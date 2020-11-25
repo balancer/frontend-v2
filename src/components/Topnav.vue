@@ -60,9 +60,6 @@
                 class="hide-md hide-lg hide-xl ml-n2 mr-n2 v-align-text-bottom"
               />
             </UiButton>
-            <UiButton @click="modalAboutOpen = true" class="ml-2">
-              <span v-text="'?'" class="ml-n1 mr-n1" />
-            </UiButton>
           </div>
         </div>
       </Container>

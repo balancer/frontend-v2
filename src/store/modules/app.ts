@@ -1,10 +1,14 @@
 import Vue from 'vue';
+import { loadTokenlist } from '@/utils/tokenlists';
+import { TOKEN_LIST_DEFAULT } from '@/constants/tokenlists';
 
 const state = {
   init: false,
   loading: false,
   modalOpen: false,
-  spaces: {}
+  spaces: {},
+  tokenlist: {},
+  skin: 'light'
 };
 
 const mutations = {
@@ -20,6 +24,7 @@ const actions = {
     commit('SET', { loading: true });
     const connector = await Vue.prototype.$auth.getConnector();
     if (connector) await dispatch('login', connector);
+    await dispatch('loadTokenlist');
     commit('SET', { loading: false, init: true });
   },
   loading: ({ commit }, payload) => {
@@ -27,6 +32,13 @@ const actions = {
   },
   toggleModal: ({ commit }) => {
     commit('SET', { modalOpen: !state.modalOpen });
+  },
+  loadTokenlist: async ({ commit }, name) => {
+    const tokenlist = await loadTokenlist(name || TOKEN_LIST_DEFAULT);
+    commit('SET', { tokenlist });
+  },
+  setSkin: async ({ commit }, skin) => {
+    commit('SET', { skin });
   }
 };
 

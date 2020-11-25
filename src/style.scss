@@ -13,6 +13,37 @@
   --block-bg: transparent;
 }
 
+.light {
+  --primary-color: #384aff;
+  --bg-color: white;
+  --text-color: #586069;
+  --link-color: #111111;
+  --heading-color: #111111;
+  --border-color: #d1d5da;
+  --header-bg: white;
+  --block-bg: transparent;
+}
+
+.dark {
+  --primary-color: #384aff;
+  --bg-color: #0f1011;
+  --text-color: #586069;
+  --link-color: white;
+  --heading-color: white;
+  --border-color: #353d45;
+  --header-bg: #151617;
+}
+
+.classic {
+  --primary-color: #536cfe;
+  --bg-color: #21242c;
+  --text-color: #90a4ae;
+  --link-color: white;
+  --heading-color: white;
+  --border-color: #41476b;
+  --header-bg: #282a32;
+}
+
 @font-face {
   font-family: 'Calibre-Medium';
   src: url('./assets/fonts/Calibre-Medium.eot');
