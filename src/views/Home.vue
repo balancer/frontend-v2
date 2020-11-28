@@ -1,15 +1,15 @@
 <template>
   <Container :slim="true">
-    <div class="px-4 px-md-0 mb-3">
-      <router-link :to="{ name: 'home' }" class="text-gray">
-        <Icon name="back" size="22" class="v-align-middle" />
-        Home
-      </router-link>
-    </div>
     <div>
       <div class="col-12 col-lg-8 float-left pr-0 pr-lg-5">
         <div class="px-4 px-md-0">
-          <h1 v-text="'Components'" class="mb-4" />
+          <h1 v-text="'Dashboard'" class="mb-4" />
+          <div class="mb-4">
+            <router-link :to="{ name: 'pool' }" class="mr-2">Pool</router-link>
+            <router-link :to="{ name: 'create' }" class="mr-2"
+              >Create</router-link
+            >
+          </div>
           <div class="mb-4">
             <h3 v-text="'Current network'" class="mb-2" />
             <p>{{ web3.network.name }}</p>
@@ -41,6 +41,12 @@
               Classic
             </UiButton>
           </div>
+          <div class="mb-4">
+            <h3 v-text="'Send transaction'" class="mb-2" />
+            <UiButton @click="setSkin('light')" class="mr-2">
+              Send
+            </UiButton>
+          </div>
         </div>
       </div>
     </div>
@@ -49,14 +55,16 @@
         :open="modalOpen"
         @close="modalOpen = false"
         @select="selectedToken = $event"
-        :tokenlist="app.tokenlist"
+        :tokens="getTokens"
+        :tokenlist="getCurrentTokenlist"
+        :balances="app.balances"
       />
     </portal>
   </Container>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   data() {
@@ -64,6 +72,9 @@ export default {
       modalOpen: false,
       selectedToken: false
     };
+  },
+  computed: {
+    ...mapGetters(['getTokens', 'getCurrentTokenlist'])
   },
   methods: {
     ...mapActions(['setSkin'])

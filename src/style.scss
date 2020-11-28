@@ -14,14 +14,14 @@
 }
 
 .light {
-  --primary-color: #384aff;
-  --bg-color: white;
-  --text-color: #586069;
+  --primary-color: #21232c;
+  --bg-color: #fafafa;
+  --text-color: #8199a4;
   --link-color: #111111;
-  --heading-color: #111111;
-  --border-color: #d1d5da;
-  --header-bg: white;
-  --block-bg: transparent;
+  --heading-color: #000;
+  --border-color: #e0e0e0;
+  --header-bg: #ffffff;
+  --block-bg: #ffffff;
 }
 
 .dark {
@@ -259,4 +259,8 @@ textarea {
 .markdown-body blockquote {
   color: var(--text-color);
   border-left-color: var(--text-color);
+}
+
+.last-child-border-0:last-child {
+  border: 0 !important;
 }

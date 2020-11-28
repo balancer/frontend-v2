@@ -37,6 +37,12 @@
     }
   }
 
+  &.fill-white {
+    path {
+      fill: white;
+    }
+  }
+
   svg {
     display: inline-block;
     vertical-align: middle;

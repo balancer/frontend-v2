@@ -1,12 +1,5 @@
 <template>
   <Sticky class="mb-4">
-    <div
-      v-if="config.env === 'develop'"
-      class="p-3 text-center bg-blue"
-      style="color: white; font-size: 20px;"
-    >
-      This is the demo site, give it a try!
-    </div>
     <nav id="topnav" class="border-bottom width-full bg-black">
       <Container>
         <div class="d-flex flex-items-center" style="height: 78px;">
@@ -22,15 +15,9 @@
                 v-text="'balancer'"
               />
             </router-link>
-            <router-link
-              v-if="space"
-              :to="{ name: 'proposals' }"
-              class="d-inline-block d-flex flex-items-center"
-              style="font-size: 24px; padding-top: 4px;"
-            >
-              <Token :space="space.key" symbolIndex="space" size="28" />
-              <span class="ml-2" v-text="space.name" />
-            </router-link>
+            <span v-if="web3.network.key !== '1'">
+              {{ web3.network.key }}
+            </span>
           </div>
           <div :key="web3.account">
             <template v-if="$auth.isAuthenticated">
@@ -64,6 +51,10 @@
         </div>
       </Container>
     </nav>
+    <div class="p-2 text-center bg-blue" style="color: white;">
+      <UiLoading class="fill-white mr-2" />
+      <span class="d-inline-block pt-1">1 transaction pending</span>
+    </div>
     <portal to="modal">
       <ModalAccount
         :open="modalOpen"

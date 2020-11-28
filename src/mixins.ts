@@ -7,6 +7,7 @@ import domains from '@snapshot-labs/snapshot-spaces/spaces/domains.json';
 import store from '@/store';
 import config from '@/helpers/config';
 import { shorten } from '@/helpers/utils';
+import { formatUnits } from '@ethersproject/units';
 
 // @ts-ignore
 const modules = Object.entries(store.state).map(module => module[0]);
@@ -33,7 +34,11 @@ export default {
       return prettyMs(diff);
     },
     _numeral(number, format = '(0.[00]a)') {
+      if (number == 0) return '-';
       return numeral(number).format(format);
+    },
+    _units(bn, decimals) {
+      return formatUnits(bn, decimals);
     },
     _shorten(str: string, key: string): string {
       if (!str) return str;

@@ -4,7 +4,7 @@
     <div
       class="shell overflow-hidden anim-scale-in position-relative rounded-0 rounded-md-2"
     >
-      <div v-if="$slots.header" class="border-bottom p-4 text-center">
+      <div v-if="$slots.header" class="border-bottom pt-4 pb-3 text-center">
         <slot name="header" />
       </div>
       <div class="modal-body">
@@ -84,10 +84,14 @@ export default {
       max-height: 100% !important;
       min-height: 100% !important;
       margin-bottom: 0 !important;
+
+      .modal-body {
+        max-height: 100% !important;
+      }
     }
 
     .modal-body {
-      max-height: 380px;
+      max-height: 320px;
       flex: auto;
       text-align: initial;
       overflow-y: auto;

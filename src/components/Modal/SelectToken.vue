@@ -3,12 +3,16 @@
     <template slot="header">
       <h3>Select token</h3>
     </template>
+    <Search
+      placeholder="Search by name, symbol or address"
+      class="p-3 border-bottom"
+    />
     <div>
       <a
-        v-for="(token, i) in tokenlist.tokens"
+        v-for="(token, i) in tokens"
         :key="i"
         @click="onSelect(token)"
-        class="d-block border-bottom p-3"
+        class="d-block border-bottom last-child-border-0 p-3"
       >
         <img
           :src="token.logoURI"
@@ -18,13 +22,16 @@
         />
         {{ token.symbol }}
         {{ token.name }}
+        <span class="float-right text-gray">
+          {{ _numeral(_units(balances[token.address], token.decimals)) }}
+        </span>
       </a>
     </div>
     <template slot="footer">
-      <div>
+      <a>
         <Icon name="gear" size="24" class="v-align-middle" />
         {{ tokenlist.name }}
-      </div>
+      </a>
     </template>
   </UiModal>
 </template>
@@ -33,7 +40,9 @@
 export default {
   props: {
     open: Boolean,
-    tokenlist: Object
+    tokens: Array,
+    tokenlist: Object,
+    balances: {}
   },
   methods: {
     onSelect(token) {

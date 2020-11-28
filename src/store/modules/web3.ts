@@ -2,9 +2,11 @@ import Vue from 'vue';
 import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue';
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
+import { formatUnits } from '@ethersproject/units';
+import { multicall } from '@snapshot-labs/snapshot.js/src/utils';
 import networks from '@snapshot-labs/snapshot.js/src/networks.json';
 import store from '@/store';
-import { formatUnits } from '@ethersproject/units';
+import abi from '@/helpers/abi';
 
 let wsProvider;
 let auth;
@@ -18,7 +20,8 @@ if (wsProvider) {
 const state = {
   account: null,
   name: null,
-  network: networks['1']
+  network: networks['1'],
+  balances: {}
 };
 
 const mutations = {
@@ -64,6 +67,7 @@ const actions = {
     if (auth.provider) {
       auth.web3 = new Web3Provider(auth.provider);
       await dispatch('loadProvider');
+      await dispatch('getBalances');
     }
   },
   logout: async ({ commit }) => {
@@ -77,11 +81,13 @@ const actions = {
       if (auth.provider.on) {
         auth.provider.on('chainChanged', async chainId => {
           commit('HANDLE_CHAIN_CHANGED', parseInt(formatUnits(chainId, 0)));
+          await dispatch('getBalances');
         });
         auth.provider.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
             commit('HANDLE_ACCOUNTS_CHANGED', accounts[0]);
             await dispatch('loadProvider');
+            await dispatch('getBalances');
           }
         });
         auth.provider.on('disconnect', async () => {
@@ -108,6 +114,23 @@ const actions = {
       commit('LOAD_PROVIDER_FAILURE', e);
       return Promise.reject();
     }
+  },
+  getBalances: async ({ commit, rootGetters }) => {
+    const tokens = rootGetters.getTokens;
+    const account = state.account;
+    const network = state.network.key;
+    let balances = await multicall(
+      network,
+      getProvider(network),
+      abi['TestToken'],
+      tokens.map(token => [token.address, 'balanceOf', [account]])
+    );
+    balances = Object.fromEntries(
+      tokens.map((token, i) => [token.address, balances[i][0]])
+      //.filter(([, balance]) => balance.toString() !== '0')
+    );
+    console.log(balances);
+    commit('SET', { balances });
   }
 };
 
