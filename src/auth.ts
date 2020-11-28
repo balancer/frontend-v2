@@ -5,15 +5,21 @@ import fortmatic from '@snapshot-labs/lock/connectors/fortmatic';
 import portis from '@snapshot-labs/lock/connectors/portis';
 import walletconnect from '@snapshot-labs/lock/connectors/walletconnect';
 import walletlink from '@snapshot-labs/lock/connectors/walletlink';
-import config from '@/helpers/config';
+import connectors from '@/helpers/connectors.json';
 
 const options: any = { connectors: [] };
-const connectors = { injected, fortmatic, portis, walletconnect, walletlink };
+const connectorClasses = {
+  injected,
+  fortmatic,
+  portis,
+  walletconnect,
+  walletlink
+};
 
-Object.entries(config.connectors).forEach((connector: any) => {
+Object.entries(connectors).forEach((connector: any) => {
   options.connectors.push({
     key: connector[0],
-    connector: connectors[connector[0]],
+    connector: connectorClasses[connector[0]],
     options: connector[1].options
   });
 });

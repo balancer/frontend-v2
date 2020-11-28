@@ -1,6 +1,6 @@
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import { ipfsGet } from '@snapshot-labs/snapshot.js/src/utils';
-import { resolveContent } from '@/helpers/web3';
+import { resolveContent } from '@snapshot-labs/snapshot.js/src/utils/contentHash';
 
 const gateway = process.env.VUE_APP_IPFS_NODE || 'ipfs.io';
 

@@ -5,7 +5,6 @@ import prettyMs from 'pretty-ms';
 import networks from '@snapshot-labs/snapshot.js/src/networks.json';
 import domains from '@snapshot-labs/snapshot-spaces/spaces/domains.json';
 import store from '@/store';
-import config from '@/helpers/config';
 import { shorten } from '@/helpers/utils';
 import { formatUnits } from '@ethersproject/units';
 
@@ -14,11 +13,6 @@ const modules = Object.entries(store.state).map(module => module[0]);
 const domainName = window.location.hostname;
 
 export default {
-  data() {
-    return {
-      config
-    };
-  },
   computed: {
     ...mapState(modules),
     domain() {
