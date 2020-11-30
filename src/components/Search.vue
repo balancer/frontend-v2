@@ -2,6 +2,7 @@
   <div class="d-flex flex-items-center">
     <Icon name="search" size="22" class="mb-1 mr-2 text-gray" />
     <input
+      v-autofocus
       :value="value"
       :placeholder="placeholder"
       @input="handleInput"

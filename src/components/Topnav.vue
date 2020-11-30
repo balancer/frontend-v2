@@ -15,16 +15,19 @@
                 v-text="'balancer'"
               />
             </router-link>
-            <span v-if="web3.network.key !== '1'">
-              {{ web3.network.key }}
-            </span>
+            <span
+              v-if="web3.network.key !== '1'"
+              style="font-size: 19px; padding-top: 6px;"
+              class="pl-1 pr-2 text-gray"
+              v-text="web3.network.shortName"
+            />
           </div>
           <div :key="web3.account">
             <template v-if="$auth.isAuthenticated">
               <UiButton
                 @click="modalOpen = true"
                 class="button-outline"
-                :loading="loading"
+                :loading="app.authLoading"
               >
                 <Avatar
                   :address="web3.account"
@@ -35,11 +38,7 @@
                 <span v-else v-text="_shorten(web3.account)" class="hide-sm" />
               </UiButton>
             </template>
-            <UiButton
-              v-if="!$auth.isAuthenticated"
-              @click="modalOpen = true"
-              :loading="loading"
-            >
+            <UiButton v-if="!$auth.isAuthenticated" @click="modalOpen = true">
               <span class="hide-sm" v-text="'Connect wallet'" />
               <Icon
                 name="login"
@@ -72,7 +71,6 @@ import { mapActions } from 'vuex';
 export default {
   data() {
     return {
-      loading: false,
       modalOpen: false,
       modalAboutOpen: false
     };
@@ -98,9 +96,7 @@ export default {
     },
     async handleLogin(connector) {
       this.modalOpen = false;
-      this.loading = true;
       await this.login(connector);
-      this.loading = false;
     }
   }
 };

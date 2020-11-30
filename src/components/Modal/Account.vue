@@ -8,7 +8,7 @@
       <h3 class="m-4 mb-0 text-center"></h3>
       <div class="m-4 mb-5">
         <a
-          v-for="(connector, id, i) in config.connectors"
+          v-for="(connector, id, i) in connectors"
           :key="i"
           @click="$emit('login', connector.id)"
           target="_blank"
@@ -75,11 +75,13 @@
 <script>
 import { mapActions } from 'vuex';
 import { getInjected } from '@/helpers/utils';
+import connectors from '@/helpers/connectors.json';
 
 export default {
   props: ['open'],
   data() {
     return {
+      connectors,
       step: null,
       path:
         'https://raw.githubusercontent.com/snapshot-labs/lock/master/connectors/assets'

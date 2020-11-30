@@ -15,21 +15,6 @@
             <p>{{ web3.network.name }}</p>
           </div>
           <div class="mb-4">
-            <h3 v-text="'Select token'" class="mb-2" />
-            <UiButton @click="modalOpen = true">
-              <template v-if="selectedToken">
-                <img
-                  :src="selectedToken.logoURI"
-                  class="circle v-align-middle mr-1"
-                  width="24"
-                  height="24"
-                />
-                {{ selectedToken.symbol }}
-              </template>
-              <template v-else>Select token</template>
-            </UiButton>
-          </div>
-          <div class="mb-4">
             <h3 v-text="'Change theme'" class="mb-2" />
             <UiButton @click="setSkin('light')" class="mr-2">
               Light
@@ -50,32 +35,13 @@
         </div>
       </div>
     </div>
-    <portal to="modal">
-      <ModalSelectToken
-        :open="modalOpen"
-        @close="modalOpen = false"
-        @select="selectedToken = $event"
-        :tokens="getTokens"
-        :tokenlist="getCurrentTokenlist"
-        :balances="app.balances"
-      />
-    </portal>
   </Container>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
-  data() {
-    return {
-      modalOpen: false,
-      selectedToken: false
-    };
-  },
-  computed: {
-    ...mapGetters(['getTokens', 'getCurrentTokenlist'])
-  },
   methods: {
     ...mapActions(['setSkin'])
   }

@@ -25,6 +25,11 @@ const state = {
 };
 
 const mutations = {
+  WEB3_SET(_state, payload) {
+    Object.keys(payload).forEach(key => {
+      Vue.set(_state, key, payload[key]);
+    });
+  },
   LOGOUT(_state) {
     Vue.set(_state, 'account', null);
     Vue.set(_state, 'name', null);
@@ -61,14 +66,16 @@ const mutations = {
 };
 
 const actions = {
-  login: async ({ dispatch }, connector = 'injected') => {
+  login: async ({ dispatch, commit }, connector = 'injected') => {
     auth = getInstance();
+    commit('SET', { authLoading: true });
     await auth.login(connector);
     if (auth.provider) {
       auth.web3 = new Web3Provider(auth.provider);
       await dispatch('loadProvider');
       await dispatch('getBalances');
     }
+    commit('SET', { authLoading: false });
   },
   logout: async ({ commit }) => {
     Vue.prototype.$auth.logout();
@@ -116,7 +123,7 @@ const actions = {
     }
   },
   getBalances: async ({ commit, rootGetters }) => {
-    const tokens = rootGetters.getTokens;
+    const tokens = rootGetters.getTokensWithBalances({});
     const account = state.account;
     const network = state.network.key;
     let balances = await multicall(
@@ -129,8 +136,7 @@ const actions = {
       tokens.map((token, i) => [token.address, balances[i][0]])
       //.filter(([, balance]) => balance.toString() !== '0')
     );
-    console.log(balances);
-    commit('SET', { balances });
+    commit('WEB3_SET', { balances });
   }
 };
 

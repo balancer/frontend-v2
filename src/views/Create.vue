@@ -43,7 +43,7 @@
                 <Icon name="close" size="12" class="mb-1" />
               </a>
             </UiButton>
-            <UiButton @click="modalOpen = true" class="width-full">
+            <UiButton @click="modal.selectToken = true" class="width-full">
               Add a token
             </UiButton>
           </Block>
@@ -52,38 +52,62 @@
     </div>
     <portal to="modal">
       <ModalSelectToken
-        :open="modalOpen"
-        @close="modalOpen = false"
+        :open="modal.selectToken"
+        @close="modal.selectToken = false"
         @select="addToken"
-        :tokens="getTokens"
+        @selectTokenlist="
+          modal.selectToken = false;
+          modal.selectTokenlist = true;
+        "
+        @inputSearch="q = $event"
+        :tokens="getTokensWithBalances({ q })"
         :tokenlist="getCurrentTokenlist"
-        :balances="app.balances"
+      />
+      <ModalSelectTokenlist
+        :open="modal.selectTokenlist"
+        @close="modal.selectTokenlist = false"
+        @select="selectTokenlist"
+        :tokenlists="registry.tokenlists"
       />
     </portal>
   </Container>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   data() {
     return {
+      q: '',
       form: {
         tokens: []
       },
-      modalOpen: false
+      modal: {
+        selectToken: false,
+        selectTokenlist: false
+      }
     };
   },
   computed: {
-    ...mapGetters(['getTokens', 'getCurrentTokenlist'])
+    ...mapGetters([
+      'getTokensWithBalances',
+      'getCurrentTokenlist',
+      'getTokenlists'
+    ])
   },
   methods: {
+    ...mapActions(['setTokenlist']),
     addToken(token) {
       this.form.tokens.push(token);
     },
     removeToken(i) {
       this.form.tokens = this.form.tokens.filter((token, index) => index !== i);
+    },
+    selectTokenlist(i) {
+      this.setTokenlist(i);
+      this.q = '';
+      this.modal.selectToken = true;
     }
   }
 };

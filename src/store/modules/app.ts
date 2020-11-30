@@ -3,6 +3,7 @@ import Vue from 'vue';
 const state = {
   init: false,
   loading: false,
+  authLoading: false,
   modalOpen: false,
   spaces: {},
   skin: 'light'
@@ -19,8 +20,7 @@ const mutations = {
 const actions = {
   init: async ({ commit, dispatch }) => {
     commit('SET', { loading: true });
-    await dispatch('loadTokenlist');
-    dispatch('setTokenlist');
+    await dispatch('loadTokenlists');
     const connector = await Vue.prototype.$auth.getConnector();
     if (connector) dispatch('login', connector);
     commit('SET', { loading: false, init: true });
