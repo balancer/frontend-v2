@@ -22,7 +22,7 @@ const mutations = {
 
 const getters = {
   getTokens: (state, getters, rootState) => ({ q }) => {
-    if (state.loading) return [];
+    if (state.loading || !state.currentTokenlist) return [];
 
     const currentTokenlist = state.tokenlists[state.currentTokenlist];
     let tokens = currentTokenlist.tokens || [];
