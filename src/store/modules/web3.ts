@@ -124,8 +124,9 @@ const actions = {
     }
   },
   getBalances: async ({ commit, rootGetters }) => {
-    const tokens = rootGetters.getTokens({});
     const account = state.account;
+    if (!account) return;
+    const tokens = rootGetters.getTokens({});
     const network = state.network.key;
     let balances = await multicall(
       network,
