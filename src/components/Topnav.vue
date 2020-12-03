@@ -86,11 +86,6 @@ export default {
       return this.app.spaces[key] ? this.app.spaces[key] : false;
     }
   },
-  watch: {
-    space() {
-      this.setTitle();
-    }
-  },
   methods: {
     ...mapActions(['login']),
     async handleLogin(connector) {
