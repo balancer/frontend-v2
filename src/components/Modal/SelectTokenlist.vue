@@ -22,7 +22,7 @@
           v-for="(tokenlist, i) in tokenlists"
           :key="i"
           @click="onSelect(i)"
-          class="d-block border-bottom last-child-border-0 p-3"
+          class="d-block border-bottom last-child-border-0 p-3 highlight"
         >
           <img
             :src="_url(tokenlist.logoURI)"

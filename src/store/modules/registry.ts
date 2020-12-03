@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import { loadTokenlist } from '@/utils/tokenlists';
 import { TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
-import { clone } from '@/helpers/utils';
+import { clone, lsGet, lsSet } from '@/helpers/utils';
 import { formatUnits } from '@ethersproject/units';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';
 
 const state = {
-  currentTokenlist: TOKEN_LIST_DEFAULT,
+  currentTokenlist: lsGet('tokenlist') || TOKEN_LIST_DEFAULT,
   tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
   loading: false
 };
@@ -63,7 +63,7 @@ const getters = {
       tokens = orderBy(tokens, ['value', 'balance'], ['desc', 'desc']);
     }
 
-    return tokens.slice(0, 50);
+    return tokens.slice(0, 100);
   },
   getCurrentTokenlist: state => {
     const tokenlist = clone(state.tokenlists[state.currentTokenlist]);
@@ -114,6 +114,7 @@ const actions = {
     dispatch('loadPrices');
   },
   setTokenlist: ({ commit, dispatch }, name) => {
+    lsSet('tokenlist', name);
     commit('REGISTRY_SET', { currentTokenlist: name });
     dispatch('getBalances');
     dispatch('loadPrices');

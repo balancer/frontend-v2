@@ -12,9 +12,9 @@
       v-if="tokenlist.tags && Object.keys(tokenlist.tags).length > 0"
       class="d-block border-bottom p-3 sliding"
     >
-      <span v-for="(tag, i) in tokenlist.tags" :key="i" class="mr-2">
+      <UiTag v-for="(tag, i) in tokenlist.tags" :key="i" class="mr-2">
         {{ tag.name }}
-      </span>
+      </UiTag>
     </div>
     <div>
       <div v-if="tokens.length > 0">
@@ -22,7 +22,7 @@
           v-for="(token, i) in tokens"
           :key="i"
           @click="onSelect(token)"
-          class="d-block border-bottom last-child-border-0 p-3"
+          class="d-block border-bottom last-child-border-0 p-3 highlight"
         >
           <Token
             :url="token.logoURI"

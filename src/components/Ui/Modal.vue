@@ -73,7 +73,7 @@ export default {
 
   .shell {
     border: 1px solid var(--border-color);
-    background-color: var(--bg-color);
+    background-color: var(--block-bg);
     padding-left: 0 !important;
     padding-right: 0 !important;
     max-width: 440px;

@@ -10,7 +10,7 @@
   --heading-color: #111111;
   --border-color: #d1d5da;
   --header-bg: white;
-  --block-bg: transparent;
+  --block-bg: white;
   --border-radius-2: 4px;
 }
 
@@ -34,6 +34,7 @@
   --heading-color: white;
   --border-color: #353d45;
   --header-bg: #151617;
+  --block-bg: #0f1011;
   --border-radius-2: 23px;
 }
 
@@ -45,6 +46,7 @@
   --heading-color: white;
   --border-color: #41476b;
   --header-bg: #282a32;
+  --block-bg: #21242c;
   --border-radius-2: 23px;
 }
 
@@ -276,4 +278,8 @@ textarea {
 
 .sliding::-webkit-scrollbar {
   display: none;
+}
+
+.highlight:hover {
+  background-color: var(--bg-color);
 }

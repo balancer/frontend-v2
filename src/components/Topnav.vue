@@ -55,7 +55,7 @@
         </div>
       </Container>
     </nav>
-    <div class="p-2 text-center bg-blue" style="color: white;">
+    <div v-if="1 === 2" class="p-2 text-center bg-blue" style="color: white;">
       <UiLoading class="fill-white mr-2" />
       <span class="d-inline-block pt-1">1 transaction pending</span>
     </div>
