@@ -1,15 +1,44 @@
 <template>
   <Container :slim="true">
-    <div class="px-4 px-md-0 mb-3">
-      <router-link :to="{ name: 'home' }" class="text-gray">
-        <Icon name="back" size="22" class="v-align-middle" />
-        Home
-      </router-link>
+    <div class="px-4 px-md-0">
+      <div class="mb-3">
+        <router-link :to="{ name: 'home' }" class="text-gray">
+          <Icon name="back" size="22" class="v-align-middle" />
+          Home
+        </router-link>
+      </div>
+      <h1 v-text="'Create a pool'" class="mb-4" />
     </div>
     <div>
       <div class="col-12 col-lg-8 float-left pr-0 pr-lg-5">
-        <div class="px-4 px-md-0">
-          <h1 v-text="'Create a pool'" class="mb-4" />
+        <div>
+          <Block title="Tokens">
+            <UiButton
+              v-for="(token, i) in form.tokens"
+              :key="token.address"
+              class="width-full text-left mb-2 px-3"
+            >
+              <Token
+                :url="token.logoURI"
+                :address="token.address"
+                :size="24"
+                class="mr-1"
+              />
+              {{ token.symbol }}
+              <a @click="removeToken(i)" class="float-right">
+                <Icon name="close" size="12" class="mb-1" />
+              </a>
+            </UiButton>
+            <UiButton
+              @click="
+                modal.selectToken = true;
+                q = '';
+              "
+              class="width-full"
+            >
+              Add a token
+            </UiButton>
+          </Block>
           <Block title="Tokenizer">
             <UiButton class="width-full mb-2">
               Immutable pool
@@ -26,48 +55,31 @@
               Flattened curve
             </UiButton>
           </Block>
-          <Block title="Tokens">
-            <UiButton
-              v-for="(token, i) in form.tokens"
-              :key="i"
-              class="width-full text-left mb-2"
-            >
-              <img
-                :src="token.logoURI"
-                class="circle v-align-middle mr-1"
-                width="24"
-                height="24"
-              />
-              {{ token.symbol }}
-              <a @click="removeToken(i)" class="float-right">
-                <Icon name="close" size="12" class="mb-1" />
-              </a>
-            </UiButton>
-            <UiButton @click="modal.selectToken = true" class="width-full">
-              Add a token
-            </UiButton>
-          </Block>
         </div>
       </div>
     </div>
     <portal to="modal">
       <ModalSelectToken
         :open="modal.selectToken"
+        :loading="registry.loading"
         @close="modal.selectToken = false"
         @select="addToken"
         @selectTokenlist="
           modal.selectToken = false;
           modal.selectTokenlist = true;
+          q = '';
         "
         @inputSearch="q = $event"
-        :tokens="getTokensWithBalances({ q })"
+        :tokens="getTokens({ q })"
         :tokenlist="getCurrentTokenlist"
       />
       <ModalSelectTokenlist
         :open="modal.selectTokenlist"
         @close="modal.selectTokenlist = false"
+        @back="selectTokenlist"
         @select="selectTokenlist"
-        :tokenlists="registry.tokenlists"
+        @inputSearch="q = $event"
+        :tokenlists="getTokenlists({ q })"
       />
     </portal>
   </Container>
@@ -90,11 +102,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'getTokensWithBalances',
-      'getCurrentTokenlist',
-      'getTokenlists'
-    ])
+    ...mapGetters(['getTokens', 'getCurrentTokenlist', 'getTokenlists'])
   },
   methods: {
     ...mapActions(['setTokenlist']),
@@ -105,7 +113,7 @@ export default {
       this.form.tokens = this.form.tokens.filter((token, index) => index !== i);
     },
     selectTokenlist(i) {
-      this.setTokenlist(i);
+      if (i) this.setTokenlist(i);
       this.q = '';
       this.modal.selectToken = true;
     }

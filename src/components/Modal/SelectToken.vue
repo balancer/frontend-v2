@@ -8,6 +8,14 @@
       placeholder="Search by name, symbol or address"
       class="p-3 border-bottom"
     />
+    <div
+      v-if="tokenlist.tags && Object.keys(tokenlist.tags).length > 0"
+      class="d-block border-bottom p-3 sliding"
+    >
+      <span v-for="(tag, i) in tokenlist.tags" :key="i" class="mr-2">
+        {{ tag.name }}
+      </span>
+    </div>
     <div>
       <div v-if="tokens.length > 0">
         <a
@@ -16,11 +24,11 @@
           @click="onSelect(token)"
           class="d-block border-bottom last-child-border-0 p-3"
         >
-          <img
-            :src="_url(token.logoURI)"
-            class="circle v-align-middle mr-1"
-            width="24"
-            height="24"
+          <Token
+            :url="token.logoURI"
+            :address="token.address"
+            :size="24"
+            class="mr-1"
           />
           {{ _shorten(token.symbol, 'symbol') }}
           {{ _shorten(token.name, 'name') }}
@@ -29,17 +37,21 @@
           </span>
         </a>
       </div>
+      <div v-else-if="loading" class="d-block text-center p-3">
+        <UiLoading />
+      </div>
       <div v-else class="d-block text-center p-3">
-        Sorry, we can't find any tokens
+        Oops, we can't find any tokens
       </div>
     </div>
-    <template slot="footer">
+    <template v-if="tokenlist.name" slot="footer">
       <div class="text-left text-white">
         <img
-            :src="_url(tokenlist.logoURI)"
-            class="circle v-align-middle mr-1"
-            width="24"
-            height="24"
+          v-if="tokenlist.logoURI"
+          :src="_url(tokenlist.logoURI)"
+          class="circle v-align-middle mr-1"
+          width="24"
+          height="24"
         />
         {{ tokenlist.name }}
         <a @click="$emit('selectTokenlist')" class="float-right">
@@ -56,7 +68,8 @@ export default {
     open: Boolean,
     tokens: Array,
     tokenlist: Object,
-    balances: {}
+    balances: {},
+    loading: Boolean
   },
   methods: {
     onSelect(token) {

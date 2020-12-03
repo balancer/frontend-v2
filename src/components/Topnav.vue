@@ -1,5 +1,10 @@
 <template>
   <Sticky class="mb-4">
+    <div
+      v-if="web3.network.unknown"
+      class="bg-red overflow-hidden"
+      style="height: 4px;"
+    ></div>
     <nav id="topnav" class="border-bottom width-full bg-black">
       <Container>
         <div class="d-flex flex-items-center" style="height: 78px;">

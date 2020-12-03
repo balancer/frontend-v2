@@ -11,6 +11,7 @@
   --border-color: #d1d5da;
   --header-bg: white;
   --block-bg: transparent;
+  --border-radius-2: 4px;
 }
 
 .light {
@@ -22,6 +23,7 @@
   --border-color: #e0e0e0;
   --header-bg: #ffffff;
   --block-bg: #ffffff;
+  --border-radius-2: 8px;
 }
 
 .dark {
@@ -32,6 +34,7 @@
   --heading-color: white;
   --border-color: #353d45;
   --header-bg: #151617;
+  --border-radius-2: 23px;
 }
 
 .classic {
@@ -42,6 +45,7 @@
   --heading-color: white;
   --border-color: #41476b;
   --header-bg: #282a32;
+  --border-radius-2: 23px;
 }
 
 @font-face {
@@ -263,4 +267,13 @@ textarea {
 
 .last-child-border-0:last-child {
   border: 0 !important;
+}
+
+.sliding {
+  overflow: auto;
+  white-space: nowrap;
+}
+
+.sliding::-webkit-scrollbar {
+  display: none;
 }

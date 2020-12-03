@@ -53,7 +53,8 @@ const mutations = {
         ...networks['1'],
         chainId,
         name: 'Unknown',
-        network: 'unknown'
+        network: 'unknown',
+        unknown: true
       };
     }
     Vue.set(_state, 'network', networks[chainId]);
@@ -123,7 +124,7 @@ const actions = {
     }
   },
   getBalances: async ({ commit, rootGetters }) => {
-    const tokens = rootGetters.getTokensWithBalances({});
+    const tokens = rootGetters.getTokens({});
     const account = state.account;
     const network = state.network.key;
     let balances = await multicall(
@@ -133,7 +134,7 @@ const actions = {
       tokens.map(token => [token.address, 'balanceOf', [account]])
     );
     balances = Object.fromEntries(
-      tokens.map((token, i) => [token.address, balances[i][0]])
+      tokens.map((token, i) => [token.address.toLowerCase(), balances[i][0]])
       //.filter(([, balance]) => balance.toString() !== '0')
     );
     commit('WEB3_SET', { balances });

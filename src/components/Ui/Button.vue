@@ -24,7 +24,7 @@ export default {
   border: 1px solid var(--border-color);
   background-color: transparent;
   color: var(--link-color);
-  border-radius: 23px;
+  border-radius: var(--border-radius-2);
   padding: 0 24px;
   outline: none;
   line-height: 46px;

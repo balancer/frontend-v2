@@ -1,30 +1,44 @@
 <template>
-  <UiModal :open="open" @close="$emit('close')">
+  <UiModal
+    :open="open"
+    @close="$emit('close')"
+    @back="
+      $emit('back');
+      $emit('close');
+    "
+    :back="true"
+  >
     <template slot="header">
-      <h3>Select a token list</h3>
+      <h3>Select a list</h3>
     </template>
     <Search
-      placeholder="Search by name, symbol or address"
+      @input="$emit('inputSearch', $event)"
+      placeholder="Search by name"
       class="p-3 border-bottom"
     />
     <div>
-      <a
-        v-for="(tokenlist, i) in tokenlists"
-        :key="i"
-        @click="onSelect(i)"
-        class="d-block border-bottom last-child-border-0 p-3"
-      >
-        <img
-          :src="_url(tokenlist.logoURI)"
-          class="circle v-align-middle mr-1"
-          width="24"
-          height="24"
-        />
-        {{ tokenlist.name }}
-        <span class="float-right text-gray">
-          {{ _numeral(tokenlist.tokens.length) }} tokens
-        </span>
-      </a>
+      <div v-if="Object.keys(tokenlists).length > 0">
+        <a
+          v-for="(tokenlist, i) in tokenlists"
+          :key="i"
+          @click="onSelect(i)"
+          class="d-block border-bottom last-child-border-0 p-3"
+        >
+          <img
+            :src="_url(tokenlist.logoURI)"
+            class="circle v-align-middle mr-1"
+            width="24"
+            height="24"
+          />
+          {{ tokenlist.name }}
+          <span class="float-right text-gray">
+            {{ _numeral(tokenlist.tokens.length) }} tokens
+          </span>
+        </a>
+      </div>
+      <div v-else class="d-block text-center p-3">
+        Oops, we can't find any list
+      </div>
     </div>
     <template slot="footer">
       <a href="https://tokenlists.org" target="_blank">

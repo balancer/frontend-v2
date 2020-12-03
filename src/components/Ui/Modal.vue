@@ -14,6 +14,13 @@
         <slot name="footer" />
       </div>
       <a
+        v-if="back"
+        @click="$emit('back')"
+        class="position-absolute left-0 top-0 p-4 text-gray"
+      >
+        <Icon name="back" size="26" />
+      </a>
+      <a
         @click="$emit('close')"
         class="position-absolute right-0 top-1 p-4 text-gray"
       >
@@ -28,7 +35,8 @@ import { mapActions } from 'vuex';
 
 export default {
   props: {
-    open: Boolean
+    open: Boolean,
+    back: Boolean
   },
   watch: {
     open(val, prev) {

@@ -19,11 +19,12 @@ const mutations = {
 
 const actions = {
   init: async ({ commit, dispatch }) => {
-    commit('SET', { loading: true });
-    await dispatch('loadTokenlists');
-    const connector = await Vue.prototype.$auth.getConnector();
-    if (connector) dispatch('login', connector);
-    commit('SET', { loading: false, init: true });
+    // commit('SET', { loading: true });
+    commit('SET', { init: true });
+    dispatch('loadTokenlists');
+    Vue.prototype.$auth.getConnector().then(connector => {
+      if (connector) dispatch('login', connector);
+    });
   },
   loading: ({ commit }, payload) => {
     commit('SET', { loading: payload });
