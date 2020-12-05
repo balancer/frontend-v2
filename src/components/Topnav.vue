@@ -51,6 +51,11 @@
                 class="hide-md hide-lg hide-xl ml-n2 mr-n2 v-align-text-bottom"
               />
             </UiButton>
+            <router-link :to="{ name: 'settings' }" class="ml-2">
+              <UiButton class="px-2">
+                <Icon name="gear" size="22" class="v-align-text-bottom px-1" />
+              </UiButton>
+            </router-link>
           </div>
         </div>
       </Container>

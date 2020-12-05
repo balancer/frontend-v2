@@ -8,6 +8,8 @@ import networks from '@snapshot-labs/snapshot.js/src/networks.json';
 import store from '@/store';
 import abi from '@/helpers/abi';
 
+const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';
+
 let wsProvider;
 let auth;
 
@@ -20,7 +22,7 @@ if (wsProvider) {
 const state = {
   account: null,
   name: null,
-  network: networks['1'],
+  network: networks[defaultNetwork],
   balances: {}
 };
 
@@ -125,8 +127,8 @@ const actions = {
   },
   getBalances: async ({ commit, rootGetters }) => {
     const account = state.account;
-    if (!account) return;
     const tokens = rootGetters.getTokens({});
+    if (!account || tokens.length === 0) return;
     const network = state.network.key;
     let balances = await multicall(
       network,
