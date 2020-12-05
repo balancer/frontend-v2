@@ -5,6 +5,9 @@
         <div class="px-4 px-md-0">
           <h1 v-text="'Settings'" class="mb-4" />
           <p class="mb-4">
+            <router-link :to="{ name: 'home' }" class="mr-2">
+              Explore
+            </router-link>
             <router-link :to="{ name: 'create' }" class="mr-2">
               Create pool
             </router-link>
