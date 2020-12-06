@@ -6,14 +6,4 @@ export default class User {
   constructor(address) {
     this.address = address;
   }
-
-  // @ts-ignore
-  async getBalances(tokens: string[]): Promise<number> {
-    // return await multicall();
-  }
-
-  // @ts-ignore
-  async getAllowances(tokens: string[]): Promise<number> {
-    // return await multicall();
-  }
 }

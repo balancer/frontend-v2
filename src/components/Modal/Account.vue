@@ -74,8 +74,8 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { getInjected } from '@/helpers/utils';
-import connectors from '@/helpers/connectors.json';
+import { getInjected } from '@/utils';
+import connectors from '@/constants/connectors.json';
 
 export default {
   props: ['open'],
