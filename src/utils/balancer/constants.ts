@@ -18,8 +18,3 @@ export const TOKEN_FACTORY_ADDRESS =
   '0x69AC2050b7537f8337fF3f9C329F76dDbCB7D376';
 
 export const WETH_ADDRESS = '0xfC84D68f714eB5B09B7b1D347394bcc6872805d6';
-
-export const STRATEGY_TYPES = {
-  0: 'Constant weighted product',
-  1: 'Flattened curve'
-};

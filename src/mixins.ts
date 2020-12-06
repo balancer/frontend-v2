@@ -5,7 +5,7 @@ import prettyMs from 'pretty-ms';
 import networks from '@snapshot-labs/snapshot.js/src/networks.json';
 import domains from '@snapshot-labs/snapshot-spaces/spaces/domains.json';
 import store from '@/store';
-import { shorten } from '@/helpers/utils';
+import { shorten } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 
 // @ts-ignore

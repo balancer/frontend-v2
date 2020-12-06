@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { loadTokenlist } from '@/utils/tokenlists';
 import { TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
-import { clone, lsSet } from '@/helpers/utils';
+import { clone, lsSet } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';

@@ -11,12 +11,13 @@
           <div class="flex-auto d-flex flex-items-center">
             <router-link
               :to="{ name: 'home' }"
-              class="d-inline-block d-flex flex-items-center"
-              style="font-size: 24px; padding-top: 4px;"
+              class="d-flex flex-items-center"
             >
+              <img src="~@/assets/balancer.svg" height="30" class="mr-2" />
               <span
                 :class="space && 'hide-sm'"
                 class="mr-1"
+                style="font-size: 24px; margin-top: 4px;"
                 v-text="'balancer'"
               />
             </router-link>

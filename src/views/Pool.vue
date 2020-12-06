@@ -23,13 +23,25 @@
             <Block title="Controller">
               <User :address="pool.controller" />
             </Block>
-            <Block title="Strategy">
+            <Block title="Trading strategy">
               <div class="d-flex">
                 <div class="flex-auto">
-                  {{ strategyTypes[pool.strategy[1]] }}
-                  ({{ pool.strategy[1] }})
+                  {{ pool.strategy.name }}
+                  ({{ pool.strategy.type }})
                 </div>
-                <User :address="pool.strategy[0]" />
+                <User :address="pool.strategy.address" />
+              </div>
+              <div v-if="pool.strategy.swapFee" class="d-flex">
+                <div class="flex-auto">
+                  Swap fee
+                </div>
+                {{ _numeral(pool.strategy.swapFeePercent) }}%
+              </div>
+              <div v-if="pool.strategy.totalTokens" class="d-flex">
+                <div class="flex-auto">
+                  Total tokens
+                </div>
+                {{ _numeral(pool.strategy.totalTokens) }}
               </div>
             </Block>
             <Block title="Tokens" :counter="pool.tokens.length" :slim="true">
@@ -90,14 +102,12 @@
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import Pool from '@/utils/balancer/pool';
 import { mapActions } from 'vuex';
-import { STRATEGY_TYPES } from '@/utils/balancer/constants';
 
 export default {
   data() {
     return {
       id: this.$route.params.id,
-      pool: false,
-      strategyTypes: STRATEGY_TYPES
+      pool: false
     };
   },
   async created() {

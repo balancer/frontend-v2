@@ -5,7 +5,7 @@ import fortmatic from '@snapshot-labs/lock/connectors/fortmatic';
 import portis from '@snapshot-labs/lock/connectors/portis';
 import walletconnect from '@snapshot-labs/lock/connectors/walletconnect';
 import walletlink from '@snapshot-labs/lock/connectors/walletlink';
-import connectors from '@/helpers/connectors.json';
+import connectors from '@/constants/connectors.json';
 
 const options: any = { connectors: [] };
 const connectorClasses = {

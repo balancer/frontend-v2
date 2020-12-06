@@ -19,10 +19,8 @@
 </template>
 
 <script>
-import { call } from '@snapshot-labs/snapshot.js/src/utils';
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
-import abi from '@/helpers/abi';
-import { VAULT_ADDRESS } from '@/utils/balancer/constants';
+import Vault from '@/utils/balancer/vault';
 
 export default {
   data() {
@@ -30,22 +28,13 @@ export default {
       poolIds: []
     };
   },
-  methods: {
-    async onClick() {
-      console.log('Click');
-    }
-  },
   async created() {
-    const totalPools = await call(
-      getProvider(this.web3.network.key),
-      abi['Vault'],
-      [VAULT_ADDRESS, 'getTotalPools']
+    const vault = new Vault(
+      this.web3.network.key,
+      getProvider(this.web3.network.key)
     );
-    this.poolIds = await call(
-      getProvider(this.web3.network.key),
-      abi['Vault'],
-      [VAULT_ADDRESS, 'getPoolIds', [0, totalPools]]
-    );
+    const totalPools = await vault.getTotalPools();
+    this.poolIds = await vault.getPoolIds(0, totalPools);
   }
 };
 </script>

@@ -6,7 +6,7 @@ import { formatUnits } from '@ethersproject/units';
 import { multicall } from '@snapshot-labs/snapshot.js/src/utils';
 import networks from '@snapshot-labs/snapshot.js/src/networks.json';
 import store from '@/store';
-import abi from '@/helpers/abi';
+import abi from '@/utils/abi';
 
 const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';
 
