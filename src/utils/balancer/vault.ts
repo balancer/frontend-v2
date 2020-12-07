@@ -1,6 +1,6 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { VAULT_ADDRESS } from './constants';
 import { call } from '@snapshot-labs/snapshot.js/src/utils';
+import { VAULT_ADDRESS } from './constants';
 import { abi } from './abi/Vault.json';
 
 export default class Vault {

@@ -1,14 +1,16 @@
 import Vue from 'vue';
-import { loadTokenlist } from '@/utils/tokenlists';
-import { TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
-import { clone, lsSet } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';
+import { loadTokenlist } from '@/utils/tokenlists';
+import { TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
+import { clone, lsSet } from '@/utils';
+import injected from '@/constants/injected';
 
 const state = {
   currentTokenlist: TOKEN_LIST_DEFAULT,
   tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
+  injected,
   loading: false
 };
 
@@ -21,11 +23,14 @@ const mutations = {
 };
 
 const getters = {
-  getTokens: (state, getters, rootState) => ({ q }) => {
-    if (state.loading || !state.currentTokenlist) return [];
-
-    const currentTokenlist = state.tokenlists[state.currentTokenlist];
+  getTokens: (state, getters, rootState) => ({ q, addresses }) => {
+    const currentTokenlist = state.tokenlists[state.currentTokenlist] || {};
     let tokens = currentTokenlist.tokens || [];
+    const injected = Object.fromEntries(
+      state.injected.map(token => [token.address, token])
+    );
+    tokens = Object.fromEntries(tokens.map(token => [token.address, token]));
+    tokens = Object.values({ ...injected, ...tokens });
 
     tokens = tokens.filter(
       token => token.chainId === rootState.web3.network.chainId
@@ -61,6 +66,15 @@ const getters = {
         return token;
       });
       tokens = orderBy(tokens, ['value', 'balance'], ['desc', 'desc']);
+    }
+
+    if (addresses) {
+      tokens = addresses.map(
+        address =>
+          tokens.filter(
+            token => token.address.toLowerCase() === address.toLowerCase()
+          )[0]
+      );
     }
 
     return tokens.slice(0, 100);

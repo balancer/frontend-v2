@@ -48,11 +48,12 @@
             </UiButton>
           </Block>
           <Block title="Trading strategy">
-            <UiButton class="width-full mb-2">
-              Constant weighted product
-            </UiButton>
-            <UiButton class="width-full">
-              Flattened curve
+            <UiButton
+              v-for="(strategy, i) in strategies"
+              :key="i"
+              class="width-full mb-2"
+            >
+              {{ strategy.name }}
             </UiButton>
           </Block>
         </div>
@@ -87,11 +88,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import strategies from '@/utils/balancer/strategies';
 
 export default {
   data() {
     return {
       q: '',
+      strategies: Object.values(strategies),
       form: {
         tokens: []
       },

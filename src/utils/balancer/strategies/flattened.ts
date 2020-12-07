@@ -4,8 +4,9 @@ import { call } from '@snapshot-labs/snapshot.js/src/utils';
 import BStrategy from '../strategy';
 import { abi } from '../abi/FlattenedTradingStrategy.json';
 
+export const name = 'Flattened curve';
+
 export default class Strategy extends BStrategy {
-  public name = 'Flattened curve';
   public swapFee?: BigNumber;
   public swapFeePercent?: number;
   public amp?: BigNumber;

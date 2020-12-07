@@ -27,7 +27,8 @@ export default {
       const diff = number * 1e3 - new Date().getTime();
       return prettyMs(diff);
     },
-    _numeral(number, format = '(0.[00]a)') {
+    _numeral(number, format = '(0.[0]a)') {
+      if (number < 1) format = '0.[000]';
       if (number == 0) return '-';
       return numeral(number).format(format);
     },
@@ -38,7 +39,7 @@ export default {
       if (!str) return str;
       let limit;
       if (key === 'symbol') limit = 6;
-      if (key === 'name') limit = 24;
+      if (key === 'name') limit = 18;
       if (key === 'choice') limit = 12;
       if (limit)
         return str.length > limit ? `${str.slice(0, limit).trim()}...` : str;

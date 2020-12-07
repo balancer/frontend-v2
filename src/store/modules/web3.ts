@@ -3,10 +3,9 @@ import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue';
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import { formatUnits } from '@ethersproject/units';
-import { multicall } from '@snapshot-labs/snapshot.js/src/utils';
 import networks from '@snapshot-labs/snapshot.js/src/networks.json';
 import store from '@/store';
-import abi from '@/utils/abi';
+import { getBalances } from '@/utils/balancer/tokens';
 
 const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';
 
@@ -130,15 +129,11 @@ const actions = {
     const tokens = rootGetters.getTokens({});
     if (!account || tokens.length === 0) return;
     const network = state.network.key;
-    let balances = await multicall(
+    const balances = await getBalances(
       network,
       getProvider(network),
-      abi['TestToken'],
-      tokens.map(token => [token.address, 'balanceOf', [account]])
-    );
-    balances = Object.fromEntries(
-      tokens.map((token, i) => [token.address.toLowerCase(), balances[i][0]])
-      //.filter(([, balance]) => balance.toString() !== '0')
+      account,
+      tokens.map(token => token.address)
     );
     commit('WEB3_SET', { balances });
   }

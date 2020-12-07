@@ -32,6 +32,13 @@
           />
           {{ _shorten(token.symbol, 'symbol') }}
           {{ _shorten(token.name, 'name') }}
+          <a
+            v-if="token.injected"
+            aria-label="This token is unknown"
+            class="v-align-middle line-height-0 tooltipped tooltipped-n"
+          >
+            <Icon name="info" size="24" class="text-gray" />
+          </a>
           <span class="float-right text-gray">
             {{ _numeral(token.balance) }}
           </span>

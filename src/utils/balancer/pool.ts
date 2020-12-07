@@ -1,10 +1,9 @@
-import { call } from '@snapshot-labs/snapshot.js/src/utils';
+import { call, multicall } from '@snapshot-labs/snapshot.js/src/utils';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { VAULT_ADDRESS } from '@/utils/balancer/constants';
 import { abi } from './abi/Vault.json';
 import Strategy from './strategy';
-import CwpStrategy from './strategies/cwp';
-import FlattenedStrategy from './strategies/flattened';
+import strategies from './strategies';
 
 export default class Pool {
   public network: string;
@@ -12,9 +11,11 @@ export default class Pool {
   public id: string;
 
   public tokens?: string[];
-  public tokenBalances?: any[];
-  public strategy?: Strategy;
   public controller?: string;
+  public strategyType?: number;
+  public strategyAddress?: string;
+  public strategy?: Strategy;
+  public tokenBalances?: any[];
 
   constructor(network: string, provider: JsonRpcProvider, id: string) {
     this.network = network;
@@ -23,39 +24,29 @@ export default class Pool {
   }
 
   async load() {
-    this.tokens = await call(this.provider, abi, [
-      VAULT_ADDRESS,
-      'getPoolTokens',
-      [this.id]
+    [
+      [this.tokens],
+      [this.controller],
+      [this.strategyAddress, this.strategyType]
+    ] = await multicall(this.network, this.provider, abi, [
+      [VAULT_ADDRESS, 'getPoolTokens', [this.id]],
+      [VAULT_ADDRESS, 'getPoolController', [this.id]],
+      [VAULT_ADDRESS, 'getPoolStrategy', [this.id]]
     ]);
-
-    this.tokenBalances = await call(this.provider, abi, [
-      VAULT_ADDRESS,
-      'getPoolTokenBalances',
-      [this.id, this.tokens]
-    ]);
-
-    const [strategyAddress, strategyType] = await call(this.provider, abi, [
-      VAULT_ADDRESS,
-      'getPoolStrategy',
-      [this.id]
-    ]);
-
-    const strategies = [CwpStrategy, FlattenedStrategy];
-    const strategy = new strategies[strategyType](
+    const strategy = new strategies[this.strategyType].class(
       this.network,
       this.provider,
-      strategyType,
-      strategyAddress
+      this.strategyType,
+      this.strategyAddress
     );
-    await strategy.load();
-    console.log('Swap fee', strategy.swapFee);
-    this.strategy = strategy;
-
-    this.controller = await call(this.provider, abi, [
-      VAULT_ADDRESS,
-      'getPoolController',
-      [this.id]
+    [this.tokenBalances] = await Promise.all([
+      await call(this.provider, abi, [
+        VAULT_ADDRESS,
+        'getPoolTokenBalances',
+        [this.id, this.tokens]
+      ]),
+      await strategy.load(this.tokens)
     ]);
+    this.strategy = strategy;
   }
 }

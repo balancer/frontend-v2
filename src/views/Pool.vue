@@ -43,56 +43,30 @@
                 </div>
                 {{ _numeral(pool.strategy.totalTokens) }}
               </div>
-            </Block>
-            <Block title="Tokens" :counter="pool.tokens.length" :slim="true">
-              <div
-                v-for="(token, i) in pool.tokens"
-                :key="token"
-                class="px-4 py-3 d-flex border-bottom last-child-border-0"
-              >
+              <div v-if="pool.strategy.weights" class="d-flex">
                 <div class="flex-auto">
-                  <User :address="token" />
+                  Weights
                 </div>
                 <div>
-                  {{ _numeral(pool.tokenBalances[i]) }}
+                  <span v-for="(weight, i) in pool.strategy.weights" :key="i">
+                    {{ _numeral(weight) }}%
+                    <span v-if="i + 1 !== pool.strategy.weights.length">/</span>
+                  </span>
                 </div>
               </div>
             </Block>
+            <BlockPoolTokens
+              :tokens="getTokens({ addresses: pool.tokens })"
+              :tokenBalances="pool.tokenBalances"
+            />
           </div>
         </div>
       </div>
       <div class="col-12 col-lg-4 float-left">
-        <Block v-if="pool" title="Buy">
-          <div class="mb-2">
-            <div>Send</div>
-            <UiButton
-              v-for="token in pool.tokens"
-              :key="token"
-              class="mb-2 width-full px-3"
-            >
-              <input
-                class="input width-full"
-                type="number"
-                placeholder="0.0"
-                required
-              />
-            </UiButton>
-          </div>
-          <div class="mb-2">
-            <div>Receive</div>
-            <UiButton class="mb-2 width-full px-3">
-              <input
-                class="input width-full"
-                type="number"
-                placeholder="0.0"
-                required
-              />
-            </UiButton>
-          </div>
-          <UiButton disabled class="button--submit width-full">
-            Buy
-          </UiButton>
-        </Block>
+        <BlockPoolJoin
+          v-if="pool"
+          :sendTokens="getTokens({ addresses: pool.tokens })"
+        />
       </div>
     </div>
   </Container>
@@ -101,7 +75,7 @@
 <script>
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import Pool from '@/utils/balancer/pool';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   data() {
@@ -110,17 +84,20 @@ export default {
       pool: false
     };
   },
-  async created() {
-    const network = this.web3.network.key;
-    const pool = new Pool(network, getProvider(network), this.id);
-    await pool.load();
-    this.pool = pool;
+  computed: {
+    ...mapGetters(['getTokens'])
   },
   methods: {
     ...mapActions(['notify']),
     handleCopy() {
       this.notify('Copied!');
     }
+  },
+  async created() {
+    const network = this.web3.network.key;
+    const pool = new Pool(network, getProvider(network), this.id);
+    await pool.load();
+    this.pool = pool;
   }
 };
 </script>
