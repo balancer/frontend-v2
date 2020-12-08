@@ -58,6 +58,7 @@
             <BlockPoolTokens
               :tokens="getTokens({ addresses: pool.tokens })"
               :tokenBalances="pool.tokenBalances"
+              :tokenWeights="pool.strategy.weights || []"
             />
           </div>
         </div>

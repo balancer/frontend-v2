@@ -8,6 +8,9 @@
       <div class="flex-auto text-white">
         <Token :address="token.address" :size="16" class="mr-1" />
         {{ _shorten(token.symbol, 'symbol') }}
+	      <span v-if="tokenWeights[i]">
+		      {{ tokenWeights[i] }}%
+	      </span>
       </div>
       <div>
         {{ _numeral(_units(tokenBalances[i], token.decimals)) }}
@@ -20,7 +23,8 @@
 export default {
   props: {
     tokens: Array,
-    tokenBalances: Array
+    tokenBalances: Array,
+	  tokenWeights: Array,
   }
 };
 </script>

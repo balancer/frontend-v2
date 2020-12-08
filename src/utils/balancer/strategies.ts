@@ -5,10 +5,12 @@ import FlattenedStrategy, {
 
 export default {
   0: {
+    type: '0',
     name: cwpName,
     class: CwpStrategy
   },
   1: {
+    type: '1',
     name: flattenedName,
     class: FlattenedStrategy
   }

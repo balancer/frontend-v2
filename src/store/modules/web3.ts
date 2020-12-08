@@ -5,7 +5,7 @@ import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import { formatUnits } from '@ethersproject/units';
 import networks from '@snapshot-labs/snapshot.js/src/networks.json';
 import store from '@/store';
-import { getBalances } from '@/utils/balancer/tokens';
+import { getBalances } from '@/utils/balancer/utils/tokens';
 
 const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';
 

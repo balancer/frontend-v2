@@ -61,9 +61,9 @@
         </div>
       </Container>
     </nav>
-    <div v-if="1 === 2" class="p-2 text-center bg-blue" style="color: white;">
+    <div v-if="notifications.watch.length > 0" class="p-2 text-center bg-blue" style="color: white;">
       <UiLoading class="fill-white mr-2" />
-      <span class="d-inline-block pt-1">1 transaction pending</span>
+      <span class="d-inline-block pt-1">{{ _numeral(notifications.watch.length )}} transaction pending</span>
     </div>
     <portal to="modal">
       <ModalAccount

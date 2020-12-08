@@ -1,6 +1,6 @@
 import { call, multicall } from '@snapshot-labs/snapshot.js/src/utils';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { VAULT_ADDRESS } from '@/utils/balancer/constants';
+import { VAULT_ADDRESS } from './constants';
 import { abi } from './abi/Vault.json';
 import Strategy from './strategy';
 import strategies from './strategies';

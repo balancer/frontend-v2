@@ -1,6 +1,6 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { multicall } from '@snapshot-labs/snapshot.js/src/utils';
-import { abi } from './abi/BToken.json';
+import { abi } from '../abi/BToken.json';
 
 export async function getBalances(
   network: string,
