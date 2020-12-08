@@ -33,7 +33,7 @@ export default class Pool {
       [VAULT_ADDRESS, 'getPoolController', [this.id]],
       [VAULT_ADDRESS, 'getPoolStrategy', [this.id]]
     ]);
-    const strategy = new strategies[this.strategyType].class(
+    const strategy = new strategies[this.strategyType || 0].class(
       this.network,
       this.provider,
       this.strategyType,
