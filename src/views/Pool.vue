@@ -43,14 +43,19 @@
                 </div>
                 {{ _numeral(pool.strategy.totalTokens) }}
               </div>
-              <div v-if="pool.strategy.weights" class="d-flex">
+              <div v-if="pool.strategy.weightsPercent" class="d-flex">
                 <div class="flex-auto">
                   Weights
                 </div>
                 <div>
-                  <span v-for="(weight, i) in pool.strategy.weights" :key="i">
+                  <span
+                    v-for="(weight, i) in pool.strategy.weightsPercent"
+                    :key="i"
+                  >
                     {{ _numeral(weight) }}%
-                    <span v-if="i + 1 !== pool.strategy.weights.length">/</span>
+                    <span v-if="i + 1 !== pool.strategy.weightsPercent.length"
+                      >/</span
+                    >
                   </span>
                 </div>
               </div>
@@ -58,7 +63,7 @@
             <BlockPoolTokens
               :tokens="getTokens({ addresses: pool.tokens })"
               :tokenBalances="pool.tokenBalances"
-              :tokenWeights="pool.strategy.weights || []"
+              :tokenWeights="pool.strategy.weightsPercent || []"
             />
           </div>
         </div>
@@ -75,8 +80,8 @@
 
 <script>
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
-import Pool from '@/utils/balancer/pool';
 import { mapActions, mapGetters } from 'vuex';
+import { getPool } from '@/utils/balancer/utils/pools';
 
 export default {
   data() {
@@ -96,8 +101,8 @@ export default {
   },
   async created() {
     const network = this.web3.network.key;
-    const pool = new Pool(network, getProvider(network), this.id);
-    await pool.load();
+    const pool = await getPool(network, getProvider(network), this.id);
+    console.log(pool);
     this.pool = pool;
   }
 };

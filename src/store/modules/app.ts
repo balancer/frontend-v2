@@ -9,14 +9,6 @@ const state = {
   skin: 'light'
 };
 
-const mutations = {
-  SET(_state, payload) {
-    Object.keys(payload).forEach(key => {
-      Vue.set(_state, key, payload[key]);
-    });
-  }
-};
-
 const actions = {
   init: async ({ commit, dispatch }) => {
     // commit('SET', { loading: true });
@@ -34,6 +26,14 @@ const actions = {
   },
   setSkin: async ({ commit }, skin) => {
     commit('SET', { skin });
+  }
+};
+
+const mutations = {
+  SET(_state, payload) {
+    Object.keys(payload).forEach(key => {
+      Vue.set(_state, key, payload[key]);
+    });
   }
 };
 

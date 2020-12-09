@@ -5,7 +5,6 @@ import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import { formatUnits } from '@ethersproject/units';
 import networks from '@snapshot-labs/snapshot.js/src/networks.json';
 import store from '@/store';
-import { getBalances } from '@/utils/balancer/utils/tokens';
 
 const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';
 
@@ -21,8 +20,7 @@ if (wsProvider) {
 const state = {
   account: null,
   name: null,
-  network: networks[defaultNetwork],
-  balances: {}
+  network: networks[defaultNetwork]
 };
 
 const mutations = {
@@ -75,7 +73,7 @@ const actions = {
     if (auth.provider) {
       auth.web3 = new Web3Provider(auth.provider);
       await dispatch('loadProvider');
-      await dispatch('getBalances');
+      dispatch('getBalances');
     }
     commit('SET', { authLoading: false });
   },
@@ -90,13 +88,15 @@ const actions = {
       if (auth.provider.on) {
         auth.provider.on('chainChanged', async chainId => {
           commit('HANDLE_CHAIN_CHANGED', parseInt(formatUnits(chainId, 0)));
-          await dispatch('getBalances');
+          dispatch('resetAccount');
+          dispatch('getBalances');
         });
         auth.provider.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
             commit('HANDLE_ACCOUNTS_CHANGED', accounts[0]);
+            dispatch('resetAccount');
             await dispatch('loadProvider');
-            await dispatch('getBalances');
+            dispatch('getBalances');
           }
         });
         auth.provider.on('disconnect', async () => {
@@ -123,19 +123,6 @@ const actions = {
       commit('LOAD_PROVIDER_FAILURE', e);
       return Promise.reject();
     }
-  },
-  getBalances: async ({ commit, rootGetters }) => {
-    const account = state.account;
-    const tokens = rootGetters.getTokens({});
-    if (!account || tokens.length === 0) return;
-    const network = state.network.key;
-    const balances = await getBalances(
-      network,
-      getProvider(network),
-      account,
-      tokens.map(token => token.address)
-    );
-    commit('WEB3_SET', { balances });
   }
 };
 

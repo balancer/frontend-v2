@@ -75,7 +75,6 @@ export default {
     open: Boolean,
     tokens: Array,
     tokenlist: Object,
-    balances: {},
     loading: Boolean
   },
   methods: {

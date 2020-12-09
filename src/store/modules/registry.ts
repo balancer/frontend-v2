@@ -14,18 +14,10 @@ const state = {
   loading: false
 };
 
-const mutations = {
-  REGISTRY_SET(_state, payload) {
-    Object.keys(payload).forEach(key => {
-      Vue.set(_state, key, payload[key]);
-    });
-  }
-};
-
 const getters = {
   getTokens: (state, getters, rootState) => ({ q, addresses }) => {
     const currentTokenlist = state.tokenlists[state.currentTokenlist] || {};
-    let tokens = currentTokenlist.tokens || [];
+    let tokens = clone(currentTokenlist.tokens || []);
     const injected = Object.fromEntries(
       state.injected.map(token => [token.address, token])
     );
@@ -59,7 +51,7 @@ const getters = {
       tokens = tokens.map(token => {
         const address = token.address.toLowerCase();
         token.balance = formatUnits(
-          rootState.web3.balances[address] || new BN(0),
+          rootState.account.balances[address] || new BN(0),
           token.decimals
         );
         token.value = token.balance * token.price;
@@ -132,6 +124,14 @@ const actions = {
     commit('REGISTRY_SET', { currentTokenlist: name });
     dispatch('getBalances');
     dispatch('loadPrices');
+  }
+};
+
+const mutations = {
+  REGISTRY_SET(_state, payload) {
+    Object.keys(payload).forEach(key => {
+      Vue.set(_state, key, payload[key]);
+    });
   }
 };
 

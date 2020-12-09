@@ -1,5 +1,5 @@
-import Vue from "vue";
-import {clone} from "@/utils";
+import Vue from 'vue';
+import { clone } from '@/utils';
 
 const state = {
   items: [],
