@@ -11,7 +11,7 @@
     <div>
       <div class="col-12 col-lg-8 float-left pr-0 pr-lg-5">
         <div>
-          <h1 v-text="'Create a pool'" class="mb-4" />
+          <h1 v-text="'Create a strategy'" class="mb-4" />
           <Block title="Trading strategy">
             <UiButton
               v-for="(strategy, i) in strategies"
@@ -43,13 +43,7 @@
                 :key="token.address"
                 class="width-full text-left mb-2 px-3"
               >
-                <Token
-                  :url="token.logoURI"
-                  :address="token.address"
-                  :size="24"
-                  class="mr-1"
-                />
-                {{ token.symbol }}
+                <Token :token="token" :symbol="true" class="mr-1" />
                 <a @click="removeToken(i)" class="float-right">
                   <Icon name="close" size="12" class="mb-1" />
                 </a>

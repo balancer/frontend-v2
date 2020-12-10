@@ -8,7 +8,9 @@ const state = {
 
 const actions = {
   loadPrices: async ({ commit, rootGetters }) => {
-    const tokens = rootGetters.getTokens({}).map(token => token.address);
+    const tokens = Object.values(rootGetters.getTokensObj({})).map(
+      (token: any) => token.address
+    );
     try {
       commit('MARKET_SET', { loading: true });
       const prices = await getTokensPrice(tokens);

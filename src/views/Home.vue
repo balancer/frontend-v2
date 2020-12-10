@@ -1,13 +1,16 @@
 <template>
-  <Container :slim="true">
+  <Container :slim="true" class="overflow-hidden">
     <div class="px-4 px-md-0">
       <h1 v-text="'Explore'" class="mb-4" />
     </div>
-    <div v-if="loading">
-      <UiLoading />
-    </div>
-    <div v-else>
-      <div v-for="pool in pools" :key="pool.id">
+    <div
+      v-infinite-scroll="loadMore"
+      infinite-scroll-distance="0"
+      infinite-scroll-disabled="loading"
+      class="overflow-hidden"
+    >
+      <UiLoading v-if="loading" />
+      <div v-for="pool in filteredPools" :key="pool.id" class="overflow-hidden">
         <router-link
           :to="{ name: 'pool', params: { id: pool.id } }"
           class="d-block overflow-hidden mr-3"
@@ -29,13 +32,24 @@ export default {
   data() {
     return {
       loading: false,
-      pools: {}
+      pools: {},
+      limit: 8
     };
   },
   computed: {
     ...mapGetters(['getTokensObj']),
     tokens() {
       return this.getTokensObj({});
+    },
+    filteredPools() {
+      return Object.fromEntries(
+        Object.entries(this.pools).slice(0, this.limit)
+      );
+    }
+  },
+  methods: {
+    loadMore() {
+      this.limit += 8;
     }
   },
   async created() {
@@ -51,8 +65,8 @@ export default {
       getProvider(this.web3.network.key),
       poolIds
     );
-    this.loading = false;
     console.log('Multicall', this.pools);
+    this.loading = false;
   }
 };
 </script>

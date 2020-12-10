@@ -36,7 +36,7 @@
     "name": "Coinbase",
     "network": "1",
     "options": {
-      "appName": "Snapshot",
+      "appName": "Balancer",
       "darkMode": false,
       "chainId": 1,
       "ethJsonrpcUrl": "https://cloudflare-eth.com"

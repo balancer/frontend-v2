@@ -4,14 +4,9 @@
     Strategy: {{ pool.strategy.name }} ({{ pool.strategyType }})<br />
     Swap fee: {{ _numeral(pool.strategy.swapFeePercent) }}%<br />
     <div>
-      <span v-for="token in pool.tokens" :key="token" class="mr-2">
-        <Token
-          :url="tokens[token].logoURI"
-          :address="tokens[token].address"
-          :size="24"
-          class="mr-1"
-        />
-        {{ _shorten(tokens[token].symbol, 'symbol') }}
+      <span v-for="(token, i) in pool.tokens" :key="token" class="mr-2">
+        <Token :token="tokens[token]" :symbol="true" class="mr-1" />
+	      {{ _numeral(pool.strategy.weightsPercent[i]) }}%
       </span>
     </div>
   </Block>

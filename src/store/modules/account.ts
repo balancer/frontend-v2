@@ -14,7 +14,7 @@ const actions = {
   },
   getBalances: async ({ commit, rootGetters, rootState }, tokens?) => {
     const account = rootState.web3.account;
-    tokens = tokens || rootGetters.getTokens({});
+    tokens = tokens || rootGetters.getTokensObj({});
     if (!account || tokens.length === 0) return;
     const network = rootState.web3.network.key;
     commit('ACCOUNT_SET', { loading: true });
@@ -22,13 +22,13 @@ const actions = {
       network,
       getProvider(network),
       account,
-      tokens.map(token => token.address)
+      Object.values(tokens).map((token: any) => token.address)
     );
     commit('ACCOUNT_SET', { balances, loading: false });
   },
   getAllowances: async ({ commit, rootGetters, rootState }, tokens?) => {
     const account = rootState.web3.account;
-    tokens = tokens || rootGetters.getTokens({});
+    tokens = tokens || rootGetters.getTokensObj({});
     if (!account || tokens.length === 0) return;
     const dst = account;
     const network = rootState.web3.network.key;
@@ -38,7 +38,7 @@ const actions = {
       getProvider(network),
       account,
       dst,
-      tokens.map(token => token.address)
+      Object.values(tokens).map((token: any) => token.address)
     );
     commit('ACCOUNT_SET', { allowances, loading: false });
   }

@@ -24,21 +24,7 @@
           @click="onSelect(token)"
           class="d-block border-bottom last-child-border-0 p-3 highlight"
         >
-          <Token
-            :url="token.logoURI"
-            :address="token.address"
-            :size="24"
-            class="mr-1"
-          />
-          {{ _shorten(token.symbol, 'symbol') }}
-          {{ _shorten(token.name, 'name') }}
-          <a
-            v-if="token.injected"
-            aria-label="This token is unknown"
-            class="v-align-middle line-height-0 tooltipped tooltipped-n"
-          >
-            <Icon name="info" size="24" class="text-gray" />
-          </a>
+          <Token :token="token" :symbol="true" :name="true" />
           <span class="float-right text-gray">
             {{ _numeral(token.balance) }}
           </span>
@@ -56,7 +42,7 @@
         <img
           v-if="tokenlist.logoURI"
           :src="_url(tokenlist.logoURI)"
-          class="circle v-align-middle mr-1"
+          class="circle bg-white v-align-middle mr-1"
           width="24"
           height="24"
         />

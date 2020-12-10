@@ -6,9 +6,8 @@
       class="px-4 py-3 d-flex border-bottom last-child-border-0"
     >
       <div class="flex-auto text-white">
-        <Token :address="token.address" :size="16" class="mr-1" />
-        {{ _shorten(token.symbol, 'symbol') }}
-        <span v-if="tokenWeights[i]"> {{ tokenWeights[i] }}% </span>
+        <Token :token="token" :size="16" :symbol="true" />
+        <span v-if="tokenWeights[i]"> {{ _numeral(tokenWeights[i]) }}% </span>
       </div>
       <div>
         {{ _numeral(_units(tokenBalances[i], token.decimals)) }}

@@ -15,10 +15,10 @@ import i18n from '@/i18n';
 import '@/auth';
 import '@/style.scss';
 
-Vue.use(PortalVue);
-Vue.use(VueClipboard);
 Vue.use(infiniteScroll);
+Vue.use(VueClipboard);
 Vue.use(TextareaAutosize);
+Vue.use(PortalVue);
 
 const requireComponent = require.context('@/components', true, /[\w-]+\.vue$/);
 requireComponent.keys().forEach(fileName => {
