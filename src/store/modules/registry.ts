@@ -69,7 +69,11 @@ const getters = {
       );
     }
 
-    return tokens.slice(0, 100);
+    return tokens;
+  },
+  getTokensObj: (state, getters) => query => {
+    const tokens = getters.getTokens(query);
+    return Object.fromEntries(tokens.map(token => [token.address, token]));
   },
   getCurrentTokenlist: state => {
     const tokenlist = clone(state.tokenlists[state.currentTokenlist]);

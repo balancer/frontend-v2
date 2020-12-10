@@ -13,9 +13,19 @@
               :to="{ name: 'home' }"
               class="d-flex flex-items-center"
             >
-              <img src="~@/assets/balancer.svg" height="30" class="mr-2" />
+              <img
+                v-if="app.skin === 'light'"
+                src="~@/assets/logo-light.svg"
+                height="30"
+                class="mr-2"
+              />
+              <img
+                v-else
+                src="~@/assets/logo-dark.svg"
+                height="30"
+                class="mr-2"
+              />
               <span
-                :class="space && 'hide-sm'"
                 class="mr-1"
                 style="font-size: 24px; margin-top: 4px;"
                 v-text="'balancer'"

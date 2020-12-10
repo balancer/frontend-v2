@@ -6,17 +6,13 @@
     <div v-if="loading">
       <UiLoading />
     </div>
-    <div v-else class="mr-n3">
-      <div v-for="pool in pools" :key="pool.id" class="col-3 float-left">
+    <div v-else>
+      <div v-for="pool in pools" :key="pool.id">
         <router-link
           :to="{ name: 'pool', params: { id: pool.id } }"
           class="d-block overflow-hidden mr-3"
         >
-          <Block>
-            {{ _shorten(pool.id) }}<br />
-            Strategy {{ pool.strategyType }}<br />
-            Tokens {{ pool.tokens.length }}<br />
-          </Block>
+          <BlockPool :pool="pool" :tokens="tokens" />
         </router-link>
       </div>
     </div>
@@ -24,6 +20,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import Vault from '@/utils/balancer/vault';
 import { getPools } from '@/utils/balancer/utils/pools';
@@ -34,6 +31,12 @@ export default {
       loading: false,
       pools: {}
     };
+  },
+  computed: {
+    ...mapGetters(['getTokensObj']),
+    tokens() {
+      return this.getTokensObj({});
+    }
   },
   async created() {
     this.loading = true;

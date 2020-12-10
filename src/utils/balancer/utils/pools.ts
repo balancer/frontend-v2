@@ -13,16 +13,25 @@ function formatPool(pool) {
   pool.strategy.swapFeePercent = parseFloat(
     formatUnits(pool.strategy.swapFee || BigNumber.from(0), 16)
   );
-  if (pool.strategyType === 0) {
-    const totalWeight = pool.strategy.weights.reduce(
-      (a, b) => a.add(b),
-      BigNumber.from(0)
-    );
-    pool.strategy.weightsPercent = pool.strategy.weights.map(
-      weight =>
-        (100 / parseFloat(formatUnits(totalWeight, 10))) *
-        parseFloat(formatUnits(weight, 10))
-    );
+
+  switch (pool.strategyType) {
+    case 0: {
+      pool.strategy.name = 'Constant weighted product';
+      const totalWeight = pool.strategy.weights.reduce(
+        (a, b) => a.add(b),
+        BigNumber.from(0)
+      );
+      pool.strategy.weightsPercent = pool.strategy.weights.map(
+        weight =>
+          (100 / parseFloat(formatUnits(totalWeight, 10))) *
+          parseFloat(formatUnits(weight, 10))
+      );
+      break;
+    }
+    case 1: {
+      pool.strategy.name = 'Flattened curve';
+      break;
+    }
   }
   return pool;
 }
@@ -63,15 +72,12 @@ export async function getPools(
     set(pools, `${id}.strategy.type`, pool.strategyType);
     set(pools, `${id}.strategy.address`, address);
     if (pool.strategyType === 0) {
-      set(pools, `${id}.strategy.name`, 'Constant weighted product');
       multi.call(`${id}.strategy.totalTokens`, address, 'getTotalTokens');
       pool.tokens.forEach((token, i) =>
         multi.call(`${id}.strategy.weights[${i}]`, address, 'getWeight', [
           token
         ])
       );
-    } else if (pool.strategyType === 1) {
-      set(pools, `${id}.strategy.name`, 'Flattened curve');
     }
   });
   pools = await multi.execute(pools);
