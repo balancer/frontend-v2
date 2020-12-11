@@ -19,7 +19,7 @@
               />
             </a>
           </h1>
-          <div v-if="pool">
+          <div v-if="pool && !loading">
             <Block title="Controller">
               <User :address="pool.controller" />
             </Block>
@@ -70,7 +70,7 @@
       </div>
       <div class="col-12 col-lg-4 float-left">
         <BlockPoolJoin
-          v-if="pool"
+          v-if="pool && !loading"
           :sendTokens="getTokens({ addresses: pool.tokens })"
         />
       </div>
@@ -87,6 +87,7 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
+      loading: false,
       pool: false
     };
   },
@@ -94,15 +95,17 @@ export default {
     ...mapGetters(['getTokens'])
   },
   methods: {
-    ...mapActions(['notify']),
+    ...mapActions(['notify', 'injectTokens']),
     handleCopy() {
       this.notify('Copied!');
     }
   },
   async created() {
+    this.loading = true;
     const network = this.web3.network.key;
     const pool = await getPool(network, getProvider(network), this.id);
-    console.log(pool);
+    await this.injectTokens(pool.tokens);
+    this.loading = false;
     this.pool = pool;
   }
 };

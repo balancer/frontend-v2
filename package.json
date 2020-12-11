@@ -23,7 +23,7 @@
     "@primer/css": "^14.4.0",
     "@snapshot-labs/lock": "github:snapshot-labs/lock#c938fc06389cd7948870c87c7c19b338774a64ea",
     "@snapshot-labs/snapshot-spaces": "github:snapshot-labs/snapshot-spaces#master",
-    "@snapshot-labs/snapshot.js": "github:snapshot-labs/snapshot.js#master",
+    "@snapshot-labs/snapshot.js": "^0.1.0",
     "@vue/cli-plugin-babel": "^4.4.0",
     "@vue/cli-plugin-eslint": "^4.4.0",
     "@vue/cli-plugin-typescript": "^4.4.0",

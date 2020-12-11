@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import Vault from '@/utils/balancer/vault';
 import { getPools } from '@/utils/balancer/utils/pools';
@@ -48,6 +48,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['injectTokens']),
     loadMore() {
       this.limit += 8;
     }
@@ -60,11 +61,17 @@ export default {
     );
     const totalPools = await vault.getTotalPools();
     const poolIds = await vault.getPoolIds(0, totalPools);
-    this.pools = await getPools(
+    const pools = await getPools(
       this.web3.network.key,
       getProvider(this.web3.network.key),
-      poolIds
+      poolIds.slice(0, 12)
     );
+    const tokens = [];
+    Object.values(pools).forEach(pool =>
+      pool.tokens.forEach(token => tokens.push(token))
+    );
+    await this.injectTokens(tokens);
+    this.pools = pools;
     console.log('Multicall', this.pools);
     this.loading = false;
   }

@@ -5,12 +5,13 @@ import BN from 'bn.js';
 import { loadTokenlist } from '@/utils/tokenlists';
 import { TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
 import { clone, lsSet } from '@/utils';
-import injected from '@/constants/injected';
+import { getTokensMetadata } from '@/utils/balancer/utils/tokens';
+import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 
 const state = {
   currentTokenlist: TOKEN_LIST_DEFAULT,
   tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
-  injected,
+  injected: [],
   loading: false
 };
 
@@ -19,7 +20,7 @@ const getters = {
     const currentTokenlist = state.tokenlists[state.currentTokenlist] || {};
     let tokens = clone(currentTokenlist.tokens || []);
     const injected = Object.fromEntries(
-      state.injected.map(token => [token.address, token])
+      clone(state.injected).map(token => [token.address, token])
     );
     tokens = Object.fromEntries(tokens.map(token => [token.address, token]));
     tokens = Object.values({ ...injected, ...tokens });
@@ -128,6 +129,21 @@ const actions = {
     commit('REGISTRY_SET', { currentTokenlist: name });
     dispatch('getBalances');
     dispatch('loadPrices');
+  },
+  injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
+    const injected = clone(state.injected);
+    const network = rootState.web3.network.key;
+    const tokensMetadata = await getTokensMetadata(
+      network,
+      getProvider(network),
+      tokens
+    );
+    Object.values(tokensMetadata).map((tokenMetadata: any) =>
+      injected.push({ ...tokenMetadata, ...{ injected: true } })
+    );
+    commit('REGISTRY_SET', { injected });
+    dispatch('getBalances', tokens);
+    dispatch('loadPrices', tokens);
   }
 };
 

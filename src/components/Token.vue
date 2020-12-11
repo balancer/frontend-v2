@@ -8,7 +8,7 @@
         height: `${size || 24}px`
       }"
       @error="error = true"
-      class="circle bg-white border line-height-0"
+      class="circle v-align-middle bg-white border line-height-0"
     />
     <Avatar v-else :address="token.address" :size="size || 24" />
     <span v-if="symbol || name" class="ml-1">

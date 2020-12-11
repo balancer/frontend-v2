@@ -1,13 +1,13 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
+import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
+import { getAddress } from '@ethersproject/address';
 import set from 'lodash/set';
 import { abi } from '@/utils/balancer/abi/Vault.json';
 import { abi as cwpAbi } from '@/utils/balancer/abi/CWPTradingStrategy.json';
 import { abi as flattenedAbi } from '@/utils/balancer/abi/FlattenedTradingStrategy.json';
-import Multicaller from '@/utils/multicaller';
 import { VAULT_ADDRESS } from '@/utils/balancer/constants';
-import { getAddress } from '@ethersproject/address';
 
 function formatPool(pool) {
   pool.strategy.swapFeePercent = parseFloat(
@@ -30,7 +30,9 @@ function formatPool(pool) {
     }
     case 1: {
       pool.strategy.name = 'Flattened curve';
-      pool.strategy.weightsPercent = pool.tokens.map(() => 100 / pool.tokens.length);
+      pool.strategy.weightsPercent = pool.tokens.map(
+        () => 100 / pool.tokens.length
+      );
       break;
     }
   }

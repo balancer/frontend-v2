@@ -12,10 +12,10 @@ const actions = {
   resetAccount({ commit }) {
     commit('ACCOUNT_SET', { balances: {}, allowances: {} });
   },
-  getBalances: async ({ commit, rootGetters, rootState }, tokens?) => {
+  getBalances: async ({ commit, rootGetters, rootState }) => {
     const account = rootState.web3.account;
-    tokens = tokens || rootGetters.getTokensObj({});
-    if (!account || tokens.length === 0) return;
+    const tokens = rootGetters.getTokensObj({});
+    if (!account || Object.keys(tokens).length === 0) return;
     const network = rootState.web3.network.key;
     commit('ACCOUNT_SET', { loading: true });
     const balances = await getBalances(
@@ -29,7 +29,7 @@ const actions = {
   getAllowances: async ({ commit, rootGetters, rootState }, tokens?) => {
     const account = rootState.web3.account;
     tokens = tokens || rootGetters.getTokensObj({});
-    if (!account || tokens.length === 0) return;
+    if (!account || Object.keys(tokens).length === 0) return;
     const dst = account;
     const network = rootState.web3.network.key;
     commit('ACCOUNT_SET', { loading: true });

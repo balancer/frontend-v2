@@ -7,13 +7,12 @@ const state = {
 };
 
 const actions = {
-  loadPrices: async ({ commit, rootGetters }) => {
-    const tokens = Object.values(rootGetters.getTokensObj({})).map(
-      (token: any) => token.address
-    );
+  loadPrices: async ({ commit, rootGetters }, tokens?) => {
+    tokens = tokens || rootGetters.getTokensObj({});
+    const addresses = Object.values(tokens).map((token: any) => token.address);
     try {
       commit('MARKET_SET', { loading: true });
-      const prices = await getTokensPrice(tokens);
+      const prices = await getTokensPrice(addresses);
       commit('MARKET_SET', { prices, loading: false });
     } catch (e) {
       console.log(e);
