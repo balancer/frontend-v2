@@ -8,13 +8,19 @@ const state = {
   loading: false
 };
 
+const getters = {
+  getAllowances: (state, getters, rootState) => required => {
+    return required;
+  }
+};
+
 const actions = {
   resetAccount({ commit }) {
     commit('ACCOUNT_SET', { balances: {}, allowances: {} });
   },
   getBalances: async ({ commit, rootGetters, rootState }) => {
     const account = rootState.web3.account;
-    const tokens = rootGetters.getTokensObj({});
+    const tokens = rootGetters.getTokens();
     if (!account || Object.keys(tokens).length === 0) return;
     const network = rootState.web3.network.key;
     commit('ACCOUNT_SET', { loading: true });
@@ -28,7 +34,7 @@ const actions = {
   },
   getAllowances: async ({ commit, rootGetters, rootState }, tokens?) => {
     const account = rootState.web3.account;
-    tokens = tokens || rootGetters.getTokensObj({});
+    tokens = tokens || rootGetters.getTokens();
     if (!account || Object.keys(tokens).length === 0) return;
     const dst = account;
     const network = rootState.web3.network.key;
@@ -55,5 +61,6 @@ const mutations = {
 export default {
   state,
   mutations,
+  getters,
   actions
 };

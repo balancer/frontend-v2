@@ -12,11 +12,13 @@ const state = {
   currentTokenlist: TOKEN_LIST_DEFAULT,
   tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
   injected: [],
-  loading: false
+  loading: false,
+  loaded: false
 };
 
 const getters = {
-  getTokens: (state, getters, rootState) => ({ q, addresses }) => {
+  getTokens: (state, getters, rootState) => (query: any = {}) => {
+    const { q, addresses } = query;
     const currentTokenlist = state.tokenlists[state.currentTokenlist] || {};
     let tokens = clone(currentTokenlist.tokens || []);
     const injected = Object.fromEntries(
@@ -63,17 +65,13 @@ const getters = {
 
     if (addresses) {
       tokens = addresses.map(
-        address =>
+        (address: any) =>
           tokens.filter(
             token => token.address.toLowerCase() === address.toLowerCase()
           )[0]
       );
     }
 
-    return tokens;
-  },
-  getTokensObj: (state, getters) => query => {
-    const tokens = getters.getTokens(query);
     return Object.fromEntries(tokens.map(token => [token.address, token]));
   },
   getCurrentTokenlist: state => {
@@ -120,7 +118,7 @@ const actions = {
   loadTokenlists: async ({ dispatch, commit }) => {
     commit('REGISTRY_SET', { loading: true });
     await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
-    commit('REGISTRY_SET', { loading: false });
+    commit('REGISTRY_SET', { loading: false, loaded: true });
     dispatch('getBalances');
     dispatch('loadPrices');
   },

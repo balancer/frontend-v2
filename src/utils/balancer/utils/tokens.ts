@@ -60,6 +60,11 @@ export async function getTokensMetadata(
     tokens.forEach(token => {
       set(tokensMetadata, `${token}.address`, token);
       set(tokensMetadata, `${token}.chainId`, parseInt(network));
+      set(
+        tokensMetadata,
+        `${token}.logoURI`,
+        `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${token}/logo.png`
+      );
       multi.call(`${token}.name`, token, 'name');
       multi.call(`${token}.symbol`, token, 'symbol');
       multi.call(`${token}.decimals`, token, 'decimals');

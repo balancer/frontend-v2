@@ -17,11 +17,11 @@
       </UiTag>
     </div>
     <div>
-      <div v-if="tokens.length > 0">
+      <div v-if="Object.keys(tokens).length > 0">
         <a
-          v-for="(token, i) in tokens"
-          :key="i"
-          @click="onSelect(token)"
+          v-for="(token, key) in tokens"
+          :key="key"
+          @click="onSelect(token.address)"
           class="d-block border-bottom last-child-border-0 p-3 highlight"
         >
           <Token :token="token" :symbol="true" :name="true" />
@@ -59,7 +59,7 @@
 export default {
   props: {
     open: Boolean,
-    tokens: Array,
+    tokens: Object,
     tokenlist: Object,
     loading: Boolean
   },

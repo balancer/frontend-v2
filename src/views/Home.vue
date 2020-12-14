@@ -2,6 +2,17 @@
   <Container :slim="true" class="overflow-hidden">
     <div class="px-4 px-md-0">
       <h1 v-text="'Explore'" class="mb-4" />
+      <p class="mb-4">
+        <router-link :to="{ name: 'create' }" class="mr-2">
+          Create strategy
+        </router-link>
+        <router-link :to="{ name: 'create2' }" class="mr-2">
+          Create pool
+        </router-link>
+        <router-link :to="{ name: 'vault' }" class="mr-2">
+          Vault
+        </router-link>
+      </p>
     </div>
     <div
       v-infinite-scroll="loadMore"
@@ -9,14 +20,20 @@
       infinite-scroll-disabled="loading"
       class="overflow-hidden"
     >
-      <UiLoading v-if="loading" />
-      <div v-for="pool in filteredPools" :key="pool.id" class="overflow-hidden">
-        <router-link
-          :to="{ name: 'pool', params: { id: pool.id } }"
-          class="d-block overflow-hidden mr-3"
+      <UiLoading v-if="loading || registry.loading" />
+      <div v-if="!registry.loading">
+        <div
+          v-for="pool in filteredPools"
+          :key="pool.id"
+          class="overflow-hidden"
         >
-          <BlockPool :pool="pool" :tokens="tokens" />
-        </router-link>
+          <router-link
+            :to="{ name: 'pool', params: { id: pool.id } }"
+            class="d-block overflow-hidden mr-3"
+          >
+            <BlockPool :pool="pool" :tokens="tokens" />
+          </router-link>
+        </div>
       </div>
     </div>
   </Container>
@@ -37,9 +54,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getTokensObj']),
+    ...mapGetters(['getTokens']),
     tokens() {
-      return this.getTokensObj({});
+      return this.getTokens();
     },
     filteredPools() {
       return Object.fromEntries(

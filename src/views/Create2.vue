@@ -11,20 +11,53 @@
     <div>
       <div class="col-12 col-lg-8 float-left pr-0 pr-lg-5">
         <div>
-          <h1 v-text="'Create a strategy'" class="mb-4" />
-          <Block title="Trading strategy">
+          <h1 v-text="'Create a pool'" class="mb-4" />
+          <Block title="Tokenizer">
             <UiButton
-              v-for="(strategy, i) in strategies"
+              v-for="(tokenizer, i) in tokenizers"
               :key="i"
-              @click="form.strategyType = strategy.type"
-              :class="form.strategyType === strategy.type && 'button--active'"
+              @click="form.tokenizer = i"
+              :class="form.tokenizer === i && 'button--active'"
               class="width-full mb-2"
             >
-              {{ strategy.name }}
+              {{ tokenizer.name }}
             </UiButton>
           </Block>
-          <div v-if="form.strategyType">
-            <Block v-if="form.strategyType === '0'" title="Tokens">
+          <div v-if="form.tokenizer !== ''">
+            <Block title="Strategy">
+              <UiButton class="d-flex width-full px-3 mb-2">
+                <span class="mr-2 text-gray">Address</span>
+                <input
+                  v-model="form.strategy"
+                  class="input text-left flex-auto"
+                  required
+                />
+              </UiButton>
+              <UiButton class="d-flex width-full px-3">
+                <span class="mr-2 text-gray">Type</span>
+                <input
+                  v-model="form.strategyType"
+                  class="input text-left flex-auto"
+                  type="number"
+                  placeholder="0"
+                  step="0"
+                  required
+                />
+              </UiButton>
+            </Block>
+            <Block title="Initial BPT">
+              <UiButton class="d-flex width-full mb-2 px-3">
+                <input
+                  v-model="form.initialBPT"
+                  type="number"
+                  placeholder="0"
+                  step="0"
+                  class="input text-left flex-auto"
+                  required
+                />
+              </UiButton>
+            </Block>
+            <Block title="Tokens">
               <div
                 v-for="(token, i) in form.tokens"
                 :key="tokens[token].address"
@@ -44,9 +77,9 @@
                 />
                 <div>
                   <UiButton class="d-flex width-full px-3">
-                    <span class="mr-2 text-gray">Weight</span>
+                    <span class="mr-2 text-gray">Amount</span>
                     <input
-                      v-model="form.weights[i]"
+                      v-model="form.amounts[i]"
                       class="input width-full"
                       type="number"
                       placeholder="0.0"
@@ -66,27 +99,20 @@
                 Add a token
               </UiButton>
             </Block>
-            <Block title="Swap fee">
+            <Block v-if="form.tokenizer === 1" title="Owner">
               <UiButton class="d-flex width-full mb-2 px-3">
                 <input
-                  v-model="form.swapFee"
+                  v-model="form.owner"
                   class="input text-left flex-auto"
-                  type="number"
-                  placeholder="0.0"
-                  step="16"
                   required
                 />
-                %
               </UiButton>
             </Block>
-            <Block v-if="form.strategyType === '1'" title="Amp">
+            <Block title="Salt">
               <UiButton class="d-flex width-full mb-2 px-3">
                 <input
-                  v-model="form.amp"
+                  v-model="form.salt"
                   class="input text-left flex-auto"
-                  type="number"
-                  placeholder="0"
-                  step="0"
                   required
                 />
               </UiButton>
@@ -141,10 +167,10 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { parseUnits } from '@ethersproject/units';
-import strategies from '@/utils/balancer/strategies';
+import tokenizers from '@/utils/balancer/tokenizers';
 import {
-  createCwpStrategy,
-  createFlattenedStrategy
+  createFixedSetPoolTokenizer,
+  createOwnableFixedSetPoolTokenizer
 } from '@/utils/balancer/utils/factory';
 
 export default {
@@ -152,13 +178,14 @@ export default {
     return {
       q: '',
       loading: false,
-      strategies: Object.values(strategies),
+      tokenizers: Object.values(tokenizers),
       form: {
-        strategyType: null,
+        tokenizer: '',
         tokens: [],
-        weights: [],
-        swapFee: '',
-        amp: ''
+        amounts: [],
+        initialBPT: '',
+        owner: '',
+        salt: ''
       },
       modal: {
         selectToken: false,
@@ -172,31 +199,29 @@ export default {
       return this.getTokens();
     },
     params() {
-      if (this.form.strategyType === '0')
-        return [
-          this.form.tokens,
-          this.form.weights.map(weight =>
-            parseUnits(weight || '0', 16).toString()
-          ),
-          parseUnits(this.form.swapFee || '0', 16).toString()
-        ];
-      if (this.form.strategyType === '1')
-        return [
-          parseUnits(this.form.swapFee || '0', 16).toString(),
-          this.form.amp
-        ];
-      return [];
+      const params = [
+        this.form.strategy,
+        this.form.strategyType,
+        this.form.initialBPT,
+        this.form.tokens,
+        this.form.amounts.map(weight =>
+          parseUnits(weight || '0', 16).toString()
+        )
+      ];
+      if (this.form.tokenizer === 1) params.push(this.form.owner);
+      params.push(this.form.salt);
+      return params;
     }
   },
   methods: {
     ...mapActions(['setTokenlist', 'notify', 'watchTx']),
     addToken(token) {
-      this.form.weights.push('');
+      this.form.amounts.push('');
       this.form.tokens.push(token);
     },
     removeToken(i) {
       this.form.tokens = this.form.tokens.filter((token, index) => index !== i);
-      this.form.weights = this.form.weights.filter(
+      this.form.amounts = this.form.amounts.filter(
         (token, index) => index !== i
       );
     },
@@ -208,15 +233,18 @@ export default {
     async onSubmit() {
       this.loading = true;
       try {
-        const createStrategies = [createCwpStrategy, createFlattenedStrategy];
-        const tx = await createStrategies[this.form.strategyType](
+        const createTokenizers = [
+          createFixedSetPoolTokenizer,
+          createOwnableFixedSetPoolTokenizer
+        ];
+        const tx = await createTokenizers[this.form.tokenizer](
           this.$auth.web3,
           this.params
         );
         this.loading = false;
         console.log(tx);
         await this.watchTx(tx);
-        this.notify('Strategy created!');
+        this.notify('Pool created!');
       } catch (e) {
         this.loading = false;
       }

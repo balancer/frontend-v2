@@ -1,12 +1,12 @@
 <template>
   <Block title="Tokens" :counter="tokens.length" :slim="true">
     <div
-      v-for="(token, i) in tokens"
-      :key="token.address"
+      v-for="(token, key, i) in tokens"
+      :key="key"
       class="px-4 py-3 d-flex border-bottom last-child-border-0"
     >
       <div class="flex-auto text-white">
-        <Token :token="token" :size="16" :symbol="true" />
+        <Token :token="token" :symbol="true" />
         <span v-if="tokenWeights[i]"> {{ _numeral(tokenWeights[i]) }}% </span>
       </div>
       <div>
@@ -19,7 +19,7 @@
 <script>
 export default {
   props: {
-    tokens: Array,
+    tokens: Object,
     tokenBalances: Array,
     tokenWeights: Array
   }

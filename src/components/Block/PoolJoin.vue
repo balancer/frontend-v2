@@ -6,8 +6,8 @@
         <UiLabel class="float-right">Max</UiLabel>
       </div>
       <UiButton
-        v-for="token in sendTokens"
-        :key="token.address"
+        v-for="(token, key) in sendTokens"
+        :key="key"
         class="d-flex mb-2 width-full px-3"
       >
         <input
@@ -45,7 +45,7 @@
 <script>
 export default {
   props: {
-    sendTokens: Array
+    sendTokens: Object
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="open" class="modal mx-auto">
+  <div v-if="open" @keydown.esc="$emit('close')" class="modal mx-auto">
     <div class="backdrop" @click="$emit('close')" />
     <div
       class="shell overflow-hidden anim-scale-in position-relative rounded-0 rounded-md-2"
