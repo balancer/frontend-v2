@@ -4,10 +4,12 @@ import { BigNumber } from '@ethersproject/bignumber';
 import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
 import { getAddress } from '@ethersproject/address';
 import set from 'lodash/set';
-import { abi } from '@/utils/balancer/abi/Vault.json';
+import { abi as vaultAbi } from '@/utils/balancer/abi/Vault.json';
+import { abi as tokenizerAbi } from '@/utils/balancer/abi/FixedSetPoolTokenizer.json';
 import { abi as cwpAbi } from '@/utils/balancer/abi/CWPTradingStrategy.json';
 import { abi as flattenedAbi } from '@/utils/balancer/abi/FlattenedTradingStrategy.json';
 import { VAULT_ADDRESS } from '@/utils/balancer/constants';
+import { sendTransaction } from '@snapshot-labs/snapshot.js/src/utils';
 
 function formatPool(pool) {
   pool.strategy.swapFeePercent = parseFloat(
@@ -50,7 +52,7 @@ export async function getPools(
   provider: JsonRpcProvider,
   poolIds: string[]
 ) {
-  let multi = new Multicaller(network, provider, abi);
+  let multi = new Multicaller(network, provider, vaultAbi);
   let pools = {};
   poolIds.forEach(id => {
     const strategyType = parseInt(id.slice(25, 26));
@@ -62,7 +64,8 @@ export async function getPools(
     multi.call(`${id}.controller`, VAULT_ADDRESS, 'getPoolController', [id]);
   });
   pools = await multi.execute(pools);
-  const abis = [...abi, ...cwpAbi, ...flattenedAbi];
+
+  const abis = [...vaultAbi, ...cwpAbi, ...flattenedAbi, ...tokenizerAbi];
   multi = new Multicaller(network, provider, abis);
   poolIds.forEach(id => {
     const pool = pools[id];
@@ -81,6 +84,15 @@ export async function getPools(
           token
         ])
       );
+    } else if (pool.strategyType === 1) {
+      // multi.call(`${id}.strategy.amp`, address, 'getAmp');
+    }
+    if (pool.controller === '0x4AAc4d91cD6AA57AEe6DD379B63D0bCaD9D91f49') {
+      set(pools, `${id}.tokenizer.address`, pool.controller);
+      multi.call(`${id}.tokenizer.name`, pool.controller, 'name');
+      multi.call(`${id}.tokenizer.symbol`, pool.controller, 'symbol');
+      multi.call(`${id}.tokenizer.decimals`, pool.controller, 'decimals');
+      multi.call(`${id}.tokenizer.totalSupply`, pool.controller, 'totalSupply');
     }
   });
   pools = await multi.execute(pools);
@@ -94,4 +106,8 @@ export async function getPool(
 ) {
   const pools = await getPools(network, provider, [id]);
   return formatPool(pools[id]);
+}
+
+export async function joinPool(web3, address, params: any[]) {
+  return await sendTransaction(web3, address, tokenizerAbi, 'joinPool', params);
 }

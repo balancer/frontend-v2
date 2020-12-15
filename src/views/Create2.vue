@@ -108,20 +108,18 @@
                 />
               </UiButton>
             </Block>
-            <Block title="Salt">
-              <UiButton class="d-flex width-full mb-2 px-3">
-                <input
-                  v-model="form.salt"
-                  class="input text-left flex-auto"
-                  required
-                />
-              </UiButton>
-            </Block>
           </div>
         </div>
       </div>
       <div class="col-12 col-lg-4 float-left">
         <Block title="Actions">
+          <UiButton
+            @click="onApprove"
+            :disabled="!$auth.isAuthenticated"
+            class="d-block width-full mb-2"
+          >
+            Approve
+          </UiButton>
           <UiButton
             @click="onSubmit"
             :disabled="!$auth.isAuthenticated"
@@ -167,11 +165,14 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { parseUnits } from '@ethersproject/units';
+import { id } from '@ethersproject/hash';
 import tokenizers from '@/utils/balancer/tokenizers';
 import {
   createFixedSetPoolTokenizer,
   createOwnableFixedSetPoolTokenizer
 } from '@/utils/balancer/utils/factory';
+import { approveTokens } from '@/utils/balancer/utils/tokens';
+import { VAULT_ADDRESS } from '@/utils/balancer/constants';
 
 export default {
   data() {
@@ -184,8 +185,7 @@ export default {
         tokens: [],
         amounts: [],
         initialBPT: '',
-        owner: '',
-        salt: ''
+        owner: ''
       },
       modal: {
         selectToken: false,
@@ -201,15 +201,18 @@ export default {
     params() {
       const params = [
         this.form.strategy,
-        this.form.strategyType,
-        this.form.initialBPT,
+        parseInt(this.form.strategyType),
+        parseUnits(this.form.initialBPT || '0').toString(),
         this.form.tokens,
-        this.form.amounts.map(weight =>
-          parseUnits(weight || '0', 16).toString()
+        this.form.amounts.map((amount, i) =>
+          parseUnits(
+            amount || '0',
+            this.tokens[this.form.tokens[i]].decimals
+          ).toString()
         )
       ];
       if (this.form.tokenizer === 1) params.push(this.form.owner);
-      params.push(this.form.salt);
+      params.push(id(Math.random().toString()));
       return params;
     }
   },
@@ -246,7 +249,20 @@ export default {
         await this.watchTx(tx);
         this.notify('Pool created!');
       } catch (e) {
+        console.log(e);
         this.loading = false;
+      }
+    },
+    async onApprove() {
+      try {
+        const tx = await approveTokens(
+          this.$auth.web3,
+          VAULT_ADDRESS,
+          this.form.tokens
+        );
+        console.log(tx);
+      } catch (e) {
+        console.log(e);
       }
     }
   }

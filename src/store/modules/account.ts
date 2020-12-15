@@ -9,7 +9,7 @@ const state = {
 };
 
 const getters = {
-  getAllowances: (state, getters, rootState) => required => {
+  getAllowances: () => required => {
     return required;
   }
 };

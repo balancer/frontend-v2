@@ -214,8 +214,11 @@ export default {
           this.params
         );
         this.loading = false;
-        console.log(tx);
+        console.log('Tx', tx);
         await this.watchTx(tx);
+        const receipt = await tx.wait();
+        console.log('Receipt', receipt);
+        console.log('Strategy', receipt.events?.[0]?.args?.strategy);
         this.notify('Strategy created!');
       } catch (e) {
         this.loading = false;

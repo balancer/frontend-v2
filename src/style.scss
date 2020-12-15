@@ -283,3 +283,11 @@ textarea {
 .highlight:hover {
   background-color: var(--bg-color);
 }
+
+.border-green {
+  border-color: $green !important;
+}
+
+.border-red {
+  border-color: $red !important;
+}

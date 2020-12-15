@@ -81,7 +81,7 @@ export default {
     const pools = await getPools(
       this.web3.network.key,
       getProvider(this.web3.network.key),
-      poolIds.slice(0, 12)
+      poolIds.slice(0)
     );
     const tokens = [];
     Object.values(pools).forEach(pool =>

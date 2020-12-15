@@ -19,9 +19,36 @@
               />
             </a>
           </h1>
-          <div v-if="pool && !loading">
+          <div v-if="pool && !loading && !registry.loading">
             <Block title="Controller">
-              <User :address="pool.controller" />
+              <div class="d-flex">
+                <div class="flex-auto">
+                  Address
+                </div>
+                <User :address="pool.controller" />
+              </div>
+              <div v-if="pool.tokenizer">
+                <div class="d-flex">
+                  <div class="flex-auto">
+                    Name
+                  </div>
+                  {{ pool.tokenizer.name }}
+                </div>
+                <div class="d-flex">
+                  <div class="flex-auto">
+                    Total supply
+                  </div>
+                  {{
+                    _numeral(
+                      _units(
+                        pool.tokenizer.totalSupply,
+                        pool.tokenizer.decimals
+                      )
+                    )
+                  }}
+                  {{ pool.tokenizer.symbol }}
+                </div>
+              </div>
             </Block>
             <Block title="Trading strategy">
               <div class="d-flex">
@@ -68,10 +95,14 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-lg-4 float-left">
-        <BlockPoolJoin
-          v-if="pool && !loading"
-          :sendTokens="getTokens({ addresses: pool.tokens })"
+      <div
+        v-if="pool && !loading && !registry.loading && pool.tokenizer"
+        class="col-12 col-lg-4 float-left"
+      >
+        <BlockJoinOrExitPool
+          @submit="onJoinPool"
+          :tokens="getTokens()"
+          :pool="pool"
         />
       </div>
     </div>
@@ -80,8 +111,9 @@
 
 <script>
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
+import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
-import { getPool } from '@/utils/balancer/utils/pools';
+import { getPool, joinPool } from '@/utils/balancer/utils/pools';
 
 export default {
   data() {
@@ -98,15 +130,52 @@ export default {
     ...mapActions(['notify', 'injectTokens']),
     handleCopy() {
       this.notify('Copied!');
+    },
+    async loadPool() {
+      this.pool = await getPool(
+        this.web3.network.key,
+        getProvider(this.web3.network.key),
+        this.id
+      );
+    },
+    async onJoinPool(data) {
+      this.tokens = this.getTokens();
+      const [poolAmountOut] = data.receiveAmounts;
+      const maxAmountsIn = this.pool.tokens.map((token, i) =>
+        parseUnits(data.sendAmounts[i], this.tokens[token].decimals).toString()
+      );
+      const transferTokens = true;
+      const beneficiary = this.web3.account;
+      const params = [
+        parseUnits(
+          poolAmountOut,
+          this.tokens[this.pool.tokenizer.address].decimals
+        ),
+        maxAmountsIn,
+        transferTokens,
+        beneficiary
+      ];
+      try {
+        const tx = await joinPool(
+          this.$auth.web3,
+          this.pool.tokenizer.address,
+          params
+        );
+        console.log(tx);
+        await this.loadPool();
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
   async created() {
     this.loading = true;
-    const network = this.web3.network.key;
-    const pool = await getPool(network, getProvider(network), this.id);
-    await this.injectTokens(pool.tokens);
+    await this.loadPool();
+    await this.injectTokens([
+      ...this.pool.tokens,
+      this.pool.tokenizer?.address || undefined
+    ]);
     this.loading = false;
-    this.pool = pool;
   }
 };
 </script>

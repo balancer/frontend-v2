@@ -1,6 +1,10 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { MaxUint256 } from '@ethersproject/constants';
 import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
-import { multicall } from '@snapshot-labs/snapshot.js/src/utils';
+import {
+  multicall,
+  sendTransaction
+} from '@snapshot-labs/snapshot.js/src/utils';
 import set from 'lodash/set';
 import { abi } from '../abi/BToken.json';
 
@@ -74,4 +78,19 @@ export async function getTokensMetadata(
     console.log(e);
   }
   return {};
+}
+
+export async function approveTokens(
+  web3: Web3Provider,
+  spender: string,
+  tokens: string[]
+) {
+  return await Promise.all(
+    tokens.map(token =>
+      sendTransaction(web3, token, abi, 'approve', [
+        spender,
+        MaxUint256.toString()
+      ])
+    )
+  );
 }
