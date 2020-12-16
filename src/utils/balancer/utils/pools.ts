@@ -111,3 +111,7 @@ export async function getPool(
 export async function joinPool(web3, address, params: any[]) {
   return await sendTransaction(web3, address, tokenizerAbi, 'joinPool', params);
 }
+
+export async function exitPool(web3, address, params: any[]) {
+  return await sendTransaction(web3, address, tokenizerAbi, 'exitPool', params);
+}

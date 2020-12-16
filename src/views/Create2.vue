@@ -11,7 +11,7 @@
     <div>
       <div class="col-12 col-lg-8 float-left pr-0 pr-lg-5">
         <div>
-          <h1 v-text="'Create a pool'" class="mb-4" />
+          <h1 v-text="'Create a tokenizer'" class="mb-4" />
           <Block title="Tokenizer">
             <UiButton
               v-for="(tokenizer, i) in tokenizers"
@@ -181,6 +181,8 @@ export default {
       loading: false,
       tokenizers: Object.values(tokenizers),
       form: {
+        strategy: this.$route.params.strategyAddress || '',
+        strategyType: this.$route.params.strategyType || '',
         tokenizer: '',
         tokens: [],
         amounts: [],
@@ -247,7 +249,12 @@ export default {
         this.loading = false;
         console.log(tx);
         await this.watchTx(tx);
+        const receipt = await tx.wait();
+        console.log('Receipt', receipt);
+        const pool = receipt.events?.[0]?.args?.pool;
+        console.log('Controller', pool);
         this.notify('Pool created!');
+        // this.$router.push({ name: 'pool', params: { id: pool } });
       } catch (e) {
         console.log(e);
         this.loading = false;

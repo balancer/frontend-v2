@@ -15,7 +15,11 @@ const routes: Array<RouteConfig> = [
   { path: '/settings', name: 'settings', component: Settings },
   { path: '/vault', name: 'vault', component: Vault },
   { path: '/create', name: 'create', component: Create },
-  { path: '/create2', name: 'create2', component: Create2 },
+  {
+    path: '/create/:strategyAddress/:strategyType',
+    name: 'create2',
+    component: Create2
+  },
   { path: '/*', name: 'error-404', beforeEnter: (to, from, next) => next('/') }
 ];
 

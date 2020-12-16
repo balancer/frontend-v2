@@ -99,8 +99,9 @@
         v-if="pool && !loading && !registry.loading && pool.tokenizer"
         class="col-12 col-lg-4 float-left"
       >
-        <BlockJoinOrExitPool
-          @submit="onJoinPool"
+        <BlockPoolActions
+          @joinPool="onJoinPool"
+          @exitPool="onExitPool"
           :tokens="getTokens()"
           :pool="pool"
         />
@@ -113,7 +114,7 @@
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
-import { getPool, joinPool } from '@/utils/balancer/utils/pools';
+import { exitPool, getPool, joinPool } from '@/utils/balancer/utils/pools';
 
 export default {
   data() {
@@ -157,6 +158,38 @@ export default {
       ];
       try {
         const tx = await joinPool(
+          this.$auth.web3,
+          this.pool.tokenizer.address,
+          params
+        );
+        console.log(tx);
+        await this.loadPool();
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async onExitPool(data) {
+      this.tokens = this.getTokens();
+      const [poolAmountIn] = data.sendAmounts;
+      const minAmountsOut = this.pool.tokens.map((token, i) =>
+        parseUnits(
+          data.receiveAmounts[i],
+          this.tokens[token].decimals
+        ).toString()
+      );
+      const withdrawTokens = true;
+      const beneficiary = this.web3.account;
+      const params = [
+        parseUnits(
+          poolAmountIn,
+          this.tokens[this.pool.tokenizer.address].decimals
+        ),
+        minAmountsOut,
+        withdrawTokens,
+        beneficiary
+      ];
+      try {
+        const tx = await exitPool(
           this.$auth.web3,
           this.pool.tokenizer.address,
           params

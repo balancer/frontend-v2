@@ -218,7 +218,14 @@ export default {
         await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
-        console.log('Strategy', receipt.events?.[0]?.args?.strategy);
+        const strategyAddress = receipt.events?.[0]?.args?.strategy;
+        this.$router.push({
+          name: 'create2',
+          params: {
+            strategyAddress,
+            strategyType: this.form.strategyType
+          }
+        });
         this.notify('Strategy created!');
       } catch (e) {
         this.loading = false;

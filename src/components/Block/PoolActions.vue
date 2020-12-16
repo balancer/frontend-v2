@@ -19,17 +19,23 @@
       </a>
     </div>
     <div class="p-4">
-      <ExchangerJoinPool
+      <Exchanger
+        :key="currentSide"
         v-if="currentSide === 0"
-        @submit="$emit('submit', $event)"
         :tokens="tokens"
-        :pool="pool"
+        :sendTokens="pool.tokens"
+        :receiveTokens="[pool.tokenizer.address]"
+        @submit="$emit('joinPool', $event)"
+        :submit="'Buy'"
       />
-      <ExchangerExitPool
+      <Exchanger
+        :key="currentSide"
         v-if="currentSide === 1"
-        @submit="$emit('submit', $event)"
         :tokens="tokens"
-        :pool="pool"
+        :sendTokens="[pool.tokenizer.address]"
+        :receiveTokens="pool.tokens"
+        @submit="$emit('exitPool', $event)"
+        :submit="'Sell'"
       />
     </div>
   </Block>

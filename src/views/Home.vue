@@ -4,9 +4,6 @@
       <h1 v-text="'Explore'" class="mb-4" />
       <p class="mb-4">
         <router-link :to="{ name: 'create' }" class="mr-2">
-          Create strategy
-        </router-link>
-        <router-link :to="{ name: 'create2' }" class="mr-2">
           Create pool
         </router-link>
         <router-link :to="{ name: 'vault' }" class="mr-2">
