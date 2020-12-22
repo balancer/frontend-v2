@@ -1,12 +1,12 @@
 import Vue from 'vue';
 import { formatUnits } from '@ethersproject/units';
+import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';
 import { loadTokenlist } from '@/utils/tokenlists';
 import { TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
 import { clone, lsSet } from '@/utils';
 import { getTokensMetadata } from '@/utils/balancer/utils/tokens';
-import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 
 const state = {
   currentTokenlist: TOKEN_LIST_DEFAULT,
@@ -129,6 +129,7 @@ const actions = {
     dispatch('loadPrices');
   },
   injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
+    if (tokens.length === 0) return;
     const injected = clone(state.injected);
     const network = rootState.web3.network.key;
     const tokensMetadata = await getTokensMetadata(

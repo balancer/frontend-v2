@@ -3,21 +3,16 @@ import numeral from 'numeral';
 import get from 'lodash/get';
 import prettyMs from 'pretty-ms';
 import networks from '@snapshot-labs/snapshot.js/src/networks.json';
-import domains from '@snapshot-labs/snapshot-spaces/spaces/domains.json';
 import store from '@/store';
 import { shorten } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 
 // @ts-ignore
 const modules = Object.entries(store.state).map(module => module[0]);
-const domainName = window.location.hostname;
 
 export default {
   computed: {
-    ...mapState(modules),
-    domain() {
-      return domains[domainName];
-    }
+    ...mapState(modules)
   },
   methods: {
     _get(object, path, fb) {

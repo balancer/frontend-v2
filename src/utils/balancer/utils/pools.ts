@@ -5,10 +5,9 @@ import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
 import { getAddress } from '@ethersproject/address';
 import set from 'lodash/set';
 import { abi as vaultAbi } from '@/utils/balancer/abi/Vault.json';
-import { abi as tokenizerAbi } from '@/utils/balancer/abi/FixedSetPoolTokenizer.json';
-import { abi as cwpAbi } from '@/utils/balancer/abi/CWPTradingStrategy.json';
-import { abi as flattenedAbi } from '@/utils/balancer/abi/FlattenedTradingStrategy.json';
-import { VAULT_ADDRESS } from '@/utils/balancer/constants';
+import { abi as constantProductPoolAbi } from '@/utils/balancer/abi/ConstantProductPool.json';
+import { abi as bTokenAbi } from '@/utils/balancer/abi/BToken.json';
+import constants from '@/utils/balancer/constants';
 import { sendTransaction } from '@snapshot-labs/snapshot.js/src/utils';
 
 function formatPool(pool) {
@@ -52,6 +51,7 @@ export async function getPools(
   provider: JsonRpcProvider,
   poolIds: string[]
 ) {
+  if (poolIds.length === 0) return {};
   let multi = new Multicaller(network, provider, vaultAbi);
   let pools = {};
   poolIds.forEach(id => {
@@ -60,17 +60,16 @@ export async function getPools(
     set(pools, `${id}.id`, id);
     set(pools, `${id}.strategyType`, strategyType);
     set(pools, `${id}.strategyAddress`, getAddress(strategyAddress));
-    multi.call(`${id}.tokens`, VAULT_ADDRESS, 'getPoolTokens', [id]);
-    multi.call(`${id}.controller`, VAULT_ADDRESS, 'getPoolController', [id]);
+    multi.call(`${id}.tokens`, constants.vault, 'getPoolTokens', [id]);
   });
   pools = await multi.execute(pools);
 
-  const abis = [...vaultAbi, ...cwpAbi, ...flattenedAbi, ...tokenizerAbi];
+  const abis = [...vaultAbi, ...constantProductPoolAbi, ...bTokenAbi];
   multi = new Multicaller(network, provider, abis);
   poolIds.forEach(id => {
     const pool = pools[id];
     const address = pool.strategyAddress;
-    multi.call(`${id}.tokenBalances`, VAULT_ADDRESS, 'getPoolTokenBalances', [
+    multi.call(`${id}.tokenBalances`, constants.vault, 'getPoolTokenBalances', [
       id,
       pool.tokens
     ]);
@@ -78,22 +77,21 @@ export async function getPools(
     set(pools, `${id}.strategy.type`, pool.strategyType);
     set(pools, `${id}.strategy.address`, address);
     if (pool.strategyType === 0) {
-      multi.call(`${id}.strategy.totalTokens`, address, 'getTotalTokens');
-      pool.tokens.forEach((token, i) =>
-        multi.call(`${id}.strategy.weights[${i}]`, address, 'getWeight', [
-          token
-        ])
-      );
+      multi.call(`${id}.strategy.weights`, address, 'getWeights', [
+        pool.tokens
+      ]);
     } else if (pool.strategyType === 1) {
-      // multi.call(`${id}.strategy.amp`, address, 'getAmp');
+      multi.call(`${id}.strategy.amp`, address, 'getAmplification');
     }
-    if (pool.controller === '0x4AAc4d91cD6AA57AEe6DD379B63D0bCaD9D91f49') {
-      set(pools, `${id}.tokenizer.address`, pool.controller);
-      multi.call(`${id}.tokenizer.name`, pool.controller, 'name');
-      multi.call(`${id}.tokenizer.symbol`, pool.controller, 'symbol');
-      multi.call(`${id}.tokenizer.decimals`, pool.controller, 'decimals');
-      multi.call(`${id}.tokenizer.totalSupply`, pool.controller, 'totalSupply');
-    }
+    set(pools, `${id}.tokenizer.address`, pool.strategyAddress);
+    multi.call(`${id}.tokenizer.name`, pool.strategyAddress, 'name');
+    multi.call(`${id}.tokenizer.symbol`, pool.strategyAddress, 'symbol');
+    multi.call(`${id}.tokenizer.decimals`, pool.strategyAddress, 'decimals');
+    multi.call(
+      `${id}.tokenizer.totalSupply`,
+      pool.strategyAddress,
+      'totalSupply'
+    );
   });
   pools = await multi.execute(pools);
   return formatPools(pools);
@@ -109,9 +107,21 @@ export async function getPool(
 }
 
 export async function joinPool(web3, address, params: any[]) {
-  return await sendTransaction(web3, address, tokenizerAbi, 'joinPool', params);
+  return await sendTransaction(
+    web3,
+    address,
+    constantProductPoolAbi,
+    'joinPool',
+    params
+  );
 }
 
 export async function exitPool(web3, address, params: any[]) {
-  return await sendTransaction(web3, address, tokenizerAbi, 'exitPool', params);
+  return await sendTransaction(
+    web3,
+    address,
+    constantProductPoolAbi,
+    'exitPool',
+    params
+  );
 }

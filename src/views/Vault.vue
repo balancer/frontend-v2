@@ -43,7 +43,7 @@
 import { call } from '@snapshot-labs/snapshot.js/src/utils';
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import { abi } from '@/utils/balancer/abi/Vault.json';
-import { VAULT_ADDRESS } from '@/utils/balancer/constants';
+import constants from '@/utils/balancer/constants';
 
 export default {
   data() {
@@ -57,40 +57,40 @@ export default {
   },
   async created() {
     let total = await call(getProvider(this.web3.network.key), abi, [
-      VAULT_ADDRESS,
+      constants.vault,
       'getTotalTrustedOperatorReporters'
     ]);
     this.trustedOperatorReporters = await call(
       getProvider(this.web3.network.key),
       abi,
-      [VAULT_ADDRESS, 'getTrustedOperatorReporters', [0, total]]
+      [constants.vault, 'getTrustedOperatorReporters', [0, total]]
     );
 
     total = await call(getProvider(this.web3.network.key), abi, [
-      VAULT_ADDRESS,
+      constants.vault,
       'getTotalTrustedOperators'
     ]);
     this.trustedOperators = await call(
       getProvider(this.web3.network.key),
       abi,
-      [VAULT_ADDRESS, 'getTrustedOperators', [0, total]]
+      [constants.vault, 'getTrustedOperators', [0, total]]
     );
 
     this.protocolFlashLoanFee = await call(
       getProvider(this.web3.network.key),
       abi,
-      [VAULT_ADDRESS, 'protocolFlashLoanFee']
+      [constants.vault, 'protocolFlashLoanFee']
     );
 
     this.protocolSwapFee = await call(getProvider(this.web3.network.key), abi, [
-      VAULT_ADDRESS,
+      constants.vault,
       'protocolSwapFee'
     ]);
 
     this.protocolWithdrawFee = await call(
       getProvider(this.web3.network.key),
       abi,
-      [VAULT_ADDRESS, 'protocolWithdrawFee']
+      [constants.vault, 'protocolWithdrawFee']
     );
   }
 };

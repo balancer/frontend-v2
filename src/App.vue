@@ -25,16 +25,6 @@ export default {
   mounted() {
     this.init();
   },
-  computed: {
-    space() {
-      try {
-        const key = this.domain || this.$route.params.key;
-        return this.app.spaces[key];
-      } catch (e) {
-        return {};
-      }
-    }
-  },
   methods: {
     ...mapActions(['init'])
   }

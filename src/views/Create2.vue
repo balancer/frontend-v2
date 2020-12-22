@@ -172,7 +172,7 @@ import {
   createOwnableFixedSetPoolTokenizer
 } from '@/utils/balancer/utils/factory';
 import { approveTokens } from '@/utils/balancer/utils/tokens';
-import { VAULT_ADDRESS } from '@/utils/balancer/constants';
+import constants from '@/utils/balancer/constants';
 
 export default {
   data() {
@@ -264,7 +264,7 @@ export default {
       try {
         const tx = await approveTokens(
           this.$auth.web3,
-          VAULT_ADDRESS,
+          constants.vault,
           this.form.tokens
         );
         console.log(tx);

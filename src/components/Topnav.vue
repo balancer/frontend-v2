@@ -102,12 +102,6 @@ export default {
       modalAboutOpen: false
     };
   },
-  computed: {
-    space() {
-      const key = this.domain || this.$route.params.key;
-      return this.app.spaces[key] ? this.app.spaces[key] : false;
-    }
-  },
   methods: {
     ...mapActions(['login']),
     async handleLogin(connector) {

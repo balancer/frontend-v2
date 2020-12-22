@@ -74,7 +74,9 @@ export default {
       getProvider(this.web3.network.key)
     );
     const totalPools = await vault.getTotalPools();
+    console.log('Total pools', totalPools);
     const poolIds = await vault.getPoolIds(0, totalPools);
+    console.log('Pool ids', poolIds);
     const pools = await getPools(
       this.web3.network.key,
       getProvider(this.web3.network.key),

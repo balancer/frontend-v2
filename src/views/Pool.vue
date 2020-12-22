@@ -21,12 +21,6 @@
           </h1>
           <div v-if="pool && !loading && !registry.loading">
             <Block title="Controller">
-              <div class="d-flex">
-                <div class="flex-auto">
-                  Address
-                </div>
-                <User :address="pool.controller" />
-              </div>
               <div v-if="pool.tokenizer">
                 <div class="d-flex">
                   <div class="flex-auto">

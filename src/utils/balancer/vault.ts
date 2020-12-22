@@ -1,12 +1,12 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { call } from '@snapshot-labs/snapshot.js/src/utils';
-import { VAULT_ADDRESS } from './constants';
+import constants from './constants';
 import { abi } from './abi/Vault.json';
 
 export default class Vault {
   public network: string;
   public provider: JsonRpcProvider;
-  public address: string = VAULT_ADDRESS;
+  public address: string = constants.vault;
 
   constructor(network: string, provider: JsonRpcProvider) {
     this.network = network;

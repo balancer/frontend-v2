@@ -11,8 +11,8 @@
     <div>
       <div class="col-12 col-lg-8 float-left pr-0 pr-lg-5">
         <div>
-          <h1 v-text="'Create a strategy'" class="mb-4" />
-          <Block title="Trading strategy">
+          <h1 v-text="'Create a pool'" class="mb-4" />
+          <Block title="Strategy">
             <UiButton
               v-for="(strategy, i) in strategies"
               :key="i"
@@ -23,93 +23,124 @@
               {{ strategy.name }}
             </UiButton>
           </Block>
-          <div v-if="form.strategyType">
-            <Block v-if="form.strategyType === '0'" title="Tokens">
-              <div
-                v-for="(token, i) in form.tokens"
-                :key="tokens[token].address"
-                class="p-4 d-block border rounded-2 mb-3 position-relative"
+          <Block title="Initial BPT">
+            <UiButton class="d-flex width-full mb-2 px-3">
+              <input
+                v-model="form.initialBPT"
+                type="number"
+                placeholder="0"
+                step="0"
+                class="input text-left flex-auto"
+                required
+              />
+            </UiButton>
+          </Block>
+          <Block title="Tokens">
+            <div
+              v-for="(token, i) in form.tokens"
+              :key="tokens[token].address"
+              class="p-4 d-block border rounded-2 mb-3 position-relative"
+            >
+              <a
+                @click="removeToken(i)"
+                class="position-absolute top-4 right-0"
               >
-                <a
-                  @click="removeToken(i)"
-                  class="position-absolute top-4 right-0"
+                <Icon name="close" size="12" class="p-4" />
+              </a>
+              <Token
+                :token="tokens[token]"
+                :symbol="true"
+                :name="true"
+                class="mb-3 text-white"
+              />
+              <div>
+                <UiButton
+                  v-if="form.strategyType === '0'"
+                  class="d-flex width-full px-3 mb-2"
                 >
-                  <Icon name="close" size="12" class="p-4" />
-                </a>
-                <Token
-                  :token="tokens[token]"
-                  :symbol="true"
-                  :name="true"
-                  class="mb-3 text-white"
-                />
-                <div>
-                  <UiButton class="d-flex width-full px-3">
-                    <span class="mr-2 text-gray">Weight</span>
-                    <input
-                      v-model="form.weights[i]"
-                      class="input width-full"
-                      type="number"
-                      placeholder="0.0"
-                      step="any"
-                      required
-                    />
-                  </UiButton>
-                </div>
+                  <span class="mr-2 text-gray">Weight</span>
+                  <input
+                    v-model="form.weights[i]"
+                    class="input width-full"
+                    type="number"
+                    placeholder="0.0"
+                    step="any"
+                    required
+                  />
+                </UiButton>
+                <UiButton class="d-flex width-full px-3">
+                  <span class="mr-2 text-gray">Amount</span>
+                  <input
+                    v-model="form.amounts[i]"
+                    class="input width-full"
+                    type="number"
+                    placeholder="0.0"
+                    step="any"
+                    required
+                  />
+                </UiButton>
               </div>
-              <UiButton
-                @click="
-                  modal.selectToken = true;
-                  q = '';
-                "
-                class="width-full"
-              >
-                Add a token
-              </UiButton>
-            </Block>
-            <Block title="Swap fee">
-              <UiButton class="d-flex width-full mb-2 px-3">
-                <input
-                  v-model="form.swapFee"
-                  class="input text-left flex-auto"
-                  type="number"
-                  placeholder="0.0"
-                  step="16"
-                  required
-                />
-                %
-              </UiButton>
-            </Block>
-            <Block v-if="form.strategyType === '1'" title="Amp">
-              <UiButton class="d-flex width-full mb-2 px-3">
-                <input
-                  v-model="form.amp"
-                  class="input text-left flex-auto"
-                  type="number"
-                  placeholder="0"
-                  step="0"
-                  required
-                />
-              </UiButton>
-            </Block>
-          </div>
+            </div>
+            <UiButton
+              @click="
+                modal.selectToken = true;
+                q = '';
+              "
+              class="width-full"
+            >
+              Add a token
+            </UiButton>
+          </Block>
+          <Block title="Swap fee">
+            <UiButton class="d-flex width-full mb-2 px-3">
+              <input
+                v-model="form.swapFee"
+                class="input text-left flex-auto"
+                type="number"
+                placeholder="0.0"
+                step="16"
+                required
+              />
+              %
+            </UiButton>
+          </Block>
+          <Block v-if="form.strategyType === '1'" title="Amp">
+            <UiButton class="d-flex width-full mb-2 px-3">
+              <input
+                v-model="form.amp"
+                class="input text-left flex-auto"
+                type="number"
+                placeholder="0"
+                step="0"
+                required
+              />
+            </UiButton>
+          </Block>
         </div>
       </div>
-      <div class="col-12 col-lg-4 float-left">
-        <Block title="Actions">
-          <UiButton
-            @click="onSubmit"
-            :disabled="!$auth.isAuthenticated"
-            :loading="loading"
-            class="d-block width-full button--submit"
-          >
-            Create
-          </UiButton>
-        </Block>
-        <Block title="Payload">
-          "create"
-          <pre>{{ JSON.stringify(params, null, 2) }}</pre>
-        </Block>
-      </div>
+    </div>
+    <div class="col-12 col-lg-4 float-left">
+      <Block title="Actions">
+        <UiButton
+          @click="onApprove"
+          :disabled="!$auth.isAuthenticated"
+          class="d-block width-full mb-2"
+        >
+          Approve
+        </UiButton>
+        <UiButton
+          @click="onSubmit"
+          :disabled="!$auth.isAuthenticated"
+          :loading="loading"
+          class="d-block width-full button--submit"
+        >
+          Create
+        </UiButton>
+      </Block>
+      <Block title="Payload">
+        "create"
+        <pre>{{ JSON.stringify(params, null, 2) }}</pre>
+      </Block>
     </div>
     <portal to="modal">
       <ModalSelectToken
@@ -141,22 +172,26 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { parseUnits } from '@ethersproject/units';
-import strategies from '@/utils/balancer/strategies';
+import constants from '@/utils/balancer/constants';
 import {
-  createCwpStrategy,
-  createFlattenedStrategy
+  createConstantProductPool,
+  createStablecoinPool
 } from '@/utils/balancer/utils/factory';
+import { approveTokens } from '@/utils/balancer/utils/tokens';
+import { id } from '@ethersproject/hash';
 
 export default {
   data() {
     return {
       q: '',
       loading: false,
-      strategies: Object.values(strategies),
+      strategies: Object.values(constants.strategies),
       form: {
         strategyType: null,
+        initialBPT: '',
         tokens: [],
         weights: [],
+        amounts: [],
         swapFee: '',
         amp: ''
       },
@@ -172,20 +207,27 @@ export default {
       return this.getTokens();
     },
     params() {
+      const initialBPT = parseUnits(this.form.initialBPT || '0').toString();
+      const tokens = this.form.tokens;
+      const amounts = this.form.amounts.map((amount, i) =>
+        parseUnits(
+          amount || '0',
+          this.tokens[this.form.tokens[i]].decimals
+        ).toString()
+      );
+      const swapFee = parseUnits(this.form.swapFee || '0', 16).toString();
+      const salt = id(Math.random().toString());
+      const params = [initialBPT, tokens, amounts];
       if (this.form.strategyType === '0')
-        return [
-          this.form.tokens,
+        params.push(
           this.form.weights.map(weight =>
             parseUnits(weight || '0', 16).toString()
-          ),
-          parseUnits(this.form.swapFee || '0', 16).toString()
-        ];
-      if (this.form.strategyType === '1')
-        return [
-          parseUnits(this.form.swapFee || '0', 16).toString(),
-          this.form.amp
-        ];
-      return [];
+          )
+        );
+      if (this.form.strategyType === '1') params.push(this.form.amp);
+      params.push(swapFee);
+      params.push(salt);
+      return params;
     }
   },
   methods: {
@@ -208,7 +250,10 @@ export default {
     async onSubmit() {
       this.loading = true;
       try {
-        const createStrategies = [createCwpStrategy, createFlattenedStrategy];
+        const createStrategies = [
+          createConstantProductPool,
+          createStablecoinPool
+        ];
         const tx = await createStrategies[this.form.strategyType](
           this.$auth.web3,
           this.params
@@ -218,17 +263,22 @@ export default {
         await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
-        const strategyAddress = receipt.events?.[0]?.args?.strategy;
-        this.$router.push({
-          name: 'create2',
-          params: {
-            strategyAddress,
-            strategyType: this.form.strategyType
-          }
-        });
-        this.notify('Strategy created!');
+        // const poolAddress = receipt.events?.[0]?.args?.strategy;
+        this.notify('Pool created!');
       } catch (e) {
         this.loading = false;
+      }
+    },
+    async onApprove() {
+      try {
+        const tx = await approveTokens(
+          this.$auth.web3,
+          constants.vault,
+          this.form.tokens
+        );
+        console.log(tx);
+      } catch (e) {
+        console.log(e);
       }
     }
   }
