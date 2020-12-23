@@ -9,11 +9,11 @@ export default {
   strategies: {
     0: {
       type: '0',
-      name: 'Constant product pool'
+      name: 'Standard pool'
     },
     1: {
       type: '1',
-      name: 'Stablecoin pool'
+      name: 'Pegged pool'
     }
   }
 };

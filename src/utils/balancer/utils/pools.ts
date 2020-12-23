@@ -17,7 +17,7 @@ function formatPool(pool) {
 
   switch (pool.strategyType) {
     case 0: {
-      pool.strategy.name = 'Constant weighted product';
+      pool.strategy.name = 'Standard pool';
       const totalWeight = pool.strategy.weights.reduce(
         (a, b) => a.add(b),
         BigNumber.from(0)
@@ -30,7 +30,7 @@ function formatPool(pool) {
       break;
     }
     case 1: {
-      pool.strategy.name = 'Flattened curve';
+      pool.strategy.name = 'Pegged pool';
       pool.strategy.weightsPercent = pool.tokens.map(
         () => 100 / pool.tokens.length
       );
@@ -48,7 +48,7 @@ function formatPools(pools) {
 
 export async function getPools(
   network: string,
-  provider: JsonRpcProvider,
+  provider: any,
   poolIds: string[]
 ) {
   if (poolIds.length === 0) return {};

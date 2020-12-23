@@ -1,4 +1,4 @@
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { Web3Provider } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
 import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
 import {
@@ -10,7 +10,7 @@ import { abi } from '../abi/BToken.json';
 
 export async function getBalances(
   network: string,
-  provider: JsonRpcProvider,
+  provider: any,
   account: string,
   tokens: string[]
 ) {
@@ -32,7 +32,7 @@ export async function getBalances(
 
 export async function getAllowances(
   network: string,
-  provider: JsonRpcProvider,
+  provider: any,
   src: string,
   dst: string,
   tokens: string[]
@@ -55,7 +55,7 @@ export async function getAllowances(
 
 export async function getTokensMetadata(
   network: string,
-  provider: JsonRpcProvider,
+  provider: any,
   tokens: string[]
 ) {
   try {
