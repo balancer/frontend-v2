@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { lsGet, lsSet } from '@/utils';
 
 const state = {
   init: false,
@@ -6,7 +7,7 @@ const state = {
   authLoading: false,
   modalOpen: false,
   spaces: {},
-  skin: 'light'
+  skin: lsGet('skin', 'light')
 };
 
 const actions = {
@@ -25,6 +26,7 @@ const actions = {
     commit('SET', { modalOpen: !state.modalOpen });
   },
   setSkin: async ({ commit }, skin) => {
+    lsSet('skin', skin);
     commit('SET', { skin });
   }
 };

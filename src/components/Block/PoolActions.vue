@@ -24,7 +24,9 @@
         v-if="currentSide === 0"
         :tokens="tokens"
         :sendTokens="pool.tokens"
+        :sendRatios="pool.tokenBalances"
         :receiveTokens="[pool.tokenizer.address]"
+        :receiveRatios="[pool.tokenizer.totalSupply]"
         @submit="$emit('joinPool', $event)"
         :submit="'Buy'"
       />
@@ -33,7 +35,9 @@
         v-if="currentSide === 1"
         :tokens="tokens"
         :sendTokens="[pool.tokenizer.address]"
+        :sendRatios="[pool.tokenizer.totalSupply]"
         :receiveTokens="pool.tokens"
+        :receiveRatios="pool.tokenBalances"
         @submit="$emit('exitPool', $event)"
         :submit="'Sell'"
       />

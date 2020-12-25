@@ -29,22 +29,11 @@ export function lsSet(key: string, value: any) {
   return localStorage.setItem(`${pkg.name}.${key}`, JSON.stringify(value));
 }
 
-export function lsGet(key: string) {
+export function lsGet(key: string, fallback?: string) {
   const item = localStorage.getItem(`${pkg.name}.${key}`);
-  return jsonParse(item, '');
+  return jsonParse(item, fallback);
 }
 
 export function lsRemove(key: string) {
   return localStorage.removeItem(`${pkg.name}.${key}`);
-}
-
-export function getInjected() {
-  const web3: any = window['ethereum'];
-  if (!web3) return;
-  let injected = { name: 'Injected', id: 'web3' };
-  if (web3.isMetaMask) injected = { name: 'MetaMask', id: 'metamask' };
-  if (web3.isTrust) injected = { name: 'Trust Wallet', id: 'trustwallet' };
-  if (web3.isStatus) injected = { name: 'Status', id: 'status' };
-  if (web3.isFrame) injected = { name: 'Frame', id: 'frame' };
-  return injected;
 }

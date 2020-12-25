@@ -15,18 +15,20 @@
       v-infinite-scroll="loadMore"
       infinite-scroll-distance="0"
       infinite-scroll-disabled="loading"
-      class="overflow-hidden"
+      class="overflow-hidden border rounded-2 block-bg"
     >
-      <UiLoading v-if="loading || registry.loading" />
+      <div v-if="loading || registry.loading" class="text-center p-4">
+        <UiLoading />
+      </div>
       <div v-if="!registry.loading">
         <div
           v-for="pool in filteredPools"
           :key="pool.id"
-          class="overflow-hidden"
+          class="overflow-hidden border-bottom last-child-border-0"
         >
           <router-link
             :to="{ name: 'pool', params: { id: pool.id } }"
-            class="d-block overflow-hidden mr-3"
+            class="d-block overflow-hidden"
           >
             <BlockPool :pool="pool" :tokens="tokens" />
           </router-link>

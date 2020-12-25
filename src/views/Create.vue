@@ -12,7 +12,7 @@
       <div class="col-12 col-lg-8 float-left pr-0 pr-lg-5">
         <div>
           <h1 v-text="'Create a pool'" class="mb-4" />
-          <Block title="Strategy">
+          <Block title="Pool type">
             <UiButton
               v-for="(strategy, i) in strategies"
               :key="i"
@@ -23,8 +23,9 @@
               {{ strategy.name }}
             </UiButton>
           </Block>
-          <Block title="Initial BPT">
-            <UiButton class="d-flex width-full mb-2 px-3">
+          <Block v-if="form.strategyType" title="Configuration">
+            <UiButton class="d-flex width-full px-3 mb-2">
+              <span class="mr-2 text-gray">Initial BPT</span>
               <input
                 v-model="form.initialBPT"
                 type="number"
@@ -34,8 +35,35 @@
                 required
               />
             </UiButton>
+
+            <UiButton class="d-flex width-full mb-2 px-3">
+              <span class="mr-2 text-gray">Swap fee</span>
+              <input
+                v-model="form.swapFee"
+                class="input text-left flex-auto"
+                type="number"
+                placeholder="0.0"
+                step="16"
+                required
+              />
+              %
+            </UiButton>
+            <UiButton
+              v-if="form.strategyType === '1'"
+              class="d-flex width-full mb-2 px-3"
+            >
+              <span class="mr-2 text-gray">Amplification</span>
+              <input
+                v-model="form.amp"
+                class="input text-left flex-auto"
+                type="number"
+                placeholder="0"
+                step="0"
+                required
+              />
+            </UiButton>
           </Block>
-          <Block title="Tokens">
+          <Block v-if="form.strategyType" title="Tokens">
             <div
               v-for="(token, i) in form.tokens"
               :key="tokens[token].address"
@@ -91,35 +119,10 @@
               Add a token
             </UiButton>
           </Block>
-          <Block title="Swap fee">
-            <UiButton class="d-flex width-full mb-2 px-3">
-              <input
-                v-model="form.swapFee"
-                class="input text-left flex-auto"
-                type="number"
-                placeholder="0.0"
-                step="16"
-                required
-              />
-              %
-            </UiButton>
-          </Block>
-          <Block v-if="form.strategyType === '1'" title="Amp">
-            <UiButton class="d-flex width-full mb-2 px-3">
-              <input
-                v-model="form.amp"
-                class="input text-left flex-auto"
-                type="number"
-                placeholder="0"
-                step="0"
-                required
-              />
-            </UiButton>
-          </Block>
         </div>
       </div>
     </div>
-    <div class="col-12 col-lg-4 float-left">
+    <div v-if="form.strategyType" class="col-12 col-lg-4 float-left">
       <Block title="Actions">
         <UiButton
           @click="onApprove"
@@ -263,8 +266,9 @@ export default {
         await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
-        // const poolAddress = receipt.events?.[0]?.args?.strategy;
         this.notify('Pool created!');
+        const poolId = receipt.events?.[0]?.topics?.[2];
+        console.log('Pool id', poolId);
       } catch (e) {
         this.loading = false;
       }

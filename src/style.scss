@@ -28,7 +28,7 @@
 
 .dark {
   --primary-color: #384aff;
-  --bg-color: #0f1011;
+  --bg-color: #000000;
   --text-color: #586069;
   --link-color: white;
   --heading-color: white;
@@ -40,14 +40,14 @@
 
 .classic {
   --primary-color: #536cfe;
-  --bg-color: #21242c;
+  --bg-color: #21232c;
   --text-color: #90a4ae;
   --link-color: white;
   --heading-color: white;
   --border-color: #41476b;
   --header-bg: #282a32;
   --block-bg: #21242c;
-  --border-radius-2: 8px;
+  --border-radius-2: 6px;
 }
 
 @font-face {

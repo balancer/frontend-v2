@@ -1,5 +1,5 @@
 <template>
-  <Block>
+  <div class="p-4">
     {{ _shorten(pool.id) }}<br />
     Strategy: {{ pool.strategy.name }} ({{ pool.strategyType }})<br />
     Swap fee: {{ _numeral(pool.strategy.swapFeePercent) }}%<br />
@@ -9,7 +9,7 @@
         {{ _numeral(pool.strategy.weightsPercent[i]) }}%
       </span>
     </div>
-  </Block>
+  </div>
 </template>
 
 <script>

@@ -74,7 +74,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { getInjected } from '@/utils';
+import { getInjected } from '@snapshot-labs/lock/src/utils';
 import connectors from '@/constants/connectors.json';
 
 export default {

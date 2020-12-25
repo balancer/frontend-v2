@@ -11,6 +11,7 @@
         class="d-flex mb-2 width-full px-3"
       >
         <input
+          @input="onInput('send', i)"
           v-model="sendAmounts[i]"
           class="input flex-auto"
           type="number"
@@ -30,6 +31,7 @@
         class="d-flex mb-2 width-full px-3"
       >
         <input
+          @input="onInput('receive', i)"
           v-model="receiveAmounts[i]"
           class="input flex-auto"
           type="number"
@@ -48,11 +50,15 @@
 </template>
 
 <script>
+import { parseUnits, formatUnits } from '@ethersproject/units';
+
 export default {
   props: {
     tokens: Object,
     sendTokens: Array,
+    sendRatios: Array,
     receiveTokens: Array,
+    receiveRatios: Array,
     submit: String
   },
   data() {
@@ -66,6 +72,41 @@ export default {
       this.$emit('submit', {
         sendAmounts: this.sendAmounts,
         receiveAmounts: this.receiveAmounts
+      });
+    },
+    onInput(type, index) {
+      if (this[`${type}Amounts`][index].trim() === '') {
+        this.sendAmounts = this.sendTokens.map(() => '');
+        this.receiveAmounts = this.receiveTokens.map(() => '');
+        return;
+      }
+
+      const currentTokenAddress = this[`${type}Tokens`][index];
+      const currentToken = this.tokens[currentTokenAddress];
+      const currentAmount = this[`${type}Amounts`][index];
+      const currentDenormAmount = parseUnits(
+        currentAmount,
+        currentToken.decimals
+      );
+      const currentRatio = this[`${type}Ratios`][index];
+
+      const types = ['send', 'receive'];
+      [this.sendRatios, this.receiveRatios].forEach((ratios, ratioType) => {
+        ratios.forEach((ratio, i) => {
+          if (i !== index || type !== types[ratioType]) {
+            const tokenAddress = this[`${types[ratioType]}Tokens`][i];
+            const token = this.tokens[tokenAddress];
+            this[`${types[ratioType]}Amounts`][i] = formatUnits(
+              currentDenormAmount.mul(ratio).div(currentRatio),
+              token.decimals
+            );
+            console.log(
+              types[ratioType],
+              i,
+              this[`${types[ratioType]}Amounts`][i]
+            );
+          }
+        });
       });
     }
   }

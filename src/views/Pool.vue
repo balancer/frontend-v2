@@ -20,65 +20,39 @@
             </a>
           </h1>
           <div v-if="pool && !loading && !registry.loading">
-            <Block title="Controller">
-              <div v-if="pool.tokenizer">
-                <div class="d-flex">
-                  <div class="flex-auto">
-                    Name
-                  </div>
-                  {{ pool.tokenizer.name }}
-                </div>
-                <div class="d-flex">
-                  <div class="flex-auto">
-                    Total supply
-                  </div>
-                  {{
-                    _numeral(
-                      _units(
-                        pool.tokenizer.totalSupply,
-                        pool.tokenizer.decimals
-                      )
-                    )
-                  }}
-                  {{ pool.tokenizer.symbol }}
-                </div>
-              </div>
-            </Block>
-            <Block title="Trading strategy">
+            <Block title="Overview">
               <div class="d-flex">
                 <div class="flex-auto">
-                  {{ pool.strategy.name }}
-                  ({{ pool.strategy.type }})
+                  Pool token name
                 </div>
-                <User :address="pool.strategy.address" />
+                {{ pool.tokenizer.name }}
+                <a @click="addToken" class="ml-1 mb-n1 mr-n1">
+                  <Icon name="plus" size="22" />
+                </a>
+              </div>
+              <div class="d-flex">
+                <div class="flex-auto">
+                  Total supply
+                </div>
+                {{
+                  _numeral(
+                    _units(pool.tokenizer.totalSupply, pool.tokenizer.decimals)
+                  )
+                }}
+                {{ pool.tokenizer.symbol }}
+              </div>
+              <div class="d-flex">
+                <div class="flex-auto">
+                  Pool type
+                </div>
+                {{ pool.strategy.name }}
+                ({{ pool.strategy.type }})
               </div>
               <div v-if="pool.strategy.swapFee" class="d-flex">
                 <div class="flex-auto">
                   Swap fee
                 </div>
                 {{ _numeral(pool.strategy.swapFeePercent) }}%
-              </div>
-              <div v-if="pool.strategy.totalTokens" class="d-flex">
-                <div class="flex-auto">
-                  Total tokens
-                </div>
-                {{ _numeral(pool.strategy.totalTokens) }}
-              </div>
-              <div v-if="pool.strategy.weightsPercent" class="d-flex">
-                <div class="flex-auto">
-                  Weights
-                </div>
-                <div>
-                  <span
-                    v-for="(weight, i) in pool.strategy.weightsPercent"
-                    :key="i"
-                  >
-                    {{ _numeral(weight) }}%
-                    <span v-if="i + 1 !== pool.strategy.weightsPercent.length"
-                      >/</span
-                    >
-                  </span>
-                </div>
               </div>
             </Block>
             <BlockPoolTokens
@@ -158,6 +132,7 @@ export default {
         );
         console.log(tx);
         await this.loadPool();
+        this.notify('You did it!');
       } catch (e) {
         console.log(e);
       }
@@ -190,9 +165,27 @@ export default {
         );
         console.log(tx);
         await this.loadPool();
+        this.notify('You did it!');
       } catch (e) {
         console.log(e);
       }
+    },
+    async addToken() {
+      const tokens = this.getTokens();
+      const address = this.pool.tokenizer.address;
+      // @ts-ignore
+      await this.$auth.provider.sendAsync({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address,
+            symbol: tokens[address].symbol,
+            decimals: tokens[address].decimals
+          }
+        },
+        id: Math.round(Math.random() * 100000)
+      });
     }
   },
   async created() {

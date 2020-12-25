@@ -81,7 +81,7 @@ export async function getPools(
         pool.tokens
       ]);
     } else if (pool.strategyType === 1) {
-      multi.call(`${id}.strategy.amp`, address, 'getAmplification');
+      // multi.call(`${id}.strategy.amp`, address, 'getAmplification');
     }
     set(pools, `${id}.tokenizer.address`, pool.strategyAddress);
     multi.call(`${id}.tokenizer.name`, pool.strategyAddress, 'name');
