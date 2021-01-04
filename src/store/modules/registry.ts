@@ -18,7 +18,7 @@ const state = {
 
 const getters = {
   getTokens: (state, getters, rootState) => (query: any = {}) => {
-    const { q, addresses } = query;
+    const { q, addresses, not } = query;
     const currentTokenlist = state.tokenlists[state.currentTokenlist] || {};
     let tokens = clone(currentTokenlist.tokens || []);
     const injected = Object.fromEntries(
@@ -72,6 +72,10 @@ const getters = {
       );
     }
 
+    if (not) {
+      tokens = tokens.filter(token => !not.includes(token.address));
+    }
+
     return Object.fromEntries(tokens.map(token => [token.address, token]));
   },
   getCurrentTokenlist: state => {
@@ -120,12 +124,14 @@ const actions = {
     await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
     commit('REGISTRY_SET', { loading: false, loaded: true });
     dispatch('getBalances');
+    dispatch('getAllowances');
     dispatch('loadPrices');
   },
   setTokenlist: ({ commit, dispatch }, name) => {
     lsSet('tokenlist', name);
     commit('REGISTRY_SET', { currentTokenlist: name });
     dispatch('getBalances');
+    dispatch('getAllowances');
     dispatch('loadPrices');
   },
   injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
@@ -142,6 +148,7 @@ const actions = {
     );
     commit('REGISTRY_SET', { injected });
     dispatch('getBalances', tokens);
+    dispatch('getAllowances', { tokens });
     dispatch('loadPrices', tokens);
   }
 };

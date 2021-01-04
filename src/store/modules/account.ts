@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import { getAllowances, getBalances } from '@/utils/balancer/utils/tokens';
+import constants from '@/utils/balancer/constants';
 
 const state = {
   balances: {},
@@ -9,8 +10,20 @@ const state = {
 };
 
 const getters = {
-  getAllowances: () => required => {
-    return required;
+  getRequiredAllowances: state => query => {
+    const tokens = query.tokens;
+    const dst = query.dst || constants.vault;
+    const requiredAllowances = {};
+    Object.entries(tokens).forEach(([token, allowance]) => {
+      if (
+        !state.allowances[dst] ||
+        !state.allowances[dst][token.toLowerCase()] ||
+        state.allowances[dst][token.toLowerCase()].lt(allowance)
+      ) {
+        requiredAllowances[token] = allowance;
+      }
+    });
+    return requiredAllowances;
   }
 };
 
@@ -32,20 +45,22 @@ const actions = {
     );
     commit('ACCOUNT_SET', { balances, loading: false });
   },
-  getAllowances: async ({ commit, rootGetters, rootState }, tokens?) => {
+  getAllowances: async ({ commit, rootGetters, rootState }, payload) => {
     const account = rootState.web3.account;
-    tokens = tokens || rootGetters.getTokens();
+    const tokens = payload?.tokens || rootGetters.getTokens();
     if (!account || Object.keys(tokens).length === 0) return;
-    const dst = account;
+    const dst = payload?.dst || constants.vault;
     const network = rootState.web3.network.key;
     commit('ACCOUNT_SET', { loading: true });
-    const allowances = await getAllowances(
+    const dstAllowances = await getAllowances(
       network,
       getProvider(network),
       account,
       dst,
       Object.values(tokens).map((token: any) => token.address)
     );
+    const allowances = state.allowances;
+    allowances[dst] = { ...dstAllowances, ...allowances[dst] };
     commit('ACCOUNT_SET', { allowances, loading: false });
   }
 };

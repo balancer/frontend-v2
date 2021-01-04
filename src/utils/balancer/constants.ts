@@ -13,7 +13,7 @@ export default {
     },
     1: {
       type: '1',
-      name: 'Pegged pool'
+      name: 'Same price pool'
     }
   }
 };

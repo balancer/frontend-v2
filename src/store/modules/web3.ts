@@ -74,6 +74,7 @@ const actions = {
       auth.web3 = new Web3Provider(auth.provider);
       await dispatch('loadProvider');
       dispatch('getBalances');
+      dispatch('getAllowances');
     }
     commit('SET', { authLoading: false });
   },
@@ -90,6 +91,7 @@ const actions = {
           commit('HANDLE_CHAIN_CHANGED', parseInt(formatUnits(chainId, 0)));
           dispatch('resetAccount');
           dispatch('getBalances');
+          dispatch('getAllowances');
         });
         auth.provider.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
@@ -97,6 +99,7 @@ const actions = {
             dispatch('resetAccount');
             await dispatch('loadProvider');
             dispatch('getBalances');
+            dispatch('getAllowances');
           }
         });
         auth.provider.on('disconnect', async () => {

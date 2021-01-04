@@ -30,7 +30,7 @@ function formatPool(pool) {
       break;
     }
     case 1: {
-      pool.strategy.name = 'Pegged pool';
+      pool.strategy.name = 'Same price pool';
       pool.strategy.weightsPercent = pool.tokens.map(
         () => 100 / pool.tokens.length
       );

@@ -125,6 +125,7 @@
     <div v-if="form.strategyType" class="col-12 col-lg-4 float-left">
       <Block title="Actions">
         <UiButton
+          v-if="Object.keys(requiredAllowances).length > 0"
           @click="onApprove"
           :disabled="!$auth.isAuthenticated"
           class="d-block width-full mb-2"
@@ -132,6 +133,7 @@
           Approve
         </UiButton>
         <UiButton
+          v-else
           @click="onSubmit"
           :disabled="!$auth.isAuthenticated"
           :loading="loading"
@@ -157,7 +159,7 @@
           q = '';
         "
         @inputSearch="q = $event"
-        :tokens="getTokens({ q })"
+        :tokens="getTokens({ q, not: form.tokens })"
         :tokenlist="getCurrentTokenlist"
       />
       <ModalSelectTokenlist
@@ -205,16 +207,28 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getTokens', 'getCurrentTokenlist', 'getTokenlists']),
+    ...mapGetters([
+      'getTokens',
+      'getCurrentTokenlist',
+      'getTokenlists',
+      'getRequiredAllowances'
+    ]),
     tokens() {
       return this.getTokens();
+    },
+    requiredAllowances() {
+      return this.getRequiredAllowances({
+        tokens: Object.fromEntries(
+          this.params[1].map((token, i) => [token, this.params[2][i] || '0'])
+        )
+      });
     },
     params() {
       const initialBPT = parseUnits(this.form.initialBPT || '0').toString();
       const tokens = this.form.tokens;
-      const amounts = this.form.amounts.map((amount, i) =>
+      const amounts = this.form.tokens.map((token, i) =>
         parseUnits(
-          amount || '0',
+          this.form.amounts[i] || '0',
           this.tokens[this.form.tokens[i]].decimals
         ).toString()
       );
@@ -278,7 +292,7 @@ export default {
         const tx = await approveTokens(
           this.$auth.web3,
           constants.vault,
-          this.form.tokens
+          Object.keys(this.requiredAllowances)
         );
         console.log(tx);
       } catch (e) {
