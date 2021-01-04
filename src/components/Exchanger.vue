@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { parseUnits, formatUnits } from '@ethersproject/units';
+import PoolAdapter from '@/utils/balancer/adapters/pool';
 
 export default {
   props: {
@@ -75,39 +75,21 @@ export default {
       });
     },
     onInput(type, index) {
-      if (this[`${type}Amounts`][index].trim() === '') {
-        this.sendAmounts = this.sendTokens.map(() => '');
-        this.receiveAmounts = this.receiveTokens.map(() => '');
-        return;
-      }
-
-      const currentTokenAddress = this[`${type}Tokens`][index];
-      const currentToken = this.tokens[currentTokenAddress];
       const currentAmount = this[`${type}Amounts`][index];
-      const currentDenormAmount = parseUnits(
-        currentAmount,
-        currentToken.decimals
+      const adapter = new PoolAdapter(
+        this.tokens,
+        this.sendTokens,
+        this.receiveTokens,
+        this.sendRatios,
+        this.receiveRatios
       );
-      const currentRatio = this[`${type}Ratios`][index];
-
-      const types = ['send', 'receive'];
-      [this.sendRatios, this.receiveRatios].forEach((ratios, ratioType) => {
-        ratios.forEach((ratio, i) => {
-          if (i !== index || type !== types[ratioType]) {
-            const tokenAddress = this[`${types[ratioType]}Tokens`][i];
-            const token = this.tokens[tokenAddress];
-            this[`${types[ratioType]}Amounts`][i] = formatUnits(
-              currentDenormAmount.mul(ratio).div(currentRatio),
-              token.decimals
-            );
-            console.log(
-              types[ratioType],
-              i,
-              this[`${types[ratioType]}Amounts`][i]
-            );
-          }
-        });
-      });
+      const { sendAmounts, receiveAmounts } = adapter.calcAmountsWith(
+        type,
+        index,
+        currentAmount
+      );
+      this.sendAmounts = sendAmounts;
+      this.receiveAmounts = receiveAmounts;
     }
   }
 };
