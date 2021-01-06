@@ -125,7 +125,7 @@
     <div v-if="form.strategyType" class="col-12 col-lg-4 float-left">
       <Block title="Actions">
         <UiButton
-          v-if="Object.keys(requiredAllowances).length > 0"
+          v-if="!hasAllowed && Object.keys(requiredAllowances).length > 0"
           @click="onApprove"
           :disabled="!$auth.isAuthenticated"
           class="d-block width-full mb-2"
@@ -191,6 +191,7 @@ export default {
       q: '',
       loading: false,
       strategies: Object.values(constants.strategies),
+      hasAllowed: false,
       form: {
         strategyType: null,
         initialBPT: '',
@@ -248,7 +249,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setTokenlist', 'notify', 'watchTx']),
+    ...mapActions(['setTokenlist', 'notify', 'watchTx', 'getAllowances']),
     addToken(token) {
       this.form.weights.push('');
       this.form.tokens.push(token);
@@ -295,6 +296,7 @@ export default {
           Object.keys(this.requiredAllowances)
         );
         console.log(tx);
+        this.hasAllowed = true;
       } catch (e) {
         console.log(e);
       }

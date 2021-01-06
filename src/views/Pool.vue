@@ -19,7 +19,10 @@
               />
             </a>
           </h1>
-          <div v-if="pool && !loading && !registry.loading">
+          <div v-if="loading || registry.loading">
+            <UiLoading />
+          </div>
+          <div v-else>
             <Block title="Overview">
               <div class="d-flex">
                 <div class="flex-auto">
@@ -70,6 +73,8 @@
         <BlockPoolActions
           @joinPool="onJoinPool"
           @exitPool="onExitPool"
+          @approve="onApprove"
+          :hasAllowed="hasAllowed"
           :tokens="getTokens()"
           :pool="pool"
         />
@@ -83,13 +88,16 @@ import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
 import { exitPool, getPool, joinPool } from '@/utils/balancer/utils/pools';
+import { approveTokens } from '@/utils/balancer/utils/tokens';
+import constants from '@/utils/balancer/constants';
 
 export default {
   data() {
     return {
       id: this.$route.params.id,
       loading: false,
-      pool: false
+      pool: false,
+      hasAllowed: false
     };
   },
   computed: {
@@ -106,6 +114,20 @@ export default {
         getProvider(this.web3.network.key),
         this.id
       );
+    },
+    async onApprove(data) {
+      try {
+        const tx = await approveTokens(
+          this.$auth.web3,
+          constants.vault,
+          Object.keys(data)
+        );
+        console.log(tx);
+
+        this.hasAllowed = true;
+      } catch (e) {
+        console.log(e);
+      }
     },
     async onJoinPool(data) {
       this.tokens = this.getTokens();
@@ -191,10 +213,7 @@ export default {
   async created() {
     this.loading = true;
     await this.loadPool();
-    await this.injectTokens([
-      ...this.pool.tokens,
-      this.pool.tokenizer?.address || undefined
-    ]);
+    await this.injectTokens([...this.pool.tokens, this.pool.tokenizer.address]);
     this.loading = false;
   }
 };

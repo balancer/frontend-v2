@@ -43,17 +43,27 @@
         </div>
       </UiButton>
     </div>
-    <UiButton @click="onSubmit" class="button--submit width-full">
+    <UiButton
+      v-if="requireAllowance && Object.keys(requiredAllowances).length > 0"
+      @click="onApprove"
+      class="button--submit width-full"
+    >
+      Approve
+    </UiButton>
+    <UiButton v-else @click="onSubmit" class="button--submit width-full">
       {{ submit }}
     </UiButton>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { parseUnits } from '@ethersproject/units';
 import PoolAdapter from '@/utils/balancer/adapters/pool';
 
 export default {
   props: {
+    requireAllowance: Boolean,
     tokens: Object,
     sendTokens: Array,
     sendRatios: Array,
@@ -67,12 +77,30 @@ export default {
       receiveAmounts: []
     };
   },
+  computed: {
+    ...mapGetters(['getRequiredAllowances']),
+    requiredAllowances() {
+      const tokens = Object.fromEntries(
+        this.sendTokens.map((token, i) => {
+          const amount = this.sendAmounts?.[i] || '0';
+          return [
+            token,
+            parseUnits(amount, this.tokens[token].decimals).toString()
+          ];
+        })
+      );
+      return this.getRequiredAllowances({ tokens });
+    }
+  },
   methods: {
     onSubmit() {
       this.$emit('submit', {
         sendAmounts: this.sendAmounts,
         receiveAmounts: this.receiveAmounts
       });
+    },
+    onApprove() {
+      this.$emit('approve', this.requiredAllowances);
     },
     onInput(type, index) {
       const currentAmount = this[`${type}Amounts`][index];

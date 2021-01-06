@@ -14,15 +14,17 @@ const getters = {
     const tokens = query.tokens;
     const dst = query.dst || constants.vault;
     const requiredAllowances = {};
-    Object.entries(tokens).forEach(([token, allowance]) => {
+    Object.entries(tokens).forEach(([token, allowance]: any) => {
       if (
-        !state.allowances[dst] ||
-        !state.allowances[dst][token.toLowerCase()] ||
-        state.allowances[dst][token.toLowerCase()].lt(allowance)
+        allowance !== '0' &&
+        (!state.allowances[dst] ||
+          !state.allowances[dst][token.toLowerCase()] ||
+          state.allowances[dst][token.toLowerCase()].lt(allowance))
       ) {
         requiredAllowances[token] = allowance;
       }
     });
+    console.log('Required allowances', requiredAllowances);
     return requiredAllowances;
   }
 };

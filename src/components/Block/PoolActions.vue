@@ -22,12 +22,14 @@
       <Exchanger
         :key="currentSide"
         v-if="currentSide === 0"
+        :requireAllowance="!hasAllowed"
         :tokens="tokens"
         :sendTokens="pool.tokens"
         :sendRatios="pool.tokenBalances"
         :receiveTokens="[pool.tokenizer.address]"
         :receiveRatios="[pool.tokenizer.totalSupply]"
         @submit="$emit('joinPool', $event)"
+        @approve="$emit('approve', $event)"
         :submit="'Buy'"
       />
       <Exchanger
@@ -49,7 +51,8 @@
 export default {
   props: {
     tokens: Object,
-    pool: Object
+    pool: Object,
+    hasAllowed: Boolean
   },
   data() {
     return {
