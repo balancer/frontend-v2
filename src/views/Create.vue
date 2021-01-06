@@ -96,7 +96,13 @@
                     required
                   />
                 </UiButton>
-                <UiButton class="d-flex width-full px-3">
+                <UiButton
+                  :class="{
+                    'border-red':
+                      parseFloat(form.amounts[i]) > tokens[token].balance
+                  }"
+                  class="d-flex width-full px-3"
+                >
                   <span class="mr-2 text-gray">Amount</span>
                   <input
                     v-model="form.amounts[i]"

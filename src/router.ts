@@ -15,7 +15,7 @@ const routes: Array<RouteConfig> = [
   { path: '/settings', name: 'settings', component: Settings },
   { path: '/vault', name: 'vault', component: Vault },
   { path: '/create', name: 'create', component: Create },
-  { path: '/claim', name: 'claim', component: Claim },
+  { path: '/claim/:address', name: 'claim', component: Claim },
   { path: '/*', name: 'error-404', beforeEnter: (to, from, next) => next('/') }
 ];
 

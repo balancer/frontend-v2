@@ -8,6 +8,9 @@
       <UiButton
         v-for="(token, i) in sendTokens"
         :key="token"
+        :class="{
+          'border-red': parseFloat(sendAmounts[i]) > tokens[token].balance
+        }"
         class="d-flex mb-2 width-full px-3"
       >
         <input
