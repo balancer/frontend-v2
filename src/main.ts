@@ -15,9 +15,6 @@ import i18n from '@/i18n';
 import '@/auth';
 import '@/style.scss';
 
-import { MULTICALL } from '@snapshot-labs/snapshot.js/src/utils';
-MULTICALL['8545'] = '0x566131e85d46cc7BBd0ce5C6587E9912Dc27cDAc';
-
 Vue.use(infiniteScroll);
 Vue.use(VueClipboard);
 Vue.use(TextareaAutosize);
