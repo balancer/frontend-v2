@@ -40,7 +40,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
+import getProvider from '@/utils/provider';
 import Vault from '@/utils/balancer/vault';
 import { getPools } from '@/utils/balancer/utils/pools';
 

@@ -41,7 +41,7 @@
 
 <script>
 import { call } from '@snapshot-labs/snapshot.js/src/utils';
-import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
+import getProvider from '@/utils/provider';
 import { abi } from '@/utils/balancer/abi/Vault.json';
 import constants from '@/utils/balancer/constants';
 

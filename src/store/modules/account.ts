@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
+import getProvider from '@/utils/provider';
 import { getAllowances, getBalances } from '@/utils/balancer/utils/tokens';
 import constants from '@/utils/balancer/constants';
 

@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue';
-import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
 import { formatUnits } from '@ethersproject/units';
-import networks from '@snapshot-labs/snapshot.js/src/networks.json';
+import getProvider from '@/utils/provider';
+import networks from '@/utils/networks.json';
 import store from '@/store';
 
 const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';

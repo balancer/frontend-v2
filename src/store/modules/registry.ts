@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { formatUnits } from '@ethersproject/units';
-import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
+import getProvider from '@/utils/provider';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';
 import { loadTokenlist } from '@/utils/tokenlists';
@@ -33,6 +33,7 @@ const getters = {
 
     tokens = tokens.map(token => {
       token.balance = 0;
+      token.balanceDenorm = '0';
       return token;
     });
 
@@ -53,10 +54,8 @@ const getters = {
     if (rootState.web3.account) {
       tokens = tokens.map(token => {
         const address = token.address.toLowerCase();
-        token.balance = formatUnits(
-          rootState.account.balances[address] || new BN(0),
-          token.decimals
-        );
+        token.balanceDenorm = rootState.account.balances[address] || new BN(0);
+        token.balance = formatUnits(token.balanceDenorm, token.decimals);
         token.value = token.balance * token.price;
         return token;
       });

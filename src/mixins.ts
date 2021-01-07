@@ -2,7 +2,7 @@ import { mapState } from 'vuex';
 import numeral from 'numeral';
 import get from 'lodash/get';
 import prettyMs from 'pretty-ms';
-import networks from '@snapshot-labs/snapshot.js/src/networks.json';
+import networks from '@/utils/networks.json';
 import store from '@/store';
 import { shorten } from '@/utils';
 import { formatUnits } from '@ethersproject/units';

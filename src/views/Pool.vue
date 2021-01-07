@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
+import getProvider from '@/utils/provider';
 import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
 import { exitPool, getPool, joinPool } from '@/utils/balancer/utils/pools';

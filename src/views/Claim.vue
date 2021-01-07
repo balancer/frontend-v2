@@ -32,7 +32,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import getProvider from '@snapshot-labs/snapshot.js/src/utils/provider';
+import getProvider from '@/utils/provider';
 import { claimWeeks, getPendingClaims } from '@/utils/balancer/claim';
 
 export default {
