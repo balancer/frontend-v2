@@ -3,7 +3,9 @@
     <div class="mb-3">
       <div class="mb-2">
         Send
-        <UiLabel class="float-right">Max</UiLabel>
+        <a @click="onMax">
+          <UiLabel class="float-right">Max</UiLabel>
+        </a>
       </div>
       <UiButton
         v-for="(token, i) in sendTokens"
@@ -119,6 +121,18 @@ export default {
         index,
         currentAmount
       );
+      this.sendAmounts = sendAmounts;
+      this.receiveAmounts = receiveAmounts;
+    },
+    onMax() {
+      const adapter = new PoolAdapter(
+        this.tokens,
+        this.sendTokens,
+        this.receiveTokens,
+        this.sendRatios,
+        this.receiveRatios
+      );
+      const { sendAmounts, receiveAmounts } = adapter.calcAmountsMax();
       this.sendAmounts = sendAmounts;
       this.receiveAmounts = receiveAmounts;
     }

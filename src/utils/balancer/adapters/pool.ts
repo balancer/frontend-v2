@@ -2,6 +2,32 @@ import { formatUnits, parseUnits } from '@ethersproject/units';
 import Adapter from '@/utils/balancer/adapters/adapter';
 
 export default class PoolAdapter extends Adapter {
+  calcAmountsMax() {
+    let max: any = {
+      sendAmounts: [],
+      receiveAmounts: []
+    };
+
+    this.sendTokens.forEach((token, i) => {
+      let hasBalance = true;
+      const amounts = this.calcAmountsWith(
+        'send',
+        i,
+        this.tokens[token].balance
+      );
+      amounts.sendAmounts.forEach((amount, index) => {
+        if (parseFloat(amount) > this.tokens[this.sendTokens[index]].balance)
+          hasBalance = false;
+      });
+      if (hasBalance) {
+        const sendFirstTokenMax = parseFloat(max.sendAmounts[i] || '0');
+        if (parseFloat(amounts.sendAmounts[i]) > sendFirstTokenMax)
+          max = amounts;
+      }
+    });
+    return max;
+  }
+
   calcAmountsWith(type, index, currentAmount) {
     if (currentAmount.trim() === '')
       return {
