@@ -23,6 +23,7 @@
     "@primer/css": "^14.4.0",
     "@snapshot-labs/lock": "github:snapshot-labs/lock#master",
     "@snapshot-labs/snapshot.js": "github:snapshot-labs/snapshot.js#master",
+    "@toruslabs/torus-embed": "^1.9.4",
     "@vue/cli-plugin-babel": "^4.4.0",
     "@vue/cli-plugin-eslint": "^4.4.0",
     "@vue/cli-plugin-typescript": "^4.4.0",
