@@ -10,7 +10,32 @@
     </div>
     <div>
       <div class="col-12 col-lg-8 float-left pr-0 pr-lg-5">
-        <h1 v-text="'Claim BAL'" class="mb-4" />
+        <h1 class="mb-4">Claim BAL for {{ _shorten(address) }}</h1>
+        <Block :slim="true" title="Pending claims">
+          <div v-if="loading" class="text-center py-3">
+            <UiLoading />
+          </div>
+          <div
+            v-for="(pendingClaim, i) in pendingClaims"
+            :key="i"
+            class="d-flex border-bottom last-child-border-0 px-4 py-3"
+          >
+            <div class="flex-auto">
+              <a
+                :href="
+                  `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${parseInt(
+                    pendingClaim.id
+                  ) + 20}/_totals.json`
+                "
+                target="_blank"
+              >
+                Week {{ parseInt(pendingClaim.id) + 20 }}
+                <Icon name="external-link" class="ml-1" />
+              </a>
+            </div>
+            <div>{{ _numeral(pendingClaim.amount) }} BAL</div>
+          </div>
+        </Block>
       </div>
     </div>
     <div class="col-12 col-lg-4 float-left">
