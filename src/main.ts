@@ -21,6 +21,9 @@ Vue.use(TextareaAutosize);
 Vue.use(PortalVue);
 Vue.use(VueApexCharts);
 
+import { MULTICALL } from '@snapshot-labs/snapshot.js/src/utils';
+MULTICALL['17'] = '0x566131e85d46cc7BBd0ce5C6587E9912Dc27cDAc';
+
 const requireComponent = require.context('@/components', true, /[\w-]+\.vue$/);
 requireComponent.keys().forEach(fileName => {
   const componentConfig = requireComponent(fileName);
