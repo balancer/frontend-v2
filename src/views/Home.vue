@@ -71,18 +71,18 @@
     </div>
     <portal to="modal">
       <ModalSelectToken
-        :open="modal.selectToken"
-        :loading="registry.loading"
-        @close="modal.selectToken = false"
-        @select="addToken"
-        @selectTokenlist="
+	      :open="modal.selectToken"
+	      :loading="registry.loading"
+	      @close="modal.selectToken = false"
+	      @select="addToken"
+	      @selectTokenlist="
           modal.selectToken = false;
           modal.selectTokenlist = true;
           q = '';
         "
-        @inputSearch="q = $event"
-        :tokens="getTokens({ q, not: form.tokens })"
-        :tokenlist="getCurrentTokenlist"
+	      @inputSearch="onTokenSearch"
+	      :tokens="getTokens({ q, not: form.tokens })"
+	      :tokenlist="getCurrentTokenlist"
       />
       <ModalSelectTokenlist
         :open="modal.selectTokenlist"
@@ -145,23 +145,27 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['injectTokens', 'setTokenlist']),
-    addToken(token) {
-      this.form.tokens.push(token);
-    },
-    removeToken(i) {
-      this.form.tokens = this.form.tokens.filter((token, index) => index !== i);
-    },
-    selectTokenlist(i) {
-      if (i) this.setTokenlist(i);
-      this.q = '';
-      this.modal.selectToken = true;
-    },
-    loadMore() {
-      this.limit += 8;
-    },
-    async loadPools() {
-      const query = clone(this.$route.query);
+	  ...mapActions(['injectTokens', 'setTokenlist']),
+	  addToken(token) {
+		  this.form.tokens.push(token);
+	  },
+	  removeToken(i) {
+		  this.form.tokens = this.form.tokens.filter((token, index) => index !== i);
+	  },
+	  onTokenSearch(event) {
+		  this.q = event;
+		  this.injectTokens([event.trim()]);
+	  },
+	  selectTokenlist(i) {
+		  if (i) this.setTokenlist(i);
+		  this.q = '';
+		  this.modal.selectToken = true;
+	  },
+	  loadMore() {
+		  this.limit += 8;
+	  },
+	  async loadPools() {
+		  const query = clone(this.$route.query);
       if (query.tokens && !Array.isArray(query.tokens))
         query.tokens = [query.tokens];
       this.form = { ...this.form, ...query };

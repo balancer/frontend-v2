@@ -155,18 +155,18 @@
     </div>
     <portal to="modal">
       <ModalSelectToken
-        :open="modal.selectToken"
-        :loading="registry.loading"
-        @close="modal.selectToken = false"
-        @select="addToken"
-        @selectTokenlist="
+	      :open="modal.selectToken"
+	      :loading="registry.loading"
+	      @close="modal.selectToken = false"
+	      @select="addToken"
+	      @selectTokenlist="
           modal.selectToken = false;
           modal.selectTokenlist = true;
           q = '';
         "
-        @inputSearch="q = $event"
-        :tokens="getTokens({ q, not: form.tokens })"
-        :tokenlist="getCurrentTokenlist"
+	      @inputSearch="onTokenSearch"
+	      :tokens="getTokens({ q, not: form.tokens })"
+	      :tokenlist="getCurrentTokenlist"
       />
       <ModalSelectTokenlist
         :open="modal.selectTokenlist"
@@ -255,32 +255,42 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setTokenlist', 'notify', 'watchTx', 'getAllowances']),
-    addToken(token) {
-      this.form.weights.push('');
-      this.form.tokens.push(token);
-    },
-    removeToken(i) {
-      this.form.tokens = this.form.tokens.filter((token, index) => index !== i);
-      this.form.weights = this.form.weights.filter(
-        (token, index) => index !== i
-      );
-    },
-    selectTokenlist(i) {
-      if (i) this.setTokenlist(i);
-      this.q = '';
-      this.modal.selectToken = true;
-    },
-    async onSubmit() {
-      this.loading = true;
-      try {
-        const createStrategies = [
-          createConstantProductPool,
-          createStablecoinPool
-        ];
-        const tx = await createStrategies[this.form.strategyType](
-          this.$auth.web3,
-          this.params
+	  ...mapActions([
+		  'setTokenlist',
+		  'notify',
+		  'watchTx',
+		  'getAllowances',
+		  'injectTokens'
+	  ]),
+	  addToken(token) {
+		  this.form.weights.push('');
+		  this.form.tokens.push(token);
+	  },
+	  removeToken(i) {
+		  this.form.tokens = this.form.tokens.filter((token, index) => index !== i);
+		  this.form.weights = this.form.weights.filter(
+			  (token, index) => index !== i
+		  );
+	  },
+	  selectTokenlist(i) {
+		  if (i) this.setTokenlist(i);
+		  this.q = '';
+		  this.modal.selectToken = true;
+	  },
+	  onTokenSearch(event) {
+		  this.q = event;
+		  this.injectTokens([event.trim()]);
+	  },
+	  async onSubmit() {
+		  this.loading = true;
+		  try {
+			  const createStrategies = [
+				  createConstantProductPool,
+				  createStablecoinPool
+			  ];
+			  const tx = await createStrategies[this.form.strategyType](
+				  this.$auth.web3,
+				  this.params
         );
         this.loading = false;
         console.log('Tx', tx);

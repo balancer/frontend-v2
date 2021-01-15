@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import { formatUnits } from '@ethersproject/units';
+import {formatUnits} from '@ethersproject/units';
+import {isAddress} from '@ethersproject/address';
 import getProvider from '@/utils/provider';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';
@@ -134,7 +135,7 @@ const actions = {
     dispatch('loadPrices');
   },
   injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
-    if (tokens.length === 0) return;
+    if (tokens.length === 0 || !isAddress(tokens[0])) return;
     const injected = clone(state.injected);
     const network = rootState.web3.network.key;
     const tokensMetadata = await getTokensMetadata(
