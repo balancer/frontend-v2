@@ -7,6 +7,7 @@ import VueClipboard from 'vue-clipboard2';
 import Jazzicon from 'vue-jazzicon';
 import upperFirst from 'lodash/upperFirst';
 import camelCase from 'lodash/camelCase';
+import VueApexCharts from 'vue-apexcharts';
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
@@ -19,6 +20,7 @@ Vue.use(infiniteScroll);
 Vue.use(VueClipboard);
 Vue.use(TextareaAutosize);
 Vue.use(PortalVue);
+Vue.use(VueApexCharts);
 
 const requireComponent = require.context('@/components', true, /[\w-]+\.vue$/);
 requireComponent.keys().forEach(fileName => {
@@ -29,6 +31,7 @@ requireComponent.keys().forEach(fileName => {
   Vue.component(componentName, componentConfig.default || componentConfig);
 });
 
+Vue.component('apexchart', VueApexCharts);
 Vue.component('jazzicon', Jazzicon);
 Vue.mixin(mixins);
 Vue.directive('autofocus', autofocus);

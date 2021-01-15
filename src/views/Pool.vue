@@ -24,6 +24,7 @@
           <UiLoading />
         </div>
         <div v-else>
+          <Chart class="mb-4" />
           <Block title="Overview">
             <div class="d-flex">
               <div class="flex-auto">
