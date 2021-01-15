@@ -6,25 +6,27 @@
           <UiButton @click="modal.selectToken = true" class="mb-3 width-full">
             Token(s)
           </UiButton>
-          <div v-for="(token, i) in form.tokens" :key="i" class="d-flex py-1">
-            <Token
-              :token="tokens[token]"
-              :symbol="true"
-              class="text-white flex-auto"
-            />
-            <a @click="removeToken(i)"
-              ><Icon name="close" size="16" class="py-1 text-gray"
-            /></a>
+          <div v-if="!registry.loading">
+            <div v-for="(token, i) in form.tokens" :key="i" class="d-flex py-1">
+              <Token
+                :token="tokens[token]"
+                :symbol="true"
+                class="text-white flex-auto"
+              />
+              <a @click="removeToken(i)"
+                ><Icon name="close" size="16" class="py-1 text-gray"
+              /></a>
+            </div>
           </div>
         </Block>
-        <div class="d-flex flex-column">
+        <p class="d-flex flex-column">
           <router-link :to="{ name: 'create' }">
             Create pool
           </router-link>
           <router-link :to="{ name: 'vault' }">
             Vault
           </router-link>
-        </div>
+        </p>
       </div>
       <div class="col-12 col-lg-9 float-left pl-0 pl-lg-5">
         <div class="px-4 px-md-0 mb-3 d-flex">
@@ -42,12 +44,12 @@
                 <UiLoading />
               </div>
               <div v-if="!registry.loading">
-                <div
-                  v-if="Object.keys(filteredPools).length === 0"
-                  class="pt-4 pb-3 px-4"
+                <p
+                  v-if="!loading && Object.keys(filteredPools).length === 0"
+                  class="px-4 pt-4 pb-3"
                 >
                   There aren't any matches for your search.
-                </div>
+                </p>
                 <div
                   v-else
                   v-for="pool in filteredPools"
@@ -99,6 +101,7 @@ import { mapGetters, mapActions } from 'vuex';
 import getProvider from '@/utils/provider';
 import Vault from '@/utils/balancer/vault';
 import { getPools } from '@/utils/balancer/utils/pools';
+import { clone } from '@/utils';
 
 export default {
   data() {
@@ -115,6 +118,12 @@ export default {
         selectTokenlist: false
       }
     };
+  },
+  watch: {
+    'form.tokens': function() {
+      const query = clone(this.form);
+      this.$router.push({ query });
+    }
   },
   computed: {
     ...mapGetters(['getTokens', 'getCurrentTokenlist', 'getTokenlists']),
@@ -149,6 +158,10 @@ export default {
     }
   },
   async created() {
+    const query = clone(this.$route.query);
+    if (query.tokens && !Array.isArray(query.tokens))
+      query.tokens = [query.tokens];
+    this.form = { ...this.form, ...query };
     this.loading = true;
     const vault = new Vault(
       this.web3.network.key,
