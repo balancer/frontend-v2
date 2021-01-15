@@ -120,6 +120,10 @@ export default {
     };
   },
   watch: {
+    'web3.network.key': function() {
+      this.pools = {};
+      this.loadPools();
+    },
     'form.tokens': function() {
       const query = clone(this.form);
       this.$router.push({ query });
@@ -155,35 +159,38 @@ export default {
     },
     loadMore() {
       this.limit += 8;
+    },
+    async loadPools() {
+      const query = clone(this.$route.query);
+      if (query.tokens && !Array.isArray(query.tokens))
+        query.tokens = [query.tokens];
+      this.form = { ...this.form, ...query };
+      this.loading = true;
+      const vault = new Vault(
+        this.web3.network.key,
+        getProvider(this.web3.network.key)
+      );
+      const totalPools = await vault.getTotalPools();
+      console.log('Total pools', totalPools);
+      const poolIds = await vault.getPoolIds(0, totalPools);
+      console.log('Pool ids', poolIds);
+      const pools = await getPools(
+        this.web3.network.key,
+        getProvider(this.web3.network.key),
+        poolIds.slice(0)
+      );
+      const tokens = [];
+      Object.values(pools).forEach(pool =>
+        pool.tokens.forEach(token => tokens.push(token))
+      );
+      await this.injectTokens(tokens);
+      this.pools = pools;
+      console.log('Multicall', this.pools);
+      this.loading = false;
     }
   },
   async created() {
-    const query = clone(this.$route.query);
-    if (query.tokens && !Array.isArray(query.tokens))
-      query.tokens = [query.tokens];
-    this.form = { ...this.form, ...query };
-    this.loading = true;
-    const vault = new Vault(
-      this.web3.network.key,
-      getProvider(this.web3.network.key)
-    );
-    const totalPools = await vault.getTotalPools();
-    console.log('Total pools', totalPools);
-    const poolIds = await vault.getPoolIds(0, totalPools);
-    console.log('Pool ids', poolIds);
-    const pools = await getPools(
-      this.web3.network.key,
-      getProvider(this.web3.network.key),
-      poolIds.slice(0)
-    );
-    const tokens = [];
-    Object.values(pools).forEach(pool =>
-      pool.tokens.forEach(token => tokens.push(token))
-    );
-    await this.injectTokens(tokens);
-    this.pools = pools;
-    console.log('Multicall', this.pools);
-    this.loading = false;
+    await this.loadPools();
   }
 };
 </script>
