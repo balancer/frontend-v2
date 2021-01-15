@@ -13,7 +13,7 @@ export default {
     },
     1: {
       type: '1',
-      name: 'Same price pool'
+      name: 'Stable pool'
     }
   }
 };
