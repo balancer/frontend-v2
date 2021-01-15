@@ -5,17 +5,17 @@
       class="bg-red overflow-hidden"
       style="height: 4px;"
     ></div>
-    <nav id="topnav" class="border-bottom width-full bg-black">
-      <Container>
-        <div class="d-flex flex-items-center" style="height: 78px;">
-          <div class="flex-auto d-flex flex-items-center">
-            <router-link
-              :to="{ name: 'home' }"
-              class="d-flex flex-items-center"
-            >
-              <img
-                v-if="app.skin === 'light'"
-                src="~@/assets/logo-light.svg"
+    <nav id="topnav" class="border-bottom width-full block-bg">
+	    <Container>
+		    <div class="d-flex flex-items-center" style="height: 78px;">
+			    <div class="flex-auto d-flex flex-items-center">
+				    <router-link
+					    :to="{ name: 'home' }"
+					    class="d-flex flex-items-center"
+				    >
+					    <img
+						    v-if="app.skin === 'light'"
+						    src="~@/assets/logo-light.svg"
                 height="30"
                 class="mr-2"
               />
@@ -47,7 +47,7 @@
                   v-if="totalPending"
                   class="button--submit hide-sm hide-md mr-2"
                 >
-                  Claim {{ _numeral(totalPending) }} BAL
+	                ✨ {{ _numeral(totalPending) }} BAL
                 </UiButton>
               </router-link>
               <UiButton
@@ -137,11 +137,17 @@ export default {
         provider,
         this.web3.account
       );
-      this.pendingClaims = pendingClaims;
-      this.totalPending = pendingClaims
-        .map(claim => parseFloat(claim.amount))
-        .reduce((a, b) => a + b, 0);
+	    this.pendingClaims = pendingClaims;
+	    this.totalPending = pendingClaims
+		    .map(claim => parseFloat(claim.amount))
+		    .reduce((a, b) => a + b, 0);
     }
   }
 };
 </script>
+
+<style scoped lang="scss">
+#topnav {
+	box-shadow: 0 0 12px -6px var(--border-color);
+}
+</style>

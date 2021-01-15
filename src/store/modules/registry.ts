@@ -4,10 +4,10 @@ import {isAddress} from '@ethersproject/address';
 import getProvider from '@/utils/provider';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';
-import { loadTokenlist } from '@/utils/tokenlists';
-import { TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
-import { clone, lsSet } from '@/utils';
-import { getTokensMetadata } from '@/utils/balancer/utils/tokens';
+import {loadTokenlist} from '@/utils/tokenlists';
+import {TOKEN_LIST_DEFAULT, TOKEN_LISTS} from '@/constants/tokenlists';
+import {clone, lsSet} from '@/utils';
+import {getTokensMetadata} from '@/utils/balancer/utils/tokens';
 
 const state = {
   currentTokenlist: TOKEN_LIST_DEFAULT,

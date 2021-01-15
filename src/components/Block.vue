@@ -1,6 +1,6 @@
 <template>
   <div
-    class="border-top border-bottom border-md rounded-0 rounded-md-2 mb-4 block-bg"
+	  class="block border-top border-bottom border-md rounded-0 rounded-md-2 mb-4 block-bg"
   >
     <h4
       v-if="title"
@@ -26,6 +26,12 @@
 
 <script>
 export default {
-  props: ['title', 'counter', 'slim', 'icon']
+	props: ['title', 'counter', 'slim', 'icon']
 };
 </script>
+
+<style scoped lang="scss">
+.block {
+	box-shadow: 0 0 12px -6px var(--border-color);
+}
+</style>

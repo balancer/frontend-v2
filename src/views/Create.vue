@@ -291,16 +291,16 @@ export default {
 			  const tx = await createStrategies[this.form.strategyType](
 				  this.$auth.web3,
 				  this.params
-        );
-        this.loading = false;
-        console.log('Tx', tx);
-        await this.watchTx(tx);
-        const receipt = await tx.wait();
-        console.log('Receipt', receipt);
-        this.notify('Pool created!');
-        const poolId = receipt.events?.[0]?.topics?.[2];
-        console.log('Pool id', poolId);
-      } catch (e) {
+			  );
+			  this.loading = false;
+			  console.log('Tx', tx);
+			  await this.watchTx(tx);
+			  const receipt = await tx.wait();
+			  console.log('Receipt', receipt);
+			  this.notify('Pool created!');
+			  const poolId = receipt.events?.[0]?.topics?.[2];
+			  console.log('Pool id', poolId);
+		  } catch (e) {
         this.loading = false;
       }
     },
