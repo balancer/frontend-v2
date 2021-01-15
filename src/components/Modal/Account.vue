@@ -39,6 +39,13 @@
             {{ injected.name }}
           </UiButton>
         </a>
+        <UiButton
+          @click="connectorsLimit = 1e3"
+          v-if="invisibleConnectorsCount"
+          class="width-full"
+        >
+          See more ({{ invisibleConnectorsCount }})
+        </UiButton>
       </div>
     </div>
     <div v-else>
@@ -81,7 +88,7 @@ export default {
   props: ['open'],
   data() {
     return {
-      connectors,
+      connectorsLimit: 3,
       step: null,
       path:
         'https://raw.githubusercontent.com/snapshot-labs/lock/master/connectors/assets'
@@ -90,11 +97,22 @@ export default {
   watch: {
     open() {
       this.step = null;
+      this.connectorsLimit = 3;
     }
   },
   computed: {
     injected() {
       return getInjected();
+    },
+    connectors() {
+      return Object.fromEntries(
+        Object.entries(connectors).slice(0, this.connectorsLimit)
+      );
+    },
+    invisibleConnectorsCount() {
+      return (
+        Object.keys(connectors).length - Object.keys(this.connectors).length
+      );
     }
   },
   methods: {
