@@ -40,6 +40,16 @@
           </div>
           <div :key="web3.account">
             <template v-if="$auth.isAuthenticated">
+              <router-link
+                :to="{ name: 'claim', params: { address: web3.account } }"
+              >
+                <UiButton
+                  v-if="totalPending"
+                  class="button--submit hide-sm hide-md mr-2"
+                >
+                  Claim {{ _numeral(totalPending) }} BAL
+                </UiButton>
+              </router-link>
               <UiButton
                 @click="modalOpen = true"
                 class="button-outline"
@@ -48,7 +58,7 @@
                 <Avatar
                   :address="web3.account"
                   size="16"
-                  class="mr-0 mr-sm-2 mr-md-2 mr-lg-2 mr-xl-2 ml-n1"
+                  class="mr-0 mr-sm-2 mr-md-2 mr-lg-2 mr-xl-2 ml-n1 mr-n1"
                 />
                 <span v-if="web3.name" v-text="web3.name" class="hide-sm" />
                 <span v-else v-text="_shorten(web3.account)" class="hide-sm" />
@@ -94,19 +104,43 @@
 
 <script>
 import { mapActions } from 'vuex';
+import getProvider from '@/utils/provider';
+import { getPendingClaims } from '@/utils/balancer/claim';
 
 export default {
   data() {
     return {
       modalOpen: false,
-      modalAboutOpen: false
+      modalAboutOpen: false,
+      pendingClaims: false,
+      totalPending: false
     };
+  },
+  watch: {
+    'web3.account': function() {
+      this.pendingClaims = false;
+      this.totalPending = false;
+      if (this.web3.account) this.getPendingClaims();
+    }
   },
   methods: {
     ...mapActions(['login']),
     async handleLogin(connector) {
       this.modalOpen = false;
       await this.login(connector);
+    },
+    async getPendingClaims() {
+      const network = '1' || this.web3.network.key;
+      const provider = getProvider(network);
+      const pendingClaims = await getPendingClaims(
+        network,
+        provider,
+        this.web3.account
+      );
+      this.pendingClaims = pendingClaims;
+      this.totalPending = pendingClaims
+        .map(claim => parseFloat(claim.amount))
+        .reduce((a, b) => a + b, 0);
     }
   }
 };

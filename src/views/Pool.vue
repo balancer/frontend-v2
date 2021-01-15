@@ -19,51 +19,51 @@
               />
             </a>
           </h1>
-          <div v-if="loading || registry.loading">
-            <UiLoading />
-          </div>
-          <div v-else>
-            <Block title="Overview">
-              <div class="d-flex">
-                <div class="flex-auto">
-                  Pool token name
-                </div>
-                {{ pool.tokenizer.name }}
-                <a @click="addToken" class="ml-1 mb-n1 mr-n1">
-                  <Icon name="plus" size="22" />
-                </a>
+        </div>
+        <div v-if="loading || registry.loading" class="px-4 px-md-0">
+          <UiLoading />
+        </div>
+        <div v-else>
+          <Block title="Overview">
+            <div class="d-flex">
+              <div class="flex-auto">
+                Pool token name
               </div>
-              <div class="d-flex">
-                <div class="flex-auto">
-                  Total supply
-                </div>
-                {{
-                  _numeral(
-                    _units(pool.tokenizer.totalSupply, pool.tokenizer.decimals)
-                  )
-                }}
-                {{ pool.tokenizer.symbol }}
+              {{ pool.tokenizer.name }}
+              <a @click="addToken" class="ml-1 mb-n1 mr-n1">
+                <Icon name="plus" size="22" />
+              </a>
+            </div>
+            <div class="d-flex">
+              <div class="flex-auto">
+                Total supply
               </div>
-              <div class="d-flex">
-                <div class="flex-auto">
-                  Pool type
-                </div>
-                {{ pool.strategy.name }}
-                ({{ pool.strategy.type }})
+              {{
+                _numeral(
+                  _units(pool.tokenizer.totalSupply, pool.tokenizer.decimals)
+                )
+              }}
+              {{ pool.tokenizer.symbol }}
+            </div>
+            <div class="d-flex">
+              <div class="flex-auto">
+                Pool type
               </div>
-              <div v-if="pool.strategy.swapFee" class="d-flex">
-                <div class="flex-auto">
-                  Swap fee
-                </div>
-                {{ _numeral(pool.strategy.swapFeePercent) }}%
+              {{ pool.strategy.name }}
+              ({{ pool.strategy.type }})
+            </div>
+            <div v-if="pool.strategy.swapFee" class="d-flex">
+              <div class="flex-auto">
+                Swap fee
               </div>
-            </Block>
-            <BlockPoolTokens
-              :tokens="getTokens({ addresses: pool.tokens })"
-              :tokenBalances="pool.tokenBalances"
-              :tokenWeights="pool.strategy.weightsPercent || []"
-            />
-          </div>
+              {{ _numeral(pool.strategy.swapFeePercent) }}%
+            </div>
+          </Block>
+          <BlockPoolTokens
+            :tokens="getTokens({ addresses: pool.tokens })"
+            :tokenBalances="pool.tokenBalances"
+            :tokenWeights="pool.strategy.weightsPercent || []"
+          />
         </div>
       </div>
       <div

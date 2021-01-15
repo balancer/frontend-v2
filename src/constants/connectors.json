@@ -10,6 +10,10 @@
       "apiKey": "pk_live_9CE8FD92E54684ED"
     }
   },
+  "torus": {
+    "id": "torus",
+    "name": "Torus"
+  },
   "portis": {
     "id": "portis",
     "name": "Portis",

@@ -1,11 +1,12 @@
-import { soliditySha3, toWei } from 'web3-utils';
+// import { soliditySha3, toWei } from 'web3-utils';
+import { toWei } from 'web3-utils';
 import {
   sendTransaction,
   call,
   ipfsGet
 } from '@snapshot-labs/snapshot.js/src/utils';
 import gateways from '@snapshot-labs/snapshot.js/src/gateways.json';
-import { loadTree } from '@/utils/balancer/claim/merkle';
+// import { loadTree } from '@/utils/balancer/claim/merkle';
 import { abi } from './MerkleRedeem.json';
 
 const gateway = process.env.VUE_APP_IPFS_NODE || gateways[0];
@@ -75,14 +76,12 @@ export async function getPendingClaims(network, provider, address) {
   const reports = await getReports(snapshot, pending);
 
   return Object.entries(reports).map((report: any) => {
-    const merkleTree = loadTree(report[1]);
+    // const merkleTree = loadTree(report[1]);
     return {
       id: report[0],
       amount: report[1][address],
-      amountDenorm: toWei(report[1][address]),
-      proof: merkleTree.getHexProof(
-        soliditySha3(address, toWei(report[1][address]))
-      )
+      amountDenorm: toWei(report[1][address])
+      // proof: merkleTree.getHexProof(soliditySha3(address, toWei(report[1][address])))
     };
   });
 }

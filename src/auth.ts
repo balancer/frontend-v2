@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { LockPlugin } from '@snapshot-labs/lock/plugins/vue';
 import injected from '@snapshot-labs/lock/connectors/injected';
 import fortmatic from '@snapshot-labs/lock/connectors/fortmatic';
+import torus from '@snapshot-labs/lock/connectors/torus';
 import portis from '@snapshot-labs/lock/connectors/portis';
 import walletconnect from '@snapshot-labs/lock/connectors/walletconnect';
 import walletlink from '@snapshot-labs/lock/connectors/walletlink';
@@ -11,6 +12,7 @@ const options: any = { connectors: [] };
 const connectorClasses = {
   injected,
   fortmatic,
+  torus,
   portis,
   walletconnect,
   walletlink
