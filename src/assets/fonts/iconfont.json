@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "11982163",
+      "name": "toggle_off",
+      "font_class": "toggle_off",
+      "unicode": "e9ad",
+      "unicode_decimal": 59821
+    },
+    {
+      "icon_id": "15617211",
+      "name": "toggle-on",
+      "font_class": "toggle-on",
+      "unicode": "e8b2",
+      "unicode_decimal": 59570
+    },
+    {
+      "icon_id": "1393793",
+      "name": "threedots",
+      "font_class": "threedots",
+      "unicode": "e730",
+      "unicode_decimal": 59184
+    },
+    {
       "icon_id": "13896012",
       "name": "moon",
       "font_class": "moon",

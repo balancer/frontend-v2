@@ -30,28 +30,18 @@
           </span>
         </a>
       </div>
-      <div v-else-if="loading" class="d-block text-center p-3">
-        <UiLoading />
-      </div>
-      <div v-else class="d-block text-center p-3">
-        Oops, we can't find any tokens
-      </div>
+	    <div v-else-if="loading" class="d-block text-center p-3">
+		    <UiLoading/>
+	    </div>
+	    <div v-else class="d-block text-center p-3">
+		    Oops, we can't find any tokens
+	    </div>
     </div>
-    <template v-if="tokenlist.name" slot="footer">
-      <div class="text-left text-white">
-        <img
-          v-if="tokenlist.logoURI"
-          :src="_url(tokenlist.logoURI)"
-          class="circle bg-white v-align-middle mr-1"
-          width="24"
-          height="24"
-        />
-        {{ tokenlist.name }}
-        <a @click="$emit('selectTokenlist')" class="float-right">
-          Change
-        </a>
-      </div>
-    </template>
+	  <template slot="footer">
+		  <a @click="$emit('selectTokenlist')">
+			  Manage lists
+		  </a>
+	  </template>
   </UiModal>
 </template>
 

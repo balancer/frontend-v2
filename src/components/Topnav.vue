@@ -16,16 +16,16 @@
 					    <img
 						    v-if="app.skin === 'light'"
 						    src="~@/assets/logo-light.svg"
-                height="30"
-                class="mr-2"
-              />
-              <img
-                v-else
-                src="~@/assets/logo-dark.svg"
-                height="30"
-                class="mr-2"
-              />
-              <span
+						    height="30"
+						    class="mr-2"
+					    />
+					    <img
+						    v-else
+						    src="~@/assets/logo-dark.svg"
+						    height="30"
+						    class="mr-2"
+					    />
+					    <span
                 class="mr-1"
                 style="font-size: 24px; margin-top: 4px;"
                 v-text="'balancer'"
@@ -130,13 +130,13 @@ export default {
       await this.login(connector);
     },
     async getPendingClaims() {
-      const network = '1' || this.web3.network.key;
-      const provider = getProvider(network);
-      const pendingClaims = await getPendingClaims(
-        network,
-        provider,
-        this.web3.account
-      );
+	    const network = '1' || this.web3.network.key;
+	    const provider = getProvider(network);
+	    const pendingClaims = await getPendingClaims(
+		    network,
+		    provider,
+		    this.web3.account
+	    );
 	    this.pendingClaims = pendingClaims;
 	    this.totalPending = pendingClaims
 		    .map(claim => parseFloat(claim.amount))

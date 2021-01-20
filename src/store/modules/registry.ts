@@ -1,15 +1,19 @@
 import Vue from 'vue';
 import {formatUnits} from '@ethersproject/units';
-import {isAddress} from '@ethersproject/address';
+import {getAddress, isAddress} from '@ethersproject/address';
 import getProvider from '@/utils/provider';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';
 import {loadTokenlist} from '@/utils/tokenlists';
 import {TOKEN_LIST_DEFAULT, TOKEN_LISTS} from '@/constants/tokenlists';
-import {clone, lsSet} from '@/utils';
+import {clone, lsGet, lsSet} from '@/utils';
 import {getTokensMetadata} from '@/utils/balancer/utils/tokens';
 
+const defaultActiveLists = {};
+defaultActiveLists[TOKEN_LIST_DEFAULT] = true;
+
 const state = {
+  activeLists: lsGet('tokenlists', defaultActiveLists),
   currentTokenlist: TOKEN_LIST_DEFAULT,
   tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
   injected: [],
@@ -19,14 +23,22 @@ const state = {
 
 const getters = {
   getTokens: (state, getters, rootState) => (query: any = {}) => {
-    const { q, addresses, not } = query;
-    const currentTokenlist = state.tokenlists[state.currentTokenlist] || {};
-    let tokens = clone(currentTokenlist.tokens || []);
-    const injected = Object.fromEntries(
-      clone(state.injected).map(token => [token.address, token])
+    const {q, addresses, not} = query;
+
+    const activeLists = Object.keys(state.tokenlists)
+      .filter(name => state.activeLists[name])
+      .reverse();
+
+    let tokens: any = {};
+    clone(state.injected).forEach(
+      token => (tokens[getAddress(token.address)] = token)
     );
-    tokens = Object.fromEntries(tokens.map(token => [token.address, token]));
-    tokens = Object.values({ ...injected, ...tokens });
+    activeLists.forEach(name => {
+      clone(state.tokenlists[name])?.tokens?.map(
+        token => (tokens[getAddress(token.address)] = token)
+      );
+    });
+    tokens = Object.values(tokens);
 
     tokens = tokens.filter(
       token => token.chainId === rootState.web3.network.chainId
@@ -144,12 +156,24 @@ const actions = {
       tokens
     );
     Object.values(tokensMetadata).map((tokenMetadata: any) =>
-      injected.push({ ...tokenMetadata, ...{ injected: true } })
+      injected.push({...tokenMetadata, ...{injected: true}})
     );
-    commit('REGISTRY_SET', { injected });
+    commit('REGISTRY_SET', {injected});
     dispatch('getBalances', tokens);
-    dispatch('getAllowances', { tokens });
+    dispatch('getAllowances', {tokens});
     dispatch('loadPrices', tokens);
+  },
+  toggleList: ({commit}, name) => {
+    const activeLists = clone(state.activeLists);
+    if (activeLists[name]) {
+      delete activeLists[name];
+    } else {
+      activeLists[name] = true;
+    }
+    if (Object.keys(activeLists).length > 0) {
+      lsSet('tokenlists', activeLists);
+      commit('REGISTRY_SET', {activeLists});
+    }
   }
 };
 

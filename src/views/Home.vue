@@ -22,80 +22,79 @@
 					      :token="tokens[token]"
 					      :symbol="true"
 					      class="text-white flex-auto"
-              />
-              <a @click="removeToken(i)"
-                ><Icon name="close" size="16" class="py-1 text-gray"
-              /></a>
-            </div>
-          </div>
-        </Block>
-      </div>
-      <div class="col-12 col-lg-9 float-left pl-0 pl-lg-5">
-	      <div class="px-4 px-md-0 d-flex">
-		      <div class="flex-auto">
-			      <div class="d-flex flex-items-center flex-auto">
-				      <h1 class="mb-3">Explore</h1>
+				      />
+				      <a @click="removeToken(i)"
+				      >
+					      <Icon name="close" size="16" class="py-1 text-gray"
+					      />
+				      </a>
 			      </div>
-			      <Block
-				      :slim="true"
-				      v-infinite-scroll="loadMore"
-				      infinite-scroll-distance="0"
-				      infinite-scroll-disabled="loading"
-				      class="overflow-hidden"
-			      >
-				      <div v-if="loading || registry.loading" class="text-center p-4">
-					      <UiLoading/>
-				      </div>
-				      <div v-if="!registry.loading">
-					      <p
-                  v-if="!loading && Object.keys(filteredPools).length === 0"
-                  class="px-4 pt-4 pb-3"
-                >
-                  There aren't any matches for your search.
-                </p>
-                <div
-	                v-else
-	                v-for="pool in filteredPools"
-	                :key="pool.id"
-	                class="overflow-hidden border-bottom last-child-border-0"
-                >
-	                <router-link
-		                :to="{ name: 'pool', params: { id: pool.id } }"
-		                class="d-block overflow-hidden"
-	                >
-		                <BlockPool :pool="pool" :tokens="tokens"/>
-	                </router-link>
-                </div>
-				      </div>
-			      </Block>
+		      </div>
+	      </Block>
+      </div>
+	    <div class="col-12 col-lg-9 float-left pl-0 pl-lg-5">
+		    <div class="px-4 px-md-0 d-flex">
+			    <div class="flex-auto">
+				    <div class="d-flex flex-items-center flex-auto">
+					    <h1 class="mb-3">Explore</h1>
+				    </div>
+				    <Block
+					    :slim="true"
+					    v-infinite-scroll="loadMore"
+					    infinite-scroll-distance="0"
+					    infinite-scroll-disabled="loading"
+					    class="overflow-hidden"
+				    >
+					    <div v-if="loading || registry.loading" class="text-center p-4">
+						    <UiLoading/>
+					    </div>
+					    <div v-if="!registry.loading">
+						    <p
+							    v-if="!loading && Object.keys(filteredPools).length === 0"
+							    class="px-4 pt-4 pb-3"
+						    >
+							    There aren't any matches for your search.
+						    </p>
+						    <div
+							    v-else
+							    v-for="pool in filteredPools"
+							    :key="pool.id"
+							    class="overflow-hidden border-bottom last-child-border-0"
+						    >
+							    <router-link
+								    :to="{ name: 'pool', params: { id: pool.id } }"
+								    class="d-block overflow-hidden"
+							    >
+								    <BlockPool :pool="pool" :tokens="tokens"/>
+							    </router-link>
+						    </div>
+					    </div>
+				    </Block>
           </div>
         </div>
       </div>
     </div>
-    <portal to="modal">
-	    <ModalSelectToken
-		    :open="modal.selectToken"
-		    :loading="registry.loading"
-		    @close="modal.selectToken = false"
-		    @select="addToken"
-		    @selectTokenlist="
-          modal.selectToken = false;
-          modal.selectTokenlist = true;
-          q = '';
-        "
-		    @inputSearch="onTokenSearch"
-		    :tokens="getTokens({ q, not: form.tokens })"
-		    :tokenlist="getCurrentTokenlist"
-	    />
-      <ModalSelectTokenlist
-        :open="modal.selectTokenlist"
-        @close="modal.selectTokenlist = false"
-        @back="selectTokenlist"
-        @select="selectTokenlist"
-        @inputSearch="q = $event"
-        :tokenlists="getTokenlists({ q })"
-      />
-    </portal>
+	  <portal to="modal">
+		  <ModalSelectToken
+			  :open="modal.selectToken"
+			  :loading="registry.loading"
+			  @close="modal.selectToken = false"
+			  @select="addToken"
+			  @selectTokenlist="modalSelectLists"
+			  @inputSearch="onTokenSearch"
+			  :tokens="getTokens({ q, not: form.tokens })"
+			  :tokenlist="getCurrentTokenlist"
+		  />
+		  <ModalSelectTokenlist
+			  :open="modal.selectTokenlist"
+			  @close="modal.selectTokenlist = false"
+			  @back="modalSelectToken"
+			  @select="toggleList($event)"
+			  @inputSearch="q = $event"
+			  :tokenlists="getTokenlists({ q })"
+			  :activeLists="registry.activeLists"
+		  />
+	  </portal>
   </Container>
 </template>
 
@@ -148,7 +147,17 @@ export default {
     }
   },
   methods: {
-	  ...mapActions(['injectTokens', 'setTokenlist']),
+	  ...mapActions(['injectTokens', 'setTokenlist', 'toggleList']),
+	  modalSelectToken() {
+		  this.modal.selectToken = true;
+		  this.modal.selectTokenlist = false;
+		  this.q = '';
+	  },
+	  modalSelectLists() {
+		  this.modal.selectToken = false;
+		  this.modal.selectTokenlist = true;
+		  this.q = '';
+	  },
 	  addToken(token) {
 		  this.form.tokens.push(token);
 	  },
@@ -158,11 +167,6 @@ export default {
 	  onTokenSearch(event) {
 		  this.q = event;
 		  this.injectTokens([event.trim()]);
-	  },
-	  selectTokenlist(i) {
-		  if (i) this.setTokenlist(i);
-		  this.q = '';
-		  this.modal.selectToken = true;
 	  },
 	  loadMore() {
 		  this.limit += 8;
@@ -179,16 +183,16 @@ export default {
 		  );
 		  const totalPools = await vault.getTotalPools();
 		  console.log('Total pools', totalPools);
-      const poolIds = await vault.getPoolIds(0, totalPools);
-      console.log('Pool ids', poolIds);
-      const pools = await getPools(
-        this.web3.network.key,
-        getProvider(this.web3.network.key),
-        poolIds.slice(0)
-      );
-      const tokens = [];
-      Object.values(pools).forEach(pool =>
-        pool.tokens.forEach(token => tokens.push(token))
+		  const poolIds = await vault.getPoolIds(0, totalPools);
+		  console.log('Pool ids', poolIds);
+		  const pools = await getPools(
+			  this.web3.network.key,
+			  getProvider(this.web3.network.key),
+			  poolIds.slice(0)
+		  );
+		  const tokens = [];
+		  Object.values(pools).forEach(pool =>
+			  pool.tokens.forEach(token => tokens.push(token))
       );
       await this.injectTokens(tokens);
       this.pools = pools;
