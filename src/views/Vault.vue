@@ -1,42 +1,41 @@
 <template>
-  <Container :slim="true">
-    <div class="px-4 px-md-0">
-      <h1 v-text="'Vault'" class="mb-4" />
-    </div>
-    <div>
-      <div class="col-12 col-lg-8 float-left pr-0 pr-lg-5">
-        <Block :slim="true" title="Trusted operator reporters">
-          <div
-            v-for="(operatorReporter, i) in trustedOperatorReporters"
-            :key="i"
-            class="px-4 py-3 border-bottom last-child-border-0"
-          >
-            {{ operatorReporter }}
-          </div>
-        </Block>
-        <Block :slim="true" title="Trusted operators">
-          <div
-            v-for="(operator, i) in trustedOperators"
-            :key="i"
-            class="px-4 py-3 border-bottom last-child-border-0"
-          >
-            {{ operator }}
-          </div>
-          <div
-            v-if="trustedOperators.length === 0"
-            class="px-4 py-3 border-bottom last-child-border-0"
-          >
-            Oops, we can't find any trusted operators
-          </div>
-        </Block>
-        <Block title="Protocol fees">
-          <div>Flash loan fee: {{ protocolFlashLoanFee }}</div>
-          <div>Swap fee: {{ protocolSwapFee }}</div>
-          <div>Withdraw fee: {{ protocolWithdrawFee }}</div>
-        </Block>
-      </div>
-    </div>
-  </Container>
+	<Layout class="mt-4">
+		<template slot="content-left">
+			<div class="px-4 px-md-0">
+				<Breadcrumb/>
+				<h1 v-text="'Vault'" class="mb-4"/>
+			</div>
+			<Block :slim="true" title="Trusted operator reporters">
+				<div
+					v-for="(operatorReporter, i) in trustedOperatorReporters"
+					:key="i"
+					class="px-4 py-3 border-bottom last-child-border-0"
+				>
+					{{ operatorReporter }}
+				</div>
+			</Block>
+			<Block :slim="true" title="Trusted operators">
+				<div
+					v-for="(operator, i) in trustedOperators"
+					:key="i"
+					class="px-4 py-3 border-bottom last-child-border-0"
+				>
+					{{ operator }}
+				</div>
+				<div
+					v-if="trustedOperators.length === 0"
+					class="px-4 py-3 border-bottom last-child-border-0"
+				>
+					Oops, we can't find any trusted operators
+				</div>
+			</Block>
+			<Block title="Protocol fees">
+				<div>Flash loan fee: {{ protocolFlashLoanFee }}</div>
+				<div>Swap fee: {{ protocolSwapFee }}</div>
+				<div>Withdraw fee: {{ protocolWithdrawFee }}</div>
+			</Block>
+		</template>
+	</Layout>
 </template>
 
 <script>

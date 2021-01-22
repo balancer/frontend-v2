@@ -1,47 +1,41 @@
 <template>
-  <Sticky class="mb-4">
-    <div
-      v-if="web3.network.unknown"
-      class="bg-red overflow-hidden"
-      style="height: 4px;"
-    ></div>
-    <nav id="topnav" class="border-bottom width-full block-bg">
-	    <Container>
-		    <div class="d-flex flex-items-center" style="height: 78px;">
-			    <div class="flex-auto d-flex flex-items-center">
-				    <router-link
-					    :to="{ name: 'home' }"
-					    class="d-flex flex-items-center"
-				    >
-					    <img
-						    v-if="app.skin === 'light'"
-						    src="~@/assets/logo-light.svg"
-						    height="30"
-						    class="mr-2"
-					    />
-					    <img
-						    v-else
-						    src="~@/assets/logo-dark.svg"
-						    height="30"
-						    class="mr-2"
-					    />
-					    <span
-                class="mr-1"
-                style="font-size: 24px; margin-top: 4px;"
-                v-text="'balancer'"
-              />
-            </router-link>
-            <span
-              v-if="web3.network.key !== '1'"
-              style="font-size: 19px; padding-top: 6px;"
-              class="pl-1 pr-2 text-gray"
-              v-text="web3.network.shortName"
-            />
-          </div>
-          <div :key="web3.account">
-            <template v-if="$auth.isAuthenticated">
-              <router-link
-                :to="{ name: 'claim', params: { address: web3.account } }"
+  <Sticky>
+	  <div
+		  v-if="web3.network.unknown"
+		  class="bg-red overflow-hidden"
+		  style="height: 4px;"
+	  />
+	  <nav id="topnav" class="border-bottom width-full block-bg">
+		  <Container>
+			  <div class="d-flex flex-items-center" style="height: 78px;">
+				  <div class="flex-auto d-flex flex-items-center">
+					  <router-link
+						  :to="{ name: 'home' }"
+						  class="d-flex flex-items-center pr-2"
+					  >
+						  <img
+							  v-if="app.skin === 'light'"
+							  src="~@/assets/logo-light.svg"
+							  height="30"
+							  class="mr-2"
+						  />
+						  <img
+							  v-else
+							  src="~@/assets/logo-dark.svg"
+							  height="30"
+							  class="mr-2"
+						  />
+						  <span
+							  class="mr-1"
+							  style="font-size: 24px; margin-top: 4px;"
+							  v-text="'balancer'"
+						  />
+					  </router-link>
+				  </div>
+				  <div :key="web3.account">
+					  <template v-if="$auth.isAuthenticated">
+						  <router-link
+							  :to="{ name: 'claim', params: { address: web3.account } }"
               >
                 <UiButton
                   v-if="totalPending"
