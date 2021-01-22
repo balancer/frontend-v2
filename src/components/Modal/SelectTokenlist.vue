@@ -25,8 +25,8 @@
 		      class="d-block border-bottom last-child-border-0 p-3 highlight"
 	      >
 		      <Icon
-			      :name="activeLists[i] ? 'toggle-on' : 'toggle_off'"
-			      :class="activeLists[i] ? 'text-green' : 'border-color'"
+			      :name="tokenlist.active ? 'toggle-on' : 'toggle_off'"
+			      :class="tokenlist.active ? 'text-green' : 'border-color'"
 			      size="32"
 			      class="mt-n1 mr-3 float-left"
 		      />
@@ -40,7 +40,7 @@
 		      <span class="text-gray float-right ml-1">
             {{ _numeral(tokenlist.tokens.length) }} tokens
           </span>
-        </a>
+	      </a>
       </div>
       <div v-else class="d-block text-center p-3">
         Oops, we can't find any list
@@ -59,8 +59,7 @@
 export default {
   props: {
 	  open: Boolean,
-	  tokenlists: Object,
-	  activeLists: Object
+	  tokenlists: Object
   },
   methods: {
     onSelect(name) {

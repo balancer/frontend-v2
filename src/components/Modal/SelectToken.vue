@@ -19,13 +19,13 @@
     <div>
       <div v-if="Object.keys(tokens).length > 0">
         <a
-          v-for="(token, key) in tokens"
-          :key="key"
-          @click="onSelect(token.address)"
-          class="d-block border-bottom last-child-border-0 p-3 highlight"
+	        v-for="(token, key) in tokens"
+	        :key="key"
+	        @click="onSelect(token.address)"
+	        class="d-block border-bottom last-child-border-0 p-3 highlight"
         >
-          <Token :token="token" :symbol="true" :name="true" />
-          <span class="float-right text-gray">
+	        <Token :token="token" :symbol="true" :name="true"/>
+	        <span class="float-right text-gray">
             {{ _numeral(token.balance) }}
           </span>
         </a>
