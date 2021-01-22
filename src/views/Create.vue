@@ -309,12 +309,12 @@ export default {
 				  constants.vault,
 				  Object.keys(this.requiredAllowances)
 			  );
-        console.log(tx);
-        this.hasAllowed = true;
-      } catch (e) {
-        console.log(e);
-      }
-    }
+			  console.log(tx);
+			  this.hasAllowed = true;
+		  } catch (e) {
+			  console.log(e);
+		  }
+	  }
   }
 };
 </script>

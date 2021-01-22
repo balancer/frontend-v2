@@ -36,16 +36,16 @@
 					  <template v-if="$auth.isAuthenticated">
 						  <router-link
 							  :to="{ name: 'claim', params: { address: web3.account } }"
-              >
-                <UiButton
-                  v-if="totalPending"
-                  class="button--submit hide-sm hide-md mr-2"
-                >
-	                ✨ {{ _numeral(totalPending) }} BAL
-                </UiButton>
-              </router-link>
-              <UiButton
-                @click="modalOpen = true"
+						  >
+							  <UiButton
+								  v-if="totalPending"
+								  class="button--submit hide-sm hide-md mr-2"
+							  >
+								  ✨ {{ _numeral(totalPending) }} BAL
+							  </UiButton>
+						  </router-link>
+						  <UiButton
+							  @click="modalOpen = true"
                 class="button-outline"
                 :loading="app.authLoading"
               >
