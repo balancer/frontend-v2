@@ -19,6 +19,7 @@ if (wsProvider) {
 
 const state = {
   account: null,
+  balance: false,
   name: null,
   network: networks[defaultNetwork]
 };
@@ -33,14 +34,6 @@ const mutations = {
     Vue.set(_state, 'account', null);
     Vue.set(_state, 'name', null);
     console.debug('LOGOUT');
-  },
-  LOAD_PROVIDER_REQUEST() {
-    console.debug('LOAD_PROVIDER_REQUEST');
-  },
-  LOAD_PROVIDER_SUCCESS(_state, payload) {
-    Vue.set(_state, 'account', payload.account);
-    Vue.set(_state, 'name', payload.name);
-    console.debug('LOAD_PROVIDER_SUCCESS');
   },
   LOAD_PROVIDER_FAILURE(_state, payload) {
     Vue.set(_state, 'account', null);
@@ -83,7 +76,6 @@ const actions = {
     commit('LOGOUT');
   },
   loadProvider: async ({ commit, dispatch }) => {
-    commit('LOAD_PROVIDER_REQUEST');
     try {
       if (auth.provider.removeAllListeners && !auth.provider.isTorus)
         auth.provider.removeAllListeners();
@@ -113,14 +105,17 @@ const actions = {
       ]);
       commit('HANDLE_CHAIN_CHANGED', network.chainId);
       const account = accounts.length > 0 ? accounts[0] : null;
+      const balance = await auth.web3.getBalance(account);
+      console.log('Balance', balance);
       let name;
       try {
         name = await getProvider('1').lookupAddress(account);
       } catch (e) {
         console.error(e);
       }
-      commit('LOAD_PROVIDER_SUCCESS', {
+      commit('WEB3_SET', {
         account,
+        balance,
         name
       });
     } catch (e) {

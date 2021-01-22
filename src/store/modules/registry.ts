@@ -23,7 +23,7 @@ const state = {
 
 const getters = {
   getTokens: (state, getters, rootState) => (query: any = {}) => {
-    const {q, addresses, not} = query;
+    const {q, addresses, not, withBalance} = query;
 
     const activeLists = Object.keys(state.tokenlists)
       .filter(name => state.activeLists[name])
@@ -50,17 +50,11 @@ const getters = {
       return token;
     });
 
-    if (q) {
-      tokens = tokens.filter(token =>
-        JSON.stringify([token.address, token.symbol, token.name])
-          .toLowerCase()
-          .includes(q.toLowerCase())
-      );
-    }
-
     tokens = tokens.map(token => {
       const address = token.address.toLowerCase();
-      token.price = rootState.market.prices[address] || 0;
+      token.price = rootState.market.prices[address]?.price || 0;
+      token.price24HChange =
+        rootState.market.prices[address]?.price24HChange || 0;
       return token;
     });
 
@@ -70,9 +64,21 @@ const getters = {
         token.balanceDenorm = rootState.account.balances[address] || new BN(0);
         token.balance = formatUnits(token.balanceDenorm, token.decimals);
         token.value = token.balance * token.price;
+        token.value24HChange =
+          (parseFloat(token.value) / 100) * token.price24HChange;
         return token;
       });
       tokens = orderBy(tokens, ['value', 'balance'], ['desc', 'desc']);
+    }
+
+    // Query filters
+
+    if (q) {
+      tokens = tokens.filter(token =>
+        JSON.stringify([token.address, token.symbol, token.name])
+          .toLowerCase()
+          .includes(q.toLowerCase())
+      );
     }
 
     if (addresses) {
@@ -84,9 +90,8 @@ const getters = {
       );
     }
 
-    if (not) {
-      tokens = tokens.filter(token => !not.includes(token.address));
-    }
+    if (not) tokens = tokens.filter(token => !not.includes(token.address));
+    if (withBalance) tokens = tokens.filter(token => token.value > 0);
 
     return Object.fromEntries(tokens.map(token => [token.address, token]));
   },
@@ -102,19 +107,21 @@ const getters = {
         .map((tokenlist: any) => {
           tokenlist[1].tokens = tokenlist[1].tokens
             ? tokenlist[1].tokens.filter(
-                token => token.chainId === rootState.web3.network.chainId
-              )
+              token => token.chainId === rootState.web3.network.chainId
+            )
             : [];
+          tokenlist[1].active = state.activeLists[tokenlist[0]] ? 1 : 0;
           return tokenlist;
         })
         .filter(tokenlist => tokenlist[1].tokens.length > 0)
         .filter(tokenlist =>
           q
             ? `${tokenlist[0]} ${tokenlist[1].name}`
-                .toLowerCase()
-                .includes(q.toLowerCase())
+              .toLowerCase()
+              .includes(q.toLowerCase())
             : true
         )
+        .sort((a, b): any => b[1].active - a[1].active)
     );
   }
 };
