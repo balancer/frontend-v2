@@ -91,7 +91,7 @@ const getters = {
     }
 
     if (not) tokens = tokens.filter(token => !not.includes(token.address));
-    if (withBalance) tokens = tokens.filter(token => token.value > 0);
+    if (withBalance) tokens = tokens.filter(token => token.balance > 0);
 
     return Object.fromEntries(tokens.map(token => [token.address, token]));
   },

@@ -1,15 +1,21 @@
 import Vue from 'vue';
 import getProvider from '@/utils/provider';
-import { getAllowances, getBalances } from '@/utils/balancer/utils/tokens';
+import {getAllowances, getBalances} from '@/utils/balancer/utils/tokens';
+import {getInstance} from '@snapshot-labs/lock/plugins/vue';
 import constants from '@/utils/balancer/constants';
 
 const state = {
   balances: {},
   allowances: {},
-  loading: false
+  loading: false,
+  loaded: false
 };
 
 const getters = {
+  getPortfolioValue: (state, getters, rootState, rootGetters) => () => {
+    const tokens = rootGetters.getTokens({withBalance: true});
+    return Object.values(tokens).reduce((a: any, b: any) => a + b.value, 0);
+  },
   getRequiredAllowances: state => query => {
     const tokens = query.tokens;
     const dst = query.dst || constants.vault;
@@ -31,21 +37,30 @@ const getters = {
 
 const actions = {
   resetAccount({ commit }) {
-    commit('ACCOUNT_SET', { balances: {}, allowances: {} });
+    commit('ACCOUNT_SET', {
+      balances: {},
+      allowances: {},
+      loaded: false
+    });
   },
   getBalances: async ({ commit, rootGetters, rootState }) => {
+    const auth = getInstance();
     const account = rootState.web3.account;
     const tokens = rootGetters.getTokens();
     if (!account || Object.keys(tokens).length === 0) return;
     const network = rootState.web3.network.key;
-    commit('ACCOUNT_SET', { loading: true });
-    const balances = await getBalances(
-      network,
-      getProvider(network),
-      account,
-      Object.values(tokens).map((token: any) => token.address)
-    );
-    commit('ACCOUNT_SET', { balances, loading: false });
+    commit('ACCOUNT_SET', {loading: true});
+    const [balances, etherBalance] = await Promise.all([
+      getBalances(
+        network,
+        getProvider(network),
+        account,
+        Object.values(tokens).map((token: any) => token.address)
+      ),
+      auth.web3.getBalance(account)
+    ]);
+    balances.ether = etherBalance;
+    commit('ACCOUNT_SET', {balances, loading: false, loaded: true});
   },
   getAllowances: async ({ commit, rootGetters, rootState }, payload) => {
     const account = rootState.web3.account;

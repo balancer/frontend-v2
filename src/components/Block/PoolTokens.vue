@@ -7,10 +7,10 @@
     >
       <div class="flex-auto text-white">
         <Token :token="token" :symbol="true" />
-        <span v-if="tokenWeights[i]"> {{ _numeral(tokenWeights[i]) }}% </span>
+        <span v-if="tokenWeights[i]"> {{ $n(tokenWeights[i]) }}% </span>
       </div>
       <div>
-        {{ _numeral(_units(tokenBalances[i], token.decimals)) }}
+	      {{ $n(_units(tokenBalances[i], token.decimals)) }}
       </div>
     </div>
   </Block>

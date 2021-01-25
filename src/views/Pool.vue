@@ -34,9 +34,7 @@
 							Total supply
 						</div>
 						{{
-							_numeral(
-								_units(pool.tokenizer.totalSupply, pool.tokenizer.decimals)
-							)
+							$n(_units(pool.tokenizer.totalSupply, pool.tokenizer.decimals))
 						}}
 						{{ pool.tokenizer.symbol }}
 					</div>
@@ -51,7 +49,7 @@
 						<div class="flex-auto">
 							Swap fee
 						</div>
-						{{ _numeral(pool.strategy.swapFeePercent) }}%
+						{{ $n(pool.strategy.swapFeePercent) }}%
 					</div>
 				</Block>
 				<BlockPoolTokens

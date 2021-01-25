@@ -12,7 +12,6 @@ import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
 import mixins from '@/mixins';
-import i18n from '@/i18n';
 import '@/auth';
 import '@/style.scss';
 
@@ -39,7 +38,6 @@ Vue.directive('autofocus', autofocus);
 Vue.config.productionTip = false;
 
 new Vue({
-  i18n,
   router,
   store,
   render: h => h(App)

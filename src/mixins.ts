@@ -22,9 +22,12 @@ export default {
       const diff = number * 1e3 - new Date().getTime();
       return prettyMs(diff);
     },
-    _numeral(number, format = '(0.[0]a)') {
-      if (number < 1) format = '0.[000]';
-      if (number == 0) return '-';
+    $n(number, format) {
+      if (!format) {
+        format = '(0.[0]a)';
+        if (number < 1) format = '0.[000]';
+        if (number == 0) return '-';
+      }
       return numeral(number).format(format);
     },
     _units(bn, decimals) {

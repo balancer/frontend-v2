@@ -41,21 +41,21 @@
 								  v-if="totalPending"
 								  class="button--submit hide-sm hide-md mr-2"
 							  >
-								  ✨ {{ _numeral(totalPending) }} BAL
+								  ✨ {{ $n(totalPending) }} BAL
 							  </UiButton>
 						  </router-link>
 						  <UiButton
 							  @click="modalOpen = true"
-                class="button-outline"
-                :loading="app.authLoading"
-              >
-                <Avatar
-                  :address="web3.account"
-                  size="16"
-                  class="mr-0 mr-sm-2 mr-md-2 mr-lg-2 mr-xl-2 ml-n1 mr-n1"
-                />
-                <span v-if="web3.name" v-text="web3.name" class="hide-sm" />
-                <span v-else v-text="_shorten(web3.account)" class="hide-sm" />
+							  class="button-outline"
+							  :loading="app.authLoading"
+						  >
+							  <Avatar
+								  :address="web3.account"
+								  size="16"
+								  class="mr-0 mr-sm-2 mr-md-2 mr-lg-2 mr-xl-2 ml-n1 mr-n1"
+							  />
+							  <span v-if="web3.name" v-text="web3.name" class="hide-sm"/>
+							  <span v-else v-text="_shorten(web3.account)" class="hide-sm"/>
               </UiButton>
             </template>
             <UiButton v-if="!$auth.isAuthenticated" @click="modalOpen = true">
@@ -81,9 +81,9 @@
       style="color: white;"
     >
       <UiLoading class="fill-white mr-2" />
-      <span class="d-inline-block pt-1"
-        >{{ _numeral(notifications.watch.length) }} transaction pending</span
-      >
+	    <span class="d-inline-block pt-1"
+	    >{{ $n(notifications.watch.length) }} transaction pending</span
+	    >
     </div>
     <portal to="modal">
       <ModalAccount
@@ -91,7 +91,6 @@
         @close="modalOpen = false"
         @login="handleLogin"
       />
-      <ModalAbout :open="modalAboutOpen" @close="modalAboutOpen = false" />
     </portal>
   </Sticky>
 </template>
@@ -105,7 +104,6 @@ export default {
   data() {
     return {
       modalOpen: false,
-      modalAboutOpen: false,
       pendingClaims: false,
       totalPending: false
     };

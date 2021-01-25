@@ -13,3 +13,10 @@ export const TOKEN_LISTS: string[] = [
   'tokenlist.aave.eth',
   't2crtokens.eth'
 ];
+
+export const ETHER = {
+  name: 'Ether',
+  symbol: 'ETH',
+  decimals: 18,
+  logoURI: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
+}

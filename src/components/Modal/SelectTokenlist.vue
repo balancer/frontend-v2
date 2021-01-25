@@ -38,7 +38,7 @@
 		      />
 		      {{ tokenlist.name }}
 		      <span class="text-gray float-right ml-1">
-            {{ _numeral(tokenlist.tokens.length) }} tokens
+            {{ $n(tokenlist.tokens.length) }} tokens
           </span>
 	      </a>
       </div>

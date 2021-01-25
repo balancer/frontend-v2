@@ -19,7 +19,6 @@ if (wsProvider) {
 
 const state = {
   account: null,
-  balance: false,
   name: null,
   network: networks[defaultNetwork]
 };
@@ -105,19 +104,13 @@ const actions = {
       ]);
       commit('HANDLE_CHAIN_CHANGED', network.chainId);
       const account = accounts.length > 0 ? accounts[0] : null;
-      const balance = await auth.web3.getBalance(account);
-      console.log('Balance', balance);
       let name;
       try {
         name = await getProvider('1').lookupAddress(account);
       } catch (e) {
         console.error(e);
       }
-      commit('WEB3_SET', {
-        account,
-        balance,
-        name
-      });
+      commit('WEB3_SET', {account, name});
     } catch (e) {
       commit('LOAD_PROVIDER_FAILURE', e);
       return Promise.reject();

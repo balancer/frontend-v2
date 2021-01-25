@@ -4,7 +4,7 @@
 			<h1 class="mb-3" style="font-size: 44px;">Explore pools</h1>
 			<UiButton
 				class="px-3 hide-sm hide-md width-full"
-				style="max-width: 460px;"
+				style="max-width: 380px;"
 			>
 				<Search class="width-full"/>
 			</UiButton>
