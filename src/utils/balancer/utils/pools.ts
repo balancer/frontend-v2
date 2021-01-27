@@ -51,6 +51,7 @@ export async function getPools(
   provider: any,
   poolIds: string[]
 ) {
+  console.time('getPools');
   if (poolIds.length === 0) return {};
   let multi = new Multicaller(network, provider, vaultAbi);
   let pools = {};
@@ -94,6 +95,7 @@ export async function getPools(
     );
   });
   pools = await multi.execute(pools);
+  console.timeEnd('getPools');
   return formatPools(pools);
 }
 
