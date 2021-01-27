@@ -93,14 +93,14 @@
 				>
 			</div>
 		</nav>
-    <portal to="modal">
-      <ModalAccount
-        :open="modalOpen"
-        @close="modalOpen = false"
-        @login="handleLogin"
-      />
-    </portal>
-  </Sticky>
+		<portal to="modal">
+			<ModalAccount
+				:open="modalOpen"
+				@close="modalOpen = false"
+				@login="handleLogin"
+			/>
+		</portal>
+	</Sticky>
 </template>
 
 <script>

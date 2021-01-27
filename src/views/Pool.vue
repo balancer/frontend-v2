@@ -23,26 +23,22 @@
 						<a @click="loadMarketCharts(1)" class="mr-2">
 							<UiLabel :class="marketChartsDays === 1 && 'active'"
 							>1 day
-							</UiLabel
-							>
+							</UiLabel>
 						</a>
 						<a @click="loadMarketCharts(7)" class="mr-2">
 							<UiLabel :class="marketChartsDays === 7 && 'active'"
 							>1 week
-							</UiLabel
-							>
+							</UiLabel>
 						</a>
 						<a @click="loadMarketCharts(30)" class="mr-2">
 							<UiLabel :class="marketChartsDays === 30 && 'active'"
 							>1 month
-							</UiLabel
-							>
+							</UiLabel>
 						</a>
 						<a @click="loadMarketCharts(365)" class="mr-2">
 							<UiLabel :class="marketChartsDays === 365 && 'active'"
 							>1 year
-							</UiLabel
-							>
+							</UiLabel>
 						</a>
 					</div>
 					<UiLoading
@@ -224,7 +220,7 @@ export default {
       const address = this.pool.tokenizer.address;
       // @ts-ignore
       await this.$auth.provider.sendAsync({
-        method: 'wallet_watchAsset',
+	      method: 'wallet_watchAsset',
 	      params: {
 		      type: 'ERC20',
 		      options: {
@@ -247,8 +243,8 @@ export default {
 	  }
   },
   async created() {
-    this.loading = true;
-    await this.loadPool();
+	  this.loading = true;
+	  await this.loadPool();
 	  await this.injectTokens([...this.pool.tokens, this.pool.tokenizer.address]);
 	  await this.loadMarketCharts(7);
 	  this.loading = false;

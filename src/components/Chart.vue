@@ -48,16 +48,16 @@ export default {
 				grid: {
 					// show: false
 				},
-        xaxis: {
-          floating: true,
-          axisTicks: {
-            show: false
-          },
-          crosshairs: {
-            show: true
-          },
-          axisBorder: {
-            show: false
+				xaxis: {
+					floating: true,
+					axisTicks: {
+						show: false
+					},
+					crosshairs: {
+						show: true
+					},
+					axisBorder: {
+						show: false
           },
           labels: {
             show: false
