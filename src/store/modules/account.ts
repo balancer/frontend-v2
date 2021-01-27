@@ -14,7 +14,11 @@ const state = {
 const getters = {
   getPortfolioValue: (state, getters, rootState, rootGetters) => () => {
     const tokens = rootGetters.getTokens({withBalance: true});
-    return Object.values(tokens).reduce((a: any, b: any) => a + b.value, 0);
+    const ether = rootGetters.getEther();
+    return Object.values(tokens).reduce(
+      (a: any, b: any) => a + b.value,
+      ether.value || 0
+    );
   },
   getRequiredAllowances: state => query => {
     const tokens = query.tokens;

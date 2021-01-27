@@ -5,7 +5,7 @@ import getProvider from '@/utils/provider';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';
 import {loadTokenlist} from '@/utils/tokenlists';
-import {TOKEN_LIST_DEFAULT, TOKEN_LISTS} from '@/constants/tokenlists';
+import {ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS} from '@/constants/tokenlists';
 import {clone, lsGet, lsSet} from '@/utils';
 import {getTokensMetadata} from '@/utils/balancer/utils/tokens';
 
@@ -22,6 +22,21 @@ const state = {
 };
 
 const getters = {
+  getEther: (state, getters, rootState) => () => {
+    const ether: any = ETHER;
+    ether.balance = 0;
+    ether.balanceDenorm = '0';
+    ether.price = rootState.market.prices?.ether?.price || 0;
+    ether.price24HChange = rootState.market.prices?.ether?.price24HChange || 0;
+    if (rootState.web3.account) {
+      ether.balanceDenorm = rootState.account.balances.ether || new BN(0);
+      ether.balance = formatUnits(ether.balanceDenorm, ether.decimals);
+      ether.value = ether.balance * ether.price;
+      ether.value24HChange =
+        (parseFloat(ether.value) / 100) * ether.price24HChange;
+    }
+    return ether;
+  },
   getTokens: (state, getters, rootState) => (query: any = {}) => {
     const {q, addresses, not, withBalance} = query;
 
