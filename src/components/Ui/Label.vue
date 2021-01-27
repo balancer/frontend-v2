@@ -6,14 +6,20 @@
 
 <style scoped lang="scss">
 .Label {
-  display: inline-block;
-  padding: 0 7px;
-  font-size: 14px;
-  font-weight: 500;
-  height: 22px;
-  line-height: 23px;
-  border-radius: 2em;
-  box-shadow: none;
-  color: var(--text-color);
+	display: inline-block;
+	padding: 0 7px;
+	font-size: 14px;
+	font-weight: 500;
+	height: 22px;
+	line-height: 23px;
+	border-radius: 2em;
+	box-shadow: none;
+	color: var(--text-color);
+}
+
+.active {
+	color: white;
+	background-color: var(--primary-color);
+	border-color: var(--primary-color) !important;
 }
 </style>

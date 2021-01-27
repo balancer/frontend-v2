@@ -12,57 +12,42 @@
 
 <script>
 export default {
-  data() {
-    return {
-      series: [
-        {
-          name: 'Value ($)',
-          data: [
-            10,
-            22,
-            41,
-            44,
-            35,
-            65,
-            51,
-            64,
-            49,
-            71,
-            62,
-            51,
-            69,
-            120,
-            91,
-            148
-          ]
-        }
-      ],
-      options: {
-        chart: {
-          type: 'line',
-          animations: {
-            enabled: false
-          },
-          zoom: {
-            enabled: false
-          },
-          toolbar: {
-            tools: {
-              download: false
-            }
-          }
-        },
-        colors: ['#384aff'],
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          width: 3,
-          curve: 'straight'
-        },
-        grid: {
-          // show: false
-        },
+	props: {
+		marketCharts: Array
+	},
+	data() {
+		const series = this.marketCharts.map(marketChart => ({
+			name: '',
+			data: marketChart.map(data => data[1])
+		}));
+		return {
+			series,
+			options: {
+				chart: {
+					type: 'line',
+					animations: {
+						enabled: false
+					},
+					zoom: {
+						enabled: false
+					},
+					toolbar: {
+						tools: {
+							download: false
+						}
+					}
+				},
+				colors: ['#384aff', '#ffe200'],
+				dataLabels: {
+					enabled: false
+				},
+				stroke: {
+					width: 3,
+					curve: 'straight'
+				},
+				grid: {
+					// show: false
+				},
         xaxis: {
           floating: true,
           axisTicks: {
@@ -96,7 +81,7 @@ export default {
         },
         tooltip: {
           custom: ({ series, seriesIndex, dataPointIndex }) =>
-            `<div>$${series[seriesIndex][dataPointIndex]}</div>`
+	          `<div>$${this.$n(series[seriesIndex][dataPointIndex])}</div>`
         }
       }
     };

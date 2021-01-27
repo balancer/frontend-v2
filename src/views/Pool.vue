@@ -18,7 +18,39 @@
 				<UiLoading/>
 			</div>
 			<div v-else>
-				<Chart class="mb-4"/>
+				<div class="mb-4 position-relative">
+					<div class="text-right">
+						<a @click="loadMarketCharts(1)" class="mr-2">
+							<UiLabel :class="marketChartsDays === 1 && 'active'"
+							>1 day
+							</UiLabel
+							>
+						</a>
+						<a @click="loadMarketCharts(7)" class="mr-2">
+							<UiLabel :class="marketChartsDays === 7 && 'active'"
+							>1 week
+							</UiLabel
+							>
+						</a>
+						<a @click="loadMarketCharts(30)" class="mr-2">
+							<UiLabel :class="marketChartsDays === 30 && 'active'"
+							>1 month
+							</UiLabel
+							>
+						</a>
+						<a @click="loadMarketCharts(365)" class="mr-2">
+							<UiLabel :class="marketChartsDays === 365 && 'active'"
+							>1 year
+							</UiLabel
+							>
+						</a>
+					</div>
+					<UiLoading
+						v-if="marketChartsLoading"
+						class="position-absolute mt-n4"
+					/>
+					<Chart :key="marketCharts[0].length" :marketCharts="marketCharts"/>
+				</div>
 				<Block title="Overview">
 					<div class="d-flex">
 						<div class="flex-auto">
@@ -81,14 +113,18 @@ import { mapActions, mapGetters } from 'vuex';
 import { exitPool, getPool, joinPool } from '@/utils/balancer/utils/pools';
 import { approveTokens } from '@/utils/balancer/utils/tokens';
 import constants from '@/utils/balancer/constants';
+import {getMarketChart} from '@/utils/coingecko';
 
 export default {
   data() {
     return {
-      id: this.$route.params.id,
-      loading: false,
-      pool: false,
-      hasAllowed: false
+	    id: this.$route.params.id,
+	    loading: false,
+	    pool: false,
+	    hasAllowed: false,
+	    marketCharts: [],
+	    marketChartsDays: 7,
+	    marketChartsLoading: false
     };
   },
   computed: {
@@ -189,23 +225,33 @@ export default {
       // @ts-ignore
       await this.$auth.provider.sendAsync({
         method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20',
-          options: {
-            address,
-            symbol: tokens[address].symbol,
-            decimals: tokens[address].decimals
-          }
-        },
-        id: Math.round(Math.random() * 100000)
+	      params: {
+		      type: 'ERC20',
+		      options: {
+			      address,
+			      symbol: tokens[address].symbol,
+			      decimals: tokens[address].decimals
+		      }
+	      },
+	      id: Math.round(Math.random() * 100000)
       });
-    }
+    },
+	  async loadMarketCharts(days) {
+		  this.marketChartsLoading = true;
+		  this.marketChartsDays = days;
+		  this.marketCharts = await Promise.all([
+			  getMarketChart('0xba100000625a3754423978a60c9317c58a424e3D', days),
+			  getMarketChart('0x514910771AF9Ca656af840dff83E8264EcF986CA', days)
+		  ]);
+		  this.marketChartsLoading = false;
+	  }
   },
   async created() {
     this.loading = true;
     await this.loadPool();
-    await this.injectTokens([...this.pool.tokens, this.pool.tokenizer.address]);
-    this.loading = false;
+	  await this.injectTokens([...this.pool.tokens, this.pool.tokenizer.address]);
+	  await this.loadMarketCharts(7);
+	  this.loading = false;
   }
 };
 </script>

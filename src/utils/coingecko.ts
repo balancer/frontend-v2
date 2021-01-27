@@ -23,3 +23,19 @@ export async function getTokensPrice(addresses) {
     ])
   );
 }
+
+export async function getEtherPrice() {
+  const uri =
+    'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true';
+  const result = await fetch(uri).then(res => res.json());
+  return {
+    price: result.ethereum.usd,
+    price24HChange: result.ethereum.usd_24h_change
+  };
+}
+
+export async function getMarketChart(address, days = 7) {
+  const uri = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=${days}`;
+  const result = await fetch(uri).then(res => res.json());
+  return result.prices;
+}
