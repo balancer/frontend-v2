@@ -2,9 +2,9 @@ import Vue from 'vue';
 import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue';
 import { formatUnits } from '@ethersproject/units';
-import getProvider from '@/utils/provider';
 import networks from '@/utils/networks.json';
 import store from '@/store';
+import {getProfiles} from '@/utils/profile';
 
 const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';
 
@@ -19,7 +19,7 @@ if (wsProvider) {
 
 const state = {
   account: null,
-  name: null,
+  profile: {},
   network: networks[defaultNetwork]
 };
 
@@ -41,10 +41,7 @@ const mutations = {
   HANDLE_CHAIN_CHANGED(_state, chainId) {
     if (!networks[chainId]) {
       networks[chainId] = {
-        ...networks['1'],
-        chainId,
-        name: 'Unknown',
-        network: 'unknown',
+        ...networks[defaultNetwork],
         unknown: true
       };
     }
@@ -104,13 +101,8 @@ const actions = {
       ]);
       commit('HANDLE_CHAIN_CHANGED', network.chainId);
       const account = accounts.length > 0 ? accounts[0] : null;
-      let name;
-      try {
-        name = await getProvider('1').lookupAddress(account);
-      } catch (e) {
-        console.error(e);
-      }
-      commit('WEB3_SET', {account, name});
+      const profiles = await getProfiles([account]);
+      commit('WEB3_SET', {account, profile: profiles[account]});
     } catch (e) {
       commit('LOAD_PROVIDER_FAILURE', e);
       return Promise.reject();
