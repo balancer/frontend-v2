@@ -4,7 +4,7 @@ import { getInstance } from '@snapshot-labs/lock/plugins/vue';
 import { formatUnits } from '@ethersproject/units';
 import networks from '@/utils/networks.json';
 import store from '@/store';
-import {getProfiles} from '@/utils/profile';
+import { getProfiles } from '@/utils/profile';
 
 const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';
 
@@ -102,7 +102,7 @@ const actions = {
       commit('HANDLE_CHAIN_CHANGED', network.chainId);
       const account = accounts.length > 0 ? accounts[0] : null;
       const profiles = await getProfiles([account]);
-	    commit('WEB3_SET', {account, profile: profiles[account]});
+      commit('WEB3_SET', { account, profile: profiles[account] });
     } catch (e) {
       commit('LOAD_PROVIDER_FAILURE', e);
       return Promise.reject();

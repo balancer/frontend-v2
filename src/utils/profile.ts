@@ -1,4 +1,4 @@
-import {subgraphRequest} from '@snapshot-labs/snapshot.js/src/utils';
+import { subgraphRequest } from '@snapshot-labs/snapshot.js/src/utils';
 
 function get3BoxProfiles(addresses) {
   return new Promise((resolove, reject) => {
@@ -12,7 +12,7 @@ function get3BoxProfiles(addresses) {
         image: true
       }
     })
-      .then(({profiles}) => {
+      .then(({ profiles }) => {
         const _3BoxProfiles = {};
         profiles.forEach(profile => {
           _3BoxProfiles[profile.eth_address.toLowerCase()] = profile;
@@ -45,7 +45,7 @@ function lookupAddresses(addresses) {
         }
       }
     })
-      .then(({accounts}) => {
+      .then(({ accounts }) => {
         const ensNames = {};
         accounts.forEach(profile => {
           ensNames[profile.id.toLowerCase()] = profile?.domains?.[0]?.labelName

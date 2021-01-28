@@ -18,29 +18,29 @@
     />
     <div>
       <div v-if="Object.keys(tokenlists).length > 0">
-	      <a
-		      v-for="(tokenlist, i) in tokenlists"
-		      :key="i"
-		      @click="onSelect(i)"
-		      class="d-block border-bottom last-child-border-0 p-3 highlight"
-	      >
-		      <Icon
-			      :name="tokenlist.active ? 'toggle-on' : 'toggle_off'"
-			      :class="tokenlist.active ? 'text-green' : 'border-color'"
-			      size="32"
-			      class="mt-n1 mr-3 float-left"
-		      />
-		      <img
-			      :src="_url(tokenlist.logoURI)"
-			      class="circle v-align-middle mr-1"
-			      width="24"
-			      height="24"
-		      />
-		      {{ tokenlist.name }}
-		      <span class="text-gray float-right ml-1">
+        <a
+          v-for="(tokenlist, i) in tokenlists"
+          :key="i"
+          @click="onSelect(i)"
+          class="d-block border-bottom last-child-border-0 p-3 highlight"
+        >
+          <Icon
+            :name="tokenlist.active ? 'toggle-on' : 'toggle_off'"
+            :class="tokenlist.active ? 'text-green' : 'border-color'"
+            size="32"
+            class="mt-n1 mr-3 float-left"
+          />
+          <img
+            :src="_url(tokenlist.logoURI)"
+            class="circle v-align-middle mr-1"
+            width="24"
+            height="24"
+          />
+          {{ tokenlist.name }}
+          <span class="text-gray float-right ml-1">
             {{ $n(tokenlist.tokens.length) }} tokens
           </span>
-	      </a>
+        </a>
       </div>
       <div v-else class="d-block text-center p-3">
         Oops, we can't find any list
@@ -58,8 +58,8 @@
 <script>
 export default {
   props: {
-	  open: Boolean,
-	  tokenlists: Object
+    open: Boolean,
+    tokenlists: Object
   },
   methods: {
     onSelect(name) {

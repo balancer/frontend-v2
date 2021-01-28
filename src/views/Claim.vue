@@ -1,51 +1,51 @@
 <template>
-	<Layout class="mt-4">
-		<template slot="content-left">
-			<div class="px-4 px-md-0">
-				<Breadcrumb/>
-				<h1 class="mb-3">Claim BAL for {{ _shorten(address) }}</h1>
-			</div>
-			<Block :slim="true" title="Pending claims">
-				<div v-if="loading" class="text-center py-3">
-					<UiLoading/>
-				</div>
-				<div
-					v-for="(pendingClaim, i) in pendingClaims"
-					:key="i"
-					class="d-flex border-bottom last-child-border-0 px-4 py-3"
-				>
-					<div class="flex-auto">
-						<a
-							:href="
+  <Layout class="mt-4">
+    <template slot="content-left">
+      <div class="px-4 px-md-0">
+        <Breadcrumb />
+        <h1 class="mb-3">Claim BAL for {{ _shorten(address) }}</h1>
+      </div>
+      <Block :slim="true" title="Pending claims">
+        <div v-if="loading" class="text-center py-3">
+          <UiLoading />
+        </div>
+        <div
+          v-for="(pendingClaim, i) in pendingClaims"
+          :key="i"
+          class="d-flex border-bottom last-child-border-0 px-4 py-3"
+        >
+          <div class="flex-auto">
+            <a
+              :href="
                 `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${parseInt(
                   pendingClaim.id
                 ) + 20}/_totals.json`
               "
-							target="_blank"
-						>
-							Week {{ parseInt(pendingClaim.id) + 20 }}
-							<Icon name="external-link" class="ml-1"/>
-						</a>
-					</div>
-					<div>{{ $n(pendingClaim.amount) }} BAL</div>
-				</div>
-			</Block>
-		</template>
-		<template slot="sidebar-right">
-			<Block title="Actions">
-				<UiButton :loading="loading" class="d-block width-full mb-2">
-					{{ $n(totalPending) }} BAL
-				</UiButton>
-				<UiButton
-					:disabled="loading || !$auth.isAuthenticated"
-					@click="onSubmit"
-					class="d-block width-full button--submit"
-				>
-					Claim
-				</UiButton>
-			</Block>
-		</template>
-	</Layout>
+              target="_blank"
+            >
+              Week {{ parseInt(pendingClaim.id) + 20 }}
+              <Icon name="external-link" class="ml-1" />
+            </a>
+          </div>
+          <div>{{ $n(pendingClaim.amount) }} BAL</div>
+        </div>
+      </Block>
+    </template>
+    <template slot="sidebar-right">
+      <Block title="Actions">
+        <UiButton :loading="loading" class="d-block width-full mb-2">
+          {{ $n(totalPending) }} BAL
+        </UiButton>
+        <UiButton
+          :disabled="loading || !$auth.isAuthenticated"
+          @click="onSubmit"
+          class="d-block width-full button--submit"
+        >
+          Claim
+        </UiButton>
+      </Block>
+    </template>
+  </Layout>
 </template>
 
 <script>

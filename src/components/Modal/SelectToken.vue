@@ -19,29 +19,29 @@
     <div>
       <div v-if="Object.keys(tokens).length > 0">
         <a
-	        v-for="(token, key) in tokens"
-	        :key="key"
-	        @click="onSelect(token.address)"
-	        class="d-block border-bottom last-child-border-0 p-3 highlight"
+          v-for="(token, key) in tokens"
+          :key="key"
+          @click="onSelect(token.address)"
+          class="d-block border-bottom last-child-border-0 p-3 highlight"
         >
-	        <Token :token="token" :symbol="true" :name="true"/>
-	        <span class="float-right text-gray">
+          <Token :token="token" :symbol="true" :name="true" />
+          <span class="float-right text-gray">
             {{ $n(token.balance) }}
           </span>
         </a>
       </div>
-	    <div v-else-if="loading" class="d-block text-center p-3">
-		    <UiLoading/>
-	    </div>
-	    <div v-else class="d-block text-center p-3">
-		    Oops, we can't find any tokens
-	    </div>
+      <div v-else-if="loading" class="d-block text-center p-3">
+        <UiLoading />
+      </div>
+      <div v-else class="d-block text-center p-3">
+        Oops, we can't find any tokens
+      </div>
     </div>
-	  <template slot="footer">
-		  <a @click="$emit('selectTokenlist')">
-			  Manage lists
-		  </a>
-	  </template>
+    <template slot="footer">
+      <a @click="$emit('selectTokenlist')">
+        Manage lists
+      </a>
+    </template>
   </UiModal>
 </template>
 

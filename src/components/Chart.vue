@@ -12,62 +12,62 @@
 
 <script>
 export default {
-	props: {
-		marketCharts: Array
-	},
-	data() {
-		const series = this.marketCharts.map(marketChart => ({
-			name: '',
-			data: marketChart.map(data => data[1])
-		}));
-		return {
-			series,
-			options: {
-				chart: {
-					type: 'line',
-					animations: {
-						enabled: false
-					},
-					zoom: {
-						enabled: false
-					},
-					toolbar: {
-						tools: {
-							download: false
-						}
-					}
-				},
-				colors: ['#384aff', '#ffe200'],
-				dataLabels: {
-					enabled: false
-				},
-				stroke: {
-					width: 3,
-					curve: 'straight'
-				},
-				grid: {
-					// show: false
-				},
-				xaxis: {
-					floating: true,
-					axisTicks: {
-						show: false
-					},
-					crosshairs: {
-						show: true
-					},
-					axisBorder: {
-						show: false
-					},
-					labels: {
-						show: false
-					},
-					tooltip: {
-						enabled: false
-					}
-					// categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-				},
-				yaxis: {
+  props: {
+    marketCharts: Array
+  },
+  data() {
+    const series = this.marketCharts.map(marketChart => ({
+      name: '',
+      data: marketChart.map(data => data[1])
+    }));
+    return {
+      series,
+      options: {
+        chart: {
+          type: 'line',
+          animations: {
+            enabled: false
+          },
+          zoom: {
+            enabled: false
+          },
+          toolbar: {
+            tools: {
+              download: false
+            }
+          }
+        },
+        colors: ['#384aff', '#ffe200'],
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          width: 3,
+          curve: 'straight'
+        },
+        grid: {
+          // show: false
+        },
+        xaxis: {
+          floating: true,
+          axisTicks: {
+            show: false
+          },
+          crosshairs: {
+            show: true
+          },
+          axisBorder: {
+            show: false
+          },
+          labels: {
+            show: false
+          },
+          tooltip: {
+            enabled: false
+          }
+          // categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+        },
+        yaxis: {
           floating: true,
           axisTicks: {
             show: false
@@ -81,7 +81,7 @@ export default {
         },
         tooltip: {
           custom: ({ series, seriesIndex, dataPointIndex }) =>
-	          `<div>$${this.$n(series[seriesIndex][dataPointIndex])}</div>`
+            `<div>$${this.$n(series[seriesIndex][dataPointIndex])}</div>`
         }
       }
     };

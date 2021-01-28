@@ -1,23 +1,23 @@
 import Vue from 'vue';
-import {formatUnits} from '@ethersproject/units';
-import {getAddress, isAddress} from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
+import { getAddress, isAddress } from '@ethersproject/address';
 import getProvider from '@/utils/provider';
 import orderBy from 'lodash/orderBy';
 import BN from 'bn.js';
-import {loadTokenlist} from '@/utils/tokenlists';
-import {ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS} from '@/constants/tokenlists';
-import {clone, lsGet, lsSet} from '@/utils';
-import {getTokensMetadata} from '@/utils/balancer/utils/tokens';
+import { loadTokenlist } from '@/utils/tokenlists';
+import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
+import { clone, lsGet, lsSet } from '@/utils';
+import { getTokensMetadata } from '@/utils/balancer/utils/tokens';
 
 const defaultActiveLists = {};
 defaultActiveLists[TOKEN_LIST_DEFAULT] = true;
 
 const state = {
-	activeLists: lsGet('tokenlists', defaultActiveLists),
-	currentTokenlist: TOKEN_LIST_DEFAULT,
-	tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
-	injected: [],
-	loading: false,
+  activeLists: lsGet('tokenlists', defaultActiveLists),
+  currentTokenlist: TOKEN_LIST_DEFAULT,
+  tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
+  injected: [],
+  loading: false,
   loaded: false
 };
 
@@ -38,7 +38,7 @@ const getters = {
     return ether;
   },
   getTokens: (state, getters, rootState) => (query: any = {}) => {
-	  const {q, addresses, not, withBalance} = query;
+    const { q, addresses, not, withBalance } = query;
 
     const activeLists = Object.keys(state.tokenlists)
       .filter(name => state.activeLists[name])
@@ -122,8 +122,8 @@ const getters = {
         .map((tokenlist: any) => {
           tokenlist[1].tokens = tokenlist[1].tokens
             ? tokenlist[1].tokens.filter(
-		          token => token.chainId === rootState.web3.network.chainId
-	          )
+                token => token.chainId === rootState.web3.network.chainId
+              )
             : [];
           tokenlist[1].active = state.activeLists[tokenlist[0]] ? 1 : 0;
           return tokenlist;
@@ -132,8 +132,8 @@ const getters = {
         .filter(tokenlist =>
           q
             ? `${tokenlist[0]} ${tokenlist[1].name}`
-		          .toLowerCase()
-		          .includes(q.toLowerCase())
+                .toLowerCase()
+                .includes(q.toLowerCase())
             : true
         )
         .sort((a, b): any => b[1].active - a[1].active)
@@ -177,25 +177,25 @@ const actions = {
       getProvider(network),
       tokens
     );
-	  Object.values(tokensMetadata).map((tokenMetadata: any) =>
-		  injected.push({...tokenMetadata, ...{injected: true}})
-	  );
-	  commit('REGISTRY_SET', {injected});
-	  dispatch('getBalances', tokens);
-	  dispatch('getAllowances', {tokens});
-	  dispatch('loadPrices', tokens);
+    Object.values(tokensMetadata).map((tokenMetadata: any) =>
+      injected.push({ ...tokenMetadata, ...{ injected: true } })
+    );
+    commit('REGISTRY_SET', { injected });
+    dispatch('getBalances', tokens);
+    dispatch('getAllowances', { tokens });
+    dispatch('loadPrices', tokens);
   },
-	toggleList: ({commit}, name) => {
-		const activeLists = clone(state.activeLists);
-		if (activeLists[name]) {
-			delete activeLists[name];
-		} else {
-			activeLists[name] = true;
-		}
-		if (Object.keys(activeLists).length > 0) {
-			lsSet('tokenlists', activeLists);
-			commit('REGISTRY_SET', {activeLists});
-		}
+  toggleList: ({ commit }, name) => {
+    const activeLists = clone(state.activeLists);
+    if (activeLists[name]) {
+      delete activeLists[name];
+    } else {
+      activeLists[name] = true;
+    }
+    if (Object.keys(activeLists).length > 0) {
+      lsSet('tokenlists', activeLists);
+      commit('REGISTRY_SET', { activeLists });
+    }
   }
 };
 

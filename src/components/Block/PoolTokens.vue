@@ -10,7 +10,7 @@
         <span v-if="tokenWeights[i]"> {{ $n(tokenWeights[i]) }}% </span>
       </div>
       <div>
-	      {{ $n(_units(tokenBalances[i], token.decimals)) }}
+        {{ $n(_units(tokenBalances[i], token.decimals)) }}
       </div>
     </div>
   </Block>
