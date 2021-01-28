@@ -1,12 +1,12 @@
 <template>
-	<Sticky :key="web3.network.key">
+	<Sticky :key="web3.network.unknown">
 		<nav id="topnav" class="border-bottom width-full block-bg">
 			<div
 				v-if="web3.network.unknown"
 				class="p-2 text-center bg-red"
 				style="color: white;"
 			>
-				<Icon name="info" size="20" class="mr-1 v-align-text-bottom"/>
+				<Icon name="warning1" size="20" class="mr-1 v-align-text-bottom"/>
 				Balancer is not available in your current network
 			</div>
 			<Container>

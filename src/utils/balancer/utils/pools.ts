@@ -17,7 +17,7 @@ function formatPool(pool) {
 
   switch (pool.strategyType) {
     case 0: {
-      pool.strategy.name = 'Standard pool';
+      pool.strategy.name = 'Weighted pool';
       const totalWeight = pool.strategy.weights.reduce(
         (a, b) => a.add(b),
         BigNumber.from(0)

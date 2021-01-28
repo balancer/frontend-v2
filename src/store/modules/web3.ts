@@ -102,7 +102,7 @@ const actions = {
       commit('HANDLE_CHAIN_CHANGED', network.chainId);
       const account = accounts.length > 0 ? accounts[0] : null;
       const profiles = await getProfiles([account]);
-      commit('WEB3_SET', {account, profile: profiles[account]});
+	    commit('WEB3_SET', {account, profile: profiles[account]});
     } catch (e) {
       commit('LOAD_PROVIDER_FAILURE', e);
       return Promise.reject();

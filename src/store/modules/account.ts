@@ -5,16 +5,16 @@ import {getInstance} from '@snapshot-labs/lock/plugins/vue';
 import constants from '@/utils/balancer/constants';
 
 const state = {
-  balances: {},
-  allowances: {},
-  loading: false,
-  loaded: false
+	balances: {},
+	allowances: {},
+	loading: false,
+	loaded: false
 };
 
 const getters = {
   getPortfolioValue: (state, getters, rootState, rootGetters) => () => {
-    const tokens = rootGetters.getTokens({withBalance: true});
-    const ether = rootGetters.getEther();
+	  const tokens = rootGetters.getTokens({withBalance: true});
+	  const ether = rootGetters.getEther();
     return Object.values(tokens).reduce(
       (a: any, b: any) => a + b.value,
       ether.value || 0
@@ -53,7 +53,7 @@ const actions = {
     const tokens = rootGetters.getTokens();
     if (!account || Object.keys(tokens).length === 0) return;
     const network = rootState.web3.network.key;
-    commit('ACCOUNT_SET', {loading: true});
+	  commit('ACCOUNT_SET', {loading: true});
     const [balances, etherBalance] = await Promise.all([
       getBalances(
         network,
@@ -63,8 +63,8 @@ const actions = {
       ),
       auth.web3.getBalance(account)
     ]);
-    balances.ether = etherBalance;
-    commit('ACCOUNT_SET', {balances, loading: false, loaded: true});
+	  balances.ether = etherBalance;
+	  commit('ACCOUNT_SET', {balances, loading: false, loaded: true});
   },
   getAllowances: async ({ commit, rootGetters, rootState }, payload) => {
     const account = rootState.web3.account;

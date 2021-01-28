@@ -35,9 +35,9 @@
 							>1 month
 							</UiLabel>
 						</a>
-						<a @click="loadMarketCharts(365)" class="mr-2">
-							<UiLabel :class="marketChartsDays === 365 && 'active'"
-							>1 year
+						<a @click="loadMarketCharts(90)" class="mr-2">
+							<UiLabel :class="marketChartsDays === 90 && 'active'"
+							>3 months
 							</UiLabel>
 						</a>
 					</div>

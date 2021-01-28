@@ -11,13 +11,13 @@ const actions = {
     tokens = tokens || rootGetters.getTokens();
     const addresses = Object.values(tokens).map((token: any) => token.address);
     try {
-      commit('MARKET_SET', {loading: true});
+	    commit('MARKET_SET', {loading: true});
       const [prices, etherPrice] = await Promise.all([
         getTokensPrice(addresses),
         getEtherPrice()
       ]);
-      prices.ether = etherPrice;
-      commit('MARKET_SET', {prices, loading: false});
+	    prices.ether = etherPrice;
+	    commit('MARKET_SET', {prices, loading: false});
     } catch (e) {
       console.log(e);
     }

@@ -58,16 +58,16 @@ export default {
 					},
 					axisBorder: {
 						show: false
-          },
-          labels: {
-            show: false
-          },
-          tooltip: {
-            enabled: false
-          }
-          // categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-        },
-        yaxis: {
+					},
+					labels: {
+						show: false
+					},
+					tooltip: {
+						enabled: false
+					}
+					// categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+				},
+				yaxis: {
           floating: true,
           axisTicks: {
             show: false

@@ -22,7 +22,7 @@ export default {
   strategies: {
     0: {
       type: '0',
-      name: 'Standard pool'
+      name: 'Weighted pool'
     },
     1: {
       type: '1',
