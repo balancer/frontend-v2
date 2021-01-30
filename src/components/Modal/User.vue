@@ -10,8 +10,10 @@
         target="_blank"
         class="mb-2 d-block"
       >
-        <UiButton class="button-outline width-full">
-          See on explorer
+        <UiButton
+          v-text="$t('seeOnExplorer')"
+          class="button-outline width-full"
+        >
           <Icon name="external-link" class="ml-1" />
         </UiButton>
       </a>

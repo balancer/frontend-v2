@@ -19,14 +19,15 @@ export default {
   tokenFactory: '0x69AC2050b7537f8337fF3f9C329F76dDbCB7D376',
   weth: '0x261e43889ec6d48d83BB3A22648Eb6995c382174',
   MockFlashLoanReceiver: '0x566131e85d46cc7BBd0ce5C6587E9912Dc27cDAc',
+  // Strategy names are i18n translation keys
   strategies: {
     0: {
       type: '0',
-      name: 'Weighted pool'
+      name: 'weightedPool'
     },
     1: {
       type: '1',
-      name: 'Stable pool'
+      name: 'stablePool'
     }
   }
 };
