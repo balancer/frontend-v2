@@ -14,7 +14,7 @@ export default class Vault {
   }
 
   async getTotalPools(): Promise<number> {
-    return await call(this.provider, abi, [this.address, 'getTotalPools']);
+    return await call(this.provider, abi, [this.address, 'getNumberOfPools']);
   }
 
   async getPoolIds(start: number, end: number): Promise<string[]> {

@@ -70,9 +70,9 @@ export async function getPools(
   poolIds.forEach(id => {
     const pool = pools[id];
     const address = pool.strategyAddress;
-    multi.call(`${id}.tokenBalances`, constants.vault, 'getPoolTokenBalances', [
+    // TODO all these have changed :(
+    multi.call(`${id}.tokenBalances`, constants.vault, 'getPoolTokens', [
       id,
-      pool.tokens
     ]);
     multi.call(`${id}.strategy.swapFee`, address, 'getSwapFee');
     set(pools, `${id}.strategy.type`, pool.strategyType);

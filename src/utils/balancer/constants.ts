@@ -6,7 +6,8 @@ export default {
   stablecoinPoolFactory: '0xA840ddccf6a06692B312f54D63F7487b2806A3a1',
   oneToOneSwapValidator: '0x52402A8bAf78a6d7c5804D4308B31a856BAa52a2',
   tokenFactory: '0x0B5b6CA7c40C3f4a7b59653B8a2b140BbD8c7D6e',
-  weth: '0x4CDDb3505Cf09ee0Fa0877061eB654839959B9cd',
+  //weth: '0x4CDDb3505Cf09ee0Fa0877061eB654839959B9cd',
+  weth: '0xdA7D8D96bc15CB6dE1B950E53101Ac20452b37d4',
   MockFlashLoanReceiver: '0xD1C8625C3ECCD11d214A8760093959A8237dD710',
 
   // Config for Kovan deployment
