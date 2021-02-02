@@ -39,3 +39,15 @@ export async function getMarketChart(address, days = 7) {
   const result = await fetch(uri).then(res => res.json());
   return result.prices;
 }
+
+export async function getDailyMarketChart(address, days = 7) {
+  const dailyMarketChart = {};
+  const marketChart = await getMarketChart(address, days);
+  marketChart.forEach(p => {
+    const date = new Date();
+    date.setTime(p[0]);
+    const day = date.toISOString().split('T')[0];
+    dailyMarketChart[day] = p[1];
+  });
+  return Object.entries(dailyMarketChart);
+}

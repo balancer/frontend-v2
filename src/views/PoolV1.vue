@@ -1,0 +1,112 @@
+<template>
+  <Layout class="mt-4">
+    <template slot="content-left">
+      <div class="px-4 px-md-0">
+        <Breadcrumb />
+        <h1 class="mb-4">
+          V1 Pool {{ _shorten(id) }}
+          <a v-clipboard:copy="id" v-clipboard:success="handleCopy">
+            <Icon
+              name="copy"
+              size="24"
+              class="text-gray line-height-0 p-0 m-0"
+            />
+          </a>
+        </h1>
+      </div>
+      <div v-if="loading || registry.loading" class="px-4 px-md-0">
+        <UiLoading />
+      </div>
+      <div v-else>
+        <div class="mb-4 position-relative">
+          <div class="text-right">
+            <a @click="loadMarketCharts(1)" class="mr-2">
+              <UiLabel :class="marketChartsDays === 1 && 'active'"
+                >1 day
+              </UiLabel>
+            </a>
+            <a @click="loadMarketCharts(7)" class="mr-2">
+              <UiLabel :class="marketChartsDays === 7 && 'active'"
+                >1 week
+              </UiLabel>
+            </a>
+            <a @click="loadMarketCharts(30)" class="mr-2">
+              <UiLabel :class="marketChartsDays === 30 && 'active'"
+                >1 month
+              </UiLabel>
+            </a>
+            <a @click="loadMarketCharts(90)" class="mr-2">
+              <UiLabel :class="marketChartsDays === 90 && 'active'"
+                >3 months
+              </UiLabel>
+            </a>
+          </div>
+          <UiLoading
+            v-if="marketChartsLoading"
+            class="position-absolute mt-n4"
+          />
+          <Chart :key="marketCharts[0].length" :marketCharts="marketCharts" />
+        </div>
+      </div>
+    </template>
+  </Layout>
+</template>
+
+<script>
+import { getDailyMarketChart } from '@/utils/coingecko';
+import {
+  getBPTMarketChart,
+  getPool,
+  getPoolTokens,
+  getTokenMarketChart
+} from '@/utils/subgraph';
+import { mapActions } from 'vuex';
+import { formatMarketChartData } from '@/utils/chart';
+
+export default {
+  data() {
+    return {
+      id: this.$route.params.id,
+      loading: false,
+      marketCharts: [],
+      marketChartsDays: 7,
+      marketChartsLoading: false
+    };
+  },
+  methods: {
+    ...mapActions(['notify', 'getBlockNumber']),
+    handleCopy() {
+      this.notify('Copied!');
+    },
+    async loadMarketCharts(days) {
+      this.marketChartsLoading = true;
+      this.marketChartsDays = days;
+      const tokens = await getPoolTokens(this.web3.network.key, this.id);
+      const marketCharts = await Promise.all([
+        getBPTMarketChart(
+          this.web3.network.key,
+          this.web3.blockNumber,
+          this.id,
+          days
+        ),
+        ...tokens.map(token =>
+          getTokenMarketChart(
+            this.web3.network.key,
+            this.web3.blockNumber,
+            token,
+            days
+          )
+        )
+      ]);
+      this.marketCharts = formatMarketChartData(marketCharts);
+      this.marketChartsLoading = false;
+    }
+  },
+  async created() {
+    this.loading = true;
+    await this.getBlockNumber();
+    await this.loadMarketCharts(7);
+    this.loading = false;
+  }
+};
+</script>

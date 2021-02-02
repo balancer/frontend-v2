@@ -37,3 +37,12 @@ export function lsGet(key: string, fallback?: any) {
 export function lsRemove(key: string) {
   return localStorage.removeItem(`${pkg.name}.${key}`);
 }
+
+export function getCurrentTs() {
+  return parseInt((new Date().getTime() / 1e3).toString());
+}
+
+export function tsToBlockNumber(currentBlockNumber, ts) {
+  const diffTs = getCurrentTs() - ts;
+  return currentBlockNumber - parseInt((diffTs / 13.35).toString());
+}

@@ -20,6 +20,7 @@ export default {
       name: '',
       data: marketChart.map(data => data[1])
     }));
+    const categories = this.marketCharts[0].map(data => data[0]);
     return {
       series,
       options: {
@@ -37,7 +38,7 @@ export default {
             }
           }
         },
-        colors: ['#384aff', '#ffe200'],
+        colors: ['#384aff', '#101111', '#5c6170'],
         dataLabels: {
           enabled: false
         },
@@ -46,7 +47,7 @@ export default {
           curve: 'straight'
         },
         grid: {
-          // show: false
+          show: true
         },
         xaxis: {
           floating: true,
@@ -62,12 +63,10 @@ export default {
           labels: {
             show: false
           },
-          tooltip: {
-            enabled: false
-          }
-          // categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+          categories
         },
         yaxis: {
+          // logarithmic: true,
           floating: true,
           axisTicks: {
             show: false
@@ -81,7 +80,10 @@ export default {
         },
         tooltip: {
           custom: ({ series, seriesIndex, dataPointIndex }) =>
-            `<div>$${this.$n(series[seriesIndex][dataPointIndex])}</div>`
+            `<div>$${this.$n(
+              series[seriesIndex][dataPointIndex],
+              '0,0.00'
+            )}</div>`
         }
       }
     };
@@ -93,5 +95,25 @@ export default {
 .apexcharts-tooltip {
   font-size: 18px;
   padding: 6px 12px 2px;
+}
+
+.apexcharts-xaxistooltip {
+  all: initial;
+  padding-left: 12px;
+
+  * {
+    all: unset;
+  }
+
+  .apexcharts-xaxistooltip-text {
+    font-family: 'Calibre' !important;
+    color: var(--text-color) !important;
+    font-size: 17px !important;
+  }
+
+  &:before,
+  &:after {
+    all: initial;
+  }
 }
 </style>
