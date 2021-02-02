@@ -12,9 +12,9 @@ const state = {
 
 const actions = {
   init: async ({ commit, dispatch }) => {
-    // commit('SET', { loading: true });
     commit('SET', { init: true });
     dispatch('loadTokenlists');
+    dispatch('getBlockNumber');
     Vue.prototype.$auth.getConnector().then(connector => {
       if (connector) dispatch('login', connector);
     });

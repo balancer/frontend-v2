@@ -3,24 +3,18 @@ import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue';
 import { formatUnits } from '@ethersproject/units';
 import networks from '@/utils/networks.json';
-import store from '@/store';
 import { getProfiles } from '@/utils/profile';
+import store from '@/store';
+import getProvider from '@/utils/provider';
 
 const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';
-
-let wsProvider;
 let auth;
-
-if (wsProvider) {
-  wsProvider.on('block', blockNumber => {
-    store.commit('GET_BLOCK_SUCCESS', blockNumber);
-  });
-}
 
 const state = {
   account: null,
   profile: {},
-  network: networks[defaultNetwork]
+  network: networks[defaultNetwork],
+  blockNumber: null
 };
 
 const mutations = {
@@ -71,6 +65,10 @@ const actions = {
     Vue.prototype.$auth.logout();
     commit('LOGOUT');
   },
+  getBlockNumber: async () => {
+    const blockNumber = await getProvider(state.network.key).getBlockNumber();
+    store.commit('WEB3_SET', { blockNumber });
+  },
   loadProvider: async ({ commit, dispatch }) => {
     try {
       if (auth.provider.removeAllListeners && !auth.provider.isTorus)
@@ -81,6 +79,7 @@ const actions = {
           dispatch('resetAccount');
           dispatch('getBalances');
           dispatch('getAllowances');
+          dispatch('getBlockNumber');
         });
         auth.provider.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
@@ -102,6 +101,7 @@ const actions = {
       commit('HANDLE_CHAIN_CHANGED', network.chainId);
       const account = accounts.length > 0 ? accounts[0] : null;
       const profiles = await getProfiles([account]);
+      await dispatch('getBlockNumber');
       commit('WEB3_SET', { account, profile: profiles[account] });
     } catch (e) {
       commit('LOAD_PROVIDER_FAILURE', e);
