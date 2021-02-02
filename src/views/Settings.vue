@@ -21,6 +21,7 @@
           </UiButton>
         </div>
       </div>
+      <Circular />
     </template>
   </Layout>
 </template>
