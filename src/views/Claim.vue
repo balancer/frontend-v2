@@ -27,14 +27,14 @@
               <Icon name="external-link" class="ml-1" />
             </a>
           </div>
-          <div>{{ $n(pendingClaim.amount) }} BAL</div>
+          <div>{{ _num(pendingClaim.amount) }} BAL</div>
         </div>
       </Block>
     </template>
     <template slot="sidebar-right">
       <Block :title="$t('actions')">
         <UiButton :loading="loading" class="d-block width-full mb-2">
-          {{ $n(totalPending) }} BAL
+          {{ _num(totalPending) }} BAL
         </UiButton>
         <UiButton
           :disabled="loading || !$auth.isAuthenticated"

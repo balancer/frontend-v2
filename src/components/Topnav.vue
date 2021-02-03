@@ -44,7 +44,7 @@
                   v-if="totalPending"
                   class="button--submit hide-sm hide-md mr-2"
                 >
-                  ✨ {{ $n(totalPending) }} BAL
+                  ✨ {{ _num(totalPending) }} BAL
                 </UiButton>
               </router-link>
               <UiButton
@@ -102,7 +102,7 @@
       >
         <UiLoading class="fill-white mr-2" />
         <span class="d-inline-block pt-1"
-          >{{ $n(notifications.watch.length) }}
+          >{{ _num(notifications.watch.length) }}
           {{ $tc('transactionPending', notifications.watch.length) }}
         </span>
       </div>

@@ -80,7 +80,7 @@ export default {
         },
         tooltip: {
           custom: ({ series, seriesIndex, dataPointIndex }) =>
-            `<div>$${this.$n(
+            `<div>$${this._num(
               series[seriesIndex][dataPointIndex],
               '0,0.00'
             )}</div>`

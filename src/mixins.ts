@@ -22,7 +22,7 @@ export default {
       const diff = number * 1e3 - new Date().getTime();
       return prettyMs(diff);
     },
-    $n(number, format) {
+    _num(number, format) {
       if (!format) {
         format = '(0.[0]a)';
         if (number < 1) format = '0.[000]';

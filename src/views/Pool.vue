@@ -62,7 +62,7 @@
           <div class="d-flex">
             <div v-text="$t('totalSupply')" class="flex-auto" />
             {{
-              $n(_units(pool.tokenizer.totalSupply, pool.tokenizer.decimals))
+              _num(_units(pool.tokenizer.totalSupply, pool.tokenizer.decimals))
             }}
             {{ pool.tokenizer.symbol }}
           </div>
@@ -73,7 +73,7 @@
           </div>
           <div v-if="pool.strategy.swapFee" class="d-flex">
             <div v-text="$t('swapFee')" class="flex-auto" />
-            {{ $n(pool.strategy.swapFeePercent) }}%
+            {{ _num(pool.strategy.swapFeePercent) }}%
           </div>
         </Block>
         <BlockPoolTokens
