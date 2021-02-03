@@ -59,10 +59,10 @@ export async function getPools(
   let pools = {};
   poolIds.forEach(id => {
     const strategyType = 1; // @TODO detect strategy type
-    const strategyAddress = id.slice(0, 42);
+    const address = id.slice(0, 42);
     set(pools, `${id}.id`, id);
     set(pools, `${id}.strategyType`, strategyType);
-    set(pools, `${id}.strategyAddress`, getAddress(strategyAddress));
+    set(pools, `${id}.address`, getAddress(address));
     multi.call(`${id}.tokens`, constants.vault, 'getPoolTokens', [id]);
   });
   pools = await multi.execute(pools);
@@ -71,23 +71,15 @@ export async function getPools(
   multi = new Multicaller(network, provider, abis);
   poolIds.forEach(id => {
     const pool = pools[id];
-    const address = pool.strategyAddress;
     multi.call(`${id}.tokenBalances`, constants.vault, 'getPoolTokens', [id]);
-    multi.call(`${id}.strategy.swapFee`, address, 'getSwapFee');
+    multi.call(`${id}.strategy.swapFee`, pool.address, 'getSwapFee');
     set(pools, `${id}.strategy.type`, pool.strategyType);
-    set(pools, `${id}.strategy.address`, address);
     if (pool.strategyType === 0) {
-      multi.call(`${id}.strategy.weights`, address, 'getWeights', [
-        pool.tokens
-      ]);
+      // multi.call(`${id}.strategy.weights`, pool.address, 'getWeights', [pool.tokens]);
     } else if (pool.strategyType === 1) {
       // multi.call(`${id}.strategy.amp`, address, 'getAmplification');
     }
-    set(pools, `${id}.tokenizer.address`, pool.strategyAddress);
-    // multi.call(`${id}.tokenizer.name`, pool.strategyAddress, 'name');
-    // multi.call(`${id}.tokenizer.symbol`, pool.strategyAddress, 'symbol');
-    // multi.call(`${id}.tokenizer.decimals`, pool.strategyAddress, 'decimals');
-    multi.call(`${id}.tokenizer.totalSupply`, pool.strategyAddress, 'totalSupply');
+    multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
   });
   pools = await multi.execute(pools);
   console.timeEnd('getPools');

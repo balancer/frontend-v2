@@ -8,12 +8,15 @@
       <UiLoading v-if="loading" />
       <div v-if="loaded">
         <Block title="Overview">
-          <div>{{ $t('numberOfPools')}}: {{ vault.numberOfPools }}</div>
+          <div>{{ $t('numberOfPools') }}: {{ vault.numberOfPools }}</div>
         </Block>
         <Block title="Protocol fees">
-          <div>{{ $t('flashLoanFee')}}: {{ vault.protocolFlashLoanFee }}</div>
-          <div>{{ $t('swapFee')}} Swap fee: {{ vault.protocolSwapFee }}</div>
-          <div>{{ $t('withdrawFee')}} Withdraw fee: {{ vault.protocolWithdrawFee }}</div>
+          <div>{{ $t('flashLoanFee') }}: {{ vault.protocolFlashLoanFee }}</div>
+          <div>{{ $t('swapFee') }} Swap fee: {{ vault.protocolSwapFee }}</div>
+          <div>
+            {{ $t('withdrawFee') }} Withdraw fee:
+            {{ vault.protocolWithdrawFee }}
+          </div>
         </Block>
       </div>
     </template>
