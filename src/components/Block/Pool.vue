@@ -6,7 +6,9 @@
     <div>
       <span v-for="(token, i) in pool.tokens" :key="token" class="mr-2">
         <Token :token="tokens[token]" :symbol="true" class="mr-1" />
-        {{ $n(pool.strategy.weightsPercent[i]) }}%
+        <template v-if="pool.strategy.weightsPercent">
+          {{ $n(pool.strategy.weightsPercent[i]) }}%
+        </template>
       </span>
     </div>
   </div>

@@ -56,8 +56,8 @@ export async function getPools(
   let multi = new Multicaller(network, provider, vaultAbi);
   let pools = {};
   poolIds.forEach(id => {
-    const strategyType = parseInt(id.slice(25, 26));
-    const strategyAddress = id.slice(26);
+    const strategyType = 1; // @TODO detect strategy type
+    const strategyAddress = id.slice(0, 42);
     set(pools, `${id}.id`, id);
     set(pools, `${id}.strategyType`, strategyType);
     set(pools, `${id}.strategyAddress`, getAddress(strategyAddress));
@@ -70,10 +70,7 @@ export async function getPools(
   poolIds.forEach(id => {
     const pool = pools[id];
     const address = pool.strategyAddress;
-    // TODO all these have changed :(
-    multi.call(`${id}.tokenBalances`, constants.vault, 'getPoolTokens', [
-      id,
-    ]);
+    multi.call(`${id}.tokenBalances`, constants.vault, 'getPoolTokens', [id]);
     multi.call(`${id}.strategy.swapFee`, address, 'getSwapFee');
     set(pools, `${id}.strategy.type`, pool.strategyType);
     set(pools, `${id}.strategy.address`, address);
@@ -85,17 +82,14 @@ export async function getPools(
       // multi.call(`${id}.strategy.amp`, address, 'getAmplification');
     }
     set(pools, `${id}.tokenizer.address`, pool.strategyAddress);
-    multi.call(`${id}.tokenizer.name`, pool.strategyAddress, 'name');
-    multi.call(`${id}.tokenizer.symbol`, pool.strategyAddress, 'symbol');
-    multi.call(`${id}.tokenizer.decimals`, pool.strategyAddress, 'decimals');
-    multi.call(
-      `${id}.tokenizer.totalSupply`,
-      pool.strategyAddress,
-      'totalSupply'
-    );
+    // multi.call(`${id}.tokenizer.name`, pool.strategyAddress, 'name');
+    // multi.call(`${id}.tokenizer.symbol`, pool.strategyAddress, 'symbol');
+    // multi.call(`${id}.tokenizer.decimals`, pool.strategyAddress, 'decimals');
+    multi.call(`${id}.tokenizer.totalSupply`, pool.strategyAddress, 'totalSupply');
   });
   pools = await multi.execute(pools);
   console.timeEnd('getPools');
+  console.log('Pools', pools);
   return formatPools(pools);
 }
 
