@@ -4,7 +4,7 @@
       <div class="px-4 px-md-0">
         <Breadcrumb />
         <h1 class="mb-4">
-          Pool {{ _shorten(id) }}
+          {{ $t('pool') }} {{ _shorten(id) }}
           <a v-clipboard:copy="id" v-clipboard:success="handleCopy">
             <Icon
               name="copy"
@@ -21,24 +21,28 @@
         <div class="mb-4 position-relative">
           <div class="text-right">
             <a @click="loadMarketCharts(1)" class="mr-2">
-              <UiLabel :class="marketChartsDays === 1 && 'active'"
-                >1 day
-              </UiLabel>
+              <UiLabel
+                v-text="$t('oneDay')"
+                :class="marketChartsDays === 1 && 'active'"
+              />
             </a>
             <a @click="loadMarketCharts(7)" class="mr-2">
-              <UiLabel :class="marketChartsDays === 7 && 'active'"
-                >1 week
-              </UiLabel>
+              <UiLabel
+                v-text="$t('oneWeek')"
+                :class="marketChartsDays === 7 && 'active'"
+              />
             </a>
             <a @click="loadMarketCharts(30)" class="mr-2">
-              <UiLabel :class="marketChartsDays === 30 && 'active'"
-                >1 month
-              </UiLabel>
+              <UiLabel
+                v-text="$t('oneMonth')"
+                :class="marketChartsDays === 30 && 'active'"
+              />
             </a>
             <a @click="loadMarketCharts(90)" class="mr-2">
-              <UiLabel :class="marketChartsDays === 90 && 'active'"
-                >3 months
-              </UiLabel>
+              <UiLabel
+                v-text="$t('threeMonths')"
+                :class="marketChartsDays === 90 && 'active'"
+              />
             </a>
           </div>
           <UiLoading
@@ -47,36 +51,28 @@
           />
           <Chart :key="marketCharts[0].length" :marketCharts="marketCharts" />
         </div>
-        <Block title="Overview">
+        <Block :title="$t('overview')">
           <div class="d-flex">
-            <div class="flex-auto">
-              Pool token name
-            </div>
+            <div v-text="$t('poolTokenName')" class="flex-auto" />
             {{ pool.tokenizer.name }}
             <a @click="addToken" class="ml-1 mb-n1 mr-n1">
               <Icon name="plus" size="22" />
             </a>
           </div>
           <div class="d-flex">
-            <div class="flex-auto">
-              Total supply
-            </div>
+            <div v-text="$t('totalSupply')" class="flex-auto" />
             {{
               $n(_units(pool.tokenizer.totalSupply, pool.tokenizer.decimals))
             }}
             {{ pool.tokenizer.symbol }}
           </div>
           <div class="d-flex">
-            <div class="flex-auto">
-              Pool type
-            </div>
-            {{ pool.strategy.name }}
+            <div v-text="$t('poolType')" class="flex-auto" />
+            {{ $t(pool.strategy.name) }}
             ({{ pool.strategy.type }})
           </div>
           <div v-if="pool.strategy.swapFee" class="d-flex">
-            <div class="flex-auto">
-              Swap fee
-            </div>
+            <div v-text="$t('swapFee')" class="flex-auto" />
             {{ $n(pool.strategy.swapFeePercent) }}%
           </div>
         </Block>
@@ -129,7 +125,7 @@ export default {
   methods: {
     ...mapActions(['notify', 'injectTokens']),
     handleCopy() {
-      this.notify('Copied!');
+      this.notify(this.$t('copied!'));
     },
     async loadPool() {
       this.pool = await getPool(
@@ -177,7 +173,7 @@ export default {
         );
         console.log(tx);
         await this.loadPool();
-        this.notify('You did it!');
+        this.notify(this.$t('youDidIt'));
       } catch (e) {
         console.log(e);
       }
@@ -210,7 +206,7 @@ export default {
         );
         console.log(tx);
         await this.loadPool();
-        this.notify('You did it!');
+        this.notify(this.$t('youDidIt'));
       } catch (e) {
         console.log(e);
       }

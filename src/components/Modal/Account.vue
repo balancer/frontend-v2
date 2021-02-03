@@ -1,8 +1,11 @@
 <template>
   <UiModal :open="open" @close="$emit('close')">
     <template slot="header">
-      <h3 v-if="!web3.account || step === 'connect'">Connect wallet</h3>
-      <h3 v-else>Account</h3>
+      <h3
+        v-if="!web3.account || step === 'connect'"
+        v-text="$t('connectWallet')"
+      />
+      <h3 v-else v-text="$t('account')" />
     </template>
     <div v-if="!web3.account || step === 'connect'">
       <h3 class="m-4 mb-0 text-center"></h3>
@@ -44,7 +47,7 @@
           v-if="invisibleConnectorsCount"
           class="width-full"
         >
-          See more ({{ invisibleConnectorsCount }})
+          {{ $t('seeMore') }} ({{ invisibleConnectorsCount }})
         </UiButton>
       </div>
     </div>
@@ -66,13 +69,13 @@
           @click="step = 'connect'"
           class="button-outline width-full mb-2"
         >
-          Connect wallet
+          {{ $t('connectWallet') }}
         </UiButton>
         <UiButton
           @click="handleLogout"
           class="button-outline width-full text-red mb-2"
         >
-          Log out
+          {{ $t('logOut') }}
         </UiButton>
       </div>
     </div>

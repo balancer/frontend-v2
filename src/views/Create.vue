@@ -3,9 +3,9 @@
     <template slot="content-left">
       <div class="px-4 px-md-0">
         <Breadcrumb />
-        <h1 v-text="'Create a pool'" class="mb-4" />
+        <h1 v-text="$t('createPool')" class="mb-4" />
       </div>
-      <Block title="Pool type">
+      <Block :title="$t('poolType')">
         <UiButton
           v-for="(strategy, i) in strategies"
           :key="i"
@@ -13,12 +13,12 @@
           :class="form.strategyType === strategy.type && 'button--active'"
           class="width-full mb-2"
         >
-          {{ strategy.name }}
+          {{ $t(strategy.name) }}
         </UiButton>
       </Block>
-      <Block v-if="form.strategyType" title="Configuration">
+      <Block v-if="form.strategyType" :title="$t('configuration')">
         <UiButton class="d-flex width-full px-3 mb-2">
-          <span class="mr-2 text-gray">Initial BPT</span>
+          <span v-text="$t('initialBPT')" class="mr-2 text-gray" />
           <input
             v-model="form.initialBPT"
             type="number"
@@ -30,7 +30,7 @@
         </UiButton>
 
         <UiButton class="d-flex width-full mb-2 px-3">
-          <span class="mr-2 text-gray">Swap fee</span>
+          <span v-text="$t('swapFee')" class="mr-2 text-gray" />
           <input
             v-model="form.swapFee"
             class="input text-left flex-auto"
@@ -45,7 +45,7 @@
           v-if="form.strategyType === '1'"
           class="d-flex width-full mb-2 px-3"
         >
-          <span class="mr-2 text-gray">Amplification</span>
+          <span v-text="$t('amplification')" class="mr-2 text-gray" />
           <input
             v-model="form.amp"
             class="input text-left flex-auto"
@@ -56,7 +56,7 @@
           />
         </UiButton>
       </Block>
-      <Block v-if="form.strategyType" title="Tokens">
+      <Block v-if="form.strategyType" :title="$t('tokens')">
         <div
           v-for="(token, i) in form.tokens"
           :key="tokens[token].address"
@@ -76,7 +76,7 @@
               v-if="form.strategyType === '0'"
               class="d-flex width-full px-3 mb-2"
             >
-              <span class="mr-2 text-gray">Weight</span>
+              <span v-text="$t('weight')" class="mr-2 text-gray" />
               <input
                 v-model="form.weights[i]"
                 class="input width-full"
@@ -93,7 +93,7 @@
               }"
               class="d-flex width-full px-3"
             >
-              <span class="mr-2 text-gray">Amount</span>
+              <span v-text="$t('amount')" class="mr-2 text-gray" />
               <input
                 v-model="form.amounts[i]"
                 class="input width-full"
@@ -112,20 +112,20 @@
           "
           class="width-full"
         >
-          Add a token
+          {{ $t('addToken') }}
         </UiButton>
       </Block>
     </template>
     <template slot="sidebar-right">
       <div v-if="form.strategyType">
-        <Block title="Actions">
+        <Block :title="$t('actions')">
           <UiButton
             v-if="!hasAllowed && Object.keys(requiredAllowances).length > 0"
             @click="onApprove"
             :disabled="!$auth.isAuthenticated"
             class="d-block width-full mb-2"
           >
-            Approve
+            {{ $t('approve') }}
           </UiButton>
           <UiButton
             v-else
@@ -134,10 +134,10 @@
             :loading="loading"
             class="d-block width-full button--submit"
           >
-            Create
+            {{ $t('create') }}
           </UiButton>
         </Block>
-        <Block title="Payload">
+        <Block :title="$t('payload')">
           "create"
           <pre>{{ JSON.stringify(params, null, 2) }}</pre>
         </Block>
@@ -295,7 +295,7 @@ export default {
         await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
-        this.notify('Pool created!');
+        this.notify(this.$t('poolCreated!'));
         const poolId = receipt.events?.[0]?.topics?.[2];
         console.log('Pool id', poolId);
       } catch (e) {

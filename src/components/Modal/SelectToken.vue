@@ -1,11 +1,11 @@
 <template>
   <UiModal :open="open" @close="$emit('close')">
     <template slot="header">
-      <h3>Select a token</h3>
+      <h3 v-text="$t('selectToken')" />
     </template>
     <Search
       @input="$emit('inputSearch', $event)"
-      placeholder="Search by name, symbol or address"
+      :placeholder="$t('searchBy')"
       class="p-3 border-bottom"
     />
     <div
@@ -33,14 +33,14 @@
       <div v-else-if="loading" class="d-block text-center p-3">
         <UiLoading />
       </div>
-      <div v-else class="d-block text-center p-3">
-        Oops, we can't find any tokens
-      </div>
+      <div
+        v-else
+        v-text="$t('errorNoTokens')"
+        class="d-block text-center p-3"
+      />
     </div>
     <template slot="footer">
-      <a @click="$emit('selectTokenlist')">
-        Manage lists
-      </a>
+      <a v-text="$t('manageLists')" @click="$emit('selectTokenlist')" />
     </template>
   </UiModal>
 </template>

@@ -9,11 +9,11 @@
     :back="true"
   >
     <template slot="header">
-      <h3>Manage lists</h3>
+      <h3 v-text="$t('manageLists')" />
     </template>
     <Search
       @input="$emit('inputSearch', $event)"
-      placeholder="Search by name"
+      :placeholder="$t('searchByName')"
       class="p-3 border-bottom"
     />
     <div>
@@ -38,17 +38,18 @@
           />
           {{ tokenlist.name }}
           <span class="text-gray float-right ml-1">
-            {{ $n(tokenlist.tokens.length) }} tokens
+            {{ $n(tokenlist.tokens.length) }} {{ $t('tokensLowerCase') }}
           </span>
         </a>
       </div>
-      <div v-else class="d-block text-center p-3">
-        Oops, we can't find any list
-      </div>
+      <div v-else v-text="$t('errorNoLists')" class="d-block text-center p-3" />
     </div>
     <template slot="footer">
-      <a href="https://tokenlists.org" target="_blank">
-        Browse lists
+      <a
+        v-text="$t('browseLists')"
+        href="https://tokenlists.org"
+        target="_blank"
+      >
         <Icon name="external-link" class="ml-1" />
       </a>
     </template>

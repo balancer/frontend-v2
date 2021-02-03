@@ -4,7 +4,7 @@
       <div class="px-4 px-md-0">
         <Breadcrumb />
         <h1 class="mb-3">
-          Portfolio
+          {{ $t('portfolio') }}
           <h2 v-if="!loading && portfolioValue > 0" class="float-right mt-1">
             {{ $n(portfolioValue, '$0,0')
             }}<span v-text="$n(portfolioValue, '.[00]')" class="text-gray" />

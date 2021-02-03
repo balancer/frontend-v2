@@ -24,7 +24,7 @@ export async function getBPTMarketChart(
       .split('T')[0]
       .replace('-', '')
       .replace('-', '');
-    const blockNumber = tsToBlockNumber(currentBlockNumber - 5, ts);
+    const blockNumber = tsToBlockNumber(currentBlockNumber - 10, ts);
     query[`_${id}`] = {
       __aliasFor: 'pool',
       __args: {
@@ -69,7 +69,7 @@ export async function getTokenMarketChart(
       .split('T')[0]
       .replace('-', '')
       .replace('-', '');
-    const blockNumber = tsToBlockNumber(currentBlockNumber - 5, ts);
+    const blockNumber = tsToBlockNumber(currentBlockNumber - 10, ts);
     query[`_${id}`] = {
       __aliasFor: 'tokenPrice',
       __args: {

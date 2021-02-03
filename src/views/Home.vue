@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-center py-9 border-bottom block-bg mb-4">
-      <h1 class="mb-3" style="font-size: 44px;">Explore pools</h1>
+      <h1 v-text="$t('explorePools')" class="mb-3" style="font-size: 44px;" />
       <UiButton
         class="px-3 hide-sm hide-md width-full"
         style="max-width: 380px;"
@@ -12,10 +12,12 @@
     <Layout>
       <template slot="sidebar-left">
         <BlockMenu />
-        <Block title="Filters">
-          <UiButton @click="modal.selectToken = true" class="mb-3 width-full">
-            Token(s)
-          </UiButton>
+        <Block :title="$t('filters')">
+          <UiButton
+            v-text="$t('tokensParen')"
+            @click="modal.selectToken = true"
+            class="mb-3 width-full"
+          />
           <div v-if="!registry.loading">
             <div v-for="(token, i) in form.tokens" :key="i" class="d-flex py-1">
               <Token
@@ -46,7 +48,7 @@
               v-if="!loading && Object.keys(filteredPools).length === 0"
               class="px-4 pt-4 pb-3"
             >
-              There aren't any matches for your search.
+              {{ $t('errorNoMatch') }}
             </p>
             <div
               v-else

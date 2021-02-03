@@ -17,7 +17,8 @@ function formatPool(pool) {
 
   switch (pool.strategyType) {
     case 0: {
-      pool.strategy.name = 'Weighted pool';
+      // Set the i18n key of the strategy name
+      pool.strategy.name = 'weightedPool';
       const totalWeight = pool.strategy.weights.reduce(
         (a, b) => a.add(b),
         BigNumber.from(0)
@@ -30,7 +31,8 @@ function formatPool(pool) {
       break;
     }
     case 1: {
-      pool.strategy.name = 'Stable pool';
+      // Set the i18n key of the strategy name
+      pool.strategy.name = 'stablePool';
       pool.strategy.weightsPercent = pool.tokens.map(
         () => 100 / pool.tokens.length
       );

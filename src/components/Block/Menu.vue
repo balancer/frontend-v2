@@ -1,17 +1,17 @@
 <template>
-  <Block title="Menu">
+  <Block :title="$t('menu')">
     <p class="d-flex flex-column">
       <router-link :to="{ name: 'home' }">
-        Explore
+        {{ $t('explore') }}
       </router-link>
       <router-link :to="{ name: 'create' }">
-        Create pool
+        {{ $t('createPool') }}
       </router-link>
       <router-link :to="{ name: 'portfolio' }">
-        Portfolio
+        {{ $t('portfolio') }}
       </router-link>
       <router-link :to="{ name: 'vault' }">
-        Vault
+        {{ $t('vault') }}
       </router-link>
     </p>
   </Block>

@@ -7,7 +7,7 @@
         class="col-6 pt-3 text-center border-bottom"
         style="padding-bottom: 10px;"
       >
-        <h4>Buy</h4>
+        <h4 v-text="$t('buy')" />
       </a>
       <a
         @click="currentSide = 1"
@@ -15,7 +15,7 @@
         class="col-6 pt-3 text-center border-bottom"
         style="padding-bottom: 10px;"
       >
-        <h4>Sell</h4>
+        <h4 v-text="$t('sell')" />
       </a>
     </div>
     <div class="p-4">
@@ -30,7 +30,7 @@
         :receiveRatios="[pool.tokenizer.totalSupply]"
         @submit="$emit('joinPool', $event)"
         @approve="$emit('approve', $event)"
-        :submit="'Buy'"
+        :submit="$t('buy')"
       />
       <Exchanger
         :key="currentSide"
@@ -41,7 +41,7 @@
         :receiveTokens="pool.tokens"
         :receiveRatios="pool.tokenBalances"
         @submit="$emit('exitPool', $event)"
-        :submit="'Sell'"
+        :submit="$t('sell')"
       />
     </div>
   </Block>

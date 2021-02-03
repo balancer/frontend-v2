@@ -3,9 +3,9 @@
     <template slot="content-left">
       <div class="px-4 px-md-0">
         <Breadcrumb />
-        <h1 class="mb-3">Claim BAL for {{ _shorten(address) }}</h1>
+        <h1 class="mb-3">{{ $t('claimBAL') }} {{ _shorten(address) }}</h1>
       </div>
-      <Block :slim="true" title="Pending claims">
+      <Block :slim="true" :title="$t('pendingClaims')">
         <div v-if="loading" class="text-center py-3">
           <UiLoading />
         </div>
@@ -23,7 +23,7 @@
               "
               target="_blank"
             >
-              Week {{ parseInt(pendingClaim.id) + 20 }}
+              {{ $t('week') }} {{ parseInt(pendingClaim.id) + 20 }}
               <Icon name="external-link" class="ml-1" />
             </a>
           </div>
@@ -32,7 +32,7 @@
       </Block>
     </template>
     <template slot="sidebar-right">
-      <Block title="Actions">
+      <Block :title="$t('actions')">
         <UiButton :loading="loading" class="d-block width-full mb-2">
           {{ $n(totalPending) }} BAL
         </UiButton>
@@ -41,7 +41,7 @@
           @click="onSubmit"
           class="d-block width-full button--submit"
         >
-          Claim
+          {{ $t('claim') }}
         </UiButton>
       </Block>
     </template>
@@ -95,7 +95,7 @@ export default {
         await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
-        this.notify('Claim success!');
+        this.notify(this.$t('claimSuccess'));
       } catch (e) {
         console.log(e);
       }

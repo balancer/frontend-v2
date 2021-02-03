@@ -2,9 +2,9 @@
   <div>
     <div class="mb-3">
       <div class="mb-2">
-        Send
+        {{ $t('send') }}
         <a @click="onMax">
-          <UiLabel class="float-right">Max</UiLabel>
+          <UiLabel v-text="$t('max')" class="float-right" />
         </a>
       </div>
       <UiButton
@@ -29,7 +29,7 @@
       </UiButton>
     </div>
     <div class="mb-3">
-      <div class="mb-2">Receive</div>
+      <div v-text="$t('receive')" class="mb-2" />
       <UiButton
         v-for="(token, i) in receiveTokens"
         :key="token"
@@ -53,7 +53,7 @@
       @click="onApprove"
       class="button--submit width-full"
     >
-      Approve
+      {{ $t('approve') }}
     </UiButton>
     <UiButton v-else @click="onSubmit" class="button--submit width-full">
       {{ submit }}
