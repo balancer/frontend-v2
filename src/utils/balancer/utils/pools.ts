@@ -58,7 +58,7 @@ export async function getPools(
   let multi = new Multicaller(network, provider, vaultAbi);
   let pools = {};
   poolIds.forEach(id => {
-    const strategyType = 1; // @TODO detect strategy type
+    const strategyType = parseInt(id.slice(42, 46));
     const address = id.slice(0, 42);
     set(pools, `${id}.id`, id);
     set(pools, `${id}.strategyType`, strategyType);
@@ -71,7 +71,14 @@ export async function getPools(
   multi = new Multicaller(network, provider, abis);
   poolIds.forEach(id => {
     const pool = pools[id];
-    multi.call(`${id}.tokenBalances`, constants.vault, 'getPoolTokens', [id]);
+    pool.tokens.forEach((token, i) => {
+      multi.call(
+        `${id}.tokenBalances[${i}]`,
+        constants.vault,
+        'getPoolTokenBalanceInfo',
+        [id, token]
+      );
+    });
     multi.call(`${id}.strategy.swapFee`, pool.address, 'getSwapFee');
     set(pools, `${id}.strategy.type`, pool.strategyType);
     if (pool.strategyType === 0) {
@@ -83,7 +90,6 @@ export async function getPools(
   });
   pools = await multi.execute(pools);
   console.timeEnd('getPools');
-  console.log('Pools', pools);
   return formatPools(pools);
 }
 

@@ -53,10 +53,8 @@
 </template>
 
 <script>
-import { getDailyMarketChart } from '@/utils/coingecko';
 import {
   getBPTMarketChart,
-  getPool,
   getPoolTokens,
   getTokenMarketChart
 } from '@/utils/subgraph';
