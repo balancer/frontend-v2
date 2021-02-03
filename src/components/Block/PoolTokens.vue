@@ -1,5 +1,5 @@
 <template>
-  <Block title="Tokens" :counter="tokens.length" :slim="true">
+  <Block :title="$t('tokens')" :counter="tokens.length" :slim="true">
     <div
       v-for="(token, key, i) in tokens"
       :key="key"

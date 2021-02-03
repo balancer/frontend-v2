@@ -7,7 +7,7 @@
         style="color: white;"
       >
         <Icon name="warning1" size="20" class="mr-1 v-align-text-bottom" />
-        Balancer is not available in your current network
+        {{ $t('unavailableOnNetwork') }}
       </div>
       <Container>
         <div class="d-flex flex-items-center" style="height: 78px;">
@@ -74,6 +74,19 @@
                 class="hide-md hide-lg hide-xl ml-n2 mr-n2 v-align-text-bottom"
               />
             </UiButton>
+            <UiButton class="ml-2" id="langSelect">
+              <span class="hide-sm">
+                <select v-model="$root.$i18n.locale">
+                  <option
+                    v-for="(lang, i) in langs"
+                    :key="`Lang${i}`"
+                    :value="lang"
+                  >
+                    {{ langMap[lang] }}
+                  </option>
+                </select>
+              </span>
+            </UiButton>
             <router-link :to="{ name: 'settings' }" class="ml-2">
               <UiButton class="px-2">
                 <Icon name="gear" size="22" class="v-align-text-bottom px-1" />
@@ -89,8 +102,9 @@
       >
         <UiLoading class="fill-white mr-2" />
         <span class="d-inline-block pt-1"
-          >{{ $n(notifications.watch.length) }} transaction pending</span
-        >
+          >{{ $n(notifications.watch.length) }}
+          {{ $tc('transactionPending', notifications.watch.length) }}
+        </span>
       </div>
     </nav>
     <portal to="modal">
@@ -113,7 +127,9 @@ export default {
     return {
       modalOpen: false,
       pendingClaims: false,
-      totalPending: false
+      totalPending: false,
+      langs: ['en-US', 'zh-CN'],
+      langMap: { 'en-US': 'English', 'zh-CN': '中文' }
     };
   },
   watch: {
@@ -149,5 +165,9 @@ export default {
 <style scoped lang="scss">
 #topnav {
   box-shadow: 0 0 12px -6px var(--border-color);
+}
+
+#langSelect {
+  border: none;
 }
 </style>

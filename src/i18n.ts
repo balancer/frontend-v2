@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import messages from '@/locales';
 
 Vue.use(VueI18n);
 
@@ -7,13 +8,7 @@ const locale = 'en-US';
 
 export default new VueI18n({
   locale,
-  messages: {
-    en: {
-      messages: {
-        EMPTY_STATE: 'No results found'
-      }
-    }
-  },
+  messages,
   dateTimeFormats: {
     'en-US': {
       short: {

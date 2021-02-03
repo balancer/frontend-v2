@@ -3,9 +3,9 @@
     <template slot="content-left">
       <div class="px-4 px-md-0">
         <Breadcrumb />
-        <h1 v-text="'Vault'" class="mb-4" />
+        <h1 v-text="$t('vault')" class="mb-4" />
       </div>
-      <Block :slim="true" title="Trusted operator reporters">
+      <Block :slim="true" :title="$t('universalAgentManagers')">
         <div
           v-for="(operatorReporter, i) in trustedOperatorReporters"
           :key="i"
@@ -14,7 +14,7 @@
           {{ operatorReporter }}
         </div>
       </Block>
-      <Block :slim="true" title="Trusted operators">
+      <Block :slim="true" :title="$t('universalAgents')">
         <div
           v-for="(operator, i) in trustedOperators"
           :key="i"
@@ -24,15 +24,14 @@
         </div>
         <div
           v-if="trustedOperators.length === 0"
+          v-text="$t('errorNoUniversalAgents')"
           class="px-4 py-3 border-bottom last-child-border-0"
-        >
-          Oops, we can't find any trusted operators
-        </div>
+        />
       </Block>
-      <Block title="Protocol fees">
-        <div>Flash loan fee: {{ protocolFlashLoanFee }}</div>
-        <div>Swap fee: {{ protocolSwapFee }}</div>
-        <div>Withdraw fee: {{ protocolWithdrawFee }}</div>
+      <Block :title="$t('protocolFees')">
+        <div>{{ $t('flashLoanFee') }}: {{ protocolFlashLoanFee }}</div>
+        <div>{{ $t('swapFee') }}: {{ protocolSwapFee }}</div>
+        <div>{{ $t('withdrawalFee') }}: {{ protocolWithdrawFee }}</div>
       </Block>
     </template>
   </Layout>
