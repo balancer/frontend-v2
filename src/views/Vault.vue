@@ -12,11 +12,8 @@
         </Block>
         <Block title="Protocol fees">
           <div>{{ $t('flashLoanFee') }}: {{ vault.protocolFlashLoanFee }}</div>
-          <div>{{ $t('swapFee') }} Swap fee: {{ vault.protocolSwapFee }}</div>
-          <div>
-            {{ $t('withdrawFee') }} Withdraw fee:
-            {{ vault.protocolWithdrawFee }}
-          </div>
+          <div>{{ $t('swapFee') }}: {{ vault.protocolSwapFee }}</div>
+          <div>{{ $t('withdrawFee') }}: {{ vault.protocolWithdrawFee }}</div>
         </Block>
       </div>
     </template>

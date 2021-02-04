@@ -174,8 +174,13 @@ export default {
       const provider = getProvider(network);
 
       const totalPools = await getNumberOfPools(provider);
+      console.log('Total pools', totalPools);
+
       const poolIds = await getPoolIds(provider, 0, totalPools);
+      console.log('Pool ids', poolIds);
+
       const pools = await getPools(network, provider, poolIds.slice(0, 20));
+      console.log('Pools', pools);
 
       const tokens = Object.values(pools)
         .map(pool => pool.tokens)

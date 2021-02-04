@@ -66,6 +66,7 @@ export async function getPools(
     multi.call(`${id}.tokens`, constants.vault, 'getPoolTokens', [id]);
   });
   pools = await multi.execute(pools);
+  console.log(pools);
 
   const abis = [...vaultAbi, ...constantProductPoolAbi, ...bTokenAbi];
   multi = new Multicaller(network, provider, abis);
