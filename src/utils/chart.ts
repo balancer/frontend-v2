@@ -1,17 +1,17 @@
 export function formatMarketChartData(data) {
   // Reference date should be a user definable vertical line on the chart
   const refIndex = Math.floor(data[0].length * 0.25);
-  const refDate = data[0][refIndex][0];
+  // const refDate = data[0][refIndex][0];
   const refAmount = data[0][refIndex][1];
 
   // This equalizes all values from the reference date onwards
-  const tokenMultipliers = [
+  const tokenMultipliers: any[] = [
     null,
     refAmount / data[1][refIndex][1],
     refAmount / data[2][refIndex][1]
   ];
 
-  const response = {
+  const response: any = {
     categories: [],
     series: [
       { name: 'HODL', data: [] },

@@ -53,7 +53,7 @@ export default {
         .attr('id', function(d, i) {
           return 'arc-' + i;
         })
-        .attr('fill', d => d3.interpolateCool(Math.random()));
+        .attr('fill', () => d3.interpolateCool(Math.random()));
       newBlock
         .append('text')
         .attr('dx', 10)
