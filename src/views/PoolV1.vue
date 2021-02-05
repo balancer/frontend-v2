@@ -61,8 +61,10 @@
 </template>
 
 <script>
+import { getDailyMarketChart } from '@/utils/coingecko';
 import {
   getBPTMarketChart,
+  getPool,
   getPoolTokens,
   getTokenMarketChart
 } from '@/utils/subgraph';
@@ -75,7 +77,7 @@ export default {
       id: this.$route.params.id,
       loading: false,
       marketCharts: {},
-      marketChartsDays: 90,
+      marketChartsDays: 180,
       marketChartsLoading: false
     };
   },
@@ -88,7 +90,7 @@ export default {
       this.marketChartsLoading = true;
       this.marketChartsDays = days;
       const tokens = await getPoolTokens(this.web3.network.key, this.id);
-
+      console.log(tokens);
       const marketCharts = await Promise.all([
         getBPTMarketChart(
           this.web3.network.key,
@@ -105,7 +107,8 @@ export default {
           )
         )
       ]);
-      this.marketCharts = formatMarketChartData(marketCharts);
+      // TODO: get more information on tokens: weight, name, etc
+      this.marketCharts = formatMarketChartData(marketCharts, tokens);
       this.marketChartsLoading = false;
     }
   },
