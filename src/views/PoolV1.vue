@@ -40,12 +40,20 @@
                 >3 months
               </UiLabel>
             </a>
+            <a @click="loadMarketCharts(180)" class="mr-2">
+              <UiLabel :class="marketChartsDays === 180 && 'active'"
+                >6 months
+              </UiLabel>
+            </a>
           </div>
           <UiLoading
             v-if="marketChartsLoading"
             class="position-absolute mt-n4"
           />
-          <Chart :key="marketCharts[0].length" :marketCharts="marketCharts" />
+          <Chart
+            :key="marketCharts.categories.length"
+            :marketCharts="marketCharts"
+          />
         </div>
       </div>
     </template>
@@ -53,10 +61,8 @@
 </template>
 
 <script>
-import { getDailyMarketChart } from '@/utils/coingecko';
 import {
   getBPTMarketChart,
-  getPool,
   getPoolTokens,
   getTokenMarketChart
 } from '@/utils/subgraph';
@@ -68,8 +74,8 @@ export default {
     return {
       id: this.$route.params.id,
       loading: false,
-      marketCharts: [],
-      marketChartsDays: 7,
+      marketCharts: {},
+      marketChartsDays: 90,
       marketChartsLoading: false
     };
   },
@@ -82,6 +88,7 @@ export default {
       this.marketChartsLoading = true;
       this.marketChartsDays = days;
       const tokens = await getPoolTokens(this.web3.network.key, this.id);
+
       const marketCharts = await Promise.all([
         getBPTMarketChart(
           this.web3.network.key,
@@ -105,7 +112,7 @@ export default {
   async created() {
     this.loading = true;
     await this.getBlockNumber();
-    await this.loadMarketCharts(7);
+    await this.loadMarketCharts(180);
     this.loading = false;
   }
 };
