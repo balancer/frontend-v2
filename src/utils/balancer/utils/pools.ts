@@ -5,7 +5,7 @@ import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
 import { getAddress } from '@ethersproject/address';
 import set from 'lodash/set';
 import { abi as vaultAbi } from '@/utils/balancer/abi/Vault.json';
-import { abi as constantProductPoolAbi } from '@/utils/balancer/abi/ConstantProductPool.json';
+import { abi as weightedPoolAbi } from '@/utils/balancer/abi/WeightedPool.json';
 import { abi as bTokenAbi } from '@/utils/balancer/abi/BToken.json';
 import constants from '@/utils/balancer/constants';
 import { sendTransaction } from '@snapshot-labs/snapshot.js/src/utils';
@@ -58,43 +58,36 @@ export async function getPools(
   let multi = new Multicaller(network, provider, vaultAbi);
   let pools = {};
   poolIds.forEach(id => {
-    const strategyType = parseInt(id.slice(25, 26));
-    const strategyAddress = id.slice(26);
+    const strategyType = parseInt(id.slice(42, 46));
+    const address = id.slice(0, 42);
     set(pools, `${id}.id`, id);
     set(pools, `${id}.strategyType`, strategyType);
-    set(pools, `${id}.strategyAddress`, getAddress(strategyAddress));
+    set(pools, `${id}.address`, getAddress(address));
     multi.call(`${id}.tokens`, constants.vault, 'getPoolTokens', [id]);
   });
   pools = await multi.execute(pools);
+  console.log(pools);
 
-  const abis = [...vaultAbi, ...constantProductPoolAbi, ...bTokenAbi];
+  const abis = [...vaultAbi, ...weightedPoolAbi, ...bTokenAbi];
   multi = new Multicaller(network, provider, abis);
   poolIds.forEach(id => {
     const pool = pools[id];
-    const address = pool.strategyAddress;
-    multi.call(`${id}.tokenBalances`, constants.vault, 'getPoolTokenBalances', [
-      id,
-      pool.tokens
-    ]);
-    multi.call(`${id}.strategy.swapFee`, address, 'getSwapFee');
+    pool.tokens.forEach((token, i) => {
+      multi.call(
+        `${id}.tokenBalances[${i}]`,
+        constants.vault,
+        'getPoolTokenBalanceInfo',
+        [id, token]
+      );
+    });
+    multi.call(`${id}.strategy.swapFee`, pool.address, 'getSwapFee');
     set(pools, `${id}.strategy.type`, pool.strategyType);
-    set(pools, `${id}.strategy.address`, address);
     if (pool.strategyType === 0) {
-      multi.call(`${id}.strategy.weights`, address, 'getWeights', [
-        pool.tokens
-      ]);
+      // multi.call(`${id}.strategy.weights`, pool.address, 'getWeights', [pool.tokens]);
     } else if (pool.strategyType === 1) {
       // multi.call(`${id}.strategy.amp`, address, 'getAmplification');
     }
-    set(pools, `${id}.tokenizer.address`, pool.strategyAddress);
-    multi.call(`${id}.tokenizer.name`, pool.strategyAddress, 'name');
-    multi.call(`${id}.tokenizer.symbol`, pool.strategyAddress, 'symbol');
-    multi.call(`${id}.tokenizer.decimals`, pool.strategyAddress, 'decimals');
-    multi.call(
-      `${id}.tokenizer.totalSupply`,
-      pool.strategyAddress,
-      'totalSupply'
-    );
+    multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
   });
   pools = await multi.execute(pools);
   console.timeEnd('getPools');
@@ -114,7 +107,7 @@ export async function joinPool(web3, address, params: any[]) {
   return await sendTransaction(
     web3,
     address,
-    constantProductPoolAbi,
+    weightedPoolAbi,
     'joinPool',
     params
   );
@@ -124,7 +117,7 @@ export async function exitPool(web3, address, params: any[]) {
   return await sendTransaction(
     web3,
     address,
-    constantProductPoolAbi,
+    weightedPoolAbi,
     'exitPool',
     params
   );

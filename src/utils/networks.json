@@ -67,6 +67,9 @@
     "network": "docker localhost",
     "rpc": [
       "http://localhost:8545"
+    ],
+    "ws": [
+      "ws://localhost:8546"
     ]
   }
 }

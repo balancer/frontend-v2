@@ -26,7 +26,7 @@
         >
           <Token :token="token" :symbol="true" :name="true" />
           <span class="float-right text-gray">
-            {{ $n(token.balance) }}
+            {{ _num(token.balance) }}
           </span>
         </a>
       </div>
