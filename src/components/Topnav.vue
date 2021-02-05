@@ -101,9 +101,8 @@
         style="color: white;"
       >
         <UiLoading class="fill-white mr-2" />
-        <span class="d-inline-block pt-1"
-          >{{ _num(notifications.watch.length) }}
-          {{ $tc('transactionPending', notifications.watch.length) }}
+        <span class="d-inline-block pt-1">
+          {{ $tc('transactionPending', _num(notifications.watch.length)) }}
         </span>
       </div>
     </nav>

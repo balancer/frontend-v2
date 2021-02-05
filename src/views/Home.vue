@@ -176,19 +176,22 @@ export default {
       const totalPools = await getNumberOfPools(provider);
       console.log('Total pools', totalPools);
 
-      const poolIds = await getPoolIds(provider, 0, totalPools);
-      console.log('Pool ids', poolIds);
+      if (totalPools > 0) {
+        const poolIds = await getPoolIds(provider, 0, totalPools);
+        console.log('Pool ids', poolIds);
 
-      const pools = await getPools(network, provider, poolIds.slice(0, 20));
-      console.log('Pools', pools);
+        const pools = await getPools(network, provider, poolIds.slice(0, 20));
+        console.log('Pools', pools);
 
-      const tokens = Object.values(pools)
-        .map(pool => pool.tokens)
-        .reduce((a, b) => [...a, ...b], []);
-      await this.injectTokens(tokens);
+        const tokens = Object.values(pools)
+          .map(pool => pool.tokens)
+          .reduce((a, b) => [...a, ...b], []);
+        await this.injectTokens(tokens);
 
-      this.pools = pools;
-      console.log('Pools', this.pools);
+        this.pools = pools;
+        console.log('Pools', this.pools);
+      }
+
       this.loading = false;
     }
   },

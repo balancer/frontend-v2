@@ -5,7 +5,7 @@ import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
 import { getAddress } from '@ethersproject/address';
 import set from 'lodash/set';
 import { abi as vaultAbi } from '@/utils/balancer/abi/Vault.json';
-import { abi as constantProductPoolAbi } from '@/utils/balancer/abi/ConstantProductPool.json';
+import { abi as weightedPoolAbi } from '@/utils/balancer/abi/WeightedPool.json';
 import { abi as bTokenAbi } from '@/utils/balancer/abi/BToken.json';
 import constants from '@/utils/balancer/constants';
 import { sendTransaction } from '@snapshot-labs/snapshot.js/src/utils';
@@ -68,7 +68,7 @@ export async function getPools(
   pools = await multi.execute(pools);
   console.log(pools);
 
-  const abis = [...vaultAbi, ...constantProductPoolAbi, ...bTokenAbi];
+  const abis = [...vaultAbi, ...weightedPoolAbi, ...bTokenAbi];
   multi = new Multicaller(network, provider, abis);
   poolIds.forEach(id => {
     const pool = pools[id];
@@ -107,7 +107,7 @@ export async function joinPool(web3, address, params: any[]) {
   return await sendTransaction(
     web3,
     address,
-    constantProductPoolAbi,
+    weightedPoolAbi,
     'joinPool',
     params
   );
@@ -117,7 +117,7 @@ export async function exitPool(web3, address, params: any[]) {
   return await sendTransaction(
     web3,
     address,
-    constantProductPoolAbi,
+    weightedPoolAbi,
     'exitPool',
     params
   );

@@ -1,23 +1,23 @@
 import { sendTransaction } from '@snapshot-labs/snapshot.js/src/utils';
 import constants from '../constants';
-import { abi as constantProductPoolFactoryAbi } from '../abi/ConstantProductPoolFactory.json';
-import { abi as stablecoinPoolFactoryAbi } from '../abi/StablecoinPoolFactory.json';
+import { abi as weightedPoolFactoryAbi } from '../abi/WeightedPoolFactory.json';
+import { abi as stablePoolFactoryAbi } from '../abi/StablePoolFactory.json';
 
-export async function createConstantProductPool(web3, params: any[]) {
+export async function createWeightedPool(web3, params: any[]) {
   return await sendTransaction(
     web3,
-    constants.constantProductPoolFactory,
-    constantProductPoolFactoryAbi,
+    constants.weightedPoolFactory,
+    weightedPoolFactoryAbi,
     'create',
     params
   );
 }
 
-export async function createStablecoinPool(web3, params: any[]) {
+export async function createstablePool(web3, params: any[]) {
   return await sendTransaction(
     web3,
-    constants.stablecoinPoolFactory,
-    stablecoinPoolFactoryAbi,
+    constants.stablePoolFactory,
+    stablePoolFactoryAbi,
     'create',
     params
   );
