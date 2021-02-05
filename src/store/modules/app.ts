@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { lsGet, lsSet } from '@/utils';
+import i18n from '@/i18n';
 
 const state = {
   init: false,
@@ -7,7 +8,8 @@ const state = {
   authLoading: false,
   modalOpen: false,
   spaces: {},
-  skin: lsGet('skin', 'light')
+  skin: lsGet('skin', 'light'),
+  locale: lsGet('locale', 'en-US')
 };
 
 const actions = {
@@ -18,6 +20,7 @@ const actions = {
     Vue.prototype.$auth.getConnector().then(connector => {
       if (connector) dispatch('login', connector);
     });
+    i18n.locale = state.locale;
   },
   loading: ({ commit }, payload) => {
     commit('SET', { loading: payload });
@@ -28,6 +31,11 @@ const actions = {
   setSkin: async ({ commit }, skin) => {
     lsSet('skin', skin);
     commit('SET', { skin });
+  },
+  setLocale: async ({ commit }, locale) => {
+    lsSet('locale', locale);
+    i18n.locale = locale;
+    commit('SET', { locale });
   }
 };
 
