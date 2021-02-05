@@ -1,9 +1,7 @@
 <template>
   <div class="p-4">
     {{ _shorten(pool.id) }}<br />
-    {{ $t('strategy') }}: {{ $t(pool.strategy.name) }} ({{
-      pool.strategyType
-    }})<br />
+    {{ $t('strategy') }}: {{ $t(pool.strategy.name) }}<br />
     {{ $t('swapFee') }}: {{ _num(pool.strategy.swapFeePercent) }}%<br />
     <div>
       <span v-for="(token, i) in pool.tokens" :key="token" class="mr-2">

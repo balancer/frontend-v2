@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import getProvider from '@/utils/provider';
-import { getAllowances, getBalances } from '@/utils/balancer/utils/tokens';
+import { getAllowances, getBalances } from '@/utils/balancer/tokens';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue';
 import constants from '@/utils/balancer/constants';
 

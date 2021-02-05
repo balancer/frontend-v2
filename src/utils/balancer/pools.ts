@@ -10,13 +10,20 @@ import { abi as bTokenAbi } from '@/utils/balancer/abi/BToken.json';
 import constants from '@/utils/balancer/constants';
 import { sendTransaction } from '@snapshot-labs/snapshot.js/src/utils';
 
+// Merge all the ABIs and remove duplicates
+const abis = Object.values(
+  Object.fromEntries(
+    [...vaultAbi, ...weightedPoolAbi, ...bTokenAbi].map(row => [row.name, row])
+  )
+);
+
 function formatPool(pool) {
   pool.strategy.swapFeePercent = parseFloat(
     formatUnits(pool.strategy.swapFee || BigNumber.from(0), 16)
   );
 
-  switch (pool.strategyType) {
-    case 0: {
+  switch (pool.strategy.type) {
+    case 2: {
       // Set the i18n key of the strategy name
       pool.strategy.name = 'weightedPool';
       const totalWeight = pool.strategy.weights.reduce(
@@ -48,6 +55,7 @@ function formatPools(pools) {
   );
 }
 
+// Load pools data with multicalls
 export async function getPools(
   network: string,
   provider: any,
@@ -61,14 +69,13 @@ export async function getPools(
     const strategyType = parseInt(id.slice(42, 46));
     const address = id.slice(0, 42);
     set(pools, `${id}.id`, id);
-    set(pools, `${id}.strategyType`, strategyType);
+    set(pools, `${id}.strategy.type`, strategyType);
     set(pools, `${id}.address`, getAddress(address));
     multi.call(`${id}.tokens`, constants.vault, 'getPoolTokens', [id]);
   });
   pools = await multi.execute(pools);
   console.log(pools);
 
-  const abis = [...vaultAbi, ...weightedPoolAbi, ...bTokenAbi];
   multi = new Multicaller(network, provider, abis);
   poolIds.forEach(id => {
     const pool = pools[id];
@@ -81,10 +88,14 @@ export async function getPools(
       );
     });
     multi.call(`${id}.strategy.swapFee`, pool.address, 'getSwapFee');
-    set(pools, `${id}.strategy.type`, pool.strategyType);
-    if (pool.strategyType === 0) {
-      // multi.call(`${id}.strategy.weights`, pool.address, 'getWeights', [pool.tokens]);
-    } else if (pool.strategyType === 1) {
+    if (pool.strategy.type === 2) {
+      multi.call(
+        `${id}.strategy.weights`,
+        pool.address,
+        'getNormalizedWeights',
+        [pool.tokens]
+      );
+    } else if (pool.strategy.type === 1) {
       // multi.call(`${id}.strategy.amp`, address, 'getAmplification');
     }
     multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');

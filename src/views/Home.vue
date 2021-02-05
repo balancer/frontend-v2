@@ -93,8 +93,9 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import getProvider from '@/utils/provider';
-import { getNumberOfPools, getPoolIds } from '@/utils/balancer/vault';
-import { getPools } from '@/utils/balancer/utils/pools';
+import { getNumberOfPools } from '@/utils/balancer/vault';
+import { getPoolIds } from '@/utils/balancer/subgraph';
+import { getPools } from '@/utils/balancer/pools';
 import { clone } from '@/utils';
 
 export default {
@@ -177,7 +178,7 @@ export default {
       console.log('Total pools', totalPools);
 
       if (totalPools > 0) {
-        const poolIds = await getPoolIds(provider, 0, totalPools);
+        const poolIds = await getPoolIds(network);
         console.log('Pool ids', poolIds);
 
         const pools = await getPools(network, provider, poolIds.slice(0, 20));

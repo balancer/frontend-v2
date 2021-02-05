@@ -7,7 +7,7 @@ import BN from 'bn.js';
 import { loadTokenlist } from '@/utils/tokenlists';
 import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/utils';
-import { getTokensMetadata } from '@/utils/balancer/utils/tokens';
+import { getTokensMetadata } from '@/utils/balancer/tokens';
 
 const defaultActiveLists = {};
 defaultActiveLists[TOKEN_LIST_DEFAULT] = true;

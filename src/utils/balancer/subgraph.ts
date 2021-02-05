@@ -1,10 +1,9 @@
 import { subgraphRequest } from '@snapshot-labs/snapshot.js/src/utils';
-import { getCurrentTs, tsToBlockNumber } from '@/utils/index';
+import { getCurrentTs, tsToBlockNumber } from '@/utils';
 
 const BALANCER_SUBGRAPH_URL = {
   '1': 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-beta',
-  '4': 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-rinkeby',
-  '42': 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan'
+  '42': 'https://api.thegraph.com/subgraphs/name/bonustrack/balancer-kovan-v2'
 };
 
 export async function getBPTMarketChart(
@@ -104,4 +103,17 @@ export async function getPoolTokens(network, id) {
   };
   const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
   return result?.pool?.tokensList;
+}
+
+export async function getPoolIds(network) {
+  const query = {
+    pools: {
+      __args: {
+        first: 1000
+      },
+      id: true
+    }
+  };
+  const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
+  return result?.pools?.map(pool => pool.id);
 }

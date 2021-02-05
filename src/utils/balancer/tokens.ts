@@ -6,7 +6,7 @@ import {
   sendTransaction
 } from '@snapshot-labs/snapshot.js/src/utils';
 import set from 'lodash/set';
-import { abi } from '../abi/BToken.json';
+import { abi } from './abi/BToken.json';
 
 export async function getBalances(
   network: string,
