@@ -34,7 +34,6 @@ const getters = {
         requiredAllowances[token] = allowance;
       }
     });
-    console.log('Required allowances', requiredAllowances);
     return requiredAllowances;
   }
 };

@@ -17,18 +17,24 @@
         </UiButton>
       </Block>
       <Block v-if="form.strategyType" :title="$t('configuration')">
-        <UiButton class="d-flex width-full px-3 mb-2">
-          <span v-text="$t('initialBPT')" class="mr-2 text-gray" />
+        <UiButton class="d-flex width-full mb-2 px-3">
+          <span v-text="$t('name')" class="mr-2 text-gray" />
           <input
-            v-model="form.initialBPT"
-            type="number"
-            placeholder="0"
-            step="0"
+            v-model="form.name"
             class="input text-left flex-auto"
+            maxlength="32"
             required
           />
         </UiButton>
-
+        <UiButton class="d-flex width-full mb-2 px-3">
+          <span v-text="$t('symbol')" class="mr-2 text-gray" />
+          <input
+            v-model="form.symbol"
+            class="input text-left flex-auto"
+            maxlength="8"
+            required
+          />
+        </UiButton>
         <UiButton class="d-flex width-full mb-2 px-3">
           <span v-text="$t('swapFee')" class="mr-2 text-gray" />
           <input
@@ -69,33 +75,15 @@
             :token="tokens[token]"
             :symbol="true"
             :name="true"
-            class="mb-3 text-white"
+            class="text-white"
           />
-          <div>
+          <div v-if="form.strategyType === '0'" class="mt-3">
             <UiButton
-              v-if="form.strategyType === '0'"
               class="d-flex width-full px-3 mb-2"
             >
               <span v-text="$t('weight')" class="mr-2 text-gray" />
               <input
                 v-model="form.weights[i]"
-                class="input width-full"
-                type="number"
-                placeholder="0.0"
-                step="any"
-                required
-              />
-            </UiButton>
-            <UiButton
-              :class="{
-                'border-red':
-                  parseFloat(form.amounts[i]) > tokens[token].balance
-              }"
-              class="d-flex width-full px-3"
-            >
-              <span v-text="$t('amount')" class="mr-2 text-gray" />
-              <input
-                v-model="form.amounts[i]"
                 class="input width-full"
                 type="number"
                 placeholder="0.0"
@@ -119,6 +107,7 @@
     <template slot="sidebar-right">
       <div v-if="form.strategyType">
         <Block :title="$t('actions')">
+          <!--
           <UiButton
             v-if="!hasAllowed && Object.keys(requiredAllowances).length > 0"
             @click="onApprove"
@@ -127,8 +116,8 @@
           >
             {{ $t('approve') }}
           </UiButton>
+          -->
           <UiButton
-            v-else
             @click="onSubmit"
             :disabled="!$auth.isAuthenticated"
             :loading="loading"
@@ -172,11 +161,10 @@ import { mapGetters, mapActions } from 'vuex';
 import { parseUnits } from '@ethersproject/units';
 import constants from '@/utils/balancer/constants';
 import {
-  createConstantProductPool,
-  createStablecoinPool
+  createWeightedPool,
+  createstablePool
 } from '@/utils/balancer/utils/factory';
 import { approveTokens } from '@/utils/balancer/utils/tokens';
-import { id } from '@ethersproject/hash';
 
 export default {
   data() {
@@ -187,10 +175,10 @@ export default {
       hasAllowed: false,
       form: {
         strategyType: null,
-        initialBPT: '',
+        name: '',
+        symbol: '',
         tokens: [],
         weights: [],
-        amounts: [],
         swapFee: '',
         amp: ''
       },
@@ -213,32 +201,23 @@ export default {
     requiredAllowances() {
       return this.getRequiredAllowances({
         tokens: Object.fromEntries(
-          this.params[1].map((token, i) => [token, this.params[2][i] || '0'])
+          this.params[2].map((token, i) => [token, this.params[3][i] || '0'])
         )
       });
     },
     params() {
-      const initialBPT = parseUnits(this.form.initialBPT || '0').toString();
-      const tokens = this.form.tokens;
-      const amounts = this.form.tokens.map((token, i) =>
-        parseUnits(
-          this.form.amounts[i] || '0',
-          this.tokens[this.form.tokens[i]].decimals
-        ).toString()
-      );
-      const swapFee = parseUnits(this.form.swapFee || '0', 16).toString();
-      const salt = id(Math.random().toString());
-      const params = [initialBPT, tokens, amounts];
+      const params = {
+        name: this.form.name,
+        symbol: this.form.symbol,
+        tokens: this.form.tokens
+      };
       if (this.form.strategyType === '0')
-        params.push(
-          this.form.weights.map(weight =>
-            parseUnits(weight || '0', 16).toString()
-          )
+        params.weights = this.form.weights.map(weight =>
+          parseUnits(weight || '0', 16).toString()
         );
-      if (this.form.strategyType === '1') params.push(this.form.amp);
-      params.push(swapFee);
-      params.push(salt);
-      return params;
+      if (this.form.strategyType === '1') params.amp = this.form.amp;
+      params.swapFee = parseUnits(this.form.swapFee || '0', 16).toString();
+      return Object.values(params);
     }
   },
   methods: {
@@ -282,10 +261,7 @@ export default {
     async onSubmit() {
       this.loading = true;
       try {
-        const createStrategies = [
-          createConstantProductPool,
-          createStablecoinPool
-        ];
+        const createStrategies = [createWeightedPool, createstablePool];
         const tx = await createStrategies[this.form.strategyType](
           this.$auth.web3,
           this.params

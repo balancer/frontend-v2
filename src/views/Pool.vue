@@ -54,17 +54,15 @@
         <Block :title="$t('overview')">
           <div class="d-flex">
             <div v-text="$t('poolTokenName')" class="flex-auto" />
-            {{ pool.tokenizer.name }}
+            {{ tokens[pool.address].name }}
             <a @click="addToken" class="ml-1 mb-n1 mr-n1">
               <Icon name="plus" size="22" />
             </a>
           </div>
           <div class="d-flex">
             <div v-text="$t('totalSupply')" class="flex-auto" />
-            {{
-              $n(_units(pool.tokenizer.totalSupply, pool.tokenizer.decimals))
-            }}
-            {{ pool.tokenizer.symbol }}
+            {{ _num(_units(pool.totalSupply, tokens[pool.address].decimals)) }}
+            {{ tokens[pool.address].symbol }}
           </div>
           <div class="d-flex">
             <div v-text="$t('poolType')" class="flex-auto" />
@@ -73,7 +71,7 @@
           </div>
           <div v-if="pool.strategy.swapFee" class="d-flex">
             <div v-text="$t('swapFee')" class="flex-auto" />
-            {{ $n(pool.strategy.swapFeePercent) }}%
+            {{ _num(pool.strategy.swapFeePercent) }}%
           </div>
         </Block>
         <BlockPoolTokens
@@ -84,13 +82,13 @@
       </div>
     </template>
     <template slot="sidebar-right">
-      <div v-if="pool && !loading && !registry.loading && pool.tokenizer">
+      <div v-if="pool && !loading && !registry.loading">
         <BlockPoolActions
           @joinPool="onJoinPool"
           @exitPool="onExitPool"
           @approve="onApprove"
           :hasAllowed="hasAllowed"
-          :tokens="getTokens()"
+          :tokens="tokens"
           :pool="pool"
         />
       </div>
@@ -120,7 +118,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getTokens'])
+    ...mapGetters(['getTokens']),
+    tokens() {
+      return this.getTokens();
+    }
   },
   methods: {
     ...mapActions(['notify', 'injectTokens']),
@@ -149,7 +150,6 @@ export default {
       }
     },
     async onJoinPool(data) {
-      this.tokens = this.getTokens();
       const [poolAmountOut] = data.receiveAmounts;
       const maxAmountsIn = this.pool.tokens.map((token, i) =>
         parseUnits(data.sendAmounts[i], this.tokens[token].decimals).toString()
@@ -157,20 +157,13 @@ export default {
       const transferTokens = true;
       const beneficiary = this.web3.account;
       const params = [
-        parseUnits(
-          poolAmountOut,
-          this.tokens[this.pool.tokenizer.address].decimals
-        ),
+        parseUnits(poolAmountOut, this.tokens[this.pool.address].decimals),
         maxAmountsIn,
         transferTokens,
         beneficiary
       ];
       try {
-        const tx = await joinPool(
-          this.$auth.web3,
-          this.pool.tokenizer.address,
-          params
-        );
+        const tx = await joinPool(this.$auth.web3, this.pool.address, params);
         console.log(tx);
         await this.loadPool();
         this.notify(this.$t('youDidIt'));
@@ -179,7 +172,6 @@ export default {
       }
     },
     async onExitPool(data) {
-      this.tokens = this.getTokens();
       const [poolAmountIn] = data.sendAmounts;
       const minAmountsOut = this.pool.tokens.map((token, i) =>
         parseUnits(
@@ -190,20 +182,13 @@ export default {
       const withdrawTokens = true;
       const beneficiary = this.web3.account;
       const params = [
-        parseUnits(
-          poolAmountIn,
-          this.tokens[this.pool.tokenizer.address].decimals
-        ),
+        parseUnits(poolAmountIn, this.tokens[this.pool.address].decimals),
         minAmountsOut,
         withdrawTokens,
         beneficiary
       ];
       try {
-        const tx = await exitPool(
-          this.$auth.web3,
-          this.pool.tokenizer.address,
-          params
-        );
+        const tx = await exitPool(this.$auth.web3, this.pool.address, params);
         console.log(tx);
         await this.loadPool();
         this.notify(this.$t('youDidIt'));
@@ -212,8 +197,7 @@ export default {
       }
     },
     async addToken() {
-      const tokens = this.getTokens();
-      const address = this.pool.tokenizer.address;
+      const address = this.pool.address;
       // @ts-ignore
       await this.$auth.provider.sendAsync({
         method: 'wallet_watchAsset',
@@ -221,8 +205,8 @@ export default {
           type: 'ERC20',
           options: {
             address,
-            symbol: tokens[address].symbol,
-            decimals: tokens[address].decimals
+            symbol: this.tokens[address].symbol,
+            decimals: this.tokens[address].decimals
           }
         },
         id: Math.round(Math.random() * 100000)
@@ -241,7 +225,7 @@ export default {
   async created() {
     this.loading = true;
     await this.loadPool();
-    await this.injectTokens([...this.pool.tokens, this.pool.tokenizer.address]);
+    await this.injectTokens([...this.pool.tokens, this.pool.address]);
     await this.loadMarketCharts(7);
     this.loading = false;
   }

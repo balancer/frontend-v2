@@ -93,7 +93,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import getProvider from '@/utils/provider';
-import Vault from '@/utils/balancer/vault';
+import { getNumberOfPools, getPoolIds } from '@/utils/balancer/vault';
 import { getPools } from '@/utils/balancer/utils/pools';
 import { clone } from '@/utils';
 
@@ -168,27 +168,30 @@ export default {
       if (query.tokens && !Array.isArray(query.tokens))
         query.tokens = [query.tokens];
       this.form = { ...this.form, ...query };
+
       this.loading = true;
-      const vault = new Vault(
-        this.web3.network.key,
-        getProvider(this.web3.network.key)
-      );
-      const totalPools = await vault.getTotalPools();
+      const network = this.web3.network.key;
+      const provider = getProvider(network);
+
+      const totalPools = await getNumberOfPools(provider);
       console.log('Total pools', totalPools);
-      const poolIds = await vault.getPoolIds(0, totalPools);
-      console.log('Pool ids', poolIds);
-      const pools = await getPools(
-        this.web3.network.key,
-        getProvider(this.web3.network.key),
-        poolIds.slice(0)
-      );
-      const tokens = [];
-      Object.values(pools).forEach(pool =>
-        pool.tokens.forEach(token => tokens.push(token))
-      );
-      await this.injectTokens(tokens);
-      this.pools = pools;
-      console.log('Multicall', this.pools);
+
+      if (totalPools > 0) {
+        const poolIds = await getPoolIds(provider, 0, totalPools);
+        console.log('Pool ids', poolIds);
+
+        const pools = await getPools(network, provider, poolIds.slice(0, 20));
+        console.log('Pools', pools);
+
+        const tokens = Object.values(pools)
+          .map(pool => pool.tokens)
+          .reduce((a, b) => [...a, ...b], []);
+        await this.injectTokens(tokens);
+
+        this.pools = pools;
+        console.log('Pools', this.pools);
+      }
+
       this.loading = false;
     }
   },

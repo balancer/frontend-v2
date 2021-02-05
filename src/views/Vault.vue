@@ -3,93 +3,48 @@
     <template slot="content-left">
       <div class="px-4 px-md-0">
         <Breadcrumb />
-        <h1 v-text="$t('vault')" class="mb-4" />
+        <h1 v-text="'Vault'" class="mb-4" />
       </div>
-      <Block :slim="true" :title="$t('universalAgentManagers')">
-        <div
-          v-for="(operatorReporter, i) in trustedOperatorReporters"
-          :key="i"
-          class="px-4 py-3 border-bottom last-child-border-0"
-        >
-          {{ operatorReporter }}
-        </div>
-      </Block>
-      <Block :slim="true" :title="$t('universalAgents')">
-        <div
-          v-for="(operator, i) in trustedOperators"
-          :key="i"
-          class="px-4 py-3 border-bottom last-child-border-0"
-        >
-          {{ operator }}
-        </div>
-        <div
-          v-if="trustedOperators.length === 0"
-          v-text="$t('errorNoUniversalAgents')"
-          class="px-4 py-3 border-bottom last-child-border-0"
-        />
-      </Block>
-      <Block :title="$t('protocolFees')">
-        <div>{{ $t('flashLoanFee') }}: {{ protocolFlashLoanFee }}</div>
-        <div>{{ $t('swapFee') }}: {{ protocolSwapFee }}</div>
-        <div>{{ $t('withdrawalFee') }}: {{ protocolWithdrawFee }}</div>
-      </Block>
+      <UiLoading v-if="loading" />
+      <div v-if="loaded">
+        <Block title="Overview">
+          <div>{{ $t('numberOfPools') }}: {{ vault.numberOfPools }}</div>
+        </Block>
+        <Block title="Protocol fees">
+          <div>{{ $t('flashLoanFee') }}: {{ vault.protocolFlashLoanFee }}</div>
+          <div>{{ $t('swapFee') }}: {{ vault.protocolSwapFee }}</div>
+          <div>{{ $t('withdrawFee') }}: {{ vault.protocolWithdrawFee }}</div>
+        </Block>
+      </div>
     </template>
   </Layout>
 </template>
 
 <script>
-import { call } from '@snapshot-labs/snapshot.js/src/utils';
 import getProvider from '@/utils/provider';
-import { abi } from '@/utils/balancer/abi/Vault.json';
-import constants from '@/utils/balancer/constants';
+import { getVault } from '@/utils/balancer/vault';
 
 export default {
   data() {
     return {
-      trustedOperatorReporters: false,
-      trustedOperators: false,
-      protocolFlashLoanFee: false,
-      protocolSwapFee: false,
-      protocolWithdrawFee: false
+      loading: false,
+      loaded: false,
+      vault: {
+        numberOfPools: false,
+        protocolFlashLoanFee: false,
+        protocolSwapFee: false,
+        protocolWithdrawFee: false
+      }
     };
   },
   async created() {
-    let total = await call(getProvider(this.web3.network.key), abi, [
-      constants.vault,
-      'getTotalTrustedOperatorReporters'
-    ]);
-    this.trustedOperatorReporters = await call(
-      getProvider(this.web3.network.key),
-      abi,
-      [constants.vault, 'getTrustedOperatorReporters', [0, total]]
+    this.loading = true;
+    this.vault = await getVault(
+      this.web3.network.key,
+      getProvider(this.web3.network.key)
     );
-
-    total = await call(getProvider(this.web3.network.key), abi, [
-      constants.vault,
-      'getTotalTrustedOperators'
-    ]);
-    this.trustedOperators = await call(
-      getProvider(this.web3.network.key),
-      abi,
-      [constants.vault, 'getTrustedOperators', [0, total]]
-    );
-
-    this.protocolFlashLoanFee = await call(
-      getProvider(this.web3.network.key),
-      abi,
-      [constants.vault, 'protocolFlashLoanFee']
-    );
-
-    this.protocolSwapFee = await call(getProvider(this.web3.network.key), abi, [
-      constants.vault,
-      'protocolSwapFee'
-    ]);
-
-    this.protocolWithdrawFee = await call(
-      getProvider(this.web3.network.key),
-      abi,
-      [constants.vault, 'protocolWithdrawFee']
-    );
+    this.loading = false;
+    this.loaded = true;
   }
 };
 </script>

@@ -11,7 +11,7 @@
           v-if="now < item.timestamp + duration && !item.hide"
           @click="item.hide = true"
         >
-          {{ item.message }}
+          {{ $t('item.message') }}
         </UiButton>
       </div>
     </div>

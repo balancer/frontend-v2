@@ -1,7 +1,7 @@
 <template>
   <span>
     <img
-      v-if="profile.image"
+      v-if="profile && profile.image"
       :src="_ipfsUrl(profile.image)"
       :style="{
         width: `${parseInt(size) || 22}px`,
