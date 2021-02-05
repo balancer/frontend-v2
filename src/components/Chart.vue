@@ -13,14 +13,11 @@
 <script>
 export default {
   props: {
-    marketCharts: Array
+    marketCharts: Object
   },
   data() {
-    const series = this.marketCharts.map(marketChart => ({
-      name: '',
-      data: marketChart.map(data => data[1])
-    }));
-    const categories = this.marketCharts[0].map(data => data[0]);
+    const categories = this.marketCharts['categories'];
+    const series = this.marketCharts['series'];
     return {
       series,
       options: {
@@ -30,7 +27,7 @@ export default {
             enabled: false
           },
           zoom: {
-            enabled: false
+            enabled: true
           },
           toolbar: {
             tools: {
@@ -38,13 +35,14 @@ export default {
             }
           }
         },
-        colors: ['#384aff', '#101111', '#5c6170'],
+        colors: ['#00AAFA', '#C2D5F7', '#CCE7FE', '#00AAFA'],
         dataLabels: {
           enabled: false
         },
         stroke: {
-          width: 3,
-          curve: 'straight'
+          width: [2, 3, 3, 3, 4],
+          curve: 'straight',
+          dashArray: [2, 0, 0, 0]
         },
         grid: {
           show: true
