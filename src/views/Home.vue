@@ -103,7 +103,7 @@ export default {
     return {
       q: '',
       loading: false,
-      pools: {},
+      pools: [],
       limit: 64,
       form: {
         tokens: []
@@ -116,7 +116,7 @@ export default {
   },
   watch: {
     'web3.network.key': function() {
-      this.pools = {};
+      this.pools = [];
       this.loadPools();
     },
     'form.tokens': function() {
@@ -130,13 +130,11 @@ export default {
       return this.getTokens();
     },
     filteredPools() {
-      return Object.fromEntries(
-        Object.entries(this.pools)
-          .filter(pool =>
-            this.form.tokens.every(token => pool[1].tokens.includes(token))
-          )
-          .slice(0, this.limit)
-      );
+      return this.pools
+        .filter(pool =>
+          this.form.tokens.every(token => pool[1].tokens.includes(token))
+        )
+        .slice(0, this.limit);
     }
   },
   methods: {
@@ -184,7 +182,7 @@ export default {
         const pools = await getPools(network, provider, poolIds.slice(0, 20));
         console.log('Pools', pools);
 
-        const tokens = Object.values(pools)
+        const tokens = pools
           .map(pool => pool.tokens)
           .reduce((a, b) => [...a, ...b], []);
         await this.injectTokens(tokens);

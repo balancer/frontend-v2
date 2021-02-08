@@ -8,7 +8,7 @@ import { abi as vaultAbi } from '@/utils/balancer/abi/Vault.json';
 import { abi as weightedPoolAbi } from '@/utils/balancer/abi/WeightedPool.json';
 import { abi as bTokenAbi } from '@/utils/balancer/abi/BToken.json';
 import constants from '@/utils/balancer/constants';
-import { sendTransaction } from '@snapshot-labs/snapshot.js/src/utils';
+import { Pool } from '@/utils/balancer/types';
 
 // Merge all the ABIs and remove duplicates
 const abis = Object.values(
@@ -17,7 +17,7 @@ const abis = Object.values(
   )
 );
 
-function formatPool(pool) {
+function formatPool(pool): Pool {
   pool.strategy.swapFeePercent = parseFloat(
     formatUnits(pool.strategy.swapFee || BigNumber.from(0), 16)
   );
@@ -50,9 +50,7 @@ function formatPool(pool) {
 }
 
 function formatPools(pools) {
-  return Object.fromEntries(
-    Object.entries(pools).map(pool => [pool[0], formatPool(pool[1])])
-  );
+  return pools.map(pool => formatPool(pool));
 }
 
 // Load pools data with multicalls
@@ -60,9 +58,9 @@ export async function getPools(
   network: string,
   provider: any,
   poolIds: string[]
-) {
+): Promise<Pool[]> {
   console.time('getPools');
-  if (poolIds.length === 0) return {};
+  if (poolIds.length === 0) return [];
   let multi = new Multicaller(network, provider, vaultAbi);
   let pools = {};
   poolIds.forEach(id => {
@@ -74,8 +72,6 @@ export async function getPools(
     multi.call(`${id}.tokens`, constants.vault, 'getPoolTokens', [id]);
   });
   pools = await multi.execute(pools);
-  console.log(pools);
-
   multi = new Multicaller(network, provider, abis);
   poolIds.forEach(id => {
     const pool = pools[id];
@@ -101,6 +97,7 @@ export async function getPools(
     multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
   });
   pools = await multi.execute(pools);
+  pools = Object.values(pools);
   console.timeEnd('getPools');
   return formatPools(pools);
 }
@@ -109,27 +106,7 @@ export async function getPool(
   network: string,
   provider: JsonRpcProvider,
   id: string
-) {
+): Promise<Pool> {
   const pools = await getPools(network, provider, [id]);
-  return formatPool(pools[id]);
-}
-
-export async function joinPool(web3, address, params: any[]) {
-  return await sendTransaction(
-    web3,
-    address,
-    weightedPoolAbi,
-    'joinPool',
-    params
-  );
-}
-
-export async function exitPool(web3, address, params: any[]) {
-  return await sendTransaction(
-    web3,
-    address,
-    weightedPoolAbi,
-    'exitPool',
-    params
-  );
+  return formatPool(pools[0]);
 }
