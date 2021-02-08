@@ -66,9 +66,10 @@ const actions = {
     commit('ACCOUNT_SET', { balances, loading: false, loaded: true });
   },
   getAllowances: async ({ commit, rootGetters, rootState }, payload) => {
-    const account = rootState.web3.account;
-    const tokens = payload?.tokens || rootGetters.getTokens();
-    if (!account || Object.keys(tokens).length === 0) return;
+    const account: string = rootState.web3.account;
+    const tokens: string[] =
+      payload?.tokens || Object.keys(rootGetters.getTokens());
+    if (!account || tokens.length === 0) return;
     const dst = payload?.dst || constants.vault;
     const network = rootState.web3.network.key;
     commit('ACCOUNT_SET', { loading: true });
@@ -77,7 +78,7 @@ const actions = {
       getProvider(network),
       account,
       dst,
-      Object.values(tokens).map((token: any) => token.address)
+      tokens
     );
     const allowances = state.allowances;
     allowances[dst] = { ...dstAllowances, ...allowances[dst] };

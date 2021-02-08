@@ -188,7 +188,6 @@ export default {
         await this.injectTokens(tokens);
 
         this.pools = pools;
-        console.log('Pools', this.pools);
       }
 
       this.loading = false;
