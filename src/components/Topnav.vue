@@ -1,5 +1,5 @@
 <template>
-  <Sticky :key="web3.network.unknown">
+  <Sticky :key="`${web3.network.unknown}${notifications.watch.length}`">
     <nav id="topnav" class="border-bottom width-full block-bg">
       <div
         v-if="web3.network.unknown"
@@ -88,9 +88,8 @@
         style="color: white;"
       >
         <UiLoading class="fill-white mr-2" />
-        <span class="d-inline-block pt-1"
-          >{{ _num(notifications.watch.length) }}
-          {{ $tc('transactionPending', notifications.watch.length) }}
+        <span class="d-inline-block pt-1">
+          {{ $tc('transactionPending', _num(notifications.watch.length)) }}
         </span>
       </div>
     </nav>

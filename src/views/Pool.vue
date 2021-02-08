@@ -101,9 +101,14 @@
 import getProvider from '@/utils/provider';
 import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
-import { exitPool, getPool, joinPool } from '@/utils/balancer/pools';
+import { getPool } from '@/utils/balancer/pools';
 import { approveTokens } from '@/utils/balancer/tokens';
 import constants from '@/utils/balancer/constants';
+import {
+  encodeExitWeightedPool,
+  encodeJoinWeightedPool
+} from '@/utils/balancer/weightedPoolEncoding';
+import { exitPool, joinPool } from '@/utils/balancer/vault';
 
 export default {
   data() {
@@ -124,7 +129,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['notify', 'injectTokens']),
+    ...mapActions(['notify', 'injectTokens', 'watchTx']),
     handleCopy() {
       this.notify(this.$t('copied'));
     },
@@ -150,48 +155,92 @@ export default {
       }
     },
     async onJoinPool(data) {
-      const [poolAmountOut] = data.receiveAmounts;
+      const poolId = this.id;
+      const recipient = this.web3.account;
+      const tokens = this.pool.tokens;
       const maxAmountsIn = this.pool.tokens.map((token, i) =>
         parseUnits(data.sendAmounts[i], this.tokens[token].decimals).toString()
       );
-      const transferTokens = true;
-      const beneficiary = this.web3.account;
+      const fromInternalBalance = false;
+
+      let userData;
+      if (this.pool.totalSupply === 0) {
+        userData = encodeJoinWeightedPool({
+          kind: 'Init',
+          amountsIn: maxAmountsIn
+        });
+      } else {
+        const [poolAmountOut] = data.receiveAmounts;
+        const minimumBPT = parseUnits(
+          poolAmountOut,
+          this.tokens[this.pool.address].decimals
+        );
+        userData = encodeJoinWeightedPool({
+          amountsIn: maxAmountsIn,
+          minimumBPT
+        });
+      }
+
       const params = [
-        parseUnits(poolAmountOut, this.tokens[this.pool.address].decimals),
+        poolId,
+        recipient,
+        tokens,
         maxAmountsIn,
-        transferTokens,
-        beneficiary
+        fromInternalBalance,
+        userData
       ];
+      console.log(params);
+
       try {
-        const tx = await joinPool(this.$auth.web3, this.pool.address, params);
-        console.log(tx);
-        await this.loadPool();
+        const tx = await joinPool(this.$auth.web3, params);
+        await this.watchTx(tx);
+        const receipt = await tx.wait();
+        console.log('Receipt', receipt);
         this.notify(this.$t('youDidIt'));
+        await this.loadPool();
       } catch (e) {
         console.log(e);
       }
     },
     async onExitPool(data) {
-      const [poolAmountIn] = data.sendAmounts;
+      const poolId = this.id;
+      const recipient = this.web3.account;
+      const tokens = this.pool.tokens;
       const minAmountsOut = this.pool.tokens.map((token, i) =>
         parseUnits(
           data.receiveAmounts[i],
           this.tokens[token].decimals
         ).toString()
       );
-      const withdrawTokens = true;
-      const beneficiary = this.web3.account;
+      const toInternalBalance = false;
+
+      const [poolAmountIn] = data.sendAmounts;
+      const bptAmountIn = parseUnits(
+        poolAmountIn,
+        this.tokens[this.pool.address].decimals
+      );
+      const userData = encodeExitWeightedPool({
+        kind: 'ExactBPTInForAllTokensOut',
+        bptAmountIn
+      });
+
       const params = [
-        parseUnits(poolAmountIn, this.tokens[this.pool.address].decimals),
+        poolId,
+        recipient,
+        tokens,
         minAmountsOut,
-        withdrawTokens,
-        beneficiary
+        toInternalBalance,
+        userData
       ];
+      console.log(params);
+
       try {
-        const tx = await exitPool(this.$auth.web3, this.pool.address, params);
-        console.log(tx);
-        await this.loadPool();
+        const tx = await exitPool(this.$auth.web3, params);
+        await this.watchTx(tx);
+        const receipt = await tx.wait();
+        console.log('Receipt', receipt);
         this.notify(this.$t('youDidIt'));
+        await this.loadPool();
       } catch (e) {
         console.log(e);
       }
@@ -205,7 +254,7 @@ export default {
           type: 'ERC20',
           options: {
             address,
-            symbol: this.tokens[address].symbol,
+            symbol: this.tokens[address].symbol.slice(0, 6),
             decimals: this.tokens[address].decimals
           }
         },

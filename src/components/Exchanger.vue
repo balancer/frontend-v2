@@ -23,7 +23,7 @@
           placeholder="0.0"
           required
         />
-        <div class="pl-2">
+        <div>
           {{ _shorten(tokens[token].symbol, 'symbol') }}
         </div>
       </UiButton>
@@ -43,7 +43,7 @@
           placeholder="0.0"
           required
         />
-        <div class="pl-2">
+        <div>
           {{ _shorten(tokens[token].symbol, 'symbol') }}
         </div>
       </UiButton>

@@ -67,7 +67,7 @@
     "tokensParen": "Token(s)",
     "tokensLowerCase": "tokens",
     "totalSupply": "Total supply",
-    "transactionPending": "no transactions pending | {n} transaction pending | {n} transactions pending",
+    "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
     "unavailableOnNetwork": "Sorry! Balancer is not yet available on this network",
     "universalAgents": "Universal agents",
     "universalAgentManagers": "Universal agent managers",

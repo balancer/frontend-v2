@@ -266,9 +266,9 @@ export default {
         await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
-        this.notify(this.$t('poolCreated!'));
-        const poolId = receipt.events?.[0]?.topics?.[2];
-        console.log('Pool id', poolId);
+        this.notify(this.$t('poolCreated'));
+        const events = receipt.events?.[0]?.topics;
+        console.log('Pool id', events);
       } catch (e) {
         this.loading = false;
       }
