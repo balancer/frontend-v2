@@ -10,18 +10,6 @@ export async function getNumberOfPools(
   return await call(provider, abi, [constants.vault, 'getNumberOfPools']);
 }
 
-export async function getPoolIds(
-  provider: JsonRpcProvider,
-  start: number,
-  end: number
-): Promise<string[]> {
-  return await call(provider, abi, [
-    constants.vault,
-    'getPoolIds',
-    [start, end]
-  ]);
-}
-
 export async function getVault(network: string, provider: JsonRpcProvider) {
   // @ts-ignore
   const multi = new Multicaller(network, provider, abi);

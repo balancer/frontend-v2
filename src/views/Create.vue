@@ -78,9 +78,7 @@
             class="text-white"
           />
           <div v-if="form.strategyType === '0'" class="mt-3">
-            <UiButton
-              class="d-flex width-full px-3 mb-2"
-            >
+            <UiButton class="d-flex width-full px-3 mb-2">
               <span v-text="$t('weight')" class="mr-2 text-gray" />
               <input
                 v-model="form.weights[i]"
@@ -160,11 +158,8 @@
 import { mapGetters, mapActions } from 'vuex';
 import { parseUnits } from '@ethersproject/units';
 import constants from '@/utils/balancer/constants';
-import {
-  createWeightedPool,
-  createstablePool
-} from '@/utils/balancer/utils/factory';
-import { approveTokens } from '@/utils/balancer/utils/tokens';
+import { createWeightedPool, createstablePool } from '@/utils/balancer/factory';
+import { approveTokens } from '@/utils/balancer/tokens';
 
 export default {
   data() {

@@ -74,19 +74,6 @@
                 class="hide-md hide-lg hide-xl ml-n2 mr-n2 v-align-text-bottom"
               />
             </UiButton>
-            <UiButton class="ml-2" id="langSelect">
-              <span class="hide-sm">
-                <select v-model="$root.$i18n.locale">
-                  <option
-                    v-for="(lang, i) in langs"
-                    :key="`Lang${i}`"
-                    :value="lang"
-                  >
-                    {{ langMap[lang] }}
-                  </option>
-                </select>
-              </span>
-            </UiButton>
             <router-link :to="{ name: 'settings' }" class="ml-2">
               <UiButton class="px-2">
                 <Icon name="gear" size="22" class="v-align-text-bottom px-1" />
@@ -101,8 +88,9 @@
         style="color: white;"
       >
         <UiLoading class="fill-white mr-2" />
-        <span class="d-inline-block pt-1">
-          {{ $tc('transactionPending', _num(notifications.watch.length)) }}
+        <span class="d-inline-block pt-1"
+          >{{ _num(notifications.watch.length) }}
+          {{ $tc('transactionPending', notifications.watch.length) }}
         </span>
       </div>
     </nav>
@@ -126,9 +114,7 @@ export default {
     return {
       modalOpen: false,
       pendingClaims: false,
-      totalPending: false,
-      langs: ['en-US', 'zh-CN'],
-      langMap: { 'en-US': 'English', 'zh-CN': '中文' }
+      totalPending: false
     };
   },
   watch: {
@@ -164,9 +150,5 @@ export default {
 <style scoped lang="scss">
 #topnav {
   box-shadow: 0 0 12px -6px var(--border-color);
-}
-
-#langSelect {
-  border: none;
 }
 </style>

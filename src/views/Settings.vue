@@ -18,6 +18,17 @@
           <UiButton @click="setSkin('dark')" v-text="$t('dark')" class="mr-2" />
           <UiButton @click="setSkin('classic')" v-text="$t('classic')" />
         </div>
+        <div class="mb-4">
+          <h3 v-text="$t('language')" class="mb-2" />
+          <UiButton
+            v-for="(lang, i) in langs"
+            :key="`Lang${i}`"
+            @click="setLocale(lang)"
+            class="mr-2"
+          >
+            {{ langMap[lang] }}
+          </UiButton>
+        </div>
       </div>
       <Circular />
     </template>
@@ -28,8 +39,17 @@
 import { mapActions } from 'vuex';
 
 export default {
+  data() {
+    return {
+      modalOpen: false,
+      pendingClaims: false,
+      totalPending: false,
+      langs: ['en-US', 'zh-CN'],
+      langMap: { 'en-US': 'English', 'zh-CN': '中文' }
+    };
+  },
   methods: {
-    ...mapActions(['setSkin'])
+    ...mapActions(['setSkin', 'setLocale'])
   }
 };
 </script>

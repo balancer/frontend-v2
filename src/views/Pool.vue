@@ -18,6 +18,7 @@
         <UiLoading />
       </div>
       <div v-else>
+        <!--
         <div class="mb-4 position-relative">
           <div class="text-right">
             <a @click="loadMarketCharts(1)" class="mr-2">
@@ -51,6 +52,7 @@
           />
           <Chart :key="marketCharts[0].length" :marketCharts="marketCharts" />
         </div>
+        -->
         <Block :title="$t('overview')">
           <div class="d-flex">
             <div v-text="$t('poolTokenName')" class="flex-auto" />
@@ -67,7 +69,6 @@
           <div class="d-flex">
             <div v-text="$t('poolType')" class="flex-auto" />
             {{ $t(pool.strategy.name) }}
-            ({{ pool.strategy.type }})
           </div>
           <div v-if="pool.strategy.swapFee" class="d-flex">
             <div v-text="$t('swapFee')" class="flex-auto" />
@@ -100,10 +101,9 @@
 import getProvider from '@/utils/provider';
 import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
-import { exitPool, getPool, joinPool } from '@/utils/balancer/utils/pools';
-import { approveTokens } from '@/utils/balancer/utils/tokens';
+import { exitPool, getPool, joinPool } from '@/utils/balancer/pools';
+import { approveTokens } from '@/utils/balancer/tokens';
 import constants from '@/utils/balancer/constants';
-import { getMarketChart } from '@/utils/coingecko';
 
 export default {
   data() {
@@ -126,7 +126,7 @@ export default {
   methods: {
     ...mapActions(['notify', 'injectTokens']),
     handleCopy() {
-      this.notify(this.$t('copied!'));
+      this.notify(this.$t('copied'));
     },
     async loadPool() {
       this.pool = await getPool(
@@ -215,10 +215,7 @@ export default {
     async loadMarketCharts(days) {
       this.marketChartsLoading = true;
       this.marketChartsDays = days;
-      this.marketCharts = await Promise.all([
-        getMarketChart('0xba100000625a3754423978a60c9317c58a424e3D', days),
-        getMarketChart('0x514910771AF9Ca656af840dff83E8264EcF986CA', days)
-      ]);
+      this.marketCharts = {};
       this.marketChartsLoading = false;
     }
   },
@@ -226,7 +223,7 @@ export default {
     this.loading = true;
     await this.loadPool();
     await this.injectTokens([...this.pool.tokens, this.pool.address]);
-    await this.loadMarketCharts(7);
+    // await this.loadMarketCharts(7);
     this.loading = false;
   }
 };
