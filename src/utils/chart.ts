@@ -14,46 +14,46 @@ export function formatMarketChartData(data) {
   const response: any = {
     categories: [],
     series: [
-      { name: 'HODL', data: [] },
-      { name: 'MIN', data: [] },
-      { name: 'MAX', data: [] },
-      { name: 'LBT', data: [] }
+      { name: 'MAX', type: 'area', data: [] },
+      { name: 'HODL', type: 'area', data: [] },
+      { name: 'MIN', type: 'area', data: [] },
+      { name: 'BPT', type: 'line', data: [] }
     ]
   };
 
   data[0].forEach((item, i) => {
     // Categories are dates
     response.categories.push(item[0]);
-    // This is the LBT values
+    // This is the BPT values
     response.series[3].data.push(item[1]);
 
-    // Before refDate only show LBT price
+    // Before refDate only show BPT price
     if (i < refIndex) {
       response.series[0].data.push(null);
       response.series[1].data.push(null);
       response.series[2].data.push(null);
     } else {
-      // Compare with holding tokens
-      // TODO: support multitoken, different weights
-      response.series[0].data.push(
-        0.5 * data[1][i][1] * tokenMultipliers[1] +
-          0.5 * data[2][i][1] * tokenMultipliers[2]
-      );
-      // The worst performing you could get with these tokens
-      response.series[1].data.push(
-        Math.min(
-          data[1][i][1] * tokenMultipliers[1],
-          data[2][i][1] * tokenMultipliers[2]
-        )
-      );
       // Best performance you could get
-      response.series[2].data.push(
+      response.series[0].data.push(
         Math.max(
           data[1][i][1] * tokenMultipliers[1],
           data[2][i][1] * tokenMultipliers[2]
         )
       );
-      // TODO: Add another chart with the LBT plus fees (and optionally BAL mining)
+      // Compare with holding tokens
+      // TODO: support multitoken, different weights
+      response.series[1].data.push(
+        0.5 * data[1][i][1] * tokenMultipliers[1] +
+          0.5 * data[2][i][1] * tokenMultipliers[2]
+      );
+      // The worst performing you could get with these tokens
+      response.series[2].data.push(
+        Math.min(
+          data[1][i][1] * tokenMultipliers[1],
+          data[2][i][1] * tokenMultipliers[2]
+        )
+      );
+      // TODO: Add another chart with the BPT plus fees (and optionally BAL mining)
     }
   });
   return response;

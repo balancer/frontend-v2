@@ -76,7 +76,7 @@ export default {
       id: this.$route.params.id,
       loading: false,
       marketCharts: {},
-      marketChartsDays: 90,
+      marketChartsDays: 180,
       marketChartsLoading: false
     };
   },
@@ -97,7 +97,8 @@ export default {
           getTokenMarketChart(network, blockNumber, token, days)
         )
       ]);
-      this.marketCharts = formatMarketChartData(marketCharts);
+      // TODO: get more information on tokens: weight, name, etc
+      this.marketCharts = formatMarketChartData(marketCharts, tokens);
       this.marketChartsLoading = false;
     }
   },

@@ -27,27 +27,95 @@ export default {
             enabled: false
           },
           zoom: {
-            enabled: true
+            enabled: false
           },
           toolbar: {
             tools: {
               download: false
             }
+          },
+          events: {
+            click: function(event, chartContext, config) {
+              // TODO: Redraw chart using config.dataPointIndex as the refIndex parameter in formatMarketChartData
+              console.log(
+                'click on chart!',
+                config.dataPointIndex,
+                config.seriesIndex
+              );
+            },
+            mouseMove: function(event, chartContext, config) {
+              // TODO: Redraw chart using config.dataPointIndex as the refIndex parameter in formatMarketChartData
+              console.log(
+                'mouse on chart!',
+                config.dataPointIndex,
+                config.seriesIndex
+              );
+            }
           }
         },
-        colors: ['#00AAFA', '#C2D5F7', '#CCE7FE', '#00AAFA'],
+        // annotations: {
+        //   xaxis: [
+        //     {
+        //       x: 205,
+        //       strokeDashArray: 2,
+        //       width: 2,
+        //       borderColor: '#C2D3F8',
+        //       label: {
+        //         borderColor: '#C2D3F8',
+        //         style: {
+        //           color: '#596167',
+        //           background: '#C2D3F8'
+        //         },
+        //         text: 'yield range'
+        //       }
+        //     }
+        //     // {
+        //     //   x: new Date('26 Nov 2017').getTime(),
+        //     //   x2: new Date('28 Nov 2017').getTime(),
+        //     //   fillColor: '#B3F7CA',
+        //     //   opacity: 0.4,
+        //     //   label: {
+        //     //     borderColor: '#B3F7CA',
+        //     //     style: {
+        //     //       fontSize: '10px',
+        //     //       color: '#fff',
+        //     //       background: '#00E396'
+        //     //     },
+        //     //     offsetY: -10,
+        //     //     text: 'X-axis range'
+        //     //   }
+        //     // }
+        //   ]
+        // },
+        colors: ['#C2D5F7', '#00AAFA', '#CCE7FE', '#00AAFA'],
         dataLabels: {
           enabled: false
         },
         stroke: {
-          width: [2, 3, 3, 3, 4],
+          width: [3, 1, 3, 3],
           curve: 'straight',
-          dashArray: [2, 0, 0, 0]
+          dashArray: [0, 2, 0, 0]
         },
+        fill: {
+          colors: ['#C2D3F8', '#C8E6FE', '#fff', 'transparent']
+          // type: ['gradient', 'gradient', 'none', 'none'],
+          // gradient: {
+          //   shade: 'dark',
+          //   gradientToColors: undefined,
+          //   type: 'vertical',
+          //   shadeIntensity: 0.9,
+          //   inverseColors: true,
+          //   opacityFrom: 0.5,
+          //   opacityTo: 0,
+          //   stops: [0, 90, 100]
+          // }
+        },
+
         grid: {
           show: true
         },
         xaxis: {
+          type: 'datetime',
           floating: true,
           axisTicks: {
             show: false
@@ -77,11 +145,10 @@ export default {
           }
         },
         tooltip: {
-          custom: ({ series, seriesIndex, dataPointIndex }) =>
-            `<div>$${this._num(
-              series[seriesIndex][dataPointIndex],
-              '0,0.00'
-            )}</div>`
+          custom: ({ seriesIndex, dataPointIndex }) =>
+            `<div>${series[seriesIndex].name}: $${series[seriesIndex].data[
+              dataPointIndex
+            ].toFixed(2)}</div>`
         }
       }
     };
