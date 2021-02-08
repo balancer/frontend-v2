@@ -37,19 +37,19 @@ export default {
           events: {
             click: function(event, chartContext, config) {
               // TODO: Redraw chart using config.dataPointIndex as the refIndex parameter in formatMarketChartData
-              // console.log(
-              //   'click on chart!',
-              //   config.dataPointIndex,
-              //   config.seriesIndex
-              // );
+              console.log(
+                'click on chart!',
+                config.dataPointIndex,
+                config.seriesIndex
+              );
             },
             mouseMove: function(event, chartContext, config) {
               // TODO: Redraw chart using config.dataPointIndex as the refIndex parameter in formatMarketChartData
-              // console.log(
-              //   'mouse on chart!',
-              //   config.dataPointIndex,
-              //   config.seriesIndex
-              // );
+              console.log(
+                'mouse on chart!',
+                config.dataPointIndex,
+                config.seriesIndex
+              );
             }
           }
         },
@@ -87,7 +87,6 @@ export default {
         //     // }
         //   ]
         // },
-
         colors: ['#C2D5F7', '#00AAFA', '#CCE7FE', '#00AAFA'],
         dataLabels: {
           enabled: false
@@ -146,7 +145,7 @@ export default {
           }
         },
         tooltip: {
-          custom: ({ d, seriesIndex, dataPointIndex }) =>
+          custom: ({ seriesIndex, dataPointIndex }) =>
             `<div>${series[seriesIndex].name}: $${series[seriesIndex].data[
               dataPointIndex
             ].toFixed(2)}</div>`

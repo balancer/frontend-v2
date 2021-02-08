@@ -1,17 +1,17 @@
-export function formatMarketChartData(data, t) {
+export function formatMarketChartData(data) {
   // Reference date should be a user definable vertical line on the chart
   const refIndex = Math.floor(data[0].length * 0.25);
   // const refDate = data[0][refIndex][0];
   const refAmount = data[0][refIndex][1];
 
   // This equalizes all values from the reference date onwards
-  const tokenMultipliers = [
+  const tokenMultipliers: any[] = [
     null,
     refAmount / data[1][refIndex][1],
     refAmount / data[2][refIndex][1]
   ];
 
-  const response = {
+  const response: any = {
     categories: [],
     series: [
       { name: 'MAX', type: 'area', data: [] },
@@ -24,10 +24,10 @@ export function formatMarketChartData(data, t) {
   data[0].forEach((item, i) => {
     // Categories are dates
     response.categories.push(item[0]);
-    // This is the LBT values
+    // This is the BPT values
     response.series[3].data.push(item[1]);
 
-    // Before refDate only show LBT price
+    // Before refDate only show BPT price
     if (i < refIndex) {
       response.series[0].data.push(null);
       response.series[1].data.push(null);
@@ -53,7 +53,7 @@ export function formatMarketChartData(data, t) {
           data[2][i][1] * tokenMultipliers[2]
         )
       );
-      // TODO: Add another chart with the LBT plus fees (and optionally BAL mining)
+      // TODO: Add another chart with the BPT plus fees (and optionally BAL mining)
     }
   });
   return response;
