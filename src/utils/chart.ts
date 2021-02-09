@@ -1,6 +1,8 @@
-export function formatMarketChartData(data) {
+export function formatMarketChartData(data, chartConfig?) {
   // Reference date should be a user definable vertical line on the chart
-  const refIndex = Math.floor(data[0].length * 0.25);
+  const refIndex = chartConfig?.dataPointIndex
+    ? chartConfig.dataPointIndex
+    : Math.floor(data[0].length * 0.25);
   // const refDate = data[0][refIndex][0];
   const refAmount = data[0][refIndex][1];
 

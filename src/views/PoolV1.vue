@@ -50,10 +50,7 @@
             v-if="marketChartsLoading"
             class="position-absolute mt-n4"
           />
-          <Chart
-            :key="marketCharts.categories.length"
-            :marketCharts="marketCharts"
-          />
+          <Chart :key="i" :marketCharts="marketCharts" @click="redrawCharts" />
         </div>
       </div>
     </template>
@@ -73,11 +70,13 @@ import getProvider from '@/utils/provider';
 export default {
   data() {
     return {
+      i: 0,
       id: this.$route.params.id,
       loading: false,
       marketCharts: {},
       marketChartsDays: 180,
-      marketChartsLoading: false
+      marketChartsLoading: false,
+      poolTokens: []
     };
   },
   methods: {
@@ -89,17 +88,22 @@ export default {
       this.marketChartsLoading = true;
       this.marketChartsDays = days;
       const network = '1'; // this.web3.network.key;
-      const tokens = await getPoolTokens(network, this.id);
+      this.poolTokens = await getPoolTokens(network, this.id);
       const blockNumber = await getProvider(network).getBlockNumber(); // this.web3.blockNumber
-      const marketCharts = await Promise.all([
+      this.marketChartsRaw = await Promise.all([
         getBPTMarketChart(network, blockNumber, this.id, days),
-        ...tokens.map(token =>
+        ...this.poolTokens.map(token =>
           getTokenMarketChart(network, blockNumber, token, days)
         )
       ]);
       // TODO: get more information on tokens: weight, name, etc
-      this.marketCharts = formatMarketChartData(marketCharts, tokens);
+      this.marketCharts = formatMarketChartData(this.marketChartsRaw);
+      this.i++;
       this.marketChartsLoading = false;
+    },
+    redrawCharts(config) {
+      this.marketCharts = formatMarketChartData(this.marketChartsRaw, config);
+      this.i++;
     }
   },
   async created() {
