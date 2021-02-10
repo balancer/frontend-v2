@@ -109,6 +109,7 @@ import {
   encodeJoinWeightedPool
 } from '@/utils/balancer/weightedPoolEncoding';
 import { exitPool, joinPool } from '@/utils/balancer/vault';
+import { encodeJoinStablePool } from '@/utils/balancer/stablePoolEncoding';
 
 export default {
   data() {
@@ -164,21 +165,41 @@ export default {
       const fromInternalBalance = false;
 
       let userData;
-      if (this.pool.totalSupply === 0) {
-        userData = encodeJoinWeightedPool({
-          kind: 'Init',
-          amountsIn: maxAmountsIn
-        });
-      } else {
-        const [poolAmountOut] = data.receiveAmounts;
-        const minimumBPT = parseUnits(
-          poolAmountOut,
-          this.tokens[this.pool.address].decimals
-        );
-        userData = encodeJoinWeightedPool({
-          amountsIn: maxAmountsIn,
-          minimumBPT
-        });
+      if (this.pool.strategy.name === 'weightedPool') {
+        if (this.pool.totalSupply.toString() === '0') {
+          console.log('Join weighted pool for the first time');
+          userData = encodeJoinWeightedPool({
+            kind: 'Init',
+            amountsIn: maxAmountsIn
+          });
+        } else {
+          const [poolAmountOut] = data.receiveAmounts;
+          const minimumBPT = parseUnits(
+            poolAmountOut,
+            this.tokens[this.pool.address].decimals
+          );
+          userData = encodeJoinWeightedPool({
+            amountsIn: maxAmountsIn,
+            minimumBPT
+          });
+        }
+      } else if (this.pool.strategy.name === 'stablePool') {
+        if (this.pool.totalSupply.toString() === '0') {
+          userData = encodeJoinStablePool({
+            kind: 'Init',
+            amountsIn: maxAmountsIn
+          });
+        } else {
+          const [poolAmountOut] = data.receiveAmounts;
+          const minimumBPT = parseUnits(
+            poolAmountOut,
+            this.tokens[this.pool.address].decimals
+          );
+          userData = encodeJoinStablePool({
+            amountsIn: maxAmountsIn,
+            minimumBPT
+          });
+        }
       }
 
       const params = [

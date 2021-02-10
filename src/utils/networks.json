@@ -1,7 +1,9 @@
 {
   "1": {
     "key": "1",
+    "unknown": true,
     "name": "Ethereum Mainnet",
+    "shortName": "Mainnet",
     "chainId": 1,
     "network": "homestead",
     "rpc": [
@@ -21,6 +23,7 @@
   },
   "4": {
     "key": "4",
+    "unknown": true,
     "name": "Ethereum Testnet Rinkeby",
     "shortName": "Rinkeby",
     "chainId": 4,

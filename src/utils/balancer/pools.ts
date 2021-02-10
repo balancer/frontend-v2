@@ -21,11 +21,13 @@ function formatPool(pool): Pool {
   pool.strategy.swapFeePercent = parseFloat(
     formatUnits(pool.strategy.swapFee || BigNumber.from(0), 16)
   );
+  pool.strategy = {
+    ...pool.strategy,
+    ...constants.strategies[pool.strategy.type]
+  };
 
-  switch (pool.strategy.type) {
-    case 2: {
-      // Set the i18n key of the strategy name
-      pool.strategy.name = 'weightedPool';
+  switch (pool.strategy.name) {
+    case 'weightedPool': {
       const totalWeight = pool.strategy.weights.reduce(
         (a, b) => a.add(b),
         BigNumber.from(0)
@@ -37,9 +39,7 @@ function formatPool(pool): Pool {
       );
       break;
     }
-    case 1: {
-      // Set the i18n key of the strategy name
-      pool.strategy.name = 'stablePool';
+    case 'stablePool': {
       pool.strategy.weightsPercent = pool.tokens.map(
         () => 100 / pool.tokens.length
       );

@@ -12,11 +12,11 @@ export default {
   ...configs[config],
   // Strategy names are i18n translation keys
   strategies: {
-    2: {
+    '2': {
       type: '2',
       name: 'weightedPool'
     },
-    1: {
+    '1': {
       type: '1',
       name: 'stablePool'
     }

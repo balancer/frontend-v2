@@ -68,7 +68,7 @@
     "tokensLowerCase": "tokens",
     "totalSupply": "Total supply",
     "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
-    "unavailableOnNetwork": "Sorry! Balancer is not yet available on this network",
+    "unavailableOnNetwork": "Sorry! Balancer is not available on this network | Sorry! Balancer is not available on {n}",
     "universalAgents": "Universal agents",
     "universalAgentManagers": "Universal agent managers",
     "vault": "Vault",

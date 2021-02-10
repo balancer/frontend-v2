@@ -2,12 +2,13 @@
   <Sticky :key="`${web3.network.unknown}${notifications.watch.length}`">
     <nav id="topnav" class="border-bottom width-full block-bg">
       <div
+        :key="web3.network.unknown"
         v-if="web3.network.unknown"
         class="p-2 text-center bg-red"
         style="color: white;"
       >
         <Icon name="warning1" size="20" class="mr-1 v-align-text-bottom" />
-        {{ $t('unavailableOnNetwork') }}
+        {{ $tc('unavailableOnNetwork', web3.network.shortName) }}
       </div>
       <Container>
         <div class="d-flex flex-items-center" style="height: 78px;">
@@ -82,17 +83,17 @@
           </div>
         </div>
       </Container>
-      <div
-        v-if="notifications.watch.length > 0"
-        class="p-2 text-center bg-blue"
-        style="color: white;"
-      >
-        <UiLoading class="fill-white mr-2" />
-        <span class="d-inline-block pt-1">
-          {{ $tc('transactionPending', _num(notifications.watch.length)) }}
-        </span>
-      </div>
     </nav>
+    <div
+      v-if="notifications.watch.length > 0"
+      class="p-2 text-center bg-blue"
+      style="color: white;"
+    >
+      <UiLoading class="fill-white mr-2" />
+      <span class="d-inline-block pt-1">
+        {{ $tc('transactionPending', _num(notifications.watch.length)) }}
+      </span>
+    </div>
     <portal to="modal">
       <ModalAccount
         :open="modalOpen"

@@ -36,7 +36,8 @@ const mutations = {
     if (!networks[chainId]) {
       networks[chainId] = {
         ...networks[defaultNetwork],
-        unknown: true
+        unknown: true,
+        shortName: undefined
       };
     }
     Vue.set(_state, 'network', networks[chainId]);

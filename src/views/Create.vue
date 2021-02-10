@@ -77,7 +77,7 @@
             :name="true"
             class="text-white"
           />
-          <div v-if="form.strategyType === '0'" class="mt-3">
+          <div v-if="form.strategyType === '2'" class="mt-3">
             <UiButton class="d-flex width-full px-3 mb-2">
               <span v-text="$t('weight')" class="mr-2 text-gray" />
               <input
@@ -158,7 +158,7 @@
 import { mapGetters, mapActions } from 'vuex';
 import { parseUnits } from '@ethersproject/units';
 import constants from '@/utils/balancer/constants';
-import { createWeightedPool, createstablePool } from '@/utils/balancer/factory';
+import { createWeightedPool, createStablePool } from '@/utils/balancer/factory';
 import { approveTokens } from '@/utils/balancer/tokens';
 
 export default {
@@ -166,7 +166,7 @@ export default {
     return {
       q: '',
       loading: false,
-      strategies: Object.values(constants.strategies),
+      strategies: [constants.strategies['2'], constants.strategies['1']],
       hasAllowed: false,
       form: {
         strategyType: null,
@@ -206,7 +206,7 @@ export default {
         symbol: this.form.symbol,
         tokens: this.form.tokens
       };
-      if (this.form.strategyType === '0')
+      if (this.form.strategyType === '2')
         params.weights = this.form.weights.map(weight =>
           parseUnits(weight || '0', 16).toString()
         );
@@ -256,7 +256,10 @@ export default {
     async onSubmit() {
       this.loading = true;
       try {
-        const createStrategies = [createWeightedPool, createstablePool];
+        const createStrategies = {
+          '2': createWeightedPool,
+          '1': createStablePool
+        };
         const tx = await createStrategies[this.form.strategyType](
           this.$auth.web3,
           this.params
@@ -267,8 +270,11 @@ export default {
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
         this.notify(this.$t('poolCreated'));
-        const events = receipt.events?.[0]?.topics;
-        console.log('Pool id', events);
+        const poolId = receipt.logs?.[0].data;
+        console.log('Pool id', poolId);
+        if (poolId) {
+          this.$router.push({ name: 'pool', params: { id: poolId } });
+        }
       } catch (e) {
         this.loading = false;
       }

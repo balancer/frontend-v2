@@ -13,7 +13,7 @@ export async function createWeightedPool(web3, params: any[]) {
   );
 }
 
-export async function createstablePool(web3, params: any[]) {
+export async function createStablePool(web3, params: any[]) {
   return await sendTransaction(
     web3,
     constants.stablePoolFactory,
