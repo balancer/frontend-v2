@@ -68,27 +68,27 @@ export default {
               x: new Date('2020-11-01').getTime(),
               y: 11,
               marker: {
-                strokeColor: 'red',
-                fillColor: 'red',
-                size: 4
+                strokeColor: '#00ADFF',
+                fillColor: '#00ADFF',
+                size: 6
               }
             },
             {
               x: new Date('2020-10-01').getTime(),
               y: 15,
               marker: {
-                strokeColor: 'green',
-                fillColor: 'green',
-                size: 4
+                strokeColor: '#00ADFF',
+                fillColor: '#00ADFF',
+                size: 6
               }
             },
             {
               x: new Date('2021-01-01').getTime(),
               y: 20,
               marker: {
-                strokeColor: 'green',
-                fillColor: 'green',
-                size: 4
+                strokeColor: '#00ADFF',
+                fillColor: '#00ADFF',
+                size: 6
               }
             }
           ]
