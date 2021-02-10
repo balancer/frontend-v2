@@ -37,44 +37,62 @@ export default {
           events: {
             click: (event, chartContext, config) => {
               this.$emit('click', config);
+            },
+            mouseMove: (event, chartContext, config) => {
+              this.$emit('click', config);
             }
-            // mouseMove: function(event, chartContext, config) {}
           }
         },
-        // annotations: {
-        //   xaxis: [
-        //     {
-        //       x: 205,
-        //       strokeDashArray: 2,
-        //       width: 2,
-        //       borderColor: '#C2D3F8',
-        //       label: {
-        //         borderColor: '#C2D3F8',
-        //         style: {
-        //           color: '#596167',
-        //           background: '#C2D3F8'
-        //         },
-        //         text: 'yield range'
-        //       }
-        //     }
-        //        {
-        //          x: new Date('26 Nov 2017').getTime(),
-        //          x2: new Date('28 Nov 2017').getTime(),
-        //          fillColor: '#B3F7CA',
-        //          opacity: 0.4,
-        //          label: {
-        //            borderColor: '#B3F7CA',
-        //            style: {
-        //              fontSize: '10px',
-        //              color: '#fff',
-        //              background: '#00E396'
-        //            },
-        //            offsetY: -10,
-        //            text: 'X-axis range'
-        //          }
-        //        }
-        //   ]
-        // },
+        annotations: {
+          xaxis: [
+            {
+              x: new Date('2020-10-01').getTime(),
+              strokeDashArray: 2,
+              width: 4,
+              strokeWidth: 4,
+              borderColor: '#00ADFF',
+              label: {
+                borderColor: '#00ADFF',
+                style: {
+                  color: '#FFF',
+                  fontSize: '13px',
+                  background: '#00ADFF'
+                },
+                text: 'comparing to 01 march 2020'
+              }
+            }
+          ],
+          points: [
+            //Points represent when user bought/sold
+            {
+              x: new Date('2020-11-01').getTime(),
+              y: 11,
+              marker: {
+                strokeColor: 'red',
+                fillColor: 'red',
+                size: 4
+              }
+            },
+            {
+              x: new Date('2020-10-01').getTime(),
+              y: 15,
+              marker: {
+                strokeColor: 'green',
+                fillColor: 'green',
+                size: 4
+              }
+            },
+            {
+              x: new Date('2021-01-01').getTime(),
+              y: 20,
+              marker: {
+                strokeColor: 'green',
+                fillColor: 'green',
+                size: 4
+              }
+            }
+          ]
+        },
         colors: ['#C2D5F7', '#00AAFA', '#CCE7FE', '#00AAFA'],
         dataLabels: {
           enabled: false
@@ -121,6 +139,8 @@ export default {
         },
         yaxis: {
           // logarithmic: true,
+          max: 100,
+          min: 0,
           floating: true,
           axisTicks: {
             show: false
