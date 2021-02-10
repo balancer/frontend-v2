@@ -30,7 +30,7 @@
           </UiButton>
         </div>
       </div>
-      <Circular />
+      <!-- <Circular /> -->
     </template>
   </Layout>
 </template>
