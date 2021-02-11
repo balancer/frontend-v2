@@ -1,5 +1,5 @@
 <template>
-  <svg width="500" height="300"></svg>
+  <svg />
 </template>
 
 <script>
@@ -8,9 +8,9 @@ const d3 = require('d3');
 export default {
   mounted() {
     const svg = d3.select(this.$el);
-    const width = +svg.attr('width');
-    const height = +svg.attr('height');
-    const margin = { top: 20, left: 0, bottom: 30, right: 0 };
+    const width = svg.attr('width');
+    const height = svg.attr('height');
+    const margin = { top: 0, left: 0, bottom: 0, right: 0 };
     const chartWidth = width - (margin.left + margin.right);
     const chartHeight = height - (margin.top + margin.bottom);
     this.chartLayer = svg
@@ -54,15 +54,6 @@ export default {
           return 'arc-' + i;
         })
         .attr('fill', () => d3.interpolateCool(Math.random()));
-      newBlock
-        .append('text')
-        .attr('dx', 10)
-        .attr('dy', -5)
-        .append('textPath')
-        .attr('xlink:href', function(d, i) {
-          return '#arc-' + i;
-        })
-        .text(d => d.data.name);
     }
   }
 };

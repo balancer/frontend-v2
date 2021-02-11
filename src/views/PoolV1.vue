@@ -3,16 +3,28 @@
     <template slot="content-left">
       <div class="px-4 px-md-0">
         <Breadcrumb />
-        <h1 class="mb-4">
-          V1 Pool {{ _shorten(id) }}
-          <a v-clipboard:copy="id" v-clipboard:success="handleCopy">
-            <Icon
-              name="copy"
-              size="24"
-              class="text-gray line-height-0 p-0 m-0"
+        <div class="overflow-hidden">
+          <div class="float-left mr-3">
+            <Pie
+              :data="[
+                { name: 'BAL', value: 80 },
+                { name: 'WETH', value: 20 }
+              ]"
+              width="60"
+              height="60"
             />
-          </a>
-        </h1>
+          </div>
+          <h1 class="mb-4">
+            V1 Pool {{ _shorten(id) }}
+            <a v-clipboard:copy="id" v-clipboard:success="handleCopy">
+              <Icon
+                name="copy"
+                size="24"
+                class="text-gray line-height-0 p-0 m-0"
+              />
+            </a>
+          </h1>
+        </div>
       </div>
       <div v-if="loading || registry.loading" class="px-4 px-md-0">
         <UiLoading />
