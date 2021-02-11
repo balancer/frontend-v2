@@ -84,15 +84,15 @@ export async function getPools(
       );
     });
     multi.call(`${id}.strategy.swapFee`, pool.address, 'getSwapFee');
-    if (pool.strategy.type === 2) {
+    if ([1, 2].includes(pool.strategy.type)) {
       multi.call(
         `${id}.strategy.weights`,
         pool.address,
         'getNormalizedWeights',
         [pool.tokens]
       );
-    } else if (pool.strategy.type === 1) {
-      // multi.call(`${id}.strategy.amp`, address, 'getAmplification');
+    } else if ([3].includes(pool.strategy.type)) {
+      multi.call(`${id}.strategy.amp`, pool.address, 'getAmplification');
     }
     multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
   });

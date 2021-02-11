@@ -1,4 +1,4 @@
-import { sendTransaction } from '@snapshot-labs/snapshot.js/src/utils';
+import { sendTransaction } from '@/utils/balancer/web3';
 import constants from './constants';
 import { abi as weightedPoolFactoryAbi } from './abi/WeightedPoolFactory.json';
 import { abi as stablePoolFactoryAbi } from './abi/StablePoolFactory.json';

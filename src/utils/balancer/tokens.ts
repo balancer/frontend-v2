@@ -1,10 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
 import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
-import {
-  multicall,
-  sendTransaction
-} from '@snapshot-labs/snapshot.js/src/utils';
+import { multicall } from '@snapshot-labs/snapshot.js/src/utils';
+import { sendTransaction } from '@/utils/balancer/web3';
 import set from 'lodash/set';
 import { abi } from './abi/BToken.json';
 
