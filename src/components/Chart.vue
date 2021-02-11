@@ -37,9 +37,6 @@ export default {
           events: {
             click: (event, chartContext, config) => {
               this.$emit('click', config);
-            },
-            mouseMove: (event, chartContext, config) => {
-              this.$emit('click', config);
             }
           }
         },
