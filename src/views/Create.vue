@@ -208,7 +208,7 @@ export default {
       };
       if (this.form.strategyType === '2')
         params.weights = this.form.weights.map(weight =>
-          parseUnits(weight || '0', 16).toString()
+          parseUnits(weight || '0', 18).toString()
         );
       if (this.form.strategyType === '1') params.amp = this.form.amp;
       params.swapFee = parseUnits(this.form.swapFee || '0', 16).toString();
