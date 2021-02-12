@@ -7,11 +7,9 @@
           <div class="float-left mr-3">
             <Pie
               :data="[
-                { name: 'BAL', color: '#0073FF', value: 80 },
-                /* { name: 'BAL1', color: 300, value: 10 },
-                { name: 'BAL2', color: 60, value: 1 },
-                { name: 'BAL3', color: 180, value: 1 }, */
-                { name: 'WETH', color: '#29177F', value: 20 }
+                { name: 'BAL', color: '#0073FF', value: 75 },
+                { name: 'WETH', color: '#29177F', value: 20 },
+                { name: 'DAI', color: '#FFDE5D', value: 5 }
               ]"
               width="60"
               height="60"
