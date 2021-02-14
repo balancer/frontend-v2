@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { lsGet, lsSet } from '@/utils';
-import i18n from '@/i18n';
+import i18n, { defaultLocale } from '@/i18n';
 
 const state = {
   init: false,
@@ -9,7 +9,7 @@ const state = {
   modalOpen: false,
   spaces: {},
   skin: lsGet('skin', 'light'),
-  locale: lsGet('locale', 'en-US')
+  locale: lsGet('locale', defaultLocale)
 };
 
 const actions = {
