@@ -117,3 +117,20 @@ export async function getPoolIds(network) {
   const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
   return result?.pools?.map(pool => pool.id);
 }
+
+export async function getPoolShares(network: string, address: string) {
+  const query = {
+    poolShares: {
+      __args: {
+        first: 1000,
+        where: {
+          userAddress: address.toLowerCase()
+        }
+      },
+      id: true,
+      balance: true
+    }
+  };
+  const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
+  return result?.poolShares;
+}

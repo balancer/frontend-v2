@@ -83,6 +83,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { getPoolShares } from '@/utils/balancer/subgraph';
 
 export default {
   computed: {
@@ -100,6 +101,12 @@ export default {
     portfolioValue() {
       return this.getPortfolioValue();
     }
+  },
+  async created() {
+    const network = this.web3.network.key;
+    const address = this.web3.account;
+    const poolShares = await getPoolShares(network, address);
+    console.log('Pool shares', poolShares);
   }
 };
 </script>
