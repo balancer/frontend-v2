@@ -45,11 +45,8 @@
       <div v-else v-text="$t('errorNoLists')" class="d-block text-center p-3" />
     </div>
     <template slot="footer">
-      <a
-        v-text="$t('browseLists')"
-        href="https://tokenlists.org"
-        target="_blank"
-      >
+      <a href="https://tokenlists.org" target="_blank">
+        {{ $t('browseLists') }}
         <Icon name="external-link" class="ml-1" />
       </a>
     </template>
