@@ -8,8 +8,8 @@
             <Pie
               :data="[
                 { name: 'BAL', color: '#0073FF', value: 75 },
-                { name: 'WETH', color: '#29177F', value: 20 },
-                { name: 'DAI', color: '#FFDE5D', value: 5 }
+                { name: 'ETH', color: '#29177F', value: 20 },
+                { name: 'DAI', color: '#FFB932', value: 5 }
               ]"
               width="60"
               height="60"

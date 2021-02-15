@@ -33,6 +33,8 @@ export default {
   },
   methods: {
     drawChart(data, height) {
+      const svg = d3.select('svg');
+
       const TAU = 6.2318;
       const totalSize = data.reduce((result, e) => result + e.value, 0);
       const numOfSlices = 12; // Simplify the pool to this amount of slices
@@ -49,6 +51,7 @@ export default {
           name = d.name + '-slice-' + n;
           newArray.push({
             name: name,
+            token: d.name,
             class: n == 0 ? 'header' : 'tail',
             color: d3.hsl(
               d3.hsl(d.color).h,
@@ -77,7 +80,6 @@ export default {
 
       // Define gradients
       newArray.forEach((d, i) => {
-        const svg = d3.select('svg');
         const defs = svg.append('defs');
         // Angle of gradients
         gradient = defs
@@ -133,9 +135,13 @@ export default {
         .append('path')
         .attr('d', this.arc)
         .attr('id', (d, i) => 'arc-' + d.data.name)
+        // .attr('fill', (d, i) => d.data.color)
         .attr('fill', (d, i) => 'url(#svgGradient-' + d.data.name + ')')
         .attr('stroke', (d, i) => 'url(#svgGradient-' + d.data.name + ')')
-        .attr('stroke-width', 0.5);
+        .attr('stroke-width', 0.5)
+        .on('mouseover', (d, i) => {
+          console.log('mouseover', d, i);
+        });
 
       // draw semicircles
       let c, angle, x, y;
@@ -165,6 +171,20 @@ export default {
             .attr('d', arc)
             .attr('id', 'mycircle')
             .attr('fill', c.color);
+
+          // LOGOS
+          // x -= 28;
+          // y -= 28;
+          const myimage = svg
+            .append('g')
+            .attr('transform', 'translate(-6,-6)')
+            .append('image')
+            .attr('class', 'myimage')
+            .attr('xlink:href', 'tokens/token-' + c.token + '.png')
+            .attr('width', 12)
+            .attr('height', 12);
+
+          // .attr('transform', 'translate(' + x + 'px,' + y + 'px)');
         }
       }
     }
