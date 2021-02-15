@@ -132,7 +132,7 @@ export default {
     filteredPools() {
       return this.pools
         .filter(pool =>
-          this.form.tokens.every(token => pool[1].tokens.includes(token))
+          this.form.tokens.every(token => pool.tokens.includes(token))
         )
         .slice(0, this.limit);
     }
