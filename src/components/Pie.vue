@@ -34,34 +34,89 @@ export default {
   methods: {
     drawChart(data, height) {
       const TAU = 6.2318;
-      // const newData = data.map();
-      // const extraSize = data.length * 10;
       const totalSize = data.reduce((result, e) => result + e.value, 0);
       const numOfSlices = 12; // Simplify the pool to this amount of slices
 
       const newArray = [];
+      let alpha, name, gradient;
+
+      // Normalize values and create the gradient slices
       data.forEach((d, i) => {
         d.value = d.value / totalSize;
-        // newArray.push({ name: d.name, color: d.color, value: 10, alpha: 1 });
         const slices = d.value * numOfSlices;
         for (let n = 0; n < slices; n++) {
+          alpha = 0.25 + (0.75 * (slices - n)) / slices;
+          name = d.name + '-slice-' + n;
           newArray.push({
-            name: d.name + '-slice-' + n,
+            name: name,
             class: n == 0 ? 'header' : 'tail',
-            color: d.color,
+            color: d3.hsl(
+              d3.hsl(d.color).h,
+              d3.hsl(d.color).s,
+              1 - 0.5 * ((slices - n) / slices),
+              1
+            ),
+            colorTo: d3.hsl(
+              d3.hsl(d.color).h,
+              d3.hsl(d.color).s,
+              1 - 0.5 * ((slices - n - 1) / slices),
+              1
+            ),
             value: 1,
-            alpha: 0.25 + (0.75 * (slices - n)) / slices
+            alpha: alpha
           });
         }
       });
 
-      // while (newArray.length > 12) {
+      // Remove extra tail slices to reduce it back to number of slices desired
+      // This will increase the sizes of heads displayed. It is desirable
       for (let i = newArray.length - 1; i >= 0; i--) {
         if (newArray.length > numOfSlices && newArray[i].class != 'header')
           newArray.splice(i, 1);
       }
-      // }
-      console.log('data', data, totalSize, newArray);
+
+      // Define gradients
+      newArray.forEach((d, i) => {
+        const svg = d3.select('svg');
+        const defs = svg.append('defs');
+        // Angle of gradients
+        gradient = defs
+          .append('linearGradient')
+          .attr('id', 'svgGradient-' + d.name)
+          .attr(
+            'x1',
+            0.5 +
+              0.25 * Math.cos(TAU * (0.5 + i / numOfSlices - 0.5 / numOfSlices))
+          )
+          .attr(
+            'x2',
+            0.5 + 0.25 * Math.cos(TAU * (i / numOfSlices + 0.5 / numOfSlices))
+          )
+          .attr(
+            'y1',
+            0.5 +
+              0.25 * Math.sin(TAU * (0.5 + i / numOfSlices - 0.5 / numOfSlices))
+          )
+          .attr(
+            'y2',
+            0.5 + 0.25 * Math.sin(TAU * (i / numOfSlices + 0.5 / numOfSlices))
+          );
+
+        gradient
+          .append('stop')
+          .attr('class', 'start')
+          .attr('offset', '0%')
+          .attr('stop-color', d.color)
+          .attr('stop-opacity', 1);
+
+        gradient
+          .append('stop')
+          .attr('class', 'end')
+          .attr('offset', '100%')
+          .attr('stop-color', d.colorTo)
+          // .attr('stop-color', 'black')
+          .attr('stop-opacity', 1);
+      });
 
       const arcs = d3
         .pie()
@@ -69,40 +124,8 @@ export default {
         .value(d => d.value)(newArray);
       const block = this.pieG.selectAll('.arc').data(arcs);
       block.select('path').attr('d', this.arc);
-      // console.log('drawChart!', data, newArray, 'pie', arcs);
-      const svg = d3
-        .select('body')
-        .append('svg')
-        .attr('width', 500)
-        .attr('height', 300);
-
-      const defs = svg.append('defs');
-
-      // DEFINE A GRADIENT
-      // const gradient = defs
-      //   .append('linearGradient')
-      //   .attr('id', 'svgGradient')
-      //   .attr('x1', '0%')
-      //   .attr('x2', '100%')
-      //   .attr('y1', '0%')
-      //   .attr('y2', '100%');
-      //
-      // gradient
-      //   .append('stop')
-      //   .attr('class', 'start')
-      //   .attr('offset', '0%')
-      //   .attr('stop-color', 'red')
-      //   .attr('stop-opacity', 1);
-      //
-      // gradient
-      //   .append('stop')
-      //   .attr('class', 'end')
-      //   .attr('offset', '100%')
-      //   .attr('stop-color', 'blue')
-      //   .attr('stop-opacity', 1);
 
       // DRAW THE BLOCKS
-
       const newBlock = block
         .enter()
         .append('g')
@@ -110,33 +133,19 @@ export default {
         .append('path')
         .attr('d', this.arc)
         .attr('id', (d, i) => 'arc-' + d.data.name)
-        // .attr('fill', 'url(#svgGradient)');
-        .attr('fill', function(d, i) {
-          return d3.hsl(
-            d3.hsl(d.data.color).h,
-            d3.hsl(d.data.color).s,
-            d3.hsl(d.data.color).l,
-            d.data.alpha
-          );
-        });
+        .attr('fill', (d, i) => 'url(#svgGradient-' + d.data.name + ')')
+        .attr('stroke', (d, i) => 'url(#svgGradient-' + d.data.name + ')')
+        .attr('stroke-width', 0.5);
 
       // draw semicircles
       let c, angle, x, y;
       for (let i = newArray.length - 1; i >= 0; i--) {
         c = newArray[i];
         angle = i / numOfSlices + 0.01;
-        console.log(
-          'data circles',
-          i,
-          c,
-          angle,
-          Math.sin(angle),
-          Math.cos(angle)
-        );
 
         if (c.class == 'header') {
-          x = height * (0.5 + 0.38 * Math.sin(angle * TAU));
-          y = height * (0.5 - 0.38 * Math.cos(angle * TAU));
+          x = height * (1 / 2 + (3 / 8) * Math.sin(angle * TAU));
+          y = height * (1 / 2 - (3 / 8) * Math.cos(angle * TAU));
           const svg = d3
             .select('svg')
             .append('g')
@@ -147,8 +156,8 @@ export default {
             .arc()
             .innerRadius(0)
             .outerRadius(height / 8)
-            .startAngle(TAU * (angle + 0.45))
-            .endAngle(TAU * (angle + 1.05));
+            .startAngle(TAU * (angle + 0.5))
+            .endAngle(TAU * (angle + 1.0));
 
           svg
             .append('path')
@@ -158,22 +167,6 @@ export default {
             .attr('fill', c.color);
         }
       }
-
-      // console.log('block', block, newBlock);
-
-      //circles?
-      // const arcGenerator = d3
-      //   .arc()
-      //   .outerRadius(100)
-      //   .innerRadius(0)
-      //   .startAngle(-Math.PI / 2)
-      //   .endAngle(Math.PI / 2);
-      //
-      // const arc = block
-      //   .append('path')
-      //   .attr('transform', 'translate(150,120)')
-      //   .attr('id', 'circlemagic')
-      //   .attr('d', arcGenerator());
     }
   }
 };
