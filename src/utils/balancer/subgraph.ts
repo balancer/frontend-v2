@@ -3,7 +3,7 @@ import { getCurrentTs, tsToBlockNumber } from '@/utils';
 
 const BALANCER_SUBGRAPH_URL = {
   '1': 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-beta',
-  '42': 'https://api.thegraph.com/subgraphs/name/bonustrack/balancer-kovan-v2'
+  '42': 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2'
 };
 
 export async function getBPTMarketChart(
