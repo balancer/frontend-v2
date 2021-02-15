@@ -116,13 +116,12 @@ export default {
         this.sendRatios,
         this.receiveRatios
       );
-      const { sendAmounts, receiveAmounts } = adapter.calcAmountsWith(
-        type,
-        index,
-        currentAmount
-      );
-      this.sendAmounts = sendAmounts;
-      this.receiveAmounts = receiveAmounts;
+      const amounts = adapter.calcAmountsWith(type, index, currentAmount);
+      if (amounts) {
+        const { sendAmounts, receiveAmounts } = amounts;
+        this.sendAmounts = sendAmounts;
+        this.receiveAmounts = receiveAmounts;
+      }
     },
     onMax() {
       const adapter = new PoolAdapter(

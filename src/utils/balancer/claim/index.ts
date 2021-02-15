@@ -2,11 +2,10 @@
 import { toWei } from 'web3-utils';
 import { ipfsGet } from '@snapshot-labs/snapshot.js/src/utils';
 import { call, sendTransaction } from '@/utils/balancer/web3';
-import gateways from '@snapshot-labs/snapshot.js/src/gateways.json';
 // import { loadTree } from '@/utils/balancer/claim/merkle';
 import { abi } from './MerkleRedeem.json';
 
-const gateway = process.env.VUE_APP_IPFS_NODE || gateways[0];
+const gateway = process.env.VUE_APP_IPFS_NODE || 'ipfs.io';
 
 export const constants = {
   1: {

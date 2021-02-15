@@ -30,7 +30,6 @@
           </UiButton>
         </div>
       </div>
-      <!-- <Circular /> -->
     </template>
   </Layout>
 </template>
@@ -44,8 +43,8 @@ export default {
       modalOpen: false,
       pendingClaims: false,
       totalPending: false,
-      langs: ['en-US', 'zh-CN'],
-      langMap: { 'en-US': 'English', 'zh-CN': '中文' }
+      langs: ['en-US', 'zh-CN', 'fr-FR'],
+      langMap: { 'en-US': 'English', 'zh-CN': '中文', 'fr-FR': 'Français' }
     };
   },
   methods: {

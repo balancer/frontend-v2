@@ -68,7 +68,7 @@
               </UiButton>
             </template>
             <UiButton v-if="!$auth.isAuthenticated" @click="modalOpen = true">
-              <span class="hide-sm" v-text="'Connect wallet'" />
+              <span class="hide-sm" v-text="$t('connectWallet')" />
               <Icon
                 name="login"
                 size="20"
