@@ -33,8 +33,10 @@
     "light": "光",
     "logOut": "登出",
     "manageLists": "管理清单",
-    "max": "最高",
     "menu": "菜单",
+    "max": "最高",
+    "name": "Name",
+    "numberOfPools": "Number of pools",
     "oneDay": "一天",
     "oneMonth": "一个月",
     "oneWeek": "一周",
@@ -59,6 +61,7 @@
     "stablePool": "稳定的游泳池",
     "strategy": "战略",
     "swapFee": "掉期费",
+    "symbol": "Symbol",
     "threeMonths": "三个月",
     "tokens": "代币",
     "tokensParen": "代币",
@@ -72,6 +75,6 @@
     "week": "周",
     "weight": "重量",
     "weightedPool": "加权池",
-    "withdrawalFee": "提款费",
+    "withdrawFee": "Withdraw fee",
     "youDidIt": "你做到了！"
 }
