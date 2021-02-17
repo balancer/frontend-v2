@@ -6,7 +6,8 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/."
+    "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
+    "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts"
   },
   "dependencies": {
     "@ensdomains/content-hash": "^2.5.3",
