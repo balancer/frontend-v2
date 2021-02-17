@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
 import options from '@/auth';
 import VueClipboard from 'vue3-clipboard';
+import VueApexCharts from 'vue3-apexcharts';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import upperFirst from 'lodash/upperFirst';
 import camelCase from 'lodash/camelCase';
@@ -10,18 +11,13 @@ import router from '@/router';
 import store from '@/store';
 import mixins from '@/mixins';
 import i18n from '@/i18n';
-import '@/auth';
-import '@/style.scss';
-
-// import infiniteScroll from 'vue-infinite-scroll';
-// import VueApexCharts from 'vue-apexcharts';
 import dockerParity from '@/utils/balancer/configs/docker-parity.json';
 import { MULTICALL } from '@snapshot-labs/snapshot.js/src/utils';
+import '@/auth';
+import '@/style.scss';
+// import infiniteScroll from 'vue-infinite-scroll';
 
 MULTICALL['17'] = dockerParity.multicall;
-
-// Vue.use(VueApexCharts);
-// Vue.component('apexchart', VueApexCharts);
 
 const app = createApp(App)
   .use(i18n)
@@ -31,6 +27,7 @@ const app = createApp(App)
     autoSetContainer: true
   })
   .use(LockPlugin, options)
+  .use(VueApexCharts)
   .component('jazzicon', Jazzicon)
   .mixin(mixins);
 
