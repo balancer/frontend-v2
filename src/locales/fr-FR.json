@@ -24,7 +24,7 @@
     "errorNoTokens": "Oops, aucun token n'a été trouvé",
     "errorNoUniversalAgents": "Oops, aucun agent universel n'a été trouvé",
     "explore": "Explorer",
-    "explorePools": "Explorer les pools",
+    "explorePools": "Explore pools",
     "filters": "Filtres",
     "flashLoanFee": "Frais de flash loan",
     "home": "Accueil",
@@ -74,7 +74,7 @@
     "vault": "Coffre-fort",
     "week": "Semaine",
     "weight": "Poids",
-    "weightedPool": "Weighted pool",
+    "weightedPool": "Pool pondérée",
     "withdrawFee": "Frais de retrait",
     "youDidIt": "C'est fait!"
 }
