@@ -11,6 +11,7 @@ import VueApexCharts from 'vue-apexcharts';
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
+import dockerParity from '@/utils/balancer/configs/docker-parity.json';
 import mixins from '@/mixins';
 import i18n from '@/i18n';
 import '@/auth';
@@ -21,6 +22,9 @@ Vue.use(VueClipboard);
 Vue.use(TextareaAutosize);
 Vue.use(PortalVue);
 Vue.use(VueApexCharts);
+
+import { MULTICALL } from '@snapshot-labs/snapshot.js/src/utils';
+MULTICALL['17'] = dockerParity.multicall;
 
 const requireComponent = require.context('@/components', true, /[\w-]+\.vue$/);
 requireComponent.keys().forEach(fileName => {
