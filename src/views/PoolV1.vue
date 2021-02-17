@@ -1,6 +1,6 @@
 <template>
   <Layout class="mt-4">
-    <template slot="content-left">
+    <template v-slot:content-left>
       <div class="px-4 px-md-0">
         <Breadcrumb />
         <div class="overflow-hidden">

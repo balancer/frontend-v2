@@ -1,6 +1,6 @@
 <template>
   <UiModal :open="open" @close="$emit('close')">
-    <template slot="header">
+    <template v-slot:header>
       <h3 v-text="$t('selectToken')" />
     </template>
     <Search
@@ -39,7 +39,7 @@
         class="d-block text-center p-3"
       />
     </div>
-    <template slot="footer">
+    <template v-slot:footer>
       <a v-text="$t('manageLists')" @click="$emit('selectTokenlist')" />
     </template>
   </UiModal>
@@ -53,6 +53,7 @@ export default {
     tokenlist: Object,
     loading: Boolean
   },
+  emits: ['close'],
   methods: {
     onSelect(token) {
       this.$emit('select', token);

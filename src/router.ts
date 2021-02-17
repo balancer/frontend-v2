@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import VueRouter, { RouteConfig } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Pool from '@/views/Pool.vue';
 import PoolV1 from '@/views/PoolV1.vue';
@@ -9,12 +8,10 @@ import Create from '@/views/Create.vue';
 import Claim from '@/views/Claim.vue';
 import Portfolio from '@/views/Portfolio.vue';
 
-Vue.use(VueRouter);
-
-const routes: Array<RouteConfig> = [
+const routes: any[] = [
   { path: '/', name: 'home', component: Home },
   { path: '/pool/:id', name: 'pool', component: Pool },
-  { path: '/v1/pool/:id', name: 'pool', component: PoolV1 },
+  { path: '/v1/pool/:id', name: 'pool-v1', component: PoolV1 },
   { path: '/settings', name: 'settings', component: Settings },
   { path: '/vault', name: 'vault', component: Vault },
   { path: '/create', name: 'create', component: Create },
@@ -23,11 +20,11 @@ const routes: Array<RouteConfig> = [
   { path: '/*', name: 'error-404', beforeEnter: (to, from, next) => next('/') }
 ];
 
-const router = new VueRouter({
-  mode: 'hash',
+const router = createRouter({
+  history: createWebHashHistory(),
   routes,
   scrollBehavior() {
-    return { x: 0, y: 0 };
+    return { top: 0 };
   }
 });
 

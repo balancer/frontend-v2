@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/utils';
 import i18n, { defaultLocale } from '@/i18n';
 
@@ -17,10 +17,11 @@ const actions = {
     commit('SET', { init: true });
     dispatch('loadTokenlists');
     dispatch('getBlockNumber');
-    Vue.prototype.$auth.getConnector().then(connector => {
+    const auth = getInstance();
+    auth.getConnector().then(connector => {
       if (connector) dispatch('login', connector);
     });
-    i18n.locale = state.locale;
+    i18n.global.locale = state.locale;
   },
   loading: ({ commit }, payload) => {
     commit('SET', { loading: payload });
@@ -34,7 +35,7 @@ const actions = {
   },
   setLocale: async ({ commit }, locale) => {
     lsSet('locale', locale);
-    i18n.locale = locale;
+    i18n.global.locale = locale;
     commit('SET', { locale });
   }
 };
@@ -42,7 +43,7 @@ const actions = {
 const mutations = {
   SET(_state, payload) {
     Object.keys(payload).forEach(key => {
-      Vue.set(_state, key, payload[key]);
+      _state[key] = payload[key];
     });
   }
 };

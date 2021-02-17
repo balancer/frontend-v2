@@ -37,7 +37,7 @@
             </router-link>
           </div>
           <div :key="web3.account">
-            <template v-if="$auth.isAuthenticated">
+            <template v-if="$auth.isAuthenticated.value">
               <router-link
                 :to="{ name: 'claim', params: { address: web3.account } }"
               >
@@ -67,7 +67,10 @@
                 <span v-else v-text="_shorten(web3.account)" class="hide-sm" />
               </UiButton>
             </template>
-            <UiButton v-if="!$auth.isAuthenticated" @click="modalOpen = true">
+            <UiButton
+              v-if="!$auth.isAuthenticated.value"
+              @click="modalOpen = true"
+            >
               <span class="hide-sm" v-text="$t('connectWallet')" />
               <Icon
                 name="login"
@@ -94,13 +97,13 @@
         {{ $tc('transactionPending', _num(notifications.watch.length)) }}
       </span>
     </div>
-    <portal to="modal">
+    <teleport to="#modal">
       <ModalAccount
         :open="modalOpen"
         @close="modalOpen = false"
         @login="handleLogin"
       />
-    </portal>
+    </teleport>
   </Sticky>
 </template>
 

@@ -10,7 +10,7 @@
       </UiButton>
     </div>
     <Layout>
-      <template slot="sidebar-left">
+      <template v-slot:sidebar-left>
         <BlockMenu />
         <Block :title="$t('filters')">
           <UiButton
@@ -32,14 +32,8 @@
           </div>
         </Block>
       </template>
-      <template slot="content-right">
-        <Block
-          :slim="true"
-          v-infinite-scroll="loadMore"
-          infinite-scroll-distance="0"
-          infinite-scroll-disabled="loading"
-          class="overflow-hidden"
-        >
+      <template v-slot:content-right>
+        <Block :slim="true" class="overflow-hidden">
           <div v-if="loading || registry.loading" class="text-center p-4">
             <UiLoading />
           </div>
@@ -66,7 +60,7 @@
           </div>
         </Block>
       </template>
-      <portal to="modal">
+      <teleport to="#modal">
         <ModalSelectToken
           :open="modal.selectToken"
           :loading="registry.loading"
@@ -85,7 +79,7 @@
           @inputSearch="q = $event"
           :tokenlists="getTokenlists({ q })"
         />
-      </portal>
+      </teleport>
     </Layout>
   </div>
 </template>

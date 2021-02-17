@@ -1,6 +1,6 @@
 <template>
   <Layout class="mt-4">
-    <template slot="content-left">
+    <template v-slot:content-left>
       <div class="px-4 px-md-0">
         <Breadcrumb />
         <h1 class="mb-3">{{ $t('claimBAL') }} {{ _shorten(address) }}</h1>
@@ -31,13 +31,13 @@
         </div>
       </Block>
     </template>
-    <template slot="sidebar-right">
+    <template v-slot:sidebar-right>
       <Block :title="$t('actions')">
         <UiButton :loading="loading" class="d-block width-full mb-2">
           {{ _num(totalPending) }} BAL
         </UiButton>
         <UiButton
-          :disabled="loading || !$auth.isAuthenticated"
+          :disabled="loading || !$auth.isAuthenticated.value"
           @click="onSubmit"
           class="d-block width-full button--submit"
         >

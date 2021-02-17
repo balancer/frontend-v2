@@ -1,6 +1,5 @@
-import Vue from 'vue';
 import { Web3Provider } from '@ethersproject/providers';
-import { getInstance } from '@snapshot-labs/lock/plugins/vue';
+import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
 import networks from '@/utils/networks.json';
 import { getProfiles } from '@/utils/profile';
@@ -20,16 +19,16 @@ const state = {
 const mutations = {
   WEB3_SET(_state, payload) {
     Object.keys(payload).forEach(key => {
-      Vue.set(_state, key, payload[key]);
+      _state[key] = payload[key];
     });
   },
   LOGOUT(_state) {
-    Vue.set(_state, 'account', null);
-    Vue.set(_state, 'name', null);
+    _state.account = null;
+    _state.name = null;
     console.debug('LOGOUT');
   },
   LOAD_PROVIDER_FAILURE(_state, payload) {
-    Vue.set(_state, 'account', null);
+    _state.account = null;
     console.debug('LOAD_PROVIDER_FAILURE', payload);
   },
   HANDLE_CHAIN_CHANGED(_state, chainId) {
@@ -40,11 +39,11 @@ const mutations = {
         shortName: undefined
       };
     }
-    Vue.set(_state, 'network', networks[chainId]);
+    _state.network = networks[chainId];
     console.debug('HANDLE_CHAIN_CHANGED', chainId);
   },
   HANDLE_ACCOUNTS_CHANGED(_state, payload) {
-    Vue.set(_state, 'account', payload);
+    _state.account = payload;
     console.debug('HANDLE_ACCOUNTS_CHANGED', payload);
   }
 };
@@ -54,8 +53,8 @@ const actions = {
     auth = getInstance();
     commit('SET', { authLoading: true });
     await auth.login(connector);
-    if (auth.provider) {
-      auth.web3 = new Web3Provider(auth.provider);
+    if (auth.provider.value) {
+      auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
       dispatch('getBalances');
       dispatch('getAllowances');
@@ -63,7 +62,8 @@ const actions = {
     commit('SET', { authLoading: false });
   },
   logout: async ({ commit }) => {
-    Vue.prototype.$auth.logout();
+    auth = getInstance();
+    auth.logout();
     commit('LOGOUT');
   },
   getBlockNumber: async () => {
@@ -72,17 +72,20 @@ const actions = {
   },
   loadProvider: async ({ commit, dispatch }) => {
     try {
-      if (auth.provider.removeAllListeners && !auth.provider.isTorus)
-        auth.provider.removeAllListeners();
-      if (auth.provider.on) {
-        auth.provider.on('chainChanged', async chainId => {
+      if (
+        auth.provider.value.removeAllListeners &&
+        !auth.provider.value.isTorus
+      )
+        auth.provider.value.removeAllListeners();
+      if (auth.provider.value.on) {
+        auth.provider.value.on('chainChanged', async chainId => {
           commit('HANDLE_CHAIN_CHANGED', parseInt(formatUnits(chainId, 0)));
           dispatch('resetAccount');
           dispatch('getBalances');
           dispatch('getAllowances');
           dispatch('getBlockNumber');
         });
-        auth.provider.on('accountsChanged', async accounts => {
+        auth.provider.value.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
             commit('HANDLE_ACCOUNTS_CHANGED', accounts[0]);
             dispatch('resetAccount');
@@ -91,7 +94,7 @@ const actions = {
             dispatch('getAllowances');
           }
         });
-        auth.provider.on('disconnect', async () => {
+        auth.provider.value.on('disconnect', async () => {
           commit('HANDLE_CLOSE');
         });
       }

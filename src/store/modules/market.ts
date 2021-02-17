@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { getEtherPrice, getTokensPrice } from '@/utils/coingecko';
 
 const state = {
@@ -27,7 +26,7 @@ const actions = {
 const mutations = {
   MARKET_SET(_state, payload) {
     Object.keys(payload).forEach(key => {
-      Vue.set(_state, key, payload[key]);
+      _state[key] = payload[key];
     });
   }
 };
