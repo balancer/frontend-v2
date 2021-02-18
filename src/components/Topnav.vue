@@ -8,7 +8,14 @@
         style="color: white;"
       >
         <Icon name="warning1" size="20" class="mr-1 v-align-text-bottom" />
-        {{ $tc('unavailableOnNetwork', web3.network.shortName) }}
+        {{
+          $t(
+            web3.network.shortName
+              ? 'unavailableOnNetworkWithName'
+              : 'unavailableOnNetwork',
+            [web3.network.shortName]
+          )
+        }}
       </div>
       <Container>
         <div class="d-flex flex-items-center" style="height: 78px;">
