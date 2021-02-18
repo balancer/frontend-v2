@@ -30,7 +30,12 @@ export default {
   },
   props: ['data'],
   watch: {
-    data: newData => this.drawChart(newData, height, innerRadius)
+    data(newData) {
+      const svg = d3.select(this.$el);
+      const height = svg.attr('height');
+      const innerRadius = 1 / 2;
+      this.drawChart(newData, height, innerRadius);
+    }
   },
   methods: {
     drawChart(data, height, innerRadius) {
@@ -44,7 +49,7 @@ export default {
       let alpha, name, gradient;
 
       // Normalize values and create the gradient slices
-      data.forEach((d, i) => {
+      data.forEach(d => {
         d.value = d.value / totalSize;
         const slices = d.value * numOfSlices;
         for (let n = 0; n < slices; n++) {
@@ -56,7 +61,7 @@ export default {
             name: name,
             token: d.name,
             percentage: Math.floor(d.value * 100),
-            class: n == 0 ? 'header' : 'tail',
+            class: n === 0 ? 'header' : 'tail',
             color: d3.hsl(
               d3.hsl(d.color).h * z + d3.hsl(d.color2).h * (1 - z),
               d3.hsl(d.color).s * z + d3.hsl(d.color2).s * (1 - z),
@@ -78,7 +83,7 @@ export default {
       // Remove extra tail slices to reduce it back to number of slices desired
       // This will increase the sizes of heads displayed. It is desirable
       for (let i = newArray.length - 1; i >= 0; i--) {
-        if (newArray.length > numOfSlices && newArray[i].class != 'header')
+        if (newArray.length > numOfSlices && newArray[i].class !== 'header')
           newArray.splice(i, 1);
       }
 
@@ -132,17 +137,17 @@ export default {
       block.select('path').attr('d', this.arc);
 
       // DRAW THE BLOCKS
-      const newBlock = block
+      block
         .enter()
         .append('g')
         .classed('arc', true)
         .append('path')
         .attr('d', this.arc)
-        .attr('id', (d, i) => 'arc-' + d.data.name)
+        .attr('id', d => 'arc-' + d.data.name)
         .attr('class', 'arc')
-        .attr('class', (d, i) => 'arc-token-' + d.data.token)
-        .attr('fill', (d, i) => 'url(#svgGradient-' + d.data.name + ')')
-        .attr('stroke', (d, i) => 'url(#svgGradient-' + d.data.name + ')')
+        .attr('class', d => 'arc-token-' + d.data.token)
+        .attr('fill', d => 'url(#svgGradient-' + d.data.name + ')')
+        .attr('stroke', d => 'url(#svgGradient-' + d.data.name + ')')
         .attr('stroke-width', 0.5)
         .on('mouseover', (ev, el) => {
           d3.select('#curve-text-' + el.data.token)
@@ -224,7 +229,7 @@ export default {
         c = newArray[i];
         angle = i / numOfSlices + 0.01;
 
-        if (c.class == 'header') {
+        if (c.class === 'header') {
           x = height * (1 / 2 + (3 / 4) * innerRadius * Math.sin(angle * TAU));
           y = height * (1 / 2 - (3 / 4) * innerRadius * Math.cos(angle * TAU));
           // 3/4 is an approximation derived mostly from trial than logic
@@ -254,7 +259,8 @@ export default {
           // LOGOS
           // x -= 28;
           // y -= 28;
-          const myimage = svg
+
+          svg
             .append('g')
             .attr('transform', 'translate(-6,-6)')
             .append('image')
