@@ -1,6 +1,6 @@
 <template>
   <Layout class="mt-4">
-    <template slot="content-left">
+    <template v-slot:content-left>
       <div class="px-4 px-md-0">
         <Breadcrumb />
         <h1 class="mb-4">
@@ -82,7 +82,7 @@
         />
       </div>
     </template>
-    <template slot="sidebar-right">
+    <template v-slot:sidebar-right>
       <div v-if="pool && !loading && !registry.loading">
         <BlockPoolActions
           @joinPool="onJoinPool"

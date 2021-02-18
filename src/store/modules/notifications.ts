@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { clone } from '@/utils';
 
 const state = {
@@ -12,7 +11,7 @@ const mutations = {
   },
   NOTIFY_SET(_state, payload) {
     Object.keys(payload).forEach(key => {
-      Vue.set(_state, key, payload[key]);
+      _state[key] = payload[key];
     });
   }
 };

@@ -1,6 +1,6 @@
 <template>
   <UiModal :open="open" @close="$emit('close')">
-    <template slot="header">
+    <template v-slot:header>
       <h3
         v-if="!web3.account || step === 'connect'"
         v-text="$t('connectWallet')"
@@ -52,7 +52,7 @@
       </div>
     </div>
     <div v-else>
-      <div v-if="$auth.isAuthenticated" class="m-4">
+      <div v-if="$auth.isAuthenticated.value" class="m-4">
         <a
           :href="_explorer(web3.network.key, web3.account)"
           target="_blank"
@@ -89,6 +89,7 @@ import connectors from '@/constants/connectors.json';
 
 export default {
   props: ['open'],
+  emits: ['close'],
   data() {
     return {
       connectorsLimit: 3,

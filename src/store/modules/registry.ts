@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { formatUnits } from '@ethersproject/units';
 import { getAddress, isAddress } from '@ethersproject/address';
 import getProvider from '@/utils/provider';
@@ -202,7 +201,7 @@ const actions = {
 const mutations = {
   REGISTRY_SET(_state, payload) {
     Object.keys(payload).forEach(key => {
-      Vue.set(_state, key, payload[key]);
+      _state[key] = payload[key];
     });
   }
 };

@@ -10,10 +10,8 @@
         target="_blank"
         class="mb-2 d-block"
       >
-        <UiButton
-          v-text="$t('seeOnExplorer')"
-          class="button-outline width-full"
-        >
+        <UiButton class="button-outline width-full">
+          {{ $t('seeOnExplorer') }}
           <Icon name="external-link" class="ml-1" />
         </UiButton>
       </a>
@@ -23,6 +21,7 @@
 
 <script>
 export default {
-  props: ['open', 'address', 'space']
+  props: ['open', 'address', 'space'],
+  emits: ['close']
 };
 </script>

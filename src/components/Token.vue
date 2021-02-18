@@ -12,16 +12,16 @@
     />
     <Avatar v-else :address="token.address" :size="size || 24" />
     <span v-if="symbol || name" class="ml-1">
-      <template v-if="symbol">
+      <span v-if="symbol" class="ml-1">
         {{ _shorten(token.symbol, 'symbol') }}
-      </template>
-      <template v-if="name">
+      </span>
+      <span v-if="name" class="ml-1">
         {{ _shorten(token.name, 'name') }}
-      </template>
+      </span>
       <a
         v-if="name && token.injected"
         aria-label="This token is injected"
-        class="v-align-middle line-height-0 tooltipped tooltipped-n"
+        class="v-align-middle line-height-0 tooltipped tooltipped-n ml-1"
       >
         <Icon name="info" size="24" class="text-gray" />
       </a>

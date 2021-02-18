@@ -8,7 +8,7 @@
     "
     :back="true"
   >
-    <template slot="header">
+    <template v-slot:header>
       <h3 v-text="$t('manageLists')" />
     </template>
     <Search
@@ -44,7 +44,7 @@
       </div>
       <div v-else v-text="$t('errorNoLists')" class="d-block text-center p-3" />
     </div>
-    <template slot="footer">
+    <template v-slot:footer>
       <a href="https://tokenlists.org" target="_blank">
         {{ $t('browseLists') }}
         <Icon name="external-link" class="ml-1" />
@@ -59,6 +59,7 @@ export default {
     open: Boolean,
     tokenlists: Object
   },
+  emits: ['back', 'close'],
   methods: {
     onSelect(name) {
       this.$emit('select', name);

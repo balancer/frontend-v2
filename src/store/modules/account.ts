@@ -1,7 +1,6 @@
-import Vue from 'vue';
 import getProvider from '@/utils/provider';
 import { getAllowances, getBalances } from '@/utils/balancer/tokens';
-import { getInstance } from '@snapshot-labs/lock/plugins/vue';
+import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import constants from '@/utils/balancer/constants';
 
 const state = {
@@ -89,7 +88,7 @@ const actions = {
 const mutations = {
   ACCOUNT_SET(_state, payload) {
     Object.keys(payload).forEach(key => {
-      Vue.set(_state, key, payload[key]);
+      _state[key] = payload[key];
     });
   }
 };

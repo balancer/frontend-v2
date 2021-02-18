@@ -1,6 +1,6 @@
 <template>
   <Layout class="mt-4">
-    <template slot="content-left">
+    <template v-slot:content-left>
       <div class="px-4 px-md-0">
         <Breadcrumb />
         <h1 v-text="'Vault'" class="mb-4" />
@@ -8,12 +8,19 @@
       <UiLoading v-if="loading" />
       <div v-if="loaded">
         <Block title="Overview">
-          <div>{{ $t('numberOfPools') }}: {{ vault.numberOfPools }}</div>
+          <div>
+            {{ $t('numberOfPools') }}:
+            {{ _num(_units(vault.numberOfPools, 0)) }}
+          </div>
         </Block>
         <Block title="Protocol fees">
-          <div>{{ $t('flashLoanFee') }}: {{ vault.protocolFlashLoanFee }}</div>
-          <div>{{ $t('swapFee') }}: {{ vault.protocolSwapFee }}</div>
-          <div>{{ $t('withdrawFee') }}: {{ vault.protocolWithdrawFee }}</div>
+          <div>
+            {{ $t('flashLoanFee') }}: {{ _units(vault.protocolFlashLoanFee) }}%
+          </div>
+          <div>{{ $t('swapFee') }}: {{ _units(vault.protocolSwapFee) }}%</div>
+          <div>
+            {{ $t('withdrawFee') }}: {{ _units(vault.protocolWithdrawFee) }}%
+          </div>
         </Block>
       </div>
     </template>

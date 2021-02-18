@@ -1,6 +1,6 @@
 <template>
   <Layout class="mt-4">
-    <template slot="content-left">
+    <template v-slot:content-left>
       <div class="px-4 px-md-0">
         <Breadcrumb />
         <h1 v-text="$t('settings')" class="mb-4" />

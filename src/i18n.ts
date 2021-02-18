@@ -1,11 +1,8 @@
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import { createI18n } from 'vue-i18n';
 import messages from '@/locales';
 
 messages['en-US'] = messages.default;
 delete messages.default;
-
-Vue.use(VueI18n);
 
 export function getBrowserLocale() {
   if (typeof navigator !== 'undefined') {
@@ -24,7 +21,7 @@ Object.keys(messages).forEach(locale => {
   if (locale.slice(0, 2) === browserLocale.slice(0, 2)) defaultLocale = locale;
 });
 
-export default new VueI18n({
+const i18n = createI18n({
   locale: defaultLocale,
   messages,
   dateTimeFormats: {
@@ -39,3 +36,5 @@ export default new VueI18n({
     }
   }
 });
+
+export default i18n;

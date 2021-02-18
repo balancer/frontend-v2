@@ -1,6 +1,6 @@
 <template>
   <Layout class="mt-4">
-    <template v-if="web3.account" slot="content-right">
+    <template v-if="web3.account" v-slot:content-right>
       <div class="px-4 px-md-0">
         <Breadcrumb />
         <h1 class="mb-3">
@@ -75,7 +75,7 @@
         </div>
       </Block>
     </template>
-    <template slot="sidebar-left">
+    <template v-slot:sidebar-left>
       <BlockMenu />
     </template>
   </Layout>

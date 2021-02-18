@@ -1,6 +1,6 @@
 <template>
   <Layout class="mt-4">
-    <template slot="content-left">
+    <template v-slot:content-left>
       <div class="px-4 px-md-0">
         <Breadcrumb />
         <h1 v-text="$t('createPool')" class="mb-4" />
@@ -102,14 +102,14 @@
         </UiButton>
       </Block>
     </template>
-    <template slot="sidebar-right">
+    <template v-slot:sidebar-right>
       <div v-if="form.strategyType">
         <Block :title="$t('actions')">
           <!--
           <UiButton
             v-if="!hasAllowed && Object.keys(requiredAllowances).length > 0"
             @click="onApprove"
-            :disabled="!$auth.isAuthenticated"
+            :disabled="!$auth.isAuthenticated.value"
             class="d-block width-full mb-2"
           >
             {{ $t('approve') }}
@@ -117,7 +117,7 @@
           -->
           <UiButton
             @click="onSubmit"
-            :disabled="!$auth.isAuthenticated"
+            :disabled="!$auth.isAuthenticated.value"
             :loading="loading"
             class="d-block width-full button--submit"
           >
@@ -130,7 +130,7 @@
         </Block>
       </div>
     </template>
-    <portal to="modal">
+    <teleport to="#modal">
       <ModalSelectToken
         :open="modal.selectToken"
         :loading="registry.loading"
@@ -150,7 +150,7 @@
         :tokenlists="getTokenlists({ q })"
         :activeLists="registry.activeLists"
       />
-    </portal>
+    </teleport>
   </Layout>
 </template>
 

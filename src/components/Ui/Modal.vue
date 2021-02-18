@@ -38,6 +38,7 @@ export default {
     open: Boolean,
     back: Boolean
   },
+  emits: ['back', 'close'],
   watch: {
     open(val, prev) {
       if (val !== prev) this.toggleModal();
