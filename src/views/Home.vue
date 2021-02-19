@@ -29,10 +29,10 @@
         <div v-if="!registry.loading">
           <div v-if="!loading" class="border-bottom">
             <div class="px-4 py-3 d-flex flex-justify-between">
-              <div>Pool</div>
+              <div>Pool name</div>
               <div>
                 <span class="d-inline-block column-sm text-right"
-                  >Liquidity</span
+                  >Pool value</span
                 >
                 <span class="d-inline-block column-sm text-right ml-2"
                   >Volume (24h)</span
