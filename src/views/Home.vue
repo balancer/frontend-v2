@@ -1,77 +1,74 @@
 <template>
   <div>
-    <Layout class="mt-2">
-      <template v-slot:sidebar-left>
-        <BlockMenu />
-        <Block :title="$t('filters')">
-          <UiButton
-            v-text="$t('tokensParen')"
-            @click="modal.selectToken = true"
-            class="mb-3 width-full"
-          />
-          <div v-if="!registry.loading">
-            <div v-for="(token, i) in form.tokens" :key="i" class="d-flex py-1">
-              <Token
-                :token="tokens[token]"
-                :symbol="true"
-                class="text-white flex-auto"
-              />
-              <a @click="removeToken(i)">
-                <Icon name="close" size="16" class="py-1 text-gray" />
-              </a>
-            </div>
-          </div>
-        </Block>
-      </template>
-      <template v-slot:content-right>
-        <Block :slim="true" class="overflow-hidden">
-          <div v-if="loading || registry.loading" class="text-center p-4">
-            <UiLoading />
-          </div>
-          <div v-if="!registry.loading">
-            <p
-              v-if="!loading && Object.keys(filteredPools).length === 0"
-              class="px-4 pt-4 pb-3"
-            >
-              {{ $t('errorNoMatch') }}
-            </p>
-            <div
-              v-else
-              v-for="pool in filteredPools"
-              :key="pool.id"
-              class="overflow-hidden border-bottom last-child-border-0"
-            >
-              <router-link
-                :to="{ name: 'pool', params: { id: pool.id } }"
-                class="d-block overflow-hidden"
-              >
-                <BlockPool :pool="pool" :tokens="tokens" />
-              </router-link>
-            </div>
-          </div>
-        </Block>
-      </template>
-      <teleport to="#modal">
-        <ModalSelectToken
-          :open="modal.selectToken"
-          :loading="registry.loading"
-          @close="modal.selectToken = false"
-          @select="addToken"
-          @selectTokenlist="modalSelectLists"
-          @inputSearch="onTokenSearch"
-          :tokens="getTokens({ q, not: form.tokens })"
-          :tokenlist="getCurrentTokenlist"
+    <Container class="mt-2">
+      <Block :title="$t('filters')">
+        <UiButton
+          v-text="$t('tokensParen')"
+          @click="modal.selectToken = true"
+          class="mb-3 width-full"
         />
-        <ModalSelectTokenlist
-          :open="modal.selectTokenlist"
-          @close="modal.selectTokenlist = false"
-          @back="modalSelectToken"
-          @select="toggleList($event)"
-          @inputSearch="q = $event"
-          :tokenlists="getTokenlists({ q })"
-        />
-      </teleport>
-    </Layout>
+        <div v-if="!registry.loading">
+          <div v-for="(token, i) in form.tokens" :key="i" class="d-flex py-1">
+            <Token
+              :token="tokens[token]"
+              :symbol="true"
+              class="text-white flex-auto"
+            />
+            <a @click="removeToken(i)">
+              <Icon name="close" size="16" class="py-1 text-gray" />
+            </a>
+          </div>
+        </div>
+      </Block>
+    </Container>
+    <Container :slim="true" class="mt-2">
+      <Block :slim="true" class="overflow-hidden">
+        <div v-if="loading || registry.loading" class="text-center p-4">
+          <UiLoading />
+        </div>
+        <div v-if="!registry.loading">
+          <p
+            v-if="!loading && Object.keys(filteredPools).length === 0"
+            class="px-4 pt-4 pb-3"
+          >
+            {{ $t('errorNoMatch') }}
+          </p>
+          <div
+            v-else
+            v-for="pool in filteredPools"
+            :key="pool.id"
+            class="overflow-hidden border-bottom last-child-border-0"
+          >
+            <router-link
+              :to="{ name: 'pool', params: { id: pool.id } }"
+              class="d-block overflow-hidden"
+            >
+              <BlockPool :pool="pool" :tokens="tokens" />
+            </router-link>
+          </div>
+        </div>
+      </Block>
+    </Container>
+    <teleport to="#modal">
+      <ModalSelectToken
+        :open="modal.selectToken"
+        :loading="registry.loading"
+        @close="modal.selectToken = false"
+        @select="addToken"
+        @selectTokenlist="modalSelectLists"
+        @inputSearch="onTokenSearch"
+        :tokens="getTokens({ q, not: form.tokens })"
+        :tokenlist="getCurrentTokenlist"
+      />
+      <ModalSelectTokenlist
+        :open="modal.selectTokenlist"
+        @close="modal.selectTokenlist = false"
+        @back="modalSelectToken"
+        @select="toggleList($event)"
+        @inputSearch="q = $event"
+        :tokenlists="getTokenlists({ q })"
+      />
+    </teleport>
   </div>
 </template>
 
