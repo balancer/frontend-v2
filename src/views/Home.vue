@@ -1,14 +1,14 @@
 <template>
   <div>
     <Container class="mt-2">
-      <Block :title="$t('filters')">
-        <UiButton
-          v-text="$t('tokensParen')"
-          @click="modal.selectToken = true"
-          class="mb-3 width-full"
-        />
-        <div v-if="!registry.loading">
-          <div v-for="(token, i) in form.tokens" :key="i" class="d-flex py-1">
+      <div class="width-full d-flex flex-items-center">
+        <UiButton v-text="$t('filters')" @click="modal.selectToken = true" />
+        <div class="d-flex ml-2" v-if="!registry.loading">
+          <div
+            v-for="(token, i) in form.tokens"
+            :key="i"
+            class="d-flex flex-items-center py-1 mr-2"
+          >
             <Token
               :token="tokens[token]"
               :symbol="true"
@@ -19,9 +19,9 @@
             </a>
           </div>
         </div>
-      </Block>
+      </div>
     </Container>
-    <Container :slim="true" class="mt-2">
+    <Container class="mt-2" :slim="true">
       <Block :slim="true" class="overflow-hidden">
         <div v-if="loading || registry.loading" class="text-center p-4">
           <UiLoading />
