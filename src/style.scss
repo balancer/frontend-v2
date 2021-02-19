@@ -1,6 +1,9 @@
 @import './vars';
-@import '~@primer/css';
 @import './assets/fonts/iconfont.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --primary-color: #384aff;
@@ -78,6 +81,7 @@ body,
   background: var(--bg-color);
   color: var(--text-color);
   font-family: $font-weight-normal;
+  font-size: 17px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -92,6 +96,18 @@ h3,
 h4 {
   color: var(--heading-color);
   font-family: $font-weight-bold;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 20px;
 }
 
 b {
@@ -286,12 +302,4 @@ textarea {
 
 .highlight:hover {
   background-color: var(--bg-color);
-}
-
-.border-green {
-  border-color: $green !important;
-}
-
-.border-red {
-  border-color: $red !important;
 }

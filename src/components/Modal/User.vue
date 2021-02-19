@@ -8,9 +8,9 @@
       <a
         :href="_explorer(space ? space.network : '1', address)"
         target="_blank"
-        class="mb-2 d-block"
+        class="mb-2 block"
       >
-        <UiButton class="button-outline width-full">
+        <UiButton class="button-outline w-full">
           {{ $t('seeOnExplorer') }}
           <Icon name="external-link" class="ml-1" />
         </UiButton>

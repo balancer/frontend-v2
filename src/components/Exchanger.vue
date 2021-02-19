@@ -11,9 +11,9 @@
         v-for="(token, i) in sendTokens"
         :key="token"
         :class="{
-          'border-red': parseFloat(sendAmounts[i]) > tokens[token].balance
+          'border-red-500': parseFloat(sendAmounts[i]) > tokens[token].balance
         }"
-        class="d-flex mb-2 width-full px-3"
+        class="flex mb-2 w-full px-3"
       >
         <input
           @input="onInput('send', i)"
@@ -33,7 +33,7 @@
       <UiButton
         v-for="(token, i) in receiveTokens"
         :key="token"
-        class="d-flex mb-2 width-full px-3"
+        class="flex mb-2 w-full px-3"
       >
         <input
           @input="onInput('receive', i)"
@@ -51,11 +51,11 @@
     <UiButton
       v-if="requireAllowance && Object.keys(requiredAllowances).length > 0"
       @click="onApprove"
-      class="button--submit width-full"
+      class="button--submit w-full"
     >
       {{ $t('approve') }}
     </UiButton>
-    <UiButton v-else @click="onSubmit" class="button--submit width-full">
+    <UiButton v-else @click="onSubmit" class="button--submit w-full">
       {{ submit }}
     </UiButton>
   </div>

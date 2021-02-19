@@ -1,10 +1,8 @@
 <template>
-  <div
-    class="block border-top border-bottom border-md rounded-0 rounded-md-2 mb-4 block-bg"
-  >
+  <div class="block border-t border-b md:border md:rounded-md mb-4 block-bg">
     <h4
       v-if="title"
-      class="px-4 pt-3 border-bottom d-block bg-gray-dark rounded-top-0 rounded-md-top-2"
+      class="px-5 pt-3 border-b block bg-gray-dark md:rounded-t-md"
       style="padding-bottom: 12px;"
     >
       {{ title }}
@@ -18,7 +16,7 @@
         <Icon :name="icon" size="22" />
       </a>
     </h4>
-    <div :class="!slim && 'p-4'">
+    <div :class="!slim && 'p-5'">
       <slot />
     </div>
   </div>

@@ -15,11 +15,11 @@
           :key="i"
           @click="$emit('login', connector.id)"
           target="_blank"
-          class="mb-2 d-block"
+          class="mb-2 block"
         >
           <UiButton
             v-if="id !== 'injected'"
-            class="button-outline width-full v-align-middle"
+            class="button-outline w-full v-align-middle"
           >
             <img
               :src="`${path}/${connector.id}.png`"
@@ -31,7 +31,7 @@
           </UiButton>
           <UiButton
             v-else-if="injected"
-            class="button-outline width-full v-align-middle"
+            class="button-outline w-full v-align-middle"
           >
             <img
               :src="`${path}/${injected.id}.png`"
@@ -45,7 +45,7 @@
         <UiButton
           @click="connectorsLimit = 1e3"
           v-if="invisibleConnectorsCount"
-          class="width-full"
+          class="w-full"
         >
           {{ $t('seeMore') }} ({{ invisibleConnectorsCount }})
         </UiButton>
@@ -56,24 +56,21 @@
         <a
           :href="_explorer(web3.network.key, web3.account)"
           target="_blank"
-          class="mb-2 d-block"
+          class="mb-2 block"
         >
-          <UiButton class="button-outline width-full">
+          <UiButton class="button-outline w-full">
             <Avatar :address="web3.account" size="16" class="mr-2 ml-n1" />
             <span v-if="web3.name" v-text="web3.name" />
             <span v-else v-text="_shorten(web3.account)" />
             <Icon name="external-link" class="ml-1" />
           </UiButton>
         </a>
-        <UiButton
-          @click="step = 'connect'"
-          class="button-outline width-full mb-2"
-        >
+        <UiButton @click="step = 'connect'" class="button-outline w-full mb-2">
           {{ $t('connectWallet') }}
         </UiButton>
         <UiButton
           @click="handleLogout"
-          class="button-outline width-full text-red mb-2"
+          class="button-outline w-full text-red mb-2"
         >
           {{ $t('logOut') }}
         </UiButton>

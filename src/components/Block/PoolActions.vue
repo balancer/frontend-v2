@@ -1,18 +1,18 @@
 <template>
   <Block :slim="true">
-    <div class="d-flex d-block bg-gray-dark rounded-top-0 rounded-md-top-2">
+    <div class="flex block bg-gray-dark md:rounded-t-md">
       <a
         @click="currentSide = 0"
-        :class="currentSide === 0 && 'active border-green'"
-        class="col-6 pt-3 text-center border-bottom"
+        :class="currentSide === 0 && 'active border-green-500'"
+        class="w-1/2 pt-3 text-center border-b md:rounded-t-md"
         style="padding-bottom: 10px;"
       >
         <h4 v-text="$t('buy')" />
       </a>
       <a
         @click="currentSide = 1"
-        :class="currentSide === 1 && 'active border-red'"
-        class="col-6 pt-3 text-center border-bottom"
+        :class="currentSide === 1 && 'active border-red-500'"
+        class="w-1/2 pt-3 text-center border-b"
         style="padding-bottom: 10px;"
       >
         <h4 v-text="$t('sell')" />
