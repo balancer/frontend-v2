@@ -20,6 +20,9 @@
       <span class="d-inline-block column-sm text-right ml-2">{{
         _num(pool.totalSwapVolume, '$0,0')
       }}</span>
+      <span class="d-inline-block column-sm text-right ml-2">{{
+        _num(pool.apy, '0,0%')
+      }}</span>
     </div>
   </div>
 </template>

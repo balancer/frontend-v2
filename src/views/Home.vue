@@ -166,7 +166,7 @@ export default {
         const pools = await getPools(network, provider, poolIds.slice(0, 20));
         console.log('Pools', pools);
 
-        const poolStats = pools.map((pool, i) => {
+        const poolData = pools.map((pool, i) => {
           const currentPoolVolume = parseFloat(poolVolume[i].totalSwapVolume);
           const pastPoolVolume =
             poolVolume[i].swaps.length === 0
@@ -176,17 +176,18 @@ export default {
           return {
             ...pool,
             liquidity: getPoolLiquidity(pool, this.market.prices),
-            volume
+            volume,
+            apy: 0
           };
         });
-        console.log('Pool data', poolStats);
+        console.log('Pool data', poolData);
 
         const tokens = pools
           .map(pool => pool.tokens)
           .reduce((a, b) => [...a, ...b], []);
         await this.injectTokens(tokens);
 
-        this.pools = poolStats;
+        this.pools = poolData;
       }
 
       this.loading = false;
