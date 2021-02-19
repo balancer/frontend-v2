@@ -132,7 +132,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['injectTokens', 'setTokenlist', 'toggleList']),
+    ...mapActions(['injectTokens', 'toggleList']),
     modalSelectToken() {
       this.modal.selectToken = true;
       this.modal.selectTokenlist = false;

@@ -217,7 +217,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'setTokenlist',
       'notify',
       'watchTx',
       'getAllowances',
@@ -243,11 +242,6 @@ export default {
       this.form.weights = this.form.weights.filter(
         (token, index) => index !== i
       );
-    },
-    selectTokenlist(i) {
-      if (i) this.setTokenlist(i);
-      this.q = '';
-      this.modal.selectToken = true;
     },
     onTokenSearch(event) {
       this.q = event;
