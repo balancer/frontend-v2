@@ -1,15 +1,6 @@
 <template>
   <div>
-    <div class="text-center py-9 border-bottom block-bg mb-4">
-      <h1 v-text="$t('explorePools')" class="mb-3" style="font-size: 44px;" />
-      <UiButton
-        class="px-3 hide-sm hide-md width-full"
-        style="max-width: 380px;"
-      >
-        <Search class="width-full" />
-      </UiButton>
-    </div>
-    <Layout>
+    <Layout class="mt-2">
       <template v-slot:sidebar-left>
         <BlockMenu />
         <Block :title="$t('filters')">
@@ -87,8 +78,9 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import getProvider from '@/utils/provider';
+import { getPoolLiquidity } from '@/utils/balancer/price';
 import { getNumberOfPools } from '@/utils/balancer/vault';
-import { getPoolIds } from '@/utils/balancer/subgraph';
+import { getPoolVolume } from '@/utils/balancer/subgraph';
 import { getPools } from '@/utils/balancer/pools';
 import { clone } from '@/utils';
 
@@ -170,18 +162,34 @@ export default {
       console.log('Total pools', totalPools);
 
       if (totalPools > 0) {
-        const poolIds = await getPoolIds(network);
-        console.log('Pool ids', poolIds);
+        const poolVolume = await getPoolVolume(network);
+        console.log('Pool volume', poolVolume);
+        const poolIds = poolVolume.map(pool => pool.id);
 
         const pools = await getPools(network, provider, poolIds.slice(0, 20));
         console.log('Pools', pools);
+
+        const poolStats = pools.map((pool, i) => {
+          const currentPoolVolume = parseFloat(poolVolume[i].totalSwapVolume);
+          const pastPoolVolume =
+            poolVolume[i].swaps.length === 0
+              ? 0
+              : parseFloat(poolVolume[i].swaps[0].totalSwapVolume);
+          const volume = currentPoolVolume - pastPoolVolume;
+          return {
+            ...pool,
+            liquidity: getPoolLiquidity(pool, this.market.prices),
+            volume
+          };
+        });
+        console.log('Pool data', poolStats);
 
         const tokens = pools
           .map(pool => pool.tokens)
           .reduce((a, b) => [...a, ...b], []);
         await this.injectTokens(tokens);
 
-        this.pools = pools;
+        this.pools = poolStats;
       }
 
       this.loading = false;
