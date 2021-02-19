@@ -8,7 +8,6 @@
       <h3 v-else v-text="$t('account')" />
     </template>
     <div v-if="!web3.account || step === 'connect'">
-      <h3 class="m-4 mb-0 text-center"></h3>
       <div class="m-4 mb-5">
         <a
           v-for="(connector, id, i) in connectors"
@@ -19,25 +18,25 @@
         >
           <UiButton
             v-if="id !== 'injected'"
-            class="button-outline w-full v-align-middle"
+            class="button-outline w-full align-middle"
           >
             <img
               :src="`${path}/${connector.id}.png`"
               height="28"
               width="28"
-              class="mr-1 v-align-middle"
+              class="mr-1 inline-block align-middle"
             />
             {{ connector.name }}
           </UiButton>
           <UiButton
             v-else-if="injected"
-            class="button-outline w-full v-align-middle"
+            class="button-outline w-full align-middle"
           >
             <img
               :src="`${path}/${injected.id}.png`"
               height="28"
               width="28"
-              class="mr-1 v-align-middle"
+              class="mr-1 inline-block align-middle"
             />
             {{ injected.name }}
           </UiButton>

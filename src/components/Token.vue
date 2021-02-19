@@ -8,7 +8,7 @@
         height: `${size || 24}px`
       }"
       @error="error = true"
-      class="rounded-full v-align-middle bg-white border line-height-0"
+      class="rounded-full inline-block bg-white border line-height-0"
     />
     <Avatar v-else :address="token.address" :size="size || 24" />
     <span v-if="symbol || name" class="ml-1">
@@ -21,7 +21,7 @@
       <a
         v-if="name && token.injected"
         aria-label="This token is injected"
-        class="v-align-middle line-height-0 tooltipped tooltipped-n ml-1"
+        class="align-middle line-height-0 tooltipped tooltipped-n ml-1"
       >
         <Icon name="info" size="24" class="text-gray" />
       </a>

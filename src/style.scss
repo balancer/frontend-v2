@@ -81,7 +81,7 @@ body,
   background: var(--bg-color);
   color: var(--text-color);
   font-family: $font-weight-normal;
-  font-size: 17px;
+  font-size: 18px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -196,11 +196,9 @@ textarea {
 }
 
 .border,
-.border-md,
-.border-lg,
-.border-bottom,
-.border-top {
-  border-color: var(--border-color) !important;
+.border-b,
+.border-t {
+  border-color: var(--border-color);
 }
 
 .bg-gray-dark {
@@ -223,7 +221,7 @@ textarea {
   color: var(--border-color) !important;
 }
 
-.text-white {
+.link-color {
   color: var(--link-color) !important;
 }
 
@@ -302,4 +300,19 @@ textarea {
 
 .highlight:hover {
   background-color: var(--bg-color);
+}
+
+pre {
+  font-size: 13px !important;
+}
+
+/* Hide arrows from input number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }

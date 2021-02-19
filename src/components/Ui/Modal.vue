@@ -2,23 +2,23 @@
   <div v-if="open" @keydown.esc="$emit('close')" class="modal mx-auto">
     <div class="backdrop" @click="$emit('close')" />
     <div class="shell overflow-hidden anim-scale-in relative md:rounded-lg">
-      <div v-if="$slots.header" class="border-b pt-4 pb-3 text-center">
+      <div v-if="$slots.header" class="border-b pt-5 pb-4 text-center">
         <slot name="header" />
       </div>
       <div class="modal-body">
         <slot />
       </div>
-      <div v-if="$slots.footer" class="border-t p-4 text-center">
+      <div v-if="$slots.footer" class="border-t p-5 text-center">
         <slot name="footer" />
       </div>
       <a
         v-if="back"
         @click="$emit('back')"
-        class="absolute left-0 top-0 p-4 text-gray"
+        class="absolute left-0 top-0 p-5 text-gray"
       >
         <Icon name="back" size="26" />
       </a>
-      <a @click="$emit('close')" class="absolute right-0 top-1 p-4 text-gray">
+      <a @click="$emit('close')" class="absolute right-0 top-1 p-5 text-gray">
         <Icon name="close" />
       </a>
     </div>

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="text-center py-9 border-b block-bg mb-4">
-      <h1 v-text="$t('explorePools')" class="mb-3" style="font-size: 44px;" />
+    <div class="text-center py-9 border-b block-bg mb-7">
+      <h1 v-text="$t('explorePools')" class="mb-5" style="font-size: 44px;" />
       <UiButton class="px-3 w-full" style="max-width: 380px;">
         <Search class="w-full" />
       </UiButton>
@@ -20,7 +20,7 @@
               <Token
                 :token="tokens[token]"
                 :symbol="true"
-                class="text-white flex-auto"
+                class="link-color flex-auto"
               />
               <a @click="removeToken(i)">
                 <Icon name="close" size="16" class="py-1 text-gray" />
@@ -37,7 +37,7 @@
           <div v-if="!registry.loading">
             <p
               v-if="!loading && Object.keys(filteredPools).length === 0"
-              class="px-4 pt-4 pb-3"
+              class="px-4 pt-5 pb-4"
             >
               {{ $t('errorNoMatch') }}
             </p>

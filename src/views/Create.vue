@@ -3,7 +3,7 @@
     <template v-slot:content-left>
       <div class="px-4 md:px-0">
         <Breadcrumb />
-        <h1 v-text="$t('createPool')" class="mb-4" />
+        <h1 v-text="$t('createPool')" class="mb-5" />
       </div>
       <Block :title="$t('poolType')">
         <UiButton
@@ -66,7 +66,7 @@
         <div
           v-for="(token, i) in form.tokens"
           :key="tokens[token].address"
-          class="p-4 block border rounded-2 mb-3 relative"
+          class="p-4 block border rounded-md mb-3 relative"
         >
           <a @click="removeToken(i)" class="absolute top-4 right-0">
             <Icon name="close" size="12" class="p-4" />
@@ -75,7 +75,7 @@
             :token="tokens[token]"
             :symbol="true"
             :name="true"
-            class="text-white"
+            class="link-color"
           />
           <div v-if="form.strategyType === '2'" class="mt-3">
             <UiButton class="flex w-full px-3 mb-2">
@@ -117,7 +117,7 @@
           -->
           <UiButton
             @click="onSubmit"
-            :disabled="!$auth.isAuthenticated.value"
+            :disabled="!$auth.isAuthenticated.value || loading"
             :loading="loading"
             class="block w-full button--submit"
           >

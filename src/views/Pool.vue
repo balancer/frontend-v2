@@ -3,7 +3,7 @@
     <template v-slot:content-left>
       <div class="px-4 md:px-0">
         <Breadcrumb />
-        <h1 class="mb-4">
+        <h1 class="mb-5">
           {{ $t('pool') }} {{ _shorten(id) }}
           <a v-clipboard:copy="id" v-clipboard:success="handleCopy">
             <Icon name="copy" size="24" class="text-gray" />
@@ -15,7 +15,7 @@
       </div>
       <div v-else>
         <!--
-        <div class="mb-4 relative">
+        <div class="mb-5 relative">
           <div class="text-right">
             <a @click="loadMarketCharts(1)" class="mr-2">
               <UiLabel

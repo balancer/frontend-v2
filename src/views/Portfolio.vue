@@ -19,14 +19,14 @@
           <div class="p-3 border-b last-child-border-0 flex items-center">
             <Token :token="ether" :size="32" class="mr-3" />
             <div class="flex-auto">
-              <div v-text="ether.name" class="text-white" />
+              <div v-text="ether.name" class="link-color" />
               <div>
                 {{ _num(ether.balance, '0,0.[000]') }}
                 {{ ether.symbol }} · {{ _num(ether.price, '$0,0.[00]') }}
               </div>
             </div>
             <div class="text-right">
-              <div class="text-white">
+              <div class="link-color">
                 {{ _num(ether.value, '$0,0.[00]') }}
               </div>
               <div>
@@ -50,14 +50,14 @@
           >
             <Token :token="token" :size="32" class="mr-3" />
             <div class="flex-auto">
-              <div v-text="token.name" class="text-white" />
+              <div v-text="token.name" class="link-color" />
               <div>
                 {{ _num(token.balance, '0,0.[000]') }} {{ token.symbol }} ·
                 {{ _num(token.price, '$0,0.[00]') }}
               </div>
             </div>
             <div class="text-right">
-              <div class="text-white">
+              <div class="link-color">
                 {{ _num(token.value, '$0,0.[00]') }}
               </div>
               <div>

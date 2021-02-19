@@ -1,9 +1,8 @@
 <template>
-  <div class="block border-t border-b md:border md:rounded-md mb-4 block-bg">
+  <div class="block border-t border-b md:border md:rounded-md mb-5 block-bg">
     <h4
       v-if="title"
-      class="px-5 pt-3 border-b block bg-gray-dark md:rounded-t-md"
-      style="padding-bottom: 12px;"
+      class="px-5 pb-2 pt-3 border-b block bg-gray-dark md:rounded-t-md"
     >
       {{ title }}
       <UiCounter v-if="counter" :counter="counter" class="ml-1" />

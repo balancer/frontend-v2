@@ -14,6 +14,6 @@ export default {
 
 <style>
 .container {
-  max-width: 990px;
+  max-width: 1016px;
 }
 </style>

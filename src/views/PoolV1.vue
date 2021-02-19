@@ -15,7 +15,7 @@
               height="60"
             />
           </div>
-          <h1 class="mb-4">
+          <h1 class="mb-5">
             V1 Pool {{ _shorten(id) }}
             <a v-clipboard:copy="id" v-clipboard:success="handleCopy">
               <Icon
@@ -31,7 +31,7 @@
         <UiLoading />
       </div>
       <div v-else>
-        <div class="mb-4 relative">
+        <div class="mb-5 relative">
           <div class="text-right">
             <a @click="loadMarketCharts(1)" class="mr-2">
               <UiLabel :class="marketChartsDays === 1 && 'active'"

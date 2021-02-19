@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4">
+  <div class="p-5">
     {{ _shorten(pool.id) }}<br />
     {{ $t('strategy') }}: {{ $t(pool.strategy.name) }}<br />
     {{ $t('swapFee') }}: {{ _num(pool.strategy.swapFeePercent) }}%<br />

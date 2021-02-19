@@ -43,9 +43,10 @@
           <div :key="web3.account">
             <template v-if="$auth.isAuthenticated.value">
               <router-link
+                v-if="totalPending"
                 :to="{ name: 'claim', params: { address: web3.account } }"
               >
-                <UiButton v-if="totalPending" class="button--submit mr-2">
+                <UiButton class="button--submit mr-2 hidden md:inline-block">
                   ✨ {{ _num(totalPending) }} BAL
                 </UiButton>
               </router-link>
@@ -62,9 +63,13 @@
                 <span
                   v-if="web3.profile.name || web3.profile.ens"
                   v-text="web3.profile.name || web3.profile.ens"
-                  class="pl-2"
+                  class="pl-2 hidden md:inline-block"
                 />
-                <span v-else v-text="_shorten(web3.account)" class="pl-2" />
+                <span
+                  v-else
+                  v-text="_shorten(web3.account)"
+                  class="pl-2 hidden md:inline-block"
+                />
               </UiButton>
             </template>
             <UiButton
