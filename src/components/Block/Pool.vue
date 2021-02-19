@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 py-3 d-flex flex-justify-between">
+  <div class="px-4 py-3 d-flex flex-justify-between highlight">
     <div>
       <span>
         <span v-for="token in pool.tokens" :key="token">
