@@ -27,6 +27,22 @@
           <UiLoading />
         </div>
         <div v-if="!registry.loading">
+          <div v-if="!loading" class="border-bottom">
+            <div class="px-4 py-3 d-flex flex-justify-between">
+              <div>Pool</div>
+              <div>
+                <span class="d-inline-block column-sm text-right"
+                  >Liquidity</span
+                >
+                <span class="d-inline-block column-sm text-right ml-2"
+                  >Volume (24h)</span
+                >
+                <span class="d-inline-block column-sm text-right ml-2"
+                  >APY</span
+                >
+              </div>
+            </div>
+          </div>
           <p
             v-if="!loading && Object.keys(filteredPools).length === 0"
             class="px-4 pt-4 pb-3"
