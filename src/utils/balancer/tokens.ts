@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
-import { multicall, Multicaller } from '@/utils/balancer/multicall';
+import { multicall, Multicaller } from '@/utils/balancer/contract';
 import { sendTransaction } from '@/utils/balancer/web3';
 import set from 'lodash/set';
 import { abi } from './abi/BToken.json';
