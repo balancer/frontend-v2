@@ -1,6 +1,6 @@
 // import { soliditySha3, toWei } from 'web3-utils';
 import { toWei } from 'web3-utils';
-import { ipfsGet } from '@snapshot-labs/snapshot.js/src/utils';
+import { ipfsGet } from '@/utils/balancer/ipfs';
 import { call, sendTransaction } from '@/utils/balancer/web3';
 // import { loadTree } from '@/utils/balancer/claim/merkle';
 import { abi } from './MerkleRedeem.json';
