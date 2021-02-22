@@ -23,7 +23,7 @@
           <UiLoading />
         </div>
         <div v-if="!registry.loading">
-          <div v-if="!loading" class="border-bottom">
+          <div v-if="!loading" class="border-bottom hidden sm:block">
             <div class="px-4 py-3 flex justify-between">
               <div>Pool name</div>
               <div>
@@ -47,7 +47,7 @@
             v-else
             v-for="pool in filteredPools"
             :key="pool.id"
-            class="overflow-hidden border-bottom last-child-border-0"
+            class="border-bottom last-child-border-0"
           >
             <router-link
               :to="{ name: 'pool', params: { id: pool.id } }"

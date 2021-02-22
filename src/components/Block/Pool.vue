@@ -18,7 +18,7 @@
         {{ symbols }}
       </span>
     </div>
-    <div>
+    <div class="hidden sm:inline-block">
       <span class="inline-block column-sm text-right">{{
         _num(pool.liquidity, '$0,0')
       }}</span>
