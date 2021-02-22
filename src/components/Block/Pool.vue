@@ -1,11 +1,16 @@
 <template>
   <div class="px-4 py-3 flex justify-between highlight">
-    <div>
-      <span>
-        <span v-for="token in pool.tokens" :key="token">
-          <Token :token="tokens[token]" class="mr-1" />
+    <div class="flex">
+      <div class="icons relative">
+        <span
+          v-for="(token, i) in pool.tokens"
+          :key="token"
+          class="icon absolute"
+          :style="{ left: `${(26 * i) / (pool.tokens.length - 1)}px` }"
+        >
+          <Token :token="tokens[token]" />
         </span>
-      </span>
+      </div>
       <span class="ml-2">
         {{ shares }}
       </span>
@@ -51,5 +56,13 @@ export default {
 <style scoped>
 .column-sm {
   width: 120px;
+}
+
+.icons {
+  width: 50px;
+}
+
+.icon:hover {
+  z-index: 2;
 }
 </style>
