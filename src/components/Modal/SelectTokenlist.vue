@@ -12,7 +12,8 @@
       <h3 v-text="$t('manageLists')" />
     </template>
     <Search
-      @input="$emit('inputSearch', $event)"
+      v-model="q"
+      @input="$emit('inputSearch', q)"
       :placeholder="$t('searchByName')"
       class="p-3 border-bottom"
     />
@@ -55,11 +56,16 @@
 
 <script>
 export default {
+  data() {
+    return {
+      q: ''
+    };
+  },
   props: {
     open: Boolean,
     tokenlists: Object
   },
-  emits: ['back', 'close'],
+  emits: ['back', 'close', 'inputSearch'],
   methods: {
     onSelect(name) {
       this.$emit('select', name);

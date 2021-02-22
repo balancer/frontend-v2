@@ -4,7 +4,8 @@
       <h3 v-text="$t('selectToken')" />
     </template>
     <Search
-      @input="$emit('inputSearch', $event)"
+      v-model="q"
+      @input="$emit('inputSearch', q)"
       :placeholder="$t('searchBy')"
       class="p-3 border-bottom"
     />
@@ -47,13 +48,18 @@
 
 <script>
 export default {
+  data() {
+    return {
+      q: ''
+    };
+  },
   props: {
     open: Boolean,
     tokens: Object,
     tokenlist: Object,
     loading: Boolean
   },
-  emits: ['close'],
+  emits: ['close', 'inputSearch'],
   methods: {
     onSelect(token) {
       this.$emit('select', token);
