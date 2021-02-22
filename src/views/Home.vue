@@ -66,7 +66,7 @@
           @selectTokenlist="modalSelectLists"
           @inputSearch="onTokenSearch"
           :tokens="getTokens({ q, not: form.tokens })"
-          :tokenlist="getCurrentTokenlist"
+          :tokenlists="getTokenlists({ active: true })"
         />
         <ModalSelectTokenlist
           :open="modal.selectTokenlist"

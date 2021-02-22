@@ -15,7 +15,7 @@
       v-model="q"
       @input="$emit('inputSearch', q)"
       :placeholder="$t('searchByName')"
-      class="py-3 px-4 border-b"
+      class="p-4 border-b"
     />
     <div>
       <div v-if="Object.keys(tokenlists).length > 0">
@@ -23,7 +23,7 @@
           v-for="(tokenlist, i) in tokenlists"
           :key="i"
           @click="onSelect(i)"
-          class="block border-b last-child-border-0 py-3 px-4 highlight"
+          class="block border-b last-child-border-0 py-3 px-4 highlight flex items-center"
         >
           <Icon
             :name="tokenlist.active ? 'toggle-on' : 'toggle_off'"
@@ -37,7 +37,9 @@
             width="24"
             height="24"
           />
-          {{ tokenlist.name }}
+          <div class="flex-auto">
+            {{ tokenlist.name }}
+          </div>
           <span class="text-gray float-right ml-1">
             {{ _num(tokenlist.tokens.length) }} {{ $t('tokensLowerCase') }}
           </span>

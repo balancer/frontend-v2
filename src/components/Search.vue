@@ -24,11 +24,9 @@ export default {
   methods: {
     handleInput(e) {
       const input = e.target.value;
-      this.$router.push({ query: input ? { q: input } : {} });
       this.$emit('update:modelValue', input);
     },
     clearInput() {
-      this.$router.push({});
       this.$emit('update:modelValue', '');
     }
   },
