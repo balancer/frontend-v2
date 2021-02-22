@@ -1,91 +1,99 @@
 <template>
   <div>
-    <div class="text-center py-9 border-b block-bg mb-7">
-      <h1 v-text="$t('explorePools')" class="mb-5" style="font-size: 44px;" />
-      <UiButton class="px-3 w-full" style="max-width: 380px;">
-        <Search class="w-full" />
-      </UiButton>
-    </div>
-    <Layout>
-      <template v-slot:sidebar-left>
-        <BlockMenu />
-        <Block :title="$t('filters')">
-          <UiButton
-            v-text="$t('tokensParen')"
-            @click="modal.selectToken = true"
-            class="mb-3 w-full"
-          />
-          <div v-if="!registry.loading">
-            <div v-for="(token, i) in form.tokens" :key="i" class="flex py-1">
-              <Token
-                :token="tokens[token]"
-                :symbol="true"
-                class="link-color flex-auto"
-              />
-              <a @click="removeToken(i)">
-                <Icon name="close" size="16" class="py-1 text-gray" />
-              </a>
+    <Container class="mt-2">
+      <div class="width-full d-flex flex-items-center">
+        <UiButton v-text="$t('filters')" @click="modal.selectToken = true" />
+        <div class="d-flex ml-2" v-if="!registry.loading">
+          <div
+            v-for="(token, i) in form.tokens"
+            :key="i"
+            class="d-flex flex-items-center py-1 mr-2"
+          >
+            <Token
+              :token="tokens[token]"
+              :symbol="true"
+              class="text-white flex-auto"
+            />
+            <a @click="removeToken(i)">
+              <Icon name="close" size="16" class="py-1 text-gray" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </Container>
+    <Container class="mt-2" :slim="true">
+      <Block :slim="true" class="overflow-hidden">
+        <div v-if="loading || registry.loading" class="text-center p-4">
+          <UiLoading />
+        </div>
+        <div v-if="!registry.loading">
+          <div v-if="!loading" class="border-bottom">
+            <div class="px-4 py-3 d-flex flex-justify-between">
+              <div>Pool name</div>
+              <div>
+                <span class="d-inline-block column-sm text-right"
+                  >Pool value</span
+                >
+                <span class="d-inline-block column-sm text-right ml-2"
+                  >Volume (24h)</span
+                >
+                <span class="d-inline-block column-sm text-right ml-2"
+                  >APY</span
+                >
+              </div>
             </div>
           </div>
-        </Block>
-      </template>
-      <template v-slot:content-right>
-        <Block :slim="true" class="overflow-hidden">
-          <div v-if="loading || registry.loading" class="text-center p-4">
-            <UiLoading />
-          </div>
-          <div v-if="!registry.loading">
-            <p
-              v-if="!loading && Object.keys(filteredPools).length === 0"
-              class="px-4 pt-5 pb-4"
+          <p
+            v-if="!loading && Object.keys(filteredPools).length === 0"
+            class="px-4 pt-4 pb-3"
+          >
+            {{ $t('errorNoMatch') }}
+          </p>
+          <div
+            v-else
+            v-for="pool in filteredPools"
+            :key="pool.id"
+            class="overflow-hidden border-bottom last-child-border-0"
+          >
+            <router-link
+              :to="{ name: 'pool', params: { id: pool.id } }"
+              class="d-block overflow-hidden"
             >
-              {{ $t('errorNoMatch') }}
-            </p>
-            <div
-              v-else
-              v-for="pool in filteredPools"
-              :key="pool.id"
-              class="overflow-hidden border-b last-child-border-0"
-            >
-              <router-link
-                :to="{ name: 'pool', params: { id: pool.id } }"
-                class="block overflow-hidden"
-              >
-                <BlockPool :pool="pool" :tokens="tokens" />
-              </router-link>
-            </div>
+              <BlockPool :pool="pool" :tokens="tokens" />
+            </router-link>
           </div>
-        </Block>
-      </template>
-      <teleport to="#modal">
-        <ModalSelectToken
-          :open="modal.selectToken"
-          :loading="registry.loading"
-          @close="modal.selectToken = false"
-          @select="addToken"
-          @selectTokenlist="modalSelectLists"
-          @inputSearch="onTokenSearch"
-          :tokens="getTokens({ q, not: form.tokens })"
-          :tokenlist="getCurrentTokenlist"
-        />
-        <ModalSelectTokenlist
-          :open="modal.selectTokenlist"
-          @close="modal.selectTokenlist = false"
-          @back="modalSelectToken"
-          @select="toggleList($event)"
-          @inputSearch="q = $event"
-          :tokenlists="getTokenlists({ q })"
-        />
-      </teleport>
-    </Layout>
+        </div>
+      </Block>
+    </Container>
+    <teleport to="#modal">
+      <ModalSelectToken
+        :open="modal.selectToken"
+        :loading="registry.loading"
+        @close="modal.selectToken = false"
+        @select="addToken"
+        @selectTokenlist="modalSelectLists"
+        @inputSearch="onTokenSearch"
+        :tokens="getTokens({ q, not: form.tokens })"
+        :tokenlist="getCurrentTokenlist"
+      />
+      <ModalSelectTokenlist
+        :open="modal.selectTokenlist"
+        @close="modal.selectTokenlist = false"
+        @back="modalSelectToken"
+        @select="toggleList($event)"
+        @inputSearch="q = $event"
+        :tokenlists="getTokenlists({ q })"
+      />
+    </teleport>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import getProvider from '@/utils/provider';
+import { getPoolLiquidity } from '@/utils/balancer/price';
 import { getNumberOfPools } from '@/utils/balancer/vault';
-import { getPoolIds } from '@/utils/balancer/subgraph';
+import { getPoolVolume } from '@/utils/balancer/subgraph';
 import { getPools } from '@/utils/balancer/pools';
 import { clone } from '@/utils';
 
@@ -167,18 +175,35 @@ export default {
       console.log('Total pools', totalPools);
 
       if (totalPools > 0) {
-        const poolIds = await getPoolIds(network);
-        console.log('Pool ids', poolIds);
+        const poolVolume = await getPoolVolume(network);
+        console.log('Pool volume', poolVolume);
+        const poolIds = poolVolume.map(pool => pool.id);
 
         const pools = await getPools(network, provider, poolIds.slice(0, 20));
         console.log('Pools', pools);
+
+        const poolData = pools.map((pool, i) => {
+          const currentPoolVolume = parseFloat(poolVolume[i].totalSwapVolume);
+          const pastPoolVolume =
+            poolVolume[i].swaps.length === 0
+              ? 0
+              : parseFloat(poolVolume[i].swaps[0].totalSwapVolume);
+          const volume = currentPoolVolume - pastPoolVolume;
+          return {
+            ...pool,
+            liquidity: getPoolLiquidity(pool, this.market.prices),
+            volume,
+            apy: 0
+          };
+        });
+        console.log('Pool data', poolData);
 
         const tokens = pools
           .map(pool => pool.tokens)
           .reduce((a, b) => [...a, ...b], []);
         await this.injectTokens(tokens);
 
-        this.pools = pools;
+        this.pools = poolData;
       }
 
       this.loading = false;
