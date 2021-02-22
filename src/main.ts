@@ -11,13 +11,9 @@ import router from '@/router';
 import store from '@/store';
 import mixins from '@/mixins';
 import i18n from '@/i18n';
-import dockerParity from '@/utils/balancer/configs/docker-parity.json';
-import { MULTICALL } from '@snapshot-labs/snapshot.js/src/utils';
 import '@/auth';
 import '@/style.scss';
 // import infiniteScroll from 'vue-infinite-scroll';
-
-MULTICALL['17'] = dockerParity.multicall;
 
 const app = createApp(App)
   .use(i18n)

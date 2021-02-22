@@ -1,5 +1,5 @@
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
-import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
+import { Multicaller } from '@/utils/balancer/contract';
 import { call, sendTransaction } from '@/utils/balancer/web3';
 import constants from './constants';
 import { abi } from './abi/Vault.json';
