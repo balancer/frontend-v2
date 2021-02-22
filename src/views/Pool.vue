@@ -1,25 +1,21 @@
 <template>
   <Layout class="mt-4">
     <template v-slot:content-left>
-      <div class="px-4 px-md-0">
+      <div class="px-4 md:px-0">
         <Breadcrumb />
-        <h1 class="mb-4">
+        <h1 class="mb-5">
           {{ $t('pool') }} {{ _shorten(id) }}
           <a v-clipboard:copy="id" v-clipboard:success="handleCopy">
-            <Icon
-              name="copy"
-              size="24"
-              class="text-gray line-height-0 p-0 m-0"
-            />
+            <Icon name="copy" size="24" class="text-gray" />
           </a>
         </h1>
       </div>
-      <div v-if="loading || registry.loading" class="px-4 px-md-0">
+      <div v-if="loading || registry.loading" class="px-4 md:px-0">
         <UiLoading />
       </div>
       <div v-else>
         <!--
-        <div class="mb-4 position-relative">
+        <div class="mb-5 relative">
           <div class="text-right">
             <a @click="loadMarketCharts(1)" class="mr-2">
               <UiLabel
@@ -48,29 +44,29 @@
           </div>
           <UiLoading
             v-if="marketChartsLoading"
-            class="position-absolute mt-n4"
+            class="absolute mt-n4"
           />
           <Chart :key="marketCharts[0].length" :marketCharts="marketCharts" />
         </div>
         -->
         <Block :title="$t('overview')">
-          <div class="d-flex">
+          <div class="flex">
             <div v-text="$t('poolTokenName')" class="flex-auto" />
             {{ tokens[pool.address].name }}
             <a @click="addToken" class="ml-1 mb-n1 mr-n1">
               <Icon name="plus" size="22" />
             </a>
           </div>
-          <div class="d-flex">
+          <div class="flex">
             <div v-text="$t('totalSupply')" class="flex-auto" />
             {{ _num(_units(pool.totalSupply, tokens[pool.address].decimals)) }}
             {{ tokens[pool.address].symbol }}
           </div>
-          <div class="d-flex">
+          <div class="flex">
             <div v-text="$t('poolType')" class="flex-auto" />
             {{ $t(pool.strategy.name) }}
           </div>
-          <div v-if="pool.strategy.swapFee" class="d-flex">
+          <div v-if="pool.strategy.swapFee" class="flex">
             <div v-text="$t('swapFee')" class="flex-auto" />
             {{ _num(pool.strategy.swapFeePercent) }}%
           </div>

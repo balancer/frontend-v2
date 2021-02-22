@@ -4,7 +4,7 @@
     <div
       style="z-index: 20;"
       id="sticky"
-      :class="{ 'position-fixed width-full top-0': isFixed }"
+      :class="{ 'fixed w-full top-0': isFixed }"
     >
       <slot />
     </div>

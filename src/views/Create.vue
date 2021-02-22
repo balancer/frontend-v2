@@ -1,9 +1,9 @@
 <template>
   <Layout class="mt-4">
     <template v-slot:content-left>
-      <div class="px-4 px-md-0">
+      <div class="px-4 md:px-0">
         <Breadcrumb />
-        <h1 v-text="$t('createPool')" class="mb-4" />
+        <h1 v-text="$t('createPool')" class="mb-5" />
       </div>
       <Block :title="$t('poolType')">
         <UiButton
@@ -11,13 +11,13 @@
           :key="i"
           @click="form.strategyType = strategy.type"
           :class="form.strategyType === strategy.type && 'button--active'"
-          class="width-full mb-2"
+          class="w-full mb-2"
         >
           {{ $t(strategy.name) }}
         </UiButton>
       </Block>
       <Block v-if="form.strategyType" :title="$t('configuration')">
-        <UiButton class="d-flex width-full mb-2 px-3">
+        <UiButton class="flex w-full mb-2 px-3">
           <span v-text="$t('name')" class="mr-2 text-gray" />
           <input
             v-model="form.name"
@@ -26,7 +26,7 @@
             required
           />
         </UiButton>
-        <UiButton class="d-flex width-full mb-2 px-3">
+        <UiButton class="flex w-full mb-2 px-3">
           <span v-text="$t('symbol')" class="mr-2 text-gray" />
           <input
             v-model="form.symbol"
@@ -35,7 +35,7 @@
             required
           />
         </UiButton>
-        <UiButton class="d-flex width-full mb-2 px-3">
+        <UiButton class="flex w-full mb-2 px-3">
           <span v-text="$t('swapFee')" class="mr-2 text-gray" />
           <input
             v-model="form.swapFee"
@@ -49,7 +49,7 @@
         </UiButton>
         <UiButton
           v-if="form.strategyType === '1'"
-          class="d-flex width-full mb-2 px-3"
+          class="flex w-full mb-2 px-3"
         >
           <span v-text="$t('amplification')" class="mr-2 text-gray" />
           <input
@@ -66,23 +66,23 @@
         <div
           v-for="(token, i) in form.tokens"
           :key="tokens[token].address"
-          class="p-4 d-block border rounded-2 mb-3 position-relative"
+          class="p-4 block border rounded-md mb-3 relative"
         >
-          <a @click="removeToken(i)" class="position-absolute top-4 right-0">
+          <a @click="removeToken(i)" class="absolute top-4 right-0">
             <Icon name="close" size="12" class="p-4" />
           </a>
           <Token
             :token="tokens[token]"
             :symbol="true"
             :name="true"
-            class="text-white"
+            class="link-color"
           />
           <div v-if="form.strategyType === '2'" class="mt-3">
-            <UiButton class="d-flex width-full px-3 mb-2">
+            <UiButton class="flex w-full px-3 mb-2">
               <span v-text="$t('weight')" class="mr-2 text-gray" />
               <input
                 v-model="form.weights[i]"
-                class="input width-full"
+                class="input w-full"
                 type="number"
                 placeholder="0.0"
                 step="any"
@@ -96,7 +96,7 @@
             modal.selectToken = true;
             q = '';
           "
-          class="width-full"
+          class="w-full"
         >
           {{ $t('addToken') }}
         </UiButton>
@@ -110,16 +110,16 @@
             v-if="!hasAllowed && Object.keys(requiredAllowances).length > 0"
             @click="onApprove"
             :disabled="!$auth.isAuthenticated.value"
-            class="d-block width-full mb-2"
+            class="block w-full mb-2"
           >
             {{ $t('approve') }}
           </UiButton>
           -->
           <UiButton
             @click="onSubmit"
-            :disabled="!$auth.isAuthenticated.value"
+            :disabled="!$auth.isAuthenticated.value || loading"
             :loading="loading"
-            class="d-block width-full button--submit"
+            class="block w-full button--submit"
           >
             {{ $t('create') }}
           </UiButton>

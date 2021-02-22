@@ -1,6 +1,6 @@
 <template>
   <Block :title="$t('menu')">
-    <p class="d-flex flex-column">
+    <p class="flex flex-col">
       <router-link :to="{ name: 'home' }">
         {{ $t('explore') }}
       </router-link>

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-items-center">
+  <div class="flex items-center">
     <Icon name="search" size="22" class="mb-1 mr-2 text-gray" />
     <input
       :value="modelValue"
@@ -9,7 +9,7 @@
       type="text"
       autocorrect="off"
       autocapitalize="none"
-      class="border-0 input flex-auto width-full"
+      class="border-0 input flex-auto w-full"
     />
     <a @click="clearInput">
       <Icon v-if="modelValue" name="close" size="12" class="mb-1" />

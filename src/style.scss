@@ -1,6 +1,9 @@
 @import './vars';
-@import '~@primer/css';
 @import './assets/fonts/iconfont.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --primary-color: #384aff;
@@ -78,6 +81,7 @@ body,
   background: var(--bg-color);
   color: var(--text-color);
   font-family: $font-weight-normal;
+  font-size: 18px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -92,6 +96,18 @@ h3,
 h4 {
   color: var(--heading-color);
   font-family: $font-weight-bold;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 20px;
 }
 
 b {
@@ -180,11 +196,9 @@ textarea {
 }
 
 .border,
-.border-md,
-.border-lg,
-.border-bottom,
-.border-top {
-  border-color: var(--border-color) !important;
+.border-b,
+.border-t {
+  border-color: var(--border-color);
 }
 
 .bg-gray-dark {
@@ -207,7 +221,7 @@ textarea {
   color: var(--border-color) !important;
 }
 
-.text-white {
+.link-color {
   color: var(--link-color) !important;
 }
 
@@ -288,10 +302,17 @@ textarea {
   background-color: var(--bg-color);
 }
 
-.border-green {
-  border-color: $green !important;
+pre {
+  font-size: 13px !important;
 }
 
-.border-red {
-  border-color: $red !important;
+/* Hide arrows from input number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }

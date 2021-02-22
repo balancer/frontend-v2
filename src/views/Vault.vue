@@ -1,9 +1,9 @@
 <template>
   <Layout class="mt-4">
     <template v-slot:content-left>
-      <div class="px-4 px-md-0">
+      <div class="px-4 md:px-0">
         <Breadcrumb />
-        <h1 v-text="'Vault'" class="mb-4" />
+        <h1 v-text="'Vault'" class="mb-5" />
       </div>
       <UiLoading v-if="loading" />
       <div v-if="loaded">
