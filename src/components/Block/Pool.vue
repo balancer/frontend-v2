@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 py-3 d-flex flex-justify-between highlight">
+  <div class="px-4 py-3 flex justify-between highlight">
     <div>
       <span>
         <span v-for="token in pool.tokens" :key="token">
@@ -14,13 +14,13 @@
       </span>
     </div>
     <div>
-      <span class="d-inline-block column-sm text-right">{{
+      <span class="inline-block column-sm text-right">{{
         _num(pool.liquidity, '$0,0')
       }}</span>
-      <span class="d-inline-block column-sm text-right ml-2">{{
+      <span class="inline-block column-sm text-right ml-2">{{
         _num(pool.totalSwapVolume, '$0,0')
       }}</span>
-      <span class="d-inline-block column-sm text-right ml-2">{{
+      <span class="inline-block column-sm text-right ml-2">{{
         _num(pool.apy, '0,0%')
       }}</span>
     </div>
@@ -47,3 +47,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.column-sm {
+  width: 120px;
+}
+</style>

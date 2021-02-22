@@ -1,19 +1,15 @@
 <template>
   <div>
     <Container class="mt-2">
-      <div class="width-full d-flex flex-items-center">
+      <div class="width-full flex items-center">
         <UiButton v-text="$t('filters')" @click="modal.selectToken = true" />
-        <div class="d-flex ml-2" v-if="!registry.loading">
+        <div class="flex ml-2" v-if="!registry.loading">
           <div
             v-for="(token, i) in form.tokens"
             :key="i"
-            class="d-flex flex-items-center py-1 mr-2"
+            class="flex flex-items-center py-1 mr-2"
           >
-            <Token
-              :token="tokens[token]"
-              :symbol="true"
-              class="text-white flex-auto"
-            />
+            <Token :token="tokens[token]" :symbol="true" class="flex-auto" />
             <a @click="removeToken(i)">
               <Icon name="close" size="16" class="py-1 text-gray" />
             </a>
@@ -28,18 +24,16 @@
         </div>
         <div v-if="!registry.loading">
           <div v-if="!loading" class="border-bottom">
-            <div class="px-4 py-3 d-flex flex-justify-between">
+            <div class="px-4 py-3 flex justify-between">
               <div>Pool name</div>
               <div>
-                <span class="d-inline-block column-sm text-right"
+                <span class="inline-block column-sm text-right"
                   >Pool value</span
                 >
-                <span class="d-inline-block column-sm text-right ml-2"
+                <span class="inline-block column-sm text-right ml-2"
                   >Volume (24h)</span
                 >
-                <span class="d-inline-block column-sm text-right ml-2"
-                  >APY</span
-                >
+                <span class="inline-block column-sm text-right ml-2">APY</span>
               </div>
             </div>
           </div>
@@ -214,3 +208,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.column-sm {
+  width: 120px;
+}
+</style>
