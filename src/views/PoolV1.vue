@@ -1,7 +1,7 @@
 <template>
   <Layout class="mt-4">
     <template v-slot:content-left>
-      <div class="px-4 px-md-0">
+      <div class="px-4 md:px-0">
         <Breadcrumb />
         <div class="overflow-hidden">
           <div class="float-left mr-3">
@@ -15,7 +15,7 @@
               height="60"
             />
           </div>
-          <h1 class="mb-4">
+          <h1 class="mb-5">
             V1 Pool {{ _shorten(id) }}
             <a v-clipboard:copy="id" v-clipboard:success="handleCopy">
               <Icon
@@ -27,11 +27,11 @@
           </h1>
         </div>
       </div>
-      <div v-if="loading || registry.loading" class="px-4 px-md-0">
+      <div v-if="loading || registry.loading" class="px-4 md:px-0">
         <UiLoading />
       </div>
       <div v-else>
-        <div class="mb-4 position-relative">
+        <div class="mb-5 relative">
           <div class="text-right">
             <a @click="loadMarketCharts(1)" class="mr-2">
               <UiLabel :class="marketChartsDays === 1 && 'active'"
@@ -59,10 +59,7 @@
               </UiLabel>
             </a>
           </div>
-          <UiLoading
-            v-if="marketChartsLoading"
-            class="position-absolute mt-n4"
-          />
+          <UiLoading v-if="marketChartsLoading" class="absolute mt-n4" />
           <Chart :key="i" :marketCharts="marketCharts" @click="redrawCharts" />
         </div>
       </div>

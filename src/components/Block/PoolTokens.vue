@@ -3,9 +3,9 @@
     <div
       v-for="(token, key, i) in tokens"
       :key="key"
-      class="px-4 py-3 d-flex border-bottom last-child-border-0"
+      class="px-5 py-4 flex border-b last-child-border-0"
     >
-      <div class="flex-auto text-white">
+      <div class="flex-auto link-color">
         <Token :token="token" :symbol="true" />
         <span v-if="tokenWeights[i]" class="ml-1">
           {{ _num(tokenWeights[i]) }}%

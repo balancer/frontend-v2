@@ -1,24 +1,22 @@
 <template>
   <Block :slim="true">
-    <div class="d-flex d-block bg-gray-dark rounded-top-0 rounded-md-top-2">
+    <div class="flex block bg-gray-dark md:rounded-t-md">
       <a
         @click="currentSide = 0"
-        :class="currentSide === 0 && 'active border-green'"
-        class="col-6 pt-3 text-center border-bottom"
-        style="padding-bottom: 10px;"
+        :class="currentSide === 0 ? 'active border-green-500' : 'border-b'"
+        class="w-1/2 pt-3 pb-2 text-center md:rounded-t-md"
       >
         <h4 v-text="$t('buy')" />
       </a>
       <a
         @click="currentSide = 1"
-        :class="currentSide === 1 && 'active border-red'"
-        class="col-6 pt-3 text-center border-bottom"
-        style="padding-bottom: 10px;"
+        :class="currentSide === 1 ? 'active border-red-500' : 'border-b'"
+        class="w-1/2 pt-3 pb-2 text-center"
       >
         <h4 v-text="$t('sell')" />
       </a>
     </div>
-    <div class="p-4">
+    <div class="p-5">
       <Exchanger
         :key="currentSide"
         v-if="currentSide === 0"

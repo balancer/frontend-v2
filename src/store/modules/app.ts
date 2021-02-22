@@ -7,7 +7,6 @@ const state = {
   loading: false,
   authLoading: false,
   modalOpen: false,
-  spaces: {},
   skin: lsGet('skin', 'light'),
   locale: lsGet('locale', defaultLocale)
 };

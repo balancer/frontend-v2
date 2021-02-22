@@ -160,13 +160,6 @@ const actions = {
     dispatch('getAllowances');
     dispatch('loadPrices');
   },
-  setTokenlist: ({ commit, dispatch }, name) => {
-    lsSet('tokenlist', name);
-    commit('REGISTRY_SET', { currentTokenlist: name });
-    dispatch('getBalances');
-    dispatch('getAllowances');
-    dispatch('loadPrices');
-  },
   injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
     if (tokens.length === 0 || !isAddress(tokens[0])) return;
     const injected = clone(state.injected);

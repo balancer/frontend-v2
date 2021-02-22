@@ -12,9 +12,10 @@
       <h3 v-text="$t('manageLists')" />
     </template>
     <Search
-      @input="$emit('inputSearch', $event)"
+      v-model="q"
+      @input="$emit('inputSearch', q)"
       :placeholder="$t('searchByName')"
-      class="p-3 border-bottom"
+      class="py-3 px-4 border-b"
     />
     <div>
       <div v-if="Object.keys(tokenlists).length > 0">
@@ -22,17 +23,17 @@
           v-for="(tokenlist, i) in tokenlists"
           :key="i"
           @click="onSelect(i)"
-          class="d-block border-bottom last-child-border-0 p-3 highlight"
+          class="block border-b last-child-border-0 py-3 px-4 highlight"
         >
           <Icon
             :name="tokenlist.active ? 'toggle-on' : 'toggle_off'"
-            :class="tokenlist.active ? 'text-green' : 'border-color'"
+            :class="tokenlist.active ? 'text-green-500' : 'border-color'"
             size="32"
             class="mt-n1 mr-3 float-left"
           />
           <img
             :src="_url(tokenlist.logoURI)"
-            class="circle v-align-middle mr-1"
+            class="rounded-full inline-block align-middle mr-1"
             width="24"
             height="24"
           />
@@ -42,7 +43,7 @@
           </span>
         </a>
       </div>
-      <div v-else v-text="$t('errorNoLists')" class="d-block text-center p-3" />
+      <div v-else v-text="$t('errorNoLists')" class="block text-center p-4" />
     </div>
     <template v-slot:footer>
       <a href="https://tokenlists.org" target="_blank">
@@ -55,11 +56,16 @@
 
 <script>
 export default {
+  data() {
+    return {
+      q: ''
+    };
+  },
   props: {
     open: Boolean,
     tokenlists: Object
   },
-  emits: ['back', 'close'],
+  emits: ['back', 'close', 'inputSearch'],
   methods: {
     onSelect(name) {
       this.$emit('select', name);

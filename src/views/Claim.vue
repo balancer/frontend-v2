@@ -1,7 +1,7 @@
 <template>
   <Layout class="mt-4">
     <template v-slot:content-left>
-      <div class="px-4 px-md-0">
+      <div class="px-4 md:px-0">
         <Breadcrumb />
         <h1 class="mb-3">{{ $t('claimBAL') }} {{ _shorten(address) }}</h1>
       </div>
@@ -12,7 +12,7 @@
         <div
           v-for="(pendingClaim, i) in pendingClaims"
           :key="i"
-          class="d-flex border-bottom last-child-border-0 px-4 py-3"
+          class="flex border-b last-child-border-0 px-4 py-3"
         >
           <div class="flex-auto">
             <a
@@ -33,13 +33,13 @@
     </template>
     <template v-slot:sidebar-right>
       <Block :title="$t('actions')">
-        <UiButton :loading="loading" class="d-block width-full mb-2">
+        <UiButton :loading="loading" class="block w-full mb-2">
           {{ _num(totalPending) }} BAL
         </UiButton>
         <UiButton
           :disabled="loading || !$auth.isAuthenticated.value"
           @click="onSubmit"
-          class="d-block width-full button--submit"
+          class="block w-full button--submit"
         >
           {{ $t('claim') }}
         </UiButton>

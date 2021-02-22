@@ -1,13 +1,13 @@
 <template>
   <Sticky :key="`${web3.network.unknown}${notifications.watch.length}`">
-    <nav id="topnav" class="border-bottom width-full block-bg">
+    <nav id="topnav" class="border-b width-full block-bg">
       <div
         :key="web3.network.unknown"
         v-if="web3.network.unknown"
-        class="p-2 text-center bg-red"
+        class="p-2 flex bg-red-500 justify-center"
         style="color: white;"
       >
-        <Icon name="warning1" size="20" class="mr-1 v-align-text-bottom" />
+        <Icon name="warning1" size="20" class="mr-1" />
         {{
           $t(
             web3.network.shortName
@@ -18,22 +18,19 @@
         }}
       </div>
       <Container>
-        <div class="d-flex flex-items-center" style="height: 78px;">
-          <div class="flex-auto d-flex flex-items-center">
-            <router-link
-              :to="{ name: 'home' }"
-              class="d-flex flex-items-center pr-2"
-            >
+        <div class="flex items-center" style="height: 78px;">
+          <div class="flex-auto flex items-center">
+            <router-link :to="{ name: 'home' }" class="flex items-center pr-2">
               <img
                 v-if="app.skin === 'light'"
                 src="~@/assets/logo-light.svg"
-                height="30"
+                width="30"
                 class="mr-2"
               />
               <img
                 v-else
                 src="~@/assets/logo-dark.svg"
-                height="30"
+                width="30"
                 class="mr-2"
               />
               <span
@@ -46,12 +43,10 @@
           <div :key="web3.account">
             <template v-if="$auth.isAuthenticated.value">
               <router-link
+                v-if="totalPending"
                 :to="{ name: 'claim', params: { address: web3.account } }"
               >
-                <UiButton
-                  v-if="totalPending"
-                  class="button--submit hide-sm hide-md mr-2"
-                >
+                <UiButton class="button--submit mr-2 hidden md:inline-block">
                   ✨ {{ _num(totalPending) }} BAL
                 </UiButton>
               </router-link>
@@ -64,30 +59,32 @@
                   :address="web3.account"
                   :profile="web3.profile"
                   size="16"
-                  class="mr-0 mr-sm-2 mr-md-2 mr-lg-2 mr-xl-2 ml-n1 mr-n1"
                 />
                 <span
                   v-if="web3.profile.name || web3.profile.ens"
                   v-text="web3.profile.name || web3.profile.ens"
-                  class="hide-sm"
+                  class="pl-2 hidden md:inline-block"
                 />
-                <span v-else v-text="_shorten(web3.account)" class="hide-sm" />
+                <span
+                  v-else
+                  v-text="_shorten(web3.account)"
+                  class="pl-2 hidden md:inline-block"
+                />
               </UiButton>
             </template>
             <UiButton
               v-if="!$auth.isAuthenticated.value"
               @click="modalOpen = true"
             >
-              <span class="hide-sm" v-text="$t('connectWallet')" />
-              <Icon
-                name="login"
-                size="20"
-                class="hide-md hide-lg hide-xl ml-n2 mr-n2 v-align-text-bottom"
+              <span
+                class="hidden md:inline-block"
+                v-text="$t('connectWallet')"
               />
+              <Icon name="login" size="20" class="-ml-2 -mr-2 md:hidden" />
             </UiButton>
             <router-link :to="{ name: 'settings' }" class="ml-2">
-              <UiButton class="px-2">
-                <Icon name="gear" size="22" class="v-align-text-bottom px-1" />
+              <UiButton>
+                <Icon name="gear" size="22" class="-ml-2 -mr-2" />
               </UiButton>
             </router-link>
           </div>
@@ -96,11 +93,11 @@
     </nav>
     <div
       v-if="notifications.watch.length > 0"
-      class="p-2 text-center bg-blue"
+      class="p-2 text-center bg-blue-500"
       style="color: white;"
     >
       <UiLoading class="fill-white mr-2" />
-      <span class="d-inline-block pt-1">
+      <span class="inline-block pt-1">
         {{ $tc('transactionPending', _num(notifications.watch.length)) }}
       </span>
     </div>

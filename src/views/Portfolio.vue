@@ -1,7 +1,7 @@
 <template>
   <Layout class="mt-4">
     <template v-if="web3.account" v-slot:content-right>
-      <div class="px-4 px-md-0">
+      <div class="px-4 md:px-0">
         <Breadcrumb />
         <h1 class="mb-3">
           {{ $t('portfolio') }}
@@ -16,25 +16,25 @@
           <UiLoading />
         </div>
         <div v-else>
-          <div
-            class="p-3 border-bottom last-child-border-0 d-flex flex-items-center"
-          >
+          <div class="p-3 border-b last-child-border-0 flex items-center">
             <Token :token="ether" :size="32" class="mr-3" />
             <div class="flex-auto">
-              <div v-text="ether.name" class="text-white" />
+              <div v-text="ether.name" class="link-color" />
               <div>
                 {{ _num(ether.balance, '0,0.[000]') }}
                 {{ ether.symbol }} · {{ _num(ether.price, '$0,0.[00]') }}
               </div>
             </div>
             <div class="text-right">
-              <div class="text-white">
+              <div class="link-color">
                 {{ _num(ether.value, '$0,0.[00]') }}
               </div>
               <div>
                 <span
                   v-if="ether.price24HChange"
-                  :class="ether.price24HChange > 0 ? 'text-green' : 'text-red'"
+                  :class="
+                    ether.price24HChange > 0 ? 'text-green-500' : 'text-red-500'
+                  "
                 >
                   {{ _num(ether.price24HChange, '+0,0.[00]') }}% ({{
                     _num(ether.value24HChange, '$0,0.[00]')
@@ -46,24 +46,26 @@
           <div
             v-for="(token, i) in getTokens({ withBalance: true })"
             :key="i"
-            class="p-3 border-bottom last-child-border-0 d-flex flex-items-center"
+            class="p-3 border-b last-child-border-0 flex items-center"
           >
             <Token :token="token" :size="32" class="mr-3" />
             <div class="flex-auto">
-              <div v-text="token.name" class="text-white" />
+              <div v-text="token.name" class="link-color" />
               <div>
                 {{ _num(token.balance, '0,0.[000]') }} {{ token.symbol }} ·
                 {{ _num(token.price, '$0,0.[00]') }}
               </div>
             </div>
             <div class="text-right">
-              <div class="text-white">
+              <div class="link-color">
                 {{ _num(token.value, '$0,0.[00]') }}
               </div>
               <div>
                 <span
                   v-if="token.price24HChange"
-                  :class="token.price24HChange > 0 ? 'text-green' : 'text-red'"
+                  :class="
+                    token.price24HChange > 0 ? 'text-green-500' : 'text-red-500'
+                  "
                 >
                   {{ _num(token.price24HChange, '+0,0.[00]') }}% ({{
                     _num(token.value24HChange, '$0,0.[00]')

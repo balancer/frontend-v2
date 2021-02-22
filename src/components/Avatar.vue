@@ -9,13 +9,13 @@
         verticalAlign: 'middle'
       }"
       @error="error = true"
-      class="circle border line-height-0"
+      class="rounded-full align-middle inline-block border line-height-0"
     />
     <jazzicon
       v-else
       :address="address"
       :diameter="parseInt(size) || 22"
-      class="d-inline-block v-align-middle line-height-0"
+      class="inline-block align-middle line-height-0"
     />
   </span>
 </template>

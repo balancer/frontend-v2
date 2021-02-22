@@ -1,11 +1,8 @@
 <template>
-  <div
-    class="block border-top border-bottom border-md rounded-0 rounded-md-2 mb-4 block-bg"
-  >
+  <div class="block border-t border-b md:border md:rounded-md mb-5 block-bg">
     <h4
       v-if="title"
-      class="px-4 pt-3 border-bottom d-block bg-gray-dark rounded-top-0 rounded-md-top-2"
-      style="padding-bottom: 12px;"
+      class="px-5 pb-2 pt-3 border-b block bg-gray-dark md:rounded-t-md"
     >
       {{ title }}
       <UiCounter v-if="counter" :counter="counter" class="ml-1" />
@@ -18,7 +15,7 @@
         <Icon :name="icon" size="22" />
       </a>
     </h4>
-    <div :class="!slim && 'p-4'">
+    <div :class="!slim && 'p-5'">
       <slot />
     </div>
   </div>
