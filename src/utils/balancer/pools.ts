@@ -1,7 +1,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
-import Multicaller from '@snapshot-labs/snapshot.js/src/utils/multicaller';
+import { Multicaller } from '@/utils/balancer/contract';
 import { getAddress } from '@ethersproject/address';
 import set from 'lodash/set';
 import { abi as vaultAbi } from '@/utils/balancer/abi/Vault.json';
