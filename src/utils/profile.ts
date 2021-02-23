@@ -1,4 +1,4 @@
-import { subgraphRequest } from '@snapshot-labs/snapshot.js/src/utils';
+import { subgraphRequest } from '@/utils/balancer/subgraph';
 
 function get3BoxProfiles(addresses) {
   return new Promise((resolove, reject) => {
