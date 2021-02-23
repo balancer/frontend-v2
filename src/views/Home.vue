@@ -185,7 +185,7 @@ export default {
           const volume = currentPoolVolume - pastPoolVolume;
           return {
             ...pool,
-            liquidity: getPoolLiquidity(pool, this.market.prices),
+            liquidity: getPoolLiquidity(pool, this.tokens, this.market.prices),
             volume,
             apy: 0
           };

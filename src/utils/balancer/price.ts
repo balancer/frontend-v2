@@ -1,21 +1,33 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { formatUnits } from '@ethersproject/units';
+
 import { Pool } from './types';
 
-export function getPoolLiquidity(pool: Pool, prices) {
+export function getPoolLiquidity(pool: Pool, tokens, prices) {
   if (pool.strategy.type == 2) {
-    const sumWeight =
-      pool.strategy.weights?.reduce(
-        (sum, weight) => sum.add(weight),
-        BigNumber.from(0)
-      ) || BigNumber.from(0);
-    const sumValue = pool.tokenBalances.reduce((sum, balance, i) => {
+    let sumWeight = 0;
+    let sumValue = 0;
+
+    for (let i = 0; i < pool.tokens.length; i++) {
       const token = pool.tokens[i];
-      const price = prices[token] ? prices[token].price : 0;
-      const value = balance.mul(price);
-      return sum.add(value);
-    }, BigNumber.from(0));
-    if (sumWeight.gt(0)) {
-      return sumValue.div(sumWeight).toString();
+      if (!prices[token]) {
+        continue;
+      }
+      const price = prices[token].price;
+
+      const balance = pool.tokenBalances[i];
+      const decimals = tokens[token].decimals;
+      const amount = parseFloat(formatUnits(balance, decimals));
+
+      const value = amount * price;
+      const weight = pool.strategy.weightsPercent
+        ? pool.strategy.weightsPercent[i]
+        : 0;
+      sumValue = sumValue + value;
+      sumWeight = sumWeight + weight;
+    }
+    if (sumWeight > 0) {
+      const liquidity = (sumValue / sumWeight) * 100;
+      return liquidity.toString();
     } else {
       return '0';
     }
