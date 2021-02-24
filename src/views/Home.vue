@@ -7,11 +7,12 @@
           <div
             v-for="(token, i) in form.tokens"
             :key="i"
-            class="flex flex-items-center py-1 mr-2"
+            class="flex flex-items-center p-1 mr-2 rounded-full border border-gray-500"
           >
-            <Token :token="tokens[token]" :symbol="true" class="flex-auto" />
+            <Token :token="tokens[token]" :symbol="false" class="flex-auto" />
+            <span class="ml-1 text-black">{{ tokens[token].symbol }}</span>
             <a @click="removeToken(i)">
-              <Icon name="close" size="16" class="py-1 text-gray" />
+              <Icon name="close" size="12" class="ml-1" />
             </a>
           </div>
         </div>
