@@ -1,26 +1,20 @@
-@import './vars';
 @import './assets/fonts/iconfont.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --primary-color: #384aff;
-  --bg-color: white;
-  --text-color: #586069;
-  --link-color: #111111;
-  --heading-color: #111111;
-  --border-color: #d1d5da;
-  --header-bg: white;
-  --block-bg: white;
-  --border-radius-2: 8px;
+$font-primary: 'Calibre-Medium', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+$font-secondary: 'Utopia-Std-Display', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+
+.font-secondary {
+  font-family: $font-secondary;
 }
 
 .light {
   --primary-color: #21232c;
   --bg-color: #fafafa;
-  --text-color: #8199a4;
+  --text-color: #90A4AE;
   --link-color: #111111;
   --heading-color: #000;
   --border-color: #e0e0e0;
@@ -75,12 +69,26 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Utopia-Std-Display';
+  src: url('./assets/fonts/Utopia-Std-Display.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Utopia-Std-Display';
+  src: url('./assets/fonts/Utopia-Std-Semibold-Display.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
 html,
 body,
 #app {
   background: var(--bg-color);
   color: var(--text-color);
-  font-family: $font-weight-normal;
+  font-family: $font-primary;
   font-size: 18px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -91,11 +99,15 @@ body,
 }
 
 h1,
-h2,
+h2 {
+  color: var(--heading-color);
+  font-family: $font-secondary;
+}
+
 h3,
 h4 {
   color: var(--heading-color);
-  font-family: $font-weight-bold;
+  font-family: $font-primary;
 }
 
 h1 {
@@ -111,7 +123,7 @@ h4 {
 }
 
 b {
-  font-family: $font-weight-bold;
+  font-family: $font-secondary;
 }
 
 p {

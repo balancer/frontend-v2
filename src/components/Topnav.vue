@@ -17,7 +17,7 @@
           )
         }}
       </div>
-      <Container>
+      <div class="px-6">
         <div class="flex items-center" style="height: 78px;">
           <div class="flex-auto flex items-center">
             <router-link :to="{ name: 'home' }" class="flex items-center pr-2">
@@ -34,9 +34,8 @@
                 class="mr-2"
               />
               <span
-                class="mr-1"
-                style="font-size: 24px; margin-top: 4px;"
-                v-text="'balancer'"
+                class="mr-1 font-secondary text-lg font-semibold"
+                v-text="'Balancer'"
               />
             </router-link>
           </div>
@@ -89,7 +88,7 @@
             </router-link>
           </div>
         </div>
-      </Container>
+      </div>
     </nav>
     <div
       v-if="notifications.watch.length > 0"
