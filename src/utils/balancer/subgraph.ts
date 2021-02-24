@@ -134,6 +134,36 @@ export async function getPoolIds(network) {
   return result?.pools?.map(pool => pool.id);
 }
 
+export async function getPoolVolume(network: string) {
+  const currentTs = getCurrentTs();
+  const ts = currentTs - 60 * 60 * 24;
+  const query = {
+    pools: {
+      __args: {
+        first: 1000
+      },
+      id: true,
+      totalSwapVolume: true,
+      swaps: {
+        __args: {
+          where: {
+            timestamp_lt: ts
+          },
+          totalSwapVolume: true
+        }
+      }
+    }
+  };
+  const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
+  return result?.pools?.map(pool => {
+    return {
+      id: pool.id,
+      totalSwapVolume: pool.totalSwapVolume,
+      swaps: pool.swaps
+    };
+  });
+}
+
 export async function getPoolShares(network: string, address: string) {
   const query = {
     poolShares: {
