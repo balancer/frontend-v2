@@ -19,6 +19,8 @@
     "createPool": "Create a pool",
     "currentNetwork": "Current network",
     "dark": "Dark",
+    "editoTitle": "Put your money at work.",
+    "editoAbout": "Earn more on your Ethereum-based assets. Add tokens to pools and earn compounding fees when people trade on the exchange utilizing your liquidity.",
     "errorNoLists": "Sorry, we can't find any lists",
     "errorNoMatch": "Sorry, we can't find any matches",
     "errorNoTokens": "Sorry, we can't find any tokens",
