@@ -1,13 +1,19 @@
 <template>
   <div>
     <Container class="mt-2">
-      <div class="width-full flex items-center">
-        <UiButton v-text="$t('filters')" @click="modal.selectToken = true" />
-        <div class="flex ml-2" v-if="!registry.loading">
+      <h1>Investment pools</h1>
+      <div
+        class="width-full h-9 flex items-center cursor-pointer rounded border border-gray-500 hover:border-black hover:bg-gray-100"
+        @click="modal.selectToken = true"
+      >
+        <span class="ml-2 text-gray-500">Name, symbol or contract address</span>
+      </div>
+      <div class="flex mt-3">
+        <div class="flex mr-2" v-if="!registry.loading">
           <div
             v-for="(token, i) in form.tokens"
             :key="i"
-            class="flex flex-items-center p-1 mr-2 rounded-full border border-gray-500"
+            class="flex flex-items-center py-0.5 px-1 mr-2 rounded-full border border-gray-500"
           >
             <Token :token="tokens[token]" :symbol="false" class="flex-auto" />
             <span class="ml-1 text-black">{{ tokens[token].symbol }}</span>
