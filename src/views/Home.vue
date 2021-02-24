@@ -22,41 +22,7 @@
         <div v-if="loading || registry.loading" class="text-center p-4">
           <UiLoading />
         </div>
-        <div v-if="!registry.loading">
-          <div v-if="!loading" class="border-bottom hidden sm:block">
-            <div class="px-4 py-3 flex justify-between">
-              <div>Pool name</div>
-              <div>
-                <span class="inline-block column-sm text-right"
-                  >Pool value</span
-                >
-                <span class="inline-block column-sm text-right ml-2"
-                  >Volume (24h)</span
-                >
-                <span class="inline-block column-sm text-right ml-2">APY</span>
-              </div>
-            </div>
-          </div>
-          <p
-            v-if="!loading && Object.keys(filteredPools).length === 0"
-            class="px-4 pt-4 pb-3"
-          >
-            {{ $t('errorNoMatch') }}
-          </p>
-          <div
-            v-else
-            v-for="pool in filteredPools"
-            :key="pool.id"
-            class="border-bottom last-child-border-0"
-          >
-            <router-link
-              :to="{ name: 'pool', params: { id: pool.id } }"
-              class="d-block overflow-hidden"
-            >
-              <BlockPool :pool="pool" :tokens="tokens" />
-            </router-link>
-          </div>
-        </div>
+        <TablePools v-else :pools="filteredPools" :tokens="tokens" />
       </Block>
     </Container>
     <teleport to="#modal">
