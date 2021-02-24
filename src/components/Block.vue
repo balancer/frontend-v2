@@ -1,5 +1,5 @@
 <template>
-  <div class="block border-t border-b md:border md:rounded-md mb-5 block-bg">
+  <div class="block border-t border-b md:border mb-5 block-bg">
     <h4
       v-if="title"
       class="px-5 pb-2 pt-3 border-b block bg-gray-dark md:rounded-t-md"

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Edito />
     <Container class="mt-2">
       <div class="width-full flex items-center">
         <UiButton v-text="$t('filters')" @click="modal.selectToken = true" />

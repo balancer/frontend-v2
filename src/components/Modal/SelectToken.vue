@@ -26,7 +26,11 @@
     </div>
     <div>
       <div v-if="Object.keys(tokens).length > 0">
-        <a v-for="(token, key) in tokens" :key="key" @click="onSelect(token.address)">
+        <a
+          v-for="(token, key) in tokens"
+          :key="key"
+          @click="onSelect(token.address)"
+        >
           <RowToken :token="token" />
         </a>
       </div>
