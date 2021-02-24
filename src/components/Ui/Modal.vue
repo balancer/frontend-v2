@@ -95,7 +95,7 @@ export default {
     }
 
     .modal-body {
-      max-height: 420px;
+      height: 420px;
       flex: auto;
       text-align: initial;
       overflow-y: auto;

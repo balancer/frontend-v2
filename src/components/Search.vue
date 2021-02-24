@@ -11,9 +11,6 @@
       autocapitalize="none"
       class="border-0 input flex-auto w-full"
     />
-    <a @click="clearInput">
-      <Icon v-if="modelValue" name="close" size="12" class="mb-1" />
-    </a>
   </div>
 </template>
 
@@ -25,9 +22,6 @@ export default {
     handleInput(e) {
       const input = e.target.value;
       this.$emit('update:modelValue', input);
-    },
-    clearInput() {
-      this.$emit('update:modelValue', '');
     }
   },
   mounted() {
