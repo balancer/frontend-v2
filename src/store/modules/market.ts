@@ -7,13 +7,15 @@ const state = {
 
 const actions = {
   loadPrices: async ({ commit, rootState, rootGetters }, tokens?) => {
-    tokens = tokens || rootGetters.getTokens();
-    const addresses = Object.values(tokens).map((token: any) => token.address);
+    if (!tokens)
+      tokens = Object.values(rootGetters.getTokens()).map(
+        (token: any) => token.address
+      );
     try {
       commit('MARKET_SET', { loading: true });
       const chainId = rootState.web3.network.chainId;
       const [prices, etherPrice] = await Promise.all([
-        getTokensPrice(chainId, addresses),
+        getTokensPrice(chainId, tokens),
         getEtherPrice()
       ]);
       prices.ether = etherPrice;

@@ -114,7 +114,7 @@ const getters = {
     delete tokenlist.tokens;
     return tokenlist;
   },
-  getTokenlists: (state, getters, rootState) => ({ q }) => {
+  getTokenlists: (state, getters, rootState) => ({ q, active }) => {
     const tokenlists = clone(state.tokenlists);
     return Object.fromEntries(
       Object.entries(tokenlists)
@@ -127,7 +127,11 @@ const getters = {
           tokenlist[1].active = state.activeLists[tokenlist[0]] ? 1 : 0;
           return tokenlist;
         })
-        .filter(tokenlist => tokenlist[1].tokens.length > 0)
+        .filter(
+          tokenlist =>
+            tokenlist[1].tokens.length > 0 &&
+            (!active || (active && tokenlist[1].active))
+        )
         .filter(tokenlist =>
           q
             ? `${tokenlist[0]} ${tokenlist[1].name}`
