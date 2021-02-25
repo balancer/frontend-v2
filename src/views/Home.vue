@@ -2,17 +2,24 @@
   <div>
     <Edito />
     <Container class="mt-2">
-      <div class="width-full flex items-center">
-        <UiButton v-text="$t('filters')" @click="modal.selectToken = true" />
-        <div class="flex ml-2" v-if="!registry.loading">
+      <h1>Investment pools</h1>
+      <div
+        class="width-full h-9 flex items-center cursor-pointer rounded border border-gray-500 hover:border-black hover:bg-gray-100"
+        @click="modal.selectToken = true"
+      >
+        <span class="ml-2 text-gray-500">Name, symbol or contract address</span>
+      </div>
+      <div class="flex mt-3">
+        <div class="flex mr-2" v-if="!registry.loading">
           <div
             v-for="(token, i) in form.tokens"
             :key="i"
-            class="flex flex-items-center py-1 mr-2"
+            class="flex flex-items-center py-0.5 px-1 mr-2 rounded-full border border-gray-500"
           >
-            <Token :token="tokens[token]" :symbol="true" class="flex-auto" />
+            <Token :token="tokens[token]" :symbol="false" class="flex-auto" />
+            <span class="ml-1 text-black">{{ tokens[token].symbol }}</span>
             <a @click="removeToken(i)">
-              <Icon name="close" size="16" class="py-1 text-gray" />
+              <Icon name="close" size="12" class="ml-1" />
             </a>
           </div>
         </div>
@@ -23,41 +30,7 @@
         <div v-if="loading || registry.loading" class="text-center p-4">
           <UiLoading />
         </div>
-        <div v-if="!registry.loading">
-          <div v-if="!loading" class="border-bottom hidden sm:block">
-            <div class="px-4 py-3 flex justify-between">
-              <div>Pool name</div>
-              <div>
-                <span class="inline-block column-sm text-right"
-                  >Pool value</span
-                >
-                <span class="inline-block column-sm text-right ml-2"
-                  >Volume (24h)</span
-                >
-                <span class="inline-block column-sm text-right ml-2">APY</span>
-              </div>
-            </div>
-          </div>
-          <p
-            v-if="!loading && Object.keys(filteredPools).length === 0"
-            class="px-4 pt-4 pb-3"
-          >
-            {{ $t('errorNoMatch') }}
-          </p>
-          <div
-            v-else
-            v-for="pool in filteredPools"
-            :key="pool.id"
-            class="border-bottom last-child-border-0"
-          >
-            <router-link
-              :to="{ name: 'pool', params: { id: pool.id } }"
-              class="d-block overflow-hidden"
-            >
-              <BlockPool :pool="pool" :tokens="tokens" />
-            </router-link>
-          </div>
-        </div>
+        <TablePools v-else :pools="filteredPools" :tokens="tokens" />
       </Block>
     </Container>
     <teleport to="#modal">
