@@ -2,12 +2,14 @@
   <div>
     <Edito />
     <Container class="mt-2">
-      <h1>Investment pools</h1>
+      <h3>Investment pools</h3>
       <div
-        class="width-full h-9 flex items-center cursor-pointer rounded border border-gray-500 hover:border-black hover:bg-gray-100"
+        class="width-full h-9 mt-2 flex items-center cursor-pointer rounded border border-gray-500 hover:border-black hover:bg-gray-100"
         @click="modal.selectToken = true"
       >
-        <span class="ml-2 text-gray-500">Name, symbol or contract address</span>
+        <span class="ml-2 text-sm text-gray-500"
+          >Name, symbol or contract address</span
+        >
       </div>
       <div class="flex mt-3">
         <div class="flex mr-2" v-if="!registry.loading">
@@ -17,7 +19,9 @@
             class="flex flex-items-center py-0.5 px-1 mr-2 rounded-full border border-gray-500"
           >
             <Token :token="tokens[token]" :symbol="false" class="flex-auto" />
-            <span class="ml-1 text-black">{{ tokens[token].symbol }}</span>
+            <span class="ml-1 text-base text-black">{{
+              tokens[token].symbol
+            }}</span>
             <a @click="removeToken(i)">
               <Icon name="close" size="12" class="ml-1" />
             </a>

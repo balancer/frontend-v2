@@ -38,6 +38,15 @@
                 v-text="'Balancer'"
               />
             </router-link>
+            <a
+              href="https://balancer.exchange"
+              target="_blank"
+              class="ml-4 text-gray font-bold"
+              >Trade</a
+            >
+            <router-link :to="{ name: 'home' }" class="ml-4 font-bold">
+              Invest
+            </router-link>
           </div>
           <div :key="web3.account">
             <template v-if="$auth.isAuthenticated.value">
@@ -57,17 +66,17 @@
                 <Avatar
                   :address="web3.account"
                   :profile="web3.profile"
-                  size="16"
+                  size="20"
                 />
                 <span
                   v-if="web3.profile.name || web3.profile.ens"
                   v-text="web3.profile.name || web3.profile.ens"
-                  class="pl-2 hidden md:inline-block"
+                  class="pl-2 text-base hidden md:inline-block"
                 />
                 <span
                   v-else
                   v-text="_shorten(web3.account)"
-                  class="pl-2 hidden md:inline-block"
+                  class="pl-2 text-base hidden md:inline-block"
                 />
               </UiButton>
             </template>

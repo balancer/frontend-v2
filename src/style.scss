@@ -74,7 +74,7 @@ body,
   background: var(--bg-color);
   color: var(--text-color);
   font-family: $font-primary;
-  font-size: 18px;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -100,19 +100,15 @@ h1 {
 }
 
 h3 {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 h4 {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 b {
   font-family: $font-secondary;
-}
-
-p {
-  font-size: 20px;
 }
 
 #app {
