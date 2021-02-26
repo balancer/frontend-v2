@@ -18,7 +18,7 @@
         <input
           @input="onInput('send', i)"
           v-model="sendAmounts[i]"
-          class="input flex-auto"
+          class="input w-0 flex-auto"
           type="number"
           placeholder="0.0"
           required
@@ -38,7 +38,7 @@
         <input
           @input="onInput('receive', i)"
           v-model="receiveAmounts[i]"
-          class="input flex-auto"
+          class="input w-0 flex-auto"
           type="number"
           placeholder="0.0"
           required

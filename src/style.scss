@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-$font-primary: 'Calibre-Medium', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+$font-primary: 'Inter-Variable', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
 $font-secondary: 'Utopia-Std-Display', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
 
 .font-secondary {
@@ -48,23 +48,8 @@ $font-secondary: 'Utopia-Std-Display', -apple-system, BlinkMacSystemFont, Segoe 
 }
 
 @font-face {
-  font-family: 'Calibre-Medium';
-  src: url('./assets/fonts/Calibre-Medium.eot');
-  src: url('./assets/fonts/Calibre-Medium.eot?#iefix')
-      format('embedded-opentype'),
-    url('./assets/fonts/Calibre-Medium.woff') format('woff'),
-    url('./assets/fonts/Calibre-Medium.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Calibre-Semibold';
-  src: url('./assets/fonts/Calibre-Semibold.eot');
-  src: url('./assets/fonts/Calibre-Semibold.eot?#iefix')
-      format('embedded-opentype'),
-    url('./assets/fonts/Calibre-Semibold.woff') format('woff'),
-    url('./assets/fonts/Calibre-Semibold.ttf') format('truetype');
+  font-family: 'Inter-Variable';
+  src: url('./assets/fonts/Inter-Variable.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -89,7 +74,7 @@ body,
   background: var(--bg-color);
   color: var(--text-color);
   font-family: $font-primary;
-  font-size: 18px;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -115,19 +100,15 @@ h1 {
 }
 
 h3 {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 h4 {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 b {
   font-family: $font-secondary;
-}
-
-p {
-  font-size: 20px;
 }
 
 #app {
