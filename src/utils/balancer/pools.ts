@@ -9,6 +9,7 @@ import { abi as weightedPoolAbi } from '@/utils/balancer/abi/WeightedPool.json';
 import { abi as bTokenAbi } from '@/utils/balancer/abi/BToken.json';
 import constants from '@/utils/balancer/constants';
 import { Pool } from '@/utils/balancer/types';
+import { getPoolShares } from '@/utils/balancer/subgraph';
 
 // Merge all the ABIs and remove duplicates
 const abis = Object.values(
@@ -109,4 +110,24 @@ export async function getPool(
 ): Promise<Pool> {
   const pools = await getPools(network, provider, [id]);
   return formatPool(pools[0]);
+}
+
+export async function getPoolsWithShares(
+  network: string,
+  provider: JsonRpcProvider,
+  account: string
+) {
+  const poolShares = await getPoolShares(network, account);
+  const balances = Object.fromEntries(
+    poolShares.map(poolShare => [poolShare.poolId.id, poolShare.balance])
+  );
+  const pools = await getPools(
+    network,
+    provider,
+    poolShares.map(poolShare => poolShare.poolId.id)
+  );
+  return pools.map(pool => {
+    pool.shares = parseFloat(balances[pool.id]) || 0;
+    return pool;
+  });
 }
