@@ -1,7 +1,8 @@
 <template>
   <div>
     <Edito />
-    <Container class="mt-2">
+    <Container class="mt-6">
+      <MainMenu />
       <h1>Investment pools</h1>
       <div
         class="width-full h-9 flex items-center cursor-pointer rounded border border-gray-500 hover:border-black hover:bg-gray-100"

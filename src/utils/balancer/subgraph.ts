@@ -173,7 +173,9 @@ export async function getPoolShares(network: string, address: string) {
           userAddress: address.toLowerCase()
         }
       },
-      id: true,
+      poolId: {
+        id: true
+      },
       balance: true
     }
   };

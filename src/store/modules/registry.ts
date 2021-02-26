@@ -37,7 +37,7 @@ const getters = {
     return ether;
   },
   getTokens: (state, getters, rootState) => (query: any = {}) => {
-    const { q, addresses, not, withBalance } = query;
+    const { q, addresses, not, withBalance, limit } = query;
 
     const activeLists = Object.keys(state.tokenlists)
       .filter(name => state.activeLists[name])
@@ -102,6 +102,10 @@ const getters = {
             token => token.address.toLowerCase() === address.toLowerCase()
           )[0]
       );
+    }
+
+    if (limit) {
+      tokens = tokens.slice(0, limit);
     }
 
     if (not) tokens = tokens.filter(token => !not.includes(token.address));

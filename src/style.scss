@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-$font-primary: 'Calibre-Medium', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+$font-primary: 'Calibre', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
 $font-secondary: 'Utopia-Std-Display', -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
 
 .font-secondary {
@@ -17,7 +17,7 @@ $font-secondary: 'Utopia-Std-Display', -apple-system, BlinkMacSystemFont, Segoe 
   --text-color: #90A4AE;
   --link-color: #111111;
   --heading-color: #000;
-  --border-color: #e0e0e0;
+  --border-color: #E6E6E6;
   --header-bg: #ffffff;
   --block-bg: #ffffff;
   --border-radius-2: 23px;
@@ -48,7 +48,7 @@ $font-secondary: 'Utopia-Std-Display', -apple-system, BlinkMacSystemFont, Segoe 
 }
 
 @font-face {
-  font-family: 'Calibre-Medium';
+  font-family: 'Calibre';
   src: url('./assets/fonts/Calibre-Medium.eot');
   src: url('./assets/fonts/Calibre-Medium.eot?#iefix')
       format('embedded-opentype'),
@@ -59,13 +59,13 @@ $font-secondary: 'Utopia-Std-Display', -apple-system, BlinkMacSystemFont, Segoe 
 }
 
 @font-face {
-  font-family: 'Calibre-Semibold';
+  font-family: 'Calibre';
   src: url('./assets/fonts/Calibre-Semibold.eot');
   src: url('./assets/fonts/Calibre-Semibold.eot?#iefix')
       format('embedded-opentype'),
     url('./assets/fonts/Calibre-Semibold.woff') format('woff'),
     url('./assets/fonts/Calibre-Semibold.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 600;
   font-style: normal;
 }
 
@@ -112,6 +112,11 @@ h4 {
 
 h1 {
   font-size: 36px;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: bold;
 }
 
 h3 {
@@ -229,7 +234,7 @@ textarea {
   color: var(--primary-color) !important;
 }
 
-.text-gray {
+.text-gray, .text-color {
   color: var(--text-color) !important;
 }
 
@@ -335,4 +340,8 @@ input[type=number] {
 
 small {
   font-size: 16px;
+}
+
+.shadow {
+  box-shadow: 0 0 12px -6px var(--border-color);
 }
