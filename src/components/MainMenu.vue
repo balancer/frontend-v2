@@ -1,5 +1,5 @@
 <template>
-  <Block :slim="true" class="mainmenu sliding text-lg px-4 pt-1">
+  <Block :slim="true" class="mainmenu sliding px-4 py-2">
     <router-link
       :to="{ name: 'portfolio' }"
       v-text="$t('myPortfolio')"

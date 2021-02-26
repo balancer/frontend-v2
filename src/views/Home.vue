@@ -97,7 +97,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getTokens', 'getCurrentTokenlist', 'getTokenlists']),
+    ...mapGetters(['getTokens', 'getTokenlists']),
     tokens() {
       return this.getTokens();
     },

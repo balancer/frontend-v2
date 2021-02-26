@@ -6,7 +6,8 @@ module.exports = {
       xs: '.625rem',
       sm: '.75rem',
       base: '.875rem',
-      lg: '1.2rem'
+      lg: '1rem',
+      xl: '1.2rem'
     },
     extend: {}
   },

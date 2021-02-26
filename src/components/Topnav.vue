@@ -4,7 +4,7 @@
       <div
         :key="web3.network.unknown"
         v-if="web3.network.unknown"
-        class="p-2 flex bg-red-500 justify-center"
+        class="p-2 flex bg-red-500 justify-center text-base"
         style="color: white;"
       >
         <Icon name="warning1" size="20" class="mr-1" />
@@ -34,7 +34,7 @@
                 class="mr-2"
               />
               <span
-                class="mr-1 font-secondary text-lg font-semibold"
+                class="mr-1 font-secondary text-xl font-semibold"
                 v-text="'Balancer'"
               />
             </router-link>
