@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-x-auto whitespace-nowrap">
+  <div class="overflow-x-auto whitespace-nowrap text-base">
     <table class="min-w-full text-black">
       <tr class="bg-gray-50">
         <th class="sticky top-0 p-2 pl-4 py-6 text-left">Pool name</th>
@@ -14,7 +14,7 @@
         @click="openPool(pool)"
       >
         <td class="p-2 pl-4 py-6 flex">
-          <div class="w-16 relative">
+          <div class="w-20 relative">
             <span
               v-for="(token, i) in pool.tokens"
               :key="token"

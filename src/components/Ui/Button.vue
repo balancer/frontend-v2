@@ -30,7 +30,7 @@ export default {
   outline: none;
   line-height: 46px;
   height: 46px;
-  font-size: 18px;
+  font-size: 16px;
 
   &.button--submit {
     color: white;
