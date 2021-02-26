@@ -48,9 +48,11 @@ export default {
     },
     sharesValue() {
       if (!this.pool.shares) return 0;
-      return this.poolRegistry.liquidity *
+      return (
+        this.poolRegistry.liquidity *
         formatUnits(this.pool.totalSupply, 18) *
-        this.pool.shares;
+        this.pool.shares
+      );
     }
   },
   methods: {

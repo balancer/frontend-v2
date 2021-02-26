@@ -184,12 +184,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'getTokens',
-      'getCurrentTokenlist',
-      'getTokenlists',
-      'getRequiredAllowances'
-    ]),
+    ...mapGetters(['getTokens', 'getTokenlists', 'getRequiredAllowances']),
     tokens() {
       return this.getTokens();
     },
