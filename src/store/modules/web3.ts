@@ -80,6 +80,7 @@ const actions = {
       if (auth.provider.value.on) {
         auth.provider.value.on('chainChanged', async chainId => {
           commit('HANDLE_CHAIN_CHANGED', parseInt(formatUnits(chainId, 0)));
+          dispatch('loadPools');
           dispatch('resetAccount');
           dispatch('getBalances');
           dispatch('getAllowances');
