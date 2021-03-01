@@ -4,7 +4,7 @@
   </span>
 </template>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .Label {
   display: inline-block;
   padding: 0 7px;
@@ -19,7 +19,6 @@
 
 .active {
   color: white;
-  background-color: var(--primary-color);
-  border-color: var(--primary-color) !important;
+  @apply bg-primary-500 border-primary-500;
 }
 </style>

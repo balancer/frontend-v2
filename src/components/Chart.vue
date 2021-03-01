@@ -144,7 +144,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="css">
 .apexcharts-tooltip {
   font-size: 18px;
   padding: 6px 12px 2px;

@@ -1,6 +1,6 @@
 <template>
   <Sticky :key="`${web3.network.unknown}${notifications.watch.length}`">
-    <nav id="topnav" class="border-b width-full block-bg">
+    <nav id="topnav" class="shadow border-b width-full block-bg">
       <div
         :key="web3.network.unknown"
         v-if="web3.network.unknown"
@@ -153,13 +153,3 @@ export default {
   }
 };
 </script>
-
-<style scoped lang="scss">
-#topnav {
-  box-shadow: 0 0 12px -6px var(--border-color);
-}
-
-.button-outline:hover ~ .popover {
-  display: initial;
-}
-</style>
