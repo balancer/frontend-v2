@@ -1,95 +1,54 @@
 <template>
-  <Layout class="mt-4">
-    <template v-if="web3.account" v-slot:content-right>
-      <div class="px-4 md:px-0">
-        <Breadcrumb />
-        <h1 class="mb-3">
-          {{ $t('portfolio') }}
-          <h2 v-if="!loading && portfolioValue > 0" class="float-right mt-1">
-            {{ _num(portfolioValue, '$0,0')
-            }}<span v-text="_num(portfolioValue, '.[00]')" class="text-gray" />
-          </h2>
-        </h1>
+  <Container :slim="true" class="mt-6">
+    <MainMenu />
+    <Block v-if="web3.account">
+      <h2 v-text="$t('myInvestments')" class="mb-4" />
+      <UiLoading v-if="!loaded" />
+      <div v-else-if="pools.length > 0">
+        <TablePortfolioPools :pools="pools" :tokens="tokens" />
+        <div class="border-t mt-4">
+          <a class="mt-8 max-w-sm text-base block">
+            <div v-text="$t('investmentPoolsAbout')" class="mb-2" />
+            <div v-text="$t('investmentPoolsAboutLink')" class="font-bold" />
+          </a>
+        </div>
       </div>
-      <Block :slim="true">
-        <div v-if="loading" class="text-center p-4">
-          <UiLoading />
-        </div>
-        <div v-else>
-          <div class="p-3 border-b last-child-border-0 flex items-center">
-            <Token :token="ether" :size="32" class="mr-3" />
-            <div class="flex-auto">
-              <div v-text="ether.name" class="link-color" />
-              <div>
-                {{ _num(ether.balance, '0,0.[000]') }}
-                {{ ether.symbol }} · {{ _num(ether.price, '$0,0.[00]') }}
-              </div>
-            </div>
-            <div class="text-right">
-              <div class="link-color">
-                {{ _num(ether.value, '$0,0.[00]') }}
-              </div>
-              <div>
-                <span
-                  v-if="ether.price24HChange"
-                  :class="
-                    ether.price24HChange > 0 ? 'text-green-500' : 'text-red-500'
-                  "
-                >
-                  {{ _num(ether.price24HChange, '+0,0.[00]') }}% ({{
-                    _num(ether.value24HChange, '$0,0.[00]')
-                  }})
-                </span>
-              </div>
-            </div>
-          </div>
-          <div
-            v-for="(token, i) in getTokens({ withBalance: true })"
-            :key="i"
-            class="p-3 border-b last-child-border-0 flex items-center"
-          >
-            <Token :token="token" :size="32" class="mr-3" />
-            <div class="flex-auto">
-              <div v-text="token.name" class="link-color" />
-              <div>
-                {{ _num(token.balance, '0,0.[000]') }} {{ token.symbol }} ·
-                {{ _num(token.price, '$0,0.[00]') }}
-              </div>
-            </div>
-            <div class="text-right">
-              <div class="link-color">
-                {{ _num(token.value, '$0,0.[00]') }}
-              </div>
-              <div>
-                <span
-                  v-if="token.price24HChange"
-                  :class="
-                    token.price24HChange > 0 ? 'text-green-500' : 'text-red-500'
-                  "
-                >
-                  {{ _num(token.price24HChange, '+0,0.[00]') }}% ({{
-                    _num(token.value24HChange, '$0,0.[00]')
-                  }})
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Block>
-    </template>
-    <template v-slot:sidebar-left>
-      <BlockMenu />
-    </template>
-  </Layout>
+      <div v-else class="border-t mt-4">
+        <router-link
+          :to="{ name: 'home' }"
+          class="mt-8 max-w-sm text-base block"
+        >
+          <div v-text="$t('emptyInvestmentPools')" class="mb-2" />
+          <div v-text="$t('emptyInvestmentPoolsLink')" class="font-bold" />
+        </router-link>
+      </div>
+    </Block>
+    <BlockMyWallet v-if="web3.account" :loading="loading" />
+  </Container>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import { getPoolShares } from '@/utils/balancer/subgraph';
+import { getPoolsWithShares } from '@/utils/balancer/pools';
+import getProvider from '@/utils/provider';
 
 export default {
+  data() {
+    return {
+      loaded: false,
+      pools: []
+    };
+  },
+  watch: {
+    'web3.network.key': function() {
+      this.load();
+    },
+    'web3.account': function() {
+      this.load();
+    }
+  },
   computed: {
-    ...mapGetters(['getTokens', 'getPortfolioValue', 'getEther']),
+    ...mapGetters(['getTokens']),
     loading() {
       return (
         this.app.authLoading ||
@@ -97,18 +56,26 @@ export default {
         this.registry.loading
       );
     },
-    ether() {
-      return this.getEther();
-    },
-    portfolioValue() {
-      return this.getPortfolioValue();
+    tokens() {
+      return this.getTokens();
+    }
+  },
+  methods: {
+    async load() {
+      const account = this.web3.account;
+      if (account) {
+        const network = this.web3.network.key;
+        const provider = getProvider(network);
+        this.pools = await getPoolsWithShares(network, provider, account);
+        console.log('Pools', this.pools);
+      }
+      this.loaded = true;
     }
   },
   async created() {
-    const network = this.web3.network.key;
-    const address = this.web3.account;
-    const poolShares = await getPoolShares(network, address);
-    console.log('Pool shares', poolShares);
+    if (this.web3.account) {
+      await this.load();
+    }
   }
 };
 </script>

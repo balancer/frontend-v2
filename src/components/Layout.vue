@@ -1,7 +1,7 @@
 <template>
   <Container :slim="true">
+    <slot />
     <div class="grid grid-cols-12 gap-5">
-      <slot />
       <div v-if="$slots['sidebar-left']" class="col-span-12 md:col-span-3">
         <slot name="sidebar-left" />
       </div>

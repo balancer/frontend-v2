@@ -1,8 +1,9 @@
 <template>
   <div>
     <Edito />
-    <Container class="mt-2">
-      <h3>Investment pools</h3>
+    <Container class="mt-6">
+      <MainMenu />
+      <h1>Investment pools</h1>
       <div
         class="width-full h-9 mt-2 flex items-center cursor-pointer rounded border border-gray-500 hover:border-black hover:bg-gray-100"
         @click="modal.selectToken = true"
@@ -96,7 +97,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getTokens', 'getCurrentTokenlist', 'getTokenlists']),
+    ...mapGetters(['getTokens', 'getTokenlists']),
     tokens() {
       return this.getTokens();
     },

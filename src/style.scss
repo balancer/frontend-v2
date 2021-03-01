@@ -17,7 +17,7 @@ $font-secondary: 'Utopia-Std-Display', -apple-system, BlinkMacSystemFont, Segoe 
   --text-color: #90A4AE;
   --link-color: #111111;
   --heading-color: #000;
-  --border-color: #e0e0e0;
+  --border-color: #E6E6E6;
   --header-bg: #ffffff;
   --block-bg: #ffffff;
   --border-radius-2: 23px;
@@ -97,6 +97,11 @@ h4 {
 
 h1 {
   font-size: 36px;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: bold;
 }
 
 h3 {
@@ -210,7 +215,7 @@ textarea {
   color: var(--primary-color) !important;
 }
 
-.text-gray {
+.text-gray, .text-color {
   color: var(--text-color) !important;
 }
 
@@ -316,4 +321,8 @@ input[type=number] {
 
 small {
   font-size: 16px;
+}
+
+.shadow {
+  box-shadow: 0 0 12px -6px var(--border-color);
 }

@@ -14,7 +14,7 @@ const state = {
 const actions = {
   init: async ({ commit, dispatch }) => {
     commit('SET', { init: true });
-    dispatch('loadTokenlists');
+    dispatch('loadRegistry');
     dispatch('getBlockNumber');
     const auth = getInstance();
     auth.getConnector().then(connector => {

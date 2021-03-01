@@ -10,7 +10,7 @@
           <img src="~@/assets/empty.png" class="border bg-color float-right" />
         </div>
       </div>
-      <div class="absolute -bottom-4 text-2xl border-color">
+      <div class="hidden absolute -bottom-4 text-2xl border-color">
         <span v-text="'•'" class="link-color mr-1" />
         <span v-text="'•'" class="mr-1" />
         <span v-text="'•'" class="mr-1" />

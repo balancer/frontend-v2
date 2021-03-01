@@ -7,6 +7,7 @@ import { loadTokenlist } from '@/utils/tokenlists';
 import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/utils';
 import { getTokensMetadata } from '@/utils/balancer/tokens';
+import { getPoolsFromIPFS } from '@/utils/balancer/ipfs';
 
 const defaultActiveLists = {};
 defaultActiveLists[TOKEN_LIST_DEFAULT] = true;
@@ -15,6 +16,7 @@ const state = {
   activeLists: lsGet('tokenlists', defaultActiveLists),
   currentTokenlist: TOKEN_LIST_DEFAULT,
   tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
+  pools: {},
   injected: [],
   loading: false,
   loaded: false
@@ -37,7 +39,7 @@ const getters = {
     return ether;
   },
   getTokens: (state, getters, rootState) => (query: any = {}) => {
-    const { q, addresses, not, withBalance } = query;
+    const { q, addresses, not, withBalance, limit } = query;
 
     const activeLists = Object.keys(state.tokenlists)
       .filter(name => state.activeLists[name])
@@ -104,15 +106,14 @@ const getters = {
       );
     }
 
+    if (limit) {
+      tokens = tokens.slice(0, limit);
+    }
+
     if (not) tokens = tokens.filter(token => !not.includes(token.address));
     if (withBalance) tokens = tokens.filter(token => token.balance > 0);
 
     return Object.fromEntries(tokens.map(token => [token.address, token]));
-  },
-  getCurrentTokenlist: state => {
-    const tokenlist = clone(state.tokenlists[state.currentTokenlist]);
-    delete tokenlist.tokens;
-    return tokenlist;
   },
   getTokenlists: (state, getters, rootState) => ({ q, active }) => {
     const tokenlists = clone(state.tokenlists);
@@ -145,6 +146,17 @@ const getters = {
 };
 
 const actions = {
+  loadRegistry: async ({ dispatch, commit }) => {
+    commit('REGISTRY_SET', { loading: true });
+    await Promise.all([
+      dispatch('loadPools'),
+      ...TOKEN_LISTS.map(name => dispatch('loadTokenlist', name))
+    ]);
+    commit('REGISTRY_SET', { loading: false, loaded: true });
+    dispatch('getBalances');
+    dispatch('getAllowances');
+    dispatch('loadPrices');
+  },
   loadTokenlist: async ({ commit }, name) => {
     name = name || TOKEN_LIST_DEFAULT;
     try {
@@ -155,14 +167,6 @@ const actions = {
     } catch (e) {
       console.error(e);
     }
-  },
-  loadTokenlists: async ({ dispatch, commit }) => {
-    commit('REGISTRY_SET', { loading: true });
-    await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
-    commit('REGISTRY_SET', { loading: false, loaded: true });
-    dispatch('getBalances');
-    dispatch('getAllowances');
-    dispatch('loadPrices');
   },
   injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
     if (tokens.length === 0 || !isAddress(tokens[0])) return;
@@ -192,6 +196,11 @@ const actions = {
       lsSet('tokenlists', activeLists);
       commit('REGISTRY_SET', { activeLists });
     }
+  },
+  loadPools: async ({ commit, rootState }) => {
+    const network = rootState.web3.network.key;
+    const pools = await getPoolsFromIPFS(network);
+    commit('REGISTRY_SET', { pools });
   }
 };
 

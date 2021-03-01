@@ -1,8 +1,8 @@
 <template>
-  <Layout class="mt-4">
+  <Layout class="mt-6">
+    <MainMenu />
     <template v-slot:content-left>
       <div class="px-4 md:px-0">
-        <Breadcrumb />
         <h1 v-text="$t('createPool')" class="mb-5" />
       </div>
       <Block :title="$t('poolType')">
@@ -184,12 +184,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      'getTokens',
-      'getCurrentTokenlist',
-      'getTokenlists',
-      'getRequiredAllowances'
-    ]),
+    ...mapGetters(['getTokens', 'getTokenlists', 'getRequiredAllowances']),
     tokens() {
       return this.getTokens();
     },

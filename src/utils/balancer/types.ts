@@ -7,6 +7,7 @@ export interface Pool {
   tokenBalances: BigNumber[];
   tokens: string[];
   totalSupply: BigNumber;
+  shares?: number;
 }
 
 export interface Strategy {
