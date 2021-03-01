@@ -8,10 +8,10 @@
           <div class="col-span-12 md:col-span-8 mb-6 md:mb-0">
             <div>
               <div class="float-right text-base">
-                <span v-text="$t('oneDay')" class="ml-4"/>
-                <span v-text="$t('oneWeek')" class="ml-4"/>
-                <span v-text="$t('oneMonth')" class="ml-4"/>
-                <span v-text="$t('threeMonths')" class="ml-4"/>
+                <span v-text="$t('oneDay')" class="ml-4" />
+                <span v-text="$t('oneWeek')" class="ml-4" />
+                <span v-text="$t('oneMonth')" class="ml-4" />
+                <span v-text="$t('threeMonths')" class="ml-4" />
               </div>
               <div class="text-xl font-bold link-color">
                 {{ _num(totalBalance, '$0,0.[00]') }}
@@ -23,32 +23,36 @@
           </div>
           <div class="col-span-12 md:col-span-4 link-color border leading-6">
             <div class="grid grid-cols-2">
-              <div class="col-span-2 md:col-span-1 md:border-r grid grid-cols-3 md:grid-cols-none border-b md:border-b-0">
+              <div
+                class="col-span-2 md:col-span-1 md:border-r grid grid-cols-3 md:grid-cols-none border-b md:border-b-0"
+              >
                 <div class="p-5 border-r md:border-r-0">
                   <div class="text-base">APY (1w)</div>
-                  <div v-text="`${_num(12.34)}%`" class="font-bold text-xl"/>
+                  <div v-text="`${_num(12.34)}%`" class="font-bold text-xl" />
                 </div>
                 <div class="p-5 border-r md:border-r-0">
                   <div class="text-base">Profit (1w)</div>
-                  <div v-text="`${_num(5.6)}%`" class="font-bold text-xl"/>
+                  <div v-text="`${_num(5.6)}%`" class="font-bold text-xl" />
                 </div>
                 <div class="p-5">
                   <div class="text-base">Baller score</div>
-                  <div v-text="_num(789)" class="font-bold text-xl"/>
+                  <div v-text="_num(789)" class="font-bold text-xl" />
                 </div>
               </div>
-              <div class="col-span-2 md:col-span-1 grid grid-cols-3 md:grid-cols-none">
+              <div
+                class="col-span-2 md:col-span-1 grid grid-cols-3 md:grid-cols-none"
+              >
                 <div class="p-5 border-r md:border-r-0">
                   <div class="text-base">APY (1y)</div>
-                  <div v-text="`${_num(12.34)}%`" class="font-bold text-xl"/>
+                  <div v-text="`${_num(12.34)}%`" class="font-bold text-xl" />
                 </div>
                 <div class="p-5 border-r md:border-r-0">
                   <div class="text-base">Profit (1y)</div>
-                  <div v-text="`${_num(5.6)}%`" class="font-bold text-xl"/>
+                  <div v-text="`${_num(5.6)}%`" class="font-bold text-xl" />
                 </div>
                 <div class="p-5">
                   <div class="text-base">Rank (1w)</div>
-                  <div v-text="_num(98)" class="font-bold text-xl"/>
+                  <div v-text="_num(98)" class="font-bold text-xl" />
                 </div>
               </div>
             </div>
@@ -59,7 +63,7 @@
     <Block v-if="web3.account">
       <div class="mx-4 md:mx-0">
         <h2 v-text="$t('myInvestments')" class="mb-4" />
-        <UiLoading v-if="!loaded"/>
+        <UiLoading v-if="!loaded" />
       </div>
       <div v-if="loaded">
         <div v-if="pools.length > 0">
@@ -137,7 +141,9 @@ export default {
           account,
           30
         );
-        this.totalBalance = clone(this.poolSharesChart.series[0].data).slice(-1).pop();
+        this.totalBalance = clone(this.poolSharesChart.series[0].data)
+          .slice(-1)
+          .pop();
       }
       this.loaded = true;
     }
