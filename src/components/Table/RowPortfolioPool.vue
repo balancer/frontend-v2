@@ -19,7 +19,7 @@
       </div>
     </td>
     <td class="p-2 py-6 text-right">
-      {{ _num(sharesValue, '$0,0') }}
+      {{ _num(sharesValue, '$0,0.00') }}
     </td>
     <td class="p-2 py-6 text-right">
       {{ _num(poolRegistry.liquidity, '$0,0') }}
@@ -48,10 +48,10 @@ export default {
     },
     sharesValue() {
       if (!this.pool.shares) return 0;
+      // const liquidity = this.poolRegistry.liquidity;
+      const liquidity = 10000; // Use hardcoded liquidity value until v2 subgraph map this data
       return (
-        this.poolRegistry.liquidity *
-        formatUnits(this.pool.totalSupply, 18) *
-        this.pool.shares
+        (liquidity / formatUnits(this.pool.totalSupply, 18)) * this.pool.shares
       );
     }
   },

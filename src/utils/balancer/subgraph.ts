@@ -170,7 +170,8 @@ export async function getPoolShares(network: string, address: string) {
       __args: {
         first: 1000,
         where: {
-          userAddress: address.toLowerCase()
+          userAddress: address.toLowerCase(),
+          balance_gt: 0
         }
       },
       poolId: {
@@ -181,4 +182,80 @@ export async function getPoolShares(network: string, address: string) {
   };
   const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
   return result?.poolShares;
+}
+
+export async function getPoolSharesChart(
+  network: string,
+  currentBlockNumber: number,
+  account: string,
+  days: number
+) {
+  const query = {};
+  const currentTs = getCurrentTs();
+  for (let i = 0; i < days; i++) {
+    const ts = currentTs - i * (60 * 60 * 24);
+    const date = new Date();
+    date.setTime(ts * 1e3);
+    const id = date
+      .toISOString()
+      .split('T')[0]
+      .replace('-', '')
+      .replace('-', '');
+    const blockNumber = tsToBlockNumber(currentBlockNumber - 10, ts);
+    query[`_${id}`] = {
+      __aliasFor: 'poolShares',
+      __args: {
+        block: {
+          number: blockNumber
+        },
+        first: 1000,
+        where: {
+          userAddress: account.toLowerCase(),
+          balance_gt: 0
+        }
+      },
+      balance: true,
+      poolTokenizerId: {
+        id: true,
+        totalShares: true
+      },
+      poolId: {
+        liquidity: true
+      }
+    };
+  }
+
+  const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
+  const formatedResults = Object.entries(result)
+    .map((data: any) => [
+      parseInt(data[0].slice(1)),
+      data[1]
+        .map(poolShare => {
+          // const poolLiquidity = parseFloat(poolShare.poolId.liquidity);
+          const poolLiquidity = 10000; // Use hardcoded liquidity value until v2 subgraph map this data
+          return (
+            (poolLiquidity /
+              parseFloat(poolShare.poolTokenizerId.totalShares)) *
+            parseFloat(poolShare.balance)
+          );
+        })
+        .reduce((a, b) => a + b, 0)
+    ])
+    .sort((a, b) => a[0] - b[0])
+    .map(data => {
+      const year = data[0].toString().slice(0, 4);
+      const month = data[0].toString().slice(4, 6);
+      const day = data[0].toString().slice(6, 8);
+      const value = data[1];
+      return [`${year}-${month}-${day}`, value];
+    });
+  return {
+    categories: formatedResults.map(row => row[0]),
+    series: [
+      {
+        name: 'Value ($)',
+        data: formatedResults.map(row => row[1])
+      }
+    ]
+  };
 }

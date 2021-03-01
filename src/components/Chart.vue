@@ -159,7 +159,7 @@ export default {
   }
 
   .apexcharts-xaxistooltip-text {
-    font-family: 'Calibre' !important;
+    font-family: 'Inter' !important;
     color: var(--text-color) !important;
     font-size: 17px !important;
   }
