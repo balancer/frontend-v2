@@ -1,0 +1,16 @@
+version: "3.7"
+  
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    command: npm run serve
+    volumes: 
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - 8080:8080
+    env_file:
+      - ./.env
