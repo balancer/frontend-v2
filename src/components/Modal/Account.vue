@@ -50,36 +50,10 @@
         </UiButton>
       </div>
     </div>
-    <div v-else>
-      <div v-if="$auth.isAuthenticated.value" class="m-4">
-        <a
-          :href="_explorer(web3.network.key, web3.account)"
-          target="_blank"
-          class="mb-2 block"
-        >
-          <UiButton class="button-outline w-full">
-            <Avatar :address="web3.account" size="16" class="mr-2 ml-n1" />
-            <span v-if="web3.name" v-text="web3.name" />
-            <span v-else v-text="_shorten(web3.account)" />
-            <Icon name="external-link" class="ml-1" />
-          </UiButton>
-        </a>
-        <UiButton @click="step = 'connect'" class="button-outline w-full mb-2">
-          {{ $t('connectWallet') }}
-        </UiButton>
-        <UiButton
-          @click="handleLogout"
-          class="button-outline w-full text-red mb-2"
-        >
-          {{ $t('logOut') }}
-        </UiButton>
-      </div>
-    </div>
   </UiModal>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
 import { getInjected } from '@snapshot-labs/lock/src/utils';
 import connectors from '@/constants/connectors.json';
 
@@ -113,13 +87,6 @@ export default {
       return (
         Object.keys(connectors).length - Object.keys(this.connectors).length
       );
-    }
-  },
-  methods: {
-    ...mapActions(['logout']),
-    async handleLogout() {
-      await this.logout();
-      this.$emit('close');
     }
   }
 };

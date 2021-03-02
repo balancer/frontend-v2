@@ -1,14 +1,14 @@
 <template>
   <div class="overflow-x-auto whitespace-nowrap text-base">
     <table class="min-w-full text-black">
-      <tr class="bg-gray-50">
+      <tr class="header">
         <th class="sticky top-0 p-2 pl-4 py-6 text-left">Pool name</th>
         <th class="sticky top-0 p-2 py-6 text-right">Pool value</th>
         <th class="sticky top-0 p-2 py-6 text-right">Volume (24h)</th>
         <th class="sticky top-0 p-2 pr-4 py-6 text-right">APY (1y)</th>
       </tr>
       <tr
-        class="cursor-pointer hover:bg-gray-50"
+        class="row cursor-pointer hover:bg-gray-50"
         v-for="pool in pools"
         :key="pool.address"
         @click="openPool(pool)"
@@ -67,3 +67,17 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+table {
+  color: var(--text-color);
+}
+
+.header {
+  background-color: var(--bg-color);
+}
+
+.row:hover {
+  background-color: var(--bg-color);
+}
+</style>
