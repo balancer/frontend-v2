@@ -1,6 +1,6 @@
 <template>
   <Sticky :key="`${web3.network.unknown}${notifications.watch.length}`">
-    <nav id="topnav" class="shadow border-b width-full block-bg">
+    <nav id="topnav" class="shadow border-b width-full block-bg bg-white">
       <div
         :key="web3.network.unknown"
         v-if="web3.network.unknown"
@@ -22,14 +22,14 @@
           <div class="flex-auto flex items-center">
             <router-link :to="{ name: 'home' }" class="flex items-center pr-2">
               <img
-                v-if="app.skin === 'light'"
-                src="~@/assets/logo-light.svg"
+                v-if="app.darkMode"
+                src="~@/assets/logo-dark.svg"
                 width="30"
                 class="mr-2"
               />
               <img
                 v-else
-                src="~@/assets/logo-dark.svg"
+                src="~@/assets/logo-light.svg"
                 width="30"
                 class="mr-2"
               />
@@ -41,7 +41,7 @@
             <a
               href="https://balancer.exchange"
               target="_blank"
-              class="ml-4 text-gray font-bold"
+              class="ml-4 text-gray-500 font-bold"
               >Trade</a
             >
             <router-link :to="{ name: 'home' }" class="ml-4 font-bold">

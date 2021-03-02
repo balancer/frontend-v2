@@ -2,12 +2,22 @@ import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/utils';
 import i18n, { defaultLocale } from '@/i18n';
 
-const state = {
+export interface AppState {
+  init: boolean;
+  loading: boolean;
+  authLoading: boolean;
+  modalOpen: boolean;
+  darkMode: boolean;
+  locale: string;
+  slippage: string;
+}
+
+const state : AppState = {
   init: false,
   loading: false,
   authLoading: false,
   modalOpen: false,
-  skin: lsGet('skin', 'light'),
+  darkMode: false,
   locale: lsGet('locale', defaultLocale),
   slippage: lsGet('slippage', '0.01')
 };
@@ -23,16 +33,15 @@ const actions = {
     });
     i18n.global.locale = state.locale;
   },
+
   loading: ({ commit }, payload) => {
     commit('SET', { loading: payload });
   },
+
   toggleModal: ({ commit }) => {
     commit('SET', { modalOpen: !state.modalOpen });
   },
-  setSkin: async ({ commit }, skin) => {
-    lsSet('skin', skin);
-    commit('SET', { skin });
-  },
+
   setLocale: async ({ commit }, locale) => {
     lsSet('locale', locale);
     i18n.global.locale = locale;
@@ -49,6 +58,17 @@ const mutations = {
     Object.keys(payload).forEach(key => {
       _state[key] = payload[key];
     });
+  },
+
+  setDarkMode (state: AppState, val: boolean) {
+    state.darkMode = val
+    lsSet('darkMode', state.darkMode)
+  },
+
+  toggleDarkMode (state: AppState) {
+    console.log('toggle')
+    state.darkMode = !state.darkMode
+    lsSet('darkMode', state.darkMode)
   }
 };
 
