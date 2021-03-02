@@ -20,8 +20,8 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.button {
+<style scoped lang="css">
+/* .button {
   border: 1px solid var(--border-color);
   background-color: transparent;
   color: var(--link-color);
@@ -63,5 +63,5 @@ export default {
     color: var(--border-color) !important;
     cursor: not-allowed;
   }
-}
+} */
 </style>

@@ -45,8 +45,8 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.modal {
+<style lang="css">
+/* .modal {
   position: fixed;
   display: flex;
   top: 0;
@@ -102,5 +102,5 @@ export default {
       overflow-x: hidden;
     }
   }
-}
+} */
 </style>

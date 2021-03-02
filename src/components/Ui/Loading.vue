@@ -24,8 +24,8 @@
   </span>
 </template>
 
-<style lang="scss">
-.loading {
+<style lang="css">
+/* .loading {
   span {
     width: 100%;
   }
@@ -66,5 +66,5 @@
     right: 0;
     width: 100%;
   }
-}
+} */
 </style>

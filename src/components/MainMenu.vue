@@ -21,10 +21,10 @@
   </Block>
 </template>
 
-<style lang="scss" scoped>
-.mainmenu {
-  a {
-    color: var(--text-color);
+<style lang="css" scoped>
+.mainmenu > a {
+  @apply text-gray-700;
+}
 
     &.router-link-exact-active {
       color: var(--link-color);

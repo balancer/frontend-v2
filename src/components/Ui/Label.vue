@@ -19,6 +19,6 @@
 
 .active {
   color: white;
-  @apply bg-primary-500 border-primary-500;
+  @apply bg-primary border-primary;
 }
 </style>
