@@ -58,7 +58,7 @@
                   ✨ {{ _num(totalPending) }} BAL
                 </UiButton>
               </router-link>
-              <UiButton class="button-outline" :loading="app.authLoading">
+              <UiButton @click="modalOpen = true" :loading="app.authLoading">
                 <Avatar
                   :address="web3.account"
                   :profile="web3.profile"

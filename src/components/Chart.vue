@@ -161,7 +161,8 @@ export default {
   font-size: 14px !important;
   color: var(--text-color) !important;
 }
-.apexcharts-xaxistooltip::before, .apexcharts-xaxistooltip::after {
+.apexcharts-xaxistooltip::before,
+.apexcharts-xaxistooltip::after {
   all: initial;
 }
 </style>

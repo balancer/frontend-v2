@@ -12,7 +12,7 @@ export interface AppState {
   slippage: string;
 }
 
-const state : AppState = {
+const state: AppState = {
   init: false,
   loading: false,
   authLoading: false,
@@ -60,15 +60,15 @@ const mutations = {
     });
   },
 
-  setDarkMode (state: AppState, val: boolean) {
-    state.darkMode = val
-    lsSet('darkMode', state.darkMode)
+  setDarkMode(state: AppState, val: boolean) {
+    state.darkMode = val;
+    lsSet('darkMode', state.darkMode);
   },
 
-  toggleDarkMode (state: AppState) {
-    console.log('toggle')
-    state.darkMode = !state.darkMode
-    lsSet('darkMode', state.darkMode)
+  toggleDarkMode(state: AppState) {
+    console.log('toggle');
+    state.darkMode = !state.darkMode;
+    lsSet('darkMode', state.darkMode);
   }
 };
 
