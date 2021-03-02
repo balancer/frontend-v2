@@ -1,5 +1,5 @@
 <template>
-  <span class="Label border v-align-middle">
+  <span class="Label border v-align-middle bg-primary-500 border-primary-500">
     <slot />
   </span>
 </template>
@@ -19,6 +19,5 @@
 
 .active {
   color: white;
-  @apply bg-primary border-primary;
 }
 </style>

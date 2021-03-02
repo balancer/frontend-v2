@@ -25,13 +25,10 @@
 .mainmenu > a {
   @apply text-gray-700;
 }
-
-    &.router-link-exact-active {
-      color: var(--link-color);
-      background-image: url('~@/assets/red-bullet.svg');
-      background-repeat: no-repeat;
-      background-position: top 18px right 0;
-    }
-  }
+.mainmenu > a.router-link-exact-active {
+  color: var(--link-color);
+  background-image: url('~@/assets/red-bullet.svg');
+  background-repeat: no-repeat;
+  background-position: top 18px right 0;
 }
 </style>
