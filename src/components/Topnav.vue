@@ -54,7 +54,7 @@
                 v-if="totalPending"
                 :to="{ name: 'claim', params: { address: web3.account } }"
               >
-                <UiButton class="button--submit mr-2 hidden md:inline-block">
+                <UiButton class="mr-2 hidden md:inline-block">
                   ✨ {{ _num(totalPending) }} BAL
                 </UiButton>
               </router-link>
@@ -63,6 +63,7 @@
                   :address="web3.account"
                   :profile="web3.profile"
                   size="20"
+                  class="leading-none"
                 />
                 <span
                   v-if="web3.profile.name || web3.profile.ens"
