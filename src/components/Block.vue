@@ -15,7 +15,7 @@
         <Icon :name="icon" size="22" />
       </a>
     </h4>
-    <div :class="!slim && 'px-8 py-10'">
+    <div :class="!slim && 'px-0 md:px-8 py-10'">
       <slot />
     </div>
   </div>

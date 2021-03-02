@@ -1,9 +1,9 @@
 <template>
   <Block>
-    <h2 v-text="$t('myWallet')" class="mb-4" />
+    <h2 v-text="$t('myWallet')" class="mb-4 mx-4 md:mx-0" />
     <div class="grid grid-cols-12 gap-5">
       <div class="col-span-12 md:col-span-6 text-base">
-        <div class="border">
+        <div class="border-t border-b md:border-l md:border-r">
           <div v-if="loading" class="text-center p-5">
             <UiLoading />
           </div>
