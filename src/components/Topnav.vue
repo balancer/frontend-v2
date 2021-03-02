@@ -1,6 +1,6 @@
 <template>
   <Sticky :key="`${web3.network.unknown}${notifications.watch.length}`">
-    <nav id="topnav" class="shadow border-b width-full block-bg bg-white">
+    <nav id="topnav" class="shadow width-full block-bg bg-white">
       <div
         :key="web3.network.unknown"
         v-if="web3.network.unknown"

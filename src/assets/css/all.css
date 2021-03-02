@@ -3,7 +3,7 @@
 
 html,
 body {
-  @apply font-body;
+  @apply font-body bg-gray-50 dark:bg-gray-900;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

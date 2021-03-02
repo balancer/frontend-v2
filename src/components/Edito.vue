@@ -1,5 +1,5 @@
 <template>
-  <div class="block-bg py-12 border-b">
+  <div class="block-bg py-12 border-b bg-white">
     <Container class="relative">
       <div class="grid grid-cols-12 gap-8 flex items-center">
         <div class="col-span-12 md:col-span-6">

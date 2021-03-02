@@ -13,12 +13,12 @@
         :class="{
           'border-red-500': parseFloat(sendAmounts[i]) > tokens[token].balance
         }"
-        class="flex mb-2 w-full px-3"
+        class="flex items-center mb-2 w-full px-3"
       >
         <input
           @input="onInput('send', i)"
           v-model="sendAmounts[i]"
-          class="input w-0 flex-auto"
+          class="input w-0 flex-auto bg-transparent"
           type="number"
           placeholder="0.0"
           required
@@ -33,12 +33,12 @@
       <UiButton
         v-for="(token, i) in receiveTokens"
         :key="token"
-        class="flex mb-2 w-full px-3"
+        class="flex items-center mb-2 w-full px-3"
       >
         <input
           @input="onInput('receive', i)"
           v-model="receiveAmounts[i]"
-          class="input w-0 flex-auto"
+          class="input w-0 flex-auto bg-transparent"
           type="number"
           placeholder="0.0"
           required

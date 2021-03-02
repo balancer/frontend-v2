@@ -1,7 +1,7 @@
 <template>
   <Block
     :slim="true"
-    class="mainmenu sliding px-2 md:px-4 pb-1 text-base md:text-lg"
+    class="mainmenu bg-white sliding px-2 md:px-4 pb-1 text-base md:text-lg"
   >
     <router-link
       :to="{ name: 'portfolio' }"
@@ -25,8 +25,8 @@
 .mainmenu > a {
   @apply text-gray-700;
 }
-.mainmenu > a.router-link-exact-active {
-  color: var(--link-color);
+.mainmenu a.router-link-exact-active {
+  @apply text-black font-medium;
   background-image: url('~@/assets/red-bullet.svg');
   background-repeat: no-repeat;
   background-position: top 18px right 0;
