@@ -13,6 +13,7 @@ const state = {
   account: null,
   profile: {},
   network: networks[defaultNetwork],
+  connector: 'injected',
   blockNumber: null
 };
 
@@ -60,6 +61,7 @@ const actions = {
       dispatch('getAllowances');
     }
     commit('SET', { authLoading: false });
+    commit('WEB3_SET', { connector });
   },
   logout: async ({ commit }) => {
     auth = getInstance();
