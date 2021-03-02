@@ -4,7 +4,7 @@
     <Container class="mt-2">
       <h3>Investment pools</h3>
       <div
-        class="width-full h-9 mt-2 flex items-center cursor-pointer rounded border border-gray-500 hover:border-black hover:bg-gray-100"
+        class="width-full h-9 mt-2 flex items-center cursor-pointer rounded border border-gray-500"
         @click="modal.selectToken = true"
       >
         <span class="ml-2 text-sm text-gray-500"
