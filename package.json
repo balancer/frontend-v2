@@ -48,6 +48,7 @@
     "numeral": "^2.0.4",
     "portal-vue": "^2.1.7",
     "postcss": "^7.0.35",
+    "postcss-nesting": "^7.0.1",
     "pretty-ms": "^7.0.0",
     "remarkable": "^2.0.1",
     "sanitize-html": "^1.27.1",
