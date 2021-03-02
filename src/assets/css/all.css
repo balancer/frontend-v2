@@ -1,0 +1,13 @@
+@import "./fonts.css";
+@import "./typography.css";
+
+html,
+body {
+  @apply font-body;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  outline: none !important;
+}
