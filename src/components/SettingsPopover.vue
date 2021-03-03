@@ -1,7 +1,7 @@
 <template>
   <div class="popover-wrapper hidden absolute right-6 top-14 z-10 mt-2">
     <div class="w-full h-2"></div>
-    <div class="popover bg-white shadow-lg pt-4 border rounded">
+    <div class="popover bg-white dark:bg-gray-900 shadow-lg pt-4 border dark:border-gray-700 rounded">
       <div class="px-4">
         <h5>Account</h5>
         <div class="flex mt-1 pb-4 border-b justify-between">

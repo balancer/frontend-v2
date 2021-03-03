@@ -3,11 +3,16 @@
 
 html,
 body {
-  @apply font-body bg-gray-50 dark:bg-gray-900;
+  @apply font-body;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   outline: none !important;
+}
+
+#app {
+  @apply min-h-screen bg-gray-50 dark:bg-gray-900;
+  @apply text-gray-900 dark:text-gray-50;
 }

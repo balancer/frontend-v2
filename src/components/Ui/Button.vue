@@ -22,7 +22,7 @@ export default {
 
 <style scoped lang="css">
 .button {
-  @apply bg-gray-100 rounded;
+  @apply bg-gray-100 dark:bg-gray-700 rounded;
   @apply font-medium;
   @apply px-4 h-12;
 }
