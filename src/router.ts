@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Pool from '@/views/Pool.vue';
 import PoolV1 from '@/views/PoolV1.vue';
-import Settings from '@/views/Settings.vue';
 import Vault from '@/views/Vault.vue';
 import Create from '@/views/Create.vue';
 import Claim from '@/views/Claim.vue';
@@ -12,7 +11,6 @@ const routes: any[] = [
   { path: '/', name: 'home', component: Home },
   { path: '/pool/:id', name: 'pool', component: Pool },
   { path: '/v1/pool/:id', name: 'pool-v1', component: PoolV1 },
-  { path: '/settings', name: 'settings', component: Settings },
   { path: '/vault', name: 'vault', component: Vault },
   { path: '/create', name: 'create', component: Create },
   { path: '/portfolio', name: 'portfolio', component: Portfolio },

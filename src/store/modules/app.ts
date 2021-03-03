@@ -8,7 +8,8 @@ const state = {
   authLoading: false,
   modalOpen: false,
   skin: lsGet('skin', 'light'),
-  locale: lsGet('locale', defaultLocale)
+  locale: lsGet('locale', defaultLocale),
+  slippage: lsGet('slippage', '0.01')
 };
 
 const actions = {
@@ -36,6 +37,10 @@ const actions = {
     lsSet('locale', locale);
     i18n.global.locale = locale;
     commit('SET', { locale });
+  },
+  setSlippage: async ({ commit }, slippage) => {
+    lsSet('slippage', slippage);
+    commit('SET', { slippage });
   }
 };
 

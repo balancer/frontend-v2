@@ -58,11 +58,7 @@
                   ✨ {{ _num(totalPending) }} BAL
                 </UiButton>
               </router-link>
-              <UiButton
-                @click="modalOpen = true"
-                class="button-outline"
-                :loading="app.authLoading"
-              >
+              <UiButton class="button-outline" :loading="app.authLoading">
                 <Avatar
                   :address="web3.account"
                   :profile="web3.profile"
@@ -79,6 +75,7 @@
                   class="pl-2 text-base hidden md:inline-block"
                 />
               </UiButton>
+              <SettingsPopover v-if="!app.authLoading" class="popover" />
             </template>
             <UiButton
               v-if="!$auth.isAuthenticated.value"
@@ -90,11 +87,6 @@
               />
               <Icon name="login" size="20" class="-ml-2 -mr-2 md:hidden" />
             </UiButton>
-            <router-link :to="{ name: 'settings' }" class="ml-2">
-              <UiButton>
-                <Icon name="gear" size="22" class="-ml-2 -mr-2" />
-              </UiButton>
-            </router-link>
           </div>
         </div>
       </div>
@@ -165,5 +157,9 @@ export default {
 <style scoped lang="scss">
 #topnav {
   box-shadow: 0 0 12px -6px var(--border-color);
+}
+
+.button-outline:hover ~ .popover {
+  display: initial;
 }
 </style>

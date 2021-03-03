@@ -90,7 +90,8 @@ h2 {
 }
 
 h3,
-h4 {
+h4,
+h5 {
   color: var(--heading-color);
   font-family: $font-primary;
 }
@@ -110,6 +111,10 @@ h3 {
 
 h4 {
   font-size: 18px;
+}
+
+h5 {
+  font-size: 16px;
 }
 
 b {
