@@ -1,6 +1,6 @@
 <template>
   <div :class="['bal-card', cardClasses]">
-    <div :class="['header', headerClasses]">
+    <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
       <component :is="titleTag" v-if="!!title" v-text="title" />
       <div v-if="$slots.header" class="flex-1">
         <slot name="header" />
