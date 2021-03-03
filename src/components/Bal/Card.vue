@@ -45,13 +45,13 @@ export default defineComponent({
 
     contentClasses(): Record<string, boolean> {
       return {
-        'p-4': !this.noPad
+        'p-4 pt-3': !this.noPad
       };
     },
 
     headerClasses(): Record<string, boolean> {
       return {
-        'p-4': !this.noPad
+        'p-4 pb-3': !this.noPad
       };
     },
 
