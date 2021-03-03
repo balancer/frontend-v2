@@ -24,9 +24,15 @@ export default defineComponent({
   props: {
     title: { type: String, default: '' },
     titleTag: { type: String, default: 'h3' },
-    shadowSize: { type: String, default: '' },
     square: { type: Boolean, default: false },
-    noPad: { type: Boolean, default: false }
+    noPad: { type: Boolean, default: false },
+    shadowSize: {
+      type: String,
+      default: '',
+      validator: (val: string): boolean => {
+        return ['', '-none', '-sm', '-md', '-lg', '-xl', '-2xl'].includes(val);
+      }
+    }
   },
 
   computed: {
