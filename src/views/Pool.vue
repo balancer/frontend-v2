@@ -169,7 +169,12 @@ export default {
             amountsIn: maxAmountsIn
           });
         } else {
-          const [poolAmountOut] = data.receiveAmounts;
+          const slippageTolerance = this.app.slippage;
+          const receiveAmount = parseFloat(data.receiveAmounts[0]);
+          const poolAmountOut = (
+            receiveAmount *
+            (1 - slippageTolerance)
+          ).toFixed(this.tokens[this.pool.address].decimals);
           const minimumBPT = parseUnits(
             poolAmountOut,
             this.tokens[this.pool.address].decimals
@@ -186,7 +191,12 @@ export default {
             amountsIn: maxAmountsIn
           });
         } else {
-          const [poolAmountOut] = data.receiveAmounts;
+          const slippageTolerance = this.app.slippage;
+          const receiveAmount = parseFloat(data.receiveAmounts[0]);
+          const poolAmountOut = (
+            receiveAmount *
+            (1 - slippageTolerance)
+          ).toFixed(this.tokens[this.pool.address].decimals);
           const minimumBPT = parseUnits(
             poolAmountOut,
             this.tokens[this.pool.address].decimals
@@ -223,12 +233,17 @@ export default {
       const poolId = this.id;
       const recipient = this.web3.account;
       const tokens = this.pool.tokens;
-      const minAmountsOut = this.pool.tokens.map((token, i) =>
-        parseUnits(
-          data.receiveAmounts[i],
+      const minAmountsOut = this.pool.tokens.map((token, i) => {
+        const slippageTolerance = this.app.slippage;
+        const receiveAmount = parseFloat(data.receiveAmounts[i]);
+        const poolAmountOut = (receiveAmount * (1 - slippageTolerance)).toFixed(
           this.tokens[token].decimals
-        ).toString()
-      );
+        );
+        return parseUnits(
+          poolAmountOut,
+          this.tokens[token].decimals
+        ).toString();
+      });
       const toInternalBalance = false;
 
       const [poolAmountIn] = data.sendAmounts;
