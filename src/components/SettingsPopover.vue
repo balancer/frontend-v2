@@ -135,8 +135,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['logout', 'setLocale', 'setSlippage']),
-    ...mapMutations(['setDarkMode']),
+    ...mapActions(['logout']),
+    ...mapMutations(['setDarkMode', 'setLocale', 'setSlippage']),
     copyAddress() {
       const address = this.web3.account;
       navigator.clipboard.writeText(address);
