@@ -59,7 +59,8 @@ module.exports = {
   },
   variants: {
     extend: {
-      zIndex: ['hover']
+      zIndex: ['hover'],
+      borderWidth: ['dark']
     }
   },
   plugins: []
