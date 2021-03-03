@@ -54,16 +54,15 @@
                 v-if="totalPending"
                 :to="{ name: 'claim', params: { address: web3.account } }"
               >
-                <UiButton class="mr-2 hidden md:inline-block">
+                <UiButton class="button--submit mr-2 hidden md:inline-block">
                   ✨ {{ _num(totalPending) }} BAL
                 </UiButton>
               </router-link>
-              <UiButton @click="modalOpen = true" :loading="app.authLoading">
+              <UiButton class="button-outline" :loading="app.authLoading">
                 <Avatar
                   :address="web3.account"
                   :profile="web3.profile"
                   size="20"
-                  class="leading-none"
                 />
                 <span
                   v-if="web3.profile.name || web3.profile.ens"
@@ -116,7 +115,6 @@
 import { mapActions } from 'vuex';
 import getProvider from '@/utils/provider';
 import { getPendingClaims } from '@/utils/balancer/claim';
-
 export default {
   data() {
     return {
@@ -154,3 +152,9 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="css">
+.button-outline:hover ~ .popover {
+  display: initial;
+}
+</style>
