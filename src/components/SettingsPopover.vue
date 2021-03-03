@@ -61,15 +61,15 @@
         <div class="flex mt-1">
           <div
             class="option w-16 mr-2 py-1.5 flex justify-center border rounded-xl cursor-pointer"
-            :class="{ active: app.skin === 'light' }"
-            @click="setSkin('light')"
+            :class="{ active: !app.darkMode }"
+            @click="setDarkMode(false)"
           >
             <IconSun class="w-5 h-5" />
           </div>
           <div
             class="option w-16 mr-2 py-1.5 flex justify-center border rounded-xl cursor-pointer"
-            :class="{ active: app.skin === 'dark' }"
-            @click="setSkin('dark')"
+            :class="{ active: app.darkMode }"
+            @click="setDarkMode(true)"
           >
             <IconMoon class="w-5 h-5" />
           </div>
@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 
 import { getConnectorName, getConnectorLogo } from '@/auth';
 
@@ -133,7 +133,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['logout', 'setSkin', 'setLocale', 'setSlippage']),
+    ...mapActions(['logout', 'setLocale', 'setSlippage']),
+    ...mapMutations(['setDarkMode']),
     copyAddress() {
       const address = this.web3.account;
       navigator.clipboard.writeText(address);
@@ -178,32 +179,22 @@ export default {
 }
 
 .address {
-  color: var(--link-color);
+  @apply text-blue-500;
 }
 
 .option:hover {
-  border-color: var(--link-color);
-  color: var(--link-color);
+  @apply text-blue-500 border-blue-500;
 }
 
 .option.active {
-  border-color: var(--link-color);
-  color: var(--link-color);
-  font-weight: bold;
+  @apply text-blue-500 border-blue-500 font-bold;
 }
 
 .slippage-input {
-  background-color: var(--block-bg);
+  @apply bg-white;
 }
 
 .slippage-input.active {
-  border-color: var(--link-color);
-  color: var(--link-color);
-  font-weight: bold;
-}
-
-.network {
-  background-color: var(--bg-color);
-  color: var(--link-color);
+  @apply text-blue-500 border-blue-500 font-bold;
 }
 </style>

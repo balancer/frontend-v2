@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapMutations } from 'vuex';
 
 export default {
   props: {
@@ -40,7 +40,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleModal'])
+    ...mapMutations(['toggleModal'])
   }
 };
 </script>
