@@ -3,7 +3,7 @@
     <template v-slot:header>
       <h3 v-text="$t('selectToken')" />
     </template>
-    <div class="border-b flex">
+    <div class="border-b dark:border-gray-700 flex">
       <Search
         v-model="q"
         @input="$emit('inputSearch', q)"

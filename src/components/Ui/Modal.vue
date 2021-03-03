@@ -1,14 +1,22 @@
 <template>
   <div v-if="open" @keydown.esc="$emit('close')" class="modal mx-auto">
     <div class="backdrop" @click="$emit('close')" />
-    <div class="shell overflow-hidden anim-scale-in relative">
-      <div v-if="$slots.header" class="border-b pt-5 pb-4 text-center">
+    <div
+      class="shell overflow-hidden anim-scale-in relative bg-white dark:bg-gray-900 border border-transparent dark:border-gray-700 shadow-xl rounded"
+    >
+      <div
+        v-if="$slots.header"
+        class="border-b dark:border-gray-700 pt-5 pb-4 text-center"
+      >
         <slot name="header" />
       </div>
       <div class="modal-body">
         <slot />
       </div>
-      <div v-if="$slots.footer" class="border-t p-5 text-center">
+      <div
+        v-if="$slots.footer"
+        class="border dark:border-gray-700 p-5 text-center"
+      >
         <slot name="footer" />
       </div>
       <a
@@ -68,7 +76,6 @@ export default {
   }
 
   & > .shell {
-    @apply bg-white shadow-xl rounded;
     padding-left: 0 !important;
     padding-right: 0 !important;
     max-width: 440px;
