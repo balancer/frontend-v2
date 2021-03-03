@@ -1,7 +1,7 @@
 import { mapState } from 'vuex';
 import numeral from 'numeral';
 import prettyMs from 'pretty-ms';
-import networks from '@/utils/networks.json';
+import configs from '@/config';
 import store from '@/store';
 import { shorten } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
@@ -49,7 +49,7 @@ export default {
         .replace('ipns://', `https://${process.env.VUE_APP_IPFS_NODE}/ipns/`);
     },
     _explorer(network, str: string, type = 'address'): string {
-      return `${networks[network].explorer}/${type}/${str}`;
+      return `${configs[network].explorer}/${type}/${str}`;
     }
   }
 };
