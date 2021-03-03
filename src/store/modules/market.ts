@@ -13,7 +13,7 @@ const actions = {
       );
     try {
       commit('MARKET_SET', { loading: true });
-      const chainId = rootState.web3.network.chainId;
+      const chainId = rootState.web3.config.chainId;
       const [prices, etherPrice] = await Promise.all([
         getTokensPrice(chainId, tokens),
         getEtherPrice()

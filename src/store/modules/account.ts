@@ -20,7 +20,7 @@ const getters = {
     );
   },
   getRequiredAllowances: (state, getters, rootState) => query => {
-    const config = rootState.web3.network.key;
+    const config = rootState.web3.config.key;
     const tokens = query.tokens;
     const dst = query.dst || configs[config].addresses.vault;
     const requiredAllowances = {};
@@ -51,7 +51,7 @@ const actions = {
     const account = rootState.web3.account;
     const tokens = rootGetters.getTokens();
     if (!account || Object.keys(tokens).length === 0) return;
-    const network = rootState.web3.network.key;
+    const network = rootState.web3.config.key;
     commit('ACCOUNT_SET', { loading: true });
     const [balances, etherBalance] = await Promise.all([
       getBalances(
@@ -66,13 +66,13 @@ const actions = {
     commit('ACCOUNT_SET', { balances, loading: false, loaded: true });
   },
   getAllowances: async ({ commit, rootGetters, rootState }, payload) => {
-    const config = rootState.web3.network.key;
+    const config = rootState.web3.config.key;
     const account: string = rootState.web3.account;
     const tokens: string[] =
       payload?.tokens || Object.keys(rootGetters.getTokens());
     if (!account || tokens.length === 0) return;
     const dst = payload?.dst || configs[config].addresses.vault;
-    const network = rootState.web3.network.key;
+    const network = rootState.web3.config.key;
     commit('ACCOUNT_SET', { loading: true });
     const dstAllowances = await getAllowances(
       network,

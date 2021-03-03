@@ -106,7 +106,7 @@ export default {
     };
   },
   watch: {
-    'web3.network.key': function() {
+    'web3.config.key': function() {
       this.load();
     },
     'web3.account': function() {
@@ -131,7 +131,7 @@ export default {
     async load() {
       const account = this.web3.account;
       if (account) {
-        const network = this.web3.network.key;
+        const network = this.web3.config.key;
         const provider = getProvider(network);
         const currentBlockNumber = this.web3.blockNumber;
         this.pools = await getPoolsWithShares(network, provider, account);

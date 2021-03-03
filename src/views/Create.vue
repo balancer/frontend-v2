@@ -204,7 +204,7 @@ export default {
       return Object.values(params);
     },
     strategies() {
-      return this.web3.network.strategies;
+      return this.web3.config.strategies;
     }
   },
   methods: {
@@ -247,7 +247,7 @@ export default {
           stablePool: createStablePool
         };
         const tx = await createStrategies[this.form.strategyType](
-          this.web3.network.key,
+          this.web3.config.key,
           this.$auth.web3,
           this.params
         );
@@ -271,7 +271,7 @@ export default {
       try {
         const tx = await approveTokens(
           this.$auth.web3,
-          this.web3.network.addresses.vault,
+          this.web3.config.addresses.vault,
           Object.keys(this.requiredAllowances)
         );
         console.log(tx);

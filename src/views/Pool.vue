@@ -131,8 +131,8 @@ export default {
     },
     async loadPool() {
       this.pool = await getPool(
-        this.web3.network.key,
-        getProvider(this.web3.network.key),
+        this.web3.config.key,
+        getProvider(this.web3.config.key),
         this.id
       );
     },
@@ -140,7 +140,7 @@ export default {
       try {
         const tx = await approveTokens(
           this.$auth.web3,
-          this.web3.network.addresses.vault,
+          this.web3.config.addresses.vault,
           Object.keys(data)
         );
         console.log(tx);
@@ -151,7 +151,7 @@ export default {
       }
     },
     async onJoinPool(data) {
-      const network = this.web3.network.key;
+      const network = this.web3.config.key;
       const poolId = this.id;
       const recipient = this.web3.account;
       const tokens = this.pool.tokens;
@@ -220,7 +220,7 @@ export default {
       }
     },
     async onExitPool(data) {
-      const network = this.web3.network.key;
+      const network = this.web3.config.key;
       const poolId = this.id;
       const recipient = this.web3.account;
       const tokens = this.pool.tokens;

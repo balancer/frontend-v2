@@ -38,7 +38,7 @@
                 />
               </div>
               <a
-                :href="_explorer(web3.network.key, web3.account)"
+                :href="_explorer(web3.config.key, web3.account)"
                 target="_blank"
               >
                 {{ $t('viewFullWallet') }}

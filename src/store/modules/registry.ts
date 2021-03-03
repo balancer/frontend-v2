@@ -57,7 +57,7 @@ const getters = {
     tokens = Object.values(tokens);
 
     tokens = tokens.filter(
-      token => token.chainId === rootState.web3.network.chainId
+      token => token.chainId === rootState.web3.config.chainId
     );
 
     tokens = tokens.map(token => {
@@ -122,7 +122,7 @@ const getters = {
         .map((tokenlist: any) => {
           tokenlist[1].tokens = tokenlist[1].tokens
             ? tokenlist[1].tokens.filter(
-                token => token.chainId === rootState.web3.network.chainId
+                token => token.chainId === rootState.web3.config.chainId
               )
             : [];
           tokenlist[1].active = state.activeLists[tokenlist[0]] ? 1 : 0;
@@ -171,7 +171,7 @@ const actions = {
   injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
     if (tokens.length === 0 || !isAddress(tokens[0])) return;
     const injected = clone(state.injected);
-    const network = rootState.web3.network.key;
+    const network = rootState.web3.config.key;
     const tokensMetadata = await getTokensMetadata(
       network,
       getProvider(network),
@@ -198,7 +198,7 @@ const actions = {
     }
   },
   loadPools: async ({ commit, rootState }) => {
-    const network = rootState.web3.network.key;
+    const network = rootState.web3.config.key;
     const pools = await getPoolsFromIPFS(network);
     commit('REGISTRY_SET', { pools });
   }

@@ -12,7 +12,7 @@ let auth;
 const state = {
   account: null,
   profile: {},
-  network: configs[defaultConfig],
+  config: configs[defaultConfig],
   connector: 'injected',
   blockNumber: null
 };
@@ -40,7 +40,7 @@ const mutations = {
         shortName: undefined
       };
     }
-    _state.network = configs[chainId];
+    _state.config = configs[chainId];
     console.debug('HANDLE_CHAIN_CHANGED', chainId);
   },
   HANDLE_ACCOUNTS_CHANGED(_state, payload) {
@@ -69,7 +69,7 @@ const actions = {
     commit('LOGOUT');
   },
   getBlockNumber: async () => {
-    const blockNumber = await getProvider(state.network.key).getBlockNumber();
+    const blockNumber = await getProvider(state.config.key).getBlockNumber();
     store.commit('WEB3_SET', { blockNumber });
   },
   loadProvider: async ({ commit, dispatch }) => {
