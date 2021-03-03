@@ -30,26 +30,26 @@ export default defineComponent({
   },
 
   computed: {
-    cardClasses(): Record<string, any> {
+    cardClasses(): Record<string, boolean> {
       return {
         rounded: !this.square,
         [`shadow${this.shadowSize}`]: true
       };
     },
 
-    contentClasses(): Record<string, any> {
+    contentClasses(): Record<string, boolean> {
       return {
         'p-4': !this.noPad
       };
     },
 
-    headerClasses(): Record<string, any> {
+    headerClasses(): Record<string, boolean> {
       return {
         'p-4': !this.noPad
       };
     },
 
-    footerClasses(): Record<string, any> {
+    footerClasses(): Record<string, boolean> {
       return {
         'p-4': !this.noPad,
         'rounded-b': !this.square
