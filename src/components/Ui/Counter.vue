@@ -10,8 +10,9 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .Counter {
+  @apply bg-gray-700;
   display: inline-block;
   font-weight: 500;
   line-height: 18px;
@@ -19,7 +20,6 @@ export default {
   min-width: 20px;
   color: white;
   text-align: center;
-  background-color: var(--text-color);
   border-radius: 10px;
   vertical-align: middle;
 }

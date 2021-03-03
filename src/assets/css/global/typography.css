@@ -1,0 +1,13 @@
+h1, h2 {
+  @apply font-display;
+}
+
+h3, h4, h5, h6 {
+  @apply font-body;
+}
+
+h1 { @apply text-5xl; }
+h2 { @apply text-3xl font-bold; }
+h3 { @apply text-2xl; }
+h4 { @apply text-xl; }
+h5 { @apply text-lg; }

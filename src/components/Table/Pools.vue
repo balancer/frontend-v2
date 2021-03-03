@@ -1,7 +1,7 @@
 <template>
   <div class="overflow-x-auto whitespace-nowrap text-base">
-    <table class="min-w-full text-black">
-      <tr class="header">
+    <table class="min-w-full text-black bg-white dark:bg-gray-900">
+      <tr class="bg-gray-50 dark:bg-gray-700">
         <th class="sticky top-0 p-2 pl-4 py-6 text-left">Pool name</th>
         <th class="sticky top-0 p-2 py-6 text-right">Pool value</th>
         <th class="sticky top-0 p-2 py-6 text-right">Volume (24h)</th>

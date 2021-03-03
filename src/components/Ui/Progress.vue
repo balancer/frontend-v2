@@ -23,8 +23,8 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.Progress {
+<style scoped lang="css">
+/* .Progress {
   background-color: var(--border-color);
   height: 8px;
   border-radius: 4px;
@@ -56,5 +56,5 @@ export default {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
   }
-}
+} */
 </style>

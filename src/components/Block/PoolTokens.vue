@@ -3,7 +3,7 @@
     <div
       v-for="(token, key, i) in tokens"
       :key="key"
-      class="px-5 py-4 flex border-b last-child-border-0"
+      class="px-5 py-4 flex border-b dark:border-gray-700 last-child-border-0"
     >
       <div class="flex-auto link-color">
         <Token :token="token" :symbol="true" />

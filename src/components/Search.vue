@@ -9,7 +9,7 @@
       type="text"
       autocorrect="off"
       autocapitalize="none"
-      class="border-0 input flex-auto w-full"
+      class="border-0 input flex-auto w-full bg-transparent"
     />
   </div>
 </template>

@@ -60,7 +60,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .active {
   border-bottom-width: 3px !important;
 }

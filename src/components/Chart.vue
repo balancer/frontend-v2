@@ -144,29 +144,25 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="css">
 .apexcharts-tooltip {
-  font-size: 18px;
-  padding: 6px 12px 2px;
+  font-size: 14px;
+  padding: 8px 12px;
 }
-
 .apexcharts-xaxistooltip {
   all: initial;
   padding-left: 12px;
-
-  * {
-    all: unset;
-  }
-
-  .apexcharts-xaxistooltip-text {
-    font-family: 'Inter' !important;
-    color: var(--text-color) !important;
-    font-size: 17px !important;
-  }
-
-  &:before,
-  &:after {
-    all: initial;
-  }
+}
+.apexcharts-xaxistooltip > * {
+  all: unset;
+}
+.apexcharts-xaxistooltip > .apexcharts-xaxistooltip-text {
+  font-family: 'Inter' !important;
+  font-size: 14px !important;
+  color: var(--text-color) !important;
+}
+.apexcharts-xaxistooltip::before,
+.apexcharts-xaxistooltip::after {
+  all: initial;
 }
 </style>

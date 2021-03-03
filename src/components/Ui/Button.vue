@@ -20,48 +20,10 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .button {
-  border: 1px solid var(--border-color);
-  background-color: transparent;
-  color: var(--link-color);
-  border-radius: var(--border-radius-2);
-  padding: 0 24px;
-  outline: none;
-  line-height: 46px;
-  height: 46px;
-  font-size: 16px;
-
-  &.button--submit {
-    color: white;
-    background-color: var(--primary-color);
-    border: 1px solid var(--primary-color);
-
-    &:hover {
-      color: white;
-      background-color: var(--primary-color);
-      border: 1px solid var(--primary-color);
-    }
-
-    &:disabled {
-      color: var(--link-color) !important;
-      border: 1px solid var(--border-color);
-      background-color: var(--border-color);
-    }
-  }
-
-  &.button--active {
-    border-color: var(--link-color) !important;
-  }
-
-  &:hover {
-    color: var(--link-color);
-    border-color: var(--link-color);
-  }
-
-  &:disabled {
-    color: var(--border-color) !important;
-    cursor: not-allowed;
-  }
+  @apply bg-gray-100 dark:bg-gray-700 rounded;
+  @apply font-medium;
+  @apply px-4 h-12;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <Sticky :key="`${web3.network.unknown}${notifications.watch.length}`">
-    <nav id="topnav" class="border-b width-full block-bg">
+    <nav id="topnav">
       <div
         :key="web3.network.unknown"
         v-if="web3.network.unknown"
@@ -22,14 +22,14 @@
           <div class="flex-auto flex items-center">
             <router-link :to="{ name: 'home' }" class="flex items-center pr-2">
               <img
-                v-if="app.skin === 'light'"
-                src="~@/assets/logo-light.svg"
+                v-if="app.darkMode"
+                src="~@/assets/logo-dark.svg"
                 width="30"
                 class="mr-2"
               />
               <img
                 v-else
-                src="~@/assets/logo-dark.svg"
+                src="~@/assets/logo-light.svg"
                 width="30"
                 class="mr-2"
               />
@@ -41,7 +41,7 @@
             <a
               href="https://balancer.exchange"
               target="_blank"
-              class="ml-4 text-gray font-bold"
+              class="ml-4 text-gray-500 font-bold"
               >Trade</a
             >
             <router-link :to="{ name: 'home' }" class="ml-4 font-bold">
@@ -115,7 +115,6 @@
 import { mapActions } from 'vuex';
 import getProvider from '@/utils/provider';
 import { getPendingClaims } from '@/utils/balancer/claim';
-
 export default {
   data() {
     return {
@@ -154,11 +153,12 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 #topnav {
-  box-shadow: 0 0 12px -6px var(--border-color);
+  @apply w-full shadow;
+  @apply bg-white dark:bg-gray-900;
+  @apply border-b border-transparent dark:border-gray-700;
 }
-
 .button-outline:hover ~ .popover {
   display: initial;
 }

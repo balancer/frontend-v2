@@ -3,7 +3,7 @@
     <Edito />
     <Container class="mt-6">
       <MainMenu />
-      <h1>Investment pools</h1>
+      <h3>Investment pools</h3>
       <div
         class="width-full h-9 mt-2 flex items-center cursor-pointer rounded border border-gray-500"
         @click="modal.selectToken = true"
@@ -187,9 +187,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.column-sm {
-  width: 120px;
-}
-</style>

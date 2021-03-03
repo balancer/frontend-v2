@@ -1,6 +1,6 @@
 <template>
   <span class="loading">
-    <span>
+    <span class="w-full">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="50"
@@ -24,47 +24,35 @@
   </span>
 </template>
 
-<style lang="scss">
-.loading {
-  span {
-    width: 100%;
-  }
+<style lang="css">
+.loading > .big svg {
+  width: 34px;
+  height: 34px;
+}
+.loading > .fill-white path {
+  fill: white;
+}
+.loading svg {
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
 
-  &.big {
-    svg {
-      width: 34px;
-      height: 34px;
-    }
-  }
+.loading svg path {
+  fill: theme('colors.gray.500');
+}
 
-  &.fill-white {
-    path {
-      fill: white;
-    }
-  }
-
-  svg {
-    display: inline-block;
-    vertical-align: middle;
-    width: 20px;
-    height: 20px;
-
-    path {
-      fill: var(--link-color);
-    }
-  }
-
-  &.overlay {
-    position: fixed;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    top: 0;
-    bottom: 80px;
-    left: 0;
-    right: 0;
-    width: 100%;
-  }
+.loading > .overlay {
+  position: fixed;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  top: 0;
+  bottom: 80px;
+  left: 0;
+  right: 0;
+  width: 100%;
 }
 </style>
