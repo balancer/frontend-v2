@@ -1,7 +1,7 @@
 <template>
   <Block
     :slim="true"
-    class="mainmenu sliding px-2 md:px-4 pb-1 text-base md:text-lg"
+    class="mainmenu bg-white sliding px-2 md:px-4 pb-1 text-base md:text-lg"
   >
     <router-link
       :to="{ name: 'portfolio' }"
@@ -21,17 +21,14 @@
   </Block>
 </template>
 
-<style lang="scss" scoped>
-.mainmenu {
-  a {
-    color: var(--text-color);
-
-    &.router-link-exact-active {
-      color: var(--link-color);
-      background-image: url('~@/assets/red-bullet.svg');
-      background-repeat: no-repeat;
-      background-position: top 18px right 0;
-    }
-  }
+<style lang="css" scoped>
+.mainmenu > a {
+  @apply text-gray-700;
+}
+.mainmenu a.router-link-exact-active {
+  @apply text-black dark:text-white font-medium;
+  background-image: url('~@/assets/red-bullet.svg');
+  background-repeat: no-repeat;
+  background-position: top 18px right 0;
 }
 </style>

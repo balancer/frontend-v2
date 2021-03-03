@@ -15,7 +15,7 @@
       v-model="q"
       @input="$emit('inputSearch', q)"
       :placeholder="$t('searchByName')"
-      class="p-4 border-b"
+      class="p-4 border-b dark:border-gray-700"
     />
     <div>
       <div v-if="Object.keys(tokenlists).length > 0">

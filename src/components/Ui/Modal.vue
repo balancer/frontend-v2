@@ -1,14 +1,22 @@
 <template>
   <div v-if="open" @keydown.esc="$emit('close')" class="modal mx-auto">
     <div class="backdrop" @click="$emit('close')" />
-    <div class="shell overflow-hidden anim-scale-in relative md:rounded-lg">
-      <div v-if="$slots.header" class="border-b pt-5 pb-4 text-center">
+    <div
+      class="shell overflow-hidden anim-scale-in relative bg-white dark:bg-gray-900 border border-transparent dark:border-gray-700 shadow-xl rounded"
+    >
+      <div
+        v-if="$slots.header"
+        class="border-b dark:border-gray-700 pt-5 pb-4 text-center"
+      >
         <slot name="header" />
       </div>
       <div class="modal-body">
         <slot />
       </div>
-      <div v-if="$slots.footer" class="border-t p-5 text-center">
+      <div
+        v-if="$slots.footer"
+        class="border dark:border-gray-700 p-5 text-center"
+      >
         <slot name="footer" />
       </div>
       <a
@@ -26,7 +34,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapMutations } from 'vuex';
 
 export default {
   props: {
@@ -40,12 +48,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleModal'])
+    ...mapMutations(['toggleModal'])
   }
 };
 </script>
 
-<style lang="scss">
+<style lang="css" scoped>
 .modal {
   position: fixed;
   display: flex;
@@ -57,7 +65,7 @@ export default {
   justify-content: center;
   z-index: 40;
 
-  .backdrop {
+  & > .backdrop {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -67,9 +75,7 @@ export default {
     background: rgba(0, 0, 0, 0.4);
   }
 
-  .shell {
-    border: 1px solid var(--border-color);
-    background-color: var(--block-bg);
+  & > .shell {
     padding-left: 0 !important;
     padding-right: 0 !important;
     max-width: 440px;
@@ -82,19 +88,20 @@ export default {
     width: 100%;
 
     @media (max-width: 767px) {
-      border: 0;
-      width: 100% !important;
-      max-width: 100% !important;
-      max-height: 100% !important;
-      min-height: 100% !important;
-      margin-bottom: 0 !important;
-
-      .modal-body {
+      & {
+        border: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        min-height: 100% !important;
+        margin-bottom: 0 !important;
+      }
+      & > .modal-body {
         max-height: 100% !important;
       }
     }
 
-    .modal-body {
+    & > .modal-body {
       height: 480px;
       flex: auto;
       text-align: initial;

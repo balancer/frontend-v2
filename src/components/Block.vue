@@ -1,8 +1,8 @@
 <template>
-  <div class="border-t border-b md:border-r md:border-l block-bg mb-2 shadow">
+  <div class="card">
     <h4
       v-if="title"
-      class="px-5 pb-2 pt-3 border-b block bg-gray-dark md:rounded-t-md"
+      class="px-5 pb-2 pt-3 border-b dark:border-gray-700 block bg-gray-dark md:rounded-t-md"
     >
       {{ title }}
       <UiCounter v-if="counter" :counter="counter" class="ml-1" />
@@ -26,3 +26,11 @@ export default {
   props: ['title', 'counter', 'slim', 'icon']
 };
 </script>
+
+<style>
+.card {
+  @apply block rounded shadow mb-5;
+  @apply bg-white dark:bg-gray-900;
+  @apply border border-transparent dark:border-gray-700;
+}
+</style>

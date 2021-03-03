@@ -1,0 +1,20 @@
+@font-face {
+  font-family: 'Inter-Variable';
+  src: url('../../fonts/Inter-Variable.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Utopia-Std-Display';
+  src: url('../../fonts/Utopia-Std-Display.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Utopia-Std-Display';
+  src: url('../../fonts/Utopia-Std-Semibold-Display.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}

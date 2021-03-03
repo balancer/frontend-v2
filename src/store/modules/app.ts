@@ -2,53 +2,79 @@ import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/utils';
 import i18n, { defaultLocale } from '@/i18n';
 
-const state = {
+export interface AppState {
+  init: boolean;
+  loading: boolean;
+  authLoading: boolean;
+  modalOpen: boolean;
+  darkMode: boolean;
+  locale: string;
+  slippage: string;
+}
+
+const state: AppState = {
   init: false,
   loading: false,
   authLoading: false,
   modalOpen: false,
-  skin: lsGet('skin', 'light'),
-  locale: lsGet('locale', defaultLocale),
-  slippage: lsGet('slippage', '0.01')
+  darkMode: false,
+  locale: defaultLocale,
+  slippage: '0.01'
 };
 
 const actions = {
   init: async ({ commit, dispatch }) => {
-    commit('SET', { init: true });
+    commit('setInit', true);
+
+    // Fetch init data
     dispatch('loadRegistry');
     dispatch('getBlockNumber');
+
+    // Setup web3
     const auth = getInstance();
     auth.getConnector().then(connector => {
       if (connector) dispatch('login', connector);
     });
-    i18n.global.locale = state.locale;
-  },
-  loading: ({ commit }, payload) => {
-    commit('SET', { loading: payload });
-  },
-  toggleModal: ({ commit }) => {
-    commit('SET', { modalOpen: !state.modalOpen });
-  },
-  setSkin: async ({ commit }, skin) => {
-    lsSet('skin', skin);
-    commit('SET', { skin });
-  },
-  setLocale: async ({ commit }, locale) => {
-    lsSet('locale', locale);
-    i18n.global.locale = locale;
-    commit('SET', { locale });
-  },
-  setSlippage: async ({ commit }, slippage) => {
-    lsSet('slippage', slippage);
-    commit('SET', { slippage });
+
+    // Set defaults from localStorage
+    commit('setLocale', lsGet('locale', defaultLocale));
+    commit('setSlippage', lsGet('slippage', '0.01'));
+    commit('setDarkMode', lsGet('darkMode', false));
   }
 };
 
 const mutations = {
-  SET(_state, payload) {
-    Object.keys(payload).forEach(key => {
-      _state[key] = payload[key];
-    });
+  setInit(state: AppState, val: boolean): void {
+    state.init = val;
+  },
+
+  setLoading(state: AppState, val: boolean): void {
+    state.loading = val;
+  },
+
+  toggleModal(state: AppState): void {
+    state.modalOpen = !state.modalOpen;
+  },
+
+  setLocale(state: AppState, locale: string): void {
+    state.locale = locale;
+    lsSet('locale', locale);
+    i18n.global.locale = locale;
+  },
+
+  setSlippage(state: AppState, slippage: string): void {
+    state.slippage = slippage;
+    lsSet('slippage', slippage);
+  },
+
+  setDarkMode(state: AppState, val: boolean): void {
+    state.darkMode = val;
+    lsSet('darkMode', state.darkMode);
+    if (state.darkMode) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
   }
 };
 
