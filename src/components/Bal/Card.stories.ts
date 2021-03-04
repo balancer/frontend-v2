@@ -38,6 +38,7 @@ const Template = (args: Props) => ({
 export const OnlyContent = Template.bind({});
 
 export const WithTitle = Template.bind({});
+// @ts-ignore
 WithTitle.args = { title: 'A title' };
 
 export const WithFooter = (args: Props) => ({
@@ -56,4 +57,5 @@ export const WithFooter = (args: Props) => ({
 });
 
 export const Complete = WithFooter.bind({});
+// @ts-ignore
 Complete.args = { title: 'A title' };
