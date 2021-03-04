@@ -1,7 +1,4 @@
-import '../assets/css/tailwind.css';
-import '../assets/css/index.css';
-
-import BalCard from '../components/Bal/Card.vue';
+import BalCard from './Card.vue';
 
 export default {
   component: BalCard,
