@@ -11,14 +11,14 @@ export default {
     titleTag: 'h3',
     square: false,
     noPad: false,
-    shadowSize: ''
+    shadow: ''
   },
   argTypes: {
     titleTag: { control: { type: 'select', options: ['h1', 'h2', 'h3'] } },
-    shadowSize: {
+    shadow: {
       control: {
         type: 'select',
-        options: ['', '-none', '-sm', '-md', '-lg', '-xl', '-2xl']
+        options: ['', 'none', 'sm', 'md', 'lg', 'xl', '2xl']
       }
     }
   }
@@ -29,7 +29,7 @@ interface Props {
   titleTag: string;
   square: boolean;
   noPad: boolean;
-  shadowSize: string;
+  shadow: string;
 }
 
 //👇 We create a “template” of how args map to rendering
@@ -50,4 +50,4 @@ const Template = (args: Props) => ({
 });
 
 //👇 Each story then reuses that template
-export const Primary = Template.bind({});
+export const Default = Template.bind({});

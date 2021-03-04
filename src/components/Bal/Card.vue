@@ -26,11 +26,11 @@ export default defineComponent({
     titleTag: { type: String, default: 'h3' },
     square: { type: Boolean, default: false },
     noPad: { type: Boolean, default: false },
-    shadowSize: {
+    shadow: {
       type: String,
       default: '',
       validator: (val: string): boolean => {
-        return ['', '-none', '-sm', '-md', '-lg', '-xl', '-2xl'].includes(val);
+        return ['', 'none', 'sm', 'md', 'lg', 'xl', '2xl'].includes(val);
       }
     }
   },
@@ -39,7 +39,7 @@ export default defineComponent({
     cardClasses(): Record<string, boolean> {
       return {
         rounded: !this.square,
-        [`shadow${this.shadowSize}`]: true
+        [`shadow${this.shadow ? '-' : ''}${this.shadow}`]: true
       };
     },
 
