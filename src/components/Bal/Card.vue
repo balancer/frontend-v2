@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   name: 'BalCard',
@@ -35,32 +35,39 @@ export default defineComponent({
     }
   },
 
-  computed: {
-    cardClasses(): Record<string, boolean> {
+  setup(props) {
+    const cardClasses = computed(() => {
       return {
-        rounded: !this.square,
-        [`shadow${this.shadow ? '-' : ''}${this.shadow}`]: true
+        rounded: !props.square,
+        [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true
       };
-    },
+    });
 
-    contentClasses(): Record<string, boolean> {
+    const headerClasses = computed(() => {
       return {
-        'p-4 pt-3': !this.noPad
+        'p-4 pb-3': !props.noPad
       };
-    },
+    });
 
-    headerClasses(): Record<string, boolean> {
+    const contentClasses = computed(() => {
       return {
-        'p-4 pb-3': !this.noPad
+        'p-4 pt-3': !props.noPad
       };
-    },
+    });
 
-    footerClasses(): Record<string, boolean> {
+    const footerClasses = computed(() => {
       return {
-        'p-4': !this.noPad,
-        'rounded-b': !this.square
+        'rounded-b': !props.square,
+        'p-4 pt-3': !props.noPad
       };
-    }
+    });
+
+    return {
+      cardClasses,
+      contentClasses,
+      headerClasses,
+      footerClasses
+    };
   }
 });
 </script>
