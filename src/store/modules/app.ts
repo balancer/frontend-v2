@@ -52,6 +52,10 @@ const mutations = {
     state.loading = val;
   },
 
+  setAuthLoading(state: AppState, val: boolean): void {
+    state.authLoading = val;
+  },
+
   toggleModal(state: AppState): void {
     state.modalOpen = !state.modalOpen;
   },

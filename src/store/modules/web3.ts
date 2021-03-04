@@ -52,7 +52,7 @@ const mutations = {
 const actions = {
   login: async ({ dispatch, commit }, connector = 'injected') => {
     auth = getInstance();
-    commit('SET', { authLoading: true });
+    commit('setAuthLoading', true);
     await auth.login(connector);
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
@@ -60,7 +60,7 @@ const actions = {
       dispatch('getBalances');
       dispatch('getAllowances');
     }
-    commit('SET', { authLoading: false });
+    commit('setAuthLoading', false);
     commit('WEB3_SET', { connector });
   },
   logout: async ({ commit }) => {
