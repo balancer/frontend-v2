@@ -4,10 +4,8 @@ export default {
   component: BalCard,
   title: 'Components/BalCard',
   args: {
-    title: 'A title',
+    title: '',
     titleTag: 'h3',
-    square: false,
-    noPad: false,
     shadow: ''
   },
   argTypes: {
@@ -21,19 +19,30 @@ export default {
   }
 };
 
-interface Props {
-  title: string;
-  titleTag: string;
-  square: boolean;
-  noPad: boolean;
-  shadow: string;
-}
+type Props = {
+  title?: string;
+  titleTag?: string;
+  square?: boolean;
+  noPad?: boolean;
+  shadow?: string;
+};
 
-//👇 We create a “template” of how args map to rendering
 const Template = (args: Props) => ({
   components: { BalCard },
   setup() {
-    //👇 The args will now be passed down to the template
+    return { args };
+  },
+  template: '<BalCard v-bind="args">content</BalCard>'
+});
+
+export const OnlyContent = Template.bind({});
+
+export const WithTitle = Template.bind({});
+WithTitle.args = { title: 'A title' };
+
+export const WithFooter = (args: Props) => ({
+  components: { BalCard },
+  setup() {
     return { args };
   },
   template: `
@@ -46,5 +55,5 @@ const Template = (args: Props) => ({
 `
 });
 
-//👇 Each story then reuses that template
-export const Default = Template.bind({});
+export const Complete = WithFooter.bind({});
+Complete.args = { title: 'A title' };
