@@ -99,7 +99,6 @@ import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
 import { getPool } from '@/utils/balancer/pools';
 import { approveTokens } from '@/utils/balancer/tokens';
-import constants from '@/utils/balancer/constants';
 import {
   encodeExitWeightedPool,
   encodeJoinWeightedPool
@@ -132,8 +131,8 @@ export default {
     },
     async loadPool() {
       this.pool = await getPool(
-        this.web3.network.key,
-        getProvider(this.web3.network.key),
+        this.web3.config.key,
+        getProvider(this.web3.config.key),
         this.id
       );
     },
@@ -141,7 +140,7 @@ export default {
       try {
         const tx = await approveTokens(
           this.$auth.web3,
-          constants.vault,
+          this.web3.config.addresses.vault,
           Object.keys(data)
         );
         console.log(tx);
@@ -152,6 +151,7 @@ export default {
       }
     },
     async onJoinPool(data) {
+      const network = this.web3.config.key;
       const poolId = this.id;
       const recipient = this.web3.account;
       const tokens = this.pool.tokens;
@@ -219,7 +219,7 @@ export default {
       console.log(params);
 
       try {
-        const tx = await joinPool(this.$auth.web3, params);
+        const tx = await joinPool(network, this.$auth.web3, params);
         await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
@@ -230,6 +230,7 @@ export default {
       }
     },
     async onExitPool(data) {
+      const network = this.web3.config.key;
       const poolId = this.id;
       const recipient = this.web3.account;
       const tokens = this.pool.tokens;
@@ -267,7 +268,7 @@ export default {
       console.log(params);
 
       try {
-        const tx = await exitPool(this.$auth.web3, params);
+        const tx = await exitPool(network, this.$auth.web3, params);
         await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);

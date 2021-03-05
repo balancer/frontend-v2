@@ -1,19 +1,19 @@
 <template>
-  <Sticky :key="`${web3.network.unknown}${notifications.watch.length}`">
+  <Sticky :key="`${web3.config.unknown}${notifications.watch.length}`">
     <nav id="topnav">
       <div
-        :key="web3.network.unknown"
-        v-if="web3.network.unknown"
+        :key="web3.config.unknown"
+        v-if="web3.config.unknown"
         class="p-2 flex bg-red-500 justify-center text-base"
         style="color: white;"
       >
         <Icon name="warning1" size="20" class="mr-1" />
         {{
           $t(
-            web3.network.shortName
+            web3.config.shortName
               ? 'unavailableOnNetworkWithName'
               : 'unavailableOnNetwork',
-            [web3.network.shortName]
+            [web3.config.shortName]
           )
         }}
       </div>
@@ -137,7 +137,7 @@ export default {
       await this.login(connector);
     },
     async getPendingClaims() {
-      const network = '1' || this.web3.network.key;
+      const network = '1' || this.web3.config.key;
       const provider = getProvider(network);
       const pendingClaims = await getPendingClaims(
         network,

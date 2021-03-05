@@ -1,18 +1,18 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
-import networks from '@/utils/networks.json';
+import configs from '@/config';
 import { getProfiles } from '@/utils/profile';
 import store from '@/store';
 import getProvider from '@/utils/provider';
 
-const defaultNetwork = process.env.VUE_APP_DEFAULT_NETWORK || '1';
+const defaultConfig = process.env.VUE_APP_DEFAULT_NETWORK || '1';
 let auth;
 
 const state = {
   account: null,
   profile: {},
-  network: networks[defaultNetwork],
+  config: configs[defaultConfig],
   connector: 'injected',
   blockNumber: null
 };
@@ -33,14 +33,14 @@ const mutations = {
     console.debug('LOAD_PROVIDER_FAILURE', payload);
   },
   HANDLE_CHAIN_CHANGED(_state, chainId) {
-    if (!networks[chainId]) {
-      networks[chainId] = {
-        ...networks[defaultNetwork],
+    if (!configs[chainId]) {
+      configs[chainId] = {
+        ...configs[defaultConfig],
         unknown: true,
         shortName: undefined
       };
     }
-    _state.network = networks[chainId];
+    _state.config = configs[chainId];
     console.debug('HANDLE_CHAIN_CHANGED', chainId);
   },
   HANDLE_ACCOUNTS_CHANGED(_state, payload) {
@@ -69,7 +69,7 @@ const actions = {
     commit('LOGOUT');
   },
   getBlockNumber: async () => {
-    const blockNumber = await getProvider(state.network.key).getBlockNumber();
+    const blockNumber = await getProvider(state.config.key).getBlockNumber();
     store.commit('WEB3_SET', { blockNumber });
   },
   loadProvider: async ({ commit, dispatch }) => {

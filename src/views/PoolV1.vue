@@ -97,7 +97,7 @@ export default {
     async loadMarketCharts(days) {
       this.marketChartsLoading = true;
       this.marketChartsDays = days;
-      const network = '1'; // this.web3.network.key;
+      const network = '1'; // this.web3.config.key;
       this.poolTokens = await getPoolTokens(network, this.id);
       const blockNumber = await getProvider(network).getBlockNumber(); // this.web3.blockNumber
       this.marketChartsRaw = await Promise.all([

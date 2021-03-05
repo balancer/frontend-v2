@@ -1,0 +1,35 @@
+{
+  "key": "42",
+  "chainId": 42,
+  "name": "Ethereum Testnet Kovan",
+  "shortName": "Kovan",
+  "network": "kovan",
+  "rpc": "https://eth-kovan.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
+  "ws": "wss://eth-kovan.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
+  "explorer": "https://kovan.etherscan.io",
+  "addresses": {
+    "multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a",
+    "authorizer": "0x22E33436335B983A7322bAe156f726e61C3012Dd",
+    "vault": "0x99EceD8Ba43D090CA4283539A31431108FD34438",
+    "weightedPoolFactory": "0xdB49af9b25cFAdbb0118BD38ec86EaE51F210931",
+    "stablePoolFactory": "0xd0264838A8278674fa71f135f7Dba07cDDeC20d9",
+    "oneToOneSwapValidator": "0x6648473ae4D7a7FdE330846D11ee95FDE2DE9447",
+    "tokenFactory": "0xfc532Ef450D9BaB17d5F153B091d271A3ADDcade",
+    "weth": "0xd98C8F956714a17a5708A3175B8a3E97d1C5eaCc",
+    "MockFlashLoanReceiver": "0xD1C8625C3ECCD11d214A8760093959A8237dD710"
+  },
+  "strategies": {
+    "0": {
+      "type": "0",
+      "name": "stablePool"
+    },
+    "1": {
+      "type": "1",
+      "name": "weightedPool"
+    },
+    "2": {
+      "type": "2",
+      "name": "weightedPool"
+    }
+  }
+}

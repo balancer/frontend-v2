@@ -26,6 +26,11 @@ const app = createApp(App)
   .use(LockPlugin, options)
   .use(VueApexCharts)
   .component('jazzicon', Jazzicon)
+  .directive('autofocus', {
+    mounted(el) {
+      el.focus();
+    }
+  })
   .mixin(mixins);
 
 const requireComponent = require.context('@/components', true, /[\w-]+\.vue$/);

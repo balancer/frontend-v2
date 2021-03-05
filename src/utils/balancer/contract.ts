@@ -2,16 +2,8 @@ import set from 'lodash.set';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { Interface } from '@ethersproject/abi';
-import dockerParity from '@/utils/balancer/configs/docker-parity.json';
-import { abi as multicallAbi } from './abi/Multicall.json';
-
-export const MULTICALL = {
-  '1': '0xeefba1e63905ef1d7acba5a8513c70307c1ce441',
-  '4': '0x42ad527de7d4e9d9d011ac45b31d8551f8fe9821',
-  '17': dockerParity.multicall,
-  '42': '0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a',
-  '1337': '0x566131e85d46cc7BBd0ce5C6587E9912Dc27cDAc'
-};
+import { abi as multicallAbi } from '@/abi/Multicall.json';
+import configs from '@/config';
 
 export async function call(provider, abi: any[], call: any[], options?) {
   const contract = new Contract(call[0], abi, provider);
@@ -30,7 +22,11 @@ export async function multicall(
   calls: any[],
   options?
 ) {
-  const multi = new Contract(MULTICALL[network], multicallAbi, provider);
+  const multi = new Contract(
+    configs[network].addresses.multicall,
+    multicallAbi,
+    provider
+  );
   const itf = new Interface(abi);
   try {
     const [, res] = await multi.aggregate(
