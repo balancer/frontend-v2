@@ -9,8 +9,9 @@
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
     "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "tailwind-viewer": "tailwind-config-viewer -o"
+    "storybook:build": "build-storybook",
+    "tailwind:view": "tailwind-config-viewer -o",
+    "tailwind:build": "tailwind-config-viewer export ./tailwind-static"
   },
   "dependencies": {
     "@ensdomains/content-hash": "^2.5.3",
