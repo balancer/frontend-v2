@@ -1,9 +1,11 @@
 import BalCard from './Card.vue';
+import { generateTemplate } from '../../../.storybook/helpers/templates';
 
 export default {
   component: BalCard,
   title: 'Components/Bal/Card',
   args: {
+    darkMode: false,
     title: '',
     titleTag: 'h3',
     shadow: ''
@@ -32,7 +34,10 @@ const Template = (args: Props) => ({
   setup() {
     return { args };
   },
-  template: '<BalCard v-bind="args">content</BalCard>'
+  template: generateTemplate(`
+<BalCard v-bind="args">
+  content
+</BalCard>`)
 });
 
 export const OnlyContent = Template.bind({});
@@ -46,14 +51,13 @@ export const WithFooter = (args: Props) => ({
   setup() {
     return { args };
   },
-  template: `
+  template: generateTemplate(`
 <BalCard v-bind="args">
   Content
   <template v-slot:footer>
     Action
   </template>
-</BalCard>
-`
+</BalCard>`)
 });
 
 export const Complete = WithFooter.bind({});
