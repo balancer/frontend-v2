@@ -10,6 +10,8 @@ export default {
 
 type Props = {
   show?: boolean;
+  title?: string;
+  noPad?: boolean;
 };
 
 const Template = (args: Props) => ({

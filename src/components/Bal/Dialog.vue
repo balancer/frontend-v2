@@ -11,7 +11,12 @@
         @after-leave="$emit('close')"
       >
         <div v-if="showContent" class="content" @click.stop>
-          <BalCard :title="title" shadow="2xl" class="dialog-card">
+          <BalCard
+            :title="title"
+            shadow="2xl"
+            :no-pad="noPad"
+            class="dialog-card"
+          >
             <template v-if="$slots.header" v-slot:header>
               <slot name="header" />
             </template>
@@ -40,7 +45,8 @@ export default defineComponent({
 
   props: {
     show: { type: Boolean, default: false },
-    title: { type: String, default: '' }
+    title: { type: String, default: '' },
+    noPad: { type: Boolean, default: false }
   },
 
   directives: {
