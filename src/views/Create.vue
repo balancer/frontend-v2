@@ -7,13 +7,18 @@
       </div>
       <Block :title="$t('poolType')">
         <UiButton
-          v-for="(strategy, i) in strategies"
-          :key="i"
-          @click="form.strategyType = strategy.type"
-          :class="form.strategyType === strategy.type && 'button--active'"
+          @click="form.strategyType = 'weightedPool'"
+          :class="form.strategyType === 'weightedPool' && 'button--active'"
           class="w-full mb-2"
         >
-          {{ $t(strategy.name) }}
+          {{ $t('weightedPool') }}
+        </UiButton>
+        <UiButton
+          @click="form.strategyType = 'stablePool'"
+          :class="form.strategyType === 'stablePool' && 'button--active'"
+          class="w-full mb-2"
+        >
+          {{ $t('stablePool') }}
         </UiButton>
       </Block>
       <Block v-if="form.strategyType" :title="$t('configuration')">
@@ -48,7 +53,7 @@
           %
         </UiButton>
         <UiButton
-          v-if="form.strategyType === '1'"
+          v-if="form.strategyType === 'stablePool'"
           class="flex w-full mb-2 px-3"
         >
           <span v-text="$t('amplification')" class="mr-2 text-gray" />
@@ -77,7 +82,7 @@
             :name="true"
             class="link-color"
           />
-          <div v-if="form.strategyType === '2'" class="mt-3">
+          <div v-if="form.strategyType === 'weightedPool'" class="mt-3">
             <UiButton class="flex w-full px-3 mb-2">
               <span v-text="$t('weight')" class="mr-2 text-gray" />
               <input
@@ -105,16 +110,6 @@
     <template v-slot:sidebar-right>
       <div v-if="form.strategyType">
         <Block :title="$t('actions')">
-          <!--
-          <UiButton
-            v-if="!hasAllowed && Object.keys(requiredAllowances).length > 0"
-            @click="onApprove"
-            :disabled="!$auth.isAuthenticated.value"
-            class="block w-full mb-2"
-          >
-            {{ $t('approve') }}
-          </UiButton>
-          -->
           <UiButton
             @click="onSubmit"
             :disabled="!$auth.isAuthenticated.value || loading"
@@ -157,7 +152,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { parseUnits } from '@ethersproject/units';
-import constants from '@/utils/balancer/constants';
 import { createWeightedPool, createStablePool } from '@/utils/balancer/factory';
 import { approveTokens } from '@/utils/balancer/tokens';
 
@@ -166,7 +160,6 @@ export default {
     return {
       q: '',
       loading: false,
-      strategies: [constants.strategies['2'], constants.strategies['1']],
       hasAllowed: false,
       form: {
         strategyType: null,
@@ -201,13 +194,17 @@ export default {
         symbol: this.form.symbol,
         tokens: this.form.tokens
       };
-      if (this.form.strategyType === '2')
+      if (this.form.strategyType === 'weightedPool')
         params.weights = this.form.weights.map(weight =>
           parseUnits(weight || '0', 18).toString()
         );
-      if (this.form.strategyType === '1') params.amp = this.form.amp;
+      if (this.form.strategyType === 'stablePool')
+        params.amp = parseUnits(this.form.amp || '0', 18).toString();
       params.swapFee = parseUnits(this.form.swapFee || '0', 16).toString();
       return Object.values(params);
+    },
+    strategies() {
+      return this.web3.config.strategies;
     }
   },
   methods: {
@@ -246,10 +243,11 @@ export default {
       this.loading = true;
       try {
         const createStrategies = {
-          '2': createWeightedPool,
-          '1': createStablePool
+          weightedPool: createWeightedPool,
+          stablePool: createStablePool
         };
         const tx = await createStrategies[this.form.strategyType](
+          this.web3.config.key,
           this.$auth.web3,
           this.params
         );
@@ -265,6 +263,7 @@ export default {
           this.$router.push({ name: 'pool', params: { id: poolId } });
         }
       } catch (e) {
+        console.log('Create pool failed', e);
         this.loading = false;
       }
     },
@@ -272,7 +271,7 @@ export default {
       try {
         const tx = await approveTokens(
           this.$auth.web3,
-          constants.vault,
+          this.web3.config.addresses.vault,
           Object.keys(this.requiredAllowances)
         );
         console.log(tx);

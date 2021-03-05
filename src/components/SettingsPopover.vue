@@ -26,7 +26,7 @@
                     @click="copyAddress"
                   />
                   <a
-                    :href="_explorer(web3.network.chainId, web3.account)"
+                    :href="_explorer(web3.config.chainId, web3.account)"
                     target="_blank"
                   >
                     <IconLink class="w-4 h-4 ml-1" />
@@ -101,7 +101,7 @@
         <div>Network</div>
         <div class="flex items-baseline">
           <div class="w-2 h-2 mr-1 bg-green-400 rounded-full"></div>
-          {{ web3.network.name }}
+          {{ web3.config.name }}
         </div>
       </div>
     </div>

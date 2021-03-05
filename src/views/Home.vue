@@ -87,7 +87,7 @@ export default {
     };
   },
   watch: {
-    'web3.network.key': function() {
+    'web3.config.key': function() {
       this.pools = [];
       this.loadPools();
     },
@@ -141,10 +141,10 @@ export default {
       this.form = { ...this.form, ...query };
 
       this.loading = true;
-      const network = this.web3.network.key;
+      const network = this.web3.config.key;
       const provider = getProvider(network);
 
-      const totalPools = await getNumberOfPools(provider);
+      const totalPools = await getNumberOfPools(network, provider);
       console.log('Total pools', totalPools);
 
       if (totalPools > 0) {

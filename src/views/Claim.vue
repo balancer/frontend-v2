@@ -65,7 +65,7 @@ export default {
   },
   async created() {
     this.loading = true;
-    const network = '1' || this.web3.network.key;
+    const network = '1' || this.web3.config.key;
     const provider = getProvider(network);
     const pendingClaims = await getPendingClaims(
       network,
@@ -83,7 +83,7 @@ export default {
     ...mapActions(['notify', 'watchTx']),
     async onSubmit() {
       try {
-        const network = this.web3.network.key;
+        const network = this.web3.config.key;
         const tx = await claimWeeks(
           network,
           this.$auth.web3,

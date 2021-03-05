@@ -1,42 +1,50 @@
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Multicaller } from '@/utils/balancer/contract';
 import { call, sendTransaction } from '@/utils/balancer/web3';
-import constants from './constants';
-import { abi } from './abi/Vault.json';
+import configs from '@/config';
+import { abi } from '@/abi/Vault.json';
 
 export async function getNumberOfPools(
+  network: string,
   provider: JsonRpcProvider
 ): Promise<number> {
-  return await call(provider, abi, [constants.vault, 'getNumberOfPools']);
+  const vaultAddress = configs[network].addresses.vault;
+  return await call(provider, abi, [vaultAddress, 'getNumberOfPools']);
 }
 
 export async function getVault(
   network: string,
   provider: JsonRpcProvider
 ): Promise<any> {
+  const vaultAddress = configs[network].addresses.vault;
   // @ts-ignore
   const multi = new Multicaller(network, provider, abi);
-  multi.call('numberOfPools', constants.vault, 'getNumberOfPools', []);
+  multi.call('numberOfPools', vaultAddress, 'getNumberOfPools', []);
   multi.call(
     'protocolFlashLoanFee',
-    constants.vault,
+    vaultAddress,
     'getProtocolFlashLoanFee',
     []
   );
-  multi.call('protocolSwapFee', constants.vault, 'getProtocolSwapFee', []);
-  multi.call(
-    'protocolWithdrawFee',
-    constants.vault,
-    'getProtocolWithdrawFee',
-    []
-  );
+  multi.call('protocolSwapFee', vaultAddress, 'getProtocolSwapFee', []);
+  multi.call('protocolWithdrawFee', vaultAddress, 'getProtocolWithdrawFee', []);
   return await multi.execute();
 }
 
-export async function joinPool(web3: Web3Provider, params: any[]) {
-  return await sendTransaction(web3, constants.vault, abi, 'joinPool', params);
+export async function joinPool(
+  network: string,
+  web3: Web3Provider,
+  params: any[]
+) {
+  const vaultAddress = configs[network].addresses.vault;
+  return await sendTransaction(web3, vaultAddress, abi, 'joinPool', params);
 }
 
-export async function exitPool(web3: Web3Provider, params: any[]) {
-  return await sendTransaction(web3, constants.vault, abi, 'exitPool', params);
+export async function exitPool(
+  network: string,
+  web3: Web3Provider,
+  params: any[]
+) {
+  const vaultAddress = configs[network].addresses.vault;
+  return await sendTransaction(web3, vaultAddress, abi, 'exitPool', params);
 }

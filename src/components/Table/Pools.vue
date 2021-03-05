@@ -26,7 +26,9 @@
           </div>
           <div>
             <span class="ml-2" v-for="(token, i) in pool.tokens" :key="token">
-              {{ _num(pool.strategy.weightsPercent[i]) }}
+              <span v-if="pool.strategy.weightsPercent">
+                {{ _num(pool.strategy.weightsPercent[i]) }}
+              </span>
               {{ tokens[token].symbol }}
             </span>
           </div>

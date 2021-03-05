@@ -47,8 +47,8 @@ export default {
   async created() {
     this.loading = true;
     this.vault = await getVault(
-      this.web3.network.key,
-      getProvider(this.web3.network.key)
+      this.web3.config.key,
+      getProvider(this.web3.config.key)
     );
     this.loading = false;
     this.loaded = true;
