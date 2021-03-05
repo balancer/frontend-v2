@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" v-hotkey="keymap" class="bal-dialog" @click="hide">
+  <div v-if="show" @keyup.esc="hide" class="bal-dialog" @click="hide">
     <transition name="dialog-bg" mode="out-in" appear>
       <div v-if="showContent" class="dialog-bg" @click="hide" />
     </transition>
@@ -34,7 +34,6 @@
 <script lang="ts">
 import BalCard from './Card.vue';
 import { defineComponent, ref, toRefs, watch, computed } from 'vue';
-import VueHotkey from 'v-hotkey';
 
 export default defineComponent({
   name: 'BalDialog',
@@ -47,14 +46,6 @@ export default defineComponent({
     show: { type: Boolean, default: false },
     title: { type: String, default: '' },
     noPad: { type: Boolean, default: false }
-  },
-
-  directives: {
-    hotkey: {
-      beforeMount: VueHotkey.directive.bind,
-      updated: VueHotkey.directive.componentUpdated,
-      unmounted: VueHotkey.directive.unbind
-    }
   },
 
   setup(props) {
