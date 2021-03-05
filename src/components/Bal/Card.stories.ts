@@ -2,7 +2,7 @@ import BalCard from './Card.vue';
 
 export default {
   component: BalCard,
-  title: 'Components/BalCard',
+  title: 'Components/Bal/Card',
   args: {
     title: '',
     titleTag: 'h3',
