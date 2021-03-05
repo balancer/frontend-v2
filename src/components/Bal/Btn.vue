@@ -43,7 +43,6 @@ export default defineComponent({
       default: 'primary',
       validator: (val: string): boolean => ['primary'].includes(val)
     },
-    rounded: { type: Boolean, default: false },
     block: { type: Boolean, default: false },
     circle: { type: Boolean, default: false },
     flat: { type: Boolean, default: false },
