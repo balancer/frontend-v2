@@ -104,7 +104,6 @@ export default defineComponent({
 
     const textColorClasses = (): string => {
       if (props.outline) return `text-${props.color}-100`;
-      if (props.color === 'white') return 'text-primary-500';
       return 'text-white';
     };
 
@@ -145,6 +144,7 @@ export default defineComponent({
     });
 
     const iconColor = computed(() => {
+      if (props.outline) return props.color;
       return 'white';
     });
 
