@@ -45,7 +45,7 @@ export default defineComponent({
     },
     block: { type: Boolean, default: false },
     circle: { type: Boolean, default: false },
-    flat: { type: Boolean, default: false },
+    outline: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     loadingLabel: { type: String, default: 'loading...' },
     disabled: { type: Boolean, default: false }
@@ -75,6 +75,8 @@ export default defineComponent({
     };
 
     const bgColorClasses = (): string => {
+      if (props.outline) return 'bg-transparent';
+
       if (props.disabled || props.loading) {
         return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
       }
@@ -95,7 +97,13 @@ export default defineComponent({
       `;
     };
 
+    const borderClasses = (): string => {
+      if (props.outline) return `border border-${props.color}-100`;
+      return 'border-none';
+    };
+
     const textColorClasses = (): string => {
+      if (props.outline) return `text-${props.color}-100`;
       if (props.color === 'white') return 'text-primary-500';
       return 'text-white';
     };
@@ -117,7 +125,7 @@ export default defineComponent({
     };
 
     const shadowClasses = (): string => {
-      if (props.flat || props.disabled || props.loading) return '';
+      if (props.outline || props.disabled || props.loading) return '';
       return 'shadow-lg hover:shadow-none';
     };
 
@@ -128,6 +136,7 @@ export default defineComponent({
         [bgColorClasses()]: props.color !== 'gradient',
         [bgGradientClasses()]: props.color === 'gradient',
         [textColorClasses()]: true,
+        [borderClasses()]: true,
         [displayClasses()]: true,
         [shapeClasses()]: true,
         [shadowClasses()]: true,
