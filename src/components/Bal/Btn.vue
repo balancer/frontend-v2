@@ -161,12 +161,13 @@ export default defineComponent({
 <style scoped>
 .bal-btn {
   @apply font-medium overflow-hidden;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
   text-decoration: none !important;
   line-height: 0;
 }
 
-.bal-btn:focus, .bal-btn:active {
+.bal-btn:focus,
+.bal-btn:active {
   outline: none !important;
 }
 

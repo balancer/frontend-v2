@@ -97,27 +97,29 @@ export default defineComponent({
 }
 
 .content-enter-active {
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .content-leave-active {
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
-.content-enter-from, .content-leave-to {
+.content-enter-from,
+.content-leave-to {
   opacity: 0;
   transform: translateY(70%) scale(0.95);
 }
 
 .dialog-bg-enter-active {
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .dialog-bg-leave-active {
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
-.dialog-bg-enter-from, .dialog-bg-leave-to {
+.dialog-bg-enter-from,
+.dialog-bg-leave-to {
   background: transparent;
 }
 </style>

@@ -147,7 +147,7 @@ export default defineComponent({
 <style scoped>
 input {
   @apply w-full bg-transparent leading-none;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
