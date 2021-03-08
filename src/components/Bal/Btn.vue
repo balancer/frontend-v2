@@ -88,6 +88,8 @@ export default defineComponent({
     };
 
     const bgGradientClasses = (): string => {
+      if (props.outline) return 'bg-transparent';
+
       if (props.disabled || props.loading) {
         return 'bg-gradient-to-tr from-gradient-blue-200 to-gradient-pink-200';
       }
