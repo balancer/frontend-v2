@@ -34,7 +34,7 @@ export default {
       type: { name: 'string', default: 'primary' },
       control: {
         type: 'select',
-        options: ['primary']
+        options: ['primary', 'gradient']
       }
     }
   }

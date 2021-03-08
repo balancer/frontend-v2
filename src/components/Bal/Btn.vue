@@ -41,7 +41,7 @@ export default defineComponent({
     color: {
       type: String,
       default: 'primary',
-      validator: (val: string): boolean => ['primary'].includes(val)
+      validator: (val: string): boolean => ['primary', 'gradient'].includes(val)
     },
     block: { type: Boolean, default: false },
     circle: { type: Boolean, default: false },
@@ -74,18 +74,24 @@ export default defineComponent({
       }
     };
 
-    const colorClasses = (): string => {
+    const bgColorClasses = (): string => {
       if (props.disabled || props.loading) {
-        return `
-          bg-${props.color}-400 dark:bg-${props.color}-dark-400
-          border-${props.color}-400 dark:border-${props.color}-dark-400
-        `;
+        return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
       }
+
       return `
         bg-${props.color}-500 hover:bg-${props.color}-600
         dark:bg-${props.color}-dark-500 dark:hover:bg-${props.color}-dark-600
-        border-${props.color}-500 hover:border-${props.color}-600
-        dark:border-${props.color}-dark-500 dark:hover:border-${props.color}-dark-600
+      `;
+    };
+
+    const bgGradientClasses = (): string => {
+      if (props.disabled || props.loading) {
+        return 'bg-gradient-to-tr from-gradient-blue-200 to-gradient-pink-200';
+      }
+      return `
+        bg-gradient-to-tr from-gradient-blue-500 to-gradient-pink-500
+        hover:from-gradient-blue-600 hover:to-gradient-pink-600
       `;
     };
 
@@ -119,7 +125,8 @@ export default defineComponent({
       return {
         [sizeClasses()]: !props.circle,
         [circleSizeClasses()]: props.circle,
-        [colorClasses()]: true,
+        [bgColorClasses()]: props.color !== 'gradient',
+        [bgGradientClasses()]: props.color === 'gradient',
         [textColorClasses()]: true,
         [displayClasses()]: true,
         [shapeClasses()]: true,
@@ -142,7 +149,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-btn {
-  @apply font-medium border-2 overflow-hidden;
+  @apply font-medium overflow-hidden;
   transition: all .2s ease;
   text-decoration: none !important;
   line-height: 0;
