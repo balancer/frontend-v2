@@ -11,10 +11,12 @@
           {{ loadingLabel }}
         </span>
       </div>
-      <span v-if="label">
-        {{ label }}
-      </span>
-      <slot v-else />
+      <div v-else>
+        <span v-if="label">
+          {{ label }}
+        </span>
+        <slot v-else />
+      </div>
     </div>
   </component>
 </template>
