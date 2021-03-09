@@ -46,7 +46,6 @@ export default defineComponent({
   props: {
     name: { type: String, required: true },
     label: { type: String, default: '' },
-    value: { type: [String, Number], default: '' },
     type: {
       type: String,
       default: 'text',
@@ -86,11 +85,13 @@ export default defineComponent({
 
     function handleBlur(event): void {
       emit('blur');
+      emit('update:modelValue', event.target.value);
       if (validateOn.value === 'blur') validate(event.target.value);
     }
 
     function handleInput(event): void {
       emit('input', event.target.value);
+      emit('update:modelValue', event.target.value);
       if (validateOn.value === 'input') validate(event.target.value);
     }
 
