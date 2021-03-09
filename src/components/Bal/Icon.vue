@@ -1,5 +1,7 @@
 <template>
-  <i :data-feather="name" :width="_size" :height="_size" />
+  <span>
+    <i :data-feather="name" :width="_size" :height="_size" />
+  </span>
 </template>
 
 <script lang="ts">
@@ -14,13 +16,17 @@ export default defineComponent({
     size: {
       type: String,
       default: 'md',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
+      validator: (val: string): boolean => {
+        return ['xs', 'sm', 'md', 'lg'].includes(val);
+      }
     }
   },
 
   setup(props) {
     const _size = computed(() => {
       switch (props.size) {
+        case 'xs':
+          return '12';
         case 'sm':
           return '16';
         case 'lg':

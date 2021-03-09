@@ -17,7 +17,7 @@ export default {
       type: { name: 'string', default: 'md' },
       control: {
         type: 'select',
-        options: ['sm', 'md', 'lg']
+        options: ['xs', 'sm', 'md', 'lg']
       }
     }
   }
