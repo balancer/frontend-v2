@@ -11,7 +11,6 @@
       </div>
       <div class="flex-1">
         <input
-          :ref="name"
           :class="[inputClasses]"
           :type="type"
           :name="name"
