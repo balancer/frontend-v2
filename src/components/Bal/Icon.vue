@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import feather from 'feather-icons';
-import { computed, defineComponent, onMounted, toRefs } from 'vue';
+import { computed, defineComponent, onMounted } from 'vue';
 
 export default defineComponent({
   name: 'BalIcon',
@@ -19,10 +19,8 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { size } = toRefs(props);
-
     const _size = computed(() => {
-      switch (size.value) {
+      switch (props.size) {
         case 'sm':
           return '16';
         case 'lg':
