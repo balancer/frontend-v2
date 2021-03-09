@@ -42,10 +42,10 @@
               href="https://balancer.exchange"
               target="_blank"
               class="ml-4 text-gray-500 font-bold"
-              >Trade</a
+              >{{ $t('trade') }}</a
             >
             <router-link :to="{ name: 'home' }" class="ml-4 font-bold">
-              Invest
+              {{ $t('invest') }}
             </router-link>
           </div>
           <div :key="web3.account">

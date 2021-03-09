@@ -116,7 +116,9 @@ import { getConnectorName, getConnectorLogo } from '@/auth';
 const locales = {
   'en-US': 'EN',
   'zh-CN': '中文',
-  'fr-FR': 'FR'
+  'fr-FR': 'FR',
+  'pt-PT': 'PT',
+  'ru-RU': 'Россия'
 };
 const slippageOptions = ['0.005', '0.01', '0.02'];
 
