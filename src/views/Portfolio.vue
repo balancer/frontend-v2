@@ -27,15 +27,21 @@
                 class="col-span-2 md:col-span-1 md:border-r grid grid-cols-3 md:grid-cols-none border-b md:border-b-0"
               >
                 <div class="p-5 border-r md:border-r-0">
-                  <div class="text-base">APY (1w)</div>
+                  <div
+                    v-text="$t('apy', [$t('weekAbbrev')])"
+                    class="text-base"
+                  />
                   <div v-text="`${_num(12.34)}%`" class="font-bold text-xl" />
                 </div>
                 <div class="p-5 border-r md:border-r-0">
-                  <div class="text-base">Profit (1w)</div>
+                  <div
+                    v-text="$t('profit', [$t('weekAbbrev')])"
+                    class="text-base"
+                  />
                   <div v-text="`${_num(5.6)}%`" class="font-bold text-xl" />
                 </div>
                 <div class="p-5">
-                  <div class="text-base">Baller score</div>
+                  <div class="text-base">Baller {{ $t('score') }}</div>
                   <div v-text="_num(789)" class="font-bold text-xl" />
                 </div>
               </div>
@@ -43,15 +49,24 @@
                 class="col-span-2 md:col-span-1 grid grid-cols-3 md:grid-cols-none"
               >
                 <div class="p-5 border-r md:border-r-0">
-                  <div class="text-base">APY (1y)</div>
+                  <div
+                    v-text="$t('apy', [$t('yearAbbrev')])"
+                    class="text-base"
+                  />
                   <div v-text="`${_num(12.34)}%`" class="font-bold text-xl" />
                 </div>
                 <div class="p-5 border-r md:border-r-0">
-                  <div class="text-base">Profit (1y)</div>
+                  <div
+                    v-text="$t('profit', [$t('yearAbbrev')])"
+                    class="text-base"
+                  />
                   <div v-text="`${_num(5.6)}%`" class="font-bold text-xl" />
                 </div>
                 <div class="p-5">
-                  <div class="text-base">Rank (1w)</div>
+                  <div
+                    v-text="$t('rank', [$t('weekAbbrev')])"
+                    class="text-base"
+                  />
                   <div v-text="_num(98)" class="font-bold text-xl" />
                 </div>
               </div>

@@ -3,14 +3,12 @@
     <Edito />
     <Container class="mt-6">
       <MainMenu />
-      <h3>Investment pools</h3>
+      <h3 v-text="$t('investmentPools')" />
       <div
         class="width-full h-9 mt-2 flex items-center cursor-pointer rounded border border-gray-500"
         @click="modal.selectToken = true"
       >
-        <span class="ml-2 text-sm text-gray-500"
-          >Name, symbol or contract address</span
-        >
+        <span v-text="namePlaceholder" class="ml-2 text-sm text-gray-500" />
       </div>
       <div class="flex mt-3">
         <div class="flex mr-2" v-if="!registry.loading">
