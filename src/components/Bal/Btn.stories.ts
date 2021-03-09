@@ -13,6 +13,7 @@ export default {
     tag: 'button',
     size: 'md',
     color: 'primary',
+    label: '',
     loadingLabel: 'Loading...'
   },
   argTypes: {
@@ -41,15 +42,16 @@ export default {
 };
 
 type Props = {
-  tag: string;
-  size: string;
-  color: string;
-  block: boolean;
-  circle: boolean;
-  outline: boolean;
-  loading: boolean;
-  loadingLabel: string;
-  disabled: boolean;
+  tag?: string;
+  size?: string;
+  color?: string;
+  label?: string;
+  block?: boolean;
+  circle?: boolean;
+  outline?: boolean;
+  loading?: boolean;
+  loadingLabel?: string;
+  disabled?: boolean;
 };
 
 const Template = (args: Props) => ({

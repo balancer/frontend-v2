@@ -11,6 +11,9 @@
           {{ loadingLabel }}
         </span>
       </div>
+      <span v-if="label">
+        {{ label }}
+      </span>
       <slot v-else />
     </div>
   </component>
@@ -43,6 +46,7 @@ export default defineComponent({
       default: 'primary',
       validator: (val: string): boolean => ['primary', 'gradient'].includes(val)
     },
+    label: { type: String, default: '' },
     block: { type: Boolean, default: false },
     circle: { type: Boolean, default: false },
     outline: { type: Boolean, default: false },
@@ -74,19 +78,6 @@ export default defineComponent({
       }
     };
 
-    const bgColorClasses = (): string => {
-      if (props.outline) return 'bg-transparent';
-
-      if (props.disabled || props.loading) {
-        return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
-      }
-
-      return `
-        bg-${props.color}-500 hover:bg-${props.color}-600
-        dark:bg-${props.color}-dark-500 dark:hover:bg-${props.color}-dark-600
-      `;
-    };
-
     const bgGradientClasses = (): string => {
       if (props.outline) return 'bg-transparent';
 
@@ -96,6 +87,20 @@ export default defineComponent({
       return `
         bg-gradient-to-tr from-gradient-blue-500 to-gradient-pink-500
         hover:from-gradient-blue-600 hover:to-gradient-pink-600
+      `;
+    };
+
+    const bgColorClasses = (): string => {
+      if (props.color === 'gradient') return bgGradientClasses();
+      if (props.outline) return 'bg-transparent';
+
+      if (props.disabled || props.loading) {
+        return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
+      }
+
+      return `
+        bg-${props.color}-500 hover:bg-${props.color}-600
+        dark:bg-${props.color}-dark-500 dark:hover:bg-${props.color}-dark-600
       `;
     };
 
@@ -134,8 +139,7 @@ export default defineComponent({
       return {
         [sizeClasses()]: !props.circle,
         [circleSizeClasses()]: props.circle,
-        [bgColorClasses()]: props.color !== 'gradient',
-        [bgGradientClasses()]: props.color === 'gradient',
+        [bgColorClasses()]: true,
         [textColorClasses()]: true,
         [borderClasses()]: true,
         [displayClasses()]: true,
