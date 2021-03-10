@@ -36,3 +36,12 @@ export function isPositive() {
 export function isLessThanOrEqualTo(max: number) {
   return v => !v || parseFloat(v) <= max || `must be less than ${max}`;
 }
+
+export const isEmailCheck = email => {
+  const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return regex.test(String(email).toLowerCase());
+};
+
+export function isEmail() {
+  return v => !v || isEmailCheck(v) || 'Must be a valid email';
+}
