@@ -6,7 +6,7 @@
         name="gear"
         class="rounded-full border p-1 inline-block float-right"
       />
-      <h2 class="mb-6">Swap</h2>
+      <h2 v-text="$t('trade')" class="mb-6"/>
       <div class="mb-8">
         <div class="grid grid-cols-12 border mb-4 rounded-2xl overflow-hidden">
           <a
