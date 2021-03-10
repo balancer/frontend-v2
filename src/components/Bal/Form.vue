@@ -39,11 +39,11 @@ function useFormValidations() {
     });
   }
 
-  function validate(form) {
+  function validate(this: any) {
     errors.value = [];
     validatable.value = [];
 
-    findValidatable(form.$.subTree.children);
+    findValidatable(this.$.subTree.children);
     validatable.value.forEach(input => validateInput(input));
 
     if (errors.value.length > 0) return false;
