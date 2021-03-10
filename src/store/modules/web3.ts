@@ -8,7 +8,7 @@ import store from '@/store';
 import getProvider from '@/utils/provider';
 
 const defaultConfig = process.env.VUE_APP_DEFAULT_NETWORK || '1';
-const BLOCKNATIVE_DAPP_ID = '5223bfd4-694c-4e9c-b02e-d896b117aa2b';
+const BLOCKNATIVE_DAPP_ID = process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '';
 
 let auth;
 let notify;
@@ -116,20 +116,23 @@ const actions = {
       const profiles = await getProfiles([account]);
       await dispatch('getBlockNumber');
 
-      if (notify && state.account) {
-        notify.unsubscribe(state.account);
-      }
+      if (BLOCKNATIVE_DAPP_ID) {
+        if (notify && state.account) {
+          notify.unsubscribe(state.account);
+        }
 
-      notify = Notify({
-        dappId: BLOCKNATIVE_DAPP_ID,
-        networkId: network.chainId
-      });
-      const { emitter } = notify.account(account);
-      emitter.on('all', transaction => {
-        if (transaction.status === 'confirmed')
-          dispatch('getBalances');
-        return false;
-      });
+        notify = Notify({
+          dappId: BLOCKNATIVE_DAPP_ID,
+          networkId: network.chainId
+        });
+
+        const { emitter } = notify.account(account);
+
+        emitter.on('all', transaction => {
+          if (transaction.status === 'confirmed') dispatch('getBalances');
+          return false;
+        });
+      }
 
       commit('WEB3_SET', { account, profile: profiles[account] });
     } catch (e) {
