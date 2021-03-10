@@ -75,7 +75,7 @@ export default defineComponent({
 <style scoped>
 .bal-card {
   @apply bg-white dark:bg-gray-900;
-  @apply border-0 dark:border dark:border-gray-700;
+  @apply border border-gray-300 dark:border-gray-700;
 }
 
 .header {
