@@ -6,8 +6,12 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json .src/abi/.",
-    "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts"
+    "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
+    "import-config": "tsc ./scripts/update-config.ts && node ./scripts/update-config.ts",
+    "storybook": "start-storybook -p 6006",
+    "storybook:build": "build-storybook",
+    "tailwind:view": "tailwind-config-viewer -o",
+    "tailwind:build": "tailwind-config-viewer export ./tailwind-static"
   },
   "dependencies": {
     "@ensdomains/content-hash": "^2.5.3",
@@ -41,6 +45,7 @@
     "d3": "^6.5.0",
     "eslint": "^6.7.2",
     "ethereumjs-util": "^7.0.7",
+    "feather-icons": "^4.28.0",
     "fortmatic": "^2.0.6",
     "json-to-graphql-query": "^2.0.0",
     "jsonexport": "^3.0.1",
@@ -73,6 +78,11 @@
     "web3-utils": "^1.3.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.13.8",
+    "@storybook/addon-actions": "^6.2.0-beta.6",
+    "@storybook/addon-essentials": "^6.2.0-beta.6",
+    "@storybook/addon-links": "^6.2.0-beta.6",
+    "@storybook/vue3": "^6.2.0-beta.6",
     "@types/jest": "^24.0.19",
     "@types/node": "^14.0.13",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
@@ -84,10 +94,13 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "^2.0.0-alpha.1",
+    "babel-loader": "^8.2.2",
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-vue": "^7.0.0-alpha.0",
     "prettier": "^1.19.1",
-    "vue-cli-plugin-vue-next": "~0.1.4"
+    "tailwind-config-viewer": "^1.5.0",
+    "vue-cli-plugin-vue-next": "~0.1.4",
+    "vue-loader": "^16.1.2"
   },
   "license": "MIT",
   "repository": "balancer-labs/pool-management-v2"
