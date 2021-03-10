@@ -35,7 +35,9 @@ function useFormValidations() {
       ) {
         validatable.value.push(child.component.proxy);
       }
-      if (child.children) findValidatable(child.children);
+      if (Array.isArray(child.children)) {
+        findValidatable(child.children);
+      }
     });
   }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="bal-text-input">
+  <div :class="['bal-text-input', wrapperClasses]">
     <div v-if="!!label" class="label">
       {{ label }}
     </div>
@@ -45,6 +45,7 @@ export default defineComponent({
   props: {
     name: { type: String, required: true },
     label: { type: String, default: '' },
+    noMargin: { type: Boolean, default: false },
     type: {
       type: String,
       default: 'text',
@@ -69,7 +70,7 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { rules, size, validateOn } = toRefs(props);
+    const { rules, size, validateOn, noMargin } = toRefs(props);
     const errors = ref([] as Array<string>);
 
     const hasError = computed(() => errors.value.length > 0);
@@ -105,6 +106,12 @@ export default defineComponent({
       }
     };
 
+    const wrapperClasses = computed(() => {
+      return {
+        'mb-5': !noMargin.value
+      };
+    });
+
     const containerClasses = computed(() => {
       return {
         'border-red-500': hasError.value
@@ -135,6 +142,7 @@ export default defineComponent({
       validate,
       handleBlur,
       handleInput,
+      wrapperClasses,
       containerClasses,
       inputClasses,
       appendClasses,
@@ -167,6 +175,6 @@ input:focus {
 }
 
 .error {
-  @apply text-red-500 text-sm;
+  @apply absolute text-red-500 text-sm;
 }
 </style>
