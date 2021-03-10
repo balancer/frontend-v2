@@ -7,6 +7,7 @@
   "rpc": "https://cloudflare-eth.com",
   "ws": "wss://eth-mainnet.ws.alchemyapi.io/v2/4bdDVB5QAaorY2UE-GBUbM2yQB3QJqzv",
   "explorer": "https://etherscan.io",
+  "subgraphBackupUrl": "https://ipfs.fleek.co/ipns/balancer-bucket.storage.fleek.co/balancer-exchange/pools",
   "addresses": {
     "multicall": "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
     "authorizer": "0x22E33436335B983A7322bAe156f726e61C3012Dd",

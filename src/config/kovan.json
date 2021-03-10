@@ -7,6 +7,7 @@
   "rpc": "https://eth-kovan.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "ws": "wss://eth-kovan.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "explorer": "https://kovan.etherscan.io",
+  "subgraphBackupUrl": "https://ipfs.fleek.co/ipns/balancer-bucket.storage.fleek.co/balancer-exchange-kovan/pools",
   "addresses": {
     "multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a",
     "authorizer": "0x22E33436335B983A7322bAe156f726e61C3012Dd",

@@ -6,7 +6,7 @@
         name="gear"
         class="rounded-full border p-1 inline-block float-right"
       />
-      <h2 v-text="$t('trade')" class="mb-6"/>
+      <h2 v-text="$t('trade')" class="mb-6" />
       <div class="mb-8">
         <div class="grid grid-cols-12 border mb-4 rounded-2xl overflow-hidden">
           <a
@@ -101,11 +101,20 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed, watch } from 'vue';
+import { ref, defineComponent, computed, watch, onMounted } from 'vue';
+import { useIntervalFn } from '@vueuse/core';
 import { useStore } from 'vuex';
+import { SOR } from '@balancer-labs/sor';
+import getProvider from '@/utils/provider';
+import { BigNumber } from '@ethersproject/bignumber';
+
+const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
+const MAX_POOLS = 4;
 
 export default defineComponent({
   setup() {
+    let sor: SOR | undefined = undefined;
+
     const store = useStore();
     const { getTokens, getTokenlists } = store.getters;
 
@@ -118,8 +127,39 @@ export default defineComponent({
     const modalSelectTokenIsOpen = ref(false);
     const modalSelectListIsOpen = ref(false);
     const q = ref('');
+    const pools = ref([]);
 
     const tokens = computed(() => getTokens());
+
+    onMounted(async () => {
+      await initSor();
+    });
+
+    useIntervalFn(async () => {
+      if (sor) {
+        console.time('[SOR] fetchPools');
+        await sor.fetchPools();
+        console.timeEnd('[SOR] fetchPools');
+      }
+    }, 60 * 1e3);
+
+    async function initSor(): Promise<void> {
+      const poolsUrl = `${
+        store.state.web3.config.subgraphBackupUrl
+      }?timestamp=${Date.now()}`;
+      sor = new SOR(
+        getProvider(chainId.value),
+        BigNumber.from(GAS_PRICE),
+        MAX_POOLS,
+        chainId.value,
+        poolsUrl
+      );
+
+      console.time('[SOR] fetchPools');
+      await sor.fetchPools();
+      console.timeEnd('[SOR] fetchPools');
+      pools.value = sor.onChainCache.pools;
+    }
 
     function openModalSelectToken(type: string): void {
       modalSelectTokenIsOpen.value = true;
@@ -140,6 +180,7 @@ export default defineComponent({
       } else {
         assetOutAddressInput.value = address;
       }
+      store.dispatch('injectTokens', [address]);
     }
 
     function handleTokenSearch(address: string): void {
@@ -165,32 +206,35 @@ export default defineComponent({
       assetOutAmountInput.value = assetInAmountInputSave;
     }
 
-    watch(chainId, () => {
+    watch(chainId, async () => {
       assetInAddressInput.value = '';
       assetInAmountInput.value = '';
       assetOutAddressInput.value = '';
       assetOutAmountInput.value = '';
+      await initSor();
     });
 
     return {
-      chainId,
+      q,
+      tokens,
+      modalSelectTokenIsOpen,
+      modalSelectListIsOpen,
+
       assetInAddressInput,
       assetInAmountInput,
       assetOutAddressInput,
       assetOutAmountInput,
-      modalSelectTokenIsOpen,
-      modalSelectListIsOpen,
+
       openModalSelectToken,
       openModalSelectList,
+      getTokens,
+      getTokenlists,
+
       handleSelectToken,
       handleTokenSearch,
       handleToggleList,
       handleMax,
-      handleSwitchAssets,
-      q,
-      tokens,
-      getTokens,
-      getTokenlists
+      handleSwitchAssets
     };
   }
 });
