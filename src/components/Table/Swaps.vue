@@ -1,0 +1,77 @@
+<template>
+  <div class="overflow-x-auto whitespace-nowrap text-base">
+    <table class="min-w-full text-black bg-white dark:bg-gray-900">
+      <tr class="bg-gray-50 dark:bg-gray-700">
+        <th class="sticky top-0 p-2 pl-4 py-6 text-left">Timestamp</th>
+        <th class="sticky top-0 p-2 py-6 text-right">Token in</th>
+        <th class="sticky top-0 p-2 py-6 text-right">Token out</th>
+        <th class="sticky top-0 p-2 py-6 text-right">Value</th>
+        <th class="sticky top-0 p-2 py-6 text-right">Fee</th>
+        <th class="sticky top-0 p-2 pr-4 py-6 text-right">Transaction</th>
+      </tr>
+      <tr class="row hover:bg-gray-50" v-for="swap in swaps" :key="swap.id">
+        <th class="sticky top-0 p-2 pl-4 py-6 text-left">
+          {{ swap.timestamp }}
+        </th>
+        <th class="sticky top-0 p-2 py-6 text-right">
+          {{ _num(swap.tokenAmountIn, '0.0000') }} {{ swap.tokenInSym }}
+        </th>
+        <th class="sticky top-0 p-2 py-6 text-right">
+          {{ _num(swap.tokenAmountOut, '0.0000') }} {{ swap.tokenOutSym }}
+        </th>
+        <th class="sticky top-0 p-2 py-6 text-right">
+          {{ _num(getValue(swap), '$0,0.00') }}
+        </th>
+        <th class="sticky top-0 p-2 py-6 text-right">
+          {{ _num(getFeeValue(swap), '$0,0.00') }}
+        </th>
+        <th class="sticky top-0 p-2 pr-4 py-6 text-right">
+          <a :href="_explorer(web3.config.key, swap.id, 'tx')" target="_blank">
+            {{ swap.id.substr(0, 10) }}…
+          </a>
+        </th>
+      </tr>
+    </table>
+  </div>
+</template>
+
+<script>
+import { getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
+
+export default {
+  props: {
+    swaps: Object
+  },
+  methods: {
+    getValue(swap) {
+      const tokenInPrice = this.market.prices[getAddress(swap.tokenIn)];
+      const tokenOutPrice = this.market.prices[getAddress(swap.tokenOut)];
+      if (tokenInPrice) {
+        const tokenInAmount = parseFloat(swap.tokenAmountIn);
+        return tokenInPrice.price * tokenInAmount;
+      }
+      if (tokenOutPrice) {
+        const tokenOutAmount = parseFloat(swap.tokenAmountOut);
+        return tokenOutPrice.price * tokenOutAmount;
+      }
+      return 0;
+    },
+    getFeeValue(swap) {
+      const value = this.getValue(swap);
+      const fee = parseFloat(formatUnits(swap.poolId.swapFee, 18));
+      return fee * value;
+    }
+  }
+};
+</script>
+
+<style scoped>
+table {
+  color: var(--text-color);
+}
+
+.row:hover {
+  background-color: var(--bg-color);
+}
+</style>
