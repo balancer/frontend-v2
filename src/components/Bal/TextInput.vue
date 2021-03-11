@@ -14,9 +14,10 @@
           :class="[inputClasses]"
           :type="type"
           :name="name"
+          v-model="$attrs.modelValue"
           v-bind="$attrs"
-          @blur="handleBlur"
-          @input="handleInput"
+          @blur="onBlur"
+          @input="onInput"
         />
       </div>
       <div v-if="$slots.append" :class="[appendClasses]">
@@ -41,6 +42,8 @@ export default defineComponent({
   name: 'BalTextInput',
 
   inheritAttrs: false,
+
+  emits: ['input', 'blur', 'update:modelValue'],
 
   props: {
     name: { type: String, required: true },
@@ -83,13 +86,13 @@ export default defineComponent({
       });
     }
 
-    function handleBlur(event): void {
+    function onBlur(event): void {
       emit('blur');
       emit('update:modelValue', event.target.value);
       if (validateOn.value === 'blur') validate(event.target.value);
     }
 
-    function handleInput(event): void {
+    function onInput(event): void {
       emit('input', event.target.value);
       emit('update:modelValue', event.target.value);
       if (validateOn.value === 'input') validate(event.target.value);
@@ -140,8 +143,8 @@ export default defineComponent({
       errors,
       hasError,
       validate,
-      handleBlur,
-      handleInput,
+      onBlur,
+      onInput,
       wrapperClasses,
       containerClasses,
       inputClasses,

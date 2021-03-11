@@ -42,7 +42,6 @@ export default {
 type Props = {
   name: string;
   label: string;
-  value: string | number;
   type: string;
   size: string;
   rules: Array<Rules>;
@@ -54,7 +53,7 @@ const Template = (args: Props) => ({
     return { args };
   },
   template: generateTemplate(`
-<BalTextInput v-model="args.value" v-bind="args">
+<BalTextInput v-model="args.modelValue" v-bind="args">
   <template v-if="args.prepend" v-slot:prepend>
   $
   </template>
@@ -67,7 +66,7 @@ const Template = (args: Props) => ({
 
 export const Default = Template.bind({});
 // @ts-ignore
-Default.args = { rules: [isRequired()] };
+Default.args = { modelValue: 'A value', rules: [isRequired()] };
 
 export const WithPrepend = Template.bind({});
 // @ts-ignore
