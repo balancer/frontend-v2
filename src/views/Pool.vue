@@ -76,6 +76,7 @@
           :tokenBalances="pool.tokenBalances"
           :tokenWeights="pool.strategy.weightsPercent || []"
         />
+        <TableSwaps :swaps="swaps" />
       </div>
     </template>
     <template v-slot:sidebar-right>
@@ -99,6 +100,7 @@ import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
 import { getPool } from '@/utils/balancer/pools';
 import { approveTokens } from '@/utils/balancer/tokens';
+import { getPoolSwaps } from '@/utils/balancer/subgraph';
 import {
   encodeExitWeightedPool,
   encodeJoinWeightedPool
@@ -112,6 +114,7 @@ export default {
       id: this.$route.params.id,
       loading: false,
       pool: false,
+      swaps: [],
       hasAllowed: false,
       marketCharts: [],
       marketChartsDays: 7,
@@ -135,6 +138,10 @@ export default {
         getProvider(this.web3.config.key),
         this.id
       );
+    },
+    async loadSwaps() {
+      const network = this.web3.config.key;
+      this.swaps = await getPoolSwaps(network, this.id);
     },
     async onApprove(data) {
       try {
@@ -305,6 +312,7 @@ export default {
     this.loading = true;
     await this.loadPool();
     await this.injectTokens([...this.pool.tokens, this.pool.address]);
+    await this.loadSwaps();
     // await this.loadMarketCharts(7);
     this.loading = false;
   }
