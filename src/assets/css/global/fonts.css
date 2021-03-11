@@ -1,7 +1,14 @@
 @font-face {
   font-family: 'Inter-Variable';
   src: url('../../fonts/Inter-Variable.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter-Variable';
+  src: url('../../fonts/Inter-Medium.ttf') format('truetype');
+  font-weight: 500;
   font-style: normal;
 }
 
