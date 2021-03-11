@@ -3,7 +3,7 @@ export const TOKEN_LIST_DEFAULT = 'textcoin.eth';
 export const TOKEN_LISTS: string[] = [
   TOKEN_LIST_DEFAULT,
   'tokens.uniswap.eth',
-  'tokens.1inch.eth',
+  // 'tokens.1inch.eth', Fail to load
   'synths.snx.eth',
   'tokenlist.dharma.eth',
   'defi.cmc.eth',
