@@ -1,11 +1,6 @@
 <template>
   <Layout>
-    <div class="border p-10 max-w-lg mx-auto mt-16 rounded-2xl">
-      <Icon
-        :size="24"
-        name="gear"
-        class="rounded-full border p-1 inline-block float-right"
-      />
+    <BalCard class="p-8 max-w-lg mx-auto mt-16">
       <h2 v-text="$t('trade')" class="mb-6" />
       <div class="mb-8">
         <div class="grid grid-cols-12 border mb-4 rounded-2xl overflow-hidden">
@@ -26,6 +21,7 @@
             <div class="flex">
               <input
                 v-model="assetInAmountInput"
+                @input="handleAmountChange($event.target.value)"
                 type="number"
                 placeholder="0"
                 class="flex-auto"
@@ -42,13 +38,18 @@
             </div>
           </div>
         </div>
-        <a @click="handleSwitchAssets" class="inline-block mb-4">
-          <Icon
-            :size="24"
-            name="refresh"
-            class="rounded-full border p-2 inline-block"
-          />
-        </a>
+        <div class="flex mb-4">
+          <a @click="handleSwitchAssets">
+            <Icon
+              :size="24"
+              name="refresh"
+              class="rounded-full border p-2 inline-block"
+            />
+          </a>
+          <div v-if="rateMessage" class="flex-auto ml-4 my-2">
+            <span @click="toggleRate" v-text="rateMessage" />
+          </div>
+        </div>
         <div class="grid grid-cols-12 border mb-4 rounded-2xl overflow-hidden">
           <a
             @click="openModalSelectToken('output')"
@@ -66,6 +67,7 @@
           <div class="col-span-8 px-3 py-2">
             <input
               v-model="assetOutAmountInput"
+              @input="handleAmountChange($event.target.value)"
               type="number"
               placeholder="0"
               class="w-full"
@@ -74,7 +76,7 @@
         </div>
       </div>
       <UiButton class="w-full">Swap</UiButton>
-    </div>
+    </BalCard>
     <teleport to="#modal">
       <ModalSelectToken
         :open="modalSelectTokenIsOpen"
@@ -105,8 +107,10 @@ import { ref, defineComponent, computed, watch, onMounted } from 'vue';
 import { useIntervalFn } from '@vueuse/core';
 import { useStore } from 'vuex';
 import { SOR } from '@balancer-labs/sor';
-import getProvider from '@/utils/provider';
+import numeral from 'numeral';
 import { BigNumber } from '@ethersproject/bignumber';
+import getProvider from '@/utils/provider';
+import { Pool } from '@balancer-labs/sor/dist/types';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -126,8 +130,9 @@ export default defineComponent({
     const modalSelectTokenType = ref('input');
     const modalSelectTokenIsOpen = ref(false);
     const modalSelectListIsOpen = ref(false);
+    const isInRate = ref(true);
     const q = ref('');
-    const pools = ref([]);
+    const pools = ref<Pool[]>([]);
 
     const tokens = computed(() => getTokens());
 
@@ -142,6 +147,45 @@ export default defineComponent({
         console.timeEnd('[SOR] fetchPools');
       }
     }, 60 * 1e3);
+
+    function handleAmountChange(amount: string): void {
+      onAmountChange(amount);
+    }
+
+    async function onAmountChange(amount: string): Promise<void> {
+      console.log('Amount changed', amount);
+    }
+
+    const rateMessage = computed(() => {
+      let message = '';
+      if (
+        assetInAddressInput.value &&
+        assetOutAddressInput.value &&
+        assetInAmountInput.value &&
+        assetOutAmountInput.value
+      ) {
+        const assetIn = tokens.value[assetInAddressInput.value];
+        const assetOut = tokens.value[assetOutAddressInput.value];
+        const assetInAmount = assetInAmountInput.value;
+        const assetOutAmount = assetOutAmountInput.value;
+        if (isInRate.value) {
+          const rate = parseFloat(assetOutAmount) / parseFloat(assetInAmount);
+          message = `1 ${assetIn.symbol} = ${numeral(rate).format(
+            '0,0.[000000]'
+          )} ${assetOut.symbol}`;
+        } else {
+          const rate = parseFloat(assetInAmount) / parseFloat(assetOutAmount);
+          message = `1 ${assetOut.symbol} = ${numeral(rate).format(
+            '0,0.[000000]'
+          )} ${assetIn.symbol}`;
+        }
+      }
+      return message;
+    });
+
+    function toggleRate(): void {
+      isInRate.value = !isInRate.value;
+    }
 
     async function initSor(): Promise<void> {
       const poolsUrl = `${
@@ -224,6 +268,7 @@ export default defineComponent({
       assetInAmountInput,
       assetOutAddressInput,
       assetOutAmountInput,
+      rateMessage,
 
       openModalSelectToken,
       openModalSelectList,
@@ -234,7 +279,9 @@ export default defineComponent({
       handleTokenSearch,
       handleToggleList,
       handleMax,
-      handleSwitchAssets
+      handleSwitchAssets,
+      handleAmountChange,
+      toggleRate
     };
   }
 });
