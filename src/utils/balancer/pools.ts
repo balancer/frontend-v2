@@ -1,20 +1,26 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Multicaller } from '@/utils/balancer/contract';
 import { getAddress } from '@ethersproject/address';
+import { Multicaller } from '@/utils/balancer/contract';
 import set from 'lodash/set';
 import { abi as vaultAbi } from '@/abi/Vault.json';
 import { abi as weightedPoolAbi } from '@/abi/WeightedPool.json';
+import { abi as stablePoolAbi } from '@/abi/StablePool.json';
 import { abi as bTokenAbi } from '@/abi/BToken.json';
 import { Pool } from '@/utils/balancer/types';
 import { getPoolShares } from '@/utils/balancer/subgraph';
 import configs from '@/config';
 
-// Merge all the ABIs and remove duplicates
+// Combine all the ABIs and remove duplicates
 const abis = Object.values(
   Object.fromEntries(
-    [...vaultAbi, ...weightedPoolAbi, ...bTokenAbi].map(row => [row.name, row])
+    [
+      ...vaultAbi,
+      ...weightedPoolAbi,
+      ...stablePoolAbi,
+      ...bTokenAbi
+    ].map(row => [row.name, row])
   )
 );
 
@@ -71,7 +77,7 @@ export async function getPools(
     set(pools, `${id}.id`, id);
     set(pools, `${id}.strategy`, strategies[strategyType]);
     set(pools, `${id}.address`, getAddress(address));
-    multi.call(`${id}.tokens`, vaultAddress, 'getPoolTokens', [id]);
+    multi.call(`${id}.poolTokens`, vaultAddress, 'getPoolTokens', [id]);
   });
 
   pools = await multi.execute(pools);
@@ -80,16 +86,10 @@ export async function getPools(
 
   poolIds.forEach(id => {
     const pool = pools[id];
-    pool.tokens.forEach((token, i) => {
-      multi.call(
-        `${id}.tokenBalances[${i}]`,
-        vaultAddress,
-        'getPoolTokenBalanceInfo',
-        [id, token]
-      );
-    });
-
+    set(pools, `${id}.tokens`, pool.poolTokens.tokens);
+    set(pools, `${id}.tokenBalances`, pool.poolTokens.balances);
     multi.call(`${id}.strategy.swapFee`, pool.address, 'getSwapFee');
+    multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
 
     if (pool.strategy.name === 'weightedPool') {
       multi.call(
@@ -99,9 +99,8 @@ export async function getPools(
         [pool.tokens]
       );
     } else if (pool.strategy.name === 'stablePool') {
-      // multi.call(`${id}.strategy.amp`, pool.address, 'getAmplification');
+      multi.call(`${id}.strategy.amp`, pool.address, 'getAmplification');
     }
-    multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
   });
 
   pools = await multi.execute(pools);
