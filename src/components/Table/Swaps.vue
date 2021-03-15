@@ -2,7 +2,7 @@
   <div class="overflow-x-auto whitespace-nowrap text-base">
     <table class="min-w-full text-black bg-white dark:bg-gray-900">
       <tr class="bg-gray-50 dark:bg-gray-700">
-        <th class="sticky top-0 p-2 pl-4 py-6 text-left">Date</th>
+        <th class="sticky top-0 p-2 pl-4 py-6 text-left">Time</th>
         <th class="sticky top-0 p-2 py-6 text-right">In</th>
         <th class="sticky top-0 p-2 py-6 text-right">Out</th>
         <th class="sticky top-0 p-2 py-6 text-right">Value</th>
@@ -11,7 +11,7 @@
       </tr>
       <tr class="row hover:bg-gray-50" v-for="swap in swaps" :key="swap.id">
         <th class="sticky top-0 p-2 pl-4 py-6 text-left">
-          {{ swap.timestamp }}
+          {{ getDate(swap.timestamp) }}
         </th>
         <th class="sticky top-0 p-2 py-6 text-right">
           {{ _num(swap.tokenAmountIn, '0.0000') }} {{ swap.tokenInSym }}
@@ -47,6 +47,19 @@ export default {
   setup() {
     const store = useStore();
 
+    function getDate(timestamp) {
+      const timestampNumber = parseInt(timestamp);
+      const date = new Date(timestampNumber * 1000);
+      const dateOptions: Intl.DateTimeFormatOptions = {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      return date.toLocaleString('en-US', dateOptions);
+    }
+
     function getValue(swap) {
       const tokenInPrice = store.state.market.prices[getAddress(swap.tokenIn)];
       const tokenOutPrice =
@@ -69,6 +82,7 @@ export default {
     }
 
     return {
+      getDate,
       getValue,
       getFeeValue
     };
