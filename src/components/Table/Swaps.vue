@@ -6,11 +6,12 @@
         <th class="sticky top-0 p-2 py-6 text-right">In</th>
         <th class="sticky top-0 p-2 py-6 text-right">Out</th>
         <th class="sticky top-0 p-2 py-6 text-right">Value</th>
-        <th class="sticky top-0 p-2 pr-4 py-6 text-right">Transaction</th>
       </tr>
       <tr class="row hover:bg-gray-50" v-for="swap in swaps" :key="swap.id">
         <th class="sticky top-0 p-2 pl-4 py-6 text-left">
-          {{ getDate(swap.timestamp) }}
+          <a :href="_explorer(web3.config.key, swap.id, 'tx')" target="_blank">
+            {{ getDate(swap.timestamp) }}
+          </a>
         </th>
         <th class="sticky top-0 p-2 py-6 text-right">
           {{ _num(swap.tokenAmountIn, '0.0000') }} {{ swap.tokenInSym }}
@@ -20,11 +21,6 @@
         </th>
         <th class="sticky top-0 p-2 py-6 text-right">
           {{ _num(getValue(swap), '$0,0.00') }}
-        </th>
-        <th class="sticky top-0 p-2 pr-4 py-6 text-right">
-          <a :href="_explorer(web3.config.key, swap.id, 'tx')" target="_blank">
-            {{ swap.id.substr(0, 10) }}…
-          </a>
         </th>
       </tr>
     </table>
