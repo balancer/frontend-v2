@@ -88,24 +88,23 @@
     </template>
     <template v-slot:sidebar-right>
       <div v-if="pool && !loading && !registry.loading">
-        <BlockPoolActions
+        <PoolActionsCard class="mb-4" :pool="pool" />
+        <!-- <BlockPoolActions
           @joinPool="onJoinPool"
           @exitPool="onExitPool"
           @approve="onApprove"
           :hasAllowed="hasAllowed"
           :tokens="tokens"
           :pool="pool"
-        />
+        /> -->
       </div>
     </template>
   </Layout>
 </template>
 
 <script>
-import getProvider from '@/utils/provider';
 import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
-import { getPool } from '@/utils/balancer/pools';
 import { approveTokens } from '@/utils/balancer/tokens';
 import { getPoolSwaps, getPoolSnapshots } from '@/utils/balancer/subgraph';
 import {
@@ -117,6 +116,10 @@ import { encodeJoinStablePool } from '@/utils/balancer/stablePoolEncoding';
 import { getTokensHistoricalPrice } from '@/utils/coingecko';
 
 export default {
+  components: {
+    PoolActionsCard
+  },
+
   data() {
     return {
       id: this.$route.params.id,
@@ -133,12 +136,17 @@ export default {
   },
   computed: {
     ...mapGetters(['getTokens']),
+
+    pool() {
+      return this.pools.current;
+    },
+
     tokens() {
       return this.getTokens();
     }
   },
   methods: {
-    ...mapActions(['notify', 'injectTokens', 'watchTx']),
+    ...mapActions(['notify', 'injectTokens', 'watchTx', 'loadPool']),
     handleCopy() {
       this.notify(this.$t('copied'));
     },
@@ -247,7 +255,7 @@ export default {
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
         this.notify(this.$t('youDidIt'));
-        await this.loadPool();
+        await this.loadPool(this.id);
       } catch (e) {
         console.log(e);
       }
@@ -296,7 +304,7 @@ export default {
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
         this.notify(this.$t('youDidIt'));
-        await this.loadPool();
+        await this.loadPool(this.id);
       } catch (e) {
         console.log(e);
       }
@@ -326,7 +334,7 @@ export default {
   },
   async created() {
     this.loading = true;
-    await this.loadPool();
+    await this.loadPool(this.id);
     await this.injectTokens([...this.pool.tokens, this.pool.address]);
     await this.loadSwaps();
     await this.loadChartData(30);
