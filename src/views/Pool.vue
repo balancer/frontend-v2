@@ -49,6 +49,11 @@
           <Chart :key="marketCharts[0].length" :marketCharts="marketCharts" />
         </div>
         -->
+        <PoolChart
+          :tokens="pool.tokens"
+          :prices="prices"
+          :snapshots="snapshots"
+        />
         <Block :title="$t('overview')">
           <div class="flex">
             <div v-text="$t('poolTokenName')" class="flex-auto" />
@@ -100,13 +105,14 @@ import { parseUnits } from '@ethersproject/units';
 import { mapActions, mapGetters } from 'vuex';
 import { getPool } from '@/utils/balancer/pools';
 import { approveTokens } from '@/utils/balancer/tokens';
-import { getPoolSwaps } from '@/utils/balancer/subgraph';
+import { getPoolSwaps, getPoolSnapshots } from '@/utils/balancer/subgraph';
 import {
   encodeExitWeightedPool,
   encodeJoinWeightedPool
 } from '@/utils/balancer/weightedPoolEncoding';
 import { exitPool, joinPool } from '@/utils/balancer/vault';
 import { encodeJoinStablePool } from '@/utils/balancer/stablePoolEncoding';
+import { getTokensHistoricalPrice } from '@/utils/coingecko';
 
 export default {
   data() {
@@ -115,6 +121,8 @@ export default {
       loading: false,
       pool: false,
       swaps: [],
+      prices: {},
+      snapshots: [],
       hasAllowed: false,
       marketCharts: [],
       marketChartsDays: 7,
@@ -142,6 +150,12 @@ export default {
     async loadSwaps() {
       const network = this.web3.config.key;
       this.swaps = await getPoolSwaps(network, this.id);
+    },
+    async loadChartData(days) {
+      const network = this.web3.config.key;
+      const addresses = this.pool.tokens;
+      this.prices = await getTokensHistoricalPrice(network, addresses, days);
+      this.snapshots = await getPoolSnapshots(network, this.id, days);
     },
     async onApprove(data) {
       try {
@@ -313,6 +327,7 @@ export default {
     await this.loadPool();
     await this.injectTokens([...this.pool.tokens, this.pool.address]);
     await this.loadSwaps();
+    await this.loadChartData(30);
     // await this.loadMarketCharts(7);
     this.loading = false;
   }
