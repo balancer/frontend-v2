@@ -1,13 +1,17 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
+import Notify from 'bnc-notify';
 import configs from '@/config';
 import { getProfiles } from '@/utils/profile';
 import store from '@/store';
 import getProvider from '@/utils/provider';
 
 const defaultConfig = process.env.VUE_APP_DEFAULT_NETWORK || '1';
+const BLOCKNATIVE_DAPP_ID = process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '';
+
 let auth;
+let notify;
 
 const state = {
   account: null,
@@ -101,18 +105,39 @@ const actions = {
           commit('HANDLE_CLOSE');
         });
       }
+
       const [network, accounts] = await Promise.all([
         auth.web3.getNetwork(),
         auth.web3.listAccounts()
       ]);
       commit('HANDLE_CHAIN_CHANGED', network.chainId);
+
       const account = accounts.length > 0 ? accounts[0] : null;
       const profiles = await getProfiles([account]);
       await dispatch('getBlockNumber');
+
+      if (BLOCKNATIVE_DAPP_ID) {
+        if (notify && state.account) {
+          notify.unsubscribe(state.account);
+        }
+
+        notify = Notify({
+          dappId: BLOCKNATIVE_DAPP_ID,
+          networkId: network.chainId
+        });
+
+        const { emitter } = notify.account(account);
+
+        emitter.on('all', transaction => {
+          if (transaction.status === 'confirmed') dispatch('getBalances');
+          return false;
+        });
+      }
+
       commit('WEB3_SET', { account, profile: profiles[account] });
     } catch (e) {
       commit('LOAD_PROVIDER_FAILURE', e);
-      return Promise.reject();
+      return Promise.reject(e);
     }
   }
 };

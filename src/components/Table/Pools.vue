@@ -2,10 +2,19 @@
   <div class="overflow-x-auto whitespace-nowrap text-base">
     <table class="min-w-full text-black bg-white dark:bg-gray-900">
       <tr class="bg-gray-50 dark:bg-gray-700">
-        <th class="sticky top-0 p-2 pl-4 py-6 text-left">Pool name</th>
-        <th class="sticky top-0 p-2 py-6 text-right">Pool value</th>
-        <th class="sticky top-0 p-2 py-6 text-right">Volume (24h)</th>
-        <th class="sticky top-0 p-2 pr-4 py-6 text-right">APY (1y)</th>
+        <th
+          v-text="$t('poolName')"
+          class="sticky top-0 p-2 pl-4 py-6 text-left"
+        />
+        <th v-text="$t('poolValue')" class="sticky top-0 p-2 py-6 text-right" />
+        <th
+          v-text="$t('volume24h', [$t('hourAbbrev')])"
+          class="sticky top-0 p-2 py-6 text-right"
+        />
+        <th
+          v-text="$t('apy', [$t('yearAbbrev')])"
+          class="sticky top-0 p-2 pr-4 py-6 text-right"
+        />
       </tr>
       <tr
         class="row cursor-pointer hover:bg-gray-50"
