@@ -146,7 +146,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['notify', 'injectTokens', 'watchTx', 'loadPool']),
+    ...mapActions([
+      'notify',
+      'injectTokens',
+      'watchTx',
+      'loadPool',
+      'loadPrices'
+    ]),
     handleCopy() {
       this.notify(this.$t('copied'));
     },
@@ -335,6 +341,7 @@ export default {
   async created() {
     this.loading = true;
     await this.loadPool(this.id);
+    await this.loadPrices(this.pool.tokens);
     await this.injectTokens([...this.pool.tokens, this.pool.address]);
     await this.loadSwaps();
     await this.loadChartData(30);

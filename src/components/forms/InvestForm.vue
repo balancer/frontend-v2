@@ -98,6 +98,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const joinPool = useJoinPool(props.pool);
+    const { format: formatNum } = useNumbers();
 
     const {
       requiredAllowances,
@@ -109,8 +110,6 @@ export default defineComponent({
       props.pool.tokens,
       amounts
     );
-
-    const { format: formatNum } = useNumbers();
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.strategy.weightsPercent);
