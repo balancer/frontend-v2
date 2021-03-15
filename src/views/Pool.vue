@@ -81,7 +81,9 @@
           :tokenBalances="pool.tokenBalances"
           :tokenWeights="pool.strategy.weightsPercent || []"
         />
-        <TableSwaps :swaps="swaps" />
+        <Block :title="'Activity'">
+          <TableSwaps :swaps="swaps" />
+        </Block>
       </div>
     </template>
     <template v-slot:sidebar-right>
