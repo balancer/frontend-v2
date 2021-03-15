@@ -90,34 +90,38 @@ export default defineComponent({
   },
 
   setup(props) {
-    const store = useStore();
     const investForm = ref({} as FormRef);
     const loading = ref(false);
     const amounts = ref([] as string[]);
     const receiveAmount = ref('');
+
+    // COMPOSABLES
+    const store = useStore();
     const joinPool = useJoinPool(props.pool);
 
-    console.log('prices', store.state.market.prices);
+    const {
+      requiredAllowances,
+      approveAllowances,
+      approving,
+      approvedAll
+    } = useTokenApprovals(
+      store.getters.getTokens(),
+      props.pool.tokens,
+      amounts
+    );
 
+    const { format: formatNum } = useNumbers();
+
+    // COMPUTED
     const tokenWeights = computed(() => props.pool.strategy.weightsPercent);
     const allTokens = computed(() => store.getters.getTokens());
+
     const hasAmounts = computed(() => {
       const amountSum = amounts.value
         .map(amount => parseFloat(amount))
         .reduce((a, b) => a + b, 0);
       return amountSum > 0;
     });
-    const {
-      requiredAllowances,
-      approveAllowances,
-      approving,
-      approvedAll
-    } = useTokenApprovals(allTokens, props.pool.tokens, amounts);
-    const { format: formatNum } = useNumbers();
-
-    function tokenBalance(index) {
-      return allTokens.value[props.pool.tokens[index]].balance;
-    }
 
     const total = computed(() => {
       const total = props.pool.tokens
@@ -145,6 +149,11 @@ export default defineComponent({
       props.pool.tokenBalances,
       [props.pool.totalSupply]
     );
+
+    // METHODS
+    function tokenBalance(index) {
+      return allTokens.value[props.pool.tokens[index]].balance;
+    }
 
     function onInput(amount, index): void {
       const { sendAmounts, receiveAmounts } = poolAdapter.calcAmountsWith(

@@ -14,7 +14,7 @@ export default function useTokenApprovals(allTokens, poolTokens, amounts) {
     return Object.fromEntries(
       poolTokens.map((token, i) => {
         const amount = amounts.value?.[i] || '0';
-        const tokenDecimals = allTokens.value[token].decimals;
+        const tokenDecimals = allTokens[token].decimals;
         return [token, parseUnits(amount, tokenDecimals).toString()];
       })
     );
