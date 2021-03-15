@@ -7,9 +7,9 @@
         <th class="sticky top-0 p-2 py-6 text-right">Out</th>
         <th class="sticky top-0 p-2 py-6 text-right">Value</th>
       </tr>
-      <tr class="row hover:bg-gray-50" v-for="swap in swaps" :key="swap.id">
+      <tr class="row hover:bg-gray-50" v-for="swap in swaps" :key="swap.tx">
         <th class="sticky top-0 p-2 pl-4 py-6 text-left">
-          <a :href="_explorer(web3.config.key, swap.id, 'tx')" target="_blank">
+          <a :href="_explorer(web3.config.key, swap.tx, 'tx')" target="_blank">
             {{ getDate(swap.timestamp) }}
           </a>
         </th>

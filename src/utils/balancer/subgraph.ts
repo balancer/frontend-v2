@@ -175,7 +175,7 @@ export async function getPoolSwaps(network: string, address: string) {
           poolId: address
         }
       },
-      id: true,
+      tx: true,
       tokenIn: true,
       tokenInSym: true,
       tokenAmountIn: true,
