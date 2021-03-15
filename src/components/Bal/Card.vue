@@ -28,7 +28,7 @@ export default defineComponent({
     noPad: { type: Boolean, default: false },
     shadow: {
       type: String,
-      default: '',
+      default: 'lg',
       validator: (val: string): boolean => {
         return ['', 'none', 'sm', 'md', 'lg', 'xl', '2xl'].includes(val);
       }
@@ -75,7 +75,7 @@ export default defineComponent({
 <style scoped>
 .bal-card {
   @apply bg-white dark:bg-gray-900;
-  @apply border border-gray-300 dark:border-gray-700;
+  @apply border border-gray-200 dark:border-gray-700;
 }
 
 .header {
