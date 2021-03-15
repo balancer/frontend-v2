@@ -35,18 +35,22 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
+import { useStore } from 'vuex';
 
 export default {
   props: {
     swaps: Object
   },
-  methods: {
-    getValue(swap) {
-      const tokenInPrice = this.market.prices[getAddress(swap.tokenIn)];
-      const tokenOutPrice = this.market.prices[getAddress(swap.tokenOut)];
+  setup() {
+    const store = useStore();
+
+    function getValue(swap) {
+      const tokenInPrice = store.state.market.prices[getAddress(swap.tokenIn)];
+      const tokenOutPrice =
+        store.state.market.prices[getAddress(swap.tokenOut)];
       if (tokenInPrice) {
         const tokenInAmount = parseFloat(swap.tokenAmountIn);
         return tokenInPrice.price * tokenInAmount;
@@ -56,12 +60,18 @@ export default {
         return tokenOutPrice.price * tokenOutAmount;
       }
       return 0;
-    },
-    getFeeValue(swap) {
-      const value = this.getValue(swap);
+    }
+
+    function getFeeValue(swap) {
+      const value = getValue(swap);
       const fee = parseFloat(formatUnits(swap.poolId.swapFee, 18));
       return fee * value;
     }
+
+    return {
+      getValue,
+      getFeeValue
+    };
   }
 };
 </script>
