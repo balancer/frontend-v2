@@ -75,6 +75,51 @@ export async function getTokensPrice(chainId, addresses) {
   );
 }
 
+export async function getTokensHistoricalPrice(chainId, addresses, days) {
+  const DAY = 60 * 60 * 24;
+  const now = Math.floor(Date.now() / 1000);
+  const end = now - (now % DAY);
+  const start = end - days * DAY;
+  const priceRequests = addresses.map(address => {
+    const chainAddress = getChainAddress(chainId, address);
+    const url = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${chainAddress}/market_chart/range?vs_currency=usd&from=${start}&to=${end}`;
+    const request = fetch(url).then(res => res.json());
+    return request;
+  });
+  const results = await Promise.all(priceRequests);
+
+  const assetPrices = Object.fromEntries(
+    addresses.map((chainAddress, index) => {
+      const address = getOriginalAddress(chainId, chainAddress);
+      const result = (results[index] as any).prices as number[][];
+      const prices = {};
+      let dayTimestamp = start;
+      for (const key in result) {
+        const value = result[key];
+        const [timestamp, price] = value;
+        if (timestamp > dayTimestamp * 1000) {
+          prices[dayTimestamp * 1000] = price;
+          dayTimestamp += DAY;
+        }
+      }
+      return [address, prices];
+    })
+  );
+
+  const prices = {};
+  for (const asset in assetPrices) {
+    const assetPrice = assetPrices[asset];
+    for (const timestamp in assetPrice) {
+      const price = assetPrice[timestamp];
+      if (!(timestamp in prices)) {
+        prices[timestamp] = [];
+      }
+      prices[timestamp].push(price);
+    }
+  }
+  return prices;
+}
+
 export async function getEtherPrice() {
   const uri =
     'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true';
