@@ -211,7 +211,7 @@ input:focus {
 }
 
 .input-container {
-  @apply px-2;
+  @apply px-2 w-full;
 }
 
 .prepend {
