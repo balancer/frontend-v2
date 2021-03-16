@@ -88,7 +88,7 @@
     </template>
     <template v-slot:sidebar-right>
       <div v-if="pool && !loading && !registry.loading">
-        <PoolActionsCard class="mb-4" :pool="pool" @on-tx="loadPool(id)" />
+        <PoolActionsCard class="mb-4" :pool="pool" @on-tx="reloadPool" />
         <!-- <BlockPoolActions
           @joinPool="onJoinPool"
           @exitPool="onExitPool"
@@ -151,7 +151,8 @@ export default {
       'injectTokens',
       'watchTx',
       'loadPool',
-      'loadPrices'
+      'loadPrices',
+      'getBalances'
     ]),
     handleCopy() {
       this.notify(this.$t('copied'));
