@@ -79,7 +79,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { FormRef } from '@/types';
@@ -136,7 +136,6 @@ export default defineComponent({
     });
 
     const bptBalance = computed(() => {
-      console.log(allTokens.value[props.pool.address].balance);
       return allTokens.value[props.pool.address].balance;
     });
 
@@ -183,10 +182,18 @@ export default defineComponent({
       }
     }
 
-    onMounted(() => {
+    function setMaxWithdrawalAmount() {
       amountIn.value = bptBalance.value;
       onInput(amountIn.value);
       receiveAmountsMax.value = receiveAmounts.value;
+    }
+
+    watch(bptBalance, () => {
+      setMaxWithdrawalAmount();
+    });
+
+    onMounted(() => {
+      setMaxWithdrawalAmount();
     });
 
     return {
