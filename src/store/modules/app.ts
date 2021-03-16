@@ -1,6 +1,6 @@
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/utils';
-import i18n, { defaultLocale } from '@/i18n';
+import i18n from '@/i18n';
 
 export interface AppState {
   init: boolean;
@@ -18,7 +18,8 @@ const state: AppState = {
   authLoading: false,
   modalOpen: false,
   darkMode: false,
-  locale: defaultLocale,
+  // locale: defaultLocale,
+  locale: 'en-US',
   slippage: '0.01'
 };
 
@@ -36,10 +37,13 @@ const actions = {
       if (connector) dispatch('login', connector);
     });
 
+    commit('setLocale', 'en-US');
+    commit('setDarkMode', false);
+
     // Set defaults from localStorage
-    commit('setLocale', lsGet('locale', defaultLocale));
+    // commit('setLocale', lsGet('locale', defaultLocale));
+    // commit('setDarkMode', lsGet('darkMode', false));
     commit('setSlippage', lsGet('slippage', '0.01'));
-    commit('setDarkMode', lsGet('darkMode', false));
   }
 };
 

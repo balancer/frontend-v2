@@ -50,14 +50,15 @@
           </div>
           <div :key="web3.account">
             <template v-if="$auth.isAuthenticated.value">
-              <router-link
+              <a
                 v-if="totalPending"
-                :to="{ name: 'claim', params: { address: web3.account } }"
+                :href="`https://claim.balancer.finance/#/${web3.account}`"
+                target="_blank"
               >
                 <UiButton class="button--submit mr-2 hidden md:inline-block">
                   ✨ {{ _num(totalPending) }} BAL
                 </UiButton>
-              </router-link>
+              </a>
               <UiButton class="button-outline" :loading="app.authLoading">
                 <Avatar
                   :address="web3.account"
@@ -115,6 +116,7 @@
 import { mapActions } from 'vuex';
 import getProvider from '@/utils/provider';
 import { getPendingClaims } from '@/utils/balancer/claim';
+
 export default {
   data() {
     return {

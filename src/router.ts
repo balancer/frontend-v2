@@ -4,7 +4,6 @@ import Pool from '@/views/Pool.vue';
 import PoolV1 from '@/views/PoolV1.vue';
 import Vault from '@/views/Vault.vue';
 import Create from '@/views/Create.vue';
-import Claim from '@/views/Claim.vue';
 import Portfolio from '@/views/Portfolio.vue';
 
 const routes: any[] = [
@@ -14,7 +13,6 @@ const routes: any[] = [
   { path: '/vault', name: 'vault', component: Vault },
   { path: '/create', name: 'create', component: Create },
   { path: '/portfolio', name: 'portfolio', component: Portfolio },
-  { path: '/claim/:address', name: 'claim', component: Claim },
   { path: '/*', name: 'error-404', beforeEnter: (to, from, next) => next('/') }
 ];
 
