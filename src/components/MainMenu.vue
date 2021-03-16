@@ -13,11 +13,6 @@
       v-text="$t('investmentPools')"
       class="md:mx-2 px-2 py-5 inline-block"
     />
-    <router-link
-      :to="{ name: 'create' }"
-      v-text="$t('createPool')"
-      class="md:mx-2 px-2 py-5 inline-block"
-    />
   </Block>
 </template>
 
