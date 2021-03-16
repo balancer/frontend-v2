@@ -88,7 +88,7 @@
     </template>
     <template v-slot:sidebar-right>
       <div v-if="pool && !loading && !registry.loading">
-        <PoolActionsCard class="mb-4" :pool="pool" />
+        <PoolActionsCard class="mb-4" :pool="pool" @on-tx="loadPool(id)" />
         <!-- <BlockPoolActions
           @joinPool="onJoinPool"
           @exitPool="onExitPool"
