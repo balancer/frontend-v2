@@ -12,7 +12,7 @@
       step="any"
       placeholder="0"
       :info="`${formatNum(tokenBalance(i), '0,0.[000]')} max`"
-      :disabled="loading"
+      :disabled="loading || isStablePool"
       validate-on="input"
       @input="onInput($event, i)"
     >
@@ -32,6 +32,32 @@
     </BalTextInput>
 
     <BalTextInput
+      v-if="isStablePool"
+      name="poolToken"
+      v-model="receiveAmount"
+      :rules="[isPositive()]"
+      type="number"
+      min="0"
+      step="any"
+      placeholder="0"
+      :disabled="loading"
+      validate-on="input"
+      @input="onInput($event, 0, 'receive')"
+    >
+      <template v-slot:prepend>
+        <div class="flex items-center w-24">
+          <Token :token="allTokens[pool.address]" />
+          <div class="flex flex-col ml-3">
+            <span class="font-medium text-sm leading-none w-14 truncate">
+              {{ allTokens[pool.address].symbol }}
+            </span>
+          </div>
+        </div>
+      </template>
+    </BalTextInput>
+
+    <BalTextInput
+      v-else
       name="total"
       v-model="total"
       placeholder="$0"
@@ -114,6 +140,9 @@ export default defineComponent({
     // COMPUTED
     const tokenWeights = computed(() => props.pool.strategy.weightsPercent);
     const allTokens = computed(() => store.getters.getTokens());
+    const isStablePool = computed(
+      () => props.pool.strategy.name === 'stablePool'
+    );
 
     const hasAmounts = computed(() => {
       const amountSum = amounts.value
@@ -127,7 +156,7 @@ export default defineComponent({
         .map((token, i) => {
           return (
             (Number(amounts.value[i]) || 0) *
-            store.state.market.prices[token].price
+            store.state.market.prices[token]?.price || 0
           );
         })
         .reduce((a, b) => a + b, 0);
@@ -154,9 +183,9 @@ export default defineComponent({
       return allTokens.value[props.pool.tokens[index]].balance;
     }
 
-    function onInput(amount, index): void {
+    function onInput(amount, index, type = 'send'): void {
       const { sendAmounts, receiveAmounts } = poolAdapter.calcAmountsWith(
-        'send',
+        type,
         index,
         amount
       );
@@ -188,6 +217,7 @@ export default defineComponent({
     return {
       investForm,
       amounts,
+      receiveAmount,
       submit,
       allTokens,
       hasAmounts,
@@ -201,7 +231,8 @@ export default defineComponent({
       isPositive,
       isLessThanOrEqualTo,
       total,
-      formatNum
+      formatNum,
+      isStablePool
     };
   }
 });

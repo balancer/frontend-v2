@@ -45,7 +45,7 @@ export default function useJoinPool(pool) {
     } else {
       return dataEncodeFn({
         amountsIn: amountsIn.value,
-        minimumBPT: calcMinBPT.value
+        bptAmountOut: calcMinBPT.value
       });
     }
   });
@@ -63,10 +63,12 @@ export default function useJoinPool(pool) {
   });
 
   function _joinPool(_amounts: string[], _receiveAmount: string) {
+    console.log('inputs', _amounts, _receiveAmount)
     amounts.value = _amounts;
     receiveAmount.value = _receiveAmount;
 
     try {
+      console.log('txParams', txParams.value)
       return joinPool(store.state.web3.config.key, auth.web3, txParams.value);
       // await this.watchTx(tx);
       // const receipt = await tx.wait();
