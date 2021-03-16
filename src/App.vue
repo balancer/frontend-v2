@@ -8,12 +8,17 @@
       </div>
     </div>
     <div id="modal" />
+    <ModalAccount
+      :open="web3.modal"
+      @close="setAccountModal(false)"
+      @login="handleLogin"
+    />
     <Notifications />
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 
 export default {
   watch: {
@@ -22,11 +27,19 @@ export default {
       el.classList[val ? 'add' : 'remove']('overflow-hidden');
     }
   },
+
   mounted() {
     this.init();
   },
+
   methods: {
-    ...mapActions(['init'])
+    ...mapActions(['init', 'login']),
+    ...mapMutations(['setAccountModal']),
+
+    async handleLogin(connector) {
+      this.setAccountModal(false);
+      await this.login(connector);
+    }
   }
 };
 </script>
