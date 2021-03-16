@@ -35,10 +35,10 @@
       :rules="[isPositive()]"
       type="number"
       min="0"
-      :max="tokenBalance(i)"
+      :max="receiveAmountsMax[i]"
       step="any"
       placeholder="0"
-      :info="`${formatNum(tokenBalance(i), '0,0.[000]')} max`"
+      :info="`${formatNum(receiveAmountsMax[i], '0,0.[000]')} max`"
       :disabled="true"
       validate-on="input"
     >
@@ -100,6 +100,7 @@ export default defineComponent({
     const loading = ref(false);
     const amountIn = ref('');
     const receiveAmounts = ref([] as string[]);
+    const receiveAmountsMax = ref([] as string[]);
 
     // COMPOSABLES
     const store = useStore();
@@ -185,6 +186,7 @@ export default defineComponent({
     onMounted(() => {
       amountIn.value = bptBalance.value;
       onInput(amountIn.value);
+      receiveAmountsMax.value = receiveAmounts.value;
     });
 
     return {
@@ -204,7 +206,8 @@ export default defineComponent({
       isPositive,
       isLessThanOrEqualTo,
       formatNum,
-      bptBalance
+      bptBalance,
+      receiveAmountsMax
     };
   }
 });
