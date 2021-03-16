@@ -63,7 +63,7 @@
       v-else
       type="submit"
       label="Invest"
-      loading-label="Investing..."
+      loading-label="Confirming..."
       color="gradient"
       :disabled="!hasAmounts"
       :loading="loading"
@@ -89,7 +89,7 @@ export default defineComponent({
     pool: { type: Object, required: true }
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const investForm = ref({} as FormRef);
     const loading = ref(false);
     const amounts = ref([] as string[]);
@@ -164,6 +164,11 @@ export default defineComponent({
       receiveAmount.value = receiveAmounts[0];
     }
 
+    function resetForm() {
+      amounts.value = [];
+      receiveAmount.value = '';
+    }
+
     async function submit(): Promise<void> {
       if (!investForm.value.validate()) return;
       try {
@@ -171,6 +176,8 @@ export default defineComponent({
         const tx = await joinPool(amounts.value, receiveAmount.value);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
+        emit('onTx', receipt);
+        resetForm();
       } catch (error) {
         console.error(error);
       } finally {
