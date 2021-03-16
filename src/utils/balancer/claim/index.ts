@@ -1,8 +1,6 @@
-// import { soliditySha3, toWei } from 'web3-utils';
 import { toWei } from 'web3-utils';
 import { ipfsGet } from '@/utils/balancer/ipfs';
-import { call, sendTransaction } from '@/utils/balancer/web3';
-// import { loadTree } from '@/utils/balancer/claim/merkle';
+import { call } from '@/utils/balancer/web3';
 import { abi } from './MerkleRedeem.json';
 
 const gateway = process.env.VUE_APP_IPFS_NODE || 'ipfs.io';
@@ -18,21 +16,6 @@ export const constants = {
       'balancer-team-bucket.storage.fleek.co/balancer-claim-kovan/snapshot'
   }
 };
-
-export async function claimWeeks(network, web3, address, pendingClaims) {
-  const claims = pendingClaims.map(claim => [
-    parseInt(claim.id),
-    claim.amountDenorm,
-    claim.proof
-  ]);
-  return await sendTransaction(
-    web3,
-    constants[network].merkleRedeem,
-    abi,
-    'claimWeeks',
-    [address, claims]
-  );
-}
 
 export async function getSnapshot(network) {
   if (constants[network]?.snapshot)
@@ -72,12 +55,10 @@ export async function getPendingClaims(network, provider, address) {
   const reports = await getReports(snapshot, pending);
 
   return Object.entries(reports).map((report: any) => {
-    // const merkleTree = loadTree(report[1]);
     return {
       id: report[0],
       amount: report[1][address],
       amountDenorm: toWei(report[1][address])
-      // proof: merkleTree.getHexProof(soliditySha3(address, toWei(report[1][address])))
     };
   });
 }
