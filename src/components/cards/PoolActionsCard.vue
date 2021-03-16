@@ -17,7 +17,16 @@
       </div>
     </div>
     <div class="p-4">
-      <InvestForm v-if="isActiveTab('invest')" :pool="pool" />
+      <InvestForm
+        v-if="isActiveTab('invest')"
+        :pool="pool"
+        @on-tx="$emit('onTx', $event)"
+      />
+      <WithdrawForm
+        v-if="isActiveTab('withdraw')"
+        :pool="pool"
+        @on-tx="$emit('onTx', $event)"
+      />
     </div>
   </BalCard>
 </template>
@@ -25,12 +34,14 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import InvestForm from '@/components/forms/InvestForm.vue';
+import WithdrawForm from '@/components/forms/WithdrawForm.vue';
 
 export default defineComponent({
   name: 'PoolActionsCard',
 
   components: {
-    InvestForm
+    InvestForm,
+    WithdrawForm
   },
 
   props: {
