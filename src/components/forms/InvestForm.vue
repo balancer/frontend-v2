@@ -12,7 +12,7 @@
       step="any"
       placeholder="0"
       :info="`${formatNum(tokenBalance(i), '0,0.[000]')} max`"
-      :disabled="loading || isStablePool"
+      :disabled="loading"
       validate-on="input"
       @input="onInput($event, i)"
     >
@@ -40,7 +40,7 @@
       min="0"
       step="any"
       placeholder="0"
-      :disabled="loading"
+      :disabled="true"
       validate-on="input"
       @input="onInput($event, 0, 'receive')"
     >
@@ -192,7 +192,7 @@ export default defineComponent({
     function tokenBalance(index) {
       return allTokens.value[props.pool.tokens[index]].balance;
     }
-    
+
     function connectWallet() {
       store.commit('setAccountModal', true);
     }
