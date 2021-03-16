@@ -1,6 +1,6 @@
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/utils';
-import i18n, { defaultLocale } from '@/i18n';
+import i18n from '@/i18n';
 
 export interface AppState {
   init: boolean;
