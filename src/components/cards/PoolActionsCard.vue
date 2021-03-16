@@ -3,25 +3,27 @@
     <div class="pl-4 pt-4 pb-2">
       <div class="flex border-b font-medium text-gray-500">
         <div
-          class="border-b border-black -mb-px py-3 text-black font-bold cursor-pointer"
+          :class="['tab', activeClasses('invest')]"
+          @click="activeTab = 'invest'"
         >
           Invest
         </div>
         <div
-          class="border-b -mb-px ml-4 py-3 px-2 cursor-pointer hover:text-black"
+          :class="['tab', activeClasses('withdraw')]"
+          @click="activeTab = 'withdraw'"
         >
           Withdraw
         </div>
       </div>
     </div>
     <div class="p-4">
-      <InvestForm :pool="pool" />
+      <InvestForm v-if="isActiveTab('invest')" :pool="pool" />
     </div>
   </BalCard>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import InvestForm from '@/components/forms/InvestForm.vue';
 
 export default defineComponent({
@@ -33,6 +35,28 @@ export default defineComponent({
 
   props: {
     pool: { type: Object, required: true }
+  },
+
+  setup() {
+    const activeTab = ref('invest');
+
+    function isActiveTab(tab) {
+      return activeTab.value === tab;
+    }
+
+    function activeClasses(tab) {
+      return {
+        'border-black text-black font-bold': isActiveTab(tab)
+      };
+    }
+
+    return { activeTab, isActiveTab, activeClasses };
   }
 });
 </script>
+
+<style>
+.tab {
+  @apply border-b -mb-px mr-4 py-3 cursor-pointer hover:text-black;
+}
+</style>
