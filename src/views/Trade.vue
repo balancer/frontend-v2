@@ -108,7 +108,7 @@ import { useIntervalFn } from '@vueuse/core';
 import { useStore } from 'vuex';
 import { SOR } from '@balancer-labs/sor';
 import numeral from 'numeral';
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'bignumber.js';
 import getProvider from '@/utils/provider';
 import { Pool } from '@balancer-labs/sor/dist/types';
 
@@ -193,7 +193,7 @@ export default defineComponent({
       }?timestamp=${Date.now()}`;
       sor = new SOR(
         getProvider(chainId.value),
-        BigNumber.from(GAS_PRICE),
+        new BigNumber(GAS_PRICE),
         MAX_POOLS,
         chainId.value,
         poolsUrl
