@@ -58,29 +58,38 @@
     </BalTextInput>
 
     <BalBtn
-      v-if="requireApproval"
-      label="Allow"
-      :loading="approving"
-      loading-label="Allowing..."
-      :disabled="!hasAmounts"
+      v-if="!isAuthenticated"
+      label="Connect wallet"
       block
-      @click.stop="approveAllowances"
+      @click.prevent="connectWallet"
     />
-    <BalBtn
-      type="submit"
-      label="Withdraw"
-      loading-label="Confirming..."
-      color="gradient"
-      :disabled="!hasAmounts"
-      :loading="loading"
-      block
-    />
+    <template v-else>
+      <BalBtn
+        v-if="requireApproval"
+        label="Allow"
+        :loading="approving"
+        loading-label="Allowing..."
+        :disabled="!hasAmounts"
+        block
+        @click.prevent="approveAllowances"
+      />
+      <BalBtn
+        type="submit"
+        label="Withdraw"
+        loading-label="Confirming..."
+        color="gradient"
+        :disabled="!hasAmounts"
+        :loading="loading"
+        block
+      />
+    </template>
   </BalForm>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import useAuth from '@/composables/useAuth';
 import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { FormRef } from '@/types';
 import PoolAdapter from '@/utils/balancer/adapters/pool';
@@ -104,6 +113,7 @@ export default defineComponent({
 
     // COMPOSABLES
     const store = useStore();
+    const { isAuthenticated } = useAuth();
     const exitPool = useExitPool(props.pool);
     const { format: formatNum } = useNumbers();
 
@@ -152,6 +162,10 @@ export default defineComponent({
       return allTokens.value[props.pool.tokens[index]].balance;
     }
 
+    function connectWallet() {
+      store.commit('setAccountModal', true);
+    }
+
     function onInput(amount): void {
       const {
         sendAmounts,
@@ -183,9 +197,11 @@ export default defineComponent({
     }
 
     function setMaxWithdrawalAmount() {
-      amountIn.value = bptBalance.value;
-      onInput(amountIn.value);
-      receiveAmountsMax.value = receiveAmounts.value;
+      if (bptBalance.value) {
+        amountIn.value = bptBalance.value;
+        onInput(amountIn.value);
+        receiveAmountsMax.value = receiveAmounts.value;
+      }
     }
 
     watch(bptBalance, () => {
@@ -214,7 +230,9 @@ export default defineComponent({
       isLessThanOrEqualTo,
       formatNum,
       bptBalance,
-      receiveAmountsMax
+      receiveAmountsMax,
+      isAuthenticated,
+      connectWallet
     };
   }
 });
