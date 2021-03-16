@@ -9,7 +9,7 @@ import { abi as weightedPoolAbi } from '@/abi/WeightedPool.json';
 import { abi as stablePoolAbi } from '@/abi/StablePool.json';
 import { abi as bTokenAbi } from '@/abi/BToken.json';
 import { Pool } from '@/utils/balancer/types';
-import { getPoolShares } from '@/utils/balancer/subgraph';
+import { getPoolShares, getPoolsLiquidity } from '@/utils/balancer/subgraph';
 import configs from '@/config';
 
 // Combine all the ABIs and remove duplicates
@@ -129,13 +129,14 @@ export async function getPoolsWithShares(
   const balances = Object.fromEntries(
     poolShares.map(poolShare => [poolShare.poolId.id, poolShare.balance])
   );
-  const pools = await getPools(
-    network,
-    provider,
-    poolShares.map(poolShare => poolShare.poolId.id)
-  );
-  return pools.map(pool => {
-    pool.shares = parseFloat(balances[pool.id]) || 0;
+  const poolIds = poolShares.map(poolShare => poolShare.poolId.id);
+  const pools = await getPools(network, provider, poolIds);
+  const poolsLiquidity = await getPoolsLiquidity(network, poolIds);
+
+  return pools.map((pool: any) => {
+    pool.shares = parseFloat(balances[pool.id] || '0');
+    pool.liquidity = parseFloat(poolsLiquidity[pool.id]?.liquidity || '0');
+    pool.volume = 1000;
     return pool;
   });
 }

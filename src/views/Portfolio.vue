@@ -142,23 +142,31 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getBlockNumber']),
+    ...mapActions(['getBlockNumber', 'injectTokens']),
     async load() {
       const account = this.web3.account;
       if (account) {
         const network = this.web3.config.key;
         const provider = getProvider(network);
         const currentBlockNumber = this.web3.blockNumber;
+
         this.pools = await getPoolsWithShares(network, provider, account);
+
         this.poolSharesChart = await getPoolSharesChart(
           network,
           currentBlockNumber,
           account,
           30
         );
+
         this.totalBalance = clone(this.poolSharesChart.series[0].data)
           .slice(-1)
           .pop();
+
+        const tokens = this.pools
+          .map(pool => pool.tokens)
+          .reduce((a, b) => [...a, ...b], []);
+        await this.injectTokens(tokens);
       }
       this.loaded = true;
     }
