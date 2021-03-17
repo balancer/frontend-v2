@@ -1,7 +1,5 @@
 <template>
-  <span>
-    <i :data-feather="name" :width="_size" :height="_size" />
-  </span>
+  <i :data-feather="name" :width="iconSize" :height="iconSize" />
 </template>
 
 <script lang="ts">
@@ -23,7 +21,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const _size = computed(() => {
+    const iconSize = computed(() => {
       switch (props.size) {
         case 'xs':
           return '12';
@@ -38,7 +36,7 @@ export default defineComponent({
 
     onMounted(() => feather.replace());
 
-    return { _size };
+    return { iconSize };
   }
 });
 </script>
