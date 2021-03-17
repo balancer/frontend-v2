@@ -29,12 +29,13 @@
       </div>
     </Container>
     <Container class="mt-2" :slim="true">
-      <Block :slim="true" class="overflow-hidden">
-        <div v-if="loading || registry.loading" class="text-center p-4">
-          <UiLoading />
-        </div>
-        <TablePools v-else :pools="filteredPools" :tokens="tokens" />
-      </Block>
+      <BalCard
+        v-if="!loading && !registry.loading"
+        class="overflow-hidden"
+        noPad
+      >
+        <TablePools :pools="filteredPools" :tokens="tokens" />
+      </BalCard>
     </Container>
     <teleport to="#modal">
       <ModalSelectToken

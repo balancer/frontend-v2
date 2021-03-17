@@ -35,7 +35,7 @@
         </a>
       </div>
       <div v-else-if="loading" class="block text-center p-4">
-        <UiLoading />
+        <BalLoadingIcon />
       </div>
       <div v-else v-text="$t('errorNoTokens')" class="block text-center p-4" />
     </div>

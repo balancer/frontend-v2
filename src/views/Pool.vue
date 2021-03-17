@@ -31,8 +31,7 @@
     <div class="px-8 lg:px-4">
       <div class="flex flex-wrap -mx-8">
         <div class="order-2 lg:order-1 w-full lg:w-2/3 px-4">
-          <UiLoading v-if="loading || registry.loading" />
-          <div v-else>
+          <div v-if="!loading && !registry.loading">
             <PoolChart
               :tokens="pool.tokens"
               :prices="prices"
