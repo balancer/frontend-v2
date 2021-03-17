@@ -1,7 +1,13 @@
 <template>
   <div class="container mx-auto mt-4">
     <div class="pool-nav">
-      <BalBtn color="gray" size="sm" flat>
+      <BalBtn
+        tag="router-link"
+        :to="{ name: 'home' }"
+        color="gray"
+        size="sm"
+        flat
+      >
         <BalIcon name="arrow-left" size="sm" />
         <span class="ml-2">Home</span>
       </BalBtn>
