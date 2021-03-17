@@ -63,26 +63,16 @@
       block
       @click.prevent="connectWallet"
     />
-    <template v-else>
-      <BalBtn
-        v-if="requireApproval"
-        label="Allow"
-        :loading="approving"
-        loading-label="Allowing..."
-        :disabled="!hasAmounts"
-        block
-        @click.prevent="approveAllowances"
-      />
-      <BalBtn
-        type="submit"
-        label="Withdraw"
-        loading-label="Confirming..."
-        color="gradient"
-        :disabled="!hasAmounts"
-        :loading="loading"
-        block
-      />
-    </template>
+    <BalBtn
+      v-else
+      type="submit"
+      label="Withdraw"
+      loading-label="Confirming..."
+      color="gradient"
+      :disabled="!hasAmounts"
+      :loading="loading"
+      block
+    />
   </BalForm>
 </template>
 
@@ -93,7 +83,6 @@ import useAuth from '@/composables/useAuth';
 import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { FormRef } from '@/types';
 import PoolAdapter from '@/utils/balancer/adapters/pool';
-import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 import useExitPool from '@/composables/pools/useExitPool';
 import useNumbers from '@/composables/useNumbers';
 
@@ -119,17 +108,6 @@ export default defineComponent({
     const exitPool = useExitPool(props.pool);
     const { format: formatNum } = useNumbers();
 
-    const {
-      requiredAllowances,
-      approveAllowances,
-      approving,
-      approvedAll
-    } = useTokenApprovals(
-      store.getters.getTokens(),
-      props.pool.tokens,
-      receiveAmounts
-    );
-
     // COMPUTED
     const tokenWeights = computed(() => props.pool.strategy.weightsPercent);
     const allTokens = computed(() => store.getters.getTokens());
@@ -139,12 +117,6 @@ export default defineComponent({
         .map(amount => parseFloat(amount))
         .reduce((a, b) => a + b, 0);
       return amountSum > 0;
-    });
-
-    const requireApproval = computed(() => {
-      if (!hasAmounts.value) return false;
-      if (approvedAll.value) return false;
-      return Object.keys(requiredAllowances.value).length > 0;
     });
 
     const bptBalance = computed(() => {
@@ -223,9 +195,6 @@ export default defineComponent({
       allTokens,
       hasAmounts,
       loading,
-      approving,
-      requireApproval,
-      approveAllowances,
       tokenWeights,
       tokenBalance,
       isPositive,
