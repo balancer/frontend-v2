@@ -21,7 +21,7 @@
             <div class="flex">
               <input
                 v-model="assetInAmountInput"
-                @input="handleAmountChange($event.target.value)"
+                @input="handleAmountChange(true, $event.target.value)"
                 type="number"
                 placeholder="0"
                 class="flex-auto"
@@ -67,7 +67,7 @@
           <div class="col-span-8 px-3 py-2">
             <input
               v-model="assetOutAmountInput"
-              @input="handleAmountChange($event.target.value)"
+              @input="handleAmountChange(false, $event.target.value)"
               type="number"
               placeholder="0"
               class="w-full"
@@ -111,6 +111,7 @@ import numeral from 'numeral';
 import { BigNumber } from 'bignumber.js';
 import getProvider from '@/utils/provider';
 import { Pool } from '@balancer-labs/sor/dist/types';
+import { scale } from '@/utils';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -148,12 +149,71 @@ export default defineComponent({
       }
     }, 60 * 1e3);
 
-    function handleAmountChange(amount: string): void {
-      onAmountChange(amount);
-    }
+    async function handleAmountChange(
+      isExactIn: boolean,
+      amount: string
+    ): Promise<void> {
+      const assetInAddress = assetInAddressInput.value;
+      const assetOutAddress = assetOutAddressInput.value;
 
-    async function onAmountChange(amount: string): Promise<void> {
-      console.log('Amount changed', amount);
+      if (
+        !assetInAddress ||
+        !assetOutAddress ||
+        !sor ||
+        !sor.hasDataForPair(assetInAddress, assetOutAddress)
+      ) {
+        return;
+      }
+
+      const assetInDecimals = tokens.value[assetInAddress].decimals;
+      const assetOutDecimals = tokens.value[assetOutAddress].decimals;
+
+      const assetAmountRaw = new BigNumber(amount);
+
+      if (isExactIn) {
+        const assetInAmount = scale(assetAmountRaw, assetInDecimals);
+
+        console.time(
+          `[SOR] getSwaps ${assetInAddress} ${assetOutAddress} exactIn`
+        );
+        const [, tradeAmount] = await sor.getSwaps(
+          assetInAddress,
+          assetOutAddress,
+          'swapExactIn',
+          assetInAmount
+        );
+        console.timeEnd(
+          `[SOR] getSwaps ${assetInAddress} ${assetOutAddress} exactIn`
+        );
+
+        const assetOutAmountRaw = scale(tradeAmount, -assetOutDecimals);
+        assetOutAmountInput.value = assetOutAmountRaw.toFixed(
+          6,
+          BigNumber.ROUND_DOWN
+        );
+      } else {
+        const assetOutAmount = scale(assetAmountRaw, assetOutDecimals);
+
+        console.time(
+          `[SOR] getSwaps ${assetInAddress} ${assetOutAddress} exactOut`
+        );
+
+        const [, tradeAmount] = await sor.getSwaps(
+          assetInAddress,
+          assetOutAddress,
+          'swapExactOut',
+          assetOutAmount
+        );
+        console.timeEnd(
+          `[SOR] getSwaps ${assetInAddress} ${assetOutAddress} exactOut`
+        );
+
+        const assetInAmountRaw = scale(tradeAmount, -assetInDecimals);
+        assetInAmountInput.value = assetInAmountRaw.toFixed(
+          6,
+          BigNumber.ROUND_DOWN
+        );
+      }
     }
 
     const rateMessage = computed(() => {
@@ -239,6 +299,7 @@ export default defineComponent({
     function handleMax(): void {
       assetInAmountInput.value =
         tokens.value[assetInAddressInput.value]?.balance || '';
+      handleAmountChange(true, assetInAmountInput.value);
     }
 
     function handleSwitchAssets(): void {
@@ -248,6 +309,7 @@ export default defineComponent({
       assetOutAddressInput.value = assetInAddressInputSave;
       assetInAmountInput.value = assetOutAmountInput.value;
       assetOutAmountInput.value = assetInAmountInputSave;
+      handleAmountChange(false, assetOutAmountInput.value);
     }
 
     watch(chainId, async () => {
