@@ -1,9 +1,9 @@
 <template>
-  <Block :title="$t('tokens')" :counter="tokens.length" :slim="true">
+  <BalCard :title="$t('tokens')" noContentPad>
     <div
       v-for="(token, key, i) in tokens"
       :key="key"
-      class="px-5 py-4 flex border-b dark:border-gray-700 last-child-border-0"
+      class="px-5 py-4 flex border-b dark:border-gray-700 last:border-0"
     >
       <div class="flex-auto link-color">
         <Token :token="token" :symbol="true" />
@@ -15,7 +15,7 @@
         {{ _num(_units(tokenBalances[i], token.decimals)) }}
       </div>
     </div>
-  </Block>
+  </BalCard>
 </template>
 
 <script>

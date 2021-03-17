@@ -4,19 +4,17 @@
     :class="['bal-btn', btnClasses]"
     :disabled="disabled || loading"
   >
-    <div class="content">
-      <div v-if="loading" class="flex items-center">
-        <BalLoadingIcon :size="size" :color="iconColor" />
-        <span v-if="loadingLabel" class="ml-2">
-          {{ loadingLabel }}
-        </span>
-      </div>
-      <div v-else>
-        <span v-if="label">
-          {{ label }}
-        </span>
-        <slot v-else />
-      </div>
+    <div v-if="loading" class="flex items-center justify-center">
+      <BalLoadingIcon :size="size" :color="iconColor" />
+      <span v-if="loadingLabel" class="ml-2">
+        {{ loadingLabel }}
+      </span>
+    </div>
+    <div v-else class="content">
+      <span v-if="label">
+        {{ label }}
+      </span>
+      <slot v-else />
     </div>
   </component>
 </template>
@@ -36,7 +34,8 @@ export default defineComponent({
     tag: {
       type: String,
       default: 'button',
-      validator: (val: string): boolean => ['button', 'a', 'div'].includes(val)
+      validator: (val: string): boolean =>
+        ['button', 'a', 'div', 'router-link'].includes(val)
     },
     size: {
       type: String,
@@ -46,12 +45,14 @@ export default defineComponent({
     color: {
       type: String,
       default: 'primary',
-      validator: (val: string): boolean => ['primary', 'gradient'].includes(val)
+      validator: (val: string): boolean =>
+        ['primary', 'gradient', 'gray'].includes(val)
     },
     label: { type: String, default: '' },
     block: { type: Boolean, default: false },
     circle: { type: Boolean, default: false },
     outline: { type: Boolean, default: false },
+    flat: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     loadingLabel: { type: String, default: 'loading...' },
     disabled: { type: Boolean, default: false }
@@ -92,9 +93,17 @@ export default defineComponent({
       `;
     };
 
+    const bgFlatClasses = computed(() => {
+      return `
+        bg-${props.color}-50 hover:bg-${props.color}-100
+        dark:hover:bg-${props.color}-dark-800
+      `;
+    });
+
     const bgColorClasses = (): string => {
       if (props.color === 'gradient') return bgGradientClasses();
       if (props.outline) return 'bg-transparent';
+      if (props.flat) return bgFlatClasses.value;
 
       if (props.disabled || props.loading) {
         return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
@@ -113,6 +122,7 @@ export default defineComponent({
 
     const textColorClasses = (): string => {
       if (props.outline) return `text-${props.color}-100`;
+      if (props.flat) return `text-${props.color}-400`;
       return 'text-white';
     };
 
@@ -133,7 +143,8 @@ export default defineComponent({
     };
 
     const shadowClasses = (): string => {
-      if (props.outline || props.disabled || props.loading) return '';
+      if (props.outline || props.flat || props.disabled || props.loading)
+        return '';
       return 'shadow-lg hover:shadow-none';
     };
 

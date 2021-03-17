@@ -18,7 +18,8 @@ const state = {
   profile: {},
   config: configs[defaultConfig],
   connector: 'injected',
-  blockNumber: null
+  blockNumber: null,
+  modal: false
 };
 
 const mutations = {
@@ -50,6 +51,10 @@ const mutations = {
   HANDLE_ACCOUNTS_CHANGED(_state, payload) {
     _state.account = payload;
     console.debug('HANDLE_ACCOUNTS_CHANGED', payload);
+  },
+
+  setAccountModal(_state, val: boolean) {
+    _state.modal = val;
   }
 };
 

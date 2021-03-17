@@ -33,7 +33,11 @@ const app = createApp(App)
   })
   .mixin(mixins);
 
-const requireComponent = require.context('@/components', true, /[\w-]+\.vue$/);
+const requireComponent = require.context(
+  '@/components',
+  true,
+  /^((?![\\/]cards|[\\/]dialogs|[\\/]forms).)*\.vue$/
+);
 requireComponent.keys().forEach(fileName => {
   const componentConfig = requireComponent(fileName);
   const componentName = upperFirst(

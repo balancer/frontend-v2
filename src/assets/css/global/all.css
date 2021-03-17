@@ -22,5 +22,5 @@ body {
 }
 
 a {
-  cursor: pointer;
+  @apply cursor-pointer;
 }
