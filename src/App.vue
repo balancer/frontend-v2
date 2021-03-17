@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="overflow-x-hidden">
+  <div id="app" class="overflow-x-hidden lg:overflow-x-visible">
     <UiLoading v-if="app.loading || !app.init" />
     <div v-else>
       <Topnav />
