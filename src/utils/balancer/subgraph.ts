@@ -231,8 +231,7 @@ export async function getPoolSharesChart(
       parseInt(data[0].slice(1)),
       data[1]
         .map(poolShare => {
-          // const poolLiquidity = parseFloat(poolShare.poolId.liquidity);
-          const poolLiquidity = 10000; // Use hardcoded liquidity value until v2 subgraph map this data
+          const poolLiquidity = parseFloat(poolShare.poolId.liquidity);
           return (
             (poolLiquidity /
               parseFloat(poolShare.poolTokenizerId.totalShares)) *
@@ -258,4 +257,24 @@ export async function getPoolSharesChart(
       }
     ]
   };
+}
+
+export async function getPoolsLiquidity(network: string, poolIds: string[]) {
+  const query = {
+    pools: {
+      __args: {
+        first: 1000,
+        where: {
+          id_in: poolIds
+        }
+      },
+      id: true,
+      liquidity: true
+    }
+  };
+
+  const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
+  return Object.fromEntries(
+    result.pools.map(pool => [pool.id, { liquidity: pool.liquidity }])
+  );
 }

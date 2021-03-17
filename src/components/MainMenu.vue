@@ -22,8 +22,5 @@
 }
 .mainmenu a.router-link-exact-active {
   @apply text-black dark:text-white font-medium;
-  background-image: url('~@/assets/red-bullet.svg');
-  background-repeat: no-repeat;
-  background-position: top 18px right 0;
 }
 </style>

@@ -7,7 +7,6 @@ import { loadTokenlist } from '@/utils/tokenlists';
 import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/utils';
 import { getTokensMetadata } from '@/utils/balancer/tokens';
-import { getPoolsFromIPFS } from '@/utils/balancer/ipfs';
 
 const defaultActiveLists = {};
 defaultActiveLists[TOKEN_LIST_DEFAULT] = true;
@@ -16,7 +15,6 @@ const state = {
   activeLists: lsGet('tokenlists', defaultActiveLists),
   currentTokenlist: TOKEN_LIST_DEFAULT,
   tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
-  pools: {},
   injected: [],
   loading: false,
   loaded: false
@@ -148,10 +146,7 @@ const getters = {
 const actions = {
   loadRegistry: async ({ dispatch, commit }) => {
     commit('REGISTRY_SET', { loading: true });
-    await Promise.all([
-      dispatch('loadPools'),
-      ...TOKEN_LISTS.map(name => dispatch('loadTokenlist', name))
-    ]);
+    await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
     commit('REGISTRY_SET', { loading: false, loaded: true });
     dispatch('getBalances');
     dispatch('getAllowances');
@@ -196,11 +191,6 @@ const actions = {
       lsSet('tokenlists', activeLists);
       commit('REGISTRY_SET', { activeLists });
     }
-  },
-  loadPools: async ({ commit, rootState }) => {
-    const network = rootState.web3.config.key;
-    const pools = await getPoolsFromIPFS(network);
-    commit('REGISTRY_SET', { pools });
   }
 };
 

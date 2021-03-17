@@ -281,7 +281,7 @@ export default {
     async addToken() {
       const address = this.pool.address;
       // @ts-ignore
-      await this.$auth.provider.sendAsync({
+      await this.$auth.provider.value.sendAsync({
         method: 'wallet_watchAsset',
         params: {
           type: 'ERC20',

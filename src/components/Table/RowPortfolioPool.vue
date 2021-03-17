@@ -22,10 +22,10 @@
       {{ _num(sharesValue, '$0,0.00') }}
     </td>
     <td class="p-2 py-6 text-right">
-      {{ _num(poolRegistry.liquidity, '$0,0') }}
+      {{ _num(pool.liquidity, '$0,0') }}
     </td>
     <td class="p-2 py-6 text-right">
-      {{ _num(poolRegistry.volume, '$0,0') }}
+      {{ _num(pool.volume, '$0,0') }}
     </td>
     <td class="p-2 pr-4 py-6 text-right">
       {{ _num(pool.apy, '0,0%') }}
@@ -43,26 +43,18 @@ export default {
     withShares: Boolean
   },
   computed: {
-    poolRegistry() {
-      return this.registry.pools[this.pool.id];
-    },
     sharesValue() {
       if (!this.pool.shares) return 0;
-      // const liquidity = this.poolRegistry.liquidity;
-      const liquidity = 10000; // Use hardcoded liquidity value until v2 subgraph map this data
       return (
-        (liquidity / formatUnits(this.pool.totalSupply, 18)) * this.pool.shares
+        (this.pool.liquidity / formatUnits(this.pool.totalSupply, 18)) *
+        this.pool.shares
       );
     }
   },
   methods: {
     getIconPosition(i, count) {
-      if (count < 3) {
-        return 28 * i;
-      }
-      if (count === 3) {
-        return 24 * i;
-      }
+      if (count < 3) return 28 * i;
+      if (count === 3) return 24 * i;
       return (48 * i) / (count - 1);
     }
   }
