@@ -8,20 +8,20 @@
         <th class="sticky top-0 p-2 py-6 text-right">Value</th>
       </tr>
       <tr class="row hover:bg-gray-50" v-for="swap in swaps" :key="swap.tx">
-        <th class="sticky top-0 p-2 pl-4 py-6 text-left">
+        <td class="sticky top-0 p-2 pl-4 py-6 text-left">
           <a :href="_explorer(web3.config.key, swap.tx, 'tx')" target="_blank">
             {{ getDate(swap.timestamp) }}
           </a>
-        </th>
-        <th class="sticky top-0 p-2 py-6 text-right">
+        </td>
+        <td class="sticky top-0 p-2 py-6 text-right">
           {{ _num(swap.tokenAmountIn, '0.0000') }} {{ swap.tokenInSym }}
-        </th>
-        <th class="sticky top-0 p-2 py-6 text-right">
+        </td>
+        <td class="sticky top-0 p-2 py-6 text-right">
           {{ _num(swap.tokenAmountOut, '0.0000') }} {{ swap.tokenOutSym }}
-        </th>
-        <th class="sticky top-0 p-2 py-6 text-right">
+        </td>
+        <td class="sticky top-0 p-2 py-6 text-right">
           {{ _num(getValue(swap), '$0,0.00') }}
-        </th>
+        </td>
       </tr>
     </table>
   </div>
@@ -73,13 +73,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-table {
-  color: var(--text-color);
-}
-
-.row:hover {
-  background-color: var(--bg-color);
-}
-</style>
