@@ -99,7 +99,7 @@ module.exports = {
   variants: {
     extend: {
       zIndex: ['hover'],
-      borderWidth: ['dark']
+      borderWidth: ['dark', 'last']
     }
   },
   plugins: []
