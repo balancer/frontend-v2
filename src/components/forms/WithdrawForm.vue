@@ -25,7 +25,7 @@
       </template>
     </BalTextInput>
 
-    <hr class="mb-4"/>
+    <hr class="mb-4" />
 
     <BalTextInput
       v-for="(token, i) in pool.tokens"
