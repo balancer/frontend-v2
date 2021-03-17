@@ -121,14 +121,12 @@ export default defineComponent({
     }
 
     function handleInvestment(txReceipt): void {
-      console.log('handleInvestment', txReceipt);
       investmentSuccess.value = true;
       txHash.value = txReceipt.transactionHash;
       emit('onTx', txReceipt);
     }
 
     function handleWithdrawal(txReceipt): void {
-      console.log('handleWithdrawal', txReceipt);
       withdrawalSuccess.value = true;
       txHash.value = txReceipt.transactionHash;
       emit('onTx', txReceipt);
