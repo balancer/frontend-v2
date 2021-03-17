@@ -34,7 +34,8 @@ export default defineComponent({
     tag: {
       type: String,
       default: 'button',
-      validator: (val: string): boolean => ['button', 'a', 'div'].includes(val)
+      validator: (val: string): boolean =>
+        ['button', 'a', 'div', 'router-link'].includes(val)
     },
     size: {
       type: String,
