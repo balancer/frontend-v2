@@ -28,9 +28,9 @@
       </BalBtn>
     </h1>
 
-    <div class="px-4">
-      <div class="flex -mx-8">
-        <div class="w-2/3 px-4">
+    <div class="px-8 lg:px-4">
+      <div class="flex flex-wrap -mx-8">
+        <div class="w-full lg:w-2/3 px-4">
           <UiLoading v-if="loading || registry.loading" />
           <div v-else>
             <PoolChart
@@ -73,7 +73,7 @@
             </BalCard>
           </div>
         </div>
-        <div class="w-1/3 px-4">
+        <div class="w-full lg:w-1/3 px-4 mt-8 lg:mt-0">
           <PoolActionsCard
             v-if="pool && !loading && !registry.loading"
             class="sticky top-24"
