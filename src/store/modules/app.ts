@@ -14,7 +14,7 @@ export interface AppState {
 
 const state: AppState = {
   init: false,
-  loading: true,
+  loading: false,
   authLoading: false,
   modalOpen: false,
   darkMode: false,
@@ -28,8 +28,8 @@ const actions = {
     commit('setInit', true);
 
     // Fetch init data
-    await dispatch('loadRegistry');
-    await dispatch('getBlockNumber');
+    dispatch('loadRegistry');
+    dispatch('getBlockNumber');
 
     // Setup web3
     const auth = getInstance();
