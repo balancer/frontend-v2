@@ -1,9 +1,9 @@
 <template>
-  <div id="app" class="overflow-hidden">
+  <div id="app">
     <UiLoading v-if="app.loading || !app.init" />
     <div v-else>
       <Topnav />
-      <div class="pb-6 overflow-hidden">
+      <div class="pb-12">
         <router-view :key="$route.path" class="flex-auto" />
       </div>
     </div>
@@ -21,13 +21,6 @@
 import { mapActions, mapMutations } from 'vuex';
 
 export default {
-  watch: {
-    'app.modalOpen': function(val) {
-      const el = document.body;
-      el.classList[val ? 'add' : 'remove']('overflow-hidden');
-    }
-  },
-
   mounted() {
     this.init();
   },
