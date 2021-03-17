@@ -14,7 +14,7 @@ export interface AppState {
 
 const state: AppState = {
   init: false,
-  loading: false,
+  loading: true,
   authLoading: false,
   modalOpen: false,
   darkMode: false,
@@ -28,8 +28,8 @@ const actions = {
     commit('setInit', true);
 
     // Fetch init data
-    dispatch('loadRegistry');
-    dispatch('getBlockNumber');
+    await dispatch('loadRegistry');
+    await dispatch('getBlockNumber');
 
     // Setup web3
     const auth = getInstance();
@@ -44,6 +44,7 @@ const actions = {
     // commit('setLocale', lsGet('locale', defaultLocale));
     // commit('setDarkMode', lsGet('darkMode', false));
     commit('setSlippage', lsGet('slippage', '0.01'));
+    commit('setLoading', false);
   }
 };
 
