@@ -38,12 +38,9 @@
                 v-text="'Balancer'"
               />
             </router-link>
-            <a
-              href="https://balancer.exchange"
-              target="_blank"
-              class="ml-4 text-gray-500 font-bold"
-              >{{ $t('trade') }}</a
-            >
+            <router-link :to="{ name: 'trade' }" class="ml-4 font-bold">
+              {{ $t('trade') }}
+            </router-link>
             <router-link :to="{ name: 'home' }" class="ml-4 font-bold">
               {{ $t('invest') }}
             </router-link>

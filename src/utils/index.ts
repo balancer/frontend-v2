@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import pkg from '@/../package.json';
 
 export function shorten(str = '') {
@@ -45,4 +46,10 @@ export function getCurrentTs() {
 export function tsToBlockNumber(currentBlockNumber, ts) {
   const diffTs = getCurrentTs() - ts;
   return currentBlockNumber - parseInt((diffTs / 13.35).toString());
+}
+
+export function scale(input: BigNumber, decimalPlaces: number): BigNumber {
+  const scalePow = new BigNumber(decimalPlaces.toString());
+  const scaleMul = new BigNumber(10).pow(scalePow);
+  return input.times(scaleMul);
 }

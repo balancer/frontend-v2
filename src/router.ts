@@ -5,9 +5,11 @@ import PoolV1 from '@/views/PoolV1.vue';
 import Vault from '@/views/Vault.vue';
 import Create from '@/views/Create.vue';
 import Portfolio from '@/views/Portfolio.vue';
+import Trade from '@/views/Trade.vue';
 
 const routes: any[] = [
   { path: '/', name: 'home', component: Home },
+  { path: '/trade/:assetIn?/:assetOut?', name: 'trade', component: Trade },
   { path: '/pool/:id', name: 'pool', component: Pool },
   { path: '/v1/pool/:id', name: 'pool-v1', component: PoolV1 },
   { path: '/vault', name: 'vault', component: Vault },

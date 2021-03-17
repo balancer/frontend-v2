@@ -7,7 +7,12 @@
   "rpc": "https://cloudflare-eth.com",
   "ws": "wss://eth-mainnet.ws.alchemyapi.io/v2/4bdDVB5QAaorY2UE-GBUbM2yQB3QJqzv",
   "explorer": "https://etherscan.io",
+  "subgraphBackupUrl": "https://ipfs.fleek.co/ipns/balancer-bucket.storage.fleek.co/balancer-exchange/pools",
   "addresses": {
+    "bFactory": "0x9424B1412450D0f8Fc2255FAf6046b98213B76Bd",
+    "bActions": "0xde4A25A0b9589689945d842c5ba0CF4f0D4eB3ac",
+    "dsProxyRegistry": "0x4678f0a6958e4D2Bc4F1BAF7Bc52E8F3564f3fE4",
+    "exchangeProxy": "0x3E66B66Fd1d0b02fDa6C811Da9E0547970DB2f21",
     "multicall": "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
     "authorizer": "0x22E33436335B983A7322bAe156f726e61C3012Dd",
     "vault": "0x99EceD8Ba43D090CA4283539A31431108FD34438",
