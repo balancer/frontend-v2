@@ -26,6 +26,7 @@ export default defineComponent({
     titleTag: { type: String, default: 'h3' },
     square: { type: Boolean, default: false },
     noPad: { type: Boolean, default: false },
+    noContentPad: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: 'lg',
@@ -51,7 +52,7 @@ export default defineComponent({
 
     const contentClasses = computed(() => {
       return {
-        'p-4 pt-3': !props.noPad
+        'p-4 pt-3': !props.noPad && !props.noContentPad
       };
     });
 

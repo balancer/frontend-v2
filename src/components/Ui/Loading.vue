@@ -1,58 +1,7 @@
 <template>
-  <span class="loading">
-    <span class="w-full">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="50"
-        height="50"
-        viewBox="0 0 50 50"
-      >
-        <path
-          d="M25,5A20.14,20.14,0,0,1,45,22.88a2.51,2.51,0,0,0,2.49,2.26h0A2.52,2.52,0,0,0,50,22.33a25.14,25.14,0,0,0-50,0,2.52,2.52,0,0,0,2.5,2.81h0A2.51,2.51,0,0,0,5,22.88,20.14,20.14,0,0,1,25,5Z"
-        >
-          <animateTransform
-            attributeName="transform"
-            type="rotate"
-            from="0 25 25"
-            to="360 25 25"
-            dur="0.5s"
-            repeatCount="indefinite"
-          />
-        </path>
-      </svg>
-    </span>
-  </span>
+  <div
+    class="absolute top-0 left-0 h-screen w-full flex items-center justify-center bg-gray-50 z-50"
+  >
+    <BalLoadingIcon />
+  </div>
 </template>
-
-<style lang="css">
-.loading > .big svg {
-  width: 34px;
-  height: 34px;
-}
-.loading > .fill-white path {
-  fill: white;
-}
-.loading svg {
-  display: inline-block;
-  vertical-align: middle;
-  width: 20px;
-  height: 20px;
-}
-
-.loading svg path {
-  fill: theme('colors.gray.500');
-}
-
-.loading > .overlay {
-  position: fixed;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  align-content: center;
-  top: 0;
-  bottom: 80px;
-  left: 0;
-  right: 0;
-  width: 100%;
-}
-</style>

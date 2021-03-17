@@ -5,29 +5,19 @@ function getChainAddress(chainId: number, address: string) {
   const map = {
     1: {},
     42: {
-      '0xd0A1E359811322d97991E03f863a0C30C2cF029C':
+      '0xb5399358fa9744c604f8fae7043a547f74206d4c':
         '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      '0x1528F3FCc26d13F7079325Fb78D9442607781c8C':
-        '0x6b175474e89094c44da98b954eedeac495271d0f',
-      '0xef13C0c8abcaf5767160018d268f9697aE4f5375':
-        '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
-      '0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5':
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      '0x8c9e6c40d3402480ACE624730524fACC5482798c':
-        '0x221657776846890989a759ba2973e427dff5c9bb',
-      '0xe0C9275E44Ea80eF17579d33c55136b7DA269aEb':
+      '0x3994596ad2114bc369e3e542abee9bc3d2c071b1':
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-      '0x1f1f156E0317167c11Aa412E3d1435ea29Dc3cCE':
-        '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
-      '0x86436BcE20258a6DcfE48C9512d4d49A30C4d8c4':
-        '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
-      '0x37f03a12241E9FD3658ad6777d289c3fb8512Bc9':
-        '0xa117000000f279d81a1d3cc75430faa017fa5a2e',
-      '0xccb0F4Cf5D3F97f4a55bb5f5cA321C3ED033f244':
-        '0xe41d2489571d322189246dafa5ebde1f4699f498'
+      '0x16c6a736b28d92aae496bb30f937826798afc63c':
+        '0xba100000625a3754423978a60c9317c58a424e3d',
+      '0xfa06b7b5e149e575b457e595c606ec58b17e9e13':
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      '0xff7f80466430289049c9325f88af5646ae93e5a7':
+        '0x6b175474e89094c44da98b954eedeac495271d0f'
     }
   };
-  return map[chainId][address] || address;
+  return map[chainId][address.toLowerCase()] || address;
 }
 
 function getOriginalAddress(chainId: number, address: string) {
@@ -36,34 +26,19 @@ function getOriginalAddress(chainId: number, address: string) {
   }
   const map = {
     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': {
-      42: '0xd0A1E359811322d97991E03f863a0C30C2cF029C'
-    },
-    '0x6b175474e89094c44da98b954eedeac495271d0f': {
-      42: '0x1528F3FCc26d13F7079325Fb78D9442607781c8C'
-    },
-    '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2': {
-      42: '0xef13C0c8abcaf5767160018d268f9697aE4f5375'
-    },
-    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
-      42: '0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5'
-    },
-    '0x221657776846890989a759ba2973e427dff5c9bb': {
-      42: '0x8c9e6c40d3402480ACE624730524fACC5482798c'
+      42: '0xB5399358Fa9744c604F8faE7043a547F74206D4C'
     },
     '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': {
-      42: '0xe0C9275E44Ea80eF17579d33c55136b7DA269aEb'
+      42: '0x3994596aD2114BC369E3e542ABeE9bC3D2c071b1'
     },
-    '0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
-      42: '0x1f1f156E0317167c11Aa412E3d1435ea29Dc3cCE'
+    '0xba100000625a3754423978a60c9317c58a424e3d': {
+      42: '0x16c6A736B28d92aae496bB30f937826798AfC63C'
     },
-    '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
-      42: '0x86436BcE20258a6DcfE48C9512d4d49A30C4d8c4'
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+      42: '0xfA06B7B5e149e575B457e595c606ec58B17e9e13'
     },
-    '0xa117000000f279d81a1d3cc75430faa017fa5a2e': {
-      42: '0x37f03a12241E9FD3658ad6777d289c3fb8512Bc9'
-    },
-    '0xe41d2489571d322189246dafa5ebde1f4699f498': {
-      42: '0xccb0F4Cf5D3F97f4a55bb5f5cA321C3ED033f244'
+    '0x6b175474e89094c44da98b954eedeac495271d0f': {
+      42: '0xFf7F80466430289049c9325F88Af5646ae93e5A7'
     }
   };
   if (!map[address] || !map[address][chainId]) {
@@ -98,6 +73,51 @@ export async function getTokensPrice(chainId, addresses) {
       }
     ])
   );
+}
+
+export async function getTokensHistoricalPrice(chainId, addresses, days) {
+  const DAY = 60 * 60 * 24;
+  const now = Math.floor(Date.now() / 1000);
+  const end = now - (now % DAY);
+  const start = end - days * DAY;
+  const priceRequests = addresses.map(address => {
+    const chainAddress = getChainAddress(chainId, address);
+    const url = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${chainAddress}/market_chart/range?vs_currency=usd&from=${start}&to=${end}`;
+    const request = fetch(url).then(res => res.json());
+    return request;
+  });
+  const results = await Promise.all(priceRequests);
+
+  const assetPrices = Object.fromEntries(
+    addresses.map((chainAddress, index) => {
+      const address = getOriginalAddress(chainId, chainAddress);
+      const result = (results[index] as any).prices as number[][];
+      const prices = {};
+      let dayTimestamp = start;
+      for (const key in result) {
+        const value = result[key];
+        const [timestamp, price] = value;
+        if (timestamp > dayTimestamp * 1000) {
+          prices[dayTimestamp * 1000] = price;
+          dayTimestamp += DAY;
+        }
+      }
+      return [address, prices];
+    })
+  );
+
+  const prices = {};
+  for (const asset in assetPrices) {
+    const assetPrice = assetPrices[asset];
+    for (const timestamp in assetPrice) {
+      const price = assetPrice[timestamp];
+      if (!(timestamp in prices)) {
+        prices[timestamp] = [];
+      }
+      prices[timestamp].push(price);
+    }
+  }
+  return prices;
 }
 
 export async function getEtherPrice() {

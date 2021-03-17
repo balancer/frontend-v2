@@ -79,7 +79,7 @@ export default defineComponent({
     }
   },
 
-  setup(props, { emit, slots }) {
+  setup(props, { emit, slots, attrs }) {
     const { rules, size, validateOn, noMargin } = toRefs(props);
     const errors = ref([] as Array<string>);
 
@@ -143,7 +143,8 @@ export default defineComponent({
       return {
         [inputHeightClasses()]: true,
         'border-l': slots.prepend,
-        'border-r': slots.append
+        'border-r': slots.append,
+        'shadow-inner': !attrs.disabled
       };
     });
 
@@ -207,11 +208,11 @@ input:focus {
 
 .input-group {
   @apply flex items-center overflow-hidden bg-transparent;
-  @apply border rounded px-2;
+  @apply border rounded;
 }
 
 .input-container {
-  @apply px-2;
+  @apply px-2 w-full;
 }
 
 .prepend {
