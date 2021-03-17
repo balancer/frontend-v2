@@ -13,11 +13,6 @@
       v-text="$t('investmentPools')"
       class="md:mx-2 px-2 py-5 inline-block"
     />
-    <router-link
-      :to="{ name: 'create' }"
-      v-text="$t('createPool')"
-      class="md:mx-2 px-2 py-5 inline-block"
-    />
   </Block>
 </template>
 
@@ -27,8 +22,5 @@
 }
 .mainmenu a.router-link-exact-active {
   @apply text-black dark:text-white font-medium;
-  background-image: url('~@/assets/red-bullet.svg');
-  background-repeat: no-repeat;
-  background-position: top 18px right 0;
 }
 </style>

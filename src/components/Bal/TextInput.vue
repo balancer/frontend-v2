@@ -3,22 +3,27 @@
     <div v-if="!!label" class="label">
       {{ label }}
     </div>
-    <div :class="['input-container', containerClasses]">
-      <div v-if="$slots.prepend" :class="[prependClasses]">
-        <div class="flex items-center justify-center h-full">
-          <slot name="prepend" />
-        </div>
+    <div :class="['input-group', inputGroupClasses]">
+      <div v-if="$slots.prepend" :class="['prepend', prependClasses]">
+        <slot name="prepend" />
       </div>
-      <div class="flex-1">
-        <input
-          :class="[inputClasses]"
-          :type="type"
-          :name="name"
-          v-model="$attrs.modelValue"
-          v-bind="$attrs"
-          @blur="onBlur"
-          @input="onInput"
-        />
+      <div :class="['input-container', inputContainerClasses]">
+        <div class="flex flex-col justify-center h-full">
+          <input
+            :class="[inputClasses]"
+            :type="type"
+            :name="name"
+            :value="$attrs.modelValue"
+            v-bind="$attrs"
+            @blur="onBlur"
+            @input="onInput"
+          />
+          <div v-if="$slots.info || info" :class="['info', infoClasses]">
+            <slot name="info">
+              {{ info }}
+            </slot>
+          </div>
+        </div>
       </div>
       <div v-if="$slots.append" :class="[appendClasses]">
         <div class="flex items-center justify-center h-full">
@@ -26,7 +31,7 @@
         </div>
       </div>
     </div>
-    <div v-if="hasError" :class="['error', errorClasses]">
+    <div v-if="hasError" :class="['error']">
       <div class="relative">
         {{ errors[0] }}
       </div>
@@ -49,6 +54,8 @@ export default defineComponent({
     name: { type: String, required: true },
     label: { type: String, default: '' },
     noMargin: { type: Boolean, default: false },
+    textRight: { type: Boolean, default: false },
+    info: { type: String, default: '' },
     type: {
       type: String,
       default: 'text',
@@ -72,7 +79,7 @@ export default defineComponent({
     }
   },
 
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const { rules, size, validateOn, noMargin } = toRefs(props);
     const errors = ref([] as Array<string>);
 
@@ -98,14 +105,25 @@ export default defineComponent({
       if (validateOn.value === 'input') validate(event.target.value);
     }
 
-    const sizeClasses = (): string => {
+    const textSizeClasses = (): string => {
       switch (size.value) {
         case 'sm':
-          return 'h-8 px-2 text-sm';
+          return 'text-sm';
         case 'lg':
-          return 'h-16 px-2 text-lg';
+          return 'text-lg';
         default:
-          return 'h-12 px-2';
+          return 'text-base';
+      }
+    };
+
+    const inputHeightClasses = (): string => {
+      switch (size.value) {
+        case 'sm':
+          return 'h-8';
+        case 'lg':
+          return 'h-16';
+        default:
+          return 'h-12';
       }
     };
 
@@ -115,28 +133,41 @@ export default defineComponent({
       };
     });
 
-    const containerClasses = computed(() => {
+    const inputGroupClasses = computed(() => {
       return {
         'border-red-500': hasError.value
       };
     });
 
+    const inputContainerClasses = computed(() => {
+      return {
+        [inputHeightClasses()]: true,
+        'border-l': slots.prepend,
+        'border-r': slots.append
+      };
+    });
+
     const inputClasses = computed(() => {
       return {
-        [sizeClasses()]: true
+        [textSizeClasses()]: true,
+        'text-right': props.textRight
       };
     });
 
     const appendClasses = computed(() => {
       return {
-        [sizeClasses()]: true
+        [textSizeClasses()]: true
       };
     });
 
     const prependClasses = computed(() => {
       return {
-        [sizeClasses()]: true
+        [textSizeClasses()]: true
       };
+    });
+
+    const infoClasses = computed(() => {
+      return {};
     });
 
     return {
@@ -146,10 +177,12 @@ export default defineComponent({
       onBlur,
       onInput,
       wrapperClasses,
-      containerClasses,
+      inputGroupClasses,
+      inputContainerClasses,
       inputClasses,
       appendClasses,
-      prependClasses
+      prependClasses,
+      infoClasses
     };
   }
 });
@@ -172,12 +205,28 @@ input:focus {
   @apply text-primary-300;
 }
 
-.input-container {
-  @apply flex overflow-hidden bg-transparent;
+.input-group {
+  @apply flex items-center overflow-hidden bg-transparent;
   @apply border rounded px-2;
+}
+
+.input-container {
+  @apply px-2;
+}
+
+.prepend {
+  @apply h-full px-2;
+}
+
+.append {
+  @apply h-full px-2;
 }
 
 .error {
   @apply absolute text-red-500 text-sm;
+}
+
+.info {
+  @apply text-gray-500 text-xs;
 }
 </style>

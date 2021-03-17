@@ -44,7 +44,7 @@
           </div>
         </div>
       </div>
-      <div class="mt-4 px-4">
+      <div class="hidden mt-4 px-4">
         <h5>Language</h5>
         <div class="flex mt-1">
           <div
@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <div class="mt-4 px-4">
+      <div class="hidden mt-4 px-4">
         <h5>Theme</h5>
         <div class="flex mt-1">
           <div

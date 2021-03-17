@@ -12,17 +12,15 @@ body {
   outline: none !important;
 }
 
-a {
-  cursor: pointer;
-}
-
 #app {
   @apply min-h-screen bg-gray-50 dark:bg-gray-900;
   @apply text-gray-900 dark:text-gray-50;
 }
 
-
 #storybook-app {
   @apply text-gray-900 dark:text-gray-50;
 }
 
+a {
+  cursor: pointer;
+}
