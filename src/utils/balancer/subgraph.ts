@@ -164,6 +164,34 @@ export async function getPoolVolume(network: string) {
   });
 }
 
+export async function getPoolSwaps(network: string, address: string) {
+  const query = {
+    swaps: {
+      __args: {
+        first: 20,
+        orderBy: 'timestamp',
+        orderDirection: 'desc',
+        where: {
+          poolId: address
+        }
+      },
+      tx: true,
+      tokenIn: true,
+      tokenInSym: true,
+      tokenAmountIn: true,
+      tokenOut: true,
+      tokenOutSym: true,
+      tokenAmountOut: true,
+      timestamp: true,
+      poolId: {
+        swapFee: true
+      }
+    }
+  };
+  const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
+  return result?.swaps;
+}
+
 export async function getPoolShares(network: string, address: string) {
   const query = {
     poolShares: {
@@ -182,6 +210,43 @@ export async function getPoolShares(network: string, address: string) {
   };
   const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
   return result?.poolShares;
+}
+
+export async function getPoolSnapshots(
+  network: string,
+  id: string,
+  days: number
+) {
+  const query = {};
+  const currentTs = getCurrentTs();
+  const dayTs = currentTs - (currentTs % (60 * 60 * 24));
+  for (let i = 0; i < days; i++) {
+    const ts = dayTs - i * (60 * 60 * 24);
+    query[`_${ts}`] = {
+      __aliasFor: 'poolSnapshot',
+      __args: {
+        id: `${id}-${ts}`
+      },
+      amounts: true,
+      totalShares: true
+    };
+  }
+  const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
+  const snapshots = Object.fromEntries(
+    Object.entries(result)
+      .map(entry => {
+        // return entry;
+        const [id, data] = entry;
+        const timestamp = parseInt(id.substr(1));
+        if (!data) {
+          return [timestamp, null];
+        }
+        const { amounts, totalShares } = data as any;
+        return [timestamp * 1000, { amounts, totalShares }];
+      })
+      .filter(entry => !!entry[1])
+  );
+  return snapshots;
 }
 
 export async function getPoolSharesChart(
