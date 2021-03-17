@@ -32,32 +32,6 @@
     </BalTextInput>
 
     <BalTextInput
-      v-if="isStablePool"
-      name="poolToken"
-      v-model="receiveAmount"
-      :rules="[isPositive()]"
-      type="number"
-      min="0"
-      step="any"
-      placeholder="0"
-      :disabled="true"
-      validate-on="input"
-      @input="onInput($event, 0, 'receive')"
-    >
-      <template v-slot:prepend>
-        <div class="flex items-center w-24">
-          <Token :token="allTokens[pool.address]" />
-          <div class="flex flex-col ml-3">
-            <span class="font-medium text-sm leading-none w-14 truncate">
-              {{ allTokens[pool.address].symbol }}
-            </span>
-          </div>
-        </div>
-      </template>
-    </BalTextInput>
-
-    <BalTextInput
-      v-else
       name="total"
       v-model="total"
       placeholder="$0"
