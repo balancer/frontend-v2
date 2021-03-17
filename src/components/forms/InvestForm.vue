@@ -94,6 +94,8 @@ import useNumbers from '@/composables/useNumbers';
 export default defineComponent({
   name: 'InvestForm',
 
+  emits: ['success'],
+
   props: {
     pool: { type: Object, required: true }
   },
@@ -193,7 +195,7 @@ export default defineComponent({
         const tx = await joinPool(amounts.value, receiveAmount.value);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
-        emit('onTx', receipt);
+        emit('success', receipt);
         resetForm();
       } catch (error) {
         console.error(error);
