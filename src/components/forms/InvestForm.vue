@@ -207,9 +207,16 @@ export default defineComponent({
 
     function txListener(hash) {
       const { emitter } = notify.hash(hash);
+
       emitter.on('txConfirmed', tx => {
         emit('success', tx);
         resetForm();
+        loading.value = false;
+        return undefined;
+      });
+
+      emitter.on('txFailed', () => {
+        loading.value = false;
         return undefined;
       });
     }
@@ -223,8 +230,6 @@ export default defineComponent({
         txListener(tx.hash);
       } catch (error) {
         console.error(error);
-      } finally {
-        loading.value = false;
       }
     }
 
