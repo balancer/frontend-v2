@@ -7,6 +7,8 @@ export interface Pool {
   tokenBalances: BigNumber[];
   tokens: string[];
   totalSupply: BigNumber;
+  weights: BigNumber[];
+  weightsPercent: number[];
   shares?: number;
 }
 

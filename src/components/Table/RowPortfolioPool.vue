@@ -13,7 +13,7 @@
       </div>
       <div>
         <span class="ml-2" v-for="(token, i) in pool.tokens" :key="token">
-          {{ _num(pool.strategy.weightsPercent[i]) }}
+          {{ _num(pool.weightsPercent[i]) }}
           {{ tokens[token].symbol }}
         </span>
       </div>
