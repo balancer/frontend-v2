@@ -2,16 +2,16 @@
   <BalForm ref="investForm" @on-submit="submit">
     <BalTextInput
       v-for="(token, i) in pool.tokens"
-      :key="i"
+      :key="token"
       :name="token"
       v-model="amounts[i]"
-      :rules="[isPositive(), isLessThanOrEqualTo(tokenBalance(i))]"
+      :rules="amountRules(i)"
       type="number"
       min="0"
       :max="tokenBalance(i)"
       step="any"
       placeholder="0"
-      :info="`${formatNum(tokenBalance(i), '0,0.[000]')} max`"
+      :info="infoLabel(i)"
       :disabled="loading"
       validate-on="input"
       @input="onInput($event, i)"
@@ -169,6 +169,18 @@ export default defineComponent({
       return allTokens.value[props.pool.tokens[index]].balance;
     }
 
+    function infoLabel(index) {
+      return isAuthenticated.value
+        ? `${formatNum(tokenBalance(index), '0,0.[000]')} max`
+        : '';
+    }
+
+    function amountRules(index) {
+      return isAuthenticated.value
+        ? [isPositive(), isLessThanOrEqualTo(tokenBalance(index))]
+        : [isPositive()];
+    }
+
     function connectWallet() {
       store.commit('setAccountModal', true);
     }
@@ -218,13 +230,13 @@ export default defineComponent({
       approveAllowances,
       tokenWeights,
       tokenBalance,
-      isPositive,
-      isLessThanOrEqualTo,
+      amountRules,
       total,
       formatNum,
       isStablePool,
       isAuthenticated,
-      connectWallet
+      connectWallet,
+      infoLabel
     };
   }
 });
