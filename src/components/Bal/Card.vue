@@ -39,7 +39,7 @@ export default defineComponent({
   setup(props) {
     const cardClasses = computed(() => {
       return {
-        rounded: !props.square,
+        'rounded-lg': !props.square,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true
       };
     });
@@ -58,7 +58,7 @@ export default defineComponent({
 
     const footerClasses = computed(() => {
       return {
-        'rounded-b': !props.square,
+        'rounded-b-lg': !props.square,
         'p-4 pt-3': !props.noPad
       };
     });
