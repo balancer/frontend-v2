@@ -8,7 +8,6 @@
       :rules="amountRules(i)"
       type="number"
       min="0"
-      :max="tokenBalance(i)"
       step="any"
       placeholder="0"
       :info="infoLabel(i)"

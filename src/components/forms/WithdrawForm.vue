@@ -3,14 +3,13 @@
     <BalTextInput
       name="total"
       v-model="amountIn"
-      :rules="[isPositive(), isLessThanOrEqualTo(bptBalance)]"
+      :rules="bptAmountRules"
       validate-on="input"
       placeholder="0"
       type="number"
       min="0"
-      :max="bptBalance"
       step="any"
-      :info="`${bptBalance} max`"
+      :info="bptInfoLabel"
       @input="onInput($event)"
     >
       <template v-slot:prepend>
@@ -125,6 +124,21 @@ export default defineComponent({
       return allTokens.value[props.pool.address].balance;
     });
 
+    const bptInfoLabel = computed(() => {
+      return isAuthenticated.value
+        ? `${formatNum(bptBalance.value, '0,0.[000]')} max`
+        : '';
+    });
+
+    const bptAmountRules = computed(() => {
+      return isAuthenticated.value
+        ? [
+            isPositive(),
+            isLessThanOrEqualTo(bptBalance.value, 'Exceeds balance')
+          ]
+        : [isPositive()];
+    });
+
     const poolAdapter = new PoolAdapter(
       allTokens.value,
       [props.pool.address],
@@ -211,13 +225,13 @@ export default defineComponent({
       loading,
       tokenWeights,
       tokenBalance,
+      bptAmountRules,
       isPositive,
-      isLessThanOrEqualTo,
       formatNum,
-      bptBalance,
       receiveAmountsMax,
       isAuthenticated,
-      connectWallet
+      connectWallet,
+      bptInfoLabel
     };
   }
 });
