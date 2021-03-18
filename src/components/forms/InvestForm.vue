@@ -241,6 +241,7 @@ export default defineComponent({
         txListener(tx.hash);
       } catch (error) {
         console.error(error);
+        loading.value = false;
       }
     }
 
