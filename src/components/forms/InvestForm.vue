@@ -139,6 +139,13 @@ export default defineComponent({
       return amountSum > 0;
     });
 
+    const hasBalance = computed(() => {
+      const balanceSum = props.pool.tokens
+        .map(token => allTokens.value[token].balance)
+        .reduce((a, b) => a + b, 0);
+      return balanceSum > 0;
+    });
+
     const total = computed(() => {
       const total = props.pool.tokens
         .map((token, i) => {
@@ -154,6 +161,7 @@ export default defineComponent({
 
     const requireApproval = computed(() => {
       if (!hasAmounts.value) return false;
+      if (!hasBalance.value) return false;
       if (approvedAll.value) return false;
       return Object.keys(requiredAllowances.value).length > 0;
     });
