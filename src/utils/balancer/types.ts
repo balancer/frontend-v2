@@ -17,6 +17,4 @@ export interface Strategy {
   swapFee: BigNumber;
   swapFeePercent: number;
   type: number;
-  weights?: BigNumber[];
-  weightsPercent?: number[];
 }
