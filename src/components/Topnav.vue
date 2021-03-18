@@ -101,47 +101,37 @@
               color="gray"
               outline
               rounded
-              @click="modalOpen = true"
+              :circle="['sm', 'md'].includes(bp)"
+              @click="setAccountModal(true)"
             >
               <span
                 class="hidden md:inline-block"
                 v-text="$t('connectWallet')"
               />
-              <Icon name="login" size="20" class="-ml-2 -mr-2 md:hidden" />
+              <BalIcon name="log-out" size="sm" class="md:hidden" />
             </BalBtn>
           </div>
         </div>
       </div>
     </nav>
-    <div
-      v-if="notifications.watch.length > 0"
-      class="p-2 text-center bg-blue-500"
-      style="color: white;"
-    >
-      <UiLoading class="fill-white mr-2" />
-      <span class="inline-block pt-1">
-        {{ $tc('transactionPending', _num(notifications.watch.length)) }}
-      </span>
-    </div>
-    <teleport to="#modal">
-      <ModalAccount
-        :open="modalOpen"
-        @close="modalOpen = false"
-        @login="handleLogin"
-      />
-    </teleport>
   </Sticky>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { defineComponent } from 'vue';
+import { mapActions, mapMutations } from 'vuex';
 import getProvider from '@/utils/provider';
 import { getPendingClaims } from '@/utils/balancer/claim';
+import useBreakpoints from '@/composables/useBreakpoints';
 
-export default {
+export default defineComponent({
+  setup() {
+    const { bp } = useBreakpoints();
+    return { bp };
+  },
+
   data() {
     return {
-      modalOpen: false,
       pendingClaims: false,
       totalPending: false
     };
@@ -157,11 +147,7 @@ export default {
 
   methods: {
     ...mapActions(['login']),
-
-    async handleLogin(connector) {
-      this.modalOpen = false;
-      await this.login(connector);
-    },
+    ...mapMutations(['setAccountModal']),
 
     async getPendingClaims() {
       const network = '1' || this.web3.config.key;
@@ -177,7 +163,7 @@ export default {
         .reduce((a, b) => a + b, 0);
     }
   }
-};
+});
 </script>
 
 <style scoped lang="css">
