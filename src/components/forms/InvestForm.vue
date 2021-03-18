@@ -177,7 +177,10 @@ export default defineComponent({
 
     function amountRules(index) {
       return isAuthenticated.value
-        ? [isPositive(), isLessThanOrEqualTo(tokenBalance(index))]
+        ? [
+            isPositive(),
+            isLessThanOrEqualTo(tokenBalance(index), 'Exceeds balance')
+          ]
         : [isPositive()];
     }
 
