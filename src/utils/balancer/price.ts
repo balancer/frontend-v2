@@ -19,9 +19,7 @@ export function getPoolLiquidity(pool: Pool, tokens, prices) {
       const amount = parseFloat(formatUnits(balance, decimals));
 
       const value = amount * price;
-      const weight = pool.strategy.weightsPercent
-        ? pool.strategy.weightsPercent[i]
-        : 0;
+      const weight = pool.weightsPercent ? pool.weightsPercent[i] : 0;
       sumValue = sumValue + value;
       sumWeight = sumWeight + weight;
     }

@@ -7,6 +7,8 @@ export interface Pool {
   tokenBalances: BigNumber[];
   tokens: string[];
   totalSupply: BigNumber;
+  weights: BigNumber[];
+  weightsPercent: number[];
   shares?: number;
 }
 
@@ -15,6 +17,4 @@ export interface Strategy {
   swapFee: BigNumber;
   swapFeePercent: number;
   type: number;
-  weights?: BigNumber[];
-  weightsPercent?: number[];
 }

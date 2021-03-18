@@ -124,7 +124,7 @@ export default defineComponent({
     );
 
     // COMPUTED
-    const tokenWeights = computed(() => props.pool.strategy.weightsPercent);
+    const tokenWeights = computed(() => props.pool.weightsPercent);
     const allTokens = computed(() => store.getters.getTokens());
     const isStablePool = computed(
       () => props.pool.strategy.name === 'stablePool'
