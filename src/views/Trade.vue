@@ -281,8 +281,10 @@ export default defineComponent({
     function handleSelectToken(address: string): void {
       if (modalSelectTokenType.value === 'input') {
         assetInAddressInput.value = address;
+        handleAmountChange(false, assetOutAmountInput.value);
       } else {
         assetOutAddressInput.value = address;
+        handleAmountChange(true, assetInAmountInput.value);
       }
       store.dispatch('injectTokens', [address]);
     }
