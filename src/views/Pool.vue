@@ -88,7 +88,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { getPoolSwaps, getPoolSnapshots } from '@/utils/balancer/subgraph';
-import { getTokensHistoricalPrice } from '@/utils/coingecko';
+import { getTokensHistoricalPrice } from '@/api/coingecko';
 import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
 
 export default {

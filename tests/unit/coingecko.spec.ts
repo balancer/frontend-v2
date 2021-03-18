@@ -1,5 +1,5 @@
 global.fetch = require('node-fetch');
-import { getTokensPrice } from '@/utils/coingecko';
+import { getTokensPrice } from '@/api/coingecko';
 
 describe('coingecko.getTokensPrice', () => {
   it('return tokens usd price', async () => {

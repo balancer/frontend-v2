@@ -47,7 +47,29 @@ function getOriginalAddress(chainId: number, address: string) {
   return map[address][chainId];
 }
 
-export async function getTokensPrice(chainId, addresses) {
+interface Price {
+  price: number;
+  price24HChange: number;
+}
+
+type Prices = Record<string, Price>;
+
+type HistoricalPrices = Record<string, Prices>;
+
+export async function getEtherPrice(): Promise<Price> {
+  const uri =
+    'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true';
+  const result = await fetch(uri).then(res => res.json());
+  return {
+    price: result.ethereum.usd,
+    price24HChange: result.ethereum.usd_24h_change
+  };
+}
+
+export async function getTokensPrice(
+  chainId: number,
+  addresses: string[]
+): Promise<Prices> {
   const max = 175;
   const pages = Math.ceil(addresses.length / max);
   const promises = [];
@@ -75,7 +97,11 @@ export async function getTokensPrice(chainId, addresses) {
   );
 }
 
-export async function getTokensHistoricalPrice(chainId, addresses, days) {
+export async function getTokensHistoricalPrice(
+  chainId: number,
+  addresses: string[],
+  days: number
+): Promise<HistoricalPrices> {
   const DAY = 60 * 60 * 24;
   const now = Math.floor(Date.now() / 1000);
   const end = now - (now % DAY);
@@ -118,32 +144,4 @@ export async function getTokensHistoricalPrice(chainId, addresses, days) {
     }
   }
   return prices;
-}
-
-export async function getEtherPrice() {
-  const uri =
-    'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true';
-  const result = await fetch(uri).then(res => res.json());
-  return {
-    price: result.ethereum.usd,
-    price24HChange: result.ethereum.usd_24h_change
-  };
-}
-
-export async function getMarketChart(address, days = 7) {
-  const uri = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${address}/market_chart/?vs_currency=usd&days=${days}`;
-  const result = await fetch(uri).then(res => res.json());
-  return result.prices;
-}
-
-export async function getDailyMarketChart(address, days = 7) {
-  const dailyMarketChart = {};
-  const marketChart = await getMarketChart(address, days);
-  marketChart.forEach(p => {
-    const date = new Date();
-    date.setTime(p[0]);
-    const day = date.toISOString().split('T')[0];
-    dailyMarketChart[day] = p[1];
-  });
-  return Object.entries(dailyMarketChart);
 }
