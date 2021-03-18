@@ -22,6 +22,11 @@
           </div>
         </div>
       </template>
+      <template v-slot:info>
+        <div class="cursor-pointer" @click="onInput(bptBalance)">
+          {{ bptInfoLabel }}
+        </div>
+      </template>
     </BalTextInput>
 
     <hr class="mb-4" />
@@ -231,6 +236,7 @@ export default defineComponent({
       receiveAmountsMax,
       isAuthenticated,
       connectWallet,
+      bptBalance,
       bptInfoLabel
     };
   }

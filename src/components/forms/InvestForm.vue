@@ -10,7 +10,6 @@
       min="0"
       step="any"
       placeholder="0"
-      :info="infoLabel(i)"
       :disabled="loading"
       validate-on="input"
       @input="onInput($event, i)"
@@ -26,6 +25,11 @@
               {{ formatNum(tokenWeights[i]) }}%
             </span>
           </div>
+        </div>
+      </template>
+      <template v-slot:info>
+        <div class="cursor-pointer" @click="onInput(tokenBalance(i), i)">
+          {{ infoLabel(i) }}
         </div>
       </template>
     </BalTextInput>
