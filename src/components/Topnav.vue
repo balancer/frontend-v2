@@ -38,25 +38,46 @@
                 v-text="'Balancer'"
               />
             </router-link>
-            <router-link :to="{ name: 'trade' }" class="ml-4 font-bold">
+            <router-link
+              :to="{ name: 'trade' }"
+              :class="[
+                'ml-8 font-medium text-gray-500',
+                { 'text-gray-900': $route.name === 'trade' }
+              ]"
+            >
               {{ $t('trade') }}
             </router-link>
-            <router-link :to="{ name: 'home' }" class="ml-4 font-bold">
+            <router-link
+              :to="{ name: 'home' }"
+              :class="[
+                'ml-8 font-medium text-gray-500',
+                { 'text-gray-900': $route.name === 'home' }
+              ]"
+            >
               {{ $t('invest') }}
             </router-link>
           </div>
           <div :key="web3.account">
-            <template v-if="$auth.isAuthenticated.value">
-              <a
+            <div v-if="$auth.isAuthenticated.value" class="flex items-center">
+              <BalBtn
                 v-if="totalPending"
+                tag="a"
                 :href="`https://claim.balancer.finance/#/${web3.account}`"
                 target="_blank"
+                rel="noreferrer"
+                color="gradient"
+                rounded
+                class="mr-2"
               >
-                <UiButton class="button--submit mr-2 hidden md:inline-block">
-                  ✨ {{ _num(totalPending) }} BAL
-                </UiButton>
-              </a>
-              <UiButton class="button-outline" :loading="app.authLoading">
+                ✨ {{ _num(totalPending) }} BAL
+              </BalBtn>
+              <BalBtn
+                class="auth-btn"
+                :loading="app.authLoading"
+                color="gray"
+                outline
+                rounded
+              >
                 <Avatar
                   :address="web3.account"
                   :profile="web3.profile"
@@ -72,11 +93,14 @@
                   v-text="_shorten(web3.account)"
                   class="pl-2 text-base hidden md:inline-block"
                 />
-              </UiButton>
+              </BalBtn>
               <SettingsPopover v-if="!app.authLoading" class="popover" />
-            </template>
-            <UiButton
-              v-if="!$auth.isAuthenticated.value"
+            </div>
+            <BalBtn
+              v-else
+              color="gray"
+              outline
+              rounded
               @click="modalOpen = true"
             >
               <span
@@ -84,7 +108,7 @@
                 v-text="$t('connectWallet')"
               />
               <Icon name="login" size="20" class="-ml-2 -mr-2 md:hidden" />
-            </UiButton>
+            </BalBtn>
           </div>
         </div>
       </div>
@@ -122,6 +146,7 @@ export default {
       totalPending: false
     };
   },
+
   watch: {
     'web3.account': function() {
       this.pendingClaims = false;
@@ -129,12 +154,15 @@ export default {
       if (this.web3.account) this.getPendingClaims();
     }
   },
+
   methods: {
     ...mapActions(['login']),
+
     async handleLogin(connector) {
       this.modalOpen = false;
       await this.login(connector);
     },
+
     async getPendingClaims() {
       const network = '1' || this.web3.config.key;
       const provider = getProvider(network);
@@ -158,7 +186,8 @@ export default {
   @apply bg-white dark:bg-gray-900;
   @apply border-b border-transparent dark:border-gray-700;
 }
-.button-outline:hover ~ .popover {
+
+.auth-btn:hover ~ .popover {
   display: initial;
 }
 </style>
