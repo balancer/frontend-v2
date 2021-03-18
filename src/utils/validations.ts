@@ -34,7 +34,8 @@ export function isPositive() {
 }
 
 export function isLessThanOrEqualTo(max: number, msg = '') {
-  return v => !v || parseFloat(v) <= max || (msg ? msg : `must be less than ${max}`);
+  return v =>
+    !v || parseFloat(v) <= max || (msg ? msg : `must be less than ${max}`);
 }
 
 export const isEmailCheck = email => {
