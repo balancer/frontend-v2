@@ -82,14 +82,15 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
-import { useStore } from 'vuex';
-import useAuth from '@/composables/useAuth';
-import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { FormRef } from '@/types';
 import PoolAdapter from '@/utils/balancer/adapters/pool';
+import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
+import { useStore } from 'vuex';
+import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 import useJoinPool from '@/composables/pools/useJoinPool';
 import useNumbers from '@/composables/useNumbers';
+import useBlocknative from '@/composables/useBlocknative';
 
 export default defineComponent({
   name: 'InvestForm',
@@ -108,6 +109,7 @@ export default defineComponent({
 
     // COMPOSABLES
     const store = useStore();
+    const notify = useBlocknative();
     const { isAuthenticated } = useAuth();
     const joinPool = useJoinPool(props.pool);
     const { format: formatNum } = useNumbers();
@@ -203,15 +205,22 @@ export default defineComponent({
       receiveAmount.value = '';
     }
 
+    function txListener(hash) {
+      const { emitter } = notify.hash(hash);
+      emitter.on('txConfirmed', tx => {
+        emit('success', tx);
+        resetForm();
+        return undefined;
+      });
+    }
+
     async function submit(): Promise<void> {
       if (!investForm.value.validate()) return;
       try {
         loading.value = true;
         const tx = await joinPool(amounts.value, receiveAmount.value);
-        const receipt = await tx.wait();
-        console.log('Receipt', receipt);
-        emit('success', receipt);
-        resetForm();
+        console.log('Receipt', tx);
+        txListener(tx.hash);
       } catch (error) {
         console.error(error);
       } finally {
