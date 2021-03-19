@@ -1,4 +1,3 @@
-import { toWei } from 'web3-utils';
 import { ipfsGet } from '@/utils/balancer/ipfs';
 import { call } from '@/utils/balancer/web3';
 import { abi } from './MerkleRedeem.json';
@@ -57,8 +56,7 @@ export async function getPendingClaims(network, provider, address) {
   return Object.entries(reports).map((report: any) => {
     return {
       id: report[0],
-      amount: report[1][address],
-      amountDenorm: toWei(report[1][address])
+      amount: report[1]?.[address] || 0
     };
   });
 }
