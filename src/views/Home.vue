@@ -108,7 +108,7 @@ export default {
     pools() {
       const pools = this.poolData
         .map(pool => {
-          const tokens = pool.tokens.map(token => getAddress(token.address));
+          const tokens = pool.tokensList.map(token => getAddress(token));
           const { id, weights } = pool;
           return {
             id,
