@@ -23,19 +23,20 @@
       </BalBtn>
     </div>
 
+    <div v-if="!loading" class="mb-10">
+      <h3 class="font-bold mb-2">
+        {{ header }}
+      </h3>
+      <div class="text-sm">
+        {{ poolType }} pool. LPs earn
+        {{ _num(pool.strategy.swapFeePercent / 100, '0.00%') }} in fees.
+      </div>
+    </div>
+
     <div class="px-8 lg:px-4">
       <div class="flex flex-wrap -mx-8">
         <div class="order-2 lg:order-1 w-full lg:w-2/3 px-4">
           <div v-if="!loading && !registry.loading">
-            <div class="mb-10">
-              <h3 class="font-bold mb-2">
-                {{ header }}
-              </h3>
-              <div class="text-sm">
-                {{ poolType }} pool. LPs earn
-                {{ _num(pool.strategy.swapFeePercent / 100, '0.00%') }} in fees.
-              </div>
-            </div>
             <PoolChart
               class="mb-10"
               :tokens="pool.tokens"
