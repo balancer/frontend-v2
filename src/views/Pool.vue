@@ -78,11 +78,7 @@ export default {
       loading: false,
       swaps: [],
       prices: {},
-      snapshots: [],
-      hasAllowed: false,
-      marketCharts: [],
-      marketChartsDays: 7,
-      marketChartsLoading: false
+      snapshots: []
     };
   },
 
