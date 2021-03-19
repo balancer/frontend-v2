@@ -91,7 +91,7 @@ export default {
       }
       return this.pool.tokens
         .map((address, index) => {
-          const weight = this.pool.strategy.weightsPercent[index];
+          const weight = this.pool.weightsPercent[index];
           const token = this.tokens[address];
           if (!token) {
             return '';
