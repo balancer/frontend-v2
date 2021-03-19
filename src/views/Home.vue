@@ -4,27 +4,33 @@
     <Container class="mt-6">
       <MainMenu />
       <h3 v-text="$t('investmentPools')" />
-      <div
-        class="width-full h-9 mt-2 flex items-center cursor-pointer rounded border border-gray-500"
-        @click="modal.selectToken = true"
-      >
-        <span v-text="namePlaceholder" class="ml-2 text-sm text-gray-500" />
-      </div>
-      <div class="flex mt-3">
-        <div class="flex mr-2" v-if="!registry.loading">
-          <div
+      <div class="flex mt-2">
+        <BalBtn
+          color="primary"
+          size="sm"
+          outline
+          @click.prevent="modal.selectToken = true"
+        >
+          <span>Filter</span>
+        </BalBtn>
+        <div class="flex ml-4" v-if="!registry.loading">
+          <BalChip
             v-for="(token, i) in form.tokens"
-            :key="i"
-            class="flex flex-items-center py-0.5 px-1 mr-2 rounded-full border border-gray-500"
+            class="mr-2"
+            :key="token"
+            size="md"
+            color="gray"
+            :closeable="true"
+            @closed="removeToken(i)"
           >
-            <Token :token="tokens[token]" :symbol="false" class="flex-auto" />
-            <span class="ml-1 text-base text-black">{{
-              tokens[token].symbol
-            }}</span>
-            <a @click="removeToken(i)">
-              <Icon name="close" size="12" class="ml-1" />
-            </a>
-          </div>
+            <Token
+              :token="tokens[token]"
+              :symbol="false"
+              size="20"
+              class="flex-auto"
+            />
+            <span class="ml-1">{{ tokens[token].symbol }}</span>
+          </BalChip>
         </div>
       </div>
     </Container>
