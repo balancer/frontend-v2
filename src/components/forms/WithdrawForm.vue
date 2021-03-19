@@ -185,7 +185,14 @@ export default defineComponent({
         return undefined;
       });
 
+      emitter.on('txCancel', () => {
+        // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
+        loading.value = false;
+        return undefined;
+      });
+
       emitter.on('txFailed', () => {
+        // An error has occurred initiating the transaction
         loading.value = false;
         return undefined;
       });
