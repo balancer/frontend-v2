@@ -2,6 +2,7 @@
   <BalForm ref="withdrawForm" @on-submit="submit">
     <BalTextInput
       name="total"
+      ref="bptAmountInput"
       v-model="amountIn"
       :rules="bptAmountRules"
       validate-on="input"
@@ -10,7 +11,6 @@
       min="0"
       step="any"
       :info="bptInfoLabel"
-      @input="onInput($event)"
     >
       <template v-slot:prepend>
         <div class="w-24 flex flex-col">
@@ -23,7 +23,7 @@
         </div>
       </template>
       <template v-slot:info>
-        <div class="cursor-pointer" @click="onInput(bptBalance)">
+        <div class="cursor-pointer" @click="amountIn = bptBalance">
           {{ bptInfoLabel }}
         </div>
       </template>
@@ -161,14 +161,14 @@ export default defineComponent({
       store.commit('setAccountModal', true);
     }
 
-    function onInput(amount): void {
+    watch(amountIn, newAmount => {
       const {
         sendAmounts,
         receiveAmounts: _receiveAmounts
-      } = poolAdapter.calcAmountsWith('send', 0, amount);
+      } = poolAdapter.calcAmountsWith('send', 0, newAmount);
       amountIn.value = sendAmounts[0];
       receiveAmounts.value = _receiveAmounts;
-    }
+    });
 
     function resetForm() {
       amountIn.value = '';
@@ -214,7 +214,6 @@ export default defineComponent({
     function setMaxWithdrawalAmount() {
       if (bptBalance.value) {
         amountIn.value = bptBalance.value;
-        onInput(amountIn.value);
         receiveAmountsMax.value = receiveAmounts.value;
       }
     }
@@ -232,7 +231,6 @@ export default defineComponent({
       amountIn,
       receiveAmounts,
       submit,
-      onInput,
       allTokens,
       hasAmounts,
       loading,
