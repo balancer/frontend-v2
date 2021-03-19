@@ -208,7 +208,7 @@ input:focus {
 
 .input-group {
   @apply flex items-center overflow-hidden bg-transparent;
-  @apply border rounded;
+  @apply border rounded-lg;
 }
 
 .input-container {
