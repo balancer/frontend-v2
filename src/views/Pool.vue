@@ -65,7 +65,7 @@
               class="mt-8"
               :tokens="getTokens({ addresses: pool.tokens })"
               :tokenBalances="pool.tokenBalances"
-              :tokenWeights="pool.strategy.weightsPercent || []"
+              :tokenWeights="pool.weightsPercent || []"
             />
             <BalCard title="Activity" class="mt-8" noContentPad>
               <TableSwaps :swaps="swaps" />

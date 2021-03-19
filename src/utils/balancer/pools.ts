@@ -31,11 +31,11 @@ function formatPool(pool): Pool {
 
   switch (pool.strategy.name) {
     case 'weightedPool': {
-      const totalWeight = pool.strategy.weights.reduce(
+      const totalWeight = pool.weights.reduce(
         (a, b) => a.add(b),
         BigNumber.from(0)
       );
-      pool.strategy.weightsPercent = pool.strategy.weights.map(
+      pool.weightsPercent = pool.weights.map(
         weight =>
           (100 / parseFloat(formatUnits(totalWeight, 10))) *
           parseFloat(formatUnits(weight, 10))
@@ -43,9 +43,7 @@ function formatPool(pool): Pool {
       break;
     }
     case 'stablePool': {
-      pool.strategy.weightsPercent = pool.tokens.map(
-        () => 100 / pool.tokens.length
-      );
+      pool.weightsPercent = pool.tokens.map(() => 100 / pool.tokens.length);
       break;
     }
   }
@@ -92,12 +90,9 @@ export async function getPools(
     multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
 
     if (pool.strategy.name === 'weightedPool') {
-      multi.call(
-        `${id}.strategy.weights`,
-        pool.address,
-        'getNormalizedWeights',
-        [pool.tokens]
-      );
+      multi.call(`${id}.weights`, pool.address, 'getNormalizedWeights', [
+        pool.tokens
+      ]);
     } else if (pool.strategy.name === 'stablePool') {
       multi.call(`${id}.strategy.amp`, pool.address, 'getAmplification');
     }

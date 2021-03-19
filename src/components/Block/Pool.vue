@@ -46,7 +46,7 @@ export default {
     },
     shares() {
       return this.pool.tokens
-        .map((_poolToken, i) => this._num(this.pool.strategy.weightsPercent[i]))
+        .map((_poolToken, i) => this._num(this.pool.weightsPercent[i]))
         .join('/');
     }
   }

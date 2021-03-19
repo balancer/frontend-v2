@@ -39,7 +39,7 @@ export default defineComponent({
   setup(props) {
     const cardClasses = computed(() => {
       return {
-        rounded: !props.square,
+        'rounded-lg': !props.square,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true
       };
     });
@@ -58,7 +58,7 @@ export default defineComponent({
 
     const footerClasses = computed(() => {
       return {
-        'rounded-b': !props.square,
+        'rounded-b-lg': !props.square,
         'p-4 pt-3': !props.noPad
       };
     });
@@ -75,6 +75,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-card {
+  @apply overflow-hidden;
   @apply bg-white dark:bg-gray-900;
   @apply border border-gray-200 dark:border-gray-700;
 }

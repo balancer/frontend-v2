@@ -109,7 +109,7 @@ export default defineComponent({
     const { format: formatNum } = useNumbers();
 
     // COMPUTED
-    const tokenWeights = computed(() => props.pool.strategy.weightsPercent);
+    const tokenWeights = computed(() => props.pool.weightsPercent);
     const allTokens = computed(() => store.getters.getTokens());
 
     const hasAmounts = computed(() => {
