@@ -138,6 +138,13 @@ export default {
       this.notify(this.$t('copied'));
     },
 
+    async fetchPool() {
+      this.loading = true;
+      await this.loadPool(this.id);
+      await this.injectTokens([...this.pool.tokens, this.pool.address]);
+      this.loading = false;
+    },
+
     async loadSwaps() {
       const network = this.web3.config.key;
       this.swaps = await getPoolSwaps(network, this.id);
@@ -169,12 +176,9 @@ export default {
   },
 
   async created() {
-    this.loading = true;
-    await this.loadPool(this.id);
-    await this.injectTokens([...this.pool.tokens, this.pool.address]);
-    await this.loadSwaps();
-    await this.loadChartData(30);
-    this.loading = false;
+    await this.fetchPool();
+    this.loadSwaps();
+    this.loadChartData(30);
   }
 };
 </script>
