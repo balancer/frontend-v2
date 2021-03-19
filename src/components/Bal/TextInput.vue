@@ -13,7 +13,7 @@
             :class="[inputClasses]"
             :type="type"
             :name="name"
-            :value="$attrs.modelValue"
+            :value="modelValue"
             v-bind="$attrs"
             @blur="onBlur"
             @input="onInput"
@@ -40,7 +40,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, toRefs, PropType } from 'vue';
+import {
+  defineComponent,
+  ref,
+  computed,
+  toRefs,
+  PropType,
+  watchEffect
+} from 'vue';
 import { Rules, RuleFunction } from '@/types';
 
 export default defineComponent({
@@ -51,6 +58,7 @@ export default defineComponent({
   emits: ['input', 'blur', 'update:modelValue'],
 
   props: {
+    modelValue: { type: [String, Number], default: '' },
     name: { type: String, required: true },
     label: { type: String, default: '' },
     noMargin: { type: Boolean, default: false },
@@ -94,7 +102,7 @@ export default defineComponent({
     }
 
     function onBlur(event): void {
-      emit('blur');
+      emit('blur', event.target.value);
       emit('update:modelValue', event.target.value);
       if (validateOn.value === 'blur') validate(event.target.value);
     }
@@ -102,8 +110,12 @@ export default defineComponent({
     function onInput(event): void {
       emit('input', event.target.value);
       emit('update:modelValue', event.target.value);
-      if (validateOn.value === 'input') validate(event.target.value);
     }
+
+    watchEffect(() => {
+      // @ts-ignore
+      if (validateOn.value === 'input') validate(props.modelValue);
+    });
 
     const textSizeClasses = (): string => {
       switch (size.value) {

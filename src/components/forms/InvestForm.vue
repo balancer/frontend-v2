@@ -2,16 +2,14 @@
   <BalForm ref="investForm" @on-submit="submit">
     <BalTextInput
       v-for="(token, i) in pool.tokens"
-      :key="i"
+      :key="token"
       :name="token"
       v-model="amounts[i]"
-      :rules="[isPositive(), isLessThanOrEqualTo(tokenBalance(i))]"
+      :rules="amountRules(i)"
       type="number"
       min="0"
-      :max="tokenBalance(i)"
       step="any"
       placeholder="0"
-      :info="`${formatNum(tokenBalance(i), '0,0.[000]')} max`"
       :disabled="loading"
       validate-on="input"
       @input="onInput($event, i)"
@@ -27,6 +25,11 @@
               {{ formatNum(tokenWeights[i]) }}%
             </span>
           </div>
+        </div>
+      </template>
+      <template v-slot:info>
+        <div class="cursor-pointer" @click="onInput(tokenBalance(i), i)">
+          {{ infoLabel(i) }}
         </div>
       </template>
     </BalTextInput>
@@ -82,14 +85,15 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
-import { useStore } from 'vuex';
-import useAuth from '@/composables/useAuth';
-import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { FormRef } from '@/types';
 import PoolAdapter from '@/utils/balancer/adapters/pool';
+import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
+import { useStore } from 'vuex';
+import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 import useJoinPool from '@/composables/pools/useJoinPool';
 import useNumbers from '@/composables/useNumbers';
+import useBlocknative from '@/composables/useBlocknative';
 
 export default defineComponent({
   name: 'InvestForm',
@@ -108,6 +112,7 @@ export default defineComponent({
 
     // COMPOSABLES
     const store = useStore();
+    const notify = useBlocknative();
     const { isAuthenticated } = useAuth();
     const joinPool = useJoinPool(props.pool);
     const { format: formatNum } = useNumbers();
@@ -137,6 +142,13 @@ export default defineComponent({
       return amountSum > 0;
     });
 
+    const hasBalance = computed(() => {
+      const balanceSum = props.pool.tokens
+        .map(token => allTokens.value[token].balance)
+        .reduce((a, b) => a + b, 0);
+      return balanceSum > 0;
+    });
+
     const total = computed(() => {
       const total = props.pool.tokens
         .map((token, i) => {
@@ -152,6 +164,7 @@ export default defineComponent({
 
     const requireApproval = computed(() => {
       if (!hasAmounts.value) return false;
+      if (!hasBalance.value) return false;
       if (approvedAll.value) return false;
       return Object.keys(requiredAllowances.value).length > 0;
     });
@@ -167,6 +180,21 @@ export default defineComponent({
     // METHODS
     function tokenBalance(index) {
       return allTokens.value[props.pool.tokens[index]].balance;
+    }
+
+    function infoLabel(index) {
+      return isAuthenticated.value
+        ? `${formatNum(tokenBalance(index), '0,0.[000]')} max`
+        : '';
+    }
+
+    function amountRules(index) {
+      return isAuthenticated.value
+        ? [
+            isPositive(),
+            isLessThanOrEqualTo(tokenBalance(index), 'Exceeds balance')
+          ]
+        : [isPositive()];
     }
 
     function connectWallet() {
@@ -188,18 +216,38 @@ export default defineComponent({
       receiveAmount.value = '';
     }
 
+    function txListener(hash) {
+      const { emitter } = notify.hash(hash);
+
+      emitter.on('txConfirmed', tx => {
+        emit('success', tx);
+        resetForm();
+        loading.value = false;
+        return undefined;
+      });
+
+      emitter.on('txCancel', () => {
+        // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
+        loading.value = false;
+        return undefined;
+      });
+
+      emitter.on('txFailed', () => {
+        // An error has occurred initiating the transaction
+        loading.value = false;
+        return undefined;
+      });
+    }
+
     async function submit(): Promise<void> {
       if (!investForm.value.validate()) return;
       try {
         loading.value = true;
         const tx = await joinPool(amounts.value, receiveAmount.value);
-        const receipt = await tx.wait();
-        console.log('Receipt', receipt);
-        emit('success', receipt);
-        resetForm();
+        console.log('Receipt', tx);
+        txListener(tx.hash);
       } catch (error) {
         console.error(error);
-      } finally {
         loading.value = false;
       }
     }
@@ -218,13 +266,13 @@ export default defineComponent({
       approveAllowances,
       tokenWeights,
       tokenBalance,
-      isPositive,
-      isLessThanOrEqualTo,
+      amountRules,
       total,
       formatNum,
       isStablePool,
       isAuthenticated,
-      connectWallet
+      connectWallet,
+      infoLabel
     };
   }
 });

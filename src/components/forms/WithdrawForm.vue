@@ -2,16 +2,15 @@
   <BalForm ref="withdrawForm" @on-submit="submit">
     <BalTextInput
       name="total"
+      ref="bptAmountInput"
       v-model="amountIn"
-      :rules="[isPositive(), isLessThanOrEqualTo(bptBalance)]"
+      :rules="bptAmountRules"
       validate-on="input"
       placeholder="0"
       type="number"
       min="0"
-      :max="bptBalance"
       step="any"
-      :info="`${bptBalance} max`"
-      @input="onInput($event)"
+      :info="bptInfoLabel"
     >
       <template v-slot:prepend>
         <div class="w-24 flex flex-col">
@@ -21,6 +20,11 @@
           <div class="leading-none text-xs mt-1 text-gray-500">
             BPT
           </div>
+        </div>
+      </template>
+      <template v-slot:info>
+        <div class="cursor-pointer" @click="amountIn = bptBalance">
+          {{ bptInfoLabel }}
         </div>
       </template>
     </BalTextInput>
@@ -78,16 +82,17 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
-import { useStore } from 'vuex';
-import useAuth from '@/composables/useAuth';
-import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { FormRef } from '@/types';
 import PoolAdapter from '@/utils/balancer/adapters/pool';
+import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
+import { useStore } from 'vuex';
+import useAuth from '@/composables/useAuth';
 import useExitPool from '@/composables/pools/useExitPool';
 import useNumbers from '@/composables/useNumbers';
+import useBlocknative from '@/composables/useBlocknative';
 
 export default defineComponent({
-  name: 'InvestForm',
+  name: 'WithdrawalForm',
 
   emits: ['success'],
 
@@ -104,6 +109,7 @@ export default defineComponent({
 
     // COMPOSABLES
     const store = useStore();
+    const notify = useBlocknative();
     const { isAuthenticated } = useAuth();
     const exitPool = useExitPool(props.pool);
     const { format: formatNum } = useNumbers();
@@ -123,6 +129,21 @@ export default defineComponent({
       return allTokens.value[props.pool.address].balance;
     });
 
+    const bptInfoLabel = computed(() => {
+      return isAuthenticated.value
+        ? `${formatNum(bptBalance.value, '0,0.[000]')} max`
+        : '';
+    });
+
+    const bptAmountRules = computed(() => {
+      return isAuthenticated.value
+        ? [
+            isPositive(),
+            isLessThanOrEqualTo(bptBalance.value, 'Exceeds balance')
+          ]
+        : [isPositive()];
+    });
+
     const poolAdapter = new PoolAdapter(
       allTokens.value,
       [props.pool.address],
@@ -140,18 +161,41 @@ export default defineComponent({
       store.commit('setAccountModal', true);
     }
 
-    function onInput(amount): void {
+    watch(amountIn, newAmount => {
       const {
         sendAmounts,
         receiveAmounts: _receiveAmounts
-      } = poolAdapter.calcAmountsWith('send', 0, amount);
+      } = poolAdapter.calcAmountsWith('send', 0, newAmount);
       amountIn.value = sendAmounts[0];
       receiveAmounts.value = _receiveAmounts;
-    }
+    });
 
     function resetForm() {
       amountIn.value = '';
       receiveAmounts.value = [];
+    }
+
+    function txListener(hash) {
+      const { emitter } = notify.hash(hash);
+
+      emitter.on('txConfirmed', tx => {
+        emit('success', tx);
+        resetForm();
+        loading.value = false;
+        return undefined;
+      });
+
+      emitter.on('txCancel', () => {
+        // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
+        loading.value = false;
+        return undefined;
+      });
+
+      emitter.on('txFailed', () => {
+        // An error has occurred initiating the transaction
+        loading.value = false;
+        return undefined;
+      });
     }
 
     async function submit(): Promise<void> {
@@ -159,13 +203,10 @@ export default defineComponent({
       try {
         loading.value = true;
         const tx = await exitPool(amountIn.value, receiveAmounts.value);
-        const receipt = await tx.wait();
-        console.log('Receipt', receipt);
-        emit('success', receipt);
-        resetForm();
+        console.log('Receipt', tx);
+        txListener(tx.hash);
       } catch (error) {
         console.error(error);
-      } finally {
         loading.value = false;
       }
     }
@@ -173,7 +214,6 @@ export default defineComponent({
     function setMaxWithdrawalAmount() {
       if (bptBalance.value) {
         amountIn.value = bptBalance.value;
-        onInput(amountIn.value);
         receiveAmountsMax.value = receiveAmounts.value;
       }
     }
@@ -191,19 +231,19 @@ export default defineComponent({
       amountIn,
       receiveAmounts,
       submit,
-      onInput,
       allTokens,
       hasAmounts,
       loading,
       tokenWeights,
       tokenBalance,
+      bptAmountRules,
       isPositive,
-      isLessThanOrEqualTo,
       formatNum,
-      bptBalance,
       receiveAmountsMax,
       isAuthenticated,
-      connectWallet
+      connectWallet,
+      bptBalance,
+      bptInfoLabel
     };
   }
 });

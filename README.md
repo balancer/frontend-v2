@@ -38,6 +38,8 @@ npm run tailwind-viewer
 ```
 Your browser should load the app at [http://localhost:3000](http://localhost:3000).
 
+The production Tailwind viewer is deployed when the master branch is updated here: [https://pm2-tailwind.on.fleek.co](https://pm2-tailwind.on.fleek.co/)
+
 ### Component Library
 We are using [Storybook](https://storybook.js.org/) to document our commonly used components. You can browse the component library in development by running:
 
@@ -45,3 +47,5 @@ We are using [Storybook](https://storybook.js.org/) to document our commonly use
 npm run storybook
 ```
 Your browser should load the app at [http://localhost:6006](http://localhost:6006).
+
+The production Storybook app is deployed when the master branch is updated here: [https://pm2-storybook.on.fleek.co](https://pm2-storybook.on.fleek.co/)
