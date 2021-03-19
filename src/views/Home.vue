@@ -62,11 +62,9 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import getProvider from '@/utils/provider';
+import { getAddress } from '@ethersproject/address';
 import { getPoolLiquidity } from '@/utils/balancer/price';
-import { getNumberOfPools } from '@/utils/balancer/vault';
-import { getPoolVolume } from '@/utils/balancer/subgraph';
-import { getPools } from '@/utils/balancer/pools';
+import { getPools } from '@/api/subgraph';
 import { clone } from '@/utils';
 
 export default {
@@ -74,7 +72,7 @@ export default {
     return {
       q: '',
       loading: false,
-      pools: [],
+      poolData: [],
       limit: 64,
       form: {
         tokens: []
@@ -87,7 +85,7 @@ export default {
   },
   watch: {
     'web3.config.key': function() {
-      this.pools = [];
+      this.poolData = [];
       this.loadPools();
     },
     'form.tokens': function() {
@@ -106,6 +104,23 @@ export default {
           this.form.tokens.every(token => pool.tokens.includes(token))
         )
         .slice(0, this.limit);
+    },
+    pools() {
+      const pools = this.poolData
+        .map(pool => {
+          const tokens = pool.tokens.map(token => getAddress(token.address));
+          const { id, weights } = pool;
+          return {
+            id,
+            tokens,
+            weights,
+            liquidity: getPoolLiquidity(pool, this.market.prices),
+            volume: 0,
+            apy: 0
+          };
+        })
+        .filter(pool => pool.tokens.every(address => !!this.tokens[address]));
+      return pools;
     }
   },
   methods: {
@@ -140,43 +155,15 @@ export default {
       this.form = { ...this.form, ...query };
 
       this.loading = true;
-      const network = this.web3.config.key;
-      const provider = getProvider(network);
+      const chainId = this.web3.config.chainId;
 
-      const totalPools = await getNumberOfPools(network, provider);
-      console.log('Total pools', totalPools);
+      const poolData = await getPools(chainId);
+      this.poolData = poolData;
 
-      if (totalPools > 0) {
-        const poolVolume = await getPoolVolume(network);
-        console.log('Pool volume', poolVolume);
-        const poolIds = poolVolume.map(pool => pool.id);
-
-        const pools = await getPools(network, provider, poolIds.slice(0, 20));
-        console.log('Pools', pools);
-
-        const poolData = pools.map((pool, i) => {
-          const currentPoolVolume = parseFloat(poolVolume[i].totalSwapVolume);
-          const pastPoolVolume =
-            poolVolume[i].swaps.length === 0
-              ? 0
-              : parseFloat(poolVolume[i].swaps[0].totalSwapVolume);
-          const volume = currentPoolVolume - pastPoolVolume;
-          return {
-            ...pool,
-            liquidity: getPoolLiquidity(pool, this.tokens, this.market.prices),
-            volume,
-            apy: 0
-          };
-        });
-        console.log('Pool data', poolData);
-
-        const tokens = pools
-          .map(pool => pool.tokens)
-          .reduce((a, b) => [...a, ...b], []);
-        await this.injectTokens(tokens);
-
-        this.pools = poolData;
-      }
+      const tokens = poolData
+        .map(pool => pool.tokens.map(token => getAddress(token.address)))
+        .reduce((a, b) => [...a, ...b], []);
+      await this.injectTokens(tokens);
 
       this.loading = false;
     }
