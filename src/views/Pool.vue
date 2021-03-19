@@ -42,7 +42,7 @@
               :prices="prices"
               :snapshots="snapshots"
             />
-            <div>
+            <div v-if="swaps.length > 0">
               <h5 class="mb-5">Transactions in this pool</h5>
               <TableSwaps :swaps="swaps" />
             </div>
