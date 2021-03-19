@@ -97,7 +97,7 @@ export default {
             return '';
           }
           const symbol = token.symbol;
-          return `${weight} ${symbol}`;
+          return `${this._num(weight, '0.')} ${symbol}`;
         })
         .join(', ');
     },
