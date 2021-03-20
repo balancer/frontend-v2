@@ -1,5 +1,5 @@
 <template>
-  <div class="chart mr-n2 ml-n2">
+  <div class="chart mr-n2 ml-n2" v-if="nonEmptyHistory.length >= 7">
     <apexchart
       width="100%"
       height="400"

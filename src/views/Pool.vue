@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto mt-4">
-    <div class="pool-nav">
+    <div class="pool-nav border-b pb-2 mb-4">
       <BalBtn
         tag="router-link"
         :to="{ name: 'home' }"
@@ -11,65 +11,42 @@
         <BalIcon name="arrow-left" size="sm" />
         <span class="ml-2">Home</span>
       </BalBtn>
-    </div>
 
-    <h1 class="my-4 flex items-center">
-      {{ $t('pool') }} {{ _shorten(id) }}
       <BalBtn
-        v-clipboard:copy="id"
-        v-clipboard:success="handleCopy"
+        tag="router-link"
+        :to="{ name: 'portfolio' }"
         color="gray"
         size="sm"
         flat
-        circle
-        class="ml-2"
       >
-        <BalIcon name="copy" size="xs" />
+        <span class="ml-2">My Portfolio</span>
       </BalBtn>
-    </h1>
+    </div>
+
+    <div v-if="!loading" class="mb-10">
+      <h3 class="font-bold mb-2">
+        {{ header }}
+      </h3>
+      <div class="text-sm">
+        {{ poolType }} pool. LPs earn
+        {{ _num(pool.strategy.swapFeePercent / 100, '0.00%') }} in fees.
+      </div>
+    </div>
 
     <div class="px-8 lg:px-4">
       <div class="flex flex-wrap -mx-8">
         <div class="order-2 lg:order-1 w-full lg:w-2/3 px-4">
           <div v-if="!loading && !registry.loading">
             <PoolChart
+              class="mb-10"
               :tokens="pool.tokens"
               :prices="prices"
               :snapshots="snapshots"
             />
-            <BalCard :title="$t('overview')" class="mt-8">
-              <div class="flex">
-                <div v-text="$t('poolTokenName')" class="flex-auto" />
-                {{ tokens[pool.address].name }}
-                <a @click="addToken" class="ml-1 mb-n1 mr-n1">
-                  <Icon name="plus" size="22" />
-                </a>
-              </div>
-              <div class="flex">
-                <div v-text="$t('totalSupply')" class="flex-auto" />
-                {{
-                  _num(_units(pool.totalSupply, tokens[pool.address].decimals))
-                }}
-                {{ tokens[pool.address].symbol }}
-              </div>
-              <div class="flex">
-                <div v-text="$t('poolType')" class="flex-auto" />
-                {{ $t(pool.strategy.name) }}
-              </div>
-              <div v-if="pool.strategy.swapFee" class="flex">
-                <div v-text="$t('swapFee')" class="flex-auto" />
-                {{ _num(pool.strategy.swapFeePercent) }}%
-              </div>
-            </BalCard>
-            <BlockPoolTokens
-              class="mt-8"
-              :tokens="getTokens({ addresses: pool.tokens })"
-              :tokenBalances="pool.tokenBalances"
-              :tokenWeights="pool.weightsPercent || []"
-            />
-            <BalCard title="Activity" class="mt-8" noContentPad>
+            <div v-if="swaps.length > 0">
+              <h5 class="mb-5">Transactions in this pool</h5>
               <TableSwaps :swaps="swaps" />
-            </BalCard>
+            </div>
           </div>
         </div>
         <div class="order-1 lg:order-2 w-full lg:w-1/3 px-4 mt-8 lg:mt-0">
@@ -88,7 +65,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { getPoolSwaps, getPoolSnapshots } from '@/utils/balancer/subgraph';
-import { getTokensHistoricalPrice } from '@/utils/coingecko';
+import { getTokensHistoricalPrice } from '@/api/coingecko';
 import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
 
 export default {
@@ -102,17 +79,38 @@ export default {
       loading: false,
       swaps: [],
       prices: {},
-      snapshots: [],
-      hasAllowed: false,
-      marketCharts: [],
-      marketChartsDays: 7,
-      marketChartsLoading: false
+      snapshots: []
     };
   },
 
   computed: {
     ...mapGetters(['getTokens']),
-
+    header() {
+      if (!this.pool) {
+        return '';
+      }
+      return this.pool.tokens
+        .map((address, index) => {
+          const weight = this.pool.weightsPercent[index];
+          const token = this.tokens[address];
+          if (!token) {
+            return '';
+          }
+          const symbol = token.symbol;
+          return `${this._num(weight, '0.')} ${symbol}`;
+        })
+        .join(', ');
+    },
+    poolType() {
+      const strategyName = this.pool.strategy.name;
+      if (strategyName === 'weightedPool') {
+        return 'Weighted';
+      }
+      if (strategyName === 'stablePool') {
+        return 'Stable';
+      }
+      return '';
+    },
     pool() {
       return this.pools.current;
     },
@@ -139,6 +137,13 @@ export default {
 
     handleCopy() {
       this.notify(this.$t('copied'));
+    },
+
+    async fetchPool() {
+      this.loading = true;
+      await this.loadPool(this.id);
+      await this.injectTokens([...this.pool.tokens, this.pool.address]);
+      this.loading = false;
     },
 
     async loadSwaps() {
@@ -172,12 +177,9 @@ export default {
   },
 
   async created() {
-    this.loading = true;
-    await this.loadPool(this.id);
-    await this.injectTokens([...this.pool.tokens, this.pool.address]);
-    await this.loadSwaps();
-    await this.loadChartData(30);
-    this.loading = false;
+    await this.fetchPool();
+    this.loadSwaps();
+    this.loadChartData(30);
   }
 };
 </script>

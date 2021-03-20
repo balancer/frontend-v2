@@ -5,13 +5,9 @@
         {{ label }}
       </span>
       <slot v-else />
-      <BalIcon
-        v-if="closeable"
-        name="x"
-        :size="iconSize"
-        :class="['close', iconClasses]"
-        @click="$emit('closed')"
-      />
+      <div v-if="closeable" @click="$emit('closed')">
+        <BalIcon name="x" :size="iconSize" :class="['close', iconClasses]" />
+      </div>
     </div>
   </div>
 </template>
@@ -81,6 +77,8 @@ export default defineComponent({
   components: {
     BalIcon
   },
+
+  emits: ['closed'],
 
   props: {
     label: { type: String, default: '' },

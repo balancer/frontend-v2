@@ -4,10 +4,13 @@
   "name": "Docker localhost 8545",
   "shortName": "dockerLocalhost",
   "network": "docker localhost",
+  "unknown": false,
   "rpc": "http://localhost:8545",
   "ws": "ws://localhost:8546",
   "explorer": "",
+  "subgraphBackupUrl": "",
   "addresses": {
+    "exchangeProxy": "",
     "multicall": "0xfe17B701A8F44D9D18D4f83dB71Bf9442D0003f1",
     "authorizer": "0x6Bff77238256fFF717e5Cc9A96640dC0D068b14D",
     "vault": "0x293f6758Fe4a4343E367Ac8E6A697eC6315fBEd7",

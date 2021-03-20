@@ -1,30 +1,32 @@
-import { formatUnits } from '@ethersproject/units';
+import { getAddress } from '@ethersproject/address';
 
-import { Pool } from './types';
+import { Pool } from '@/api/subgraph';
 
-export function getPoolLiquidity(pool: Pool, tokens, prices) {
-  if (pool.strategy.type == 2) {
+export function getPoolLiquidity(pool: Pool, prices) {
+  if (pool.strategyType == 2) {
+    const totalWeight = pool.weights.reduce(
+      (total, value) => total + parseFloat(value),
+      0
+    );
     let sumWeight = 0;
     let sumValue = 0;
 
     for (let i = 0; i < pool.tokens.length; i++) {
       const token = pool.tokens[i];
-      if (!prices[token]) {
+      const address = getAddress(token.address);
+      if (!prices[address]) {
         continue;
       }
-      const price = prices[token].price;
+      const price = prices[address].price;
+      const balance = parseFloat(pool.tokens[i].balance);
 
-      const balance = pool.tokenBalances[i];
-      const decimals = tokens[token].decimals;
-      const amount = parseFloat(formatUnits(balance, decimals));
-
-      const value = amount * price;
-      const weight = pool.weightsPercent ? pool.weightsPercent[i] : 0;
+      const value = balance * price;
+      const weight = pool.weights ? parseFloat(pool.weights[i]) : 0;
       sumValue = sumValue + value;
       sumWeight = sumWeight + weight;
     }
     if (sumWeight > 0) {
-      const liquidity = (sumValue / sumWeight) * 100;
+      const liquidity = (sumValue / sumWeight) * totalWeight;
       return liquidity.toString();
     } else {
       return '0';

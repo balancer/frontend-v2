@@ -35,8 +35,8 @@
           </div>
           <div>
             <span class="ml-2" v-for="(token, i) in pool.tokens" :key="token">
-              <span v-if="pool.weightsPercent">
-                {{ _num(pool.weightsPercent[i]) }}
+              <span v-if="pool.weights">
+                {{ _num(getWeights(pool.weights, i), '0%') }}
               </span>
               {{ tokens[token].symbol }}
             </span>
@@ -56,7 +56,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
     pools: Object,
@@ -65,6 +65,14 @@ export default {
   methods: {
     openPool(pool) {
       this.$router.push({ name: 'pool', params: { id: pool.id } });
+    },
+    getWeights(weights, i) {
+      const totalWeight = weights.reduce(
+        (total, val) => total + parseFloat(val),
+        0
+      );
+      const weight = parseFloat(weights[i]);
+      return weight / totalWeight;
     },
     getIconPosition(i, count) {
       if (count < 3) {
