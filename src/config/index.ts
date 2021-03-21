@@ -18,7 +18,6 @@ interface Config {
     vault: string;
     weightedPoolFactory: string;
     stablePoolFactory: string;
-    exchangeProxy: string;
     weth: string;
   };
   strategies: Record<

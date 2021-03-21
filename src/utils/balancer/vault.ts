@@ -2,7 +2,7 @@ import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Multicaller } from '@/utils/balancer/contract';
 import { call, sendTransaction } from '@/utils/balancer/web3';
 import configs from '@/config';
-import { abi } from '@/abi/Vault.json';
+import { default as abi } from '@/abi/Vault.json';
 
 export async function getNumberOfPools(
   network: string,
