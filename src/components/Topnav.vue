@@ -74,9 +74,13 @@
               <BalBtn
                 class="auth-btn"
                 :loading="app.authLoading"
+                :loading-label="
+                  ['sm', 'md'].includes(bp) ? '' : 'Connecting...'
+                "
                 color="gray"
                 outline
                 rounded
+                :circle="['sm', 'md'].includes(bp)"
               >
                 <Avatar
                   :address="web3.account"
