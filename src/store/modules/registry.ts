@@ -176,9 +176,9 @@ const actions = {
       injected.push({ ...tokenMetadata, ...{ injected: true } })
     );
     commit('REGISTRY_SET', { injected });
-    dispatch('getBalances', tokens);
-    dispatch('getAllowances', { tokens });
-    dispatch('loadPrices', tokens);
+    await dispatch('getBalances', tokens);
+    await dispatch('getAllowances', { tokens });
+    await dispatch('loadPrices', tokens);
   },
   toggleList: ({ commit }, name) => {
     const activeLists = clone(state.activeLists);
