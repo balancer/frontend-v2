@@ -2,7 +2,7 @@ import set from 'lodash.set';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { Interface } from '@ethersproject/abi';
-import { abi as multicallAbi } from '@/abi/Multicall.json';
+import { default as multicallAbi } from '@/abi/Multicall.json';
 import configs from '@/config';
 
 export async function call(provider, abi: any[], call: any[], options?) {

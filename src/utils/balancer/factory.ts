@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { sendTransaction } from '@/utils/balancer/web3';
-import { abi as weightedPoolFactoryAbi } from '@/abi/WeightedPoolFactory.json';
-import { abi as stablePoolFactoryAbi } from '@/abi/StablePoolFactory.json';
+import { default as weightedPoolFactoryAbi } from '@/abi/WeightedPoolFactory.json';
+import { default as stablePoolFactoryAbi } from '@/abi/StablePoolFactory.json';
 import configs from '@/config';
 
 export async function createWeightedPool(

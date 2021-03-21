@@ -10,19 +10,13 @@
   "explorer": "https://kovan.etherscan.io",
   "subgraphBackupUrl": "https://ipfs.fleek.co/ipns/balancer-bucket.storage.fleek.co/balancer-exchange-kovan/pools",
   "addresses": {
-    "bFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB",
-    "bActions": "0x02EFDB542B9390ae7C1620B29674e02F9c0d86CC",
-    "dsProxyRegistry": "0x130767E0cf05469CF11Fa3fcf270dfC1f52b9072",
-    "exchangeProxy": "0x4e67bf5bD28Dd4b570FBAFe11D0633eCbA2754Ec",
-    "multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a",
-    "authorizer": "0x22E33436335B983A7322bAe156f726e61C3012Dd",
-    "vault": "0x99EceD8Ba43D090CA4283539A31431108FD34438",
-    "weightedPoolFactory": "0xdB49af9b25cFAdbb0118BD38ec86EaE51F210931",
-    "stablePoolFactory": "0xd0264838A8278674fa71f135f7Dba07cDDeC20d9",
-    "oneToOneSwapValidator": "0x6648473ae4D7a7FdE330846D11ee95FDE2DE9447",
-    "tokenFactory": "0xfc532Ef450D9BaB17d5F153B091d271A3ADDcade",
-    "weth": "0xd98C8F956714a17a5708A3175B8a3E97d1C5eaCc",
-    "MockFlashLoanReceiver": "0xD1C8625C3ECCD11d214A8760093959A8237dD710"
+    "multicall": "0x3b2A02F22fCbc872AF77674ceD303eb269a46ce3",
+    "authorizer": "0x9dF05a75cf0cD41E26262F072bDbE9A9B2178834",
+    "vault": "0xba1c01474A7598c2B49015FdaFc67DdF06ce15f7",
+    "weightedPoolFactory": "0x3b5dBD2bFbE5eFA86dD51Af24436A9B3c25caE40",
+    "stablePoolFactory": "0x360E616ef7A487558982C0005C7B8E60ef252a78",
+    "tokenFactory": "0xEaa391544B268018C0FA848204E984Bd7FF7f20c",
+    "weth": "0xe1329748c41A140536e41049C95c36A53bCACee6"
   },
   "strategies": {
     "0": {
