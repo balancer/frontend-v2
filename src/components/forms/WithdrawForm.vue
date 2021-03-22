@@ -6,7 +6,7 @@
           name="withdrawType"
           label="Withdrawal type"
           v-model="withdrawType"
-          :options="['Proportional', 'Custom', 'Single asset']"
+          :options="['Proportional', 'Single asset']"
           @change="onWithdrawTypeChange"
         />
       </div>
@@ -58,14 +58,6 @@
               {{ formatNum(tokenWeights[i]) }}%
             </span>
           </div>
-        </div>
-      </template>
-      <template v-if="!isProportional" v-slot:info>
-        <div
-          class="cursor-pointer"
-          @click="amounts[i] = amountsMax[i]"
-        >
-          {{ `${amountsMax[i]} max` }}
         </div>
       </template>
     </BalTextInput>
@@ -174,7 +166,7 @@ export default defineComponent({
         .map((token, i) => {
           return (
             (Number(amounts.value[i]) || 0) *
-              store.state.market.prices[token]?.price || 0
+              store.state.market.prices[token.toLowerCase()]?.price || 0
           );
         })
         .reduce((a, b) => a + b, 0);
