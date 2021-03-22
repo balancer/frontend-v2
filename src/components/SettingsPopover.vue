@@ -3,7 +3,7 @@
     <div class="w-full h-2"></div>
     <BalCard class="popover pt-4" shadow="xl" noPad>
       <div class="px-4">
-        <h5>Account</h5>
+        <h5 v-text="$t('account')" />
         <div class="flex mt-1 pb-4 border-b justify-between">
           <div class="flex">
             <div class="relative">
@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="hidden mt-4 px-4">
-        <h5>Language</h5>
+        <h5 v-text="$t('language')" />
         <div class="flex mt-1">
           <div
             v-for="(locale, localeKey) in locales"
@@ -57,7 +57,7 @@
         </div>
       </div>
       <div class="hidden mt-4 px-4">
-        <h5>Theme</h5>
+        <h5 v-text="$t('theme')" />
         <div class="flex mt-1">
           <div
             class="option w-16 mr-2 py-1.5 flex justify-center border rounded-xl cursor-pointer"
@@ -76,7 +76,7 @@
         </div>
       </div>
       <div class="mt-4 px-4">
-        <h5>Price impact tolerance</h5>
+        <h5 v-text="$t('priceImpactTolerance')" />
         <div class="flex mt-1">
           <div
             v-for="slippage in slippageOptions"
@@ -91,12 +91,12 @@
             class="slippage-input w-20 px-2 border rounded-xl"
             :class="{ active: isCustomSlippage }"
             v-model="slippageInput"
-            placeholder="Custom"
+            :placeholder="$t('custom')"
           />
         </div>
       </div>
       <div class="network mt-4 px-4 pt-2 pb-4 text-sm border-t rounded-b-xl">
-        <div>Network</div>
+        <div v-text="$t('network')" />
         <div class="flex items-baseline">
           <div class="w-2 h-2 mr-1 bg-green-400 rounded-full"></div>
           {{ web3.config.name }}

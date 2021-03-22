@@ -11,7 +11,7 @@
           outline
           @click.prevent="modal.selectToken = true"
         >
-          <span>Filter</span>
+          <span v-text="$t('filter')" />
         </BalBtn>
         <div class="flex ml-4" v-if="!registry.loading">
           <BalChip
