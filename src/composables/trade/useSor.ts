@@ -1,11 +1,13 @@
 import { SOR } from '@balancer-labs/sor';
 import { computed, onMounted, ref } from 'vue';
 import { useIntervalFn } from '@vueuse/core';
-import { Pool } from '@balancer-labs/sor/dist/types';
+import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber } from 'bignumber.js';
-import { scale, sleep } from '@/utils';
+import { scale } from '@/utils';
 import getProvider from '@/utils/provider';
 import { useStore } from 'vuex';
+import useAuth from '@/composables/useAuth';
+import { swapIn, swapOut } from '@/utils/balancer/trade';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -19,9 +21,12 @@ export default function useValidation(
 ) {
   let sor: SOR | undefined = undefined;
   const pools = ref<Pool[]>([]);
+  const swaps = ref<Swap[][]>([]);
   const trading = ref(false);
+  const exactIn = ref(true);
 
   const store = useStore();
+  const auth = useAuth();
   const { config } = store.state.web3;
 
   const chainId = computed(() => config.chainId);
@@ -67,9 +72,9 @@ export default function useValidation(
       return;
     }
 
+    exactIn.value = isExactIn;
     const tokenInDecimals = tokens.value[tokenInAddress].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
-
     const tokenAmountRaw = new BigNumber(amount);
 
     if (isExactIn) {
@@ -78,7 +83,7 @@ export default function useValidation(
       console.time(
         `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactIn`
       );
-      const [, tradeAmount] = await sor.getSwaps(
+      const [tradeSwaps, tradeAmount] = await sor.getSwaps(
         tokenInAddress,
         tokenOutAddress,
         'swapExactIn',
@@ -87,6 +92,7 @@ export default function useValidation(
       console.timeEnd(
         `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactIn`
       );
+      swaps.value = tradeSwaps;
 
       const tokenOutAmountRaw = scale(tradeAmount, -tokenOutDecimals);
       tokenOutAmountInput.value = tokenOutAmountRaw.toFixed(
@@ -100,7 +106,7 @@ export default function useValidation(
         `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactOut`
       );
 
-      const [, tradeAmount] = await sor.getSwaps(
+      const [tradeSwaps, tradeAmount] = await sor.getSwaps(
         tokenInAddress,
         tokenOutAddress,
         'swapExactOut',
@@ -109,6 +115,7 @@ export default function useValidation(
       console.timeEnd(
         `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactOut`
       );
+      swaps.value = tradeSwaps;
 
       const tokenInAmountRaw = scale(tradeAmount, -tokenInDecimals);
       tokenInAmountInput.value = tokenInAmountRaw.toFixed(
@@ -120,8 +127,59 @@ export default function useValidation(
 
   async function trade() {
     trading.value = true;
-    await sleep(3e3);
-    trading.value = false;
+
+    const tokenInAddress = tokenInAddressInput.value;
+    const tokenOutAddress = tokenOutAddressInput.value;
+    const tokenInDecimals = tokens.value[tokenInAddress].decimals;
+    const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
+    const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
+    const tokenInAmount = scale(tokenInAmountNumber, tokenInDecimals);
+    const slippageBufferRate = 1; // @TODO change to real slippage;
+
+    if (exactIn.value) {
+      const tokenOutAmountNumber = new BigNumber(tokenOutAmountInput.value);
+      const tokenOutAmount = scale(tokenOutAmountNumber, tokenOutDecimals);
+      const minAmount = tokenOutAmount
+        .div(1 + slippageBufferRate)
+        .integerValue(BigNumber.ROUND_DOWN);
+
+      try {
+        const tx = await swapIn(
+          config.key,
+          auth.web3,
+          swaps.value,
+          tokenInAddress,
+          tokenOutAddress,
+          tokenInAmount,
+          minAmount
+        );
+        await tx.wait();
+      } catch (e) {
+        console.log(e);
+      } finally {
+        trading.value = false;
+      }
+    } else {
+      const tokenInAmountMax = tokenInAmount
+        .times(1 + slippageBufferRate)
+        .integerValue(BigNumber.ROUND_DOWN);
+
+      try {
+        const tx = await swapOut(
+          config.key,
+          auth.web3,
+          swaps.value,
+          tokenInAddress,
+          tokenOutAddress,
+          tokenInAmountMax
+        );
+        await tx.wait();
+      } catch (e) {
+        console.log(e);
+      } finally {
+        trading.value = false;
+      }
+    }
   }
 
   return {
