@@ -15,6 +15,7 @@
             :title="title"
             shadow="2xl"
             :no-pad="noPad"
+            :no-content-pad="noContentPad"
             class="modal-card"
             no-border
           >
@@ -46,7 +47,8 @@ export default defineComponent({
   props: {
     show: { type: Boolean, default: false },
     title: { type: String, default: '' },
-    noPad: { type: Boolean, default: false }
+    noPad: { type: Boolean, default: false },
+    noContentPad: { type: Boolean, default: false }
   },
 
   setup(props) {
@@ -85,7 +87,7 @@ export default defineComponent({
 }
 
 .content {
-  @apply relative w-full;
+  @apply relative w-full max-h-screen overflow-hidden;
   max-width: 500px;
 }
 
