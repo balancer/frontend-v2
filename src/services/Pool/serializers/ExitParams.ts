@@ -3,7 +3,6 @@ import { encodeExitStablePool } from '@/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { ExitOptions } from '../Exchange';
 
 export default class ExitParams {
   private service: PoolService;
