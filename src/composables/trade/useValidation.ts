@@ -11,19 +11,16 @@ export default function useValidation(
   const auth = useAuth();
 
   const errorMessage = computed(() => {
-    if (!auth.isAuthenticated)
-      return '';
+    if (!auth.isAuthenticated) return '';
 
     const tokenIn = tokens.value[tokenInAddress.value];
 
-    if (parseFloat(tokenInAmount.value) == 0)
-      return 'Enter amount';
+    if (parseFloat(tokenInAmount.value) == 0) return 'Enter amount';
 
     if (!tokenIn?.balance || tokenIn.balance < tokenInAmount.value)
       return 'Not enough funds';
 
-    if (!tokenOutAmount.value)
-      return 'Not enough liquidity';
+    if (!tokenOutAmount.value) return 'Not enough liquidity';
 
     return '';
   });
