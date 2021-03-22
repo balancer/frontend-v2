@@ -34,6 +34,7 @@ export default class ExitParams {
     return [
       this.service.pool.id,
       account,
+      account,
       this.service.pool.tokens,
       parsedAmountsOut,
       this.toInternalBalance,
