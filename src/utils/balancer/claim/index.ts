@@ -58,7 +58,7 @@ export async function getPendingClaims(network, provider, address) {
     return {
       id: report[0],
       amount: report[1][address],
-      amountDenorm: toWei(report[1][address])
+      amountDenorm: toWei(report[1][address] || '0')
     };
   });
 }
