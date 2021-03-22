@@ -33,6 +33,7 @@ export default class JoinParams {
     return [
       this.service.pool.id,
       account,
+      account,
       this.service.pool.tokens,
       parsedAmountsIn,
       this.fromInternalBalance,
