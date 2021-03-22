@@ -3,7 +3,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Web3Provider } from '@ethersproject/providers';
 import configs from '@/config';
 import { sendTransaction } from '@/utils/balancer/web3';
-import { abi } from '@/abi/Vault.json';
+import { default as abi } from '@/abi/Vault.json';
 import { Token } from '@/types';
 import JoinParams from './serializers/JoinParams';
 import ExitParams from './serializers/ExitParams';
@@ -28,7 +28,7 @@ export default class Exchange {
     amountsIn: string[],
     bptOut = '0'
   ): Promise<TransactionResponse> {
-    const txParams = new JoinParams(this).serialize(account, amountsIn, bptOut);
+    const txParams = this.joinParams.serialize(account, amountsIn, bptOut);
 
     return await sendTransaction(
       this.provider,
@@ -45,7 +45,7 @@ export default class Exchange {
     bptIn: string,
     exitTokenIndex: number | null
   ): Promise<TransactionResponse> {
-    const txParams = new ExitParams(this).serialize(
+    const txParams = this.exitParams.serialize(
       account,
       amountsOut,
       bptIn,
@@ -59,5 +59,13 @@ export default class Exchange {
       'exitPool',
       txParams
     );
+  }
+
+  private get joinParams() {
+    return new JoinParams(this);
+  }
+
+  private get exitParams() {
+    return new ExitParams(this);
   }
 }
