@@ -94,9 +94,11 @@
         v-else
         type="submit"
         label="Swap"
+        :loading="trading"
         loading-label="Confirming..."
         color="gradient"
         block
+        @click.prevent="trade"
       />
     </BalCard>
     <teleport to="#modal">
@@ -125,28 +127,18 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed, watch, onMounted } from 'vue';
-import { useIntervalFn } from '@vueuse/core';
+import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import numeral from 'numeral';
-import { SOR } from '@balancer-labs/sor';
-import { BigNumber } from 'bignumber.js';
-import getProvider from '@/utils/provider';
-import { Pool } from '@balancer-labs/sor/dist/types';
-import { scale } from '@/utils';
 import useAuth from '@/composables/useAuth';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
-
-const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
-const MAX_POOLS = 4;
+import useSor from '@/composables/trade/useSor';
 
 export default defineComponent({
   setup() {
-    let sor: SOR | undefined = undefined;
-
     const store = useStore();
-    const auth = useAuth();
+    const { isAuthenticated } = useAuth();
 
     const { getTokens, getTokenlists } = store.getters;
     const { config } = store.state.web3;
@@ -161,17 +153,12 @@ export default defineComponent({
     const modalSelectListIsOpen = ref(false);
     const isInRate = ref(true);
     const q = ref('');
-    const pools = ref<Pool[]>([]);
 
     const tokens = computed(() => getTokens());
 
     // Composables
-    const { approving, approve, requireAllowance } = useTokenApproval(
-      tokenInAddressInput,
-      tokenInAmountInput,
-      tokens
-    );
-    const { errorMessage } = useValidation(
+
+    const { trading, trade, initSor, handleAmountChange } = useSor(
       tokenInAddressInput,
       tokenInAmountInput,
       tokenOutAddressInput,
@@ -179,82 +166,19 @@ export default defineComponent({
       tokens
     );
 
-    onMounted(async () => await initSor());
+    const { approving, approve, requireAllowance } = useTokenApproval(
+      tokenInAddressInput,
+      tokenInAmountInput,
+      tokens
+    );
 
-    useIntervalFn(async () => {
-      if (sor) {
-        console.time('[SOR] fetchPools');
-        await sor.fetchPools();
-        console.timeEnd('[SOR] fetchPools');
-      }
-    }, 60 * 1e3);
-
-    async function handleAmountChange(
-      isExactIn: boolean,
-      amount: string
-    ): Promise<void> {
-      const tokenInAddress = tokenInAddressInput.value;
-      const tokenOutAddress = tokenOutAddressInput.value;
-
-      if (
-        !tokenInAddress ||
-        !tokenOutAddress ||
-        !sor ||
-        !sor.hasDataForPair(tokenInAddress, tokenOutAddress)
-      ) {
-        return;
-      }
-
-      const tokenInDecimals = tokens.value[tokenInAddress].decimals;
-      const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
-
-      const tokenAmountRaw = new BigNumber(amount);
-
-      if (isExactIn) {
-        const tokenInAmount = scale(tokenAmountRaw, tokenInDecimals);
-
-        console.time(
-          `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactIn`
-        );
-        const [, tradeAmount] = await sor.getSwaps(
-          tokenInAddress,
-          tokenOutAddress,
-          'swapExactIn',
-          tokenInAmount
-        );
-        console.timeEnd(
-          `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactIn`
-        );
-
-        const tokenOutAmountRaw = scale(tradeAmount, -tokenOutDecimals);
-        tokenOutAmountInput.value = tokenOutAmountRaw.toFixed(
-          6,
-          BigNumber.ROUND_DOWN
-        );
-      } else {
-        const tokenOutAmount = scale(tokenAmountRaw, tokenOutDecimals);
-
-        console.time(
-          `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactOut`
-        );
-
-        const [, tradeAmount] = await sor.getSwaps(
-          tokenInAddress,
-          tokenOutAddress,
-          'swapExactOut',
-          tokenOutAmount
-        );
-        console.timeEnd(
-          `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactOut`
-        );
-
-        const tokenInAmountRaw = scale(tradeAmount, -tokenInDecimals);
-        tokenInAmountInput.value = tokenInAmountRaw.toFixed(
-          6,
-          BigNumber.ROUND_DOWN
-        );
-      }
-    }
+    const { errorMessage } = useValidation(
+      tokenInAddressInput,
+      tokenInAmountInput,
+      tokenOutAddressInput,
+      tokenOutAmountInput,
+      tokens
+    );
 
     const rateMessage = computed(() => {
       let message = '';
@@ -285,21 +209,6 @@ export default defineComponent({
 
     function toggleRate(): void {
       isInRate.value = !isInRate.value;
-    }
-
-    async function initSor(): Promise<void> {
-      const poolsUrl = `${config.subgraphBackupUrl}?timestamp=${Date.now()}`;
-      sor = new SOR(
-        getProvider(chainId.value),
-        new BigNumber(GAS_PRICE),
-        MAX_POOLS,
-        chainId.value,
-        poolsUrl
-      );
-      console.time('[SOR] fetchPools');
-      await sor.fetchPools();
-      console.timeEnd('[SOR] fetchPools');
-      pools.value = sor.onChainCache.pools;
     }
 
     function openModalSelectToken(type: string): void {
@@ -368,7 +277,7 @@ export default defineComponent({
       tokens,
       modalSelectTokenIsOpen,
       modalSelectListIsOpen,
-      isAuthenticated: auth.isAuthenticated,
+      isAuthenticated,
       connectWallet,
       tokenInAddressInput,
       tokenInAmountInput,
@@ -389,7 +298,9 @@ export default defineComponent({
       errorMessage,
       requireAllowance,
       approving,
-      approve
+      approve,
+      trading,
+      trade
     };
   }
 });
