@@ -154,7 +154,7 @@ export default defineComponent({
         .map((token, i) => {
           return (
             (Number(amounts.value[i]) || 0) *
-              store.state.market.prices[token]?.price || 0
+              store.state.market.prices[token.toLowerCase()]?.price || 0
           );
         })
         .reduce((a, b) => a + b, 0);

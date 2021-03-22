@@ -5,15 +5,19 @@ function getChainAddress(chainId: number, address: string) {
   const map = {
     1: {},
     42: {
-      '0xb5399358fa9744c604f8fae7043a547f74206d4c':
+      '0xe1329748c41A140536e41049C95c36A53bCACee6':
         '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      '0x3994596ad2114bc369e3e542abee9bc3d2c071b1':
+      '0x7a0fbc1ad60e8d624215282afb0e877e51a08136':
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-      '0x16c6a736b28d92aae496bb30f937826798afc63c':
+      '0x1688c45bc51faa1b783d274e03da0a0b28a0a871':
         '0xba100000625a3754423978a60c9317c58a424e3d',
-      '0xfa06b7b5e149e575b457e595c606ec58b17e9e13':
+      '0x5468c3a3e32e390c6fef5e3622a616695b501900':
+        '0xbc396689893d065f41bc2c6ecbee5e0085233447',
+      '0xd9d9e09604c0c14b592e6e383582291b026ebced':
+        '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
+      '0xfd05bbf0e4e2fc552a67f3cb2dd2ecb289252ee1':
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      '0xff7f80466430289049c9325f88af5646ae93e5a7':
+      '0x59935f19d720ad935becdc34c4f367397a28daed':
         '0x6b175474e89094c44da98b954eedeac495271d0f'
     }
   };
@@ -26,23 +30,29 @@ function getOriginalAddress(chainId: number, address: string) {
   }
   const map = {
     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': {
-      42: '0xB5399358Fa9744c604F8faE7043a547F74206D4C'
+      42: '0xe1329748c41a140536e41049c95c36a53bcacee6'
     },
     '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': {
-      42: '0x3994596aD2114BC369E3e542ABeE9bC3D2c071b1'
+      42: '0x7a0fbc1ad60e8d624215282afb0e877e51a08136'
     },
     '0xba100000625a3754423978a60c9317c58a424e3d': {
-      42: '0x16c6A736B28d92aae496bB30f937826798AfC63C'
+      42: '0x1688c45bc51faa1b783d274e03da0a0b28a0a871'
+    },
+    '0xbc396689893d065f41bc2c6ecbee5e0085233447': {
+      42: '0x5468c3a3e32e390c6fef5e3622a616695b501900'
+    },
+    '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2': {
+      42: '0xd9d9e09604c0c14b592e6e383582291b026ebced'
     },
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
-      42: '0xfA06B7B5e149e575B457e595c606ec58B17e9e13'
+      42: '0xfd05bbf0e4e2fc552a67f3cb2dd2ecb289252ee1'
     },
     '0x6b175474e89094c44da98b954eedeac495271d0f': {
-      42: '0xFf7F80466430289049c9325F88Af5646ae93e5A7'
+      42: '0x59935f19d720ad935becdc34c4f367397a28daed'
     }
   };
   if (!map[address] || !map[address][chainId]) {
-    return address;
+    return address.toLowerCase();
   }
   return map[address][chainId];
 }
