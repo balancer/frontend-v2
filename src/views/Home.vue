@@ -5,10 +5,31 @@
       <MainMenu class="mt-6" />
       <TablePools
         v-if="!loading && !registry.loading"
-        class="mt-2"
-        :pools="pools"
+        class="overflow-hidden"
+        noPad
+      >
+        <TablePools :pools="filteredPools" :tokens="tokens" />
+      </BalCard>
+    </Container>
+    <teleport to="#modal">
+      <ModalSelectToken
+        :open="modal.selectToken"
+        :loading="registry.loading"
+        @close="modal.selectToken = false"
+        @select="addToken"
+        @selectTokenlist="modalSelectLists"
+        @inputSearch="onTokenSearch"
+        :tokens="getTokens({ q, not: form.tokens })"
       />
-    </div>
+      <!-- <ModalSelectTokenlist
+        :open="modal.selectTokenlist"
+        @close="modal.selectTokenlist = false"
+        @back="modalSelectToken"
+        @select="toggleList($event)"
+        @inputSearch="q = $event"
+        :tokenlists="getTokenlists({ q })"
+      /> -->
+    </teleport>
   </div>
 </template>
 
