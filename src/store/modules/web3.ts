@@ -66,8 +66,8 @@ const actions = {
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
-      dispatch('getBalances');
-      dispatch('getAllowances');
+      await dispatch('getBalances');
+      await dispatch('getAllowances');
     }
     commit('setAuthLoading', false);
     commit('WEB3_SET', { connector });
@@ -91,18 +91,18 @@ const actions = {
       if (auth.provider.value.on) {
         auth.provider.value.on('chainChanged', async chainId => {
           commit('HANDLE_CHAIN_CHANGED', parseInt(formatUnits(chainId, 0)));
-          dispatch('resetAccount');
-          dispatch('getBalances');
-          dispatch('getAllowances');
-          dispatch('getBlockNumber');
+          await dispatch('resetAccount');
+          await dispatch('getBalances');
+          await dispatch('getAllowances');
+          await dispatch('getBlockNumber');
         });
         auth.provider.value.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
             commit('HANDLE_ACCOUNTS_CHANGED', accounts[0]);
-            dispatch('resetAccount');
+            await dispatch('resetAccount');
             await dispatch('loadProvider');
-            dispatch('getBalances');
-            dispatch('getAllowances');
+            await dispatch('getBalances');
+            await dispatch('getAllowances');
           }
         });
         auth.provider.value.on('disconnect', async () => {

@@ -148,9 +148,9 @@ const actions = {
     commit('REGISTRY_SET', { loading: true });
     await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
     commit('REGISTRY_SET', { loading: false, loaded: true });
-    dispatch('getBalances');
-    dispatch('getAllowances');
-    dispatch('loadPrices');
+    await dispatch('getBalances');
+    await dispatch('getAllowances');
+    await dispatch('loadPrices');
   },
   loadTokenlist: async ({ commit }, name) => {
     name = name || TOKEN_LIST_DEFAULT;
@@ -176,7 +176,7 @@ const actions = {
       injected.push({ ...tokenMetadata, ...{ injected: true } })
     );
     commit('REGISTRY_SET', { injected });
-    await dispatch('getBalances', tokens);
+    await dispatch('getBalances');
     await dispatch('getAllowances', { tokens });
     await dispatch('loadPrices', tokens);
   },
