@@ -46,13 +46,14 @@ export default defineComponent({
       type: String,
       default: 'primary',
       validator: (val: string): boolean =>
-        ['primary', 'gradient', 'gray'].includes(val)
+        ['primary', 'gradient', 'gray', 'red'].includes(val)
     },
     label: { type: String, default: '' },
     block: { type: Boolean, default: false },
     circle: { type: Boolean, default: false },
     outline: { type: Boolean, default: false },
     flat: { type: Boolean, default: false },
+    rounded: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     loadingLabel: { type: String, default: 'loading...' },
     disabled: { type: Boolean, default: false }
@@ -116,12 +117,12 @@ export default defineComponent({
     };
 
     const borderClasses = (): string => {
-      if (props.outline) return `border border-${props.color}-100`;
+      if (props.outline) return `border border-${props.color}-200`;
       return 'border-none';
     };
 
     const textColorClasses = (): string => {
-      if (props.outline) return `text-${props.color}-100`;
+      if (props.outline) return `text-${props.color}-500`;
       if (props.flat) return `text-${props.color}-400`;
       return 'text-white';
     };
@@ -133,8 +134,8 @@ export default defineComponent({
     };
 
     const shapeClasses = (): string => {
-      if (props.circle) return 'rounded-full';
-      return 'rounded';
+      if (props.circle || props.rounded) return 'rounded-full';
+      return 'rounded-lg';
     };
 
     const cursorClasses = (): string => {

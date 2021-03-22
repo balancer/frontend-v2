@@ -38,25 +38,46 @@
                 v-text="'Balancer'"
               />
             </router-link>
-            <router-link :to="{ name: 'trade' }" class="ml-4 font-bold">
+            <router-link
+              :to="{ name: 'trade' }"
+              :class="[
+                'ml-8 font-medium text-gray-500',
+                { 'text-gray-900': $route.name === 'trade' }
+              ]"
+            >
               {{ $t('trade') }}
             </router-link>
-            <router-link :to="{ name: 'home' }" class="ml-4 font-bold">
+            <router-link
+              :to="{ name: 'home' }"
+              :class="[
+                'ml-8 font-medium text-gray-500',
+                { 'text-gray-900': $route.name === 'home' }
+              ]"
+            >
               {{ $t('invest') }}
             </router-link>
           </div>
           <div :key="web3.account">
-            <template v-if="$auth.isAuthenticated.value">
-              <a
+            <div v-if="$auth.isAuthenticated.value" class="flex items-center">
+              <BalBtn
                 v-if="totalPending"
+                tag="a"
                 :href="`https://claim.balancer.finance/#/${web3.account}`"
                 target="_blank"
+                rel="noreferrer"
+                color="gradient"
+                rounded
+                class="mr-2"
               >
-                <UiButton class="button--submit mr-2 hidden md:inline-block">
-                  ✨ {{ _num(totalPending) }} BAL
-                </UiButton>
-              </a>
-              <UiButton class="button-outline" :loading="app.authLoading">
+                ✨ {{ _num(totalPending) }} BAL
+              </BalBtn>
+              <BalBtn
+                class="auth-btn"
+                :loading="app.authLoading"
+                color="gray"
+                outline
+                rounded
+              >
                 <Avatar
                   :address="web3.account"
                   :profile="web3.profile"
@@ -72,56 +93,50 @@
                   v-text="_shorten(web3.account)"
                   class="pl-2 text-base hidden md:inline-block"
                 />
-              </UiButton>
+              </BalBtn>
               <SettingsPopover v-if="!app.authLoading" class="popover" />
-            </template>
-            <UiButton
-              v-if="!$auth.isAuthenticated.value"
-              @click="modalOpen = true"
+            </div>
+            <BalBtn
+              v-else
+              color="gray"
+              outline
+              rounded
+              :circle="['sm', 'md'].includes(bp)"
+              @click="setAccountModal(true)"
             >
               <span
                 class="hidden md:inline-block"
                 v-text="$t('connectWallet')"
               />
-              <Icon name="login" size="20" class="-ml-2 -mr-2 md:hidden" />
-            </UiButton>
+              <BalIcon name="log-out" size="sm" class="md:hidden" />
+            </BalBtn>
           </div>
         </div>
       </div>
     </nav>
-    <div
-      v-if="notifications.watch.length > 0"
-      class="p-2 text-center bg-blue-500"
-      style="color: white;"
-    >
-      <UiLoading class="fill-white mr-2" />
-      <span class="inline-block pt-1">
-        {{ $tc('transactionPending', _num(notifications.watch.length)) }}
-      </span>
-    </div>
-    <teleport to="#modal">
-      <ModalAccount
-        :open="modalOpen"
-        @close="modalOpen = false"
-        @login="handleLogin"
-      />
-    </teleport>
   </Sticky>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { defineComponent } from 'vue';
+import { mapActions, mapMutations } from 'vuex';
 import getProvider from '@/utils/provider';
 import { getPendingClaims } from '@/utils/balancer/claim';
+import useBreakpoints from '@/composables/useBreakpoints';
 
-export default {
+export default defineComponent({
+  setup() {
+    const { bp } = useBreakpoints();
+    return { bp };
+  },
+
   data() {
     return {
-      modalOpen: false,
       pendingClaims: false,
       totalPending: false
     };
   },
+
   watch: {
     'web3.account': function() {
       this.pendingClaims = false;
@@ -129,12 +144,11 @@ export default {
       if (this.web3.account) this.getPendingClaims();
     }
   },
+
   methods: {
     ...mapActions(['login']),
-    async handleLogin(connector) {
-      this.modalOpen = false;
-      await this.login(connector);
-    },
+    ...mapMutations(['setAccountModal']),
+
     async getPendingClaims() {
       const network = '1' || this.web3.config.key;
       const provider = getProvider(network);
@@ -149,7 +163,7 @@ export default {
         .reduce((a, b) => a + b, 0);
     }
   }
-};
+});
 </script>
 
 <style scoped lang="css">
@@ -158,7 +172,8 @@ export default {
   @apply bg-white dark:bg-gray-900;
   @apply border-b border-transparent dark:border-gray-700;
 }
-.button-outline:hover ~ .popover {
+
+.auth-btn:hover ~ .popover {
   display: initial;
 }
 </style>

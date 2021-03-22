@@ -42,7 +42,7 @@ const mutations = {
       configs[chainId] = {
         ...configs[defaultConfig],
         unknown: true,
-        shortName: undefined
+        shortName: ''
       };
     }
     _state.config = configs[chainId];

@@ -4,10 +4,10 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 import { Multicaller } from '@/utils/balancer/contract';
 import set from 'lodash/set';
-import { abi as vaultAbi } from '@/abi/Vault.json';
-import { abi as weightedPoolAbi } from '@/abi/WeightedPool.json';
-import { abi as stablePoolAbi } from '@/abi/StablePool.json';
-import { abi as bTokenAbi } from '@/abi/BToken.json';
+import { default as vaultAbi } from '@/abi/Vault.json';
+import { default as weightedPoolAbi } from '@/abi/WeightedPool.json';
+import { default as stablePoolAbi } from '@/abi/StablePool.json';
+import { default as TokenAbi } from '@/abi/ERC20.json';
 import { Pool } from '@/utils/balancer/types';
 import { getPoolShares, getPoolsLiquidity } from '@/utils/balancer/subgraph';
 import configs from '@/config';
@@ -19,7 +19,7 @@ const abis = Object.values(
       ...vaultAbi,
       ...weightedPoolAbi,
       ...stablePoolAbi,
-      ...bTokenAbi
+      ...TokenAbi
     ].map(row => [row.name, row])
   )
 );
@@ -31,11 +31,11 @@ function formatPool(pool): Pool {
 
   switch (pool.strategy.name) {
     case 'weightedPool': {
-      const totalWeight = pool.strategy.weights.reduce(
+      const totalWeight = pool.weights.reduce(
         (a, b) => a.add(b),
         BigNumber.from(0)
       );
-      pool.strategy.weightsPercent = pool.strategy.weights.map(
+      pool.weightsPercent = pool.weights.map(
         weight =>
           (100 / parseFloat(formatUnits(totalWeight, 10))) *
           parseFloat(formatUnits(weight, 10))
@@ -43,9 +43,7 @@ function formatPool(pool): Pool {
       break;
     }
     case 'stablePool': {
-      pool.strategy.weightsPercent = pool.tokens.map(
-        () => 100 / pool.tokens.length
-      );
+      pool.weightsPercent = pool.tokens.map(() => 100 / pool.tokens.length);
       break;
     }
   }
@@ -92,14 +90,13 @@ export async function getPools(
     multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
 
     if (pool.strategy.name === 'weightedPool') {
-      multi.call(
-        `${id}.strategy.weights`,
-        pool.address,
-        'getNormalizedWeights',
-        [pool.tokens]
-      );
+      multi.call(`${id}.weights`, pool.address, 'getNormalizedWeights', []);
     } else if (pool.strategy.name === 'stablePool') {
-      multi.call(`${id}.strategy.amp`, pool.address, 'getAmplification');
+      multi.call(
+        `${id}.strategy.amp`,
+        pool.address,
+        'getAmplificationParameter'
+      );
     }
   });
 

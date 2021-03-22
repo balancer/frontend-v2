@@ -27,7 +27,7 @@
     "@ethersproject/units": "^5.0.1",
     "@ethersproject/wallet": "^5.0.1",
     "@portis/web3": "^3.0.3",
-    "@snapshot-labs/lock": "github:snapshot-labs/lock#master",
+    "@snapshot-labs/lock": "github:snapshot-labs/lock#d710a75eee46ee78e5a78b36fbf0cffb77a0fa5c",
     "@toruslabs/torus-embed": "^1.9.4",
     "@vue/cli-plugin-babel": "^4.4.0",
     "@vue/cli-plugin-eslint": "^4.4.0",

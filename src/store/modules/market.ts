@@ -1,4 +1,4 @@
-import { getEtherPrice, getTokensPrice } from '@/utils/coingecko';
+import { getEtherPrice, getTokensPrice } from '@/api/coingecko';
 
 const state = {
   prices: {},

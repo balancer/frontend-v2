@@ -122,13 +122,13 @@ export default defineComponent({
 
     function handleInvestment(txReceipt): void {
       investmentSuccess.value = true;
-      txHash.value = txReceipt.transactionHash;
+      txHash.value = txReceipt.hash;
       emit('onTx', txReceipt);
     }
 
     function handleWithdrawal(txReceipt): void {
       withdrawalSuccess.value = true;
-      txHash.value = txReceipt.transactionHash;
+      txHash.value = txReceipt.hash;
       emit('onTx', txReceipt);
     }
 
