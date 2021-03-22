@@ -1,7 +1,7 @@
 <template>
-  <div v-if="show" @keyup.esc="hide" class="bal-dialog" @click="hide">
-    <transition name="dialog-bg" mode="out-in" appear>
-      <div v-if="showContent" class="dialog-bg" @click="hide" />
+  <div v-if="show" @keyup.esc="hide" class="bal-modal" @click="hide">
+    <transition name="modal-bg" mode="out-in" appear>
+      <div v-if="showContent" class="modal-bg" @click="hide" />
     </transition>
     <div class="content-container">
       <transition
@@ -15,7 +15,8 @@
             :title="title"
             shadow="2xl"
             :no-pad="noPad"
-            class="dialog-card"
+            class="modal-card"
+            no-border
           >
             <template v-if="$slots.header" v-slot:header>
               <slot name="header" />
@@ -36,7 +37,7 @@ import BalCard from './Card.vue';
 import { defineComponent, ref, toRefs, watch, computed } from 'vue';
 
 export default defineComponent({
-  name: 'BalDialog',
+  name: 'BalModal',
 
   components: {
     BalCard
@@ -75,7 +76,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.bal-dialog {
+.bal-modal {
   @apply top-0 left-0 fixed h-screen w-full z-50;
 }
 
@@ -88,12 +89,12 @@ export default defineComponent({
   max-width: 500px;
 }
 
-.dialog-bg {
+.modal-bg {
   @apply absolute h-full w-full bg-black bg-opacity-50;
 }
 
-.dialog-card {
-  @apply w-full mx-auto rounded-b-none sm:rounded-b;
+.modal-card {
+  @apply w-full mx-auto rounded-b-none sm:rounded-b-lg;
 }
 
 .content-enter-active {
@@ -110,16 +111,16 @@ export default defineComponent({
   transform: translateY(70%) scale(0.95);
 }
 
-.dialog-bg-enter-active {
+.modal-bg-enter-active {
   transition: all 0.3s ease-in-out;
 }
 
-.dialog-bg-leave-active {
+.modal-bg-leave-active {
   transition: all 0.3s ease-in-out;
 }
 
-.dialog-bg-enter-from,
-.dialog-bg-leave-to {
+.modal-bg-enter-from,
+.modal-bg-leave-to {
   background: transparent;
 }
 </style>
