@@ -13,22 +13,11 @@
     </Container>
     <teleport to="#modal">
       <ModalSelectToken
+        v-if="!registry.loading"
         :open="modal.selectToken"
-        :loading="registry.loading"
         @close="modal.selectToken = false"
         @select="addToken"
-        @selectTokenlist="modalSelectLists"
-        @inputSearch="onTokenSearch"
-        :tokens="getTokens({ q, not: form.tokens })"
       />
-      <!-- <ModalSelectTokenlist
-        :open="modal.selectTokenlist"
-        @close="modal.selectTokenlist = false"
-        @back="modalSelectToken"
-        @select="toggleList($event)"
-        @inputSearch="q = $event"
-        :tokenlists="getTokenlists({ q })"
-      /> -->
     </teleport>
   </div>
 </template>

@@ -5,7 +5,7 @@
     @close="$emit('close')"
     no-content-pad
   >
-    <template v-if="selectTokenlist">
+    <template v-if="selectTokenList">
       <Search
         v-model="q"
         @input="filterTokenLists"
@@ -14,11 +14,11 @@
       />
       <div>
         <div
-          v-if="Object.keys(tokenlists).length > 0"
+          v-if="Object.keys(tokenLists).length > 0"
           class="h-96 overflow-scroll"
         >
-          <a v-for="(tokenlist, i) in tokenlists" :key="i" @click="onSelect(i)">
-            <RowTokenlist :tokenlist="tokenlist" />
+          <a v-for="(tokenList, i) in tokenLists" :key="i" @click="onSelect(i)">
+            <RowTokenlist :tokenlist="tokenList" />
           </a>
         </div>
         <div
@@ -36,11 +36,11 @@
           :placeholder="$t('searchBy')"
           class="p-4 flex-auto"
         />
-        <a @click="toggleList" class="p-4">
+        <a @click="toggleSelectTokenList" class="p-4">
           <Icon name="down" class="pl-1 pt-1 float-right" />
           <span class="mr-3">
             <img
-              v-for="(tokenlist, i) in tokenlistsReverse"
+              v-for="(tokenlist, i) in activeTokenLists"
               :key="i"
               :src="_url(tokenlist.logoURI)"
               class="rounded-full float-right inline-block bg-white align-middle border -ml-3"
@@ -74,23 +74,24 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { clone } from '@/utils';
 
 export default {
   emits: ['close', 'inputSearch', 'selectTokenlist', 'select'],
 
   props: {
-    open: Boolean,
-    tokens: Object,
-    loading: Boolean
+    open: Boolean
   },
 
   data() {
     return {
+      loading: false,
       q: '',
-      selectTokenlist: false,
-      tokenLists: {}
+      selectTokenList: false,
+      form: {
+        tokens: []
+      }
     };
   },
 
@@ -98,23 +99,34 @@ export default {
     ...mapGetters(['getTokens', 'getTokenlists']),
 
     tokenlistsReverse() {
-      const tokenlists = clone(this.tokenlists);
+      const tokenlists = clone(this.tokenLists);
       return Object.values(tokenlists).reverse();
+    },
+
+    tokenLists() {
+      return this.getTokenlists({ q: this.q });
+    },
+
+    activeTokenLists() {
+      return this.getTokenlists({ active: true });
+    },
+
+    tokens() {
+      return this.getTokens({ q: this.q, not: this.form.tokens });
     }
   },
 
-  beforeMount() {
-    this.tokenLists = this.getTokenlists({ active: true });
-  },
-
   methods: {
+    ...mapActions(['toggleList']),
+
     onSelect(token) {
-      this.$emit('select', token);
-      this.$emit('close');
+      this.toggleList(token);
+      // this.$emit('select', token);
+      // this.$emit('close');
     },
 
-    toggleList() {
-      this.selectTokenlist = !this.selectTokenlist;
+    toggleSelectTokenList() {
+      this.selectTokenList = !this.selectTokenList;
       this.q = '';
     },
 
