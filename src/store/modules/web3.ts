@@ -91,18 +91,18 @@ const actions = {
       if (auth.provider.value.on) {
         auth.provider.value.on('chainChanged', async chainId => {
           commit('HANDLE_CHAIN_CHANGED', parseInt(formatUnits(chainId, 0)));
-          await dispatch('resetAccount');
-          await dispatch('getBalances');
-          await dispatch('getAllowances');
-          await dispatch('getBlockNumber');
+          dispatch('resetAccount');
+          dispatch('getBalances');
+          dispatch('getAllowances');
+          dispatch('getBlockNumber');
         });
         auth.provider.value.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
             commit('HANDLE_ACCOUNTS_CHANGED', accounts[0]);
-            await dispatch('resetAccount');
+            dispatch('resetAccount');
             await dispatch('loadProvider');
-            await dispatch('getBalances');
-            await dispatch('getAllowances');
+            dispatch('getBalances');
+            dispatch('getAllowances');
           }
         });
         auth.provider.value.on('disconnect', async () => {
