@@ -54,7 +54,7 @@ export default class ExitParams {
     exitTokenIndex: number | null
   ): string {
     const isSingleAssetOut = exitTokenIndex !== null;
-    console.log('params2', amountsOut, bptIn, exitTokenIndex, isSingleAssetOut)
+
     if (this.isStablePool) {
       return this.dataEncodeFn({
         kind: 'ExactBPTInForAllTokensOut',
