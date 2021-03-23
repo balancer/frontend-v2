@@ -66,8 +66,8 @@ const actions = {
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
-      await dispatch('getBalances');
-      await dispatch('getAllowances');
+      dispatch('getBalances');
+      dispatch('getAllowances');
     }
     commit('setAuthLoading', false);
     commit('WEB3_SET', { connector });
