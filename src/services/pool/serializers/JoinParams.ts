@@ -27,7 +27,7 @@ export default class JoinParams {
     const parsedBptOut = parseUnits(
       bptOut,
       this.exchange.tokens[this.exchange.pool.address].decimals
-    );
+    ).toString();
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
 
     return [
