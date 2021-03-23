@@ -12,7 +12,7 @@
       </div>
       <div v-if="isProportional" class="ml-4 flex-1">
         <div class="text-right text-sm text-gray-500">
-          {{ Math.ceil((Number(bptIn) / bptBalance) * 100) }}%
+          {{ propPercentage }}%
         </div>
         <input
           type="range"
@@ -166,6 +166,14 @@ export default defineComponent({
         .reduce((a, b) => a + b, 0);
 
       return formatNum(total, '$0,0.[00]');
+    });
+
+    const propPercentage = computed(() => {
+      const maxAmount = Number(bptBalance.value);
+      const currentAmount = Number(bptIn.value);
+      if (!currentAmount) return 0;
+      if (maxAmount === 0) return 0;
+      return Math.ceil((currentAmount / maxAmount) * 100);
     });
 
     const isProportional = computed(() => {
@@ -325,7 +333,8 @@ export default defineComponent({
       isSingleAsset,
       singleAsset,
       setSingleAsset,
-      bptIn
+      bptIn,
+      propPercentage
     };
   }
 });
