@@ -11,9 +11,7 @@
         {{ filter.name }}
       </div>
     </div>
-    <div
-      class="mt-2 overflow-x-auto whitespace-nowrap text-base border rounded-lg"
-    >
+    <div class="mt-2 overflow-x-auto whitespace-nowrap border rounded-lg">
       <table class="min-w-full text-black bg-white dark:bg-gray-900">
         <tr class="bg-gray-50 dark:bg-gray-700">
           <th class="sticky top-0 p-2 pl-5 py-5 text-left">Action</th>
@@ -21,11 +19,7 @@
           <th class="sticky top-0 p-2 py-5 text-right">Details</th>
           <th class="sticky top-0 p-2 pr-5 py-5 text-right">Date</th>
         </tr>
-        <tr
-          class="row hover:bg-gray-50"
-          v-for="action in actions"
-          :key="action.tx"
-        >
+        <tr class="hover:bg-gray-50" v-for="action in actions" :key="action.tx">
           <td class="p-2 pl-5 py-5 flex items-center text-left">
             {{ action.label }}
             <a
