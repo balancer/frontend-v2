@@ -62,7 +62,7 @@ interface Price {
   price24HChange: number;
 }
 
-type Prices = Record<string, Price>;
+export type Prices = Record<string, Price>;
 
 type HistoricalPrices = Record<string, Prices>;
 

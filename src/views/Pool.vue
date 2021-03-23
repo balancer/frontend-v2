@@ -37,16 +37,17 @@
       <div class="flex flex-wrap -mx-8">
         <div class="order-2 lg:order-1 w-full lg:w-2/3 px-4">
           <div v-if="!loading && !registry.loading">
+            <PoolBalancesCard
+              :tokens="pool.tokens"
+              :balances="pool.tokenBalances"
+            />
             <PoolChart
-              class="mb-10"
+              class="mt-10"
               :tokens="pool.tokens"
               :prices="prices"
               :snapshots="snapshots"
             />
-            <div v-if="swaps.length > 0">
-              <h5 class="mb-5">Transactions in this pool</h5>
-              <TableSwaps :swaps="swaps" />
-            </div>
+            <TableEvents class="mt-10" :tokens="pool.tokens" :events="events" />
           </div>
         </div>
         <div class="order-1 lg:order-2 w-full lg:w-1/3 px-4 mt-8 lg:mt-0">
@@ -64,20 +65,27 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { getPoolSwaps, getPoolSnapshots } from '@/utils/balancer/subgraph';
+import { getPoolSnapshots } from '@/utils/balancer/subgraph';
 import { getTokensHistoricalPrice } from '@/api/coingecko';
+import { getPoolEvents } from '@/api/subgraph';
 import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
+import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 
 export default {
   components: {
-    PoolActionsCard
+    PoolActionsCard,
+    PoolBalancesCard
   },
 
   data() {
     return {
       id: this.$route.params.id,
       loading: true,
-      swaps: [],
+      events: {
+        swaps: [],
+        joins: [],
+        exits: []
+      },
       prices: {},
       snapshots: []
     };
@@ -138,9 +146,9 @@ export default {
       await this.injectTokens([...this.pool.tokens, this.pool.address]);
     },
 
-    async loadSwaps() {
+    async loadEvents() {
       const network = this.web3.config.key;
-      this.swaps = await getPoolSwaps(network, this.id);
+      this.events = await getPoolEvents(network, this.id);
     },
 
     async loadChartData(days) {
@@ -170,7 +178,7 @@ export default {
 
   async created() {
     await this.fetchPool();
-    this.loadSwaps();
+    this.loadEvents();
     this.loadChartData(30);
     this.loading = false;
   }
