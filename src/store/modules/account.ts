@@ -83,7 +83,8 @@ const actions = {
     );
     const allowances = state.allowances;
     allowances[dst] = { ...dstAllowances, ...allowances[dst] };
-    commit('ACCOUNT_SET', { allowances, loading: false });
+    commit('setLoading', false);
+    commit('setAllowances', allowances);
   }
 };
 
@@ -92,6 +93,14 @@ const mutations = {
     Object.keys(payload).forEach(key => {
       _state[key] = payload[key];
     });
+  },
+
+  setLoading(_state, val) {
+    _state.loading = val;
+  },
+
+  setAllowances(_state, allowances) {
+    _state.allowances = { ...allowances };
   }
 };
 
