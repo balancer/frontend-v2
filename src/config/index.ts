@@ -19,6 +19,7 @@ interface Config {
     weightedPoolFactory: string;
     stablePoolFactory: string;
     weth: string;
+    balancerHelpers: string;
   };
   strategies: Record<
     string,
