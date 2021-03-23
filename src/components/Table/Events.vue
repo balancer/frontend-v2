@@ -1,6 +1,19 @@
 <template>
-  <BalCard v-if="actions.length > 0" :title="'Activity'">
-    <div class="overflow-x-auto whitespace-nowrap text-base border rounded-lg">
+  <BalCard :title="'Activity'">
+    <div class="flex">
+      <div
+        v-for="filter in filters"
+        :key="filter.id"
+        class="mr-2 cursor-pointer"
+        :class="{ 'font-bold': filter.id === activeFilter }"
+        @click="selectFilter(filter.id)"
+      >
+        {{ filter.name }}
+      </div>
+    </div>
+    <div
+      class="mt-2 overflow-x-auto whitespace-nowrap text-base border rounded-lg"
+    >
       <table class="min-w-full text-black bg-white dark:bg-gray-900">
         <tr class="bg-gray-50 dark:bg-gray-700">
           <th class="sticky top-0 p-2 pl-5 py-5 text-left">Action</th>
@@ -37,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, computed } from 'vue';
+import { PropType, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
@@ -50,6 +63,27 @@ interface Action {
   timestamp: number;
   tx: string;
 }
+
+type Filter = 'all' | 'swaps' | 'joins' | 'exits';
+
+const filters = [
+  {
+    id: 'all',
+    name: 'All'
+  },
+  {
+    id: 'swaps',
+    name: 'Swaps'
+  },
+  {
+    id: 'joins',
+    name: 'Investments'
+  },
+  {
+    id: 'exits',
+    name: 'Withdrawals'
+  }
+];
 
 export default {
   props: {
@@ -67,6 +101,12 @@ export default {
     const { format: formatNum } = useNumbers();
 
     const allTokens = computed(() => store.getters.getTokens());
+
+    const activeFilter = ref<Filter>('all');
+
+    function selectFilter(filter: Filter) {
+      activeFilter.value = filter;
+    }
 
     const actions = computed<Action[]>(() => {
       if (!Object.keys(props.events)) {
@@ -99,7 +139,14 @@ export default {
           tx: exit.tx
         };
       });
-      const actions = [...swapActions, ...joinActions, ...exitActions];
+      const actions =
+        activeFilter.value === 'swaps'
+          ? swapActions
+          : activeFilter.value === 'joins'
+          ? joinActions
+          : activeFilter.value === 'exits'
+          ? exitActions
+          : [...swapActions, ...joinActions, ...exitActions];
       actions.sort((a, b) => b.timestamp - a.timestamp);
       return actions;
     });
@@ -160,6 +207,10 @@ export default {
     }
 
     return {
+      filters,
+      activeFilter,
+      selectFilter,
+
       actions,
 
       formatDate
