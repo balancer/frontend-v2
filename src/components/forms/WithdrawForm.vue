@@ -114,8 +114,8 @@ import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
-import PoolExchange from '@/services/Pool/Exchange';
-import PoolCalculator from '@/services/Pool/Calculator';
+import PoolExchange from '@/services/pool/Exchange';
+import PoolCalculator from '@/services/pool/Calculator';
 
 export default defineComponent({
   name: 'WithdrawalForm',
