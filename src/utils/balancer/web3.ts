@@ -19,6 +19,24 @@ export async function sendTransaction(
   return await contractWithSigner[action](...params, overrides);
 }
 
+export async function callStatic(
+  web3,
+  contractAddress: string,
+  abi: any[],
+  action: string,
+  params: any[],
+  overrides = {}
+) {
+  console.log('Sending transaction');
+  console.log('Contract', contractAddress);
+  console.log('Action', `"${action}"`);
+  console.log('Params', params);
+  const signer = web3.getSigner();
+  const contract = new Contract(contractAddress, abi, web3);
+  const contractWithSigner = contract.connect(signer);
+  return await contractWithSigner.callStatic[action](...params, overrides);
+}
+
 export async function call(provider, abi: any[], call: any[], options?) {
   const contract = new Contract(call[0], abi, provider);
   try {
