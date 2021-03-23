@@ -16,8 +16,8 @@
         </div>
         <input
           type="range"
-          v-model="amounts[pool.tokens.indexOf(propToken)]"
-          :max="tokenBalance(pool.tokens.indexOf(propToken))"
+          v-model="amounts[propToken]"
+          :max="tokenBalance(propToken)"
           step="0.001"
           @update:modelValue="onPropChange"
           class="w-full"
@@ -120,6 +120,7 @@ import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
 import PoolExchange from '@/services/pool/Exchange';
 import PoolCalculator from '@/services/pool/Calculator';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 
 export default defineComponent({
   name: 'InvestForm',
@@ -134,8 +135,7 @@ export default defineComponent({
     const investForm = ref({} as FormRef);
     const loading = ref(false);
     const amounts = ref([] as string[]);
-    const receiveAmount = ref('');
-    const propToken = ref('');
+    const propToken = ref(0);
     const investType = ref('Proportional');
 
     // COMPOSABLES
@@ -197,11 +197,8 @@ export default defineComponent({
     });
 
     const propPercentage = computed(() => {
-      const currentAmount =
-        amounts.value[props.pool.tokens.indexOf(propToken.value)];
-      const maxAmount = tokenBalance(
-        props.pool.tokens.indexOf(propToken.value)
-      );
+      const currentAmount = amounts.value[propToken.value];
+      const maxAmount = tokenBalance(propToken.value);
 
       if (!currentAmount) return 0;
       return Math.ceil((Number(currentAmount) / maxAmount) * 100);
@@ -244,23 +241,20 @@ export default defineComponent({
       store.commit('setAccountModal', true);
     }
 
-    function setPropMax() {
-      const { send, receive, fixedToken } = poolCalculator.propMax();
+    async function setPropMax() {
+      const { send, fixedToken } = poolCalculator.propMax();
       amounts.value = send;
-      receiveAmount.value = receive[0];
       propToken.value = fixedToken;
     }
 
     function onPropChange() {
-      const propTokenIndex = props.pool.tokens.indexOf(propToken.value);
-      const amount = amounts.value[propTokenIndex];
-      const { send, receive } = poolCalculator.propAmountsGiven(
+      const amount = amounts.value[propToken.value];
+      const { send } = poolCalculator.propAmountsGiven(
         amount,
-        propTokenIndex,
+        propToken.value,
         'send'
       );
       amounts.value = send;
-      receiveAmount.value = receive[0];
     }
 
     function onInvestTypeChange(newType) {
@@ -269,7 +263,6 @@ export default defineComponent({
 
     function resetForm() {
       amounts.value = [];
-      receiveAmount.value = '';
     }
 
     function txListener(hash) {
@@ -295,13 +288,29 @@ export default defineComponent({
       });
     }
 
+    async function calcMinBptOut(): Promise<string> {
+      const { bptOut } = await poolExchange.queryJoin(
+        store.state.web3.account,
+        amounts.value
+      );
+      const slippageBasisPoints = parseFloat(store.state.app.slippage) * 10000;
+      const delta = bptOut.mul(slippageBasisPoints).div(10000);
+      const minBptOut = bptOut.sub(delta);
+      return formatUnits(
+        minBptOut,
+        allTokens.value[props.pool.address].decimals
+      );
+    }
+
     async function submit(): Promise<void> {
       if (!investForm.value.validate()) return;
       try {
         loading.value = true;
+        const minBptOut = await calcMinBptOut();
         const tx = await poolExchange.join(
           store.state.web3.account,
-          amounts.value
+          amounts.value,
+          minBptOut
         );
         console.log('Receipt', tx);
         txListener(tx.hash);
@@ -323,7 +332,6 @@ export default defineComponent({
     return {
       investForm,
       amounts,
-      receiveAmount,
       submit,
       allTokens,
       hasAmounts,
