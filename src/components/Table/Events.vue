@@ -26,8 +26,14 @@
           v-for="action in actions"
           :key="action.tx"
         >
-          <td class="p-2 pl-5 py-5 text-left">
+          <td class="p-2 pl-5 py-5 flex items-center text-left">
             {{ action.label }}
+            <a
+              :href="_explorer(web3.config.chainId, action.tx, 'tx')"
+              target="_blank"
+            >
+              <BalIcon name="external-link" size="sm" class="ml-2" />
+            </a>
           </td>
           <td class="p-2 py-5 text-right">
             {{ _num(action.value, '$0,0.00') }}
@@ -36,12 +42,7 @@
             {{ action.details }}
           </td>
           <td class="p-2 pr-5 py-5 text-right">
-            <a
-              :href="_explorer(web3.config.key, action.tx, 'tx')"
-              target="_blank"
-            >
-              {{ formatDate(action.timestamp) }}
-            </a>
+            {{ formatDate(action.timestamp) }}
           </td>
         </tr>
       </table>
