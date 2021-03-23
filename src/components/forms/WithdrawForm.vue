@@ -12,13 +12,7 @@
       </div>
       <div v-if="isProportional" class="ml-4 flex-1">
         <div class="text-right text-sm text-gray-500">
-          {{
-            Math.ceil(
-              (Number(bptIn) /
-                bptBalance) *
-                100
-            )
-          }}%
+          {{ Math.ceil((Number(bptIn) / bptBalance) * 100) }}%
         </div>
         <input
           type="range"

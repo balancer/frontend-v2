@@ -312,8 +312,8 @@ export default defineComponent({
     }
 
     watch(allTokens, newTokens => {
-      poolCalculator.setAllTokens(newTokens)
-      setPropMax()
+      poolCalculator.setAllTokens(newTokens);
+      setPropMax();
     });
 
     onMounted(() => {

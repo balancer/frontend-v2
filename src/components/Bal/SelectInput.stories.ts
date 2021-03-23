@@ -1,6 +1,5 @@
 import BalSelectInput from './SelectInput.vue';
 import { Rules } from '@/types';
-import { isRequired } from '../../utils/validations';
 import { generateTemplate } from '../../../.storybook/helpers/templates';
 
 export default {
@@ -45,4 +44,7 @@ const Template = (args: Props) => ({
 
 export const Default = Template.bind({});
 // @ts-ignore
-Default.args = { modelValue: 'Proportional', options: ['Proportional', 'Custom'] };
+Default.args = {
+  modelValue: 'Proportional',
+  options: ['Proportional', 'Custom']
+};
