@@ -4,17 +4,19 @@ import { approveTokens } from '@/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
 import useAuth from '@/composables/useAuth';
 
-export default function useTokenApprovals(allTokens, poolTokens, amounts) {
+export default function useTokenApprovals(approvalTokens, amounts) {
   const auth = useAuth();
   const store = useStore();
   const approving = ref(false);
   const approvedAll = ref(false);
 
+  const allTokens = computed(() => store.getters.getTokens());
+
   const tokens = computed(() => {
     return Object.fromEntries(
-      poolTokens.map((token, i) => {
+      approvalTokens.map((token, i) => {
         const amount = amounts.value?.[i] || '0';
-        const tokenDecimals = allTokens[token].decimals;
+        const tokenDecimals = allTokens.value[token].decimals;
         return [token, parseUnits(amount, tokenDecimals).toString()];
       })
     );

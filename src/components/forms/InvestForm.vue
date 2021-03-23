@@ -149,11 +149,7 @@ export default defineComponent({
       approveAllowances,
       approving,
       approvedAll
-    } = useTokenApprovals(
-      store.getters.getTokens(),
-      props.pool.tokens,
-      amounts
-    );
+    } = useTokenApprovals(props.pool.tokens, amounts);
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
