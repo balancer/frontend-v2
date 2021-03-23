@@ -170,7 +170,7 @@ export default {
 
   async created() {
     await this.fetchPool();
-    // this.loadSwaps();
+    this.loadSwaps();
     this.loadChartData(30);
     this.loading = false;
   }
