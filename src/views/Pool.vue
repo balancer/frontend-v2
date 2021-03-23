@@ -55,7 +55,7 @@
             v-if="pool && !loading && !registry.loading"
             class="sticky top-24"
             :pool="pool"
-            @on-tx="reloadPool"
+            @on-tx="fetchPool"
           />
         </div>
       </div>
@@ -80,7 +80,7 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
-      loading: false,
+      loading: true,
       events: {
         swaps: [],
         joins: [],
@@ -134,24 +134,16 @@ export default {
       'injectTokens',
       'watchTx',
       'loadPool',
-      'loadPrices',
-      'getBalances'
+      'loadPrices'
     ]),
-
-    async reloadPool() {
-      await this.loadPool(this.id);
-      await this.injectTokens([...this.pool.tokens, this.pool.address]);
-    },
 
     handleCopy() {
       this.notify(this.$t('copied'));
     },
 
     async fetchPool() {
-      this.loading = true;
       await this.loadPool(this.id);
       await this.injectTokens([...this.pool.tokens, this.pool.address]);
-      this.loading = false;
     },
 
     async loadEvents() {
@@ -188,6 +180,7 @@ export default {
     await this.fetchPool();
     this.loadEvents();
     this.loadChartData(30);
+    this.loading = false;
   }
 };
 </script>

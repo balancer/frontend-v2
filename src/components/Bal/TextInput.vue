@@ -15,6 +15,7 @@
             :name="name"
             :value="modelValue"
             v-bind="$attrs"
+            :disabled="disabled"
             @blur="onBlur"
             @input="onInput"
           />
@@ -36,6 +37,7 @@
         {{ errors[0] }}
       </div>
     </div>
+    <div v-if="fadedOut" class="faded-out-overlay" @click="$emit('click')" />
   </div>
 </template>
 
@@ -55,7 +57,7 @@ export default defineComponent({
 
   inheritAttrs: false,
 
-  emits: ['input', 'blur', 'update:modelValue'],
+  emits: ['input', 'blur', 'update:modelValue', 'click'],
 
   props: {
     modelValue: { type: [String, Number], default: '' },
@@ -63,6 +65,10 @@ export default defineComponent({
     label: { type: String, default: '' },
     noMargin: { type: Boolean, default: false },
     textRight: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    appendBorder: { type: Boolean, default: false },
+    prependBorder: { type: Boolean, default: false },
+    fadedOut: { type: Boolean, default: false },
     info: { type: String, default: '' },
     type: {
       type: String,
@@ -87,7 +93,7 @@ export default defineComponent({
     }
   },
 
-  setup(props, { emit, slots, attrs }) {
+  setup(props, { emit, slots }) {
     const { rules, size, validateOn, noMargin } = toRefs(props);
     const errors = ref([] as Array<string>);
 
@@ -131,11 +137,11 @@ export default defineComponent({
     const inputHeightClasses = (): string => {
       switch (size.value) {
         case 'sm':
-          return 'h-8';
+          return 'h-10';
         case 'lg':
-          return 'h-16';
+          return 'h-18';
         default:
-          return 'h-12';
+          return 'h-14';
       }
     };
 
@@ -154,9 +160,9 @@ export default defineComponent({
     const inputContainerClasses = computed(() => {
       return {
         [inputHeightClasses()]: true,
-        'border-l': slots.prepend,
-        'border-r': slots.append,
-        'shadow-inner': !attrs.disabled
+        'border-l': slots.prepend && props.prependBorder,
+        'border-r': slots.append && props.appendBorder,
+        'shadow-inner': !props.disabled
       };
     });
 
@@ -202,6 +208,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.bal-text-input {
+  @apply relative;
+}
+
 input {
   @apply w-full bg-transparent leading-none;
   transition: all 0.3s ease;
@@ -241,5 +251,9 @@ input:focus {
 
 .info {
   @apply text-gray-500 text-xs;
+}
+
+.faded-out-overlay {
+  @apply absolute top-0 left-0 opacity-75 w-full h-full bg-white z-10 cursor-pointer;
 }
 </style>

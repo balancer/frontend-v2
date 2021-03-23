@@ -63,11 +63,11 @@ export default defineComponent({
     const sizeClasses = (): string => {
       switch (props.size) {
         case 'sm':
-          return 'px-4 h-8 text-xs';
+          return 'px-4 h-10 text-xs';
         case 'lg':
-          return 'px-2 md:px-12 h-16 text-lg md:text-2xl';
+          return 'px-2 md:px-12 h-18 text-lg md:text-2xl';
         default:
-          return 'px-2 md:px-8 h-12 text-base';
+          return 'px-2 md:px-8 h-14 text-base';
       }
     };
 

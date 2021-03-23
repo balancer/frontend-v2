@@ -176,7 +176,7 @@ const actions = {
       injected.push({ ...tokenMetadata, ...{ injected: true } })
     );
     commit('REGISTRY_SET', { injected });
-    dispatch('getBalances', tokens);
+    dispatch('getBalances');
     dispatch('getAllowances', { tokens });
     dispatch('loadPrices', tokens);
   },
