@@ -1,18 +1,18 @@
-import PoolService from '../Exchange';
+import PoolExchange from '../Exchange';
 import { encodeExitStablePool } from '@/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 export default class ExitParams {
-  private service: PoolService;
+  private exchange: PoolExchange;
   private isStablePool: boolean;
   private dataEncodeFn: Function;
   private toInternalBalance = false;
 
-  constructor(service) {
-    this.service = service;
-    this.isStablePool = service.pool.strategy.name === 'stablePool';
+  constructor(exchange) {
+    this.exchange = exchange;
+    this.isStablePool = exchange.pool.strategy.name === 'stablePool';
     this.dataEncodeFn = this.isStablePool
       ? encodeExitStablePool
       : encodeExitWeightedPool;
@@ -27,15 +27,15 @@ export default class ExitParams {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
     const parsedBptIn = parseUnits(
       bptIn,
-      this.service.tokens[this.service.pool.address].decimals
+      this.exchange.tokens[this.exchange.pool.address].decimals
     );
     const txData = this.txData(parsedAmountsOut, parsedBptIn, exitTokenIndex);
 
     return [
-      this.service.pool.id,
+      this.exchange.pool.id,
       account,
       account,
-      this.service.pool.tokens,
+      this.exchange.pool.tokens,
       parsedAmountsOut,
       this.toInternalBalance,
       txData
@@ -43,8 +43,8 @@ export default class ExitParams {
   }
 
   private parseAmounts(amounts: string[]): BigNumberish[] {
-    return this.service.pool.tokens.map((token, i) =>
-      parseUnits(amounts[i], this.service.tokens[token].decimals).toString()
+    return this.exchange.pool.tokens.map((token, i) =>
+      parseUnits(amounts[i], this.exchange.tokens[token].decimals).toString()
     );
   }
 
