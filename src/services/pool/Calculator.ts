@@ -5,7 +5,7 @@ import { parseUnits, formatUnits } from '@ethersproject/units';
 interface Amounts {
   send: string[];
   receive: string[];
-  fixedToken: string;
+  fixedToken: number;
 }
 
 export default class Calculator {
@@ -21,7 +21,7 @@ export default class Calculator {
   }
 
   public propMax(): Amounts {
-    let maxAmounts: Amounts = { send: [], receive: [], fixedToken: '' };
+    let maxAmounts: Amounts = { send: [], receive: [], fixedToken: 0 };
     const type = this.action === 'join' ? 'send' : 'receive';
 
     this.pool.tokens.forEach((token, tokenIndex) => {
@@ -41,7 +41,7 @@ export default class Calculator {
         const thisAmount = parseFloat(amounts.send[tokenIndex]);
         if (thisAmount > currentMaxAmount) {
           maxAmounts = amounts;
-          maxAmounts.fixedToken = token;
+          maxAmounts.fixedToken = tokenIndex;
         }
       }
     });
