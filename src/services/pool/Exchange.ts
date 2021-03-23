@@ -2,8 +2,9 @@ import { Pool } from '@/utils/balancer/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Web3Provider } from '@ethersproject/providers';
 import configs from '@/config';
-import { sendTransaction } from '@/utils/balancer/web3';
-import { default as abi } from '@/abi/Vault.json';
+import { callStatic, sendTransaction } from '@/utils/balancer/web3';
+import { default as vaultAbi } from '@/abi/Vault.json';
+import { default as helpersAbi } from '@/abi/BalancerHelpers.json';
 import { Token } from '@/types';
 import JoinParams from './serializers/JoinParams';
 import ExitParams from './serializers/ExitParams';
@@ -13,6 +14,7 @@ export default class Exchange {
   network: string;
   provider: Web3Provider;
   vaultAddress: string;
+  helpersAddress: string;
   tokens: Token[];
 
   constructor(pool, network, provider, tokens) {
@@ -21,6 +23,19 @@ export default class Exchange {
     this.provider = provider;
     this.tokens = tokens;
     this.vaultAddress = configs[network].addresses.vault;
+    this.helpersAddress = configs[network].addresses.balancerHelpers;
+  }
+
+  public async queryJoin(account: string, amountsIn: string[], bptOut = '0') {
+    const txParams = this.joinParams.serialize(account, amountsIn, bptOut);
+
+    return await callStatic(
+      this.provider,
+      this.helpersAddress,
+      helpersAbi,
+      'queryJoin',
+      txParams
+    );
   }
 
   public async join(
@@ -33,7 +48,7 @@ export default class Exchange {
     return await sendTransaction(
       this.provider,
       this.vaultAddress,
-      abi,
+      vaultAbi,
       'joinPool',
       txParams
     );
