@@ -72,6 +72,10 @@
               placeholder="0"
               class="w-full"
             />
+            <div v-if="slippage" class="text-xs">
+              Price impact:
+              {{ _num(slippage, '0,0.[00]%') }}
+            </div>
           </div>
         </div>
       </div>
@@ -158,7 +162,7 @@ export default defineComponent({
 
     // Composables
 
-    const { trading, trade, initSor, handleAmountChange } = useSor(
+    const { trading, trade, initSor, handleAmountChange, slippage } = useSor(
       tokenInAddressInput,
       tokenInAmountInput,
       tokenOutAddressInput,
@@ -300,7 +304,8 @@ export default defineComponent({
       approving,
       approve,
       trading,
-      trade
+      trade,
+      slippage
     };
   }
 });

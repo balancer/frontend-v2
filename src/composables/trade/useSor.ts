@@ -25,6 +25,7 @@ export default function useSor(
   const swaps = ref<Swap[][]>([]);
   const trading = ref(false);
   const exactIn = ref(true);
+  const slippage = ref(0);
 
   // COMPOSABLES
   const store = useStore();
@@ -85,7 +86,7 @@ export default function useSor(
       console.time(
         `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactIn`
       );
-      const [tradeSwaps, tradeAmount] = await sor.getSwaps(
+      const [tradeSwaps, tradeAmount, spotPrice] = await sor.getSwaps(
         tokenInAddress,
         tokenOutAddress,
         'swapExactIn',
@@ -101,6 +102,16 @@ export default function useSor(
         6,
         BigNumber.ROUND_DOWN
       );
+
+      if (tradeSwaps.length === 0) {
+        slippage.value = 0;
+      } else {
+        const price = tokenInAmount.div(tradeAmount).times('1e18');
+        const slippageNumber = price.div(spotPrice).minus(1);
+        slippage.value = slippageNumber.isNegative()
+          ? 0.00001
+          : slippageNumber.toNumber();
+      }
     } else {
       const tokenOutAmount = scale(tokenAmountRaw, tokenOutDecimals);
 
@@ -108,7 +119,7 @@ export default function useSor(
         `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactOut`
       );
 
-      const [tradeSwaps, tradeAmount] = await sor.getSwaps(
+      const [tradeSwaps, tradeAmount, spotPrice] = await sor.getSwaps(
         tokenInAddress,
         tokenOutAddress,
         'swapExactOut',
@@ -124,13 +135,23 @@ export default function useSor(
         6,
         BigNumber.ROUND_DOWN
       );
+
+      if (tradeSwaps.length === 0) {
+        slippage.value = 0;
+      } else {
+        const price = tradeAmount.div(tokenOutAmount).times('1e18');
+        const slippageNumber = price.div(spotPrice).minus(1);
+        slippage.value = slippageNumber.isNegative()
+          ? 0.00001
+          : slippageNumber.toNumber();
+      }
     }
   }
 
   function txListener(hash) {
     const { emitter } = notify.hash(hash);
 
-    emitter.on('txConfirmed', tx => {
+    emitter.on('txConfirmed', () => {
       trading.value = false;
       return undefined;
     });
@@ -209,6 +230,7 @@ export default function useSor(
     initSor,
     handleAmountChange,
     trade,
-    trading
+    trading,
+    slippage
   };
 }

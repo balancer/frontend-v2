@@ -56,7 +56,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   function txListener(hash) {
     const { emitter } = notify.hash(hash);
 
-    emitter.on('txConfirmed', tx => {
+    emitter.on('txConfirmed', () => {
       approving.value = false;
       approved.value = true;
       checkApproval();

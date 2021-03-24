@@ -31,8 +31,14 @@
     <div class="mt-2 overflow-x-auto whitespace-nowrap border rounded-lg">
       <table class="min-w-full text-black bg-white dark:bg-gray-900">
         <tr class="bg-gray-50 dark:bg-gray-700">
-          <th v-text="$t('poolName')" class="sticky top-0 p-2 pl-5 py-5 text-left" />
-          <th v-text="$t('poolValue')" class="sticky top-0 p-2 py-5 text-right" />
+          <th
+            v-text="$t('poolName')"
+            class="sticky top-0 p-2 pl-5 py-5 text-left"
+          />
+          <th
+            v-text="$t('poolValue')"
+            class="sticky top-0 p-2 py-5 text-right"
+          />
           <th
             v-text="$t('volume24', [$t('hourAbbrev')])"
             class="sticky top-0 p-2 py-5 text-right"
