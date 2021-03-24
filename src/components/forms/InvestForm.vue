@@ -164,7 +164,6 @@ export default defineComponent({
     const poolExchange = new PoolExchange(
       props.pool,
       store.state.web3.config.key,
-      web3,
       store.getters.getTokens()
     );
 

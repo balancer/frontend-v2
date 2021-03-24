@@ -1,6 +1,6 @@
 import { Pool } from '@/utils/balancer/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Web3Provider } from '@ethersproject/providers';
+import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import configs from '@/config';
 import { callStatic, sendTransaction } from '@/utils/balancer/web3';
 import { default as vaultAbi } from '@/abi/Vault.json';
@@ -12,15 +12,13 @@ import ExitParams from './serializers/ExitParams';
 export default class Exchange {
   pool: Pool;
   network: string;
-  provider: Web3Provider;
   vaultAddress: string;
   helpersAddress: string;
   tokens: Token[];
 
-  constructor(pool, network, provider, tokens) {
+  constructor(pool, network, tokens) {
     this.pool = pool;
     this.network = network;
-    this.provider = provider;
     this.tokens = tokens;
     this.vaultAddress = configs[network].addresses.vault;
     this.helpersAddress = configs[network].addresses.balancerHelpers;
@@ -96,6 +94,11 @@ export default class Exchange {
       'exitPool',
       txParams
     );
+  }
+
+  public get provider() {
+    const { web3 } = getInstance();
+    return web3;
   }
 
   private get joinParams() {
