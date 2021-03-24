@@ -62,7 +62,6 @@
       name="total"
       v-model="total"
       placeholder="$0"
-      :info="`${priceImpact}%`"
       :disabled="true"
       prepend-border
     >
@@ -71,9 +70,30 @@
           <div class="font-medium text-sm leading-none">
             Total
           </div>
-          <div class="leading-none text-xs mt-1 text-gray-500">
+          <div
+            :class="[
+              'leading-none text-xs mt-1 text-gray-500 ',
+              { 'text-red-500 font-medium': priceImpact >= 1 }
+            ]"
+          >
             Price impact
           </div>
+        </div>
+      </template>
+      <template v-slot:info>
+        <div
+          :class="[
+            'flex items-center',
+            { 'text-red-500 font-medium': priceImpact >= 1 }
+          ]"
+        >
+          <span>{{ formatNum(priceImpact) }}%</span>
+          <BalIcon
+            v-if="priceImpact >= 1"
+            name="alert-triangle"
+            size="xs"
+            class="ml-1"
+          />
         </div>
       </template>
     </BalTextInput>
@@ -145,13 +165,13 @@ export default defineComponent({
       propToken: 0,
       investType: 'Proportional' as 'Proportional' | 'Custom',
       piLoading: false,
-      priceImpact: '0'
+      priceImpact: 0
     });
 
     // COMPOSABLES
     const store = useStore();
     const notify = useBlocknative();
-    const { web3, isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth();
     const { format: formatNum } = useNumbers();
 
     const {
@@ -294,7 +314,7 @@ export default defineComponent({
         const bptOut = await calcBptOut(amountsIn);
         const pi = poolCalculator.priceImpact(amountsIn, bptOut);
         console.log('check', amountsIn, bptOut, formatNum(pi * 100));
-        data.priceImpact = formatNum(pi * 100);
+        data.priceImpact = pi * 100;
       } catch (error) {
         console.error(error);
       } finally {
