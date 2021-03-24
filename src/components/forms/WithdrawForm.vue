@@ -127,13 +127,12 @@ export default defineComponent({
     const amountsMax = ref([] as string[]);
     const bptIn = ref('');
     const withdrawType = ref('Proportional');
-    const propToken = ref('');
     const singleAsset = ref(0);
 
     // COMPOSABLES
     const store = useStore();
     const notify = useBlocknative();
-    const { web3, isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth();
     const { format: formatNum } = useNumbers();
 
     // COMPUTED
@@ -193,7 +192,6 @@ export default defineComponent({
     const poolExchange = new PoolExchange(
       props.pool,
       store.state.web3.config.key,
-      web3,
       allTokens.value
     );
 
@@ -214,7 +212,7 @@ export default defineComponent({
     }
 
     function setPropMax() {
-      const { send, receive, fixedToken } = poolCalculator.propAmountsGiven(
+      const { send, receive } = poolCalculator.propAmountsGiven(
         bptBalance.value,
         0,
         'send'
@@ -222,7 +220,6 @@ export default defineComponent({
       bptIn.value = send[0];
       amounts.value = receive;
       amountsMax.value = [...receive];
-      propToken.value = fixedToken;
     }
 
     function onPropChange() {
@@ -326,7 +323,6 @@ export default defineComponent({
       total,
       withdrawType,
       tokenBalance,
-      propToken,
       onPropChange,
       onWithdrawTypeChange,
       isProportional,
