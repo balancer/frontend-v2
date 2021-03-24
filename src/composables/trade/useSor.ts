@@ -8,11 +8,12 @@ import getProvider from '@/utils/provider';
 import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import { swapIn, swapOut } from '@/utils/balancer/trade';
+import useBlocknative from '@/composables/useBlocknative';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
 
-export default function useValidation(
+export default function useSor(
   tokenInAddressInput,
   tokenInAmountInput,
   tokenOutAddressInput,
@@ -25,11 +26,12 @@ export default function useValidation(
   const trading = ref(false);
   const exactIn = ref(true);
 
+  // COMPOSABLES
   const store = useStore();
   const auth = useAuth();
-  const { config } = store.state.web3;
-
+  const notify = useBlocknative();
   const chainId = computed(() => config.chainId);
+  const { config } = store.state.web3;
 
   onMounted(async () => await initSor());
 
@@ -125,6 +127,27 @@ export default function useValidation(
     }
   }
 
+  function txListener(hash) {
+    const { emitter } = notify.hash(hash);
+
+    emitter.on('txConfirmed', tx => {
+      trading.value = false;
+      return undefined;
+    });
+
+    emitter.on('txCancel', () => {
+      // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
+      trading.value = false;
+      return undefined;
+    });
+
+    emitter.on('txFailed', () => {
+      // An error has occurred initiating the transaction
+      trading.value = false;
+      return undefined;
+    });
+  }
+
   async function trade() {
     trading.value = true;
 
@@ -153,10 +176,9 @@ export default function useValidation(
           tokenInAmount,
           minAmount
         );
-        await tx.wait();
+        txListener(tx.hash);
       } catch (e) {
         console.log(e);
-      } finally {
         trading.value = false;
       }
     } else {
@@ -173,10 +195,9 @@ export default function useValidation(
           tokenOutAddress,
           tokenInAmountMax
         );
-        await tx.wait();
+        txListener(tx.hash);
       } catch (e) {
         console.log(e);
-      } finally {
         trading.value = false;
       }
     }
