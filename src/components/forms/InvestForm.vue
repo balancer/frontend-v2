@@ -288,12 +288,13 @@ export default defineComponent({
       });
     }
 
-    async function calcPriceImpact(): Promise<void> {
+    async function calcPriceImpact(amountsIn: string[]): Promise<void> {
       if (!hasAmounts.value || isProportional.value || data.piLoading) return;
       try {
         data.piLoading = true;
-        const bptOut = await calcBptOut();
-        const pi = poolCalculator.priceImpact(data.amounts, bptOut);
+        const bptOut = await calcBptOut(amountsIn);
+        const pi = poolCalculator.priceImpact(amountsIn, bptOut);
+        console.log('check', amountsIn, bptOut, formatNum(pi * 100));
         data.priceImpact = formatNum(pi * 100);
       } catch (error) {
         console.error(error);
@@ -302,10 +303,10 @@ export default defineComponent({
       }
     }
 
-    async function calcBptOut(): Promise<string> {
+    async function calcBptOut(amountsIn: string[]): Promise<string> {
       const { bptOut } = await poolExchange.queryJoin(
         store.state.web3.account,
-        data.amounts
+        amountsIn
       );
       return formatUnits(bptOut, allTokens.value[props.pool.address].decimals);
     }
@@ -349,14 +350,13 @@ export default defineComponent({
 
     watch(
       () => [...data.amounts],
-      async () => await calcPriceImpact()
+      async newAmounts => await calcPriceImpact(newAmounts)
     );
 
     watch(
       () => data.investType,
       newType => {
         if (newType === 'Proportional') setPropMax();
-        if (newType === 'Custom') calcPriceImpact();
       }
     );
 
