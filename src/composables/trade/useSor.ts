@@ -178,7 +178,7 @@ export default function useSor(
     const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
     const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
     const tokenInAmount = scale(tokenInAmountNumber, tokenInDecimals);
-    const slippageBufferRate = 1; // @TODO change to real slippage;
+    const slippageBufferRate = parseFloat(store.state.app.slippage);
 
     if (exactIn.value) {
       const tokenOutAmountNumber = new BigNumber(tokenOutAmountInput.value);
