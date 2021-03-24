@@ -202,6 +202,7 @@ export default defineComponent({
         })
         .reduce((a, b) => a + b, 0);
 
+      if (total < 0) return formatNum(0, '$0,0.[00]');
       return formatNum(total, '$0,0.[00]');
     });
 
