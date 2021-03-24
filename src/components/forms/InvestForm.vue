@@ -7,7 +7,6 @@
           label="Investment type"
           v-model="investType"
           :options="['Proportional', 'Custom']"
-          @change="onInvestTypeChange"
         />
       </div>
       <div v-if="isProportional" class="ml-4 flex-1">
@@ -63,7 +62,7 @@
       name="total"
       v-model="total"
       placeholder="$0"
-      info="0%"
+      :info="`${priceImpact}%`"
       :disabled="true"
       prepend-border
     >
@@ -110,7 +109,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import {
+  defineComponent,
+  computed,
+  watch,
+  onMounted,
+  reactive,
+  toRefs
+} from 'vue';
 import { FormRef } from '@/types';
 import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { useStore } from 'vuex';
@@ -120,7 +126,7 @@ import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
 import PoolExchange from '@/services/pool/Exchange';
 import PoolCalculator from '@/services/pool/Calculator';
-import { formatUnits, parseUnits } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 
 export default defineComponent({
   name: 'InvestForm',
@@ -132,11 +138,15 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const investForm = ref({} as FormRef);
-    const loading = ref(false);
-    const amounts = ref([] as string[]);
-    const propToken = ref(0);
-    const investType = ref('Proportional');
+    const data = reactive({
+      investForm: {} as FormRef,
+      loading: false,
+      amounts: [] as string[],
+      propToken: 0,
+      investType: 'Proportional' as 'Proportional' | 'Custom',
+      piLoading: false,
+      priceImpact: '0'
+    });
 
     // COMPOSABLES
     const store = useStore();
@@ -149,17 +159,27 @@ export default defineComponent({
       approveAllowances,
       approving,
       approvedAll
-    } = useTokenApprovals(props.pool.tokens, amounts);
+    } = useTokenApprovals(props.pool.tokens, data.amounts);
+
+    const poolExchange = new PoolExchange(
+      props.pool,
+      store.state.web3.config.key,
+      web3,
+      store.getters.getTokens()
+    );
+
+    const poolCalculator = new PoolCalculator(
+      props.pool,
+      store.getters.getTokens(),
+      'join'
+    );
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
     const allTokens = computed(() => store.getters.getTokens());
-    const isStablePool = computed(
-      () => props.pool.strategy.name === 'stablePool'
-    );
 
     const hasAmounts = computed(() => {
-      const amountSum = amounts.value
+      const amountSum = data.amounts
         .map(amount => parseFloat(amount))
         .reduce((a, b) => a + b, 0);
       return amountSum > 0;
@@ -176,7 +196,7 @@ export default defineComponent({
       const total = props.pool.tokens
         .map((token, i) => {
           return (
-            (Number(amounts.value[i]) || 0) *
+            (parseFloat(data.amounts[i]) || 0) *
               store.state.market.prices[token.toLowerCase()]?.price || 0
           );
         })
@@ -193,29 +213,16 @@ export default defineComponent({
     });
 
     const isProportional = computed(() => {
-      return investType.value === 'Proportional';
+      return data.investType === 'Proportional';
     });
 
     const propPercentage = computed(() => {
-      const currentAmount = amounts.value[propToken.value];
-      const maxAmount = tokenBalance(propToken.value);
+      const currentAmount = data.amounts[data.propToken];
+      const maxAmount = tokenBalance(data.propToken);
 
       if (!currentAmount) return 0;
       return Math.ceil((Number(currentAmount) / maxAmount) * 100);
     });
-
-    const poolExchange = new PoolExchange(
-      props.pool,
-      store.state.web3.config.key,
-      web3,
-      allTokens.value
-    );
-
-    const poolCalculator = new PoolCalculator(
-      props.pool,
-      allTokens.value,
-      'join'
-    );
 
     // METHODS
     function tokenBalance(index) {
@@ -243,26 +250,18 @@ export default defineComponent({
 
     async function setPropMax() {
       const { send, fixedToken } = poolCalculator.propMax();
-      amounts.value = send;
-      propToken.value = fixedToken;
+      data.amounts = send;
+      data.propToken = fixedToken;
     }
 
     function onPropChange() {
-      const amount = amounts.value[propToken.value];
+      const amount = data.amounts[data.propToken];
       const { send } = poolCalculator.propAmountsGiven(
         amount,
-        propToken.value,
+        data.propToken,
         'send'
       );
-      amounts.value = send;
-    }
-
-    function onInvestTypeChange(newType) {
-      if (newType === 'Proportional') setPropMax();
-    }
-
-    function resetForm() {
-      amounts.value = [];
+      data.amounts = send;
     }
 
     function txListener(hash) {
@@ -270,28 +269,50 @@ export default defineComponent({
 
       emitter.on('txConfirmed', tx => {
         emit('success', tx);
-        resetForm();
-        loading.value = false;
+        data.amounts = [];
+        data.loading = false;
         return undefined;
       });
 
       emitter.on('txCancel', () => {
         // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
-        loading.value = false;
+        data.loading = false;
         return undefined;
       });
 
       emitter.on('txFailed', () => {
         // An error has occurred initiating the transaction
-        loading.value = false;
+        data.loading = false;
         return undefined;
       });
+    }
+
+    async function calcPriceImpact(): Promise<void> {
+      if (!hasAmounts.value || isProportional.value || data.piLoading) return;
+      try {
+        data.piLoading = true;
+        const bptOut = await calcBptOut();
+        const pi = poolCalculator.priceImpact(data.amounts, bptOut);
+        data.priceImpact = formatNum(pi * 100);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        data.piLoading = false;
+      }
+    }
+
+    async function calcBptOut(): Promise<string> {
+      const { bptOut } = await poolExchange.queryJoin(
+        store.state.web3.account,
+        data.amounts
+      );
+      return formatUnits(bptOut, allTokens.value[props.pool.address].decimals);
     }
 
     async function calcMinBptOut(): Promise<string> {
       const { bptOut } = await poolExchange.queryJoin(
         store.state.web3.account,
-        amounts.value
+        data.amounts
       );
       const slippageBasisPoints = parseFloat(store.state.app.slippage) * 10000;
       const delta = bptOut.mul(slippageBasisPoints).div(10000);
@@ -303,20 +324,20 @@ export default defineComponent({
     }
 
     async function submit(): Promise<void> {
-      if (!investForm.value.validate()) return;
+      if (!data.investForm.validate()) return;
       try {
-        loading.value = true;
+        data.loading = true;
         const minBptOut = await calcMinBptOut();
         const tx = await poolExchange.join(
           store.state.web3.account,
-          amounts.value,
+          data.amounts,
           minBptOut
         );
         console.log('Receipt', tx);
         txListener(tx.hash);
       } catch (error) {
         console.error(error);
-        loading.value = false;
+        data.loading = false;
       }
     }
 
@@ -325,17 +346,28 @@ export default defineComponent({
       if (!hasAmounts.value) setPropMax();
     });
 
+    watch(
+      () => [...data.amounts],
+      async () => await calcPriceImpact()
+    );
+
+    watch(
+      () => data.investType,
+      newType => {
+        if (newType === 'Proportional') setPropMax();
+        if (newType === 'Custom') calcPriceImpact();
+      }
+    );
+
     onMounted(() => {
       setPropMax();
     });
 
     return {
-      investForm,
-      amounts,
+      ...toRefs(data),
       submit,
       allTokens,
       hasAmounts,
-      loading,
       approving,
       requireApproval,
       approveAllowances,
@@ -344,16 +376,12 @@ export default defineComponent({
       amountRules,
       total,
       formatNum,
-      isStablePool,
       isAuthenticated,
       connectWallet,
       infoLabel,
       setPropMax,
-      propToken,
-      investType,
       onPropChange,
       isProportional,
-      onInvestTypeChange,
       propPercentage
     };
   }
