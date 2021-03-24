@@ -15,7 +15,7 @@
                 :symbol="true"
               />
             </span>
-            <span v-else>Select</span>
+            <span v-else v-text="$t('select')" />
           </a>
           <div class="col-span-8 px-3 py-2">
             <div class="flex">
@@ -26,12 +26,15 @@
                 placeholder="0"
                 class="flex-auto"
               />
-              <a @click="handleMax" class="p-1 border rounded text-xs">
-                Max
-              </a>
+              <a
+                @click="handleMax"
+                v-text="$t('max')"
+                class="p-1 border rounded text-xs"
+              />
             </div>
             <div v-if="assetInAddressInput" class="text-xs">
-              Balance:
+              {{ $t('balance') }}
+              :
               {{
                 _num(tokens[assetInAddressInput]?.balance || 0, '0,0.[000000]')
               }}
@@ -62,7 +65,7 @@
                 :symbol="true"
               />
             </span>
-            <span v-else>Select</span>
+            <span v-else v-text="$t('select')" />
           </a>
           <div class="col-span-8 px-3 py-2">
             <input
@@ -75,7 +78,7 @@
           </div>
         </div>
       </div>
-      <UiButton class="w-full">Swap</UiButton>
+      <UiButton v-text="$t('swap')" class="w-full" />
     </BalCard>
     <teleport to="#modal">
       <ModalSelectToken
