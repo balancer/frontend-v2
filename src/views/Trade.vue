@@ -162,8 +162,7 @@ export default defineComponent({
 
     const tokens = computed(() => getTokens());
 
-    // Composables
-
+    // COMPOSABLES
     const { trading, trade, initSor, handleAmountChange, slippage } = useSor(
       tokenInAddressInput,
       tokenInAmountInput,
@@ -171,13 +170,11 @@ export default defineComponent({
       tokenOutAmountInput,
       tokens
     );
-
     const { approving, approve, requireAllowance } = useTokenApproval(
       tokenInAddressInput,
       tokenInAmountInput,
       tokens
     );
-
     const { errorMessage } = useValidation(
       tokenInAddressInput,
       tokenInAmountInput,

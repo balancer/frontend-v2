@@ -48,7 +48,6 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
       txListener(tx.hash);
     } catch (e) {
       console.log(e);
-    } finally {
       approving.value = false;
     }
   }
