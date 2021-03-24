@@ -1,8 +1,7 @@
-import { getAddress } from '@ethersproject/address';
-
 import { Pool } from '@/api/subgraph';
+import { Prices } from '@/api/coingecko';
 
-export function getPoolLiquidity(pool: Pool, prices) {
+export function getPoolLiquidity(pool: Pool, prices: Prices) {
   if (pool.strategyType == 2) {
     const totalWeight = pool.weights.reduce(
       (total, value) => total + parseFloat(value),
@@ -13,11 +12,10 @@ export function getPoolLiquidity(pool: Pool, prices) {
 
     for (let i = 0; i < pool.tokens.length; i++) {
       const token = pool.tokens[i];
-      const address = getAddress(token.address);
-      if (!prices[address]) {
+      if (!prices[token.address]) {
         continue;
       }
-      const price = prices[address].price;
+      const price = prices[token.address].price;
       const balance = parseFloat(pool.tokens[i].balance);
 
       const value = balance * price;

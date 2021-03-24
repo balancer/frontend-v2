@@ -1,6 +1,8 @@
+import { parseUnits } from '@ethersproject/units';
 import { ipfsGet } from '@/utils/balancer/ipfs';
 import { call } from '@/utils/balancer/web3';
 import { abi } from './MerkleRedeem.json';
+import { Claim } from '@/types';
 
 const gateway = process.env.VUE_APP_IPFS_NODE || 'ipfs.io';
 
@@ -37,7 +39,13 @@ export async function getReports(snapshot, weeks) {
   return Object.fromEntries(reports.map((report, i) => [weeks[i], report]));
 }
 
-export async function getPendingClaims(network, provider, address) {
+type Report = Record<number, any>;
+
+export async function getPendingClaims(
+  network,
+  provider,
+  address
+): Promise<Claim[]> {
   const snapshot = await getSnapshot(network);
 
   const claimStatus = await getClaimStatus(
@@ -51,12 +59,16 @@ export async function getPendingClaims(network, provider, address) {
     .filter(([, status]) => status === false)
     .map(([i]) => i);
 
-  const reports = await getReports(snapshot, pending);
+  const reports = Object.entries(await getReports(snapshot, pending));
+  const reportsWithAccount = reports.filter(
+    (report: Report) => report[1][address]
+  );
 
-  return Object.entries(reports).map((report: any) => {
+  return reportsWithAccount.map((report: Report) => {
     return {
       id: report[0],
-      amount: report[1]?.[address] || 0
+      amount: report[1][address],
+      amountDenorm: parseUnits(report[1][address], 18)
     };
   });
 }

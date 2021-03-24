@@ -164,34 +164,6 @@ export async function getPoolVolume(network: string) {
   });
 }
 
-export async function getPoolSwaps(network: string, address: string) {
-  const query = {
-    swaps: {
-      __args: {
-        first: 20,
-        orderBy: 'timestamp',
-        orderDirection: 'desc',
-        where: {
-          poolId: address
-        }
-      },
-      tx: true,
-      tokenIn: true,
-      tokenInSym: true,
-      tokenAmountIn: true,
-      tokenOut: true,
-      tokenOutSym: true,
-      tokenAmountOut: true,
-      timestamp: true,
-      poolId: {
-        swapFee: true
-      }
-    }
-  };
-  const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
-  return result?.swaps;
-}
-
 export async function getPoolShares(network: string, address: string) {
   const query = {
     poolShares: {
