@@ -1,6 +1,8 @@
 import { Token } from '@/types';
 import { Pool } from '@/utils/balancer/types';
 import { parseUnits, formatUnits } from '@ethersproject/units';
+import { BigNumber } from '@ethersproject/bignumber';
+import { bnum } from '@/utils';
 
 interface Amounts {
   send: string[];
@@ -55,7 +57,7 @@ export default class Calculator {
     type: 'send' | 'receive'
   ): Amounts {
     if (fixedAmount.trim() === '')
-      return { send: [], receive: [], fixedToken: '' };
+      return { send: [], receive: [], fixedToken: 0 };
 
     const types = ['send', 'receive'];
     const fixedTokenAddress = this.tokenOf(type, index);
@@ -86,6 +88,50 @@ export default class Calculator {
     return amounts;
   }
 
+  public priceImpact(tokenAmounts: string[], currentBPTAmount: string): number {
+    const denormBPTAmount = parseUnits(
+      currentBPTAmount,
+      this.poolDecimals
+    ).toString();
+    const _currentBPTAmount = bnum(denormBPTAmount);
+    const bptSpotAmount = this.bptSpotAmount(tokenAmounts);
+    const priceImpact = bnum(1).minus(_currentBPTAmount.div(bptSpotAmount));
+    return priceImpact.toNumber();
+  }
+
+  public bptSpotAmount(tokenAmounts: string[]): string {
+    const denormAmounts: string[] = this.pool.tokens.map((token, i) => {
+      return parseUnits(
+        tokenAmounts[i],
+        this.allTokens[token].decimals
+      ).toString();
+    });
+
+    const tokenBPTPrices: string[] = this.pool.tokens.map((_, i) => {
+      return this.tokenPriceInBPT(i);
+    });
+
+    let bptSpot = bnum(0);
+    this.pool.tokens.forEach((_, i) => {
+      const amount = bnum(denormAmounts[i]);
+      bptSpot = bptSpot.plus(amount.div(tokenBPTPrices[i]));
+    });
+
+    return bptSpot.toString();
+  }
+
+  public tokenPriceInBPT(tokenIndex: number): string {
+    const totalSupply: string = this.pool.totalSupply.toString();
+    const totalWeight: string = this.pool.weights
+      .reduce((a, b) => a.add(b), BigNumber.from(0))
+      .toString();
+    const weight = bnum(this.pool.weights[tokenIndex].toString());
+    const weightFraction = weight.div(totalWeight);
+    const balance = bnum(this.pool.poolTokens.balances[tokenIndex].toString());
+    const price = balance.div(weightFraction).div(totalSupply);
+    return price.toString();
+  }
+
   public setAllTokens(tokens: Token[]): void {
     this.allTokens = tokens;
   }
@@ -96,6 +142,10 @@ export default class Calculator {
 
   private ratioOf(type: string, index: number) {
     return this[`${type}Ratios`][index];
+  }
+
+  private get poolDecimals() {
+    return this.allTokens[this.pool.address].decimals;
   }
 
   private get sendTokens() {
