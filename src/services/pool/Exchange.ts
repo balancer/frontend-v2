@@ -54,6 +54,28 @@ export default class Exchange {
     );
   }
 
+  public async queryExit(
+    account: string,
+    amountsOut: string[],
+    bptIn: string,
+    exitTokenIndex: number | null
+  ) {
+    const txParams = this.exitParams.serialize(
+      account,
+      amountsOut,
+      bptIn,
+      exitTokenIndex
+    );
+
+    return await callStatic(
+      this.provider,
+      this.helpersAddress,
+      helpersAbi,
+      'queryExit',
+      txParams
+    );
+  }
+
   public async exit(
     account: string,
     amountsOut: string[],
@@ -70,7 +92,7 @@ export default class Exchange {
     return await sendTransaction(
       this.provider,
       this.vaultAddress,
-      abi,
+      vaultAbi,
       'exitPool',
       txParams
     );
