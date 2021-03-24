@@ -15,7 +15,7 @@
                 :symbol="true"
               />
             </span>
-            <span v-else>Select</span>
+            <span v-text="$t('select')" v-else />
           </a>
           <div class="col-span-8 px-3 py-2">
             <div class="flex">
@@ -26,9 +26,11 @@
                 placeholder="0"
                 class="flex-auto"
               />
-              <a @click="handleMax" class="p-1 border rounded text-xs">
-                Max
-              </a>
+              <a
+                @click="handleMax"
+                v-text="$t('max')"
+                class="p-1 border rounded text-xs"
+              />
             </div>
             <div v-if="tokenInAddressInput" class="text-xs">
               Balance:
@@ -62,7 +64,7 @@
                 :symbol="true"
               />
             </span>
-            <span v-else>Select</span>
+            <span v-text="$t('select')" v-else />
           </a>
           <div class="col-span-8 px-3 py-2">
             <input
@@ -73,7 +75,7 @@
               class="w-full"
             />
             <div v-if="slippage" class="text-xs">
-              Price impact:
+              {{ $t('priceImpact') }}:
               {{ _num(slippage, '0,0.[00]%') }}
             </div>
           </div>
