@@ -1,6 +1,7 @@
 import { Pool } from '@/api/subgraph';
+import { Prices } from '@/api/coingecko';
 
-export function getPoolLiquidity(pool: Pool, prices) {
+export function getPoolLiquidity(pool: Pool, prices: Prices) {
   if (pool.strategyType == 2) {
     const totalWeight = pool.weights.reduce(
       (total, value) => total + parseFloat(value),

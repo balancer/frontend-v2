@@ -12,7 +12,8 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import numeral from 'numeral';
+
+import useNumbers from '@/composables/useNumbers';
 
 export default defineComponent({
   props: {
@@ -21,10 +22,12 @@ export default defineComponent({
     snapshots: Object
   },
   setup(props) {
+    const { format: formatNum } = useNumbers();
+
     const { tokens, prices, snapshots } = toRefs(props);
 
     function formatYAxis(value) {
-      return numeral(value).format('0.%');
+      return formatNum(value, '0.%');
     }
 
     function getAssetValue(state) {

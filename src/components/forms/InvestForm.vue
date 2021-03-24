@@ -1,5 +1,30 @@
 <template>
   <BalForm ref="investForm" @on-submit="submit">
+    <div class="flex items-center w-full">
+      <div class="w-1/2">
+        <BalSelectInput
+          name="investType"
+          label="Investment type"
+          v-model="investType"
+          :options="['Proportional', 'Custom']"
+          @change="onInvestTypeChange"
+        />
+      </div>
+      <div v-if="isProportional" class="ml-4 flex-1">
+        <div class="text-right text-sm text-gray-500">
+          {{ propPercentage }}%
+        </div>
+        <input
+          type="range"
+          v-model="amounts[pool.tokens.indexOf(propToken)]"
+          :max="tokenBalance(pool.tokens.indexOf(propToken))"
+          step="0.001"
+          @update:modelValue="onPropChange"
+          class="w-full"
+        />
+      </div>
+    </div>
+
     <BalTextInput
       v-for="(token, i) in pool.tokens"
       :key="token"
@@ -10,9 +35,9 @@
       min="0"
       step="any"
       placeholder="0"
-      :disabled="loading"
+      :disabled="loading || isProportional"
       validate-on="input"
-      @input="onInput($event, i)"
+      prepend-border
     >
       <template v-slot:prepend>
         <div class="flex items-center w-24">
@@ -27,8 +52,8 @@
           </div>
         </div>
       </template>
-      <template v-slot:info>
-        <div class="cursor-pointer" @click="onInput(tokenBalance(i), i)">
+      <template v-if="!isProportional" v-slot:info>
+        <div class="cursor-pointer" @click="amounts[i] = tokenBalance(i)">
           {{ infoLabel(i) }}
         </div>
       </template>
@@ -40,6 +65,7 @@
       placeholder="$0"
       info="0%"
       :disabled="true"
+      prepend-border
     >
       <template v-slot:prepend>
         <div class="w-24 flex flex-col">
@@ -84,16 +110,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { FormRef } from '@/types';
-import PoolAdapter from '@/utils/balancer/adapters/pool';
 import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
-import useJoinPool from '@/composables/pools/useJoinPool';
 import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
+import PoolExchange from '@/services/pool/Exchange';
+import PoolCalculator from '@/services/pool/Calculator';
 
 export default defineComponent({
   name: 'InvestForm',
@@ -109,12 +135,13 @@ export default defineComponent({
     const loading = ref(false);
     const amounts = ref([] as string[]);
     const receiveAmount = ref('');
+    const propToken = ref('');
+    const investType = ref('Proportional');
 
     // COMPOSABLES
     const store = useStore();
     const notify = useBlocknative();
-    const { isAuthenticated } = useAuth();
-    const joinPool = useJoinPool(props.pool);
+    const { web3, isAuthenticated } = useAuth();
     const { format: formatNum } = useNumbers();
 
     const {
@@ -122,11 +149,7 @@ export default defineComponent({
       approveAllowances,
       approving,
       approvedAll
-    } = useTokenApprovals(
-      store.getters.getTokens(),
-      props.pool.tokens,
-      amounts
-    );
+    } = useTokenApprovals(props.pool.tokens, amounts);
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
@@ -144,7 +167,7 @@ export default defineComponent({
 
     const hasBalance = computed(() => {
       const balanceSum = props.pool.tokens
-        .map(token => allTokens.value[token].balance)
+        .map(token => Number(allTokens.value[token].balance))
         .reduce((a, b) => a + b, 0);
       return balanceSum > 0;
     });
@@ -169,17 +192,37 @@ export default defineComponent({
       return Object.keys(requiredAllowances.value).length > 0;
     });
 
-    const poolAdapter = new PoolAdapter(
+    const isProportional = computed(() => {
+      return investType.value === 'Proportional';
+    });
+
+    const propPercentage = computed(() => {
+      const currentAmount =
+        amounts.value[props.pool.tokens.indexOf(propToken.value)];
+      const maxAmount = tokenBalance(
+        props.pool.tokens.indexOf(propToken.value)
+      );
+
+      if (!currentAmount) return 0;
+      return Math.ceil((Number(currentAmount) / maxAmount) * 100);
+    });
+
+    const poolExchange = new PoolExchange(
+      props.pool,
+      store.state.web3.config.key,
+      web3,
+      allTokens.value
+    );
+
+    const poolCalculator = new PoolCalculator(
+      props.pool,
       allTokens.value,
-      props.pool.tokens,
-      [props.pool.address],
-      props.pool.tokenBalances,
-      [props.pool.totalSupply]
+      'join'
     );
 
     // METHODS
     function tokenBalance(index) {
-      return allTokens.value[props.pool.tokens[index]].balance;
+      return allTokens.value[props.pool.tokens[index]]?.balance || 0;
     }
 
     function infoLabel(index) {
@@ -201,14 +244,27 @@ export default defineComponent({
       store.commit('setAccountModal', true);
     }
 
-    function onInput(amount, index, type = 'send'): void {
-      const { sendAmounts, receiveAmounts } = poolAdapter.calcAmountsWith(
-        type,
-        index,
-        amount
+    function setPropMax() {
+      const { send, receive, fixedToken } = poolCalculator.propMax();
+      amounts.value = send;
+      receiveAmount.value = receive[0];
+      propToken.value = fixedToken;
+    }
+
+    function onPropChange() {
+      const propTokenIndex = props.pool.tokens.indexOf(propToken.value);
+      const amount = amounts.value[propTokenIndex];
+      const { send, receive } = poolCalculator.propAmountsGiven(
+        amount,
+        propTokenIndex,
+        'send'
       );
-      amounts.value = sendAmounts;
-      receiveAmount.value = receiveAmounts[0];
+      amounts.value = send;
+      receiveAmount.value = receive[0];
+    }
+
+    function onInvestTypeChange(newType) {
+      if (newType === 'Proportional') setPropMax();
     }
 
     function resetForm() {
@@ -243,7 +299,10 @@ export default defineComponent({
       if (!investForm.value.validate()) return;
       try {
         loading.value = true;
-        const tx = await joinPool(amounts.value, receiveAmount.value);
+        const tx = await poolExchange.join(
+          store.state.web3.account,
+          amounts.value
+        );
         console.log('Receipt', tx);
         txListener(tx.hash);
       } catch (error) {
@@ -251,6 +310,15 @@ export default defineComponent({
         loading.value = false;
       }
     }
+
+    watch(allTokens, newTokens => {
+      poolCalculator.setAllTokens(newTokens);
+      if (!hasAmounts.value) setPropMax();
+    });
+
+    onMounted(() => {
+      setPropMax();
+    });
 
     return {
       investForm,
@@ -261,7 +329,6 @@ export default defineComponent({
       hasAmounts,
       loading,
       approving,
-      onInput,
       requireApproval,
       approveAllowances,
       tokenWeights,
@@ -272,7 +339,14 @@ export default defineComponent({
       isStablePool,
       isAuthenticated,
       connectWallet,
-      infoLabel
+      infoLabel,
+      setPropMax,
+      propToken,
+      investType,
+      onPropChange,
+      isProportional,
+      onInvestTypeChange,
+      propPercentage
     };
   }
 });

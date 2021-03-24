@@ -23,7 +23,7 @@ function useFormValidations() {
   }
 
   function validateInput(input) {
-    input.validate(input.$attrs.modelValue);
+    input.validate(input.$props.modelValue);
     handleInputErrors(input.errors);
   }
 
@@ -61,6 +61,8 @@ function useFormValidations() {
 
 export default defineComponent({
   name: 'BalForm',
+
+  emits: ['onSubmit'],
 
   props: {
     action: { type: String, default: '' },
