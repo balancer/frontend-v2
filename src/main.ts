@@ -14,7 +14,6 @@ import i18n from '@/i18n';
 import '@/auth';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
-// import infiniteScroll from 'vue-infinite-scroll';
 
 const app = createApp(App)
   .use(i18n)
