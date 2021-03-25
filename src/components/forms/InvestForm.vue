@@ -186,7 +186,7 @@ export default defineComponent({
     const allTokens = computed(() => store.getters.getTokens());
 
     const hasAmounts = computed(() => {
-      const amountSum = data.amounts
+      const amountSum = fullAmounts.value
         .map(amount => parseFloat(amount))
         .reduce((a, b) => a + b, 0);
       return amountSum > 0;
@@ -203,7 +203,7 @@ export default defineComponent({
       const total = props.pool.tokens
         .map((token, i) => {
           return (
-            (parseFloat(data.amounts[i]) || 0) *
+            (parseFloat(fullAmounts.value[i]) || 0) *
               store.state.market.prices[token.toLowerCase()]?.price || 0
           );
         })
@@ -225,16 +225,22 @@ export default defineComponent({
     });
 
     const propPercentage = computed(() => {
-      const currentAmount = data.amounts[data.propToken];
+      const currentAmount = fullAmounts.value[data.propToken];
       const maxAmount = tokenBalance(data.propToken);
 
-      if (!currentAmount) return 0;
+      if (currentAmount === '0') return 0;
       return Math.ceil((Number(currentAmount) / maxAmount) * 100);
+    });
+
+    const fullAmounts = computed(() => {
+      return props.pool.tokens.map((_, i) => {
+        return data.amounts[i] || '0';
+      });
     });
 
     const priceImpact = computed(() => {
       if (!hasAmounts.value) return 0;
-      const pi = poolCalculator.joinPriceImpact(data.amounts);
+      const pi = poolCalculator.joinPriceImpact(fullAmounts.value);
       return parseFloat(pi.toString()) * 100;
     });
 
@@ -309,9 +315,10 @@ export default defineComponent({
     }
 
     async function calcMinBptOut(): Promise<string> {
+      // const bptOut = poolCalculator.exactTokensInForBPTOut(fullAmounts.value);
       const { bptOut } = await poolExchange.queryJoin(
         store.state.web3.account,
-        data.amounts
+        fullAmounts.value
       );
       const slippageBasisPoints = parseFloat(store.state.app.slippage) * 10000;
       const delta = bptOut.mul(slippageBasisPoints).div(10000);
@@ -329,7 +336,7 @@ export default defineComponent({
         const minBptOut = await calcMinBptOut();
         const tx = await poolExchange.join(
           store.state.web3.account,
-          data.amounts,
+          fullAmounts.value,
           minBptOut
         );
         console.log('Receipt', tx);

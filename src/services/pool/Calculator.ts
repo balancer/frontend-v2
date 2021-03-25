@@ -1,14 +1,15 @@
 import { Token } from '@/types';
 import { Pool } from '@/utils/balancer/types';
 import { parseUnits, formatUnits } from '@ethersproject/units';
-import {
-  bnum as fpBnum,
-  FixedPoint
-} from '@balancer-labs/sor/dist/solidityHelpers/math/FixedPoint';
 import { bnum } from '@/utils';
 import BigNumber from 'bignumber.js';
 import { BPTForTokensZeroPriceImpact } from '@balancer-labs/sor/dist/solidityHelpers/frontendHelpers/weightedHelpers';
 import { _exactTokensInForBPTOut } from '@balancer-labs/sor/dist/solidityHelpers/pools/weighted';
+import {
+  bnum as fpBnum,
+  FixedPoint
+} from '@balancer-labs/sor/dist/solidityHelpers/math/FixedPoint';
+
 interface Amounts {
   send: string[];
   receive: string[];
@@ -171,7 +172,7 @@ export default class Calculator {
     return bnum(this.pool.strategy.swapFee.toString());
   }
 
-  private get poolDecimals() {
+  private get poolDecimals(): number {
     return this.allTokens[this.pool.address].decimals;
   }
 
