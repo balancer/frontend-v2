@@ -87,6 +87,7 @@ export function decodeContenthash(encoded) {
         decoded = encoded;
       }
     } catch (e) {
+      console.error(e);
       error = e.message;
     }
   }
