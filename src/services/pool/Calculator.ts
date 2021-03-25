@@ -93,7 +93,7 @@ export default class Calculator {
     return amounts;
   }
 
-  public joinPriceImpact(tokensIn: string[]) {
+  public joinPriceImpact(tokensIn: string[]): BigNumber {
     const bptForExactTokensIn = this.exactTokensInForBPTOut(tokensIn);
     const bptForTokensZeroPriceImpact = this.bptForTokensZeroPriceImpact(
       tokensIn
@@ -102,6 +102,8 @@ export default class Calculator {
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPoint {
+    const balances = this.poolTokenBalances.map(b => fpBnum(b.toString()));
+    const weights = this.poolTokenWeights.map(w => fpBnum(w.toString()));
     const denormAmounts = this.denormAmounts(
       tokenAmounts,
       this.poolTokenDecimals
@@ -109,8 +111,8 @@ export default class Calculator {
     const amounts = denormAmounts.map(a => fpBnum(a));
 
     return _exactTokensInForBPTOut(
-      this.poolTokenBalances.map(b => fpBnum(b.toString())),
-      this.poolTokenWeights.map(w => fpBnum(w.toString())),
+      balances,
+      weights,
       amounts,
       fpBnum(this.poolTotalSupply.toString()),
       fpBnum(this.poolSwapFee.toString())
