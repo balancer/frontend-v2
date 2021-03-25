@@ -1,9 +1,14 @@
 import { Token } from '@/types';
 import { Pool } from '@/utils/balancer/types';
 import { parseUnits, formatUnits } from '@ethersproject/units';
-import { BigNumber } from '@ethersproject/bignumber';
+import {
+  bnum as fpBnum,
+  FixedPoint
+} from '@balancer-labs/sor/dist/solidityHelpers/math/FixedPoint';
 import { bnum } from '@/utils';
-
+import BigNumber from 'bignumber.js';
+import { BPTForTokensZeroPriceImpact } from '@balancer-labs/sor/dist/solidityHelpers/frontendHelpers/weightedHelpers';
+import { _exactTokensInForBPTOut } from '@balancer-labs/sor/dist/solidityHelpers/pools/weighted';
 interface Amounts {
   send: string[];
   receive: string[];
@@ -67,7 +72,7 @@ export default class Calculator {
     const amounts = {
       send: this.sendTokens.map(() => ''),
       receive: this.receiveTokens.map(() => ''),
-      fixedToken: fixedTokenAddress
+      fixedToken: index
     };
 
     amounts[type][index] = fixedAmount;
@@ -88,48 +93,48 @@ export default class Calculator {
     return amounts;
   }
 
-  public priceImpact(tokenAmounts: string[], currentBPTAmount: string): number {
-    const denormBPTAmount = parseUnits(
-      currentBPTAmount,
-      this.poolDecimals
-    ).toString();
-    const _currentBPTAmount = bnum(denormBPTAmount);
-    const bptSpotAmount = this.bptSpotAmount(tokenAmounts);
-    const priceImpact = bnum(1).minus(_currentBPTAmount.div(bptSpotAmount));
-    return priceImpact.toNumber();
+  public joinPriceImpact(tokensIn: string[]) {
+    const bptForExactTokensIn = this.exactTokensInForBPTOut(tokensIn);
+    const bptForTokensZeroPriceImpact = this.bptForTokensZeroPriceImpact(
+      tokensIn
+    );
+    return bnum(1).minus(bptForExactTokensIn.div(bptForTokensZeroPriceImpact));
   }
 
-  public bptSpotAmount(tokenAmounts: string[]): string {
-    const denormAmounts: string[] = this.pool.tokens.map((token, i) => {
-      return parseUnits(
-        tokenAmounts[i],
-        this.allTokens[token].decimals
-      ).toString();
-    });
+  public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPoint {
+    const denormAmounts = this.denormAmounts(
+      tokenAmounts,
+      this.poolTokenDecimals
+    );
+    const amounts = denormAmounts.map(a => fpBnum(a));
 
-    const tokenBPTPrices: string[] = this.pool.tokens.map((_, i) => {
-      return this.tokenPriceInBPT(i);
-    });
-
-    let bptSpot = bnum(0);
-    this.pool.tokens.forEach((_, i) => {
-      const amount = bnum(denormAmounts[i]);
-      bptSpot = bptSpot.plus(amount.div(tokenBPTPrices[i]));
-    });
-
-    return bptSpot.toString();
+    return _exactTokensInForBPTOut(
+      this.poolTokenBalances.map(b => fpBnum(b.toString())),
+      this.poolTokenWeights.map(w => fpBnum(w.toString())),
+      amounts,
+      fpBnum(this.poolTotalSupply.toString()),
+      fpBnum(this.poolSwapFee.toString())
+    );
   }
 
-  public tokenPriceInBPT(tokenIndex: number): string {
-    const totalSupply: string = this.pool.totalSupply.toString();
-    const totalWeight: string = this.pool.weights
-      .reduce((a, b) => a.add(b), BigNumber.from(0))
-      .toString();
-    const weight = bnum(this.pool.weights[tokenIndex].toString());
-    const weightFraction = weight.div(totalWeight);
-    const balance = bnum(this.pool.poolTokens.balances[tokenIndex].toString());
-    const price = balance.div(weightFraction).div(totalSupply);
-    return price.toString();
+  public bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
+    const denormAmounts = this.denormAmounts(
+      tokenAmounts,
+      this.poolTokenDecimals
+    );
+    const amounts = denormAmounts.map(a => bnum(a));
+
+    return BPTForTokensZeroPriceImpact(
+      this.poolTokenBalances,
+      this.poolTokenDecimals,
+      this.poolTokenWeights,
+      amounts,
+      this.poolTotalSupply
+    );
+  }
+
+  public denormAmounts(amounts: string[], decimals: number[]): string[] {
+    return amounts.map((a, i) => parseUnits(a, decimals[i]).toString());
   }
 
   public setAllTokens(tokens: Token[]): void {
@@ -142,6 +147,26 @@ export default class Calculator {
 
   private ratioOf(type: string, index: number) {
     return this[`${type}Ratios`][index];
+  }
+
+  private get poolTokenBalances(): BigNumber[] {
+    return this.pool.poolTokens.balances.map(b => bnum(b.toString()));
+  }
+
+  private get poolTokenDecimals(): number[] {
+    return this.pool.tokens.map(t => this.allTokens[t].decimals);
+  }
+
+  private get poolTokenWeights(): BigNumber[] {
+    return this.pool.weights.map(w => bnum(w.toString()));
+  }
+
+  private get poolTotalSupply(): BigNumber {
+    return bnum(this.pool.totalSupply.toString());
+  }
+
+  private get poolSwapFee(): BigNumber {
+    return bnum(this.pool.strategy.swapFee.toString());
   }
 
   private get poolDecimals() {
