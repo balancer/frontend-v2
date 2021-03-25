@@ -1,7 +1,7 @@
 <template>
   <div :class="['spinner', sizeClasses]">
-    <div :class="`double-bounce1 ${colorClasses}`" />
-    <div :class="`double-bounce2 ${colorClasses}`" />
+    <div :class="`spinner-double-bounce1 ${colorClasses}`" />
+    <div :class="`spinner-double-bounce2 ${colorClasses}`" />
   </div>
 </template>
 
@@ -28,11 +28,11 @@ export default defineComponent({
     const sizeClasses = computed(() => {
       switch (props.size) {
         case 'lg':
-          return 'lg';
+          return 'spinner-lg';
         case 'sm':
-          return 'sm';
+          return 'spinner-sm';
         default:
-          return 'md';
+          return 'spinner-md';
       }
     });
 
@@ -53,28 +53,28 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 .spinner {
   position: relative;
 }
 
-.sm {
+.spinner-sm {
   width: 16px;
   height: 16px;
 }
 
-.md {
+.spinner-md {
   width: 22px;
   height: 22px;
 }
 
-.lg {
+.spinner-lg {
   width: 32px;
   height: 32px;
 }
 
-.double-bounce1,
-.double-bounce2 {
+.spinner-double-bounce1,
+.spinner-double-bounce2 {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -85,7 +85,7 @@ export default defineComponent({
   -webkit-animation: sk-bounce 2s infinite ease-in-out;
   animation: sk-bounce 2s infinite ease-in-out;
 }
-.double-bounce2 {
+.spinner-double-bounce2 {
   -webkit-animation-delay: -1s;
   animation-delay: -1s;
 }
