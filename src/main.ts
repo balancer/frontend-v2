@@ -12,7 +12,7 @@ import store from '@/store';
 import mixins from '@/mixins';
 import i18n from '@/i18n';
 import '@/auth';
-import '@/assets/css/tailwind.css';
+import 'tailwindcss/tailwind.css';
 import '@/assets/css/index.css';
 
 const app = createApp(App)
