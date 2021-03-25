@@ -70,23 +70,13 @@
           <div class="font-medium text-sm leading-none">
             Total
           </div>
-          <div
-            :class="[
-              'leading-none text-xs mt-1 text-gray-500 ',
-              { 'text-red-500 font-medium': priceImpact >= 1 }
-            ]"
-          >
+          <div :class="['leading-none text-xs mt-1', priceImpactClasses]">
             Price impact
           </div>
         </div>
       </template>
       <template v-slot:info>
-        <div
-          :class="[
-            'flex items-center',
-            { 'text-red-500 font-medium': priceImpact >= 1 }
-          ]"
-        >
+        <div :class="['flex items-center', priceImpactClasses]">
           <span>{{ formatNum(priceImpact) }}%</span>
           <BalIcon
             v-if="priceImpact >= 1"
@@ -163,9 +153,7 @@ export default defineComponent({
       loading: false,
       amounts: [] as string[],
       propToken: 0,
-      investType: 'Proportional' as 'Proportional' | 'Custom',
-      piLoading: false,
-      priceImpact: 0
+      investType: 'Proportional' as 'Proportional' | 'Custom'
     });
 
     // COMPOSABLES
@@ -244,6 +232,19 @@ export default defineComponent({
       return Math.ceil((Number(currentAmount) / maxAmount) * 100);
     });
 
+    const priceImpact = computed(() => {
+      if (!hasAmounts.value) return 0;
+      const pi = poolCalculator.joinPriceImpact(data.amounts);
+      return parseFloat(pi.toString()) * 100;
+    });
+
+    const priceImpactClasses = computed(() => {
+      return {
+        'text-red-500 font-medium': priceImpact.value >= 1,
+        'text-gray-500 font-normal': priceImpact.value < 1
+      };
+    });
+
     // METHODS
     function tokenBalance(index) {
       return allTokens.value[props.pool.tokens[index]]?.balance || 0;
@@ -307,29 +308,6 @@ export default defineComponent({
       });
     }
 
-    async function calcPriceImpact(amountsIn: string[]): Promise<void> {
-      if (!hasAmounts.value || isProportional.value || data.piLoading) return;
-      try {
-        data.piLoading = true;
-        const bptOut = await calcBptOut(amountsIn);
-        const pi = poolCalculator.priceImpact(amountsIn, bptOut);
-        console.log('check', amountsIn, bptOut, formatNum(pi * 100));
-        data.priceImpact = pi * 100;
-      } catch (error) {
-        console.error(error);
-      } finally {
-        data.piLoading = false;
-      }
-    }
-
-    async function calcBptOut(amountsIn: string[]): Promise<string> {
-      const { bptOut } = await poolExchange.queryJoin(
-        store.state.web3.account,
-        amountsIn
-      );
-      return formatUnits(bptOut, allTokens.value[props.pool.address].decimals);
-    }
-
     async function calcMinBptOut(): Promise<string> {
       const { bptOut } = await poolExchange.queryJoin(
         store.state.web3.account,
@@ -368,11 +346,6 @@ export default defineComponent({
     });
 
     watch(
-      () => [...data.amounts],
-      async newAmounts => await calcPriceImpact(newAmounts)
-    );
-
-    watch(
       () => data.investType,
       newType => {
         if (newType === 'Proportional') setPropMax();
@@ -402,7 +375,9 @@ export default defineComponent({
       setPropMax,
       onPropChange,
       isProportional,
-      propPercentage
+      propPercentage,
+      priceImpact,
+      priceImpactClasses
     };
   }
 });
