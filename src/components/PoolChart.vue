@@ -57,7 +57,9 @@ export default defineComponent({
         totalShares: '0'
       };
       const history = Object.keys(prices.value).map(timestamp => {
+        // @ts-ignore
         const price = prices.value[timestamp];
+        // @ts-ignore
         const state = snapshots.value[timestamp] || poolState;
         const { amounts, totalShares } = state;
         poolState = {
