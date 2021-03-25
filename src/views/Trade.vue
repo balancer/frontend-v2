@@ -116,7 +116,11 @@
         @selectTokenlist="openModalSelectList"
         @inputSearch="handleTokenSearch"
         :tokens="
-          getTokens({ q, not: [tokenInAddressInput, tokenOutAddressInput] })
+          getTokens({
+            q,
+            not: [tokenInAddressInput, tokenOutAddressInput],
+            includeEther: true
+          })
         "
         :tokenlists="getTokenlists({ active: true })"
       />
@@ -149,7 +153,6 @@ export default defineComponent({
     const { getTokens, getTokenlists } = store.getters;
     const { config } = store.state.web3;
 
-    const chainId = computed(() => config.chainId);
     const tokenInAddressInput = ref('');
     const tokenInAmountInput = ref('');
     const tokenOutAddressInput = ref('');
@@ -160,7 +163,8 @@ export default defineComponent({
     const isInRate = ref(true);
     const q = ref('');
 
-    const tokens = computed(() => getTokens());
+    const chainId = computed(() => config.chainId);
+    const tokens = computed(() => getTokens({ includeEther: true }));
 
     // COMPOSABLES
     const { trading, trade, initSor, handleAmountChange, slippage } = useSor(

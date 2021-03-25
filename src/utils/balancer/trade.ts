@@ -4,6 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/utils/balancer/web3';
 import abi from '@/abi/ExchangeProxy.json';
 import configs from '@/config';
+import { ETHER } from '@/constants/tokenlists';
 
 export async function swapIn(
   network: string,
@@ -14,6 +15,10 @@ export async function swapIn(
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber
 ): Promise<any> {
+  const overrides: any = {};
+  if (tokenInAddress === ETHER.address) {
+    overrides.value = `0x${tokenInAmount.toString(16)}`;
+  }
   try {
     return sendTransaction(
       web3,
@@ -26,7 +31,8 @@ export async function swapIn(
         tokenOutAddress,
         tokenInAmount.toString(),
         tokenOutAmountMin.toString()
-      ]
+      ],
+      overrides
     );
   } catch (e) {
     return Promise.reject(e);
@@ -41,13 +47,18 @@ export async function swapOut(
   tokenOutAddress: string,
   tokenInAmountMax: BigNumber
 ): Promise<any> {
+  const overrides: any = {};
+  if (tokenInAddress === ETHER.address) {
+    overrides.value = `0x${tokenInAmountMax.toString(16)}`;
+  }
   try {
     return sendTransaction(
       web3,
       configs[network].addresses.exchangeProxy,
       abi,
       'multihopBatchSwapExactOut',
-      [swaps, tokenInAddress, tokenOutAddress, tokenInAmountMax.toString()]
+      [swaps, tokenInAddress, tokenOutAddress, tokenInAmountMax.toString()],
+      overrides
     );
   } catch (e) {
     return Promise.reject(e);

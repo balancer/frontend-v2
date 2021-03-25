@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/utils/balancer/tokens';
 import useBlocknative from '@/composables/useBlocknative';
+import { ETHER } from '@/constants/tokenlists';
 
 export default function useTokenApproval(tokenInAddress, amount, tokens) {
   const approving = ref(false);
@@ -77,8 +78,12 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   }
 
   watch(tokenInAddress, async () => {
-    approved.value = false;
-    await checkApproval();
+    if (tokenInAddress.value === ETHER.address) {
+      approved.value = true;
+    } else {
+      approved.value = false;
+      await checkApproval();
+    }
   });
 
   return {

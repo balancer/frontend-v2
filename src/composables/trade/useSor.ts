@@ -9,6 +9,7 @@ import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import { swapIn, swapOut } from '@/utils/balancer/trade';
 import useBlocknative from '@/composables/useBlocknative';
+import { ETHER } from '@/constants/tokenlists';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -63,8 +64,14 @@ export default function useSor(
     isExactIn: boolean,
     amount: string
   ): Promise<void> {
-    const tokenInAddress = tokenInAddressInput.value;
-    const tokenOutAddress = tokenOutAddressInput.value;
+    const tokenInAddress =
+      tokenInAddressInput.value === ETHER.address
+        ? config.addresses.weth
+        : tokenInAddressInput.value;
+    const tokenOutAddress =
+      tokenOutAddressInput.value === ETHER.address
+        ? config.addresses.weth
+        : tokenOutAddressInput.value;
 
     if (
       !tokenInAddress ||
@@ -76,8 +83,8 @@ export default function useSor(
     }
 
     exactIn.value = isExactIn;
-    const tokenInDecimals = tokens.value[tokenInAddress].decimals;
-    const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
+    const tokenInDecimals = tokens.value[tokenInAddressInput.value].decimals;
+    const tokenOutDecimals = tokens.value[tokenOutAddressInput.value].decimals;
     const tokenAmountRaw = new BigNumber(amount);
 
     if (isExactIn) {
