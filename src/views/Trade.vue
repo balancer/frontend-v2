@@ -192,8 +192,8 @@ export default defineComponent({
       if (
         tokenInAddressInput.value &&
         tokenOutAddressInput.value &&
-        tokenInAmountInput.value &&
-        tokenOutAmountInput.value
+        parseFloat(tokenInAmountInput.value) > 0 &&
+        parseFloat(tokenOutAmountInput.value) > 0
       ) {
         const tokenIn = tokens.value[tokenInAddressInput.value];
         const tokenOut = tokens.value[tokenOutAddressInput.value];
