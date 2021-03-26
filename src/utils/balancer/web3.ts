@@ -25,8 +25,9 @@ export async function sendTransaction(
     return await contractWithSigner[action](...params, overrides);
   } catch (e) {
     if (e.code === CODE_FAILED) {
+      const network = (await web3.getNetwork()).name;
       const sender = await web3.getSigner().getAddress();
-      logFailedTx(sender, contract, action, params, overrides);
+      logFailedTx(network, sender, contract, action, params, overrides);
     }
   }
 }

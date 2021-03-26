@@ -9,5 +9,7 @@ export default function getProvider(network: string) {
   return providers[network];
 }
 
-const alchemyKey = 'cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88';
-export const loggingProvider = new AlchemyProvider('homestead', alchemyKey);
+export function getLoggingProvider(network: string) {
+  const alchemyKey = 'cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88';
+  return new AlchemyProvider(network, alchemyKey);
+}
