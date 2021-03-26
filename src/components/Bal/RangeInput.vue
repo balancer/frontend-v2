@@ -19,6 +19,7 @@
       :dot-style="dotStyle"
       :rail-style="railSyle"
       :process-style="proccessStyle"
+      :contained="true"
     />
   </div>
 </template>
