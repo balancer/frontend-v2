@@ -325,6 +325,7 @@ export default defineComponent({
         store.state.web3.account,
         fullAmounts.value
       );
+      console.log('queryJoin BPT', bptOut.toString())
       const slippageBasisPoints = parseFloat(store.state.app.slippage) * 10000;
       const delta = bptOut.mul(slippageBasisPoints).div(10000);
       const minBptOut = bptOut.sub(delta);
