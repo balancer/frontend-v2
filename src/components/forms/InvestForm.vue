@@ -77,9 +77,9 @@
       </template>
       <template v-slot:info>
         <div :class="['flex items-center', priceImpactClasses]">
-          <span>{{ formatNum(priceImpact) }}%</span>
+          <span>{{ formatNum(priceImpact, '0.00%') }}</span>
           <BalIcon
-            v-if="priceImpact >= 1"
+            v-if="priceImpact >= 0.01"
             name="alert-triangle"
             size="xs"
             class="ml-1"
@@ -248,14 +248,13 @@ export default defineComponent({
 
     const priceImpact = computed(() => {
       if (!hasAmounts.value) return 0;
-      const pi = poolCalculator.priceImpact(fullAmounts.value);
-      return parseFloat(pi.toString()) * 100;
+      return poolCalculator.priceImpact(fullAmounts.value).toNumber();
     });
 
     const priceImpactClasses = computed(() => {
       return {
-        'text-red-500 font-medium': priceImpact.value >= 1,
-        'text-gray-500 font-normal': priceImpact.value < 1
+        'text-red-500 font-medium': priceImpact.value >= 0.01,
+        'text-gray-500 font-normal': priceImpact.value < 0.01
       };
     });
 
