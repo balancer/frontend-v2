@@ -10,16 +10,15 @@
         />
       </div>
       <div v-if="isProportional" class="ml-4 flex-1">
-        <div class="text-right text-sm text-gray-500">
-          {{ propPercentage }}%
-        </div>
-        <input
-          type="range"
-          v-model="amounts[propToken]"
-          :max="tokenBalance(propToken)"
-          step="0.001"
-          @update:modelValue="onPropChange"
+        <BalRangeInput
           class="w-full"
+          v-model="amounts[propToken]"
+          :max="Number(tokenBalance(propToken))"
+          :interval="Number(tokenBalance(propToken)) / 1000"
+          :min="0"
+          :right-label="`${propPercentage}%`"
+          tooltip="none"
+          @drag="onPropChange"
         />
       </div>
     </div>
@@ -322,7 +321,6 @@ export default defineComponent({
     }
 
     async function calcMinBptOut(): Promise<string> {
-      // const bptOut = poolCalculator.exactTokensInForBPTOut(fullAmounts.value);
       const { bptOut } = await poolExchange.queryJoin(
         store.state.web3.account,
         fullAmounts.value
@@ -357,7 +355,11 @@ export default defineComponent({
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
       if (!hasAmounts.value) setPropMax();
-      if (hasZeroBalance.value) data.investType = 'Custom';
+      if (hasZeroBalance.value) {
+        data.investType = 'Custom';
+      } else {
+        data.investType = 'Proportional';
+      }
     });
 
     watch(

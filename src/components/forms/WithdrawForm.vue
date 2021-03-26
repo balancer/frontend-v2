@@ -11,16 +11,15 @@
         />
       </div>
       <div v-if="isProportional" class="ml-4 flex-1">
-        <div class="text-right text-sm text-gray-500">
-          {{ propPercentage }}%
-        </div>
-        <input
-          type="range"
-          v-model="bptIn"
-          :max="bptBalance"
-          step="0.001"
-          @update:modelValue="onPropChange"
+        <BalRangeInput
           class="w-full"
+          v-model="bptIn"
+          :max="Number(bptBalance)"
+          :interval="Number(bptBalance) / 1000"
+          :min="0"
+          :right-label="`${propPercentage}%`"
+          tooltip="none"
+          @drag="onPropChange"
         />
       </div>
     </div>
