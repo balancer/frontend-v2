@@ -240,7 +240,7 @@ export default defineComponent({
 
     const priceImpact = computed(() => {
       if (!hasAmounts.value) return 0;
-      const pi = poolCalculator.joinPriceImpact(fullAmounts.value);
+      const pi = poolCalculator.priceImpact(fullAmounts.value);
       return parseFloat(pi.toString()) * 100;
     });
 

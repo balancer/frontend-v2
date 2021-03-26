@@ -94,12 +94,17 @@ export default class Calculator {
     return amounts;
   }
 
-  public joinPriceImpact(tokensIn: string[]): BigNumber {
-    const bptForExactTokensIn = this.exactTokensInForBPTOut(tokensIn);
-    const bptForTokensZeroPriceImpact = this.bptForTokensZeroPriceImpact(
-      tokensIn
-    );
-    return bnum(1).minus(bptForExactTokensIn.div(bptForTokensZeroPriceImpact));
+  public priceImpact(tokenAmounts: string[]): BigNumber {
+    let bptEstimate, bptZeroPriceImpact;
+
+    if (this.action === 'join') {
+      bptEstimate = this.exactTokensInForBPTOut(tokenAmounts);
+      bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      return bnum(1).minus(bptEstimate.div(bptZeroPriceImpact));
+    } else {
+      // TODO: exit price impact calc
+      return bnum(0);
+    }
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPoint {
