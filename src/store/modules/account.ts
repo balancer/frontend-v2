@@ -2,6 +2,8 @@ import getProvider from '@/utils/provider';
 import { getAllowances, getBalances } from '@/utils/balancer/tokens';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import configs from '@/config';
+import { ETHER } from '@/constants/tokenlists';
+import { isAddress } from '@ethersproject/address';
 
 const state = {
   balances: {},
@@ -68,8 +70,11 @@ const actions = {
   getAllowances: async ({ commit, rootGetters, rootState }, payload) => {
     const config = rootState.web3.config.key;
     const account: string = rootState.web3.account;
-    const tokens: string[] =
+    let tokens: string[] =
       payload?.tokens || Object.keys(rootGetters.getTokens());
+    tokens = tokens.filter(
+      token => token !== ETHER.address && isAddress(token)
+    );
     if (!account || tokens.length === 0) return;
     const dst = payload?.dst || configs[config].addresses.vault;
     const network = rootState.web3.config.key;

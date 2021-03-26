@@ -15,7 +15,9 @@ export const TOKEN_LISTS: string[] = [
 ];
 
 export const ETHER = {
+  id: 'ether',
   name: 'Ether',
+  address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
   symbol: 'ETH',
   decimals: 18,
   logoURI:

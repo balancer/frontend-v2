@@ -37,7 +37,7 @@ const getters = {
     return ether;
   },
   getTokens: (state, getters, rootState) => (query: any = {}) => {
-    const { q, addresses, not, withBalance, limit } = query;
+    const { q, addresses, not, withBalance, limit, includeEther } = query;
 
     const activeLists = Object.keys(state.tokenlists)
       .filter(name => state.activeLists[name])
@@ -86,6 +86,10 @@ const getters = {
     }
 
     // Query filters
+
+    if (includeEther) {
+      tokens = [getters.getEther(), ...tokens];
+    }
 
     if (q) {
       tokens = tokens.filter(token =>
@@ -164,7 +168,10 @@ const actions = {
     }
   },
   injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
-    if (tokens.length === 0 || !isAddress(tokens[0])) return;
+    tokens = tokens.filter(
+      token => token !== ETHER.address && isAddress(token)
+    );
+    if (tokens.length === 0) return;
     const injected = clone(state.injected);
     const network = rootState.web3.config.key;
     const tokensMetadata = await getTokensMetadata(
