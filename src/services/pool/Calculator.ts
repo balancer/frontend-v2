@@ -5,6 +5,8 @@ import { bnum } from '@/utils';
 import BigNumber from 'bignumber.js';
 import { BPTForTokensZeroPriceImpact } from '@balancer-labs/sor/dist/solidityHelpers/frontendHelpers/weightedHelpers';
 import { _exactTokensInForBPTOut } from '@balancer-labs/sor/dist/solidityHelpers/pools/weighted';
+import { calcBptOutGivenExactTokensIn } from './helpers/math/weighted';
+import { BigNumberish } from '@/utils/balancer/helpers/numbers';
 import {
   bnum as fpBnum,
   FixedPoint
@@ -95,16 +97,48 @@ export default class Calculator {
   }
 
   public priceImpact(tokenAmounts: string[]): BigNumber {
-    let bptEstimate, bptZeroPriceImpact;
+    let bptEstimate, bptZeroPriceImpact, altBptEst;
 
     if (this.action === 'join') {
+      altBptEst = this.altExactTokensInForBPTOut(tokenAmounts);
+      console.log('COR', altBptEst.toString());
       bptEstimate = this.exactTokensInForBPTOut(tokenAmounts);
+      console.log('SOR', bptEstimate.toString());
       bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       return bnum(1).minus(bptEstimate.div(bptZeroPriceImpact));
     } else {
       // TODO: exit price impact calc
       return bnum(0);
     }
+  }
+
+  public altExactTokensInForBPTOut(tokenAmounts: string[]): BigNumberish {
+    const denormAmounts = this.denormAmounts(
+      tokenAmounts,
+      this.poolTokenDecimals
+    );
+
+    console.log(
+      'balances',
+      this.poolTokenBalances.map(b => b.toString())
+    );
+    console.log(
+      'weights',
+      this.poolTokenWeights.map(w => w.toString())
+    );
+    console.log(
+      'amounts',
+      denormAmounts.map(a => a.toString())
+    );
+    console.log('totalSupply', this.poolTotalSupply.toString());
+    console.log('poolSwapFee', this.poolSwapFee.toString());
+    return calcBptOutGivenExactTokensIn(
+      this.poolTokenBalances,
+      this.poolTokenWeights,
+      denormAmounts,
+      this.poolTotalSupply,
+      this.poolSwapFee
+    );
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPoint {
@@ -114,7 +148,7 @@ export default class Calculator {
       tokenAmounts,
       this.poolTokenDecimals
     );
-    const amounts = denormAmounts.map(a => fpBnum(a));
+    const amounts = denormAmounts.map(a => fpBnum(a.toString()));
 
     return _exactTokensInForBPTOut(
       balances,
@@ -130,19 +164,19 @@ export default class Calculator {
       tokenAmounts,
       this.poolTokenDecimals
     );
-    const amounts = denormAmounts.map(a => bnum(a));
+    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
     return BPTForTokensZeroPriceImpact(
-      this.poolTokenBalances,
+      this.poolTokenBalances.map(b => bnum(b.toString())),
       this.poolTokenDecimals,
-      this.poolTokenWeights,
+      this.poolTokenWeights.map(w => bnum(w.toString())),
       amounts,
-      this.poolTotalSupply
+      bnum(this.poolTotalSupply.toString())
     );
   }
 
-  public denormAmounts(amounts: string[], decimals: number[]): string[] {
-    return amounts.map((a, i) => parseUnits(a, decimals[i]).toString());
+  public denormAmounts(amounts: string[], decimals: number[]): BigNumberish[] {
+    return amounts.map((a, i) => parseUnits(a, decimals[i]));
   }
 
   public setAllTokens(tokens: Token[]): void {
@@ -157,24 +191,24 @@ export default class Calculator {
     return this[`${type}Ratios`][index];
   }
 
-  private get poolTokenBalances(): BigNumber[] {
-    return this.pool.poolTokens.balances.map(b => bnum(b.toString()));
+  private get poolTokenBalances(): BigNumberish[] {
+    return this.pool.poolTokens.balances;
   }
 
   private get poolTokenDecimals(): number[] {
     return this.pool.tokens.map(t => this.allTokens[t].decimals);
   }
 
-  private get poolTokenWeights(): BigNumber[] {
-    return this.pool.weights.map(w => bnum(w.toString()));
+  private get poolTokenWeights(): BigNumberish[] {
+    return this.pool.weights;
   }
 
-  private get poolTotalSupply(): BigNumber {
-    return bnum(this.pool.totalSupply.toString());
+  private get poolTotalSupply(): BigNumberish {
+    return this.pool.totalSupply;
   }
 
-  private get poolSwapFee(): BigNumber {
-    return bnum(this.pool.strategy.swapFee.toString());
+  private get poolSwapFee(): BigNumberish {
+    return this.pool.strategy.swapFee;
   }
 
   private get poolDecimals(): number {
