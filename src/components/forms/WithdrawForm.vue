@@ -29,7 +29,7 @@
       :key="i"
       :name="token"
       v-model="amounts[i]"
-      :rules="amountRules(i)"
+      :rules="[isPositive()]"
       type="number"
       min="0"
       step="any"
@@ -95,17 +95,15 @@
 <script lang="ts">
 import {
   defineComponent,
-  ref,
   computed,
   watch,
   onMounted,
   nextTick,
   reactive,
-  toRef,
   toRefs
 } from 'vue';
 import { FormRef } from '@/types';
-import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
+import { isPositive } from '@/utils/validations';
 import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
@@ -113,6 +111,7 @@ import useBlocknative from '@/composables/useBlocknative';
 import PoolExchange from '@/services/pool/Exchange';
 import PoolCalculator from '@/services/pool/Calculator';
 import { bnum } from '@/utils';
+import { formatUnits } from '@ethersproject/units';
 
 export default defineComponent({
   name: 'WithdrawalForm',
@@ -197,18 +196,6 @@ export default defineComponent({
       return data.withdrawType === 'Single asset';
     });
 
-    function amountRules(index) {
-      const balance = isSingleAsset.value
-        ? data.singleAssetMax[index]
-        : data.propMax[index];
-      return isAuthenticated.value
-        ? [
-            isPositive(),
-            isLessThanOrEqualTo(Number(balance), 'Exceeds balance')
-          ]
-        : [isPositive()];
-    }
-
     const poolExchange = new PoolExchange(
       props.pool,
       store.state.web3.config.key,
@@ -259,7 +246,7 @@ export default defineComponent({
 
     function setSingleAsset(index) {
       if (!isSingleAsset.value) return;
-      data.amounts.forEach((amount, i) => {
+      props.pool.tokens.forEach((_, i) => {
         if (i === index) {
           data.amounts[i] = data.singleAssetMax[index];
         } else {
@@ -269,15 +256,30 @@ export default defineComponent({
       data.singleAsset = index;
     }
 
-    function onWithdrawTypeChange(newType) {
-      nextTick(() => {
+    async function onWithdrawTypeChange(newType) {
+      nextTick(async () => {
         if (newType === 'Proportional') setPropMax();
-        if (newType === 'Single asset') setSingleAsset(0);
+        if (newType === 'Single asset') {
+          await calcSingleAssetMax();
+          setSingleAsset(0);
+        }
       });
     }
 
-    function resetForm() {
-      data.amounts = [];
+    async function calcSingleAssetMax() {
+      data.singleAssetMax = [];
+      for (let i = 0; i < props.pool.tokens.length; i++) {
+        const { amountsOut } = await poolExchange.queryExit(
+          store.state.web3.account,
+          fullAmounts.value,
+          bptBalance.value,
+          i
+        );
+        data.singleAssetMax[i] = formatUnits(
+          amountsOut[i],
+          allTokens.value[props.pool.tokens[i]].decimals
+        );
+      }
     }
 
     function txListener(hash) {
@@ -285,7 +287,7 @@ export default defineComponent({
 
       emitter.on('txConfirmed', tx => {
         emit('success', tx);
-        resetForm();
+        data.amounts = [];
         data.loading = false;
         return undefined;
       });
@@ -334,7 +336,6 @@ export default defineComponent({
       allTokens,
       hasAmounts,
       tokenWeights,
-      amountRules,
       isPositive,
       formatNum,
       isAuthenticated,
