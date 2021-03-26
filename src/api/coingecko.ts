@@ -80,7 +80,6 @@ export async function getTokensPrice(
   chainId: number,
   addresses: string[]
 ): Promise<Prices> {
-  console.log('getTokensPrice', chainId, addresses);
   const max = 175;
   const pages = Math.ceil(addresses.length / max);
   const promises = [];
