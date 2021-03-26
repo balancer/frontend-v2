@@ -13,13 +13,13 @@
       <div v-if="isProportional" class="ml-4 flex-1">
         <BalRangeInput
           class="w-full"
-          v-model="bptIn"
-          :max="Number(bptBalance)"
-          :interval="Number(bptBalance) / 1000"
+          v-model="range"
+          :max="1000"
+          :interval="1"
           :min="0"
           :right-label="`${propPercentage}%`"
           tooltip="none"
-          @drag="onPropChange"
+          @drag="onRangeChange"
         />
       </div>
     </div>
@@ -29,7 +29,7 @@
       :key="i"
       :name="token"
       v-model="amounts[i]"
-      :rules="amountRules(amountsMax[i])"
+      :rules="amountRules(i)"
       type="number"
       min="0"
       step="any"
@@ -112,6 +112,7 @@ import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
 import PoolExchange from '@/services/pool/Exchange';
 import PoolCalculator from '@/services/pool/Calculator';
+import { bnum } from '@/utils';
 
 export default defineComponent({
   name: 'WithdrawalForm',
@@ -127,10 +128,12 @@ export default defineComponent({
       withdrawForm: {} as FormRef,
       loading: false,
       amounts: [] as string[],
-      amountsMax: [] as string[],
+      propMax: [] as string[],
+      singleAssetMax: [] as string[],
       bptIn: '',
       withdrawType: 'Proportional' as 'Proportional' | 'Single asset',
-      singleAsset: 0
+      singleAsset: 0,
+      range: 1000
     });
 
     // COMPOSABLES
@@ -194,9 +197,15 @@ export default defineComponent({
       return data.withdrawType === 'Single asset';
     });
 
-    function amountRules(balance) {
+    function amountRules(index) {
+      const balance = isSingleAsset.value
+        ? data.singleAssetMax[index]
+        : data.propMax[index];
       return isAuthenticated.value
-        ? [isPositive(), isLessThanOrEqualTo(balance, 'Exceeds balance')]
+        ? [
+            isPositive(),
+            isLessThanOrEqualTo(Number(balance), 'Exceeds balance')
+          ]
         : [isPositive()];
     }
 
@@ -230,12 +239,17 @@ export default defineComponent({
       );
       data.bptIn = send[0];
       data.amounts = receive;
-      data.amountsMax = [...receive];
+      data.propMax = [...receive];
+      data.range = 1000;
     }
 
-    function onPropChange() {
+    function onRangeChange(range) {
+      const fractionBasisPoints = (range / 1000) * 10000;
+      const bpt = bnum(bptBalance.value)
+        .times(fractionBasisPoints)
+        .div(10000);
       const { send, receive } = poolCalculator.propAmountsGiven(
-        data.bptIn,
+        bpt.toString(),
         0,
         'send'
       );
@@ -247,7 +261,7 @@ export default defineComponent({
       if (!isSingleAsset.value) return;
       data.amounts.forEach((amount, i) => {
         if (i === index) {
-          data.amounts[i] = data.amountsMax[index];
+          data.amounts[i] = data.singleAssetMax[index];
         } else {
           data.amounts[i] = '0';
         }
@@ -330,7 +344,7 @@ export default defineComponent({
       setPropMax,
       total,
       tokenBalance,
-      onPropChange,
+      onRangeChange,
       onWithdrawTypeChange,
       isProportional,
       isSingleAsset,

@@ -12,13 +12,13 @@
       <div v-if="isProportional" class="ml-4 flex-1">
         <BalRangeInput
           class="w-full"
-          v-model="amounts[propToken]"
-          :max="Number(tokenBalance(propToken))"
-          :interval="Number(tokenBalance(propToken)) / 1000"
+          v-model="range"
+          :max="1000"
+          :interval="1"
           :min="0"
           :right-label="`${propPercentage}%`"
           tooltip="none"
-          @drag="onPropChange"
+          @drag="onRangeChange"
         />
       </div>
     </div>
@@ -136,6 +136,7 @@ import useBlocknative from '@/composables/useBlocknative';
 import PoolExchange from '@/services/pool/Exchange';
 import PoolCalculator from '@/services/pool/Calculator';
 import { formatUnits } from '@ethersproject/units';
+import { bnum } from '@/utils';
 
 export default defineComponent({
   name: 'InvestForm',
@@ -152,7 +153,8 @@ export default defineComponent({
       loading: false,
       amounts: [] as string[],
       propToken: 0,
-      investType: 'Proportional' as 'Proportional' | 'Custom'
+      investType: 'Proportional' as 'Proportional' | 'Custom',
+      range: 1000
     });
 
     // COMPOSABLES
@@ -192,18 +194,18 @@ export default defineComponent({
     });
 
     const balances = computed(() => {
-      return props.pool.tokens.map(token =>
-        parseFloat(allTokens.value[token].balance)
-      );
+      return props.pool.tokens.map(token => allTokens.value[token].balance);
     });
 
     const hasBalance = computed(() => {
-      const balanceSum = balances.value.reduce((a, b) => a + b, 0);
+      const balanceSum = balances.value
+        .map(b => Number(b))
+        .reduce((a, b) => a + b, 0);
       return balanceSum > 0;
     });
 
     const hasZeroBalance = computed(() => {
-      return balances.value.includes(0);
+      return balances.value.includes('0');
     });
 
     const total = computed(() => {
@@ -285,12 +287,16 @@ export default defineComponent({
       const { send, fixedToken } = poolCalculator.propMax();
       data.amounts = send;
       data.propToken = fixedToken;
+      data.range = 1000;
     }
 
-    function onPropChange() {
-      const amount = data.amounts[data.propToken];
+    function onRangeChange(range) {
+      const fractionBasisPoints = (range / 1000) * 10000;
+      const amount = bnum(balances.value[data.propToken])
+        .times(fractionBasisPoints)
+        .div(10000);
       const { send } = poolCalculator.propAmountsGiven(
-        amount,
+        amount.toString(),
         data.propToken,
         'send'
       );
@@ -391,7 +397,7 @@ export default defineComponent({
       connectWallet,
       infoLabel,
       setPropMax,
-      onPropChange,
+      onRangeChange,
       isProportional,
       propPercentage,
       priceImpact,
