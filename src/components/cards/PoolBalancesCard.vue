@@ -50,7 +50,7 @@ export default defineComponent({
     function getBalance(index: number) {
       const address = tokens.value[index];
       const balance = balances.value[index].toString();
-      const token = allTokens[address];
+      const token = allTokens.value[address];
       const decimals = token ? token.decimals : 18;
       const b = formatUnits(balance, decimals);
       return b.toString();
