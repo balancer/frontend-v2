@@ -192,11 +192,19 @@ export default defineComponent({
       return amountSum > 0;
     });
 
+    const balances = computed(() => {
+      return props.pool.tokens.map(token =>
+        parseFloat(allTokens.value[token].balance)
+      );
+    });
+
     const hasBalance = computed(() => {
-      const balanceSum = props.pool.tokens
-        .map(token => Number(allTokens.value[token].balance))
-        .reduce((a, b) => a + b, 0);
+      const balanceSum = balances.value.reduce((a, b) => a + b, 0);
       return balanceSum > 0;
+    });
+
+    const hasZeroBalance = computed(() => {
+      return balances.value.includes(0);
     });
 
     const total = computed(() => {
@@ -350,6 +358,7 @@ export default defineComponent({
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
       if (!hasAmounts.value) setPropMax();
+      if (hasZeroBalance.value) data.investType = 'Custom';
     });
 
     watch(
