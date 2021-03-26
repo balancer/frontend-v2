@@ -99,7 +99,10 @@ import {
   computed,
   watch,
   onMounted,
-  nextTick
+  nextTick,
+  reactive,
+  toRef,
+  toRefs
 } from 'vue';
 import { FormRef } from '@/types';
 import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
@@ -120,13 +123,15 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const withdrawForm = ref({} as FormRef);
-    const loading = ref(false);
-    const amounts = ref([] as string[]);
-    const amountsMax = ref([] as string[]);
-    const bptIn = ref('');
-    const withdrawType = ref('Proportional');
-    const singleAsset = ref(0);
+    const data = reactive({
+      withdrawForm: {} as FormRef,
+      loading: false,
+      amounts: [] as string[],
+      amountsMax: [] as string[],
+      bptIn: '',
+      withdrawType: 'Proportional' as 'Proportional' | 'Single asset',
+      singleAsset: 0
+    });
 
     // COMPOSABLES
     const store = useStore();
@@ -138,8 +143,14 @@ export default defineComponent({
     const tokenWeights = computed(() => props.pool.weightsPercent);
     const allTokens = computed(() => store.getters.getTokens());
 
+    const fullAmounts = computed(() => {
+      return props.pool.tokens.map((_, i) => {
+        return data.amounts[i] || '0';
+      });
+    });
+
     const hasAmounts = computed(() => {
-      const amountSum = amounts.value
+      const amountSum = fullAmounts.value
         .map(amount => parseFloat(amount))
         .reduce((a, b) => a + b, 0);
       return amountSum > 0;
@@ -157,29 +168,30 @@ export default defineComponent({
       const total = props.pool.tokens
         .map((token, i) => {
           return (
-            (Number(amounts.value[i]) || 0) *
+            (parseFloat(fullAmounts.value[i]) || 0) *
               store.state.market.prices[token.toLowerCase()]?.price || 0
           );
         })
         .reduce((a, b) => a + b, 0);
 
+      if (total < 0) return formatNum(0, '$0,0.[00]');
       return formatNum(total, '$0,0.[00]');
     });
 
     const propPercentage = computed(() => {
       const maxAmount = Number(bptBalance.value);
-      const currentAmount = Number(bptIn.value);
+      const currentAmount = Number(data.bptIn);
       if (!currentAmount) return 0;
       if (maxAmount === 0) return 0;
       return Math.ceil((currentAmount / maxAmount) * 100);
     });
 
     const isProportional = computed(() => {
-      return withdrawType.value === 'Proportional';
+      return data.withdrawType === 'Proportional';
     });
 
     const isSingleAsset = computed(() => {
-      return withdrawType.value === 'Single asset';
+      return data.withdrawType === 'Single asset';
     });
 
     function amountRules(balance) {
@@ -216,31 +228,31 @@ export default defineComponent({
         0,
         'send'
       );
-      bptIn.value = send[0];
-      amounts.value = receive;
-      amountsMax.value = [...receive];
+      data.bptIn = send[0];
+      data.amounts = receive;
+      data.amountsMax = [...receive];
     }
 
     function onPropChange() {
       const { send, receive } = poolCalculator.propAmountsGiven(
-        bptIn.value,
+        data.bptIn,
         0,
         'send'
       );
-      bptIn.value = send[0];
-      amounts.value = receive;
+      data.bptIn = send[0];
+      data.amounts = receive;
     }
 
     function setSingleAsset(index) {
       if (!isSingleAsset.value) return;
-      amounts.value.forEach((amount, i) => {
+      data.amounts.forEach((amount, i) => {
         if (i === index) {
-          amounts.value[i] = amountsMax.value[index];
+          data.amounts[i] = data.amountsMax[index];
         } else {
-          amounts.value[i] = '0';
+          data.amounts[i] = '0';
         }
       });
-      singleAsset.value = index;
+      data.singleAsset = index;
     }
 
     function onWithdrawTypeChange(newType) {
@@ -251,7 +263,7 @@ export default defineComponent({
     }
 
     function resetForm() {
-      amounts.value = [];
+      data.amounts = [];
     }
 
     function txListener(hash) {
@@ -260,31 +272,31 @@ export default defineComponent({
       emitter.on('txConfirmed', tx => {
         emit('success', tx);
         resetForm();
-        loading.value = false;
+        data.loading = false;
         return undefined;
       });
 
       emitter.on('txCancel', () => {
         // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
-        loading.value = false;
+        data.loading = false;
         return undefined;
       });
 
       emitter.on('txFailed', () => {
         // An error has occurred initiating the transaction
-        loading.value = false;
+        data.loading = false;
         return undefined;
       });
     }
 
     async function submit(): Promise<void> {
-      if (!withdrawForm.value.validate()) return;
+      if (!data.withdrawForm.validate()) return;
       try {
-        loading.value = true;
-        const exitTokenIndex = isSingleAsset.value ? singleAsset.value : null;
+        data.loading = true;
+        const exitTokenIndex = isSingleAsset.value ? data.singleAsset : null;
         const tx = await poolExchange.exit(
           store.state.web3.account,
-          amounts.value,
+          fullAmounts.value,
           bptBalance.value,
           exitTokenIndex
         );
@@ -292,7 +304,7 @@ export default defineComponent({
         txListener(tx.hash);
       } catch (error) {
         console.error(error);
-        loading.value = false;
+        data.loading = false;
       }
     }
 
@@ -303,32 +315,26 @@ export default defineComponent({
     });
 
     return {
-      withdrawForm,
-      amounts,
+      ...toRefs(data),
       submit,
       allTokens,
       hasAmounts,
-      loading,
       tokenWeights,
       amountRules,
       isPositive,
       formatNum,
-      amountsMax,
       isAuthenticated,
       connectWallet,
       bptBalance,
       bptInfoLabel,
       setPropMax,
       total,
-      withdrawType,
       tokenBalance,
       onPropChange,
       onWithdrawTypeChange,
       isProportional,
       isSingleAsset,
-      singleAsset,
       setSingleAsset,
-      bptIn,
       propPercentage
     };
   }
