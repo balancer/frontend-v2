@@ -3,14 +3,15 @@ import { Pool } from '@/utils/balancer/types';
 import { parseUnits, formatUnits } from '@ethersproject/units';
 import { bnum } from '@/utils';
 import BigNumber from 'bignumber.js';
-import { BPTForTokensZeroPriceImpact } from '@balancer-labs/sor/dist/solidityHelpers/frontendHelpers/weightedHelpers';
-import { _exactTokensInForBPTOut } from '@balancer-labs/sor/dist/solidityHelpers/pools/weighted';
-import { calcBptOutGivenExactTokensIn } from './helpers/math/weighted';
-import { BigNumberish } from '@/utils/balancer/helpers/numbers';
+import {
+  exactTokensInForBPTOut,
+  bptForTokensZeroPriceImpact
+} from './helpers/math/weighted';
 import {
   bnum as fpBnum,
-  FixedPoint
-} from '@balancer-labs/sor/dist/solidityHelpers/math/FixedPoint';
+  FixedPoint as FpBigNumber
+} from '@/utils/balancer/helpers/sor/FixedPoint';
+import { BigNumberish } from '@/utils/balancer/helpers/numbers';
 
 interface Amounts {
   send: string[];
@@ -97,51 +98,19 @@ export default class Calculator {
   }
 
   public priceImpact(tokenAmounts: string[]): BigNumber {
-    let bptEstimate, bptZeroPriceImpact, altBptEst;
+    let bptAmount, bptZeroPriceImpact;
 
     if (this.action === 'join') {
-      altBptEst = this.altExactTokensInForBPTOut(tokenAmounts);
-      console.log('COR', altBptEst.toString());
-      bptEstimate = this.exactTokensInForBPTOut(tokenAmounts);
-      console.log('SOR', bptEstimate.toString());
+      bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
       bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
-      return bnum(1).minus(bptEstimate.div(bptZeroPriceImpact));
+      return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
     } else {
       // TODO: exit price impact calc
       return bnum(0);
     }
   }
 
-  public altExactTokensInForBPTOut(tokenAmounts: string[]): BigNumberish {
-    const denormAmounts = this.denormAmounts(
-      tokenAmounts,
-      this.poolTokenDecimals
-    );
-
-    console.log(
-      'balances',
-      this.poolTokenBalances.map(b => b.toString())
-    );
-    console.log(
-      'weights',
-      this.poolTokenWeights.map(w => w.toString())
-    );
-    console.log(
-      'amounts',
-      denormAmounts.map(a => a.toString())
-    );
-    console.log('totalSupply', this.poolTotalSupply.toString());
-    console.log('poolSwapFee', this.poolSwapFee.toString());
-    return calcBptOutGivenExactTokensIn(
-      this.poolTokenBalances,
-      this.poolTokenWeights,
-      denormAmounts,
-      this.poolTotalSupply,
-      this.poolSwapFee
-    );
-  }
-
-  public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPoint {
+  public exactTokensInForBPTOut(tokenAmounts: string[]): FpBigNumber {
     const balances = this.poolTokenBalances.map(b => fpBnum(b.toString()));
     const weights = this.poolTokenWeights.map(w => fpBnum(w.toString()));
     const denormAmounts = this.denormAmounts(
@@ -150,7 +119,7 @@ export default class Calculator {
     );
     const amounts = denormAmounts.map(a => fpBnum(a.toString()));
 
-    return _exactTokensInForBPTOut(
+    return exactTokensInForBPTOut(
       balances,
       weights,
       amounts,
@@ -166,7 +135,7 @@ export default class Calculator {
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
 
-    return BPTForTokensZeroPriceImpact(
+    return bptForTokensZeroPriceImpact(
       this.poolTokenBalances.map(b => bnum(b.toString())),
       this.poolTokenDecimals,
       this.poolTokenWeights.map(w => bnum(w.toString())),
