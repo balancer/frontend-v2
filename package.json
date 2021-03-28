@@ -45,7 +45,6 @@
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
     "d3": "^6.5.0",
-    "decimal.js": "^10.2.1",
     "eslint": "^6.7.2",
     "ethereumjs-util": "^7.0.7",
     "feather-icons": "^4.28.0",
