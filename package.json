@@ -14,7 +14,7 @@
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static"
   },
   "dependencies": {
-    "@balancer-labs/sor": "git+https://github.com/garethfuller/balancer-sor.git#solidity-helpers",
+    "@balancer-labs/sor": "^1.0.0",
     "@ensdomains/content-hash": "^2.5.3",
     "@ethersproject/abi": "^5.0.1",
     "@ethersproject/address": "^5.0.1",
