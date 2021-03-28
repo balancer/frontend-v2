@@ -11,7 +11,7 @@ import {
   bnum as fpBnum,
   FixedPoint as FpBigNumber
 } from '@/utils/balancer/helpers/sor/FixedPoint';
-import { BigNumberish } from '@/utils/balancer/helpers/numbers';
+import { BigNumberish } from '@ethersproject/bignumber';
 
 interface Amounts {
   send: string[];
