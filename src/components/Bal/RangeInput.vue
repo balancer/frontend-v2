@@ -50,11 +50,6 @@ export default defineComponent({
 
     const colors = theme.extend.colors;
 
-    function onDrag(event) {
-      emit('drag', event.toString());
-      emit('update:modelValue', event.toString());
-    }
-
     function onChange(value) {
       emit('change', value);
       emit('update:modelValue', value);
