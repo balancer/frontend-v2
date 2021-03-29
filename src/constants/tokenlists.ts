@@ -1,17 +1,14 @@
-export const TOKEN_LIST_DEFAULT = 'textcoin.eth';
+export const TOKEN_LIST_DEFAULT =
+  'ipns://balancer-bucket.storage.fleek.co/assets/listed.tokenlist.json';
 
 export const TOKEN_LISTS: string[] = [
   TOKEN_LIST_DEFAULT,
-  'tokens.uniswap.eth'
-  // 'tokens.1inch.eth', Fail to load
-  // 'synths.snx.eth',
-  // 'tokenlist.dharma.eth',
-  // 'defi.cmc.eth',
-  // 'erc20.cmc.eth',
-  // 'stablecoin.cmc.eth',
-  // 'tokenlist.zerion.eth',
-  // 'tokenlist.aave.eth',
-  // 't2crtokens.eth'
+  'https://www.coingecko.com/tokens_list/uniswap/defi_100/v_0_0_0.json',
+  'ipns://tokens.uniswap.org',
+  'tokenlist.zerion.eth',
+  'tokens.1inch.eth',
+  'tokenlist.aave.eth',
+  'https://umaproject.org/uma.tokenlist.json'
 ];
 
 export const ETHER = {
