@@ -1,7 +1,7 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
     <div class="flex flex-wrap items-end w-full mb-6">
-      <div class="w-1/2">
+      <div class="w-full xl:w-1/2">
         <BalSelectInput
           name="withdrawType"
           label="Withdrawal type"
