@@ -1,16 +1,17 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
-    <div class="flex items-center w-full">
-      <div class="w-1/2">
+    <div class="flex flex-wrap items-end w-full mb-6">
+      <div class="w-full xl:w-1/2">
         <BalSelectInput
           name="withdrawType"
           label="Withdrawal type"
           v-model="withdrawType"
           :options="['Proportional', 'Single asset']"
           @change="onWithdrawTypeChange"
+          no-margin
         />
       </div>
-      <div v-if="isProportional" class="ml-4 flex-1">
+      <div v-if="isProportional" class="ml-0 mt-4 xl:ml-4 xl:mt-0 flex-1">
         <BalRangeInput
           class="w-full"
           v-model="range"
