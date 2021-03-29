@@ -15,7 +15,7 @@
     <vue-slider
       v-model="range"
       v-bind="$attrs"
-      @dragging="onDrag"
+      @change="onChange"
       :dot-style="dotStyle"
       :rail-style="railSyle"
       :process-style="proccessStyle"
@@ -37,7 +37,7 @@ export default defineComponent({
     VueSlider
   },
 
-  emits: ['drag', 'update:modelValue'],
+  emits: ['change', 'update:modelValue'],
 
   props: {
     modelValue: { type: [String, Number], default: '0' },
@@ -53,6 +53,11 @@ export default defineComponent({
     function onDrag(event) {
       emit('drag', event.toString());
       emit('update:modelValue', event.toString());
+    }
+
+    function onChange(value) {
+      emit('change', value);
+      emit('update:modelValue', value);
     }
 
     const dotStyle = computed(() => {
@@ -85,7 +90,7 @@ export default defineComponent({
 
     return {
       range,
-      onDrag,
+      onChange,
       dotStyle,
       railSyle,
       proccessStyle
