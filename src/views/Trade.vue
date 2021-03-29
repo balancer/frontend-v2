@@ -80,9 +80,13 @@
               placeholder="0"
               class="w-full"
             />
-            <div v-if="slippage" class="text-xs">
+            <div
+              v-if="slippage"
+              :class="slippage > 0.02 && 'text-yellow-500'"
+              class="text-xs"
+            >
               {{ $t('priceImpact') }}:
-              {{ _num(slippage, '0,0.[00]%') }}
+              {{ _num(slippage > 0.0001 ? slippage : 0.0001, '0,0.[00]%') }}
             </div>
           </div>
         </div>
