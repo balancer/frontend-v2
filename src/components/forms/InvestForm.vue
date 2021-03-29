@@ -317,7 +317,6 @@ export default defineComponent({
         store.state.web3.account,
         fullAmounts.value
       );
-      console.log('queryJoin BPT', bptOut.toString())
       const slippageBasisPoints = parseFloat(store.state.app.slippage) * 10000;
       const delta = bptOut.mul(slippageBasisPoints).div(10000);
       const minBptOut = bptOut.sub(delta);
@@ -355,22 +354,28 @@ export default defineComponent({
       }
     });
 
-    watch(() => data.investType, newType => {
+    watch(
+      () => data.investType,
+      newType => {
         if (newType === 'Proportional') setPropMax();
-    });
+      }
+    );
 
-    watch(() => data.range, newVal => {
-      const fractionBasisPoints = (newVal / 1000) * 10000;
-      const amount = bnum(balances.value[data.propToken])
-        .times(fractionBasisPoints)
-        .div(10000);
-      const { send } = poolCalculator.propAmountsGiven(
-        amount.toString(),
-        data.propToken,
-        'send'
-      );
-      data.amounts = send;
-    })
+    watch(
+      () => data.range,
+      newVal => {
+        const fractionBasisPoints = (newVal / 1000) * 10000;
+        const amount = bnum(balances.value[data.propToken])
+          .times(fractionBasisPoints)
+          .div(10000);
+        const { send } = poolCalculator.propAmountsGiven(
+          amount.toString(),
+          data.propToken,
+          'send'
+        );
+        data.amounts = send;
+      }
+    );
 
     onMounted(() => {
       setPropMax();

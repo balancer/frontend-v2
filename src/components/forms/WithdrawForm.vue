@@ -311,19 +311,22 @@ export default defineComponent({
 
     watch(bptBalance, () => setPropMax());
 
-    watch(() => data.range, newVal => {
-      const fractionBasisPoints = (newVal / 1000) * 10000;
-      const bpt = bnum(bptBalance.value)
-        .times(fractionBasisPoints)
-        .div(10000);
-      const { send, receive } = poolCalculator.propAmountsGiven(
-        bpt.toString(),
-        0,
-        'send'
-      );
-      data.bptIn = send[0];
-      data.amounts = receive;
-    });
+    watch(
+      () => data.range,
+      newVal => {
+        const fractionBasisPoints = (newVal / 1000) * 10000;
+        const bpt = bnum(bptBalance.value)
+          .times(fractionBasisPoints)
+          .div(10000);
+        const { send, receive } = poolCalculator.propAmountsGiven(
+          bpt.toString(),
+          0,
+          'send'
+        );
+        data.bptIn = send[0];
+        data.amounts = receive;
+      }
+    );
 
     onMounted(() => {
       if (bptBalance.value) setPropMax();
