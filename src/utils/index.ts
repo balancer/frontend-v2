@@ -48,6 +48,11 @@ export function tsToBlockNumber(currentBlockNumber, ts) {
   return currentBlockNumber - parseInt((diffTs / 13.35).toString());
 }
 
+export function bnum(val: string | number | BigNumber): BigNumber {
+  const number = typeof val === 'string' ? val : val ? val.toString() : '0';
+  return new BigNumber(number);
+}
+
 export function scale(input: BigNumber, decimalPlaces: number): BigNumber {
   const scalePow = new BigNumber(decimalPlaces.toString());
   const scaleMul = new BigNumber(10).pow(scalePow);

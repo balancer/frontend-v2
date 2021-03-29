@@ -1,5 +1,7 @@
 <template>
-  <i :data-feather="name" :width="iconSize" :height="iconSize" />
+  <div>
+    <i :data-feather="name" :width="iconSize" :height="iconSize" />
+  </div>
 </template>
 
 <script lang="ts">

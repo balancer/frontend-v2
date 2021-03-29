@@ -60,7 +60,10 @@ export default defineComponent({
   emits: ['input', 'blur', 'update:modelValue', 'click'],
 
   props: {
-    modelValue: { type: [String, Number], default: '' },
+    modelValue: {
+      type: [String, Number],
+      default: ''
+    },
     name: { type: String, required: true },
     label: { type: String, default: '' },
     noMargin: { type: Boolean, default: false },
@@ -74,7 +77,7 @@ export default defineComponent({
       type: String,
       default: 'text',
       validator: (val: string): boolean => {
-        return ['text', 'number', 'date'].includes(val);
+        return ['text', 'number', 'date', 'email', 'password'].includes(val);
       }
     },
     size: {
@@ -99,7 +102,7 @@ export default defineComponent({
 
     const hasError = computed(() => errors.value.length > 0);
 
-    function validate(val: string): void {
+    function validate(val: string | number): void {
       errors.value = [];
       rules.value.forEach((rule: RuleFunction) => {
         const result = rule(val);
@@ -119,7 +122,6 @@ export default defineComponent({
     }
 
     watchEffect(() => {
-      // @ts-ignore
       if (validateOn.value === 'input') validate(props.modelValue);
     });
 

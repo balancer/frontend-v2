@@ -20,7 +20,8 @@
     "weightedPoolFactory": "0x3b5dBD2bFbE5eFA86dD51Af24436A9B3c25caE40",
     "stablePoolFactory": "0x360E616ef7A487558982C0005C7B8E60ef252a78",
     "tokenFactory": "0xEaa391544B268018C0FA848204E984Bd7FF7f20c",
-    "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
+    "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
+    "balancerHelpers": "0xc11B8377b5F9F152717e47086963877574B22Da4"
   },
   "strategies": {
     "0": {

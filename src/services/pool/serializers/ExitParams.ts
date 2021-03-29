@@ -28,7 +28,7 @@ export default class ExitParams {
     const parsedBptIn = parseUnits(
       bptIn,
       this.exchange.tokens[this.exchange.pool.address].decimals
-    );
+    ).toString();
     const txData = this.txData(parsedAmountsOut, parsedBptIn, exitTokenIndex);
 
     return [
