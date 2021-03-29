@@ -15,7 +15,7 @@ export default function useTokenApprovals(approvalTokens, amounts) {
   const tokens = computed(() => {
     return Object.fromEntries(
       approvalTokens.map((token, i) => {
-        const amount = amounts.value?.[i] || '0';
+        const amount = amounts[i] || '1';
         const tokenDecimals = allTokens.value[token].decimals;
         return [token, parseUnits(amount, tokenDecimals).toString()];
       })

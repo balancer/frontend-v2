@@ -69,6 +69,7 @@
     "poolType": "Pool type",
     "poolValue": "Pool value",
     "portfolio": "Portfolio",
+    "priceImpact": "Price impact",
     "priceImpactTolerance": "Price impact tolerance",
     "profit": "Profit (1{0})",
     "protocolFees": "Protocol fees",

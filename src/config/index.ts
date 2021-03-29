@@ -14,11 +14,13 @@ interface Config {
   explorer: string;
   subgraphBackupUrl: string;
   addresses: {
+    exchangeProxy: string;
     multicall: string;
     vault: string;
     weightedPoolFactory: string;
     stablePoolFactory: string;
     weth: string;
+    balancerHelpers: string;
   };
   strategies: Record<
     string,

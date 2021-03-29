@@ -8,19 +8,19 @@
             @click="openModalSelectToken('input')"
             class="col-span-4 border-r p-3"
           >
-            <span v-if="assetInAddressInput">
+            <span v-if="tokenInAddressInput">
               <Token
-                :token="tokens[assetInAddressInput]"
+                :token="tokens[tokenInAddressInput]"
                 :size="32"
                 :symbol="true"
               />
             </span>
-            <span v-else v-text="$t('select')" />
+            <span v-text="$t('select')" v-else />
           </a>
           <div class="col-span-8 px-3 py-2">
             <div class="flex">
               <input
-                v-model="assetInAmountInput"
+                v-model="tokenInAmountInput"
                 @input="handleAmountChange(true, $event.target.value)"
                 type="number"
                 placeholder="0"
@@ -32,17 +32,16 @@
                 class="p-1 border rounded text-xs"
               />
             </div>
-            <div v-if="assetInAddressInput" class="text-xs">
-              {{ $t('balance') }}
-              :
+            <div v-if="tokenInAddressInput" class="text-xs">
+              Balance:
               {{
-                _num(tokens[assetInAddressInput]?.balance || 0, '0,0.[000000]')
+                _num(tokens[tokenInAddressInput]?.balance || 0, '0,0.[000000]')
               }}
             </div>
           </div>
         </div>
         <div class="flex mb-4">
-          <a @click="handleSwitchAssets">
+          <a @click="handleSwitchTokens">
             <Icon
               :size="24"
               name="refresh"
@@ -58,27 +57,55 @@
             @click="openModalSelectToken('output')"
             class="col-span-4 border-r p-3"
           >
-            <span v-if="assetOutAddressInput">
+            <span v-if="tokenOutAddressInput">
               <Token
-                :token="tokens[assetOutAddressInput]"
+                :token="tokens[tokenOutAddressInput]"
                 :size="32"
                 :symbol="true"
               />
             </span>
-            <span v-else v-text="$t('select')" />
+            <span v-text="$t('select')" v-else />
           </a>
           <div class="col-span-8 px-3 py-2">
             <input
-              v-model="assetOutAmountInput"
+              v-model="tokenOutAmountInput"
               @input="handleAmountChange(false, $event.target.value)"
               type="number"
               placeholder="0"
               class="w-full"
             />
+            <div v-if="slippage" class="text-xs">
+              {{ $t('priceImpact') }}:
+              {{ _num(slippage, '0,0.[00]%') }}
+            </div>
           </div>
         </div>
       </div>
-      <UiButton v-text="$t('swap')" class="w-full" />
+      <BalBtn
+        v-if="!isAuthenticated"
+        label="Connect wallet"
+        block
+        @click.prevent="connectWallet"
+      />
+      <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
+      <BalBtn
+        v-else-if="requireAllowance"
+        label="Allow"
+        :loading="approving"
+        loading-label="Allowing..."
+        block
+        @click.prevent="approve"
+      />
+      <BalBtn
+        v-else
+        type="submit"
+        label="Swap"
+        :loading="trading"
+        loading-label="Confirming..."
+        color="gradient"
+        block
+        @click.prevent="trade"
+      />
     </BalCard>
     <teleport to="#modal">
       <ModalSelectToken
@@ -89,7 +116,11 @@
         @selectTokenlist="openModalSelectList"
         @inputSearch="handleTokenSearch"
         :tokens="
-          getTokens({ q, not: [assetInAddressInput, assetOutAddressInput] })
+          getTokens({
+            q,
+            not: [tokenInAddressInput, tokenOutAddressInput],
+            includeEther: true
+          })
         "
         :tokenlists="getTokenlists({ active: true })"
       />
@@ -106,141 +137,78 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed, watch, onMounted } from 'vue';
-import { useIntervalFn } from '@vueuse/core';
+import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
-import { SOR } from '@balancer-labs/sor';
 import numeral from 'numeral';
-import { BigNumber } from 'bignumber.js';
-import getProvider from '@/utils/provider';
-import { Pool } from '@balancer-labs/sor/dist/types';
-import { scale } from '@/utils';
-
-const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
-const MAX_POOLS = 4;
+import useAuth from '@/composables/useAuth';
+import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useValidation from '@/composables/trade/useValidation';
+import useSor from '@/composables/trade/useSor';
 
 export default defineComponent({
   setup() {
-    let sor: SOR | undefined = undefined;
-
     const store = useStore();
-    const { getTokens, getTokenlists } = store.getters;
+    const { isAuthenticated } = useAuth();
 
-    const chainId = computed(() => store.state.web3.config.chainId);
-    const assetInAddressInput = ref('');
-    const assetInAmountInput = ref('');
-    const assetOutAddressInput = ref('');
-    const assetOutAmountInput = ref('');
+    const { getTokens, getTokenlists } = store.getters;
+    const { config } = store.state.web3;
+
+    const tokenInAddressInput = ref('');
+    const tokenInAmountInput = ref('');
+    const tokenOutAddressInput = ref('');
+    const tokenOutAmountInput = ref('');
     const modalSelectTokenType = ref('input');
     const modalSelectTokenIsOpen = ref(false);
     const modalSelectListIsOpen = ref(false);
     const isInRate = ref(true);
     const q = ref('');
-    const pools = ref<Pool[]>([]);
 
-    const tokens = computed(() => getTokens());
+    const chainId = computed(() => config.chainId);
+    const tokens = computed(() => getTokens({ includeEther: true }));
 
-    onMounted(async () => {
-      await initSor();
-    });
-
-    useIntervalFn(async () => {
-      if (sor) {
-        console.time('[SOR] fetchPools');
-        await sor.fetchPools();
-        console.timeEnd('[SOR] fetchPools');
-      }
-    }, 60 * 1e3);
-
-    async function handleAmountChange(
-      isExactIn: boolean,
-      amount: string
-    ): Promise<void> {
-      const assetInAddress = assetInAddressInput.value;
-      const assetOutAddress = assetOutAddressInput.value;
-
-      if (
-        !assetInAddress ||
-        !assetOutAddress ||
-        !sor ||
-        !sor.hasDataForPair(assetInAddress, assetOutAddress)
-      ) {
-        return;
-      }
-
-      const assetInDecimals = tokens.value[assetInAddress].decimals;
-      const assetOutDecimals = tokens.value[assetOutAddress].decimals;
-
-      const assetAmountRaw = new BigNumber(amount);
-
-      if (isExactIn) {
-        const assetInAmount = scale(assetAmountRaw, assetInDecimals);
-
-        console.time(
-          `[SOR] getSwaps ${assetInAddress} ${assetOutAddress} exactIn`
-        );
-        const [, tradeAmount] = await sor.getSwaps(
-          assetInAddress,
-          assetOutAddress,
-          'swapExactIn',
-          assetInAmount
-        );
-        console.timeEnd(
-          `[SOR] getSwaps ${assetInAddress} ${assetOutAddress} exactIn`
-        );
-
-        const assetOutAmountRaw = scale(tradeAmount, -assetOutDecimals);
-        assetOutAmountInput.value = assetOutAmountRaw.toFixed(
-          6,
-          BigNumber.ROUND_DOWN
-        );
-      } else {
-        const assetOutAmount = scale(assetAmountRaw, assetOutDecimals);
-
-        console.time(
-          `[SOR] getSwaps ${assetInAddress} ${assetOutAddress} exactOut`
-        );
-
-        const [, tradeAmount] = await sor.getSwaps(
-          assetInAddress,
-          assetOutAddress,
-          'swapExactOut',
-          assetOutAmount
-        );
-        console.timeEnd(
-          `[SOR] getSwaps ${assetInAddress} ${assetOutAddress} exactOut`
-        );
-
-        const assetInAmountRaw = scale(tradeAmount, -assetInDecimals);
-        assetInAmountInput.value = assetInAmountRaw.toFixed(
-          6,
-          BigNumber.ROUND_DOWN
-        );
-      }
-    }
+    // COMPOSABLES
+    const { trading, trade, initSor, handleAmountChange, slippage } = useSor(
+      tokenInAddressInput,
+      tokenInAmountInput,
+      tokenOutAddressInput,
+      tokenOutAmountInput,
+      tokens
+    );
+    const { approving, approve, requireAllowance } = useTokenApproval(
+      tokenInAddressInput,
+      tokenInAmountInput,
+      tokens
+    );
+    const { errorMessage } = useValidation(
+      tokenInAddressInput,
+      tokenInAmountInput,
+      tokenOutAddressInput,
+      tokenOutAmountInput,
+      tokens
+    );
 
     const rateMessage = computed(() => {
       let message = '';
       if (
-        assetInAddressInput.value &&
-        assetOutAddressInput.value &&
-        assetInAmountInput.value &&
-        assetOutAmountInput.value
+        tokenInAddressInput.value &&
+        tokenOutAddressInput.value &&
+        parseFloat(tokenInAmountInput.value) > 0 &&
+        parseFloat(tokenOutAmountInput.value) > 0
       ) {
-        const assetIn = tokens.value[assetInAddressInput.value];
-        const assetOut = tokens.value[assetOutAddressInput.value];
-        const assetInAmount = assetInAmountInput.value;
-        const assetOutAmount = assetOutAmountInput.value;
+        const tokenIn = tokens.value[tokenInAddressInput.value];
+        const tokenOut = tokens.value[tokenOutAddressInput.value];
+        const tokenInAmount = tokenInAmountInput.value;
+        const tokenOutAmount = tokenOutAmountInput.value;
         if (isInRate.value) {
-          const rate = parseFloat(assetOutAmount) / parseFloat(assetInAmount);
-          message = `1 ${assetIn.symbol} = ${numeral(rate).format(
+          const rate = parseFloat(tokenOutAmount) / parseFloat(tokenInAmount);
+          message = `1 ${tokenIn.symbol} = ${numeral(rate).format(
             '0,0.[000000]'
-          )} ${assetOut.symbol}`;
+          )} ${tokenOut.symbol}`;
         } else {
-          const rate = parseFloat(assetInAmount) / parseFloat(assetOutAmount);
-          message = `1 ${assetOut.symbol} = ${numeral(rate).format(
+          const rate = parseFloat(tokenInAmount) / parseFloat(tokenOutAmount);
+          message = `1 ${tokenOut.symbol} = ${numeral(rate).format(
             '0,0.[000000]'
-          )} ${assetIn.symbol}`;
+          )} ${tokenIn.symbol}`;
         }
       }
       return message;
@@ -248,24 +216,6 @@ export default defineComponent({
 
     function toggleRate(): void {
       isInRate.value = !isInRate.value;
-    }
-
-    async function initSor(): Promise<void> {
-      const poolsUrl = `${
-        store.state.web3.config.subgraphBackupUrl
-      }?timestamp=${Date.now()}`;
-      sor = new SOR(
-        getProvider(chainId.value),
-        new BigNumber(GAS_PRICE),
-        MAX_POOLS,
-        chainId.value,
-        poolsUrl
-      );
-
-      console.time('[SOR] fetchPools');
-      await sor.fetchPools();
-      console.timeEnd('[SOR] fetchPools');
-      pools.value = sor.onChainCache.pools;
     }
 
     function openModalSelectToken(type: string): void {
@@ -281,11 +231,17 @@ export default defineComponent({
       q.value = '';
     }
 
+    function connectWallet() {
+      store.commit('setAccountModal', true);
+    }
+
     function handleSelectToken(address: string): void {
       if (modalSelectTokenType.value === 'input') {
-        assetInAddressInput.value = address;
+        tokenInAddressInput.value = address;
+        handleAmountChange(false, tokenOutAmountInput.value);
       } else {
-        assetOutAddressInput.value = address;
+        tokenOutAddressInput.value = address;
+        handleAmountChange(true, tokenInAmountInput.value);
       }
       store.dispatch('injectTokens', [address]);
     }
@@ -300,26 +256,26 @@ export default defineComponent({
     }
 
     function handleMax(): void {
-      assetInAmountInput.value =
-        tokens.value[assetInAddressInput.value]?.balance || '';
-      handleAmountChange(true, assetInAmountInput.value);
+      tokenInAmountInput.value =
+        tokens.value[tokenInAddressInput.value]?.balance || '';
+      handleAmountChange(true, tokenInAmountInput.value);
     }
 
-    function handleSwitchAssets(): void {
-      const assetInAddressInputSave = assetInAddressInput.value;
-      const assetInAmountInputSave = assetInAmountInput.value;
-      assetInAddressInput.value = assetOutAddressInput.value;
-      assetOutAddressInput.value = assetInAddressInputSave;
-      assetInAmountInput.value = assetOutAmountInput.value;
-      assetOutAmountInput.value = assetInAmountInputSave;
-      handleAmountChange(false, assetOutAmountInput.value);
+    function handleSwitchTokens(): void {
+      const tokenInAddressInputSave = tokenInAddressInput.value;
+      const tokenInAmountInputSave = tokenInAmountInput.value;
+      tokenInAddressInput.value = tokenOutAddressInput.value;
+      tokenOutAddressInput.value = tokenInAddressInputSave;
+      tokenInAmountInput.value = tokenOutAmountInput.value;
+      tokenOutAmountInput.value = tokenInAmountInputSave;
+      handleAmountChange(false, tokenOutAmountInput.value);
     }
 
     watch(chainId, async () => {
-      assetInAddressInput.value = '';
-      assetInAmountInput.value = '';
-      assetOutAddressInput.value = '';
-      assetOutAmountInput.value = '';
+      tokenInAddressInput.value = '';
+      tokenInAmountInput.value = '';
+      tokenOutAddressInput.value = '';
+      tokenOutAmountInput.value = '';
       await initSor();
     });
 
@@ -328,25 +284,31 @@ export default defineComponent({
       tokens,
       modalSelectTokenIsOpen,
       modalSelectListIsOpen,
-
-      assetInAddressInput,
-      assetInAmountInput,
-      assetOutAddressInput,
-      assetOutAmountInput,
+      isAuthenticated,
+      connectWallet,
+      tokenInAddressInput,
+      tokenInAmountInput,
+      tokenOutAddressInput,
+      tokenOutAmountInput,
       rateMessage,
-
       openModalSelectToken,
       openModalSelectList,
       getTokens,
       getTokenlists,
-
       handleSelectToken,
       handleTokenSearch,
       handleToggleList,
       handleMax,
-      handleSwitchAssets,
+      handleSwitchTokens,
       handleAmountChange,
-      toggleRate
+      toggleRate,
+      errorMessage,
+      requireAllowance,
+      approving,
+      approve,
+      trading,
+      trade,
+      slippage
     };
   }
 });
