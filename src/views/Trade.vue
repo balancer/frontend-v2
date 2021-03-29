@@ -109,6 +109,7 @@
     </BalCard>
     <teleport to="#modal">
       <ModalSelectToken
+        :key="account.balances.ether"
         :open="modalSelectTokenIsOpen"
         :loading="registry.loading"
         @close="modalSelectTokenIsOpen = false"
