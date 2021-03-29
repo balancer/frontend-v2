@@ -42,6 +42,11 @@ export default {
     return {
       error: false
     };
+  },
+  watch: {
+    token() {
+      this.error = false;
+    }
   }
 };
 </script>
