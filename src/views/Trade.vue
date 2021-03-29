@@ -32,7 +32,13 @@
                 class="p-1 border rounded text-xs"
               />
             </div>
-            <div v-if="tokenInAddressInput" class="text-xs">
+            <div
+              v-if="tokenInAddressInput"
+              :class="
+                validationStatus === 'INSUFFICIENT_BALANCE' && 'text-red-500'
+              "
+              class="text-xs"
+            >
               Balance:
               {{
                 _num(tokens[tokenInAddressInput]?.balance || 0, '0,0.[000000]')
@@ -180,7 +186,7 @@ export default defineComponent({
       tokenInAmountInput,
       tokens
     );
-    const { errorMessage } = useValidation(
+    const { validationStatus, errorMessage } = useValidation(
       tokenInAddressInput,
       tokenInAmountInput,
       tokenOutAddressInput,
@@ -303,6 +309,7 @@ export default defineComponent({
       handleSwitchTokens,
       handleAmountChange,
       toggleRate,
+      validationStatus,
       errorMessage,
       requireAllowance,
       approving,
