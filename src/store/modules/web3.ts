@@ -58,6 +58,12 @@ const mutations = {
   }
 };
 
+const getters = {
+  getChainId: state => () => {
+    return state.config.chainId;
+  }
+};
+
 const actions = {
   login: async ({ dispatch, commit }, connector = 'injected') => {
     auth = getInstance();
@@ -149,5 +155,6 @@ const actions = {
 export default {
   state,
   mutations,
+  getters,
   actions
 };

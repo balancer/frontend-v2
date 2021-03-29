@@ -157,8 +157,7 @@ export default defineComponent({
     const store = useStore();
     const { isAuthenticated } = useAuth();
 
-    const { getTokens, getTokenlists } = store.getters;
-    const { config } = store.state.web3;
+    const { getTokens, getTokenlists, getChainId } = store.getters;
 
     const tokenInAddressInput = ref('');
     const tokenInAmountInput = ref('');
@@ -170,7 +169,6 @@ export default defineComponent({
     const isInRate = ref(true);
     const q = ref('');
 
-    const chainId = computed(() => config.chainId);
     const tokens = computed(() => getTokens({ includeEther: true }));
 
     // COMPOSABLES
@@ -278,7 +276,7 @@ export default defineComponent({
       handleAmountChange(false, tokenOutAmountInput.value);
     }
 
-    watch(chainId, async () => {
+    watch(getChainId, async () => {
       tokenInAddressInput.value = '';
       tokenInAmountInput.value = '';
       tokenOutAddressInput.value = '';
