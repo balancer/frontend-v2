@@ -86,7 +86,7 @@ export default defineComponent({
       if (props.outline) return 'bg-transparent';
 
       if (props.disabled || props.loading) {
-        return 'bg-gradient-to-tr from-gradient-blue-200 to-gradient-pink-200';
+        return 'bg-gradient-to-tr from-gradient-blue-50 to-gradient-pink-50';
       }
       return `
         bg-gradient-to-tr from-gradient-blue-500 to-gradient-pink-500

@@ -1,16 +1,17 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
-    <div class="flex items-center w-full">
-      <div class="w-1/2">
+    <div class="flex flex-wrap items-end w-full mb-6">
+      <div class="w-full xl:w-1/2">
         <BalSelectInput
           name="withdrawType"
           label="Withdrawal type"
           v-model="withdrawType"
           :options="['Proportional', 'Single asset']"
           @change="onWithdrawTypeChange"
+          no-margin
         />
       </div>
-      <div v-if="isProportional" class="ml-4 flex-1">
+      <div v-if="isProportional" class="ml-0 mt-4 xl:ml-4 xl:mt-0 flex-1">
         <BalRangeInput
           class="w-full"
           v-model="range"
@@ -19,7 +20,6 @@
           :min="0"
           :right-label="`${propPercentage}%`"
           tooltip="none"
-          @drag="onRangeChange"
         />
       </div>
     </div>
@@ -230,20 +230,6 @@ export default defineComponent({
       data.range = 1000;
     }
 
-    function onRangeChange(range) {
-      const fractionBasisPoints = (range / 1000) * 10000;
-      const bpt = bnum(bptBalance.value)
-        .times(fractionBasisPoints)
-        .div(10000);
-      const { send, receive } = poolCalculator.propAmountsGiven(
-        bpt.toString(),
-        0,
-        'send'
-      );
-      data.bptIn = send[0];
-      data.amounts = receive;
-    }
-
     function setSingleAsset(index) {
       if (!isSingleAsset.value) return;
       props.pool.tokens.forEach((_, i) => {
@@ -326,6 +312,23 @@ export default defineComponent({
 
     watch(bptBalance, () => setPropMax());
 
+    watch(
+      () => data.range,
+      newVal => {
+        const fractionBasisPoints = (newVal / 1000) * 10000;
+        const bpt = bnum(bptBalance.value)
+          .times(fractionBasisPoints)
+          .div(10000);
+        const { send, receive } = poolCalculator.propAmountsGiven(
+          bpt.toString(),
+          0,
+          'send'
+        );
+        data.bptIn = send[0];
+        data.amounts = receive;
+      }
+    );
+
     onMounted(() => {
       if (bptBalance.value) setPropMax();
     });
@@ -345,7 +348,6 @@ export default defineComponent({
       setPropMax,
       total,
       tokenBalance,
-      onRangeChange,
       onWithdrawTypeChange,
       isProportional,
       isSingleAsset,

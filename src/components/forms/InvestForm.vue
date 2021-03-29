@@ -1,15 +1,16 @@
 <template>
   <BalForm ref="investForm" @on-submit="submit">
-    <div class="flex items-center w-full">
-      <div class="w-1/2">
+    <div class="flex flex-wrap items-end w-full mb-6">
+      <div class="w-full xl:w-1/2">
         <BalSelectInput
           name="investType"
           label="Investment type"
           v-model="investType"
           :options="['Proportional', 'Custom']"
+          no-margin
         />
       </div>
-      <div v-if="isProportional" class="ml-4 flex-1">
+      <div v-if="isProportional" class="ml-0 mt-4 xl:ml-4 xl:mt-0 flex-1">
         <BalRangeInput
           class="w-full"
           v-model="range"
@@ -18,7 +19,6 @@
           :min="0"
           :right-label="`${propPercentage}%`"
           tooltip="none"
-          @drag="onRangeChange"
         />
       </div>
     </div>
@@ -290,19 +290,6 @@ export default defineComponent({
       data.range = 1000;
     }
 
-    function onRangeChange(range) {
-      const fractionBasisPoints = (range / 1000) * 10000;
-      const amount = bnum(balances.value[data.propToken])
-        .times(fractionBasisPoints)
-        .div(10000);
-      const { send } = poolCalculator.propAmountsGiven(
-        amount.toString(),
-        data.propToken,
-        'send'
-      );
-      data.amounts = send;
-    }
-
     function txListener(hash) {
       const { emitter } = notify.hash(hash);
 
@@ -331,7 +318,6 @@ export default defineComponent({
         store.state.web3.account,
         fullAmounts.value
       );
-      console.log('queryJoin BPT', bptOut.toString());
       const slippageBasisPoints = parseFloat(store.state.app.slippage) * 10000;
       const delta = bptOut.mul(slippageBasisPoints).div(10000);
       const minBptOut = bptOut.sub(delta);
@@ -376,6 +362,22 @@ export default defineComponent({
       }
     );
 
+    watch(
+      () => data.range,
+      newVal => {
+        const fractionBasisPoints = (newVal / 1000) * 10000;
+        const amount = bnum(balances.value[data.propToken])
+          .times(fractionBasisPoints)
+          .div(10000);
+        const { send } = poolCalculator.propAmountsGiven(
+          amount.toString(),
+          data.propToken,
+          'send'
+        );
+        data.amounts = send;
+      }
+    );
+
     onMounted(() => {
       setPropMax();
     });
@@ -397,7 +399,6 @@ export default defineComponent({
       connectWallet,
       infoLabel,
       setPropMax,
-      onRangeChange,
       isProportional,
       propPercentage,
       priceImpact,
