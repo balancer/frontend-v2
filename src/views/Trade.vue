@@ -155,13 +155,14 @@ import useAuth from '@/composables/useAuth';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
+import initialTokens from '@/constants/initialTokens.json';
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const { isAuthenticated } = useAuth();
 
-    const { getTokens, getTokenlists, getChainId } = store.getters;
+    const { getTokens, getTokenlists, getConfig } = store.getters;
 
     const tokenInAddressInput = ref('');
     const tokenInAmountInput = ref('');
@@ -280,13 +281,25 @@ export default defineComponent({
       handleAmountChange(false, tokenOutAmountInput.value);
     }
 
-    watch(getChainId, async () => {
+    async function populateInitialTokens(): void {
+      const { chainId } = getConfig();
+      modalSelectTokenType.value = 'input';
+      await handleSelectToken(initialTokens[chainId].input);
+      modalSelectTokenType.value = 'output';
+      await handleSelectToken(initialTokens[chainId].output);
+    }
+
+    watch(getConfig, async () => {
       tokenInAddressInput.value = '';
       tokenInAmountInput.value = '';
       tokenOutAddressInput.value = '';
       tokenOutAmountInput.value = '';
+      slippage.value = 0;
       await initSor();
+      await populateInitialTokens();
     });
+
+    populateInitialTokens();
 
     return {
       q,

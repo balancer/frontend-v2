@@ -1,0 +1,10 @@
+{
+  "1": {
+    "input": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "output": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+  },
+  "42": {
+    "input": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "output": "0x59935f19d720aD935beCdC34c4F367397a28DaED"
+  }
+}

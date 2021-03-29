@@ -59,8 +59,8 @@ const mutations = {
 };
 
 const getters = {
-  getChainId: state => () => {
-    return state.config.chainId;
+  getConfig: state => () => {
+    return state.config;
   }
 };
 

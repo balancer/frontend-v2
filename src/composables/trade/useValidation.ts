@@ -30,7 +30,11 @@ export default function useValidation(
     if (!tokenIn?.balance || tokenIn.balance < tokenInAmount.value)
       return 'INSUFFICIENT_BALANCE';
 
-    if (!tokenOutAmount.value) return 'INSUFFICIENT_LIQUIDITY';
+    if (
+      parseFloat(tokenOutAmount.value) == 0 ||
+      tokenOutAmount.value.trim() === ''
+    )
+      return 'INSUFFICIENT_LIQUIDITY';
 
     return 'VALID';
   });

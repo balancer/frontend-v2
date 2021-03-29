@@ -7,6 +7,7 @@ import { loadTokenlist } from '@/utils/tokenlists';
 import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/utils';
 import { getTokensMetadata } from '@/utils/balancer/tokens';
+import injected from '@/constants/injected.json';
 
 const defaultActiveLists = {};
 defaultActiveLists[TOKEN_LIST_DEFAULT] = true;
@@ -15,7 +16,7 @@ const state = {
   activeLists: lsGet('tokenlists', defaultActiveLists),
   currentTokenlist: TOKEN_LIST_DEFAULT,
   tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
-  injected: [],
+  injected,
   loading: false,
   loaded: false
 };

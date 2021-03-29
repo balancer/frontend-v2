@@ -32,8 +32,8 @@ export default function useSor(
   const store = useStore();
   const auth = useAuth();
   const notify = useBlocknative();
-  const chainId = computed(() => config.chainId);
-  const { config } = store.state.web3;
+
+  const { getConfig } = store.getters;
 
   onMounted(async () => await initSor());
 
@@ -43,15 +43,16 @@ export default function useSor(
       await sor.fetchPools();
       console.timeEnd('[SOR] fetchPools');
     }
-  }, 60 * 1e3);
+  }, 30 * 1e3);
 
   async function initSor(): Promise<void> {
+    const config = getConfig();
     const poolsUrl = `${config.subgraphBackupUrl}?timestamp=${Date.now()}`;
     sor = new SOR(
-      getProvider(chainId.value),
+      getProvider(config.chainId),
       new BigNumber(GAS_PRICE),
       MAX_POOLS,
-      chainId.value,
+      config.chainId,
       poolsUrl
     );
     console.time('[SOR] fetchPools');
@@ -64,6 +65,7 @@ export default function useSor(
     isExactIn: boolean,
     amount: string
   ): Promise<void> {
+    const config = getConfig();
     const tokenInAddress =
       tokenInAddressInput.value === ETHER.address
         ? config.addresses.weth
@@ -102,6 +104,7 @@ export default function useSor(
       console.timeEnd(
         `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactIn`
       );
+
       swaps.value = tradeSwaps;
 
       const tokenOutAmountRaw = scale(tradeAmount, -tokenOutDecimals);
@@ -177,6 +180,7 @@ export default function useSor(
   }
 
   async function trade() {
+    const { chainId } = getConfig();
     trading.value = true;
 
     const tokenInAddress = tokenInAddressInput.value;
@@ -196,7 +200,7 @@ export default function useSor(
 
       try {
         const tx = await swapIn(
-          config.key,
+          chainId,
           auth.web3,
           swaps.value,
           tokenInAddress,
@@ -216,7 +220,7 @@ export default function useSor(
 
       try {
         const tx = await swapOut(
-          config.key,
+          chainId,
           auth.web3,
           swaps.value,
           tokenInAddress,
