@@ -1,0 +1,1 @@
+This directory is a copy and paste of files from the balancer-sor repo #solidity-helpers branch. Once the package is updated with the FixedPoint.ts class the files in this directory should be remove and references replaced.

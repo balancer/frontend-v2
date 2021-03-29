@@ -1,4 +1,4 @@
-export type RuleFunction = (val: string) => string;
+export type RuleFunction = (val: string | number) => string;
 export type Rules = Array<RuleFunction>;
 import { BigNumberish } from '@ethersproject/bignumber';
 

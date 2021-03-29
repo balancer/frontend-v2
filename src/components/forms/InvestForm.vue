@@ -7,20 +7,18 @@
           label="Investment type"
           v-model="investType"
           :options="['Proportional', 'Custom']"
-          @change="onInvestTypeChange"
         />
       </div>
       <div v-if="isProportional" class="ml-4 flex-1">
-        <div class="text-right text-sm text-gray-500">
-          {{ propPercentage }}%
-        </div>
-        <input
-          type="range"
-          v-model="amounts[pool.tokens.indexOf(propToken)]"
-          :max="tokenBalance(pool.tokens.indexOf(propToken))"
-          step="0.001"
-          @update:modelValue="onPropChange"
+        <BalRangeInput
           class="w-full"
+          v-model="range"
+          :max="1000"
+          :interval="1"
+          :min="0"
+          :right-label="`${propPercentage}%`"
+          tooltip="none"
+          @drag="onRangeChange"
         />
       </div>
     </div>
@@ -63,7 +61,6 @@
       name="total"
       v-model="total"
       placeholder="$0"
-      info="0%"
       :disabled="true"
       prepend-border
     >
@@ -72,9 +69,20 @@
           <div class="font-medium text-sm leading-none">
             Total
           </div>
-          <div class="leading-none text-xs mt-1 text-gray-500">
+          <div :class="['leading-none text-xs mt-1', priceImpactClasses]">
             Price impact
           </div>
+        </div>
+      </template>
+      <template v-slot:info>
+        <div :class="['flex items-center', priceImpactClasses]">
+          <span>{{ formatNum(priceImpact, '0.00%') }}</span>
+          <BalIcon
+            v-if="priceImpact >= 0.01"
+            name="alert-triangle"
+            size="xs"
+            class="ml-1"
+          />
         </div>
       </template>
     </BalTextInput>
@@ -110,7 +118,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import {
+  defineComponent,
+  computed,
+  watch,
+  onMounted,
+  reactive,
+  toRefs
+} from 'vue';
 import { FormRef } from '@/types';
 import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { useStore } from 'vuex';
@@ -120,6 +135,8 @@ import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
 import PoolExchange from '@/services/pool/Exchange';
 import PoolCalculator from '@/services/pool/Calculator';
+import { formatUnits } from '@ethersproject/units';
+import { bnum } from '@/utils';
 
 export default defineComponent({
   name: 'InvestForm',
@@ -131,17 +148,19 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const investForm = ref({} as FormRef);
-    const loading = ref(false);
-    const amounts = ref([] as string[]);
-    const receiveAmount = ref('');
-    const propToken = ref('');
-    const investType = ref('Proportional');
+    const data = reactive({
+      investForm: {} as FormRef,
+      loading: false,
+      amounts: [] as string[],
+      propToken: 0,
+      investType: 'Proportional' as 'Proportional' | 'Custom',
+      range: 1000
+    });
 
     // COMPOSABLES
     const store = useStore();
     const notify = useBlocknative();
-    const { web3, isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth();
     const { format: formatNum } = useNumbers();
 
     const {
@@ -149,39 +168,57 @@ export default defineComponent({
       approveAllowances,
       approving,
       approvedAll
-    } = useTokenApprovals(props.pool.tokens, amounts);
+    } = useTokenApprovals(props.pool.tokens, data.amounts);
+
+    const poolExchange = new PoolExchange(
+      props.pool,
+      store.state.web3.config.key,
+      store.getters.getTokens()
+    );
+
+    const poolCalculator = new PoolCalculator(
+      props.pool,
+      store.getters.getTokens(),
+      'join'
+    );
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
     const allTokens = computed(() => store.getters.getTokens());
-    const isStablePool = computed(
-      () => props.pool.strategy.name === 'stablePool'
-    );
 
     const hasAmounts = computed(() => {
-      const amountSum = amounts.value
+      const amountSum = fullAmounts.value
         .map(amount => parseFloat(amount))
         .reduce((a, b) => a + b, 0);
       return amountSum > 0;
     });
 
+    const balances = computed(() => {
+      return props.pool.tokens.map(token => allTokens.value[token].balance);
+    });
+
     const hasBalance = computed(() => {
-      const balanceSum = props.pool.tokens
-        .map(token => Number(allTokens.value[token].balance))
+      const balanceSum = balances.value
+        .map(b => Number(b))
         .reduce((a, b) => a + b, 0);
       return balanceSum > 0;
+    });
+
+    const hasZeroBalance = computed(() => {
+      return balances.value.includes('0');
     });
 
     const total = computed(() => {
       const total = props.pool.tokens
         .map((token, i) => {
           return (
-            (Number(amounts.value[i]) || 0) *
+            (parseFloat(fullAmounts.value[i]) || 0) *
               store.state.market.prices[token.toLowerCase()]?.price || 0
           );
         })
         .reduce((a, b) => a + b, 0);
 
+      if (total < 0) return formatNum(0, '$0,0.[00]');
       return formatNum(total, '$0,0.[00]');
     });
 
@@ -193,32 +230,34 @@ export default defineComponent({
     });
 
     const isProportional = computed(() => {
-      return investType.value === 'Proportional';
+      return data.investType === 'Proportional';
     });
 
     const propPercentage = computed(() => {
-      const currentAmount =
-        amounts.value[props.pool.tokens.indexOf(propToken.value)];
-      const maxAmount = tokenBalance(
-        props.pool.tokens.indexOf(propToken.value)
-      );
+      const currentAmount = fullAmounts.value[data.propToken];
+      const maxAmount = tokenBalance(data.propToken);
 
-      if (!currentAmount) return 0;
+      if (currentAmount === '0') return 0;
       return Math.ceil((Number(currentAmount) / maxAmount) * 100);
     });
 
-    const poolExchange = new PoolExchange(
-      props.pool,
-      store.state.web3.config.key,
-      web3,
-      allTokens.value
-    );
+    const fullAmounts = computed(() => {
+      return props.pool.tokens.map((_, i) => {
+        return data.amounts[i] || '0';
+      });
+    });
 
-    const poolCalculator = new PoolCalculator(
-      props.pool,
-      allTokens.value,
-      'join'
-    );
+    const priceImpact = computed(() => {
+      if (!hasAmounts.value) return 0;
+      return poolCalculator.priceImpact(fullAmounts.value).toNumber();
+    });
+
+    const priceImpactClasses = computed(() => {
+      return {
+        'text-red-500 font-medium': priceImpact.value >= 0.01,
+        'text-gray-500 font-normal': priceImpact.value < 0.01
+      };
+    });
 
     // METHODS
     function tokenBalance(index) {
@@ -244,32 +283,24 @@ export default defineComponent({
       store.commit('setAccountModal', true);
     }
 
-    function setPropMax() {
-      const { send, receive, fixedToken } = poolCalculator.propMax();
-      amounts.value = send;
-      receiveAmount.value = receive[0];
-      propToken.value = fixedToken;
+    async function setPropMax() {
+      const { send, fixedToken } = poolCalculator.propMax();
+      data.amounts = send;
+      data.propToken = fixedToken;
+      data.range = 1000;
     }
 
-    function onPropChange() {
-      const propTokenIndex = props.pool.tokens.indexOf(propToken.value);
-      const amount = amounts.value[propTokenIndex];
-      const { send, receive } = poolCalculator.propAmountsGiven(
-        amount,
-        propTokenIndex,
+    function onRangeChange(range) {
+      const fractionBasisPoints = (range / 1000) * 10000;
+      const amount = bnum(balances.value[data.propToken])
+        .times(fractionBasisPoints)
+        .div(10000);
+      const { send } = poolCalculator.propAmountsGiven(
+        amount.toString(),
+        data.propToken,
         'send'
       );
-      amounts.value = send;
-      receiveAmount.value = receive[0];
-    }
-
-    function onInvestTypeChange(newType) {
-      if (newType === 'Proportional') setPropMax();
-    }
-
-    function resetForm() {
-      amounts.value = [];
-      receiveAmount.value = '';
+      data.amounts = send;
     }
 
     function txListener(hash) {
@@ -277,57 +308,83 @@ export default defineComponent({
 
       emitter.on('txConfirmed', tx => {
         emit('success', tx);
-        resetForm();
-        loading.value = false;
+        data.amounts = [];
+        data.loading = false;
         return undefined;
       });
 
       emitter.on('txCancel', () => {
         // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
-        loading.value = false;
+        data.loading = false;
         return undefined;
       });
 
       emitter.on('txFailed', () => {
         // An error has occurred initiating the transaction
-        loading.value = false;
+        data.loading = false;
         return undefined;
       });
     }
 
+    async function calcMinBptOut(): Promise<string> {
+      const { bptOut } = await poolExchange.queryJoin(
+        store.state.web3.account,
+        fullAmounts.value
+      );
+      console.log('queryJoin BPT', bptOut.toString())
+      const slippageBasisPoints = parseFloat(store.state.app.slippage) * 10000;
+      const delta = bptOut.mul(slippageBasisPoints).div(10000);
+      const minBptOut = bptOut.sub(delta);
+      return formatUnits(
+        minBptOut,
+        allTokens.value[props.pool.address].decimals
+      );
+    }
+
     async function submit(): Promise<void> {
-      if (!investForm.value.validate()) return;
+      if (!data.investForm.validate()) return;
       try {
-        loading.value = true;
+        data.loading = true;
+        const minBptOut = await calcMinBptOut();
         const tx = await poolExchange.join(
           store.state.web3.account,
-          amounts.value
+          fullAmounts.value,
+          minBptOut
         );
         console.log('Receipt', tx);
         txListener(tx.hash);
       } catch (error) {
         console.error(error);
-        loading.value = false;
+        data.loading = false;
       }
     }
 
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
       if (!hasAmounts.value) setPropMax();
+      if (hasZeroBalance.value) {
+        data.investType = 'Custom';
+      } else {
+        data.investType = 'Proportional';
+      }
     });
+
+    watch(
+      () => data.investType,
+      newType => {
+        if (newType === 'Proportional') setPropMax();
+      }
+    );
 
     onMounted(() => {
       setPropMax();
     });
 
     return {
-      investForm,
-      amounts,
-      receiveAmount,
+      ...toRefs(data),
       submit,
       allTokens,
       hasAmounts,
-      loading,
       approving,
       requireApproval,
       approveAllowances,
@@ -336,17 +393,15 @@ export default defineComponent({
       amountRules,
       total,
       formatNum,
-      isStablePool,
       isAuthenticated,
       connectWallet,
       infoLabel,
       setPropMax,
-      propToken,
-      investType,
-      onPropChange,
+      onRangeChange,
       isProportional,
-      onInvestTypeChange,
-      propPercentage
+      propPercentage,
+      priceImpact,
+      priceImpactClasses
     };
   }
 });

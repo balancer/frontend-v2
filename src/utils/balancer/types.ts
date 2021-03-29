@@ -5,6 +5,7 @@ export interface Pool {
   id: string;
   strategy: Strategy;
   tokenBalances: BigNumber[];
+  poolTokens: any;
   tokens: string[];
   totalSupply: BigNumber;
   weights: BigNumber[];
