@@ -28,7 +28,7 @@ const getters = {
     ether.price = rootState.market.prices?.ether?.price || 0;
     ether.price24HChange = rootState.market.prices?.ether?.price24HChange || 0;
     if (rootState.web3.account) {
-      ether.balanceDenorm = rootState.account.balances.ether || new BN(0);
+      ether.balanceDenorm = rootState.account.balances.ether || '0';
       ether.balance = formatUnits(ether.balanceDenorm, ether.decimals);
       ether.value = ether.balance * ether.price;
       ether.value24HChange =
@@ -75,7 +75,7 @@ const getters = {
     if (rootState.web3.account) {
       tokens = tokens.map(token => {
         const address = token.address.toLowerCase();
-        token.balanceDenorm = rootState.account.balances[address] || new BN(0);
+        token.balanceDenorm = rootState.account.balances[address] || '0';
         token.balance = formatUnits(token.balanceDenorm, token.decimals);
         token.value = token.balance * token.price;
         token.value24HChange =
