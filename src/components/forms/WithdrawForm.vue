@@ -199,14 +199,17 @@ export default defineComponent({
     });
 
     const singleAssetMaxed = computed(() => {
-      return data.singleAssetMax[data.singleAsset] === fullAmounts.value[data.singleAsset];
+      return (
+        data.singleAssetMax[data.singleAsset] ===
+        fullAmounts.value[data.singleAsset]
+      );
     });
 
     const exitTokenIndex = computed(() => {
       if (isSingleAsset.value && singleAssetMaxed.value) {
         return data.singleAsset;
       }
-      return null
+      return null;
     });
 
     const exactOut = computed(() => {
@@ -275,7 +278,11 @@ export default defineComponent({
 
     async function calcSingleAssetMax() {
       data.singleAssetMax = [];
-      for (let tokenIndex = 0; tokenIndex < props.pool.tokens.length; tokenIndex++) {
+      for (
+        let tokenIndex = 0;
+        tokenIndex < props.pool.tokens.length;
+        tokenIndex++
+      ) {
         const { amountsOut } = await poolExchange.queryExit(
           store.state.web3.account,
           fullAmounts.value,
@@ -333,7 +340,7 @@ export default defineComponent({
       return fullAmounts.value.map((amount, i) => {
         if (amount === '0' || exactOut.value) return amount;
         return minusSlippage(amount, tokenDecimals(i));
-      })
+      });
     }
 
     async function submit(): Promise<void> {

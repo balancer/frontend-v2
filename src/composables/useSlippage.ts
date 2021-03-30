@@ -6,9 +6,9 @@ export default function useSlippage() {
   const store = useStore();
 
   const slippageBasisPoints = computed(() => {
-    return Number(store.state.app.slippage) * 10000
+    return Number(store.state.app.slippage) * 10000;
   });
-  
+
   function minusSlippage(_amount: string, decimals: number): string {
     let amount = parseUnits(_amount, decimals);
     const delta = amount.mul(slippageBasisPoints.value).div(10000);

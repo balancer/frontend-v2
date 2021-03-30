@@ -30,7 +30,12 @@ export default class ExitParams {
       bptIn,
       this.exchange.tokens[this.exchange.pool.address].decimals
     ).toString();
-    const txData = this.txData(parsedAmountsOut, parsedBptIn, exitTokenIndex, exactOut);
+    const txData = this.txData(
+      parsedAmountsOut,
+      parsedBptIn,
+      exitTokenIndex,
+      exactOut
+    );
 
     return [
       this.exchange.pool.id,
