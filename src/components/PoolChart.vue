@@ -36,7 +36,7 @@ export default defineComponent({
       return formatNum(value, '0.%');
     }
 
-    function getAssetValue(amounts: string[], prices: number[]) {
+    function getPoolValue(amounts: string[], prices: number[]) {
       const values = amounts.map((amount, index) => {
         const price = prices[index];
         return price * parseFloat(amount);
@@ -91,17 +91,14 @@ export default defineComponent({
         return [];
       }
       const firstState = nonEmptyHistory.value[0];
+      const firstValue = getPoolValue(firstState.amounts, firstState.price);
       const values = history.value
         .filter(state => state.totalShares !== '0')
         .map(state => {
           if (state.timestamp < firstState.timestamp) {
             return 0;
           }
-          const firstValue = getAssetValue(
-            firstState.amounts,
-            firstState.price
-          );
-          const currentValue = getAssetValue(firstState.amounts, state.price);
+          const currentValue = getPoolValue(firstState.amounts, state.price);
           return currentValue / firstValue - 1;
         });
       return values;
@@ -112,29 +109,19 @@ export default defineComponent({
         return [];
       }
       const firstState = nonEmptyHistory.value[0];
+      const firstValue = getPoolValue(firstState.amounts, firstState.price);
+      const firstShares = parseFloat(firstState.totalShares);
+      const firstValuePerBpt = firstValue / firstShares;
       const values = history.value
         .filter(state => state.totalShares !== '0')
         .map(state => {
           if (state.timestamp < firstState.timestamp) {
             return 0;
           }
-          const firstShares = firstState.totalShares;
-          const currentShares = state.totalShares;
-          const amounts = state.amounts.map(amount => {
-            const amountNumber = parseFloat(amount);
-            const firstSharesNumber = parseFloat(firstShares);
-            const currentSharesNumber = parseFloat(currentShares);
-            return (
-              (amountNumber * firstSharesNumber) /
-              currentSharesNumber
-            ).toString();
-          });
-          const firstValue = getAssetValue(
-            firstState.amounts,
-            firstState.price
-          );
-          const currentValue = getAssetValue(amounts, state.price);
-          return currentValue / firstValue - 1;
+          const currentValue = getPoolValue(state.amounts, state.price);
+          const currentShares = parseFloat(state.totalShares);
+          const currentValuePerBpt = currentValue / currentShares;
+          return currentValuePerBpt / firstValuePerBpt - 1;
         });
       return values;
     });
