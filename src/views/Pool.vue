@@ -41,7 +41,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { getTokensHistoricalPrice } from '@/api/coingecko';
-import { getPoolEvents, getPoolSnapshots } from '@/api/subgraph';
+import { getUserPoolEvents, getPoolSnapshots } from '@/api/subgraph';
 import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 
@@ -122,7 +122,10 @@ export default {
 
     async loadEvents() {
       const network = this.web3.config.key;
-      this.events = await getPoolEvents(network, this.id);
+      const account = this.web3.account;
+      if (account) {
+        this.events = await getUserPoolEvents(network, this.id, account);
+      }
     },
 
     async loadChartData(days) {

@@ -44,7 +44,6 @@ export interface PoolExit {
 }
 
 export interface PoolEvents {
-  swaps: PoolSwap[];
   joins: PoolJoin[];
   exits: PoolExit[];
 }
@@ -89,28 +88,18 @@ export async function getPools(chainId: number) {
   return data.pools as Pool[];
 }
 
-export async function getPoolEvents(chainId: number, poolId: string) {
+export async function getUserPoolEvents(
+  chainId: number,
+  poolId: string,
+  userAddress: string
+) {
   const query = `
     query {
-      swaps(
-        first: 100,
-        where: {
-          poolId: "${poolId}"
-        }
-      ) {
-        tokenIn
-        tokenAmountIn
-        tokenInSym
-        tokenOut
-        tokenAmountOut
-        tokenOutSym
-        timestamp
-        tx
-      }
       joins(
         first: 100,
         where: {
-          pool: "${poolId}"
+          pool: "${poolId}",
+          sender: "${userAddress}"
         }
       ) {
         amounts
@@ -120,7 +109,8 @@ export async function getPoolEvents(chainId: number, poolId: string) {
       exits(
         first: 100,
         where: {
-          pool: "${poolId}"
+          pool: "${poolId}",
+          sender: "${userAddress}"
         }
       ) {
         amounts
