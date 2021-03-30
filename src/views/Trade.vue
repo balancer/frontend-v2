@@ -32,7 +32,13 @@
                 class="p-1 border rounded text-xs"
               />
             </div>
-            <div v-if="tokenInAddressInput" class="text-xs">
+            <div
+              v-if="tokenInAddressInput"
+              :class="
+                validationStatus === 'INSUFFICIENT_BALANCE' && 'text-red-500'
+              "
+              class="text-xs"
+            >
               Balance:
               {{
                 _num(tokens[tokenInAddressInput]?.balance || 0, '0,0.[000000]')
@@ -74,9 +80,13 @@
               placeholder="0"
               class="w-full"
             />
-            <div v-if="slippage" class="text-xs">
+            <div
+              v-if="slippage"
+              :class="slippage > 0.02 && 'text-yellow-500'"
+              class="text-xs"
+            >
               {{ $t('priceImpact') }}:
-              {{ _num(slippage, '0,0.[00]%') }}
+              {{ _num(slippage > 0.0001 ? slippage : 0.0001, '0,0.[00]%') }}
             </div>
           </div>
         </div>
@@ -109,6 +119,7 @@
     </BalCard>
     <teleport to="#modal">
       <ModalSelectToken
+        :key="account.balances.ether"
         :open="modalSelectTokenIsOpen"
         :loading="registry.loading"
         @close="modalSelectTokenIsOpen = false"
@@ -144,14 +155,14 @@ import useAuth from '@/composables/useAuth';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
+import initialTokens from '@/constants/initialTokens.json';
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const { isAuthenticated } = useAuth();
 
-    const { getTokens, getTokenlists } = store.getters;
-    const { config } = store.state.web3;
+    const { getTokens, getTokenlists, getConfig } = store.getters;
 
     const tokenInAddressInput = ref('');
     const tokenInAmountInput = ref('');
@@ -163,7 +174,6 @@ export default defineComponent({
     const isInRate = ref(true);
     const q = ref('');
 
-    const chainId = computed(() => config.chainId);
     const tokens = computed(() => getTokens({ includeEther: true }));
 
     // COMPOSABLES
@@ -179,7 +189,7 @@ export default defineComponent({
       tokenInAmountInput,
       tokens
     );
-    const { errorMessage } = useValidation(
+    const { validationStatus, errorMessage } = useValidation(
       tokenInAddressInput,
       tokenInAmountInput,
       tokenOutAddressInput,
@@ -271,13 +281,25 @@ export default defineComponent({
       handleAmountChange(false, tokenOutAmountInput.value);
     }
 
-    watch(chainId, async () => {
+    async function populateInitialTokens(): void {
+      const { chainId } = getConfig();
+      modalSelectTokenType.value = 'input';
+      await handleSelectToken(initialTokens[chainId].input);
+      modalSelectTokenType.value = 'output';
+      await handleSelectToken(initialTokens[chainId].output);
+    }
+
+    watch(getConfig, async () => {
       tokenInAddressInput.value = '';
       tokenInAmountInput.value = '';
       tokenOutAddressInput.value = '';
       tokenOutAmountInput.value = '';
+      slippage.value = 0;
       await initSor();
+      await populateInitialTokens();
     });
+
+    populateInitialTokens();
 
     return {
       q,
@@ -302,6 +324,7 @@ export default defineComponent({
       handleSwitchTokens,
       handleAmountChange,
       toggleRate,
+      validationStatus,
       errorMessage,
       requireAllowance,
       approving,

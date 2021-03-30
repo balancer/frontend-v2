@@ -21,7 +21,7 @@
     "stablePoolFactory": "0xd0264838A8278674fa71f135f7Dba07cDDeC20d9",
     "oneToOneSwapValidator": "0x6648473ae4D7a7FdE330846D11ee95FDE2DE9447",
     "tokenFactory": "0xfc532Ef450D9BaB17d5F153B091d271A3ADDcade",
-    "weth": "0xd98C8F956714a17a5708A3175B8a3E97d1C5eaCc",
+    "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     "MockFlashLoanReceiver": "0xD1C8625C3ECCD11d214A8760093959A8237dD710",
     "balancerHelpers": ""
   },
