@@ -53,6 +53,11 @@
           </div>
         </div>
       </template>
+      <template v-if="isSingleAsset" v-slot:info>
+        <div class="cursor-pointer" @click="amounts[i] = singleAssetMax[i]">
+          {{ `${singleAssetMax[i]} max` }}
+        </div>
+      </template>
     </BalTextInput>
 
     <BalTextInput
