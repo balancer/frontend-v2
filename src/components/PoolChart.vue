@@ -160,7 +160,7 @@ export default defineComponent({
         dataLabels: {
           enabled: false
         },
-        colors: ['#8A00FF', '#333333'],
+        colors: ['#28BD9C', '#333333'],
         stroke: {
           curve: 'straight',
           width: 2
