@@ -11,37 +11,40 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
+import { PropType, defineComponent, toRefs, computed } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
+import { PoolSnapshots } from '@/api/subgraph';
 
 export default defineComponent({
   props: {
-    tokens: Object,
-    prices: Object,
-    snapshots: Object
+    prices: {
+      type: Object as PropType<Record<string, number[]>>,
+      required: true
+    },
+    snapshots: {
+      type: Object as PropType<PoolSnapshots>,
+      required: true
+    }
   },
   setup(props) {
     const { format: formatNum } = useNumbers();
 
-    const { tokens, prices, snapshots } = toRefs(props);
+    const { prices, snapshots } = toRefs(props);
 
-    function formatYAxis(value) {
+    function formatYAxis(value: number) {
       return formatNum(value, '0.%');
     }
 
-    function getAssetValue(state) {
-      const values = state.amounts.map((amount, index) => {
-        const price = state.price[index];
-        return price * amount;
+    function getAssetValue(amounts: string[], prices: number[]) {
+      const values = amounts.map((amount, index) => {
+        const price = prices[index];
+        return price * parseFloat(amount);
       });
       return values.reduce((total, value) => total + value, 0);
     }
 
     const history = computed(() => {
-      if (!tokens || !tokens.value) {
-        return [];
-      }
       if (!prices || !prices.value) {
         return [];
       }
@@ -53,13 +56,14 @@ export default defineComponent({
         return [];
       }
       let poolState = {
-        amounts: tokens.value.map(() => '0'),
+        amounts: ['0', '0'],
         totalShares: '0'
       };
       const history = Object.keys(prices.value).map(timestamp => {
         const price = prices.value[timestamp];
         const state = snapshots.value[timestamp] || poolState;
-        const { amounts, totalShares } = state;
+        const amounts = state.amounts as string[];
+        const totalShares = state.totalShares as string;
         poolState = {
           amounts,
           totalShares
@@ -93,8 +97,11 @@ export default defineComponent({
           if (state.timestamp < firstState.timestamp) {
             return 0;
           }
-          const firstValue = getAssetValue(firstState);
-          const currentValue = getAssetValue(state);
+          const firstValue = getAssetValue(
+            firstState.amounts,
+            firstState.price
+          );
+          const currentValue = getAssetValue(firstState.amounts, state.price);
           return currentValue / firstValue - 1;
         });
       return values;
@@ -117,14 +124,16 @@ export default defineComponent({
             const amountNumber = parseFloat(amount);
             const firstSharesNumber = parseFloat(firstShares);
             const currentSharesNumber = parseFloat(currentShares);
-            return (amountNumber * firstSharesNumber) / currentSharesNumber;
+            return (
+              (amountNumber * firstSharesNumber) /
+              currentSharesNumber
+            ).toString();
           });
-          const updatedState = {
-            amounts,
-            price: state.price
-          };
-          const firstValue = getAssetValue(firstState);
-          const currentValue = getAssetValue(updatedState);
+          const firstValue = getAssetValue(
+            firstState.amounts,
+            firstState.price
+          );
+          const currentValue = getAssetValue(amounts, state.price);
           return currentValue / firstValue - 1;
         });
       return values;
