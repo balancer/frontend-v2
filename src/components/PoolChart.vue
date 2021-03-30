@@ -186,8 +186,14 @@ export default defineComponent({
           }
         },
         legend: {
+          position: 'top',
           horizontalAlign: 'left',
-          offsetY: 8
+          offsetY: 8,
+          markers: {
+            width: 16,
+            height: 4,
+            radius: 2
+          }
         }
       };
     });
