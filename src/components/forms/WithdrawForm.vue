@@ -36,7 +36,7 @@
       placeholder="0"
       validate-on="input"
       prepend-border
-      :disabled="isProportional || isSingleAsset"
+      :disabled="isProportional"
       :faded-out="isSingleAsset && singleAsset !== i"
       @click="setSingleAsset(i)"
     >
@@ -196,6 +196,14 @@ export default defineComponent({
       return data.withdrawType === 'Single asset';
     });
 
+    const exitTokenIndex = computed(() => {
+      const singleAssetMaxed = data.singleAssetMax[data.singleAsset] === fullAmounts.value[data.singleAsset];
+      if (isSingleAsset.value && singleAssetMaxed) {
+        return data.singleAsset;
+      }
+      return null
+    });
+
     const poolExchange = new PoolExchange(
       props.pool,
       store.state.web3.config.key,
@@ -295,12 +303,11 @@ export default defineComponent({
       if (!data.withdrawForm.validate()) return;
       try {
         data.loading = true;
-        const exitTokenIndex = isSingleAsset.value ? data.singleAsset : null;
         const tx = await poolExchange.exit(
           store.state.web3.account,
           fullAmounts.value,
           bptBalance.value,
-          exitTokenIndex
+          exitTokenIndex.value
         );
         console.log('Receipt', tx);
         txListener(tx.hash);
@@ -310,7 +317,10 @@ export default defineComponent({
       }
     }
 
-    watch(bptBalance, () => setPropMax());
+    watch(bptBalance, async () => {
+      setPropMax();
+      await calcSingleAssetMax();
+    });
 
     watch(
       () => data.range,
