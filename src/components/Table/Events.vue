@@ -1,6 +1,6 @@
 <template>
   <div v-if="actions.length > 0">
-    <h4>Your activity in the pool</h4>
+    <h4>Your transactions in this pool</h4>
     <div class="mt-3 overflow-x-auto whitespace-nowrap border rounded-lg">
       <table class="min-w-full text-black bg-white dark:bg-gray-900">
         <tr class="bg-gray-50 dark:bg-gray-700">
