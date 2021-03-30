@@ -108,6 +108,7 @@ import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
+import useSlippage from '@/composables/useSlippage';
 import PoolExchange from '@/services/pool/Exchange';
 import PoolCalculator from '@/services/pool/Calculator';
 import { bnum } from '@/utils';
@@ -140,6 +141,7 @@ export default defineComponent({
     const notify = useBlocknative();
     const { isAuthenticated } = useAuth();
     const { format: formatNum } = useNumbers();
+    const { minusSlippage, addSlippage } = useSlippage();
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
@@ -196,12 +198,19 @@ export default defineComponent({
       return data.withdrawType === 'Single asset';
     });
 
+    const singleAssetMaxed = computed(() => {
+      return data.singleAssetMax[data.singleAsset] === fullAmounts.value[data.singleAsset];
+    });
+
     const exitTokenIndex = computed(() => {
-      const singleAssetMaxed = data.singleAssetMax[data.singleAsset] === fullAmounts.value[data.singleAsset];
-      if (isSingleAsset.value && singleAssetMaxed) {
+      if (isSingleAsset.value && singleAssetMaxed.value) {
         return data.singleAsset;
       }
       return null
+    });
+
+    const exactOut = computed(() => {
+      return isSingleAsset.value && !singleAssetMaxed.value;
     });
 
     const poolExchange = new PoolExchange(
@@ -220,6 +229,10 @@ export default defineComponent({
     // METHODS
     function tokenBalance(index) {
       return allTokens.value[props.pool.tokens[index]]?.balance;
+    }
+
+    function tokenDecimals(index) {
+      return allTokens.value[props.pool.tokens[index]]?.decimals;
     }
 
     function connectWallet() {
@@ -262,16 +275,17 @@ export default defineComponent({
 
     async function calcSingleAssetMax() {
       data.singleAssetMax = [];
-      for (let i = 0; i < props.pool.tokens.length; i++) {
+      for (let tokenIndex = 0; tokenIndex < props.pool.tokens.length; tokenIndex++) {
         const { amountsOut } = await poolExchange.queryExit(
           store.state.web3.account,
           fullAmounts.value,
           bptBalance.value,
-          i
+          tokenIndex,
+          exactOut.value
         );
-        data.singleAssetMax[i] = formatUnits(
-          amountsOut[i],
-          allTokens.value[props.pool.tokens[i]].decimals
+        data.singleAssetMax[tokenIndex] = formatUnits(
+          amountsOut[tokenIndex],
+          tokenDecimals(tokenIndex)
         );
       }
     }
@@ -299,15 +313,41 @@ export default defineComponent({
       });
     }
 
+    async function calcBptIn(): Promise<string> {
+      if (isProportional.value) return data.bptIn;
+
+      const poolDecimals = allTokens.value[props.pool.address].decimals;
+      let { bptIn } = await poolExchange.queryExit(
+        store.state.web3.account,
+        fullAmounts.value,
+        bptBalance.value,
+        exitTokenIndex.value,
+        exactOut.value
+      );
+      bptIn = formatUnits(bptIn, poolDecimals);
+
+      return exactOut.value ? addSlippage(bptIn, poolDecimals) : bptIn;
+    }
+
+    function calcAmountsOut(): string[] {
+      return fullAmounts.value.map((amount, i) => {
+        if (amount === '0' || exactOut.value) return amount;
+        return minusSlippage(amount, tokenDecimals(i));
+      })
+    }
+
     async function submit(): Promise<void> {
       if (!data.withdrawForm.validate()) return;
       try {
         data.loading = true;
+        const bptIn = await calcBptIn();
+        const amountsOut = calcAmountsOut();
         const tx = await poolExchange.exit(
           store.state.web3.account,
-          fullAmounts.value,
-          bptBalance.value,
-          exitTokenIndex.value
+          amountsOut,
+          bptIn,
+          exitTokenIndex.value,
+          exactOut.value
         );
         console.log('Receipt', tx);
         txListener(tx.hash);
