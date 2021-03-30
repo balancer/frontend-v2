@@ -1,27 +1,6 @@
 <template>
   <div class="container mx-auto mt-4">
-    <div class="pool-nav border-b pb-2 mb-4">
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'home' }"
-        color="gray"
-        size="sm"
-        flat
-      >
-        <BalIcon name="arrow-left" size="sm" />
-        <span class="ml-2">Home</span>
-      </BalBtn>
-
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'portfolio' }"
-        color="gray"
-        size="sm"
-        flat
-      >
-        <span class="ml-2">My Portfolio</span>
-      </BalBtn>
-    </div>
+    <PoolNav class="mt-14 mb-12" />
 
     <div v-if="!loading" class="mb-10">
       <h3 class="font-bold mb-2">
