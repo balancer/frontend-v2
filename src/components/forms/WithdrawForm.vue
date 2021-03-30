@@ -74,6 +74,20 @@
           <div class="font-medium text-sm leading-none">
             Total
           </div>
+          <div :class="['leading-none text-xs mt-1', priceImpactClasses]">
+            Price impact
+          </div>
+        </div>
+      </template>
+      <template v-slot:info>
+        <div :class="['flex items-center', priceImpactClasses]">
+          <span>{{ formatNum(priceImpact, '0.00%') }}</span>
+          <BalIcon
+            v-if="priceImpact >= 0.01"
+            name="alert-triangle"
+            size="xs"
+            class="ml-1"
+          />
         </div>
       </template>
     </BalTextInput>
@@ -148,6 +162,18 @@ export default defineComponent({
     const { format: formatNum } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
 
+    const poolExchange = new PoolExchange(
+      props.pool,
+      store.state.web3.config.key,
+      store.getters.getTokens()
+    );
+
+    const poolCalculator = new PoolCalculator(
+      props.pool,
+      store.getters.getTokens(),
+      'exit'
+    );
+
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
     const allTokens = computed(() => store.getters.getTokens());
@@ -221,18 +247,21 @@ export default defineComponent({
       return isSingleAsset.value && !singleAssetMaxed.value;
     });
 
-    const poolExchange = new PoolExchange(
-      props.pool,
-      store.state.web3.config.key,
-      allTokens.value
-    );
+    const priceImpact = computed(() => {
+      if (!hasAmounts.value || isProportional.value) return 0;
+      return poolCalculator.priceImpact(
+        fullAmounts.value,
+        exactOut.value,
+        exitTokenIndex.value
+      ).toNumber();
+    });
 
-    const poolCalculator = new PoolCalculator(
-      props.pool,
-      allTokens.value,
-      'exit'
-    );
-    watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
+    const priceImpactClasses = computed(() => {
+      return {
+        'text-red-500 font-medium': priceImpact.value >= 0.01,
+        'text-gray-500 font-normal': priceImpact.value < 0.01
+      };
+    });
 
     // METHODS
     function tokenBalance(index) {
@@ -248,6 +277,8 @@ export default defineComponent({
     }
 
     function setPropMax() {
+      if (!isAuthenticated.value) return;
+
       const { send, receive } = poolCalculator.propAmountsGiven(
         bptBalance.value,
         0,
@@ -282,7 +313,9 @@ export default defineComponent({
     }
 
     async function calcSingleAssetMax() {
-      data.singleAssetMax = [];
+      data.singleAssetMax = props.pool.tokens.map(() => '0');
+      if (!isAuthenticated.value) return;
+
       for (
         let tokenIndex = 0;
         tokenIndex < props.pool.tokens.length;
@@ -391,6 +424,8 @@ export default defineComponent({
       }
     );
 
+    watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
+
     onMounted(() => {
       if (bptBalance.value) setPropMax();
     });
@@ -414,7 +449,9 @@ export default defineComponent({
       isProportional,
       isSingleAsset,
       setSingleAsset,
-      propPercentage
+      propPercentage,
+      priceImpact,
+      priceImpactClasses
     };
   }
 });
