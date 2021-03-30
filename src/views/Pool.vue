@@ -16,9 +16,13 @@
       <div class="flex flex-wrap -mx-8">
         <div class="order-2 lg:order-1 w-full lg:w-2/3">
           <div v-if="!loading && !registry.loading">
-            <PoolChart class="mt-10" :prices="prices" :snapshots="snapshots" />
+            <PoolChart
+              class="mt-10 px-4"
+              :prices="prices"
+              :snapshots="snapshots"
+            />
             <PoolBalancesCard
-              class="mt-10"
+              class="mt-10 px-4"
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
             />

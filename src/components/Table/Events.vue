@@ -1,6 +1,7 @@
 <template>
-  <BalCard :title="'Your activity in the pool'" v-if="actions.length > 0">
-    <div class="overflow-x-auto whitespace-nowrap border rounded-lg">
+  <div v-if="actions.length > 0">
+    <h4>Your activity in the pool</h4>
+    <div class="mt-3 overflow-x-auto whitespace-nowrap border rounded-lg">
       <table class="min-w-full text-black bg-white dark:bg-gray-900">
         <tr class="bg-gray-50 dark:bg-gray-700">
           <th class="sticky top-0 p-2 pl-5 py-5 text-left">Action</th>
@@ -30,7 +31,7 @@
         </tr>
       </table>
     </div>
-  </BalCard>
+  </div>
 </template>
 
 <script lang="ts">
