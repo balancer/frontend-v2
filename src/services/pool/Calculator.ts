@@ -5,6 +5,8 @@ import { bnum } from '@/utils';
 import BigNumber from 'bignumber.js';
 import {
   exactTokensInForBPTOut,
+  bptInForExactTokensOut,
+  exactBPTInForTokenOut,
   bptForTokensZeroPriceImpact
 } from './helpers/math/weighted';
 import {
@@ -29,6 +31,10 @@ export default class Calculator {
     this.pool = pool;
     this.allTokens = allTokens;
     this.action = action;
+  }
+
+  public setAllTokens(tokens: Token[]): void {
+    this.allTokens = tokens;
   }
 
   public propMax(): Amounts {
@@ -97,20 +103,33 @@ export default class Calculator {
     return amounts;
   }
 
-  public priceImpact(tokenAmounts: string[]): BigNumber {
+  public priceImpact(tokenAmounts: string[], exactOut = false, tokenIndex = 0): BigNumber {
     let bptAmount, bptZeroPriceImpact;
 
     if (this.action === 'join') {
       bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
       bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+
       return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
-    } else {
-      // TODO: exit price impact calc
-      return bnum(0);
+    } else { // Single asset exit
+      if (exactOut) {
+        bptAmount = this.bptInForExactTokensOut(tokenAmounts)
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      } else {
+        bptAmount = parseUnits(this.bptBalance, this.poolDecimals).toString();
+        tokenAmounts = this.pool.tokens.map((_, i) => {
+          if (i !== tokenIndex) return '0';
+          const tokenAmount = this.exactBPTInForTokenOut(bptAmount, tokenIndex).toString();
+          return formatUnits(tokenAmount, this.poolTokenDecimals[tokenIndex]).toString();
+        })
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      }
+
+      return bnum(bptAmount).div(bptZeroPriceImpact).minus(1);
     }
   }
 
-  public exactTokensInForBPTOut(tokenAmounts: string[]): FpBigNumber {
+  private exactTokensInForBPTOut(tokenAmounts: string[]): FpBigNumber {
     const balances = this.poolTokenBalances.map(b => fpBnum(b.toString()));
     const weights = this.poolTokenWeights.map(w => fpBnum(w.toString()));
     const denormAmounts = this.denormAmounts(
@@ -128,13 +147,45 @@ export default class Calculator {
     );
   }
 
-  public bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
+  private bptInForExactTokensOut(tokenAmounts: string[]): FpBigNumber {
+    const balances = this.poolTokenBalances.map(b => fpBnum(b.toString()));
+    const weights = this.poolTokenWeights.map(w => fpBnum(w.toString()));
+    const denormAmounts = this.denormAmounts(
+      tokenAmounts,
+      this.poolTokenDecimals
+    );
+    const amounts = denormAmounts.map(a => fpBnum(a.toString()));
+
+    return bptInForExactTokensOut(
+      balances,
+      weights,
+      amounts,
+      fpBnum(this.poolTotalSupply.toString()),
+      fpBnum(this.poolSwapFee.toString())
+    );
+  }
+
+  private exactBPTInForTokenOut(bptAmount: string, tokenIndex: number): FpBigNumber {
+    const tokenBalance = fpBnum(this.poolTokenBalances[tokenIndex].toString());
+    const tokenNormalizedWeight = fpBnum(this.poolTokenWeights[tokenIndex].toString());
+    const bptAmountIn = fpBnum(bptAmount);
+
+    return exactBPTInForTokenOut(
+      tokenBalance,
+      tokenNormalizedWeight,
+      bptAmountIn,
+      fpBnum(this.poolTotalSupply.toString()),
+      fpBnum(this.poolSwapFee.toString())
+    )
+  }
+
+  private bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
     const denormAmounts = this.denormAmounts(
       tokenAmounts,
       this.poolTokenDecimals
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
-
+    
     return bptForTokensZeroPriceImpact(
       this.poolTokenBalances.map(b => bnum(b.toString())),
       this.poolTokenDecimals,
@@ -144,12 +195,8 @@ export default class Calculator {
     );
   }
 
-  public denormAmounts(amounts: string[], decimals: number[]): BigNumberish[] {
+  private denormAmounts(amounts: string[], decimals: number[]): BigNumberish[] {
     return amounts.map((a, i) => parseUnits(a, decimals[i]));
-  }
-
-  public setAllTokens(tokens: Token[]): void {
-    this.allTokens = tokens;
   }
 
   private tokenOf(type: string, index: number) {
@@ -182,6 +229,10 @@ export default class Calculator {
 
   private get poolDecimals(): number {
     return this.allTokens[this.pool.address].decimals;
+  }
+
+  private get bptBalance(): string {
+    return this.allTokens[this.pool.address].balance;
   }
 
   private get sendTokens() {
