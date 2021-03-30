@@ -1,8 +1,8 @@
 <template>
-  <div class="container mx-auto mt-4">
-    <PoolNav class="mt-14 mb-12" />
+  <div class="container mx-auto mt-4 px-4 lg:px-0">
+    <PoolNav class="mt-7 lg:mt-14 mb-8 lg:mb-12" />
 
-    <div v-if="!loading" class="mb-10">
+    <div v-if="!loading" class="lg:mb-10">
       <h3 class="font-bold mb-2">
         {{ header }}
       </h3>
@@ -12,9 +12,9 @@
       </div>
     </div>
 
-    <div class="px-8 lg:px-4">
+    <div class="px-4">
       <div class="flex flex-wrap -mx-8">
-        <div class="order-2 lg:order-1 w-full lg:w-2/3 px-4">
+        <div class="order-2 lg:order-1 w-full lg:w-2/3">
           <div v-if="!loading && !registry.loading">
             <PoolChart
               class="mt-10"
@@ -23,13 +23,14 @@
               :snapshots="snapshots"
             />
             <PoolBalancesCard
+              class="mt-10"
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
             />
             <TableEvents class="mt-10" :tokens="pool.tokens" :events="events" />
           </div>
         </div>
-        <div class="order-1 lg:order-2 w-full lg:w-1/3 px-4 mt-8 lg:mt-0">
+        <div class="order-1 lg:order-2 w-full lg:w-1/3 mt-8 lg:mt-0 lg:px-4">
           <PoolActionsCard
             v-if="pool && !loading && !registry.loading"
             class="sticky top-24"
