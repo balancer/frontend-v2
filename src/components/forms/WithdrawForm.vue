@@ -29,7 +29,7 @@
       :key="i"
       :name="token"
       v-model="amounts[i]"
-      :rules="[isPositive()]"
+      :rules="amountRules(i)"
       type="number"
       min="0"
       step="any"
@@ -122,7 +122,7 @@ import {
   toRefs
 } from 'vue';
 import { FormRef } from '@/types';
-import { isPositive } from '@/utils/validations';
+import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
@@ -273,6 +273,15 @@ export default defineComponent({
       return allTokens.value[props.pool.tokens[index]]?.decimals;
     }
 
+    function amountRules(index) {
+      if (!isAuthenticated.value || isProportional.value) return [isPositive()]
+      return [
+        isPositive(),
+        isLessThanOrEqualTo(data.singleAssetMax[index], 'Exceeds balance')
+      ]
+    }
+
+
     function connectWallet() {
       store.commit('setAccountModal', true);
     }
@@ -315,6 +324,7 @@ export default defineComponent({
 
     async function calcSingleAssetMax() {
       data.singleAssetMax = props.pool.tokens.map(() => '0');
+      data.amounts = props.pool.tokens.map(() => '0');
       if (!isAuthenticated.value) return;
 
       for (
@@ -452,7 +462,8 @@ export default defineComponent({
       setSingleAsset,
       propPercentage,
       priceImpact,
-      priceImpactClasses
+      priceImpactClasses,
+      amountRules
     };
   }
 });
