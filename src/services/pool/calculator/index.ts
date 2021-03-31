@@ -1,22 +1,19 @@
 import { Token } from '@/types';
 import { Pool } from '@/utils/balancer/types';
 import { parseUnits, formatUnits } from '@ethersproject/units';
-import { bnum } from '@/utils';
-import BigNumber from 'bignumber.js';
-import {
-  exactTokensInForBPTOut,
-  bptForTokensZeroPriceImpact
-} from './helpers/math/weighted';
-import {
-  bnum as fpBnum,
-  FixedPoint as FpBigNumber
-} from '@/utils/balancer/helpers/sor/FixedPoint';
 import { BigNumberish } from '@ethersproject/bignumber';
+import BigNumber from 'bignumber.js';
+import Weighted from './weighted';
 
 interface Amounts {
   send: string[];
   receive: string[];
   fixedToken: number;
+}
+
+export interface PiOptions {
+  exactOut: boolean;
+  tokenIndex: number;
 }
 
 export default class Calculator {
@@ -29,6 +26,18 @@ export default class Calculator {
     this.pool = pool;
     this.allTokens = allTokens;
     this.action = action;
+  }
+
+  public priceImpact(
+    tokenAmounts: string[],
+    opts: PiOptions = { exactOut: false, tokenIndex: 0 }
+  ): BigNumber {
+    if (this.isStablePool) return new BigNumber(0); // TODO stable pool PI calc
+    return this.weighted.priceImpact(tokenAmounts, opts);
+  }
+
+  public setAllTokens(tokens: Token[]): void {
+    this.allTokens = tokens;
   }
 
   public propMax(): Amounts {
@@ -97,109 +106,70 @@ export default class Calculator {
     return amounts;
   }
 
-  public priceImpact(tokenAmounts: string[]): BigNumber {
-    let bptAmount, bptZeroPriceImpact;
-
-    if (this.action === 'join') {
-      bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
-      bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
-      return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
-    } else {
-      // TODO: exit price impact calc
-      return bnum(0);
-    }
-  }
-
-  public exactTokensInForBPTOut(tokenAmounts: string[]): FpBigNumber {
-    const balances = this.poolTokenBalances.map(b => fpBnum(b.toString()));
-    const weights = this.poolTokenWeights.map(w => fpBnum(w.toString()));
-    const denormAmounts = this.denormAmounts(
-      tokenAmounts,
-      this.poolTokenDecimals
-    );
-    const amounts = denormAmounts.map(a => fpBnum(a.toString()));
-
-    return exactTokensInForBPTOut(
-      balances,
-      weights,
-      amounts,
-      fpBnum(this.poolTotalSupply.toString()),
-      fpBnum(this.poolSwapFee.toString())
-    );
-  }
-
-  public bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
-    const denormAmounts = this.denormAmounts(
-      tokenAmounts,
-      this.poolTokenDecimals
-    );
-    const amounts = denormAmounts.map(a => bnum(a.toString()));
-
-    return bptForTokensZeroPriceImpact(
-      this.poolTokenBalances.map(b => bnum(b.toString())),
-      this.poolTokenDecimals,
-      this.poolTokenWeights.map(w => bnum(w.toString())),
-      amounts,
-      bnum(this.poolTotalSupply.toString())
-    );
-  }
-
   public denormAmounts(amounts: string[], decimals: number[]): BigNumberish[] {
     return amounts.map((a, i) => parseUnits(a, decimals[i]));
   }
 
-  public setAllTokens(tokens: Token[]): void {
-    this.allTokens = tokens;
-  }
-
-  private tokenOf(type: string, index: number) {
+  public tokenOf(type: string, index: number) {
     return this[`${type}Tokens`][index];
   }
 
-  private ratioOf(type: string, index: number) {
+  public ratioOf(type: string, index: number) {
     return this[`${type}Ratios`][index];
   }
 
-  private get poolTokenBalances(): BigNumberish[] {
+  public get weighted() {
+    return new Weighted(this);
+  }
+
+  public get poolTokenBalances(): BigNumberish[] {
     return this.pool.poolTokens.balances;
   }
 
-  private get poolTokenDecimals(): number[] {
+  public get poolTokenDecimals(): number[] {
     return this.pool.tokens.map(t => this.allTokens[t].decimals);
   }
 
-  private get poolTokenWeights(): BigNumberish[] {
+  public get poolTokenWeights(): BigNumberish[] {
     return this.pool.weights;
   }
 
-  private get poolTotalSupply(): BigNumberish {
+  public get poolTotalSupply(): BigNumberish {
     return this.pool.totalSupply;
   }
 
-  private get poolSwapFee(): BigNumberish {
+  public get poolSwapFee(): BigNumberish {
     return this.pool.strategy.swapFee;
   }
 
-  private get poolDecimals(): number {
+  public get poolDecimals(): number {
     return this.allTokens[this.pool.address].decimals;
   }
 
-  private get sendTokens() {
+  public get bptBalance(): string {
+    return this.allTokens[this.pool.address].balance;
+  }
+
+  public get isStablePool(): boolean {
+    return this.pool.strategy.name === 'stablePool';
+  }
+
+  public get sendTokens() {
     if (this.action === 'join') return this.pool.tokens;
     return [this.pool.address];
   }
 
-  private get receiveTokens() {
+  public get receiveTokens() {
     if (this.action === 'join') return [this.pool.address];
     return this.pool.tokens;
   }
 
-  private get sendRatios() {
+  public get sendRatios() {
     if (this.action === 'join') return this.pool.tokenBalances;
     return [this.pool.totalSupply];
   }
 
-  private get receiveRatios() {
+  public get receiveRatios() {
     if (this.action === 'join') return [this.pool.totalSupply];
     return this.pool.tokenBalances;
   }

@@ -29,14 +29,14 @@
       :key="i"
       :name="token"
       v-model="amounts[i]"
-      :rules="[isPositive()]"
+      :rules="amountRules(i)"
       type="number"
       min="0"
       step="any"
       placeholder="0"
       validate-on="input"
       prepend-border
-      :disabled="isProportional || isSingleAsset"
+      :disabled="isProportional"
       :faded-out="isSingleAsset && singleAsset !== i"
       @click="setSingleAsset(i)"
     >
@@ -51,6 +51,11 @@
               {{ formatNum(tokenWeights[i]) }}%
             </span>
           </div>
+        </div>
+      </template>
+      <template v-if="isSingleAsset" v-slot:info>
+        <div class="cursor-pointer" @click="amounts[i] = singleAssetMax[i]">
+          {{ `${singleAssetMax[i]} max` }}
         </div>
       </template>
     </BalTextInput>
@@ -69,6 +74,20 @@
           <div class="font-medium text-sm leading-none">
             Total
           </div>
+          <div :class="['leading-none text-xs mt-1', priceImpactClasses]">
+            Price impact
+          </div>
+        </div>
+      </template>
+      <template v-slot:info>
+        <div :class="['flex items-center', priceImpactClasses]">
+          <span>{{ formatNum(priceImpact, '0.00%') }}</span>
+          <BalIcon
+            v-if="priceImpact >= 0.01"
+            name="alert-triangle"
+            size="xs"
+            class="ml-1"
+          />
         </div>
       </template>
     </BalTextInput>
@@ -103,13 +122,14 @@ import {
   toRefs
 } from 'vue';
 import { FormRef } from '@/types';
-import { isPositive } from '@/utils/validations';
+import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
 import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
-import PoolExchange from '@/services/pool/Exchange';
-import PoolCalculator from '@/services/pool/Calculator';
+import useSlippage from '@/composables/useSlippage';
+import PoolExchange from '@/services/pool/exchange';
+import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 
@@ -140,6 +160,19 @@ export default defineComponent({
     const notify = useBlocknative();
     const { isAuthenticated } = useAuth();
     const { format: formatNum } = useNumbers();
+    const { minusSlippage, addSlippage } = useSlippage();
+
+    const poolExchange = new PoolExchange(
+      props.pool,
+      store.state.web3.config.key,
+      store.getters.getTokens()
+    );
+
+    const poolCalculator = new PoolCalculator(
+      props.pool,
+      store.getters.getTokens(),
+      'exit'
+    );
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
@@ -196,29 +229,66 @@ export default defineComponent({
       return data.withdrawType === 'Single asset';
     });
 
-    const poolExchange = new PoolExchange(
-      props.pool,
-      store.state.web3.config.key,
-      allTokens.value
-    );
+    const singleAssetMaxed = computed(() => {
+      return (
+        data.singleAssetMax[data.singleAsset] ===
+        fullAmounts.value[data.singleAsset]
+      );
+    });
 
-    const poolCalculator = new PoolCalculator(
-      props.pool,
-      allTokens.value,
-      'exit'
-    );
-    watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
+    const exitTokenIndex = computed(() => {
+      if (isSingleAsset.value && singleAssetMaxed.value) {
+        return data.singleAsset;
+      }
+      return null;
+    });
+
+    const exactOut = computed(() => {
+      return isSingleAsset.value && !singleAssetMaxed.value;
+    });
+
+    const priceImpact = computed(() => {
+      if (!hasAmounts.value || isProportional.value) return 0;
+      return poolCalculator
+        .priceImpact(fullAmounts.value, {
+          exactOut: exactOut.value,
+          tokenIndex: exitTokenIndex.value
+        })
+        .toNumber();
+    });
+
+    const priceImpactClasses = computed(() => {
+      return {
+        'text-red-500 font-medium': priceImpact.value >= 0.01,
+        'text-gray-500 font-normal': priceImpact.value < 0.01
+      };
+    });
 
     // METHODS
     function tokenBalance(index) {
       return allTokens.value[props.pool.tokens[index]]?.balance;
     }
 
+    function tokenDecimals(index) {
+      return allTokens.value[props.pool.tokens[index]]?.decimals;
+    }
+
+    function amountRules(index) {
+      if (!isAuthenticated.value || isProportional.value) return [isPositive()]
+      return [
+        isPositive(),
+        isLessThanOrEqualTo(data.singleAssetMax[index], 'Exceeds balance')
+      ]
+    }
+
+
     function connectWallet() {
       store.commit('setAccountModal', true);
     }
 
     function setPropMax() {
+      if (!isAuthenticated.value) return;
+
       const { send, receive } = poolCalculator.propAmountsGiven(
         bptBalance.value,
         0,
@@ -253,17 +323,25 @@ export default defineComponent({
     }
 
     async function calcSingleAssetMax() {
-      data.singleAssetMax = [];
-      for (let i = 0; i < props.pool.tokens.length; i++) {
+      data.singleAssetMax = props.pool.tokens.map(() => '0');
+      data.amounts = props.pool.tokens.map(() => '0');
+      if (!isAuthenticated.value) return;
+
+      for (
+        let tokenIndex = 0;
+        tokenIndex < props.pool.tokens.length;
+        tokenIndex++
+      ) {
         const { amountsOut } = await poolExchange.queryExit(
           store.state.web3.account,
           fullAmounts.value,
           bptBalance.value,
-          i
+          tokenIndex,
+          exactOut.value
         );
-        data.singleAssetMax[i] = formatUnits(
-          amountsOut[i],
-          allTokens.value[props.pool.tokens[i]].decimals
+        data.singleAssetMax[tokenIndex] = formatUnits(
+          amountsOut[tokenIndex],
+          tokenDecimals(tokenIndex)
         );
       }
     }
@@ -291,16 +369,41 @@ export default defineComponent({
       });
     }
 
+    async function calcBptIn(): Promise<string> {
+      if (isProportional.value) return data.bptIn;
+
+      const poolDecimals = allTokens.value[props.pool.address].decimals;
+      let { bptIn } = await poolExchange.queryExit(
+        store.state.web3.account,
+        fullAmounts.value,
+        bptBalance.value,
+        exitTokenIndex.value,
+        exactOut.value
+      );
+      bptIn = formatUnits(bptIn, poolDecimals);
+
+      return exactOut.value ? addSlippage(bptIn, poolDecimals) : bptIn;
+    }
+
+    function calcAmountsOut(): string[] {
+      return fullAmounts.value.map((amount, i) => {
+        if (amount === '0' || exactOut.value) return amount;
+        return minusSlippage(amount, tokenDecimals(i));
+      });
+    }
+
     async function submit(): Promise<void> {
       if (!data.withdrawForm.validate()) return;
       try {
         data.loading = true;
-        const exitTokenIndex = isSingleAsset.value ? data.singleAsset : null;
+        const bptIn = await calcBptIn();
+        const amountsOut = calcAmountsOut();
         const tx = await poolExchange.exit(
           store.state.web3.account,
-          fullAmounts.value,
-          bptBalance.value,
-          exitTokenIndex
+          amountsOut,
+          bptIn,
+          exitTokenIndex.value,
+          exactOut.value
         );
         console.log('Receipt', tx);
         txListener(tx.hash);
@@ -310,7 +413,10 @@ export default defineComponent({
       }
     }
 
-    watch(bptBalance, () => setPropMax());
+    watch(bptBalance, async () => {
+      setPropMax();
+      await calcSingleAssetMax();
+    });
 
     watch(
       () => data.range,
@@ -328,6 +434,8 @@ export default defineComponent({
         data.amounts = receive;
       }
     );
+
+    watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
 
     onMounted(() => {
       if (bptBalance.value) setPropMax();
@@ -352,7 +460,10 @@ export default defineComponent({
       isProportional,
       isSingleAsset,
       setSingleAsset,
-      propPercentage
+      propPercentage,
+      priceImpact,
+      priceImpactClasses,
+      amountRules
     };
   }
 });

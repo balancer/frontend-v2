@@ -56,13 +56,15 @@ export default class Exchange {
     account: string,
     amountsOut: string[],
     bptIn: string,
-    exitTokenIndex: number | null
+    exitTokenIndex: number | null,
+    exactOut: boolean
   ) {
     const txParams = this.exitParams.serialize(
       account,
       amountsOut,
       bptIn,
-      exitTokenIndex
+      exitTokenIndex,
+      exactOut
     );
 
     return await callStatic(
@@ -78,13 +80,15 @@ export default class Exchange {
     account: string,
     amountsOut: string[],
     bptIn: string,
-    exitTokenIndex: number | null
+    exitTokenIndex: number | null,
+    exactOut: boolean
   ): Promise<TransactionResponse> {
     const txParams = this.exitParams.serialize(
       account,
       amountsOut,
       bptIn,
-      exitTokenIndex
+      exitTokenIndex,
+      exactOut
     );
 
     return await sendTransaction(
