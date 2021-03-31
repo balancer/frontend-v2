@@ -77,39 +77,39 @@ export function bptInForExactTokensOut(
   const tokenBalanceRatiosWithoutFee = new Array(amountsOut.length);
   let weightedBalanceRatio = bnum(0);
   for (let i = 0; i < balances.length; i++) {
-      tokenBalanceRatiosWithoutFee[i] = balances[i]
-          .sub(amountsOut[i])
-          .divUp(balances[i]);
-      weightedBalanceRatio = weightedBalanceRatio.add(
-          tokenBalanceRatiosWithoutFee[i].mulUp(normalizedWeights[i])
-      );
+    tokenBalanceRatiosWithoutFee[i] = balances[i]
+      .sub(amountsOut[i])
+      .divUp(balances[i]);
+    weightedBalanceRatio = weightedBalanceRatio.add(
+      tokenBalanceRatiosWithoutFee[i].mulUp(normalizedWeights[i])
+    );
   }
 
   //Second loop to calculate new amounts in taking into account the fee on the % excess
   let invariantRatio = FixedPoint.ONE;
   for (let i = 0; i < balances.length; i++) {
-      let tokenBalancePercentageExcess;
-      // For each ratioSansFee, compare with the total weighted ratio (weightedBalanceRatio) and
-      // decrease the fee from what goes above it
-      if (weightedBalanceRatio <= tokenBalanceRatiosWithoutFee[i]) {
-          tokenBalancePercentageExcess = bnum(0);
-      } else {
-          tokenBalancePercentageExcess = weightedBalanceRatio
-              .sub(tokenBalanceRatiosWithoutFee[i])
-              .divUp(tokenBalanceRatiosWithoutFee[i].complement());
-      }
+    let tokenBalancePercentageExcess;
+    // For each ratioSansFee, compare with the total weighted ratio (weightedBalanceRatio) and
+    // decrease the fee from what goes above it
+    if (weightedBalanceRatio <= tokenBalanceRatiosWithoutFee[i]) {
+      tokenBalancePercentageExcess = bnum(0);
+    } else {
+      tokenBalancePercentageExcess = weightedBalanceRatio
+        .sub(tokenBalanceRatiosWithoutFee[i])
+        .divUp(tokenBalanceRatiosWithoutFee[i].complement());
+    }
 
-      const swapFeeExcess = swapFee.mulUp(tokenBalancePercentageExcess);
+    const swapFeeExcess = swapFee.mulUp(tokenBalancePercentageExcess);
 
-      const amountOutBeforeFee = amountsOut[i].divUp(
-          swapFeeExcess.complement()
-      );
+    const amountOutBeforeFee = amountsOut[i].divUp(swapFeeExcess.complement());
 
-      const tokenBalanceRatio = amountOutBeforeFee.divUp(balances[i]).complement();
+    const tokenBalanceRatio = amountOutBeforeFee
+      .divUp(balances[i])
+      .complement();
 
-      invariantRatio = invariantRatio.mulDown(
-          FixedPoint.powDown(tokenBalanceRatio, normalizedWeights[i])
-      );
+    invariantRatio = invariantRatio.mulDown(
+      FixedPoint.powDown(tokenBalanceRatio, normalizedWeights[i])
+    );
   }
 
   return bptTotalSupply.mulUp(invariantRatio.complement());
@@ -138,14 +138,14 @@ export function exactBPTInForTokenOut(
 
   // Calculate by how much the token balance has to increase to cause invariantRatio
   const tokenBalanceRatio = FixedPoint.powUp(
-      invariantRatio,
-      FixedPoint.ONE.divUp(tokenNormalizedWeight)
+    invariantRatio,
+    FixedPoint.ONE.divUp(tokenNormalizedWeight)
   );
   const tokenBalancePercentageExcess = tokenNormalizedWeight.complement();
 
   //Because of rounding up, tokenBalanceRatio can be greater than one
   const amountOutBeforeFee = tokenBalance.mulDown(
-      tokenBalanceRatio.complement()
+    tokenBalanceRatio.complement()
   );
 
   const swapFeeExcess = swapFee.mulUp(tokenBalancePercentageExcess);

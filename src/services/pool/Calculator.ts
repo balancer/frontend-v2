@@ -103,7 +103,11 @@ export default class Calculator {
     return amounts;
   }
 
-  public priceImpact(tokenAmounts: string[], exactOut = false, tokenIndex = 0): BigNumber {
+  public priceImpact(
+    tokenAmounts: string[],
+    exactOut = false,
+    tokenIndex = 0
+  ): BigNumber {
     let bptAmount, bptZeroPriceImpact;
 
     if (this.action === 'join') {
@@ -111,21 +115,30 @@ export default class Calculator {
       bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
 
       return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
-    } else { // Single asset exit
+    } else {
+      // Single asset exit
       if (exactOut) {
-        bptAmount = this.bptInForExactTokensOut(tokenAmounts)
+        bptAmount = this.bptInForExactTokensOut(tokenAmounts);
         bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       } else {
         bptAmount = parseUnits(this.bptBalance, this.poolDecimals).toString();
         tokenAmounts = this.pool.tokens.map((_, i) => {
           if (i !== tokenIndex) return '0';
-          const tokenAmount = this.exactBPTInForTokenOut(bptAmount, tokenIndex).toString();
-          return formatUnits(tokenAmount, this.poolTokenDecimals[tokenIndex]).toString();
-        })
+          const tokenAmount = this.exactBPTInForTokenOut(
+            bptAmount,
+            tokenIndex
+          ).toString();
+          return formatUnits(
+            tokenAmount,
+            this.poolTokenDecimals[tokenIndex]
+          ).toString();
+        });
         bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       }
 
-      return bnum(bptAmount).div(bptZeroPriceImpact).minus(1);
+      return bnum(bptAmount)
+        .div(bptZeroPriceImpact)
+        .minus(1);
     }
   }
 
@@ -165,9 +178,14 @@ export default class Calculator {
     );
   }
 
-  private exactBPTInForTokenOut(bptAmount: string, tokenIndex: number): FpBigNumber {
+  private exactBPTInForTokenOut(
+    bptAmount: string,
+    tokenIndex: number
+  ): FpBigNumber {
     const tokenBalance = fpBnum(this.poolTokenBalances[tokenIndex].toString());
-    const tokenNormalizedWeight = fpBnum(this.poolTokenWeights[tokenIndex].toString());
+    const tokenNormalizedWeight = fpBnum(
+      this.poolTokenWeights[tokenIndex].toString()
+    );
     const bptAmountIn = fpBnum(bptAmount);
 
     return exactBPTInForTokenOut(
@@ -176,7 +194,7 @@ export default class Calculator {
       bptAmountIn,
       fpBnum(this.poolTotalSupply.toString()),
       fpBnum(this.poolSwapFee.toString())
-    )
+    );
   }
 
   private bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
@@ -185,7 +203,7 @@ export default class Calculator {
       this.poolTokenDecimals
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
-    
+
     return bptForTokensZeroPriceImpact(
       this.poolTokenBalances.map(b => bnum(b.toString())),
       this.poolTokenDecimals,

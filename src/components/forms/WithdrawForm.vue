@@ -249,11 +249,9 @@ export default defineComponent({
 
     const priceImpact = computed(() => {
       if (!hasAmounts.value || isProportional.value) return 0;
-      return poolCalculator.priceImpact(
-        fullAmounts.value,
-        exactOut.value,
-        exitTokenIndex.value
-      ).toNumber();
+      return poolCalculator
+        .priceImpact(fullAmounts.value, exactOut.value, exitTokenIndex.value)
+        .toNumber();
     });
 
     const priceImpactClasses = computed(() => {
