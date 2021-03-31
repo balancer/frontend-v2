@@ -250,7 +250,10 @@ export default defineComponent({
     const priceImpact = computed(() => {
       if (!hasAmounts.value || isProportional.value) return 0;
       return poolCalculator
-        .priceImpact(fullAmounts.value, exactOut.value, exitTokenIndex.value)
+        .priceImpact(fullAmounts.value, {
+          exactOut: exactOut.value,
+          tokenIndex: exitTokenIndex.value
+        })
         .toNumber();
     });
 
