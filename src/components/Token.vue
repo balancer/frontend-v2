@@ -44,8 +44,8 @@ export default {
     };
   },
   watch: {
-    token() {
-      this.error = false;
+    token(val, prev) {
+      if (val !== prev) this.error = false;
     }
   }
 };
