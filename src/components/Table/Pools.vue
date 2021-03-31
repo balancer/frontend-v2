@@ -40,7 +40,7 @@
             class="sticky top-0 p-2 py-5 text-right"
           />
           <th
-            v-text="$t('volume24', [$t('hourAbbrev')])"
+            v-text="$t('volume24h', [$t('hourAbbrev')])"
             class="sticky top-0 p-2 py-5 text-right"
           />
           <th
