@@ -103,7 +103,7 @@
       type="submit"
       label="Withdraw"
       loading-label="Confirming..."
-      color="gradient"
+      color="gradient-reverse"
       :disabled="!hasAmounts"
       :loading="loading"
       block
