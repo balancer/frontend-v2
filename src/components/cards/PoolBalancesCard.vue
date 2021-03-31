@@ -1,9 +1,10 @@
 <template>
-  <BalCard :title="'Balances'">
+  <div>
+    <h4>Balances</h4>
     <div
       v-for="(address, index) in tokens"
       :key="address"
-      class="flex justify-between"
+      class="mt-3 flex justify-between"
     >
       <span>
         <Avatar :address="address" :size="24" />
@@ -15,7 +16,7 @@
         {{ getBalance(index) }}
       </span>
     </div>
-  </BalCard>
+  </div>
 </template>
 
 <script lang="ts">
