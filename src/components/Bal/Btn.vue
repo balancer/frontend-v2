@@ -86,11 +86,11 @@ export default defineComponent({
       if (props.outline) return 'bg-transparent';
 
       if (props.disabled || props.loading) {
-        return 'bg-gradient-to-tr from-gradient-blue-50 to-gradient-pink-50';
+        return 'bg-gradient-to-tr from-blue-50 to-pink-50';
       }
       return `
-        bg-gradient-to-tr from-gradient-blue-500 to-gradient-pink-500
-        hover:from-gradient-blue-600 hover:to-gradient-pink-600
+        bg-gradient-to-tr from-blue-500 to-pink-500
+        hover:from-blue-600 hover:to-pink-600
       `;
     };
 
