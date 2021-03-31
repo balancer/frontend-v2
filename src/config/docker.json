@@ -8,7 +8,8 @@
   "rpc": "http://localhost:8545",
   "ws": "ws://localhost:8546",
   "explorer": "",
-  "subgraphBackupUrl": "",
+  "poolsUrlV1": "",
+  "poolsUrlV2": "",
   "addresses": {
     "exchangeProxy": "",
     "multicall": "0xfe17B701A8F44D9D18D4f83dB71Bf9442D0003f1",

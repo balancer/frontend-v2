@@ -8,7 +8,8 @@
   "rpc": "https://cloudflare-eth.com",
   "ws": "wss://eth-mainnet.ws.alchemyapi.io/v2/4bdDVB5QAaorY2UE-GBUbM2yQB3QJqzv",
   "explorer": "https://etherscan.io",
-  "subgraphBackupUrl": "https://ipfs.fleek.co/ipns/balancer-bucket.storage.fleek.co/balancer-exchange/pools",
+  "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange/pools",
+  "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
   "addresses": {
     "bFactory": "0x9424B1412450D0f8Fc2255FAf6046b98213B76Bd",
     "bActions": "0xde4A25A0b9589689945d842c5ba0CF4f0D4eB3ac",

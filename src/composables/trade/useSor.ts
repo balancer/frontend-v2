@@ -47,7 +47,7 @@ export default function useSor(
 
   async function initSor(): Promise<void> {
     const config = getConfig();
-    const poolsUrl = `${config.subgraphBackupUrl}?timestamp=${Date.now()}`;
+    const poolsUrl = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
     sor = new SOR(
       getProvider(config.chainId),
       new BigNumber(GAS_PRICE),
