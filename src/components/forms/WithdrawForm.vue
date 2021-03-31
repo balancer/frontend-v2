@@ -128,8 +128,8 @@ import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
 import useSlippage from '@/composables/useSlippage';
-import PoolExchange from '@/services/pool/Exchange';
-import PoolCalculator from '@/services/pool/Calculator';
+import PoolExchange from '@/services/pool/exchange';
+import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 

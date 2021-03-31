@@ -1,4 +1,4 @@
-import PoolExchange from '../Exchange';
+import PoolExchange from '..';
 import { encodeJoinStablePool } from '@/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
