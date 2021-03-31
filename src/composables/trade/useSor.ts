@@ -10,6 +10,7 @@ import useAuth from '@/composables/useAuth';
 import { swapIn, swapOut } from '@/utils/balancer/trade';
 import useBlocknative from '@/composables/useBlocknative';
 import { ETHER } from '@/constants/tokenlists';
+import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -21,8 +22,33 @@ export default function useSor(
   tokenOutAmountInput,
   tokens
 ) {
-  let sor: SOR | undefined = undefined;
-  const pools = ref<Pool[]>([]);
+  let sorManager: SorManager | undefined = undefined;
+  const pools = ref<any[]>([]); // TODO - Check type & make sure correct value is returned by SorManager
+  const sorReturn = ref<SorReturn>({
+    isV1swap: false,
+    isV1best: false,
+    hasSwaps: false,
+    tokenIn: '',
+    tokenOut: '',
+    returnDecimals: 18,
+    returnAmount: new BigNumber(0),
+    marketSpNormalised: new BigNumber(0),
+    v1result: [[], new BigNumber(0), new BigNumber(0)],
+    v2result: {
+      tokenAddresses: [],
+      swaps: [],
+      swapAmount: new BigNumber(0),
+      returnAmount: new BigNumber(0),
+      tokenIn: '',
+      tokenOut: '',
+      marketSp: new BigNumber(0)
+    }
+  });
+  const allowanceState = ref<any>({
+    overRide: false,
+    isUnlockedV1: false,
+    isUnlockedV2: false
+  });
   const swaps = ref<Swap[][]>([]);
   const trading = ref(false);
   const exactIn = ref(true);
@@ -38,27 +64,31 @@ export default function useSor(
   onMounted(async () => await initSor());
 
   useIntervalFn(async () => {
-    if (sor) {
+    if (sorManager) {
       console.time('[SOR] fetchPools');
-      await sor.fetchPools();
+      await sorManager.fetchPools();
       console.timeEnd('[SOR] fetchPools');
     }
   }, 30 * 1e3);
 
   async function initSor(): Promise<void> {
     const config = getConfig();
-    const poolsUrl = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
-    sor = new SOR(
+    const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
+    const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
+
+    sorManager = new SorManager(
       getProvider(config.chainId),
       new BigNumber(GAS_PRICE),
       MAX_POOLS,
       config.chainId,
-      poolsUrl
+      poolsUrlV1,
+      poolsUrlV2
     );
+
     console.time('[SOR] fetchPools');
-    await sor.fetchPools();
+    await sorManager.fetchPools();
     console.timeEnd('[SOR] fetchPools');
-    pools.value = sor.onChainCache.pools;
+    pools.value = sorManager.selectedPools.pools;
   }
 
   async function handleAmountChange(
@@ -78,8 +108,8 @@ export default function useSor(
     if (
       !tokenInAddress ||
       !tokenOutAddress ||
-      !sor ||
-      !sor.hasDataForPair(tokenInAddress, tokenOutAddress)
+      !sorManager ||
+      !sorManager.hasDataForPair(tokenInAddress, tokenOutAddress)
     ) {
       return;
     }
@@ -87,73 +117,100 @@ export default function useSor(
     exactIn.value = isExactIn;
     const tokenInDecimals = tokens.value[tokenInAddressInput.value].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value].decimals;
-    const tokenAmountRaw = new BigNumber(amount);
 
     if (isExactIn) {
-      const tokenInAmount = scale(tokenAmountRaw, tokenInDecimals);
-
-      console.time(
-        `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactIn`
+      const tokenInAmountNormalised = new BigNumber(amount); // Normalized value
+      const tokenInAmountScaled = scale(
+        tokenInAmountNormalised,
+        tokenInDecimals
       );
-      const [tradeSwaps, tradeAmount, spotPrice] = await sor.getSwaps(
+
+      console.log('[SOR Manager] swapExactIn');
+      const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
+        tokenInDecimals,
+        tokenOutDecimals,
         'swapExactIn',
-        tokenInAmount
-      );
-      console.timeEnd(
-        `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactIn`
+        tokenInAmountScaled,
+        tokenInDecimals,
+        true, // TODO use allowanceState.value.isUnlockedV1,
+        true // TODO use allowanceState.value.isUnlockedV2,
       );
 
-      swaps.value = tradeSwaps;
-
-      const tokenOutAmountRaw = scale(tradeAmount, -tokenOutDecimals);
+      sorReturn.value = swapReturn; // TO DO - is it needed?
+      const tokenOutAmountRaw = scale(
+        swapReturn.returnAmount,
+        -tokenOutDecimals
+      );
       tokenOutAmountInput.value = tokenOutAmountRaw.toFixed(
         6,
         BigNumber.ROUND_DOWN
       );
 
-      if (tradeSwaps.length === 0) {
+      if (!sorReturn.value.hasSwaps) {
         slippage.value = 0;
       } else {
-        const price = tokenInAmount.div(tradeAmount).times('1e18');
-        const slippageNumber = price.div(spotPrice).minus(1);
-        slippage.value = slippageNumber.isNegative()
+        const returnAmtNormalised = scale(
+          swapReturn.returnAmount,
+          -tokenOutDecimals
+        );
+        const effectivePrice = tokenInAmountNormalised.div(returnAmtNormalised);
+        const slippageCalc = effectivePrice
+          .div(swapReturn.marketSpNormalised)
+          .minus(1);
+
+        console.log(`EP: ${effectivePrice.toString()}`);
+        console.log(`SP: ${swapReturn.marketSpNormalised.toString()}`);
+        console.log(`Slippage: ${slippageCalc.toString()}`);
+
+        slippage.value = slippageCalc.isNegative()
           ? 0.00001
-          : slippageNumber.toNumber();
+          : slippageCalc.toNumber();
       }
     } else {
-      const tokenOutAmount = scale(tokenAmountRaw, tokenOutDecimals);
+      const tokenOutAmountNormalised = new BigNumber(amount);
+      const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
 
-      console.time(
-        `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactOut`
-      );
-
-      const [tradeSwaps, tradeAmount, spotPrice] = await sor.getSwaps(
+      console.log('[SOR Manager] swapExactOut');
+      const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
+        tokenInDecimals,
+        tokenOutDecimals,
         'swapExactOut',
-        tokenOutAmount
+        tokenOutAmount,
+        tokenOutDecimals,
+        true, // TODO use allowanceState.value.isUnlockedV1,
+        true // TODO use allowanceState.value.isUnlockedV2
       );
-      console.timeEnd(
-        `[SOR] getSwaps ${tokenInAddress} ${tokenOutAddress} exactOut`
-      );
-      swaps.value = tradeSwaps;
 
-      const tokenInAmountRaw = scale(tradeAmount, -tokenInDecimals);
-      tokenInAmountInput.value = tokenInAmountRaw.toFixed(
+      sorReturn.value = swapReturn; // TO DO - is it needed?
+
+      const tradeAmount: BigNumber = swapReturn.returnAmount;
+      const tokenInAmountNormalised = scale(tradeAmount, -tokenInDecimals);
+      tokenInAmountInput.value = tokenInAmountNormalised.toFixed(
         6,
-        BigNumber.ROUND_DOWN
+        BigNumber.ROUND_UP
       );
 
-      if (tradeSwaps.length === 0) {
+      if (!sorReturn.value.hasSwaps) {
         slippage.value = 0;
       } else {
-        const price = tradeAmount.div(tokenOutAmount).times('1e18');
-        const slippageNumber = price.div(spotPrice).minus(1);
-        slippage.value = slippageNumber.isNegative()
+        const effectivePrice = tokenInAmountNormalised.div(
+          tokenOutAmountNormalised
+        );
+        const slippageCalc = effectivePrice
+          .div(swapReturn.marketSpNormalised)
+          .minus(1);
+
+        console.log(`EP: ${effectivePrice.toString()}`);
+        console.log(`SP: ${swapReturn.marketSpNormalised.toString()}`);
+        console.log(`Slippage: ${slippageCalc.toString()}`);
+
+        slippage.value = slippageCalc.isNegative()
           ? 0.00001
-          : slippageNumber.toNumber();
+          : slippageCalc.toNumber();
       }
     }
   }
@@ -188,7 +245,7 @@ export default function useSor(
     const tokenInDecimals = tokens.value[tokenInAddress].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
     const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
-    const tokenInAmount = scale(tokenInAmountNumber, tokenInDecimals);
+    const tokenInAmountScaled = scale(tokenInAmountNumber, tokenInDecimals);
     const slippageBufferRate = parseFloat(store.state.app.slippage);
 
     if (exactIn.value) {
@@ -205,7 +262,7 @@ export default function useSor(
           swaps.value,
           tokenInAddress,
           tokenOutAddress,
-          tokenInAmount,
+          tokenInAmountScaled,
           minAmount
         );
         txListener(tx.hash);
@@ -214,7 +271,7 @@ export default function useSor(
         trading.value = false;
       }
     } else {
-      const tokenInAmountMax = tokenInAmount
+      const tokenInAmountMax = tokenInAmountScaled
         .times(1 + slippageBufferRate)
         .integerValue(BigNumber.ROUND_DOWN);
 
@@ -236,7 +293,7 @@ export default function useSor(
   }
 
   return {
-    sor,
+    sorManager,
     pools,
     initSor,
     handleAmountChange,

@@ -22,8 +22,9 @@ export default function useValidation(
     const tokenIn = tokens.value[tokenInAddress.value];
 
     if (
-      parseFloat(tokenInAmount.value) == 0 ||
-      tokenInAmount.value.trim() === ''
+      (parseFloat(tokenInAmount.value) == 0 ||
+        tokenInAmount.value.trim() === '') &&
+      parseFloat(tokenOutAmount.value) == 0
     )
       return 'EMPTY';
 
@@ -32,7 +33,9 @@ export default function useValidation(
 
     if (
       parseFloat(tokenOutAmount.value) == 0 ||
-      tokenOutAmount.value.trim() === ''
+      tokenOutAmount.value.trim() === '' ||
+      parseFloat(tokenInAmount.value) == 0 ||
+      tokenInAmount.value.trim() === ''
     )
       return 'INSUFFICIENT_LIQUIDITY';
 
