@@ -144,7 +144,7 @@
           type="submit"
           :label="`Withdraw ${total}`"
           loading-label="Confirming..."
-          color="gradient-reverse"
+          color="gradient"
           :disabled="!hasAmounts"
           :loading="loading"
           block
