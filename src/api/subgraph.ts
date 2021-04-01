@@ -1,3 +1,9 @@
+const BALANCER_SUBGRAPH_URL = {
+  1: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-beta',
+  17: 'http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2',
+  42: 'https://api.thegraph.com/subgraphs/name/destiner/balancer-kovan-v2'
+};
+
 interface PoolToken {
   id: string;
   address: string;
@@ -49,12 +55,6 @@ export interface PoolEvents {
 }
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;
-
-const BALANCER_SUBGRAPH_URL = {
-  1: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-beta',
-  17: 'http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2',
-  42: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2'
-};
 
 export async function getPools(chainId: number) {
   const query = `
