@@ -215,8 +215,7 @@ import {
   watch,
   onMounted,
   reactive,
-  toRefs,
-  PropType
+  toRefs
 } from 'vue';
 import { FormRef } from '@/types';
 import {

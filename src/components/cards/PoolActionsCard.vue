@@ -71,10 +71,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref } from 'vue';
 import InvestForm from '@/components/forms/InvestForm.vue';
 import WithdrawForm from '@/components/forms/WithdrawForm.vue';
-import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'PoolActionsCard',
@@ -96,14 +95,10 @@ export default defineComponent({
       withdraw = 'Withdraw'
     }
 
-    const store = useStore();
-
     const activeTab = ref(Tabs.invest);
     const investmentSuccess = ref(false);
     const withdrawalSuccess = ref(false);
     const txHash = ref('');
-
-    const allTokens = computed(() => store.getters.getTokens());
 
     function handleInvestment(txReceipt): void {
       investmentSuccess.value = true;
