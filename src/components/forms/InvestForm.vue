@@ -7,10 +7,20 @@
         name="investType"
       >
         <template v-slot:label>
-          No price impact
-          <span class="text-xs text-gray-500">
-            ({{ propMaxUSD }} max)
-          </span>
+            <span>
+              No price impact
+            </span>
+            <span class="text-xs text-gray-500">
+              ({{ propMaxUSD }} max)
+            </span>
+            <BalTooltip :width="250" :height="115" on-hover top>
+              <template v-slot:activator>
+                <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
+              </template>
+              <div class="p-4 text-sm text-gray-500">
+                No price impact is achieved by adding tokens in the same proportion to the weights of the pool composition.
+              </div>
+            </BalTooltip>
         </template>
       </BalRadioInput>
       <BalRadioInput
@@ -24,6 +34,15 @@
           <span class="text-xs text-gray-500">
             ({{ balanceMaxUSD }} max)
           </span>
+          <BalTooltip :width="250" :height="155" on-hover top>
+            <template v-slot:activator>
+              <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
+            </template>
+            <div class="p-4 text-sm text-gray-500">
+              Adding custom amounts causes the internal prices of the pool to change, as if you were swapping tokens.
+              The higher the price impact the more you'll spend in swap fees.
+            </div>
+          </BalTooltip>
         </template>
       </BalRadioInput>
     </div>
@@ -140,6 +159,15 @@
               size="xs"
               class="ml-1"
             />
+            <BalTooltip v-if="priceImpact < 0.01" :width="250" :height="155" on-hover top>
+              <template v-slot:activator>
+                <BalIcon name="info" size="xs" class="text-gray-400 -mb-px ml-2" />
+              </template>
+              <div class="p-4 text-sm">
+                Adding custom amounts causes the internal prices of the pool to change, as if you were swapping tokens.
+                The higher the price impact the more you'll spend in swap fees.
+              </div>
+            </BalTooltip>
           </div>
           <BalCheckboxInput
             v-if="priceImpact >= 0.01"
