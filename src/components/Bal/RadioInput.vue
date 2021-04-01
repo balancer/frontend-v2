@@ -8,8 +8,13 @@
       v-bind="$attrs"
       @change="$emit('update:modelValue', value)"
       :class="['bal-radio-input', inputClasses]"
+    />
+    <label
+      v-if="$slots.label || label"
+      :for="name"
+      :class="['bal-radio-label', labelClasses]"
+      @click="$emit('update:modelValue', value)"
     >
-    <label v-if="$slots.label || label" :for="name" :class="['bal-radio-label', labelClasses]" @click="$emit('update:modelValue', value)">
       <slot name="label">
         {{ label }}
       </slot>
@@ -38,8 +43,7 @@ export default defineComponent({
     color: {
       type: String,
       default: 'blue',
-      validator: (val: string): boolean =>
-        ['blue'].includes(val)
+      validator: (val: string): boolean => ['blue'].includes(val)
     }
   },
 
@@ -74,19 +78,19 @@ export default defineComponent({
       return {
         [sizeClasses.value]: true,
         [colorClasses.value]: true
-      }
-    })
+      };
+    });
 
     const labelClasses = computed(() => {
       return {
         [textSizeClass.value]: true
-      }
-    })
+      };
+    });
 
     return {
       inputClasses,
       labelClasses
-    }
+    };
   }
 });
 </script>
@@ -95,7 +99,7 @@ export default defineComponent({
 .bal-radio-input {
   @apply bg-white flex-shrink rounded-full cursor-pointer m-0;
   @apply border border-gray-200;
-  transition: all ease .25s;
+  transition: all ease 0.25s;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -111,12 +115,12 @@ export default defineComponent({
 }
 
 .bal-radio-input:checked {
-    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
-    border-color: transparent;
-    background-color: currentColor;
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+  border-color: transparent;
+  background-color: currentColor;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .bal-radio-label {

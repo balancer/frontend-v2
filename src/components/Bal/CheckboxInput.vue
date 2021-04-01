@@ -8,10 +8,14 @@
           :checked="modelValue"
           :class="['bal-checkbox-input', inputClasses]"
           @change="onChange"
-        >
+        />
       </div>
       <div class="relative ml-4 flex-col">
-        <label v-if="$slots.label || label" :for="name" :class="['bal-checkbox-label', labelClasses]">
+        <label
+          v-if="$slots.label || label"
+          :for="name"
+          :class="['bal-checkbox-label', labelClasses]"
+        >
           <slot name="label">
             {{ label }}
           </slot>
@@ -52,8 +56,7 @@ export default defineComponent({
     color: {
       type: String,
       default: 'blue',
-      validator: (val: string): boolean =>
-        ['blue'].includes(val)
+      validator: (val: string): boolean => ['blue'].includes(val)
     }
   },
 
@@ -111,14 +114,14 @@ export default defineComponent({
       return {
         [sizeClasses.value]: true,
         [colorClasses.value]: true
-      }
-    })
+      };
+    });
 
     const labelClasses = computed(() => {
       return {
         [textSizeClass.value]: true
-      }
-    })
+      };
+    });
 
     return {
       wrapperClasses,
@@ -128,7 +131,7 @@ export default defineComponent({
       hasError,
       errors,
       onChange
-    }
+    };
   }
 });
 </script>

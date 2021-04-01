@@ -8,9 +8,7 @@
       >
         <template v-slot:label>
           No price impact
-          <span class="text-xs text-gray-500">
-            ({{ propMaxUSD }} max)
-          </span>
+          <span class="text-xs text-gray-500"> ({{ propMaxUSD }} max) </span>
         </template>
       </BalRadioInput>
       <BalRadioInput
@@ -21,9 +19,7 @@
       >
         <template v-slot:label>
           Single token
-          <span class="text-xs text-gray-500">
-            (~{{ singleMaxUSD }} max)
-          </span>
+          <span class="text-xs text-gray-500"> (~{{ singleMaxUSD }} max) </span>
         </template>
       </BalRadioInput>
     </div>
@@ -31,7 +27,9 @@
     <template v-if="isProportional">
       <div class="p-4 border-t">
         <div class="border rounded-lg shadow-inner p-2">
-          <div class="flex items-center justify-between mb-3 text-sm text-gray-600">
+          <div
+            class="flex items-center justify-between mb-3 text-sm text-gray-600"
+          >
             <span>Amount to withdraw</span>
             <span>{{ propPercentage }}%</span>
           </div>
@@ -52,7 +50,11 @@
       </div>
 
       <div class="px-4 py-3 bg-gray-50 border-t border-b">
-        <div v-for="(token, i) in pool.tokens" :key="token" class="py-3 last:mb-0">
+        <div
+          v-for="(token, i) in pool.tokens"
+          :key="token"
+          class="py-3 last:mb-0"
+        >
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <Token :token="allTokens[token]" class="mr-4" />
@@ -163,7 +165,11 @@ import {
   toRefs
 } from 'vue';
 import { FormRef } from '@/types';
-import { isPositive, isLessThanOrEqualTo, isRequired } from '@/utils/validations';
+import {
+  isPositive,
+  isLessThanOrEqualTo,
+  isRequired
+} from '@/utils/validations';
 import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
@@ -235,14 +241,15 @@ export default defineComponent({
       const total = props.pool.tokens
         .map((token, i) => toFiat(data.propMax[i], token))
         .reduce((a, b) => a + b, 0);
-      
+
       return fNum(total, 'usd');
     });
 
     const singleMaxUSD = computed(() => {
-      const maxes = props.pool.tokens
-        .map((token, i) => toFiat(data.singleAssetMax[i], token))
-      
+      const maxes = props.pool.tokens.map((token, i) =>
+        toFiat(data.singleAssetMax[i], token)
+      );
+
       return fNum(Math.max(...maxes), 'usd');
     });
 
@@ -353,13 +360,12 @@ export default defineComponent({
     }
 
     function amountRules(index) {
-      if (!isAuthenticated.value || isProportional.value) return [isPositive()]
+      if (!isAuthenticated.value || isProportional.value) return [isPositive()];
       return [
         isPositive(),
         isLessThanOrEqualTo(data.singleAssetMax[index], 'Exceeds balance')
-      ]
+      ];
     }
-
 
     function connectWallet() {
       store.commit('setAccountModal', true);

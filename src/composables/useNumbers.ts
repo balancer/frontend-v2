@@ -14,13 +14,18 @@ enum PresetFormats {
 export default function useNumbers() {
   const store = useStore();
 
-  function fNum(number: number, preset: Preset | null = 'default', format = '') {
+  function fNum(
+    number: number,
+    preset: Preset | null = 'default',
+    format = ''
+  ) {
     if (format) return numeral(number).format(format);
     return numeral(number).format(PresetFormats[preset || 'default']);
   }
 
   function toFiat(amount: number, tokenAddress: string, fiat: Fiat = 'usd') {
-    const rate = store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;
+    const rate =
+      store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;
     return amount * rate;
   }
 

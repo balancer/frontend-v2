@@ -42,7 +42,7 @@ export default defineComponent({
 
     const containerClasses = computed(() => {
       return {
-        'px-4': !props.noPad,
+        'px-4': !props.noPad
       };
     });
 
@@ -58,7 +58,7 @@ export default defineComponent({
       onClick,
       containerClasses,
       stateClasses
-    }
+    };
   }
 });
 </script>
