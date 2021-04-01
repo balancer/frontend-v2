@@ -48,7 +48,7 @@
               {{ allTokens[token].symbol }}
             </span>
             <span class="leading-none text-xs mt-1 text-gray-500">
-              {{ formatNum(tokenWeights[i]) }}%
+              {{ fNum(tokenWeights[i]) }}%
             </span>
           </div>
         </div>
@@ -81,7 +81,7 @@
       </template>
       <template v-slot:info>
         <div :class="['flex items-center', priceImpactClasses]">
-          <span>{{ formatNum(priceImpact, '0.00%') }}</span>
+          <span>{{ fNum(priceImpact, 'usd') }}</span>
           <BalIcon
             v-if="priceImpact >= 0.01"
             name="alert-triangle"
@@ -159,7 +159,7 @@ export default defineComponent({
     const store = useStore();
     const notify = useBlocknative();
     const { isAuthenticated } = useAuth();
-    const { format: formatNum } = useNumbers();
+    const { fNum } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
 
     const poolExchange = new PoolExchange(
@@ -209,8 +209,8 @@ export default defineComponent({
         })
         .reduce((a, b) => a + b, 0);
 
-      if (total < 0) return formatNum(0, '$0,0.[00]');
-      return formatNum(total, '$0,0.[00]');
+      if (total < 0) return fNum(0, 'usd');
+      return fNum(total, 'usd');
     });
 
     const propPercentage = computed(() => {
@@ -448,7 +448,7 @@ export default defineComponent({
       hasAmounts,
       tokenWeights,
       isPositive,
-      formatNum,
+      fNum,
       isAuthenticated,
       connectWallet,
       bptBalance,
