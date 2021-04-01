@@ -1,7 +1,7 @@
 <template>
   <BalCard noPad>
-    <BalTabs v-model="activeTab" :tabs="Object.values(Tabs)" class="pt-4 pb-2" />
-    <div class="p-4">
+    <BalTabs v-model="activeTab" :tabs="Object.values(Tabs)" class="pt-4" />
+    <div>
       <template v-if="activeTab === Tabs.invest">
         <div v-if="investmentSuccess">
           <h5>Your investment has settled</h5>
@@ -71,14 +71,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import InvestForm from '@/components/forms/InvestForm.vue';
 import WithdrawForm from '@/components/forms/WithdrawForm.vue';
-
-enum Tabs {
-  invest = "Invest",
-  withdraw = 'Withdraw'
-}
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'PoolActionsCard',
@@ -95,10 +91,19 @@ export default defineComponent({
   },
 
   setup(_, { emit }) {
+    enum Tabs {
+      invest = 'Invest',
+      withdraw = 'Withdraw'
+    }
+
+    const store = useStore();
+
     const activeTab = ref(Tabs.invest);
     const investmentSuccess = ref(false);
     const withdrawalSuccess = ref(false);
     const txHash = ref('');
+
+    const allTokens = computed(() => store.getters.getTokens());
 
     function handleInvestment(txReceipt): void {
       investmentSuccess.value = true;
