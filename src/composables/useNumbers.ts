@@ -7,7 +7,7 @@ type Preset = 'default' | 'token' | 'usd' | 'percent';
 enum PresetFormats {
   default = '(0.[0]a)',
   token = '0,0.[0000]',
-  usd = '$0,0.[00]',
+  usd = '$0,0.00',
   percent = '0.00%'
 }
 
