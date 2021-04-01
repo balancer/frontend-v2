@@ -64,6 +64,95 @@ export function exactTokensInForBPTOut(
   return bptTotalSupply.mulDown(invariantRatio.sub(FixedPoint.ONE));
 }
 
+export function bptInForExactTokensOut(
+  balances: FpBigNumber[],
+  normalizedWeights: FpBigNumber[],
+  amountsOut: FpBigNumber[],
+  bptTotalSupply: FpBigNumber,
+  swapFee
+): FpBigNumber {
+  // BPT in, so we round up overall.
+
+  // First loop to calculate the weighted balance ratio
+  const tokenBalanceRatiosWithoutFee = new Array(amountsOut.length);
+  let weightedBalanceRatio = bnum(0);
+  for (let i = 0; i < balances.length; i++) {
+    tokenBalanceRatiosWithoutFee[i] = balances[i]
+      .sub(amountsOut[i])
+      .divUp(balances[i]);
+    weightedBalanceRatio = weightedBalanceRatio.add(
+      tokenBalanceRatiosWithoutFee[i].mulUp(normalizedWeights[i])
+    );
+  }
+
+  //Second loop to calculate new amounts in taking into account the fee on the % excess
+  let invariantRatio = FixedPoint.ONE;
+  for (let i = 0; i < balances.length; i++) {
+    let tokenBalancePercentageExcess;
+    // For each ratioSansFee, compare with the total weighted ratio (weightedBalanceRatio) and
+    // decrease the fee from what goes above it
+    if (weightedBalanceRatio <= tokenBalanceRatiosWithoutFee[i]) {
+      tokenBalancePercentageExcess = bnum(0);
+    } else {
+      tokenBalancePercentageExcess = weightedBalanceRatio
+        .sub(tokenBalanceRatiosWithoutFee[i])
+        .divUp(tokenBalanceRatiosWithoutFee[i].complement());
+    }
+
+    const swapFeeExcess = swapFee.mulUp(tokenBalancePercentageExcess);
+
+    const amountOutBeforeFee = amountsOut[i].divUp(swapFeeExcess.complement());
+
+    const tokenBalanceRatio = amountOutBeforeFee
+      .divUp(balances[i])
+      .complement();
+
+    invariantRatio = invariantRatio.mulDown(
+      FixedPoint.powDown(tokenBalanceRatio, normalizedWeights[i])
+    );
+  }
+
+  return bptTotalSupply.mulUp(invariantRatio.complement());
+}
+
+export function exactBPTInForTokenOut(
+  tokenBalance: FpBigNumber,
+  tokenNormalizedWeight: FpBigNumber,
+  bptAmountIn: FpBigNumber,
+  bptTotalSupply: FpBigNumber,
+  swapFee: FpBigNumber
+): FpBigNumber {
+  /*****************************************************************************************
+  // exactBPTInForTokenOut                                                                //
+  // a = tokenAmountOut                                                                   //
+  // b = tokenBalance                /      /    totalBPT - bptIn       \    (1 / w)  \   //
+  // bptIn = bptAmountIn    a = b * |  1 - | --------------------------  | ^           |  //
+  // bpt = totalBPT                  \      \       totalBPT            /             /   //
+  // w = tokenWeight                                                                      //
+  *****************************************************************************************/
+
+  // Token out, so we round down overall.
+
+  // Calculate the factor by which the invariant will decrease after burning BPTAmountIn
+  const invariantRatio = bptTotalSupply.sub(bptAmountIn).divUp(bptTotalSupply);
+
+  // Calculate by how much the token balance has to increase to cause invariantRatio
+  const tokenBalanceRatio = FixedPoint.powUp(
+    invariantRatio,
+    FixedPoint.ONE.divUp(tokenNormalizedWeight)
+  );
+  const tokenBalancePercentageExcess = tokenNormalizedWeight.complement();
+
+  //Because of rounding up, tokenBalanceRatio can be greater than one
+  const amountOutBeforeFee = tokenBalance.mulDown(
+    tokenBalanceRatio.complement()
+  );
+
+  const swapFeeExcess = swapFee.mulUp(tokenBalancePercentageExcess);
+
+  return amountOutBeforeFee.mulDown(swapFeeExcess.complement());
+}
+
 // Get BPT amount for token amounts with zero-price impact
 // This function is the same regardless of whether we are considering
 // an Add or Remove liquidity operation: The spot prices of BPT in tokens

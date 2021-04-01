@@ -1,17 +1,7 @@
 <template>
-  <BalCard :title="'Activity'">
-    <div class="flex">
-      <div
-        v-for="filter in filters"
-        :key="filter.id"
-        class="mr-2 cursor-pointer"
-        :class="{ 'font-bold': filter.id === activeFilter }"
-        @click="selectFilter(filter.id)"
-      >
-        {{ filter.name }}
-      </div>
-    </div>
-    <div class="mt-2 overflow-x-auto whitespace-nowrap border rounded-lg">
+  <div v-if="actions.length > 0">
+    <h4>Your transactions in this pool</h4>
+    <div class="mt-3 overflow-x-auto whitespace-nowrap border rounded-lg">
       <table class="min-w-full text-black bg-white dark:bg-gray-900">
         <tr class="bg-gray-50 dark:bg-gray-700">
           <th class="sticky top-0 p-2 pl-5 py-5 text-left">Action</th>
@@ -41,15 +31,14 @@
         </tr>
       </table>
     </div>
-  </BalCard>
+  </div>
 </template>
 
 <script lang="ts">
-import { PropType, computed, ref } from 'vue';
+import { PropType, computed } from 'vue';
 import { useStore } from 'vuex';
 
-import useNumbers from '@/composables/useNumbers';
-import { PoolSwap, PoolJoin, PoolExit, PoolEvents } from '@/api/subgraph';
+import { PoolJoin, PoolExit, PoolEvents } from '@/api/subgraph';
 
 interface Action {
   label: string;
@@ -58,27 +47,6 @@ interface Action {
   timestamp: number;
   tx: string;
 }
-
-type Filter = 'all' | 'swaps' | 'joins' | 'exits';
-
-const filters = [
-  {
-    id: 'all',
-    name: 'All'
-  },
-  {
-    id: 'swaps',
-    name: 'Swaps'
-  },
-  {
-    id: 'joins',
-    name: 'Investments'
-  },
-  {
-    id: 'exits',
-    name: 'Withdrawals'
-  }
-];
 
 export default {
   props: {
@@ -93,29 +61,13 @@ export default {
   },
   setup(props) {
     const store = useStore();
-    const { format: formatNum } = useNumbers();
 
     const allTokens = computed(() => store.getters.getTokens());
-
-    const activeFilter = ref<Filter>('all');
-
-    function selectFilter(filter: Filter) {
-      activeFilter.value = filter;
-    }
 
     const actions = computed<Action[]>(() => {
       if (!Object.keys(props.events)) {
         return [];
       }
-      const swapActions = props.events.swaps.map(swap => {
-        return {
-          label: 'Swap',
-          value: getSwapValue(swap),
-          details: getSwapDetails(swap),
-          timestamp: swap.timestamp,
-          tx: swap.tx
-        };
-      });
       const joinActions = props.events.joins.map(join => {
         return {
           label: 'Investment',
@@ -134,14 +86,7 @@ export default {
           tx: exit.tx
         };
       });
-      const actions =
-        activeFilter.value === 'swaps'
-          ? swapActions
-          : activeFilter.value === 'joins'
-          ? joinActions
-          : activeFilter.value === 'exits'
-          ? exitActions
-          : [...swapActions, ...joinActions, ...exitActions];
+      const actions = [...joinActions, ...exitActions];
       actions.sort((a, b) => b.timestamp - a.timestamp);
       return actions;
     });
@@ -153,28 +98,6 @@ export default {
         month: 'long'
       };
       return date.toLocaleString('en-US', dateOptions);
-    }
-
-    function getSwapValue(event: PoolSwap) {
-      const tokenInPrice = store.state.market.prices[event.tokenIn];
-      const tokenOutPrice = store.state.market.prices[event.tokenOut];
-      if (tokenInPrice) {
-        const tokenInAmount = parseFloat(event.tokenAmountIn);
-        return tokenInPrice.price * tokenInAmount;
-      }
-      if (tokenOutPrice) {
-        const tokenOutAmount = parseFloat(event.tokenAmountOut);
-        return tokenOutPrice.price * tokenOutAmount;
-      }
-      return 0;
-    }
-
-    function getSwapDetails(event: PoolSwap) {
-      const amountIn = parseFloat(event.tokenAmountIn);
-      const amountOut = parseFloat(event.tokenAmountOut);
-      const inLabel = `${formatNum(amountIn, '0.0000')} ${event.tokenInSym}`;
-      const outLabel = `${formatNum(amountOut, '0.0000')} ${event.tokenOutSym}`;
-      return `+${inLabel}, -${outLabel}`;
     }
 
     function getJoinExitValue(event: PoolJoin | PoolExit) {
@@ -202,12 +125,7 @@ export default {
     }
 
     return {
-      filters,
-      activeFilter,
-      selectFilter,
-
       actions,
-
       formatDate
     };
   }

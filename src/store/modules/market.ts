@@ -28,9 +28,14 @@ const actions = {
 
 const mutations = {
   MARKET_SET(_state, payload) {
-    Object.keys(payload).forEach(key => {
-      _state[key] = payload[key];
-    });
+    const { prices, loading } = payload;
+    _state.loading = loading;
+    if (prices) {
+      for (const asset in prices) {
+        const price = prices[asset];
+        _state.prices[asset] = price;
+      }
+    }
   }
 };
 

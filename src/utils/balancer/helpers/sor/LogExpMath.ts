@@ -20,12 +20,12 @@ import { BigNumber } from './bignumber';
 const DECIMALS = new BigNumber(10 ** 18);
 const DOUBLE_DECIMALS = DECIMALS.times(DECIMALS);
 const PRECISION = new BigNumber(10 ** 20);
-const DOUBLE_PRECISION = PRECISION.times(PRECISION);
+// const DOUBLE_PRECISION = PRECISION.times(PRECISION);
 const PRECISION_LOG_UNDER_BOUND = DECIMALS.minus(10 ** 17);
 const PRECISION_LOG_UPPER_BOUND = DECIMALS.plus(10 ** 17);
-const EXPONENT_LB = new BigNumber(-41446531673892822312);
-const EXPONENT_UB = new BigNumber(130700829182905140221);
-const MILD_EXPONENT_BOUND = new BigNumber(2 ** 254).idiv(PRECISION);
+// const EXPONENT_LB = new BigNumber(-41446531673892822312);
+// const EXPONENT_UB = new BigNumber(130700829182905140221);
+// const MILD_EXPONENT_BOUND = new BigNumber(2 ** 254).idiv(PRECISION);
 
 const x0 = new BigNumber(128000000000000000000); //2ˆ7
 const a0 = new BigNumber(

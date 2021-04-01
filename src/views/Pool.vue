@@ -1,29 +1,8 @@
 <template>
-  <div class="container mx-auto mt-4">
-    <div class="pool-nav border-b pb-2 mb-4">
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'home' }"
-        color="gray"
-        size="sm"
-        flat
-      >
-        <BalIcon name="arrow-left" size="sm" />
-        <span class="ml-2">Home</span>
-      </BalBtn>
+  <div class="container mx-auto mt-4 px-4 lg:px-0">
+    <PoolNav class="mt-7 lg:mt-14 mb-8 lg:mb-12" />
 
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'portfolio' }"
-        color="gray"
-        size="sm"
-        flat
-      >
-        <span class="ml-2">My Portfolio</span>
-      </BalBtn>
-    </div>
-
-    <div v-if="!loading" class="mb-10">
+    <div v-if="!loading" class="lg:mb-10">
       <h3 class="font-bold mb-2">
         {{ header }}
       </h3>
@@ -33,24 +12,20 @@
       </div>
     </div>
 
-    <div class="px-8 lg:px-4">
+    <div class="px-4">
       <div class="flex flex-wrap -mx-8">
-        <div class="order-2 lg:order-1 w-full lg:w-2/3 px-4">
-          <div v-if="!loading && !registry.loading">
+        <div class="order-2 lg:order-1 w-full lg:w-2/3">
+          <div class="px-4" v-if="!loading && !registry.loading">
+            <PoolChart class="mb-10" :prices="prices" :snapshots="snapshots" />
             <PoolBalancesCard
+              class="mb-10"
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
             />
-            <PoolChart
-              class="mt-10"
-              :tokens="pool.tokens"
-              :prices="prices"
-              :snapshots="snapshots"
-            />
-            <TableEvents class="mt-10" :tokens="pool.tokens" :events="events" />
+            <TableEvents :tokens="pool.tokens" :events="events" />
           </div>
         </div>
-        <div class="order-1 lg:order-2 w-full lg:w-1/3 px-4 mt-8 lg:mt-0">
+        <div class="order-1 lg:order-2 w-full lg:w-1/3 mt-8 lg:mt-0 lg:px-4">
           <PoolActionsCard
             v-if="pool && !loading && !registry.loading"
             class="sticky top-24"
@@ -65,9 +40,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { getPoolSnapshots } from '@/utils/balancer/subgraph';
 import { getTokensHistoricalPrice } from '@/api/coingecko';
-import { getPoolEvents } from '@/api/subgraph';
+import { getUserPoolEvents, getPoolSnapshots } from '@/api/subgraph';
 import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 
@@ -148,7 +122,10 @@ export default {
 
     async loadEvents() {
       const network = this.web3.config.key;
-      this.events = await getPoolEvents(network, this.id);
+      const account = this.web3.account;
+      if (account) {
+        this.events = await getUserPoolEvents(network, this.id, account);
+      }
     },
 
     async loadChartData(days) {

@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { Web3Provider, Provider } from '@ethersproject/providers';
+import { Web3Provider } from '@ethersproject/providers';
 
 import { logFailedTx } from '@/utils/logging';
 

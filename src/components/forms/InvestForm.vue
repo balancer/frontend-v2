@@ -133,8 +133,8 @@ import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 import useNumbers from '@/composables/useNumbers';
 import useBlocknative from '@/composables/useBlocknative';
-import PoolExchange from '@/services/pool/Exchange';
-import PoolCalculator from '@/services/pool/Calculator';
+import PoolExchange from '@/services/pool/exchange';
+import PoolCalculator from '@/services/pool/calculator';
 import { formatUnits } from '@ethersproject/units';
 import { bnum } from '@/utils';
 

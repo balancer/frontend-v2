@@ -184,43 +184,6 @@ export async function getPoolShares(network: string, address: string) {
   return result?.poolShares;
 }
 
-export async function getPoolSnapshots(
-  network: string,
-  id: string,
-  days: number
-) {
-  const query = {};
-  const currentTs = getCurrentTs();
-  const dayTs = currentTs - (currentTs % (60 * 60 * 24));
-  for (let i = 0; i < days; i++) {
-    const ts = dayTs - i * (60 * 60 * 24);
-    query[`_${ts}`] = {
-      __aliasFor: 'poolSnapshot',
-      __args: {
-        id: `${id}-${ts}`
-      },
-      amounts: true,
-      totalShares: true
-    };
-  }
-  const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
-  const snapshots = Object.fromEntries(
-    Object.entries(result)
-      .map(entry => {
-        // return entry;
-        const [id, data] = entry;
-        const timestamp = parseInt(id.substr(1));
-        if (!data) {
-          return [timestamp, null];
-        }
-        const { amounts, totalShares } = data as any;
-        return [timestamp * 1000, { amounts, totalShares }];
-      })
-      .filter(entry => !!entry[1])
-  );
-  return snapshots;
-}
-
 export async function getPoolSharesChart(
   network: string,
   currentBlockNumber: number,

@@ -1,4 +1,4 @@
-import PoolExchange from '../Exchange';
+import PoolExchange from '..';
 import { encodeExitStablePool } from '@/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
@@ -22,14 +22,20 @@ export default class ExitParams {
     account: string,
     amountsOut: string[],
     bptIn: string,
-    exitTokenIndex: number | null
+    exitTokenIndex: number | null,
+    exactOut: boolean
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
     const parsedBptIn = parseUnits(
       bptIn,
       this.exchange.tokens[this.exchange.pool.address].decimals
     ).toString();
-    const txData = this.txData(parsedAmountsOut, parsedBptIn, exitTokenIndex);
+    const txData = this.txData(
+      parsedAmountsOut,
+      parsedBptIn,
+      exitTokenIndex,
+      exactOut
+    );
 
     return [
       this.exchange.pool.id,
@@ -51,7 +57,8 @@ export default class ExitParams {
   private txData(
     amountsOut: BigNumberish[],
     bptIn: BigNumberish,
-    exitTokenIndex: number | null
+    exitTokenIndex: number | null,
+    exactOut: boolean
   ): string {
     const isSingleAssetOut = exitTokenIndex !== null;
 
@@ -67,11 +74,16 @@ export default class ExitParams {
           bptAmountIn: bptIn,
           exitTokenIndex
         });
-      } else {
+      } else if (exactOut) {
         return this.dataEncodeFn({
           kind: 'BPTInForExactTokensOut',
           amountsOut,
           maxBPTAmountIn: bptIn
+        });
+      } else {
+        return this.dataEncodeFn({
+          kind: 'ExactBPTInForAllTokensOut',
+          bptAmountIn: bptIn
         });
       }
     }
