@@ -4,10 +4,12 @@ const BALANCER_SUBGRAPH_URL = {
   42: 'https://api.thegraph.com/subgraphs/name/destiner/balancer-kovan-v2'
 };
 
+type PoolType = 'Weighted' | 'Stable';
+
 interface PoolToken {
-  id: string;
   address: string;
   balance: string;
+  weight: string;
 }
 
 interface PoolSnapshot {
@@ -17,13 +19,10 @@ interface PoolSnapshot {
 
 export interface Pool {
   id: string;
-  strategyType: number;
+  poolType: PoolType;
   swapFee: string;
-  totalWeight: string;
   tokensList: string[];
   tokens: PoolToken[];
-  weights: string[];
-  amp: string;
 }
 
 export interface PoolSwap {
@@ -61,17 +60,14 @@ export async function getPools(chainId: number) {
     query {
       pools(first: 1000) {
         id
-        strategyType
+        poolType
         swapFee
-        totalWeight
         tokensList
         tokens {
-          id
           address
           balance
+          weight
         }
-        weights
-        amp
       }
     }
   `;
