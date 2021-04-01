@@ -1,5 +1,5 @@
 <template>
-  <label :for="name" class="inline-flex items-center mt-3">
+  <div class="inline-flex items-center">
     <input
       type="radio"
       :value="value"
@@ -9,10 +9,12 @@
       @change="$emit('update:modelValue', value)"
       :class="['bal-radio-input', inputClasses]"
     >
-    <slot name="label" v-if="$slots.label || label">
-      <span :class="['bal-radio-label', labelClasses]">{{ label }}</span>
-    </slot>
-  </label>
+    <label v-if="$slots.label || label" :for="name" :class="['bal-radio-label', labelClasses]">
+      <slot name="label">
+        {{ label }}
+      </slot>
+    </label>
+  </div>
 </template>
 
 <script lang="ts">
@@ -49,7 +51,7 @@ export default defineComponent({
         case 'lg':
           return 'w-6 h-6';
         default:
-          return 'w-5 h-5';
+          return 'w-4 h-4';
       }
     });
 
@@ -91,8 +93,9 @@ export default defineComponent({
 
 <style>
 .bal-radio-input {
-  @apply bg-white flex-shrink rounded-full cursor-pointer;
+  @apply bg-white flex-shrink rounded-full cursor-pointer m-0;
   @apply border border-gray-200;
+  transition: all ease .25s;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
