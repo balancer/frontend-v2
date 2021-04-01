@@ -56,8 +56,9 @@ export default defineComponent({
 
     const dotStyle = computed(() => {
       return {
-        background: colors.gray['900'],
-        borderColor: 'transparent',
+        backgroundColor: colors.blue['500'],
+        borderColor: colors.blue['500'],
+        backgroundImage: `radial-gradient(circle at center, ${colors.pink['500']} 0, ${colors.pink['50']} 40%, ${colors.blue['500']} 100%)`
       };
     });
 
