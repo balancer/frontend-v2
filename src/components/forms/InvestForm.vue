@@ -1,119 +1,167 @@
 <template>
   <BalForm ref="investForm" @on-submit="submit">
-    <div class="flex flex-wrap items-end w-full mb-6">
-      <div class="w-full xl:w-1/2">
-        <BalSelectInput
-          name="investType"
-          label="Investment type"
-          v-model="investType"
-          :options="['Proportional', 'Custom']"
-          no-margin
-        />
-      </div>
-      <div v-if="isProportional" class="ml-0 mt-4 xl:ml-4 xl:mt-0 flex-1">
-        <BalRangeInput
-          class="w-full"
-          v-model="range"
-          :max="1000"
-          :interval="1"
-          :min="0"
-          :right-label="`${propPercentage}%`"
-          tooltip="none"
-        />
-      </div>
+    <div class="flex flex-col p-4">
+      <BalRadioInput
+        v-model="investType"
+        :value="FormTypes.proportional"
+        name="investType"
+      >
+        <template v-slot:label>
+          No price impact
+          <span class="text-xs text-gray-500">
+            ({{ propMaxUSD }} max)
+          </span>
+        </template>
+      </BalRadioInput>
+      <BalRadioInput
+        v-model="investType"
+        :value="FormTypes.custom"
+        name="investType"
+        class="mt-3"
+      >
+        <template v-slot:label>
+          Custom amounts
+          <span class="text-xs text-gray-500">
+            ({{ balanceMaxUSD }} max)
+          </span>
+        </template>
+      </BalRadioInput>
     </div>
 
-    <BalTextInput
-      v-for="(token, i) in pool.tokens"
-      :key="token"
-      :name="token"
-      v-model="amounts[i]"
-      :rules="amountRules(i)"
-      type="number"
-      min="0"
-      step="any"
-      placeholder="0"
-      :disabled="loading || isProportional"
-      validate-on="input"
-      prepend-border
-    >
-      <template v-slot:prepend>
-        <div class="flex items-center w-24">
-          <Token :token="allTokens[token]" />
-          <div class="flex flex-col ml-3">
-            <span class="font-medium text-sm leading-none w-14 truncate">
-              {{ allTokens[token].symbol }}
+    <template v-if="isProportional">
+      <div class="p-4 border-t">
+        <div class="border rounded-lg shadow-inner p-2">
+          <div class="flex items-center justify-between mb-3 text-sm text-gray-600">
+            <span>Amount to invest</span>
+            <span>{{ propPercentage }}%</span>
+          </div>
+          <div class="flex items-end">
+            <span class="mr-2 text-lg font-medium w-1/2">
+              {{ total }}
             </span>
-            <span class="leading-none text-xs mt-1 text-gray-500">
-              {{ formatNum(tokenWeights[i]) }}%
-            </span>
+            <BalRangeInput
+              class="w-1/2"
+              v-model="range"
+              :max="1000"
+              :interval="1"
+              :min="0"
+              tooltip="none"
+            />
           </div>
         </div>
-      </template>
-      <template v-if="!isProportional" v-slot:info>
-        <div class="cursor-pointer" @click="amounts[i] = tokenBalance(i)">
-          {{ infoLabel(i) }}
-        </div>
-      </template>
-    </BalTextInput>
+      </div>
 
-    <BalTextInput
-      name="total"
-      v-model="total"
-      placeholder="$0"
-      :disabled="true"
-      prepend-border
-    >
-      <template v-slot:prepend>
-        <div class="w-24 flex flex-col">
-          <div class="font-medium text-sm leading-none">
-            Total
-          </div>
-          <div :class="['leading-none text-xs mt-1', priceImpactClasses]">
-            Price impact
+      <div class="px-4 py-3 bg-gray-50 border-t border-b">
+        <div v-for="(token, i) in pool.tokens" :key="token" class="py-3 last:mb-0">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <Token :token="allTokens[token]" class="mr-4" />
+              <div class="flex flex-col leading-none">
+                <span>
+                  {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
+                </span>
+                <span class="text-xs text-gray-400">
+                  {{ balanceLabel(i) }} balance
+                </span>
+              </div>
+            </div>
+            <div class="flex flex-col leading-none text-right">
+              <span>
+                {{ fNum(amountUSD(i), 'usd') }}
+              </span>
+              <span class="text-xs text-gray-400">
+                {{ fNum(tokenWeights[i]) }}%
+              </span>
+            </div>
           </div>
         </div>
-      </template>
-      <template v-slot:info>
-        <div :class="['flex items-center', priceImpactClasses]">
-          <span>{{ formatNum(priceImpact, '0.00%') }}</span>
-          <BalIcon
-            v-if="priceImpact >= 0.01"
-            name="alert-triangle"
-            size="xs"
-            class="ml-1"
-          />
-        </div>
-      </template>
-    </BalTextInput>
-
-    <BalBtn
-      v-if="!isAuthenticated"
-      label="Connect wallet"
-      block
-      @click.prevent="connectWallet"
-    />
-    <template v-else>
-      <BalBtn
-        v-if="requireApproval"
-        label="Allow"
-        :loading="approving"
-        loading-label="Allowing..."
-        :disabled="!hasAmounts"
-        block
-        @click.prevent="approveAllowances"
-      />
-      <BalBtn
-        v-else
-        type="submit"
-        label="Invest"
-        loading-label="Confirming..."
-        color="gradient"
-        :disabled="!hasAmounts"
-        :loading="loading"
-        block
-      />
+      </div>
     </template>
+
+    <div v-else class="px-4 pt-6 bg-gray-50 border-t border-b">
+      <BalTextInput
+        v-for="(token, i) in pool.tokens"
+        :key="token"
+        :name="token"
+        v-model="amounts[i]"
+        :rules="amountRules(i)"
+        type="number"
+        min="0"
+        step="any"
+        placeholder="0"
+        :disabled="loading"
+        validate-on="input"
+        prepend-border
+      >
+        <template v-slot:prepend>
+          <div class="flex items-center w-24">
+            <Token :token="allTokens[token]" />
+            <div class="flex flex-col ml-3">
+              <span class="font-medium text-sm leading-none w-14 truncate">
+                {{ allTokens[token].symbol }}
+              </span>
+              <span class="leading-none text-xs mt-1 text-gray-500">
+                {{ fNum(tokenWeights[i]) }}%
+              </span>
+            </div>
+          </div>
+        </template>
+        <template v-slot:info>
+          <div class="cursor-pointer" @click="amounts[i] = tokenBalance(i)">
+            {{ balanceLabel(i) }} max
+          </div>
+        </template>
+      </BalTextInput>
+    </div>
+
+    <div class="p-4">
+      <BalBtn
+        v-if="!isAuthenticated"
+        label="Connect wallet"
+        block
+        @click.prevent="connectWallet"
+      />
+      <template v-else>
+        <BalBtn
+          v-if="requireApproval"
+          label="Allow"
+          :loading="approving"
+          loading-label="Allowing..."
+          :disabled="!hasAmounts"
+          block
+          @click.prevent="approveAllowances"
+        />
+        <template v-else>
+          <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
+            <span>Price impact: {{ fNum(priceImpact, 'percent') }}</span>
+            <BalIcon
+              v-if="priceImpact >= 0.01"
+              name="alert-triangle"
+              size="xs"
+              class="ml-1"
+            />
+          </div>
+          <BalCheckboxInput
+            v-if="priceImpact >= 0.01"
+            v-model="highPiAccepted"
+            :rules="[isRequired()]"
+            name="highPiAccepted"
+            class="text-gray-500 mb-8"
+            size="sm"
+            label="I accept the high price impact from adding custom token amounts, moving the market price based on the depth of the market."
+          />
+          <BalBtn
+            type="submit"
+            :label="`Invest ${total}`"
+            loading-label="Confirming..."
+            color="gradient"
+            :disabled="!hasAmounts"
+            :loading="loading"
+            block
+          />
+        </template>
+      </template>
+    </div>
   </BalForm>
 </template>
 
@@ -124,10 +172,11 @@ import {
   watch,
   onMounted,
   reactive,
-  toRefs
+  toRefs,
+  PropType
 } from 'vue';
 import { FormRef } from '@/types';
-import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
+import { isPositive, isLessThanOrEqualTo, isRequired } from '@/utils/validations';
 import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
@@ -138,30 +187,37 @@ import PoolCalculator from '@/services/pool/calculator';
 import { formatUnits } from '@ethersproject/units';
 import { bnum } from '@/utils';
 
+export enum FormTypes {
+  proportional = 'proportional',
+  custom = 'custom'
+}
+
 export default defineComponent({
   name: 'InvestForm',
 
   emits: ['success'],
 
   props: {
-    pool: { type: Object, required: true }
+    pool: { type: Object, required: true },
   },
 
   setup(props, { emit }) {
     const data = reactive({
       investForm: {} as FormRef,
+      investType: FormTypes.proportional as FormTypes,
       loading: false,
       amounts: [] as string[],
+      propMax: [] as string[],
       propToken: 0,
-      investType: 'Proportional' as 'Proportional' | 'Custom',
-      range: 1000
+      range: 1000,
+      highPiAccepted: false
     });
 
     // COMPOSABLES
     const store = useStore();
     const notify = useBlocknative();
     const { isAuthenticated } = useAuth();
-    const { format: formatNum } = useNumbers();
+    const { fNum, toFiat } = useNumbers();
 
     const {
       requiredAllowances,
@@ -203,23 +259,18 @@ export default defineComponent({
         .reduce((a, b) => a + b, 0);
       return balanceSum > 0;
     });
-
+    
     const hasZeroBalance = computed(() => {
       return balances.value.includes('0');
     });
 
     const total = computed(() => {
       const total = props.pool.tokens
-        .map((token, i) => {
-          return (
-            (parseFloat(fullAmounts.value[i]) || 0) *
-              store.state.market.prices[token.toLowerCase()]?.price || 0
-          );
-        })
+        .map((_, i) => amountUSD(i))
         .reduce((a, b) => a + b, 0);
 
-      if (total < 0) return formatNum(0, '$0,0.[00]');
-      return formatNum(total, '$0,0.[00]');
+      if (total < 0) return fNum(0, 'usd');
+      return fNum(total, 'usd');
     });
 
     const requireApproval = computed(() => {
@@ -230,7 +281,7 @@ export default defineComponent({
     });
 
     const isProportional = computed(() => {
-      return data.investType === 'Proportional';
+      return data.investType === FormTypes.proportional;
     });
 
     const propPercentage = computed(() => {
@@ -245,6 +296,22 @@ export default defineComponent({
       return props.pool.tokens.map((_, i) => {
         return data.amounts[i] || '0';
       });
+    });
+
+    const propMaxUSD = computed(() => {
+      const total = props.pool.tokens
+        .map((token, i) => toFiat(data.propMax[i], token))
+        .reduce((a, b) => a + b, 0);
+      
+      return fNum(total, 'usd');
+    });
+
+    const balanceMaxUSD = computed(() => {
+      const total = props.pool.tokens
+        .map((token, i) => toFiat(balances.value[i], token))
+        .reduce((a, b) => a + b, 0);
+      
+      return fNum(total, 'usd');
     });
 
     const priceImpact = computed(() => {
@@ -264,10 +331,14 @@ export default defineComponent({
       return allTokens.value[props.pool.tokens[index]]?.balance || 0;
     }
 
-    function infoLabel(index) {
-      return isAuthenticated.value
-        ? `${formatNum(tokenBalance(index), '0,0.[000]')} max`
-        : '';
+    function amountUSD(index) {
+      const amount = fullAmounts.value[index] || 0;
+      const token = props.pool.tokens[index].toLowerCase();
+      return toFiat(amount, token);
+    }
+
+    function balanceLabel(index) {
+      return fNum(tokenBalance(index), 'token');
     }
 
     function amountRules(index) {
@@ -286,6 +357,7 @@ export default defineComponent({
     async function setPropMax() {
       const { send, fixedToken } = poolCalculator.propMax();
       data.amounts = send;
+      data.propMax = [...send];
       data.propToken = fixedToken;
       data.range = 1000;
     }
@@ -349,16 +421,16 @@ export default defineComponent({
       poolCalculator.setAllTokens(newTokens);
       if (!hasAmounts.value) setPropMax();
       if (hasZeroBalance.value) {
-        data.investType = 'Custom';
+        data.investType = FormTypes.custom;
       } else {
-        data.investType = 'Proportional';
+        data.investType = FormTypes.proportional;
       }
     });
 
     watch(
       () => data.investType,
       newType => {
-        if (newType === 'Proportional') setPropMax();
+        if (newType === FormTypes.proportional) setPropMax();
       }
     );
 
@@ -394,15 +466,20 @@ export default defineComponent({
       tokenBalance,
       amountRules,
       total,
-      formatNum,
+      fNum,
       isAuthenticated,
       connectWallet,
-      infoLabel,
+      balanceLabel,
       setPropMax,
       isProportional,
       propPercentage,
       priceImpact,
-      priceImpactClasses
+      priceImpactClasses,
+      amountUSD,
+      propMaxUSD,
+      balanceMaxUSD,
+      FormTypes,
+      isRequired
     };
   }
 });
