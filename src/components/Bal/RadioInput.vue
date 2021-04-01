@@ -9,7 +9,7 @@
       @change="$emit('update:modelValue', value)"
       :class="['bal-radio-input', inputClasses]"
     >
-    <label v-if="$slots.label || label" :for="name" :class="['bal-radio-label', labelClasses]">
+    <label v-if="$slots.label || label" :for="name" :class="['bal-radio-label', labelClasses]" @click="$emit('update:modelValue', value)">
       <slot name="label">
         {{ label }}
       </slot>
@@ -120,6 +120,6 @@ export default defineComponent({
 }
 
 .bal-radio-label {
-  @apply ml-2;
+  @apply ml-2 cursor-pointer;
 }
 </style>
