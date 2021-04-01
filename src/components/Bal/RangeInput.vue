@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pr-2">
     <div class="flex justify-between text-sm text-gray-500">
       <div>
         <slot v-if="$slots.leftLabel || leftLabel" name="leftLabel">
@@ -19,7 +19,6 @@
       :dot-style="dotStyle"
       :rail-style="railSyle"
       :process-style="proccessStyle"
-      :contained="true"
     />
   </div>
 </template>
@@ -57,9 +56,8 @@ export default defineComponent({
 
     const dotStyle = computed(() => {
       return {
-        background: colors.gray['50'],
-        outlineColor: colors.gray['900'],
-        borderColor: colors.gray['900']
+        background: colors.gray['900'],
+        borderColor: 'transparent',
       };
     });
 
@@ -71,7 +69,7 @@ export default defineComponent({
 
     const proccessStyle = computed(() => {
       return {
-        background: colors.gray['900']
+        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`
       };
     });
 
