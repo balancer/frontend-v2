@@ -5,14 +5,14 @@
       :value="value"
       :checked="modelValue === value"
       :name="name"
-      @change="$emit('update:modelValue', value)"
+      @change="onChange(value)"
       :class="['bal-radio-input', inputClasses]"
     />
     <label
       v-if="$slots.label || label"
       :for="name"
       :class="['bal-radio-label', labelClasses]"
-      @click="$emit('update:modelValue', value)"
+      @click="onChange(value)"
     >
       <slot name="label">
         {{ label }}
@@ -34,6 +34,7 @@ export default defineComponent({
     value: { type: [String, Number], required: true },
     modelValue: { type: [String, Number], default: '' },
     label: { type: String, default: '' },
+    disabled: { type: Boolean, default: false },
     size: {
       type: String,
       default: 'md',
@@ -46,7 +47,11 @@ export default defineComponent({
     }
   },
 
-  setup(props) {
+  setup(props, { emit }) {
+    function onChange(value) {
+      if (!props.disabled) emit('update:modelValue', value)
+    }
+
     const sizeClasses = computed(() => {
       switch (props.size) {
         case 'sm':
@@ -69,24 +74,33 @@ export default defineComponent({
       }
     });
 
-    const colorClasses = computed(() => {
+    const colorClass = computed(() => {
+      if (props.disabled) return 'text-gray-500';
       return `text-${props.color}-500`;
+    });
+
+    const cursrorClass = computed(() => {
+      if (props.disabled) return 'cursor-not-allowed';
+      return 'cursor-pointer';
     });
 
     const inputClasses = computed(() => {
       return {
         [sizeClasses.value]: true,
-        [colorClasses.value]: true
+        [colorClass.value]: true,
+        [cursrorClass.value]: true
       };
     });
 
     const labelClasses = computed(() => {
       return {
-        [textSizeClass.value]: true
+        [textSizeClass.value]: true,
+        [cursrorClass.value]: true
       };
     });
 
     return {
+      onChange,
       inputClasses,
       labelClasses
     };
@@ -96,7 +110,7 @@ export default defineComponent({
 
 <style>
 .bal-radio-input {
-  @apply bg-white flex-shrink rounded-full cursor-pointer m-0;
+  @apply bg-white flex-shrink rounded-full m-0;
   @apply border border-gray-200;
   transition: all ease 0.25s;
   -webkit-appearance: none;
@@ -123,6 +137,6 @@ export default defineComponent({
 }
 
 .bal-radio-label {
-  @apply ml-2 cursor-pointer;
+  @apply ml-2;
 }
 </style>
