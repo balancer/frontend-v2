@@ -7,6 +7,7 @@
       :value="type.value"
       name="formType"
       class="py-2"
+      :disabled="loading"
     >
       <template v-slot:label>
         <span>
@@ -43,7 +44,8 @@ export default defineComponent({
 
   props: {
     formTypes: { type: Object as PropType<FormType[]>, required: true },
-    modelValue: { type: String, required: true }
+    modelValue: { type: String, required: true },
+    loading: { type: Boolean, default: false }
   },
 
   setup(props, { emit }) {

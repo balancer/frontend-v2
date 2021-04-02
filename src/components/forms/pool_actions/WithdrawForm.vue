@@ -1,6 +1,6 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
-    <FormTypeToggle v-model="withdrawType" :form-types="formTypes" />
+    <FormTypeToggle v-model="withdrawType" :form-types="formTypes" :loading="loading" />
 
     <template v-if="isProportional">
       <div class="p-4 border-t">
@@ -22,6 +22,7 @@
               :interval="1"
               :min="0"
               tooltip="none"
+              :disabled="loading"
             />
           </div>
         </div>

@@ -1,6 +1,6 @@
 <template>
   <BalForm ref="investForm" @on-submit="submit">
-    <FormTypeToggle v-model="investType" :form-types="formTypes" />
+    <FormTypeToggle v-model="investType" :form-types="formTypes" :loading="loading" />
 
     <template v-if="isProportional">
       <div class="p-4 border-t">
@@ -22,6 +22,7 @@
               :interval="1"
               :min="0"
               tooltip="none"
+              :disabled="loading"
             />
           </div>
         </div>
@@ -492,7 +493,7 @@ export default defineComponent({
       tokenBalance,
       amountRules,
       total,
-      fNum,
+    fNum,
       isAuthenticated,
       connectWallet,
       balanceLabel,
