@@ -38,16 +38,16 @@
             <div class="flex items-center w-1/2">
               <Token :token="allTokens[token]" class="mr-2" />
               <div class="flex flex-col w-3/4 leading-none">
-                <span class="truncate">
+                <span class="truncate" :title="`${fNum(amounts[i], 'token')} ${allTokens[token].symbol}`">
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
-                <span class="text-xs text-gray-400 truncate">
+                <span class="text-xs text-gray-400 truncate" :title="`${balanceLabel(i)} balance`">
                   {{ balanceLabel(i) }} balance
                 </span>
               </div>
             </div>
             <div class="flex flex-col w-1/2 leading-none text-right">
-              <span class="truncate">
+              <span class="truncate" :title="fNum(amountUSD(i), 'usd')">
                 {{ fNum(amountUSD(i), 'usd') }}
               </span>
               <span class="text-xs text-gray-400">
