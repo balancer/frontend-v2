@@ -494,14 +494,11 @@ export default defineComponent({
       isAuthenticated,
       connectWallet,
       balanceLabel,
-      setPropMax,
       isProportional,
       propPercentage,
       priceImpact,
       priceImpactClasses,
       amountUSD,
-      propMaxUSD,
-      balanceMaxUSD,
       formTypes,
       isRequired
     };
