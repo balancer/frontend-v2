@@ -1,5 +1,5 @@
 import { SOR } from '@balancer-labs/sor';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useIntervalFn } from '@vueuse/core';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber } from 'bignumber.js';
