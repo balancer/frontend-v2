@@ -33,6 +33,14 @@
 </template>
 
 <script lang="ts">
+/*
+  REFACTOR
+  This component is a quick hack and should be refactored to be more usable.
+  Currently, to be used, the width and height must be set for every usage
+  in order to correctly position the tooltip relative to the activator.
+  Ideally at least the height would be automatic.
+*/
+
 import {
   defineComponent,
   reactive,
