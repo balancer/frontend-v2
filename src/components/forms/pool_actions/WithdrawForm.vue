@@ -340,13 +340,9 @@ export default defineComponent({
         max: singleMaxUSD,
         value: FormTypes.single
       }
-    ])
+    ]);
 
     // METHODS
-    function tokenBalance(index) {
-      return allTokens.value[props.pool.tokens[index]]?.balance;
-    }
-
     function tokenDecimals(index) {
       return allTokens.value[props.pool.tokens[index]]?.decimals;
     }

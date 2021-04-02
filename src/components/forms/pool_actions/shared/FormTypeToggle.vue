@@ -12,9 +12,7 @@
         <span>
           {{ type.label }}
         </span>
-        <span class="text-xs text-gray-500">
-          ({{ type.max }} max)
-        </span>
+        <span class="text-xs text-gray-500"> ({{ type.max }} max) </span>
         <BalTooltip v-if="type.tooltip" :width="250" :height="100" on-hover top>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
@@ -49,15 +47,15 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const selected = ref(props.formTypes[0].value)
+    const selected = ref(props.formTypes[0].value);
 
     watch(selected, newVal => {
       emit('update:modelValue', newVal);
-    })
+    });
 
     return {
       selected
-    }
+    };
   }
 });
 </script>

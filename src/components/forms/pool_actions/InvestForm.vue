@@ -340,15 +340,17 @@ export default defineComponent({
         label: 'No price impact',
         max: propMaxUSD,
         value: FormTypes.proportional,
-        tooltip: 'No price impact is achieved by adding tokens in the same proportion to the weights of the pool composition.'
+        tooltip:
+          'No price impact is achieved by adding tokens in the same proportion to the weights of the pool composition.'
       },
       {
         label: 'Custom amounts',
         max: balanceMaxUSD,
         value: FormTypes.custom,
-        tooltip: 'Adding custom amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you\'ll spend in swap fees.'
+        tooltip:
+          "Adding custom amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
       }
-    ])
+    ]);
 
     // METHODS
     function tokenBalance(index) {
