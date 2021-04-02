@@ -12,7 +12,7 @@
             <span>{{ propPercentage }}%</span>
           </div>
           <div class="flex items-end">
-            <span class="mr-2 text-lg font-medium w-1/2">
+            <span class="mr-2 text-lg font-medium w-1/2 truncate" :title="total">
               {{ total }}
             </span>
             <BalRangeInput
@@ -35,19 +35,19 @@
           class="py-3 last:mb-0"
         >
           <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <Token :token="allTokens[token]" class="mr-4" />
-              <div class="flex flex-col leading-none">
-                <span>
+            <div class="flex items-center w-1/2">
+              <Token :token="allTokens[token]" class="mr-2" />
+              <div class="flex flex-col w-3/4 leading-none">
+                <span class="truncate">
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
-                <span class="text-xs text-gray-400">
+                <span class="text-xs text-gray-400 truncate">
                   {{ balanceLabel(i) }} balance
                 </span>
               </div>
             </div>
-            <div class="flex flex-col leading-none text-right">
-              <span>
+            <div class="flex flex-col w-1/2 leading-none text-right">
+              <span class="truncate">
                 {{ fNum(amountUSD(i), 'usd') }}
               </span>
               <span class="text-xs text-gray-400">
