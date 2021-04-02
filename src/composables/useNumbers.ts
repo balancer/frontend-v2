@@ -1,7 +1,6 @@
 import numeral from 'numeral';
 import { useStore } from 'vuex';
 
-type Fiat = 'usd';
 type Preset = 'default' | 'token' | 'usd' | 'percent';
 
 enum PresetFormats {
@@ -23,7 +22,7 @@ export default function useNumbers() {
     return numeral(number).format(PresetFormats[preset || 'default']);
   }
 
-  function toFiat(amount: number, tokenAddress: string, fiat: Fiat = 'usd') {
+  function toFiat(amount: number, tokenAddress: string) {
     const rate =
       store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;
     return amount * rate;
