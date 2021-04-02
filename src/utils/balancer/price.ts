@@ -2,9 +2,9 @@ import { Pool } from '@/api/subgraph';
 import { Prices } from '@/api/coingecko';
 
 export function getPoolLiquidity(pool: Pool, prices: Prices) {
-  if (pool.strategyType == 2) {
-    const totalWeight = pool.weights.reduce(
-      (total, value) => total + parseFloat(value),
+  if (pool.poolType == 'Weighted') {
+    const totalWeight = pool.tokens.reduce(
+      (total, token) => total + parseFloat(token.weight),
       0
     );
     let sumWeight = 0;
@@ -19,7 +19,7 @@ export function getPoolLiquidity(pool: Pool, prices: Prices) {
       const balance = parseFloat(pool.tokens[i].balance);
 
       const value = balance * price;
-      const weight = pool.weights ? parseFloat(pool.weights[i]) : 0;
+      const weight = token.weight ? parseFloat(token.weight) : 0;
       sumValue = sumValue + value;
       sumWeight = sumWeight + weight;
     }
