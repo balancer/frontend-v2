@@ -72,8 +72,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import InvestForm from '@/components/forms/InvestForm.vue';
-import WithdrawForm from '@/components/forms/WithdrawForm.vue';
+import InvestForm from '@/components/forms/pool_actions/InvestForm.vue';
+import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm.vue';
 
 export default defineComponent({
   name: 'PoolActionsCard',

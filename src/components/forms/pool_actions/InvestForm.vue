@@ -1,49 +1,6 @@
 <template>
   <BalForm ref="investForm" @on-submit="submit">
-    <div class="flex flex-col p-4">
-      <BalRadioInput
-        v-model="investType"
-        :value="FormTypes.proportional"
-        name="investType"
-      >
-        <template v-slot:label>
-          <span>
-            No price impact
-          </span>
-          <span class="text-xs text-gray-500"> ({{ propMaxUSD }} max) </span>
-          <BalTooltip :width="250" :height="115" on-hover top>
-            <template v-slot:activator>
-              <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
-            </template>
-            <div class="p-4 text-sm text-gray-500">
-              No price impact is achieved by adding tokens in the same
-              proportion to the weights of the pool composition.
-            </div>
-          </BalTooltip>
-        </template>
-      </BalRadioInput>
-      <BalRadioInput
-        v-model="investType"
-        :value="FormTypes.custom"
-        name="investType"
-        class="mt-3"
-      >
-        <template v-slot:label>
-          Custom amounts
-          <span class="text-xs text-gray-500"> ({{ balanceMaxUSD }} max) </span>
-          <BalTooltip :width="250" :height="155" on-hover top>
-            <template v-slot:activator>
-              <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
-            </template>
-            <div class="p-4 text-sm text-gray-500">
-              Adding custom amounts causes the internal prices of the pool to
-              change, as if you were swapping tokens. The higher the price
-              impact the more you'll spend in swap fees.
-            </div>
-          </BalTooltip>
-        </template>
-      </BalRadioInput>
-    </div>
+    <FormTypeToggle v-model="investType" :form-types="formTypes" />
 
     <template v-if="isProportional">
       <div class="p-4 border-t">
@@ -215,7 +172,8 @@ import {
   watch,
   onMounted,
   reactive,
-  toRefs
+  toRefs,
+  ref
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -232,6 +190,7 @@ import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
 import { formatUnits } from '@ethersproject/units';
 import { bnum } from '@/utils';
+import FormTypeToggle from './shared/FormTypeToggle.vue';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -240,6 +199,10 @@ export enum FormTypes {
 
 export default defineComponent({
   name: 'InvestForm',
+
+  components: {
+    FormTypeToggle
+  },
 
   emits: ['success'],
 
@@ -371,6 +334,21 @@ export default defineComponent({
         'text-gray-500 font-normal': priceImpact.value < 0.01
       };
     });
+
+    const formTypes = ref([
+      {
+        label: 'No price impact',
+        max: propMaxUSD,
+        value: FormTypes.proportional,
+        tooltip: 'No price impact is achieved by adding tokens in the same proportion to the weights of the pool composition.'
+      },
+      {
+        label: 'Custom amounts',
+        max: balanceMaxUSD,
+        value: FormTypes.custom,
+        tooltip: 'Adding custom amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you\'ll spend in swap fees.'
+      }
+    ])
 
     // METHODS
     function tokenBalance(index) {
@@ -524,7 +502,7 @@ export default defineComponent({
       amountUSD,
       propMaxUSD,
       balanceMaxUSD,
-      FormTypes,
+      formTypes,
       isRequired
     };
   }

@@ -1,28 +1,6 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
-    <div class="flex flex-col p-4">
-      <BalRadioInput
-        v-model="withdrawType"
-        :value="FormTypes.proportional"
-        name="withdrawType"
-      >
-        <template v-slot:label>
-          No price impact
-          <span class="text-xs text-gray-500"> ({{ propMaxUSD }} max) </span>
-        </template>
-      </BalRadioInput>
-      <BalRadioInput
-        v-model="withdrawType"
-        :value="FormTypes.single"
-        name="withdrawType"
-        class="mt-3"
-      >
-        <template v-slot:label>
-          Single token
-          <span class="text-xs text-gray-500"> (~{{ singleMaxUSD }} max) </span>
-        </template>
-      </BalRadioInput>
-    </div>
+    <FormTypeToggle v-model="withdrawType" :form-types="formTypes" />
 
     <template v-if="isProportional">
       <div class="p-4 border-t">
@@ -161,7 +139,8 @@ import {
   watch,
   onMounted,
   reactive,
-  toRefs
+  toRefs,
+  ref
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -178,6 +157,7 @@ import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
+import FormTypeToggle from './shared/FormTypeToggle.vue';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -186,6 +166,10 @@ export enum FormTypes {
 
 export default defineComponent({
   name: 'WithdrawalForm',
+
+  components: {
+    FormTypeToggle
+  },
 
   emits: ['success'],
 
@@ -285,10 +269,6 @@ export default defineComponent({
       return toFiat(amount, token);
     }
 
-    const bptInfoLabel = computed(() => {
-      return isAuthenticated.value ? `${bptBalance.value} max` : '';
-    });
-
     const total = computed(() => {
       const total = props.pool.tokens
         .map((_, i) => amountUSD(i))
@@ -348,6 +328,19 @@ export default defineComponent({
         'text-gray-500 font-normal': priceImpact.value < 0.01
       };
     });
+
+    const formTypes = ref([
+      {
+        label: 'No price impact',
+        max: propMaxUSD,
+        value: FormTypes.proportional
+      },
+      {
+        label: 'Single token',
+        max: singleMaxUSD,
+        value: FormTypes.single
+      }
+    ])
 
     // METHODS
     function tokenBalance(index) {
@@ -533,15 +526,10 @@ export default defineComponent({
       allTokens,
       hasAmounts,
       tokenWeights,
-      isPositive,
       fNum,
       isAuthenticated,
       connectWallet,
-      bptBalance,
-      bptInfoLabel,
-      setPropMax,
       total,
-      tokenBalance,
       isProportional,
       isSingleAsset,
       setSingleAsset,
@@ -549,9 +537,7 @@ export default defineComponent({
       priceImpact,
       priceImpactClasses,
       amountRules,
-      propMaxUSD,
-      singleMaxUSD,
-      FormTypes,
+      formTypes,
       propBalanceLabel,
       amountUSD,
       singleAssetMaxLabel,
