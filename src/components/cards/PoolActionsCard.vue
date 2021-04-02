@@ -3,7 +3,7 @@
     <BalTabs v-model="activeTab" :tabs="Object.values(Tabs)" class="pt-4" />
     <div>
       <template v-if="activeTab === Tabs.invest">
-        <div v-if="investmentSuccess">
+        <div v-if="investmentSuccess" class="p-4">
           <h5>Your investment has settled</h5>
           <p>
             Your tokens have been added to this pool, and you should have
@@ -35,7 +35,7 @@
         <InvestForm v-else :pool="pool" @success="handleInvestment($event)" />
       </template>
       <template v-if="activeTab === Tabs.withdraw">
-        <div v-if="withdrawalSuccess">
+        <div v-if="withdrawalSuccess" class="p-4">
           <h5>Your withdrawal has settled</h5>
           <p>
             Your investment has been withdrawan from this pool, and the
