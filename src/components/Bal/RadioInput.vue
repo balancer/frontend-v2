@@ -5,7 +5,6 @@
       :value="value"
       :checked="modelValue === value"
       :name="name"
-      v-bind="$attrs"
       @change="$emit('update:modelValue', value)"
       :class="['bal-radio-input', inputClasses]"
     />
