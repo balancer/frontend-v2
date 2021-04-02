@@ -109,6 +109,26 @@
             size="xs"
             class="ml-1"
           />
+          <BalTooltip
+            v-if="priceImpact < 0.01"
+            :width="250"
+            :height="100"
+            on-hover
+            top
+          >
+            <template v-slot:activator>
+              <BalIcon
+                name="info"
+                size="xs"
+                class="text-gray-400 -mb-px ml-2"
+              />
+            </template>
+            <div class="p-2 text-xs">
+              Withdrawing single asset amounts causes the internal prices of the pool to
+              change, as if you were swapping tokens. The higher the price
+              impact the more you'll spend in swap fees.
+            </div>
+          </BalTooltip>
         </div>
         <BalCheckboxInput
           v-if="priceImpact >= 0.01"

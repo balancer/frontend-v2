@@ -124,7 +124,7 @@
             <BalTooltip
               v-if="priceImpact < 0.01"
               :width="250"
-              :height="155"
+              :height="100"
               on-hover
               top
             >
@@ -135,7 +135,7 @@
                   class="text-gray-400 -mb-px ml-2"
                 />
               </template>
-              <div class="p-4 text-sm">
+              <div class="p-2 text-xs">
                 Adding custom amounts causes the internal prices of the pool to
                 change, as if you were swapping tokens. The higher the price
                 impact the more you'll spend in swap fees.
