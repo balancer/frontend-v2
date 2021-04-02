@@ -2,7 +2,7 @@ module.exports = {
   purge: {
     content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
     options: {
-      safelist: [/^shadow/, /^bg/, /^text/, /^border/, 'dark']
+      safelist: [/^shadow/, /^bg/, /^text/, /^border/, /^from/, /^to/, 'dark']
     }
   },
   darkMode: 'class', // false or 'media' or 'class'
@@ -69,7 +69,7 @@ module.exports = {
           800: '#1a2ce1',
           900: '#1022d7'
         },
-        'gradient-blue': {
+        blue: {
           50: '#3232ff',
           100: '#2828ff',
           200: '#1e1eff',
@@ -81,7 +81,7 @@ module.exports = {
           800: '#0000e1',
           900: '#0000d7'
         },
-        'gradient-pink': {
+        pink: {
           50: '#ff32ff',
           100: '#ff28ff',
           200: '#ff1eff',

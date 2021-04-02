@@ -31,7 +31,7 @@ function useChipClasses(size: string, color: string) {
   };
 
   const bgGradientClasses = (): string => {
-    return 'text-white bg-gradient-to-tr from-gradient-blue-500 to-gradient-pink-500';
+    return 'text-white bg-gradient-to-tr from-blue-500 to-pink-500';
   };
 
   const bgColorClasses = (): string => {

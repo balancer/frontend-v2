@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div v-if="hasError" :class="['error']">
+    <div v-if="hasError" class="error">
       <div class="relative">
         {{ errors[0] }}
       </div>
@@ -231,7 +231,7 @@ input:focus {
 }
 
 .input-group {
-  @apply flex items-center overflow-hidden bg-transparent;
+  @apply flex items-center overflow-hidden bg-white;
   @apply border rounded-lg;
 }
 

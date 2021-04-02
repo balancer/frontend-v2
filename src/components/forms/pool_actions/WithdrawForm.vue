@@ -1,113 +1,155 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
-    <div class="flex flex-wrap items-end w-full mb-6">
-      <div class="w-full xl:w-1/2">
-        <BalSelectInput
-          name="withdrawType"
-          label="Withdrawal type"
-          v-model="withdrawType"
-          :options="['Proportional', 'Single asset']"
-          @change="onWithdrawTypeChange"
-          no-margin
-        />
+    <FormTypeToggle v-model="withdrawType" :form-types="formTypes" :loading="loading" />
+
+    <template v-if="isProportional">
+      <div class="p-4 border-t">
+        <div class="border rounded-lg shadow-inner p-2">
+          <div
+            class="flex items-center justify-between mb-3 text-sm text-gray-600"
+          >
+            <span>Amount to withdraw</span>
+            <span>{{ propPercentage }}%</span>
+          </div>
+          <div class="flex items-end">
+            <span class="mr-2 text-lg font-medium w-1/2">
+              {{ total }}
+            </span>
+            <BalRangeInput
+              class="w-1/2"
+              v-model="range"
+              :max="1000"
+              :interval="1"
+              :min="0"
+              tooltip="none"
+              :disabled="loading"
+            />
+          </div>
+        </div>
       </div>
-      <div v-if="isProportional" class="ml-0 mt-4 xl:ml-4 xl:mt-0 flex-1">
-        <BalRangeInput
-          class="w-full"
-          v-model="range"
-          :max="1000"
-          :interval="1"
-          :min="0"
-          :right-label="`${propPercentage}%`"
-          tooltip="none"
-        />
+
+      <div class="px-4 py-3 bg-gray-50 border-t border-b">
+        <div
+          v-for="(token, i) in pool.tokens"
+          :key="token"
+          class="py-3 last:mb-0"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <Token :token="allTokens[token]" class="mr-4" />
+              <div class="flex flex-col leading-none">
+                <span>
+                  {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
+                </span>
+                <span class="text-xs text-gray-400">
+                  {{ propBalanceLabel(i) }} balance
+                </span>
+              </div>
+            </div>
+            <div class="flex flex-col leading-none text-right">
+              <span>
+                {{ fNum(amountUSD(i), 'usd') }}
+              </span>
+              <span class="text-xs text-gray-400">
+                {{ fNum(tokenWeights[i]) }}%
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
+    </template>
+
+    <div v-else class="px-4 pt-6 bg-gray-50 border-t border-b">
+      <BalTextInput
+        v-for="(token, i) in pool.tokens"
+        :key="i"
+        :name="token"
+        v-model="amounts[i]"
+        :rules="amountRules(i)"
+        type="number"
+        min="0"
+        step="any"
+        placeholder="0"
+        validate-on="input"
+        prepend-border
+        :faded-out="isSingleAsset && singleAsset !== i"
+        @click="setSingleAsset(i)"
+      >
+        <template v-slot:prepend>
+          <div class="flex items-center w-24">
+            <Token :token="allTokens[token]" />
+            <div class="flex flex-col ml-3">
+              <span class="font-medium text-sm leading-none w-14 truncate">
+                {{ allTokens[token].symbol }}
+              </span>
+            </div>
+          </div>
+        </template>
+        <template v-if="isSingleAsset" v-slot:info>
+          <div class="cursor-pointer" @click="amounts[i] = singleAssetMax[i]">
+            Single token max: {{ singleAssetMaxLabel(i) }}
+          </div>
+        </template>
+      </BalTextInput>
     </div>
 
-    <BalTextInput
-      v-for="(token, i) in pool.tokens"
-      :key="i"
-      :name="token"
-      v-model="amounts[i]"
-      :rules="amountRules(i)"
-      type="number"
-      min="0"
-      step="any"
-      placeholder="0"
-      validate-on="input"
-      prepend-border
-      :disabled="isProportional"
-      :faded-out="isSingleAsset && singleAsset !== i"
-      @click="setSingleAsset(i)"
-    >
-      <template v-slot:prepend>
-        <div class="flex items-center w-24">
-          <Token :token="allTokens[token]" />
-          <div class="flex flex-col ml-3">
-            <span class="font-medium text-sm leading-none w-14 truncate">
-              {{ allTokens[token].symbol }}
-            </span>
-            <span class="leading-none text-xs mt-1 text-gray-500">
-              {{ formatNum(tokenWeights[i]) }}%
-            </span>
-          </div>
-        </div>
-      </template>
-      <template v-if="isSingleAsset" v-slot:info>
-        <div class="cursor-pointer" @click="amounts[i] = singleAssetMax[i]">
-          {{ `${singleAssetMax[i]} max` }}
-        </div>
-      </template>
-    </BalTextInput>
-
-    <BalTextInput
-      name="total"
-      ref="bptInput"
-      v-model="total"
-      validate-on="input"
-      placeholder="$0.00"
-      disabled
-      prepend-border
-    >
-      <template v-slot:prepend>
-        <div class="w-24 flex flex-col">
-          <div class="font-medium text-sm leading-none">
-            Total
-          </div>
-          <div :class="['leading-none text-xs mt-1', priceImpactClasses]">
-            Price impact
-          </div>
-        </div>
-      </template>
-      <template v-slot:info>
-        <div :class="['flex items-center', priceImpactClasses]">
-          <span>{{ formatNum(priceImpact, '0.00%') }}</span>
+    <div class="p-4">
+      <BalBtn
+        v-if="!isAuthenticated"
+        label="Connect wallet"
+        block
+        @click.prevent="connectWallet"
+      />
+      <template v-else>
+        <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
+          <span>Price impact: {{ fNum(priceImpact, 'percent') }}</span>
           <BalIcon
             v-if="priceImpact >= 0.01"
             name="alert-triangle"
             size="xs"
             class="ml-1"
           />
+          <BalTooltip
+            v-if="priceImpact < 0.01"
+            :width="250"
+            :height="100"
+            on-hover
+            top
+          >
+            <template v-slot:activator>
+              <BalIcon
+                name="info"
+                size="xs"
+                class="text-gray-400 -mb-px ml-2"
+              />
+            </template>
+            <div class="p-2 text-xs">
+              Withdrawing single asset amounts causes the internal prices of the pool to
+              change, as if you were swapping tokens. The higher the price
+              impact the more you'll spend in swap fees.
+            </div>
+          </BalTooltip>
         </div>
+        <BalCheckboxInput
+          v-if="priceImpact >= 0.01"
+          v-model="highPiAccepted"
+          :rules="[isRequired()]"
+          name="highPiAccepted"
+          class="text-gray-500 mb-8"
+          size="sm"
+          label="I accept the high price impact from withdrawing single token amounts, moving the market price based on the depth of the market."
+        />
+        <BalBtn
+          type="submit"
+          :label="`Withdraw ${total}`"
+          loading-label="Confirming..."
+          color="gradient"
+          :disabled="!hasAmounts"
+          :loading="loading"
+          block
+        />
       </template>
-    </BalTextInput>
-
-    <BalBtn
-      v-if="!isAuthenticated"
-      label="Connect wallet"
-      block
-      @click.prevent="connectWallet"
-    />
-    <BalBtn
-      v-else
-      type="submit"
-      label="Withdraw"
-      loading-label="Confirming..."
-      color="gradient"
-      :disabled="!hasAmounts"
-      :loading="loading"
-      block
-    />
+    </div>
   </BalForm>
 </template>
 
@@ -117,12 +159,16 @@ import {
   computed,
   watch,
   onMounted,
-  nextTick,
   reactive,
-  toRefs
+  toRefs,
+  ref
 } from 'vue';
 import { FormRef } from '@/types';
-import { isPositive, isLessThanOrEqualTo } from '@/utils/validations';
+import {
+  isPositive,
+  isLessThanOrEqualTo,
+  isRequired
+} from '@/utils/validations';
 import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
@@ -132,9 +178,19 @@ import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
+import FormTypeToggle from './shared/FormTypeToggle.vue';
+
+export enum FormTypes {
+  proportional = 'proportional',
+  single = 'single'
+}
 
 export default defineComponent({
   name: 'WithdrawalForm',
+
+  components: {
+    FormTypeToggle
+  },
 
   emits: ['success'],
 
@@ -150,16 +206,17 @@ export default defineComponent({
       propMax: [] as string[],
       singleAssetMax: [] as string[],
       bptIn: '',
-      withdrawType: 'Proportional' as 'Proportional' | 'Single asset',
+      withdrawType: FormTypes.proportional as FormTypes,
       singleAsset: 0,
-      range: 1000
+      range: 1000,
+      highPiAccepted: false
     });
 
     // COMPOSABLES
     const store = useStore();
     const notify = useBlocknative();
     const { isAuthenticated } = useAuth();
-    const { format: formatNum } = useNumbers();
+    const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
 
     const poolExchange = new PoolExchange(
@@ -184,6 +241,22 @@ export default defineComponent({
       });
     });
 
+    const propMaxUSD = computed(() => {
+      const total = props.pool.tokens
+        .map((token, i) => toFiat(data.propMax[i], token))
+        .reduce((a, b) => a + b, 0);
+
+      return fNum(total, 'usd');
+    });
+
+    const singleMaxUSD = computed(() => {
+      const maxes = props.pool.tokens.map((token, i) =>
+        toFiat(data.singleAssetMax[i], token)
+      );
+
+      return fNum(Math.max(...maxes), 'usd');
+    });
+
     const hasAmounts = computed(() => {
       const amountSum = fullAmounts.value
         .map(amount => parseFloat(amount))
@@ -195,22 +268,35 @@ export default defineComponent({
       return allTokens.value[props.pool.address].balance;
     });
 
-    const bptInfoLabel = computed(() => {
-      return isAuthenticated.value ? `${bptBalance.value} max` : '';
-    });
+    function propTokenBalance(index) {
+      return data.propMax[index] || 0;
+    }
+
+    function singleAssetMax(index) {
+      return data.singleAssetMax[index] || 0;
+    }
+
+    function propBalanceLabel(index) {
+      return fNum(propTokenBalance(index), 'token');
+    }
+
+    function singleAssetMaxLabel(index) {
+      return fNum(singleAssetMax(index), 'token');
+    }
+
+    function amountUSD(index) {
+      const amount = fullAmounts.value[index] || 0;
+      const token = props.pool.tokens[index].toLowerCase();
+      return toFiat(amount, token);
+    }
 
     const total = computed(() => {
       const total = props.pool.tokens
-        .map((token, i) => {
-          return (
-            (parseFloat(fullAmounts.value[i]) || 0) *
-              store.state.market.prices[token.toLowerCase()]?.price || 0
-          );
-        })
+        .map((_, i) => amountUSD(i))
         .reduce((a, b) => a + b, 0);
 
-      if (total < 0) return formatNum(0, '$0,0.[00]');
-      return formatNum(total, '$0,0.[00]');
+      if (total < 0) return fNum(0, 'usd');
+      return fNum(total, 'usd');
     });
 
     const propPercentage = computed(() => {
@@ -222,11 +308,11 @@ export default defineComponent({
     });
 
     const isProportional = computed(() => {
-      return data.withdrawType === 'Proportional';
+      return data.withdrawType === FormTypes.proportional;
     });
 
     const isSingleAsset = computed(() => {
-      return data.withdrawType === 'Single asset';
+      return data.withdrawType === FormTypes.single;
     });
 
     const singleAssetMaxed = computed(() => {
@@ -264,23 +350,31 @@ export default defineComponent({
       };
     });
 
-    // METHODS
-    function tokenBalance(index) {
-      return allTokens.value[props.pool.tokens[index]]?.balance;
-    }
+    const formTypes = ref([
+      {
+        label: 'No price impact',
+        max: propMaxUSD,
+        value: FormTypes.proportional
+      },
+      {
+        label: 'Single token',
+        max: singleMaxUSD,
+        value: FormTypes.single
+      }
+    ]);
 
+    // METHODS
     function tokenDecimals(index) {
       return allTokens.value[props.pool.tokens[index]]?.decimals;
     }
 
     function amountRules(index) {
-      if (!isAuthenticated.value || isProportional.value) return [isPositive()]
+      if (!isAuthenticated.value || isProportional.value) return [isPositive()];
       return [
         isPositive(),
         isLessThanOrEqualTo(data.singleAssetMax[index], 'Exceeds balance')
-      ]
+      ];
     }
-
 
     function connectWallet() {
       store.commit('setAccountModal', true);
@@ -312,19 +406,8 @@ export default defineComponent({
       data.singleAsset = index;
     }
 
-    async function onWithdrawTypeChange(newType) {
-      nextTick(async () => {
-        if (newType === 'Proportional') setPropMax();
-        if (newType === 'Single asset') {
-          await calcSingleAssetMax();
-          setSingleAsset(0);
-        }
-      });
-    }
-
     async function calcSingleAssetMax() {
       data.singleAssetMax = props.pool.tokens.map(() => '0');
-      data.amounts = props.pool.tokens.map(() => '0');
       if (!isAuthenticated.value) return;
 
       for (
@@ -413,6 +496,18 @@ export default defineComponent({
       }
     }
 
+    watch(
+      () => data.withdrawType,
+      async newType => {
+        if (newType === FormTypes.proportional) setPropMax();
+        if (newType === FormTypes.single) {
+          data.amounts = props.pool.tokens.map(() => '0');
+          await calcSingleAssetMax();
+          setSingleAsset(0);
+        }
+      }
+    );
+
     watch(bptBalance, async () => {
       setPropMax();
       await calcSingleAssetMax();
@@ -437,8 +532,9 @@ export default defineComponent({
 
     watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
 
-    onMounted(() => {
+    onMounted(async () => {
       if (bptBalance.value) setPropMax();
+      await calcSingleAssetMax();
     });
 
     return {
@@ -447,23 +543,22 @@ export default defineComponent({
       allTokens,
       hasAmounts,
       tokenWeights,
-      isPositive,
-      formatNum,
+      fNum,
       isAuthenticated,
       connectWallet,
-      bptBalance,
-      bptInfoLabel,
-      setPropMax,
       total,
-      tokenBalance,
-      onWithdrawTypeChange,
       isProportional,
       isSingleAsset,
       setSingleAsset,
       propPercentage,
       priceImpact,
       priceImpactClasses,
-      amountRules
+      amountRules,
+      formTypes,
+      propBalanceLabel,
+      amountUSD,
+      singleAssetMaxLabel,
+      isRequired
     };
   }
 });

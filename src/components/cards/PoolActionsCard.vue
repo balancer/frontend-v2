@@ -1,24 +1,9 @@
 <template>
   <BalCard noPad>
-    <div class="pl-4 pt-4 pb-2">
-      <div class="flex border-b font-medium text-gray-500">
-        <div
-          :class="['tab', activeClasses('invest')]"
-          @click="activeTab = 'invest'"
-        >
-          Invest
-        </div>
-        <div
-          :class="['tab', activeClasses('withdraw')]"
-          @click="activeTab = 'withdraw'"
-        >
-          Withdraw
-        </div>
-      </div>
-    </div>
-    <div class="p-4">
-      <template v-if="isActiveTab('invest')">
-        <div v-if="investmentSuccess">
+    <BalTabs v-model="activeTab" :tabs="Object.values(Tabs)" class="pt-4" />
+    <div>
+      <template v-if="activeTab === Tabs.invest">
+        <div v-if="investmentSuccess" class="p-4">
           <h5>Your investment has settled</h5>
           <p>
             Your tokens have been added to this pool, and you should have
@@ -49,8 +34,8 @@
         </div>
         <InvestForm v-else :pool="pool" @success="handleInvestment($event)" />
       </template>
-      <template v-if="isActiveTab('withdraw')">
-        <div v-if="withdrawalSuccess">
+      <template v-if="activeTab === Tabs.withdraw">
+        <div v-if="withdrawalSuccess" class="p-4">
           <h5>Your withdrawal has settled</h5>
           <p>
             Your investment has been withdrawan from this pool, and the
@@ -87,8 +72,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import InvestForm from '@/components/forms/InvestForm.vue';
-import WithdrawForm from '@/components/forms/WithdrawForm.vue';
+import InvestForm from '@/components/forms/pool_actions/InvestForm.vue';
+import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm.vue';
 
 export default defineComponent({
   name: 'PoolActionsCard',
@@ -105,20 +90,15 @@ export default defineComponent({
   },
 
   setup(_, { emit }) {
-    const activeTab = ref('invest');
+    enum Tabs {
+      invest = 'Invest',
+      withdraw = 'Withdraw'
+    }
+
+    const activeTab = ref(Tabs.invest);
     const investmentSuccess = ref(false);
     const withdrawalSuccess = ref(false);
     const txHash = ref('');
-
-    function isActiveTab(tab) {
-      return activeTab.value === tab;
-    }
-
-    function activeClasses(tab) {
-      return {
-        'border-black text-black font-bold': isActiveTab(tab)
-      };
-    }
 
     function handleInvestment(txReceipt): void {
       investmentSuccess.value = true;
@@ -134,8 +114,7 @@ export default defineComponent({
 
     return {
       activeTab,
-      isActiveTab,
-      activeClasses,
+      Tabs,
 
       handleInvestment,
       handleWithdrawal,
@@ -146,9 +125,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style>
-.tab {
-  @apply border-b -mb-px mr-4 py-3 cursor-pointer hover:text-black;
-}
-</style>

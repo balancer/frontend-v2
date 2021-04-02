@@ -75,7 +75,6 @@ export default defineComponent({
 
 <style scoped>
 .bal-card {
-  @apply overflow-hidden;
   @apply bg-white dark:bg-gray-900;
   @apply border border-gray-200 dark:border-gray-700;
 }
