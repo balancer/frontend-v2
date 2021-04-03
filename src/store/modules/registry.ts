@@ -76,7 +76,7 @@ const getters = {
     if (rootState.web3.account) {
       tokens = tokens.map(token => {
         const address = token.address.toLowerCase();
-        token.balanceDenorm = rootState.account.balances[address] || new BN(0);
+        token.balanceDenorm = rootState.account.balances[address] || '0';
         token.balance = formatUnits(token.balanceDenorm, token.decimals);
         token.value = token.balance * token.price;
         token.value24HChange =
