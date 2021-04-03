@@ -1,7 +1,7 @@
 import injected from '@snapshot-labs/lock/connectors/injected';
 import fortmatic from '@snapshot-labs/lock/connectors/fortmatic';
 import torus from '@snapshot-labs/lock/connectors/torus';
-import portis from '@snapshot-labs/lock/connectors/portis';
+// import portis from '@snapshot-labs/lock/connectors/portis';
 import walletconnect from '@snapshot-labs/lock/connectors/walletconnect';
 import walletlink from '@snapshot-labs/lock/connectors/walletlink';
 import connectors from '@/constants/connectors.json';
@@ -22,7 +22,7 @@ const connectorClasses = {
   injected,
   fortmatic,
   torus,
-  portis,
+  // portis,
   walletconnect,
   walletlink
 };
@@ -58,9 +58,9 @@ export function getConnectorName(connectorId: string): string {
   if (connectorId === 'fortmatic') {
     return 'Fortmatic';
   }
-  if (connectorId === 'portis') {
-    return 'Portis';
-  }
+  // if (connectorId === 'portis') {
+  //   return 'Portis';
+  // }
   if (connectorId === 'walletconnect') {
     return 'WalletConnect';
   }
@@ -93,9 +93,9 @@ export function getConnectorLogo(connectorId: string): string {
   if (connectorId === 'fortmatic') {
     return fortmaticLogo;
   }
-  if (connectorId === 'portis') {
-    return portisLogo;
-  }
+  // if (connectorId === 'portis') {
+  //   return portisLogo;
+  // }
   if (connectorId === 'walletconnect') {
     return walletconnectLogo;
   }
