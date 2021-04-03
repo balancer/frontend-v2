@@ -281,7 +281,7 @@ export default defineComponent({
       handleAmountChange(false, tokenOutAmountInput.value);
     }
 
-    async function populateInitialTokens(): void {
+    async function populateInitialTokens(): Promise<void> {
       const { chainId } = getConfig();
       modalSelectTokenType.value = 'input';
       await handleSelectToken(initialTokens[chainId].input);

@@ -13,7 +13,7 @@ interface Amounts {
 
 export interface PiOptions {
   exactOut: boolean;
-  tokenIndex: number;
+  tokenIndex: number | null;
 }
 
 export default class Calculator {

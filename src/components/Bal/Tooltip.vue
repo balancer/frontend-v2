@@ -66,7 +66,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const activator = ref({});
+    const activator = ref({} as HTMLElement);
 
     const data = reactive({
       popoverXPosition: 0,
@@ -74,7 +74,7 @@ export default defineComponent({
       showPopover: false,
       isOverContent: false,
       isOverActivator: false,
-      timer: null
+      timer: 0
     });
 
     const position = computed(() => {
@@ -124,7 +124,7 @@ export default defineComponent({
 
     function handleMouseover() {
       if (props.onHover) {
-        data.timer = setTimeout(() => {
+        data.timer = window.setTimeout(() => {
           data.showPopover = true;
         }, 200);
       }
@@ -133,7 +133,7 @@ export default defineComponent({
     function handleMouseout() {
       if (props.onHover) {
         clearTimeout(data.timer);
-        data.timer = setTimeout(() => {
+        data.timer = window.setTimeout(() => {
           if (!data.isOverContent && !data.isOverActivator) {
             data.showPopover = false;
           }
