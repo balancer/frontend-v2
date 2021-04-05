@@ -12,7 +12,7 @@
             <span>{{ propPercentage }}%</span>
           </div>
           <div class="flex items-end">
-            <span class="mr-2 text-lg font-medium w-1/2">
+            <span class="mr-2 text-lg font-medium w-1/2 leading-none break-words">
               {{ total }}
             </span>
             <BalRangeInput
@@ -35,19 +35,19 @@
           class="py-3 last:mb-0"
         >
           <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <Token :token="allTokens[token]" class="mr-4" />
-              <div class="flex flex-col leading-none">
-                <span>
+            <div class="w-1/2 flex items-center">
+              <Token :token="allTokens[token]" class="mr-2" />
+              <div class="w-3/4 flex flex-col leading-none">
+                <span class="break-words">
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
-                <span class="text-xs text-gray-400">
+                <span class="text-xs text-gray-400 break-words">
                   {{ propBalanceLabel(i) }} balance
                 </span>
               </div>
             </div>
-            <div class="flex flex-col leading-none text-right">
-              <span>
+            <div class="w-1/2 flex flex-col leading-none text-right pl-2">
+              <span class="break-words">
                 {{ fNum(amountUSD(i), 'usd') }}
               </span>
               <span class="text-xs text-gray-400">
@@ -141,13 +141,14 @@
         />
         <BalBtn
           type="submit"
-          :label="`Withdraw ${total}`"
           loading-label="Confirming..."
           color="gradient"
           :disabled="!hasAmounts"
           :loading="loading"
           block
-        />
+        >
+          Withdraw {{ total.length > 15 ? '' : total }}
+        </BalBtn>
       </template>
     </div>
   </BalForm>
