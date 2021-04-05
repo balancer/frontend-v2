@@ -1,6 +1,10 @@
 <template>
   <BalForm ref="investForm" @on-submit="submit">
-    <FormTypeToggle v-model="investType" :form-types="formTypes" :loading="loading" />
+    <FormTypeToggle
+      v-model="investType"
+      :form-types="formTypes"
+      :loading="loading"
+    />
 
     <template v-if="isProportional">
       <div class="p-4 border-t">
@@ -12,7 +16,10 @@
             <span>{{ propPercentage }}%</span>
           </div>
           <div class="flex items-end">
-            <span class="mr-2 text-lg font-medium w-1/2 break-words leading-none" :title="total">
+            <span
+              class="mr-2 text-lg font-medium w-1/2 break-words leading-none"
+              :title="total"
+            >
               {{ total }}
             </span>
             <BalRangeInput
@@ -38,10 +45,18 @@
             <div class="flex items-center w-1/2">
               <Token :token="allTokens[token]" class="mr-2" />
               <div class="flex flex-col w-3/4 leading-none">
-                <span class="break-words" :title="`${fNum(amounts[i], 'token')} ${allTokens[token].symbol}`">
+                <span
+                  class="break-words"
+                  :title="
+                    `${fNum(amounts[i], 'token')} ${allTokens[token].symbol}`
+                  "
+                >
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
-                <span class="text-xs text-gray-400 break-words" :title="`${balanceLabel(i)} balance`">
+                <span
+                  class="text-xs text-gray-400 break-words"
+                  :title="`${balanceLabel(i)} balance`"
+                >
                   {{ balanceLabel(i) }} balance
                 </span>
               </div>
@@ -494,7 +509,7 @@ export default defineComponent({
       tokenBalance,
       amountRules,
       total,
-    fNum,
+      fNum,
       isAuthenticated,
       connectWallet,
       balanceLabel,

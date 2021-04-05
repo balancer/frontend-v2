@@ -27,7 +27,9 @@ export default function useNumbers() {
       adjustedPreset = `${preset}_lg`;
     }
 
-    return numeral(number).format(PresetFormats[adjustedPreset || preset || 'default']);
+    return numeral(number).format(
+      PresetFormats[adjustedPreset || preset || 'default']
+    );
   }
 
   function toFiat(amount: number, tokenAddress: string) {

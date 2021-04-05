@@ -49,7 +49,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     function onChange(value) {
-      if (!props.disabled) emit('update:modelValue', value)
+      if (!props.disabled) emit('update:modelValue', value);
     }
 
     const sizeClasses = computed(() => {

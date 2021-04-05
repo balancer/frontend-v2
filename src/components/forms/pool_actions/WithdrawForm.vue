@@ -1,6 +1,10 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
-    <FormTypeToggle v-model="withdrawType" :form-types="formTypes" :loading="loading" />
+    <FormTypeToggle
+      v-model="withdrawType"
+      :form-types="formTypes"
+      :loading="loading"
+    />
 
     <template v-if="isProportional">
       <div class="p-4 border-t">
@@ -12,7 +16,9 @@
             <span>{{ propPercentage }}%</span>
           </div>
           <div class="flex items-end">
-            <span class="mr-2 text-lg font-medium w-1/2 leading-none break-words">
+            <span
+              class="mr-2 text-lg font-medium w-1/2 leading-none break-words"
+            >
               {{ total }}
             </span>
             <BalRangeInput
@@ -124,9 +130,9 @@
               />
             </template>
             <div class="p-2 text-xs">
-              Withdrawing single asset amounts causes the internal prices of the pool to
-              change, as if you were swapping tokens. The higher the price
-              impact the more you'll spend in swap fees.
+              Withdrawing single asset amounts causes the internal prices of the
+              pool to change, as if you were swapping tokens. The higher the
+              price impact the more you'll spend in swap fees.
             </div>
           </BalTooltip>
         </div>
