@@ -1,6 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
-
 import { logFailedTx } from '@/utils/logging';
 
 const CODE_FAILED = -32016;
@@ -29,6 +28,7 @@ export async function sendTransaction(
       const sender = await web3.getSigner().getAddress();
       logFailedTx(network, sender, contract, action, params, overrides);
     }
+    return Promise.reject(e);
   }
 }
 

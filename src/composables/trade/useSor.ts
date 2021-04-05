@@ -1,13 +1,11 @@
-import { SOR } from '@balancer-labs/sor';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
-import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { BigNumber } from 'bignumber.js';
 import { scale } from '@/utils';
 import getProvider from '@/utils/provider';
-import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
-import { swapIn, swapOut } from '@/utils/balancer/trade';
+import { swapIn, swapOut } from '@/utils/balancer/swapper';
 import useBlocknative from '@/composables/useBlocknative';
 import { ETHER } from '@/constants/tokenlists';
 import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
@@ -20,7 +18,8 @@ export default function useSor(
   tokenInAmountInput,
   tokenOutAddressInput,
   tokenOutAmountInput,
-  tokens
+  tokens,
+  allowanceState
 ) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<any[]>([]); // TODO - Check type & make sure correct value is returned by SorManager
@@ -44,12 +43,6 @@ export default function useSor(
       marketSp: new BigNumber(0)
     }
   });
-  const allowanceState = ref<any>({
-    overRide: false,
-    isUnlockedV1: false,
-    isUnlockedV2: false
-  });
-  const swaps = ref<Swap[][]>([]);
   const trading = ref(false);
   const exactIn = ref(true);
   const slippage = ref(0);
@@ -134,8 +127,8 @@ export default function useSor(
         'swapExactIn',
         tokenInAmountScaled,
         tokenInDecimals,
-        true, // TODO use allowanceState.value.isUnlockedV1,
-        true // TODO use allowanceState.value.isUnlockedV2,
+        allowanceState.value.isUnlockedV1,
+        allowanceState.value.isUnlockedV2
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -181,8 +174,8 @@ export default function useSor(
         'swapExactOut',
         tokenOutAmount,
         tokenOutDecimals,
-        true, // TODO use allowanceState.value.isUnlockedV1,
-        true // TODO use allowanceState.value.isUnlockedV2
+        allowanceState.value.isUnlockedV1,
+        allowanceState.value.isUnlockedV2
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -254,17 +247,17 @@ export default function useSor(
       const minAmount = tokenOutAmount
         .div(1 + slippageBufferRate)
         .integerValue(BigNumber.ROUND_DOWN);
+      const sr: SorReturn = sorReturn.value as SorReturn;
 
       try {
         const tx = await swapIn(
           chainId,
           auth.web3,
-          swaps.value,
-          tokenInAddress,
-          tokenOutAddress,
+          sr,
           tokenInAmountScaled,
           minAmount
         );
+        console.log('Swap in tx', tx);
         txListener(tx.hash);
       } catch (e) {
         console.log(e);
@@ -274,16 +267,22 @@ export default function useSor(
       const tokenInAmountMax = tokenInAmountScaled
         .times(1 + slippageBufferRate)
         .integerValue(BigNumber.ROUND_DOWN);
+      const sr: SorReturn = sorReturn.value as SorReturn;
+      const tokenOutAmountNormalised = new BigNumber(tokenOutAmountInput.value);
+      const tokenOutAmountScaled = scale(
+        tokenOutAmountNormalised,
+        tokenOutDecimals
+      );
 
       try {
         const tx = await swapOut(
           chainId,
           auth.web3,
-          swaps.value,
-          tokenInAddress,
-          tokenOutAddress,
-          tokenInAmountMax
+          sr,
+          tokenInAmountMax,
+          tokenOutAmountScaled
         );
+        console.log('Swap out tx', tx);
         txListener(tx.hash);
       } catch (e) {
         console.log(e);
@@ -294,6 +293,7 @@ export default function useSor(
 
   return {
     sorManager,
+    sorReturn,
     pools,
     initSor,
     handleAmountChange,

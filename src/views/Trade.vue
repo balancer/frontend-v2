@@ -99,7 +99,11 @@
       />
       <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
-        v-else-if="requireAllowance"
+        v-else-if="
+          sorReturn.isV1swap
+            ? !allowanceState.isUnlockedV1
+            : !allowanceState.isUnlockedV2
+        "
         label="Allow"
         :loading="approving"
         loading-label="Allowing..."
@@ -109,7 +113,7 @@
       <BalBtn
         v-else
         type="submit"
-        label="Swap"
+        :label="`Swap (${sorReturn.isV1swap ? 'V1' : 'V2'})`"
         :loading="trading"
         loading-label="Confirming..."
         color="gradient"
@@ -177,17 +181,26 @@ export default defineComponent({
     const tokens = computed(() => getTokens({ includeEther: true }));
 
     // COMPOSABLES
-    const { trading, trade, initSor, handleAmountChange, slippage } = useSor(
+    const {
+      approving,
+      approveV1,
+      approveV2,
+      allowanceState
+    } = useTokenApproval(tokenInAddressInput, tokenInAmountInput, tokens);
+    const {
+      trading,
+      trade,
+      initSor,
+      handleAmountChange,
+      slippage,
+      sorReturn
+    } = useSor(
       tokenInAddressInput,
       tokenInAmountInput,
       tokenOutAddressInput,
       tokenOutAmountInput,
-      tokens
-    );
-    const { approving, approve, requireAllowance } = useTokenApproval(
-      tokenInAddressInput,
-      tokenInAmountInput,
-      tokens
+      tokens,
+      allowanceState
     );
     const { validationStatus, errorMessage } = useValidation(
       tokenInAddressInput,
@@ -289,6 +302,14 @@ export default defineComponent({
       await handleSelectToken(initialTokens[chainId].output);
     }
 
+    async function approve(): void {
+      if (sorReturn.value.isV1swap) {
+        await approveV1();
+      } else {
+        await approveV2();
+      }
+    }
+
     watch(getConfig, async () => {
       tokenInAddressInput.value = '';
       tokenInAmountInput.value = '';
@@ -326,8 +347,9 @@ export default defineComponent({
       toggleRate,
       validationStatus,
       errorMessage,
-      requireAllowance,
+      allowanceState,
       approving,
+      sorReturn,
       approve,
       trading,
       trade,
