@@ -46,7 +46,7 @@ export default defineComponent({
       type: String,
       default: 'primary',
       validator: (val: string): boolean =>
-        ['primary', 'gradient', 'gray', 'red'].includes(val)
+        ['primary', 'gradient', 'gradient-reverse', 'gray', 'red'].includes(val)
     },
     label: { type: String, default: '' },
     block: { type: Boolean, default: false },
@@ -85,12 +85,15 @@ export default defineComponent({
     const bgGradientClasses = (): string => {
       if (props.outline) return 'bg-transparent';
 
+      const fromColor = props.color === 'gradient' ? 'blue' : 'pink';
+      const toColor = props.color === 'gradient' ? 'pink' : 'blue';
+
       if (props.disabled || props.loading) {
-        return 'bg-gradient-to-tr from-gradient-blue-50 to-gradient-pink-50';
+        return `bg-gradient-to-tr from-${fromColor}-50 to-${toColor}-50`;
       }
       return `
-        bg-gradient-to-tr from-gradient-blue-500 to-gradient-pink-500
-        hover:from-gradient-blue-600 hover:to-gradient-pink-600
+        bg-gradient-to-tr from-${fromColor}-500 to-${toColor}-500
+        hover:from-${fromColor}-600 hover:to-${toColor}-600
       `;
     };
 
@@ -102,7 +105,7 @@ export default defineComponent({
     });
 
     const bgColorClasses = (): string => {
-      if (props.color === 'gradient') return bgGradientClasses();
+      if (props.color.includes('gradient')) return bgGradientClasses();
       if (props.outline) return 'bg-transparent';
       if (props.flat) return bgFlatClasses.value;
 

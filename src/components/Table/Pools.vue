@@ -70,12 +70,10 @@
               <div>
                 <span
                   class="ml-2"
-                  v-for="(token, i) in pool.tokens"
+                  v-for="token in pool.tokens"
                   :key="token.address"
                 >
-                  <span v-if="pool.weights">
-                    {{ _num(getWeights(pool.weights, i), '0%') }}
-                  </span>
+                  {{ _num(token.weight, '0%') }}
                   {{ allTokens[getAddress(token.address)].symbol }}
                 </span>
               </div>

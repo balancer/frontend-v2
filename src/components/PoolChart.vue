@@ -28,12 +28,12 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { format: formatNum } = useNumbers();
+    const { fNum } = useNumbers();
 
     const { prices, snapshots } = toRefs(props);
 
     function formatYAxis(value: number) {
-      return formatNum(value, '0.%');
+      return fNum(value, null, '0.%');
     }
 
     function getPoolValue(amounts: string[], prices: number[]) {
