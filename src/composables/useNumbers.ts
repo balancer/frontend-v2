@@ -1,12 +1,14 @@
 import numeral from 'numeral';
 import { useStore } from 'vuex';
 
-type Preset = 'default' | 'token' | 'usd' | 'percent';
+type Preset = 'default' | 'token' | 'token_lg' | 'usd' | 'usd_lg' | 'percent';
 
 enum PresetFormats {
   default = '(0.[0]a)',
   token = '0,0.[0000]',
+  token_lg = '0,0',
   usd = '$0,0.00',
+  usd_lg = '$0,0',
   percent = '0.00%'
 }
 
@@ -19,7 +21,15 @@ export default function useNumbers() {
     format = ''
   ) {
     if (format) return numeral(number).format(format);
-    return numeral(number).format(PresetFormats[preset || 'default']);
+
+    let adjustedPreset;
+    if (number >= 10_000) {
+      adjustedPreset = `${preset}_lg`;
+    }
+
+    return numeral(number).format(
+      PresetFormats[adjustedPreset || preset || 'default']
+    );
   }
 
   function toFiat(amount: number, tokenAddress: string) {

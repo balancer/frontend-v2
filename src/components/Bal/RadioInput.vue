@@ -1,5 +1,5 @@
 <template>
-  <div class="inline-flex items-center">
+  <div class="inline-flex items-start">
     <input
       type="radio"
       :value="value"
@@ -49,7 +49,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     function onChange(value) {
-      if (!props.disabled) emit('update:modelValue', value)
+      if (!props.disabled) emit('update:modelValue', value);
     }
 
     const sizeClasses = computed(() => {
@@ -110,7 +110,7 @@ export default defineComponent({
 
 <style>
 .bal-radio-input {
-  @apply bg-white flex-shrink rounded-full m-0;
+  @apply bg-white rounded-full m-0;
   @apply border border-gray-200;
   transition: all ease 0.25s;
   -webkit-appearance: none;
@@ -137,6 +137,6 @@ export default defineComponent({
 }
 
 .bal-radio-label {
-  @apply ml-2;
+  @apply ml-2 flex-1 leading-none;
 }
 </style>

@@ -1,6 +1,10 @@
 <template>
   <BalForm ref="investForm" @on-submit="submit">
-    <FormTypeToggle v-model="investType" :form-types="formTypes" :loading="loading" />
+    <FormTypeToggle
+      v-model="investType"
+      :form-types="formTypes"
+      :loading="loading"
+    />
 
     <template v-if="isProportional">
       <div class="p-4 border-t">
@@ -12,7 +16,10 @@
             <span>{{ propPercentage }}%</span>
           </div>
           <div class="flex items-end">
-            <span class="mr-2 text-lg font-medium w-1/2">
+            <span
+              class="mr-2 text-lg font-medium w-1/2 break-words leading-none"
+              :title="total"
+            >
               {{ total }}
             </span>
             <BalRangeInput
@@ -35,19 +42,27 @@
           class="py-3 last:mb-0"
         >
           <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <Token :token="allTokens[token]" class="mr-4" />
-              <div class="flex flex-col leading-none">
-                <span>
+            <div class="flex items-center w-1/2">
+              <Token :token="allTokens[token]" class="mr-2" />
+              <div class="flex flex-col w-3/4 leading-none">
+                <span
+                  class="break-words"
+                  :title="
+                    `${fNum(amounts[i], 'token')} ${allTokens[token].symbol}`
+                  "
+                >
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
-                <span class="text-xs text-gray-400">
+                <span
+                  class="text-xs text-gray-400 break-words"
+                  :title="`${balanceLabel(i)} balance`"
+                >
                   {{ balanceLabel(i) }} balance
                 </span>
               </div>
             </div>
-            <div class="flex flex-col leading-none text-right">
-              <span>
+            <div class="flex flex-col w-1/2 leading-none text-right pl-2">
+              <span class="break-words" :title="fNum(amountUSD(i), 'usd')">
                 {{ fNum(amountUSD(i), 'usd') }}
               </span>
               <span class="text-xs text-gray-400">
@@ -153,13 +168,14 @@
           />
           <BalBtn
             type="submit"
-            :label="`Invest ${total}`"
             loading-label="Confirming..."
             color="gradient"
             :disabled="!hasAmounts"
             :loading="loading"
             block
-          />
+          >
+            Invest {{ total.length > 15 ? '' : total }}
+          </BalBtn>
         </template>
       </template>
     </div>
@@ -493,7 +509,7 @@ export default defineComponent({
       tokenBalance,
       amountRules,
       total,
-    fNum,
+      fNum,
       isAuthenticated,
       connectWallet,
       balanceLabel,
