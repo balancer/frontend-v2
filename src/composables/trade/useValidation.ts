@@ -28,7 +28,7 @@ export default function useValidation(
     )
       return 'EMPTY';
 
-    if (!tokenIn?.balance || tokenIn.balance < tokenInAmount.value)
+    if (!tokenIn?.balance || tokenIn.balance < parseFloat(tokenInAmount.value))
       return 'INSUFFICIENT_BALANCE';
 
     if (
