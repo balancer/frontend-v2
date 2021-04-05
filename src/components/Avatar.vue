@@ -21,7 +21,13 @@
 </template>
 
 <script>
+import Jazzicon from 'vue3-jazzicon/src/components';
+
 export default {
+  components: {
+    Jazzicon
+  },
+
   props: ['address', 'size', 'profile']
 };
 </script>

@@ -2,7 +2,7 @@
   <div class="flex items-center">
     <Icon name="search" size="22" class="mb-1 mr-2 text-gray" />
     <input
-      v-autofocus
+      ref="searchInput"
       :value="modelValue"
       :placeholder="placeholder"
       @input="handleInput"
@@ -17,7 +17,13 @@
 <script>
 export default {
   props: ['modelValue', 'placeholder'],
+
   emits: ['update:modelValue'],
+
+  mounted() {
+    this.$refs.searchInput.focus();
+  },
+
   methods: {
     handleInput(e) {
       const input = e.target.value;
