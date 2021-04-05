@@ -326,7 +326,7 @@ export default defineComponent({
 
     const propMaxUSD = computed(() => {
       const total = props.pool.tokens
-        .map((token, i) => toFiat(data.propMax[i], token))
+        .map((token, i) => toFiat(Number(data.propMax[i]), token))
         .reduce((a, b) => a + b, 0);
 
       return fNum(total, 'usd');

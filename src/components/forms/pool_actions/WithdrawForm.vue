@@ -250,7 +250,7 @@ export default defineComponent({
 
     const propMaxUSD = computed(() => {
       const total = props.pool.tokens
-        .map((token, i) => toFiat(data.propMax[i], token))
+        .map((token, i) => toFiat(Number(data.propMax[i]), token))
         .reduce((a, b) => a + b, 0);
 
       return fNum(total, 'usd');
@@ -258,7 +258,7 @@ export default defineComponent({
 
     const singleMaxUSD = computed(() => {
       const maxes = props.pool.tokens.map((token, i) =>
-        toFiat(data.singleAssetMax[i], token)
+        toFiat(Number(data.singleAssetMax[i]), token)
       );
 
       return fNum(Math.max(...maxes), 'usd');
@@ -276,11 +276,11 @@ export default defineComponent({
     });
 
     function propTokenBalance(index) {
-      return data.propMax[index] || 0;
+      return Number(data.propMax[index] || '0');
     }
 
     function singleAssetMax(index) {
-      return data.singleAssetMax[index] || 0;
+      return Number(data.singleAssetMax[index] || '0');
     }
 
     function propBalanceLabel(index) {
@@ -292,9 +292,9 @@ export default defineComponent({
     }
 
     function amountUSD(index) {
-      const amount = fullAmounts.value[index] || 0;
+      const amount = fullAmounts.value[index] || '0';
       const token = props.pool.tokens[index].toLowerCase();
-      return toFiat(amount, token);
+      return toFiat(Number(amount), token);
     }
 
     const total = computed(() => {
@@ -379,7 +379,10 @@ export default defineComponent({
       if (!isAuthenticated.value || isProportional.value) return [isPositive()];
       return [
         isPositive(),
-        isLessThanOrEqualTo(data.singleAssetMax[index], 'Exceeds balance')
+        isLessThanOrEqualTo(
+          Number(data.singleAssetMax[index]),
+          'Exceeds balance'
+        )
       ];
     }
 
