@@ -23,7 +23,7 @@ export default function useNumbers() {
     if (format) return numeral(number).format(format);
 
     let adjustedPreset;
-    if (number >= 100_000) {
+    if (number >= 10_000) {
       adjustedPreset = `${preset}_lg`;
     }
 
