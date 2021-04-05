@@ -379,7 +379,10 @@ export default defineComponent({
       if (!isAuthenticated.value || isProportional.value) return [isPositive()];
       return [
         isPositive(),
-        isLessThanOrEqualTo(Number(data.singleAssetMax[index]), 'Exceeds balance')
+        isLessThanOrEqualTo(
+          Number(data.singleAssetMax[index]),
+          'Exceeds balance'
+        )
       ];
     }
 
