@@ -5,20 +5,10 @@
       <MainMenu class="mt-6" />
       <TablePools
         v-if="!loading && !registry.loading"
-        class="overflow-hidden"
-        noPad
-      >
-        <TablePools :pools="filteredPools" :tokens="tokens" />
-      </BalCard>
-    </Container>
-    <teleport to="#modal">
-      <ModalSelectToken
-        v-if="!registry.loading"
-        :open="modal.selectToken"
-        @close="modal.selectToken = false"
-        @select="addToken"
+        class="mt-2"
+        :pools="pools"
       />
-    </teleport>
+    </div>
   </div>
 </template>
 
@@ -35,34 +25,34 @@ export default {
       pools: []
     };
   },
+
   watch: {
     'web3.config.key': function() {
       this.pools = [];
       this.loadPools();
     }
   },
+
   methods: {
     ...mapActions(['injectTokens']),
+
     async loadPools() {
       const query = clone(this.$route.query);
       if (query.tokens && !Array.isArray(query.tokens))
         query.tokens = [query.tokens];
       this.form = { ...this.form, ...query };
-
       this.loading = true;
       const chainId = this.web3.config.chainId;
-
       const pools = await getPools(chainId);
       this.pools = pools;
-
       const tokens = pools
         .map(pool => pool.tokens.map(token => getAddress(token.address)))
         .reduce((a, b) => [...a, ...b], []);
       await this.injectTokens(tokens);
-
       this.loading = false;
     }
   },
+
   async created() {
     await this.loadPools();
   }
