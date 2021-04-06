@@ -135,8 +135,8 @@ export default {
 
     onSelect(token) {
       this.toggleList(token);
-      // this.$emit('select', token);
-      // this.$emit('close');
+      this.$emit('select', token);
+      this.$emit('close');
     },
 
     toggleSelectTokenList() {
