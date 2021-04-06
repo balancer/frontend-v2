@@ -26,7 +26,11 @@
           v-if="Object.keys(tokenLists).length > 0"
           class="h-96 overflow-scroll"
         >
-          <a v-for="(tokenList, i) in tokenLists" :key="i" @click="onSelectList(i)">
+          <a
+            v-for="(tokenList, i) in tokenLists"
+            :key="i"
+            @click="onSelectList(i)"
+          >
             <RowTokenlist :tokenlist="tokenList" />
           </a>
         </div>
