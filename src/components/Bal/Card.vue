@@ -2,7 +2,7 @@
   <div :class="['bal-card', cardClasses]">
     <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
       <component :is="titleTag" v-if="!!title" v-text="title" />
-      <div v-if="$slots.header" class="flex-1">
+      <div v-if="$slots.header" class="flex-1 flex items-center">
         <slot name="header" />
       </div>
     </div>
