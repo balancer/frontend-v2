@@ -215,12 +215,10 @@ export async function getPoolSharesChart(
         }
       },
       balance: true,
-      poolTokenizerId: {
-        id: true,
-        totalShares: true
-      },
       poolId: {
-        liquidity: true
+        id: true,
+        totalShares: true,
+        totalLiquidity: true
       }
     };
   }
@@ -231,10 +229,9 @@ export async function getPoolSharesChart(
       parseInt(data[0].slice(1)),
       data[1]
         .map(poolShare => {
-          const poolLiquidity = parseFloat(poolShare.poolId.liquidity);
+          const poolLiquidity = parseFloat(poolShare.poolId.totalLiquidity);
           return (
-            (poolLiquidity /
-              parseFloat(poolShare.poolTokenizerId.totalShares)) *
+            (poolLiquidity / parseFloat(poolShare.poolId.totalShares)) *
             parseFloat(poolShare.balance)
           );
         })
@@ -269,12 +266,12 @@ export async function getPoolsLiquidity(network: string, poolIds: string[]) {
         }
       },
       id: true,
-      liquidity: true
+      totalLiquidity: true
     }
   };
 
   const result = await subgraphRequest(BALANCER_SUBGRAPH_URL[network], query);
   return Object.fromEntries(
-    result.pools.map(pool => [pool.id, { liquidity: pool.liquidity }])
+    result.pools.map(pool => [pool.id, { liquidity: pool.totalLiquidity }])
   );
 }
