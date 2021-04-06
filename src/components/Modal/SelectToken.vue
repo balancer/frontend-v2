@@ -8,7 +8,7 @@
         class="mr-2"
         flat
         circle
-        @click="selectTokenList = false"
+        @click="onListExit"
       >
         <BalIcon name="arrow-left" size="sm" />
       </BalBtn>
@@ -26,7 +26,7 @@
           v-if="Object.keys(tokenLists).length > 0"
           class="h-96 overflow-scroll"
         >
-          <a v-for="(tokenList, i) in tokenLists" :key="i" @click="onSelect(i)">
+          <a v-for="(tokenList, i) in tokenLists" :key="i" @click="onSelectList(i)">
             <RowTokenlist :tokenlist="tokenList" />
           </a>
         </div>
@@ -64,7 +64,7 @@
           <a
             v-for="(token, key) in tokens"
             :key="key"
-            @click="onSelect(token.address)"
+            @click="onSelectToken(token.address)"
           >
             <RowToken :token="token" />
           </a>
@@ -133,10 +133,18 @@ export default {
   methods: {
     ...mapActions(['toggleList']),
 
-    onSelect(token) {
-      this.toggleList(token);
+    onSelectList(list) {
+      this.toggleList(list);
+    },
+
+    onSelectToken(token) {
       this.$emit('select', token);
       this.$emit('close');
+    },
+
+    onListExit() {
+      this.selectTokenList = false;
+      this.q = '';
     },
 
     toggleSelectTokenList() {
