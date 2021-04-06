@@ -1,7 +1,6 @@
 import { createApp } from 'vue';
 import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
 import options from '@/auth';
-import VueClipboard from 'vue3-clipboard';
 import VueApexCharts from 'vue3-apexcharts';
 import Jazzicon from 'vue3-jazzicon/src/components';
 import upperFirst from 'lodash/upperFirst';
@@ -14,15 +13,11 @@ import i18n from '@/i18n';
 import '@/auth';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
-// import infiniteScroll from 'vue-infinite-scroll';
 
 const app = createApp(App)
   .use(i18n)
   .use(router)
   .use(store)
-  .use(VueClipboard, {
-    autoSetContainer: true
-  })
   .use(LockPlugin, options)
   .use(VueApexCharts)
   .component('jazzicon', Jazzicon)
