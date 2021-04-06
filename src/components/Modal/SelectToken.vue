@@ -1,10 +1,19 @@
 <template>
-  <BalModal
-    :show="open"
-    :title="$t('selectToken')"
-    @close="$emit('close')"
-    no-content-pad
-  >
+  <BalModal :show="open" @close="$emit('close')" no-content-pad>
+    <template v-slot:header>
+      <BalBtn
+        v-if="selectTokenList"
+        color="gray"
+        size="sm"
+        class="mr-2"
+        flat
+        circle
+        @click="selectTokenList = false"
+      >
+        <BalIcon name="arrow-left" size="sm" />
+      </BalBtn>
+      <h3>{{ title }}</h3>
+    </template>
     <template v-if="selectTokenList">
       <Search
         v-model="q"
@@ -97,6 +106,11 @@ export default {
 
   computed: {
     ...mapGetters(['getTokens', 'getTokenlists']),
+
+    title() {
+      if (this.selectTokenList) return this.$t('manageLists');
+      return this.$t('selectToken');
+    },
 
     tokenlistsReverse() {
       const tokenlists = clone(this.tokenLists);
