@@ -8,7 +8,7 @@
       </div>
     </div>
     <div id="modal" />
-    <ModalAccount
+    <AccountModal
       :open="web3.modal"
       @close="setAccountModal(false)"
       @login="onLogin"
@@ -21,8 +21,13 @@
 import { defineComponent, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
+import AccountModal from '@/components/modals/AccountModal.vue';
 
 export default defineComponent({
+  components: {
+    AccountModal
+  },
+
   setup() {
     // COMPOSABLES
     const store = useStore();

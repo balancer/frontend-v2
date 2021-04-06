@@ -92,7 +92,7 @@
       </table>
     </div>
     <teleport to="#modal">
-      <ModalSelectToken
+      <SelectTokenModal
         v-if="!registry.loading"
         :open="selectTokenModal"
         @close="selectTokenModal = false"
@@ -106,11 +106,15 @@
 import { PropType, defineComponent, toRefs, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
-
 import { getPoolLiquidity } from '@/utils/balancer/price';
 import { Pool } from '@/api/subgraph';
+import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 
 export default defineComponent({
+  components: {
+    SelectTokenModal
+  },
+
   props: {
     pools: {
       type: Array as PropType<Pool[]>,
