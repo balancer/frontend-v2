@@ -6,7 +6,7 @@ export default {
   install: app => {
     const notifyInstance = Notify({
       dappId: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '',
-      networkId: Number(process.env.VUE_APP_BLOCKNATIVE_DAPP_ID) || 1
+      networkId: Number(process.env.VUE_APP_DEFAULT_NETWORK) || 1
     });
 
     // Make plugin available in options API
