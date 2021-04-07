@@ -2,7 +2,7 @@ import homestead from '@/config/homestead.json';
 import kovan from '@/config/kovan.json';
 import docker from '@/config/docker.json';
 
-interface Config {
+export interface Config {
   key: string;
   chainId: number;
   name: string;
