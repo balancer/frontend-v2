@@ -10,9 +10,6 @@ import {
 } from 'sorv2package/dist/types';
 import { Swap, Pools } from '@balancer-labs/sor/dist/types';
 
-// TODO: npm i sorv2package@github:balancer-labs/balancer-sor#v2-package
-// We need to use sorv1 as pools from V1 have different format/multicall SC calls.
-
 export interface SorReturn {
   isV1swap: boolean;
   isV1best: boolean;
