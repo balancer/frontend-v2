@@ -99,14 +99,14 @@
       />
       <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
-        v-else-if="
-          sorReturn.isV1swap
-            ? !allowanceState.isUnlockedV1
-            : !allowanceState.isUnlockedV2
+        v-else-if="requireApproval"
+        :label="
+          `Unlock ${tokens[tokenInAddressInput].symbol} (${
+            sorReturn.isV1swap ? 'V1' : 'V2'
+          })`
         "
-        label="Allow"
         :loading="approving"
-        loading-label="Allowing..."
+        :loading-label="`Unlock ${tokens[tokenInAddressInput].symbol}...`"
         block
         @click.prevent="approve"
       />
@@ -209,6 +209,12 @@ export default defineComponent({
       tokenOutAmountInput,
       tokens
     );
+
+    const requireApproval = computed(() => {
+      return sorReturn.value.isV1swap
+        ? !allowanceState.value.isUnlockedV1
+        : !allowanceState.value.isUnlockedV2;
+    });
 
     const rateMessage = computed(() => {
       let message = '';
@@ -347,7 +353,7 @@ export default defineComponent({
       toggleRate,
       validationStatus,
       errorMessage,
-      allowanceState,
+      requireApproval,
       approving,
       sorReturn,
       approve,
