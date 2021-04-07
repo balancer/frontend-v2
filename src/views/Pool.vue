@@ -6,10 +6,7 @@
       <h3 class="font-bold mb-2">
         {{ title }}
       </h3>
-      <div class="text-sm">
-        {{ poolTypeLabel }} pool. LPs earn
-        {{ fNum(pool.strategy.swapFeePercent / 100, 'percent') }} in fees.
-      </div>
+      <div class="text-sm">{{ poolTypeLabel }}. {{ poolFeeLabel }}.</div>
     </div>
 
     <div class="px-4">
@@ -47,6 +44,7 @@ import {
   onBeforeMount
 } from 'vue';
 import { useStore } from 'vuex';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
 import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
@@ -76,6 +74,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
+    const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
     const { fNum } = useNumbers();
@@ -118,12 +117,18 @@ export default defineComponent({
     const poolTypeLabel = computed(() => {
       switch (pool.value.strategy.name) {
         case 'weightedPool':
-          return 'Weighted';
+          return t('weightedPool');
         case 'stablePool':
-          return 'Stable';
+          return t('stablePool');
         default:
           return '';
       }
+    });
+
+    const poolFeeLabel = computed(() => {
+      return t('lpsEarnFee', [
+        fNum(pool.value.strategy.swapFeePercent / 100, 'percent')
+      ]);
     });
 
     // CALLBACKS
@@ -169,6 +174,7 @@ export default defineComponent({
       // computed
       pool,
       poolTypeLabel,
+      poolFeeLabel,
       title,
       // methods
       fNum,
