@@ -14,7 +14,14 @@
           {{ type.label }}
         </span>
         <span class="text-xs text-gray-500"> ({{ type.max }} max) </span>
-        <BalTooltip v-if="type.tooltip" :width="250" :height="100" on-hover top>
+        <BalTooltip
+          v-if="type.tooltip"
+          :width="250"
+          :height="100"
+          on-hover
+          top
+          left
+        >
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
           </template>

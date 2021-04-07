@@ -1,6 +1,10 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
-    <FormTypeToggle v-model="withdrawType" :form-types="formTypes" :loading="loading" />
+    <FormTypeToggle
+      v-model="withdrawType"
+      :form-types="formTypes"
+      :loading="loading"
+    />
 
     <template v-if="isProportional">
       <div class="p-4 border-t">
@@ -12,7 +16,9 @@
             <span>{{ propPercentage }}%</span>
           </div>
           <div class="flex items-end">
-            <span class="mr-2 text-lg font-medium w-1/2">
+            <span
+              class="mr-2 text-lg font-medium w-1/2 leading-none break-words"
+            >
               {{ total }}
             </span>
             <BalRangeInput
@@ -35,19 +41,19 @@
           class="py-3 last:mb-0"
         >
           <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <Token :token="allTokens[token]" class="mr-4" />
-              <div class="flex flex-col leading-none">
-                <span>
+            <div class="w-1/2 flex items-center">
+              <Token :token="allTokens[token]" class="mr-2" />
+              <div class="w-3/4 flex flex-col leading-none">
+                <span class="break-words">
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
-                <span class="text-xs text-gray-400">
+                <span class="text-xs text-gray-400 break-words">
                   {{ propBalanceLabel(i) }} balance
                 </span>
               </div>
             </div>
-            <div class="flex flex-col leading-none text-right">
-              <span>
+            <div class="w-1/2 flex flex-col leading-none text-right pl-2">
+              <span class="break-words">
                 {{ fNum(amountUSD(i), 'usd') }}
               </span>
               <span class="text-xs text-gray-400">
@@ -124,9 +130,9 @@
               />
             </template>
             <div class="p-2 text-xs">
-              Withdrawing single asset amounts causes the internal prices of the pool to
-              change, as if you were swapping tokens. The higher the price
-              impact the more you'll spend in swap fees.
+              Withdrawing single asset amounts causes the internal prices of the
+              pool to change, as if you were swapping tokens. The higher the
+              price impact the more you'll spend in swap fees.
             </div>
           </BalTooltip>
         </div>
@@ -141,13 +147,14 @@
         />
         <BalBtn
           type="submit"
-          :label="`Withdraw ${total}`"
           loading-label="Confirming..."
           color="gradient"
           :disabled="!hasAmounts"
           :loading="loading"
           block
-        />
+        >
+          Withdraw {{ total.length > 15 ? '' : total }}
+        </BalBtn>
       </template>
     </div>
   </BalForm>
@@ -243,7 +250,7 @@ export default defineComponent({
 
     const propMaxUSD = computed(() => {
       const total = props.pool.tokens
-        .map((token, i) => toFiat(data.propMax[i], token))
+        .map((token, i) => toFiat(Number(data.propMax[i]), token))
         .reduce((a, b) => a + b, 0);
 
       return fNum(total, 'usd');
@@ -251,7 +258,7 @@ export default defineComponent({
 
     const singleMaxUSD = computed(() => {
       const maxes = props.pool.tokens.map((token, i) =>
-        toFiat(data.singleAssetMax[i], token)
+        toFiat(Number(data.singleAssetMax[i]), token)
       );
 
       return fNum(Math.max(...maxes), 'usd');
@@ -269,11 +276,11 @@ export default defineComponent({
     });
 
     function propTokenBalance(index) {
-      return data.propMax[index] || 0;
+      return Number(data.propMax[index] || '0');
     }
 
     function singleAssetMax(index) {
-      return data.singleAssetMax[index] || 0;
+      return Number(data.singleAssetMax[index] || '0');
     }
 
     function propBalanceLabel(index) {
@@ -285,9 +292,9 @@ export default defineComponent({
     }
 
     function amountUSD(index) {
-      const amount = fullAmounts.value[index] || 0;
+      const amount = fullAmounts.value[index] || '0';
       const token = props.pool.tokens[index].toLowerCase();
-      return toFiat(amount, token);
+      return toFiat(Number(amount), token);
     }
 
     const total = computed(() => {
@@ -372,7 +379,10 @@ export default defineComponent({
       if (!isAuthenticated.value || isProportional.value) return [isPositive()];
       return [
         isPositive(),
-        isLessThanOrEqualTo(data.singleAssetMax[index], 'Exceeds balance')
+        isLessThanOrEqualTo(
+          Number(data.singleAssetMax[index]),
+          'Exceeds balance'
+        )
       ];
     }
 
