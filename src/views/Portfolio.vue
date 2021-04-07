@@ -77,7 +77,7 @@ export default {
     ...mapGetters(['getTokens']),
     loading() {
       return (
-        this.app.authLoading ||
+        this.web3.loading ||
         (this.account.loading && !this.account.loaded) ||
         this.registry.loading
       );
