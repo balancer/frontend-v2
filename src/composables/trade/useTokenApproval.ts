@@ -26,7 +26,10 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     }
 
     if (!tokenInAddress.value || !amount.value || approved.value === true)
-      return false;
+      return {
+        isUnlockedV1: true,
+        isUnlockedV2: true
+      };
 
     const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
     const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
@@ -39,7 +42,6 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     });
 
     const requiredAllowancesV2 = store.getters.getRequiredAllowances({
-      dst: config.addresses.vault,
       tokens: tokensRequired
     });
 
@@ -52,8 +54,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   async function checkAllowances(): Promise<void> {
     await Promise.all([
       store.dispatch('getAllowances', {
-        tokens: [tokenInAddress.value],
-        dst: config.addresses.vault
+        tokens: [tokenInAddress.value]
       }),
       store.dispatch('getAllowances', {
         tokens: [tokenInAddress.value],
@@ -98,14 +99,12 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     emitter.on('txConfirmed', () => {
       approving.value = false;
       approved.value = true;
-      checkAllowances();
       return undefined;
     });
 
     emitter.on('txCancel', () => {
       // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
       approving.value = false;
-      checkAllowances();
       return undefined;
     });
 
