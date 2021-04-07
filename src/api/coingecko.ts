@@ -64,7 +64,7 @@ interface Price {
 
 export type Prices = Record<string, Price>;
 
-type HistoricalPrices = Record<string, Prices>;
+export type HistoricalPrices = Record<string, Prices>;
 
 export async function getEtherPrice(): Promise<Price> {
   const uri =
