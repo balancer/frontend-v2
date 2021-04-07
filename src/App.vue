@@ -11,28 +11,37 @@
     <ModalAccount
       :open="web3.modal"
       @close="setAccountModal(false)"
-      @login="handleLogin"
+      @login="onLogin"
     />
     <Notifications />
   </div>
 </template>
 
-<script>
-import { mapActions, mapMutations } from 'vuex';
+<script lang="ts">
+import { defineComponent, onBeforeMount } from 'vue';
+import { useStore } from 'vuex';
+import useWeb3Watchers from '@/composables/useWeb3Watchers';
 
-export default {
-  mounted() {
-    this.init();
-  },
+export default defineComponent({
+  setup() {
+    // COMPOSABLES
+    const store = useStore();
+    useWeb3Watchers();
 
-  methods: {
-    ...mapActions(['init', 'login']),
-    ...mapMutations(['setAccountModal']),
+    // CALLBACKS
+    onBeforeMount(() => {
+      store.dispatch('init');
+    });
 
-    async handleLogin(connector) {
-      this.setAccountModal(false);
-      await this.login(connector);
+    // METHODS
+    async function onLogin(connector: string): Promise<void> {
+      store.commit('setAccountModal', false);
+      await store.dispatch('login', connector);
     }
+
+    return {
+      onLogin
+    };
   }
-};
+});
 </script>
