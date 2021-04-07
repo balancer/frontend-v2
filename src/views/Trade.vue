@@ -106,7 +106,7 @@
           })`
         "
         :loading="approving"
-        :loading-label="`Unlock ${tokens[tokenInAddressInput].symbol}...`"
+        :loading-label="`Unlocking ${tokens[tokenInAddressInput].symbol}...`"
         block
         @click.prevent="approve"
       />
