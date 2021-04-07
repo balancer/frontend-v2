@@ -17,8 +17,7 @@
     <template v-if="selectTokenList">
       <Search
         v-model="q"
-        @input="filterTokenLists"
-        :placeholder="$t('searchByName')"
+        :placeholder="t('searchByName')"
         class="p-4 border-b dark:border-gray-700"
       />
       <div>
@@ -36,7 +35,7 @@
         </div>
         <div
           v-else
-          v-text="$t('errorNoLists')"
+          v-text="t('errorNoLists')"
           class="h-96 flex items-center justify-center"
         />
       </div>
@@ -45,8 +44,8 @@
       <div class="border-b dark:border-gray-700 flex">
         <Search
           v-model="q"
-          @input="$emit('inputSearch', q)"
-          :placeholder="$t('searchBy')"
+          @input="onTokenSearch"
+          :placeholder="t('searchBy')"
           class="p-4 flex-auto"
         />
         <a @click="toggleSelectTokenList" class="p-4">
@@ -78,7 +77,7 @@
         </div>
         <div
           v-else
-          v-text="$t('errorNoTokens')"
+          v-text="t('errorNoTokens')"
           class="h-96 flex items-center justify-center"
         />
       </div>
@@ -86,79 +85,102 @@
   </BalModal>
 </template>
 
-<script>
-import { mapGetters, mapActions } from 'vuex';
+<script lang="ts">
+import { defineComponent, reactive, toRefs, computed } from 'vue';
+import { useStore } from 'vuex';
+import { useI18n } from 'vue-i18n';
 import { clone } from '@/utils';
+import { isAddress, getAddress } from '@ethersproject/address';
 
-export default {
-  emits: ['close', 'inputSearch', 'selectTokenlist', 'select'],
+export default defineComponent({
+  emits: ['close', 'selectTokenlist', 'select'],
 
   props: {
     open: Boolean
   },
 
-  data() {
-    return {
+  setup(_, { emit }) {
+    // DATA
+    const data = reactive({
       loading: false,
-      q: '',
+      query: '',
       selectTokenList: false,
-      form: {
-        tokens: []
+      selectedTokens: []
+    });
+
+    // COMPOSABLES
+    const store = useStore();
+    const { t } = useI18n();
+
+    // COMPUTED
+    const title = computed(() => {
+      if (data.selectTokenList) return t('manageLists');
+      return t('selectToken');
+    });
+
+    const tokens = computed(() => {
+      return store.getters.getTokens({
+        q: data.query,
+        not: data.selectedTokens
+      });
+    });
+
+    const tokenLists = computed(() => {
+      return store.getters.getTokenlists({ q: data.query });
+    });
+
+    const tokenlistsReverse = computed(() => {
+      const tokenListsClone = clone(tokenLists.value);
+      return Object.values(tokenListsClone).reverse();
+    });
+
+    const activeTokenLists = computed(() => {
+      return store.getters.getTokenlists({ active: true });
+    });
+
+    // METHODS
+    function onTokenSearch(event): void {
+      let address = event.target.value;
+      if (isAddress(address)) {
+        address = getAddress(address);
+        store.dispatch('injectTokens', [address.trim()]);
       }
+    }
+
+    function onSelectToken(token: string): void {
+      emit('select', token);
+      emit('close');
+    }
+
+    function onSelectList(list: string): void {
+      store.dispatch('toggleList', list);
+    }
+
+    function onListExit(): void {
+      data.selectTokenList = false;
+      data.query = '';
+    }
+
+    function toggleSelectTokenList(): void {
+      data.selectTokenList = !data.selectTokenList;
+      data.query = '';
+    }
+
+    return {
+      ...toRefs(data),
+      t,
+
+      title,
+      tokens,
+      tokenlistsReverse,
+      activeTokenLists,
+
+      onTokenSearch,
+      onSelectToken,
+      onSelectList,
+      onListExit,
+      toggleSelectTokenList
     };
-  },
-
-  computed: {
-    ...mapGetters(['getTokens', 'getTokenlists']),
-
-    title() {
-      if (this.selectTokenList) return this.$t('manageLists');
-      return this.$t('selectToken');
-    },
-
-    tokenlistsReverse() {
-      const tokenlists = clone(this.tokenLists);
-      return Object.values(tokenlists).reverse();
-    },
-
-    tokenLists() {
-      return this.getTokenlists({ q: this.q });
-    },
-
-    activeTokenLists() {
-      return this.getTokenlists({ active: true });
-    },
-
-    tokens() {
-      return this.getTokens({ q: this.q, not: this.form.tokens });
-    }
-  },
-
-  methods: {
-    ...mapActions(['toggleList']),
-
-    onSelectList(list) {
-      this.toggleList(list);
-    },
-
-    onSelectToken(token) {
-      this.$emit('select', token);
-      this.$emit('close');
-    },
-
-    onListExit() {
-      this.selectTokenList = false;
-      this.q = '';
-    },
-
-    toggleSelectTokenList() {
-      this.selectTokenList = !this.selectTokenList;
-      this.q = '';
-    },
-
-    filterTokenLists() {
-      this.tokenLists = this.getTokenlists({ q: this.q });
-    }
   }
-};
+});
 </script>
