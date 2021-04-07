@@ -308,7 +308,7 @@ export default defineComponent({
       await handleSelectToken(initialTokens[chainId].output);
     }
 
-    async function approve(): void {
+    async function approve(): Promise<void> {
       if (sorReturn.value.isV1swap) {
         await approveV1();
       } else {

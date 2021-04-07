@@ -90,7 +90,6 @@
     "eslint-plugin-vue": "^7.0.0-alpha.0",
     "prettier": "^1.19.1",
     "tailwind-config-viewer": "^1.5.0",
-    "vue-cli-plugin-vue-next": "~0.1.4",
     "vue-cli-plugin-webpack-bundle-analyzer": "^2.0.0",
     "vue-loader": "^16.1.2"
   },
