@@ -22,17 +22,20 @@ export default function useValidation(
     const tokenIn = tokens.value[tokenInAddress.value];
 
     if (
-      parseFloat(tokenInAmount.value) == 0 ||
-      tokenInAmount.value.trim() === ''
+      (parseFloat(tokenInAmount.value) == 0 ||
+        tokenInAmount.value.trim() === '') &&
+      parseFloat(tokenOutAmount.value) == 0
     )
       return 'EMPTY';
 
-    if (!tokenIn?.balance || tokenIn.balance < tokenInAmount.value)
+    if (!tokenIn?.balance || tokenIn.balance < parseFloat(tokenInAmount.value))
       return 'INSUFFICIENT_BALANCE';
 
     if (
       parseFloat(tokenOutAmount.value) == 0 ||
-      tokenOutAmount.value.trim() === ''
+      tokenOutAmount.value.trim() === '' ||
+      parseFloat(tokenInAmount.value) == 0 ||
+      tokenInAmount.value.trim() === ''
     )
       return 'INSUFFICIENT_LIQUIDITY';
 

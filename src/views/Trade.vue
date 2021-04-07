@@ -99,17 +99,21 @@
       />
       <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
-        v-else-if="requireAllowance"
-        label="Allow"
+        v-else-if="requireApproval"
+        :label="
+          `Unlock ${tokens[tokenInAddressInput].symbol} (${
+            sorReturn.isV1swap ? 'V1' : 'V2'
+          })`
+        "
         :loading="approving"
-        loading-label="Allowing..."
+        :loading-label="`Unlocking ${tokens[tokenInAddressInput].symbol}...`"
         block
         @click.prevent="approve"
       />
       <BalBtn
         v-else
         type="submit"
-        label="Swap"
+        :label="`Swap (${sorReturn.isV1swap ? 'V1' : 'V2'})`"
         :loading="trading"
         loading-label="Confirming..."
         color="gradient"
@@ -177,17 +181,26 @@ export default defineComponent({
     const tokens = computed(() => getTokens({ includeEther: true }));
 
     // COMPOSABLES
-    const { trading, trade, initSor, handleAmountChange, slippage } = useSor(
+    const {
+      approving,
+      approveV1,
+      approveV2,
+      allowanceState
+    } = useTokenApproval(tokenInAddressInput, tokenInAmountInput, tokens);
+    const {
+      trading,
+      trade,
+      initSor,
+      handleAmountChange,
+      slippage,
+      sorReturn
+    } = useSor(
       tokenInAddressInput,
       tokenInAmountInput,
       tokenOutAddressInput,
       tokenOutAmountInput,
-      tokens
-    );
-    const { approving, approve, requireAllowance } = useTokenApproval(
-      tokenInAddressInput,
-      tokenInAmountInput,
-      tokens
+      tokens,
+      allowanceState
     );
     const { validationStatus, errorMessage } = useValidation(
       tokenInAddressInput,
@@ -196,6 +209,12 @@ export default defineComponent({
       tokenOutAmountInput,
       tokens
     );
+
+    const requireApproval = computed(() => {
+      return sorReturn.value.isV1swap
+        ? !allowanceState.value.isUnlockedV1
+        : !allowanceState.value.isUnlockedV2;
+    });
 
     const rateMessage = computed(() => {
       let message = '';
@@ -289,6 +308,14 @@ export default defineComponent({
       await handleSelectToken(initialTokens[chainId].output);
     }
 
+    async function approve(): Promise<void> {
+      if (sorReturn.value.isV1swap) {
+        await approveV1();
+      } else {
+        await approveV2();
+      }
+    }
+
     watch(getConfig, async () => {
       tokenInAddressInput.value = '';
       tokenInAmountInput.value = '';
@@ -326,8 +353,9 @@ export default defineComponent({
       toggleRate,
       validationStatus,
       errorMessage,
-      requireAllowance,
+      requireApproval,
       approving,
+      sorReturn,
       approve,
       trading,
       trade,

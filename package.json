@@ -57,6 +57,7 @@
     "postcss": "^7.0.35",
     "postcss-nesting": "^7.0.1",
     "pretty-ms": "^7.0.0",
+    "sorv2package": "github:balancer-labs/balancer-sor#v2-package",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4",
     "typescript": "~3.9.3",
     "vue": "^3.0.0-beta.1",
@@ -89,7 +90,6 @@
     "eslint-plugin-vue": "^7.0.0-alpha.0",
     "prettier": "^1.19.1",
     "tailwind-config-viewer": "^1.5.0",
-    "vue-cli-plugin-vue-next": "~0.1.4",
     "vue-cli-plugin-webpack-bundle-analyzer": "^2.0.0",
     "vue-loader": "^16.1.2"
   },

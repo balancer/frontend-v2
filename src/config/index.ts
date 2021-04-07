@@ -12,7 +12,8 @@ interface Config {
   rpc: string;
   ws: string;
   explorer: string;
-  subgraphBackupUrl: string;
+  poolsUrlV1: string;
+  poolsUrlV2: string;
   addresses: {
     exchangeProxy: string;
     multicall: string;
@@ -34,6 +35,7 @@ interface Config {
 const config: Record<string, Config> = {
   '1': homestead,
   '42': kovan,
+  // @ts-ignore
   '17': docker
 };
 
