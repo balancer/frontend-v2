@@ -36,12 +36,6 @@ const getters = {
 };
 
 const mutations = {
-  WEB3_SET(_state, payload) {
-    Object.keys(payload).forEach(key => {
-      _state[key] = payload[key];
-    });
-  },
-
   setWeb3Loading(_state: Web3State, val: boolean): void {
     _state.loading = val;
   },
