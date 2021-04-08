@@ -113,5 +113,6 @@
     "weightedPool": "Weighted pool",
     "withdrawFee": "Withdraw fee",
     "yearAbbrev": "y",
-    "youDidIt": "You did it!"
+    "youDidIt": "You did it!",
+    "lpsEarnFee": "LPs earn {0} in fees"
 }

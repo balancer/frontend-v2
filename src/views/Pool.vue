@@ -4,12 +4,9 @@
 
     <div v-if="!loading" class="lg:mb-10">
       <h3 class="font-bold mb-2">
-        {{ header }}
+        {{ title }}
       </h3>
-      <div class="text-sm">
-        {{ poolType }} pool. LPs earn
-        {{ _num(pool.strategy.swapFeePercent / 100, '0.00%') }} in fees.
-      </div>
+      <div class="text-sm">{{ poolTypeLabel }}. {{ poolFeeLabel }}.</div>
     </div>
 
     <div class="px-4">
@@ -38,126 +35,151 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapGetters } from 'vuex';
-import { getTokensHistoricalPrice } from '@/api/coingecko';
-import { getUserPoolEvents, getPoolSnapshots } from '@/api/subgraph';
+<script lang="ts">
+import {
+  defineComponent,
+  reactive,
+  toRefs,
+  computed,
+  onBeforeMount
+} from 'vue';
+import { useStore } from 'vuex';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import useNumbers from '@/composables/useNumbers';
+import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
+import {
+  getUserPoolEvents,
+  getPoolSnapshots,
+  PoolEvents,
+  PoolSnapshots
+} from '@/api/subgraph';
 import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 
-export default {
+interface PoolPageData {
+  id: string;
+  loading: boolean;
+  events: PoolEvents;
+  prices: HistoricalPrices;
+  snapshots: PoolSnapshots;
+}
+
+export default defineComponent({
   components: {
     PoolActionsCard,
     PoolBalancesCard
   },
 
-  data() {
-    return {
-      id: this.$route.params.id,
+  setup() {
+    // COMPOSABLES
+    const store = useStore();
+    const { t } = useI18n();
+    const route = useRoute();
+    const router = useRouter();
+    const { fNum } = useNumbers();
+
+    // DATA
+    const data = reactive<PoolPageData>({
+      id: route.params.id as string,
       loading: true,
       events: {
-        swaps: [],
         joins: [],
         exits: []
       },
       prices: {},
       snapshots: []
-    };
-  },
+    });
 
-  computed: {
-    ...mapGetters(['getTokens']),
-    header() {
-      if (!this.pool) {
-        return '';
-      }
-      return this.pool.tokens
+    // COMPUTED
+    const pool = computed(() => {
+      return store.state.pools.current;
+    });
+
+    const allTokens = computed(() => {
+      return store.getters.getTokens();
+    });
+
+    const title = computed(() => {
+      return pool.value.tokens
         .map((address, index) => {
-          const weight = this.pool.weightsPercent[index];
-          const token = this.tokens[address];
-          if (!token) {
-            return '';
-          }
+          const weight = pool.value.weightsPercent[index];
+          const token = allTokens.value[address];
+          if (!token) return null;
+
           const symbol = token.symbol;
-          return `${this._num(weight, '0.')} ${symbol}`;
+          return `${fNum(weight, null, '0.')} ${symbol}`;
         })
+        .filter(token => token)
         .join(', ');
-    },
-    poolType() {
-      const strategyName = this.pool.strategy.name;
-      if (strategyName === 'weightedPool') {
-        return 'Weighted';
-      }
-      if (strategyName === 'stablePool') {
-        return 'Stable';
-      }
-      return '';
-    },
-    pool() {
-      return this.pools.current;
-    },
+    });
 
-    tokens() {
-      return this.getTokens();
+    const poolTypeLabel = computed(() => {
+      switch (pool.value.strategy.name) {
+        case 'weightedPool':
+          return t('weightedPool');
+        case 'stablePool':
+          return t('stablePool');
+        default:
+          return '';
+      }
+    });
+
+    const poolFeeLabel = computed(() => {
+      return t('lpsEarnFee', [
+        fNum(pool.value.strategy.swapFeePercent / 100, 'percent')
+      ]);
+    });
+
+    // CALLBACKS
+    onBeforeMount(async () => {
+      try {
+        await fetchPool();
+        loadEvents();
+        loadChartData(30);
+        data.loading = false;
+      } catch (error) {
+        console.error(error);
+        router.push('/');
+      }
+    });
+
+    // METHODS
+    async function fetchPool(): Promise<void> {
+      await store.dispatch('loadPool', data.id);
+      await store.dispatch('injectTokens', [
+        ...pool.value.tokens,
+        pool.value.address
+      ]);
     }
-  },
 
-  methods: {
-    ...mapActions([
-      'notify',
-      'injectTokens',
-      'watchTx',
-      'loadPool',
-      'loadPrices'
-    ]),
-
-    handleCopy() {
-      this.notify(this.$t('copied'));
-    },
-
-    async fetchPool() {
-      await this.loadPool(this.id);
-      await this.injectTokens([...this.pool.tokens, this.pool.address]);
-    },
-
-    async loadEvents() {
-      const network = this.web3.config.key;
-      const account = this.web3.account;
+    async function loadEvents(): Promise<void> {
+      const network = store.state.web3.config.key;
+      const account = store.state.web3.account;
       if (account) {
-        this.events = await getUserPoolEvents(network, this.id, account);
+        data.events = await getUserPoolEvents(network, data.id, account);
       }
-    },
-
-    async loadChartData(days) {
-      const network = this.web3.config.key;
-      const addresses = this.pool.tokens;
-      this.prices = await getTokensHistoricalPrice(network, addresses, days);
-      this.snapshots = await getPoolSnapshots(network, this.id, days);
-    },
-
-    async addToken() {
-      const address = this.pool.address;
-      // @ts-ignore
-      await this.$auth.provider.value.sendAsync({
-        method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20',
-          options: {
-            address,
-            symbol: this.tokens[address].symbol.slice(0, 6),
-            decimals: this.tokens[address].decimals
-          }
-        },
-        id: Math.round(Math.random() * 100000)
-      });
     }
-  },
 
-  async created() {
-    await this.fetchPool();
-    this.loadEvents();
-    this.loadChartData(30);
-    this.loading = false;
+    async function loadChartData(days: number): Promise<void> {
+      const network = store.state.web3.config.key;
+      const addresses = pool.value.tokens;
+      data.prices = await getTokensHistoricalPrice(network, addresses, days);
+      data.snapshots = await getPoolSnapshots(network, data.id, days);
+    }
+
+    return {
+      // data
+      ...toRefs(data),
+      // computed
+      pool,
+      poolTypeLabel,
+      poolFeeLabel,
+      title,
+      // methods
+      fNum,
+      fetchPool
+    };
   }
-};
+});
 </script>
