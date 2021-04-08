@@ -125,8 +125,10 @@
       <SelectTokenModal
         v-if="!registry.loading"
         :open="modalSelectTokenIsOpen"
+        :excludedTokens="[tokenInAddressInput, tokenOutAddressInput]"
         @close="modalSelectTokenIsOpen = false"
         @select="handleSelectToken"
+        include-ether
       />
     </teleport>
   </Layout>

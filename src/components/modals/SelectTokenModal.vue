@@ -16,7 +16,7 @@
     </template>
     <template v-if="selectTokenList">
       <Search
-        v-model="q"
+        v-model="query"
         :placeholder="t('searchByName')"
         class="p-4 border-b dark:border-gray-700"
       />
@@ -43,7 +43,7 @@
     <template v-else>
       <div class="border-b dark:border-gray-700 flex">
         <Search
-          v-model="q"
+          v-model="query"
           @input="onTokenSearch"
           :placeholder="t('searchBy')"
           class="p-4 flex-auto"
@@ -96,16 +96,17 @@ export default defineComponent({
   emits: ['close', 'selectTokenlist', 'select'],
 
   props: {
-    open: Boolean
+    open: { type: Boolean, default: false },
+    excludedTokens: { type: Array, default: () => [] },
+    includeEther: { type: Boolean, default: false }
   },
 
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     // DATA
     const data = reactive({
       loading: false,
       query: '',
-      selectTokenList: false,
-      selectedTokens: []
+      selectTokenList: false
     });
 
     // COMPOSABLES
@@ -121,7 +122,8 @@ export default defineComponent({
     const tokens = computed(() => {
       return store.getters.getTokens({
         q: data.query,
-        not: data.selectedTokens
+        not: props.excludedTokens,
+        includeEther: props.includeEther
       });
     });
 
@@ -167,14 +169,16 @@ export default defineComponent({
     }
 
     return {
+      // data
       ...toRefs(data),
       t,
-
+      // computed
       title,
       tokens,
       tokenlistsReverse,
       activeTokenLists,
-
+      tokenLists,
+      // methods
       onTokenSearch,
       onSelectToken,
       onSelectList,

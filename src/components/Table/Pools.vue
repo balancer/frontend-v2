@@ -95,6 +95,7 @@
       <SelectTokenModal
         v-if="!registry.loading"
         :open="selectTokenModal"
+        :excluded-tokens="selectedTokens"
         @close="selectTokenModal = false"
         @select="addToken"
       />
