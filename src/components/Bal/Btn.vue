@@ -125,8 +125,7 @@ export default defineComponent({
     };
 
     const textColorClasses = (): string => {
-      if (props.outline) return `text-${props.color}-500`;
-      if (props.flat) return `text-${props.color}-400`;
+      if (props.outline || props.flat) return `text-${props.color}-500`;
       return 'text-white';
     };
 
