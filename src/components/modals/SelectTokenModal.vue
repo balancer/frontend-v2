@@ -23,7 +23,7 @@
       <div>
         <div
           v-if="Object.keys(tokenLists).length > 0"
-          class="h-96 overflow-scroll"
+          class="h-96 overflow-y-scroll"
         >
           <a
             v-for="(tokenList, i) in tokenLists"
@@ -48,18 +48,18 @@
           :placeholder="t('searchBy')"
           class="p-4 flex-auto"
         />
-        <a @click="toggleSelectTokenList" class="p-4">
-          <Icon name="down" class="pl-1 pt-1 float-right" />
-          <span class="mr-3">
+        <a @click="toggleSelectTokenList" class="p-4 flex">
+          <span class="mr-1">
             <img
               v-for="(tokenlist, i) in activeTokenLists"
               :key="i"
               :src="_url(tokenlist.logoURI)"
-              class="rounded-full float-right inline-block bg-white align-middle border -ml-3"
+              class="rounded-full inline-block bg-white align-middle shadow -ml-3"
               width="26"
               height="26"
             />
           </span>
+          <BalIcon name="chevron-down" class="text-gray-500" />
         </a>
       </div>
       <div>
