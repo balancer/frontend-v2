@@ -1,19 +1,26 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
-import Notify from 'bnc-notify';
-import configs from '@/config';
+import configs, { Config } from '@/config';
 import { getProfiles } from '@/utils/profile';
-import store from '@/store';
 import getProvider from '@/utils/provider';
 
 const defaultConfig = process.env.VUE_APP_DEFAULT_NETWORK || '1';
-const BLOCKNATIVE_DAPP_ID = process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '';
 
 let auth;
-let notify;
 
-const state = {
+interface Web3State {
+  loading: boolean;
+  account: string | null;
+  profile: {};
+  config: Config;
+  connector: string;
+  blockNumber: number | null;
+  modal: boolean;
+}
+
+const state: Web3State = {
+  loading: false,
   account: null,
   profile: {},
   config: configs[defaultConfig],
@@ -22,22 +29,31 @@ const state = {
   modal: false
 };
 
+const getters = {
+  getConfig: state => () => {
+    return state.config;
+  }
+};
+
 const mutations = {
-  WEB3_SET(_state, payload) {
-    Object.keys(payload).forEach(key => {
-      _state[key] = payload[key];
-    });
+  setWeb3Loading(_state: Web3State, val: boolean): void {
+    _state.loading = val;
   },
-  LOGOUT(_state) {
+
+  logout(_state: Web3State) {
     _state.account = null;
-    _state.name = null;
-    console.debug('LOGOUT');
+    _state.profile = {};
   },
-  LOAD_PROVIDER_FAILURE(_state, payload) {
-    _state.account = null;
-    console.debug('LOAD_PROVIDER_FAILURE', payload);
+
+  setAccount(_state: Web3State, account: string): void {
+    _state.account = account;
   },
-  HANDLE_CHAIN_CHANGED(_state, chainId) {
+
+  setProfile(_state: Web3State, profile) {
+    _state.profile = profile;
+  },
+
+  setNetwork(_state: Web3State, chainId: number): void {
     if (!configs[chainId]) {
       configs[chainId] = {
         ...configs[defaultConfig],
@@ -46,48 +62,51 @@ const mutations = {
       };
     }
     _state.config = configs[chainId];
-    console.debug('HANDLE_CHAIN_CHANGED', chainId);
-  },
-  HANDLE_ACCOUNTS_CHANGED(_state, payload) {
-    _state.account = payload;
-    console.debug('HANDLE_ACCOUNTS_CHANGED', payload);
   },
 
-  setAccountModal(_state, val: boolean) {
+  setConnector(_state: Web3State, connector: string): void {
+    _state.connector = connector;
+  },
+
+  setBlockNumber(_state: Web3State, blockNumber: number): void {
+    _state.blockNumber = blockNumber;
+  },
+
+  setAccountModal(_state: Web3State, val: boolean) {
     _state.modal = val;
   }
 };
 
-const getters = {
-  getConfig: state => () => {
-    return state.config;
-  }
-};
-
 const actions = {
-  login: async ({ dispatch, commit }, connector = 'injected') => {
+  async login({ dispatch, commit }, connector = 'injected') {
+    commit('setWeb3Loading', true);
+
     auth = getInstance();
-    commit('setAuthLoading', true);
     await auth.login(connector);
+
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
       dispatch('getBalances');
       dispatch('getAllowances');
     }
-    commit('setAuthLoading', false);
-    commit('WEB3_SET', { connector });
+
+    commit('setWeb3Loading', false);
+    commit('setConnector', connector);
   },
-  logout: async ({ commit }) => {
+
+  async logout({ commit }) {
     auth = getInstance();
     auth.logout();
-    commit('LOGOUT');
+    commit('logout');
   },
-  getBlockNumber: async () => {
+
+  async getBlockNumber({ commit }) {
     const blockNumber = await getProvider(state.config.key).getBlockNumber();
-    store.commit('WEB3_SET', { blockNumber });
+    commit('setBlockNumber', blockNumber);
   },
-  loadProvider: async ({ commit, dispatch }) => {
+
+  async loadProvider({ commit, dispatch }) {
     try {
       if (
         auth.provider.value.removeAllListeners &&
@@ -96,7 +115,7 @@ const actions = {
         auth.provider.value.removeAllListeners();
       if (auth.provider.value.on) {
         auth.provider.value.on('chainChanged', async chainId => {
-          commit('HANDLE_CHAIN_CHANGED', parseInt(formatUnits(chainId, 0)));
+          commit('setNetwork', parseInt(formatUnits(chainId, 0)));
           dispatch('resetAccount');
           dispatch('getBalances');
           dispatch('getAllowances');
@@ -104,8 +123,8 @@ const actions = {
         });
         auth.provider.value.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
-            commit('HANDLE_ACCOUNTS_CHANGED', accounts[0]);
-            dispatch('resetAccount');
+            commit('setAccount', accounts[0]);
+            dispatch('  ');
             await dispatch('loadProvider');
             dispatch('getBalances');
             dispatch('getAllowances');
@@ -120,33 +139,17 @@ const actions = {
         auth.web3.getNetwork(),
         auth.web3.listAccounts()
       ]);
-      commit('HANDLE_CHAIN_CHANGED', network.chainId);
+      commit('setNetwork', network.chainId);
 
       const account = accounts.length > 0 ? accounts[0] : null;
       const profiles = await getProfiles([account]);
       await dispatch('getBlockNumber');
 
-      if (BLOCKNATIVE_DAPP_ID) {
-        if (notify && state.account) {
-          notify.unsubscribe(state.account);
-        }
-
-        notify = Notify({
-          dappId: BLOCKNATIVE_DAPP_ID,
-          networkId: network.chainId
-        });
-
-        const { emitter } = notify.account(account);
-
-        emitter.on('all', transaction => {
-          if (transaction.status === 'confirmed') dispatch('getBalances');
-          return false;
-        });
-      }
-
-      commit('WEB3_SET', { account, profile: profiles[account] });
+      commit('setAccount', account);
+      commit('setProfile', profiles[account]);
     } catch (e) {
-      commit('LOAD_PROVIDER_FAILURE', e);
+      commit('setAccount', null);
+      console.debug('LOAD_PROVIDER_FAILURE', e);
       return Promise.reject(e);
     }
   }

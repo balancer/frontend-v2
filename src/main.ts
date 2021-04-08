@@ -1,16 +1,15 @@
 import { createApp } from 'vue';
+import App from '@/App.vue';
+import store from '@/store';
+import router from '@/plugins/router';
+import mixins from '@/plugins/mixins';
+import i18n from '@/plugins/i18n';
+import blocknative from '@/plugins/blocknative';
+import authOptions from '@/plugins/authOptions';
 import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
-import options from '@/auth';
 import VueApexCharts from 'vue3-apexcharts';
-import Jazzicon from 'vue3-jazzicon/src/components';
 import upperFirst from 'lodash/upperFirst';
 import camelCase from 'lodash/camelCase';
-import App from '@/App.vue';
-import router from '@/router';
-import store from '@/store';
-import mixins from '@/mixins';
-import i18n from '@/i18n';
-import '@/auth';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
 
@@ -18,14 +17,9 @@ const app = createApp(App)
   .use(i18n)
   .use(router)
   .use(store)
-  .use(LockPlugin, options)
+  .use(blocknative)
+  .use(LockPlugin, authOptions)
   .use(VueApexCharts)
-  .component('jazzicon', Jazzicon)
-  .directive('autofocus', {
-    mounted(el) {
-      el.focus();
-    }
-  })
   .mixin(mixins);
 
 const requireComponent = require.context(

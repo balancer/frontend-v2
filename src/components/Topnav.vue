@@ -73,7 +73,7 @@
               </BalBtn>
               <BalBtn
                 class="auth-btn"
-                :loading="app.authLoading"
+                :loading="web3.loading"
                 :loading-label="
                   ['sm', 'md'].includes(bp) ? '' : 'Connecting...'
                 "
@@ -98,7 +98,7 @@
                   class="pl-2 text-base hidden md:inline-block"
                 />
               </BalBtn>
-              <SettingsPopover v-if="!app.authLoading" class="popover" />
+              <SettingsPopover v-if="!web3.loading" class="popover" />
             </div>
             <BalBtn
               v-else

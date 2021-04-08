@@ -1,11 +1,10 @@
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/utils';
-import i18n from '@/i18n';
+import i18n from '@/plugins/i18n';
 
 export interface AppState {
   init: boolean;
   loading: boolean;
-  authLoading: boolean;
   modalOpen: boolean;
   darkMode: boolean;
   locale: string;
@@ -15,7 +14,6 @@ export interface AppState {
 const state: AppState = {
   init: false,
   loading: true,
-  authLoading: false,
   modalOpen: false,
   darkMode: false,
   // locale: defaultLocale,
@@ -54,10 +52,6 @@ const mutations = {
 
   setLoading(state: AppState, val: boolean): void {
     state.loading = val;
-  },
-
-  setAuthLoading(state: AppState, val: boolean): void {
-    state.authLoading = val;
   },
 
   toggleModal(state: AppState): void {

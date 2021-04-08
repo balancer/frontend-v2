@@ -241,7 +241,7 @@ export default defineComponent({
 
     // COMPOSABLES
     const store = useStore();
-    const notify = useBlocknative();
+    const { notify } = useBlocknative();
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
 

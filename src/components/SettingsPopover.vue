@@ -108,8 +108,7 @@
 
 <script>
 import { mapActions, mapMutations } from 'vuex';
-
-import { getConnectorName, getConnectorLogo } from '@/auth';
+import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
 
 const locales = {
   'en-US': 'EN',
