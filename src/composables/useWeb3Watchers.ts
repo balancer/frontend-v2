@@ -12,7 +12,8 @@ export default function useWeb3Watchers(): void {
     () => store.state.web3.config.key,
     newNetwork => {
       notify.config({ networkId: Number(newNetwork) });
-    }, { immediate: true }
+    },
+    { immediate: true }
   );
 
   // Watch for user account change:
