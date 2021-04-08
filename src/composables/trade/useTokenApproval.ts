@@ -13,7 +13,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   // COMPOSABLES
   const store = useStore();
   const auth = useAuth();
-  const notify = useBlocknative();
+  const { notify } = useBlocknative();
 
   const { config } = store.state.web3;
 

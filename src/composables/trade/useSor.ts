@@ -50,7 +50,7 @@ export default function useSor(
   // COMPOSABLES
   const store = useStore();
   const auth = useAuth();
-  const notify = useBlocknative();
+  const { notify } = useBlocknative();
 
   const { getConfig } = store.getters;
 

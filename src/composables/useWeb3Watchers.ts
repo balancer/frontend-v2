@@ -4,7 +4,7 @@ import { useStore } from 'vuex';
 
 export default function useWeb3Watchers(): void {
   const store = useStore();
-  const notify = useBlocknative();
+  const { notify } = useBlocknative();
 
   // Watch for network change:
   // -> Update Blocknative networkId
