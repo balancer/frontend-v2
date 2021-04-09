@@ -45,7 +45,7 @@ export default {
   },
   watch: {
     token(val, prev) {
-      if (val !== prev) this.error = false;
+      if (val.address !== prev.address) this.error = false;
     }
   }
 };
