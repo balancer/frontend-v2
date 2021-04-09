@@ -28,7 +28,7 @@
         </div>
       </div>
       <div v-if="loading || registry.loading" class="px-4 md:px-0">
-        <UiLoading />
+        <BalLoadingIcon />
       </div>
       <div v-else>
         <div class="mb-5 relative">
@@ -59,7 +59,7 @@
               </UiLabel>
             </a>
           </div>
-          <UiLoading v-if="marketChartsLoading" class="absolute mt-n4" />
+          <BalLoadingIcon v-if="marketChartsLoading" class="absolute mt-n4" />
           <Chart :key="i" :marketCharts="marketCharts" @click="redrawCharts" />
         </div>
       </div>

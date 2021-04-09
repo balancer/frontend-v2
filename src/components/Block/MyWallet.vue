@@ -5,7 +5,7 @@
       <div class="col-span-12 md:col-span-6 text-base">
         <div class="border-t border-b md:border-l md:border-r">
           <div v-if="loading" class="text-center p-5">
-            <UiLoading />
+            <BalLoadingIcon />
           </div>
           <div v-else>
             <div
