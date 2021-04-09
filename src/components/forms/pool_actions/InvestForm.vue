@@ -341,7 +341,7 @@ export default defineComponent({
     });
 
     const priceImpact = computed(() => {
-      if (!hasAmounts.value) return 0;
+      if (isProportional.value || !hasAmounts.value) return 0;
       return poolCalculator.priceImpact(fullAmounts.value).toNumber();
     });
 
