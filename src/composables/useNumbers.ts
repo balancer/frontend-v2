@@ -25,6 +25,10 @@ export default function useNumbers() {
     let adjustedPreset;
     if (number >= 10_000) {
       adjustedPreset = `${preset}_lg`;
+    } else if (number < 1e-6) {
+      // Numeral returns NaN in this case so just set to zero.
+      // https://github.com/adamwdraper/Numeral-js/issues/596
+      number = 0;
     }
 
     return numeral(number).format(
