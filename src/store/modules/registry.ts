@@ -2,7 +2,6 @@ import { formatUnits } from '@ethersproject/units';
 import { getAddress, isAddress } from '@ethersproject/address';
 import getProvider from '@/utils/provider';
 import orderBy from 'lodash/orderBy';
-import BN from 'bn.js';
 import { loadTokenlist } from '@/utils/tokenlists';
 import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/utils';
