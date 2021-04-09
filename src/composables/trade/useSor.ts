@@ -9,6 +9,7 @@ import { swapIn, swapOut } from '@/utils/balancer/swapper';
 import useBlocknative from '@/composables/useBlocknative';
 import { ETHER } from '@/constants/tokenlists';
 import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import { BALANCER_SUBGRAPH_URL } from '@/api/subgraph';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -68,6 +69,7 @@ export default function useSor(
     const config = getConfig();
     const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
     const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
+    const subgraphUrl = BALANCER_SUBGRAPH_URL[config.chainId];
 
     sorManager = new SorManager(
       getProvider(config.chainId),
@@ -75,7 +77,8 @@ export default function useSor(
       MAX_POOLS,
       config.chainId,
       poolsUrlV1,
-      poolsUrlV2
+      poolsUrlV2,
+      subgraphUrl
     );
 
     console.time('[SOR] fetchPools');
