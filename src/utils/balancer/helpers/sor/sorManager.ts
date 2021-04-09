@@ -1,7 +1,7 @@
-import { 
-  SOR as SORV2, 
-  SwapInfo, 
-  DisabledOptions, 
+import {
+  SOR as SORV2,
+  SwapInfo,
+  DisabledOptions,
   SubGraphPoolsBase,
   SwapTypes,
   fetchSubgraphPools
@@ -124,7 +124,7 @@ export class SorManager {
     isUnlockedV2: boolean
   ): Promise<SorReturn> {
     console.log(tokenIn);
-    console.log(tokenOut)
+    console.log(tokenOut);
     // V2 uses normalised values. V1 uses scaled values.
     const amountNormalised = scale(amountScaled, -swapDecimals);
 
@@ -140,8 +140,7 @@ export class SorManager {
     );
 
     let swapTypeV2: SwapTypes = SwapTypes.SwapExactIn;
-    if(swapType !== 'swapExactIn')
-      swapTypeV2 = SwapTypes.SwapExactOut;
+    if (swapType !== 'swapExactIn') swapTypeV2 = SwapTypes.SwapExactOut;
 
     const swapInfoV2: SwapInfo = await this.sorV2.getSwaps(
       tokenIn.toLowerCase(),
