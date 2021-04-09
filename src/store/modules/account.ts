@@ -48,6 +48,7 @@ const actions = {
       loaded: false
     });
   },
+
   getBalances: async ({ commit, rootGetters, rootState }) => {
     const auth = getInstance();
     const account = rootState.web3.account;
@@ -67,6 +68,7 @@ const actions = {
     balances.ether = etherBalance;
     commit('ACCOUNT_SET', { balances, loading: false, loaded: true });
   },
+
   getAllowances: async ({ commit, rootGetters, rootState }, payload) => {
     const config = rootState.web3.config.key;
     const account: string = rootState.web3.account;
@@ -110,6 +112,7 @@ const mutations = {
 };
 
 export default {
+  namespaced: true,
   state,
   mutations,
   getters,
