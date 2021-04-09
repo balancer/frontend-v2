@@ -1,22 +1,6 @@
 <template>
   <Sticky :key="`${web3.config.unknown}${notifications.watch.length}`">
     <nav id="topnav">
-      <div
-        :key="web3.config.unknown"
-        v-if="web3.config.unknown"
-        class="p-2 flex bg-red-500 justify-center text-base"
-        style="color: white;"
-      >
-        <Icon name="warning1" size="20" class="mr-1" />
-        {{
-          $t(
-            web3.config.shortName
-              ? 'unavailableOnNetworkWithName'
-              : 'unavailableOnNetwork',
-            [web3.config.shortName]
-          )
-        }}
-      </div>
       <div class="px-6">
         <div class="flex items-center" style="height: 78px;">
           <div class="flex-auto flex items-center">
