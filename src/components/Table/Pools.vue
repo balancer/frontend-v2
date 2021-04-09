@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, toRefs, ref, computed } from 'vue';
+import { PropType, defineComponent, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import { getPoolLiquidity } from '@/utils/balancer/price';
@@ -124,23 +124,18 @@ export default defineComponent({
   },
 
   setup(props) {
+    // COMPOSABLES
     const store = useStore();
-    const { pools } = toRefs(props);
 
+    // DATA
     const selectTokenModal = ref(false);
     const selectedTokens = ref<string[]>([]);
 
+    // COMPUTED
     const allTokens = computed(() => store.getters.getTokens());
-    function addToken(token: string) {
-      selectedTokens.value.push(token);
-    }
-
-    function removeToken(i: number) {
-      selectedTokens.value.splice(i);
-    }
 
     const filteredPools = computed(() => {
-      return pools.value.filter(pool =>
+      return props.pools.filter(pool =>
         selectedTokens.value.every(token =>
           pool.tokens.map(token => token.address).includes(token.toLowerCase())
         )
@@ -149,7 +144,7 @@ export default defineComponent({
 
     const stats = computed(() => {
       const stats = Object.fromEntries(
-        pools.value.map(pool => {
+        props.pools.map(pool => {
           const liquidity = getPoolLiquidity(pool, store.state.market.prices);
           const poolStats = {
             liquidity,
@@ -162,6 +157,15 @@ export default defineComponent({
       return stats;
     });
 
+    // METHODS
+    function addToken(token: string) {
+      selectedTokens.value.push(token);
+    }
+
+    function removeToken(i: number) {
+      selectedTokens.value.splice(i);
+    }
+
     function getIconPosition(i: number, count: number) {
       if (count < 3) {
         return 28 * i;
@@ -173,19 +177,19 @@ export default defineComponent({
     }
 
     return {
-      getAddress,
-
-      allTokens,
-
-      addToken,
-      removeToken,
-
+      // data
       selectedTokens,
       selectTokenModal,
 
+      // computed
+      allTokens,
       filteredPools,
       stats,
 
+      // methods
+      getAddress,
+      addToken,
+      removeToken,
       getIconPosition
     };
   }

@@ -146,7 +146,7 @@ export default defineComponent({
 
     // METHODS
     async function fetchPool(): Promise<void> {
-      await store.dispatch('loadPool', data.id);
+      await store.dispatch('getPool', data.id);
       await store.dispatch('injectTokens', [
         ...pool.value.tokens,
         pool.value.address
