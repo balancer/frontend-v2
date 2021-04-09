@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="overflow-x-hidden lg:overflow-x-visible">
-    <UiLoading v-if="app.loading || !app.init" />
+    <UiLoading v-if="app.loading || !app.init || web3Loading" />
     <div v-else>
       <Topnav />
       <div class="pb-12">
@@ -31,7 +31,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    useWeb3Watchers();
+    const { loading: web3Loading } = useWeb3Watchers();
 
     // CALLBACKS
     onBeforeMount(() => {
@@ -45,7 +45,8 @@ export default defineComponent({
     }
 
     return {
-      onLogin
+      onLogin,
+      web3Loading
     };
   }
 });
