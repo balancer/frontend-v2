@@ -62,6 +62,13 @@ export default defineComponent({
       emit('update:modelValue', newVal);
     });
 
+    watch(
+      () => props.modelValue,
+      newVal => {
+        if (selected.value != newVal) selected.value = newVal;
+      }
+    );
+
     return {
       selected
     };

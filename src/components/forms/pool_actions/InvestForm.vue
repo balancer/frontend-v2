@@ -287,7 +287,7 @@ export default defineComponent({
     });
 
     const hasZeroBalance = computed(() => {
-      return balances.value.includes('0');
+      return balances.value.map(b => Number(b)).includes(0);
     });
 
     const total = computed(() => {
