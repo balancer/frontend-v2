@@ -2,7 +2,7 @@
   <Container :slim="true" class="mt-6">
     <MainMenu />
     <Block v-if="web3.account">
-      <UiLoading v-if="!loaded" class="mx-4 md:mx-0" />
+      <BalLoadingIcon v-if="!loaded" class="mx-4 md:mx-0" />
       <div v-else class="mb-4 mx-4 md:mx-0">
         <div class="mb-6 md:mb-0">
           <div>
@@ -23,7 +23,7 @@
     <Block v-if="web3.account">
       <div class="mx-4 md:mx-0">
         <h2 v-text="$t('myInvestments')" class="mb-4" />
-        <UiLoading v-if="!loaded" />
+        <BalLoadingIcon v-if="!loaded" />
       </div>
       <div v-if="loaded">
         <div v-if="pools.length > 0">
