@@ -122,30 +122,13 @@
       />
     </BalCard>
     <teleport to="#modal">
-      <ModalSelectToken
-        :key="account.balances.ether"
+      <SelectTokenModal
+        v-if="!registry.loading"
         :open="modalSelectTokenIsOpen"
-        :loading="registry.loading"
+        :excludedTokens="[tokenInAddressInput, tokenOutAddressInput]"
         @close="modalSelectTokenIsOpen = false"
         @select="handleSelectToken"
-        @selectTokenlist="openModalSelectList"
-        @inputSearch="handleTokenSearch"
-        :tokens="
-          getTokens({
-            q,
-            not: [tokenInAddressInput, tokenOutAddressInput],
-            includeEther: true
-          })
-        "
-        :tokenlists="getTokenlists({ active: true })"
-      />
-      <ModalSelectTokenlist
-        :open="modalSelectListIsOpen"
-        @close="modalSelectListIsOpen = false"
-        @back="openModalSelectToken"
-        @select="handleToggleList($event)"
-        @inputSearch="q = $event"
-        :tokenlists="getTokenlists({ q })"
+        include-ether
       />
     </teleport>
   </Layout>
@@ -160,13 +143,18 @@ import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
 import initialTokens from '@/constants/initialTokens.json';
+import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 
 export default defineComponent({
+  components: {
+    SelectTokenModal
+  },
+
   setup() {
     const store = useStore();
     const { isAuthenticated } = useAuth();
 
-    const { getTokens, getTokenlists, getConfig } = store.getters;
+    const { getTokens, getConfig } = store.getters;
 
     const tokenInAddressInput = ref('');
     const tokenInAmountInput = ref('');
@@ -174,9 +162,7 @@ export default defineComponent({
     const tokenOutAmountInput = ref('');
     const modalSelectTokenType = ref('input');
     const modalSelectTokenIsOpen = ref(false);
-    const modalSelectListIsOpen = ref(false);
     const isInRate = ref(true);
-    const q = ref('');
 
     const tokens = computed(() => getTokens({ includeEther: true }));
 
@@ -249,15 +235,7 @@ export default defineComponent({
 
     function openModalSelectToken(type: string): void {
       modalSelectTokenIsOpen.value = true;
-      modalSelectListIsOpen.value = false;
       modalSelectTokenType.value = type;
-      q.value = '';
-    }
-
-    function openModalSelectList(): void {
-      modalSelectListIsOpen.value = true;
-      modalSelectTokenIsOpen.value = false;
-      q.value = '';
     }
 
     function connectWallet() {
@@ -273,15 +251,6 @@ export default defineComponent({
         handleAmountChange(true, tokenInAmountInput.value);
       }
       store.dispatch('injectTokens', [address]);
-    }
-
-    function handleTokenSearch(address: string): void {
-      q.value = address;
-      store.dispatch('injectTokens', [address.trim()]);
-    }
-
-    function handleToggleList(name: string): void {
-      store.dispatch('toggleList', name);
     }
 
     function handleMax(): void {
@@ -329,10 +298,8 @@ export default defineComponent({
     populateInitialTokens();
 
     return {
-      q,
       tokens,
       modalSelectTokenIsOpen,
-      modalSelectListIsOpen,
       isAuthenticated,
       connectWallet,
       tokenInAddressInput,
@@ -341,12 +308,7 @@ export default defineComponent({
       tokenOutAmountInput,
       rateMessage,
       openModalSelectToken,
-      openModalSelectList,
-      getTokens,
-      getTokenlists,
       handleSelectToken,
-      handleTokenSearch,
-      handleToggleList,
       handleMax,
       handleSwitchTokens,
       handleAmountChange,

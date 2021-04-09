@@ -2,7 +2,7 @@
   <div :class="['bal-card', cardClasses]">
     <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
       <component :is="titleTag" v-if="!!title" v-text="title" />
-      <div v-if="$slots.header" class="flex-1">
+      <div v-if="$slots.header" class="flex-1 flex items-center">
         <slot name="header" />
       </div>
     </div>
@@ -27,6 +27,7 @@ export default defineComponent({
     square: { type: Boolean, default: false },
     noPad: { type: Boolean, default: false },
     noContentPad: { type: Boolean, default: false },
+    noBorder: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: 'lg',
@@ -37,10 +38,15 @@ export default defineComponent({
   },
 
   setup(props) {
+    const borderClasses = computed(() => {
+      return 'border border-gray-200 dark:border-gray-700';
+    });
+
     const cardClasses = computed(() => {
       return {
         'rounded-lg': !props.square,
-        [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true
+        [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
+        [borderClasses.value]: !props.noBorder
       };
     });
 
@@ -76,7 +82,6 @@ export default defineComponent({
 <style scoped>
 .bal-card {
   @apply bg-white dark:bg-gray-900;
-  @apply border border-gray-200 dark:border-gray-700;
 }
 
 .header {

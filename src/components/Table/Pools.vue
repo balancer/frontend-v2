@@ -6,7 +6,7 @@
         size="sm"
         :label="$t('filter')"
         outline
-        @click.prevent="modal.selectToken = true"
+        @click.prevent="selectTokenModal = true"
       />
       <div class="flex ml-4">
         <BalChip
@@ -92,23 +92,12 @@
       </table>
     </div>
     <teleport to="#modal">
-      <ModalSelectToken
-        :open="modal.selectToken"
-        :loading="registry.loading"
-        @close="modal.selectToken = false"
+      <SelectTokenModal
+        v-if="!registry.loading"
+        :open="selectTokenModal"
+        :excluded-tokens="selectedTokens"
+        @close="selectTokenModal = false"
         @select="addToken"
-        @selectTokenlist="modalSelectLists"
-        @inputSearch="onTokenSearch"
-        :tokens="selectableTokens"
-        :tokenlists="activeTokenlists"
-      />
-      <ModalSelectTokenlist
-        :open="modal.selectTokenlist"
-        @close="modal.selectTokenlist = false"
-        @back="modalSelectToken"
-        @select="toggleList"
-        @inputSearch="query = $event"
-        :tokenlists="selectableTokenlists"
       />
     </teleport>
   </BalCard>
@@ -118,70 +107,36 @@
 import { PropType, defineComponent, toRefs, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
-
 import { getPoolLiquidity } from '@/utils/balancer/price';
 import { Pool } from '@/api/subgraph';
+import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 
 export default defineComponent({
+  components: {
+    SelectTokenModal
+  },
+
   props: {
     pools: {
       type: Array as PropType<Pool[]>,
       required: true
     }
   },
+
   setup(props) {
     const store = useStore();
     const { pools } = toRefs(props);
 
-    const modal = ref({
-      selectToken: false,
-      selectTokenlist: false
-    });
-    const query = ref('');
+    const selectTokenModal = ref(false);
     const selectedTokens = ref<string[]>([]);
 
     const allTokens = computed(() => store.getters.getTokens());
-    const selectableTokens = computed(() =>
-      store.getters.getTokens({ q: query.value, not: selectedTokens.value })
-    );
-    const activeTokenlists = computed(() =>
-      store.getters.getTokenlists({ active: true })
-    );
-    const selectableTokenlists = computed(() =>
-      store.getters.getTokenlists({ q: query.value })
-    );
-
-    function modalSelectToken() {
-      modal.value = {
-        selectToken: true,
-        selectTokenlist: false
-      };
-      query.value = '';
-    }
-
-    function modalSelectLists() {
-      modal.value = {
-        selectToken: false,
-        selectTokenlist: true
-      };
-      query.value = '';
-    }
-
     function addToken(token: string) {
       selectedTokens.value.push(token);
     }
 
     function removeToken(i: number) {
       selectedTokens.value.splice(i);
-    }
-
-    function onTokenSearch(value: string) {
-      query.value = value;
-      store.dispatch('injectTokens', [value.trim()]);
-    }
-
-    function toggleList(name: string) {
-      store.dispatch('toggleList', name);
     }
 
     const filteredPools = computed(() => {
@@ -207,15 +162,6 @@ export default defineComponent({
       return stats;
     });
 
-    function getWeights(weights: string[], i: number) {
-      const totalWeight = weights.reduce(
-        (total, val) => total + parseFloat(val),
-        0
-      );
-      const weight = parseFloat(weights[i]);
-      return weight / totalWeight;
-    }
-
     function getIconPosition(i: number, count: number) {
       if (count < 3) {
         return 28 * i;
@@ -230,25 +176,16 @@ export default defineComponent({
       getAddress,
 
       allTokens,
-      selectableTokens,
-      activeTokenlists,
-      selectableTokenlists,
 
-      modalSelectToken,
-      modalSelectLists,
       addToken,
       removeToken,
-      onTokenSearch,
-      toggleList,
 
       selectedTokens,
-      modal,
-      query,
+      selectTokenModal,
 
       filteredPools,
       stats,
 
-      getWeights,
       getIconPosition
     };
   }

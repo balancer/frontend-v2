@@ -23,6 +23,7 @@ export default function useWeb3Watchers(): void {
     () => store.state.web3.account,
     (newAccount, oldAccount) => {
       if (oldAccount) notify.unsubscribe(oldAccount);
+      if (!newAccount) return;
 
       const { emitter } = notify.account(newAccount);
       emitter.on('all', transaction => {

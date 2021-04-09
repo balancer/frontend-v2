@@ -1,9 +1,9 @@
-import BalDialog from './Dialog.vue';
+import BalModal from './Modal.vue';
 import { generateTemplate } from '../../../.storybook/helpers/templates';
 
 export default {
-  component: BalDialog,
-  title: 'Components/Bal/Dialog',
+  component: BalModal,
+  title: 'Components/Bal/Modal',
   args: {
     title: '',
     darkMode: false
@@ -17,14 +17,14 @@ type Props = {
 };
 
 const Template = (args: Props) => ({
-  components: { BalDialog },
+  components: { BalModal },
   setup() {
     return { args };
   },
   template: generateTemplate(`
-<BalDialog v-bind="args" @close="args.show = false">
+<BalModal v-bind="args" @close="args.show = false">
   content
-</BalDialog>`)
+</BalModal>`)
 });
 
 export const Primary = Template.bind({});
@@ -32,16 +32,16 @@ export const Primary = Template.bind({});
 Primary.args = { title: 'A title', show: true };
 
 export const WithFooter = (args: Props) => ({
-  components: { BalDialog },
+  components: { BalModal },
   setup() {
     return { args };
   },
   template: generateTemplate(`
-<BalDialog v-bind="args" @close="args.show = false">
+<BalModal v-bind="args" @close="args.show = false">
   content
   <template v-slot:footer>
     Action
   </template>
-</BalDialog>`)
+</BalModal>`)
 });
 WithFooter.args = { title: 'A title', show: true };

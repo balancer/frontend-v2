@@ -1,56 +1,45 @@
 <template>
-  <UiModal :open="open" @close="$emit('close')">
-    <template v-slot:header>
-      <h3
-        v-if="!web3.account || step === 'connect'"
-        v-text="$t('connectWallet')"
-      />
-      <h3 v-else v-text="$t('account')" />
-    </template>
-    <div v-if="!web3.account || step === 'connect'">
-      <div class="m-4 mb-5">
-        <a
+  <BalModal :show="open" :title="title" @close="$emit('close')">
+    <div
+      v-if="!web3.account || step === 'connect'"
+      class="text-gray-700 font-medium"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div
           v-for="(connector, id, i) in connectors"
           :key="i"
+          class="account-btn"
           @click="$emit('login', connector.id)"
-          target="_blank"
-          class="mb-2 block"
         >
-          <UiButton
-            v-if="id !== 'injected'"
-            class="button-outline w-full align-middle"
-          >
+          <template v-if="id !== 'injected'">
             <img
               :src="`${path}/${connector.id}.png`"
               height="28"
               width="28"
-              class="mr-1 inline-block align-middle"
+              class="account-btn-img"
             />
             {{ connector.name }}
-          </UiButton>
-          <UiButton
-            v-else-if="injected"
-            class="button-outline w-full align-middle"
-          >
+          </template>
+          <template v-else-if="injected">
             <img
               :src="`${path}/${injected.id}.png`"
               height="28"
               width="28"
-              class="mr-1 inline-block align-middle"
+              class="account-btn-img"
             />
             {{ injected.name }}
-          </UiButton>
-        </a>
-        <UiButton
-          @click="connectorsLimit = 1e3"
+          </template>
+        </div>
+        <div
           v-if="invisibleConnectorsCount"
-          class="w-full"
+          class="account-btn"
+          @click="connectorsLimit = 1e3"
         >
           {{ $t('seeMore') }} ({{ invisibleConnectorsCount }})
-        </UiButton>
+        </div>
       </div>
     </div>
-  </UiModal>
+  </BalModal>
 </template>
 
 <script>
@@ -87,7 +76,26 @@ export default {
       return (
         Object.keys(connectors).length - Object.keys(this.connectors).length
       );
+    },
+
+    title() {
+      if (!this.web3.account || this.step === 'connect')
+        return this.$t('connectWallet');
+      return this.$t('account');
     }
   }
 };
 </script>
+
+<style>
+.account-btn {
+  @apply rounded cursor-pointer;
+  @apply bg-gray-100 hover:bg-gray-200;
+  @apply flex flex-row md:flex-col items-center justify-center;
+  @apply py-4 md:py-12;
+}
+
+.account-btn-img {
+  @apply mr-4 md:mr-0 mb-0 md:mb-4;
+}
+</style>
