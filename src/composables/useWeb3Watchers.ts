@@ -1,4 +1,4 @@
-import { watch, ref } from 'vue';
+import { watch, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import useBlocknative from './useBlocknative';
 import InfuraService from '@/services/infura/service';
@@ -14,6 +14,11 @@ export default function useWeb3Watchers() {
 
   // SERVICES
   const infuraService = new InfuraService(store.state.web3.config.chainId);
+
+  // COMPUTED
+  const unsupportedNetwork = computed(() => {
+    return store.state.web3.config.unknown;
+  });
 
   // METHODS
   const setBlockNumber = (blockNumber: number) =>
@@ -69,5 +74,5 @@ export default function useWeb3Watchers() {
     }
   );
 
-  return { loading };
+  return { loading, unsupportedNetwork };
 }
