@@ -132,14 +132,14 @@ export default function useSor(
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
-      const tokenOutAmountRaw = scale(
+      const tokenOutAmountNormalised = scale(
         swapReturn.returnAmount,
         -tokenOutDecimals
       );
-      tokenOutAmountInput.value = tokenOutAmountRaw.toFixed(
-        6,
-        BigNumber.ROUND_DOWN
-      );
+      tokenOutAmountInput.value =
+        tokenOutAmountNormalised.toNumber() > 0
+          ? tokenOutAmountNormalised.toFixed(6, BigNumber.ROUND_DOWN)
+          : '';
 
       if (!sorReturn.value.hasSwaps) {
         slippage.value = 0;
@@ -182,10 +182,10 @@ export default function useSor(
 
       const tradeAmount: BigNumber = swapReturn.returnAmount;
       const tokenInAmountNormalised = scale(tradeAmount, -tokenInDecimals);
-      tokenInAmountInput.value = tokenInAmountNormalised.toFixed(
-        6,
-        BigNumber.ROUND_UP
-      );
+      tokenInAmountInput.value =
+        tokenInAmountNormalised.toNumber() > 0
+          ? tokenInAmountNormalised.toFixed(6, BigNumber.ROUND_UP)
+          : '';
 
       if (!sorReturn.value.hasSwaps) {
         slippage.value = 0;
