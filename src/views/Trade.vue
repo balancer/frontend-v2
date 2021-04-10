@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <BalCard class="p-8 max-w-lg mx-auto mt-16">
-      <h2 v-text="$t('trade')" class="mb-6" />
+      <h2 v-text="$t(title)" class="mb-6" />
       <div class="mb-8">
         <div class="grid grid-cols-12 border mb-4 rounded-2xl overflow-hidden">
           <a
@@ -100,11 +100,7 @@
       <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
         v-else-if="requireApproval"
-        :label="
-          `Unlock ${tokens[tokenInAddressInput].symbol} (${
-            sorReturn.isV1swap ? 'V1' : 'V2'
-          })`
-        "
+        :label="`Unlock ${tokens[tokenInAddressInput].symbol} ${versionLabel}`"
         :loading="approving"
         :loading-label="`Unlocking ${tokens[tokenInAddressInput].symbol}...`"
         block
@@ -113,7 +109,7 @@
       <BalBtn
         v-else
         type="submit"
-        :label="`Swap (${sorReturn.isV1swap ? 'V1' : 'V2'})`"
+        :label="`${$t(submitLabel)} ${versionLabel}`"
         :loading="trading"
         loading-label="Confirming..."
         color="gradient"
@@ -144,6 +140,7 @@ import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
 import initialTokens from '@/constants/initialTokens.json';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
+import { ETHER } from '@/constants/tokenlists';
 
 export default defineComponent({
   components: {
@@ -166,6 +163,22 @@ export default defineComponent({
 
     const tokens = computed(() => getTokens({ includeEther: true }));
 
+    const isWrap = computed(() => {
+      const config = getConfig();
+      return (
+        tokenInAddressInput.value === ETHER.address &&
+        tokenOutAddressInput.value === config.addresses.weth
+      );
+    });
+
+    const isUnwrap = computed(() => {
+      const config = getConfig();
+      return (
+        tokenOutAddressInput.value === ETHER.address &&
+        tokenInAddressInput.value === config.addresses.weth
+      );
+    });
+
     // COMPOSABLES
     const {
       approving,
@@ -186,7 +199,9 @@ export default defineComponent({
       tokenOutAddressInput,
       tokenOutAmountInput,
       tokens,
-      allowanceState
+      allowanceState,
+      isWrap,
+      isUnwrap
     );
     const { validationStatus, errorMessage } = useValidation(
       tokenInAddressInput,
@@ -197,9 +212,28 @@ export default defineComponent({
     );
 
     const requireApproval = computed(() => {
+      if (isUnwrap.value) return false;
       return sorReturn.value.isV1swap
         ? !allowanceState.value.isUnlockedV1
         : !allowanceState.value.isUnlockedV2;
+    });
+
+    const title = computed(() => {
+      if (isWrap.value) return 'wrap';
+      if (isUnwrap.value) return 'unwrap';
+      return 'trade';
+    });
+
+    const submitLabel = computed(() => {
+      if (isWrap.value) return 'wrap';
+      if (isUnwrap.value) return 'unwrap';
+      return 'swap';
+    });
+
+    const versionLabel = computed(() => {
+      if (submitLabel.value === 'swap')
+        return sorReturn.value.isV1swap ? 'V1' : 'V2';
+      return '';
     });
 
     const rateMessage = computed(() => {
@@ -299,6 +333,9 @@ export default defineComponent({
 
     return {
       tokens,
+      title,
+      submitLabel,
+      versionLabel,
       modalSelectTokenIsOpen,
       isAuthenticated,
       connectWallet,
