@@ -48,10 +48,9 @@
         </div>
         <div class="flex mb-4">
           <a @click="handleSwitchTokens">
-            <Icon
-              :size="24"
-              name="refresh"
-              class="rounded-full border p-2 inline-block"
+            <img
+              src="../assets/iconfinder_arrow-up-down-circle_2291593.svg"
+              style="width:48px"
             />
           </a>
           <div v-if="rateMessage" class="flex-auto ml-4 my-2">
