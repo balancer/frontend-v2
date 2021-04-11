@@ -6,15 +6,21 @@ const BALANCER_SUBGRAPH_URL = {
 
 type PoolType = 'Weighted' | 'Stable';
 
+const DAY = 60 * 60 * 24;
+
 interface PoolToken {
   address: string;
   balance: string;
   weight: string;
 }
 
-interface PoolSnapshot {
+export interface PoolSnapshot {
+  pool: {
+    id: string;
+  };
   amounts: string[];
   totalShares: string;
+  swapVolume: string;
 }
 
 export interface Pool {
@@ -56,6 +62,8 @@ export interface PoolEvents {
 export type PoolSnapshots = Record<number, PoolSnapshot>;
 
 export async function getPools(chainId: number) {
+  const currentTimestamp = Math.ceil(Date.now() / 1000);
+  const timestamp = currentTimestamp - (currentTimestamp % DAY) - DAY;
   const query = `
     query {
       pools(first: 1000) {
@@ -69,6 +77,16 @@ export async function getPools(chainId: number) {
           weight
         }
       }
+      poolSnapshots(
+        where: {
+          timestamp: ${timestamp}
+        }
+      ) {
+        pool {
+          id
+        }
+        swapVolume
+      }
     }
   `;
   const url = BALANCER_SUBGRAPH_URL[chainId];
@@ -81,7 +99,10 @@ export async function getPools(chainId: number) {
     body: JSON.stringify({ query })
   });
   const { data } = await res.json();
-  return data.pools as Pool[];
+  return {
+    pools: data.pools as Pool[],
+    snapshots: data.poolSnapshots as PoolSnapshot[]
+  };
 }
 
 export async function getUserPoolEvents(
@@ -134,16 +155,17 @@ export async function getPoolSnapshots(
   days: number
 ) {
   const currentTimestamp = Math.ceil(Date.now() / 1000);
-  const dayTimestamp = currentTimestamp - (currentTimestamp % (60 * 60 * 24));
+  const dayTimestamp = currentTimestamp - (currentTimestamp % DAY);
   const timestamps: number[] = [];
   for (let i = 0; i < days; i++) {
-    timestamps.push(dayTimestamp - i * (60 * 60 * 24));
+    timestamps.push(dayTimestamp - i * DAY);
   }
   const dayQueries = timestamps.map(timestamp => {
     return `
       _${timestamp}: poolSnapshot(id: "${poolId}-${timestamp}") {
         amounts
         totalShares
+        swapVolume
       }
     `;
   });
