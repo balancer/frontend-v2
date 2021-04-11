@@ -3,7 +3,7 @@
     <LoadingScreen v-if="app.loading || !app.init || web3Loading" />
     <UnsupportedNetworkScreen v-else-if="unsupportedNetwork" />
     <div v-else>
-      <Topnav />
+      <AppNav />
       <div class="pb-12">
         <router-view :key="$route.path" class="flex-auto" />
       </div>
@@ -19,15 +19,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount } from 'vue';
+import { defineComponent, onBeforeMount, ref, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
 import LoadingScreen from '@/components/screens/LoadingScreen.vue';
 import UnsupportedNetworkScreen from '@/components/screens/UnsupportedNetworkScreen.vue';
+import AppNav from '@/components/navs/AppNav.vue';
 
 export default defineComponent({
   components: {
+    AppNav,
     AccountModal,
     LoadingScreen,
     UnsupportedNetworkScreen
@@ -39,8 +41,8 @@ export default defineComponent({
     const { loading: web3Loading, unsupportedNetwork } = useWeb3Watchers();
 
     // DATA
-    const { app } = store.state;
-    const web3Modal = store.state.web3.modal;
+    const app = toRefs(store.state.app);
+    const web3Modal = ref(store.state.web3.modal);
 
     // CALLBACKS
     onBeforeMount(() => {
