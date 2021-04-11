@@ -7,6 +7,7 @@
         v-if="!loading && !registry.loading"
         class="mt-2"
         :pools="pools"
+        :snapshots="snapshots"
       />
     </div>
   </div>
@@ -22,13 +23,15 @@ export default {
   data() {
     return {
       loading: false,
-      pools: []
+      pools: [],
+      snapshots: []
     };
   },
 
   watch: {
     'web3.config.key': function() {
       this.pools = [];
+      this.snapshots = [];
       this.loadPools();
     }
   },
@@ -43,8 +46,9 @@ export default {
       this.form = { ...this.form, ...query };
       this.loading = true;
       const chainId = this.web3.config.chainId;
-      const pools = await getPools(chainId);
+      const { pools, snapshots } = await getPools(chainId);
       this.pools = pools;
+      this.snapshots = snapshots;
       const tokens = pools
         .map(pool => pool.tokens.map(token => getAddress(token.address)))
         .reduce((a, b) => [...a, ...b], []);

@@ -108,7 +108,7 @@ import { PropType, defineComponent, toRefs, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import { getPoolLiquidity } from '@/utils/balancer/price';
-import { Pool } from '@/api/subgraph';
+import { Pool, PoolSnapshot } from '@/api/subgraph';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 
 export default defineComponent({
@@ -120,12 +120,16 @@ export default defineComponent({
     pools: {
       type: Array as PropType<Pool[]>,
       required: true
+    },
+    snapshots: {
+      type: Array as PropType<PoolSnapshot[]>,
+      required: true
     }
   },
 
   setup(props) {
     const store = useStore();
-    const { pools } = toRefs(props);
+    const { pools, snapshots } = toRefs(props);
 
     const selectTokenModal = ref(false);
     const selectedTokens = ref<string[]>([]);
@@ -151,9 +155,13 @@ export default defineComponent({
       const stats = Object.fromEntries(
         pools.value.map(pool => {
           const liquidity = getPoolLiquidity(pool, store.state.market.prices);
+          const snapshot = snapshots.value.find(
+            snapshot => snapshot.pool.id === pool.id
+          );
+          const volume = snapshot ? snapshot.swapVolume : '0';
           const poolStats = {
             liquidity,
-            volume: '0',
+            volume,
             apy: '0'
           };
           return [pool.id, poolStats];
