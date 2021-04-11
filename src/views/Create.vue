@@ -208,13 +208,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'notify',
-      'watchTx',
-      'getAllowances',
-      'injectTokens',
-      'toggleList'
-    ]),
+    ...mapActions({
+      notify: 'notifcations/notify',
+      watchTx: 'notifcations/watchTx',
+      getAllowances: 'accounts/getAllowances',
+      injectTokens: 'registry/injectTokens',
+      toggleList: 'registry/toggleList'
+    }),
+
     modalSelectToken() {
       this.modal.selectToken = true;
       this.modal.selectTokenlist = false;

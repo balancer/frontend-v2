@@ -22,10 +22,10 @@ export default function useWeb3Watchers() {
 
   // METHODS
   const setBlockNumber = (blockNumber: number) =>
-    store.commit('setBlockNumber', blockNumber);
+    store.commit('web3/setBlockNumber', blockNumber);
 
   async function updatePools(chainId: number): Promise<void> {
-    await store.dispatch('getAllPools', chainId);
+    await store.dispatch('pools/getAll', chainId);
   }
 
   async function updateTokens(): Promise<void> {
@@ -33,7 +33,7 @@ export default function useWeb3Watchers() {
     const tokens = pools
       .map(pool => pool.tokens.map(token => getAddress(token.address)))
       .reduce((a, b) => [...a, ...b], []);
-    await store.dispatch('injectTokens', tokens);
+    await store.dispatch('registry/injectTokens', tokens);
   }
 
   // WATCHERS
@@ -68,7 +68,8 @@ export default function useWeb3Watchers() {
 
       const { emitter } = notify.account(newAccount);
       emitter.on('all', transaction => {
-        if (transaction.status === 'confirmed') store.dispatch('getBalances');
+        if (transaction.status === 'confirmed')
+          store.dispatch('account/getBalances');
         return false;
       });
     }

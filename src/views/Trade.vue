@@ -250,7 +250,7 @@ export default defineComponent({
         tokenOutAddressInput.value = address;
         handleAmountChange(true, tokenInAmountInput.value);
       }
-      store.dispatch('injectTokens', [address]);
+      store.dispatch('registry/injectTokens', [address]);
     }
 
     function handleMax(): void {

@@ -97,7 +97,7 @@ export default defineComponent({
     });
 
     const allTokens = computed(() => {
-      return store.getters.getTokens();
+      return store.getters['registry/getTokens']();
     });
 
     const title = computed(() => {
@@ -146,8 +146,8 @@ export default defineComponent({
 
     // METHODS
     async function fetchPool(): Promise<void> {
-      await store.dispatch('getPool', data.id);
-      await store.dispatch('injectTokens', [
+      await store.dispatch('pools/get', data.id);
+      await store.dispatch('registry/injectTokens', [
         ...pool.value.tokens,
         pool.value.address
       ]);

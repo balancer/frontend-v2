@@ -36,7 +36,7 @@ const getters = {
 };
 
 const mutations = {
-  setWeb3Loading(_state: Web3State, val: boolean): void {
+  setLoading(_state: Web3State, val: boolean): void {
     _state.loading = val;
   },
 
@@ -79,7 +79,7 @@ const mutations = {
 
 const actions = {
   async login({ dispatch, commit }, connector = 'injected') {
-    commit('setWeb3Loading', true);
+    commit('setLoading', true);
 
     auth = getInstance();
     await auth.login(connector);
@@ -87,11 +87,11 @@ const actions = {
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
-      dispatch('getBalances');
-      dispatch('getAllowances');
+      dispatch('account/getBalances', null, { root: true });
+      dispatch('account/getAllowances', null, { root: true });
     }
 
-    commit('setWeb3Loading', false);
+    commit('setLoading', false);
     commit('setConnector', connector);
   },
 
@@ -116,18 +116,18 @@ const actions = {
       if (auth.provider.value.on) {
         auth.provider.value.on('chainChanged', async chainId => {
           commit('setNetwork', parseInt(formatUnits(chainId, 0)));
-          dispatch('resetAccount');
-          dispatch('getBalances');
-          dispatch('getAllowances');
+          dispatch('account/resetAccount', null, { root: true });
+          dispatch('account/getBalances', null, { root: true });
+          dispatch('account/getAllowances', null, { root: true });
           dispatch('getBlockNumber');
         });
         auth.provider.value.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
+            dispatch('account/resetAccount', null, { root: true });
             commit('setAccount', accounts[0]);
-            dispatch('  ');
             await dispatch('loadProvider');
-            dispatch('getBalances');
-            dispatch('getAllowances');
+            dispatch('account/getBalances', null, { root: true });
+            dispatch('account/getAllowances', null, { root: true });
           }
         });
         auth.provider.value.on('disconnect', async () => {

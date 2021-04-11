@@ -147,16 +147,25 @@ const getters = {
   }
 };
 
+const mutations = {
+  REGISTRY_SET(_state, payload) {
+    Object.keys(payload).forEach(key => {
+      _state[key] = payload[key];
+    });
+  }
+};
+
 const actions = {
-  loadRegistry: async ({ dispatch, commit }) => {
+  async get({ dispatch, commit }) {
     commit('REGISTRY_SET', { loading: true });
     await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
     commit('REGISTRY_SET', { loading: false, loaded: true });
-    dispatch('getBalances');
-    dispatch('getAllowances');
-    dispatch('loadPrices');
+    dispatch('account/getBalances', null, { root: true });
+    dispatch('account/getAllowances', null, { root: true });
+    dispatch('market/loadPrices', [], { root: true });
   },
-  loadTokenlist: async ({ commit }, name) => {
+
+  async loadTokenlist({ commit }, name) {
     name = name || TOKEN_LIST_DEFAULT;
     try {
       const tokenlist = await loadTokenlist(name);
@@ -167,7 +176,8 @@ const actions = {
       console.error(e);
     }
   },
-  injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
+
+  async injectTokens({ commit, dispatch, rootState }, tokens) {
     tokens = tokens.filter(
       token => token !== ETHER.address && isAddress(token)
     );
@@ -183,11 +193,12 @@ const actions = {
       injected.push({ ...tokenMetadata, ...{ injected: true } })
     );
     commit('REGISTRY_SET', { injected });
-    dispatch('getBalances');
-    dispatch('getAllowances', { tokens });
-    dispatch('loadPrices', tokens);
+    dispatch('account/getBalances', null, { root: true });
+    dispatch('account/getAllowances', { tokens }, { root: true });
+    dispatch('market/loadPrices', tokens, { root: true });
   },
-  toggleList: ({ commit }, name) => {
+
+  toggleList({ commit }, name) {
     const activeLists = clone(state.activeLists);
     if (activeLists[name]) {
       delete activeLists[name];
@@ -198,14 +209,6 @@ const actions = {
       lsSet('tokenlists', activeLists);
       commit('REGISTRY_SET', { activeLists });
     }
-  }
-};
-
-const mutations = {
-  REGISTRY_SET(_state, payload) {
-    Object.keys(payload).forEach(key => {
-      _state[key] = payload[key];
-    });
   }
 };
 

@@ -74,7 +74,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getTokens']),
+    ...mapGetters({
+      getTokens: 'registry/getTokens'
+    }),
+
     loading() {
       return (
         this.web3.loading ||
@@ -87,7 +90,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getBlockNumber', 'injectTokens']),
+    ...mapActions({
+      getBlockNumber: 'web3/getBlockNumber',
+      injectTokens: 'registry/injectTokens'
+    }),
+
     async load() {
       const account = this.web3.account;
       if (account) {

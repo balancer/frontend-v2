@@ -62,7 +62,7 @@ export default {
   setup(props) {
     const store = useStore();
 
-    const allTokens = computed(() => store.getters.getTokens());
+    const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const actions = computed<Action[]>(() => {
       if (!Object.keys(props.events)) {

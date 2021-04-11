@@ -65,7 +65,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getTokens', 'getPortfolioValue', 'getEther']),
+    ...mapGetters({
+      getTokens: 'registry/getTokens',
+      getEther: 'registry/getEther',
+      getPortfolioValue: 'account/getPortfolioValue'
+    }),
+
     tokens() {
       return this.getTokens();
     },

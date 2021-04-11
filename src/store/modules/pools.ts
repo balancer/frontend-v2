@@ -24,7 +24,7 @@ const mutations = {
 };
 
 const actions = {
-  async getPool({ commit, rootState }, id: string): Promise<Pool> {
+  async get({ commit, rootState }, id: string): Promise<Pool> {
     const network = rootState.web3.config.key;
     const provider = getProvider(network);
     const pool = await getPool(network, provider, id);
@@ -32,7 +32,7 @@ const actions = {
     return pool;
   },
 
-  async getAllPools({ commit, rootState }): Promise<SubgraphPool[]> {
+  async getAll({ commit, rootState }): Promise<SubgraphPool[]> {
     const network = rootState.web3.config.key;
     const pools = await getPools(network);
     commit('setAll', pools);

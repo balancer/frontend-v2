@@ -90,7 +90,11 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['notify', 'getBlockNumber']),
+    ...mapActions({
+      notify: 'notifications/notify',
+      getBlockNumber: 'web3/getBlockNumber'
+    }),
+
     handleCopy() {
       this.notify('copied');
     },
