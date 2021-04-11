@@ -10,7 +10,7 @@
     </div>
     <div id="modal" />
     <AccountModal
-      :open="web3.modal"
+      :open="web3Modal"
       @close="setAccountModal(false)"
       @login="onLogin"
     />
@@ -38,18 +38,24 @@ export default defineComponent({
     const store = useStore();
     const { loading: web3Loading, unsupportedNetwork } = useWeb3Watchers();
 
+    // DATA
+    const { app } = store.state;
+    const web3Modal = store.state.web3.modal;
+
     // CALLBACKS
     onBeforeMount(() => {
-      store.dispatch('init');
+      store.dispatch('app/init');
     });
 
     // METHODS
     async function onLogin(connector: string): Promise<void> {
       store.commit('setAccountModal', false);
-      await store.dispatch('login', connector);
+      await store.dispatch('web3/login', connector);
     }
 
     return {
+      app,
+      web3Modal,
       onLogin,
       web3Loading,
       unsupportedNetwork

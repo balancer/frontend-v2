@@ -6,9 +6,9 @@ const state = {
 };
 
 const actions = {
-  loadPrices: async ({ commit, rootState, rootGetters }, tokens?) => {
-    if (!tokens)
-      tokens = Object.values(rootGetters.getTokens()).map(
+  async loadPrices({ commit, rootState, rootGetters }, tokens: string[] = []) {
+    if (tokens.length === 0)
+      tokens = Object.values(rootGetters['registry/getTokens']()).map(
         (token: any) => token.address
       );
     try {

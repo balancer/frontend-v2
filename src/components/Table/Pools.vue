@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, ref, computed } from 'vue';
+import { PropType, defineComponent, ref, computed, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import { getPoolLiquidity } from '@/utils/balancer/price';
@@ -132,7 +132,7 @@ export default defineComponent({
     const selectedTokens = ref<string[]>([]);
 
     // COMPUTED
-    const allTokens = computed(() => store.getters.getTokens());
+    const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const filteredPools = computed(() => {
       return props.pools.filter(pool =>

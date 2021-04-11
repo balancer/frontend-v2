@@ -14,8 +14,8 @@ const state = {
 
 const getters = {
   getPortfolioValue: (state, getters, rootState, rootGetters) => () => {
-    const tokens = rootGetters.getTokens({ withBalance: true });
-    const ether = rootGetters.getEther();
+    const tokens = rootGetters['registry/getTokens']({ withBalance: true });
+    const ether = rootGetters['registry/getEther']();
     return Object.values(tokens).reduce(
       (a: any, b: any) => a + b.value,
       ether.value || 0
@@ -49,10 +49,10 @@ const actions = {
     });
   },
 
-  getBalances: async ({ commit, rootGetters, rootState }) => {
+  async getBalances({ commit, rootGetters, rootState }) {
     const auth = getInstance();
     const account = rootState.web3.account;
-    const tokens = rootGetters.getTokens();
+    const tokens = rootGetters['registry/getTokens']();
     if (!account || Object.keys(tokens).length === 0) return;
     const network = rootState.web3.config.key;
     commit('ACCOUNT_SET', { loading: true });
@@ -73,7 +73,7 @@ const actions = {
     const config = rootState.web3.config.key;
     const account: string = rootState.web3.account;
     let tokens: string[] =
-      payload?.tokens || Object.keys(rootGetters.getTokens());
+      payload?.tokens || Object.keys(rootGetters['registry/getTokens']());
     tokens = tokens.filter(
       token => token !== ETHER.address && isAddress(token)
     );
