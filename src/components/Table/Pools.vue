@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, ref, computed, onBeforeMount } from 'vue';
+import { PropType, defineComponent, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import { getPoolLiquidity } from '@/utils/balancer/price';
