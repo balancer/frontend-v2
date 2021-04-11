@@ -39,7 +39,7 @@
               "
               class="text-xs"
             >
-              Balance:
+              {{ $t('balance') }}:
               {{
                 _num(tokens[tokenInAddressInput]?.balance || 0, '0,0.[000000]')
               }}
