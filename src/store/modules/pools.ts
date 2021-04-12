@@ -13,16 +13,6 @@ const state: PoolsState = {
   all: []
 };
 
-const mutations = {
-  setCurrent(_state: PoolsState, pool: Pool): void {
-    _state.current = pool;
-  },
-
-  setAll(_state: PoolsState, pools: SubgraphPool[]): void {
-    _state.all = pools;
-  }
-};
-
 const actions = {
   async get({ commit, rootState }, id: string): Promise<Pool> {
     const network = rootState.web3.config.key;
@@ -37,6 +27,16 @@ const actions = {
     const pools = await getPools(network);
     commit('setAll', pools);
     return pools;
+  }
+};
+
+const mutations = {
+  setCurrent(_state: PoolsState, pool: Pool): void {
+    _state.current = pool;
+  },
+
+  setAll(_state: PoolsState, pools: SubgraphPool[]): void {
+    _state.all = pools;
   }
 };
 
