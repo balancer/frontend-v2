@@ -10,7 +10,7 @@ export default function useTokenApprovals(approvalTokens, amounts) {
   const approving = ref(false);
   const approvedAll = ref(false);
 
-  const allTokens = computed(() => store.getters.getTokens());
+  const allTokens = computed(() => store.getters['registry/getTokens']());
 
   const tokens = computed(() => {
     return Object.fromEntries(
@@ -23,7 +23,9 @@ export default function useTokenApprovals(approvalTokens, amounts) {
   });
 
   const requiredAllowances = computed(() => {
-    return store.getters.getRequiredAllowances({ tokens: tokens.value });
+    return store.getters['account/getRequiredAllowances']({
+      tokens: tokens.value
+    });
   });
 
   async function approveAllowances(): Promise<void> {

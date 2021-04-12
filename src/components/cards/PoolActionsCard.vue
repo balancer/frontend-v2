@@ -1,8 +1,8 @@
 <template>
   <BalCard noPad>
-    <BalTabs v-model="activeTab" :tabs="Object.values(Tabs)" class="pt-4" />
+    <BalTabs v-model="activeTab" :tabs="Object.values(tabs)" class="pt-4" />
     <div>
-      <template v-if="activeTab === Tabs.invest">
+      <template v-if="activeTab === tabs.invest">
         <div v-if="investmentSuccess" class="p-4">
           <h5>Your investment has settled</h5>
           <p>
@@ -12,7 +12,7 @@
           <div class="flex mt-4">
             <BalBtn
               tag="a"
-              :href="_explorer(web3.config.chainId, txHash, 'tx')"
+              :href="_explorer(networkId, txHash, 'tx')"
               target="_blank"
               rel="noreferrer"
               color="gray"
@@ -34,7 +34,7 @@
         </div>
         <InvestForm v-else :pool="pool" @success="handleInvestment($event)" />
       </template>
-      <template v-if="activeTab === Tabs.withdraw">
+      <template v-if="activeTab === tabs.withdraw">
         <div v-if="withdrawalSuccess" class="p-4">
           <h5>Your withdrawal has settled</h5>
           <p>
@@ -44,7 +44,7 @@
           <div class="flex mt-4">
             <BalBtn
               tag="a"
-              :href="_explorer(web3.config.chainId, txHash, 'tx')"
+              :href="_explorer(networkId, txHash, 'tx')"
               target="_blank"
               rel="noreferrer"
               color="gray"
@@ -71,9 +71,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import InvestForm from '@/components/forms/pool_actions/InvestForm.vue';
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm.vue';
+import { useI18n } from 'vue-i18n';
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'PoolActionsCard',
@@ -90,16 +92,24 @@ export default defineComponent({
   },
 
   setup(_, { emit }) {
-    enum Tabs {
-      invest = 'Invest',
-      withdraw = 'Withdraw'
-    }
+    // COMPOSABLES
+    const store = useStore();
+    const { t } = useI18n();
 
-    const activeTab = ref(Tabs.invest);
+    // DATA
+    const tabs = {
+      invest: t('invest'),
+      withdraw: t('withdraw')
+    };
+    const activeTab = ref(tabs.invest);
     const investmentSuccess = ref(false);
     const withdrawalSuccess = ref(false);
     const txHash = ref('');
 
+    // COMPUTED
+    const networkId = computed(() => store.state.web3.config.chainId);
+
+    // METHODS
     function handleInvestment(txReceipt): void {
       investmentSuccess.value = true;
       txHash.value = txReceipt.hash;
@@ -113,14 +123,17 @@ export default defineComponent({
     }
 
     return {
+      // data
       activeTab,
-      Tabs,
-
-      handleInvestment,
-      handleWithdrawal,
+      tabs,
       investmentSuccess,
       withdrawalSuccess,
-      txHash
+      txHash,
+      // computed
+      networkId,
+      // methods
+      handleInvestment,
+      handleWithdrawal
     };
   }
 });
