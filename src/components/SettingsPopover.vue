@@ -78,7 +78,7 @@
       <div class="mt-4 px-4">
         <div class="flex items-baseline">
           <h5 v-text="'Slippage tolerance'" />
-          <BalTooltip class="ml-2" :width="150" :height="240" on-hover top left>
+          <BalTooltip class="ml-2" :width="150" :height="240" on-hover bottom left>
             <template v-slot:activator>
               <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
             </template>
