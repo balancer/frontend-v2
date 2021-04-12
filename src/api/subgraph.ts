@@ -22,6 +22,7 @@ export interface PoolSnapshot {
   amounts: string[];
   totalShares: string;
   swapVolume: string;
+  swapFees: string;
 }
 
 export interface Pool {
@@ -87,6 +88,7 @@ export async function getPools(chainId: number) {
           id
         }
         swapVolume
+        swapFees
       }
     }
   `;
@@ -168,6 +170,7 @@ export async function getPoolSnapshots(
         amounts
         totalShares
         swapVolume
+        swapFees
       }
     `;
   });
@@ -196,10 +199,10 @@ export async function getPoolSnapshots(
         if (!data) {
           return [timestamp, null];
         }
-        const { amounts, totalShares, swapVolume } = data;
+        const { amounts, totalShares, swapVolume, swapFees } = data;
         return [
           timestamp * 1000,
-          { timestamp, amounts, totalShares, swapVolume }
+          { timestamp, amounts, totalShares, swapVolume, swapFees }
         ];
       })
       .filter(entry => !!entry[1])
