@@ -1,51 +1,70 @@
 <template>
   <div id="app" class="overflow-x-hidden lg:overflow-x-visible">
-    <UiLoading v-if="app.loading || !app.init" />
+    <LoadingScreen v-if="appLoading || !appInit || web3Loading" />
+    <UnsupportedNetworkScreen v-else-if="unsupportedNetwork" />
     <div v-else>
-      <Topnav />
+      <AppNav />
       <div class="pb-12">
         <router-view :key="$route.path" class="flex-auto" />
       </div>
     </div>
     <div id="modal" />
     <AccountModal
-      :open="web3.modal"
+      :open="web3Modal"
       @close="setAccountModal(false)"
       @login="onLogin"
     />
-    <Notifications />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount } from 'vue';
+import { defineComponent, onBeforeMount, computed } from 'vue';
 import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
+import LoadingScreen from '@/components/screens/LoadingScreen.vue';
+import UnsupportedNetworkScreen from '@/components/screens/UnsupportedNetworkScreen.vue';
+import AppNav from '@/components/navs/AppNav.vue';
 
 export default defineComponent({
   components: {
-    AccountModal
+    AppNav,
+    AccountModal,
+    LoadingScreen,
+    UnsupportedNetworkScreen
   },
 
   setup() {
     // COMPOSABLES
     const store = useStore();
-    useWeb3Watchers();
+    const { loading: web3Loading, unsupportedNetwork } = useWeb3Watchers();
+
+    // COMPUTED
+    const appLoading = computed(() => store.state.app.loading);
+    const appInit = computed(() => store.state.app.init);
+    const web3Modal = computed(() => store.state.web3.modal);
 
     // CALLBACKS
     onBeforeMount(() => {
-      store.dispatch('init');
+      store.dispatch('app/init');
     });
 
     // METHODS
+    const setAccountModal = val => store.commit('web3/setAccountModal', val);
+
     async function onLogin(connector: string): Promise<void> {
-      store.commit('setAccountModal', false);
-      await store.dispatch('login', connector);
+      setAccountModal(false);
+      await store.dispatch('web3/login', connector);
     }
 
     return {
-      onLogin
+      appLoading,
+      appInit,
+      web3Modal,
+      onLogin,
+      web3Loading,
+      unsupportedNetwork,
+      setAccountModal
     };
   }
 });

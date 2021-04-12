@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" @keyup.esc="hide" class="bal-modal" @click="hide">
+  <div v-if="show" class="bal-modal" @click="hide" @keyup.esc="hide">
     <transition name="modal-bg" mode="out-in" appear>
       <div v-if="showContent" class="modal-bg" @click="hide" />
     </transition>
@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import BalCard from './Card.vue';
-import { defineComponent, ref, toRefs, watch, computed } from 'vue';
+import { defineComponent, ref, toRefs, watch } from 'vue';
 
 export default defineComponent({
   name: 'BalModal',
@@ -65,12 +65,8 @@ export default defineComponent({
       showContent.value = false;
     }
 
-    // Computed
-    const keymap = computed(() => ({ esc: hide }));
-
     return {
       showContent,
-      keymap,
       hide
     };
   }

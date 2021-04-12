@@ -1,7 +1,7 @@
 <template>
   <BalModal :show="open" :title="title" @close="$emit('close')">
     <div
-      v-if="!web3.account || step === 'connect'"
+      v-if="!account || step === 'connect'"
       class="text-gray-700 font-medium"
     >
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -35,56 +35,86 @@
           class="account-btn"
           @click="connectorsLimit = 1e3"
         >
-          {{ $t('seeMore') }} ({{ invisibleConnectorsCount }})
+          {{ t('seeMore') }} ({{ invisibleConnectorsCount }})
         </div>
       </div>
     </div>
   </BalModal>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, toRefs, reactive, watch, computed } from 'vue';
 import { getInjected } from '@snapshot-labs/lock/src/utils';
-import connectors from '@/constants/connectors.json';
+import connectorsList from '@/constants/connectors.json';
+import { useStore } from 'vuex';
+import { useI18n } from 'vue-i18n';
 
-export default {
-  props: ['open'],
-  emits: ['close'],
-  data() {
-    return {
+export default defineComponent({
+  props: {
+    open: { type: Boolean, default: false }
+  },
+
+  emits: ['close', 'login'],
+
+  setup(props) {
+    // COMPOSABLES
+    const store = useStore();
+    const { t } = useI18n();
+
+    // DATA
+    const data = reactive({
       connectorsLimit: 3,
       step: null,
       path:
         'https://raw.githubusercontent.com/snapshot-labs/lock/master/connectors/assets'
-    };
-  },
-  watch: {
-    open() {
-      this.step = null;
-      this.connectorsLimit = 3;
-    }
-  },
-  computed: {
-    injected() {
-      return getInjected();
-    },
-    connectors() {
-      return Object.fromEntries(
-        Object.entries(connectors).slice(0, this.connectorsLimit)
-      );
-    },
-    invisibleConnectorsCount() {
-      return (
-        Object.keys(connectors).length - Object.keys(this.connectors).length
-      );
-    },
+    });
 
-    title() {
-      if (!this.web3.account || this.step === 'connect')
-        return this.$t('connectWallet');
-      return this.$t('account');
-    }
+    // COMPUTED
+    const account = computed(() => store.state.web3.account);
+
+    const title = computed(() => {
+      if (!account.value || data.step === 'connect') return t('connectWallet');
+      return t('account');
+    });
+
+    const injected = computed(() => getInjected());
+
+    const connectors = computed(() => {
+      return Object.fromEntries(
+        Object.entries(connectorsList).slice(0, data.connectorsLimit)
+      );
+    });
+
+    const invisibleConnectorsCount = computed(() => {
+      return (
+        Object.keys(connectorsList).length -
+        Object.keys(connectors.value).length
+      );
+    });
+
+    // WATCHERS
+    watch(
+      () => props.open,
+      () => {
+        data.step = null;
+        data.connectorsLimit = 3;
+      }
+    );
+
+    return {
+      // data
+      ...toRefs(data),
+      // computed
+      account,
+      title,
+      injected,
+      connectors,
+      invisibleConnectorsCount,
+      // methods
+      t
+    };
   }
-};
+});
 </script>
 
 <style>
