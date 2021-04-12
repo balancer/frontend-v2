@@ -36,14 +36,18 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     const tokensRequired = {};
     tokensRequired[tokenInAddress.value] = tokenInAmountDenorm;
 
-    const requiredAllowancesV1 = store.getters.getRequiredAllowances({
-      dst: config.addresses.exchangeProxy,
-      tokens: tokensRequired
-    });
+    const requiredAllowancesV1 = store.getters['account/getRequiredAllowances'](
+      {
+        dst: config.addresses.exchangeProxy,
+        tokens: tokensRequired
+      }
+    );
 
-    const requiredAllowancesV2 = store.getters.getRequiredAllowances({
-      tokens: tokensRequired
-    });
+    const requiredAllowancesV2 = store.getters['account/getRequiredAllowances'](
+      {
+        tokens: tokensRequired
+      }
+    );
 
     return {
       isUnlockedV1: Object.keys(requiredAllowancesV1).length === 0,

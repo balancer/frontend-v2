@@ -12,15 +12,12 @@
         <tr class="hover:bg-gray-50" v-for="action in actions" :key="action.tx">
           <td class="p-2 pl-5 py-5 flex items-center text-left">
             {{ action.label }}
-            <a
-              :href="_explorer(web3.config.chainId, action.tx, 'tx')"
-              target="_blank"
-            >
+            <a :href="_explorer(networkId, action.tx, 'tx')" target="_blank">
               <BalIcon name="external-link" size="sm" class="ml-2" />
             </a>
           </td>
           <td class="p-2 py-5 text-right">
-            {{ _num(action.value, '$0,0.00') }}
+            {{ fNum(action.value, 'usd') }}
           </td>
           <td class="p-2 py-5 text-right">
             {{ action.details }}
@@ -39,6 +36,7 @@ import { PropType, computed } from 'vue';
 import { useStore } from 'vuex';
 
 import { PoolJoin, PoolExit, PoolEvents } from '@/api/subgraph';
+import useNumbers from '@/composables/useNumbers';
 
 interface Action {
   label: string;
@@ -59,10 +57,14 @@ export default {
       required: true
     }
   },
+
   setup(props) {
     const store = useStore();
+    const { fNum } = useNumbers();
 
-    const allTokens = computed(() => store.getters.getTokens());
+    const allTokens = computed(() => store.getters['registry/getTokens']());
+
+    const networkId = computed(() => store.state.web3.config.chainId);
 
     const actions = computed<Action[]>(() => {
       if (!Object.keys(props.events)) {
@@ -126,7 +128,9 @@ export default {
 
     return {
       actions,
-      formatDate
+      formatDate,
+      networkId,
+      fNum
     };
   }
 };

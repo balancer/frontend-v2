@@ -119,7 +119,6 @@
     </BalCard>
     <teleport to="#modal">
       <SelectTokenModal
-        v-if="!registry.loading"
         :open="modalSelectTokenIsOpen"
         :excludedTokens="[tokenInAddressInput, tokenOutAddressInput]"
         @close="modalSelectTokenIsOpen = false"
@@ -151,8 +150,6 @@ export default defineComponent({
     const store = useStore();
     const { isAuthenticated } = useAuth();
 
-    const { getTokens, getConfig } = store.getters;
-
     const tokenInAddressInput = ref('');
     const tokenInAmountInput = ref('');
     const tokenOutAddressInput = ref('');
@@ -161,6 +158,9 @@ export default defineComponent({
     const modalSelectTokenIsOpen = ref(false);
     const isInRate = ref(true);
 
+    const getTokens = (params = {}) =>
+      store.getters['registry/getTokens'](params);
+    const getConfig = () => store.getters['web3/getConfig']();
     const tokens = computed(() => getTokens({ includeEther: true }));
 
     const isWrap = computed(() => {
@@ -273,7 +273,7 @@ export default defineComponent({
     }
 
     function connectWallet() {
-      store.commit('setAccountModal', true);
+      store.commit('web3/setAccountModal', true);
     }
 
     function handleSelectToken(address: string): void {
@@ -284,7 +284,7 @@ export default defineComponent({
         tokenOutAddressInput.value = address;
         handleAmountChange(true, tokenInAmountInput.value);
       }
-      store.dispatch('injectTokens', [address]);
+      store.dispatch('registry/injectTokens', [address]);
     }
 
     function handleMax(): void {

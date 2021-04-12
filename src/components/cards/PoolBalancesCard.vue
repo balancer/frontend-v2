@@ -41,7 +41,7 @@ export default defineComponent({
 
     const { tokens, balances } = toRefs(props);
 
-    const allTokens = computed(() => store.getters.getTokens());
+    const allTokens = computed(() => store.getters['registry/getTokens']());
 
     function getSymbol(address: string) {
       const token = allTokens.value[address];
