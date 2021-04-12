@@ -4,8 +4,18 @@ import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import configs from '@/config';
 import { ETHER } from '@/constants/tokenlists';
 import { isAddress } from '@ethersproject/address';
+import { BigNumber } from '@ethersproject/bignumber';
 
-const state = {
+type AddressToValue = Record<string, BigNumber>;
+
+interface AccountState {
+  balances: AddressToValue;
+  allowances: AddressToValue;
+  loading: boolean;
+  loaded: boolean;
+}
+
+const state: AccountState = {
   balances: {},
   allowances: {},
   loading: false,
@@ -21,6 +31,7 @@ const getters = {
       ether.value || 0
     );
   },
+
   getRequiredAllowances: (state, getters, rootState) => query => {
     const config = rootState.web3.config.key;
     const tokens = query.tokens;
@@ -40,13 +51,29 @@ const getters = {
   }
 };
 
+const mutations = {
+  setLoading(_state: AccountState, val: boolean): void {
+    _state.loading = val;
+  },
+
+  setLoaded(_state: AccountState, val: boolean): void {
+    _state.loaded = val;
+  },
+
+  setBalances(_state: AccountState, balances: AddressToValue): void {
+    _state.balances = { ...balances };
+  },
+
+  setAllowances(_state: AccountState, allowances: AddressToValue): void {
+    _state.allowances = { ...allowances };
+  }
+};
+
 const actions = {
   resetAccount({ commit }) {
-    commit('ACCOUNT_SET', {
-      balances: {},
-      allowances: {},
-      loaded: false
-    });
+    commit('setBalances', {});
+    commit('setAllowances', {});
+    commit('setLoaded', false);
   },
 
   async getBalances({ commit, rootGetters, rootState }) {
@@ -55,7 +82,7 @@ const actions = {
     const tokens = rootGetters['registry/getTokens']();
     if (!account || Object.keys(tokens).length === 0) return;
     const network = rootState.web3.config.key;
-    commit('ACCOUNT_SET', { loading: true });
+    commit('setLoading', true);
     const [balances, etherBalance] = await Promise.all([
       getBalances(
         network,
@@ -66,10 +93,12 @@ const actions = {
       auth.web3.getBalance(account)
     ]);
     balances.ether = etherBalance;
-    commit('ACCOUNT_SET', { balances, loading: false, loaded: true });
+    commit('setBalances', balances);
+    commit('setLoading', false);
+    commit('setLoaded', true);
   },
 
-  getAllowances: async ({ commit, rootGetters, rootState }, payload) => {
+  async getAllowances({ commit, rootGetters, rootState }, payload) {
     const config = rootState.web3.config.key;
     const account: string = rootState.web3.account;
     let tokens: string[] =
@@ -80,7 +109,7 @@ const actions = {
     if (!account || tokens.length === 0) return;
     const dst = payload?.dst || configs[config].addresses.vault;
     const network = rootState.web3.config.key;
-    commit('ACCOUNT_SET', { loading: true });
+    commit('setLoading', true);
     const dstAllowances = await getAllowances(
       network,
       getProvider(network),
@@ -89,25 +118,10 @@ const actions = {
       tokens
     );
     const allowances = state.allowances;
+    // @ts-ignore
     allowances[dst] = { ...dstAllowances, ...allowances[dst] };
     commit('setLoading', false);
     commit('setAllowances', allowances);
-  }
-};
-
-const mutations = {
-  ACCOUNT_SET(_state, payload) {
-    Object.keys(payload).forEach(key => {
-      _state[key] = payload[key];
-    });
-  },
-
-  setLoading(_state, val) {
-    _state.loading = val;
-  },
-
-  setAllowances(_state, allowances) {
-    _state.allowances = { ...allowances };
   }
 };
 
