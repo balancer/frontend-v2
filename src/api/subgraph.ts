@@ -18,6 +18,7 @@ export interface PoolSnapshot {
   pool: {
     id: string;
   };
+  timestamp: number;
   amounts: string[];
   totalShares: string;
   swapVolume: string;
@@ -163,6 +164,7 @@ export async function getPoolSnapshots(
   const dayQueries = timestamps.map(timestamp => {
     return `
       _${timestamp}: poolSnapshot(id: "${poolId}-${timestamp}") {
+        timestamp
         amounts
         totalShares
         swapVolume
@@ -194,8 +196,11 @@ export async function getPoolSnapshots(
         if (!data) {
           return [timestamp, null];
         }
-        const { amounts, totalShares } = data;
-        return [timestamp * 1000, { amounts, totalShares }];
+        const { amounts, totalShares, swapVolume } = data;
+        return [
+          timestamp * 1000,
+          { timestamp, amounts, totalShares, swapVolume }
+        ];
       })
       .filter(entry => !!entry[1])
   );
