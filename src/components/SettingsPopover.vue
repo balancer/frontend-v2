@@ -76,7 +76,28 @@
         </div>
       </div>
       <div class="mt-4 px-4">
-        <h5 v-text="$t('priceImpactTolerance')" />
+        <div class="flex items-baseline">
+          <h5 v-text="'Slippage tolerance'" />
+          <BalTooltip
+            class="ml-2"
+            :width="150"
+            :height="240"
+            on-hover
+            bottom
+            left
+          >
+            <template v-slot:activator>
+              <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
+            </template>
+            <div class="p-2 text-xs text-gray-500">
+              Market conditions may change between the time your order is
+              submitted and the time it gets executed on Ethereum. Slippage
+              tolerance is the maximum change in price you are willing to
+              accept. This protects you from front-running bots and miner
+              extractable value (MEV).
+            </div>
+          </BalTooltip>
+        </div>
         <div class="flex mt-1">
           <div
             v-for="slippage in slippageOptions"
