@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h4>Balances</h4>
+    <h4 v-text="$t('balances')" />
     <div
       v-for="(address, index) in tokens"
       :key="address"
