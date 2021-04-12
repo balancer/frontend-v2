@@ -1,6 +1,13 @@
 import { getEtherPrice, getTokensPrice } from '@/api/coingecko';
 
-const state = {
+type Prices = Record<string, number>;
+
+interface MarketState {
+  prices: Prices;
+  loading: boolean;
+}
+
+const state: MarketState = {
   prices: {},
   loading: false
 };
@@ -12,14 +19,15 @@ const actions = {
         (token: any) => token.address
       );
     try {
-      commit('MARKET_SET', { loading: true });
+      commit('setLoading', true);
       const chainId = rootState.web3.config.chainId;
       const [prices, etherPrice] = await Promise.all([
         getTokensPrice(chainId, tokens),
         getEtherPrice()
       ]);
       prices.ether = etherPrice;
-      commit('MARKET_SET', { prices, loading: false });
+      commit('addPrices', prices);
+      commit('setLoading', false);
     } catch (e) {
       console.log(e);
     }
@@ -27,15 +35,14 @@ const actions = {
 };
 
 const mutations = {
-  MARKET_SET(_state, payload) {
-    const { prices, loading } = payload;
-    _state.loading = loading;
-    if (prices) {
-      for (const asset in prices) {
-        const price = prices[asset];
-        _state.prices[asset] = price;
-      }
+  addPrices(_state: MarketState, prices: Prices) {
+    for (const asset in prices) {
+      _state.prices[asset] = prices[asset];
     }
+  },
+
+  setLoading(_state: MarketState, val: boolean) {
+    _state.loading = val;
   }
 };
 
