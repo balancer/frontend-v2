@@ -103,7 +103,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, ref, computed } from 'vue';
+import { PropType, defineComponent, toRefs, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import { getPoolLiquidity } from '@/utils/balancer/price';
@@ -141,7 +141,7 @@ export default defineComponent({
     const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const filteredPools = computed(() => {
-      return props.pools.filter(pool =>
+      return pools.value.filter(pool =>
         selectedTokens.value.every(token =>
           pool.tokens.map(token => token.address).includes(token.toLowerCase())
         )
@@ -150,7 +150,7 @@ export default defineComponent({
 
     const stats = computed(() => {
       const stats = Object.fromEntries(
-        props.pools.map(pool => {
+        pools.value.map(pool => {
           const liquidity = getPoolLiquidity(pool, store.state.market.prices);
           const snapshot = snapshots.value.find(
             snapshot => snapshot.pool.id === pool.id
