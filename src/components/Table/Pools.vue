@@ -86,7 +86,7 @@
             {{ _num(stats[pool.id].volume, '$0,0') }}
           </td>
           <td class="p-2 pr-5 py-5 text-right">
-            {{ _num(stats[pool.id].apy, '0,0%') }}
+            {{ _num(stats[pool.id].apy, '0,0.[00]%') }}
           </td>
         </tr>
       </table>
@@ -159,10 +159,13 @@ export default defineComponent({
             snapshot => snapshot.pool.id === pool.id
           );
           const volume = snapshot ? snapshot.swapVolume : '0';
+          const apy = snapshot
+            ? (parseFloat(snapshot.swapFees) / parseFloat(liquidity)) * 365
+            : '0';
           const poolStats = {
             liquidity,
             volume,
-            apy: '0'
+            apy
           };
           return [pool.id, poolStats];
         })

@@ -11,6 +11,10 @@
         <div class="text-lg">{{ fNum(volume, 'usd') }}</div>
       </div>
       <div class="mr-16 mt-5">
+        <div class="text-sm">Fees (7d)</div>
+        <div class="text-lg">{{ fNum(fees, 'usd') }}</div>
+      </div>
+      <div class="mr-16 mt-5">
         <div class="text-sm">APY</div>
         <div class="text-lg">{{ fNum(apy, 'percent') }}</div>
       </div>
@@ -71,27 +75,43 @@ export default defineComponent({
     });
 
     const liquidity = computed(() =>
-      getPoolLiquidity(subgraphPool.value, store.state.market.prices)
+      parseFloat(
+        getPoolLiquidity(subgraphPool.value, store.state.market.prices)
+      )
     );
-    const volume = computed(() => {
+
+    const weekSnapshots = computed(() => {
       const weekSnapshots = Object.values(snapshots.value).filter(snapshot => {
         const timestamp = Date.now() / 1000;
         const weekTimestamp = timestamp - 7 * 24 * 60 * 60;
         return snapshot.timestamp >= weekTimestamp;
       });
-      console.log(snapshots, Object.values(snapshots.value), weekSnapshots);
-      const volume = weekSnapshots.reduce(
+      return weekSnapshots;
+    });
+
+    const volume = computed(() => {
+      const volume = weekSnapshots.value.reduce(
         (total, snapshot) => total + parseFloat(snapshot.swapVolume),
         0
       );
       return volume;
     });
-    const apy = computed(() => 0);
+
+    const fees = computed(() => {
+      const fees = weekSnapshots.value.reduce(
+        (total, snapshot) => total + parseFloat(snapshot.swapFees),
+        0
+      );
+      return fees;
+    });
+
+    const apy = computed(() => (fees.value / liquidity.value / 7) * 365);
 
     return {
       subgraphPool,
       liquidity,
       volume,
+      fees,
       apy,
       fNum
     };
