@@ -127,7 +127,7 @@ const getters = {
     return Object.fromEntries(tokens.map(token => [token.address, token]));
   },
 
-  gettokenLists: (state, getters, rootState) => ({ q, active }) => {
+  getTokenLists: (state, getters, rootState) => ({ q, active }) => {
     const tokenLists = clone(state.tokenLists);
     return Object.fromEntries(
       Object.entries(tokenLists)

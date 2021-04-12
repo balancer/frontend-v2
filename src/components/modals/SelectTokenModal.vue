@@ -128,7 +128,7 @@ export default defineComponent({
     });
 
     const tokenLists = computed(() => {
-      return store.getters['registry/getTokenlists']({ q: data.query });
+      return store.getters['registry/getTokenLists']({ q: data.query });
     });
 
     const tokenlistsReverse = computed(() => {
@@ -137,7 +137,7 @@ export default defineComponent({
     });
 
     const activeTokenLists = computed(() => {
-      return store.getters['registry/getTokenlists']({ active: true });
+      return store.getters['registry/getTokenLists']({ active: true });
     });
 
     // METHODS

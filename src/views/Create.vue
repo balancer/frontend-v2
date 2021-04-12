@@ -134,7 +134,7 @@
         @selectTokenlist="modalSelectLists"
         @inputSearch="onTokenSearch"
         :tokens="getTokens({ q, not: form.tokens })"
-        :tokenlists="getTokenlists({ active: true })"
+        :tokenlists="getTokenLists({ active: true })"
       />
       <ModalSelectTokenlist
         :open="modal.selectTokenlist"
@@ -142,7 +142,7 @@
         @back="modalSelectToken"
         @select="toggleList($event)"
         @inputSearch="q = $event"
-        :tokenlists="getTokenlists({ q })"
+        :tokenlists="getTokenLists({ q })"
         :activeLists="registry.activeLists"
       />
     </teleport>
@@ -177,7 +177,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getTokens', 'getTokenlists', 'getRequiredAllowances']),
+    ...mapGetters({
+      getTokens: 'registry/getTokens',
+      getTokenlists: 'registry/getTokenLists',
+      getRequiredAllowances: 'account/getRequiredAllowances'
+    }),
+
     tokens() {
       return this.getTokens();
     },
