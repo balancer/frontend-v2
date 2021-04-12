@@ -209,7 +209,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      notify: 'notifcations/notify',
       watchTx: 'notifcations/watchTx',
       getAllowances: 'accounts/getAllowances',
       injectTokens: 'registry/injectTokens',
@@ -257,7 +256,6 @@ export default {
         await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
-        this.notify(this.$t('poolCreated'));
         const poolId = receipt.logs?.[0].data;
         console.log('Pool id', poolId);
         if (poolId) {
