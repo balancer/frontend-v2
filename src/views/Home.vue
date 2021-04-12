@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useStore } from 'vuex';
 
 export default defineComponent({
@@ -17,11 +17,8 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
 
-    // DATA
-    const allPools = store.state.pools.all;
-
     return {
-      allPools
+      allPools: computed(() => store.state.pools.all)
     };
   }
 });

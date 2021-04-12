@@ -41,7 +41,7 @@
             </BalBtn>
             <BalBtn
               class="auth-btn"
-              :loading="web3.loading"
+              :loading="web3Loading"
               :loading-label="['sm', 'md'].includes(bp) ? '' : 'Connecting...'"
               color="gray"
               outline
@@ -107,14 +107,18 @@ export default defineComponent({
     const account = computed(() => store.state.web3.account);
     const profile = computed(() => store.state.web3.profile);
     const web3Loading = computed(() => store.state.web3.loading);
-    const network = computed(() => store.state.config.key);
+    const network = computed(() => store.state.web3.config.key);
 
     // METHODS
     const setAccountModal = () => store.dispatch('web3/setAccountModal');
 
     async function getClaimsData() {
-      const provider = getProvider(network);
-      const pendingClaims = await getPendingClaims(network, provider, account);
+      const provider = getProvider(network.value);
+      const pendingClaims = await getPendingClaims(
+        network.value,
+        provider,
+        account.value
+      );
       data.pendingClaims = pendingClaims;
       data.totalPending = pendingClaims
         .map(claim => parseFloat(claim.amount))

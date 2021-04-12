@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="overflow-x-hidden lg:overflow-x-visible">
-    <LoadingScreen v-if="app.loading || !app.init || web3Loading" />
+    <LoadingScreen v-if="appLoading || !appInit || web3Loading" />
     <UnsupportedNetworkScreen v-else-if="unsupportedNetwork" />
     <div v-else>
       <AppNav />
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, ref, toRefs } from 'vue';
+import { defineComponent, onBeforeMount, computed } from 'vue';
 import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
@@ -40,9 +40,10 @@ export default defineComponent({
     const store = useStore();
     const { loading: web3Loading, unsupportedNetwork } = useWeb3Watchers();
 
-    // DATA
-    const app = toRefs(store.state.app);
-    const web3Modal = ref(store.state.web3.modal);
+    // COMPUTED
+    const appLoading = computed(() => store.state.app.loading);
+    const appInit = computed(() => store.state.app.init);
+    const web3Modal = computed(() => store.state.web3.modal);
 
     // CALLBACKS
     onBeforeMount(() => {
@@ -56,7 +57,8 @@ export default defineComponent({
     }
 
     return {
-      app,
+      appLoading,
+      appInit,
       web3Modal,
       onLogin,
       web3Loading,

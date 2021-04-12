@@ -52,7 +52,7 @@ export default function useSor(
   const auth = useAuth();
   const { notify } = useBlocknative();
 
-  const { getConfig } = store.getters;
+  const getConfig = () => store.getters['web3/getConfig']();
 
   onMounted(async () => await initSor());
 
