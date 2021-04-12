@@ -2,8 +2,8 @@ import { WebSocketProvider } from '@ethersproject/providers';
 
 const INFURA_PROJECT_ID = process.env.VUE_APP_INFURA_PROJECT_ID;
 
-type NetworkKey = 1 | 42;
-const networkMap = {
+type NetworkId = 1 | 42;
+const networkMap: Record<NetworkId, string> = {
   1: 'mainnet',
   42: 'kovan'
 };
@@ -14,16 +14,16 @@ export default class Service {
   network: string;
   wsProvider: WebSocketProvider;
 
-  constructor(networkKey: NetworkKey) {
+  constructor(NetworkId: NetworkId) {
     if (!INFURA_PROJECT_ID) throw new Error('Infura project ID missing!');
-    this.network = networkMap[networkKey];
+    this.network = networkMap[NetworkId];
     this.wsProvider = new WebSocketProvider(
       `wss://${this.network}.infura.io/ws/v3/${INFURA_PROJECT_ID}`
     );
   }
 
-  public switchNetwork(networkKey: NetworkKey): void {
-    this.network = networkMap[networkKey];
+  public switchNetwork(networkId: NetworkId): void {
+    this.network = networkMap[networkId];
     if (this.wsProvider) this.wsProvider.removeAllListeners();
     this.wsProvider = new WebSocketProvider(
       `wss://${this.network}.infura.io/ws/v3/${INFURA_PROJECT_ID}`
