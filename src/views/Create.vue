@@ -214,7 +214,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      watchTx: 'notifcations/watchTx',
       getAllowances: 'accounts/getAllowances',
       injectTokens: 'registry/injectTokens',
       toggleList: 'registry/toggleList'
@@ -258,7 +257,6 @@ export default {
         );
         this.loading = false;
         console.log('Tx', tx);
-        await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
         const poolId = receipt.logs?.[0].data;
