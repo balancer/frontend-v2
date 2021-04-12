@@ -134,7 +134,7 @@
         @selectTokenlist="modalSelectLists"
         @inputSearch="onTokenSearch"
         :tokens="getTokens({ q, not: form.tokens })"
-        :tokenlists="getTokenlists({ active: true })"
+        :tokenlists="getTokenLists({ active: true })"
       />
       <ModalSelectTokenlist
         :open="modal.selectTokenlist"
@@ -142,7 +142,7 @@
         @back="modalSelectToken"
         @select="toggleList($event)"
         @inputSearch="q = $event"
-        :tokenlists="getTokenlists({ q })"
+        :tokenlists="getTokenLists({ q })"
         :activeLists="registry.activeLists"
       />
     </teleport>
@@ -177,7 +177,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getTokens', 'getTokenlists', 'getRequiredAllowances']),
+    ...mapGetters({
+      getTokens: 'registry/getTokens',
+      getTokenlists: 'registry/getTokenLists',
+      getRequiredAllowances: 'account/getRequiredAllowances'
+    }),
+
     tokens() {
       return this.getTokens();
     },
@@ -208,13 +213,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'notify',
-      'watchTx',
-      'getAllowances',
-      'injectTokens',
-      'toggleList'
-    ]),
+    ...mapActions({
+      getAllowances: 'accounts/getAllowances',
+      injectTokens: 'registry/injectTokens',
+      toggleList: 'registry/toggleList'
+    }),
+
     modalSelectToken() {
       this.modal.selectToken = true;
       this.modal.selectTokenlist = false;
@@ -253,10 +257,8 @@ export default {
         );
         this.loading = false;
         console.log('Tx', tx);
-        await this.watchTx(tx);
         const receipt = await tx.wait();
         console.log('Receipt', receipt);
-        this.notify(this.$t('poolCreated'));
         const poolId = receipt.logs?.[0].data;
         console.log('Pool id', poolId);
         if (poolId) {

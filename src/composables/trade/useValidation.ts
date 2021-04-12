@@ -18,7 +18,8 @@ export default function useValidation(
     if (
       (parseFloat(tokenInAmount.value) == 0 ||
         tokenInAmount.value.trim() === '') &&
-      parseFloat(tokenOutAmount.value) == 0
+      (parseFloat(tokenOutAmount.value) == 0 ||
+        tokenOutAmount.value.trim() === '')
     )
       return i18n.global.t('enterAmount');
 

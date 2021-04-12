@@ -1,4 +1,6 @@
-FROM node:15
+FROM node:14
+
+RUN npm install npm@7
 
 ENV APP_ROOT /app
 
