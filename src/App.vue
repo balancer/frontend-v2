@@ -14,7 +14,6 @@
       @close="setAccountModal(false)"
       @login="onLogin"
     />
-    <Notifications />
   </div>
 </template>
 
