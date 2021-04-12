@@ -9,6 +9,7 @@ import { swapIn, swapOut } from '@/utils/balancer/swapper';
 import useBlocknative from '@/composables/useBlocknative';
 import { ETHER } from '@/constants/tokenlists';
 import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import { unwrap, wrap } from '@/utils/balancer/wrapper';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -19,7 +20,9 @@ export default function useSor(
   tokenOutAddressInput,
   tokenOutAmountInput,
   tokens,
-  allowanceState
+  allowanceState,
+  isWrap,
+  isUnwrap
 ) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<any[]>([]); // TODO - Check type & make sure correct value is returned by SorManager
@@ -88,6 +91,15 @@ export default function useSor(
     isExactIn: boolean,
     amount: string
   ): Promise<void> {
+    if (isWrap.value || isUnwrap.value) {
+      if (isExactIn) {
+        tokenOutAmountInput.value = tokenInAmountInput.value;
+      } else {
+        tokenInAmountInput.value = tokenOutAmountInput.value;
+      }
+      return;
+    }
+
     const config = getConfig();
     const tokenInAddress =
       tokenInAddressInput.value === ETHER.address
@@ -240,6 +252,28 @@ export default function useSor(
     const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
     const tokenInAmountScaled = scale(tokenInAmountNumber, tokenInDecimals);
     const slippageBufferRate = parseFloat(store.state.app.slippage);
+
+    if (isWrap.value) {
+      try {
+        const tx = await wrap(chainId, auth.web3, tokenInAmountScaled);
+        console.log('Wrap tx', tx);
+        txListener(tx.hash);
+      } catch (e) {
+        console.log(e);
+        trading.value = false;
+      }
+      return;
+    } else if (isUnwrap.value) {
+      try {
+        const tx = await unwrap(chainId, auth.web3, tokenInAmountScaled);
+        console.log('Unwrap tx', tx);
+        txListener(tx.hash);
+      } catch (e) {
+        console.log(e);
+        trading.value = false;
+      }
+      return;
+    }
 
     if (exactIn.value) {
       const tokenOutAmountNumber = new BigNumber(tokenOutAmountInput.value);
