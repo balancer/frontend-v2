@@ -5,7 +5,7 @@
         <Breadcrumb />
         <h1 v-text="'Vault'" class="mb-5" />
       </div>
-      <UiLoading v-if="loading" />
+      <BalLoadingIcon v-if="loading" />
       <div v-if="loaded">
         <Block title="Overview">
           <div>

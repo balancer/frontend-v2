@@ -120,7 +120,7 @@ export default defineComponent({
     });
 
     const tokens = computed(() => {
-      return store.getters.getTokens({
+      return store.getters['registry/getTokens']({
         q: data.query,
         not: props.excludedTokens,
         includeEther: props.includeEther
@@ -128,7 +128,7 @@ export default defineComponent({
     });
 
     const tokenLists = computed(() => {
-      return store.getters.getTokenlists({ q: data.query });
+      return store.getters['registry/getTokenLists']({ q: data.query });
     });
 
     const tokenlistsReverse = computed(() => {
@@ -137,7 +137,7 @@ export default defineComponent({
     });
 
     const activeTokenLists = computed(() => {
-      return store.getters.getTokenlists({ active: true });
+      return store.getters['registry/getTokenLists']({ active: true });
     });
 
     // METHODS
@@ -145,7 +145,7 @@ export default defineComponent({
       let address = event.target.value;
       if (isAddress(address)) {
         address = getAddress(address);
-        store.dispatch('injectTokens', [address.trim()]);
+        store.dispatch('registry/injectTokens', [address.trim()]);
       }
     }
 
@@ -155,7 +155,7 @@ export default defineComponent({
     }
 
     function onSelectList(list: string): void {
-      store.dispatch('toggleList', list);
+      store.dispatch('registry/toggleList', list);
     }
 
     function onListExit(): void {

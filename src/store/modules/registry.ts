@@ -7,14 +7,22 @@ import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/utils';
 import { getTokensMetadata } from '@/utils/balancer/tokens';
 import injected from '@/constants/injected.json';
+import { TokenList, TokenInfo } from '@/types/TokenList';
 
 const defaultActiveLists = {};
 defaultActiveLists[TOKEN_LIST_DEFAULT] = true;
 
-const state = {
-  activeLists: lsGet('tokenlists', defaultActiveLists),
-  currentTokenlist: TOKEN_LIST_DEFAULT,
-  tokenlists: Object.fromEntries(TOKEN_LISTS.map(tokenlist => [tokenlist, {}])),
+interface RegistryState {
+  activeLists: Record<string, boolean>;
+  tokenLists: Record<string, TokenList | {}>;
+  injected: TokenInfo[];
+  loading: boolean;
+  loaded: boolean;
+}
+
+const state: RegistryState = {
+  activeLists: lsGet('tokenLists', defaultActiveLists),
+  tokenLists: Object.fromEntries(TOKEN_LISTS.map(tokenList => [tokenList, {}])),
   injected,
   loading: false,
   loaded: false
@@ -36,10 +44,11 @@ const getters = {
     }
     return ether;
   },
+
   getTokens: (state, getters, rootState) => (query: any = {}) => {
     const { q, addresses, not, withBalance, limit, includeEther } = query;
 
-    const activeLists = Object.keys(state.tokenlists)
+    const activeLists = Object.keys(state.tokenLists)
       .filter(name => state.activeLists[name])
       .reverse();
 
@@ -48,7 +57,7 @@ const getters = {
       token => (tokens[getAddress(token.address)] = token)
     );
     activeLists.forEach(name => {
-      clone(state.tokenlists[name])?.tokens?.map(
+      clone(state.tokenLists[name])?.tokens?.map(
         token => (tokens[getAddress(token.address)] = token)
       );
     });
@@ -117,27 +126,28 @@ const getters = {
 
     return Object.fromEntries(tokens.map(token => [token.address, token]));
   },
-  getTokenlists: (state, getters, rootState) => ({ q, active }) => {
-    const tokenlists = clone(state.tokenlists);
+
+  getTokenLists: (state, getters, rootState) => ({ q, active }) => {
+    const tokenLists = clone(state.tokenLists);
     return Object.fromEntries(
-      Object.entries(tokenlists)
-        .map((tokenlist: any) => {
-          tokenlist[1].tokens = tokenlist[1].tokens
-            ? tokenlist[1].tokens.filter(
+      Object.entries(tokenLists)
+        .map((tokenList: any) => {
+          tokenList[1].tokens = tokenList[1].tokens
+            ? tokenList[1].tokens.filter(
                 token => token.chainId === rootState.web3.config.chainId
               )
             : [];
-          tokenlist[1].active = state.activeLists[tokenlist[0]] ? 1 : 0;
-          return tokenlist;
+          tokenList[1].active = state.activeLists[tokenList[0]] ? 1 : 0;
+          return tokenList;
         })
         .filter(
-          tokenlist =>
-            tokenlist[1].tokens.length > 0 &&
-            (!active || (active && tokenlist[1].active))
+          tokenList =>
+            tokenList[1].tokens.length > 0 &&
+            (!active || (active && tokenList[1].active))
         )
-        .filter(tokenlist =>
+        .filter(tokenList =>
           q
-            ? `${tokenlist[0]} ${tokenlist[1].name}`
+            ? `${tokenList[0]} ${tokenList[1].name}`
                 .toLowerCase()
                 .includes(q.toLowerCase())
             : true
@@ -148,26 +158,29 @@ const getters = {
 };
 
 const actions = {
-  loadRegistry: async ({ dispatch, commit }) => {
-    commit('REGISTRY_SET', { loading: true });
+  async get({ dispatch, commit }) {
+    commit('setLoading', true);
     await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
-    commit('REGISTRY_SET', { loading: false, loaded: true });
-    dispatch('getBalances');
-    dispatch('getAllowances');
-    dispatch('loadPrices');
+    commit('setLoading', false);
+    commit('setLoaded', true);
+    dispatch('account/getBalances', null, { root: true });
+    dispatch('account/getAllowances', null, { root: true });
+    dispatch('market/loadPrices', [], { root: true });
   },
-  loadTokenlist: async ({ commit }, name) => {
+
+  async loadTokenlist({ commit }, name) {
     name = name || TOKEN_LIST_DEFAULT;
     try {
-      const tokenlist = await loadTokenlist(name);
-      const tokenlists = clone(state.tokenlists);
-      tokenlists[name] = tokenlist;
-      commit('REGISTRY_SET', { tokenlists });
+      const tokenList = await loadTokenlist(name);
+      const tokenLists = clone(state.tokenLists);
+      tokenLists[name] = tokenList;
+      commit('setTokenLists', tokenLists);
     } catch (e) {
       console.error(e);
     }
   },
-  injectTokens: async ({ commit, dispatch, rootState }, tokens) => {
+
+  async injectTokens({ commit, dispatch, rootState }, tokens) {
     tokens = tokens.filter(
       token => token !== ETHER.address && isAddress(token)
     );
@@ -182,12 +195,13 @@ const actions = {
     Object.values(tokensMetadata).map((tokenMetadata: any) =>
       injected.push({ ...tokenMetadata, ...{ injected: true } })
     );
-    commit('REGISTRY_SET', { injected });
-    dispatch('getBalances');
-    dispatch('getAllowances', { tokens });
-    dispatch('loadPrices', tokens);
+    commit('setInjected', injected);
+    dispatch('account/getBalances', null, { root: true });
+    dispatch('account/getAllowances', { tokens }, { root: true });
+    dispatch('market/loadPrices', tokens, { root: true });
   },
-  toggleList: ({ commit }, name) => {
+
+  toggleList({ commit }, name) {
     const activeLists = clone(state.activeLists);
     if (activeLists[name]) {
       delete activeLists[name];
@@ -195,21 +209,42 @@ const actions = {
       activeLists[name] = true;
     }
     if (Object.keys(activeLists).length > 0) {
-      lsSet('tokenlists', activeLists);
-      commit('REGISTRY_SET', { activeLists });
+      lsSet('tokenLists', activeLists);
+      commit('setActiveLists', activeLists);
     }
   }
 };
 
 const mutations = {
-  REGISTRY_SET(_state, payload) {
-    Object.keys(payload).forEach(key => {
-      _state[key] = payload[key];
-    });
+  setLoading(_state: RegistryState, val: boolean): void {
+    _state.loading = val;
+  },
+
+  setLoaded(_state: RegistryState, val: boolean): void {
+    _state.loaded = val;
+  },
+
+  setTokenLists(
+    _state: RegistryState,
+    tokenLists: Record<string, TokenList[]>
+  ): void {
+    _state.tokenLists = tokenLists;
+  },
+
+  setInjected(_state: RegistryState, injected: TokenInfo[]): void {
+    _state.injected = injected;
+  },
+
+  setActiveLists(
+    _state: RegistryState,
+    activeLists: Record<string, boolean>
+  ): void {
+    _state.activeLists = activeLists;
   }
 };
 
 export default {
+  namespaced: true,
   state,
   mutations,
   getters,
