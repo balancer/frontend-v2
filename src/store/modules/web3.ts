@@ -3,7 +3,6 @@ import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
 import configs, { Config } from '@/config';
 import { getProfiles } from '@/utils/profile';
-import getProvider from '@/utils/provider';
 
 const defaultConfig = process.env.VUE_APP_DEFAULT_NETWORK || '1';
 
@@ -32,48 +31,6 @@ const state: Web3State = {
 const getters = {
   getConfig: state => () => {
     return state.config;
-  }
-};
-
-const mutations = {
-  setLoading(_state: Web3State, val: boolean): void {
-    _state.loading = val;
-  },
-
-  logout(_state: Web3State) {
-    _state.account = null;
-    _state.profile = {};
-  },
-
-  setAccount(_state: Web3State, account: string): void {
-    _state.account = account;
-  },
-
-  setProfile(_state: Web3State, profile) {
-    _state.profile = profile;
-  },
-
-  setNetwork(_state: Web3State, chainId: number): void {
-    if (!configs[chainId]) {
-      configs[chainId] = {
-        ...configs[defaultConfig],
-        unknown: true,
-        shortName: ''
-      };
-    }
-    _state.config = configs[chainId];
-  },
-
-  setConnector(_state: Web3State, connector: string): void {
-    _state.connector = connector;
-  },
-
-  setBlockNumber(_state: Web3State, blockNumber: number): void {
-    _state.blockNumber = blockNumber;
-  },
-
-  setAccountModal(_state: Web3State, val: boolean) {
-    _state.modal = val;
   }
 };
 
@@ -145,6 +102,48 @@ const actions = {
       console.debug('LOAD_PROVIDER_FAILURE', e);
       return Promise.reject(e);
     }
+  }
+};
+
+const mutations = {
+  setLoading(_state: Web3State, val: boolean): void {
+    _state.loading = val;
+  },
+
+  logout(_state: Web3State) {
+    _state.account = null;
+    _state.profile = {};
+  },
+
+  setAccount(_state: Web3State, account: string): void {
+    _state.account = account;
+  },
+
+  setProfile(_state: Web3State, profile) {
+    _state.profile = profile;
+  },
+
+  setNetwork(_state: Web3State, chainId: number): void {
+    if (!configs[chainId]) {
+      configs[chainId] = {
+        ...configs[defaultConfig],
+        unknown: true,
+        shortName: ''
+      };
+    }
+    _state.config = configs[chainId];
+  },
+
+  setConnector(_state: Web3State, connector: string): void {
+    _state.connector = connector;
+  },
+
+  setBlockNumber(_state: Web3State, blockNumber: number): void {
+    _state.blockNumber = blockNumber;
+  },
+
+  setAccountModal(_state: Web3State, val: boolean) {
+    _state.modal = val;
   }
 };
 
