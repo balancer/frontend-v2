@@ -64,7 +64,7 @@ import {
   getPoolTokens,
   getTokenMarketChart
 } from '@/utils/balancer/subgraph';
-import { mapActions, mapState } from 'vuex';
+import { mapState } from 'vuex';
 import { formatMarketChartData } from '@/utils/chart';
 
 export default {
