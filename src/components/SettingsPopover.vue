@@ -111,10 +111,12 @@ import { mapActions, mapMutations } from 'vuex';
 import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
 
 const locales = {
-  'en-US': 'EN',
+  'en-US': 'English',
   'zh-CN': '中文',
-  'fr-FR': 'FR',
-  'pt-PT': 'PT',
+  'es-ES': 'Español',
+  'it-IT': 'Italiano',
+  'fr-FR': 'Français',
+  'pt-PT': 'Português',
   'ru-RU': 'Россия'
 };
 const slippageOptions = ['0.005', '0.01', '0.02'];
