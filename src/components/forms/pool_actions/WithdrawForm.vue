@@ -387,7 +387,7 @@ export default defineComponent({
     }
 
     function connectWallet() {
-      store.commit('setAccountModal', true);
+      store.commit('web3/setAccountModal', true);
     }
 
     function setPropMax() {

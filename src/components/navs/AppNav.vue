@@ -110,7 +110,7 @@ export default defineComponent({
     const network = computed(() => store.state.web3.config.key);
 
     // METHODS
-    const setAccountModal = () => store.dispatch('web3/setAccountModal');
+    const setAccountModal = val => store.commit('web3/setAccountModal', val);
 
     async function getClaimsData() {
       const provider = getProvider(network.value);

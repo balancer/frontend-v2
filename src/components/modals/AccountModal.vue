@@ -54,7 +54,7 @@ export default defineComponent({
     open: { type: Boolean, default: false }
   },
 
-  emits: ['close'],
+  emits: ['close', 'login'],
 
   setup(props) {
     // COMPOSABLES

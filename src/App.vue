@@ -50,8 +50,10 @@ export default defineComponent({
     });
 
     // METHODS
+    const setAccountModal = val => store.commit('web3/setAccountModal', val);
+
     async function onLogin(connector: string): Promise<void> {
-      store.commit('setAccountModal', false);
+      setAccountModal(false);
       await store.dispatch('web3/login', connector);
     }
 
@@ -61,7 +63,8 @@ export default defineComponent({
       web3Modal,
       onLogin,
       web3Loading,
-      unsupportedNetwork
+      unsupportedNetwork,
+      setAccountModal
     };
   }
 });
