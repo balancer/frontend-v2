@@ -155,7 +155,7 @@ export default defineComponent({
     }
 
     function onSelectList(list: string): void {
-      store.dispatch('toggleList', list);
+      store.dispatch('registry/toggleList', list);
     }
 
     function onListExit(): void {
