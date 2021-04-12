@@ -11,14 +11,10 @@ export default defineComponent({
   name: 'AppIcon',
 
   setup() {
-    // COMPOSABLES
     const store = useStore();
 
-    // COMPUTED
-    const darkMode = computed(() => store.state.app.darkMode);
-
     return {
-      darkMode
+      darkMode: computed(() => store.state.app.darkMode)
     };
   }
 });
