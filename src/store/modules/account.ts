@@ -51,24 +51,6 @@ const getters = {
   }
 };
 
-const mutations = {
-  setLoading(_state: AccountState, val: boolean): void {
-    _state.loading = val;
-  },
-
-  setLoaded(_state: AccountState, val: boolean): void {
-    _state.loaded = val;
-  },
-
-  setBalances(_state: AccountState, balances: AddressToValue): void {
-    _state.balances = { ...balances };
-  },
-
-  setAllowances(_state: AccountState, allowances: AddressToValue): void {
-    _state.allowances = { ...allowances };
-  }
-};
-
 const actions = {
   resetAccount({ commit }) {
     commit('setBalances', {});
@@ -122,6 +104,24 @@ const actions = {
     allowances[dst] = { ...dstAllowances, ...allowances[dst] };
     commit('setLoading', false);
     commit('setAllowances', allowances);
+  }
+};
+
+const mutations = {
+  setLoading(_state: AccountState, val: boolean): void {
+    _state.loading = val;
+  },
+
+  setLoaded(_state: AccountState, val: boolean): void {
+    _state.loaded = val;
+  },
+
+  setBalances(_state: AccountState, balances: AddressToValue): void {
+    _state.balances = { ...balances };
+  },
+
+  setAllowances(_state: AccountState, allowances: AddressToValue): void {
+    _state.allowances = { ...allowances };
   }
 };
 
