@@ -17,7 +17,7 @@ export default defineComponent({
       type: String,
       default: 'md',
       validator: (val: string): boolean => {
-        return ['xs', 'sm', 'md', 'lg'].includes(val);
+        return ['xs', 'sm', 'md', 'lg', 'xl'].includes(val);
       }
     }
   },
@@ -31,6 +31,8 @@ export default defineComponent({
           return '16';
         case 'lg':
           return '32';
+        case 'xl':
+          return '40';
         default:
           return '24';
       }

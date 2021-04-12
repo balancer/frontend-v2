@@ -1,18 +1,10 @@
-import { mapState } from 'vuex';
 import numeral from 'numeral';
 import prettyMs from 'pretty-ms';
 import configs from '@/config';
-import store from '@/store';
 import { shorten } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 
-// @ts-ignore
-const modules = Object.entries(store.state).map(module => module[0]);
-
 export default {
-  computed: {
-    ...mapState(modules)
-  },
   methods: {
     _ms(number) {
       const diff = number * 1e3 - new Date().getTime();

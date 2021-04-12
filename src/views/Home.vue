@@ -3,62 +3,23 @@
     <Edito />
     <div class="container mx-auto">
       <MainMenu class="mt-6" />
-      <TablePools
-        v-if="!loading && !registry.loading"
-        class="mt-2"
-        :pools="pools"
-        :snapshots="snapshots"
-      />
+      <TablePools class="mt-2" :pools="poolData.pools" :snapshots="poolData.snapshots" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { getAddress } from '@ethersproject/address';
-import { getPools } from '@/api/subgraph';
-import { clone } from '@/utils';
+import { defineComponent, computed } from 'vue';
+import { useStore } from 'vuex';
 
-export default {
-  data() {
+export default defineComponent({
+  setup() {
+    // COMPOSABLES
+    const store = useStore();
+
     return {
-      loading: false,
-      pools: [],
-      snapshots: []
+      poolData: computed(() => store.state.pools.all)
     };
-  },
-
-  watch: {
-    'web3.config.key': function() {
-      this.pools = [];
-      this.snapshots = [];
-      this.loadPools();
-    }
-  },
-
-  methods: {
-    ...mapActions(['injectTokens']),
-
-    async loadPools() {
-      const query = clone(this.$route.query);
-      if (query.tokens && !Array.isArray(query.tokens))
-        query.tokens = [query.tokens];
-      this.form = { ...this.form, ...query };
-      this.loading = true;
-      const chainId = this.web3.config.chainId;
-      const { pools, snapshots } = await getPools(chainId);
-      this.pools = pools;
-      this.snapshots = snapshots;
-      const tokens = pools
-        .map(pool => pool.tokens.map(token => getAddress(token.address)))
-        .reduce((a, b) => [...a, ...b], []);
-      await this.injectTokens(tokens);
-      this.loading = false;
-    }
-  },
-
-  async created() {
-    await this.loadPools();
   }
-};
+});
 </script>

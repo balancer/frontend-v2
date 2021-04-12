@@ -255,18 +255,18 @@ export default defineComponent({
     const poolExchange = new PoolExchange(
       props.pool,
       store.state.web3.config.key,
-      store.getters.getTokens()
+      store.getters['registry/getTokens']()
     );
 
     const poolCalculator = new PoolCalculator(
       props.pool,
-      store.getters.getTokens(),
+      store.getters['registry/getTokens'](),
       'join'
     );
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
-    const allTokens = computed(() => store.getters.getTokens());
+    const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const hasAmounts = computed(() => {
       const amountSum = fullAmounts.value
@@ -394,7 +394,7 @@ export default defineComponent({
     }
 
     function connectWallet() {
-      store.commit('setAccountModal', true);
+      store.commit('web3/setAccountModal', true);
     }
 
     async function setPropMax() {
