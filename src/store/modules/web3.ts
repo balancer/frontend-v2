@@ -101,11 +101,6 @@ const actions = {
     commit('logout');
   },
 
-  async getBlockNumber({ commit }) {
-    const blockNumber = await getProvider(state.config.key).getBlockNumber();
-    commit('setBlockNumber', blockNumber);
-  },
-
   async loadProvider({ commit, dispatch }) {
     try {
       if (
@@ -119,7 +114,6 @@ const actions = {
           dispatch('account/resetAccount', null, { root: true });
           dispatch('account/getBalances', null, { root: true });
           dispatch('account/getAllowances', null, { root: true });
-          dispatch('getBlockNumber');
         });
         auth.provider.value.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
@@ -143,7 +137,6 @@ const actions = {
 
       const account = accounts.length > 0 ? accounts[0] : null;
       const profiles = await getProfiles([account]);
-      await dispatch('getBlockNumber');
 
       commit('setAccount', account);
       commit('setProfile', profiles[account]);
