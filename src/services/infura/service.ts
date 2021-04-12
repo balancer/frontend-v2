@@ -14,9 +14,9 @@ export default class Service {
   network: string;
   wsProvider: WebSocketProvider;
 
-  constructor(NetworkId: NetworkId) {
+  constructor(networkId: NetworkId) {
     if (!INFURA_PROJECT_ID) throw new Error('Infura project ID missing!');
-    this.network = networkMap[NetworkId];
+    this.network = networkMap[networkId];
     this.wsProvider = new WebSocketProvider(
       `wss://${this.network}.infura.io/ws/v3/${INFURA_PROJECT_ID}`
     );
