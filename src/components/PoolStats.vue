@@ -48,7 +48,7 @@ export default defineComponent({
     const store = useStore();
     const { fNum } = useNumbers();
 
-    const allTokens = computed(() => store.getters.getTokens());
+    const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const subgraphPool = computed(() => {
       const strategy = pool.value.strategy.name;
