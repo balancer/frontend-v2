@@ -73,9 +73,8 @@ import {
   getPoolTokens,
   getTokenMarketChart
 } from '@/utils/balancer/subgraph';
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { formatMarketChartData } from '@/utils/chart';
-import getProvider from '@/utils/provider';
 
 export default {
   data() {
@@ -89,10 +88,16 @@ export default {
       poolTokens: []
     };
   },
+
+  computed: {
+    ...mapState({
+      blockNumber: state => state.web3.blockNumber
+    })
+  },
+
   methods: {
     ...mapActions({
-      notify: 'notifications/notify',
-      getBlockNumber: 'web3/getBlockNumber'
+      notify: 'notifications/notify'
     }),
 
     handleCopy() {
@@ -103,11 +108,10 @@ export default {
       this.marketChartsDays = days;
       const network = '1'; // this.web3.config.key;
       this.poolTokens = await getPoolTokens(network, this.id);
-      const blockNumber = await getProvider(network).getBlockNumber(); // this.web3.blockNumber
       this.marketChartsRaw = await Promise.all([
-        getBPTMarketChart(network, blockNumber, this.id, days),
+        getBPTMarketChart(network, this.blockNumber, this.id, days),
         ...this.poolTokens.map(token =>
-          getTokenMarketChart(network, blockNumber, token, days)
+          getTokenMarketChart(network, this.blockNumber, token, days)
         )
       ]);
       // TODO: get more information on tokens: weight, name, etc
@@ -122,7 +126,6 @@ export default {
   },
   async created() {
     this.loading = true;
-    await this.getBlockNumber();
     await this.loadMarketCharts(180);
     this.loading = false;
   }
