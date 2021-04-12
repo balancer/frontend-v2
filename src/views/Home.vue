@@ -3,7 +3,11 @@
     <Edito />
     <div class="container mx-auto">
       <MainMenu class="mt-6" />
-      <TablePools class="mt-2" :pools="poolData.pools" :snapshots="poolData.snapshots" />
+      <TablePools
+        class="mt-2"
+        :pools="poolData.pools"
+        :snapshots="poolData.snapshots"
+      />
     </div>
   </div>
 </template>
