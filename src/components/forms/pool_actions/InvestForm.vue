@@ -12,7 +12,7 @@
           <div
             class="flex items-center justify-between mb-3 text-sm text-gray-600"
           >
-            <span>Amount to invest</span>
+            <span v-text="$t('amountToInvest')" />
             <span>{{ propPercentage }}%</span>
           </div>
           <div class="flex items-end">
@@ -57,7 +57,7 @@
                   class="text-xs text-gray-400 break-words"
                   :title="`${balanceLabel(i)} balance`"
                 >
-                  {{ balanceLabel(i) }} balance
+                  {{ balanceLabel(i) }} {{ $t('balance').toLowerCase() }}
                 </span>
               </div>
             </div>
@@ -104,7 +104,7 @@
         </template>
         <template v-slot:info>
           <div class="cursor-pointer" @click="amounts[i] = tokenBalance(i)">
-            {{ balanceLabel(i) }} max
+            {{ balanceLabel(i) }} {{ $t('max').toLowerCase() }}
           </div>
         </template>
       </BalTextInput>
@@ -113,23 +113,25 @@
     <div class="p-4">
       <BalBtn
         v-if="!isAuthenticated"
-        label="Connect wallet"
+        :label="$t('connectWallet')"
         block
         @click.prevent="connectWallet"
       />
       <template v-else>
         <BalBtn
           v-if="requireApproval"
-          label="Allow"
+          :label="$t('allow')"
           :loading="approving"
-          loading-label="Allowing..."
+          :loading-label="$t('allowing')"
           :disabled="!hasAmounts"
           block
           @click.prevent="approveAllowances"
         />
         <template v-else>
           <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
-            <span>Price impact: {{ fNum(priceImpact, 'percent') }}</span>
+            <span
+              >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
+            >
             <BalIcon
               v-if="priceImpact >= 0.01"
               name="alert-triangle"
@@ -150,11 +152,7 @@
                   class="text-gray-400 -mb-px ml-2"
                 />
               </template>
-              <div class="p-2 text-xs">
-                Adding custom amounts causes the internal prices of the pool to
-                change, as if you were swapping tokens. The higher the price
-                impact the more you'll spend in swap fees.
-              </div>
+              <div v-html="$t('customAmountsTip')" class="p-2 text-xs" />
             </BalTooltip>
           </div>
           <BalCheckboxInput
@@ -164,7 +162,7 @@
             name="highPiAccepted"
             class="text-gray-500 mb-8"
             size="sm"
-            label="I accept the high price impact from adding custom token amounts, moving the market price based on the depth of the market."
+            :label="$t('priceImpactAccept')"
           />
           <BalBtn
             type="submit"
@@ -174,7 +172,7 @@
             :loading="loading"
             block
           >
-            Invest {{ total.length > 15 ? '' : total }}
+            {{ $t('invest') }} {{ total.length > 15 ? '' : total }}
           </BalBtn>
         </template>
       </template>
@@ -208,6 +206,7 @@ import PoolCalculator from '@/services/pool/calculator';
 import { formatUnits } from '@ethersproject/units';
 import { bnum } from '@/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
+import { useI18n } from 'vue-i18n';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -244,6 +243,7 @@ export default defineComponent({
     const { notify } = useBlocknative();
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
+    const { t } = useI18n();
 
     const {
       requiredAllowances,
@@ -354,18 +354,16 @@ export default defineComponent({
 
     const formTypes = ref([
       {
-        label: 'No price impact',
+        label: t('noPriceImpact'),
         max: propMaxUSD,
         value: FormTypes.proportional,
-        tooltip:
-          'No price impact is achieved by adding tokens in the same proportion to the weights of the pool composition.'
+        tooltip: t('noPriceImpactTip')
       },
       {
-        label: 'Custom amounts',
+        label: t('customAmounts'),
         max: balanceMaxUSD,
         value: FormTypes.custom,
-        tooltip:
-          "Adding custom amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
+        tooltip: t('customAmountsTip')
       }
     ]);
 
@@ -388,7 +386,7 @@ export default defineComponent({
       return isAuthenticated.value
         ? [
             isPositive(),
-            isLessThanOrEqualTo(tokenBalance(index), 'Exceeds balance')
+            isLessThanOrEqualTo(tokenBalance(index), t('exceedsBalance'))
           ]
         : [isPositive()];
     }

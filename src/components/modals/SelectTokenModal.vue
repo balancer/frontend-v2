@@ -72,6 +72,12 @@
             <RowToken :token="token" />
           </a>
         </div>
+        <div
+          v-else-if="isTokenSelected"
+          class="h-96 flex items-center justify-center"
+        >
+          Token Already Selected
+        </div>
         <div v-else-if="loading" class="h-96 flex items-center justify-center">
           <BalLoadingIcon />
         </div>
@@ -106,7 +112,8 @@ export default defineComponent({
     const data = reactive({
       loading: false,
       query: '',
-      selectTokenList: false
+      selectTokenList: false,
+      isTokenSelected: false
     });
 
     // COMPOSABLES
@@ -145,7 +152,11 @@ export default defineComponent({
       let address = event.target.value;
       if (isAddress(address)) {
         address = getAddress(address);
-        store.dispatch('registry/injectTokens', [address.trim()]);
+        if (props.excludedTokens.includes(address)) data.isTokenSelected = true;
+        else {
+          data.isTokenSelected = false;
+          store.dispatch('registry/injectTokens', [address.trim()]);
+        }
       }
     }
 

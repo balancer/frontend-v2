@@ -2,7 +2,7 @@
   "name": "pool-management-v2",
   "version": "0.1.0",
   "engines": {
-    "node": ">=15",
+    "node": "14.x",
     "npm": ">=7"
   },
   "scripts": {

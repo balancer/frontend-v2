@@ -139,10 +139,12 @@ import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
 
 const locales = {
-  'en-US': 'EN',
+  'en-US': 'English',
   'zh-CN': '中文',
-  'fr-FR': 'FR',
-  'pt-PT': 'PT',
+  'es-ES': 'Español',
+  'it-IT': 'Italiano',
+  'fr-FR': 'Français',
+  'pt-PT': 'Português',
   'ru-RU': 'Россия'
 };
 const slippageOptions = ['0.005', '0.01', '0.02'];
