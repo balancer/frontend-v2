@@ -40,7 +40,7 @@
               "
               class="text-xs"
             >
-              Balance:
+              {{ $t('balance') }}:
               {{
                 _num(tokens[tokenInAddressInput]?.balance || 0, '0,0.[000000]')
               }}
@@ -48,13 +48,9 @@
           </div>
         </div>
         <div class="flex mb-4">
-          <a @click="handleSwitchTokens">
-            <Icon
-              :size="24"
-              name="refresh"
-              class="rounded-full border p-2 inline-block"
-            />
-          </a>
+          <BalBtn color="gray" flat circle @click="handleSwitchTokens">
+            <BalIcon name="shuffle" size="sm" />
+          </BalBtn>
           <div v-if="rateMessage" class="flex-auto ml-4 my-2">
             <span @click="toggleRate" v-text="rateMessage" />
           </div>
