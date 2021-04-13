@@ -59,20 +59,20 @@ const actions = {
   },
 
   async getBalances({ commit, rootGetters, rootState }) {
-    const auth = getInstance();
     const account = rootState.web3.account;
     const tokens = rootGetters['registry/getTokens']();
     if (!account || Object.keys(tokens).length === 0) return;
     const network = rootState.web3.config.key;
+    const provider = getProvider(network);
     commit('setLoading', true);
     const [balances, etherBalance] = await Promise.all([
       getBalances(
         network,
-        getProvider(network),
+        provider,
         account,
         Object.values(tokens).map((token: any) => token.address)
       ),
-      auth.web3.getBalance(account)
+      provider.getBalance(account)
     ]);
     balances.ether = etherBalance;
     commit('setBalances', balances);
