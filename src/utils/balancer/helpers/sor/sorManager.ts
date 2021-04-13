@@ -139,7 +139,7 @@ export class SorManager {
     );
 
     const swapTypeV2: SwapTypes =
-      swapType !== 'swapExactIn'
+      swapType === 'swapExactIn'
         ? SwapTypes.SwapExactIn
         : SwapTypes.SwapExactOut;
 
