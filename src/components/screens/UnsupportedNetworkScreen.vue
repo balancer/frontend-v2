@@ -8,31 +8,34 @@
       class="text-red-500 mx-auto mb-8"
     />
     <div class="px-8 text-center">
-      <h1 class="font-body leading-snug text-gray-700">
-        {{
-          t(
-            web3.config.shortName
-              ? 'unavailableOnNetworkWithName'
-              : 'unavailableOnNetwork',
-            [web3.config.shortName]
-          )
-        }}.
-      </h1>
+      <h1 class="font-body leading-snug text-gray-700">{{ warning }}.</h1>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'UnsupportedNetworkScreen',
 
   setup() {
+    // COMPOSABLES
     const { t } = useI18n();
+    const store = useStore();
 
-    return { t };
+    // COMPUTED
+    const networkName = computed(() => store.state.web3.config.shortName);
+    const warning = computed(() => {
+      const key = networkName.value
+        ? 'unavailableOnNetworkWithName'
+        : 'unavailableOnNetwork';
+      return t(key, [networkName]);
+    });
+
+    return { warning };
   }
 });
 </script>
