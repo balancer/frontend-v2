@@ -109,7 +109,9 @@
       />
       <template v-else>
         <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
-          <span>{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span>
+          <span
+            >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
+          >
           <BalIcon
             v-if="priceImpact >= 0.01"
             name="alert-triangle"
@@ -379,7 +381,7 @@ export default defineComponent({
         isPositive(),
         isLessThanOrEqualTo(
           Number(data.singleAssetMax[index]),
-          'Exceeds balance'
+          i18n.global.t('exceedsBalance')
         )
       ];
     }

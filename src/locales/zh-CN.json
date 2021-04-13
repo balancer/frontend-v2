@@ -39,6 +39,7 @@
     "errorNoMatch": "抱歉，我们找不到任何匹配项",
     "errorNoTokens": "抱歉，我们找不到任何代币",
     "errorNoUniversalAgents": "抱歉，我们找不到通用代理",
+    "exceedsBalance": "超过余额",
     "explore": "探索",
     "explorePools": "探索泳池",
     "filter": "筛选",

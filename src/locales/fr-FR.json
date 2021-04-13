@@ -39,6 +39,7 @@
     "errorNoMatch": "Oops, il n'y a pas de résultat",
     "errorNoTokens": "Oops, aucun token n'a été trouvé",
     "errorNoUniversalAgents": "Oops, aucun agent universel n'a été trouvé",
+    "exceedsBalance": "Dépasse l&#39;équilibre",
     "explore": "Explorer",
     "explorePools": "Explorer les pools",
     "filter": "Filtre",

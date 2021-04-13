@@ -36,6 +36,7 @@
     "editoAbout": "Earn more on your Ethereum-based assets. Add tokens to pools and earn compounding fees when people trade on the exchange utilizing your liquidity.",
     "emptyInvestmentPools": "You have not joined any Balancer investment pools.",
     "emptyInvestmentPoolsLink": "View investment pools ->",
+    "exceedsBalance": "Exceeds balance",
     "investmentPoolsAbout": "Stake your assets to get $BAL tokens for participating in Balancer V2 liquidity mining.",
     "investmentPoolsAboutLink": "Learn more ->",
     "errorNoLists": "Sorry, we can't find any lists",
