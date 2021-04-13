@@ -83,7 +83,7 @@ export default defineComponent({
     const weekSnapshots = computed(() => {
       const weekSnapshots = Object.values(snapshots.value).filter(snapshot => {
         const timestamp = Date.now() / 1000;
-        const weekTimestamp = timestamp - 7 * 24 * 60 * 60;
+        const weekTimestamp = timestamp - 7 * DAY;
         return snapshot.timestamp >= weekTimestamp;
       });
       return weekSnapshots;
