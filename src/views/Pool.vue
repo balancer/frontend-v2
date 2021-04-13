@@ -18,6 +18,9 @@
               class="mb-10"
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
+              :weights="pool.weightsPercent"
+              :prices="prices"
+              :snapshots="snapshots"
             />
             <TableEvents :tokens="pool.tokens" :events="events" />
           </div>

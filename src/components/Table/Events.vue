@@ -1,13 +1,19 @@
 <template>
   <div v-if="actions.length > 0">
-    <h4>Your transactions in this pool</h4>
+    <h4 v-text="$t('yourTransactions')" />
     <div class="mt-3 overflow-x-auto whitespace-nowrap border rounded-lg">
       <table class="min-w-full text-black bg-white dark:bg-gray-900">
         <tr class="bg-gray-50 dark:bg-gray-700">
-          <th class="sticky top-0 p-2 pl-5 py-5 text-left">Action</th>
-          <th class="sticky top-0 p-2 py-5 text-right">Value</th>
-          <th class="sticky top-0 p-2 py-5 text-right">Details</th>
-          <th class="sticky top-0 p-2 pr-5 py-5 text-right">Date</th>
+          <th
+            v-text="$t('action')"
+            class="sticky top-0 p-2 pl-5 py-5 text-left"
+          />
+          <th v-text="$t('value')" class="sticky top-0 p-2 py-5 text-right" />
+          <th v-text="$t('details')" class="sticky top-0 p-2 py-5 text-right" />
+          <th
+            v-text="$t('date')"
+            class="sticky top-0 p-2 pr-5 py-5 text-right"
+          />
         </tr>
         <tr class="hover:bg-gray-50" v-for="action in actions" :key="action.tx">
           <td class="p-2 pl-5 py-5 flex items-center text-left">
@@ -37,6 +43,7 @@ import { useStore } from 'vuex';
 
 import { PoolJoin, PoolExit, PoolEvents } from '@/api/subgraph';
 import useNumbers from '@/composables/useNumbers';
+import i18n from '@/plugins/i18n';
 
 interface Action {
   label: string;
@@ -70,9 +77,10 @@ export default {
       if (!Object.keys(props.events)) {
         return [];
       }
+
       const joinActions = props.events.joins.map(join => {
         return {
-          label: 'Investment',
+          label: i18n.global.t('investment'),
           value: getJoinExitValue(join),
           details: getJoinExitDetails(join),
           timestamp: join.timestamp,
@@ -81,7 +89,7 @@ export default {
       });
       const exitActions = props.events.exits.map(exit => {
         return {
-          label: 'Withdrawal',
+          label: i18n.global.t('withdrawal'),
           value: getJoinExitValue(exit),
           details: getJoinExitDetails(exit),
           timestamp: exit.timestamp,

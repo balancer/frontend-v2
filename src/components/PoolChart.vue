@@ -15,6 +15,7 @@ import { PropType, defineComponent, toRefs, computed } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import { PoolSnapshots } from '@/api/subgraph';
+import i18n from '@/plugins/i18n';
 
 export default defineComponent({
   props: {
@@ -128,7 +129,7 @@ export default defineComponent({
 
     const series = computed(() => [
       {
-        name: 'Pool returns',
+        name: i18n.global.t('poolReturns'),
         data: bptValues.value
       },
       {
