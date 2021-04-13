@@ -175,17 +175,20 @@ import {
   isLessThanOrEqualTo,
   isRequired
 } from '@/utils/validations';
+import { TransactionData } from 'bnc-notify';
+import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
+
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
-import useBlocknative from '@/composables/useBlocknative';
+import useNotify from '@/composables/useNotify';
 import useSlippage from '@/composables/useSlippage';
+
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
-import { useI18n } from 'vue-i18n';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -221,7 +224,7 @@ export default defineComponent({
 
     // COMPOSABLES
     const store = useStore();
-    const { notify } = useBlocknative();
+    const { txListener } = useNotify();
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
@@ -440,29 +443,6 @@ export default defineComponent({
       }
     }
 
-    function txListener(hash) {
-      const { emitter } = notify.hash(hash);
-
-      emitter.on('txConfirmed', tx => {
-        emit('success', tx);
-        data.amounts = [];
-        data.loading = false;
-        return undefined;
-      });
-
-      emitter.on('txCancel', () => {
-        // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
-        data.loading = false;
-        return undefined;
-      });
-
-      emitter.on('txFailed', () => {
-        // An error has occurred initiating the transaction
-        data.loading = false;
-        return undefined;
-      });
-    }
-
     async function calcBptIn(): Promise<string> {
       if (isProportional.value) return data.bptIn;
 
@@ -500,7 +480,19 @@ export default defineComponent({
           exactOut.value
         );
         console.log('Receipt', tx);
-        txListener(tx.hash);
+        txListener(tx.hash, {
+          onTxConfirmed: (tx: TransactionData) => {
+            emit('success', tx);
+            data.amounts = [];
+            data.loading = false;
+          },
+          onTxCancel: () => {
+            data.loading = false;
+          },
+          onTxFailed: () => {
+            data.loading = false;
+          }
+        });
       } catch (error) {
         console.error(error);
         data.loading = false;
