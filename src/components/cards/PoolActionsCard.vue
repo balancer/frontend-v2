@@ -4,11 +4,8 @@
     <div>
       <template v-if="activeTab === tabs.invest">
         <div v-if="investmentSuccess" class="p-4">
-          <h5>Your investment has settled</h5>
-          <p>
-            Your tokens have been added to this pool, and you should have
-            received a new LP token representing this investment.
-          </p>
+          <h5 v-text="$t('investmentSettled')" />
+          <p v-html="$t('investmentSuccess')" />
           <div class="flex mt-4">
             <BalBtn
               tag="a"
@@ -19,7 +16,7 @@
               size="sm"
               flat
             >
-              <span>View transaction</span>
+              <span v-text="$t('viewTransaction')" />
               <BalIcon name="external-link" size="sm" class="ml-2" />
             </BalBtn>
             <BalBtn
@@ -36,11 +33,8 @@
       </template>
       <template v-if="activeTab === tabs.withdraw">
         <div v-if="withdrawalSuccess" class="p-4">
-          <h5>Your withdrawal has settled</h5>
-          <p>
-            Your investment has been withdrawan from this pool, and the
-            underlying tokens should now be in your wallet.
-          </p>
+          <h5 v-text="$t('withdrawalSettled')" />
+          <p v-html="$t('withdrawalSuccess')" />
           <div class="flex mt-4">
             <BalBtn
               tag="a"
@@ -51,7 +45,7 @@
               size="sm"
               flat
             >
-              <span>View transaction</span>
+              <span v-text="$t('viewTransaction')" />
               <BalIcon name="external-link" size="sm" class="ml-2" />
             </BalBtn>
             <BalBtn
