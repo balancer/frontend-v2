@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto mt-4 px-4 lg:px-0">
+  <div v-if="!loading" class="container mx-auto mt-4 px-4 lg:px-0">
     <PoolNav class="mt-7 lg:mt-14 mb-8 lg:mb-12" />
 
     <div v-if="!loading" class="lg:mb-10">
@@ -49,7 +49,8 @@ import {
   reactive,
   toRefs,
   computed,
-  onBeforeMount
+  onBeforeMount,
+  watch
 } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
@@ -138,6 +139,15 @@ export default defineComponent({
         fNum(pool.value.strategy.swapFeePercent / 100, 'percent')
       ]);
     });
+
+    // WATCHERS
+    watch(
+      () => store.state.web3.config.chainId,
+      () => {
+        // Network has changed so this pool won't exist
+        router.go(0);
+      }
+    );
 
     // CALLBACKS
     onBeforeMount(async () => {
