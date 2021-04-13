@@ -25,15 +25,23 @@ export default function useWeb3Watchers() {
     store.commit('web3/setBlockNumber', blockNumber);
 
   async function updatePools(chainId: number): Promise<void> {
-    await store.dispatch('pools/getAll', chainId);
+    try {
+      await store.dispatch('pools/getAll', chainId);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async function updateTokens(): Promise<void> {
-    const pools = store.state.pools.all.pools;
-    const tokens = pools
-      .map(pool => pool.tokens.map(token => getAddress(token.address)))
-      .reduce((a, b) => [...a, ...b], []);
-    await store.dispatch('registry/injectTokens', tokens);
+    try {
+      const pools = store.state.pools.all.pools;
+      const tokens = pools
+        .map(pool => pool.tokens.map(token => getAddress(token.address)))
+        .reduce((a, b) => [...a, ...b], []);
+      await store.dispatch('registry/injectTokens', tokens);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // WATCHERS
