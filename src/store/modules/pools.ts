@@ -1,16 +1,24 @@
 import { Pool } from '@/utils/balancer/types';
 import { getPool } from '@/utils/balancer/pools';
-import { getPools, Pool as SubgraphPool } from '@/api/subgraph';
+import { getPools, Pool as SubgraphPool, PoolSnapshot } from '@/api/subgraph';
 import getProvider from '@/utils/provider';
+
+interface PoolData {
+  pools: SubgraphPool[];
+  snapshots: PoolSnapshot[];
+}
 
 export interface PoolsState {
   current: Pool | null;
-  all: SubgraphPool[];
+  all: PoolData;
 }
 
 const state: PoolsState = {
   current: null,
-  all: []
+  all: {
+    pools: [],
+    snapshots: []
+  }
 };
 
 const actions = {
@@ -22,7 +30,7 @@ const actions = {
     return pool;
   },
 
-  async getAll({ commit, rootState }): Promise<SubgraphPool[]> {
+  async getAll({ commit, rootState }): Promise<PoolData> {
     const network = rootState.web3.config.key;
     const pools = await getPools(network);
     commit('setAll', pools);
@@ -35,7 +43,7 @@ const mutations = {
     _state.current = pool;
   },
 
-  setAll(_state: PoolsState, pools: SubgraphPool[]): void {
+  setAll(_state: PoolsState, pools: PoolData): void {
     _state.all = pools;
   }
 };
