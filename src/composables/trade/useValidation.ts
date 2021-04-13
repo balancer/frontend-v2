@@ -1,12 +1,6 @@
 import { computed } from 'vue';
 import useAuth from '@/composables/useAuth';
-
-export enum ValidationStatus {
-  VALID = '',
-  EMPTY = 'Enter amount',
-  INSUFFICIENT_BALANCE = 'Insufficient balance',
-  INSUFFICIENT_LIQUIDITY = 'Not enough liquidity'
-}
+import i18n from '@/plugins/i18n';
 
 export default function useValidation(
   tokenInAddress,
@@ -27,10 +21,10 @@ export default function useValidation(
       (parseFloat(tokenOutAmount.value) == 0 ||
         tokenOutAmount.value.trim() === '')
     )
-      return 'EMPTY';
+      return i18n.global.t('enterAmount');
 
     if (!tokenIn?.balance || tokenIn.balance < parseFloat(tokenInAmount.value))
-      return 'INSUFFICIENT_BALANCE';
+      return i18n.global.t('insufficientBalance');
 
     if (
       parseFloat(tokenOutAmount.value) == 0 ||
@@ -38,12 +32,12 @@ export default function useValidation(
       parseFloat(tokenInAmount.value) == 0 ||
       tokenInAmount.value.trim() === ''
     )
-      return 'INSUFFICIENT_LIQUIDITY';
+      return i18n.global.t('insufficientLiquidity');
 
-    return 'VALID';
+    return '';
   });
 
-  const errorMessage = computed(() => ValidationStatus[validationStatus.value]);
+  const errorMessage = computed(() => validationStatus.value);
 
   return {
     validationStatus,
