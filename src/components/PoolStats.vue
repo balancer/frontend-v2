@@ -31,6 +31,8 @@ import { PoolSnapshots } from '@/api/subgraph';
 import useNumbers from '@/composables/useNumbers';
 import { getPoolLiquidity } from '@/utils/balancer/price';
 
+const DAY = 24 * 60 * 60;
+
 export default defineComponent({
   props: {
     pool: {
