@@ -1,18 +1,37 @@
 <template>
-  <a :href="href" target="_blank" rel="noopener noreferrer">
+  <a v-bind="_attrs">
     <slot />
   </a>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
+  name: 'BalLink',
+
   props: {
-    href: {
-      type: String,
-      required: true
+    external: {
+      type: Boolean,
+      default: false
     }
+  },
+
+  setup(props, { attrs }) {
+    const _attrs = computed(() => {
+      let _attrs = attrs;
+
+      if (props.external) {
+        _attrs = Object.assign({}, _attrs, {
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        });
+      }
+
+      return _attrs;
+    });
+
+    return { _attrs };
   }
 });
 </script>
