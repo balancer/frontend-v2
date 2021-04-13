@@ -12,7 +12,7 @@
           <div
             class="flex items-center justify-between mb-3 text-sm text-gray-600"
           >
-            <span>Amount to withdraw</span>
+            <span v-text="$t('amountToWithdraw')" />
             <span>{{ propPercentage }}%</span>
           </div>
           <div class="flex items-end">
@@ -48,7 +48,8 @@
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
                 <span class="text-xs text-gray-400 break-words">
-                  {{ propBalanceLabel(i) }} balance
+                  {{ propBalanceLabel(i) }}
+                  {{ $t('balance') }}
                 </span>
               </div>
             </div>
@@ -93,7 +94,7 @@
         </template>
         <template v-if="isSingleAsset" v-slot:info>
           <div class="cursor-pointer" @click="amounts[i] = singleAssetMax[i]">
-            Single token max: {{ singleAssetMaxLabel(i) }}
+            {{ $t('singleTokenMax') }}: {{ singleAssetMaxLabel(i) }}
           </div>
         </template>
       </BalTextInput>
@@ -102,13 +103,15 @@
     <div class="p-4">
       <BalBtn
         v-if="!isAuthenticated"
-        label="Connect wallet"
+        :label="$t('connectWallet')"
         block
         @click.prevent="connectWallet"
       />
       <template v-else>
         <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
-          <span>Price impact: {{ fNum(priceImpact, 'percent') }}</span>
+          <span
+            >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
+          >
           <BalIcon
             v-if="priceImpact >= 0.01"
             name="alert-triangle"
@@ -129,11 +132,7 @@
                 class="text-gray-400 -mb-px ml-2"
               />
             </template>
-            <div class="p-2 text-xs">
-              Withdrawing single asset amounts causes the internal prices of the
-              pool to change, as if you were swapping tokens. The higher the
-              price impact the more you'll spend in swap fees.
-            </div>
+            <div v-html="$t('withdrawWarning')" class="p-2 text-xs" />
           </BalTooltip>
         </div>
         <BalCheckboxInput
@@ -143,7 +142,7 @@
           name="highPiAccepted"
           class="text-gray-500 mb-8"
           size="sm"
-          label="I accept the high price impact from withdrawing single token amounts, moving the market price based on the depth of the market."
+          :label="$t('priceImpactAccept')"
         />
         <BalBtn
           type="submit"
@@ -153,7 +152,7 @@
           :loading="loading"
           block
         >
-          Withdraw {{ total.length > 15 ? '' : total }}
+          {{ $t('withdraw') }} {{ total.length > 15 ? '' : total }}
         </BalBtn>
       </template>
     </div>
@@ -186,6 +185,7 @@ import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
+import { useI18n } from 'vue-i18n';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -225,6 +225,7 @@ export default defineComponent({
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
+    const { t } = useI18n();
 
     const poolExchange = new PoolExchange(
       props.pool,
@@ -359,12 +360,12 @@ export default defineComponent({
 
     const formTypes = ref([
       {
-        label: 'No price impact',
+        label: t('noPriceImpact'),
         max: propMaxUSD,
         value: FormTypes.proportional
       },
       {
-        label: 'Single token',
+        label: t('singleToken'),
         max: singleMaxUSD,
         value: FormTypes.single
       }
@@ -381,7 +382,7 @@ export default defineComponent({
         isPositive(),
         isLessThanOrEqualTo(
           Number(data.singleAssetMax[index]),
-          'Exceeds balance'
+          t('exceedsBalance')
         )
       ];
     }

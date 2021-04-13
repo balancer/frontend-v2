@@ -14,11 +14,18 @@
         <div class="order-2 lg:order-1 w-full lg:w-2/3">
           <div class="px-4" v-if="!loading">
             <PoolChart class="mb-10" :prices="prices" :snapshots="snapshots" />
+
+            <h4 v-text="$t('poolComposition')" class="mb-4" />
             <PoolBalancesCard
               class="mb-10"
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
+              :weights="pool.weightsPercent"
+              :prices="prices"
+              :snapshots="snapshots"
             />
+
+            <h4 v-text="$t('yourTransactions')" class="mb-4" />
             <TableEvents :tokens="pool.tokens" :events="events" />
           </div>
         </div>
