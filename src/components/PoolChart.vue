@@ -15,9 +15,11 @@ import { PropType, defineComponent, toRefs, computed } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import { PoolSnapshots } from '@/api/subgraph';
-import i18n from '@/plugins/i18n';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
+  name: 'PoolChart',
+
   props: {
     prices: {
       type: Object as PropType<Record<string, number[]>>,
@@ -28,8 +30,10 @@ export default defineComponent({
       required: true
     }
   },
+
   setup(props) {
     const { fNum } = useNumbers();
+    const { t } = useI18n();
 
     const { prices, snapshots } = toRefs(props);
 
@@ -129,7 +133,7 @@ export default defineComponent({
 
     const series = computed(() => [
       {
-        name: i18n.global.t('poolReturns'),
+        name: t('poolReturns'),
         data: bptValues.value
       },
       {

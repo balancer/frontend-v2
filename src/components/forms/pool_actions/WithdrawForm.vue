@@ -185,7 +185,7 @@ import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
-import i18n from '@/plugins/i18n';
+import { useI18n } from 'vue-i18n';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -225,6 +225,7 @@ export default defineComponent({
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
+    const { t } = useI18n();
 
     const poolExchange = new PoolExchange(
       props.pool,
@@ -359,12 +360,12 @@ export default defineComponent({
 
     const formTypes = ref([
       {
-        label: i18n.global.t('noPriceImpact'),
+        label: t('noPriceImpact'),
         max: propMaxUSD,
         value: FormTypes.proportional
       },
       {
-        label: i18n.global.t('singleToken'),
+        label: t('singleToken'),
         max: singleMaxUSD,
         value: FormTypes.single
       }
@@ -381,7 +382,7 @@ export default defineComponent({
         isPositive(),
         isLessThanOrEqualTo(
           Number(data.singleAssetMax[index]),
-          i18n.global.t('exceedsBalance')
+          t('exceedsBalance')
         )
       ];
     }

@@ -206,7 +206,7 @@ import PoolCalculator from '@/services/pool/calculator';
 import { formatUnits } from '@ethersproject/units';
 import { bnum } from '@/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
-import i18n from '@/plugins/i18n';
+import { useI18n } from 'vue-i18n';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -243,6 +243,7 @@ export default defineComponent({
     const { notify } = useBlocknative();
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
+    const { t } = useI18n();
 
     const {
       requiredAllowances,
@@ -353,16 +354,16 @@ export default defineComponent({
 
     const formTypes = ref([
       {
-        label: i18n.global.t('noPriceImpact'),
+        label: t('noPriceImpact'),
         max: propMaxUSD,
         value: FormTypes.proportional,
-        tooltip: i18n.global.t('noPriceImpactTip')
+        tooltip: t('noPriceImpactTip')
       },
       {
-        label: i18n.global.t('customAmounts'),
+        label: t('customAmounts'),
         max: balanceMaxUSD,
         value: FormTypes.custom,
-        tooltip: i18n.global.t('customAmountsTip')
+        tooltip: t('customAmountsTip')
       }
     ]);
 
@@ -385,10 +386,7 @@ export default defineComponent({
       return isAuthenticated.value
         ? [
             isPositive(),
-            isLessThanOrEqualTo(
-              tokenBalance(index),
-              i18n.global.t('exceedsBalance')
-            )
+            isLessThanOrEqualTo(tokenBalance(index), t('exceedsBalance'))
           ]
         : [isPositive()];
     }

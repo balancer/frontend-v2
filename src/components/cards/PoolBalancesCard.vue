@@ -1,7 +1,6 @@
 <template>
-  <h4 v-text="$t('poolComposition')" />
-  <div class="mt-3 overflow-x-auto whitespace-nowrap border rounded-lg">
-    <table class="min-w-full text-black bg-white dark:bg-gray-900">
+  <BalCard class="overflow-x-auto whitespace-nowrap" no-pad>
+    <table class="min-w-full dark:bg-gray-900">
       <tr class="bg-gray-50 dark:bg-gray-700">
         <th class="sticky top-0 p-2 pl-5 py-5 text-left" v-text="$t('token')" />
         <th class="sticky top-0 p-2 py-5 text-right" v-text="$t('weight')" />
@@ -39,8 +38,7 @@
         </td>
       </tr>
     </table>
-  </div>
-  <br />
+  </BalCard>
 </template>
 
 <script lang="ts">
