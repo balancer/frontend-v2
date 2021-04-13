@@ -12,19 +12,26 @@
     <div class="px-4">
       <div class="flex flex-wrap -mx-8">
         <div class="order-2 lg:order-1 w-full lg:w-2/3">
-          <div class="px-4" v-if="!loading && !registry.loading">
+          <div class="px-4" v-if="!loading">
             <PoolChart class="mb-10" :prices="prices" :snapshots="snapshots" />
+
+            <h4 v-text="$t('poolComposition')" class="mb-4" />
             <PoolBalancesCard
               class="mb-10"
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
+              :weights="pool.weightsPercent"
+              :prices="prices"
+              :snapshots="snapshots"
             />
+
+            <h4 v-text="$t('yourTransactions')" class="mb-4" />
             <TableEvents :tokens="pool.tokens" :events="events" />
           </div>
         </div>
         <div class="order-1 lg:order-2 w-full lg:w-1/3 mt-8 lg:mt-0 lg:px-4">
           <PoolActionsCard
-            v-if="pool && !loading && !registry.loading"
+            v-if="pool && !loading"
             class="sticky top-24"
             :pool="pool"
             @on-tx="fetchPool"
@@ -97,7 +104,7 @@ export default defineComponent({
     });
 
     const allTokens = computed(() => {
-      return store.getters.getTokens();
+      return store.getters['registry/getTokens']();
     });
 
     const title = computed(() => {
@@ -146,8 +153,8 @@ export default defineComponent({
 
     // METHODS
     async function fetchPool(): Promise<void> {
-      await store.dispatch('loadPool', data.id);
-      await store.dispatch('injectTokens', [
+      await store.dispatch('pools/get', data.id);
+      await store.dispatch('registry/injectTokens', [
         ...pool.value.tokens,
         pool.value.address
       ]);
