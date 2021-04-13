@@ -72,7 +72,10 @@
             <RowToken :token="token" />
           </a>
         </div>
-        <div v-else-if="isTokenSelected" class="h-96 flex items-center justify-center">
+        <div
+          v-else-if="isTokenSelected"
+          class="h-96 flex items-center justify-center"
+        >
           Token Already Selected
         </div>
         <div v-else-if="loading" class="h-96 flex items-center justify-center">
@@ -149,9 +152,8 @@ export default defineComponent({
       let address = event.target.value;
       if (isAddress(address)) {
         address = getAddress(address);
-        if(props.excludedTokens.includes(address))
-          data.isTokenSelected = true;
-        else{
+        if (props.excludedTokens.includes(address)) data.isTokenSelected = true;
+        else {
           data.isTokenSelected = false;
           store.dispatch('injectTokens', [address.trim()]);
         }
