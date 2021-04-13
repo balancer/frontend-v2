@@ -20,10 +20,12 @@
         :key="address"
       >
         <td class="p-2 pl-5 py-5 flex items-center text-left">
-          <Avatar :address="address" :size="24" />
-          <span class="pl-4">
-            {{ getSymbol(address) }}
-          </span>
+          <a :href="_explorer(networkId, address)" target="_blank">
+            <Avatar :address="address" :size="24" />
+            <span class="pl-4">
+              {{ getSymbol(address) }}
+            </span>
+          </a>
         </td>
         <td class="p-2 py-5 text-right">
           {{ getWeight(index) }}
@@ -80,6 +82,8 @@ export default defineComponent({
 
     const tokenValues: number[] = new Array(tokens.value.length);
 
+    const networkId = computed(() => store.state.web3.config.chainId);
+
     if (prices && prices.value && snapshots && snapshots.value) {
       let timestamps = Object.keys(prices.value);
       let latestTimestamp = timestamps[timestamps.length - 1];
@@ -125,7 +129,8 @@ export default defineComponent({
       getSymbol,
       getBalance,
       getWeight,
-      getValue
+      getValue,
+      networkId
     };
   }
 });
