@@ -1,6 +1,5 @@
 import getProvider from '@/utils/provider';
 import { getAllowances, getBalances } from '@/utils/balancer/tokens';
-import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import configs from '@/config';
 import { ETHER } from '@/constants/tokenlists';
 import { isAddress } from '@ethersproject/address';
