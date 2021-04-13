@@ -22,7 +22,7 @@
     "stablePoolFactory": "0xaD9a0de4fda03eE4cdb07590B42D6469Ad1aBd85",
     "tokenFactory": "0xEaa391544B268018C0FA848204E984Bd7FF7f20c",
     "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-    "balancerHelpers": "0xc11B8377b5F9F152717e47086963877574B22Da4"
+    "balancerHelpers": "0xF32dcd39F3f8be5c141df34f7b2A539eea9F9ff3"
   },
   "strategies": {
     "0": {
