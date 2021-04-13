@@ -14,6 +14,7 @@
         <div class="order-2 lg:order-1 w-full lg:w-2/3">
           <div class="px-4" v-if="!loading">
             <PoolChart class="mb-10" :prices="prices" :snapshots="snapshots" />
+            <PoolStats class="mb-10" :pool="pool" :snapshots="snapshots" />
 
             <h4 v-text="$t('poolComposition')" class="mb-4" />
             <PoolBalancesCard

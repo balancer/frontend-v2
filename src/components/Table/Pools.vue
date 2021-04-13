@@ -86,7 +86,7 @@
             {{ _num(stats[pool.id].volume, '$0,0') }}
           </td>
           <td class="p-2 pr-5 py-5 text-right">
-            {{ _num(stats[pool.id].apy, '0,0%') }}
+            {{ _num(stats[pool.id].apy, '0,0.[00]%') }}
           </td>
         </tr>
       </table>
@@ -103,11 +103,11 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, ref, computed } from 'vue';
+import { PropType, defineComponent, toRefs, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import { getPoolLiquidity } from '@/utils/balancer/price';
-import { Pool } from '@/api/subgraph';
+import { Pool, PoolSnapshot } from '@/api/subgraph';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 import { useI18n } from 'vue-i18n';
 
@@ -120,12 +120,17 @@ export default defineComponent({
     pools: {
       type: Array as PropType<Pool[]>,
       required: true
+    },
+    snapshots: {
+      type: Array as PropType<PoolSnapshot[]>,
+      required: true
     }
   },
 
   setup(props) {
     // COMPOSABLES
     const store = useStore();
+    const { pools, snapshots } = toRefs(props);
     const { t } = useI18n();
 
     // DATA
@@ -136,7 +141,7 @@ export default defineComponent({
     const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const filteredPools = computed(() => {
-      return props.pools.filter(pool =>
+      return pools.value.filter(pool =>
         selectedTokens.value.every(token =>
           pool.tokens.map(token => token.address).includes(token.toLowerCase())
         )
@@ -145,12 +150,19 @@ export default defineComponent({
 
     const stats = computed(() => {
       const stats = Object.fromEntries(
-        props.pools.map(pool => {
+        pools.value.map(pool => {
           const liquidity = getPoolLiquidity(pool, store.state.market.prices);
+          const snapshot = snapshots.value.find(
+            snapshot => snapshot.pool.id === pool.id
+          );
+          const volume = snapshot ? snapshot.swapVolume : '0';
+          const apy = snapshot
+            ? (parseFloat(snapshot.swapFees) / parseFloat(liquidity)) * 365
+            : '0';
           const poolStats = {
             liquidity,
-            volume: '0',
-            apy: '0'
+            volume,
+            apy
           };
           return [pool.id, poolStats];
         })

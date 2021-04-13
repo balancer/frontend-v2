@@ -3,7 +3,11 @@
     <Edito />
     <div class="container mx-auto">
       <MainMenu class="mt-6" />
-      <TablePools class="mt-2" :pools="allPools" />
+      <TablePools
+        class="mt-2"
+        :pools="poolData.pools"
+        :snapshots="poolData.snapshots"
+      />
     </div>
   </div>
 </template>
@@ -18,7 +22,7 @@ export default defineComponent({
     const store = useStore();
 
     return {
-      allPools: computed(() => store.state.pools.all)
+      poolData: computed(() => store.state.pools.all)
     };
   }
 });

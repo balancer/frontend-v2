@@ -29,7 +29,7 @@ export default function useWeb3Watchers() {
   }
 
   async function updateTokens(): Promise<void> {
-    const pools = store.state.pools.all;
+    const pools = store.state.pools.all.pools;
     const tokens = pools
       .map(pool => pool.tokens.map(token => getAddress(token.address)))
       .reduce((a, b) => [...a, ...b], []);
