@@ -5,7 +5,7 @@ import {
   SubGraphPoolsBase,
   SwapTypes,
   fetchSubgraphPools
-} from 'sorv2package';
+} from '@balancer-labs/sor2';
 import { SOR as SORV1 } from '@balancer-labs/sor';
 import { BaseProvider } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';

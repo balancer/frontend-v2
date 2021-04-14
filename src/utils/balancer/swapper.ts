@@ -1,7 +1,7 @@
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { Web3Provider } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
-import { SwapV2 } from 'sorv2package/dist/types';
+import { SwapV2 } from '@balancer-labs/sor2/dist/types';
 import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/utils/balancer/web3';
 import exchangeProxyAbi from '@/abi/ExchangeProxy.json';
