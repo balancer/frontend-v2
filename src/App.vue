@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="overflow-x-hidden lg:overflow-x-visible">
-    <LoadingScreen v-if="appLoading || !appInit || web3Loading" />
+    <LoadingScreen v-if="appLoading || !appInit" />
     <UnsupportedNetworkScreen v-else-if="unsupportedNetwork" />
     <div v-else>
       <AppNav />
@@ -25,6 +25,7 @@ import AccountModal from '@/components/modals/AccountModal.vue';
 import LoadingScreen from '@/components/screens/LoadingScreen.vue';
 import UnsupportedNetworkScreen from '@/components/screens/UnsupportedNetworkScreen.vue';
 import AppNav from '@/components/navs/AppNav.vue';
+import InfuraService from '@/services/infura/service';
 
 export default defineComponent({
   components: {
@@ -37,32 +38,38 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { loading: web3Loading, unsupportedNetwork } = useWeb3Watchers();
+    const { unsupportedNetwork } = useWeb3Watchers();
+
+    // SERVICES
+    const infuraService = new InfuraService(store.state.web3.config.chainId);
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
     const appInit = computed(() => store.state.app.init);
     const web3Modal = computed(() => store.state.web3.modal);
 
-    // CALLBACKS
-    onBeforeMount(() => {
-      store.dispatch('app/init');
-    });
-
     // METHODS
     const setAccountModal = val => store.commit('web3/setAccountModal', val);
+
+    const setBlockNumber = (blockNumber: number) =>
+      store.commit('web3/setBlockNumber', blockNumber);
 
     async function onLogin(connector: string): Promise<void> {
       setAccountModal(false);
       await store.dispatch('web3/login', connector);
     }
 
+    // CALLBACKS
+    onBeforeMount(() => {
+      store.dispatch('app/init');
+      infuraService.initBlockListener(setBlockNumber);
+    });
+
     return {
       appLoading,
       appInit,
       web3Modal,
       onLogin,
-      web3Loading,
       unsupportedNetwork,
       setAccountModal
     };
