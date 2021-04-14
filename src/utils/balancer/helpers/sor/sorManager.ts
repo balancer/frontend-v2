@@ -11,6 +11,7 @@ import { BaseProvider } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 import { scale } from '@/utils';
 import { Swap, Pools } from '@balancer-labs/sor/dist/types';
+import { ETHER } from '@/constants/tokenlists';
 
 export interface SorReturn {
   isV1swap: boolean;
@@ -32,6 +33,7 @@ export class SorManager {
   sorV1: SORV1;
   sorV2: SORV2;
   selectedPools: SubGraphPoolsBase | Pools = { pools: [] };
+  weth: string;
   subgraphUrl: string;
 
   constructor(
@@ -39,6 +41,7 @@ export class SorManager {
     gasPrice: BigNumber,
     maxPools: number,
     chainId: number,
+    weth: string,
     poolsSourceV1: string,
     poolsSourceV2: SubGraphPoolsBase | string,
     subgraphUrl: string,
@@ -64,6 +67,7 @@ export class SorManager {
       poolsSourceV2,
       disabledOptions
     );
+    this.weth = weth;
     this.subgraphUrl = subgraphUrl;
   }
 
@@ -127,13 +131,16 @@ export class SorManager {
     // V2 uses normalised values. V1 uses scaled values.
     const amountNormalised = scale(amountScaled, -swapDecimals);
 
+    const v1TokenIn = tokenIn === ETHER.address ? this.weth : tokenIn;
+    const v1TokenOut = tokenOut === ETHER.address ? this.weth : tokenOut;
+
     const [
       swapsV1,
       returnAmountV1,
       marketSpV1Scaled
     ] = await this.sorV1.getSwaps(
-      tokenIn.toLowerCase(),
-      tokenOut.toLowerCase(),
+      v1TokenIn.toLowerCase(),
+      v1TokenOut.toLowerCase(),
       swapType,
       amountScaled
     );

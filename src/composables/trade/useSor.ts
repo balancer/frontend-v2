@@ -9,7 +9,6 @@ import getProvider from '@/utils/provider';
 import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/utils/balancer/swapper';
 
-import { ETHER } from '@/constants/tokenlists';
 import { BALANCER_SUBGRAPH_URL } from '@/api/subgraph';
 
 import useAuth from '@/composables/useAuth';
@@ -82,6 +81,7 @@ export default function useSor(
       new BigNumber(GAS_PRICE),
       MAX_POOLS,
       config.chainId,
+      config.addresses.weth,
       poolsUrlV1,
       poolsUrlV2,
       subgraphUrl
@@ -106,15 +106,8 @@ export default function useSor(
       return;
     }
 
-    const config = getConfig();
-    const tokenInAddress =
-      tokenInAddressInput.value === ETHER.address
-        ? config.addresses.weth
-        : tokenInAddressInput.value;
-    const tokenOutAddress =
-      tokenOutAddressInput.value === ETHER.address
-        ? config.addresses.weth
-        : tokenOutAddressInput.value;
+    const tokenInAddress = tokenInAddressInput.value;
+    const tokenOutAddress = tokenOutAddressInput.value;
 
     if (
       !tokenInAddress ||
