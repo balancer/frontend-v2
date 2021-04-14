@@ -10,7 +10,7 @@
   </button>
   <div
     ref="content"
-    class="tooltip p-2 text-xs font-medium shadow-md rounded-md border"
+    class="tooltip p-3 text-xs bg-white font-medium shadow-md rounded-md border"
   >
     <slot />
   </div>

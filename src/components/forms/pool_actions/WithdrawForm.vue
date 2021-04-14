@@ -120,10 +120,6 @@
           />
           <BalTooltip
             v-if="priceImpact < 0.01"
-            :width="250"
-            :height="100"
-            on-hover
-            top
           >
             <template v-slot:activator>
               <BalIcon
@@ -132,7 +128,7 @@
                 class="text-gray-400 -mb-px ml-2"
               />
             </template>
-            <div v-html="$t('withdrawWarning')" class="p-2 text-xs" />
+            <div v-html="$t('withdrawWarning')" class="w-52" />
           </BalTooltip>
         </div>
         <BalCheckboxInput

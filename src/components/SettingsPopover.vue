@@ -75,18 +75,11 @@
       <div class="mt-4 px-4">
         <div class="flex items-baseline">
           <h5 v-text="'Slippage tolerance'" />
-          <BalTooltip
-            class="ml-2"
-            :width="150"
-            :height="240"
-            on-hover
-            bottom
-            left
-          >
+          <BalTooltip>
             <template v-slot:activator>
               <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
             </template>
-            <div class="p-2 text-xs text-gray-500">
+            <div class="w-52">
               Market conditions may change between the time your order is
               submitted and the time it gets executed on Ethereum. Slippage
               tolerance is the maximum change in price you are willing to
@@ -131,7 +124,7 @@ import {
   onMounted,
   computed,
   toRefs,
-  watch
+  watch,
 } from 'vue';
 import { useStore } from 'vuex';
 import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
@@ -145,7 +138,7 @@ const locales = {
   'it-IT': 'Italiano',
   'fr-FR': 'Français',
   'pt-PT': 'Português',
-  'ru-RU': 'Россия'
+  'ru-RU': 'Россия',
 };
 const slippageOptions = ['0.005', '0.01', '0.02'];
 
@@ -160,7 +153,7 @@ export default defineComponent({
     const data = reactive({
       locales,
       slippageOptions,
-      slippageInput: ''
+      slippageInput: '',
     });
 
     // COMPUTED
@@ -193,9 +186,9 @@ export default defineComponent({
 
     // METHODS
     const logout = () => store.dispatch('web3/logout');
-    const setDarkMode = val => store.commit('app/setDarkMode', val);
-    const setLocale = locale => store.commit('app/setLocale', locale);
-    const setSlippage = slippage => store.commit('app/setSlippage', slippage);
+    const setDarkMode = (val) => store.commit('app/setDarkMode', val);
+    const setLocale = (locale) => store.commit('app/setLocale', locale);
+    const setSlippage = (slippage) => store.commit('app/setSlippage', slippage);
 
     function copyAddress() {
       navigator.clipboard.writeText(store.state.web3.account);
@@ -204,7 +197,7 @@ export default defineComponent({
     // WATCHERS
     watch(
       () => data.slippageInput,
-      newSlippage => {
+      (newSlippage) => {
         if (!newSlippage) return;
 
         const number = Number(newSlippage);
@@ -237,9 +230,9 @@ export default defineComponent({
       setSlippage,
       copyAddress,
       fNum,
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 
