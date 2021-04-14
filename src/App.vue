@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="overflow-x-hidden lg:overflow-x-visible">
     <LoadingScreen v-if="appLoading || !appInit" />
-    <UnsupportedNetworkScreen v-else-if="unsupportedNetwork" />
+    <NetworkWarningScreen v-else-if="unsupportedNetwork || networkMismatch" />
     <div v-else>
       <AppNav />
       <div class="pb-12">
@@ -23,7 +23,7 @@ import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
 import LoadingScreen from '@/components/screens/LoadingScreen.vue';
-import UnsupportedNetworkScreen from '@/components/screens/UnsupportedNetworkScreen.vue';
+import NetworkWarningScreen from '@/components/screens/NetworkWarningScreen.vue';
 import AppNav from '@/components/navs/AppNav.vue';
 import InfuraService from '@/services/infura/service';
 import useWeb3 from './composables/useWeb3';
@@ -33,13 +33,13 @@ export default defineComponent({
     AppNav,
     AccountModal,
     LoadingScreen,
-    UnsupportedNetworkScreen
+    NetworkWarningScreen
   },
 
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { networkId, unsupportedNetwork } = useWeb3();
+    const { networkId, unsupportedNetwork, networkMismatch } = useWeb3();
     useWeb3Watchers();
 
     // SERVICES
@@ -68,11 +68,14 @@ export default defineComponent({
     });
 
     return {
+      // computed
       appLoading,
       appInit,
       web3Modal,
-      onLogin,
       unsupportedNetwork,
+      networkMismatch,
+      // methods
+      onLogin,
       setAccountModal
     };
   }
