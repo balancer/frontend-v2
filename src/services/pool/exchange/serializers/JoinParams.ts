@@ -34,10 +34,12 @@ export default class JoinParams {
       this.exchange.pool.id,
       account,
       account,
-      this.exchange.pool.tokens,
-      parsedAmountsIn,
-      this.fromInternalBalance,
-      txData
+      {
+        assets: this.exchange.pool.tokens,
+        maxAmountsIn: parsedAmountsIn,
+        userData: txData,
+        fromInternalBalance: this.fromInternalBalance
+      }
     ];
   }
 

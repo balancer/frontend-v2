@@ -1,4 +1,4 @@
-import { onMounted, ref } from 'vue';
+import { Ref, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -10,6 +10,7 @@ import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/utils/balancer/swapper';
 
 import { ETHER } from '@/constants/tokenlists';
+import { BALANCER_SUBGRAPH_URL } from '@/api/subgraph';
 
 import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
@@ -18,14 +19,14 @@ const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
 
 export default function useSor(
-  tokenInAddressInput,
-  tokenInAmountInput,
-  tokenOutAddressInput,
-  tokenOutAmountInput,
-  tokens,
-  allowanceState,
-  isWrap,
-  isUnwrap
+  tokenInAddressInput: Ref<string>,
+  tokenInAmountInput: Ref<string>,
+  tokenOutAddressInput: Ref<string>,
+  tokenOutAmountInput: Ref<string>,
+  tokens: Ref<any>,
+  allowanceState: any,
+  isWrap: Ref<boolean>,
+  isUnwrap: Ref<boolean>
 ) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<any[]>([]); // TODO - Check type & make sure correct value is returned by SorManager
@@ -74,6 +75,7 @@ export default function useSor(
     const config = getConfig();
     const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
     const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
+    const subgraphUrl = BALANCER_SUBGRAPH_URL[config.chainId];
 
     sorManager = new SorManager(
       getProvider(config.chainId),
@@ -81,7 +83,8 @@ export default function useSor(
       MAX_POOLS,
       config.chainId,
       poolsUrlV1,
-      poolsUrlV2
+      poolsUrlV2,
+      subgraphUrl
     );
 
     console.time('[SOR] fetchPools');

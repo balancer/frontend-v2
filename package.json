@@ -58,7 +58,7 @@
     "postcss": "^7.0.35",
     "postcss-nesting": "^7.0.1",
     "pretty-ms": "^7.0.0",
-    "sorv2package": "github:balancer-labs/balancer-sor#v2-package",
+    "sorv2package": "github:balancer-labs/balancer-sor#john/rc02-package",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4",
     "typescript": "~3.9.3",
     "vue": "^3.0.0-beta.1",

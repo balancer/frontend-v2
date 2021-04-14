@@ -57,10 +57,10 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
 
   async function checkAllowances(): Promise<void> {
     await Promise.all([
-      store.dispatch('getAllowances', {
+      store.dispatch('account/getAllowances', {
         tokens: [tokenInAddress.value]
       }),
-      store.dispatch('getAllowances', {
+      store.dispatch('account/getAllowances', {
         tokens: [tokenInAddress.value],
         dst: config.addresses.exchangeProxy
       })

@@ -304,9 +304,9 @@ export default defineComponent({
     async function populateInitialTokens(): Promise<void> {
       const { chainId } = getConfig();
       modalSelectTokenType.value = 'input';
-      await handleSelectToken(initialTokens[chainId].input);
+      handleSelectToken(initialTokens[chainId].input);
       modalSelectTokenType.value = 'output';
-      await handleSelectToken(initialTokens[chainId].output);
+      handleSelectToken(initialTokens[chainId].output);
     }
 
     async function approve(): Promise<void> {

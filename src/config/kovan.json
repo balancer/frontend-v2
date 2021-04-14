@@ -9,7 +9,7 @@
   "ws": "wss://eth-kovan.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "explorer": "https://kovan.etherscan.io",
   "poolsUrlV1": "https://ipfs.fleek.co/ipns/balancer-bucket.storage.fleek.co/balancer-exchange-kovan/pools",
-  "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc1-22-03.json",
+  "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
   "addresses": {
     "bFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB",
     "bActions": "0x02EFDB542B9390ae7C1620B29674e02F9c0d86CC",
@@ -17,12 +17,12 @@
     "exchangeProxy": "0x4e67bf5bD28Dd4b570FBAFe11D0633eCbA2754Ec",
     "multicall": "0x3b2A02F22fCbc872AF77674ceD303eb269a46ce3",
     "authorizer": "0x9dF05a75cf0cD41E26262F072bDbE9A9B2178834",
-    "vault": "0xba1c01474A7598c2B49015FdaFc67DdF06ce15f7",
-    "weightedPoolFactory": "0x3b5dBD2bFbE5eFA86dD51Af24436A9B3c25caE40",
-    "stablePoolFactory": "0x360E616ef7A487558982C0005C7B8E60ef252a78",
+    "vault": "0xba1222227c37746aDA22d10Da6265E02E44400DD",
+    "weightedPoolFactory": "0xCFD48F189e5fBfd74eE8E63Cfe2EB1930246e3F9",
+    "stablePoolFactory": "0xaD9a0de4fda03eE4cdb07590B42D6469Ad1aBd85",
     "tokenFactory": "0xEaa391544B268018C0FA848204E984Bd7FF7f20c",
     "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-    "balancerHelpers": "0xc11B8377b5F9F152717e47086963877574B22Da4"
+    "balancerHelpers": "0xF32dcd39F3f8be5c141df34f7b2A539eea9F9ff3"
   },
   "strategies": {
     "0": {
