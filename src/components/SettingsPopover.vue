@@ -139,8 +139,6 @@ import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 
-import BalLink from '@/components/Bal/BalLink';
-
 const locales = {
   'en-US': 'English',
   'zh-CN': '中文',
@@ -153,9 +151,6 @@ const locales = {
 const slippageOptions = ['0.005', '0.01', '0.02'];
 
 export default defineComponent({
-  components: {
-    BalLink
-  },
   setup() {
     // COMPOSABLES
     const store = useStore();
