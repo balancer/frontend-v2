@@ -49,8 +49,7 @@ import {
   reactive,
   toRefs,
   computed,
-  onBeforeMount,
-  watch
+  onBeforeMount
 } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
@@ -139,15 +138,6 @@ export default defineComponent({
         fNum(pool.value.strategy.swapFeePercent / 100, 'percent')
       ]);
     });
-
-    // WATCHERS
-    watch(
-      () => store.state.web3.config.chainId,
-      () => {
-        // Network has changed so this pool won't exist
-        router.go(0);
-      }
-    );
 
     // CALLBACKS
     onBeforeMount(async () => {
