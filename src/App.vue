@@ -26,6 +26,7 @@ import LoadingScreen from '@/components/screens/LoadingScreen.vue';
 import UnsupportedNetworkScreen from '@/components/screens/UnsupportedNetworkScreen.vue';
 import AppNav from '@/components/navs/AppNav.vue';
 import InfuraService from '@/services/infura/service';
+import useWeb3 from './composables/useWeb3';
 
 export default defineComponent({
   components: {
@@ -38,10 +39,11 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { unsupportedNetwork } = useWeb3Watchers();
+    const { networkId, unsupportedNetwork } = useWeb3();
+    useWeb3Watchers();
 
     // SERVICES
-    const infuraService = new InfuraService(store.state.web3.config.chainId);
+    const infuraService = new InfuraService(networkId.value);
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);

@@ -11,6 +11,10 @@ export default function useWeb3() {
   const account = computed(() => store.state.web3.account);
   const blockNumber = computed(() => store.state.web3.blockNumber);
 
+  const unsupportedNetwork = computed(() => {
+    return store.state.web3.config.unknown;
+  });
+
   const explorerBaseURL = configs[networkId.value].explorer;
 
   // assumes etherscan.io
@@ -25,6 +29,7 @@ export default function useWeb3() {
     networkId,
     networkKey,
     account,
-    blockNumber
+    blockNumber,
+    unsupportedNetwork
   };
 }
