@@ -23,9 +23,9 @@
                     class="w-4 h-4 cursor-pointer"
                     @click="copyAddress"
                   />
-                  <ExternalLink :href="explorer.addressLink(account)">
+                  <BalLink :href="explorer.addressLink(account)" external>
                     <IconLink class="w-4 h-4 ml-1" />
-                  </ExternalLink>
+                  </BalLink>
                 </div>
               </div>
               <div class="text-sm">{{ connectorName }}</div>
@@ -139,7 +139,7 @@ import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 
-import ExternalLink from '@/components/ExternalLink';
+import BalLink from '@/components/Bal/BalLink';
 
 const locales = {
   'en-US': 'English',
@@ -154,7 +154,7 @@ const slippageOptions = ['0.005', '0.01', '0.02'];
 
 export default defineComponent({
   components: {
-    ExternalLink
+    BalLink
   },
   setup() {
     // COMPOSABLES

@@ -22,10 +22,11 @@ export default defineComponent({
       let _attrs = attrs;
 
       if (props.external) {
-        _attrs = Object.assign({}, _attrs, {
+        _attrs = {
+          ..._attrs,
           target: '_blank',
           rel: 'noopener noreferrer'
-        });
+        };
       }
 
       return _attrs;
