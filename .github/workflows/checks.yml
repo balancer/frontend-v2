@@ -1,0 +1,44 @@
+name: Checks
+
+on:
+  - pull_request
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - name: Install deps
+      run: npm install -g npm@7 && npm ci
+    - name: Run build
+      run: npm run build
+
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - name: Install deps
+      run: npm install -g npm@7 && npm ci
+    - name: Run lint
+      run: npm run lint
+        
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - name: Install deps
+      run: npm install -g npm@7 && npm ci
+    - name: Run tests
+      run: npm run test:unit

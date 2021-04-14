@@ -1,37 +1,38 @@
 <template>
-  <div v-if="actions.length > 0">
-    <h4>Your transactions in this pool</h4>
-    <div class="mt-3 overflow-x-auto whitespace-nowrap border rounded-lg">
-      <table class="min-w-full text-black bg-white dark:bg-gray-900">
-        <tr class="bg-gray-50 dark:bg-gray-700">
-          <th class="sticky top-0 p-2 pl-5 py-5 text-left">Action</th>
-          <th class="sticky top-0 p-2 py-5 text-right">Value</th>
-          <th class="sticky top-0 p-2 py-5 text-right">Details</th>
-          <th class="sticky top-0 p-2 pr-5 py-5 text-right">Date</th>
-        </tr>
-        <tr class="hover:bg-gray-50" v-for="action in actions" :key="action.tx">
-          <td class="p-2 pl-5 py-5 flex items-center text-left">
-            {{ action.label }}
-            <a
-              :href="_explorer(web3.config.chainId, action.tx, 'tx')"
-              target="_blank"
-            >
-              <BalIcon name="external-link" size="sm" class="ml-2" />
-            </a>
-          </td>
-          <td class="p-2 py-5 text-right">
-            {{ _num(action.value, '$0,0.00') }}
-          </td>
-          <td class="p-2 py-5 text-right">
-            {{ action.details }}
-          </td>
-          <td class="p-2 pr-5 py-5 text-right">
-            {{ formatDate(action.timestamp) }}
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
+  <BalCard
+    v-if="actions.length > 0"
+    class="overflow-x-auto whitespace-nowrap"
+    no-pad
+  >
+    <table class="min-w-full dark:bg-gray-900">
+      <tr class="bg-gray-50 dark:bg-gray-700">
+        <th
+          v-text="$t('action')"
+          class="sticky top-0 p-2 pl-5 py-5 text-left"
+        />
+        <th v-text="$t('value')" class="sticky top-0 p-2 py-5 text-right" />
+        <th v-text="$t('details')" class="sticky top-0 p-2 py-5 text-right" />
+        <th v-text="$t('date')" class="sticky top-0 p-2 pr-5 py-5 text-right" />
+      </tr>
+      <tr class="hover:bg-gray-50" v-for="action in actions" :key="action.tx">
+        <td class="p-2 pl-5 py-5 flex items-center text-left">
+          {{ action.label }}
+          <a :href="_explorer(networkId, action.tx, 'tx')" target="_blank">
+            <BalIcon name="external-link" size="sm" class="ml-2" />
+          </a>
+        </td>
+        <td class="p-2 py-5 text-right">
+          {{ fNum(action.value, 'usd') }}
+        </td>
+        <td class="p-2 py-5 text-right">
+          {{ action.details }}
+        </td>
+        <td class="p-2 pr-5 py-5 text-right">
+          {{ formatDate(action.timestamp) }}
+        </td>
+      </tr>
+    </table>
+  </BalCard>
 </template>
 
 <script lang="ts">
@@ -39,6 +40,8 @@ import { PropType, computed } from 'vue';
 import { useStore } from 'vuex';
 
 import { PoolJoin, PoolExit, PoolEvents } from '@/api/subgraph';
+import useNumbers from '@/composables/useNumbers';
+import { useI18n } from 'vue-i18n';
 
 interface Action {
   label: string;
@@ -59,18 +62,24 @@ export default {
       required: true
     }
   },
+
   setup(props) {
     const store = useStore();
+    const { fNum } = useNumbers();
+    const { t } = useI18n();
 
-    const allTokens = computed(() => store.getters.getTokens());
+    const allTokens = computed(() => store.getters['registry/getTokens']());
+
+    const networkId = computed(() => store.state.web3.config.chainId);
 
     const actions = computed<Action[]>(() => {
       if (!Object.keys(props.events)) {
         return [];
       }
+
       const joinActions = props.events.joins.map(join => {
         return {
-          label: 'Investment',
+          label: t('investment'),
           value: getJoinExitValue(join),
           details: getJoinExitDetails(join),
           timestamp: join.timestamp,
@@ -79,7 +88,7 @@ export default {
       });
       const exitActions = props.events.exits.map(exit => {
         return {
-          label: 'Withdrawal',
+          label: t('withdrawal'),
           value: getJoinExitValue(exit),
           details: getJoinExitDetails(exit),
           timestamp: exit.timestamp,
@@ -126,7 +135,9 @@ export default {
 
     return {
       actions,
-      formatDate
+      formatDate,
+      networkId,
+      fNum
     };
   }
 };

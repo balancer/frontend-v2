@@ -1,10 +1,10 @@
 <template>
-  <BalCard :title="$t('investmentPools')">
+  <BalCard :title="t('investmentPools')">
     <div class="flex">
       <BalBtn
         color="primary"
         size="sm"
-        :label="$t('filter')"
+        :label="t('filter')"
         outline
         @click.prevent="selectTokenModal = true"
       />
@@ -32,19 +32,19 @@
       <table class="min-w-full text-black bg-white dark:bg-gray-900">
         <tr class="bg-gray-50 dark:bg-gray-700">
           <th
-            v-text="$t('poolName')"
+            v-text="t('poolName')"
             class="sticky top-0 p-2 pl-5 py-5 text-left"
           />
           <th
-            v-text="$t('poolValue')"
+            v-text="t('poolValue')"
             class="sticky top-0 p-2 py-5 text-right"
           />
           <th
-            v-text="$t('volume24h', [$t('hourAbbrev')])"
+            v-text="t('volume24h', [t('hourAbbrev')])"
             class="sticky top-0 p-2 py-5 text-right"
           />
           <th
-            v-text="$t('apy', [$t('yearAbbrev')])"
+            v-text="t('apy', [t('yearAbbrev')])"
             class="sticky top-0 p-2 pr-5 py-5 text-right"
           />
         </tr>
@@ -86,14 +86,13 @@
             {{ _num(stats[pool.id].volume, '$0,0') }}
           </td>
           <td class="p-2 pr-5 py-5 text-right">
-            {{ _num(stats[pool.id].apy, '0,0%') }}
+            {{ _num(stats[pool.id].apy, '0,0.[00]%') }}
           </td>
         </tr>
       </table>
     </div>
     <teleport to="#modal">
       <SelectTokenModal
-        v-if="!registry.loading"
         :open="selectTokenModal"
         :excluded-tokens="selectedTokens"
         @close="selectTokenModal = false"
@@ -108,8 +107,9 @@ import { PropType, defineComponent, toRefs, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import { getPoolLiquidity } from '@/utils/balancer/price';
-import { Pool } from '@/api/subgraph';
+import { Pool, PoolSnapshot } from '@/api/subgraph';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -120,24 +120,25 @@ export default defineComponent({
     pools: {
       type: Array as PropType<Pool[]>,
       required: true
+    },
+    snapshots: {
+      type: Array as PropType<PoolSnapshot[]>,
+      required: true
     }
   },
 
   setup(props) {
+    // COMPOSABLES
     const store = useStore();
-    const { pools } = toRefs(props);
+    const { pools, snapshots } = toRefs(props);
+    const { t } = useI18n();
 
+    // DATA
     const selectTokenModal = ref(false);
     const selectedTokens = ref<string[]>([]);
 
-    const allTokens = computed(() => store.getters.getTokens());
-    function addToken(token: string) {
-      selectedTokens.value.push(token);
-    }
-
-    function removeToken(i: number) {
-      selectedTokens.value.splice(i);
-    }
+    // COMPUTED
+    const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const filteredPools = computed(() => {
       return pools.value.filter(pool =>
@@ -151,16 +152,32 @@ export default defineComponent({
       const stats = Object.fromEntries(
         pools.value.map(pool => {
           const liquidity = getPoolLiquidity(pool, store.state.market.prices);
+          const snapshot = snapshots.value.find(
+            snapshot => snapshot.pool.id === pool.id
+          );
+          const volume = snapshot ? snapshot.swapVolume : '0';
+          const apy = snapshot
+            ? (parseFloat(snapshot.swapFees) / parseFloat(liquidity)) * 365
+            : '0';
           const poolStats = {
             liquidity,
-            volume: '0',
-            apy: '0'
+            volume,
+            apy
           };
           return [pool.id, poolStats];
         })
       );
       return stats;
     });
+
+    // METHODS
+    function addToken(token: string) {
+      selectedTokens.value.push(token);
+    }
+
+    function removeToken(i: number) {
+      selectedTokens.value.splice(i);
+    }
 
     function getIconPosition(i: number, count: number) {
       if (count < 3) {
@@ -173,20 +190,21 @@ export default defineComponent({
     }
 
     return {
-      getAddress,
-
-      allTokens,
-
-      addToken,
-      removeToken,
-
+      // data
       selectedTokens,
       selectTokenModal,
 
+      // computed
+      allTokens,
       filteredPools,
       stats,
 
-      getIconPosition
+      // methods
+      getAddress,
+      addToken,
+      removeToken,
+      getIconPosition,
+      t
     };
   }
 });

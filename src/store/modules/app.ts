@@ -26,13 +26,12 @@ const actions = {
     commit('setInit', true);
 
     // Fetch init data
-    await dispatch('loadRegistry');
-    await dispatch('getBlockNumber');
+    await dispatch('registry/get', null, { root: true });
 
     // Setup web3
     const auth = getInstance();
     const connector = await auth.getConnector();
-    if (connector) dispatch('login', connector);
+    if (connector) dispatch('web3/login', connector, { root: true });
 
     commit('setLocale', 'en-US');
     commit('setDarkMode', false);
@@ -81,6 +80,7 @@ const mutations = {
 };
 
 export default {
+  namespaced: true,
   state,
   mutations,
   actions

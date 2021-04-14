@@ -72,6 +72,12 @@
             <RowToken :token="token" />
           </a>
         </div>
+        <div
+          v-else-if="isTokenSelected"
+          class="h-96 flex items-center justify-center"
+        >
+          Token Already Selected
+        </div>
         <div v-else-if="loading" class="h-96 flex items-center justify-center">
           <BalLoadingIcon />
         </div>
@@ -106,7 +112,8 @@ export default defineComponent({
     const data = reactive({
       loading: false,
       query: '',
-      selectTokenList: false
+      selectTokenList: false,
+      isTokenSelected: false
     });
 
     // COMPOSABLES
@@ -120,7 +127,7 @@ export default defineComponent({
     });
 
     const tokens = computed(() => {
-      return store.getters.getTokens({
+      return store.getters['registry/getTokens']({
         q: data.query,
         not: props.excludedTokens,
         includeEther: props.includeEther
@@ -128,7 +135,7 @@ export default defineComponent({
     });
 
     const tokenLists = computed(() => {
-      return store.getters.getTokenlists({ q: data.query });
+      return store.getters['registry/getTokenLists']({ q: data.query });
     });
 
     const tokenlistsReverse = computed(() => {
@@ -137,7 +144,7 @@ export default defineComponent({
     });
 
     const activeTokenLists = computed(() => {
-      return store.getters.getTokenlists({ active: true });
+      return store.getters['registry/getTokenLists']({ active: true });
     });
 
     // METHODS
@@ -145,7 +152,11 @@ export default defineComponent({
       let address = event.target.value;
       if (isAddress(address)) {
         address = getAddress(address);
-        store.dispatch('injectTokens', [address.trim()]);
+        if (props.excludedTokens.includes(address)) data.isTokenSelected = true;
+        else {
+          data.isTokenSelected = false;
+          store.dispatch('registry/injectTokens', [address.trim()]);
+        }
       }
     }
 
@@ -155,7 +166,7 @@ export default defineComponent({
     }
 
     function onSelectList(list: string): void {
-      store.dispatch('toggleList', list);
+      store.dispatch('registry/toggleList', list);
     }
 
     function onListExit(): void {
