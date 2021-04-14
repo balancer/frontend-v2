@@ -3,7 +3,7 @@ import { generateTemplate } from '../../../.storybook/helpers/templates';
 
 export default {
   component: Tooltip,
-  title: 'Components/Tooltip',
+  title: 'Components/Bal/Tooltip',
   parameters: {
     layout: 'centered'
   },
