@@ -76,6 +76,7 @@
     "@babel/core": "^7.13.8",
     "@storybook/addon-actions": "^6.2.7",
     "@storybook/addon-console": "^1.2.3",
+    "@storybook/addon-essentials": "^6.2.8",
     "@storybook/cli": "^6.2.7",
     "@storybook/vue3": "^6.2.7",
     "@types/jest": "^24.0.19",
