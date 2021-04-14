@@ -3,7 +3,7 @@ import useAuth from '@/composables/useAuth';
 import { computed, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/utils/balancer/tokens';
-import useBlocknative from '@/composables/useBlocknative';
+import useNotify from '@/composables/useNotify';
 import { ETHER } from '@/constants/tokenlists';
 
 export default function useTokenApproval(tokenInAddress, amount, tokens) {
@@ -13,7 +13,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   // COMPOSABLES
   const store = useStore();
   const auth = useAuth();
-  const { notify } = useBlocknative();
+  const { txListener } = useNotify();
 
   const { config } = store.state.web3;
 
@@ -76,7 +76,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
         config.addresses.exchangeProxy,
         [tokenInAddress.value]
       );
-      txListener(tx.hash);
+      approvalTxListener(tx.hash);
     } catch (e) {
       console.log(e);
       approving.value = false;
@@ -90,32 +90,25 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
       const [tx] = await approveTokens(auth.web3, config.addresses.vault, [
         tokenInAddress.value
       ]);
-      txListener(tx.hash);
+      approvalTxListener(tx.hash);
     } catch (e) {
       console.log(e);
       approving.value = false;
     }
   }
 
-  function txListener(hash) {
-    const { emitter } = notify.hash(hash);
-
-    emitter.on('txConfirmed', () => {
-      approving.value = false;
-      approved.value = true;
-      return undefined;
-    });
-
-    emitter.on('txCancel', () => {
-      // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
-      approving.value = false;
-      return undefined;
-    });
-
-    emitter.on('txFailed', () => {
-      // An error has occurred initiating the transaction
-      approving.value = false;
-      return undefined;
+  function approvalTxListener(hash: string) {
+    txListener(hash, {
+      onTxConfirmed: () => {
+        approving.value = false;
+        approved.value = true;
+      },
+      onTxCancel: () => {
+        approving.value = false;
+      },
+      onTxFailed: () => {
+        approving.value = false;
+      }
     });
   }
 

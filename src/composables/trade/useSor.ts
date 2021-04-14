@@ -2,15 +2,18 @@ import { Ref, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
+
 import { scale } from '@/utils';
-import getProvider from '@/utils/provider';
-import useAuth from '@/composables/useAuth';
-import { swapIn, swapOut } from '@/utils/balancer/swapper';
-import useBlocknative from '@/composables/useBlocknative';
-import { ETHER } from '@/constants/tokenlists';
-import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 import { unwrap, wrap } from '@/utils/balancer/wrapper';
+import getProvider from '@/utils/provider';
+import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import { swapIn, swapOut } from '@/utils/balancer/swapper';
+
+import { ETHER } from '@/constants/tokenlists';
 import { BALANCER_SUBGRAPH_URL } from '@/api/subgraph';
+
+import useAuth from '@/composables/useAuth';
+import useNotify from '@/composables/useNotify';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -54,7 +57,7 @@ export default function useSor(
   // COMPOSABLES
   const store = useStore();
   const auth = useAuth();
-  const { notify } = useBlocknative();
+  const { txListener } = useNotify();
 
   const getConfig = () => store.getters['web3/getConfig']();
 
@@ -223,24 +226,17 @@ export default function useSor(
     }
   }
 
-  function txListener(hash) {
-    const { emitter } = notify.hash(hash);
-
-    emitter.on('txConfirmed', () => {
-      trading.value = false;
-      return undefined;
-    });
-
-    emitter.on('txCancel', () => {
-      // A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
-      trading.value = false;
-      return undefined;
-    });
-
-    emitter.on('txFailed', () => {
-      // An error has occurred initiating the transaction
-      trading.value = false;
-      return undefined;
+  function tradeTxListener(hash: string) {
+    txListener(hash, {
+      onTxConfirmed: () => {
+        trading.value = false;
+      },
+      onTxCancel: () => {
+        trading.value = false;
+      },
+      onTxFailed: () => {
+        trading.value = false;
+      }
     });
   }
 
@@ -260,7 +256,7 @@ export default function useSor(
       try {
         const tx = await wrap(chainId, auth.web3, tokenInAmountScaled);
         console.log('Wrap tx', tx);
-        txListener(tx.hash);
+        tradeTxListener(tx.hash);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -270,7 +266,7 @@ export default function useSor(
       try {
         const tx = await unwrap(chainId, auth.web3, tokenInAmountScaled);
         console.log('Unwrap tx', tx);
-        txListener(tx.hash);
+        tradeTxListener(tx.hash);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -295,7 +291,7 @@ export default function useSor(
           minAmount
         );
         console.log('Swap in tx', tx);
-        txListener(tx.hash);
+        tradeTxListener(tx.hash);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -320,7 +316,7 @@ export default function useSor(
           tokenOutAmountScaled
         );
         console.log('Swap out tx', tx);
-        txListener(tx.hash);
+        tradeTxListener(tx.hash);
       } catch (e) {
         console.log(e);
         trading.value = false;
