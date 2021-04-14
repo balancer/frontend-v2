@@ -4,7 +4,7 @@ import { formatUnits } from '@ethersproject/units';
 import configs, { Config } from '@/config';
 import { getProfiles } from '@/utils/profile';
 
-const defaultConfig = process.env.VUE_APP_DEFAULT_NETWORK || '1';
+const defaultConfig = process.env.VUE_APP_NETWORK || '1';
 
 let auth;
 
