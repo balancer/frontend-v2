@@ -2,6 +2,7 @@ import '../src/assets/css/tailwind.css';
 import '../src/assets/css/index.css';
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '../tailwind.config'
+import '@storybook/addon-console';
 
 const fullConfig = resolveConfig(tailwindConfig)
 

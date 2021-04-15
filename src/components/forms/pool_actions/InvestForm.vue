@@ -47,9 +47,9 @@
               <div class="flex flex-col w-3/4 leading-none">
                 <span
                   class="break-words"
-                  :title="
-                    `${fNum(amounts[i], 'token')} ${allTokens[token].symbol}`
-                  "
+                  :title="`${fNum(amounts[i], 'token')} ${
+                    allTokens[token].symbol
+                  }`"
                 >
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
@@ -138,13 +138,7 @@
               size="xs"
               class="ml-1"
             />
-            <BalTooltip
-              v-if="priceImpact < 0.01"
-              :width="250"
-              :height="100"
-              on-hover
-              top
-            >
+            <BalTooltip v-if="priceImpact < 0.0">
               <template v-slot:activator>
                 <BalIcon
                   name="info"
@@ -152,7 +146,7 @@
                   class="text-gray-400 -mb-px ml-2"
                 />
               </template>
-              <div v-html="$t('customAmountsTip')" class="p-2 text-xs" />
+              <div v-html="$t('customAmountsTip')" class="w-52" />
             </BalTooltip>
           </div>
           <BalCheckboxInput
