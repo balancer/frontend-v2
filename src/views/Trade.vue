@@ -25,7 +25,7 @@
                 type="number"
                 placeholder="0"
                 min="0"
-                class="flex-auto"
+                class="flex-auto placeholder-gray-500::placeholder"
               />
               <a
                 @click="handleMax"
@@ -38,7 +38,7 @@
               :class="
                 validationStatus === 'INSUFFICIENT_BALANCE' && 'text-red-500'
               "
-              class="text-xs"
+              class="text-xs text-gray-500"
             >
               {{ $t('balance') }}:
               {{
@@ -76,12 +76,12 @@
               type="number"
               placeholder="0"
               min="0"
-              class="w-full"
+              class="w-full placeholder-gray-500::placeholder"
             />
             <div
               v-if="slippage"
               :class="slippage > 0.02 && 'text-yellow-500'"
-              class="text-xs"
+              class="text-xs text-gray-500"
             >
               {{ $t('priceImpact') }}:
               {{ _num(slippage > 0.0001 ? slippage : 0.0001, '0,0.[00]%') }}
