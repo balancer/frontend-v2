@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading" class="container mx-auto mt-4 px-4 lg:px-0">
+  <div class="container mx-auto mt-4 px-4 lg:px-0">
     <PoolNav class="mt-7 lg:mt-14 mb-8 lg:mb-12" />
 
     <div v-if="!loading" class="lg:mb-10">
@@ -176,10 +176,10 @@ export default defineComponent({
     }
 
     // WATCHERS
-    watch(blockNumber, async () => {
+    watch(blockNumber, () => {
       if (!data.loading) {
-        await fetchPool();
-        await loadEvents();
+        fetchPool();
+        loadEvents();
       }
     });
 
