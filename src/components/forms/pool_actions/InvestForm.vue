@@ -47,9 +47,9 @@
               <div class="flex flex-col w-3/4 leading-none">
                 <span
                   class="break-words"
-                  :title="`${fNum(amounts[i], 'token')} ${
-                    allTokens[token].symbol
-                  }`"
+                  :title="
+                    `${fNum(amounts[i], 'token')} ${allTokens[token].symbol}`
+                  "
                 >
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
