@@ -3,6 +3,7 @@
     <FormTypeToggle
       v-model="investType"
       :form-types="formTypes"
+      :hasZeroBalance="hasZeroBalance"
       :loading="loading"
     />
 
@@ -503,7 +504,8 @@ export default defineComponent({
       priceImpactClasses,
       amountUSD,
       formTypes,
-      isRequired
+      isRequired,
+      hasZeroBalance
     };
   }
 });
