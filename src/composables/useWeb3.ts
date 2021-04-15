@@ -6,14 +6,22 @@ import configs from '@/config';
 export default function useWeb3() {
   const store = useStore();
 
+  // App Network vars (static)
   const appNetworkKey = process.env.VUE_APP_NETWORK;
   const appNetworkId = Number(appNetworkKey);
   const appNetworkName = configs[appNetworkId].shortName;
-  const networkId = computed(() => store.state.web3.config.chainId);
+
+  // User network vars (dynamic)
   const networkKey = computed(() => store.state.web3.config.key);
+  const networkId = computed(() => store.state.web3.config.chainId);
   const networkName = computed(() => store.state.web3.config.shortName);
+
   const account = computed(() => store.state.web3.account);
   const blockNumber = computed(() => store.state.web3.blockNumber);
+
+  const isMainnet = computed(() => {
+    return networkName.value === 'Mainnet';
+  });
 
   const unsupportedNetwork = computed(() => {
     return store.state.web3.config.unknown;
@@ -45,6 +53,7 @@ export default function useWeb3() {
     networkName,
     account,
     blockNumber,
+    isMainnet,
     unsupportedNetwork,
     networkMismatch
   };
