@@ -5,9 +5,10 @@ import {
   SubGraphPoolsBase,
   SwapTypes,
   fetchSubgraphPools
-} from 'sorv2package';
+} from '@balancer-labs/sor2';
 import { SOR as SORV1 } from '@balancer-labs/sor';
 import { BaseProvider } from '@ethersproject/providers';
+import { AddressZero } from '@ethersproject/constants';
 import BigNumber from 'bignumber.js';
 import { scale } from '@/utils';
 import { Swap, Pools } from '@balancer-labs/sor/dist/types';
@@ -145,14 +146,17 @@ export class SorManager {
       amountScaled
     );
 
+    const v2TokenIn = tokenIn === ETHER.address ? AddressZero : tokenIn;
+    const v2TokenOut = tokenOut === ETHER.address ? AddressZero : tokenOut;
+
     const swapTypeV2: SwapTypes =
       swapType === 'swapExactIn'
         ? SwapTypes.SwapExactIn
         : SwapTypes.SwapExactOut;
 
     const swapInfoV2: SwapInfo = await this.sorV2.getSwaps(
-      tokenIn.toLowerCase(),
-      tokenOut.toLowerCase(),
+      v2TokenIn.toLowerCase(),
+      v2TokenOut.toLowerCase(),
       swapTypeV2,
       amountNormalised
     );
