@@ -1,7 +1,6 @@
 <template>
   <div id="app" class="overflow-x-hidden lg:overflow-x-visible">
     <LoadingScreen v-if="appLoading || !appInit" />
-    <NetworkWarningScreen v-else-if="unsupportedNetwork || networkMismatch" />
     <div v-else>
       <AppNav />
       <div class="pb-12">
@@ -23,7 +22,6 @@ import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
 import LoadingScreen from '@/components/screens/LoadingScreen.vue';
-import NetworkWarningScreen from '@/components/screens/NetworkWarningScreen.vue';
 import AppNav from '@/components/navs/AppNav.vue';
 import InfuraService from '@/services/infura/service';
 import useWeb3 from './composables/useWeb3';
@@ -32,8 +30,7 @@ export default defineComponent({
   components: {
     AppNav,
     AccountModal,
-    LoadingScreen,
-    NetworkWarningScreen
+    LoadingScreen
   },
 
   setup() {

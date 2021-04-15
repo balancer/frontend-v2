@@ -1,11 +1,20 @@
 import { watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 import useBlocknative from './useBlocknative';
+import useWeb3 from './useWeb3';
 
 export default function useWeb3Watchers() {
   // COMPOSABLES
   const store = useStore();
+  const { t } = useI18n();
   const { notify } = useBlocknative();
+  const {
+    appNetwork,
+    userNetwork,
+    unsupportedNetwork,
+    networkMismatch
+  } = useWeb3();
 
   // Watch for user account change:
   // -> Unsubscribe Blocknative from old account if exits
@@ -24,6 +33,33 @@ export default function useWeb3Watchers() {
         }
         return false;
       });
+    }
+  );
+
+  // Watch for user network switch
+  // -> Display alert message if unsupported or not the same as app network.
+  watch(
+    () => store.state.web3.config.key,
+    () => {
+      if (unsupportedNetwork.value) {
+        const localeKey = userNetwork.value.name
+          ? 'unavailableOnNetworkWithName'
+          : 'unavailableOnNetwork';
+        store.commit('alerts/setCurrent', {
+          label: t(localeKey, [userNetwork.value.name, appNetwork.name]),
+          type: 'error'
+        });
+      } else if (networkMismatch.value) {
+        store.commit('alerts/setCurrent', {
+          label: t('networkMismatch', [
+            userNetwork.value.name,
+            appNetwork.name
+          ]),
+          type: 'error'
+        });
+      } else {
+        store.commit('alerts/setCurrent', null);
+      }
     }
   );
 }

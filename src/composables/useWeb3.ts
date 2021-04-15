@@ -7,7 +7,9 @@ export default function useWeb3() {
   const store = useStore();
 
   const account = computed(() => store.state.web3.account);
+  const profile = computed(() => store.state.web3.profile);
   const blockNumber = computed(() => store.state.web3.blockNumber);
+  const loading = computed(() => store.state.web3.loading);
 
   // App Network vars (static)
   const appNetwork = {
@@ -54,6 +56,8 @@ export default function useWeb3() {
     appNetwork,
     userNetwork,
     account,
+    profile,
+    loading,
     blockNumber,
     isMainnet,
     unsupportedNetwork,

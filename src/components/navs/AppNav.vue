@@ -1,5 +1,7 @@
 <template>
   <nav id="topnav">
+    <NavAlert v-if="alert" :alert="alert" />
+
     <div class="px-6">
       <div class="flex items-center" style="height: 78px;">
         <div class="flex-auto flex items-center">
@@ -86,16 +88,20 @@ import getProvider from '@/utils/provider';
 import { getPendingClaims } from '@/utils/balancer/claim';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppLogo from '@/components/images/AppLogo.vue';
+import NavAlert from './NavAlert.vue';
+import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   components: {
-    AppLogo
+    AppLogo,
+    NavAlert
   },
 
   setup() {
     // COMPOSABLES
     const store = useStore();
     const { bp } = useBreakpoints();
+    const { account, profile, loading: web3Loading, userNetwork } = useWeb3();
 
     // DATA
     const data = reactive({
@@ -104,18 +110,15 @@ export default defineComponent({
     });
 
     // COMPUTED
-    const account = computed(() => store.state.web3.account);
-    const profile = computed(() => store.state.web3.profile);
-    const web3Loading = computed(() => store.state.web3.loading);
-    const network = computed(() => store.state.web3.config.key);
+    const alert = computed(() => store.state.alerts.current);
 
     // METHODS
     const setAccountModal = val => store.commit('web3/setAccountModal', val);
 
     async function getClaimsData() {
-      const provider = getProvider(network.value);
+      const provider = getProvider(userNetwork.value.key);
       const pendingClaims = await getPendingClaims(
-        network.value,
+        userNetwork.value.key,
         provider,
         account.value
       );
@@ -140,6 +143,7 @@ export default defineComponent({
       profile,
       web3Loading,
       bp,
+      alert,
       // methods
       setAccountModal
     };
@@ -147,7 +151,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="css">
+<style scoped>
 #topnav {
   @apply w-full shadow;
   @apply bg-white dark:bg-gray-900;
