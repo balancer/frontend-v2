@@ -176,13 +176,13 @@ const actions = {
     }
   },
 
-  async injectTokens({ commit, dispatch, rootState }, tokens) {
+  async injectTokens({ commit, dispatch }, tokens) {
     tokens = tokens.filter(
       token => token !== ETHER.address && isAddress(token)
     );
     if (tokens.length === 0) return;
     const injected = clone(state.injected);
-    const network = rootState.web3.config.key;
+    const network = process.env.VUE_APP_NETWORK || '1';
     const tokensMetadata = await getTokensMetadata(
       network,
       getProvider(network),
