@@ -224,6 +224,7 @@ export default defineComponent({
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
 
+    // SERVICES
     const poolExchange = new PoolExchange(
       props.pool,
       store.state.web3.config.key,
@@ -389,7 +390,7 @@ export default defineComponent({
     }
 
     function setPropMax() {
-      if (!isAuthenticated.value) return;
+      if (!isAuthenticated.value || bptBalance.value === 0) return;
 
       const { send, receive } = poolCalculator.propAmountsGiven(
         bptBalance.value,
@@ -404,6 +405,7 @@ export default defineComponent({
 
     function setSingleAsset(index) {
       if (!isSingleAsset.value) return;
+
       props.pool.tokens.forEach((_, i) => {
         if (i === index) {
           data.amounts[i] = data.singleAssetMax[index];
@@ -416,7 +418,7 @@ export default defineComponent({
 
     async function calcSingleAssetMax() {
       data.singleAssetMax = props.pool.tokens.map(() => '0');
-      if (!isAuthenticated.value) return;
+      if (!isAuthenticated.value || bptBalance.value === 0) return;
 
       for (
         let tokenIndex = 0;
@@ -505,9 +507,9 @@ export default defineComponent({
       }
     );
 
-    watch(bptBalance, async () => {
+    watch(bptBalance, () => {
       setPropMax();
-      await calcSingleAssetMax();
+      calcSingleAssetMax();
     });
 
     watch(
@@ -528,6 +530,14 @@ export default defineComponent({
     );
 
     watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
+
+    watch(isAuthenticated, isAuth => {
+      if (!isAuth) {
+        data.amounts = [];
+        data.propMax = [];
+        data.singleAssetMax = [];
+      }
+    });
 
     onMounted(async () => {
       if (bptBalance.value) setPropMax();

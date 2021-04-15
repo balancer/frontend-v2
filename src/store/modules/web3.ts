@@ -52,10 +52,11 @@ const actions = {
     commit('setConnector', connector);
   },
 
-  async logout({ commit }) {
+  async logout({ commit, dispatch }) {
     auth = getInstance();
     auth.logout();
     commit('logout');
+    dispatch('account/resetAccount', null, { root: true });
   },
 
   async loadProvider({ commit, dispatch }) {
@@ -73,7 +74,6 @@ const actions = {
           dispatch('account/getAllowances', null, { root: true });
         });
         auth.provider.value.on('accountsChanged', async accounts => {
-          console.log('account changed')
           if (accounts.length !== 0) {
             dispatch('account/resetAccount', null, { root: true });
             commit('setAccount', accounts[0]);

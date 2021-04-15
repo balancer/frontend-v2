@@ -250,6 +250,7 @@ export default defineComponent({
       approvedAll
     } = useTokenApprovals(props.pool.tokens, data.amounts);
 
+    // SERVICES
     const poolExchange = new PoolExchange(
       props.pool,
       store.state.web3.config.key,
@@ -477,6 +478,13 @@ export default defineComponent({
         data.amounts = send;
       }
     );
+
+    watch(isAuthenticated, isAuth => {
+      if (!isAuth) {
+        data.amounts = [];
+        data.propMax = [];
+      }
+    });
 
     onMounted(() => {
       setPropMax();
