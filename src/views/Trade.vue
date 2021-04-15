@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <BalCard class="p-4 max-w-lg mx-auto mt-16">
+    <BalCard class="p-8 max-w-lg mx-auto mt-16">
       <h3 v-text="$t(title)" class="mb-6" />
       <div class="mb-8">
         <BalTextInput
