@@ -27,6 +27,7 @@ const actions = {
 
     // Fetch init data
     await dispatch('registry/get', null, { root: true });
+    dispatch('market/loadPrices', [], { root: true });
 
     // Setup web3
     const auth = getInstance();

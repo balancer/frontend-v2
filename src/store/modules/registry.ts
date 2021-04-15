@@ -159,9 +159,6 @@ const actions = {
     await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
     commit('setLoading', false);
     commit('setLoaded', true);
-    dispatch('account/getBalances', null, { root: true });
-    dispatch('account/getAllowances', null, { root: true });
-    dispatch('market/loadPrices', [], { root: true });
   },
 
   async loadTokenlist({ commit }, name) {
