@@ -1,6 +1,7 @@
 import { WebSocketProvider } from '@ethersproject/providers';
 
 const INFURA_PROJECT_ID = process.env.VUE_APP_INFURA_PROJECT_ID;
+const NETWORK = process.env.VUE_APP_NETWORK || '1';
 
 const networkMap: Record<string, string> = {
   '1': 'mainnet',
@@ -13,22 +14,17 @@ export default class Service {
   network: string;
   wsProvider: WebSocketProvider;
 
-  constructor(networkKey: string) {
+  constructor() {
     if (!INFURA_PROJECT_ID) throw new Error('Infura project ID missing!');
-    if (!Object.keys(networkMap).includes(networkKey))
-      throw new Error('Infura: Unsupported network!');
 
-    this.network = networkMap[networkKey];
+    this.network = networkMap[NETWORK];
     this.wsProvider = new WebSocketProvider(
       `wss://${this.network}.infura.io/ws/v3/${INFURA_PROJECT_ID}`
     );
   }
 
-  public switchNetwork(networkKey: string): void {
-    if (!Object.keys(networkMap).includes(networkKey))
-      throw new Error('Infura: Unsupported network!');
-
-    this.network = networkMap[networkKey];
+  public switchNetwork(): void {
+    this.network = networkMap[NETWORK];
     if (this.wsProvider) this.wsProvider.removeAllListeners();
     this.wsProvider = new WebSocketProvider(
       `wss://${this.network}.infura.io/ws/v3/${INFURA_PROJECT_ID}`
