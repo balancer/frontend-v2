@@ -49,7 +49,8 @@ import {
   reactive,
   toRefs,
   computed,
-  onBeforeMount
+  onBeforeMount,
+  watch
 } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
@@ -87,7 +88,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { fNum } = useNumbers();
-    const { appNetwork, account } = useWeb3();
+    const { appNetwork, account, blockNumber } = useWeb3();
 
     // DATA
     const data = reactive<PoolPageData>({
@@ -141,35 +142,26 @@ export default defineComponent({
       ]);
     });
 
-    // CALLBACKS
-    onBeforeMount(async () => {
-      try {
-        await fetchPool();
-        loadEvents();
-        loadChartData(30);
-        data.loading = false;
-      } catch (error) {
-        console.error(error);
-        router.push('/');
-      }
-    });
-
     // METHODS
     async function fetchPool(): Promise<void> {
+      console.time('loadPool');
       await store.dispatch('pools/get', data.id);
       await store.dispatch('registry/injectTokens', [
         ...pool.value.tokens,
         pool.value.address
       ]);
+      console.timeEnd('loadPool');
     }
 
     async function loadEvents(): Promise<void> {
       if (account) {
+        console.time('loadPoolEvents');
         data.events = await getUserPoolEvents(
           appNetwork.id,
           data.id,
           account.value
         );
+        console.timeEnd('loadPoolEvents');
       }
     }
 
@@ -182,6 +174,27 @@ export default defineComponent({
       );
       data.snapshots = await getPoolSnapshots(appNetwork.id, data.id, days);
     }
+
+    // WATCHERS
+    watch(blockNumber, async () => {
+      if (!data.loading) {
+        await fetchPool();
+        await loadEvents();
+      }
+    });
+
+    // CALLBACKS
+    onBeforeMount(async () => {
+      try {
+        await fetchPool();
+        await loadEvents();
+        loadChartData(30);
+        data.loading = false;
+      } catch (error) {
+        console.error(error);
+        router.push('/');
+      }
+    });
 
     return {
       // data
