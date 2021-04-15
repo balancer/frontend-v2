@@ -61,6 +61,6 @@ export default defineComponent({
 
 <style>
 .bal-alert {
-  @apply flex items-center justify-between py-4;
+  @apply flex items-center justify-between py-4 px-6;
 }
 </style>

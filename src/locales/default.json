@@ -72,7 +72,7 @@
     "name": "Name",
     "namePlaceholder": "Name, symbol or contract address",
     "network": "Network",
-    "networkMismatch": "Please switch to {1}",
+    "networkMismatch": "Please switch to {0}",
     "networkMismatchLink": "Or for {0} go to:",
     "noPriceImpact": "No price impact",
     "noPriceImpactTip": "No price impact is achieved by adding tokens in the same proportion to the weights of the pool composition.",

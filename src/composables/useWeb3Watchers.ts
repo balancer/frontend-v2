@@ -47,15 +47,14 @@ export default function useWeb3Watchers() {
           : 'unavailableOnNetwork';
         store.commit('alerts/setCurrent', {
           label: t(localeKey, [userNetwork.value.name, appNetwork.name]),
-          type: 'error'
+          type: 'error',
+          persistant: true
         });
       } else if (networkMismatch.value) {
         store.commit('alerts/setCurrent', {
-          label: t('networkMismatch', [
-            userNetwork.value.name,
-            appNetwork.name
-          ]),
-          type: 'error'
+          label: t('networkMismatch', [appNetwork.name]),
+          type: 'error',
+          persistant: true
         });
       } else {
         store.commit('alerts/setCurrent', null);
