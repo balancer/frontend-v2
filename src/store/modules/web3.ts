@@ -68,11 +68,9 @@ const actions = {
       if (auth.provider.value.on) {
         auth.provider.value.on('chainChanged', async chainId => {
           commit('setNetwork', parseInt(formatUnits(chainId, 0)));
-          dispatch('account/resetAccount', null, { root: true });
-          dispatch('account/getBalances', null, { root: true });
-          dispatch('account/getAllowances', null, { root: true });
         });
         auth.provider.value.on('accountsChanged', async accounts => {
+          console.log('account changed')
           if (accounts.length !== 0) {
             dispatch('account/resetAccount', null, { root: true });
             commit('setAccount', accounts[0]);

@@ -63,10 +63,6 @@ const getters = {
     });
     tokens = Object.values(tokens);
 
-    tokens = tokens.filter(
-      token => token.chainId === rootState.web3.config.chainId
-    );
-
     tokens = tokens.map(token => {
       token.balance = 0;
       token.balanceDenorm = '0';
