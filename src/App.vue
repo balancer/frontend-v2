@@ -39,11 +39,11 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { networkId, unsupportedNetwork, networkMismatch } = useWeb3();
+    const { appNetwork, unsupportedNetwork, networkMismatch } = useWeb3();
     useWeb3Watchers();
 
     // SERVICES
-    const infuraService = new InfuraService(networkId.value);
+    const infuraService = new InfuraService(appNetwork.key);
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);

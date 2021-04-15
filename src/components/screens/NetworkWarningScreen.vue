@@ -10,7 +10,7 @@
     <div class="px-8 text-center">
       <h1 class="font-body leading-snug text-gray-700">{{ warning }}</h1>
       <p v-if="networkMismatch">
-        {{ $t('networkMismatchLink', [networkName]) }}
+        {{ $t('networkMismatchLink', [userNetwork.name]) }}
         <BalLink :href="networkLink">
           {{ networkLink }}
         </BalLink>
@@ -33,8 +33,9 @@ export default defineComponent({
     const { t } = useI18n();
     const { appDomain } = useEnv();
     const {
-      appNetworkName,
-      networkName,
+      appNetwork,
+      userNetwork,
+      isMainnet,
       unsupportedNetwork,
       networkMismatch
     } = useWeb3();
@@ -42,7 +43,7 @@ export default defineComponent({
     // COMPUTED
     const warningLocaleKey = computed(() => {
       if (unsupportedNetwork.value) {
-        return networkName.value
+        return userNetwork.value.name
           ? 'unavailableOnNetworkWithName'
           : 'unavailableOnNetwork';
       } else if (networkMismatch.value) {
@@ -53,17 +54,20 @@ export default defineComponent({
     });
 
     const warning = computed(() => {
-      return t(warningLocaleKey.value, [networkName.value, appNetworkName]);
+      return t(warningLocaleKey.value, [
+        userNetwork.value.name,
+        appNetwork.name
+      ]);
     });
 
     const networkLink = computed(() => {
-      const network = networkName.value.toLowerCase();
-      const networkPrefix = network === 'mainnet' ? '' : `${network}.`;
+      const network = userNetwork.value.name.toLowerCase();
+      const networkPrefix = isMainnet.value ? '' : `${network}.`;
 
       return `https://${networkPrefix}${appDomain}`;
     });
 
-    return { warning, networkMismatch, networkLink, networkName };
+    return { warning, networkMismatch, networkLink, userNetwork };
   }
 });
 </script>

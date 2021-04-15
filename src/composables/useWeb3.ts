@@ -6,21 +6,27 @@ import configs from '@/config';
 export default function useWeb3() {
   const store = useStore();
 
-  // App Network vars (static)
-  const appNetworkKey = process.env.VUE_APP_NETWORK;
-  const appNetworkId = Number(appNetworkKey);
-  const appNetworkName = configs[appNetworkId].shortName;
-
-  // User network vars (dynamic)
-  const networkKey = computed(() => store.state.web3.config.key);
-  const networkId = computed(() => store.state.web3.config.chainId);
-  const networkName = computed(() => store.state.web3.config.shortName);
-
   const account = computed(() => store.state.web3.account);
   const blockNumber = computed(() => store.state.web3.blockNumber);
 
+  // App Network vars (static)
+  const appNetwork = {
+    key: process.env.VUE_APP_NETWORK || '1',
+    id: Number(process.env.VUE_APP_NETWORK) || 1,
+    name: configs[Number(process.env.VUE_APP_NETWORK)].shortName || 'Mainnet'
+  };
+
+  // User network vars (dynamic)
+  const userNetwork = computed(() => {
+    return {
+      key: store.state.web3.config.key,
+      id: store.state.web3.config.chainId,
+      name: store.state.web3.config.shortName
+    };
+  });
+
   const isMainnet = computed(() => {
-    return networkName.value === 'Mainnet';
+    return userNetwork.value.name === 'Mainnet';
   });
 
   const unsupportedNetwork = computed(() => {
@@ -30,11 +36,11 @@ export default function useWeb3() {
   const networkMismatch = computed(() => {
     return (
       !unsupportedNetwork.value &&
-      networkKey.value !== process.env.VUE_APP_NETWORK
+      userNetwork.value.key !== process.env.VUE_APP_NETWORK
     );
   });
 
-  const explorerBaseURL = configs[networkId.value].explorer;
+  const explorerBaseURL = configs[appNetwork.id].explorer;
 
   // assumes etherscan.io
   const explorer = {
@@ -45,12 +51,8 @@ export default function useWeb3() {
 
   return {
     explorer,
-    appNetworkKey,
-    appNetworkId,
-    appNetworkName,
-    networkId,
-    networkKey,
-    networkName,
+    appNetwork,
+    userNetwork,
     account,
     blockNumber,
     isMainnet,
