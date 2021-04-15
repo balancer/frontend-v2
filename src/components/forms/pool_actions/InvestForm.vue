@@ -133,18 +133,19 @@
             <span
               >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
             >
-            <BalIcon
-              v-if="priceImpact >= 0.01"
-              name="alert-triangle"
-              size="xs"
-              class="ml-1"
-            />
-            <BalTooltip v-if="priceImpact < 0.0">
+            <BalTooltip>
               <template v-slot:activator>
                 <BalIcon
+                  v-if="priceImpact >= 0.01"
+                  name="alert-triangle"
+                  size="xs"
+                  class="ml-2"
+                />
+                <BalIcon
+                  v-else
                   name="info"
                   size="xs"
-                  class="text-gray-400 -mb-px ml-2"
+                  class="text-gray-400 ml-2"
                 />
               </template>
               <div v-html="$t('customAmountsTip')" class="w-52" />
@@ -449,11 +450,7 @@ export default defineComponent({
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
       if (!hasAmounts.value) setPropMax();
-      if (hasZeroBalance.value) {
-        data.investType = FormTypes.custom;
-      } else {
-        data.investType = FormTypes.proportional;
-      }
+      if (hasZeroBalance.value) data.investType = FormTypes.custom;
     });
 
     watch(
