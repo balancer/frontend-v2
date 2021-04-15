@@ -13,7 +13,7 @@ const state: MarketState = {
 };
 
 const actions = {
-  async loadPrices({ commit, rootState, rootGetters }, tokens: string[] = []) {
+  async loadPrices({ commit, rootGetters }, tokens: string[] = []) {
     if (tokens.length === 0)
       tokens = Object.values(rootGetters['registry/getTokens']()).map(
         (token: any) => token.address
