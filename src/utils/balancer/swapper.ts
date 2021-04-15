@@ -10,6 +10,9 @@ import configs from '@/config';
 import { ETHER } from '@/constants/tokenlists';
 import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 
+const SWAP_KIND_IN = 0;
+const SWAP_KIND_OUT = 1;
+
 type FundManagement = {
   sender: string;
   recipient: string;
@@ -188,8 +191,8 @@ async function batchSwapGivenInV2(
       web3,
       configs[network].addresses.vault,
       vaultAbi,
-      'batchSwapGivenIn',
-      [swaps, tokenAddresses, funds, limits, MaxUint256],
+      'batchSwap',
+      [SWAP_KIND_IN, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
     );
   } catch (e) {
@@ -241,8 +244,8 @@ async function batchSwapGivenOutV2(
       web3,
       configs[network].addresses.vault,
       vaultAbi,
-      'batchSwapGivenOut',
-      [swaps, tokenAddresses, funds, limits, MaxUint256],
+      'batchSwap',
+      [SWAP_KIND_OUT, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
     );
   } catch (e) {

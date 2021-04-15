@@ -1,14 +1,17 @@
-import { SOR as SORV2 } from 'sorv2package';
+import {
+  SOR as SORV2,
+  SwapInfo,
+  DisabledOptions,
+  SubGraphPoolsBase,
+  SwapTypes,
+  fetchSubgraphPools
+} from 'sorv2package';
 import { SOR as SORV1 } from '@balancer-labs/sor';
 import { BaseProvider } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 import { scale } from '@/utils';
-import {
-  SubGraphPools,
-  DisabledOptions,
-  SwapInfo
-} from 'sorv2package/dist/types';
 import { Swap, Pools } from '@balancer-labs/sor/dist/types';
+import { ETHER } from '@/constants/tokenlists';
 
 export interface SorReturn {
   isV1swap: boolean;
@@ -29,15 +32,19 @@ Aims to manage liquidity between V1 & V2 using SOR.
 export class SorManager {
   sorV1: SORV1;
   sorV2: SORV2;
-  selectedPools: SubGraphPools | Pools = { pools: [] };
+  selectedPools: SubGraphPoolsBase | Pools = { pools: [] };
+  weth: string;
+  subgraphUrl: string;
 
   constructor(
     provider: BaseProvider,
     gasPrice: BigNumber,
     maxPools: number,
     chainId: number,
+    weth: string,
     poolsSourceV1: string,
-    poolsSourceV2: string | SubGraphPools,
+    poolsSourceV2: SubGraphPoolsBase | string,
+    subgraphUrl: string,
     disabledOptions: DisabledOptions = {
       isOverRide: false,
       disabledTokens: []
@@ -60,6 +67,8 @@ export class SorManager {
       poolsSourceV2,
       disabledOptions
     );
+    this.weth = weth;
+    this.subgraphUrl = subgraphUrl;
   }
 
   // Uses SOR V2 to retrieve the cost & reuses for SOR V1 to save time (requires onchain call).
@@ -89,13 +98,19 @@ export class SorManager {
 
   // This fetches ALL pool with onchain info.
   async fetchPools(): Promise<void> {
+    console.time(`[SorManager] fetch Subgraph`);
+    const subgraphFetch = fetchSubgraphPools(this.subgraphUrl);
     console.log('[SorManager] V1 fetchPools started');
     const v1fetch = this.sorV1.fetchPools();
-    console.log('[SorManager] V2 fetchPools started');
-    const v2result = await this.sorV2.fetchPools();
-    console.log(`[SorManager] V2 fetchPools done ${v2result}`);
+    const subgraphPools = await subgraphFetch;
+    console.timeEnd('[SorManager] fetch Subgraph');
+    console.time('[SorManager] V2 fetchPools');
+    // Use Subgraph pools data and fetch onChain
+    const v2result = await this.sorV2.fetchPools(true, subgraphPools);
+    console.timeEnd(`[SorManager] V2 fetchPools`);
+    console.log(`[SorManager] V2 fetchPools result: ${v2result}`);
     const v1result = await v1fetch;
-    console.log(`[SorManager] V1 fetchPools done ${v1result}`);
+    console.log(`[SorManager] V1 fetchPools result: ${v1result}`);
     this.selectedPools = this.sorV2.onChainBalanceCache;
   }
 
@@ -111,24 +126,34 @@ export class SorManager {
     isUnlockedV1: boolean,
     isUnlockedV2: boolean
   ): Promise<SorReturn> {
+    console.log(tokenIn);
+    console.log(tokenOut);
     // V2 uses normalised values. V1 uses scaled values.
     const amountNormalised = scale(amountScaled, -swapDecimals);
+
+    const v1TokenIn = tokenIn === ETHER.address ? this.weth : tokenIn;
+    const v1TokenOut = tokenOut === ETHER.address ? this.weth : tokenOut;
 
     const [
       swapsV1,
       returnAmountV1,
       marketSpV1Scaled
     ] = await this.sorV1.getSwaps(
-      tokenIn.toLowerCase(),
-      tokenOut.toLowerCase(),
+      v1TokenIn.toLowerCase(),
+      v1TokenOut.toLowerCase(),
       swapType,
       amountScaled
     );
 
+    const swapTypeV2: SwapTypes =
+      swapType === 'swapExactIn'
+        ? SwapTypes.SwapExactIn
+        : SwapTypes.SwapExactOut;
+
     const swapInfoV2: SwapInfo = await this.sorV2.getSwaps(
       tokenIn.toLowerCase(),
       tokenOut.toLowerCase(),
-      swapType,
+      swapTypeV2,
       amountNormalised
     );
 

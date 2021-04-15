@@ -41,10 +41,12 @@ export default class ExitParams {
       this.exchange.pool.id,
       account,
       account,
-      this.exchange.pool.tokens,
-      parsedAmountsOut,
-      this.toInternalBalance,
-      txData
+      {
+        assets: this.exchange.pool.tokens,
+        minAmountsOut: parsedAmountsOut,
+        userData: txData,
+        toInternalBalance: this.toInternalBalance
+      }
     ];
   }
 

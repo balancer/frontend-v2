@@ -23,9 +23,9 @@
                     class="w-4 h-4 cursor-pointer"
                     @click="copyAddress"
                   />
-                  <a :href="_explorer(networkId, account)" target="_blank">
+                  <BalLink :href="explorer.addressLink(account)" external>
                     <IconLink class="w-4 h-4 ml-1" />
-                  </a>
+                  </BalLink>
                 </div>
               </div>
               <div class="text-sm">{{ connectorName }}</div>
@@ -130,6 +130,7 @@ import { useStore } from 'vuex';
 import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
 import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
+import useWeb3 from '@/composables/useWeb3';
 
 const locales = {
   'en-US': 'English',
@@ -148,6 +149,7 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const { fNum } = useNumbers();
+    const { explorer } = useWeb3();
 
     // DATA
     const data = reactive({
@@ -231,6 +233,7 @@ export default defineComponent({
       copyAddress,
       fNum,
       t,
+      explorer
     };
   },
 });
