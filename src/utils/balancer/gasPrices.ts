@@ -22,7 +22,6 @@ type BlocknativeGasPlatformResponse = {
   msSinceLastBlock: number;
   network: string;
   system: string;
-  blockNumber: string;
   blockPrices: BlocknativeBlockPrice[];
 };
 
@@ -38,6 +37,8 @@ export const getGasPrice = async (
         }
       }
     );
+
+    console.log(response.data);
 
     const gasPrice = response.data.blockPrices[0].estimatedPrices.find(
       estimatedPrice => estimatedPrice.confidence === confidence
