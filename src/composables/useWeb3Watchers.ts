@@ -39,7 +39,7 @@ export default function useWeb3Watchers() {
   // Watch for user network switch
   // -> Display alert message if unsupported or not the same as app network.
   watch(
-    () => store.state.web3.config.key,
+    () => userNetwork.value.name,
     () => {
       if (unsupportedNetwork.value) {
         const localeKey = userNetwork.value.name
