@@ -1,4 +1,4 @@
-n<template>
+<template>
   <div
     class="absolute top-0 left-0 h-screen w-full flex flex-col items-center justify-center bg-gray-50 z-50"
   >
