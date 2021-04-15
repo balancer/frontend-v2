@@ -24,7 +24,6 @@ import AccountModal from '@/components/modals/AccountModal.vue';
 import LoadingScreen from '@/components/screens/LoadingScreen.vue';
 import AppNav from '@/components/navs/AppNav.vue';
 import InfuraService from '@/services/infura/service';
-import useWeb3 from './composables/useWeb3';
 
 export default defineComponent({
   components: {
@@ -37,7 +36,6 @@ export default defineComponent({
     // COMPOSABLES
     useWeb3Watchers();
     const store = useStore();
-    const { unsupportedNetwork, networkMismatch } = useWeb3();
 
     // SERVICES
     const infuraService = new InfuraService();
@@ -69,8 +67,6 @@ export default defineComponent({
       appLoading,
       appInit,
       web3Modal,
-      unsupportedNetwork,
-      networkMismatch,
       // methods
       onLogin,
       setAccountModal
