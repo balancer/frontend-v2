@@ -27,7 +27,7 @@ export default defineComponent({
   name: 'Tooltip',
   components: { BalIcon },
   props: {
-    placement: { type: Object as PropType<Placement>, default: 'top' },
+    placement: { type: String as PropType<Placement>, default: 'top' },
     onShow: { type: Function },
     onHide: { type: Function }
   },
