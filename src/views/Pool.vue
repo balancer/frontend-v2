@@ -26,8 +26,10 @@
               :snapshots="snapshots"
             />
 
-            <h4 v-text="$t('yourTransactions')" class="mb-4" />
-            <TableEvents :tokens="pool.tokens" :events="events" />
+            <template v-if="isAuthenticated && events">
+              <h4 v-text="$t('yourTransactions')" class="mb-4" />
+              <TableEvents :tokens="pool.tokens" :events="events" />
+            </template>
           </div>
         </div>
         <div class="order-1 lg:order-2 w-full lg:w-1/3 mt-8 lg:mt-0 lg:px-4">
@@ -66,6 +68,7 @@ import {
 import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
+import useAuth from '@/composables/useAuth';
 
 interface PoolPageData {
   id: string;
@@ -89,6 +92,7 @@ export default defineComponent({
     const router = useRouter();
     const { fNum } = useNumbers();
     const { appNetwork, account, blockNumber } = useWeb3();
+    const { isAuthenticated } = useAuth();
 
     // DATA
     const data = reactive<PoolPageData>({
@@ -204,6 +208,7 @@ export default defineComponent({
       poolTypeLabel,
       poolFeeLabel,
       title,
+      isAuthenticated,
       // methods
       fNum,
       fetchPool
