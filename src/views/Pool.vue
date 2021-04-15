@@ -64,6 +64,7 @@ import {
 } from '@/api/subgraph';
 import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
+import useWeb3 from '@/composables/useWeb3';
 
 interface PoolPageData {
   id: string;
@@ -86,6 +87,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { fNum } = useNumbers();
+    const { appNetwork, account } = useWeb3();
 
     // DATA
     const data = reactive<PoolPageData>({
@@ -162,18 +164,23 @@ export default defineComponent({
     }
 
     async function loadEvents(): Promise<void> {
-      const network = store.state.web3.config.key;
-      const account = store.state.web3.account;
       if (account) {
-        data.events = await getUserPoolEvents(network, data.id, account);
+        data.events = await getUserPoolEvents(
+          appNetwork.id,
+          data.id,
+          account.value
+        );
       }
     }
 
     async function loadChartData(days: number): Promise<void> {
-      const network = store.state.web3.config.key;
       const addresses = pool.value.tokens;
-      data.prices = await getTokensHistoricalPrice(network, addresses, days);
-      data.snapshots = await getPoolSnapshots(network, data.id, days);
+      data.prices = await getTokensHistoricalPrice(
+        appNetwork.id,
+        addresses,
+        days
+      );
+      data.snapshots = await getPoolSnapshots(appNetwork.id, data.id, days);
     }
 
     return {
