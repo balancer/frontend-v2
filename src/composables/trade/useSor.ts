@@ -51,7 +51,7 @@ export default function useSor(
   });
   const trading = ref(false);
   const exactIn = ref(true);
-  const slippage = ref(0);
+  const priceImpact = ref(0);
 
   // COMPOSABLES
   const store = useStore();
@@ -153,24 +153,20 @@ export default function useSor(
           : '';
 
       if (!sorReturn.value.hasSwaps) {
-        slippage.value = 0;
+        priceImpact.value = 0;
       } else {
         const returnAmtNormalised = scale(
           swapReturn.returnAmount,
           -tokenOutDecimals
         );
         const effectivePrice = tokenInAmountNormalised.div(returnAmtNormalised);
-        const slippageCalc = effectivePrice
+        const priceImpactCalc = effectivePrice
           .div(swapReturn.marketSpNormalised)
           .minus(1);
 
-        console.log(`EP: ${effectivePrice.toString()}`);
-        console.log(`SP: ${swapReturn.marketSpNormalised.toString()}`);
-        console.log(`Slippage: ${slippageCalc.toString()}`);
-
-        slippage.value = slippageCalc.isNegative()
+        priceImpact.value = priceImpactCalc.isNegative()
           ? 0.00001
-          : slippageCalc.toNumber();
+          : priceImpactCalc.toNumber();
       }
     } else {
       const tokenOutAmountNormalised = new BigNumber(amount);
@@ -199,22 +195,18 @@ export default function useSor(
           : '';
 
       if (!sorReturn.value.hasSwaps) {
-        slippage.value = 0;
+        priceImpact.value = 0;
       } else {
         const effectivePrice = tokenInAmountNormalised.div(
           tokenOutAmountNormalised
         );
-        const slippageCalc = effectivePrice
+        const priceImpactCalc = effectivePrice
           .div(swapReturn.marketSpNormalised)
           .minus(1);
 
-        console.log(`EP: ${effectivePrice.toString()}`);
-        console.log(`SP: ${swapReturn.marketSpNormalised.toString()}`);
-        console.log(`Slippage: ${slippageCalc.toString()}`);
-
-        slippage.value = slippageCalc.isNegative()
+        priceImpact.value = priceImpactCalc.isNegative()
           ? 0.00001
-          : slippageCalc.toNumber();
+          : priceImpactCalc.toNumber();
       }
     }
   }
@@ -325,6 +317,6 @@ export default function useSor(
     handleAmountChange,
     trade,
     trading,
-    slippage
+    priceImpact
   };
 }
