@@ -38,7 +38,11 @@
             <BalIcon name="shuffle" size="sm" />
           </BalBtn>
           <div v-if="rateMessage" class="flex-auto ml-4 my-2">
-            <span @click="toggleRate" v-text="rateMessage" />
+            <span
+              class="text-sm text-gray-500 cursor-pointer"
+              @click="toggleRate"
+              v-text="rateMessage"
+            />
           </div>
         </div>
         <BalTextInput
