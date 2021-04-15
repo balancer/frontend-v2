@@ -82,7 +82,7 @@ const actions = {
           }
         });
         auth.provider.value.on('disconnect', async () => {
-          commit('HANDLE_CLOSE');
+          dispatch('account/resetAccount', null, { root: true });
         });
       }
 
