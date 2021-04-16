@@ -38,7 +38,7 @@ export default defineComponent({
   props: {
     pool: {
       type: Object,
-      required: true
+      default: () => {}
     },
     snapshots: {
       type: Object as PropType<PoolSnapshots>,

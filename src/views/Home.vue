@@ -1,15 +1,12 @@
 <template>
-  <div>
-    <Edito />
-    <div class="container mx-auto">
-      <MainMenu class="mt-6" />
-      <TablePools
-        v-if="!loading"
-        class="mt-2"
-        :pools="poolData.pools"
-        :snapshots="poolData.snapshots"
-      />
-    </div>
+  <div class="container mx-auto">
+    <SubNav class="mb-8" />
+    <TablePools
+      v-if="!loading"
+      class="mt-2"
+      :pools="poolData.pools"
+      :snapshots="poolData.snapshots"
+    />
   </div>
 </template>
 
@@ -17,8 +14,13 @@
 import { defineComponent, computed, onBeforeMount, ref } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
+import SubNav from '@/components/navs/SubNav.vue';
 
 export default defineComponent({
+  components: {
+    SubNav
+  },
+
   setup() {
     // COMPOSABLES
     const store = useStore();

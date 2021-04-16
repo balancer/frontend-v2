@@ -7,7 +7,7 @@
         :class="['bal-tab', stateClasses(tab)]"
         @click="onClick(tab)"
       >
-        {{ tab }}
+        {{ tab.label }}
       </div>
     </div>
   </div>
@@ -16,13 +16,18 @@
 <script lang="ts">
 import { defineComponent, ref, PropType, computed } from 'vue';
 
+interface Tab {
+  value: string;
+  label: string;
+}
+
 export default defineComponent({
   name: 'BalTabs',
 
   emits: ['selected', 'update:modelValue'],
 
   props: {
-    tabs: { type: Array as PropType<string[]>, required: true },
+    tabs: { type: Array as PropType<Tab[]>, required: true },
     modelValue: { type: String, default: '' },
     noPad: { type: Boolean, default: false }
   },
@@ -30,14 +35,14 @@ export default defineComponent({
   setup(props, { emit }) {
     const activeTab = ref(props.modelValue);
 
-    function isActiveTab(tab) {
-      return activeTab.value === tab;
+    function isActiveTab(tab: Tab): boolean {
+      return activeTab.value === tab.value;
     }
 
-    function onClick(tab) {
-      activeTab.value = tab;
-      emit('selected', tab);
-      emit('update:modelValue', tab);
+    function onClick(tab: Tab) {
+      activeTab.value = tab.value;
+      emit('selected', tab.value);
+      emit('update:modelValue', tab.value);
     }
 
     const containerClasses = computed(() => {
@@ -46,7 +51,7 @@ export default defineComponent({
       };
     });
 
-    function stateClasses(tab): Record<string, boolean> {
+    function stateClasses(tab: Tab): Record<string, boolean> {
       return {
         'border-blue-500 text-blue-500 hover:text-blue-500': isActiveTab(tab),
         'hover:text-black': !isActiveTab(tab)
@@ -65,7 +70,7 @@ export default defineComponent({
 
 <style>
 .bal-tab {
-  @apply border-b -mb-px mr-4 py-3 cursor-pointer;
+  @apply border-b -mb-px mr-6 py-3 cursor-pointer;
 }
 
 .bal-tab-container {

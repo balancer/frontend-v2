@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 lg:px-0">
-    <PoolNav class="  mb-8" />
+    <SubNav class="mb-8" />
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
@@ -93,6 +93,7 @@ import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
+import SubNav from '@/components/navs/SubNav.vue';
 
 interface PoolPageData {
   id: string;
@@ -104,6 +105,7 @@ interface PoolPageData {
 
 export default defineComponent({
   components: {
+    SubNav,
     PoolActionsCard,
     PoolBalancesCard
   },
@@ -178,7 +180,10 @@ export default defineComponent({
     });
 
     const hasEvents = computed(() => {
-      return data.events.joins.length > 0 || data.events.exits.length > 0;
+      return (
+        data.events &&
+        (data.events.joins.length > 0 || data.events.exits.length > 0)
+      );
     });
 
     // METHODS
