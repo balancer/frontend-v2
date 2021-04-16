@@ -19,8 +19,22 @@
               @click="openModalSelectToken('input')"
             >
               <Token :token="tokens[tokenInAddressInput]" />
-              <div class="flex flex-col ml-3">
-                <span class="font-medium text-sm leading-none w-14 truncate">
+              <div
+                class="flex flex-col ml-3 w-14 font-medium text-sm leading-none truncate"
+              >
+                <BalTooltip
+                  v-if="tokens[tokenInAddressInput].symbol.length > 5"
+                >
+                  <template v-slot:activator>
+                    <span>
+                      {{ tokens[tokenInAddressInput].symbol }}
+                    </span>
+                  </template>
+                  <div>
+                    {{ tokens[tokenInAddressInput].symbol }}
+                  </div>
+                </BalTooltip>
+                <span v-else>
                   {{ tokens[tokenInAddressInput].symbol }}
                 </span>
               </div>
@@ -61,8 +75,22 @@
               @click="openModalSelectToken('output')"
             >
               <Token :token="tokens[tokenOutAddressInput]" />
-              <div class="flex flex-col ml-3">
-                <span class="font-medium text-sm leading-none w-14 truncate">
+              <div
+                class="flex flex-col ml-3 w-14 font-medium text-sm leading-none truncate"
+              >
+                <BalTooltip
+                  v-if="tokens[tokenOutAddressInput].symbol.length > 5"
+                >
+                  <template v-slot:activator>
+                    <span>
+                      {{ tokens[tokenOutAddressInput].symbol }}
+                    </span>
+                  </template>
+                  <div>
+                    {{ tokens[tokenOutAddressInput].symbol }}
+                  </div>
+                </BalTooltip>
+                <span v-else>
                   {{ tokens[tokenOutAddressInput].symbol }}
                 </span>
               </div>
