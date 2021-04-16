@@ -1,23 +1,24 @@
 <template>
-  <div>
-    <h4>Pool stats</h4>
-    <div class="flex flex-wrap">
-      <div class="mr-16 mt-5">
-        <div class="text-sm">Pool value</div>
-        <div class="text-lg">{{ fNum(liquidity, 'usd') }}</div>
-      </div>
-      <div class="mr-16 mt-5">
-        <div class="text-sm">Volume (7d)</div>
-        <div class="text-lg">{{ fNum(volume, 'usd') }}</div>
-      </div>
-      <div class="mr-16 mt-5">
-        <div class="text-sm">Fees (7d)</div>
-        <div class="text-lg">{{ fNum(fees, 'usd') }}</div>
-      </div>
-      <div class="mr-16 mt-5">
-        <div class="text-sm">APY</div>
-        <div class="text-lg">{{ fNum(apy, 'percent') }}</div>
-      </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+    <div class="">
+      <div class="text-xs uppercase text-gray-500 font-medium">Pool value</div>
+      <BalLoadingBlock v-if="loading" class="h-5" />
+      <div v-else class="text-xl font-medium">{{ fNum(liquidity, 'usd') }}</div>
+    </div>
+    <div class="">
+      <div class="text-xs uppercase text-gray-500 font-medium">Volume (7d)</div>
+      <BalLoadingBlock v-if="loading" class="h-5" />
+      <div v-else class="text-xl font-medium">{{ fNum(volume, 'usd') }}</div>
+    </div>
+    <div class="">
+      <div class="text-xs uppercase text-gray-500 font-medium">Fees (7d)</div>
+      <BalLoadingBlock v-if="loading" class="h-5" />
+      <div v-else class="text-xl font-medium">{{ fNum(fees, 'usd') }}</div>
+    </div>
+    <div class="">
+      <div class="text-xs uppercase text-gray-500 font-medium">APY</div>
+      <BalLoadingBlock v-if="loading" class="h-5" />
+      <div v-else class="text-xl font-medium">{{ fNum(apy, 'percent') }}</div>
     </div>
   </div>
 </template>
@@ -37,13 +38,15 @@ export default defineComponent({
   props: {
     pool: {
       type: Object,
-      required: true
+      default: () => ({})
     },
     snapshots: {
       type: Object as PropType<PoolSnapshots>,
       required: true
-    }
+    },
+    loading: { type: Boolean, default: true }
   },
+
   setup(props) {
     const { pool, snapshots } = toRefs(props);
 

@@ -10,7 +10,7 @@
   </button>
   <div
     ref="content"
-    class="tooltip p-3 text-xs bg-white font-medium shadow-md rounded-md border"
+    class="tooltip p-3 text-xs bg-white text-black font-medium shadow-md rounded-md border"
   >
     <slot />
   </div>
@@ -27,7 +27,7 @@ export default defineComponent({
   name: 'Tooltip',
   components: { BalIcon },
   props: {
-    placement: { type: Object as PropType<Placement>, default: 'top' },
+    placement: { type: String as PropType<Placement>, default: 'top' },
     onShow: { type: Function },
     onHide: { type: Function }
   },

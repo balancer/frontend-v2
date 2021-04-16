@@ -1,6 +1,7 @@
 <template>
-  <Container :slim="true" class="mt-6">
-    <MainMenu />
+  <div class="container mx-auto">
+    <SubNav class="mb-8" />
+
     <Block v-if="account">
       <BalLoadingIcon v-if="!loaded" class="mx-4 md:mx-0" />
       <div v-else class="mb-4 mx-4 md:mx-0">
@@ -47,7 +48,7 @@
       </div>
     </Block>
     <BlockMyWallet v-if="account" :loading="loading" />
-  </Container>
+  </div>
 </template>
 
 <script>
@@ -66,8 +67,13 @@ import { getPoolSharesChart } from '@/utils/balancer/subgraph';
 import { clone } from '@/utils';
 import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
+import SubNav from '@/components/navs/SubNav.vue';
 
 export default defineComponent({
+  components: {
+    SubNav
+  },
+
   setup() {
     // COMPOSABLES
     const store = useStore();

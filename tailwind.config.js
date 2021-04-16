@@ -2,7 +2,17 @@ module.exports = {
   purge: {
     content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
     options: {
-      safelist: [/^shadow/, /^bg/, /^text/, /^border/, /^from/, /^to/, 'dark']
+      safelist: [
+        /^shadow/,
+        /^bg/,
+        /^text/,
+        /^border/,
+        /^from/,
+        /^to/,
+        /^dark:/,
+        /^hover:/,
+        'dark'
+      ]
     }
   },
   darkMode: 'class', // false or 'media' or 'class'

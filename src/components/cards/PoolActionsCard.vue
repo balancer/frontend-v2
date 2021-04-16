@@ -1,8 +1,8 @@
 <template>
   <BalCard noPad>
-    <BalTabs v-model="activeTab" :tabs="Object.values(tabs)" class="pt-4" />
+    <BalTabs v-model="activeTab" :tabs="tabs" class="pt-4" />
     <div>
-      <template v-if="activeTab === tabs.invest">
+      <template v-if="activeTab === 'invest'">
         <div v-if="investmentSuccess" class="p-4">
           <h5 v-text="$t('investmentSettled')" />
           <p v-html="$t('investmentSuccess')" />
@@ -31,7 +31,7 @@
         </div>
         <InvestForm v-else :pool="pool" @success="handleInvestment($event)" />
       </template>
-      <template v-if="activeTab === tabs.withdraw">
+      <template v-if="activeTab === 'withdraw'">
         <div v-if="withdrawalSuccess" class="p-4">
           <h5 v-text="$t('withdrawalSettled')" />
           <p v-html="$t('withdrawalSuccess')" />
@@ -91,11 +91,11 @@ export default defineComponent({
     const { t } = useI18n();
 
     // DATA
-    const tabs = {
-      invest: t('invest'),
-      withdraw: t('withdraw')
-    };
-    const activeTab = ref(tabs.invest);
+    const tabs = [
+      { value: 'invest', label: t('invest') },
+      { value: 'withdraw', label: t('withdraw') }
+    ];
+    const activeTab = ref(tabs[0].value);
     const investmentSuccess = ref(false);
     const withdrawalSuccess = ref(false);
     const txHash = ref('');
