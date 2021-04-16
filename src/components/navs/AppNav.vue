@@ -11,8 +11,8 @@
           <router-link
             :to="{ name: 'trade' }"
             :class="[
-              'ml-8 font-medium text-gray-500',
-              { 'text-gray-900': $route.name === 'trade' }
+              'ml-8 font-medium',
+              $route.name === 'trade' ? 'text-gray-900' : 'text-gray-500'
             ]"
           >
             {{ $t('trade') }}
@@ -20,8 +20,8 @@
           <router-link
             :to="{ name: 'home' }"
             :class="[
-              'ml-8 font-medium text-gray-500',
-              { 'text-gray-900': $route.name === 'home' }
+              'ml-8 font-medium',
+              $route.name === 'home' ? 'text-gray-900' : 'text-gray-500'
             ]"
           >
             {{ $t('invest') }}
