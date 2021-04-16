@@ -58,12 +58,17 @@
         </div>
       </div>
 
-      <div class="sticky top-10 order-1 lg:order-2">
+      <div class="order-1 lg:order-2">
         <BalLoadingBlock
           v-if="loading || appLoading || web3Loading"
-          class="h-96"
+          class="h-96 sticky top-10"
         />
-        <PoolActionsCard v-else :pool="pool" @on-tx="fetchPool" />
+        <PoolActionsCard
+          v-else
+          :pool="pool"
+          @on-tx="fetchPool"
+          class="sticky top-10"
+        />
       </div>
     </div>
   </div>
