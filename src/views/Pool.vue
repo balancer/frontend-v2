@@ -25,10 +25,7 @@
             :loading="loading"
           />
 
-          <div>
-            <h4 class="mb-4">Pool stats</h4>
-            <PoolStats :pool="pool" :snapshots="snapshots" :loading="loading" />
-          </div>
+          <PoolStats :pool="pool" :snapshots="snapshots" :loading="loading" />
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
