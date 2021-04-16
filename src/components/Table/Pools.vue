@@ -176,7 +176,7 @@ export default defineComponent({
     }
 
     function removeToken(i: number) {
-      selectedTokens.value.splice(i);
+      selectedTokens.value.splice(i, 1);
     }
 
     function getIconPosition(i: number, count: number) {
