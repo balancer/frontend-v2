@@ -118,9 +118,7 @@
             size="xs"
             class="ml-1"
           />
-          <BalTooltip
-            v-if="priceImpact < 0.01"
-          >
+          <BalTooltip v-if="priceImpact < 0.01">
             <template v-slot:activator>
               <BalIcon
                 name="info"
