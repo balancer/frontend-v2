@@ -23,14 +23,6 @@ export default class Service {
     );
   }
 
-  public switchNetwork(): void {
-    this.network = networkMap[NETWORK];
-    if (this.wsProvider) this.wsProvider.removeAllListeners();
-    this.wsProvider = new WebSocketProvider(
-      `wss://${this.network}.infura.io/ws/v3/${INFURA_PROJECT_ID}`
-    );
-  }
-
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
     this.wsProvider.on('block', newBlockNumber =>
       newBlockHandler(newBlockNumber)
