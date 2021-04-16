@@ -242,12 +242,23 @@ export default defineComponent({
     const { t } = useI18n();
     const { txListener } = useNotify();
 
+    const fullAmountsMap = computed(() => {
+      const oos = props.pool.tokens.reduce(
+        (amounts, token, i) => ({
+          ...amounts,
+          [token]: data.amounts[i] || '0'
+        }),
+        {}
+      );
+      return oos;
+    });
+
     const {
       requiredAllowances,
       approveAllowances,
       approving,
       approvedAll
-    } = useTokenApprovals(props.pool.tokens, data.amounts);
+    } = useTokenApprovals(props.pool.tokens, data.amounts, fullAmountsMap);
 
     const poolExchange = new PoolExchange(
       props.pool,
