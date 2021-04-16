@@ -47,7 +47,6 @@ export default defineComponent({
     }
 
     onBeforeMount(() => {
-      console.log(route.name);
       if (route.name === 'home') {
         activeTab.value = 'home';
       } else if (route.name === 'portfolio') {
