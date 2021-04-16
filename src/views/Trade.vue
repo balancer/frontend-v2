@@ -127,6 +127,8 @@ import initialTokens from '@/constants/initialTokens.json';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 import { ETHER } from '@/constants/tokenlists';
 
+const ETH_BUFFER = 0.1;
+
 export default defineComponent({
   components: {
     SelectTokenModal
@@ -279,8 +281,14 @@ export default defineComponent({
     }
 
     function handleMax(): void {
+      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
+      const balanceNumber = parseFloat(balance);
       tokenInAmountInput.value =
-        tokens.value[tokenInAddressInput.value]?.balance || '';
+        tokenInAddressInput.value !== ETHER.address
+          ? balance
+          : balanceNumber > ETH_BUFFER
+          ? (balanceNumber - ETH_BUFFER).toString()
+          : '0';
       handleAmountChange(true, tokenInAmountInput.value);
     }
 
