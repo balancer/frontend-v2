@@ -13,14 +13,14 @@ const state: MarketState = {
 };
 
 const actions = {
-  async loadPrices({ commit, rootState, rootGetters }, tokens: string[] = []) {
+  async loadPrices({ commit, rootGetters }, tokens: string[] = []) {
     if (tokens.length === 0)
       tokens = Object.values(rootGetters['registry/getTokens']()).map(
         (token: any) => token.address
       );
     try {
       commit('setLoading', true);
-      const chainId = rootState.web3.config.chainId;
+      const chainId = Number(process.env.VUE_APP_NETWORK || 1);
       const [prices, etherPrice] = await Promise.all([
         getTokensPrice(chainId, tokens),
         getEtherPrice()

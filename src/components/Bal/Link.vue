@@ -1,5 +1,5 @@
 <template>
-  <a v-bind="_attrs">
+  <a v-bind="attrs_" class="text-blue-500 hover:underline">
     <slot />
   </a>
 </template>
@@ -18,21 +18,21 @@ export default defineComponent({
   },
 
   setup(props, { attrs }) {
-    const _attrs = computed(() => {
-      let _attrs = attrs;
+    const attrs_ = computed(() => {
+      let attrs_ = attrs;
 
       if (props.external) {
-        _attrs = {
-          ..._attrs,
+        attrs_ = {
+          ...attrs_,
           target: '_blank',
           rel: 'noopener noreferrer'
         };
       }
 
-      return _attrs;
+      return attrs_;
     });
 
-    return { _attrs };
+    return { attrs_ };
   }
 });
 </script>

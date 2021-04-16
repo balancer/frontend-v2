@@ -22,16 +22,16 @@ const state: PoolsState = {
 };
 
 const actions = {
-  async get({ commit, rootState }, id: string): Promise<Pool> {
-    const network = rootState.web3.config.key;
+  async get({ commit }, id: string): Promise<Pool> {
+    const network = process.env.VUE_APP_NETWORK || '1';
     const provider = getProvider(network);
     const pool = await getPool(network, provider, id);
     commit('setCurrent', pool);
     return pool;
   },
 
-  async getAll({ commit, rootState }): Promise<PoolData> {
-    const network = rootState.web3.config.key;
+  async getAll({ commit }): Promise<PoolData> {
+    const network = Number(process.env.VUE_APP_NETWORK || 1);
     const pools = await getPools(network);
     commit('setAll', pools);
     return pools;

@@ -1,43 +1,74 @@
 <template>
-  <div class="container mx-auto mt-4 px-4 lg:px-0">
-    <PoolNav class="mt-7 lg:mt-14 mb-8 lg:mb-12" />
+  <div class="container mx-auto px-4 lg:px-0">
+    <SubNav class="mb-8" />
 
-    <div v-if="!loading" class="lg:mb-10">
-      <h3 class="font-bold mb-2">
-        {{ title }}
-      </h3>
-      <div class="text-sm">{{ poolTypeLabel }}. {{ poolFeeLabel }}.</div>
-    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
+      <div class="col-span-2">
+        <BalLoadingBlock v-if="loading" class="h-12 mb-2" />
+        <h3 v-else class="font-bold mb-2">
+          {{ title }}
+        </h3>
 
-    <div class="px-4">
-      <div class="flex flex-wrap -mx-8">
-        <div class="order-2 lg:order-1 w-full lg:w-2/3">
-          <div class="px-4" v-if="!loading">
-            <PoolChart class="mb-10" :prices="prices" :snapshots="snapshots" />
-            <PoolStats class="mb-10" :pool="pool" :snapshots="snapshots" />
+        <BalLoadingBlock v-if="loading" class="h-4" />
+        <div v-else class="text-sm">
+          {{ poolTypeLabel }}. {{ poolFeeLabel }}.
+        </div>
+      </div>
 
+      <div class="hidden lg:block" />
+
+      <div class="col-span-2 order-2 lg:order-1">
+        <div class="grid grid-cols-1 gap-y-8">
+          <PoolChart
+            :prices="prices"
+            :snapshots="snapshots"
+            :loading="loading"
+          />
+
+          <PoolStats :pool="pool" :snapshots="snapshots" :loading="loading" />
+
+          <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
+            <BalLoadingBlock v-if="loading" class="h-60" />
             <PoolBalancesCard
-              class="mb-10"
+              v-else
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
               :weights="pool.weightsPercent"
               :prices="prices"
               :snapshots="snapshots"
             />
+          </div>
 
+          <div>
             <h4 v-text="$t('yourTransactions')" class="mb-4" />
-            <TableEvents :tokens="pool.tokens" :events="events" />
+            <BalLoadingBlock
+              v-if="loading || appLoading || web3Loading"
+              class="h-60"
+            />
+            <TableEvents
+              v-else-if="hasEvents"
+              :tokens="pool.tokens"
+              :events="events"
+            />
+            <BalBlankSlate v-else class="h-60">
+              No investments in this pool.
+            </BalBlankSlate>
           </div>
         </div>
-        <div class="order-1 lg:order-2 w-full lg:w-1/3 mt-8 lg:mt-0 lg:px-4">
-          <PoolActionsCard
-            v-if="pool && !loading"
-            class="sticky top-24"
-            :pool="pool"
-            @on-tx="fetchPool"
-          />
-        </div>
+      </div>
+
+      <div class="order-1 lg:order-2">
+        <BalLoadingBlock
+          v-if="loading || appLoading || web3Loading"
+          class="h-96 sticky top-10"
+        />
+        <PoolActionsCard
+          v-else
+          :pool="pool"
+          @on-tx="fetchPool"
+          class="sticky top-10"
+        />
       </div>
     </div>
   </div>
@@ -49,7 +80,8 @@ import {
   reactive,
   toRefs,
   computed,
-  onBeforeMount
+  onBeforeMount,
+  watch
 } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
@@ -64,6 +96,9 @@ import {
 } from '@/api/subgraph';
 import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
+import useWeb3 from '@/composables/useWeb3';
+import useAuth from '@/composables/useAuth';
+import SubNav from '@/components/navs/SubNav.vue';
 
 interface PoolPageData {
   id: string;
@@ -75,6 +110,7 @@ interface PoolPageData {
 
 export default defineComponent({
   components: {
+    SubNav,
     PoolActionsCard,
     PoolBalancesCard
   },
@@ -86,6 +122,13 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { fNum } = useNumbers();
+    const { isAuthenticated } = useAuth();
+    const {
+      appNetwork,
+      account,
+      blockNumber,
+      loading: web3Loading
+    } = useWeb3();
 
     // DATA
     const data = reactive<PoolPageData>({
@@ -100,6 +143,8 @@ export default defineComponent({
     });
 
     // COMPUTED
+    const appLoading = computed(() => store.state.app.loading);
+
     const pool = computed(() => {
       return store.state.pools.current;
     });
@@ -139,11 +184,59 @@ export default defineComponent({
       ]);
     });
 
+    const hasEvents = computed(() => {
+      return (
+        data.events &&
+        (data.events.joins.length > 0 || data.events.exits.length > 0)
+      );
+    });
+
+    // METHODS
+    async function fetchPool(): Promise<void> {
+      console.time('loadPool');
+      await store.dispatch('pools/get', data.id);
+      await store.dispatch('registry/injectTokens', [
+        ...pool.value.tokens,
+        pool.value.address
+      ]);
+      console.timeEnd('loadPool');
+    }
+
+    async function loadEvents(): Promise<void> {
+      if (account) {
+        console.time('loadPoolEvents');
+        data.events = await getUserPoolEvents(
+          appNetwork.id,
+          data.id,
+          account.value
+        );
+        console.timeEnd('loadPoolEvents');
+      }
+    }
+
+    async function loadChartData(days: number): Promise<void> {
+      const addresses = pool.value.tokens;
+      data.prices = await getTokensHistoricalPrice(
+        appNetwork.id,
+        addresses,
+        days
+      );
+      data.snapshots = await getPoolSnapshots(appNetwork.id, data.id, days);
+    }
+
+    // WATCHERS
+    watch(blockNumber, () => {
+      if (!data.loading) {
+        fetchPool();
+        loadEvents();
+      }
+    });
+
     // CALLBACKS
     onBeforeMount(async () => {
       try {
         await fetchPool();
-        loadEvents();
+        await loadEvents();
         loadChartData(30);
         data.loading = false;
       } catch (error) {
@@ -152,38 +245,18 @@ export default defineComponent({
       }
     });
 
-    // METHODS
-    async function fetchPool(): Promise<void> {
-      await store.dispatch('pools/get', data.id);
-      await store.dispatch('registry/injectTokens', [
-        ...pool.value.tokens,
-        pool.value.address
-      ]);
-    }
-
-    async function loadEvents(): Promise<void> {
-      const network = store.state.web3.config.key;
-      const account = store.state.web3.account;
-      if (account) {
-        data.events = await getUserPoolEvents(network, data.id, account);
-      }
-    }
-
-    async function loadChartData(days: number): Promise<void> {
-      const network = store.state.web3.config.key;
-      const addresses = pool.value.tokens;
-      data.prices = await getTokensHistoricalPrice(network, addresses, days);
-      data.snapshots = await getPoolSnapshots(network, data.id, days);
-    }
-
     return {
       // data
       ...toRefs(data),
       // computed
+      appLoading,
+      web3Loading,
       pool,
       poolTypeLabel,
       poolFeeLabel,
       title,
+      isAuthenticated,
+      hasEvents,
       // methods
       fNum,
       fetchPool

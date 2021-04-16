@@ -64,7 +64,7 @@ const getters = {
     tokens = Object.values(tokens);
 
     tokens = tokens.filter(
-      token => token.chainId === rootState.web3.config.chainId
+      token => token.chainId === Number(process.env.VUE_APP_NETWORK || 1)
     );
 
     tokens = tokens.map(token => {
@@ -163,9 +163,6 @@ const actions = {
     await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
     commit('setLoading', false);
     commit('setLoaded', true);
-    dispatch('account/getBalances', null, { root: true });
-    dispatch('account/getAllowances', null, { root: true });
-    dispatch('market/loadPrices', [], { root: true });
   },
 
   async loadTokenlist({ commit }, name) {
@@ -180,13 +177,13 @@ const actions = {
     }
   },
 
-  async injectTokens({ commit, dispatch, rootState }, tokens) {
+  async injectTokens({ commit, dispatch }, tokens) {
     tokens = tokens.filter(
       token => token !== ETHER.address && isAddress(token)
     );
     if (tokens.length === 0) return;
     const injected = clone(state.injected);
-    const network = rootState.web3.config.key;
+    const network = process.env.VUE_APP_NETWORK || '1';
     const tokensMetadata = await getTokensMetadata(
       network,
       getProvider(network),

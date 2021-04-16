@@ -3,6 +3,7 @@
     <FormTypeToggle
       v-model="investType"
       :form-types="formTypes"
+      :hasZeroBalance="hasZeroBalance"
       :loading="loading"
     />
 
@@ -47,9 +48,9 @@
               <div class="flex flex-col w-3/4 leading-none">
                 <span
                   class="break-words"
-                  :title="`${fNum(amounts[i], 'token')} ${
-                    allTokens[token].symbol
-                  }`"
+                  :title="
+                    `${fNum(amounts[i], 'token')} ${allTokens[token].symbol}`
+                  "
                 >
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
@@ -249,6 +250,7 @@ export default defineComponent({
       approvedAll
     } = useTokenApprovals(props.pool.tokens, data.amounts);
 
+    // SERVICES
     const poolExchange = new PoolExchange(
       props.pool,
       store.state.web3.config.key,
@@ -447,11 +449,7 @@ export default defineComponent({
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
       if (!hasAmounts.value) setPropMax();
-      if (hasZeroBalance.value) {
-        data.investType = FormTypes.custom;
-      } else {
-        data.investType = FormTypes.proportional;
-      }
+      if (hasZeroBalance.value) data.investType = FormTypes.custom;
     });
 
     watch(
@@ -476,6 +474,13 @@ export default defineComponent({
         data.amounts = send;
       }
     );
+
+    watch(isAuthenticated, isAuth => {
+      if (!isAuth) {
+        data.amounts = [];
+        data.propMax = [];
+      }
+    });
 
     onMounted(() => {
       setPropMax();
@@ -503,7 +508,8 @@ export default defineComponent({
       priceImpactClasses,
       amountUSD,
       formTypes,
-      isRequired
+      isRequired,
+      hasZeroBalance
     };
   }
 });
