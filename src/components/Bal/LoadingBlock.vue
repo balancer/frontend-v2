@@ -17,8 +17,12 @@ export default defineComponent({
 }
 
 @keyframes shimmerBackground {
-  0% {background-position:-5000px 0}
-  100% {background-position:5000px 0}
+  0% {
+    background-position: -5000px 0;
+  }
+  100% {
+    background-position: 5000px 0;
+  }
 }
 
 .shimmer {
