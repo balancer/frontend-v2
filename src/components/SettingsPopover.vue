@@ -77,7 +77,11 @@
           <h5 v-text="'Slippage tolerance'" />
           <BalTooltip>
             <template v-slot:activator>
-              <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
+              <BalIcon
+                name="info"
+                size="xs"
+                class="ml-1 text-gray-400 -mb-px"
+              />
             </template>
             <div class="w-52">
               Market conditions may change between the time your order is
