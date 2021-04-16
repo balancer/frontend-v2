@@ -1,7 +1,6 @@
 <template>
   <Layout>
-    <BalCard class="p-8 max-w-lg mx-auto mt-16">
-      <h3 v-text="$t(title)" class="mb-6" />
+    <BalCard class="p-8 max-w-lg mx-auto mt-16" :title="$t(title)">
       <div class="mb-8">
         <BalTextInput
           :name="'tokenIn'"
