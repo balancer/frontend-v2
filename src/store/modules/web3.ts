@@ -44,8 +44,8 @@ const actions = {
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
-      dispatch('account/getBalances', null, { root: true });
-      dispatch('account/getAllowances', null, { root: true });
+      await dispatch('account/getBalances', null, { root: true });
+      await dispatch('account/getAllowances', null, { root: true });
     }
 
     commit('setLoading', false);

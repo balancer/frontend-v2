@@ -1,5 +1,6 @@
 <template>
-  <div class="chart mr-n2 ml-n2" v-if="nonEmptyHistory.length >= 7">
+  <BalLoadingBlock v-if="loading" class="h-60" />
+  <div class="chart mr-n2 ml-n2" v-else-if="nonEmptyHistory.length >= 7">
     <apexchart
       width="100%"
       height="400"
@@ -8,6 +9,10 @@
       :series="series"
     />
   </div>
+  <BalBlankSlate v-else class="h-60">
+    <BalIcon name="bar-chart" />
+    Not enough data.
+  </BalBlankSlate>
 </template>
 
 <script lang="ts">
@@ -28,7 +33,8 @@ export default defineComponent({
     snapshots: {
       type: Object as PropType<PoolSnapshots>,
       required: true
-    }
+    },
+    loading: { type: Boolean, default: true }
   },
 
   setup(props) {
