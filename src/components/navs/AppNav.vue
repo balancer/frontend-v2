@@ -38,6 +38,7 @@
               color="gradient"
               rounded
               class="mr-2"
+              size="sm"
             >
               ✨ {{ _num(totalPending) }} BAL
             </BalBtn>
@@ -48,18 +49,19 @@
               color="gray"
               outline
               rounded
+              :size="['sm', 'md'].includes(bp) ? 'md' : 'sm'"
               :circle="['sm', 'md'].includes(bp)"
             >
               <Avatar :address="account" :profile="profile" size="20" />
               <span
                 v-if="profile.name || profile.ens"
                 v-text="profile.name || profile.ens"
-                class="pl-2 text-base hidden md:inline-block"
+                class="pl-2 hidden md:inline-block"
               />
               <span
                 v-else
                 v-text="_shorten(account)"
-                class="pl-2 text-base hidden md:inline-block"
+                class="pl-2 hidden md:inline-block"
               />
             </BalBtn>
             <SettingsPopover v-if="!web3Loading" class="popover" />
@@ -69,6 +71,7 @@
             color="gray"
             outline
             rounded
+            :size="['sm', 'md'].includes(bp) ? 'md' : 'sm'"
             :circle="['sm', 'md'].includes(bp)"
             @click="setAccountModal(true)"
           >
