@@ -64,7 +64,7 @@ const getters = {
     tokens = Object.values(tokens);
 
     tokens = tokens.filter(
-      token => token.chainId === (Number(process.env.VUE_APP_NETWORK) || 1)
+      token => token.chainId === Number(process.env.VUE_APP_NETWORK || 1)
     );
 
     tokens = tokens.map(token => {
