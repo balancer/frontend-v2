@@ -1,24 +1,15 @@
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-    <div class="">
-      <div class="text-xs uppercase text-gray-500 font-medium">Pool value</div>
-      <BalLoadingBlock v-if="loading" class="h-5" />
-      <div v-else class="text-xl font-medium">{{ fNum(liquidity, 'usd') }}</div>
-    </div>
-    <div class="">
-      <div class="text-xs uppercase text-gray-500 font-medium">Volume (7d)</div>
-      <BalLoadingBlock v-if="loading" class="h-5" />
-      <div v-else class="text-xl font-medium">{{ fNum(volume, 'usd') }}</div>
-    </div>
-    <div class="">
-      <div class="text-xs uppercase text-gray-500 font-medium">Fees (7d)</div>
-      <BalLoadingBlock v-if="loading" class="h-5" />
-      <div v-else class="text-xl font-medium">{{ fNum(fees, 'usd') }}</div>
-    </div>
-    <div class="">
-      <div class="text-xs uppercase text-gray-500 font-medium">APY</div>
-      <BalLoadingBlock v-if="loading" class="h-5" />
-      <div v-else class="text-xl font-medium">{{ fNum(apy, 'percent') }}</div>
+    <div v-for="(stat, i) in stats" :key="i">
+      <BalLoadingBlock v-if="loading" class="h-24" />
+      <BalCard v-else>
+        <div class="text-xs uppercase text-gray-500 font-medium mb-3">
+          {{ stat.label }}
+        </div>
+        <div class="text-xl font-medium">
+          {{ stat.value }}
+        </div>
+      </BalCard>
     </div>
   </div>
 </template>
@@ -27,10 +18,10 @@
 import { PropType, defineComponent, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { formatUnits } from '@ethersproject/units';
-
 import { PoolSnapshots } from '@/api/subgraph';
 import useNumbers from '@/composables/useNumbers';
 import { getPoolLiquidity } from '@/utils/balancer/price';
+import { useI18n } from 'vue-i18n';
 
 const DAY = 24 * 60 * 60;
 
@@ -48,11 +39,15 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { pool, snapshots } = toRefs(props);
-
+    // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
+    const { t } = useI18n();
 
+    // DATA
+    const { pool, snapshots } = toRefs(props);
+
+    // COMPUTED
     const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const subgraphPool = computed(() => {
@@ -112,13 +107,29 @@ export default defineComponent({
 
     const apy = computed(() => (fees.value / liquidity.value / 7) * 365);
 
+    const stats = computed(() => {
+      return [
+        {
+          label: t('poolValue'),
+          value: fNum(liquidity.value, 'usd')
+        },
+        {
+          label: t('volumeTime', ['7d']),
+          value: fNum(volume.value, 'usd')
+        },
+        {
+          label: t('feesTime', ['7d']),
+          value: fNum(fees.value, 'usd')
+        },
+        {
+          label: t('apy', [t('yearAbbrev')]),
+          value: fNum(apy.value, 'percent')
+        }
+      ];
+    });
+
     return {
-      subgraphPool,
-      liquidity,
-      volume,
-      fees,
-      apy,
-      fNum
+      stats
     };
   }
 });
