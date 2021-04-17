@@ -139,7 +139,10 @@ const locales = {
   'it-IT': 'Italiano',
   'fr-FR': 'Français',
   'pt-PT': 'Português',
-  'ru-RU': 'Россия'
+  'ru-RU': 'Россия',
+  'ko-KO': '한국어',
+  'ja-JP': '日本語',
+  'tr-TR': 'Türk'
 };
 const slippageOptions = ['0.005', '0.01', '0.02'];
 
