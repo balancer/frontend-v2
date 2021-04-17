@@ -1,10 +1,10 @@
-import BalSelectInput from './SelectInput.vue';
+import BalSelectInput from './BalSelectInput.vue';
 import { Rules } from '@/types';
-import { generateTemplate } from '../../../.storybook/helpers/templates';
+import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {
   component: BalSelectInput,
-  title: 'Components/Bal/Inputs/Select',
+  title: 'Components/inputs/BalSelectInput',
   args: {
     darkMode: false,
     name: 'input1',

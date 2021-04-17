@@ -1,9 +1,9 @@
-import BalCard from './Card.vue';
-import { generateTemplate } from '../../../.storybook/helpers/templates';
+import BalCard from './BalCard.vue';
+import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {
   component: BalCard,
-  title: 'Components/Bal/Card',
+  title: 'Components/BalCard',
   args: {
     darkMode: false,
     title: '',

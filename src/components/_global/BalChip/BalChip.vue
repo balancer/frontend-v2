@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import BalIcon from './Icon.vue';
+import BalIcon from '../BalIcon/BalIcon.vue';
 import { defineComponent, computed } from 'vue';
 
 function useChipClasses(size: string, color: string) {

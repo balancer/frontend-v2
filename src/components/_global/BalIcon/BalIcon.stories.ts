@@ -1,9 +1,9 @@
-import BalIcon from './Icon.vue';
-import { generateTemplate } from '../../../.storybook/helpers/templates';
+import BalIcon from './BalIcon.vue';
+import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {
   component: BalIcon,
-  title: 'Components/Bal/Icon',
+  title: 'Components/BalIcon',
   parameters: {
     layout: 'centered'
   },

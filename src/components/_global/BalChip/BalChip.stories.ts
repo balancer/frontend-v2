@@ -1,9 +1,9 @@
-import BalChip from './Chip.vue';
-import { generateTemplate } from '../../../.storybook/helpers/templates';
+import BalChip from './BalChip.vue';
+import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {
   component: BalChip,
-  title: 'Components/Bal/Chip',
+  title: 'Components/BalChip',
   parameters: {
     layout: 'centered',
     actions: { handles: ['click .close'] }

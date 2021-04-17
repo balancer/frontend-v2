@@ -26,7 +26,7 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
-  name: 'BalRadioInput',
+  name: 'BalRadio',
 
   emits: ['update:modelValue'],
 
