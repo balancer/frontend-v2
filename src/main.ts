@@ -25,7 +25,7 @@ const app = createApp(App)
 const requireComponent = require.context(
   '@/components',
   true,
-  /^((?![\\/]cards|[\\/]dialogs|[\\/]forms|[\\/]modals|[\\/]images|[\\/]navs).)*\.vue$/
+  /^((?![\\/]cards|[\\/]dialogs|[\\/]forms|[\\/]modals|[\\/]images|[\\/]navs|[\\/]tables).)*\.vue$/
 );
 requireComponent.keys().forEach(fileName => {
   const componentConfig = requireComponent(fileName);

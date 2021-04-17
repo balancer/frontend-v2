@@ -2,6 +2,8 @@ import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { logFailedTx } from '@/utils/logging';
 
+import { getGasPrice } from './gasPrices';
+
 const CODE_FAILED = -32016;
 
 export async function sendTransaction(
@@ -10,7 +12,7 @@ export async function sendTransaction(
   abi: any[],
   action: string,
   params: any[],
-  overrides = {}
+  overrides: Record<string, any> = {}
 ) {
   console.log('Sending transaction');
   console.log('Contract', contractAddress);
@@ -19,7 +21,14 @@ export async function sendTransaction(
   const signer = web3.getSigner();
   const contract = new Contract(contractAddress, abi, web3);
   const contractWithSigner = contract.connect(signer);
-  // overrides.gasLimit = 12e6;
+
+  if (overrides.gasPrice == null) {
+    const gasPrice = await getGasPrice();
+    if (gasPrice != null) {
+      overrides.gasPrice = gasPrice;
+    }
+  }
+
   try {
     return await contractWithSigner[action](...params, overrides);
   } catch (e) {

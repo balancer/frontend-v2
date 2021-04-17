@@ -27,11 +27,12 @@ const actions = {
 
     // Fetch init data
     await dispatch('registry/get', null, { root: true });
+    await dispatch('market/loadPrices', [], { root: true });
 
     // Setup web3
     const auth = getInstance();
     const connector = await auth.getConnector();
-    if (connector) dispatch('web3/login', connector, { root: true });
+    if (connector) await dispatch('web3/login', connector, { root: true });
 
     commit('setLocale', 'en-US');
     commit('setDarkMode', false);

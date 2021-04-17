@@ -4,7 +4,7 @@ import { formatUnits } from '@ethersproject/units';
 import configs, { Config } from '@/config';
 import { getProfiles } from '@/utils/profile';
 
-const defaultConfig = process.env.VUE_APP_DEFAULT_NETWORK || '1';
+const defaultConfig = process.env.VUE_APP_NETWORK || '1';
 
 let auth;
 
@@ -44,18 +44,19 @@ const actions = {
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
-      dispatch('account/getBalances', null, { root: true });
-      dispatch('account/getAllowances', null, { root: true });
+      await dispatch('account/getBalances', null, { root: true });
+      await dispatch('account/getAllowances', null, { root: true });
     }
 
     commit('setLoading', false);
     commit('setConnector', connector);
   },
 
-  async logout({ commit }) {
+  async logout({ commit, dispatch }) {
     auth = getInstance();
     auth.logout();
     commit('logout');
+    dispatch('account/resetAccount', null, { root: true });
   },
 
   async loadProvider({ commit, dispatch }) {
@@ -82,7 +83,7 @@ const actions = {
           }
         });
         auth.provider.value.on('disconnect', async () => {
-          commit('HANDLE_CLOSE');
+          dispatch('account/resetAccount', null, { root: true });
         });
       }
 

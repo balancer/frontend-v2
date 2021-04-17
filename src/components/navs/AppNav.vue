@@ -1,5 +1,7 @@
 <template>
   <nav id="topnav">
+    <NavAlert v-if="alert" :alert="alert" />
+
     <div class="px-6">
       <div class="flex items-center" style="height: 78px;">
         <div class="flex-auto flex items-center">
@@ -9,8 +11,8 @@
           <router-link
             :to="{ name: 'trade' }"
             :class="[
-              'ml-8 font-medium text-gray-500',
-              { 'text-gray-900': $route.name === 'trade' }
+              'ml-8 font-medium',
+              $route.name === 'trade' ? 'text-gray-900' : 'text-gray-500'
             ]"
           >
             {{ $t('trade') }}
@@ -18,8 +20,8 @@
           <router-link
             :to="{ name: 'home' }"
             :class="[
-              'ml-8 font-medium text-gray-500',
-              { 'text-gray-900': $route.name === 'home' }
+              'ml-8 font-medium',
+              $route.name === 'home' ? 'text-gray-900' : 'text-gray-500'
             ]"
           >
             {{ $t('invest') }}
@@ -36,6 +38,7 @@
               color="gradient"
               rounded
               class="mr-2"
+              size="sm"
             >
               ✨ {{ _num(totalPending) }} BAL
             </BalBtn>
@@ -46,18 +49,19 @@
               color="gray"
               outline
               rounded
+              :size="['sm', 'md'].includes(bp) ? 'md' : 'sm'"
               :circle="['sm', 'md'].includes(bp)"
             >
               <Avatar :address="account" :profile="profile" size="20" />
               <span
                 v-if="profile.name || profile.ens"
                 v-text="profile.name || profile.ens"
-                class="pl-2 text-base hidden md:inline-block"
+                class="pl-2 hidden md:inline-block"
               />
               <span
                 v-else
                 v-text="_shorten(account)"
-                class="pl-2 text-base hidden md:inline-block"
+                class="pl-2 hidden md:inline-block"
               />
             </BalBtn>
             <SettingsPopover v-if="!web3Loading" class="popover" />
@@ -67,6 +71,7 @@
             color="gray"
             outline
             rounded
+            :size="['sm', 'md'].includes(bp) ? 'md' : 'sm'"
             :circle="['sm', 'md'].includes(bp)"
             @click="setAccountModal(true)"
           >
@@ -86,16 +91,20 @@ import getProvider from '@/utils/provider';
 import { getPendingClaims } from '@/utils/balancer/claim';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppLogo from '@/components/images/AppLogo.vue';
+import NavAlert from './NavAlert.vue';
+import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   components: {
-    AppLogo
+    AppLogo,
+    NavAlert
   },
 
   setup() {
     // COMPOSABLES
     const store = useStore();
     const { bp } = useBreakpoints();
+    const { account, profile, loading: web3Loading, userNetwork } = useWeb3();
 
     // DATA
     const data = reactive({
@@ -104,18 +113,15 @@ export default defineComponent({
     });
 
     // COMPUTED
-    const account = computed(() => store.state.web3.account);
-    const profile = computed(() => store.state.web3.profile);
-    const web3Loading = computed(() => store.state.web3.loading);
-    const network = computed(() => store.state.web3.config.key);
+    const alert = computed(() => store.state.alerts.current);
 
     // METHODS
     const setAccountModal = val => store.commit('web3/setAccountModal', val);
 
     async function getClaimsData() {
-      const provider = getProvider(network.value);
+      const provider = getProvider(userNetwork.value.key);
       const pendingClaims = await getPendingClaims(
-        network.value,
+        userNetwork.value.key,
         provider,
         account.value
       );
@@ -140,6 +146,7 @@ export default defineComponent({
       profile,
       web3Loading,
       bp,
+      alert,
       // methods
       setAccountModal
     };
@@ -147,7 +154,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="css">
+<style scoped>
 #topnav {
   @apply w-full shadow;
   @apply bg-white dark:bg-gray-900;
