@@ -1,93 +1,108 @@
 <template>
   <Layout>
-    <BalCard class="p-8 max-w-lg mx-auto mt-16">
-      <h2 v-text="$t(title)" class="mb-6" />
+    <BalCard class="p-8 max-w-lg mx-auto mt-16" :title="$t(title)">
       <div class="mb-8">
-        <div class="grid grid-cols-12 border mb-4 rounded-2xl overflow-hidden">
-          <a
-            @click="openModalSelectToken('input')"
-            class="col-span-4 border-r p-3"
-          >
-            <span v-if="tokenInAddressInput">
-              <Token
-                :token="tokens[tokenInAddressInput]"
-                :size="32"
-                :symbol="true"
-              />
-            </span>
-            <span v-text="$t('select')" v-else />
-          </a>
-          <div class="col-span-8 px-3 py-2">
-            <div class="flex">
-              <input
-                v-model="tokenInAmountInput"
-                @input="handleAmountChange(true, $event.target.value)"
-                type="number"
-                placeholder="0"
-                min="0"
-                class="flex-auto"
-              />
-              <a
-                @click="handleMax"
-                v-text="$t('max')"
-                class="p-1 border rounded text-xs"
-              />
-            </div>
+        <BalTextInput
+          :name="'tokenIn'"
+          v-model="tokenInAmountInput"
+          @input="value => handleAmountChange(true, value)"
+          type="number"
+          min="0"
+          step="any"
+          placeholder="0"
+          validate-on="input"
+          prepend-border
+        >
+          <template v-slot:prepend>
             <div
-              v-if="tokenInAddressInput"
-              :class="
-                validationStatus === 'INSUFFICIENT_BALANCE' && 'text-red-500'
-              "
-              class="text-xs"
+              class="flex items-center w-24 cursor-pointer"
+              @click="openModalSelectToken('input')"
             >
-              {{ $t('balance') }}:
-              {{
-                _num(tokens[tokenInAddressInput]?.balance || 0, '0,0.[000000]')
-              }}
+              <Token :token="tokens[tokenInAddressInput]" />
+              <div
+                class="flex flex-col ml-3 w-14 font-medium text-sm leading-none truncate"
+              >
+                <BalTooltip
+                  v-if="tokens[tokenInAddressInput].symbol.length > 5"
+                >
+                  <template v-slot:activator>
+                    <span>
+                      {{ tokens[tokenInAddressInput].symbol }}
+                    </span>
+                  </template>
+                  <div>
+                    {{ tokens[tokenInAddressInput].symbol }}
+                  </div>
+                </BalTooltip>
+                <span v-else>
+                  {{ tokens[tokenInAddressInput].symbol }}
+                </span>
+              </div>
             </div>
-          </div>
-        </div>
+          </template>
+          <template v-slot:info>
+            <div class="cursor-pointer" @click="handleMax">
+              {{ $t('max') }}: {{ balanceLabel }}
+            </div>
+          </template>
+        </BalTextInput>
         <div class="flex mb-4">
           <BalBtn color="gray" flat circle @click="handleSwitchTokens">
             <BalIcon name="shuffle" size="sm" />
           </BalBtn>
           <div v-if="rateMessage" class="flex-auto ml-4 my-2">
-            <span @click="toggleRate" v-text="rateMessage" />
-          </div>
-        </div>
-        <div class="grid grid-cols-12 border mb-4 rounded-2xl overflow-hidden">
-          <a
-            @click="openModalSelectToken('output')"
-            class="col-span-4 border-r p-3"
-          >
-            <span v-if="tokenOutAddressInput">
-              <Token
-                :token="tokens[tokenOutAddressInput]"
-                :size="32"
-                :symbol="true"
-              />
-            </span>
-            <span v-text="$t('select')" v-else />
-          </a>
-          <div class="col-span-8 px-3 py-2">
-            <input
-              v-model="tokenOutAmountInput"
-              @input="handleAmountChange(false, $event.target.value)"
-              type="number"
-              placeholder="0"
-              min="0"
-              class="w-full"
+            <span
+              class="text-sm text-gray-500 cursor-pointer"
+              @click="toggleRate"
+              v-text="rateMessage"
             />
-            <div
-              v-if="slippage"
-              :class="slippage > 0.02 && 'text-yellow-500'"
-              class="text-xs"
-            >
-              {{ $t('priceImpact') }}:
-              {{ _num(slippage > 0.0001 ? slippage : 0.0001, '0,0.[00]%') }}
-            </div>
           </div>
         </div>
+        <BalTextInput
+          :name="'tokenOut'"
+          v-model="tokenOutAmountInput"
+          @input="value => handleAmountChange(false, value)"
+          type="number"
+          min="0"
+          step="any"
+          placeholder="0"
+          validate-on="input"
+          prepend-border
+        >
+          <template v-slot:prepend>
+            <div
+              class="flex items-center w-24 cursor-pointer"
+              @click="openModalSelectToken('output')"
+            >
+              <Token :token="tokens[tokenOutAddressInput]" />
+              <div
+                class="flex flex-col ml-3 w-14 font-medium text-sm leading-none truncate"
+              >
+                <BalTooltip
+                  v-if="tokens[tokenOutAddressInput].symbol.length > 5"
+                >
+                  <template v-slot:activator>
+                    <span>
+                      {{ tokens[tokenOutAddressInput].symbol }}
+                    </span>
+                  </template>
+                  <div>
+                    {{ tokens[tokenOutAddressInput].symbol }}
+                  </div>
+                </BalTooltip>
+                <span v-else>
+                  {{ tokens[tokenOutAddressInput].symbol }}
+                </span>
+              </div>
+            </div>
+          </template>
+          <template v-slot:info>
+            <div>
+              {{ $t('priceImpact') }}:
+              {{ fNum(priceImpact > 0.0001 ? priceImpact : 0.0001, 'percent') }}
+            </div>
+          </template>
+        </BalTextInput>
       </div>
       <BalBtn
         v-if="!isAuthenticated"
@@ -130,14 +145,17 @@
 <script lang="ts">
 import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
-import numeral from 'numeral';
+
 import useAuth from '@/composables/useAuth';
+import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
 import initialTokens from '@/constants/initialTokens.json';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 import { ETHER } from '@/constants/tokenlists';
+
+const ETH_BUFFER = 0.1;
 
 export default defineComponent({
   components: {
@@ -147,6 +165,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const { isAuthenticated } = useAuth();
+    const { fNum } = useNumbers();
 
     const tokenInAddressInput = ref('');
     const tokenInAmountInput = ref('');
@@ -189,7 +208,7 @@ export default defineComponent({
       trade,
       initSor,
       handleAmountChange,
-      slippage,
+      priceImpact,
       sorReturn
     } = useSor(
       tokenInAddressInput,
@@ -215,6 +234,10 @@ export default defineComponent({
         ? !allowanceState.value.isUnlockedV1
         : !allowanceState.value.isUnlockedV2;
     });
+
+    const balanceLabel = computed(
+      () => tokens.value[tokenInAddressInput.value]?.balance
+    );
 
     const title = computed(() => {
       if (isWrap.value) return 'wrap';
@@ -248,14 +271,14 @@ export default defineComponent({
         const tokenOutAmount = tokenOutAmountInput.value;
         if (isInRate.value) {
           const rate = parseFloat(tokenOutAmount) / parseFloat(tokenInAmount);
-          message = `1 ${tokenIn.symbol} = ${numeral(rate).format(
-            '0,0.[000000]'
-          )} ${tokenOut.symbol}`;
+          message = `1 ${tokenIn.symbol} = ${fNum(rate, 'token')} ${
+            tokenOut.symbol
+          }`;
         } else {
           const rate = parseFloat(tokenInAmount) / parseFloat(tokenOutAmount);
-          message = `1 ${tokenOut.symbol} = ${numeral(rate).format(
-            '0,0.[000000]'
-          )} ${tokenIn.symbol}`;
+          message = `1 ${tokenOut.symbol} = ${fNum(rate, 'token')} ${
+            tokenIn.symbol
+          }`;
         }
       }
       return message;
@@ -286,8 +309,14 @@ export default defineComponent({
     }
 
     function handleMax(): void {
+      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
+      const balanceNumber = parseFloat(balance);
       tokenInAmountInput.value =
-        tokens.value[tokenInAddressInput.value]?.balance || '';
+        tokenInAddressInput.value !== ETHER.address
+          ? balance
+          : balanceNumber > ETH_BUFFER
+          ? (balanceNumber - ETH_BUFFER).toString()
+          : '0';
       handleAmountChange(true, tokenInAmountInput.value);
     }
 
@@ -322,7 +351,7 @@ export default defineComponent({
       tokenInAmountInput.value = '';
       tokenOutAddressInput.value = '';
       tokenOutAmountInput.value = '';
-      slippage.value = 0;
+      priceImpact.value = 0;
       await initSor();
       await populateInitialTokens();
     });
@@ -330,7 +359,9 @@ export default defineComponent({
     populateInitialTokens();
 
     return {
+      fNum,
       tokens,
+      balanceLabel,
       title,
       submitLabel,
       versionLabel,
@@ -356,7 +387,7 @@ export default defineComponent({
       approve,
       trading,
       trade,
-      slippage
+      priceImpact
     };
   }
 });
