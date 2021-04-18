@@ -1,5 +1,5 @@
 <template>
-  <BalModal :show="open" @close="$emit('close')" no-content-pad>
+  <BalModal :show="open" @close="onClose" no-content-pad>
     <template v-slot:header>
       <BalBtn
         v-if="selectTokenList"
@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
+import { defineComponent, reactive, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { clone } from '@/utils';
@@ -179,13 +179,10 @@ export default defineComponent({
       data.query = '';
     }
 
-    // WATCHERS
-    watch(
-      () => props.open,
-      () => {
-        data.query = '';
-      }
-    );
+    function onClose() {
+      data.query = '';
+      emit('close');
+    }
 
     return {
       // data
@@ -202,7 +199,8 @@ export default defineComponent({
       onSelectToken,
       onSelectList,
       onListExit,
-      toggleSelectTokenList
+      toggleSelectTokenList,
+      onClose
     };
   }
 });
