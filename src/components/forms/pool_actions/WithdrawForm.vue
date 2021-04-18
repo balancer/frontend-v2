@@ -425,15 +425,10 @@ export default defineComponent({
         tokenIndex < props.pool.tokens.length;
         tokenIndex++
       ) {
-        const { amountsOut } = await poolExchange.queryExit(
-          store.state.web3.account,
-          fullAmounts.value,
-          bptBalance.value,
-          tokenIndex,
-          exactOut.value
-        );
         data.singleAssetMax[tokenIndex] = formatUnits(
-          amountsOut[tokenIndex],
+          poolCalculator
+            .exactBPTInForTokenOut(bptBalance.value, tokenIndex)
+            .toString(),
           tokenDecimals(tokenIndex)
         );
       }
