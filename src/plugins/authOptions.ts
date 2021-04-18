@@ -1,5 +1,6 @@
 import injected from '@snapshot-labs/lock/connectors/injected';
 import fortmatic from '@snapshot-labs/lock/connectors/fortmatic';
+import gnosis from '@snapshot-labs/lock/connectors/gnosis';
 import torus from '@snapshot-labs/lock/connectors/torus';
 import portis from '@snapshot-labs/lock/connectors/portis';
 import walletconnect from '@snapshot-labs/lock/connectors/walletconnect';
@@ -9,6 +10,7 @@ import connectors from '@/constants/connectors.json';
 import defaultLogo from '@/assets/images/connectors/default.svg';
 import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
+import gnosisLogo from '@/assets/images/connector/gnosis.svg';
 import imtokenLogo from '@/assets/images/connectors/imtoken.svg';
 import metamaskLogo from '@/assets/images/connectors/metamask.svg';
 import portisLogo from '@/assets/images/connectors/portis.svg';
@@ -22,6 +24,7 @@ const options: any = { connectors: [] };
 const connectorClasses = {
   injected,
   fortmatic,
+  gnosis,
   torus,
   portis,
   walletconnect,
@@ -59,6 +62,9 @@ export function getConnectorName(connectorId: string): string {
   if (connectorId === 'fortmatic') {
     return 'Fortmatic';
   }
+  if (connectorId === 'gnosis') {
+    return 'Gnosis Safe';
+  }
   if (connectorId === 'portis') {
     return 'Portis';
   }
@@ -93,6 +99,9 @@ export function getConnectorLogo(connectorId: string): string {
   }
   if (connectorId === 'fortmatic') {
     return fortmaticLogo;
+  }
+  if (connectorId === 'gnosis') {
+    return gnosisLogo;
   }
   if (connectorId === 'portis') {
     return portisLogo;

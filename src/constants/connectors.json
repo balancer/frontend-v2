@@ -46,5 +46,9 @@
       "chainId": 1,
       "ethJsonrpcUrl": "https://mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66"
     }
+  },
+  "gnosis": {
+    "id": "gnosis",
+    "name": "Gnosis Safe"
   }
 }
