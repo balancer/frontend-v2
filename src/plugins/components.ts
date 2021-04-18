@@ -4,7 +4,11 @@ import camelCase from 'lodash/camelCase';
 
 export function registerGlobalComponents(app: App): void {
   // Load global components from @/components/_global
-  const req = require.context('@/components/_global', true, /\.(js|vue)$/i);
+  const req = require.context(
+    '@/components/_global',
+    true,
+    /^((?!stories).)*\.(js|ts|vue)$/i
+  );
   for (const key of req.keys()) {
     const componentName = key.match(/\w+/)?.[0];
     if (!componentName) continue;
