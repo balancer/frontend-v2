@@ -4,7 +4,11 @@ import { approveTokens } from '@/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
 import useAuth from '@/composables/useAuth';
 
-export default function useTokenApprovals(approvalTokens, amounts) {
+export default function useTokenApprovals(
+  approvalTokens,
+  amounts,
+  tokenAmountMap
+) {
   const auth = useAuth();
   const store = useStore();
   const approving = ref(false);
@@ -23,9 +27,11 @@ export default function useTokenApprovals(approvalTokens, amounts) {
   });
 
   const requiredAllowances = computed(() => {
-    return store.getters['account/getRequiredAllowances']({
-      tokens: tokens.value
+    const allowances = store.getters['account/getRequiredAllowances']({
+      tokens: tokens.value,
+      amounts: tokenAmountMap
     });
+    return allowances;
   });
 
   async function approveAllowances(): Promise<void> {
