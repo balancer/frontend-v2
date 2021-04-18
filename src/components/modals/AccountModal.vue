@@ -48,6 +48,17 @@ import { getInjected } from '@snapshot-labs/lock/src/utils';
 import connectorsList from '@/constants/connectors.json';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
+import { inIframe } from '@/utils/iframe';
+import { PartialBy } from '@/types';
+
+// Only show the option to connect to a Gnosis Safe if we're in an iframe
+const filteredConnectors: PartialBy<
+  typeof connectorsList,
+  'gnosis'
+> = connectorsList;
+if (!inIframe()) {
+  delete filteredConnectors.gnosis;
+}
 
 export default defineComponent({
   props: {
@@ -81,13 +92,13 @@ export default defineComponent({
 
     const connectors = computed(() => {
       return Object.fromEntries(
-        Object.entries(connectorsList).slice(0, data.connectorsLimit)
+        Object.entries(filteredConnectors).slice(0, data.connectorsLimit)
       );
     });
 
     const invisibleConnectorsCount = computed(() => {
       return (
-        Object.keys(connectorsList).length -
+        Object.keys(filteredConnectors).length -
         Object.keys(connectors.value).length
       );
     });
