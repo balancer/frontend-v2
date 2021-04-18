@@ -1,9 +1,9 @@
-import BalBtn from './Btn.vue';
-import { generateTemplate } from '../../../.storybook/helpers/templates';
+import BalBtn from './BalBtn.vue';
+import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {
   component: BalBtn,
-  title: 'Components/Bal/Btn',
+  title: 'Components/BalBtn',
   parameters: {
     layout: 'centered',
     actions: { handles: ['click'] }

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col px-4 py-2">
-    <BalRadioInput
+    <BalRadio
       v-for="(type, i) in formTypes"
       :key="i"
       v-model="selected"
@@ -23,7 +23,7 @@
           </div>
         </BalTooltip>
       </template>
-    </BalRadioInput>
+    </BalRadio>
   </div>
 </template>
 

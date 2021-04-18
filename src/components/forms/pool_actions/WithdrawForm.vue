@@ -129,7 +129,7 @@
             <div v-html="$t('withdrawWarning')" class="w-52" />
           </BalTooltip>
         </div>
-        <BalCheckboxInput
+        <BalCheckbox
           v-if="priceImpact >= 0.01"
           v-model="highPiAccepted"
           :rules="[isRequired()]"

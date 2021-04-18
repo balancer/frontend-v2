@@ -14,3 +14,16 @@ services:
       - 8080:8080
     env_file:
       - ./.env.development
+  # storybook:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   restart: always
+  #   command: npm run storybook
+  #   volumes: 
+  #     - ./:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - 6006:6006
+  #   env_file:
+  #     - ./.env.development

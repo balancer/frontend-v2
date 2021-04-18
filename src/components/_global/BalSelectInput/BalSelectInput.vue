@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import BalIcon from './Icon.vue';
+import BalIcon from '../BalIcon/BalIcon.vue';
 import { defineComponent, ref, computed, PropType } from 'vue';
 import { Rules, RuleFunction } from '@/types';
 
