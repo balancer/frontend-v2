@@ -34,6 +34,7 @@ const getters = {
   getRequiredAllowances: (state, getters, rootState) => query => {
     const config = rootState.web3.config.key;
     const tokens = query.tokens;
+    const amounts = query.amounts;
     const dst = query.dst || configs[config].addresses.vault;
     const requiredAllowances = {};
     Object.entries(tokens).forEach(([token, allowance]: any) => {
@@ -41,7 +42,8 @@ const getters = {
         allowance !== '0' &&
         (!state.allowances[dst] ||
           !state.allowances[dst][token.toLowerCase()] ||
-          state.allowances[dst][token.toLowerCase()].lt(allowance))
+          state.allowances[dst][token.toLowerCase()].lt(allowance)) &&
+        ['0.0', '0'].includes(amounts[token])
       ) {
         requiredAllowances[token] = allowance;
       }
