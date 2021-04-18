@@ -1,4 +1,4 @@
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { approveTokens } from '@/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
