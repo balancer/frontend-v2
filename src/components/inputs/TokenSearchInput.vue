@@ -11,13 +11,13 @@
       <span v-if="modelValue.length === 0">{{ $t('searchBy') }}</span>
       <BalChip
         v-else
-        v-for="(token, i) in modelValue"
+        v-for="token in modelValue"
         class="mr-2"
         :key="token"
         size="md"
         color="gray"
         :closeable="true"
-        @closed="removeToken(i)"
+        @closed="removeToken(token)"
         @click.stop
       >
         <Token
@@ -66,15 +66,14 @@ export default defineComponent({
     // DATA
     const selectTokenModal = ref(false);
 
+    // METHODS
     function addToken(token: string) {
       const newSelected = [...props.modelValue, token];
       emit('update:modelValue', newSelected);
     }
 
-    function removeToken(i: number) {
-      const newSelected = props.modelValue.filter(
-        token => token !== props.modelValue[i]
-      );
+    function removeToken(token: string) {
+      const newSelected = props.modelValue.filter(t => t !== token);
       emit('update:modelValue', newSelected);
     }
 
