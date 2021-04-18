@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue';
+import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { clone } from '@/utils';
@@ -178,6 +178,14 @@ export default defineComponent({
       data.selectTokenList = !data.selectTokenList;
       data.query = '';
     }
+
+    // WATCHERS
+    watch(
+      () => props.open,
+      () => {
+        data.query = '';
+      }
+    );
 
     return {
       // data
