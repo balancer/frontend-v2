@@ -103,6 +103,7 @@ import SubNav from '@/components/navs/SubNav.vue';
 interface PoolPageData {
   id: string;
   loading: boolean;
+  backgroundLoading: boolean;
   events: PoolEvents;
   prices: HistoricalPrices;
   snapshots: PoolSnapshots;
@@ -134,6 +135,7 @@ export default defineComponent({
     const data = reactive<PoolPageData>({
       id: route.params.id as string,
       loading: true,
+      backgroundLoading: false,
       events: {
         joins: [],
         exits: []
@@ -226,9 +228,11 @@ export default defineComponent({
 
     // WATCHERS
     watch(blockNumber, async () => {
-      if (!data.loading) {
+      if (!data.loading && !data.backgroundLoading) {
+        data.backgroundLoading = true;
         await fetchPool();
         await loadEvents();
+        data.backgroundLoading = false;
       }
     });
 
