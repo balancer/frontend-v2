@@ -43,7 +43,7 @@
               ✨ {{ _num(totalPending) }} BAL
             </BalBtn>
             <BalBtn
-              class="auth-btn"
+              class="auth-btn text-base"
               :loading="web3Loading"
               :loading-label="['sm', 'md'].includes(bp) ? '' : 'Connecting...'"
               color="gray"
@@ -68,6 +68,7 @@
           </div>
           <BalBtn
             v-else
+            class="text-base"
             color="gray"
             outline
             rounded
