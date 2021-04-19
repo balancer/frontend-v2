@@ -4,8 +4,12 @@ import { parseUnits, formatUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
 import BigNumber from 'bignumber.js';
 import Weighted from './weighted';
-import { _exactBPTInForTokenOut } from '@balancer-labs/sor2/dist/pools/weightedPool/weightedMathEvm';
+import {
+  _exactBPTInForTokenOut,
+  _bptInForExactTokenOut
+} from '@balancer-labs/sor2/dist/pools/weightedPool/weightedMathEvm';
 import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
+import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
 
 interface Amounts {
   send: string[];
@@ -34,26 +38,24 @@ export default class Calculator {
     tokenAmounts: string[],
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): BigNumber {
-    if (this.isStablePool) return new BigNumber(0); // TODO stable pool PI calc
+    if (this.isStablePool) return new BigNumber(0); // TODO
     return this.weighted.priceImpact(tokenAmounts, opts);
   }
 
-  public exactBPTInForTokenOut(bptAmount: string, tokenIndex: number) {
-    const tokenBalance = fnum(this.poolTokenBalances[tokenIndex].toString());
-    const tokenNormalizedWeight = fnum(
-      this.poolTokenWeights[tokenIndex].toString()
-    );
-    const bptAmountIn = fnum(parseUnits(bptAmount, this.poolDecimals));
-    const bptTotalSupply = fnum(this.poolTotalSupply.toString());
-    const swapFee = fnum(this.poolSwapFee.toString());
+  public exactBPTInForTokenOut(
+    bptAmount: string,
+    tokenIndex: number
+  ): FixedPointNumber {
+    if (this.isStablePool) return fnum(0); // TODO
+    return this.weighted.exactBPTInForTokenOut(bptAmount, tokenIndex);
+  }
 
-    return _exactBPTInForTokenOut(
-      tokenBalance,
-      tokenNormalizedWeight,
-      bptAmountIn,
-      bptTotalSupply,
-      swapFee
-    );
+  public bptInForExactTokenOut(
+    amount: string,
+    tokenIndex: number
+  ): FixedPointNumber {
+    if (this.isStablePool) return fnum(0); // TODO
+    return this.weighted.bptInForExactTokenOut(amount, tokenIndex);
   }
 
   public setAllTokens(tokens: Token[]): void {
