@@ -1,4 +1,5 @@
 import numeral from 'numeral';
+import BigNumber from 'bignumber.js';
 import { useStore } from 'vuex';
 
 type Preset = 'default' | 'token' | 'token_lg' | 'usd' | 'usd_lg' | 'percent';
@@ -16,10 +17,10 @@ export default function useNumbers() {
   const store = useStore();
 
   function fNum(
-    number: number,
+    number: number | string,
     preset: Preset | null = 'default',
     format = ''
-  ) {
+  ): string {
     if (format) return numeral(number).format(format);
 
     let adjustedPreset;
@@ -36,10 +37,11 @@ export default function useNumbers() {
     );
   }
 
-  function toFiat(amount: number, tokenAddress: string) {
+  function toFiat(amount: number | string, tokenAddress: string): number {
     const rate =
       store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;
-    return amount * rate;
+    const tokenAmount = new BigNumber(amount);
+    return tokenAmount.times(rate).toNumber();
   }
 
   return { fNum, toFiat };
