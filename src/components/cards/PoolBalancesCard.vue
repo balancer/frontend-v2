@@ -78,11 +78,15 @@ export default defineComponent({
 
     const allTokens = computed(() => store.getters['registry/getTokens']());
 
-    const tokenValues: number[] = new Array(tokens.value.length);
-
     const networkId = computed(() => store.state.web3.config.chainId);
 
-    if (prices && prices.value && snapshots && snapshots.value) {
+    const tokenValues = computed(() => {
+      if (!prices.value || !snapshots.value) {
+        return [];
+      }
+
+      const tokenValues: number[] = new Array(tokens.value.length);
+
       let timestamps = Object.keys(prices.value);
       let latestTimestamp = timestamps[timestamps.length - 1];
       const tokenPrices = prices.value[latestTimestamp];
@@ -91,6 +95,7 @@ export default defineComponent({
       timestamps = Object.keys(snapshots.value).filter(
         timestamp => snapshots.value[timestamp].totalShares || '0' !== '0'
       );
+
       if (timestamps.length > 0) {
         latestTimestamp = timestamps[timestamps.length - 1];
         const tokenAmounts = snapshots.value[latestTimestamp].amounts;
@@ -99,7 +104,9 @@ export default defineComponent({
           tokenValues[i] = tokenPrices[i] * parseFloat(tokenAmounts[i]);
         }
       }
-    }
+
+      return tokenValues;
+    });
 
     function getSymbol(address: string) {
       const token = allTokens.value[address];
@@ -120,7 +127,7 @@ export default defineComponent({
     }
 
     function getValue(index: number) {
-      return tokenValues[index] || 0;
+      return tokenValues.value[index] || 0;
     }
 
     return {
