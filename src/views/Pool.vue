@@ -41,7 +41,7 @@
           </div>
 
           <div>
-            <h4 v-text="$t('yourTransactions')" class="mb-4" />
+            <h4 v-text="$t('activity')" class="mb-4" />
             <BalLoadingBlock
               v-if="loading || appLoading || web3Loading"
               class="h-60"
@@ -89,7 +89,7 @@ import { useRoute, useRouter } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
 import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
 import {
-  getUserPoolEvents,
+  getPoolEvents,
   getPoolSnapshots,
   PoolEvents,
   PoolSnapshots
@@ -205,11 +205,7 @@ export default defineComponent({
     async function loadEvents(): Promise<void> {
       if (account) {
         console.time('loadPoolEvents');
-        data.events = await getUserPoolEvents(
-          appNetwork.id,
-          data.id,
-          account.value
-        );
+        data.events = await getPoolEvents(appNetwork.id, data.id);
         console.timeEnd('loadPoolEvents');
       }
     }

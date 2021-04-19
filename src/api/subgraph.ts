@@ -108,18 +108,13 @@ export async function getPools(chainId: number) {
   };
 }
 
-export async function getUserPoolEvents(
-  chainId: number,
-  poolId: string,
-  userAddress: string
-) {
+export async function getPoolEvents(chainId: number, poolId: string) {
   const query = `
     query {
       joins(
         first: 100,
         where: {
-          pool: "${poolId}",
-          sender: "${userAddress}"
+          pool: "${poolId}"
         }
       ) {
         amounts
@@ -129,8 +124,7 @@ export async function getUserPoolEvents(
       exits(
         first: 100,
         where: {
-          pool: "${poolId}",
-          sender: "${userAddress}"
+          pool: "${poolId}"
         }
       ) {
         amounts
