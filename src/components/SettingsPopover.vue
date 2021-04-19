@@ -74,10 +74,14 @@
       </div>
       <div class="mt-4 px-4">
         <div class="flex items-baseline">
-          <h5 v-text="'Slippage tolerance'" />
+          <h5 v-text="'Slippage tolerance'" class="pr-1" />
           <BalTooltip>
             <template v-slot:activator>
-              <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
+              <BalIcon
+                name="info"
+                size="xs"
+                class="ml-1 text-gray-400 -mb-px"
+              />
             </template>
             <div class="w-52">
               Market conditions may change between the time your order is
@@ -109,7 +113,12 @@
       <div class="network mt-4 px-4 pt-2 pb-4 text-sm border-t rounded-b-xl">
         <div v-text="t('network')" />
         <div class="flex items-baseline">
-          <div class="w-2 h-2 mr-1 bg-green-400 rounded-full"></div>
+          <div
+            :class="[
+              'w-2 h-2 mr-1 bg-green-400 rounded-full',
+              networkColorClass
+            ]"
+          ></div>
           {{ networkName }}
         </div>
       </div>
@@ -139,7 +148,10 @@ const locales = {
   'it-IT': 'Italiano',
   'fr-FR': 'Français',
   'pt-PT': 'Português',
-  'ru-RU': 'Россия'
+  'ru-RU': 'Россия',
+  'ko-KO': '한국어',
+  'ja-JP': '日本語',
+  'tr-TR': 'Türk'
 };
 const slippageOptions = ['0.005', '0.01', '0.02'];
 
@@ -162,6 +174,9 @@ export default defineComponent({
     const account = computed(() => store.state.web3.account);
     const networkId = computed(() => store.state.web3.config.chainId);
     const networkName = computed(() => store.state.web3.config.name);
+    const networkColorClass = computed(
+      () => `network-${store.state.web3.config.shortName.toLowerCase()}`
+    );
     const appSlippage = computed(() => store.state.app.slippage);
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
@@ -219,6 +234,7 @@ export default defineComponent({
       account,
       networkId,
       networkName,
+      networkColorClass,
       appSlippage,
       appLocale,
       appDarkMode,
@@ -262,5 +278,21 @@ export default defineComponent({
 
 .slippage-input.active {
   @apply text-blue-500 border-blue-500 font-bold;
+}
+
+.network-kovan {
+  background: #9064ff;
+}
+
+.network-ropsten {
+  background: #ff4a8d;
+}
+
+.network-rinkeby {
+  background: #f6c343;
+}
+
+.network-goerli {
+  background: #3099f2;
 }
 </style>

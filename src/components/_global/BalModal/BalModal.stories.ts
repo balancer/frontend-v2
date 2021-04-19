@@ -1,9 +1,9 @@
-import BalModal from './Modal.vue';
-import { generateTemplate } from '../../../.storybook/helpers/templates';
+import BalModal from './BalModal.vue';
+import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {
   component: BalModal,
-  title: 'Components/Bal/Modal',
+  title: 'Components/BalModal',
   args: {
     title: '',
     darkMode: false

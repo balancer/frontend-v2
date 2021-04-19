@@ -1,7 +1,7 @@
 export const BALANCER_SUBGRAPH_URL = {
   1: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-beta',
   17: 'http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2',
-  42: 'https://api.thegraph.com/subgraphs/name/destiner/balancer-kovan-v2'
+  42: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2'
 };
 
 type PoolType = 'Weighted' | 'Stable';

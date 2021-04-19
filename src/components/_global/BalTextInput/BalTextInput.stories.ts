@@ -1,11 +1,11 @@
-import BalTextInput from './TextInput.vue';
+import BalTextInput from './BalTextInput.vue';
 import { Rules } from '@/types';
-import { isRequired } from '../../utils/validations';
-import { generateTemplate } from '../../../.storybook/helpers/templates';
+import { isRequired } from '../../../utils/validations';
+import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {
   component: BalTextInput,
-  title: 'Components/Bal/Inputs/Text',
+  title: 'Components/inputs/BalTextInput',
   args: {
     darkMode: false,
     name: 'input1',

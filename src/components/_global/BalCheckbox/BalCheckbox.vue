@@ -35,7 +35,7 @@ import { defineComponent, computed, PropType, ref } from 'vue';
 import { Rules, RuleFunction } from '@/types';
 
 export default defineComponent({
-  name: 'BalCheckboxInput',
+  name: 'BalCheckbox',
 
   emits: ['update:modelValue'],
 

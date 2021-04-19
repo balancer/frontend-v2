@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import BalCard from './Card.vue';
+import BalCard from '../BalCard/BalCard.vue';
 import { defineComponent, ref, toRefs, watch } from 'vue';
 
 export default defineComponent({
