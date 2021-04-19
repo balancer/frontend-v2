@@ -37,7 +37,7 @@
               rel="noreferrer"
               color="gradient"
               rounded
-              class="mr-2"
+              class="mr-2 text-base"
               size="sm"
             >
               ✨ {{ _num(totalPending) }} BAL
