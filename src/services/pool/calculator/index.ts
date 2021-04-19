@@ -4,10 +4,6 @@ import { parseUnits, formatUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
 import BigNumber from 'bignumber.js';
 import Weighted from './weighted';
-import {
-  _exactBPTInForTokenOut,
-  _bptInForExactTokenOut
-} from '@balancer-labs/sor2/dist/pools/weightedPool/weightedMathEvm';
 import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
 import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
 
