@@ -35,8 +35,6 @@
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
               :weights="pool.weightsPercent"
-              :prices="prices"
-              :snapshots="snapshots"
             />
           </div>
 
