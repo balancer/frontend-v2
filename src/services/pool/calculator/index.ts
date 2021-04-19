@@ -42,6 +42,11 @@ export default class Calculator {
     return this.weighted.priceImpact(tokenAmounts, opts);
   }
 
+  public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
+    if (this.isStablePool) return fnum(0); // TODO
+    return this.weighted.exactTokensInForBPTOut(tokenAmounts);
+  }
+
   public exactBPTInForTokenOut(
     bptAmount: string,
     tokenIndex: number
