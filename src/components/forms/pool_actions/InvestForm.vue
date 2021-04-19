@@ -119,6 +119,27 @@
         @click.prevent="connectWallet"
       />
       <template v-else>
+        <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
+          <span
+            >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
+          >
+          <BalIcon
+            v-if="priceImpact >= 0.01"
+            name="alert-triangle"
+            size="xs"
+            class="ml-1"
+          />
+          <BalTooltip v-if="priceImpact < 0.0">
+            <template v-slot:activator>
+              <BalIcon
+                name="info"
+                size="xs"
+                class="text-gray-400 -mb-px ml-2"
+              />
+            </template>
+            <div v-html="$t('customAmountsTip')" class="w-52" />
+          </BalTooltip>
+        </div>
         <BalBtn
           v-if="requireApproval"
           :label="$t('allow')"
@@ -129,29 +150,7 @@
           @click.prevent="approveAllowances"
         />
         <template v-else>
-          <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
-            <span
-              >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
-            >
-            <BalTooltip>
-              <template v-slot:activator>
-                <BalIcon
-                  v-if="priceImpact >= 0.01"
-                  name="alert-triangle"
-                  size="xs"
-                  class="ml-2"
-                />
-                <BalIcon
-                  v-else
-                  name="info"
-                  size="xs"
-                  class="text-gray-400 ml-2"
-                />
-              </template>
-              <div v-html="$t('customAmountsTip')" class="w-52" />
-            </BalTooltip>
-          </div>
-          <BalCheckbox
+          <BalCheckboxInput
             v-if="priceImpact >= 0.01"
             v-model="highPiAccepted"
             :rules="[isRequired()]"
