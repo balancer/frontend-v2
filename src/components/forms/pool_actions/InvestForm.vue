@@ -463,7 +463,6 @@ export default defineComponent({
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
       if (!hasAmounts.value) setPropMax();
-      if (hasZeroBalance.value) data.investType = FormTypes.custom;
     });
 
     watch(
@@ -498,6 +497,7 @@ export default defineComponent({
 
     onMounted(() => {
       setPropMax();
+      if (hasZeroBalance.value) data.investType = FormTypes.custom;
     });
 
     return {
