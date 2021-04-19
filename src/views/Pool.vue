@@ -225,10 +225,10 @@ export default defineComponent({
     }
 
     // WATCHERS
-    watch(blockNumber, () => {
+    watch(blockNumber, async () => {
       if (!data.loading) {
-        fetchPool();
-        loadEvents();
+        await fetchPool();
+        await loadEvents();
       }
     });
 
