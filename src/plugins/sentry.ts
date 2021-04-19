@@ -15,16 +15,18 @@ const networkMap = {
 const environment = `${ENV}-${networkMap[NETWORK]}`;
 
 export default function initSentry(app: App) {
-  app.config.errorHandler = (error, _, info) => {
-    setTag('info', info);
-    captureException(error);
-  };
+  if (ENV === 'production') {
+    app.config.errorHandler = (error, _, info) => {
+      setTag('info', info);
+      captureException(error);
+    };
 
-  init({
-    dsn:
-      'https://d292b6ec7b6e4aa2801d972e06cb232c@o574636.ingest.sentry.io/5725878',
-    integrations: [new Integrations.BrowserTracing()],
-    tracesSampleRate: 1.0,
-    environment
-  });
+    init({
+      dsn:
+        'https://d292b6ec7b6e4aa2801d972e06cb232c@o574636.ingest.sentry.io/5725878',
+      integrations: [new Integrations.BrowserTracing()],
+      tracesSampleRate: 1.0,
+      environment
+    });
+  }
 }
