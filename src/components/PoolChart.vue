@@ -1,5 +1,5 @@
 <template>
-  <BalLoadingBlock v-if="loading" class="h-60" />
+  <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
   <div class="chart mr-n2 ml-n2" v-else-if="nonEmptyHistory.length >= 7">
     <apexchart
       width="100%"
@@ -21,6 +21,7 @@ import { PropType, defineComponent, toRefs, computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import { PoolSnapshots } from '@/api/subgraph';
 import { useI18n } from 'vue-i18n';
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'PoolChart',
@@ -38,10 +39,13 @@ export default defineComponent({
   },
 
   setup(props) {
+    const store = useStore();
     const { fNum } = useNumbers();
     const { t } = useI18n();
 
     const { prices, snapshots } = toRefs(props);
+
+    const appLoading = computed(() => store.state.app.loading);
 
     function formatYAxis(value: number) {
       return fNum(value, null, '0.%');
@@ -209,6 +213,7 @@ export default defineComponent({
       series,
       options,
       history,
+      appLoading,
 
       nonEmptyHistory,
       timestamps,
