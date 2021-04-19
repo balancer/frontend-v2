@@ -106,7 +106,7 @@ export default class Weighted {
       this.calc.poolTokenWeights[tokenIndex].toString()
     );
     const bptAmountIn = fnum(
-      parseUnits(amount, this.calc.poolTokenDecimals[tokenIndex])
+      parseUnits(amount, this.calc.poolTokenDecimals[tokenIndex]).toString()
     );
     const bptTotalSupply = fnum(this.calc.poolTotalSupply.toString());
     const swapFee = fnum(this.calc.poolSwapFee.toString());

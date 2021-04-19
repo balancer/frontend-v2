@@ -359,8 +359,10 @@ export default defineComponent({
 
     const minBptOut = computed(() => {
       const poolDecimals = allTokens.value[props.pool.address].decimals;
-      let bptOut = poolCalculator.exactTokensInForBPTOut(fullAmounts.value);
-      bptOut = formatUnits(bptOut.toString(), poolDecimals);
+      let bptOut = poolCalculator
+        .exactTokensInForBPTOut(fullAmounts.value)
+        .toString();
+      bptOut = formatUnits(bptOut, poolDecimals);
 
       return minusSlippage(bptOut, poolDecimals);
     });

@@ -184,7 +184,6 @@ import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import useTokens from '@/composables/useTokens';
-import { logFailedTx } from '@/utils/logging';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -365,11 +364,10 @@ export default defineComponent({
       if (isProportional.value) return data.bptIn;
 
       const poolDecimals = allTokens.value[props.pool.address].decimals;
-      let bptIn = poolCalculator.bptInForExactTokenOut(
-        data.amounts[data.singleAsset],
-        data.singleAsset
-      );
-      bptIn = formatUnits(bptIn.toString(), poolDecimals);
+      let bptIn = poolCalculator
+        .bptInForExactTokenOut(data.amounts[data.singleAsset], data.singleAsset)
+        .toString();
+      bptIn = formatUnits(bptIn, poolDecimals);
 
       return exactOut.value ? addSlippage(bptIn, poolDecimals) : bptIn;
     });
