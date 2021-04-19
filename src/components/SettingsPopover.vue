@@ -1,6 +1,7 @@
 <template>
-  <div class="popover-wrapper hidden absolute right-6 top-14 z-10 mt-2">
-    <div class="w-full h-2"></div>
+  <div
+    class="popover-wrapper top-full invisible opacity-0 absolute z-10 pt-3 right-0"
+  >
     <BalCard class="popover pt-4" shadow="xl" noPad>
       <div class="px-4">
         <h5 v-text="t('account')" />
@@ -74,7 +75,7 @@
       </div>
       <div class="mt-4 px-4">
         <div class="flex items-baseline">
-          <h5 v-text="'Slippage tolerance'" class="pr-1" />
+          <h5 v-text="'Slippage tolerance'" />
           <BalTooltip>
             <template v-slot:activator>
               <BalIcon
@@ -256,8 +257,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.popover-wrapper {
+  transition: all 0.2s ease-in-out;
+}
 .popover-wrapper:hover {
-  display: initial;
+  @apply visible opacity-100;
 }
 
 .address {

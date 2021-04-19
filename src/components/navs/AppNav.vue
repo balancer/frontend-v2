@@ -42,29 +42,33 @@
             >
               ✨ {{ _num(totalPending) }} BAL
             </BalBtn>
-            <BalBtn
-              class="auth-btn"
-              :loading="web3Loading"
-              :loading-label="['sm', 'md'].includes(bp) ? '' : 'Connecting...'"
-              color="gray"
-              outline
-              rounded
-              :size="['sm', 'md'].includes(bp) ? 'md' : 'sm'"
-              :circle="['sm', 'md'].includes(bp)"
-            >
-              <Avatar :address="account" :profile="profile" size="20" />
-              <span
-                v-if="profile.name || profile.ens"
-                v-text="profile.name || profile.ens"
-                class="pl-2 hidden md:inline-block"
-              />
-              <span
-                v-else
-                v-text="_shorten(account)"
-                class="pl-2 hidden md:inline-block"
-              />
-            </BalBtn>
-            <SettingsPopover v-if="!web3Loading" class="popover" />
+            <div class="relative">
+              <BalBtn
+                class="auth-btn"
+                :loading="web3Loading"
+                :loading-label="
+                  ['sm', 'md'].includes(bp) ? '' : 'Connecting...'
+                "
+                color="gray"
+                outline
+                rounded
+                :size="['sm', 'md'].includes(bp) ? 'md' : 'sm'"
+                :circle="['sm', 'md'].includes(bp)"
+              >
+                <Avatar :address="account" :profile="profile" size="20" />
+                <span
+                  v-if="profile.name || profile.ens"
+                  v-text="profile.name || profile.ens"
+                  class="pl-2 hidden md:inline-block"
+                />
+                <span
+                  v-else
+                  v-text="_shorten(account)"
+                  class="pl-2 hidden md:inline-block"
+                />
+              </BalBtn>
+              <SettingsPopover v-if="!web3Loading" class="popover" />
+            </div>
           </div>
           <BalBtn
             v-else
@@ -162,6 +166,6 @@ export default defineComponent({
 }
 
 .auth-btn:hover ~ .popover {
-  display: initial;
+  @apply visible opacity-100;
 }
 </style>
