@@ -1,8 +1,10 @@
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-    <div v-for="(stat, i) in stats" :key="i">
-      <BalLoadingBlock v-if="loading" class="h-24" />
-      <BalCard v-else>
+    <template v-if="loading">
+      <BalLoadingBlock v-for="n in 4" :key="n" class="h-24" />
+    </template>
+    <template v-else>
+      <BalCard v-for="(stat, i) in stats" :key="i">
         <div class="text-xs uppercase text-gray-500 font-medium mb-3">
           {{ stat.label }}
         </div>
@@ -10,7 +12,7 @@
           {{ stat.value }}
         </div>
       </BalCard>
-    </div>
+    </template>
   </div>
 </template>
 
