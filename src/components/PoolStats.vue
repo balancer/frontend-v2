@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
     <template v-if="loading">
       <BalLoadingBlock v-for="n in 4" :key="n" class="h-24" />
     </template>
