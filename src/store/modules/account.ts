@@ -40,7 +40,7 @@ const getters = {
     const allowances = tokens.filter((token, index) => {
       const amount = amounts[index];
       if (parseFloat(amount) == 0) {
-        return true;
+        return false;
       }
       if (!state.allowances[dst]) {
         return true;
