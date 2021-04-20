@@ -1,33 +1,21 @@
 <template>
   <nav id="topnav">
-    <NavAlert v-if="alert" :alert="alert" />
+    <AppNavAlert v-if="alert" :alert="alert" />
 
     <div class="px-6">
-      <div class="flex items-center" style="height: 78px;">
-        <div class="flex-auto flex items-center">
-          <router-link :to="{ name: 'home' }" class="flex items-center pr-2">
-            <AppLogo />
-          </router-link>
-          <router-link
-            :to="{ name: 'trade' }"
-            :class="[
-              'ml-8 font-medium',
-              $route.name === 'trade' ? 'text-gray-900' : 'text-gray-500'
-            ]"
-          >
-            {{ $t('trade') }}
-          </router-link>
-          <router-link
-            :to="{ name: 'home' }"
-            :class="[
-              'ml-8 font-medium',
-              $route.name === 'home' ? 'text-gray-900' : 'text-gray-500'
-            ]"
-          >
-            {{ $t('invest') }}
+      <div class="flex items-center justify-between h-20">
+        <div class="w-1/3">
+          <router-link :to="{ name: 'home' }">
+            <AppIcon v-if="['sm', 'md'].includes(bp)" />
+            <AppLogo v-else />
           </router-link>
         </div>
-        <div>
+
+        <div class="w-1/3 flex justify-center">
+          <AppNavToggle />
+        </div>
+
+        <div class="w-1/3 flex justify-end">
           <div v-if="$auth.isAuthenticated.value" class="flex items-center">
             <BalBtn
               v-if="totalPending"
@@ -96,13 +84,17 @@ import getProvider from '@/utils/provider';
 import { getPendingClaims } from '@/utils/balancer/claim';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppLogo from '@/components/images/AppLogo.vue';
-import NavAlert from './NavAlert.vue';
+import AppIcon from '@/components/images/AppIcon.vue';
+import AppNavAlert from './AppNavAlert.vue';
+import AppNavToggle from './AppNavToggle.vue';
 import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   components: {
     AppLogo,
-    NavAlert
+    AppIcon,
+    AppNavAlert,
+    AppNavToggle
   },
 
   setup() {
