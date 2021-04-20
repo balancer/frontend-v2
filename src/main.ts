@@ -5,6 +5,7 @@ import router from '@/plugins/router';
 import mixins from '@/plugins/mixins';
 import i18n from '@/plugins/i18n';
 import blocknative from '@/plugins/blocknative';
+import initSentry from '@/plugins/sentry';
 import authOptions from '@/plugins/authOptions';
 import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
 import VueApexCharts from 'vue3-apexcharts';
@@ -22,6 +23,7 @@ const app = createApp(App)
   .mixin(mixins);
 
 registerGlobalComponents(app);
+initSentry(app);
 
 app.mount('#app');
 
