@@ -46,7 +46,6 @@ import { PropType, defineComponent, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
-import { PoolSnapshots } from '@/api/subgraph';
 
 export default defineComponent({
   props: {
@@ -61,45 +60,36 @@ export default defineComponent({
     weights: {
       type: Array as PropType<number[]>,
       required: true
-    },
-    prices: {
-      type: Object as PropType<Record<string, number[]>>,
-      required: true
-    },
-    snapshots: {
-      type: Object as PropType<PoolSnapshots>,
-      required: true
     }
   },
   setup(props) {
     const store = useStore();
 
-    const { tokens, balances, weights, prices, snapshots } = toRefs(props);
+    const { tokens, balances, weights } = toRefs(props);
 
     const allTokens = computed(() => store.getters['registry/getTokens']());
 
-    const tokenValues: number[] = new Array(tokens.value.length);
-
     const networkId = computed(() => store.state.web3.config.chainId);
+    const prices = computed(() => store.state.market.prices);
 
-    if (prices && prices.value && snapshots && snapshots.value) {
-      let timestamps = Object.keys(prices.value);
-      let latestTimestamp = timestamps[timestamps.length - 1];
-      const tokenPrices = prices.value[latestTimestamp];
-
-      // Find latest timestamp when the pool had liquidity
-      timestamps = Object.keys(snapshots.value).filter(
-        timestamp => snapshots.value[timestamp].totalShares || '0' !== '0'
-      );
-      if (timestamps.length > 0) {
-        latestTimestamp = timestamps[timestamps.length - 1];
-        const tokenAmounts = snapshots.value[latestTimestamp].amounts;
-
-        for (let i = 0; i < tokenPrices.length; i++) {
-          tokenValues[i] = tokenPrices[i] * parseFloat(tokenAmounts[i]);
-        }
+    const tokenValues = computed(() => {
+      if (!prices.value || !balances.value) {
+        return [];
       }
-    }
+
+      const tokenValues = balances.value.map((balance, index) => {
+        const address = tokens.value[index];
+        const token = allTokens.value[address];
+        const decimals = token ? token.decimals : 18;
+        const shortBalanceString = formatUnits(balance, decimals);
+        const shortBalance = parseFloat(shortBalanceString);
+        const price = prices.value[address.toLowerCase()].price;
+        const value = shortBalance * price;
+        return value;
+      });
+
+      return tokenValues;
+    });
 
     function getSymbol(address: string) {
       const token = allTokens.value[address];
@@ -120,7 +110,7 @@ export default defineComponent({
     }
 
     function getValue(index: number) {
-      return tokenValues[index] || 0;
+      return tokenValues.value[index] || 0;
     }
 
     return {

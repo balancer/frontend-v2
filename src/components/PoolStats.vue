@@ -51,19 +51,21 @@ export default defineComponent({
     const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const subgraphPool = computed(() => {
+      if (!pool.value) {
+        return {};
+      }
       const strategy = pool.value.strategy.name;
       if (strategy !== 'weightedPool') {
         return {};
       }
       const poolType = 'Weighted';
-      const tokens = pool.value.tokens.map((tokenAddress, index) => {
-        const address = tokenAddress.toLowerCase();
+      const tokens = pool.value.tokens.map((address, index) => {
         const weight = pool.value.weights[index].toString();
         const token = allTokens.value[address];
         const decimals = token ? token.decimals : 18;
         const balance = formatUnits(pool.value.tokenBalances[index], decimals);
         return {
-          address,
+          address: address.toLowerCase(),
           weight,
           balance
         };
