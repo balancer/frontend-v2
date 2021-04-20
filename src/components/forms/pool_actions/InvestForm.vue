@@ -199,6 +199,9 @@ import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 import useNumbers from '@/composables/useNumbers';
 import useNotify from '@/composables/useNotify';
+import useSlippage from '@/composables/useSlippage';
+import useWeb3 from '@/composables/useWeb3';
+import useTokens from '@/composables/useTokens';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
@@ -239,9 +242,12 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { isAuthenticated } = useAuth();
+    const { account, userNetwork } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { txListener } = useNotify();
+    const { minusSlippage } = useSlippage();
+    const { allTokens } = useTokens();
 
     const fullAmountsMap = computed(() => {
       const oos = props.pool.tokens.reduce(
@@ -264,19 +270,18 @@ export default defineComponent({
     // SERVICES
     const poolExchange = new PoolExchange(
       props.pool,
-      store.state.web3.config.key,
-      store.getters['registry/getTokens']()
+      userNetwork.value.key,
+      allTokens.value
     );
 
     const poolCalculator = new PoolCalculator(
       props.pool,
-      store.getters['registry/getTokens'](),
+      allTokens.value,
       'join'
     );
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
-    const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const hasAmounts = computed(() => {
       const amountSum = fullAmounts.value
@@ -362,6 +367,16 @@ export default defineComponent({
       };
     });
 
+    const minBptOut = computed(() => {
+      const poolDecimals = allTokens.value[props.pool.address].decimals;
+      let bptOut = poolCalculator
+        .exactTokensInForBPTOut(fullAmounts.value)
+        .toString();
+      bptOut = formatUnits(bptOut, poolDecimals);
+
+      return minusSlippage(bptOut, poolDecimals);
+    });
+
     const formTypes = ref([
       {
         label: t('noPriceImpact'),
@@ -413,29 +428,29 @@ export default defineComponent({
       data.range = 1000;
     }
 
-    async function calcMinBptOut(): Promise<string> {
-      const { bptOut } = await poolExchange.queryJoin(
-        store.state.web3.account,
+    // Legacy function for sense check against JS calculation of BPT out
+    // Left here so numbers can be debugged in conosle
+    // Talk to Fernando to see if still needed
+    async function calcMinBptOut(): Promise<void> {
+      const poolDecimals = allTokens.value[props.pool.address].decimals;
+      let { bptOut } = await poolExchange.queryJoin(
+        account.value,
         fullAmounts.value
       );
-      const slippageBasisPoints = parseFloat(store.state.app.slippage) * 10000;
-      const delta = bptOut.mul(slippageBasisPoints).div(10000);
-      const minBptOut = bptOut.sub(delta);
-      return formatUnits(
-        minBptOut,
-        allTokens.value[props.pool.address].decimals
-      );
+      bptOut = formatUnits(bptOut.toString(), poolDecimals);
+      console.log('bptOut (queryJoin)', minusSlippage(bptOut, poolDecimals));
+      console.log('bptOut (JS)', minBptOut.value);
     }
 
     async function submit(): Promise<void> {
       if (!data.investForm.validate()) return;
       try {
         data.loading = true;
-        const minBptOut = await calcMinBptOut();
+        await calcMinBptOut();
         const tx = await poolExchange.join(
-          store.state.web3.account,
+          account.value,
           fullAmounts.value,
-          minBptOut
+          minBptOut.value
         );
         console.log('Receipt', tx);
         txListener(tx.hash, {
@@ -460,7 +475,6 @@ export default defineComponent({
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
       if (!hasAmounts.value) setPropMax();
-      if (hasZeroBalance.value) data.investType = FormTypes.custom;
     });
 
     watch(
@@ -495,6 +509,7 @@ export default defineComponent({
 
     onMounted(() => {
       setPropMax();
+      if (hasZeroBalance.value) data.investType = FormTypes.custom;
     });
 
     return {

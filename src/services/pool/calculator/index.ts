@@ -4,6 +4,8 @@ import { parseUnits, formatUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
 import BigNumber from 'bignumber.js';
 import Weighted from './weighted';
+import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
+import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
 
 interface Amounts {
   send: string[];
@@ -32,8 +34,29 @@ export default class Calculator {
     tokenAmounts: string[],
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): BigNumber {
-    if (this.isStablePool) return new BigNumber(0); // TODO stable pool PI calc
+    if (this.isStablePool) return new BigNumber(0); // TODO
     return this.weighted.priceImpact(tokenAmounts, opts);
+  }
+
+  public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
+    if (this.isStablePool) return fnum(0); // TODO
+    return this.weighted.exactTokensInForBPTOut(tokenAmounts);
+  }
+
+  public exactBPTInForTokenOut(
+    bptAmount: string,
+    tokenIndex: number
+  ): FixedPointNumber {
+    if (this.isStablePool) return fnum(0); // TODO
+    return this.weighted.exactBPTInForTokenOut(bptAmount, tokenIndex);
+  }
+
+  public bptInForExactTokenOut(
+    amount: string,
+    tokenIndex: number
+  ): FixedPointNumber {
+    if (this.isStablePool) return fnum(0); // TODO
+    return this.weighted.bptInForExactTokenOut(amount, tokenIndex);
   }
 
   public setAllTokens(tokens: Token[]): void {

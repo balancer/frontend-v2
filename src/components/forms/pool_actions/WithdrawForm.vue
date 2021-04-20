@@ -93,7 +93,7 @@
           </div>
         </template>
         <template v-if="isSingleAsset" v-slot:info>
-          <div class="cursor-pointer" @click="amounts[i] = singleAssetMax[i]">
+          <div class="cursor-pointer" @click="amounts[i] = singleAssetMaxes[i]">
             {{ $t('singleTokenMax') }}: {{ singleAssetMaxLabel(i) }}
           </div>
         </template>
@@ -183,6 +183,7 @@ import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
+import useTokens from '@/composables/useTokens';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -208,7 +209,6 @@ export default defineComponent({
       loading: false,
       amounts: [] as string[],
       propMax: [] as string[],
-      singleAssetMax: [] as string[],
       bptIn: '',
       withdrawType: FormTypes.proportional as FormTypes,
       singleAsset: 0,
@@ -223,27 +223,38 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
+    const { allTokens } = useTokens();
 
     // SERVICES
     const poolExchange = new PoolExchange(
       props.pool,
       store.state.web3.config.key,
-      store.getters['registry/getTokens']()
+      allTokens.value
     );
 
     const poolCalculator = new PoolCalculator(
       props.pool,
-      store.getters['registry/getTokens'](),
+      allTokens.value,
       'exit'
     );
 
     // COMPUTED
     const tokenWeights = computed(() => props.pool.weightsPercent);
-    const allTokens = computed(() => store.getters['registry/getTokens']());
 
     const fullAmounts = computed(() => {
       return props.pool.tokens.map((_, i) => {
         return data.amounts[i] || '0';
+      });
+    });
+
+    const singleAssetMaxes = computed(() => {
+      return props.pool.tokens.map((_, tokenIndex) => {
+        return formatUnits(
+          poolCalculator
+            .exactBPTInForTokenOut(bptBalance.value, tokenIndex)
+            .toString(),
+          tokenDecimals(tokenIndex)
+        );
       });
     });
 
@@ -257,7 +268,7 @@ export default defineComponent({
 
     const singleMaxUSD = computed(() => {
       const maxes = props.pool.tokens.map((token, i) =>
-        toFiat(Number(data.singleAssetMax[i]), token)
+        toFiat(singleAssetMaxes.value[i], token)
       );
 
       return fNum(Math.max(...maxes), 'usd');
@@ -267,6 +278,7 @@ export default defineComponent({
       const amountSum = fullAmounts.value
         .map(amount => parseFloat(amount))
         .reduce((a, b) => a + b, 0);
+
       return amountSum > 0;
     });
 
@@ -274,26 +286,18 @@ export default defineComponent({
       return allTokens.value[props.pool.address].balance;
     });
 
-    function propTokenBalance(index) {
-      return Number(data.propMax[index] || '0');
-    }
-
-    function singleAssetMax(index) {
-      return Number(data.singleAssetMax[index] || '0');
-    }
-
     function propBalanceLabel(index) {
-      return fNum(propTokenBalance(index), 'token');
+      return fNum(data.propMax[index] || '0', 'token');
     }
 
     function singleAssetMaxLabel(index) {
-      return fNum(singleAssetMax(index), 'token');
+      return fNum(singleAssetMaxes.value[index] || '0', 'token');
     }
 
     function amountUSD(index) {
       const amount = fullAmounts.value[index] || '0';
       const token = props.pool.tokens[index].toLowerCase();
-      return toFiat(Number(amount), token);
+      return toFiat(amount, token);
     }
 
     const total = computed(() => {
@@ -323,7 +327,7 @@ export default defineComponent({
 
     const singleAssetMaxed = computed(() => {
       return (
-        data.singleAssetMax[data.singleAsset] ===
+        singleAssetMaxes.value[data.singleAsset] ===
         fullAmounts.value[data.singleAsset]
       );
     });
@@ -356,6 +360,25 @@ export default defineComponent({
       };
     });
 
+    const bptIn = computed(() => {
+      if (isProportional.value) return data.bptIn;
+
+      const poolDecimals = allTokens.value[props.pool.address].decimals;
+      let bptIn = poolCalculator
+        .bptInForExactTokenOut(data.amounts[data.singleAsset], data.singleAsset)
+        .toString();
+      bptIn = formatUnits(bptIn, poolDecimals);
+
+      return exactOut.value ? addSlippage(bptIn, poolDecimals) : bptIn;
+    });
+
+    const amountsOut = computed(() => {
+      return fullAmounts.value.map((amount, i) => {
+        if (amount === '0' || exactOut.value) return amount;
+        return minusSlippage(amount, tokenDecimals(i));
+      });
+    });
+
     const formTypes = ref([
       {
         label: t('noPriceImpact'),
@@ -379,7 +402,7 @@ export default defineComponent({
       return [
         isPositive(),
         isLessThanOrEqualTo(
-          Number(data.singleAssetMax[index]),
+          Number(singleAssetMaxes.value[index]),
           t('exceedsBalance')
         )
       ];
@@ -405,73 +428,45 @@ export default defineComponent({
 
     function setSingleAsset(index) {
       if (!isSingleAsset.value) return;
+      data.singleAsset = index;
 
       props.pool.tokens.forEach((_, i) => {
         if (i === index) {
-          data.amounts[i] = data.singleAssetMax[index];
+          data.amounts[i] = singleAssetMaxes.value[index];
         } else {
           data.amounts[i] = '0';
         }
       });
-      data.singleAsset = index;
     }
 
-    async function calcSingleAssetMax() {
-      data.singleAssetMax = props.pool.tokens.map(() => '0');
-      if (!isAuthenticated.value || bptBalance.value === 0) return;
-
-      for (
-        let tokenIndex = 0;
-        tokenIndex < props.pool.tokens.length;
-        tokenIndex++
-      ) {
-        const { amountsOut } = await poolExchange.queryExit(
-          store.state.web3.account,
-          fullAmounts.value,
-          bptBalance.value,
-          tokenIndex,
-          exactOut.value
-        );
-        data.singleAssetMax[tokenIndex] = formatUnits(
-          amountsOut[tokenIndex],
-          tokenDecimals(tokenIndex)
-        );
-      }
-    }
-
-    async function calcBptIn(): Promise<string> {
-      if (isProportional.value) return data.bptIn;
-
-      const poolDecimals = allTokens.value[props.pool.address].decimals;
-      let { bptIn } = await poolExchange.queryExit(
+    // Legacy function for sense check against JS calculation of BPT in
+    // Left here so numbers can be debugged in conosle
+    // Talk to Fernando to see if still needed
+    async function calcBptIn() {
+      const { bptIn: queryBptIn } = await poolExchange.queryExit(
         store.state.web3.account,
         fullAmounts.value,
         bptBalance.value,
         exitTokenIndex.value,
         exactOut.value
       );
-      bptIn = formatUnits(bptIn, poolDecimals);
-
-      return exactOut.value ? addSlippage(bptIn, poolDecimals) : bptIn;
-    }
-
-    function calcAmountsOut(): string[] {
-      return fullAmounts.value.map((amount, i) => {
-        if (amount === '0' || exactOut.value) return amount;
-        return minusSlippage(amount, tokenDecimals(i));
-      });
+      const poolDecimals = allTokens.value[props.pool.address].decimals;
+      console.log(
+        'bptIn (queryExit)',
+        formatUnits(queryBptIn.toString(), poolDecimals)
+      );
+      console.log('bptIn (JS)', bptIn.value);
     }
 
     async function submit(): Promise<void> {
       if (!data.withdrawForm.validate()) return;
       try {
         data.loading = true;
-        const bptIn = await calcBptIn();
-        const amountsOut = calcAmountsOut();
+        await calcBptIn();
         const tx = await poolExchange.exit(
           store.state.web3.account,
-          amountsOut,
-          bptIn,
+          amountsOut.value,
+          bptIn.value,
           exitTokenIndex.value,
           exactOut.value
         );
@@ -501,7 +496,6 @@ export default defineComponent({
         if (newType === FormTypes.proportional) setPropMax();
         if (newType === FormTypes.single) {
           data.amounts = props.pool.tokens.map(() => '0');
-          await calcSingleAssetMax();
           setSingleAsset(0);
         }
       }
@@ -509,7 +503,6 @@ export default defineComponent({
 
     watch(bptBalance, () => {
       setPropMax();
-      calcSingleAssetMax();
     });
 
     watch(
@@ -535,13 +528,11 @@ export default defineComponent({
       if (!isAuth) {
         data.amounts = [];
         data.propMax = [];
-        data.singleAssetMax = [];
       }
     });
 
     onMounted(async () => {
       if (bptBalance.value) setPropMax();
-      await calcSingleAssetMax();
     });
 
     return {
@@ -565,6 +556,7 @@ export default defineComponent({
       propBalanceLabel,
       amountUSD,
       singleAssetMaxLabel,
+      singleAssetMaxes,
       isRequired
     };
   }
