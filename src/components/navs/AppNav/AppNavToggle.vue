@@ -4,13 +4,13 @@
       :to="{ name: 'home' }"
       :class="['toggle-link pl-6 pr-4', { [activeClasses]: !isTradePage }]"
     >
-      Invest
+      {{ $t('invest') }}
     </router-link>
     <router-link
       :to="{ name: 'trade' }"
       :class="['toggle-link pl-4 pr-6', { [activeClasses]: isTradePage }]"
     >
-      Trade
+      {{ $t('trade') }}
     </router-link>
   </div>
 </template>
