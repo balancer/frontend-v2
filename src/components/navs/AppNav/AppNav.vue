@@ -25,13 +25,7 @@
 </template>
 
 <script>
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  onUnmounted,
-  ref
-} from 'vue';
+import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppLogo from '@/components/images/AppLogo.vue';
