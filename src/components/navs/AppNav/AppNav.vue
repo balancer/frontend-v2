@@ -86,8 +86,4 @@ export default defineComponent({
   @apply border-b border-transparent dark:border-gray-700;
   transition: all .2s ease-in-out;
 }
-
-.auth-btn:hover ~ .popover {
-  @apply visible opacity-100;
-}
 </style>
