@@ -33,25 +33,25 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
 
     const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
     const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
-    const tokensRequired = {};
-    tokensRequired[tokenInAddress.value] = tokenInAmountDenorm;
 
     const requiredAllowancesV1 = store.getters['account/getRequiredAllowances'](
       {
         dst: config.addresses.exchangeProxy,
-        tokens: tokensRequired
+        tokens: [tokenInAddress.value],
+        amounts: [tokenInAmountDenorm.toString()]
       }
     );
 
     const requiredAllowancesV2 = store.getters['account/getRequiredAllowances'](
       {
-        tokens: tokensRequired
+        tokens: [tokenInAddress.value],
+        amounts: [tokenInAmountDenorm.toString()]
       }
     );
 
     return {
-      isUnlockedV1: Object.keys(requiredAllowancesV1).length === 0,
-      isUnlockedV2: Object.keys(requiredAllowancesV2).length === 0
+      isUnlockedV1: requiredAllowancesV1.length === 0,
+      isUnlockedV2: requiredAllowancesV2.length === 0
     };
   });
 

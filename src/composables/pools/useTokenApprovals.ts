@@ -4,11 +4,7 @@ import { approveTokens } from '@/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
 import useAuth from '@/composables/useAuth';
 
-export default function useTokenApprovals(
-  approvalTokens,
-  amounts,
-  tokenAmountMap
-) {
+export default function useTokenApprovals(tokens, shortAmounts) {
   const auth = useAuth();
   const store = useStore();
   const approving = ref(false);
@@ -16,20 +12,19 @@ export default function useTokenApprovals(
 
   const allTokens = computed(() => store.getters['registry/getTokens']());
 
-  const tokens = computed(() => {
-    return Object.fromEntries(
-      approvalTokens.map((token, i) => {
-        const amount = amounts[i] || '1';
-        const tokenDecimals = allTokens.value[token].decimals;
-        return [token, parseUnits(amount, tokenDecimals).toString()];
-      })
-    );
-  });
+  const amounts = computed(() =>
+    tokens.map((token, index) => {
+      const shortAmount = shortAmounts.value[index] || '0';
+      const decimals = allTokens.value[token].decimals;
+      const amount = parseUnits(shortAmount, decimals).toString();
+      return amount;
+    })
+  );
 
   const requiredAllowances = computed(() => {
     const allowances = store.getters['account/getRequiredAllowances']({
-      tokens: tokens.value,
-      amounts: tokenAmountMap
+      tokens,
+      amounts: amounts.value
     });
     return allowances;
   });
@@ -40,7 +35,7 @@ export default function useTokenApprovals(
       const txs = await approveTokens(
         auth.web3,
         store.state.web3.config.addresses.vault,
-        Object.keys(requiredAllowances.value)
+        requiredAllowances.value
       );
       console.log(txs);
       await Promise.all(txs.map(tx => tx.wait()));
