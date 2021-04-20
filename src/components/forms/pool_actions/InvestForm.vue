@@ -194,6 +194,7 @@ import {
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { TransactionData } from 'bnc-notify';
+import { formatUnits } from '@ethersproject/units';
 
 import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
@@ -205,7 +206,6 @@ import useTokens from '@/composables/useTokens';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
-import { formatUnits } from '@ethersproject/units';
 import { bnum } from '@/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 
@@ -249,23 +249,14 @@ export default defineComponent({
     const { minusSlippage } = useSlippage();
     const { allTokens } = useTokens();
 
-    const fullAmountsMap = computed(() => {
-      const oos = props.pool.tokens.reduce(
-        (amounts, token, i) => ({
-          ...amounts,
-          [token]: data.amounts[i] || '0'
-        }),
-        {}
-      );
-      return oos;
-    });
+    const { amounts } = toRefs(data);
 
     const {
       requiredAllowances,
       approveAllowances,
       approving,
       approvedAll
-    } = useTokenApprovals(props.pool.tokens, data.amounts, fullAmountsMap);
+    } = useTokenApprovals(props.pool.tokens, amounts);
 
     // SERVICES
     const poolExchange = new PoolExchange(
@@ -318,7 +309,7 @@ export default defineComponent({
       if (!hasAmounts.value) return false;
       if (!hasBalance.value) return false;
       if (approvedAll.value) return false;
-      return Object.keys(requiredAllowances.value).length > 0;
+      return requiredAllowances.value.length > 0;
     });
 
     const isProportional = computed(() => {

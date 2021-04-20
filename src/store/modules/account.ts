@@ -36,19 +36,16 @@ const getters = {
     const tokens = query.tokens;
     const amounts = query.amounts;
     const dst = query.dst || configs[config].addresses.vault;
-    const requiredAllowances = {};
-    Object.entries(tokens).forEach(([token, allowance]: any) => {
-      if (
-        allowance !== '0' &&
-        (!state.allowances[dst] ||
-          !state.allowances[dst][token.toLowerCase()] ||
-          state.allowances[dst][token.toLowerCase()].lt(allowance)) &&
-        ['0.0', '0'].includes(amounts[token])
-      ) {
-        requiredAllowances[token] = allowance;
-      }
+
+    const allowances = tokens.filter((token, index) => {
+      const amount = amounts[index];
+      if (parseFloat(amount) == 0) return false;
+      if (!state.allowances[dst]) return true;
+      if (!state.allowances[dst][token.toLowerCase()]) return true;
+      return state.allowances[dst][token.toLowerCase()].lt(amount);
     });
-    return requiredAllowances;
+
+    return allowances;
   }
 };
 
