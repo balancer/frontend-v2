@@ -20,6 +20,7 @@
         class="cursor-default hover:bg-gray-50"
         v-for="pool in filteredPools"
         :key="pool.address"
+        @click="openPool(pool)"
       >
         <td class="p-2 pl-5 py-5 flex">
           <div class="w-20 relative">
@@ -80,6 +81,12 @@ export default defineComponent({
       required: true
     },
     selectedTokens: { type: Array as PropType<string[]>, default: () => [] }
+  },
+
+  methods: {
+    openPool(pool: Pool) {
+      this.$router.push({ name: 'pool', params: { id: pool.id } });
+    }
   },
 
   setup(props) {
