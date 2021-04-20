@@ -152,7 +152,8 @@ export async function getPoolSnapshots(
   days: number
 ) {
   const currentTimestamp = Math.ceil(Date.now() / 1000);
-  const dayTimestamp = currentTimestamp - (currentTimestamp % DAY);
+  const dayTimestamp = currentTimestamp - (currentTimestamp % DAY) + DAY;
+
   const timestamps: number[] = [];
   for (let i = 0; i < days; i++) {
     timestamps.push(dayTimestamp - i * DAY);
