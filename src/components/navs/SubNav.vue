@@ -1,11 +1,12 @@
 <template>
   <nav class="flex items-end border-b">
     <BalBtn
-      v-if="!isHome"
+      v-if="isPoolPage"
       flat
       circle
+      size="sm"
       color="gray"
-      class="mb-1"
+      class="mb-3"
       @click="$router.push({ name: 'home' })"
     >
       <BalIcon name="arrow-left" size="sm" />
@@ -13,7 +14,7 @@
     <BalTabs
       v-model="activeTab"
       :tabs="tabs"
-      :no-pad="isHome"
+      :no-pad="!isPoolPage"
       class="pt-4 -mb-px"
       @selected="onSelected"
     />
@@ -40,7 +41,7 @@ export default defineComponent({
       { value: 'portfolio', label: t('portfolio') }
     ];
 
-    const isHome = computed(() => route.name === 'home');
+    const isPoolPage = computed(() => route.name === 'pool');
 
     function onSelected(tab) {
       router.push({ name: tab });
@@ -54,7 +55,7 @@ export default defineComponent({
       }
     });
 
-    return { tabs, activeTab, onSelected, isHome };
+    return { tabs, activeTab, onSelected, isPoolPage };
   }
 });
 </script>
