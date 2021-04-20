@@ -79,7 +79,7 @@ const actions = {
   },
 
   async getAllowances({ commit, rootGetters, rootState }, payload) {
-    const config = rootState.web3.config.key;
+    const network = rootState.web3.config.key;
     const account: string = rootState.web3.account;
     let tokens: string[] =
       payload?.tokens || Object.keys(rootGetters['registry/getTokens']());
@@ -87,8 +87,7 @@ const actions = {
       token => token !== ETHER.address && isAddress(token)
     );
     if (!account || tokens.length === 0) return;
-    const dst = payload?.dst || configs[config].addresses.vault;
-    const network = rootState.web3.config.key;
+    const dst = payload?.dst || configs[network].addresses.vault;
     commit('setLoading', true);
     const dstAllowances = await getAllowances(
       network,
@@ -99,7 +98,7 @@ const actions = {
     );
     const allowances = state.allowances;
     // @ts-ignore
-    allowances[dst] = { ...dstAllowances, ...allowances[dst] };
+    allowances[dst] = { ...allowances[dst], ...dstAllowances };
     commit('setLoading', false);
     commit('setAllowances', allowances);
   }
