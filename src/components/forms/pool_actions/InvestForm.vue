@@ -142,9 +142,9 @@
         </div>
         <BalBtn
           v-if="requireApproval"
-          :label="$t('allow')"
+          :label="$t('approveTokens')"
           :loading="approving"
-          :loading-label="$t('allowing')"
+          :loading-label="$t('approving')"
           :disabled="!hasAmounts"
           block
           @click.prevent="approveAllowances"
