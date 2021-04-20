@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="overflow-x-hidden lg:overflow-x-visible">
+  <div id="app">
     <AppNav />
     <div class="pb-12">
       <router-view :key="$route.path" class="flex-auto" />
@@ -18,7 +18,7 @@ import { defineComponent, onBeforeMount, computed } from 'vue';
 import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
-import AppNav from '@/components/navs/AppNav.vue';
+import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import InfuraService from '@/services/infura/service';
 
 export default defineComponent({

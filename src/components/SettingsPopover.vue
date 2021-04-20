@@ -2,7 +2,7 @@
   <div
     class="popover-wrapper top-full invisible opacity-0 absolute z-10 pt-3 right-0"
   >
-    <BalCard class="popover pt-4" shadow="xl" noPad>
+    <BalCard class="popover pt-4" shadow="lg" noPad>
       <div class="px-4">
         <h5 v-text="t('account')" />
         <div class="flex mt-1 pb-4 border-b justify-between">

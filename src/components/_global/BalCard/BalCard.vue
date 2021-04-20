@@ -30,16 +30,16 @@ export default defineComponent({
     noBorder: { type: Boolean, default: false },
     shadow: {
       type: String,
-      default: 'lg',
+      default: '',
       validator: (val: string): boolean => {
-        return ['', 'none', 'sm', 'md', 'lg', 'xl', '2xl'].includes(val);
+        return ['', 'none', 'sm', 'md', 'lg'].includes(val);
       }
     }
   },
 
   setup(props) {
     const borderClasses = computed(() => {
-      return 'border border-gray-200 dark:border-gray-700';
+      return 'border dark:border-gray-700';
     });
 
     const cardClasses = computed(() => {

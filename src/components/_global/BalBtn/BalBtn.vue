@@ -148,7 +148,8 @@ export default defineComponent({
     const shadowClasses = (): string => {
       if (props.outline || props.flat || props.disabled || props.loading)
         return '';
-      return 'shadow-lg hover:shadow-none';
+      if (props.size === 'sm') return 'shadow-sm hover:shadow-none';
+      return 'shadow hover:shadow-none';
     };
 
     const btnClasses = computed(() => {

@@ -150,7 +150,7 @@
           @click.prevent="approveAllowances"
         />
         <template v-else>
-          <BalCheckboxInput
+          <BalCheckbox
             v-if="priceImpact >= 0.01"
             v-model="highPiAccepted"
             :rules="[isRequired()]"

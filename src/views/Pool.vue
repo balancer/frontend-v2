@@ -59,13 +59,13 @@
       <div class="order-1 lg:order-2">
         <BalLoadingBlock
           v-if="loading || appLoading || web3Loading"
-          class="h-96 sticky top-10"
+          class="h-96 sticky top-24"
         />
         <PoolActionsCard
           v-else
           :pool="pool"
           @on-tx="fetchPool"
-          class="sticky top-10"
+          class="sticky top-24"
         />
       </div>
     </div>

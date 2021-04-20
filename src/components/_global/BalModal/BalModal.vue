@@ -13,7 +13,7 @@
         <div v-if="showContent" class="content" @click.stop>
           <BalCard
             :title="title"
-            shadow="2xl"
+            shadow="lg"
             :no-pad="noPad"
             :no-content-pad="noContentPad"
             class="modal-card"

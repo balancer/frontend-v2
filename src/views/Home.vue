@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto">
+  <div class="container mx-auto px-4 lg:px-0">
     <SubNav class="mb-8" />
 
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>

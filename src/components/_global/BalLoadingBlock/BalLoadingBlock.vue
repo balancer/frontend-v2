@@ -26,9 +26,9 @@ export default defineComponent({
 }
 
 .shimmer {
-  --startColor: theme('colors.gray.100');
-  --midColor: theme('colors.gray.200');
-  --endColor: theme('colors.gray.100');
+  --startColor: theme('colors.gray.50');
+  --midColor: theme('colors.gray.100');
+  --endColor: theme('colors.gray.50');
 
   animation: shimmerBackground 10s infinite;
   background: linear-gradient(
