@@ -39,15 +39,9 @@ const getters = {
 
     const allowances = tokens.filter((token, index) => {
       const amount = amounts[index];
-      if (parseFloat(amount) == 0) {
-        return false;
-      }
-      if (!state.allowances[dst]) {
-        return true;
-      }
-      if (!state.allowances[dst][token.toLowerCase()]) {
-        return true;
-      }
+      if (parseFloat(amount) == 0) return false;
+      if (!state.allowances[dst]) return true;
+      if (!state.allowances[dst][token.toLowerCase()]) return true;
       return state.allowances[dst][token.toLowerCase()].lt(amount);
     });
 
