@@ -8,6 +8,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@media only screen and (max-width: 600px) {
+  html {
+    font-size: 14px;
+  }
+}
+
 * {
   outline: none !important;
 }
