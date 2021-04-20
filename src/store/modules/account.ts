@@ -38,13 +38,16 @@ const getters = {
     const dst = query.dst || configs[config].addresses.vault;
 
     const allowances = tokens.filter((token, index) => {
+      const amount = amounts[index];
+      if (parseFloat(amount) == 0) {
+        return true;
+      }
       if (!state.allowances[dst]) {
         return true;
       }
       if (!state.allowances[dst][token.toLowerCase()]) {
         return true;
       }
-      const amount = amounts[index];
       return state.allowances[dst][token.toLowerCase()].lt(amount);
     });
 
