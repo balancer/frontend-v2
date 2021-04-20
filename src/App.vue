@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="overflow-x-hidden lg:overflow-x-visible">
+  <div id="app">
     <AppNav />
     <div class="pb-12">
       <router-view :key="$route.path" class="flex-auto" />
