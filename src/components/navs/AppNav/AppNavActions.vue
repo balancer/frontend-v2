@@ -2,7 +2,7 @@
   <div>
     <div v-if="$auth.isAuthenticated.value" class="flex items-center">
       <BalBtn
-        v-if="!totalPending"
+        v-if="totalPending > 0"
         tag="a"
         :href="`https://claim.balancer.finance/#/${account}`"
         target="_blank"
