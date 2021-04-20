@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import BalLoadingIcon from './LoadingIcon.vue';
+import BalLoadingIcon from '../BalLoadingIcon/BalLoadingIcon.vue';
 
 export default defineComponent({
   name: 'BalBtn',

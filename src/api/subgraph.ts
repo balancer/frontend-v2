@@ -1,7 +1,7 @@
 export const BALANCER_SUBGRAPH_URL = {
   1: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-beta',
   17: 'http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2',
-  42: 'https://api.thegraph.com/subgraphs/name/destiner/balancer-kovan-v2'
+  42: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2'
 };
 
 type PoolType = 'Weighted' | 'Stable';
@@ -108,18 +108,13 @@ export async function getPools(chainId: number) {
   };
 }
 
-export async function getUserPoolEvents(
-  chainId: number,
-  poolId: string,
-  userAddress: string
-) {
+export async function getPoolEvents(chainId: number, poolId: string) {
   const query = `
     query {
       joins(
         first: 100,
         where: {
-          pool: "${poolId}",
-          sender: "${userAddress}"
+          pool: "${poolId}"
         }
       ) {
         amounts
@@ -129,8 +124,7 @@ export async function getUserPoolEvents(
       exits(
         first: 100,
         where: {
-          pool: "${poolId}",
-          sender: "${userAddress}"
+          pool: "${poolId}"
         }
       ) {
         amounts

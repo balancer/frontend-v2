@@ -1,9 +1,9 @@
-import Tooltip from '../Bal/Tooltip.vue';
-import { generateTemplate } from '../../../.storybook/helpers/templates';
+import Tooltip from './BalTooltip.vue';
+import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {
   component: Tooltip,
-  title: 'Components/Bal/Tooltip',
+  title: 'Components/BalTooltip',
   parameters: {
     layout: 'centered'
   },

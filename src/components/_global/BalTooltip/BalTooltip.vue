@@ -19,7 +19,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, PropType, ref } from 'vue';
 import { createPopper, Instance as PopperInstance } from '@popperjs/core';
-import BalIcon from './Icon.vue';
+import BalIcon from '../BalIcon/BalIcon.vue';
 
 type Placement = 'top' | 'left' | 'bottom' | 'right';
 
