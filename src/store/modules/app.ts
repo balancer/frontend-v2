@@ -46,10 +46,6 @@ const actions = {
 };
 
 const mutations = {
-  setInit(state: AppState, val: boolean): void {
-    state.init = val;
-  },
-
   setLoading(state: AppState, val: boolean): void {
     state.loading = val;
   },
