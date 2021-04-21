@@ -5,7 +5,7 @@
       :src="_url(token.logoURI)"
       :style="{
         width: `${size || 24}px`,
-        height: `${size || 24}px`
+        height: `${size || 24}px`,
       }"
       @error="error = true"
       class="rounded-full inline-block bg-white leading-none"
@@ -30,23 +30,20 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   props: {
     token: Object,
     address: String,
     size: Number,
     symbol: Boolean,
-    name: Boolean
+    name: Boolean,
   },
-  data() {
+  setup(props) {
     return {
-      error: false
+      error: false,
     };
   },
-  watch: {
-    token(val, prev) {
-      if (val.address !== prev.address) this.error = false;
-    }
-  }
-};
+});
 </script>
