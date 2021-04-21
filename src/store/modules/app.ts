@@ -23,25 +23,30 @@ const state: AppState = {
 
 const actions = {
   init: async ({ commit, dispatch }) => {
-    commit('setInit', true);
+    try {
+      // Fetch init data
+      await dispatch('registry/get', null, { root: true });
+      await dispatch('market/loadPrices', [], { root: true });
 
-    // Fetch init data
-    await dispatch('registry/get', null, { root: true });
-    await dispatch('market/loadPrices', [], { root: true });
+      // Setup web3
+      const auth = getInstance();
+      const connector = await auth.getConnector();
+      if (connector) await dispatch('web3/login', connector, { root: true });
 
-    // Setup web3
-    const auth = getInstance();
-    const connector = await auth.getConnector();
-    if (connector) await dispatch('web3/login', connector, { root: true });
+      commit('setLocale', 'en-US');
+      commit('setDarkMode', false);
 
-    commit('setLocale', 'en-US');
-    commit('setDarkMode', false);
 
-    // Set defaults from localStorage
-    // commit('setLocale', lsGet('locale', defaultLocale));
-    // commit('setDarkMode', lsGet('darkMode', false));
-    commit('setSlippage', lsGet('slippage', '0.01'));
-    commit('setLoading', false);
+      // Set defaults from localStorage
+      // commit('setLocale', lsGet('locale', defaultLocale));
+      // commit('setDarkMode', lsGet('darkMode', false));
+      commit('setSlippage', lsGet('slippage', '0.01'));
+      commit('setLoading', false);
+      commit('setInit', true);
+    } catch (error) {
+      commit('setInit', false);
+      console.error('Failed to initialize app', error);
+    }
   }
 };
 
