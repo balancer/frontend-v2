@@ -47,9 +47,7 @@
           </template>
         </BalTextInput>
         <div class="flex mb-4">
-          <BalBtn color="gray" flat circle @click="handleSwitchTokens">
-            <BalIcon name="shuffle" size="sm" />
-          </BalBtn>
+          <PairToggle @toggle="handleSwitchTokens" />
           <div v-if="rateMessage" class="flex-auto ml-4 my-2">
             <span
               class="text-sm text-gray-500 cursor-pointer"
@@ -152,13 +150,15 @@ import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
 import initialTokens from '@/constants/initialTokens.json';
-import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 import { ETHER } from '@/constants/tokenlists';
+import PairToggle from '@/components/PairToggle.vue';
+import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 
 const ETH_BUFFER = 0.1;
 
 export default defineComponent({
   components: {
+    PairToggle,
     SelectTokenModal
   },
 
