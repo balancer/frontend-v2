@@ -1,6 +1,10 @@
 <template>
   <AppNavAlert v-if="alert" :alert="alert" />
-  <nav id="app-nav" ref="appNav" class="h-20 px-4 lg:px-6 bg-white sticky top-0 z-50">
+  <nav
+    id="app-nav"
+    ref="appNav"
+    class="h-20 px-4 lg:px-6 bg-white sticky top-0 z-50"
+  >
     <div class="h-full flex items-center justify-between">
       <div class="w-1/3">
         <router-link :to="{ name: 'home' }">
@@ -21,14 +25,14 @@
 </template>
 
 <script>
-import { computed, defineComponent, toRefs, onMounted, onUnmounted, ref } from 'vue';
+import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppLogo from '@/components/images/AppLogo.vue';
 import AppIcon from '@/components/images/AppIcon.vue';
 import AppNavAlert from './AppNavAlert.vue';
 import AppNavToggle from './AppNavToggle.vue';
-import AppNavActions from './AppNavActions.vue'
+import AppNavActions from './AppNavActions.vue';
 
 export default defineComponent({
   components: {
@@ -53,9 +57,9 @@ export default defineComponent({
     // METHODS
     function handleScroll() {
       if (window.scrollY === 0) {
-        appNav.value.classList.remove('shadow-lg')
+        appNav.value.classList.remove('shadow-lg');
       } else {
-        appNav.value.classList.add('shadow-lg')
+        appNav.value.classList.add('shadow-lg');
       }
     }
 
@@ -84,6 +88,6 @@ export default defineComponent({
   @apply w-full;
   @apply bg-white dark:bg-gray-900;
   @apply border-b border-transparent dark:border-gray-700;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 </style>
