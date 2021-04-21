@@ -3,14 +3,16 @@ import { useStore } from 'vuex';
 import { approveTokens } from '@/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
 import useAuth from '@/composables/useAuth';
+import useTokens from '@/composables/useTokens';
+import useNotify from '@/composables/useNotify';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
   const auth = useAuth();
   const store = useStore();
   const approving = ref(false);
   const approvedAll = ref(false);
-
-  const allTokens = computed(() => store.getters['registry/getTokens']());
+  const { allTokens } = useTokens();
+  const { txListener } = useNotify();
 
   const amounts = computed(() =>
     tokens.map((token, index) => {
@@ -29,6 +31,23 @@ export default function useTokenApprovals(tokens, shortAmounts) {
     return allowances;
   });
 
+  function handleTransactions(txs) {
+    txs.forEach(tx => {
+      txListener(tx.hash, {
+        onTxConfirmed: () => {
+          store.dispatch('account/getAllowances', { tokens });
+          approving.value = false;
+        },
+        onTxCancel: () => {
+          approving.value = false;
+        },
+        onTxFailed: () => {
+          approving.value = false;
+        }
+      });
+    });
+  }
+
   async function approveAllowances(): Promise<void> {
     try {
       approving.value = true;
@@ -38,12 +57,9 @@ export default function useTokenApprovals(tokens, shortAmounts) {
         requiredAllowances.value
       );
       console.log(txs);
-      await Promise.all(txs.map(tx => tx.wait()));
-      approvedAll.value = true;
+      handleTransactions(txs);
     } catch (error) {
       console.error(error);
-    } finally {
-      approving.value = false;
     }
   }
 

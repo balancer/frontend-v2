@@ -362,14 +362,16 @@ export default defineComponent({
 
     const bptIn = computed(() => {
       if (isProportional.value) return data.bptIn;
+      if (!exactOut.value) return bptBalance.value; // Single asset max withdrawal
 
+      // Else single asset exact amount case
       const poolDecimals = allTokens.value[props.pool.address].decimals;
       let bptIn = poolCalculator
         .bptInForExactTokenOut(data.amounts[data.singleAsset], data.singleAsset)
         .toString();
       bptIn = formatUnits(bptIn, poolDecimals);
 
-      return exactOut.value ? addSlippage(bptIn, poolDecimals) : bptIn;
+      return addSlippage(bptIn, poolDecimals);
     });
 
     const amountsOut = computed(() => {
