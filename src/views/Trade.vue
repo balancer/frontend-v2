@@ -2,6 +2,14 @@
   <Layout>
     <BalCard class="max-w-md mx-auto mt-16" :title="$t(title)" :titleTag="'h4'">
       <div class="mb-8">
+        <div
+          class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
+        >
+          <div>Send</div>
+          <div class="text-gray-500">
+            {{ fNum(toFiat(tokenInAmountInput, tokenInAddressInput), 'usd') }}
+          </div>
+        </div>
         <BalTextInput
           :name="'tokenIn'"
           v-model="tokenInAmountInput"
@@ -11,6 +19,7 @@
           step="any"
           placeholder="0"
           validate-on="input"
+          square-top
           prepend-border
         >
           <template v-slot:prepend>
@@ -59,6 +68,14 @@
             />
           </div>
         </div>
+        <div
+          class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
+        >
+          <div>Receive</div>
+          <div class="text-gray-500">
+            {{ fNum(toFiat(tokenOutAmountInput, tokenOutAddressInput), 'usd') }}
+          </div>
+        </div>
         <BalTextInput
           :name="'tokenOut'"
           v-model="tokenOutAmountInput"
@@ -69,6 +86,7 @@
           placeholder="0"
           validate-on="input"
           prepend-border
+          square-top
         >
           <template v-slot:prepend>
             <div
@@ -171,7 +189,7 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const { isAuthenticated } = useAuth();
-    const { fNum } = useNumbers();
+    const { fNum, toFiat } = useNumbers();
 
     const tokenInAddressInput = ref('');
     const tokenInAmountInput = ref('');
@@ -366,6 +384,7 @@ export default defineComponent({
 
     return {
       fNum,
+      toFiat,
       tokens,
       balanceLabel,
       title,
