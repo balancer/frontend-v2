@@ -36,7 +36,6 @@ const actions = {
       commit('setLocale', 'en-US');
       commit('setDarkMode', false);
 
-
       // Set defaults from localStorage
       // commit('setLocale', lsGet('locale', defaultLocale));
       // commit('setDarkMode', lsGet('darkMode', false));
