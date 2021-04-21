@@ -16,7 +16,8 @@
     "storybook": "start-storybook -p 6006",
     "storybook:build": "build-storybook",
     "tailwind:view": "tailwind-config-viewer -o",
-    "tailwind:build": "tailwind-config-viewer export ./tailwind-static"
+    "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@balancer-labs/sor": "^1.0.0",
@@ -98,6 +99,7 @@
     "babel-loader": "^8.2.2",
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-vue": "^7.0.0-alpha.0",
+    "husky": "^6.0.0",
     "prettier": "^1.19.1",
     "tailwind-config-viewer": "^1.5.0",
     "vue-cli-plugin-webpack-bundle-analyzer": "^2.0.0",
