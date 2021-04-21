@@ -1,6 +1,9 @@
 <template>
   <Layout>
-    <BalCard class="max-w-md mx-auto mt-16" :title="$t(title)" :titleTag="'h4'">
+    <BalCard class="max-w-md mx-auto mt-16">
+      <template v-slot:header>
+        <h4 class="font-bold">{{ $t(title) }}</h4>
+      </template>
       <div class="mb-8">
         <div
           class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
