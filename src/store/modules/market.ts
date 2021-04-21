@@ -18,19 +18,15 @@ const actions = {
       tokens = Object.values(rootGetters['registry/getTokens']()).map(
         (token: any) => token.address
       );
-    try {
-      commit('setLoading', true);
-      const chainId = Number(process.env.VUE_APP_NETWORK || 1);
-      const [prices, etherPrice] = await Promise.all([
-        getTokensPrice(chainId, tokens),
-        getEtherPrice()
-      ]);
-      prices.ether = etherPrice;
-      commit('addPrices', prices);
-      commit('setLoading', false);
-    } catch (e) {
-      console.log(e);
-    }
+    commit('setLoading', true);
+    const chainId = Number(process.env.VUE_APP_NETWORK || 1);
+    const [prices, etherPrice] = await Promise.all([
+      getTokensPrice(chainId, tokens),
+      getEtherPrice()
+    ]);
+    prices.ether = etherPrice;
+    commit('addPrices', prices);
+    commit('setLoading', false);
   }
 };
 
