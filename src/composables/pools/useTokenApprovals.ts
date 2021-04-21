@@ -3,8 +3,8 @@ import { useStore } from 'vuex';
 import { approveTokens } from '@/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
 import useAuth from '@/composables/useAuth';
-import useTokens from '../useTokens';
-import useNotify from '../useNotify';
+import useTokens from '@/composables/useTokens';
+import useNotify from '@/composables/useNotify';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
   const auth = useAuth();
