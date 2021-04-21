@@ -58,9 +58,9 @@
             </div>
           </template>
         </BalTextInput>
-        <div class="flex mb-4">
+        <div class="flex items-center mb-4">
           <PairToggle @toggle="handleSwitchTokens" />
-          <div v-if="rateMessage" class="flex-auto ml-4 my-2">
+          <div v-if="rateMessage" class="flex-auto ml-4">
             <span
               class="text-sm text-gray-500 cursor-pointer"
               @click="toggleRate"
