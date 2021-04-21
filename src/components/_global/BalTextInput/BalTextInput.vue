@@ -217,9 +217,9 @@ export default defineComponent({
 input {
   @apply w-full bg-transparent leading-none;
   transition: all 0.3s ease;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 input:focus {
