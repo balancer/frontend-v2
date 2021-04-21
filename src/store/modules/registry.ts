@@ -33,8 +33,10 @@ const getters = {
     const ether: any = ETHER;
     ether.balance = 0;
     ether.balanceDenorm = '0';
-    ether.price = rootState.market.prices?.ether?.price || 0;
-    ether.price24HChange = rootState.market.prices?.ether?.price24HChange || 0;
+    ether.price =
+      rootState.market.prices[ether.address.toLowerCase()]?.price || 0;
+    ether.price24HChange =
+      rootState.market.prices[ether.address.toLowerCase()]?.price24HChange || 0;
     if (rootState.web3.account) {
       ether.balanceDenorm = rootState.account.balances.ether || '0';
       ether.balance = formatUnits(ether.balanceDenorm, ether.decimals);
