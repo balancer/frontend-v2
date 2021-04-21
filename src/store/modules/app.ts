@@ -3,7 +3,6 @@ import { lsGet, lsSet } from '@/utils';
 import i18n from '@/plugins/i18n';
 
 export interface AppState {
-  init: boolean;
   loading: boolean;
   modalOpen: boolean;
   darkMode: boolean;
@@ -12,7 +11,6 @@ export interface AppState {
 }
 
 const state: AppState = {
-  init: false,
   loading: true,
   modalOpen: false,
   darkMode: false,
@@ -41,9 +39,7 @@ const actions = {
       // commit('setDarkMode', lsGet('darkMode', false));
       commit('setSlippage', lsGet('slippage', '0.01'));
       commit('setLoading', false);
-      commit('setInit', true);
     } catch (error) {
-      commit('setInit', false);
       console.error('Failed to initialize app', error);
     }
   }

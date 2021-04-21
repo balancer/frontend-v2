@@ -28,12 +28,12 @@
           <PoolStats
             :pool="pool"
             :snapshots="snapshots"
-            :loading="loading || !appInitialized"
+            :loading="loading || !appLoading"
           />
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
-            <BalLoadingBlock v-if="loading || !appInitialized" class="h-60" />
+            <BalLoadingBlock v-if="loading || !appLoading" class="h-60" />
             <PoolBalancesCard
               v-else
               :tokens="pool.tokens"
@@ -147,7 +147,6 @@ export default defineComponent({
     });
 
     // COMPUTED
-    const appInitialized = computed(() => store.state.app.init);
     const appLoading = computed(() => store.state.app.loading);
 
     const pool = computed(() => {
@@ -260,7 +259,6 @@ export default defineComponent({
       title,
       isAuthenticated,
       hasEvents,
-      appInitialized,
       // methods
       fNum,
       fetchPool
