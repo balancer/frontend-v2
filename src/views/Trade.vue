@@ -6,8 +6,8 @@
           class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
         >
           <div>Send</div>
-          <div class="text-gray-500">
-            {{ fNum(toFiat(tokenInAmountInput, tokenInAddressInput), 'usd') }}
+          <div v-if="tokenInValue > 0" class="text-gray-500">
+            {{ fNum(tokenInValue, 'usd') }}
           </div>
         </div>
         <BalTextInput
@@ -72,8 +72,8 @@
           class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
         >
           <div>Receive</div>
-          <div class="text-gray-500">
-            {{ fNum(toFiat(tokenOutAmountInput, tokenOutAddressInput), 'usd') }}
+          <div v-if="tokenOutValue > 0" class="text-gray-500">
+            {{ fNum(tokenOutValue, 'usd') }}
           </div>
         </div>
         <BalTextInput
@@ -203,6 +203,13 @@ export default defineComponent({
       store.getters['registry/getTokens'](params);
     const getConfig = () => store.getters['web3/getConfig']();
     const tokens = computed(() => getTokens({ includeEther: true }));
+
+    const tokenInValue = computed(() =>
+      toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
+    );
+    const tokenOutValue = computed(() =>
+      toFiat(tokenOutAmountInput.value, tokenOutAddressInput.value)
+    );
 
     const isWrap = computed(() => {
       const config = getConfig();
@@ -395,8 +402,10 @@ export default defineComponent({
       connectWallet,
       tokenInAddressInput,
       tokenInAmountInput,
+      tokenInValue,
       tokenOutAddressInput,
       tokenOutAmountInput,
+      tokenOutValue,
       rateMessage,
       openModalSelectToken,
       handleSelectToken,
