@@ -246,13 +246,8 @@ export async function getPoolSharesChart(
       return [`${year}-${month}-${day}`, value];
     });
   return {
-    categories: formatedResults.map(row => row[0]),
-    series: [
-      {
-        name: 'Value ($)',
-        data: formatedResults.map(row => row[1])
-      }
-    ]
+    axis: formatedResults.map(row => row[0]),
+    data: formatedResults.map(row => row[1])
   };
 }
 

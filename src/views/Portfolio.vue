@@ -1,8 +1,14 @@
 <template>
   <div class="container mx-auto max-w-5xl">
     <SubNav class="mb-8" />
+    <BalLoadingBlock v-if="isLoadingChartData" class="h-96 mt-16" />
     <div class="mt-16">
-      <bal-chart />
+      <bal-chart
+        v-if="!isLoadingChartData"
+        name="Value ($)"
+        :axis="portfolioChartData?.axis"
+        :data="portfolioChartData?.data"
+      />
     </div>
     <!-- <Block v-if="account">
       <div class="mx-4 md:mx-0">
@@ -34,29 +40,29 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import {
   defineComponent,
   reactive,
   toRefs,
   computed,
   onBeforeMount,
-  watch,
+  watch
 } from 'vue';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import getProvider from '@/utils/provider';
 import { getPoolSharesChart } from '@/utils/balancer/subgraph';
-import { clone } from '@/utils';
 import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import SubNav from '@/components/navs/SubNav.vue';
 import useWeb3 from '@/composables/useWeb3';
-import BalChart from '@/components/_global/BalChart/BalChart.vue';
+import { useQuery } from 'vue-react-query';
+import { isNil } from 'lodash';
 
 export default defineComponent({
   components: {
-    SubNav,
+    SubNav
   },
 
   setup() {
@@ -68,15 +74,31 @@ export default defineComponent({
 
     // DATA
     const data = reactive({
-      poolSharesChart: {},
       loaded: false,
       pools: [],
-      totalBalance: 0,
+      totalBalance: 0
     });
 
     // COMPUTED
     const networkKey = computed(() => store.state.web3.config.key);
     const tokens = computed(() => store.getters['registry/getTokens']());
+    const {
+      data: portfolioChartData,
+      isLoading: isLoadingChartData
+    } = useQuery<any, any>(
+      'chartData',
+      () =>
+        getPoolSharesChart(
+          networkKey.value,
+          blockNumber.value,
+          account.value,
+          30
+        ),
+      {
+        enabled:
+          !isNil(account) || !isNil(networkKey.value) || !isNil(account.value)
+      }
+    );
 
     const isLoading = computed(() => {
       return (
@@ -90,9 +112,8 @@ export default defineComponent({
       () => isAppLoading.value || isLoading.value || isWeb3Loading.value
     );
 
-    watch(data, () => console.log('d', data.poolSharesChart))
     // METHODS
-    const injectTokens = (tokens) =>
+    const injectTokens = tokens =>
       store.dispatch('registry/injectTokens', tokens);
 
     async function load() {
@@ -105,19 +126,8 @@ export default defineComponent({
           account.value
         );
 
-        data.poolSharesChart = await getPoolSharesChart(
-          networkKey.value,
-          blockNumber.value,
-          account.value,
-          30
-        );
-
-        data.totalBalance = clone(data.poolSharesChart.series[0].data)
-          .slice(-1)
-          .pop();
-
         const tokens = data.pools
-          .map((pool) => pool.tokens)
+          .map(pool => pool.tokens)
           .reduce((a, b) => [...a, ...b], []);
         await injectTokens(tokens);
       }
@@ -151,7 +161,9 @@ export default defineComponent({
       // methods
       fNum,
       t,
+      isLoadingChartData,
+      portfolioChartData
     };
-  },
+  }
 });
 </script>
