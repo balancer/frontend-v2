@@ -1,5 +1,5 @@
 {
-  "name": "pool-management-v2",
+  "name": "@balancer-labs/frontend-v2",
   "version": "0.1.0",
   "engines": {
     "node": "14.x",
@@ -104,5 +104,5 @@
     "vue-loader": "^16.1.2"
   },
   "license": "MIT",
-  "repository": "balancer-labs/pool-management-v2"
+  "repository": "balancer-labs/frontend-v2"
 }
