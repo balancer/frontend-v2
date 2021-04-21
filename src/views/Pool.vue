@@ -28,12 +28,12 @@
           <PoolStats
             :pool="pool"
             :snapshots="snapshots"
-            :loading="loading || !appLoading"
+            :loading="loading || appLoading"
           />
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
-            <BalLoadingBlock v-if="loading || !appLoading" class="h-60" />
+            <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
             <PoolBalancesCard
               v-else
               :tokens="pool.tokens"
