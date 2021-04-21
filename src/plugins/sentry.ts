@@ -17,8 +17,12 @@ const environment = `${ENV}-${networkMap[NETWORK]}`;
 export default function initSentry(app: App) {
   if (ENV === 'production') {
     app.config.errorHandler = (error, _, info) => {
-      setTag('info', info);
-      captureException(error);
+      try {
+        setTag('info', info);
+        captureException(error);
+      } catch (error) {
+        console.error('Failed to send error to Sentry', error);
+      }
     };
 
     init({
