@@ -45,7 +45,7 @@
           </template>
           <template v-slot:info>
             <div class="cursor-pointer" @click="handleMax">
-              {{ $t('max') }}: {{ balanceLabel }}
+              {{ $t('balance') }}: {{ fNum(balanceLabel, 'token') }}
             </div>
           </template>
         </BalTextInput>
