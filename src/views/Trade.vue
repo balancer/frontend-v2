@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <BalCard class="max-w-md mx-auto mt-16">
+    <BalCard class="max-w-full lg:max-w-sm mx-auto lg:mt-16">
       <template v-slot:header>
         <h4 class="font-bold">{{ $t(title) }}</h4>
       </template>
