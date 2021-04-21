@@ -12,7 +12,14 @@
           <BalBtn color="white" class="mr-4" @click="setAccountModal(true)">
             {{ $t('connectWallet') }}
           </BalBtn>
-          <BalBtn color="white" outline>
+          <BalBtn
+            tag="a"
+            href="https://balancer.fi"
+            target="_blank"
+            rel="noreferrer"
+            color="white"
+            outline
+          >
             {{ $t('learnMore') }}
             <BalIcon name="external-link" size="sm" class="ml-2" />
           </BalBtn>
