@@ -15,18 +15,16 @@
         >
           <template v-slot:prepend>
             <div
-              class="flex items-center w-24 cursor-pointer"
+              class="flex items-center w-28 cursor-pointer"
               @click="openModalSelectToken('input')"
             >
-              <Token :token="tokens[tokenInAddressInput]" />
-              <div
-                class="flex flex-col ml-3 w-14 font-medium text-sm leading-none truncate"
-              >
+              <Token :token="tokens[tokenInAddressInput]" :size="28" />
+              <div class="flex flex-col ml-3 w-14 leading-none truncate">
                 <BalTooltip
                   v-if="tokens[tokenInAddressInput].symbol.length > 5"
                 >
                   <template v-slot:activator>
-                    <span>
+                    <span class="font-bold">
                       {{ tokens[tokenInAddressInput].symbol }}
                     </span>
                   </template>
@@ -34,10 +32,15 @@
                     {{ tokens[tokenInAddressInput].symbol }}
                   </div>
                 </BalTooltip>
-                <span v-else>
+                <span v-else class="font-bold">
                   {{ tokens[tokenInAddressInput].symbol }}
                 </span>
               </div>
+              <BalIcon
+                :name="'chevron-down'"
+                :size="'sm'"
+                class="text-blue-500"
+              />
             </div>
           </template>
           <template v-slot:info>
@@ -69,18 +72,16 @@
         >
           <template v-slot:prepend>
             <div
-              class="flex items-center w-24 cursor-pointer"
+              class="flex items-center w-28 cursor-pointer"
               @click="openModalSelectToken('output')"
             >
-              <Token :token="tokens[tokenOutAddressInput]" />
-              <div
-                class="flex flex-col ml-3 w-14 font-medium text-sm leading-none truncate"
-              >
+              <Token :token="tokens[tokenOutAddressInput]" :size="28" />
+              <div class="flex flex-col ml-3 w-14 leading-none truncate">
                 <BalTooltip
                   v-if="tokens[tokenOutAddressInput].symbol.length > 5"
                 >
                   <template v-slot:activator>
-                    <span>
+                    <span class="font-bold">
                       {{ tokens[tokenOutAddressInput].symbol }}
                     </span>
                   </template>
@@ -88,10 +89,15 @@
                     {{ tokens[tokenOutAddressInput].symbol }}
                   </div>
                 </BalTooltip>
-                <span v-else>
+                <span v-else class="font-bold">
                   {{ tokens[tokenOutAddressInput].symbol }}
                 </span>
               </div>
+              <BalIcon
+                :name="'chevron-down'"
+                :size="'sm'"
+                class="text-blue-500"
+              />
             </div>
           </template>
           <template v-slot:info>
