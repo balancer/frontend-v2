@@ -11,11 +11,14 @@
   </div>
   <ECharts
     ref="chartInstance"
-    class="w-full h-96"
+    class="w-full h-72"
     :option="option"
     autoresize
     @updateAxisPointer="_onAxisMoved"
   />
+  <div class="flex w-full mt-2 justify-end">
+    <bal-button-group :options="periodOptions" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -25,6 +28,29 @@ import * as echarts from 'echarts/core';
 import { EChartsOption } from 'echarts/types/dist/shared';
 import ECharts from 'vue-echarts';
 import { format as formatDate } from 'date-fns';
+
+const PeriodOptions = [
+  {
+    label: '1d',
+    value: '24h'
+  },
+  {
+    label: '1w',
+    value: '1w'
+  },
+  {
+    label: '1m',
+    value: '1m'
+  },
+  {
+    label: '3m',
+    value: '3m'
+  },
+  {
+    label: '1y',
+    value: '1y'
+  }
+];
 
 // https://echarts.apache.org/en/option.html
 const LineChartConfig = (
@@ -47,6 +73,7 @@ const LineChartConfig = (
     left: 0,
     right: 0,
     top: 0,
+    bottom: '5%',
     containLabel: false
   },
   tooltip: {
@@ -63,7 +90,6 @@ const LineChartConfig = (
         'do LLL yyyy'
       )}</span>`,
     shadowColor: 'none',
-    shadowBlur: 0,
     backgroundColor: 'transparent'
   },
   series: [
@@ -113,12 +139,13 @@ export default defineComponent({
     const chartInstance = ref<echarts.ECharts>();
     const lineChart = ref<HTMLElement>();
     const option = ref<EChartsOption>({});
-    const currentValue = ref('$0.00');
+    const currentValue = ref('$0,00');
     const change = ref(0);
 
+    // Triggered when hovering mouse over different xAxis points
     const _onAxisMoved = ({ dataIndex }: AxisMoveEvent) => {
       props.onAxisMoved && props.onAxisMoved(props.data[dataIndex]);
-      currentValue.value = numeral(props.data[dataIndex]).format('$0.00');
+      currentValue.value = numeral(props.data[dataIndex]).format('$0,0.00');
 
       if (dataIndex === 0) {
         change.value = 0;
@@ -135,6 +162,8 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      // This is a small trick to trigger an animation on first mount
+      // rather than have the chart just pop into existence
       setTimeout(() => {
         option.value = LineChartConfig(props.name, props.axis, props.data);
       }, 0);
@@ -147,7 +176,8 @@ export default defineComponent({
       _onAxisMoved,
       currentValue,
       change,
-      numeral
+      numeral,
+      periodOptions: PeriodOptions
     };
   }
 });
