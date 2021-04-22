@@ -74,7 +74,7 @@
         <div
           class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
         >
-          <div>Receive</div>
+          <div>{{ $t('receive') }}</div>
           <div v-if="tokenOutValue > 0" class="text-gray-500">
             {{ fNum(tokenOutValue, 'usd') }}
           </div>
