@@ -17,7 +17,11 @@
     @updateAxisPointer="_onAxisMoved"
   />
   <div class="flex w-full mt-2 justify-end">
-    <bal-button-group :options="periodOptions" :defaultValue="30" />
+    <bal-button-group
+      :options="periodOptions"
+      :defaultValue="30"
+      :onChange="onPeriodSelected"
+    />
   </div>
 </template>
 
@@ -129,6 +133,9 @@ export default defineComponent({
       default: () => 'Please provide a chart name'
     },
     onAxisMoved: {
+      type: Function
+    },
+    onPeriodSelected: {
       type: Function
     }
   },

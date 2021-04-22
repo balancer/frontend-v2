@@ -9,6 +9,7 @@
         :axis="portfolioChartData?.axis"
         :data="portfolioChartData?.data"
         dataKey="id"
+        :onPeriodSelected="handleGraphingPeriodChange"
       />
     </div>
     <div>
@@ -16,6 +17,7 @@
         My V2 Investments
       </h3>
       <div class="shadow-lg mt-8">
+        {{ isLoadingPools }}
         <bal-table
           :columns="columns"
           :data="pools"
@@ -60,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue';
+import { defineComponent, reactive, toRefs, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import getProvider from '@/utils/provider';
@@ -149,6 +151,7 @@ export default defineComponent({
     const data = reactive({
       totalBalance: 0
     });
+    const currentGraphingPeriod = ref(30);
 
     // COMPUTED
     const isLoading = computed(() => {
@@ -174,7 +177,7 @@ export default defineComponent({
           networkKey.value,
           blockNumber.value,
           account.value,
-          30
+          currentGraphingPeriod.value
         ),
       {
         enabled:
@@ -207,6 +210,10 @@ export default defineComponent({
     const injectTokens = tokens =>
       store.dispatch('registry/injectTokens', tokens);
 
+    const handleGraphingPeriodChange = (newPeriod: number) => {
+      currentGraphingPeriod.value = newPeriod;
+    };
+
     return {
       // data
       ...toRefs(data),
@@ -224,7 +231,8 @@ export default defineComponent({
       t,
       isLoadingChartData,
       portfolioChartData,
-      columns
+      columns,
+      handleGraphingPeriodChange
     };
   }
 });
