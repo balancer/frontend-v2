@@ -64,6 +64,7 @@
     "investmentSettled": "Your investment has settled",
     "investmentSuccess": "Your tokens have been added to this pool, and you have <br> received a new LP token representing this investment.",
     "language": "Language",
+    "learnMore": "Learn more",
     "light": "Light",
     "logOut": "Log out",
     "lpsEarnFee": "LPs earn {0} in fees",

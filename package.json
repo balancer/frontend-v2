@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@balancer-labs/sor": "^1.0.0",
-    "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#timur/rc02-package",
+    "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#mike/mainnet",
     "@ensdomains/content-hash": "^2.5.3",
     "@ethersproject/abi": "^5.0.1",
     "@ethersproject/address": "^5.0.1",

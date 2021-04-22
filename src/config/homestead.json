@@ -16,15 +16,14 @@
     "dsProxyRegistry": "0x4678f0a6958e4D2Bc4F1BAF7Bc52E8F3564f3fE4",
     "exchangeProxy": "0x3E66B66Fd1d0b02fDa6C811Da9E0547970DB2f21",
     "multicall": "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
-    "authorizer": "0x22E33436335B983A7322bAe156f726e61C3012Dd",
-    "vault": "0x99EceD8Ba43D090CA4283539A31431108FD34438",
-    "weightedPoolFactory": "0xdB49af9b25cFAdbb0118BD38ec86EaE51F210931",
-    "stablePoolFactory": "0xd0264838A8278674fa71f135f7Dba07cDDeC20d9",
-    "oneToOneSwapValidator": "0x6648473ae4D7a7FdE330846D11ee95FDE2DE9447",
-    "tokenFactory": "0xfc532Ef450D9BaB17d5F153B091d271A3ADDcade",
+    "authorizer": "0xA331D84eC860Bf466b4CdCcFb4aC09a1B43F3aE6",
+    "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+    "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
+    "stablePoolFactory": "",
+    "tokenFactory": "",
     "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-    "MockFlashLoanReceiver": "0xD1C8625C3ECCD11d214A8760093959A8237dD710",
-    "balancerHelpers": ""
+    "MockFlashLoanReceiver": "",
+    "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E"
   },
   "strategies": {
     "0": {
