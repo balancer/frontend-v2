@@ -83,7 +83,7 @@
         @click="setSingleAsset(i)"
       >
         <template v-slot:prepend>
-          <div class="flex items-center w-24">
+          <div class="flex items-center h-full w-24">
             <Token :token="allTokens[token]" />
             <div class="flex flex-col ml-3">
               <span class="font-medium text-sm leading-none w-14 truncate">
@@ -93,8 +93,22 @@
           </div>
         </template>
         <template v-if="isSingleAsset" v-slot:info>
-          <div class="cursor-pointer" @click="amounts[i] = singleAssetMaxes[i]">
+          <div
+            class="cursor-pointer"
+            @click.prevent="amounts[i] = singleAssetMaxes[i]"
+          >
             {{ $t('singleTokenMax') }}: {{ singleAssetMaxLabel(i) }}
+          </div>
+        </template>
+        <template v-slot:append>
+          <div class="p-2">
+            <BalBtn
+              size="xs"
+              color="white"
+              @click.prevent="amounts[i] = singleAssetMaxes[i]"
+            >
+              {{ $t('max') }}
+            </BalBtn>
           </div>
         </template>
       </BalTextInput>
