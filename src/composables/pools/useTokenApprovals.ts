@@ -31,9 +31,15 @@ export default function useTokenApprovals(tokens, shortAmounts) {
     return allowances;
   });
 
-  function handleTransactions(txs) {
-    txs.forEach(tx => {
-      txListener(tx.hash, {
+  async function approveAllowances(): Promise<void> {
+    try {
+      approving.value = true;
+      const txs: string[] = await approveTokens(
+        auth.web3,
+        store.state.web3.config.addresses.vault,
+        requiredAllowances.value
+      );
+      txListener(txs, {
         onTxConfirmed: () => {
           store.dispatch('account/getAllowances', { tokens });
           approving.value = false;
@@ -45,19 +51,6 @@ export default function useTokenApprovals(tokens, shortAmounts) {
           approving.value = false;
         }
       });
-    });
-  }
-
-  async function approveAllowances(): Promise<void> {
-    try {
-      approving.value = true;
-      const txs = await approveTokens(
-        auth.web3,
-        store.state.web3.config.addresses.vault,
-        requiredAllowances.value
-      );
-      console.log(txs);
-      handleTransactions(txs);
     } catch (error) {
       console.error(error);
     }

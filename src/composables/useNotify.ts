@@ -1,5 +1,6 @@
 import { TransactionEventCode, TransactionData } from 'bnc-notify';
 import castArray from 'lodash/castArray';
+import mapValues from 'lodash/mapValues';
 
 import useBlocknative from './useBlocknative';
 import useWeb3 from './useWeb3';
@@ -11,7 +12,7 @@ export default function useNotify() {
   const { explorer } = useWeb3();
 
   function txListener(
-    txs: string | string[],
+    txHash: string | string[],
     {
       onTxConfirmed,
       onTxCancel,
@@ -20,9 +21,12 @@ export default function useNotify() {
       onTxConfirmed?: TxCallback;
       onTxCancel?: TxCallback;
       onTxFailed?: TxCallback;
-    }
+    },
+    strategy: 'all' | 'race' = 'all'
   ) {
-    castArray(txs).forEach(txHash => {
+    const txs = castArray(txHash);
+
+    txs.forEach(txHash => {
       const { emitter } = notify.hash(txHash);
 
       const defaultNotificationParams = {
@@ -43,6 +47,12 @@ export default function useNotify() {
         txFailed: onTxFailed
       };
 
+      // init event counters
+      const processedEventsCounter: Partial<Record<
+        TransactionEventCode,
+        number
+      >> = mapValues(eventsMap, () => 0);
+
       // register to events that have a callback
       Object.entries(eventsMap)
         .filter(([, txCallback]) => txCallback != null)
@@ -50,7 +60,16 @@ export default function useNotify() {
           emitter.on(
             eventName as TransactionEventCode,
             (txData: TransactionData) => {
-              if (txCallback != null) {
+              processedEventsCounter[eventName]++;
+
+              // 'all' strategy will fire the callback after all txs were processed
+              // 'race' strategy will fire the callback every time tx is processed
+              if (
+                txCallback != null &&
+                (strategy === 'all'
+                  ? processedEventsCounter[eventName] === txs.length
+                  : true)
+              ) {
                 txCallback(txData);
               }
 
