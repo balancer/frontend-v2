@@ -17,15 +17,13 @@ interface RegistryState {
   tokenLists: Record<string, TokenList | {}>;
   injected: TokenInfo[];
   loading: boolean;
-  loaded: boolean;
 }
 
 const state: RegistryState = {
   activeLists: lsGet('tokenLists', defaultActiveLists),
   tokenLists: Object.fromEntries(TOKEN_LISTS.map(tokenList => [tokenList, {}])),
   injected,
-  loading: false,
-  loaded: false
+  loading: true
 };
 
 const getters = {
@@ -161,10 +159,15 @@ const getters = {
 
 const actions = {
   async get({ dispatch, commit }) {
-    commit('setLoading', true);
-    await Promise.all(TOKEN_LISTS.map(name => dispatch('loadTokenlist', name)));
+    const loadAllLists = TOKEN_LISTS.map(name =>
+      dispatch('loadTokenlist', name)
+    );
+    const results = await Promise.all(loadAllLists.map(p => p.catch(e => e)));
+    const validResults = results.filter(result => !(result instanceof Error));
+    if (validResults.length === 0) {
+      throw new Error('Failed to load any TokenLists');
+    }
     commit('setLoading', false);
-    commit('setLoaded', true);
   },
 
   async loadTokenlist({ commit }, name) {
@@ -174,8 +177,9 @@ const actions = {
       const tokenLists = clone(state.tokenLists);
       tokenLists[name] = tokenList;
       commit('setTokenLists', tokenLists);
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error('Failed to load TokenList', name, error);
+      throw error;
     }
   },
 
@@ -217,10 +221,6 @@ const actions = {
 const mutations = {
   setLoading(_state: RegistryState, val: boolean): void {
     _state.loading = val;
-  },
-
-  setLoaded(_state: RegistryState, val: boolean): void {
-    _state.loaded = val;
   },
 
   setTokenLists(

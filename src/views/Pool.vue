@@ -96,7 +96,7 @@ import {
   PoolEvents,
   PoolSnapshots
 } from '@/api/subgraph';
-import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
+import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
