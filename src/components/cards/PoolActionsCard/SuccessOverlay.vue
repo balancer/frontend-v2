@@ -18,14 +18,13 @@
           :href="explorer.txLink(txHash)"
           target="_blank"
           rel="noreferrer"
-          outline
           flat
           color="gray"
         >
           <span v-text="$t('receipt')" />
           <BalIcon name="external-link" size="sm" class="ml-2" />
         </BalBtn>
-        <BalBtn :label="closeLabel" color="gradient" @click="$emit('close')" />
+        <BalBtn :label="closeLabel" color="gray" flat @click="$emit('close')" />
       </div>
     </div>
   </div>
