@@ -74,10 +74,9 @@
         </div>
         <div
           v-else-if="isTokenSelected"
+          v-text="$t('tokenAlreadySelected')"
           class="h-96 flex items-center justify-center"
-        >
-          Token Already Selected
-        </div>
+        />
         <div v-else-if="loading" class="h-96 flex items-center justify-center">
           <BalLoadingIcon />
         </div>

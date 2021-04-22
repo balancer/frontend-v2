@@ -84,13 +84,7 @@
                 class="ml-1 text-gray-400 -mb-px"
               />
             </template>
-            <div class="w-52">
-              Market conditions may change between the time your order is
-              submitted and the time it gets executed on Ethereum. Slippage
-              tolerance is the maximum change in price you are willing to
-              accept. This protects you from front-running bots and miner
-              extractable value (MEV).
-            </div>
+            <div v-html="$t('marketConditionsWarning')" class="w-52" />
           </BalTooltip>
         </div>
         <div class="flex mt-1">
