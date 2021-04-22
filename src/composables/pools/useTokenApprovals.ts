@@ -59,6 +59,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
       console.log(txs);
       handleTransactions(txs);
     } catch (error) {
+      approving.value = false;
       console.error(error);
     }
   }
