@@ -1,5 +1,5 @@
 export const TOKEN_LIST_DEFAULT =
-  'ipns://balancer-bucket.storage.fleek.co/assets/listed.tokenlist.json';
+  'https://storageapi.fleek.co/balancer-team-bucket/assets/listed.tokenlist.json';
 
 export const TOKEN_LISTS: string[] = [
   TOKEN_LIST_DEFAULT,
