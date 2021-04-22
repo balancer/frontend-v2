@@ -147,7 +147,7 @@
         :label="`${$t('unlock')} ${tokens[tokenInAddressInput].symbol}`"
         :loading="approving"
         :loading-label="
-          `${$t('jnlocking')} ${tokens[tokenInAddressInput].symbol}...`
+          `${$t('unlocking')} ${tokens[tokenInAddressInput].symbol}...`
         "
         block
         @click.prevent="approve"
