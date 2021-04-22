@@ -158,7 +158,8 @@ export default defineComponent({
       return {
         'rounded-lg': !props.squareTop,
         'rounded-b-lg': props.squareTop,
-        'border-red-500': hasError.value
+        'border-red-500': hasError.value,
+        'shadow-inner': !props.disabled
       };
     });
 
@@ -166,8 +167,7 @@ export default defineComponent({
       return {
         [inputHeightClasses()]: true,
         'border-l': slots.prepend && props.prependBorder,
-        'border-r': slots.append && props.appendBorder,
-        'shadow-inner': !props.disabled
+        'border-r': slots.append && props.appendBorder
       };
     });
 
@@ -180,13 +180,17 @@ export default defineComponent({
 
     const appendClasses = computed(() => {
       return {
-        [textSizeClasses()]: true
+        [textSizeClasses()]: true,
+        [inputHeightClasses()]: true,
+        ['bg-white']: props.appendBorder
       };
     });
 
     const prependClasses = computed(() => {
       return {
-        [textSizeClasses()]: true
+        [textSizeClasses()]: true,
+        [inputHeightClasses()]: true,
+        ['bg-white']: props.prependBorder
       };
     });
 
@@ -242,11 +246,11 @@ input:focus {
 }
 
 .prepend {
-  @apply h-full px-2;
+  @apply px-2;
 }
 
 .append {
-  @apply h-full px-2;
+  @apply px-2;
 }
 
 .error {

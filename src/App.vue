@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <AppNav />
+    <AppHero />
     <div class="pb-12">
       <router-view :key="$route.path" class="flex-auto" />
     </div>
@@ -19,11 +20,13 @@ import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
+import AppHero from '@/components/heros/AppHero.vue';
 import InfuraService from '@/services/infura/service';
 
 export default defineComponent({
   components: {
     AppNav,
+    AppHero,
     AccountModal
   },
 
