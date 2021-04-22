@@ -53,9 +53,7 @@
               :tokens="pool.tokens"
               :events="events"
             />
-            <BalBlankSlate v-else class="h-60">
-              No investments in this pool.
-            </BalBlankSlate>
+            <BalBlankSlate v-else v-text="$t('noInvestments')" class="h-60" />
           </div>
         </div>
       </div>

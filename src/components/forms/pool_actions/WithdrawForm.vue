@@ -140,7 +140,7 @@
         />
         <BalBtn
           type="submit"
-          loading-label="Confirming..."
+          :loading-label="$t('confirming')"
           color="gradient"
           :disabled="!hasAmounts"
           :loading="loading"

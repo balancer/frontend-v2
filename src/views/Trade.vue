@@ -106,16 +106,22 @@
       </div>
       <BalBtn
         v-if="!isAuthenticated"
-        label="Connect wallet"
+        :label="$t('connectWallet')"
         block
         @click.prevent="connectWallet"
       />
       <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
         v-else-if="requireApproval"
-        :label="`Unlock ${tokens[tokenInAddressInput].symbol} ${versionLabel}`"
+        :label="
+          `${$t('unlock')} ${
+            tokens[tokenInAddressInput].symbol
+          } ${versionLabel}`
+        "
         :loading="approving"
-        :loading-label="`Unlocking ${tokens[tokenInAddressInput].symbol}...`"
+        :loading-label="
+          `${$t('unlocking')} ${tokens[tokenInAddressInput].symbol}...`
+        "
         block
         @click.prevent="approve"
       />
@@ -124,7 +130,7 @@
         type="submit"
         :label="`${$t(submitLabel)} ${versionLabel}`"
         :loading="trading"
-        loading-label="Confirming..."
+        :loading-label="$t('confirming')"
         color="gradient"
         block
         @click.prevent="trade"
