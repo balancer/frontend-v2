@@ -2,10 +2,10 @@
   <span class="inline-block v-align-middle leading-none">
     <img
       v-if="!error"
-      :src="_url(token.logoURI)"
+      :src="_url(token?.logoURI)"
       :style="{
         width: `${size || 24}px`,
-        height: `${size || 24}px`,
+        height: `${size || 24}px`
       }"
       @error="error = true"
       class="rounded-full inline-block bg-white leading-none"
@@ -38,12 +38,12 @@ export default defineComponent({
     address: String,
     size: Number,
     symbol: Boolean,
-    name: Boolean,
+    name: Boolean
   },
   setup(props) {
     return {
-      error: false,
+      error: false
     };
-  },
+  }
 });
 </script>

@@ -1,68 +1,107 @@
 <template>
-  <table class="min-w-full">
-    <thead class="bg-gray-50 dark:bg-gray-700">
-      <slot name="headers">
-        <th
-          v-for="(header, i) in headers"
-          :key="i"
-          v-text="header"
-          class="sticky top-0 p-2 pl-5 py-5 text-left"
-        />
-      </slot>
-    </thead>
-    <slot></slot>
-    <tr
-      class="cursor-default hover:bg-gray-50"
-      v-for="pool in filteredPools"
-      :key="pool.address"
-    >
-      <td class="p-2 pl-5 py-5 flex">
-        <div class="w-20 relative">
-          <span
-            v-for="(token, i) in pool.tokens"
-            :key="token.address"
-            class="hover:z-10 absolute"
-            :style="{
-              left: `${getIconPosition(i, pool.tokens.length)}px`
-            }"
-          >
-            <Token :token="allTokens[getAddress(token.address)]" />
-          </span>
-        </div>
-        <router-link :to="{ name: 'pool', params: { id: pool.id } }">
-          <div>
-            <span
-              class="ml-2"
-              v-for="token in pool.tokens"
-              :key="token.address"
-            >
-              {{ _num(token.weight, '0%') }}
-              {{ allTokens[getAddress(token.address)].symbol }}
-            </span>
+  <div class="overflow-x-auto whitespace-nowrap">
+    <table class="min-w-full">
+      <thead class="bg-white shadow-sm w-full flex flex-row">
+        <td
+          v-for="column in columns"
+          :key="column.id"
+          class="p-6 flex flex-grow"
+          :class="[
+            column.className,
+            column.align === 'right' ? 'justify-end' : 'justify-start'
+          ]"
+        >
+          <slot
+            v-if="column.Header"
+            v-bind="column"
+            :name="column.Header"
+          ></slot>
+          <div v-else>
+            <h5 class="text-base font-semibold text-gray-800">
+              {{ column.name }}
+            </h5>
           </div>
-        </router-link>
-      </td>
-      <td class="p-2 py-5 text-right">
-        {{ _num(stats[pool.id].liquidity, '$0,0') }}
-      </td>
-      <td class="p-2 py-5 text-right">
-        {{ _num(stats[pool.id].volume, '$0,0') }}
-      </td>
-      <td class="p-2 pr-5 py-5 text-right">
-        {{ _num(stats[pool.id].apy, '0,0.[00]%') }}
-      </td>
-    </tr>
-  </table>
+        </td>
+      </thead>
+      <BalLoadingBlock v-if="isLoading" :class="skeletonClass" />
+      <tbody v-else>
+        <tr
+          v-for="dataItem in data"
+          :key="dataItem[dataKey]"
+          class="flex flex-row"
+        >
+          <td
+            v-for="column in columns"
+            :key="column.id"
+            :class="[
+              column.className,
+              column.align === 'right' ? 'justify-end' : 'justify-start'
+            ]"
+            class="flex flex-grow"
+          >
+            <slot
+              v-if="column.Cell"
+              v-bind="dataItem"
+              :name="column.Cell"
+            ></slot>
+            <div v-else class="px-6 py-8">
+              {{
+                typeof column.accessor === 'string'
+                  ? dataItem[column.accessor]
+                  : column.accessor(dataItem)
+              }}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType, watch } from 'vue';
+
+export type ColumnDefinition = {
+  // Column Header Label
+  name: string;
+  // Unique ID
+  id: string;
+  // Key or function to access data from the row
+  accessor: string | ((row: unknown) => string);
+  // Slot ID for custom rendering the cell
+  Cell?: string;
+  // Slot ID for custom rendering a header
+  Header?: string;
+  // Is the column sortable
+  isSortable?: boolean;
+  // Extra classes to supply to the column. E.g. min width
+  className?: string;
+  // Left or right aligned content. E.g. Numbers should be right aligned
+  align?: 'left' | 'right';
+};
 
 export default defineComponent({
   name: 'BalTable',
 
   props: {
-    headers: { type: Array as PropType<string[]>, default: () => [] }
+    columns: {
+      type: Object as PropType<Array<ColumnDefinition>>,
+      required: true
+    },
+    data: {
+      type: Object as PropType<Array<any>>
+    },
+    dataKey: {
+      type: String,
+      required: true
+    },
+    isLoading: {
+      type: Boolean,
+      default: () => false
+    },
+    skeletonClass: {
+      type: String
+    }
   }
 });
 </script>

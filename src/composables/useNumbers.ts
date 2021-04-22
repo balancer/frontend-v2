@@ -13,29 +13,28 @@ enum PresetFormats {
   percent = '0.00%'
 }
 
+export function fNum(
+  number: number | string,
+  preset: Preset | null = 'default',
+  format = ''
+): string {
+  if (format) return numeral(number).format(format);
+
+  let adjustedPreset;
+  if (number >= 10_000) {
+    adjustedPreset = `${preset}_lg`;
+  } else if (number < 1e-6) {
+    // Numeral returns NaN in this case so just set to zero.
+    // https://github.com/adamwdraper/Numeral-js/issues/596
+    number = 0;
+  }
+
+  return numeral(number).format(
+    PresetFormats[adjustedPreset || preset || 'default']
+  );
+}
 export default function useNumbers() {
   const store = useStore();
-
-  function fNum(
-    number: number | string,
-    preset: Preset | null = 'default',
-    format = ''
-  ): string {
-    if (format) return numeral(number).format(format);
-
-    let adjustedPreset;
-    if (number >= 10_000) {
-      adjustedPreset = `${preset}_lg`;
-    } else if (number < 1e-6) {
-      // Numeral returns NaN in this case so just set to zero.
-      // https://github.com/adamwdraper/Numeral-js/issues/596
-      number = 0;
-    }
-
-    return numeral(number).format(
-      PresetFormats[adjustedPreset || preset || 'default']
-    );
-  }
 
   function toFiat(amount: number | string, tokenAddress: string): number {
     const rate =

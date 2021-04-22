@@ -33,7 +33,7 @@
               :key="token"
               class="hover:z-10 absolute"
               :style="{
-                left: `${getIconPosition(i, pool.tokens.length)}px`,
+                left: `${getIconPosition(i, pool.tokens.length)}px`
               }"
             >
               <Token :token="tokens[token]" v-if="tokens[token]" />
