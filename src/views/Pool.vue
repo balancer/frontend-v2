@@ -53,9 +53,7 @@
               :tokens="pool.tokens"
               :events="events"
             />
-            <BalBlankSlate v-else class="h-60">
-              No investments in this pool.
-            </BalBlankSlate>
+            <BalBlankSlate v-else v-text="$t('noInvestments')" class="h-60" />
           </div>
         </div>
       </div>
@@ -96,7 +94,7 @@ import {
   PoolEvents,
   PoolSnapshots
 } from '@/api/subgraph';
-import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
+import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';

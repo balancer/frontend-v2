@@ -26,27 +26,27 @@
           <div class="text-right">
             <a @click="loadMarketCharts(1)" class="mr-2">
               <UiLabel :class="marketChartsDays === 1 && 'active'"
-                >1 day
+                >1 {{ $t('day') }}
               </UiLabel>
             </a>
             <a @click="loadMarketCharts(7)" class="mr-2">
               <UiLabel :class="marketChartsDays === 7 && 'active'"
-                >1 week
+                >1 {{ $t('week').toLowerCase() }}
               </UiLabel>
             </a>
             <a @click="loadMarketCharts(30)" class="mr-2">
               <UiLabel :class="marketChartsDays === 30 && 'active'"
-                >1 month
+                >1 {{ $t('month') }}
               </UiLabel>
             </a>
             <a @click="loadMarketCharts(90)" class="mr-2">
               <UiLabel :class="marketChartsDays === 90 && 'active'"
-                >3 months
+                >3 {{ $t('months') }}
               </UiLabel>
             </a>
             <a @click="loadMarketCharts(180)" class="mr-2">
               <UiLabel :class="marketChartsDays === 180 && 'active'"
-                >6 months
+                >6 {{ $t('months') }}
               </UiLabel>
             </a>
           </div>

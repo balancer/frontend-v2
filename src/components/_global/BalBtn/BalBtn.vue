@@ -73,11 +73,11 @@ export default defineComponent({
         case 'xs':
           return 'px-2 h-6 text-xs';
         case 'sm':
-          return 'px-2 h-10 text-xs';
+          return 'px-3 h-10 text-xs';
         case 'lg':
-          return 'px-2 md:px-12 h-18 text-lg md:text-2xl';
+          return 'px-5 h-18 text-lg md:text-2xl';
         default:
-          return 'px-2 md:px-8 h-14 text-base';
+          return 'px-4 h-14 text-base';
       }
     });
 
