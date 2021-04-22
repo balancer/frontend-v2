@@ -27,7 +27,7 @@
         >
           <template v-slot:prepend>
             <div
-              class="flex items-center w-28 cursor-pointer"
+              class="flex items-center w-28 h-full cursor-pointer"
               @click="openModalSelectToken('input')"
             >
               <Token :token="tokens[tokenInAddressInput]" :size="28" />
@@ -58,6 +58,17 @@
           <template v-slot:info>
             <div class="cursor-pointer" @click="handleMax">
               {{ $t('balance') }}: {{ fNum(balanceLabel, 'token') }}
+            </div>
+          </template>
+          <template v-slot:append>
+            <div class="p-2">
+              <BalBtn
+                size="xs"
+                color="white"
+                @click="handleMax"
+              >
+                {{ $t('max') }}
+              </BalBtn>
             </div>
           </template>
         </BalTextInput>
@@ -93,7 +104,7 @@
         >
           <template v-slot:prepend>
             <div
-              class="flex items-center w-28 cursor-pointer"
+              class="flex items-center w-28 h-full cursor-pointer"
               @click="openModalSelectToken('output')"
             >
               <Token :token="tokens[tokenOutAddressInput]" :size="28" />
