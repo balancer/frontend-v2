@@ -22,7 +22,7 @@ export default function useNotify() {
       onTxCancel?: TxCallback;
       onTxFailed?: TxCallback;
     },
-    strategy: 'all' | 'race' = 'all'
+    strategy: 'all' | 'async' = 'all'
   ) {
     const txs = castArray(txHash);
 
@@ -63,7 +63,7 @@ export default function useNotify() {
               processedEventsCounter[eventName]++;
 
               // 'all' strategy will fire the callback after all txs were processed
-              // 'race' strategy will fire the callback every time tx is processed
+              // 'async' strategy will fire the callback every time tx is processed
               if (
                 txCallback != null &&
                 (strategy === 'all'
