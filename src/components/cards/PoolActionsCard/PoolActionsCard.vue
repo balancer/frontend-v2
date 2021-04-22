@@ -8,7 +8,7 @@
           v-if="investmentSuccess"
           :title="$t('investmentSettled')"
           :description="$t('investmentSuccess')"
-          :closeLabel="$t('newTrade')"
+          :closeLabel="$t('close')"
           :txHash="txHash"
           @close="investmentSuccess = false"
         />
