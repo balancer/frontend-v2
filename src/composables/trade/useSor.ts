@@ -98,11 +98,8 @@ export default function useSor(
     amount: string
   ): Promise<void> {
     if (isWrap.value || isUnwrap.value) {
-      if (isExactIn) {
-        tokenOutAmountInput.value = tokenInAmountInput.value;
-      } else {
-        tokenInAmountInput.value = tokenOutAmountInput.value;
-      }
+      tokenInAmountInput.value = amount;
+      tokenOutAmountInput.value = amount;
       return;
     }
 
