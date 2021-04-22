@@ -89,9 +89,10 @@
         :disabled="loading"
         validate-on="input"
         prepend-border
+        append-shadow
       >
         <template v-slot:prepend>
-          <div class="flex items-center w-24">
+          <div class="flex items-center h-full w-24">
             <Token :token="allTokens[token]" />
             <div class="flex flex-col ml-3">
               <span class="font-medium text-sm leading-none w-14 truncate">
@@ -104,8 +105,22 @@
           </div>
         </template>
         <template v-slot:info>
-          <div class="cursor-pointer" @click="amounts[i] = tokenBalance(i)">
-            {{ balanceLabel(i) }} {{ $t('max').toLowerCase() }}
+          <div
+            class="cursor-pointer"
+            @click.prevent="amounts[i] = tokenBalance(i)"
+          >
+            {{ $t('balance').toLowerCase() }}: {{ balanceLabel(i) }}
+          </div>
+        </template>
+        <template v-slot:append>
+          <div class="p-2">
+            <BalBtn
+              size="xs"
+              color="white"
+              @click.prevent="amounts[i] = tokenBalance(i)"
+            >
+              {{ $t('max') }}
+            </BalBtn>
           </div>
         </template>
       </BalTextInput>

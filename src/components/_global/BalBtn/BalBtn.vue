@@ -40,7 +40,8 @@ export default defineComponent({
     size: {
       type: String,
       default: 'md',
-      validator: (val: string): boolean => ['sm', 'md', 'lg'].includes(val)
+      validator: (val: string): boolean =>
+        ['xs', 'sm', 'md', 'lg'].includes(val)
     },
     color: {
       type: String,
@@ -69,8 +70,10 @@ export default defineComponent({
   setup(props) {
     const sizeClasses = computed(() => {
       switch (props.size) {
+        case 'xs':
+          return 'px-2 h-6 text-xs';
         case 'sm':
-          return 'px-4 h-10 text-xs';
+          return 'px-2 h-10 text-xs';
         case 'lg':
           return 'px-2 md:px-12 h-18 text-lg md:text-2xl';
         default:
@@ -80,6 +83,8 @@ export default defineComponent({
 
     const circleSizeClasses = computed(() => {
       switch (props.size) {
+        case 'xs':
+          return 'w-4 h-4 text-sm';
         case 'sm':
           return 'w-6 h-6 text-lg';
         case 'lg':
