@@ -19,12 +19,12 @@
         :key="address"
       >
         <td class="p-2 pl-5 py-5 flex items-center text-left">
-          <a :href="explorer.addressLink(address)" target="_blank">
+          <BalLink :href="explorer.addressLink(address)" external>
             <Avatar :address="address" :size="24" />
             <span class="pl-4">
               {{ getSymbol(address) }}
             </span>
-          </a>
+          </BalLink>
         </td>
         <td class="p-2 py-5 text-right">
           {{ fNum(getWeight(index), 'percent') }}
