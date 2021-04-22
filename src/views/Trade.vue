@@ -145,7 +145,7 @@
       <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
         v-else-if="requireApproval"
-        :label="`Unlock ${tokens[tokenInAddressInput].symbol} ${versionLabel}`"
+        :label="`Unlock ${tokens[tokenInAddressInput].symbol}`"
         :loading="approving"
         :loading-label="`Unlocking ${tokens[tokenInAddressInput].symbol}...`"
         block
@@ -154,7 +154,7 @@
       <BalBtn
         v-else
         type="submit"
-        :label="`${$t(submitLabel)} ${versionLabel}`"
+        :label="`${$t(submitLabel)}`"
         :loading="trading"
         loading-label="Confirming..."
         color="gradient"
@@ -292,12 +292,6 @@ export default defineComponent({
       return 'swap';
     });
 
-    const versionLabel = computed(() => {
-      if (submitLabel.value === 'swap')
-        return sorReturn.value.isV1swap ? 'V1' : 'V2';
-      return '';
-    });
-
     const rateMessage = computed(() => {
       let message = '';
       if (
@@ -406,7 +400,6 @@ export default defineComponent({
       balanceLabel,
       title,
       submitLabel,
-      versionLabel,
       modalSelectTokenIsOpen,
       isAuthenticated,
       connectWallet,
