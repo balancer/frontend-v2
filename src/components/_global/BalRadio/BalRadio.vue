@@ -67,11 +67,11 @@ export default defineComponent({
     const textSizeClass = computed(() => {
       switch (props.size) {
         case 'sm':
-          return 'text-sm';
+          return 'leading-none text-sm';
         case 'lg':
-          return 'text-lg';
+          return 'leading-none text-lg';
         default:
-          return 'text-base';
+          return 'leading-none text-base';
       }
     });
 
@@ -138,6 +138,6 @@ export default defineComponent({
 }
 
 .bal-radio-label {
-  @apply ml-2 flex-1 leading-none;
+  @apply ml-2 flex-1;
 }
 </style>
