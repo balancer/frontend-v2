@@ -5,7 +5,7 @@ function getChainAddress(chainId: number, address: string) {
   const map = {
     1: {},
     42: {
-      '0x02822e968856186a20fec2c824d4b174d0b70502':
+      '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1':
         '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       '0x1c8e3bcb3378a443cc591f154c5ce0ebb4da9648':
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -30,7 +30,7 @@ function getOriginalAddress(chainId: number, address: string) {
   }
   const map = {
     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': {
-      42: '0x02822e968856186a20fec2c824d4b174d0b70502'
+      42: '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1'
     },
     '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': {
       42: '0x1c8e3bcb3378a443cc591f154c5ce0ebb4da9648'

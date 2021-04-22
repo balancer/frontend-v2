@@ -3,7 +3,6 @@ import { lsGet, lsSet } from '@/utils';
 import i18n from '@/plugins/i18n';
 
 export interface AppState {
-  init: boolean;
   loading: boolean;
   modalOpen: boolean;
   darkMode: boolean;
@@ -12,7 +11,6 @@ export interface AppState {
 }
 
 const state: AppState = {
-  init: false,
   loading: true,
   modalOpen: false,
   darkMode: false,
@@ -23,33 +21,31 @@ const state: AppState = {
 
 const actions = {
   init: async ({ commit, dispatch }) => {
-    commit('setInit', true);
+    try {
+      // Fetch init data
+      await dispatch('registry/get', null, { root: true });
+      await dispatch('market/loadPrices', [], { root: true });
 
-    // Fetch init data
-    await dispatch('registry/get', null, { root: true });
-    await dispatch('market/loadPrices', [], { root: true });
+      // Setup web3
+      const auth = getInstance();
+      const connector = await auth.getConnector();
+      if (connector) await dispatch('web3/login', connector, { root: true });
 
-    // Setup web3
-    const auth = getInstance();
-    const connector = await auth.getConnector();
-    if (connector) await dispatch('web3/login', connector, { root: true });
+      commit('setLocale', 'en-US');
+      commit('setDarkMode', false);
 
-    commit('setLocale', 'en-US');
-    commit('setDarkMode', false);
-
-    // Set defaults from localStorage
-    // commit('setLocale', lsGet('locale', defaultLocale));
-    // commit('setDarkMode', lsGet('darkMode', false));
-    commit('setSlippage', lsGet('slippage', '0.01'));
-    commit('setLoading', false);
+      // Set defaults from localStorage
+      // commit('setLocale', lsGet('locale', defaultLocale));
+      // commit('setDarkMode', lsGet('darkMode', false));
+      commit('setSlippage', lsGet('slippage', '0.01'));
+      commit('setLoading', false);
+    } catch (error) {
+      console.error('Failed to initialize app', error);
+    }
   }
 };
 
 const mutations = {
-  setInit(state: AppState, val: boolean): void {
-    state.init = val;
-  },
-
   setLoading(state: AppState, val: boolean): void {
     state.loading = val;
   },

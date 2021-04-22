@@ -1,10 +1,10 @@
-# Balancer App
+# Balancer Frontend App (v2)
 Frontend Vue app for Balancer exchange and pool management.
 
 ## Development
 To setup the development environment first clone the repo:
 ```bash
-git clone https://github.com/balancer-labs/pool-management-v2.git && cd pool-management-v2
+git clone https://github.com/balancer-labs/frontend-v2.git && cd frontend-v2
 ```
 
 ### Local env
