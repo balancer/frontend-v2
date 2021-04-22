@@ -19,22 +19,21 @@
         :key="address"
       >
         <td class="p-2 pl-5 py-5 flex items-center text-left">
-          <a :href="_explorer(networkId, address)" target="_blank">
+          <BalLink :href="explorer.addressLink(address)" external>
             <Avatar :address="address" :size="24" />
             <span class="pl-4">
               {{ getSymbol(address) }}
             </span>
-          </a>
+          </BalLink>
         </td>
         <td class="p-2 py-5 text-right">
-          {{ getWeight(index) }}
-          %
+          {{ fNum(getWeight(index), 'percent') }}
         </td>
         <td class="p-2 py-5 text-right">
-          {{ _num(getBalance(index), '0,0.00') }}
+          {{ fNum(getBalance(index), 'token') }}
         </td>
         <td class="p-2 pr-5 py-5 text-right">
-          {{ 0 == getValue(index) ? '?' : _num(getValue(index), '$0,0.00') }}
+          {{ 0 == getValue(index) ? '?' : fNum(getValue(index), 'usd') }}
         </td>
       </tr>
     </table>
@@ -46,6 +45,9 @@ import { PropType, defineComponent, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
+import useNumbers from '@/composables/useNumbers';
+import useWeb3 from '@/composables/useWeb3';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   props: {
@@ -63,13 +65,16 @@ export default defineComponent({
     }
   },
   setup(props) {
+    // COMPOSABLES
     const store = useStore();
+    const { fNum } = useNumbers();
+    const { explorer } = useWeb3();
+    const { allTokens } = useTokens();
 
+    // DATA
     const { tokens, balances, weights } = toRefs(props);
 
-    const allTokens = computed(() => store.getters['registry/getTokens']());
-
-    const networkId = computed(() => store.state.web3.config.chainId);
+    // COMPUTED
     const prices = computed(() => store.state.market.prices);
 
     const tokenValues = computed(() => {
@@ -106,7 +111,7 @@ export default defineComponent({
     }
 
     function getWeight(index: number) {
-      return weights.value[index];
+      return weights.value[index] / 100;
     }
 
     function getValue(index: number) {
@@ -118,7 +123,8 @@ export default defineComponent({
       getBalance,
       getWeight,
       getValue,
-      networkId
+      fNum,
+      explorer
     };
   }
 });
