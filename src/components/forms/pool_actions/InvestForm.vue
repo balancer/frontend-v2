@@ -123,15 +123,16 @@
           <span
             >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
           >
-          <BalIcon
-            v-if="priceImpact >= 0.01"
-            name="alert-triangle"
-            size="xs"
-            class="ml-1"
-          />
-          <BalTooltip v-if="priceImpact < 0.0">
+          <BalTooltip>
             <template v-slot:activator>
               <BalIcon
+                v-if="priceImpact >= 0.01"
+                name="alert-triangle"
+                size="xs"
+                class="ml-1"
+              />
+              <BalIcon
+                v-else
                 name="info"
                 size="xs"
                 class="text-gray-400 -mb-px ml-2"
