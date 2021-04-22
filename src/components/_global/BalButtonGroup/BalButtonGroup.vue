@@ -6,7 +6,8 @@
       class="py-1 px-2 text-sm border-2 border-white font-medium rounded-lg"
       :class="{
         'text-gray-500 hover:bg-gray-100': activeOption !== option.value,
-        'text-gray-800 border-2 border-gray-800 hover:bg-white': activeOption === option.value
+        'text-gray-800 border-2 border-gray-800 hover:bg-white':
+          activeOption === option.value
       }"
       @click="setActiveOption(option.value)"
     >
@@ -31,17 +32,21 @@ export default defineComponent({
     },
     onChange: {
       type: Function
+    },
+    defaultValue: {
+      type: Number
     }
   },
-  setup() {
-    const activeOption = ref('');
-    const setActiveOption = (value: string) => {
+  setup(props) {
+    const activeOption = ref(props.defaultValue);
+    const setActiveOption = (value: number) => {
       activeOption.value = value;
-    }
+      props.onChange && props.onChange(value);
+    };
 
     return {
       activeOption,
-      setActiveOption,
+      setActiveOption
     };
   }
 });

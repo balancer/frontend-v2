@@ -17,7 +17,7 @@
     @updateAxisPointer="_onAxisMoved"
   />
   <div class="flex w-full mt-2 justify-end">
-    <bal-button-group :options="periodOptions" />
+    <bal-button-group :options="periodOptions" :defaultValue="30" />
   </div>
 </template>
 
@@ -32,23 +32,23 @@ import { format as formatDate } from 'date-fns';
 const PeriodOptions = [
   {
     label: '1d',
-    value: '24h'
+    value: 1
   },
   {
     label: '1w',
-    value: '1w'
+    value: 7
   },
   {
     label: '1m',
-    value: '1m'
+    value: 30
   },
   {
     label: '3m',
-    value: '3m'
+    value: 90
   },
   {
     label: '1y',
-    value: '1y'
+    value: 365
   }
 ];
 
@@ -147,12 +147,15 @@ export default defineComponent({
       props.onAxisMoved && props.onAxisMoved(props.data[dataIndex]);
       currentValue.value = numeral(props.data[dataIndex]).format('$0,0.00');
 
+      // no change if first point in the chart
       if (dataIndex === 0) {
         change.value = 0;
       } else {
         const prev = props.data[dataIndex - 1] as number;
         const current = props.data[dataIndex] as number;
         const _change = (current - prev) / prev;
+
+        // any errors or 0 division, fall back to 0
         if (isNaN(_change)) {
           change.value = 0;
           return;

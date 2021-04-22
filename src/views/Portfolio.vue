@@ -80,6 +80,9 @@ export default defineComponent({
     });
 
     // COMPUTED
+    const isPageLoading = computed(
+      () => isAppLoading.value || isLoading.value || isWeb3Loading.value
+    );
     const networkKey = computed(() => store.state.web3.config.key);
     const tokens = computed(() => store.getters['registry/getTokens']());
     const {
@@ -96,7 +99,10 @@ export default defineComponent({
         ),
       {
         enabled:
-          !isNil(account) || !isNil(networkKey.value) || !isNil(account.value)
+          !isNil(account) ||
+          !isNil(networkKey.value) ||
+          !isNil(account.value) ||
+          isPageLoading.value
       }
     );
 
@@ -108,9 +114,6 @@ export default defineComponent({
     });
 
     const isAppLoading = computed(() => store.state.app.loading);
-    const isPageLoading = computed(
-      () => isAppLoading.value || isLoading.value || isWeb3Loading.value
-    );
 
     // METHODS
     const injectTokens = tokens =>
