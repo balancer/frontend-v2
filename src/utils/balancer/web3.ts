@@ -5,6 +5,9 @@ import { logFailedTx } from '@/utils/logging';
 import { getGasPrice } from './gasPrices';
 
 const CODE_FAILED = -32016;
+// only disable if set to "false"
+const USE_BLOCKNATIVE_GAS_PLATFORM =
+  process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
 
 export async function sendTransaction(
   web3: Web3Provider,
@@ -22,7 +25,7 @@ export async function sendTransaction(
   const contract = new Contract(contractAddress, abi, web3);
   const contractWithSigner = contract.connect(signer);
 
-  if (overrides.gasPrice == null) {
+  if (USE_BLOCKNATIVE_GAS_PLATFORM && overrides.gasPrice == null) {
     const gasPrice = await getGasPrice();
     if (gasPrice != null) {
       overrides.gasPrice = gasPrice;

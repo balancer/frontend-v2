@@ -16,13 +16,13 @@
     "dsProxyRegistry": "0x130767E0cf05469CF11Fa3fcf270dfC1f52b9072",
     "exchangeProxy": "0x4e67bf5bD28Dd4b570FBAFe11D0633eCbA2754Ec",
     "multicall": "0x3b2A02F22fCbc872AF77674ceD303eb269a46ce3",
-    "authorizer": "0x9dF05a75cf0cD41E26262F072bDbE9A9B2178834",
-    "vault": "0xba1222227c37746aDA22d10Da6265E02E44400DD",
-    "weightedPoolFactory": "0xCFD48F189e5fBfd74eE8E63Cfe2EB1930246e3F9",
-    "stablePoolFactory": "0xaD9a0de4fda03eE4cdb07590B42D6469Ad1aBd85",
+    "authorizer": "0xA331D84eC860Bf466b4CdCcFb4aC09a1B43F3aE6",
+    "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+    "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
+    "stablePoolFactory": "",
     "tokenFactory": "0xEaa391544B268018C0FA848204E984Bd7FF7f20c",
-    "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-    "balancerHelpers": "0xF32dcd39F3f8be5c141df34f7b2A539eea9F9ff3"
+    "weth": "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1",
+    "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d"
   },
   "strategies": {
     "0": {
