@@ -1,4 +1,5 @@
 import { getEtherPrice, getTokensPrice } from '@/api/coingecko';
+import { ETHER } from '@/constants/tokenlists';
 
 type Prices = Record<string, number>;
 
@@ -24,7 +25,7 @@ const actions = {
       getTokensPrice(chainId, tokens),
       getEtherPrice()
     ]);
-    prices.ether = etherPrice;
+    prices[ETHER.address.toLowerCase()] = etherPrice;
     commit('addPrices', prices);
     commit('setLoading', false);
   }

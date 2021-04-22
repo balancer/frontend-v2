@@ -66,6 +66,7 @@ export default defineComponent({
     },
     name: { type: String, required: true },
     label: { type: String, default: '' },
+    squareTop: { type: Boolean, default: false },
     noMargin: { type: Boolean, default: false },
     textRight: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
@@ -155,6 +156,8 @@ export default defineComponent({
 
     const inputGroupClasses = computed(() => {
       return {
+        'rounded-lg': !props.squareTop,
+        'rounded-b-lg': props.squareTop,
         'border-red-500': hasError.value,
         'shadow-inner': !props.disabled
       };
@@ -221,9 +224,9 @@ export default defineComponent({
 input {
   @apply w-full bg-transparent leading-none;
   transition: all 0.3s ease;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 input:focus {
@@ -235,8 +238,7 @@ input:focus {
 }
 
 .input-group {
-  @apply flex items-center overflow-hidden bg-white;
-  @apply border rounded-lg;
+  @apply flex items-center overflow-hidden bg-white border;
 }
 
 .input-container {
