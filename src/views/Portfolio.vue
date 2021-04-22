@@ -55,6 +55,7 @@
         </bal-table>
       </div>
     </div>
+    <!-- <BlockMyWallet v-if="account" :loading="loading" /> -->
   </div>
 </template>
 
