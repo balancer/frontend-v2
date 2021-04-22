@@ -1,4 +1,4 @@
-import { Web3Provider } from '@ethersproject/providers';
+import { Web3Provider, TransactionResponse } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
 import { multicall, Multicaller } from '@/utils/balancer/contract';
 import { sendTransaction } from '@/utils/balancer/web3';
@@ -81,7 +81,7 @@ export async function approveTokens(
   web3: Web3Provider,
   spender: string,
   tokens: string[]
-) {
+): Promise<TransactionResponse[]> {
   return await Promise.all(
     tokens.map(token =>
       sendTransaction(web3, token, abi, 'approve', [
