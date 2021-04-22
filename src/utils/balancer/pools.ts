@@ -86,7 +86,7 @@ export async function getPools(
     const pool = pools[id];
     set(pools, `${id}.tokens`, pool.poolTokens.tokens);
     set(pools, `${id}.tokenBalances`, pool.poolTokens.balances);
-    multi.call(`${id}.strategy.swapFee`, pool.address, 'getSwapFee');
+    multi.call(`${id}.strategy.swapFee`, pool.address, 'getSwapFeePercentage');
     multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
 
     if (pool.strategy.name === 'weightedPool') {
