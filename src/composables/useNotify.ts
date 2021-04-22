@@ -26,6 +26,21 @@ export default function useNotify() {
   ) {
     const txs = castArray(txHash);
 
+    const eventsMap: Partial<Record<
+      TransactionEventCode,
+      TxCallback | undefined
+    >> = {
+      txConfirmed: onTxConfirmed,
+      txCancel: onTxCancel,
+      txFailed: onTxFailed
+    };
+
+    // init event counters
+    const processedEventsCounter: Partial<Record<
+      TransactionEventCode,
+      number
+    >> = mapValues(eventsMap, () => 0);
+
     txs.forEach(txHash => {
       const { emitter } = notify.hash(txHash);
 
@@ -37,21 +52,6 @@ export default function useNotify() {
       emitter.on('all', () => {
         return defaultNotificationParams;
       });
-
-      const eventsMap: Partial<Record<
-        TransactionEventCode,
-        TxCallback | undefined
-      >> = {
-        txConfirmed: onTxConfirmed,
-        txCancel: onTxCancel,
-        txFailed: onTxFailed
-      };
-
-      // init event counters
-      const processedEventsCounter: Partial<Record<
-        TransactionEventCode,
-        number
-      >> = mapValues(eventsMap, () => 0);
 
       // register to events that have a callback
       Object.entries(eventsMap)
