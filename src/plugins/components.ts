@@ -22,7 +22,7 @@ export function registerGlobalComponents(app: App): void {
   const requireComponent = require.context(
     '@/components',
     true,
-    /^((?![\\/]cards|[\\/]dialogs|[\\/]forms|[\\/]modals|[\\/]images|[\\/]navs|[\\/]tables).)*\.vue$/
+    /^((?![\\/]cards|[\\/]dialogs|[\\/]forms|[\\/]modals|[\\/]images|[\\/]navs|[\\/]tables|[\\/]heros).)*\.vue$/
   );
   requireComponent.keys().forEach(fileName => {
     const componentConfig = requireComponent(fileName);

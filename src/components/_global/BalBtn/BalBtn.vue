@@ -46,7 +46,14 @@ export default defineComponent({
       type: String,
       default: 'primary',
       validator: (val: string): boolean =>
-        ['primary', 'gradient', 'gradient-reverse', 'gray', 'red'].includes(val)
+        [
+          'primary',
+          'gradient',
+          'gradient-reverse',
+          'gray',
+          'red',
+          'white'
+        ].includes(val)
     },
     label: { type: String, default: '' },
     block: { type: Boolean, default: false },
@@ -60,7 +67,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const sizeClasses = (): string => {
+    const sizeClasses = computed(() => {
       switch (props.size) {
         case 'sm':
           return 'px-4 h-10 text-xs';
@@ -69,9 +76,9 @@ export default defineComponent({
         default:
           return 'px-2 md:px-8 h-14 text-base';
       }
-    };
+    });
 
-    const circleSizeClasses = (): string => {
+    const circleSizeClasses = computed(() => {
       switch (props.size) {
         case 'sm':
           return 'w-6 h-6 text-lg';
@@ -80,9 +87,9 @@ export default defineComponent({
         default:
           return 'w-10 h-10 text-base';
       }
-    };
+    });
 
-    const bgGradientClasses = (): string => {
+    const bgGradientClasses = computed(() => {
       if (props.outline) return 'bg-transparent';
 
       const fromColor = props.color === 'gradient' ? 'blue' : 'pink';
@@ -95,7 +102,7 @@ export default defineComponent({
         bg-gradient-to-tr from-${fromColor}-500 to-${toColor}-500
         hover:from-${fromColor}-600 hover:to-${toColor}-600
       `;
-    };
+    });
 
     const bgFlatClasses = computed(() => {
       return `
@@ -104,65 +111,71 @@ export default defineComponent({
       `;
     });
 
-    const bgColorClasses = (): string => {
-      if (props.color.includes('gradient')) return bgGradientClasses();
-      if (props.outline) return 'bg-transparent';
-      if (props.flat) return bgFlatClasses.value;
+    const bgColorClasses = computed(() => {
+      if (props.color.includes('gradient')) return bgGradientClasses.value;
+      else if (props.outline) return 'bg-transparent';
+      else if (props.flat) return bgFlatClasses.value;
+      else if (props.color === 'white') return 'bg-white';
+      else {
+        if (props.disabled || props.loading) {
+          return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
+        }
 
-      if (props.disabled || props.loading) {
-        return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
+        return `
+          bg-${props.color}-500 hover:bg-${props.color}-600
+          dark:bg-${props.color}-dark-500 dark:hover:bg-${props.color}-dark-600
+        `;
       }
+    });
 
-      return `
-        bg-${props.color}-500 hover:bg-${props.color}-600
-        dark:bg-${props.color}-dark-500 dark:hover:bg-${props.color}-dark-600
-      `;
-    };
-
-    const borderClasses = (): string => {
+    const borderClasses = computed(() => {
       if (props.outline) return `border border-${props.color}-200`;
       return 'border-none';
-    };
+    });
 
-    const textColorClasses = (): string => {
+    const textColorClasses = computed(() => {
+      if (props.color === 'white') {
+        if (props.outline) return 'text-white';
+        else return 'text-black';
+      }
       if (props.outline || props.flat) return `text-${props.color}-500`;
       return 'text-white';
-    };
+    });
 
-    const displayClasses = (): string => {
+    const displayClasses = computed(() => {
       if (props.circle) return 'flex justify-center items-center';
       if (props.block) return 'block w-full';
       return 'inline-block';
-    };
+    });
 
-    const shapeClasses = (): string => {
+    const shapeClasses = computed(() => {
       if (props.circle || props.rounded) return 'rounded-full';
       return 'rounded-lg';
-    };
+    });
 
-    const cursorClasses = (): string => {
+    const cursorClasses = computed(() => {
       if (props.disabled || props.loading) return 'cursor-not-allowed';
       return 'cursor-pointer';
-    };
+    });
 
-    const shadowClasses = (): string => {
+    const shadowClasses = computed(() => {
       if (props.outline || props.flat || props.disabled || props.loading)
         return '';
       if (props.size === 'sm') return 'shadow-sm hover:shadow-none';
       return 'shadow hover:shadow-none';
-    };
+    });
 
     const btnClasses = computed(() => {
       return {
-        [sizeClasses()]: !props.circle,
-        [circleSizeClasses()]: props.circle,
-        [bgColorClasses()]: true,
-        [textColorClasses()]: true,
-        [borderClasses()]: true,
-        [displayClasses()]: true,
-        [shapeClasses()]: true,
-        [shadowClasses()]: true,
-        [cursorClasses()]: true
+        [sizeClasses.value]: !props.circle,
+        [circleSizeClasses.value]: props.circle,
+        [bgColorClasses.value]: true,
+        [textColorClasses.value]: true,
+        [borderClasses.value]: true,
+        [displayClasses.value]: true,
+        [shapeClasses.value]: true,
+        [shadowClasses.value]: true,
+        [cursorClasses.value]: true
       };
     });
 
