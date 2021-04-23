@@ -48,7 +48,8 @@ import {
   computed,
   toRefs,
   PropType,
-  watchEffect
+  watchEffect,
+  watch
 } from 'vue';
 import { Rules, RuleFunction } from '@/types';
 
@@ -57,12 +58,16 @@ export default defineComponent({
 
   inheritAttrs: false,
 
-  emits: ['input', 'blur', 'update:modelValue', 'click'],
+  emits: ['input', 'blur', 'update:modelValue', 'update:isValid', 'click'],
 
   props: {
     modelValue: {
       type: [String, Number],
       default: ''
+    },
+    isValid: {
+      type: Boolean,
+      default: true
     },
     name: { type: String, required: true },
     label: { type: String, default: '' },
@@ -124,6 +129,10 @@ export default defineComponent({
 
     watchEffect(() => {
       if (validateOn.value === 'input') validate(props.modelValue);
+    });
+
+    watch(hasError, newVal => {
+      emit('update:isValid', !newVal);
     });
 
     const textSizeClasses = (): string => {
