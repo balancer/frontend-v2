@@ -99,6 +99,7 @@ import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import SubNav from '@/components/navs/SubNav.vue';
+import useTokens from '@/composables/useTokens';
 
 interface PoolPageData {
   id: string;
@@ -124,6 +125,7 @@ export default defineComponent({
     const router = useRouter();
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
+    const { allTokens } = useTokens();
     const {
       appNetwork,
       account,
@@ -149,10 +151,6 @@ export default defineComponent({
 
     const pool = computed(() => {
       return store.state.pools.current;
-    });
-
-    const allTokens = computed(() => {
-      return store.getters['registry/getTokens']();
     });
 
     const title = computed(() => {
@@ -191,6 +189,12 @@ export default defineComponent({
         data.events &&
         (data.events.joins.length > 0 || data.events.exits.length > 0)
       );
+    });
+
+    const haveAllPrices = computed(() => {
+      const tokensWithPrice = Object.keys(store.state.market.prices);
+      const poolTokens = pool.value.tokens.map(t => t.toLowerCase());
+      return poolTokens.every(token => tokensWithPrice.includes(token));
     });
 
     // METHODS
@@ -257,6 +261,7 @@ export default defineComponent({
       title,
       isAuthenticated,
       hasEvents,
+      haveAllPrices,
       // methods
       fNum,
       fetchPool
