@@ -105,6 +105,37 @@
           />
         </div>
       </div>
+      <div class="mt-4 px-4">
+        <div class="flex items-baseline">
+          <h5 v-text="'Trade liquidity'" />
+          <BalTooltip>
+            <template v-slot:activator>
+              <BalIcon
+                name="info"
+                size="xs"
+                class="ml-1 text-gray-400 -mb-px"
+              />
+            </template>
+            <div
+              v-text="
+                'Which liquidity pools should be used when you make a trade.'
+              "
+              class="w-52"
+            />
+          </BalTooltip>
+        </div>
+        <div class="flex mt-1">
+          <div
+            v-for="(tradeLiquidity, i) in tradeLiquidityOptions"
+            :key="i"
+            class="option w-16 mr-2 py-1 text-center border rounded-xl cursor-pointer capitalize"
+            :class="{ active: appTradeLiquidity === tradeLiquidity }"
+            @click="setTradeLiquidity(tradeLiquidity)"
+          >
+            {{ tradeLiquidity }}
+          </div>
+        </div>
+      </div>
       <div class="network mt-4 px-4 pt-2 pb-4 text-sm border-t rounded-b-xl">
         <div v-text="t('network')" />
         <div class="flex items-baseline">
@@ -149,6 +180,7 @@ const locales = {
   'tr-TR': 'Türk'
 };
 const slippageOptions = ['0.005', '0.01', '0.02'];
+const tradeLiquidityOptions = ['best', 'v1', 'v2'];
 
 export default defineComponent({
   setup() {
@@ -162,6 +194,7 @@ export default defineComponent({
     const data = reactive({
       locales,
       slippageOptions,
+      tradeLiquidityOptions,
       slippageInput: ''
     });
 
@@ -173,6 +206,7 @@ export default defineComponent({
       () => `network-${store.state.web3.config.shortName.toLowerCase()}`
     );
     const appSlippage = computed(() => store.state.app.slippage);
+    const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
 
@@ -201,6 +235,8 @@ export default defineComponent({
     const setDarkMode = val => store.commit('app/setDarkMode', val);
     const setLocale = locale => store.commit('app/setLocale', locale);
     const setSlippage = slippage => store.commit('app/setSlippage', slippage);
+    const setTradeLiquidity = tradeLiquidity =>
+      store.commit('app/setTradeLiquidity', tradeLiquidity);
 
     function copyAddress() {
       navigator.clipboard.writeText(store.state.web3.account);
@@ -231,6 +267,7 @@ export default defineComponent({
       networkName,
       networkColorClass,
       appSlippage,
+      appTradeLiquidity,
       appLocale,
       appDarkMode,
       isCustomSlippage,
@@ -241,6 +278,7 @@ export default defineComponent({
       setDarkMode,
       setLocale,
       setSlippage,
+      setTradeLiquidity,
       copyAddress,
       fNum,
       t,
