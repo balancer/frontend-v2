@@ -99,7 +99,6 @@ export default defineComponent({
         provider,
         account.value
       );
-      console.log(pendingClaims);
       data.pendingClaims = pendingClaims;
       data.totalPending = pendingClaims
         .map(claim => parseFloat(claim.amount))
