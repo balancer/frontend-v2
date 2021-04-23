@@ -2,12 +2,15 @@ import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/utils';
 import i18n from '@/plugins/i18n';
 
+type TradeLiquidity = 'best' | 'v1' | 'v2';
+
 export interface AppState {
   loading: boolean;
   modalOpen: boolean;
   darkMode: boolean;
   locale: string;
   slippage: string;
+  tradeLiquidity: TradeLiquidity;
 }
 
 const state: AppState = {
@@ -16,7 +19,8 @@ const state: AppState = {
   darkMode: false,
   // locale: defaultLocale,
   locale: 'en-US',
-  slippage: '0.01'
+  slippage: '0.01',
+  tradeLiquidity: 'best'
 };
 
 const actions = {
@@ -38,6 +42,7 @@ const actions = {
       // commit('setLocale', lsGet('locale', defaultLocale));
       // commit('setDarkMode', lsGet('darkMode', false));
       commit('setSlippage', lsGet('slippage', '0.01'));
+      commit('setTradeLiquidity', lsGet('tradeLiquidity', 'best'));
       commit('setLoading', false);
     } catch (error) {
       console.error('Failed to initialize app', error);
@@ -73,6 +78,11 @@ const mutations = {
     } else {
       document.body.classList.remove('dark');
     }
+  },
+
+  setTradeLiquidity(state: AppState, tradeLiquidity: TradeLiquidity): void {
+    state.tradeLiquidity = tradeLiquidity;
+    lsSet('tradeLiquidity', state.tradeLiquidity);
   }
 };
 
