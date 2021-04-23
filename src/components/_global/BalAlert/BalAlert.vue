@@ -100,7 +100,7 @@ export default defineComponent({
 }
 
 .bal-alert-container {
- @apply flex items-center;
+  @apply flex items-center;
 }
 
 .bal-alert-icon {
