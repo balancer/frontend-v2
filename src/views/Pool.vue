@@ -28,6 +28,7 @@
           <PoolStats
             :pool="pool"
             :snapshots="snapshots"
+            :missing-prices="missingPrices"
             :loading="loading || appLoading"
           />
 
@@ -39,6 +40,7 @@
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
               :weights="pool.weightsPercent"
+              :missing-prices="missingPrices"
             />
           </div>
 
@@ -191,10 +193,10 @@ export default defineComponent({
       );
     });
 
-    const haveAllPrices = computed(() => {
+    const missingPrices = computed(() => {
       const tokensWithPrice = Object.keys(store.state.market.prices);
       const poolTokens = pool.value.tokens.map(t => t.toLowerCase());
-      return poolTokens.every(token => tokensWithPrice.includes(token));
+      return !poolTokens.every(token => tokensWithPrice.includes(token));
     });
 
     // METHODS
@@ -261,7 +263,7 @@ export default defineComponent({
       title,
       isAuthenticated,
       hasEvents,
-      haveAllPrices,
+      missingPrices,
       // methods
       fNum,
       fetchPool
