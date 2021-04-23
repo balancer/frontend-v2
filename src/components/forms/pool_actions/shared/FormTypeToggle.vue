@@ -13,10 +13,12 @@
         <span>
           {{ type.label }}
         </span>
-        <span class="text-xs text-gray-500"> ({{ type.max }} max) </span>
+        <span v-if="!missingPrices" class="text-xs text-gray-500">
+          ({{ type.max }} max)
+        </span>
         <BalTooltip v-if="type.tooltip">
           <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="text-gray-400 -mb-px" />
+            <BalIcon name="info" size="xs" class="text-gray-400 -mb-px ml-2" />
           </template>
           <div class="w-52">
             {{ type.tooltip }}
@@ -48,7 +50,8 @@ export default defineComponent({
     formTypes: { type: Object as PropType<FormType[]>, required: true },
     modelValue: { type: String, required: true },
     loading: { type: Boolean, default: false },
-    hasZeroBalance: { type: Boolean, default: false }
+    hasZeroBalance: { type: Boolean, default: false },
+    missingPrices: { type: Boolean, default: false }
   },
 
   setup(props, { emit }) {

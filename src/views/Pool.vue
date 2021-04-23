@@ -13,6 +13,13 @@
         <div v-else class="text-sm">
           {{ poolTypeLabel }}. {{ poolFeeLabel }}.
         </div>
+
+        <BalAlert
+          v-if="!loading && !appLoading && missingPrices"
+          type="warning"
+          label="Failed to fetch pool token price information."
+          class="mt-2"
+        />
       </div>
 
       <div class="hidden lg:block" />
@@ -68,6 +75,7 @@
         <PoolActionsCard
           v-else
           :pool="pool"
+          :missing-prices="missingPrices"
           @on-tx="fetchPool"
           class="sticky top-24"
         />
@@ -194,9 +202,12 @@ export default defineComponent({
     });
 
     const missingPrices = computed(() => {
-      const tokensWithPrice = Object.keys(store.state.market.prices);
-      const poolTokens = pool.value.tokens.map(t => t.toLowerCase());
-      return !poolTokens.every(token => tokensWithPrice.includes(token));
+      if (pool.value) {
+        const tokensWithPrice = Object.keys(store.state.market.prices);
+        const poolTokens = pool.value.tokens.map(t => t.toLowerCase());
+        return !poolTokens.every(token => tokensWithPrice.includes(token));
+      }
+      return false;
     });
 
     // METHODS

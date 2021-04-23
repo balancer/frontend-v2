@@ -3,7 +3,8 @@
     <FormTypeToggle
       v-model="investType"
       :form-types="formTypes"
-      :hasZeroBalance="hasZeroBalance"
+      :missing-prices="missingPrices"
+      :has-zero-balance="hasZeroBalance"
       :loading="loading"
     />
 
@@ -21,7 +22,7 @@
               class="mr-2 text-lg font-medium w-1/2 break-words leading-none"
               :title="total"
             >
-              {{ total }}
+              {{ missingPrices ? '-' : total }}
             </span>
             <BalRangeInput
               class="w-1/2"
@@ -183,7 +184,8 @@
             :loading="loading"
             block
           >
-            {{ $t('invest') }} {{ total.length > 15 ? '' : total }}
+            {{ $t('invest') }}
+            {{ missingPrices || total.length > 15 ? '' : total }}
           </BalBtn>
         </template>
       </template>
@@ -240,7 +242,8 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: { type: Object, required: true }
+    pool: { type: Object, required: true },
+    missingPrices: { type: Boolean, default: false }
   },
 
   setup(props, { emit }) {
