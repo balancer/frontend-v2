@@ -307,13 +307,6 @@ export default defineComponent({
       return props.pool.tokens.map(token => allTokens.value[token].balance);
     });
 
-    const hasBalance = computed(() => {
-      const balanceSum = balances.value
-        .map(b => Number(b))
-        .reduce((a, b) => a + b, 0);
-      return balanceSum > 0;
-    });
-
     const hasZeroBalance = computed(() => {
       return balances.value.map(b => Number(b)).includes(0);
     });
