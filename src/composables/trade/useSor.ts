@@ -101,6 +101,7 @@ export default function useSor(
     isExactIn: boolean,
     amount: string
   ): Promise<void> {
+    exactIn.value = isExactIn;
     if (isWrap.value || isUnwrap.value) {
       if (isExactIn) {
         tokenOutAmountInput.value = tokenInAmountInput.value;
@@ -122,7 +123,6 @@ export default function useSor(
       return;
     }
 
-    exactIn.value = isExactIn;
     const tokenInDecimals = tokens.value[tokenInAddressInput.value].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value].decimals;
 
@@ -329,6 +329,7 @@ export default function useSor(
     pools,
     initSor,
     handleAmountChange,
+    exactIn,
     trade,
     trading,
     priceImpact
