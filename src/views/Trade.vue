@@ -144,10 +144,10 @@
       />
       <BalBtn
         v-else-if="requireApproval"
-        :label="`${$t('unlock')} ${tokens[tokenInAddressInput].symbol}`"
+        :label="`${$t('approve')} ${tokens[tokenInAddressInput].symbol}`"
         :loading="approving"
         :loading-label="
-          `${$t('unlocking')} ${tokens[tokenInAddressInput].symbol}...`
+          `${$t('approving')} ${tokens[tokenInAddressInput].symbol}...`
         "
         block
         @click.prevent="approve"
