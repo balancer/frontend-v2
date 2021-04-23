@@ -12,7 +12,7 @@
         class="mr-2 text-base hidden md:block"
         size="sm"
       >
-        <IconStars class="mr-1" />{{ fNum(totalPending, 'token') }} BAL
+        <StarsIcon class="mr-1" />{{ fNum(totalPending, 'token') }} BAL
       </BalBtn>
       <div class="relative">
         <BalBtn
@@ -99,6 +99,7 @@ export default defineComponent({
         provider,
         account.value
       );
+      console.log(pendingClaims);
       data.pendingClaims = pendingClaims;
       data.totalPending = pendingClaims
         .map(claim => parseFloat(claim.amount))
