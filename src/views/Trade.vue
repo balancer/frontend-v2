@@ -57,7 +57,7 @@
           </template>
           <template v-slot:info>
             <div class="cursor-pointer" @click="handleMax">
-              {{ $t('balance') }}: {{ fNum(balanceLabel, 'token') }}
+              {{ $t('balance') }}: {{ formatBalance }}
             </div>
           </template>
           <template v-slot:append>
@@ -277,8 +277,8 @@ export default defineComponent({
         : !allowanceState.value.isUnlockedV2;
     });
 
-    const balanceLabel = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance
+    const formatBalance = computed(() =>
+      fNum(tokens.value[tokenInAddressInput.value]?.balance, 'token')
     );
 
     const title = computed(() => {
@@ -398,7 +398,7 @@ export default defineComponent({
       fNum,
       toFiat,
       tokens,
-      balanceLabel,
+      formatBalance,
       title,
       submitLabel,
       modalSelectTokenIsOpen,
