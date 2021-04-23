@@ -56,9 +56,9 @@
                 </span>
                 <span
                   class="text-xs text-gray-400 break-words"
-                  :title="`${balanceLabel(i)} balance`"
+                  :title="`${formatBalance(i)} balance`"
                 >
-                  {{ balanceLabel(i) }} {{ $t('balance').toLowerCase() }}
+                  {{ $t('balance') }}: {{ formatBalance(i) }}
                 </span>
               </div>
             </div>
@@ -109,7 +109,7 @@
             class="cursor-pointer"
             @click.prevent="amounts[i] = tokenBalance(i)"
           >
-            {{ $t('balance').toLowerCase() }}: {{ balanceLabel(i) }}
+            {{ $t('balance') }}: {{ formatBalance(i) }}
           </div>
         </template>
         <template v-slot:append>
@@ -410,7 +410,7 @@ export default defineComponent({
       return toFiat(amount, token);
     }
 
-    function balanceLabel(index) {
+    function formatBalance(index) {
       return fNum(tokenBalance(index), 'token');
     }
 
@@ -537,7 +537,7 @@ export default defineComponent({
       fNum,
       isAuthenticated,
       connectWallet,
-      balanceLabel,
+      formatBalance,
       isProportional,
       propPercentage,
       priceImpact,
