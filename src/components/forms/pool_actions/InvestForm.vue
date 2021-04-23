@@ -58,7 +58,7 @@
                   class="text-xs text-gray-400 break-words"
                   :title="`${balanceLabel(i)} balance`"
                 >
-                  {{ balanceLabel(i) }} {{ $t('balance').toLowerCase() }}
+                  {{ $t('balance') }}: {{ balanceLabel(i) }}
                 </span>
               </div>
             </div>
@@ -109,7 +109,7 @@
             class="cursor-pointer"
             @click.prevent="amounts[i] = tokenBalance(i)"
           >
-            {{ $t('balance').toLowerCase() }}: {{ balanceLabel(i) }}
+            {{ $t('balance') }}: {{ balanceLabel(i) }}
           </div>
         </template>
         <template v-slot:append>

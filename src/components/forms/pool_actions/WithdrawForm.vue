@@ -48,8 +48,7 @@
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
                 <span class="text-xs text-gray-400 break-words">
-                  {{ propBalanceLabel(i) }}
-                  {{ $t('balance') }}
+                  {{ $t('balance') }}: {{ propBalanceLabel(i) }}
                 </span>
               </div>
             </div>
