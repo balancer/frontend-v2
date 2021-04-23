@@ -6,7 +6,11 @@ import { BigNumber } from 'bignumber.js';
 import { scale } from '@/utils';
 import { unwrap, wrap } from '@/utils/balancer/wrapper';
 import getProvider from '@/utils/provider';
-import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import {
+  LiquiditySelection,
+  SorManager,
+  SorReturn
+} from '@/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/utils/balancer/swapper';
 
 import { BALANCER_SUBGRAPH_URL } from '@/api/subgraph';
@@ -130,6 +134,10 @@ export default function useSor(
       );
 
       console.log('[SOR Manager] swapExactIn');
+
+      // TO DO - This will be selected in UI
+      const liquiditySelection = LiquiditySelection.Best;
+
       const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
@@ -139,7 +147,8 @@ export default function useSor(
         tokenInAmountScaled,
         tokenInDecimals,
         allowanceState.value.isUnlockedV1,
-        allowanceState.value.isUnlockedV2
+        allowanceState.value.isUnlockedV2,
+        liquiditySelection
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -173,6 +182,10 @@ export default function useSor(
       const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
 
       console.log('[SOR Manager] swapExactOut');
+
+      // TO DO - This will be selected in UI
+      const liquiditySelection = LiquiditySelection.Best;
+
       const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
@@ -182,7 +195,8 @@ export default function useSor(
         tokenOutAmount,
         tokenOutDecimals,
         allowanceState.value.isUnlockedV1,
-        allowanceState.value.isUnlockedV2
+        allowanceState.value.isUnlockedV2,
+        liquiditySelection
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
