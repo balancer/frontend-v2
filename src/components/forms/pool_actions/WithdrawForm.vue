@@ -176,7 +176,8 @@ import {
   onMounted,
   reactive,
   toRefs,
-  ref
+  ref,
+  PropType
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -199,6 +200,7 @@ import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import useTokens from '@/composables/useTokens';
+import { Pool } from '@/utils/balancer/types';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -215,7 +217,7 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: { type: Object, required: true }
+    pool: { type: Object as PropType<Pool>, required: true }
   },
 
   setup(props, { emit }) {
