@@ -19,7 +19,7 @@
           class="auth-btn text-base"
           :loading="web3Loading"
           :loading-label="
-            ['sm', 'md', 'lg'].includes(bp) ? '' : t('connecting')
+            ['sm', 'md', 'lg'].includes(bp) ? '' : $t('connecting')
           "
           color="gray"
           outline

@@ -1,4 +1,4 @@
-import set from 'lodash.set';
+import set from 'lodash/set';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { Interface } from '@ethersproject/abi';
