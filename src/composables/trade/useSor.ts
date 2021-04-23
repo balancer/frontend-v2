@@ -136,7 +136,7 @@ export default function useSor(
       console.log('[SOR Manager] swapExactIn');
 
       // TO DO - This will be selected in UI
-      const liquiditySelection = LiquiditySelection.Best;
+      const liquiditySelection = LiquiditySelection.V2;
 
       const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
@@ -184,7 +184,7 @@ export default function useSor(
       console.log('[SOR Manager] swapExactOut');
 
       // TO DO - This will be selected in UI
-      const liquiditySelection = LiquiditySelection.Best;
+      const liquiditySelection = LiquiditySelection.V2;
 
       const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
