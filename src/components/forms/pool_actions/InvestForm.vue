@@ -199,7 +199,8 @@ import {
   onMounted,
   reactive,
   toRefs,
-  ref
+  ref,
+  PropType
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -211,6 +212,7 @@ import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { TransactionData } from 'bnc-notify';
 import { formatUnits } from '@ethersproject/units';
+import isEqual from 'lodash/isEqual';
 
 import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
@@ -224,6 +226,7 @@ import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
+import { Pool } from '@/utils/balancer/types';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -240,7 +243,7 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: { type: Object, required: true }
+    pool: { type: Object as PropType<Pool>, required: true }
   },
 
   setup(props, { emit }) {
@@ -482,6 +485,22 @@ export default defineComponent({
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
       if (!hasAmounts.value) setPropMax();
+    });
+
+    watch(
+      () => props.pool.tokenBalances,
+      (newBalances, oldBalances) => {
+        poolCalculator.setPool(props.pool);
+        const _newBalances = newBalances.map(b => b.toString());
+        const _oldBalances = oldBalances.map(b => b.toString());
+        const balancesChanged = !isEqual(_newBalances, _oldBalances);
+        if (balancesChanged) setPropMax();
+      }
+    );
+
+    watch(balances, (newBalances, oldBalances) => {
+      const balancesChanged = !isEqual(newBalances, oldBalances);
+      if (balancesChanged) setPropMax();
     });
 
     watch(
