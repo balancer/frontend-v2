@@ -16,6 +16,7 @@ import useNotify from '@/composables/useNotify';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
+const MIN_PRICE_IMPACT = 0.0001;
 
 export default function useSor(
   tokenInAddressInput: Ref<string>,
@@ -97,9 +98,12 @@ export default function useSor(
     isExactIn: boolean,
     amount: string
   ): Promise<void> {
-    if (isWrap.value || isUnwrap.value) {
+    // Avoid using SOR if querying a zero value or (un)wrapping trade
+    const zeroValueTrade = amount === '' || new BigNumber(amount).isZero();
+    if (zeroValueTrade || isWrap.value || isUnwrap.value) {
       tokenInAmountInput.value = amount;
       tokenOutAmountInput.value = amount;
+      priceImpact.value = 0;
       return;
     }
 
@@ -161,9 +165,10 @@ export default function useSor(
           .div(swapReturn.marketSpNormalised)
           .minus(1);
 
-        priceImpact.value = priceImpactCalc.isNegative()
-          ? 0.00001
-          : priceImpactCalc.toNumber();
+        priceImpact.value = BigNumber.max(
+          priceImpactCalc,
+          MIN_PRICE_IMPACT
+        ).toNumber();
       }
     } else {
       const tokenOutAmountNormalised = new BigNumber(amount);
@@ -201,9 +206,10 @@ export default function useSor(
           .div(swapReturn.marketSpNormalised)
           .minus(1);
 
-        priceImpact.value = priceImpactCalc.isNegative()
-          ? 0.00001
-          : priceImpactCalc.toNumber();
+        priceImpact.value = BigNumber.max(
+          priceImpactCalc,
+          MIN_PRICE_IMPACT
+        ).toNumber();
       }
     }
   }
