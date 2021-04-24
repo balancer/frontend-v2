@@ -146,7 +146,7 @@
         <BalCheckbox
           v-if="priceImpact >= 0.01"
           v-model="highPiAccepted"
-          :rules="[isRequired()]"
+          :rules="[isRequired($t('priceImpactCheckbox'))]"
           name="highPiAccepted"
           class="text-gray-500 mb-8"
           size="sm"
