@@ -12,7 +12,7 @@
         class="mr-2 text-base hidden md:block"
         size="sm"
       >
-        ✨ {{ fNum(totalPending, 'token') }} BAL
+        <StarsIcon class="mr-1" />{{ fNum(totalPending, 'token') }} BAL
       </BalBtn>
       <div class="relative">
         <BalBtn
