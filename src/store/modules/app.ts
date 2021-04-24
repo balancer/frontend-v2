@@ -41,7 +41,10 @@ const actions = {
       // commit('setLocale', lsGet('locale', defaultLocale));
       // commit('setDarkMode', lsGet('darkMode', false));
       commit('setSlippage', lsGet('slippage', '0.01'));
-      commit('setTradeLiquidity', lsGet('tradeLiquidity', 'best'));
+      commit(
+        'setTradeLiquidity',
+        lsGet('tradeLiquidity', LiquiditySelection.Best)
+      );
       commit('setLoading', false);
     } catch (error) {
       console.error('Failed to initialize app', error);
@@ -81,7 +84,6 @@ const mutations = {
 
   setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection): void {
     state.tradeLiquidity = tradeLiquidity;
-    console.log(state.tradeLiquidity);
     lsSet('tradeLiquidity', state.tradeLiquidity);
   }
 };
