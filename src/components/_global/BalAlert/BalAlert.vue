@@ -31,20 +31,20 @@ export default defineComponent({
     const bgColorClass = computed(() => {
       switch (props.type) {
         case 'warning':
-          return 'bg-yellow-500';
+          return 'bg-yellow-100 border border-yellow-500 text-black';
         case 'error':
-          return 'bg-red-500';
+          return 'bg-red-500 text-white';
         default:
-          return 'bg-black';
+          return 'bg-black text-white';
       }
     });
 
     const paddingClasses = computed(() => {
       switch (props.size) {
         case 'sm':
-          return 'p-1 pl-1 pr-4 ';
+          return 'p-1 pl-1 pr-4';
         default:
-          return 'p-1 pl-1 pr-4 ';
+          return 'p-1 pl-1 pr-4';
       }
     });
 
@@ -74,18 +74,30 @@ export default defineComponent({
       }
     });
 
+    const iconColorClasses = computed(() => {
+      switch (props.type) {
+        case 'warning':
+          return 'text-yellow-500';
+        case 'error':
+          return 'text-white bg-white bg-opacity-20';
+        default:
+          return 'text-white bg-white bg-opacity-20';
+      }
+    });
+
     const iconClasses = computed(() => {
       return {
-        [iconSizeClasses.value]: true
+        [iconSizeClasses.value]: true,
+        [iconColorClasses.value]: true
       };
     });
 
     const iconSize = computed(() => {
       switch (props.size) {
         case 'sm':
-          return 'xs';
+          return 'sm';
         default:
-          return 'xs';
+          return 'sm';
       }
     });
 
@@ -96,7 +108,7 @@ export default defineComponent({
 
 <style>
 .bal-alert {
-  @apply inline-block shadow-sm text-white rounded-full font-medium;
+  @apply inline-block shadow-sm rounded-full font-medium;
 }
 
 .bal-alert-container {
@@ -104,6 +116,6 @@ export default defineComponent({
 }
 
 .bal-alert-icon {
-  @apply bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-2;
+  @apply rounded-full flex items-center justify-center mr-2;
 }
 </style>
