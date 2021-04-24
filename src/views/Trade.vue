@@ -57,7 +57,7 @@
           </template>
           <template v-slot:info>
             <div class="cursor-pointer" @click="handleMax">
-              {{ $t('balance') }}: {{ fNum(balanceLabel, 'token') }}
+              {{ $t('balance') }}: {{ formatBalance }}
             </div>
           </template>
           <template v-slot:append>
@@ -138,16 +138,17 @@
       </div>
       <BalBtn
         v-if="!isAuthenticated"
-        label="Connect wallet"
+        :label="$t('connectWallet')"
         block
         @click.prevent="connectWallet"
       />
-      <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
         v-else-if="requireApproval"
-        :label="`Unlock ${tokens[tokenInAddressInput].symbol}`"
+        :label="`${$t('approve')} ${tokens[tokenInAddressInput].symbol}`"
         :loading="approving"
-        :loading-label="`Unlocking ${tokens[tokenInAddressInput].symbol}...`"
+        :loading-label="
+          `${$t('approving')} ${tokens[tokenInAddressInput].symbol}...`
+        "
         block
         @click.prevent="approve"
       />
@@ -156,7 +157,7 @@
         type="submit"
         :label="`${$t(submitLabel)}`"
         :loading="trading"
-        loading-label="Confirming..."
+        :loading-label="$t('confirming')"
         color="gradient"
         block
         @click.prevent="trade"
@@ -276,8 +277,8 @@ export default defineComponent({
         : !allowanceState.value.isUnlockedV2;
     });
 
-    const balanceLabel = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance
+    const formatBalance = computed(() =>
+      fNum(tokens.value[tokenInAddressInput.value]?.balance, 'token')
     );
 
     const title = computed(() => {
@@ -397,7 +398,7 @@ export default defineComponent({
       fNum,
       toFiat,
       tokens,
-      balanceLabel,
+      formatBalance,
       title,
       submitLabel,
       modalSelectTokenIsOpen,

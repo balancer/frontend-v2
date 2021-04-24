@@ -12,14 +12,14 @@
         class="mr-2 text-base hidden md:block"
         size="sm"
       >
-        ✨ {{ fNum(totalPending, 'token') }} BAL
+        <StarsIcon class="mr-1" />{{ fNum(totalPending, 'token') }} BAL
       </BalBtn>
       <div class="relative">
         <BalBtn
           class="auth-btn text-base"
           :loading="web3Loading"
           :loading-label="
-            ['sm', 'md', 'lg'].includes(bp) ? '' : 'Connecting...'
+            ['sm', 'md', 'lg'].includes(bp) ? '' : $t('connecting')
           "
           color="gray"
           outline

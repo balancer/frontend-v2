@@ -56,9 +56,9 @@
                 </span>
                 <span
                   class="text-xs text-gray-400 break-words"
-                  :title="`${balanceLabel(i)} balance`"
+                  :title="`${formatBalance(i)} balance`"
                 >
-                  {{ balanceLabel(i) }} {{ $t('balance').toLowerCase() }}
+                  {{ $t('balance') }}: {{ formatBalance(i) }}
                 </span>
               </div>
             </div>
@@ -110,7 +110,7 @@
             class="cursor-pointer"
             @click.prevent="amounts[i] = tokenBalance(i)"
           >
-            {{ $t('balance').toLowerCase() }}: {{ balanceLabel(i) }}
+            {{ $t('balance') }}: {{ formatBalance(i) }}
           </div>
         </template>
         <template v-slot:append>
@@ -178,7 +178,7 @@
           />
           <BalBtn
             type="submit"
-            loading-label="Confirming..."
+            :loading-label="$t('confirming')"
             color="gradient"
             :disabled="!hasAmounts || !hasValidInputs"
             :loading="loading"
@@ -408,7 +408,7 @@ export default defineComponent({
       return toFiat(amount, token);
     }
 
-    function balanceLabel(index) {
+    function formatBalance(index) {
       return fNum(tokenBalance(index), 'token');
     }
 
@@ -479,7 +479,7 @@ export default defineComponent({
 
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
-      if (!hasAmounts.value) setPropMax();
+      if (!hasAmounts.value && !hasZeroBalance.value) setPropMax();
     });
 
     watch(
@@ -513,8 +513,11 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      setPropMax();
-      if (hasZeroBalance.value) data.investType = FormTypes.custom;
+      if (hasZeroBalance.value) {
+        data.investType = FormTypes.custom;
+      } else {
+        setPropMax();
+      }
     });
 
     return {
@@ -531,7 +534,8 @@ export default defineComponent({
       amountRules,
       total,
       isAuthenticated,
-      balanceLabel,
+      connectWallet,
+      formatBalance,
       isProportional,
       propPercentage,
       priceImpact,
@@ -543,8 +547,7 @@ export default defineComponent({
       // methods
       submit,
       approveAllowances,
-      fNum,
-      connectWallet
+      fNum
     };
   }
 });

@@ -3,17 +3,17 @@
     <template v-slot:content-left>
       <div class="px-4 md:px-0">
         <Breadcrumb />
-        <h1 v-text="'Vault'" class="mb-5" />
+        <h1 v-text="$t('vault')" class="mb-5" />
       </div>
       <BalLoadingIcon v-if="loading" />
       <div v-if="loaded">
-        <Block title="Overview">
+        <Block :title="$t('overview')">
           <div>
             {{ $t('numberOfPools') }}:
             {{ _num(_units(vault.numberOfPools, 0)) }}
           </div>
         </Block>
-        <Block title="Protocol fees">
+        <Block :title="$t('protocolFees')">
           <div>
             {{ $t('flashLoanFee') }}: {{ _units(vault.protocolFlashLoanFee) }}%
           </div>
