@@ -5,7 +5,7 @@
   "shortName": "Mainnet",
   "network": "homestead",
   "unknown": false,
-  "rpc": "https://cloudflare-eth.com",
+  "rpc": "https://mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
   "ws": "wss://eth-mainnet.ws.alchemyapi.io/v2/4bdDVB5QAaorY2UE-GBUbM2yQB3QJqzv",
   "explorer": "https://etherscan.io",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange/pools",
