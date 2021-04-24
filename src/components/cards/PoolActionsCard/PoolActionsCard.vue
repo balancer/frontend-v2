@@ -3,7 +3,11 @@
     <div class="relative overflow-hidden">
       <BalTabs v-model="activeTab" :tabs="tabs" class="pt-4" />
       <template v-if="activeTab === 'invest'">
-        <InvestForm :pool="pool" @success="handleInvestment($event)" />
+        <InvestForm
+          :pool="pool"
+          :missing-prices="missingPrices"
+          @success="handleInvestment($event)"
+        />
         <SuccessOverlay
           v-if="investmentSuccess"
           :title="$t('investmentSettled')"
@@ -14,7 +18,11 @@
         />
       </template>
       <template v-if="activeTab === 'withdraw'">
-        <WithdrawForm :pool="pool" @success="handleWithdrawal($event)" />
+        <WithdrawForm
+          :pool="pool"
+          :missing-prices="missingPrices"
+          @success="handleWithdrawal($event)"
+        />
         <SuccessOverlay
           v-if="withdrawalSuccess"
           :title="$t('withdrawalSettled')"
@@ -47,7 +55,8 @@ export default defineComponent({
   },
 
   props: {
-    pool: { type: Object, required: true }
+    pool: { type: Object, required: true },
+    missingPrices: { type: Boolean, default: false }
   },
 
   setup(_, { emit }) {

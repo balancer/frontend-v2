@@ -48,8 +48,7 @@
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
                 <span class="text-xs text-gray-400 break-words">
-                  {{ propBalanceLabel(i) }}
-                  {{ $t('balance') }}
+                  {{ $t('balance') }}: {{ formatPropBalance(i) }}
                 </span>
               </div>
             </div>
@@ -301,7 +300,7 @@ export default defineComponent({
       return allTokens.value[props.pool.address].balance;
     });
 
-    function propBalanceLabel(index) {
+    function formatPropBalance(index) {
       return fNum(data.propMax[index] || '0', 'token');
     }
 
@@ -570,7 +569,7 @@ export default defineComponent({
       priceImpactClasses,
       amountRules,
       formTypes,
-      propBalanceLabel,
+      formatPropBalance,
       amountUSD,
       singleAssetMaxLabel,
       singleAssetMaxes,

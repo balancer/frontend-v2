@@ -63,7 +63,10 @@
         </a>
       </div>
       <div>
-        <div v-if="Object.keys(tokens).length > 0" class="h-96 overflow-scroll">
+        <div
+          v-if="Object.keys(tokens).length > 0"
+          class="h-96 overflow-y-scroll"
+        >
           <a
             v-for="(token, key) in tokens"
             :key="key"

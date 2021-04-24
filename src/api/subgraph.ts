@@ -68,7 +68,7 @@ export async function getPools(chainId: number) {
   const timestamp = currentTimestamp - (currentTimestamp % DAY) - DAY;
   const query = `
     query {
-      pools(first: 1000) {
+      pools(first: 1000, where: { totalShares_gt: 0 }) {
         id
         poolType
         swapFee
