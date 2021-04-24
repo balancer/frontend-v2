@@ -1,35 +1,37 @@
 <template>
-  <div id="lineChartHeader">
-    <h3 class="text-gray-800 font-semibold text-xl tracking-wider">
-      {{ currentValue }}
-    </h3>
-    <span
-      class="font-medium"
-      :class="{ 'text-green-400': change >= 0, 'text-red-400': change < 0 }"
-      >{{ numeral(change).format('+0.0%') }}</span
-    >
-  </div>
-  <ECharts
-    ref="chartInstance"
-    class="w-full h-72"
-    :option="option"
-    autoresize
-    @updateAxisPointer="_onAxisMoved"
-  />
-  <div class="flex w-full mt-2 justify-end">
-    <bal-button-group
-      :options="periodOptions"
-      :defaultValue="30"
-      :onChange="onPeriodSelected"
+  <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
+  <div v-else>
+    <div id="lineChartHeader">
+      <h3 class="text-gray-800 font-semibold text-xl tracking-wider">
+        {{ currentValue }}
+      </h3>
+      <span
+        class="font-medium"
+        :class="{ 'text-green-400': change >= 0, 'text-red-400': change < 0 }"
+        >{{ numeral(change).format('+0.0%') }}</span
+      >
+    </div>
+    <ECharts
+      ref="chartInstance"
+      class="w-full h-72"
+      :option="chartConfig"
+      autoresize
+      @updateAxisPointer="_onAxisMoved"
     />
+    <div class="flex w-full mt-2 justify-end">
+      <bal-button-group
+        :options="periodOptions"
+        :value="currentGraphingPeriod"
+        :onChange="onPeriodSelected"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { onMounted, defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, computed } from 'vue';
 import numeral from 'numeral';
 import * as echarts from 'echarts/core';
-import { EChartsOption } from 'echarts/types/dist/shared';
 import ECharts from 'vue-echarts';
 import { format as formatDate } from 'date-fns';
 
@@ -55,60 +57,6 @@ const PeriodOptions = [
     value: 365
   }
 ];
-
-// https://echarts.apache.org/en/option.html
-const LineChartConfig = (
-  name: string,
-  xAxis: string[] | number[],
-  data: string[] | number[]
-): EChartsOption => ({
-  xAxis: {
-    type: 'category',
-    data: xAxis,
-    show: false,
-    min: 0
-  },
-  yAxis: {
-    type: 'value',
-    show: false
-  },
-  color: ['#07C808'],
-  grid: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: '5%',
-    containLabel: false
-  },
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'shadow',
-      label: {
-        show: false
-      }
-    },
-    formatter: params =>
-      `<span class="font-semibold">${formatDate(
-        new Date(params[0].axisValue),
-        'do LLL yyyy'
-      )}</span>`,
-    shadowColor: 'none',
-    backgroundColor: 'transparent'
-  },
-  series: [
-    {
-      data,
-      type: 'line',
-      smooth: false,
-      symbol: 'none',
-      name,
-      lineStyle: {
-        width: 2
-      }
-    }
-  ]
-});
 
 type AxisMoveEvent = {
   seriesIndex: number;
@@ -137,6 +85,13 @@ export default defineComponent({
     },
     onPeriodSelected: {
       type: Function
+    },
+    isLoading: {
+      type: Boolean,
+      default: () => false
+    },
+    currentGraphingPeriod: {
+      type: Number
     }
   },
   components: {
@@ -145,9 +100,59 @@ export default defineComponent({
   setup(props) {
     const chartInstance = ref<echarts.ECharts>();
     const lineChart = ref<HTMLElement>();
-    const option = ref<EChartsOption>({});
+    const option = ref();
     const currentValue = ref('$0,00');
     const change = ref(0);
+
+    // https://echarts.apache.org/en/option.html
+    const chartConfig = computed(() => ({
+      xAxis: {
+        type: 'category',
+        data: props.axis,
+        show: false,
+        min: 0
+      },
+      yAxis: {
+        type: 'value',
+        show: false
+      },
+      color: ['#07C808'],
+      grid: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: '5%',
+        containLabel: false
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+          label: {
+            show: false
+          }
+        },
+        formatter: params =>
+          `<span class="font-semibold">${formatDate(
+            new Date(params[0].axisValue),
+            'do LLL yyyy'
+          )}</span>`,
+        shadowColor: 'none',
+        backgroundColor: 'transparent'
+      },
+      series: [
+        {
+          data: props.data,
+          type: 'line',
+          smooth: false,
+          symbol: 'none',
+          name: props.name,
+          lineStyle: {
+            width: 2
+          }
+        }
+      ]
+    }));
 
     // Triggered when hovering mouse over different xAxis points
     const _onAxisMoved = ({ dataIndex }: AxisMoveEvent) => {
@@ -171,14 +176,6 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
-      // This is a small trick to trigger an animation on first mount
-      // rather than have the chart just pop into existence
-      setTimeout(() => {
-        option.value = LineChartConfig(props.name, props.axis, props.data);
-      }, 0);
-    });
-
     return {
       chartInstance,
       lineChart,
@@ -187,7 +184,8 @@ export default defineComponent({
       currentValue,
       change,
       numeral,
-      periodOptions: PeriodOptions
+      periodOptions: PeriodOptions,
+      chartConfig
     };
   }
 });

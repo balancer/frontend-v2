@@ -1,15 +1,15 @@
 <template>
   <div class="container mx-auto">
     <SubNav class="mb-8" />
-    <BalLoadingBlock v-if="isLoadingChartData" class="h-96 mt-16" />
     <div class="mt-16">
-      <bal-chart
-        v-if="!isLoadingChartData"
+      <BalChart
+        :isLoading="isLoadingChartData || isAppLoading"
         name="Value ($)"
         :axis="portfolioChartData?.axis"
         :data="portfolioChartData?.data"
         dataKey="id"
         :onPeriodSelected="handleGraphingPeriodChange"
+        :currentGraphingPeriod="currentGraphingPeriod"
       />
     </div>
     <div>
@@ -17,12 +17,12 @@
         My V2 Investments
       </h3>
       <div class="shadow-lg mt-8">
-        {{ isLoadingPools }}
-        <bal-table
+        <BalTable
           :columns="columns"
           :data="pools"
-          :isLoading="isLoadingPools"
+          :isLoading="isLoadingPools || isAppLoading || isInjectingTokens"
           skeletonClass="h-64"
+          sticky="horizontal"
         >
           <template v-slot:iconColumnHeader>
             <div class="flex items-center">
@@ -49,12 +49,12 @@
               </span>
             </div>
           </template>
-          <template v-slot:stakeButtonCell>
+          <!-- <template v-slot:stakeButtonCell>
             <div class="px-6 py-4 flex items-center">
-              <bal-btn size="sm" color="blue">Stake</bal-btn>
+              <BalBtn size="sm" color="blue">Stake</BalBtn>
             </div>
-          </template>
-        </bal-table>
+          </template> -->
+        </BalTable>
       </div>
     </div>
     <!-- <BlockMyWallet v-if="account" :loading="loading" /> -->
@@ -62,79 +62,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, ref } from 'vue';
+import {
+  defineComponent,
+  reactive,
+  toRefs,
+  computed,
+  ref,
+  watch,
+  onMounted,
+  unref
+} from 'vue';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import getProvider from '@/utils/provider';
 import { getPoolSharesChart } from '@/utils/balancer/subgraph';
-import { fNum } from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import SubNav from '@/components/navs/SubNav.vue';
 import useWeb3 from '@/composables/useWeb3';
 import { useQuery } from 'vue-react-query';
-import { isNil } from 'lodash';
+
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
-
-const getPoolShare = (pool: {
-  liquidity: number;
-  totalSupply: BigNumber;
-  shares: number;
-}) => {
-  if (!pool.shares) return 0;
-  return (
-    (pool.liquidity / parseFloat(formatUnits(pool.totalSupply, 18))) *
-    pool.shares
-  );
-};
-
-const columns = [
-  {
-    name: 'Icons',
-    id: 'icons',
-    accessor: 'uri',
-    Header: 'iconColumnHeader',
-    Cell: 'iconColumnCell',
-    className: 'cell'
-  },
-  {
-    name: 'Pool Name',
-    id: 'poolName',
-    accessor: 'id',
-    Cell: 'poolNameCell',
-    className: 'w-full'
-  },
-  {
-    name: 'My Balance',
-    accessor: pool => fNum(getPoolShare(pool), 'usd_lg'),
-    className: 'cell',
-    align: 'right'
-  },
-  {
-    name: 'Pool Value',
-    accessor: pool => fNum(pool.liquidity, 'usd_lg'),
-    className: 'cell',
-    align: 'right'
-  },
-  {
-    name: 'Vol (24h)',
-    accessor: pool => fNum(pool.volume, 'usd_lg'),
-    className: 'cell',
-    align: 'right'
-  },
-  {
-    name: 'APY (1y)',
-    accessor: pool => `${fNum(pool.apy, 'percent')} ✨`,
-    className: 'cell',
-    align: 'right'
-  },
-  {
-    name: 'Staking',
-    accessor: 'stake',
-    Cell: 'stakeButtonCell',
-    className: 'cell'
-  }
-];
+import useTokens from '@/composables/useTokens';
+import useNumbers from '@/composables/useNumbers';
 
 export default defineComponent({
   components: {
@@ -146,32 +96,77 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const { account, blockNumber, loading: isWeb3Loading } = useWeb3();
-
+    const { fNum } = useNumbers();
     // DATA
+    const columns = ref([
+      {
+        name: 'Icons',
+        id: 'icons',
+        accessor: 'uri',
+        Header: 'iconColumnHeader',
+        Cell: 'iconColumnCell',
+        className: 'cell'
+      },
+      {
+        name: 'Pool Name',
+        id: 'poolName',
+        accessor: 'id',
+        Cell: 'poolNameCell',
+        className: 'w-full'
+      },
+      {
+        name: 'My Balance',
+        accessor: pool => fNum(getPoolShare(pool), 'usd'),
+        className: 'cell',
+        align: 'right'
+      },
+      {
+        name: 'Pool Value',
+        accessor: pool => fNum(pool.liquidity, 'usd'),
+        className: 'cell',
+        align: 'right'
+      },
+      {
+        name: 'Vol (24h)',
+        accessor: pool => fNum(pool.volume, 'usd'),
+        className: 'cell',
+        align: 'right'
+      },
+      {
+        name: 'APY (1y)',
+        accessor: pool => `${fNum(pool.apy, 'percent')} ✨`,
+        className: 'cell',
+        align: 'right'
+      }
+      // {
+      //   name: 'Staking',
+      //   accessor: 'stake',
+      //   Cell: 'stakeButtonCell',
+      //   className: 'cell'
+      // }
+    ]);
     const data = reactive({
       totalBalance: 0
     });
     const currentGraphingPeriod = ref(30);
+    const isInjectingTokens = ref(true);
 
-    // COMPUTED
-    const isLoading = computed(() => {
-      return (
-        store.state.web3.loading ||
-        (store.state.account.loading && !store.state.account.loaded)
-      );
-    });
     const isAppLoading = computed(() => store.state.app.loading);
     const isPageLoading = computed(
-      () => isAppLoading.value || isLoading.value || isWeb3Loading.value
+      () => isAppLoading.value || isWeb3Loading.value
     );
+    const areQueriesEnabled = computed(() => !isPageLoading.value);
     const provider = computed(() => getProvider(networkKey.value));
     const networkKey = computed(() => store.state.web3.config.key);
-    const tokens = computed(() => store.getters['registry/getTokens']());
+    const { allTokens } = useTokens();
+
     const {
       data: portfolioChartData,
-      isLoading: isLoadingChartData
+      isLoading: isLoadingChartData,
+      isFetchedAfterMount,
+      isFetching: isFetchingMoreChartData
     } = useQuery<any, any>(
-      ['chartData', networkKey.value, blockNumber.value, account.value],
+      reactive(['chartData', { networkKey, account, currentGraphingPeriod }]),
       () =>
         getPoolSharesChart(
           networkKey.value,
@@ -179,34 +174,39 @@ export default defineComponent({
           account.value,
           currentGraphingPeriod.value
         ),
-      {
-        enabled:
-          !isNil(account) ||
-          !isNil(networkKey.value) ||
-          !isNil(account.value) ||
-          !isPageLoading.value
-      }
+      reactive({
+        enabled: areQueriesEnabled
+      })
     );
 
-    const { data: pools, isLoading: isLoadingPools } = useQuery(
-      ['portfolioPools', networkKey.value, provider, account.value],
+    const { data: pools, isLoading: isLoadingPools, status } = useQuery(
+      reactive(['portfolioPools', { networkKey, provider, account }]),
       () => getPoolsWithShares(networkKey.value, provider.value, account.value),
-      {
-        enabled:
-          !isNil(networkKey.value) ||
-          !isNil(provider.value) ||
-          !isNil(account.value) ||
-          !isPageLoading.value,
+      reactive({
+        enabled: areQueriesEnabled,
         onSuccess: async pools => {
           const tokens = pools
             .map(pool => pool.tokens)
             .reduce((a, b) => [...a, ...b], []);
           await injectTokens(tokens);
+          isInjectingTokens.value = false;
         }
-      }
+      })
     );
 
     // METHODS
+    const getPoolShare = (pool: {
+      liquidity: number;
+      totalSupply: BigNumber;
+      shares: number;
+    }) => {
+      if (!pool.shares) return 0;
+      return (
+        (pool.liquidity / parseFloat(formatUnits(pool.totalSupply, 18))) *
+        pool.shares
+      );
+    };
+
     const injectTokens = tokens =>
       store.dispatch('registry/injectTokens', tokens);
 
@@ -221,18 +221,23 @@ export default defineComponent({
       isLoadingPools,
       // computed
       account,
-      isLoading,
       isWeb3Loading,
       isAppLoading,
       isPageLoading,
-      tokens,
+      tokens: allTokens,
       // methods
       fNum,
       t,
       isLoadingChartData,
       portfolioChartData,
+      isFetchingMoreChartData,
       columns,
-      handleGraphingPeriodChange
+      handleGraphingPeriodChange,
+      isInjectingTokens,
+      console,
+      status,
+      isFetchedAfterMount,
+      currentGraphingPeriod
     };
   }
 });

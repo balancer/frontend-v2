@@ -33,15 +33,16 @@ export default defineComponent({
     onChange: {
       type: Function
     },
-    defaultValue: {
+    value: {
       type: Number
     }
   },
   setup(props) {
-    const activeOption = ref(props.defaultValue);
+    const activeOption = ref(props.value);
+
     const setActiveOption = (value: number) => {
-      activeOption.value = value;
       props.onChange && props.onChange(value);
+      activeOption.value = value;
     };
 
     return {
