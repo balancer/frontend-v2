@@ -1,6 +1,7 @@
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/utils';
 import i18n from '@/plugins/i18n';
+import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
 
 export interface AppState {
   loading: boolean;
@@ -8,6 +9,7 @@ export interface AppState {
   darkMode: boolean;
   locale: string;
   slippage: string;
+  tradeLiquidity: LiquiditySelection;
 }
 
 const state: AppState = {
@@ -16,7 +18,8 @@ const state: AppState = {
   darkMode: false,
   // locale: defaultLocale,
   locale: 'en-US',
-  slippage: '0.01'
+  slippage: '0.01',
+  tradeLiquidity: LiquiditySelection.Best
 };
 
 const actions = {
@@ -38,6 +41,10 @@ const actions = {
       // commit('setLocale', lsGet('locale', defaultLocale));
       // commit('setDarkMode', lsGet('darkMode', false));
       commit('setSlippage', lsGet('slippage', '0.01'));
+      commit(
+        'setTradeLiquidity',
+        lsGet('tradeLiquidity', LiquiditySelection.Best)
+      );
       commit('setLoading', false);
     } catch (error) {
       console.error('Failed to initialize app', error);
@@ -73,6 +80,11 @@ const mutations = {
     } else {
       document.body.classList.remove('dark');
     }
+  },
+
+  setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection): void {
+    state.tradeLiquidity = tradeLiquidity;
+    lsSet('tradeLiquidity', state.tradeLiquidity);
   }
 };
 

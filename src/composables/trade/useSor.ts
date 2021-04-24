@@ -1,4 +1,4 @@
-import { Ref, onMounted, ref } from 'vue';
+import { Ref, onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -6,11 +6,7 @@ import { BigNumber } from 'bignumber.js';
 import { scale } from '@/utils';
 import { unwrap, wrap } from '@/utils/balancer/wrapper';
 import getProvider from '@/utils/provider';
-import {
-  LiquiditySelection,
-  SorManager,
-  SorReturn
-} from '@/utils/balancer/helpers/sor/sorManager';
+import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/utils/balancer/swapper';
 
 import { BALANCER_SUBGRAPH_URL } from '@/api/subgraph';
@@ -63,6 +59,7 @@ export default function useSor(
   const { txListener } = useNotify();
 
   const getConfig = () => store.getters['web3/getConfig']();
+  const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
   onMounted(async () => await initSor());
 
@@ -135,9 +132,6 @@ export default function useSor(
 
       console.log('[SOR Manager] swapExactIn');
 
-      // TO DO - This will be selected in UI
-      const liquiditySelection = LiquiditySelection.Best;
-
       const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
@@ -148,7 +142,7 @@ export default function useSor(
         tokenInDecimals,
         allowanceState.value.isUnlockedV1,
         allowanceState.value.isUnlockedV2,
-        liquiditySelection
+        liquiditySelection.value
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -183,9 +177,6 @@ export default function useSor(
 
       console.log('[SOR Manager] swapExactOut');
 
-      // TO DO - This will be selected in UI
-      const liquiditySelection = LiquiditySelection.Best;
-
       const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
@@ -196,7 +187,7 @@ export default function useSor(
         tokenOutDecimals,
         allowanceState.value.isUnlockedV1,
         allowanceState.value.isUnlockedV2,
-        liquiditySelection
+        liquiditySelection.value
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
