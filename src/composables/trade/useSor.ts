@@ -117,7 +117,7 @@ export default function useSor(
       !tokenInAddress ||
       !tokenOutAddress ||
       !sorManager ||
-      !sorManager.hasDataForPair(tokenInAddress, tokenOutAddress)
+      !sorManager.hasPoolData()
     ) {
       return;
     }

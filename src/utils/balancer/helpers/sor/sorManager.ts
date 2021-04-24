@@ -33,6 +33,13 @@ export interface SorReturn {
   v2result: SwapInfo;
 }
 
+interface FetchStatus {
+  v1finishedFetch: boolean;
+  v2finishedFetch: boolean;
+  v1success: boolean;
+  v2success: boolean;
+}
+
 /*
 Aims to manage liquidity between V1 & V2 using SOR.
 */
@@ -42,6 +49,12 @@ export class SorManager {
   selectedPools: SubGraphPoolsBase | Pools = { pools: [] };
   weth: string;
   subgraphUrl: string;
+  fetchStatus: FetchStatus = {
+    v1finishedFetch: false,
+    v2finishedFetch: false,
+    v1success: false,
+    v2success: false
+  };
 
   constructor(
     provider: BaseProvider,
@@ -85,39 +98,46 @@ export class SorManager {
     this.sorV1.setCostOutputToken(tokenAddr, cost);
   }
 
-  // filtered calls are a quicker method, retrieving only onchain info for pools of interest
-  async fetchFilteredPairPools(
-    tokenIn: string,
-    tokenOut: string
-  ): Promise<void> {
-    tokenIn = tokenIn.toLowerCase();
-    tokenOut = tokenOut.toLowerCase();
-    console.log('[SorManager] V1 fetchFilteredPairPools started.');
-    const v1fetch = this.sorV1.fetchFilteredPairPools(tokenIn, tokenOut);
-    console.log('[SorManager] V2 fetchFilteredPairPools started');
-    const v2result = await this.sorV2.fetchFilteredPairPools(tokenIn, tokenOut);
-    console.log(`[SorManager] V2 fetchFilteredPairPools done: ${v2result}`);
-    const v1result = await v1fetch;
-    console.log(`[SorManager] V1 fetchFilteredPairPools done: ${v1result}`);
-    // TO DO - This is used by GasReimbursement but may not be needed?
-    this.selectedPools = this.sorV2.onChainBalanceCache;
-  }
-
   // This fetches ALL pool with onchain info.
   async fetchPools(): Promise<void> {
-    console.time(`[SorManager] fetch Subgraph`);
+    console.log(`[SorManager] fetch Subgraph`);
     const subgraphFetch = fetchSubgraphPools(this.subgraphUrl);
     console.log('[SorManager] V1 fetchPools started');
     const v1fetch = this.sorV1.fetchPools();
-    const subgraphPools = await subgraphFetch;
-    console.timeEnd('[SorManager] fetch Subgraph');
-    console.time('[SorManager] V2 fetchPools');
-    // Use Subgraph pools data and fetch onChain
-    const v2result = await this.sorV2.fetchPools(true, subgraphPools);
+    let subgraphPools;
+    // This will catch any error fetching Subgraph or onChain data with V2
+    try {
+      subgraphPools = await subgraphFetch;
+      console.log('[SorManager] Subgraph fetched');
+      console.time('[SorManager] V2 fetchPools');
+      // Use Subgraph pools data and fetch onChain
+      const v2result = await this.sorV2.fetchPools(true, subgraphPools);
+      this.fetchStatus.v2finishedFetch = true;
+      this.fetchStatus.v2success = v2result;
+    } catch (err) {
+      console.log(`[SorManager] V2 fetchPools issue: ${err.message}`);
+      this.fetchStatus.v2finishedFetch = true;
+      this.fetchStatus.v2success = false;
+    }
+    console.log(
+      `[SorManager] V2 fetchPools result: ${this.fetchStatus.v2success}`
+    );
     console.timeEnd(`[SorManager] V2 fetchPools`);
-    console.log(`[SorManager] V2 fetchPools result: ${v2result}`);
-    const v1result = await v1fetch;
-    console.log(`[SorManager] V1 fetchPools result: ${v1result}`);
+
+    // This will catch any error with OnChain data with V1
+    try {
+      const v1result = await v1fetch;
+      this.fetchStatus.v1finishedFetch = true;
+      this.fetchStatus.v1success = v1result;
+    } catch (err) {
+      console.log(`[SorManager] V1 fetchPools issue: ${err.message}`);
+      this.fetchStatus.v1finishedFetch = true;
+      this.fetchStatus.v1success = false;
+    }
+    console.log(
+      `[SorManager] V1 fetchPools result: ${this.fetchStatus.v1success}`
+    );
+
     this.selectedPools = this.sorV2.onChainBalanceCache;
   }
 
@@ -373,11 +393,31 @@ export class SorManager {
     }
   }
 
-  // Check if pair data already fetched (using fetchFilteredPairPools)
-  hasDataForPair(tokenIn: string, tokenOut: string): boolean {
-    return (
-      this.sorV1.hasDataForPair(tokenIn, tokenOut) &&
-      this.sorV2.hasDataForPair(tokenIn, tokenOut)
-    );
+  // Check if pool info fetch
+  hasPoolData(): boolean {
+    if (this.fetchStatus.v1finishedFetch && this.fetchStatus.v2finishedFetch) {
+      // TO DO - This could be used to provide more info to UI?
+      if (
+        this.fetchStatus.v1success === false &&
+        this.fetchStatus.v2success === false
+      ) {
+        console.log(
+          `[SorManager] Error Fetching V1 & V2 Pools - No Liquidity Sources.`
+        );
+        return false;
+      } else if (this.fetchStatus.v1success === false)
+        console.log(
+          `[SorManager] Error Fetching V1 Pools - Using V2 Liquidity Only.`
+        );
+      else if (this.fetchStatus.v2success === false)
+        console.log(
+          `[SorManager] Error Fetching V2 Pools - Using V1 Liquidity Only.`
+        );
+
+      return true;
+    } else {
+      console.log(`[SorManager] Not finished fetching pools.`);
+      return false;
+    }
   }
 }
