@@ -32,7 +32,7 @@ const actions = {
       // Setup web3
       const auth = getInstance();
       const connector = await auth.getConnector();
-      if (connector) await dispatch('web3/login', connector, { root: true });
+      if (connector) dispatch('web3/login', connector, { root: true });
 
       commit('setLocale', 'en-US');
       commit('setDarkMode', false);
