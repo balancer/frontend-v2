@@ -1,5 +1,5 @@
 <template>
-  <div :class="['bal-alert', classes]">
+  <div :class="['app-nav-alert', classes]">
     <div class="w-8" />
     <div class="flex-1 text-center flex items-center justify-center">
       <BalIcon :name="iconName" class="mr-4" />
@@ -60,7 +60,7 @@ export default defineComponent({
 </script>
 
 <style>
-.bal-alert {
+.app-nav-alert {
   @apply flex items-center justify-between py-4 px-6;
 }
 </style>
