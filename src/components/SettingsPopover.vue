@@ -166,6 +166,7 @@ import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
 import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
+import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
 
 const locales = {
   'en-US': 'English',
@@ -180,7 +181,6 @@ const locales = {
   'tr-TR': 'Türk'
 };
 const slippageOptions = ['0.005', '0.01', '0.02'];
-const tradeLiquidityOptions = ['best', 'v1', 'v2'];
 
 export default defineComponent({
   setup() {
@@ -194,7 +194,9 @@ export default defineComponent({
     const data = reactive({
       locales,
       slippageOptions,
-      tradeLiquidityOptions,
+      tradeLiquidityOptions: Object.values(LiquiditySelection).filter(
+        v => typeof v === 'string'
+      ),
       slippageInput: ''
     });
 

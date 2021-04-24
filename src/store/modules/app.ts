@@ -1,8 +1,7 @@
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/utils';
 import i18n from '@/plugins/i18n';
-
-type TradeLiquidity = 'best' | 'v1' | 'v2';
+import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
 
 export interface AppState {
   loading: boolean;
@@ -10,7 +9,7 @@ export interface AppState {
   darkMode: boolean;
   locale: string;
   slippage: string;
-  tradeLiquidity: TradeLiquidity;
+  tradeLiquidity: LiquiditySelection;
 }
 
 const state: AppState = {
@@ -20,7 +19,7 @@ const state: AppState = {
   // locale: defaultLocale,
   locale: 'en-US',
   slippage: '0.01',
-  tradeLiquidity: 'best'
+  tradeLiquidity: LiquiditySelection.Best
 };
 
 const actions = {
@@ -80,8 +79,9 @@ const mutations = {
     }
   },
 
-  setTradeLiquidity(state: AppState, tradeLiquidity: TradeLiquidity): void {
+  setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection): void {
     state.tradeLiquidity = tradeLiquidity;
+    console.log(state.tradeLiquidity);
     lsSet('tradeLiquidity', state.tradeLiquidity);
   }
 };
