@@ -430,10 +430,26 @@ export default defineComponent({
 
     async function setPropMax() {
       const { send, fixedToken } = poolCalculator.propMax();
-      data.amounts = send;
       data.propMax = [...send];
       data.propToken = fixedToken;
+    }
+
+    function resetSlider() {
+      data.amounts = [...data.propMax];
       data.range = 1000;
+    }
+
+    function setPropAmountsFor(range) {
+      const fractionBasisPoints = (range / 1000) * 10000;
+      const amount = bnum(balances.value[data.propToken])
+        .times(fractionBasisPoints)
+        .div(10000);
+      const { send } = poolCalculator.propAmountsGiven(
+        amount.toString(),
+        data.propToken,
+        'send'
+      );
+      data.amounts = send;
     }
 
     // Legacy function for sense check against JS calculation of BPT out
@@ -482,7 +498,6 @@ export default defineComponent({
 
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
-      if (!hasAmounts.value && !hasZeroBalance.value) setPropMax();
     });
 
     watch(
@@ -492,35 +507,35 @@ export default defineComponent({
         const _newBalances = newBalances.map(b => b.toString());
         const _oldBalances = oldBalances.map(b => b.toString());
         const balancesChanged = !isEqual(_newBalances, _oldBalances);
-        if (balancesChanged) setPropMax();
+        if (balancesChanged) {
+          setPropMax();
+          if (isProportional.value) setPropAmountsFor(data.range);
+        }
       }
     );
 
     watch(balances, (newBalances, oldBalances) => {
       const balancesChanged = !isEqual(newBalances, oldBalances);
-      if (balancesChanged) setPropMax();
+      if (balancesChanged) {
+        setPropMax();
+        if (isProportional.value) setPropAmountsFor(data.range);
+      }
     });
 
     watch(
       () => data.investType,
       newType => {
-        if (newType === FormTypes.proportional) setPropMax();
+        if (newType === FormTypes.proportional) {
+          setPropMax();
+          resetSlider();
+        }
       }
     );
 
     watch(
       () => data.range,
       newVal => {
-        const fractionBasisPoints = (newVal / 1000) * 10000;
-        const amount = bnum(balances.value[data.propToken])
-          .times(fractionBasisPoints)
-          .div(10000);
-        const { send } = poolCalculator.propAmountsGiven(
-          amount.toString(),
-          data.propToken,
-          'send'
-        );
-        data.amounts = send;
+        setPropAmountsFor(newVal);
       }
     );
 
@@ -536,6 +551,7 @@ export default defineComponent({
         data.investType = FormTypes.custom;
       } else {
         setPropMax();
+        resetSlider();
       }
     });
 
