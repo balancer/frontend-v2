@@ -57,9 +57,9 @@
                 </span>
                 <span
                   class="text-xs text-gray-400 break-words"
-                  :title="`${balanceLabel(i)} balance`"
+                  :title="`${formatBalance(i)} balance`"
                 >
-                  {{ balanceLabel(i) }} {{ $t('balance').toLowerCase() }}
+                  {{ $t('balance') }}: {{ formatBalance(i) }}
                 </span>
               </div>
             </div>
@@ -82,6 +82,7 @@
         :key="token"
         :name="token"
         v-model="amounts[i]"
+        v-model:isValid="validInputs[i]"
         :rules="amountRules(i)"
         type="number"
         min="0"
@@ -110,7 +111,7 @@
             class="cursor-pointer"
             @click.prevent="amounts[i] = tokenBalance(i)"
           >
-            {{ $t('balance').toLowerCase() }}: {{ balanceLabel(i) }}
+            {{ $t('balance') }}: {{ formatBalance(i) }}
           </div>
         </template>
         <template v-slot:append>
@@ -162,7 +163,7 @@
           :label="$t('approveTokens')"
           :loading="approving"
           :loading-label="$t('approving')"
-          :disabled="!hasAmounts"
+          :disabled="!hasAmounts || !hasValidInputs"
           block
           @click.prevent="approveAllowances"
         />
@@ -180,7 +181,7 @@
             type="submit"
             :loading-label="$t('confirming')"
             color="gradient"
-            :disabled="!hasAmounts"
+            :disabled="!hasAmounts || !hasValidInputs"
             :loading="loading"
             block
           >
@@ -253,6 +254,7 @@ export default defineComponent({
       loading: false,
       amounts: [] as string[],
       propMax: [] as string[],
+      validInputs: [] as boolean[],
       propToken: 0,
       range: 1000,
       highPiAccepted: false
@@ -300,15 +302,12 @@ export default defineComponent({
       return amountSum > 0;
     });
 
-    const balances = computed(() => {
-      return props.pool.tokens.map(token => allTokens.value[token].balance);
+    const hasValidInputs = computed(() => {
+      return data.validInputs.every(validInput => validInput === true);
     });
 
-    const hasBalance = computed(() => {
-      const balanceSum = balances.value
-        .map(b => Number(b))
-        .reduce((a, b) => a + b, 0);
-      return balanceSum > 0;
+    const balances = computed(() => {
+      return props.pool.tokens.map(token => allTokens.value[token].balance);
     });
 
     const hasZeroBalance = computed(() => {
@@ -326,7 +325,6 @@ export default defineComponent({
 
     const requireApproval = computed(() => {
       if (!hasAmounts.value) return false;
-      if (!hasBalance.value) return false;
       if (approvedAll.value) return false;
       return requiredAllowances.value.length > 0;
     });
@@ -413,7 +411,7 @@ export default defineComponent({
       return toFiat(amount, token);
     }
 
-    function balanceLabel(index) {
+    function formatBalance(index) {
       return fNum(tokenBalance(index), 'token');
     }
 
@@ -526,21 +524,21 @@ export default defineComponent({
     });
 
     return {
+      // data
       ...toRefs(data),
-      submit,
+      // computed
       allTokens,
+      hasValidInputs,
       hasAmounts,
       approving,
       requireApproval,
-      approveAllowances,
       tokenWeights,
       tokenBalance,
       amountRules,
       total,
-      fNum,
       isAuthenticated,
       connectWallet,
-      balanceLabel,
+      formatBalance,
       isProportional,
       propPercentage,
       priceImpact,
@@ -548,7 +546,11 @@ export default defineComponent({
       amountUSD,
       formTypes,
       isRequired,
-      hasZeroBalance
+      hasZeroBalance,
+      // methods
+      submit,
+      approveAllowances,
+      fNum
     };
   }
 });
