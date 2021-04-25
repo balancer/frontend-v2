@@ -2,6 +2,7 @@ import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import configs from '@/config';
+import getProvider from '@/utils/provider';
 
 export default function useWeb3() {
   const store = useStore();
@@ -25,6 +26,10 @@ export default function useWeb3() {
       id: store.state.web3.config.chainId,
       name: store.state.web3.config.shortName
     };
+  });
+
+  const userProvider = computed(() => {
+    return getProvider(userNetwork.value.key);
   });
 
   const isMainnet = computed(() => {
@@ -55,6 +60,7 @@ export default function useWeb3() {
     explorer,
     appNetwork,
     userNetwork,
+    userProvider,
     account,
     profile,
     loading,
