@@ -16,7 +16,7 @@
       <h3 class="text-gray-800 font-semibold text-xl tracking-wide mt-8">
         My V2 Investments
       </h3>
-      <BalCard  shadow="lg" class="mt-8" no-pad>
+      <BalCard shadow="lg" class="mt-8" no-pad>
         <BalTable
           :columns="columns"
           :data="pools"

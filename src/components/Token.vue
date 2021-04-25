@@ -40,7 +40,7 @@ export default defineComponent({
     symbol: Boolean,
     name: Boolean
   },
-  setup(props) {
+  setup() {
     return {
       error: false
     };
