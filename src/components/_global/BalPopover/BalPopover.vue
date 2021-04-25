@@ -4,7 +4,7 @@
       <slot name="activator" />
     </div>
     <div class="bal-popover-wrapper">
-      <BalCard shadow="lg">
+      <BalCard shadow="lg" v-bind="$attrs">
         <slot />
       </BalCard>
     </div>
