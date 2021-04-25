@@ -30,6 +30,14 @@ export default class Calculator {
     this.action = action;
   }
 
+  public setAllTokens(tokens: Token[]): void {
+    this.allTokens = tokens;
+  }
+
+  public setPool(pool: Pool): void {
+    this.pool = pool;
+  }
+
   public priceImpact(
     tokenAmounts: string[],
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
@@ -57,10 +65,6 @@ export default class Calculator {
   ): FixedPointNumber {
     if (this.isStablePool) return fnum(0); // TODO
     return this.weighted.bptInForExactTokenOut(amount, tokenIndex);
-  }
-
-  public setAllTokens(tokens: Token[]): void {
-    this.allTokens = tokens;
   }
 
   public propMax(): Amounts {
