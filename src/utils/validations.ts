@@ -1,5 +1,5 @@
 export function isRequired(field = '') {
-  const _field = field ? `${field} ` : '';
+  const _field = field ? `${field} ` : 'Input ';
   return v => !!v || `${_field}is required`;
 }
 
