@@ -3,7 +3,8 @@
     <div
       class="max-w-full sm:max-w-lg md:max-w-md lg:max-w-sm mx-auto mt-8 lg:mt-16"
     >
-      <BalCard>
+      <BalLoadingBlock v-if="appLoading" class="h-96" />
+      <BalCard v-else>
         <template v-slot:header>
           <h4 class="font-bold">{{ $t(title) }}</h4>
         </template>
@@ -220,6 +221,7 @@ export default defineComponent({
       store.getters['registry/getTokens'](params);
     const getConfig = () => store.getters['web3/getConfig']();
     const tokens = computed(() => getTokens({ includeEther: true }));
+    const appLoading = computed(() => store.state.app.loading);
 
     const tokenInValue = computed(() =>
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
@@ -401,6 +403,7 @@ export default defineComponent({
     populateInitialTokens();
 
     return {
+      appLoading,
       fNum,
       toFiat,
       tokens,
