@@ -53,6 +53,7 @@ export default function useSor(
   const trading = ref(false);
   const exactIn = ref(true);
   const priceImpact = ref(0);
+  const latestTxHash = ref('');
 
   // COMPOSABLES
   const store = useStore();
@@ -222,6 +223,7 @@ export default function useSor(
     txListener(hash, {
       onTxConfirmed: () => {
         trading.value = false;
+        latestTxHash.value = hash;
       },
       onTxCancel: () => {
         trading.value = false;
@@ -325,6 +327,7 @@ export default function useSor(
     exactIn,
     trade,
     trading,
-    priceImpact
+    priceImpact,
+    latestTxHash
   };
 }

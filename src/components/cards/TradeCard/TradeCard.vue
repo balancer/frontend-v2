@@ -1,48 +1,60 @@
 <template>
-  <BalCard>
+  <BalCard class="relative">
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ $t(title) }}</h4>
         <TradeSettingsPopover />
       </div>
     </template>
-    <TradePair
-      :token-in-amount-input="tokenInAmount"
-      :token-in-address-input="tokenInAddress"
-      :token-out-amount-input="tokenOutAmount"
-      :token-out-address-input="tokenOutAddress"
-      :exact-in="exactIn"
-      :price-impact="priceImpact"
-      @token-in-amount-change="value => (tokenInAmount = value)"
-      @token-in-address-change="value => (tokenInAddress = value)"
-      @token-out-amount-change="value => (tokenOutAmount = value)"
-      @token-out-address-change="value => (tokenOutAddress = value)"
-      @exact-in-change="value => (exactIn = value)"
-      @change="handleAmountChange"
-    />
-    <BalBtn
-      v-if="!isAuthenticated"
-      :label="$t('connectWallet')"
-      block
-      @click.prevent="connectWallet"
-    />
-    <BalBtn
-      v-else-if="requireApproval"
-      :label="`${$t('approve')} ${tokens[tokenInAddress].symbol}`"
-      :loading="approving"
-      :loading-label="`${$t('approving')} ${tokens[tokenInAddress].symbol}...`"
-      block
-      @click.prevent="approve"
-    />
-    <BalBtn
-      v-else
-      type="submit"
-      :label="`${$t(submitLabel)}`"
-      :loading="trading"
-      :loading-label="$t('confirming')"
-      color="gradient"
-      block
-      @click.prevent="trade"
+    <div>
+      <TradePair
+        :token-in-amount-input="tokenInAmount"
+        :token-in-address-input="tokenInAddress"
+        :token-out-amount-input="tokenOutAmount"
+        :token-out-address-input="tokenOutAddress"
+        :exact-in="exactIn"
+        :price-impact="priceImpact"
+        @token-in-amount-change="value => (tokenInAmount = value)"
+        @token-in-address-change="value => (tokenInAddress = value)"
+        @token-out-amount-change="value => (tokenOutAmount = value)"
+        @token-out-address-change="value => (tokenOutAddress = value)"
+        @exact-in-change="value => (exactIn = value)"
+        @change="handleAmountChange"
+      />
+      <BalBtn
+        v-if="!isAuthenticated"
+        :label="$t('connectWallet')"
+        block
+        @click.prevent="connectWallet"
+      />
+      <BalBtn
+        v-else-if="requireApproval"
+        :label="`${$t('approve')} ${tokens[tokenInAddress].symbol}`"
+        :loading="approving"
+        :loading-label="
+          `${$t('approving')} ${tokens[tokenInAddress].symbol}...`
+        "
+        block
+        @click.prevent="approve"
+      />
+      <BalBtn
+        v-else
+        type="submit"
+        :label="`${$t(submitLabel)}`"
+        :loading="trading"
+        :loading-label="$t('confirming')"
+        color="gradient"
+        block
+        @click.prevent="trade"
+      />
+    </div>
+    <SuccessOverlay
+      v-if="tradeSuccess"
+      :title="$t('tradeSettled')"
+      :description="$t('tradeSuccess')"
+      :closeLabel="$t('close')"
+      :txHash="txHash"
+      @close="tradeSuccess = false"
     />
   </BalCard>
 </template>
@@ -59,11 +71,13 @@ import useSor from '@/composables/trade/useSor';
 import initialTokens from '@/constants/initialTokens.json';
 import { ETHER } from '@/constants/tokenlists';
 
+import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
 
 export default defineComponent({
   components: {
+    SuccessOverlay,
     TradePair,
     TradeSettingsPopover
   },
@@ -82,6 +96,8 @@ export default defineComponent({
     const tokenInAmount = ref('');
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
+    const tradeSuccess = ref(false);
+    const txHash = ref('');
 
     const isWrap = computed(() => {
       const config = getConfig();
@@ -113,7 +129,8 @@ export default defineComponent({
       handleAmountChange,
       priceImpact,
       exactIn,
-      sorReturn
+      sorReturn,
+      latestTxHash
     } = useSor(
       tokenInAddress,
       tokenInAmount,
@@ -181,6 +198,11 @@ export default defineComponent({
       handleAmountChange();
     });
 
+    watch(latestTxHash, () => {
+      txHash.value = latestTxHash.value;
+      tradeSuccess.value = true;
+    });
+
     populateInitialTokens();
 
     return {
@@ -205,6 +227,8 @@ export default defineComponent({
       approve,
       trading,
       trade,
+      txHash,
+      tradeSuccess,
       priceImpact
     };
   }
