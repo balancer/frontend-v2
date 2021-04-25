@@ -262,6 +262,7 @@ export default defineComponent({
       trade,
       initSor,
       handleAmountChange,
+      exactIn,
       priceImpact,
       sorReturn
     } = useSor(
@@ -384,7 +385,10 @@ export default defineComponent({
       tokenOutAddressInput.value = tokenInAddressInputSave;
       tokenInAmountInput.value = tokenOutAmountInput.value;
       tokenOutAmountInput.value = tokenInAmountInputSave;
-      handleAmountChange(false, tokenOutAmountInput.value);
+      handleAmountChange(
+        !exactIn.value,
+        !exactIn.value ? tokenInAmountInput.value : tokenOutAmountInput.value
+      );
     }
 
     async function populateInitialTokens(): Promise<void> {

@@ -99,6 +99,7 @@ export default function useSor(
     isExactIn: boolean,
     amount: string
   ): Promise<void> {
+    exactIn.value = isExactIn;
     // Avoid using SOR if querying a zero value or (un)wrapping trade
     const zeroValueTrade = amount === '' || new BigNumber(amount).isZero();
     if (zeroValueTrade || isWrap.value || isUnwrap.value) {
@@ -120,7 +121,6 @@ export default function useSor(
       return;
     }
 
-    exactIn.value = isExactIn;
     const tokenInDecimals = tokens.value[tokenInAddressInput.value].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value].decimals;
 
@@ -323,6 +323,7 @@ export default function useSor(
     pools,
     initSor,
     handleAmountChange,
+    exactIn,
     trade,
     trading,
     priceImpact
