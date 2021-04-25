@@ -6,7 +6,10 @@
       <BalLoadingBlock v-if="appLoading" class="h-96" />
       <BalCard v-else>
         <template v-slot:header>
-          <h4 class="font-bold">{{ $t(title) }}</h4>
+          <div class="w-full flex items-center justify-between">
+            <h4 class="font-bold">{{ $t(title) }}</h4>
+            <TradeSettingsPopover />
+          </div>
         </template>
         <div class="mb-8">
           <div
@@ -195,13 +198,15 @@ import initialTokens from '@/constants/initialTokens.json';
 import { ETHER } from '@/constants/tokenlists';
 import PairToggle from '@/components/PairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
+import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
 
 const ETH_BUFFER = 0.1;
 
 export default defineComponent({
   components: {
     PairToggle,
-    SelectTokenModal
+    SelectTokenModal,
+    TradeSettingsPopover
   },
 
   setup() {
