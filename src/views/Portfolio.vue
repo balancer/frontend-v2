@@ -32,21 +32,21 @@
           </template>
           <template v-slot:iconColumnCell="pool">
             <div class="px-6 py-8 flex flex-row icon">
-              <div v-for="token in pool.tokens" :key="token">
-                <Token :token="tokens[token]" />
+              <div v-for="token in tokensFor(pool)" :key="token">
+                <Token :token="allTokens[token]" />
               </div>
             </div>
           </template>
           <template v-slot:poolNameCell="pool">
             <div class="px-6 py-8">
               <span
-                v-for="(token, i) in pool.tokens"
+                v-for="token in pool.tokens"
                 :key="token"
                 class="inline-block mr-1"
               >
                 <span class="dot">•</span>
-                {{ pool.weightsPercent[i] }}
-                {{ tokens[token].symbol }}
+                {{ token.weight * 100 }}
+                {{ allTokens[getAddress(token.address)].symbol }}
               </span>
             </div>
           </template>
@@ -72,11 +72,9 @@ import { useI18n } from 'vue-i18n';
 import SubNav from '@/components/navs/SubNav.vue';
 import useWeb3 from '@/composables/useWeb3';
 import { useQuery } from 'vue-query';
-
-import { formatUnits } from '@ethersproject/units';
-import { BigNumber } from '@ethersproject/bignumber';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
+import { getAddress } from '@ethersproject/address';
 
 export default defineComponent({
   components: {
@@ -94,6 +92,8 @@ export default defineComponent({
       userNetwork
     } = useWeb3();
     const { fNum } = useNumbers();
+    const { allTokens } = useTokens();
+
     // DATA
     const columns = ref([
       {
@@ -113,7 +113,7 @@ export default defineComponent({
       },
       {
         name: 'My Balance',
-        accessor: pool => fNum(getPoolShare(pool), 'usd'),
+        accessor: pool => fNum(getPoolShare(pool), 'usd', null, true),
         className: 'cell',
         align: 'right',
         id: 'myBalance'
@@ -157,7 +157,7 @@ export default defineComponent({
     const areQueriesEnabled = computed(() => !isPageLoading.value);
     const provider = computed(() => getProvider(networkKey.value));
     const networkKey = computed(() => userNetwork.value.key);
-    const { allTokens } = useTokens();
+    const prices = computed(() => store.state.market.prices);
 
     const {
       data: portfolioChartData,
@@ -179,12 +179,12 @@ export default defineComponent({
 
     const { data: pools, isLoading: isLoadingPools } = useQuery(
       reactive(['portfolioPools', { networkKey, provider, account }]),
-      () => getPoolsWithShares(networkKey.value, provider.value, account.value),
+      () => getPoolsWithShares(networkKey.value, account.value, prices.value),
       reactive({
         enabled: areQueriesEnabled,
         onSuccess: async pools => {
           const tokens = pools
-            .map(pool => pool.tokens)
+            .map(pool => pool.tokens.map(t => t.address))
             .reduce((a, b) => [...a, ...b], []);
           await injectTokens(tokens);
           isInjectingTokens.value = false;
@@ -193,17 +193,14 @@ export default defineComponent({
     );
 
     // METHODS
-    const getPoolShare = (pool: {
-      liquidity: number;
-      totalSupply: BigNumber;
-      shares: number;
-    }) => {
+    const getPoolShare = pool => {
       if (!pool.shares) return 0;
-      return (
-        (pool.liquidity / parseFloat(formatUnits(pool.totalSupply, 18))) *
-        pool.shares
-      );
+      return (pool.liquidity / parseFloat(pool.totalShares)) * pool.shares;
     };
+
+    function tokensFor(pool) {
+      return pool.tokens.map(token => getAddress(token.address));
+    }
 
     const injectTokens = tokens =>
       store.dispatch('registry/injectTokens', tokens);
@@ -222,7 +219,7 @@ export default defineComponent({
       isWeb3Loading,
       isAppLoading,
       isPageLoading,
-      tokens: allTokens,
+      allTokens,
       isLoadingChartData,
       portfolioChartData,
       isFetchingMoreChartData,
@@ -232,7 +229,9 @@ export default defineComponent({
       fNum,
       t,
       columns,
-      handleGraphingPeriodChange
+      handleGraphingPeriodChange,
+      tokensFor,
+      getAddress
     };
   }
 });
