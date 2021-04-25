@@ -13,6 +13,13 @@
         <div v-else class="text-sm">
           {{ poolTypeLabel }}. {{ poolFeeLabel }}.
         </div>
+
+        <BalAlert
+          v-if="!loading && !appLoading && missingPrices"
+          type="warning"
+          label="Failed to fetch pool token price information."
+          class="mt-2"
+        />
       </div>
 
       <div class="hidden lg:block" />
@@ -28,6 +35,7 @@
           <PoolStats
             :pool="pool"
             :snapshots="snapshots"
+            :missing-prices="missingPrices"
             :loading="loading || appLoading"
           />
 
@@ -39,6 +47,7 @@
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
               :weights="pool.weightsPercent"
+              :missing-prices="missingPrices"
             />
           </div>
 
@@ -53,9 +62,7 @@
               :tokens="pool.tokens"
               :events="events"
             />
-            <BalBlankSlate v-else class="h-60">
-              No investments in this pool.
-            </BalBlankSlate>
+            <BalBlankSlate v-else v-text="$t('noInvestments')" class="h-60" />
           </div>
         </div>
       </div>
@@ -68,6 +75,7 @@
         <PoolActionsCard
           v-else
           :pool="pool"
+          :missing-prices="missingPrices"
           @on-tx="fetchPool"
           class="sticky top-24"
         />
@@ -96,13 +104,12 @@ import {
   PoolEvents,
   PoolSnapshots
 } from '@/api/subgraph';
-import PoolActionsCard from '@/components/cards/PoolActionsCard.vue';
+import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import SubNav from '@/components/navs/SubNav.vue';
-import { QueryClient } from 'react-query';
-import { useQueryClient } from 'vue-react-query';
+import useTokens from '@/composables/useTokens';
 
 interface PoolPageData {
   id: string;
@@ -128,6 +135,7 @@ export default defineComponent({
     const router = useRouter();
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
+    const { allTokens } = useTokens();
     const {
       appNetwork,
       account,
@@ -153,10 +161,6 @@ export default defineComponent({
 
     const pool = computed(() => {
       return store.state.pools.current;
-    });
-
-    const allTokens = computed(() => {
-      return store.getters['registry/getTokens']();
     });
 
     const title = computed(() => {
@@ -195,6 +199,15 @@ export default defineComponent({
         data.events &&
         (data.events.joins.length > 0 || data.events.exits.length > 0)
       );
+    });
+
+    const missingPrices = computed(() => {
+      if (pool.value) {
+        const tokensWithPrice = Object.keys(store.state.market.prices);
+        const poolTokens = pool.value.tokens.map(t => t.toLowerCase());
+        return !poolTokens.every(token => tokensWithPrice.includes(token));
+      }
+      return false;
     });
 
     // METHODS
@@ -261,6 +274,7 @@ export default defineComponent({
       title,
       isAuthenticated,
       hasEvents,
+      missingPrices,
       // methods
       fNum,
       fetchPool

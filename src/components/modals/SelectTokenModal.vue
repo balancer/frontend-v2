@@ -63,7 +63,10 @@
         </a>
       </div>
       <div>
-        <div v-if="Object.keys(tokens).length > 0" class="h-96 overflow-scroll">
+        <div
+          v-if="Object.keys(tokens).length > 0"
+          class="h-96 overflow-y-scroll"
+        >
           <a
             v-for="(token, key) in tokens"
             :key="key"
@@ -74,10 +77,9 @@
         </div>
         <div
           v-else-if="isTokenSelected"
+          v-text="$t('tokenAlreadySelected')"
           class="h-96 flex items-center justify-center"
-        >
-          Token Already Selected
-        </div>
+        />
         <div v-else-if="loading" class="h-96 flex items-center justify-center">
           <BalLoadingIcon />
         </div>

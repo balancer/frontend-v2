@@ -19,22 +19,21 @@
         :key="address"
       >
         <td class="p-2 pl-5 py-5 flex items-center text-left">
-          <a :href="_explorer(networkId, address)" target="_blank">
+          <BalLink :href="explorer.addressLink(address)" external>
             <Avatar :address="address" :size="24" />
             <span class="pl-4">
-              {{ getSymbol(address) }}
+              {{ symbolFor(address) }}
             </span>
-          </a>
+          </BalLink>
         </td>
         <td class="p-2 py-5 text-right">
-          {{ getWeight(index) }}
-          %
+          {{ weightFor(index) }}
         </td>
         <td class="p-2 py-5 text-right">
-          {{ _num(getBalance(index), '0,0.00') }}
+          {{ balanceFor(index) }}
         </td>
         <td class="p-2 pr-5 py-5 text-right">
-          {{ 0 == getValue(index) ? '?' : _num(getValue(index), '$0,0.00') }}
+          {{ fiatValueFor(index) }}
         </td>
       </tr>
     </table>
@@ -46,6 +45,9 @@ import { PropType, defineComponent, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
+import useNumbers from '@/composables/useNumbers';
+import useWeb3 from '@/composables/useWeb3';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   props: {
@@ -60,16 +62,20 @@ export default defineComponent({
     weights: {
       type: Array as PropType<number[]>,
       required: true
-    }
+    },
+    missingPrices: { type: Boolean, default: false }
   },
   setup(props) {
+    // COMPOSABLES
     const store = useStore();
+    const { fNum } = useNumbers();
+    const { explorer } = useWeb3();
+    const { allTokens } = useTokens();
 
+    // DATA
     const { tokens, balances, weights } = toRefs(props);
 
-    const allTokens = computed(() => store.getters['registry/getTokens']());
-
-    const networkId = computed(() => store.state.web3.config.chainId);
+    // COMPUTED
     const prices = computed(() => store.state.market.prices);
 
     const tokenValues = computed(() => {
@@ -91,34 +97,36 @@ export default defineComponent({
       return tokenValues;
     });
 
-    function getSymbol(address: string) {
+    function symbolFor(address: string) {
       const token = allTokens.value[address];
       return token ? token.symbol : address;
     }
 
-    function getBalance(index: number) {
+    function balanceFor(index: number) {
       const address = tokens.value[index];
-      const balance = balances.value[index].toString();
+      const denormBalance = balances.value[index].toString();
       const token = allTokens.value[address];
       const decimals = token ? token.decimals : 18;
-      const b = formatUnits(balance, decimals);
-      return b;
+      const balance = formatUnits(denormBalance, decimals);
+      return fNum(balance, 'token');
     }
 
-    function getWeight(index: number) {
-      return weights.value[index];
+    function weightFor(index: number) {
+      return fNum(weights.value[index] / 100, 'percent');
     }
 
-    function getValue(index: number) {
-      return tokenValues.value[index] || 0;
+    function fiatValueFor(index: number) {
+      if (props.missingPrices) return '-';
+      return fNum(tokenValues.value[index] || 0, 'usd');
     }
 
     return {
-      getSymbol,
-      getBalance,
-      getWeight,
-      getValue,
-      networkId
+      symbolFor,
+      balanceFor,
+      weightFor,
+      fiatValueFor,
+      fNum,
+      explorer
     };
   }
 });

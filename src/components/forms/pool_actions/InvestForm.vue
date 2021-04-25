@@ -3,7 +3,8 @@
     <FormTypeToggle
       v-model="investType"
       :form-types="formTypes"
-      :hasZeroBalance="hasZeroBalance"
+      :missing-prices="missingPrices"
+      :has-zero-balance="hasZeroBalance"
       :loading="loading"
     />
 
@@ -21,7 +22,7 @@
               class="mr-2 text-lg font-medium w-1/2 break-words leading-none"
               :title="total"
             >
-              {{ total }}
+              {{ missingPrices ? '-' : total }}
             </span>
             <BalRangeInput
               class="w-1/2"
@@ -56,9 +57,9 @@
                 </span>
                 <span
                   class="text-xs text-gray-400 break-words"
-                  :title="`${balanceLabel(i)} balance`"
+                  :title="`${formatBalance(i)} balance`"
                 >
-                  {{ balanceLabel(i) }} {{ $t('balance').toLowerCase() }}
+                  {{ $t('balance') }}: {{ formatBalance(i) }}
                 </span>
               </div>
             </div>
@@ -81,6 +82,7 @@
         :key="token"
         :name="token"
         v-model="amounts[i]"
+        v-model:isValid="validInputs[i]"
         :rules="amountRules(i)"
         type="number"
         min="0"
@@ -89,9 +91,10 @@
         :disabled="loading"
         validate-on="input"
         prepend-border
+        append-shadow
       >
         <template v-slot:prepend>
-          <div class="flex items-center w-24">
+          <div class="flex items-center h-full w-24">
             <Token :token="allTokens[token]" />
             <div class="flex flex-col ml-3">
               <span class="font-medium text-sm leading-none w-14 truncate">
@@ -104,8 +107,22 @@
           </div>
         </template>
         <template v-slot:info>
-          <div class="cursor-pointer" @click="amounts[i] = tokenBalance(i)">
-            {{ balanceLabel(i) }} {{ $t('max').toLowerCase() }}
+          <div
+            class="cursor-pointer"
+            @click.prevent="amounts[i] = tokenBalance(i)"
+          >
+            {{ $t('balance') }}: {{ formatBalance(i) }}
+          </div>
+        </template>
+        <template v-slot:append>
+          <div class="p-2">
+            <BalBtn
+              size="xs"
+              color="white"
+              @click.prevent="amounts[i] = tokenBalance(i)"
+            >
+              {{ $t('max') }}
+            </BalBtn>
           </div>
         </template>
       </BalTextInput>
@@ -123,15 +140,16 @@
           <span
             >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
           >
-          <BalIcon
-            v-if="priceImpact >= 0.01"
-            name="alert-triangle"
-            size="xs"
-            class="ml-1"
-          />
-          <BalTooltip v-if="priceImpact < 0.0">
+          <BalTooltip>
             <template v-slot:activator>
               <BalIcon
+                v-if="priceImpact >= 0.01"
+                name="alert-triangle"
+                size="xs"
+                class="ml-1"
+              />
+              <BalIcon
+                v-else
                 name="info"
                 size="xs"
                 class="text-gray-400 -mb-px ml-2"
@@ -145,7 +163,7 @@
           :label="$t('approveTokens')"
           :loading="approving"
           :loading-label="$t('approving')"
-          :disabled="!hasAmounts"
+          :disabled="!hasAmounts || !hasValidInputs"
           block
           @click.prevent="approveAllowances"
         />
@@ -161,13 +179,14 @@
           />
           <BalBtn
             type="submit"
-            loading-label="Confirming..."
+            :loading-label="$t('confirming')"
             color="gradient"
-            :disabled="!hasAmounts"
+            :disabled="!hasAmounts || !hasValidInputs"
             :loading="loading"
             block
           >
-            {{ $t('invest') }} {{ total.length > 15 ? '' : total }}
+            {{ $t('invest') }}
+            {{ missingPrices || total.length > 15 ? '' : total }}
           </BalBtn>
         </template>
       </template>
@@ -224,7 +243,8 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: { type: Object, required: true }
+    pool: { type: Object, required: true },
+    missingPrices: { type: Boolean, default: false }
   },
 
   setup(props, { emit }) {
@@ -234,6 +254,7 @@ export default defineComponent({
       loading: false,
       amounts: [] as string[],
       propMax: [] as string[],
+      validInputs: [] as boolean[],
       propToken: 0,
       range: 1000,
       highPiAccepted: false
@@ -281,15 +302,12 @@ export default defineComponent({
       return amountSum > 0;
     });
 
-    const balances = computed(() => {
-      return props.pool.tokens.map(token => allTokens.value[token].balance);
+    const hasValidInputs = computed(() => {
+      return data.validInputs.every(validInput => validInput === true);
     });
 
-    const hasBalance = computed(() => {
-      const balanceSum = balances.value
-        .map(b => Number(b))
-        .reduce((a, b) => a + b, 0);
-      return balanceSum > 0;
+    const balances = computed(() => {
+      return props.pool.tokens.map(token => allTokens.value[token].balance);
     });
 
     const hasZeroBalance = computed(() => {
@@ -307,7 +325,6 @@ export default defineComponent({
 
     const requireApproval = computed(() => {
       if (!hasAmounts.value) return false;
-      if (!hasBalance.value) return false;
       if (approvedAll.value) return false;
       return requiredAllowances.value.length > 0;
     });
@@ -394,7 +411,7 @@ export default defineComponent({
       return toFiat(amount, token);
     }
 
-    function balanceLabel(index) {
+    function formatBalance(index) {
       return fNum(tokenBalance(index), 'token');
     }
 
@@ -465,7 +482,7 @@ export default defineComponent({
 
     watch(allTokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
-      if (!hasAmounts.value) setPropMax();
+      if (!hasAmounts.value && !hasZeroBalance.value) setPropMax();
     });
 
     watch(
@@ -499,26 +516,29 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      setPropMax();
-      if (hasZeroBalance.value) data.investType = FormTypes.custom;
+      if (hasZeroBalance.value) {
+        data.investType = FormTypes.custom;
+      } else {
+        setPropMax();
+      }
     });
 
     return {
+      // data
       ...toRefs(data),
-      submit,
+      // computed
       allTokens,
+      hasValidInputs,
       hasAmounts,
       approving,
       requireApproval,
-      approveAllowances,
       tokenWeights,
       tokenBalance,
       amountRules,
       total,
-      fNum,
       isAuthenticated,
       connectWallet,
-      balanceLabel,
+      formatBalance,
       isProportional,
       propPercentage,
       priceImpact,
@@ -526,7 +546,11 @@ export default defineComponent({
       amountUSD,
       formTypes,
       isRequired,
-      hasZeroBalance
+      hasZeroBalance,
+      // methods
+      submit,
+      approveAllowances,
+      fNum
     };
   }
 });

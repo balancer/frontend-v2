@@ -24,6 +24,7 @@ import { PoolSnapshots } from '@/api/subgraph';
 import useNumbers from '@/composables/useNumbers';
 import { getPoolLiquidity } from '@/utils/balancer/price';
 import { useI18n } from 'vue-i18n';
+import useTokens from '@/composables/useTokens';
 
 const DAY = 24 * 60 * 60;
 
@@ -37,6 +38,7 @@ export default defineComponent({
       type: Object as PropType<PoolSnapshots>,
       required: true
     },
+    missingPrices: { type: Boolean, default: false },
     loading: { type: Boolean, default: true }
   },
 
@@ -45,13 +47,12 @@ export default defineComponent({
     const store = useStore();
     const { fNum } = useNumbers();
     const { t } = useI18n();
+    const { allTokens } = useTokens();
 
     // DATA
     const { pool, snapshots } = toRefs(props);
 
     // COMPUTED
-    const allTokens = computed(() => store.getters['registry/getTokens']());
-
     const subgraphPool = computed(() => {
       if (!pool.value) {
         return {};
@@ -115,19 +116,19 @@ export default defineComponent({
       return [
         {
           label: t('poolValue'),
-          value: fNum(liquidity.value, 'usd')
+          value: props.missingPrices ? '-' : fNum(liquidity.value, 'usd')
         },
         {
           label: t('volumeTime', ['7d']),
-          value: fNum(volume.value, 'usd')
+          value: props.missingPrices ? '-' : fNum(volume.value, 'usd')
         },
         {
           label: t('feesTime', ['7d']),
-          value: fNum(fees.value, 'usd')
+          value: props.missingPrices ? '-' : fNum(fees.value, 'usd')
         },
         {
           label: t('apy', [t('yearAbbrev')]),
-          value: fNum(apy.value, 'percent')
+          value: props.missingPrices ? '-' : fNum(apy.value, 'percent')
         }
       ];
     });

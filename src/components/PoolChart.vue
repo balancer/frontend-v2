@@ -11,7 +11,7 @@
   </div>
   <BalBlankSlate v-else class="h-60">
     <BalIcon name="bar-chart" />
-    Not enough data.
+    {{ $t('insufficientData') }}
   </BalBlankSlate>
 </template>
 

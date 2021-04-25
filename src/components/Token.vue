@@ -20,7 +20,7 @@
       </span>
       <a
         v-if="name && token.injected"
-        aria-label="This token is injected"
+        :aria-label="$t('tokenInjected')"
         class="align-middle leading-none tooltipped tooltipped-n ml-1"
       >
         <Icon name="info" size="24" class="text-gray" />

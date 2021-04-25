@@ -48,8 +48,7 @@
                   {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
                 </span>
                 <span class="text-xs text-gray-400 break-words">
-                  {{ propBalanceLabel(i) }}
-                  {{ $t('balance') }}
+                  {{ $t('balance') }}: {{ formatPropBalance(i) }}
                 </span>
               </div>
             </div>
@@ -83,7 +82,7 @@
         @click="setSingleAsset(i)"
       >
         <template v-slot:prepend>
-          <div class="flex items-center w-24">
+          <div class="flex items-center h-full w-24">
             <Token :token="allTokens[token]" />
             <div class="flex flex-col ml-3">
               <span class="font-medium text-sm leading-none w-14 truncate">
@@ -93,8 +92,22 @@
           </div>
         </template>
         <template v-if="isSingleAsset" v-slot:info>
-          <div class="cursor-pointer" @click="amounts[i] = singleAssetMaxes[i]">
+          <div
+            class="cursor-pointer"
+            @click.prevent="amounts[i] = singleAssetMaxes[i]"
+          >
             {{ $t('singleTokenMax') }}: {{ singleAssetMaxLabel(i) }}
+          </div>
+        </template>
+        <template v-slot:append>
+          <div class="p-2">
+            <BalBtn
+              size="xs"
+              color="white"
+              @click.prevent="amounts[i] = singleAssetMaxes[i]"
+            >
+              {{ $t('max') }}
+            </BalBtn>
           </div>
         </template>
       </BalTextInput>
@@ -112,15 +125,16 @@
           <span
             >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
           >
-          <BalIcon
-            v-if="priceImpact >= 0.01"
-            name="alert-triangle"
-            size="xs"
-            class="ml-1"
-          />
-          <BalTooltip v-if="priceImpact < 0.01">
+          <BalTooltip>
             <template v-slot:activator>
               <BalIcon
+                v-if="priceImpact >= 0.01"
+                name="alert-triangle"
+                size="xs"
+                class="ml-1"
+              />
+              <BalIcon
+                v-else
                 name="info"
                 size="xs"
                 class="text-gray-400 -mb-px ml-2"
@@ -140,7 +154,7 @@
         />
         <BalBtn
           type="submit"
-          loading-label="Confirming..."
+          :loading-label="$t('confirming')"
           color="gradient"
           :disabled="!hasAmounts"
           :loading="loading"
@@ -286,7 +300,7 @@ export default defineComponent({
       return allTokens.value[props.pool.address].balance;
     });
 
-    function propBalanceLabel(index) {
+    function formatPropBalance(index) {
       return fNum(data.propMax[index] || '0', 'token');
     }
 
@@ -555,7 +569,7 @@ export default defineComponent({
       priceImpactClasses,
       amountRules,
       formTypes,
-      propBalanceLabel,
+      formatPropBalance,
       amountUSD,
       singleAssetMaxLabel,
       singleAssetMaxes,

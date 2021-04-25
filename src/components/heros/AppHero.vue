@@ -6,7 +6,7 @@
     >
       <div class="w-full sm:w-3/4 md:w-1/2">
         <h1 class="text-white text-bold text-center">
-          An automated porfolio manager and trading platform.
+          An automated portfolio manager and trading platform.
         </h1>
         <div class="flex justify-center mt-4">
           <BalBtn color="white" class="mr-4" @click="setAccountModal(true)">
