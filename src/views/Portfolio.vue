@@ -183,8 +183,6 @@ export default defineComponent({
       reactive({
         enabled: areQueriesEnabled,
         onSuccess: async pools => {
-          console.log('pools', pools)
-          console.log('allTokens', allTokens.value);
           const tokens = pools
             .map(pool => pool.tokens.map(t => t.address))
             .reduce((a, b) => [...a, ...b], []);
