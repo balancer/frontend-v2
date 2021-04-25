@@ -26,7 +26,7 @@ type BlocknativeGasPlatformResponse = {
 };
 
 export const getGasPrice = async (
-  confidence: BlocknativeGasPriceConfidence = 70
+  confidence: BlocknativeGasPriceConfidence = 90
 ) => {
   try {
     const response = await axios.get<BlocknativeGasPlatformResponse>(
