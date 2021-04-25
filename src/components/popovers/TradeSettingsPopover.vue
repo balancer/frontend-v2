@@ -8,7 +8,7 @@
 
     <div>
       <div class="flex items-baseline">
-        <h5 v-text="'Slippage tolerance'" />
+        <span v-text="$t('slippageTolerance')" class="font-medium mb-2" />
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
@@ -20,23 +20,23 @@
         <div
           v-for="slippage in slippageOptions"
           :key="slippage"
-          class="trade-settings-option w-16 mr-2 py-1 text-center border rounded-xl cursor-pointer"
+          class="trade-settings-option w-16 mr-2 py-1 text-center border rounded-lg cursor-pointer"
           :class="{ active: appSlippage === slippage }"
           @click="setSlippage(slippage)"
         >
           {{ fNum(slippage, null, '0.0%') }}
         </div>
         <input
-          class="slippage-input w-20 px-2 border rounded-xl"
+          class="slippage-input w-20 px-2 border rounded-lg"
           :class="{ active: isCustomSlippage }"
           v-model="slippageInput"
           :placeholder="$t('custom')"
         />
       </div>
     </div>
-    <div v-if="!hideLiquidity" class="mt-4">
+    <div v-if="!hideLiquidity" class="mt-6">
       <div class="flex items-baseline">
-        <h5 v-text="'Trade liquidity'" />
+        <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
@@ -53,7 +53,7 @@
         <div
           v-for="(tradeLiquidity, i) in tradeLiquidityOptions"
           :key="i"
-          class="trade-settings-option w-16 mr-2 py-1 text-center border rounded-xl cursor-pointer capitalize"
+          class="trade-settings-option w-16 mr-2 py-1 text-center border rounded-lg cursor-pointer capitalize"
           :class="{ active: appTradeLiquidity === tradeLiquidity }"
           @click="setTradeLiquidity(tradeLiquidity)"
         >
@@ -161,6 +161,6 @@ export default defineComponent({
 }
 
 .trade-settings-option.active {
-  @apply text-blue-500 border-blue-500 font-bold;
+  @apply text-blue-500 border-blue-500;
 }
 </style>
