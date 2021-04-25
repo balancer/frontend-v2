@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-x-auto whitespace-nowrap" ref="tableRef">
+  <div class="overflow-x-auto whitespace-nowrap rounded-lg" ref="tableRef">
     <table class="min-w-full">
       <thead
         class="bg-white w-full flex flex-row z-20"
