@@ -125,6 +125,12 @@ export default function useSor(
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value].decimals;
 
     if (isExactIn) {
+      // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
+      await sorManager.setCostOutputToken(
+        tokenOutAddressInput.value,
+        tokenOutDecimals
+      );
+
       const tokenInAmountNormalised = new BigNumber(amount); // Normalized value
       const tokenInAmountScaled = scale(
         tokenInAmountNormalised,
@@ -174,6 +180,12 @@ export default function useSor(
         ).toNumber();
       }
     } else {
+      // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
+      await sorManager.setCostOutputToken(
+        tokenInAddressInput.value,
+        tokenInDecimals
+      );
+
       const tokenOutAmountNormalised = new BigNumber(amount);
       const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
 
