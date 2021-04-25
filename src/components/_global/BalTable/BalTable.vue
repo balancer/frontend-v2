@@ -164,9 +164,9 @@ export default defineComponent({
       return '';
     };
 
-    const handleRowClick = (data) => {
+    const handleRowClick = data => {
       props.onRowClick && props.onRowClick(data);
-    }
+    };
 
     const handleSort = (columnId: string) => {
       currentSortColumn.value = columnId;

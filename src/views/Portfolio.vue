@@ -2,7 +2,7 @@
   <div class="container mx-auto">
     <SubNav class="mb-8" />
     <div class="mt-16">
-      <BalChart
+      <BalLineChart
         :isLoading="isLoadingChartData || isAppLoading"
         name="Value ($)"
         :axis="portfolioChartData?.axis"
