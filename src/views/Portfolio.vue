@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, ref } from 'vue';
+import { defineComponent, reactive, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import getProvider from '@/utils/provider';
@@ -146,9 +146,7 @@ export default defineComponent({
       //   className: 'cell'
       // }
     ]);
-    const data = reactive({
-      totalBalance: 0
-    });
+    const totalBalance = ref(0);
     const currentGraphingPeriod = ref(30);
     const isInjectingTokens = ref(true);
 
@@ -216,7 +214,7 @@ export default defineComponent({
 
     return {
       // data
-      ...toRefs(data),
+      totalBalance,
       pools,
       isLoadingPools,
       // computed
