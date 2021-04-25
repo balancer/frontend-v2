@@ -63,16 +63,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  toRefs,
-  computed,
-  ref,
-  watch,
-  onMounted,
-  unref
-} from 'vue';
+import { defineComponent, reactive, toRefs, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import getProvider from '@/utils/provider';
@@ -96,7 +87,12 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { t } = useI18n();
-    const { account, blockNumber, loading: isWeb3Loading } = useWeb3();
+    const {
+      account,
+      blockNumber,
+      loading: isWeb3Loading,
+      userNetwork
+    } = useWeb3();
     const { fNum } = useNumbers();
     // DATA
     const columns = ref([
@@ -162,13 +158,12 @@ export default defineComponent({
     );
     const areQueriesEnabled = computed(() => !isPageLoading.value);
     const provider = computed(() => getProvider(networkKey.value));
-    const networkKey = computed(() => store.state.web3.config.key);
+    const networkKey = computed(() => userNetwork.value.key);
     const { allTokens } = useTokens();
 
     const {
       data: portfolioChartData,
       isLoading: isLoadingChartData,
-      isFetchedAfterMount,
       isFetching: isFetchingMoreChartData
     } = useQuery<any, any>(
       reactive(['chartData', { networkKey, account, currentGraphingPeriod }]),
@@ -184,7 +179,7 @@ export default defineComponent({
       })
     );
 
-    const { data: pools, isLoading: isLoadingPools, status } = useQuery(
+    const { data: pools, isLoading: isLoadingPools } = useQuery(
       reactive(['portfolioPools', { networkKey, provider, account }]),
       () => getPoolsWithShares(networkKey.value, provider.value, account.value),
       reactive({
