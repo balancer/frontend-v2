@@ -405,6 +405,10 @@ export default defineComponent({
       return allTokens.value[props.pool.tokens[index]]?.balance || 0;
     }
 
+    function tokenDecimals(index) {
+      return allTokens.value[props.pool.tokens[index]].decimals;
+    }
+
     function amountUSD(index) {
       const amount = fullAmounts.value[index] || 0;
       const token = props.pool.tokens[index].toLowerCase();
@@ -443,7 +447,8 @@ export default defineComponent({
       const fractionBasisPoints = (range / 1000) * 10000;
       const amount = bnum(balances.value[data.propToken])
         .times(fractionBasisPoints)
-        .div(10000);
+        .div(10000)
+        .precision(tokenDecimals(data.propToken));
       const { send } = poolCalculator.propAmountsGiven(
         amount.toString(),
         data.propToken,
