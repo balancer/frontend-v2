@@ -138,9 +138,7 @@
             <template v-slot:info>
               <div>
                 {{ $t('priceImpact') }}:
-                {{
-                  fNum(priceImpact, 'percent')
-                }}
+                {{ fNum(priceImpact, 'percent') }}
               </div>
             </template>
           </BalTextInput>
