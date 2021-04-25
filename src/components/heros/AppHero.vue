@@ -5,7 +5,8 @@
         <h1 class="text-lg font-normal text-gray-500 font-body mb-2">
           My Balancer investments
         </h1>
-        <span class="text-3xl font-bold">
+        <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" />
+        <span v-else class="text-3xl font-bold">
           {{ fNum(totalInvested, 'usd', null, true) }}
         </span>
       </template>
@@ -60,6 +61,7 @@ export default defineComponent({
 
     // DATA
     const totalInvested = ref(0);
+    const calculating = ref(false);
 
     // COMPUTED
     const setAccountModal = val => store.commit('web3/setAccountModal', val);
@@ -83,6 +85,7 @@ export default defineComponent({
     }
 
     watch(blockNumber, async () => {
+      if (totalInvested.value === 0) calculating.value = true;
       if (isConnected.value) {
         const pools: Pool[] = await getPoolsWithShares(
           userNetwork.value.id,
@@ -91,12 +94,14 @@ export default defineComponent({
         );
         const investedAmounts = pools.map(pool => getInvestedValue(pool));
         totalInvested.value = investedAmounts.reduce((a, b) => a + b, 0);
+        calculating.value = false;
       }
     });
 
     return {
       // data
       totalInvested,
+      calculating,
       // computed
       isConnected,
       classes,
