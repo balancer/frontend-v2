@@ -44,7 +44,7 @@
 import { defineComponent, ref } from 'vue';
 import InvestForm from '@/components/forms/pool_actions/InvestForm.vue';
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm.vue';
-import SuccessOverlay from './SuccessOverlay.vue';
+import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import { useI18n } from 'vue-i18n';
 import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
 
