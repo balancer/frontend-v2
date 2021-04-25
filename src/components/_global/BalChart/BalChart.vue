@@ -17,6 +17,7 @@
       :option="chartConfig"
       autoresize
       @updateAxisPointer="_onAxisMoved"
+      :update-options="{ replaceMerge: 'series' }"
     />
     <div class="flex w-full mt-2 justify-end">
       <bal-button-group
@@ -100,7 +101,6 @@ export default defineComponent({
   setup(props) {
     const chartInstance = ref<echarts.ECharts>();
     const lineChart = ref<HTMLElement>();
-    const option = ref();
     const currentValue = ref('$0,00');
     const change = ref(0);
 
@@ -167,6 +167,12 @@ export default defineComponent({
         const current = props.data[dataIndex] as number;
         const _change = (current - prev) / prev;
 
+        // 100% increase if coming from a 0!
+        if (prev === 0 && current !== 0) {
+          change.value = 1;
+          return;
+        }
+
         // any errors or 0 division, fall back to 0
         if (isNaN(_change)) {
           change.value = 0;
@@ -177,14 +183,20 @@ export default defineComponent({
     };
 
     return {
+      //refs
       chartInstance,
       lineChart,
-      option,
+
+      // methods
       _onAxisMoved,
-      currentValue,
-      change,
       numeral,
       periodOptions: PeriodOptions,
+
+      // data
+      currentValue,
+      change,
+
+      // computed
       chartConfig
     };
   }

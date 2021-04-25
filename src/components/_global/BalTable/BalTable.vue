@@ -1,18 +1,24 @@
 <template>
   <div class="overflow-x-auto whitespace-nowrap" ref="tableRef">
     <table class="min-w-full">
-      <thead class="bg-white shadow-sm w-full flex flex-row">
+      <thead
+        class="bg-white w-full flex flex-row z-20"
+        :class="{
+          'sticky top-0': sticky === 'both' || sticky === 'vertical'
+        }"
+      >
         <td
           v-for="(column, columnIndex) in columns"
           :key="`header-${column.id}`"
-          class="p-6 flex flex-grow bg-white"
+          class="p-6 flex flex-grow bg-white headingShadow border-b border-gray-200 cursor-pointer"
           :class="[
             column.className,
             column.align === 'right' ? 'justify-end' : 'justify-start',
-            getStickyClass(columnIndex),
-            isHeaderStuck ? 'isSticky' : ''
+            getHorizontalStickyClass(columnIndex),
+            isColumnStuck ? 'isSticky' : ''
           ]"
           :ref="setHeaderRef(columnIndex)"
+          @click="handleSort(column.id)"
         >
           <slot
             v-if="column.Header"
@@ -24,14 +30,28 @@
               {{ column.name }}
             </h5>
           </div>
+          <BalIcon
+            name="arrow-up"
+            v-if="
+              currentSortColumn === column.id && currentSortDirection === 'asc'
+            "
+            class="ml-1"
+          />
+          <BalIcon
+            name="arrow-down"
+            v-if="
+              currentSortColumn === column.id && currentSortDirection === 'desc'
+            "
+            class="ml-1"
+          />
         </td>
       </thead>
       <BalLoadingBlock v-if="isLoading" :class="skeletonClass" />
       <tbody v-else>
         <tr
-          v-for="dataItem in data"
-          :key="dataItem[dataKey]"
-          class="flex flex-row bg-white"
+          v-for="(dataItem, index) in data"
+          :key="`tableRow-${index}`"
+          class="flex flex-row bg-white z-10"
         >
           <td
             v-for="(column, columnIndex) in columns"
@@ -39,11 +59,10 @@
             :class="[
               column.className,
               column.align === 'right' ? 'justify-end' : 'justify-start',
-              getStickyClass(columnIndex),
+              getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : ''
             ]"
             class="flex flex-grow bg-white"
-            :ref="setColumnRef(columnIndex)"
           >
             <slot
               v-if="column.Cell"
@@ -65,16 +84,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  PropType,
-  reactive,
-  ref,
-  watch
-} from 'vue';
-import * as Sticky from 'sticky-js';
+import { defineComponent, onMounted, PropType, ref } from 'vue';
 
 export type ColumnDefinition = {
   // Column Header Label
@@ -93,6 +103,8 @@ export type ColumnDefinition = {
   className?: string;
   // Left or right aligned content. E.g. Numbers should be right aligned
   align?: 'left' | 'right';
+  // Dictates whether the column is sortable or not
+  sortable?: boolean;
 };
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
@@ -127,9 +139,10 @@ export default defineComponent({
   setup(props) {
     const stickyHeaderRef = ref();
     const tableRef = ref<HTMLElement>();
-    const isHeaderStuck = ref(false);
     const isColumnStuck = ref(false);
-    const stickyColumnRefs: Array<HTMLElement> = reactive([]);
+    const _data = ref(props.data);
+    const currentSortDirection = ref<'asc' | 'desc' | null>(null);
+    const currentSortColumn = ref<string | null>(null);
 
     const setHeaderRef = (columnIndex: number) => (el: HTMLElement) => {
       if (el && columnIndex === 0) {
@@ -137,48 +150,73 @@ export default defineComponent({
       }
     };
 
-    const setColumnRef = (columnIndex: number) => (el: HTMLElement) => {
-      if (el && columnIndex === 0) {
-        stickyColumnRefs.push(el);
-      }
-    };
-
-    const getStickyClass = index => {
+    // Need a method for horizontal stickiness as we need to
+    // check whether the table item belongs in the first column
+    const getHorizontalStickyClass = index => {
       if (index !== 0) return '';
-      if (props.sticky === 'horizontal') {
+      if (props.sticky === 'horizontal' || props.sticky === 'both') {
         return 'horizontalSticky';
       }
-      if (props.sticky === 'vertical') {
-        return 'verticalSticky';
+      return '';
+    };
+
+    const handleSort = (columnId: string) => {
+      currentSortColumn.value = columnId;
+      switch (currentSortDirection.value) {
+        case 'asc':
+          currentSortDirection.value = 'desc';
+          break;
+        case 'desc':
+          currentSortDirection.value = null;
+          break;
+        case null:
+          currentSortDirection.value == 'asc';
+          break;
+        default:
+          currentSortDirection.value == null;
       }
-      return 'combinedSticky';
+      // const column = props.columns.find(column => column.id === columnId);
+      // const sortedData = sortBy(props.data, column?.accessor);
+
+      // if (currentSortDirection.value === 'asc') {
+      //   _data.value = sortedData;
+      // } else if (currentSortDirection.value === 'desc') {
+      //   _data.value = sortedData.reverse();
+      // }
+      _data.value = props.data;
     };
 
     onMounted(() => {
       if (tableRef.value) {
         tableRef.value.onscroll = () => {
           if (tableRef.value) {
-            isHeaderStuck.value = !!(
-              stickyHeaderRef.value.offsetLeft >
-              stickyHeaderRef.value.offsetWidth * 1.1
-            );
-
-            isColumnStuck.value = !!(
-              stickyHeaderRef.value.offsetLeft >
-              stickyHeaderRef.value.offsetWidth * 1.1
-            );
+            if (props.sticky === 'both') {
+              isColumnStuck.value = !!(stickyHeaderRef.value.offsetLeft > 0);
+            } else {
+              isColumnStuck.value = !!(
+                stickyHeaderRef.value.offsetLeft >
+                stickyHeaderRef.value.offsetWidth * 1.1
+              );
+            }
           }
         };
       }
     });
 
     return {
-      setHeaderRef,
-      getStickyClass,
+      //refs
       tableRef,
-      isHeaderStuck,
-      setColumnRef,
-      isColumnStuck
+
+      // methods
+      setHeaderRef,
+      getHorizontalStickyClass,
+      handleSort,
+
+      //data
+      isColumnStuck,
+      _data,
+      currentSortColumn,
+      currentSortDirection
     };
   }
 });

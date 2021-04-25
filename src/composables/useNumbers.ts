@@ -35,7 +35,7 @@ export default function useNumbers() {
       PresetFormats[adjustedPreset || preset || 'default']
     );
   }
-  
+
   function toFiat(amount: number | string, tokenAddress: string): number {
     const rate =
       store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;

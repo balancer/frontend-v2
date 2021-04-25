@@ -22,7 +22,8 @@
           :data="pools"
           :isLoading="isLoadingPools || isAppLoading || isInjectingTokens"
           skeletonClass="h-64"
-          sticky="horizontal"
+          sticky="both"
+          :dataKey="id"
         >
           <template v-slot:iconColumnHeader>
             <div class="flex items-center">
@@ -112,31 +113,35 @@ export default defineComponent({
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',
-        className: 'w-full'
+        className: 'w-full',
       },
       {
         name: 'My Balance',
         accessor: pool => fNum(getPoolShare(pool), 'usd'),
         className: 'cell',
-        align: 'right'
+        align: 'right',
+        id: 'myBalance'
       },
       {
         name: 'Pool Value',
         accessor: pool => fNum(pool.liquidity, 'usd'),
         className: 'cell',
-        align: 'right'
+        align: 'right',
+        id: 'poolValue'
       },
       {
         name: 'Vol (24h)',
         accessor: pool => fNum(pool.volume, 'usd'),
         className: 'cell',
-        align: 'right'
+        align: 'right',
+        id: 'poolVolume'
       },
       {
         name: 'APY (1y)',
-        accessor: pool => `${fNum(pool.apy, 'percent')} ✨`,
+        accessor: pool => `${fNum(pool.apy, 'percent')}`,
         className: 'cell',
-        align: 'right'
+        align: 'right',
+        id: 'poolApy'
       }
       // {
       //   name: 'Staking',
@@ -225,19 +230,16 @@ export default defineComponent({
       isAppLoading,
       isPageLoading,
       tokens: allTokens,
-      // methods
-      fNum,
-      t,
       isLoadingChartData,
       portfolioChartData,
       isFetchingMoreChartData,
-      columns,
-      handleGraphingPeriodChange,
       isInjectingTokens,
-      console,
-      status,
-      isFetchedAfterMount,
-      currentGraphingPeriod
+      currentGraphingPeriod,
+      // methods
+      fNum,
+      t,
+      columns,
+      handleGraphingPeriodChange
     };
   }
 });
