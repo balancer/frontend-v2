@@ -16,7 +16,7 @@
       <h3 class="text-gray-800 font-semibold text-xl tracking-wide mt-8">
         My V2 Investments
       </h3>
-      <div class="shadow-lg mt-8">
+      <BalCard  shadow="lg" class="mt-8" no-pad>
         <BalTable
           :columns="columns"
           :data="pools"
@@ -56,7 +56,7 @@
             </div>
           </template> -->
         </BalTable>
-      </div>
+      </BalCard>
     </div>
     <!-- <BlockMyWallet v-if="account" :loading="loading" /> -->
   </div>
