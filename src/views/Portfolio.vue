@@ -80,7 +80,7 @@ import { getPoolSharesChart } from '@/utils/balancer/subgraph';
 import { useI18n } from 'vue-i18n';
 import SubNav from '@/components/navs/SubNav.vue';
 import useWeb3 from '@/composables/useWeb3';
-import { useQuery } from 'vue-react-query';
+import { useQuery } from 'vue-query';
 
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
