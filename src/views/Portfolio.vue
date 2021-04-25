@@ -113,7 +113,7 @@ export default defineComponent({
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',
-        className: 'w-full',
+        className: 'w-full'
       },
       {
         name: 'My Balance',

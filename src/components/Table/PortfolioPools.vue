@@ -80,11 +80,8 @@ export default defineComponent({
     }
   },
 
-  setup(props) {
+  setup() {
     const tokens = computed(() => store.getters['registry/getTokens']());
-
-    watch(tokens, () => console.log('tok', tokens));
-
     const getIconPosition = (i: number, count: number) => {
       if (count < 3) {
         return 28 * i;
