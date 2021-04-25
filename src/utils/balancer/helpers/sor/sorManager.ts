@@ -15,9 +15,9 @@ import { Swap, Pools } from '@balancer-labs/sor/dist/types';
 import { ETHER } from '@/constants/tokenlists';
 
 export enum LiquiditySelection {
-  Best,
-  V1,
-  V2
+  Best = 'best',
+  V1 = 'v1',
+  V2 = 'v2'
 }
 
 export interface SorReturn {

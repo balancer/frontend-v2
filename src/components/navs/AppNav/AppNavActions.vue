@@ -14,33 +14,7 @@
       >
         <StarsIcon class="mr-1" />{{ fNum(totalPending, 'token') }} BAL
       </BalBtn>
-      <div class="relative">
-        <BalBtn
-          class="auth-btn text-base"
-          :loading="web3Loading"
-          :loading-label="
-            ['sm', 'md', 'lg'].includes(bp) ? '' : $t('connecting')
-          "
-          color="gray"
-          outline
-          rounded
-          :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
-          :circle="['sm', 'md', 'lg'].includes(bp)"
-        >
-          <Avatar :address="account" :profile="profile" size="20" />
-          <span
-            v-if="profile.name || profile.ens"
-            v-text="profile.name || profile.ens"
-            class="pl-2 hidden lg:inline-block"
-          />
-          <span
-            v-else
-            v-text="_shorten(account)"
-            class="pl-2 hidden lg:inline-block"
-          />
-        </BalBtn>
-        <SettingsPopover v-if="!web3Loading" class="popover" />
-      </div>
+      <AppNavAccountBtn />
     </div>
     <BalBtn
       v-else
@@ -67,6 +41,7 @@ import useWeb3 from '@/composables/useWeb3';
 import { useStore } from 'vuex';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
+import AppNavAccountBtn from './AppNavAccountBtn.vue';
 
 interface ActionsData {
   pendingClaims: Claim[] | null;
@@ -75,6 +50,10 @@ interface ActionsData {
 
 export default defineComponent({
   name: 'AppNavActions',
+
+  components: {
+    AppNavAccountBtn
+  },
 
   setup() {
     // COMPOSABLES
