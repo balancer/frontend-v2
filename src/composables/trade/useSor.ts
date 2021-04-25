@@ -1,4 +1,4 @@
-import { Ref, onMounted, ref } from 'vue';
+import { Ref, onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -60,6 +60,7 @@ export default function useSor(
   const { txListener } = useNotify();
 
   const getConfig = () => store.getters['web3/getConfig']();
+  const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
   onMounted(async () => await initSor());
 
@@ -114,7 +115,7 @@ export default function useSor(
       !tokenInAddress ||
       !tokenOutAddress ||
       !sorManager ||
-      !sorManager.hasDataForPair(tokenInAddress, tokenOutAddress)
+      !sorManager.hasPoolData()
     ) {
       return;
     }
@@ -131,6 +132,7 @@ export default function useSor(
       );
 
       console.log('[SOR Manager] swapExactIn');
+
       const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
@@ -140,7 +142,8 @@ export default function useSor(
         tokenInAmountScaled,
         tokenInDecimals,
         allowanceState.value.isUnlockedV1,
-        allowanceState.value.isUnlockedV2
+        allowanceState.value.isUnlockedV2,
+        liquiditySelection.value
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -175,6 +178,7 @@ export default function useSor(
       const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
 
       console.log('[SOR Manager] swapExactOut');
+
       const swapReturn: SorReturn = await sorManager.getBestSwap(
         tokenInAddress,
         tokenOutAddress,
@@ -184,7 +188,8 @@ export default function useSor(
         tokenOutAmount,
         tokenOutDecimals,
         allowanceState.value.isUnlockedV1,
-        allowanceState.value.isUnlockedV2
+        allowanceState.value.isUnlockedV2,
+        liquiditySelection.value
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
