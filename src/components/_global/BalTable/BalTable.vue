@@ -49,7 +49,7 @@
       <BalLoadingBlock v-if="isLoading" :class="skeletonClass" />
       <tbody v-else>
         <tr
-          v-for="(dataItem, index) in data"
+          v-for="(dataItem, index) in _data"
           :key="`tableRow-${index}`"
           class="flex flex-row bg-white z-10"
           @click="onRowClick(dataItem)"
@@ -85,8 +85,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from 'vue';
-
+import { defineComponent, onMounted, PropType, ref, watch } from 'vue';
+import { sortBy } from 'lodash';
 export type ColumnDefinition = {
   // Column Header Label
   name: string;
@@ -170,28 +170,25 @@ export default defineComponent({
 
     const handleSort = (columnId: string) => {
       currentSortColumn.value = columnId;
-      switch (currentSortDirection.value) {
-        case 'asc':
-          currentSortDirection.value = 'desc';
-          break;
-        case 'desc':
-          currentSortDirection.value = null;
-          break;
-        case null:
-          currentSortDirection.value == 'asc';
-          break;
-        default:
-          currentSortDirection.value == null;
+      if (currentSortDirection.value === null) {
+        currentSortDirection.value = 'asc';
+      } else if (currentSortDirection.value === 'asc') {
+        currentSortDirection.value = 'desc';
+      } else {
+        currentSortDirection.value = null;
       }
-      // const column = props.columns.find(column => column.id === columnId);
-      // const sortedData = sortBy(props.data, column?.accessor);
 
-      // if (currentSortDirection.value === 'asc') {
-      //   _data.value = sortedData;
-      // } else if (currentSortDirection.value === 'desc') {
-      //   _data.value = sortedData.reverse();
-      // }
-      _data.value = props.data;
+      const column = props.columns.find(column => column.id === columnId);
+      if (column?.accessor) {
+        const sortedData = sortBy(props.data, column.accessor);
+
+        if (currentSortDirection.value === 'asc') {
+          _data.value = sortedData;
+        } else if (currentSortDirection.value === 'desc') {
+          _data.value = sortedData.reverse();
+        }
+        _data.value = sortedData;
+      }
     };
 
     onMounted(() => {
@@ -211,6 +208,13 @@ export default defineComponent({
       }
     });
 
+    watch(
+      () => props.data,
+      newData => {
+        _data.value = newData;
+      }
+    );
+
     return {
       //refs
       tableRef,
@@ -225,7 +229,8 @@ export default defineComponent({
       isColumnStuck,
       _data,
       currentSortColumn,
-      currentSortDirection
+      currentSortDirection,
+      console
     };
   }
 });
