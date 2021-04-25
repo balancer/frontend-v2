@@ -504,9 +504,7 @@ export default defineComponent({
       }
     }
 
-    watch(allTokens, newTokens => {
-      poolCalculator.setAllTokens(newTokens);
-    });
+    watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
 
     watch(
       () => props.pool.tokenBalances,
