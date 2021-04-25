@@ -52,6 +52,7 @@
           v-for="(dataItem, index) in data"
           :key="`tableRow-${index}`"
           class="flex flex-row bg-white z-10"
+          @click="onRowClick(dataItem)"
         >
           <td
             v-for="(column, columnIndex) in columns"
@@ -132,6 +133,9 @@ export default defineComponent({
     skeletonClass: {
       type: String
     },
+    onRowClick: {
+      type: Function
+    },
     sticky: {
       type: Object as PropType<Sticky>
     }
@@ -159,6 +163,10 @@ export default defineComponent({
       }
       return '';
     };
+
+    const handleRowClick = (data) => {
+      props.onRowClick && props.onRowClick(data);
+    }
 
     const handleSort = (columnId: string) => {
       currentSortColumn.value = columnId;
@@ -211,6 +219,7 @@ export default defineComponent({
       setHeaderRef,
       getHorizontalStickyClass,
       handleSort,
+      handleRowClick,
 
       //data
       isColumnStuck,
