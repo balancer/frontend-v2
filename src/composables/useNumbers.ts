@@ -15,7 +15,6 @@ enum PresetFormats {
 
 export default function useNumbers() {
   const store = useStore();
-
   function fNum(
     number: number | string,
     preset: Preset | null = 'default',

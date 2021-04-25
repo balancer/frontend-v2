@@ -2,7 +2,7 @@
   <span class="inline-block v-align-middle leading-none">
     <img
       v-if="!error"
-      :src="_url(token.logoURI)"
+      :src="_url(token?.logoURI)"
       :style="{
         width: `${size || 24}px`,
         height: `${size || 24}px`
@@ -30,7 +30,9 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   props: {
     token: Object,
     address: String,
@@ -38,15 +40,10 @@ export default {
     symbol: Boolean,
     name: Boolean
   },
-  data() {
+  setup() {
     return {
       error: false
     };
-  },
-  watch: {
-    token(val, prev) {
-      if (val.address !== prev.address) this.error = false;
-    }
   }
-};
+});
 </script>

@@ -53,7 +53,8 @@ export default defineComponent({
           'gradient-reverse',
           'gray',
           'red',
-          'white'
+          'white',
+          'blue'
         ].includes(val)
     },
     label: { type: String, default: '' },
