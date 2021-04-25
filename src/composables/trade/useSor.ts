@@ -95,11 +95,10 @@ export default function useSor(
     pools.value = sorManager.selectedPools.pools;
   }
 
-  async function handleAmountChange(
-    isExactIn: boolean,
-    amount: string
-  ): Promise<void> {
-    exactIn.value = isExactIn;
+  async function handleAmountChange(): Promise<void> {
+    const amount = exactIn.value
+      ? tokenInAmountInput.value
+      : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping trade
     const zeroValueTrade = amount === '' || new BigNumber(amount).isZero();
     if (zeroValueTrade || isWrap.value || isUnwrap.value) {
@@ -124,7 +123,7 @@ export default function useSor(
     const tokenInDecimals = tokens.value[tokenInAddressInput.value].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value].decimals;
 
-    if (isExactIn) {
+    if (exactIn.value) {
       const tokenInAmountNormalised = new BigNumber(amount); // Normalized value
       const tokenInAmountScaled = scale(
         tokenInAmountNormalised,
