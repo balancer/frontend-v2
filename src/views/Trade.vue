@@ -167,6 +167,7 @@
           :label="`${$t(submitLabel)}`"
           :loading="trading"
           :loading-label="$t('confirming')"
+          :disabled="zeroAmounts"
           color="gradient"
           block
           @click.prevent="trade"
@@ -333,6 +334,15 @@ export default defineComponent({
       return message;
     });
 
+    const zeroAmounts = computed(() => {
+      return (
+        (!tokenInAmountInput.value ||
+          parseFloat(tokenInAmountInput.value) === 0) &&
+        (!tokenOutAmountInput.value ||
+          parseFloat(tokenOutAmountInput.value) === 0)
+      );
+    });
+
     function toggleRate(): void {
       isInRate.value = !isInRate.value;
     }
@@ -439,7 +449,8 @@ export default defineComponent({
       approve,
       trading,
       trade,
-      priceImpact
+      priceImpact,
+      zeroAmounts
     };
   }
 });
