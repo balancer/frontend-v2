@@ -170,7 +170,7 @@ export async function getPoolShares(network: string, address: string) {
       __args: {
         first: 1000,
         where: {
-          userAddress: address.toLowerCase(),
+          userAddress: address?.toLowerCase(),
           balance_gt: 0
         }
       },
@@ -210,7 +210,7 @@ export async function getPoolSharesChart(
         },
         first: 1000,
         where: {
-          userAddress: account.toLowerCase(),
+          userAddress: account?.toLowerCase(),
           balance_gt: 0
         }
       },
@@ -246,13 +246,8 @@ export async function getPoolSharesChart(
       return [`${year}-${month}-${day}`, value];
     });
   return {
-    categories: formatedResults.map(row => row[0]),
-    series: [
-      {
-        name: 'Value ($)',
-        data: formatedResults.map(row => row[1])
-      }
-    ]
+    axis: formatedResults.map(row => row[0]),
+    data: formatedResults.map(row => row[1])
   };
 }
 

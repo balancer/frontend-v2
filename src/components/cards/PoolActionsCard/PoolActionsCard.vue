@@ -1,9 +1,17 @@
 <template>
   <BalCard noPad>
     <div class="relative overflow-hidden">
-      <BalTabs v-model="activeTab" :tabs="tabs" class="pt-4" />
+      <div class="flex justify-between items-end border-b px-4">
+        <BalTabs v-model="activeTab" :tabs="tabs" class="pt-4 -mb-px" no-pad />
+        <TradeSettingsPopover hide-liquidity />
+      </div>
+
       <template v-if="activeTab === 'invest'">
-        <InvestForm :pool="pool" @success="handleInvestment($event)" />
+        <InvestForm
+          :pool="pool"
+          :missing-prices="missingPrices"
+          @success="handleInvestment($event)"
+        />
         <SuccessOverlay
           v-if="investmentSuccess"
           :title="$t('investmentSettled')"
@@ -14,7 +22,11 @@
         />
       </template>
       <template v-if="activeTab === 'withdraw'">
-        <WithdrawForm :pool="pool" @success="handleWithdrawal($event)" />
+        <WithdrawForm
+          :pool="pool"
+          :missing-prices="missingPrices"
+          @success="handleWithdrawal($event)"
+        />
         <SuccessOverlay
           v-if="withdrawalSuccess"
           :title="$t('withdrawalSettled')"
@@ -34,6 +46,7 @@ import InvestForm from '@/components/forms/pool_actions/InvestForm.vue';
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm.vue';
 import SuccessOverlay from './SuccessOverlay.vue';
 import { useI18n } from 'vue-i18n';
+import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
 
 export default defineComponent({
   name: 'PoolActionsCard',
@@ -43,11 +56,13 @@ export default defineComponent({
   components: {
     InvestForm,
     WithdrawForm,
-    SuccessOverlay
+    SuccessOverlay,
+    TradeSettingsPopover
   },
 
   props: {
-    pool: { type: Object, required: true }
+    pool: { type: Object, required: true },
+    missingPrices: { type: Boolean, default: false }
   },
 
   setup(_, { emit }) {

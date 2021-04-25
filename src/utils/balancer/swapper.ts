@@ -20,6 +20,15 @@ type FundManagement = {
   toInternalBalance: boolean;
 };
 
+type SingleSwap = {
+  poolId: string;
+  kind: number;
+  assetIn: string;
+  assetOut: string;
+  amount: string;
+  userData: string;
+};
+
 export async function swapIn(
   network: string,
   provider: Web3Provider,
@@ -191,6 +200,29 @@ async function batchSwapGivenInV2(
   console.log('Limits', limits);
 
   try {
+    // Do a single swap instead of a batch to save gas
+    if (swaps.length == 1) {
+      console.log('[Swapper] Overriding with single swap() GivenIn');
+
+      const single: SingleSwap = {
+        poolId: swaps[0].poolId,
+        kind: SWAP_KIND_IN,
+        assetIn: tokenAddresses[swaps[0].assetInIndex],
+        assetOut: tokenAddresses[swaps[0].assetOutIndex],
+        amount: swaps[0].amount,
+        userData: swaps[0].userData
+      };
+
+      return sendTransaction(
+        web3,
+        configs[network].addresses.vault,
+        vaultAbi,
+        'swap',
+        [single, funds, limits[0], MaxUint256],
+        overrides
+      );
+    }
+
     return sendTransaction(
       web3,
       configs[network].addresses.vault,
@@ -244,6 +276,29 @@ async function batchSwapGivenOutV2(
   console.log('Limits', limits);
 
   try {
+    // Do a single swap instead of a batch to save gas
+    if (swaps.length == 1) {
+      console.log('[Swapper] Overriding with single swap() GivenOut');
+
+      const single: SingleSwap = {
+        poolId: swaps[0].poolId,
+        kind: SWAP_KIND_OUT,
+        assetIn: tokenAddresses[swaps[0].assetInIndex],
+        assetOut: tokenAddresses[swaps[0].assetOutIndex],
+        amount: swaps[0].amount,
+        userData: swaps[0].userData
+      };
+
+      return sendTransaction(
+        web3,
+        configs[network].addresses.vault,
+        vaultAbi,
+        'swap',
+        [single, funds, limits[0], MaxUint256],
+        overrides
+      );
+    }
+
     return sendTransaction(
       web3,
       configs[network].addresses.vault,

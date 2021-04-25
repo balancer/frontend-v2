@@ -1,4 +1,5 @@
 import { App } from 'vue';
+import parsePath from 'parse-filepath';
 import upperFirst from 'lodash/upperFirst';
 import camelCase from 'lodash/camelCase';
 
@@ -9,10 +10,10 @@ export function registerGlobalComponents(app: App): void {
     true,
     /^((?!stories).)*\.(js|ts|vue)$/i
   );
-  for (const key of req.keys()) {
-    const componentName = key.match(/\w+/)?.[0];
+  for (const filePath of req.keys()) {
+    const componentName = parsePath(filePath).name;
     if (!componentName) continue;
-    const componentConfig = req(key);
+    const componentConfig = req(filePath);
     app.component(componentName, componentConfig.default || componentConfig);
   }
 
