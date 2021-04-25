@@ -203,3 +203,38 @@ export async function getPoolSnapshots(
   );
   return snapshots as PoolSnapshots;
 }
+
+export async function getPoolsById(
+  chainId: number,
+  ids: string[]
+): Promise<Pool[]> {
+  const _ids = ids.map(id => `"${id.toLocaleLowerCase()}"`).join(',');
+
+  const query = `
+    query {
+      pools(first: 1000, where: { id_in: [${_ids}] }) {
+        id
+        poolType
+        swapFee
+        tokensList
+        totalShares
+        tokens {
+          address
+          balance
+          weight
+        }
+      }
+    }
+  `;
+  const url = BALANCER_SUBGRAPH_URL[chainId];
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ query })
+  });
+  const { data } = await res.json();
+  return data.pools;
+}
