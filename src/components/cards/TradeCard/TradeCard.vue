@@ -27,6 +27,7 @@
         block
         @click.prevent="connectWallet"
       />
+      <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
         v-else-if="requireApproval"
         :label="`${$t('approve')} ${tokens[tokenInAddress].symbol}`"
