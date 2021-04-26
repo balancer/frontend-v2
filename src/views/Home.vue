@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, reactive, watch } from 'vue';
+import { defineComponent, computed, ref, reactive } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import SubNav from '@/components/navs/SubNav.vue';

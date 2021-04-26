@@ -141,13 +141,13 @@ export async function getPoolsWithVolume({
   return pools.map(pool => {
     const liquidity = parseFloat(getPoolLiquidity(pool, prices) || '0');
     const apy = snapshotMap[pool.id]
-      ? (parseFloat(snapshotMap[pool.id].swapFees) / liquidity) * 365
+      ? (parseFloat(snapshotMap[pool.id]?.swapFees) / liquidity) * 365
       : '0';
     return {
       ...pool,
       liquidity,
       apy,
-      volume: snapshotMap[pool.id].swapVolume || '0'
+      volume: snapshotMap[pool.id]?.swapVolume || '0'
     };
   });
 }
@@ -171,14 +171,14 @@ export async function getPoolsWithShares(
   const populatedPools = pools.map(pool => {
     const liquidity = parseFloat(getPoolLiquidity(pool, prices) || '0');
     const apy = snapshotMap[pool.id]
-      ? (parseFloat(snapshotMap[pool.id].swapFees) / liquidity) * 365
+      ? (parseFloat(snapshotMap[pool.id]?.swapFees) / liquidity) * 365
       : '0';
     return {
       ...pool,
       shares: parseFloat(balances[pool.id] || '0'),
       liquidity,
       apy,
-      volume: snapshotMap[pool.id].swapVolume || '0'
+      volume: snapshotMap[pool.id]?.swapVolume || '0'
     };
   });
   return populatedPools;
