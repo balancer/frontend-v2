@@ -6,7 +6,6 @@
     <div
       class="ease-in-out duration-300"
       :class="{ 'transform rotate-180': isRotated }"
-      :title="'pairToggle'"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

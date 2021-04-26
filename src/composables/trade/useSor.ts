@@ -53,6 +53,7 @@ export default function useSor(
   const trading = ref(false);
   const exactIn = ref(true);
   const priceImpact = ref(0);
+  const latestTxHash = ref('');
 
   // COMPOSABLES
   const store = useStore();
@@ -95,11 +96,10 @@ export default function useSor(
     pools.value = sorManager.selectedPools.pools;
   }
 
-  async function handleAmountChange(
-    isExactIn: boolean,
-    amount: string
-  ): Promise<void> {
-    exactIn.value = isExactIn;
+  async function handleAmountChange(): Promise<void> {
+    const amount = exactIn.value
+      ? tokenInAmountInput.value
+      : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping trade
     const zeroValueTrade = amount === '' || new BigNumber(amount).isZero();
     if (zeroValueTrade || isWrap.value || isUnwrap.value) {
@@ -124,7 +124,7 @@ export default function useSor(
     const tokenInDecimals = tokens.value[tokenInAddressInput.value].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value].decimals;
 
-    if (isExactIn) {
+    if (exactIn.value) {
       // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
       await sorManager.setCostOutputToken(
         tokenOutAddressInput.value,
@@ -235,6 +235,7 @@ export default function useSor(
     txListener(hash, {
       onTxConfirmed: () => {
         trading.value = false;
+        latestTxHash.value = hash;
       },
       onTxCancel: () => {
         trading.value = false;
@@ -338,6 +339,7 @@ export default function useSor(
     exactIn,
     trade,
     trading,
-    priceImpact
+    priceImpact,
+    latestTxHash
   };
 }

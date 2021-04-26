@@ -65,6 +65,8 @@
     "insufficientLiquidity": "Not enough liquidity",
     "invest": "Invest",
     "investment": "Investment",
+    "tradeSettled": "Your trade has settled",
+    "tradeSuccess": "Successfully traded your tokens",
     "investmentPools": "Investment pools",
     "investmentSettled": "Your investment has settled",
     "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",
