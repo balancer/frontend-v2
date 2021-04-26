@@ -17,10 +17,33 @@
             <div class="address flex items-baseline">
               <div v-text="_shorten(account)" />
               <div class="ml-3 flex">
-                <IconCopy class="w-4 h-4 cursor-pointer" @click="copyAddress" />
-                <BalLink :href="explorer.addressLink(account)" external>
-                  <IconLink class="w-4 h-4 ml-1" />
-                </BalLink>
+                <BalTooltip>
+                  <template v-slot:activator>
+                    <BalBtn
+                      circle
+                      color="white"
+                      @click="copyAddress"
+                      class="mr-2"
+                    >
+                      <BalIcon v-if="copiedAddress" name="check" size="sm" />
+                      <BalIcon v-else name="clipboard" size="sm" />
+                    </BalBtn>
+                  </template>
+                  <div
+                    v-text="copiedAddress ? t('copied') : t('copyAddress')"
+                    class="w-20 text-center"
+                  />
+                </BalTooltip>
+                <BalBtn
+                  circle
+                  color="white"
+                  tag="a"
+                  :href="explorer.addressLink(account)"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <BalIcon name="external-link" size="sm" />
+                </BalBtn>
               </div>
             </div>
             <div class="text-sm">{{ connectorName }}</div>
@@ -32,6 +55,18 @@
             @click="logout"
           />
         </div>
+      </div>
+      <div>
+        <BalBtn
+          class="text-base"
+          color="gray"
+          outline
+          :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
+          :circle="['sm', 'md', 'lg'].includes(bp)"
+          @click="setAccountModal(true)"
+        >
+          <span class="hidden md:inline-block" v-text="'disconnect'" />
+        </BalBtn>
       </div>
     </div>
     <div class="hidden">
@@ -179,7 +214,8 @@ export default defineComponent({
       tradeLiquidityOptions: Object.values(LiquiditySelection).filter(
         v => typeof v === 'string'
       ),
-      slippageInput: ''
+      slippageInput: '',
+      copiedAddress: false
     });
 
     // COMPUTED
@@ -224,6 +260,11 @@ export default defineComponent({
 
     function copyAddress() {
       navigator.clipboard.writeText(store.state.web3.account);
+      data.copiedAddress = true;
+
+      setTimeout(() => {
+        data.copiedAddress = false;
+      }, 2 * 1000);
     }
 
     // WATCHERS

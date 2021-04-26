@@ -88,6 +88,8 @@ export default defineComponent({
           return 'w-4 h-4 text-sm';
         case 'sm':
           return 'w-6 h-6 text-lg';
+        case 'md':
+          return 'w-7 h-7 text-lg';
         case 'lg':
           return 'w-16 h-16 text-2xl';
         default:
