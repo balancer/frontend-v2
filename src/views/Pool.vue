@@ -17,7 +17,7 @@
         <BalAlert
           v-if="!loading && !appLoading && missingPrices"
           type="warning"
-          label="Failed to fetch pool token price information."
+          :label="$t('noPriceInfo')"
           class="mt-2"
         />
       </div>
