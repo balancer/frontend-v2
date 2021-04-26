@@ -41,12 +41,11 @@
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
-            <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
             <PoolBalancesCard
-              v-else
               :tokens="pool.tokens"
               :balances="pool.tokenBalances"
               :weights="pool.weightsPercent"
+              :loading="loading || appLoading"
               :missing-prices="missingPrices"
             />
           </div>
