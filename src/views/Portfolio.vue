@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto">
+  <div class="container px-4 mx-auto">
     <SubNav class="mb-8" />
     <div class="mt-16">
       <BalLineChart
