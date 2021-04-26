@@ -2,7 +2,7 @@
   <BalCard class="overflow-x-auto whitespace-nowrap" no-pad>
     <BalTable
       :columns="columns"
-      :data="tokens.map((address, index) => ({ address, index }))"
+      :data="tableData"
       :is-loading="loading"
       skeleton-class="h-64"
       sticky="both"
@@ -44,11 +44,12 @@ import { BigNumber } from '@ethersproject/bignumber';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
+import { Pool } from '@/utils/balancer/types';
 
 export default defineComponent({
   props: {
-    tokens: {
-      type: Array as PropType<string[]>,
+    pool: {
+      type: Object as PropType<Pool>,
       required: true
     },
     balances: {
@@ -70,18 +71,18 @@ export default defineComponent({
     const { allTokens } = useTokens();
 
     // DATA
-    const { tokens, balances, weights } = toRefs(props);
+    const { pool } = toRefs(props);
 
     // COMPUTED
     const prices = computed(() => store.state.market.prices);
 
     const tokenValues = computed(() => {
-      if (!prices.value || !balances.value) {
+      if (!prices.value || !pool.value.tokenBalances) {
         return [];
       }
 
-      const tokenValues = balances.value.map((balance, index) => {
-        const address = tokens.value[index];
+      const tokenValues = pool.value.tokenBalances.map((balance, index) => {
+        const address = pool.value.tokens[index];
         const token = allTokens.value[address];
         const decimals = token ? token.decimals : 18;
         const shortBalanceString = formatUnits(balance, decimals);
@@ -92,6 +93,11 @@ export default defineComponent({
       });
 
       return tokenValues;
+    });
+
+    const tableData = computed(() => {
+      if (props.loading) return [];
+      return pool.value.tokens.map((address, index) => ({ address, index }));
     });
 
     const columns = computed(() => [
@@ -134,8 +140,8 @@ export default defineComponent({
     }
 
     function balanceFor(index: number) {
-      const address = tokens.value[index];
-      const denormBalance = balances.value[index].toString();
+      const address = pool.value.tokens[index];
+      const denormBalance = pool.value.tokenBalances[index].toString();
       const token = allTokens.value[address];
       const decimals = token ? token.decimals : 18;
       const balance = formatUnits(denormBalance, decimals);
@@ -143,7 +149,7 @@ export default defineComponent({
     }
 
     function weightFor(index: number) {
-      return fNum(weights.value[index] / 100, 'percent');
+      return fNum(pool.value.weightsPercent[index] / 100, 'percent');
     }
 
     function fiatValueFor(index: number) {
@@ -158,7 +164,8 @@ export default defineComponent({
       fiatValueFor,
       fNum,
       explorer,
-      columns
+      columns,
+      tableData
     };
   }
 });

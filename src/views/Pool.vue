@@ -42,9 +42,7 @@
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
             <PoolBalancesCard
-              :tokens="pool.tokens"
-              :balances="pool.tokenBalances"
-              :weights="pool.weightsPercent"
+              :pool="pool"
               :loading="loading || appLoading"
               :missing-prices="missingPrices"
             />
