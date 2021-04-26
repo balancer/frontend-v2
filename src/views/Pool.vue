@@ -52,14 +52,11 @@
 
           <div>
             <h4 v-text="$t('activity')" class="mb-4" />
-            <BalLoadingBlock
-              v-if="loading || appLoading || web3Loading"
-              class="h-60"
-            />
             <TableEvents
-              v-else-if="hasEvents"
+              v-if="hasEvents"
               :tokens="pool.tokens"
               :events="events"
+              :loading="loading || appLoading || web3Loading"
             />
             <BalBlankSlate v-else v-text="$t('noInvestments')" class="h-60" />
           </div>
