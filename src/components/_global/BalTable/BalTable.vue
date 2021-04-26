@@ -260,7 +260,7 @@ export default defineComponent({
 }
 
 .rowBg > td {
-  background-color: #fff;
+  @apply bg-white;
 }
 
 .rowBg:hover > td {

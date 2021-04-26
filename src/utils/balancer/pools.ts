@@ -14,7 +14,7 @@ import { getPools as getPoolsViaSubgraph } from '@/api/subgraph';
 import configs from '@/config';
 import { Prices } from '@/api/coingecko';
 import { getPoolLiquidity } from '@/utils/balancer/price';
-import { keyBy } from 'lodash';
+import keyBy from 'lodash/keyBy';
 
 // Combine all the ABIs and remove duplicates
 const abis = Object.values(
