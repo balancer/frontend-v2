@@ -20,7 +20,7 @@
       >
         <td class="p-2 pl-5 py-5 flex items-center text-left">
           <BalLink :href="explorer.addressLink(address)" external>
-            <Avatar :address="address" :size="24" />
+            <Token :token="allTokens[getAddress(address)]" />
             <span class="pl-4">
               {{ symbolFor(address) }}
             </span>
@@ -43,6 +43,7 @@
 <script lang="ts">
 import { PropType, defineComponent, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
+import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
 import useNumbers from '@/composables/useNumbers';
@@ -121,6 +122,8 @@ export default defineComponent({
     }
 
     return {
+      allTokens,
+      getAddress,
       symbolFor,
       balanceFor,
       weightFor,
