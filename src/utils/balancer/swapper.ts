@@ -250,6 +250,10 @@ async function batchSwapGivenOutV2(
   console.log('[Swapper] batchSwapGivenOutV2');
   const overrides: any = {};
 
+  if (tokenIn === AddressZero) {
+    overrides.value = `0x${tokenInAmountMax.toString(16)}`;
+  }
+
   const address = await web3.getSigner().getAddress();
 
   const funds: FundManagement = {
