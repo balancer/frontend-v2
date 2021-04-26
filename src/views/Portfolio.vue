@@ -24,6 +24,11 @@
           skeletonClass="h-64"
           sticky="both"
           :dataKey="id"
+          :onRowClick="
+            pool => {
+              router.push({ name: 'pool', params: { id: pool.id } });
+            }
+          "
         >
           <template v-slot:iconColumnHeader>
             <div class="flex items-center">
@@ -75,6 +80,7 @@ import { useQuery } from 'vue-query';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -85,6 +91,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { t } = useI18n();
+    const router = useRouter();
     const {
       account,
       blockNumber,
@@ -231,7 +238,8 @@ export default defineComponent({
       columns,
       handleGraphingPeriodChange,
       tokensFor,
-      getAddress
+      getAddress,
+      router
     };
   }
 });
