@@ -121,6 +121,23 @@ export async function getPool(
   return formatPool(pools[0]);
 }
 
+export async function getPoolsWithVolume(network: string, prices: Prices) {
+  const { pools, snapshots } = await getPoolsViaSubgraph(Number(network));
+  const snapshotMap = keyBy(snapshots, 'pool.id');
+  return pools.map(pool => {
+    const liquidity = parseFloat(getPoolLiquidity(pool, prices) || '0');
+    const apy = snapshotMap[pool.id]
+      ? (parseFloat(snapshotMap[pool.id].swapFees) / liquidity) * 365
+      : '0';
+    return {
+      ...pool,
+      liquidity,
+      apy,
+      volume: snapshotMap[pool.id].swapVolume || '0'
+    };
+  });
+}
+
 export async function getPoolsWithShares(
   network: string,
   account: string,
