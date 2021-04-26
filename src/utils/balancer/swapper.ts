@@ -218,7 +218,7 @@ async function batchSwapGivenInV2(
         configs[network].addresses.vault,
         vaultAbi,
         'swap',
-        [single, funds, limits[0], MaxUint256],
+        [single, funds, tokenOutAmountMin.toString(), MaxUint256],
         overrides
       );
     }
@@ -294,7 +294,7 @@ async function batchSwapGivenOutV2(
         configs[network].addresses.vault,
         vaultAbi,
         'swap',
-        [single, funds, limits[0], MaxUint256],
+        [single, funds, tokenInAmountMax.toString(), MaxUint256],
         overrides
       );
     }
