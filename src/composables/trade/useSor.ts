@@ -118,10 +118,8 @@ export default function useSor(
       !sorManager ||
       !sorManager.hasPoolData()
     ) {
-      if(exactIn.value)
-        tokenOutAmountInput.value = '';
-      else
-        tokenInAmountInput.value = '';
+      if (exactIn.value) tokenOutAmountInput.value = '';
+      else tokenInAmountInput.value = '';
       return;
     }
 
