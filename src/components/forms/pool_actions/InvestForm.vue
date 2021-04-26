@@ -202,7 +202,8 @@ import {
   onMounted,
   reactive,
   toRefs,
-  ref
+  ref,
+  PropType
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -214,6 +215,7 @@ import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { TransactionData } from 'bnc-notify';
 import { formatUnits } from '@ethersproject/units';
+import isEqual from 'lodash/isEqual';
 
 import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
@@ -227,6 +229,7 @@ import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
+import { Pool } from '@/utils/balancer/types';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -243,7 +246,7 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: { type: Object, required: true },
+    pool: { type: Object as PropType<Pool>, required: true },
     missingPrices: { type: Boolean, default: false }
   },
 
@@ -405,6 +408,10 @@ export default defineComponent({
       return allTokens.value[props.pool.tokens[index]]?.balance || 0;
     }
 
+    function tokenDecimals(index) {
+      return allTokens.value[props.pool.tokens[index]].decimals;
+    }
+
     function amountUSD(index) {
       const amount = fullAmounts.value[index] || 0;
       const token = props.pool.tokens[index].toLowerCase();
@@ -430,10 +437,27 @@ export default defineComponent({
 
     async function setPropMax() {
       const { send, fixedToken } = poolCalculator.propMax();
-      data.amounts = send;
       data.propMax = [...send];
       data.propToken = fixedToken;
+    }
+
+    function resetSlider() {
+      data.amounts = [...data.propMax];
       data.range = 1000;
+    }
+
+    function setPropAmountsFor(range) {
+      const fractionBasisPoints = (range / 1000) * 10000;
+      const amount = bnum(balances.value[data.propToken])
+        .times(fractionBasisPoints)
+        .div(10000)
+        .precision(tokenDecimals(data.propToken));
+      const { send } = poolCalculator.propAmountsGiven(
+        amount.toString(),
+        data.propToken,
+        'send'
+      );
+      data.amounts = send;
     }
 
     // Legacy function for sense check against JS calculation of BPT out
@@ -480,31 +504,44 @@ export default defineComponent({
       }
     }
 
-    watch(allTokens, newTokens => {
-      poolCalculator.setAllTokens(newTokens);
-      if (!hasAmounts.value && !hasZeroBalance.value) setPropMax();
+    watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
+
+    watch(
+      () => props.pool.tokenBalances,
+      (newBalances, oldBalances) => {
+        poolCalculator.setPool(props.pool);
+        const _newBalances = newBalances.map(b => b.toString());
+        const _oldBalances = oldBalances.map(b => b.toString());
+        const balancesChanged = !isEqual(_newBalances, _oldBalances);
+        if (balancesChanged) {
+          setPropMax();
+          if (isProportional.value) setPropAmountsFor(data.range);
+        }
+      }
+    );
+
+    watch(balances, (newBalances, oldBalances) => {
+      const balancesChanged = !isEqual(newBalances, oldBalances);
+      if (balancesChanged) {
+        setPropMax();
+        if (isProportional.value) setPropAmountsFor(data.range);
+      }
     });
 
     watch(
       () => data.investType,
       newType => {
-        if (newType === FormTypes.proportional) setPropMax();
+        if (newType === FormTypes.proportional) {
+          setPropMax();
+          resetSlider();
+        }
       }
     );
 
     watch(
       () => data.range,
       newVal => {
-        const fractionBasisPoints = (newVal / 1000) * 10000;
-        const amount = bnum(balances.value[data.propToken])
-          .times(fractionBasisPoints)
-          .div(10000);
-        const { send } = poolCalculator.propAmountsGiven(
-          amount.toString(),
-          data.propToken,
-          'send'
-        );
-        data.amounts = send;
+        setPropAmountsFor(newVal);
       }
     );
 
@@ -520,6 +557,7 @@ export default defineComponent({
         data.investType = FormTypes.custom;
       } else {
         setPropMax();
+        resetSlider();
       }
     });
 

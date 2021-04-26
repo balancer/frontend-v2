@@ -31,7 +31,7 @@
           v-if="withdrawalSuccess"
           :title="$t('withdrawalSettled')"
           :description="$t('withdrawalSuccess')"
-          :closeLabel="$t('newTrade')"
+          :closeLabel="$t('close')"
           :txHash="txHash"
           @close="withdrawalSuccess = false"
         />

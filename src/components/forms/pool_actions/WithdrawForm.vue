@@ -175,7 +175,8 @@ import {
   onMounted,
   reactive,
   toRefs,
-  ref
+  ref,
+  PropType
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -186,6 +187,7 @@ import {
 import { TransactionData } from 'bnc-notify';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
+import isEqual from 'lodash/isEqual';
 
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
@@ -198,6 +200,7 @@ import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import useTokens from '@/composables/useTokens';
+import { Pool } from '@/utils/balancer/types';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -214,7 +217,7 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: { type: Object, required: true }
+    pool: { type: Object as PropType<Pool>, required: true }
   },
 
   setup(props, { emit }) {
@@ -437,9 +440,32 @@ export default defineComponent({
         'send'
       );
       data.bptIn = send[0];
-      data.amounts = receive;
       data.propMax = [...receive];
+    }
+
+    function resetSlider() {
+      data.amounts = [...data.propMax];
       data.range = 1000;
+    }
+
+    function setPropAmountsFor(range) {
+      console.log('setPropAmountsFor');
+      const poolDecimals = allTokens.value[props.pool.address].decimals;
+      const fractionBasisPoints = (range / 1000) * 10000;
+      const bpt = bnum(bptBalance.value)
+        .times(fractionBasisPoints)
+        .div(10000)
+        .precision(poolDecimals);
+
+      const { send, receive } = poolCalculator.propAmountsGiven(
+        bpt.toString(),
+        0,
+        'send'
+      );
+      console.log('updating bptIn', data.bptIn, send[0]);
+      data.bptIn = send[0];
+      console.log('updating amounts', data.amounts, receive);
+      data.amounts = receive;
     }
 
     function setSingleAsset(index) {
@@ -507,10 +533,27 @@ export default defineComponent({
     }
 
     watch(
+      () => props.pool.tokenBalances,
+      (newBalances, oldBalances) => {
+        poolCalculator.setPool(props.pool);
+        const _newBalances = newBalances.map(b => b.toString());
+        const _oldBalances = oldBalances.map(b => b.toString());
+        const balancesChanged = !isEqual(_newBalances, _oldBalances);
+        if (balancesChanged) {
+          console.log('balancesChanged');
+          setPropMax();
+          if (isProportional.value) setPropAmountsFor(data.range);
+        }
+      }
+    );
+
+    watch(
       () => data.withdrawType,
       async newType => {
-        if (newType === FormTypes.proportional) setPropMax();
-        if (newType === FormTypes.single) {
+        if (newType === FormTypes.proportional) {
+          setPropMax();
+          resetSlider();
+        } else if (newType === FormTypes.single) {
           data.amounts = props.pool.tokens.map(() => '0');
           setSingleAsset(0);
         }
@@ -519,22 +562,13 @@ export default defineComponent({
 
     watch(bptBalance, () => {
       setPropMax();
+      if (isProportional.value) setPropAmountsFor(data.range);
     });
 
     watch(
       () => data.range,
       newVal => {
-        const fractionBasisPoints = (newVal / 1000) * 10000;
-        const bpt = bnum(bptBalance.value)
-          .times(fractionBasisPoints)
-          .div(10000);
-        const { send, receive } = poolCalculator.propAmountsGiven(
-          bpt.toString(),
-          0,
-          'send'
-        );
-        data.bptIn = send[0];
-        data.amounts = receive;
+        setPropAmountsFor(newVal);
       }
     );
 
@@ -548,7 +582,10 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      if (bptBalance.value) setPropMax();
+      if (bptBalance.value) {
+        setPropMax();
+        resetSlider();
+      }
     });
 
     return {
