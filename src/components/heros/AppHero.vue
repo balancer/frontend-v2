@@ -52,16 +52,11 @@ export default defineComponent({
     const store = useStore();
     const { isAuthenticated } = useAuth();
     const { fNum } = useNumbers();
-    const {
-      blockNumber,
-      userNetwork,
-      account,
-      loading: isWeb3Loading
-    } = useWeb3();
+    const { userNetwork, account, loading: isWeb3Loading } = useWeb3();
 
     // DATA
     const totalInvested = ref(0);
-    const calculating = ref(false);
+    const calculating = ref(true);
 
     // COMPUTED
     const setAccountModal = val => store.commit('web3/setAccountModal', val);
@@ -84,9 +79,8 @@ export default defineComponent({
       return (pool.liquidity / parseFloat(pool.totalShares)) * pool.shares;
     }
 
-    watch(blockNumber, async () => {
-      if (totalInvested.value === 0) calculating.value = true;
-      if (isConnected.value) {
+    watch(isConnected, async newVal => {
+      if (newVal) {
         const pools: Pool[] = await getPoolsWithShares(
           userNetwork.value.id,
           account.value,
