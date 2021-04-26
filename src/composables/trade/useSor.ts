@@ -96,6 +96,17 @@ export default function useSor(
     pools.value = sorManager.selectedPools.pools;
   }
 
+  async function fetchPools(): Promise<void> {
+    if (!sorManager) {
+      return;
+    }
+
+    console.time('[SOR] fetchPools');
+    await sorManager.fetchPools();
+    console.timeEnd('[SOR] fetchPools');
+    pools.value = sorManager.selectedPools.pools;
+  }
+
   async function handleAmountChange(): Promise<void> {
     const amount = exactIn.value
       ? tokenInAmountInput.value
@@ -340,6 +351,7 @@ export default function useSor(
     trade,
     trading,
     priceImpact,
-    latestTxHash
+    latestTxHash,
+    fetchPools
   };
 }

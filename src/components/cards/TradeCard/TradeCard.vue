@@ -130,7 +130,8 @@ export default defineComponent({
       priceImpact,
       exactIn,
       sorReturn,
-      latestTxHash
+      latestTxHash,
+      fetchPools
     } = useSor(
       tokenInAddress,
       tokenInAmount,
@@ -199,6 +200,8 @@ export default defineComponent({
     });
 
     watch(latestTxHash, () => {
+      // Refresh SOR pools
+      fetchPools();
       txHash.value = latestTxHash.value;
       tradeSuccess.value = true;
     });
