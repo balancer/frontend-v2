@@ -132,7 +132,6 @@ export async function getPoolsWithVolume({
   tokenIds,
   poolIds
 }: GetPopulatedPoolsRequest) {
-  console.log('bingo was', tokenIds);
   const { pools, snapshots } = await getPoolsViaSubgraph({
     chainId,
     tokenIds,
