@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref, watch } from 'vue';
+import { defineComponent, reactive, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import getProvider from '@/utils/provider';
@@ -165,7 +165,6 @@ export default defineComponent({
     const provider = computed(() => getProvider(networkKey.value));
     const networkKey = computed(() => userNetwork.value.key);
     const prices = computed(() => store.state.market.prices);
-    const poolData = computed(() => store.state.pools.all);
 
     const {
       data: portfolioChartData,

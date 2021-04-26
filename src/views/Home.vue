@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onBeforeMount, ref, watch } from 'vue';
+import { defineComponent, computed, onBeforeMount, ref } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import SubNav from '@/components/navs/SubNav.vue';

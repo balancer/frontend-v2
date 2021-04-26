@@ -10,7 +10,7 @@ import { default as stablePoolAbi } from '@/abi/StablePool.json';
 import { default as TokenAbi } from '@/abi/ERC20.json';
 import { Pool } from '@/utils/balancer/types';
 import { getPoolShares } from '@/utils/balancer/subgraph';
-import { getPoolsById, getPools as getPoolsViaSubgraph } from '@/api/subgraph';
+import { getPools as getPoolsViaSubgraph } from '@/api/subgraph';
 import configs from '@/config';
 import { Prices } from '@/api/coingecko';
 import { getPoolLiquidity } from '@/utils/balancer/price';

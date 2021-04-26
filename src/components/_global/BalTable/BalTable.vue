@@ -33,14 +33,14 @@
           <BalIcon
             name="arrow-up"
             v-if="
-              currentSortColumn === column.id && currentSortDirection === 'asc'
+              currentSortColumn === column.id && currentSortDirection === 'desc'
             "
             class="ml-1"
           />
           <BalIcon
             name="arrow-down"
             v-if="
-              currentSortColumn === column.id && currentSortDirection === 'desc'
+              currentSortColumn === column.id && currentSortDirection === 'asc'
             "
             class="ml-1"
           />
@@ -260,7 +260,7 @@ export default defineComponent({
 }
 
 .rowBg > td {
-  background-color: #FFF;
+  background-color: #fff;
 }
 
 .rowBg:hover > td {
