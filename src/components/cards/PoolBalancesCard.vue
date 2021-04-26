@@ -44,7 +44,6 @@ import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
 import { Pool } from '@/utils/balancer/types';
-import { getAddress } from '@ethersproject/address';
 
 export default defineComponent({
   props: {
