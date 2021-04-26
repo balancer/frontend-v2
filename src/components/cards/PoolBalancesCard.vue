@@ -40,7 +40,6 @@
 import { PropType, defineComponent, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { formatUnits } from '@ethersproject/units';
-import { BigNumber } from '@ethersproject/bignumber';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
@@ -49,15 +48,7 @@ import { Pool } from '@/utils/balancer/types';
 export default defineComponent({
   props: {
     pool: {
-      type: Object as PropType<Pool>,
-      required: true
-    },
-    balances: {
-      type: Array as PropType<BigNumber[]>,
-      required: true
-    },
-    weights: {
-      type: Array as PropType<number[]>,
+      type: Object as PropType<Pool> | null,
       required: true
     },
     missingPrices: { type: Boolean, default: false },
