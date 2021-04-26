@@ -30,7 +30,7 @@
                     </BalBtn>
                   </template>
                   <div
-                    v-text="copiedAddress ? t('copied') : t('copy-address')"
+                    v-text="copiedAddress ? t('copied') : t('copyAddress')"
                     class="w-20 text-center"
                   />
                 </BalTooltip>
@@ -55,6 +55,18 @@
             @click="logout"
           />
         </div>
+      </div>
+      <div>
+        <BalBtn
+          class="text-base"
+          color="gray"
+          outline
+          :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
+          :circle="['sm', 'md', 'lg'].includes(bp)"
+          @click="setAccountModal(true)"
+        >
+          <span class="hidden md:inline-block" v-text="'disconnect'" />
+        </BalBtn>
       </div>
     </div>
     <div class="hidden">
