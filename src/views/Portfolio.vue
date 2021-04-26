@@ -7,7 +7,6 @@
         name="Value ($)"
         :axis="portfolioChartData?.axis"
         :data="portfolioChartData?.data"
-        dataKey="id"
         :onPeriodSelected="handleGraphingPeriodChange"
         :currentGraphingPeriod="currentGraphingPeriod"
       />
@@ -23,7 +22,6 @@
           :isLoading="isLoadingPools || isAppLoading || isInjectingTokens"
           skeletonClass="h-64"
           sticky="both"
-          :dataKey="id"
           :onRowClick="
             pool => {
               router.push({ name: 'pool', params: { id: pool.id } });

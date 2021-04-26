@@ -16,7 +16,7 @@
       class="w-full h-72"
       :option="chartConfig"
       autoresize
-      @updateAxisPointer="_onAxisMoved"
+      @updateAxisPointer="handleAxisMoved"
       :update-options="{ replaceMerge: 'series' }"
     />
     <div class="flex w-full mt-2 justify-end">
@@ -167,7 +167,7 @@ export default defineComponent({
     }));
 
     // Triggered when hovering mouse over different xAxis points
-    const _onAxisMoved = ({ dataIndex }: AxisMoveEvent) => {
+    const handleAxisMoved = ({ dataIndex }: AxisMoveEvent) => {
       props.onAxisMoved && props.onAxisMoved(props.data[dataIndex]);
       currentValue.value = numeral(props.data[dataIndex]).format('$0,0.00');
 
@@ -200,7 +200,7 @@ export default defineComponent({
       lineChart,
 
       // methods
-      _onAxisMoved,
+      handleAxisMoved,
       numeral,
       periodOptions: PeriodOptions,
 
