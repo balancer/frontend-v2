@@ -68,12 +68,13 @@ import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
-import initialTokens from '@/constants/initialTokens.json';
 import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
+
+import Storage from '@/utils/storage';
 
 export default defineComponent({
   components: {
@@ -174,8 +175,9 @@ export default defineComponent({
 
     async function populateInitialTokens(): Promise<void> {
       const { chainId } = getConfig();
-      tokenInAddress.value = initialTokens[chainId].input;
-      tokenOutAddress.value = initialTokens[chainId].output;
+      const initialPair = Storage.getPair(chainId);
+      tokenInAddress.value = initialPair.inputAsset;
+      tokenOutAddress.value = initialPair.outputAsset;
     }
 
     async function approve(): Promise<void> {
@@ -191,10 +193,14 @@ export default defineComponent({
     });
 
     watch(tokenInAddress, () => {
+      const { chainId } = getConfig();
+      Storage.saveInputAsset(chainId, tokenInAddress.value);
       handleAmountChange();
     });
 
     watch(tokenOutAddress, () => {
+      const { chainId } = getConfig();
+      Storage.saveOutputAsset(chainId, tokenOutAddress.value);
       handleAmountChange();
     });
 
