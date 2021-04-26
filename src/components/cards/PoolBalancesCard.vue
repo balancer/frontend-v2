@@ -10,7 +10,7 @@
       <template v-slot:tokenColumnCell="token">
         <div class="px-6 py-8 flex flex-row icon-stack">
           <BalLink :href="explorer.addressLink(token.address)" external>
-            <Avatar :address="token.address" :size="24" />
+            <Token :token="tokenFor(token.address)" :size="24" />
             <span class="pl-4">
               {{ symbolFor(token.address) }}
             </span>
@@ -44,6 +44,7 @@ import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
 import { Pool } from '@/utils/balancer/types';
+import { getAddress } from '@ethersproject/address';
 
 export default defineComponent({
   props: {
@@ -125,6 +126,10 @@ export default defineComponent({
       }
     ]);
 
+    function tokenFor(address: string) {
+      return allTokens.value[address];
+    }
+
     function symbolFor(address: string) {
       const token = allTokens.value[address];
       return token ? token.symbol : address;
@@ -156,7 +161,8 @@ export default defineComponent({
       fNum,
       explorer,
       columns,
-      tableData
+      tableData,
+      tokenFor
     };
   }
 });
