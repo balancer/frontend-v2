@@ -120,7 +120,7 @@ export default defineComponent({
       required: true
     },
     data: {
-      type: Object as PropType<Array<any>>,
+      type: Object as PropType<Array<any>>
     },
     isLoading: {
       type: Boolean,
