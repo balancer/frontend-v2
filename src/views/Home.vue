@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onBeforeMount, ref } from 'vue';
+import { defineComponent, computed, onBeforeMount, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import SubNav from '@/components/navs/SubNav.vue';
@@ -37,6 +37,7 @@ export default defineComponent({
     // DATA
     const loading = ref(true);
     const selectedTokens = ref<string[]>([]);
+    const poolData = computed(() => store.state.pools.all);
 
     // METHODS
     async function fetchPoolTokens(): Promise<void> {
@@ -64,7 +65,7 @@ export default defineComponent({
 
     return {
       loading,
-      poolData: computed(() => store.state.pools.all),
+      poolData,
       selectedTokens
     };
   }

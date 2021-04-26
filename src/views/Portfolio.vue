@@ -24,6 +24,11 @@
           skeletonClass="h-64"
           sticky="both"
           :dataKey="id"
+          :onRowClick="
+            pool => {
+              router.push({ name: 'pool', params: { id: pool.id } });
+            }
+          "
         >
           <template v-slot:iconColumnHeader>
             <div class="flex items-center">
@@ -63,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref } from 'vue';
+import { defineComponent, reactive, computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import getProvider from '@/utils/provider';
@@ -75,6 +80,7 @@ import { useQuery } from 'vue-query';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -85,6 +91,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { t } = useI18n();
+    const router = useRouter();
     const {
       account,
       blockNumber,
@@ -158,6 +165,7 @@ export default defineComponent({
     const provider = computed(() => getProvider(networkKey.value));
     const networkKey = computed(() => userNetwork.value.key);
     const prices = computed(() => store.state.market.prices);
+    const poolData = computed(() => store.state.pools.all);
 
     const {
       data: portfolioChartData,
@@ -231,7 +239,8 @@ export default defineComponent({
       columns,
       handleGraphingPeriodChange,
       tokensFor,
-      getAddress
+      getAddress,
+      router
     };
   }
 });

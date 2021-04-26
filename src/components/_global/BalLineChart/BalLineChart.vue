@@ -149,6 +149,18 @@ export default defineComponent({
           name: props.name,
           lineStyle: {
             width: 2
+          },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0.1,
+                color: '#f5fff5'
+              },
+              {
+                offset: 0.8,
+                color: '#FFF'
+              }
+            ])
           }
         }
       ]
