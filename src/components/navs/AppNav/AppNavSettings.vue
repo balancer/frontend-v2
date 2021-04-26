@@ -56,18 +56,6 @@
           />
         </div>
       </div>
-      <div>
-        <BalBtn
-          class="text-base"
-          color="gray"
-          outline
-          :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
-          :circle="['sm', 'md', 'lg'].includes(bp)"
-          @click="setAccountModal(true)"
-        >
-          <span class="hidden md:inline-block" v-text="'disconnect'" />
-        </BalBtn>
-      </div>
     </div>
     <div class="hidden">
       <h5 v-text="t('language')" />
