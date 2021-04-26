@@ -106,9 +106,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style>
-.auth-btn:hover ~ .popover {
-  @apply visible opacity-100;
-}
-</style>

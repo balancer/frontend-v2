@@ -7,6 +7,7 @@ import i18n from '@/plugins/i18n';
 import blocknative from '@/plugins/blocknative';
 import initSentry from '@/plugins/sentry';
 import authOptions from '@/plugins/authOptions';
+import registerDirectives from '@/plugins/directives';
 import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 import { registerGlobalComponents } from '@/plugins/components';
@@ -47,6 +48,7 @@ const app = createApp(App)
   .provide(VUE_QUERY_CLIENT, queryClient)
   .mixin(mixins);
 
+registerDirectives(app);
 registerGlobalComponents(app);
 initSentry(app);
 
