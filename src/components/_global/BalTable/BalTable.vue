@@ -33,14 +33,14 @@
           <BalIcon
             name="arrow-up"
             v-if="
-              currentSortColumn === column.id && currentSortDirection === 'asc'
+              currentSortColumn === column.id && currentSortDirection === 'desc'
             "
             class="ml-1"
           />
           <BalIcon
             name="arrow-down"
             v-if="
-              currentSortColumn === column.id && currentSortDirection === 'desc'
+              currentSortColumn === column.id && currentSortDirection === 'asc'
             "
             class="ml-1"
           />
@@ -51,8 +51,9 @@
         <tr
           v-for="(dataItem, index) in _data"
           :key="`tableRow-${index}`"
-          class="flex flex-row bg-white z-10"
+          class="flex flex-row bg-white z-10 rowBg"
           @click="onRowClick(dataItem)"
+          :class="{ 'cursor-pointer': onRowClick }"
         >
           <td
             v-for="(column, columnIndex) in columns"
@@ -63,7 +64,7 @@
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : ''
             ]"
-            class="flex flex-grow bg-white"
+            class="flex flex-grow"
           >
             <slot
               v-if="column.Cell"
@@ -246,7 +247,7 @@ export default defineComponent({
   position: absolute;
   top: 0;
   right: 0;
-  bottom: -1px;
+  bottom: 0;
   width: 30px;
   transform: translateX(100%);
   transition: box-shadow 0.3s;
@@ -256,5 +257,13 @@ export default defineComponent({
 
 .isSticky::after {
   box-shadow: inset 10px 0 8px -8px rgb(0 0 0 / 15%);
+}
+
+.rowBg > td {
+  @apply bg-white;
+}
+
+.rowBg:hover > td {
+  @apply bg-gray-100;
 }
 </style>

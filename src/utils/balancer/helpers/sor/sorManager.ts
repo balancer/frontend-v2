@@ -92,10 +92,29 @@ export class SorManager {
   }
 
   // Uses SOR V2 to retrieve the cost & reuses for SOR V1 to save time (requires onchain call).
-  async setCostOutputToken(tokenAddr: string): Promise<void> {
-    console.log('[SorManager] setCostOutputToken');
-    const cost: BigNumber = await this.sorV2.setCostOutputToken(tokenAddr);
-    this.sorV1.setCostOutputToken(tokenAddr, cost);
+  // If previously called the cached value will be used.
+  async setCostOutputToken(
+    tokenAddr: string,
+    tokenDecimals: number
+  ): Promise<BigNumber> {
+    tokenAddr = tokenAddr === ETHER.address ? AddressZero : tokenAddr;
+
+    let cost = this.sorV2.tokenCost[tokenAddr.toLowerCase()];
+    if (cost) {
+      console.log(
+        `[SorManager] Cost for token ${tokenAddr} (cache): ${cost.toString()}`
+      );
+    } else {
+      cost = await this.sorV2.setCostOutputToken(tokenAddr, tokenDecimals);
+      console.log(
+        `[SorManager] Cost for token ${tokenAddr} (new): ${cost.toString()}`
+      );
+    }
+    this.sorV1.setCostOutputToken(
+      tokenAddr,
+      cost.times(new BigNumber(10 ** tokenDecimals))
+    );
+    return cost;
   }
 
   // This fetches ALL pool with onchain info.

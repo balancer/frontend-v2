@@ -2,7 +2,7 @@
   <BalPopover no-pad>
     <template v-slot:activator>
       <BalBtn
-        class="auth-btn text-base"
+        class="text-base"
         :loading="web3Loading"
         :loading-label="['sm', 'md', 'lg'].includes(bp) ? '' : $t('connecting')"
         color="gray"
@@ -21,6 +21,11 @@
           v-else
           v-text="_shorten(account)"
           class="pl-2 hidden lg:inline-block"
+        />
+        <BalIcon
+          name="chevron-down"
+          size="sm"
+          class="pl-1 hidden lg:inline-block"
         />
       </BalBtn>
     </template>

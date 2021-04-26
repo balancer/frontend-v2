@@ -10,10 +10,11 @@ import { default as stablePoolAbi } from '@/abi/StablePool.json';
 import { default as TokenAbi } from '@/abi/ERC20.json';
 import { Pool } from '@/utils/balancer/types';
 import { getPoolShares } from '@/utils/balancer/subgraph';
-import { getPoolsById } from '@/api/subgraph';
+import { getPools as getPoolsViaSubgraph } from '@/api/subgraph';
 import configs from '@/config';
 import { Prices } from '@/api/coingecko';
 import { getPoolLiquidity } from '@/utils/balancer/price';
+import keyBy from 'lodash/keyBy';
 
 // Combine all the ABIs and remove duplicates
 const abis = Object.values(
@@ -126,16 +127,28 @@ export async function getPoolsWithShares(
   prices: Prices
 ) {
   const poolShares = await getPoolShares(network, account);
+  const poolIds = poolShares.map(poolShare => poolShare.poolId.id);
+
   const balances = Object.fromEntries(
     poolShares.map(poolShare => [poolShare.poolId.id, poolShare.balance])
   );
-  const poolIds = poolShares.map(poolShare => poolShare.poolId.id);
-  const pools = await getPoolsById(Number(network), poolIds);
-
-  return pools.map((pool: any) => {
-    pool.shares = parseFloat(balances[pool.id] || '0');
-    pool.liquidity = parseFloat(getPoolLiquidity(pool, prices) || '0');
-    pool.volume = 1000;
-    return pool;
+  const { pools, snapshots } = await getPoolsViaSubgraph(
+    Number(network),
+    poolIds
+  );
+  const snapshotMap = keyBy(snapshots, 'pool.id');
+  const populatedPools = pools.map(pool => {
+    const liquidity = parseFloat(getPoolLiquidity(pool, prices) || '0');
+    const apy = snapshotMap[pool.id]
+      ? (parseFloat(snapshotMap[pool.id].swapFees) / liquidity) * 365
+      : '0';
+    return {
+      ...pool,
+      shares: parseFloat(balances[pool.id] || '0'),
+      liquidity,
+      apy,
+      volume: snapshotMap[pool.id].swapVolume || '0'
+    };
   });
+  return populatedPools;
 }

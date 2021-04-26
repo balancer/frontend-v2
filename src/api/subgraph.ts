@@ -63,16 +63,25 @@ export interface PoolEvents {
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;
 
-export async function getPools(chainId: number) {
+export async function getPools(chainId: number, poolIds: string[] = []) {
   const currentTimestamp = Math.ceil(Date.now() / 1000);
   const timestamp = currentTimestamp - (currentTimestamp % DAY) - DAY;
+
+  const stringifiedPoolIds = poolIds
+    ?.map(id => `"${id.toLowerCase()}"`)
+    .join(',');
+  const poolFilterFragment = poolIds?.length
+    ? `, id_in: [${stringifiedPoolIds}]`
+    : '';
   const query = `
     query {
-      pools(first: 1000, where: { totalShares_gt: 0 }) {
+      pools(first: 1000, where: { totalShares_gt: 0${poolFilterFragment} }) {
         id
         poolType
         swapFee
         tokensList
+        totalLiquidity
+        totalShares
         tokens {
           address
           balance
