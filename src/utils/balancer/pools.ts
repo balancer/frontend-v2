@@ -10,7 +10,10 @@ import { default as stablePoolAbi } from '@/abi/StablePool.json';
 import { default as TokenAbi } from '@/abi/ERC20.json';
 import { Pool } from '@/utils/balancer/types';
 import { getPoolShares } from '@/utils/balancer/subgraph';
-import { getPools as getPoolsViaSubgraph } from '@/api/subgraph';
+import {
+  getPools as getPoolsViaSubgraph,
+  GetPoolsRequest
+} from '@/api/subgraph';
 import configs from '@/config';
 import { Prices } from '@/api/coingecko';
 import { getPoolLiquidity } from '@/utils/balancer/price';
@@ -121,8 +124,20 @@ export async function getPool(
   return formatPool(pools[0]);
 }
 
-export async function getPoolsWithVolume(network: string, prices: Prices) {
-  const { pools, snapshots } = await getPoolsViaSubgraph(Number(network));
+type GetPopulatedPoolsRequest = GetPoolsRequest & { prices: Prices };
+
+export async function getPoolsWithVolume({
+  chainId,
+  prices,
+  tokenIds,
+  poolIds
+}: GetPopulatedPoolsRequest) {
+  console.log('bingo was', tokenIds);
+  const { pools, snapshots } = await getPoolsViaSubgraph({
+    chainId,
+    tokenIds,
+    poolIds
+  });
   const snapshotMap = keyBy(snapshots, 'pool.id');
   return pools.map(pool => {
     const liquidity = parseFloat(getPoolLiquidity(pool, prices) || '0');
@@ -149,10 +164,10 @@ export async function getPoolsWithShares(
   const balances = Object.fromEntries(
     poolShares.map(poolShare => [poolShare.poolId.id, poolShare.balance])
   );
-  const { pools, snapshots } = await getPoolsViaSubgraph(
-    Number(network),
+  const { pools, snapshots } = await getPoolsViaSubgraph({
+    chainId: Number(network),
     poolIds
-  );
+  });
   const snapshotMap = keyBy(snapshots, 'pool.id');
   const populatedPools = pools.map(pool => {
     const liquidity = parseFloat(getPoolLiquidity(pool, prices) || '0');

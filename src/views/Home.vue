@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, reactive } from 'vue';
+import { defineComponent, computed, ref, reactive, watch } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import SubNav from '@/components/navs/SubNav.vue';
@@ -135,11 +135,17 @@ export default defineComponent({
       reactive([
         'poolsData',
         {
-          network: userNetwork.value.key,
-          prices
+          userNetwork,
+          prices,
+          selectedTokens
         }
       ]),
-      () => getPoolsWithVolume(userNetwork.value.key, prices.value),
+      () =>
+        getPoolsWithVolume({
+          chainId: userNetwork.value.key,
+          prices: prices.value,
+          tokenIds: selectedTokens.value
+        }),
       reactive({
         enabled: shouldLoadPools,
         onSuccess: async pools => {
