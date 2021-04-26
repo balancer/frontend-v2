@@ -17,7 +17,7 @@
         <BalAlert
           v-if="!loading && !appLoading && missingPrices"
           type="warning"
-          label="Failed to fetch pool token price information."
+          :label="$t('noPriceInfo')"
           class="mt-2"
         />
       </div>
@@ -41,26 +41,20 @@
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
-            <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
             <PoolBalancesCard
-              v-else
-              :tokens="pool.tokens"
-              :balances="pool.tokenBalances"
-              :weights="pool.weightsPercent"
+              :pool="pool"
+              :loading="loading || appLoading"
               :missing-prices="missingPrices"
             />
           </div>
 
           <div>
             <h4 v-text="$t('activity')" class="mb-4" />
-            <BalLoadingBlock
-              v-if="loading || appLoading || web3Loading"
-              class="h-60"
-            />
             <TableEvents
-              v-else-if="hasEvents"
+              v-if="hasEvents"
               :tokens="pool.tokens"
               :events="events"
+              :loading="loading || appLoading || web3Loading"
             />
             <BalBlankSlate v-else v-text="$t('noInvestments')" class="h-60" />
           </div>

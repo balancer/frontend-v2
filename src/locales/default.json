@@ -95,6 +95,7 @@
     "newTrade": "New Trade",
     "noPriceImpact": "No price impact",
     "noPriceImpactTip": "No price impact is achieved by adding tokens in the same proportion to the weights of the pool composition.",
+    "noPriceInfo": "No price information is available for this pool, since it contains a token not found by our pricing provider.",
     "noInvestments": "No investments in this pool",
     "numberOfPools": "Number of pools",
     "oneDay": "1D",

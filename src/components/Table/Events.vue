@@ -1,47 +1,31 @@
 <template>
-  <BalCard
-    v-if="actions.length > 0"
-    class="overflow-x-auto whitespace-nowrap"
-    no-pad
-  >
-    <table class="min-w-full dark:bg-gray-900">
-      <tr class="bg-gray-50 dark:bg-gray-700">
-        <th
-          v-text="$t('action')"
-          class="sticky top-0 p-2 pl-5 py-5 text-left"
-        />
-        <th v-text="$t('value')" class="sticky top-0 p-2 py-5 text-right" />
-        <th v-text="$t('details')" class="sticky top-0 p-2 py-5 text-right" />
-        <th v-text="$t('date')" class="sticky top-0 p-2 pr-5 py-5 text-right" />
-      </tr>
-      <tr class="hover:bg-gray-50" v-for="action in actions" :key="action.tx">
-        <td class="p-2 pl-5 py-5 flex items-center text-left">
+  <BalCard class="overflow-x-auto" no-pad>
+    <BalTable
+      :columns="columns"
+      :data="actions"
+      :is-loading="loading"
+      skeleton-class="h-64"
+      sticky="both"
+    >
+      <template v-slot:tokenActionCell="action">
+        <div class="px-6 py-8 flex items-center flex-row">
           {{ action.label }}
-          <a :href="_explorer(networkId, action.tx, 'tx')" target="_blank">
+          <BalLink :href="explorer.txLink(action.tx)" external>
             <BalIcon name="external-link" size="sm" class="ml-2" />
-          </a>
-        </td>
-        <td class="p-2 py-5 text-right">
-          {{ fNum(action.value, 'usd') }}
-        </td>
-        <td class="p-2 py-5 text-right">
-          {{ action.details }}
-        </td>
-        <td class="p-2 pr-5 py-5 text-right">
-          {{ formatDate(action.timestamp) }}
-        </td>
-      </tr>
-    </table>
+          </BalLink>
+        </div>
+      </template>
+    </BalTable>
   </BalCard>
 </template>
 
 <script lang="ts">
 import { PropType, computed } from 'vue';
-import { useStore } from 'vuex';
-
 import { PoolJoin, PoolExit, PoolEvents } from '@/api/subgraph';
 import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
+import useWeb3 from '@/composables/useWeb3';
+import useTokens from '@/composables/useTokens';
 
 interface Action {
   label: string;
@@ -60,17 +44,46 @@ export default {
     events: {
       type: Object as PropType<PoolEvents>,
       required: true
-    }
+    },
+    loading: { type: Boolean, default: false }
   },
 
   setup(props) {
-    const store = useStore();
     const { fNum } = useNumbers();
     const { t } = useI18n();
+    const { explorer } = useWeb3();
+    const { allTokens } = useTokens();
 
-    const allTokens = computed(() => store.getters['registry/getTokens']());
-
-    const networkId = computed(() => store.state.web3.config.chainId);
+    const columns = computed(() => [
+      {
+        name: 'Action',
+        id: 'action',
+        accessor: 'tx',
+        Cell: 'tokenActionCell',
+        className: 'pool-balance-table-cell'
+      },
+      {
+        name: 'Details',
+        id: 'details',
+        accessor: 'details',
+        align: 'right',
+        className: 'w-full'
+      },
+      {
+        name: 'Value',
+        id: 'value',
+        accessor: action => fNum(action.value, 'usd'),
+        align: 'right',
+        className: 'pool-balance-table-cell'
+      },
+      {
+        name: 'Date',
+        id: 'date',
+        accessor: action => formatDate(action.timestamp),
+        align: 'right',
+        className: 'pool-balance-table-cell'
+      }
+    ]);
 
     const actions = computed<Action[]>(() => {
       if (!Object.keys(props.events)) {
@@ -114,7 +127,7 @@ export default {
         const address = props.tokens[index];
         const token = allTokens.value[address];
         const price = token.price || 0;
-        const amountNumber = parseFloat(amount);
+        const amountNumber = Math.abs(parseFloat(amount));
         return total + amountNumber * price;
       }, 0);
       return value;
@@ -134,10 +147,9 @@ export default {
     }
 
     return {
+      columns,
       actions,
-      formatDate,
-      networkId,
-      fNum
+      explorer
     };
   }
 };
