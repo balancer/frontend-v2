@@ -24,7 +24,7 @@
         />
         <BalIcon
           name="chevron-down"
-          :size="'sm'"
+          size="sm"
           class="pl-1 hidden lg:inline-block"
         />
       </BalBtn>
