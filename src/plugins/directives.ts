@@ -3,20 +3,22 @@ import { App } from 'vue';
 export default function registerDirectives(app: App) {
   app.directive('click-outside', {
     beforeMount(el, binding) {
-      el.onClickOutside = function(event) {
+      el.__vueOnClickOutside = function(event) {
         const callback = binding.value;
+        const path = event.path || (event.composedPath && event.composedPath());
 
-        if (
-          typeof callback === 'function' &&
-          !(el === event.target || el.contains(event.target))
-        ) {
+        const isClickOutside = path
+          ? path.indexOf(el) < 0
+          : !el.contains(event.target);
+
+        if (typeof callback === 'function' && isClickOutside) {
           callback(event);
         }
       };
-      document.body.addEventListener('click', el.onClickOutside);
+      document.body.addEventListener('click', el.__vueOnClickOutside);
     },
     unmounted(el) {
-      document.body.removeEventListener('click', el.onClickOutside);
+      document.body.removeEventListener('click', el.__vueOnClickOutside);
     }
   });
 }
