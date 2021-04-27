@@ -26,7 +26,7 @@ type BlocknativeGasPlatformResponse = {
 };
 
 export const getGasPrice = async (
-  confidence: BlocknativeGasPriceConfidence = 90
+  confidence: BlocknativeGasPriceConfidence | 'best' = 'best'
 ) => {
   try {
     const response = await axios.get<BlocknativeGasPlatformResponse>(
@@ -37,10 +37,28 @@ export const getGasPrice = async (
         }
       }
     );
+    const estimatedPrices = response.data.blockPrices[0].estimatedPrices;
 
-    const gasPrice = response.data.blockPrices[0].estimatedPrices.find(
-      estimatedPrice => estimatedPrice.confidence === confidence
-    );
+    let gasPrice: BlocknativeEstimatedPrice | undefined;
+
+    // try to get 90% confidence, but make sure not to overpay. (otherwise grab 70%)
+    if (confidence === 'best') {
+      const gasPrice70 = estimatedPrices.find(
+        estimatedPrice => estimatedPrice.confidence === 70
+      );
+      const gasPrice90 = estimatedPrices.find(
+        estimatedPrice => estimatedPrice.confidence === 90
+      );
+
+      if (gasPrice70 != null && gasPrice90 != null) {
+        gasPrice =
+          gasPrice90.price > 1.25 * gasPrice70.price ? gasPrice70 : gasPrice90;
+      }
+    } else {
+      gasPrice = estimatedPrices.find(
+        estimatedPrice => estimatedPrice.confidence === confidence
+      );
+    }
 
     // gas price is in gwei
     return gasPrice != null ? gasPrice.price * GWEI_UNIT : null;
