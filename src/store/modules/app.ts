@@ -29,6 +29,9 @@ const actions = {
       await dispatch('registry/get', null, { root: true });
       await dispatch('market/loadPrices', [], { root: true });
 
+      // Fetch initial trade tokens
+      dispatch('trade/init', null, { root: true });
+
       // Setup web3
       const auth = getInstance();
       const connector = await auth.getConnector();
