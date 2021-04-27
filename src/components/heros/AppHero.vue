@@ -70,8 +70,8 @@ export default defineComponent({
 
     const classes = computed(() => {
       return {
-        ['bg-cover h-72 app-hero-bg-image']: !isConnected.value,
-        ['bg-white h-40']: isConnected.value
+        ['h-72']: !isConnected.value,
+        ['h-40']: isConnected.value
       };
     });
 
@@ -111,11 +111,8 @@ export default defineComponent({
 
 <style>
 .app-hero {
-  @apply flex items-center justify-center text-center px-4;
+  @apply bg-cover flex items-center justify-center text-center px-4;
   transition: all 0.3s ease-in-out;
-}
-
-.app-hero-bg-image {
   background-image: url('/images/backgrounds/bg-connect-wallet.svg');
 }
 </style>

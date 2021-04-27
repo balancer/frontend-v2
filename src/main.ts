@@ -25,7 +25,14 @@ import { CanvasRenderer } from 'echarts/renderers';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 0
+    }
+  }
+});
 queryClient.mount();
 
 use([
