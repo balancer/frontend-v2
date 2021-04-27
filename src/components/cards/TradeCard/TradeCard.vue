@@ -22,7 +22,7 @@
         @change="handleAmountChange"
       />
       <GasReimbursement
-        class="reimbursement-message"
+        class="mb-5"
         :address-in="tokenInAddress"
         :address-out="tokenOutAddress"
         :sorReturn="sorReturn"

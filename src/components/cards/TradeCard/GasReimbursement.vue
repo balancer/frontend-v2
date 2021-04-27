@@ -2,14 +2,16 @@
   <a
     href="https://docs.balancer.finance/core-concepts/bal-balancer-governance-token/bal-for-gas"
     target="_blank"
-    class="message-link"
+    class="block no-underline"
   >
-    <div v-if="isActive()" class="message">
-      <div>
-        <span class="header"> High gas fees? Here's a helping hand<br /> </span>
-        <span class="body">
+    <div v-if="isActive()" class="message relative px-2 py-3">
+      <div class="ml-12">
+        <div class="relative text-sm font-bold">
+          High gas fees? Here's a helping hand
+        </div>
+        <div class="relative text-sm text-gray-500">
           {{ text }}
-        </span>
+        </div>
       </div>
     </div>
   </a>
@@ -174,47 +176,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.message-link {
-  text-decoration: none;
-}
-
 .message {
-  position: relative;
-  padding: 20px 30px;
-  border-radius: var(--border-radius-medium);
-  color: var(--text-primary);
-  background: linear-gradient(185deg, #f0f 0%, #00f 100%);
+  @apply bg-gradient-to-tr from-blue-50 to-pink-50;
+  border-radius: 10px;
 }
 
 .message::before {
+  @apply absolute px-4 py-3 inset-0.5 text-2xl bg-white rounded-lg;
   content: '🤝';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  bottom: 2px;
-  right: 2px;
-  padding: 20px;
-  border-radius: var(--border-radius-medium);
-  text-align: left;
-  font-size: 32px;
-  background: var(--background-control);
-}
-
-.header {
-  font-size: var(--font-size-medium);
-  font-weight: bold;
-  color: var(--text-primary);
-}
-
-.body {
-  color: var(--text-secondary);
-  font-size: var(--font-size-small);
-}
-
-.header,
-.body {
-  margin-left: 36px;
-  position: relative;
 }
 
 @media only screen and (max-width: 768px) {
