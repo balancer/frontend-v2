@@ -49,7 +49,7 @@
       <BalLoadingBlock v-if="isLoading" :class="skeletonClass" />
       <tbody v-else>
         <tr
-          v-for="(dataItem, index) in _data"
+          v-for="(dataItem, index) in tableData"
           :key="`tableRow-${index}`"
           class="flex flex-row bg-white z-10 rowBg"
           @click="onRowClick(dataItem)"
@@ -120,12 +120,7 @@ export default defineComponent({
       required: true
     },
     data: {
-      type: Object as PropType<Array<any>>,
-      required: true
-    },
-    dataKey: {
-      type: String,
-      required: true
+      type: Object as PropType<Array<any>>
     },
     isLoading: {
       type: Boolean,
@@ -138,14 +133,14 @@ export default defineComponent({
       type: Function
     },
     sticky: {
-      type: Object as PropType<Sticky>
+      type: String as PropType<Sticky>
     }
   },
   setup(props) {
     const stickyHeaderRef = ref();
     const tableRef = ref<HTMLElement>();
     const isColumnStuck = ref(false);
-    const _data = ref(props.data);
+    const tableData = ref(props.data);
     const currentSortDirection = ref<'asc' | 'desc' | null>(null);
     const currentSortColumn = ref<string | null>(null);
 
@@ -184,11 +179,11 @@ export default defineComponent({
         const sortedData = sortBy(props.data, column.accessor);
 
         if (currentSortDirection.value === 'asc') {
-          _data.value = sortedData;
+          tableData.value = sortedData;
         } else if (currentSortDirection.value === 'desc') {
-          _data.value = sortedData.reverse();
+          tableData.value = sortedData.reverse();
         }
-        _data.value = sortedData;
+        tableData.value = sortedData;
       }
     };
 
@@ -212,7 +207,7 @@ export default defineComponent({
     watch(
       () => props.data,
       newData => {
-        _data.value = newData;
+        tableData.value = newData;
       }
     );
 
@@ -228,7 +223,7 @@ export default defineComponent({
 
       //data
       isColumnStuck,
-      _data,
+      tableData,
       currentSortColumn,
       currentSortDirection,
       console
