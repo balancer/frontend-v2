@@ -69,7 +69,6 @@ import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
-import initialTokens from '@/constants/initialTokens.json';
 import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '../shared/SuccessOverlay.vue';
@@ -175,9 +174,8 @@ export default defineComponent({
     }
 
     async function populateInitialTokens(): Promise<void> {
-      const { chainId } = getConfig();
-      tokenInAddress.value = initialTokens[chainId].input;
-      tokenOutAddress.value = initialTokens[chainId].output;
+      tokenInAddress.value = store.state.trade.inputAsset;
+      tokenOutAddress.value = store.state.trade.outputAsset;
     }
 
     async function approve(): Promise<void> {
@@ -193,10 +191,12 @@ export default defineComponent({
     });
 
     watch(tokenInAddress, () => {
+      store.commit('trade/setInputAsset', tokenInAddress.value);
       handleAmountChange();
     });
 
     watch(tokenOutAddress, () => {
+      store.commit('trade/setOutputAsset', tokenOutAddress.value);
       handleAmountChange();
     });
 
