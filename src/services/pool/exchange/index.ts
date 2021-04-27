@@ -36,6 +36,16 @@ export default class Exchange {
     );
   }
 
+  public async getUserBalance(account: string, addresses: string[]) {
+    return await callStatic(
+      this.provider,
+      this.vaultAddress,
+      vaultAbi,
+      'getInternalBalance',
+      [account, addresses]
+    );
+  }
+
   public async join(
     account: string,
     amountsIn: string[],

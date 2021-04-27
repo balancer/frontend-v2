@@ -112,6 +112,7 @@
             @click.prevent="amounts[i] = tokenBalance(i)"
           >
             {{ $t('balance') }}: {{ formatBalance(i) }}
+            {{ formatUserBalance(i) }}
           </div>
         </template>
         <template v-slot:append>
@@ -260,7 +261,8 @@ export default defineComponent({
       validInputs: [] as boolean[],
       propToken: 0,
       range: 1000,
-      highPiAccepted: false
+      highPiAccepted: false,
+      userBalances: [] as number[]
     });
 
     // COMPOSABLES
@@ -408,6 +410,22 @@ export default defineComponent({
       return allTokens.value[props.pool.tokens[index]]?.balance || 0;
     }
 
+    function userBalance(index) {
+      return data.userBalances[index] == 0
+        ? ''
+        : `<br>User Balance: ${data.userBalances[index]}`;
+    }
+
+    async function getUserBalances() {
+      const addresses = props.pool.tokens.map(
+        token => allTokens.value[token].address
+      );
+      data.userBalances = await poolExchange.getUserBalance(
+        account.value,
+        addresses
+      );
+    }
+
     function tokenDecimals(index) {
       return allTokens.value[props.pool.tokens[index]].decimals;
     }
@@ -420,6 +438,10 @@ export default defineComponent({
 
     function formatBalance(index) {
       return fNum(tokenBalance(index), 'token');
+    }
+
+    function formatUserBalance(index) {
+      return data.userBalances[index]; // formatUnits(data.userBalances[index], tokenDecimals(index));
     }
 
     function amountRules(index) {
@@ -517,6 +539,7 @@ export default defineComponent({
           setPropMax();
           if (isProportional.value) setPropAmountsFor(data.range);
         }
+        getUserBalances();
       }
     );
 
@@ -588,6 +611,7 @@ export default defineComponent({
       // methods
       submit,
       approveAllowances,
+      formatUserBalance,
       fNum
     };
   }

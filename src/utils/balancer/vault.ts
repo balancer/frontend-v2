@@ -1,5 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
-import { sendTransaction } from '@/utils/balancer/web3';
+import { callStatic, sendTransaction } from '@/utils/balancer/web3';
 import configs from '@/config';
 import { default as abi } from '@/abi/Vault.json';
 
