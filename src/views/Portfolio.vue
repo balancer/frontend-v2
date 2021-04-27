@@ -34,8 +34,15 @@
             </div>
           </template>
           <template v-slot:iconColumnCell="pool">
-            <div class="px-6 py-8 flex flex-row icon">
-              <div v-for="token in tokensFor(pool)" :key="token">
+            <div class="px-6 py-8 grid grid-cols-3">
+              <div
+                v-for="(token, i) in tokensFor(pool)"
+                :key="token"
+                class="z-10 absolute"
+                :style="{
+                  left: `${getIconPosition(i, pool.tokens.length)}px`
+                }"
+              >
                 <Token :token="allTokens[token]" />
               </div>
             </div>
@@ -214,6 +221,16 @@ export default defineComponent({
       currentGraphingPeriod.value = newPeriod;
     };
 
+    function getIconPosition(i: number, count: number) {
+      if (count < 3) {
+        return 28 * i + 24;
+      }
+      if (count === 3) {
+        return 24 * i + 24;
+      }
+      return (48 * i) / (count - 1) + 24;
+    }
+
     return {
       // data
       totalBalance,
@@ -237,7 +254,8 @@ export default defineComponent({
       handleGraphingPeriodChange,
       tokensFor,
       getAddress,
-      router
+      router,
+      getIconPosition
     };
   }
 });
@@ -247,9 +265,7 @@ export default defineComponent({
 .cell {
   min-width: 8rem;
 }
-.icon > :not(:last-child) {
-  margin-right: 0.5rem;
-}
+
 .dot {
   color: #44d7b6;
 }
