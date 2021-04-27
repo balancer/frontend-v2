@@ -39,7 +39,7 @@
             class="inline-block mr-1"
           >
             <span class="dot">•</span>
-            {{ fNum(token.weight * 100, 'percent') }}
+            {{ fNum(token.weight, 'percent') }}
             {{ allTokens[getAddress(token.address)].symbol }}
           </span>
         </div>
