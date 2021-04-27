@@ -105,10 +105,7 @@ export class SorManager {
         `[SorManager] Cost for token ${tokenAddr} (cache): ${cost.toString()}`
       );
     } else {
-      cost = await this.sorV2.setCostOutputToken(
-        tokenAddr,
-        tokenDecimals
-      );
+      cost = await this.sorV2.setCostOutputToken(tokenAddr, tokenDecimals);
       console.log(
         `[SorManager] Cost for token ${tokenAddr} (new): ${cost.toString()}`
       );
