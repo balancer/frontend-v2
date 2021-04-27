@@ -1,24 +1,24 @@
 import { isBudgetLeft } from '@/utils/balancer/bal4gas';
 
-export interface Bal4GasState {
+export interface BalForGasState {
   isBudgetLeft: boolean;
 }
 
 const mutations = {
-  setIsBudget: (_state: Bal4GasState, isBudgetLeft: boolean): void => {
+  setIsBudget: (_state: BalForGasState, isBudgetLeft: boolean): void => {
     _state.isBudgetLeft = isBudgetLeft;
   }
 };
 
 const actions = {
-  async fetchBal4Gas({ commit }): Promise<void> {
+  async fetchBalForGasBudget({ commit }): Promise<void> {
     const budgetLeft = await isBudgetLeft();
     console.log(budgetLeft);
     commit('setIsBudget', budgetLeft);
   }
 };
 
-const state: Bal4GasState = {
+const state: BalForGasState = {
   isBudgetLeft: false
 };
 

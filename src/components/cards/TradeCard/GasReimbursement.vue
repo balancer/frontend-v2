@@ -58,6 +58,14 @@ export default defineComponent({
     );
 
     const reimburseAmount = computed(() => {
+      // If no swaps set costs to 0 so no price shown
+      if (!props.sorReturn.hasSwaps) {
+        return {
+          bal: new BigNumber(0),
+          usd: new BigNumber(0)
+        };
+      }
+
       const ethPrice =
         store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
       const balPrice =
@@ -140,6 +148,7 @@ export default defineComponent({
     const text = computed(() => {
       const isEligible =
         reimburseAmount.value && reimburseAmount.value.usd.gt(0);
+
       return isEligible
         ? `This trade earns you ~${reimburseAmount.value.bal.toFixed(
             1,
