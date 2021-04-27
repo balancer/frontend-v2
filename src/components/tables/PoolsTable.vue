@@ -39,7 +39,7 @@
             class="inline-block mr-1"
           >
             <span class="dot">•</span>
-            {{ token.weight * 100 }}
+            {{ fNum(token.weight, 'percent') }}
             {{ allTokens[getAddress(token.address)].symbol }}
           </span>
         </div>
@@ -132,7 +132,8 @@ export default defineComponent({
       router,
       getAddress,
       tokensFor,
-      getIconPosition
+      getIconPosition,
+      fNum
     };
   }
 });
