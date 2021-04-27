@@ -12,7 +12,7 @@
           :key="`header-${column.id}`"
           class="p-6 flex flex-grow bg-white headingShadow border-b border-gray-200 cursor-pointer"
           :class="[
-            column.className,
+            column.className || 'baltable-default-cell-width',
             column.align === 'right' ? 'justify-end' : 'justify-start',
             getHorizontalStickyClass(columnIndex),
             isColumnStuck ? 'isSticky' : ''
@@ -46,7 +46,7 @@
           />
         </td>
       </thead>
-      <BalLoadingBlock v-if="isLoading" :class="skeletonClass" />
+      <BalLoadingBlock v-if="isLoading" :class="`h-${loadingHeight}`" />
       <tbody v-else>
         <tr
           v-for="(dataItem, index) in tableData"
@@ -59,7 +59,7 @@
             v-for="(column, columnIndex) in columns"
             :key="column.id"
             :class="[
-              column.className,
+              column.className || 'baltable-default-cell-width',
               column.align === 'right' ? 'justify-end' : 'justify-start',
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : ''
@@ -126,7 +126,7 @@ export default defineComponent({
       type: Boolean,
       default: () => false
     },
-    skeletonClass: {
+    loadingHeight: {
       type: String
     },
     onRowClick: {
@@ -260,5 +260,9 @@ export default defineComponent({
 
 .rowBg:hover > td {
   @apply bg-gray-100;
+}
+
+.baltable-default-cell-width {
+  min-width: 8rem;
 }
 </style>

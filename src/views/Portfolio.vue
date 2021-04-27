@@ -20,7 +20,7 @@
           :columns="columns"
           :data="pools"
           :isLoading="isLoadingPools || isAppLoading || isInjectingTokens"
-          skeletonClass="h-64"
+          loadingHeight="64"
           sticky="both"
           :onRowClick="
             pool => {
@@ -106,8 +106,7 @@ export default defineComponent({
         id: 'icons',
         accessor: 'uri',
         Header: 'iconColumnHeader',
-        Cell: 'iconColumnCell',
-        className: 'cell'
+        Cell: 'iconColumnCell'
       },
       {
         name: 'Pool Name',
@@ -119,28 +118,24 @@ export default defineComponent({
       {
         name: 'My Balance',
         accessor: pool => fNum(getPoolShare(pool), 'usd', null, true),
-        className: 'cell',
         align: 'right',
         id: 'myBalance'
       },
       {
         name: 'Pool Value',
         accessor: pool => fNum(pool.liquidity, 'usd'),
-        className: 'cell',
         align: 'right',
         id: 'poolValue'
       },
       {
         name: 'Vol (24h)',
         accessor: pool => fNum(pool.volume, 'usd'),
-        className: 'cell',
         align: 'right',
         id: 'poolVolume'
       },
       {
         name: 'APY (1y)',
         accessor: pool => `${fNum(pool.apy, 'percent')}`,
-        className: 'cell',
         align: 'right',
         id: 'poolApy'
       }
@@ -244,9 +239,6 @@ export default defineComponent({
 </script>
 
 <style>
-.cell {
-  min-width: 8rem;
-}
 .icon > :not(:last-child) {
   margin-right: 0.5rem;
 }
