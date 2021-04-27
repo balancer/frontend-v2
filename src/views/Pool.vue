@@ -153,7 +153,9 @@ export default defineComponent({
     });
 
     const title = computed(() => {
-      return `${pool.value.name}<br>(${pool.value.symbol})`;
+      const divider =
+        pool.value.name.length + pool.value.symbol.length < 40 ? ' ' : '<br>';
+      return `${pool.value.name}${divider}(${pool.value.symbol})`;
     });
 
     const poolTypeLabel = computed(() => {
