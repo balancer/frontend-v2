@@ -6,7 +6,7 @@
           v-text="$t('myInvestments')"
           class="text-lg font-normal text-white opacity-90 font-body mb-2"
         />
-        <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" />
+        <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" white />
         <span v-else class="text-3xl font-bold text-white">
           {{ fNum(totalInvested, 'usd', null, true) }}
         </span>
