@@ -45,7 +45,7 @@
         >
           <div class="flex items-center justify-between">
             <div class="flex items-center w-1/2">
-              <Token :token="allTokens[token]" class="mr-2" />
+              <BalAsset :address="token" class="mr-2" />
               <div class="flex flex-col w-3/4 leading-none">
                 <span
                   class="break-words"
@@ -95,7 +95,7 @@
       >
         <template v-slot:prepend>
           <div class="flex items-center h-full w-24">
-            <Token :token="allTokens[token]" />
+            <BalAsset :address="token" />
             <div class="flex flex-col ml-3">
               <span class="font-medium text-sm leading-none w-14 truncate">
                 {{ allTokens[token].symbol }}

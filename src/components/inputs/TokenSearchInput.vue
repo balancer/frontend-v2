@@ -20,12 +20,7 @@
         @closed="removeToken(token)"
         @click.stop
       >
-        <Token
-          :token="allTokens[token]"
-          :symbol="false"
-          :size="20"
-          class="flex-auto"
-        />
+        <BalAsset :address="token" :size="20" class="flex-auto" />
         <span class="ml-1">{{ allTokens[token].symbol }}</span>
       </BalChip>
     </div>
