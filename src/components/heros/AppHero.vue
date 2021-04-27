@@ -3,7 +3,7 @@
     <div class="w-full sm:w-3/4 md:w-1/2">
       <template v-if="isConnected">
         <h1
-          v-text="t('myInvestments')"
+          v-text="$t('myInvestments')"
           class="text-lg font-normal text-gray-500 font-body mb-2"
         />
         <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" />
