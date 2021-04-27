@@ -45,7 +45,6 @@ import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import useWeb3 from '@/composables/useWeb3';
 import { Pool } from '@/api/subgraph';
-import i18n from '@/plugins/i18n';
 
 export default defineComponent({
   name: 'AppHero',
