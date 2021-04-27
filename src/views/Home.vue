@@ -37,7 +37,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { userNetwork } = useWeb3();
+    const { appNetwork } = useWeb3();
     const prices = computed(() => store.state.market.prices);
     const { allTokens } = useTokens();
     const router = useRouter();
@@ -55,14 +55,13 @@ export default defineComponent({
       reactive([
         'poolsData',
         {
-          userNetwork,
           prices,
           selectedTokens
         }
       ]),
       () =>
         getPoolsWithVolume({
-          chainId: userNetwork.value.key,
+          chainId: appNetwork.id,
           prices: prices.value,
           tokenIds: selectedTokens.value
         }),
