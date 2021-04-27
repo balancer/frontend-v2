@@ -19,7 +19,14 @@
       </template>
       <template v-slot:iconColumnCell="pool">
         <div class="px-6 py-8 flex flex-row icon">
-          <div v-for="token in tokensFor(pool)" :key="token">
+          <div
+            v-for="(token, i) in tokensFor(pool)"
+            class="z-10 absolute"
+            :key="token"
+            :style="{
+              left: `${getIconPosition(i, pool.tokens.length)}px`
+            }"
+          >
             <Token :token="allTokens[token]" />
           </div>
         </div>
@@ -106,6 +113,16 @@ export default defineComponent({
       return pool.tokens.map(token => getAddress(token.address));
     }
 
+    function getIconPosition(i: number, count: number) {
+      if (count < 3) {
+        return 28 * i + 24;
+      }
+      if (count === 3) {
+        return 24 * i + 24;
+      }
+      return (48 * i) / (count - 1) + 24;
+    }
+
     return {
       // data
       columns,
@@ -114,7 +131,8 @@ export default defineComponent({
       // methods
       router,
       getAddress,
-      tokensFor
+      tokensFor,
+      getIconPosition
     };
   }
 });
