@@ -6,7 +6,7 @@ import { Integrations } from '@sentry/tracing';
 // the official vue package (@sentry/vue) because it doesn't support vue 3 yet.
 // https://github.com/getsentry/sentry-javascript/issues/2925
 
-const ENV = process.env.NODE_ENV || 'development';
+const ENV = process.env.VUE_APP_ENV || 'development';
 const NETWORK = process.env.VUE_APP_NETWORK || '42';
 const networkMap = {
   '1': 'mainnet',
@@ -15,7 +15,7 @@ const networkMap = {
 const environment = `${ENV}-${networkMap[NETWORK]}`;
 
 export default function initSentry(app: App) {
-  if (ENV === 'production') {
+  if (['production', 'staging'].includes(ENV)) {
     app.config.errorHandler = (error, _, info) => {
       try {
         setTag('info', info);
