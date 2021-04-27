@@ -10,7 +10,7 @@
       <template v-slot:tokenColumnCell="token">
         <div class="px-6 py-8 flex flex-row icon-stack">
           <BalLink :href="explorer.addressLink(token.address)" external>
-            <Token :token="tokenFor(token.address)" :size="24" />
+            <BalAsset :address="token.address" />
             <span class="pl-4">
               {{ symbolFor(token.address) }}
             </span>
@@ -127,10 +127,6 @@ export default defineComponent({
       }
     ]);
 
-    function tokenFor(address: string) {
-      return allTokens.value[address];
-    }
-
     function symbolFor(address: string) {
       const token = allTokens.value[address];
       return token ? token.symbol : address;
@@ -162,8 +158,7 @@ export default defineComponent({
       fNum,
       explorer,
       columns,
-      tableData,
-      tokenFor
+      tableData
     };
   }
 });
