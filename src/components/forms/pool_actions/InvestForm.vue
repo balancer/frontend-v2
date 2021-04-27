@@ -112,7 +112,9 @@
             @click.prevent="amounts[i] = tokenBalance(i)"
           >
             {{ $t('balance') }}: {{ formatBalance(i) }}
-            {{ formatUserBalance(i) }}
+            <div v-if="formatUserBalance(i) != 0">
+              {{ $t('userBalance') }}: {{ formatUserBalance(i) }}
+            </div>
           </div>
         </template>
         <template v-slot:append>
@@ -410,12 +412,6 @@ export default defineComponent({
       return allTokens.value[props.pool.tokens[index]]?.balance || 0;
     }
 
-    function userBalance(index) {
-      return data.userBalances[index] == 0
-        ? ''
-        : `<br>User Balance: ${data.userBalances[index]}`;
-    }
-
     async function getUserBalances() {
       const addresses = props.pool.tokens.map(
         token => allTokens.value[token].address
@@ -441,7 +437,15 @@ export default defineComponent({
     }
 
     function formatUserBalance(index) {
-      return data.userBalances[index]; // formatUnits(data.userBalances[index], tokenDecimals(index));
+      const decimals = props.pool.tokens.map(
+        token => allTokens.value[token].decimals
+      );
+
+      return data.userBalances[index]
+        ? bnum(formatUnits(data.userBalances[index], decimals[index])).toFixed(
+            3
+          )
+        : '';
     }
 
     function amountRules(index) {
