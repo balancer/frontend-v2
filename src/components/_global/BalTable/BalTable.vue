@@ -46,7 +46,7 @@
           />
         </td>
       </thead>
-      <BalLoadingBlock v-if="isLoading" :class="skeletonClass" />
+      <BalLoadingBlock v-if="isLoading" :class="skeletonClass" square />
       <tbody v-else>
         <tr
           v-for="(dataItem, index) in tableData"
@@ -259,6 +259,6 @@ export default defineComponent({
 }
 
 .rowBg:hover > td {
-  @apply bg-gray-100;
+  @apply bg-gray-50;
 }
 </style>

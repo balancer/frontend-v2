@@ -12,9 +12,10 @@
       />
     </div>
     <div>
-      <h3 class="text-gray-800 font-semibold text-xl tracking-wide mt-8">
-        My V2 Investments
-      </h3>
+      <h3
+        v-text="$t('myV2Investments')"
+        class="text-gray-800 font-semibold text-xl tracking-wide mt-8"
+      />
       <BalCard shadow="lg" class="mt-8" no-pad>
         <BalTable
           :columns="columns"
@@ -34,8 +35,15 @@
             </div>
           </template>
           <template v-slot:iconColumnCell="pool">
-            <div class="px-6 py-8 flex flex-row icon">
-              <div v-for="token in tokensFor(pool)" :key="token">
+            <div class="px-6 py-8 grid grid-cols-3">
+              <div
+                v-for="(token, i) in tokensFor(pool)"
+                :key="token"
+                class="z-10 absolute"
+                :style="{
+                  left: `${getIconPosition(i, pool.tokens.length)}px`
+                }"
+              >
                 <Token :token="allTokens[token]" />
               </div>
             </div>
@@ -110,35 +118,35 @@ export default defineComponent({
         className: 'cell'
       },
       {
-        name: 'Pool Name',
+        name: t('poolName'),
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',
         className: 'w-full'
       },
       {
-        name: 'My Balance',
+        name: t('myBalance'),
         accessor: pool => fNum(getPoolShare(pool), 'usd', null, true),
         className: 'cell',
         align: 'right',
         id: 'myBalance'
       },
       {
-        name: 'Pool Value',
+        name: t('poolValue'),
         accessor: pool => fNum(pool.liquidity, 'usd'),
         className: 'cell',
         align: 'right',
         id: 'poolValue'
       },
       {
-        name: 'Vol (24h)',
+        name: t('volume24h', [t('hourAbbrev')]),
         accessor: pool => fNum(pool.volume, 'usd'),
         className: 'cell',
         align: 'right',
         id: 'poolVolume'
       },
       {
-        name: 'APY (1y)',
+        name: t('apy', [t('yearAbbrev')]),
         accessor: pool => `${fNum(pool.apy, 'percent')}`,
         className: 'cell',
         align: 'right',
@@ -214,6 +222,16 @@ export default defineComponent({
       currentGraphingPeriod.value = newPeriod;
     };
 
+    function getIconPosition(i: number, count: number) {
+      if (count < 3) {
+        return 28 * i + 24;
+      }
+      if (count === 3) {
+        return 24 * i + 24;
+      }
+      return (48 * i) / (count - 1) + 24;
+    }
+
     return {
       // data
       totalBalance,
@@ -237,7 +255,8 @@ export default defineComponent({
       handleGraphingPeriodChange,
       tokensFor,
       getAddress,
-      router
+      router,
+      getIconPosition
     };
   }
 });
@@ -247,9 +266,7 @@ export default defineComponent({
 .cell {
   min-width: 8rem;
 }
-.icon > :not(:last-child) {
-  margin-right: 0.5rem;
-}
+
 .dot {
   color: #44d7b6;
 }
