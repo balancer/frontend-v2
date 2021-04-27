@@ -57,7 +57,11 @@
               >
                 <span class="dot">•</span>
                 {{ fNum(token.weight, 'percent') }}
-                {{ allTokens[token.address] ? allTokens[token.address].symbol : ''}}
+                {{
+                  allTokens[token.address]
+                    ? allTokens[token.address].symbol
+                    : ''
+                }}
               </span>
             </div>
           </template>
