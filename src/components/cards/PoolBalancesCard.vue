@@ -44,6 +44,7 @@ import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
 import { Pool } from '@/utils/balancer/types';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -60,6 +61,7 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { explorer } = useWeb3();
     const { allTokens } = useTokens();
+    const { t } = useI18n();
 
     // DATA
     const { pool } = toRefs(props);
@@ -93,14 +95,14 @@ export default defineComponent({
 
     const columns = computed(() => [
       {
-        name: 'Token',
+        name: t('token'),
         id: 'token',
         accessor: 'address',
         Cell: 'tokenColumnCell',
         className: 'w-full'
       },
       {
-        name: 'Weight',
+        name: t('weight'),
         id: 'weight',
         accessor: 'index',
         Cell: 'tokenWeightCell',
@@ -108,7 +110,7 @@ export default defineComponent({
         className: 'pool-balance-table-cell'
       },
       {
-        name: 'Pool balance',
+        name: t('poolBalance'),
         id: 'poolBalance',
         accessor: 'index',
         Cell: 'tokenBalanceCell',
@@ -116,7 +118,7 @@ export default defineComponent({
         className: 'pool-balance-table-cell'
       },
       {
-        name: 'Pool value',
+        name: t('poolValue'),
         id: 'value',
         accessor: 'index',
         Cell: 'tokenValueCell',

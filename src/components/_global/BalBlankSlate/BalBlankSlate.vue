@@ -1,8 +1,6 @@
 <template>
   <div class="bal-blank-slate">
-    <slot>
-      No content
-    </slot>
+    <slot v-text="$t('noContent')" />
   </div>
 </template>
 

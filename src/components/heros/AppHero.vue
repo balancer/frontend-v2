@@ -2,18 +2,20 @@
   <div :class="['app-hero', classes]">
     <div class="w-full sm:w-3/4 md:w-1/2">
       <template v-if="isConnected">
-        <h1 class="text-lg font-normal text-gray-500 font-body mb-2">
-          My Balancer investments
-        </h1>
+        <h1
+          v-text="t('myInvestments')"
+          class="text-lg font-normal text-gray-500 font-body mb-2"
+        />
         <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" />
         <span v-else class="text-3xl font-bold">
           {{ fNum(totalInvested, 'usd', null, true) }}
         </span>
       </template>
       <template v-else>
-        <h1 class="text-white text-bold text-center">
-          An automated portfolio manager and trading platform.
-        </h1>
+        <h1
+          v-text="$t('ammPlatform')"
+          class="text-white text-bold text-center"
+        />
         <div class="flex justify-center mt-4">
           <BalBtn color="white" class="mr-4" @click="setAccountModal(true)">
             {{ $t('connectWallet') }}
@@ -43,6 +45,7 @@ import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import useWeb3 from '@/composables/useWeb3';
 import { Pool } from '@/api/subgraph';
+import i18n from '@/plugins/i18n';
 
 export default defineComponent({
   name: 'AppHero',
