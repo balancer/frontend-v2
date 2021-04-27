@@ -132,7 +132,8 @@ export default defineComponent({
       router,
       getAddress,
       tokensFor,
-      getIconPosition
+      getIconPosition,
+      fNum
     };
   }
 });
