@@ -25,9 +25,9 @@
           class="flex items-center w-28 h-full cursor-pointer"
           @click="openModalSelectToken('input')"
         >
-          <Token
-            v-if="tokens[tokenInAddressInput]"
-            :token="tokens[tokenInAddressInput]"
+          <BalAsset
+            v-if="tokenInAddressInput"
+            :address="tokenInAddressInput"
             :size="28"
           />
           <div class="flex flex-col ml-3 w-14 leading-none truncate">
@@ -96,9 +96,9 @@
           class="flex items-center w-28 h-full cursor-pointer"
           @click="openModalSelectToken('output')"
         >
-          <Token
-            v-if="tokens[tokenOutAddressInput]"
-            :token="tokens[tokenOutAddressInput]"
+          <BalAsset
+            v-if="tokenOutAddressInput"
+            :address="tokenOutAddressInput"
             :size="28"
           />
           <div class="flex flex-col ml-3 w-14 leading-none truncate">
