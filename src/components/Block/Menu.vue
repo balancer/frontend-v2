@@ -10,9 +10,6 @@
       <router-link :to="{ name: 'portfolio' }">
         {{ $t('portfolio') }}
       </router-link>
-      <router-link :to="{ name: 'vault' }">
-        {{ $t('vault') }}
-      </router-link>
     </p>
   </Block>
 </template>
