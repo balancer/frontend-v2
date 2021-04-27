@@ -95,6 +95,8 @@ export async function getPools(
     set(pools, `${id}.tokenBalances`, pool.poolTokens.balances);
     multi.call(`${id}.strategy.swapFee`, pool.address, 'getSwapFeePercentage');
     multi.call(`${id}.totalSupply`, pool.address, 'totalSupply');
+    multi.call(`${id}.name`, pool.address, 'name');
+    multi.call(`${id}.symbol`, pool.address, 'symbol');
 
     if (pool.strategy.name === 'weightedPool') {
       multi.call(`${id}.weights`, pool.address, 'getNormalizedWeights', []);
