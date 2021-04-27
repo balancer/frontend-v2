@@ -32,6 +32,9 @@ const actions = {
       // Fetch initial trade tokens
       dispatch('trade/init', null, { root: true });
 
+      // Fetch bal4gas budget
+      await dispatch('balForGas/fetchBal4Gas', null, { root: true });
+
       // Setup web3
       const auth = getInstance();
       const connector = await auth.getConnector();
