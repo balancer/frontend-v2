@@ -2,18 +2,20 @@
   <div :class="['app-hero', classes]">
     <div class="w-full sm:w-3/4 md:w-1/2">
       <template v-if="isConnected">
-        <h1 class="text-lg font-normal text-gray-500 font-body mb-2">
-          My Balancer investments
-        </h1>
-        <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" />
+        <h1
+          v-text="$t('myBalancerInvestments')"
+          class="text-lg font-normal text-white font-body mb-2"
+        />
+        <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" white />
         <span v-else class="text-3xl font-bold">
           {{ fNum(totalInvested, 'usd', null, true) }}
         </span>
       </template>
       <template v-else>
-        <h1 class="text-white text-bold text-center">
-          An automated portfolio manager and trading platform.
-        </h1>
+        <h1
+          v-text="$t('appDescription')"
+          class="text-white text-bold text-center"
+        />
         <div class="flex justify-center mt-4">
           <BalBtn color="white" class="mr-4" @click="setAccountModal(true)">
             {{ $t('connectWallet') }}
@@ -68,8 +70,8 @@ export default defineComponent({
 
     const classes = computed(() => {
       return {
-        ['bg-cover h-72 app-hero-bg-image']: !isConnected.value,
-        ['bg-white h-40']: isConnected.value
+        ['h-72']: !isConnected.value,
+        ['h-40']: isConnected.value
       };
     });
 
@@ -109,11 +111,8 @@ export default defineComponent({
 
 <style>
 .app-hero {
-  @apply flex items-center justify-center text-center px-4;
+  @apply bg-cover flex items-center justify-center text-center px-4;
   transition: all 0.3s ease-in-out;
-}
-
-.app-hero-bg-image {
   background-image: url('/images/backgrounds/bg-connect-wallet.svg');
 }
 </style>
