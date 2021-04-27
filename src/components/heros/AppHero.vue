@@ -3,17 +3,17 @@
     <div class="w-full sm:w-3/4 md:w-1/2">
       <template v-if="isConnected">
         <h1
-          v-text="$t('myBalancerInvestments')"
-          class="text-lg font-normal text-white font-body mb-2"
+          v-text="$t('myInvestments')"
+          class="text-lg font-normal text-white opacity-90 font-body mb-2"
         />
         <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" white />
-        <span v-else class="text-3xl font-bold">
+        <span v-else class="text-3xl font-bold text-white">
           {{ fNum(totalInvested, 'usd', null, true) }}
         </span>
       </template>
       <template v-else>
         <h1
-          v-text="$t('appDescription')"
+          v-text="$t('ammPlatform')"
           class="text-white text-bold text-center"
         />
         <div class="flex justify-center mt-4">

@@ -16,6 +16,7 @@ import statusLogo from '@/assets/connector/status.svg';
 import trustwalletLogo from '@/assets/connector/trustwallet.svg';
 import walletconnectLogo from '@/assets/connector/walletconnect.svg';
 import walletlinkLogo from '@/assets/connector/walletlink.svg';
+import i18n from './i18n';
 
 const options: any = { connectors: [] };
 const connectorClasses = {
@@ -53,7 +54,7 @@ export function getConnectorName(connectorId: string): string {
     if (provider.isFrame) {
       return 'Frame';
     }
-    return 'Browser Wallet';
+    return i18n.global.t('browserWallet');
   }
   if (connectorId === 'fortmatic') {
     return 'Fortmatic';
@@ -65,9 +66,9 @@ export function getConnectorName(connectorId: string): string {
     return 'WalletConnect';
   }
   if (connectorId === 'walletlink') {
-    return 'Coinbase Wallet';
+    return `Coinbase ${i18n.global.t('wallet')}`;
   }
-  return 'Unknown';
+  return i18n.global.t('unknown');
 }
 
 export function getConnectorLogo(connectorId: string): string {

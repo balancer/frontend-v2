@@ -125,12 +125,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div
-            v-text="
-              'Which liquidity pools should be used when you make a trade.'
-            "
-            class="w-52"
-          />
+          <div v-text="$t('whichPools')" class="w-52" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">
