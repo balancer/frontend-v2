@@ -4,11 +4,11 @@ export const BALANCER_SUBGRAPH_URL = {
   42: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2'
 };
 
-type PoolType = 'Weighted' | 'Stable';
+export type PoolType = 'Weighted' | 'Stable';
 
 const DAY = 60 * 60 * 24;
 
-interface PoolToken {
+export interface PoolToken {
   address: string;
   balance: string;
   weight: string;
