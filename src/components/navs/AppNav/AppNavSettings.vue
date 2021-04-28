@@ -329,10 +329,6 @@ export default defineComponent({
   @apply text-blue-500 border-blue-500;
 }
 
-.slippage .bal-btn {
-  border: 1px solid #ff4a8d;
-}
-
 .slippage-input {
   @apply bg-white;
 }
