@@ -1,4 +1,4 @@
-import { Ref, onMounted, ref, computed } from 'vue';
+import { Ref, onMounted, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -72,6 +72,11 @@ export default function useSor(
       console.timeEnd('[SOR] fetchPools');
     }
   }, 30 * 1e3);
+
+  watch(liquiditySelection, () => {
+    // When the liquidity type is changed we need to update the trade to use that selection
+    handleAmountChange();
+  });
 
   async function initSor(): Promise<void> {
     const config = getConfig();
