@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
     <template v-if="loading">
       <BalLoadingBlock v-for="n in 4" :key="n" class="h-24" />
     </template>
@@ -8,7 +8,7 @@
         <div class="text-xs uppercase text-gray-500 font-medium mb-3">
           {{ stat.label }}
         </div>
-        <div class="text-xl font-medium">
+        <div class="text-xl font-medium truncate">
           {{ stat.value }}
         </div>
       </BalCard>

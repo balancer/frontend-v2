@@ -16,7 +16,9 @@ export default function useWeb3() {
   const appNetwork = {
     key: process.env.VUE_APP_NETWORK || '1',
     id: Number(process.env.VUE_APP_NETWORK) || 1,
-    name: configs[Number(process.env.VUE_APP_NETWORK)].shortName || 'Mainnet'
+    name: configs[Number(process.env.VUE_APP_NETWORK)].shortName || 'Mainnet',
+    networkName:
+      configs[Number(process.env.VUE_APP_NETWORK)].network || 'homestead'
   };
 
   // User network vars (dynamic)

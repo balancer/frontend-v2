@@ -13,22 +13,6 @@ export function minChar(minLength: number, field = '') {
     `${_field}${i18n.global.t('mustBeAtLeast', [minLength])}`;
 }
 
-export function isSameAs(val: string, field = '') {
-  return v => !v || v === val || i18n.global.t('mustBeSame', [field]);
-}
-
-export function isNumberCheck(val) {
-  return !isNaN(parseFloat(val)) && isFinite(val);
-}
-export function isNumber() {
-  return v => !v || isNumberCheck(v) || i18n.global.t('mustBeValidNum');
-}
-
-export function isInt() {
-  return v =>
-    !v || Number.isInteger(parseFloat(v)) || i18n.global.t('mustBeInt');
-}
-
 export function isPositiveCheck(number: number) {
   return number >= 0;
 }

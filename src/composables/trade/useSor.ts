@@ -1,4 +1,4 @@
-import { Ref, onMounted, ref, computed } from 'vue';
+import { Ref, onMounted, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -73,6 +73,11 @@ export default function useSor(
     }
   }, 30 * 1e3);
 
+  watch(liquiditySelection, () => {
+    // When the liquidity type is changed we need to update the trade to use that selection
+    handleAmountChange();
+  });
+
   async function initSor(): Promise<void> {
     const config = getConfig();
     const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
@@ -113,7 +118,16 @@ export default function useSor(
       : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping trade
     const zeroValueTrade = amount === '' || new BigNumber(amount).isZero();
-    if (zeroValueTrade || isWrap.value || isUnwrap.value) {
+    if (zeroValueTrade) {
+      tokenInAmountInput.value = amount;
+      tokenOutAmountInput.value = amount;
+      priceImpact.value = 0;
+      sorReturn.value.hasSwaps = false;
+      sorReturn.value.returnAmount = new BigNumber(0);
+      return;
+    }
+
+    if (isWrap.value || isUnwrap.value) {
       tokenInAmountInput.value = amount;
       tokenOutAmountInput.value = amount;
       priceImpact.value = 0;
