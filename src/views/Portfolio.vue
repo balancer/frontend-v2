@@ -44,7 +44,7 @@
                   left: `${getIconPosition(i, pool.tokens.length)}px`
                 }"
               >
-                <Token :token="allTokens[token]" />
+                <BalAsset :address="token" />
               </div>
             </div>
           </template>
