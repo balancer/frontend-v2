@@ -104,10 +104,7 @@
         <BalBtnGroup
           :options="slippageOptions"
           v-model="appSlippage"
-          outline
-          color="gray"
-          size="sm"
-          class="capitalize mr-2 w-16 text-base sm:h-9"
+          @update:modelValue="setSlippage"
         />
         <input
           class="slippage-input w-20 px-2 border rounded-lg"
@@ -135,10 +132,7 @@
       <BalBtnGroup
         :options="tradeLiquidityOptions"
         v-model="appTradeLiquidity"
-        outline
-        color="gray"
-        size="sm"
-        class="capitalize mr-2 w-16 text-base sm:h-9"
+        @update:modelValue="setTradeLiquidity"
       />
     </div>
     <div class="network mt-4 p-4 text-sm border-t rounded-b-xl">
@@ -204,7 +198,8 @@ export default defineComponent({
           value: option
         })),
       slippageInput: '',
-      copiedAddress: false
+      copiedAddress: false,
+      appSlippage: store.state.app.slippage
     });
 
     // COMPUTED
@@ -216,14 +211,8 @@ export default defineComponent({
     );
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
-    const appSlippage = computed({
-      get: () => store.state.app.slippage,
-      set: slippage => setSlippage(slippage)
-    });
-    const appTradeLiquidity = computed({
-      get: () => store.state.app.tradeLiquidity,
-      set: tradeLiquidity => setTradeLiquidity(tradeLiquidity)
-    });
+    const appSlippage = computed(() => store.state.app.slippage);
+    const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
 
     const isCustomSlippage = computed(
       () =>

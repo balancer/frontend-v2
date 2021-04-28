@@ -4,8 +4,11 @@
       v-for="option in options"
       :key="option.value"
       @click="onSelect(option)"
-      :active="modelValue === option.value"
+      outline
+      size="sm"
+      class="capitalize mr-2 w-16"
       v-bind="attrs_"
+      :color="modelValue === option.value ? 'blue' : 'gray'"
     >
       {{ option.label }}
     </BalBtn>
