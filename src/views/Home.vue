@@ -68,12 +68,10 @@ export default defineComponent({
       reactive({
         enabled: shouldLoadPools,
         onSuccess: async pools => {
-          if (process.env.NODE_ENV !== 'production') {
-            const tokens = pools
-              .map(pool => pool.tokens.map(token => getAddress(token.address)))
-              .reduce((a, b) => [...a, ...b], []);
-            await store.dispatch('registry/injectTokens', tokens);
-          }
+          const tokens = pools
+            .map(pool => pool.tokens.map(token => getAddress(token.address)))
+            .reduce((a, b) => [...a, ...b], []);
+          await store.dispatch('registry/injectTokens', tokens);
         }
       })
     );
