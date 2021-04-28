@@ -2,6 +2,8 @@
   <div class="container mx-auto px-4 lg:px-0">
     <SubNav class="mb-8" />
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
+    {{ status }}
+    {{ shouldLoadPools }}
     <TokenSearchInput
       v-model="selectedTokens"
       :loading="isLoadingPools || isWaitingForPoolsQuery"
@@ -50,7 +52,8 @@ export default defineComponent({
     const {
       data: pools,
       isLoading: isLoadingPools,
-      isIdle: isWaitingForPoolsQuery
+      isIdle: isWaitingForPoolsQuery,
+      status
     } = useQuery(
       reactive([
         'poolsData',
@@ -87,7 +90,9 @@ export default defineComponent({
 
       //methods
       getAddress,
-      router
+      router,
+      status,
+      shouldLoadPools,
     };
   }
 });
