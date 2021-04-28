@@ -65,7 +65,8 @@ export default defineComponent({
     rounded: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     loadingLabel: { type: String, default: 'loading...' },
-    disabled: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
+    active: { type: Boolean, default: false }
   },
 
   setup(props) {
@@ -173,6 +174,13 @@ export default defineComponent({
       return 'shadow hover:shadow-none';
     });
 
+    const activeClasses = computed(() => {
+      if (props.outline && props.color === 'gray') {
+        return `border-blue-500 text-blue-500`;
+      }
+      return '';
+    });
+
     const btnClasses = computed(() => {
       return {
         [sizeClasses.value]: !props.circle,
@@ -183,7 +191,8 @@ export default defineComponent({
         [displayClasses.value]: true,
         [shapeClasses.value]: true,
         [shadowClasses.value]: true,
-        [cursorClasses.value]: true
+        [cursorClasses.value]: true,
+        [activeClasses.value]: props.active
       };
     });
 
