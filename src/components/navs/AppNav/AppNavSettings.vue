@@ -101,15 +101,14 @@
         </BalTooltip>
       </div>
       <div class="flex mt-1">
-        <div
-          v-for="slippage in slippageOptions"
-          :key="slippage"
-          class="option w-16 mr-2 py-1 text-center border rounded-lg cursor-pointer"
-          :class="{ active: appSlippage === slippage }"
-          @click="setSlippage(slippage)"
-        >
-          {{ fNum(slippage, null, '0.0%') }}
-        </div>
+        <BalBtnGroup
+          :options="slippageOptions"
+          v-model="appSlippage"
+          outline
+          color="gray"
+          size="sm"
+          class="capitalize mr-2 w-16 text-base sm:h-9"
+        />
         <input
           class="slippage-input w-20 px-2 border rounded-lg"
           :class="{ active: isCustomSlippage }"
@@ -133,17 +132,14 @@
           />
         </BalTooltip>
       </div>
-      <div class="flex mt-1">
-        <div
-          v-for="(tradeLiquidity, i) in tradeLiquidityOptions"
-          :key="i"
-          class="option w-16 mr-2 py-1 text-center border rounded-lg cursor-pointer capitalize"
-          :class="{ active: appTradeLiquidity === tradeLiquidity }"
-          @click="setTradeLiquidity(tradeLiquidity)"
-        >
-          {{ tradeLiquidity }}
-        </div>
-      </div>
+      <BalBtnGroup
+        :options="tradeLiquidityOptions"
+        v-model="appTradeLiquidity"
+        outline
+        color="gray"
+        size="sm"
+        class="capitalize mr-2 w-16 text-base sm:h-9"
+      />
     </div>
     <div class="network mt-4 p-4 text-sm border-t rounded-b-xl">
       <div v-text="t('network')" />
@@ -185,7 +181,6 @@ const locales = {
   'ja-JP': '日本語',
   'tr-TR': 'Türk'
 };
-const slippageOptions = ['0.005', '0.01', '0.02'];
 
 export default defineComponent({
   setup() {
@@ -198,10 +193,16 @@ export default defineComponent({
     // DATA
     const data = reactive({
       locales,
-      slippageOptions,
-      tradeLiquidityOptions: Object.values(LiquiditySelection).filter(
-        v => typeof v === 'string'
-      ),
+      slippageOptions: ['0.005', '0.01', '0.02'].map(option => ({
+        label: fNum(option, null, '0.0%'),
+        value: option
+      })),
+      tradeLiquidityOptions: Object.values(LiquiditySelection)
+        .filter(v => typeof v === 'string')
+        .map(option => ({
+          label: option,
+          value: option
+        })),
       slippageInput: '',
       copiedAddress: false
     });
@@ -213,22 +214,31 @@ export default defineComponent({
     const networkColorClass = computed(
       () => `network-${store.state.web3.config.shortName.toLowerCase()}`
     );
-    const appSlippage = computed(() => store.state.app.slippage);
-    const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
-
-    const isCustomSlippage = computed(() => {
-      return !slippageOptions.includes(appSlippage.value);
+    const appSlippage = computed({
+      get: () => store.state.app.slippage,
+      set: slippage => setSlippage(slippage)
+    });
+    const appTradeLiquidity = computed({
+      get: () => store.state.app.tradeLiquidity,
+      set: tradeLiquidity => setTradeLiquidity(tradeLiquidity)
     });
 
-    const connectorName = computed(() => {
-      return getConnectorName(store.state.web3.connector);
-    });
+    const isCustomSlippage = computed(
+      () =>
+        !Object.values(data.slippageOptions).some(
+          option => option.value === appSlippage.value
+        )
+    );
 
-    const connectorLogo = computed(() => {
-      return getConnectorLogo(store.state.web3.connector);
-    });
+    const connectorName = computed(() =>
+      getConnectorName(store.state.web3.connector)
+    );
+
+    const connectorLogo = computed(() =>
+      getConnectorLogo(store.state.web3.connector)
+    );
 
     // CALLBACKS
     onMounted(() => {
@@ -266,7 +276,6 @@ export default defineComponent({
 
         const slippage = number / 100;
         if (slippage >= 0.1) return;
-
         setSlippage(slippage.toString());
       }
     );
@@ -276,11 +285,11 @@ export default defineComponent({
       ...toRefs(data),
       // computed
       account,
+      appSlippage,
+      appTradeLiquidity,
       networkId,
       networkName,
       networkColorClass,
-      appSlippage,
-      appTradeLiquidity,
       appLocale,
       appDarkMode,
       isCustomSlippage,
@@ -293,7 +302,6 @@ export default defineComponent({
       setSlippage,
       setTradeLiquidity,
       copyAddress,
-      fNum,
       t,
       explorer
     };
@@ -319,6 +327,10 @@ export default defineComponent({
 
 .option.active {
   @apply text-blue-500 border-blue-500;
+}
+
+.slippage .bal-btn {
+  border: 1px solid #ff4a8d;
 }
 
 .slippage-input {
