@@ -50,15 +50,14 @@
           </div>
         </div>
         <div class="flex items-center">
-          <IconCross
-            class="p-1 w-6 h-6 text-red-500 rounded-full border cursor-pointer"
-            @click="logout"
-          />
+          <BalBtn circle color="white" @click="logout">
+            <BalIcon class="text-red-500" name="x" size="sm" />
+          </BalBtn>
         </div>
       </div>
     </div>
-    <div class="hidden">
-      <h5 v-text="t('language')" />
+    <div class="hidden px-4">
+      <span v-text="$t('language')" class="font-medium mb-2" />
       <div class="flex mt-1">
         <div
           v-for="(locale, localeKey) in locales"
@@ -71,22 +70,22 @@
         </div>
       </div>
     </div>
-    <div class="hidden mt-4">
-      <h5 v-text="t('theme')" />
+    <div class="hidden px-4 mt-4">
+      <span v-text="$t('theme')" class="font-medium mb-2" />
       <div class="flex mt-1">
         <div
-          class="option w-16 mr-2 py-1.5 flex justify-center border rounded-xl cursor-pointer"
+          class="option w-16 mr-2 py-1.5 flex items-center justify-center border rounded-xl cursor-pointer"
           :class="{ active: !appDarkMode }"
           @click="setDarkMode(false)"
         >
-          <IconSun class="w-5 h-5" />
+          <BalIcon name="sun" size="sm" />
         </div>
         <div
-          class="option w-16 mr-2 py-1.5 flex justify-center border rounded-xl cursor-pointer"
+          class="option w-16 mr-2 py-1.5 flex items-center justify-center border rounded-xl cursor-pointer"
           :class="{ active: appDarkMode }"
           @click="setDarkMode(true)"
         >
-          <IconMoon class="w-5 h-5" />
+          <BalIcon name="moon" size="sm" />
         </div>
       </div>
     </div>

@@ -13,6 +13,7 @@ const networkMap = {
   '42': 'kovan'
 };
 const environment = `${ENV}-${networkMap[NETWORK]}`;
+const release = `frontend-v2@${process.env.npm_package_version}`;
 
 export default function initSentry(app: App) {
   if (['production', 'staging'].includes(ENV)) {
@@ -30,7 +31,8 @@ export default function initSentry(app: App) {
         'https://d292b6ec7b6e4aa2801d972e06cb232c@o574636.ingest.sentry.io/5725878',
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 1.0,
-      environment
+      environment,
+      release
     });
   }
 }
