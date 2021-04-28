@@ -3,6 +3,9 @@ name: Checks
 on:
   - pull_request
 
+env:
+  VUE_APP_FATHOM_SITE_ID: xxx
+
 jobs:
   Build:
     runs-on: ubuntu-latest
