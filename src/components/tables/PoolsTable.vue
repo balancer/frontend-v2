@@ -54,6 +54,7 @@ import { getAddress } from '@ethersproject/address';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -68,6 +69,7 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { allTokens } = useTokens();
     const router = useRouter();
+    const { t } = useI18n();
 
     // COMPOSABLES
     const columns = ref([
@@ -80,28 +82,28 @@ export default defineComponent({
         className: 'cell'
       },
       {
-        name: 'Pool Name',
+        name: t('poolName'),
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',
         className: 'w-full'
       },
       {
-        name: 'Pool Value',
+        name: t('poolValue'),
         accessor: pool => fNum(pool.liquidity, 'usd'),
         className: 'cell',
         align: 'right',
         id: 'poolValue'
       },
       {
-        name: 'Vol (24h)',
+        name: t('volume24h', [t('hourAbbrev')]),
         accessor: pool => fNum(pool.volume, 'usd'),
         className: 'cell',
         align: 'right',
         id: 'poolVolume'
       },
       {
-        name: 'APY (1y)',
+        name: t('apy', [t('yearAbbrev')]),
         accessor: pool => `${fNum(pool.apy, 'percent')}`,
         className: 'cell',
         align: 'right',
