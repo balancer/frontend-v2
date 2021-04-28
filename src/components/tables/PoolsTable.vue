@@ -40,7 +40,7 @@
           >
             <span class="dot">•</span>
             {{ fNum(token.weight, 'percent') }}
-            {{ allTokens[getAddress(token.address)].symbol }}
+            {{ allTokens[getAddress(token.address)]?.symbol }}
           </span>
         </div>
       </template>

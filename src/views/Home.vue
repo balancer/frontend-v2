@@ -71,10 +71,12 @@ export default defineComponent({
       reactive({
         enabled: shouldLoadPools,
         onSuccess: async pools => {
-          const tokens = pools
-            .map(pool => pool.tokens.map(token => getAddress(token.address)))
-            .reduce((a, b) => [...a, ...b], []);
-          await store.dispatch('registry/injectTokens', tokens);
+          if (process.env.NODE_ENV !== 'production') {
+            const tokens = pools
+              .map(pool => pool.tokens.map(token => getAddress(token.address)))
+              .reduce((a, b) => [...a, ...b], []);
+            await store.dispatch('registry/injectTokens', tokens);
+          }
         }
       })
     );
@@ -92,7 +94,7 @@ export default defineComponent({
       getAddress,
       router,
       status,
-      shouldLoadPools,
+      shouldLoadPools
     };
   }
 });
