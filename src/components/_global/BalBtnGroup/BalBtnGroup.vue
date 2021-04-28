@@ -5,7 +5,7 @@
       :key="option.value"
       @click="onSelect(option)"
       :active="modelValue === option.value"
-      v-bind="$attrs"
+      v-bind="attrs_"
     >
       {{ option.label }}
     </BalBtn>
