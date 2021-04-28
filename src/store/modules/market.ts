@@ -6,11 +6,13 @@ type Prices = Record<string, number>;
 
 interface MarketState {
   prices: Prices;
+  gasPrice: number;
   loading: boolean;
 }
 
 const state: MarketState = {
   prices: {},
+  gasPrice: 0,
   loading: false
 };
 
@@ -27,14 +29,12 @@ const actions = {
       getEtherPrice()
     ]);
     prices[ETHER.address.toLowerCase()] = etherPrice;
-
-    const gasPrice = await getGasPrice();
-    prices['gas'] = {
-      price: gasPrice || 0,
-      price24HChange: 0
-    };
     commit('addPrices', prices);
     commit('setLoading', false);
+  },
+  async getGasPrice({ commit }){
+    const price = await getGasPrice();
+    commit('setGasPrice', price);
   }
 };
 
@@ -43,6 +43,10 @@ const mutations = {
     for (const asset in prices) {
       _state.prices[asset] = prices[asset];
     }
+  },
+
+  setGasPrice(_state: MarketState, price: number) {
+      _state.gasPrice = price;
   },
 
   setLoading(_state: MarketState, val: boolean) {

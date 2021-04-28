@@ -18,11 +18,12 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, computed } from 'vue';
+import { PropType, defineComponent, computed, onBeforeMount, ref } from 'vue';
 import { useStore } from 'vuex';
 import { ETHER } from '@/constants/tokenlists';
 import BigNumber from 'bignumber.js';
 import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import { isBudgetLeft } from '@/utils/balancer/bal4gas';
 
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
 
@@ -51,6 +52,8 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
 
+    const isBalForGasBudget = ref<boolean>(false);
+
     const eligibleAssetMeta = eligibleAssetList[networkMap[NETWORK]];
     const eligibleAssets = Object.fromEntries(
       Object.entries(eligibleAssetMeta).map(assetEntry => {
@@ -73,7 +76,7 @@ export default defineComponent({
       const balPrice =
         store.state.market.prices['0xba100000625a3754423978a60c9317c58a424e3d']
           ?.price || 0;
-      const gasPrice = store.state.market.prices['gas']?.price || 0;
+      const gasPrice = store.state.market.gasPrice || 0;
 
       const addressInIsEligible =
         props.addressIn === ETHER.address ||
@@ -164,8 +167,13 @@ export default defineComponent({
     }
 
     function isActive(): boolean {
-      return NETWORK === '1' && store.state.balForGas.isBudgetLeft;
+      return NETWORK === '1' && isBalForGasBudget.value;
     }
+
+    // CALLBACKS
+    onBeforeMount(async () => {
+        isBalForGasBudget.value = await isBudgetLeft();
+    });
 
     return {
       text,
