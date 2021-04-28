@@ -8,7 +8,6 @@ export default class ExitParams {
   private exchange: PoolExchange;
   private isStablePool: boolean;
   private dataEncodeFn: Function;
-  private toInternalBalance = false;
 
   constructor(exchange) {
     this.exchange = exchange;
@@ -23,7 +22,8 @@ export default class ExitParams {
     amountsOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
-    exactOut: boolean
+    exactOut: boolean,
+    toInternalBalance = false
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
     const parsedBptIn = parseUnits(
@@ -45,7 +45,7 @@ export default class ExitParams {
         assets: this.exchange.pool.tokens,
         minAmountsOut: parsedAmountsOut,
         userData: txData,
-        toInternalBalance: this.toInternalBalance
+        toInternalBalance: toInternalBalance
       }
     ];
   }

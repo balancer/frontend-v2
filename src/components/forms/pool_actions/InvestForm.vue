@@ -112,9 +112,6 @@
             @click.prevent="amounts[i] = tokenBalance(i)"
           >
             {{ $t('balance') }}: {{ formatBalance(i) }}
-            <div v-if="formatUserBalance(i) != 0">
-              {{ $t('userBalance') }}: {{ formatUserBalance(i) }}
-            </div>
           </div>
         </template>
         <template v-slot:append>
@@ -122,7 +119,7 @@
             <BalBtn
               size="xs"
               color="white"
-              @click.prevent="amounts[i] = tokenBalance(i)"
+              @click.prevent="amounts[i] = tokenBalance(i).toString()"
             >
               {{ $t('max') }}
             </BalBtn>
@@ -139,6 +136,12 @@
         @click.prevent="connectWallet"
       />
       <template v-else>
+        <BalCheckbox
+          v-model="includeUserBalance"
+          name="includeUserBalance"
+          size="sm"
+          label="Include User Balance"
+        />
         <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
           <span
             >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
@@ -264,6 +267,7 @@ export default defineComponent({
       propToken: 0,
       range: 1000,
       highPiAccepted: false,
+      includeUserBalance: false,
       userBalances: [] as number[]
     });
 
@@ -409,7 +413,18 @@ export default defineComponent({
 
     // METHODS
     function tokenBalance(index) {
-      return allTokens.value[props.pool.tokens[index]]?.balance || 0;
+      let balance = allTokens.value[props.pool.tokens[index]]?.balance || 0;
+      if (data.includeUserBalance && data.userBalances[index] > 0) {
+        const decimals = props.pool.tokens.map(
+          token => allTokens.value[token].decimals
+        );
+        const units = bnum(
+          formatUnits(data.userBalances[index], decimals[index])
+        );
+        balance = bnum(balance).plus(units);
+      }
+
+      return balance;
     }
 
     async function getUserBalances() {
@@ -434,18 +449,6 @@ export default defineComponent({
 
     function formatBalance(index) {
       return fNum(tokenBalance(index), 'token');
-    }
-
-    function formatUserBalance(index) {
-      const decimals = props.pool.tokens.map(
-        token => allTokens.value[token].decimals
-      );
-
-      return data.userBalances[index]
-        ? bnum(formatUnits(data.userBalances[index], decimals[index])).toFixed(
-            3
-          )
-        : '';
     }
 
     function amountRules(index) {
@@ -508,7 +511,8 @@ export default defineComponent({
         const tx = await poolExchange.join(
           account.value,
           fullAmounts.value,
-          minBptOut.value
+          minBptOut.value,
+          data.includeUserBalance
         );
         console.log('Receipt', tx);
         txListener(tx.hash, {
@@ -615,7 +619,6 @@ export default defineComponent({
       // methods
       submit,
       approveAllowances,
-      formatUserBalance,
       fNum
     };
   }

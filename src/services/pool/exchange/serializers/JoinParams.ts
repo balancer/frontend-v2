@@ -8,7 +8,6 @@ export default class JoinParams {
   private exchange: PoolExchange;
   private isStablePool: boolean;
   private dataEncodeFn: Function;
-  private fromInternalBalance = false;
 
   constructor(exchange) {
     this.exchange = exchange;
@@ -21,7 +20,8 @@ export default class JoinParams {
   public serialize(
     account: string,
     amountsIn: string[],
-    bptOut: string
+    bptOut: string,
+    fromInternalBalance = false
   ): any[] {
     const parsedAmountsIn = this.parseAmounts(amountsIn);
     const parsedBptOut = parseUnits(
@@ -38,7 +38,7 @@ export default class JoinParams {
         assets: this.exchange.pool.tokens,
         maxAmountsIn: parsedAmountsIn,
         userData: txData,
-        fromInternalBalance: this.fromInternalBalance
+        fromInternalBalance: fromInternalBalance
       }
     ];
   }

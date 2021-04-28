@@ -49,9 +49,15 @@ export default class Exchange {
   public async join(
     account: string,
     amountsIn: string[],
-    bptOut = '0'
+    bptOut = '0',
+    fromUserBalance = false
   ): Promise<TransactionResponse> {
-    const txParams = this.joinParams.serialize(account, amountsIn, bptOut);
+    const txParams = this.joinParams.serialize(
+      account,
+      amountsIn,
+      bptOut,
+      fromUserBalance
+    );
 
     return await sendTransaction(
       this.provider,
@@ -91,14 +97,16 @@ export default class Exchange {
     amountsOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
-    exactOut: boolean
+    exactOut: boolean,
+    toUserBalance = false
   ): Promise<TransactionResponse> {
     const txParams = this.exitParams.serialize(
       account,
       amountsOut,
       bptIn,
       exitTokenIndex,
-      exactOut
+      exactOut,
+      toUserBalance
     );
 
     return await sendTransaction(

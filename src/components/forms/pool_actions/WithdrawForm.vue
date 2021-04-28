@@ -121,6 +121,12 @@
         @click.prevent="connectWallet"
       />
       <template v-else>
+        <BalCheckbox
+          v-model="includeUserBalance"
+          name="includeUserBalance"
+          size="sm"
+          label="Withdraw to User Balance"
+        />
         <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
           <span
             >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
@@ -230,7 +236,8 @@ export default defineComponent({
       withdrawType: FormTypes.proportional as FormTypes,
       singleAsset: 0,
       range: 1000,
-      highPiAccepted: false
+      highPiAccepted: false,
+      includeUserBalance: false
     });
 
     // COMPOSABLES
@@ -510,7 +517,8 @@ export default defineComponent({
           amountsOut.value,
           bptIn.value,
           exitTokenIndex.value,
-          exactOut.value
+          exactOut.value,
+          data.includeUserBalance
         );
         console.log('Receipt', tx);
         txListener(tx.hash, {
