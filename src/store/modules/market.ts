@@ -1,15 +1,18 @@
 import { getEtherPrice, getTokensPrice } from '@/api/coingecko';
 import { ETHER } from '@/constants/tokenlists';
+import { getGasPrice } from '@/utils/balancer/gasPrices';
 
 type Prices = Record<string, number>;
 
 interface MarketState {
   prices: Prices;
+  gasPrice: number;
   loading: boolean;
 }
 
 const state: MarketState = {
   prices: {},
+  gasPrice: 0,
   loading: false
 };
 
@@ -28,6 +31,10 @@ const actions = {
     prices[ETHER.address.toLowerCase()] = etherPrice;
     commit('addPrices', prices);
     commit('setLoading', false);
+  },
+  async getGasPrice({ commit }) {
+    const price = await getGasPrice();
+    commit('setGasPrice', price);
   }
 };
 
@@ -36,6 +43,10 @@ const mutations = {
     for (const asset in prices) {
       _state.prices[asset] = prices[asset];
     }
+  },
+
+  setGasPrice(_state: MarketState, price: number) {
+    _state.gasPrice = price;
   },
 
   setLoading(_state: MarketState, val: boolean) {

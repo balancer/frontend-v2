@@ -20,6 +20,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@balancer-labs/assets": "github:balancer-labs/assets#master",
     "@balancer-labs/sor": "^1.0.0",
     "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#john/rc03-package",
     "@ensdomains/content-hash": "^2.5.3",

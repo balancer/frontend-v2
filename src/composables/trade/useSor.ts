@@ -118,7 +118,16 @@ export default function useSor(
       : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping trade
     const zeroValueTrade = amount === '' || new BigNumber(amount).isZero();
-    if (zeroValueTrade || isWrap.value || isUnwrap.value) {
+    if (zeroValueTrade) {
+      tokenInAmountInput.value = amount;
+      tokenOutAmountInput.value = amount;
+      priceImpact.value = 0;
+      sorReturn.value.hasSwaps = false;
+      sorReturn.value.returnAmount = new BigNumber(0);
+      return;
+    }
+
+    if (isWrap.value || isUnwrap.value) {
       tokenInAmountInput.value = amount;
       tokenOutAmountInput.value = amount;
       priceImpact.value = 0;

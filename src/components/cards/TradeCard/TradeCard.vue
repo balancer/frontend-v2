@@ -21,6 +21,12 @@
         @exact-in-change="value => (exactIn = value)"
         @change="handleAmountChange"
       />
+      <GasReimbursement
+        class="mb-5"
+        :address-in="tokenInAddress"
+        :address-out="tokenOutAddress"
+        :sorReturn="sorReturn"
+      />
       <BalBtn
         v-if="!isAuthenticated"
         :label="$t('connectWallet')"
@@ -74,12 +80,14 @@ import { ETHER } from '@/constants/tokenlists';
 import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
+import GasReimbursement from './GasReimbursement.vue';
 
 export default defineComponent({
   components: {
     SuccessOverlay,
     TradePair,
-    TradeSettingsPopover
+    TradeSettingsPopover,
+    GasReimbursement
   },
 
   setup() {
