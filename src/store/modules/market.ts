@@ -32,7 +32,7 @@ const actions = {
     commit('addPrices', prices);
     commit('setLoading', false);
   },
-  async getGasPrice({ commit }){
+  async getGasPrice({ commit }) {
     const price = await getGasPrice();
     commit('setGasPrice', price);
   }
@@ -46,7 +46,7 @@ const mutations = {
   },
 
   setGasPrice(_state: MarketState, price: number) {
-      _state.gasPrice = price;
+    _state.gasPrice = price;
   },
 
   setLoading(_state: MarketState, val: boolean) {

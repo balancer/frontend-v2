@@ -24,14 +24,9 @@ import { ETHER } from '@/constants/tokenlists';
 import BigNumber from 'bignumber.js';
 import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 import { isBudgetLeft } from '@/utils/balancer/bal4gas';
+import useWeb3 from '@/composables/useWeb3';
 
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
-
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
-const networkMap = {
-  '1': 'homestead',
-  '42': 'kovan'
-};
 
 export default defineComponent({
   props: {
@@ -51,10 +46,10 @@ export default defineComponent({
 
   setup(props) {
     const store = useStore();
-
+    const { appNetwork } = useWeb3();
     const isBalForGasBudget = ref<boolean>(false);
 
-    const eligibleAssetMeta = eligibleAssetList[networkMap[NETWORK]];
+    const eligibleAssetMeta = eligibleAssetList[appNetwork.networkName];
     const eligibleAssets = Object.fromEntries(
       Object.entries(eligibleAssetMeta).map(assetEntry => {
         const [address] = assetEntry;
@@ -167,12 +162,12 @@ export default defineComponent({
     }
 
     function isActive(): boolean {
-      return NETWORK === '1' && isBalForGasBudget.value;
+      return appNetwork.key === '1' && isBalForGasBudget.value;
     }
 
     // CALLBACKS
     onBeforeMount(async () => {
-        isBalForGasBudget.value = await isBudgetLeft();
+      isBalForGasBudget.value = await isBudgetLeft();
     });
 
     return {
