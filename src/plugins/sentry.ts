@@ -1,6 +1,7 @@
 import { App } from 'vue';
 import { captureException, init, setTag } from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
+import { version } from '../../package.json';
 
 // Using Sentry's vanila JS package (@sentry/browser) here instead of
 // the official vue package (@sentry/vue) because it doesn't support vue 3 yet.
@@ -13,7 +14,7 @@ const networkMap = {
   '42': 'kovan'
 };
 const environment = `${ENV}-${networkMap[NETWORK]}`;
-const release = `frontend-v2@${process.env.npm_package_version}`;
+const release = `frontend-v2@${version}`;
 
 export default function initSentry(app: App) {
   if (['production', 'staging'].includes(ENV)) {
