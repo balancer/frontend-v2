@@ -182,7 +182,7 @@ export default defineComponent({
     const data = reactive({
       locales,
       slippageOptions: ['0.005', '0.01', '0.02'].map(option => ({
-        label: fNum(option, null, '0.0%'),
+        label: fNum(option, null, { format: '0.0%' }),
         value: option
       })),
       tradeLiquidityOptions: Object.values(LiquiditySelection)
