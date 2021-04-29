@@ -1,17 +1,18 @@
 <template>
   <div class="overflow-x-auto whitespace-nowrap rounded-lg" ref="tableRef">
-    <table class="min-w-full">
+    <table class="min-w-full whitespace-normal">
       <thead
-        class="bg-white w-full flex flex-row z-20"
-        :class="{
-          'sticky top-0': sticky === 'both' || sticky === 'vertical'
-        }"
+        :class="[
+          'bg-white w-full flex flex-row z-20',
+          { 'sticky top-0': sticky === 'both' || sticky === 'vertical' }
+        ]"
       >
         <td
           v-for="(column, columnIndex) in columns"
           :key="`header-${column.id}`"
-          class="p-6 flex flex-grow bg-white headingShadow border-b border-gray-200 cursor-pointer"
           :class="[
+            'p-6 flex bg-white headingShadow border-b border-gray-200 cursor-pointer',
+            column.noGrow ? '' : 'flex-grow',
             column.className,
             column.align === 'right' ? 'justify-end' : 'justify-start',
             getHorizontalStickyClass(columnIndex),
@@ -51,20 +52,23 @@
         <tr
           v-for="(dataItem, index) in tableData"
           :key="`tableRow-${index}`"
-          class="flex flex-row bg-white z-10 rowBg"
           @click="onRowClick(dataItem)"
-          :class="{ 'cursor-pointer': onRowClick }"
+          :class="[
+            'flex flex-grow bg-white z-10 rowBg',
+            { 'cursor-pointer': onRowClick }
+          ]"
         >
           <td
             v-for="(column, columnIndex) in columns"
             :key="column.id"
             :class="[
+              'flex',
               column.className,
               column.align === 'right' ? 'justify-end' : 'justify-start',
               getHorizontalStickyClass(columnIndex),
-              isColumnStuck ? 'isSticky' : ''
+              isColumnStuck ? 'isSticky' : '',
+              column.noGrow ? '' : 'flex-grow'
             ]"
-            class="flex flex-grow"
           >
             <slot
               v-if="column.Cell"
@@ -107,6 +111,8 @@ export type ColumnDefinition = {
   align?: 'left' | 'right';
   // Dictates whether the column is sortable or not
   sortable?: boolean;
+  // Should the column width grow to fit available space?
+  noGrow?: boolean;
 };
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
