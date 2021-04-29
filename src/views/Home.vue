@@ -6,8 +6,13 @@
       <PoolsTable
         :isLoading="isLoadingSharesPools || isWaitingForSharesPoolsQuery"
         :data="poolsShares"
+        class="mb-8"
       />
-      <div class="mb-8" />
+      <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
+      <BalLink href="https://pools.balancer.exchange" external>{{
+        $t('goToBalancerV1Site')
+      }}</BalLink>
+      <div class="mb-16" />
     </template>
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
     <TokenSearchInput
