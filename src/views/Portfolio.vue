@@ -130,7 +130,8 @@ export default defineComponent({
       },
       {
         name: t('myBalance'),
-        accessor: pool => fNum(getPoolShare(pool), 'usd', null, true),
+        accessor: pool =>
+          fNum(getPoolShare(pool), 'usd', { forcePreset: true }),
         className: 'cell',
         align: 'right',
         id: 'myBalance'
