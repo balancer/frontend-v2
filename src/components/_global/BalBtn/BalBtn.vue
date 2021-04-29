@@ -74,7 +74,7 @@ export default defineComponent({
         case 'xs':
           return 'px-2 h-6 text-xs';
         case 'sm':
-          return 'px-3 h-10 text-xs';
+          return 'px-3 h-9 text-base';
         case 'lg':
           return 'px-5 h-18 text-lg md:text-2xl';
         default:
