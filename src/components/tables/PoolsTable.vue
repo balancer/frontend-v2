@@ -94,21 +94,21 @@ export default defineComponent({
       },
       {
         name: t('poolValue'),
-        accessor: pool => fNum(pool.liquidity, 'usd'),
+        accessor: pool => fNum(pool.totalLiquidity, 'usd'),
         className: 'w-32',
         align: 'right',
         id: 'poolValue'
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
-        accessor: pool => fNum(pool.volume, 'usd'),
+        accessor: pool => fNum(pool.dynamic.volume, 'usd'),
         className: 'w-32',
         align: 'right',
         id: 'poolVolume'
       },
       {
         name: t('apy', [t('yearAbbrev')]),
-        accessor: pool => `${fNum(pool.apy, 'percent')}`,
+        accessor: pool => `${fNum(pool.dynamic.apy, 'percent')}`,
         className: 'w-32',
         align: 'right',
         id: 'poolApy'
