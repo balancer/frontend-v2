@@ -8,7 +8,7 @@
         />
         <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" white />
         <span v-else class="text-3xl font-bold text-white">
-          {{ fNum(totalInvested, 'usd', null, true) }}
+          {{ fNum(totalInvested, 'usd', { forcePreset: true }) }}
         </span>
       </template>
       <template v-else>

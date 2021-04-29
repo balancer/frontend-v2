@@ -107,7 +107,7 @@
           :class="{ active: appSlippage === slippage }"
           @click="setSlippage(slippage)"
         >
-          {{ fNum(slippage, null, '0.0%') }}
+          {{ fNum(slippage, null, { format: '0.0%' }) }}
         </div>
         <input
           class="slippage-input w-20 px-2 border rounded-lg"

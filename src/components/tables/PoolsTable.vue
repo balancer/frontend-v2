@@ -36,11 +36,12 @@
           <span
             v-for="token in pool.tokens"
             :key="token"
-            class="inline-block mr-1"
+            class="inline-block mr-4"
           >
-            <span class="dot">•</span>
-            {{ fNum(token.weight, 'percent') }}
             {{ allTokens[getAddress(token.address)]?.symbol }}
+            <span class="font-medium text-gray-400 text-xs">
+              {{ fNum(token.weight, 'percent_lg') }}
+            </span>
           </span>
         </div>
       </template>
@@ -55,6 +56,7 @@ import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   props: {
@@ -70,6 +72,7 @@ export default defineComponent({
     const { allTokens } = useTokens();
     const router = useRouter();
     const { t } = useI18n();
+    const { bp } = useBreakpoints();
 
     // COMPOSABLES
     const columns = ref([
@@ -79,33 +82,34 @@ export default defineComponent({
         accessor: 'uri',
         Header: 'iconColumnHeader',
         Cell: 'iconColumnCell',
-        className: 'cell'
+        className: 'w-32 md:w-36 lg:w-40',
+        noGrow: true
       },
       {
         name: t('poolName'),
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',
-        className: 'w-full'
+        className: 'w-72'
       },
       {
         name: t('poolValue'),
         accessor: pool => fNum(pool.liquidity, 'usd'),
-        className: 'cell',
+        className: 'w-32',
         align: 'right',
         id: 'poolValue'
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
         accessor: pool => fNum(pool.volume, 'usd'),
-        className: 'cell',
+        className: 'w-32',
         align: 'right',
         id: 'poolVolume'
       },
       {
         name: t('apy', [t('yearAbbrev')]),
         accessor: pool => `${fNum(pool.apy, 'percent')}`,
-        className: 'cell',
+        className: 'w-32',
         align: 'right',
         id: 'poolApy'
       }
@@ -116,13 +120,12 @@ export default defineComponent({
     }
 
     function getIconPosition(i: number, count: number) {
-      if (count < 3) {
-        return 28 * i + 24;
-      }
-      if (count === 3) {
-        return 24 * i + 24;
-      }
-      return (48 * i) / (count - 1) + 24;
+      if (count < 3) return 28 * i + 24;
+      if (count === 3) return 24 * i + 24;
+
+      if (['sm', 'md'].includes(bp.value)) return (48 * i) / (count - 1) + 24;
+      if (bp.value === 'lg') return (72 * i) / (count - 1) + 24;
+      return (96 * i) / (count - 1) + 24;
     }
 
     return {

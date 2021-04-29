@@ -58,7 +58,7 @@ export default defineComponent({
     const appLoading = computed(() => store.state.app.loading);
 
     function formatYAxis(value: number) {
-      return fNum(value, null, '0.%');
+      return fNum(value, null, { format: '0.%' });
     }
 
     const nonEmptyHistory = computed(() =>
