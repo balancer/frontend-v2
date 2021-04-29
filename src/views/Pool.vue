@@ -5,10 +5,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
         <BalLoadingBlock v-if="loading" class="h-12 mb-2" />
-        <h3 v-else class="font-bold mb-2">
-          {{ title }}
-        </h3>
-
+        <h3 v-else v-html="title" class="font-bold mb-2" />
         <BalLoadingBlock v-if="loading" class="h-4" />
         <div v-else class="text-sm">
           {{ poolTypeLabel }}. {{ poolFeeLabel }}.
@@ -103,7 +100,6 @@ import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import SubNav from '@/components/navs/SubNav.vue';
-import useTokens from '@/composables/useTokens';
 
 interface PoolPageData {
   id: string;
@@ -129,7 +125,6 @@ export default defineComponent({
     const router = useRouter();
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
-    const { allTokens } = useTokens();
     const {
       appNetwork,
       account,
@@ -158,17 +153,9 @@ export default defineComponent({
     });
 
     const title = computed(() => {
-      return pool.value.tokens
-        .map((address, index) => {
-          const weight = pool.value.weightsPercent[index];
-          const token = allTokens.value[address];
-          if (!token) return null;
-
-          const symbol = token.symbol;
-          return `${fNum(weight, null, '0.')} ${symbol}`;
-        })
-        .filter(token => token)
-        .join(', ');
+      const divider =
+        pool.value.name.length + pool.value.symbol.length < 40 ? ' ' : '<br>';
+      return `${pool.value.name}${divider}(${pool.value.symbol})`;
     });
 
     const poolTypeLabel = computed(() => {

@@ -32,7 +32,7 @@ const actions = {
 
   async getAll({ commit }): Promise<PoolData> {
     const network = Number(process.env.VUE_APP_NETWORK || 1);
-    const pools = await getPools(network);
+    const pools = await getPools({ chainId: network });
     commit('setAll', pools);
     return pools;
   }

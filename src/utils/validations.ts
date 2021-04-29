@@ -1,6 +1,8 @@
+import i18n from '@/plugins/i18n';
+
 export function isRequired(field = '') {
   const _field = field ? `${field} ` : 'Input ';
-  return v => !!v || `${_field}is required`;
+  return v => !!v || `${_field}${i18n.global.t('isRequired')}`;
 }
 
 export function minChar(minLength: number, field = '') {
@@ -8,34 +10,21 @@ export function minChar(minLength: number, field = '') {
   return v =>
     !v ||
     v.length >= minLength ||
-    `${_field}must be at least ${minLength} characters`;
-}
-
-export function isSameAs(val: string, field = '') {
-  return v => !v || v === val || `must be the same as ${field}`;
-}
-
-export function isNumberCheck(val) {
-  return !isNaN(parseFloat(val)) && isFinite(val);
-}
-export function isNumber() {
-  return v => !v || isNumberCheck(v) || 'must be a valid number';
-}
-
-export function isInt() {
-  return v => !v || Number.isInteger(parseFloat(v)) || 'must be integer';
+    `${_field}${i18n.global.t('mustBeAtLeast', [minLength])}`;
 }
 
 export function isPositiveCheck(number: number) {
   return number >= 0;
 }
 export function isPositive() {
-  return v => !v || isPositiveCheck(v) || 'must be a positive number';
+  return v => !v || isPositiveCheck(v) || i18n.global.t('mustBePositive');
 }
 
 export function isLessThanOrEqualTo(max: number, msg = '') {
   return v =>
-    !v || parseFloat(v) <= max || (msg ? msg : `must be less than ${max}`);
+    !v ||
+    parseFloat(v) <= max ||
+    (msg ? msg : i18n.global.t('mustBeLessThan', [max]));
 }
 
 export const isEmailCheck = email => {
@@ -44,5 +33,5 @@ export const isEmailCheck = email => {
 };
 
 export function isEmail() {
-  return v => !v || isEmailCheck(v) || 'Must be a valid email';
+  return v => !v || isEmailCheck(v) || i18n.global.t('mustBeValidEmail');
 }

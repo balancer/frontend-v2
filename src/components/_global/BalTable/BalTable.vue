@@ -1,17 +1,18 @@
 <template>
   <div class="overflow-x-auto whitespace-nowrap rounded-lg" ref="tableRef">
-    <table class="min-w-full">
+    <table class="min-w-full whitespace-normal">
       <thead
-        class="bg-white w-full flex flex-row z-20"
-        :class="{
-          'sticky top-0': sticky === 'both' || sticky === 'vertical'
-        }"
+        :class="[
+          'bg-white w-full flex flex-row z-20',
+          { 'sticky top-0': sticky === 'both' || sticky === 'vertical' }
+        ]"
       >
         <td
           v-for="(column, columnIndex) in columns"
           :key="`header-${column.id}`"
-          class="p-6 flex flex-grow bg-white headingShadow border-b border-gray-200 cursor-pointer"
           :class="[
+            'p-6 flex bg-white headingShadow border-b border-gray-200 cursor-pointer',
+            column.noGrow ? '' : 'flex-grow',
             column.className,
             column.align === 'right' ? 'justify-end' : 'justify-start',
             getHorizontalStickyClass(columnIndex),
@@ -46,25 +47,28 @@
           />
         </td>
       </thead>
-      <BalLoadingBlock v-if="isLoading" :class="skeletonClass" />
+      <BalLoadingBlock v-if="isLoading" :class="skeletonClass" square />
       <tbody v-else>
         <tr
-          v-for="(dataItem, index) in _data"
+          v-for="(dataItem, index) in tableData"
           :key="`tableRow-${index}`"
-          class="flex flex-row bg-white z-10 rowBg"
           @click="onRowClick(dataItem)"
-          :class="{ 'cursor-pointer': onRowClick }"
+          :class="[
+            'flex flex-grow bg-white z-10 rowBg',
+            { 'cursor-pointer': onRowClick }
+          ]"
         >
           <td
             v-for="(column, columnIndex) in columns"
             :key="column.id"
             :class="[
+              'flex',
               column.className,
               column.align === 'right' ? 'justify-end' : 'justify-start',
               getHorizontalStickyClass(columnIndex),
-              isColumnStuck ? 'isSticky' : ''
+              isColumnStuck ? 'isSticky' : '',
+              column.noGrow ? '' : 'flex-grow'
             ]"
-            class="flex flex-grow"
           >
             <slot
               v-if="column.Cell"
@@ -107,6 +111,8 @@ export type ColumnDefinition = {
   align?: 'left' | 'right';
   // Dictates whether the column is sortable or not
   sortable?: boolean;
+  // Should the column width grow to fit available space?
+  noGrow?: boolean;
 };
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
@@ -120,12 +126,7 @@ export default defineComponent({
       required: true
     },
     data: {
-      type: Object as PropType<Array<any>>,
-      required: true
-    },
-    dataKey: {
-      type: String,
-      required: true
+      type: Object as PropType<Array<any>>
     },
     isLoading: {
       type: Boolean,
@@ -138,14 +139,14 @@ export default defineComponent({
       type: Function
     },
     sticky: {
-      type: Object as PropType<Sticky>
+      type: String as PropType<Sticky>
     }
   },
   setup(props) {
     const stickyHeaderRef = ref();
     const tableRef = ref<HTMLElement>();
     const isColumnStuck = ref(false);
-    const _data = ref(props.data);
+    const tableData = ref(props.data);
     const currentSortDirection = ref<'asc' | 'desc' | null>(null);
     const currentSortColumn = ref<string | null>(null);
 
@@ -184,11 +185,11 @@ export default defineComponent({
         const sortedData = sortBy(props.data, column.accessor);
 
         if (currentSortDirection.value === 'asc') {
-          _data.value = sortedData;
+          tableData.value = sortedData;
         } else if (currentSortDirection.value === 'desc') {
-          _data.value = sortedData.reverse();
+          tableData.value = sortedData.reverse();
         }
-        _data.value = sortedData;
+        tableData.value = sortedData;
       }
     };
 
@@ -212,7 +213,7 @@ export default defineComponent({
     watch(
       () => props.data,
       newData => {
-        _data.value = newData;
+        tableData.value = newData;
       }
     );
 
@@ -228,7 +229,7 @@ export default defineComponent({
 
       //data
       isColumnStuck,
-      _data,
+      tableData,
       currentSortColumn,
       currentSortDirection,
       console
@@ -264,6 +265,6 @@ export default defineComponent({
 }
 
 .rowBg:hover > td {
-  @apply bg-gray-100;
+  @apply bg-gray-50;
 }
 </style>

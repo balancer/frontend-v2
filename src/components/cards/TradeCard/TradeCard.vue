@@ -21,6 +21,12 @@
         @exact-in-change="value => (exactIn = value)"
         @change="handleAmountChange"
       />
+      <GasReimbursement
+        class="mb-5"
+        :address-in="tokenInAddress"
+        :address-out="tokenOutAddress"
+        :sorReturn="sorReturn"
+      />
       <BalBtn
         v-if="!isAuthenticated"
         :label="$t('connectWallet')"
@@ -69,18 +75,19 @@ import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
-import initialTokens from '@/constants/initialTokens.json';
 import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
+import GasReimbursement from './GasReimbursement.vue';
 
 export default defineComponent({
   components: {
     SuccessOverlay,
     TradePair,
-    TradeSettingsPopover
+    TradeSettingsPopover,
+    GasReimbursement
   },
 
   setup() {
@@ -175,9 +182,8 @@ export default defineComponent({
     }
 
     async function populateInitialTokens(): Promise<void> {
-      const { chainId } = getConfig();
-      tokenInAddress.value = initialTokens[chainId].input;
-      tokenOutAddress.value = initialTokens[chainId].output;
+      tokenInAddress.value = store.state.trade.inputAsset;
+      tokenOutAddress.value = store.state.trade.outputAsset;
     }
 
     async function approve(): Promise<void> {
@@ -193,10 +199,12 @@ export default defineComponent({
     });
 
     watch(tokenInAddress, () => {
+      store.commit('trade/setInputAsset', tokenInAddress.value);
       handleAmountChange();
     });
 
     watch(tokenOutAddress, () => {
+      store.commit('trade/setOutputAsset', tokenOutAddress.value);
       handleAmountChange();
     });
 

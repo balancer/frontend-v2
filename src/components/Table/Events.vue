@@ -56,28 +56,28 @@ export default {
 
     const columns = computed(() => [
       {
-        name: 'Action',
+        name: t('action'),
         id: 'action',
         accessor: 'tx',
         Cell: 'tokenActionCell',
         className: 'pool-balance-table-cell'
       },
       {
-        name: 'Details',
+        name: t('details'),
         id: 'details',
         accessor: 'details',
         align: 'right',
         className: 'w-full'
       },
       {
-        name: 'Value',
+        name: t('value'),
         id: 'value',
         accessor: action => fNum(action.value, 'usd'),
         align: 'right',
         className: 'pool-balance-table-cell'
       },
       {
-        name: 'Date',
+        name: t('date'),
         id: 'date',
         accessor: action => formatDate(action.timestamp),
         align: 'right',

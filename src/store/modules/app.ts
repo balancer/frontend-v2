@@ -28,6 +28,10 @@ const actions = {
       // Fetch init data
       await dispatch('registry/get', null, { root: true });
       await dispatch('market/loadPrices', [], { root: true });
+      await dispatch('market/getGasPrice', [], { root: true });
+
+      // Fetch initial trade tokens
+      dispatch('trade/init', null, { root: true });
 
       // Setup web3
       const auth = getInstance();

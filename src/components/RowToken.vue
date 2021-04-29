@@ -1,6 +1,6 @@
 <template>
   <div class="flex py-3 px-4 highlight items-center leading-5 text-base">
-    <Token :token="token" :size="34" class="mr-2" />
+    <BalAsset :address="token.address" :size="34" class="mr-2" />
     <div class="flex-auto">
       {{ token.symbol }}
       <div class="text-gray text-sm">
