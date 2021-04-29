@@ -6,23 +6,11 @@ import { useStore } from 'vuex';
 import isEmpty from 'lodash/isEmpty';
 import { getAddress } from '@ethersproject/address';
 
-import { getPoolsWithVolume } from '@/utils/balancer/pools';
-
 import useWeb3 from '@/composables/useWeb3';
 import QUERY_KEYS from '@/constants/queryKeys';
 
-import { PoolType, PoolToken } from '@/api/subgraph';
-
-type Pool = {
-  liquidity: number;
-  apy: string | number;
-  volume: string;
-  id: string;
-  poolType: PoolType;
-  swapFee: string;
-  tokensList: string[];
-  tokens: PoolToken[];
-};
+import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import { Pool } from '@/services/balancer/subgraph/types';
 
 type PoolsQueryResponse = {
   pools: Pool[];
@@ -32,19 +20,25 @@ type PoolsQueryResponse = {
 export default function usePoolsQuery(
   options: QueryObserverOptions<PoolsQueryResponse> = {}
 ) {
-  const store = useStore();
-  const { appNetwork } = useWeb3();
+  // SERVICES
+  const balancerSubgraph = new BalancerSubgraph();
 
+  // COMPOSABLES
+  const store = useStore();
+
+  // DATA
+  const queryKey = QUERY_KEYS.Pools.All;
+
+  // COMPUTED
   const prices = computed(() => store.state.market.prices);
   const shouldLoadPools = computed(() => !isEmpty(prices.value));
 
-  const queryKey = QUERY_KEYS.Pools.All;
-
+  // METHODS
   const queryFn = async () => {
-    const pools = await getPoolsWithVolume({
-      chainId: appNetwork.id,
-      prices: prices.value
-    });
+    const pools = await await balancerSubgraph.getDecoratedPools(
+      '24h',
+      prices.value
+    );
 
     const tokens = pools
       .map(pool => pool.tokensList.map(getAddress))
