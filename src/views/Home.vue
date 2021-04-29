@@ -14,18 +14,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, reactive } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent, ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { getAddress } from '@ethersproject/address';
+
 import SubNav from '@/components/navs/SubNav.vue';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
-import { useQuery } from 'vue-query';
-import useWeb3 from '@/composables/useWeb3';
-import { getPoolsWithVolume } from '@/utils/balancer/pools';
+
 import useTokens from '@/composables/useTokens';
-import { useRouter } from 'vue-router';
-import { isEmpty } from 'lodash';
 import PoolsTable from '@/components/tables/PoolsTable.vue';
+import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 
 export default defineComponent({
   components: {
@@ -36,49 +34,32 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const store = useStore();
-    const { appNetwork } = useWeb3();
-    const prices = computed(() => store.state.market.prices);
     const { allTokens } = useTokens();
     const router = useRouter();
 
     // DATA
     const selectedTokens = ref<string[]>([]);
-    const poolData = computed(() => store.state.pools.all);
-    const shouldLoadPools = computed(() => !isEmpty(prices.value));
 
     const {
-      data: pools,
+      data: poolsData,
       isLoading: isLoadingPools,
       isIdle: isWaitingForPoolsQuery
-    } = useQuery(
-      reactive([
-        'poolsData',
-        {
-          prices,
-          selectedTokens
-        }
-      ]),
-      () =>
-        getPoolsWithVolume({
-          chainId: appNetwork.id,
-          prices: prices.value,
-          tokenIds: selectedTokens.value
-        }),
-      reactive({
-        enabled: shouldLoadPools,
-        onSuccess: async pools => {
-          const tokens = pools
-            .map(pool => pool.tokens.map(token => getAddress(token.address)))
-            .reduce((a, b) => [...a, ...b], []);
-          await store.dispatch('registry/injectTokens', tokens);
-        }
-      })
+    } = usePoolsQuery();
+
+    const pools = computed(() =>
+      selectedTokens.value.length > 0
+        ? poolsData.value?.pools.filter(pool => {
+            const poolTokenList = pool.tokensList.map(getAddress);
+
+            return selectedTokens.value.every(selectedToken =>
+              poolTokenList.includes(selectedToken)
+            );
+          })
+        : poolsData.value?.pools
     );
 
     return {
       // data
-      poolData,
       selectedTokens,
       pools,
       isLoadingPools,
@@ -86,7 +67,6 @@ export default defineComponent({
       isWaitingForPoolsQuery,
 
       //methods
-      getAddress,
       router
     };
   }
