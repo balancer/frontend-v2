@@ -57,6 +57,7 @@ import useTokens from '@/composables/useTokens';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import useBreakpoints from '@/composables/useBreakpoints';
+import { Pool } from '@balancer-labs/sor/dist/types';
 
 export default defineComponent({
   props: {
@@ -115,8 +116,8 @@ export default defineComponent({
       }
     ]);
 
-    function tokensFor(pool) {
-      return pool.tokens.map(token => getAddress(token.address));
+    function tokensFor(pool: Pool) {
+      return pool.tokensList.map(getAddress);
     }
 
     function getIconPosition(i: number, count: number) {

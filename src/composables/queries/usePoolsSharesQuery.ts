@@ -7,38 +7,43 @@ import isEmpty from 'lodash/isEmpty';
 import flatten from 'lodash/flatten';
 import { getAddress } from '@ethersproject/address';
 
-import { getPoolsWithVolume, PoolWithVolume } from '@/utils/balancer/pools';
+import { getPoolsWithShares, PoolWithShares } from '@/utils/balancer/pools';
 
 import useWeb3 from '@/composables/useWeb3';
 import QUERY_KEYS from '@/constants/queryKeys';
 
 type PoolsQueryResponse = {
-  pools: PoolWithVolume[];
+  pools: PoolWithShares[];
   tokens: string[];
+  poolIds: string[];
 };
 
-export default function usePoolsQuery(
+export default function usePoolsSharesQuery(
   options: QueryObserverOptions<PoolsQueryResponse> = {}
 ) {
   const store = useStore();
-  const { appNetwork } = useWeb3();
+  const { account, userNetwork, isConnected } = useWeb3();
 
   const prices = computed(() => store.state.market.prices);
-  const isQueryEnabled = computed(() => !isEmpty(prices.value));
+  const networkKey = computed(() => userNetwork.value.key);
+  const isQueryEnabled = computed(() => isConnected && !isEmpty(prices.value));
 
-  const queryKey = QUERY_KEYS.Pools.All;
+  const queryKey = QUERY_KEYS.Pools.Shares(account);
 
   const queryFn = async () => {
-    const pools = await getPoolsWithVolume({
-      chainId: appNetwork.id,
-      prices: prices.value
-    });
+    const pools = await getPoolsWithShares(
+      networkKey.value,
+      account.value,
+      prices.value
+    );
 
     const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
+    const poolIds = pools.map(pool => pool.id);
 
     return {
       pools,
-      tokens
+      tokens,
+      poolIds
     };
   };
 

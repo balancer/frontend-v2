@@ -1,6 +1,14 @@
 <template>
   <div class="container mx-auto px-4 lg:px-0">
-    <SubNav class="mb-8" />
+    <div class="mb-8" />
+    <template v-if="isConnected">
+      <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
+      <PoolsTable
+        :isLoading="isLoadingSharesPools || isWaitingForSharesPoolsQuery"
+        :data="poolsShares"
+      />
+      <div class="mb-8" />
+    </template>
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
     <TokenSearchInput
       v-model="selectedTokens"
@@ -18,24 +26,27 @@ import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAddress } from '@ethersproject/address';
 
-import SubNav from '@/components/navs/SubNav.vue';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 
 import useTokens from '@/composables/useTokens';
 import PoolsTable from '@/components/tables/PoolsTable.vue';
+import MyInvestmentsTable from '@/components/tables/MyInvestmentsTable.vue';
+
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
+import usePoolsSharesQuery from '@/composables/queries/usePoolsSharesQuery';
+import useWeb3 from '@/composables/useWeb3';
+import { filterPools } from '@balancer-labs/sor';
 
 export default defineComponent({
   components: {
-    SubNav,
     TokenSearchInput,
     PoolsTable
   },
 
   setup() {
     // COMPOSABLES
-    const { allTokens } = useTokens();
     const router = useRouter();
+    const { isConnected } = useWeb3();
 
     // DATA
     const selectedTokens = ref<string[]>([]);
@@ -46,25 +57,46 @@ export default defineComponent({
       isIdle: isWaitingForPoolsQuery
     } = usePoolsQuery();
 
-    const pools = computed(() =>
-      selectedTokens.value.length > 0
-        ? poolsData.value?.pools.filter(pool => {
-            const poolTokenList = pool.tokensList.map(getAddress);
+    const {
+      data: poolsSharesData,
+      isLoading: isLoadingSharesPools,
+      isIdle: isWaitingForSharesPoolsQuery
+    } = usePoolsSharesQuery();
 
-            return selectedTokens.value.every(selectedToken =>
-              poolTokenList.includes(selectedToken)
-            );
-          })
-        : poolsData.value?.pools
-    );
+    const poolsShares = computed(() => poolsSharesData.value?.pools);
+    const poolsSharesIds = computed(() => poolsSharesData.value?.poolIds);
+
+    const pools = computed(() => {
+      const filteredPools =
+        selectedTokens.value.length > 0
+          ? poolsData.value?.pools.filter(pool => {
+              const poolTokenList = pool.tokensList.map(getAddress);
+
+              return selectedTokens.value.every(selectedToken =>
+                poolTokenList.includes(selectedToken)
+              );
+            })
+          : poolsData.value?.pools;
+
+      return poolsSharesIds.value && poolsSharesIds.value.length > 0
+        ? filteredPools?.filter(
+            pool => !poolsSharesIds.value?.includes(pool.id)
+          )
+        : filteredPools;
+    });
 
     return {
       // data
       selectedTokens,
       pools,
       isLoadingPools,
-      allTokens,
       isWaitingForPoolsQuery,
+      poolsShares,
+      isLoadingSharesPools,
+      isWaitingForSharesPoolsQuery,
+
+      // computed
+      isConnected,
 
       //methods
       router

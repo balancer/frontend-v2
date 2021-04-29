@@ -1,6 +1,9 @@
+import { Ref } from 'vue';
+
 const QUERY_KEYS = {
   Pools: {
-    All: ['pools', 'all']
+    All: ['pools', 'all'],
+    Shares: (account: Ref<string>) => ['pools', 'shares', account]
   }
 };
 
