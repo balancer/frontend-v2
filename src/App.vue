@@ -11,11 +11,13 @@
       @close="setAccountModal(false)"
       @login="onLogin"
     />
+    <VueQueryDevTools />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onBeforeMount, computed } from 'vue';
+import { VueQueryDevTools } from 'vue-query/devtools';
 import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
@@ -27,7 +29,8 @@ export default defineComponent({
   components: {
     AppNav,
     AppHero,
-    AccountModal
+    AccountModal,
+    VueQueryDevTools
   },
 
   setup() {
