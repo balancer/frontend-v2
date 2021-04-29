@@ -6,7 +6,6 @@ import { useStore } from 'vuex';
 import isEmpty from 'lodash/isEmpty';
 import { getAddress } from '@ethersproject/address';
 
-import useWeb3 from '@/composables/useWeb3';
 import QUERY_KEYS from '@/constants/queryKeys';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
