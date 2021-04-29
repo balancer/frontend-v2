@@ -28,14 +28,11 @@ import { getAddress } from '@ethersproject/address';
 
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 
-import useTokens from '@/composables/useTokens';
 import PoolsTable from '@/components/tables/PoolsTable.vue';
-import MyInvestmentsTable from '@/components/tables/MyInvestmentsTable.vue';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import usePoolsSharesQuery from '@/composables/queries/usePoolsSharesQuery';
 import useWeb3 from '@/composables/useWeb3';
-import { filterPools } from '@balancer-labs/sor';
 
 export default defineComponent({
   components: {
