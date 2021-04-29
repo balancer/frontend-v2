@@ -55,5 +55,9 @@ export default function usePoolsSharesQuery(
     ...options
   });
 
-  return useQuery<PoolsSharesQueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<PoolsSharesQueryResponse>(
+    reactive(queryKey),
+    queryFn,
+    queryOptions
+  );
 }
