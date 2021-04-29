@@ -1,12 +1,21 @@
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
   <div class="chart mr-n2 ml-n2" v-else-if="nonEmptyHistory.length >= 7">
-    <apexchart
+    <!-- <apexchart
       width="100%"
       height="400"
       type="line"
       :options="options"
       :series="series"
+    /> -->
+    <BalLineChart
+      :data="series"
+      :isPeriodSelectionEnabled="false"
+      :showAxis="true"
+      :axisLabelFormatter="{ yAxis: 'percent' }"
+      :color="['#28BD9C', '#000000']"
+      height="96"
+      :showLegend="true"
     />
   </div>
   <BalBlankSlate v-else class="h-60">
@@ -22,6 +31,7 @@ import useNumbers from '@/composables/useNumbers';
 import { PoolSnapshots } from '@/api/subgraph';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
+import { zip } from 'lodash';
 
 export default defineComponent({
   name: 'PoolChart',
@@ -50,6 +60,10 @@ export default defineComponent({
     function formatYAxis(value: number) {
       return fNum(value, null, '0.%');
     }
+
+    const nonEmptyHistory = computed(() =>
+      history.value.filter(state => state.totalShares !== '0')
+    );
 
     function getPoolValue(amounts: string[], prices: number[]) {
       const values = amounts.map((amount, index) => {
@@ -92,10 +106,6 @@ export default defineComponent({
       });
       return history;
     });
-
-    const nonEmptyHistory = computed(() =>
-      history.value.filter(state => state.totalShares !== '0')
-    );
 
     const timestamps = computed(() => {
       return nonEmptyHistory.value.map(state => state.timestamp);
@@ -144,20 +154,25 @@ export default defineComponent({
     const series = computed(() => [
       {
         name: t('poolReturns'),
-        data: bptValues.value
+        values: zip(timestamps.value, bptValues.value)
       },
       {
         name: 'HODL',
-        data: holdValues.value
+        values: zip(timestamps.value, holdValues.value)
       }
     ]);
 
+    const minValue = computed(() =>
+      Math.min(...holdValues.value, ...bptValues.value)
+    );
+    const maxValue = computed(() =>
+      Math.max(...holdValues.value, ...bptValues.value)
+    );
+    const min = computed(() => (Math.floor(maxValue.value) / 2) * -1);
+    const max = computed(() => Math.ceil(maxValue.value * 4) / 4);
+
     const options = computed(() => {
-      const minValue = Math.min(...holdValues.value, ...bptValues.value);
-      const maxValue = Math.max(...holdValues.value, ...bptValues.value);
-      const min = Math.floor(minValue * 4) / 4;
-      const max = Math.ceil(maxValue * 4) / 4;
-      const tickAmount = (max - min) * 4;
+      const tickAmount = (max.value - min.value) * 4;
       return {
         chart: {
           type: 'line',
@@ -171,7 +186,6 @@ export default defineComponent({
         dataLabels: {
           enabled: false
         },
-        colors: ['#28BD9C', '#333333'],
         stroke: {
           curve: 'straight',
           width: 2
@@ -218,7 +232,9 @@ export default defineComponent({
       nonEmptyHistory,
       timestamps,
       holdValues,
-      bptValues
+      bptValues,
+      max,
+      min
     };
   }
 });

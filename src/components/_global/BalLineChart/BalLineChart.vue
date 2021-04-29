@@ -1,7 +1,7 @@
 <template>
   <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
   <div v-else>
-    <div id="lineChartHeader">
+    <div id="lineChartHeader" class="mb-4" v-if="showHeader">
       <h3 class="text-gray-800 font-semibold text-xl tracking-wider">
         {{ currentValue }}
       </h3>
@@ -13,13 +13,14 @@
     </div>
     <ECharts
       ref="chartInstance"
-      class="w-full h-72"
+      class="w-full"
+      :class="[height ? `h-${height}` : '']"
       :option="chartConfig"
       autoresize
       @updateAxisPointer="handleAxisMoved"
       :update-options="{ replaceMerge: 'series' }"
     />
-    <div class="flex w-full mt-2 justify-end">
+    <div v-if="isPeriodSelectionEnabled" class="flex w-full mt-2 justify-end">
       <bal-button-group
         :options="periodOptions"
         :value="currentGraphingPeriod"
@@ -30,11 +31,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from 'vue';
+import { defineComponent, PropType, ref, computed, watch } from 'vue';
 import numeral from 'numeral';
 import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
 import { format as formatDate } from 'date-fns';
+import pools from '@/store/modules/pools';
+import { last } from 'lodash';
+import useNumbers, { Preset } from '@/composables/useNumbers';
 
 const PeriodOptions = [
   {
@@ -64,22 +68,22 @@ type AxisMoveEvent = {
   dataIndex: number;
 };
 
+type ChartData = {
+  name: string;
+  values: string[] | number[];
+};
+
+type AxisLabelFormat = {
+  xAxis?: Preset;
+  yAxis?: Preset;
+};
+
 export default defineComponent({
   props: {
-    axis: {
-      type: Array as PropType<string[] | number[]>,
-      required: true,
-      default: () => []
-    },
     data: {
-      type: Array as PropType<string[] | number[]>,
+      type: Array as PropType<Array<ChartData>>,
       required: true,
       default: () => []
-    },
-    name: {
-      type: String,
-      required: true,
-      default: () => 'Please provide a chart name'
     },
     onAxisMoved: {
       type: Function
@@ -93,6 +97,42 @@ export default defineComponent({
     },
     currentGraphingPeriod: {
       type: Number
+    },
+    isPeriodSelectionEnabled: {
+      type: Boolean,
+      default: () => true
+    },
+    type: {
+      type: String as PropType<'category' | 'time'>,
+      default: () => 'category'
+    },
+    showAxis: {
+      type: Boolean
+    },
+    showHeader: {
+      type: Boolean
+    },
+    showGradient: {
+      type: Boolean
+    },
+    axisLabelFormatter: {
+      type: Object as PropType<AxisLabelFormat>,
+      default: () => ({})
+    },
+    color: {
+      type: Array as PropType<string[]>
+    },
+    height: {
+      type: String
+    },
+    min: {
+      type: Number
+    },
+    max: {
+      type: Number
+    },
+    showLegend: {
+      type: Boolean
     }
   },
   components: {
@@ -104,25 +144,59 @@ export default defineComponent({
     const currentValue = ref('$0,00');
     const change = ref(0);
 
+    const { fNum } = useNumbers();
+
     // https://echarts.apache.org/en/option.html
     const chartConfig = computed(() => ({
+      legend: {
+        show: props.showLegend,
+        left: 0,
+        top: 0,
+        icon: 'roundRect',
+        itemHeight: 5,
+        formatter: (legendName: string) => {
+          const latestValue = last(
+            props.data.find(d => (d.name = legendName))?.values as any
+          ) as [unknown, unknown];
+          return `${legendName}: ${latestValue[1]}`;
+        }
+      },
       xAxis: {
-        type: 'category',
-        data: props.axis,
-        show: false,
-        min: 0
+        type: 'time',
+        show: props.showAxis,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+          formatter: props.axisLabelFormatter.xAxis
+            ? value => fNum(value, props.axisLabelFormatter.xAxis)
+            : undefined,
+          interval: () => true
+        }
       },
       yAxis: {
+        axisLine: { show: false },
         type: 'value',
-        show: false
+        show: props.showAxis,
+        splitNumber: 4,
+        splitLine: {
+          lineStyle: {
+            type: 'dashed'
+          }
+        },
+        position: 'right',
+        axisLabel: {
+          formatter: value => fNum(value, props.axisLabelFormatter.yAxis)
+        },
+        min: props.min,
+        max: props.max
       },
-      color: ['#07C808'],
+      color: props.color,
       grid: {
         left: 0,
         right: 0,
-        top: 0,
+        top: '10%',
         bottom: '5%',
-        containLabel: false
+        containLabel: props.showAxis
       },
       tooltip: {
         trigger: 'axis',
@@ -132,6 +206,8 @@ export default defineComponent({
             show: false
           }
         },
+        triggerOn: 'mousemove',
+        hideDelay: 0,
         formatter: params =>
           `<span class="font-semibold">${formatDate(
             new Date(params[0].axisValue),
@@ -140,43 +216,45 @@ export default defineComponent({
         shadowColor: 'none',
         backgroundColor: 'transparent'
       },
-      series: [
-        {
-          data: props.data,
-          type: 'line',
-          smooth: false,
-          symbol: 'none',
-          name: props.name,
-          lineStyle: {
-            width: 2
-          },
-          areaStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0.1,
-                color: '#f5fff5'
-              },
-              {
-                offset: 0.8,
-                color: '#FFF'
-              }
-            ])
-          }
-        }
-      ]
+      series: props.data.map(d => ({
+        data: d.values,
+        type: 'line',
+        smooth: false,
+        symbol: 'none',
+        name: d.name,
+        lineStyle: {
+          width: 2
+        },
+        areaStyle: props.showGradient
+          ? {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0.1,
+                  color: '#f5fff5'
+                },
+                {
+                  offset: 0.8,
+                  color: '#FFF'
+                }
+              ])
+            }
+          : null
+      }))
     }));
 
     // Triggered when hovering mouse over different xAxis points
-    const handleAxisMoved = ({ dataIndex }: AxisMoveEvent) => {
-      props.onAxisMoved && props.onAxisMoved(props.data[dataIndex]);
+    const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
+      if (!props.showHeader) return;
+      props.onAxisMoved &&
+        props.onAxisMoved(props.data[seriesIndex].values[dataIndex]);
       currentValue.value = numeral(props.data[dataIndex]).format('$0,0.00');
 
       // no change if first point in the chart
       if (dataIndex === 0) {
         change.value = 0;
       } else {
-        const prev = props.data[dataIndex - 1] as number;
-        const current = props.data[dataIndex] as number;
+        const prev = props.data[seriesIndex].values[dataIndex - 1] as number;
+        const current = props.data[seriesIndex].values[dataIndex] as number;
         const _change = (current - prev) / prev;
 
         // 100% increase if coming from a 0!
