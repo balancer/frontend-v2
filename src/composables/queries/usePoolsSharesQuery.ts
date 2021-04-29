@@ -12,14 +12,14 @@ import { getPoolsWithShares, PoolWithShares } from '@/utils/balancer/pools';
 import useWeb3 from '@/composables/useWeb3';
 import QUERY_KEYS from '@/constants/queryKeys';
 
-type PoolsQueryResponse = {
+type PoolsSharesQueryResponse = {
   pools: PoolWithShares[];
   tokens: string[];
   poolIds: string[];
 };
 
 export default function usePoolsSharesQuery(
-  options: QueryObserverOptions<PoolsQueryResponse> = {}
+  options: QueryObserverOptions<PoolsSharesQueryResponse> = {}
 ) {
   const store = useStore();
   const { account, userNetwork, isConnected } = useWeb3();
@@ -49,11 +49,11 @@ export default function usePoolsSharesQuery(
 
   const queryOptions = reactive({
     enabled: isQueryEnabled,
-    onSuccess: async (poolsData: PoolsQueryResponse) => {
+    onSuccess: async (poolsData: PoolsSharesQueryResponse) => {
       await store.dispatch('registry/injectTokens', poolsData.tokens);
     },
     ...options
   });
 
-  return useQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
+  return useQuery<PoolsSharesQueryResponse>(queryKey, queryFn, queryOptions);
 }
