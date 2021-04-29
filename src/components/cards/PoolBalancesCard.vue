@@ -10,7 +10,7 @@
       <template v-slot:tokenColumnCell="token">
         <div class="px-6 py-8 flex flex-row icon-stack">
           <BalLink :href="explorer.addressLink(token.address)" external>
-            <BalAsset :address="token.address" />
+            <BalAsset :address="token.address" :size="36" />
             <span class="pl-4">
               {{ symbolFor(token.address) }}
             </span>
