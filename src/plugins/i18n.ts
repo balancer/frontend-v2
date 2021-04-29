@@ -15,11 +15,11 @@ export function getBrowserLocale() {
   return undefined;
 }
 
-export let defaultLocale = 'en-US';
-const browserLocale = getBrowserLocale();
-Object.keys(messages).forEach(locale => {
-  if (locale.slice(0, 2) === browserLocale.slice(0, 2)) defaultLocale = locale;
-});
+const defaultLocale = 'en-US';
+// const browserLocale = getBrowserLocale();
+// Object.keys(messages).forEach(locale => {
+//   if (locale.slice(0, 2) === browserLocale.slice(0, 2)) defaultLocale = locale;
+// });
 
 const i18n = createI18n({
   locale: defaultLocale,
