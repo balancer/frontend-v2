@@ -21,8 +21,8 @@ export default class Service {
     this.infuraService = infuraService;
   }
 
-  public async getPools(args = {}): Promise<Pool[]> {
-    const query = this.queries.pools(args);
+  public async getPools(args = {}, attrs = {}): Promise<Pool[]> {
+    const query = this.queries.pools(args, attrs);
     const data = await this.client.get(query);
     return data.pools;
   }
@@ -30,15 +30,24 @@ export default class Service {
   public async getDecoratedPools(
     period: TimeTravelPeriod,
     prices: Prices,
-    args = {}
+    args = {},
+    attrs = {}
   ): Promise<DecoratedPool[]> {
     const block = { number: await this.timeTravelBlock(period) };
-    const pools = await this.getPools(args);
-    const pastPools = await this.getPools({ ...args, block });
-    return this.generateDecoratedPools(pools, pastPools, period, prices);
+    const __aliasFor = 'pools';
+    const query = {
+      currentPools: this.queries.pools(args, { ...attrs, __aliasFor }).pools,
+      pastPools: this.queries.pools(
+        { ...args, block },
+        { ...attrs, __aliasFor }
+      ).pools
+    };
+    const { currentPools, pastPools } = await this.client.get(query);
+
+    return this.serializePools(currentPools, pastPools, period, prices);
   }
 
-  private generateDecoratedPools(
+  private serializePools(
     pools: Pool[],
     pastPools: Pool[],
     period: TimeTravelPeriod,
