@@ -8,13 +8,13 @@
     />
     <PoolsTable
       :isLoading="isLoadingPools || isWaitingForPoolsQuery"
-      :data="poolsData && poolsData.pools"
+      :data="pools"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAddress } from '@ethersproject/address';
 
@@ -44,18 +44,29 @@ export default defineComponent({
       data: poolsData,
       isLoading: isLoadingPools,
       isIdle: isWaitingForPoolsQuery
-    } = usePoolsQuery(selectedTokens);
+    } = usePoolsQuery();
+
+    const pools = computed(() =>
+      selectedTokens.value.length > 0
+        ? poolsData.value?.pools.filter(pool => {
+            const poolTokenList = pool.tokensList.map(getAddress);
+
+            return selectedTokens.value.every(selectedToken =>
+              poolTokenList.includes(selectedToken)
+            );
+          })
+        : poolsData.value?.pools
+    );
 
     return {
       // data
       selectedTokens,
-      poolsData,
+      pools,
       isLoadingPools,
       allTokens,
       isWaitingForPoolsQuery,
 
       //methods
-      getAddress,
       router
     };
   }

@@ -1,4 +1,4 @@
-import { computed, reactive, Ref } from 'vue';
+import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
 
@@ -30,38 +30,39 @@ type PoolsQueryResponse = {
 };
 
 export default function usePoolsQuery(
-  selectedTokens: Ref<string[]>,
   options: QueryObserverOptions<PoolsQueryResponse> = {}
 ) {
   const store = useStore();
   const { appNetwork } = useWeb3();
+
   const prices = computed(() => store.state.market.prices);
-
   const shouldLoadPools = computed(() => !isEmpty(prices.value));
-  return useQuery<PoolsQueryResponse>(
-    reactive(QUERY_KEYS.Pools.Data(selectedTokens, appNetwork.id)),
-    async () => {
-      const pools = await getPoolsWithVolume({
-        chainId: appNetwork.id,
-        prices: prices.value,
-        tokenIds: selectedTokens.value
-      });
 
-      const tokens = pools
-        .map(pool => pool.tokens.map(token => getAddress(token.address)))
-        .reduce((a, b) => [...a, ...b], []);
+  const queryKey = QUERY_KEYS.Pools.All;
 
-      return {
-        pools,
-        tokens
-      };
+  const queryFn = async () => {
+    const pools = await getPoolsWithVolume({
+      chainId: appNetwork.id,
+      prices: prices.value
+    });
+
+    const tokens = pools
+      .map(pool => pool.tokensList.map(getAddress))
+      .reduce((a, b) => [...a, ...b], []);
+
+    return {
+      pools,
+      tokens
+    };
+  };
+
+  const queryOptions = reactive({
+    enabled: shouldLoadPools,
+    onSuccess: async (poolsData: PoolsQueryResponse) => {
+      await store.dispatch('registry/injectTokens', poolsData.tokens);
     },
-    reactive({
-      enabled: shouldLoadPools,
-      onSuccess: async (poolsData: PoolsQueryResponse) => {
-        await store.dispatch('registry/injectTokens', poolsData.tokens);
-      },
-      ...options
-    })
-  );
+    ...options
+  });
+
+  return useQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
 }
