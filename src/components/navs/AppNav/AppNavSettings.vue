@@ -22,6 +22,7 @@
                     <BalBtn
                       circle
                       color="white"
+                      size="sm"
                       @click="copyAddress"
                       class="mr-2"
                     >
@@ -37,6 +38,7 @@
                 <BalBtn
                   circle
                   color="white"
+                  size="sm"
                   tag="a"
                   :href="explorer.addressLink(account)"
                   target="_blank"
@@ -50,7 +52,7 @@
           </div>
         </div>
         <div class="flex items-center">
-          <BalBtn circle color="white" @click="logout">
+          <BalBtn circle color="white" size="xs" @click="logout">
             <BalIcon class="text-red-500" name="x" size="sm" />
           </BalBtn>
         </div>
