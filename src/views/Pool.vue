@@ -1,7 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 lg:px-0">
-    <SubNav class="mb-8" />
-
+  <div class="container mx-auto px-4 lg:px-0 pt-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
         <BalLoadingBlock v-if="loading" class="h-12 mb-2" />
@@ -99,7 +97,6 @@ import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
-import SubNav from '@/components/navs/SubNav.vue';
 
 interface PoolPageData {
   id: string;
@@ -112,7 +109,6 @@ interface PoolPageData {
 
 export default defineComponent({
   components: {
-    SubNav,
     PoolActionsCard,
     PoolBalancesCard
   },
