@@ -8,7 +8,7 @@
         ]"
       >
         <td
-          v-for="(column, columnIndex) in columns"
+          v-for="(column, columnIndex) in filteredColumns"
           :key="`header-${column.id}`"
           :class="[
             'p-6 flex bg-white headingShadow border-b border-gray-200 cursor-pointer',
@@ -59,7 +59,7 @@
           ]"
         >
           <td
-            v-for="(column, columnIndex) in columns"
+            v-for="(column, columnIndex) in filteredColumns"
             :key="column.id"
             :class="[
               'flex',
@@ -90,15 +90,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch } from 'vue';
+import {
+  defineComponent,
+  onMounted,
+  PropType,
+  ref,
+  watch,
+  computed
+} from 'vue';
 import { sortBy } from 'lodash';
-export type ColumnDefinition = {
+
+type Sticky = 'horizontal' | 'vertical' | 'both';
+type Data = any;
+
+export type ColumnDefinition<T = Data> = {
   // Column Header Label
   name: string;
   // Unique ID
   id: string;
   // Key or function to access data from the row
-  accessor: string | ((row: unknown) => string);
+  accessor: string | ((row: T) => string);
   // Slot ID for custom rendering the cell
   Cell?: string;
   // Slot ID for custom rendering a header
@@ -113,20 +124,20 @@ export type ColumnDefinition = {
   sortable?: boolean;
   // Should the column width grow to fit available space?
   noGrow?: boolean;
+  // Set to true to hide the column
+  hidden?: boolean;
 };
-
-type Sticky = 'horizontal' | 'vertical' | 'both';
 
 export default defineComponent({
   name: 'BalTable',
 
   props: {
     columns: {
-      type: Object as PropType<Array<ColumnDefinition>>,
+      type: Object as PropType<ColumnDefinition[]>,
       required: true
     },
     data: {
-      type: Object as PropType<Array<any>>
+      type: Object as PropType<Data[]>
     },
     isLoading: {
       type: Boolean,
@@ -136,7 +147,7 @@ export default defineComponent({
       type: String
     },
     onRowClick: {
-      type: Function
+      type: Function as PropType<(data: Data) => void>
     },
     sticky: {
       type: String as PropType<Sticky>
@@ -158,7 +169,7 @@ export default defineComponent({
 
     // Need a method for horizontal stickiness as we need to
     // check whether the table item belongs in the first column
-    const getHorizontalStickyClass = index => {
+    const getHorizontalStickyClass = (index: number) => {
       if (index !== 0) return '';
       if (props.sticky === 'horizontal' || props.sticky === 'both') {
         return 'horizontalSticky';
@@ -166,7 +177,7 @@ export default defineComponent({
       return '';
     };
 
-    const handleRowClick = data => {
+    const handleRowClick = (data: Data) => {
       props.onRowClick && props.onRowClick(data);
     };
 
@@ -210,6 +221,10 @@ export default defineComponent({
       }
     });
 
+    const filteredColumns = computed(() =>
+      props.columns.filter(column => !column.hidden)
+    );
+
     watch(
       () => props.data,
       newData => {
@@ -232,7 +247,9 @@ export default defineComponent({
       tableData,
       currentSortColumn,
       currentSortDirection,
-      console
+
+      // computed
+      filteredColumns
     };
   }
 });

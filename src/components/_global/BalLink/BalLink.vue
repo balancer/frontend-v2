@@ -1,5 +1,5 @@
 <template>
-  <a v-bind="attrs_" class="text-blue-500 hover:underline">
+  <a class="text-blue-500 hover:underline" v-bind="attrs_">
     <slot />
   </a>
 </template>

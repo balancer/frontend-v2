@@ -28,4 +28,8 @@ export default class Service {
       newBlockHandler(newBlockNumber)
     );
   }
+
+  public async getBlockNumber(): Promise<number> {
+    return await this.wsProvider.getBlockNumber();
+  }
 }
