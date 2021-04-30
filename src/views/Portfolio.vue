@@ -7,7 +7,7 @@
         :data="chartSeries"
         @periodSelected="handleGraphingPeriodChange"
         :currentGraphingPeriod="currentGraphingPeriod"
-        :color="['#28BD9C']"
+        :color="[chartColor]"
         :periodOptions="periodOption"
         height="96"
       />
@@ -92,6 +92,7 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
 import { useRouter } from 'vue-router';
+import useTailwind from '@/composables/useTailwind';
 
 export default defineComponent({
   components: {
@@ -200,6 +201,8 @@ export default defineComponent({
     const provider = computed(() => getProvider(networkKey.value));
     const networkKey = computed(() => userNetwork.value.key);
     const prices = computed(() => store.state.market.prices);
+    const tailwind = useTailwind();
+    const chartColor = tailwind.theme.colors.green['500'];
 
     const {
       data: portfolioChartData,
@@ -271,6 +274,7 @@ export default defineComponent({
       pools,
       isLoadingPools,
       periodOptions,
+      chartColor,
       // computed
       account,
       isWeb3Loading,

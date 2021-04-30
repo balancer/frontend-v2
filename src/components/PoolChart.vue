@@ -6,7 +6,7 @@
       :isPeriodSelectionEnabled="false"
       :showAxis="true"
       :axisLabelFormatter="{ yAxis: '0.00%' }"
-      :color="['#28BD9C', '#000000']"
+      :color="chartColors"
       height="96"
       :showLegend="true"
     />
@@ -25,6 +25,7 @@ import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 import { zip } from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
+import useTailwind from '@/composables/useTailwind';
 
 export default defineComponent({
   name: 'PoolChart',
@@ -48,6 +49,11 @@ export default defineComponent({
     const { prices, snapshots } = toRefs(props);
 
     const appLoading = computed(() => store.state.app.loading);
+    const tailwind = useTailwind();
+    const chartColors = [
+      tailwind.theme.colors.green['400'],
+      tailwind.theme.colors.black
+    ];
 
     const nonEmptySnapshots = computed(() =>
       history.value.filter(state => state.totalShares !== '0')
@@ -155,7 +161,8 @@ export default defineComponent({
     return {
       series,
       appLoading,
-      nonEmptySnapshots
+      nonEmptySnapshots,
+      chartColors
     };
   }
 });
