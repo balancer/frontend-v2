@@ -265,7 +265,7 @@ export default defineComponent({
       tokensFor,
       getAddress,
       router,
-      getIconPosition,
+      getIconPosition
     };
   }
 });

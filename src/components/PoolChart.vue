@@ -5,7 +5,7 @@
       :data="series"
       :isPeriodSelectionEnabled="false"
       :showAxis="true"
-      :axisLabelFormatter="{ yAxis: '0.0%' }"
+      :axisLabelFormatter="{ yAxis: '0.00%' }"
       :color="['#28BD9C', '#000000']"
       height="96"
       :showLegend="true"
@@ -20,7 +20,6 @@
 <script lang="ts">
 import { PropType, defineComponent, toRefs, computed } from 'vue';
 
-import useNumbers from '@/composables/useNumbers';
 import { PoolSnapshots } from '@/api/subgraph';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
