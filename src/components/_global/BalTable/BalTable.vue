@@ -124,7 +124,7 @@ export type ColumnDefinition<T = Data> = {
   sortable?: boolean;
   // Should the column width grow to fit available space?
   noGrow?: boolean;
-  // Hidden
+  // Set to true to hide the column
   hidden?: boolean;
 };
 
