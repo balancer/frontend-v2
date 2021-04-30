@@ -3,12 +3,13 @@
     <SubNav class="mb-8" />
     <div class="mt-16">
       <BalLineChart
-        :isLoading="isLoadingChartData || isAppLoading"
-        name="Value ($)"
-        :axis="portfolioChartData?.axis"
-        :data="portfolioChartData?.data"
-        :onPeriodSelected="handleGraphingPeriodChange"
+        :isLoading="isLoadingChartData || isAppLoading || isPageLoading"
+        :data="chartSeries"
+        @periodSelected="handleGraphingPeriodChange"
         :currentGraphingPeriod="currentGraphingPeriod"
+        :color="[chartColor]"
+        :periodOptions="periodOption"
+        height="96"
       />
     </div>
     <div>
@@ -91,6 +92,7 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
 import { useRouter } from 'vue-router';
+import useTailwind from '@/composables/useTailwind';
 
 export default defineComponent({
   components: {
@@ -111,6 +113,29 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { allTokens } = useTokens();
 
+    const periodOptions = ref([
+      {
+        label: '1d',
+        value: 1
+      },
+      {
+        label: '1w',
+        value: 7
+      },
+      {
+        label: '1m',
+        value: 30
+      },
+      {
+        label: '3m',
+        value: 90
+      },
+      {
+        label: '1y',
+        value: 365
+      }
+    ]);
+
     // DATA
     const columns = ref([
       {
@@ -130,7 +155,8 @@ export default defineComponent({
       },
       {
         name: t('myBalance'),
-        accessor: pool => fNum(getPoolShare(pool), 'usd', null, true),
+        accessor: pool =>
+          fNum(getPoolShare(pool), 'usd', { forcePreset: true }),
         className: 'cell',
         align: 'right',
         id: 'myBalance'
@@ -175,6 +201,8 @@ export default defineComponent({
     const provider = computed(() => getProvider(networkKey.value));
     const networkKey = computed(() => userNetwork.value.key);
     const prices = computed(() => store.state.market.prices);
+    const tailwind = useTailwind();
+    const chartColor = tailwind.theme.colors.green['500'];
 
     const {
       data: portfolioChartData,
@@ -193,6 +221,10 @@ export default defineComponent({
         enabled: areQueriesEnabled
       })
     );
+
+    const chartSeries = computed(() => [
+      { name: 'Value ($)', values: portfolioChartData?.value?.data || [] }
+    ]);
 
     const { data: pools, isLoading: isLoadingPools } = useQuery(
       reactive(['portfolioPools', { networkKey, provider, account }]),
@@ -241,6 +273,8 @@ export default defineComponent({
       totalBalance,
       pools,
       isLoadingPools,
+      periodOptions,
+      chartColor,
       // computed
       account,
       isWeb3Loading,
@@ -248,7 +282,7 @@ export default defineComponent({
       isPageLoading,
       allTokens,
       isLoadingChartData,
-      portfolioChartData,
+      chartSeries,
       isFetchingMoreChartData,
       isInjectingTokens,
       currentGraphingPeriod,

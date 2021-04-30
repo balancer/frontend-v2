@@ -8,7 +8,7 @@
         />
         <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" white />
         <span v-else class="text-3xl font-bold text-white">
-          {{ fNum(totalInvested, 'usd', null, true) }}
+          {{ fNum(totalInvested, 'usd', { forcePreset: true }) }}
         </span>
       </template>
       <template v-else>
@@ -39,7 +39,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
-import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
@@ -52,9 +51,8 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { isAuthenticated } = useAuth();
     const { fNum } = useNumbers();
-    const { userNetwork, account, loading: isWeb3Loading } = useWeb3();
+    const { userNetwork, account, isConnected } = useWeb3();
 
     // DATA
     const totalInvested = ref(0);
@@ -63,10 +61,6 @@ export default defineComponent({
     // COMPUTED
     const setAccountModal = val => store.commit('web3/setAccountModal', val);
     const prices = computed(() => store.state.market.prices);
-
-    const isConnected = computed(
-      () => isAuthenticated.value && !isWeb3Loading.value
-    );
 
     const classes = computed(() => {
       return {

@@ -74,7 +74,7 @@ export default defineComponent({
         case 'xs':
           return 'px-2 h-6 text-xs';
         case 'sm':
-          return 'px-3 h-10 text-xs';
+          return 'px-3 h-9 text-base';
         case 'lg':
           return 'px-5 h-18 text-lg md:text-2xl';
         default:
@@ -85,11 +85,11 @@ export default defineComponent({
     const circleSizeClasses = computed(() => {
       switch (props.size) {
         case 'xs':
-          return 'w-4 h-4 text-sm';
+          return 'w-6 h-6 text-sm';
         case 'sm':
-          return 'w-6 h-6 text-lg';
+          return 'w-9 h-9 text-lg';
         case 'md':
-          return 'w-7 h-7 text-lg';
+          return 'w-10 h-10 text-lg';
         case 'lg':
           return 'w-16 h-16 text-2xl';
         default:

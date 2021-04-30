@@ -1,12 +1,14 @@
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
-  <div class="chart mr-n2 ml-n2" v-else-if="nonEmptyHistory.length >= 7">
-    <apexchart
-      width="100%"
-      height="400"
-      type="line"
-      :options="options"
-      :series="series"
+  <div class="chart mr-n2 ml-n2" v-else-if="nonEmptySnapshots.length >= 7">
+    <BalLineChart
+      :data="series"
+      :isPeriodSelectionEnabled="false"
+      :showAxis="true"
+      :axisLabelFormatter="{ yAxis: '0.00%' }"
+      :color="chartColors"
+      height="96"
+      :showLegend="true"
     />
   </div>
   <BalBlankSlate v-else class="h-60">
@@ -18,10 +20,12 @@
 <script lang="ts">
 import { PropType, defineComponent, toRefs, computed } from 'vue';
 
-import useNumbers from '@/composables/useNumbers';
 import { PoolSnapshots } from '@/api/subgraph';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
+import { zip } from 'lodash';
+import { fromUnixTime, format } from 'date-fns';
+import useTailwind from '@/composables/useTailwind';
 
 export default defineComponent({
   name: 'PoolChart',
@@ -40,16 +44,20 @@ export default defineComponent({
 
   setup(props) {
     const store = useStore();
-    const { fNum } = useNumbers();
     const { t } = useI18n();
 
     const { prices, snapshots } = toRefs(props);
 
     const appLoading = computed(() => store.state.app.loading);
+    const tailwind = useTailwind();
+    const chartColors = [
+      tailwind.theme.colors.green['400'],
+      tailwind.theme.colors.black
+    ];
 
-    function formatYAxis(value: number) {
-      return fNum(value, null, '0.%');
-    }
+    const nonEmptySnapshots = computed(() =>
+      history.value.filter(state => state.totalShares !== '0')
+    );
 
     function getPoolValue(amounts: string[], prices: number[]) {
       const values = amounts.map((amount, index) => {
@@ -93,19 +101,17 @@ export default defineComponent({
       return history;
     });
 
-    const nonEmptyHistory = computed(() =>
-      history.value.filter(state => state.totalShares !== '0')
-    );
-
     const timestamps = computed(() => {
-      return nonEmptyHistory.value.map(state => state.timestamp);
+      return nonEmptySnapshots.value.map(state =>
+        format(fromUnixTime(state.timestamp / 1000), 'yyyy/MM/dd')
+      );
     });
 
     const holdValues = computed(() => {
-      if (nonEmptyHistory.value.length === 0) {
+      if (nonEmptySnapshots.value.length === 0) {
         return [];
       }
-      const firstState = nonEmptyHistory.value[0];
+      const firstState = nonEmptySnapshots.value[0];
       const firstValue = getPoolValue(firstState.amounts, firstState.price);
       const values = history.value
         .filter(state => state.totalShares !== '0')
@@ -114,16 +120,16 @@ export default defineComponent({
             return 0;
           }
           const currentValue = getPoolValue(firstState.amounts, state.price);
-          return currentValue / firstValue - 1;
+          return (currentValue / firstValue - 1) / 100;
         });
       return values;
     });
 
     const bptValues = computed(() => {
-      if (nonEmptyHistory.value.length === 0) {
+      if (nonEmptySnapshots.value.length === 0) {
         return [];
       }
-      const firstState = nonEmptyHistory.value[0];
+      const firstState = nonEmptySnapshots.value[0];
       const firstValue = getPoolValue(firstState.amounts, firstState.price);
       const firstShares = parseFloat(firstState.totalShares);
       const firstValuePerBpt = firstValue / firstShares;
@@ -136,7 +142,7 @@ export default defineComponent({
           const currentValue = getPoolValue(state.amounts, state.price);
           const currentShares = parseFloat(state.totalShares);
           const currentValuePerBpt = currentValue / currentShares;
-          return currentValuePerBpt / firstValuePerBpt - 1;
+          return (currentValuePerBpt / firstValuePerBpt - 1) / 100;
         });
       return values;
     });
@@ -144,81 +150,19 @@ export default defineComponent({
     const series = computed(() => [
       {
         name: t('poolReturns'),
-        data: bptValues.value
+        values: zip(timestamps.value, bptValues.value)
       },
       {
         name: 'HODL',
-        data: holdValues.value
+        values: zip(timestamps.value, holdValues.value)
       }
     ]);
 
-    const options = computed(() => {
-      const minValue = Math.min(...holdValues.value, ...bptValues.value);
-      const maxValue = Math.max(...holdValues.value, ...bptValues.value);
-      const min = Math.floor(minValue * 4) / 4;
-      const max = Math.ceil(maxValue * 4) / 4;
-      const tickAmount = (max - min) * 4;
-      return {
-        chart: {
-          type: 'line',
-          toolbar: {
-            show: false
-          },
-          zoom: {
-            enabled: false
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        colors: ['#28BD9C', '#333333'],
-        stroke: {
-          curve: 'straight',
-          width: 2
-        },
-        grid: {
-          borderColor: '#dfdde1',
-          strokeDashArray: [4, 2]
-        },
-        xaxis: {
-          type: 'datetime',
-          tooltip: {
-            enabled: false
-          },
-          categories: timestamps.value
-        },
-        yaxis: {
-          min,
-          max,
-          tickAmount,
-          opposite: true,
-          labels: {
-            formatter: formatYAxis
-          }
-        },
-        legend: {
-          position: 'top',
-          horizontalAlign: 'left',
-          offsetY: 8,
-          markers: {
-            width: 16,
-            height: 4,
-            radius: 2
-          }
-        }
-      };
-    });
-
     return {
       series,
-      options,
-      history,
       appLoading,
-
-      nonEmptyHistory,
-      timestamps,
-      holdValues,
-      bptValues
+      nonEmptySnapshots,
+      chartColors
     };
   }
 });

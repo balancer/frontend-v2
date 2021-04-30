@@ -19,7 +19,9 @@ import {
   TooltipComponent,
   GridComponent,
   LegendComponent,
-  ToolboxComponent
+  ToolboxComponent,
+  MarkPointComponent,
+  MarkLineComponent
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import '@/assets/css/tailwind.css';
@@ -42,7 +44,9 @@ use([
   LineChart,
   GridComponent,
   LegendComponent,
-  ToolboxComponent
+  ToolboxComponent,
+  MarkPointComponent,
+  MarkLineComponent
 ]);
 
 const app = createApp(App)

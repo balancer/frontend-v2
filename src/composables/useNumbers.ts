@@ -2,7 +2,18 @@ import numeral from 'numeral';
 import BigNumber from 'bignumber.js';
 import { useStore } from 'vuex';
 
-type Preset = 'default' | 'token' | 'token_lg' | 'usd' | 'usd_lg' | 'percent';
+export type Preset =
+  | 'default'
+  | 'token'
+  | 'token_lg'
+  | 'usd'
+  | 'usd_lg'
+  | 'percent';
+
+interface Options {
+  format?: string;
+  forcePreset?: boolean;
+}
 
 enum PresetFormats {
   default = '(0.[0]a)',
@@ -10,7 +21,8 @@ enum PresetFormats {
   token_lg = '0,0',
   usd = '$0,0.00',
   usd_lg = '$0,0',
-  percent = '0.00%'
+  percent = '0.00%',
+  percent_lg = '0%'
 }
 
 export default function useNumbers() {
@@ -18,13 +30,14 @@ export default function useNumbers() {
   function fNum(
     number: number | string,
     preset: Preset | null = 'default',
-    format: string | null = null,
-    forcePreset = false
+    options: Options = {}
   ): string {
-    if (format) return numeral(number).format(format);
+    if (options.format) return numeral(number).format(options.format);
 
     let adjustedPreset;
-    if (number >= 10_000 && !forcePreset) adjustedPreset = `${preset}_lg`;
+    if (number >= 10_000 && !options.forcePreset) {
+      adjustedPreset = `${preset}_lg`;
+    }
     if (number < 1e-6) {
       // Numeral returns NaN in this case so just set to zero.
       // https://github.com/adamwdraper/Numeral-js/issues/596

@@ -12,7 +12,9 @@ import { Pool } from '@/utils/balancer/types';
 import { getPoolShares } from '@/utils/balancer/subgraph';
 import {
   getPools as getPoolsViaSubgraph,
-  GetPoolsRequest
+  GetPoolsRequest,
+  PoolToken,
+  PoolType
 } from '@/api/subgraph';
 import configs from '@/config';
 import { Prices } from '@/api/coingecko';
@@ -128,12 +130,23 @@ export async function getPool(
 
 type GetPopulatedPoolsRequest = GetPoolsRequest & { prices: Prices };
 
+export type PoolWithVolume = {
+  liquidity: number;
+  apy: string | number;
+  volume: string;
+  id: string;
+  poolType: PoolType;
+  swapFee: string;
+  tokensList: string[];
+  tokens: PoolToken[];
+};
+
 export async function getPoolsWithVolume({
   chainId,
   prices,
   tokenIds,
   poolIds
-}: GetPopulatedPoolsRequest) {
+}: GetPopulatedPoolsRequest): Promise<PoolWithVolume[]> {
   const { pools, snapshots } = await getPoolsViaSubgraph({
     chainId,
     tokenIds,
@@ -154,11 +167,15 @@ export async function getPoolsWithVolume({
   });
 }
 
+export type PoolWithShares = PoolWithVolume & {
+  shares: number;
+};
+
 export async function getPoolsWithShares(
   network: string,
   account: string,
   prices: Prices
-) {
+): Promise<PoolWithShares[]> {
   const poolShares = await getPoolShares(network, account);
   const poolIds = poolShares.map(poolShare => poolShare.poolId.id);
 
