@@ -39,15 +39,13 @@ export default class Service {
     args = {},
     attrs = {}
   ): Promise<DecoratedPool[]> {
+    attrs = { ...attrs, __aliasFor: 'pools' };
     const block = { number: await this.timeTravelBlock(period) };
-    const __aliasFor = 'pools';
     const query = {
-      currentPools: this.queries.pools(args, { ...attrs, __aliasFor }).pools,
-      pastPools: this.queries.pools(
-        { ...args, block },
-        { ...attrs, __aliasFor }
-      ).pools
+      currentPools: this.queries.pools(args, attrs).pools,
+      pastPools: this.queries.pools({ ...args, block }, attrs).pools
     };
+
     const { currentPools, pastPools } = await this.client.get(query);
 
     return this.serializePools(currentPools, pastPools, period, prices);
