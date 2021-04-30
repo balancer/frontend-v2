@@ -34,7 +34,10 @@ export default function usePoolsQuery(
 
   // METHODS
   const queryFn = async () => {
-    const pools = await balancerSubgraph.getDecoratedPools('24h', prices.value);
+    const pools = await balancerSubgraph.pools.getDecorated(
+      '24h',
+      prices.value
+    );
 
     const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
 

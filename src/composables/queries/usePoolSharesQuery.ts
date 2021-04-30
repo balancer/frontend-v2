@@ -42,7 +42,7 @@ export default function usePoolSharesQuery(
   // METHODS
 
   const queryFn = async () => {
-    const poolShares = await balancerSubgraph.getPoolShares({
+    const poolShares = await balancerSubgraph.poolShares.get({
       where: {
         userAddress: account.value.toLowerCase()
       }

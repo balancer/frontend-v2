@@ -1,3 +1,10 @@
+export type QueryArgs = Record<string, any>;
+export type QueryAttrs = Record<string, any>;
+export type QueryBuilder = (
+  args?: QueryArgs,
+  attrs?: QueryAttrs
+) => Record<string, any>;
+
 export type PoolType = 'Weighted' | 'Stable';
 export type TimeTravelPeriod = '24h';
 
