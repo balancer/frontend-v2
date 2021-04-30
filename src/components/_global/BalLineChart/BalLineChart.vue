@@ -23,10 +23,10 @@
       :update-options="{ replaceMerge: 'series' }"
     />
     <div v-if="isPeriodSelectionEnabled" class="flex w-full mt-2 justify-end">
-      <bal-button-group
+      <BalButtonGroup
         :options="periodOptions"
         :value="currentGraphingPeriod"
-        :onChange="onPeriodSelected"
+        :onChange="$emit('periodSelected')"
       />
     </div>
   </div>
@@ -39,29 +39,6 @@ import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
 import { last } from 'lodash';
 import useNumbers, { Preset } from '@/composables/useNumbers';
-
-const PeriodOptions = [
-  {
-    label: '1d',
-    value: 1
-  },
-  {
-    label: '1w',
-    value: 7
-  },
-  {
-    label: '1m',
-    value: 30
-  },
-  {
-    label: '3m',
-    value: 90
-  },
-  {
-    label: '1y',
-    value: 365
-  }
-];
 
 type AxisMoveEvent = {
   seriesIndex: number;
@@ -78,17 +55,19 @@ type AxisLabelFormat = {
   yAxis?: Preset | string;
 };
 
+type PeriodOption = {
+  option: string;
+  value: string;
+};
+
 export default defineComponent({
+  emits: ['periodSelected'],
   props: {
     data: {
-      type: Array as PropType<Array<ChartData>>,
-      required: true,
-      default: () => []
+      type: Array as PropType<ChartData[]>,
+      required: true
     },
     onAxisMoved: {
-      type: Function
-    },
-    onPeriodSelected: {
       type: Function
     },
     isLoading: {
@@ -98,9 +77,8 @@ export default defineComponent({
     currentGraphingPeriod: {
       type: Number
     },
-    isPeriodSelectionEnabled: {
-      type: Boolean,
-      default: () => true
+    periodOptions: {
+      type: Array as PropType<PeriodOption[]>
     },
     type: {
       type: String as PropType<'category' | 'time'>,
@@ -309,7 +287,6 @@ export default defineComponent({
       // methods
       handleAxisMoved,
       numeral,
-      periodOptions: PeriodOptions,
 
       // data
       currentValue,

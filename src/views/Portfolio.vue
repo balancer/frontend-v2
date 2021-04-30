@@ -5,9 +5,10 @@
       <BalLineChart
         :isLoading="isLoadingChartData || isAppLoading || isPageLoading"
         :data="chartSeries"
-        :onPeriodSelected="handleGraphingPeriodChange"
+        @periodSelected="handleGraphingPeriodChange"
         :currentGraphingPeriod="currentGraphingPeriod"
         :color="['#28BD9C']"
+        :periodOptions="periodOption"
         height="96"
       />
     </div>
@@ -78,7 +79,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref, watch } from 'vue';
+import { defineComponent, reactive, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import getProvider from '@/utils/provider';
@@ -110,6 +111,29 @@ export default defineComponent({
     } = useWeb3();
     const { fNum } = useNumbers();
     const { allTokens } = useTokens();
+
+    const periodOptions = ref([
+      {
+        label: '1d',
+        value: 1
+      },
+      {
+        label: '1w',
+        value: 7
+      },
+      {
+        label: '1m',
+        value: 30
+      },
+      {
+        label: '3m',
+        value: 90
+      },
+      {
+        label: '1y',
+        value: 365
+      }
+    ]);
 
     // DATA
     const columns = ref([
@@ -246,6 +270,7 @@ export default defineComponent({
       totalBalance,
       pools,
       isLoadingPools,
+      periodOptions,
       // computed
       account,
       isWeb3Loading,

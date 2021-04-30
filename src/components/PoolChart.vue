@@ -1,6 +1,6 @@
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
-  <div class="chart mr-n2 ml-n2" v-else-if="nonEmptyHistory.length >= 7">
+  <div class="chart mr-n2 ml-n2" v-else-if="nonEmptySnapshots.length >= 7">
     <BalLineChart
       :data="series"
       :isPeriodSelectionEnabled="false"
@@ -49,7 +49,7 @@ export default defineComponent({
 
     const appLoading = computed(() => store.state.app.loading);
 
-    const nonEmptyHistory = computed(() =>
+    const nonEmptySnapshots = computed(() =>
       history.value.filter(state => state.totalShares !== '0')
     );
 
@@ -96,16 +96,16 @@ export default defineComponent({
     });
 
     const timestamps = computed(() => {
-      return nonEmptyHistory.value.map(state =>
+      return nonEmptySnapshots.value.map(state =>
         format(fromUnixTime(state.timestamp / 1000), 'yyyy/MM/dd')
       );
     });
 
     const holdValues = computed(() => {
-      if (nonEmptyHistory.value.length === 0) {
+      if (nonEmptySnapshots.value.length === 0) {
         return [];
       }
-      const firstState = nonEmptyHistory.value[0];
+      const firstState = nonEmptySnapshots.value[0];
       const firstValue = getPoolValue(firstState.amounts, firstState.price);
       const values = history.value
         .filter(state => state.totalShares !== '0')
@@ -120,10 +120,10 @@ export default defineComponent({
     });
 
     const bptValues = computed(() => {
-      if (nonEmptyHistory.value.length === 0) {
+      if (nonEmptySnapshots.value.length === 0) {
         return [];
       }
-      const firstState = nonEmptyHistory.value[0];
+      const firstState = nonEmptySnapshots.value[0];
       const firstValue = getPoolValue(firstState.amounts, firstState.price);
       const firstShares = parseFloat(firstState.totalShares);
       const firstValuePerBpt = firstValue / firstShares;
@@ -155,7 +155,7 @@ export default defineComponent({
     return {
       series,
       appLoading,
-      nonEmptyHistory
+      nonEmptySnapshots
     };
   }
 });
