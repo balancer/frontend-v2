@@ -183,7 +183,7 @@ const actions = {
     }
   },
 
-  async injectTokens({ commit, dispatch }, tokens) {
+  async injectTokens({ commit, dispatch }, tokens: string[]) {
     tokens = tokens.filter(
       token => token !== ETHER.address && isAddress(token)
     );

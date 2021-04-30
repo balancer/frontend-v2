@@ -138,7 +138,7 @@ export default defineComponent({
     const textSizeClasses = (): string => {
       switch (size.value) {
         case 'sm':
-          return 'text-sm';
+          return 'text-base';
         case 'lg':
           return 'text-lg';
         default:
@@ -149,7 +149,7 @@ export default defineComponent({
     const inputHeightClasses = (): string => {
       switch (size.value) {
         case 'sm':
-          return 'h-10';
+          return 'h-9';
         case 'lg':
           return 'h-18';
         default:

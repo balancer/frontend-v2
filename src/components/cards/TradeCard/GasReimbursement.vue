@@ -124,16 +124,15 @@ export default defineComponent({
               numSwaps++;
           });
         }
-        // TO DO - What should the swap costs be for V2?
         const gasLimit =
           numSwaps === 1
-            ? 100000
+            ? 90000
             : numSwaps === 2
-            ? 200000
+            ? 140000
             : numSwaps === 3
-            ? 300000
+            ? 140000
             : numSwaps >= 4
-            ? 400000
+            ? 140000
             : 0;
         const gasLimitNumber = new BigNumber(gasLimit);
         const gasCostWei = gasLimitNumber.times(gasPrice);

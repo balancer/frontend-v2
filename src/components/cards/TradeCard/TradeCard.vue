@@ -69,6 +69,7 @@
 <script lang="ts">
 import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
@@ -92,6 +93,7 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
+    const router = useRouter();
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
 
@@ -182,8 +184,17 @@ export default defineComponent({
     }
 
     async function populateInitialTokens(): Promise<void> {
-      tokenInAddress.value = store.state.trade.inputAsset;
-      tokenOutAddress.value = store.state.trade.outputAsset;
+      const assetIn =
+        (router.currentRoute.value.params.assetIn as string) === 'ether'
+          ? ETHER.address
+          : (router.currentRoute.value.params.assetIn as string);
+      const assetOut =
+        (router.currentRoute.value.params.assetOut as string) === 'ether'
+          ? ETHER.address
+          : (router.currentRoute.value.params.assetOut as string);
+
+      tokenInAddress.value = assetIn || store.state.trade.inputAsset;
+      tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
     async function approve(): Promise<void> {

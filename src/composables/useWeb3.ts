@@ -3,14 +3,17 @@ import { useStore } from 'vuex';
 
 import configs from '@/config';
 import getProvider from '@/utils/provider';
+import useAuth from '@/composables/useAuth';
 
 export default function useWeb3() {
   const store = useStore();
+  const { isAuthenticated } = useAuth();
 
   const account = computed(() => store.state.web3.account);
   const profile = computed(() => store.state.web3.profile);
   const blockNumber = computed(() => store.state.web3.blockNumber);
   const loading = computed(() => store.state.web3.loading);
+  const isConnected = computed(() => isAuthenticated.value && !loading.value);
 
   // App Network vars (static)
   const appNetwork = {
@@ -69,6 +72,7 @@ export default function useWeb3() {
     blockNumber,
     isMainnet,
     unsupportedNetwork,
-    networkMismatch
+    networkMismatch,
+    isConnected
   };
 }

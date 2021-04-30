@@ -97,7 +97,7 @@ export class SorManager {
     tokenAddr: string,
     tokenDecimals: number
   ): Promise<BigNumber> {
-    tokenAddr = tokenAddr === ETHER.address ? AddressZero : tokenAddr;
+    tokenAddr = tokenAddr === ETHER.address ? this.weth : tokenAddr;
 
     let cost = this.sorV2.tokenCost[tokenAddr.toLowerCase()];
     if (cost) {
@@ -185,7 +185,8 @@ export class SorManager {
     const [
       swapsV1,
       returnAmountV1,
-      marketSpV1Scaled
+      marketSpV1Scaled,
+      returnAmountV1ConsideringFees
     ] = await this.sorV1.getSwaps(
       v1TokenIn.toLowerCase(),
       v1TokenOut.toLowerCase(),
@@ -209,14 +210,21 @@ export class SorManager {
     );
 
     // Both are scaled amounts
-    console.log(`[SorManager] V1 return amount: ${returnAmountV1.toString()}`);
+    console.log(`[SorManager] ${returnAmountV1.toString()}: V1 return amount`);
     console.log(
-      `[SorManager] V2 return amount: ${swapInfoV2.returnAmount.toString()}`
+      `[SorManager] ${returnAmountV1ConsideringFees.toString()}: V1 return amount with fees`
+    );
+    console.log(
+      `[SorManager] ${swapInfoV2.returnAmount.toString()}: V2 return amount`
+    );
+    console.log(
+      `[SorManager] ${swapInfoV2.returnAmountConsideringFees.toString()}: V2 return amount with fees`
     );
 
     if (swapType === 'swapExactIn') {
       return this.getBestSwapIn(
         returnAmountV1,
+        returnAmountV1ConsideringFees,
         marketSpV1Scaled,
         swapsV1,
         swapInfoV2,
@@ -231,6 +239,7 @@ export class SorManager {
     } else {
       return this.getBestSwapOut(
         returnAmountV1,
+        returnAmountV1ConsideringFees,
         marketSpV1Scaled,
         swapsV1,
         swapInfoV2,
@@ -247,6 +256,7 @@ export class SorManager {
 
   getBestSwapIn(
     returnAmountV1: BigNumber,
+    returnAmountV1ConsideringFees: BigNumber,
     marketSpV1Scaled: BigNumber,
     swapsV1: Swap[][],
     swapInfoV2: SwapInfo,
@@ -259,7 +269,9 @@ export class SorManager {
     liquiditySelection: LiquiditySelection
   ): SorReturn {
     // For swapExactIn the highest return is best
-    const isV1best = returnAmountV1.gt(swapInfoV2.returnAmount);
+    const isV1best = returnAmountV1ConsideringFees.gt(
+      swapInfoV2.returnAmountConsideringFees
+    );
 
     // Need to return marketSp as normalized
     const marketSpV1Normalised: BigNumber = marketSpV1Scaled.div(
@@ -327,6 +339,7 @@ export class SorManager {
 
   getBestSwapOut(
     returnAmountV1: BigNumber,
+    returnAmountV1ConsideringFees: BigNumber,
     marketSpV1Scaled: BigNumber,
     swapsV1: Swap[][],
     swapInfoV2: SwapInfo,
@@ -346,7 +359,10 @@ export class SorManager {
     // This doesn't actually matter but rules out 0 values for next cases
     else if (returnAmountV1.isZero()) isV1best = false;
     else if (swapInfoV2.returnAmount.isZero()) isV1best = true;
-    else isV1best = returnAmountV1.lt(swapInfoV2.returnAmount);
+    else
+      isV1best = returnAmountV1ConsideringFees.lt(
+        swapInfoV2.returnAmountConsideringFees
+      );
 
     // Need to return marketSp as normalized
     const marketSpV1Normalised: BigNumber = marketSpV1Scaled.div(
