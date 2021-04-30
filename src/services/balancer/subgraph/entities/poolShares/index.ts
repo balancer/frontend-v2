@@ -2,7 +2,7 @@ import Service from '../../service';
 import poolQueryBuilder from './query';
 import { PoolShare, QueryBuilder } from '../../types';
 
-export default class Pools {
+export default class PoolShares {
   service: Service;
   query: QueryBuilder;
 
