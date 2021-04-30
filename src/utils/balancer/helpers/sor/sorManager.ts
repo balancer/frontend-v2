@@ -304,7 +304,6 @@ export class SorManager {
       return v2return;
     }
 
-
     // Either V1 & V2 are both unlocked or both locked so return best option by value
     if (isV1best) {
       console.log('[SorManager] V1 swap is best.');
