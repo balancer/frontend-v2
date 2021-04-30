@@ -175,8 +175,6 @@ export default function useSor(
         'swapExactIn',
         tokenInAmountScaled,
         tokenInDecimals,
-        allowanceState.value.isUnlockedV1,
-        allowanceState.value.isUnlockedV2,
         liquiditySelection.value
       );
 
@@ -227,8 +225,6 @@ export default function useSor(
         'swapExactOut',
         tokenOutAmount,
         tokenOutDecimals,
-        allowanceState.value.isUnlockedV1,
-        allowanceState.value.isUnlockedV2,
         liquiditySelection.value
       );
 
