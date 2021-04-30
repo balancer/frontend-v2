@@ -45,6 +45,7 @@ export default function useSor(
       swaps: [],
       swapAmount: new BigNumber(0),
       returnAmount: new BigNumber(0),
+      returnAmountConsideringFees: new BigNumber(0),
       tokenIn: '',
       tokenOut: '',
       marketSp: new BigNumber(0)
