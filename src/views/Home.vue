@@ -4,8 +4,9 @@
     <template v-if="isConnected">
       <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
       <PoolsTable
-        :isLoading="isLoadingSharesPools || isWaitingForSharesPoolsQuery"
-        :data="poolsShares"
+        :isLoading="isLoadingPoolsWithShares"
+        :data="poolsWithShares"
+        showPoolShares
         class="mb-8"
       />
       <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
@@ -15,14 +16,8 @@
       <div class="mb-16" />
     </template>
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
-    <TokenSearchInput
-      v-model="selectedTokens"
-      :loading="isLoadingPools || isWaitingForPoolsQuery"
-    />
-    <PoolsTable
-      :isLoading="isLoadingPools || isWaitingForPoolsQuery"
-      :data="pools"
-    />
+    <TokenSearchInput v-model="selectedTokens" :loading="isLoadingPools" />
+    <PoolsTable :isLoading="isLoadingPools" :data="pools" />
   </div>
 </template>
 
@@ -31,12 +26,13 @@ import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAddress } from '@ethersproject/address';
 
+import { bnum } from '@/utils';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 
 import PoolsTable from '@/components/tables/PoolsTable.vue';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import usePoolsSharesQuery from '@/composables/queries/usePoolsSharesQuery';
+import usePoolSharesQuery from '@/composables/queries/usePoolSharesQuery';
 import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
@@ -49,53 +45,56 @@ export default defineComponent({
     // COMPOSABLES
     const router = useRouter();
     const { isConnected } = useWeb3();
+    const poolsQuery = usePoolsQuery();
+    const poolSharesQuery = usePoolSharesQuery();
 
     // DATA
     const selectedTokens = ref<string[]>([]);
 
-    const {
-      data: poolsData,
-      isLoading: isLoadingPools,
-      isIdle: isWaitingForPoolsQuery
-    } = usePoolsQuery();
+    const pools = computed(() =>
+      selectedTokens.value.length > 0
+        ? poolsQuery.data.value?.pools.filter(pool => {
+            const poolTokenList = pool.tokensList.map(getAddress);
 
-    const {
-      data: poolsSharesData,
-      isLoading: isLoadingSharesPools,
-      isIdle: isWaitingForSharesPoolsQuery
-    } = usePoolsSharesQuery();
+            return selectedTokens.value.every(selectedToken =>
+              poolTokenList.includes(selectedToken)
+            );
+          })
+        : poolsQuery.data.value?.pools
+    );
 
-    const poolsShares = computed(() => poolsSharesData.value?.pools);
-    const poolsSharesIds = computed(() => poolsSharesData.value?.poolIds);
+    const poolsWithShares = computed(() => {
+      if (isConnected.value && poolSharesQuery.data.value) {
+        const { poolSharesMap, poolSharesIds } = poolSharesQuery.data.value;
 
-    const pools = computed(() => {
-      const filteredPools =
-        selectedTokens.value.length > 0
-          ? poolsData.value?.pools.filter(pool => {
-              const poolTokenList = pool.tokensList.map(getAddress);
-
-              return selectedTokens.value.every(selectedToken =>
-                poolTokenList.includes(selectedToken)
-              );
-            })
-          : poolsData.value?.pools;
-
-      return poolsSharesIds.value && poolsSharesIds.value.length > 0
-        ? filteredPools?.filter(
-            pool => !poolsSharesIds.value?.includes(pool.id)
-          )
-        : filteredPools;
+        return poolsQuery.data.value?.pools
+          .filter(pool => poolSharesIds.includes(pool.id))
+          .map(pool => ({
+            ...pool,
+            shares: bnum(pool.totalLiquidity)
+              .div(pool.totalShares)
+              .times(poolSharesMap[pool.id].balance)
+              .toString()
+          }));
+      }
+      return [];
     });
+
+    const isLoadingPools = computed(
+      () => poolsQuery.isLoading.value || poolsQuery.isIdle.value
+    );
+
+    const isLoadingPoolsWithShares = computed(
+      () => poolSharesQuery.isLoading.value || poolSharesQuery.isIdle.value
+    );
 
     return {
       // data
       selectedTokens,
       pools,
+      poolsWithShares,
+      isLoadingPoolsWithShares,
       isLoadingPools,
-      isWaitingForPoolsQuery,
-      poolsShares,
-      isLoadingSharesPools,
-      isWaitingForSharesPoolsQuery,
 
       // computed
       isConnected,

@@ -3,7 +3,7 @@ import Queries from './queries';
 import InfuraService from '@/services/infura/service';
 import { getPoolLiquidity } from '@/utils/balancer/price';
 import { bnum } from '@/utils';
-import { Pool, DecoratedPool, TimeTravelPeriod } from './types';
+import { Pool, DecoratedPool, TimeTravelPeriod, PoolShare } from './types';
 import { Prices } from '@/api/coingecko';
 
 export default class Service {
@@ -25,6 +25,12 @@ export default class Service {
     const query = this.queries.pools(args, attrs);
     const data = await this.client.get(query);
     return data.pools;
+  }
+
+  public async getPoolShares(args = {}, attrs = {}): Promise<PoolShare[]> {
+    const query = this.queries.poolShares(args, attrs);
+    const data = await this.client.get(query);
+    return data.poolShares;
   }
 
   public async getDecoratedPools(
@@ -70,7 +76,7 @@ export default class Service {
       .toString();
   }
 
-  private calcAPY(pool: Pool, pastPool: Pool | undefined): string {
+  private calcAPY(pool: Pool, pastPool?: Pool) {
     if (!pastPool)
       return bnum(pool.totalSwapFee)
         .dividedBy(pool.totalLiquidity)

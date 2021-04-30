@@ -30,7 +30,7 @@ export default function usePoolsQuery(
 
   // COMPUTED
   const prices = computed(() => store.state.market.prices);
-  const shouldLoadPools = computed(() => !isEmpty(prices.value));
+  const isQueryEnabled = computed(() => !isEmpty(prices.value));
 
   // METHODS
   const queryFn = async () => {
@@ -45,7 +45,7 @@ export default function usePoolsQuery(
   };
 
   const queryOptions = reactive({
-    enabled: shouldLoadPools,
+    enabled: isQueryEnabled,
     onSuccess: async (poolsData: PoolsQueryResponse) => {
       await store.dispatch('registry/injectTokens', poolsData.tokens);
     },

@@ -26,3 +26,14 @@ export interface DecoratedPool extends Pool {
     apy: string;
   };
 }
+
+export interface PoolShare {
+  poolId: {
+    id: string;
+  };
+  balance: string;
+}
+
+export interface DecoratedPoolWithShares extends DecoratedPool {
+  shares: string;
+}

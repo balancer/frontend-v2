@@ -23,11 +23,31 @@ const defaultPoolAttrs = {
   }
 };
 
+const defaultPoolSharesArgs = {
+  first: 1000,
+  where: {
+    balance_gt: 0
+  }
+};
+
+const defaultPoolSharesAttrs = {
+  poolId: {
+    id: true
+  },
+  balance: true
+};
+
 export default {
   pools: (args = {}, attrs = {}) => ({
     pools: {
       __args: merge({}, defaultPoolArgs, args),
       ...merge({}, defaultPoolAttrs, attrs)
+    }
+  }),
+  poolShares: (args = {}, attrs = {}) => ({
+    poolShares: {
+      __args: merge({}, defaultPoolSharesArgs, args),
+      ...merge({}, defaultPoolSharesAttrs, attrs)
     }
   })
 };

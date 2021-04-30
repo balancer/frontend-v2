@@ -51,13 +51,18 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { getAddress } from '@ethersproject/address';
-import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+
+import { getAddress } from '@ethersproject/address';
+
+import useNumbers from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { Pool } from '@balancer-labs/sor/dist/types';
+
+import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 
 export default defineComponent({
   props: {
@@ -66,9 +71,13 @@ export default defineComponent({
     },
     isLoading: {
       type: Boolean
+    },
+    showPoolShares: {
+      type: Boolean,
+      default: false
     }
   },
-  setup() {
+  setup(props) {
     const { fNum } = useNumbers();
     const { allTokens } = useTokens();
     const router = useRouter();
@@ -76,7 +85,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
 
     // COMPOSABLES
-    const columns = ref([
+    const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
       {
         name: 'Icons',
         id: 'icons',
@@ -92,6 +101,14 @@ export default defineComponent({
         accessor: 'id',
         Cell: 'poolNameCell',
         className: 'w-72'
+      },
+      {
+        name: t('myBalance'),
+        accessor: pool => fNum(pool.shares, 'usd', { forcePreset: true }),
+        className: 'cell',
+        align: 'right',
+        id: 'myBalance',
+        hidden: !props.showPoolShares
       },
       {
         name: t('poolValue'),
@@ -116,7 +133,7 @@ export default defineComponent({
       }
     ]);
 
-    function tokensFor(pool: Pool) {
+    function tokensFor(pool: DecoratedPoolWithShares) {
       return pool.tokensList.map(getAddress);
     }
 
