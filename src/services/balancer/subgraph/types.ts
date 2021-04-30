@@ -44,3 +44,20 @@ export interface PoolShare {
 export interface DecoratedPoolWithShares extends DecoratedPool {
   shares: string;
 }
+
+export interface PoolJoin {
+  amounts: string[];
+  timestamp: number;
+  tx: string;
+}
+
+export interface PoolExit {
+  amounts: string[];
+  timestamp: number;
+  tx: string;
+}
+
+export interface PoolEvents {
+  joins: PoolJoin[];
+  exits: PoolExit[];
+}
