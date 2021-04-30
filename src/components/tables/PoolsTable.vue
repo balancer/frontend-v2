@@ -32,17 +32,19 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div class="px-6 py-8">
-          <span
+        <div class="px-6 py-8 -mt-1 flex flex-wrap">
+          <div
             v-for="token in pool.tokens"
             :key="token"
-            class="inline-block mr-4"
+            class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
           >
-            {{ allTokens[getAddress(token.address)]?.symbol }}
-            <span class="font-medium text-gray-400 text-xs">
+            <span>
+              {{ allTokens[getAddress(token.address)]?.symbol }}
+            </span>
+            <span class="font-medium text-gray-400 text-xs mt-px ml-1">
               {{ fNum(token.weight, 'percent_lg') }}
             </span>
-          </span>
+          </div>
         </div>
       </template>
     </BalTable>
