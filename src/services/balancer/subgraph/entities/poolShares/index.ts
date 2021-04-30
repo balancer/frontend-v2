@@ -1,12 +1,12 @@
 import Service from '../../service';
-import poolQueryBuilder from './query';
+import queryBuilder from './query';
 import { PoolShare, QueryBuilder } from '../../types';
 
 export default class PoolShares {
   service: Service;
   query: QueryBuilder;
 
-  constructor(service, query = poolQueryBuilder) {
+  constructor(service, query = queryBuilder) {
     this.service = service;
     this.query = query;
   }
