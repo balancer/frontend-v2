@@ -51,7 +51,11 @@
               :events="events"
               :loading="loading || appLoading || web3Loading"
             />
-            <BalBlankSlate v-else v-text="$t('noInvestments')" class="h-60" />
+            <BalBlankSlate
+              v-else
+              v-text="$t('noInvestmentsPool')"
+              class="h-60"
+            />
           </div>
         </div>
       </div>

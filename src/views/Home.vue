@@ -5,6 +5,7 @@
       <PoolsTable
         :isLoading="isLoadingPoolsWithShares"
         :data="poolsWithShares"
+        :noPoolsLabel="$t('noInvestments')"
         showPoolShares
         class="mb-8"
       />
@@ -16,7 +17,11 @@
     </template>
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
     <TokenSearchInput v-model="selectedTokens" :loading="isLoadingPools" />
-    <PoolsTable :isLoading="isLoadingPools" :data="pools" />
+    <PoolsTable
+      :isLoading="isLoadingPools"
+      :data="pools"
+      :noPoolsLabel="$t('noPoolsFound')"
+    />
   </div>
 </template>
 
