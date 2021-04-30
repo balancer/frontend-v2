@@ -2,7 +2,13 @@ import numeral from 'numeral';
 import BigNumber from 'bignumber.js';
 import { useStore } from 'vuex';
 
-type Preset = 'default' | 'token' | 'token_lg' | 'usd' | 'usd_lg' | 'percent';
+export type Preset =
+  | 'default'
+  | 'token'
+  | 'token_lg'
+  | 'usd'
+  | 'usd_lg'
+  | 'percent';
 
 interface Options {
   format?: string;
