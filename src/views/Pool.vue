@@ -101,6 +101,7 @@ import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
+import BalancerSubgraph from '@/services/balancer/subgraph/service';
 
 interface PoolPageData {
   id: string;
@@ -118,6 +119,9 @@ export default defineComponent({
   },
 
   setup() {
+    // SERVICES
+    const balancerSubgraph = new BalancerSubgraph();
+
     // COMPOSABLES
     const store = useStore();
     const { t } = useI18n();
@@ -205,7 +209,11 @@ export default defineComponent({
     async function loadEvents(): Promise<void> {
       if (account) {
         console.time('loadPoolEvents');
-        data.events = await getPoolEvents(appNetwork.id, data.id);
+        data.events = await balancerSubgraph.poolEvents.get({
+          where: {
+            pool: data.id
+          }
+        })
         console.timeEnd('loadPoolEvents');
       }
     }
