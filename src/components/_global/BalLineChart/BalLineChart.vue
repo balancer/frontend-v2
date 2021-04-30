@@ -6,15 +6,17 @@
         {{ currentValue }}
       </h3>
       <span
-        class="font-medium"
-        :class="{ 'text-green-400': change >= 0, 'text-red-400': change < 0 }"
+        :class="{
+          'text-green-400': change >= 0,
+          'text-red-400': change < 0,
+          'font-medium': true
+        }"
         >{{ numeral(change).format('+0.0%') }}</span
       >
     </div>
     <ECharts
       ref="chartInstance"
-      class="w-full"
-      :class="[height ? `h-${height}` : '']"
+      :class="[height ? `h-${height}` : '', 'w-full']"
       :option="chartConfig"
       autoresize
       @updateAxisPointer="handleAxisMoved"
@@ -31,12 +33,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from 'vue';
+import { defineComponent, PropType, ref, computed } from 'vue';
 import numeral from 'numeral';
 import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
-import { format as formatDate } from 'date-fns';
-import pools from '@/store/modules/pools';
 import { last } from 'lodash';
 import useNumbers, { Preset } from '@/composables/useNumbers';
 
@@ -138,6 +138,8 @@ export default defineComponent({
 
     // https://echarts.apache.org/en/option.html
     const chartConfig = computed(() => ({
+      // controls the legend you see at the top
+      // formatter allows us to show the latest value for each series
       legend: {
         show: props.showLegend,
         left: 0,
@@ -153,6 +155,7 @@ export default defineComponent({
           })}`;
         }
       },
+      // controlling the display of the X-Axis
       xAxis: {
         type: 'time',
         show: props.showAxis,
@@ -163,10 +166,10 @@ export default defineComponent({
             ? value =>
                 fNum(value, null, { format: props.axisLabelFormatter.xAxis })
             : undefined,
-          interval: () => true,
           color: '#718B98'
         }
       },
+      // controlling the display of the Y-Axis
       yAxis: {
         axisLine: { show: true, lineStyle: { color: '#D8D8D8' } },
         type: 'value',
@@ -186,6 +189,7 @@ export default defineComponent({
         nameGap: 25
       },
       color: props.color,
+      // Controls the boundaries of the chart from the HTML defined rectangle
       grid: {
         left: '2.5%',
         right: 0,
@@ -202,7 +206,6 @@ export default defineComponent({
           }
         },
         formatter: params => {
-          console.log('params', params);
           return `
             <div class='flex flex-col font-body'>
               <span>${params[0].value[0]}</span>
@@ -230,12 +233,15 @@ export default defineComponent({
         smooth: false,
         symbol: 'none',
         name: d.name,
-        animationEasing: function (k) {
-          return k === 1 ? 1 : 1 - Math.pow(2, -10 * k)
+        animationEasing: function(k) {
+          return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
         },
         lineStyle: {
           width: 2
         },
+        // This is a retrofitted option to show the small pill with the
+        // latest value of the series at the end of the line on the RHS
+        // the line is hidden, but the label is shown with extra styles
         markLine: {
           symbol: 'roundRect',
           symbolSize: 0,
@@ -261,7 +267,7 @@ export default defineComponent({
               yAxis: (last(props.data[i].values) || [])[1]
             }
           ]
-        },
+        }
       }))
     }));
 

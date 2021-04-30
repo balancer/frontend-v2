@@ -2,7 +2,6 @@
   <div class="container px-4 mx-auto">
     <SubNav class="mb-8" />
     <div class="mt-16">
-      {{ console.log(chartSeries) }}
       <BalLineChart
         :isLoading="isLoadingChartData || isAppLoading || isPageLoading"
         :data="chartSeries"
@@ -267,7 +266,6 @@ export default defineComponent({
       getAddress,
       router,
       getIconPosition,
-      console
     };
   }
 });

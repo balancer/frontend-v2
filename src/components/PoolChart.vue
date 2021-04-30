@@ -1,13 +1,6 @@
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
   <div class="chart mr-n2 ml-n2" v-else-if="nonEmptyHistory.length >= 7">
-    <!-- <apexchart
-      width="100%"
-      height="400"
-      type="line"
-      :options="options"
-      :series="series"
-    /> -->
     <BalLineChart
       :data="series"
       :isPeriodSelectionEnabled="false"
@@ -51,16 +44,11 @@ export default defineComponent({
 
   setup(props) {
     const store = useStore();
-    const { fNum } = useNumbers();
     const { t } = useI18n();
 
     const { prices, snapshots } = toRefs(props);
 
     const appLoading = computed(() => store.state.app.loading);
-
-    function formatYAxis(value: number) {
-      return fNum(value, null, { format: '0.%' });
-    }
 
     const nonEmptyHistory = computed(() =>
       history.value.filter(state => state.totalShares !== '0')
@@ -165,79 +153,10 @@ export default defineComponent({
       }
     ]);
 
-    const minValue = computed(() =>
-      Math.min(...holdValues.value, ...bptValues.value)
-    );
-    const maxValue = computed(() =>
-      Math.max(...holdValues.value, ...bptValues.value)
-    );
-    const min = computed(() => (Math.floor(maxValue.value) / 2) * -1);
-    const max = computed(() => Math.ceil(maxValue.value * 4) / 4);
-
-    const options = computed(() => {
-      const tickAmount = (max.value - min.value) * 4;
-      return {
-        chart: {
-          type: 'line',
-          toolbar: {
-            show: false
-          },
-          zoom: {
-            enabled: false
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'straight',
-          width: 2
-        },
-        grid: {
-          borderColor: '#dfdde1',
-          strokeDashArray: [4, 2]
-        },
-        xaxis: {
-          type: 'datetime',
-          tooltip: {
-            enabled: false
-          },
-          categories: timestamps.value
-        },
-        yaxis: {
-          min,
-          max,
-          tickAmount,
-          opposite: true,
-          labels: {
-            formatter: formatYAxis
-          }
-        },
-        legend: {
-          position: 'top',
-          horizontalAlign: 'left',
-          offsetY: 8,
-          markers: {
-            width: 16,
-            height: 4,
-            radius: 2
-          }
-        }
-      };
-    });
-
     return {
       series,
-      options,
-      history,
       appLoading,
-
-      nonEmptyHistory,
-      timestamps,
-      holdValues,
-      bptValues,
-      max,
-      min
+      nonEmptyHistory
     };
   }
 });
