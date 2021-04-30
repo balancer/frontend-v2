@@ -101,10 +101,9 @@ export async function getPoolSharesChart(
       const month = data[0].toString().slice(4, 6);
       const day = data[0].toString().slice(6, 8);
       const value = data[1];
-      return [`${year}-${month}-${day}`, value];
+      return [`${year}/${month}/${day}`, value];
     });
   return {
-    axis: formatedResults.map(row => row[0]),
-    data: formatedResults.map(row => row[1])
+    data: formatedResults
   };
 }

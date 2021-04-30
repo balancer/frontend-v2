@@ -2,13 +2,14 @@
   <div class="container px-4 mx-auto">
     <SubNav class="mb-8" />
     <div class="mt-16">
+      {{ console.log(chartSeries) }}
       <BalLineChart
-        :isLoading="isLoadingChartData || isAppLoading"
-        name="Value ($)"
-        :axis="portfolioChartData?.axis"
-        :data="portfolioChartData?.data"
+        :isLoading="isLoadingChartData || isAppLoading || isPageLoading"
+        :data="chartSeries"
         :onPeriodSelected="handleGraphingPeriodChange"
         :currentGraphingPeriod="currentGraphingPeriod"
+        :color="['#28BD9C']"
+        height="96"
       />
     </div>
     <div>
@@ -78,7 +79,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref } from 'vue';
+import { defineComponent, reactive, computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import getProvider from '@/utils/provider';
@@ -195,6 +196,10 @@ export default defineComponent({
       })
     );
 
+    const chartSeries = computed(() => [
+      { name: 'Value ($)', values: portfolioChartData?.value?.data || [] }
+    ]);
+
     const { data: pools, isLoading: isLoadingPools } = useQuery(
       reactive(['portfolioPools', { networkKey, provider, account }]),
       () => getPoolsWithShares(networkKey.value, account.value, prices.value),
@@ -249,7 +254,7 @@ export default defineComponent({
       isPageLoading,
       allTokens,
       isLoadingChartData,
-      portfolioChartData,
+      chartSeries,
       isFetchingMoreChartData,
       isInjectingTokens,
       currentGraphingPeriod,
@@ -261,7 +266,8 @@ export default defineComponent({
       tokensFor,
       getAddress,
       router,
-      getIconPosition
+      getIconPosition,
+      console
     };
   }
 });

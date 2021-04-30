@@ -12,7 +12,7 @@
       :data="series"
       :isPeriodSelectionEnabled="false"
       :showAxis="true"
-      :axisLabelFormatter="{ yAxis: 'percent' }"
+      :axisLabelFormatter="{ yAxis: '0.0%' }"
       :color="['#28BD9C', '#000000']"
       height="96"
       :showLegend="true"
@@ -32,6 +32,7 @@ import { PoolSnapshots } from '@/api/subgraph';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 import { zip } from 'lodash';
+import { fromUnixTime, format } from 'date-fns';
 
 export default defineComponent({
   name: 'PoolChart',
@@ -108,7 +109,9 @@ export default defineComponent({
     });
 
     const timestamps = computed(() => {
-      return nonEmptyHistory.value.map(state => state.timestamp);
+      return nonEmptyHistory.value.map(state =>
+        format(fromUnixTime(state.timestamp / 1000), 'yyyy/MM/dd')
+      );
     });
 
     const holdValues = computed(() => {
@@ -124,7 +127,7 @@ export default defineComponent({
             return 0;
           }
           const currentValue = getPoolValue(firstState.amounts, state.price);
-          return currentValue / firstValue - 1;
+          return (currentValue / firstValue - 1) / 100;
         });
       return values;
     });
@@ -146,7 +149,7 @@ export default defineComponent({
           const currentValue = getPoolValue(state.amounts, state.price);
           const currentShares = parseFloat(state.totalShares);
           const currentValuePerBpt = currentValue / currentShares;
-          return currentValuePerBpt / firstValuePerBpt - 1;
+          return (currentValuePerBpt / firstValuePerBpt - 1) / 100;
         });
       return values;
     });

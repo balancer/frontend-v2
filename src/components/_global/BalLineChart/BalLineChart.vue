@@ -70,12 +70,12 @@ type AxisMoveEvent = {
 
 type ChartData = {
   name: string;
-  values: string[] | number[];
+  values: number[];
 };
 
 type AxisLabelFormat = {
-  xAxis?: Preset;
-  yAxis?: Preset;
+  xAxis?: Preset | string;
+  yAxis?: Preset | string;
 };
 
 export default defineComponent({
@@ -112,9 +112,6 @@ export default defineComponent({
     showHeader: {
       type: Boolean
     },
-    showGradient: {
-      type: Boolean
-    },
     axisLabelFormatter: {
       type: Object as PropType<AxisLabelFormat>,
       default: () => ({})
@@ -124,12 +121,6 @@ export default defineComponent({
     },
     height: {
       type: String
-    },
-    min: {
-      type: Number
-    },
-    max: {
-      type: Number
     },
     showLegend: {
       type: Boolean
@@ -143,7 +134,6 @@ export default defineComponent({
     const lineChart = ref<HTMLElement>();
     const currentValue = ref('$0,00');
     const change = ref(0);
-
     const { fNum } = useNumbers();
 
     // https://echarts.apache.org/en/option.html
@@ -156,43 +146,48 @@ export default defineComponent({
         itemHeight: 5,
         formatter: (legendName: string) => {
           const latestValue = last(
-            props.data.find(d => (d.name = legendName))?.values as any
-          ) as [unknown, unknown];
-          return `${legendName}: ${latestValue[1]}`;
+            props.data.find(d => d.name === legendName)?.values as any
+          ) as [string | number, string | number];
+          return `${legendName}: ${fNum(latestValue[1], null, {
+            format: props.axisLabelFormatter.yAxis
+          })}`;
         }
       },
       xAxis: {
         type: 'time',
         show: props.showAxis,
-        axisLine: { show: false },
-        axisTick: { show: false },
+        axisTick: { show: true, alignWithLabel: true },
+        axisLine: { onZero: false, lineStyle: { color: '#D8D8D8' } },
         axisLabel: {
           formatter: props.axisLabelFormatter.xAxis
-            ? value => fNum(value, props.axisLabelFormatter.xAxis)
+            ? value =>
+                fNum(value, null, { format: props.axisLabelFormatter.xAxis })
             : undefined,
-          interval: () => true
+          interval: () => true,
+          color: '#718B98'
         }
       },
       yAxis: {
-        axisLine: { show: false },
+        axisLine: { show: true, lineStyle: { color: '#D8D8D8' } },
         type: 'value',
         show: props.showAxis,
         splitNumber: 4,
         splitLine: {
-          lineStyle: {
-            type: 'dashed'
-          }
+          show: false
         },
         position: 'right',
         axisLabel: {
-          formatter: value => fNum(value, props.axisLabelFormatter.yAxis)
+          formatter: props.axisLabelFormatter.yAxis
+            ? value =>
+                fNum(value, null, { format: props.axisLabelFormatter.yAxis })
+            : undefined,
+          color: '#718B98'
         },
-        min: props.min,
-        max: props.max
+        nameGap: 25
       },
       color: props.color,
       grid: {
-        left: 0,
+        left: '2.5%',
         right: 0,
         top: '10%',
         bottom: '5%',
@@ -206,39 +201,67 @@ export default defineComponent({
             show: false
           }
         },
-        triggerOn: 'mousemove',
-        hideDelay: 0,
-        formatter: params =>
-          `<span class="font-semibold">${formatDate(
-            new Date(params[0].axisValue),
-            'do LLL yyyy'
-          )}</span>`,
-        shadowColor: 'none',
-        backgroundColor: 'transparent'
+        formatter: params => {
+          console.log('params', params);
+          return `
+            <div class='flex flex-col font-body'>
+              <span>${params[0].value[0]}</span>
+              ${params
+                .map(
+                  param => `
+                <span>
+                ${param.marker} ${
+                    param.seriesName
+                  } <span class='font-medium'>${fNum(param.value[1], null, {
+                    format: props.axisLabelFormatter.yAxis
+                  })}
+                  </span>
+                </span>
+              `
+                )
+                .join('')}
+            </div>
+          `;
+        }
       },
-      series: props.data.map(d => ({
+      series: props.data.map((d, i) => ({
         data: d.values,
         type: 'line',
         smooth: false,
         symbol: 'none',
         name: d.name,
+        animationEasing: function (k) {
+          return k === 1 ? 1 : 1 - Math.pow(2, -10 * k)
+        },
         lineStyle: {
           width: 2
         },
-        areaStyle: props.showGradient
-          ? {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0.1,
-                  color: '#f5fff5'
-                },
-                {
-                  offset: 0.8,
-                  color: '#FFF'
-                }
-              ])
+        markLine: {
+          symbol: 'roundRect',
+          symbolSize: 0,
+          silent: true,
+          lineStyle: {
+            color: 'rgba(0, 0, 0, 0)'
+          },
+          label: {
+            backgroundColor: (props.color || [])[i] || 'black',
+            borderRadius: 3,
+            padding: 4,
+            formatter: (params: { value: string }) => {
+              return fNum(params.value, null, {
+                format: props.axisLabelFormatter.yAxis
+              });
+            },
+            color: '#FFF',
+            fontSize: 10
+          },
+          data: [
+            {
+              name: 'Latest',
+              yAxis: (last(props.data[i].values) || [])[1]
             }
-          : null
+          ]
+        },
       }))
     }));
 
