@@ -49,7 +49,7 @@
       </template>
     </BalTable>
     <div
-      v-if="!isLoading && data.length === 0"
+      v-if="!isLoading && data && data.length === 0"
       class="h-40 border-t -mt-px flex items-center justify-center text-gray-500 font-medium"
     >
       {{ noPoolsLabel }}
