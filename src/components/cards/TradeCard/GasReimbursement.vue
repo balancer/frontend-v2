@@ -47,7 +47,7 @@ export default defineComponent({
     const { appNetwork } = useWeb3();
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
-    
+
     const eligibleAssetMeta = eligibleAssetList[appNetwork.networkName];
     const eligibleAssets = Object.fromEntries(
       Object.entries(eligibleAssetMeta).map(assetEntry => {

@@ -18,7 +18,6 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import omit from 'lodash/omit';
-import { useI18n } from 'vue-i18n';
 
 interface Option {
   value: string | number;
@@ -38,8 +37,6 @@ export default defineComponent({
   },
 
   setup(props, { emit, attrs }) {
-    const { t } = useI18n();
-
     // COMPUTED
     const attrs_ = computed(() => omit(attrs, 'options'));
 
