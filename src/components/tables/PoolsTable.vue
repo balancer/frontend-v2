@@ -120,28 +120,32 @@ export default defineComponent({
         className: 'cell',
         align: 'right',
         id: 'myBalance',
-        hidden: !props.showPoolShares
+        hidden: !props.showPoolShares,
+        sortKey: pool => Number(pool.shares)
       },
       {
         name: t('poolValue'),
         accessor: pool => fNum(pool.totalLiquidity, 'usd'),
         className: 'w-32',
         align: 'right',
-        id: 'poolValue'
+        id: 'poolValue',
+        sortKey: pool => Number(pool.totalLiquidity)
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
         accessor: pool => fNum(pool.dynamic.volume, 'usd'),
         className: 'w-32',
         align: 'right',
-        id: 'poolVolume'
+        id: 'poolVolume',
+        sortKey: pool => Number(pool.dynamic.volume)
       },
       {
         name: t('apy', [t('yearAbbrev')]),
         accessor: pool => `${fNum(pool.dynamic.apy, 'percent')}`,
         className: 'w-32',
         align: 'right',
-        id: 'poolApy'
+        id: 'poolApy',
+        sortKey: pool => Number(pool.dynamic.apy)
       }
     ]);
 
