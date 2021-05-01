@@ -102,6 +102,7 @@ export default defineComponent({
         name: 'Icons',
         id: 'icons',
         accessor: 'uri',
+        numericAccessor: 0,
         Header: 'iconColumnHeader',
         Cell: 'iconColumnCell',
         className: 'w-32 md:w-36 lg:w-40',
@@ -111,12 +112,14 @@ export default defineComponent({
         name: t('poolName'),
         id: 'poolName',
         accessor: 'id',
+        numericAccessor: 0,
         Cell: 'poolNameCell',
         className: 'w-72'
       },
       {
         name: t('myBalance'),
         accessor: pool => fNum(pool.shares, 'usd', { forcePreset: true }),
+        numericAccessor: pool => parseFloat(pool.shares),
         className: 'cell',
         align: 'right',
         id: 'myBalance',
@@ -125,6 +128,7 @@ export default defineComponent({
       {
         name: t('poolValue'),
         accessor: pool => fNum(pool.totalLiquidity, 'usd'),
+        numericAccessor: pool => parseFloat(pool.totalLiquidity),
         className: 'w-32',
         align: 'right',
         id: 'poolValue'
@@ -132,6 +136,7 @@ export default defineComponent({
       {
         name: t('volume24h', [t('hourAbbrev')]),
         accessor: pool => fNum(pool.dynamic.volume, 'usd'),
+        numericAccessor: pool => parseFloat(pool.dynamic.volume),
         className: 'w-32',
         align: 'right',
         id: 'poolVolume'
@@ -139,6 +144,7 @@ export default defineComponent({
       {
         name: t('apy', [t('yearAbbrev')]),
         accessor: pool => `${fNum(pool.dynamic.apy, 'percent')}`,
+        numericAccessor: pool => parseFloat(pool.dynamic.apy),
         className: 'w-32',
         align: 'right',
         id: 'poolApy'

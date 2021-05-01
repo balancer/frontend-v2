@@ -126,6 +126,8 @@ export type ColumnDefinition<T = Data> = {
   noGrow?: boolean;
   // Set to true to hide the column
   hidden?: boolean;
+  // Access data numerically for sorting
+  numericAccessor: number | ((row: T) => number);
 };
 
 export default defineComponent({
@@ -192,8 +194,8 @@ export default defineComponent({
       }
 
       const column = props.columns.find(column => column.id === columnId);
-      if (column?.accessor) {
-        const sortedData = sortBy(props.data, column.accessor);
+      if (column?.numericAccessor) {
+        const sortedData = sortBy(props.data, column.numericAccessor);
 
         if (currentSortDirection.value === 'asc') {
           tableData.value = sortedData;
