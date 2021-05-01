@@ -6,11 +6,11 @@
       @click="onSelect(option)"
       outline
       size="sm"
-      class="capitalize mr-2 w-16"
+      class="capitalize mr-2 w-18"
       v-bind="attrs_"
       :color="modelValue === option.value ? 'blue' : 'gray'"
     >
-      {{ option.label }}
+      {{ 'best' === option.label ? $t(option.label) : option.label }}
     </BalBtn>
   </div>
 </template>
@@ -18,6 +18,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import omit from 'lodash/omit';
+import { useI18n } from 'vue-i18n';
 
 interface Option {
   value: string | number;
@@ -37,6 +38,8 @@ export default defineComponent({
   },
 
   setup(props, { emit, attrs }) {
+    const { t } = useI18n();
+
     // COMPUTED
     const attrs_ = computed(() => omit(attrs, 'options'));
 

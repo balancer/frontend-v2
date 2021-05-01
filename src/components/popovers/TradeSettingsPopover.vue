@@ -52,7 +52,7 @@
           :class="{ active: appTradeLiquidity === tradeLiquidity }"
           @click="setTradeLiquidity(tradeLiquidity)"
         >
-          {{ tradeLiquidity }}
+          {{ $t(tradeLiquidity.toLowerCase()) }}
         </div>
       </div>
     </div>
@@ -72,6 +72,7 @@ import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
+import { useI18n } from 'vue-i18n';
 
 const slippageOptions = ['0.005', '0.01', '0.02'];
 
@@ -86,6 +87,7 @@ export default defineComponent({
     const store = useStore();
     const { fNum } = useNumbers();
     const { explorer } = useWeb3();
+    const { t } = useI18n();
 
     // DATA
     const data = reactive({

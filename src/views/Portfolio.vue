@@ -223,7 +223,7 @@ export default defineComponent({
     );
 
     const chartSeries = computed(() => [
-      { name: 'Value ($)', values: portfolioChartData?.value?.data || [] }
+      { name: `${t('value')} ($)`, values: portfolioChartData?.value?.data || [] }
     ]);
 
     const { data: pools, isLoading: isLoadingPools } = useQuery(
