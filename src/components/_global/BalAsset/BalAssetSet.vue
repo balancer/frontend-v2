@@ -20,7 +20,6 @@
 </template>
 
 <script lang="ts">
-import useBreakpoints from '@/composables/useBreakpoints';
 import { defineComponent, PropType } from 'vue';
 import BalAsset from './BalAsset.vue';
 
