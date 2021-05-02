@@ -207,6 +207,7 @@ export default defineComponent({
 
     watch(getConfig, async () => {
       await initSor();
+      await handleAmountChange();
     });
 
     watch(tokenInAddress, () => {
