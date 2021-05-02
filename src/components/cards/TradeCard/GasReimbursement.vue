@@ -6,9 +6,7 @@
   >
     <div v-if="isActive()" class="message relative px-2 py-3">
       <div class="ml-12">
-        <div class="relative text-sm font-bold">
-          High gas fees? Here's a helping hand
-        </div>
+        <div v-text="$t('highGasFees')" class="relative text-sm font-bold" />
         <div class="relative text-sm text-gray-500">
           {{ text }}
         </div>
@@ -25,8 +23,8 @@ import BigNumber from 'bignumber.js';
 import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 import { isBudgetLeft } from '@/utils/balancer/bal4gas';
 import useWeb3 from '@/composables/useWeb3';
-
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -48,6 +46,7 @@ export default defineComponent({
     const store = useStore();
     const { appNetwork } = useWeb3();
     const isBalForGasBudget = ref<boolean>(false);
+    const { t } = useI18n();
 
     const eligibleAssetMeta = eligibleAssetList[appNetwork.networkName];
     const eligibleAssets = Object.fromEntries(
@@ -149,11 +148,11 @@ export default defineComponent({
         reimburseAmount.value && reimburseAmount.value.usd.gt(0);
 
       return isEligible
-        ? `This trade earns you ~${reimburseAmount.value.bal.toFixed(
+        ? `${t('tradeEarns')} ~${reimburseAmount.value.bal.toFixed(
             1,
             BigNumber.ROUND_DOWN
           )} BAL (${formatUSD(reimburseAmount.value.usd)})`
-        : 'Earn BAL when swapping eligible tokens';
+        : t('earnBAL');
     });
 
     function formatUSD(amount: BigNumber): string {
