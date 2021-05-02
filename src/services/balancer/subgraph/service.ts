@@ -3,6 +3,8 @@ import InfuraService from '@/services/infura/service';
 import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
 
+const NETWORK = process.env.VUE_APP_NETWORK || '1';
+
 export default class Service {
   client: Client;
   infuraService: InfuraService;
@@ -16,5 +18,16 @@ export default class Service {
     // Init entities
     this.pools = new Pools(this);
     this.poolShares = new PoolShares(this);
+  }
+
+  public get blockTime(): number {
+    switch (NETWORK) {
+      case '1':
+        return 13;
+      case '42':
+        return 4;
+      default:
+        return 13;
+    }
   }
 }
