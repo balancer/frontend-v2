@@ -13,7 +13,7 @@
       v-if="$slots.label || label"
       :for="name"
       :class="['bal-radio-label', labelClasses]"
-      @click="onChange(value)"
+      @click.prevent="onChange(value)"
     >
       <slot name="label">
         {{ label }}
