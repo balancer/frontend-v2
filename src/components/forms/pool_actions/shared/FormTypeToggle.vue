@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col px-4 py-2" :class="hasZeroBalance ? 'hidden' : ''">
+  <div :class="['flex flex-col px-4 py-2', hasZeroBalance ? 'hidden' : '']">
     <BalRadio
       v-for="(type, i) in formTypes"
       :key="i"
