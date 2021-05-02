@@ -34,14 +34,14 @@
           <BalIcon
             name="arrow-up"
             v-if="
-              currentSortColumn === column.id && currentSortDirection === 'desc'
+              currentSortColumn === column.id && currentSortDirection === 'asc'
             "
             class="ml-1"
           />
           <BalIcon
             name="arrow-down"
             v-if="
-              currentSortColumn === column.id && currentSortDirection === 'asc'
+              currentSortColumn === column.id && currentSortDirection === 'desc'
             "
             class="ml-1"
           />
@@ -126,6 +126,8 @@ export type ColumnDefinition<T = Data> = {
   noGrow?: boolean;
   // Set to true to hide the column
   hidden?: boolean;
+  // Accessor for sorting purposes
+  sortKey?: string | ((row: T) => unknown);
 };
 
 export default defineComponent({
@@ -192,9 +194,8 @@ export default defineComponent({
       }
 
       const column = props.columns.find(column => column.id === columnId);
-      if (column?.accessor) {
-        const sortedData = sortBy(props.data, column.accessor);
-
+      if (column?.sortKey) {
+        const sortedData = sortBy(props.data, column.sortKey);
         if (currentSortDirection.value === 'asc') {
           tableData.value = sortedData;
         } else if (currentSortDirection.value === 'desc') {
