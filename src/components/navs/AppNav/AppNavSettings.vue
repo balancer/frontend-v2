@@ -59,7 +59,7 @@
       </div>
     </div>
     <div class="hidden px-4">
-      <span v-text="$t('language')" class="font-medium mb-2" />
+      <span v-text="t('language')" class="font-medium mb-2" />
       <div class="flex mt-1">
         <div
           v-for="(locale, localeKey) in locales"
@@ -73,7 +73,7 @@
       </div>
     </div>
     <div class="hidden px-4 mt-4">
-      <span v-text="$t('theme')" class="font-medium mb-2" />
+      <span v-text="t('theme')" class="font-medium mb-2" />
       <div class="flex mt-1">
         <div
           class="option w-16 mr-2 py-1.5 flex items-center justify-center border rounded-xl cursor-pointer"
@@ -93,12 +93,12 @@
     </div>
     <div class="px-4 mt-4">
       <div class="flex items-baseline">
-        <span v-text="$t('slippageTolerance')" class="font-medium mb-2" />
+        <span v-text="t('slippageTolerance')" class="font-medium mb-2" />
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-html="$t('marketConditionsWarning')" class="w-52" />
+          <div v-html="t('marketConditionsWarning')" class="w-52" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">
@@ -117,12 +117,12 @@
     </div>
     <div class="px-4 mt-6">
       <div class="flex items-baseline">
-        <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
+        <span v-text="t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-text="$t('whichPools')" class="w-52" />
+          <div v-text="t('whichPools')" class="w-52" />
         </BalTooltip>
       </div>
       <BalBtnGroup

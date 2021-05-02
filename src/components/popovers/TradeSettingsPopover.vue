@@ -52,7 +52,7 @@
           :class="{ active: appTradeLiquidity === tradeLiquidity }"
           @click="setTradeLiquidity(tradeLiquidity)"
         >
-          {{ tradeLiquidity }}
+          {{ $t(tradeLiquidity.toLowerCase()) }}
         </div>
       </div>
     </div>
