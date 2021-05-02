@@ -3,7 +3,7 @@
   <nav
     id="app-nav"
     ref="appNav"
-    class="h-20 px-4 lg:px-6 bg-white sticky top-0 z-50"
+    class="h-20 px-4 lg:px-6 bg-white sticky top-0"
   >
     <div class="h-full flex items-center justify-between">
       <div class="w-1/3">
@@ -89,5 +89,6 @@ export default defineComponent({
   @apply bg-white dark:bg-gray-900;
   @apply border-b border-transparent dark:border-gray-700;
   transition: all 0.2s ease-in-out;
+  z-index: 99999999;
 }
 </style>
