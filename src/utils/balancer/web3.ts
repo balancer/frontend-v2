@@ -1,10 +1,11 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
+import { ErrorCode } from '@ethersproject/logger';
 import { logFailedTx } from '@/utils/logging';
 
 import { getGasPrice } from './gasPrices';
 
-const CODE_FAILED = -32016;
+const ENV = process.env.VUE_APP_ENV || 'development';
 // only disable if set to "false"
 const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
@@ -35,7 +36,7 @@ export async function sendTransaction(
   try {
     return await contractWithSigner[action](...params, overrides);
   } catch (e) {
-    if (e.code === CODE_FAILED) {
+    if (e.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT && ENV !== 'development') {
       const network = (await web3.getNetwork()).name;
       const sender = await web3.getSigner().getAddress();
       logFailedTx(network, sender, contract, action, params, overrides);
