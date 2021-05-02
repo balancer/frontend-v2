@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col px-4 py-2">
+  <div :class="['flex flex-col px-4 py-2', hasZeroBalance ? 'hidden' : '']">
     <BalRadio
       v-for="(type, i) in formTypes"
       :key="i"
@@ -7,7 +7,7 @@
       :value="type.value"
       name="formType"
       class="py-2"
-      :disabled="loading || (hasZeroBalance && type.value === 'proportional')"
+      :disabled="loading"
     >
       <template v-slot:label>
         <span>
