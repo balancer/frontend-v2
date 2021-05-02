@@ -6,11 +6,11 @@
       @click="onSelect(option)"
       outline
       size="sm"
-      class="capitalize mr-2 w-16"
+      class="capitalize mr-2 w-18"
       v-bind="attrs_"
       :color="modelValue === option.value ? 'blue' : 'gray'"
     >
-      {{ option.label }}
+      {{ 'best' === option.label ? $t(option.label) : option.label }}
     </BalBtn>
   </div>
 </template>
