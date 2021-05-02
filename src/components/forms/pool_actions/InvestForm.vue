@@ -37,7 +37,12 @@
         </div>
       </div>
 
-      <div :class="['px-4 py-3 bg-gray-50 border-b', hasZeroBalance ? '' : 'border-t']">
+      <div
+        :class="[
+          'px-4 py-3 bg-gray-50 border-b',
+          hasZeroBalance ? '' : 'border-t'
+        ]"
+      >
         <div
           v-for="(token, i) in pool.tokens"
           :key="token"
@@ -76,7 +81,13 @@
       </div>
     </template>
 
-    <div v-else :class="['px-4 pt-6 bg-gray-50 border-b', hasZeroBalance ? '' : 'border-t']">
+    <div
+      v-else
+      :class="[
+        'px-4 pt-6 bg-gray-50 border-b',
+        hasZeroBalance ? '' : 'border-t'
+      ]"
+    >
       <BalTextInput
         v-for="(token, i) in pool.tokens"
         :key="token"
