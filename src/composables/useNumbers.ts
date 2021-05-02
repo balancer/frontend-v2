@@ -8,7 +8,8 @@ export type Preset =
   | 'token_lg'
   | 'usd'
   | 'usd_lg'
-  | 'percent';
+  | 'percent'
+  | 'percent_lg';
 
 interface Options {
   format?: string;
