@@ -4,7 +4,8 @@
     :style="{
       width: `${width}px`,
       height: `${size}px`
-    }">
+    }"
+  >
     <BalAsset
       v-for="(address, i) in addresses"
       :key="i"
@@ -44,13 +45,11 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { bp } = useBreakpoints();
-
     function leftOffsetFor(i: number): number {
       const maxCount = 8;
       const radius = props.size / 2;
       const spacer = (maxCount / props.addresses.length - 1) * (radius * 2);
-      return (((props.width - (radius * 2)) + spacer) / (maxCount - 1)) * i
+      return ((props.width - radius * 2 + spacer) / (maxCount - 1)) * i;
     }
 
     return { leftOffsetFor };

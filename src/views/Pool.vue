@@ -11,12 +11,12 @@
                 {{ token.symbol }}
               </span>
               <span class="text-gray-500 font-normal text-sm">
-                {{ fNum(token.weight/100, 'percent_lg') }}
+                {{ fNum(token.weight / 100, 'percent_lg') }}
               </span>
             </h3>
           </div>
         </div>
-        
+
         <BalLoadingBlock v-if="loading" class="h-4" />
         <div v-else class="text-sm">
           {{ poolTypeLabel }}. {{ poolFeeLabel }}.
@@ -168,12 +168,14 @@ export default defineComponent({
     });
 
     const titleTokens = computed(() => {
-      return pool.value.tokens.map((token, i) => {
-        return { 
-          symbol: allTokens.value[token]?.symbol,
-          weight: pool.value.weightsPercent[i]
-        }
-      }).sort((a, b) =>  b.weight - a.weight)
+      return pool.value.tokens
+        .map((token, i) => {
+          return {
+            symbol: allTokens.value[token]?.symbol,
+            weight: pool.value.weightsPercent[i]
+          };
+        })
+        .sort((a, b) => b.weight - a.weight);
     });
 
     const poolTypeLabel = computed(() => {
