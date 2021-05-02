@@ -64,7 +64,10 @@ export default function useSor(
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
-  onMounted(async () => await initSor());
+  onMounted(async () => {
+    await initSor();
+    await handleAmountChange();
+  });
 
   useIntervalFn(async () => {
     if (sorManager) {
