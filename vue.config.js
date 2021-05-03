@@ -1,9 +1,9 @@
 const path = require('path');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
-const version = require('./package.json');
+const { version } = require('./package.json');
 
 const release = `frontend-v2@${version}`;
-const ENV = process.env.VUE_APP_ENV || 'development';
+const ENV = process.env.VUE_APP_SENTRY_AUTH_TOKEN || 'development';
 
 const sentryWebpack = new SentryWebpackPlugin({
   // sentry-cli configuration
