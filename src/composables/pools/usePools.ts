@@ -7,11 +7,14 @@ import usePoolSharesQuery from '@/composables/queries/usePoolSharesQuery';
 import useWeb3 from '@/composables/useWeb3';
 
 export default function usePoolsWithSharesQuery() {
+  // COMPOSABLES
   const { isConnected } = useWeb3();
   const poolsQuery = usePoolsQuery();
   const poolSharesQuery = usePoolSharesQuery();
 
+  // COMPUTED
   const pools = computed(() => poolsQuery.data.value?.pools);
+
   const tokens = computed(() => poolsQuery.data.value?.tokens);
 
   const poolsWithShares = computed(() => {
@@ -38,20 +41,21 @@ export default function usePoolsWithSharesQuery() {
       .toString()
   );
 
-  const isLoadingPoolsWithShares = computed(
-    () => poolSharesQuery.isLoading.value || poolSharesQuery.isIdle.value
-  );
-
   const isLoadingPools = computed(
     () => poolsQuery.isLoading.value || poolsQuery.isIdle.value
   );
 
+  const isLoadingPoolsWithShares = computed(
+    () => poolSharesQuery.isLoading.value || poolSharesQuery.isIdle.value
+  );
+
   return {
+    // computed
     pools,
     tokens,
     poolsWithShares,
     totalInvestedAmount,
-    isLoadingPoolsWithShares,
-    isLoadingPools
+    isLoadingPools,
+    isLoadingPoolsWithShares
   };
 }
