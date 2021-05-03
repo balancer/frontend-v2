@@ -50,6 +50,8 @@ const actions = {
 
     commit('setLoading', false);
     commit('setConnector', connector);
+
+    await dispatch('loadAccountData');
   },
 
   async loadAccountData({ commit, dispatch }, account = '') {
