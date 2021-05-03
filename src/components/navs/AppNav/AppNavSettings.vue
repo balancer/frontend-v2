@@ -22,12 +22,12 @@
                     <BalBtn
                       circle
                       color="white"
-                      size="sm"
+                      size="xs"
                       @click="copyAddress"
                       class="mr-2"
                     >
-                      <BalIcon v-if="copiedAddress" name="check" size="sm" />
-                      <BalIcon v-else name="clipboard" size="sm" />
+                      <BalIcon v-if="copiedAddress" name="check" size="xs" />
+                      <BalIcon v-else name="clipboard" size="xs" />
                     </BalBtn>
                   </template>
                   <div
@@ -38,13 +38,13 @@
                 <BalBtn
                   circle
                   color="white"
-                  size="sm"
+                  size="xs"
                   tag="a"
                   :href="explorer.addressLink(account)"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <BalIcon name="external-link" size="sm" />
+                  <BalIcon name="external-link" size="xs" />
                 </BalBtn>
               </div>
             </div>
