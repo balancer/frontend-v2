@@ -16,6 +16,7 @@ interface Web3State {
   connector: string;
   blockNumber: number | null;
   modal: boolean;
+  loadingAccountData: boolean;
 }
 
 const state: Web3State = {
@@ -25,7 +26,8 @@ const state: Web3State = {
   config: configs[defaultConfig],
   connector: 'injected',
   blockNumber: null,
-  modal: false
+  modal: false,
+  loadingAccountData: false
 };
 
 const getters = {
@@ -44,12 +46,19 @@ const actions = {
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
-      await dispatch('account/getBalances', null, { root: true });
-      await dispatch('account/getAllowances', null, { root: true });
     }
 
     commit('setLoading', false);
     commit('setConnector', connector);
+  },
+
+  async loadAccountData({ commit, dispatch }, account = '') {
+    await dispatch('account/getBalances', null, { root: true });
+    await dispatch('account/getAllowances', null, { root: true });
+    if (account) {
+      const profiles = await getProfiles([account]);
+      commit('setProfile', profiles[account]);
+    }
   },
 
   async logout({ commit, dispatch }) {
@@ -91,13 +100,12 @@ const actions = {
         auth.web3.getNetwork(),
         auth.web3.listAccounts()
       ]);
+
       commit('setNetwork', network.chainId);
 
       const account = accounts.length > 0 ? accounts[0] : null;
-      const profiles = await getProfiles([account]);
 
       commit('setAccount', account);
-      commit('setProfile', profiles[account]);
     } catch (e) {
       commit('setAccount', null);
       console.debug('LOAD_PROVIDER_FAILURE', e);
@@ -109,6 +117,10 @@ const actions = {
 const mutations = {
   setLoading(_state: Web3State, val: boolean): void {
     _state.loading = val;
+  },
+
+  setLoadingAccountData(_state: Web3State, val: boolean): void {
+    _state.loadingAccountData = val;
   },
 
   logout(_state: Web3State) {

@@ -25,6 +25,11 @@ const state: AppState = {
 const actions = {
   init: async ({ commit, dispatch }) => {
     try {
+      // Setup web3
+      const auth = getInstance();
+      const connector = await auth.getConnector();
+      if (connector) dispatch('web3/login', connector, { root: true });
+
       // Fetch init data
       await dispatch('registry/get', null, { root: true });
       await dispatch('market/loadPrices', [], { root: true });
@@ -32,11 +37,6 @@ const actions = {
 
       // Fetch initial trade tokens
       dispatch('trade/init', null, { root: true });
-
-      // Setup web3
-      const auth = getInstance();
-      const connector = await auth.getConnector();
-      if (connector) dispatch('web3/login', connector, { root: true });
 
       commit('setLocale', 'en-US');
       commit('setDarkMode', false);
