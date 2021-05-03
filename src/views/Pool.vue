@@ -2,8 +2,21 @@
   <div class="container mx-auto px-4 lg:px-0 pt-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
-        <BalLoadingBlock v-if="loading" class="h-12 mb-2" />
-        <h3 v-else v-html="title" class="font-bold mb-2" />
+        <BalLoadingBlock v-if="loading" class="h-16 mb-2" />
+        <div v-else class="">
+          <BalAssetSet :addresses="pool.tokens" :size="36" />
+          <div class="mb-1 mt-3 flex flex-wrap items-center">
+            <h3 v-for="(token, i) in titleTokens" :key="i" class="mr-3">
+              <span class="mr-1 font-bold">
+                {{ token.symbol }}
+              </span>
+              <span class="text-gray-500 font-normal text-sm">
+                {{ fNum(token.weight / 100, 'percent_lg') }}
+              </span>
+            </h3>
+          </div>
+        </div>
+
         <BalLoadingBlock v-if="loading" class="h-4" />
         <div v-else class="text-sm">
           {{ poolTypeLabel }}. {{ poolFeeLabel }}.
@@ -101,6 +114,7 @@ import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
+import useTokens from '@/composables/useTokens';
 
 interface PoolPageData {
   id: string;
@@ -125,6 +139,7 @@ export default defineComponent({
     const router = useRouter();
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
+    const { allTokens } = useTokens();
     const {
       appNetwork,
       account,
@@ -152,10 +167,15 @@ export default defineComponent({
       return store.state.pools.current;
     });
 
-    const title = computed(() => {
-      const divider =
-        pool.value.name.length + pool.value.symbol.length < 40 ? ' ' : '<br>';
-      return `${pool.value.name}${divider}(${pool.value.symbol})`;
+    const titleTokens = computed(() => {
+      return pool.value.tokens
+        .map((token, i) => {
+          return {
+            symbol: allTokens.value[token]?.symbol,
+            weight: pool.value.weightsPercent[i]
+          };
+        })
+        .sort((a, b) => b.weight - a.weight);
     });
 
     const poolTypeLabel = computed(() => {
@@ -252,7 +272,7 @@ export default defineComponent({
       pool,
       poolTypeLabel,
       poolFeeLabel,
-      title,
+      titleTokens,
       isAuthenticated,
       hasEvents,
       missingPrices,
