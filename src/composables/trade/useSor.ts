@@ -2,6 +2,8 @@ import { Ref, onMounted, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
+import { Pool } from '@balancer-labs/sor/dist/types';
+import { SubgraphPoolBase } from '@balancer-labs/sor2';
 
 import { scale } from '@/utils';
 import { unwrap, wrap } from '@/utils/balancer/wrapper';
@@ -29,7 +31,7 @@ export default function useSor(
   isUnwrap: Ref<boolean>
 ) {
   let sorManager: SorManager | undefined = undefined;
-  const pools = ref<any[]>([]); // TODO - Check type & make sure correct value is returned by SorManager
+  const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
   const sorReturn = ref<SorReturn>({
     isV1swap: false,
     isV1best: false,
@@ -102,7 +104,7 @@ export default function useSor(
     console.time('[SOR] fetchPools');
     await sorManager.fetchPools();
     console.timeEnd('[SOR] fetchPools');
-    pools.value = sorManager.selectedPools.pools;
+    pools.value = sorManager.selectedPools;
   }
 
   async function fetchPools(): Promise<void> {
@@ -113,7 +115,7 @@ export default function useSor(
     console.time('[SOR] fetchPools');
     await sorManager.fetchPools();
     console.timeEnd('[SOR] fetchPools');
-    pools.value = sorManager.selectedPools.pools;
+    pools.value = sorManager.selectedPools;
   }
 
   async function handleAmountChange(): Promise<void> {
@@ -260,6 +262,8 @@ export default function useSor(
         ).toNumber();
       }
     }
+
+    pools.value = sorManager.selectedPools;
   }
 
   function tradeTxListener(hash: string) {
