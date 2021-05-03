@@ -22,7 +22,7 @@
           </BalBtn>
           <BalBtn
             tag="a"
-            href="https://balancer.fi"
+            :href="EXTERNAL_LINKS.Balancer.Home"
             target="_blank"
             rel="noreferrer"
             color="white"
@@ -44,6 +44,8 @@ import { useStore } from 'vuex';
 import { getPoolsWithShares } from '@/utils/balancer/pools';
 import useWeb3 from '@/composables/useWeb3';
 import { Pool } from '@/api/subgraph';
+
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 export default defineComponent({
   name: 'AppHero',
@@ -97,7 +99,9 @@ export default defineComponent({
       classes,
       // methods
       setAccountModal,
-      fNum
+      fNum,
+      // constants
+      EXTERNAL_LINKS
     };
   }
 });

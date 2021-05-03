@@ -4,7 +4,7 @@
       <BalBtn
         v-if="totalPending > 0"
         tag="a"
-        :href="`https://claim.balancer.finance/#/${account}`"
+        :href="EXTERNAL_LINKS.Balancer.Claim(account)"
         target="_blank"
         rel="noreferrer"
         color="gradient"
@@ -42,6 +42,7 @@ import { useStore } from 'vuex';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 interface ActionsData {
   pendingClaims: Claim[] | null;
@@ -101,7 +102,9 @@ export default defineComponent({
       bp,
       // methods
       setAccountModal,
-      fNum
+      fNum,
+      // constants
+      EXTERNAL_LINKS
     };
   }
 });
