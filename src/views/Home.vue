@@ -10,7 +10,7 @@
         class="mb-8"
       />
       <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
-      <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1" external>{{
+      <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Dashboard" external>{{
         $t('goToBalancerV1Site')
       }}</BalLink>
       <div class="mb-16" />

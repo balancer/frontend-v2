@@ -4,6 +4,6 @@ export const EXTERNAL_LINKS = {
     BalForGas:
       'https://docs.balancer.finance/core-concepts/bal-balancer-governance-token/bal-for-gas',
     Claim: (account: string) => `https://claim.balancer.finance/#/${account}`,
-    PoolsV1: 'https://pools.balancer.exchange'
+    PoolsV1Dashboard: 'https://pools.balancer.exchange/dashboard'
   }
 };
