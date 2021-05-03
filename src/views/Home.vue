@@ -10,7 +10,7 @@
         class="mb-8"
       />
       <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
-      <BalLink href="https://pools.balancer.exchange/dashboard" external>{{
+      <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Dashboard" external>{{
         $t('goToBalancerV1Site')
       }}</BalLink>
       <div class="mb-16" />
@@ -29,6 +29,8 @@
 import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAddress } from '@ethersproject/address';
+
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 
@@ -81,7 +83,10 @@ export default defineComponent({
       isConnected,
 
       //methods
-      router
+      router,
+
+      // constants
+      EXTERNAL_LINKS
     };
   }
 });
