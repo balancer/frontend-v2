@@ -64,13 +64,14 @@ export default function useSor(
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
-  onMounted(async () => await initSor());
+  onMounted(async () => {
+    await initSor();
+    await handleAmountChange();
+  });
 
   useIntervalFn(async () => {
     if (sorManager) {
-      console.time('[SOR] fetchPools');
-      await sorManager.fetchPools();
-      console.timeEnd('[SOR] fetchPools');
+      fetchPools();
     }
   }, 30 * 1e3);
 
@@ -96,10 +97,7 @@ export default function useSor(
       subgraphUrl
     );
 
-    console.time('[SOR] fetchPools');
-    await sorManager.fetchPools();
-    console.timeEnd('[SOR] fetchPools');
-    pools.value = sorManager.selectedPools.pools;
+    fetchPools();
   }
 
   async function fetchPools(): Promise<void> {
@@ -111,6 +109,8 @@ export default function useSor(
     await sorManager.fetchPools();
     console.timeEnd('[SOR] fetchPools');
     pools.value = sorManager.selectedPools.pools;
+    // Updates any swaps with up to date pools/balances
+    handleAmountChange();
   }
 
   async function handleAmountChange(): Promise<void> {
@@ -175,8 +175,6 @@ export default function useSor(
         'swapExactIn',
         tokenInAmountScaled,
         tokenInDecimals,
-        allowanceState.value.isUnlockedV1,
-        allowanceState.value.isUnlockedV2,
         liquiditySelection.value
       );
 
@@ -227,8 +225,6 @@ export default function useSor(
         'swapExactOut',
         tokenOutAmount,
         tokenOutDecimals,
-        allowanceState.value.isUnlockedV1,
-        allowanceState.value.isUnlockedV2,
         liquiditySelection.value
       );
 
