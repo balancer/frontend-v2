@@ -3,6 +3,7 @@ import {
   SwapInfo,
   DisabledOptions,
   SubGraphPoolsBase,
+  SubgraphPoolBase,
   SwapTypes,
   fetchSubgraphPools
 } from '@balancer-labs/sor2';
@@ -11,7 +12,7 @@ import { BaseProvider } from '@ethersproject/providers';
 import { AddressZero } from '@ethersproject/constants';
 import BigNumber from 'bignumber.js';
 import { scale } from '@/utils';
-import { Swap, Pools } from '@balancer-labs/sor/dist/types';
+import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { ETHER } from '@/constants/tokenlists';
 
 export enum LiquiditySelection {
@@ -46,7 +47,7 @@ Aims to manage liquidity between V1 & V2 using SOR.
 export class SorManager {
   sorV1: SORV1;
   sorV2: SORV2;
-  selectedPools: SubGraphPoolsBase | Pools = { pools: [] };
+  selectedPools: (SubgraphPoolBase | Pool)[] = [];
   weth: string;
   subgraphUrl: string;
   fetchStatus: FetchStatus = {
@@ -157,7 +158,7 @@ export class SorManager {
       `[SorManager] V1 fetchPools result: ${this.fetchStatus.v1success}`
     );
 
-    this.selectedPools = this.sorV2.onChainBalanceCache;
+    this.selectedPools = this.sorV2.onChainBalanceCache.pools;
   }
 
   // Gets swaps for V1 & V2 liquidity and determined best result
@@ -307,11 +308,11 @@ export class SorManager {
     // Either V1 & V2 are both unlocked or both locked so return best option by value
     if (isV1best) {
       console.log('[SorManager] V1 swap is best.');
-      this.selectedPools = this.sorV1.onChainCache;
+      this.selectedPools = this.sorV1.onChainCache.pools;
       return v1return;
     } else {
       console.log('[SorManager]  V2 swap is best.');
-      this.selectedPools = this.sorV2.onChainBalanceCache;
+      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
       return v2return;
     }
   }
@@ -383,11 +384,11 @@ export class SorManager {
     // Either V1 & V2 are both unlocked or both locked so return best option by value
     if (isV1best) {
       console.log('[SorManager] V1 swap is best.');
-      this.selectedPools = this.sorV1.onChainCache;
+      this.selectedPools = this.sorV1.onChainCache.pools;
       return v1return;
     } else {
       console.log('[SorManager] V2 swap is best.');
-      this.selectedPools = this.sorV2.onChainBalanceCache;
+      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
       return v2return;
     }
   }
