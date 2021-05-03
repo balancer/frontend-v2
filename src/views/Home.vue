@@ -19,7 +19,7 @@
     <TokenSearchInput v-model="selectedTokens" :loading="isLoadingPools" />
     <PoolsTable
       :isLoading="isLoadingPools"
-      :data="pools"
+      :data="filteredPools"
       :noPoolsLabel="$t('noPoolsFound')"
     />
   </div>
@@ -30,13 +30,11 @@ import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAddress } from '@ethersproject/address';
 
-import { bnum } from '@/utils';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 
 import PoolsTable from '@/components/tables/PoolsTable.vue';
 
-import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import usePoolSharesQuery from '@/composables/queries/usePoolSharesQuery';
+import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
@@ -49,56 +47,35 @@ export default defineComponent({
     // COMPOSABLES
     const router = useRouter();
     const { isConnected } = useWeb3();
-    const poolsQuery = usePoolsQuery();
-    const poolSharesQuery = usePoolSharesQuery();
+    const {
+      pools,
+      poolsWithShares,
+      isLoadingPools,
+      isLoadingPoolsWithShares
+    } = usePools();
 
     // DATA
     const selectedTokens = ref<string[]>([]);
 
-    const pools = computed(() =>
+    const filteredPools = computed(() =>
       selectedTokens.value.length > 0
-        ? poolsQuery.data.value?.pools.filter(pool => {
+        ? pools.value?.filter(pool => {
             const poolTokenList = pool.tokensList.map(getAddress);
 
             return selectedTokens.value.every(selectedToken =>
               poolTokenList.includes(selectedToken)
             );
           })
-        : poolsQuery.data.value?.pools
-    );
-
-    const poolsWithShares = computed(() => {
-      if (isConnected.value && poolSharesQuery.data.value) {
-        const { poolSharesMap, poolSharesIds } = poolSharesQuery.data.value;
-
-        return poolsQuery.data.value?.pools
-          .filter(pool => poolSharesIds.includes(pool.id))
-          .map(pool => ({
-            ...pool,
-            shares: bnum(pool.totalLiquidity)
-              .div(pool.totalShares)
-              .times(poolSharesMap[pool.id].balance)
-              .toString()
-          }));
-      }
-      return [];
-    });
-
-    const isLoadingPools = computed(
-      () => poolsQuery.isLoading.value || poolsQuery.isIdle.value
-    );
-
-    const isLoadingPoolsWithShares = computed(
-      () => poolSharesQuery.isLoading.value || poolSharesQuery.isIdle.value
+        : pools
     );
 
     return {
       // data
       selectedTokens,
-      pools,
+      filteredPools,
       poolsWithShares,
-      isLoadingPoolsWithShares,
       isLoadingPools,
+      isLoadingPoolsWithShares,
 
       // computed
       isConnected,
