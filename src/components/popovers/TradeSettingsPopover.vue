@@ -1,7 +1,7 @@
 <template>
   <BalPopover>
     <template v-slot:activator>
-      <BalBtn circle color="white" class="mb-2 text-gray-500">
+      <BalBtn circle color="white" size="sm" class="mb-2 text-gray-500">
         <BalIcon name="settings" size="sm" />
       </BalBtn>
     </template>

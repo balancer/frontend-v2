@@ -21,7 +21,11 @@ export default function initSentry(app: App) {
     app.config.errorHandler = (error, _, info) => {
       try {
         setTag('info', info);
-        captureException(error);
+        captureException(error, {
+          extra: {
+            error: error
+          }
+        });
       } catch (error) {
         console.error('Failed to send error to Sentry', error);
       }

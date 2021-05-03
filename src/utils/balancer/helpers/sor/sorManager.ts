@@ -170,8 +170,6 @@ export class SorManager {
     swapType: string,
     amountScaled: BigNumber,
     swapDecimals: number,
-    isUnlockedV1: boolean,
-    isUnlockedV2: boolean,
     liquiditySelection: LiquiditySelection
   ): Promise<SorReturn> {
     console.log(
@@ -233,8 +231,6 @@ export class SorManager {
         tokenInDecimals,
         tokenOut,
         tokenOutDecimals,
-        isUnlockedV1,
-        isUnlockedV2,
         liquiditySelection
       );
     } else {
@@ -248,8 +244,6 @@ export class SorManager {
         tokenInDecimals,
         tokenOut,
         tokenOutDecimals,
-        isUnlockedV1,
-        isUnlockedV2,
         liquiditySelection
       );
     }
@@ -265,8 +259,6 @@ export class SorManager {
     tokenInDecimals: number,
     tokenOut: string,
     tokenOutDecimals: number,
-    isUnlockedV1: boolean,
-    isUnlockedV2: boolean,
     liquiditySelection: LiquiditySelection
   ): SorReturn {
     // For swapExactIn the highest return is best
@@ -313,19 +305,6 @@ export class SorManager {
       return v2return;
     }
 
-    // Allowances take initial priority for best swap
-    if (isUnlockedV1 && !isUnlockedV2) {
-      console.log('[SorManager] V1 swap is best by allowance.');
-      this.selectedPools = this.sorV1.onChainCache.pools;
-      return v1return;
-    }
-
-    if (!isUnlockedV1 && isUnlockedV2) {
-      console.log('[SorManager] V2 swap is best by allowance.');
-      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
-      return v2return;
-    }
-
     // Either V1 & V2 are both unlocked or both locked so return best option by value
     if (isV1best) {
       console.log('[SorManager] V1 swap is best.');
@@ -348,8 +327,6 @@ export class SorManager {
     tokenInDecimals: number,
     tokenOut: string,
     tokenOutDecimals: number,
-    isUnlockedV1: boolean,
-    isUnlockedV2: boolean,
     liquiditySelection: LiquiditySelection
   ): SorReturn {
     // swapExactOut cases
@@ -401,19 +378,6 @@ export class SorManager {
       return v1return;
     } else if (liquiditySelection === LiquiditySelection.V2) {
       console.log('[SorManager] V2 swap is best by manual choice.');
-      return v2return;
-    }
-
-    // Allowances take initial priority for best swap
-    if (isUnlockedV1 && !isUnlockedV2) {
-      console.log('[SorManager] V1 swap is best by allowance.');
-      this.selectedPools = this.sorV1.onChainCache.pools;
-      return v1return;
-    }
-
-    if (!isUnlockedV1 && isUnlockedV2) {
-      console.log('[SorManager] V2 swap is best by allowance.');
-      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
       return v2return;
     }
 
