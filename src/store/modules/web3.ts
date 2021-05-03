@@ -54,12 +54,12 @@ const actions = {
     await dispatch('loadAccountData');
   },
 
-  async loadAccountData({ commit, dispatch }, account = '') {
+  async loadAccountData({ commit, dispatch, state }) {
     await dispatch('account/getBalances', null, { root: true });
     await dispatch('account/getAllowances', null, { root: true });
-    if (account) {
-      const profiles = await getProfiles([account]);
-      commit('setProfile', profiles[account]);
+    if (state.account) {
+      const profiles = await getProfiles([state.account]);
+      commit('setProfile', profiles[state.account]);
     }
   },
 
