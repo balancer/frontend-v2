@@ -18,17 +18,8 @@
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
-        <div class="px-6 py-8 flex flex-row icon">
-          <div
-            v-for="(token, i) in tokensFor(pool)"
-            class="z-10 absolute"
-            :key="token"
-            :style="{
-              left: `${getIconPosition(i, pool.tokens.length)}px`
-            }"
-          >
-            <BalAsset :address="token" />
-          </div>
+        <div class="px-6 py-8">
+          <BalAssetSet :addresses="tokensFor(pool)" :width="100" />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
@@ -68,7 +59,6 @@ import { getAddress } from '@ethersproject/address';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import useBreakpoints from '@/composables/useBreakpoints';
 
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 
@@ -94,7 +84,6 @@ export default defineComponent({
     const { allTokens } = useTokens();
     const router = useRouter();
     const { t } = useI18n();
-    const { bp } = useBreakpoints();
 
     // COMPOSABLES
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -120,42 +109,37 @@ export default defineComponent({
         className: 'cell',
         align: 'right',
         id: 'myBalance',
-        hidden: !props.showPoolShares
+        hidden: !props.showPoolShares,
+        sortKey: pool => Number(pool.shares)
       },
       {
         name: t('poolValue'),
         accessor: pool => fNum(pool.totalLiquidity, 'usd'),
         className: 'w-32',
         align: 'right',
-        id: 'poolValue'
+        id: 'poolValue',
+        sortKey: pool => Number(pool.totalLiquidity)
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
         accessor: pool => fNum(pool.dynamic.volume, 'usd'),
         className: 'w-32',
         align: 'right',
-        id: 'poolVolume'
+        id: 'poolVolume',
+        sortKey: pool => Number(pool.dynamic.volume)
       },
       {
         name: t('apy', [t('yearAbbrev')]),
         accessor: pool => `${fNum(pool.dynamic.apy, 'percent')}`,
         className: 'w-32',
         align: 'right',
-        id: 'poolApy'
+        id: 'poolApy',
+        sortKey: pool => Number(pool.dynamic.apy)
       }
     ]);
 
     function tokensFor(pool: DecoratedPoolWithShares) {
       return pool.tokensList.map(getAddress);
-    }
-
-    function getIconPosition(i: number, count: number) {
-      if (count < 3) return 28 * i + 24;
-      if (count === 3) return 24 * i + 24;
-
-      if (['sm', 'md'].includes(bp.value)) return (48 * i) / (count - 1) + 24;
-      if (bp.value === 'lg') return (72 * i) / (count - 1) + 24;
-      return (96 * i) / (count - 1) + 24;
     }
 
     return {
@@ -167,7 +151,6 @@ export default defineComponent({
       router,
       getAddress,
       tokensFor,
-      getIconPosition,
       fNum
     };
   }

@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -84,6 +84,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
+    "@sentry/webpack-plugin": "^1.15.1",
     "@storybook/addon-actions": "^6.2.8",
     "@storybook/addon-console": "^1.2.3",
     "@storybook/addon-essentials": "^6.2.8",

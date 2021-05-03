@@ -37,7 +37,12 @@
         </div>
       </div>
 
-      <div class="px-4 py-3 bg-gray-50 border-t border-b">
+      <div
+        :class="[
+          'px-4 py-3 bg-gray-50 border-b',
+          hasZeroBalance ? '' : 'border-t'
+        ]"
+      >
         <div
           v-for="(token, i) in pool.tokens"
           :key="token"
@@ -76,7 +81,13 @@
       </div>
     </template>
 
-    <div v-else class="px-4 pt-6 bg-gray-50 border-t border-b">
+    <div
+      v-else
+      :class="[
+        'px-4 pt-6 bg-gray-50 border-b',
+        hasZeroBalance ? '' : 'border-t'
+      ]"
+    >
       <BalTextInput
         v-for="(token, i) in pool.tokens"
         :key="token"
@@ -136,7 +147,10 @@
         @click.prevent="connectWallet"
       />
       <template v-else>
-        <div :class="['flex items-center text-sm mb-4', priceImpactClasses]">
+        <div
+          :class="['flex items-center text-sm mb-4', priceImpactClasses]"
+          @click.prevent
+        >
           <span
             >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
           >
@@ -549,6 +563,15 @@ export default defineComponent({
       if (!isAuth) {
         data.amounts = [];
         data.propMax = [];
+      }
+    });
+
+    watch(account, () => {
+      if (hasZeroBalance.value) {
+        data.investType = FormTypes.custom;
+      } else {
+        setPropMax();
+        resetSlider();
       }
     });
 

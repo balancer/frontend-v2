@@ -54,6 +54,15 @@
         block
         @click.prevent="trade"
       />
+      <TradeRoute
+        class="mt-5"
+        :address-in="tokenInAddress"
+        :amount-in="tokenInAmount"
+        :address-out="tokenOutAddress"
+        :amount-out="tokenOutAmount"
+        :pools="pools"
+        :sor-return="sorReturn"
+      />
     </div>
     <SuccessOverlay
       v-if="tradeSuccess"
@@ -80,6 +89,7 @@ import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
+import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
 
@@ -87,6 +97,7 @@ export default defineComponent({
   components: {
     SuccessOverlay,
     TradePair,
+    TradeRoute,
     TradeSettingsPopover,
     GasReimbursement
   },
@@ -141,6 +152,7 @@ export default defineComponent({
       exactIn,
       sorReturn,
       latestTxHash,
+      pools,
       fetchPools
     } = useSor(
       tokenInAddress,
@@ -185,11 +197,11 @@ export default defineComponent({
 
     async function populateInitialTokens(): Promise<void> {
       const assetIn =
-        (router.currentRoute.value.params.assetIn as string) === 'ether'
+        (router.currentRoute.value.params.assetIn as string) === ETHER.id
           ? ETHER.address
           : (router.currentRoute.value.params.assetIn as string);
       const assetOut =
-        (router.currentRoute.value.params.assetOut as string) === 'ether'
+        (router.currentRoute.value.params.assetOut as string) === ETHER.id
           ? ETHER.address
           : (router.currentRoute.value.params.assetOut as string);
 
@@ -207,6 +219,7 @@ export default defineComponent({
 
     watch(getConfig, async () => {
       await initSor();
+      await handleAmountChange();
     });
 
     watch(tokenInAddress, () => {
@@ -247,6 +260,7 @@ export default defineComponent({
       requireApproval,
       approving,
       sorReturn,
+      pools,
       approve,
       trading,
       trade,

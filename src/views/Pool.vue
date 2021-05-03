@@ -3,11 +3,33 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
         <BalLoadingBlock v-if="loading" class="h-12 mb-2" />
-        <h3 v-else v-html="title" class="font-bold mb-2" />
-        <BalLoadingBlock v-if="loading" class="h-4" />
-        <div v-else class="text-sm">
-          {{ poolTypeLabel }}. {{ poolFeeLabel }}.
+        <div v-else class="flex items-center">
+          <h3 class="font-bold mr-4 capitalize">
+            {{ poolTypeLabel }}
+          </h3>
+          <BalAssetSet :addresses="titleTokens.map(t => t.token)" :size="36" />
         </div>
+
+        <BalLoadingBlock v-if="loading" class="h-10 mb-2" />
+        <div v-else class="mb-1 mt-3 flex flex-wrap items-center">
+          <div class="flex flex-wrap">
+            <div
+              v-for="(token, i) in titleTokens"
+              :key="i"
+              class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
+            >
+              <span>
+                {{ token.symbol }}
+              </span>
+              <span class="font-medium text-gray-400 text-xs mt-px ml-1">
+                {{ fNum(token.weight / 100, 'percent_lg') }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <BalLoadingBlock v-if="loading" class="h-4" />
+        <div v-else class="text-sm">{{ poolFeeLabel }}.</div>
 
         <BalAlert
           v-if="!loading && !appLoading && missingPrices"
@@ -101,6 +123,7 @@ import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
+import useTokens from '@/composables/useTokens';
 
 interface PoolPageData {
   id: string;
@@ -125,6 +148,7 @@ export default defineComponent({
     const router = useRouter();
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
+    const { allTokens } = useTokens();
     const {
       appNetwork,
       account,
@@ -152,10 +176,16 @@ export default defineComponent({
       return store.state.pools.current;
     });
 
-    const title = computed(() => {
-      const divider =
-        pool.value.name.length + pool.value.symbol.length < 40 ? ' ' : '<br>';
-      return `${pool.value.name}${divider}(${pool.value.symbol})`;
+    const titleTokens = computed(() => {
+      return pool.value.tokens
+        .map((token, i) => {
+          return {
+            symbol: allTokens.value[token]?.symbol,
+            weight: pool.value.weightsPercent[i],
+            token
+          };
+        })
+        .sort((a, b) => b.weight - a.weight);
     });
 
     const poolTypeLabel = computed(() => {
@@ -252,7 +282,7 @@ export default defineComponent({
       pool,
       poolTypeLabel,
       poolFeeLabel,
-      title,
+      titleTokens,
       isAuthenticated,
       hasEvents,
       missingPrices,

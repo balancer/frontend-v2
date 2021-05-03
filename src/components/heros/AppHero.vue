@@ -6,9 +6,13 @@
           v-text="$t('myInvestments')"
           class="text-lg font-normal text-white opacity-90 font-body mb-2"
         />
-        <BalLoadingBlock v-if="calculating" class="h-10 w-40 mx-auto" white />
+        <BalLoadingBlock
+          v-if="isLoadingPoolsWithShares"
+          class="h-10 w-40 mx-auto"
+          white
+        />
         <span v-else class="text-3xl font-bold text-white">
-          {{ fNum(totalInvested, 'usd', { forcePreset: true }) }}
+          {{ fNum(totalInvestedAmount, 'usd', { forcePreset: true }) }}
         </span>
       </template>
       <template v-else>
@@ -22,7 +26,7 @@
           </BalBtn>
           <BalBtn
             tag="a"
-            href="https://balancer.fi"
+            :href="EXTERNAL_LINKS.Balancer.Home"
             target="_blank"
             rel="noreferrer"
             color="white"
@@ -38,12 +42,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
-import useNumbers from '@/composables/useNumbers';
+import { computed, defineComponent } from 'vue';
 import { useStore } from 'vuex';
-import { getPoolsWithShares } from '@/utils/balancer/pools';
+
+import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
-import { Pool } from '@/api/subgraph';
+import usePoolsWithShares from '@/composables/pools/usePools';
+
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 export default defineComponent({
   name: 'AppHero',
@@ -52,52 +58,35 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { userNetwork, account, isConnected } = useWeb3();
-
-    // DATA
-    const totalInvested = ref(0);
-    const calculating = ref(true);
+    const { isConnected } = useWeb3();
+    const {
+      totalInvestedAmount,
+      isLoadingPoolsWithShares
+    } = usePoolsWithShares();
 
     // COMPUTED
-    const setAccountModal = val => store.commit('web3/setAccountModal', val);
-    const prices = computed(() => store.state.market.prices);
+    const setAccountModal = (val: boolean) =>
+      store.commit('web3/setAccountModal', val);
 
-    const classes = computed(() => {
-      return {
-        ['h-72']: !isConnected.value,
-        ['h-40']: isConnected.value
-      };
-    });
-
-    // METHODS
-    function getInvestedValue(pool): number {
-      if (!pool.shares) return 0;
-      return (pool.liquidity / parseFloat(pool.totalShares)) * pool.shares;
-    }
-
-    watch(isConnected, async newVal => {
-      if (newVal) {
-        const pools: Pool[] = await getPoolsWithShares(
-          userNetwork.value.id,
-          account.value,
-          prices.value
-        );
-        const investedAmounts = pools.map(pool => getInvestedValue(pool));
-        totalInvested.value = investedAmounts.reduce((a, b) => a + b, 0);
-        calculating.value = false;
-      }
-    });
+    const classes = computed(() => ({
+      ['h-72']: !isConnected.value,
+      ['h-40']: isConnected.value
+    }));
 
     return {
       // data
-      totalInvested,
-      calculating,
+      totalInvestedAmount,
+      isLoadingPoolsWithShares,
+
       // computed
       isConnected,
       classes,
+
       // methods
       setAccountModal,
-      fNum
+      fNum,
+      // constants
+      EXTERNAL_LINKS
     };
   }
 });
