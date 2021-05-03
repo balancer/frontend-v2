@@ -2,25 +2,34 @@
   <div class="container mx-auto px-4 lg:px-0 pt-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
-        <BalLoadingBlock v-if="loading" class="h-16 mb-2" />
-        <div v-else class="">
-          <BalAssetSet :addresses="pool.tokens" :size="36" />
-          <div class="mb-1 mt-3 flex flex-wrap items-center">
-            <h3 v-for="(token, i) in titleTokens" :key="i" class="mr-3">
-              <span class="mr-1 font-bold">
+        <BalLoadingBlock v-if="loading" class="h-12 mb-2" />
+        <div v-else class="flex items-center">
+          <h3 class="font-bold mr-4 capitalize">
+            {{ poolTypeLabel }}
+          </h3>
+          <BalAssetSet :addresses="titleTokens.map(t => t.token)" :size="36" />
+        </div>
+
+        <BalLoadingBlock v-if="loading" class="h-10 mb-2" />
+        <div v-else class="mb-1 mt-3 flex flex-wrap items-center">
+          <div class="flex flex-wrap">
+            <div
+              v-for="(token, i) in titleTokens"
+              :key="i"
+              class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
+            >
+              <span>
                 {{ token.symbol }}
               </span>
-              <span class="text-gray-500 font-normal text-sm">
+              <span class="font-medium text-gray-400 text-xs mt-px ml-1">
                 {{ fNum(token.weight / 100, 'percent_lg') }}
               </span>
-            </h3>
+            </div>
           </div>
         </div>
 
         <BalLoadingBlock v-if="loading" class="h-4" />
-        <div v-else class="text-sm">
-          {{ poolTypeLabel }}. {{ poolFeeLabel }}.
-        </div>
+        <div v-else class="text-sm">{{ poolFeeLabel }}.</div>
 
         <BalAlert
           v-if="!loading && !appLoading && missingPrices"
@@ -172,7 +181,8 @@ export default defineComponent({
         .map((token, i) => {
           return {
             symbol: allTokens.value[token]?.symbol,
-            weight: pool.value.weightsPercent[i]
+            weight: pool.value.weightsPercent[i],
+            token
           };
         })
         .sort((a, b) => b.weight - a.weight);
