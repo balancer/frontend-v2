@@ -185,11 +185,11 @@ export default defineComponent({
 
     async function populateInitialTokens(): Promise<void> {
       const assetIn =
-        (router.currentRoute.value.params.assetIn as string) === 'ether'
+        (router.currentRoute.value.params.assetIn as string) === ETHER.id
           ? ETHER.address
           : (router.currentRoute.value.params.assetIn as string);
       const assetOut =
-        (router.currentRoute.value.params.assetOut as string) === 'ether'
+        (router.currentRoute.value.params.assetOut as string) === ETHER.id
           ? ETHER.address
           : (router.currentRoute.value.params.assetOut as string);
 
