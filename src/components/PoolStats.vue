@@ -24,10 +24,7 @@ import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 export default defineComponent({
   props: {
-    pool: {
-      type: Object as PropType<DecoratedPool>,
-      required: true
-    },
+    pool: { type: Object as PropType<DecoratedPool> },
     missingPrices: { type: Boolean, default: false },
     loading: { type: Boolean, default: true }
   },
@@ -39,6 +36,8 @@ export default defineComponent({
 
     // COMPUTED
     const stats = computed(() => {
+      if (!props.pool) return [];
+
       return [
         {
           label: t('poolValue'),
