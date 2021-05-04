@@ -18,12 +18,12 @@
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
-        <div class="px-6 py-8">
+        <div class="px-6 py-4">
           <BalAssetSet :addresses="tokensFor(pool)" :width="100" />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div class="px-6 py-8 -mt-1 flex flex-wrap">
+        <div class="px-6 py-4 -mt-1 flex flex-wrap">
           <div
             v-for="token in pool.tokens"
             :key="token"

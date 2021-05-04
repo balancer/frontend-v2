@@ -77,7 +77,7 @@
               v-bind="dataItem"
               :name="column.Cell"
             ></slot>
-            <div v-else class="px-6 py-8">
+            <div v-else class="px-6 py-4">
               {{
                 typeof column.accessor === 'string'
                   ? dataItem[column.accessor]
