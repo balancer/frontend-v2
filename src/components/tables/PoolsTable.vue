@@ -106,7 +106,7 @@ export default defineComponent({
       {
         name: t('myBalance'),
         accessor: pool => fNum(pool.shares, 'usd', { forcePreset: true }),
-        className: 'cell',
+        className: 'w-32',
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,
