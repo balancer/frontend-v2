@@ -68,7 +68,7 @@ export default defineComponent({
               poolTokenList.includes(selectedToken)
             );
           })
-        : pools
+        : pools.value
     );
 
     return {

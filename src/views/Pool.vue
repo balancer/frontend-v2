@@ -113,6 +113,10 @@ import { useRoute, useRouter } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
+import { useQueryClient } from 'vue-query';
+
+import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
+
 import {
   getPoolEvents,
   getPoolSnapshots,
@@ -133,7 +137,10 @@ interface PoolPageData {
   events: PoolEvents;
   prices: HistoricalPrices;
   snapshots: PoolSnapshots;
+  refetchQueriesOnBlockNumber: number;
 }
+
+const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 
 export default defineComponent({
   components: {
@@ -158,6 +165,7 @@ export default defineComponent({
       blockNumber,
       loading: web3Loading
     } = useWeb3();
+    const queryClient = useQueryClient();
 
     // DATA
     const data = reactive<PoolPageData>({
@@ -169,7 +177,8 @@ export default defineComponent({
         exits: []
       },
       prices: {},
-      snapshots: []
+      snapshots: [],
+      refetchQueriesOnBlockNumber: 0
     });
 
     // COMPUTED
@@ -238,6 +247,9 @@ export default defineComponent({
         pool.value.address
       ]);
       console.timeEnd('loadPool');
+
+      data.refetchQueriesOnBlockNumber =
+        blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
     }
 
     async function loadEvents(): Promise<void> {
@@ -266,6 +278,9 @@ export default defineComponent({
         await loadEvents();
         queryClient.invalidateQueries(['pools', 'current', data.id]);
         data.backgroundLoading = false;
+      }
+      if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
+        queryClient.invalidateQueries([POOLS_ROOT_KEY]);
       }
     });
 
