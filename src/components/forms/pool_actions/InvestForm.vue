@@ -230,9 +230,6 @@ import { useI18n } from 'vue-i18n';
 import { TransactionData } from 'bnc-notify';
 import { formatUnits } from '@ethersproject/units';
 import isEqual from 'lodash/isEqual';
-import { useQueryClient } from 'vue-query';
-
-import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
 import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
@@ -263,10 +260,7 @@ type DataProps = {
   propToken: number;
   range: number;
   highPiAccepted: boolean;
-  refetchQueriesOnBlockNumber: number;
 };
-
-const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 
 export default defineComponent({
   name: 'InvestForm',
@@ -292,20 +286,18 @@ export default defineComponent({
       validInputs: [],
       propToken: 0,
       range: 1000,
-      highPiAccepted: false,
-      refetchQueriesOnBlockNumber: 0
+      highPiAccepted: false
     });
 
     // COMPOSABLES
     const store = useStore();
     const { isAuthenticated } = useAuth();
-    const { account, userNetwork, blockNumber } = useWeb3();
+    const { account, userNetwork } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { txListener } = useNotify();
     const { minusSlippage } = useSlippage();
     const { allTokens } = useTokens();
-    const queryClient = useQueryClient();
 
     const { amounts } = toRefs(data);
 
@@ -524,8 +516,6 @@ export default defineComponent({
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
-            data.refetchQueriesOnBlockNumber =
-              blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
           },
           onTxCancel: () => {
             data.loading = false;
@@ -596,15 +586,6 @@ export default defineComponent({
         resetSlider();
       }
     });
-
-    watch(
-      () => blockNumber.value,
-      () => {
-        if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
-          queryClient.invalidateQueries([POOLS_ROOT_KEY]);
-        }
-      }
-    );
 
     onMounted(() => {
       if (hasZeroBalance.value) {
