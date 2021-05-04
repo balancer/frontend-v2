@@ -75,7 +75,8 @@ export default defineComponent({
 
 <style scoped>
 .bal-modal {
-  @apply top-0 left-0 fixed h-screen w-full z-50;
+  @apply top-0 left-0 fixed h-screen w-full;
+  z-index: 9999999999;
 }
 
 .content-container {
