@@ -263,7 +263,7 @@ type DataProps = {
   propToken: number;
   range: number;
   highPiAccepted: boolean;
-  refetchQueriesOnBlock: number;
+  refetchQueriesOnBlockNumber: number;
 };
 
 const REFETCH_QUERIES_BLOCK_BUFFER = 3;
@@ -293,7 +293,7 @@ export default defineComponent({
       propToken: 0,
       range: 1000,
       highPiAccepted: false,
-      refetchQueriesOnBlock: 0
+      refetchQueriesOnBlockNumber: 0
     });
 
     // COMPOSABLES
@@ -524,7 +524,7 @@ export default defineComponent({
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
-            data.refetchQueriesOnBlock =
+            data.refetchQueriesOnBlockNumber =
               blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
           },
           onTxCancel: () => {
@@ -600,7 +600,7 @@ export default defineComponent({
     watch(
       () => blockNumber.value,
       () => {
-        if (data.refetchQueriesOnBlock === blockNumber.value) {
+        if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
           queryClient.invalidateQueries([POOLS_ROOT_KEY]);
         }
       }
