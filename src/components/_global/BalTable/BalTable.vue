@@ -33,17 +33,19 @@
           </div>
           <BalIcon
             name="arrow-up"
+            size="sm"
             v-if="
               currentSortColumn === column.id && currentSortDirection === 'asc'
             "
-            class="ml-1"
+            class="ml-1 flex items-center"
           />
           <BalIcon
             name="arrow-down"
+            size="sm"
             v-if="
               currentSortColumn === column.id && currentSortDirection === 'desc'
             "
-            class="ml-1"
+            class="ml-1 flex items-center"
           />
         </td>
       </thead>
