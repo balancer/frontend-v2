@@ -51,10 +51,12 @@ export default class Pools {
   ): DecoratedPool[] {
     return pools.map((pool, i) => {
       pool.totalLiquidity = getPoolLiquidity(pool, prices);
-      const volume = this.calcVolume(pool, pastPools[i]);
-      const apy = this.calcAPY(pool, pastPools[i]);
+      const pastPool = pastPools.find(p => p.id === pool.id);
+      const volume = this.calcVolume(pool, pastPool);
+      const apy = this.calcAPY(pool, pastPool);
+      const fees = this.calcFees(pool, pastPool);
 
-      return { ...pool, dynamic: { period, volume, apy } };
+      return { ...pool, dynamic: { period, volume, apy, fees } };
     });
   }
 
@@ -77,6 +79,14 @@ export default class Pools {
     return swapFees
       .dividedBy(pool.totalLiquidity)
       .multipliedBy(365)
+      .toString();
+  }
+
+  private calcFees(pool: Pool, pastPool: Pool | undefined): string {
+    if (!pastPool) return pool.totalSwapFee;
+
+    return bnum(pool.totalSwapFee)
+      .minus(pastPool.totalSwapFee)
       .toString();
   }
 
