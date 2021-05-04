@@ -54,9 +54,7 @@
               v-for="(tokenlist, i) in activeTokenLists"
               :key="i"
               :src="_url(tokenlist.logoURI)"
-              class="rounded-full inline-block bg-white align-middle shadow -ml-3"
-              width="26"
-              height="26"
+              class="rounded-full inline-block bg-white align-middle shadow w-6 h-6"
             />
           </span>
           <BalIcon name="chevron-down" class="text-gray-500" />
