@@ -107,7 +107,7 @@ export default defineComponent({
 .content-enter-from,
 .content-leave-to {
   opacity: 0;
-  transform: translateY(70%) scale(0.95);
+  transform: translateY(20px) scale(0.95);
 }
 
 .modal-bg-enter-active {
