@@ -2,7 +2,13 @@ import Notify from 'bnc-notify';
 
 export const bnNotifySymbol = Symbol();
 
-export const defaultOptions = {
+interface Options {
+  dappId: string;
+  networkId: number;
+  desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight' | undefined;
+}
+
+export const defaultOptions: Options = {
   dappId: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '',
   networkId: Number(process.env.VUE_APP_NETWORK) || 1,
   desktopPosition: 'bottomLeft'
