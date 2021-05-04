@@ -4,7 +4,8 @@ export const bnNotifySymbol = Symbol();
 
 export const defaultOptions = {
   dappId: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '',
-  networkId: Number(process.env.VUE_APP_NETWORK) || 1
+  networkId: Number(process.env.VUE_APP_NETWORK) || 1,
+  desktopPosition: 'bottomLeft'
 };
 
 export default {
