@@ -83,10 +83,7 @@
 
     <div
       v-else
-      :class="[
-        'px-4 pt-6 border-b',
-        hasZeroBalance ? '' : 'border-t'
-      ]"
+      :class="['px-4 pt-6 border-b', hasZeroBalance ? '' : 'border-t']"
     >
       <BalTextInput
         v-for="(token, i) in pool.tokens"
