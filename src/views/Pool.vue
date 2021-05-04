@@ -61,7 +61,6 @@
             <PoolBalancesCard
               :pool="pool"
               :loading="loading || appLoading"
-              :missing-prices="missingPrices"
             />
           </div>
 
