@@ -113,7 +113,6 @@ import { useRoute, useRouter } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
-import { useQueryClient } from 'vue-query';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
@@ -128,7 +127,7 @@ import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
-import useVueQuery from '@/composables/useVueQuery';
+import { useQueryClient } from 'vue-query';
 
 interface PoolPageData {
   id: string;
@@ -157,7 +156,7 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
     const { allTokens } = useTokens();
-    const queryClient = useVueQuery();
+    const queryClient = useQueryClient();
     const poolQuery = usePoolQuery(route.params.id as string);
     const {
       appNetwork,
@@ -165,7 +164,6 @@ export default defineComponent({
       blockNumber,
       loading: web3Loading
     } = useWeb3();
-    const queryClient = useQueryClient();
 
     // DATA
     const data = reactive<PoolPageData>({
@@ -276,11 +274,12 @@ export default defineComponent({
         data.backgroundLoading = true;
         await fetchPool();
         await loadEvents();
-        queryClient.invalidateQueries(['pools', 'current', data.id]);
         data.backgroundLoading = false;
       }
       if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
         queryClient.invalidateQueries([POOLS_ROOT_KEY]);
+      } else {
+        queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
       }
     });
 
