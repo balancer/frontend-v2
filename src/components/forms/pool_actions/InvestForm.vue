@@ -84,7 +84,7 @@
     <div
       v-else
       :class="[
-        'px-4 pt-6 bg-gray-50 border-b',
+        'px-4 pt-6 border-b',
         hasZeroBalance ? '' : 'border-t'
       ]"
     >
