@@ -2,14 +2,7 @@ import { QueryClient, VUE_QUERY_CLIENT } from 'vue-query';
 
 export default {
   install: app => {
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          refetchOnWindowFocus: false,
-          retry: 0
-        }
-      }
-    });
+    const queryClient = new QueryClient();
 
     queryClient.mount();
 
