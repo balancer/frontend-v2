@@ -129,7 +129,7 @@ export default defineComponent({
         sortKey: pool => Number(pool.dynamic.volume)
       },
       {
-        name: t('apy', [t('yearAbbrev')]),
+        name: t('apy'),
         accessor: pool => `${fNum(pool.dynamic.apy, 'percent')}`,
         className: 'w-32',
         align: 'right',
