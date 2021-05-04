@@ -24,7 +24,7 @@ function useChipClasses(size: string, color: string) {
       case 'sm':
         return 'px-2 h-6 text-xs';
       case 'lg':
-        return 'px-4 h-10 text-base';
+        return 'px-2 h-10 text-base';
       default:
         return 'px-3 h-8 text-sm';
     }
@@ -39,10 +39,15 @@ function useChipClasses(size: string, color: string) {
     return `bg-${color}-100`;
   };
 
+  const outlineClasses = (): string => {
+    return `border-gray-100 border shadow-lg`;
+  };
+
   return computed(() => {
     return {
       [sizeClasses()]: true,
-      [bgColorClasses()]: true
+      [bgColorClasses()]: true,
+      [outlineClasses()]: true
     };
   });
 }
@@ -91,7 +96,12 @@ export default defineComponent({
     color: {
       type: String,
       default: 'gray',
-      validator: (val: string): boolean => ['gray', 'gradient'].includes(val)
+      validator: (val: string): boolean =>
+        ['gray', 'gradient', 'white'].includes(val)
+    },
+    outline: {
+      type: Boolean,
+      default: () => false
     }
   },
 
@@ -117,6 +127,6 @@ export default defineComponent({
 }
 
 .close {
-  @apply cursor-pointer ml-2;
+  @apply cursor-pointer ml-1;
 }
 </style>

@@ -62,6 +62,7 @@ export default defineComponent({
     circle: { type: Boolean, default: false },
     outline: { type: Boolean, default: false },
     flat: { type: Boolean, default: false },
+    darkOutline: { type: Boolean, default: false },
     rounded: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     loadingLabel: { type: String, default: 'loading...' },
@@ -138,6 +139,7 @@ export default defineComponent({
 
     const borderClasses = computed(() => {
       if (props.outline) return `border border-${props.color}-200`;
+      if (props.darkOutline) return `border border-${props.color}`;
       return 'border-none';
     });
 
@@ -146,6 +148,7 @@ export default defineComponent({
         if (props.outline) return 'text-white';
         else return 'text-black';
       }
+      if (props.darkOutline) return 'text-black';
       if (props.outline || props.flat) return `text-${props.color}-500`;
       return 'text-white';
     });
