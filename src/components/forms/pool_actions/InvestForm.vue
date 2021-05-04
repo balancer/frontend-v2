@@ -250,6 +250,18 @@ export enum FormTypes {
   custom = 'custom'
 }
 
+type DataProps = {
+  investForm: FormRef;
+  investType: FormTypes;
+  loading: boolean;
+  amounts: string[];
+  propMax: string[];
+  validInputs: boolean[];
+  propToken: number;
+  range: number;
+  highPiAccepted: boolean;
+};
+
 export default defineComponent({
   name: 'InvestForm',
 
@@ -265,13 +277,13 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const data = reactive({
+    const data = reactive<DataProps>({
       investForm: {} as FormRef,
-      investType: FormTypes.proportional as FormTypes,
+      investType: FormTypes.proportional,
       loading: false,
-      amounts: [] as string[],
-      propMax: [] as string[],
-      validInputs: [] as boolean[],
+      amounts: [],
+      propMax: [],
+      validInputs: [],
       propToken: 0,
       range: 1000,
       highPiAccepted: false
