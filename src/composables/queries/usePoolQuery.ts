@@ -35,7 +35,7 @@ export default function usePoolQuery(
       { where: { id } }
     );
     return pool;
-  }
+  };
 
   const queryOptions = reactive({
     enabled: isQueryEnabled,
