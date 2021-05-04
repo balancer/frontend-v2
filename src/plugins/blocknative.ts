@@ -5,7 +5,12 @@ export const bnNotifySymbol = Symbol();
 interface Options {
   dappId: string;
   networkId: number;
-  desktopPosition: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight' | undefined;
+  desktopPosition:
+    | 'bottomLeft'
+    | 'bottomRight'
+    | 'topLeft'
+    | 'topRight'
+    | undefined;
 }
 
 export const defaultOptions: Options = {

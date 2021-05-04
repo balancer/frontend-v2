@@ -58,10 +58,7 @@
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
-            <PoolBalancesCard
-              :pool="pool"
-              :loading="loading || appLoading"
-            />
+            <PoolBalancesCard :pool="pool" :loading="loading || appLoading" />
           </div>
 
           <div>
