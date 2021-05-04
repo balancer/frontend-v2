@@ -124,7 +124,7 @@ import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import useVueQuery from '@/composables/useVueQuery';
 
 interface PoolPageData {
   id: string;
@@ -142,9 +142,6 @@ export default defineComponent({
   },
 
   setup() {
-    // Sevices
-    const balancerSubgraph = new BalancerSubgraph();
-
     // COMPOSABLES
     const store = useStore();
     const { t } = useI18n();
@@ -153,6 +150,7 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
     const { allTokens } = useTokens();
+    const queryClient = useVueQuery();
     const poolQuery = usePoolQuery(route.params.id as string);
     const {
       appNetwork,
@@ -266,6 +264,7 @@ export default defineComponent({
         data.backgroundLoading = true;
         await fetchPool();
         await loadEvents();
+        queryClient.invalidateQueries(['pools', 'current', data.id]);
         data.backgroundLoading = false;
       }
     });
