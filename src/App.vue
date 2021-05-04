@@ -3,7 +3,11 @@
     <AppNav />
     <AppHero />
     <div class="pb-12">
-      <router-view :key="$route.path" class="flex-auto" />
+      <router-view v-slot="{ Component }">
+        <transition name="slideup" appear>
+          <component :is="Component" :key="$route.path" class="flex-auto" />
+        </transition>
+      </router-view>
     </div>
     <div id="modal" />
     <AccountModal
@@ -71,3 +75,18 @@ export default defineComponent({
   }
 });
 </script>
+
+<style>
+.slideup-enter-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.slideup-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.slideup-enter,
+.slideup-leave-to {
+  opacity: 0;
+}
+</style>
