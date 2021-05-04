@@ -79,6 +79,7 @@
 import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { isAddress, getAddress } from '@ethersproject/address';
 
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
@@ -196,14 +197,12 @@ export default defineComponent({
     }
 
     async function populateInitialTokens(): Promise<void> {
-      const assetIn =
-        (router.currentRoute.value.params.assetIn as string) === ETHER.id
-          ? ETHER.address
-          : (router.currentRoute.value.params.assetIn as string);
-      const assetOut =
-        (router.currentRoute.value.params.assetOut as string) === ETHER.id
-          ? ETHER.address
-          : (router.currentRoute.value.params.assetOut as string);
+      let assetIn = router.currentRoute.value.params.assetIn as string;
+      if (assetIn === ETHER.id) assetIn = ETHER.address;
+      else if (isAddress(assetIn)) assetIn = getAddress(assetIn);
+      let assetOut = router.currentRoute.value.params.assetOut as string;
+      if (assetOut === ETHER.id) assetOut = ETHER.address;
+      else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
