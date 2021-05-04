@@ -18,12 +18,12 @@
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
-        <div class="px-6 py-8">
+        <div class="px-6 py-4">
           <BalAssetSet :addresses="tokensFor(pool)" :width="100" />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div class="px-6 py-8 -mt-1 flex flex-wrap">
+        <div class="px-6 py-4 -mt-1 flex flex-wrap">
           <div
             v-for="token in pool.tokens"
             :key="token"
@@ -106,7 +106,7 @@ export default defineComponent({
       {
         name: t('myBalance'),
         accessor: pool => fNum(pool.shares, 'usd', { forcePreset: true }),
-        className: 'cell',
+        className: 'w-32',
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,
@@ -129,7 +129,7 @@ export default defineComponent({
         sortKey: pool => Number(pool.dynamic.volume)
       },
       {
-        name: t('apy', [t('yearAbbrev')]),
+        name: t('apy'),
         accessor: pool => `${fNum(pool.dynamic.apy, 'percent')}`,
         className: 'w-32',
         align: 'right',
