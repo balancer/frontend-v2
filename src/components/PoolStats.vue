@@ -22,8 +22,6 @@ import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
-const DAY = 24 * 60 * 60;
-
 export default defineComponent({
   props: {
     pool: {

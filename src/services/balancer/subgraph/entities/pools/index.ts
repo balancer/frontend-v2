@@ -49,7 +49,7 @@ export default class Pools {
     period: TimeTravelPeriod,
     prices: Prices
   ): DecoratedPool[] {
-    return pools.map((pool, i) => {
+    return pools.map(pool => {
       pool.totalLiquidity = getPoolLiquidity(pool, prices);
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
