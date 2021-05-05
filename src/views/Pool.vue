@@ -261,7 +261,11 @@ export default defineComponent({
         addresses,
         days
       );
-      data.snapshots = await getPoolSnapshots(appNetwork.id, poolId.value, days);
+      data.snapshots = await getPoolSnapshots(
+        appNetwork.id,
+        poolId.value,
+        days
+      );
     }
 
     // WATCHERS
