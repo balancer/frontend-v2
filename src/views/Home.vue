@@ -1,6 +1,5 @@
 <template>
   <div class="container mx-auto px-4 lg:px-0 pt-8">
-    {{ console.log('selectedTokens', filteredPools) }}
     <template v-if="isConnected">
       <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
       <PoolsTable
@@ -82,9 +81,7 @@ export default defineComponent({
       isConnected,
 
       //methods
-      router,
-
-      console
+      router
     };
   }
 });

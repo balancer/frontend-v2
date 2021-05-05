@@ -1,23 +1,55 @@
 <template>
   <div>
-    <div class="flex items-center">
-      <BalBtn color="black" darkOutline @click="onClick" class="mr-2">
-        <BalIcon name="search" size="sm" class="mr-2" />
-        Filter tokens
-      </BalBtn>
-      <BalChip
-        v-for="token in modelValue"
-        class="mr-2"
-        :key="token"
-        size="lg"
-        color="white"
-        iconSize="sm"
-        :closeable="true"
-        @closed="removeToken(token)"
+    <div class="flex items-center flex-wrap">
+      <div class="flex items-center flex-wrap">
+        <BalBtn color="black" darkOutline @click="onClick" class="mr-4">
+          <BalIcon name="search" size="sm" class="mr-2" />
+          Filter tokens
+        </BalBtn>
+        <BalChip
+          v-for="token in modelValue"
+          class="mr-2"
+          :key="token"
+          size="lg"
+          color="white"
+          iconSize="sm"
+          :closeable="true"
+          @closed="removeToken(token)"
+        >
+          <BalAsset :address="token" :size="20" class="flex-auto" />
+          <span class="ml-2">{{ allTokens[token]?.symbol }}</span>
+        </BalChip>
+      </div>
+      <div
+        class="text-gray-400 my-4 overflow-x-auto"
+        v-if="
+          account &&
+            !isNotFetchingBalances &&
+            !isLoadingBalances &&
+            !hasNoBalances
+        "
       >
-        <BalAsset :address="token" :size="20" class="flex-auto" />
-        <span class="ml-2">{{ allTokens[token].symbol }}</span>
-      </BalChip>
+        <span class="mr-6">In your wallet:</span>
+        <span
+          v-for="token in sortedBalances"
+          :key="`wallet-${token.symbol}`"
+          class="mr-6 cursor-pointer hover:text-blue-700"
+          @click="addToken(token.address)"
+        >
+          {{ token?.symbol }}
+        </span>
+      </div>
+      <div class="text-gray-400 my-4 flex flex-wrap" v-else>
+        <span class="mr-6">Popular Bases:</span>
+        <span
+          v-for="token in whiteListedTokens"
+          :key="`popular-${token.symbol}`"
+          class="mr-6 cursor-pointer hover:text-gray-700"
+          @click="addToken(token.address)"
+        >
+          {{ token?.symbol }}
+        </span>
+      </div>
     </div>
     <teleport to="#modal">
       <SelectTokenModal
@@ -31,9 +63,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
+import useAccountBalances from '@/composables/useAccountBalances';
+import { sortBy, take } from 'lodash';
+import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -52,6 +87,33 @@ export default defineComponent({
   setup(props, { emit }) {
     // COMPOSABLES
     const { allTokens } = useTokens();
+    const {
+      isLoading: isLoadingBalances,
+      balances,
+      isIdle: isNotFetchingBalances
+    } = useAccountBalances();
+    const { account } = useWeb3();
+
+    // sorted by biggest bag balance, limited to biggest 5
+    const sortedBalances = computed(() => {
+      return take(
+        sortBy(Object.values(balances.value || {}), 'balance')
+          .reverse()
+          .filter(
+            (balance: any) => !props.modelValue.includes(balance.address)
+          ),
+        6
+      );
+    });
+
+    const hasNoBalances = computed(() => !sortedBalances.value.length);
+    const whiteListedTokens = computed(() =>
+      Object.values(allTokens.value)
+        .filter((token: any) =>
+          ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'].includes(token.symbol)
+        )
+        .filter((balance: any) => !props.modelValue.includes(balance.address))
+    );
 
     // DATA
     const selectTokenModal = ref(false);
@@ -59,13 +121,11 @@ export default defineComponent({
     // METHODS
     function addToken(token: string) {
       const newSelected = [...props.modelValue, token];
-      console.log('lmao', newSelected);
       emit('update:modelValue', newSelected);
     }
 
     function removeToken(token: string) {
       const newSelected = props.modelValue.filter(t => t !== token);
-      console.log('lmao', newSelected);
       emit('update:modelValue', newSelected);
     }
 
@@ -76,6 +136,13 @@ export default defineComponent({
     return {
       // data
       selectTokenModal,
+      isNotFetchingBalances,
+      isLoadingBalances,
+      balances,
+      sortedBalances,
+      account,
+      hasNoBalances,
+      whiteListedTokens,
       // computed
       allTokens,
       // methods
