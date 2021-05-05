@@ -195,12 +195,10 @@ export default defineComponent({
 
       const column = props.columns.find(column => column.id === columnId);
       if (column?.sortKey) {
-        console.log('oosh', props.data);
         const sortedData = sortBy(
           (props.data as any).value || props.data,
           column.sortKey
         );
-        console.log('sropted', sortedData);
         if (currentSortDirection.value === 'asc') {
           tableData.value = sortedData;
         } else if (currentSortDirection.value === 'desc') {
