@@ -49,20 +49,11 @@
             :loading="loading"
           />
 
-          <PoolStats
-            :pool="pool"
-            :snapshots="snapshots"
-            :missing-prices="missingPrices"
-            :loading="loading || appLoading"
-          />
+          <PoolStats :pool="subgraphPool" :loading="isLoadingSubgraphPool" />
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
-            <PoolBalancesCard
-              :pool="pool"
-              :loading="loading || appLoading"
-              :missing-prices="missingPrices"
-            />
+            <PoolBalancesCard :pool="pool" :loading="loading || appLoading" />
           </div>
 
           <div>
@@ -112,7 +103,11 @@ import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
+import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
+
+import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
+
 import {
   getPoolEvents,
   getPoolSnapshots,
@@ -124,6 +119,7 @@ import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
+import { useQueryClient } from 'vue-query';
 
 interface PoolPageData {
   id: string;
@@ -132,7 +128,10 @@ interface PoolPageData {
   events: PoolEvents;
   prices: HistoricalPrices;
   snapshots: PoolSnapshots;
+  refetchQueriesOnBlockNumber: number;
 }
+
+const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 
 export default defineComponent({
   components: {
@@ -149,6 +148,8 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
     const { allTokens } = useTokens();
+    const queryClient = useQueryClient();
+    const poolQuery = usePoolQuery(route.params.id as string);
     const {
       appNetwork,
       account,
@@ -166,11 +167,17 @@ export default defineComponent({
         exits: []
       },
       prices: {},
-      snapshots: []
+      snapshots: [],
+      refetchQueriesOnBlockNumber: 0
     });
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
+
+    const subgraphPool = computed(() => poolQuery.data.value);
+    const isLoadingSubgraphPool = computed(
+      () => poolQuery.isLoading.value || poolQuery.isIdle.value
+    );
 
     const pool = computed(() => {
       return store.state.pools.current;
@@ -230,6 +237,9 @@ export default defineComponent({
         pool.value.address
       ]);
       console.timeEnd('loadPool');
+
+      data.refetchQueriesOnBlockNumber =
+        blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
     }
 
     async function loadEvents(): Promise<void> {
@@ -258,6 +268,11 @@ export default defineComponent({
         await loadEvents();
         data.backgroundLoading = false;
       }
+      if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
+        queryClient.invalidateQueries([POOLS_ROOT_KEY]);
+      } else {
+        queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
+      }
     });
 
     // CALLBACKS
@@ -282,6 +297,8 @@ export default defineComponent({
       pool,
       poolTypeLabel,
       poolFeeLabel,
+      subgraphPool,
+      isLoadingSubgraphPool,
       titleTokens,
       isAuthenticated,
       hasEvents,

@@ -3,8 +3,8 @@
     <BalAsset :address="token.address" :size="34" class="mr-2" />
     <div class="flex-auto">
       {{ token.symbol }}
-      <div class="text-gray text-sm">
-        {{ _shorten(token.name, 'name') }}
+      <div class="text-gray text-sm w-40 md:w-60 truncate">
+        {{ token.name }}
       </div>
     </div>
     <span class="text-right">
