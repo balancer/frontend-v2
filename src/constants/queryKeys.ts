@@ -6,7 +6,13 @@ const QUERY_KEYS = {
   Pools: {
     All: [POOLS_ROOT_KEY, 'all'],
     Shares: (account: Ref<string>) => [POOLS_ROOT_KEY, 'shares', account],
-    Activity: (id: string) => [POOLS_ROOT_KEY, 'activity', id]
+    Activities: (id: string) => [POOLS_ROOT_KEY, 'activities', 'all', id],
+    UserActivities: (id: string, account: Ref<string>) => [
+      POOLS_ROOT_KEY,
+      'activities',
+      account,
+      id
+    ]
   }
 };
 

@@ -2,16 +2,47 @@
   <BalCard class="overflow-x-auto" no-pad>
     <BalTable
       :columns="columns"
-      :data="actions"
+      :data="activityRows"
       :is-loading="loading"
       skeleton-class="h-64"
       sticky="both"
     >
-      <template v-slot:tokenActionCell="action">
-        <div class="px-6 py-8 flex items-center flex-row">
+      <template v-slot:valueCell="action">
+        <div class="pool-activity-cell">
+          {{ action.value }}
+        </div>
+      </template>
+      <template v-slot:actionCell="action">
+        <div class="pool-activity-cell">
+          <PlusSquareIcon v-if="action.type === 'join'" />
+          <MinusSquareIcon v-else />
           {{ action.label }}
+        </div>
+      </template>
+
+      <template v-slot:detailsCell="action">
+        <div class="pool-activity-cell">
+          <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
+            <div class="mr-2 flex items-center p-1 px-2 bg-gray-50 rounded-lg">
+              <BalAsset
+                :address="tokenAmount.address"
+                class="mr-2 flex-shrink-0"
+              />
+              {{ tokenAmount.amount }}
+            </div>
+          </template>
+        </div>
+      </template>
+
+      <template v-slot:dateCell="action">
+        <div class="pool-activity-cell">
+          {{ action.formattedDate }}
           <BalLink :href="explorer.txLink(action.tx)" external>
-            <BalIcon name="external-link" size="sm" class="ml-2" />
+            <BalIcon
+              name="external-link"
+              size="sm"
+              class="ml-2 text-gray-500 hover:text-blue-500"
+            />
           </BalLink>
         </div>
       </template>
@@ -27,15 +58,30 @@ import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 
-import { PoolActivity } from '@/services/balancer/subgraph/types';
+import {
+  PoolActivity,
+  PoolActivityType
+} from '@/services/balancer/subgraph/types';
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 
-interface Action {
+import { formatDistanceToNow } from 'date-fns';
+import { Token } from '@/types';
+import { bnum } from '@balancer-labs/sor2/dist/bmath';
+
+type TokenAmount = {
+  address: string;
+  symbol: string;
+  amount: string;
+};
+
+interface ActivityRow {
   label: string;
-  value: number;
-  details: string;
+  value: string;
   timestamp: number;
+  formattedDate: string;
   tx: string;
+  type: PoolActivityType;
+  tokenAmounts: TokenAmount[];
 }
 
 export default {
@@ -57,85 +103,95 @@ export default {
     const { explorer } = useWeb3();
     const { allTokens } = useTokens();
 
-    const columns = computed<ColumnDefinition<Action>[]>(() => [
+    const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
       {
         name: t('action'),
         id: 'action',
         accessor: 'tx',
-        Cell: 'tokenActionCell',
-        className: 'pool-balance-table-cell'
-      },
-      {
-        name: t('details'),
-        id: 'details',
-        accessor: 'details',
-        align: 'right',
-        className: 'w-full'
+        Cell: 'actionCell',
+        className: 'w-12'
       },
       {
         name: t('value'),
         id: 'value',
-        accessor: action => fNum(action.value, 'usd'),
+        accessor: 'value',
+        Cell: 'valueCell',
         align: 'right',
-        className: 'pool-balance-table-cell'
+        className: 'align-center w-12'
+      },
+      {
+        name: t('details'),
+        id: 'details',
+        accessor: '',
+        Cell: 'detailsCell',
+        className: 'w-40',
+        sortable: false
       },
       {
         name: t('date'),
         id: 'date',
-        accessor: action => formatDate(action.timestamp),
+        accessor: 'timestamp',
+        Cell: 'dateCell',
         align: 'right',
-        className: 'pool-balance-table-cell'
+        className: 'w-12'
       }
     ]);
 
-    const actions = computed<Action[]>(() => {
-      return props.poolActivities.map(poolActivity => ({
-        label: poolActivity.type === 'join' ? t('investment') : t('withdrawal'),
-        value: getJoinExitValue(poolActivity),
-        details: getJoinExitDetails(poolActivity),
-        timestamp: poolActivity.timestamp,
-        tx: poolActivity.tx
-      }));
-    });
+    const activityRows = computed<ActivityRow[]>(() =>
+      props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
+        const isJoin = type === 'join';
+        const minusSign = isJoin ? '-' : '';
 
-    function formatDate(timestamp: number) {
-      const date = new Date(timestamp);
-      const dateOptions: Intl.DateTimeFormatOptions = {
-        day: '2-digit',
-        month: 'long'
-      };
-      return date.toLocaleString('en-US', dateOptions);
-    }
+        return {
+          label: isJoin ? t('invest') : t('withdraw'),
+          value: `${minusSign}${fNum(getJoinExitValue(amounts), 'usd')}`,
+          timestamp,
+          formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
+          tx,
+          type,
+          tokenAmounts: getJoinExitDetails(amounts)
+        };
+      })
+    );
 
-    function getJoinExitValue(poolActivity: PoolActivity) {
-      const value = poolActivity.amounts.reduce((total, amount, index) => {
-        const address = props.tokens[index];
-        const token = allTokens.value[address];
-        const price = token.price || 0;
-        const amountNumber = Math.abs(parseFloat(amount));
-        return total + amountNumber * price;
-      }, 0);
-      return value;
-    }
-
-    function getJoinExitDetails(poolActivity: PoolActivity) {
-      const tokenLabels = poolActivity.amounts
-        .map((amount, index) => {
+    function getJoinExitValue(amounts: PoolActivity['amounts']) {
+      return amounts
+        .reduce((total, amount, index) => {
           const address = props.tokens[index];
-          const token = allTokens.value[address];
-          const symbol = token ? token.symbol : address;
-          const amountNumber = parseFloat(amount);
-          return `${amountNumber.toFixed(2)} ${symbol}`;
-        })
-        .join(' ');
-      return tokenLabels;
+          const token: Token = allTokens.value[address];
+          const price = token.price || 0;
+          const amountNumber = bnum(Math.abs(parseFloat(amount)));
+
+          return total.plus(amountNumber.times(price));
+        }, bnum(0))
+        .toString();
+    }
+
+    function getJoinExitDetails(amounts: PoolActivity['amounts']) {
+      return amounts.map((amount, index) => {
+        const address = props.tokens[index];
+        const token: Token = allTokens.value[address];
+        const symbol = token ? token.symbol : address;
+        const amountNumber = parseFloat(amount);
+
+        return {
+          address,
+          symbol,
+          amount: fNum(amountNumber, 'token')
+        };
+      });
     }
 
     return {
       columns,
-      actions,
+      activityRows,
       explorer
     };
   }
 };
 </script>
+<style>
+.pool-activity-cell {
+  @apply px-6 py-4 flex items-center flex-row;
+}
+</style>

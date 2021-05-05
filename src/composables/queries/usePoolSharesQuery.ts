@@ -1,16 +1,16 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
+import { isEmpty, keyBy } from 'lodash';
 
 import { useStore } from 'vuex';
-import isEmpty from 'lodash/isEmpty';
+
+import QUERY_KEYS from '@/constants/queryKeys';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import { PoolShare } from '@/services/balancer/subgraph/types';
 
 import useWeb3 from '@/composables/useWeb3';
-import QUERY_KEYS from '@/constants/queryKeys';
-import { PoolShare } from '@/services/balancer/subgraph/types';
-import { keyBy } from 'lodash';
 
 type PoolsSharesQueryResponse = {
   poolShares: PoolShare[];

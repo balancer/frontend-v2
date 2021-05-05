@@ -62,7 +62,7 @@
           </div>
 
           <div>
-            <h4 v-text="$t('activity')" class="mb-4" />
+            <h4 v-text="$t('poolTransactions')" class="mb-4" />
             <TablePoolActivities
               v-if="hasPoolActivities"
               :tokens="pool.tokens"
