@@ -11,6 +11,8 @@
           router.push({ name: 'pool', params: { id: pool.id } });
         }
       "
+      isPaginated
+      @loadMore="$emit('loadMore', data.length)"
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
@@ -63,6 +65,8 @@ import useTokens from '@/composables/useTokens';
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 
 export default defineComponent({
+  emits: ['loadMore'],
+
   props: {
     data: {
       type: Array
@@ -79,6 +83,7 @@ export default defineComponent({
       default: 'No pools'
     }
   },
+
   setup(props) {
     const { fNum } = useNumbers();
     const { allTokens } = useTokens();

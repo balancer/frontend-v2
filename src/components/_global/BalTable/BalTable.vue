@@ -88,6 +88,13 @@
         </tr>
       </tbody>
     </table>
+    <div
+      v-if="isPaginated && !isLoading"
+      class="bal-table-pagination-btn"
+      @click="$emit('loadMore')">
+      Load more
+      <BalIcon name="chevron-down" size="sm" class="ml-2" />
+    </div>
   </div>
 </template>
 
@@ -135,6 +142,8 @@ export type ColumnDefinition<T = Data> = {
 export default defineComponent({
   name: 'BalTable',
 
+  emits: ['loadMore'],
+
   props: {
     columns: {
       type: Object as PropType<ColumnDefinition[]>,
@@ -155,6 +164,9 @@ export default defineComponent({
     },
     sticky: {
       type: String as PropType<Sticky>
+    },
+    isPaginated: {
+      type: Boolean, default: false
     }
   },
   setup(props) {
@@ -287,4 +299,12 @@ export default defineComponent({
 .rowBg:hover > td {
   @apply bg-gray-50;
 }
+
+.bal-table-pagination-btn {
+  @apply flex items-center justify-center h-16;
+  @apply text-gray-500 font-medium hover:text-gray-800;
+  @apply border-t rounded-b-lg;
+  @apply hover:bg-gray-50 cursor-pointer;
+}
 </style>
+

@@ -21,6 +21,7 @@
       :isLoading="isLoadingPools"
       :data="filteredPools"
       :noPoolsLabel="$t('noPoolsFound')"
+      @loadMore="loadMorePools"
     />
   </div>
 </template>
@@ -53,7 +54,8 @@ export default defineComponent({
       pools,
       poolsWithShares,
       isLoadingPools,
-      isLoadingPoolsWithShares
+      isLoadingPoolsWithShares,
+      loadMorePools
     } = usePools();
 
     // DATA
@@ -84,6 +86,7 @@ export default defineComponent({
 
       //methods
       router,
+      loadMorePools,
 
       // constants
       EXTERNAL_LINKS

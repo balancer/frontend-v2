@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue';
+import { computed, reactive, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
 
@@ -17,7 +17,10 @@ type PoolsQueryResponse = {
 };
 
 export default function usePoolsQuery(
-  options: QueryObserverOptions<PoolsQueryResponse> = {}
+  currentCount: Ref<number>,
+  options: QueryObserverOptions<PoolsQueryResponse> = {
+    keepPreviousData: true
+  }
 ) {
   // SERVICES
   const balancerSubgraph = new BalancerSubgraph();
@@ -26,7 +29,7 @@ export default function usePoolsQuery(
   const store = useStore();
 
   // DATA
-  const queryKey = QUERY_KEYS.Pools.All;
+  const queryKey = reactive(QUERY_KEYS.Pools.All(currentCount));
 
   // COMPUTED
   const prices = computed(() => store.state.market.prices);
@@ -36,7 +39,8 @@ export default function usePoolsQuery(
   const queryFn = async () => {
     const pools = await balancerSubgraph.pools.getDecorated(
       '24h',
-      prices.value
+      prices.value,
+      { first: 10, skip: currentCount.value }
     );
 
     const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));

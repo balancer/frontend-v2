@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import { bnum } from '@/utils';
 
@@ -7,9 +7,12 @@ import usePoolSharesQuery from '@/composables/queries/usePoolSharesQuery';
 import useWeb3 from '@/composables/useWeb3';
 
 export default function usePools() {
+  // DATA
+  const currentCount = ref(0);
+
   // COMPOSABLES
   const { isConnected } = useWeb3();
-  const poolsQuery = usePoolsQuery();
+  const poolsQuery = usePoolsQuery(currentCount);
   const poolSharesQuery = usePoolSharesQuery();
 
   // COMPUTED
@@ -48,6 +51,10 @@ export default function usePools() {
     () => poolSharesQuery.isLoading.value || poolSharesQuery.isIdle.value
   );
 
+  function loadMorePools(newCount) {
+    currentCount.value = newCount;
+  }
+
   return {
     // computed
     pools,
@@ -55,6 +62,7 @@ export default function usePools() {
     poolsWithShares,
     totalInvestedAmount,
     isLoadingPools,
-    isLoadingPoolsWithShares
+    isLoadingPoolsWithShares,
+    loadMorePools
   };
 }
