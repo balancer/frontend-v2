@@ -5,13 +5,13 @@ import router from '@/plugins/router';
 import mixins from '@/plugins/mixins';
 import i18n from '@/plugins/i18n';
 import blocknative from '@/plugins/blocknative';
+import vueQuery from '@/plugins/vueQuery';
 import initSentry from '@/plugins/sentry';
 import authOptions from '@/plugins/authOptions';
 import registerDirectives from '@/plugins/directives';
 import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 import { registerGlobalComponents } from '@/plugins/components';
-import { QueryClient, VUE_QUERY_CLIENT } from 'vue-query';
 import { use } from 'echarts/core';
 import { LineChart } from 'echarts/charts';
 import {
@@ -26,16 +26,6 @@ import {
 import { CanvasRenderer } from 'echarts/renderers';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 0
-    }
-  }
-});
-queryClient.mount();
 
 use([
   TitleComponent,
@@ -56,7 +46,7 @@ const app = createApp(App)
   .use(blocknative)
   .use(LockPlugin, authOptions)
   .use(VueApexCharts)
-  .provide(VUE_QUERY_CLIENT, queryClient)
+  .use(vueQuery)
   .mixin(mixins);
 
 registerDirectives(app);
