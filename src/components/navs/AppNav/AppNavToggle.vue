@@ -1,7 +1,7 @@
 <template>
   <div class="app-nav-toggle">
     <router-link
-      :to="{ name: 'home' }"
+      :to="{ name: 'invest' }"
       :class="['toggle-link pl-6 pr-4', { [activeClasses]: !isTradePage }]"
     >
       {{ $t('invest') }}
