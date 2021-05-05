@@ -72,6 +72,7 @@
     "insufficientLiquidity": "Not enough liquidity",
     "invest": "Invest",
     "investment": "Investment",
+    "time": "Time",
     "timeAgo": "{0} ago",
     "tradeSettled": "Your trade has settled",
     "tradeSuccess": "Successfully traded your tokens",

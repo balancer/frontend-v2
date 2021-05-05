@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 
 const defaultArgs = {
-  first: 100
+  first: 20
 };
 
 const defaultAttrs = {

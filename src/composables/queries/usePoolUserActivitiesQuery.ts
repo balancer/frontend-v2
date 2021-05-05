@@ -10,8 +10,6 @@ import { PoolActivity } from '@/services/balancer/subgraph/types';
 
 import useWeb3 from '@/composables/useWeb3';
 
-import { normalizePoolActivity } from './utils';
-
 type PoolActivitiesQueryResponse = PoolActivity[];
 
 export default function usePoolActivitiesQuery(
@@ -35,19 +33,12 @@ export default function usePoolActivitiesQuery(
 
   // METHODS
   const queryFn = async () => {
-    const poolActivities = await balancerSubgraph.poolActivities.get({
+    const { joins, exits } = await balancerSubgraph.poolActivities.get({
       where: {
         pool: id,
         sender: account.value.toLowerCase()
       }
     });
-
-    const joins = poolActivities.joins.map(poolActivity =>
-      normalizePoolActivity(poolActivity, 'join')
-    );
-    const exits = poolActivities.exits.map(poolActivity =>
-      normalizePoolActivity(poolActivity, 'exit')
-    );
 
     return orderBy([...joins, ...exits], 'timestamp', 'desc');
   };

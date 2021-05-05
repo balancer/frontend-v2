@@ -8,8 +8,6 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { PoolActivity } from '@/services/balancer/subgraph/types';
 
-import { normalizePoolActivity } from './utils';
-
 type PoolActivitiesQueryResponse = PoolActivity[];
 
 export default function usePoolActivitiesQuery(
@@ -24,18 +22,11 @@ export default function usePoolActivitiesQuery(
 
   // METHODS
   const queryFn = async () => {
-    const poolActivities = await balancerSubgraph.poolActivities.get({
+    const { joins, exits } = await balancerSubgraph.poolActivities.get({
       where: {
         pool: id
       }
     });
-
-    const joins = poolActivities.joins.map(poolActivity =>
-      normalizePoolActivity(poolActivity, 'join')
-    );
-    const exits = poolActivities.exits.map(poolActivity =>
-      normalizePoolActivity(poolActivity, 'exit')
-    );
 
     return orderBy([...joins, ...exits], 'timestamp', 'desc');
   };

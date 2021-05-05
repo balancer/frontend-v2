@@ -128,8 +128,8 @@ export default {
         sortable: false
       },
       {
-        name: t('date'),
-        id: 'date',
+        name: t('time'),
+        id: 'dateAgo',
         accessor: 'timestamp',
         Cell: 'dateCell',
         align: 'right',
@@ -140,11 +140,10 @@ export default {
     const activityRows = computed<ActivityRow[]>(() =>
       props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
         const isJoin = type === 'join';
-        const minusSign = isJoin ? '-' : '';
 
         return {
           label: isJoin ? t('invest') : t('withdraw'),
-          value: `${minusSign}${fNum(getJoinExitValue(amounts), 'usd')}`,
+          value: fNum(getJoinExitValue(amounts), 'usd'),
           timestamp,
           formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
           tx,
