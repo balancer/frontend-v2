@@ -17,7 +17,7 @@ export default defineComponent({
       type: String,
       default: 'md',
       validator: (val: string): boolean => {
-        return ['xs', 'sm', 'md', 'lg', 'xl'].includes(val);
+        return ['xxs', 'xs', 'sm', 'md', 'lg', 'xl'].includes(val);
       }
     }
   },
@@ -25,6 +25,8 @@ export default defineComponent({
   setup(props) {
     const iconSize = computed(() => {
       switch (props.size) {
+        case 'xxs':
+          return '8';
         case 'xs':
           return '12';
         case 'sm':

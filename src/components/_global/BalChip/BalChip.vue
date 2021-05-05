@@ -22,11 +22,11 @@ function useChipClasses(size: string, color: string) {
   const sizeClasses = () => {
     switch (size) {
       case 'sm':
-        return 'px-2 h-6 text-xs';
+        return 'p-px text-xs';
       case 'lg':
-        return 'px-2 h-10 text-base';
+        return 'p-2 text-base';
       default:
-        return 'px-3 h-8 text-sm';
+        return 'p-1 text-sm';
     }
   };
 
@@ -36,6 +36,7 @@ function useChipClasses(size: string, color: string) {
 
   const bgColorClasses = (): string => {
     if (isGradient) return bgGradientClasses();
+    if (color === 'white') return 'bg-white';
     return `bg-${color}-100`;
   };
 
@@ -65,11 +66,11 @@ function useCloseIcon(size: string, color: string) {
   const iconSize = computed(() => {
     switch (size) {
       case 'sm':
-        return 'xs';
+        return 'xxs';
       case 'lg':
-        return 'md';
-      default:
         return 'sm';
+      default:
+        return 'xs';
     }
   });
 

@@ -2,15 +2,14 @@
   <div>
     <div class="flex items-center flex-wrap">
       <div class="flex items-center flex-wrap">
-        <BalBtn color="black" darkOutline @click="onClick" class="mr-4">
+        <BalBtn color="gray" outline @click="onClick" class="mr-4">
           <BalIcon name="search" size="sm" class="mr-2" />
-          Filter tokens
+          Filter by token
         </BalBtn>
         <BalChip
           v-for="token in modelValue"
           class="mr-2"
           :key="token"
-          size="lg"
           color="white"
           iconSize="sm"
           :closeable="true"
@@ -21,7 +20,7 @@
         </BalChip>
       </div>
       <div
-        class="text-gray-400 my-4 overflow-x-auto"
+        class="text-gray-400 my-4 overflow-x-auto ml-4"
         v-if="
           account &&
             !isNotFetchingBalances &&
