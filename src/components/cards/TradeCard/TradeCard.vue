@@ -27,6 +27,15 @@
         :address-out="tokenOutAddress"
         :sorReturn="sorReturn"
       />
+      <BalCheckbox
+        v-if="priceImpact >= 0.05"
+        v-model="highPiAccepted"
+        :rules="[isRequired($t('priceImpactCheckbox'))]"
+        name="highPiAccepted"
+        class="text-gray-500 mb-8"
+        size="sm"
+        :label="$t('priceImpactAccept')"
+      />
       <BalBtn
         v-if="!isAuthenticated"
         :label="$t('connectWallet')"
@@ -49,6 +58,7 @@
         type="submit"
         :label="`${$t(submitLabel)}`"
         :loading="trading"
+        :disabled="tradeDisabled"
         :loading-label="$t('confirming')"
         color="gradient"
         block
@@ -76,7 +86,8 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed, watch } from 'vue';
+import { isRequired } from '@/utils/validations';
+import { ref, defineComponent, computed, watch, reactive, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { isAddress, getAddress } from '@ethersproject/address';
@@ -104,6 +115,9 @@ export default defineComponent({
   },
 
   setup() {
+    const data = reactive({
+      highPiAccepted: false
+    });
     const store = useStore();
     const router = useRouter();
     const { isAuthenticated } = useAuth();
@@ -135,6 +149,10 @@ export default defineComponent({
         tokenOutAddress.value === ETHER.address &&
         tokenInAddress.value === config.addresses.weth
       );
+    });
+
+    const tradeDisabled = computed(() => {
+      return priceImpact.value >= 0.05 ? !data.highPiAccepted : false;
     });
 
     // COMPOSABLES
@@ -241,6 +259,7 @@ export default defineComponent({
     populateInitialTokens();
 
     return {
+      ...toRefs(data),
       fNum,
       toFiat,
       tokens,
@@ -265,7 +284,9 @@ export default defineComponent({
       trade,
       txHash,
       tradeSuccess,
-      priceImpact
+      priceImpact,
+      isRequired,
+      tradeDisabled
     };
   }
 });

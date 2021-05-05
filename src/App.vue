@@ -3,7 +3,7 @@
     <AppNav />
     <AppHero />
     <div class="pb-12">
-       <router-view :key="$route.path" class="flex-auto" />
+      <router-view :key="$route.path" class="flex-auto" />
     </div>
     <div id="modal" />
     <AccountModal
