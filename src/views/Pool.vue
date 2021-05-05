@@ -126,6 +126,7 @@ import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
 
 interface PoolPageData {
+  address: string;
   id: string;
   loading: boolean;
   backgroundLoading: boolean;
@@ -162,7 +163,8 @@ export default defineComponent({
 
     // DATA
     const data = reactive<PoolPageData>({
-      id: route.params.id as string,
+      address: route.params.address as string,
+      id: route.query.id as string,
       loading: true,
       backgroundLoading: false,
       events: {
@@ -179,6 +181,10 @@ export default defineComponent({
 
     const pool = computed(() => {
       return store.state.pools.current;
+    });
+
+    const poolId = computed(() => {
+      return data.address + data.id;
     });
 
     const titleTokens = computed(() => {
@@ -229,7 +235,7 @@ export default defineComponent({
     // METHODS
     async function fetchPool(): Promise<void> {
       console.time('loadPool');
-      await store.dispatch('pools/get', data.id);
+      await store.dispatch('pools/get', poolId.value);
       await store.dispatch('registry/injectTokens', [
         ...pool.value.tokens,
         pool.value.address
@@ -243,7 +249,7 @@ export default defineComponent({
     async function loadEvents(): Promise<void> {
       if (account) {
         console.time('loadPoolEvents');
-        data.events = await getPoolEvents(appNetwork.id, data.id);
+        data.events = await getPoolEvents(appNetwork.id, poolId.value);
         console.timeEnd('loadPoolEvents');
       }
     }
@@ -255,7 +261,7 @@ export default defineComponent({
         addresses,
         days
       );
-      data.snapshots = await getPoolSnapshots(appNetwork.id, data.id, days);
+      data.snapshots = await getPoolSnapshots(appNetwork.id, poolId.value, days);
     }
 
     // WATCHERS

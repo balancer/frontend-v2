@@ -8,7 +8,11 @@
       sticky="both"
       :onRowClick="
         pool => {
-          router.push({ name: 'pool', params: { id: pool.id } });
+          router.push({
+            name: 'pool',
+            params: { address: addressFor(pool.id) },
+            query: { id: idFor(pool.id) }
+          });
         }
       "
     >
@@ -142,6 +146,14 @@ export default defineComponent({
       return pool.tokensList.map(getAddress);
     }
 
+    function addressFor(poolId: string) {
+      return poolId.substr(0, 42);
+    }
+
+    function idFor(poolId: string) {
+      return poolId.substr(42);
+    }
+
     return {
       // data
       columns,
@@ -151,6 +163,8 @@ export default defineComponent({
       router,
       getAddress,
       tokensFor,
+      addressFor,
+      idFor,
       fNum
     };
   }

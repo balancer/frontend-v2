@@ -7,7 +7,7 @@ const routes: any[] = [
   { path: '/', name: 'home', redirect: { name: 'invest' } },
   { path: '/invest', name: 'invest', component: Invest },
   { path: '/trade/:assetIn?/:assetOut?', name: 'trade', component: Trade },
-  { path: '/pool/:id', name: 'pool', component: Pool },
+  { path: '/pool/:address', name: 'pool', component: Pool },
   { path: '/*', name: 'error-404', beforeEnter: (to, from, next) => next('/') }
 ];
 
