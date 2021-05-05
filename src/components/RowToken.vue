@@ -29,12 +29,12 @@ export default {
   props: {
     token: Object
   },
-  setup(props) {
+  setup() {
     const { fNum } = useNumbers();
 
     return {
       fNum
-    }
+    };
   }
 };
 </script>

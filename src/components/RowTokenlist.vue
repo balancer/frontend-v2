@@ -27,12 +27,12 @@ export default {
   props: {
     tokenlist: Object
   },
-  setup(props) {
+  setup() {
     const { fNum } = useNumbers();
 
     return {
       fNum
-    }
+    };
   }
 };
 </script>
