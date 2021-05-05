@@ -63,11 +63,11 @@
 
           <div>
             <h4 v-text="$t('activity')" class="mb-4" />
-            <TableEvents
-              v-if="hasEvents"
+            <TablePoolActivities
+              v-if="hasPoolActivities"
               :tokens="pool.tokens"
-              :events="events"
-              :loading="loading || appLoading || web3Loading"
+              :poolActivities="poolActivities"
+              :loading="isLoadingPoolActivities"
             />
             <BalBlankSlate
               v-else
@@ -113,23 +113,18 @@ import { useQueryClient } from 'vue-query';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
-import {
-  getPoolEvents,
-  getPoolSnapshots,
-  PoolEvents,
-  PoolSnapshots
-} from '@/api/subgraph';
+import { getPoolSnapshots, PoolSnapshots } from '@/api/subgraph';
 import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
+import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
 
 interface PoolPageData {
   id: string;
   loading: boolean;
   backgroundLoading: boolean;
-  events: PoolEvents;
   prices: HistoricalPrices;
   snapshots: PoolSnapshots;
   refetchQueriesOnBlockNumber: number;
@@ -152,29 +147,32 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
     const { allTokens } = useTokens();
-    const {
-      appNetwork,
-      account,
-      blockNumber,
-      loading: web3Loading
-    } = useWeb3();
+    const { appNetwork, blockNumber, loading: web3Loading } = useWeb3();
     const queryClient = useQueryClient();
+
+    const poolActivitiesQuery = usePoolActivitiesQuery(
+      route.params.id as string
+    );
 
     // DATA
     const data = reactive<PoolPageData>({
       id: route.params.id as string,
       loading: true,
       backgroundLoading: false,
-      events: {
-        joins: [],
-        exits: []
-      },
       prices: {},
       snapshots: [],
       refetchQueriesOnBlockNumber: 0
     });
 
     // COMPUTED
+    const poolActivities = computed(() => poolActivitiesQuery.data.value);
+
+    const isLoadingPoolActivities = computed(
+      () => poolActivitiesQuery.isLoading.value
+    );
+
+    const hasPoolActivities = computed(() => !!poolActivities.value?.length);
+
     const appLoading = computed(() => store.state.app.loading);
 
     const pool = computed(() => {
@@ -210,13 +208,6 @@ export default defineComponent({
       ]);
     });
 
-    const hasEvents = computed(() => {
-      return (
-        data.events &&
-        (data.events.joins.length > 0 || data.events.exits.length > 0)
-      );
-    });
-
     const missingPrices = computed(() => {
       if (pool.value) {
         const tokensWithPrice = Object.keys(store.state.market.prices);
@@ -240,14 +231,6 @@ export default defineComponent({
         blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
     }
 
-    async function loadEvents(): Promise<void> {
-      if (account) {
-        console.time('loadPoolEvents');
-        data.events = await getPoolEvents(appNetwork.id, data.id);
-        console.timeEnd('loadPoolEvents');
-      }
-    }
-
     async function loadChartData(days: number): Promise<void> {
       const addresses = pool.value.tokens;
       data.prices = await getTokensHistoricalPrice(
@@ -263,7 +246,7 @@ export default defineComponent({
       if (!data.loading && !data.backgroundLoading) {
         data.backgroundLoading = true;
         await fetchPool();
-        await loadEvents();
+        // refetch pool
         data.backgroundLoading = false;
       }
       if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
@@ -275,7 +258,6 @@ export default defineComponent({
     onBeforeMount(async () => {
       try {
         await fetchPool();
-        await loadEvents();
         loadChartData(30);
         data.loading = false;
       } catch (error) {
@@ -295,8 +277,10 @@ export default defineComponent({
       poolFeeLabel,
       titleTokens,
       isAuthenticated,
-      hasEvents,
+      hasPoolActivities,
       missingPrices,
+      isLoadingPoolActivities,
+      poolActivities,
       // methods
       fNum,
       fetchPool

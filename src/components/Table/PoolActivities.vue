@@ -21,11 +21,14 @@
 
 <script lang="ts">
 import { PropType, computed } from 'vue';
-import { PoolJoin, PoolExit, PoolEvents } from '@/api/subgraph';
-import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
+
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
+import useNumbers from '@/composables/useNumbers';
+
+import { PoolActivity } from '@/services/balancer/subgraph/types';
+import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 
 interface Action {
   label: string;
@@ -41,8 +44,8 @@ export default {
       type: Object as PropType<string[]>,
       required: true
     },
-    events: {
-      type: Object as PropType<PoolEvents>,
+    poolActivities: {
+      type: Array as PropType<PoolActivity[]>,
       required: true
     },
     loading: { type: Boolean, default: false }
@@ -54,7 +57,7 @@ export default {
     const { explorer } = useWeb3();
     const { allTokens } = useTokens();
 
-    const columns = computed(() => [
+    const columns = computed<ColumnDefinition<Action>[]>(() => [
       {
         name: t('action'),
         id: 'action',
@@ -86,35 +89,17 @@ export default {
     ]);
 
     const actions = computed<Action[]>(() => {
-      if (!Object.keys(props.events)) {
-        return [];
-      }
-
-      const joinActions = props.events.joins.map(join => {
-        return {
-          label: t('investment'),
-          value: getJoinExitValue(join),
-          details: getJoinExitDetails(join),
-          timestamp: join.timestamp,
-          tx: join.tx
-        };
-      });
-      const exitActions = props.events.exits.map(exit => {
-        return {
-          label: t('withdrawal'),
-          value: getJoinExitValue(exit),
-          details: getJoinExitDetails(exit),
-          timestamp: exit.timestamp,
-          tx: exit.tx
-        };
-      });
-      const actions = [...joinActions, ...exitActions];
-      actions.sort((a, b) => b.timestamp - a.timestamp);
-      return actions;
+      return props.poolActivities.map(poolActivity => ({
+        label: poolActivity.type === 'join' ? t('investment') : t('withdrawal'),
+        value: getJoinExitValue(poolActivity),
+        details: getJoinExitDetails(poolActivity),
+        timestamp: poolActivity.timestamp,
+        tx: poolActivity.tx
+      }));
     });
 
     function formatDate(timestamp: number) {
-      const date = new Date(timestamp * 1000);
+      const date = new Date(timestamp);
       const dateOptions: Intl.DateTimeFormatOptions = {
         day: '2-digit',
         month: 'long'
@@ -122,8 +107,8 @@ export default {
       return date.toLocaleString('en-US', dateOptions);
     }
 
-    function getJoinExitValue(event: PoolJoin | PoolExit) {
-      const value = event.amounts.reduce((total, amount, index) => {
+    function getJoinExitValue(poolActivity: PoolActivity) {
+      const value = poolActivity.amounts.reduce((total, amount, index) => {
         const address = props.tokens[index];
         const token = allTokens.value[address];
         const price = token.price || 0;
@@ -133,8 +118,8 @@ export default {
       return value;
     }
 
-    function getJoinExitDetails(event: PoolJoin | PoolExit) {
-      const tokenLabels = event.amounts
+    function getJoinExitDetails(poolActivity: PoolActivity) {
+      const tokenLabels = poolActivity.amounts
         .map((amount, index) => {
           const address = props.tokens[index];
           const token = allTokens.value[address];
