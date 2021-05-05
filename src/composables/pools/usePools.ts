@@ -6,7 +6,7 @@ import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import usePoolSharesQuery from '@/composables/queries/usePoolSharesQuery';
 import useWeb3 from '@/composables/useWeb3';
 
-export default function usePoolsWithSharesQuery() {
+export default function usePools() {
   // COMPOSABLES
   const { isConnected } = useWeb3();
   const poolsQuery = usePoolsQuery();
@@ -14,7 +14,6 @@ export default function usePoolsWithSharesQuery() {
 
   // COMPUTED
   const pools = computed(() => poolsQuery.data.value?.pools);
-
   const tokens = computed(() => poolsQuery.data.value?.tokens);
 
   const poolsWithShares = computed(() => {

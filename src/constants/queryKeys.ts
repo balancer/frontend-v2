@@ -12,7 +12,8 @@ const QUERY_KEYS = {
       'activities',
       account,
       id
-    ]
+    ],
+    Current: (id: string) => [POOLS_ROOT_KEY, 'current', id]
   }
 };
 

@@ -31,6 +31,7 @@ export interface DecoratedPool extends Pool {
     period: TimeTravelPeriod;
     volume: string;
     apy: string;
+    fees: string;
   };
 }
 

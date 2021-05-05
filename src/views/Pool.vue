@@ -50,10 +50,9 @@
           />
 
           <PoolStats
-            :pool="pool"
-            :snapshots="snapshots"
+            :pool="subgraphPool"
             :missing-prices="missingPrices"
-            :loading="loading || appLoading"
+            :loading="isLoadingSubgraphPool"
           />
 
           <div>
@@ -107,9 +106,11 @@ import {
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import useNumbers from '@/composables/useNumbers';
-import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
 import { useQueryClient } from 'vue-query';
+
+import useNumbers from '@/composables/useNumbers';
+import usePoolQuery from '@/composables/queries/usePoolQuery';
+import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
@@ -147,8 +148,9 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
     const { allTokens } = useTokens();
-    const { appNetwork, blockNumber, loading: web3Loading } = useWeb3();
     const queryClient = useQueryClient();
+    const poolQuery = usePoolQuery(route.params.id as string);
+    const { appNetwork, blockNumber, loading: web3Loading } = useWeb3();
 
     const poolActivitiesQuery = usePoolActivitiesQuery(
       route.params.id as string
@@ -174,6 +176,11 @@ export default defineComponent({
     const hasPoolActivities = computed(() => !!poolActivities.value?.length);
 
     const appLoading = computed(() => store.state.app.loading);
+
+    const subgraphPool = computed(() => poolQuery.data.value);
+    const isLoadingSubgraphPool = computed(
+      () => poolQuery.isLoading.value || poolQuery.isIdle.value
+    );
 
     const pool = computed(() => {
       return store.state.pools.current;
@@ -251,6 +258,8 @@ export default defineComponent({
       }
       if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
         queryClient.invalidateQueries([POOLS_ROOT_KEY]);
+      } else {
+        queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
       }
     });
 
@@ -275,6 +284,8 @@ export default defineComponent({
       pool,
       poolTypeLabel,
       poolFeeLabel,
+      subgraphPool,
+      isLoadingSubgraphPool,
       titleTokens,
       isAuthenticated,
       hasPoolActivities,

@@ -17,118 +17,51 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, toRefs, computed } from 'vue';
-import { useStore } from 'vuex';
-import { formatUnits } from '@ethersproject/units';
-import { PoolSnapshots } from '@/api/subgraph';
+import { PropType, defineComponent, computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
-import { getPoolLiquidity } from '@/utils/balancer/price';
 import { useI18n } from 'vue-i18n';
-import useTokens from '@/composables/useTokens';
-
-const DAY = 24 * 60 * 60;
+import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 export default defineComponent({
   props: {
-    pool: {
-      type: Object,
-      default: () => ({})
-    },
-    snapshots: {
-      type: Object as PropType<PoolSnapshots>,
-      required: true
-    },
+    pool: { type: Object as PropType<DecoratedPool> },
     missingPrices: { type: Boolean, default: false },
     loading: { type: Boolean, default: true }
   },
 
   setup(props) {
     // COMPOSABLES
-    const store = useStore();
     const { fNum } = useNumbers();
     const { t } = useI18n();
-    const { allTokens } = useTokens();
-
-    // DATA
-    const { pool, snapshots } = toRefs(props);
 
     // COMPUTED
-    const subgraphPool = computed(() => {
-      if (!pool.value) {
-        return {};
-      }
-      const strategy = pool.value.strategy.name;
-      if (strategy !== 'weightedPool') {
-        return {};
-      }
-      const poolType = 'Weighted';
-      const tokens = pool.value.tokens.map((address, index) => {
-        const weight = pool.value.weights[index].toString();
-        const token = allTokens.value[address];
-        const decimals = token ? token.decimals : 18;
-        const balance = formatUnits(pool.value.tokenBalances[index], decimals);
-        return {
-          address: address.toLowerCase(),
-          weight,
-          balance
-        };
-      });
-      return {
-        poolType,
-        tokens
-      } as any;
-    });
-
-    const liquidity = computed(() =>
-      parseFloat(
-        getPoolLiquidity(subgraphPool.value, store.state.market.prices)
-      )
-    );
-
-    const weekSnapshots = computed(() => {
-      const weekSnapshots = Object.values(snapshots.value).filter(snapshot => {
-        const timestamp = Date.now() / 1000;
-        const weekTimestamp = timestamp - 7 * DAY;
-        return snapshot.timestamp >= weekTimestamp;
-      });
-      return weekSnapshots;
-    });
-
-    const volume = computed(() => {
-      const volume = weekSnapshots.value.reduce(
-        (total, snapshot) => total + parseFloat(snapshot.swapVolume),
-        0
-      );
-      return volume;
-    });
-
-    const fees = computed(() => {
-      const fees = weekSnapshots.value.reduce(
-        (total, snapshot) => total + parseFloat(snapshot.swapFees),
-        0
-      );
-      return fees;
-    });
-
-    const apy = computed(() => (fees.value / liquidity.value / 7) * 365);
-
     const stats = computed(() => {
+      if (!props.pool) return [];
+
       return [
         {
           label: t('poolValue'),
-          value: props.missingPrices ? '-' : fNum(liquidity.value, 'usd')
+          value: props.missingPrices
+            ? '-'
+            : fNum(props.pool.totalLiquidity, 'usd')
         },
         {
-          label: t('volumeTime', ['7d']),
-          value: props.missingPrices ? '-' : fNum(volume.value, 'usd')
+          label: t('volumeTime', ['24h']),
+          value: props.missingPrices
+            ? '-'
+            : fNum(props.pool.dynamic.volume, 'usd')
         },
         {
-          label: t('feesTime', ['7d']),
-          value: props.missingPrices ? '-' : fNum(fees.value, 'usd')
+          label: t('feesTime', ['24h']),
+          value: props.missingPrices
+            ? '-'
+            : fNum(props.pool.dynamic.fees, 'usd')
         },
         {
-          label: t('apy', [t('yearAbbrev')]),
-          value: props.missingPrices ? '-' : fNum(apy.value, 'percent')
+          label: 'APY',
+          value: props.missingPrices
+            ? '-'
+            : fNum(props.pool.dynamic.apy, 'percent')
         }
       ];
     });
