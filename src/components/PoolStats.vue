@@ -25,7 +25,6 @@ import { DecoratedPool } from '@/services/balancer/subgraph/types';
 export default defineComponent({
   props: {
     pool: { type: Object as PropType<DecoratedPool> },
-    missingPrices: { type: Boolean, default: false },
     loading: { type: Boolean, default: true }
   },
 
@@ -41,27 +40,19 @@ export default defineComponent({
       return [
         {
           label: t('poolValue'),
-          value: props.missingPrices
-            ? '-'
-            : fNum(props.pool.totalLiquidity, 'usd')
+          value: fNum(props.pool.totalLiquidity, 'usd')
         },
         {
           label: t('volumeTime', ['24h']),
-          value: props.missingPrices
-            ? '-'
-            : fNum(props.pool.dynamic.volume, 'usd')
+          value: fNum(props.pool.dynamic.volume, 'usd')
         },
         {
           label: t('feesTime', ['24h']),
-          value: props.missingPrices
-            ? '-'
-            : fNum(props.pool.dynamic.fees, 'usd')
+          value: fNum(props.pool.dynamic.fees, 'usd')
         },
         {
           label: 'APY',
-          value: props.missingPrices
-            ? '-'
-            : fNum(props.pool.dynamic.apy, 'percent')
+          value: fNum(props.pool.dynamic.apy, 'percent')
         }
       ];
     });

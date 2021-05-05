@@ -49,11 +49,7 @@
             :loading="loading"
           />
 
-          <PoolStats
-            :pool="subgraphPool"
-            :missing-prices="missingPrices"
-            :loading="isLoadingSubgraphPool"
-          />
+          <PoolStats :pool="subgraphPool" :loading="isLoadingSubgraphPool" />
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
