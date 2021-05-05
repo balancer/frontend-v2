@@ -22,13 +22,6 @@
       @updateAxisPointer="handleAxisMoved"
       :update-options="{ replaceMerge: 'series' }"
     />
-    <div v-if="isPeriodSelectionEnabled" class="flex w-full mt-2 justify-end">
-      <BalButtonGroup
-        :options="periodOptions"
-        :value="currentGraphingPeriod"
-        :onChange="$emit('periodSelected')"
-      />
-    </div>
   </div>
 </template>
 

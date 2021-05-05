@@ -50,10 +50,9 @@
           />
 
           <PoolStats
-            :pool="pool"
-            :snapshots="snapshots"
+            :pool="subgraphPool"
             :missing-prices="missingPrices"
-            :loading="loading || appLoading"
+            :loading="isLoadingSubgraphPool"
           />
 
           <div>
@@ -108,8 +107,8 @@ import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
+import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
-import { useQueryClient } from 'vue-query';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
@@ -124,6 +123,7 @@ import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
+import { useQueryClient } from 'vue-query';
 
 interface PoolPageData {
   id: string;
@@ -152,13 +152,14 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
     const { allTokens } = useTokens();
+    const queryClient = useQueryClient();
+    const poolQuery = usePoolQuery(route.params.id as string);
     const {
       appNetwork,
       account,
       blockNumber,
       loading: web3Loading
     } = useWeb3();
-    const queryClient = useQueryClient();
 
     // DATA
     const data = reactive<PoolPageData>({
@@ -176,6 +177,11 @@ export default defineComponent({
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
+
+    const subgraphPool = computed(() => poolQuery.data.value);
+    const isLoadingSubgraphPool = computed(
+      () => poolQuery.isLoading.value || poolQuery.isIdle.value
+    );
 
     const pool = computed(() => {
       return store.state.pools.current;
@@ -268,6 +274,8 @@ export default defineComponent({
       }
       if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
         queryClient.invalidateQueries([POOLS_ROOT_KEY]);
+      } else {
+        queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
       }
     });
 
@@ -293,6 +301,8 @@ export default defineComponent({
       pool,
       poolTypeLabel,
       poolFeeLabel,
+      subgraphPool,
+      isLoadingSubgraphPool,
       titleTokens,
       isAuthenticated,
       hasEvents,
