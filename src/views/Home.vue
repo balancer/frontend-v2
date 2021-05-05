@@ -17,7 +17,6 @@
     </template>
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
     <TokenSearchInput v-model="selectedTokens" :loading="isLoadingPools" />
-    {{ console.log('fil', filteredPools) }}
     <PoolsTable
       :isLoading="isLoadingPools"
       :data="filteredPools"
@@ -82,8 +81,7 @@ export default defineComponent({
       isConnected,
 
       //methods
-      router,
-      console
+      router
     };
   }
 });
