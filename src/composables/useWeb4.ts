@@ -38,7 +38,6 @@ export default function useWeb4() {
     if (auth.provider.value && auth.provider.value.on) {
       // when changing wallet network e.g. kovan, mainnet
       auth.provider.value.on('chainChanged', async () => {
-        console.log('changed chain')
         // reinitialise web3
         auth.web3 = new Web3Provider(auth.provider.value);
         refetch.value();

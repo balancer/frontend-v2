@@ -4,9 +4,7 @@ import useTokens from './useTokens';
 import useWeb3 from './useWeb3';
 import { computed, reactive } from 'vue';
 import { getBalances } from '@/utils/balancer/tokens';
-import { mapValues } from 'lodash';
 import { formatUnits } from '@ethersproject/units';
-import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 
 export default function useAccountBalances() {
