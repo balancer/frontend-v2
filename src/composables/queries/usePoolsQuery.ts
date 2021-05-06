@@ -1,6 +1,6 @@
 import { computed, reactive, Ref } from 'vue';
-import { useQuery } from 'vue-query';
-import { QueryObserverOptions } from 'react-query/core';
+import { useInfiniteQuery } from 'vue-query';
+import { InfiniteQueryObserverOptions } from 'react-query/core';
 
 import { useStore } from 'vuex';
 import { flatten, isEmpty } from 'lodash';
@@ -18,8 +18,8 @@ type PoolsQueryResponse = {
 
 export default function usePoolsQuery(
   currentCount: Ref<number>,
-  options: QueryObserverOptions<PoolsQueryResponse> = {
-    keepPreviousData: true
+  options: InfiniteQueryObserverOptions<PoolsQueryResponse> = {
+    getNextPageParam: lastPage => lastPage + 10,
   }
 ) {
   // SERVICES
@@ -36,11 +36,11 @@ export default function usePoolsQuery(
   const isQueryEnabled = computed(() => !isEmpty(prices.value));
 
   // METHODS
-  const queryFn = async () => {
+  const queryFn = async ({ pageParam = 0 }) => {
     const pools = await balancerSubgraph.pools.getDecorated(
       '24h',
       prices.value,
-      { first: 10, skip: currentCount.value }
+      { first: 10, skip: pageParam }
     );
 
     const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
@@ -59,5 +59,5 @@ export default function usePoolsQuery(
     ...options
   });
 
-  return useQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
+  return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
 }
