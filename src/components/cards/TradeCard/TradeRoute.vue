@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="routes.length > 0">
     <div
       class="flex text-gray-500 items-center cursor-pointer"
       @click="toggleVisibility"
@@ -212,6 +212,10 @@ export default defineComponent({
 
     const routes = computed(() => {
       const { sorReturn } = props;
+
+      if (!sorReturn.hasSwaps) {
+        return [];
+      }
 
       if (sorReturn.isV1swap) {
         const pools = props.pools as Pool[];
