@@ -87,7 +87,7 @@
 
 <script lang="ts">
 import { isRequired } from '@/utils/validations';
-import { ref, defineComponent, computed, watch, reactive, toRefs } from 'vue';
+import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { isAddress, getAddress } from '@ethersproject/address';
@@ -115,9 +115,7 @@ export default defineComponent({
   },
 
   setup() {
-    const data = reactive({
-      highPiAccepted: false
-    });
+    const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
     const { isAuthenticated } = useAuth();
@@ -152,7 +150,7 @@ export default defineComponent({
     });
 
     const tradeDisabled = computed(() => {
-      return priceImpact.value >= 0.05 ? !data.highPiAccepted : false;
+      return priceImpact.value >= 0.05 ? !highPiAccepted.value : false;
     });
 
     // COMPOSABLES
@@ -259,7 +257,7 @@ export default defineComponent({
     populateInitialTokens();
 
     return {
-      ...toRefs(data),
+      highPiAccepted,
       fNum,
       toFiat,
       tokens,
