@@ -65,7 +65,7 @@
       </div>
     </template>
 
-    <div v-else class="px-4 pt-6 bg-gray-50 border-t border-b">
+    <div v-else class="px-4 pt-6 border-t border-b">
       <BalTextInput
         v-for="(token, i) in pool.tokens"
         :key="i"

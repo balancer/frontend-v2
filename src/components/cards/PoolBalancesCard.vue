@@ -52,7 +52,6 @@ export default defineComponent({
       type: Object as PropType<Pool> | null,
       required: true
     },
-    missingPrices: { type: Boolean, default: false },
     loading: { type: Boolean, default: false }
   },
   setup(props) {
@@ -80,9 +79,8 @@ export default defineComponent({
         const decimals = token ? token.decimals : 18;
         const shortBalanceString = formatUnits(balance, decimals);
         const shortBalance = parseFloat(shortBalanceString);
-        const price = prices.value[address.toLowerCase()].price;
-        const value = shortBalance * price;
-        return value;
+        const price = prices.value[address.toLowerCase()]?.price;
+        return price ? shortBalance * price : 0;
       });
 
       return tokenValues;
@@ -146,8 +144,8 @@ export default defineComponent({
     }
 
     function fiatValueFor(index: number) {
-      if (props.missingPrices) return '-';
-      return fNum(tokenValues.value[index] || 0, 'usd');
+      if (tokenValues.value[index] === 0) return '-';
+      return fNum(tokenValues.value[index], 'usd');
     }
 
     return {

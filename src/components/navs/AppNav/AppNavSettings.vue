@@ -109,7 +109,7 @@
         />
         <input
           class="slippage-input w-20 px-2 border rounded-lg"
-          :class="{ active: isCustomSlippage }"
+          :class="{ 'border border-blue-500': isCustomSlippage }"
           v-model="slippageInput"
           :placeholder="t('custom')"
         />

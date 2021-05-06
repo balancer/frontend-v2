@@ -26,7 +26,7 @@
           </BalBtn>
           <BalBtn
             tag="a"
-            href="https://balancer.fi"
+            :href="EXTERNAL_LINKS.Balancer.Home"
             target="_blank"
             rel="noreferrer"
             color="white"
@@ -48,6 +48,8 @@ import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import usePoolsWithShares from '@/composables/pools/usePools';
+
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 export default defineComponent({
   name: 'AppHero',
@@ -82,7 +84,9 @@ export default defineComponent({
 
       // methods
       setAccountModal,
-      fNum
+      fNum,
+      // constants
+      EXTERNAL_LINKS
     };
   }
 });
@@ -90,7 +94,7 @@ export default defineComponent({
 
 <style>
 .app-hero {
-  @apply bg-cover flex items-center justify-center text-center px-4;
+  @apply bg-cover bg-center flex items-center justify-center text-center px-4;
   transition: all 0.3s ease-in-out;
   background-image: url('/images/backgrounds/bg-connect-wallet.svg');
 }

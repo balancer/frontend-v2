@@ -75,7 +75,8 @@ export default defineComponent({
 
 <style scoped>
 .bal-modal {
-  @apply top-0 left-0 fixed h-screen w-full z-50;
+  @apply top-0 left-0 fixed h-screen w-full;
+  z-index: 9999999999;
 }
 
 .content-container {
@@ -106,7 +107,7 @@ export default defineComponent({
 .content-enter-from,
 .content-leave-to {
   opacity: 0;
-  transform: translateY(70%) scale(0.95);
+  transform: translateY(20px) scale(0.95);
 }
 
 .modal-bg-enter-active {

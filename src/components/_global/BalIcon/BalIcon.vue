@@ -1,6 +1,6 @@
 <template>
   <div>
-    <i :data-feather="name" :width="iconSize" :height="iconSize" />
+    <i :data-feather="name" :width="iconSize" :height="iconSize" :fill="fill" />
   </div>
 </template>
 
@@ -19,7 +19,8 @@ export default defineComponent({
       validator: (val: string): boolean => {
         return ['xxs', 'xs', 'sm', 'md', 'lg', 'xl'].includes(val);
       }
-    }
+    },
+    filled: { type: Boolean, default: false }
   },
 
   setup(props) {
@@ -40,9 +41,11 @@ export default defineComponent({
       }
     });
 
+    const fill = computed(() => (props.filled ? 'currentColor' : 'none'));
+
     onMounted(() => feather.replace());
 
-    return { iconSize };
+    return { iconSize, fill };
   }
 });
 </script>

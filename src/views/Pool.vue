@@ -2,25 +2,34 @@
   <div class="container mx-auto px-4 lg:px-0 pt-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
-        <BalLoadingBlock v-if="loading" class="h-16 mb-2" />
-        <div v-else class="">
-          <BalAssetSet :addresses="pool.tokens" :size="36" />
-          <div class="mb-1 mt-3 flex flex-wrap items-center">
-            <h3 v-for="(token, i) in titleTokens" :key="i" class="mr-3">
-              <span class="mr-1 font-bold">
+        <BalLoadingBlock v-if="loading" class="h-12 mb-2" />
+        <div v-else class="flex items-center">
+          <h3 class="font-bold mr-4 capitalize">
+            {{ poolTypeLabel }}
+          </h3>
+          <BalAssetSet :addresses="titleTokens.map(t => t.token)" :size="36" />
+        </div>
+
+        <BalLoadingBlock v-if="loading" class="h-10 mb-2" />
+        <div v-else class="mb-1 mt-3 flex flex-wrap items-center">
+          <div class="flex flex-wrap">
+            <div
+              v-for="(token, i) in titleTokens"
+              :key="i"
+              class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
+            >
+              <span>
                 {{ token.symbol }}
               </span>
-              <span class="text-gray-500 font-normal text-sm">
+              <span class="font-medium text-gray-400 text-xs mt-px ml-1">
                 {{ fNum(token.weight / 100, 'percent_lg') }}
               </span>
-            </h3>
+            </div>
           </div>
         </div>
 
         <BalLoadingBlock v-if="loading" class="h-4" />
-        <div v-else class="text-sm">
-          {{ poolTypeLabel }}. {{ poolFeeLabel }}.
-        </div>
+        <div v-else class="text-sm">{{ poolFeeLabel }}.</div>
 
         <BalAlert
           v-if="!loading && !appLoading && missingPrices"
@@ -40,20 +49,11 @@
             :loading="loading"
           />
 
-          <PoolStats
-            :pool="pool"
-            :snapshots="snapshots"
-            :missing-prices="missingPrices"
-            :loading="loading || appLoading"
-          />
+          <PoolStats :pool="subgraphPool" :loading="isLoadingSubgraphPool" />
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
-            <PoolBalancesCard
-              :pool="pool"
-              :loading="loading || appLoading"
-              :missing-prices="missingPrices"
-            />
+            <PoolBalancesCard :pool="pool" :loading="loading || appLoading" />
           </div>
 
           <div>
@@ -103,7 +103,11 @@ import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
+import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
+
+import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
+
 import {
   getPoolEvents,
   getPoolSnapshots,
@@ -115,6 +119,7 @@ import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
+import { useQueryClient } from 'vue-query';
 
 interface PoolPageData {
   id: string;
@@ -123,7 +128,10 @@ interface PoolPageData {
   events: PoolEvents;
   prices: HistoricalPrices;
   snapshots: PoolSnapshots;
+  refetchQueriesOnBlockNumber: number;
 }
+
+const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 
 export default defineComponent({
   components: {
@@ -140,6 +148,8 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
     const { allTokens } = useTokens();
+    const queryClient = useQueryClient();
+    const poolQuery = usePoolQuery(route.params.id as string);
     const {
       appNetwork,
       account,
@@ -157,11 +167,17 @@ export default defineComponent({
         exits: []
       },
       prices: {},
-      snapshots: []
+      snapshots: [],
+      refetchQueriesOnBlockNumber: 0
     });
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
+
+    const subgraphPool = computed(() => poolQuery.data.value);
+    const isLoadingSubgraphPool = computed(
+      () => poolQuery.isLoading.value || poolQuery.isIdle.value
+    );
 
     const pool = computed(() => {
       return store.state.pools.current;
@@ -172,7 +188,8 @@ export default defineComponent({
         .map((token, i) => {
           return {
             symbol: allTokens.value[token]?.symbol,
-            weight: pool.value.weightsPercent[i]
+            weight: pool.value.weightsPercent[i],
+            token
           };
         })
         .sort((a, b) => b.weight - a.weight);
@@ -220,6 +237,9 @@ export default defineComponent({
         pool.value.address
       ]);
       console.timeEnd('loadPool');
+
+      data.refetchQueriesOnBlockNumber =
+        blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
     }
 
     async function loadEvents(): Promise<void> {
@@ -248,6 +268,11 @@ export default defineComponent({
         await loadEvents();
         data.backgroundLoading = false;
       }
+      if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
+        queryClient.invalidateQueries([POOLS_ROOT_KEY]);
+      } else {
+        queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
+      }
     });
 
     // CALLBACKS
@@ -272,6 +297,8 @@ export default defineComponent({
       pool,
       poolTypeLabel,
       poolFeeLabel,
+      subgraphPool,
+      isLoadingSubgraphPool,
       titleTokens,
       isAuthenticated,
       hasEvents,

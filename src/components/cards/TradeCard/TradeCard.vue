@@ -54,6 +54,15 @@
         block
         @click.prevent="trade"
       />
+      <TradeRoute
+        class="mt-5"
+        :address-in="tokenInAddress"
+        :amount-in="tokenInAmount"
+        :address-out="tokenOutAddress"
+        :amount-out="tokenOutAmount"
+        :pools="pools"
+        :sor-return="sorReturn"
+      />
     </div>
     <SuccessOverlay
       v-if="tradeSuccess"
@@ -70,6 +79,7 @@
 import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { isAddress, getAddress } from '@ethersproject/address';
 
 import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
@@ -80,6 +90,7 @@ import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
+import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
 
@@ -87,6 +98,7 @@ export default defineComponent({
   components: {
     SuccessOverlay,
     TradePair,
+    TradeRoute,
     TradeSettingsPopover,
     GasReimbursement
   },
@@ -141,6 +153,7 @@ export default defineComponent({
       exactIn,
       sorReturn,
       latestTxHash,
+      pools,
       fetchPools
     } = useSor(
       tokenInAddress,
@@ -184,14 +197,12 @@ export default defineComponent({
     }
 
     async function populateInitialTokens(): Promise<void> {
-      const assetIn =
-        (router.currentRoute.value.params.assetIn as string) === 'ether'
-          ? ETHER.address
-          : (router.currentRoute.value.params.assetIn as string);
-      const assetOut =
-        (router.currentRoute.value.params.assetOut as string) === 'ether'
-          ? ETHER.address
-          : (router.currentRoute.value.params.assetOut as string);
+      let assetIn = router.currentRoute.value.params.assetIn as string;
+      if (assetIn === ETHER.id) assetIn = ETHER.address;
+      else if (isAddress(assetIn)) assetIn = getAddress(assetIn);
+      let assetOut = router.currentRoute.value.params.assetOut as string;
+      if (assetOut === ETHER.id) assetOut = ETHER.address;
+      else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
@@ -248,6 +259,7 @@ export default defineComponent({
       requireApproval,
       approving,
       sorReturn,
+      pools,
       approve,
       trading,
       trade,

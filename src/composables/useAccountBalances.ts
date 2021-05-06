@@ -4,8 +4,9 @@ import useTokens from './useTokens';
 import useWeb3 from './useWeb3';
 import { computed, reactive } from 'vue';
 import { getBalances } from '@/utils/balancer/tokens';
-import { formatUnits } from '@ethersproject/units';
+import { formatEther } from '@ethersproject/units';
 import { getAddress } from '@ethersproject/address';
+import QUERY_KEYS from '@/constants/queryKeys';
 
 export default function useAccountBalances() {
   const { account, userNetwork } = useWeb3();
@@ -17,7 +18,7 @@ export default function useAccountBalances() {
   );
 
   const { data, error, isLoading, isIdle, isError } = useQuery(
-    reactive(['balances', { userNetwork, account }]),
+    reactive(QUERY_KEYS.Balances.All(account, userNetwork)),
     () => {
       return Promise.all([
         getBalances(
@@ -38,7 +39,7 @@ export default function useAccountBalances() {
     if (data.value) {
       const balances = {};
       Object.keys(data.value[0]).forEach((tokenAddress: string) => {
-        const balance = formatUnits(data.value[0][tokenAddress], 18);
+        const balance = formatEther(data.value[0][tokenAddress]);
         // not concerned with tokens which have a 0 balance
         if (balance === '0.0') return;
         balances[tokenAddress] = {
@@ -53,7 +54,7 @@ export default function useAccountBalances() {
   });
   const etherBalance = computed(() => {
     if (data.value) {
-      formatUnits(data.value[1], 18);
+      formatEther(data.value[1]);
     }
     return null;
   });

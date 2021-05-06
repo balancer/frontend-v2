@@ -1,8 +1,8 @@
 <template>
-  <a
-    href="https://docs.balancer.finance/core-concepts/bal-balancer-governance-token/bal-for-gas"
-    target="_blank"
-    class="block no-underline"
+  <BalLink
+    :href="EXTERNAL_LINKS.Balancer.BalForGas"
+    external
+    class="block hover:no-underline"
   >
     <div v-if="isActive()" class="message relative px-2 py-3">
       <div class="ml-12">
@@ -12,7 +12,7 @@
         </div>
       </div>
     </div>
-  </a>
+  </BalLink>
 </template>
 
 <script lang="ts">
@@ -25,6 +25,7 @@ import { isBudgetLeft } from '@/utils/balancer/bal4gas';
 import useWeb3 from '@/composables/useWeb3';
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
 import { useI18n } from 'vue-i18n';
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 export default defineComponent({
   props: {
@@ -170,7 +171,8 @@ export default defineComponent({
 
     return {
       text,
-      isActive
+      isActive,
+      EXTERNAL_LINKS
     };
   }
 });

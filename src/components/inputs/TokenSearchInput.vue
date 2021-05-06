@@ -68,6 +68,7 @@ import useTokens from '@/composables/useTokens';
 import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
 import useWeb3 from '@/composables/useWeb3';
+import { TOKENS } from '@/constants/tokens';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -108,9 +109,7 @@ export default defineComponent({
     const hasNoBalances = computed(() => !sortedBalances.value.length);
     const whiteListedTokens = computed(() =>
       Object.values(allTokens.value)
-        .filter((token: any) =>
-          ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH'].includes(token.symbol)
-        )
+        .filter((token: any) => TOKENS.Popular.Symbols.includes(token.symbol))
         .filter((balance: any) => !props.modelValue.includes(balance.address))
     );
 

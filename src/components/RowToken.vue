@@ -3,18 +3,18 @@
     <BalAsset :address="token.address" :size="34" class="mr-2" />
     <div class="flex-auto">
       {{ token.symbol }}
-      <div class="text-gray text-sm">
-        {{ _shorten(token.name, 'name') }}
+      <div class="text-gray text-sm w-40 md:w-60 truncate">
+        {{ token.name }}
       </div>
     </div>
     <span class="text-right">
       <template v-if="token.balance > 0">
-        {{ _num(token.balance, '0,0.[000]') }}
+        {{ fNum(token.balance, '0,0.[000]') }}
       </template>
       <template v-else>-</template>
       <div class="text-gray text-sm">
         <template v-if="token.value > 0">
-          {{ _num(token.value, '$0,0.[00]') }}
+          {{ fNum(token.value, '$0,0.[00]') }}
         </template>
         <template v-else>-</template>
       </div>
@@ -22,10 +22,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import useNumbers from '@/composables/useNumbers';
+
 export default {
   props: {
     token: Object
+  },
+  setup() {
+    const { fNum } = useNumbers();
+
+    return {
+      fNum
+    };
   }
 };
 </script>
