@@ -66,8 +66,6 @@ export async function getTokensMetadata(
         `${token}.logoURI`,
         `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${token}/logo.png`
       );
-      multi.call(`${token}.name`, token, 'name');
-      multi.call(`${token}.symbol`, token, 'symbol');
       multi.call(`${token}.decimals`, token, 'decimals');
     });
     return await multi.execute(tokensMetadata);

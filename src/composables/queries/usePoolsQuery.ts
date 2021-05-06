@@ -4,7 +4,6 @@ import { QueryObserverOptions } from 'react-query/core';
 
 import { useStore } from 'vuex';
 import { flatten, isEmpty } from 'lodash';
-import { getAddress } from '@ethersproject/address';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
@@ -39,7 +38,7 @@ export default function usePoolsQuery(
       prices.value
     );
 
-    const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
+    const tokens = flatten(pools.map(pool => pool.tokenAddresses));
 
     return {
       pools,

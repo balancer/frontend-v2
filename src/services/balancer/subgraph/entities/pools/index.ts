@@ -9,6 +9,7 @@ import {
   DecoratedPool
 } from '../../types';
 import { Prices } from '@/api/coingecko';
+import { getAddress } from '@ethersproject/address';
 
 export default class Pools {
   service: Service;
@@ -50,6 +51,8 @@ export default class Pools {
     prices: Prices
   ): DecoratedPool[] {
     return pools.map(pool => {
+      pool.address = getAddress(pool.id.slice(0, 42));
+      pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.totalLiquidity = getPoolLiquidity(pool, prices);
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);

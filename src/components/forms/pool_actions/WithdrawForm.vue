@@ -36,7 +36,7 @@
 
       <div class="px-4 py-3 bg-gray-50 border-t border-b">
         <div
-          v-for="(token, i) in pool.tokens"
+          v-for="(token, i) in pool.tokenAddresses"
           :key="token"
           class="py-3 last:mb-0"
         >
@@ -45,7 +45,8 @@
               <BalAsset :address="token" class="mr-2" />
               <div class="w-3/4 flex flex-col leading-none">
                 <span class="break-words">
-                  {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
+                  {{ fNum(amounts[i], 'token') }}
+                  {{ pool.onchain.tokens[token].symbol }}
                 </span>
                 <span class="text-xs text-gray-400 break-words">
                   {{ $t('balance') }}: {{ formatPropBalance(i) }}
@@ -57,7 +58,7 @@
                 {{ fNum(amountUSD(i), 'usd') }}
               </span>
               <span class="text-xs text-gray-400">
-                {{ fNum(tokenWeights[i]) }}%
+                {{ fNum(tokenWeights[i], 'percent_lg') }}%
               </span>
             </div>
           </div>
@@ -67,7 +68,7 @@
 
     <div v-else class="px-4 pt-6 border-t border-b">
       <BalTextInput
-        v-for="(token, i) in pool.tokens"
+        v-for="(token, i) in pool.tokenAddresses"
         :key="i"
         :name="token"
         v-model="amounts[i]"
@@ -86,7 +87,7 @@
             <BalAsset :address="token" />
             <div class="flex flex-col ml-3">
               <span class="font-medium text-sm leading-none w-14 truncate">
-                {{ allTokens[token].symbol }}
+                {{ pool.onchain.tokens[token].symbol }}
               </span>
             </div>
           </div>
@@ -203,7 +204,7 @@ import { bnum } from '@/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import useTokens from '@/composables/useTokens';
-import { Pool } from '@/utils/balancer/types';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -220,10 +221,10 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: { type: Object as PropType<Pool>, required: true }
+    pool: { type: Object as PropType<FullPool>, required: true }
   },
 
-  setup(props, { emit }) {
+  setup(props: { pool: FullPool }, { emit }) {
     const data = reactive({
       withdrawForm: {} as FormRef,
       loading: false,
@@ -259,19 +260,21 @@ export default defineComponent({
     );
 
     // COMPUTED
-    const tokenWeights = computed(() => props.pool.weightsPercent);
+    const tokenWeights = computed(() =>
+      Object.values(props.pool.onchain.tokens).map(t => t.weight)
+    );
 
     const fullAmounts = computed(() => {
-      return props.pool.tokens.map((_, i) => {
+      return props.pool.tokenAddresses.map((_, i) => {
         return data.amounts[i] || '0';
       });
     });
 
     const singleAssetMaxes = computed(() => {
-      return props.pool.tokens.map((_, tokenIndex) => {
+      return props.pool.tokenAddresses.map((_, tokenIndex) => {
         return formatUnits(
           poolCalculator
-            .exactBPTInForTokenOut(bptBalance.value, tokenIndex)
+            .exactBPTInForTokenOut(bptBalance.value.toString(), tokenIndex)
             .toString(),
           tokenDecimals(tokenIndex)
         );
@@ -279,7 +282,7 @@ export default defineComponent({
     });
 
     const propMaxUSD = computed(() => {
-      const total = props.pool.tokens
+      const total = props.pool.tokenAddresses
         .map((token, i) => toFiat(Number(data.propMax[i]), token))
         .reduce((a, b) => a + b, 0);
 
@@ -287,7 +290,7 @@ export default defineComponent({
     });
 
     const singleMaxUSD = computed(() => {
-      const maxes = props.pool.tokens.map((token, i) =>
+      const maxes = props.pool.tokenAddresses.map((token, i) =>
         toFiat(singleAssetMaxes.value[i], token)
       );
 
@@ -316,12 +319,11 @@ export default defineComponent({
 
     function amountUSD(index) {
       const amount = fullAmounts.value[index] || '0';
-      const token = props.pool.tokens[index].toLowerCase();
-      return toFiat(amount, token);
+      return toFiat(amount, props.pool.tokenAddresses[index]);
     }
 
     const total = computed(() => {
-      const total = props.pool.tokens
+      const total = props.pool.tokenAddresses
         .map((_, i) => amountUSD(i))
         .reduce((a, b) => a + b, 0);
 
@@ -385,13 +387,12 @@ export default defineComponent({
       if (!exactOut.value) return bptBalance.value; // Single asset max withdrawal
 
       // Else single asset exact amount case
-      const poolDecimals = allTokens.value[props.pool.address].decimals;
       let bptIn = poolCalculator
         .bptInForExactTokenOut(data.amounts[data.singleAsset], data.singleAsset)
         .toString();
-      bptIn = formatUnits(bptIn, poolDecimals);
+      bptIn = formatUnits(bptIn, props.pool.onchain.decimals);
 
-      return addSlippage(bptIn, poolDecimals);
+      return addSlippage(bptIn, props.pool.onchain.decimals);
     });
 
     const amountsOut = computed(() => {
@@ -416,7 +417,7 @@ export default defineComponent({
 
     // METHODS
     function tokenDecimals(index) {
-      return allTokens.value[props.pool.tokens[index]]?.decimals;
+      return allTokens.value[props.pool.tokenAddresses[index]].decimals;
     }
 
     function amountRules(index) {
@@ -452,22 +453,18 @@ export default defineComponent({
     }
 
     function setPropAmountsFor(range) {
-      console.log('setPropAmountsFor');
-      const poolDecimals = allTokens.value[props.pool.address].decimals;
       const fractionBasisPoints = (range / 1000) * 10000;
       const bpt = bnum(bptBalance.value)
         .times(fractionBasisPoints)
         .div(10000)
-        .precision(poolDecimals);
+        .precision(props.pool.onchain.decimals);
 
       const { send, receive } = poolCalculator.propAmountsGiven(
         bpt.toString(),
         0,
         'send'
       );
-      console.log('updating bptIn', data.bptIn, send[0]);
       data.bptIn = send[0];
-      console.log('updating amounts', data.amounts, receive);
       data.amounts = receive;
     }
 
@@ -475,7 +472,7 @@ export default defineComponent({
       if (!isSingleAsset.value) return;
       data.singleAsset = index;
 
-      props.pool.tokens.forEach((_, i) => {
+      props.pool.tokenAddresses.forEach((_, i) => {
         if (i === index) {
           data.amounts[i] = singleAssetMaxes.value[index];
         } else {
@@ -495,10 +492,9 @@ export default defineComponent({
         exitTokenIndex.value,
         exactOut.value
       );
-      const poolDecimals = allTokens.value[props.pool.address].decimals;
       console.log(
         'bptIn (queryExit)',
-        formatUnits(queryBptIn.toString(), poolDecimals)
+        formatUnits(queryBptIn.toString(), props.pool.onchain.decimals)
       );
       console.log('bptIn (JS)', bptIn.value);
     }
@@ -536,14 +532,11 @@ export default defineComponent({
     }
 
     watch(
-      () => props.pool.tokenBalances,
-      (newBalances, oldBalances) => {
+      () => props.pool.onchain.tokens,
+      (newTokens, oldTokens) => {
         poolCalculator.setPool(props.pool);
-        const _newBalances = newBalances.map(b => b.toString());
-        const _oldBalances = oldBalances.map(b => b.toString());
-        const balancesChanged = !isEqual(_newBalances, _oldBalances);
-        if (balancesChanged) {
-          console.log('balancesChanged');
+        const tokensChanged = !isEqual(newTokens, oldTokens);
+        if (tokensChanged) {
           setPropMax();
           if (isProportional.value) setPropAmountsFor(data.range);
         }
@@ -557,7 +550,7 @@ export default defineComponent({
           setPropMax();
           resetSlider();
         } else if (newType === FormTypes.single) {
-          data.amounts = props.pool.tokens.map(() => '0');
+          data.amounts = props.pool.tokenAddresses.map(() => '0');
           setSingleAsset(0);
         }
       }
