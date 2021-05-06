@@ -91,7 +91,8 @@
     <div
       v-if="isPaginated && !isLoading"
       class="bal-table-pagination-btn"
-      @click="$emit('loadMore')">
+      @click="$emit('loadMore')"
+    >
       Load more
       <BalIcon name="chevron-down" size="sm" class="ml-2" />
     </div>
@@ -166,7 +167,8 @@ export default defineComponent({
       type: String as PropType<Sticky>
     },
     isPaginated: {
-      type: Boolean, default: false
+      type: Boolean,
+      default: false
     }
   },
   setup(props) {
@@ -307,4 +309,3 @@ export default defineComponent({
   @apply hover:bg-gray-50 cursor-pointer;
 }
 </style>
-
