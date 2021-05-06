@@ -56,7 +56,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorer } = useWeb3();
+    const { explorer, shortenLabel } = useWeb3();
     const { t } = useI18n();
 
     // DATA
@@ -66,7 +66,7 @@ export default defineComponent({
     const prices = computed(() => store.state.market.prices);
 
     const tableData = computed(() => {
-      if (props.loading) return [];
+      if (!pool.value || props.loading) return [];
       return Object.keys(pool.value.onchain.tokens).map((address, index) => ({
         address,
         index
@@ -109,7 +109,7 @@ export default defineComponent({
 
     function symbolFor(address: string) {
       const symbol = pool.value.onchain.tokens[address].symbol;
-      return symbol ? symbol : address;
+      return symbol ? symbol : shortenLabel(address);
     }
 
     function balanceFor(address: string): string {
