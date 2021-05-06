@@ -81,6 +81,7 @@
         prepend-border
         :faded-out="isSingleAsset && singleAsset !== i"
         @click="setSingleAsset(i)"
+        @update:modelValue="preventOverflow($event, i)"
       >
         <template v-slot:prepend>
           <div class="flex items-center h-full w-24">
@@ -499,6 +500,17 @@ export default defineComponent({
       console.log('bptIn (JS)', bptIn.value);
     }
 
+    function preventOverflow(value: number, index: number): void {
+      const decimals = tokenDecimals(index);
+      const amountStr = value.toString();
+      const integerLength = amountStr.replace('.','').length;
+
+      if (integerLength > tokenDecimals(index)) {
+        const maxLength = amountStr.includes('.') ? decimals + 1 : decimals;
+        data.amounts[index] = data.amounts[index].slice(0, maxLength);
+      }
+    }
+
     async function submit(): Promise<void> {
       if (!data.withdrawForm.validate()) return;
       try {
@@ -606,7 +618,8 @@ export default defineComponent({
       amountUSD,
       singleAssetMaxLabel,
       singleAssetMaxes,
-      isRequired
+      isRequired,
+      preventOverflow
     };
   }
 });

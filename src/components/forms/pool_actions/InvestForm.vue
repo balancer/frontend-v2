@@ -103,6 +103,7 @@
         validate-on="input"
         prepend-border
         append-shadow
+        @update:modelValue="preventOverflow($event, i)"
       >
         <template v-slot:prepend>
           <div class="flex items-center h-full w-24">
@@ -398,7 +399,6 @@ export default defineComponent({
 
     const priceImpact = computed(() => {
       if (isProportional.value || !hasAmounts.value) return 0;
-      console.log(poolCalculator.priceImpact(fullAmounts.value).toNumber());
       return poolCalculator.priceImpact(fullAmounts.value).toNumber() || 0;
     });
 
@@ -503,6 +503,17 @@ export default defineComponent({
         minusSlippage(bptOut, props.pool.onchain.decimals)
       );
       console.log('bptOut (JS)', minBptOut.value);
+    }
+
+    function preventOverflow(value: number, index: number): void {
+      const decimals = tokenDecimals(index);
+      const amountStr = value.toString();
+      const integerLength = amountStr.replace('.','').length;
+
+      if (integerLength > tokenDecimals(index)) {
+        const maxLength = amountStr.includes('.') ? decimals + 1 : decimals;
+        data.amounts[index] = data.amounts[index].slice(0, maxLength);
+      }
     }
 
     async function submit(): Promise<void> {
@@ -626,7 +637,8 @@ export default defineComponent({
       // methods
       submit,
       approveAllowances,
-      fNum
+      fNum,
+      preventOverflow
     };
   }
 });
