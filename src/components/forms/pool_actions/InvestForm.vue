@@ -508,7 +508,7 @@ export default defineComponent({
     function preventOverflow(value: number, index: number): void {
       const decimals = tokenDecimals(index);
       const amountStr = value.toString();
-      const integerLength = amountStr.replace('.','').length;
+      const integerLength = amountStr.replace('.', '').length;
 
       if (integerLength > tokenDecimals(index)) {
         const maxLength = amountStr.includes('.') ? decimals + 1 : decimals;
