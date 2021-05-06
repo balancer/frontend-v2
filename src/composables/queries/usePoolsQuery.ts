@@ -1,6 +1,6 @@
 import { computed, reactive, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
-import { InfiniteQueryObserverOptions } from 'react-query/core';
+import { InfiniteQueryObserverOptions, InfiniteData } from 'react-query/core';
 
 import { useStore } from 'vuex';
 import { flatten, isEmpty } from 'lodash';
@@ -17,7 +17,7 @@ type PoolsQueryResponse = {
 };
 
 export default function usePoolsQuery(
-  options: InfiniteQueryObserverOptions<PoolsQueryResponse> = {
+  options: InfiniteQueryObserverOptions<InfiniteData<PoolsQueryResponse>> = {
     getNextPageParam: lastPage => lastPage + 10,
   }
 ) {
@@ -52,11 +52,11 @@ export default function usePoolsQuery(
 
   const queryOptions = reactive({
     enabled: isQueryEnabled,
-    onSuccess: async (poolsData: PoolsQueryResponse) => {
-      await store.dispatch('registry/injectTokens', poolsData.tokens);
+    onSuccess: async (poolsData: InfiniteData<PoolsQueryResponse>) => {
+      await store.dispatch('registry/injectTokens', poolsData.pages.map(page => page.tokens));
     },
     ...options
   });
 
-  return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
+  return useInfiniteQuery<InfiniteData<PoolsQueryResponse>>(queryKey, queryFn, queryOptions);
 }
