@@ -59,7 +59,6 @@ export default function usePoolsQuery(
         poolsData.pages.map(page => page.tokens)
       );
     },
-    keepPreviousData: true,
     getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
     ...options
   });
