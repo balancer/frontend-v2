@@ -9,7 +9,7 @@
     <div class="flex-auto">
       {{ tokenlist.name }}
       <div class="text-gray text-sm">
-        {{ _num(tokenlist.tokens.length) }} {{ $t('tokensLowerCase') }}
+        {{ fNum(tokenlist.tokens.length) }} {{ $t('tokensLowerCase') }}
       </div>
     </div>
     <Icon
@@ -20,10 +20,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import useNumbers from '@/composables/useNumbers';
+
 export default {
   props: {
     tokenlist: Object
+  },
+  setup() {
+    const { fNum } = useNumbers();
+
+    return {
+      fNum
+    };
   }
 };
 </script>
