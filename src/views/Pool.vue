@@ -118,7 +118,6 @@ import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
-import useTokens from '@/composables/useTokens';
 import { useQueryClient } from 'vue-query';
 
 interface PoolPageData {

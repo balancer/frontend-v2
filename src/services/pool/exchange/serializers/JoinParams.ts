@@ -46,7 +46,10 @@ export default class JoinParams {
   private parseAmounts(amounts: string[]): BigNumberish[] {
     return amounts.map((amount, i) => {
       const token = this.exchange.pool.tokenAddresses[i];
-      return parseUnits(amount, this.exchange.pool.onchain.tokens[token].decimals);
+      return parseUnits(
+        amount,
+        this.exchange.pool.onchain.tokens[token].decimals
+      );
     });
   }
 
