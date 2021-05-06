@@ -4,7 +4,7 @@ import { bnum } from '@/utils';
 
 import { flatten } from 'lodash';
 
-import usePoolsQuery, { PoolsQueryResponse } from '@/composables/queries/usePoolsQuery';
+import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import usePoolSharesQuery from '@/composables/queries/usePoolSharesQuery';
 import useWeb3 from '@/composables/useWeb3';
 
@@ -20,16 +20,15 @@ export default function usePools() {
   // COMPUTED
   const pools = computed(() => {
     if (!poolsQuery.data.value) return [];
-    return flatten(poolsQuery.data.value.pages.map((page: any) => page.pools))
+    return flatten(poolsQuery.data.value.pages.map((page: any) => page.pools));
   });
   const tokens = computed(() => {
-    if (!poolsQuery.data.value) return [];
-    flatten(poolsQuery.data.value.pages.map((page: any) => page.tokens))
+    return [];
   });
 
-  watch(pools, newVal => {
-    console.log(newVal)
-  });
+  // watch(pools, newVal => {
+  //   console.log(newVal);
+  // });
 
   const poolsWithShares = computed(() => {
     // if (isConnected.value && poolSharesQuery.data.value) {
@@ -48,8 +47,8 @@ export default function usePools() {
     return [];
   });
 
-  const totalInvestedAmount = computed(() =>
-    '0'
+  const totalInvestedAmount = computed(
+    () => '0'
     // poolsWithShares.value
     //   ?.map(pool => pool.shares)
     //   .reduce((totalShares, shares) => totalShares.plus(shares), bnum(0))
@@ -65,8 +64,10 @@ export default function usePools() {
   );
 
   function loadMorePools() {
-    poolsQuery.fetchNextPage()
+    poolsQuery.fetchNextPage.value();
   }
+
+  const hasNextPage = computed(() => poolsQuery.hasNextPage?.value);
 
   return {
     // computed
@@ -76,6 +77,7 @@ export default function usePools() {
     totalInvestedAmount,
     isLoadingPools,
     isLoadingPoolsWithShares,
-    loadMorePools
+    loadMorePools,
+    hasNextPage
   };
 }

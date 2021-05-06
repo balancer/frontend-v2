@@ -11,7 +11,7 @@
           router.push({ name: 'pool', params: { id: pool.id } });
         }
       "
-      isPaginated
+      :isPaginated="isPaginated"
       @loadMore="$emit('loadMore')"
     >
       <template v-slot:iconColumnHeader>
@@ -81,6 +81,10 @@ export default defineComponent({
     noPoolsLabel: {
       type: String,
       default: 'No pools'
+    },
+    isPaginated: {
+      type: Boolean,
+      default: false
     }
   },
 

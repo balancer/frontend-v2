@@ -21,6 +21,7 @@
       :isLoading="isLoadingPools"
       :data="filteredPools"
       :noPoolsLabel="$t('noPoolsFound')"
+      :isPaginated="hasNextPage"
       @loadMore="loadMorePools"
     />
   </div>
@@ -55,7 +56,8 @@ export default defineComponent({
       poolsWithShares,
       isLoadingPools,
       isLoadingPoolsWithShares,
-      loadMorePools
+      loadMorePools,
+      hasNextPage
     } = usePools();
 
     // DATA
@@ -87,6 +89,7 @@ export default defineComponent({
       //methods
       router,
       loadMorePools,
+      hasNextPage,
 
       // constants
       EXTERNAL_LINKS

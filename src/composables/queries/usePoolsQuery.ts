@@ -1,6 +1,7 @@
-import { computed, reactive, Ref } from 'vue';
+import { computed, reactive } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
-import { InfiniteQueryObserverOptions, InfiniteData } from 'react-query/core';
+import { InfiniteData } from 'react-query/core';
+import { UseInfiniteQueryOptions } from 'react-query/types';
 
 import { useStore } from 'vuex';
 import { flatten, isEmpty } from 'lodash';
@@ -14,12 +15,11 @@ import { Pool } from '@/services/balancer/subgraph/types';
 type PoolsQueryResponse = {
   pools: Pool[];
   tokens: string[];
+  skip?: number;
 };
 
 export default function usePoolsQuery(
-  options: InfiniteQueryObserverOptions<InfiniteData<PoolsQueryResponse>> = {
-    getNextPageParam: lastPage => lastPage + 10,
-  }
+  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
 ) {
   // SERVICES
   const balancerSubgraph = new BalancerSubgraph();
@@ -46,17 +46,23 @@ export default function usePoolsQuery(
 
     return {
       pools,
-      tokens
+      tokens,
+      skip: pools.length ? pageParam + 10 : undefined
     };
   };
 
   const queryOptions = reactive({
     enabled: isQueryEnabled,
     onSuccess: async (poolsData: InfiniteData<PoolsQueryResponse>) => {
-      await store.dispatch('registry/injectTokens', poolsData.pages.map(page => page.tokens));
+      await store.dispatch(
+        'registry/injectTokens',
+        poolsData.pages.map(page => page.tokens)
+      );
     },
+    keepPreviousData: true,
+    getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
     ...options
   });
 
-  return useInfiniteQuery<InfiniteData<PoolsQueryResponse>>(queryKey, queryFn, queryOptions);
+  return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
 }
