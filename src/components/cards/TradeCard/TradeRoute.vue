@@ -92,7 +92,7 @@
                   :key="hop.pool.address"
                   class="p-1.5 ml-4 first:ml-0 flex bg-white rounded shadow"
                 >
-                  <a :href="getPoolLink(hop.pool.address)" target="_blank">
+                  <a :href="getPoolLink(hop.pool.id)" target="_blank">
                     <BalAsset
                       class="ml-1.5 first:ml-0"
                       v-for="token in hop.pool.tokens"
@@ -133,7 +133,7 @@ interface Route {
 
 interface Hop {
   pool: {
-    address: string;
+    id: string;
     tokens: Asset[];
   };
   tokenIn: string;
@@ -251,7 +251,7 @@ export default defineComponent({
           }
           const totalWeight = new BigNumber(rawPool.totalWeight);
           const pool = {
-            address: rawPool.id,
+            id: rawPool.id,
             tokens: rawPool.tokens
               .map(token => {
                 const address = getAddress(token.address);
@@ -318,7 +318,7 @@ export default defineComponent({
             : getAddress(addresses[i + 1]);
 
         const pool = {
-          address: rawPool.address,
+          id: rawPool.id,
           tokens: rawPool.tokens
             .map(token => {
               return {
@@ -362,7 +362,7 @@ export default defineComponent({
       return fNum(share, 'percent');
     }
 
-    function getPoolLink(address: string): string {
+    function getPoolLink(id: string): string {
       const { chainId } = getConfig();
       const prefixMap = {
         1: '',
@@ -370,8 +370,8 @@ export default defineComponent({
       };
       const prefix = prefixMap[chainId] || '';
       return props.sorReturn.isV1swap
-        ? `https://${prefix}pools.balancer.exchange/#/pool/${address}`
-        : `https://${prefix}app.balancer.fi/#pool/${address}`;
+        ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
+        : `https://${prefix}app.balancer.fi/#pool/${id}`;
     }
 
     return {
