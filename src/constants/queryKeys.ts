@@ -4,7 +4,7 @@ export const POOLS_ROOT_KEY = 'pools';
 
 const QUERY_KEYS = {
   Pools: {
-    All: (count: Ref<number>) => [POOLS_ROOT_KEY, 'all', { count }],
+    All: [POOLS_ROOT_KEY, 'all'],
     Shares: (account: Ref<string>) => [POOLS_ROOT_KEY, 'shares', { account }],
     Current: (id: string) => [POOLS_ROOT_KEY, 'current', { id }]
   }

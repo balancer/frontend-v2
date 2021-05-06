@@ -12,7 +12,7 @@
         }
       "
       isPaginated
-      @loadMore="$emit('loadMore', data.length)"
+      @loadMore="$emit('loadMore')"
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">

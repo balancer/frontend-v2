@@ -12,7 +12,7 @@ export default function usePools() {
 
   // COMPOSABLES
   const { isConnected } = useWeb3();
-  const poolsQuery = usePoolsQuery(currentCount);
+  const poolsQuery = usePoolsQuery();
   const poolSharesQuery = usePoolSharesQuery();
 
   // COMPUTED
@@ -51,8 +51,8 @@ export default function usePools() {
     () => poolSharesQuery.isLoading.value || poolSharesQuery.isIdle.value
   );
 
-  function loadMorePools(newCount) {
-    currentCount.value = newCount;
+  function loadMorePools() {
+    poolsQuery.fetchNextPage()
   }
 
   return {

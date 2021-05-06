@@ -17,7 +17,6 @@ type PoolsQueryResponse = {
 };
 
 export default function usePoolsQuery(
-  currentCount: Ref<number>,
   options: InfiniteQueryObserverOptions<PoolsQueryResponse> = {
     getNextPageParam: lastPage => lastPage + 10,
   }
@@ -29,7 +28,7 @@ export default function usePoolsQuery(
   const store = useStore();
 
   // DATA
-  const queryKey = reactive(QUERY_KEYS.Pools.All(currentCount));
+  const queryKey = QUERY_KEYS.Pools.All;
 
   // COMPUTED
   const prices = computed(() => store.state.market.prices);
