@@ -58,7 +58,7 @@
                 {{ fNum(amountUSD(i), 'usd') }}
               </span>
               <span class="text-xs text-gray-400">
-                {{ fNum(tokenWeights[i], 'percent_lg') }}%
+                {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
           </div>
