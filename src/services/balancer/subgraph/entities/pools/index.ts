@@ -1,5 +1,5 @@
 import Service from '../../service';
-import poolQueryBuilder from './query';
+import queryBuilder from './query';
 import { getPoolLiquidity } from '@/utils/balancer/price';
 import { bnum } from '@/utils';
 import {
@@ -15,7 +15,7 @@ export default class Pools {
   service: Service;
   query: QueryBuilder;
 
-  constructor(service, query = poolQueryBuilder) {
+  constructor(service: Service, query: QueryBuilder = queryBuilder) {
     this.service = service;
     this.query = query;
   }
