@@ -7,11 +7,6 @@
       skeleton-class="h-64"
       sticky="both"
     >
-      <template v-slot:valueCell="action">
-        <div class="pool-activity-cell">
-          {{ action.value }}
-        </div>
-      </template>
       <template v-slot:actionCell="action">
         <div class="pool-activity-cell">
           <PlusSquareIcon v-if="action.type === 'join'" />
@@ -20,10 +15,18 @@
         </div>
       </template>
 
-      <template v-slot:detailsCell="action">
+      <template v-slot:valueCell="action">
         <div class="pool-activity-cell">
+          {{ action.value }}
+        </div>
+      </template>
+
+      <template v-slot:detailsCell="action">
+        <div class="pool-activity-cell flex-wrap">
           <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
-            <div class="mr-2 flex items-center p-1 px-2 bg-gray-50 rounded-lg">
+            <div
+              class="mb-2 mr-2 flex items-center p-1 px-2 bg-gray-50 rounded-lg"
+            >
               <BalAsset
                 :address="tokenAmount.address"
                 class="mr-2 flex-shrink-0"
@@ -57,6 +60,8 @@ import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
+
+import { getAddress } from '@ethersproject/address';
 
 import {
   PoolActivity,
@@ -156,7 +161,7 @@ export default {
     function getJoinExitValue(amounts: PoolActivity['amounts']) {
       return amounts
         .reduce((total, amount, index) => {
-          const address = props.tokens[index];
+          const address = getAddress(props.tokens[index]);
           const token: Token = allTokens.value[address];
           const price = token.price || 0;
           const amountNumber = bnum(Math.abs(parseFloat(amount)));
@@ -168,7 +173,7 @@ export default {
 
     function getJoinExitDetails(amounts: PoolActivity['amounts']) {
       return amounts.map((amount, index) => {
-        const address = props.tokens[index];
+        const address = getAddress(props.tokens[index]);
         const token: Token = allTokens.value[address];
         const symbol = token ? token.symbol : address;
         const amountNumber = parseFloat(amount);
