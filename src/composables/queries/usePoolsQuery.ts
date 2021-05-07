@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { InfiniteData } from 'react-query/core';
 import { UseInfiniteQueryOptions } from 'react-query/types';
@@ -19,6 +19,7 @@ type PoolsQueryResponse = {
 };
 
 export default function usePoolsQuery(
+  tokenList: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
 ) {
   // SERVICES
@@ -28,7 +29,7 @@ export default function usePoolsQuery(
   const store = useStore();
 
   // DATA
-  const queryKey = QUERY_KEYS.Pools.All;
+  const queryKey = QUERY_KEYS.Pools.All(tokenList);
 
   // COMPUTED
   const prices = computed(() => store.state.market.prices);
@@ -39,7 +40,13 @@ export default function usePoolsQuery(
     const pools = await balancerSubgraph.pools.getDecorated(
       '24h',
       prices.value,
-      { first: TABLE_ROWS_PER_PAGE, skip: pageParam }
+      {
+        first: TABLE_ROWS_PER_PAGE,
+        skip: pageParam,
+        where: {
+          tokensList_contains: tokenList.value
+        }
+      }
     );
 
     const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));

@@ -1,13 +1,13 @@
-import { computed } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 
 import { flatten } from 'lodash';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 
-export default function usePools() {
+export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   // COMPOSABLES
-  const poolsQuery = usePoolsQuery();
+  const poolsQuery = usePoolsQuery(poolsTokenList);
   const userPoolsQuery = useUserPoolsQuery();
 
   // COMPUTED

@@ -21,7 +21,7 @@
       :isLoading="isLoadingPools"
       :data="filteredPools"
       :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="selectedTokens.length === 0 && poolsHasNextPage"
+      :isPaginated="poolsHasNextPage"
       :isLoadingMore="poolsIsFetchingNextPage"
       @loadMore="loadMorePools"
     />
@@ -49,6 +49,9 @@ export default defineComponent({
   },
 
   setup() {
+    // DATA
+    const selectedTokens = ref<string[]>([]);
+
     // COMPOSABLES
     const router = useRouter();
     const { isConnected } = useWeb3();
@@ -60,10 +63,7 @@ export default defineComponent({
       loadMorePools,
       poolsHasNextPage,
       poolsIsFetchingNextPage
-    } = usePools();
-
-    // DATA
-    const selectedTokens = ref<string[]>([]);
+    } = usePools(selectedTokens);
 
     const filteredPools = computed(() =>
       selectedTokens.value.length > 0
