@@ -3,8 +3,8 @@
     <template v-if="isConnected">
       <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
       <PoolsTable
-        :isLoading="isLoadingPoolsWithShares"
-        :data="poolsWithShares"
+        :isLoading="isLoadingUserPools"
+        :data="userPools"
         :noPoolsLabel="$t('noInvestments')"
         showPoolShares
         class="mb-8"
@@ -21,7 +21,8 @@
       :isLoading="isLoadingPools"
       :data="filteredPools"
       :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="hasNextPage"
+      :isPaginated="poolsHasNextPage"
+      :isLoadingMore="poolsIsFetchingNextPage"
       @loadMore="loadMorePools"
     />
   </div>
@@ -53,11 +54,12 @@ export default defineComponent({
     const { isConnected } = useWeb3();
     const {
       pools,
-      poolsWithShares,
+      userPools,
       isLoadingPools,
-      isLoadingPoolsWithShares,
+      isLoadingUserPools,
       loadMorePools,
-      hasNextPage
+      poolsHasNextPage,
+      poolsIsFetchingNextPage
     } = usePools();
 
     // DATA
@@ -79,17 +81,18 @@ export default defineComponent({
       // data
       selectedTokens,
       filteredPools,
-      poolsWithShares,
+      userPools,
       isLoadingPools,
-      isLoadingPoolsWithShares,
+      isLoadingUserPools,
 
       // computed
       isConnected,
+      poolsHasNextPage,
+      poolsIsFetchingNextPage,
 
       //methods
       router,
       loadMorePools,
-      hasNextPage,
 
       // constants
       EXTERNAL_LINKS

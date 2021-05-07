@@ -4,6 +4,7 @@
       :columns="columns"
       :data="data"
       :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
       skeletonClass="h-64"
       sticky="both"
       :onRowClick="
@@ -73,6 +74,10 @@ export default defineComponent({
     },
     isLoading: {
       type: Boolean
+    },
+    isLoadingMore: {
+      type: Boolean,
+      default: false
     },
     showPoolShares: {
       type: Boolean,

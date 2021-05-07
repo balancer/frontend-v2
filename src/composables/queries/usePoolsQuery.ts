@@ -2,18 +2,18 @@ import { computed, reactive } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { InfiniteData } from 'react-query/core';
 import { UseInfiniteQueryOptions } from 'react-query/types';
-
 import { useStore } from 'vuex';
 import { flatten, isEmpty } from 'lodash';
 import { getAddress } from '@ethersproject/address';
 
 import QUERY_KEYS from '@/constants/queryKeys';
+import { TABLE_ROWS_PER_PAGE } from '@/constants/table';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
-import { Pool } from '@/services/balancer/subgraph/types';
+import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 type PoolsQueryResponse = {
-  pools: Pool[];
+  pools: DecoratedPool[];
   tokens: string[];
   skip?: number;
 };
@@ -39,7 +39,7 @@ export default function usePoolsQuery(
     const pools = await balancerSubgraph.pools.getDecorated(
       '24h',
       prices.value,
-      { first: 10, skip: pageParam }
+      { first: TABLE_ROWS_PER_PAGE, skip: pageParam }
     );
 
     const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
@@ -47,7 +47,7 @@ export default function usePoolsQuery(
     return {
       pools,
       tokens,
-      skip: pools.length ? pageParam + 10 : undefined
+      skip: pools.length ? pageParam + TABLE_ROWS_PER_PAGE : undefined
     };
   };
 

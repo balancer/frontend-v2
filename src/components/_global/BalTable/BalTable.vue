@@ -91,10 +91,12 @@
     <div
       v-if="isPaginated && !isLoading"
       class="bal-table-pagination-btn"
-      @click="$emit('loadMore')"
+      @click="!isLoadingMore && $emit('loadMore')"
     >
-      Load more
-      <BalIcon name="chevron-down" size="sm" class="ml-2" />
+      <template v-if="isLoadingMore">{{ t('loading') }}</template>
+      <template v-else
+        >{{ t('loadMore') }} <BalIcon name="chevron-down" size="sm" class="ml-2"
+      /></template>
     </div>
   </div>
 </template>
@@ -109,6 +111,8 @@ import {
   computed
 } from 'vue';
 import { sortBy } from 'lodash';
+
+import { useI18n } from 'vue-i18n';
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;
@@ -157,6 +161,10 @@ export default defineComponent({
       type: Boolean,
       default: () => false
     },
+    isLoadingMore: {
+      type: Boolean,
+      default: false
+    },
     skeletonClass: {
       type: String
     },
@@ -178,6 +186,8 @@ export default defineComponent({
     const tableData = ref(props.data);
     const currentSortDirection = ref<'asc' | 'desc' | null>(null);
     const currentSortColumn = ref<string | null>(null);
+
+    const { t } = useI18n();
 
     const setHeaderRef = (columnIndex: number) => (el: HTMLElement) => {
       if (el && columnIndex === 0) {
@@ -266,7 +276,8 @@ export default defineComponent({
       currentSortDirection,
 
       // computed
-      filteredColumns
+      filteredColumns,
+      t
     };
   }
 });
