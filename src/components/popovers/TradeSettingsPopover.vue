@@ -22,30 +22,7 @@
           <div v-html="$t('marketConditionsWarning')" class="w-52" />
         </BalTooltip>
       </div>
-      <div class="flex mt-1">
-        <div
-          v-for="slippage in slippageOptions"
-          :key="slippage"
-          class="trade-settings-option w-16 mr-2 py-1 text-center border rounded-lg cursor-pointer"
-          :class="{ active: appSlippage === slippage }"
-          @click="setSlippage(slippage)"
-        >
-          {{ fNum(slippage, null, { format: '0.0%' }) }}
-        </div>
-        <div
-          class="flex w-20 px-1 border rounded-lg"
-          :class="{ 'border border-blue-500 text-blue-500': isCustomSlippage }"
-        >
-          <input
-            class="w-11 text-right"
-            v-model="slippageInput"
-            :placeholder="0.1"
-          />
-          <div class="py-1">
-            %
-          </div>
-        </div>
-      </div>
+      <AppSlippageForm class="mt-1" />
     </div>
     <div v-if="!hideLiquidity" class="mt-6">
       <div class="flex items-baseline">
@@ -73,16 +50,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, toRefs, watch } from 'vue';
+import { defineComponent, reactive, computed, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
-
-const slippageOptions = ['0.005', '0.01', '0.02'];
+import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 
 export default defineComponent({
   name: 'TradeSettingsPopover',
+
+  components: {
+    AppSlippageForm
+  },
 
   props: {
     hideLiquidity: { type: Boolean, default: false }
@@ -95,70 +75,27 @@ export default defineComponent({
 
     // DATA
     const data = reactive({
-      slippageOptions,
       tradeLiquidityOptions: Object.values(LiquiditySelection).filter(
         v => typeof v === 'string'
-      ),
-      slippageInput: ''
+      )
     });
 
     // COMPUTED
-    const appSlippage = computed(() => store.state.app.slippage);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
 
-    const isCustomSlippage = computed(() => {
-      return !slippageOptions.includes(appSlippage.value);
-    });
-
     // METHODS
-    const setSlippage = slippage => {
-      // Clear custom slippage if using pre-set option
-      if (slippageOptions.includes(slippage)) data.slippageInput = '';
-
-      store.commit('app/setSlippage', slippage);
-    };
-
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
-
-    const loadCustomState = () => {
-      if (isCustomSlippage.value) {
-        const slippage = parseFloat(appSlippage.value);
-        data.slippageInput = (slippage * 100).toFixed(1);
-      } else {
-        data.slippageInput = '';
-      }
-    };
-
-    // WATCHERS
-    watch(
-      () => data.slippageInput,
-      newSlippage => {
-        if (!newSlippage) return;
-
-        const number = Number(newSlippage);
-        if (!number || number <= 0) return;
-
-        const slippage = number / 100;
-        if (slippage >= 0.1) return;
-
-        setSlippage(slippage.toString());
-      }
-    );
 
     return {
       // data
       ...toRefs(data),
       // computed
-      appSlippage,
       appTradeLiquidity,
-      isCustomSlippage,
       // methods
-      setSlippage,
       setTradeLiquidity,
       fNum,
-      explorer,
-      loadCustomState
+      explorer
     };
   }
 });

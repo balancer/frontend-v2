@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="p-4 border-b">
-      <h5 v-text="t('account')" />
+      <h5 v-text="$t('account')" />
       <div class="flex mt-1 justify-between">
         <div class="flex">
           <div class="relative">
@@ -31,7 +31,7 @@
                     </BalBtn>
                   </template>
                   <div
-                    v-text="copiedAddress ? t('copied') : t('copyAddress')"
+                    v-text="copiedAddress ? $t('copied') : $t('copyAddress')"
                     class="w-20 text-center"
                   />
                 </BalTooltip>
@@ -59,7 +59,7 @@
       </div>
     </div>
     <div class="hidden px-4">
-      <span v-text="t('language')" class="font-medium mb-2" />
+      <span v-text="$t('language')" class="font-medium mb-2" />
       <div class="flex mt-1">
         <div
           v-for="(locale, localeKey) in locales"
@@ -73,7 +73,7 @@
       </div>
     </div>
     <div class="hidden px-4 mt-4">
-      <span v-text="t('theme')" class="font-medium mb-2" />
+      <span v-text="$t('theme')" class="font-medium mb-2" />
       <div class="flex mt-1">
         <div
           class="option w-16 mr-2 py-1.5 flex items-center justify-center border rounded-xl cursor-pointer"
@@ -93,43 +93,24 @@
     </div>
     <div class="px-4 mt-4">
       <div class="flex items-baseline">
-        <span v-text="t('slippageTolerance')" class="font-medium mb-2" />
+        <span v-text="$t('slippageTolerance')" class="font-medium mb-2" />
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-html="t('marketConditionsWarning')" class="w-52" />
+          <div v-html="$t('marketConditionsWarning')" class="w-52" />
         </BalTooltip>
       </div>
-      <div class="flex mt-1">
-        <BalBtnGroup
-          :options="slippageOptions"
-          v-model="appSlippage"
-          @update:modelValue="setSlippage"
-        />
-        <div
-          class="flex w-20 px-1 border rounded-lg"
-          :class="{ 'border border-blue-500 text-blue-500': isCustomSlippage }"
-        >
-          <input
-            class="w-11 text-right"
-            v-model="customSlippage"
-            :placeholder="0.1"
-          />
-          <div class="py-1">
-            %
-          </div>
-        </div>
-      </div>
+      <AppSlippageForm class="mt-1" />
     </div>
     <div class="px-4 mt-6">
       <div class="flex items-baseline">
-        <span v-text="t('tradeLiquidity')" class="font-medium mb-2" />
+        <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-text="t('whichPools')" class="w-52" />
+          <div v-text="$t('whichPools')" class="w-52" />
         </BalTooltip>
       </div>
       <BalBtnGroup
@@ -139,7 +120,7 @@
       />
     </div>
     <div class="network mt-4 p-4 text-sm border-t rounded-b-xl">
-      <div v-text="t('network')" />
+      <div v-text="$t('network')" />
       <div class="flex items-baseline">
         <div
           :class="['w-2 h-2 mr-1 bg-green-400 rounded-full', networkColorClass]"
@@ -154,10 +135,9 @@
 import { defineComponent, reactive, computed, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
-import { useI18n } from 'vue-i18n';
-import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
+import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 
 const locales = {
   'en-US': 'English',
@@ -173,28 +153,25 @@ const locales = {
 };
 
 export default defineComponent({
+  components: {
+    AppSlippageForm
+  },
+
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { t } = useI18n();
-    const { fNum } = useNumbers();
     const { explorer } = useWeb3();
 
     // DATA
     const data = reactive({
       locales,
-      slippageOptions: ['0.005', '0.01', '0.02'].map(option => ({
-        label: fNum(option, null, { format: '0.0%' }),
-        value: option
-      })),
       tradeLiquidityOptions: Object.values(LiquiditySelection)
         .filter(v => typeof v === 'string')
         .map(option => ({
           label: option,
           value: option
         })),
-      copiedAddress: false,
-      appSlippage: store.state.app.slippage
+      copiedAddress: false
     });
 
     // COMPUTED
@@ -206,15 +183,7 @@ export default defineComponent({
     );
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
-    const appSlippage = computed(() => store.state.app.slippage);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
-
-    const isCustomSlippage = computed(
-      () =>
-        !Object.values(data.slippageOptions).some(
-          option => option.value === appSlippage.value
-        )
-    );
 
     const connectorName = computed(() =>
       getConnectorName(store.state.web3.connector)
@@ -224,34 +193,10 @@ export default defineComponent({
       getConnectorLogo(store.state.web3.connector)
     );
 
-    const customSlippage = computed({
-      get: () => {
-        if (isCustomSlippage.value) {
-          const slippage = parseFloat(appSlippage.value);
-          return (slippage * 100).toFixed(1);
-        } else {
-          return '';
-        }
-      },
-      set: newSlippage => {
-        if (!newSlippage) return;
-
-        const number = Number(newSlippage);
-        if (!number || number <= 0) return;
-
-        const slippage = number / 100;
-        if (slippage >= 0.1) return;
-        setSlippage(slippage.toString());
-      }
-    });
-
     // METHODS
     const logout = () => store.dispatch('web3/logout');
     const setDarkMode = val => store.commit('app/setDarkMode', val);
     const setLocale = locale => store.commit('app/setLocale', locale);
-    const setSlippage = slippage => {
-      store.commit('app/setSlippage', slippage);
-    };
 
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
@@ -270,26 +215,21 @@ export default defineComponent({
       ...toRefs(data),
       // computed
       account,
-      appSlippage,
       appTradeLiquidity,
       networkId,
       networkName,
       networkColorClass,
       appLocale,
       appDarkMode,
-      isCustomSlippage,
       connectorName,
       connectorLogo,
       // methods
       logout,
       setDarkMode,
       setLocale,
-      setSlippage,
       setTradeLiquidity,
       copyAddress,
-      t,
-      explorer,
-      customSlippage
+      explorer
     };
   }
 });
