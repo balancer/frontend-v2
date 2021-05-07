@@ -64,18 +64,35 @@
         </a>
       </div>
       <div>
-        <div
-          v-if="Object.keys(tokens).length > 0"
+        <!-- <RecycleScroller
+          key-field="address"
+          :items="tokens"
+          :item-size="64"
+          v-slot="{ item }"
+          v-if="tokens?.length > 0"
           class="h-96 overflow-y-scroll"
+          buffer="0"
         >
-          <a
+          <a @click="onSelectToken(item.address)">
+            <RowToken :token="item" />
+          </a>
+        </RecycleScroller> -->
+        <div class="h-96 overflow-y-scroll" v-if="tokens?.length > 0">
+          <VirtualList :data="tokens" dataKey="address" itemSize="64">
+            <template v-slot="{ item }">
+              <a @click="onSelectToken(item.address)">
+                <RowToken :token="item" />
+              </a>
+            </template>
+          </VirtualList>
+        </div>
+
+        <!-- <a
             v-for="(token, key) in tokens"
             :key="key"
             @click="onSelectToken(token.address)"
           >
-            <RowToken :token="token" />
-          </a>
-        </div>
+          </a> -->
         <div
           v-else-if="isTokenSelected"
           v-text="$t('tokenAlreadySelected')"
@@ -101,6 +118,7 @@ import { useI18n } from 'vue-i18n';
 import { clone } from '@/utils';
 import { isAddress, getAddress } from '@ethersproject/address';
 import useTokenLists from '@/composables/useTokenLists';
+import { VirtualList } from 'vue3-virtual-list';
 
 export default defineComponent({
   emits: ['close', 'selectTokenlist', 'select'],
@@ -111,13 +129,18 @@ export default defineComponent({
     includeEther: { type: Boolean, default: false }
   },
 
+  components: {
+    VirtualList
+  },
+
   setup(props, { emit }) {
     const {
       isLoading: isLoadingTokenLists,
       lists: tokenLists,
       toggleActiveTokenList,
-      isActiveList
-    } = useTokenLists();
+      isActiveList,
+      tokens
+    } = useTokenLists({});
 
     // DATA
     const data = reactive({
@@ -135,18 +158,6 @@ export default defineComponent({
     const title = computed(() => {
       if (data.selectTokenList) return t('manageLists');
       return t('selectToken');
-    });
-
-    const tokens = computed(() => {
-      console.log('getting tokens');
-      return [];
-      // const tok = store.getters['registry/getTokens']({
-      //   q: data.query,
-      //   not: props.excludedTokens,
-      //   includeEther: props.includeEther
-      // });
-      // console.log('got tokens');
-      // return tok;
     });
 
     const tokenlistsReverse = computed(() => {
@@ -221,3 +232,10 @@ export default defineComponent({
   }
 });
 </script>
+
+<style>
+.vue-recycle-scroller__item-wrapper {
+  width: 100%;
+  transform: translateY(-64px);
+}
+</style>

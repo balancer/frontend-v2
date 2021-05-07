@@ -26,6 +26,7 @@ import {
 import { CanvasRenderer } from 'echarts/renderers';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 use([
   TitleComponent,
