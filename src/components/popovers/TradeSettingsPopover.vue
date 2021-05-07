@@ -1,7 +1,13 @@
 <template>
   <BalPopover>
     <template v-slot:activator>
-      <BalBtn circle color="white" size="sm" class="mb-2 text-gray-500">
+      <BalBtn
+        circle
+        color="white"
+        size="sm"
+        class="mb-2 text-gray-500"
+        @click="loadCustomState"
+      >
         <BalIcon name="settings" size="sm" />
       </BalBtn>
     </template>
@@ -26,12 +32,19 @@
         >
           {{ fNum(slippage, null, { format: '0.0%' }) }}
         </div>
-        <input
-          class="slippage-input w-20 px-2 border rounded-lg"
+        <div
+          class="flex w-20 px-1 border rounded-lg"
           :class="{ 'border border-blue-500 text-blue-500': isCustomSlippage }"
-          v-model="slippageInput"
-          :placeholder="$t('custom')"
-        />
+        >
+          <input
+            class="w-11 text-right"
+            v-model="slippageInput"
+            :placeholder="0.01"
+          />
+          <div class="py-1">
+            %
+          </div>
+        </div>
       </div>
     </div>
     <div v-if="!hideLiquidity" class="mt-6">
@@ -60,14 +73,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  onMounted,
-  computed,
-  toRefs,
-  watch
-} from 'vue';
+import { defineComponent, reactive, computed, toRefs, watch } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
@@ -104,18 +110,25 @@ export default defineComponent({
       return !slippageOptions.includes(appSlippage.value);
     });
 
-    // CALLBACKS
-    onMounted(() => {
+    // METHODS
+    const setSlippage = slippage => {
+      // Clear custom slippage if using pre-set option
+      if (slippageOptions.includes(slippage)) data.slippageInput = '';
+
+      store.commit('app/setSlippage', slippage);
+    };
+
+    const setTradeLiquidity = tradeLiquidity =>
+      store.commit('app/setTradeLiquidity', tradeLiquidity);
+
+    const loadCustomState = () => {
       if (isCustomSlippage.value) {
         const slippage = parseFloat(appSlippage.value);
         data.slippageInput = (slippage * 100).toFixed(1);
+      } else {
+        data.slippageInput = '';
       }
-    });
-
-    // METHODS
-    const setSlippage = slippage => store.commit('app/setSlippage', slippage);
-    const setTradeLiquidity = tradeLiquidity =>
-      store.commit('app/setTradeLiquidity', tradeLiquidity);
+    };
 
     // WATCHERS
     watch(
@@ -144,7 +157,8 @@ export default defineComponent({
       setSlippage,
       setTradeLiquidity,
       fNum,
-      explorer
+      explorer,
+      loadCustomState
     };
   }
 });

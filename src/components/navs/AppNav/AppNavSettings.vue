@@ -107,12 +107,19 @@
           v-model="appSlippage"
           @update:modelValue="setSlippage"
         />
-        <input
-          class="slippage-input w-20 px-2 border rounded-lg"
-          :class="{ 'border border-blue-500': isCustomSlippage }"
-          v-model="slippageInput"
-          :placeholder="t('custom')"
-        />
+        <div
+          class="flex w-20 px-1 border rounded-lg"
+          :class="{ 'border border-blue-500 text-blue-500': isCustomSlippage }"
+        >
+          <input
+            class="w-11 text-right"
+            v-model="slippageInput"
+            :placeholder="0.01"
+          />
+          <div class="py-1">
+            %
+          </div>
+        </div>
       </div>
     </div>
     <div class="px-4 mt-6">
@@ -237,7 +244,13 @@ export default defineComponent({
     const logout = () => store.dispatch('web3/logout');
     const setDarkMode = val => store.commit('app/setDarkMode', val);
     const setLocale = locale => store.commit('app/setLocale', locale);
-    const setSlippage = slippage => store.commit('app/setSlippage', slippage);
+    const setSlippage = slippage => {
+      // Clear custom slippage if using pre-set option
+      if (data.slippageOptions.includes(slippage)) data.slippageInput = '';
+
+      store.commit('app/setSlippage', slippage);
+    };
+
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
 
