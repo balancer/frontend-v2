@@ -128,8 +128,11 @@ const getters = {
   },
 
   getTokenLists: (state, getters, rootState) => ({ q, active }) => {
+    console.log('DEBUG: pre getting token lists');
+    console.log('DEBUG: getting token lists', state.tokenLists);
     const tokenLists = clone(state.tokenLists);
-    return Object.fromEntries(
+    console.log('DEBUG: gotten token lists');
+    const bingbot = Object.fromEntries(
       Object.entries(tokenLists)
         .map((tokenList: any) => {
           tokenList[1].tokens = tokenList[1].tokens
@@ -154,6 +157,12 @@ const getters = {
         )
         .sort((a, b): any => b[1].active - a[1].active)
     );
+    console.log('DEBUG: zinger', bingbot);
+    return bingbot;
+  },
+
+  getInjected(_state: RegistryState) {
+    return _state.injected;
   }
 };
 
@@ -174,6 +183,7 @@ const actions = {
     name = name || TOKEN_LIST_DEFAULT;
     try {
       const tokenList = await loadTokenlist(name);
+      // console.log('DEBUG: token list': tokenList);
       const tokenLists = clone(state.tokenLists);
       tokenLists[name] = tokenList;
       commit('setTokenLists', tokenLists);
@@ -205,6 +215,7 @@ const actions = {
   },
 
   toggleList({ commit }, name) {
+    console.log('DEBUG: Toggling list');
     const activeLists = clone(state.activeLists);
     if (activeLists[name]) {
       delete activeLists[name];
@@ -212,9 +223,10 @@ const actions = {
       activeLists[name] = true;
     }
     if (Object.keys(activeLists).length > 0) {
-      lsSet('tokenLists', activeLists);
+      // lsSet('tokenLists', activeLists);
       commit('setActiveLists', activeLists);
     }
+    console.log('DEBUG: Toggled Lists');
   }
 };
 

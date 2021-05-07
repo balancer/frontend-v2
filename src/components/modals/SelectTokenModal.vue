@@ -28,9 +28,12 @@
           <a
             v-for="(tokenList, i) in tokenLists"
             :key="i"
-            @click="onSelectList(i)"
+            @click="toggleActiveTokenList(tokenList.name)"
           >
-            <RowTokenlist :tokenlist="tokenList" />
+            <RowTokenlist
+              :isActive="isActiveList(tokenList.name)"
+              :tokenlist="tokenList"
+            />
           </a>
         </div>
         <div
@@ -50,12 +53,12 @@
         />
         <a @click="toggleSelectTokenList" class="p-4 flex">
           <span class="mr-1">
-            <img
+            <!-- <img
               v-for="(tokenlist, i) in activeTokenLists"
               :key="i"
               :src="_url(tokenlist.logoURI)"
               class="rounded-full inline-block bg-white align-middle shadow w-6 h-6"
-            />
+            /> -->
           </span>
           <BalIcon name="chevron-down" class="text-gray-500" />
         </a>
@@ -97,6 +100,7 @@ import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { clone } from '@/utils';
 import { isAddress, getAddress } from '@ethersproject/address';
+import useTokenLists from '@/composables/useTokenLists';
 
 export default defineComponent({
   emits: ['close', 'selectTokenlist', 'select'],
@@ -108,6 +112,13 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
+    const {
+      isLoading: isLoadingTokenLists,
+      lists: tokenLists,
+      toggleActiveTokenList,
+      isActiveList
+    } = useTokenLists();
+
     // DATA
     const data = reactive({
       loading: false,
@@ -127,15 +138,15 @@ export default defineComponent({
     });
 
     const tokens = computed(() => {
-      return store.getters['registry/getTokens']({
-        q: data.query,
-        not: props.excludedTokens,
-        includeEther: props.includeEther
-      });
-    });
-
-    const tokenLists = computed(() => {
-      return store.getters['registry/getTokenLists']({ q: data.query });
+      console.log('getting tokens');
+      return [];
+      // const tok = store.getters['registry/getTokens']({
+      //   q: data.query,
+      //   not: props.excludedTokens,
+      //   includeEther: props.includeEther
+      // });
+      // console.log('got tokens');
+      // return tok;
     });
 
     const tokenlistsReverse = computed(() => {
@@ -144,7 +155,9 @@ export default defineComponent({
     });
 
     const activeTokenLists = computed(() => {
-      return store.getters['registry/getTokenLists']({ active: true });
+      console.log('DEBUG: dingbot');
+      // return store.getters['registry/getTokenLists']({ active: true });
+      return [];
     });
 
     // METHODS
@@ -200,7 +213,10 @@ export default defineComponent({
       onSelectList,
       onListExit,
       toggleSelectTokenList,
-      onClose
+      onClose,
+
+      toggleActiveTokenList,
+      isActiveList
     };
   }
 });
