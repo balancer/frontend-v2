@@ -12,7 +12,7 @@ export default class JoinParams {
 
   constructor(exchange) {
     this.exchange = exchange;
-    this.isStablePool = exchange.pool.strategy.name === 'stablePool';
+    this.isStablePool = exchange.pool.poolType === 'Stable';
     this.dataEncodeFn = this.isStablePool
       ? encodeJoinStablePool
       : encodeJoinWeightedPool;
@@ -26,7 +26,7 @@ export default class JoinParams {
     const parsedAmountsIn = this.parseAmounts(amountsIn);
     const parsedBptOut = parseUnits(
       bptOut,
-      this.exchange.tokens[this.exchange.pool.address].decimals
+      this.exchange.pool.onchain.decimals
     ).toString();
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
 
@@ -35,7 +35,7 @@ export default class JoinParams {
       account,
       account,
       {
-        assets: this.exchange.pool.tokens,
+        assets: this.exchange.pool.tokenAddresses,
         maxAmountsIn: parsedAmountsIn,
         userData: txData,
         fromInternalBalance: this.fromInternalBalance
@@ -44,13 +44,17 @@ export default class JoinParams {
   }
 
   private parseAmounts(amounts: string[]): BigNumberish[] {
-    return this.exchange.pool.tokens.map((token, i) =>
-      parseUnits(amounts[i], this.exchange.tokens[token].decimals).toString()
-    );
+    return amounts.map((amount, i) => {
+      const token = this.exchange.pool.tokenAddresses[i];
+      return parseUnits(
+        amount,
+        this.exchange.pool.onchain.tokens[token].decimals
+      );
+    });
   }
 
   private txData(amountsIn: BigNumberish[], bptOut: BigNumberish): string {
-    if (this.exchange.pool.totalSupply.toString() === '0') {
+    if (this.exchange.pool.onchain.totalSupply === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
       const params = { amountsIn };

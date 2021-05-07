@@ -4,6 +4,7 @@
       :columns="columns"
       :data="data"
       :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
       skeletonClass="h-64"
       sticky="both"
       :onRowClick="
@@ -11,6 +12,8 @@
           router.push({ name: 'pool', params: { id: pool.id } });
         }
       "
+      :isPaginated="isPaginated"
+      @loadMore="$emit('loadMore')"
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
@@ -18,19 +21,19 @@
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
-        <div class="px-6 py-4">
-          <BalAssetSet :addresses="tokensFor(pool)" :width="100" />
+        <div v-if="!isLoading" class="px-6 py-4">
+          <BalAssetSet :addresses="pool.tokenAddresses" :width="100" />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div class="px-6 py-4 -mt-1 flex flex-wrap">
+        <div v-if="!isLoading" class="px-6 py-4 -mt-1 flex flex-wrap">
           <div
             v-for="token in pool.tokens"
             :key="token"
             class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
           >
             <span>
-              {{ allTokens[getAddress(token.address)]?.symbol }}
+              {{ allTokens[getAddress(token.address)].symbol }}
             </span>
             <span class="font-medium text-gray-400 text-xs mt-px ml-1">
               {{ fNum(token.weight, 'percent_lg') }}
@@ -63,12 +66,18 @@ import useTokens from '@/composables/useTokens';
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 
 export default defineComponent({
+  emits: ['loadMore'],
+
   props: {
     data: {
       type: Array
     },
     isLoading: {
       type: Boolean
+    },
+    isLoadingMore: {
+      type: Boolean,
+      default: false
     },
     showPoolShares: {
       type: Boolean,
@@ -77,8 +86,13 @@ export default defineComponent({
     noPoolsLabel: {
       type: String,
       default: 'No pools'
+    },
+    isPaginated: {
+      type: Boolean,
+      default: false
     }
   },
+
   setup(props) {
     const { fNum } = useNumbers();
     const { allTokens } = useTokens();
@@ -138,10 +152,6 @@ export default defineComponent({
       }
     ]);
 
-    function tokensFor(pool: DecoratedPoolWithShares) {
-      return pool.tokensList.map(getAddress);
-    }
-
     return {
       // data
       columns,
@@ -150,7 +160,6 @@ export default defineComponent({
       // methods
       router,
       getAddress,
-      tokensFor,
       fNum
     };
   }
