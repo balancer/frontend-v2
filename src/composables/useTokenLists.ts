@@ -3,7 +3,7 @@ import { TOKEN_LISTS } from '@/constants/tokenlists';
 import { useQuery } from 'vue-query';
 import { loadTokenlist } from '@/utils/tokenlists';
 import { useStore } from 'vuex';
-import { flatten, keyBy, orderBy } from 'lodash';
+import { flatten, keyBy, orderBy, uniqBy } from 'lodash';
 import useAccountBalances from './useAccountBalances';
 import { formatUnits } from '@ethersproject/units';
 
@@ -40,42 +40,47 @@ export default function useTokenLists(request: TokenListRequest) {
   const listNameMap = computed(() => keyBy(lists.value, 'name'));
   const injectedTokens = store.getters['registry/getInjected'];
   const tokens = computed(() => {
-    const _tokens = orderBy(
-      [
-        // insert inject tokens
-        ...Object.values(injectedTokens),
-        // get all the tokens from all the active lists
-        ...flatten(
-          activeTokenLists.value.map(name => listNameMap.value[name].tokens)
-        )
-          // invalid network tokens get filtered out
-          .filter(
-            token => token.chainId === Number(process.env.VUE_APP_NETWORK || 1)
-          )
-          // populate token data into list of tokens
-          .map(token => {
-            // const address = token.address.toLowerCase();
-            // const balanceDenorm = balances[address] || '0';
-            // const balance = formatUnits(token.balanceDenorm, token.decimals);
-            // const price = prices[address]?.price || 0;
-            // const value = token.balance * token.price;
-            // const price24HChange = prices[address]?.price24HChange || 0;
-            // const value24HChange =
-            //   (parseFloat(token.value) / 100) * token.price24HChange;
-            return {
-              ...token,
-              // price data
-              // price,
-              // price24HChange,
-              // balanceDenorm,
-              // balance,
-              value: 0
-              // value24HChange
-            };
-          })
-      ],
-      ['value', 'balance'],
-      ['desc', 'desc']
+    const _tokens = uniqBy(
+      orderBy(
+        [
+          // get all the tokens from all the active lists
+          ...flatten([
+            ...Object.values(injectedTokens).map((t: any) => ({ ...t })),
+            ...activeTokenLists.value.map(
+              name => listNameMap.value[name].tokens
+            )
+          ])
+            // invalid network tokens get filtered out
+            .filter(
+              token =>
+                token.chainId === Number(process.env.VUE_APP_NETWORK || 1)
+            )
+            // populate token data into list of tokens
+            .map(token => {
+              const balance =
+                Number(
+                  (balances.value || {})[token.address.toLowerCase()]?.balance
+                ) || 0;
+              const price =
+                prices.value[token.address.toLowerCase()]?.price || 0;
+              const value = balance * price;
+              const price24HChange =
+                prices.value[token.address.toLowerCase()]?.price24HChange || 0;
+              const value24HChange = (value / 100) * price24HChange;
+              return {
+                ...token,
+                value,
+                price,
+                price24HChange,
+                balance,
+                value24HChange
+              };
+            })
+        ],
+        ['value', 'balance'],
+        ['desc', 'desc']
+      ),
+      'address'
     );
 
     if (request.getEther) {
@@ -85,8 +90,10 @@ export default function useTokenLists(request: TokenListRequest) {
     // search functionality, this can be better
     if (request.query) {
       return _tokens.filter(token => {
-        token.name.includes(request.query) ||
-          token.symbol.includes(request.query);
+        return (
+          token.name.toLowerCase().includes(request.query?.toLowerCase()) ||
+          token.symbol.toLowerCase().includes(request.query?.toLowerCase())
+        );
       });
     }
 
@@ -97,7 +104,6 @@ export default function useTokenLists(request: TokenListRequest) {
         )
       );
     }
-
     return _tokens;
   });
 
@@ -116,8 +122,6 @@ export default function useTokenLists(request: TokenListRequest) {
   const isActiveList = (name: string) => {
     return activeTokenLists.value.includes(name);
   };
-
-  watch(activeTokenLists, () => console.log('DEBUG: active', injectedTokens));
 
   return {
     isLoading,

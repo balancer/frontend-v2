@@ -12,6 +12,7 @@ import registerDirectives from '@/plugins/directives';
 import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 import { registerGlobalComponents } from '@/plugins/components';
+import VirtualCollection from 'vue-virtual-collection';
 import { use } from 'echarts/core';
 import { LineChart } from 'echarts/charts';
 import {
@@ -23,10 +24,11 @@ import {
   MarkPointComponent,
   MarkLineComponent
 } from 'echarts/components';
+import VueVirtualScroller from 'vue3-virtual-scroller';
 import { CanvasRenderer } from 'echarts/renderers';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
+import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
 use([
   TitleComponent,
@@ -48,6 +50,8 @@ const app = createApp(App)
   .use(LockPlugin, authOptions)
   .use(VueApexCharts)
   .use(vueQuery)
+  .use(VueVirtualScroller)
+  .use(VirtualCollection)
   .mixin(mixins);
 
 registerDirectives(app);

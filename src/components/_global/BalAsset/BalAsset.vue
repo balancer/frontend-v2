@@ -8,7 +8,7 @@
         height: `${size}px`
       }"
       @error="error = true"
-      class="rounded-full inline-block bg-white leading-none shadow-sm"
+      class="rounded-full inline-block bg-white leading-none"
     />
     <Avatar v-else :address="address" :size="size" />
   </span>

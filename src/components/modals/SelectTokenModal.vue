@@ -53,46 +53,31 @@
         />
         <a @click="toggleSelectTokenList" class="p-4 flex">
           <span class="mr-1">
-            <!-- <img
+            <img
               v-for="(tokenlist, i) in activeTokenLists"
               :key="i"
               :src="_url(tokenlist.logoURI)"
               class="rounded-full inline-block bg-white align-middle shadow w-6 h-6"
-            /> -->
+            />
           </span>
           <BalIcon name="chevron-down" class="text-gray-500" />
         </a>
       </div>
       <div>
-        <!-- <RecycleScroller
-          key-field="address"
+        <RecycleScroller
+          class="h-96 overflow-y-scroll"
+          v-if="tokens?.length > 0"
           :items="tokens"
           :item-size="64"
+          key-field="address"
           v-slot="{ item }"
-          v-if="tokens?.length > 0"
-          class="h-96 overflow-y-scroll"
-          buffer="0"
+          :buffer="100"
         >
           <a @click="onSelectToken(item.address)">
             <RowToken :token="item" />
           </a>
-        </RecycleScroller> -->
-        <div class="h-96 overflow-y-scroll" v-if="tokens?.length > 0">
-          <VirtualList :data="tokens" :poolBuffer='10' dataKey="address" itemSize="64">
-            <template v-slot="{ item }">
-              <a @click="onSelectToken(item.address)">
-                <RowToken :token="item" />
-              </a>
-            </template>
-          </VirtualList>
-        </div>
+        </RecycleScroller>
 
-        <!-- <a
-            v-for="(token, key) in tokens"
-            :key="key"
-            @click="onSelectToken(token.address)"
-          >
-          </a> -->
         <div
           v-else-if="isTokenSelected"
           v-text="$t('tokenAlreadySelected')"
@@ -112,13 +97,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue';
+import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { clone } from '@/utils';
 import { isAddress, getAddress } from '@ethersproject/address';
 import useTokenLists from '@/composables/useTokenLists';
-import { VirtualList } from 'vue3-virtual-list';
 
 export default defineComponent({
   emits: ['close', 'selectTokenlist', 'select'],
@@ -129,19 +113,7 @@ export default defineComponent({
     includeEther: { type: Boolean, default: false }
   },
 
-  components: {
-    VirtualList
-  },
-
   setup(props, { emit }) {
-    const {
-      isLoading: isLoadingTokenLists,
-      lists: tokenLists,
-      toggleActiveTokenList,
-      isActiveList,
-      tokens
-    } = useTokenLists({});
-
     // DATA
     const data = reactive({
       loading: false,
@@ -149,6 +121,13 @@ export default defineComponent({
       selectTokenList: false,
       isTokenSelected: false
     });
+    const {
+      isLoading: isLoadingTokenLists,
+      lists: tokenLists,
+      toggleActiveTokenList,
+      isActiveList,
+      tokens
+    } = useTokenLists(data);
 
     // COMPOSABLES
     const store = useStore();
@@ -232,10 +211,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style>
-.vue-recycle-scroller__item-wrapper {
-  width: 100%;
-  transform: translateY(-64px);
-}
-</style>
