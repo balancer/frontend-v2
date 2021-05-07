@@ -7,7 +7,7 @@
           class="text-lg font-normal text-white opacity-90 font-body mb-2"
         />
         <BalLoadingBlock
-          v-if="isLoadingPoolsWithShares"
+          v-if="isLoadingUserPools"
           class="h-10 w-40 mx-auto"
           white
         />
@@ -47,7 +47,7 @@ import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
-import usePoolsWithShares from '@/composables/pools/usePools';
+import usePools from '@/composables/pools/usePools';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
 
@@ -59,10 +59,7 @@ export default defineComponent({
     const store = useStore();
     const { fNum } = useNumbers();
     const { isConnected } = useWeb3();
-    const {
-      totalInvestedAmount,
-      isLoadingPoolsWithShares
-    } = usePoolsWithShares();
+    const { totalInvestedAmount, isLoadingUserPools } = usePools();
 
     // COMPUTED
     const setAccountModal = (val: boolean) =>
@@ -76,7 +73,7 @@ export default defineComponent({
     return {
       // data
       totalInvestedAmount,
-      isLoadingPoolsWithShares,
+      isLoadingUserPools,
 
       // computed
       isConnected,

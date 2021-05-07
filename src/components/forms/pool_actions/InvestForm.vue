@@ -44,7 +44,7 @@
         ]"
       >
         <div
-          v-for="(token, i) in pool.tokens"
+          v-for="(token, i) in pool.tokenAddresses"
           :key="token"
           class="py-3 last:mb-0"
         >
@@ -55,10 +55,13 @@
                 <span
                   class="break-words"
                   :title="
-                    `${fNum(amounts[i], 'token')} ${allTokens[token].symbol}`
+                    `${fNum(amounts[i], 'token')} ${
+                      pool.onchain.tokens[token].symbol
+                    }`
                   "
                 >
-                  {{ fNum(amounts[i], 'token') }} {{ allTokens[token].symbol }}
+                  {{ fNum(amounts[i], 'token') }}
+                  {{ pool.onchain.tokens[token].symbol }}
                 </span>
                 <span
                   class="text-xs text-gray-400 break-words"
@@ -73,7 +76,7 @@
                 {{ fNum(amountUSD(i), 'usd') }}
               </span>
               <span class="text-xs text-gray-400">
-                {{ fNum(tokenWeights[i]) }}%
+                {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
           </div>
@@ -86,7 +89,7 @@
       :class="['px-4 pt-6 border-b', hasZeroBalance ? '' : 'border-t']"
     >
       <BalTextInput
-        v-for="(token, i) in pool.tokens"
+        v-for="(token, i) in pool.tokenAddresses"
         :key="token"
         :name="token"
         v-model="amounts[i]"
@@ -100,16 +103,17 @@
         validate-on="input"
         prepend-border
         append-shadow
+        @update:modelValue="preventOverflow($event, i)"
       >
         <template v-slot:prepend>
           <div class="flex items-center h-full w-24">
             <BalAsset :address="token" />
             <div class="flex flex-col ml-3">
               <span class="font-medium text-sm leading-none w-14 truncate">
-                {{ allTokens[token].symbol }}
+                {{ pool.onchain.tokens[token].symbol }}
               </span>
               <span class="leading-none text-xs mt-1 text-gray-500">
-                {{ fNum(tokenWeights[i]) }}%
+                {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
           </div>
@@ -240,7 +244,7 @@ import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
-import { Pool } from '@/utils/balancer/types';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -269,11 +273,11 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: { type: Object as PropType<Pool>, required: true },
+    pool: { type: Object as PropType<FullPool>, required: true },
     missingPrices: { type: Boolean, default: false }
   },
 
-  setup(props, { emit }) {
+  setup(props: { pool: FullPool }, { emit }) {
     const data = reactive<DataProps>({
       investForm: {} as FormRef,
       investType: FormTypes.proportional,
@@ -303,7 +307,7 @@ export default defineComponent({
       approveAllowances,
       approving,
       approvedAll
-    } = useTokenApprovals(props.pool.tokens, amounts);
+    } = useTokenApprovals(props.pool.tokenAddresses, amounts);
 
     // SERVICES
     const poolExchange = new PoolExchange(
@@ -319,7 +323,9 @@ export default defineComponent({
     );
 
     // COMPUTED
-    const tokenWeights = computed(() => props.pool.weightsPercent);
+    const tokenWeights = computed(() =>
+      Object.values(props.pool.onchain.tokens).map(t => t.weight)
+    );
 
     const hasAmounts = computed(() => {
       const amountSum = fullAmounts.value
@@ -333,7 +339,9 @@ export default defineComponent({
     });
 
     const balances = computed(() => {
-      return props.pool.tokens.map(token => allTokens.value[token].balance);
+      return props.pool.tokenAddresses.map(
+        token => allTokens.value[token].balance
+      );
     });
 
     const hasZeroBalance = computed(() => {
@@ -341,7 +349,7 @@ export default defineComponent({
     });
 
     const total = computed(() => {
-      const total = props.pool.tokens
+      const total = props.pool.tokenAddresses
         .map((_, i) => amountUSD(i))
         .reduce((a, b) => a + b, 0);
 
@@ -368,13 +376,13 @@ export default defineComponent({
     });
 
     const fullAmounts = computed(() => {
-      return props.pool.tokens.map((_, i) => {
+      return props.pool.tokenAddresses.map((_, i) => {
         return data.amounts[i] || '0';
       });
     });
 
     const propMaxUSD = computed(() => {
-      const total = props.pool.tokens
+      const total = props.pool.tokenAddresses
         .map((token, i) => toFiat(Number(data.propMax[i]), token))
         .reduce((a, b) => a + b, 0);
 
@@ -382,7 +390,7 @@ export default defineComponent({
     });
 
     const balanceMaxUSD = computed(() => {
-      const total = props.pool.tokens
+      const total = props.pool.tokenAddresses
         .map((token, i) => toFiat(balances.value[i], token))
         .reduce((a, b) => a + b, 0);
 
@@ -391,7 +399,7 @@ export default defineComponent({
 
     const priceImpact = computed(() => {
       if (isProportional.value || !hasAmounts.value) return 0;
-      return poolCalculator.priceImpact(fullAmounts.value).toNumber();
+      return poolCalculator.priceImpact(fullAmounts.value).toNumber() || 0;
     });
 
     const priceImpactClasses = computed(() => {
@@ -402,13 +410,12 @@ export default defineComponent({
     });
 
     const minBptOut = computed(() => {
-      const poolDecimals = allTokens.value[props.pool.address].decimals;
       let bptOut = poolCalculator
         .exactTokensInForBPTOut(fullAmounts.value)
         .toString();
-      bptOut = formatUnits(bptOut, poolDecimals);
+      bptOut = formatUnits(bptOut, props.pool.onchain.decimals);
 
-      return minusSlippage(bptOut, poolDecimals);
+      return minusSlippage(bptOut, props.pool.onchain.decimals);
     });
 
     const formTypes = ref([
@@ -428,17 +435,16 @@ export default defineComponent({
 
     // METHODS
     function tokenBalance(index) {
-      return allTokens.value[props.pool.tokens[index]]?.balance || 0;
+      return allTokens.value[props.pool.tokenAddresses[index]]?.balance || 0;
     }
 
     function tokenDecimals(index) {
-      return allTokens.value[props.pool.tokens[index]].decimals;
+      return allTokens.value[props.pool.tokenAddresses[index]].decimals;
     }
 
     function amountUSD(index) {
       const amount = fullAmounts.value[index] || 0;
-      const token = props.pool.tokens[index].toLowerCase();
-      return toFiat(amount, token);
+      return toFiat(amount, props.pool.tokenAddresses[index]);
     }
 
     function formatBalance(index) {
@@ -487,14 +493,27 @@ export default defineComponent({
     // Left here so numbers can be debugged in conosle
     // Talk to Fernando to see if still needed
     async function calcMinBptOut(): Promise<void> {
-      const poolDecimals = allTokens.value[props.pool.address].decimals;
       let { bptOut } = await poolExchange.queryJoin(
         account.value,
         fullAmounts.value
       );
-      bptOut = formatUnits(bptOut.toString(), poolDecimals);
-      console.log('bptOut (queryJoin)', minusSlippage(bptOut, poolDecimals));
+      bptOut = formatUnits(bptOut.toString(), props.pool.onchain.decimals);
+      console.log(
+        'bptOut (queryJoin)',
+        minusSlippage(bptOut, props.pool.onchain.decimals)
+      );
       console.log('bptOut (JS)', minBptOut.value);
+    }
+
+    function preventOverflow(value: number, index: number): void {
+      const decimals = tokenDecimals(index);
+      const amountStr = value.toString();
+      const integerLength = amountStr.replace('.', '').length;
+
+      if (integerLength > tokenDecimals(index)) {
+        const maxLength = amountStr.includes('.') ? decimals + 1 : decimals;
+        data.amounts[index] = data.amounts[index].slice(0, maxLength);
+      }
     }
 
     async function submit(): Promise<void> {
@@ -530,13 +549,11 @@ export default defineComponent({
     watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
 
     watch(
-      () => props.pool.tokenBalances,
-      (newBalances, oldBalances) => {
+      () => props.pool.onchain.tokens,
+      (newTokens, oldTokens) => {
         poolCalculator.setPool(props.pool);
-        const _newBalances = newBalances.map(b => b.toString());
-        const _oldBalances = oldBalances.map(b => b.toString());
-        const balancesChanged = !isEqual(_newBalances, _oldBalances);
-        if (balancesChanged) {
+        const tokensChanged = !isEqual(newTokens, oldTokens);
+        if (tokensChanged) {
           setPropMax();
           if (isProportional.value) setPropAmountsFor(data.range);
         }
@@ -620,7 +637,8 @@ export default defineComponent({
       // methods
       submit,
       approveAllowances,
-      fNum
+      fNum,
+      preventOverflow
     };
   }
 });
