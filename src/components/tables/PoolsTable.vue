@@ -1,5 +1,5 @@
 <template>
-  <BalCard shadow="lg" class="mt-8" no-pad>
+  <BalCard shadow="lg" class="mt-4" no-pad>
     <BalTable
       :columns="columns"
       :data="data"
