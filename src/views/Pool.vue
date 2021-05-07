@@ -32,7 +32,7 @@
         <div v-else class="text-sm">{{ poolFeeLabel }}.</div>
 
         <BalAlert
-          v-if="!loading && !appLoading && missingPrices"
+          v-if="!appLoading && missingPrices"
           type="warning"
           :label="$t('noPriceInfo')"
           class="mt-2"
@@ -44,9 +44,9 @@
       <div class="col-span-2 order-2 lg:order-1">
         <div class="grid grid-cols-1 gap-y-8">
           <PoolChart
-            :prices="prices"
+            :prices="historicalPrices"
             :snapshots="snapshots"
-            :loading="loading"
+            :loading="isLoadingSnapshots"
           />
 
           <PoolStats :pool="pool" :loading="loadingPool" />
@@ -91,38 +91,25 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  toRefs,
-  computed,
-  onBeforeMount,
-  watch
-} from 'vue';
+import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
-import { getPoolSnapshots, PoolEvents, PoolSnapshots } from '@/api/subgraph';
 import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import { useQueryClient } from 'vue-query';
 import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
+import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 
 interface PoolPageData {
   id: string;
-  loading: boolean;
-  backgroundLoading: boolean;
-  events: PoolEvents;
-  prices: HistoricalPrices;
-  snapshots: PoolSnapshots;
   refetchQueriesOnBlockNumber: number;
 }
 
@@ -139,7 +126,6 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const route = useRoute();
-    const router = useRouter();
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
     const queryClient = useQueryClient();
@@ -147,35 +133,40 @@ export default defineComponent({
     const poolActivitiesQuery = usePoolActivitiesQuery(
       route.params.id as string
     );
+    const poolSnapshotsQuery = usePoolSnapshotsQuery(
+      route.params.id as string,
+      30
+    );
 
-    const { appNetwork, blockNumber, loading: web3Loading } = useWeb3();
+    const { blockNumber, loading: web3Loading } = useWeb3();
 
     // DATA
     const data = reactive<PoolPageData>({
       id: route.params.id as string,
-      loading: true,
-      backgroundLoading: false,
-      events: {
-        joins: [],
-        exits: []
-      },
-      prices: {},
-      snapshots: [],
       refetchQueriesOnBlockNumber: 0
     });
 
     // COMPUTED
+    const appLoading = computed(() => store.state.app.loading);
+
+    const pool = computed(() => poolQuery.data.value);
+    const loadingPool = computed(
+      () => poolQuery.isLoading.value || poolQuery.isIdle.value
+    );
+
     const poolActivities = computed(() => poolActivitiesQuery.data.value);
     const isLoadingPoolActivities = computed(
       () => poolActivitiesQuery.isLoading.value
     );
     const hasPoolActivities = computed(() => !!poolActivities.value?.length);
 
-    const appLoading = computed(() => store.state.app.loading);
-
-    const pool = computed(() => poolQuery.data.value);
-    const loadingPool = computed(
-      () => poolQuery.isLoading.value || poolQuery.isIdle.value
+    const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
+    const historicalPrices = computed(
+      () => poolSnapshotsQuery.data.value?.prices
+    );
+    const isLoadingSnapshots = computed(
+      () =>
+        poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
     );
 
     const titleTokens = computed(() => {
@@ -220,35 +211,12 @@ export default defineComponent({
         blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
     }
 
-    async function loadChartData(days: number): Promise<void> {
-      if (!pool.value) return;
-
-      const addresses = pool.value.tokensList;
-      data.prices = await getTokensHistoricalPrice(
-        appNetwork.id,
-        addresses,
-        days
-      );
-      data.snapshots = await getPoolSnapshots(appNetwork.id, data.id, days);
-    }
-
     // WATCHERS
     watch(blockNumber, async () => {
       if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
         queryClient.invalidateQueries([POOLS_ROOT_KEY]);
       } else {
         poolQuery.refetch.value();
-      }
-    });
-
-    // CALLBACKS
-    onBeforeMount(async () => {
-      try {
-        loadChartData(30);
-        data.loading = false;
-      } catch (error) {
-        console.error(error);
-        router.push('/');
       }
     });
 
@@ -261,6 +229,9 @@ export default defineComponent({
       pool,
       poolTypeLabel,
       poolFeeLabel,
+      historicalPrices,
+      snapshots,
+      isLoadingSnapshots,
       // subgraphPool,
       loadingPool,
       titleTokens,
