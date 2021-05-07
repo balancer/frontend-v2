@@ -113,8 +113,8 @@
         >
           <input
             class="w-11 text-right"
-            v-model="slippageInput"
-            :placeholder="0.01"
+            v-model="customSlippage"
+            :placeholder="0.1"
           />
           <div class="py-1">
             %
@@ -151,14 +151,7 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  reactive,
-  onMounted,
-  computed,
-  toRefs,
-  watch
-} from 'vue';
+import { defineComponent, reactive, computed, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
 import { useI18n } from 'vue-i18n';
@@ -200,7 +193,6 @@ export default defineComponent({
           label: option,
           value: option
         })),
-      slippageInput: '',
       copiedAddress: false,
       appSlippage: store.state.app.slippage
     });
@@ -232,11 +224,24 @@ export default defineComponent({
       getConnectorLogo(store.state.web3.connector)
     );
 
-    // CALLBACKS
-    onMounted(() => {
-      if (isCustomSlippage.value) {
-        const slippage = parseFloat(appSlippage.value);
-        data.slippageInput = (slippage * 100).toFixed(1);
+    const customSlippage = computed({
+      get: () => {
+        if (isCustomSlippage.value) {
+          const slippage = parseFloat(appSlippage.value);
+          return (slippage * 100).toFixed(1);
+        } else {
+          return '';
+        }
+      },
+      set: newSlippage => {
+        if (!newSlippage) return;
+
+        const number = Number(newSlippage);
+        if (!number || number <= 0) return;
+
+        const slippage = number / 100;
+        if (slippage >= 0.1) return;
+        setSlippage(slippage.toString());
       }
     });
 
@@ -245,9 +250,6 @@ export default defineComponent({
     const setDarkMode = val => store.commit('app/setDarkMode', val);
     const setLocale = locale => store.commit('app/setLocale', locale);
     const setSlippage = slippage => {
-      // Clear custom slippage if using pre-set option
-      if (data.slippageOptions.includes(slippage)) data.slippageInput = '';
-
       store.commit('app/setSlippage', slippage);
     };
 
@@ -262,21 +264,6 @@ export default defineComponent({
         data.copiedAddress = false;
       }, 2 * 1000);
     }
-
-    // WATCHERS
-    watch(
-      () => data.slippageInput,
-      newSlippage => {
-        if (!newSlippage) return;
-
-        const number = Number(newSlippage);
-        if (!number || number <= 0) return;
-
-        const slippage = number / 100;
-        if (slippage >= 0.1) return;
-        setSlippage(slippage.toString());
-      }
-    );
 
     return {
       // data
@@ -301,7 +288,8 @@ export default defineComponent({
       setTradeLiquidity,
       copyAddress,
       t,
-      explorer
+      explorer,
+      customSlippage
     };
   }
 });

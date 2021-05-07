@@ -39,7 +39,7 @@
           <input
             class="w-11 text-right"
             v-model="slippageInput"
-            :placeholder="0.01"
+            :placeholder="0.1"
           />
           <div class="py-1">
             %
