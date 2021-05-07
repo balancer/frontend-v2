@@ -7,7 +7,7 @@ import { flatten, isEmpty } from 'lodash';
 import { getAddress } from '@ethersproject/address';
 
 import QUERY_KEYS from '@/constants/queryKeys';
-import { TABLE_ROWS_PER_PAGE } from '@/constants/table';
+import { POOLS } from '@/constants/pools';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
@@ -41,7 +41,7 @@ export default function usePoolsQuery(
       '24h',
       prices.value,
       {
-        first: TABLE_ROWS_PER_PAGE,
+        first: POOLS.Pagination.PerPage,
         skip: pageParam,
         where: {
           tokensList_contains: tokenList.value
@@ -54,7 +54,7 @@ export default function usePoolsQuery(
     return {
       pools,
       tokens,
-      skip: pools.length ? pageParam + TABLE_ROWS_PER_PAGE : undefined
+      skip: pools.length ? pageParam + POOLS.Pagination.PerPage : undefined
     };
   };
 

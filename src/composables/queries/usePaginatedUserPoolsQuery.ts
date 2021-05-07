@@ -11,7 +11,7 @@ import { bnum } from '@/utils';
 import useWeb3 from '@/composables/useWeb3';
 
 import QUERY_KEYS from '@/constants/queryKeys';
-import { TABLE_ROWS_PER_PAGE } from '@/constants/table';
+import { POOLS } from '@/constants/pools';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
@@ -56,7 +56,7 @@ export default function usePaginatedUserPoolsQuery(
       '24h',
       prices.value,
       {
-        first: TABLE_ROWS_PER_PAGE,
+        first: POOLS.Pagination.PerPage,
         skip: pageParam,
         where: {
           id_in: poolSharesIds
@@ -77,7 +77,7 @@ export default function usePaginatedUserPoolsQuery(
     return {
       pools: poolsWithShares,
       tokens,
-      skip: pools.length ? pageParam + TABLE_ROWS_PER_PAGE : undefined
+      skip: pools.length ? pageParam + POOLS.Pagination.PerPage : undefined
     };
   };
 
