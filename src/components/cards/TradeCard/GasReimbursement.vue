@@ -50,8 +50,6 @@ export default defineComponent({
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
     const BAL = '0xba100000625a3754423978a60c9317c58a424e3d';
-    const getConfig = () => store.getters['web3/getConfig']();
-    const { chainId } = getConfig();
 
     const eligibleAssetMeta = eligibleAssetList[appNetwork.networkName];
     const eligibleAssets = Object.fromEntries(
@@ -73,7 +71,7 @@ export default defineComponent({
       const ethPrice =
         store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
       const balPrice =
-        store.state.market.prices[getOriginalAddress(chainId, BAL)]?.price || 0;
+        store.state.market.prices[getOriginalAddress(appNetwork.id, BAL)]?.price || 0;
       const gasPrice = store.state.market.gasPrice || 0;
 
       const addressInIsEligible =
