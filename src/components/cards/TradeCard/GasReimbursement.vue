@@ -71,7 +71,8 @@ export default defineComponent({
       const ethPrice =
         store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
       const balPrice =
-        store.state.market.prices[getOriginalAddress(appNetwork.id, BAL)]?.price || 0;
+        store.state.market.prices[getOriginalAddress(appNetwork.id, BAL)]
+          ?.price || 0;
       const gasPrice = store.state.market.gasPrice || 0;
 
       const addressInIsEligible =
