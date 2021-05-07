@@ -1,5 +1,5 @@
 <template>
-  <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
+  <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
   <div class="chart mr-n2 ml-n2" v-else-if="nonEmptySnapshots.length >= 7">
     <BalLineChart
       :data="series"
@@ -11,7 +11,7 @@
       :showLegend="true"
     />
   </div>
-  <BalBlankSlate v-else class="h-60">
+  <BalBlankSlate v-else class="h-96">
     <BalIcon name="bar-chart" />
     {{ $t('insufficientData') }}
   </BalBlankSlate>
