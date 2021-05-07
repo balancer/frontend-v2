@@ -78,7 +78,7 @@
           </a>
         </RecycleScroller> -->
         <div class="h-96 overflow-y-scroll" v-if="tokens?.length > 0">
-          <VirtualList :data="tokens" dataKey="address" itemSize="64">
+          <VirtualList :data="tokens" :poolBuffer='10' dataKey="address" itemSize="64">
             <template v-slot="{ item }">
               <a @click="onSelectToken(item.address)">
                 <RowToken :token="item" />

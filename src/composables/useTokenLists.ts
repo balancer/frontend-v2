@@ -69,7 +69,7 @@ export default function useTokenLists(request: TokenListRequest) {
               // price24HChange,
               // balanceDenorm,
               // balance,
-              value: 0,
+              value: 0
               // value24HChange
             };
           })
@@ -117,7 +117,7 @@ export default function useTokenLists(request: TokenListRequest) {
     return activeTokenLists.value.includes(name);
   };
 
-  watch(activeTokenLists, () => console.log('DEBUG: active', tokens));
+  watch(activeTokenLists, () => console.log('DEBUG: active', injectedTokens));
 
   return {
     isLoading,
