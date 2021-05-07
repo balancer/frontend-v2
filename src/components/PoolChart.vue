@@ -1,5 +1,5 @@
 <template>
-  <BalLoadingBlock v-if="loading || appLoading" class="h-60" />
+  <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
   <div class="chart mr-n2 ml-n2" v-else-if="nonEmptySnapshots.length >= 7">
     <BalLineChart
       :data="series"
@@ -11,14 +11,14 @@
       :showLegend="true"
     />
   </div>
-  <BalBlankSlate v-else class="h-60">
+  <BalBlankSlate v-else class="h-96">
     <BalIcon name="bar-chart" />
     {{ $t('insufficientData') }}
   </BalBlankSlate>
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, toRefs, computed } from 'vue';
+import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
 
 import { PoolSnapshots } from '@/api/subgraph';
 import { useI18n } from 'vue-i18n';
@@ -26,6 +26,13 @@ import { useStore } from 'vuex';
 import { zip } from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
 import useTailwind from '@/composables/useTailwind';
+
+interface HistoryItem {
+  timestamp: number;
+  price: number[];
+  amounts: string[];
+  totalShares: string;
+}
 
 export default defineComponent({
   name: 'PoolChart',
@@ -46,7 +53,13 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
 
-    const { prices, snapshots } = toRefs(props);
+    const {
+      prices,
+      snapshots
+    }: {
+      prices: Ref<Record<string, number[]>>;
+      snapshots: Ref<PoolSnapshots>;
+    } = toRefs(props);
 
     const appLoading = computed(() => store.state.app.loading);
     const tailwind = useTailwind();
@@ -55,9 +68,10 @@ export default defineComponent({
       tailwind.theme.colors.black
     ];
 
-    const nonEmptySnapshots = computed(() =>
-      history.value.filter(state => state.totalShares !== '0')
-    );
+    const nonEmptySnapshots = computed(() => {
+      if (!history.value || !history.value) return [];
+      return history.value.filter((state: any) => state.totalShares !== '0');
+    });
 
     function getPoolValue(amounts: string[], prices: number[]) {
       const values = amounts.map((amount, index) => {
@@ -68,29 +82,24 @@ export default defineComponent({
     }
 
     const history = computed(() => {
-      if (!prices || !prices.value) {
+      if (!prices || !prices.value || Object.values(prices.value).length === 0)
         return [];
-      }
-      if (!snapshots || !snapshots.value) {
-        return [];
-      }
-      const timestamps = Object.keys(prices.value);
-      if (timestamps.length === 0) {
-        return [];
-      }
-      let poolState = {
+      if (!snapshots || !snapshots.value) return [];
+
+      const defaultState = {
         amounts: ['0', '0'],
         totalShares: '0'
       };
+
       const history = Object.keys(prices.value).map(timestamp => {
+        if (!prices.value || !snapshots.value) return [];
         const price = prices.value[timestamp];
-        const state = snapshots.value[timestamp] || poolState;
-        const amounts = state.amounts as string[];
-        const totalShares = state.totalShares as string;
-        poolState = {
-          amounts,
-          totalShares
-        };
+        const state = snapshots.value[timestamp]
+          ? snapshots.value[timestamp]
+          : defaultState;
+
+        const amounts: string[] = state.amounts;
+        const totalShares: string = state.totalShares;
         return {
           timestamp: parseInt(timestamp),
           price,
@@ -102,20 +111,22 @@ export default defineComponent({
     });
 
     const timestamps = computed(() => {
-      return nonEmptySnapshots.value.map(state =>
+      if (!nonEmptySnapshots.value || nonEmptySnapshots.value.length === 0)
+        return [];
+      return nonEmptySnapshots.value.map((state: any) =>
         format(fromUnixTime(state.timestamp / 1000), 'yyyy/MM/dd')
       );
     });
 
     const holdValues = computed(() => {
-      if (nonEmptySnapshots.value.length === 0) {
+      if (!nonEmptySnapshots.value || nonEmptySnapshots.value.length === 0) {
         return [];
       }
-      const firstState = nonEmptySnapshots.value[0];
+      const firstState: any = nonEmptySnapshots.value[0];
       const firstValue = getPoolValue(firstState.amounts, firstState.price);
       const values = history.value
-        .filter(state => state.totalShares !== '0')
-        .map(state => {
+        .filter((state: any) => state.totalShares !== '0')
+        .map((state: any) => {
           if (state.timestamp < firstState.timestamp) {
             return 0;
           }
@@ -126,16 +137,16 @@ export default defineComponent({
     });
 
     const bptValues = computed(() => {
-      if (nonEmptySnapshots.value.length === 0) {
+      if (!nonEmptySnapshots.value || nonEmptySnapshots.value.length === 0) {
         return [];
       }
-      const firstState = nonEmptySnapshots.value[0];
+      const firstState: any = nonEmptySnapshots.value[0];
       const firstValue = getPoolValue(firstState.amounts, firstState.price);
       const firstShares = parseFloat(firstState.totalShares);
       const firstValuePerBpt = firstValue / firstShares;
       const values = history.value
-        .filter(state => state.totalShares !== '0')
-        .map(state => {
+        .filter((state: any) => state.totalShares !== '0')
+        .map((state: any) => {
           if (state.timestamp < firstState.timestamp) {
             return 0;
           }
