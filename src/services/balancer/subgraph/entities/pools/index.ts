@@ -51,7 +51,7 @@ export default class Pools {
     prices: Prices
   ): DecoratedPool[] {
     return pools.map(pool => {
-      pool.address = getAddress(pool.id.slice(0, 42));
+      pool.address = this.extractAddress(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.totalLiquidity = getPoolLiquidity(pool, prices);
       const pastPool = pastPools.find(p => p.id === pool.id);
@@ -104,5 +104,9 @@ export default class Pools {
       default:
         return currentBlock - blocksInDay;
     }
+  }
+
+  private extractAddress(poolId: string): string {
+    return getAddress(poolId.slice(0, 42));
   }
 }
