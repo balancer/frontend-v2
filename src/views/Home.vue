@@ -21,7 +21,7 @@
       :isLoading="isLoadingPools"
       :data="filteredPools"
       :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="poolsHasNextPage"
+      :isPaginated="selectedTokens.length === 0 && poolsHasNextPage"
       :isLoadingMore="poolsIsFetchingNextPage"
       @loadMore="loadMorePools"
     />
