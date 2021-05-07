@@ -1,6 +1,7 @@
 import { Ref } from 'vue';
 
 export const POOLS_ROOT_KEY = 'pools';
+export const BALANCES_ROOT_KEY = 'accountBalances';
 
 const QUERY_KEYS = {
   Pools: {
@@ -12,6 +13,12 @@ const QUERY_KEYS = {
       POOLS_ROOT_KEY,
       'activities',
       { account, id }
+    ]
+  },
+  Balances: {
+    All: (account: Ref<string>, userNetwork: Ref<unknown>) => [
+      BALANCES_ROOT_KEY,
+      { userNetwork, account }
     ]
   }
 };

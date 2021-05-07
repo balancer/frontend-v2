@@ -27,7 +27,7 @@ export default defineComponent({
     const iconSize = computed(() => {
       switch (props.size) {
         case 'xxs':
-          return '6';
+          return '8';
         case 'xs':
           return '12';
         case 'sm':
