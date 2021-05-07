@@ -112,8 +112,6 @@ import {
 } from 'vue';
 import { sortBy } from 'lodash';
 
-import { useI18n } from 'vue-i18n';
-
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;
 
