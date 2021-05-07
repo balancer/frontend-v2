@@ -2,6 +2,8 @@ import { merge } from 'lodash';
 
 const defaultArgs = {
   first: 1000,
+  orderBy: 'totalLiquidity',
+  orderDirection: 'desc',
   where: {
     totalShares_gt: 0
   }

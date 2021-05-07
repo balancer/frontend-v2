@@ -1,4 +1,3 @@
-import { Pool } from '@/utils/balancer/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import configs from '@/config';
@@ -8,15 +7,16 @@ import { default as helpersAbi } from '@/abi/BalancerHelpers.json';
 import { Token } from '@/types';
 import JoinParams from './serializers/JoinParams';
 import ExitParams from './serializers/ExitParams';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 export default class Exchange {
-  pool: Pool;
+  pool: FullPool;
   network: string;
   vaultAddress: string;
   helpersAddress: string;
   tokens: Token[];
 
-  constructor(pool, network, tokens) {
+  constructor(pool: FullPool, network: string, tokens: Token[]) {
     this.pool = pool;
     this.network = network;
     this.tokens = tokens;
