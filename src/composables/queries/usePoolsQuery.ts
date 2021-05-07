@@ -2,7 +2,7 @@ import { computed, reactive, ref, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
 import { useStore } from 'vuex';
-import { flatten, isEmpty } from 'lodash';
+import { flatten } from 'lodash';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
