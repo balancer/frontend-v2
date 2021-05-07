@@ -66,7 +66,7 @@ export default class Vault {
 
     data.poolTokens.tokens.map((token, i) => {
       const tokenBalance = data.poolTokens.balances[i];
-      const tokenDecimals = tokens[token].decimals;
+      const tokenDecimals = tokens[token]?.decimals;
       _tokens[token] = {
         balance: formatUnits(tokenBalance, tokenDecimals),
         weight: weights[i],
