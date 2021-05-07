@@ -2,15 +2,15 @@
   <div class="container mx-auto px-4 lg:px-0 pt-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
-        <BalLoadingBlock v-if="loading" class="h-12 mb-2" />
+        <BalLoadingBlock v-if="loadingPool" class="h-12 mb-2" />
         <div v-else class="flex items-center">
           <h3 class="font-bold mr-4 capitalize">
             {{ poolTypeLabel }}
           </h3>
-          <BalAssetSet :addresses="titleTokens.map(t => t.token)" :size="36" />
+          <BalAssetSet :addresses="pool.tokenAddresses" :size="36" />
         </div>
 
-        <BalLoadingBlock v-if="loading" class="h-10 mb-2" />
+        <BalLoadingBlock v-if="loadingPool" class="h-10 mb-2" />
         <div v-else class="mb-1 mt-3 flex flex-wrap items-center">
           <div class="flex flex-wrap">
             <div
@@ -22,13 +22,13 @@
                 {{ token.symbol }}
               </span>
               <span class="font-medium text-gray-400 text-xs mt-px ml-1">
-                {{ fNum(token.weight / 100, 'percent_lg') }}
+                {{ fNum(token.weight, 'percent_lg') }}
               </span>
             </div>
           </div>
         </div>
 
-        <BalLoadingBlock v-if="loading" class="h-4" />
+        <BalLoadingBlock v-if="loadingPool" class="h-4" />
         <div v-else class="text-sm">{{ poolFeeLabel }}.</div>
 
         <BalAlert
@@ -49,18 +49,18 @@
             :loading="loading"
           />
 
-          <PoolStats :pool="subgraphPool" :loading="isLoadingSubgraphPool" />
+          <PoolStats :pool="pool" :loading="loadingPool" />
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
-            <PoolBalancesCard :pool="pool" :loading="loading || appLoading" />
+            <PoolBalancesCard :pool="pool" :loading="loadingPool" />
           </div>
 
           <div>
             <h4 v-text="$t('activity')" class="mb-4" />
             <TableEvents
-              v-if="hasEvents"
-              :tokens="pool.tokens"
+              v-if="hasEvents && pool"
+              :tokens="pool.tokensList"
               :events="events"
               :loading="loading || appLoading || web3Loading"
             />
@@ -75,14 +75,14 @@
 
       <div class="order-1 lg:order-2">
         <BalLoadingBlock
-          v-if="loading || appLoading || web3Loading"
+          v-if="loadingPool || web3Loading"
           class="h-96 sticky top-24"
         />
         <PoolActionsCard
           v-else
           :pool="pool"
           :missing-prices="missingPrices"
-          @on-tx="fetchPool"
+          @on-tx="onNewTx"
           class="sticky top-24"
         />
       </div>
@@ -118,7 +118,6 @@ import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
-import useTokens from '@/composables/useTokens';
 import { useQueryClient } from 'vue-query';
 
 interface PoolPageData {
@@ -147,7 +146,6 @@ export default defineComponent({
     const router = useRouter();
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
-    const { allTokens } = useTokens();
     const queryClient = useQueryClient();
     const poolQuery = usePoolQuery(route.params.id as string);
     const {
@@ -174,32 +172,25 @@ export default defineComponent({
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
 
-    const subgraphPool = computed(() => poolQuery.data.value);
-    const isLoadingSubgraphPool = computed(
+    const pool = computed(() => poolQuery.data.value);
+    const loadingPool = computed(
       () => poolQuery.isLoading.value || poolQuery.isIdle.value
     );
 
-    const pool = computed(() => {
-      return store.state.pools.current;
-    });
-
     const titleTokens = computed(() => {
-      return pool.value.tokens
-        .map((token, i) => {
-          return {
-            symbol: allTokens.value[token]?.symbol,
-            weight: pool.value.weightsPercent[i],
-            token
-          };
-        })
-        .sort((a, b) => b.weight - a.weight);
+      if (!pool.value) return [];
+      return Object.values(pool.value.onchain.tokens).sort(
+        (a: any, b: any) => b.weight - a.weight
+      );
     });
 
     const poolTypeLabel = computed(() => {
-      switch (pool.value.strategy.name) {
-        case 'weightedPool':
+      if (!pool.value) return '';
+
+      switch (pool.value.poolType) {
+        case 'Weighted':
           return t('weightedPool');
-        case 'stablePool':
+        case 'Stable':
           return t('stablePool');
         default:
           return '';
@@ -207,9 +198,8 @@ export default defineComponent({
     });
 
     const poolFeeLabel = computed(() => {
-      return t('lpsEarnFee', [
-        fNum(pool.value.strategy.swapFeePercent / 100, 'percent')
-      ]);
+      if (!pool.value) return '';
+      return t('lpsEarnFee', [fNum(pool.value.onchain.swapFee, 'percent')]);
     });
 
     const hasEvents = computed(() => {
@@ -222,22 +212,16 @@ export default defineComponent({
     const missingPrices = computed(() => {
       if (pool.value) {
         const tokensWithPrice = Object.keys(store.state.market.prices);
-        const poolTokens = pool.value.tokens.map(t => t.toLowerCase());
-        return !poolTokens.every(token => tokensWithPrice.includes(token));
+        return !pool.value.tokensList.every(token =>
+          tokensWithPrice.includes(token)
+        );
       }
       return false;
     });
 
     // METHODS
-    async function fetchPool(): Promise<void> {
-      console.time('loadPool');
-      await store.dispatch('pools/get', data.id);
-      await store.dispatch('registry/injectTokens', [
-        ...pool.value.tokens,
-        pool.value.address
-      ]);
-      console.timeEnd('loadPool');
-
+    function onNewTx(): void {
+      queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
       data.refetchQueriesOnBlockNumber =
         blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
     }
@@ -251,7 +235,9 @@ export default defineComponent({
     }
 
     async function loadChartData(days: number): Promise<void> {
-      const addresses = pool.value.tokens;
+      if (!pool.value) return;
+
+      const addresses = pool.value.tokensList;
       data.prices = await getTokensHistoricalPrice(
         appNetwork.id,
         addresses,
@@ -264,7 +250,6 @@ export default defineComponent({
     watch(blockNumber, async () => {
       if (!data.loading && !data.backgroundLoading) {
         data.backgroundLoading = true;
-        await fetchPool();
         await loadEvents();
         data.backgroundLoading = false;
       }
@@ -278,7 +263,6 @@ export default defineComponent({
     // CALLBACKS
     onBeforeMount(async () => {
       try {
-        await fetchPool();
         await loadEvents();
         loadChartData(30);
         data.loading = false;
@@ -297,15 +281,15 @@ export default defineComponent({
       pool,
       poolTypeLabel,
       poolFeeLabel,
-      subgraphPool,
-      isLoadingSubgraphPool,
+      // subgraphPool,
+      loadingPool,
       titleTokens,
       isAuthenticated,
       hasEvents,
       missingPrices,
       // methods
       fNum,
-      fetchPool
+      onNewTx
     };
   }
 });

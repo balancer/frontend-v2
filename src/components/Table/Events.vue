@@ -26,6 +26,7 @@ import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
+import { getAddress } from '@ethersproject/address';
 
 interface Action {
   label: string;
@@ -124,7 +125,7 @@ export default {
 
     function getJoinExitValue(event: PoolJoin | PoolExit) {
       const value = event.amounts.reduce((total, amount, index) => {
-        const address = props.tokens[index];
+        const address = getAddress(props.tokens[index]);
         const token = allTokens.value[address];
         const price = token.price || 0;
         const amountNumber = Math.abs(parseFloat(amount));

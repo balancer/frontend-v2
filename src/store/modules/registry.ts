@@ -1,13 +1,12 @@
 import { formatUnits } from '@ethersproject/units';
 import { getAddress, isAddress } from '@ethersproject/address';
-import getProvider from '@/utils/provider';
 import orderBy from 'lodash/orderBy';
 import { loadTokenlist } from '@/utils/tokenlists';
 import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/utils';
-import { getTokensMetadata } from '@/utils/balancer/tokens';
 import injected from '@/constants/injected.json';
 import { TokenList, TokenInfo } from '@/types/TokenList';
+import { getTokensMeta } from '@/utils/balancer/tokens';
 
 const defaultActiveLists = {};
 defaultActiveLists[TOKEN_LIST_DEFAULT] = true;
@@ -183,21 +182,16 @@ const actions = {
     }
   },
 
-  async injectTokens({ commit, dispatch }, tokens: string[]) {
+  async injectTokens({ commit, dispatch, state }, tokens: string[]) {
     tokens = tokens.filter(
       token => token !== ETHER.address && isAddress(token)
     );
     if (tokens.length === 0) return;
     const injected = clone(state.injected);
-    const network = process.env.VUE_APP_NETWORK || '1';
-    const tokensMetadata = await getTokensMetadata(
-      network,
-      getProvider(network),
-      tokens
-    );
-    Object.values(tokensMetadata).map((tokenMetadata: any) =>
-      injected.push({ ...tokenMetadata, ...{ injected: true } })
-    );
+    const tokensMeta = await getTokensMeta(tokens, state.tokenLists);
+    Object.values(tokensMeta).forEach((meta: TokenInfo) => {
+      if (meta) injected.push({ ...meta, injected: true });
+    });
     commit('setInjected', injected);
     dispatch('account/getBalances', null, { root: true });
     dispatch('account/getAllowances', { tokens }, { root: true });

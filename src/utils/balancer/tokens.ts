@@ -2,7 +2,10 @@ import { Web3Provider, TransactionResponse } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
 import { multicall, Multicaller } from '@/utils/balancer/contract';
 import { sendTransaction } from '@/utils/balancer/web3';
-import set from 'lodash/set';
+import { TokenList, TokenInfo } from '@/types/TokenList';
+import { flatten, set } from 'lodash';
+import getProvider from '@/utils/provider';
+import { APP } from '@/constants/app';
 import { default as abi } from '@/abi/ERC20.json';
 
 export async function getBalances(
@@ -50,7 +53,7 @@ export async function getAllowances(
   return {};
 }
 
-export async function getTokensMetadata(
+export async function getOnchainTokensMeta(
   network: string,
   provider: any,
   tokens: string[]
@@ -75,6 +78,39 @@ export async function getTokensMetadata(
     console.log(e);
   }
   return {};
+}
+
+// Try to find tokens metadata in tokenlists first then check onchain if that fails.
+export async function getTokensMeta(
+  tokenAddresses: string[],
+  tokenLists: TokenList[]
+): Promise<Record<string, TokenInfo>> {
+  const allTokensLists = Object.values(tokenLists)
+    .map((list: any) => list.tokens)
+    .filter(Boolean);
+  const allTokens = flatten(allTokensLists);
+
+  const meta = {};
+  tokenAddresses.forEach(async address => {
+    const tokenMeta = allTokens.find(token => token.address == address);
+    meta[address] = tokenMeta;
+  });
+  const unknownAddresses = Object.keys(meta).filter(address => !meta[address]);
+
+  try {
+    const onchainMeta = await getOnchainTokensMeta(
+      APP.Network,
+      getProvider(APP.Network),
+      unknownAddresses
+    );
+    Object.keys(onchainMeta).forEach(address => {
+      meta[address] = onchainMeta[address];
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
+  return meta;
 }
 
 export async function approveTokens(
