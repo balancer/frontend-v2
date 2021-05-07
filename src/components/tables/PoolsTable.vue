@@ -4,6 +4,7 @@
       :columns="columns"
       :data="data"
       :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
       skeletonClass="h-64"
       sticky="both"
       :onRowClick="
@@ -11,6 +12,8 @@
           router.push({ name: 'pool', params: { id: pool.id } });
         }
       "
+      :isPaginated="isPaginated"
+      @loadMore="$emit('loadMore')"
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
@@ -63,12 +66,18 @@ import useTokens from '@/composables/useTokens';
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 
 export default defineComponent({
+  emits: ['loadMore'],
+
   props: {
     data: {
       type: Array
     },
     isLoading: {
       type: Boolean
+    },
+    isLoadingMore: {
+      type: Boolean,
+      default: false
     },
     showPoolShares: {
       type: Boolean,
@@ -77,8 +86,13 @@ export default defineComponent({
     noPoolsLabel: {
       type: String,
       default: 'No pools'
+    },
+    isPaginated: {
+      type: Boolean,
+      default: false
     }
   },
+
   setup(props) {
     const { fNum } = useNumbers();
     const { allTokens } = useTokens();

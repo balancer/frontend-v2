@@ -1,60 +1,64 @@
-import { computed } from 'vue';
+import { computed, Ref, ref } from 'vue';
 
-import { bnum } from '@/utils';
+import { flatten } from 'lodash';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import usePoolSharesQuery from '@/composables/queries/usePoolSharesQuery';
-import useWeb3 from '@/composables/useWeb3';
+import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 
-export default function usePools() {
+export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   // COMPOSABLES
-  const { isConnected } = useWeb3();
-  const poolsQuery = usePoolsQuery();
-  const poolSharesQuery = usePoolSharesQuery();
+  const poolsQuery = usePoolsQuery(poolsTokenList);
+  const userPoolsQuery = useUserPoolsQuery();
 
   // COMPUTED
-  const pools = computed(() => poolsQuery.data.value?.pools);
-  const tokens = computed(() => poolsQuery.data.value?.tokens);
+  const pools = computed(() =>
+    poolsQuery.data.value
+      ? flatten(poolsQuery.data.value.pages.map(page => page.pools))
+      : []
+  );
 
-  const poolsWithShares = computed(() => {
-    if (isConnected.value && poolSharesQuery.data.value) {
-      const { poolSharesMap, poolSharesIds } = poolSharesQuery.data.value;
+  const tokens = computed(() =>
+    poolsQuery.data.value
+      ? flatten(poolsQuery.data.value.pages.map(page => page.tokens))
+      : []
+  );
 
-      return poolsQuery.data.value?.pools
-        .filter(pool => poolSharesIds.includes(pool.id))
-        .map(pool => ({
-          ...pool,
-          shares: bnum(pool.totalLiquidity)
-            .div(pool.totalShares)
-            .times(poolSharesMap[pool.id].balance)
-            .toString()
-        }));
-    }
-    return [];
-  });
+  const userPools = computed(() => userPoolsQuery.data.value?.pools);
 
-  const totalInvestedAmount = computed(() =>
-    poolsWithShares.value
-      ?.map(pool => pool.shares)
-      .reduce((totalShares, shares) => totalShares.plus(shares), bnum(0))
-      .toString()
+  const totalInvestedAmount = computed(
+    () => userPoolsQuery.data.value?.totalInvestedAmount
   );
 
   const isLoadingPools = computed(
     () => poolsQuery.isLoading.value || poolsQuery.isIdle.value
   );
 
-  const isLoadingPoolsWithShares = computed(
-    () => poolSharesQuery.isLoading.value || poolSharesQuery.isIdle.value
+  const isLoadingUserPools = computed(
+    () => userPoolsQuery.isLoading.value || userPoolsQuery.isIdle.value
   );
+
+  const poolsHasNextPage = computed(() => poolsQuery.hasNextPage?.value);
+  const poolsIsFetchingNextPage = computed(
+    () => poolsQuery.isFetchingNextPage?.value
+  );
+
+  // METHODS
+  function loadMorePools() {
+    poolsQuery.fetchNextPage.value();
+  }
 
   return {
     // computed
     pools,
     tokens,
-    poolsWithShares,
+    userPools,
     totalInvestedAmount,
     isLoadingPools,
-    isLoadingPoolsWithShares
+    isLoadingUserPools,
+    poolsHasNextPage,
+    poolsIsFetchingNextPage,
+
+    // methods
+    loadMorePools
   };
 }

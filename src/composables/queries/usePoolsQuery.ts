@@ -1,23 +1,26 @@
-import { computed, reactive } from 'vue';
-import { useQuery } from 'vue-query';
-import { QueryObserverOptions } from 'react-query/core';
-
+import { computed, reactive, ref, Ref } from 'vue';
+import { useInfiniteQuery } from 'vue-query';
+import { InfiniteData } from 'react-query/core';
+import { UseInfiniteQueryOptions } from 'react-query/types';
 import { useStore } from 'vuex';
 import { flatten, isEmpty } from 'lodash';
 import { getAddress } from '@ethersproject/address';
 
 import QUERY_KEYS from '@/constants/queryKeys';
+import { POOLS } from '@/constants/pools';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
-import { Pool } from '@/services/balancer/subgraph/types';
+import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 type PoolsQueryResponse = {
-  pools: Pool[];
+  pools: DecoratedPool[];
   tokens: string[];
+  skip?: number;
 };
 
 export default function usePoolsQuery(
-  options: QueryObserverOptions<PoolsQueryResponse> = {}
+  tokenList: Ref<string[]> = ref([]),
+  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
 ) {
   // SERVICES
   const balancerSubgraph = new BalancerSubgraph();
@@ -26,34 +29,46 @@ export default function usePoolsQuery(
   const store = useStore();
 
   // DATA
-  const queryKey = QUERY_KEYS.Pools.All;
+  const queryKey = QUERY_KEYS.Pools.All(tokenList);
 
   // COMPUTED
   const prices = computed(() => store.state.market.prices);
   const isQueryEnabled = computed(() => !isEmpty(prices.value));
 
   // METHODS
-  const queryFn = async () => {
+  const queryFn = async ({ pageParam = 0 }) => {
     const pools = await balancerSubgraph.pools.getDecorated(
       '24h',
-      prices.value
+      prices.value,
+      {
+        first: POOLS.Pagination.PerPage,
+        skip: pageParam,
+        where: {
+          tokensList_contains: tokenList.value
+        }
+      }
     );
 
     const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
 
     return {
       pools,
-      tokens
+      tokens,
+      skip: pools.length ? pageParam + POOLS.Pagination.PerPage : undefined
     };
   };
 
   const queryOptions = reactive({
     enabled: isQueryEnabled,
-    onSuccess: async (poolsData: PoolsQueryResponse) => {
-      await store.dispatch('registry/injectTokens', poolsData.tokens);
+    onSuccess: async (poolsData: InfiniteData<PoolsQueryResponse>) => {
+      await store.dispatch(
+        'registry/injectTokens',
+        poolsData.pages.map(page => page.tokens)
+      );
     },
+    getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
     ...options
   });
 
-  return useQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
+  return useInfiniteQuery<PoolsQueryResponse>(queryKey, queryFn, queryOptions);
 }
