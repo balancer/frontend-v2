@@ -1,4 +1,4 @@
-import { computed, Ref, ref, watch } from 'vue';
+import { computed, Ref, ref } from 'vue';
 
 import { flatten } from 'lodash';
 
