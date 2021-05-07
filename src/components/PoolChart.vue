@@ -90,12 +90,14 @@ export default defineComponent({
         amounts: ['0', '0'],
         totalShares: '0'
       };
+
       const history = Object.keys(prices.value).map(timestamp => {
-        if (!prices.value || snapshots.value) return [];
+        if (!prices.value || !snapshots.value) return [];
         const price = prices.value[timestamp];
         const state = snapshots.value[timestamp]
           ? snapshots.value[timestamp]
           : defaultState;
+
         const amounts: string[] = state.amounts;
         const totalShares: string = state.totalShares;
         return {
@@ -109,7 +111,8 @@ export default defineComponent({
     });
 
     const timestamps = computed(() => {
-      if (!nonEmptySnapshots.value) return [];
+      if (!nonEmptySnapshots.value || nonEmptySnapshots.value.length === 0)
+        return [];
       return nonEmptySnapshots.value.map((state: any) =>
         format(fromUnixTime(state.timestamp / 1000), 'yyyy/MM/dd')
       );
