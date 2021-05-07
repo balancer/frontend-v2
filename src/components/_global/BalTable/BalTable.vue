@@ -93,9 +93,9 @@
       class="bal-table-pagination-btn"
       @click="!isLoadingMore && $emit('loadMore')"
     >
-      <template v-if="isLoadingMore">{{ t('loading') }}</template>
+      <template v-if="isLoadingMore">{{ $t('loading') }}</template>
       <template v-else
-        >{{ t('loadMore') }} <BalIcon name="chevron-down" size="sm" class="ml-2"
+        >{{ $t('loadMore') }} <BalIcon name="chevron-down" size="sm" class="ml-2"
       /></template>
     </div>
   </div>
@@ -187,8 +187,6 @@ export default defineComponent({
     const currentSortDirection = ref<'asc' | 'desc' | null>(null);
     const currentSortColumn = ref<string | null>(null);
 
-    const { t } = useI18n();
-
     const setHeaderRef = (columnIndex: number) => (el: HTMLElement) => {
       if (el && columnIndex === 0) {
         stickyHeaderRef.value = el;
@@ -276,8 +274,7 @@ export default defineComponent({
       currentSortDirection,
 
       // computed
-      filteredColumns,
-      t
+      filteredColumns
     };
   }
 });
