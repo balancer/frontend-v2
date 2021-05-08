@@ -1,5 +1,5 @@
 <template>
-  <a class="text-blue-500 hover:underline" v-bind="attrs_">
+  <a :class="[classes]" v-bind="attrs_">
     <slot />
   </a>
 </template>
@@ -12,6 +12,10 @@ export default defineComponent({
 
   props: {
     external: {
+      type: Boolean,
+      default: false
+    },
+    noStyle: {
       type: Boolean,
       default: false
     }
@@ -32,7 +36,13 @@ export default defineComponent({
       return attrs_;
     });
 
-    return { attrs_ };
+    const classes = computed(() => {
+      return {
+        'text-blue-500 hover:underline': !props.noStyle
+      }
+    });
+
+    return { attrs_, classes };
   }
 });
 </script>
