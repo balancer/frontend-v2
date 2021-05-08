@@ -10,8 +10,7 @@ import { unwrap, wrap } from '@/utils/balancer/wrapper';
 import getProvider from '@/utils/provider';
 import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/utils/balancer/swapper';
-
-import { BALANCER_SUBGRAPH_URL } from '@/api/subgraph';
+import { urlMap as subgraphUrlMap } from '@/services/balancer/subgraph/client';
 
 import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
@@ -86,7 +85,7 @@ export default function useSor(
     const config = getConfig();
     const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
     const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
-    const subgraphUrl = BALANCER_SUBGRAPH_URL[config.chainId];
+    const subgraphUrl = subgraphUrlMap[config.chainId];
 
     sorManager = new SorManager(
       getProvider(config.chainId),
