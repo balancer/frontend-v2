@@ -9,11 +9,16 @@
     >
       <template v-slot:tokenColumnCell="token">
         <div class="px-6 py-8 flex flex-row icon-stack">
-          <BalLink :href="explorer.addressLink(token.address)" external>
+          <BalLink :href="explorer.addressLink(token.address)" external noStyle class="flex items-center">
             <BalAsset :address="token.address" :size="36" />
-            <span class="pl-4">
+            <span class="pl-4 font-medium">
               {{ symbolFor(token.address) }}
             </span>
+            <BalIcon
+              name="external-link"
+              size="sm"
+              class="ml-3 text-gray-500 hover:text-blue-500"
+            />
           </BalLink>
         </div>
       </template>
