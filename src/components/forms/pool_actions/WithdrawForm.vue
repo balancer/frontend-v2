@@ -501,12 +501,13 @@ export default defineComponent({
     }
 
     function preventOverflow(value: number, index: number): void {
-      const decimals = tokenDecimals(index);
-      const amountStr = value.toString();
-      const integerLength = amountStr.replace('.', '').length;
+      if (!value.toString().includes('.')) return;
 
-      if (integerLength > tokenDecimals(index)) {
-        const maxLength = amountStr.includes('.') ? decimals + 1 : decimals;
+      const decimalLimit = tokenDecimals(index);
+      const [numberStr, decimalStr] = value.toString().split('.');
+
+      if (decimalStr.length > decimalLimit) {
+        const maxLength = numberStr.length + decimalLimit + 1;
         data.amounts[index] = data.amounts[index].slice(0, maxLength);
       }
     }
