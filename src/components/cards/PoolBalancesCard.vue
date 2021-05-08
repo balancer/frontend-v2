@@ -100,15 +100,15 @@ export default defineComponent({
         className: 'pool-balance-table-cell'
       },
       {
-        name: t('poolBalance'),
-        id: 'poolBalance',
+        name: t('balance'),
+        id: 'balance',
         accessor: 'index',
         Cell: 'tokenBalanceCell',
         align: 'right',
         className: 'pool-balance-table-cell'
       },
       {
-        name: t('poolValue'),
+        name: t('value'),
         id: 'value',
         accessor: 'index',
         Cell: 'tokenValueCell',
