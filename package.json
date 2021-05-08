@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -22,7 +22,7 @@
   "dependencies": {
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
     "@balancer-labs/sor": "github:balancer-labs/balancer-sor#john/v1-consideringFees-package",
-    "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#john/rc03-package",
+    "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#john/ui-337-sor-add-limits-package",
     "@ensdomains/content-hash": "^2.5.3",
     "@ethersproject/abi": "^5.0.1",
     "@ethersproject/address": "^5.0.1",

@@ -1,31 +1,37 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
+import useTokens from '@/composables/useTokens';
 
 import { useStore } from 'vuex';
-import { isEmpty } from 'lodash';
+import { pick } from 'lodash';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
+import BalancerContracts from '@/services/balancer/contracts/service';
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import { Token } from '@/types';
 
 export default function usePoolQuery(
   id: string,
-  options: QueryObserverOptions<DecoratedPool> = {}
+  options: QueryObserverOptions<FullPool> = {}
 ) {
-  // SERVICES
-  const balancerSubgraph = new BalancerSubgraph();
-
   // COMPOSABLES
   const store = useStore();
+  const { allTokens } = useTokens();
+
+  // SERVICES
+  const balancerSubgraph = new BalancerSubgraph();
+  const balancerContracts = new BalancerContracts();
 
   // DATA
   const queryKey = QUERY_KEYS.Pools.Current(id);
 
   // COMPUTED
+  const appLoading = computed(() => store.state.app.loading);
   const prices = computed(() => store.state.market.prices);
-  const isQueryEnabled = computed(() => !isEmpty(prices.value));
+  const isQueryEnabled = computed(() => !appLoading.value);
 
   // METHODS
   const queryFn = async () => {
@@ -34,7 +40,19 @@ export default function usePoolQuery(
       prices.value,
       { where: { id } }
     );
-    return pool;
+    const tokens = pick(allTokens.value, pool.tokenAddresses) as Token[];
+    const onchainData = await balancerContracts.vault.getPoolData(
+      id,
+      pool.poolType,
+      tokens
+    );
+
+    await store.dispatch('registry/injectTokens', [
+      ...pool.tokenAddresses,
+      pool.address
+    ]);
+
+    return { ...pool, onchain: onchainData };
   };
 
   const queryOptions = reactive({
@@ -42,5 +60,5 @@ export default function usePoolQuery(
     ...options
   });
 
-  return useQuery<DecoratedPool>(queryKey, queryFn, queryOptions);
+  return useQuery<FullPool>(queryKey, queryFn, queryOptions);
 }

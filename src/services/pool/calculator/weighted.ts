@@ -26,6 +26,7 @@ export default class Weighted {
 
     if (this.calc.action === 'join') {
       bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
+      if (bptAmount < 0) return bnum(0);
       bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
 
       return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
@@ -39,7 +40,7 @@ export default class Weighted {
           this.calc.bptBalance,
           this.calc.poolDecimals
         ).toString();
-        tokenAmounts = this.calc.pool.tokens.map((_, i) => {
+        tokenAmounts = this.calc.pool.tokensList.map((_, i) => {
           if (i !== opts.tokenIndex) return '0';
           const tokenAmount = this.exactBPTInForTokenOut(
             this.calc.bptBalance,

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="routes.length > 0">
     <div
       class="flex text-gray-500 items-center cursor-pointer"
       @click="toggleVisibility"
@@ -11,9 +11,11 @@
       <BalIcon v-else name="chevron-down" size="sm" />
     </div>
     <div v-if="visible" class="mt-5">
-      <div v-if="routes.length === 0" class="mt-5 text-sm text-gray-500">
-        No data available
-      </div>
+      <div
+        v-if="routes.length === 0"
+        v-text="$t('noData')"
+        class="mt-5 text-sm text-gray-500"
+      />
       <div v-else>
         <div>
           <div class="flex justify-between text-xs">
@@ -92,7 +94,7 @@
                   :key="hop.pool.address"
                   class="p-1.5 ml-4 first:ml-0 flex bg-white rounded shadow"
                 >
-                  <a :href="getPoolLink(hop.pool.address)" target="_blank">
+                  <a :href="getPoolLink(hop.pool.id)" target="_blank">
                     <BalAsset
                       class="ml-1.5 first:ml-0"
                       v-for="token in hop.pool.tokens"
@@ -125,6 +127,7 @@ import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
 
 import useNumbers from '@/composables/useNumbers';
 import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import { useI18n } from 'vue-i18n';
 
 interface Route {
   share: number;
@@ -133,7 +136,7 @@ interface Route {
 
 interface Hop {
   pool: {
-    address: string;
+    id: string;
     tokens: Asset[];
   };
   tokenIn: string;
@@ -175,6 +178,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const { fNum } = useNumbers();
+    const { t } = useI18n();
 
     const getConfig = () => store.getters['web3/getConfig']();
     const getTokens = (params = {}) =>
@@ -189,7 +193,7 @@ export default defineComponent({
 
     const label = computed(() => {
       const version = props.sorReturn.isV1swap ? 'V1' : 'V2';
-      return `Using ${version} liquidity`;
+      return `${t('usingLiquidity', [version])}`;
     });
 
     const input = computed(() => {
@@ -212,6 +216,10 @@ export default defineComponent({
 
     const routes = computed(() => {
       const { sorReturn } = props;
+
+      if (!sorReturn.hasSwaps) {
+        return [];
+      }
 
       if (sorReturn.isV1swap) {
         const pools = props.pools as Pool[];
@@ -247,7 +255,7 @@ export default defineComponent({
           }
           const totalWeight = new BigNumber(rawPool.totalWeight);
           const pool = {
-            address: rawPool.id,
+            id: rawPool.id,
             tokens: rawPool.tokens
               .map(token => {
                 const address = getAddress(token.address);
@@ -314,7 +322,7 @@ export default defineComponent({
             : getAddress(addresses[i + 1]);
 
         const pool = {
-          address: rawPool.address,
+          id: rawPool.id,
           tokens: rawPool.tokens
             .map(token => {
               return {
@@ -358,7 +366,7 @@ export default defineComponent({
       return fNum(share, 'percent');
     }
 
-    function getPoolLink(address: string): string {
+    function getPoolLink(id: string): string {
       const { chainId } = getConfig();
       const prefixMap = {
         1: '',
@@ -366,8 +374,8 @@ export default defineComponent({
       };
       const prefix = prefixMap[chainId] || '';
       return props.sorReturn.isV1swap
-        ? `https://${prefix}pools.balancer.exchange/#/pool/${address}`
-        : `https://${prefix}app.balancer.fi/#pool/${address}`;
+        ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
+        : `https://${prefix}app.balancer.fi/#pool/${id}`;
     }
 
     return {

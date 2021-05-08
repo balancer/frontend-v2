@@ -9,27 +9,37 @@
     >
       <template v-slot:tokenColumnCell="token">
         <div class="px-6 py-8 flex flex-row icon-stack">
-          <BalLink :href="explorer.addressLink(token.address)" external>
+          <BalLink
+            :href="explorer.addressLink(token.address)"
+            external
+            noStyle
+            class="flex items-center"
+          >
             <BalAsset :address="token.address" :size="36" />
-            <span class="pl-4">
+            <span class="pl-4 font-medium">
               {{ symbolFor(token.address) }}
             </span>
+            <BalIcon
+              name="external-link"
+              size="sm"
+              class="ml-3 text-gray-500 hover:text-blue-500"
+            />
           </BalLink>
         </div>
       </template>
       <template v-slot:tokenWeightCell="token">
         <div class="px-6 py-8">
-          {{ weightFor(token.index) }}
+          {{ weightFor(token.address) }}
         </div>
       </template>
       <template v-slot:tokenBalanceCell="token">
         <div class="px-6 py-8">
-          {{ balanceFor(token.index) }}
+          {{ balanceFor(token.address) }}
         </div>
       </template>
       <template v-slot:tokenValueCell="token">
         <div class="px-6 py-8">
-          {{ fiatValueFor(token.index) }}
+          {{ fiatValueFor(token.address) }}
         </div>
       </template>
     </BalTable>
@@ -37,19 +47,17 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, toRefs, computed } from 'vue';
+import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
 import { useStore } from 'vuex';
-import { formatUnits } from '@ethersproject/units';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
-import useTokens from '@/composables/useTokens';
-import { Pool } from '@/utils/balancer/types';
 import { useI18n } from 'vue-i18n';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 export default defineComponent({
   props: {
     pool: {
-      type: Object as PropType<Pool> | null,
+      type: Object as PropType<FullPool>,
       required: true
     },
     loading: { type: Boolean, default: false }
@@ -58,37 +66,21 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorer } = useWeb3();
-    const { allTokens } = useTokens();
+    const { explorer, shortenLabel } = useWeb3();
     const { t } = useI18n();
 
     // DATA
-    const { pool } = toRefs(props);
+    const { pool }: { pool: Ref<FullPool> } = toRefs(props);
 
     // COMPUTED
     const prices = computed(() => store.state.market.prices);
 
-    const tokenValues = computed(() => {
-      if (!prices.value || !pool.value.tokenBalances) {
-        return [];
-      }
-
-      const tokenValues = pool.value.tokenBalances.map((balance, index) => {
-        const address = pool.value.tokens[index];
-        const token = allTokens.value[address];
-        const decimals = token ? token.decimals : 18;
-        const shortBalanceString = formatUnits(balance, decimals);
-        const shortBalance = parseFloat(shortBalanceString);
-        const price = prices.value[address.toLowerCase()]?.price;
-        return price ? shortBalance * price : 0;
-      });
-
-      return tokenValues;
-    });
-
     const tableData = computed(() => {
-      if (props.loading) return [];
-      return pool.value.tokens.map((address, index) => ({ address, index }));
+      if (!pool || !pool.value || props.loading) return [];
+      return Object.keys(pool.value.onchain.tokens).map((address, index) => ({
+        address,
+        index
+      }));
     });
 
     const columns = computed(() => [
@@ -126,26 +118,27 @@ export default defineComponent({
     ]);
 
     function symbolFor(address: string) {
-      const token = allTokens.value[address];
-      return token ? token.symbol : address;
+      if (!pool || !pool.value) return '-';
+      const symbol = pool.value.onchain.tokens[address].symbol;
+      return symbol ? symbol : shortenLabel(address);
     }
 
-    function balanceFor(index: number) {
-      const address = pool.value.tokens[index];
-      const denormBalance = pool.value.tokenBalances[index].toString();
-      const token = allTokens.value[address];
-      const decimals = token ? token.decimals : 18;
-      const balance = formatUnits(denormBalance, decimals);
-      return fNum(balance, 'token');
+    function balanceFor(address: string): string {
+      if (!pool || !pool.value) return '-';
+      return fNum(pool.value.onchain.tokens[address].balance, 'token');
     }
 
-    function weightFor(index: number) {
-      return fNum(pool.value.weightsPercent[index] / 100, 'percent');
+    function weightFor(address: string): string {
+      if (!pool || !pool.value) return '-';
+      return fNum(pool.value.onchain.tokens[address].weight, 'percent');
     }
 
-    function fiatValueFor(index: number) {
-      if (tokenValues.value[index] === 0) return '-';
-      return fNum(tokenValues.value[index], 'usd');
+    function fiatValueFor(address: string): string {
+      const price = prices.value[address.toLowerCase()]?.price;
+      if (!pool || !pool.value || !price) return '-';
+
+      const balance = Number(pool.value.onchain.tokens[address].balance);
+      return fNum(balance * price, 'usd');
     }
 
     return {

@@ -2,15 +2,15 @@
   <div class="container mx-auto px-4 lg:px-0 pt-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
-        <BalLoadingBlock v-if="loading" class="h-12 mb-2" />
+        <BalLoadingBlock v-if="loadingPool" class="h-12 mb-2" />
         <div v-else class="flex items-center">
           <h3 class="font-bold mr-4 capitalize">
             {{ poolTypeLabel }}
           </h3>
-          <BalAssetSet :addresses="titleTokens.map(t => t.token)" :size="36" />
+          <BalAssetSet :addresses="pool.tokenAddresses" :size="36" />
         </div>
 
-        <BalLoadingBlock v-if="loading" class="h-10 mb-2" />
+        <BalLoadingBlock v-if="loadingPool" class="h-10 mb-2" />
         <div v-else class="mb-1 mt-3 flex flex-wrap items-center">
           <div class="flex flex-wrap">
             <div
@@ -22,17 +22,17 @@
                 {{ token.symbol }}
               </span>
               <span class="font-medium text-gray-400 text-xs mt-px ml-1">
-                {{ fNum(token.weight / 100, 'percent_lg') }}
+                {{ fNum(token.weight, 'percent_lg') }}
               </span>
             </div>
           </div>
         </div>
 
-        <BalLoadingBlock v-if="loading" class="h-4" />
+        <BalLoadingBlock v-if="loadingPool" class="h-4" />
         <div v-else class="text-sm">{{ poolFeeLabel }}.</div>
 
         <BalAlert
-          v-if="!loading && !appLoading && missingPrices"
+          v-if="!appLoading && missingPrices"
           type="warning"
           :label="$t('noPriceInfo')"
           class="mt-2"
@@ -44,25 +44,25 @@
       <div class="col-span-2 order-2 lg:order-1">
         <div class="grid grid-cols-1 gap-y-8">
           <PoolChart
-            :prices="prices"
+            :prices="historicalPrices"
             :snapshots="snapshots"
-            :loading="loading"
+            :loading="isLoadingSnapshots"
           />
 
-          <PoolStats :pool="subgraphPool" :loading="isLoadingSubgraphPool" />
+          <PoolStats :pool="pool" :loading="loadingPool" />
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
-            <PoolBalancesCard :pool="pool" :loading="loading || appLoading" />
+            <PoolBalancesCard :pool="pool" :loading="loadingPool" />
           </div>
 
           <div>
             <h4 v-text="$t('activity')" class="mb-4" />
-            <TableEvents
-              v-if="hasEvents"
-              :tokens="pool.tokens"
-              :events="events"
-              :loading="loading || appLoading || web3Loading"
+            <TablePoolActivities
+              v-if="hasPoolActivities && pool"
+              :tokens="pool.tokensList"
+              :poolActivities="poolActivities"
+              :loading="isLoadingPoolActivities"
             />
             <BalBlankSlate
               v-else
@@ -75,14 +75,14 @@
 
       <div class="order-1 lg:order-2">
         <BalLoadingBlock
-          v-if="loading || appLoading || web3Loading"
+          v-if="loadingPool || web3Loading"
           class="h-96 sticky top-24"
         />
         <PoolActionsCard
           v-else
           :pool="pool"
           :missing-prices="missingPrices"
-          @on-tx="fetchPool"
+          @on-tx="onNewTx"
           class="sticky top-24"
         />
       </div>
@@ -91,43 +91,25 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  toRefs,
-  computed,
-  onBeforeMount,
-  watch
-} from 'vue';
+import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
-import {
-  getPoolEvents,
-  getPoolSnapshots,
-  PoolEvents,
-  PoolSnapshots
-} from '@/api/subgraph';
 import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
-import useTokens from '@/composables/useTokens';
 import { useQueryClient } from 'vue-query';
+import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
+import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 
 interface PoolPageData {
   id: string;
-  loading: boolean;
-  backgroundLoading: boolean;
-  events: PoolEvents;
-  prices: HistoricalPrices;
-  snapshots: PoolSnapshots;
   refetchQueriesOnBlockNumber: number;
 }
 
@@ -144,62 +126,63 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const route = useRoute();
-    const router = useRouter();
     const { fNum } = useNumbers();
     const { isAuthenticated } = useAuth();
-    const { allTokens } = useTokens();
     const queryClient = useQueryClient();
     const poolQuery = usePoolQuery(route.params.id as string);
-    const {
-      appNetwork,
-      account,
-      blockNumber,
-      loading: web3Loading
-    } = useWeb3();
+    const poolActivitiesQuery = usePoolActivitiesQuery(
+      route.params.id as string
+    );
+    const poolSnapshotsQuery = usePoolSnapshotsQuery(
+      route.params.id as string,
+      30
+    );
+
+    const { blockNumber, loading: web3Loading } = useWeb3();
 
     // DATA
     const data = reactive<PoolPageData>({
       id: route.params.id as string,
-      loading: true,
-      backgroundLoading: false,
-      events: {
-        joins: [],
-        exits: []
-      },
-      prices: {},
-      snapshots: [],
       refetchQueriesOnBlockNumber: 0
     });
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
 
-    const subgraphPool = computed(() => poolQuery.data.value);
-    const isLoadingSubgraphPool = computed(
+    const pool = computed(() => poolQuery.data.value);
+    const loadingPool = computed(
       () => poolQuery.isLoading.value || poolQuery.isIdle.value
     );
 
-    const pool = computed(() => {
-      return store.state.pools.current;
-    });
+    const poolActivities = computed(() => poolActivitiesQuery.data.value);
+    const isLoadingPoolActivities = computed(
+      () => poolActivitiesQuery.isLoading.value
+    );
+    const hasPoolActivities = computed(() => !!poolActivities.value?.length);
+
+    const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
+    const historicalPrices = computed(
+      () => poolSnapshotsQuery.data.value?.prices
+    );
+    const isLoadingSnapshots = computed(
+      () =>
+        poolSnapshotsQuery.isLoading.value || poolSnapshotsQuery.isIdle.value
+    );
 
     const titleTokens = computed(() => {
-      return pool.value.tokens
-        .map((token, i) => {
-          return {
-            symbol: allTokens.value[token]?.symbol,
-            weight: pool.value.weightsPercent[i],
-            token
-          };
-        })
-        .sort((a, b) => b.weight - a.weight);
+      if (!pool.value) return [];
+      return Object.values(pool.value.onchain.tokens).sort(
+        (a: any, b: any) => b.weight - a.weight
+      );
     });
 
     const poolTypeLabel = computed(() => {
-      switch (pool.value.strategy.name) {
-        case 'weightedPool':
+      if (!pool.value) return '';
+
+      switch (pool.value.poolType) {
+        case 'Weighted':
           return t('weightedPool');
-        case 'stablePool':
+        case 'Stable':
           return t('stablePool');
         default:
           return '';
@@ -207,84 +190,33 @@ export default defineComponent({
     });
 
     const poolFeeLabel = computed(() => {
-      return t('lpsEarnFee', [
-        fNum(pool.value.strategy.swapFeePercent / 100, 'percent')
-      ]);
-    });
-
-    const hasEvents = computed(() => {
-      return (
-        data.events &&
-        (data.events.joins.length > 0 || data.events.exits.length > 0)
-      );
+      if (!pool.value) return '';
+      return t('lpsEarnFee', [fNum(pool.value.onchain.swapFee, 'percent')]);
     });
 
     const missingPrices = computed(() => {
       if (pool.value) {
         const tokensWithPrice = Object.keys(store.state.market.prices);
-        const poolTokens = pool.value.tokens.map(t => t.toLowerCase());
-        return !poolTokens.every(token => tokensWithPrice.includes(token));
+        return !pool.value.tokensList.every(token =>
+          tokensWithPrice.includes(token)
+        );
       }
       return false;
     });
 
     // METHODS
-    async function fetchPool(): Promise<void> {
-      console.time('loadPool');
-      await store.dispatch('pools/get', data.id);
-      await store.dispatch('registry/injectTokens', [
-        ...pool.value.tokens,
-        pool.value.address
-      ]);
-      console.timeEnd('loadPool');
-
+    function onNewTx(): void {
+      queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
       data.refetchQueriesOnBlockNumber =
         blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
     }
 
-    async function loadEvents(): Promise<void> {
-      if (account) {
-        console.time('loadPoolEvents');
-        data.events = await getPoolEvents(appNetwork.id, data.id);
-        console.timeEnd('loadPoolEvents');
-      }
-    }
-
-    async function loadChartData(days: number): Promise<void> {
-      const addresses = pool.value.tokens;
-      data.prices = await getTokensHistoricalPrice(
-        appNetwork.id,
-        addresses,
-        days
-      );
-      data.snapshots = await getPoolSnapshots(appNetwork.id, data.id, days);
-    }
-
     // WATCHERS
     watch(blockNumber, async () => {
-      if (!data.loading && !data.backgroundLoading) {
-        data.backgroundLoading = true;
-        await fetchPool();
-        await loadEvents();
-        data.backgroundLoading = false;
-      }
       if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
         queryClient.invalidateQueries([POOLS_ROOT_KEY]);
       } else {
-        queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
-      }
-    });
-
-    // CALLBACKS
-    onBeforeMount(async () => {
-      try {
-        await fetchPool();
-        await loadEvents();
-        loadChartData(30);
-        data.loading = false;
-      } catch (error) {
-        console.error(error);
-        router.push('/');
+        poolQuery.refetch.value();
       }
     });
 
@@ -297,15 +229,20 @@ export default defineComponent({
       pool,
       poolTypeLabel,
       poolFeeLabel,
-      subgraphPool,
-      isLoadingSubgraphPool,
+      historicalPrices,
+      snapshots,
+      isLoadingSnapshots,
+      // subgraphPool,
+      loadingPool,
       titleTokens,
       isAuthenticated,
-      hasEvents,
+      hasPoolActivities,
       missingPrices,
+      isLoadingPoolActivities,
+      poolActivities,
       // methods
       fNum,
-      fetchPool
+      onNewTx
     };
   }
 });

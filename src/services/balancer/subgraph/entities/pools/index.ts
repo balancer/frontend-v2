@@ -1,5 +1,5 @@
 import Service from '../../service';
-import poolQueryBuilder from './query';
+import queryBuilder from './query';
 import { getPoolLiquidity } from '@/utils/balancer/price';
 import { bnum } from '@/utils';
 import {
@@ -9,12 +9,13 @@ import {
   DecoratedPool
 } from '../../types';
 import { Prices } from '@/api/coingecko';
+import { getAddress } from '@ethersproject/address';
 
 export default class Pools {
   service: Service;
   query: QueryBuilder;
 
-  constructor(service, query = poolQueryBuilder) {
+  constructor(service: Service, query: QueryBuilder = queryBuilder) {
     this.service = service;
     this.query = query;
   }
@@ -50,6 +51,8 @@ export default class Pools {
     prices: Prices
   ): DecoratedPool[] {
     return pools.map(pool => {
+      pool.address = this.extractAddress(pool.id);
+      pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.totalLiquidity = getPoolLiquidity(pool, prices);
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
@@ -101,5 +104,9 @@ export default class Pools {
       default:
         return currentBlock - blocksInDay;
     }
+  }
+
+  private extractAddress(poolId: string): string {
+    return getAddress(poolId.slice(0, 42));
   }
 }

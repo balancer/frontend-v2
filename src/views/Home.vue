@@ -3,8 +3,8 @@
     <template v-if="isConnected">
       <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
       <PoolsTable
-        :isLoading="isLoadingPoolsWithShares"
-        :data="poolsWithShares"
+        :isLoading="isLoadingUserPools"
+        :data="userPools"
         :noPoolsLabel="$t('noInvestments')"
         showPoolShares
         class="mb-8"
@@ -21,6 +21,9 @@
       :isLoading="isLoadingPools"
       :data="filteredPools"
       :noPoolsLabel="$t('noPoolsFound')"
+      :isPaginated="poolsHasNextPage"
+      :isLoadingMore="poolsIsFetchingNextPage"
+      @loadMore="loadMorePools"
     />
   </div>
 </template>
@@ -46,18 +49,21 @@ export default defineComponent({
   },
 
   setup() {
+    // DATA
+    const selectedTokens = ref<string[]>([]);
+
     // COMPOSABLES
     const router = useRouter();
     const { isConnected } = useWeb3();
     const {
       pools,
-      poolsWithShares,
+      userPools,
       isLoadingPools,
-      isLoadingPoolsWithShares
-    } = usePools();
-
-    // DATA
-    const selectedTokens = ref<string[]>([]);
+      isLoadingUserPools,
+      loadMorePools,
+      poolsHasNextPage,
+      poolsIsFetchingNextPage
+    } = usePools(selectedTokens);
 
     const filteredPools = computed(() =>
       selectedTokens.value.length > 0
@@ -68,22 +74,25 @@ export default defineComponent({
               poolTokenList.includes(selectedToken)
             );
           })
-        : pools.value
+        : pools?.value
     );
 
     return {
       // data
       selectedTokens,
       filteredPools,
-      poolsWithShares,
+      userPools,
       isLoadingPools,
-      isLoadingPoolsWithShares,
+      isLoadingUserPools,
 
       // computed
       isConnected,
+      poolsHasNextPage,
+      poolsIsFetchingNextPage,
 
       //methods
       router,
+      loadMorePools,
 
       // constants
       EXTERNAL_LINKS
