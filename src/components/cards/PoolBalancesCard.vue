@@ -9,7 +9,12 @@
     >
       <template v-slot:tokenColumnCell="token">
         <div class="px-6 py-8 flex flex-row icon-stack">
-          <BalLink :href="explorer.addressLink(token.address)" external noStyle class="flex items-center">
+          <BalLink
+            :href="explorer.addressLink(token.address)"
+            external
+            noStyle
+            class="flex items-center"
+          >
             <BalAsset :address="token.address" :size="36" />
             <span class="pl-4 font-medium">
               {{ symbolFor(token.address) }}

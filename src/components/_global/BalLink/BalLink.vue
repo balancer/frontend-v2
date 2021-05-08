@@ -39,7 +39,7 @@ export default defineComponent({
     const classes = computed(() => {
       return {
         'text-blue-500 hover:underline': !props.noStyle
-      }
+      };
     });
 
     return { attrs_, classes };
