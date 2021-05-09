@@ -1,7 +1,13 @@
 <template>
   <BalPopover>
     <template v-slot:activator>
-      <BalBtn circle color="white" size="sm" class="mb-2 text-gray-500">
+      <BalBtn
+        circle
+        color="white"
+        size="sm"
+        class="mb-2 text-gray-500"
+        @click="onActivatorClick"
+      >
         <BalIcon name="settings" size="sm" />
       </BalBtn>
     </template>
@@ -66,26 +72,42 @@ import {
   onMounted,
   computed,
   toRefs,
-  watch
+  watch,
+  PropType,
+  Ref
 } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
+import useFathom from '@/composables/useFathom';
 
 const slippageOptions = ['0.005', '0.01', '0.02'];
+
+export enum TradeSettingsContext {
+  trade,
+  invest
+}
 
 export default defineComponent({
   name: 'TradeSettingsPopover',
 
   props: {
-    hideLiquidity: { type: Boolean, default: false }
+    context: {
+      type: [String, Number] as PropType<TradeSettingsContext>,
+      required: true
+    }
   },
 
-  setup() {
+  setup(props) {
+    // DATA
+    const { context }: { context: Ref<TradeSettingsContext> } = toRefs(props);
+
+    // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
     const { explorer } = useWeb3();
+    const { trackGoal, Goals } = useFathom();
 
     // DATA
     const data = reactive({
@@ -99,10 +121,12 @@ export default defineComponent({
     // COMPUTED
     const appSlippage = computed(() => store.state.app.slippage);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
-
     const isCustomSlippage = computed(() => {
       return !slippageOptions.includes(appSlippage.value);
     });
+    const hideLiquidity = computed(
+      () => context.value === TradeSettingsContext.invest
+    );
 
     // CALLBACKS
     onMounted(() => {
@@ -116,6 +140,14 @@ export default defineComponent({
     const setSlippage = slippage => store.commit('app/setSlippage', slippage);
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
+
+    function onActivatorClick(): void {
+      if (context.value === TradeSettingsContext.trade) {
+        trackGoal(Goals.ClickTradeSettings);
+      } else if (context.value === TradeSettingsContext.invest) {
+        trackGoal(Goals.ClickInvestSettings);
+      }
+    }
 
     // WATCHERS
     watch(
@@ -136,15 +168,18 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
+      Goals,
       // computed
       appSlippage,
       appTradeLiquidity,
       isCustomSlippage,
+      hideLiquidity,
       // methods
       setSlippage,
       setTradeLiquidity,
       fNum,
-      explorer
+      explorer,
+      onActivatorClick
     };
   }
 });

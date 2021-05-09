@@ -24,7 +24,7 @@
       rounded
       :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
       :circle="['sm', 'md', 'lg'].includes(bp)"
-      @click="setAccountModal(true)"
+      @click="onClickConnect"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
@@ -43,6 +43,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
+import useFathom from '@/composables/useFathom';
 
 interface ActionsData {
   pendingClaims: Claim[] | null;
@@ -62,6 +63,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
     const { account, profile, loading: web3Loading, userNetwork } = useWeb3();
     const { fNum } = useNumbers();
+    const { trackGoal, Goals } = useFathom();
 
     // DATA
     const data = reactive<ActionsData>({
@@ -85,6 +87,11 @@ export default defineComponent({
         .reduce((a, b) => a + b, 0);
     }
 
+    function onClickConnect() {
+      setAccountModal(true);
+      trackGoal(Goals.ClickNavConnectWallet);
+    }
+
     // WATCHERS
     watch(account, newAccount => {
       data.pendingClaims = null;
@@ -103,6 +110,7 @@ export default defineComponent({
       // methods
       setAccountModal,
       fNum,
+      onClickConnect,
       // constants
       EXTERNAL_LINKS
     };

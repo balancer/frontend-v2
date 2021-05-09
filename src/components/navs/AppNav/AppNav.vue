@@ -7,7 +7,10 @@
   >
     <div class="h-full flex items-center justify-between">
       <div class="w-1/3">
-        <router-link :to="{ name: 'home' }">
+        <router-link
+          :to="{ name: 'home' }"
+          @click="trackGoal(Goals.ClickNavLogo)"
+        >
           <AppIcon v-if="['sm', 'md'].includes(bp)" />
           <AppLogo v-else />
         </router-link>
@@ -33,6 +36,7 @@ import AppIcon from '@/components/images/AppIcon.vue';
 import AppNavAlert from './AppNavAlert.vue';
 import AppNavToggle from './AppNavToggle.vue';
 import AppNavActions from './AppNavActions.vue';
+import useFathom from '@/composables/useFathom';
 
 export default defineComponent({
   components: {
@@ -47,6 +51,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { bp } = useBreakpoints();
+    const { trackGoal, Goals } = useFathom();
 
     // DATA
     const appNav = ref(null);
@@ -77,7 +82,10 @@ export default defineComponent({
       appNav,
       // computed
       bp,
-      alert
+      alert,
+      // methods
+      trackGoal,
+      Goals
     };
   }
 });

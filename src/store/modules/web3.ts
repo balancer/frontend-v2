@@ -3,8 +3,11 @@ import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
 import configs, { Config } from '@/config';
 import { getProfiles } from '@/utils/profile';
+import useFathom from '@/composables/useFathom';
 
 const defaultConfig = process.env.VUE_APP_NETWORK || '1';
+
+const { trackGoal, Goals } = useFathom();
 
 let auth;
 
@@ -37,7 +40,7 @@ const getters = {
 };
 
 const actions = {
-  async login({ dispatch, commit }, connector = 'injected') {
+  async login({ dispatch, commit, state }, connector = 'injected') {
     commit('setLoading', true);
 
     auth = getInstance();
@@ -48,9 +51,10 @@ const actions = {
       await dispatch('loadProvider');
     }
 
+    if (state.account) trackGoal(Goals.ConnectedWallet);
+
     commit('setLoading', false);
     commit('setConnector', connector);
-
     await dispatch('loadAccountData');
   },
 

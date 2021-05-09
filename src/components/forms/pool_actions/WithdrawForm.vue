@@ -164,6 +164,7 @@
           :disabled="!hasAmounts"
           :loading="loading"
           block
+          @click="trackGoal(Goals.ClickWithdraw)"
         >
           {{ $t('withdraw') }} {{ total.length > 15 ? '' : total }}
         </BalBtn>
@@ -206,6 +207,7 @@ import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import useTokens from '@/composables/useTokens';
 import { FullPool } from '@/services/balancer/subgraph/types';
+import useFathom from '@/composables/useFathom';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -246,6 +248,7 @@ export default defineComponent({
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
     const { allTokens } = useTokens();
+    const { trackGoal, Goals } = useFathom();
 
     // SERVICES
     const poolExchange = new PoolExchange(
@@ -616,7 +619,9 @@ export default defineComponent({
       singleAssetMaxLabel,
       singleAssetMaxes,
       isRequired,
-      preventOverflow
+      preventOverflow,
+      trackGoal,
+      Goals
     };
   }
 });

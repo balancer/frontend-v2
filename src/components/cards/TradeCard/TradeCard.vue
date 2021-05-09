@@ -3,7 +3,7 @@
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ $t(title) }}</h4>
-        <TradeSettingsPopover />
+        <TradeSettingsPopover :context="TradeSettingsContext.trade" />
       </div>
     </template>
     <div>
@@ -102,7 +102,9 @@ import { ETHER } from '@/constants/tokenlists';
 import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
-import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
+import TradeSettingsPopover, {
+  TradeSettingsContext
+} from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
 
 export default defineComponent({
@@ -284,7 +286,8 @@ export default defineComponent({
       tradeSuccess,
       priceImpact,
       isRequired,
-      tradeDisabled
+      tradeDisabled,
+      TradeSettingsContext
     };
   }
 });

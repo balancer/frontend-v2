@@ -14,6 +14,7 @@ import { urlMap as subgraphUrlMap } from '@/services/balancer/subgraph/client';
 
 import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
+import useFathom from '../useFathom';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -61,6 +62,7 @@ export default function useSor(
   const store = useStore();
   const auth = useAuth();
   const { txListener } = useNotify();
+  const { trackGoal, Goals } = useFathom();
 
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
@@ -262,6 +264,7 @@ export default function useSor(
       onTxConfirmed: () => {
         trading.value = false;
         latestTxHash.value = hash;
+        trackGoal(Goals.Swapped);
       },
       onTxCancel: () => {
         trading.value = false;
@@ -274,6 +277,7 @@ export default function useSor(
 
   async function trade() {
     const { chainId } = getConfig();
+    trackGoal(Goals.ClickSwap);
     trading.value = true;
 
     const tokenInAddress = tokenInAddressInput.value;

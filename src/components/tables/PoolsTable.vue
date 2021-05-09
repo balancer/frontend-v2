@@ -7,11 +7,7 @@
       :isLoadingMore="isLoadingMore"
       skeletonClass="h-64"
       sticky="both"
-      :onRowClick="
-        pool => {
-          router.push({ name: 'pool', params: { id: pool.id } });
-        }
-      "
+      :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
       @loadMore="$emit('loadMore')"
     >
@@ -65,6 +61,7 @@ import { getAddress } from '@ethersproject/address';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import useFathom from '@/composables/useFathom';
 
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 
@@ -101,6 +98,7 @@ export default defineComponent({
     const { allTokens } = useTokens();
     const router = useRouter();
     const { t } = useI18n();
+    const { trackGoal, Goals } = useFathom();
 
     // COMPOSABLES
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -166,13 +164,18 @@ export default defineComponent({
       return sortedTokens;
     }
 
+    function handleRowClick(pool: DecoratedPoolWithShares) {
+      trackGoal(Goals.ClickPoolsTableRow);
+      router.push({ name: 'pool', params: { id: pool.id } });
+    }
+
     return {
       // data
       columns,
       allTokens,
 
       // methods
-      router,
+      handleRowClick,
       getAddress,
       fNum,
       sortedTokenAddressesFor,
