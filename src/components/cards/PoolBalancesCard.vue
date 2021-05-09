@@ -53,6 +53,7 @@ import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import { useI18n } from 'vue-i18n';
 import { FullPool } from '@/services/balancer/subgraph/types';
+import numeral from 'numeral';
 
 export default defineComponent({
   props: {
@@ -97,7 +98,8 @@ export default defineComponent({
         accessor: 'index',
         Cell: 'tokenWeightCell',
         align: 'right',
-        className: 'pool-balance-table-cell'
+        className: 'pool-balance-table-cell',
+        sortKey: pool => weightFor(pool.address)
       },
       {
         name: t('balance'),
@@ -105,7 +107,8 @@ export default defineComponent({
         accessor: 'index',
         Cell: 'tokenBalanceCell',
         align: 'right',
-        className: 'pool-balance-table-cell'
+        className: 'pool-balance-table-cell',
+        sortKey: pool => balanceFor(pool.address)
       },
       {
         name: t('value'),
@@ -113,7 +116,8 @@ export default defineComponent({
         accessor: 'index',
         Cell: 'tokenValueCell',
         align: 'right',
-        className: 'pool-balance-table-cell'
+        className: 'pool-balance-table-cell',
+        sortKey: pool => numeral(fiatValueFor(pool.address)).value()
       }
     ]);
 
