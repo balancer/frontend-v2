@@ -51,6 +51,8 @@ export default defineComponent({
   setup() {
     // DATA
     const selectedTokens = ref<string[]>([]);
+    // Filter out pools below this value (e.g., with only dust BPT remaining)
+    const MINIMUM_VALUE = 100;
 
     // COMPOSABLES
     const router = useRouter();
@@ -70,11 +72,15 @@ export default defineComponent({
         ? pools.value?.filter(pool => {
             const poolTokenList = pool.tokensList.map(getAddress);
 
-            return selectedTokens.value.every(selectedToken =>
-              poolTokenList.includes(selectedToken)
+            return selectedTokens.value.every(
+              selectedToken =>
+                poolTokenList.includes(selectedToken) &&
+                Number(pool.totalLiquidity) > MINIMUM_VALUE
             );
           })
-        : pools?.value
+        : pools?.value.filter(pool => {
+            return Number(pool.totalLiquidity) > MINIMUM_VALUE;
+          })
     );
 
     return {
