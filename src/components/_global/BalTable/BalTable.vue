@@ -207,6 +207,11 @@ export default defineComponent({
     };
 
     const handleSort = (columnId: string) => {
+      const column = props.columns.find(column => column.id === columnId);
+      if (!column?.sortKey) {
+        return;
+      }
+
       currentSortColumn.value = columnId;
       if (currentSortDirection.value === null) {
         currentSortDirection.value = 'asc';
@@ -216,19 +221,16 @@ export default defineComponent({
         currentSortDirection.value = null;
       }
 
-      const column = props.columns.find(column => column.id === columnId);
-      if (column?.sortKey) {
-        const sortedData = sortBy(
-          (props.data as any).value || props.data,
-          column.sortKey
-        );
-        if (currentSortDirection.value === 'asc') {
-          tableData.value = sortedData;
-        } else if (currentSortDirection.value === 'desc') {
-          tableData.value = sortedData.reverse();
-        }
+      const sortedData = sortBy(
+        (props.data as any).value || props.data,
+        column.sortKey
+      );
+      if (currentSortDirection.value === 'asc') {
         tableData.value = sortedData;
+      } else if (currentSortDirection.value === 'desc') {
+        tableData.value = sortedData.reverse();
       }
+      tableData.value = sortedData;
     };
 
     onMounted(() => {
