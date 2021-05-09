@@ -23,9 +23,11 @@ import {
   MarkPointComponent,
   MarkLineComponent
 } from 'echarts/components';
+import VueVirtualScroller from 'vue3-virtual-scroller';
 import { CanvasRenderer } from 'echarts/renderers';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
+import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
 use([
   TitleComponent,
@@ -47,6 +49,7 @@ const app = createApp(App)
   .use(LockPlugin, authOptions)
   .use(VueApexCharts)
   .use(vueQuery)
+  .use(VueVirtualScroller)
   .mixin(mixins);
 
 registerDirectives(app);

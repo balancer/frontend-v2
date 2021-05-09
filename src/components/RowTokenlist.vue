@@ -13,8 +13,8 @@
       </div>
     </div>
     <Icon
-      :name="tokenlist.active ? 'toggle-on' : 'toggle_off'"
-      :class="tokenlist.active ? 'text-green-500' : 'border-color'"
+      :name="isActive ? 'toggle-on' : 'toggle_off'"
+      :class="isActive ? 'text-green-500' : 'border-color'"
       size="42"
     />
   </div>
@@ -25,13 +25,16 @@ import useNumbers from '@/composables/useNumbers';
 
 export default {
   props: {
-    tokenlist: Object
+    tokenlist: Object,
+    isActive: Boolean
   },
+  emits: ['onListSelected'],
   setup() {
     const { fNum } = useNumbers();
 
     return {
-      fNum
+      fNum,
+      console
     };
   }
 };
