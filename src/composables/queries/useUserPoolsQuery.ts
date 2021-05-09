@@ -41,7 +41,7 @@ export default function useUserPoolsQuery(
     () => isConnected.value && account.value != null && !isEmpty(prices.value)
   );
 
-  function uninjected(tokens: string[]): string[]  {
+  function uninjected(tokens: string[]): string[] {
     const allAddresses = Object.keys(allTokens.value);
     return tokens.filter(address => !allAddresses.includes(address));
   }

@@ -36,7 +36,7 @@ export default function usePoolsQuery(
   const prices = computed(() => store.state.market.prices);
   const isQueryEnabled = computed(() => !appLoading.value);
 
-  function uninjected(tokens: string[]): string[]  {
+  function uninjected(tokens: string[]): string[] {
     const allAddresses = Object.keys(allTokens.value);
     return tokens.filter(address => !allAddresses.includes(address));
   }

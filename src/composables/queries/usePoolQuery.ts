@@ -33,9 +33,11 @@ export default function usePoolQuery(
   const prices = computed(() => store.state.market.prices);
   const isQueryEnabled = computed(() => !appLoading.value);
 
-  function tokensInjected(pool: DecoratedPool): boolean  {
+  function tokensInjected(pool: DecoratedPool): boolean {
     const allAddresses = Object.keys(allTokens.value);
-    return [...pool.tokenAddresses, pool.address].every(address => allAddresses.includes(address));
+    return [...pool.tokenAddresses, pool.address].every(address =>
+      allAddresses.includes(address)
+    );
   }
 
   // METHODS
@@ -51,7 +53,7 @@ export default function usePoolQuery(
       pool.poolType,
       tokens
     );
-    
+
     if (!tokensInjected(pool)) {
       await store.dispatch('registry/injectTokens', [
         ...pool.tokenAddresses,
