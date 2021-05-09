@@ -1,11 +1,11 @@
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { TOKEN_LISTS } from '@/constants/tokenlists';
 import { useQuery } from 'vue-query';
 import { loadTokenlist } from '@/utils/tokenlists';
 import { useStore } from 'vuex';
 import { flatten, keyBy, orderBy, uniqBy } from 'lodash';
 import useAccountBalances from './useAccountBalances';
-import { formatUnits } from '@ethersproject/units';
+import { lsGet, lsSet } from '@/utils';
 
 const loadAllTokenLists = async () => {
   // since a request to retrieve the list can fail
@@ -28,7 +28,9 @@ type TokenListRequest = {
 
 export default function useTokenLists(request: TokenListRequest) {
   const store = useStore();
-  const activeTokenLists = ref<string[]>(['Balancer']);
+  const activeTokenLists = ref<string[]>(
+    lsGet('activeTokenLists', ['Balancer'])
+  );
   const prices = computed(() => store.state.market.prices);
   const { balances } = useAccountBalances();
 
@@ -109,7 +111,6 @@ export default function useTokenLists(request: TokenListRequest) {
   });
 
   const toggleActiveTokenList = (name: string) => {
-    console.log('DEBUG: BINGPOT', name);
     // remove from active lists
     if (activeTokenLists.value.includes(name)) {
       activeTokenLists.value = activeTokenLists.value.filter(
@@ -118,6 +119,7 @@ export default function useTokenLists(request: TokenListRequest) {
       return;
     }
     activeTokenLists.value = [...activeTokenLists.value, name];
+    lsSet('activeTokenLists', activeTokenLists.value);
   };
 
   const isActiveList = (name: string) => {

@@ -211,7 +211,7 @@ const actions = {
       activeLists[name] = true;
     }
     if (Object.keys(activeLists).length > 0) {
-      // lsSet('tokenLists', activeLists);
+      lsSet('tokenLists', activeLists);
       commit('setActiveLists', activeLists);
     }
   }
