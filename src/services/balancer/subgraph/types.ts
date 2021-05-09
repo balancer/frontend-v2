@@ -96,3 +96,16 @@ export interface PoolActivities {
   joins: PoolActivity[];
   exits: PoolActivity[];
 }
+
+export interface PoolSnapshot {
+  pool: {
+    id: string;
+  };
+  timestamp: number;
+  amounts: string[];
+  totalShares: string;
+  swapVolume: string;
+  swapFees: string;
+}
+
+export type PoolSnapshots = Record<number, PoolSnapshot>;

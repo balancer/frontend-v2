@@ -11,9 +11,11 @@
       <BalIcon v-else name="chevron-down" size="sm" />
     </div>
     <div v-if="visible" class="mt-5">
-      <div v-if="routes.length === 0" class="mt-5 text-sm text-gray-500">
-        No data available
-      </div>
+      <div
+        v-if="routes.length === 0"
+        v-text="$t('noData')"
+        class="mt-5 text-sm text-gray-500"
+      />
       <div v-else>
         <div>
           <div class="flex justify-between text-xs">
@@ -125,6 +127,7 @@ import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
 
 import useNumbers from '@/composables/useNumbers';
 import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import { useI18n } from 'vue-i18n';
 
 interface Route {
   share: number;
@@ -175,6 +178,7 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const { fNum } = useNumbers();
+    const { t } = useI18n();
 
     const getConfig = () => store.getters['web3/getConfig']();
     const getTokens = (params = {}) =>
@@ -189,7 +193,7 @@ export default defineComponent({
 
     const label = computed(() => {
       const version = props.sorReturn.isV1swap ? 'V1' : 'V2';
-      return `Using ${version} liquidity`;
+      return `${t('usingLiquidity', [version])}`;
     });
 
     const input = computed(() => {

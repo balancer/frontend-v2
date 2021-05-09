@@ -9,11 +9,21 @@
     >
       <template v-slot:tokenColumnCell="token">
         <div class="px-6 py-8 flex flex-row icon-stack">
-          <BalLink :href="explorer.addressLink(token.address)" external>
+          <BalLink
+            :href="explorer.addressLink(token.address)"
+            external
+            noStyle
+            class="flex items-center"
+          >
             <BalAsset :address="token.address" :size="36" />
-            <span class="pl-4">
+            <span class="pl-4 font-medium">
               {{ symbolFor(token.address) }}
             </span>
+            <BalIcon
+              name="external-link"
+              size="sm"
+              class="ml-3 text-gray-500 hover:text-blue-500"
+            />
           </BalLink>
         </div>
       </template>
@@ -37,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, toRefs, computed } from 'vue';
+import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
@@ -60,13 +70,13 @@ export default defineComponent({
     const { t } = useI18n();
 
     // DATA
-    const { pool } = toRefs(props);
+    const { pool }: { pool: Ref<FullPool> } = toRefs(props);
 
     // COMPUTED
     const prices = computed(() => store.state.market.prices);
 
     const tableData = computed(() => {
-      if (!pool.value || props.loading) return [];
+      if (!pool || !pool.value || props.loading) return [];
       return Object.keys(pool.value.onchain.tokens).map((address, index) => ({
         address,
         index
@@ -90,15 +100,15 @@ export default defineComponent({
         className: 'pool-balance-table-cell'
       },
       {
-        name: t('poolBalance'),
-        id: 'poolBalance',
+        name: t('balance'),
+        id: 'balance',
         accessor: 'index',
         Cell: 'tokenBalanceCell',
         align: 'right',
         className: 'pool-balance-table-cell'
       },
       {
-        name: t('poolValue'),
+        name: t('value'),
         id: 'value',
         accessor: 'index',
         Cell: 'tokenValueCell',
@@ -108,23 +118,24 @@ export default defineComponent({
     ]);
 
     function symbolFor(address: string) {
+      if (!pool || !pool.value) return '-';
       const symbol = pool.value.onchain.tokens[address].symbol;
       return symbol ? symbol : shortenLabel(address);
     }
 
     function balanceFor(address: string): string {
-      if (!pool.value) return '-';
+      if (!pool || !pool.value) return '-';
       return fNum(pool.value.onchain.tokens[address].balance, 'token');
     }
 
     function weightFor(address: string): string {
-      if (!pool.value) return '-';
+      if (!pool || !pool.value) return '-';
       return fNum(pool.value.onchain.tokens[address].weight, 'percent');
     }
 
     function fiatValueFor(address: string): string {
       const price = prices.value[address.toLowerCase()]?.price;
-      if (!pool.value || !price) return '-';
+      if (!pool || !pool.value || !price) return '-';
 
       const balance = Number(pool.value.onchain.tokens[address].balance);
       return fNum(balance * price, 'usd');

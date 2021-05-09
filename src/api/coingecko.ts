@@ -24,7 +24,7 @@ function getChainAddress(chainId: number, address: string) {
   return map[chainId][address.toLowerCase()] || address;
 }
 
-function getOriginalAddress(chainId: number, address: string) {
+export function getOriginalAddress(chainId: number, address: string) {
   if (!address) {
     return;
   }

@@ -8,6 +8,7 @@ const QUERY_KEYS = {
     All: (tokens: Ref<string[]>) => [POOLS_ROOT_KEY, 'all', { tokens }],
     User: (account: Ref<string>) => [POOLS_ROOT_KEY, 'user', { account }],
     Current: (id: string) => [POOLS_ROOT_KEY, 'current', { id }],
+    Snapshot: (id: string) => [POOLS_ROOT_KEY, 'snapshot', { id }],
     Activities: (id: string) => [POOLS_ROOT_KEY, 'activities', 'all', { id }],
     UserActivities: (id: string, account: Ref<string>) => [
       POOLS_ROOT_KEY,
