@@ -286,8 +286,7 @@ export default defineComponent({
       change,
 
       // computed
-      chartConfig,
-      console
+      chartConfig
     };
   }
 });
