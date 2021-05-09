@@ -79,7 +79,6 @@
     "vue-slider-component": "^4.0.0-beta.3",
     "vue3-apexcharts": "^1.2.1",
     "vue3-jazzicon": "^0.1.2",
-    "vue3-virtual-list": "^1.0.1",
     "vue3-virtual-scroller": "^0.2.1",
     "vuex": "^4.0.0-alpha.1",
     "walletlink": "^2.0.2",

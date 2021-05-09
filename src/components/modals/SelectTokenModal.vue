@@ -55,8 +55,8 @@
           <span class="mr-1">
             <img
               v-for="(tokenlist, i) in activeTokenLists"
-              :key="i"
-              :src="_url(tokenlist.logoURI)"
+              :key="`activeTokenListIcon-${i}`"
+              :src="_url(activeListMap[tokenlist]?.logoURI)"
               class="rounded-full inline-block bg-white align-middle shadow w-6 h-6"
             />
           </span>
@@ -77,7 +77,6 @@
             <RowToken :token="item" />
           </a>
         </RecycleScroller>
-
         <div
           v-else-if="isTokenSelected"
           v-text="$t('tokenAlreadySelected')"
@@ -119,14 +118,19 @@ export default defineComponent({
       loading: false,
       query: '',
       selectTokenList: false,
-      isTokenSelected: false
+      isTokenSelected: false,
+      includeEther: props.includeEther,
+      not: props.excludedTokens,
+      queryAddress: ''
     });
     const {
       isLoading: isLoadingTokenLists,
       lists: tokenLists,
       toggleActiveTokenList,
       isActiveList,
-      tokens
+      tokens,
+      listNameMap: activeListMap,
+      activeTokenLists
     } = useTokenLists(data);
 
     // COMPOSABLES
@@ -144,22 +148,19 @@ export default defineComponent({
       return Object.values(tokenListsClone).reverse();
     });
 
-    const activeTokenLists = computed(() => {
-      console.log('DEBUG: dingbot');
-      // return store.getters['registry/getTokenLists']({ active: true });
-      return [];
-    });
-
     // METHODS
     function onTokenSearch(event): void {
       let address = event.target.value;
       if (isAddress(address)) {
         address = getAddress(address);
+        data.queryAddress = address;
         if (props.excludedTokens.includes(address)) data.isTokenSelected = true;
         else {
           data.isTokenSelected = false;
           store.dispatch('registry/injectTokens', [address.trim()]);
         }
+      } else {
+        data.queryAddress = '';
       }
     }
 
@@ -195,8 +196,10 @@ export default defineComponent({
       title,
       tokens,
       tokenlistsReverse,
-      activeTokenLists,
       tokenLists,
+      activeListMap,
+      activeTokenLists,
+
       // methods
       onTokenSearch,
       onSelectToken,
@@ -206,7 +209,8 @@ export default defineComponent({
       onClose,
 
       toggleActiveTokenList,
-      isActiveList
+      isActiveList,
+      console
     };
   }
 });

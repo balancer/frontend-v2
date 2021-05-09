@@ -23,7 +23,7 @@ const loadAllTokenLists = async () => {
 type TokenListRequest = {
   getEther?: boolean;
   query?: string;
-  addresses?: string[];
+  queryAddress?: string;
 };
 
 export default function useTokenLists(request: TokenListRequest) {
@@ -39,6 +39,7 @@ export default function useTokenLists(request: TokenListRequest) {
 
   const listNameMap = computed(() => keyBy(lists.value, 'name'));
   const injectedTokens = store.getters['registry/getInjected'];
+
   const tokens = computed(() => {
     const _tokens = uniqBy(
       orderBy(
@@ -87,6 +88,13 @@ export default function useTokenLists(request: TokenListRequest) {
       _tokens.unshift(store.getters['register/getEther']);
     }
 
+    if (request?.queryAddress) {
+      return _tokens.filter(
+        token =>
+          token.address?.toLowerCase() === request?.queryAddress?.toLowerCase()
+      );
+    }
+
     // search functionality, this can be better
     if (request.query) {
       return _tokens.filter(token => {
@@ -97,13 +105,6 @@ export default function useTokenLists(request: TokenListRequest) {
       });
     }
 
-    if (request?.addresses?.length) {
-      return request.addresses.map((address: any) =>
-        _tokens.filter(
-          token => token.address.toLowerCase() === address.toLowerCase()
-        )
-      );
-    }
     return _tokens;
   });
 
@@ -128,6 +129,8 @@ export default function useTokenLists(request: TokenListRequest) {
     lists,
     toggleActiveTokenList,
     isActiveList,
-    tokens
+    tokens,
+    listNameMap,
+    activeTokenLists
   };
 }
