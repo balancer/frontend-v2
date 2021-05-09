@@ -480,9 +480,10 @@ export default defineComponent({
       const amount = bnum(balances.value[data.propToken])
         .times(fractionBasisPoints)
         .div(10000)
-        .precision(tokenDecimals(data.propToken));
+        .toFixed(tokenDecimals(data.propToken));
+
       const { send } = poolCalculator.propAmountsGiven(
-        amount.toString(),
+        amount,
         data.propToken,
         'send'
       );
