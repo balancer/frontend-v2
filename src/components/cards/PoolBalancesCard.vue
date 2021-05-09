@@ -8,7 +8,7 @@
       sticky="both"
     >
       <template v-slot:tokenColumnCell="token">
-        <div class="px-6 py-8 flex flex-row icon-stack">
+        <div class="px-6 py-4 flex flex-row icon-stack">
           <BalLink
             :href="explorer.addressLink(token.address)"
             external
@@ -28,17 +28,17 @@
         </div>
       </template>
       <template v-slot:tokenWeightCell="token">
-        <div class="px-6 py-8">
+        <div class="px-6 py-4">
           {{ weightFor(token.address) }}
         </div>
       </template>
       <template v-slot:tokenBalanceCell="token">
-        <div class="px-6 py-8">
+        <div class="px-6 py-4">
           {{ balanceFor(token.address) }}
         </div>
       </template>
       <template v-slot:tokenValueCell="token">
-        <div class="px-6 py-8">
+        <div class="px-6 py-4">
           {{ fiatValueFor(token.address) }}
         </div>
       </template>
