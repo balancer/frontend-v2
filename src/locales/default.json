@@ -86,7 +86,7 @@
     "loading": "Loading...",
     "loadMore": "Load more",
     "logOut": "Log out",
-    "lpsEarnFee": "LPs earn {0} in fees",
+    "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
     "manageLists": "Manage lists",
     "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
     "max": "Max",

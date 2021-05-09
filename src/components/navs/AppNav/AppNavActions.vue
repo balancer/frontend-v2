@@ -26,8 +26,8 @@
       :circle="['sm', 'md', 'lg'].includes(bp)"
       @click="setAccountModal(true)"
     >
-      <span class="hidden md:inline-block" v-text="$t('connectWallet')" />
-      <BalIcon name="log-out" size="sm" class="md:hidden" />
+      <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
+      <BalIcon name="log-out" size="sm" class="lg:hidden" />
     </BalBtn>
   </div>
 </template>

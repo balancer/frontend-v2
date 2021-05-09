@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="inline-block">
     <i :data-feather="name" :width="iconSize" :height="iconSize" :fill="fill" />
   </div>
 </template>
