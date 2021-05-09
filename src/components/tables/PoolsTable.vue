@@ -1,5 +1,5 @@
 <template>
-  <BalCard shadow="lg" class="mt-8" no-pad>
+  <BalCard shadow="lg" class="mt-4" no-pad>
     <BalTable
       :columns="columns"
       :data="data"
@@ -7,11 +7,7 @@
       :isLoadingMore="isLoadingMore"
       skeletonClass="h-64"
       sticky="both"
-      :onRowClick="
-        pool => {
-          router.push({ name: 'pool', params: { id: pool.id } });
-        }
-      "
+      :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
       @loadMore="$emit('loadMore')"
     >
@@ -21,14 +17,17 @@
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
-        <div class="px-6 py-4">
-          <BalAssetSet :addresses="tokensFor(pool)" :width="100" />
+        <div v-if="!isLoading" class="px-6 py-4">
+          <BalAssetSet
+            :addresses="sortedTokenAddressesFor(pool)"
+            :width="100"
+          />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div class="px-6 py-4 -mt-1 flex flex-wrap">
+        <div v-if="!isLoading" class="px-6 py-4 -mt-1 flex flex-wrap">
           <div
-            v-for="token in pool.tokens"
+            v-for="token in sortedTokensFor(pool)"
             :key="token"
             class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
           >
@@ -62,6 +61,7 @@ import { getAddress } from '@ethersproject/address';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import useFathom from '@/composables/useFathom';
 
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 
@@ -98,6 +98,7 @@ export default defineComponent({
     const { allTokens } = useTokens();
     const router = useRouter();
     const { t } = useI18n();
+    const { trackGoal, Goals } = useFathom();
 
     // COMPOSABLES
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -152,8 +153,20 @@ export default defineComponent({
       }
     ]);
 
-    function tokensFor(pool: DecoratedPoolWithShares) {
-      return pool.tokensList.map(getAddress);
+    function sortedTokenAddressesFor(pool: DecoratedPoolWithShares) {
+      const sortedTokens = sortedTokensFor(pool);
+      return sortedTokens.map(token => getAddress(token.address));
+    }
+
+    function sortedTokensFor(pool: DecoratedPoolWithShares) {
+      const sortedTokens = pool.tokens.slice();
+      sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
+      return sortedTokens;
+    }
+
+    function handleRowClick(pool: DecoratedPoolWithShares) {
+      trackGoal(Goals.ClickPoolsTableRow);
+      router.push({ name: 'pool', params: { id: pool.id } });
     }
 
     return {
@@ -162,10 +175,11 @@ export default defineComponent({
       allTokens,
 
       // methods
-      router,
+      handleRowClick,
       getAddress,
-      tokensFor,
-      fNum
+      fNum,
+      sortedTokenAddressesFor,
+      sortedTokensFor
     };
   }
 });

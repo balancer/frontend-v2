@@ -2,6 +2,8 @@ import Client from './client';
 import InfuraService from '@/services/infura/service';
 import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
+import PoolActivities from './entities/poolActivities';
+import PoolSnapshots from './entities/poolSnapshots';
 
 const NETWORK = process.env.VUE_APP_NETWORK || '1';
 
@@ -10,6 +12,8 @@ export default class Service {
   infuraService: InfuraService;
   pools: Pools;
   poolShares: PoolShares;
+  poolActivities: PoolActivities;
+  poolSnapshots: PoolSnapshots;
 
   constructor(client = new Client(), infuraService = new InfuraService()) {
     this.client = client;
@@ -18,6 +22,8 @@ export default class Service {
     // Init entities
     this.pools = new Pools(this);
     this.poolShares = new PoolShares(this);
+    this.poolActivities = new PoolActivities(this);
+    this.poolSnapshots = new PoolSnapshots(this);
   }
 
   public get blockTime(): number {

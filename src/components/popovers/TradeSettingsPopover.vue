@@ -6,7 +6,7 @@
         color="white"
         size="sm"
         class="mb-2 text-gray-500"
-        @click="loadCustomState"
+        @click="onActivatorClick"
       >
         <BalIcon name="settings" size="sm" />
       </BalBtn>
@@ -51,11 +51,25 @@
 
 <script lang="ts">
 import { defineComponent, reactive, computed, toRefs } from 'vue';
+import {
+  defineComponent,
+  reactive,
+  computed,
+  toRefs,
+  PropType,
+  Ref
+} from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
+import useFathom from '@/composables/useFathom';
+
+export enum TradeSettingsContext {
+  trade,
+  invest
+}
 
 export default defineComponent({
   name: 'TradeSettingsPopover',
@@ -65,13 +79,21 @@ export default defineComponent({
   },
 
   props: {
-    hideLiquidity: { type: Boolean, default: false }
+    context: {
+      type: [String, Number] as PropType<TradeSettingsContext>,
+      required: true
+    }
   },
 
-  setup() {
+  setup(props) {
+    // DATA
+    const { context }: { context: Ref<TradeSettingsContext> } = toRefs(props);
+
+    // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
     const { explorer } = useWeb3();
+    const { trackGoal, Goals } = useFathom();
 
     // DATA
     const data = reactive({
@@ -82,20 +104,34 @@ export default defineComponent({
 
     // COMPUTED
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
+    const hideLiquidity = computed(
+      () => context.value === TradeSettingsContext.invest
+    );
 
     // METHODS
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
 
+    function onActivatorClick(): void {
+      if (context.value === TradeSettingsContext.trade) {
+        trackGoal(Goals.ClickTradeSettings);
+      } else if (context.value === TradeSettingsContext.invest) {
+        trackGoal(Goals.ClickInvestSettings);
+      }
+    }
+
     return {
       // data
       ...toRefs(data),
+      Goals,
       // computed
       appTradeLiquidity,
+      hideLiquidity,
       // methods
       setTradeLiquidity,
       fNum,
-      explorer
+      explorer,
+      onActivatorClick
     };
   }
 });

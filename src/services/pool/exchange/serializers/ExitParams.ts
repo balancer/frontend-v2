@@ -12,7 +12,7 @@ export default class ExitParams {
 
   constructor(exchange) {
     this.exchange = exchange;
-    this.isStablePool = exchange.pool.strategy.name === 'stablePool';
+    this.isStablePool = exchange.pool.poolType === 'Stable';
     this.dataEncodeFn = this.isStablePool
       ? encodeExitStablePool
       : encodeExitWeightedPool;
@@ -28,7 +28,7 @@ export default class ExitParams {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
     const parsedBptIn = parseUnits(
       bptIn,
-      this.exchange.tokens[this.exchange.pool.address].decimals
+      this.exchange.pool.onchain.decimals
     ).toString();
     const txData = this.txData(
       parsedAmountsOut,
@@ -42,7 +42,7 @@ export default class ExitParams {
       account,
       account,
       {
-        assets: this.exchange.pool.tokens,
+        assets: this.exchange.pool.tokenAddresses,
         minAmountsOut: parsedAmountsOut,
         userData: txData,
         toInternalBalance: this.toInternalBalance
@@ -51,9 +51,13 @@ export default class ExitParams {
   }
 
   private parseAmounts(amounts: string[]): BigNumberish[] {
-    return this.exchange.pool.tokens.map((token, i) =>
-      parseUnits(amounts[i], this.exchange.tokens[token].decimals).toString()
-    );
+    return amounts.map((amount, i) => {
+      const token = this.exchange.pool.tokenAddresses[i];
+      return parseUnits(
+        amount,
+        this.exchange.pool.onchain.tokens[token].decimals
+      );
+    });
   }
 
   private txData(

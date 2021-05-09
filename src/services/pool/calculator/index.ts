@@ -1,11 +1,11 @@
 import { Token } from '@/types';
-import { Pool } from '@/utils/balancer/types';
 import { parseUnits, formatUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
 import BigNumber from 'bignumber.js';
 import Weighted from './weighted';
 import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
 import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 interface Amounts {
   send: string[];
@@ -18,13 +18,15 @@ export interface PiOptions {
   tokenIndex: number | null;
 }
 
-export default class Calculator {
-  pool: Pool;
-  allTokens: Token[];
-  types = ['send', 'receive'];
-  action: 'join' | 'exit';
+type PoolAction = 'join' | 'exit';
 
-  constructor(pool, allTokens, action) {
+export default class Calculator {
+  pool: FullPool;
+  allTokens: Token[];
+  action: PoolAction;
+  types = ['send', 'receive'];
+
+  constructor(pool: FullPool, allTokens: Token[], action: PoolAction) {
     this.pool = pool;
     this.allTokens = allTokens;
     this.action = action;
@@ -34,7 +36,7 @@ export default class Calculator {
     this.allTokens = tokens;
   }
 
-  public setPool(pool: Pool): void {
+  public setPool(pool: FullPool): void {
     this.pool = pool;
   }
 
@@ -71,14 +73,14 @@ export default class Calculator {
     let maxAmounts: Amounts = { send: [], receive: [], fixedToken: 0 };
     const type = this.action === 'join' ? 'send' : 'receive';
 
-    this.pool.tokens.forEach((token, tokenIndex) => {
+    this.pool.tokenAddresses.forEach((token, tokenIndex) => {
       let hasBalance = true;
       const balance = this.allTokens[token].balance.toString();
       const amounts = this.propAmountsGiven(balance, tokenIndex, type);
 
       amounts.send.forEach((amount, amountIndex) => {
         const greaterThanBalance =
-          parseFloat(amount) >
+          Number(amount) >
           this.allTokens[this.tokenOf(type, amountIndex)].balance;
         if (greaterThanBalance) hasBalance = false;
       });
@@ -150,27 +152,35 @@ export default class Calculator {
   }
 
   public get poolTokenBalances(): BigNumberish[] {
-    return this.pool.poolTokens.balances;
+    const normalizedBalances = Object.values(this.pool.onchain.tokens).map(
+      t => t.balance
+    );
+    return normalizedBalances.map((balance, i) =>
+      parseUnits(balance, this.poolTokenDecimals[i])
+    );
   }
 
   public get poolTokenDecimals(): number[] {
-    return this.pool.tokens.map(t => this.allTokens[t].decimals);
+    return Object.values(this.pool.onchain.tokens).map(t => t.decimals);
   }
 
   public get poolTokenWeights(): BigNumberish[] {
-    return this.pool.weights;
+    const normalizedWeights = Object.values(this.pool.onchain.tokens).map(
+      t => t.weight
+    );
+    return normalizedWeights.map(weight => parseUnits(weight.toString(), 18));
   }
 
   public get poolTotalSupply(): BigNumberish {
-    return this.pool.totalSupply;
+    return parseUnits(this.pool.onchain.totalSupply, this.poolDecimals);
   }
 
   public get poolSwapFee(): BigNumberish {
-    return this.pool.strategy.swapFee;
+    return parseUnits(this.pool.onchain.swapFee, 18);
   }
 
   public get poolDecimals(): number {
-    return this.allTokens[this.pool.address].decimals;
+    return this.pool.onchain.decimals;
   }
 
   public get bptBalance(): string {
@@ -178,26 +188,26 @@ export default class Calculator {
   }
 
   public get isStablePool(): boolean {
-    return this.pool.strategy.name === 'stablePool';
+    return this.pool.poolType === 'Stable';
   }
 
-  public get sendTokens() {
-    if (this.action === 'join') return this.pool.tokens;
+  public get sendTokens(): string[] {
+    if (this.action === 'join') return this.pool.tokenAddresses;
     return [this.pool.address];
   }
 
-  public get receiveTokens() {
+  public get receiveTokens(): string[] {
     if (this.action === 'join') return [this.pool.address];
-    return this.pool.tokens;
+    return this.pool.tokenAddresses;
   }
 
-  public get sendRatios() {
-    if (this.action === 'join') return this.pool.tokenBalances;
-    return [this.pool.totalSupply];
+  public get sendRatios(): BigNumberish[] {
+    if (this.action === 'join') return this.poolTokenBalances;
+    return [this.poolTotalSupply];
   }
 
-  public get receiveRatios() {
-    if (this.action === 'join') return [this.pool.totalSupply];
-    return this.pool.tokenBalances;
+  public get receiveRatios(): BigNumberish[] {
+    if (this.action === 'join') return [this.poolTotalSupply];
+    return this.poolTokenBalances;
   }
 }

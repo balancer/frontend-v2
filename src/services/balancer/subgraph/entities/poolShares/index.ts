@@ -6,7 +6,7 @@ export default class PoolShares {
   service: Service;
   query: QueryBuilder;
 
-  constructor(service, query = poolQueryBuilder) {
+  constructor(service: Service, query: QueryBuilder = poolQueryBuilder) {
     this.service = service;
     this.query = query;
   }

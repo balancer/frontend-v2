@@ -21,7 +21,7 @@
           class="text-white text-bold text-center"
         />
         <div class="flex justify-center mt-4">
-          <BalBtn color="white" class="mr-4" @click="setAccountModal(true)">
+          <BalBtn color="white" class="mr-4" @click="onClickConnect">
             {{ $t('connectWallet') }}
           </BalBtn>
           <BalBtn
@@ -31,6 +31,7 @@
             rel="noreferrer"
             color="white"
             outline
+            @click="trackGoal(Goals.ClickHeroLearnMore)"
           >
             {{ $t('learnMore') }}
             <BalIcon name="external-link" size="sm" class="ml-2" />
@@ -50,6 +51,7 @@ import useWeb3 from '@/composables/useWeb3';
 import usePools from '@/composables/pools/usePools';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
+import useFathom from '@/composables/useFathom';
 
 export default defineComponent({
   name: 'AppHero',
@@ -59,6 +61,7 @@ export default defineComponent({
     const store = useStore();
     const { fNum } = useNumbers();
     const { isConnected } = useWeb3();
+    const { trackGoal, Goals } = useFathom();
     const { totalInvestedAmount, isLoadingUserPools } = usePools();
 
     // COMPUTED
@@ -70,10 +73,16 @@ export default defineComponent({
       ['h-40']: isConnected.value
     }));
 
+    function onClickConnect() {
+      setAccountModal(true);
+      trackGoal(Goals.ClickHeroConnectWallet);
+    }
+
     return {
       // data
       totalInvestedAmount,
       isLoadingUserPools,
+      Goals,
 
       // computed
       isConnected,
@@ -82,6 +91,8 @@ export default defineComponent({
       // methods
       setAccountModal,
       fNum,
+      onClickConnect,
+      trackGoal,
       // constants
       EXTERNAL_LINKS
     };

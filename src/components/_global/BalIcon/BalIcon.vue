@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="inline-block">
     <i :data-feather="name" :width="iconSize" :height="iconSize" :fill="fill" />
   </div>
 </template>
@@ -27,7 +27,7 @@ export default defineComponent({
     const iconSize = computed(() => {
       switch (props.size) {
         case 'xxs':
-          return '6';
+          return '8';
         case 'xs':
           return '12';
         case 'sm':

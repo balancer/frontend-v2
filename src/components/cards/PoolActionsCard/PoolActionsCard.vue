@@ -3,7 +3,7 @@
     <div class="relative overflow-hidden">
       <div class="flex justify-between items-end border-b px-4">
         <BalTabs v-model="activeTab" :tabs="tabs" class="pt-4 -mb-px" no-pad />
-        <TradeSettingsPopover hide-liquidity />
+        <TradeSettingsPopover :context="TradeSettingsContext.invest" />
       </div>
 
       <template v-if="activeTab === 'invest'">
@@ -46,7 +46,10 @@ import InvestForm from '@/components/forms/pool_actions/InvestForm.vue';
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm.vue';
 import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import { useI18n } from 'vue-i18n';
-import TradeSettingsPopover from '@/components/popovers/TradeSettingsPopover.vue';
+import TradeSettingsPopover, {
+  TradeSettingsContext
+} from '@/components/popovers/TradeSettingsPopover.vue';
+import useFathom from '@/composables/useFathom';
 
 export default defineComponent({
   name: 'PoolActionsCard',
@@ -68,6 +71,7 @@ export default defineComponent({
   setup(_, { emit }) {
     // COMPOSABLES
     const { t } = useI18n();
+    const { trackGoal, Goals } = useFathom();
 
     // DATA
     const tabs = [
@@ -83,12 +87,14 @@ export default defineComponent({
     function handleInvestment(txReceipt): void {
       investmentSuccess.value = true;
       txHash.value = txReceipt.hash;
+      trackGoal(Goals.Invested);
       emit('onTx', txReceipt);
     }
 
     function handleWithdrawal(txReceipt): void {
       withdrawalSuccess.value = true;
       txHash.value = txReceipt.hash;
+      trackGoal(Goals.Withdrawal);
       emit('onTx', txReceipt);
     }
 
@@ -99,6 +105,7 @@ export default defineComponent({
       investmentSuccess,
       withdrawalSuccess,
       txHash,
+      TradeSettingsContext,
       // methods
       handleInvestment,
       handleWithdrawal

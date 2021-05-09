@@ -1,10 +1,8 @@
 import { computed, reactive, ref, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
-import { InfiniteData } from 'react-query/core';
 import { UseInfiniteQueryOptions } from 'react-query/types';
 import { useStore } from 'vuex';
-import { flatten, isEmpty } from 'lodash';
-import { getAddress } from '@ethersproject/address';
+import { flatten } from 'lodash';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
@@ -32,8 +30,9 @@ export default function usePoolsQuery(
   const queryKey = QUERY_KEYS.Pools.All(tokenList);
 
   // COMPUTED
+  const appLoading = computed(() => store.state.app.loading);
   const prices = computed(() => store.state.market.prices);
-  const isQueryEnabled = computed(() => !isEmpty(prices.value));
+  const isQueryEnabled = computed(() => !appLoading.value);
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
@@ -48,8 +47,8 @@ export default function usePoolsQuery(
         }
       }
     );
-
-    const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
+    const tokens = flatten(pools.map(pool => pool.tokenAddresses));
+    await store.dispatch('registry/injectTokens', tokens);
 
     return {
       pools,
@@ -60,12 +59,6 @@ export default function usePoolsQuery(
 
   const queryOptions = reactive({
     enabled: isQueryEnabled,
-    onSuccess: async (poolsData: InfiniteData<PoolsQueryResponse>) => {
-      await store.dispatch(
-        'registry/injectTokens',
-        poolsData.pages.map(page => page.tokens)
-      );
-    },
     getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
     ...options
   });

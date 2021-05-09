@@ -26,6 +26,7 @@ import useWeb3 from '@/composables/useWeb3';
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
 import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
+import { getOriginalAddress } from '@/api/coingecko';
 
 export default defineComponent({
   props: {
@@ -48,6 +49,7 @@ export default defineComponent({
     const { appNetwork } = useWeb3();
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
+    const BAL = '0xba100000625a3754423978a60c9317c58a424e3d';
 
     const eligibleAssetMeta = eligibleAssetList[appNetwork.networkName];
     const eligibleAssets = Object.fromEntries(
@@ -69,7 +71,7 @@ export default defineComponent({
       const ethPrice =
         store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
       const balPrice =
-        store.state.market.prices['0xba100000625a3754423978a60c9317c58a424e3d']
+        store.state.market.prices[getOriginalAddress(appNetwork.id, BAL)]
           ?.price || 0;
       const gasPrice = store.state.market.gasPrice || 0;
 
