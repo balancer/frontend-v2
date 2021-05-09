@@ -458,13 +458,9 @@ export default defineComponent({
       const bpt = bnum(bptBalance.value)
         .times(fractionBasisPoints)
         .div(10000)
-        .precision(props.pool.onchain.decimals);
+        .toFixed(props.pool.onchain.decimals);
 
-      const { send, receive } = poolCalculator.propAmountsGiven(
-        bpt.toString(),
-        0,
-        'send'
-      );
+      const { send, receive } = poolCalculator.propAmountsGiven(bpt, 0, 'send');
       data.bptIn = send[0];
       data.amounts = receive;
     }
