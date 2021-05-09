@@ -20,11 +20,11 @@
 <script lang="ts">
 import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
 
-import { PoolSnapshots } from '@/api/subgraph';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 import { zip } from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
+import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import useTailwind from '@/composables/useTailwind';
 
 interface HistoryItem {

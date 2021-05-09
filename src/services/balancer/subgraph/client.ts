@@ -2,7 +2,7 @@ import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 const NETWORK = process.env.VUE_APP_NETWORK || '1';
-const urlMap = {
+export const urlMap = {
   '1': 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
   '17': 'http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2',
   '42':

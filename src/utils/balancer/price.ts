@@ -1,4 +1,4 @@
-import { Pool } from '@/api/subgraph';
+import { Pool } from '@/services/balancer/subgraph/types';
 import { Prices } from '@/api/coingecko';
 
 export function getPoolLiquidity(pool: Pool, prices: Prices) {
