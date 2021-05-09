@@ -286,8 +286,7 @@ export default defineComponent({
       currentSortDirection,
 
       // computed
-      filteredColumns,
-      console
+      filteredColumns
     };
   }
 });
