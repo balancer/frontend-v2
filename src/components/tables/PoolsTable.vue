@@ -22,13 +22,16 @@
       </template>
       <template v-slot:iconColumnCell="pool">
         <div v-if="!isLoading" class="px-6 py-4">
-          <BalAssetSet :addresses="pool.tokenAddresses" :width="100" />
+          <BalAssetSet
+            :addresses="sortedTokenAddressesFor(pool)"
+            :width="100"
+          />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
         <div v-if="!isLoading" class="px-6 py-4 -mt-1 flex flex-wrap">
           <div
-            v-for="token in pool.tokens"
+            v-for="token in sortedTokensFor(pool)"
             :key="token"
             class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
           >
@@ -152,6 +155,17 @@ export default defineComponent({
       }
     ]);
 
+    function sortedTokenAddressesFor(pool: DecoratedPoolWithShares) {
+      const sortedTokens = sortedTokensFor(pool);
+      return sortedTokens.map(token => getAddress(token.address));
+    }
+
+    function sortedTokensFor(pool: DecoratedPoolWithShares) {
+      const sortedTokens = pool.tokens.slice();
+      sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
+      return sortedTokens;
+    }
+
     return {
       // data
       columns,
@@ -160,7 +174,9 @@ export default defineComponent({
       // methods
       router,
       getAddress,
-      fNum
+      fNum,
+      sortedTokenAddressesFor,
+      sortedTokensFor
     };
   }
 });
