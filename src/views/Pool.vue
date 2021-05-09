@@ -209,7 +209,7 @@ export default defineComponent({
     }
 
     // WATCHERS
-    watch(blockNumber, async () => {
+    watch(blockNumber, () => {
       if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
         queryClient.invalidateQueries([POOLS_ROOT_KEY]);
       } else {
@@ -229,7 +229,6 @@ export default defineComponent({
       historicalPrices,
       snapshots,
       isLoadingSnapshots,
-      // subgraphPool,
       loadingPool,
       titleTokens,
       isAuthenticated,
