@@ -2,34 +2,30 @@
   <div class="container mx-auto px-4 lg:px-0 pt-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
-        <BalLoadingBlock v-if="loadingPool" class="h-12 mb-2" />
-        <div v-else class="flex items-center">
-          <h3 class="font-bold mr-4 capitalize">
-            {{ poolTypeLabel }}
-          </h3>
-          <BalAssetSet :addresses="pool.tokenAddresses" :size="36" />
-        </div>
-
-        <BalLoadingBlock v-if="loadingPool" class="h-10 mb-2" />
-        <div v-else class="mb-1 mt-3 flex flex-wrap items-center">
+        <BalLoadingBlock v-if="loadingPool" class="h-16" />
+        <div v-else class="flex">
+          <div class="whitespace-nowrap">
+            <h3 class="font-bold mr-4 capitalize">
+              {{ poolTypeLabel }}
+            </h3>
+            <div v-html="poolFeeLabel" class="text-sm text-gray-600 mt-1" />
+          </div>
           <div class="flex flex-wrap">
             <div
-              v-for="(token, i) in titleTokens"
+              v-for="([address, tokenMeta], i) in titleTokens"
               :key="i"
-              class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
+              class="mr-2 mb-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
             >
-              <span>
-                {{ token.symbol }}
+              <BalAsset :address="address" :size="24" />
+              <span class="ml-2">
+                {{ tokenMeta.symbol }}
               </span>
               <span class="font-medium text-gray-400 text-xs mt-px ml-1">
-                {{ fNum(token.weight, 'percent_lg') }}
+                {{ fNum(tokenMeta.weight, 'percent_lg') }}
               </span>
             </div>
           </div>
         </div>
-
-        <BalLoadingBlock v-if="loadingPool" class="h-4" />
-        <div v-else class="text-sm">{{ poolFeeLabel }}.</div>
 
         <BalAlert
           v-if="!appLoading && missingPrices"
@@ -171,8 +167,9 @@ export default defineComponent({
 
     const titleTokens = computed(() => {
       if (!pool.value) return [];
-      return Object.values(pool.value.onchain.tokens).sort(
-        (a: any, b: any) => b.weight - a.weight
+
+      return Object.entries(pool.value.onchain.tokens).sort(
+        ([, a]: any[], [, b]: any[]) => b.weight - a.weight
       );
     });
 

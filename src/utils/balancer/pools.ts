@@ -9,17 +9,7 @@ import { default as weightedPoolAbi } from '@/abi/WeightedPool.json';
 import { default as stablePoolAbi } from '@/abi/StablePool.json';
 import { default as TokenAbi } from '@/abi/ERC20.json';
 import { Pool } from '@/utils/balancer/types';
-import { getPoolShares } from '@/utils/balancer/subgraph';
-import {
-  getPools as getPoolsViaSubgraph,
-  GetPoolsRequest,
-  PoolToken,
-  PoolType
-} from '@/api/subgraph';
 import configs from '@/config';
-import { Prices } from '@/api/coingecko';
-import { getPoolLiquidity } from '@/utils/balancer/price';
-import keyBy from 'lodash/keyBy';
 
 // Combine all the ABIs and remove duplicates
 const abis = Object.values(
@@ -126,79 +116,4 @@ export async function getPool(
 ): Promise<Pool> {
   const pools = await getPools(network, provider, [id]);
   return formatPool(pools[0]);
-}
-
-type GetPopulatedPoolsRequest = GetPoolsRequest & { prices: Prices };
-
-export type PoolWithVolume = {
-  liquidity: number;
-  apy: string | number;
-  volume: string;
-  id: string;
-  poolType: PoolType;
-  swapFee: string;
-  tokensList: string[];
-  tokens: PoolToken[];
-};
-
-export async function getPoolsWithVolume({
-  chainId,
-  prices,
-  tokenIds,
-  poolIds
-}: GetPopulatedPoolsRequest): Promise<PoolWithVolume[]> {
-  const { pools, snapshots } = await getPoolsViaSubgraph({
-    chainId,
-    tokenIds,
-    poolIds
-  });
-  const snapshotMap = keyBy(snapshots, 'pool.id');
-  return pools.map(pool => {
-    const liquidity = parseFloat(getPoolLiquidity(pool, prices) || '0');
-    const apy = snapshotMap[pool.id]
-      ? (parseFloat(snapshotMap[pool.id]?.swapFees) / liquidity) * 365
-      : '0';
-    return {
-      ...pool,
-      liquidity,
-      apy,
-      volume: snapshotMap[pool.id]?.swapVolume || '0'
-    };
-  });
-}
-
-export type PoolWithShares = PoolWithVolume & {
-  shares: number;
-};
-
-export async function getPoolsWithShares(
-  network: string,
-  account: string,
-  prices: Prices
-): Promise<PoolWithShares[]> {
-  const poolShares = await getPoolShares(network, account);
-  const poolIds = poolShares.map(poolShare => poolShare.poolId.id);
-
-  const balances = Object.fromEntries(
-    poolShares.map(poolShare => [poolShare.poolId.id, poolShare.balance])
-  );
-  const { pools, snapshots } = await getPoolsViaSubgraph({
-    chainId: Number(network),
-    poolIds
-  });
-  const snapshotMap = keyBy(snapshots, 'pool.id');
-  const populatedPools = pools.map(pool => {
-    const liquidity = parseFloat(getPoolLiquidity(pool, prices) || '0');
-    const apy = snapshotMap[pool.id]
-      ? (parseFloat(snapshotMap[pool.id]?.swapFees) / liquidity) * 365
-      : '0';
-    return {
-      ...pool,
-      shares: parseFloat(balances[pool.id] || '0'),
-      liquidity,
-      apy,
-      volume: snapshotMap[pool.id]?.swapVolume || '0'
-    };
-  });
-  return populatedPools;
 }

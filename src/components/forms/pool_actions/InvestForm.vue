@@ -199,6 +199,7 @@
             :disabled="!hasAmounts || !hasValidInputs"
             :loading="loading"
             block
+            @click="trackGoal(Goals.ClickInvest)"
           >
             {{ $t('invest') }}
             {{ missingPrices || total.length > 15 ? '' : total }}
@@ -245,6 +246,7 @@ import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
+import useFathom from '@/composables/useFathom';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -299,6 +301,7 @@ export default defineComponent({
     const { txListener } = useNotify();
     const { minusSlippage } = useSlippage();
     const { allTokens } = useTokens();
+    const { trackGoal, Goals } = useFathom();
 
     const { amounts } = toRefs(data);
 
@@ -480,9 +483,10 @@ export default defineComponent({
       const amount = bnum(balances.value[data.propToken])
         .times(fractionBasisPoints)
         .div(10000)
-        .precision(tokenDecimals(data.propToken));
+        .toFixed(tokenDecimals(data.propToken));
+
       const { send } = poolCalculator.propAmountsGiven(
-        amount.toString(),
+        amount,
         data.propToken,
         'send'
       );
@@ -614,6 +618,7 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
+      Goals,
       // computed
       allTokens,
       hasValidInputs,
@@ -639,7 +644,8 @@ export default defineComponent({
       submit,
       approveAllowances,
       fNum,
-      preventOverflow
+      preventOverflow,
+      trackGoal
     };
   }
 });

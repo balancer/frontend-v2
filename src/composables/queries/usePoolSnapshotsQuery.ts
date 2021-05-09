@@ -4,10 +4,10 @@ import { QueryObserverOptions } from 'react-query/core';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
+import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import useWeb3 from '../useWeb3';
 import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
-import { getPoolSnapshots } from '@/api/subgraph';
 import usePoolQuery from './usePoolQuery';
 
 interface QueryResponse {
@@ -22,6 +22,9 @@ export default function usePoolSnapshotsQuery(
 ) {
   // COMPOSABLES
   const { appNetwork } = useWeb3();
+
+  // SERVICES
+  const balancerSubgraph = new BalancerSubgraph();
 
   // DEPENDENT QUERIES
   const poolQuery = usePoolQuery(id);
@@ -42,11 +45,7 @@ export default function usePoolSnapshotsQuery(
       pool.value.tokensList,
       days
     );
-    const snapshots = await getPoolSnapshots(
-      appNetwork.id,
-      pool.value.id,
-      days
-    );
+    const snapshots = await balancerSubgraph.poolSnapshots.get(id, days);
 
     return { prices, snapshots };
   };

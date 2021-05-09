@@ -1,7 +1,13 @@
 <template>
   <BalPopover>
     <template v-slot:activator>
-      <BalBtn circle color="white" size="sm" class="mb-2 text-gray-500">
+      <BalBtn
+        circle
+        color="white"
+        size="sm"
+        class="mb-2 text-gray-500"
+        @click="onActivatorClick"
+      >
         <BalIcon name="settings" size="sm" />
       </BalBtn>
     </template>
@@ -16,23 +22,7 @@
           <div v-html="$t('marketConditionsWarning')" class="w-52" />
         </BalTooltip>
       </div>
-      <div class="flex mt-1">
-        <div
-          v-for="slippage in slippageOptions"
-          :key="slippage"
-          class="trade-settings-option w-16 mr-2 py-1 text-center border rounded-lg cursor-pointer"
-          :class="{ active: appSlippage === slippage }"
-          @click="setSlippage(slippage)"
-        >
-          {{ fNum(slippage, null, { format: '0.0%' }) }}
-        </div>
-        <input
-          class="slippage-input w-20 px-2 border rounded-lg"
-          :class="{ 'border border-blue-500 text-blue-500': isCustomSlippage }"
-          v-model="slippageInput"
-          :placeholder="$t('custom')"
-        />
-      </div>
+      <AppSlippageForm class="mt-1" />
     </div>
     <div v-if="!hideLiquidity" class="mt-6">
       <div class="flex items-baseline">
@@ -63,88 +53,84 @@
 import {
   defineComponent,
   reactive,
-  onMounted,
   computed,
   toRefs,
-  watch
+  PropType,
+  Ref
 } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
+import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
+import useFathom from '@/composables/useFathom';
 
-const slippageOptions = ['0.005', '0.01', '0.02'];
+export enum TradeSettingsContext {
+  trade,
+  invest
+}
 
 export default defineComponent({
   name: 'TradeSettingsPopover',
 
-  props: {
-    hideLiquidity: { type: Boolean, default: false }
+  components: {
+    AppSlippageForm
   },
 
-  setup() {
+  props: {
+    context: {
+      type: [String, Number] as PropType<TradeSettingsContext>,
+      required: true
+    }
+  },
+
+  setup(props) {
+    // DATA
+    const { context }: { context: Ref<TradeSettingsContext> } = toRefs(props);
+
+    // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
     const { explorer } = useWeb3();
+    const { trackGoal, Goals } = useFathom();
 
     // DATA
     const data = reactive({
-      slippageOptions,
       tradeLiquidityOptions: Object.values(LiquiditySelection).filter(
         v => typeof v === 'string'
-      ),
-      slippageInput: ''
+      )
     });
 
     // COMPUTED
-    const appSlippage = computed(() => store.state.app.slippage);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
-
-    const isCustomSlippage = computed(() => {
-      return !slippageOptions.includes(appSlippage.value);
-    });
-
-    // CALLBACKS
-    onMounted(() => {
-      if (isCustomSlippage.value) {
-        const slippage = parseFloat(appSlippage.value);
-        data.slippageInput = (slippage * 100).toFixed(1);
-      }
-    });
+    const hideLiquidity = computed(
+      () => context.value === TradeSettingsContext.invest
+    );
 
     // METHODS
-    const setSlippage = slippage => store.commit('app/setSlippage', slippage);
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
 
-    // WATCHERS
-    watch(
-      () => data.slippageInput,
-      newSlippage => {
-        if (!newSlippage) return;
-
-        const number = Number(newSlippage);
-        if (!number || number <= 0) return;
-
-        const slippage = number / 100;
-        if (slippage >= 0.1) return;
-
-        setSlippage(slippage.toString());
+    function onActivatorClick(): void {
+      if (context.value === TradeSettingsContext.trade) {
+        trackGoal(Goals.ClickTradeSettings);
+      } else if (context.value === TradeSettingsContext.invest) {
+        trackGoal(Goals.ClickInvestSettings);
       }
-    );
+    }
 
     return {
       // data
       ...toRefs(data),
+      Goals,
       // computed
-      appSlippage,
       appTradeLiquidity,
-      isCustomSlippage,
+      hideLiquidity,
       // methods
-      setSlippage,
       setTradeLiquidity,
       fNum,
-      explorer
+      explorer,
+      onActivatorClick
     };
   }
 });

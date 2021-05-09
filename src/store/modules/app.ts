@@ -25,6 +25,15 @@ const state: AppState = {
 const actions = {
   init: async ({ commit, dispatch }) => {
     try {
+      // Set defaults from localStorage
+      commit('setLocale', lsGet('locale', 'en-US'));
+      commit('setDarkMode', lsGet('darkMode', false));
+      commit('setSlippage', lsGet('slippage', '0.01'));
+      commit(
+        'setTradeLiquidity',
+        lsGet('tradeLiquidity', LiquiditySelection.Best)
+      );
+
       // Setup web3
       const auth = getInstance();
       const connector = await auth.getConnector();
@@ -38,17 +47,6 @@ const actions = {
       // Fetch initial trade tokens
       dispatch('trade/init', null, { root: true });
 
-      commit('setLocale', 'en-US');
-      commit('setDarkMode', false);
-
-      // Set defaults from localStorage
-      // commit('setLocale', lsGet('locale', defaultLocale));
-      // commit('setDarkMode', lsGet('darkMode', false));
-      commit('setSlippage', lsGet('slippage', '0.01'));
-      commit(
-        'setTradeLiquidity',
-        lsGet('tradeLiquidity', LiquiditySelection.Best)
-      );
       commit('setLoading', false);
     } catch (error) {
       console.error('Failed to initialize app', error);

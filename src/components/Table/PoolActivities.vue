@@ -25,7 +25,8 @@
         <div class="pool-activity-cell flex-wrap">
           <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
             <div
-              class="mb-2 mr-2 flex items-center p-1 px-2 bg-gray-50 rounded-lg"
+              class="m-1 flex items-center p-1 px-2 bg-gray-50 rounded-lg"
+              v-if="tokenAmount.amount !== '0'"
             >
               <BalAsset
                 :address="tokenAmount.address"

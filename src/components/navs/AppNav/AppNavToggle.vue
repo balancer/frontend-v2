@@ -3,12 +3,14 @@
     <router-link
       :to="{ name: 'home' }"
       :class="['toggle-link pl-6 pr-4', { [activeClasses]: !isTradePage }]"
+      @click="trackGoal(Goals.ClickNavInvest)"
     >
       {{ $t('invest') }}
     </router-link>
     <router-link
       :to="{ name: 'trade' }"
       :class="['toggle-link pl-4 pr-6', { [activeClasses]: isTradePage }]"
+      @click="trackGoal(Goals.ClickNavTrade)"
     >
       {{ $t('trade') }}
     </router-link>
@@ -16,6 +18,7 @@
 </template>
 
 <script lang="ts">
+import useFathom from '@/composables/useFathom';
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -26,8 +29,14 @@ export default defineComponent({
     const route = useRoute();
     const activeClasses = 'bg-black text-white';
     const isTradePage = computed(() => route.name === 'trade');
+    const { trackGoal, Goals } = useFathom();
 
-    return { isTradePage, activeClasses };
+    return {
+      isTradePage,
+      activeClasses,
+      trackGoal,
+      Goals
+    };
   }
 });
 </script>

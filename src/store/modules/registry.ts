@@ -128,7 +128,7 @@ const getters = {
 
   getTokenLists: (state, getters, rootState) => ({ q, active }) => {
     const tokenLists = clone(state.tokenLists);
-    return Object.fromEntries(
+    const bingbot = Object.fromEntries(
       Object.entries(tokenLists)
         .map((tokenList: any) => {
           tokenList[1].tokens = tokenList[1].tokens
@@ -153,6 +153,11 @@ const getters = {
         )
         .sort((a, b): any => b[1].active - a[1].active)
     );
+    return bingbot;
+  },
+
+  getInjected(_state: RegistryState) {
+    return _state.injected;
   }
 };
 

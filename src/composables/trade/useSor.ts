@@ -10,11 +10,11 @@ import { unwrap, wrap } from '@/utils/balancer/wrapper';
 import getProvider from '@/utils/provider';
 import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/utils/balancer/swapper';
-
-import { BALANCER_SUBGRAPH_URL } from '@/api/subgraph';
+import { urlMap as subgraphUrlMap } from '@/services/balancer/subgraph/client';
 
 import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
+import useFathom from '../useFathom';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -62,6 +62,7 @@ export default function useSor(
   const store = useStore();
   const auth = useAuth();
   const { txListener } = useNotify();
+  const { trackGoal, Goals } = useFathom();
 
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
@@ -86,7 +87,7 @@ export default function useSor(
     const config = getConfig();
     const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
     const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
-    const subgraphUrl = BALANCER_SUBGRAPH_URL[config.chainId];
+    const subgraphUrl = subgraphUrlMap[config.chainId];
 
     sorManager = new SorManager(
       getProvider(config.chainId),
@@ -263,6 +264,7 @@ export default function useSor(
       onTxConfirmed: () => {
         trading.value = false;
         latestTxHash.value = hash;
+        trackGoal(Goals.Swapped);
       },
       onTxCancel: () => {
         trading.value = false;
@@ -275,6 +277,7 @@ export default function useSor(
 
   async function trade() {
     const { chainId } = getConfig();
+    trackGoal(Goals.ClickSwap);
     trading.value = true;
 
     const tokenInAddress = tokenInAddressInput.value;
