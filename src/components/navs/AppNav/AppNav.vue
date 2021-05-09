@@ -7,7 +7,10 @@
   >
     <div class="h-full flex items-center justify-between">
       <div class="w-1/3">
-        <router-link :to="{ name: 'home' }" @click="trackGoal(Goals.ClickNavLogo)">
+        <router-link
+          :to="{ name: 'home' }"
+          @click="trackGoal(Goals.ClickNavLogo)"
+        >
           <AppIcon v-if="['sm', 'md'].includes(bp)" />
           <AppLogo v-else />
         </router-link>

@@ -44,7 +44,7 @@ export default function useFathom() {
     try {
       window.fathom.trackGoal(goal, value);
     } catch (error) {
-      console.error(error); 
+      console.error(error);
     }
   }
 

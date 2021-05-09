@@ -46,7 +46,9 @@ import InvestForm from '@/components/forms/pool_actions/InvestForm.vue';
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm.vue';
 import SuccessOverlay from '../shared/SuccessOverlay.vue';
 import { useI18n } from 'vue-i18n';
-import TradeSettingsPopover, { TradeSettingsContext } from '@/components/popovers/TradeSettingsPopover.vue';
+import TradeSettingsPopover, {
+  TradeSettingsContext
+} from '@/components/popovers/TradeSettingsPopover.vue';
 import useFathom from '@/composables/useFathom';
 
 export default defineComponent({

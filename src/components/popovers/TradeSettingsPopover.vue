@@ -93,7 +93,10 @@ export default defineComponent({
   name: 'TradeSettingsPopover',
 
   props: {
-    context: { type: [String, Number] as PropType<TradeSettingsContext>, required: true },
+    context: {
+      type: [String, Number] as PropType<TradeSettingsContext>,
+      required: true
+    }
   },
 
   setup(props) {
@@ -121,7 +124,9 @@ export default defineComponent({
     const isCustomSlippage = computed(() => {
       return !slippageOptions.includes(appSlippage.value);
     });
-    const hideLiquidity = computed(() => context.value === TradeSettingsContext.invest)
+    const hideLiquidity = computed(
+      () => context.value === TradeSettingsContext.invest
+    );
 
     // CALLBACKS
     onMounted(() => {
@@ -135,7 +140,7 @@ export default defineComponent({
     const setSlippage = slippage => store.commit('app/setSlippage', slippage);
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
-    
+
     function onActivatorClick(): void {
       if (context.value === TradeSettingsContext.trade) {
         trackGoal(Goals.ClickTradeSettings);
