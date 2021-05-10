@@ -2,7 +2,13 @@
   <div>
     <div class="flex items-center flex-wrap">
       <div class="flex items-center flex-wrap">
-        <BalBtn color="gray" outline size="sm" @click="onClick" class="mb-2 md:mb-0 mr-4">
+        <BalBtn
+          color="gray"
+          outline
+          size="sm"
+          @click="onClick"
+          class="mb-2 md:mb-0 mr-4"
+        >
           <BalIcon name="search" size="sm" class="mr-2" />
           Filter by token
         </BalBtn>
@@ -38,7 +44,7 @@
           {{ token?.symbol }}
         </span>
       </div>
-      <div v-else class="text-gray-400 flex flex-wrap" >
+      <div v-else class="text-gray-400 flex flex-wrap">
         <span class="mr-6">Popular Bases:</span>
         <span
           v-for="token in whiteListedTokens"
