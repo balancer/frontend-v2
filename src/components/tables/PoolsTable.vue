@@ -148,7 +148,7 @@ export default defineComponent({
         accessor: pool =>
           `${
             Number(pool.dynamic.apy) > 10000
-              ? '?'
+              ? '-'
               : fNum(pool.dynamic.apy, 'percent')
           }`,
         className: 'w-32',
