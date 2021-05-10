@@ -74,7 +74,7 @@ const actions = {
     dispatch('account/resetAccount', null, { root: true });
   },
 
-  async loadProvider({ commit, dispatch }) {
+  async loadProvider({ commit, dispatch, state }) {
     try {
       if (
         auth.provider.value.removeAllListeners &&
@@ -83,14 +83,16 @@ const actions = {
         auth.provider.value.removeAllListeners();
       if (auth.provider.value.on) {
         auth.provider.value.on('chainChanged', async chainId => {
+          await dispatch('account/resetAccount', null, { root: true });
+          auth.web3 = new Web3Provider(auth.provider.value);
           commit('setNetwork', parseInt(formatUnits(chainId, 0)));
-          dispatch('account/resetAccount', null, { root: true });
           dispatch('account/getBalances', null, { root: true });
           dispatch('account/getAllowances', null, { root: true });
         });
         auth.provider.value.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
-            dispatch('account/resetAccount', null, { root: true });
+            await dispatch('account/resetAccount', null, { root: true });
+            auth.web3 = new Web3Provider(auth.provider.value);
             commit('setAccount', accounts[0]);
             await dispatch('loadProvider');
             dispatch('account/getBalances', null, { root: true });

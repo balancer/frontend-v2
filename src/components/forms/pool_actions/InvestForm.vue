@@ -313,10 +313,8 @@ export default defineComponent({
     } = useTokenApprovals(props.pool.tokenAddresses, amounts);
 
     // SERVICES
-    const poolExchange = new PoolExchange(
-      props.pool,
-      userNetwork.value.key,
-      allTokens.value
+    const poolExchange = computed(
+      () => new PoolExchange(props.pool, userNetwork.value.key, allTokens.value)
     );
 
     const poolCalculator = new PoolCalculator(
@@ -497,7 +495,7 @@ export default defineComponent({
     // Left here so numbers can be debugged in conosle
     // Talk to Fernando to see if still needed
     async function calcMinBptOut(): Promise<void> {
-      let { bptOut } = await poolExchange.queryJoin(
+      let { bptOut } = await poolExchange.value.queryJoin(
         account.value,
         fullAmounts.value
       );
@@ -526,7 +524,7 @@ export default defineComponent({
       try {
         data.loading = true;
         await calcMinBptOut();
-        const tx = await poolExchange.join(
+        const tx = await poolExchange.value.join(
           account.value,
           fullAmounts.value,
           minBptOut.value
