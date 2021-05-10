@@ -57,6 +57,7 @@ export default function useSor(
   const exactIn = ref(true);
   const priceImpact = ref(0);
   const latestTxHash = ref('');
+  const poolsLoading = ref(true);
 
   // COMPOSABLES
   const store = useStore();
@@ -111,6 +112,7 @@ export default function useSor(
     console.time('[SOR] fetchPools');
     await sorManager.fetchPools();
     console.timeEnd('[SOR] fetchPools');
+    poolsLoading.value = false;
     // Updates any swaps with up to date pools/balances
     handleAmountChange();
   }
@@ -372,6 +374,7 @@ export default function useSor(
     trading,
     priceImpact,
     latestTxHash,
-    fetchPools
+    fetchPools,
+    poolsLoading
   };
 }

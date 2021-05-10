@@ -37,7 +37,13 @@
         :label="$t('priceImpactAccept')"
       />
       <BalBtn
-        v-if="!isAuthenticated"
+        v-if="poolsLoading"
+        :loading="true"
+        :loading-label="$t('loading')"
+        block
+      />
+      <BalBtn
+        v-else-if="!isAuthenticated"
         :label="$t('connectWallet')"
         block
         @click.prevent="connectWallet"
@@ -172,7 +178,8 @@ export default defineComponent({
       sorReturn,
       latestTxHash,
       pools,
-      fetchPools
+      fetchPools,
+      poolsLoading
     } = useSor(
       tokenInAddress,
       tokenInAmount,
@@ -287,7 +294,8 @@ export default defineComponent({
       priceImpact,
       isRequired,
       tradeDisabled,
-      TradeSettingsContext
+      TradeSettingsContext,
+      poolsLoading
     };
   }
 });

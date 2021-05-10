@@ -216,10 +216,11 @@ export default defineComponent({
         markLine: {
           symbol: 'roundRect',
           symbolSize: 0,
-          silent: true,
+          // silent: true,
           lineStyle: {
             color: 'rgba(0, 0, 0, 0)'
           },
+          precision: 5,
           label: {
             backgroundColor: (props.color || [])[i] || 'black',
             borderRadius: 3,
