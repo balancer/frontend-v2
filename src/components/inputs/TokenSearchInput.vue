@@ -16,7 +16,7 @@
           @closed="removeToken(token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
-          <span class="ml-2">{{ allTokens[token]?.symbol }}</span>
+          <span class="ml-2">{{ tokenDictionary[token]?.symbol }}</span>
         </BalChip>
       </div>
       <div
@@ -64,11 +64,11 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
-import useTokens from '@/composables/useTokens';
 import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
 import useWeb3 from '@/composables/useWeb3';
 import { TOKENS } from '@/constants/tokens';
+import useTokenLists from '@/composables/useTokenLists';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -86,7 +86,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     // COMPOSABLES
-    const { allTokens } = useTokens();
+    const { tokenDictionary } = useTokenLists();
     const {
       isLoading: isLoadingBalances,
       balances,
@@ -108,7 +108,7 @@ export default defineComponent({
 
     const hasNoBalances = computed(() => !sortedBalances.value.length);
     const whiteListedTokens = computed(() =>
-      Object.values(allTokens.value)
+      Object.values(tokenDictionary.value)
         .filter((token: any) => TOKENS.Popular.Symbols.includes(token.symbol))
         .filter((balance: any) => !props.modelValue.includes(balance.address))
     );
@@ -142,7 +142,7 @@ export default defineComponent({
       hasNoBalances,
       whiteListedTokens,
       // computed
-      allTokens,
+      tokenDictionary,
       // methods
       addToken,
       removeToken,

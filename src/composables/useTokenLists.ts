@@ -21,12 +21,11 @@ const loadAllTokenLists = async () => {
 };
 
 type TokenListRequest = {
-  getEther?: boolean;
   query?: string;
   queryAddress?: string;
 };
 
-export default function useTokenLists(request: TokenListRequest) {
+export default function useTokenLists(request?: TokenListRequest) {
   const store = useStore();
   const activeTokenLists = ref<string[]>(
     lsGet('activeTokenLists', ['Balancer'])
@@ -39,7 +38,7 @@ export default function useTokenLists(request: TokenListRequest) {
     loadAllTokenLists
   );
 
-  const listNameMap = computed(() => keyBy(lists.value, 'name'));
+  const listDictionary = computed(() => keyBy(lists.value, 'name'));
   const injectedTokens = store.getters['registry/getInjected'];
 
   const tokens = computed(() => {
@@ -47,16 +46,19 @@ export default function useTokenLists(request: TokenListRequest) {
       orderBy(
         [
           // get all the tokens from all the active lists
+          // get all tokens that are injected
+          // get the ETHER token ALWAYS
           ...flatten([
             ...Object.values(injectedTokens).map((t: any) => ({ ...t })),
             ...activeTokenLists.value.map(
-              name => listNameMap.value[name].tokens
-            )
+              name => listDictionary.value[name]?.tokens
+            ),
+            store.getters['registry/getEther']()
           ])
             // invalid network tokens get filtered out
             .filter(
               token =>
-                token.chainId === Number(process.env.VUE_APP_NETWORK || 1)
+                token?.chainId === Number(process.env.VUE_APP_NETWORK || 1)
             )
             // populate token data into list of tokens
             .map(token => {
@@ -86,10 +88,6 @@ export default function useTokenLists(request: TokenListRequest) {
       'address'
     );
 
-    if (request.getEther) {
-      _tokens.unshift(store.getters['register/getEther']);
-    }
-
     if (request?.queryAddress) {
       return _tokens.filter(
         token =>
@@ -98,7 +96,7 @@ export default function useTokenLists(request: TokenListRequest) {
     }
 
     // search functionality, this can be better
-    if (request.query) {
+    if (request?.query) {
       return _tokens.filter(token => {
         return (
           token.name.toLowerCase().includes(request.query?.toLowerCase()) ||
@@ -109,6 +107,8 @@ export default function useTokenLists(request: TokenListRequest) {
 
     return _tokens;
   });
+
+  const tokenDictionary = computed(() => keyBy(tokens.value, 'address'));
 
   const toggleActiveTokenList = (name: string) => {
     // remove from active lists
@@ -132,7 +132,8 @@ export default function useTokenLists(request: TokenListRequest) {
     toggleActiveTokenList,
     isActiveList,
     tokens,
-    listNameMap,
+    listDictionary,
+    tokenDictionary,
     activeTokenLists
   };
 }

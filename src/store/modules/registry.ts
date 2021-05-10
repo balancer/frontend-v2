@@ -34,6 +34,7 @@ const getters = {
       rootState.market.prices[ether.address.toLowerCase()]?.price || 0;
     ether.price24HChange =
       rootState.market.prices[ether.address.toLowerCase()]?.price24HChange || 0;
+    ether.chainId = Number(process.env.VUE_APP_NETWORK || 1);
     if (rootState.web3.account) {
       ether.balanceDenorm = rootState.account.balances.ether || '0';
       ether.balance = formatUnits(ether.balanceDenorm, ether.decimals);

@@ -56,7 +56,7 @@
             <img
               v-for="(tokenlist, i) in activeTokenLists"
               :key="`activeTokenListIcon-${i}`"
-              :src="_url(activeListMap[tokenlist]?.logoURI)"
+              :src="_url(listDictionary[tokenlist]?.logoURI)"
               class="rounded-full inline-block bg-white align-middle shadow w-6 h-6"
             />
           </span>
@@ -128,7 +128,7 @@ export default defineComponent({
       toggleActiveTokenList,
       isActiveList,
       tokens,
-      listNameMap: activeListMap,
+      listDictionary,
       activeTokenLists
     } = useTokenLists(data);
 
@@ -196,7 +196,7 @@ export default defineComponent({
       tokens,
       tokenlistsReverse,
       tokenLists,
-      activeListMap,
+      listDictionary,
       activeTokenLists,
 
       // methods
