@@ -5,7 +5,7 @@ const defaultArgs = {
   orderBy: 'totalLiquidity',
   orderDirection: 'desc',
   where: {
-    totalShares_gt: 0.1
+    totalShares_gt: 0.01
   }
 };
 
