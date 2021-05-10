@@ -84,7 +84,7 @@ export default defineComponent({
 }
 
 .content {
-  @apply relative w-full max-h-screen overflow-hidden;
+  @apply relative w-full h-3/4 sm:h-auto max-h-screen overflow-hidden;
   max-width: 500px;
 }
 
@@ -93,7 +93,7 @@ export default defineComponent({
 }
 
 .modal-card {
-  @apply w-full mx-auto rounded-b-none sm:rounded-b-lg;
+  @apply w-full mx-auto h-full rounded-b-none sm:rounded-b-lg;
 }
 
 .content-enter-active {

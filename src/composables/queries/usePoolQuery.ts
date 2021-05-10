@@ -45,7 +45,12 @@ export default function usePoolQuery(
     const [pool] = await balancerSubgraph.pools.getDecorated(
       '24h',
       prices.value,
-      { where: { id } }
+      {
+        where: {
+          id: id.toLowerCase(),
+          totalShares_gt: -1 // Avoid the filtering for low liquidity pools
+        }
+      }
     );
     const tokens = pick(allTokens.value, pool.tokenAddresses) as Token[];
     const onchainData = await balancerContracts.vault.getPoolData(

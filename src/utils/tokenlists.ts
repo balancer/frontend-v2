@@ -13,6 +13,8 @@ export async function loadTokenlist(uri) {
     return await loadTokenlist(`${protocolType}://${decoded}`);
   }
   const [protocolType, path] = uri.split('://');
-  if (protocolType.includes('http')) return fetch(uri).then(res => res.json());
+  if (protocolType.includes('http')) {
+    return fetch(uri).then(res => res.json());
+  }
   return await ipfsGet(gateway, path, protocolType);
 }

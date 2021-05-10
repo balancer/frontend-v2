@@ -3,18 +3,15 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
       <div class="col-span-2">
         <BalLoadingBlock v-if="loadingPool" class="h-16" />
-        <div v-else class="flex">
-          <div class="whitespace-nowrap">
+        <div v-else class="flex flex-col">
+          <div class="flex flex-wrap items-end -mt-2">
             <h3 class="font-bold mr-4 capitalize">
               {{ poolTypeLabel }}
             </h3>
-            <div v-html="poolFeeLabel" class="text-sm text-gray-600 mt-1" />
-          </div>
-          <div class="flex flex-wrap">
             <div
               v-for="([address, tokenMeta], i) in titleTokens"
               :key="i"
-              class="mr-2 mb-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
+              class="mr-2 mt-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
             >
               <BalAsset :address="address" :size="24" />
               <span class="ml-2">
@@ -24,6 +21,35 @@
                 {{ fNum(tokenMeta.weight, 'percent_lg') }}
               </span>
             </div>
+          </div>
+          <div class="flex items-center mt-2">
+            <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
+            <BalTooltip>
+              <template v-slot:activator>
+                <BalLink
+                  v-if="feesManagedByGauntlet"
+                  :href="EXTERNAL_LINKS.Gauntlet.Home"
+                  external
+                >
+                  <GauntletIcon class="ml-2" />
+                </BalLink>
+                <BalIcon
+                  v-else
+                  name="info"
+                  size="xs"
+                  class="text-gray-400 ml-2"
+                />
+              </template>
+              <div class="w-52">
+                <span>
+                  {{
+                    feesManagedByGauntlet
+                      ? $t('feesManagedByGauntlet')
+                      : $t('fixedFeesTooltip')
+                  }}
+                </span>
+              </div>
+            </BalTooltip>
           </div>
         </div>
 
@@ -94,6 +120,9 @@ import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import PoolActivitiesCard from '@/components/cards/PoolActivitiesCard/PoolActivitiesCard.vue';
+import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
+import { POOLS } from '@/constants/pools';
+import { EXTERNAL_LINKS } from '@/constants/links';
 
 interface PoolPageData {
   id: string;
@@ -106,7 +135,8 @@ export default defineComponent({
   components: {
     PoolActionsCard,
     PoolBalancesCard,
-    PoolActivitiesCard
+    PoolActivitiesCard,
+    GauntletIcon
   },
 
   setup() {
@@ -130,6 +160,8 @@ export default defineComponent({
       id: route.params.id as string,
       refetchQueriesOnBlockNumber: 0
     });
+
+    const feesManagedByGauntlet = POOLS.DynamicFees.Gauntlet.includes(data.id);
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
@@ -172,7 +204,12 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      return t('lpsEarnFee', [fNum(pool.value.onchain.swapFee, 'percent')]);
+      const feeLabel = fNum(pool.value.onchain.swapFee, 'percent');
+
+      if (feesManagedByGauntlet) {
+        return `Dynamic swap fees: Currently <b>${feeLabel}</b>`;
+      }
+      return `Fixed swap fees: <b>${feeLabel}</b>`;
     });
 
     const missingPrices = computed(() => {
@@ -186,7 +223,6 @@ export default defineComponent({
     });
 
     // METHODS
-
     function onNewTx(): void {
       queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
       data.refetchQueriesOnBlockNumber =
@@ -205,6 +241,7 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
+      EXTERNAL_LINKS,
       // computed
       appLoading,
       web3Loading,
@@ -218,6 +255,7 @@ export default defineComponent({
       titleTokens,
       isAuthenticated,
       missingPrices,
+      feesManagedByGauntlet,
       // methods
       fNum,
       onNewTx

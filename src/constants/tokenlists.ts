@@ -3,7 +3,6 @@ export const TOKEN_LIST_DEFAULT =
 
 export const TOKEN_LISTS: string[] = [
   TOKEN_LIST_DEFAULT,
-  'https://www.coingecko.com/tokens_list/uniswap/defi_100/v_0_0_0.json',
   'ipns://tokens.uniswap.org',
   'tokenlist.zerion.eth',
   'tokens.1inch.eth',
@@ -13,8 +12,6 @@ export const TOKEN_LISTS: string[] = [
 
 export const NAMED_TOKEN_LISTS = {
   Default: TOKEN_LIST_DEFAULT,
-  'Uniswap Default List':
-    'https://www.coingecko.com/tokens_list/uniswap/defi_100/v_0_0_0.json',
   Uniswap: 'ipns://tokens.uniswap.org',
   Zerion: 'tokenlist.zerion.eth',
   '1inch': 'tokens.1inch.eth',

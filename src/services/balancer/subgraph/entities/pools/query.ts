@@ -1,3 +1,4 @@
+import { POOLS } from '@/constants/pools';
 import { merge } from 'lodash';
 
 const defaultArgs = {
@@ -5,7 +6,8 @@ const defaultArgs = {
   orderBy: 'totalLiquidity',
   orderDirection: 'desc',
   where: {
-    totalShares_gt: 1
+    totalShares_gt: 0.01,
+    id_not_in: POOLS.BlackList
   }
 };
 
