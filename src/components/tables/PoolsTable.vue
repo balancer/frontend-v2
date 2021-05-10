@@ -112,7 +112,7 @@ export default defineComponent({
         noGrow: true
       },
       {
-        name: t('poolName'),
+        name: t('composition'),
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',
