@@ -2,7 +2,7 @@
   <div>
     <div class="flex items-center flex-wrap">
       <div class="flex items-center flex-wrap">
-        <BalBtn color="gray" outline size="sm" @click="onClick" class="mr-4">
+        <BalBtn color="gray" outline size="sm" @click="onClick" class="mb-2 md:mb-0 mr-4">
           <BalIcon name="search" size="sm" class="mr-2" />
           Filter by token
         </BalBtn>
@@ -20,13 +20,13 @@
         </BalChip>
       </div>
       <div
-        class="text-gray-400 my-4 overflow-x-auto ml-4"
         v-if="
           account &&
             !isNotFetchingBalances &&
             !isLoadingBalances &&
             !hasNoBalances
         "
+        class="text-gray-400 overflow-x-auto"
       >
         <span class="mr-6">In your wallet:</span>
         <span
@@ -38,7 +38,7 @@
           {{ token?.symbol }}
         </span>
       </div>
-      <div class="text-gray-400 my-4 flex flex-wrap" v-else>
+      <div v-else class="text-gray-400 flex flex-wrap" >
         <span class="mr-6">Popular Bases:</span>
         <span
           v-for="token in whiteListedTokens"
