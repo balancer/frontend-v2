@@ -179,7 +179,6 @@ export default defineComponent({
       columns,
       allTokens,
       balances,
-      console,
 
       // methods
       handleRowClick,
