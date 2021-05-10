@@ -41,8 +41,8 @@
         </div>
       </template>
 
-      <template v-slot:dateCell="action">
-        <div class="pool-activity-cell">
+      <template v-slot:timeCell="action">
+        <div class="pool-activity-cell whitespace-nowrap">
           {{ action.formattedDate }}
           <BalLink :href="explorer.txLink(action.tx)" external>
             <BalIcon
@@ -124,7 +124,7 @@ export default {
         id: 'action',
         accessor: 'tx',
         Cell: 'actionCell',
-        className: 'w-12',
+        className: 'w-40 md:w-32',
         sortable: false
       },
       {
@@ -133,7 +133,7 @@ export default {
         accessor: 'value',
         Cell: 'valueCell',
         align: 'right',
-        className: 'align-center w-12',
+        className: 'align-center w-40',
         sortKey: pool => numeral(pool.value).value()
       },
       {
@@ -141,16 +141,16 @@ export default {
         id: 'details',
         accessor: '',
         Cell: 'detailsCell',
-        className: 'w-40',
+        className: 'w-72',
         sortable: false
       },
       {
         name: t('time'),
-        id: 'dateAgo',
+        id: 'timeAgo',
         accessor: 'timestamp',
-        Cell: 'dateCell',
+        Cell: 'timeCell',
         align: 'right',
-        className: 'w-12',
+        className: 'w-40',
         sortKey: pool => numeral(pool.timestamp).value()
       }
     ]);
