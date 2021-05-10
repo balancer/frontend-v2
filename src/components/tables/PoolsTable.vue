@@ -3,7 +3,7 @@
     <BalTable
       :columns="columns"
       :data="data"
-      :isLoading="isLoading"
+      :isLoading="isLoading || isLoadingBalances || isBalancesQueryIdle"
       :isLoadingMore="isLoadingMore"
       skeletonClass="h-64"
       sticky="both"
@@ -25,7 +25,10 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div v-if="!isLoading" class="px-6 py-4 -mt-1 flex flex-wrap">
+        <div
+          v-if="!isLoading && !isLoadingBalances && !isBalancesQueryIdle"
+          class="px-6 py-4 -mt-1 flex flex-wrap"
+        >
           <div
             v-for="token in sortedTokensFor(pool)"
             :key="token"
@@ -103,7 +106,11 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
-    const { balances } = useAccountBalances();
+    const {
+      balances,
+      isLoading: isLoadingBalances,
+      isIdle: isBalancesQueryIdle
+    } = useAccountBalances();
 
     // COMPOSABLES
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -184,6 +191,8 @@ export default defineComponent({
       columns,
       allTokens,
       balances,
+      isLoadingBalances,
+      isBalancesQueryIdle,
 
       // methods
       handleRowClick,
