@@ -4,14 +4,14 @@
   </div>
   <template v-if="activeTab === PoolActivityTab.ALL_ACTIVITY">
     <Activities
-      :poolActivityType="PoolActivityTab.ALL_ACTIVITY"
+      :pool-activity-type="PoolActivityTab.ALL_ACTIVITY"
       :pool="pool"
       :loading="loading"
     />
   </template>
   <template v-if="activeTab === PoolActivityTab.USER_ACTIVITY">
     <Activities
-      :poolActivityType="PoolActivityTab.USER_ACTIVITY"
+      :pool-activity-type="PoolActivityTab.USER_ACTIVITY"
       :pool="pool"
       :loading="loading"
     />

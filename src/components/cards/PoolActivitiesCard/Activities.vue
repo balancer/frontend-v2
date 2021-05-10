@@ -2,11 +2,11 @@
   <TablePoolActivities
     v-if="pool && hasPoolActivities"
     :tokens="pool.tokensList"
-    :poolActivities="poolActivities"
-    :isLoading="isLoadingPoolActivities"
-    :isLoadingMore="poolActivitiesIsFetchingNextPage"
-    :isPaginated="poolActivitiesHasNextPage"
-    @loadMore="loadMorePoolActivities"
+    :pool-activities="poolActivities"
+    :is-loading="isLoadingPoolActivities"
+    :is-loading-more="poolActivitiesIsFetchingNextPage"
+    :is-paginated="poolActivitiesHasNextPage"
+    @load-more="loadMorePoolActivities"
   />
   <BalBlankSlate v-else v-text="$t('noInvestmentsPool')" class="h-60" />
 </template>
