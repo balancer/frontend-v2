@@ -26,7 +26,11 @@
             <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
             <BalTooltip>
               <template v-slot:activator>
-                <BalLink v-if="feesManagedByGauntlet" :href="EXTERNAL_LINKS.Gauntlet.Home" external>
+                <BalLink
+                  v-if="feesManagedByGauntlet"
+                  :href="EXTERNAL_LINKS.Gauntlet.Home"
+                  external
+                >
                   <GauntletIcon class="ml-2" />
                 </BalLink>
                 <BalIcon
@@ -38,9 +42,10 @@
               </template>
               <div class="w-52">
                 <span>
-                  {{ feesManagedByGauntlet ?
-                    $t('feesManagedByGauntlet') :
-                    $t('fixedFeesTooltip')
+                  {{
+                    feesManagedByGauntlet
+                      ? $t('feesManagedByGauntlet')
+                      : $t('fixedFeesTooltip')
                   }}
                 </span>
               </div>
@@ -156,7 +161,7 @@ export default defineComponent({
       refetchQueriesOnBlockNumber: 0
     });
 
-    const feesManagedByGauntlet = POOLS.DynamicFees.Gauntlet.includes(data.id)
+    const feesManagedByGauntlet = POOLS.DynamicFees.Gauntlet.includes(data.id);
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
