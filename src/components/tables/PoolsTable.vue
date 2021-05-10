@@ -112,7 +112,7 @@ export default defineComponent({
         noGrow: true
       },
       {
-        name: t('poolName'),
+        name: t('composition'),
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',
@@ -145,7 +145,12 @@ export default defineComponent({
       },
       {
         name: t('apy'),
-        accessor: pool => `${fNum(pool.dynamic.apy, 'percent')}`,
+        accessor: pool =>
+          `${
+            Number(pool.dynamic.apy) > 10000
+              ? '-'
+              : fNum(pool.dynamic.apy, 'percent')
+          }`,
         className: 'w-32',
         align: 'right',
         id: 'poolApy',

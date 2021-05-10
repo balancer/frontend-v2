@@ -10,7 +10,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 
 import BalancerContracts from '@/services/balancer/contracts/service';
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { DecoratedPool, FullPool } from '@/services/balancer/subgraph/types';
 import { Token } from '@/types';
 
 export default function usePoolQuery(
@@ -33,6 +33,13 @@ export default function usePoolQuery(
   const prices = computed(() => store.state.market.prices);
   const isQueryEnabled = computed(() => !appLoading.value);
 
+  function tokensInjected(pool: DecoratedPool): boolean {
+    const allAddresses = Object.keys(allTokens.value);
+    return [...pool.tokenAddresses, pool.address].every(address =>
+      allAddresses.includes(address)
+    );
+  }
+
   // METHODS
   const queryFn = async () => {
     const [pool] = await balancerSubgraph.pools.getDecorated(
@@ -47,10 +54,12 @@ export default function usePoolQuery(
       tokens
     );
 
-    await store.dispatch('registry/injectTokens', [
-      ...pool.tokenAddresses,
-      pool.address
-    ]);
+    if (!tokensInjected(pool)) {
+      await store.dispatch('registry/injectTokens', [
+        ...pool.tokenAddresses,
+        pool.address
+      ]);
+    }
 
     return { ...pool, onchain: onchainData };
   };

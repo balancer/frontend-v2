@@ -9,6 +9,7 @@ import { POOLS } from '@/constants/pools';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import useTokens from '../useTokens';
 
 type PoolsQueryResponse = {
   pools: DecoratedPool[];
@@ -25,6 +26,7 @@ export default function usePoolsQuery(
 
   // COMPOSABLES
   const store = useStore();
+  const { allTokens } = useTokens();
 
   // DATA
   const queryKey = QUERY_KEYS.Pools.All(tokenList);
@@ -33,6 +35,11 @@ export default function usePoolsQuery(
   const appLoading = computed(() => store.state.app.loading);
   const prices = computed(() => store.state.market.prices);
   const isQueryEnabled = computed(() => !appLoading.value);
+
+  function uninjected(tokens: string[]): string[] {
+    const allAddresses = Object.keys(allTokens.value);
+    return tokens.filter(address => !allAddresses.includes(address));
+  }
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
@@ -47,13 +54,20 @@ export default function usePoolsQuery(
         }
       }
     );
+
     const tokens = flatten(pools.map(pool => pool.tokenAddresses));
-    await store.dispatch('registry/injectTokens', tokens);
+    const uninjectedTokens = uninjected(tokens);
+    if (uninjectedTokens.length > 0) {
+      await store.dispatch('registry/injectTokens', uninjectedTokens);
+    }
 
     return {
       pools,
       tokens,
-      skip: pools.length ? pageParam + POOLS.Pagination.PerPage : undefined
+      skip:
+        pools.length >= POOLS.Pagination.PerPage
+          ? pageParam + POOLS.Pagination.PerPage
+          : undefined
     };
   };
 

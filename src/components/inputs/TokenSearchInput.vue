@@ -2,7 +2,13 @@
   <div>
     <div class="flex items-center flex-wrap">
       <div class="flex items-center flex-wrap">
-        <BalBtn color="gray" outline @click="onClick" class="mr-4">
+        <BalBtn
+          color="gray"
+          outline
+          size="sm"
+          @click="onClick"
+          class="mb-2 md:mb-0 mr-4"
+        >
           <BalIcon name="search" size="sm" class="mr-2" />
           Filter by token
         </BalBtn>
@@ -16,17 +22,17 @@
           @closed="removeToken(token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
-          <span class="ml-2">{{ allTokens[token]?.symbol }}</span>
+          <span class="ml-2">{{ tokenDictionary[token]?.symbol }}</span>
         </BalChip>
       </div>
       <div
-        class="text-gray-400 my-4 overflow-x-auto ml-4"
         v-if="
           account &&
             !isNotFetchingBalances &&
             !isLoadingBalances &&
             !hasNoBalances
         "
+        class="text-gray-400 overflow-x-auto"
       >
         <span class="mr-6">In your wallet:</span>
         <span
@@ -38,7 +44,7 @@
           {{ token?.symbol }}
         </span>
       </div>
-      <div class="text-gray-400 my-4 flex flex-wrap" v-else>
+      <div v-else class="text-gray-400 flex flex-wrap">
         <span class="mr-6">Popular Bases:</span>
         <span
           v-for="token in whiteListedTokens"
@@ -64,11 +70,11 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
-import useTokens from '@/composables/useTokens';
 import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
 import useWeb3 from '@/composables/useWeb3';
 import { TOKENS } from '@/constants/tokens';
+import useTokenLists from '@/composables/useTokenLists';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -86,7 +92,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     // COMPOSABLES
-    const { allTokens } = useTokens();
+    const { tokenDictionary } = useTokenLists();
     const {
       isLoading: isLoadingBalances,
       balances,
@@ -108,7 +114,7 @@ export default defineComponent({
 
     const hasNoBalances = computed(() => !sortedBalances.value.length);
     const whiteListedTokens = computed(() =>
-      Object.values(allTokens.value)
+      Object.values(tokenDictionary.value)
         .filter((token: any) => TOKENS.Popular.Symbols.includes(token.symbol))
         .filter((balance: any) => !props.modelValue.includes(balance.address))
     );
@@ -142,7 +148,7 @@ export default defineComponent({
       hasNoBalances,
       whiteListedTokens,
       // computed
-      allTokens,
+      tokenDictionary,
       // methods
       addToken,
       removeToken,

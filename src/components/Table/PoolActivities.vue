@@ -3,26 +3,33 @@
     <BalTable
       :columns="columns"
       :data="activityRows"
-      :is-loading="loading"
+      :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
+      :isPaginated="isPaginated"
+      @loadMore="$emit('loadMore')"
       skeleton-class="h-64"
       sticky="both"
     >
       <template v-slot:actionCell="action">
-        <div class="pool-activity-cell">
-          <PlusSquareIcon v-if="action.type === 'join'" />
-          <MinusSquareIcon v-else />
-          {{ action.label }}
+        <div class="px-6 py-2">
+          <div class="flex items-center">
+            <div>
+              <PlusSquareIcon v-if="action.type === 'Join'" />
+              <MinusSquareIcon v-else />
+            </div>
+            <div>{{ action.label }}</div>
+          </div>
         </div>
       </template>
 
       <template v-slot:valueCell="action">
-        <div class="pool-activity-cell">
-          {{ action.value }}
+        <div class="px-6 py-4 flex">
+          {{ fNum(action.value, 'usd_m') }}
         </div>
       </template>
 
       <template v-slot:detailsCell="action">
-        <div class="pool-activity-cell flex-wrap">
+        <div class="px-6 py-4 flex -mt-1 flex-wrap">
           <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
             <div
               class="m-1 flex items-center p-1 px-2 bg-gray-50 rounded-lg"
@@ -38,16 +45,22 @@
         </div>
       </template>
 
-      <template v-slot:dateCell="action">
-        <div class="pool-activity-cell">
-          {{ action.formattedDate }}
-          <BalLink :href="explorer.txLink(action.tx)" external>
-            <BalIcon
-              name="external-link"
-              size="sm"
-              class="ml-2 text-gray-500 hover:text-blue-500"
-            />
-          </BalLink>
+      <template v-slot:timeCell="action">
+        <div class="px-6 py-4">
+          <div class="flex items-center wrap whitespace-nowrap">
+            {{ action.formattedDate }}
+            <BalLink
+              :href="explorer.txLink(action.tx)"
+              external
+              class="ml-2 flex items-center"
+            >
+              <BalIcon
+                name="external-link"
+                size="sm"
+                class="text-gray-500 hover:text-blue-500"
+              />
+            </BalLink>
+          </div>
         </div>
       </template>
     </BalTable>
@@ -57,6 +70,7 @@
 <script lang="ts">
 import { PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import numeral from 'numeral';
 
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
@@ -91,6 +105,8 @@ interface ActivityRow {
 }
 
 export default {
+  emits: ['loadMore'],
+
   props: {
     tokens: {
       type: Object as PropType<string[]>,
@@ -100,7 +116,10 @@ export default {
       type: Array as PropType<PoolActivity[]>,
       required: true
     },
-    loading: { type: Boolean, default: false }
+    isLoading: { type: Boolean, default: false },
+    isLoadingMore: { type: Boolean, default: false },
+    loadMore: { type: Function as PropType<() => void> },
+    isPaginated: { type: Boolean, default: false }
   },
 
   setup(props) {
@@ -115,7 +134,8 @@ export default {
         id: 'action',
         accessor: 'tx',
         Cell: 'actionCell',
-        className: 'w-12'
+        className: 'w-40 md:w-32',
+        sortable: false
       },
       {
         name: t('value'),
@@ -123,29 +143,31 @@ export default {
         accessor: 'value',
         Cell: 'valueCell',
         align: 'right',
-        className: 'align-center w-12'
+        className: 'align-center w-40',
+        sortKey: pool => numeral(pool.value).value()
       },
       {
         name: t('details'),
         id: 'details',
         accessor: '',
         Cell: 'detailsCell',
-        className: 'w-40',
+        className: 'w-72',
         sortable: false
       },
       {
         name: t('time'),
-        id: 'dateAgo',
+        id: 'timeAgo',
         accessor: 'timestamp',
-        Cell: 'dateCell',
+        Cell: 'timeCell',
         align: 'right',
-        className: 'w-12'
+        className: 'w-40',
+        sortKey: pool => numeral(pool.timestamp).value()
       }
     ]);
 
     const activityRows = computed<ActivityRow[]>(() =>
       props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
-        const isJoin = type === 'join';
+        const isJoin = type === 'Join';
 
         return {
           label: isJoin ? t('invest') : t('withdraw'),
@@ -190,13 +212,9 @@ export default {
     return {
       columns,
       activityRows,
-      explorer
+      explorer,
+      fNum
     };
   }
 };
 </script>
-<style>
-.pool-activity-cell {
-  @apply px-6 py-4 flex items-center flex-row;
-}
-</style>

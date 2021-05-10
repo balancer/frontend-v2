@@ -133,6 +133,7 @@ export default function useSor(
     if (isWrap.value || isUnwrap.value) {
       tokenInAmountInput.value = amount;
       tokenOutAmountInput.value = amount;
+      sorReturn.value.hasSwaps = false;
       priceImpact.value = 0;
       return;
     }

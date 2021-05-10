@@ -20,7 +20,7 @@
         <span
           v-else
           v-text="_shorten(account)"
-          class="pl-2 hidden lg:inline-block"
+          class="pl-2 hidden lg:inline-block address"
         />
         <BalIcon
           name="chevron-down"
@@ -59,3 +59,9 @@ export default defineComponent({
   }
 });
 </script>
+
+<style scoped>
+.address {
+  font-variant-ligatures: no-contextual;
+}
+</style>

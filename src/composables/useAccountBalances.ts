@@ -7,6 +7,7 @@ import { getBalances } from '@/utils/balancer/tokens';
 import { formatEther } from '@ethersproject/units';
 import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { ETHER } from '@/constants/tokenlists';
 
 export default function useAccountBalances() {
   const { account, userNetwork } = useWeb3();
@@ -48,19 +49,20 @@ export default function useAccountBalances() {
           address: getAddress(tokenAddress)
         };
       });
+
+      // separate case for native ether
+      balances[ETHER.address.toLowerCase()] = {
+        balance: formatEther(data.value[1]),
+        symbol: ETHER.symbol,
+        address: ETHER.address
+      };
       return balances;
     }
     return null;
   });
-  const etherBalance = computed(() => {
-    if (data.value) {
-      formatEther(data.value[1]);
-    }
-    return null;
-  });
+
   return {
     balances,
-    etherBalance,
     error,
     isLoading,
     isIdle,

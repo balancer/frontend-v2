@@ -1,11 +1,6 @@
 import Service from '../../service';
 import queryBuilder from './query';
-import {
-  PoolActivities as PoolActivitiesType,
-  PoolActivity,
-  PoolActivityType,
-  QueryBuilder
-} from '../../types';
+import { PoolActivity, QueryBuilder } from '../../types';
 
 export default class PoolActivities {
   service: Service;
@@ -16,24 +11,16 @@ export default class PoolActivities {
     this.query = query;
   }
 
-  public async get(args = {}, attrs = {}): Promise<PoolActivitiesType> {
+  public async get(args = {}, attrs = {}): Promise<PoolActivity[]> {
     const query = this.query(args, attrs);
-    const data = await this.service.client.get(query);
-    return this.serialize(data);
+    const { joinExits } = await this.service.client.get(query);
+    return this.serializeActivity(joinExits);
   }
 
-  serialize(data: PoolActivitiesType) {
-    return {
-      joins: data.joins.map(join => this.serializeActivity(join, 'join')),
-      exits: data.exits.map(exit => this.serializeActivity(exit, 'exit'))
-    };
-  }
-
-  serializeActivity(poolActivity: PoolActivity, type: PoolActivityType) {
-    return {
+  serializeActivity(poolActivities: PoolActivity[]) {
+    return poolActivities.map(poolActivity => ({
       ...poolActivity,
-      timestamp: poolActivity.timestamp * 1000,
-      type
-    };
+      timestamp: poolActivity.timestamp * 1000
+    }));
   }
 }

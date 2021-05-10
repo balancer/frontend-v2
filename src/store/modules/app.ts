@@ -16,7 +16,6 @@ const state: AppState = {
   loading: true,
   modalOpen: false,
   darkMode: false,
-  // locale: defaultLocale,
   locale: 'en-US',
   slippage: '0.01',
   tradeLiquidity: LiquiditySelection.Best
@@ -27,7 +26,7 @@ const actions = {
     try {
       // Set defaults from localStorage
       commit('setLocale', lsGet('locale', 'en-US'));
-      commit('setDarkMode', lsGet('darkMode', false));
+      commit('setDarkMode', false);
       commit('setSlippage', lsGet('slippage', '0.01'));
       commit(
         'setTradeLiquidity',
