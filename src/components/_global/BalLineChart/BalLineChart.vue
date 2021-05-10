@@ -224,8 +224,8 @@ export default defineComponent({
             backgroundColor: (props.color || [])[i] || 'black',
             borderRadius: 3,
             padding: 4,
-            formatter: (params: { value: string }) => {
-              return fNum(params.value, null, {
+            formatter: (params: any) => {
+              return fNum(params.data.yAxis, null, {
                 format: props.axisLabelFormatter.yAxis
               });
             },
