@@ -77,7 +77,10 @@ export default function usePaginatedUserPoolsQuery(
     return {
       pools: poolsWithShares,
       tokens,
-      skip: pools.length ? pageParam + POOLS.Pagination.PerPage : undefined
+      skip:
+        pools.length >= POOLS.Pagination.PerPage
+          ? pageParam + POOLS.Pagination.PerPage
+          : undefined
     };
   };
 
