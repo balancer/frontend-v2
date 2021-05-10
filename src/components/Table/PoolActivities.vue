@@ -11,21 +11,25 @@
       sticky="both"
     >
       <template v-slot:actionCell="action">
-        <div class="pool-activity-cell">
-          <PlusSquareIcon v-if="action.type === 'Join'" />
-          <MinusSquareIcon v-else />
-          {{ action.label }}
+        <div class="px-6 py-4">
+          <div class="flex items-center">
+            <div>
+              <PlusSquareIcon v-if="action.type === 'Join'" />
+              <MinusSquareIcon v-else />
+            </div>
+            <div>{{ action.label }}</div>
+          </div>
         </div>
       </template>
 
       <template v-slot:valueCell="action">
-        <div class="pool-activity-cell">
+        <div class="px-6 py-4 flex">
           {{ fNum(action.value, 'usd_m') }}
         </div>
       </template>
 
       <template v-slot:detailsCell="action">
-        <div class="pool-activity-cell flex-wrap">
+        <div class="px-6 py-4 flex -mt-1 flex-wrap">
           <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
             <div
               class="m-1 flex items-center p-1 px-2 bg-gray-50 rounded-lg"
@@ -42,15 +46,21 @@
       </template>
 
       <template v-slot:timeCell="action">
-        <div class="pool-activity-cell whitespace-nowrap">
-          {{ action.formattedDate }}
-          <BalLink :href="explorer.txLink(action.tx)" external>
-            <BalIcon
-              name="external-link"
-              size="sm"
-              class="ml-2 text-gray-500 hover:text-blue-500"
-            />
-          </BalLink>
+        <div class="px-6 py-4">
+          <div class="flex items-center wrap whitespace-nowrap">
+            {{ action.formattedDate }}
+            <BalLink
+              :href="explorer.txLink(action.tx)"
+              external
+              class="ml-2 flex items-center"
+            >
+              <BalIcon
+                name="external-link"
+                size="sm"
+                class="text-gray-500 hover:text-blue-500"
+              />
+            </BalLink>
+          </div>
         </div>
       </template>
     </BalTable>
@@ -208,8 +218,3 @@ export default {
   }
 };
 </script>
-<style>
-.pool-activity-cell {
-  @apply px-6 py-4 flex items-center flex-row;
-}
-</style>
