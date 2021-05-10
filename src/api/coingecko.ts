@@ -69,7 +69,7 @@ export type HistoricalPrices = Record<string, Prices>;
 export async function getEtherPrice(): Promise<Price> {
   const uri =
     'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true';
-  const result = await fetch(uri).then(res => res.json());
+  const result = await fetch(uri, { mode: 'no-cors' }).then(res => res.json());
   return {
     price: result.ethereum.usd,
     price24HChange: result.ethereum.usd_24h_change
@@ -89,7 +89,7 @@ export async function getTokensPrice(
       .map(address => getChainAddress(chainId, address));
     const uri = `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${addressString}&vs_currencies=usd&include_24hr_change=true`;
     // @ts-ignore
-    promises.push(fetch(uri).then(res => res.json()));
+    promises.push(fetch(uri, { mode: 'no-cors' }).then(res => res.json()));
   });
   const results = await Promise.all(promises);
   const prices = results.reduce(
@@ -119,7 +119,7 @@ export async function getTokensHistoricalPrice(
   const priceRequests = addresses.map(address => {
     const chainAddress = getChainAddress(chainId, address);
     const url = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${chainAddress}/market_chart/range?vs_currency=usd&from=${start}&to=${end}`;
-    const request = fetch(url).then(res => res.json());
+    const request = fetch(url, { mode: 'no-cors' }).then(res => res.json());
     return request;
   });
   const results = await Promise.all(priceRequests);
