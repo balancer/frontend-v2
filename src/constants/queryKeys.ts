@@ -13,6 +13,7 @@ const QUERY_KEYS = {
     UserActivities: (id: string, account: Ref<string>) => [
       POOLS_ROOT_KEY,
       'activities',
+      'user',
       { account, id }
     ]
   },

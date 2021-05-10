@@ -93,7 +93,7 @@ import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
 import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
-import PoolActivitiesCard from '@/components/cards/PoolActivitiesCard.vue';
+import PoolActivitiesCard from '@/components/cards/PoolActivitiesCard/PoolActivitiesCard.vue';
 
 interface PoolPageData {
   id: string;
