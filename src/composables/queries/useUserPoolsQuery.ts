@@ -13,6 +13,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import useTokens from '../useTokens';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -29,6 +30,7 @@ export default function useUserPoolsQuery(
   // COMPOSABLES
   const store = useStore();
   const { account, isConnected } = useWeb3();
+  const { allTokens } = useTokens();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Pools.User(account));
@@ -38,6 +40,11 @@ export default function useUserPoolsQuery(
   const isQueryEnabled = computed(
     () => isConnected.value && account.value != null && !isEmpty(prices.value)
   );
+
+  function uninjected(tokens: string[]): string[] {
+    const allAddresses = Object.keys(allTokens.value);
+    return tokens.filter(address => !allAddresses.includes(address));
+  }
 
   // METHODS
   const queryFn = async () => {
@@ -61,6 +68,10 @@ export default function useUserPoolsQuery(
     );
 
     const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
+    const uninjectedTokens = uninjected(tokens);
+    if (uninjectedTokens.length > 0) {
+      await store.dispatch('registry/injectTokens', uninjectedTokens);
+    }
 
     const poolsWithShares = pools.map(pool => ({
       ...pool,

@@ -17,7 +17,7 @@
 
       <template v-slot:valueCell="action">
         <div class="pool-activity-cell">
-          {{ action.value }}
+          {{ fNum(action.value, 'usd_m') }}
         </div>
       </template>
 
@@ -57,6 +57,7 @@
 <script lang="ts">
 import { PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import numeral from 'numeral';
 
 import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
@@ -115,7 +116,8 @@ export default {
         id: 'action',
         accessor: 'tx',
         Cell: 'actionCell',
-        className: 'w-12'
+        className: 'w-12',
+        sortable: false
       },
       {
         name: t('value'),
@@ -123,7 +125,8 @@ export default {
         accessor: 'value',
         Cell: 'valueCell',
         align: 'right',
-        className: 'align-center w-12'
+        className: 'align-center w-12',
+        sortKey: pool => numeral(pool.value).value()
       },
       {
         name: t('details'),
@@ -139,7 +142,8 @@ export default {
         accessor: 'timestamp',
         Cell: 'dateCell',
         align: 'right',
-        className: 'w-12'
+        className: 'w-12',
+        sortKey: pool => numeral(pool.timestamp).value()
       }
     ]);
 
@@ -190,7 +194,8 @@ export default {
     return {
       columns,
       activityRows,
-      explorer
+      explorer,
+      fNum
     };
   }
 };

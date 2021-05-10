@@ -251,10 +251,13 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
 
     // SERVICES
-    const poolExchange = new PoolExchange(
-      props.pool,
-      store.state.web3.config.key,
-      allTokens.value
+    const poolExchange = computed(
+      () =>
+        new PoolExchange(
+          props.pool,
+          store.state.web3.config.key,
+          allTokens.value
+        )
     );
 
     const poolCalculator = new PoolCalculator(
@@ -485,7 +488,7 @@ export default defineComponent({
     // Left here so numbers can be debugged in conosle
     // Talk to Fernando to see if still needed
     async function calcBptIn() {
-      const { bptIn: queryBptIn } = await poolExchange.queryExit(
+      const { bptIn: queryBptIn } = await poolExchange.value.queryExit(
         store.state.web3.account,
         fullAmounts.value,
         bptBalance.value,
@@ -516,7 +519,7 @@ export default defineComponent({
       try {
         data.loading = true;
         await calcBptIn();
-        const tx = await poolExchange.exit(
+        const tx = await poolExchange.value.exit(
           store.state.web3.account,
           amountsOut.value,
           bptIn.value,
