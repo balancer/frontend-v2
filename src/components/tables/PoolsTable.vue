@@ -29,7 +29,10 @@
           <div
             v-for="token in sortedTokensFor(pool)"
             :key="token"
-            class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
+            :class="[
+              'mr-2 mb-2 flex items-center py-1 px-2 rounded-lg',
+              balances[token.address] ? 'bg-green-50' : 'bg-gray-50'
+            ]"
           >
             <span>
               {{ allTokens[getAddress(token.address)]?.symbol }}
@@ -64,6 +67,7 @@ import useTokens from '@/composables/useTokens';
 import useFathom from '@/composables/useFathom';
 
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
+import useAccountBalances from '@/composables/useAccountBalances';
 
 export default defineComponent({
   emits: ['loadMore'],
@@ -99,6 +103,7 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
+    const { balances } = useAccountBalances();
 
     // COMPOSABLES
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -173,6 +178,8 @@ export default defineComponent({
       // data
       columns,
       allTokens,
+      balances,
+      console,
 
       // methods
       handleRowClick,
