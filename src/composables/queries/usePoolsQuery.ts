@@ -64,7 +64,10 @@ export default function usePoolsQuery(
     return {
       pools,
       tokens,
-      skip: pools.length ? pageParam + POOLS.Pagination.PerPage : undefined
+      skip:
+        pools.length >= POOLS.Pagination.PerPage
+          ? pageParam + POOLS.Pagination.PerPage
+          : undefined
     };
   };
 
