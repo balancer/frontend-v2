@@ -245,6 +245,7 @@ export default defineComponent({
 
 .address {
   @apply text-blue-500;
+  font-variant-ligatures: no-contextual;
 }
 
 .option:hover {
