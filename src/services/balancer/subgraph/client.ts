@@ -5,8 +5,7 @@ const NETWORK = process.env.VUE_APP_NETWORK || '1';
 export const urlMap = {
   '1': 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
   '17': 'http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2',
-  '42':
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2'
+  '42': 'https://api.thegraph.com/subgraphs/name/mikemcdonald/kovan-v2'
 };
 
 export default class Client {

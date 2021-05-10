@@ -3,13 +3,16 @@
     <BalTable
       :columns="columns"
       :data="activityRows"
-      :is-loading="loading"
+      :isLoading="isLoading"
+      :isLoadingMore="isLoadingMore"
+      :isPaginated="isPaginated"
+      @loadMore="$emit('loadMore')"
       skeleton-class="h-64"
       sticky="both"
     >
       <template v-slot:actionCell="action">
         <div class="pool-activity-cell">
-          <PlusSquareIcon v-if="action.type === 'join'" />
+          <PlusSquareIcon v-if="action.type === 'Join'" />
           <MinusSquareIcon v-else />
           {{ action.label }}
         </div>
@@ -91,6 +94,8 @@ interface ActivityRow {
 }
 
 export default {
+  emits: ['loadMore'],
+
   props: {
     tokens: {
       type: Object as PropType<string[]>,
@@ -100,7 +105,10 @@ export default {
       type: Array as PropType<PoolActivity[]>,
       required: true
     },
-    loading: { type: Boolean, default: false }
+    isLoading: { type: Boolean, default: false },
+    isLoadingMore: { type: Boolean, default: false },
+    loadMore: { type: Function as PropType<() => void> },
+    isPaginated: { type: Boolean, default: false }
   },
 
   setup(props) {
@@ -145,7 +153,7 @@ export default {
 
     const activityRows = computed<ActivityRow[]>(() =>
       props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
-        const isJoin = type === 'join';
+        const isJoin = type === 'Join';
 
         return {
           label: isJoin ? t('invest') : t('withdraw'),

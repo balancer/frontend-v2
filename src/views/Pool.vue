@@ -58,7 +58,10 @@
               v-if="hasPoolActivities && pool"
               :tokens="pool.tokensList"
               :poolActivities="poolActivities"
-              :loading="isLoadingPoolActivities"
+              :isLoading="isLoadingPoolActivities"
+              :isLoadingMore="poolActivitiesIsFetchingNextPage"
+              :isPaginated="poolActivitiesHasNextPage"
+              @loadMore="loadMorePoolActivities"
             />
             <BalBlankSlate
               v-else
@@ -103,6 +106,7 @@ import useAuth from '@/composables/useAuth';
 import { useQueryClient } from 'vue-query';
 import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
+import { flatten } from 'lodash';
 
 interface PoolPageData {
   id: string;
@@ -146,15 +150,34 @@ export default defineComponent({
     const appLoading = computed(() => store.state.app.loading);
 
     const pool = computed(() => poolQuery.data.value);
+
     const loadingPool = computed(
       () => poolQuery.isLoading.value || poolQuery.isIdle.value
     );
 
-    const poolActivities = computed(() => poolActivitiesQuery.data.value);
+    const poolActivities = computed(() =>
+      poolActivitiesQuery.data.value
+        ? flatten(
+            poolActivitiesQuery.data.value.pages.map(
+              page => page.poolActivities
+            )
+          )
+        : []
+    );
+
     const isLoadingPoolActivities = computed(
       () => poolActivitiesQuery.isLoading.value
     );
+
     const hasPoolActivities = computed(() => !!poolActivities.value?.length);
+
+    const poolActivitiesHasNextPage = computed(
+      () => poolActivitiesQuery.hasNextPage?.value
+    );
+
+    const poolActivitiesIsFetchingNextPage = computed(
+      () => poolActivitiesQuery.isFetchingNextPage?.value
+    );
 
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
     const historicalPrices = computed(
@@ -202,6 +225,10 @@ export default defineComponent({
     });
 
     // METHODS
+    function loadMorePoolActivities() {
+      poolActivitiesQuery.fetchNextPage.value();
+    }
+
     function onNewTx(): void {
       queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
       data.refetchQueriesOnBlockNumber =
@@ -237,9 +264,12 @@ export default defineComponent({
       missingPrices,
       isLoadingPoolActivities,
       poolActivities,
+      poolActivitiesHasNextPage,
+      poolActivitiesIsFetchingNextPage,
       // methods
       fNum,
-      onNewTx
+      onNewTx,
+      loadMorePoolActivities
     };
   }
 });

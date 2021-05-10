@@ -1,7 +1,6 @@
 import { reactive, computed } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
-import { orderBy } from 'lodash';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
@@ -29,18 +28,18 @@ export default function usePoolActivitiesQuery(
   );
 
   // DATA
-  const queryKey = QUERY_KEYS.Pools.UserActivities(id, account);
+  const queryKey = reactive(QUERY_KEYS.Pools.UserActivities(id, account));
 
   // METHODS
   const queryFn = async () => {
-    const { joins, exits } = await balancerSubgraph.poolActivities.get({
+    const poolActivities = await balancerSubgraph.poolActivities.get({
       where: {
         pool: id,
         sender: account.value.toLowerCase()
       }
     });
 
-    return orderBy([...joins, ...exits], 'timestamp', 'desc');
+    return poolActivities;
   };
 
   const queryOptions = reactive({
@@ -48,9 +47,5 @@ export default function usePoolActivitiesQuery(
     ...options
   });
 
-  return useQuery<PoolActivitiesQueryResponse>(
-    reactive(queryKey),
-    queryFn,
-    queryOptions
-  );
+  return useQuery<PoolActivitiesQueryResponse>(queryKey, queryFn, queryOptions);
 }
