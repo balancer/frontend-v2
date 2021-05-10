@@ -11,12 +11,13 @@
           v-for="(column, columnIndex) in filteredColumns"
           :key="`header-${column.id}`"
           :class="[
-            'p-6 flex bg-white headingShadow border-b border-gray-200 cursor-pointer',
+            'p-6 flex bg-white headingShadow border-b border-gray-200',
             column.noGrow ? '' : 'flex-grow',
             column.className,
             column.align === 'right' ? 'justify-end' : 'justify-start',
             getHorizontalStickyClass(columnIndex),
-            isColumnStuck ? 'isSticky' : ''
+            isColumnStuck ? 'isSticky' : '',
+            column.sortKey ? 'cursor-pointer' : ''
           ]"
           :ref="setHeaderRef(columnIndex)"
           @click="handleSort(column.id)"
@@ -133,8 +134,6 @@ export type ColumnDefinition<T = Data> = {
   className?: string;
   // Left or right aligned content. E.g. Numbers should be right aligned
   align?: 'left' | 'right';
-  // Dictates whether the column is sortable or not
-  sortable?: boolean;
   // Should the column width grow to fit available space?
   noGrow?: boolean;
   // Set to true to hide the column
@@ -206,19 +205,22 @@ export default defineComponent({
       props.onRowClick && props.onRowClick(data);
     };
 
-    const handleSort = (columnId: string) => {
+    const handleSort = (columnId: string | null, updateDirection = true) => {
       const column = props.columns.find(column => column.id === columnId);
-      if (!column?.sortKey) {
-        return;
-      }
+      if (!column?.sortKey) return;
+      if (columnId !== currentSortColumn.value)
+        currentSortDirection.value = null;
 
       currentSortColumn.value = columnId;
-      if (currentSortDirection.value === null) {
-        currentSortDirection.value = 'asc';
-      } else if (currentSortDirection.value === 'asc') {
-        currentSortDirection.value = 'desc';
-      } else {
-        currentSortDirection.value = null;
+
+      if (updateDirection) {
+        if (currentSortDirection.value === null) {
+          currentSortDirection.value = 'asc';
+        } else if (currentSortDirection.value === 'asc') {
+          currentSortDirection.value = 'desc';
+        } else {
+          currentSortDirection.value = null;
+        }
       }
 
       const sortedData = sortBy(
@@ -227,10 +229,12 @@ export default defineComponent({
       );
       if (currentSortDirection.value === 'asc') {
         tableData.value = sortedData;
+        return;
       } else if (currentSortDirection.value === 'desc') {
         tableData.value = sortedData.reverse();
+        return;
       }
-      tableData.value = sortedData;
+      tableData.value = props.data;
     };
 
     onMounted(() => {
@@ -257,6 +261,10 @@ export default defineComponent({
     watch(
       () => props.data,
       newData => {
+        if (currentSortColumn.value && currentSortDirection.value !== null) {
+          handleSort(currentSortColumn.value, false);
+          return;
+        }
         tableData.value = newData;
       }
     );
