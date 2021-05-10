@@ -46,9 +46,10 @@ export default function usePoolUserActivitiesQuery(
 
     return {
       poolActivities,
-      skip: poolActivities.length
-        ? pageParam + POOLS.Pagination.PerPage
-        : undefined
+      skip:
+        poolActivities.length >= POOLS.Pagination.PerPage
+          ? pageParam + POOLS.Pagination.PerPage
+          : undefined
     };
   };
 
