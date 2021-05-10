@@ -74,7 +74,7 @@ const actions = {
     dispatch('account/resetAccount', null, { root: true });
   },
 
-  async loadProvider({ commit, dispatch, state }) {
+  async loadProvider({ commit, dispatch }) {
     try {
       if (
         auth.provider.value.removeAllListeners &&
