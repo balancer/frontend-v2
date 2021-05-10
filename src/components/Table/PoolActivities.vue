@@ -17,7 +17,7 @@
 
       <template v-slot:valueCell="action">
         <div class="pool-activity-cell">
-          {{ fNum(action.value, null, { format: '$0,00.00a' }) }}
+          {{ fNum(action.value, 'usd_m') }}
         </div>
       </template>
 
