@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-between items-end border-b mb-6">
-    <BalTabs v-model="activeTab" :tabs="tabs" no-pad />
+    <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
   </div>
   <template v-if="activeTab === PoolActivityTab.ALL_ACTIVITY">
     <Activities
