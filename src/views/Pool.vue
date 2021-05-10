@@ -53,21 +53,8 @@
           </div>
 
           <div>
-            <h4 v-text="$t('activity')" class="mb-4" />
-            <TablePoolActivities
-              v-if="hasPoolActivities && pool"
-              :tokens="pool.tokensList"
-              :poolActivities="poolActivities"
-              :isLoading="isLoadingPoolActivities"
-              :isLoadingMore="poolActivitiesIsFetchingNextPage"
-              :isPaginated="poolActivitiesHasNextPage"
-              @loadMore="loadMorePoolActivities"
-            />
-            <BalBlankSlate
-              v-else
-              v-text="$t('noInvestmentsPool')"
-              class="h-60"
-            />
+            <h4 v-text="$t('poolTransactions')" class="mb-4" />
+            <PoolActivitiesCard :pool="pool" :loading="loadingPool" />
           </div>
         </div>
       </div>
@@ -94,19 +81,19 @@ import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+import { useQueryClient } from 'vue-query';
+
 import useNumbers from '@/composables/useNumbers';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
+import useWeb3 from '@/composables/useWeb3';
+import useAuth from '@/composables/useAuth';
+import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
 import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
-import useWeb3 from '@/composables/useWeb3';
-import useAuth from '@/composables/useAuth';
-import { useQueryClient } from 'vue-query';
-import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
-import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
-import { flatten } from 'lodash';
+import PoolActivitiesCard from '@/components/cards/PoolActivitiesCard.vue';
 
 interface PoolPageData {
   id: string;
@@ -118,7 +105,8 @@ const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 export default defineComponent({
   components: {
     PoolActionsCard,
-    PoolBalancesCard
+    PoolBalancesCard,
+    PoolActivitiesCard
   },
 
   setup() {
@@ -130,9 +118,6 @@ export default defineComponent({
     const { isAuthenticated } = useAuth();
     const queryClient = useQueryClient();
     const poolQuery = usePoolQuery(route.params.id as string);
-    const poolActivitiesQuery = usePoolActivitiesQuery(
-      route.params.id as string
-    );
     const poolSnapshotsQuery = usePoolSnapshotsQuery(
       route.params.id as string,
       30
@@ -153,30 +138,6 @@ export default defineComponent({
 
     const loadingPool = computed(
       () => poolQuery.isLoading.value || poolQuery.isIdle.value
-    );
-
-    const poolActivities = computed(() =>
-      poolActivitiesQuery.data.value
-        ? flatten(
-            poolActivitiesQuery.data.value.pages.map(
-              page => page.poolActivities
-            )
-          )
-        : []
-    );
-
-    const isLoadingPoolActivities = computed(
-      () => poolActivitiesQuery.isLoading.value
-    );
-
-    const hasPoolActivities = computed(() => !!poolActivities.value?.length);
-
-    const poolActivitiesHasNextPage = computed(
-      () => poolActivitiesQuery.hasNextPage?.value
-    );
-
-    const poolActivitiesIsFetchingNextPage = computed(
-      () => poolActivitiesQuery.isFetchingNextPage?.value
     );
 
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
@@ -225,9 +186,6 @@ export default defineComponent({
     });
 
     // METHODS
-    function loadMorePoolActivities() {
-      poolActivitiesQuery.fetchNextPage.value();
-    }
 
     function onNewTx(): void {
       queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
@@ -260,16 +218,10 @@ export default defineComponent({
       loadingPool,
       titleTokens,
       isAuthenticated,
-      hasPoolActivities,
       missingPrices,
-      isLoadingPoolActivities,
-      poolActivities,
-      poolActivitiesHasNextPage,
-      poolActivitiesIsFetchingNextPage,
       // methods
       fNum,
-      onNewTx,
-      loadMorePoolActivities
+      onNewTx
     };
   }
 });
