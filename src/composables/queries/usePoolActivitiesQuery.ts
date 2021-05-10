@@ -1,40 +1,53 @@
 import { reactive } from 'vue';
-import { useQuery } from 'vue-query';
-import { QueryObserverOptions } from 'react-query/core';
-import { orderBy } from 'lodash';
+import { useInfiniteQuery } from 'vue-query';
+import { UseInfiniteQueryOptions } from 'react-query/types';
 
 import QUERY_KEYS from '@/constants/queryKeys';
+import { POOLS } from '@/constants/pools';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { PoolActivity } from '@/services/balancer/subgraph/types';
 
-type PoolActivitiesQueryResponse = PoolActivity[];
+type PoolActivitiesQueryResponse = {
+  poolActivities: PoolActivity[];
+  skip?: number;
+};
 
 export default function usePoolActivitiesQuery(
   id: string,
-  options: QueryObserverOptions<PoolActivitiesQueryResponse> = {}
+  options: UseInfiniteQueryOptions<PoolActivitiesQueryResponse> = {}
 ) {
   // SERVICES
   const balancerSubgraph = new BalancerSubgraph();
 
   // DATA
-  const queryKey = QUERY_KEYS.Pools.Activities(id);
+  const queryKey = reactive(QUERY_KEYS.Pools.Activities(id));
 
   // METHODS
-  const queryFn = async () => {
-    const { joins, exits } = await balancerSubgraph.poolActivities.get({
+  const queryFn = async ({ pageParam = 0 }) => {
+    const poolActivities = await balancerSubgraph.poolActivities.get({
+      first: POOLS.Pagination.PerPage,
+      skip: pageParam,
       where: {
         pool: id
       }
     });
 
-    return orderBy([...joins, ...exits], 'timestamp', 'desc');
+    return {
+      poolActivities,
+      skip: poolActivities.length
+        ? pageParam + POOLS.Pagination.PerPage
+        : undefined
+    };
   };
 
-  const queryOptions = reactive(options);
+  const queryOptions = reactive({
+    getNextPageParam: (lastPage: PoolActivitiesQueryResponse) => lastPage.skip,
+    ...options
+  });
 
-  return useQuery<PoolActivitiesQueryResponse>(
-    reactive(queryKey),
+  return useInfiniteQuery<PoolActivitiesQueryResponse>(
+    queryKey,
     queryFn,
     queryOptions
   );
