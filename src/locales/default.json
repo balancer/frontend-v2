@@ -123,6 +123,7 @@
     "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
     "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
     "noInvestmentsPool": "No investments in this pool",
+    "noTransactions": "No transactions",
     "numberOfPools": "Number of pools",
     "oneDay": "1D",
     "oneMonth": "1M",

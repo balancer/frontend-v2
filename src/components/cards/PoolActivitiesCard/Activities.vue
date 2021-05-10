@@ -8,7 +8,7 @@
     :is-paginated="poolActivitiesHasNextPage"
     @load-more="loadMorePoolActivities"
   />
-  <BalBlankSlate v-else v-text="$t('noInvestmentsPool')" class="h-60" />
+  <BalBlankSlate v-else v-text="$t('noTransactions')" class="h-60" />
 </template>
 
 <script lang="ts">
