@@ -8,7 +8,7 @@
       sticky="both"
     >
       <template v-slot:tokenColumnCell="token">
-        <div class="px-6 py-4 flex flex-row icon-stack">
+        <div class="px-6 py-4 flex flex-row w-52">
           <BalLink
             :href="explorer.addressLink(token.address)"
             external
@@ -90,7 +90,7 @@ export default defineComponent({
         id: 'token',
         accessor: 'address',
         Cell: 'tokenColumnCell',
-        className: 'pool-balance-symbol-cell'
+        className: 'w-52'
       },
       {
         name: t('weight'),
@@ -98,7 +98,7 @@ export default defineComponent({
         accessor: 'index',
         Cell: 'tokenWeightCell',
         align: 'right',
-        className: 'pool-balance-table-cell',
+        className: 'w-40',
         sortKey: pool => weightFor(pool.address)
       },
       {
@@ -107,7 +107,7 @@ export default defineComponent({
         accessor: 'index',
         Cell: 'tokenBalanceCell',
         align: 'right',
-        className: 'pool-balance-table-cell',
+        className: 'w-40',
         sortKey: pool => balanceFor(pool.address)
       },
       {
@@ -116,7 +116,7 @@ export default defineComponent({
         accessor: 'index',
         Cell: 'tokenValueCell',
         align: 'right',
-        className: 'pool-balance-table-cell',
+        className: 'w-40',
         sortKey: pool => numeral(fiatValueFor(pool.address)).value()
       }
     ]);
@@ -158,12 +158,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style>
-.pool-balance-table-cell {
-  min-width: 10rem;
-}
-.pool-balance-symbol-cell {
-  min-width: 12rem;
-}
-</style>
