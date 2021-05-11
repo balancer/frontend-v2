@@ -68,8 +68,6 @@ export default defineComponent({
       () => poolActivitiesQuery.isLoading.value
     );
 
-    const hasPoolActivities = computed(() => !!poolActivities.value?.length);
-
     const poolActivitiesHasNextPage = computed(
       () => poolActivitiesQuery.hasNextPage?.value
     );
@@ -78,8 +76,6 @@ export default defineComponent({
       () => poolActivitiesQuery.isFetchingNextPage?.value
     );
 
-    const tokens = computed(() => (props.pool ? props.pool.tokensList : []));
-
     // METHODS
     function loadMorePoolActivities() {
       poolActivitiesQuery.fetchNextPage.value();
@@ -87,12 +83,10 @@ export default defineComponent({
 
     return {
       // computed
-      hasPoolActivities,
       isLoadingPoolActivities,
       poolActivities,
       poolActivitiesHasNextPage,
       poolActivitiesIsFetchingNextPage,
-      tokens,
       // methods
       loadMorePoolActivities,
       // constants
