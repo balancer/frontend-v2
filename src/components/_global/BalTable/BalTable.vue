@@ -89,17 +89,16 @@
         </tr>
       </tbody>
     </table>
-    <div
-      v-if="isPaginated && !isLoading"
-      class="bal-table-pagination-btn"
-      @click="!isLoadingMore && $emit('loadMore')"
-    >
-      <template v-if="isLoadingMore">{{ $t('loading') }}</template>
-      <template v-else
-        >{{ $t('loadMore') }}
-        <BalIcon name="chevron-down" size="sm" class="ml-2"
-      /></template>
-    </div>
+  </div>
+  <div
+    v-if="isPaginated && !isLoading"
+    class="bal-table-pagination-btn"
+    @click="!isLoadingMore && $emit('loadMore')"
+  >
+    <template v-if="isLoadingMore">{{ $t('loading') }}</template>
+    <template v-else
+      >{{ $t('loadMore') }} <BalIcon name="chevron-down" size="sm" class="ml-2"
+    /></template>
   </div>
 </template>
 
