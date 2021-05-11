@@ -55,7 +55,7 @@
         <tr
           v-for="(dataItem, index) in tableData"
           :key="`tableRow-${index}`"
-          @click="onRowClick(dataItem)"
+          @click="onRowClick && onRowClick(dataItem)"
           :class="[
             'flex flex-grow bg-white z-10 rowBg',
             { 'cursor-pointer': onRowClick }
