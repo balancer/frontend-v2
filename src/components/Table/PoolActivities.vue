@@ -11,7 +11,7 @@
       sticky="both"
     >
       <template v-slot:actionCell="action">
-        <div class="px-4 py-4">
+        <div class="px-6 py-2">
           <div class="flex items-center">
             <div>
               <PlusSquareIcon v-if="action.type === 'Join'" />

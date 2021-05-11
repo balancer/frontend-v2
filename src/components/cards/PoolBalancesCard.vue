@@ -90,7 +90,7 @@ export default defineComponent({
         id: 'token',
         accessor: 'address',
         Cell: 'tokenColumnCell',
-        className: 'pool-balance-symbol-cell'
+        className: 'w-full'
       },
       {
         name: t('weight'),
@@ -162,8 +162,5 @@ export default defineComponent({
 <style>
 .pool-balance-table-cell {
   min-width: 10rem;
-}
-.pool-balance-symbol-cell {
-  min-width: 12rem;
 }
 </style>

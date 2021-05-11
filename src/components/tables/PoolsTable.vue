@@ -109,6 +109,7 @@ export default defineComponent({
         Header: 'iconColumnHeader',
         Cell: 'iconColumnCell',
         className: 'w-32 md:w-36 lg:w-40',
+        noGrow: true
       },
       {
         name: t('composition'),
