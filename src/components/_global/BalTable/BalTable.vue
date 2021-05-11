@@ -88,7 +88,10 @@
           </td>
         </tr>
       </tbody>
-      <div v-else class="bg-white rowBg h-40 flex items-center justify-center text-gray-500">
+      <div
+        v-else
+        class="bg-white rowBg h-40 flex items-center justify-center text-gray-500"
+      >
         {{ noResultsLabel || $t('noResults') }}
       </div>
     </table>
