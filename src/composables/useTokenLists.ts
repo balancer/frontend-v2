@@ -1,4 +1,5 @@
 import { computed, reactive, ref } from 'vue';
+import { getAddress } from '@ethersproject/address';
 import { TOKEN_LISTS } from '@/constants/tokenlists';
 import { useQuery } from 'vue-query';
 import { loadTokenlist } from '@/utils/tokenlists';
@@ -74,6 +75,7 @@ export default function useTokenLists(request?: TokenListRequest) {
               const value24HChange = (value / 100) * price24HChange;
               return {
                 ...token,
+                address: getAddress(token.address), // Enforce that we use checksummed addresses
                 value,
                 price,
                 price24HChange,
