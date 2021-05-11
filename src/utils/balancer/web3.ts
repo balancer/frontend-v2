@@ -9,7 +9,7 @@ const ENV = process.env.VUE_APP_ENV || 'development';
 // only disable if set to "false"
 const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
-const GAS_LIMIT_BUFFER = 0.05;
+const GAS_LIMIT_BUFFER = 0.10;
 
 export async function sendTransaction(
   web3: Web3Provider,
@@ -40,6 +40,7 @@ export async function sendTransaction(
       ...params,
       overrides
     );
+
     const gasLimit = gasLimitNumber.toNumber();
     overrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
 
