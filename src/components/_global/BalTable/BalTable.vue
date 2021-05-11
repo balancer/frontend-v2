@@ -51,7 +51,7 @@
         </td>
       </thead>
       <BalLoadingBlock v-if="isLoading" :class="skeletonClass" square />
-      <tbody v-else>
+      <tbody v-else-if="tableData.length">
         <tr
           v-for="(dataItem, index) in tableData"
           :key="`tableRow-${index}`"
@@ -88,6 +88,9 @@
           </td>
         </tr>
       </tbody>
+      <div v-else class="bg-white rowBg py-4 px-6 text-gray-500">
+        {{ noResultsLabel || $t('noResults') }}
+      </div>
     </table>
   </div>
   <div
@@ -174,6 +177,9 @@ export default defineComponent({
     isPaginated: {
       type: Boolean,
       default: false
+    },
+    noResultsLabel: {
+      type: String
     }
   },
   setup(props) {
