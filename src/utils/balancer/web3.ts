@@ -27,13 +27,6 @@ export async function sendTransaction(
   const contract = new Contract(contractAddress, abi, web3);
   const contractWithSigner = contract.connect(signer);
 
-  if (USE_BLOCKNATIVE_GAS_PLATFORM && overrides.gasPrice == null) {
-    const gasPrice = await getGasPrice();
-    if (gasPrice != null) {
-      overrides.gasPrice = gasPrice;
-    }
-  }
-
   try {
     // Gas estimation
     const gasLimitNumber = await contractWithSigner.estimateGas[action](
@@ -43,6 +36,13 @@ export async function sendTransaction(
 
     const gasLimit = gasLimitNumber.toNumber();
     overrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
+
+    if (USE_BLOCKNATIVE_GAS_PLATFORM && overrides.gasPrice == null) {
+      const gasPrice = await getGasPrice();
+      if (gasPrice != null) {
+        overrides.gasPrice = gasPrice;
+      }
+    }
 
     return await contractWithSigner[action](...params, overrides);
   } catch (e) {
