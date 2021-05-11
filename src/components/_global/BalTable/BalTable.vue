@@ -1,105 +1,125 @@
 <template>
-  <div class="overflow-x-auto whitespace-nowrap rounded-lg" ref="tableRef">
-    <table class="min-w-full whitespace-normal">
-      <thead
-        :class="[
-          'bg-white w-full flex flex-row z-20',
-          { 'sticky top-0': sticky === 'both' || sticky === 'vertical' }
-        ]"
-      >
+  <div class="max-w-full whitespace-nowrap rounded-lg" ref="tableRef">
+    <div class="overflow-hidden" ref="headerRef">
+      <table style="table-layout: fixed;">
+        <thead :class="['bg-white w-full flex flex-row z-20']">
+          <tr class="flex flex flex-grow bg-white z-10 rowBg">
+            <td
+              v-for="(column, columnIndex) in filteredColumns"
+              :key="`header-${column.id}`"
+              :class="[
+                'p-6 flex bg-white headingShadow border-b border-gray-200',
+                column.noGrow ? '' : 'flex-grow',
+                column.className,
+                column.align === 'right' ? 'justify-end' : 'justify-start',
+                getHorizontalStickyClass(columnIndex),
+                isColumnStuck && columnIndex === 0 ? 'isSticky' : '',
+                column.sortKey ? 'cursor-pointer' : ''
+              ]"
+              :ref="setHeaderRef(columnIndex)"
+              @click="handleSort(column.id)"
+            >
+              <slot
+                v-if="column.Header"
+                v-bind="column"
+                :name="column.Header"
+              ></slot>
+              <div v-else>
+                <h5 class="text-base font-semibold text-gray-800">
+                  {{ column.name }}
+                </h5>
+              </div>
+              <BalIcon
+                name="arrow-up"
+                size="sm"
+                v-if="
+                  currentSortColumn === column.id &&
+                    currentSortDirection === 'asc'
+                "
+                class="ml-1 flex items-center"
+              />
+              <BalIcon
+                name="arrow-down"
+                size="sm"
+                v-if="
+                  currentSortColumn === column.id &&
+                    currentSortDirection === 'desc'
+                "
+                class="ml-1 flex items-center"
+              />
+            </td>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div style="max-height: 300px; overflow: auto scroll" ref="bodyRef">
+      <!-- measurement row for overflow + sticky behaviour (This is just a dummy row that is not visible) -->
+      <tr class="flex flex-grow">
         <td
-          v-for="(column, columnIndex) in filteredColumns"
-          :key="`header-${column.id}`"
+          v-for="column in filteredColumns"
+          :key="column.id"
           :class="[
-            'p-6 flex bg-white headingShadow border-b border-gray-200',
-            column.noGrow ? '' : 'flex-grow',
+            'flex h-0 m-0',
             column.className,
             column.align === 'right' ? 'justify-end' : 'justify-start',
-            getHorizontalStickyClass(columnIndex),
-            isColumnStuck ? 'isSticky' : '',
-            column.sortKey ? 'cursor-pointer' : ''
+            column.noGrow ? '' : 'flex-grow'
           ]"
-          :ref="setHeaderRef(columnIndex)"
-          @click="handleSort(column.id)"
-        >
-          <slot
-            v-if="column.Header"
-            v-bind="column"
-            :name="column.Header"
-          ></slot>
-          <div v-else>
-            <h5 class="text-base font-semibold text-gray-800">
-              {{ column.name }}
-            </h5>
-          </div>
-          <BalIcon
-            name="arrow-up"
-            size="sm"
-            v-if="
-              currentSortColumn === column.id && currentSortDirection === 'asc'
-            "
-            class="ml-1 flex items-center"
-          />
-          <BalIcon
-            name="arrow-down"
-            size="sm"
-            v-if="
-              currentSortColumn === column.id && currentSortDirection === 'desc'
-            "
-            class="ml-1 flex items-center"
-          />
-        </td>
-      </thead>
+        ></td>
+      </tr>
+      <!-- end measurement row -->
       <BalLoadingBlock v-if="isLoading" :class="skeletonClass" square />
-      <tbody v-else>
-        <tr
-          v-for="(dataItem, index) in tableData"
-          :key="`tableRow-${index}`"
-          @click="onRowClick(dataItem)"
-          :class="[
-            'flex flex-grow bg-white z-10 rowBg',
-            { 'cursor-pointer': onRowClick }
-          ]"
-        >
-          <td
-            v-for="(column, columnIndex) in filteredColumns"
-            :key="column.id"
+      <table style="table-layout: fixed;" v-else>
+        <tbody>
+          <tr
+            v-for="(dataItem, index) in [tableData]"
+            :key="`tableRow-${index}`"
+            @click="onRowClick(dataItem)"
             :class="[
-              'flex',
-              column.className,
-              column.align === 'right' ? 'justify-end' : 'justify-start',
-              getHorizontalStickyClass(columnIndex),
-              isColumnStuck ? 'isSticky' : '',
-              column.noGrow ? '' : 'flex-grow'
+              'flex flex-grow bg-white z-10 rowBg',
+              { 'cursor-pointer': onRowClick }
             ]"
           >
-            <slot
-              v-if="column.Cell"
-              v-bind="dataItem"
-              :name="column.Cell"
-            ></slot>
-            <div v-else class="px-6 py-4">
-              {{
-                typeof column.accessor === 'string'
-                  ? dataItem[column.accessor]
-                  : column.accessor(dataItem)
-              }}
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div
+            <td
+              v-for="(column, columnIndex) in filteredColumns"
+              :key="column.id"
+              :class="[
+                'flex',
+                column.className,
+                column.align === 'right' ? 'justify-end' : 'justify-start',
+                getHorizontalStickyClass(columnIndex),
+                isColumnStuck ? 'isSticky' : '',
+                column.noGrow ? '' : 'flex-grow'
+              ]"
+            >
+              <slot
+                v-if="column.Cell"
+                v-bind="dataItem"
+                :name="column.Cell"
+              ></slot>
+              <div v-else class="px-6 py-4">
+                {{
+                  typeof column.accessor === 'string'
+                    ? dataItem[column.accessor]
+                    : column.accessor(dataItem)
+                }}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- <div
       v-if="isPaginated && !isLoading"
       class="bal-table-pagination-btn"
-      @click="!isLoadingMore && $emit('loadMore')"
+      @click="!isLoadingMore && $emit('<')"
     >
       <template v-if="isLoadingMore">{{ $t('loading') }}</template>
       <template v-else
-        >{{ $t('loadMore') }}
+        >{{ $t('<') }}
         <BalIcon name="chevron-down" size="sm" class="ml-2"
       /></template>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -145,7 +165,7 @@ export type ColumnDefinition<T = Data> = {
 export default defineComponent({
   name: 'BalTable',
 
-  emits: ['loadMore'],
+  emits: ['<'],
 
   props: {
     columns: {
@@ -184,6 +204,8 @@ export default defineComponent({
     const tableData = ref(props.data);
     const currentSortDirection = ref<'asc' | 'desc' | null>(null);
     const currentSortColumn = ref<string | null>(null);
+    const headerRef = ref<HTMLElement>();
+    const bodyRef = ref<HTMLElement>();
 
     const setHeaderRef = (columnIndex: number) => (el: HTMLElement) => {
       if (el && columnIndex === 0) {
@@ -252,6 +274,15 @@ export default defineComponent({
           }
         };
       }
+
+      if (bodyRef.value) {
+        console.log('esh', headerRef.value, bodyRef.value);
+        bodyRef.value.addEventListener('scroll', () => {
+          if (bodyRef.value && headerRef.value) {
+            headerRef.value.scrollLeft = bodyRef.value.scrollLeft;
+          }
+        });
+      }
     });
 
     const filteredColumns = computed(() =>
@@ -272,6 +303,8 @@ export default defineComponent({
     return {
       //refs
       tableRef,
+      headerRef,
+      bodyRef,
 
       // methods
       setHeaderRef,
