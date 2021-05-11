@@ -12,12 +12,12 @@
     </div>
     <span class="text-right">
       <template v-if="token.balance > 0">
-        {{ fNum(token.balance, '0,0.[000]') }}
+        {{ fNum(token.balance, 'token') }}
       </template>
       <template v-else>-</template>
       <div class="text-gray text-sm">
         <template v-if="token.value > 0">
-          {{ fNum(token.value, '$0,0.[00]') }}
+          {{ fNum(token.value, 'usd') }}
         </template>
         <template v-else>-</template>
       </div>
