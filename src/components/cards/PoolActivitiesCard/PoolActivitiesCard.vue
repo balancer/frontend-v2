@@ -38,7 +38,10 @@ export default defineComponent({
       type: Object as PropType<FullPool>,
       required: true
     },
-    loading: { type: Boolean, default: false }
+    loading: {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup() {
@@ -56,6 +59,7 @@ export default defineComponent({
       // data
       tabs,
       activeTab,
+      // constants
       PoolActivityTab
     };
   }

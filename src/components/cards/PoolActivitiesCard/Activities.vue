@@ -1,14 +1,17 @@
 <template>
   <TablePoolActivities
-    v-if="pool && hasPoolActivities"
-    :tokens="pool.tokensList"
+    :tokens="pool ? pool.tokensList : []"
     :pool-activities="poolActivities"
-    :is-loading="isLoadingPoolActivities"
+    :is-loading="loading || isLoadingPoolActivities"
     :is-loading-more="poolActivitiesIsFetchingNextPage"
     :is-paginated="poolActivitiesHasNextPage"
     @load-more="loadMorePoolActivities"
+    :no-results-label="
+      poolActivityType === PoolActivityTab.ALL_ACTIVITY
+        ? $t('noTransactionsPool')
+        : $t('noTransactionsUserPool')
+    "
   />
-  <BalBlankSlate v-else v-text="$t('noTransactions')" class="h-60" />
 </template>
 
 <script lang="ts">
@@ -29,7 +32,10 @@ export default defineComponent({
       type: Object as PropType<FullPool>,
       required: true
     },
-    loading: { type: Boolean, default: false },
+    loading: {
+      type: Boolean,
+      default: false
+    },
     poolActivityType: {
       type: String as PropType<PoolActivityTab>,
       default: PoolActivityTab.ALL_ACTIVITY
@@ -62,8 +68,6 @@ export default defineComponent({
       () => poolActivitiesQuery.isLoading.value
     );
 
-    const hasPoolActivities = computed(() => !!poolActivities.value?.length);
-
     const poolActivitiesHasNextPage = computed(
       () => poolActivitiesQuery.hasNextPage?.value
     );
@@ -79,13 +83,14 @@ export default defineComponent({
 
     return {
       // computed
-      hasPoolActivities,
       isLoadingPoolActivities,
       poolActivities,
       poolActivitiesHasNextPage,
       poolActivitiesIsFetchingNextPage,
       // methods
-      loadMorePoolActivities
+      loadMorePoolActivities,
+      // constants
+      PoolActivityTab
     };
   }
 });

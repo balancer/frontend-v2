@@ -51,11 +51,11 @@
         </td>
       </thead>
       <BalLoadingBlock v-if="isLoading" :class="skeletonClass" square />
-      <tbody v-else>
+      <tbody v-else-if="tableData.length">
         <tr
           v-for="(dataItem, index) in tableData"
           :key="`tableRow-${index}`"
-          @click="onRowClick(dataItem)"
+          @click="onRowClick && onRowClick(dataItem)"
           :class="[
             'flex flex-grow bg-white z-10 rowBg',
             { 'cursor-pointer': onRowClick }
@@ -88,18 +88,23 @@
           </td>
         </tr>
       </tbody>
+      <div
+        v-else
+        class="bg-white rowBg h-40 flex items-center justify-center text-gray-500"
+      >
+        {{ noResultsLabel || $t('noResults') }}
+      </div>
     </table>
-    <div
-      v-if="isPaginated && !isLoading"
-      class="bal-table-pagination-btn"
-      @click="!isLoadingMore && $emit('loadMore')"
-    >
-      <template v-if="isLoadingMore">{{ $t('loading') }}</template>
-      <template v-else
-        >{{ $t('loadMore') }}
-        <BalIcon name="chevron-down" size="sm" class="ml-2"
-      /></template>
-    </div>
+  </div>
+  <div
+    v-if="isPaginated && !isLoading"
+    class="bal-table-pagination-btn"
+    @click="!isLoadingMore && $emit('loadMore')"
+  >
+    <template v-if="isLoadingMore">{{ $t('loading') }}</template>
+    <template v-else
+      >{{ $t('loadMore') }} <BalIcon name="chevron-down" size="sm" class="ml-2"
+    /></template>
   </div>
 </template>
 
@@ -175,6 +180,9 @@ export default defineComponent({
     isPaginated: {
       type: Boolean,
       default: false
+    },
+    noResultsLabel: {
+      type: String
     }
   },
   setup(props) {
