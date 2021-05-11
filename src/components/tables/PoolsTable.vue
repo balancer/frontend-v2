@@ -3,7 +3,7 @@
     <BalTable
       :columns="columns"
       :data="data"
-      :isLoading="isLoading || isLoadingBalances || isBalancesQueryIdle"
+      :isLoading="isLoading || isLoadingBalances"
       :isLoadingMore="isLoadingMore"
       skeletonClass="h-64"
       sticky="both"
@@ -26,7 +26,7 @@
       </template>
       <template v-slot:poolNameCell="pool">
         <div
-          v-if="!isLoading && !isLoadingBalances && !isBalancesQueryIdle"
+          v-if="!isLoading && !isLoadingBalances"
           class="px-6 py-4 -mt-1 flex flex-wrap"
         >
           <div
@@ -34,7 +34,7 @@
             :key="token"
             :class="[
               'mr-2 mb-2 flex items-center py-1 px-2 rounded-lg',
-              balances[token.address] ? 'bg-green-50' : 'bg-gray-50'
+              (balances || {})[token.address] ? 'bg-green-50' : 'bg-gray-50'
             ]"
           >
             <span>
