@@ -3,12 +3,13 @@
     <BalTable
       :columns="columns"
       :data="activityRows"
-      :isLoading="isLoading"
-      :isLoadingMore="isLoadingMore"
-      :isPaginated="isPaginated"
-      @loadMore="$emit('loadMore')"
+      :is-loading="isLoading"
+      :is-loading-more="isLoadingMore"
+      :is-paginated="isPaginated"
+      @load-more="$emit('loadMore')"
       skeleton-class="h-64"
       sticky="both"
+      :no-results-label="noResultsLabel"
     >
       <template v-slot:actionCell="action">
         <div class="px-6 py-2">
@@ -109,17 +110,31 @@ export default {
 
   props: {
     tokens: {
-      type: Object as PropType<string[]>,
+      type: Array as PropType<string[]>,
       required: true
     },
     poolActivities: {
       type: Array as PropType<PoolActivity[]>,
       required: true
     },
-    isLoading: { type: Boolean, default: false },
-    isLoadingMore: { type: Boolean, default: false },
-    loadMore: { type: Function as PropType<() => void> },
-    isPaginated: { type: Boolean, default: false }
+    isLoading: {
+      type: Boolean,
+      default: false
+    },
+    isLoadingMore: {
+      type: Boolean,
+      default: false
+    },
+    loadMore: {
+      type: Function as PropType<() => void>
+    },
+    isPaginated: {
+      type: Boolean,
+      default: false
+    },
+    noResultsLabel: {
+      type: String
+    }
   },
 
   setup(props) {
@@ -166,19 +181,21 @@ export default {
     ]);
 
     const activityRows = computed<ActivityRow[]>(() =>
-      props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
-        const isJoin = type === 'Join';
+      props.isLoading
+        ? []
+        : props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
+            const isJoin = type === 'Join';
 
-        return {
-          label: isJoin ? t('invest') : t('withdraw'),
-          value: fNum(getJoinExitValue(amounts), 'usd'),
-          timestamp,
-          formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
-          tx,
-          type,
-          tokenAmounts: getJoinExitDetails(amounts)
-        };
-      })
+            return {
+              label: isJoin ? t('invest') : t('withdraw'),
+              value: fNum(getJoinExitValue(amounts), 'usd'),
+              timestamp,
+              formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
+              tx,
+              type,
+              tokenAmounts: getJoinExitDetails(amounts)
+            };
+          })
     );
 
     function getJoinExitValue(amounts: PoolActivity['amounts']) {
