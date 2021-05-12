@@ -214,7 +214,7 @@ export default defineComponent({
     const submitLabel = computed(() => {
       if (isWrap.value) return 'wrap';
       if (isUnwrap.value) return 'unwrap';
-      return 'swap';
+      return 'trade';
     });
 
     function connectWallet() {
