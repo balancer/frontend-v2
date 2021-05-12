@@ -138,6 +138,7 @@ import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
 import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
+import Avatar from '@/components/images/Avatar.vue';
 
 const locales = {
   'en-US': 'English',
@@ -154,7 +155,8 @@ const locales = {
 
 export default defineComponent({
   components: {
-    AppSlippageForm
+    AppSlippageForm,
+    Avatar
   },
 
   setup() {
