@@ -1,12 +1,40 @@
-import { computed, reactive, ref } from 'vue';
-import { getAddress } from '@ethersproject/address';
-import { TOKEN_LISTS } from '@/constants/tokenlists';
-import { useQuery } from 'vue-query';
-import { loadTokenlist } from '@/utils/tokenlists';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
+import { useQuery } from 'vue-query';
 import { flatten, keyBy, orderBy, uniqBy } from 'lodash';
-import useAccountBalances from './useAccountBalances';
+
+import { getAddress } from '@ethersproject/address';
+
+import QUERY_KEYS from '@/constants/queryKeys';
+import { TOKEN_LISTS } from '@/constants/tokenlists';
+
+import { getTokensListURL, loadTokenlist } from '@/utils/tokenlists';
 import { lsGet, lsSet } from '@/utils';
+
+import useAccountBalances from './useAccountBalances';
+
+type TokenListItem = {
+  address: string;
+  chainId: number;
+  decimals: number;
+  logoURI: string;
+  name: string;
+  symbol: string;
+};
+
+type TokenList = {
+  keywords: string[];
+  logoURI: string;
+  name: string;
+  timestamp: string;
+  tokens: TokenListItem[];
+  version: {
+    major: number;
+    minor: number;
+    patch: number;
+  };
+  tokenListsURL: string;
+};
 
 const loadAllTokenLists = async () => {
   // since a request to retrieve the list can fail
@@ -14,11 +42,21 @@ const loadAllTokenLists = async () => {
   // retrieve what we can
   return (
     await Promise.allSettled(
-      TOKEN_LISTS.map(async listName => await loadTokenlist(listName))
+      TOKEN_LISTS.map(async listURI => {
+        const tokenList = (await loadTokenlist(listURI)) as Omit<
+          TokenList,
+          'tokenListsURL'
+        >;
+
+        return {
+          ...tokenList,
+          tokenListsURL: getTokensListURL(listURI)
+        };
+      })
     )
   )
     .filter(result => result.status === 'fulfilled')
-    .map(result => (result as PromiseFulfilledResult<any>).value);
+    .map(result => (result as PromiseFulfilledResult<TokenList>).value);
 };
 
 type TokenListRequest = {
@@ -34,10 +72,10 @@ export default function useTokenLists(request?: TokenListRequest) {
   const prices = computed(() => store.state.market.prices);
   const { balances } = useAccountBalances();
 
-  const { data: lists, isLoading } = useQuery(
-    reactive(['tokenLists']),
-    loadAllTokenLists
-  );
+  const queryKey = QUERY_KEYS.TokenLists;
+  const queryFn = loadAllTokenLists;
+
+  const { data: lists, isLoading } = useQuery<TokenList[]>(queryKey, queryFn);
 
   const listDictionary = computed(() => keyBy(lists.value, 'name'));
   const injectedTokens = store.getters['registry/getInjected'];
