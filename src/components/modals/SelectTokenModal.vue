@@ -183,6 +183,7 @@ export default defineComponent({
     }
 
     function onClose() {
+      data.selectTokenList = false;
       data.query = '';
       emit('close');
     }
