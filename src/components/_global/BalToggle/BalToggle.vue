@@ -38,10 +38,10 @@ export default defineComponent({
   setup(_, { emit }) {
     function onClick(event) {
       emit('update:modelValue', event.target.checked);
-      emit('toggle', event.target.checked)
+      emit('toggle', event.target.checked);
     }
 
-    return { onClick }
+    return { onClick };
   }
 });
 </script>

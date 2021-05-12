@@ -23,11 +23,7 @@
         </BalLink>
       </div>
     </div>
-    <BalToggle
-      name="active"
-      :checked="isActive"
-      @toggle="$emit('toggle')"
-    />
+    <BalToggle name="active" :checked="isActive" @toggle="$emit('toggle')" />
   </div>
 </template>
 
