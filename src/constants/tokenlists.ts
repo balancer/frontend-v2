@@ -7,17 +7,9 @@ export const TOKEN_LISTS: string[] = [
   'tokenlist.zerion.eth',
   'tokens.1inch.eth',
   'tokenlist.aave.eth',
+  'https://tokens.coingecko.com/uniswap/all.json',
   'https://umaproject.org/uma.tokenlist.json'
 ];
-
-export const NAMED_TOKEN_LISTS = {
-  Default: TOKEN_LIST_DEFAULT,
-  Uniswap: 'ipns://tokens.uniswap.org',
-  Zerion: 'tokenlist.zerion.eth',
-  '1inch': 'tokens.1inch.eth',
-  Aave: 'tokenlist.aave.eth',
-  UMA: 'https://umaproject.org/uma.tokenlist.json'
-};
 
 export const ETHER = {
   id: 'ether',
