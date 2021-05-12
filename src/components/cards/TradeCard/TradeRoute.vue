@@ -300,7 +300,7 @@ export default defineComponent({
       swaps: SwapV2[],
       addresses: string[]
     ) {
-      if (!pools.length || !swaps.length || !addresses.length) {
+      if (!pools.length || !swaps.length || !addresses.length || addresses.length === 1) {
         return [];
       }
 
