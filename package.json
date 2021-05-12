@@ -66,7 +66,7 @@
     "lodash": "^4.17.15",
     "numeral": "^2.0.4",
     "parse-filepath": "1.0.2",
-    "postcss": "^7.0.35",
+    "postcss": "^8.2.10",
     "postcss-nesting": "^7.0.1",
     "pretty-ms": "^7.0.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4",
