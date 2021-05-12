@@ -25,16 +25,13 @@
           v-if="Object.keys(tokenLists).length > 0"
           class="h-96 overflow-y-scroll"
         >
-          <a
+          <RowTokenlist
             v-for="(tokenList, i) in tokenLists"
             :key="i"
-            @click="toggleActiveTokenList(tokenList.name)"
-          >
-            <RowTokenlist
-              :isActive="isActiveList(tokenList.name)"
-              :tokenlist="tokenList"
-            />
-          </a>
+            :isActive="isActiveList(tokenList.name)"
+            :tokenlist="tokenList"
+            @toggle="toggleActiveTokenList(tokenList.name)"
+          />
         </div>
         <div
           v-else
@@ -183,6 +180,7 @@ export default defineComponent({
     }
 
     function onClose() {
+      data.selectTokenList = false;
       data.query = '';
       emit('close');
     }

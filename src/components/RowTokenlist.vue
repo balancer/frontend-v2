@@ -8,33 +8,53 @@
     />
     <div class="flex-auto">
       {{ tokenlist.name }}
-      <div class="text-gray text-sm">
+      <div class="text-gray text-sm flex items-center">
         {{ fNum(tokenlist.tokens.length) }} {{ $t('tokensLowerCase') }}
+        <BalLink
+          :href="tokenlist.tokenListsURL"
+          external
+          class="flex items-center"
+        >
+          <BalIcon
+            name="external-link"
+            size="sm"
+            class="ml-1 text-gray-500 hover:text-blue-500"
+          />
+        </BalLink>
       </div>
     </div>
     <Icon
       :name="isActive ? 'toggle-on' : 'toggle_off'"
-      :class="isActive ? 'text-green-500' : 'border-color'"
+      :class="['cursor-pointer', isActive ? 'text-green-500' : 'border-color']"
       size="42"
+      @click="$emit('toggle')"
     />
   </div>
 </template>
 
 <script lang="ts">
+import { PropType } from 'vue';
 import useNumbers from '@/composables/useNumbers';
+import { TokenList } from '@/types/TokenList';
 
 export default {
   props: {
-    tokenlist: Object,
-    isActive: Boolean
+    tokenlist: {
+      type: Object as PropType<TokenList>
+    },
+    isActive: {
+      type: Boolean,
+      default: false
+    }
   },
-  emits: ['onListSelected'],
+
+  emits: ['toggle'],
+
   setup() {
     const { fNum } = useNumbers();
 
     return {
-      fNum,
-      console
+      fNum
     };
   }
 };
