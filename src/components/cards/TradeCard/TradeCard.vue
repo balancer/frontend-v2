@@ -105,7 +105,7 @@ import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
 import { ETHER } from '@/constants/tokenlists';
 
-import SuccessOverlay from '../shared/SuccessOverlay.vue';
+import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import TradeSettingsPopover, {
