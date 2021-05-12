@@ -223,9 +223,9 @@ export default defineComponent({
 
       if (updateDirection) {
         if (currentSortDirection.value === null) {
-          currentSortDirection.value = 'asc';
-        } else if (currentSortDirection.value === 'asc') {
           currentSortDirection.value = 'desc';
+        } else if (currentSortDirection.value === 'desc') {
+          currentSortDirection.value = 'asc';
         } else {
           currentSortDirection.value = null;
         }
