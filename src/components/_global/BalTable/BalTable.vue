@@ -7,11 +7,11 @@
           { 'sticky top-0': sticky === 'both' || sticky === 'vertical' }
         ]"
       >
-        <td
+        <th
           v-for="(column, columnIndex) in filteredColumns"
           :key="`header-${column.id}`"
           :class="[
-            'p-6 flex bg-white headingShadow border-b border-gray-200',
+            'p-6 flex bg-white headingShadow border-b border-gray-200 select-none',
             column.noGrow ? '' : 'flex-grow',
             column.className,
             column.align === 'right' ? 'justify-end' : 'justify-start',
@@ -48,7 +48,7 @@
             "
             class="ml-1 flex items-center"
           />
-        </td>
+        </th>
       </thead>
       <BalLoadingBlock v-if="isLoading" :class="skeletonClass" square />
       <tbody v-else-if="tableData.length">
