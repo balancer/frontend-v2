@@ -117,6 +117,7 @@ import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 
+import PoolChart from '@/components/charts/PoolChart.vue';
 import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
 import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
 import PoolActivitiesCard from '@/components/cards/PoolActivitiesCard/PoolActivitiesCard.vue';
@@ -133,6 +134,7 @@ const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 
 export default defineComponent({
   components: {
+    PoolChart,
     PoolActionsCard,
     PoolBalancesCard,
     PoolActivitiesCard,
