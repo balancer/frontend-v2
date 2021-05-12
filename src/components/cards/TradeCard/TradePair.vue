@@ -281,11 +281,19 @@ export default defineComponent({
       if (!tokenInAmount || !tokenOutAmount) {
         return '';
       }
-      const rate = tokenOutAmount / tokenInAmount;
-      const message = `1 ${tokenIn.symbol} = ${fNum(rate, 'token')} ${
-        tokenOut.symbol
-      }`;
-      return message;
+      if (isInRate.value) {
+        const rate = tokenOutAmount / tokenInAmount;
+        const message = `1 ${tokenIn.symbol} = ${fNum(rate, 'token')} ${
+          tokenOut.symbol
+        }`;
+        return message;
+      } else {
+        const rate = tokenInAmount / tokenOutAmount;
+        const message = `1 ${tokenOut.symbol} = ${fNum(rate, 'token')} ${
+          tokenIn.symbol
+        }`;
+        return message;
+      }
     });
 
     function toggleRate(): void {
