@@ -37,6 +37,8 @@ import useNumbers from '@/composables/useNumbers';
 import { TokenList } from '@/types/TokenList';
 
 export default {
+  name: 'TokenListsListItem',
+
   props: {
     tokenlist: {
       type: Object as PropType<TokenList>
