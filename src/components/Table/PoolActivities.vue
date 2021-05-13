@@ -24,7 +24,7 @@
       </template>
 
       <template v-slot:valueCell="action">
-        <div class="px-6 py-4 flex">
+        <div class="px-6 py-4 flex justify-end">
           {{ fNum(action.value, 'usd_m') }}
         </div>
       </template>
@@ -48,7 +48,9 @@
 
       <template v-slot:timeCell="action">
         <div class="px-6 py-4">
-          <div class="flex items-center wrap whitespace-nowrap">
+          <div
+            class="flex items-center justify-end wrap whitespace-nowrap text-right"
+          >
             {{ action.formattedDate }}
             <BalLink
               :href="explorer.txLink(action.tx)"
@@ -149,7 +151,7 @@ export default {
         id: 'action',
         accessor: 'tx',
         Cell: 'actionCell',
-        className: 'w-40 md:w-32',
+        width: 175,
         sortable: false
       },
       {
@@ -159,14 +161,15 @@ export default {
         Cell: 'valueCell',
         align: 'right',
         className: 'align-center w-40',
-        sortKey: pool => numeral(pool.value).value()
+        sortKey: pool => numeral(pool.value).value(),
+        width: 125
       },
       {
         name: t('details'),
         id: 'details',
         accessor: '',
         Cell: 'detailsCell',
-        className: 'w-72',
+        width: 300,
         sortable: false
       },
       {
@@ -175,8 +178,8 @@ export default {
         accessor: 'timestamp',
         Cell: 'timeCell',
         align: 'right',
-        className: 'w-40',
-        sortKey: pool => numeral(pool.timestamp).value()
+        sortKey: pool => numeral(pool.timestamp).value(),
+        width: 200
       }
     ]);
 

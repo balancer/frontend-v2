@@ -56,7 +56,7 @@
         </thead>
       </table>
     </div>
-    <div style="max-height: 300px; overflow: auto scroll" ref="bodyRef">
+    <div style="overflow: auto scroll" ref="bodyRef">
       <table class="w-full table-fixed whitespace-normal">
         <colgroup>
           <col
@@ -282,9 +282,13 @@ export default defineComponent({
       if (bodyRef.value) {
         bodyRef.value.onscroll = () => {
           if (bodyRef.value) {
+            const offsetRatio =
+              bodyRef.value.offsetWidth /
+              stickyHeaderRef.value.offsetWidth /
+              10;
             isColumnStuck.value = !!(
               stickyHeaderRef.value.offsetLeft >
-              stickyHeaderRef.value.offsetWidth * 1.1
+              stickyHeaderRef.value.offsetWidth * offsetRatio
             );
           }
         };

@@ -102,7 +102,7 @@ export default defineComponent({
         accessor: 'uri',
         Header: 'iconColumnHeader',
         Cell: 'iconColumnCell',
-        width: 150,
+        width: 125,
         noGrow: true
       },
       {
