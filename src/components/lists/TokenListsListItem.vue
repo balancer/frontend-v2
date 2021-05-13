@@ -23,12 +23,7 @@
         </BalLink>
       </div>
     </div>
-    <Icon
-      :name="isActive ? 'toggle-on' : 'toggle_off'"
-      :class="['cursor-pointer', isActive ? 'text-green-500' : 'border-color']"
-      size="42"
-      @click="$emit('toggle')"
-    />
+    <BalToggle name="active" :checked="isActive" @toggle="$emit('toggle')" />
   </div>
 </template>
 
@@ -38,6 +33,8 @@ import useNumbers from '@/composables/useNumbers';
 import { TokenList } from '@/types/TokenList';
 
 export default {
+  name: 'TokenListsListItem',
+
   props: {
     tokenlist: {
       type: Object as PropType<TokenList>

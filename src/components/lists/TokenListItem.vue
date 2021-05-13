@@ -31,6 +31,8 @@ import anime from 'animejs/lib/anime.es.js';
 import { onMounted, onUnmounted, ref } from '@vue/runtime-core';
 
 export default {
+  name: 'TokenListItem',
+
   props: {
     token: Object
   },

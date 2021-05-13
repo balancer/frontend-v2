@@ -28,17 +28,17 @@
         </div>
       </template>
       <template v-slot:tokenWeightCell="token">
-        <div class="px-6 py-4">
+        <div class="px-6 py-4 text-right">
           {{ weightFor(token.address) }}
         </div>
       </template>
       <template v-slot:tokenBalanceCell="token">
-        <div class="px-6 py-4">
+        <div class="px-6 py-4 text-right">
           {{ balanceFor(token.address) }}
         </div>
       </template>
       <template v-slot:tokenValueCell="token">
-        <div class="px-6 py-4">
+        <div class="px-6 py-4 text-right">
           {{ fiatValueFor(token.address) }}
         </div>
       </template>
@@ -90,7 +90,7 @@ export default defineComponent({
         id: 'token',
         accessor: 'address',
         Cell: 'tokenColumnCell',
-        className: 'w-52'
+        width: 175
       },
       {
         name: t('weight'),
@@ -98,8 +98,8 @@ export default defineComponent({
         accessor: 'index',
         Cell: 'tokenWeightCell',
         align: 'right',
-        className: 'w-40',
-        sortKey: pool => weightFor(pool.address)
+        sortKey: pool => weightFor(pool.address),
+        width: 125
       },
       {
         name: t('balance'),
@@ -107,8 +107,8 @@ export default defineComponent({
         accessor: 'index',
         Cell: 'tokenBalanceCell',
         align: 'right',
-        className: 'w-40',
-        sortKey: pool => balanceFor(pool.address)
+        sortKey: pool => balanceFor(pool.address),
+        width: 125
       },
       {
         name: t('value'),
@@ -116,8 +116,8 @@ export default defineComponent({
         accessor: 'index',
         Cell: 'tokenValueCell',
         align: 'right',
-        className: 'w-40',
-        sortKey: pool => numeral(fiatValueFor(pool.address)).value()
+        sortKey: pool => numeral(fiatValueFor(pool.address)).value(),
+        width: 125
       }
     ]);
 

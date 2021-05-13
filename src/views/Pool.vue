@@ -71,7 +71,7 @@
             :loading="isLoadingSnapshots"
           />
 
-          <PoolStats :pool="pool" :loading="loadingPool" />
+          <PoolStatCards :pool="pool" :loading="loadingPool" />
 
           <div>
             <h4 v-text="$t('poolComposition')" class="mb-4" />
@@ -104,6 +104,9 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
+import * as PoolPageComponents from '@/components/pages/pool';
+import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
+
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -116,11 +119,6 @@ import useAuth from '@/composables/useAuth';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
-
-import PoolActionsCard from '@/components/cards/PoolActionsCard/PoolActionsCard.vue';
-import PoolBalancesCard from '@/components/cards/PoolBalancesCard.vue';
-import PoolActivitiesCard from '@/components/cards/PoolActivitiesCard/PoolActivitiesCard.vue';
-import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import { POOLS } from '@/constants/pools';
 import { EXTERNAL_LINKS } from '@/constants/links';
 
@@ -133,9 +131,7 @@ const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 
 export default defineComponent({
   components: {
-    PoolActionsCard,
-    PoolBalancesCard,
-    PoolActivitiesCard,
+    ...PoolPageComponents,
     GauntletIcon
   },
 
