@@ -25,16 +25,13 @@
           v-if="Object.keys(tokenLists).length > 0"
           class="h-96 overflow-y-scroll"
         >
-          <a
+          <TokenListsListItem
             v-for="(tokenList, i) in tokenLists"
             :key="i"
-            @click="toggleActiveTokenList(tokenList.name)"
-          >
-            <RowTokenlist
-              :isActive="isActiveList(tokenList.name)"
-              :tokenlist="tokenList"
-            />
-          </a>
+            :isActive="isActiveList(tokenList.name)"
+            :tokenlist="tokenList"
+            @toggle="toggleActiveTokenList(tokenList.name)"
+          />
         </div>
         <div
           v-else
@@ -74,7 +71,7 @@
           :buffer="100"
         >
           <a @click="onSelectToken(item.address)">
-            <RowToken :token="item" />
+            <TokenListItem :token="item" />
           </a>
         </RecycleScroller>
         <div
@@ -102,8 +99,17 @@ import { useI18n } from 'vue-i18n';
 import { clone } from '@/utils';
 import { isAddress, getAddress } from '@ethersproject/address';
 import useTokenLists from '@/composables/useTokenLists';
+import TokenListItem from '@/components/lists/TokenListItem.vue';
+import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
+import Search from './Search.vue';
 
 export default defineComponent({
+  components: {
+    TokenListItem,
+    TokenListsListItem,
+    Search
+  },
+
   emits: ['close', 'selectTokenlist', 'select'],
 
   props: {
@@ -183,6 +189,7 @@ export default defineComponent({
     }
 
     function onClose() {
+      data.selectTokenList = false;
       data.query = '';
       emit('close');
     }

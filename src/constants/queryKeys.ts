@@ -22,7 +22,8 @@ const QUERY_KEYS = {
       BALANCES_ROOT_KEY,
       { userNetwork, account }
     ]
-  }
+  },
+  TokenLists: ['tokenLists']
 };
 
 export default QUERY_KEYS;

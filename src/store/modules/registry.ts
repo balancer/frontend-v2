@@ -193,8 +193,8 @@ const actions = {
       token => token !== ETHER.address && isAddress(token)
     );
     if (tokens.length === 0) return;
-    const injected = clone(state.injected);
     const tokensMeta = await getTokensMeta(tokens, state.tokenLists);
+    const injected = clone(state.injected);
     Object.values(tokensMeta).forEach((meta: TokenInfo) => {
       if (meta) injected.push({ ...meta, injected: true });
     });

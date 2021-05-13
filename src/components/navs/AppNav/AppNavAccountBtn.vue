@@ -38,12 +38,14 @@ import { defineComponent } from 'vue';
 import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';
+import Avatar from '@/components/images/Avatar.vue';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',
 
   components: {
-    AppNavSettings
+    AppNavSettings,
+    Avatar
   },
 
   setup() {
