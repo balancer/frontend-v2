@@ -57,6 +57,18 @@
       </table>
     </div>
     <div style="overflow: auto scroll" ref="bodyRef">
+      <BalLoadingBlock
+        v-if="isLoading"
+        :class="[skeletonClass, 'min-w-full']"
+        square
+        :style="{ width: `${placeholderBlockWidth}px` }"
+      />
+      <div
+        v-if="!isLoading && !tableData.length"
+        class="max-w-full bg-white rowBg h-40 flex items-center justify-center text-gray-500"
+      >
+        {{ noResultsLabel || $t('noResults') }}
+      </div>
       <table class="w-full table-fixed whitespace-normal">
         <colgroup>
           <col
@@ -78,8 +90,7 @@
           ></td>
         </tr>
         <!-- end measurement row -->
-        <BalLoadingBlock v-if="isLoading" :class="skeletonClass" square />
-        <tbody v-else-if="tableData.length">
+        <tbody v-if="!isLoading && tableData.length">
           <tr
             v-for="(dataItem, index) in tableData"
             :key="`tableRow-${index}`"
@@ -116,12 +127,6 @@
             </td>
           </tr>
         </tbody>
-        <div
-          v-else
-          class="max-w-full bg-white rowBg h-40 flex items-center justify-center text-gray-500"
-        >
-          {{ noResultsLabel || $t('noResults') }}
-        </div>
       </table>
     </div>
   </div>
@@ -146,7 +151,7 @@ import {
   watch,
   computed
 } from 'vue';
-import { sortBy } from 'lodash';
+import { sortBy, sumBy } from 'lodash';
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;
@@ -225,6 +230,9 @@ export default defineComponent({
     const currentSortColumn = ref<string | null>(null);
     const headerRef = ref<HTMLElement>();
     const bodyRef = ref<HTMLElement>();
+
+    // for loading and no results
+    const placeholderBlockWidth = computed(() => sumBy(props.columns, 'width'));
 
     const setHeaderRef = (columnIndex: number) => (el: HTMLElement) => {
       if (el && columnIndex === 0) {
@@ -332,6 +340,7 @@ export default defineComponent({
       tableData,
       currentSortColumn,
       currentSortDirection,
+      placeholderBlockWidth,
 
       // computed
       filteredColumns
