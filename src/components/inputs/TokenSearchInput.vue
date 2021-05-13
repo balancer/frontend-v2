@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
-import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
+import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
 import useWeb3 from '@/composables/useWeb3';

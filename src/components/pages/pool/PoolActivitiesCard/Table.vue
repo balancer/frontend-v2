@@ -83,7 +83,7 @@ import {
   PoolActivity,
   PoolActivityType
 } from '@/services/balancer/subgraph/types';
-import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
+import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 
 import { formatDistanceToNow } from 'date-fns';
 import { Token } from '@/types';

@@ -17,8 +17,15 @@
 <script>
 import { defineComponent, toRefs, ref, computed } from 'vue';
 import { useStore } from 'vuex';
+import Avatar from '../../images/Avatar.vue';
 
 export default defineComponent({
+  name: 'BalAsset',
+
+  components: {
+    Avatar
+  },
+
   props: {
     address: {
       type: String,
@@ -29,6 +36,7 @@ export default defineComponent({
       default: 24
     }
   },
+
   setup(props) {
     const { address } = toRefs(props);
 
