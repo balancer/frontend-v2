@@ -44,7 +44,7 @@ export default defineComponent({
       return token.logoURI;
     });
 
-    watch(iconURL, (newURL) => {
+    watch(iconURL, newURL => {
       if (newURL !== '') error.value = false;
     });
 
