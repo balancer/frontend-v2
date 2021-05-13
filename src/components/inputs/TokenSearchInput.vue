@@ -58,7 +58,7 @@
     </div>
     <teleport to="#modal">
       <SelectTokenModal
-        :open="selectTokenModal"
+        v-if="selectTokenModal"
         :excluded-tokens="modelValue"
         @close="selectTokenModal = false"
         @select="addToken"
@@ -118,8 +118,8 @@ export default defineComponent({
     const hasNoBalances = computed(() => !sortedBalances.value.length);
     const whiteListedTokens = computed(() =>
       Object.values(tokenDictionary.value)
-        .filter((token: any) => TOKENS.Popular.Symbols.includes(token.symbol))
-        .filter((balance: any) => !props.modelValue.includes(balance.address))
+        .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
+        .filter(balance => !props.modelValue.includes(balance.address))
     );
 
     // DATA

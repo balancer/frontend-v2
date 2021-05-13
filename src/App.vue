@@ -7,7 +7,7 @@
     </div>
     <div id="modal" />
     <AccountModal
-      :open="web3Modal"
+      v-if="web3Modal"
       @close="setAccountModal(false)"
       @login="onLogin"
     />
