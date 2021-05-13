@@ -61,8 +61,13 @@ export default function useAccountBalances() {
     return null;
   });
 
+  function hasBalance(address: string): boolean {
+    return (balances.value || {})[address];
+  }
+
   return {
     balances,
+    hasBalance,
     error,
     isLoading,
     isIdle,
