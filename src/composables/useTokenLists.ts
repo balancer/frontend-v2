@@ -78,7 +78,7 @@ export default function useTokenLists(request?: TokenListRequest) {
   const { data: lists, isLoading } = useQuery<TokenList[]>(queryKey, queryFn);
 
   const listDictionary = computed(() => keyBy(lists.value, 'name'));
-  const injectedTokens = store.getters['registry/getInjected'];
+  const injectedTokens = computed(() => store.state.registry.injected);
 
   const tokens = computed(() => {
     const _tokens = uniqBy(
@@ -88,7 +88,7 @@ export default function useTokenLists(request?: TokenListRequest) {
           // get all tokens that are injected
           // get the ETHER token ALWAYS
           ...flatten([
-            ...Object.values(injectedTokens).map((t: any) => ({ ...t })),
+            ...Object.values(injectedTokens.value).map((t: any) => ({ ...t })),
             ...activeTokenLists.value.map(
               name => listDictionary.value[name]?.tokens
             ),
