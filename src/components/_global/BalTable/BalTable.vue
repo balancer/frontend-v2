@@ -56,7 +56,7 @@
         </thead>
       </table>
     </div>
-    <div style="overflow: auto scroll" ref="bodyRef">
+    <div class="overflow-auto" ref="bodyRef">
       <BalLoadingBlock
         v-if="isLoading"
         :class="[skeletonClass, 'min-w-full']"
