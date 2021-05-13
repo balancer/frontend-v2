@@ -32,11 +32,12 @@
           <div
             v-for="token in sortedTokensFor(pool)"
             :key="token"
-            :class="[
-              'mr-2 mb-2 flex items-center py-1 px-2 rounded-lg',
-              (balances || {})[token.address] ? 'bg-green-50' : 'bg-gray-50'
-            ]"
+            class="mr-2 mb-2 flex items-center py-1 px-2 rounded-lg bg-gray-50 relative"
           >
+            <div
+              v-if="hasBalance(token.address)"
+              class="w-3 h-3 rounded-full border-2 border-white hover:border-gray-50 bg-green-200 absolute top-0 left-0 -mt-1 -ml-1"
+            />
             <span>
               {{ allTokens[getAddress(token.address)]?.symbol }}
             </span>
@@ -102,6 +103,7 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const {
       balances,
+      hasBalance,
       isLoading: isLoadingBalances,
       isIdle: isBalancesQueryIdle
     } = useAccountBalances();
@@ -193,7 +195,8 @@ export default defineComponent({
       getAddress,
       fNum,
       sortedTokenAddressesFor,
-      sortedTokensFor
+      sortedTokensFor,
+      hasBalance
     };
   }
 });
