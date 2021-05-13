@@ -351,6 +351,7 @@ export default defineComponent({
 
 <style>
 .horizontalSticky {
+  @apply z-10;
   position: sticky;
   left: 0;
 }
