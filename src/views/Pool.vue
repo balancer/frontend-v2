@@ -117,6 +117,7 @@ import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
+import { useRouter } from 'vue-router';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
@@ -138,6 +139,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
+    const router = useRouter();
     const { t } = useI18n();
     const route = useRoute();
     const { fNum } = useNumbers();
@@ -165,7 +167,10 @@ export default defineComponent({
     const pool = computed(() => poolQuery.data.value);
 
     const loadingPool = computed(
-      () => poolQuery.isLoading.value || poolQuery.isIdle.value
+      () =>
+        poolQuery.isLoading.value ||
+        poolQuery.isIdle.value ||
+        poolQuery.error.value
     );
 
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
@@ -232,6 +237,10 @@ export default defineComponent({
       } else {
         poolQuery.refetch.value();
       }
+    });
+
+    watch(poolQuery.error, () => {
+      router.push({ name: 'home' });
     });
 
     return {
