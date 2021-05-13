@@ -1,5 +1,5 @@
 <template>
-  <BalModal :show="open" @close="onClose" no-content-pad>
+  <BalModal show @close="$emit('close')" no-content-pad>
     <template v-slot:header>
       <BalBtn
         v-if="selectTokenList"
@@ -179,12 +179,6 @@ export default defineComponent({
       data.query = '';
     }
 
-    function onClose() {
-      data.selectTokenList = false;
-      data.query = '';
-      emit('close');
-    }
-
     return {
       // data
       ...toRefs(data),
@@ -203,11 +197,9 @@ export default defineComponent({
       onSelectList,
       onListExit,
       toggleSelectTokenList,
-      onClose,
 
       toggleActiveTokenList,
-      isActiveList,
-      console
+      isActiveList
     };
   }
 });

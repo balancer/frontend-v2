@@ -129,7 +129,7 @@
   </div>
   <teleport to="#modal">
     <SelectTokenModal
-      :open="modalSelectTokenIsOpen"
+      v-if="modalSelectTokenIsOpen"
       :excludedTokens="[tokenInAddressInput, tokenOutAddressInput]"
       @close="modalSelectTokenIsOpen = false"
       @select="handleSelectToken"
