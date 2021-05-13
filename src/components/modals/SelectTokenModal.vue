@@ -150,12 +150,17 @@ export default defineComponent({
       if (isAddress(address)) {
         address = getAddress(address);
         data.queryAddress = address;
-        if (props.excludedTokens.includes(address)) data.isTokenSelected = true;
-        else {
+        if (props.excludedTokens.includes(address)) {
+          data.loading = false;
+          data.isTokenSelected = true;
+        } else {
+          data.loading = true;
           data.isTokenSelected = false;
           store.dispatch('registry/injectTokens', [address.trim()]);
         }
       } else {
+        data.isTokenSelected = false;
+        data.loading = false;
         data.queryAddress = '';
       }
     }
