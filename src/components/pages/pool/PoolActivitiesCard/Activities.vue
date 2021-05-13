@@ -1,20 +1,25 @@
 <template>
-  <TablePoolActivities
-    v-if="pool && hasPoolActivities"
-    :tokens="pool.tokensList"
+  <Table
+    :tokens="pool ? pool.tokensList : []"
     :pool-activities="poolActivities"
-    :is-loading="isLoadingPoolActivities"
+    :is-loading="loading || isLoadingPoolActivities"
     :is-loading-more="poolActivitiesIsFetchingNextPage"
     :is-paginated="poolActivitiesHasNextPage"
     @load-more="loadMorePoolActivities"
+    :no-results-label="
+      poolActivityType === PoolActivityTab.ALL_ACTIVITY
+        ? $t('noTransactionsPool')
+        : $t('noTransactionsUserPool')
+    "
   />
-  <BalBlankSlate v-else v-text="$t('noTransactions')" class="h-60" />
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
 import { useRoute } from 'vue-router';
 import { flatten } from 'lodash';
+
+import Table from './Table.vue';
 
 import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
 import usePoolUserActivitiesQuery from '@/composables/queries/usePoolUserActivitiesQuery';
@@ -24,12 +29,19 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import { PoolActivityTab } from './types';
 
 export default defineComponent({
+  components: {
+    Table
+  },
+
   props: {
     pool: {
       type: Object as PropType<FullPool>,
       required: true
     },
-    loading: { type: Boolean, default: false },
+    loading: {
+      type: Boolean,
+      default: false
+    },
     poolActivityType: {
       type: String as PropType<PoolActivityTab>,
       default: PoolActivityTab.ALL_ACTIVITY
@@ -62,8 +74,6 @@ export default defineComponent({
       () => poolActivitiesQuery.isLoading.value
     );
 
-    const hasPoolActivities = computed(() => !!poolActivities.value?.length);
-
     const poolActivitiesHasNextPage = computed(
       () => poolActivitiesQuery.hasNextPage?.value
     );
@@ -79,13 +89,14 @@ export default defineComponent({
 
     return {
       // computed
-      hasPoolActivities,
       isLoadingPoolActivities,
       poolActivities,
       poolActivitiesHasNextPage,
       poolActivitiesIsFetchingNextPage,
       // methods
-      loadMorePoolActivities
+      loadMorePoolActivities,
+      // constants
+      PoolActivityTab
     };
   }
 });

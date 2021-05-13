@@ -69,6 +69,14 @@ export default function useSor(
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
   onMounted(async () => {
+    const unknownAssets: string[] = [];
+    if (!tokens.value[tokenInAddressInput.value]) {
+      unknownAssets.push(tokenInAddressInput.value);
+    }
+    if (!tokens.value[tokenOutAddressInput.value]) {
+      unknownAssets.push(tokenOutAddressInput.value);
+    }
+    await store.dispatch('registry/injectTokens', unknownAssets);
     await initSor();
     await handleAmountChange();
   });

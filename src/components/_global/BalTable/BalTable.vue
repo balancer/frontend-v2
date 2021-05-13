@@ -7,11 +7,11 @@
           { 'sticky top-0': sticky === 'both' || sticky === 'vertical' }
         ]"
       >
-        <td
+        <th
           v-for="(column, columnIndex) in filteredColumns"
           :key="`header-${column.id}`"
           :class="[
-            'p-6 flex bg-white headingShadow border-b border-gray-200',
+            'p-6 flex bg-white headingShadow border-b border-gray-200 select-none',
             column.noGrow ? '' : 'flex-grow',
             column.className,
             column.align === 'right' ? 'justify-end' : 'justify-start',
@@ -48,14 +48,14 @@
             "
             class="ml-1 flex items-center"
           />
-        </td>
+        </th>
       </thead>
       <BalLoadingBlock v-if="isLoading" :class="skeletonClass" square />
-      <tbody v-else>
+      <tbody v-else-if="tableData.length">
         <tr
           v-for="(dataItem, index) in tableData"
           :key="`tableRow-${index}`"
-          @click="onRowClick(dataItem)"
+          @click="onRowClick && onRowClick(dataItem)"
           :class="[
             'flex flex-grow bg-white z-10 rowBg',
             { 'cursor-pointer': onRowClick }
@@ -88,18 +88,23 @@
           </td>
         </tr>
       </tbody>
+      <div
+        v-else
+        class="bg-white rowBg h-40 flex items-center justify-center text-gray-500"
+      >
+        {{ noResultsLabel || $t('noResults') }}
+      </div>
     </table>
-    <div
-      v-if="isPaginated && !isLoading"
-      class="bal-table-pagination-btn"
-      @click="!isLoadingMore && $emit('loadMore')"
-    >
-      <template v-if="isLoadingMore">{{ $t('loading') }}</template>
-      <template v-else
-        >{{ $t('loadMore') }}
-        <BalIcon name="chevron-down" size="sm" class="ml-2"
-      /></template>
-    </div>
+  </div>
+  <div
+    v-if="isPaginated && !isLoading"
+    class="bal-table-pagination-btn"
+    @click="!isLoadingMore && $emit('loadMore')"
+  >
+    <template v-if="isLoadingMore">{{ $t('loading') }}</template>
+    <template v-else
+      >{{ $t('loadMore') }} <BalIcon name="chevron-down" size="sm" class="ml-2"
+    /></template>
   </div>
 </template>
 
@@ -175,6 +180,9 @@ export default defineComponent({
     isPaginated: {
       type: Boolean,
       default: false
+    },
+    noResultsLabel: {
+      type: String
     }
   },
   setup(props) {
@@ -215,9 +223,9 @@ export default defineComponent({
 
       if (updateDirection) {
         if (currentSortDirection.value === null) {
-          currentSortDirection.value = 'asc';
-        } else if (currentSortDirection.value === 'asc') {
           currentSortDirection.value = 'desc';
+        } else if (currentSortDirection.value === 'desc') {
+          currentSortDirection.value = 'asc';
         } else {
           currentSortDirection.value = null;
         }

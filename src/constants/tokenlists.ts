@@ -3,24 +3,13 @@ export const TOKEN_LIST_DEFAULT =
 
 export const TOKEN_LISTS: string[] = [
   TOKEN_LIST_DEFAULT,
-  'https://www.coingecko.com/tokens_list/uniswap/defi_100/v_0_0_0.json',
   'ipns://tokens.uniswap.org',
   'tokenlist.zerion.eth',
   'tokens.1inch.eth',
   'tokenlist.aave.eth',
+  'https://tokens.coingecko.com/uniswap/all.json',
   'https://umaproject.org/uma.tokenlist.json'
 ];
-
-export const NAMED_TOKEN_LISTS = {
-  Default: TOKEN_LIST_DEFAULT,
-  'Uniswap Default List':
-    'https://www.coingecko.com/tokens_list/uniswap/defi_100/v_0_0_0.json',
-  Uniswap: 'ipns://tokens.uniswap.org',
-  Zerion: 'tokenlist.zerion.eth',
-  '1inch': 'tokens.1inch.eth',
-  Aave: 'tokenlist.aave.eth',
-  UMA: 'https://umaproject.org/uma.tokenlist.json'
-};
 
 export const ETHER = {
   id: 'ether',

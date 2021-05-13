@@ -69,12 +69,13 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
-import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
+import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
 import useWeb3 from '@/composables/useWeb3';
 import { TOKENS } from '@/constants/tokens';
 import useTokenLists from '@/composables/useTokenLists';
+import { ETHER } from '@/constants/tokenlists';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -106,7 +107,9 @@ export default defineComponent({
         sortBy(Object.values(balances.value || {}), 'balance')
           .reverse()
           .filter(
-            (balance: any) => !props.modelValue.includes(balance.address)
+            (balance: any) =>
+              !props.modelValue.includes(balance.address) &&
+              balance.address !== ETHER.address
           ),
         6
       );

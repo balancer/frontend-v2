@@ -193,15 +193,15 @@ const actions = {
       token => token !== ETHER.address && isAddress(token)
     );
     if (tokens.length === 0) return;
-    const injected = clone(state.injected);
     const tokensMeta = await getTokensMeta(tokens, state.tokenLists);
+    const injected = clone(state.injected);
     Object.values(tokensMeta).forEach((meta: TokenInfo) => {
       if (meta) injected.push({ ...meta, injected: true });
     });
     commit('setInjected', injected);
-    dispatch('account/getBalances', null, { root: true });
-    dispatch('account/getAllowances', { tokens }, { root: true });
-    dispatch('market/loadPrices', tokens, { root: true });
+    await dispatch('account/getBalances', null, { root: true });
+    await dispatch('account/getAllowances', { tokens }, { root: true });
+    await dispatch('market/loadPrices', tokens, { root: true });
   },
 
   toggleList({ commit }, name) {

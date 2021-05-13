@@ -128,6 +128,6 @@ export default defineComponent({
 }
 
 .close {
-  @apply cursor-pointer ml-1;
+  @apply cursor-pointer ml-1 -mb-px text-gray-400;
 }
 </style>

@@ -138,6 +138,31 @@
           </div>
         </template>
       </BalTextInput>
+
+      <div v-if="isWethPool" class="flex items-center mb-4">
+        <router-link
+          :to="{
+            name: 'trade',
+            params: {
+              assetIn: TOKENS.AddressMap.ETH,
+              assetOut: TOKENS.AddressMap.WETH
+            }
+          }"
+          class="text-xs text-gray-500 underline"
+        >
+          Wrap your ETH to WETH
+        </router-link>
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
+          </template>
+          <div class="w-52">
+            This pool requires Wrapped Ether (WETH). To maximize your
+            investment, you could wrap some additional ETH. Make sure to keep
+            enough ETH to cover gas costs.
+          </div>
+        </BalTooltip>
+      </div>
     </div>
 
     <div class="p-4">
@@ -247,6 +272,8 @@ import { bnum } from '@/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
+
+import { TOKENS } from '@/constants/tokens';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -418,6 +445,10 @@ export default defineComponent({
 
       return minusSlippage(bptOut, props.pool.onchain.decimals);
     });
+
+    const isWethPool = computed(() =>
+      props.pool.tokenAddresses.includes(TOKENS.AddressMap.WETH)
+    );
 
     const formTypes = ref([
       {
@@ -617,6 +648,7 @@ export default defineComponent({
       // data
       ...toRefs(data),
       Goals,
+      TOKENS,
       // computed
       allTokens,
       hasValidInputs,
@@ -638,6 +670,7 @@ export default defineComponent({
       formTypes,
       isRequired,
       hasZeroBalance,
+      isWethPool,
       // methods
       submit,
       approveAllowances,
