@@ -116,7 +116,7 @@ export default defineComponent({
         accessor: 'uri',
         Header: 'iconColumnHeader',
         Cell: 'iconColumnCell',
-        className: 'w-32 md:w-36 lg:w-40',
+        width: 125,
         noGrow: true
       },
       {
@@ -124,32 +124,32 @@ export default defineComponent({
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',
-        className: 'w-72'
+        width: 350
       },
       {
         name: t('myBalance'),
         accessor: pool => fNum(pool.shares, 'usd', { forcePreset: true }),
-        className: 'w-32',
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,
-        sortKey: pool => Number(pool.shares)
+        sortKey: pool => Number(pool.shares),
+        width: 150
       },
       {
         name: t('poolValue'),
         accessor: pool => fNum(pool.totalLiquidity, 'usd'),
-        className: 'w-32',
         align: 'right',
         id: 'poolValue',
-        sortKey: pool => Number(pool.totalLiquidity)
+        sortKey: pool => Number(pool.totalLiquidity),
+        width: 150
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
         accessor: pool => fNum(pool.dynamic.volume, 'usd'),
-        className: 'w-32',
         align: 'right',
         id: 'poolVolume',
-        sortKey: pool => Number(pool.dynamic.volume)
+        sortKey: pool => Number(pool.dynamic.volume),
+        width: 150
       },
       {
         name: t('apy'),
@@ -159,10 +159,10 @@ export default defineComponent({
               ? '-'
               : fNum(pool.dynamic.apy, 'percent')
           }`,
-        className: 'w-32',
         align: 'right',
         id: 'poolApy',
-        sortKey: pool => Number(pool.dynamic.apy)
+        sortKey: pool => Number(pool.dynamic.apy),
+        width: 150
       }
     ]);
 
