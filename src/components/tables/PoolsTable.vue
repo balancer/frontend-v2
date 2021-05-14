@@ -13,7 +13,7 @@
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
-          <img :src="require('@/assets/icons/token_header.svg')" />
+          <img :src="require('@/assets/images/icons/tokens.svg')" />
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
