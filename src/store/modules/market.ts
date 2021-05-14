@@ -1,4 +1,4 @@
-import { getEtherPrice, getTokensPrice } from '@/api/coingecko';
+import { getEtherPrice, getTokensPrice } from '@/services/coingecko';
 import { ETHER } from '@/constants/tokenlists';
 import { getGasPrice } from '@/lib/utils/balancer/gasPrices';
 

@@ -26,7 +26,7 @@ import useWeb3 from '@/composables/useWeb3';
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
 import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { getOriginalAddress } from '@/api/coingecko';
+import { getOriginalAddress } from '@/services/coingecko';
 
 export default defineComponent({
   props: {

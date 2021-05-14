@@ -1,5 +1,5 @@
 import { Pool } from '@/services/balancer/subgraph/types';
-import { Prices } from '@/api/coingecko';
+import { Prices } from '@/services/coingecko';
 
 export function getPoolLiquidity(pool: Pool, prices: Prices) {
   if (pool.poolType == 'Weighted') {

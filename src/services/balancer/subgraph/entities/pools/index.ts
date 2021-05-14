@@ -8,7 +8,7 @@ import {
   TimeTravelPeriod,
   DecoratedPool
 } from '../../types';
-import { Prices } from '@/api/coingecko';
+import { Prices } from '@/services/coingecko';
 import { getAddress } from '@ethersproject/address';
 
 export default class Pools {
