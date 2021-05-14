@@ -1,5 +1,5 @@
 import Service from '../service';
-import { default as vaultAbi } from '@/abi/Vault.json';
+import { default as vaultAbi } from '@/lib/abi/Vault.json';
 import { Multicaller } from '@/utils/balancer/contract';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';

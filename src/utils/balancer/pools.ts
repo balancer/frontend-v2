@@ -4,10 +4,10 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 import { Multicaller } from '@/utils/balancer/contract';
 import set from 'lodash/set';
-import { default as vaultAbi } from '@/abi/Vault.json';
-import { default as weightedPoolAbi } from '@/abi/WeightedPool.json';
-import { default as stablePoolAbi } from '@/abi/StablePool.json';
-import { default as TokenAbi } from '@/abi/ERC20.json';
+import { default as vaultAbi } from '@/lib/abi/Vault.json';
+import { default as weightedPoolAbi } from '@/lib/abi/WeightedPool.json';
+import { default as stablePoolAbi } from '@/lib/abi/StablePool.json';
+import { default as TokenAbi } from '@/lib/abi/ERC20.json';
 import { Pool } from '@/utils/balancer/types';
 import configs from '@/config';
 

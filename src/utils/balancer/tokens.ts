@@ -6,7 +6,7 @@ import { TokenList, TokenInfo } from '@/types/TokenList';
 import { flatten, set } from 'lodash';
 import getProvider from '@/utils/provider';
 import { APP } from '@/constants/app';
-import { default as abi } from '@/abi/ERC20.json';
+import { default as abi } from '@/lib/abi/ERC20.json';
 
 export async function getBalances(
   network: string,

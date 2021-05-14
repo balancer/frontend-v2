@@ -3,10 +3,10 @@ import configs, { Config } from '@/config';
 import { Multicaller } from '@/utils/balancer/contract';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import getProvider from '@/utils/provider';
-import { default as vaultAbi } from '@/abi/Vault.json';
-import { default as weightedPoolAbi } from '@/abi/WeightedPool.json';
-import { default as stablePoolAbi } from '@/abi/StablePool.json';
-import { default as TokenAbi } from '@/abi/ERC20.json';
+import { default as vaultAbi } from '@/lib/abi/Vault.json';
+import { default as weightedPoolAbi } from '@/lib/abi/WeightedPool.json';
+import { default as stablePoolAbi } from '@/lib/abi/StablePool.json';
+import { default as TokenAbi } from '@/lib/abi/ERC20.json';
 
 const NETWORK = process.env.VUE_APP_NETWORK || '1';
 
