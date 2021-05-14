@@ -393,8 +393,7 @@ export default defineComponent({
       routes,
 
       formatShare,
-      getPoolLink,
-      console
+      getPoolLink
     };
   }
 });
