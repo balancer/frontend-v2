@@ -16,7 +16,11 @@
       <div class="mb-16" />
     </template>
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
-    <TokenSearchInput v-model="selectedTokens" :loading="isLoadingPools" />
+    <TokenSearchInput
+      v-model="selectedPoolTokens"
+      :loading="isLoadingPools"
+      @update:modelValue="updateSelectedPoolTokens"
+    />
     <PoolsTable
       :isLoading="isLoadingPools"
       :data="filteredPools"
@@ -34,8 +38,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
@@ -54,12 +59,15 @@ export default defineComponent({
   },
 
   setup() {
-    // DATA
-    const selectedTokens = ref<string[]>([]);
-
     // COMPOSABLES
+    const store = useStore();
     const router = useRouter();
     const { isConnected } = useWeb3();
+
+    const selectedPoolTokens = computed(
+      () => store.state.app.selectedPoolTokens
+    );
+
     const {
       pools,
       userPools,
@@ -68,23 +76,28 @@ export default defineComponent({
       loadMorePools,
       poolsHasNextPage,
       poolsIsFetchingNextPage
-    } = usePools(selectedTokens);
+    } = usePools(selectedPoolTokens);
 
+    // COMPUTED
     const filteredPools = computed(() =>
-      selectedTokens.value.length > 0
+      selectedPoolTokens.value.length > 0
         ? pools.value?.filter(pool => {
             const poolTokenList = pool.tokensList.map(getAddress);
 
-            return selectedTokens.value.every(selectedToken =>
+            return selectedPoolTokens.value.every((selectedToken: string) =>
               poolTokenList.includes(selectedToken)
             );
           })
         : pools?.value
     );
 
+    // METHODS
+    function updateSelectedPoolTokens(selectedPoolTokens: string[]) {
+      store.commit('app/setSelectedPoolTokens', selectedPoolTokens);
+    }
+
     return {
       // data
-      selectedTokens,
       filteredPools,
       userPools,
       isLoadingPools,
@@ -94,10 +107,12 @@ export default defineComponent({
       isConnected,
       poolsHasNextPage,
       poolsIsFetchingNextPage,
+      selectedPoolTokens,
 
       //methods
       router,
       loadMorePools,
+      updateSelectedPoolTokens,
 
       // constants
       EXTERNAL_LINKS
