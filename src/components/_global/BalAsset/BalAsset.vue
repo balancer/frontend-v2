@@ -36,7 +36,6 @@ export default defineComponent({
       default: 24
     }
   },
-
   setup(props) {
     // COMPOSABLES
     const { allTokensIncludeEth } = useTokens();

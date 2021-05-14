@@ -165,8 +165,8 @@ export default function useSor(
       return;
     }
 
-    const tokenInDecimals = tokens.value[tokenInAddressInput.value].decimals;
-    const tokenOutDecimals = tokens.value[tokenOutAddressInput.value].decimals;
+    const tokenInDecimals = tokens.value[tokenInAddressInput.value]?.decimals;
+    const tokenOutDecimals = tokens.value[tokenOutAddressInput.value]?.decimals;
 
     if (exactIn.value) {
       // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'

@@ -77,7 +77,7 @@
           <div class="relative z-10">
             <div
               v-for="route in routes"
-              :key="route.hops[0].pool.address"
+              :key="route.hops[0]?.pool?.address"
               class="mt-9 first:mt-0 flex justify-between"
             >
               <div class="w-4 ml-4 flex items-center">
@@ -91,7 +91,7 @@
               <div class="flex">
                 <div
                   v-for="hop in route.hops"
-                  :key="hop.pool.address"
+                  :key="hop?.pool?.address"
                   class="p-1.5 ml-4 first:ml-0 flex bg-white rounded shadow"
                 >
                   <a :href="getPoolLink(hop.pool.id)" target="_blank">
