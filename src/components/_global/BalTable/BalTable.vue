@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-full whitespace-nowrap rounded-lg">
+  <div class="max-w-full whitespace-nowrap rounded-lg overflow-hidden">
     <div class="overflow-hidden" ref="headerRef">
       <table class="w-full table-fixed whitespace-normal">
         <colgroup>
@@ -14,7 +14,7 @@
             v-for="(column, columnIndex) in filteredColumns"
             :key="`header-${column.id}`"
             :class="[
-              'p-6 bg-white headingShadow border-b border-gray-200',
+              'p-6 bg-white headingShadow border-b',
               column.className,
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
@@ -91,7 +91,8 @@
             :class="[
               column.align === 'right' ? 'text-left' : 'text-right',
               getHorizontalStickyClass(columnIndex),
-              isColumnStuck ? 'isSticky' : ''
+              isColumnStuck ? 'isSticky' : '',
+              'p-0 m-0 h-0'
             ]"
           ></td>
         </tr>

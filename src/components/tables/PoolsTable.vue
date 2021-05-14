@@ -32,7 +32,7 @@
           <div
             v-for="token in sortedTokensFor(pool)"
             :key="token"
-            class="mr-2 mb-2 flex items-center py-1 px-2 rounded-lg bg-gray-50 relative"
+            class="flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-50 relative"
           >
             <div
               v-if="hasBalance(token.address)"
