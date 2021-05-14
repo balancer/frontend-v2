@@ -155,10 +155,9 @@ import { sortBy, sumBy } from 'lodash';
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;
-type SortDirection = 'asc' | 'desc' | null;
 
 type InitialState = {
-  sortDirection: SortDirection;
+  sortDirection: 'asc' | 'desc' | null;
   sortColumn: string | null;
 };
 
@@ -239,10 +238,12 @@ export default defineComponent({
     const tableRef = ref<HTMLElement>();
     const isColumnStuck = ref(false);
     const tableData = ref(props.data);
-    const currentSortDirection = ref<SortDirection>(
+    const currentSortDirection = ref<InitialState['sortDirection']>(
       props.initialState.sortDirection
     );
-    const currentSortColumn = ref<string | null>(props.initialState.sortColumn);
+    const currentSortColumn = ref<InitialState['sortColumn']>(
+      props.initialState.sortColumn
+    );
     const headerRef = ref<HTMLElement>();
     const bodyRef = ref<HTMLElement>();
 
