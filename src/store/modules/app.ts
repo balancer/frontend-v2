@@ -10,6 +10,7 @@ export interface AppState {
   locale: string;
   slippage: string;
   tradeLiquidity: LiquiditySelection;
+  selectedPoolTokens: string[];
 }
 
 const state: AppState = {
@@ -18,7 +19,8 @@ const state: AppState = {
   darkMode: false,
   locale: 'en-US',
   slippage: '0.01',
-  tradeLiquidity: LiquiditySelection.Best
+  tradeLiquidity: LiquiditySelection.Best,
+  selectedPoolTokens: []
 };
 
 const actions = {
@@ -54,26 +56,26 @@ const actions = {
 };
 
 const mutations = {
-  setLoading(state: AppState, val: boolean): void {
+  setLoading(state: AppState, val: AppState['loading']) {
     state.loading = val;
   },
 
-  toggleModal(state: AppState): void {
+  toggleModal(state: AppState) {
     state.modalOpen = !state.modalOpen;
   },
 
-  setLocale(state: AppState, locale: string): void {
+  setLocale(state: AppState, locale: AppState['locale']) {
     state.locale = locale;
     lsSet('locale', locale);
     i18n.global.locale = locale;
   },
 
-  setSlippage(state: AppState, slippage: string): void {
+  setSlippage(state: AppState, slippage: AppState['slippage']) {
     state.slippage = slippage;
     lsSet('slippage', slippage);
   },
 
-  setDarkMode(state: AppState, val: boolean): void {
+  setDarkMode(state: AppState, val: AppState['darkMode']) {
     state.darkMode = val;
     lsSet('darkMode', state.darkMode);
     if (state.darkMode) {
@@ -83,9 +85,16 @@ const mutations = {
     }
   },
 
-  setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection): void {
+  setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection) {
     state.tradeLiquidity = tradeLiquidity;
     lsSet('tradeLiquidity', state.tradeLiquidity);
+  },
+
+  setSelectedPoolTokens(
+    state: AppState,
+    selectedPoolTokens: AppState['selectedPoolTokens']
+  ) {
+    state.selectedPoolTokens = selectedPoolTokens;
   }
 };
 
