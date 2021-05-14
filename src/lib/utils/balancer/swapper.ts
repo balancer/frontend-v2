@@ -3,12 +3,12 @@ import { Web3Provider } from '@ethersproject/providers';
 import { AddressZero, MaxUint256 } from '@ethersproject/constants';
 import { SwapV2 } from '@balancer-labs/sor2/dist/types';
 import { BigNumber } from 'bignumber.js';
-import { sendTransaction } from '@/utils/balancer/web3';
-import exchangeProxyAbi from '@/abi/ExchangeProxy.json';
-import vaultAbi from '@/abi/Vault.json';
-import configs from '@/config';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
+import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
+import vaultAbi from '@/lib/abi/Vault.json';
+import configs from '@/lib/config';
 import { ETHER } from '@/constants/tokenlists';
-import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 
 const SWAP_KIND_IN = 0;
 const SWAP_KIND_OUT = 1;

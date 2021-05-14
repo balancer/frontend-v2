@@ -1,12 +1,12 @@
 import { Web3Provider, TransactionResponse } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
-import { multicall, Multicaller } from '@/utils/balancer/contract';
-import { sendTransaction } from '@/utils/balancer/web3';
+import { multicall, Multicaller } from '@/lib/utils/balancer/contract';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { TokenList, TokenInfo } from '@/types/TokenList';
 import { flatten, set } from 'lodash';
-import getProvider from '@/utils/provider';
+import getProvider from '@/lib/utils/provider';
 import { APP } from '@/constants/app';
-import { default as abi } from '@/abi/ERC20.json';
+import { default as abi } from '@/lib/abi/ERC20.json';
 
 export async function getBalances(
   network: string,

@@ -1,7 +1,7 @@
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
-import { lsGet, lsSet } from '@/utils';
+import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
-import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
+import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
 
 export interface AppState {
   loading: boolean;

@@ -1,7 +1,7 @@
 import Service from '../../service';
 import queryBuilder from './query';
-import { getPoolLiquidity } from '@/utils/balancer/price';
-import { bnum } from '@/utils';
+import { getPoolLiquidity } from '@/lib/utils/balancer/price';
+import { bnum } from '@/lib/utils';
 import {
   Pool,
   QueryBuilder,

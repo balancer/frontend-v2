@@ -1,6 +1,6 @@
 import PoolExchange from '..';
-import { encodeExitStablePool } from '@/utils/balancer/stablePoolEncoding';
-import { encodeExitWeightedPool } from '@/utils/balancer/weightedPoolEncoding';
+import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
+import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
 

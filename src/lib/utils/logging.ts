@@ -2,7 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import { Wallet } from '@ethersproject/wallet';
 import { captureException } from '@sentry/browser';
 
-import { getLoggingProvider } from '@/utils/provider';
+import { getLoggingProvider } from '@/lib/utils/provider';
 
 export function logFailedTx(
   network: string,

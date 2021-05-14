@@ -1,4 +1,4 @@
-import { subgraphRequest } from '@/utils/subgraph';
+import { subgraphRequest } from '@/lib/utils/subgraph';
 
 function get3BoxProfiles(addresses) {
   return new Promise((resolove, reject) => {

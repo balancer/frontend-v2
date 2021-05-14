@@ -6,7 +6,7 @@ import { useStore } from 'vuex';
 import { flatten, isEmpty, keyBy } from 'lodash';
 import { getAddress } from '@ethersproject/address';
 
-import { bnum } from '@/utils';
+import { bnum } from '@/lib/utils';
 
 import useWeb3 from '@/composables/useWeb3';
 
