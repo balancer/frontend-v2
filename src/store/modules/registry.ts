@@ -1,12 +1,12 @@
 import { formatUnits } from '@ethersproject/units';
 import { getAddress, isAddress } from '@ethersproject/address';
 import orderBy from 'lodash/orderBy';
-import { loadTokenlist } from '@/utils/tokenlists';
+import { loadTokenlist } from '@/lib/utils/tokenlists';
 import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
-import { clone, lsGet, lsSet } from '@/utils';
+import { clone, lsGet, lsSet } from '@/lib/utils';
 import injected from '@/constants/injected.json';
 import { TokenList, TokenInfo } from '@/types/TokenList';
-import { getTokensMeta } from '@/utils/balancer/tokens';
+import { getTokensMeta } from '@/lib/utils/balancer/tokens';
 
 const defaultActiveLists = {};
 defaultActiveLists[TOKEN_LIST_DEFAULT] = true;

@@ -8,8 +8,8 @@ import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { TOKEN_LISTS } from '@/constants/tokenlists';
 
-import { getTokensListURL, loadTokenlist } from '@/utils/tokenlists';
-import { lsGet, lsSet } from '@/utils';
+import { getTokensListURL, loadTokenlist } from '@/lib/utils/tokenlists';
+import { lsGet, lsSet } from '@/lib/utils';
 
 import useAccountBalances from './useAccountBalances';
 

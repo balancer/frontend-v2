@@ -1,7 +1,7 @@
 import Calculator from '.';
 import { PiOptions } from '.';
 import { parseUnits, formatUnits } from '@ethersproject/units';
-import { bnum } from '@/utils';
+import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 
 import {

@@ -1,6 +1,6 @@
 import { parseUnits } from '@ethersproject/units';
-import { ipfsGet } from '@/utils/balancer/ipfs';
-import { call } from '@/utils/balancer/web3';
+import { ipfsGet } from '@/lib/utils/balancer/ipfs';
+import { call } from '@/lib/utils/balancer/web3';
 import { abi } from './MerkleRedeem.json';
 import { Claim } from '@/types';
 

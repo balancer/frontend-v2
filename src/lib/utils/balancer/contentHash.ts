@@ -5,7 +5,7 @@ import { Provider } from '@ethersproject/abstract-provider';
 import { namehash } from '@ethersproject/hash';
 import { isHexString } from '@ethersproject/bytes';
 import bs58 from 'bs58';
-import { call } from '@/utils/balancer/contract';
+import { call } from '@/lib/utils/balancer/contract';
 const supportedCodecs = ['ipns-ns', 'ipfs-ns', 'swarm-ns', 'onion', 'onion3'];
 
 const REGISTRAR_ABI = [

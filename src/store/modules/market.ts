@@ -1,6 +1,6 @@
 import { getEtherPrice, getTokensPrice } from '@/api/coingecko';
 import { ETHER } from '@/constants/tokenlists';
-import { getGasPrice } from '@/utils/balancer/gasPrices';
+import { getGasPrice } from '@/lib/utils/balancer/gasPrices';
 
 type Prices = Record<string, number>;
 

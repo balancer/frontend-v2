@@ -1,6 +1,6 @@
-import homestead from '@/config/homestead.json';
-import kovan from '@/config/kovan.json';
-import docker from '@/config/docker.json';
+import homestead from './homestead.json';
+import kovan from './kovan.json';
+import docker from './docker.json';
 
 export interface Config {
   key: string;
