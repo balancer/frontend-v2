@@ -155,6 +155,12 @@ import { sortBy, sumBy } from 'lodash';
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;
+type SortDirection = 'asc' | 'desc' | null;
+
+type InitialState = {
+  sortDirection: SortDirection;
+  sortColumn: string | null;
+};
 
 export type ColumnDefinition<T = Data> = {
   // Column Header Label
@@ -219,6 +225,13 @@ export default defineComponent({
     },
     noResultsLabel: {
       type: String
+    },
+    initialState: {
+      type: Object as PropType<InitialState>,
+      default: {
+        currentSortColumn: null,
+        sortDirection: null
+      }
     }
   },
   setup(props) {
@@ -226,8 +239,10 @@ export default defineComponent({
     const tableRef = ref<HTMLElement>();
     const isColumnStuck = ref(false);
     const tableData = ref(props.data);
-    const currentSortDirection = ref<'asc' | 'desc' | null>(null);
-    const currentSortColumn = ref<string | null>(null);
+    const currentSortDirection = ref<SortDirection>(
+      props.initialState.sortDirection
+    );
+    const currentSortColumn = ref<string | null>(props.initialState.sortColumn);
     const headerRef = ref<HTMLElement>();
     const bodyRef = ref<HTMLElement>();
 
