@@ -14,7 +14,7 @@
             v-for="(column, columnIndex) in filteredColumns"
             :key="`header-${column.id}`"
             :class="[
-              'p-6 bg-white headingShadow border-b border-gray-100',
+              'p-6 bg-white headingShadow border-b',
               column.className,
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
