@@ -229,7 +229,7 @@ export default defineComponent({
     initialState: {
       type: Object as PropType<InitialState>,
       default: {
-        currentSortColumn: null,
+        sortColumn: null,
         sortDirection: null
       }
     }
