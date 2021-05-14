@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/utils/balancer/web3';
-import configs from '@/config';
+import configs from '@/lib/config';
 import abi from '@/lib/abi/Weth.json';
 
 export async function wrap(

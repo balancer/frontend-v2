@@ -9,7 +9,7 @@ import { default as weightedPoolAbi } from '@/lib/abi/WeightedPool.json';
 import { default as stablePoolAbi } from '@/lib/abi/StablePool.json';
 import { default as TokenAbi } from '@/lib/abi/ERC20.json';
 import { Pool } from '@/utils/balancer/types';
-import configs from '@/config';
+import configs from '@/lib/config';
 
 // Combine all the ABIs and remove duplicates
 const abis = Object.values(

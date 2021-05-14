@@ -1,7 +1,7 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-import configs from '@/config';
+import configs from '@/lib/config';
 import getProvider from '@/utils/provider';
 import useAuth from '@/composables/useAuth';
 

@@ -1,5 +1,5 @@
 import { JsonRpcProvider, AlchemyProvider } from '@ethersproject/providers';
-import configs from '@/config';
+import configs from '@/lib/config';
 
 const providers = {};
 

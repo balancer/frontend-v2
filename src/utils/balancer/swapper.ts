@@ -6,7 +6,7 @@ import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/utils/balancer/web3';
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
 import vaultAbi from '@/lib/abi/Vault.json';
-import configs from '@/config';
+import configs from '@/lib/config';
 import { ETHER } from '@/constants/tokenlists';
 import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
 

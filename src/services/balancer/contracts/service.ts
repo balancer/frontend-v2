@@ -1,5 +1,5 @@
 import Vault from './contracts/vault';
-import configs, { Config } from '@/config';
+import configs, { Config } from '@/lib/config';
 import { Multicaller } from '@/utils/balancer/contract';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import getProvider from '@/utils/provider';

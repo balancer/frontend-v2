@@ -1,6 +1,6 @@
 import getProvider from '@/utils/provider';
 import { getAllowances, getBalances } from '@/utils/balancer/tokens';
-import configs from '@/config';
+import configs from '@/lib/config';
 import { ETHER } from '@/constants/tokenlists';
 import { isAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';

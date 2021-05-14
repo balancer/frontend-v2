@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
-import configs, { Config } from '@/config';
+import configs, { Config } from '@/lib/config';
 import { getProfiles } from '@/utils/profile';
 import useFathom from '@/composables/useFathom';
 
