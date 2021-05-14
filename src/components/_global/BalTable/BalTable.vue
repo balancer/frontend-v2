@@ -16,7 +16,6 @@
             :class="[
               'p-6 bg-white headingShadow border-b border-gray-200',
               column.className,
-              column.align === 'right' ? 'text-right' : 'text-left',
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
               column.sortKey ? 'cursor-pointer' : ''
@@ -24,34 +23,41 @@
             :ref="setHeaderRef(columnIndex)"
             @click="handleSort(column.id)"
           >
-            <slot
-              v-if="column.Header"
-              v-bind="column"
-              :name="column.Header"
-            ></slot>
-            <div v-else>
-              <h5 class="text-base font-semibold text-gray-800">
-                {{ column.name }}
-              </h5>
+            <div
+              :class="[
+                'flex',
+                column.align === 'right' ? 'justify-end' : 'justify-start'
+              ]"
+            >
+              <slot
+                v-if="column.Header"
+                v-bind="column"
+                :name="column.Header"
+              ></slot>
+              <div v-else>
+                <h5 class="text-base font-semibold text-gray-800">
+                  {{ column.name }}
+                </h5>
+              </div>
+              <BalIcon
+                name="arrow-up"
+                size="sm"
+                v-if="
+                  currentSortColumn === column.id &&
+                    currentSortDirection === 'asc'
+                "
+                class="ml-1 flex items-center"
+              />
+              <BalIcon
+                name="arrow-down"
+                size="sm"
+                v-if="
+                  currentSortColumn === column.id &&
+                    currentSortDirection === 'desc'
+                "
+                class="ml-1 flex items-center"
+              />
             </div>
-            <BalIcon
-              name="arrow-up"
-              size="sm"
-              v-if="
-                currentSortColumn === column.id &&
-                  currentSortDirection === 'asc'
-              "
-              class="ml-1 flex items-center"
-            />
-            <BalIcon
-              name="arrow-down"
-              size="sm"
-              v-if="
-                currentSortColumn === column.id &&
-                  currentSortDirection === 'desc'
-              "
-              class="ml-1 flex items-center"
-            />
           </th>
         </thead>
       </table>
