@@ -24,7 +24,12 @@
       :isPaginated="poolsHasNextPage"
       :isLoadingMore="poolsIsFetchingNextPage"
       @loadMore="loadMorePools"
+      class="mb-8"
     />
+    <div class="text-black-600">{{ $t('tableShowsBalancerV2Pools') }}</div>
+    <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Explore" external>{{
+      $t('exploreBalancerV1Pools')
+    }}</BalLink>
   </div>
 </template>
 
