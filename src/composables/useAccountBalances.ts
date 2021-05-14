@@ -1,9 +1,9 @@
-import getProvider from '@/utils/provider';
+import getProvider from '@/lib/utils/provider';
 import { useQuery } from 'vue-query';
 import useTokens from './useTokens';
 import useWeb3 from './useWeb3';
 import { computed, reactive } from 'vue';
-import { getBalances } from '@/utils/balancer/tokens';
+import { getBalances } from '@/lib/utils/balancer/tokens';
 import { formatEther } from '@ethersproject/units';
 import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';

@@ -35,8 +35,8 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, watch } from 'vue';
 import { Claim } from '@/types';
-import getProvider from '@/utils/provider';
-import { getPendingClaims } from '@/utils/balancer/claim';
+import getProvider from '@/lib/utils/provider';
+import { getPendingClaims } from '@/lib/utils/balancer/claim';
 import useWeb3 from '@/composables/useWeb3';
 import { useStore } from 'vuex';
 import useBreakpoints from '@/composables/useBreakpoints';

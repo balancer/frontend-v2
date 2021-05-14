@@ -96,7 +96,7 @@
 import { defineComponent, reactive, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
-import { clone } from '@/utils';
+import { clone } from '@/lib/utils';
 import { isAddress, getAddress } from '@ethersproject/address';
 import useTokenLists from '@/composables/useTokenLists';
 import TokenListItem from '@/components/lists/TokenListItem.vue';

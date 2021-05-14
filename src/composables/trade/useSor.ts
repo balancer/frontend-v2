@@ -5,11 +5,14 @@ import { BigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase } from '@balancer-labs/sor2';
 
-import { scale } from '@/utils';
-import { unwrap, wrap } from '@/utils/balancer/wrapper';
-import getProvider from '@/utils/provider';
-import { SorManager, SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
-import { swapIn, swapOut } from '@/utils/balancer/swapper';
+import { scale } from '@/lib/utils';
+import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
+import getProvider from '@/lib/utils/provider';
+import {
+  SorManager,
+  SorReturn
+} from '@/lib/utils/balancer/helpers/sor/sorManager';
+import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import { urlMap as subgraphUrlMap } from '@/services/balancer/subgraph/client';
 
 import useAuth from '@/composables/useAuth';

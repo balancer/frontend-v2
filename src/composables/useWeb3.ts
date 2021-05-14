@@ -2,7 +2,7 @@ import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import configs from '@/lib/config';
-import getProvider from '@/utils/provider';
+import getProvider from '@/lib/utils/provider';
 import useAuth from '@/composables/useAuth';
 
 export default function useWeb3() {

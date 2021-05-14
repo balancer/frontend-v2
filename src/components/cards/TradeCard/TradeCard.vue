@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import { isRequired } from '@/utils/validations';
+import { isRequired } from '@/lib/utils/validations';
 import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';

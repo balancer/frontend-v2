@@ -1,6 +1,6 @@
 import BalTextInput from './BalTextInput.vue';
 import { Rules } from '@/types';
-import { isRequired } from '../../../utils/validations';
+import { isRequired } from '../../../lib/utils/validations';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {

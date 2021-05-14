@@ -1,6 +1,6 @@
-import getProvider from '@/utils/provider';
-import { ipfsGet } from '@/utils/balancer/ipfs';
-import { resolveContent } from '@/utils/balancer/contentHash';
+import getProvider from '@/lib/utils/provider';
+import { ipfsGet } from '@/lib/utils/balancer/ipfs';
+import { resolveContent } from '@/lib/utils/balancer/contentHash';
 
 const gateway = process.env.VUE_APP_IPFS_NODE || 'ipfs.io';
 

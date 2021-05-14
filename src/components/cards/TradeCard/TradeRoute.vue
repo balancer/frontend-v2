@@ -127,7 +127,7 @@ import { Pool, Swap } from '@balancer-labs/sor/dist/types';
 import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
 
 import useNumbers from '@/composables/useNumbers';
-import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { useI18n } from 'vue-i18n';
 
 interface Route {

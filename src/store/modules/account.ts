@@ -1,5 +1,5 @@
-import getProvider from '@/utils/provider';
-import { getAllowances, getBalances } from '@/utils/balancer/tokens';
+import getProvider from '@/lib/utils/provider';
+import { getAllowances, getBalances } from '@/lib/utils/balancer/tokens';
 import configs from '@/lib/config';
 import { ETHER } from '@/constants/tokenlists';
 import { isAddress } from '@ethersproject/address';

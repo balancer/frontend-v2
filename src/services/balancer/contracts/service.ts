@@ -1,8 +1,8 @@
 import Vault from './contracts/vault';
 import configs, { Config } from '@/lib/config';
-import { Multicaller } from '@/utils/balancer/contract';
+import { Multicaller } from '@/lib/utils/balancer/contract';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import getProvider from '@/utils/provider';
+import getProvider from '@/lib/utils/provider';
 import { default as vaultAbi } from '@/lib/abi/Vault.json';
 import { default as weightedPoolAbi } from '@/lib/abi/WeightedPool.json';
 import { default as stablePoolAbi } from '@/lib/abi/StablePool.json';

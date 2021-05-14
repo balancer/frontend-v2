@@ -1,7 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { ErrorCode } from '@ethersproject/logger';
-import { logFailedTx } from '@/utils/logging';
+import { logFailedTx } from '@/lib/utils/logging';
 
 import { getGasPrice } from './gasPrices';
 

@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
 import configs, { Config } from '@/lib/config';
-import { getProfiles } from '@/utils/profile';
+import { getProfiles } from '@/lib/utils/profile';
 import useFathom from '@/composables/useFathom';
 
 const defaultConfig = process.env.VUE_APP_NETWORK || '1';
