@@ -1,6 +1,6 @@
 <template>
-  <div class="px-4 md:px-0">
-    <div class="max-w-full sm:max-w-lg md:max-w-md lg:max-w-sm mx-auto -mt-6">
+  <div>
+    <div class="trade-container">
       <BalLoadingBlock v-if="appLoading" class="h-96" />
       <TradeCard v-else />
     </div>
@@ -41,3 +41,20 @@ export default defineComponent({
   }
 });
 </script>
+
+<style scoped>
+.trade-container {
+  @apply max-w-full mx-auto mt-2 xs:mt-8 md:-mt-6;
+  max-width: 420px;
+}
+
+@media (min-height: 840px) {
+  .trade-container {
+    @apply md:mt-8;
+  }
+}
+
+.trade-container .bal-card .header {
+  @apply pb-0;
+}
+</style>
