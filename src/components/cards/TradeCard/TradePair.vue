@@ -330,3 +330,8 @@ export default defineComponent({
   }
 });
 </script>
+<style>
+.prepend {
+  @apply hover:bg-gray-200;
+}
+</style>
