@@ -30,15 +30,10 @@ module.exports = {
         '"Segoe UI Emoji"'
       ],
       display: [
-        'Utopia-Std-Display',
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"Segoe UI"',
-        'Helvetica',
-        'Arial',
-        'sans-serif',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"'
+        '"Tiempos Headline Medium"',
+        'Times',
+        '"Times New Roman"',
+        'serif'
       ]
     },
     boxShadow: {

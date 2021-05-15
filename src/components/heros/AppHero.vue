@@ -1,6 +1,6 @@
 <template>
   <div :class="['app-hero', classes]">
-    <div class="w-full sm:w-3/4 md:w-1/2">
+    <div class="w-full max-w-2xl mx-auto">
       <template v-if="isConnected">
         <h1
           v-text="$t('myInvestments')"
@@ -18,7 +18,7 @@
       <template v-else>
         <h1
           v-text="$t('ammPlatform')"
-          class="text-white text-bold text-center"
+          class="text-white text-center text-4xl md:text-5xl pb-2"
         />
         <div class="flex justify-center mt-4">
           <BalBtn color="white" class="mr-4" @click="onClickConnect">
@@ -104,6 +104,6 @@ export default defineComponent({
 .app-hero {
   @apply bg-cover bg-center flex items-center justify-center text-center px-4;
   transition: all 0.3s ease-in-out;
-  background-image: url('/images/backgrounds/bg-connect-wallet.svg');
+  background-image: url('/images/backgrounds/bg-header.svg');
 }
 </style>
