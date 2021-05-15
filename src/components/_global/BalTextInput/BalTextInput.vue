@@ -199,7 +199,8 @@ export default defineComponent({
       return {
         [textSizeClasses()]: true,
         [inputHeightClasses()]: true,
-        ['bg-white hover:bg-gray-50 transition-all ease-out duration-200']: props.prependBorder
+        ['bg-white hover:bg-gray-50 transition-all ease-out duration-200']:
+          props.prependBorder
       };
     });
 
