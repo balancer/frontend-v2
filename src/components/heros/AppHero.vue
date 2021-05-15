@@ -4,7 +4,7 @@
       <template v-if="isConnected">
         <h1
           v-text="$t('myInvestments')"
-          class="text-lg font-normal text-white opacity-90 font-body mb-2"
+          class="text-base font-medium text-white opacity-90 font-body mb-2"
         />
         <BalLoadingBlock
           v-if="isLoadingUserPools"
@@ -21,7 +21,7 @@
           class="text-white text-center text-4xl md:text-5xl pb-2"
         />
         <div class="flex justify-center mt-4">
-          <BalBtn color="white" class="mr-4" @click="onClickConnect">
+          <BalBtn color="white" class="mr-3" @click="onClickConnect">
             {{ $t('connectWallet') }}
           </BalBtn>
           <BalBtn
