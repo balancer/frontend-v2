@@ -29,6 +29,7 @@
     "claimSuccess": "Hai ricevuto i tuoi bal!",
     "classic": "Classico",
     "close": "Chiudere",
+    "communitySwapFeeLabel": "Commissioni swap delegate; attualmente risolto: <b>{0}</b>",
     "composition": "Composizione",
     "configuration": "Configurazione",
     "confirming": "Conferma ...",

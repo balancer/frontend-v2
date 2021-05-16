@@ -28,6 +28,7 @@
     "claimSuccess": "您已成功认领bal！",
     "classic": "经典",
     "close": "关闭",
+    "communitySwapFeeLabel": "委托掉期费；目前已修正： <b>{0}</b>",
     "composition": "作品",
     "configuration": "配置",
     "confirming": "确认中...",

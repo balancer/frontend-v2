@@ -222,13 +222,15 @@ export default defineComponent({
       if (!pool.value) return '';
       const feeLabel = fNum(pool.value.onchain.swapFee, 'percent');
 
-      if (
-        feesFixed.value ||
-        (communityManagedFees.value && !feesManagedByGauntlet.value)
-      ) {
+      if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);
+      } else if (communityManagedFees.value) {
+        return feesManagedByGauntlet.value
+          ? t('dynamicSwapFeeLabel', [feeLabel])
+          : t('communitySwapFeeLabel', [feeLabel]);
       }
 
+      // Must be owner-controlled
       return t('dynamicSwapFeeLabel', [feeLabel]);
     });
 

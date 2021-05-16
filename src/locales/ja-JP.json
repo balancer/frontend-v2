@@ -29,6 +29,7 @@
     "claimSuccess": "あなたはBALを首尾よく主張しました！",
     "classic": "クラシック",
     "close": "閉じる",
+    "communitySwapFeeLabel": "委任されたスワップ手数料;現在修正済み： <b>{0}</b>",
     "composition": "組成",
     "configuration": "構成",
     "confirming": "確認中...",

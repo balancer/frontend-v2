@@ -29,6 +29,7 @@
     "claimSuccess": "BAL을 성공적으로 신청하셨습니다!",
     "classic": "권위 있는",
     "close": "닫기",
+    "communitySwapFeeLabel": "위임 된 스왑 수수료 현재 수정 : <b>{0}</b>",
     "composition": "구성",
     "configuration": "구성",
     "confirming": "확인 중 ...",

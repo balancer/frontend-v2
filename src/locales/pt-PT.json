@@ -29,6 +29,7 @@
     "claimSuccess": "Você reivindicou BAL com sucesso!",
     "classic": "Clássico",
     "close": "Perto",
+    "communitySwapFeeLabel": "Taxas de swap delegadas; corrigido atualmente: <b>{0}</b>",
     "composition": "Composição",
     "configuration": "Configuração",
     "confirming": "Confirmando ...",

@@ -29,6 +29,7 @@
     "claimSuccess": "¡Reclamó BAL con éxito!",
     "classic": "Clásico",
     "close": "Cerca",
+    "communitySwapFeeLabel": "Comisiones de swap delegadas; actualmente corregido: <b>{0}</b>",
     "composition": "Composición",
     "configuration": "Configuración",
     "confirming": "Confirmando ...",

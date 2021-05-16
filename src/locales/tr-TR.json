@@ -28,6 +28,7 @@
     "claimSuccess": "BAL için başarıyla hak talebinde bulundunuz!",
     "classic": "Klasik",
     "close": "Kapat",
+    "communitySwapFeeLabel": "Temsilci takas ücretleri; şu anda sabit: <b>{0}</b>",
     "composition": "Kompozisyon",
     "configuration": "Yapılandırma",
     "confirming": "Onaylanıyor ...",

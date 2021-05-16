@@ -29,6 +29,7 @@
     "claimSuccess": "Vous avez reclamer vos BAL!",
     "classic": "Classique",
     "close": "Fermer",
+    "communitySwapFeeLabel": "Frais de swap délégués; actuellement corrigé: <b>{0}</b>",
     "composition": "Composition",
     "configuration": "Paramètres",
     "confirming": "Confirmation ...",

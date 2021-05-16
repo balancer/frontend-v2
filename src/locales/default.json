@@ -29,6 +29,7 @@
     "claimSuccess": "You successfully claimed BAL!",
     "classic": "Classic",
     "close": "Close",
+    "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
     "configuration": "Configuration",
     "confirming": "Confirming...",
     "connecting": "Connecting...",
