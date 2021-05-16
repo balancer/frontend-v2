@@ -160,8 +160,13 @@ export default defineComponent({
 
     const pool = computed(() => poolQuery.data.value);
 
+    // Current Authorizer lets Gauntlet control every pool with the Delegate Owner
+    // Future Authorizer will add (or remove) specific pools with the Delegate Owner address,
+    //   so still use the POOLS list
     const feesManagedByGauntlet = computed(
-      () => pool.value?.onchain.owner == POOLS.DelegateOwner
+      () =>
+        pool.value?.onchain.owner == POOLS.DelegateOwner &&
+        POOLS.DynamicFees.Gauntlet.includes(data.id)
     );
     const feesFixed = computed(
       () => pool.value?.onchain.owner == POOLS.ZeroAddress
