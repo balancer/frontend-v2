@@ -42,11 +42,7 @@
               </template>
               <div class="w-52">
                 <span>
-                  {{
-                    feesManagedByGauntlet
-                      ? $t('feesManagedByGauntlet')
-                      : $t('fixedFeesTooltip')
-                  }}
+                  {{ swapFeeToolTip }}
                 </span>
               </div>
             </BalTooltip>
@@ -159,12 +155,24 @@ export default defineComponent({
       refetchQueriesOnBlockNumber: 0
     });
 
-    const feesManagedByGauntlet = POOLS.DynamicFees.Gauntlet.includes(data.id);
-
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
 
     const pool = computed(() => poolQuery.data.value);
+
+    const feesManagedByGauntlet = computed(
+      () => pool.value?.onchain.owner == POOLS.DelegateOwner
+    );
+    const feesFixed = computed(
+      () => pool.value?.onchain.owner == POOLS.ZeroAddress
+    );
+    const swapFeeToolTip = computed(() =>
+      feesManagedByGauntlet.value
+        ? t('feesManagedByGauntlet')
+        : feesFixed.value
+        ? t('fixedFeesTooltip')
+        : t('ownerFeesTooltip')
+    );
 
     const loadingPool = computed(
       () =>
@@ -207,10 +215,11 @@ export default defineComponent({
       if (!pool.value) return '';
       const feeLabel = fNum(pool.value.onchain.swapFee, 'percent');
 
-      if (feesManagedByGauntlet) {
-        return `Dynamic swap fees: Currently <b>${feeLabel}</b>`;
+      if (feesFixed.value) {
+        return t('fixedSwapFeeLabel', [feeLabel]);
       }
-      return `Fixed swap fees: <b>${feeLabel}</b>`;
+
+      return t('dynamicSwapFeeLabel', [feeLabel]);
     });
 
     const missingPrices = computed(() => {
@@ -261,6 +270,7 @@ export default defineComponent({
       isAuthenticated,
       missingPrices,
       feesManagedByGauntlet,
+      swapFeeToolTip,
       // methods
       fNum,
       onNewTx

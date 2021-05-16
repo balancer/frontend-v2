@@ -51,6 +51,7 @@ export interface OnchainPoolData {
   totalSupply: string;
   decimals: number;
   swapFee: string;
+  owner: string;
   amp?: string;
 }
 
