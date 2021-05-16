@@ -45,6 +45,7 @@
     "dark": "Dark",
     "date": "Date",
     "day": "day",
+    "delegateFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every trade utilizing the liquidity in this pool. Control has been delegated to the community, so fees could change in the future if this pool becomes actively managed.",
     "details": "Details",
     "dynamicSwapFeeLabel": "Dynamic swap fees: Currently <b>{0}</b>",
     "editoTitle": "Put your money to work",

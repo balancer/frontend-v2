@@ -45,6 +45,7 @@
     "dark": "Scuro",
     "date": "Data",
     "day": "giorno",
+    "delegateFeesTooltip": "I fornitori di liquidità in questo pool guadagnano commissioni swap fisse su ogni operazione che utilizza la liquidità in questo pool. Il controllo è stato delegato alla comunità, quindi le tariffe potrebbero cambiare in futuro se questo pool diventasse gestito attivamente.",
     "details": "Dettagli",
     "dynamicSwapFeeLabel": "Commissioni di scambio dinamico: attualmente <b>{0}</b>",
     "earnBAL": "Guadagna BAL scambiando gettoni idonei",

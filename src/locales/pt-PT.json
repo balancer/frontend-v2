@@ -45,6 +45,7 @@
     "dark": "Escuro",
     "date": "Data",
     "day": "dia",
+    "delegateFeesTooltip": "Os fornecedores de liquidez neste pool ganham comissões fixas de swap em todas as negociações que utilizam a liquidez deste pool. O controle foi delegado à comunidade, portanto, as taxas podem mudar no futuro se este pool for gerenciado ativamente.",
     "details": "Detalhes",
     "dynamicSwapFeeLabel": "Taxas de troca dinâmica: Atualmente <b>{0}</b>",
     "earnBAL": "Ganhe BAL ao trocar tokens elegíveis",

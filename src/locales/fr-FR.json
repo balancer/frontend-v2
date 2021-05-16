@@ -45,6 +45,7 @@
     "dark": "Nuit",
     "date": "Date",
     "day": "journée",
+    "delegateFeesTooltip": "Les fournisseurs de liquidité de ce pool perçoivent des frais de swap fixes sur chaque transaction utilisant la liquidité de ce pool. Le contrôle a été délégué à la communauté, de sorte que les frais pourraient changer à l'avenir si ce pool devient activement géré.",
     "details": "Des détails",
     "dynamicSwapFeeLabel": "Frais de swap dynamique: actuellement <b>{0}</b>",
     "earnBAL": "Gagnez des BAL en échangeant des jetons éligibles",

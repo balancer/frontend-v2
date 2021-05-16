@@ -160,12 +160,12 @@ export default defineComponent({
 
     const pool = computed(() => poolQuery.data.value);
 
-    // Current Authorizer lets Gauntlet control every pool with the Delegate Owner
-    // Future Authorizer will add (or remove) specific pools with the Delegate Owner address,
-    //   so still use the POOLS list
+    const communityManagedFees = computed(
+      () => pool.value?.onchain.owner == POOLS.DelegateOwner
+    );
     const feesManagedByGauntlet = computed(
       () =>
-        pool.value?.onchain.owner == POOLS.DelegateOwner &&
+        communityManagedFees.value &&
         POOLS.DynamicFees.Gauntlet.includes(data.id)
     );
     const feesFixed = computed(
@@ -176,6 +176,8 @@ export default defineComponent({
         ? t('feesManagedByGauntlet')
         : feesFixed.value
         ? t('fixedFeesTooltip')
+        : communityManagedFees.value
+        ? t('delegateFeesTooltip')
         : t('ownerFeesTooltip')
     );
 
@@ -220,7 +222,10 @@ export default defineComponent({
       if (!pool.value) return '';
       const feeLabel = fNum(pool.value.onchain.swapFee, 'percent');
 
-      if (feesFixed.value) {
+      if (
+        feesFixed.value ||
+        (communityManagedFees.value && !feesManagedByGauntlet.value)
+      ) {
         return t('fixedSwapFeeLabel', [feeLabel]);
       }
 

@@ -44,6 +44,7 @@
     "dark": "Karanlık",
     "date": "Tarih (değiştir | kaynağı değiştir)",
     "day": "gün",
+    "delegateFeesTooltip": "Bu havuzdaki likidite sağlayıcıları, bu havuzdaki likiditeyi kullanarak her ticarette sabit takas ücreti alırlar. Denetim topluluğa devredildi, bu nedenle bu havuz aktif olarak yönetilirse gelecekte ücretler değişebilir.",
     "details": "Detaylar",
     "dynamicSwapFeeLabel": "Dinamik takas ücretleri: Şu anda <b>{0}</b>",
     "earnBAL": "Uygun jetonları değiştirirken BAL kazanın",

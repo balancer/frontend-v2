@@ -45,6 +45,7 @@
     "dark": "Oscuro",
     "date": "Fecha",
     "day": "día",
+    "delegateFeesTooltip": "Los proveedores de liquidez de este grupo obtienen comisiones de intercambio fijas en cada operación que utiliza la liquidez de este pool. El control se ha delegado a la comunidad, por lo que las tarifas podrían cambiar en el futuro si este pool se administra activamente.",
     "details": "Detalles",
     "dynamicSwapFeeLabel": "Tarifas de intercambio dinámico: actualmente <b>{0}</b>",
     "earnBAL": "Gana BAL al intercambiar tokens elegibles",
