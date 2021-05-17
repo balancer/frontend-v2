@@ -10,7 +10,7 @@ import connectors from '@/constants/connectors.json';
 import defaultLogo from '@/assets/images/connectors/default.svg';
 import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
-import gnosisLogo from '@/assets/images/connector/gnosis.svg';
+import gnosisLogo from '@/assets/images/connectors/gnosis.svg';
 import imtokenLogo from '@/assets/images/connectors/imtoken.svg';
 import metamaskLogo from '@/assets/images/connectors/metamask.svg';
 import portisLogo from '@/assets/images/connectors/portis.svg';
