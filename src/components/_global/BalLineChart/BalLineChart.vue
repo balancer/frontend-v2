@@ -202,7 +202,7 @@ export default defineComponent({
         data: d.values,
         type: 'line',
         smooth: false,
-        symbol: 'none',
+        showSymbol: false,
         name: d.name,
         silent: true,
         animationEasing: function(k) {
