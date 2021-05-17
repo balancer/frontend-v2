@@ -204,6 +204,7 @@ export default defineComponent({
         smooth: false,
         symbol: 'none',
         name: d.name,
+        silent: true,
         animationEasing: function(k) {
           return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
         },
@@ -216,7 +217,6 @@ export default defineComponent({
         markLine: {
           symbol: 'roundRect',
           symbolSize: 0,
-          // silent: true,
           lineStyle: {
             color: 'rgba(0, 0, 0, 0)'
           },
