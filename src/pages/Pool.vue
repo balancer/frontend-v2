@@ -171,17 +171,17 @@ export default defineComponent({
     const feesFixed = computed(
       () => pool.value?.onchain.owner == POOLS.ZeroAddress
     );
-    const swapFeeToolTip = computed(() =>
+    const swapFeeToolTip = computed(() => {
       if (feesManagedByGauntlet.value) {
-        t('feesManagedByGauntlet')
-      } else if (communityManagedFees.value)
-        t('delegateFeesTooltip')
-      } else if (feesFixed.value)
-        t('fixedFeesTooltip')
+        return t('feesManagedByGauntlet');
+      } else if (communityManagedFees.value) {
+        return t('delegateFeesTooltip');
+      } else if (feesFixed.value) {
+        return t('fixedFeesTooltip');
       } else {
-        t('ownerFeesTooltip')
+        return t('ownerFeesTooltip');
       }
-    );
+    });
 
     const loadingPool = computed(
       () =>
