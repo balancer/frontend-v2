@@ -161,16 +161,14 @@ export default defineComponent({
     const pool = computed(() => poolQuery.data.value);
 
     const communityManagedFees = computed(
-      () => pool.value?.onchain.owner == POOLS.DelegateOwner
+      () => pool.value?.owner == POOLS.DelegateOwner
     );
     const feesManagedByGauntlet = computed(
       () =>
         communityManagedFees.value &&
         POOLS.DynamicFees.Gauntlet.includes(data.id)
     );
-    const feesFixed = computed(
-      () => pool.value?.onchain.owner == POOLS.ZeroAddress
-    );
+    const feesFixed = computed(() => pool.value?.owner == POOLS.ZeroAddress);
     const swapFeeToolTip = computed(() => {
       if (feesManagedByGauntlet.value) {
         return t('feesManagedByGauntlet');

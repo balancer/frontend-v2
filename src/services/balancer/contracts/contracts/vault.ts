@@ -30,7 +30,6 @@ export default class Vault {
     result = await this.multiCaller.execute(result);
     this.service.multiCaller.call('totalSupply', poolAddress, 'totalSupply');
     this.service.multiCaller.call('decimals', poolAddress, 'decimals');
-    this.service.multiCaller.call('owner', poolAddress, 'getOwner');
     this.service.multiCaller.call(
       'swapFee',
       poolAddress,
@@ -83,7 +82,6 @@ export default class Vault {
       totalSupply: formatUnits(data.totalSupply, data.decimals),
       decimals: data.decimals,
       swapFee: formatUnits(data.swapFee, 18),
-      owner: data.owner,
       amp: data?.amp
     };
   }
