@@ -1,4 +1,4 @@
-import { lsGet, lsSet } from '@/utils';
+import { lsGet, lsSet } from '@/lib/utils';
 import initialTokens from '@/constants/initialTokens.json';
 
 const NETWORK = process.env.VUE_APP_NETWORK || '1';

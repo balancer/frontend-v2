@@ -61,7 +61,7 @@ import {
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
-import { LiquiditySelection } from '@/utils/balancer/helpers/sor/sorManager';
+import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import useFathom from '@/composables/useFathom';
 

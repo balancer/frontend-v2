@@ -1,14 +1,14 @@
 import Service from '../../service';
 import queryBuilder from './query';
-import { getPoolLiquidity } from '@/utils/balancer/price';
-import { bnum } from '@/utils';
+import { getPoolLiquidity } from '@/lib/utils/balancer/price';
+import { bnum } from '@/lib/utils';
 import {
   Pool,
   QueryBuilder,
   TimeTravelPeriod,
   DecoratedPool
 } from '../../types';
-import { Prices } from '@/api/coingecko';
+import { Prices } from '@/services/coingecko';
 import { getAddress } from '@ethersproject/address';
 
 export default class Pools {

@@ -8,8 +8,8 @@ import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { TOKEN_LISTS } from '@/constants/tokenlists';
 
-import { getTokensListURL, loadTokenlist } from '@/utils/tokenlists';
-import { lsGet, lsSet } from '@/utils';
+import { getTokensListURL, loadTokenlist } from '@/lib/utils/tokenlists';
+import { lsGet, lsSet } from '@/lib/utils';
 
 import useAccountBalances from './useAccountBalances';
 
@@ -75,13 +75,16 @@ export default function useTokenLists(request?: TokenListRequest) {
   const queryKey = QUERY_KEYS.TokenLists;
   const queryFn = loadAllTokenLists;
 
-  const { data: lists, isLoading } = useQuery<TokenList[]>(queryKey, queryFn);
+  const { data: lists, isLoading } = useQuery<TokenList[]>(queryKey, queryFn, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false
+  });
 
   const listDictionary = computed(() => keyBy(lists.value, 'name'));
   const injectedTokens = computed(() => store.state.registry.injected);
 
   const tokens = computed(() => {
-    const _tokens = uniqBy(
+    const _tokens = uniqBy<TokenListItem>(
       orderBy(
         [
           // get all the tokens from all the active lists
@@ -129,20 +132,22 @@ export default function useTokenLists(request?: TokenListRequest) {
     );
 
     if (request?.queryAddress) {
+      const queryAddressLC = request?.queryAddress?.toLowerCase();
+
       return _tokens.filter(
-        token =>
-          token.address?.toLowerCase() === request?.queryAddress?.toLowerCase()
+        token => token.address?.toLowerCase() === queryAddressLC
       );
     }
 
     // search functionality, this can be better
     if (request?.query) {
-      return _tokens.filter(token => {
-        return (
-          token.name.toLowerCase().includes(request.query?.toLowerCase()) ||
-          token.symbol.toLowerCase().includes(request.query?.toLowerCase())
-        );
-      });
+      const queryLC = request?.query?.toLowerCase();
+
+      return _tokens.filter(
+        token =>
+          token.name.toLowerCase().includes(queryLC) ||
+          token.symbol.toLowerCase().includes(queryLC)
+      );
     }
 
     return _tokens;

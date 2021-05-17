@@ -1,5 +1,5 @@
 <template>
-  <BalModal :show="open" :title="title" @close="$emit('close')">
+  <BalModal show :title="title" @close="$emit('close')">
     <div
       v-if="!account || step === 'connect'"
       class="text-gray-700 font-medium"
@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, reactive, watch, computed } from 'vue';
+import { defineComponent, toRefs, reactive, computed } from 'vue';
 import { getInjected } from '@snapshot-labs/lock/src/utils';
 import connectorsList from '@/constants/connectors.json';
 import { useStore } from 'vuex';
@@ -56,7 +56,7 @@ export default defineComponent({
 
   emits: ['close', 'login'],
 
-  setup(props) {
+  setup() {
     // COMPOSABLES
     const store = useStore();
     const { t } = useI18n();
@@ -91,15 +91,6 @@ export default defineComponent({
         Object.keys(connectors.value).length
       );
     });
-
-    // WATCHERS
-    watch(
-      () => props.open,
-      () => {
-        data.step = null;
-        data.connectorsLimit = 3;
-      }
-    );
 
     return {
       // data

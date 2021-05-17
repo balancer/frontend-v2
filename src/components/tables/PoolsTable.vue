@@ -3,17 +3,21 @@
     <BalTable
       :columns="columns"
       :data="data"
-      :isLoading="isLoading"
-      :isLoadingMore="isLoadingMore"
-      skeletonClass="h-64"
+      :is-loading="isLoading || isLoadingBalances"
+      :is-loading-more="isLoadingMore"
+      skeleton-class="h-64"
       sticky="both"
-      :onRowClick="handleRowClick"
-      :isPaginated="isPaginated"
-      @loadMore="$emit('loadMore')"
+      :on-row-click="handleRowClick"
+      :is-paginated="isPaginated"
+      @load-more="$emit('loadMore')"
+      :initial-state="{
+        sortColumn: 'poolValue',
+        sortDirection: 'desc'
+      }"
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
-          <img :src="require('@/assets/icons/token_header.svg')" />
+          <img :src="require('@/assets/images/icons/tokens.svg')" />
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
@@ -25,12 +29,19 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div v-if="!isLoading" class="px-6 py-4 -mt-1 flex flex-wrap">
+        <div
+          v-if="!isLoading && !isLoadingBalances"
+          class="px-6 py-4 -mt-1 flex flex-wrap"
+        >
           <div
             v-for="token in sortedTokensFor(pool)"
             :key="token"
-            class="mr-2 mb-2 flex items-center p-1 bg-gray-50 rounded-lg"
+            class="flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-50 relative"
           >
+            <div
+              v-if="hasBalance(token.address)"
+              class="w-3 h-3 rounded-full border-2 border-white hover:border-gray-50 bg-green-200 absolute top-0 right-0 -mt-1 -mr-1"
+            />
             <span>
               {{ allTokens[getAddress(token.address)]?.symbol }}
             </span>
@@ -58,6 +69,7 @@ import useTokens from '@/composables/useTokens';
 import useFathom from '@/composables/useFathom';
 
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
+import useAccountBalances from '@/composables/useAccountBalances';
 
 export default defineComponent({
   emits: ['loadMore'],
@@ -93,6 +105,12 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
+    const {
+      balances,
+      hasBalance,
+      isLoading: isLoadingBalances,
+      isIdle: isBalancesQueryIdle
+    } = useAccountBalances();
 
     // COMPOSABLES
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -102,7 +120,7 @@ export default defineComponent({
         accessor: 'uri',
         Header: 'iconColumnHeader',
         Cell: 'iconColumnCell',
-        className: 'w-32 md:w-36 lg:w-40',
+        width: 125,
         noGrow: true
       },
       {
@@ -110,32 +128,32 @@ export default defineComponent({
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',
-        className: 'w-72'
+        width: 350
       },
       {
         name: t('myBalance'),
         accessor: pool => fNum(pool.shares, 'usd', { forcePreset: true }),
-        className: 'w-32',
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,
-        sortKey: pool => Number(pool.shares)
+        sortKey: pool => Number(pool.shares),
+        width: 150
       },
       {
         name: t('poolValue'),
         accessor: pool => fNum(pool.totalLiquidity, 'usd'),
-        className: 'w-32',
         align: 'right',
         id: 'poolValue',
-        sortKey: pool => Number(pool.totalLiquidity)
+        sortKey: pool => Number(pool.totalLiquidity),
+        width: 150
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
         accessor: pool => fNum(pool.dynamic.volume, 'usd'),
-        className: 'w-32',
         align: 'right',
         id: 'poolVolume',
-        sortKey: pool => Number(pool.dynamic.volume)
+        sortKey: pool => Number(pool.dynamic.volume),
+        width: 150
       },
       {
         name: t('apy'),
@@ -145,10 +163,10 @@ export default defineComponent({
               ? '-'
               : fNum(pool.dynamic.apy, 'percent')
           }`,
-        className: 'w-32',
         align: 'right',
         id: 'poolApy',
-        sortKey: pool => Number(pool.dynamic.apy)
+        sortKey: pool => Number(pool.dynamic.apy),
+        width: 150
       }
     ]);
 
@@ -172,13 +190,17 @@ export default defineComponent({
       // data
       columns,
       allTokens,
+      balances,
+      isLoadingBalances,
+      isBalancesQueryIdle,
 
       // methods
       handleRowClick,
       getAddress,
       fNum,
       sortedTokenAddressesFor,
-      sortedTokensFor
+      sortedTokensFor,
+      hasBalance
     };
   }
 });
