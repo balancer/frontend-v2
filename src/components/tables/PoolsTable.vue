@@ -10,6 +10,10 @@
       :onRowClick="handleRowClick"
       :isPaginated="isPaginated"
       @loadMore="$emit('loadMore')"
+      :link="{
+        to: 'pool',
+        getParams: pool => ({ id: pool.id })
+      }"
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">

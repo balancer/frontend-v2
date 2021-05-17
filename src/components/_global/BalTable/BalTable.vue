@@ -106,6 +106,8 @@
           >
             <td
               v-for="(column, columnIndex) in filteredColumns"
+              @click="navigate"
+              :href="href"
               :key="column.id"
               :class="[
                 column.align === 'right' ? 'text-left' : 'text-right',
@@ -113,24 +115,52 @@
                 isColumnStuck ? 'isSticky' : ''
               ]"
             >
-              <slot
-                v-if="column.Cell"
-                v-bind="dataItem"
-                :name="column.Cell"
-              ></slot>
-              <div
-                v-else
-                :class="[
-                  'px-6 py-4',
-                  column.align === 'right' ? 'text-right' : 'text-left'
-                ]"
+              <router-link
+                v-if="link"
+                :to="{
+                  to: link.to,
+                  params: link.getParams(dataItem)
+                }"
               >
-                {{
-                  typeof column.accessor === 'string'
-                    ? dataItem[column.accessor]
-                    : column.accessor(dataItem)
-                }}
-              </div>
+                <slot
+                  v-if="column.Cell"
+                  v-bind="dataItem"
+                  :name="column.Cell"
+                ></slot>
+                <div
+                  v-else
+                  :class="[
+                    'px-6 py-4',
+                    column.align === 'right' ? 'text-right' : 'text-left'
+                  ]"
+                >
+                  {{
+                    typeof column.accessor === 'string'
+                      ? dataItem[column.accessor]
+                      : column.accessor(dataItem)
+                  }}
+                </div>
+              </router-link>
+              <template v-else>
+                <slot
+                  v-if="column.Cell"
+                  v-bind="dataItem"
+                  :name="column.Cell"
+                ></slot>
+                <div
+                  v-else
+                  :class="[
+                    'px-6 py-4',
+                    column.align === 'right' ? 'text-right' : 'text-left'
+                  ]"
+                >
+                  {{
+                    typeof column.accessor === 'string'
+                      ? dataItem[column.accessor]
+                      : column.accessor(dataItem)
+                  }}
+                </div>
+              </template>
             </td>
           </tr>
         </tbody>
@@ -226,6 +256,10 @@ export default defineComponent({
     },
     noResultsLabel: {
       type: String
+    },
+    link: {
+      type: Object,
+      default: null
     }
   },
   setup(props) {
