@@ -150,17 +150,13 @@
           }"
           class="text-xs text-gray-500 underline"
         >
-          Wrap your ETH to WETH
+          {{ $t('wrapInstruction') }}
         </router-link>
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52">
-            This pool requires Wrapped Ether (WETH). To maximize your
-            investment, you could wrap some additional ETH. Make sure to keep
-            enough ETH to cover gas costs.
-          </div>
+          <div class="w-52" v-html="ethBufferInstruction" />
         </BalTooltip>
       </div>
     </div>
