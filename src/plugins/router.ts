@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import Home from '@/views/Home.vue';
-import Pool from '@/views/Pool.vue';
-import Trade from '@/views/Trade.vue';
+import Home from '@/pages/Home.vue';
+import Pool from '@/pages/Pool.vue';
+import Trade from '@/pages/Trade.vue';
 
 const routes: any[] = [
   { path: '/', name: 'home', component: Home },

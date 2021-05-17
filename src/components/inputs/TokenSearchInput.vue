@@ -10,7 +10,7 @@
           class="mb-2 md:mb-0 mr-4"
         >
           <BalIcon name="search" size="sm" class="mr-2" />
-          Filter by token
+          {{ $t('filterByToken') }}
         </BalBtn>
         <BalChip
           v-for="token in modelValue"
@@ -34,7 +34,7 @@
         "
         class="text-gray-400 overflow-x-auto"
       >
-        <span class="mr-6">In your wallet:</span>
+        <span class="mr-6">{{ $t('inYourWallet') }}</span>
         <span
           v-for="token in sortedBalances"
           :key="`wallet-${token.symbol}`"
@@ -45,7 +45,7 @@
         </span>
       </div>
       <div v-else class="text-gray-400 flex flex-wrap">
-        <span class="mr-6">Popular Bases:</span>
+        <span class="mr-6">{{ $t('popularBases') }}</span>
         <span
           v-for="token in whiteListedTokens"
           :key="`popular-${token.symbol}`"
@@ -58,7 +58,7 @@
     </div>
     <teleport to="#modal">
       <SelectTokenModal
-        :open="selectTokenModal"
+        v-if="selectTokenModal"
         :excluded-tokens="modelValue"
         @close="selectTokenModal = false"
         @select="addToken"
@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
-import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
+import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
 import useWeb3 from '@/composables/useWeb3';
@@ -118,8 +118,8 @@ export default defineComponent({
     const hasNoBalances = computed(() => !sortedBalances.value.length);
     const whiteListedTokens = computed(() =>
       Object.values(tokenDictionary.value)
-        .filter((token: any) => TOKENS.Popular.Symbols.includes(token.symbol))
-        .filter((balance: any) => !props.modelValue.includes(balance.address))
+        .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
+        .filter(balance => !props.modelValue.includes(balance.address))
     );
 
     // DATA

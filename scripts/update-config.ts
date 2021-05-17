@@ -15,7 +15,7 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const jsonConfigFilePath = path.resolve(__dirname, '../src/utils/balancer/configs/' + network + '.json')
+const jsonConfigFilePath = path.resolve(__dirname, '../src/lib/utils/balancer/configs/' + network + '.json')
 let doc = JSON.parse(fs.readFileSync(jsonConfigFilePath, 'utf8'));
 
 Object.entries(doc).forEach(([contractName, address]) => {

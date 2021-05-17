@@ -20,13 +20,13 @@ import { PropType, defineComponent, computed, onBeforeMount, ref } from 'vue';
 import { useStore } from 'vuex';
 import { ETHER } from '@/constants/tokenlists';
 import BigNumber from 'bignumber.js';
-import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
-import { isBudgetLeft } from '@/utils/balancer/bal4gas';
+import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
+import { isBudgetLeft } from '@/lib/utils/balancer/bal4gas';
 import useWeb3 from '@/composables/useWeb3';
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
 import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { getOriginalAddress } from '@/api/coingecko';
+import { getOriginalAddress } from '@/services/coingecko';
 
 export default defineComponent({
   props: {

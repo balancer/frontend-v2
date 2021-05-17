@@ -122,11 +122,12 @@ import { PropType, defineComponent, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
+import { ETHER } from '@/constants/tokenlists';
 import { Pool, Swap } from '@balancer-labs/sor/dist/types';
 import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
 
 import useNumbers from '@/composables/useNumbers';
-import { SorReturn } from '@/utils/balancer/helpers/sor/sorManager';
+import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { useI18n } from 'vue-i18n';
 
 interface Route {
@@ -230,8 +231,10 @@ export default defineComponent({
         const pools = props.pools as SubgraphPoolBase[];
         const swaps = sorReturn.v2result.swaps;
         const addresses = sorReturn.v2result.tokenAddresses;
+        const addressIn = props.addressIn as string;
+        const addressOut = props.addressOut as string;
 
-        return getV2Routes(pools, swaps, addresses);
+        return getV2Routes(addressIn, addressOut, pools, swaps, addresses);
       }
     });
 
@@ -296,10 +299,19 @@ export default defineComponent({
     }
 
     function getV2Routes(
+      addressIn: string,
+      addressOut: string,
       pools: SubgraphPoolBase[],
       swaps: SwapV2[],
       addresses: string[]
     ) {
+      const { addresses: constants } = getConfig();
+
+      addressIn =
+        addressIn === ETHER.address ? constants.weth : getAddress(addressIn);
+      addressOut =
+        addressOut === ETHER.address ? constants.weth : getAddress(addressOut);
+
       if (
         !pools.length ||
         !swaps.length ||
@@ -309,22 +321,34 @@ export default defineComponent({
         return [];
       }
 
-      const hops = swaps.map((swap, i) => {
+      // To get total amount we can use all swaps because multihops have a value of 0
+      const totalSwapAmount = swaps.reduce((total, rawHops) => {
+        return total.plus(rawHops.amount || '0');
+      }, new BigNumber(0));
+
+      // Contains direct and multihops
+      const routes: Route[] = [];
+      // Contains every token > token hop
+      const allHops: any[] = [];
+      for (let i = 0; i < swaps.length; i++) {
+        const swap = swaps[i];
         const rawPool = pools.find(pool => pool.id === swap.poolId);
 
         if (!rawPool) {
           return {};
         }
 
-        const { addresses: constants } = getConfig();
         const tokenIn =
-          addresses[i] === AddressZero
+          addresses[swap.assetInIndex] === AddressZero
             ? constants.weth
-            : getAddress(addresses[i]);
+            : getAddress(addresses[swap.assetInIndex]);
         const tokenOut =
-          addresses[i + 1] === AddressZero
+          addresses[swap.assetOutIndex] === AddressZero
             ? constants.weth
-            : getAddress(addresses[i + 1]);
+            : getAddress(addresses[swap.assetOutIndex]);
+
+        const isDirectSwap =
+          tokenIn === addressIn && tokenOut === addressOut ? true : false;
 
         const pool = {
           id: rawPool.id,
@@ -354,17 +378,45 @@ export default defineComponent({
         const hop = {
           pool,
           tokenIn,
-          tokenOut
+          tokenOut,
+          amount: new BigNumber(swap.amount || '0')
         };
 
-        return hop;
-      });
-      const route = {
-        share: 1,
-        hops
-      } as Route;
+        allHops.push(hop);
 
-      return [route];
+        if (isDirectSwap) {
+          // Direct swaps are pushed to routes array immediately
+          const share = hop.amount.div(totalSwapAmount).toNumber();
+          const route = {
+            share,
+            hops: [hop]
+          } as Route;
+          routes.push(route);
+        } else {
+          // Only multihops that have a previous partner in sequence are pushed to routes
+          if (tokenOut === addressOut && swap.amount === '0') {
+            // TokenOut with amount of 0 for multihop means it's a swapExactIn and previous swap is partner of hop
+            const swapAmount = new BigNumber(allHops[i - 1].amount);
+            const share = swapAmount.div(totalSwapAmount).toNumber();
+            const route = {
+              share,
+              hops: [allHops[i - 1], hop]
+            } as Route;
+            routes.push(route);
+          } else if (tokenIn === addressIn && swap.amount === '0') {
+            // TokenIn with amount of 0 for multihop means it's a swapExactOut and previous swap is partner of hop
+            const swapAmount = new BigNumber(allHops[i - 1].amount);
+            const share = swapAmount.div(totalSwapAmount).toNumber();
+            const route = {
+              share,
+              hops: [hop, allHops[i - 1]]
+            } as Route;
+            routes.push(route);
+          }
+        }
+      }
+
+      return routes;
     }
 
     function formatShare(share: number): string {

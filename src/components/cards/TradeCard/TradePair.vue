@@ -129,7 +129,7 @@
   </div>
   <teleport to="#modal">
     <SelectTokenModal
-      :open="modalSelectTokenIsOpen"
+      v-if="modalSelectTokenIsOpen"
       :excludedTokens="[tokenInAddressInput, tokenOutAddressInput]"
       @close="modalSelectTokenIsOpen = false"
       @select="handleSelectToken"
@@ -146,7 +146,7 @@ import useNumbers from '@/composables/useNumbers';
 import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
-import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
+import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 
 const ETH_BUFFER = 0.1;
 

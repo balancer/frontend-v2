@@ -7,7 +7,10 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import useWeb3 from '../useWeb3';
-import { getTokensHistoricalPrice, HistoricalPrices } from '@/api/coingecko';
+import {
+  getTokensHistoricalPrice,
+  HistoricalPrices
+} from '@/services/coingecko';
 import usePoolQuery from './usePoolQuery';
 
 interface QueryResponse {

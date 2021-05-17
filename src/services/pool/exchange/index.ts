@@ -1,9 +1,9 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
-import configs from '@/config';
-import { callStatic, sendTransaction } from '@/utils/balancer/web3';
-import { default as vaultAbi } from '@/abi/Vault.json';
-import { default as helpersAbi } from '@/abi/BalancerHelpers.json';
+import configs from '@/lib/config';
+import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
+import { default as vaultAbi } from '@/lib/abi/Vault.json';
+import { default as helpersAbi } from '@/lib/abi/BalancerHelpers.json';
 import { Token } from '@/types';
 import JoinParams from './serializers/JoinParams';
 import ExitParams from './serializers/ExitParams';

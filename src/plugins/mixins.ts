@@ -1,4 +1,4 @@
-import { shorten } from '@/utils';
+import { shorten } from '@/lib/utils';
 
 export default {
   methods: {

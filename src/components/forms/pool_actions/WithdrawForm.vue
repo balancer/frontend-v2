@@ -189,7 +189,7 @@ import {
   isPositive,
   isLessThanOrEqualTo,
   isRequired
-} from '@/utils/validations';
+} from '@/lib/utils/validations';
 import { TransactionData } from 'bnc-notify';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
@@ -202,7 +202,7 @@ import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
-import { bnum } from '@/utils';
+import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import useTokens from '@/composables/useTokens';
