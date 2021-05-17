@@ -4,7 +4,7 @@ import useTokens from './useTokens';
 import useWeb3 from './useWeb3';
 import { computed, reactive } from 'vue';
 import { getBalances } from '@/lib/utils/balancer/tokens';
-import { formatEther } from '@ethersproject/units';
+import { formatEther, formatUnits } from '@ethersproject/units';
 import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { ETHER } from '@/constants/tokenlists';
@@ -40,7 +40,10 @@ export default function useAccountBalances() {
     if (data.value) {
       const balances = {};
       Object.keys(data.value[0]).forEach((tokenAddress: string) => {
-        const balance = formatEther(data.value[0][tokenAddress]);
+        const balance = formatUnits(
+          data.value[0][tokenAddress],
+          tokens.value[getAddress(tokenAddress)]?.decimals || 18
+        );
         // not concerned with tokens which have a 0 balance
         if (balance === '0.0') return;
         balances[tokenAddress] = {

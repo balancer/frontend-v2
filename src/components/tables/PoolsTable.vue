@@ -3,13 +3,17 @@
     <BalTable
       :columns="columns"
       :data="data"
-      :isLoading="isLoading || isLoadingBalances"
-      :isLoadingMore="isLoadingMore"
-      skeletonClass="h-64"
+      :is-loading="isLoading || isLoadingBalances"
+      :is-loading-more="isLoadingMore"
+      skeleton-class="h-64"
       sticky="both"
-      :onRowClick="handleRowClick"
-      :isPaginated="isPaginated"
-      @loadMore="$emit('loadMore')"
+      :on-row-click="handleRowClick"
+      :is-paginated="isPaginated"
+      @load-more="$emit('loadMore')"
+      :initial-state="{
+        sortColumn: 'poolValue',
+        sortDirection: 'desc'
+      }"
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
@@ -36,7 +40,7 @@
           >
             <div
               v-if="hasBalance(token.address)"
-              class="w-3 h-3 rounded-full border-2 border-white hover:border-gray-50 bg-green-200 absolute top-0 left-0 -mt-1 -ml-1"
+              class="w-3 h-3 rounded-full border-2 border-white hover:border-gray-50 bg-green-200 absolute top-0 right-0 -mt-1 -mr-1"
             />
             <span>
               {{ allTokens[getAddress(token.address)]?.symbol }}
