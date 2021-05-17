@@ -262,9 +262,14 @@ export class SorManager {
     liquiditySelection: LiquiditySelection
   ): SorReturn {
     // For swapExactIn the highest return is best
-    const isV1best = returnAmountV1ConsideringFees.gt(
-      swapInfoV2.returnAmountConsideringFees
-    );
+    let isV1best: boolean;
+    if (returnAmountV1.isZero()) isV1best = false;
+    else if (swapInfoV2.swapAmount.isZero()) isV1best = true;
+    else if (
+      returnAmountV1ConsideringFees.lt(swapInfoV2.returnAmountConsideringFees)
+    )
+      isV1best = false;
+    else isV1best = true;
 
     // Need to return marketSp as normalized
     const marketSpV1Normalised: BigNumber = marketSpV1Scaled.div(
