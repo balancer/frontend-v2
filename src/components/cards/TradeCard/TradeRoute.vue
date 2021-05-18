@@ -142,6 +142,7 @@ interface Hop {
   };
   tokenIn: string;
   tokenOut: string;
+  amount: BigNumber;
 }
 
 interface Asset {
@@ -329,7 +330,7 @@ export default defineComponent({
       // Contains direct and multihops
       const routes: Route[] = [];
       // Contains every token > token hop
-      const allHops: any[] = [];
+      const allHops: Hop[] = [];
       for (let i = 0; i < swaps.length; i++) {
         const swap = swaps[i];
         const rawPool = pools.find(pool => pool.id === swap.poolId);

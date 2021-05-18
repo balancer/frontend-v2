@@ -4,7 +4,7 @@ import configs from '@/lib/config';
 import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
 import { default as vaultAbi } from '@/lib/abi/Vault.json';
 import { default as helpersAbi } from '@/lib/abi/BalancerHelpers.json';
-import { Token } from '@/types';
+import { TokenMap } from '@/types';
 import JoinParams from './serializers/JoinParams';
 import ExitParams from './serializers/ExitParams';
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -14,9 +14,9 @@ export default class Exchange {
   network: string;
   vaultAddress: string;
   helpersAddress: string;
-  tokens: Token[];
+  tokens: TokenMap;
 
-  constructor(pool: FullPool, network: string, tokens: Token[]) {
+  constructor(pool: FullPool, network: string, tokens: TokenMap) {
     this.pool = pool;
     this.network = network;
     this.tokens = tokens;
