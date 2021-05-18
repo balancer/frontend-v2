@@ -106,8 +106,6 @@
           >
             <td
               v-for="(column, columnIndex) in filteredColumns"
-              @click="navigate"
-              :href="href"
               :key="column.id"
               :class="[
                 column.align === 'right' ? 'text-left' : 'text-right',
@@ -121,6 +119,7 @@
                   to: link.to,
                   params: link.getParams(dataItem)
                 }"
+                :tag="link ? 'div' : 'a'"
               >
                 <slot
                   v-if="column.Cell"
