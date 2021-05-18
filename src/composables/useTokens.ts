@@ -11,7 +11,5 @@ export default function useTokens() {
     store.getters['registry/getTokens']({ includeEther: true })
   );
 
-  console.log(allTokens.value);
-
   return { allTokens, allTokensIncludeEth };
 }
