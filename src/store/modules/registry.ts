@@ -197,9 +197,9 @@ const actions = {
   },
 
   async injectTokens({ commit, dispatch, state }, tokens: string[]) {
-    tokens = tokens.filter(
-      token => token !== ETHER.address && isAddress(token)
-    );
+    tokens = tokens
+      .filter(token => token !== ETHER.address && isAddress(token))
+      .map(token => getAddress(token));
     if (tokens.length === 0) return;
     const tokensMeta = await getTokensMeta(tokens, state.tokenLists);
     const injected = clone(state.injected);

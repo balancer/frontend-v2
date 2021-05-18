@@ -1,3 +1,4 @@
+import { getAddress } from '@ethersproject/address';
 import { Web3Provider, TransactionResponse } from '@ethersproject/providers';
 import { MaxUint256 } from '@ethersproject/constants';
 import { multicall, Multicaller } from '@/lib/utils/balancer/contract';
@@ -92,7 +93,9 @@ export async function getTokensMeta(
 
   const meta = {};
   tokenAddresses.forEach(async address => {
-    const tokenMeta = allTokens.find(token => token.address == address);
+    const tokenMeta = allTokens.find(
+      token => token.address == getAddress(address)
+    );
     meta[address] = tokenMeta;
   });
   const unknownAddresses = Object.keys(meta).filter(address => !meta[address]);
