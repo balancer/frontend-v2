@@ -2,7 +2,12 @@ import { formatUnits } from '@ethersproject/units';
 import { getAddress, isAddress } from '@ethersproject/address';
 import orderBy from 'lodash/orderBy';
 import { loadTokenlist } from '@/lib/utils/tokenlists';
-import { ETHER, TOKEN_LIST_DEFAULT, ELIGIBLE_TOKEN_LIST, TOKEN_LISTS } from '@/constants/tokenlists';
+import {
+  ETHER,
+  TOKEN_LIST_DEFAULT,
+  ELIGIBLE_TOKEN_LIST,
+  TOKEN_LISTS
+} from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/lib/utils';
 import injected from '@/constants/injected.json';
 import { TokenList, TokenInfo } from '@/types/TokenList';
@@ -166,15 +171,13 @@ const getters = {
 
 const actions = {
   async get({ dispatch, commit }) {
-    const loadAllLists = TOKEN_LISTS.map(url =>
-      dispatch('loadTokenlist', url)
-    );
+    const loadAllLists = TOKEN_LISTS.map(url => dispatch('loadTokenlist', url));
     const results = await Promise.all(loadAllLists.map(p => p.catch(e => e)));
     const validResults = results.filter(result => !(result instanceof Error));
     if (validResults.length === 0) {
       throw new Error('Failed to load any TokenLists');
     }
-    const eligibleList = await loadTokenlist(ELIGIBLE_TOKEN_LIST)
+    const eligibleList = await loadTokenlist(ELIGIBLE_TOKEN_LIST);
     commit('setEligibleList', eligibleList);
     commit('setLoading', false);
   },
@@ -200,7 +203,7 @@ const actions = {
     const lists = {
       ...state.tokenLists,
       [ELIGIBLE_TOKEN_LIST]: state.eligibleList
-    }
+    };
     const tokensMeta = await getTokensMeta(tokens, lists);
     const injected = clone(state.injected);
     Object.values(tokensMeta).forEach((meta: TokenInfo) => {
