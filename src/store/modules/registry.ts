@@ -179,8 +179,16 @@ const actions = {
     name = name || TOKEN_LIST_DEFAULT;
     try {
       const tokenList = await loadTokenlist(name);
+      // Convert all token addresses to checksum addresses to make searching easier
+      const checksummedTokenList = {
+        tokenList,
+        tokens: tokenList.tokens.map(token => ({
+          ...token,
+          address: getAddress(token.address)
+        }))
+      };
       const tokenLists = clone(state.tokenLists);
-      tokenLists[name] = tokenList;
+      tokenLists[name] = checksummedTokenList;
       commit('setTokenLists', tokenLists);
     } catch (error) {
       console.error('Failed to load TokenList', name, error);

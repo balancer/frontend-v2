@@ -3,8 +3,6 @@ import { useStore } from 'vuex';
 import { useQuery } from 'vue-query';
 import { flatten, keyBy, orderBy, uniqBy } from 'lodash';
 
-import { getAddress } from '@ethersproject/address';
-
 import QUERY_KEYS from '@/constants/queryKeys';
 import { TOKEN_LISTS } from '@/constants/tokenlists';
 
@@ -116,7 +114,6 @@ export default function useTokenLists(request?: TokenListRequest) {
               const value24HChange = (value / 100) * price24HChange;
               return {
                 ...token,
-                address: getAddress(token.address), // Enforce that we use checksummed addresses
                 value,
                 price,
                 price24HChange,
