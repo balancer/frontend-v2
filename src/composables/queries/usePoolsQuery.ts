@@ -11,6 +11,12 @@ import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import useTokens from '../useTokens';
 
+import {
+  currentLiquidityMiningRewards,
+  computeAPYForPool
+} from '@/lib/utils/liquidityMining';
+import { TOKENS } from '@/constants/tokens';
+
 type PoolsQueryResponse = {
   pools: DecoratedPool[];
   tokens: string[];
@@ -61,8 +67,28 @@ export default function usePoolsQuery(
       await store.dispatch('registry/injectTokens', uninjectedTokens);
     }
 
+    const poolsWithLiquidityMining = pools.map(pool => {
+      let liquidityMiningAPY = 0;
+      const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
+      const hasLiquidityMiningRewards = !!liquidityMiningRewards;
+
+      if (hasLiquidityMiningRewards) {
+        liquidityMiningAPY = computeAPYForPool(
+          liquidityMiningRewards,
+          prices.value[TOKENS.AddressMap.BAL].price || 0,
+          pool.totalLiquidity
+        );
+      }
+
+      return {
+        ...pool,
+        hasLiquidityMiningRewards,
+        liquidityMiningAPY
+      };
+    });
+
     return {
-      pools,
+      pools: poolsWithLiquidityMining,
       tokens,
       skip:
         pools.length >= POOLS.Pagination.PerPage

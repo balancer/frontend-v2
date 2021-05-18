@@ -51,6 +51,51 @@
           </div>
         </div>
       </template>
+      <template v-slot:apyCell="pool">
+        <div class="px-6 py-4 -mt-1 flex justify-end">
+          {{
+            Number(pool.dynamic.apy) > 10000
+              ? '-'
+              : fNum(
+                  Number(pool.dynamic.apy) + pool.liquidityMiningAPY,
+                  'percent'
+                )
+          }}
+          <BalTooltip v-if="pool.hasLiquidityMiningRewards">
+            <template v-slot:activator>
+              <StarsIcon
+                class="ml-1 stars-icon text-yellow-300"
+                v-if="pool.hasLiquidityMiningRewards"
+              />
+            </template>
+            <div class="text-sm">
+              <div class="mb-2">
+                <div>Total APY</div>
+                <div>
+                  {{
+                    fNum(
+                      Number(pool.dynamic.apy) + pool.liquidityMiningAPY,
+                      'percent'
+                    )
+                  }}
+                </div>
+              </div>
+              <div>
+                <div>
+                  {{ fNum(pool.dynamic.apy, 'percent') }}
+                  <span class="text-gray-500 text-xs">LP fees APY</span>
+                </div>
+                <div>
+                  {{ fNum(pool.liquidityMiningAPY, 'percent') }}
+                  <span class="text-gray-500 text-xs"
+                    >Liquidity Mining APY</span
+                  >
+                </div>
+              </div>
+            </div>
+          </BalTooltip>
+        </div>
+      </template>
     </BalTable>
   </BalCard>
 </template>
@@ -157,12 +202,8 @@ export default defineComponent({
       },
       {
         name: t('apy'),
-        accessor: pool =>
-          `${
-            Number(pool.dynamic.apy) > 10000
-              ? '-'
-              : fNum(pool.dynamic.apy, 'percent')
-          }`,
+        Cell: 'apyCell',
+        accessor: pool => pool.dynamic.apy,
         align: 'right',
         id: 'poolApy',
         sortKey: pool => Number(pool.dynamic.apy),
@@ -205,3 +246,7 @@ export default defineComponent({
   }
 });
 </script>
+<style>
+.stars-icon {
+}
+</style>

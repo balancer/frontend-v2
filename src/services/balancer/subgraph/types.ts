@@ -27,6 +27,8 @@ export interface Pool {
   totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
+  hasLiquidityMining: boolean;
+  liquidityMiningAPY: number;
 }
 
 export interface DecoratedPool extends Pool {
