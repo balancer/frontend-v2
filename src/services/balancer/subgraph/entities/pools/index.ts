@@ -10,6 +10,11 @@ import {
 } from '../../types';
 import { Prices } from '@/services/coingecko';
 import { getAddress } from '@ethersproject/address';
+import {
+  currentLiquidityMiningRewards,
+  computeAPYForPool
+} from '@/lib/utils/liquidityMining';
+import { TOKENS } from '@/constants/tokens';
 
 export default class Pools {
   service: Service;
@@ -59,7 +64,27 @@ export default class Pools {
       const apy = this.calcAPY(pool, pastPool);
       const fees = this.calcFees(pool, pastPool);
 
-      return { ...pool, dynamic: { period, volume, apy, fees } };
+      let liquidityMiningAPY = '0';
+      const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
+      const hasLiquidityMiningRewards = !!liquidityMiningRewards;
+
+      if (hasLiquidityMiningRewards) {
+        liquidityMiningAPY = computeAPYForPool(
+          liquidityMiningRewards,
+          prices[TOKENS.AddressMap.BAL].price || 0,
+          pool.totalLiquidity
+        );
+      }
+
+      const totalAPY = bnum(apy)
+        .plus(liquidityMiningAPY)
+        .toString();
+
+      return {
+        ...pool,
+        hasLiquidityMiningRewards,
+        dynamic: { period, volume, fees, apy, liquidityMiningAPY, totalAPY }
+      };
     });
   }
 

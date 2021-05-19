@@ -56,10 +56,7 @@
           {{
             Number(pool.dynamic.apy) > 10000
               ? '-'
-              : fNum(
-                  Number(pool.dynamic.apy) + pool.liquidityMiningAPY,
-                  'percent'
-                )
+              : fNum(pool.dynamic.totalAPY, 'percent')
           }}
           <BalTooltip v-if="pool.hasLiquidityMiningRewards">
             <template v-slot:activator>
@@ -72,12 +69,7 @@
               <div class="mb-2">
                 <div>Total APY</div>
                 <div>
-                  {{
-                    fNum(
-                      Number(pool.dynamic.apy) + pool.liquidityMiningAPY,
-                      'percent'
-                    )
-                  }}
+                  {{ fNum(pool.dynamic.totalAPY, 'percent') }}
                 </div>
               </div>
               <div>
@@ -86,7 +78,7 @@
                   <span class="text-gray-500 text-xs">LP fees APY</span>
                 </div>
                 <div>
-                  {{ fNum(pool.liquidityMiningAPY, 'percent') }}
+                  {{ fNum(pool.dynamic.liquidityMiningAPY, 'percent') }}
                   <span class="text-gray-500 text-xs"
                     >Liquidity Mining APY</span
                   >
@@ -203,10 +195,10 @@ export default defineComponent({
       {
         name: t('apy'),
         Cell: 'apyCell',
-        accessor: pool => pool.dynamic.apy,
+        accessor: pool => pool.dynamic.totalAPY,
         align: 'right',
         id: 'poolApy',
-        sortKey: pool => Number(pool.dynamic.apy),
+        sortKey: pool => Number(pool.dynamic.totalAPY),
         width: 150
       }
     ]);

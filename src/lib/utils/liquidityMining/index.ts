@@ -32,7 +32,7 @@ function computeRewardsForTier(tier: LiquidityMiningTier) {
 
 export function computeAPYForPool(
   rewards: number,
-  BALPrice: string,
+  BALPrice: number,
   totalLiquidity: string
 ) {
   return bnum(rewards)
@@ -40,8 +40,7 @@ export function computeAPYForPool(
     .times(BALPrice)
     .times(365)
     .div(totalLiquidity)
-    .div(100)
-    .toNumber();
+    .toString();
 }
 
 export function getLiquidityMiningRewards(
