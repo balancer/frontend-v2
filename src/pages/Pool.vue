@@ -207,15 +207,9 @@ export default defineComponent({
 
     const poolTypeLabel = computed(() => {
       if (!pool.value) return '';
+      const key = POOLS.Factories[pool.value.factory];
 
-      switch (pool.value.poolType) {
-        case 'Weighted':
-          return t('weightedPool');
-        case 'Stable':
-          return t('stablePool');
-        default:
-          return '';
-      }
+      return key ? t(key) : t('unknownPoolType');
     });
 
     const poolFeeLabel = computed(() => {
