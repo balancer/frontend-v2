@@ -2,7 +2,12 @@ import { formatUnits } from '@ethersproject/units';
 import { getAddress, isAddress } from '@ethersproject/address';
 import orderBy from 'lodash/orderBy';
 import { loadTokenlist } from '@/lib/utils/tokenlists';
-import { ETHER, TOKEN_LIST_DEFAULT, TOKEN_LISTS } from '@/constants/tokenlists';
+import {
+  ETHER,
+  TOKEN_LIST_DEFAULT,
+  ELIGIBLE_TOKEN_LIST,
+  TOKEN_LISTS
+} from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/lib/utils';
 import injected from '@/constants/injected.json';
 import { TokenList, TokenInfo } from '@/types/TokenList';
@@ -14,6 +19,7 @@ defaultActiveLists[TOKEN_LIST_DEFAULT] = true;
 interface RegistryState {
   activeLists: Record<string, boolean>;
   tokenLists: Record<string, TokenList | {}>;
+  eligibleList: TokenList | {};
   injected: TokenInfo[];
   loading: boolean;
 }
@@ -21,6 +27,7 @@ interface RegistryState {
 const state: RegistryState = {
   activeLists: lsGet('tokenLists', defaultActiveLists),
   tokenLists: Object.fromEntries(TOKEN_LISTS.map(tokenList => [tokenList, {}])),
+  eligibleList: {},
   injected,
   loading: true
 };
@@ -164,26 +171,26 @@ const getters = {
 
 const actions = {
   async get({ dispatch, commit }) {
-    const loadAllLists = TOKEN_LISTS.map(name =>
-      dispatch('loadTokenlist', name)
-    );
+    const loadAllLists = TOKEN_LISTS.map(url => dispatch('loadTokenlist', url));
     const results = await Promise.all(loadAllLists.map(p => p.catch(e => e)));
     const validResults = results.filter(result => !(result instanceof Error));
     if (validResults.length === 0) {
       throw new Error('Failed to load any TokenLists');
     }
+    const eligibleList = await loadTokenlist(ELIGIBLE_TOKEN_LIST);
+    commit('setEligibleList', eligibleList);
     commit('setLoading', false);
   },
 
-  async loadTokenlist({ commit }, name) {
-    name = name || TOKEN_LIST_DEFAULT;
+  async loadTokenlist({ commit }, url) {
+    url = url || TOKEN_LIST_DEFAULT;
     try {
-      const tokenList = await loadTokenlist(name);
+      const tokenList = await loadTokenlist(url);
       const tokenLists = clone(state.tokenLists);
-      tokenLists[name] = tokenList;
+      tokenLists[url] = tokenList;
       commit('setTokenLists', tokenLists);
     } catch (error) {
-      console.error('Failed to load TokenList', name, error);
+      console.error('Failed to load TokenList', url, error);
       throw error;
     }
   },
@@ -193,7 +200,11 @@ const actions = {
       token => token !== ETHER.address && isAddress(token)
     );
     if (tokens.length === 0) return;
-    const tokensMeta = await getTokensMeta(tokens, state.tokenLists);
+    const lists = {
+      ...state.tokenLists,
+      [ELIGIBLE_TOKEN_LIST]: state.eligibleList
+    };
+    const tokensMeta = await getTokensMeta(tokens, lists);
     const injected = clone(state.injected);
     Object.values(tokensMeta).forEach((meta: TokenInfo) => {
       if (meta) injected.push({ ...meta, injected: true });
@@ -239,6 +250,10 @@ const mutations = {
     activeLists: Record<string, boolean>
   ): void {
     _state.activeLists = activeLists;
+  },
+
+  setEligibleList(_state: RegistryState, list: TokenList): void {
+    _state.eligibleList = list;
   }
 };
 

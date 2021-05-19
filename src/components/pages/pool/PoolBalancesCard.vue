@@ -6,6 +6,10 @@
       :is-loading="loading"
       skeleton-class="h-64"
       sticky="both"
+      :initial-state="{
+        sortColumn: 'weight',
+        sortDirection: 'desc'
+      }"
     >
       <template v-slot:tokenColumnCell="token">
         <div class="px-6 py-4 flex flex-row w-52">

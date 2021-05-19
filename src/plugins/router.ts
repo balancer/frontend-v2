@@ -1,9 +1,9 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import Home from '@/pages/Home.vue';
 import Pool from '@/pages/Pool.vue';
 import Trade from '@/pages/Trade.vue';
 
-const routes: any[] = [
+const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: Home },
   { path: '/trade/:assetIn?/:assetOut?', name: 'trade', component: Trade },
   {

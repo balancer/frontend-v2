@@ -10,6 +10,10 @@
       skeleton-class="h-64"
       sticky="both"
       :no-results-label="noResultsLabel"
+      :initial-state="{
+        sortColumn: 'timeAgo',
+        sortDirection: 'desc'
+      }"
     >
       <template v-slot:actionCell="action">
         <div class="px-6 py-2">

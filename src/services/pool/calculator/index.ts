@@ -1,11 +1,14 @@
-import { Token } from '@/types';
+import BigNumber from 'bignumber.js';
 import { parseUnits, formatUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import BigNumber from 'bignumber.js';
-import Weighted from './weighted';
 import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
 import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
+
 import { FullPool } from '@/services/balancer/subgraph/types';
+
+import { TokenMap } from '@/types';
+
+import Weighted from './weighted';
 
 interface Amounts {
   send: string[];
@@ -22,17 +25,17 @@ type PoolAction = 'join' | 'exit';
 
 export default class Calculator {
   pool: FullPool;
-  allTokens: Token[];
+  allTokens: TokenMap;
   action: PoolAction;
   types = ['send', 'receive'];
 
-  constructor(pool: FullPool, allTokens: Token[], action: PoolAction) {
+  constructor(pool: FullPool, allTokens: TokenMap, action: PoolAction) {
     this.pool = pool;
     this.allTokens = allTokens;
     this.action = action;
   }
 
-  public setAllTokens(tokens: Token[]): void {
+  public setAllTokens(tokens: TokenMap): void {
     this.allTokens = tokens;
   }
 
@@ -81,7 +84,7 @@ export default class Calculator {
       amounts.send.forEach((amount, amountIndex) => {
         const greaterThanBalance =
           Number(amount) >
-          this.allTokens[this.tokenOf(type, amountIndex)].balance;
+          Number(this.allTokens[this.tokenOf(type, amountIndex)].balance);
         if (greaterThanBalance) hasBalance = false;
       });
 

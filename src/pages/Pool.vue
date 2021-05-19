@@ -42,11 +42,7 @@
               </template>
               <div class="w-52">
                 <span>
-                  {{
-                    feesManagedByGauntlet
-                      ? $t('feesManagedByGauntlet')
-                      : $t('fixedFeesTooltip')
-                  }}
+                  {{ swapFeeToolTip }}
                 </span>
               </div>
             </BalTooltip>
@@ -159,12 +155,31 @@ export default defineComponent({
       refetchQueriesOnBlockNumber: 0
     });
 
-    const feesManagedByGauntlet = POOLS.DynamicFees.Gauntlet.includes(data.id);
-
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
 
     const pool = computed(() => poolQuery.data.value);
+
+    const communityManagedFees = computed(
+      () => pool.value?.owner == POOLS.DelegateOwner
+    );
+    const feesManagedByGauntlet = computed(
+      () =>
+        communityManagedFees.value &&
+        POOLS.DynamicFees.Gauntlet.includes(data.id)
+    );
+    const feesFixed = computed(() => pool.value?.owner == POOLS.ZeroAddress);
+    const swapFeeToolTip = computed(() => {
+      if (feesManagedByGauntlet.value) {
+        return t('feesManagedByGauntlet');
+      } else if (communityManagedFees.value) {
+        return t('delegateFeesTooltip');
+      } else if (feesFixed.value) {
+        return t('fixedFeesTooltip');
+      } else {
+        return t('ownerFeesTooltip');
+      }
+    });
 
     const loadingPool = computed(
       () =>
@@ -207,10 +222,16 @@ export default defineComponent({
       if (!pool.value) return '';
       const feeLabel = fNum(pool.value.onchain.swapFee, 'percent');
 
-      if (feesManagedByGauntlet) {
-        return `Dynamic swap fees: Currently <b>${feeLabel}</b>`;
+      if (feesFixed.value) {
+        return t('fixedSwapFeeLabel', [feeLabel]);
+      } else if (communityManagedFees.value) {
+        return feesManagedByGauntlet.value
+          ? t('dynamicSwapFeeLabel', [feeLabel])
+          : t('communitySwapFeeLabel', [feeLabel]);
       }
-      return `Fixed swap fees: <b>${feeLabel}</b>`;
+
+      // Must be owner-controlled
+      return t('dynamicSwapFeeLabel', [feeLabel]);
     });
 
     const missingPrices = computed(() => {
@@ -261,6 +282,7 @@ export default defineComponent({
       isAuthenticated,
       missingPrices,
       feesManagedByGauntlet,
+      swapFeeToolTip,
       // methods
       fNum,
       onNewTx

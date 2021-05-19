@@ -156,14 +156,13 @@ export default function useTokenLists(request?: TokenListRequest) {
   const tokenDictionary = computed(() => keyBy(tokens.value, 'address'));
 
   const toggleActiveTokenList = (name: string) => {
-    // remove from active lists
     if (activeTokenLists.value.includes(name)) {
       activeTokenLists.value = activeTokenLists.value.filter(
         listName => listName !== name
       );
-      return;
+    } else {
+      activeTokenLists.value.push(name);
     }
-    activeTokenLists.value = [...activeTokenLists.value, name];
     lsSet('activeTokenLists', activeTokenLists.value);
   };
 

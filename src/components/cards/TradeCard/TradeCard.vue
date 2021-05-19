@@ -112,6 +112,7 @@ import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -128,6 +129,7 @@ export default defineComponent({
     const router = useRouter();
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
+    const { t } = useI18n();
 
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
@@ -206,15 +208,15 @@ export default defineComponent({
     });
 
     const title = computed(() => {
-      if (isWrap.value) return 'wrap';
-      if (isUnwrap.value) return 'unwrap';
-      return 'trade';
+      if (isWrap.value) return t('wrap');
+      if (isUnwrap.value) return t('unwrap');
+      return t('trade');
     });
 
     const submitLabel = computed(() => {
-      if (isWrap.value) return 'wrap';
-      if (isUnwrap.value) return 'unwrap';
-      return 'trade';
+      if (isWrap.value) return t('wrap');
+      if (isUnwrap.value) return t('unwrap');
+      return t('trade');
     });
 
     function connectWallet() {

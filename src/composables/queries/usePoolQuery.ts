@@ -11,7 +11,6 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import BalancerContracts from '@/services/balancer/contracts/service';
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPool, FullPool } from '@/services/balancer/subgraph/types';
-import { Token } from '@/types';
 
 export default function usePoolQuery(
   id: string,
@@ -52,7 +51,7 @@ export default function usePoolQuery(
         }
       }
     );
-    const tokens = pick(allTokens.value, pool.tokenAddresses) as Token[];
+    const tokens = pick(allTokens.value, pool.tokenAddresses);
     const onchainData = await balancerContracts.vault.getPoolData(
       id,
       pool.poolType,
