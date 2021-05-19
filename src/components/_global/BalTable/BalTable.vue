@@ -234,10 +234,10 @@ export default defineComponent({
     },
     initialState: {
       type: Object as PropType<InitialState>,
-      default: {
+      default: () => ({
         sortColumn: null,
         sortDirection: null
-      }
+      })
     }
   },
   setup(props) {
