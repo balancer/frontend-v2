@@ -65,24 +65,11 @@ export default class Pools {
       const volume = this.calcVolume(pool, pastPool);
       const poolAPY = this.calcAPY(pool, pastPool);
       const fees = this.calcFees(pool, pastPool);
-
-      let liquidityMiningAPY = '0';
-      const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
-      const hasLiquidityMiningRewards = IS_LIQUIDITY_MINING_ENABLED
-        ? !!liquidityMiningRewards
-        : false;
-
-      if (hasLiquidityMiningRewards) {
-        liquidityMiningAPY = computeAPYForPool(
-          liquidityMiningRewards,
-          prices[TOKENS.AddressMap.BAL].price || 0,
-          pool.totalLiquidity
-        );
-      }
-
-      const totalAPY = bnum(poolAPY)
-        .plus(liquidityMiningAPY)
-        .toString();
+      const {
+        hasLiquidityMiningRewards,
+        liquidityMiningAPY
+      } = this.calcLiquidityMiningAPY(pool, prices);
+      const totalAPY = this.calcTotalAPY(poolAPY, liquidityMiningAPY);
 
       return {
         ...pool,
@@ -120,6 +107,34 @@ export default class Pools {
     return swapFees
       .dividedBy(pool.totalLiquidity)
       .multipliedBy(365)
+      .toString();
+  }
+
+  private calcLiquidityMiningAPY(pool: Pool, prices: Prices) {
+    let liquidityMiningAPY = '0';
+
+    const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
+    const hasLiquidityMiningRewards = IS_LIQUIDITY_MINING_ENABLED
+      ? !!liquidityMiningRewards
+      : false;
+
+    if (hasLiquidityMiningRewards) {
+      liquidityMiningAPY = computeAPYForPool(
+        liquidityMiningRewards,
+        prices[TOKENS.AddressMap.BAL].price || 0,
+        pool.totalLiquidity
+      );
+    }
+
+    return {
+      hasLiquidityMiningRewards,
+      liquidityMiningAPY
+    };
+  }
+
+  private calcTotalAPY(poolAPY: string, liquidityMiningAPY: string) {
+    return bnum(poolAPY)
+      .plus(liquidityMiningAPY)
       .toString();
   }
 
