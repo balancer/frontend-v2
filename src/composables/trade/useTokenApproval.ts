@@ -2,7 +2,7 @@ import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
 import { computed, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
-import { approveTokens } from '@/utils/balancer/tokens';
+import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useNotify from '@/composables/useNotify';
 import { ETHER } from '@/constants/tokenlists';
 

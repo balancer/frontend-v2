@@ -150,17 +150,13 @@
           }"
           class="text-xs text-gray-500 underline"
         >
-          Wrap your ETH to WETH
+          {{ $t('wrapInstruction') }}
         </router-link>
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52">
-            This pool requires Wrapped Ether (WETH). To maximize your
-            investment, you could wrap some additional ETH. Make sure to keep
-            enough ETH to cover gas costs.
-          </div>
+          <div class="w-52" v-html="ethBufferInstruction" />
         </BalTooltip>
       </div>
     </div>
@@ -251,7 +247,7 @@ import {
   isPositive,
   isLessThanOrEqualTo,
   isRequired
-} from '@/utils/validations';
+} from '@/lib/utils/validations';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { TransactionData } from 'bnc-notify';
@@ -268,7 +264,7 @@ import useTokens from '@/composables/useTokens';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
-import { bnum } from '@/utils';
+import { bnum } from '@/lib/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
@@ -400,7 +396,7 @@ export default defineComponent({
       const maxAmount = tokenBalance(data.propToken);
 
       if (currentAmount === '0') return 0;
-      return Math.ceil((Number(currentAmount) / maxAmount) * 100);
+      return Math.ceil((Number(currentAmount) / Number(maxAmount)) * 100);
     });
 
     const fullAmounts = computed(() => {
@@ -467,7 +463,9 @@ export default defineComponent({
 
     // METHODS
     function tokenBalance(index) {
-      return allTokens.value[props.pool.tokenAddresses[index]]?.balance || 0;
+      return Number(
+        allTokens.value[props.pool.tokenAddresses[index]]?.balance || 0
+      );
     }
 
     function tokenDecimals(index) {

@@ -20,6 +20,7 @@ const defaultAttrs = {
   totalSwapVolume: true,
   totalSwapFee: true,
   totalShares: true,
+  owner: true,
   tokens: {
     address: true,
     balance: true,

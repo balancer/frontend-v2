@@ -1,8 +1,8 @@
 <template>
   <span class="inline-block v-align-middle leading-none">
     <img
-      v-if="logo && !error"
-      :src="_url(logo)"
+      v-if="iconURL && !error"
+      :src="_url(iconURL)"
       :style="{
         width: `${size}px`,
         height: `${size}px`
@@ -15,10 +15,17 @@
 </template>
 
 <script>
-import { defineComponent, toRefs, ref, computed } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent, toRefs, ref, computed, watch } from 'vue';
+import useTokens from '@/composables/useTokens';
+import Avatar from '../../images/Avatar.vue';
 
 export default defineComponent({
+  name: 'BalAsset',
+
+  components: {
+    Avatar
+  },
+
   props: {
     address: {
       type: String,
@@ -30,26 +37,26 @@ export default defineComponent({
     }
   },
   setup(props) {
+    // COMPOSABLES
+    const { allTokensIncludeEth } = useTokens();
+
+    // DATA
     const { address } = toRefs(props);
-
-    const store = useStore();
-
-    const tokens = computed(() =>
-      store.getters['registry/getTokens']({ includeEther: true })
-    );
-
     const error = ref(false);
 
-    const logo = computed(() => {
-      const token = tokens.value[address.value];
-      if (!token) {
-        return '';
-      }
+    // COMPUTED
+    const iconURL = computed(() => {
+      const token = allTokensIncludeEth.value[address.value];
+      if (!token) return '';
       return token.logoURI;
     });
 
+    watch(iconURL, newURL => {
+      if (newURL !== '') error.value = false;
+    });
+
     return {
-      logo,
+      iconURL,
       error
     };
   }

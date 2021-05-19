@@ -1,8 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
-import configs, { Config } from '@/config';
-import { getProfiles } from '@/utils/profile';
+import configs, { Config } from '@/lib/config';
+import { getProfiles } from '@/lib/utils/profile';
 import useFathom from '@/composables/useFathom';
 
 const defaultConfig = process.env.VUE_APP_NETWORK || '1';
@@ -83,20 +83,26 @@ const actions = {
         auth.provider.value.removeAllListeners();
       if (auth.provider.value.on) {
         auth.provider.value.on('chainChanged', async chainId => {
+          commit('setLoading', true);
+
           await dispatch('account/resetAccount', null, { root: true });
           auth.web3 = new Web3Provider(auth.provider.value);
+
           commit('setNetwork', parseInt(formatUnits(chainId, 0)));
           dispatch('account/getBalances', null, { root: true });
           dispatch('account/getAllowances', null, { root: true });
+          commit('setLoading', false);
         });
         auth.provider.value.on('accountsChanged', async accounts => {
           if (accounts.length !== 0) {
+            commit('setLoading', true);
+
             await dispatch('account/resetAccount', null, { root: true });
             auth.web3 = new Web3Provider(auth.provider.value);
             commit('setAccount', accounts[0]);
-            await dispatch('loadProvider');
             dispatch('account/getBalances', null, { root: true });
             dispatch('account/getAllowances', null, { root: true });
+            commit('setLoading', false);
           }
         });
         auth.provider.value.on('disconnect', async () => {

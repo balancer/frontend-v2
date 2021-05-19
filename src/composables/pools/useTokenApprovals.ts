@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
-import { approveTokens } from '@/utils/balancer/tokens';
+import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';

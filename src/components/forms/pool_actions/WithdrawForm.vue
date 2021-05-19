@@ -189,7 +189,7 @@ import {
   isPositive,
   isLessThanOrEqualTo,
   isRequired
-} from '@/utils/validations';
+} from '@/lib/utils/validations';
 import { TransactionData } from 'bnc-notify';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
@@ -202,7 +202,7 @@ import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
-import { bnum } from '@/utils';
+import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import useTokens from '@/composables/useTokens';
@@ -443,7 +443,7 @@ export default defineComponent({
     }
 
     function setPropMax() {
-      if (!isAuthenticated.value || bptBalance.value === 0) return;
+      if (!isAuthenticated.value || Number(bptBalance.value) === 0) return;
 
       const { send, receive } = poolCalculator.propAmountsGiven(
         bptBalance.value,
@@ -522,7 +522,7 @@ export default defineComponent({
         const tx = await poolExchange.value.exit(
           store.state.web3.account,
           amountsOut.value,
-          bptIn.value,
+          `${bptIn.value}`,
           exitTokenIndex.value,
           exactOut.value
         );

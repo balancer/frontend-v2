@@ -93,7 +93,7 @@
 </template>
 
 <script lang="ts">
-import { isRequired } from '@/utils/validations';
+import { isRequired } from '@/lib/utils/validations';
 import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
@@ -105,7 +105,7 @@ import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
 import { ETHER } from '@/constants/tokenlists';
 
-import SuccessOverlay from '../shared/SuccessOverlay.vue';
+import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
@@ -113,6 +113,7 @@ import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -129,6 +130,7 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const { isAuthenticated } = useAuth();
+    const { t } = useI18n();
 
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
@@ -200,9 +202,9 @@ export default defineComponent({
     );
 
     const title = computed(() => {
-      if (isWrap.value) return 'wrap';
-      if (isUnwrap.value) return 'unwrap';
-      return 'trade';
+      if (isWrap.value) return t('wrap');
+      if (isUnwrap.value) return t('unwrap');
+      return t('trade');
     });
 
     function connectWallet() {

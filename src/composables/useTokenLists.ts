@@ -1,12 +1,40 @@
-import { computed, reactive, ref } from 'vue';
-import { getAddress } from '@ethersproject/address';
-import { TOKEN_LISTS } from '@/constants/tokenlists';
-import { useQuery } from 'vue-query';
-import { loadTokenlist } from '@/utils/tokenlists';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
+import { useQuery } from 'vue-query';
 import { flatten, keyBy, orderBy, uniqBy } from 'lodash';
+
+import { getAddress } from '@ethersproject/address';
+
+import QUERY_KEYS from '@/constants/queryKeys';
+import { TOKEN_LISTS } from '@/constants/tokenlists';
+
+import { getTokensListURL, loadTokenlist } from '@/lib/utils/tokenlists';
+import { lsGet, lsSet } from '@/lib/utils';
+
 import useAccountBalances from './useAccountBalances';
-import { lsGet, lsSet } from '@/utils';
+
+type TokenListItem = {
+  address: string;
+  chainId: number;
+  decimals: number;
+  logoURI: string;
+  name: string;
+  symbol: string;
+};
+
+type TokenList = {
+  keywords: string[];
+  logoURI: string;
+  name: string;
+  timestamp: string;
+  tokens: TokenListItem[];
+  version: {
+    major: number;
+    minor: number;
+    patch: number;
+  };
+  tokenListsURL: string;
+};
 
 const loadAllTokenLists = async () => {
   // since a request to retrieve the list can fail
@@ -14,11 +42,21 @@ const loadAllTokenLists = async () => {
   // retrieve what we can
   return (
     await Promise.allSettled(
-      TOKEN_LISTS.map(async listName => await loadTokenlist(listName))
+      TOKEN_LISTS.map(async listURI => {
+        const tokenList = (await loadTokenlist(listURI)) as Omit<
+          TokenList,
+          'tokenListsURL'
+        >;
+
+        return {
+          ...tokenList,
+          tokenListsURL: getTokensListURL(listURI)
+        };
+      })
     )
   )
     .filter(result => result.status === 'fulfilled')
-    .map(result => (result as PromiseFulfilledResult<any>).value);
+    .map(result => (result as PromiseFulfilledResult<TokenList>).value);
 };
 
 type TokenListRequest = {
@@ -34,23 +72,26 @@ export default function useTokenLists(request?: TokenListRequest) {
   const prices = computed(() => store.state.market.prices);
   const { balances } = useAccountBalances();
 
-  const { data: lists, isLoading } = useQuery(
-    reactive(['tokenLists']),
-    loadAllTokenLists
-  );
+  const queryKey = QUERY_KEYS.TokenLists;
+  const queryFn = loadAllTokenLists;
+
+  const { data: lists, isLoading } = useQuery<TokenList[]>(queryKey, queryFn, {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false
+  });
 
   const listDictionary = computed(() => keyBy(lists.value, 'name'));
-  const injectedTokens = store.getters['registry/getInjected'];
+  const injectedTokens = computed(() => store.state.registry.injected);
 
   const tokens = computed(() => {
-    const _tokens = uniqBy(
+    const _tokens = uniqBy<TokenListItem>(
       orderBy(
         [
           // get all the tokens from all the active lists
           // get all tokens that are injected
           // get the ETHER token ALWAYS
           ...flatten([
-            ...Object.values(injectedTokens).map((t: any) => ({ ...t })),
+            ...Object.values(injectedTokens.value).map((t: any) => ({ ...t })),
             ...activeTokenLists.value.map(
               name => listDictionary.value[name]?.tokens
             ),
@@ -91,20 +132,22 @@ export default function useTokenLists(request?: TokenListRequest) {
     );
 
     if (request?.queryAddress) {
+      const queryAddressLC = request?.queryAddress?.toLowerCase();
+
       return _tokens.filter(
-        token =>
-          token.address?.toLowerCase() === request?.queryAddress?.toLowerCase()
+        token => token.address?.toLowerCase() === queryAddressLC
       );
     }
 
     // search functionality, this can be better
     if (request?.query) {
-      return _tokens.filter(token => {
-        return (
-          token.name.toLowerCase().includes(request.query?.toLowerCase()) ||
-          token.symbol.toLowerCase().includes(request.query?.toLowerCase())
-        );
-      });
+      const queryLC = request?.query?.toLowerCase();
+
+      return _tokens.filter(
+        token =>
+          token.name.toLowerCase().includes(queryLC) ||
+          token.symbol.toLowerCase().includes(queryLC)
+      );
     }
 
     return _tokens;
@@ -113,14 +156,13 @@ export default function useTokenLists(request?: TokenListRequest) {
   const tokenDictionary = computed(() => keyBy(tokens.value, 'address'));
 
   const toggleActiveTokenList = (name: string) => {
-    // remove from active lists
     if (activeTokenLists.value.includes(name)) {
       activeTokenLists.value = activeTokenLists.value.filter(
         listName => listName !== name
       );
-      return;
+    } else {
+      activeTokenLists.value.push(name);
     }
-    activeTokenLists.value = [...activeTokenLists.value, name];
     lsSet('activeTokenLists', activeTokenLists.value);
   };
 

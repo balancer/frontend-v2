@@ -129,7 +129,7 @@
   </div>
   <teleport to="#modal">
     <SelectTokenModal
-      :open="modalSelectTokenIsOpen"
+      v-if="modalSelectTokenIsOpen"
       :excludedTokens="[tokenInAddressInput, tokenOutAddressInput]"
       @close="modalSelectTokenIsOpen = false"
       @select="handleSelectToken"
@@ -146,7 +146,7 @@ import useNumbers from '@/composables/useNumbers';
 import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
-import SelectTokenModal from '@/components/modals/SelectTokenModal.vue';
+import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 
 const ETH_BUFFER = 0.1;
 
@@ -281,11 +281,19 @@ export default defineComponent({
       if (!tokenInAmount || !tokenOutAmount) {
         return '';
       }
-      const rate = tokenOutAmount / tokenInAmount;
-      const message = `1 ${tokenIn.symbol} = ${fNum(rate, 'token')} ${
-        tokenOut.symbol
-      }`;
-      return message;
+      if (isInRate.value) {
+        const rate = tokenOutAmount / tokenInAmount;
+        const message = `1 ${tokenIn.symbol} = ${fNum(rate, 'token')} ${
+          tokenOut.symbol
+        }`;
+        return message;
+      } else {
+        const rate = tokenInAmount / tokenOutAmount;
+        const message = `1 ${tokenOut.symbol} = ${fNum(rate, 'token')} ${
+          tokenIn.symbol
+        }`;
+        return message;
+      }
     });
 
     function toggleRate(): void {
