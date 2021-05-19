@@ -1,8 +1,5 @@
 <template v-slot:apyCell="pool">
-  <BalTooltip
-    v-if="pool.hasLiquidityMiningRewards"
-    class="liquidity-mining-tooltip"
-  >
+  <BalTooltip v-if="pool.hasLiquidityMiningRewards" noPad>
     <template v-slot:activator>
       <StarsIcon
         class="ml-1 h-5 text-yellow-300"
@@ -59,8 +56,3 @@ export default defineComponent({
   }
 });
 </script>
-<style>
-.liquidity-mining-tooltip {
-  @apply p-0;
-}
-</style>
