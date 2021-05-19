@@ -1,6 +1,9 @@
 export const TOKEN_LIST_DEFAULT =
   'https://storageapi.fleek.co/balancer-team-bucket/assets/listed.tokenlist.json';
 
+export const ELIGIBLE_TOKEN_LIST =
+  'https://storageapi.fleek.co/balancer-team-bucket/assets/vetted.tokenlist.json';
+
 export const TOKEN_LISTS: string[] = [
   TOKEN_LIST_DEFAULT,
   'ipns://tokens.uniswap.org',
