@@ -54,38 +54,11 @@
       <template v-slot:apyCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end">
           {{
-            Number(pool.dynamic.apy) > 10000
+            Number(pool.dynamic.apy.pool) > 10000
               ? '-'
-              : fNum(pool.dynamic.totalAPY, 'percent')
+              : fNum(pool.dynamic.apy.total, 'percent')
           }}
-          <BalTooltip v-if="pool.hasLiquidityMiningRewards">
-            <template v-slot:activator>
-              <StarsIcon
-                class="ml-1 stars-icon text-yellow-300"
-                v-if="pool.hasLiquidityMiningRewards"
-              />
-            </template>
-            <div class="text-sm">
-              <div class="mb-2">
-                <div>Total APY</div>
-                <div>
-                  {{ fNum(pool.dynamic.totalAPY, 'percent') }}
-                </div>
-              </div>
-              <div>
-                <div>
-                  {{ fNum(pool.dynamic.apy, 'percent') }}
-                  <span class="text-gray-500 text-xs">LP fees APY</span>
-                </div>
-                <div>
-                  {{ fNum(pool.dynamic.liquidityMiningAPY, 'percent') }}
-                  <span class="text-gray-500 text-xs"
-                    >Liquidity Mining APY</span
-                  >
-                </div>
-              </div>
-            </div>
-          </BalTooltip>
+          <LiquidityMiningTooltip :pool="pool" />
         </div>
       </template>
     </BalTable>
@@ -104,11 +77,17 @@ import { getAddress } from '@ethersproject/address';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import useFathom from '@/composables/useFathom';
-
-import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 import useAccountBalances from '@/composables/useAccountBalances';
 
+import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+
+import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
+
 export default defineComponent({
+  components: {
+    LiquidityMiningTooltip
+  },
+
   emits: ['loadMore'],
 
   props: {
@@ -195,10 +174,10 @@ export default defineComponent({
       {
         name: t('apy'),
         Cell: 'apyCell',
-        accessor: pool => pool.dynamic.totalAPY,
+        accessor: pool => pool.dynamic.apy.total,
         align: 'right',
         id: 'poolApy',
-        sortKey: pool => Number(pool.dynamic.totalAPY),
+        sortKey: pool => Number(pool.dynamic.apy.total),
         width: 150
       }
     ]);
@@ -238,7 +217,3 @@ export default defineComponent({
   }
 });
 </script>
-<style>
-.stars-icon {
-}
-</style>

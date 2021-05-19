@@ -11,6 +11,7 @@
   <div
     ref="content"
     class="tooltip p-3 text-xs bg-white text-black font-medium shadow rounded-md border z-50"
+    v-bind="$attrs"
   >
     <slot />
   </div>

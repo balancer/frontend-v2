@@ -16,6 +16,8 @@ import {
 } from '@/lib/utils/liquidityMining';
 import { TOKENS } from '@/constants/tokens';
 
+const IS_LIQUIDITY_MINING_ENABLED = true;
+
 export default class Pools {
   service: Service;
   query: QueryBuilder;
@@ -61,12 +63,14 @@ export default class Pools {
       pool.totalLiquidity = getPoolLiquidity(pool, prices);
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
-      const apy = this.calcAPY(pool, pastPool);
+      const poolAPY = this.calcAPY(pool, pastPool);
       const fees = this.calcFees(pool, pastPool);
 
       let liquidityMiningAPY = '0';
       const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
-      const hasLiquidityMiningRewards = !!liquidityMiningRewards;
+      const hasLiquidityMiningRewards = IS_LIQUIDITY_MINING_ENABLED
+        ? !!liquidityMiningRewards
+        : false;
 
       if (hasLiquidityMiningRewards) {
         liquidityMiningAPY = computeAPYForPool(
@@ -76,14 +80,23 @@ export default class Pools {
         );
       }
 
-      const totalAPY = bnum(apy)
+      const totalAPY = bnum(poolAPY)
         .plus(liquidityMiningAPY)
         .toString();
 
       return {
         ...pool,
         hasLiquidityMiningRewards,
-        dynamic: { period, volume, fees, apy, liquidityMiningAPY, totalAPY }
+        dynamic: {
+          period,
+          volume,
+          fees,
+          apy: {
+            pool: poolAPY,
+            liquidityMining: liquidityMiningAPY,
+            total: totalAPY
+          }
+        }
       };
     });
   }
