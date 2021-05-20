@@ -73,10 +73,12 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { appNetwork } = useWeb3();
 
-    const balPrice =
-      store.state.market.prices[
-        getOriginalAddress(appNetwork.id, TOKENS.AddressMap.BAL)
-      ]?.price || 0;
+    const balPrice = computed(
+      () =>
+        store.state.market.prices[
+          getOriginalAddress(appNetwork.id, TOKENS.AddressMap.BAL)
+        ]?.price
+    );
 
     // COMPUTED
     const userClaims = computed(() =>
@@ -84,18 +86,19 @@ export default defineComponent({
     );
 
     const availableToClaimInUSD = computed(() =>
-      userClaims.value != null
+      balPrice.value != null && userClaims.value != null
         ? bnum(userClaims.value?.availableToClaim)
-            .times(balPrice)
+            .times(balPrice.value)
             .toString()
         : null
     );
 
     const currentRewardsEstimateInUSD = computed(() =>
+      balPrice.value != null &&
       userClaims.value != null &&
       userClaims.value.currentRewardsEstimate != null
         ? bnum(userClaims.value?.currentRewardsEstimate)
-            .times(balPrice)
+            .times(balPrice.value)
             .toString()
         : null
     );
