@@ -1,3 +1,4 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
   purge: {
     content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
@@ -40,6 +41,7 @@ module.exports = {
       sm: '0 2px 4px 0 rgba(0,0,0,0.05)',
       DEFAULT: '0 2px 4px 0 rgba(0,0,0,0.03), 0 10px 20px 0 rgba(0,0,0,0.02)',
       lg: '0 2px 4px 0 rgba(0,0,0,0.03), 0 10px 40px 0 rgba(0,0,0,0.05)',
+      xl: '0 2px 4px 0 rgba(0,0,0,0.05), 0 0px 40px 0 rgba(0,0,0,0.1)',
       inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
       none: 'none'
     },
@@ -49,11 +51,7 @@ module.exports = {
     }),
     screens: {
       xs: '440px',
-      sm: '640px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
-      '2xl': '1536px'
+      ...defaultTheme.screens,
     },
     extend: {
       colors: {
