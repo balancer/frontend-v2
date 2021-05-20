@@ -101,7 +101,7 @@
           <tr
             v-for="(dataItem, index) in tableData"
             :key="`tableRow-${index}`"
-            @click="onRowClick && onRowClick(dataItem)"
+            @click="handleRowClick(dataItem)"
             :class="['bg-white z-10 rowBg', { 'cursor-pointer': onRowClick }]"
           >
             <td
@@ -116,10 +116,9 @@
               <router-link
                 v-if="link"
                 :to="{
-                  to: link.to,
+                  name: link.to,
                   params: link.getParams(dataItem)
                 }"
-                :tag="link ? 'div' : 'a'"
               >
                 <slot
                   v-if="column.Cell"
@@ -307,6 +306,7 @@ export default defineComponent({
     };
 
     const handleRowClick = (data: Data) => {
+      if (props.link?.to) return;
       props.onRowClick && props.onRowClick(data);
     };
 
