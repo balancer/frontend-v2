@@ -59,6 +59,7 @@
     "date-fns": "^2.21.1",
     "echarts": "^5.1.0",
     "eslint": "^6.7.2",
+    "eth-ens-namehash": "^2.0.8",
     "ethereumjs-util": "^7.0.7",
     "feather-icons": "^4.28.0",
     "fortmatic": "^2.0.6",
