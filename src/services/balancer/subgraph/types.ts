@@ -28,13 +28,18 @@ export interface Pool {
   totalShares: string;
   totalSwapFee: string;
   totalSwapVolume: string;
+  hasLiquidityMiningRewards: boolean;
 }
 
 export interface DecoratedPool extends Pool {
   dynamic: {
     period: TimeTravelPeriod;
     volume: string;
-    apy: string;
+    apy: {
+      pool: string;
+      liquidityMining: string;
+      total: string;
+    };
     fees: string;
   };
 }

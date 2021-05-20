@@ -10,6 +10,13 @@ import {
 } from '../../types';
 import { Prices } from '@/services/coingecko';
 import { getAddress } from '@ethersproject/address';
+import {
+  currentLiquidityMiningRewards,
+  computeAPYForPool
+} from '@/lib/utils/liquidityMining';
+import { TOKENS } from '@/constants/tokens';
+
+const IS_LIQUIDITY_MINING_ENABLED = false;
 
 export default class Pools {
   service: Service;
@@ -56,10 +63,28 @@ export default class Pools {
       pool.totalLiquidity = getPoolLiquidity(pool, prices);
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
-      const apy = this.calcAPY(pool, pastPool);
+      const poolAPY = this.calcAPY(pool, pastPool);
       const fees = this.calcFees(pool, pastPool);
+      const {
+        hasLiquidityMiningRewards,
+        liquidityMiningAPY
+      } = this.calcLiquidityMiningAPY(pool, prices);
+      const totalAPY = this.calcTotalAPY(poolAPY, liquidityMiningAPY);
 
-      return { ...pool, dynamic: { period, volume, apy, fees } };
+      return {
+        ...pool,
+        hasLiquidityMiningRewards,
+        dynamic: {
+          period,
+          volume,
+          fees,
+          apy: {
+            pool: poolAPY,
+            liquidityMining: liquidityMiningAPY,
+            total: totalAPY
+          }
+        }
+      };
     });
   }
 
@@ -82,6 +107,34 @@ export default class Pools {
     return swapFees
       .dividedBy(pool.totalLiquidity)
       .multipliedBy(365)
+      .toString();
+  }
+
+  private calcLiquidityMiningAPY(pool: Pool, prices: Prices) {
+    let liquidityMiningAPY = '0';
+
+    const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
+    const hasLiquidityMiningRewards = IS_LIQUIDITY_MINING_ENABLED
+      ? !!liquidityMiningRewards
+      : false;
+
+    if (hasLiquidityMiningRewards) {
+      liquidityMiningAPY = computeAPYForPool(
+        liquidityMiningRewards,
+        prices[TOKENS.AddressMap.BAL].price || 0,
+        pool.totalLiquidity
+      );
+    }
+
+    return {
+      hasLiquidityMiningRewards,
+      liquidityMiningAPY
+    };
+  }
+
+  private calcTotalAPY(poolAPY: string, liquidityMiningAPY: string) {
+    return bnum(poolAPY)
+      .plus(liquidityMiningAPY)
       .toString();
   }
 

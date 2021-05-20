@@ -51,6 +51,16 @@
           </div>
         </div>
       </template>
+      <template v-slot:apyCell="pool">
+        <div class="px-6 py-4 -mt-1 flex justify-end">
+          {{
+            Number(pool.dynamic.apy.pool) > 10000
+              ? '-'
+              : fNum(pool.dynamic.apy.total, 'percent')
+          }}
+          <LiquidityMiningTooltip :pool="pool" />
+        </div>
+      </template>
     </BalTable>
   </BalCard>
 </template>
@@ -67,11 +77,17 @@ import { getAddress } from '@ethersproject/address';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import useFathom from '@/composables/useFathom';
-
-import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 import useAccountBalances from '@/composables/useAccountBalances';
 
+import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+
+import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
+
 export default defineComponent({
+  components: {
+    LiquidityMiningTooltip
+  },
+
   emits: ['loadMore'],
 
   props: {
@@ -157,15 +173,11 @@ export default defineComponent({
       },
       {
         name: t('apy'),
-        accessor: pool =>
-          `${
-            Number(pool.dynamic.apy) > 10000
-              ? '-'
-              : fNum(pool.dynamic.apy, 'percent')
-          }`,
+        Cell: 'apyCell',
+        accessor: pool => pool.dynamic.apy.total,
         align: 'right',
         id: 'poolApy',
-        sortKey: pool => Number(pool.dynamic.apy),
+        sortKey: pool => Number(pool.dynamic.apy.total),
         width: 150
       }
     ]);
