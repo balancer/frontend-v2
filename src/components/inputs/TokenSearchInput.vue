@@ -76,6 +76,7 @@ import useWeb3 from '@/composables/useWeb3';
 import { TOKENS } from '@/constants/tokens';
 import useTokenLists from '@/composables/useTokenLists';
 import { ETHER } from '@/constants/tokenlists';
+import { getAddress } from '@ethersproject/address';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -127,7 +128,13 @@ export default defineComponent({
 
     // METHODS
     function addToken(token: string) {
-      const newSelected = [...props.modelValue, token];
+      let _token = token;
+      // special case for ETH where we want it to filter as WETH regardless
+      // as ETH is the native asset
+      if (getAddress(token) === ETHER.address) {
+        _token = TOKENS.AddressMap.WETH;
+      }
+      const newSelected = [...props.modelValue, _token];
       emit('update:modelValue', newSelected);
     }
 

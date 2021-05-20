@@ -4,7 +4,7 @@ import { Multicaller } from '@/lib/utils/balancer/contract';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Token } from '@/types';
+import { TokenMap } from '@/types';
 import { OnchainPoolData, PoolType } from '../../subgraph/types';
 
 const NETWORK = process.env.VUE_APP_NETWORK || '1';
@@ -21,7 +21,7 @@ export default class Vault {
   public async getPoolData(
     id: string,
     type: PoolType,
-    tokens: Token[]
+    tokens: TokenMap
   ): Promise<OnchainPoolData> {
     const poolAddress = getAddress(id.slice(0, 42));
     let result = {} as Record<any, any>;
@@ -59,7 +59,7 @@ export default class Vault {
   public serializePoolData(
     data,
     type: PoolType,
-    tokens: Token[]
+    tokens: TokenMap
   ): OnchainPoolData {
     const _tokens = {};
     const weights = this.normalizeWeights(data?.weights, type, tokens);
@@ -86,7 +86,11 @@ export default class Vault {
     };
   }
 
-  public normalizeWeights(weights, type: PoolType, tokens: Token[]) {
+  public normalizeWeights(
+    weights: BigNumber[],
+    type: PoolType,
+    tokens: TokenMap
+  ) {
     if (type == 'Weighted') {
       const totalWeight = weights.reduce((a, b) => a.add(b), BigNumber.from(0));
       return weights.map(
@@ -96,7 +100,8 @@ export default class Vault {
           100
       );
     } else if (type === 'Stable') {
-      return tokens.map(() => 100 / tokens.length);
+      const tokensList = Object.values(tokens);
+      return tokensList.map(() => 100 / tokensList.length);
     } else {
       return [];
     }

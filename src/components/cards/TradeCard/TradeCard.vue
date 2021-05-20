@@ -50,25 +50,13 @@
       />
       <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
-        v-else-if="requireApproval"
-        :label="`${$t('approve')} ${tokens[tokenInAddress].symbol}`"
-        :loading="approving"
-        :loading-label="
-          `${$t('approving')} ${tokens[tokenInAddress].symbol}...`
-        "
-        block
-        @click.prevent="approve"
-      />
-      <BalBtn
         v-else
-        type="submit"
-        :label="`${$t(submitLabel)}`"
-        :loading="trading"
+        :label="'Preview trade'"
         :disabled="tradeDisabled"
         :loading-label="$t('confirming')"
         color="gradient"
         block
-        @click.prevent="trade"
+        @click.prevent="modalTradePreviewIsOpen = true"
       />
       <TradeRoute
         class="mt-5"
@@ -89,6 +77,19 @@
       @close="tradeSuccess = false"
     />
   </BalCard>
+  <teleport to="#modal">
+    <TradePreviewModal
+      :open="modalTradePreviewIsOpen"
+      :is-v1-swap="sorReturn.isV1swap"
+      :address-in="tokenInAddress"
+      :amount-in="tokenInAmount"
+      :address-out="tokenOutAddress"
+      :amount-out="tokenOutAmount"
+      :trading="trading"
+      @trade="trade"
+      @close="modalTradePreviewIsOpen = false"
+    />
+  </teleport>
 </template>
 
 <script lang="ts">
@@ -99,7 +100,6 @@ import { useRouter } from 'vue-router';
 import { isAddress, getAddress } from '@ethersproject/address';
 
 import useAuth from '@/composables/useAuth';
-import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
@@ -107,16 +107,19 @@ import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
+import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
     SuccessOverlay,
     TradePair,
+    TradePreviewModal,
     TradeRoute,
     TradeSettingsPopover,
     GasReimbursement
@@ -127,7 +130,7 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const { isAuthenticated } = useAuth();
-    const { fNum, toFiat } = useNumbers();
+    const { t } = useI18n();
 
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
@@ -140,6 +143,7 @@ export default defineComponent({
     const tokenOutAmount = ref('');
     const tradeSuccess = ref(false);
     const txHash = ref('');
+    const modalTradePreviewIsOpen = ref(false);
 
     const isWrap = computed(() => {
       const config = getConfig();
@@ -162,12 +166,11 @@ export default defineComponent({
     });
 
     // COMPOSABLES
-    const {
-      approving,
-      approveV1,
-      approveV2,
-      allowanceState
-    } = useTokenApproval(tokenInAddress, tokenInAmount, tokens);
+    const { allowanceState } = useTokenApproval(
+      tokenInAddress,
+      tokenInAmount,
+      tokens
+    );
     const {
       trading,
       trade,
@@ -190,7 +193,7 @@ export default defineComponent({
       isWrap,
       isUnwrap
     );
-    const { validationStatus, errorMessage } = useValidation(
+    const { errorMessage } = useValidation(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
@@ -198,23 +201,10 @@ export default defineComponent({
       tokens
     );
 
-    const requireApproval = computed(() => {
-      if (isUnwrap.value) return false;
-      return sorReturn.value.isV1swap
-        ? !allowanceState.value.isUnlockedV1
-        : !allowanceState.value.isUnlockedV2;
-    });
-
     const title = computed(() => {
-      if (isWrap.value) return 'wrap';
-      if (isUnwrap.value) return 'unwrap';
-      return 'trade';
-    });
-
-    const submitLabel = computed(() => {
-      if (isWrap.value) return 'wrap';
-      if (isUnwrap.value) return 'unwrap';
-      return 'trade';
+      if (isWrap.value) return t('wrap');
+      if (isUnwrap.value) return t('unwrap');
+      return t('trade');
     });
 
     function connectWallet() {
@@ -231,14 +221,6 @@ export default defineComponent({
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
-    }
-
-    async function approve(): Promise<void> {
-      if (sorReturn.value.isV1swap) {
-        await approveV1();
-      } else {
-        await approveV2();
-      }
     }
 
     watch(getConfig, async () => {
@@ -261,17 +243,14 @@ export default defineComponent({
       fetchPools();
       txHash.value = latestTxHash.value;
       tradeSuccess.value = true;
+      modalTradePreviewIsOpen.value = false;
     });
 
     populateInitialTokens();
 
     return {
       highPiAccepted,
-      fNum,
-      toFiat,
-      tokens,
       title,
-      submitLabel,
       isAuthenticated,
       connectWallet,
       tokenInAddress,
@@ -280,16 +259,13 @@ export default defineComponent({
       tokenOutAmount,
       exactIn,
       handleAmountChange,
-      validationStatus,
       errorMessage,
-      requireApproval,
-      approving,
       sorReturn,
       pools,
-      approve,
       trading,
       trade,
       txHash,
+      modalTradePreviewIsOpen,
       tradeSuccess,
       priceImpact,
       isRequired,

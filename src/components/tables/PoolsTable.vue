@@ -3,13 +3,17 @@
     <BalTable
       :columns="columns"
       :data="data"
-      :isLoading="isLoading || isLoadingBalances"
-      :isLoadingMore="isLoadingMore"
-      skeletonClass="h-64"
+      :is-loading="isLoading || isLoadingBalances"
+      :is-loading-more="isLoadingMore"
+      skeleton-class="h-64"
       sticky="both"
-      :onRowClick="handleRowClick"
-      :isPaginated="isPaginated"
-      @loadMore="$emit('loadMore')"
+      :on-row-click="handleRowClick"
+      :is-paginated="isPaginated"
+      @load-more="$emit('loadMore')"
+      :initial-state="{
+        sortColumn: 'poolValue',
+        sortDirection: 'desc'
+      }"
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
@@ -36,7 +40,7 @@
           >
             <div
               v-if="hasBalance(token.address)"
-              class="w-3 h-3 rounded-full border-2 border-white hover:border-gray-50 bg-green-200 absolute top-0 left-0 -mt-1 -ml-1"
+              class="w-3 h-3 rounded-full border-2 border-white hover:border-gray-50 bg-green-200 absolute top-0 right-0 -mt-1 -mr-1"
             />
             <span>
               {{ allTokens[getAddress(token.address)]?.symbol }}
@@ -45,6 +49,16 @@
               {{ fNum(token.weight, 'percent_lg') }}
             </span>
           </div>
+        </div>
+      </template>
+      <template v-slot:apyCell="pool">
+        <div class="px-6 py-4 -mt-1 flex justify-end">
+          {{
+            Number(pool.dynamic.apy.pool) > 10000
+              ? '-'
+              : fNum(pool.dynamic.apy.total, 'percent')
+          }}
+          <LiquidityMiningTooltip :pool="pool" />
         </div>
       </template>
     </BalTable>
@@ -63,11 +77,17 @@ import { getAddress } from '@ethersproject/address';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import useFathom from '@/composables/useFathom';
-
-import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 import useAccountBalances from '@/composables/useAccountBalances';
 
+import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+
+import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
+
 export default defineComponent({
+  components: {
+    LiquidityMiningTooltip
+  },
+
   emits: ['loadMore'],
 
   props: {
@@ -153,15 +173,11 @@ export default defineComponent({
       },
       {
         name: t('apy'),
-        accessor: pool =>
-          `${
-            Number(pool.dynamic.apy) > 10000
-              ? '-'
-              : fNum(pool.dynamic.apy, 'percent')
-          }`,
+        Cell: 'apyCell',
+        accessor: pool => pool.dynamic.apy.total,
         align: 'right',
         id: 'poolApy',
-        sortKey: pool => Number(pool.dynamic.apy),
+        sortKey: pool => Number(pool.dynamic.apy.total),
         width: 150
       }
     ]);

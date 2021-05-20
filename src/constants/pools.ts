@@ -2,6 +2,8 @@ export const POOLS = {
   Pagination: {
     PerPage: 10
   },
+  DelegateOwner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
+  ZeroAddress: '0x0000000000000000000000000000000000000000',
   DynamicFees: {
     Gauntlet: [
       '0x8339e311265a025fd5792db800daa8eda4264e2c000200000000000000000029',
@@ -37,5 +39,9 @@ export const POOLS = {
       '0x021c343c6180f03ce9e48fae3ff432309b9af19900020000000000000000000b'
     ]
   },
-  BlackList: ['']
+  BlackList: [''],
+  Factories: {
+    '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0': 'oracleWeightedPool',
+    '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9': 'weightedPool'
+  }
 };

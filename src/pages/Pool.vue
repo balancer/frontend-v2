@@ -8,18 +8,21 @@
             <h3 class="font-bold mr-4 capitalize">
               {{ poolTypeLabel }}
             </h3>
-            <div
-              v-for="([address, tokenMeta], i) in titleTokens"
-              :key="i"
-              class="mr-2 mt-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
-            >
-              <BalAsset :address="address" :size="24" />
-              <span class="ml-2">
-                {{ tokenMeta.symbol }}
-              </span>
-              <span class="font-medium text-gray-400 text-xs mt-px ml-1">
-                {{ fNum(tokenMeta.weight, 'percent_lg') }}
-              </span>
+            <div class="mt-2 flex items-center">
+              <div
+                v-for="([address, tokenMeta], i) in titleTokens"
+                :key="i"
+                class="mr-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
+              >
+                <BalAsset :address="address" :size="24" />
+                <span class="ml-2">
+                  {{ tokenMeta.symbol }}
+                </span>
+                <span class="font-medium text-gray-400 text-xs mt-px ml-1">
+                  {{ fNum(tokenMeta.weight, 'percent_lg') }}
+                </span>
+              </div>
+              <LiquidityMiningTooltip :pool="pool" class="-ml-1" />
             </div>
           </div>
           <div class="flex items-center mt-2">
@@ -42,11 +45,7 @@
               </template>
               <div class="w-52">
                 <span>
-                  {{
-                    feesManagedByGauntlet
-                      ? $t('feesManagedByGauntlet')
-                      : $t('fixedFeesTooltip')
-                  }}
+                  {{ swapFeeToolTip }}
                 </span>
               </div>
             </BalTooltip>
@@ -106,6 +105,7 @@
 import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import * as PoolPageComponents from '@/components/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
+import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
@@ -133,7 +133,8 @@ const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 export default defineComponent({
   components: {
     ...PoolPageComponents,
-    GauntletIcon
+    GauntletIcon,
+    LiquidityMiningTooltip
   },
 
   setup() {
@@ -159,12 +160,31 @@ export default defineComponent({
       refetchQueriesOnBlockNumber: 0
     });
 
-    const feesManagedByGauntlet = POOLS.DynamicFees.Gauntlet.includes(data.id);
-
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
 
     const pool = computed(() => poolQuery.data.value);
+
+    const communityManagedFees = computed(
+      () => pool.value?.owner == POOLS.DelegateOwner
+    );
+    const feesManagedByGauntlet = computed(
+      () =>
+        communityManagedFees.value &&
+        POOLS.DynamicFees.Gauntlet.includes(data.id)
+    );
+    const feesFixed = computed(() => pool.value?.owner == POOLS.ZeroAddress);
+    const swapFeeToolTip = computed(() => {
+      if (feesManagedByGauntlet.value) {
+        return t('feesManagedByGauntlet');
+      } else if (communityManagedFees.value) {
+        return t('delegateFeesTooltip');
+      } else if (feesFixed.value) {
+        return t('fixedFeesTooltip');
+      } else {
+        return t('ownerFeesTooltip');
+      }
+    });
 
     const loadingPool = computed(
       () =>
@@ -192,25 +212,25 @@ export default defineComponent({
 
     const poolTypeLabel = computed(() => {
       if (!pool.value) return '';
+      const key = POOLS.Factories[pool.value.factory];
 
-      switch (pool.value.poolType) {
-        case 'Weighted':
-          return t('weightedPool');
-        case 'Stable':
-          return t('stablePool');
-        default:
-          return '';
-      }
+      return key ? t(key) : t('unknownPoolType');
     });
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
       const feeLabel = fNum(pool.value.onchain.swapFee, 'percent');
 
-      if (feesManagedByGauntlet) {
-        return `Dynamic swap fees: Currently <b>${feeLabel}</b>`;
+      if (feesFixed.value) {
+        return t('fixedSwapFeeLabel', [feeLabel]);
+      } else if (communityManagedFees.value) {
+        return feesManagedByGauntlet.value
+          ? t('dynamicSwapFeeLabel', [feeLabel])
+          : t('communitySwapFeeLabel', [feeLabel]);
       }
-      return `Fixed swap fees: <b>${feeLabel}</b>`;
+
+      // Must be owner-controlled
+      return t('dynamicSwapFeeLabel', [feeLabel]);
     });
 
     const missingPrices = computed(() => {
@@ -261,6 +281,7 @@ export default defineComponent({
       isAuthenticated,
       missingPrices,
       feesManagedByGauntlet,
+      swapFeeToolTip,
       // methods
       fNum,
       onNewTx
