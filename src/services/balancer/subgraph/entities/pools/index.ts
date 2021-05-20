@@ -16,7 +16,7 @@ import {
 } from '@/lib/utils/liquidityMining';
 import { TOKENS } from '@/constants/tokens';
 
-const IS_LIQUIDITY_MINING_ENABLED = false;
+const IS_LIQUIDITY_MINING_ENABLED = true;
 
 export default class Pools {
   service: Service;
