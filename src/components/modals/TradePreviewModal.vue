@@ -14,7 +14,8 @@
         />
         <div class="flex flex-col">
           <div class="font-bold">
-            {{ amountIn }} {{ symbolIn }} -> {{ amountOut }} {{ symbolOut }}
+            {{ fNum(amountIn, 'token') }} {{ symbolIn }} ->
+            {{ fNum(amountOut, 'token') }} {{ symbolOut }}
           </div>
           <div class="text-gray-500 text-sm">{{ fNum(valueIn, 'usd') }}</div>
         </div>
