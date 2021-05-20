@@ -1,7 +1,7 @@
 <template>
   <BalModal :show="open" @close="onClose">
     <template v-slot:header>
-      <h3>Preview trade transactions</h3>
+      <h3>{{ $t('previewTrade') }}</h3>
     </template>
     <div>
       <div
@@ -37,7 +37,7 @@
               <span v-else class="text-gray-500">1</span>
             </div>
             <div class="ml-3">
-              <span v-if="isApproved">Approved</span>
+              <span v-if="isApproved">{{ $t('approved') }}</span>
               <span v-else>{{ $t('approve') }}</span>
             </div>
           </div>
@@ -56,7 +56,7 @@
       <BalBtn
         v-if="requiresApproval && !isApproved"
         class="mt-5"
-        :label="`Approve ${symbolIn}`"
+        :label="`${$t('approve')} ${symbolIn}`"
         :loading="approving"
         :loading-label="`${$t('approving')} ${symbolIn}…`"
         color="gradient"
@@ -66,7 +66,7 @@
       <BalBtn
         v-else
         class="mt-5"
-        :label="`Confirm trade`"
+        :label="$t('confirmTrade')"
         :loading="trading"
         :loading-label="$t('confirming')"
         color="gradient"
