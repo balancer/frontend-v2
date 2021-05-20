@@ -20,6 +20,7 @@ export interface Pool {
   poolType: PoolType;
   swapFee: string;
   owner: string;
+  factory: string;
   tokens: PoolToken[];
   tokensList: string[];
   tokenAddresses: string[];
