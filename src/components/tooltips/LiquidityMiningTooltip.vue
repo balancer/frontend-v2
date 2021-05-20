@@ -17,7 +17,7 @@
       <div class="p-3">
         <div class="whitespace-nowrap flex items-center">
           {{ fNum(pool.dynamic.apy.pool, 'percent') }}
-          <span class="ml-1 text-gray-500 text-xs">{{ $t('lpFeeAPY') }}</span>
+          <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPY') }}</span>
         </div>
         <div class="whitespace-nowrap flex items-center">
           {{ fNum(pool.dynamic.apy.liquidityMining, 'percent') }}

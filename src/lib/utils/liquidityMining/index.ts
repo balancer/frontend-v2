@@ -14,8 +14,6 @@ type LiquidityMiningTier = {
 };
 
 type LiquidityMiningWeek = {
-  start_timestamp: number;
-  end_timestamp: number;
   tiers: Record<LiquidityMiningTierLevel, LiquidityMiningTier>;
 };
 
