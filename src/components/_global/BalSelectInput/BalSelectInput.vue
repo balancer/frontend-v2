@@ -99,7 +99,7 @@ export default defineComponent({
         case 'lg':
           return 'h-16';
         default:
-          return 'h-14';
+          return 'h-12';
       }
     });
 

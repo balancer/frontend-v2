@@ -17,6 +17,7 @@ type UserClaimsQueryResponse = {
   pendingClaims: Claim[];
   availableToClaim: string;
   currentRewardsEstimate: string | null;
+  totalRewards: string;
 };
 
 export default function useUserClaimsQuery(
@@ -44,12 +45,17 @@ export default function useUserClaimsQuery(
 
     const availableToClaim = pendingClaims
       .map(claim => parseFloat(claim.amount))
-      .reduce((total, amount) => total.plus(amount), bnum(0))
-      .toString();
+      .reduce((total, amount) => total.plus(amount), bnum(0));
+
+    const totalRewards =
+      currentRewardsEstimate != null
+        ? availableToClaim.plus(currentRewardsEstimate)
+        : availableToClaim;
 
     return {
       pendingClaims,
-      availableToClaim,
+      availableToClaim: availableToClaim.toString(),
+      totalRewards: totalRewards.toString(),
       currentRewardsEstimate
     };
   };

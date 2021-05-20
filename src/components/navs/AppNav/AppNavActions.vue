@@ -1,19 +1,7 @@
 <template>
   <div>
     <div v-if="$auth.isAuthenticated.value" class="flex items-center">
-      <BalBtn
-        v-if="availableToClaim != null"
-        tag="a"
-        :href="EXTERNAL_LINKS.Balancer.Claim(account)"
-        target="_blank"
-        rel="noreferrer"
-        color="gradient"
-        rounded
-        class="mr-2 text-base hidden md:block"
-        size="sm"
-      >
-        <StarsIcon class="mr-1" />{{ fNum(availableToClaim, 'token') }} BAL
-      </BalBtn>
+      <AppNavClaimBtn />
       <AppNavAccountBtn />
     </div>
     <BalBtn
@@ -45,12 +33,14 @@ import useNumbers from '@/composables/useNumbers';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
+import AppNavClaimBtn from './AppNavClaimBtn.vue';
 
 export default defineComponent({
   name: 'AppNavActions',
 
   components: {
-    AppNavAccountBtn
+    AppNavAccountBtn,
+    AppNavClaimBtn
   },
 
   setup() {
