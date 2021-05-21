@@ -41,15 +41,19 @@
       </div>
     </template>
     <template v-else>
-      <div class="border-b dark:border-gray-700 flex">
+      <div class="border-b border-t dark:border-gray-700 flex">
         <Search
           v-model="query"
           @input="onTokenSearch"
           :placeholder="t('searchBy')"
-          class="p-4 flex-auto"
+          class="p-3 flex-auto"
         />
-        <a @click="toggleSelectTokenList" class="p-4 flex">
-          <span class="mr-1">
+        
+          
+        <a @click="toggleSelectTokenList" class="token-list-container">
+          <p class="text-gray-500 group-hover:text-blue-500 group-focus:text-blue-500 transition-colors duration-200 ease-out text-xs">Token lists</p>
+          <div class="flex items-center">
+          <span class="mr-1 ">
             <img
               v-for="(tokenlist, i) in activeTokenLists"
               :key="`activeTokenListIcon-${i}`"
@@ -57,7 +61,8 @@
               class="rounded-full inline-block bg-white align-middle shadow w-6 h-6"
             />
           </span>
-          <BalIcon name="chevron-down" class="text-gray-500" />
+          <BalIcon name="chevron-down" size="sm" class="text-blue-500 group-hover:text-pink-500 group-focus:text-pink-500 transition-all duration-200 ease-out " />
+          </div>
         </a>
       </div>
       <div>
@@ -85,7 +90,7 @@
         <div
           v-else
           v-text="t('errorNoTokens')"
-          class="h-96 flex items-center justify-center"
+          class="h-96 p-4"
         />
       </div>
     </template>
@@ -218,3 +223,9 @@ export default defineComponent({
   }
 });
 </script>
+<style scoped>
+.token-list-container {
+  max-width: 148px;
+  @apply pl-2 pr-3 py-2 flex flex-col justify-center items-end border-l group;
+}
+</style>

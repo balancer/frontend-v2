@@ -89,11 +89,12 @@ export default defineComponent({
 }
 
 .modal-bg {
-  @apply absolute h-full w-full bg-black bg-opacity-50;
+  @apply absolute h-full w-full bg-black bg-opacity-80;
 }
 
 .modal-card {
-  @apply max-w-full sm:max-w-lg md:max-w-md lg:max-w-sm;
+  max-width: 420px;
+  @apply w-full;
   @apply mx-auto h-full rounded-b-none sm:rounded-b-lg;
 }
 
