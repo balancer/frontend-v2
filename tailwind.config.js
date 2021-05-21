@@ -1,4 +1,4 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require('tailwindcss/defaultTheme');
 module.exports = {
   purge: {
     content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
@@ -51,7 +51,7 @@ module.exports = {
     }),
     screens: {
       xs: '440px',
-      ...defaultTheme.screens,
+      ...defaultTheme.screens
     },
     extend: {
       colors: {

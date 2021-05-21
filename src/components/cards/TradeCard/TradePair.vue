@@ -45,7 +45,11 @@
               {{ tokenInSymbol }}
             </span>
           </div>
-          <BalIcon :name="'chevron-down'" :size="'sm'" class="text-blue-500 group-hover:text-pink-500" />
+          <BalIcon
+            :name="'chevron-down'"
+            :size="'sm'"
+            class="text-blue-500 group-hover:text-pink-500"
+          />
         </div>
       </template>
       <template v-slot:info>
@@ -116,7 +120,11 @@
               {{ tokenOutSymbol }}
             </span>
           </div>
-          <BalIcon :name="'chevron-down'" :size="'sm'" class="text-blue-500 group-hover:text-pink-500" />
+          <BalIcon
+            :name="'chevron-down'"
+            :size="'sm'"
+            class="text-blue-500 group-hover:text-pink-500"
+          />
         </div>
       </template>
       <template v-slot:info>
@@ -331,7 +339,7 @@ export default defineComponent({
 });
 </script>
 <style>
- .prepend {
-   @apply group;
+.prepend {
+  @apply group;
 }
 </style>
