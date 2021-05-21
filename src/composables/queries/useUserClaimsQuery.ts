@@ -12,7 +12,8 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import {
   getPendingClaims,
   getCurrentRewardsEstimate,
-  Report
+  Report,
+  CurrentRewardsEstimate
 } from '@/services/claim';
 
 import { Claim } from '@/types';
@@ -21,7 +22,7 @@ type UserClaimsQueryResponse = {
   pendingClaims: Claim[];
   pendingClaimsReports: Report;
   availableToClaim: string;
-  currentRewardsEstimate: string | null;
+  currentRewardsEstimate: CurrentRewardsEstimate;
   totalRewards: string;
 };
 
@@ -53,7 +54,7 @@ export default function useUserClaimsQuery(
 
     const totalRewards =
       currentRewardsEstimate != null
-        ? availableToClaim.plus(currentRewardsEstimate)
+        ? availableToClaim.plus(currentRewardsEstimate.rewards)
         : availableToClaim;
 
     return {

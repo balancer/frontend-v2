@@ -1,5 +1,4 @@
 import { parseUnits } from '@ethersproject/units';
-// import { Provider } from '@ethersproject/abstract-provider';
 import { Web3Provider } from '@ethersproject/providers';
 import { toWei, soliditySha3 } from 'web3-utils';
 import axios from 'axios';
@@ -112,25 +111,41 @@ type CurrentRewardsEstimateResponse = {
   };
 };
 
-export async function getCurrentRewardsEstimate(account: string) {
+export type CurrentRewardsEstimate = {
+  rewards: string;
+  velocity: string;
+  timestamp: string;
+} | null;
+
+export async function getCurrentRewardsEstimate(
+  account: string
+): Promise<CurrentRewardsEstimate> {
   try {
     const response = await axios.get<CurrentRewardsEstimateResponse>(
       `https://api.balancer.finance/liquidity-mining/v1/liquidity-provider/${account}`
     );
     if (response.data.success) {
-      return response.data.result['liquidity-providers']
-        .reduce(
-          (total, { current_estimate }) => total.plus(current_estimate),
-          bnum(0)
-        )
-        .toString();
-    }
+      const liquidityProviders = response.data.result['liquidity-providers'];
 
-    return null;
+      if (Array.isArray(liquidityProviders)) {
+        const lastEntry = liquidityProviders[liquidityProviders.length - 1];
+
+        return {
+          rewards: liquidityProviders
+            .reduce(
+              (total, { current_estimate }) => total.plus(current_estimate),
+              bnum(0)
+            )
+            .toString(),
+          velocity: lastEntry.velocity,
+          timestamp: response.data.result.current_timestamp
+        };
+      }
+    }
   } catch (e) {
     console.log('[Claim] Current Rewards Estimate Error', e);
-    return null;
   }
+  return null;
 }
 
 export async function claimRewards(

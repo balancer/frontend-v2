@@ -7,7 +7,7 @@
         class="mr-2 text-base hidden md:block"
         size="sm"
       >
-        <StarsIcon class="mr-1" />{{ fNum(userClaims.totalRewards, 'token') }}
+        <StarsIcon class="mr-1" />{{ fNum(totalRewards, 'token') }}
         BAL
       </BalBtn>
     </template>
@@ -42,12 +42,12 @@
         <div class="mb-1">{{ $t('pendingCurrentWeek') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
-            {{ fNum(userClaims.currentRewardsEstimate, 'token') }} BAL
+            {{ fNum(currentRewards, 'token') }} BAL
           </div>
           <div>
             {{
-              currentRewardsEstimateInUSD != null
-                ? fNum(currentRewardsEstimateInUSD, 'usd')
+              currentRewardsInUSD != null
+                ? fNum(currentRewardsInUSD, 'usd')
                 : '-'
             }}
           </div>
@@ -60,6 +60,8 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 import { useStore } from 'vuex';
+import { differenceInSeconds } from 'date-fns';
+import { useIntervalFn } from '@vueuse/core';
 
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
@@ -80,6 +82,7 @@ export default defineComponent({
     // DATA
 
     const isClaiming = ref(false);
+    const rewardsEstimateSinceTimestamp = ref('0');
 
     // COMPOSABLES
     const store = useStore();
@@ -109,15 +112,42 @@ export default defineComponent({
         : null
     );
 
-    const currentRewardsEstimateInUSD = computed(() =>
-      balPrice.value != null &&
+    const currentRewards = computed(() =>
       userClaims.value != null &&
       userClaims.value.currentRewardsEstimate != null
-        ? bnum(userClaims.value?.currentRewardsEstimate)
+        ? bnum(userClaims.value.currentRewardsEstimate.rewards)
+            .plus(rewardsEstimateSinceTimestamp.value)
+            .toString()
+        : null
+    );
+
+    const currentRewardsInUSD = computed(() =>
+      balPrice.value != null && currentRewards.value != null
+        ? bnum(currentRewards.value)
             .times(balPrice.value)
             .toString()
         : null
     );
+
+    const totalRewards = computed(() =>
+      userClaims.value != null
+        ? bnum(userClaims.value.totalRewards)
+            .plus(rewardsEstimateSinceTimestamp.value)
+            .toString()
+        : null
+    );
+
+    useIntervalFn(async () => {
+      if (userClaims.value != null && userClaims.value.currentRewardsEstimate) {
+        const diffInSeconds = differenceInSeconds(
+          new Date(),
+          new Date(userClaims.value.currentRewardsEstimate.timestamp)
+        );
+        rewardsEstimateSinceTimestamp.value = bnum(diffInSeconds)
+          .times(userClaims.value.currentRewardsEstimate.velocity)
+          .toString();
+      }
+    }, 1000);
 
     // METHODS
     async function claimAvailableRewards() {
@@ -158,7 +188,9 @@ export default defineComponent({
       // computed
       userClaims,
       availableToClaimInUSD,
-      currentRewardsEstimateInUSD,
+      currentRewards,
+      currentRewardsInUSD,
+      totalRewards,
 
       // methods
       fNum,
