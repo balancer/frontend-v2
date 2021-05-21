@@ -7,6 +7,10 @@
       :is-loading-more="isLoadingMore"
       skeleton-class="h-64"
       sticky="both"
+      :link="{
+        to: 'pool',
+        getParams: pool => ({ id: pool.id })
+      }"
       :on-row-click="handleRowClick"
       :is-paginated="isPaginated"
       @load-more="$emit('loadMore')"
