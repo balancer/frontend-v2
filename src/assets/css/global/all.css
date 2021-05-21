@@ -18,6 +18,10 @@ body {
   outline: none !important;
 }
 
+input {
+  caret-color: #ff00ff;
+}
+
 #app {
   @apply bg-white dark:bg-gray-900;
   @apply text-gray-900 dark:text-gray-50;

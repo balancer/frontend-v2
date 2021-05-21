@@ -1,7 +1,7 @@
 <template>
   <div class="relative" v-click-outside="handleClickOutside">
     <div
-      class="bal-popover-activator"
+      class="bal-popover-activator group"
       @click="trigger === 'click' && togglePopover()"
       @mouseenter="trigger === 'hover' && showPopover()"
       @mouseleave="trigger === 'hover' && hidePopover()"
@@ -94,4 +94,8 @@ export default defineComponent({
 .bal-popover-activator:hover .feather-settings {
   transform: scale(1.2) rotate(-45deg);
 }
+.bal-popover-activator:hover .icon-container {
+  @apply text-blue-500;
+}
+
 </style>

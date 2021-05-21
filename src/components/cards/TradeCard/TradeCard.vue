@@ -278,7 +278,7 @@ export default defineComponent({
 </script>
 <style>
 .trade-container .bal-card {
-  @apply border-0 xs:border shadow-none xs:shadow-lg md:rounded-xl;
+  @apply border-0 xs:border shadow-none xs:shadow-lg md:shadow-xl md:rounded-xl;
 }
 
 .trade-container .bal-card .header {
