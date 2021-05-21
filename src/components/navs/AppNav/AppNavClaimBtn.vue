@@ -27,7 +27,14 @@
             }}
           </div>
         </div>
-        <BalBtn color="gradient" size="md" block class="mb-1"
+        <BalBtn
+          color="gradient"
+          size="md"
+          block
+          class="mb-1"
+          :loading="isClaiming"
+          :loading-label="$t('claiming')"
+          @click="claimAvailableRewards"
           >{{ $t('claim') }} BAL</BalBtn
         >
       </div>
@@ -51,27 +58,36 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
+import useAuth from '@/composables/useAuth';
+import useNotify from '@/composables/useNotify';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 
 import { getOriginalAddress } from '@/services/coingecko';
 
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
+import { claimRewards } from '@/services/claim';
 
 export default defineComponent({
   name: 'AppNavClaimBtn',
 
   setup() {
+    // DATA
+
+    const isClaiming = ref(false);
+
     // COMPOSABLES
     const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
-    const { appNetwork } = useWeb3();
+    const { appNetwork, account } = useWeb3();
+    const { txListener } = useNotify();
+    const auth = useAuth();
 
     const balPrice = computed(
       () =>
@@ -103,16 +119,51 @@ export default defineComponent({
         : null
     );
 
+    // METHODS
+    async function claimAvailableRewards() {
+      if (userClaims.value != null) {
+        isClaiming.value = true;
+        try {
+          const tx = await claimRewards(
+            appNetwork.id,
+            auth.web3,
+            account.value,
+            userClaims.value.pendingClaims,
+            userClaims.value.pendingClaimsReports
+          );
+
+          txListener(tx.hash, {
+            onTxConfirmed: () => {
+              isClaiming.value = false;
+              userClaimsQuery.refetch.value();
+            },
+            onTxCancel: () => {
+              isClaiming.value = false;
+            },
+            onTxFailed: () => {
+              isClaiming.value = false;
+            }
+          });
+        } catch (e) {
+          console.log(e);
+          isClaiming.value = false;
+        }
+      }
+    }
+
     return {
+      // data
+      isClaiming,
+
       // computed
       userClaims,
       availableToClaimInUSD,
       currentRewardsEstimateInUSD,
 
       // methods
-      fNum
+      fNum,
+      claimAvailableRewards
     };
   }
 });
 </script>
-<style scoped></style>

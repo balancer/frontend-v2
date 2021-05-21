@@ -5,16 +5,21 @@ import { UseQueryOptions } from 'react-query/types';
 import { bnum } from '@/lib/utils';
 
 import useWeb3 from '@/composables/useWeb3';
+import useAuth from '@/composables/useAuth';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
-import getProvider from '@/lib/utils/provider';
-import { getPendingClaims, getCurrentRewardsEstimate } from '@/services/claim';
+import {
+  getPendingClaims,
+  getCurrentRewardsEstimate,
+  Report
+} from '@/services/claim';
 
 import { Claim } from '@/types';
 
 type UserClaimsQueryResponse = {
   pendingClaims: Claim[];
+  pendingClaimsReports: Report;
   availableToClaim: string;
   currentRewardsEstimate: string | null;
   totalRewards: string;
@@ -25,6 +30,7 @@ export default function useUserClaimsQuery(
 ) {
   // COMPOSABLES
   const { account, isConnected, appNetwork } = useWeb3();
+  const auth = useAuth();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Claims.All(account));
@@ -34,16 +40,14 @@ export default function useUserClaimsQuery(
     () => isConnected.value && account.value != null
   );
 
-  const provider = getProvider(appNetwork.key);
-
   // METHODS
   const queryFn = async () => {
     const [pendingClaims, currentRewardsEstimate] = await Promise.all([
-      getPendingClaims(appNetwork.id, provider, account.value),
+      getPendingClaims(appNetwork.id, auth.web3, account.value),
       getCurrentRewardsEstimate(account.value)
     ]);
 
-    const availableToClaim = pendingClaims
+    const availableToClaim = pendingClaims.claims
       .map(claim => parseFloat(claim.amount))
       .reduce((total, amount) => total.plus(amount), bnum(0));
 
@@ -53,7 +57,8 @@ export default function useUserClaimsQuery(
         : availableToClaim;
 
     return {
-      pendingClaims,
+      pendingClaims: pendingClaims.claims,
+      pendingClaimsReports: pendingClaims.reports,
       availableToClaim: availableToClaim.toString(),
       totalRewards: totalRewards.toString(),
       currentRewardsEstimate

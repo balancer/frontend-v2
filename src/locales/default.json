@@ -30,6 +30,7 @@
     "claim": "Claim",
     "claimBAL": "Claim BAL for",
     "claimSuccess": "You successfully claimed BAL!",
+    "claiming": "Claiming...",
     "classic": "Classic",
     "close": "Close",
     "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",

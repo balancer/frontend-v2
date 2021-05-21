@@ -1,15 +1,20 @@
 import { parseUnits } from '@ethersproject/units';
-import { Provider } from '@ethersproject/abstract-provider';
-
-import { ipfsGet } from '@/lib/utils/balancer/ipfs';
-import { call } from '@/lib/utils/balancer/web3';
-import { Claim } from '@/types';
+// import { Provider } from '@ethersproject/abstract-provider';
+import { Web3Provider } from '@ethersproject/providers';
+import { toWei, soliditySha3 } from 'web3-utils';
+import axios from 'axios';
 
 import { NetworkId } from '@/constants/network';
 
-import { abi } from '@/lib/abi/MerkleRedeem.json';
-import axios from 'axios';
+import { Claim } from '@/types';
+
+import { ipfsGet } from '@/lib/utils/balancer/ipfs';
+import { call, sendTransaction } from '@/lib/utils/balancer/web3';
 import { bnum } from '@/lib/utils';
+import { loadTree } from '@/lib/utils/merkle';
+import configs from '@/lib/config';
+
+import merkleRedeemAbi from '@/lib/abi/MerkleRedeem.json';
 
 const gateway = process.env.VUE_APP_IPFS_NODE || 'ipfs.io';
 
@@ -38,18 +43,18 @@ type ClaimStatus = boolean;
 
 export async function getClaimStatus(
   network: NetworkId,
-  provider: Provider,
+  provider: Web3Provider,
   ids: number,
   account: string
 ): Promise<ClaimStatus[]> {
-  return await call(provider, abi, [
+  return await call(provider, merkleRedeemAbi, [
     constants[network].merkleRedeem,
     'claimStatus',
     [account, 1, ids]
   ]);
 }
 
-type Report = Record<string, any>;
+export type Report = Record<string, any>;
 
 export async function getReports(snapshot: Snapshot, weeks: number[]) {
   const reports = await Promise.all<Report>(
@@ -60,9 +65,9 @@ export async function getReports(snapshot: Snapshot, weeks: number[]) {
 
 export async function getPendingClaims(
   network: NetworkId,
-  provider: Provider,
+  provider: Web3Provider,
   account: string
-): Promise<Claim[]> {
+): Promise<{ claims: Claim[]; reports: Report }> {
   const snapshot = await getSnapshot(network);
 
   const claimStatus = await getClaimStatus(
@@ -74,20 +79,23 @@ export async function getPendingClaims(
 
   const pendingWeeks = claimStatus
     .map((status, i) => [i + 1, status])
-    .filter(([, status]) => status === false)
+    .filter(([, status]) => !status)
     .map(([i]) => i) as number[];
 
-  const reports = Object.entries(await getReports(snapshot, pendingWeeks));
+  const pendingWeeksReports = await getReports(snapshot, pendingWeeks);
 
-  return reports
-    .filter((report: Report) => report[1][account])
-    .map((report: Report) => {
-      return {
-        id: report[0],
-        amount: report[1][account],
-        amountDenorm: parseUnits(report[1][account], 18)
-      };
-    });
+  return {
+    claims: Object.entries(pendingWeeksReports)
+      .filter((report: Report) => report[1][account])
+      .map((report: Report) => {
+        return {
+          id: report[0],
+          amount: report[1][account],
+          amountDenorm: parseUnits(report[1][account], 18)
+        };
+      }),
+    reports: pendingWeeksReports
+  };
 }
 
 type CurrentRewardsEstimateResponse = {
@@ -122,5 +130,38 @@ export async function getCurrentRewardsEstimate(account: string) {
   } catch (e) {
     console.log('[Claim] Current Rewards Estimate Error', e);
     return null;
+  }
+}
+
+export async function claimRewards(
+  network: NetworkId,
+  provider: Web3Provider,
+  account: string,
+  pendingClaims: Claim[],
+  reports: Report
+): Promise<any> {
+  try {
+    const claims = pendingClaims.map(week => {
+      const claimBalance = week.amount;
+      const merkleTree = loadTree(reports[week.id]);
+
+      const proof = merkleTree.getHexProof(
+        soliditySha3(account, toWei(claimBalance))
+      );
+      return [parseInt(week.id), toWei(claimBalance), proof];
+    });
+
+    console.log(claims);
+
+    return sendTransaction(
+      provider,
+      configs[network].addresses.merkleRedeem,
+      merkleRedeemAbi,
+      'claimWeeks',
+      [account, claims]
+    );
+  } catch (e) {
+    console.log('[Claim] Claim Rewards Error:', e);
+    return Promise.reject(e);
   }
 }
