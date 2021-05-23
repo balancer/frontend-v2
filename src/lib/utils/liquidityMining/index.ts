@@ -50,7 +50,7 @@ export function getLiquidityMiningRewards(
 ) {
   const miningWeek =
     week === 'current' ? getCurrentLiquidityMiningWeek() : week;
-  console.log(miningWeek);
+
   const miningRewards: LiquidityMiningRewards = {};
 
   const liquidityMiningWeek = LiquidityMiningV2[
