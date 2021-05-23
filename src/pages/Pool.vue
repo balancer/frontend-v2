@@ -8,18 +8,21 @@
             <h3 class="font-bold mr-4 capitalize">
               {{ poolTypeLabel }}
             </h3>
-            <div
-              v-for="([address, tokenMeta], i) in titleTokens"
-              :key="i"
-              class="mr-2 mt-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
-            >
-              <BalAsset :address="address" :size="24" />
-              <span class="ml-2">
-                {{ tokenMeta.symbol }}
-              </span>
-              <span class="font-medium text-gray-400 text-xs mt-px ml-1">
-                {{ fNum(tokenMeta.weight, 'percent_lg') }}
-              </span>
+            <div class="mt-2 flex items-center">
+              <div
+                v-for="([address, tokenMeta], i) in titleTokens"
+                :key="i"
+                class="mr-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
+              >
+                <BalAsset :address="address" :size="24" />
+                <span class="ml-2">
+                  {{ tokenMeta.symbol }}
+                </span>
+                <span class="font-medium text-gray-400 text-xs mt-px ml-1">
+                  {{ fNum(tokenMeta.weight, 'percent_lg') }}
+                </span>
+              </div>
+              <LiquidityMiningTooltip :pool="pool" class="-ml-1" />
             </div>
           </div>
           <div class="flex items-center mt-2">
@@ -102,6 +105,7 @@
 import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import * as PoolPageComponents from '@/components/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
+import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
@@ -129,7 +133,8 @@ const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 export default defineComponent({
   components: {
     ...PoolPageComponents,
-    GauntletIcon
+    GauntletIcon,
+    LiquidityMiningTooltip
   },
 
   setup() {
@@ -207,15 +212,9 @@ export default defineComponent({
 
     const poolTypeLabel = computed(() => {
       if (!pool.value) return '';
+      const key = POOLS.Factories[pool.value.factory];
 
-      switch (pool.value.poolType) {
-        case 'Weighted':
-          return t('weightedPool');
-        case 'Stable':
-          return t('stablePool');
-        default:
-          return '';
-      }
+      return key ? t(key) : t('unknownPoolType');
     });
 
     const poolFeeLabel = computed(() => {

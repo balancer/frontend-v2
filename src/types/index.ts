@@ -8,7 +8,7 @@ export interface FormRef {
 
 export interface Token {
   address: string;
-  balance: number;
+  balance: string;
   balanceDenorm: BigNumberish;
   chainId: number;
   decimals: number;
@@ -20,6 +20,8 @@ export interface Token {
   value: number;
   value24HChange: number;
 }
+
+export type TokenMap = Record<string, Token>;
 
 export interface Claim {
   id: string;

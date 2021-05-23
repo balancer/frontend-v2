@@ -396,7 +396,7 @@ export default defineComponent({
       const maxAmount = tokenBalance(data.propToken);
 
       if (currentAmount === '0') return 0;
-      return Math.ceil((Number(currentAmount) / maxAmount) * 100);
+      return Math.ceil((Number(currentAmount) / Number(maxAmount)) * 100);
     });
 
     const fullAmounts = computed(() => {
@@ -463,7 +463,9 @@ export default defineComponent({
 
     // METHODS
     function tokenBalance(index) {
-      return allTokens.value[props.pool.tokenAddresses[index]]?.balance || 0;
+      return Number(
+        allTokens.value[props.pool.tokenAddresses[index]]?.balance || 0
+      );
     }
 
     function tokenDecimals(index) {

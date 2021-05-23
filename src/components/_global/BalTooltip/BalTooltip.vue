@@ -10,14 +10,16 @@
   </button>
   <div
     ref="content"
-    class="tooltip p-3 text-xs bg-white text-black font-medium shadow rounded-md border z-50"
+    class="tooltip text-xs bg-white text-black font-medium shadow rounded-md border z-50"
+    :class="tooltipClasses"
+    v-bind="$attrs"
   >
     <slot />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from 'vue';
+import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
 import { createPopper, Instance as PopperInstance } from '@popperjs/core';
 import BalIcon from '../BalIcon/BalIcon.vue';
 
@@ -29,12 +31,19 @@ export default defineComponent({
   props: {
     placement: { type: String as PropType<Placement>, default: 'top' },
     onShow: { type: Function },
-    onHide: { type: Function }
+    onHide: { type: Function },
+    noPad: { type: Boolean, default: false }
   },
   setup(props) {
     const activator = ref<HTMLElement>();
     const content = ref<HTMLElement>();
     const popper = ref<PopperInstance>();
+
+    const tooltipClasses = computed(() => {
+      return {
+        'p-3': !props.noPad
+      };
+    });
 
     // show the tooltip
     const handleMouseEnter = () => {
@@ -66,7 +75,8 @@ export default defineComponent({
       activator,
       content,
       handleMouseEnter,
-      handleMouseLeave
+      handleMouseLeave,
+      tooltipClasses
     };
   }
 });
