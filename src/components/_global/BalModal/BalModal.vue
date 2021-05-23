@@ -93,7 +93,8 @@ export default defineComponent({
 }
 
 .modal-card {
-  @apply w-full mx-auto h-full rounded-b-none sm:rounded-b-lg;
+  @apply max-w-full sm:max-w-lg md:max-w-md lg:max-w-sm;
+  @apply mx-auto h-full rounded-b-none sm:rounded-b-lg;
 }
 
 .content-enter-active {

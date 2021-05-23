@@ -101,7 +101,7 @@
           <tr
             v-for="(dataItem, index) in tableData"
             :key="`tableRow-${index}`"
-            @click="onRowClick && onRowClick(dataItem)"
+            @click="handleRowClick(dataItem)"
             :class="['bg-white z-10 rowBg', { 'cursor-pointer': onRowClick }]"
           >
             <td
@@ -113,24 +113,52 @@
                 isColumnStuck ? 'isSticky' : ''
               ]"
             >
-              <slot
-                v-if="column.Cell"
-                v-bind="dataItem"
-                :name="column.Cell"
-              ></slot>
-              <div
-                v-else
-                :class="[
-                  'px-6 py-4',
-                  column.align === 'right' ? 'text-right' : 'text-left'
-                ]"
+              <router-link
+                v-if="link"
+                :to="{
+                  name: link.to,
+                  params: link.getParams(dataItem)
+                }"
               >
-                {{
-                  typeof column.accessor === 'string'
-                    ? dataItem[column.accessor]
-                    : column.accessor(dataItem)
-                }}
-              </div>
+                <slot
+                  v-if="column.Cell"
+                  v-bind="dataItem"
+                  :name="column.Cell"
+                ></slot>
+                <div
+                  v-else
+                  :class="[
+                    'px-6 py-4',
+                    column.align === 'right' ? 'text-right' : 'text-left'
+                  ]"
+                >
+                  {{
+                    typeof column.accessor === 'string'
+                      ? dataItem[column.accessor]
+                      : column.accessor(dataItem)
+                  }}
+                </div>
+              </router-link>
+              <template v-else>
+                <slot
+                  v-if="column.Cell"
+                  v-bind="dataItem"
+                  :name="column.Cell"
+                ></slot>
+                <div
+                  v-else
+                  :class="[
+                    'px-6 py-4',
+                    column.align === 'right' ? 'text-right' : 'text-left'
+                  ]"
+                >
+                  {{
+                    typeof column.accessor === 'string'
+                      ? dataItem[column.accessor]
+                      : column.accessor(dataItem)
+                  }}
+                </div>
+              </template>
             </td>
           </tr>
         </tbody>
@@ -232,12 +260,16 @@ export default defineComponent({
     noResultsLabel: {
       type: String
     },
+    link: {
+      type: Object,
+      default: null
+    },
     initialState: {
       type: Object as PropType<InitialState>,
-      default: {
+      default: () => ({
         sortColumn: null,
         sortDirection: null
-      }
+      })
     }
   },
   setup(props) {
@@ -274,6 +306,7 @@ export default defineComponent({
     };
 
     const handleRowClick = (data: Data) => {
+      if (props.link?.to) return;
       props.onRowClick && props.onRowClick(data);
     };
 
