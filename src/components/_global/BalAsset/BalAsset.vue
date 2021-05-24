@@ -1,17 +1,15 @@
 <template>
-  <span class="inline-block v-align-middle leading-none">
-    <img
-      v-if="iconURL && !error"
-      :src="_url(iconURL)"
-      :style="{
-        width: `${size}px`,
-        height: `${size}px`
-      }"
-      @error="error = true"
-      class="rounded-full inline-block bg-white leading-none shadow-sm"
-    />
-    <Avatar v-else :address="address" :size="size" />
-  </span>
+  <img
+    v-if="iconURL && !error"
+    :src="_url(iconURL)"
+    :style="{
+      width: `${size}px`,
+      height: `${size}px`
+    }"
+    @error="error = true"
+    class="rounded-full inline-block bg-white leading-none shadow-sm"
+  />
+  <Avatar v-else :address="address" :size="size" />
 </template>
 
 <script>
