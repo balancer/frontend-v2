@@ -121,7 +121,7 @@
         <template v-slot:info>
           <div
             class="cursor-pointer"
-            @click.prevent="amounts[i] = tokenBalance(i)"
+            @click.prevent="amounts[i] = tokenBalance(i).toString()"
           >
             {{ $t('balance') }}: {{ formatBalance(i) }}
           </div>
@@ -131,7 +131,7 @@
             <BalBtn
               size="xs"
               color="white"
-              @click.prevent="amounts[i] = tokenBalance(i)"
+              @click.prevent="amounts[i] = tokenBalance(i).toString()"
             >
               {{ $t('max') }}
             </BalBtn>
