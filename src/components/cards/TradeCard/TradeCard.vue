@@ -208,7 +208,6 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      console.log('error', errorMessage.value);
       if (errorMessage.value === TradeValidation.NO_ACCOUNT) {
         return {
           header: 'Connect wallet',
