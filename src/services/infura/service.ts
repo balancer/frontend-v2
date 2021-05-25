@@ -1,13 +1,7 @@
 import { WebSocketProvider } from '@ethersproject/providers';
+import configs from '@/lib/config';
 
-const INFURA_PROJECT_ID = process.env.VUE_APP_INFURA_PROJECT_ID;
 const NETWORK = process.env.VUE_APP_NETWORK || '1';
-
-const networkMap: Record<string, string> = {
-  '1': 'mainnet',
-  '4': 'rinkeby',
-  '42': 'kovan'
-};
 
 type NewBlockHandler = (blockNumber: number) => void;
 
@@ -16,12 +10,8 @@ export default class Service {
   wsProvider: WebSocketProvider;
 
   constructor() {
-    if (!INFURA_PROJECT_ID) throw new Error('Infura project ID missing!');
-
-    this.network = networkMap[NETWORK];
-    this.wsProvider = new WebSocketProvider(
-      `wss://${this.network}.infura.io/ws/v3/${INFURA_PROJECT_ID}`
-    );
+    this.network = configs[NETWORK].shortName;
+    this.wsProvider = new WebSocketProvider(configs[NETWORK].ws);
   }
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
