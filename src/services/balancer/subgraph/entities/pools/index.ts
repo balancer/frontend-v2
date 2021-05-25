@@ -147,7 +147,7 @@ export default class Pools {
   }
 
   private async timeTravelBlock(period: TimeTravelPeriod): Promise<number> {
-    const currentBlock = await this.service.infuraService.getBlockNumber();
+    const currentBlock = await this.service.wsProviderService.getBlockNumber();
     const dayInSecs = 24 * 60 * 60;
     const blocksInDay = Math.round(dayInSecs / this.service.blockTime);
 

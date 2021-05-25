@@ -23,7 +23,7 @@ import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
-import InfuraService from '@/services/infura/service';
+import wsProviderService from '@/services/wsProvider/service';
 
 export default defineComponent({
   components: {
@@ -39,7 +39,7 @@ export default defineComponent({
     const store = useStore();
 
     // SERVICES
-    const infuraService = new InfuraService();
+    const wsProvider = new wsProviderService();
 
     // COMPUTED
     const web3Modal = computed(() => store.state.web3.modal);
@@ -58,7 +58,7 @@ export default defineComponent({
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
-      infuraService.initBlockListener(setBlockNumber);
+      wsProvider.initBlockListener(setBlockNumber);
     });
 
     return {
