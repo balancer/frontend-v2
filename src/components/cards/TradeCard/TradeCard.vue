@@ -214,6 +214,13 @@ export default defineComponent({
           label: 'Connect'
         };
       }
+      if (errorMessage.value === TradeValidation.NO_ETHER) {
+        return {
+          header: "You don't have ETH",
+          body:
+            'You’ll need to add some ETH to trade with this wallet in order to pay for Ethereum gas fees.'
+        };
+      }
       if (errorMessage.value === TradeValidation.NO_BALANCE) {
         return {
           header: 'Not enough funds',
