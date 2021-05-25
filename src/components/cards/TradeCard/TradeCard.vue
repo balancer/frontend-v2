@@ -27,6 +27,14 @@
         :address-out="tokenOutAddress"
         :sorReturn="sorReturn"
       />
+      <TradeError
+        v-if="error"
+        class="mb-4"
+        :header="error.header"
+        :body="error.body"
+        :button-label="error.label"
+        @click="handleErrorButtonClick"
+      />
       <BalCheckbox
         v-if="priceImpact >= 0.05"
         v-model="highPiAccepted"
@@ -42,13 +50,6 @@
         :loading-label="$t('loading')"
         block
       />
-      <BalBtn
-        v-else-if="!isAuthenticated"
-        :label="$t('connectWallet')"
-        block
-        @click.prevent="connectWallet"
-      />
-      <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
         v-else
         :label="'Preview trade'"
@@ -99,13 +100,15 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { isAddress, getAddress } from '@ethersproject/address';
 
-import useAuth from '@/composables/useAuth';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useValidation from '@/composables/trade/useValidation';
+import useValidation, {
+  TradeValidation
+} from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
 import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
+import TradeError from '@/components/cards/TradeCard/TradeError.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
@@ -118,6 +121,7 @@ import { useI18n } from 'vue-i18n';
 export default defineComponent({
   components: {
     SuccessOverlay,
+    TradeError,
     TradePair,
     TradePreviewModal,
     TradeRoute,
@@ -129,7 +133,6 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
-    const { isAuthenticated } = useAuth();
     const { t } = useI18n();
 
     const getTokens = (params = {}) =>
@@ -162,7 +165,9 @@ export default defineComponent({
     });
 
     const tradeDisabled = computed(() => {
-      return priceImpact.value >= 0.05 ? !highPiAccepted.value : false;
+      if (errorMessage.value !== TradeValidation.VALID) return true;
+      if (priceImpact.value >= 0.05 && !highPiAccepted.value) return true;
+      return false;
     });
 
     // COMPOSABLES
@@ -207,8 +212,34 @@ export default defineComponent({
       return t('trade');
     });
 
-    function connectWallet() {
-      store.commit('web3/setAccountModal', true);
+    const error = computed(() => {
+      console.log('error', errorMessage.value);
+      if (errorMessage.value === TradeValidation.NO_ACCOUNT) {
+        return {
+          header: 'Connect wallet',
+          label: 'Connect'
+        };
+      }
+      if (errorMessage.value === TradeValidation.NO_BALANCE) {
+        return {
+          header: 'Not enough funds',
+          body: 'This trade requires more funds that you have in the wallet.'
+        };
+      }
+      if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
+        return {
+          header: 'Not enough liquidity',
+          body:
+            'Try trading with a smaller amount or check back when liquidity for this pool has increased.'
+        };
+      }
+      return undefined;
+    });
+
+    function handleErrorButtonClick() {
+      if (errorMessage.value === TradeValidation.NO_ACCOUNT) {
+        store.commit('web3/setAccountModal', true);
+      }
     }
 
     async function populateInitialTokens(): Promise<void> {
@@ -251,8 +282,8 @@ export default defineComponent({
     return {
       highPiAccepted,
       title,
-      isAuthenticated,
-      connectWallet,
+      error,
+      handleErrorButtonClick,
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
