@@ -1,0 +1,43 @@
+{
+  "key": "137",
+  "chainId": 137,
+  "name": "Matic Mainnet",
+  "shortName": "Matic",
+  "network": "matic",
+  "unknown": false,
+  "rpc": "https://rpc-mainnet.maticvigil.com",
+  "ws": "wss://rpc-mainnet.maticvigil.com/ws",
+  "explorer": "https://explorer-mainnet.maticvigil.com/",
+  "poolsUrlV1": "",
+  "poolsUrlV2": "",
+  "addresses": {
+    "bFactory": "",
+    "bActions": "",
+    "dsProxyRegistry": "",
+    "exchangeProxy": "",
+    "merkleRedeem": "",
+    "multicall": "0xa1B2b503959aedD81512C37e9dce48164ec6a94d",
+    "authorizer": "",
+    "vault": "",
+    "weightedPoolFactory": "",
+    "stablePoolFactory": "",
+    "tokenFactory": "",
+    "weth": "",
+    "MockFlashLoanReceiver": "",
+    "balancerHelpers": ""
+  },
+  "strategies": {
+    "0": {
+      "type": "0",
+      "name": "stablePool"
+    },
+    "1": {
+      "type": "1",
+      "name": "weightedPool"
+    },
+    "2": {
+      "type": "2",
+      "name": "weightedPool"
+    }
+  }
+}
