@@ -246,7 +246,7 @@
     "withdrawalSuccess": "Your investment has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
     "withdrawWarning": "Withdrawing single asset amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees.",
     "wrap": "Wrap",
-    "wrapInstruction": "Wrap your ETH to WETH",
+    "wrapInstruction": "Wrap your {0} to W{0}",
     "unwrap": "Unwrap",
     "week": "Week",
     "weekAbbrev": "w",

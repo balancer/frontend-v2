@@ -150,7 +150,7 @@
           }"
           class="text-xs text-gray-500 underline"
         >
-          {{ $t('wrapInstruction') }}
+          {{ $t('wrapInstruction', [nativeAsset]) }}
         </router-link>
         <BalTooltip>
           <template v-slot:activator>
@@ -264,6 +264,7 @@ import useTokens from '@/composables/useTokens';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
+import configs from '@/lib/config';
 import { bnum } from '@/lib/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -287,6 +288,8 @@ type DataProps = {
   range: number;
   highPiAccepted: boolean;
 };
+
+const { nativeAsset } = configs[process.env.VUE_APP_NETWORK ?? '1'];
 
 export default defineComponent({
   name: 'InvestForm',
@@ -651,6 +654,7 @@ export default defineComponent({
       // data
       ...toRefs(data),
       Goals,
+      nativeAsset,
       TOKENS,
       // computed
       allTokens,

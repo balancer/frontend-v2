@@ -5,6 +5,8 @@
   "shortName": "Matic",
   "network": "matic",
   "unknown": false,
+  "nativeAsset": "MATIC",
+  "nativeAssetLong": "Matic",
   "rpc": "https://rpc-mainnet.maticvigil.com",
   "ws": "wss://rpc-mainnet.maticvigil.com/ws",
   "explorer": "https://explorer-mainnet.maticvigil.com/",
