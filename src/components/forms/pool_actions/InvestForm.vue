@@ -264,7 +264,6 @@ import useTokens from '@/composables/useTokens';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
-import configs from '@/lib/config';
 import { bnum } from '@/lib/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -288,8 +287,6 @@ type DataProps = {
   range: number;
   highPiAccepted: boolean;
 };
-
-const { nativeAsset } = configs[process.env.VUE_APP_NETWORK ?? '1'];
 
 export default defineComponent({
   name: 'InvestForm',
@@ -321,7 +318,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { isAuthenticated } = useAuth();
-    const { account, userNetwork } = useWeb3();
+    const { account, appNetwork, userNetwork } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { txListener } = useNotify();
@@ -444,6 +441,8 @@ export default defineComponent({
 
       return minusSlippage(bptOut, props.pool.onchain.decimals);
     });
+
+    const nativeAsset = computed(() => appNetwork.nativeAsset);
 
     const isWethPool = computed(() =>
       props.pool.tokenAddresses.includes(TOKENS.AddressMap.WETH)

@@ -22,7 +22,9 @@ export default function useWeb3() {
     id: (Number(process.env.VUE_APP_NETWORK) || 1) as NetworkId,
     name: configs[Number(process.env.VUE_APP_NETWORK)].shortName || 'Mainnet',
     networkName:
-      configs[Number(process.env.VUE_APP_NETWORK)].network || 'homestead'
+      configs[Number(process.env.VUE_APP_NETWORK)].network || 'homestead',
+    nativeAsset:
+      configs[Number(process.env.VUE_APP_NETWORK)].nativeAsset || 'ETH'
   };
 
   // User network vars (dynamic)
