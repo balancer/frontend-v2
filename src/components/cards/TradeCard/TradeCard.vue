@@ -210,35 +210,33 @@ export default defineComponent({
     const error = computed(() => {
       if (errorMessage.value === TradeValidation.NO_ACCOUNT) {
         return {
-          header: 'Connect wallet',
-          label: 'Connect'
+          header: t('connectWallet'),
+          label: t('connect')
         };
       }
       if (errorMessage.value === TradeValidation.NO_ETHER) {
         return {
-          header: "You don't have ETH",
-          body:
-            'You’ll need to add some ETH to trade with this wallet in order to pay for Ethereum gas fees.'
+          header: t('noEth'),
+          body: t('noEthDetailed')
         };
       }
       if (errorMessage.value === TradeValidation.NO_BALANCE) {
         return {
-          header: 'Not enough funds',
-          body: 'This trade requires more funds that you have in the wallet.'
+          header: t('insufficientBalance'),
+          body: t('insufficientBalanceDetailed')
         };
       }
       if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
         return {
-          header: 'Not enough liquidity',
-          body:
-            'Try trading with a smaller amount or check back when liquidity for this pool has increased.'
+          header: t('insufficientLiquidity'),
+          body: t('insufficientLiquidityDetailed')
         };
       }
       if (isHighPriceImpact.value) {
         return {
-          header: 'High price impact',
-          body: 'This trade is significantly moving the market price.',
-          label: 'Accept'
+          header: t('highPriceImpact'),
+          body: t('highPriceImpactDetailed'),
+          label: t('accept')
         };
       }
       return undefined;
