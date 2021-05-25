@@ -35,15 +35,6 @@
         :button-label="error.label"
         @click="handleErrorButtonClick"
       />
-      <BalCheckbox
-        v-if="priceImpact >= 0.05"
-        v-model="highPiAccepted"
-        :rules="[isRequired($t('priceImpactCheckbox'))]"
-        name="highPiAccepted"
-        class="text-gray-500 mb-8"
-        size="sm"
-        :label="$t('priceImpactAccept')"
-      />
       <BalBtn
         v-if="poolsLoading"
         :loading="true"
@@ -164,9 +155,13 @@ export default defineComponent({
       );
     });
 
+    const isHighPriceImpact = computed(() => {
+      return priceImpact.value >= 0.05 && !highPiAccepted.value;
+    });
+
     const tradeDisabled = computed(() => {
       if (errorMessage.value !== TradeValidation.VALID) return true;
-      if (priceImpact.value >= 0.05 && !highPiAccepted.value) return true;
+      if (isHighPriceImpact.value) return true;
       return false;
     });
 
@@ -233,12 +228,22 @@ export default defineComponent({
             'Try trading with a smaller amount or check back when liquidity for this pool has increased.'
         };
       }
+      if (isHighPriceImpact.value) {
+        return {
+          header: 'High price impact',
+          body: 'This trade is significantly moving the market price.',
+          label: 'Accept'
+        };
+      }
       return undefined;
     });
 
     function handleErrorButtonClick() {
       if (errorMessage.value === TradeValidation.NO_ACCOUNT) {
         store.commit('web3/setAccountModal', true);
+      }
+      if (isHighPriceImpact.value) {
+        highPiAccepted.value = true;
       }
     }
 
