@@ -4,26 +4,24 @@
       <div class="col-span-2">
         <BalLoadingBlock v-if="loadingPool" class="h-16" />
         <div v-else class="flex flex-col">
-          <div class="flex flex-wrap items-end -mt-2">
-            <h3 class="font-bold mr-4 capitalize">
+          <div class="flex flex-wrap items-center -mt-2">
+            <h3 class="font-bold mr-4 capitalize mt-2">
               {{ poolTypeLabel }}
             </h3>
-            <div class="mt-2 flex items-center">
-              <div
-                v-for="([address, tokenMeta], i) in titleTokens"
-                :key="i"
-                class="mr-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
-              >
-                <BalAsset :address="address" :size="24" />
-                <span class="ml-2">
-                  {{ tokenMeta.symbol }}
-                </span>
-                <span class="font-medium text-gray-400 text-xs mt-px ml-1">
-                  {{ fNum(tokenMeta.weight, 'percent_lg') }}
-                </span>
-              </div>
-              <LiquidityMiningTooltip :pool="pool" class="-ml-1" />
+            <div
+              v-for="([address, tokenMeta], i) in titleTokens"
+              :key="i"
+              class="mt-2 mr-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
+            >
+              <BalAsset :address="address" :size="24" />
+              <span class="ml-2">
+                {{ tokenMeta.symbol }}
+              </span>
+              <span class="font-medium text-gray-400 text-xs mt-px ml-1">
+                {{ fNum(tokenMeta.weight, 'percent_lg') }}
+              </span>
             </div>
+            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-2" />
           </div>
           <div class="flex items-center mt-2">
             <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
