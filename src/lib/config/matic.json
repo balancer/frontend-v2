@@ -8,7 +8,7 @@
   "nativeAsset": "MATIC",
   "nativeAssetLong": "Matic",
   "rpc": "https://polygon-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
-  "ws": "wss://polygon-mainnet.infura.io/ws/v3/daaa68ec242643719749dd1caba2fc66",
+  "ws": "wss://rpc-mainnet.maticvigil.com/ws",
   "explorer": "https://explorer-mainnet.maticvigil.com/",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
