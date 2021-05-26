@@ -3,7 +3,9 @@ import getProvider from '@/lib/utils/provider';
 
 async function get3BoxProfile(address: string): Promise<Record<any, any>> {
   try {
-    const { profiles: [profile] } = await subgraphRequest('https://api.3box.io/graph', {
+    const {
+      profiles: [profile]
+    } = await subgraphRequest('https://api.3box.io/graph', {
       profiles: {
         __args: {
           ids: [address]
@@ -16,7 +18,7 @@ async function get3BoxProfile(address: string): Promise<Record<any, any>> {
     return profile;
   } catch (error) {
     console.error(error);
-    return {}
+    return {};
   }
 }
 
@@ -30,7 +32,7 @@ export async function getProfile(address: string, network: string) {
     return {
       ens: ensName,
       ...(_3BoxProfile || {})
-    }
+    };
   } catch (error) {
     console.error(error);
   }
