@@ -13,7 +13,11 @@
           </h5>
           <p
             v-if="$slots.default || description"
-            :class="['bal-alert-description', descriptionClasses, textSizeClass]"
+            :class="[
+              'bal-alert-description',
+              descriptionClasses,
+              textSizeClass
+            ]"
           >
             <slot>
               {{ description }}
@@ -58,7 +62,7 @@ export default defineComponent({
     description: { type: String },
     actionLabel: { type: String },
     raised: { type: Boolean, default: false },
-    block: { type: Boolean, default: false },
+    block: { type: Boolean, default: false }
   },
 
   setup(props, { slots }) {
@@ -166,12 +170,12 @@ export default defineComponent({
         default:
           return 'white';
       }
-    })
+    });
 
     const actionClasses = computed(() => ({
       'pl-4': !props.description && !slots.default,
       'mt-1': !!props.description || slots.default
-    }))
+    }));
 
     return {
       classes,

@@ -52,4 +52,3 @@ const Template = (args: Props) => ({
 export const Primary = Template.bind({});
 // @ts-ignore
 // Warning.args = { type: 'warning' };
-
