@@ -55,7 +55,8 @@
         <BalAlert
           v-if="!appLoading && missingPrices"
           type="warning"
-          :label="$t('noPriceInfo')"
+          :title="$t('noPriceInfo')"
+          size="sm"
           class="mt-2"
         />
       </div>
