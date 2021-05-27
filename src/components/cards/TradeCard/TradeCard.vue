@@ -2,7 +2,7 @@
   <BalCard class="relative">
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
-        <h4 class="font-bold">{{ $t(title) }}</h4>
+        <h4 class="font-bold">{{ title }}</h4>
         <TradeSettingsPopover :context="TradeSettingsContext.trade" />
       </div>
     </template>
