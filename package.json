@@ -26,6 +26,7 @@
     "@ensdomains/content-hash": "^2.5.3",
     "@ethersproject/abi": "^5.0.1",
     "@ethersproject/address": "^5.0.1",
+    "@ethersproject/bignumber": "^5.2.0",
     "@ethersproject/bytes": "^5.0.5",
     "@ethersproject/constants": "^5.0.1",
     "@ethersproject/contracts": "^5.0.1",
