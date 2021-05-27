@@ -9,6 +9,7 @@
       :color="chartColors"
       height="96"
       :showLegend="true"
+      :legendState="{ HODL: false }"
     />
   </div>
   <BalBlankSlate v-else class="h-96">

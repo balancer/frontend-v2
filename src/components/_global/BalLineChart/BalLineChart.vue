@@ -95,6 +95,9 @@ export default defineComponent({
     },
     showLegend: {
       type: Boolean
+    },
+    legendState: {
+      type: Object
     }
   },
   components: {
@@ -124,7 +127,8 @@ export default defineComponent({
           return `${legendName}: ${fNum(latestValue[1], null, {
             format: props.axisLabelFormatter.yAxis
           })}`;
-        }
+        },
+        selected: props.legendState
       },
       // controlling the display of the X-Axis
       xAxis: {
