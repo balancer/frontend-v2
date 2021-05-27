@@ -27,13 +27,16 @@
         :address-out="tokenOutAddress"
         :sorReturn="sorReturn"
       />
-      <TradeError
+      <BalAlert
         v-if="error"
         class="mb-4"
-        :header="error.header"
-        :body="error.body"
-        :button-label="error.label"
-        @click="handleErrorButtonClick"
+        type="error"
+        size="sm"
+        :title="error.header"
+        :description="error.body"
+        :action-label="error.label"
+        block
+        @actionClick="handleErrorButtonClick"
       />
       <BalBtn
         v-if="poolsLoading"
@@ -99,7 +102,6 @@ import useSor from '@/composables/trade/useSor';
 import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-import TradeError from '@/components/cards/TradeCard/TradeError.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
@@ -112,7 +114,6 @@ import { useI18n } from 'vue-i18n';
 export default defineComponent({
   components: {
     SuccessOverlay,
-    TradeError,
     TradePair,
     TradePreviewModal,
     TradeRoute,
@@ -208,12 +209,6 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      if (errorMessage.value === TradeValidation.NO_ACCOUNT) {
-        return {
-          header: t('connectWallet'),
-          label: t('connect')
-        };
-      }
       if (errorMessage.value === TradeValidation.NO_ETHER) {
         return {
           header: t('noEth'),
@@ -243,9 +238,6 @@ export default defineComponent({
     });
 
     function handleErrorButtonClick() {
-      if (errorMessage.value === TradeValidation.NO_ACCOUNT) {
-        store.commit('web3/setAccountModal', true);
-      }
       if (isHighPriceImpact.value) {
         highPiAccepted.value = true;
       }
