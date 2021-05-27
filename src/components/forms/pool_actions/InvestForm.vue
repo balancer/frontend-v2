@@ -156,7 +156,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52" v-html="ethBufferInstruction" />
+          <div class="w-52" v-html="$t('ethBufferInstruction')" />
         </BalTooltip>
       </div>
     </div>
