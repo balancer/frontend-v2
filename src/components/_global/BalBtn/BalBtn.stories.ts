@@ -1,8 +1,5 @@
 import BalBtn from './BalBtn.vue';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
 
 export default {
   component: BalBtn,
@@ -17,7 +14,7 @@ export default {
     size: 'md',
     color: 'primary',
     label: '',
-    loadingLabel: t('loading')
+    loadingLabel: 'Loading...'
   },
   argTypes: {
     tag: {
