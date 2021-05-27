@@ -15,7 +15,7 @@
             v-if="$slots.default || description"
             :class="[
               'bal-alert-description',
-              descriptionClasses,
+              descriptionColor,
               textSizeClass
             ]"
           >
@@ -148,9 +148,10 @@ export default defineComponent({
       'font-bold': !!props.description || slots.default
     }));
 
-    const descriptionClasses = computed(() => ({
-      'text-black text-opacity-70': true
-    }));
+    const descriptionColor = computed(() => {
+      if (props.type === 'info') return 'text-white text-opacity-70'
+      return 'text-black text-opacity-70'
+    });
 
     const iconSize = computed(() => {
       switch (props.size) {
@@ -185,7 +186,7 @@ export default defineComponent({
       iconSize,
       titleClasses,
       textSizeClass,
-      descriptionClasses,
+      descriptionColor,
       btnColor,
       actionClasses
     };
