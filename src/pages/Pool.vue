@@ -57,6 +57,13 @@
           size="sm"
           class="mt-2"
         />
+        <BalAlert
+          v-if="!appLoading && noInitLiquidity"
+          type="warning"
+          :title="$t('noInitLiquidity')"
+          size="sm"
+          class="mt-2"
+        />
       </div>
 
       <div class="hidden lg:block" />
@@ -85,7 +92,7 @@
 
       <div class="order-1 lg:order-2">
         <BalLoadingBlock
-          v-if="loadingPool || web3Loading"
+          v-if="loadingPool || web3Loading || noInitLiquidity"
           class="h-96 sticky top-24"
         />
         <PoolActionsCard
@@ -163,6 +170,13 @@ export default defineComponent({
     const appLoading = computed(() => store.state.app.loading);
 
     const pool = computed(() => poolQuery.data.value);
+
+    const noInitLiquidity = computed(
+      () =>
+        !loadingPool.value &&
+        pool.value &&
+        Number(pool.value.onchain.totalSupply) === 0
+    );
 
     const communityManagedFees = computed(
       () => pool.value?.owner == POOLS.DelegateOwner
@@ -270,6 +284,7 @@ export default defineComponent({
       appLoading,
       web3Loading,
       pool,
+      noInitLiquidity,
       poolTypeLabel,
       poolFeeLabel,
       historicalPrices,
