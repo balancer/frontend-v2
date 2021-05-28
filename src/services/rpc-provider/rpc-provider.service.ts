@@ -1,17 +1,15 @@
 import { WebSocketProvider } from '@ethersproject/providers';
-import configs from '@/lib/config';
-
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
+import ConfigService from '@/services/config/config.service';
 
 type NewBlockHandler = (blockNumber: number) => void;
 
-export default class Service {
+export default class RpcProviderService {
   network: string;
   wsProvider: WebSocketProvider;
 
-  constructor() {
-    this.network = configs[NETWORK].shortName;
-    this.wsProvider = new WebSocketProvider(configs[NETWORK].ws);
+  constructor(private readonly configService = new ConfigService()) {
+    this.network = configService.network.shortName;
+    this.wsProvider = new WebSocketProvider(configService.network.ws);
   }
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
