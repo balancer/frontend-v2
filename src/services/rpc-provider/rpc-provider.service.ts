@@ -1,7 +1,7 @@
 import { WebSocketProvider } from '@ethersproject/providers';
 import ConfigService from '@/services/config/config.service';
 
-type NewBlockHandler = (blockNumber: number) => void;
+type NewBlockHandler = (blockNumber: number) => any;
 
 export default class RpcProviderService {
   network: string;
