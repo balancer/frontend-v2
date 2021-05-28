@@ -27,14 +27,16 @@
         :address-out="tokenOutAddress"
         :sorReturn="sorReturn"
       />
-      <BalCheckbox
-        v-if="priceImpact >= 0.05"
-        v-model="highPiAccepted"
-        :rules="[isRequired($t('priceImpactCheckbox'))]"
-        name="highPiAccepted"
-        class="text-gray-500 mb-8"
+      <BalAlert
+        v-if="error"
+        class="mb-4"
+        type="error"
         size="sm"
-        :label="$t('priceImpactAccept')"
+        :title="error.header"
+        :description="error.body"
+        :action-label="error.label"
+        block
+        @actionClick="handleErrorButtonClick"
       />
       <BalBtn
         v-if="poolsLoading"
@@ -42,13 +44,6 @@
         :loading-label="$t('loading')"
         block
       />
-      <BalBtn
-        v-else-if="!isAuthenticated"
-        :label="$t('connectWallet')"
-        block
-        @click.prevent="connectWallet"
-      />
-      <BalBtn v-else-if="errorMessage" :label="errorMessage" block disabled />
       <BalBtn
         v-else
         :label="'Preview trade'"
@@ -99,9 +94,10 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { isAddress, getAddress } from '@ethersproject/address';
 
-import useAuth from '@/composables/useAuth';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useValidation from '@/composables/trade/useValidation';
+import useValidation, {
+  TradeValidation
+} from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
 import { ETHER } from '@/constants/tokenlists';
 
@@ -129,7 +125,6 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
-    const { isAuthenticated } = useAuth();
     const { t } = useI18n();
 
     const getTokens = (params = {}) =>
@@ -161,8 +156,14 @@ export default defineComponent({
       );
     });
 
+    const isHighPriceImpact = computed(() => {
+      return priceImpact.value >= 0.05 && !highPiAccepted.value;
+    });
+
     const tradeDisabled = computed(() => {
-      return priceImpact.value >= 0.05 ? !highPiAccepted.value : false;
+      if (errorMessage.value !== TradeValidation.VALID) return true;
+      if (isHighPriceImpact.value) return true;
+      return false;
     });
 
     // COMPOSABLES
@@ -207,8 +208,39 @@ export default defineComponent({
       return t('trade');
     });
 
-    function connectWallet() {
-      store.commit('web3/setAccountModal', true);
+    const error = computed(() => {
+      if (isHighPriceImpact.value) {
+        return {
+          header: t('highPriceImpact'),
+          body: t('highPriceImpactDetailed'),
+          label: t('accept')
+        };
+      }
+      switch (errorMessage.value) {
+        case TradeValidation.NO_ETHER:
+          return {
+            header: t('noEth'),
+            body: t('noEthDetailed')
+          };
+        case TradeValidation.NO_BALANCE:
+          return {
+            header: t('insufficientBalance'),
+            body: t('insufficientBalanceDetailed')
+          };
+        case TradeValidation.NO_LIQUIDITY:
+          return {
+            header: t('insufficientLiquidity'),
+            body: t('insufficientLiquidityDetailed')
+          };
+        default:
+          return undefined;
+      }
+    });
+
+    function handleErrorButtonClick() {
+      if (isHighPriceImpact.value) {
+        highPiAccepted.value = true;
+      }
     }
 
     async function populateInitialTokens(): Promise<void> {
@@ -251,8 +283,8 @@ export default defineComponent({
     return {
       highPiAccepted,
       title,
-      isAuthenticated,
-      connectWallet,
+      error,
+      handleErrorButtonClick,
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
