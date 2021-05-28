@@ -12,7 +12,7 @@
       >
         <BalIcon name="arrow-left" size="sm" />
       </BalBtn>
-      <h3>{{ title }}</h3>
+      <h5>{{ title }}</h5>
     </template>
     <template v-if="selectTokenList">
       <Search
