@@ -140,6 +140,8 @@
     "noData": "No data available",
     "noEth": "You don't have ETH",
     "noEthDetailed": "You’ll need to add some ETH to trade with this wallet in order to pay for Ethereum gas fees.",
+    "noInitLiquidity": "This pool has no initial liquidity",
+    "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
     "noInvestments": "No investments",
     "noPoolsFound": "No pools found",
     "noPriceImpact": "Best price",
