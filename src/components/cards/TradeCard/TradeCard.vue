@@ -209,24 +209,6 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      if (errorMessage.value === TradeValidation.NO_ETHER) {
-        return {
-          header: t('noEth'),
-          body: t('noEthDetailed')
-        };
-      }
-      if (errorMessage.value === TradeValidation.NO_BALANCE) {
-        return {
-          header: t('insufficientBalance'),
-          body: t('insufficientBalanceDetailed')
-        };
-      }
-      if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
-        return {
-          header: t('insufficientLiquidity'),
-          body: t('insufficientLiquidityDetailed')
-        };
-      }
       if (isHighPriceImpact.value) {
         return {
           header: t('highPriceImpact'),
@@ -234,7 +216,25 @@ export default defineComponent({
           label: t('accept')
         };
       }
-      return undefined;
+      switch (errorMessage.value) {
+        case TradeValidation.NO_ETHER:
+          return {
+            header: t('noEth'),
+            body: t('noEthDetailed')
+          };
+        case TradeValidation.NO_BALANCE:
+          return {
+            header: t('insufficientBalance'),
+            body: t('insufficientBalanceDetailed')
+          };
+        case TradeValidation.NO_LIQUIDITY:
+          return {
+            header: t('insufficientLiquidity'),
+            body: t('insufficientLiquidityDetailed')
+          };
+        default:
+          return undefined;
+      }
     });
 
     function handleErrorButtonClick() {
