@@ -21,7 +21,7 @@ export async function multicall(
   abi: any[],
   calls: any[],
   options?
-) {
+): Promise<any[]> {
   const multi = new Contract(
     configs[network].addresses.multicall,
     multicallAbi,

@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { ErrorCode } from '@ethersproject/logger';
 import { logFailedTx } from '@/lib/utils/logging';
 
@@ -18,7 +18,7 @@ export async function sendTransaction(
   action: string,
   params: any[],
   overrides: Record<string, any> = {}
-) {
+): Promise<TransactionResponse> {
   console.log('Sending transaction');
   console.log('Contract', contractAddress);
   console.log('Action', `"${action}"`);
