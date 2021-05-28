@@ -23,7 +23,7 @@ import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
-import wsProviderService from '@/services/wsProvider/service';
+import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 
 export default defineComponent({
   components: {
@@ -39,7 +39,7 @@ export default defineComponent({
     const store = useStore();
 
     // SERVICES
-    const wsProvider = new wsProviderService();
+    const rpcProvider = new RpcProviderService();
 
     // COMPUTED
     const web3Modal = computed(() => store.state.web3.modal);
@@ -58,7 +58,7 @@ export default defineComponent({
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
-      wsProvider.initBlockListener(setBlockNumber);
+      rpcProvider.initBlockListener(setBlockNumber);
     });
 
     return {

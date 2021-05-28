@@ -1,5 +1,5 @@
 import Client from './client';
-import WSProviderService from '@/services/wsProvider/service';
+import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
 import PoolActivities from './entities/poolActivities';
@@ -9,7 +9,7 @@ const NETWORK = process.env.VUE_APP_NETWORK || '1';
 
 export default class Service {
   client: Client;
-  wsProviderService: WSProviderService;
+  rpcProviderService: RpcProviderService;
   pools: Pools;
   poolShares: PoolShares;
   poolActivities: PoolActivities;
@@ -17,10 +17,10 @@ export default class Service {
 
   constructor(
     client = new Client(),
-    wsProviderService = new WSProviderService()
+    rpcProviderService = new RpcProviderService()
   ) {
     this.client = client;
-    this.wsProviderService = wsProviderService;
+    this.rpcProviderService = rpcProviderService;
 
     // Init entities
     this.pools = new Pools(this);
