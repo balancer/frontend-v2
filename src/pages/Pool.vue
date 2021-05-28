@@ -61,6 +61,7 @@
           v-if="!appLoading && noInitLiquidity"
           type="warning"
           :title="$t('noInitLiquidity')"
+          :description="$t('noInitLiquidityDetail')"
           size="sm"
           class="mt-2"
         />
@@ -92,11 +93,11 @@
 
       <div class="order-1 lg:order-2">
         <BalLoadingBlock
-          v-if="loadingPool || web3Loading || noInitLiquidity"
+          v-if="loadingPool || web3Loading"
           class="h-96 sticky top-24"
         />
         <PoolActionsCard
-          v-else
+          v-else-if="!noInitLiquidity"
           :pool="pool"
           :missing-prices="missingPrices"
           @on-tx="onNewTx"
