@@ -230,7 +230,6 @@ export default defineComponent({
   },
 
   setup(props: { pool: FullPool; initialState }, { emit }) {
-    console.log('lel', props.initialState);
     const data = reactive({
       withdrawForm: {} as FormRef,
       loading: false,
@@ -552,7 +551,6 @@ export default defineComponent({
     }
 
     watch(data, newData => {
-      console.log('reee', data, newData);
       emit('update:modelValue', newData);
     });
 
