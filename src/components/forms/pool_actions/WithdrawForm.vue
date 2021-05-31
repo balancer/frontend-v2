@@ -4,6 +4,7 @@
       v-model="withdrawType"
       :form-types="formTypes"
       :loading="loading"
+      :initialValue="withdrawType"
     />
 
     <template v-if="isProportional">
@@ -221,22 +222,26 @@ export default defineComponent({
     FormTypeToggle
   },
 
-  emits: ['success'],
+  emits: ['success', 'update:modelValue'],
 
   props: {
-    pool: { type: Object as PropType<FullPool>, required: true }
+    pool: { type: Object as PropType<FullPool>, required: true },
+    initialState: { type: Object, default: () => ({}) }
   },
 
-  setup(props: { pool: FullPool }, { emit }) {
+  setup(props: { pool: FullPool; initialState }, { emit }) {
+    console.log('lel', props.initialState);
     const data = reactive({
       withdrawForm: {} as FormRef,
       loading: false,
-      amounts: [] as string[],
+      amounts: props.initialState?.amounts || ([] as string[]),
       propMax: [] as string[],
-      bptIn: '',
-      withdrawType: FormTypes.proportional as FormTypes,
+      bptIn: props.initialState.bptIn || '',
+      withdrawType:
+        props.initialState.withdrawType ||
+        (FormTypes.proportional as FormTypes),
       singleAsset: 0,
-      range: 1000,
+      range: props.initialState.range || 1000,
       highPiAccepted: false
     });
 
@@ -546,6 +551,11 @@ export default defineComponent({
       }
     }
 
+    watch(data, newData => {
+      console.log('reee', data, newData);
+      emit('update:modelValue', newData);
+    });
+
     watch(
       () => props.pool.onchain.tokens,
       (newTokens, oldTokens) => {
@@ -561,10 +571,7 @@ export default defineComponent({
     watch(
       () => data.withdrawType,
       async newType => {
-        if (newType === FormTypes.proportional) {
-          setPropMax();
-          resetSlider();
-        } else if (newType === FormTypes.single) {
+        if (newType === FormTypes.single) {
           data.amounts = props.pool.tokenAddresses.map(() => '0');
           setSingleAsset(0);
         }
@@ -594,8 +601,12 @@ export default defineComponent({
 
     onMounted(async () => {
       if (bptBalance.value) {
-        setPropMax();
-        resetSlider();
+        if (props.initialState.amounts === undefined) {
+          setPropMax();
+        }
+        if (props.initialState.range === undefined) {
+          resetSlider();
+        }
       }
     });
 

@@ -51,11 +51,12 @@ export default defineComponent({
     modelValue: { type: String, required: true },
     loading: { type: Boolean, default: false },
     hasZeroBalance: { type: Boolean, default: false },
-    missingPrices: { type: Boolean, default: false }
+    missingPrices: { type: Boolean, default: false },
+    initialValue: { type: String as PropType<FormTypes> }
   },
 
   setup(props, { emit }) {
-    const selected = ref(props.formTypes[0].value);
+    const selected = ref(props.initialValue || props.formTypes[0].value);
 
     watch(selected, newVal => {
       emit('update:modelValue', newVal);

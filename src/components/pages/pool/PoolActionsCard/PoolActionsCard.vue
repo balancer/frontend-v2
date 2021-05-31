@@ -11,6 +11,8 @@
           :pool="pool"
           :missing-prices="missingPrices"
           @success="handleInvestment($event)"
+          v-model="investFormState"
+          :initialState="investFormState"
         />
         <SuccessOverlay
           v-if="investmentSuccess"
@@ -26,6 +28,8 @@
           :pool="pool"
           :missing-prices="missingPrices"
           @success="handleWithdrawal($event)"
+          v-model="withdrawFormState"
+          :initialState="withdrawFormState"
         />
         <SuccessOverlay
           v-if="withdrawalSuccess"
@@ -82,6 +86,8 @@ export default defineComponent({
     const investmentSuccess = ref(false);
     const withdrawalSuccess = ref(false);
     const txHash = ref('');
+    const investFormState = ref({});
+    const withdrawFormState = ref({});
 
     // METHODS
     function handleInvestment(txReceipt): void {
@@ -108,7 +114,10 @@ export default defineComponent({
       TradeSettingsContext,
       // methods
       handleInvestment,
-      handleWithdrawal
+      handleWithdrawal,
+      //refs
+      investFormState,
+      withdrawFormState
     };
   }
 });

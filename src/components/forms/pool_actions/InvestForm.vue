@@ -6,6 +6,7 @@
       :missing-prices="missingPrices"
       :has-zero-balance="hasZeroBalance"
       :loading="loading"
+      :initialValue="investType"
     />
 
     <template v-if="isProportional">
@@ -295,23 +296,24 @@ export default defineComponent({
     FormTypeToggle
   },
 
-  emits: ['success'],
+  emits: ['success', 'update:modelValue'],
 
   props: {
     pool: { type: Object as PropType<FullPool>, required: true },
-    missingPrices: { type: Boolean, default: false }
+    missingPrices: { type: Boolean, default: false },
+    initialState: { type: Object, default: () => ({}) }
   },
 
-  setup(props: { pool: FullPool }, { emit }) {
+  setup(props: { pool: FullPool; initialState }, { emit }) {
     const data = reactive<DataProps>({
       investForm: {} as FormRef,
-      investType: FormTypes.proportional,
+      investType: props.initialState.investType || FormTypes.proportional,
       loading: false,
-      amounts: [],
+      amounts: props.initialState?.amounts || [],
       propMax: [],
       validInputs: [],
       propToken: 0,
-      range: 1000,
+      range: props.initialState.range || 1000,
       highPiAccepted: false
     });
 
@@ -580,6 +582,10 @@ export default defineComponent({
 
     watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
 
+    watch(data, newData => {
+      emit('update:modelValue', newData);
+    });
+
     watch(
       () => props.pool.onchain.tokens,
       (newTokens, oldTokens) => {
@@ -605,7 +611,6 @@ export default defineComponent({
       newType => {
         if (newType === FormTypes.proportional) {
           setPropMax();
-          resetSlider();
         }
       }
     );
@@ -638,7 +643,9 @@ export default defineComponent({
         data.investType = FormTypes.custom;
       } else {
         setPropMax();
-        resetSlider();
+        if (props.initialState.range === undefined) {
+          resetSlider();
+        }
       }
     });
 
