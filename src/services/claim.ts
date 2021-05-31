@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units';
-import { Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { toWei, soliditySha3 } from 'web3-utils';
 import axios from 'axios';
 
@@ -126,18 +126,21 @@ export async function getCurrentRewardsEstimate(
     );
     if (response.data.success) {
       const liquidityProviders = response.data.result['liquidity-providers'];
+      const rewards = liquidityProviders
+        .reduce(
+          (total, { current_estimate }) => total.plus(current_estimate),
+          bnum(0)
+        )
+        .toString();
+      const velocity =
+        liquidityProviders
+          .find(liquidityProvider => Number(liquidityProvider.velocity) > 0)
+          ?.velocity.toString() ?? '0';
 
       if (Array.isArray(liquidityProviders)) {
-        const lastEntry = liquidityProviders[liquidityProviders.length - 1];
-
         return {
-          rewards: liquidityProviders
-            .reduce(
-              (total, { current_estimate }) => total.plus(current_estimate),
-              bnum(0)
-            )
-            .toString(),
-          velocity: lastEntry.velocity,
+          rewards,
+          velocity,
           timestamp: response.data.result.current_timestamp
         };
       }
@@ -154,7 +157,7 @@ export async function claimRewards(
   account: string,
   pendingClaims: Claim[],
   reports: Report
-): Promise<any> {
+): Promise<TransactionResponse> {
   try {
     const claims = pendingClaims.map(week => {
       const claimBalance = week.amount;
@@ -165,8 +168,6 @@ export async function claimRewards(
       );
       return [parseInt(week.id), toWei(claimBalance), proof];
     });
-
-    console.log(claims);
 
     return sendTransaction(
       provider,

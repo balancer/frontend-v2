@@ -13,11 +13,7 @@ export default function useNotify() {
 
   function txListener(
     txHash: string | string[],
-    {
-      onTxConfirmed,
-      onTxCancel,
-      onTxFailed
-    }: {
+    callbacks?: {
       onTxConfirmed?: TxCallback;
       onTxCancel?: TxCallback;
       onTxFailed?: TxCallback;
@@ -30,9 +26,9 @@ export default function useNotify() {
       TransactionEventCode,
       TxCallback | undefined
     >> = {
-      txConfirmed: onTxConfirmed,
-      txCancel: onTxCancel,
-      txFailed: onTxFailed
+      txConfirmed: callbacks?.onTxConfirmed,
+      txCancel: callbacks?.onTxCancel,
+      txFailed: callbacks?.onTxFailed
     };
 
     // init event counters

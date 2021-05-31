@@ -7,7 +7,7 @@
         class="mr-2 text-base hidden md:block"
         size="sm"
       >
-        <StarsIcon class="mr-1" />{{ fNum(totalRewards, 'token') }}
+        <StarsIcon class="mr-1" />{{ fNum(totalRewards, 'token_4_decimals') }}
         BAL
       </BalBtn>
     </template>
@@ -17,7 +17,7 @@
         <div class="mb-1">{{ $t('availableToClaim') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
-            {{ fNum(userClaims.availableToClaim, 'token') }} BAL
+            {{ fNum(userClaims.availableToClaim, 'token_4_decimals') }} BAL
           </div>
           <div>
             {{
@@ -42,7 +42,7 @@
         <div class="mb-1">{{ $t('pendingCurrentWeek') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
-            {{ fNum(currentRewards, 'token') }} BAL
+            {{ fNum(currentRewards, 'token_4_decimals') }} BAL
           </div>
           <div>
             {{
@@ -161,19 +161,11 @@ export default defineComponent({
             userClaims.value.pendingClaims,
             userClaims.value.pendingClaimsReports
           );
+          txListener(tx.hash);
 
-          txListener(tx.hash, {
-            onTxConfirmed: () => {
-              isClaiming.value = false;
-              userClaimsQuery.refetch.value();
-            },
-            onTxCancel: () => {
-              isClaiming.value = false;
-            },
-            onTxFailed: () => {
-              isClaiming.value = false;
-            }
-          });
+          await tx.wait();
+          isClaiming.value = false;
+          userClaimsQuery.refetch.value();
         } catch (e) {
           console.log(e);
           isClaiming.value = false;
