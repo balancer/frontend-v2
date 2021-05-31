@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { formatUnits } from '@ethersproject/units';
 import configs, { Config } from '@/lib/config';
-import { getProfiles } from '@/lib/utils/profile';
+import { getProfile } from '@/lib/utils/profile';
 import useFathom from '@/composables/useFathom';
 
 const defaultConfig = process.env.VUE_APP_NETWORK || '1';
@@ -62,8 +62,8 @@ const actions = {
     await dispatch('account/getBalances', null, { root: true });
     await dispatch('account/getAllowances', null, { root: true });
     if (state.account) {
-      const profiles = await getProfiles([state.account]);
-      commit('setProfile', profiles[state.account]);
+      const profile = await getProfile(state.account, state.config.key);
+      commit('setProfile', profile);
     }
   },
 
@@ -89,8 +89,7 @@ const actions = {
           auth.web3 = new Web3Provider(auth.provider.value);
 
           commit('setNetwork', parseInt(formatUnits(chainId, 0)));
-          dispatch('account/getBalances', null, { root: true });
-          dispatch('account/getAllowances', null, { root: true });
+          dispatch('loadAccountData');
           commit('setLoading', false);
         });
         auth.provider.value.on('accountsChanged', async accounts => {
@@ -100,8 +99,7 @@ const actions = {
             await dispatch('account/resetAccount', null, { root: true });
             auth.web3 = new Web3Provider(auth.provider.value);
             commit('setAccount', accounts[0]);
-            dispatch('account/getBalances', null, { root: true });
-            dispatch('account/getAllowances', null, { root: true });
+            dispatch('loadAccountData');
             commit('setLoading', false);
           }
         });

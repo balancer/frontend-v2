@@ -4,26 +4,24 @@
       <div class="col-span-2">
         <BalLoadingBlock v-if="loadingPool" class="h-16" />
         <div v-else class="flex flex-col">
-          <div class="flex flex-wrap items-end -mt-2">
-            <h3 class="font-bold mr-4 capitalize">
+          <div class="flex flex-wrap items-center -mt-2">
+            <h3 class="font-bold mr-4 capitalize mt-2">
               {{ poolTypeLabel }}
             </h3>
-            <div class="mt-2 flex items-center">
-              <div
-                v-for="([address, tokenMeta], i) in titleTokens"
-                :key="i"
-                class="mr-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
-              >
-                <BalAsset :address="address" :size="24" />
-                <span class="ml-2">
-                  {{ tokenMeta.symbol }}
-                </span>
-                <span class="font-medium text-gray-400 text-xs mt-px ml-1">
-                  {{ fNum(tokenMeta.weight, 'percent_lg') }}
-                </span>
-              </div>
-              <LiquidityMiningTooltip :pool="pool" class="-ml-1" />
+            <div
+              v-for="([address, tokenMeta], i) in titleTokens"
+              :key="i"
+              class="mt-2 mr-2 flex items-center px-2 h-10 bg-gray-50 rounded-lg"
+            >
+              <BalAsset :address="address" :size="24" />
+              <span class="ml-2">
+                {{ tokenMeta.symbol }}
+              </span>
+              <span class="font-medium text-gray-400 text-xs mt-px ml-1">
+                {{ fNum(tokenMeta.weight, 'percent_lg') }}
+              </span>
             </div>
+            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-2" />
           </div>
           <div class="flex items-center mt-2">
             <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
@@ -55,7 +53,16 @@
         <BalAlert
           v-if="!appLoading && missingPrices"
           type="warning"
-          :label="$t('noPriceInfo')"
+          :title="$t('noPriceInfo')"
+          size="sm"
+          class="mt-2"
+        />
+        <BalAlert
+          v-if="!appLoading && noInitLiquidity"
+          type="warning"
+          :title="$t('noInitLiquidity')"
+          :description="$t('noInitLiquidityDetail')"
+          size="sm"
           class="mt-2"
         />
       </div>
@@ -90,7 +97,7 @@
           class="h-96 sticky top-24"
         />
         <PoolActionsCard
-          v-else
+          v-else-if="!noInitLiquidity"
           :pool="pool"
           :missing-prices="missingPrices"
           @on-tx="onNewTx"
@@ -164,6 +171,13 @@ export default defineComponent({
     const appLoading = computed(() => store.state.app.loading);
 
     const pool = computed(() => poolQuery.data.value);
+
+    const noInitLiquidity = computed(
+      () =>
+        !loadingPool.value &&
+        pool.value &&
+        Number(pool.value.onchain.totalSupply) === 0
+    );
 
     const communityManagedFees = computed(
       () => pool.value?.owner == POOLS.DelegateOwner
@@ -271,6 +285,7 @@ export default defineComponent({
       appLoading,
       web3Loading,
       pool,
+      noInitLiquidity,
       poolTypeLabel,
       poolFeeLabel,
       historicalPrices,

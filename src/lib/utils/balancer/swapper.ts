@@ -1,5 +1,5 @@
 import { Swap } from '@balancer-labs/sor/dist/types';
-import { Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { AddressZero, MaxUint256 } from '@ethersproject/constants';
 import { SwapV2 } from '@balancer-labs/sor2/dist/types';
 import { BigNumber } from 'bignumber.js';
@@ -35,7 +35,7 @@ export async function swapIn(
   sorReturn: SorReturn,
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber
-): Promise<any> {
+): Promise<TransactionResponse> {
   if (sorReturn.isV1swap) {
     return batchSwapGivenInV1(
       network,
@@ -66,7 +66,7 @@ export async function swapOut(
   sorReturn: SorReturn,
   tokenInAmountMax: BigNumber,
   tokenOutAmount: BigNumber
-): Promise<any> {
+): Promise<TransactionResponse> {
   if (sorReturn.isV1swap) {
     return batchSwapGivenOutV1(
       network,
@@ -98,7 +98,7 @@ export async function batchSwapGivenInV1(
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber,
   swaps: Swap[][]
-): Promise<any> {
+): Promise<TransactionResponse> {
   console.log('[Swapper] batchSwapGivenInV1');
   const overrides: any = {};
 
@@ -134,7 +134,7 @@ export async function batchSwapGivenOutV1(
   tokenOut: string,
   tokenInAmountMax: BigNumber,
   swaps: Swap[][]
-): Promise<any> {
+): Promise<TransactionResponse> {
   console.log('[Swapper] batchSwapGivenOutV1');
   const overrides: any = {};
 
@@ -166,7 +166,7 @@ async function batchSwapGivenInV2(
   tokenOutAmountMin: BigNumber,
   swaps: SwapV2[],
   tokenAddresses: string[]
-): Promise<any> {
+): Promise<TransactionResponse> {
   console.log('[Swapper] batchSwapGivenInV2');
   const overrides: any = {};
 
@@ -246,7 +246,7 @@ async function batchSwapGivenOutV2(
   tokenOutAmount: BigNumber,
   swaps: SwapV2[],
   tokenAddresses: string[]
-): Promise<any> {
+): Promise<TransactionResponse> {
   console.log('[Swapper] batchSwapGivenOutV2');
   const overrides: any = {};
 

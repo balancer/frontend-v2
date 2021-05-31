@@ -1,4 +1,5 @@
 import { Web3Provider, TransactionResponse } from '@ethersproject/providers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { multicall, Multicaller } from '@/lib/utils/balancer/contract';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
@@ -13,9 +14,9 @@ export async function getBalances(
   provider: any,
   account: string,
   tokens: string[]
-) {
+): Promise<Record<string, BigNumber>> {
   try {
-    const balances = await multicall(
+    const balances: [BigNumber][] = await multicall(
       network,
       provider,
       abi,
@@ -36,9 +37,9 @@ export async function getAllowances(
   src: string,
   dst: string,
   tokens: string[]
-) {
+): Promise<Record<string, BigNumber>> {
   try {
-    const allowances = await multicall(
+    const allowances: [BigNumber][] = await multicall(
       network,
       provider,
       abi,
@@ -57,7 +58,7 @@ export async function getOnchainTokensMeta(
   network: string,
   provider: any,
   tokens: string[]
-) {
+): Promise<Record<string, any>> {
   try {
     const multi = new Multicaller(network, provider, abi);
     const tokensMetadata = {};

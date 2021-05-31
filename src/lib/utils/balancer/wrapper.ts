@@ -1,4 +1,4 @@
-import { Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import configs from '@/lib/config';
@@ -8,7 +8,7 @@ export async function wrap(
   network: string,
   web3: Web3Provider,
   amount: BigNumber
-): Promise<any> {
+): Promise<TransactionResponse> {
   try {
     return sendTransaction(
       web3,
@@ -28,7 +28,7 @@ export async function unwrap(
   network: string,
   web3: Web3Provider,
   amount: BigNumber
-): Promise<any> {
+): Promise<TransactionResponse> {
   try {
     return sendTransaction(
       web3,

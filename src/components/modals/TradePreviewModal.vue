@@ -1,8 +1,5 @@
 <template>
-  <BalModal :show="open" @close="onClose">
-    <template v-slot:header>
-      <h3>{{ $t('previewTrade') }}</h3>
-    </template>
+  <BalModal :show="open" @close="onClose" :title="$t('previewTrade')">
     <div>
       <div
         class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-700"
