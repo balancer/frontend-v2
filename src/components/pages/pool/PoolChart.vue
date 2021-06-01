@@ -132,7 +132,7 @@ export default defineComponent({
             return 0;
           }
           const currentValue = getPoolValue(firstState.amounts, state.price);
-          return (currentValue / firstValue - 1) / 100;
+          return currentValue / firstValue - 1;
         });
       return values;
     });
@@ -154,7 +154,7 @@ export default defineComponent({
           const currentValue = getPoolValue(state.amounts, state.price);
           const currentShares = parseFloat(state.totalShares);
           const currentValuePerBpt = currentValue / currentShares;
-          return (currentValuePerBpt / firstValuePerBpt - 1) / 100;
+          return currentValuePerBpt / firstValuePerBpt - 1;
         });
       return values;
     });
