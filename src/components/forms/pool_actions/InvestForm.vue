@@ -301,19 +301,19 @@ export default defineComponent({
   props: {
     pool: { type: Object as PropType<FullPool>, required: true },
     missingPrices: { type: Boolean, default: false },
-    initialState: { type: Object as PropType<DataProps>, default: () => ({}) }
+    // initialState: { type: Object as PropType<DataProps>, default: () => ({}) }
   },
 
-  setup(props: { pool: FullPool; initialState }, { emit }) {
+  setup(props: { pool: FullPool }, { emit }) {
     const data = reactive<DataProps>({
       investForm: {} as FormRef,
-      investType: props.initialState.investType || FormTypes.proportional,
+      investType: FormTypes.proportional,
       loading: false,
-      amounts: props.initialState?.amounts || [],
+      amounts: [],
       propMax: [],
       validInputs: [],
       propToken: 0,
-      range: props.initialState.range || 1000,
+      range: 1000,
       highPiAccepted: false
     });
 
@@ -643,9 +643,9 @@ export default defineComponent({
         data.investType = FormTypes.custom;
       } else {
         setPropMax();
-        if (props.initialState.range === undefined) {
+        // if (props.initialState.range === undefined) {
           resetSlider();
-        }
+        // }
       }
     });
 
