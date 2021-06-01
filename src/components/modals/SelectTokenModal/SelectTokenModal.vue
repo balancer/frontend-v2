@@ -60,7 +60,7 @@
           <BalIcon name="chevron-down" class="text-gray-500" />
         </a>
       </div>
-      <div>
+      <div class="overflow-hidden rounded-lg">
         <RecycleScroller
           class="h-96 overflow-y-scroll"
           v-if="tokens?.length > 0"
