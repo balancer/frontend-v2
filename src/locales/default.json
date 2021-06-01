@@ -163,7 +163,7 @@
     "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the Liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
     "payload": "Payload",
     "pendingClaims": "Pending claims",
-    "pendingCurrentWeek": "Pending: current week (estimate)",
+    "pendingEstimate": "Pending: (estimate)",
     "pool": "Pool",
     "poolBalance": "Pool balance",
     "poolComposition": "Pool composition",
