@@ -583,7 +583,7 @@ export default defineComponent({
     watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
 
     watch(data, newData => {
-      emit('update:modelValue', newData);
+      // emit('update:modelValue', newData);
     });
 
     watch(

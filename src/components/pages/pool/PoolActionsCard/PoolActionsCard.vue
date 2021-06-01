@@ -26,8 +26,6 @@
           :pool="pool"
           :missing-prices="missingPrices"
           @success="handleWithdrawal($event)"
-          v-model="withdrawFormState"
-          :initialState="withdrawFormState"
         />
         <SuccessOverlay
           v-if="withdrawalSuccess"
