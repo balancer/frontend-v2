@@ -560,9 +560,9 @@ export default defineComponent({
       }
     }
 
-    watch(data, newData => {
+    // watch(data, newData => {
       // emit('update:modelValue', newData);
-    });
+    // });
 
     watch(
       () => props.pool.onchain.tokens,
@@ -610,10 +610,10 @@ export default defineComponent({
     onMounted(async () => {
       if (bptBalance.value) {
         // if (props.initialState.amounts === undefined) {
-          setPropMax();
+        setPropMax();
         // }
         // if (props.initialState.range === undefined) {
-          resetSlider();
+        resetSlider();
         // }
       }
     });
