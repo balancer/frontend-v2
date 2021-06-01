@@ -3,15 +3,17 @@
     <template v-slot:activator>
       <BalBtn
         class="text-base"
+        :class="{ btn: upToLargeBreakpoint }"
         :loading="web3Loading"
-        :loading-label="['sm', 'md', 'lg'].includes(bp) ? '' : $t('connecting')"
+        :loading-label="upToLargeBreakpoint ? '' : $t('connecting')"
         color="gray"
-        outline
+        :outline="!upToLargeBreakpoint"
         rounded
-        :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
-        :circle="['sm', 'md', 'lg'].includes(bp)"
+        flat
+        :size="upToLargeBreakpoint ? 'md' : 'sm'"
+        :circle="upToLargeBreakpoint"
       >
-        <Avatar :address="account" :profile="profile" size="20" />
+        <Avatar :address="account" :profile="profile" :size="avatarSize" />
         <span
           v-if="profile.name || profile.ens"
           v-text="profile.name || profile.ens"
@@ -34,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';
@@ -49,14 +51,26 @@ export default defineComponent({
   },
 
   setup() {
-    const { bp } = useBreakpoints();
+    const { bp, upToLargeBreakpoint } = useBreakpoints();
     const { account, profile, loading: web3Loading } = useWeb3();
+
+    const avatarSize = computed(() => {
+      if (bp.value === 'sm') {
+        return 35;
+      } else if (['md', 'lg'].includes(bp.value)) {
+        return 40;
+      } else {
+        return 20;
+      }
+    });
 
     return {
       bp,
       account,
       profile,
-      web3Loading
+      web3Loading,
+      avatarSize,
+      upToLargeBreakpoint
     };
   }
 });
@@ -65,5 +79,11 @@ export default defineComponent({
 <style scoped>
 .address {
   font-variant-ligatures: no-contextual;
+}
+.btn {
+  @apply bg-transparent;
+}
+.btn:hover {
+  @apply bg-transparent;
 }
 </style>

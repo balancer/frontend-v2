@@ -4,11 +4,13 @@
       <BalBtn
         color="gradient-pink-yellow"
         rounded
-        class="mr-2 text-base hidden md:block"
-        size="sm"
+        class="mr-2 text-base"
+        :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
+        :circle="['sm', 'md', 'lg'].includes(bp)"
       >
-        <StarsIcon class="mr-1" />{{ fNum(totalRewards, 'token_4_decimals') }}
-        BAL
+        <StarsIcon /><span class="ml-1 hidden lg:block"
+          >{{ fNum(totalRewards, 'token_4_decimals') }} BAL</span
+        >
       </BalBtn>
     </template>
     <div class="divide-y w-72">
@@ -70,6 +72,7 @@ import useWeb3 from '@/composables/useWeb3';
 import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 import { getOriginalAddress } from '@/services/coingecko';
 
@@ -82,11 +85,11 @@ export default defineComponent({
 
   setup() {
     // DATA
-
     const isClaiming = ref(false);
     const rewardsEstimateSinceTimestamp = ref('0');
 
     // COMPOSABLES
+    const { bp } = useBreakpoints();
     const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
@@ -189,6 +192,7 @@ export default defineComponent({
       currentRewards,
       currentRewardsInUSD,
       totalRewards,
+      bp,
 
       // methods
       fNum,
