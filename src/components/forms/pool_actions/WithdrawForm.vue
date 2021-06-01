@@ -237,22 +237,20 @@ export default defineComponent({
   emits: ['success', 'update:modelValue'],
 
   props: {
-    pool: { type: Object as PropType<FullPool>, required: true },
-    initialState: { type: Object as PropType<DataProps>, default: () => ({}) }
+    pool: { type: Object as PropType<FullPool>, required: true }
+    // initialState: { type: Object as PropType<DataProps>, default: () => ({}) }
   },
 
-  setup(props: { pool: FullPool; initialState }, { emit }) {
+  setup(props: { pool: FullPool }, { emit }) {
     const data = reactive({
       withdrawForm: {} as FormRef,
       loading: false,
-      amounts: props.initialState?.amounts || ([] as string[]),
+      amounts: [] as string[],
       propMax: [] as string[],
-      bptIn: props.initialState.bptIn || '',
-      withdrawType:
-        props.initialState.withdrawType ||
-        (FormTypes.proportional as FormTypes),
+      bptIn: '',
+      withdrawType: FormTypes.proportional as FormTypes,
       singleAsset: 0,
-      range: props.initialState.range || 1000,
+      range: 1000,
       highPiAccepted: false
     });
 
@@ -563,7 +561,7 @@ export default defineComponent({
     }
 
     watch(data, newData => {
-      emit('update:modelValue', newData);
+      // emit('update:modelValue', newData);
     });
 
     watch(
@@ -611,12 +609,12 @@ export default defineComponent({
 
     onMounted(async () => {
       if (bptBalance.value) {
-        if (props.initialState.amounts === undefined) {
+        // if (props.initialState.amounts === undefined) {
           setPropMax();
-        }
-        if (props.initialState.range === undefined) {
+        // }
+        // if (props.initialState.range === undefined) {
           resetSlider();
-        }
+        // }
       }
     });
 
