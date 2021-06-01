@@ -35,10 +35,11 @@
           :loading="isClaiming"
           :loading-label="$t('claiming')"
           @click="claimAvailableRewards"
+          :disabled="userClaims.availableToClaim == 0"
           >{{ $t('claim') }} BAL</BalBtn
         >
       </div>
-      <div class="p-3">
+      <div class="p-3" v-if="currentRewards != null">
         <div class="mb-1">{{ $t('pendingCurrentWeek') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
@@ -53,12 +54,13 @@
           </div>
         </div>
       </div>
+      <div class="p-3" v-else>{{ $t('liquidityProviderCopy') }}</div>
     </div>
   </BalPopover>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
@@ -148,6 +150,10 @@ export default defineComponent({
           .toString();
       }
     }, 1000);
+
+    watch(account, () => {
+      rewardsEstimateSinceTimestamp.value = '0';
+    });
 
     // METHODS
     async function claimAvailableRewards() {
