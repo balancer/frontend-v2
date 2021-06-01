@@ -301,7 +301,7 @@ export default defineComponent({
   props: {
     pool: { type: Object as PropType<FullPool>, required: true },
     missingPrices: { type: Boolean, default: false },
-    initialState: { type: Object, default: () => ({}) }
+    initialState: { type: Object as PropType<DataProps>, default: () => ({}) }
   },
 
   setup(props: { pool: FullPool; initialState }, { emit }) {

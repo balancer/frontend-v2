@@ -215,6 +215,18 @@ export enum FormTypes {
   single = 'single'
 }
 
+type DataProps = {
+  withdrawForm: FormRef;
+  withdrawType: FormTypes;
+  loading: boolean;
+  amounts: string[];
+  propMax: string[];
+  range: number;
+  bptIn: string;
+  singleAsset: number;
+  highPiAccepted: boolean;
+};
+
 export default defineComponent({
   name: 'WithdrawalForm',
 
@@ -226,7 +238,7 @@ export default defineComponent({
 
   props: {
     pool: { type: Object as PropType<FullPool>, required: true },
-    initialState: { type: Object, default: () => ({}) }
+    initialState: { type: Object as PropType<DataProps>, default: () => ({}) }
   },
 
   setup(props: { pool: FullPool; initialState }, { emit }) {
