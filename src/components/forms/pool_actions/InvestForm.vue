@@ -582,9 +582,10 @@ export default defineComponent({
 
     watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
 
-    // watch(data, newData => {
-      // emit('update:modelValue', newData);
-    // });
+    watch(data, () => {
+      console.log('p', data);
+    // emit('update:modelValue', newData);
+    });
 
     watch(
       () => props.pool.onchain.tokens,

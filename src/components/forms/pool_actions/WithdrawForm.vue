@@ -560,9 +560,10 @@ export default defineComponent({
       }
     }
 
-    // watch(data, newData => {
-      // emit('update:modelValue', newData);
-    // });
+    watch(data, () => {
+      console.log('d', data);
+    // emit('update:modelValue', newData);
+    });
 
     watch(
       () => props.pool.onchain.tokens,
