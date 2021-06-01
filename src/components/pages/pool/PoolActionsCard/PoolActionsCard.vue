@@ -11,8 +11,6 @@
           :pool="pool"
           :missing-prices="missingPrices"
           @success="handleInvestment($event)"
-          v-model="investFormState"
-          :initialState="investFormState"
         />
         <SuccessOverlay
           v-if="investmentSuccess"

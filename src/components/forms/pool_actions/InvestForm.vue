@@ -300,7 +300,7 @@ export default defineComponent({
 
   props: {
     pool: { type: Object as PropType<FullPool>, required: true },
-    missingPrices: { type: Boolean, default: false },
+    missingPrices: { type: Boolean, default: false }
     // initialState: { type: Object as PropType<DataProps>, default: () => ({}) }
   },
 
@@ -644,7 +644,7 @@ export default defineComponent({
       } else {
         setPropMax();
         // if (props.initialState.range === undefined) {
-          resetSlider();
+        resetSlider();
         // }
       }
     });
