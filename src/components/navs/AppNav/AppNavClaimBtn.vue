@@ -5,8 +5,8 @@
         color="gradient-pink-yellow"
         rounded
         class="mr-2 text-base"
-        :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
-        :circle="['sm', 'md', 'lg'].includes(bp)"
+        :size="upToLargeBreakpoint ? 'md' : 'sm'"
+        :circle="upToLargeBreakpoint"
       >
         <StarsIcon /><span class="ml-1 hidden lg:block"
           >{{ fNum(totalRewards, 'token_4_decimals') }} BAL</span
@@ -89,7 +89,7 @@ export default defineComponent({
     const rewardsEstimateSinceTimestamp = ref('0');
 
     // COMPOSABLES
-    const { bp } = useBreakpoints();
+    const { upToLargeBreakpoint } = useBreakpoints();
     const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
@@ -192,7 +192,7 @@ export default defineComponent({
       currentRewards,
       currentRewardsInUSD,
       totalRewards,
-      bp,
+      upToLargeBreakpoint,
 
       // methods
       fNum,
