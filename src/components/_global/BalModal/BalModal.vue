@@ -85,7 +85,7 @@ export default defineComponent({
 
 .content {
   @apply relative w-full h-3/4 sm:h-auto max-h-screen overflow-hidden;
-  max-width: 500px;
+  max-width: 450px;
 }
 
 .modal-bg {
@@ -93,7 +93,6 @@ export default defineComponent({
 }
 
 .modal-card {
-  @apply max-w-full sm:max-w-lg md:max-w-md lg:max-w-sm;
   @apply mx-auto h-full rounded-b-none sm:rounded-b-lg;
 }
 

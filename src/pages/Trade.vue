@@ -1,6 +1,6 @@
 <template>
   <div class="px-4 md:px-0">
-    <div class="max-w-full sm:max-w-lg md:max-w-md lg:max-w-sm mx-auto -mt-6">
+    <div class="trade-card-container mx-auto -mt-6">
       <BalLoadingBlock v-if="appLoading" class="h-96" />
       <TradeCard v-else />
     </div>
@@ -41,3 +41,9 @@ export default defineComponent({
   }
 });
 </script>
+
+<style>
+.trade-card-container {
+  max-width: 450px;
+}
+</style>
