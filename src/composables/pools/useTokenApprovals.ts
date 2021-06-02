@@ -42,8 +42,8 @@ export default function useTokenApprovals(tokens, shortAmounts) {
       const txHashes = txs.map(tx => tx.hash);
 
       txListener(txHashes, {
-        onTxConfirmed: () => {
-          store.dispatch('account/getAllowances', { tokens });
+        onTxConfirmed: async () => {
+          await store.dispatch('account/getAllowances', { tokens });
           approving.value = false;
         },
         onTxCancel: () => {
