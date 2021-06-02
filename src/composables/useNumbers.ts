@@ -5,7 +5,7 @@ import { useStore } from 'vuex';
 export type Preset =
   | 'default'
   | 'token'
-  | 'token_4_decimals'
+  | 'token_fixed'
   | 'token_lg'
   | 'usd'
   | 'usd_lg'
