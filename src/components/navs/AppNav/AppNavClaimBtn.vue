@@ -12,7 +12,7 @@
           class="stars-icon"
           v-if="upToLargeBreakpoint ? !userClaimsLoading : true"
         />
-        <SpinnerIcon class="animate-spin" v-if="userClaimsLoading" />
+        <BalLoadingIcon size="sm" color="white" v-if="userClaimsLoading" />
         <span class="hidden lg:block" v-else>{{
           fNum(totalRewards, totalRewards > 0 ? 'token_fixed' : 'token')
         }}</span>
@@ -243,10 +243,6 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-.stars-icon {
-  width: 20px;
-  height: 19px;
-}
 .stars-icon + * {
   @apply ml-1;
 }
