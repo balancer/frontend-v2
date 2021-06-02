@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import { useStore } from 'vuex';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
@@ -30,7 +30,6 @@ import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
-import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
@@ -50,14 +49,6 @@ export default defineComponent({
     const { account, profile, loading: web3Loading } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
-    const userClaimsQuery = useUserClaimsQuery();
-
-    // COMPUTED
-    const availableToClaim = computed(() =>
-      userClaimsQuery.isSuccess.value
-        ? userClaimsQuery.data?.value?.availableToClaim
-        : null
-    );
 
     // METHODS
     const setAccountModal = (isOpen: boolean) =>
@@ -74,7 +65,6 @@ export default defineComponent({
       profile,
       web3Loading,
       bp,
-      availableToClaim,
       // methods
       setAccountModal,
       fNum,
