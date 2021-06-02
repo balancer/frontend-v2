@@ -20,7 +20,7 @@ interface Options {
 enum PresetFormats {
   default = '(0.[0]a)',
   token = '0,0.[0000]',
-  token_4_decimals = '0,0.0000',
+  token_fixed = '0,0.0000',
   token_lg = '0,0',
   usd = '$0,0.00',
   usd_lg = '$0,0',
