@@ -241,7 +241,8 @@ import {
   reactive,
   toRefs,
   ref,
-  PropType
+  PropType,
+  toRef
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -300,20 +301,25 @@ export default defineComponent({
 
   props: {
     pool: { type: Object as PropType<FullPool>, required: true },
-    missingPrices: { type: Boolean, default: false }
-    // initialState: { type: Object as PropType<DataProps>, default: () => ({}) }
+    missingPrices: { type: Boolean, default: false },
+    initialState: {
+      type: Object as PropType<
+        Pick<DataProps, 'investType' | 'range' | 'amounts'>
+      >,
+      default: () => ({})
+    }
   },
 
-  setup(props: { pool: FullPool }, { emit }) {
+  setup(props: { pool: FullPool; initialState }, { emit }) {
     const data = reactive<DataProps>({
       investForm: {} as FormRef,
-      investType: FormTypes.proportional,
+      investType: props.initialState.investType || FormTypes.proportional,
       loading: false,
-      amounts: [],
+      amounts: props.initialState?.amounts || [],
       propMax: [],
       validInputs: [],
       propToken: 0,
-      range: 1000,
+      range: props.initialState.range || 1000,
       highPiAccepted: false
     });
 
@@ -581,11 +587,16 @@ export default defineComponent({
     }
 
     watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
-
-    watch(data, () => {
-      console.log('p', data);
-    // emit('update:modelValue', newData);
-    });
+    watch(
+      () => ({
+        amounts: data.amounts,
+        investType: data.investType,
+        range: data.range
+      }),
+      newData => {
+        emit('update:modelValue', newData);
+      }
+    );
 
     watch(
       () => props.pool.onchain.tokens,
@@ -644,9 +655,9 @@ export default defineComponent({
         data.investType = FormTypes.custom;
       } else {
         setPropMax();
-        // if (props.initialState.range === undefined) {
-        resetSlider();
-        // }
+        if (props.initialState.range === undefined) {
+          resetSlider();
+        }
       }
     });
 

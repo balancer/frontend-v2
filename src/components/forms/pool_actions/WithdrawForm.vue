@@ -237,20 +237,27 @@ export default defineComponent({
   emits: ['success', 'update:modelValue'],
 
   props: {
-    pool: { type: Object as PropType<FullPool>, required: true }
-    // initialState: { type: Object as PropType<DataProps>, default: () => ({}) }
+    pool: { type: Object as PropType<FullPool>, required: true },
+    initialState: {
+      type: Object as PropType<
+        Pick<DataProps, 'bptIn' | 'withdrawType' | 'range' | 'amounts'>
+      >,
+      default: () => ({})
+    }
   },
 
-  setup(props: { pool: FullPool }, { emit }) {
+  setup(props: { pool: FullPool; initialState }, { emit }) {
     const data = reactive({
       withdrawForm: {} as FormRef,
       loading: false,
-      amounts: [] as string[],
+      amounts: props.initialState?.amounts || ([] as string[]),
       propMax: [] as string[],
-      bptIn: '',
-      withdrawType: FormTypes.proportional as FormTypes,
+      bptIn: props.initialState.bptIn || '',
+      withdrawType:
+        props.initialState.withdrawType ||
+        (FormTypes.proportional as FormTypes),
       singleAsset: 0,
-      range: 1000,
+      range: props.initialState.range || 1000,
       highPiAccepted: false
     });
 
@@ -560,10 +567,17 @@ export default defineComponent({
       }
     }
 
-    watch(data, () => {
-      console.log('d', data);
-    // emit('update:modelValue', newData);
-    });
+    watch(
+      () => ({
+        amounts: data.amounts,
+        withdrawType: data.withdrawType,
+        range: data.range,
+        bptIn: data.bptIn
+      }),
+      newData => {
+        emit('update:modelValue', newData);
+      }
+    );
 
     watch(
       () => props.pool.onchain.tokens,
@@ -610,12 +624,12 @@ export default defineComponent({
 
     onMounted(async () => {
       if (bptBalance.value) {
-        // if (props.initialState.amounts === undefined) {
-        setPropMax();
-        // }
-        // if (props.initialState.range === undefined) {
-        resetSlider();
-        // }
+        if (props.initialState.amounts === undefined) {
+          setPropMax();
+        }
+        if (props.initialState.range === undefined) {
+          resetSlider();
+        }
       }
     });
 
