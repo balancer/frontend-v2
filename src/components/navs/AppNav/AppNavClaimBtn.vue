@@ -29,7 +29,7 @@
           size="sm"
           class="mb-3"
         />
-        <div class="mb-1">{{ $t('availableToClaim') }}</div>
+        <div class="text-sm text-gray-600 mb-1">{{ $t('availableToClaim') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
             {{
