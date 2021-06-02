@@ -21,12 +21,14 @@
     <div class="divide-y w-72" v-if="userClaims != null">
       <div class="p-3">
         <h5 class="text-base mb-3">{{ $t('liquidityMining') }}</h5>
-        <div
-          class="border border-yellow-500 p-3 mb-3 text-sm"
+        <BalAlert
           v-if="shouldShowClaimFreezeWarning"
-        >
-          {{ $t('claimFreezeWarning') }}
-        </div>
+          title="Too many claims"
+          :description="$t('claimFreezeWarning')"
+          type="warning"
+          size="sm"
+          class="mb-3"
+        />
         <div class="mb-1">{{ $t('availableToClaim') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
