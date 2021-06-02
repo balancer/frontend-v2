@@ -30,6 +30,7 @@
     "claim": "Claim",
     "claimBAL": "Claim BAL for",
     "claimSuccess": "You successfully claimed BAL!",
+    "claimFreezeWarning": "Since you have several weeks worth of $BAL unclaimed, your screen may appear to freeze after pressing the claim button while it is processed. Just leave your browser open and your wallet will eventually pop open for you to complete the claim.",
     "claiming": "Claiming...",
     "classic": "Classic",
     "close": "Close",

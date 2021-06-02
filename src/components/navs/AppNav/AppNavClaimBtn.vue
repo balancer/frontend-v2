@@ -21,6 +21,12 @@
     <div class="divide-y w-72" v-if="userClaims != null">
       <div class="p-3">
         <h5 class="text-base mb-3">{{ $t('liquidityMining') }}</h5>
+        <div
+          class="border border-yellow-500 p-3 mb-3 text-sm"
+          v-if="shouldShowClaimFreezeWarning"
+        >
+          {{ $t('claimFreezeWarning') }}
+        </div>
         <div class="mb-1">{{ $t('availableToClaim') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
@@ -73,7 +79,7 @@
           </div>
         </div>
       </div>
-      <div class="p-3" v-else-if="totalRewards == 0">
+      <div class="p-3 text-sm" v-else-if="totalRewards == 0">
         {{ $t('liquidityProviderCopy') }}
       </div>
     </div>
@@ -130,6 +136,13 @@ export default defineComponent({
 
     const userClaimsLoading = computed(
       () => userClaimsQuery.isLoading.value || userClaimsQuery.isIdle.value
+    );
+
+    // having multiple unclaimed weeks may cause the browser to freeze (> 5)
+    const shouldShowClaimFreezeWarning = computed(() =>
+      userClaims.value != null
+        ? userClaims.value.pendingClaims.length > 5
+        : false
     );
 
     const availableToClaimInUSD = computed(() =>
@@ -217,6 +230,7 @@ export default defineComponent({
       totalRewards,
       upToLargeBreakpoint,
       userClaimsLoading,
+      shouldShowClaimFreezeWarning,
 
       // methods
       fNum,
