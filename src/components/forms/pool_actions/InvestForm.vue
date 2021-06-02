@@ -209,7 +209,7 @@
             v-model="highPiAccepted"
             :rules="[isRequired(this.$t('priceImpactCheckbox'))]"
             name="highPiAccepted"
-            class="text-gray-500 mb-8"
+            class="text-gray-500 mb-12"
             size="sm"
             :label="$t('priceImpactAccept')"
           />
