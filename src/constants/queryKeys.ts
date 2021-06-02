@@ -2,6 +2,7 @@ import { Ref } from 'vue';
 
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
+export const CLAIMS_ROOT_KEY = 'claims';
 
 const QUERY_KEYS = {
   Pools: {
@@ -23,7 +24,10 @@ const QUERY_KEYS = {
       { userNetwork, account }
     ]
   },
-  TokenLists: ['tokenLists']
+  TokenLists: ['tokenLists'],
+  Claims: {
+    All: (account: Ref<string>) => [CLAIMS_ROOT_KEY, { account }]
+  }
 };
 
 export default QUERY_KEYS;
