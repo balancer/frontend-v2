@@ -61,7 +61,7 @@
         >
       </div>
       <div class="p-3" v-if="currentRewards != null">
-        <div class="mb-1">{{ $t('pendingEstimate') }}</div>
+        <div class="text-sm text-gray-600 mb-1">{{ $t('pendingEstimate') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
             {{
