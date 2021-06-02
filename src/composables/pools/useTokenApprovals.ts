@@ -37,7 +37,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
       const txs = await approveTokens(
         auth.web3,
         store.state.web3.config.addresses.vault,
-        requiredAllowances.value
+        [requiredAllowances.value[0]]
       );
       const txHashes = txs.map(tx => tx.hash);
 

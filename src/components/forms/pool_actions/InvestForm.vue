@@ -196,7 +196,7 @@
         </div>
         <BalBtn
           v-if="requireApproval"
-          :label="$t('approveTokens')"
+          :label="`${$t('approve')} ${symbolFor(requiredAllowances[0])}`"
           :loading="approving"
           :loading-label="$t('approving')"
           :disabled="!hasAmounts || !hasValidInputs"
@@ -490,6 +490,10 @@ export default defineComponent({
         : [isPositive()];
     }
 
+    function symbolFor(token) {
+      return allTokens.value[token]?.symbol || '';
+    }
+
     function connectWallet() {
       store.commit('web3/setAccountModal', true);
     }
@@ -653,6 +657,7 @@ export default defineComponent({
       hasAmounts,
       approving,
       requireApproval,
+      requiredAllowances,
       tokenWeights,
       tokenBalance,
       amountRules,
@@ -674,7 +679,8 @@ export default defineComponent({
       approveAllowances,
       fNum,
       preventOverflow,
-      trackGoal
+      trackGoal,
+      symbolFor
     };
   }
 });
