@@ -1,5 +1,5 @@
 <template>
-  <BalPopover no-pad v-if="userClaims != null">
+  <BalPopover no-pad>
     <template v-slot:activator>
       <BalBtn
         color="gradient-pink-yellow"
@@ -8,18 +8,29 @@
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
-        <StarsIcon /><span class="ml-1 hidden lg:block"
-          >{{ fNum(totalRewards, 'token_4_decimals') }} BAL</span
-        >
+        <StarsIcon
+          class="stars-icon"
+          v-if="upToLargeBreakpoint ? !userClaimsLoading : true"
+        />
+        <SpinnerIcon class="animate-spin" v-if="userClaimsLoading" />
+        <span class="hidden lg:block" v-else>{{
+          fNum(totalRewards, totalRewards > 0 ? 'token_4_decimals' : 'token')
+        }}</span>
       </BalBtn>
     </template>
-    <div class="divide-y w-72">
+    <div class="divide-y w-72" v-if="userClaims != null">
       <div class="p-3">
         <h5 class="text-base mb-3">{{ $t('liquidityMining') }}</h5>
         <div class="mb-1">{{ $t('availableToClaim') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
-            {{ fNum(userClaims.availableToClaim, 'token_4_decimals') }} BAL
+            {{
+              fNum(
+                userClaims.availableToClaim,
+                userClaims.availableToClaim > 0 ? 'token_4_decimals' : 'token'
+              )
+            }}
+            BAL
           </div>
           <div>
             {{
@@ -45,7 +56,13 @@
         <div class="mb-1">{{ $t('pendingEstimate') }}</div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
-            {{ fNum(currentRewards, 'token_4_decimals') }} BAL
+            {{
+              fNum(
+                currentRewards,
+                currentRewards > 0 ? 'token_4_decimals' : 'token'
+              )
+            }}
+            BAL
           </div>
           <div>
             {{
@@ -56,7 +73,9 @@
           </div>
         </div>
       </div>
-      <div class="p-3" v-else>{{ $t('liquidityProviderCopy') }}</div>
+      <div class="p-3" v-else-if="totalRewards == 0">
+        {{ $t('liquidityProviderCopy') }}
+      </div>
     </div>
   </BalPopover>
 </template>
@@ -107,6 +126,10 @@ export default defineComponent({
     // COMPUTED
     const userClaims = computed(() =>
       userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null
+    );
+
+    const userClaimsLoading = computed(
+      () => userClaimsQuery.isLoading.value || userClaimsQuery.isIdle.value
     );
 
     const availableToClaimInUSD = computed(() =>
@@ -193,6 +216,7 @@ export default defineComponent({
       currentRewardsInUSD,
       totalRewards,
       upToLargeBreakpoint,
+      userClaimsLoading,
 
       // methods
       fNum,
@@ -201,3 +225,12 @@ export default defineComponent({
   }
 });
 </script>
+<style scoped>
+.stars-icon {
+  width: 20px;
+  height: 19px;
+}
+.stars-icon + * {
+  @apply ml-1;
+}
+</style>
