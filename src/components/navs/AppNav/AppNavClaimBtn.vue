@@ -20,7 +20,7 @@
     </template>
     <div class="divide-y w-72" v-if="userClaims != null">
       <div class="p-3">
-        <h5 class="text-base mb-3">{{ $t('liquidityMining') }}</h5>
+        <h5 class="text-lg mb-3">{{ $t('liquidityMining') }}</h5>
         <BalAlert
           v-if="shouldShowClaimFreezeWarning"
           title="Too many claims"
