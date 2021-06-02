@@ -29,7 +29,9 @@
           size="sm"
           class="mb-3"
         />
-        <div class="text-sm text-gray-600 mb-1">{{ $t('availableToClaim') }}</div>
+        <div class="text-sm text-gray-600 mb-1">
+          {{ $t('availableToClaim') }}
+        </div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
             {{
@@ -61,7 +63,9 @@
         >
       </div>
       <div class="p-3" v-if="currentRewards != null">
-        <div class="text-sm text-gray-600 mb-1">{{ $t('pendingEstimate') }}</div>
+        <div class="text-sm text-gray-600 mb-1">
+          {{ $t('pendingEstimate') }}
+        </div>
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
             {{
