@@ -24,7 +24,7 @@
       rounded
       :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
       :circle="['sm', 'md', 'lg'].includes(bp)"
-      @click="onClickConnect"
+      @click="promptWalletSelect"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
@@ -44,6 +44,7 @@ import useNumbers from '@/composables/useNumbers';
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useFathom from '@/composables/useFathom';
+import useOnboard from '@/composables/useOnboard';
 
 interface ActionsData {
   pendingClaims: Claim[] | null;
@@ -64,6 +65,7 @@ export default defineComponent({
     const { account, profile, loading: web3Loading, userNetwork } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
+    const { promptWalletSelect } = useOnboard();
 
     // DATA
     const data = reactive<ActionsData>({
@@ -111,6 +113,7 @@ export default defineComponent({
       setAccountModal,
       fNum,
       onClickConnect,
+      promptWalletSelect,
       // constants
       EXTERNAL_LINKS
     };

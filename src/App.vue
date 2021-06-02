@@ -1,18 +1,20 @@
 <template>
-  <div id="app">
-    <AppNav />
-    <AppHero />
-    <div class="pb-12">
-      <router-view :key="$route.path" class="flex-auto" />
+  <Web3Provider>
+    <div id="app">
+      <AppNav />
+      <AppHero />
+      <div class="pb-12">
+        <router-view :key="$route.path" class="flex-auto" />
+      </div>
+      <div id="modal" />
+      <AccountModal
+        v-if="web3Modal"
+        @close="setAccountModal(false)"
+        @login="onLogin"
+      />
+      <VueQueryDevTools />
     </div>
-    <div id="modal" />
-    <AccountModal
-      v-if="web3Modal"
-      @close="setAccountModal(false)"
-      @login="onLogin"
-    />
-    <VueQueryDevTools />
-  </div>
+  </Web3Provider>
 </template>
 
 <script lang="ts">
@@ -23,6 +25,7 @@ import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AccountModal from '@/components/modals/AccountModal.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
+import Web3Provider from '@/providers/Web3Provider.vue';
 import InfuraService from '@/services/infura/service';
 
 export default defineComponent({
@@ -30,7 +33,8 @@ export default defineComponent({
     AppNav,
     AppHero,
     AccountModal,
-    VueQueryDevTools
+    VueQueryDevTools,
+    Web3Provider
   },
 
   setup() {
