@@ -14,7 +14,7 @@
         />
         <SpinnerIcon class="animate-spin" v-if="userClaimsLoading" />
         <span class="hidden lg:block" v-else>{{
-          fNum(totalRewards, totalRewards > 0 ? 'token_4_decimals' : 'token')
+          fNum(totalRewards, totalRewards > 0 ? 'token_fixed' : 'token')
         }}</span>
       </BalBtn>
     </template>
@@ -33,7 +33,7 @@
             {{
               fNum(
                 userClaims.availableToClaim,
-                userClaims.availableToClaim > 0 ? 'token_4_decimals' : 'token'
+                userClaims.availableToClaim > 0 ? 'token_fixed' : 'token'
               )
             }}
             BAL
@@ -63,10 +63,7 @@
         <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
             {{
-              fNum(
-                currentRewards,
-                currentRewards > 0 ? 'token_4_decimals' : 'token'
-              )
+              fNum(currentRewards, currentRewards > 0 ? 'token_fixed' : 'token')
             }}
             BAL
           </div>
