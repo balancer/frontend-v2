@@ -624,9 +624,7 @@ export default defineComponent({
 
     onMounted(async () => {
       if (bptBalance.value) {
-        if (props.initialState.amounts === undefined) {
-          setPropMax();
-        }
+        setPropMax();
         if (props.initialState.range === undefined) {
           resetSlider();
         }
