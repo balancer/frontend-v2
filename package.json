@@ -52,7 +52,7 @@
     "apexcharts": "^3.23.1",
     "autoprefixer": "^9.8.6",
     "axios": "0.21.1",
-    "bnc-notify": "^1.5.1",
+    "bnc-notify": "^1.6.1",
     "bnc-sdk": "^2.1.5",
     "bs58": "^4.0.1",
     "core-js": "^3.6.5",
