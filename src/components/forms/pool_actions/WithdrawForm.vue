@@ -227,6 +227,11 @@ type DataProps = {
   highPiAccepted: boolean;
 };
 
+type WithdrawFormInitialState = Pick<
+  DataProps,
+  'bptIn' | 'withdrawType' | 'range' | 'amounts'
+>;
+
 export default defineComponent({
   name: 'WithdrawalForm',
 
@@ -239,14 +244,15 @@ export default defineComponent({
   props: {
     pool: { type: Object as PropType<FullPool>, required: true },
     initialState: {
-      type: Object as PropType<
-        Pick<DataProps, 'bptIn' | 'withdrawType' | 'range' | 'amounts'>
-      >,
+      type: Object as PropType<WithdrawFormInitialState>,
       default: () => ({})
     }
   },
 
-  setup(props: { pool: FullPool; initialState }, { emit }) {
+  setup(
+    props: { pool: FullPool; initialState: WithdrawFormInitialState },
+    { emit }
+  ) {
     const data = reactive({
       withdrawForm: {} as FormRef,
       loading: false,

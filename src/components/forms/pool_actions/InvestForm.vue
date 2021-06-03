@@ -289,6 +289,11 @@ type DataProps = {
   highPiAccepted: boolean;
 };
 
+type InvestFormInitialState = Pick<
+  DataProps,
+  'investType' | 'range' | 'amounts'
+>;
+
 export default defineComponent({
   name: 'InvestForm',
 
@@ -302,14 +307,15 @@ export default defineComponent({
     pool: { type: Object as PropType<FullPool>, required: true },
     missingPrices: { type: Boolean, default: false },
     initialState: {
-      type: Object as PropType<
-        Pick<DataProps, 'investType' | 'range' | 'amounts'>
-      >,
+      type: Object as PropType<InvestFormInitialState>,
       default: () => ({})
     }
   },
 
-  setup(props: { pool: FullPool; initialState }, { emit }) {
+  setup(
+    props: { pool: FullPool; initialState: InvestFormInitialState },
+    { emit }
+  ) {
     const data = reactive<DataProps>({
       investForm: {} as FormRef,
       investType: props.initialState.investType || FormTypes.proportional,
