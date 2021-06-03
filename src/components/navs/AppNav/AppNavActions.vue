@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="$auth.isAuthenticated.value" class="flex items-center">
+    <div v-if="bAccount?.address" class="flex items-center">
       <BalBtn
         v-if="totalPending > 0"
         tag="a"
@@ -24,7 +24,7 @@
       rounded
       :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
       :circle="['sm', 'md', 'lg'].includes(bp)"
-      @click="promptWalletSelect"
+      @click="connectWallet"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
@@ -44,7 +44,7 @@ import useNumbers from '@/composables/useNumbers';
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useFathom from '@/composables/useFathom';
-import useOnboard from '@/composables/useOnboard';
+import useBlocknative from '@/composables/useBlocknative';
 
 interface ActionsData {
   pendingClaims: Claim[] | null;
@@ -65,7 +65,7 @@ export default defineComponent({
     const { account, profile, loading: web3Loading, userNetwork } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
-    const { promptWalletSelect } = useOnboard();
+    const { connectWallet, account: bAccount } = useBlocknative();
 
     // DATA
     const data = reactive<ActionsData>({
@@ -106,6 +106,7 @@ export default defineComponent({
       ...toRefs(data),
       // computed
       account,
+      bAccount,
       profile,
       web3Loading,
       bp,
@@ -113,9 +114,10 @@ export default defineComponent({
       setAccountModal,
       fNum,
       onClickConnect,
-      promptWalletSelect,
+      connectWallet,
       // constants
-      EXTERNAL_LINKS
+      EXTERNAL_LINKS,
+      console
     };
   }
 });
