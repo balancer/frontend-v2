@@ -22,11 +22,23 @@ async function get3BoxProfile(address: string): Promise<Record<any, any>> {
   }
 }
 
-export async function getProfile(address: string, network: string) {
+async function getEnsName(
+  address: string,
+  network: string
+): Promise<string | null> {
   try {
     const provider = getProvider(network);
+    return await provider.lookupAddress(address);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getProfile(address: string, network: string) {
+  try {
     const [ensName, _3BoxProfile] = await Promise.all([
-      provider.lookupAddress(address),
+      getEnsName(address, network),
       get3BoxProfile(address)
     ]);
     return {
