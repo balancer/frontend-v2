@@ -179,6 +179,7 @@
     "popularBases": "Popular Bases:",
     "previewTrade": "Preview trade transactions",
     "priceImpact": "Price impact",
+    "priceImpactAccept": "I accept the high price impact from withdrawing single token amounts, moving the market price based on the depth of the market.",
     "priceImpactCheckbox": "Price impact acknowledgement",
     "priceImpactTolerance": "Price impact tolerance",
     "profit": "Profit (1{0})",
