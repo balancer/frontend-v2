@@ -462,10 +462,8 @@ export default defineComponent({
     ]);
 
     // METHODS
-    function tokenBalance(index) {
-      return Number(
-        allTokens.value[props.pool.tokenAddresses[index]]?.balance || 0
-      );
+    function tokenBalance(index: number): string {
+      return allTokens.value[props.pool.tokenAddresses[index]]?.balance || '0';
     }
 
     function tokenDecimals(index) {
@@ -485,7 +483,10 @@ export default defineComponent({
       return isAuthenticated.value
         ? [
             isPositive(),
-            isLessThanOrEqualTo(tokenBalance(index), t('exceedsBalance'))
+            isLessThanOrEqualTo(
+              Number(tokenBalance(index)),
+              t('exceedsBalance')
+            )
           ]
         : [isPositive()];
     }
