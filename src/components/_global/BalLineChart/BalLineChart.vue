@@ -153,7 +153,7 @@ export default defineComponent({
         axisLine: { show: true, lineStyle: { color: tailwind.theme.colors.gray['100'] } },
         type: 'value',
         show: !props.hideYAxis,
-        splitNumber: 0,
+        splitNumber: 4,
         splitLine: {
           show: false
         },
