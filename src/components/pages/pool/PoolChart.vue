@@ -4,12 +4,12 @@
     <BalLineChart
       :data="series"
       :isPeriodSelectionEnabled="false"
-      :showAxis="true"
       :axisLabelFormatter="{ yAxis: '0.00%' }"
       :color="chartColors"
       height="96"
       :showLegend="true"
       :legendState="{ HODL: false }"
+      hide-y-axis
     />
   </div>
   <BalBlankSlate v-else class="h-96">
