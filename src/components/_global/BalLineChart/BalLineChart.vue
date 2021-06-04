@@ -150,7 +150,10 @@ export default defineComponent({
       },
       // controlling the display of the Y-Axis
       yAxis: {
-        axisLine: { show: true, lineStyle: { color: tailwind.theme.colors.gray['100'] } },
+        axisLine: {
+          show: true,
+          lineStyle: { color: tailwind.theme.colors.gray['100'] }
+        },
         type: 'value',
         show: !props.hideYAxis,
         splitNumber: 4,
