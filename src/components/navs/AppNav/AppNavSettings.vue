@@ -52,7 +52,7 @@
           </div>
         </div>
         <div class="flex items-center">
-          <BalBtn circle color="white" size="xs" @click="logout">
+          <BalBtn circle color="white" size="xs" @click="disconnectWallet">
             <BalIcon class="text-red-500" name="x" size="sm" />
           </BalBtn>
         </div>
@@ -139,6 +139,7 @@ import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
+import useBlocknative from '@/composables/useBlocknative';
 
 const locales = {
   'en-US': 'English',
@@ -163,6 +164,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { explorer } = useWeb3();
+    const { disconnectWallet } = useBlocknative();
 
     // DATA
     const data = reactive({
@@ -227,6 +229,7 @@ export default defineComponent({
       connectorLogo,
       // methods
       logout,
+      disconnectWallet,
       setDarkMode,
       setLocale,
       setTradeLiquidity,

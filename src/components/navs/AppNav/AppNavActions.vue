@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="bAccount?.address" class="flex items-center">
+    <div v-if="bAccount.address" class="flex items-center">
       <BalBtn
         v-if="totalPending > 0"
         tag="a"
@@ -67,6 +67,8 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { connectWallet, account: bAccount } = useBlocknative();
 
+    watch(bAccount, () => console.log('watched inside appnavactions', bAccount));
+
     // DATA
     const data = reactive<ActionsData>({
       pendingClaims: null,
@@ -100,6 +102,8 @@ export default defineComponent({
       data.totalPending = 0;
       if (newAccount) getClaimsData();
     });
+
+    watch(bAccount, () => console.log('bogn', bAccount));
 
     return {
       // data

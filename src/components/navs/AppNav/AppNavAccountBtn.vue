@@ -13,13 +13,13 @@
       >
         <Avatar :address="account" :profile="profile" size="20" />
         <span
-          v-if="profile.name || profile.ens"
-          v-text="profile.name || profile.ens"
+          v-if="bProfile?.name || bProfile?.ens"
+          v-text="bProfile?.name || bProfile?.ens"
           class="pl-2 hidden lg:inline-block"
         />
         <span
           v-else
-          v-text="_shorten(account)"
+          v-text="_shorten(bAccount.address)"
           class="pl-2 hidden lg:inline-block address"
         />
         <BalIcon
@@ -34,11 +34,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
 import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';
 import Avatar from '@/components/images/Avatar.vue';
+import useBlocknative from '@/composables/useBlocknative';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',
@@ -51,12 +52,18 @@ export default defineComponent({
   setup() {
     const { bp } = useBreakpoints();
     const { account, profile, loading: web3Loading } = useWeb3();
+    const { account: bAccount, profile: bProfile } = useBlocknative();
+
+    watch(bAccount, () => console.log('Watched address', bAccount.value));
 
     return {
       bp,
       account,
       profile,
-      web3Loading
+      web3Loading,
+      bAccount,
+      bProfile,
+      console
     };
   }
 });

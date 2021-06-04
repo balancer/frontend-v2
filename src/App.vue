@@ -79,4 +79,8 @@ export default defineComponent({
 .bn-onboard-modal {
   @apply z-20;
 }
+
+body {
+  overflow-y: auto !important;
+}
 </style>
