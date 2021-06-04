@@ -3,7 +3,7 @@ export const TOKEN_LIST_DEFAULT =
   'https://storageapi.fleek.co/balancer-team-bucket/assets/listed.tokenlist.json';
 
 // Extended list to include LBP tokens
-export const ELIGIBLE_TOKEN_LIST =
+export const VETTED_TOKEN_LIST =
   'https://storageapi.fleek.co/balancer-team-bucket/assets/vetted.tokenlist.json';
 
 export const TOKEN_LISTS: string[] = [
@@ -29,7 +29,7 @@ export const ETHER = {
 export default {
   All: [
     TOKEN_LIST_DEFAULT,
-    ELIGIBLE_TOKEN_LIST,
+    VETTED_TOKEN_LIST,
     'ipns://tokens.uniswap.org',
     'tokenlist.zerion.eth',
     'tokens.1inch.eth',
