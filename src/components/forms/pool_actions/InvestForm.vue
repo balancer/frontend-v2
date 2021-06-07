@@ -120,20 +120,13 @@
           </div>
         </template>
         <template v-slot:info>
-          <div
-            class="cursor-pointer"
-            @click.prevent="amounts[i] = tokenBalance(i).toString()"
-          >
+          <div class="cursor-pointer" @click.prevent="setMaxInput">
             {{ $t('balance') }}: {{ formatBalance(i) }}
           </div>
         </template>
         <template v-slot:append>
           <div class="p-2">
-            <BalBtn
-              size="xs"
-              color="white"
-              @click.prevent="amounts[i] = tokenBalance(i).toString()"
-            >
+            <BalBtn size="xs" color="white" @click.prevent="setMaxInput">
               {{ $t('max') }}
             </BalBtn>
           </div>
@@ -271,6 +264,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
+import { reset } from 'numeral';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -561,6 +555,11 @@ export default defineComponent({
       }
     }
 
+    function setMaxInput(index: number) {
+      amounts[index] = tokenBalance(index).toString();
+      resetSlider();
+    }
+
     async function submit(): Promise<void> {
       if (!data.investForm.validate()) return;
       try {
@@ -698,7 +697,8 @@ export default defineComponent({
       approveAllowances,
       fNum,
       preventOverflow,
-      trackGoal
+      trackGoal,
+      setMaxInput
     };
   }
 });
