@@ -427,7 +427,7 @@ export default defineComponent({
     function getPoolLink(id: string): string {
       const { chainId } = getConfig();
       const prefixMap = {
-        1: '',
+        1: 'app.',
         42: 'kovan.'
       };
       const prefix = prefixMap[chainId] || '';
