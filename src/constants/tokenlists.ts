@@ -26,15 +26,33 @@ export const ETHER = {
     'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
 };
 
+export const balancerLists = [
+  VETTED_TOKEN_LIST,
+  TOKEN_LIST_DEFAULT
+]
+
+export const extLists = [
+  'ipns://tokens.uniswap.org',
+  'tokenlist.zerion.eth',
+  'tokens.1inch.eth',
+  'tokenlist.aave.eth',
+  'https://tokens.coingecko.com/uniswap/all.json',
+  'https://umaproject.org/uma.tokenlist.json'
+]
+
 export default {
   All: [
+    ...balancerLists,
+    ...extLists
+  ],
+  Balancer: {
+    All: balancerLists,
+    Default: TOKEN_LIST_DEFAULT,
+    Vetted: VETTED_TOKEN_LIST
+  },
+  Exchange: [
     TOKEN_LIST_DEFAULT,
-    VETTED_TOKEN_LIST,
-    'ipns://tokens.uniswap.org',
-    'tokenlist.zerion.eth',
-    'tokens.1inch.eth',
-    'tokenlist.aave.eth',
-    'https://tokens.coingecko.com/uniswap/all.json',
-    'https://umaproject.org/uma.tokenlist.json'
-  ]
+    ...extLists
+  ],
+  External: extLists,
 };

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { TokenList } from '@/types/TokenList';
+import { TokenList, TokenListGroup } from '@/types/TokenList';
 import TOKEN_LISTS from '@/constants/tokenlists';
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import IpfsService from '../ipfs/ipfs.service';
@@ -15,15 +15,18 @@ export default class TokenListService {
     this.provider = rpcProviderService.jsonProvider;
   }
 
-  async getAll(): Promise<TokenList[]> {
-    const getAllLists = TOKEN_LISTS.All.map(uri => this.get(uri));
-    const lists = await Promise.all(getAllLists.map(p => p.catch(e => e)));
-    const validLists = lists.filter(list => !(list instanceof Error));
+  async getAll(): Promise<TokenListGroup> {
+    const allFetchFns = TOKEN_LISTS.All.map(uri => this.get(uri));
+    let lists = await Promise.all(
+      allFetchFns.map(fetchList => fetchList.catch(e => e))
+    );
+    lists = lists.map((list, i) => [TOKEN_LISTS.All[i], list]);
+    const validLists = lists.filter(list => !(list[1] instanceof Error));
 
     if (validLists.length === 0) {
       throw new Error('Failed to load any TokenLists');
     }
-    return validLists;
+    return Object.fromEntries(validLists);
   }
 
   async get(uri: string): Promise<TokenList> {

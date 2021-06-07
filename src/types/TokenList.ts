@@ -33,3 +33,5 @@ export interface TokenList {
   readonly tags?: Tags;
   readonly logoURI?: string;
 }
+
+export type TokenListGroup = Record<string, TokenList>
