@@ -433,7 +433,7 @@ export default defineComponent({
       const prefix = prefixMap[chainId] || '';
       return props.sorReturn.isV1swap
         ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
-        : `https://${prefix}app.balancer.fi/#pool/${id}`;
+        : `https://${prefix}balancer.fi/#pool/${id}`;
     }
 
     return {
