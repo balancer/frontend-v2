@@ -32,6 +32,7 @@ import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
 import { last } from 'lodash';
 import useNumbers, { Preset } from '@/composables/useNumbers';
+import useTailwind from '@/composables/useTailwind';
 
 type AxisMoveEvent = {
   seriesIndex: number;
@@ -77,9 +78,8 @@ export default defineComponent({
       type: String as PropType<'category' | 'time'>,
       default: () => 'category'
     },
-    showAxis: {
-      type: Boolean
-    },
+    hideYAxis: { type: Boolean, default: false },
+    hideXAxis: { type: Boolean, default: false },
     showHeader: {
       type: Boolean
     },
@@ -109,6 +109,7 @@ export default defineComponent({
     const currentValue = ref('$0,00');
     const change = ref(0);
     const { fNum } = useNumbers();
+    const tailwind = useTailwind();
 
     // https://echarts.apache.org/en/option.html
     const chartConfig = computed(() => ({
@@ -133,33 +134,40 @@ export default defineComponent({
       // controlling the display of the X-Axis
       xAxis: {
         type: 'time',
-        show: props.showAxis,
+        show: !props.hideXAxis,
         axisTick: { show: true, alignWithLabel: true },
-        axisLine: { onZero: false, lineStyle: { color: '#D8D8D8' } },
+        axisLine: {
+          onZero: false,
+          lineStyle: { color: tailwind.theme.colors.gray['100'] }
+        },
         axisLabel: {
           formatter: props.axisLabelFormatter.xAxis
             ? value =>
                 fNum(value, null, { format: props.axisLabelFormatter.xAxis })
             : undefined,
-          color: '#718B98'
+          color: tailwind.theme.colors.gray['400']
         }
       },
       // controlling the display of the Y-Axis
       yAxis: {
-        axisLine: { show: true, lineStyle: { color: '#D8D8D8' } },
+        axisLine: {
+          show: true,
+          lineStyle: { color: tailwind.theme.colors.gray['100'] }
+        },
         type: 'value',
-        show: props.showAxis,
+        show: !props.hideYAxis,
         splitNumber: 4,
         splitLine: {
           show: false
         },
         position: 'right',
         axisLabel: {
+          show: true,
           formatter: props.axisLabelFormatter.yAxis
             ? value =>
                 fNum(value, null, { format: props.axisLabelFormatter.yAxis })
             : undefined,
-          color: '#718B98'
+          color: tailwind.theme.colors.gray['400']
         },
         nameGap: 25
       },
@@ -170,7 +178,7 @@ export default defineComponent({
         right: 0,
         top: '10%',
         bottom: '5%',
-        containLabel: props.showAxis
+        containLabel: true
       },
       tooltip: {
         trigger: 'axis',
@@ -205,7 +213,7 @@ export default defineComponent({
       series: props.data.map((d, i) => ({
         data: d.values,
         type: 'line',
-        smooth: false,
+        smooth: 0.3,
         showSymbol: false,
         name: d.name,
         silent: true,

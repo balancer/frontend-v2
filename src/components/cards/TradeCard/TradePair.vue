@@ -263,9 +263,15 @@ export default defineComponent({
 
     function handleSelectToken(address: string): void {
       if (modalSelectTokenType.value === 'input') {
-        emit('tokenInAddressChange', address);
+        if (address === tokenOutAddressInput.value) {
+          handleSwitchTokens();
+          return;
+        } else emit('tokenInAddressChange', address);
       } else {
-        emit('tokenOutAddressChange', address);
+        if (address === tokenInAddressInput.value) {
+          handleSwitchTokens();
+          return;
+        } else emit('tokenOutAddressChange', address);
       }
       store.dispatch('registry/injectTokens', [address]);
     }

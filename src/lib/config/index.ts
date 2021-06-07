@@ -16,6 +16,7 @@ export interface Config {
   poolsUrlV2: string;
   addresses: {
     exchangeProxy: string;
+    merkleRedeem: string;
     multicall: string;
     vault: string;
     weightedPoolFactory: string;

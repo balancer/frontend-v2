@@ -238,13 +238,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.popover-wrapper {
-  transition: all 0.2s ease-in-out;
-}
-.popover-wrapper:hover {
-  @apply visible opacity-100;
-}
-
 .address {
   @apply text-blue-500;
   font-variant-ligatures: no-contextual;

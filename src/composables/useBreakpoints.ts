@@ -17,5 +17,9 @@ export default function useBreakpoints() {
 
   const width = computed(() => windowWidth.value);
 
-  return { width, bp };
+  const upToLargeBreakpoint = computed(() =>
+    ['sm', 'md', 'lg'].includes(bp.value)
+  );
+
+  return { width, bp, upToLargeBreakpoint };
 }
