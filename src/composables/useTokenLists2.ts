@@ -1,6 +1,6 @@
-import { ref, readonly, computed, watch } from 'vue';
+import { ref, readonly, computed } from 'vue';
 import TokenListService from '@/services/token-list/token-list.service';
-import { TokenList, TokenListGroup } from '@/types/TokenList';
+import { TokenListGroup } from '@/types/TokenList';
 import { pick } from 'lodash';
 import TOKEN_LISTS from '@/constants/tokenlists';
 
@@ -8,7 +8,7 @@ import TOKEN_LISTS from '@/constants/tokenlists';
 const tokenListService = new TokenListService();
 // State
 const tokenLists = ref<TokenListGroup>({});
-const toggledLists = ref<string[]>([]);
+// const toggledLists = ref<string[]>([]);
 const loading = ref(true);
 const failed = ref(false);
 
@@ -24,18 +24,15 @@ const failed = ref(false);
 })();
 
 export default function useTokenLists2() {
-  watch(tokenLists, (newVal) => {
-    console.log('balancerLists', balancerLists.value);
-    console.log('vettedList', vettedList.value);
-    console.log('exchangeLists', exchangeLists.value);
-  })
-
   const balancerLists = computed(() =>
     pick(tokenLists.value, TOKEN_LISTS.Balancer.All)
   );
 
-  const vettedList = computed(() =>
-    pick(tokenLists.value, TOKEN_LISTS.Balancer.Vetted)[TOKEN_LISTS.Balancer.Vetted]
+  const vettedList = computed(
+    () =>
+      pick(tokenLists.value, TOKEN_LISTS.Balancer.Vetted)[
+        TOKEN_LISTS.Balancer.Vetted
+      ]
   );
 
   const exchangeLists = computed(() =>
