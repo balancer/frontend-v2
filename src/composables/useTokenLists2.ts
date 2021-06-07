@@ -10,7 +10,7 @@ import LS_KEYS from '@/constants/local-storage.keys';
 const tokenListService = new TokenListService();
 // State
 const tokenLists = ref<TokenListGroup>({});
-const toggledLists = ref<string[]>(
+const toggled = ref<string[]>(
   lsGet(LS_KEYS.TokenLists.Toggled, [TOKEN_LISTS.Balancer.Default])
 );
 const loading = ref(true);
@@ -28,41 +28,49 @@ const failed = ref(false);
 })();
 
 export default function useTokenLists2() {
-  const balancerLists = computed(() =>
+  const balancerTokenLists = computed(() =>
     pick(tokenLists.value, TOKEN_LISTS.Balancer.All)
   );
 
-  const vettedList = computed(
+  const vettedTokenList = computed(
     () =>
       pick(tokenLists.value, TOKEN_LISTS.Balancer.Vetted)[
         TOKEN_LISTS.Balancer.Vetted
       ]
   );
 
-  const exchangeLists = computed(() =>
-    pick(tokenLists.value, TOKEN_LISTS.Exchange)
+  const approvedTokenLists = computed(() =>
+    pick(tokenLists.value, TOKEN_LISTS.Approved)
   );
 
   function toggleList(uri: string): void {
-    if (!TOKEN_LISTS.Exchange.includes(uri)) return;
+    if (!TOKEN_LISTS.Approved.includes(uri)) return;
 
-    if (toggledLists.value.includes(uri)) {
-      toggledLists.value.splice(toggledLists.value.indexOf(uri), 1);
+    if (toggled.value.includes(uri)) {
+      toggled.value.splice(toggled.value.indexOf(uri), 1);
     } else {
-      toggledLists.value.push(uri)
+      toggled.value.push(uri);
     }
 
-    lsSet(LS_KEYS.TokenLists.Toggled, toggledLists.value);
+    lsSet(LS_KEYS.TokenLists.Toggled, toggled.value);
+  }
+
+  function isToggled(uri: string): boolean {
+    return toggled.value.includes(uri);
   }
 
   return {
-    loading,
-    failed,
+    // state
+    loading: readonly(loading),
+    failed: readonly(failed),
     all: readonly(tokenLists),
-    balancer: balancerLists,
-    exchange: exchangeLists,
-    vettedList,
-    toggledLists,
-    toggleList
+    // computed
+    balancerTokenLists,
+    approvedTokenLists,
+    vettedTokenList,
+    toggled,
+    // methods
+    toggleList,
+    isToggled
   };
 }

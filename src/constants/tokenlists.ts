@@ -44,6 +44,6 @@ export default {
     Default: TOKEN_LIST_DEFAULT,
     Vetted: VETTED_TOKEN_LIST
   },
-  Exchange: [TOKEN_LIST_DEFAULT, ...extLists],
+  Approved: [TOKEN_LIST_DEFAULT, ...extLists],
   External: extLists
 };

@@ -17,14 +17,16 @@ export default class TokenListService {
 
   async getAll(): Promise<TokenListGroup> {
     const allFetchFns = TOKEN_LISTS.All.map(uri => this.get(uri));
-    let lists = await Promise.all(
+    const lists = await Promise.all(
       allFetchFns.map(fetchList => fetchList.catch(e => e))
     );
-    lists = lists.map((list, i) => [TOKEN_LISTS.All[i], list]);
-    const validLists = lists.filter(list => !(list[1] instanceof Error));
+    const listsWithKey = lists.map((list, i) => [TOKEN_LISTS.All[i], list]);
+    const validLists = listsWithKey.filter(list => !(list[1] instanceof Error));
 
     if (validLists.length === 0) {
       throw new Error('Failed to load any TokenLists');
+    } else if (lists[0] instanceof Error) {
+      throw new Error('Failed to load default TokenList');
     }
     return Object.fromEntries(validLists);
   }
