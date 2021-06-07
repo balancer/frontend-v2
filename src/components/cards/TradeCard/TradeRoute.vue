@@ -431,9 +431,13 @@ export default defineComponent({
         42: 'kovan.'
       };
       const prefix = prefixMap[chainId] || '';
-      return props.sorReturn.isV1swap
-        ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
-        : `https://${prefix}balancer.fi/#pool/${id}`;
+      if (props.sorReturn.isV1swap && chainId === 1) {
+        return `https://pools.balancer.exchange/#/pool/${id}`;
+      } else {
+        return props.sorReturn.isV1swap
+          ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
+          : `https://${prefix}balancer.fi/#pool/${id}`;
+      }
     }
 
     return {
