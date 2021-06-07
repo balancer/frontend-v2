@@ -249,7 +249,7 @@ import {
   isRequired
 } from '@/lib/utils/validations';
 import { useStore } from 'vuex';
-import { useI18n } from 'vue-i18n';
+// import { useI18n } from 'vue-i18n';
 import { TransactionData } from 'bnc-notify';
 import { formatUnits } from '@ethersproject/units';
 import isEqual from 'lodash/isEqual';
@@ -271,6 +271,8 @@ import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
 import useBlocknative from '@/composables/useBlocknative';
+import axios from 'axios';
+import { useQuery } from 'vue-query';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -322,7 +324,13 @@ export default defineComponent({
     const { account, userNetwork } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { connectWallet: o } = useBlocknative();
-    const { t } = useI18n();
+    const { data: evmChains, isLoading: isLoadingEvmChains } = useQuery(
+      'BINGBONG',
+      async () =>
+        await (await axios.get('https://chainid.network/chains.json')).data
+    );
+    const t = (something: string) => something;
+    // const { t } = useI18n();
     const { txListener } = useNotify();
     const { minusSlippage } = useSlippage();
     const { allTokens } = useTokens();

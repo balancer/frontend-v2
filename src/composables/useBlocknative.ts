@@ -34,20 +34,20 @@ export default function useBlocknative() {
   });
 
   // load up a list of all the evm chains
-  const { data: evmChains, isLoading: isLoadingEvmChains } = useQuery(
-    'BINGBONG',
-    async () =>
-      await (await axios.get('https://chainid.network/chains.json')).data
-  );
+  // const { data: evmChains, isLoading: isLoadingEvmChains } = useQuery(
+  //   'BINGBONG',
+  //   async () =>
+  //     await (await axios.get('https://chainid.network/chains.json')).data
+  // );
 
-  const networkName = computed(() => {
-    if (!isLoadingEvmChains.value) {
-      console.log('lm', evmChains.value);
-      // const chain = evmChains.value.
-      return 0;
-    }
-    return 0;
-  })
+  // const networkName = computed(() => {
+  //   if (!isLoadingEvmChains.value) {
+  //     console.log('lm', evmChains.value);
+  //     // const chain = evmChains.value.
+  //     return 0;
+  //   }
+  //   return 0;
+  // });
 
   const profile = computed(async () => {
     if (account.value.address) {
@@ -96,7 +96,7 @@ export default function useBlocknative() {
     account,
     profile,
     isLoadingWallet,
-    evmChains,
+    // evmChains,
 
     connectWallet,
     disconnectWallet

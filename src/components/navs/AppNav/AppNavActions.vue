@@ -65,7 +65,7 @@ export default defineComponent({
     const { account, profile, loading: web3Loading, userNetwork } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
-    const { connectWallet, account: bAccount, evmChains } = useBlocknative();
+    const { connectWallet, account: bAccount } = useBlocknative();
 
     // DATA
     const data = reactive<ActionsData>({
@@ -117,8 +117,7 @@ export default defineComponent({
       connectWallet,
       // constants
       EXTERNAL_LINKS,
-      console,
-      evmChains
+      console
     };
   }
 });
