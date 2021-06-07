@@ -65,9 +65,7 @@ export default defineComponent({
     const { account, profile, loading: web3Loading, userNetwork } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
-    const { connectWallet, account: bAccount } = useBlocknative();
-
-    watch(bAccount, () => console.log('watched inside appnavactions', bAccount));
+    const { connectWallet, account: bAccount, evmChains } = useBlocknative();
 
     // DATA
     const data = reactive<ActionsData>({
@@ -103,8 +101,6 @@ export default defineComponent({
       if (newAccount) getClaimsData();
     });
 
-    watch(bAccount, () => console.log('bogn', bAccount));
-
     return {
       // data
       ...toRefs(data),
@@ -121,7 +117,8 @@ export default defineComponent({
       connectWallet,
       // constants
       EXTERNAL_LINKS,
-      console
+      console,
+      evmChains
     };
   }
 });

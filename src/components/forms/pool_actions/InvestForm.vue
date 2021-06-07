@@ -270,6 +270,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
+import useBlocknative from '@/composables/useBlocknative';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -320,12 +321,12 @@ export default defineComponent({
     const { isAuthenticated } = useAuth();
     const { account, userNetwork } = useWeb3();
     const { fNum, toFiat } = useNumbers();
+    const { connectWallet: o } = useBlocknative();
     const { t } = useI18n();
     const { txListener } = useNotify();
     const { minusSlippage } = useSlippage();
     const { allTokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
-
     const { amounts } = toRefs(data);
 
     const {

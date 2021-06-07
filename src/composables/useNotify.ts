@@ -1,6 +1,10 @@
+import { bnNotifySymbol } from '@/plugins/blocknative';
 import { TransactionEventCode, TransactionData } from 'bnc-notify';
 import castArray from 'lodash/castArray';
 import mapValues from 'lodash/mapValues';
+import { inject } from 'vue';
+import useOos from './oos';
+import Notify from 'bnc-notify';
 
 import useBlocknative from './useBlocknative';
 import useWeb3 from './useWeb3';
@@ -8,7 +12,10 @@ import useWeb3 from './useWeb3';
 type TxCallback = (txData: TransactionData) => void;
 
 export default function useNotify() {
-  const { notify } = useBlocknative();
+  // const { notify } = useBlocknative();
+  const notify = inject(bnNotifySymbol) as ReturnType<typeof Notify>;
+
+  // useOos();
   const { explorer } = useWeb3();
 
   function txListener(

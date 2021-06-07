@@ -1,6 +1,6 @@
 import BlocknativeSdk from 'bnc-sdk';
 import Notify from 'bnc-notify';
-import { computed, inject, ref, toRef, watch } from 'vue';
+import { computed, inject, onBeforeMount, reactive, ref, watch } from 'vue';
 import {
   bnNotifySymbol,
   defaultNotifyOptions,
@@ -8,9 +8,15 @@ import {
   web3Symbol
 } from '@/plugins/blocknative';
 import { getProfile } from '@/lib/utils/profile';
-import { clone } from 'lodash';
+import { useQuery } from 'vue-query';
+import axios from 'axios';
+import { UserState } from 'bnc-onboard/dist/src/interfaces';
+import useAccountBalances from './useAccountBalances';
+
+const account = ref<UserState>({} as UserState);
 
 export default function useBlocknative() {
+  const isLoadingWallet = ref(false);
   const notify = inject(bnNotifySymbol) as ReturnType<typeof Notify>;
   const { onboardInstance: onboard, web3Instance: web3 } = inject(
     web3Symbol
@@ -21,7 +27,27 @@ export default function useBlocknative() {
     throw new Error('Blocknative Onboard missing!');
   }
 
-  const account = ref(onboard.value.getState());
+  onBeforeMount(() => {
+    if (!account.value && onboard.value) {
+      account.value = onboard.value.getState();
+    }
+  });
+
+  // load up a list of all the evm chains
+  const { data: evmChains, isLoading: isLoadingEvmChains } = useQuery(
+    'BINGBONG',
+    async () =>
+      await (await axios.get('https://chainid.network/chains.json')).data
+  );
+
+  const networkName = computed(() => {
+    if (!isLoadingEvmChains.value) {
+      console.log('lm', evmChains.value);
+      // const chain = evmChains.value.
+      return 0;
+    }
+    return 0;
+  })
 
   const profile = computed(async () => {
     if (account.value.address) {
@@ -41,12 +67,17 @@ export default function useBlocknative() {
 
   async function connectWallet() {
     if (!onboard.value) return;
-    // opens the modal
-    await onboard?.value.walletSelect();
-    // verifies that the wallet is ready to transact
-    await onboard?.value.walletCheck();
-    // update account
-    account.value = onboard.value.getState();
+    try {
+      isLoadingWallet.value = true;
+      // opens the modal
+      await onboard?.value.walletSelect();
+      // verifies that the wallet is ready to transact
+      await onboard?.value.walletCheck();
+      // update account
+      account.value = onboard.value.getState();
+    } catch {
+      isLoadingWallet.value = false;
+    }
   }
 
   async function disconnectWallet() {
@@ -54,11 +85,8 @@ export default function useBlocknative() {
     await onboard?.value.walletReset();
 
     // update account
-    account.value = {} as any;
-    console.log('after disconnecting', account.value);
+    account.value = onboard.value.getState();
   }
-
-  watch(account, () => console.log('updated inside composable', account));
 
   return {
     blocknative,
@@ -67,6 +95,8 @@ export default function useBlocknative() {
     web3,
     account,
     profile,
+    isLoadingWallet,
+    evmChains,
 
     connectWallet,
     disconnectWallet

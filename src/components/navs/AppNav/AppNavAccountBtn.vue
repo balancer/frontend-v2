@@ -3,7 +3,7 @@
     <template v-slot:activator>
       <BalBtn
         class="text-base"
-        :loading="web3Loading"
+        :loading="isLoadingWallet"
         :loading-label="['sm', 'md', 'lg'].includes(bp) ? '' : $t('connecting')"
         color="gray"
         outline
@@ -52,9 +52,11 @@ export default defineComponent({
   setup() {
     const { bp } = useBreakpoints();
     const { account, profile, loading: web3Loading } = useWeb3();
-    const { account: bAccount, profile: bProfile } = useBlocknative();
-
-    watch(bAccount, () => console.log('Watched address', bAccount.value));
+    const {
+      account: bAccount,
+      profile: bProfile,
+      isLoadingWallet
+    } = useBlocknative();
 
     return {
       bp,
@@ -63,7 +65,7 @@ export default defineComponent({
       web3Loading,
       bAccount,
       bProfile,
-      console
+      isLoadingWallet
     };
   }
 });
