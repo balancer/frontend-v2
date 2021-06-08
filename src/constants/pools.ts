@@ -42,6 +42,7 @@ export const POOLS = {
   BlackList: [''],
   Factories: {
     '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0': 'oracleWeightedPool',
-    '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9': 'weightedPool'
+    '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9': 'weightedPool',
+    '0xa9b3f46761f3a47056f39724fb5d9560f3629fb8': 'stablePool'
   }
 };
