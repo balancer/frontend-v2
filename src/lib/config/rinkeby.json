@@ -1,0 +1,42 @@
+{
+  "key": "4",
+  "chainId": 4,
+  "name": "Ethereum Testnet Rinkeby",
+  "shortName": "Rinkeby",
+  "network": "rinkeby",
+  "unknown": false,
+  "rpc": "https://eth-rinkeby.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
+  "ws": "wss://eth-rinkeby.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
+  "explorer": "https://rinkeby.etherscan.io",
+  "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-rinkeby/pools",
+  "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
+  "addresses": {
+    "bFactory": "0x8f7F78080219d4066A8036ccD30D588B416a40DB",
+    "bActions": "0x02EFDB542B9390ae7C1620B29674e02F9c0d86CC",
+    "dsProxyRegistry": "0x130767E0cf05469CF11Fa3fcf270dfC1f52b9072",
+    "exchangeProxy": "0x4e67bf5bD28Dd4b570FBAFe11D0633eCbA2754Ec",
+    "merkleRedeem": "0x3bc73D276EEE8cA9424Ecb922375A0357c1833B3",
+    "multicall": "0x3b2A02F22fCbc872AF77674ceD303eb269a46ce3",
+    "authorizer": "0xA331D84eC860Bf466b4CdCcFb4aC09a1B43F3aE6",
+    "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+    "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
+    "stablePoolFactory": "",
+    "tokenFactory": "0xEaa391544B268018C0FA848204E984Bd7FF7f20c",
+    "weth": "0xc778417e063141139fce010982780140aa0cd5ab",
+    "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d"
+  },
+  "strategies": {
+    "0": {
+      "type": "0",
+      "name": "stablePool"
+    },
+    "1": {
+      "type": "1",
+      "name": "weightedPool"
+    },
+    "2": {
+      "type": "2",
+      "name": "weightedPool"
+    }
+  }
+}
