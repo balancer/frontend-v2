@@ -27,6 +27,9 @@ const QUERY_KEYS = {
   TokenLists: ['tokenLists'],
   Claims: {
     All: (account: Ref<string>) => [CLAIMS_ROOT_KEY, { account }]
+  },
+  Tokens: {
+    All: ['tokens', 'all']
   }
 };
 
