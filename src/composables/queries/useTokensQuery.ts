@@ -1,7 +1,7 @@
 import { reactive, computed } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
-import { Token } from "@/types";
+import { Token } from '@/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import useTokenLists2 from '../useTokenLists2';
 
@@ -16,18 +16,18 @@ export default function useTokensQuery(
   const {
     loading: tokenListsLoading,
     failed: tokenListsFailed
-  } = useTokenLists2()
+  } = useTokenLists2();
 
-  const enabled = computed(() => 
-    !tokenListsLoading.value && !tokenListsFailed.value
+  const enabled = computed(
+    () => !tokenListsLoading.value && !tokenListsFailed.value
   );
 
   const queryKey = reactive(QUERY_KEYS.Tokens.All);
 
   const queryFn = async () => {
-    console.log('Loading tokens...')
-    return { all: [] }
-  }
+    console.log('Loading tokens...');
+    return { all: [] };
+  };
 
   const queryOptions = reactive({
     enabled,
