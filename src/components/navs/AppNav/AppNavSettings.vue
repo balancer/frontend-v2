@@ -5,7 +5,7 @@
       <div class="flex mt-1 justify-between">
         <div class="flex">
           <div class="relative">
-            <Avatar :address="bAccount.address" size="44" />
+            <Avatar :address="bAccount.address.value" size="44" />
             <div class="connector-icon-wrapper">
               <img
                 :src="connectorLogo"
@@ -15,7 +15,7 @@
           </div>
           <div class="ml-2">
             <div class="address flex items-baseline">
-              <div v-text="_shorten(bAccount.address)" />
+              <div v-text="_shorten(bAccount.address.value)" />
               <div class="ml-3 flex">
                 <BalTooltip>
                   <template v-slot:activator>
@@ -40,7 +40,7 @@
                   color="white"
                   size="xs"
                   tag="a"
-                  :href="explorer.addressLink(bAccount.address)"
+                  :href="explorer.addressLink(bAccount.address.value)"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -48,7 +48,7 @@
                 </BalBtn>
               </div>
             </div>
-            <div class="text-sm">{{ bAccount.wallet.name }}</div>
+            <div class="text-sm">{{ bAccount.walletProvider.value }}</div>
           </div>
         </div>
         <div class="flex items-center">
@@ -125,7 +125,7 @@
         <div
           :class="['w-2 h-2 mr-1 bg-green-400 rounded-full', networkColorClass]"
         ></div>
-        {{ networkName }}
+        {{ bNetworkName }}
       </div>
     </div>
   </div>
@@ -167,7 +167,7 @@ export default defineComponent({
     const {
       disconnectWallet,
       account: bAccount,
-      isLoadingWallet
+      networkName: bNetworkName,
     } = useBlocknative();
 
     // DATA
@@ -224,6 +224,7 @@ export default defineComponent({
       // computed
       account,
       bAccount,
+      bNetworkName,
       appTradeLiquidity,
       networkId,
       networkName,

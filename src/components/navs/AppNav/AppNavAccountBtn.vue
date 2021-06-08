@@ -19,7 +19,7 @@
         />
         <span
           v-else
-          v-text="_shorten(bAccount.address)"
+          v-text="_shorten(bAccount.address.value)"
           class="pl-2 hidden lg:inline-block address"
         />
         <BalIcon
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from 'vue';
+import { defineComponent } from 'vue';
 import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';

@@ -1,17 +1,14 @@
-import { bnNotifySymbol } from '@/plugins/blocknative';
-import { inject, watch } from 'vue';
+import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
+import useBlocknative from './useBlocknative';
 import useWeb3 from './useWeb3';
-import Notify from 'bnc-notify';
 
 export default function useWeb3Watchers() {
   // COMPOSABLES
   const store = useStore();
   const { t } = useI18n();
-  const notify = inject(bnNotifySymbol) as ReturnType<typeof Notify>;
-
-  // const { notify } = useBlocknative();
+  const { notify } = useBlocknative();
   const {
     appNetwork,
     userNetwork,

@@ -270,9 +270,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
-import useBlocknative from '@/composables/useBlocknative';
-import axios from 'axios';
-import { useQuery } from 'vue-query';
+import { useI18n } from 'vue-i18n';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -323,14 +321,7 @@ export default defineComponent({
     const { isAuthenticated } = useAuth();
     const { account, userNetwork } = useWeb3();
     const { fNum, toFiat } = useNumbers();
-    const { connectWallet: o } = useBlocknative();
-    const { data: evmChains, isLoading: isLoadingEvmChains } = useQuery(
-      'BINGBONG',
-      async () =>
-        await (await axios.get('https://chainid.network/chains.json')).data
-    );
-    const t = (something: string) => something;
-    // const { t } = useI18n();
+    const { t } = useI18n();
     const { txListener } = useNotify();
     const { minusSlippage } = useSlippage();
     const { allTokens } = useTokens();
