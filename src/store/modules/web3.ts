@@ -80,33 +80,30 @@ const actions = {
         auth.provider.value.removeAllListeners &&
         !auth.provider.value.isTorus
       )
-        auth.provider.value.removeAllListeners();
-      if (auth.provider.value.on) {
-        auth.provider.value.on('chainChanged', async chainId => {
-          commit('setLoading', true);
-
-          await dispatch('account/resetAccount', null, { root: true });
-          auth.web3 = new Web3Provider(auth.provider.value);
-
-          commit('setNetwork', parseInt(formatUnits(chainId, 0)));
-          dispatch('loadAccountData');
-          commit('setLoading', false);
-        });
-        auth.provider.value.on('accountsChanged', async accounts => {
-          if (accounts.length !== 0) {
-            commit('setLoading', true);
-
-            await dispatch('account/resetAccount', null, { root: true });
-            auth.web3 = new Web3Provider(auth.provider.value);
-            commit('setAccount', accounts[0]);
-            dispatch('loadAccountData');
-            commit('setLoading', false);
-          }
-        });
-        auth.provider.value.on('disconnect', async () => {
-          dispatch('account/resetAccount', null, { root: true });
-        });
-      }
+        if (auth.provider.value.on) {
+          // auth.provider.value.removeAllListeners();
+          // auth.provider.value.on('chainChanged', async chainId => {
+          //   commit('setLoading', true);
+          //   await dispatch('account/resetAccount', null, { root: true });
+          //   auth.web3 = new Web3Provider(auth.provider.value);
+          //   commit('setNetwork', parseInt(formatUnits(chainId, 0)));
+          //   dispatch('loadAccountData');
+          //   commit('setLoading', false);
+          // });
+          // auth.provider.value.on('accountsChanged', async accounts => {
+          //   if (accounts.length !== 0) {
+          //     commit('setLoading', true);
+          //     await dispatch('account/resetAccount', null, { root: true });
+          //     auth.web3 = new Web3Provider(auth.provider.value);
+          //     commit('setAccount', accounts[0]);
+          //     dispatch('loadAccountData');
+          //     commit('setLoading', false);
+          //   }
+          // });
+          // auth.provider.value.on('disconnect', async () => {
+          //   dispatch('account/resetAccount', null, { root: true });
+          // });
+        }
 
       const [network, accounts] = await Promise.all([
         auth.web3.getNetwork(),

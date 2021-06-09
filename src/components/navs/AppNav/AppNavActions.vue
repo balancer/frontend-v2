@@ -12,7 +12,7 @@
       rounded
       :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
       :circle="['sm', 'md', 'lg'].includes(bp)"
-      @click="onClickConnect"
+      @click="connectWallet('metamask')"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
@@ -33,6 +33,7 @@ import useNumbers from '@/composables/useNumbers';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
+import useVueWeb3 from '@/vue-web3/useVueWeb3';
 
 export default defineComponent({
   name: 'AppNavActions',
@@ -49,6 +50,7 @@ export default defineComponent({
     const { account, profile, loading: web3Loading } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
+    const { connectWallet } = useVueWeb3();
 
     // METHODS
     const setAccountModal = (isOpen: boolean) =>
@@ -69,6 +71,7 @@ export default defineComponent({
       setAccountModal,
       fNum,
       onClickConnect,
+      connectWallet,
       // constants
       EXTERNAL_LINKS
     };
