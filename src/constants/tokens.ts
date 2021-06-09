@@ -8,3 +8,5 @@ export const TOKENS = {
     BAL: '0xba100000625a3754423978a60c9317c58a424e3d'
   }
 };
+
+export const DEFAULT_TOKEN_DECIMALS = 18;

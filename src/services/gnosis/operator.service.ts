@@ -1,4 +1,3 @@
-import { parseUnits } from '@ethersproject/units';
 import axios from 'axios';
 
 import { OPERATOR_URL } from './constants';
@@ -9,6 +8,7 @@ import {
   FeeQuoteParams,
   OrderID,
   OrderMetaData,
+  PriceInformation,
   PriceQuoteParams
 } from './types';
 import { getMarket, normalizeTokenAddress } from './utils';
@@ -71,9 +71,8 @@ export default class GnosisOperatorService {
     try {
       console.log('[Gnosis Operator] Get fee from API', params);
 
-      const { kind } = params;
+      const { amount, kind } = params;
 
-      const amount = parseUnits(params.amount).toString();
       const sellToken = normalizeTokenAddress(params.sellToken);
       const buyToken = normalizeTokenAddress(params.buyToken);
 
@@ -92,12 +91,11 @@ export default class GnosisOperatorService {
     try {
       console.log('[Gnosis Operator] Get price from API', params);
 
-      const { sellToken, buyToken, kind } = params;
+      const { amount, sellToken, buyToken, kind } = params;
 
-      const amount = parseUnits(params.amount).toString();
       const market = getMarket(sellToken, buyToken, kind);
 
-      const response = await axios.get<FeeInformation>(
+      const response = await axios.get<PriceInformation>(
         `${this.baseURL}/markets/${market}/${kind}/${amount}`
       );
       return response.data;

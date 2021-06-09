@@ -92,7 +92,10 @@ import TradeSettingsPopover, {
 import { useI18n } from 'vue-i18n';
 
 import TradePairGP from './TradePairGP.vue';
-import { formatUnits } from '@ethersproject/units';
+import { formatUnits, parseUnits } from '@ethersproject/units';
+import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
+import { FeeInformation } from '@/services/gnosis/types';
+import { BigNumber } from '@ethersproject/bignumber';
 
 export default defineComponent({
   components: {
@@ -106,6 +109,8 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const priceImpact = ref(0);
     const isSell = ref(true);
+    const feeQuote = ref<FeeInformation | null>(null);
+    const feeExceedsPrice = ref(false);
     const store = useStore();
     const router = useRouter();
 
@@ -144,15 +149,21 @@ export default defineComponent({
       return priceImpact.value >= 0.05 && !highPiAccepted.value;
     });
     const tokenInDecimals = computed(
-      () => tokens.value[tokenInAddress.value]?.decimals ?? 18
+      () =>
+        tokens.value[tokenInAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
     );
     const tokenOutDecimals = computed(
-      () => tokens.value[tokenOutAddress.value]?.decimals ?? 18
+      () =>
+        tokens.value[tokenOutAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
     );
 
     const tradeDisabled = computed(() => {
-      if (errorMessage.value !== TradeValidation.VALID) return true;
-      if (isHighPriceImpact.value) return true;
+      if (
+        errorMessage.value !== TradeValidation.VALID ||
+        isHighPriceImpact.value ||
+        feeExceedsPrice.value
+      )
+        return true;
       return false;
     });
 
@@ -173,9 +184,15 @@ export default defineComponent({
       return t('trade');
     });
 
-    const kind = computed(() => (isSell.value ? 'sell' : 'buy'));
+    const orderKind = computed(() => (isSell.value ? 'sell' : 'buy'));
 
     const error = computed(() => {
+      if (feeExceedsPrice.value) {
+        return {
+          header: 'Low amount',
+          body: 'Fees exceeds from amount'
+        };
+      }
       if (isHighPriceImpact.value) {
         return {
           header: t('highPriceImpact'),
@@ -222,27 +239,63 @@ export default defineComponent({
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
-    async function handleAmountChange() {
+    async function updateQuotes() {
+      feeExceedsPrice.value = false;
+
       const tokenAmount = isSell.value ? tokenInAmount : tokenOutAmount;
       const otherTokenAmount = isSell.value ? tokenOutAmount : tokenInAmount;
+      const tokenDecimals = isSell.value
+        ? tokenInDecimals.value
+        : tokenOutDecimals.value;
 
-      const params = {
-        sellToken: tokenInAddress.value,
-        buyToken: tokenOutAddress.value,
-        amount: tokenAmount.value,
-        kind: kind.value
-      };
-      // TODO: implement fee deduction
-      const fee = await gnosisOperator.getFeeQuote(params);
+      const sellToken = tokenInAddress.value;
+      const buyToken = tokenOutAddress.value;
+      const kind = orderKind.value;
+
+      let amountToExchange = parseUnits(tokenAmount.value, tokenDecimals);
 
       if (parseFloat(tokenAmount.value) > 0) {
-        const priceQuote = await gnosisOperator.getPriceQuote(params);
+        try {
+          // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
+          const feeQuoteResult = await gnosisOperator.getFeeQuote({
+            sellToken,
+            buyToken,
+            amount: amountToExchange.toString(),
+            kind
+          });
 
-        if (priceQuote != null) {
-          otherTokenAmount.value = formatUnits(
-            priceQuote.amount,
-            isSell.value ? tokenInDecimals.value : tokenOutDecimals.value
-          );
+          if (feeQuoteResult != null) {
+            if (isSell.value) {
+              // deduct fee if its a sell order
+              amountToExchange = amountToExchange.sub(feeQuoteResult.amount);
+
+              feeExceedsPrice.value = amountToExchange.isNegative();
+            }
+            if (!feeExceedsPrice.value) {
+              const priceQuoteResult = await gnosisOperator.getPriceQuote({
+                sellToken,
+                buyToken,
+                amount: amountToExchange.toString(),
+                kind
+              });
+
+              if (priceQuoteResult != null && priceQuoteResult.amount != null) {
+                feeQuote.value = feeQuoteResult;
+
+                otherTokenAmount.value = formatUnits(
+                  isSell.value
+                    ? priceQuoteResult.amount
+                    : // add the fee for buy orders
+                      BigNumber.from(priceQuoteResult.amount)
+                        .add(feeQuoteResult.amount)
+                        .toString(),
+                  tokenDecimals
+                );
+              }
+            }
+          }
+        } catch (e) {
+          console.log('[Gnosis Quotes] Failed to update quotes', e);
         }
       }
     }
@@ -256,11 +309,11 @@ export default defineComponent({
     });
 
     watch(tokenInAmount, () => {
-      handleAmountChange();
+      updateQuotes();
     });
 
     watch(tokenOutAmount, async () => {
-      handleAmountChange();
+      updateQuotes();
     });
 
     populateInitialTokens();
