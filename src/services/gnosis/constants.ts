@@ -14,7 +14,8 @@ export const OPERATOR_URLS = {
     : 'https://protocol-rinkeby.gnosis.io/api'
 };
 
-export const OPERATOR_URL = OPERATOR_URLS[APP_NETWORK_ID];
+export const OPERATOR_URL =
+  OPERATOR_URLS[APP_NETWORK_ID] ?? OPERATOR_URLS[Network.MAINNET];
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS = GPv2Settlement[APP_NETWORK_ID]
   .address as string;

@@ -2,7 +2,7 @@
   <div class="px-4 md:px-0">
     <div class="trade-card-container mx-auto -mt-6">
       <BalLoadingBlock v-if="appLoading" class="h-96" />
-      <TradeCard v-else />
+      <TradeCardGP v-else />
     </div>
   </div>
 </template>
@@ -11,11 +11,11 @@
 import { defineComponent, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
-import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
+import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
 
 export default defineComponent({
   components: {
-    TradeCard
+    TradeCardGP
   },
 
   setup() {

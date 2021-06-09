@@ -4,16 +4,16 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import Home from '@/pages/Home.vue';
 import Pool from '@/pages/Pool.vue';
 import Trade from '@/pages/Trade.vue';
-import TradeV2 from '@/pages/TradeV2.vue';
+import TradeGP from '@/pages/TradeGP.vue';
 
 const routes: RouteRecordRaw[] = compact([
   { path: '/', name: 'home', component: Home },
   { path: '/trade/:assetIn?/:assetOut?', name: 'trade', component: Trade },
   process.env.VUE_APP_GNOSIS_INTEGRATION === 'true'
     ? {
-        path: '/tradev2/:assetIn?/:assetOut?',
-        name: 'tradev2',
-        component: TradeV2
+        path: '/trade-gp/:assetIn?/:assetOut?',
+        name: 'trade-gp',
+        component: TradeGP
       }
     : undefined,
   {
@@ -25,8 +25,6 @@ const routes: RouteRecordRaw[] = compact([
   { path: '/pool/:id', name: 'pool', component: Pool },
   { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/' }
 ]);
-
-console.log(routes);
 
 const router = createRouter({
   history: createWebHashHistory(),

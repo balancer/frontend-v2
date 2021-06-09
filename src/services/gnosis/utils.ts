@@ -1,20 +1,25 @@
-import { APP_NETWORK_ID_STR } from '@/constants/network';
+import { APP_NETWORK_ID } from '@/constants/network';
 import { ETHER } from '@/constants/tokenlists';
 import configs from '@/lib/config';
 
-export function checkIfEther(tokenAddress: string) {
-  let checkedAddress = tokenAddress;
-  if (tokenAddress === ETHER.symbol) {
-    checkedAddress = configs[APP_NETWORK_ID_STR].addresses.weth;
+export function normalizeTokenAddress(tokenAddress: string) {
+  if (tokenAddress.toLowerCase() === ETHER.address.toLowerCase()) {
+    return configs[APP_NETWORK_ID].addresses.weth;
   }
 
-  return checkedAddress;
+  return tokenAddress;
 }
 
-export function toApiAddress(address: string) {
-  if (address === ETHER.symbol) {
-    return configs[APP_NETWORK_ID_STR].addresses.weth;
+export function getMarket(sellToken: string, buyToken: string, kind: string) {
+  let baseToken = buyToken;
+  let quoteToken = sellToken;
+
+  if (kind === 'sell') {
+    baseToken = sellToken;
+    quoteToken = buyToken;
   }
 
-  return address;
+  return `${normalizeTokenAddress(baseToken)}-${normalizeTokenAddress(
+    quoteToken
+  )}`;
 }

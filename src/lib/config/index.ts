@@ -1,5 +1,6 @@
 import homestead from './homestead.json';
 import kovan from './kovan.json';
+import rinkeby from './rinkeby.json';
 import docker from './docker.json';
 
 export interface Config {
@@ -36,6 +37,7 @@ export interface Config {
 const config: Record<string, Config> = {
   '1': homestead,
   '42': kovan,
+  '4': rinkeby,
   // @ts-ignore
   '17': docker
 };

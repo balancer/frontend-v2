@@ -3,14 +3,15 @@ import { Signer } from '@ethersproject/abstract-signer';
 
 import {
   domain as domainGp,
-  signOrder as signOrderGp,
-  EcdsaSignature,
-  Order,
+  signOrder as signOrderGp
+} from '@gnosis.pm/gp-v2-contracts/lib/commonjs';
+import { Order } from '@gnosis.pm/gp-v2-contracts/lib/esm/order';
+import {
+  EcdsaSigningScheme,
   Signature,
-  TypedDataV3Signer,
   SigningScheme,
-  EcdsaSigningScheme
-} from '@gnosis.pm/gp-v2-contracts';
+  EcdsaSignature
+} from '@gnosis.pm/gp-v2-contracts/lib/esm/sign';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
 
@@ -35,7 +36,6 @@ export interface SignOrderParams {
 // serializable, so no BigNumbers
 //  See https://protocol-rinkeby.dev.gnosisdev.com/api/
 export interface OrderCreation extends UnsignedOrder {
-  // TODO: I commented this because I expect the API and contract to follow the same structure for the order data. confirm and delete this comment
   signature: string; // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
   signingScheme: EcdsaSigningScheme; // value of
 }

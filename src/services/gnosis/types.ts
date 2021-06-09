@@ -29,13 +29,7 @@ export type FeeQuoteParams = Pick<
   amount: string;
 };
 
-export type PriceQuoteParams = Omit<
-  FeeQuoteParams,
-  'sellToken' | 'buyToken'
-> & {
-  baseToken: string;
-  quoteToken: string;
-};
+export type PriceQuoteParams = FeeQuoteParams;
 
 export type FeeInformation = {
   expirationDate: string;

@@ -9,4 +9,3 @@ export enum Network {
 }
 
 export const APP_NETWORK_ID = Number(process.env.VUE_APP_NETWORK) as NetworkId;
-export const APP_NETWORK_ID_STR = process.env.VUE_APP_NETWORK as string;
