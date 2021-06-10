@@ -29,7 +29,7 @@ const QUERY_KEYS = {
     All: (account: Ref<string>) => [CLAIMS_ROOT_KEY, { account }]
   },
   Tokens: {
-    All: ['tokens', 'all']
+    Prices: (tokens: Ref<string[]>) => ['tokens', 'prices', { tokens }]
   }
 };
 
