@@ -1,4 +1,4 @@
-import { MetamaskConnector } from './connectors/metamask/metamask.connector.ts';
+import { MetamaskConnector } from './connectors/metamask/metamask.connector';
 import { Connector } from './connectors/connector';
 import { computed, reactive, Ref, toRefs } from 'vue';
 import { AbstractProvider } from 'web3-core';

@@ -13,7 +13,6 @@ export class WalletConnectConnector extends Connector {
       const chainId = await provider.request({ method: 'eth_chainId' });
       this.handleChainChanged(chainId);
       this.handleAccountsChanged(accounts);
-
     } catch (err) {
       if (err.code === 4001) {
         // EIP-1193 userRejectedRequest error
