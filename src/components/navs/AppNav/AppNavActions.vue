@@ -12,7 +12,7 @@
       rounded
       :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
       :circle="['sm', 'md', 'lg'].includes(bp)"
-      @click="connectWallet('metamask')"
+      @click="connectWallet('walletconnect')"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
@@ -33,7 +33,7 @@ import useNumbers from '@/composables/useNumbers';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
-import useVueWeb3 from '@/vue-web3/useVueWeb3';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   name: 'AppNavActions',

@@ -12,10 +12,9 @@ import registerDirectives from '@/plugins/directives';
 import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 import { registerGlobalComponents } from '@/plugins/components';
-import Web3Provider from '@/vue-web3/Web3Provider';
+import Web3Provider from '@/services/web3/web3.plugin';
 import { use } from 'echarts/core';
 import { LineChart } from 'echarts/charts';
-import Web3 from 'web3';
 import {
   TitleComponent,
   TooltipComponent,
@@ -52,7 +51,7 @@ const app = createApp(App)
   .use(VueApexCharts)
   .use(vueQuery)
   .use(VueVirtualScroller)
-  .use(Web3Provider, Web3)
+  .use(Web3Provider)
   .mixin(mixins);
 
 registerDirectives(app);

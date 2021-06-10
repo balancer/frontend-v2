@@ -1,29 +1,47 @@
-import { MetamaskConnector } from './connectors/metamask/MetamaskConnector';
-import { Connector } from './connectors/Connector';
-import { reactive, Ref, toRefs } from 'vue';
+import { MetamaskConnector } from './connectors/metamask/metamask.connector.ts';
+import { Connector } from './connectors/connector';
+import { computed, reactive, Ref, toRefs } from 'vue';
+import { AbstractProvider } from 'web3-core';
+import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 
-type Wallet = 'metamask' | 'trustwallet';
+type Wallet = 'metamask' | 'walletconnect';
 type ConnectorImplementation = new (...args: any[]) => Connector;
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
-export const Web3AccountSymbol = Symbol('WEB3_ACCOUNT');
+
 export type Web3Provider = {
   connectWallet: (wallet: Wallet) => Promise<void>;
-  provider: unknown;
+  provider: AbstractProvider;
   account: Ref<string[]>;
   chainId: Ref<number>;
+  connector: Ref<Connector>;
 };
 
 const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   metamask: MetamaskConnector,
-  trustwallet: MetamaskConnector
+  walletconnect: WalletConnectConnector
 };
 
 export default {
   install: (app, Web3Library) => {
+    // this data provided is properly typed to all consumers
+    // via the 'Web3Provider' type
     const providerData = reactive({
-      provider: null,
-      account: [''],
-      chainId: 0
+      provider: null as any,
+      connector: null as any
+    });
+
+    const accounts = computed(() => {
+      if (providerData.connector) {
+        return providerData.connector.accounts;
+      }
+      return [''];
+    });
+
+    const chainId = computed(() => {
+      if (providerData.connector) {
+        return providerData.connector.chainId;
+      }
+      return 0;
     });
 
     // user supplied web3 provider. i.e. (web3, ethers)
@@ -42,15 +60,21 @@ export default {
           `Wallet [${wallet}] is not supported yet. Please contact the dev team to add this connector.`
         );
       }
-      const { provider, account, chainId } = await connector.connect();
+      const { provider } = await connector.connect();
+
+      // listens to wallet/chain changed and disconnect events
+      connector.registerListeners();
+
       providerData.provider = new Web3Library(provider);
-      providerData.account = account.value as string[];
-      providerData.chainId = chainId.value as number;
+      // it is handy to provide the connector instance
+      providerData.connector = connector;
     };
 
     const payload: Web3Provider = {
       connectWallet,
-      ...toRefs(providerData)
+      ...toRefs(providerData),
+      account: accounts,
+      chainId
     };
 
     app.provide(Web3ProviderSymbol, payload);

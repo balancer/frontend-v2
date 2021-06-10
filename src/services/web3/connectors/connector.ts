@@ -1,15 +1,15 @@
-import { EventEmitter } from 'node:stream';
+import { AbstractProvider } from 'web3-core';
 import { ref, Ref } from 'vue';
 import Web3 from 'web3';
+import { EventEmitter } from 'node:stream';
 
 export type ConnectorPayload = {
   provider: Web3;
   account: Ref<string[] | null>;
   chainId: Ref<number | null>;
 };
-
 export abstract class Connector {
-  provider: EventEmitter | null = null;
+  provider: (AbstractProvider & EventEmitter) | null = null;
   accounts: Ref<string[] | null> = ref(null);
   chainId: Ref<number | null> = ref(null);
   active: Ref<boolean> = ref(false);
