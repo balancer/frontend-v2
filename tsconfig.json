@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "experimentalDecorators": true,
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
