@@ -169,9 +169,7 @@ export default defineComponent({
     const isEthTrade = computed(() => addressIn.value === ETHER.address);
 
     const requiresApproval = computed(() => {
-      if (isWrap.value) return false;
-      if (isUnwrap.value) return false;
-      if (isEthTrade.value) return false;
+      if (isWrap.value || isUnwrap.value || isEthTrade.value) return false;
       return true;
     });
 

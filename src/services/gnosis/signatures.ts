@@ -3,15 +3,13 @@ import { Signer } from '@ethersproject/abstract-signer';
 
 import {
   domain as domainGp,
-  signOrder as signOrderGp
-} from '@gnosis.pm/gp-v2-contracts/lib/commonjs';
-import { Order } from '@gnosis.pm/gp-v2-contracts/lib/esm/order';
-import {
+  signOrder as signOrderGp,
+  Order,
   EcdsaSigningScheme,
   Signature,
   SigningScheme,
   EcdsaSignature
-} from '@gnosis.pm/gp-v2-contracts/lib/esm/sign';
+} from '@gnosis.pm/gp-v2-contracts';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
 
