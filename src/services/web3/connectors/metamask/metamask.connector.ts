@@ -3,7 +3,8 @@ import { AbstractProvider } from 'web3-core';
 import { EventEmitter } from 'node:stream';
 export class MetamaskConnector extends Connector {
   async connect() {
-    const provider = window.ethereum;
+    // type for window.ethereum is causing conflicts (provided by some library)
+    const provider = window.ethereum as any;
     if (provider) {
       this.provider = provider as AbstractProvider & EventEmitter;
       this.active.value = true;
