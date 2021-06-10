@@ -1,6 +1,6 @@
-import { ref, readonly, computed } from 'vue';
+import { ref, Ref, readonly, computed } from 'vue';
 import TokenListService from '@/services/token-list/token-list.service';
-import { TokenListGroup } from '@/types/TokenList';
+import { TokenListDict } from '@/types/TokenList';
 import { pick } from 'lodash';
 import TOKEN_LISTS from '@/constants/tokenlists';
 import { lsGet, lsSet } from '@/lib/utils';
@@ -8,14 +8,16 @@ import LS_KEYS from '@/constants/local-storage.keys';
 
 // SERVICES
 const tokenListService = new TokenListService();
-// State
-const tokenLists = ref<TokenListGroup>({});
+
+// STATE
+const tokenLists = ref<TokenListDict>({});
 const toggled = ref<string[]>(
   lsGet(LS_KEYS.TokenLists.Toggled, [TOKEN_LISTS.Balancer.Default])
 );
 const loading = ref(true);
 const failed = ref(false);
 
+// INIT STATE
 (async () => {
   try {
     tokenLists.value = await tokenListService.getAll();
@@ -28,6 +30,14 @@ const failed = ref(false);
 })();
 
 export default function useTokenLists2() {
+  // COMPUTED
+  const defaultTokenList = computed(
+    () =>
+      pick(tokenLists.value, TOKEN_LISTS.Balancer.Default)[
+        TOKEN_LISTS.Balancer.Default
+      ]
+  );
+
   const balancerTokenLists = computed(() =>
     pick(tokenLists.value, TOKEN_LISTS.Balancer.All)
   );
@@ -43,6 +53,9 @@ export default function useTokenLists2() {
     pick(tokenLists.value, TOKEN_LISTS.Approved)
   );
 
+  const toggledLists = computed(() => pick(tokenLists.value, toggled.value));
+
+  // METHODS
   function toggleList(uri: string): void {
     if (!TOKEN_LISTS.Approved.includes(uri)) return;
 
@@ -61,13 +74,15 @@ export default function useTokenLists2() {
 
   return {
     // state
-    loading: readonly(loading),
-    failed: readonly(failed),
-    all: readonly(tokenLists),
+    loading: readonly(loading) as Readonly<Ref<boolean>>,
+    failed: readonly(failed) as Readonly<Ref<boolean>>,
+    all: readonly(tokenLists) as Readonly<Ref<TokenListDict>>,
     // computed
+    defaultTokenList,
     balancerTokenLists,
     approvedTokenLists,
     vettedTokenList,
+    toggledLists,
     toggled,
     // methods
     toggleList,
