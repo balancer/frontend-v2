@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { TokenList, TokenListGroup } from '@/types/TokenList';
+import { TokenList, TokenListDict } from '@/types/TokenList';
 import TOKEN_LISTS from '@/constants/tokenlists';
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import IpfsService from '../ipfs/ipfs.service';
@@ -15,7 +15,7 @@ export default class TokenListService {
     this.provider = rpcProviderService.jsonProvider;
   }
 
-  async getAll(): Promise<TokenListGroup> {
+  async getAll(): Promise<TokenListDict> {
     const allFetchFns = TOKEN_LISTS.All.map(uri => this.get(uri));
     const lists = await Promise.all(
       allFetchFns.map(fetchList => fetchList.catch(e => e))
