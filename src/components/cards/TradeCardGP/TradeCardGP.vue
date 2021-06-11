@@ -57,7 +57,7 @@
   </BalCard>
   <teleport to="#modal">
     <TradePreviewModalGP
-      v-if="modalTradePreviewIsOpen"
+      :open="modalTradePreviewIsOpen"
       :address-in="tokenInAddress"
       :amount-in="tokenInAmount"
       :address-out="tokenOutAddress"
@@ -95,6 +95,7 @@ import { formatUnits, parseUnits } from '@ethersproject/units';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 import { FeeInformation } from '@/services/gnosis/types';
 import { BigNumber } from '@ethersproject/bignumber';
+import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 
 export default defineComponent({
   components: {
@@ -168,6 +169,8 @@ export default defineComponent({
     });
 
     // COMPOSABLES
+    useTokenApprovalGP(tokenInAddress, tokenInAmount, tokens);
+
     const { gnosisOperator } = useGnosisProtocol();
 
     const { errorMessage } = useValidation(

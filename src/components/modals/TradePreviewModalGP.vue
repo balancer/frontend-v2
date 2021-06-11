@@ -1,5 +1,5 @@
 <template>
-  <BalModal show @close="onClose" :title="$t('previewTrade')">
+  <BalModal :show="open" @close="onClose" :title="$t('previewTrade')">
     <div>
       <div
         class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-700"
@@ -79,7 +79,9 @@ import { defineComponent, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 
 import { ETHER } from '@/constants/tokenlists';
+
 import useNumbers from '@/composables/useNumbers';
+import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -161,17 +163,15 @@ export default defineComponent({
       return true;
     });
 
+    const { approving, allowanceState, approve } = useTokenApprovalGP(
+      addressIn,
+      amountIn,
+      tokens
+    );
+
     const isApproved = computed(() => {
-      return true;
+      return allowanceState.value.isUnlocked;
     });
-
-    const approving = computed(() => {
-      return true;
-    });
-
-    async function approve(): Promise<void> {
-      console.log('approve');
-    }
 
     function trade() {
       emit('trade');
