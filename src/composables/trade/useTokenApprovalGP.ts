@@ -21,8 +21,6 @@ export default function useTokenApprovalGP(
   const auth = useAuth();
   const { txListener } = useNotify();
 
-  const { config } = store.state.web3;
-
   const allowanceState = computed(() => {
     if (tokenInAddress.value === ETHER.address) {
       return {
