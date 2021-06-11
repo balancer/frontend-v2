@@ -30,6 +30,13 @@ const QUERY_KEYS = {
   },
   Tokens: {
     Prices: (tokens: Ref<string[]>) => ['tokens', 'prices', { tokens }]
+  },
+  Account: {
+    Balances: (account: Ref<string>, tokens: Ref<string[]>) => [
+      'account',
+      'balances',
+      { account, tokens }
+    ]
   }
 };
 

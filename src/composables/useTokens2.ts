@@ -6,6 +6,7 @@ import useConfig from './useConfig';
 import TokenService from '@/services/token/token.service';
 import { TOKENS } from '@/constants/tokens';
 import useTokenPricesQuery from './queries/useTokenPricesQuery';
+import useAccountQuery from './queries/useAccountQuery';
 
 // TYPES
 type TokenDictionary = { [address: string]: TokenInfo };
@@ -24,9 +25,15 @@ export default function useTokens2() {
   } = useTokenLists2();
 
   // SERVICES
-  const tokenService = new TokenService(allTokenLists);
+  const tokenService = new TokenService();
 
   // COMPUTED
+  /**
+   * Static metadata
+   *
+   * The baseTokens, injectedTokens and allTokens dictionaries
+   * provide the static metadata for each token.
+   */
   const baseTokens = computed(
     (): TokenDictionary => {
       if (loadingTokenLists.value || tokenListsFailed.value) return {};
@@ -61,41 +68,65 @@ export default function useTokens2() {
       return {
         ...baseTokens.value,
         ...injectedTokens.value,
-        ...ether.value
+        // ...ether.value
       };
     }
   );
 
   const allAddresses = computed(() => Object.keys(allTokens.value));
 
+  /**
+   * Dynamic metadata
+   *
+   * The prices, balances and allowances dictionaries provide dynamic
+   * metadata for each token in allTokens.
+   */
   const pricesQuery = useTokenPricesQuery(allAddresses);
+  const accountQuery = useAccountQuery(allAddresses);
+
   const prices = computed(() =>
     pricesQuery.data.value ? pricesQuery.data.value : {}
   );
+  const balances = computed(() =>
+    accountQuery.data.value ? accountQuery.data.value.balances : {}
+  );
+  // const allowances = computed(() =>
+  //   accountQuery.data.value ? accountQuery.data.value.allowances : {}
+  // );
 
   // METHODS
   async function injectTokens(addresses: string[]): Promise<void> {
-    const tokens = await tokenService.getMetadata(addresses);
+    const tokens = await tokenService.metadata.get(
+      addresses,
+      allTokenLists.value
+    );
     injectedTokens.value = { ...injectedTokens.value, ...tokens };
   }
 
-  watchEffect(async () => {
-    if (!loadingTokenLists.value) {
-      await injectTokens(['0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F']);
-      console.log('injected', injectedTokens.value);
-    }
-  });
+  // watchEffect(async () => {
+  //   if (!loadingTokenLists.value) {
+  //     await injectTokens(['0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F']);
+  //     console.log('injected', injectedTokens.value);
+  //   }
+  // });
 
-  watch(prices, newPrices => {
-    console.log('prices', newPrices);
-    console.log(
-      'injectedPrice',
-      newPrices['0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F']
-    );
+  // watch(prices, newPrices => {
+  //   console.log('prices', newPrices);
+  //   console.log(
+  //     'injectedPrice',
+  //     newPrices['0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F']
+  //   );
+  // });
+
+  watch(balances, newBalances => {
+    console.log('balances', newBalances);
   });
 
   return {
+    // computed
     allTokens,
+    // prices,
+    // methods
     injectTokens
   };
 }
