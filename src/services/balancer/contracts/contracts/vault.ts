@@ -101,7 +101,7 @@ export default class Vault {
       );
     } else if (type === 'Stable') {
       const tokensList = Object.values(tokens);
-      return tokensList.map(() => 100 / tokensList.length);
+      return tokensList.map(() => 1 / tokensList.length);
     } else {
       return [];
     }
