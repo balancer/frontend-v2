@@ -1,12 +1,12 @@
-import { ref, computed, watchEffect, watch } from 'vue';
+import { ref, computed } from 'vue';
 import useTokenLists2 from './useTokenLists2';
 import { getAddress } from '@ethersproject/address';
 import { TokenInfo } from '@/types/TokenList';
 import useConfig from './useConfig';
 import TokenService from '@/services/token/token.service';
-import { TOKENS } from '@/constants/tokens';
 import useTokenPricesQuery from './queries/useTokenPricesQuery';
 import useAccountQuery from './queries/useAccountQuery';
+import { TOKENS } from '@/constants/tokens';
 
 // TYPES
 type TokenDictionary = { [address: string]: TokenInfo };
@@ -67,8 +67,7 @@ export default function useTokens2() {
     (): TokenDictionary => {
       return {
         ...baseTokens.value,
-        ...injectedTokens.value,
-        // ...ether.value
+        ...injectedTokens.value
       };
     }
   );
@@ -103,29 +102,12 @@ export default function useTokens2() {
     injectedTokens.value = { ...injectedTokens.value, ...tokens };
   }
 
-  // watchEffect(async () => {
-  //   if (!loadingTokenLists.value) {
-  //     await injectTokens(['0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F']);
-  //     console.log('injected', injectedTokens.value);
-  //   }
-  // });
-
-  // watch(prices, newPrices => {
-  //   console.log('prices', newPrices);
-  //   console.log(
-  //     'injectedPrice',
-  //     newPrices['0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F']
-  //   );
-  // });
-
-  watch(balances, newBalances => {
-    console.log('balances', newBalances);
-  });
-
   return {
     // computed
     allTokens,
-    // prices,
+    ether,
+    prices,
+    balances,
     // methods
     injectTokens
   };
