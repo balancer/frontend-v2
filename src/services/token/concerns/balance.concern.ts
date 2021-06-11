@@ -12,12 +12,16 @@ export default class BalanceConcern {
 
   async getMany(
     account: string,
+    userNetwork: string,
     addresses: string[]
   ): Promise<BalanceDictionary> {
     try {
+      const provider = this.service.rpcProviderService.getJsonProvider(
+        userNetwork
+      );
       const balances: [BigNumber][] = await multicall(
-        this.service.configService.network.key,
-        this.service.provider,
+        userNetwork,
+        provider,
         erc20Abi,
         addresses.map(token => [token, 'balanceOf', [account]])
       );

@@ -5,7 +5,7 @@ import { TokenInfo } from '@/types/TokenList';
 import useConfig from './useConfig';
 import TokenService from '@/services/token/token.service';
 import useTokenPricesQuery from './queries/useTokenPricesQuery';
-import useAccountQuery from './queries/useAccountQuery';
+import useAccountBalancesQuery from './queries/useAccountBalancesQuery';
 import { TOKENS } from '@/constants/tokens';
 
 // TYPES
@@ -13,6 +13,9 @@ type TokenDictionary = { [address: string]: TokenInfo };
 
 // STATE
 const injectedTokens = ref<TokenDictionary>({});
+
+// SERVICES
+const tokenService = new TokenService();
 
 export default function useTokens2() {
   // COMPOSABLES
@@ -23,9 +26,6 @@ export default function useTokens2() {
     defaultTokenList: tokenList,
     all: allTokenLists
   } = useTokenLists2();
-
-  // SERVICES
-  const tokenService = new TokenService();
 
   // COMPUTED
   /**
@@ -81,17 +81,16 @@ export default function useTokens2() {
    * metadata for each token in allTokens.
    */
   const pricesQuery = useTokenPricesQuery(allAddresses);
-  const accountQuery = useAccountQuery(allAddresses);
+  const accountBalancesQuery = useAccountBalancesQuery(allAddresses);
 
   const prices = computed(() =>
     pricesQuery.data.value ? pricesQuery.data.value : {}
   );
   const balances = computed(() =>
-    accountQuery.data.value ? accountQuery.data.value.balances : {}
+    accountBalancesQuery.data.value
+      ? accountBalancesQuery.data.value.balances
+      : {}
   );
-  // const allowances = computed(() =>
-  //   accountQuery.data.value ? accountQuery.data.value.allowances : {}
-  // );
 
   // METHODS
   async function injectTokens(addresses: string[]): Promise<void> {

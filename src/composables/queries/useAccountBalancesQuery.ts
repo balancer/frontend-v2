@@ -1,4 +1,4 @@
-import { reactive, ref, Ref } from 'vue';
+import { reactive, ref, Ref, computed } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -7,33 +7,29 @@ import useWeb3 from '../useWeb3';
 import { BalanceDictionary } from '@/services/token/concerns/balance.concern';
 
 // TYPES
-type TokenValueDictionary = { [address: string]: string };
-type Response = {
-  balances: BalanceDictionary;
-  // allowances: TokenValueDictionary;
-};
+type Response = BalanceDictionary;
 
 // SERVICES
 const tokenService = new TokenService();
 
-export default function useAccountQuery(
+export default function useAccountBalancesQuery(
   tokens: Ref<string[]> = ref([]),
   options: UseQueryOptions<Response> = {}
 ) {
-  const { account, isConnected } = useWeb3();
+  const { account, isConnected, userNetwork } = useWeb3();
 
-  // TODO - key will have to be reactive to the user's network
-  const queryKey = reactive(QUERY_KEYS.Account.Balances(account, tokens));
+  const userNetworkKey = computed(() => userNetwork.value.key);
+
+  const queryKey = reactive(
+    QUERY_KEYS.Account.Balances(account, userNetworkKey, tokens)
+  );
 
   const queryFn = async () => {
-    // TODO: again we will have to pass in the user's network here
-    const balances = await tokenService.balance.getMany(
+    return await tokenService.balance.getMany(
       account.value,
+      userNetworkKey.value,
       tokens.value
     );
-    return {
-      balances
-    };
   };
 
   const queryOptions = reactive({
