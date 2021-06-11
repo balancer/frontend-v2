@@ -55,10 +55,9 @@
       @close="tradeSuccess = false"
     />
   </BalCard>
-  <!-- <teleport to="#modal">
-    <TradePreviewModal
-      :open="modalTradePreviewIsOpen"
-      :is-v1-swap="sorReturn.isV1swap"
+  <teleport to="#modal">
+    <TradePreviewModalGP
+      v-if="modalTradePreviewIsOpen"
       :address-in="tokenInAddress"
       :amount-in="tokenInAmount"
       :address-out="tokenOutAddress"
@@ -67,7 +66,7 @@
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"
     />
-  </teleport> -->
+  </teleport>
 </template>
 
 <script lang="ts">
@@ -85,7 +84,7 @@ import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
 
-// import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
+import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -101,7 +100,7 @@ export default defineComponent({
   components: {
     SuccessOverlay,
     TradePairGP,
-    // TradePreviewModal,
+    TradePreviewModalGP,
     TradeSettingsPopover
   },
 
@@ -126,6 +125,7 @@ export default defineComponent({
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
     const tradeSuccess = ref(false);
+    const trading = ref(false);
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
 
@@ -239,6 +239,10 @@ export default defineComponent({
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
+    async function trade() {
+      console.log('trading');
+    }
+
     async function updateQuotes() {
       feeExceedsPrice.value = false;
 
@@ -334,7 +338,9 @@ export default defineComponent({
       isRequired,
       tradeDisabled,
       TradeSettingsContext,
-      isSell
+      isSell,
+      trade,
+      trading
     };
   }
 });
