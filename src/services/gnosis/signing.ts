@@ -1,5 +1,6 @@
 import { APP_NETWORK_ID } from '@/constants/network';
 import { Signer } from '@ethersproject/abstract-signer';
+import { BigNumber } from '@ethersproject/bignumber';
 
 import {
   domain as domainGp,
@@ -8,7 +9,8 @@ import {
   EcdsaSigningScheme,
   Signature,
   SigningScheme,
-  EcdsaSignature
+  EcdsaSignature,
+  TypedDataV3Signer
 } from '@gnosis.pm/gp-v2-contracts';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
@@ -21,6 +23,7 @@ const METHOD_NOT_FOUND_ERROR_CODE = -32601;
 const V4_ERROR_MSG_REGEX = /eth_signTypedData_v4 does not exist/i;
 const V3_ERROR_MSG_REGEX = /eth_signTypedData_v3 does not exist/i;
 const RPC_REQUEST_FAILED_REGEX = /RPC request failed/i;
+const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber(); // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
 export type UnsignedOrder = Omit<Order, 'receiver'> & { receiver: string };
 
@@ -74,7 +77,7 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
   const { signer, order, signingScheme } = params;
 
   const domain = domainGp(APP_NETWORK_ID, GP_SETTLEMENT_CONTRACT_ADDRESS);
-  console.log('[Gnosis Signature] signOrder', {
+  console.log('[Gnosis Signing] signOrder', {
     domain,
     order,
     signer
@@ -151,4 +154,11 @@ export async function signOrder(
     }
   }
   return { signature: signature.data.toString(), signingScheme };
+}
+
+export function calculateValidTo(deadline: number): number {
+  const now = Date.now() / 1000;
+  const validTo = Math.floor(deadline + now);
+
+  return Math.min(validTo, MAX_VALID_TO_EPOCH);
 }

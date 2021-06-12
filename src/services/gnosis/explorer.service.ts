@@ -15,7 +15,7 @@ export default class GnosisExplorerService {
     }
   }
 
-  public async orderLink(orderId: OrderID) {
+  public orderLink(orderId: OrderID) {
     return `${this.baseURL}/orders/${orderId}`;
   }
 }

@@ -31,12 +31,6 @@
         block
         @actionClick="handleErrorButtonClick"
       />
-      <!-- <BalBtn
-        v-if="poolsLoading"
-        :loading="true"
-        :loading-label="$t('loading')"
-        block
-      /> -->
       <BalBtn
         :label="'Preview trade'"
         :disabled="tradeDisabled"
@@ -65,6 +59,7 @@
       :trading="trading"
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"
+      :order-id="orderId"
     />
   </teleport>
 </template>
@@ -96,6 +91,21 @@ import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 import { FeeInformation } from '@/services/gnosis/types';
 import { BigNumber } from '@ethersproject/bignumber';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import {
+  signOrder,
+  UnsignedOrder,
+  calculateValidTo
+} from '@/services/gnosis/signing';
+import useWeb3 from '@/composables/useWeb3';
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import useAuth from '@/composables/useAuth';
+import { normalizeTokenAddress } from '@/services/gnosis/utils';
+
+const DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES = 20 * 60;
+// TODO: get app id
+const GNOSIS_APP_ID = 1;
+
+const appData = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
 
 export default defineComponent({
   components: {
@@ -111,8 +121,11 @@ export default defineComponent({
     const isSell = ref(true);
     const feeQuote = ref<FeeInformation | null>(null);
     const feeExceedsPrice = ref(false);
+    const orderId = ref('');
     const store = useStore();
     const router = useRouter();
+    const auth = useAuth();
+    const { account } = useWeb3();
 
     const { t } = useI18n();
 
@@ -149,7 +162,7 @@ export default defineComponent({
     const isHighPriceImpact = computed(() => {
       return priceImpact.value >= 0.05 && !highPiAccepted.value;
     });
-    const tokenInDecimals = computed(
+    const tokenInDecimals = computed<number>(
       () =>
         tokens.value[tokenInAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
     );
@@ -187,7 +200,9 @@ export default defineComponent({
       return t('trade');
     });
 
-    const orderKind = computed(() => (isSell.value ? 'sell' : 'buy'));
+    const orderKind = computed(
+      () => (isSell.value ? OrderKind.SELL : OrderKind.BUY) as OrderKind
+    );
 
     const error = computed(() => {
       if (feeExceedsPrice.value) {
@@ -243,7 +258,44 @@ export default defineComponent({
     }
 
     async function trade() {
-      console.log('trading');
+      const unsignedOrder: UnsignedOrder = {
+        sellToken: normalizeTokenAddress(tokenInAddress.value),
+        buyToken: normalizeTokenAddress(tokenOutAddress.value),
+        sellAmount: parseUnits(
+          tokenInAmount.value,
+          tokenInDecimals.value
+        ).toString(),
+        buyAmount: parseUnits(
+          tokenOutAmount.value,
+          tokenOutDecimals.value
+        ).toString(),
+        validTo: calculateValidTo(DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES),
+        // TODO: get app id
+        appData,
+        feeAmount: feeQuote.value?.amount || '0',
+        kind: orderKind.value,
+        receiver: account.value,
+        partiallyFillable: false // Always fill or kill
+      };
+
+      const signer = auth.web3.getSigner();
+
+      const { signature, signingScheme } = await signOrder(
+        unsignedOrder,
+        signer
+      );
+      trading.value = true;
+
+      // Call API
+      orderId.value = await gnosisOperator.postSignedOrder({
+        order: {
+          ...unsignedOrder,
+          signature,
+          receiver: account.value,
+          signingScheme
+        },
+        owner: account.value
+      });
     }
 
     async function updateQuotes() {
@@ -343,7 +395,8 @@ export default defineComponent({
       TradeSettingsContext,
       isSell,
       trade,
-      trading
+      trading,
+      orderId
     };
   }
 });

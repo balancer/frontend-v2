@@ -70,6 +70,11 @@
         block
         @click.prevent="trade"
       />
+      <div class="m-1" v-if="orderId">
+        <BalLink :href="gnosisExplorer.orderLink(orderId)" external class="m1">
+          Track order
+        </BalLink>
+      </div>
     </div>
   </BalModal>
 </template>
@@ -82,6 +87,7 @@ import { ETHER } from '@/constants/tokenlists';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import useGnosisProtocol from '@/composables/useGnosisProtocol';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -109,11 +115,15 @@ export default defineComponent({
     trading: {
       type: Boolean,
       required: true
+    },
+    orderId: {
+      type: String
     }
   },
   setup(props, { emit }) {
     const store = useStore();
     const { fNum, toFiat } = useNumbers();
+    const { gnosisExplorer } = useGnosisProtocol();
 
     const { addressIn, amountIn, addressOut } = toRefs(props);
 
@@ -191,7 +201,8 @@ export default defineComponent({
       onClose,
       approve,
       approving,
-      trade
+      trade,
+      gnosisExplorer
     };
   }
 });

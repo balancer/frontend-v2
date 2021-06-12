@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { OPERATOR_URL } from './constants';
 import OperatorError from './error';
-import { getSigningSchemeApiValue, OrderCreation } from './signatures';
+import { getSigningSchemeApiValue, OrderCreation } from './signing';
 import {
   FeeInformation,
   FeeQuoteParams,
@@ -41,7 +41,7 @@ export default class GnosisOperatorService {
       }
     );
 
-    if (response.status === 200) {
+    if (response.status >= 200 && response.status < 300) {
       return response.data as OrderID;
     }
 
