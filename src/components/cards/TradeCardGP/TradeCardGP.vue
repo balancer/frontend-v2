@@ -46,7 +46,7 @@
       :description="$t('tradeSuccess')"
       :closeLabel="$t('close')"
       :txHash="txHash"
-      @close="tradeSuccess = false"
+      @close="onSuccessOverlayClose"
     />
   </BalCard>
   <teleport to="#modal">
@@ -88,7 +88,7 @@ import { useI18n } from 'vue-i18n';
 import TradePairGP from './TradePairGP.vue';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
-import { FeeInformation } from '@/services/gnosis/types';
+import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
 import { BigNumber } from '@ethersproject/bignumber';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 import {
@@ -99,7 +99,10 @@ import {
 import useWeb3 from '@/composables/useWeb3';
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import useAuth from '@/composables/useAuth';
-import { normalizeTokenAddress } from '@/services/gnosis/utils';
+import {
+  isOrderFinalized,
+  normalizeTokenAddress
+} from '@/services/gnosis/utils';
 
 const DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES = 20 * 60;
 // TODO: get app id
@@ -122,10 +125,11 @@ export default defineComponent({
     const feeQuote = ref<FeeInformation | null>(null);
     const feeExceedsPrice = ref(false);
     const orderId = ref('');
+    const orderMetadata = ref<OrderMetaData | null>(null);
     const store = useStore();
     const router = useRouter();
     const auth = useAuth();
-    const { account } = useWeb3();
+    const { account, blockNumber } = useWeb3();
 
     const { t } = useI18n();
 
@@ -257,45 +261,54 @@ export default defineComponent({
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
+    function onSuccessOverlayClose() {
+      tradeSuccess.value = false;
+      orderMetadata.value = null;
+    }
+
     async function trade() {
-      const unsignedOrder: UnsignedOrder = {
-        sellToken: normalizeTokenAddress(tokenInAddress.value),
-        buyToken: normalizeTokenAddress(tokenOutAddress.value),
-        sellAmount: parseUnits(
-          tokenInAmount.value,
-          tokenInDecimals.value
-        ).toString(),
-        buyAmount: parseUnits(
-          tokenOutAmount.value,
-          tokenOutDecimals.value
-        ).toString(),
-        validTo: calculateValidTo(DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES),
-        // TODO: get app id
-        appData,
-        feeAmount: feeQuote.value?.amount || '0',
-        kind: orderKind.value,
-        receiver: account.value,
-        partiallyFillable: false // Always fill or kill
-      };
-
-      const signer = auth.web3.getSigner();
-
-      const { signature, signingScheme } = await signOrder(
-        unsignedOrder,
-        signer
-      );
-      trading.value = true;
-
-      // Call API
-      orderId.value = await gnosisOperator.postSignedOrder({
-        order: {
-          ...unsignedOrder,
-          signature,
+      try {
+        const unsignedOrder: UnsignedOrder = {
+          sellToken: normalizeTokenAddress(tokenInAddress.value),
+          buyToken: normalizeTokenAddress(tokenOutAddress.value),
+          sellAmount: parseUnits(
+            tokenInAmount.value,
+            tokenInDecimals.value
+          ).toString(),
+          buyAmount: parseUnits(
+            tokenOutAmount.value,
+            tokenOutDecimals.value
+          ).toString(),
+          validTo: calculateValidTo(DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES),
+          // TODO: get app id
+          appData,
+          feeAmount: feeQuote.value?.amount || '0',
+          kind: orderKind.value,
           receiver: account.value,
-          signingScheme
-        },
-        owner: account.value
-      });
+          partiallyFillable: false // Always fill or kill
+        };
+
+        const signer = auth.web3.getSigner();
+
+        const { signature, signingScheme } = await signOrder(
+          unsignedOrder,
+          signer
+        );
+        trading.value = true;
+
+        // Call API
+        orderId.value = await gnosisOperator.postSignedOrder({
+          order: {
+            ...unsignedOrder,
+            signature,
+            receiver: account.value,
+            signingScheme
+          },
+          owner: account.value
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     async function updateQuotes() {
@@ -375,6 +388,19 @@ export default defineComponent({
       updateQuotes();
     });
 
+    watch(blockNumber, async () => {
+      if (orderId.value != '') {
+        const order = await gnosisOperator.getOrder(orderId.value);
+        if (isOrderFinalized(order)) {
+          orderMetadata.value = order;
+          trading.value = false;
+          tradeSuccess.value = true;
+          modalTradePreviewIsOpen.value = false;
+          orderId.value = '';
+        }
+      }
+    });
+
     populateInitialTokens();
 
     return {
@@ -396,7 +422,8 @@ export default defineComponent({
       isSell,
       trade,
       trading,
-      orderId
+      orderId,
+      onSuccessOverlayClose
     };
   }
 });
