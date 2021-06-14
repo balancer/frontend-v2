@@ -4,7 +4,7 @@
       <BalLoadingBlock v-if="appLoading" class="h-96" />
       <template v-else>
         <TradeCard v-if="tradeInterface === 'balancer'" />
-        <TradeCardGP v-if="tradeInterface === 'gnosis'" />
+        <TradeCardGP v-else-if="tradeInterface === 'gnosis'" />
       </template>
     </div>
   </div>
