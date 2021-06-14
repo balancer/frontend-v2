@@ -19,6 +19,7 @@ const gateway = process.env.VUE_APP_IPFS_NODE || 'ipfs.io';
 
 type Snapshot = Record<number, string>;
 
+// @ts-ignore
 export const constants: Record<NetworkId, Record<string, string>> = {
   1: {
     merkleRedeem: '0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8',

@@ -5,6 +5,7 @@ const NETWORK = process.env.VUE_APP_NETWORK || '1';
 
 const networkMap: Record<string, string> = {
   '1': 'mainnet',
+  '4': 'rinkeby',
   '42': 'kovan'
 };
 

@@ -70,6 +70,11 @@
         block
         @click.prevent="trade"
       />
+      <div class="m-1" v-if="orderId">
+        <BalLink :href="gnosisExplorer.orderLink(orderId)" external class="m1">
+          Track order
+        </BalLink>
+      </div>
     </div>
   </BalModal>
 </template>
@@ -79,8 +84,10 @@ import { defineComponent, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 
 import { ETHER } from '@/constants/tokenlists';
+
 import useNumbers from '@/composables/useNumbers';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import useGnosisProtocol from '@/composables/useGnosisProtocol';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -88,10 +95,6 @@ export default defineComponent({
     open: {
       type: Boolean,
       default: false
-    },
-    isV1Swap: {
-      type: Boolean,
-      required: true
     },
     addressIn: {
       type: String,
@@ -112,13 +115,17 @@ export default defineComponent({
     trading: {
       type: Boolean,
       required: true
+    },
+    orderId: {
+      type: String
     }
   },
   setup(props, { emit }) {
     const store = useStore();
     const { fNum, toFiat } = useNumbers();
+    const { gnosisExplorer } = useGnosisProtocol();
 
-    const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
+    const { addressIn, amountIn, addressOut } = toRefs(props);
 
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
@@ -140,13 +147,6 @@ export default defineComponent({
         addressIn.value === config.addresses.weth
       );
     });
-
-    const {
-      approving,
-      approveV1,
-      approveV2,
-      allowanceState
-    } = useTokenApproval(addressIn, amountIn, tokens);
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 
@@ -173,19 +173,15 @@ export default defineComponent({
       return true;
     });
 
-    const isApproved = computed(() => {
-      return isV1Swap.value
-        ? allowanceState.value.isUnlockedV1
-        : allowanceState.value.isUnlockedV2;
-    });
+    const { approving, allowanceState, approve } = useTokenApprovalGP(
+      addressIn,
+      amountIn,
+      tokens
+    );
 
-    async function approve(): Promise<void> {
-      if (isV1Swap.value) {
-        await approveV1();
-      } else {
-        await approveV2();
-      }
-    }
+    const isApproved = computed(() => {
+      return allowanceState.value.isUnlocked;
+    });
 
     function trade() {
       emit('trade');
@@ -205,7 +201,8 @@ export default defineComponent({
       onClose,
       approve,
       approving,
-      trade
+      trade,
+      gnosisExplorer
     };
   }
 });
