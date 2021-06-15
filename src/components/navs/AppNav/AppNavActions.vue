@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="$auth.isAuthenticated.value" class="flex items-center">
+    <div v-if="account" class="flex items-center">
       <AppNavClaimBtn />
       <AppNavAccountBtn />
     </div>
@@ -12,7 +12,7 @@
       rounded
       :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
       :circle="['sm', 'md', 'lg'].includes(bp)"
-      @click="connectWallet('walletconnect')"
+      @click="connectWallet('metamask')"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
@@ -47,10 +47,12 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { bp } = useBreakpoints();
-    const { account, profile, loading: web3Loading } = useWeb3();
+    const { profile, loading: web3Loading } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
-    const { connectWallet } = useVueWeb3();
+    const { connectWallet, account } = useVueWeb3();
+
+    watch(account, () => console.log('app nav actions', account));
 
     // METHODS
     const setAccountModal = (isOpen: boolean) =>

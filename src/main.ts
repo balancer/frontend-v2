@@ -29,6 +29,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
+import Web3 from 'web3';
 
 use([
   TitleComponent,
@@ -51,7 +52,7 @@ const app = createApp(App)
   .use(VueApexCharts)
   .use(vueQuery)
   .use(VueVirtualScroller)
-  .use(Web3Provider)
+  .use(Web3Provider, Web3)
   .mixin(mixins);
 
 registerDirectives(app);

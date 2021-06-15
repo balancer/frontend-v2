@@ -5,19 +5,19 @@ import { EventEmitter } from 'node:stream';
 
 export type ConnectorPayload = {
   provider: Web3;
-  account: Ref<string[] | null>;
+  account: Ref<string | null>;
   chainId: Ref<number | null>;
 };
 export abstract class Connector {
   provider: (AbstractProvider & EventEmitter) | null = null;
-  accounts: Ref<string[] | null> = ref(null);
+  account: Ref<string | null> = ref(null);
   chainId: Ref<number | null> = ref(null);
   active: Ref<boolean> = ref(false);
 
   // must return the provider
   abstract connect(): Promise<ConnectorPayload>;
   handleAccountsChanged = accounts => {
-    this.accounts.value = accounts;
+    this.account.value = accounts[0];
   };
 
   handleChainChanged = chainId => {
@@ -27,10 +27,11 @@ export abstract class Connector {
   handleDisconnect = () => {
     // reset everything
     this.provider?.removeAllListeners();
-    this.accounts.value = null;
+    this.account.value = null;
     this.chainId.value = null;
     this.active.value = false;
   };
+
   registerListeners() {
     if (!this.provider) {
       throw new Error(

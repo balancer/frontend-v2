@@ -3,6 +3,7 @@ import { Connector } from './connectors/connector';
 import { computed, reactive, Ref, toRefs } from 'vue';
 import { AbstractProvider } from 'web3-core';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
+import { getAddress } from '@ethersproject/address';
 
 type Wallet = 'metamask' | 'walletconnect';
 type ConnectorImplementation = new (...args: any[]) => Connector;
@@ -10,8 +11,9 @@ export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
 
 export type Web3Provider = {
   connectWallet: (wallet: Wallet) => Promise<void>;
+  disconnectWallet: () => Promise<void>;
   provider: AbstractProvider;
-  account: Ref<string[]>;
+  account: Ref<string>;
   chainId: Ref<number>;
   connector: Ref<Connector>;
 };
@@ -30,11 +32,12 @@ export default {
       connector: null as any
     });
 
-    const accounts = computed(() => {
+    const account = computed(() => {
       if (providerData.connector) {
-        return providerData.connector.accounts;
+        // always want to be using checksum addresses
+        return getAddress(providerData.connector.account);
       }
-      return [''];
+      return '';
     });
 
     const chainId = computed(() => {
@@ -70,10 +73,22 @@ export default {
       providerData.connector = connector;
     };
 
+    const disconnectWallet = async () => {
+      if (!providerData.connector) {
+        throw new Error(
+          'Cannot disconnect a wallet. No wallet currently connected.'
+        );
+      }
+      const connector = providerData.connector as Connector;
+      connector.handleDisconnect();
+      providerData.connector = null;
+    };
+
     const payload: Web3Provider = {
       connectWallet,
+      disconnectWallet,
       ...toRefs(providerData),
-      account: accounts,
+      account,
       chainId
     };
 

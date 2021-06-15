@@ -25,7 +25,7 @@ export class WalletConnectConnector extends Connector {
     return {
       // TODO type this
       provider: provider as any,
-      account: this.accounts,
+      account: this.account,
       chainId: this.chainId
     };
   }

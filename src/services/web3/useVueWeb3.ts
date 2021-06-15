@@ -1,25 +1,57 @@
-import { inject, ref, watch } from 'vue';
+import { getProfile } from '@/lib/utils/profile';
+import axios from 'axios';
+import { computed, inject, reactive } from 'vue';
+import { useQuery } from 'vue-query';
 import { Web3Provider, Web3ProviderSymbol } from './web3.plugin';
-import Web3 from 'web3';
 
 export default function useVueWeb3() {
-  const { connectWallet, account, chainId, provider, connector } = inject(
-    Web3ProviderSymbol
-  ) as Web3Provider;
+  const {
+    connectWallet,
+    account,
+    chainId,
+    provider,
+    disconnectWallet
+  } = inject(Web3ProviderSymbol) as Web3Provider;
 
-  const web3 = ref<Web3 | null>(null);
+  const canLoadProfile = computed(
+    () => account.value !== '' && chainId.value !== 0
+  );
 
-  watch(connector, () => {
-    if (connector) {
-      web3.value = new Web3(provider);
+  // TODO separate this out?
+  const { isLoading: isLoadingProfile, data: profile } = useQuery(
+    ['WEB3_PROFILE', { account, chainId }],
+    () => getProfile(account.value, String(chainId.value)),
+    reactive({
+      enabled: canLoadProfile
+    })
+  );
+
+  // TODO seperate this out?
+  // load up a list of all the evm chains
+  const { data: evmChains, isLoading: isLoadingEvmChains } = useQuery(
+    'EVM_CHAINS',
+    async () =>
+      await (await axios.get('https://chainid.network/chains.json')).data
+  );
+
+  const networkName = computed(() => {
+    if (!isLoadingEvmChains.value) {
+      const chain = evmChains.value.find(
+        chain => chain.networkId === chainId.value
+      );
+      return chain?.name || 'Unknown Network';
     }
+    return 'Loading...';
   });
 
   return {
     connectWallet,
-    web3,
     account,
     chainId,
-    provider
+    provider,
+    isLoadingProfile,
+    profile,
+    networkName,
+    disconnectWallet
   };
 }

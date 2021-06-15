@@ -4,7 +4,7 @@
       <BalBtn
         class="text-base"
         :class="{ btn: upToLargeBreakpoint }"
-        :loading="web3Loading"
+        :loading="isLoadingProfile"
         :loading-label="upToLargeBreakpoint ? '' : $t('connecting')"
         color="gray"
         :outline="!upToLargeBreakpoint"
@@ -36,11 +36,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, watch } from 'vue';
 import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';
 import Avatar from '@/components/images/Avatar.vue';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',
@@ -52,7 +53,10 @@ export default defineComponent({
 
   setup() {
     const { bp, upToLargeBreakpoint } = useBreakpoints();
-    const { account, profile, loading: web3Loading } = useWeb3();
+    // const { loading: isLoadingProfile, account, profile } = useWeb3();
+    const { isLoadingProfile, profile, account } = useVueWeb3();
+
+    watch(account, () => console.log('app nav btn', account));
 
     const avatarSize = computed(() => {
       if (bp.value === 'sm') {
@@ -68,9 +72,10 @@ export default defineComponent({
       bp,
       account,
       profile,
-      web3Loading,
       avatarSize,
-      upToLargeBreakpoint
+      upToLargeBreakpoint,
+      isLoadingProfile,
+      console
     };
   }
 });

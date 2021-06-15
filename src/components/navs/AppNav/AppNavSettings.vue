@@ -52,7 +52,7 @@
           </div>
         </div>
         <div class="flex items-center">
-          <BalBtn circle color="white" size="xs" @click="logout">
+          <BalBtn circle color="white" size="xs" @click="disconnectWallet">
             <BalIcon class="text-red-500" name="x" size="sm" />
           </BalBtn>
         </div>
@@ -139,6 +139,7 @@ import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 const locales = {
   'en-US': 'English',
@@ -163,7 +164,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { explorer } = useWeb3();
-
+    const { account, chainId, networkName, disconnectWallet } = useVueWeb3();
     // DATA
     const data = reactive({
       locales,
@@ -177,9 +178,6 @@ export default defineComponent({
     });
 
     // COMPUTED
-    const account = computed(() => store.state.web3.account);
-    const networkId = computed(() => store.state.web3.config.chainId);
-    const networkName = computed(() => store.state.web3.config.name);
     const networkColorClass = computed(
       () => `network-${store.state.web3.config.shortName.toLowerCase()}`
     );
@@ -218,7 +216,7 @@ export default defineComponent({
       // computed
       account,
       appTradeLiquidity,
-      networkId,
+      chainId,
       networkName,
       networkColorClass,
       appLocale,
@@ -226,7 +224,7 @@ export default defineComponent({
       connectorName,
       connectorLogo,
       // methods
-      logout,
+      disconnectWallet,
       setDarkMode,
       setLocale,
       setTradeLiquidity,
