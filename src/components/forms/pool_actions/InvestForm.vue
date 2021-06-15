@@ -263,7 +263,7 @@ import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
 
 import PoolExchange from '@/services/pool/exchange';
-import PoolCalculator from '@/services/pool/calculator';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { bnum } from '@/lib/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
