@@ -118,6 +118,13 @@ export class SorManager {
     return cost;
   }
 
+  // TO DO - Remove this after testing
+  tempFilterPools(pools: SubGraphPoolsBase): SubGraphPoolsBase {
+    const filteredPools = pools.pools.filter(p => p.poolType === 'Stable');
+    // const filteredPools = pools.pools.filter(p => p.id === '0xebfed10e11dc08fcda1af1fda146945e8710f22e00000000000000000000007f');
+    return { pools: filteredPools };
+  }
+
   // This fetches ALL pool with onchain info.
   async fetchPools(): Promise<void> {
     console.log(`[SorManager] fetch Subgraph`);
@@ -128,6 +135,8 @@ export class SorManager {
     // This will catch any error fetching Subgraph or onChain data with V2
     try {
       subgraphPools = await subgraphFetch;
+      // TO DO - Remove this after testing
+      subgraphPools = this.tempFilterPools(subgraphPools);
       console.log('[SorManager] Subgraph fetched');
       console.time('[SorManager] V2 fetchPools');
       // Use Subgraph pools data and fetch onChain
