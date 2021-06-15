@@ -49,7 +49,7 @@ export default class Pools {
     const block = { number: await this.timeTravelBlock(period) };
     const isCurrentPool = { id_in: currentPools.map(pool => pool.id) };
     const pastPoolsQuery = this.query(
-      { ...args, where: isCurrentPool, block },
+      { where: isCurrentPool, block },
       attrs
     );
     const { pools: pastPools } = await this.service.client.get(pastPoolsQuery);
