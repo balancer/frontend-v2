@@ -8,10 +8,11 @@
         {{ fNum(tokenInValue, 'usd') }}
       </div>
     </div>
+    <div>{{ test }}</div>
     <BalTextInput
-      :name="'tokenIn'"
-      :model-value="tokenInAmountInput"
-      @input="value => handleInAmountChange(value)"
+      name="tokenIn"
+      v-model="test"
+      @update:modelValue="handleInAmountChange"
       type="number"
       min="0"
       step="any"
@@ -139,7 +140,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed, ref } from 'vue';
+import {
+  defineComponent,
+  toRefs,
+  computed,
+  ref,
+  reactive,
+  watch,
+  nextTick
+} from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
@@ -201,6 +210,13 @@ export default defineComponent({
       exactIn
     } = toRefs(props);
 
+    // const data = reactive({
+    //   test: ''
+    // });
+
+    // const { test } = toRefs(data);
+    const test = ref('');
+
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
     const tokens = computed(() => getTokens({ includeEther: true }));
@@ -241,11 +257,39 @@ export default defineComponent({
       handleInAmountChange(maxAmount);
     }
 
+    // const { allTokens } = useTokens();
+    // function handleInputAmountChange(value) {
+    //   console.log(value);
+    //   if (!value.includes('.')) {
+    //     tokenInAmount.value = value;
+    //     return;
+    //   }
+    //   console.log('OK');
+    //   const decimalLimit = allTokens.value[tokenInAddress.value].decimals;
+    //   const [numberStr, decimalStr] = value.split('.');
+    //   console.log(decimalLimit);
+
+    //   if (decimalStr.length > decimalLimit) {
+    //     const maxLength = numberStr.length + decimalLimit + 1;
+    //     console.log(`SHOU:D BE CUTTIZNG: ${maxLength}`)
+    //     tokenInAmount.value = value.slice(0, maxLength);
+    //   }
+    // }
+
     function handleInAmountChange(value: string): void {
-      emit('exactInChange', true);
-      emit('tokenInAmountChange', value);
-      emit('change', value);
+      // @update:modelValue="handleInAmountChange($event)"
+      //
+      //  @input="value => handleInAmountChange(value)"
+      console.log('!!!!!!! TEST ???');
+      value = '1';
+      // data.test = '7';
+      nextTick(() => (test.value = '3'));
+      // emit('exactInChange', true);
+      // emit('tokenInAmountChange', value);
+      // emit('change', value);
     }
+
+    watch(test, newValue => console.log(newValue));
 
     function handleOutAmountChange(value: string): void {
       emit('exactInChange', false);
@@ -331,7 +375,9 @@ export default defineComponent({
       tokenOutSymbol,
       modalSelectTokenIsOpen,
       openModalSelectToken,
-      handleSelectToken
+      handleSelectToken,
+      // ...toRefs(data)
+      test
     };
   }
 });
