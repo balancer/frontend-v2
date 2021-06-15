@@ -48,10 +48,7 @@ export default class Pools {
     // Get past state of current pools
     const block = { number: await this.timeTravelBlock(period) };
     const isCurrentPool = { id_in: currentPools.map(pool => pool.id) };
-    const pastPoolsQuery = this.query(
-      { where: isCurrentPool, block },
-      attrs
-    );
+    const pastPoolsQuery = this.query({ where: isCurrentPool, block }, attrs);
     const { pools: pastPools } = await this.service.client.get(pastPoolsQuery);
 
     return this.serialize(currentPools, pastPools, period, prices);
