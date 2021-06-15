@@ -119,6 +119,17 @@
         @update:modelValue="setTradeLiquidity"
       />
     </div>
+    <div v-if="APP.IsGnosisIntegration" class="px-4 mt-6">
+      <div class="flex items-baseline">
+        <span v-text="'Trade interface'" class="font-medium mb-2" />
+      </div>
+      <BalBtnGroup
+        :options="tradeInterfaceOptions"
+        v-model="appTradeInterface"
+        @update:modelValue="setTradeInterface"
+      />
+      <div class="flex mt-1"></div>
+    </div>
     <div class="network mt-4 p-4 text-sm border-t rounded-b-xl">
       <div v-text="$t('network')" />
       <div class="flex items-baseline">
@@ -140,6 +151,8 @@ import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager'
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
+
+import { APP } from '@/constants/app';
 
 const locales = {
   'en-US': 'English',
@@ -174,6 +187,16 @@ export default defineComponent({
           label: option,
           value: option
         })),
+      tradeInterfaceOptions: [
+        {
+          label: 'Gnosis',
+          value: 'gnosis'
+        },
+        {
+          label: 'Balancer',
+          value: 'balancer'
+        }
+      ],
       copiedAddress: false
     });
 
@@ -184,6 +207,7 @@ export default defineComponent({
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
+    const appTradeInterface = computed(() => store.state.app.tradeInterface);
 
     const connectorName = computed(() =>
       getConnectorName(store.state.web3.connector)
@@ -200,6 +224,8 @@ export default defineComponent({
 
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
+    const setTradeInterface = tradeInterface =>
+      store.commit('app/setTradeInterface', tradeInterface);
 
     function copyAddress() {
       navigator.clipboard.writeText(store.state.web3.account);
@@ -213,10 +239,13 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
+      // constants
+      APP,
       // computed
       account,
       appTradeLiquidity,
       chainId,
+      appTradeInterface,
       networkName,
       networkColorClass,
       appLocale,
@@ -228,6 +257,7 @@ export default defineComponent({
       setDarkMode,
       setLocale,
       setTradeLiquidity,
+      setTradeInterface,
       copyAddress,
       explorer
     };
