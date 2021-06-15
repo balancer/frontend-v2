@@ -39,7 +39,7 @@ export default defineComponent({
     const store = useStore();
 
     // SERVICES
-    const rpcProvider = new RpcProviderService();
+    const providerService = new RpcProviderService();
 
     // COMPUTED
     const web3Modal = computed(() => store.state.web3.modal);
@@ -58,7 +58,7 @@ export default defineComponent({
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
-      rpcProvider.initBlockListener(setBlockNumber);
+      providerService.initBlockListener(setBlockNumber);
     });
 
     return {
