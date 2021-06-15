@@ -1,11 +1,11 @@
 import { Connector } from '../connector';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-
 export class WalletConnectConnector extends Connector {
   async connect() {
     const provider = new WalletConnectProvider({
       infuraId: process.env.VUE_APP_INFURA_PROJECT_ID
     });
+    this.provider = provider;
 
     try {
       const accounts = await provider.enable();

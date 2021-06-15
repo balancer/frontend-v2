@@ -1,7 +1,5 @@
-import { AbstractProvider } from 'web3-core';
 import { ref, Ref } from 'vue';
 import Web3 from 'web3';
-import { EventEmitter } from 'node:stream';
 import { getAddress } from '@ethersproject/address';
 
 export type ConnectorPayload = {
@@ -10,7 +8,7 @@ export type ConnectorPayload = {
   chainId: Ref<number | null>;
 };
 export abstract class Connector {
-  provider: (AbstractProvider & EventEmitter) | null = null;
+  provider: any = null;
   account: Ref<string | null> = ref(null);
   chainId: Ref<number | null> = ref(null);
   active: Ref<boolean> = ref(false);
@@ -50,6 +48,7 @@ export abstract class Connector {
     this.account.value = null;
     this.chainId.value = null;
     this.active.value = false;
+    this.selectedAccount = '';
   };
 
   registerListeners() {

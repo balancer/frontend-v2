@@ -4,9 +4,14 @@ import { computed, reactive, Ref, toRefs } from 'vue';
 import { AbstractProvider } from 'web3-core';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { getAddress } from '@ethersproject/address';
-import { lsGet, lsRemove, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils';
 
-type Wallet = 'metamask' | 'walletconnect';
+export type Wallet = 'metamask' | 'walletconnect';
+export const SupportedWallets = ['metamask', 'walletconnect'] as Wallet[];
+export const WalletNameDictionary: Record<Wallet, string> = {
+  metamask: 'Metamask',
+  walletconnect: 'Wallet Connect'
+};
 type ConnectorImplementation = new (...args: any[]) => Connector;
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
 
@@ -60,7 +65,9 @@ export default {
 
       // the wallet parameter will be provided by the front-end by means of
       // modal selection or otherwise
-      const connector = new WalletConnectorDictionary[wallet]();
+      const connector = new WalletConnectorDictionary[wallet](
+        alreadyConnectedAccount
+      );
       if (!connector) {
         throw new Error(
           `Wallet [${wallet}] is not supported yet. Please contact the dev team to add this connector.`
@@ -90,8 +97,11 @@ export default {
       const connector = providerData.connector as Connector;
       connector.handleDisconnect();
       providerData.connector = null;
-      lsRemove('connectedWallet');
-      lsRemove('connectedProvider');
+      // using lsRemove will make make lsGet return an empty
+      // object for these values when retrieved, ruining the
+      // pre-connected wallet flow
+      lsSet('connectedWallet', '');
+      lsSet('connectedProvider', '');
     };
 
     // previously connected wallet initiation

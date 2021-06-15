@@ -48,7 +48,7 @@ export default function useVueWeb3() {
     connectWallet,
     account,
     chainId,
-    provider,
+    web3: provider,
     isLoadingProfile,
     profile,
     networkName,

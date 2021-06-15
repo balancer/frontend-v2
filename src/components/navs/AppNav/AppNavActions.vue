@@ -12,16 +12,17 @@
       rounded
       :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
       :circle="['sm', 'md', 'lg'].includes(bp)"
-      @click="connectWallet('metamask')"
+      @click="toggleWalletSelectModal"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
     </BalBtn>
   </div>
+  <WalletSelectModal :isVisible="isWalletSelectVisible" />
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
@@ -33,6 +34,7 @@ import useNumbers from '@/composables/useNumbers';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
+import WalletSelectModal from '@/services/web3/components/WalletSelectModal.vue';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
@@ -40,7 +42,8 @@ export default defineComponent({
 
   components: {
     AppNavAccountBtn,
-    AppNavClaimBtn
+    AppNavClaimBtn,
+    WalletSelectModal
   },
 
   setup() {
@@ -51,13 +54,14 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
     const { connectWallet, account } = useVueWeb3();
+    const isWalletSelectVisible = ref(false);
 
     // METHODS
-    const setAccountModal = (isOpen: boolean) =>
-      store.commit('web3/setAccountModal', isOpen);
+    const toggleWalletSelectModal = () => {
+      isWalletSelectVisible.value = !isWalletSelectVisible.value;
+    };
 
     function onClickConnect() {
-      setAccountModal(true);
       trackGoal(Goals.ClickNavConnectWallet);
     }
 
@@ -67,8 +71,9 @@ export default defineComponent({
       profile,
       web3Loading,
       bp,
+      isWalletSelectVisible,
       // methods
-      setAccountModal,
+      toggleWalletSelectModal,
       fNum,
       onClickConnect,
       connectWallet,

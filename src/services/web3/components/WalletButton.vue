@@ -1,0 +1,35 @@
+<template>
+  <button
+    class="bg-white hover:bg-gray-200 p-2 flex justify-center items-center w-full h-14 rounded-md"
+    @click="connectWallet(wallet)"
+  >
+    <div class="flex items-center" style="width: 70%">
+      <img :src="require(`../images/${wallet}.svg`)" class="w-10 w-10 mr-4" />
+      <h5 class="text-gray-600 text-base">
+        Connect with
+        <span class="capitalize">{{ WalletNameDictionary[wallet] }}</span>
+      </h5>
+    </div>
+  </button>
+</template>
+
+<script lang="ts">
+import { Wallet, WalletNameDictionary } from '../web3.plugin';
+import { defineComponent, PropType } from 'vue';
+import useVueWeb3 from '../useVueWeb3';
+export default defineComponent({
+  props: {
+    wallet: {
+      type: String as PropType<Wallet>,
+      required: true
+    }
+  },
+  setup() {
+    const { connectWallet } = useVueWeb3();
+    return {
+      WalletNameDictionary,
+      connectWallet
+    };
+  }
+});
+</script>
