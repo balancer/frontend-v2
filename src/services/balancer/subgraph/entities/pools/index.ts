@@ -39,18 +39,20 @@ export default class Pools {
     args = {},
     attrs = {}
   ): Promise<DecoratedPool[]> {
-    attrs = { ...attrs, __aliasFor: 'pools' };
-    const currentPoolsQuery = {
-      currentPools: this.query(args, attrs).pools
-    };
-    const { currentPools } = await this.service.client.get(currentPoolsQuery);
+    // Get current pools
+    const currentPoolsQuery = this.query(args, attrs);
+    const { pools: currentPools } = await this.service.client.get(
+      currentPoolsQuery
+    );
 
+    // Get past state of current pools
     const block = { number: await this.timeTravelBlock(period) };
-    const pools_of_interest = { id_in: currentPools.map(pool => pool.id) };
-    const pastPoolsQuery = {
-      pastPools: this.query({ where: pools_of_interest, block }, attrs).pools
-    };
-    const { pastPools } = await this.service.client.get(pastPoolsQuery);
+    const isCurrentPool = { id_in: currentPools.map(pool => pool.id) };
+    const pastPoolsQuery = this.query(
+      { ...args, where: isCurrentPool, block },
+      attrs
+    );
+    const { pools: pastPools } = await this.service.client.get(pastPoolsQuery);
 
     return this.serialize(currentPools, pastPools, period, prices);
   }
