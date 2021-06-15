@@ -5,6 +5,7 @@ import { parseUnits } from '@ethersproject/units';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
+import { sleep } from '@/lib/utils';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
   const auth = useAuth();
@@ -43,7 +44,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
 
       txListener(txHashes, {
         onTxConfirmed: async () => {
-          await store.dispatch('account/getAllowances', { tokens });
+          await sleep(2000);
           approving.value = false;
         },
         onTxCancel: () => {
