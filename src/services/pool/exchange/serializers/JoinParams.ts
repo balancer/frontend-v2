@@ -53,17 +53,17 @@ export default class JoinParams {
     });
   }
 
-  private txData(amountsIn: BigNumberish[], bptOut: BigNumberish): string {
+  private txData(
+    amountsIn: BigNumberish[],
+    bptAmountOut: BigNumberish
+  ): string {
     if (this.exchange.pool.onchain.totalSupply === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
-      const params = { amountsIn };
-      if (this.isStablePool) {
-        params['bptAmountOut'] = bptOut;
-      } else {
-        params['minimumBPT'] = bptOut;
-      }
-      return this.dataEncodeFn(params);
+      return this.dataEncodeFn({
+        amountsIn,
+        bptAmountOut
+      });
     }
   }
 }
