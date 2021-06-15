@@ -1,7 +1,7 @@
 import homestead from './homestead.json';
 import kovan from './kovan.json';
 import rinkeby from './rinkeby.json';
-import matic from './matic.json';
+import polygon from './polygon.json';
 import docker from './docker.json';
 
 export interface Config {
@@ -41,7 +41,7 @@ const config: Record<string, Config> = {
   '1': homestead,
   '42': kovan,
   '4': rinkeby,
-  '137': matic,
+  '137': polygon,
   // @ts-ignore
   '17': docker
 };
