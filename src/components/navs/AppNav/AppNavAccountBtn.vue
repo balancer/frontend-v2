@@ -31,7 +31,7 @@
         />
       </BalBtn>
     </template>
-    <AppNavSettings v-if="!web3Loading" />
+    <AppNavSettings />
   </BalPopover>
 </template>
 

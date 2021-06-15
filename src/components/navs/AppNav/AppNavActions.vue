@@ -18,12 +18,16 @@
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
     </BalBtn>
   </div>
-  <WalletSelectModal :isVisible="isWalletSelectVisible" />
+  <teleport to="#modal">
+    <WalletSelectModal
+      :isVisible="isWalletSelectVisible"
+      @close="toggleWalletSelectModal"
+    />
+  </teleport>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent, ref, watch } from 'vue';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
 
@@ -48,7 +52,6 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const store = useStore();
     const { bp } = useBreakpoints();
     const { profile, loading: web3Loading } = useWeb3();
     const { fNum } = useNumbers();
@@ -56,8 +59,18 @@ export default defineComponent({
     const { connectWallet, account } = useVueWeb3();
     const isWalletSelectVisible = ref(false);
 
+    // if the account ref has changed, we know that
+    // the user has successfully connected a wallet
+    watch(account, () => {
+      toggleWalletSelectModal(false);
+    });
+
     // METHODS
-    const toggleWalletSelectModal = () => {
+    const toggleWalletSelectModal = (value: boolean) => {
+      if (value !== undefined && typeof value === 'boolean') {
+        isWalletSelectVisible.value = value;
+        return;
+      }
       isWalletSelectVisible.value = !isWalletSelectVisible.value;
     };
 

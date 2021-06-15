@@ -1,5 +1,5 @@
 <template>
-  <BalModal :show="isVisible">
+  <BalModal :show="isVisible" @close="() => console.log('esh')">
     <WalletButton v-for="wallet in wallets" :wallet="wallet" :key="wallet" />
   </BalModal>
 </template>
@@ -9,6 +9,7 @@ import { SupportedWallets } from '../web3.plugin';
 import WalletButton from './WalletButton.vue';
 import { defineComponent } from 'vue';
 export default defineComponent({
+  emits: ['close'],
   components: {
     WalletButton
   },

@@ -13,6 +13,7 @@ export abstract class Connector {
   chainId: Ref<number | null> = ref(null);
   active: Ref<boolean> = ref(false);
   selectedAccount = '';
+  id = 'unknown';
 
   constructor(selectedAccount: string) {
     this.selectedAccount = selectedAccount || '';
@@ -49,6 +50,9 @@ export abstract class Connector {
     this.chainId.value = null;
     this.active.value = false;
     this.selectedAccount = '';
+    if (this.provider.disconnect) {
+      this.provider.disconnect();
+    }
   };
 
   registerListeners() {

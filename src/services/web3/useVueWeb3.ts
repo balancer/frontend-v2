@@ -1,6 +1,6 @@
 import { getProfile } from '@/lib/utils/profile';
 import axios from 'axios';
-import { computed, inject, reactive } from 'vue';
+import { computed, inject, reactive, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { Web3Provider, Web3ProviderSymbol } from './web3.plugin';
 
@@ -10,7 +10,8 @@ export default function useVueWeb3() {
     account,
     chainId,
     provider,
-    disconnectWallet
+    disconnectWallet,
+    connector
   } = inject(Web3ProviderSymbol) as Web3Provider;
 
   const canLoadProfile = computed(
@@ -52,6 +53,7 @@ export default function useVueWeb3() {
     isLoadingProfile,
     profile,
     networkName,
-    disconnectWallet
+    disconnectWallet,
+    connector
   };
 }

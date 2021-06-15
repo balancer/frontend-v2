@@ -177,7 +177,13 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { explorer } = useWeb3();
-    const { account, chainId, networkName, disconnectWallet } = useVueWeb3();
+    const {
+      account,
+      chainId,
+      networkName,
+      disconnectWallet,
+      connector
+    } = useVueWeb3();
     // DATA
     const data = reactive({
       locales,
@@ -209,13 +215,9 @@ export default defineComponent({
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
 
-    const connectorName = computed(() =>
-      getConnectorName(store.state.web3.connector)
-    );
+    const connectorName = computed(() => getConnectorName(connector.value.id));
 
-    const connectorLogo = computed(() =>
-      getConnectorLogo(store.state.web3.connector)
-    );
+    const connectorLogo = computed(() => getConnectorLogo(connector.value.id));
 
     // METHODS
     const logout = () => store.dispatch('web3/logout');

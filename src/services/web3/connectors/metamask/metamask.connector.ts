@@ -1,5 +1,6 @@
 import { Connector } from '../connector';
 export class MetamaskConnector extends Connector {
+  id = 'injected';
   async connect() {
     // type for window.ethereum is causing conflicts (provided by some library)
     const provider = window.ethereum as any;
