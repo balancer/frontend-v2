@@ -37,7 +37,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, watch } from 'vue';
-import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';
 import Avatar from '@/components/images/Avatar.vue';
@@ -55,8 +54,6 @@ export default defineComponent({
     const { bp, upToLargeBreakpoint } = useBreakpoints();
     // const { loading: isLoadingProfile, account, profile } = useWeb3();
     const { isLoadingProfile, profile, account } = useVueWeb3();
-
-    watch(account, () => console.log('app nav btn', account));
 
     const avatarSize = computed(() => {
       if (bp.value === 'sm') {

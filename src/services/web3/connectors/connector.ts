@@ -2,6 +2,7 @@ import { AbstractProvider } from 'web3-core';
 import { ref, Ref } from 'vue';
 import Web3 from 'web3';
 import { EventEmitter } from 'node:stream';
+import { getAddress } from '@ethersproject/address';
 
 export type ConnectorPayload = {
   provider: Web3;
@@ -13,11 +14,30 @@ export abstract class Connector {
   account: Ref<string | null> = ref(null);
   chainId: Ref<number | null> = ref(null);
   active: Ref<boolean> = ref(false);
+  selectedAccount = '';
+
+  constructor(selectedAccount: string) {
+    this.selectedAccount = selectedAccount || '';
+  }
 
   // must return the provider
   abstract connect(): Promise<ConnectorPayload>;
+
   handleAccountsChanged = accounts => {
-    this.account.value = accounts[0];
+    if (this.selectedAccount !== '') {
+      const account = accounts.find(
+        a => getAddress(a) === getAddress(this.selectedAccount)
+      );
+      // sense check the account that was previously connected
+      if (!account) {
+        this.account.value = accounts[0];
+        throw new Error(
+          `Previously connected account [${this.selectedAccount}] was not found in the connection. Defaulting to the first.`
+        );
+      }
+      this.account.value = getAddress(this.selectedAccount);
+    }
+    this.account.value = getAddress(accounts[0]);
   };
 
   handleChainChanged = chainId => {

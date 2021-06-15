@@ -52,8 +52,6 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { connectWallet, account } = useVueWeb3();
 
-    watch(account, () => console.log('app nav actions', account));
-
     // METHODS
     const setAccountModal = (isOpen: boolean) =>
       store.commit('web3/setAccountModal', isOpen);

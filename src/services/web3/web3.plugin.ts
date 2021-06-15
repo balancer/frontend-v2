@@ -4,6 +4,7 @@ import { computed, reactive, Ref, toRefs } from 'vue';
 import { AbstractProvider } from 'web3-core';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { getAddress } from '@ethersproject/address';
+import { lsGet, lsRemove, lsSet } from '@/lib/utils';
 
 type Wallet = 'metamask' | 'walletconnect';
 type ConnectorImplementation = new (...args: any[]) => Connector;
@@ -24,7 +25,9 @@ const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
 };
 
 export default {
-  install: (app, Web3Library) => {
+  install: async (app, Web3Library) => {
+    const alreadyConnectedAccount = lsGet('connectedWallet');
+    const alreadyConnectedProvider = lsGet('connectedProvider');
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const providerData = reactive({
@@ -63,7 +66,7 @@ export default {
           `Wallet [${wallet}] is not supported yet. Please contact the dev team to add this connector.`
         );
       }
-      const { provider } = await connector.connect();
+      const { provider, account } = await connector.connect();
 
       // listens to wallet/chain changed and disconnect events
       connector.registerListeners();
@@ -71,6 +74,11 @@ export default {
       providerData.provider = new Web3Library(provider);
       // it is handy to provide the connector instance
       providerData.connector = connector;
+
+      // for when user reloads the app on an already connected wallet
+      // need to store address to pre-load that connection
+      lsSet('connectedWallet', account.value);
+      lsSet('connectedProvider', wallet);
     };
 
     const disconnectWallet = async () => {
@@ -82,7 +90,14 @@ export default {
       const connector = providerData.connector as Connector;
       connector.handleDisconnect();
       providerData.connector = null;
+      lsRemove('connectedWallet');
+      lsRemove('connectedProvider');
     };
+
+    // previously connected wallet initiation
+    if (alreadyConnectedAccount && alreadyConnectedProvider) {
+      connectWallet(alreadyConnectedProvider);
+    }
 
     const payload: Web3Provider = {
       connectWallet,
