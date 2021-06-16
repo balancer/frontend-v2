@@ -142,7 +142,6 @@ export default defineComponent({
     function onKeydown(event): void {
       if (props.type === 'number') {
         blockInvalidChar(event);
-        preventOverflow(event);
       }
       emit('keydown', event);
     }
