@@ -8,12 +8,12 @@
         {{ fNum(tokenInValue, 'usd') }}
       </div>
     </div>
-    <div>{{ test }}</div>
     <BalTextInput
       name="tokenIn"
-      v-model="test"
+      :model-value="tokenInAmountInput"
+      @input="value => handleInAmountChange(value)"
       type="number"
-      :decimal-limit="7"
+      :decimal-limit="tokenInDecimals"
       min="0"
       step="any"
       placeholder="0"
@@ -85,6 +85,7 @@
       :model-value="tokenOutAmountInput"
       @input="value => handleOutAmountChange(value)"
       type="number"
+      :decimal-limit="tokenOutDecimals"
       min="0"
       step="any"
       placeholder="0"
@@ -144,6 +145,7 @@ import { defineComponent, toRefs, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
 import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
@@ -192,6 +194,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
+    const { allTokensIncludeEth } = useTokens();
     const { fNum, toFiat } = useNumbers();
 
     const {
@@ -202,23 +205,12 @@ export default defineComponent({
       exactIn
     } = toRefs(props);
 
-    // const data = reactive({
-    //   test: ''
-    // });
-
-    // const { test } = toRefs(data);
-    const test = ref('');
-
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
-    const tokens = computed(() => getTokens({ includeEther: true }));
-
     const tokenInValue = computed(() =>
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
     );
 
     const tokenInSymbol = computed(() => {
-      const tokenIn = tokens.value[tokenInAddressInput.value];
+      const tokenIn = allTokensIncludeEth.value[tokenInAddressInput.value];
       const symbol = tokenIn ? tokenIn.symbol : '';
       return symbol;
     });
@@ -228,9 +220,23 @@ export default defineComponent({
     );
 
     const tokenOutSymbol = computed(() => {
-      const tokenOut = tokens.value[tokenOutAddressInput.value];
+      const tokenOut = allTokensIncludeEth.value[tokenOutAddressInput.value];
       const symbol = tokenOut ? tokenOut.symbol : '';
       return symbol;
+    });
+
+    const tokenInDecimals = computed(() => {
+      const decimals = allTokensIncludeEth.value[tokenInAddressInput.value]
+        ? allTokensIncludeEth.value[tokenInAddressInput.value].decimals
+        : 18;
+      return decimals;
+    });
+
+    const tokenOutDecimals = computed(() => {
+      const decimals = allTokensIncludeEth.value[tokenOutAddressInput.value]
+        ? allTokensIncludeEth.value[tokenOutAddressInput.value].decimals
+        : 18;
+      return decimals;
     });
 
     const isInRate = ref(true);
@@ -238,7 +244,8 @@ export default defineComponent({
     const modalSelectTokenIsOpen = ref(false);
 
     function handleMax(): void {
-      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
+      const balance =
+        allTokensIncludeEth.value[tokenInAddressInput.value]?.balance || '0';
       const balanceNumber = parseFloat(balance);
       const maxAmount =
         tokenInAddressInput.value !== ETHER.address
@@ -249,27 +256,10 @@ export default defineComponent({
       handleInAmountChange(maxAmount);
     }
 
-    // const { allTokens } = useTokens();
-    // function handleInputAmountChange(value) {
-    //   console.log(value);
-    //   if (!value.includes('.')) {
-    //     tokenInAmount.value = value;
-    //     return;
-    //   }
-    //   console.log('OK');
-    //   const decimalLimit = allTokens.value[tokenInAddress.value].decimals;
-    //   const [numberStr, decimalStr] = value.split('.');
-    //   console.log(decimalLimit);
-
-    //   if (decimalStr.length > decimalLimit) {
-    //     const maxLength = numberStr.length + decimalLimit + 1;
-    //     console.log(`SHOU:D BE CUTTIZNG: ${maxLength}`)
-    //     tokenInAmount.value = value.slice(0, maxLength);
-    //   }
-    // }
-
-    function handleInAmountChange(value: number): void {
-      return;
+    function handleInAmountChange(value: string): void {
+      emit('exactInChange', true);
+      emit('tokenInAmountChange', value);
+      emit('change', value);
     }
 
     function handleOutAmountChange(value: string): void {
@@ -302,8 +292,8 @@ export default defineComponent({
     }
 
     const rateMessage = computed(() => {
-      const tokenIn = tokens.value[tokenInAddressInput.value];
-      const tokenOut = tokens.value[tokenOutAddressInput.value];
+      const tokenIn = allTokensIncludeEth.value[tokenInAddressInput.value];
+      const tokenOut = allTokensIncludeEth.value[tokenOutAddressInput.value];
       if (!tokenIn || !tokenOut) {
         return '';
       }
@@ -337,11 +327,10 @@ export default defineComponent({
     }
 
     const balanceLabel = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance
+      () => allTokensIncludeEth.value[tokenInAddressInput.value]?.balance
     );
 
     return {
-      tokens,
       fNum,
       handleMax,
       balanceLabel,
@@ -357,7 +346,8 @@ export default defineComponent({
       modalSelectTokenIsOpen,
       openModalSelectToken,
       handleSelectToken,
-      test
+      tokenInDecimals,
+      tokenOutDecimals
     };
   }
 });
