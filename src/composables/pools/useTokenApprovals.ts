@@ -44,9 +44,11 @@ export default function useTokenApprovals(tokens, shortAmounts) {
 
       txListener(txHashes, {
         onTxConfirmed: async () => {
+          // REFACTOR: Hack to prevent race condition causing double approvals
           await txs[0].wait();
           await sleep(5000);
           await store.dispatch('account/getAllowances', { tokens });
+          // END REFACTOR
           approving.value = false;
         },
         onTxCancel: () => {
