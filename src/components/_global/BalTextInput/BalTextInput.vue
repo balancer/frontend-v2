@@ -18,7 +18,7 @@
             :disabled="disabled"
             @blur="onBlur"
             @input="onInput"
-            @keydown="blockInvalidChar"
+            @keydown="onKeydown"
           />
           <div v-if="$slots.info || info" :class="['info', infoClasses]">
             <slot name="info">
@@ -53,13 +53,21 @@ import {
   watch
 } from 'vue';
 import { Rules, RuleFunction } from '@/types';
+import { preventOverflow } from '@popperjs/core';
 
 export default defineComponent({
   name: 'BalTextInput',
 
   inheritAttrs: false,
 
-  emits: ['input', 'blur', 'update:modelValue', 'update:isValid', 'click'],
+  emits: [
+    'input',
+    'blur',
+    'update:modelValue',
+    'update:isValid',
+    'click',
+    'keydown'
+  ],
 
   props: {
     modelValue: {
@@ -80,6 +88,7 @@ export default defineComponent({
     prependBorder: { type: Boolean, default: false },
     fadedOut: { type: Boolean, default: false },
     info: { type: String, default: '' },
+    decimalLimit: { type: Number, default: 18 },
     type: {
       type: String,
       default: 'text',
@@ -128,9 +137,25 @@ export default defineComponent({
       emit('update:modelValue', event.target.value);
     }
 
-    function blockInvalidChar(event): void {
+    function onKeydown(event): void {
       if (props.type === 'number') {
-        ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
+        blockInvalidChar(event);
+        preventOverflow(event);
+      }
+      emit('keydown', event);
+    }
+
+    function blockInvalidChar(event): void {
+      ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
+    }
+
+    function preventOverflow(event): void {
+      if (!props.modelValue.toString().includes('.')) return;
+
+      const [, decimalStr] = props.modelValue.toString().split('.');
+
+      if (decimalStr.length > props.decimalLimit - 1) {
+        event.preventDefault();
       }
     }
 
@@ -220,6 +245,7 @@ export default defineComponent({
       validate,
       onBlur,
       onInput,
+      onKeydown,
       wrapperClasses,
       inputGroupClasses,
       inputContainerClasses,

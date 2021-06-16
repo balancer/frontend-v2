@@ -12,8 +12,8 @@
     <BalTextInput
       name="tokenIn"
       v-model="test"
-      @update:modelValue="handleInAmountChange"
       type="number"
+      :decimal-limit="7"
       min="0"
       step="any"
       placeholder="0"
@@ -140,15 +140,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  toRefs,
-  computed,
-  ref,
-  reactive,
-  watch,
-  nextTick
-} from 'vue';
+import { defineComponent, toRefs, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
@@ -276,20 +268,9 @@ export default defineComponent({
     //   }
     // }
 
-    function handleInAmountChange(value: string): void {
-      // @update:modelValue="handleInAmountChange($event)"
-      //
-      //  @input="value => handleInAmountChange(value)"
-      console.log('!!!!!!! TEST ???');
-      value = '1';
-      // data.test = '7';
-      nextTick(() => (test.value = '3'));
-      // emit('exactInChange', true);
-      // emit('tokenInAmountChange', value);
-      // emit('change', value);
+    function handleInAmountChange(value: number): void {
+      return;
     }
-
-    watch(test, newValue => console.log(newValue));
 
     function handleOutAmountChange(value: string): void {
       emit('exactInChange', false);
@@ -376,7 +357,6 @@ export default defineComponent({
       modalSelectTokenIsOpen,
       openModalSelectToken,
       handleSelectToken,
-      // ...toRefs(data)
       test
     };
   }
