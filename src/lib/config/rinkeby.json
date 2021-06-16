@@ -5,6 +5,8 @@
   "shortName": "Rinkeby",
   "network": "rinkeby",
   "unknown": false,
+  "nativeAsset": "ETH",
+  "nativeAssetLong": "Ether",
   "rpc": "https://eth-rinkeby.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "ws": "wss://eth-rinkeby.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "explorer": "https://rinkeby.etherscan.io",

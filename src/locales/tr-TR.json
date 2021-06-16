@@ -231,7 +231,7 @@
     "withdrawalSettled": "Para çekme işleminiz çözüldü",
     "withdrawalSuccess": "Yatırımınız bu havuzdan çekildi ve<br> temel belirteçler artık cüzdanınızda.",
     "wrap": "Paketlemek",
-    "wrapInstruction": "ETH'nizi WETH'e sarın",
+    "wrapInstruction": "{0}'nizi W{0}'e sarın",
     "yearAbbrev": "y",
     "youDidIt": "Sen yaptın!",
     "yourTransactions": "Bu havuzdaki işlemleriniz"

@@ -428,7 +428,8 @@ export default defineComponent({
       const { chainId } = getConfig();
       const prefixMap = {
         1: 'app.',
-        42: 'kovan.'
+        42: 'kovan.',
+        137: 'polygon.'
       };
       const prefix = prefixMap[chainId] || '';
       if (props.sorReturn.isV1swap && chainId === 1) {
