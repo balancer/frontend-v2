@@ -53,7 +53,6 @@ import {
   watch
 } from 'vue';
 import { Rules, RuleFunction } from '@/types';
-import { preventOverflow } from '@popperjs/core';
 
 export default defineComponent({
   name: 'BalTextInput',
