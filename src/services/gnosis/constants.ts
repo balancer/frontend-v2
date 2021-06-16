@@ -17,9 +17,10 @@ export const OPERATOR_URLS = {
 export const OPERATOR_URL =
   OPERATOR_URLS[APP_NETWORK_ID] ?? OPERATOR_URLS[Network.MAINNET];
 
-export const GP_SETTLEMENT_CONTRACT_ADDRESS = GPv2Settlement[APP_NETWORK_ID]
-  .address as string;
+export const GP_SETTLEMENT_CONTRACT_ADDRESS: string = (
+  GPv2Settlement[APP_NETWORK_ID] ?? GPv2Settlement[Network.MAINNET]
+).address;
 
-export const GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS = GPv2AllowanceManager[
-  APP_NETWORK_ID
-].address as string;
+export const GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS: string = (
+  GPv2AllowanceManager[APP_NETWORK_ID] ?? GPv2AllowanceManager[Network.MAINNET]
+).address;
