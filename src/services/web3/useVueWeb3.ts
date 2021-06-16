@@ -2,7 +2,7 @@ import { getProfile } from '@/lib/utils/profile';
 import axios from 'axios';
 import { computed, inject, reactive, watch } from 'vue';
 import { useQuery } from 'vue-query';
-import { Web3Provider, Web3ProviderSymbol } from './web3.plugin';
+import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 
 export default function useVueWeb3() {
   const {
@@ -12,7 +12,7 @@ export default function useVueWeb3() {
     provider,
     disconnectWallet,
     connector
-  } = inject(Web3ProviderSymbol) as Web3Provider;
+  } = inject(Web3ProviderSymbol) as Web3Plugin;
 
   const canLoadProfile = computed(
     () => account.value !== '' && chainId.value !== 0

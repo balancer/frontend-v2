@@ -1,10 +1,10 @@
 import { MetamaskConnector } from './connectors/metamask/metamask.connector';
 import { Connector } from './connectors/connector';
 import { computed, reactive, Ref, toRefs } from 'vue';
-import { AbstractProvider } from 'web3-core';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { getAddress } from '@ethersproject/address';
 import { lsGet, lsSet } from '@/lib/utils';
+import { Web3Provider } from '@ethersproject/providers';
 
 export type Wallet = 'metamask' | 'walletconnect';
 export const SupportedWallets = ['metamask', 'walletconnect'] as Wallet[];
@@ -15,10 +15,10 @@ export const WalletNameDictionary: Record<Wallet, string> = {
 type ConnectorImplementation = new (...args: any[]) => Connector;
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
 
-export type Web3Provider = {
+export type Web3Plugin = {
   connectWallet: (wallet: Wallet) => Promise<void>;
   disconnectWallet: () => Promise<void>;
-  provider: AbstractProvider;
+  provider: Web3Provider;
   account: Ref<string>;
   chainId: Ref<number>;
   connector: Ref<Connector>;
@@ -41,7 +41,7 @@ export default {
     });
 
     const account = computed(() => {
-      if (providerData.connector) {
+      if (providerData.connector && providerData.connector.account) {
         // always want to be using checksum addresses
         return getAddress(providerData.connector.account);
       }
@@ -109,7 +109,7 @@ export default {
       connectWallet(alreadyConnectedProvider);
     }
 
-    const payload: Web3Provider = {
+    const payload: Web3Plugin = {
       connectWallet,
       disconnectWallet,
       ...toRefs(providerData),

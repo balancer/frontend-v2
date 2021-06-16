@@ -18,6 +18,7 @@ import { urlMap as subgraphUrlMap } from '@/services/balancer/subgraph/client';
 import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -67,6 +68,7 @@ export default function useSor(
   const auth = useAuth();
   const { txListener } = useNotify();
   const { trackGoal, Goals } = useFathom();
+  const { web3 } = useVueWeb3();
 
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
@@ -304,7 +306,7 @@ export default function useSor(
 
     if (isWrap.value) {
       try {
-        const tx = await wrap(chainId, auth.web3, tokenInAmountScaled);
+        const tx = await wrap(chainId, web3, tokenInAmountScaled);
         console.log('Wrap tx', tx);
         tradeTxListener(tx.hash);
       } catch (e) {
@@ -314,7 +316,7 @@ export default function useSor(
       return;
     } else if (isUnwrap.value) {
       try {
-        const tx = await unwrap(chainId, auth.web3, tokenInAmountScaled);
+        const tx = await unwrap(chainId, web3, tokenInAmountScaled);
         console.log('Unwrap tx', tx);
         tradeTxListener(tx.hash);
       } catch (e) {
@@ -335,7 +337,7 @@ export default function useSor(
       try {
         const tx = await swapIn(
           chainId,
-          auth.web3,
+          web3,
           sr,
           tokenInAmountScaled,
           minAmount
@@ -360,7 +362,7 @@ export default function useSor(
       try {
         const tx = await swapOut(
           chainId,
-          auth.web3,
+          web3,
           sr,
           tokenInAmountMax,
           tokenOutAmountScaled
