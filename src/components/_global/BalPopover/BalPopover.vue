@@ -97,5 +97,4 @@ export default defineComponent({
 .bal-popover-activator:hover .icon-container {
   @apply text-blue-500;
 }
-
 </style>
