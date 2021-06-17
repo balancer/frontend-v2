@@ -46,6 +46,32 @@
         </div>
       </div>
     </div>
+
+    <div v-if="!hideLiquidity" class="mt-6">
+      <div class="flex items-baseline">
+        <span v-text="'Pool Type'" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div
+            v-text="'Which pool type should be used for liquidity'"
+            class="w-52"
+          />
+        </BalTooltip>
+      </div>
+      <div class="flex mt-1">
+        <div
+          v-for="(poolLiquidity, i) in poolLiquidityOptions"
+          :key="i"
+          class="trade-settings-option w-16 mr-2 py-1 text-center border rounded-lg cursor-pointer capitalize"
+          :class="{ active: appPoolLiquidity === poolLiquidity }"
+          @click="setPoolLiquidity(poolLiquidity)"
+        >
+          {{ `${poolLiquidity.toLowerCase()}` }}
+        </div>
+      </div>
+    </div>
   </BalPopover>
 </template>
 
@@ -59,6 +85,7 @@ import {
   Ref
 } from 'vue';
 import { useStore } from 'vuex';
+import { PoolFilter } from '@balancer-labs/sor2';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
@@ -98,11 +125,15 @@ export default defineComponent({
     const data = reactive({
       tradeLiquidityOptions: Object.values(LiquiditySelection).filter(
         v => typeof v === 'string'
+      ),
+      poolLiquidityOptions: Object.values(PoolFilter).filter(
+        v => typeof v === 'string'
       )
     });
 
     // COMPUTED
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
+    const appPoolLiquidity = computed(() => store.state.app.poolLiquidity);
     const hideLiquidity = computed(
       () => context.value === TradeSettingsContext.invest
     );
@@ -110,6 +141,9 @@ export default defineComponent({
     // METHODS
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
+
+    const setPoolLiquidity = poolLiquidity =>
+      store.commit('app/setPoolLiquidity', poolLiquidity);
 
     function onActivatorClick(): void {
       if (context.value === TradeSettingsContext.trade) {
@@ -125,9 +159,11 @@ export default defineComponent({
       Goals,
       // computed
       appTradeLiquidity,
+      appPoolLiquidity,
       hideLiquidity,
       // methods
       setTradeLiquidity,
+      setPoolLiquidity,
       fNum,
       explorer,
       onActivatorClick

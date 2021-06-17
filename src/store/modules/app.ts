@@ -1,3 +1,4 @@
+import { PoolFilter } from '@balancer-labs/sor2';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
@@ -13,6 +14,7 @@ export interface AppState {
   locale: string;
   slippage: string;
   tradeLiquidity: LiquiditySelection;
+  poolLiquidity: PoolFilter;
   tradeInterface: TradeInterface;
   selectedPoolTokens: string[];
 }
@@ -24,6 +26,7 @@ const state: AppState = {
   locale: 'en-US',
   slippage: '0.01',
   tradeLiquidity: LiquiditySelection.Best,
+  poolLiquidity: PoolFilter.All,
   selectedPoolTokens: [],
   tradeInterface: APP.IsGnosisIntegration ? 'gnosis' : 'balancer'
 };
@@ -39,6 +42,7 @@ const actions = {
         'setTradeLiquidity',
         lsGet('tradeLiquidity', LiquiditySelection.Best)
       );
+      commit('setPoolLiquidity', lsGet('poolLiquidity', PoolFilter.All));
 
       // Setup web3
       const auth = getInstance();
@@ -93,6 +97,11 @@ const mutations = {
   setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection) {
     state.tradeLiquidity = tradeLiquidity;
     lsSet('tradeLiquidity', state.tradeLiquidity);
+  },
+
+  setPoolLiquidity(state: AppState, poolLiquidity: PoolFilter) {
+    state.poolLiquidity = poolLiquidity;
+    lsSet('poolLiquidity', state.poolLiquidity);
   },
 
   setSelectedPoolTokens(

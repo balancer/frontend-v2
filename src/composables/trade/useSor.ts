@@ -70,6 +70,7 @@ export default function useSor(
 
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
+  const poolSelection = computed(() => store.state.app.poolLiquidity);
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
@@ -91,6 +92,11 @@ export default function useSor(
   }, 30 * 1e3);
 
   watch(liquiditySelection, () => {
+    // When the liquidity type is changed we need to update the trade to use that selection
+    handleAmountChange();
+  });
+
+  watch(poolSelection, () => {
     // When the liquidity type is changed we need to update the trade to use that selection
     handleAmountChange();
   });
@@ -191,7 +197,8 @@ export default function useSor(
         'swapExactIn',
         tokenInAmountScaled,
         tokenInDecimals,
-        liquiditySelection.value
+        liquiditySelection.value,
+        poolSelection.value
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
@@ -241,7 +248,8 @@ export default function useSor(
         'swapExactOut',
         tokenOutAmount,
         tokenOutDecimals,
-        liquiditySelection.value
+        liquiditySelection.value,
+        poolSelection.value
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
