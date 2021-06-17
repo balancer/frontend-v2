@@ -85,7 +85,7 @@ export default defineComponent({
 
 .content {
   @apply relative w-full h-3/4 sm:h-auto max-h-screen overflow-hidden;
-  max-width: 450px;
+  max-width: 420px;
 }
 
 .modal-bg {
