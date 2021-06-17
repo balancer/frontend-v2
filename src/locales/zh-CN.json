@@ -232,7 +232,7 @@
     "withdrawalSettled": "您的提款已经解决",
     "withdrawalSuccess": "您的投资已从该资金池中撤出，<br>基础令牌现在在您的钱包中。",
     "wrap": "裹",
-    "wrapInstruction": "将您的ETH包裹到WETH",
+    "wrapInstruction": "将您的{0}包裹到W{0}",
     "yearAbbrev": "年",
     "youDidIt": "你做到了！",
     "yourTransactions": "您在该池中的交易"

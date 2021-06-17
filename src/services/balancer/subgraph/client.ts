@@ -6,7 +6,9 @@ export const urlMap = {
   '1': 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
   '17': 'http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2',
   '42':
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2'
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2',
+  '137':
+    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-matic-v2'
 };
 
 export default class Client {
