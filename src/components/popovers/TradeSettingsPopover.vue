@@ -91,7 +91,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorer } = useWeb3();
+    const { appNetwork, explorer } = useWeb3();
     const { trackGoal, Goals } = useFathom();
 
     // DATA
@@ -104,7 +104,8 @@ export default defineComponent({
     // COMPUTED
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const hideLiquidity = computed(
-      () => context.value === TradeSettingsContext.invest
+      () =>
+        !appNetwork.supportsV1 || context.value === TradeSettingsContext.invest
     );
 
     // METHODS

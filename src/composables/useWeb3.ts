@@ -5,6 +5,7 @@ import configs, { Config } from '@/lib/config';
 import getProvider from '@/lib/utils/provider';
 import useAuth from '@/composables/useAuth';
 import { NetworkId } from '@/constants/network';
+import { isAddress } from '@ethersproject/address';
 
 const appConfig: Config | undefined =
   configs[Number(process.env.VUE_APP_NETWORK)];
@@ -25,7 +26,8 @@ export default function useWeb3() {
     id: (Number(process.env.VUE_APP_NETWORK) || 1) as NetworkId,
     name: appConfig?.shortName || 'Mainnet',
     networkName: appConfig?.network || 'homestead',
-    nativeAsset: appConfig?.nativeAsset || 'ETH'
+    nativeAsset: appConfig?.nativeAsset || 'ETH',
+    supportsV1: isAddress(appConfig?.addresses.exchangeProxy || '')
   };
 
   // User network vars (dynamic)
