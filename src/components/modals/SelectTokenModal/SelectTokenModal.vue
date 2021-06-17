@@ -12,7 +12,7 @@
       >
         <BalIcon name="arrow-left" size="sm" />
       </BalBtn>
-      <h3>{{ title }}</h3>
+      <h5>{{ title }}</h5>
     </template>
     <template v-if="selectTokenList">
       <Search
@@ -65,7 +65,7 @@
           </div>
         </a>
       </div>
-      <div>
+      <div class="overflow-hidden rounded-lg">
         <RecycleScroller
           class="h-96 overflow-y-scroll"
           v-if="tokens?.length > 0"

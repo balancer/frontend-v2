@@ -1,6 +1,4 @@
 import BalTextInput from './BalTextInput.vue';
-import { Rules } from '@/types';
-import { isRequired } from '../../../lib/utils/validations';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {
@@ -44,7 +42,6 @@ type Props = {
   label: string;
   type: string;
   size: string;
-  rules: Array<Rules>;
 };
 
 const Template = (args: Props) => ({
@@ -66,7 +63,7 @@ const Template = (args: Props) => ({
 
 export const Default = Template.bind({});
 // @ts-ignore
-Default.args = { modelValue: 'A value', rules: [isRequired()] };
+Default.args = { modelValue: 'A value' };
 
 export const WithPrepend = Template.bind({});
 // @ts-ignore

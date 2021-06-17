@@ -51,6 +51,7 @@ export default defineComponent({
           'primary',
           'gradient',
           'gradient-reverse',
+          'gradient-pink-yellow',
           'gray',
           'red',
           'white',
@@ -78,7 +79,7 @@ export default defineComponent({
         case 'lg':
           return 'px-5 h-18 text-lg md:text-2xl';
         default:
-          return 'px-4 h-14 text-base';
+          return 'px-4 h-12 text-base';
       }
     });
 
@@ -100,10 +101,21 @@ export default defineComponent({
     const bgGradientClasses = computed(() => {
       if (props.outline) return 'bg-transparent';
 
-      const fromColor = props.color === 'gradient' ? 'blue' : 'pink';
-      const toColor = props.color === 'gradient' ? 'pink' : 'blue';
+      let fromColor = 'blue';
+      let toColor = 'pink';
 
-      if (props.disabled || props.loading) {
+      if (props.color === 'gradient-reverse') {
+        fromColor = 'pink';
+        toColor = 'blue';
+      } else if (props.color === 'gradient-pink-yellow') {
+        fromColor = 'pink';
+        toColor = 'yellow';
+      }
+
+      if (props.disabled) {
+        return `bg-gray-300 text-white`;
+      }
+      if (props.loading) {
         return `bg-gradient-to-tr from-${fromColor}-50 to-${toColor}-50`;
       }
       return `
@@ -125,7 +137,10 @@ export default defineComponent({
       else if (props.flat) return bgFlatClasses.value;
       else if (props.color === 'white') return 'bg-white';
       else {
-        if (props.disabled || props.loading) {
+        if (props.disabled) {
+          return `bg-gray-300 text-white`;
+        }
+        if (props.loading) {
           return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
         }
 

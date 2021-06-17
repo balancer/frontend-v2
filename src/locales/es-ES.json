@@ -235,7 +235,7 @@
     "withdrawalSettled": "Su retiro se ha liquidado",
     "withdrawalSuccess": "Su inversión se ha retirado de este pool y el<br> los tokens subyacentes ahora están en su billetera.",
     "wrap": "Envoltura",
-    "wrapInstruction": "Envuelve tu ETH en WETH",
+    "wrapInstruction": "Envuelve tu {0} en W{0}",
     "yearAbbrev": "y",
     "youDidIt": "¡Lo hiciste!",
     "yourTransactions": "Tus transacciones en este pool"

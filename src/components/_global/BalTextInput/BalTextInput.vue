@@ -18,6 +18,7 @@
             :disabled="disabled"
             @blur="onBlur"
             @input="onInput"
+            @keydown="onKeydown"
           />
           <div v-if="$slots.info || info" :class="['info', infoClasses]">
             <slot name="info">
@@ -58,7 +59,14 @@ export default defineComponent({
 
   inheritAttrs: false,
 
-  emits: ['input', 'blur', 'update:modelValue', 'update:isValid', 'click'],
+  emits: [
+    'input',
+    'blur',
+    'update:modelValue',
+    'update:isValid',
+    'click',
+    'keydown'
+  ],
 
   props: {
     modelValue: {
@@ -79,6 +87,7 @@ export default defineComponent({
     prependBorder: { type: Boolean, default: false },
     fadedOut: { type: Boolean, default: false },
     info: { type: String, default: '' },
+    decimalLimit: { type: Number, default: 18 },
     type: {
       type: String,
       default: 'text',
@@ -123,8 +132,35 @@ export default defineComponent({
     }
 
     function onInput(event): void {
+      if (props.type === 'number') {
+        event.target.value = preventOverflow(event.target.value);
+      }
       emit('input', event.target.value);
       emit('update:modelValue', event.target.value);
+    }
+
+    function onKeydown(event): void {
+      if (props.type === 'number') {
+        blockInvalidChar(event);
+      }
+      emit('keydown', event);
+    }
+
+    function blockInvalidChar(event): void {
+      ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
+    }
+
+    function preventOverflow(value: string): string {
+      if (!value.toString().includes('.')) return value;
+
+      const [numberStr, decimalStr] = value.toString().split('.');
+
+      if (decimalStr.length > props.decimalLimit) {
+        const maxLength = numberStr.length + props.decimalLimit + 1;
+        value = value.toString().slice(0, maxLength);
+      }
+
+      return value;
     }
 
     watchEffect(() => {
@@ -153,7 +189,7 @@ export default defineComponent({
         case 'lg':
           return 'h-18';
         default:
-          return 'h-14';
+          return 'h-12';
       }
     };
 
@@ -214,13 +250,15 @@ export default defineComponent({
       validate,
       onBlur,
       onInput,
+      onKeydown,
       wrapperClasses,
       inputGroupClasses,
       inputContainerClasses,
       inputClasses,
       appendClasses,
       prependClasses,
-      infoClasses
+      infoClasses,
+      blockInvalidChar
     };
   }
 });

@@ -33,11 +33,11 @@ export default defineComponent({
         case 'sm':
           return '16';
         case 'lg':
-          return '32';
-        case 'xl':
-          return '40';
-        default:
           return '24';
+        case 'xl':
+          return '28';
+        default:
+          return '20';
       }
     });
 

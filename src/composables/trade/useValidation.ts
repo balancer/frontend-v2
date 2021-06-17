@@ -1,6 +1,17 @@
 import { computed } from 'vue';
 import useAuth from '@/composables/useAuth';
-import i18n from '@/plugins/i18n';
+import { ETHER } from '@/constants/tokenlists';
+
+const MIN_ETH_REQUIRED = 0.0001;
+
+export enum TradeValidation {
+  VALID,
+  NO_ACCOUNT,
+  EMPTY,
+  NO_ETHER,
+  NO_BALANCE,
+  NO_LIQUIDITY
+}
 
 export default function useValidation(
   tokenInAddress,
@@ -12,7 +23,7 @@ export default function useValidation(
   const auth = useAuth();
 
   const validationStatus = computed(() => {
-    if (!auth.isAuthenticated) return '';
+    if (!auth.isAuthenticated.value) return TradeValidation.NO_ACCOUNT;
     const tokenIn = tokens.value[tokenInAddress.value];
 
     if (
@@ -21,10 +32,16 @@ export default function useValidation(
       (parseFloat(tokenOutAmount.value) == 0 ||
         tokenOutAmount.value.trim() === '')
     )
-      return i18n.global.t('enterAmount');
+      return TradeValidation.EMPTY;
+
+    const eth = tokens.value[ETHER.address];
+    const ethBalance = parseFloat(eth.balance);
+    if (ethBalance < MIN_ETH_REQUIRED) {
+      return TradeValidation.NO_ETHER;
+    }
 
     if (!tokenIn?.balance || tokenIn.balance < parseFloat(tokenInAmount.value))
-      return i18n.global.t('insufficientBalance');
+      return TradeValidation.NO_BALANCE;
 
     if (
       parseFloat(tokenOutAmount.value) == 0 ||
@@ -32,9 +49,9 @@ export default function useValidation(
       parseFloat(tokenInAmount.value) == 0 ||
       tokenInAmount.value.trim() === ''
     )
-      return i18n.global.t('insufficientLiquidity');
+      return TradeValidation.NO_LIQUIDITY;
 
-    return '';
+    return TradeValidation.VALID;
   });
 
   const errorMessage = computed(() => validationStatus.value);

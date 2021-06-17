@@ -23,7 +23,7 @@ export default defineComponent({
 
   props: {
     title: { type: String, default: '' },
-    titleTag: { type: String, default: 'h3' },
+    titleTag: { type: String, default: 'h5' },
     square: { type: Boolean, default: false },
     noPad: { type: Boolean, default: false },
     noContentPad: { type: Boolean, default: false },

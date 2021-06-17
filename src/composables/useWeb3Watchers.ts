@@ -26,11 +26,9 @@ export default function useWeb3Watchers() {
       if (!newAccount) return;
 
       const { emitter } = notify.account(newAccount);
-      emitter.on('all', transaction => {
-        if (transaction.status === 'confirmed') {
-          store.dispatch('account/getBalances');
-          store.dispatch('account/getAllowances');
-        }
+      emitter.on('txConfirmed', () => {
+        store.dispatch('account/getBalances');
+        store.dispatch('account/getAllowances');
         return false;
       });
     }

@@ -1,0 +1,45 @@
+{
+  "key": "137",
+  "chainId": 137,
+  "name": "Polygon Mainnet",
+  "shortName": "Polygon",
+  "network": "polygon",
+  "unknown": false,
+  "nativeAsset": "MATIC",
+  "nativeAssetLong": "Matic",
+  "rpc": "https://polygon-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
+  "ws": "wss://rpc-mainnet.maticvigil.com/ws",
+  "explorer": "https://polygonscan.com/",
+  "poolsUrlV1": "",
+  "poolsUrlV2": "",
+  "addresses": {
+    "bFactory": "",
+    "bActions": "",
+    "dsProxyRegistry": "",
+    "exchangeProxy": "",
+    "merkleRedeem": "",
+    "multicall": "0xa1B2b503959aedD81512C37e9dce48164ec6a94d",
+    "authorizer": "",
+    "vault": "",
+    "weightedPoolFactory": "",
+    "stablePoolFactory": "",
+    "tokenFactory": "",
+    "weth": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+    "MockFlashLoanReceiver": "",
+    "balancerHelpers": ""
+  },
+  "strategies": {
+    "0": {
+      "type": "0",
+      "name": "stablePool"
+    },
+    "1": {
+      "type": "1",
+      "name": "weightedPool"
+    },
+    "2": {
+      "type": "2",
+      "name": "weightedPool"
+    }
+  }
+}

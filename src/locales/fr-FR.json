@@ -233,7 +233,7 @@
     "withdrawalSettled": "Votre retrait est réglé",
     "withdrawalSuccess": "Votre investissement a été retiré de ce pool et le<br> les jetons sous-jacents sont maintenant dans votre portefeuille.",
     "wrap": "Envelopper",
-    "wrapInstruction": "Enveloppez votre ETH dans WETH",
+    "wrapInstruction": "Enveloppez votre {0} dans W{0}",
     "yearAbbrev": "a",
     "youDidIt": "C'est fait!",
     "yourTransactions": "Vos transactions dans ce pool"

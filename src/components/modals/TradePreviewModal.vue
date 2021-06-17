@@ -1,8 +1,5 @@
 <template>
-  <BalModal :show="open" @close="onClose">
-    <template v-slot:header>
-      <h3>{{ $t('previewTrade') }}</h3>
-    </template>
+  <BalModal :show="open" @close="onClose" :title="$t('previewTrade')">
     <div>
       <div
         class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-700"
@@ -172,9 +169,7 @@ export default defineComponent({
     const isEthTrade = computed(() => addressIn.value === ETHER.address);
 
     const requiresApproval = computed(() => {
-      if (isWrap.value) return false;
-      if (isUnwrap.value) return false;
-      if (isEthTrade.value) return false;
+      if (isWrap.value || isUnwrap.value || isEthTrade.value) return false;
       return true;
     });
 

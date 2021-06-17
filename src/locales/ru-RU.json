@@ -233,7 +233,7 @@
     "withdrawalSettled": "Ваш вывод рассчитан",
     "withdrawalSuccess": "Ваши инвестиции были выведены из этого пула, и<br> базовые токены теперь находятся в вашем кошельке.",
     "wrap": "Сворачивать",
-    "wrapInstruction": "Оберните свой ETH в WETH",
+    "wrapInstruction": "Оберните свой {0} в W{0}",
     "yearAbbrev": "г",
     "youDidIt": "Ты сделал это!",
     "yourTransactions": "Ваши транзакции в этом пуле"

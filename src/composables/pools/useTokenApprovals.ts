@@ -5,6 +5,7 @@ import { parseUnits } from '@ethersproject/units';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
+import { sleep } from '@/lib/utils';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
   const auth = useAuth();
@@ -37,13 +38,17 @@ export default function useTokenApprovals(tokens, shortAmounts) {
       const txs = await approveTokens(
         auth.web3,
         store.state.web3.config.addresses.vault,
-        requiredAllowances.value
+        [requiredAllowances.value[0]]
       );
       const txHashes = txs.map(tx => tx.hash);
 
       txListener(txHashes, {
-        onTxConfirmed: () => {
-          store.dispatch('account/getAllowances', { tokens });
+        onTxConfirmed: async () => {
+          // REFACTOR: Hack to prevent race condition causing double approvals
+          await txs[0].wait();
+          await sleep(5000);
+          await store.dispatch('account/getAllowances', { tokens });
+          // END REFACTOR
           approving.value = false;
         },
         onTxCancel: () => {

@@ -121,7 +121,7 @@
         <template v-slot:info>
           <div
             class="cursor-pointer"
-            @click.prevent="amounts[i] = tokenBalance(i)"
+            @click.prevent="amounts[i] = tokenBalance(i).toString()"
           >
             {{ $t('balance') }}: {{ formatBalance(i) }}
           </div>
@@ -131,7 +131,7 @@
             <BalBtn
               size="xs"
               color="white"
-              @click.prevent="amounts[i] = tokenBalance(i)"
+              @click.prevent="amounts[i] = tokenBalance(i).toString()"
             >
               {{ $t('max') }}
             </BalBtn>
@@ -150,13 +150,13 @@
           }"
           class="text-xs text-gray-500 underline"
         >
-          {{ $t('wrapInstruction') }}
+          {{ $t('wrapInstruction', [nativeAsset]) }}
         </router-link>
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52" v-html="ethBufferInstruction" />
+          <div class="w-52" v-html="$t('ethBufferInstruction')" />
         </BalTooltip>
       </div>
     </div>
@@ -196,7 +196,7 @@
         </div>
         <BalBtn
           v-if="requireApproval"
-          :label="$t('approveTokens')"
+          :label="`${$t('approve')} ${symbolFor(requiredAllowances[0])}`"
           :loading="approving"
           :loading-label="$t('approving')"
           :disabled="!hasAmounts || !hasValidInputs"
@@ -209,7 +209,7 @@
             v-model="highPiAccepted"
             :rules="[isRequired(this.$t('priceImpactCheckbox'))]"
             name="highPiAccepted"
-            class="text-gray-500 mb-8"
+            class="text-gray-500 mb-12"
             size="sm"
             :label="$t('priceImpactAccept')"
           />
@@ -318,7 +318,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { isAuthenticated } = useAuth();
-    const { account, userNetwork } = useWeb3();
+    const { account, appNetwork, userNetwork } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { txListener } = useNotify();
@@ -442,6 +442,8 @@ export default defineComponent({
       return minusSlippage(bptOut, props.pool.onchain.decimals);
     });
 
+    const nativeAsset = computed(() => appNetwork.nativeAsset);
+
     const isWethPool = computed(() =>
       props.pool.tokenAddresses.includes(TOKENS.AddressMap.WETH)
     );
@@ -462,10 +464,8 @@ export default defineComponent({
     ]);
 
     // METHODS
-    function tokenBalance(index) {
-      return Number(
-        allTokens.value[props.pool.tokenAddresses[index]]?.balance || 0
-      );
+    function tokenBalance(index: number): string {
+      return allTokens.value[props.pool.tokenAddresses[index]]?.balance || '0';
     }
 
     function tokenDecimals(index) {
@@ -485,9 +485,16 @@ export default defineComponent({
       return isAuthenticated.value
         ? [
             isPositive(),
-            isLessThanOrEqualTo(tokenBalance(index), t('exceedsBalance'))
+            isLessThanOrEqualTo(
+              Number(tokenBalance(index)),
+              t('exceedsBalance')
+            )
           ]
         : [isPositive()];
+    }
+
+    function symbolFor(token) {
+      return allTokens.value[token]?.symbol || '';
     }
 
     function connectWallet() {
@@ -646,6 +653,7 @@ export default defineComponent({
       // data
       ...toRefs(data),
       Goals,
+      nativeAsset,
       TOKENS,
       // computed
       allTokens,
@@ -653,6 +661,7 @@ export default defineComponent({
       hasAmounts,
       approving,
       requireApproval,
+      requiredAllowances,
       tokenWeights,
       tokenBalance,
       amountRules,
@@ -674,7 +683,8 @@ export default defineComponent({
       approveAllowances,
       fNum,
       preventOverflow,
-      trackGoal
+      trackGoal,
+      symbolFor
     };
   }
 });

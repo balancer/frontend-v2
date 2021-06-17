@@ -201,11 +201,14 @@ export class SorManager {
         ? SwapTypes.SwapExactIn
         : SwapTypes.SwapExactOut;
 
+    const timestampSeconds = Math.floor(Date.now() / 1000);
+
     const swapInfoV2: SwapInfo = await this.sorV2.getSwaps(
       v2TokenIn.toLowerCase(),
       v2TokenOut.toLowerCase(),
       swapTypeV2,
-      amountNormalised
+      amountNormalised,
+      timestampSeconds
     );
 
     // Both are scaled amounts

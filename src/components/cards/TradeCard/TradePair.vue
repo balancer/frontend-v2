@@ -9,10 +9,11 @@
       </div>
     </div>
     <BalTextInput
-      :name="'tokenIn'"
+      name="tokenIn"
       :model-value="tokenInAmountInput"
       @input="value => handleInAmountChange(value)"
       type="number"
+      :decimal-limit="tokenInDecimals"
       min="0"
       step="any"
       placeholder="0"
@@ -88,6 +89,7 @@
       :model-value="tokenOutAmountInput"
       @input="value => handleOutAmountChange(value)"
       type="number"
+      :decimal-limit="tokenOutDecimals"
       min="0"
       step="any"
       placeholder="0"
@@ -151,6 +153,7 @@ import { defineComponent, toRefs, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
 import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
@@ -199,6 +202,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
+    const { allTokensIncludeEth } = useTokens();
     const { fNum, toFiat } = useNumbers();
 
     const {
@@ -209,16 +213,12 @@ export default defineComponent({
       exactIn
     } = toRefs(props);
 
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
-    const tokens = computed(() => getTokens({ includeEther: true }));
-
     const tokenInValue = computed(() =>
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
     );
 
     const tokenInSymbol = computed(() => {
-      const tokenIn = tokens.value[tokenInAddressInput.value];
+      const tokenIn = allTokensIncludeEth.value[tokenInAddressInput.value];
       const symbol = tokenIn ? tokenIn.symbol : '';
       return symbol;
     });
@@ -228,9 +228,23 @@ export default defineComponent({
     );
 
     const tokenOutSymbol = computed(() => {
-      const tokenOut = tokens.value[tokenOutAddressInput.value];
+      const tokenOut = allTokensIncludeEth.value[tokenOutAddressInput.value];
       const symbol = tokenOut ? tokenOut.symbol : '';
       return symbol;
+    });
+
+    const tokenInDecimals = computed(() => {
+      const decimals = allTokensIncludeEth.value[tokenInAddressInput.value]
+        ? allTokensIncludeEth.value[tokenInAddressInput.value].decimals
+        : 18;
+      return decimals;
+    });
+
+    const tokenOutDecimals = computed(() => {
+      const decimals = allTokensIncludeEth.value[tokenOutAddressInput.value]
+        ? allTokensIncludeEth.value[tokenOutAddressInput.value].decimals
+        : 18;
+      return decimals;
     });
 
     const isInRate = ref(true);
@@ -238,7 +252,8 @@ export default defineComponent({
     const modalSelectTokenIsOpen = ref(false);
 
     function handleMax(): void {
-      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
+      const balance =
+        allTokensIncludeEth.value[tokenInAddressInput.value]?.balance || '0';
       const balanceNumber = parseFloat(balance);
       const maxAmount =
         tokenInAddressInput.value !== ETHER.address
@@ -271,16 +286,22 @@ export default defineComponent({
 
     function handleSelectToken(address: string): void {
       if (modalSelectTokenType.value === 'input') {
-        emit('tokenInAddressChange', address);
+        if (address === tokenOutAddressInput.value) {
+          handleSwitchTokens();
+          return;
+        } else emit('tokenInAddressChange', address);
       } else {
-        emit('tokenOutAddressChange', address);
+        if (address === tokenInAddressInput.value) {
+          handleSwitchTokens();
+          return;
+        } else emit('tokenOutAddressChange', address);
       }
       store.dispatch('registry/injectTokens', [address]);
     }
 
     const rateMessage = computed(() => {
-      const tokenIn = tokens.value[tokenInAddressInput.value];
-      const tokenOut = tokens.value[tokenOutAddressInput.value];
+      const tokenIn = allTokensIncludeEth.value[tokenInAddressInput.value];
+      const tokenOut = allTokensIncludeEth.value[tokenOutAddressInput.value];
       if (!tokenIn || !tokenOut) {
         return '';
       }
@@ -314,11 +335,10 @@ export default defineComponent({
     }
 
     const balanceLabel = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance
+      () => allTokensIncludeEth.value[tokenInAddressInput.value]?.balance
     );
 
     return {
-      tokens,
       fNum,
       handleMax,
       balanceLabel,
@@ -333,7 +353,9 @@ export default defineComponent({
       tokenOutSymbol,
       modalSelectTokenIsOpen,
       openModalSelectToken,
-      handleSelectToken
+      handleSelectToken,
+      tokenInDecimals,
+      tokenOutDecimals
     };
   }
 });
