@@ -232,7 +232,7 @@
     "withdrawalSettled": "Il tuo ritiro è stato risolto",
     "withdrawalSuccess": "Il tuo investimento è stato ritirato da questo pool e il file<br> i token sottostanti sono ora nel tuo portafoglio.",
     "wrap": "Avvolgere",
-    "wrapInstruction": "Avvolgi il tuo ETH in WETH",
+    "wrapInstruction": "Avvolgi il tuo {0} in W{0}",
     "yearAbbrev": "y",
     "youDidIt": "Ce l'hai fatta!",
     "yourTransactions": "Le tue transazioni in questo pool"

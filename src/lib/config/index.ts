@@ -1,5 +1,7 @@
 import homestead from './homestead.json';
 import kovan from './kovan.json';
+import rinkeby from './rinkeby.json';
+import polygon from './polygon.json';
 import docker from './docker.json';
 
 export interface Config {
@@ -9,6 +11,8 @@ export interface Config {
   shortName: string;
   network: string;
   unknown: boolean;
+  nativeAsset: string;
+  nativeAssetLong: string;
   rpc: string;
   ws: string;
   explorer: string;
@@ -36,6 +40,8 @@ export interface Config {
 const config: Record<string, Config> = {
   '1': homestead,
   '42': kovan,
+  '4': rinkeby,
+  '137': polygon,
   // @ts-ignore
   '17': docker
 };

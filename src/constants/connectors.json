@@ -12,7 +12,8 @@
         "1": "https://mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
         "4": "https://eth-rinkeby.alchemyapi.io/v2/twReQE9Px03E-E_N_Fbb3OVF7YgHxoGq",
         "17": "https://localhost:8545",
-        "42": "https://eth-kovan.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO"
+        "42": "https://eth-kovan.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
+        "137": "https://polygon.mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66"
       }
     }
   },

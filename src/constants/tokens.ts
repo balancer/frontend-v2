@@ -38,3 +38,5 @@ export const TOKENS = {
     }
   }
 };
+
+export const DEFAULT_TOKEN_DECIMALS = 18;

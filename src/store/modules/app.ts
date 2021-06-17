@@ -2,6 +2,9 @@ import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
 import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
+import { APP } from '@/constants/app';
+
+export type TradeInterface = 'gnosis' | 'balancer';
 
 export interface AppState {
   loading: boolean;
@@ -10,6 +13,7 @@ export interface AppState {
   locale: string;
   slippage: string;
   tradeLiquidity: LiquiditySelection;
+  tradeInterface: TradeInterface;
   selectedPoolTokens: string[];
 }
 
@@ -20,7 +24,8 @@ const state: AppState = {
   locale: 'en-US',
   slippage: '0.01',
   tradeLiquidity: LiquiditySelection.Best,
-  selectedPoolTokens: []
+  selectedPoolTokens: [],
+  tradeInterface: APP.IsGnosisIntegration ? 'gnosis' : 'balancer'
 };
 
 const actions = {
@@ -95,6 +100,15 @@ const mutations = {
     selectedPoolTokens: AppState['selectedPoolTokens']
   ) {
     state.selectedPoolTokens = selectedPoolTokens;
+  },
+
+  setTradeInterface(
+    state: AppState,
+    tradeInterface: AppState['tradeInterface']
+  ) {
+    if (APP.IsGnosisIntegration) {
+      state.tradeInterface = tradeInterface;
+    }
   }
 };
 
