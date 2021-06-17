@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 lg:px-0 pt-8">
-    <template v-if="isConnected">
+    <template v-if="isWalletReady">
       <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
       <PoolsTable
         :isLoading="isLoadingUserPools"
@@ -51,6 +51,7 @@ import PoolsTable from '@/components/tables/PoolsTable.vue';
 
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/composables/useWeb3';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   components: {
@@ -62,7 +63,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const router = useRouter();
-    const { isConnected } = useWeb3();
+    const { isWalletReady } = useVueWeb3();
 
     const selectedPoolTokens = computed(
       () => store.state.app.selectedPoolTokens
@@ -104,7 +105,7 @@ export default defineComponent({
       isLoadingUserPools,
 
       // computed
-      isConnected,
+      isWalletReady,
       poolsHasNextPage,
       poolsIsFetchingNextPage,
       selectedPoolTokens,
