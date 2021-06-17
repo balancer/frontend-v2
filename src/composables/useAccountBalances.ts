@@ -2,28 +2,33 @@ import getProvider from '@/lib/utils/provider';
 import { useQuery } from 'vue-query';
 import useTokens from './useTokens';
 import useWeb3 from './useWeb3';
-import { computed, reactive } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { getBalances } from '@/lib/utils/balancer/tokens';
 import { formatEther, formatUnits } from '@ethersproject/units';
 import { getAddress } from '@ethersproject/address';
+import { Web3Provider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { ETHER } from '@/constants/tokenlists';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default function useAccountBalances() {
-  const { account, userNetwork } = useWeb3();
+  const { account, chainId, isWalletReady } = useVueWeb3();
   const { allTokens: tokens } = useTokens();
-  const network = userNetwork.value.key;
-  const provider = getProvider(network);
+  const provider = getProvider(String(chainId.value));
   const isQueryEnabled = computed(
-    () => account.value !== null && Object.keys(tokens).length !== 0
+    () =>
+      account.value !== null &&
+      Object.keys(tokens).length !== 0 &&
+      isWalletReady.value
   );
 
+  // TODO separate this out
   const { data, error, isLoading, isIdle, isError } = useQuery(
-    reactive(QUERY_KEYS.Balances.All(account, userNetwork)),
+    reactive(QUERY_KEYS.Balances.All(account, chainId)),
     () => {
       return Promise.all([
         getBalances(
-          network,
+          String(chainId.value),
           provider,
           account.value,
           Object.values(tokens.value).map((token: any) => token.address)
@@ -55,7 +60,7 @@ export default function useAccountBalances() {
 
       // separate case for native ether
       balances[ETHER.address.toLowerCase()] = {
-        balance: formatEther(data.value[1]),
+        balance: formatEther(data.value[1] || 0),
         symbol: ETHER.symbol,
         address: ETHER.address
       };

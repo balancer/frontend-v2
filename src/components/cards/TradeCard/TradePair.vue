@@ -139,7 +139,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed, ref } from 'vue';
+import { defineComponent, toRefs, computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
@@ -147,6 +147,7 @@ import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
+import useTokenLists from '@/composables/useTokenLists';
 
 const ETH_BUFFER = 0.1;
 
@@ -204,13 +205,14 @@ export default defineComponent({
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
     const tokens = computed(() => getTokens({ includeEther: true }));
+    const { tokenDictionary } = useTokenLists();
 
     const tokenInValue = computed(() =>
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
     );
 
     const tokenInSymbol = computed(() => {
-      const tokenIn = tokens.value[tokenInAddressInput.value];
+      const tokenIn = tokenDictionary.value[tokenInAddressInput.value];
       const symbol = tokenIn ? tokenIn.symbol : '';
       return symbol;
     });
@@ -220,7 +222,7 @@ export default defineComponent({
     );
 
     const tokenOutSymbol = computed(() => {
-      const tokenOut = tokens.value[tokenOutAddressInput.value];
+      const tokenOut = tokenDictionary.value[tokenOutAddressInput.value];
       const symbol = tokenOut ? tokenOut.symbol : '';
       return symbol;
     });
@@ -230,7 +232,7 @@ export default defineComponent({
     const modalSelectTokenIsOpen = ref(false);
 
     function handleMax(): void {
-      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
+      const balance = tokenDictionary.value[tokenInAddressInput.value]?.balance || '0';
       const balanceNumber = parseFloat(balance);
       const maxAmount =
         tokenInAddressInput.value !== ETHER.address
@@ -277,8 +279,8 @@ export default defineComponent({
     }
 
     const rateMessage = computed(() => {
-      const tokenIn = tokens.value[tokenInAddressInput.value];
-      const tokenOut = tokens.value[tokenOutAddressInput.value];
+      const tokenIn = tokenDictionary.value[tokenInAddressInput.value];
+      const tokenOut = tokenDictionary.value[tokenOutAddressInput.value];
       if (!tokenIn || !tokenOut) {
         return '';
       }
@@ -312,7 +314,7 @@ export default defineComponent({
     }
 
     const balanceLabel = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance
+      () => tokenDictionary.value[tokenInAddressInput.value]?.balance
     );
 
     return {

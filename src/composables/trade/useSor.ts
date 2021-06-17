@@ -68,7 +68,8 @@ export default function useSor(
   const auth = useAuth();
   const { txListener } = useNotify();
   const { trackGoal, Goals } = useFathom();
-  const { web3 } = useVueWeb3();
+  const { getProvider: getWeb3Provider } = useVueWeb3();
+  const provider = computed(() => getWeb3Provider());
 
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
@@ -306,7 +307,11 @@ export default function useSor(
 
     if (isWrap.value) {
       try {
-        const tx = await wrap(chainId, web3, tokenInAmountScaled);
+        const tx = await wrap(
+          chainId,
+          provider.value as any,
+          tokenInAmountScaled
+        );
         console.log('Wrap tx', tx);
         tradeTxListener(tx.hash);
       } catch (e) {
@@ -316,7 +321,11 @@ export default function useSor(
       return;
     } else if (isUnwrap.value) {
       try {
-        const tx = await unwrap(chainId, web3, tokenInAmountScaled);
+        const tx = await unwrap(
+          chainId,
+          provider.value as any,
+          tokenInAmountScaled
+        );
         console.log('Unwrap tx', tx);
         tradeTxListener(tx.hash);
       } catch (e) {
@@ -337,7 +346,7 @@ export default function useSor(
       try {
         const tx = await swapIn(
           chainId,
-          web3,
+          provider.value as any,
           sr,
           tokenInAmountScaled,
           minAmount
@@ -362,7 +371,7 @@ export default function useSor(
       try {
         const tx = await swapOut(
           chainId,
-          web3,
+          provider.value as any,
           sr,
           tokenInAmountMax,
           tokenOutAmountScaled

@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useQuery } from 'vue-query';
 import { flatten, keyBy, orderBy, uniqBy } from 'lodash';
@@ -20,6 +20,7 @@ type TokenListItem = {
   logoURI: string;
   name: string;
   symbol: string;
+  balance: string;
 };
 
 type TokenList = {
@@ -105,9 +106,8 @@ export default function useTokenLists(request?: TokenListRequest) {
             // populate token data into list of tokens
             .map(token => {
               const balance =
-                Number(
-                  (balances.value || {})[token.address.toLowerCase()]?.balance
-                ) || 0;
+                (balances.value || {})[token.address.toLowerCase()]?.balance ||
+                '0';
               const price =
                 prices.value[token.address.toLowerCase()]?.price || 0;
               const value = balance * price;

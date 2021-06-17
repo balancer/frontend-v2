@@ -5,6 +5,7 @@ import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useNotify from '@/composables/useNotify';
 import { ETHER } from '@/constants/tokenlists';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default function useTokenApproval(tokenInAddress, amount, tokens) {
   const approving = ref(false);
@@ -14,6 +15,8 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   const store = useStore();
   const auth = useAuth();
   const { txListener } = useNotify();
+  const { getProvider } = useVueWeb3();
+  const provider = getProvider();
 
   const { config } = store.state.web3;
 
@@ -72,7 +75,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     approving.value = true;
     try {
       const [tx] = await approveTokens(
-        auth.web3,
+        provider,
         config.addresses.exchangeProxy,
         [tokenInAddress.value]
       );
@@ -87,7 +90,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     console.log('[TokenApproval] Unlock V2');
     approving.value = true;
     try {
-      const [tx] = await approveTokens(auth.web3, config.addresses.vault, [
+      const [tx] = await approveTokens(provider, config.addresses.vault, [
         tokenInAddress.value
       ]);
       approvalTxListener(tx.hash);

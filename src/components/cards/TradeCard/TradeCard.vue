@@ -110,6 +110,7 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
+import useTokenLists from '@/composables/useTokenLists';
 
 export default defineComponent({
   components: {
@@ -131,6 +132,7 @@ export default defineComponent({
       store.getters['registry/getTokens'](params);
     const getConfig = () => store.getters['web3/getConfig']();
     const tokens = computed(() => getTokens({ includeEther: true }));
+    const { tokenDictionary } = useTokenLists();
 
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
@@ -170,7 +172,7 @@ export default defineComponent({
     const { allowanceState } = useTokenApproval(
       tokenInAddress,
       tokenInAmount,
-      tokens
+      tokenDictionary
     );
     const {
       trading,
@@ -189,7 +191,7 @@ export default defineComponent({
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      tokens,
+      tokenDictionary,
       allowanceState,
       isWrap,
       isUnwrap
@@ -199,7 +201,7 @@ export default defineComponent({
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      tokens
+      tokenDictionary
     );
 
     const title = computed(() => {

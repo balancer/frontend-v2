@@ -3,20 +3,26 @@ import axios from 'axios';
 import { computed, inject, reactive, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
+import { Web3Provider } from '@ethersproject/providers';
 
 export default function useVueWeb3() {
   const {
     connectWallet,
     account,
     chainId,
-    provider,
     disconnectWallet,
-    connector
+    connector,
+    provider,
+    walletState
   } = inject(Web3ProviderSymbol) as Web3Plugin;
+
+  const isWalletReady = computed(() => walletState.value === 'connected');
 
   const canLoadProfile = computed(
     () => account.value !== '' && chainId.value !== 0
   );
+
+  const getProvider = () => new Web3Provider(provider.value as any);
 
   // TODO separate this out?
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
@@ -49,11 +55,14 @@ export default function useVueWeb3() {
     connectWallet,
     account,
     chainId,
-    web3: provider,
+    getProvider,
     isLoadingProfile,
     profile,
     networkName,
     disconnectWallet,
-    connector
+    connector,
+    provider,
+    walletState,
+    isWalletReady
   };
 }
