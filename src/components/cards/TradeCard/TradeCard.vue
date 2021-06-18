@@ -1,9 +1,5 @@
 <template>
-  <BalCard
-    class="relative"
-    :shadow="bp === 'xs' ? 'none' : 'lg'"
-    :no-border="bp === 'xs'"
-  >
+  <BalCard class="relative" :shadow="tradeCardShadow" :no-border="bp === 'xs'">
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
@@ -145,6 +141,17 @@ export default defineComponent({
     const tradeSuccess = ref(false);
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
+
+    const tradeCardShadow = computed(() => {
+      switch (bp.value) {
+        case 'xs':
+          return 'none';
+        case 'sm':
+          return 'lg';
+        default:
+          return 'xl';
+      }
+    });
 
     const isWrap = computed(() => {
       const config = getConfig();
@@ -310,7 +317,8 @@ export default defineComponent({
       tradeDisabled,
       TradeSettingsContext,
       poolsLoading,
-      bp
+      bp,
+      tradeCardShadow
     };
   }
 });
