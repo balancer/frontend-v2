@@ -33,3 +33,6 @@ export interface TokenList {
   readonly tags?: Tags;
   readonly logoURI?: string;
 }
+
+export type TokenListDict = { [address: string]: TokenList };
+export type TokenInfoDict = { [address: string]: TokenInfo };

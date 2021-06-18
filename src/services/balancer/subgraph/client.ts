@@ -1,19 +1,12 @@
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
-export const urlMap = {
-  '1': 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2',
-  '17': 'http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2',
-  '42':
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2'
-};
+import ConfigService from '@/services/config/config.service';
 
 export default class Client {
   url: string;
 
-  constructor() {
-    this.url = urlMap[NETWORK];
+  constructor(private readonly configService = new ConfigService()) {
+    this.url = configService.network.subgraph;
   }
 
   public async get(query) {

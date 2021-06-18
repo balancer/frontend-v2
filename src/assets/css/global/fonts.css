@@ -13,15 +13,10 @@
 }
 
 @font-face {
-  font-family: 'Utopia-Std-Display';
-  src: url('../../fonts/Utopia-Std-Display.ttf') format('truetype');
-  font-weight: normal;
+  font-family: "Tiempos Headline Medium";
+  src: url("../../fonts/tiemposDispMed.woff2") format("woff2"),
+    url("../../fonts/tiemposDispMed.woff") format("woff"), format("opentype"),
+    url("../../fonts/tiemposDispMed.ttf") format("truetype");
   font-style: normal;
-}
-
-@font-face {
-  font-family: 'Utopia-Std-Display';
-  src: url('../../fonts/Utopia-Std-Semibold-Display.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
+  font-weight: 400;
 }

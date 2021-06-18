@@ -150,7 +150,7 @@
           }"
           class="text-xs text-gray-500 underline"
         >
-          {{ $t('wrapInstruction') }}
+          {{ $t('wrapInstruction', [nativeAsset]) }}
         </router-link>
         <BalTooltip>
           <template v-slot:activator>
@@ -318,7 +318,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { isAuthenticated } = useAuth();
-    const { account, userNetwork } = useWeb3();
+    const { account, appNetwork, userNetwork } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { txListener } = useNotify();
@@ -441,6 +441,8 @@ export default defineComponent({
 
       return minusSlippage(bptOut, props.pool.onchain.decimals);
     });
+
+    const nativeAsset = computed(() => appNetwork.nativeAsset);
 
     const isWethPool = computed(() =>
       props.pool.tokenAddresses.includes(TOKENS.AddressMap.WETH)
@@ -651,6 +653,7 @@ export default defineComponent({
       // data
       ...toRefs(data),
       Goals,
+      nativeAsset,
       TOKENS,
       // computed
       allTokens,

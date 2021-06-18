@@ -427,13 +427,18 @@ export default defineComponent({
     function getPoolLink(id: string): string {
       const { chainId } = getConfig();
       const prefixMap = {
-        1: '',
-        42: 'kovan.'
+        1: 'app.',
+        42: 'kovan.',
+        137: 'polygon.'
       };
       const prefix = prefixMap[chainId] || '';
-      return props.sorReturn.isV1swap
-        ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
-        : `https://${prefix}app.balancer.fi/#pool/${id}`;
+      if (props.sorReturn.isV1swap && chainId === 1) {
+        return `https://pools.balancer.exchange/#/pool/${id}`;
+      } else {
+        return props.sorReturn.isV1swap
+          ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
+          : `https://${prefix}balancer.fi/#pool/${id}`;
+      }
     }
 
     return {

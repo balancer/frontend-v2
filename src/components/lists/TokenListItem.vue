@@ -3,7 +3,7 @@
     ref="animateRef"
     class="flex py-3 px-4 highlight items-center leading-5 text-base opacity-0"
   >
-    <BalAsset :address="token.address" :size="34" class="mr-2" />
+    <BalAsset :address="token.address" :size="34" class="mr-3" />
     <div class="flex-auto">
       {{ token.symbol }}
       <div class="text-gray text-sm w-40 md:w-60 truncate">

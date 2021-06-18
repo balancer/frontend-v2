@@ -103,7 +103,7 @@
       </div>
       <AppSlippageForm class="mt-1" />
     </div>
-    <div class="px-4 mt-6">
+    <div v-if="!hideLiquidity" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
@@ -118,6 +118,17 @@
         v-model="appTradeLiquidity"
         @update:modelValue="setTradeLiquidity"
       />
+    </div>
+    <div v-if="APP.IsGnosisIntegration" class="px-4 mt-6">
+      <div class="flex items-baseline">
+        <span v-text="'Trade interface'" class="font-medium mb-2" />
+      </div>
+      <BalBtnGroup
+        :options="tradeInterfaceOptions"
+        v-model="appTradeInterface"
+        @update:modelValue="setTradeInterface"
+      />
+      <div class="flex mt-1"></div>
     </div>
     <div class="network mt-4 p-4 text-sm border-t rounded-b-xl">
       <div v-text="$t('network')" />
@@ -139,6 +150,8 @@ import useWeb3 from '@/composables/useWeb3';
 import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
+
+import { APP } from '@/constants/app';
 
 const locales = {
   'en-US': 'English',
@@ -162,7 +175,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { explorer } = useWeb3();
+    const { appNetwork, explorer } = useWeb3();
 
     // DATA
     const data = reactive({
@@ -173,6 +186,16 @@ export default defineComponent({
           label: option,
           value: option
         })),
+      tradeInterfaceOptions: [
+        {
+          label: 'Gnosis',
+          value: 'gnosis'
+        },
+        {
+          label: 'Balancer',
+          value: 'balancer'
+        }
+      ],
       copiedAddress: false
     });
 
@@ -186,6 +209,8 @@ export default defineComponent({
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
+    const appTradeInterface = computed(() => store.state.app.tradeInterface);
+    const hideLiquidity = computed(() => !appNetwork.supportsV1);
 
     const connectorName = computed(() =>
       getConnectorName(store.state.web3.connector)
@@ -202,6 +227,8 @@ export default defineComponent({
 
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
+    const setTradeInterface = tradeInterface =>
+      store.commit('app/setTradeInterface', tradeInterface);
 
     function copyAddress() {
       navigator.clipboard.writeText(store.state.web3.account);
@@ -215,9 +242,12 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
+      // constants
+      APP,
       // computed
       account,
       appTradeLiquidity,
+      appTradeInterface,
       networkId,
       networkName,
       networkColorClass,
@@ -225,11 +255,13 @@ export default defineComponent({
       appDarkMode,
       connectorName,
       connectorLogo,
+      hideLiquidity,
       // methods
       logout,
       setDarkMode,
       setLocale,
       setTradeLiquidity,
+      setTradeInterface,
       copyAddress,
       explorer
     };
