@@ -107,9 +107,9 @@
 import { defineComponent, reactive, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
-import { clone } from '@/lib/utils';
 import { isAddress, getAddress } from '@ethersproject/address';
 import useTokenLists from '@/composables/useTokenLists';
+// import useTokenLists2 from '@/composables/useTokenLists2';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
@@ -148,6 +148,12 @@ export default defineComponent({
       listDictionary,
       activeTokenLists
     } = useTokenLists(data);
+    // const {
+    //   approvedTokenLists,
+    //   toggleList,
+    //   toggled: toggledTokenLists,
+    //   isToggled: isToggledList
+    // } = useTokenLists2();
 
     // COMPOSABLES
     const store = useStore();
@@ -157,11 +163,6 @@ export default defineComponent({
     const title = computed(() => {
       if (data.selectTokenList) return t('manageLists');
       return t('selectToken');
-    });
-
-    const tokenlistsReverse = computed(() => {
-      const tokenListsClone = clone(tokenLists.value);
-      return Object.values(tokenListsClone).reverse();
     });
 
     // METHODS
@@ -211,7 +212,6 @@ export default defineComponent({
       // computed
       title,
       tokens,
-      tokenlistsReverse,
       tokenLists,
       listDictionary,
       activeTokenLists,
@@ -222,7 +222,6 @@ export default defineComponent({
       onSelectList,
       onListExit,
       toggleSelectTokenList,
-
       toggleActiveTokenList,
       isActiveList
     };

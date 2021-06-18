@@ -1,4 +1,4 @@
-import { WebSocketProvider } from '@ethersproject/providers';
+import { WebSocketProvider, JsonRpcProvider } from '@ethersproject/providers';
 import ConfigService from '@/services/config/config.service';
 
 type NewBlockHandler = (blockNumber: number) => any;
@@ -6,10 +6,12 @@ type NewBlockHandler = (blockNumber: number) => any;
 export default class RpcProviderService {
   network: string;
   wsProvider: WebSocketProvider;
+  jsonProvider: JsonRpcProvider;
 
   constructor(private readonly configService = new ConfigService()) {
     this.network = configService.network.shortName;
     this.wsProvider = new WebSocketProvider(configService.network.ws);
+    this.jsonProvider = new JsonRpcProvider(configService.network.rpc);
   }
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
@@ -20,5 +22,10 @@ export default class RpcProviderService {
 
   public async getBlockNumber(): Promise<number> {
     return await this.wsProvider.getBlockNumber();
+  }
+
+  public getJsonProvider(networkKey: string): JsonRpcProvider {
+    const rpcUrl = this.configService.getNetworkConfig(networkKey).rpc;
+    return new JsonRpcProvider(rpcUrl);
   }
 }
