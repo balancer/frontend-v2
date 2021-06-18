@@ -6,7 +6,7 @@
   "network": "polygon",
   "unknown": false,
   "rpc": "https://polygon-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
-  "ws": "wss://rpc-mainnet.maticvigil.com/ws",
+  "ws": "wss://ws-matic-mainnet.chainstacklabs.com",
   "explorer": "https://polygonscan.com/",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
   "poolsUrlV1": "",
