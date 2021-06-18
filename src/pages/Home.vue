@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 lg:px-0 pt-8">
+  <div class="container mx-auto px-4 lg:px-0 pt-10 md:pt-12">
     <template v-if="isConnected">
       <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
       <PoolsTable

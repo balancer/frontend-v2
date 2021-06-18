@@ -1,6 +1,6 @@
 <template>
-  <div class="px-4 md:px-0">
-    <div class="trade-card-container mx-auto pt-8">
+  <div>
+    <div class="trade-container">
       <BalLoadingBlock v-if="appLoading" class="h-96" />
       <template v-else>
         <TradeCard v-if="tradeInterface === 'balancer'" />
@@ -49,8 +49,15 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.trade-card-container {
+<style scoped>
+.trade-container {
+  @apply max-w-full mx-auto mt-2 xs:mt-8;
   max-width: 450px;
+}
+
+@media (min-height: 840px) {
+  .trade-container {
+    @apply md:mt-8;
+  }
 }
 </style>

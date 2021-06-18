@@ -1,7 +1,7 @@
 <template>
   <div class="relative" v-click-outside="handleClickOutside">
     <div
-      class="bal-popover-activator"
+      class="bal-popover-activator group"
       @click="trigger === 'click' && togglePopover()"
       @mouseenter="trigger === 'hover' && showPopover()"
       @mouseleave="trigger === 'hover' && hidePopover()"
