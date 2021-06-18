@@ -1,6 +1,6 @@
 <template>
   <div class="px-4 md:px-0">
-    <div class="trade-card-container mx-auto -mt-6">
+    <div class="trade-card-container mx-auto pt-8">
       <BalLoadingBlock v-if="appLoading" class="h-96" />
       <template v-else>
         <TradeCard v-if="tradeInterface === 'balancer'" />

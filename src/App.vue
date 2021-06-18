@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <AppNav />
-    <AppHero />
+    <AppHero v-if="isHomePage" />
     <div class="pb-12">
       <router-view :key="$route.path" class="flex-auto" />
     </div>
@@ -24,6 +24,7 @@ import AccountModal from '@/components/modals/AccountModal.vue';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -37,12 +38,14 @@ export default defineComponent({
     // COMPOSABLES
     useWeb3Watchers();
     const store = useStore();
+    const route = useRoute();
 
     // SERVICES
     const providerService = new RpcProviderService();
 
     // COMPUTED
     const web3Modal = computed(() => store.state.web3.modal);
+    const isHomePage = computed(() => route.path === '/');
 
     // METHODS
     const setAccountModal = val => store.commit('web3/setAccountModal', val);
@@ -64,6 +67,7 @@ export default defineComponent({
     return {
       // computed
       web3Modal,
+      isHomePage,
       // methods
       onLogin,
       setAccountModal
