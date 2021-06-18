@@ -1,5 +1,9 @@
 <template>
-  <BalCard class="relative" shadow="lg">
+  <BalCard
+    class="relative"
+    :shadow="bp === 'xs' ? 'none' : 'lg'"
+    :no-border="bp === 'xs'"
+  >
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
@@ -110,6 +114,7 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   components: {
@@ -126,6 +131,7 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const { t } = useI18n();
+    const { bp } = useBreakpoints();
 
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
@@ -303,13 +309,9 @@ export default defineComponent({
       isRequired,
       tradeDisabled,
       TradeSettingsContext,
-      poolsLoading
+      poolsLoading,
+      bp
     };
   }
 });
 </script>
-<style>
-.trade-container .bal-card {
-  @apply border-0 xs:border shadow-none xs:shadow-lg md:shadow-xl md:rounded-xl;
-}
-</style>
