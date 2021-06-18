@@ -60,8 +60,4 @@ export default defineComponent({
     @apply md:mt-8;
   }
 }
-
-.trade-container .bal-card .header {
-  @apply pb-0;
-}
 </style>

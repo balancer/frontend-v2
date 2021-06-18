@@ -312,8 +312,4 @@ export default defineComponent({
 .trade-container .bal-card {
   @apply border-0 xs:border shadow-none xs:shadow-lg md:shadow-xl md:rounded-xl;
 }
-
-.trade-container .bal-card .header {
-  @apply pb-0;
-}
 </style>
