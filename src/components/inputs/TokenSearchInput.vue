@@ -22,7 +22,7 @@
           @closed="removeToken(token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
-          <span class="ml-2">{{ tokenDictionary[token]?.symbol }}</span>
+          <span class="ml-2">{{ allTokens[token]?.symbol }}</span>
         </BalChip>
       </div>
       <div
@@ -74,7 +74,7 @@ import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
 import useWeb3 from '@/composables/useWeb3';
 import { TOKENS } from '@/constants/tokens';
-import useTokenLists from '@/composables/useTokenLists';
+import useTokens from '@/composables/useTokens2';
 import { ETHER } from '@/constants/tokenlists';
 import { getAddress } from '@ethersproject/address';
 
@@ -94,7 +94,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     // COMPOSABLES
-    const { tokenDictionary } = useTokenLists();
+    const { allTokens } = useTokens();
     const {
       isLoading: isLoadingBalances,
       balances,
@@ -118,7 +118,7 @@ export default defineComponent({
 
     const hasNoBalances = computed(() => !sortedBalances.value.length);
     const whiteListedTokens = computed(() =>
-      Object.values(tokenDictionary.value)
+      Object.values(allTokens.value)
         .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
         .filter(balance => !props.modelValue.includes(balance.address))
     );
@@ -154,11 +154,10 @@ export default defineComponent({
       isLoadingBalances,
       balances,
       sortedBalances,
+      allTokens,
       account,
       hasNoBalances,
       whiteListedTokens,
-      // computed
-      tokenDictionary,
       // methods
       addToken,
       removeToken,
