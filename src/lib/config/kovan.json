@@ -10,6 +10,7 @@
   "rpc": "https://eth-kovan.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "ws": "wss://eth-kovan.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "explorer": "https://kovan.etherscan.io",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-kovan/pools",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
   "addresses": {

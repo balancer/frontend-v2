@@ -10,6 +10,7 @@
   "rpc": "https://eth-rinkeby.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "ws": "wss://eth-rinkeby.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "explorer": "https://rinkeby.etherscan.io",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-rinkeby-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-rinkeby/pools",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
   "addresses": {
