@@ -1,24 +1,50 @@
 <template>
   <BalModal show @close="$emit('close')" no-content-pad>
     <template v-slot:header>
-      <BalBtn
-        v-if="selectTokenList"
-        color="gray"
-        size="sm"
-        class="mr-2"
-        flat
-        circle
-        @click="onListExit"
-      >
-        <BalIcon name="arrow-left" size="sm" />
-      </BalBtn>
-      <h5>{{ title }}</h5>
+      <div class="w-full flex justify-between items-center">
+        <div class="flex items-center">
+          <BalBtn
+            v-if="selectTokenList"
+            color="gray"
+            size="xs"
+            class="mr-2"
+            flat
+            circle
+            @click="onListExit"
+          >
+            <BalIcon name="arrow-left" size="sm" />
+          </BalBtn>
+          <h5>{{ title }}</h5>
+        </div>
+        <div
+          v-if="!selectTokenList"
+          @click="toggleSelectTokenList"
+          class="flex items-center group cursor-pointer"
+        >
+          <span class="text-xs text-gray-500">{{ $t('tokenLists') }}</span>
+          <div class="flex items-center ml-2">
+            <span class="mr-1 ">
+              <img
+                v-for="(tokenlist, i) in activeTokenLists"
+                :key="`activeTokenListIcon-${i}`"
+                :src="_url(listDictionary[tokenlist]?.logoURI)"
+                class="rounded-full inline-block bg-white shadow w-6 h-6"
+              />
+            </span>
+            <BalIcon
+              name="chevron-down"
+              size="sm"
+              class="ml-1 text-blue-500 group-hover:text-pink-500 group-focus:text-pink-500 transition-all duration-200 ease-out "
+            />
+          </div>
+        </div>
+      </div>
     </template>
     <template v-if="selectTokenList">
       <Search
         v-model="query"
         :placeholder="t('searchByName')"
-        class="p-4 border-b dark:border-gray-700"
+        class="px-4 py-3 flex-auto border-b dark:border-gray-700"
       />
       <div>
         <div
@@ -41,36 +67,13 @@
       </div>
     </template>
     <template v-else>
-      <div class="border-b border-t dark:border-gray-700 flex">
+      <div class="border-b dark:border-gray-700 flex">
         <Search
           v-model="query"
           @input="onTokenSearch"
           :placeholder="t('searchBy')"
-          class="p-3 flex-auto"
+          class="px-4 py-3 flex-auto"
         />
-
-        <a @click="toggleSelectTokenList" class="token-list-container">
-          <p
-            class="text-gray-500 group-hover:text-blue-500 group-focus:text-blue-500 transition-colors duration-200 ease-out text-xs"
-          >
-            Token lists
-          </p>
-          <div class="flex items-center">
-            <span class="mr-1 ">
-              <img
-                v-for="(tokenlist, i) in activeTokenLists"
-                :key="`activeTokenListIcon-${i}`"
-                :src="_url(listDictionary[tokenlist]?.logoURI)"
-                class="rounded-full inline-block bg-white align-middle shadow w-6 h-6"
-              />
-            </span>
-            <BalIcon
-              name="chevron-down"
-              size="sm"
-              class="text-blue-500 group-hover:text-pink-500 group-focus:text-pink-500 transition-all duration-200 ease-out "
-            />
-          </div>
-        </a>
       </div>
       <div class="overflow-hidden rounded-lg">
         <RecycleScroller
@@ -226,9 +229,3 @@ export default defineComponent({
   }
 });
 </script>
-<style scoped>
-.token-list-container {
-  max-width: 148px;
-  @apply pl-2 pr-3 py-2 flex flex-col justify-center items-end border-l group;
-}
-</style>

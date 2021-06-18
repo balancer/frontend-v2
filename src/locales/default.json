@@ -210,6 +210,7 @@
     "theme": "Theme",
     "threeMonths": "3M",
     "token": "Token",
+    "tokenLists": "Token lists",
     "tokenAlreadySelected": "Token Already Selected",
     "tokenInjected": "This token is injected",
     "tokens": "Tokens",
