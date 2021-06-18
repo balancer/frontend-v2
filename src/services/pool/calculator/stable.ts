@@ -9,10 +9,9 @@ import {
   _exactBPTInForTokenOut,
   _bptInForExactTokensOut
 } from '@balancer-labs/sor2/dist/pools/stablePool/stableMathEvm';
-import { BPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2/dist/frontendHelpers/weightedHelpers';
+import { BPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2/dist/frontendHelpers/stableHelpers';
 import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
 import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
-import { BigNumberish } from '@ethersproject/bignumber';
 
 /**
  * The stableMathEvm works with all values scaled to 18 decimals,
@@ -40,43 +39,42 @@ export default class Stable {
   }
 
   public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
-    return bnum(0);
-    // let bptAmount, bptZeroPriceImpact;
+    let bptAmount, bptZeroPriceImpact;
 
-    // if (this.calc.action === 'join') {
-    //   bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
-    //   if (bptAmount < 0) return bnum(0);
-    //   bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+    if (this.calc.action === 'join') {
+      bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
+      if (bptAmount < 0) return bnum(0);
+      bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
 
-    //   return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
-    // } else {
-    //   // Single asset exit
-    //   if (opts.exactOut) {
-    //     bptAmount = this.bptInForExactTokensOut(tokenAmounts);
-    //     bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
-    //   } else {
-    //     bptAmount = parseUnits(
-    //       this.calc.bptBalance,
-    //       this.calc.poolDecimals
-    //     ).toString();
-    //     tokenAmounts = this.calc.pool.tokensList.map((_, i) => {
-    //       if (i !== opts.tokenIndex) return '0';
-    //       const tokenAmount = this.exactBPTInForTokenOut(
-    //         this.calc.bptBalance,
-    //         opts.tokenIndex
-    //       ).toString();
-    //       return formatUnits(
-    //         tokenAmount,
-    //         this.calc.poolTokenDecimals[opts.tokenIndex]
-    //       ).toString();
-    //     });
-    //     bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
-    //   }
+      return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
+    } else {
+      // Single asset exit
+      if (opts.exactOut) {
+        bptAmount = this.bptInForExactTokensOut(tokenAmounts);
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      } else {
+        bptAmount = parseUnits(
+          this.calc.bptBalance,
+          this.calc.poolDecimals
+        ).toString();
+        tokenAmounts = this.calc.pool.tokensList.map((_, i) => {
+          if (i !== opts.tokenIndex) return '0';
+          const tokenAmount = this.exactBPTInForTokenOut(
+            this.calc.bptBalance,
+            opts.tokenIndex
+          ).toString();
+          return formatUnits(
+            tokenAmount,
+            this.calc.poolTokenDecimals[opts.tokenIndex]
+          ).toString();
+        });
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      }
 
-    //   return bnum(bptAmount)
-    //     .div(bptZeroPriceImpact)
-    //     .minus(1);
-    // }
+      return bnum(bptAmount)
+        .div(bptZeroPriceImpact)
+        .minus(1);
+    }
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
@@ -149,19 +147,20 @@ export default class Stable {
     );
   }
 
-  // public bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
-  //   const denormAmounts = this.calc.denormAmounts(
-  //     tokenAmounts,
-  //     this.calc.poolTokenDecimals
-  //   );
-  //   const amounts = denormAmounts.map(a => bnum(a.toString()));
+  public bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
+    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const denormAmounts = this.calc.denormAmounts(
+      tokenAmounts,
+      this.calc.poolTokenDecimals
+    );
+    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
-  //   return _bptForTokensZeroPriceImpact(
-  //     this.calc.poolTokenBalances.map(b => bnum(b.toString())),
-  //     this.calc.poolTokenDecimals,
-  //     this.calc.poolTokenWeights.map(w => bnum(w.toString())),
-  //     amounts,
-  //     bnum(this.calc.poolTotalSupply.toString())
-  //   );
-  // }
+    return _bptForTokensZeroPriceImpact(
+      this.calc.poolTokenBalances.map(b => bnum(b.toString())),
+      this.calc.poolTokenDecimals,
+      amounts,
+      bnum(this.calc.poolTotalSupply.toString()),
+      amp
+    );
+  }
 }
