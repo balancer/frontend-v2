@@ -27,7 +27,7 @@ export default class JoinParams {
     const parsedBptOut = parseUnits(
       bptOut,
       this.exchange.pool.onchain.decimals
-    ).toString();
+    );
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
 
     return [
@@ -53,16 +53,14 @@ export default class JoinParams {
     });
   }
 
-  private txData(
-    amountsIn: BigNumberish[],
-    bptAmountOut: BigNumberish
-  ): string {
+  private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {
     if (this.exchange.pool.onchain.totalSupply === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
       return this.dataEncodeFn({
+        kind: 'ExactTokensInForBPTOut',
         amountsIn,
-        bptAmountOut
+        minimumBPT
       });
     }
   }
