@@ -52,7 +52,7 @@ export default defineComponent({
 <style scoped>
 .trade-container {
   @apply max-w-full mx-auto mt-2 xs:mt-8;
-  max-width: 420px;
+  max-width: 450px;
 }
 
 @media (min-height: 840px) {
