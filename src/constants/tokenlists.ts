@@ -43,7 +43,9 @@ type TokenLists = {
   All: string[];
   Balancer: {
     All: string[];
+    // Compliant list for exchange
     Default: string;
+    // Extended list to include LBP tokens
     Vetted: string;
   };
   Approved: string[];
@@ -71,13 +73,6 @@ const processTokenLists = (config: TokenListConfig): TokenLists => {
   };
 };
 
-const FULL_TOKEN_LISTS = processTokenLists(TOKEN_LISTS_MAP[env.NETWORK]);
+const TOKEN_LISTS = processTokenLists(TOKEN_LISTS_MAP[env.NETWORK]);
 
-// Compliant list for exchange
-export const TOKEN_LIST_DEFAULT = FULL_TOKEN_LISTS.Balancer.Default;
-// Extended list to include LBP tokens
-export const VETTED_TOKEN_LIST = FULL_TOKEN_LISTS.Balancer.Vetted;
-
-export const TOKEN_LISTS = FULL_TOKEN_LISTS.Approved;
-
-export default FULL_TOKEN_LISTS;
+export default TOKEN_LISTS;

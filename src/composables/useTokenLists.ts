@@ -6,7 +6,7 @@ import { flatten, keyBy, orderBy, uniqBy } from 'lodash';
 import { getAddress } from '@ethersproject/address';
 
 import QUERY_KEYS from '@/constants/queryKeys';
-import { TOKEN_LISTS } from '@/constants/tokenlists';
+import TOKEN_LISTS from '@/constants/tokenlists';
 
 import { getTokensListURL, loadTokenlist } from '@/lib/utils/tokenlists';
 import { lsGet, lsSet } from '@/lib/utils';
@@ -42,7 +42,7 @@ const loadAllTokenLists = async () => {
   // retrieve what we can
   return (
     await Promise.allSettled(
-      TOKEN_LISTS.map(async listURI => {
+      TOKEN_LISTS.Approved.map(async listURI => {
         const tokenList = (await loadTokenlist(listURI)) as Omit<
           TokenList,
           'tokenListsURL'

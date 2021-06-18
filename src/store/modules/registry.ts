@@ -2,19 +2,14 @@ import { formatUnits } from '@ethersproject/units';
 import { getAddress, isAddress } from '@ethersproject/address';
 import orderBy from 'lodash/orderBy';
 import { loadTokenlist } from '@/lib/utils/tokenlists';
-import {
-  ETHER,
-  TOKEN_LIST_DEFAULT,
-  VETTED_TOKEN_LIST,
-  TOKEN_LISTS
-} from '@/constants/tokenlists';
+import TOKEN_LISTS, { ETHER } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/lib/utils';
 import injected from '@/constants/injected.json';
 import { TokenList, TokenInfo } from '@/types/TokenList';
 import { getTokensMeta } from '@/lib/utils/balancer/tokens';
 
 const defaultActiveLists = {};
-defaultActiveLists[TOKEN_LIST_DEFAULT] = true;
+defaultActiveLists[TOKEN_LISTS.Balancer.Default] = true;
 
 interface RegistryState {
   activeLists: Record<string, boolean>;
@@ -26,7 +21,9 @@ interface RegistryState {
 
 const state: RegistryState = {
   activeLists: lsGet('tokenLists', defaultActiveLists),
-  tokenLists: Object.fromEntries(TOKEN_LISTS.map(tokenList => [tokenList, {}])),
+  tokenLists: Object.fromEntries(
+    TOKEN_LISTS.Approved.map(tokenList => [tokenList, {}])
+  ),
   eligibleList: {},
   injected,
   loading: true
@@ -171,19 +168,21 @@ const getters = {
 
 const actions = {
   async get({ dispatch, commit }) {
-    const loadAllLists = TOKEN_LISTS.map(url => dispatch('loadTokenlist', url));
+    const loadAllLists = TOKEN_LISTS.Approved.map(url =>
+      dispatch('loadTokenlist', url)
+    );
     const results = await Promise.all(loadAllLists.map(p => p.catch(e => e)));
     const validResults = results.filter(result => !(result instanceof Error));
     if (validResults.length === 0) {
       throw new Error('Failed to load any TokenLists');
     }
-    const eligibleList = await loadTokenlist(VETTED_TOKEN_LIST);
+    const eligibleList = await loadTokenlist(TOKEN_LISTS.Balancer.Vetted);
     commit('setEligibleList', eligibleList);
     commit('setLoading', false);
   },
 
   async loadTokenlist({ commit }, url) {
-    url = url || TOKEN_LIST_DEFAULT;
+    url = url || TOKEN_LISTS.Balancer.Default;
     try {
       const tokenList = await loadTokenlist(url);
       const tokenLists = clone(state.tokenLists);
@@ -202,7 +201,7 @@ const actions = {
     if (tokens.length === 0) return;
     const lists = {
       ...state.tokenLists,
-      [VETTED_TOKEN_LIST]: state.eligibleList
+      [TOKEN_LISTS.Balancer.Vetted]: state.eligibleList
     };
     const tokensMeta = await getTokensMeta(tokens, lists);
     const injected = clone(state.injected);
