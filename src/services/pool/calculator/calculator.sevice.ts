@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { parseUnits, formatUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
 import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -58,7 +57,9 @@ export default class CalculatorService {
     tokenAmounts: string[],
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): BigNumber {
-    if (this.isStablePool) return new BigNumber(0); // TODO
+    if (this.isStablePool) {
+      return this.stable.priceImpact(tokenAmounts, opts);
+    }
     return this.weighted.priceImpact(tokenAmounts, opts);
   }
 
@@ -74,7 +75,7 @@ export default class CalculatorService {
     tokenIndex: number
   ): FixedPointNumber {
     if (this.isStablePool) {
-      return fnum(0); // this.stable.exactBPTInForTokenOut(bptAmount, tokenIndex);
+      return this.stable.exactBPTInForTokenOut(bptAmount, tokenIndex);
     }
     return this.weighted.exactBPTInForTokenOut(bptAmount, tokenIndex);
   }
@@ -84,7 +85,7 @@ export default class CalculatorService {
     tokenIndex: number
   ): FixedPointNumber {
     if (this.isStablePool) {
-      return fnum(0); // this.stable.bptInForExactTokenOut(amount, tokenIndex);
+      return this.stable.bptInForExactTokenOut(amount, tokenIndex);
     }
     return this.weighted.bptInForExactTokenOut(amount, tokenIndex);
   }
