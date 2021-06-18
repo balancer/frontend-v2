@@ -1,7 +1,7 @@
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
 import { parseUnits, formatUnits } from '@ethersproject/units';
-import { bnum, scale } from '@/lib/utils';
+import { bnum, scale, scaleFp } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 
 import {
@@ -26,16 +26,97 @@ export default class Stable {
 
   public get scaledBalances(): FixedPointNumber[] {
     return this.calc.poolTokenBalances.map((balance, i) => {
-      const _balance = bnum(balance.toString());
+      const _balance = fnum(balance.toString());
       const decimals = 18 - this.calc.poolTokenDecimals[i];
-      return fnum(scale(_balance, decimals).toString());
+      return scaleFp(_balance, decimals);
     });
   }
 
   public get scaledPoolTotalSupply(): FixedPointNumber {
-    const totalSupply = bnum(this.calc.poolTotalSupply.toString());
+    const totalSupply = fnum(this.calc.poolTotalSupply.toString());
     const decimals = 18 - this.calc.poolDecimals;
-    return fnum(scale(totalSupply, decimals).toString());
+    return scaleFp(totalSupply, decimals);
+  }
+
+  public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
+    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const denormAmounts = this.calc.denormAmounts(
+      tokenAmounts,
+      this.calc.poolTokenDecimals.map(() => 18)
+    );
+    const amounts = denormAmounts.map(a => fnum(a.toString()));
+
+    const bptOut = _exactTokensInForBPTOut(
+      this.scaledBalances,
+      amp,
+      amounts,
+      this.scaledPoolTotalSupply,
+      fnum(this.calc.poolSwapFee.toString())
+    );
+
+    return scaleFp(bptOut, this.calc.poolDecimals - 18);
+  }
+
+  public bptInForExactTokensOut(tokenAmounts: string[]): FixedPointNumber {
+    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const denormAmounts = this.calc.denormAmounts(
+      tokenAmounts,
+      this.calc.poolTokenDecimals.map(() => 18)
+    );
+    const amounts = denormAmounts.map(a => fnum(a.toString()));
+
+    const bptIn = _bptInForExactTokensOut(
+      this.scaledBalances,
+      amp,
+      amounts,
+      this.scaledPoolTotalSupply,
+      fnum(this.calc.poolSwapFee.toString())
+    );
+
+    return scaleFp(bptIn, this.calc.poolDecimals - 18);
+  }
+
+  public bptInForExactTokenOut(
+    amount: string,
+    tokenIndex: number
+  ): FixedPointNumber {
+    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const amounts = this.calc.pool.tokenAddresses.map((address, i) => {
+      if (i === tokenIndex) return fnum(parseUnits(amount, 18).toString());
+      return fnum('0');
+    });
+
+    const bptIn = _bptInForExactTokensOut(
+      this.scaledBalances,
+      amp,
+      amounts,
+      this.scaledPoolTotalSupply,
+      fnum(this.calc.poolSwapFee.toString())
+    );
+
+    return scaleFp(bptIn, this.calc.poolDecimals - 18);
+  }
+
+  public exactBPTInForTokenOut(
+    bptAmount: string,
+    tokenIndex: number
+  ): FixedPointNumber {
+    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const bptAmountIn = fnum(parseUnits(bptAmount, 18).toString());
+
+    const tokenAmountOut = _exactBPTInForTokenOut(
+      tokenIndex,
+      this.scaledBalances,
+      amp,
+      bptAmountIn,
+      fnum(this.calc.poolTotalSupply.toString()),
+      fnum(this.calc.poolSwapFee.toString())
+    );
+
+    return scaleFp(
+      tokenAmountOut,
+      this.calc.poolTokenDecimals[tokenIndex] - 18
+    );
   }
 
   public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
@@ -75,76 +156,6 @@ export default class Stable {
         .div(bptZeroPriceImpact)
         .minus(1);
     }
-  }
-
-  public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
-    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
-    const denormAmounts = this.calc.denormAmounts(
-      tokenAmounts,
-      this.calc.poolTokenDecimals.map(() => 18)
-    );
-    const amounts = denormAmounts.map(a => fnum(a.toString()));
-
-    return _exactTokensInForBPTOut(
-      this.scaledBalances,
-      amp,
-      amounts,
-      this.scaledPoolTotalSupply,
-      fnum(this.calc.poolSwapFee.toString())
-    );
-  }
-
-  public bptInForExactTokensOut(tokenAmounts: string[]): FixedPointNumber {
-    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
-    const denormAmounts = this.calc.denormAmounts(
-      tokenAmounts,
-      this.calc.poolTokenDecimals.map(() => 18)
-    );
-    const amounts = denormAmounts.map(a => fnum(a.toString()));
-
-    return _bptInForExactTokensOut(
-      this.scaledBalances,
-      amp,
-      amounts,
-      this.scaledPoolTotalSupply,
-      fnum(this.calc.poolSwapFee.toString())
-    );
-  }
-
-  public bptInForExactTokenOut(
-    amount: string,
-    tokenIndex: number
-  ): FixedPointNumber {
-    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
-    const amounts = this.calc.pool.tokenAddresses.map((address, i) => {
-      if (i === tokenIndex) return fnum(parseUnits(amount, 18).toString());
-      return fnum('0');
-    });
-
-    return _bptInForExactTokensOut(
-      this.scaledBalances,
-      amp,
-      amounts,
-      this.scaledPoolTotalSupply,
-      fnum(this.calc.poolSwapFee.toString())
-    );
-  }
-
-  public exactBPTInForTokenOut(
-    bptAmount: string,
-    tokenIndex: number
-  ): FixedPointNumber {
-    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
-    const bptAmountIn = fnum(parseUnits(bptAmount, 18).toString());
-
-    return _exactBPTInForTokenOut(
-      tokenIndex,
-      this.scaledBalances,
-      amp,
-      bptAmountIn,
-      fnum(this.calc.poolTotalSupply.toString()),
-      fnum(this.calc.poolSwapFee.toString())
-    );
   }
 
   public bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
