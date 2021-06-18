@@ -86,15 +86,4 @@ export default defineComponent({
 .bal-popover-wrapper:hover {
   @apply visible opacity-100;
 }
-
-.bal-popover-activator .feather-settings {
-  @apply transition-all duration-200 ease-out;
-}
-
-.bal-popover-activator:hover .feather-settings {
-  transform: scale(1.2) rotate(-45deg);
-}
-.bal-popover-activator:hover .icon-container {
-  @apply text-blue-500;
-}
 </style>

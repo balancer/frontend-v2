@@ -1,0 +1,11 @@
+.icon-spin-anim .feather-settings {
+  @apply transition-all duration-200 ease-out;
+}
+
+.icon-spin-anim:hover .feather-settings {
+  transform: scale(1.2) rotate(-45deg);
+}
+
+.icon-spin-anim:hover .bal-icon {
+  @apply text-blue-500;
+}

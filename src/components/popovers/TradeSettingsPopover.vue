@@ -5,7 +5,7 @@
         circle
         color="white"
         size="sm"
-        class="mb-2 text-gray-500"
+        class="mb-2 text-gray-500 icon-spin-anim"
         @click="onActivatorClick"
       >
         <BalIcon name="settings" size="sm" />
