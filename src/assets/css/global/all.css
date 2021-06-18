@@ -19,7 +19,7 @@ body {
 }
 
 input {
-  caret-color: #ff00ff;
+  caret-color: theme('colors.pink.500');
 }
 
 #app {
