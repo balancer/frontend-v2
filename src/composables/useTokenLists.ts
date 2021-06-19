@@ -1,183 +1,91 @@
-import { computed, ref } from 'vue';
-import { useStore } from 'vuex';
-import { useQuery } from 'vue-query';
-import { flatten, keyBy, orderBy, uniqBy } from 'lodash';
-
-import { getAddress } from '@ethersproject/address';
-
-import QUERY_KEYS from '@/constants/queryKeys';
+import { ref, Ref, readonly, computed } from 'vue';
+import TokenListService from '@/services/token-list/token-list.service';
+import { TokenListDict } from '@/types/TokenList';
+import { pick } from 'lodash';
 import TOKEN_LISTS from '@/constants/tokenlists';
-
-import { getTokensListURL, loadTokenlist } from '@/lib/utils/tokenlists';
 import { lsGet, lsSet } from '@/lib/utils';
+import LS_KEYS from '@/constants/local-storage.keys';
 
-import useAccountBalances from './useAccountBalances';
+// SERVICES
+const tokenListService = new TokenListService();
 
-type TokenListItem = {
-  address: string;
-  chainId: number;
-  decimals: number;
-  logoURI: string;
-  name: string;
-  symbol: string;
-};
+// STATE
+const tokenLists = ref<TokenListDict>({});
+const toggled = ref<string[]>(
+  lsGet(LS_KEYS.TokenLists.Toggled, [TOKEN_LISTS.Balancer.Default])
+);
+const loading = ref(true);
+const failed = ref(false);
 
-type TokenList = {
-  keywords: string[];
-  logoURI: string;
-  name: string;
-  timestamp: string;
-  tokens: TokenListItem[];
-  version: {
-    major: number;
-    minor: number;
-    patch: number;
-  };
-  tokenListsURL: string;
-};
+// INIT STATE
+(async () => {
+  try {
+    tokenLists.value = await tokenListService.getAll();
+  } catch (error) {
+    failed.value = true;
+    console.error('Failed to load tokenlists', error);
+  } finally {
+    loading.value = false;
+  }
+})();
 
-const loadAllTokenLists = async () => {
-  // since a request to retrieve the list can fail
-  // it is best to use allSettled as we still want to
-  // retrieve what we can
-  return (
-    await Promise.allSettled(
-      TOKEN_LISTS.Approved.map(async listURI => {
-        const tokenList = (await loadTokenlist(listURI)) as Omit<
-          TokenList,
-          'tokenListsURL'
-        >;
-
-        return {
-          ...tokenList,
-          tokenListsURL: getTokensListURL(listURI)
-        };
-      })
-    )
-  )
-    .filter(result => result.status === 'fulfilled')
-    .map(result => (result as PromiseFulfilledResult<TokenList>).value);
-};
-
-type TokenListRequest = {
-  query?: string;
-  queryAddress?: string;
-};
-
-export default function useTokenLists(request?: TokenListRequest) {
-  const store = useStore();
-  const activeTokenLists = ref<string[]>(
-    lsGet('activeTokenLists', ['Balancer'])
+export default function useTokenLists() {
+  // COMPUTED
+  const defaultTokenList = computed(
+    () =>
+      pick(tokenLists.value, TOKEN_LISTS.Balancer.Default)[
+        TOKEN_LISTS.Balancer.Default
+      ]
   );
-  const prices = computed(() => store.state.market.prices);
-  const { balances } = useAccountBalances();
 
-  const queryKey = QUERY_KEYS.TokenLists;
-  const queryFn = loadAllTokenLists;
+  const balancerTokenLists = computed(() =>
+    pick(tokenLists.value, TOKEN_LISTS.Balancer.All)
+  );
 
-  const { data: lists, isLoading } = useQuery<TokenList[]>(queryKey, queryFn, {
-    refetchOnMount: false,
-    refetchOnWindowFocus: false
-  });
+  const vettedTokenList = computed(
+    () =>
+      pick(tokenLists.value, TOKEN_LISTS.Balancer.Vetted)[
+        TOKEN_LISTS.Balancer.Vetted
+      ]
+  );
 
-  const listDictionary = computed(() => keyBy(lists.value, 'name'));
-  const injectedTokens = computed(() => store.state.registry.injected);
+  const approvedTokenLists = computed(() =>
+    pick(tokenLists.value, TOKEN_LISTS.Approved)
+  );
 
-  const tokens = computed(() => {
-    const _tokens = uniqBy<TokenListItem>(
-      orderBy(
-        [
-          // get all the tokens from all the active lists
-          // get all tokens that are injected
-          // get the ETHER token ALWAYS
-          ...flatten([
-            ...Object.values(injectedTokens.value).map((t: any) => ({ ...t })),
-            ...activeTokenLists.value.map(
-              name => listDictionary.value[name]?.tokens
-            ),
-            store.getters['registry/getEther']()
-          ])
-            // invalid network tokens get filtered out
-            .filter(
-              token =>
-                token?.chainId === Number(process.env.VUE_APP_NETWORK || 1)
-            )
-            // populate token data into list of tokens
-            .map(token => {
-              const balance =
-                Number(
-                  (balances.value || {})[token.address.toLowerCase()]?.balance
-                ) || 0;
-              const price =
-                prices.value[token.address.toLowerCase()]?.price || 0;
-              const value = balance * price;
-              const price24HChange =
-                prices.value[token.address.toLowerCase()]?.price24HChange || 0;
-              const value24HChange = (value / 100) * price24HChange;
-              return {
-                ...token,
-                address: getAddress(token.address), // Enforce that we use checksummed addresses
-                value,
-                price,
-                price24HChange,
-                balance,
-                value24HChange
-              };
-            })
-        ],
-        ['value', 'balance'],
-        ['desc', 'desc']
-      ),
-      'address'
-    );
+  const toggledLists = computed(() => pick(tokenLists.value, toggled.value));
 
-    if (request?.queryAddress) {
-      const queryAddressLC = request?.queryAddress?.toLowerCase();
+  // METHODS
+  function toggleList(uri: string): void {
+    if (!TOKEN_LISTS.Approved.includes(uri)) return;
 
-      return _tokens.filter(
-        token => token.address?.toLowerCase() === queryAddressLC
-      );
-    }
-
-    // search functionality, this can be better
-    if (request?.query) {
-      const queryLC = request?.query?.toLowerCase();
-
-      return _tokens.filter(
-        token =>
-          token.name.toLowerCase().includes(queryLC) ||
-          token.symbol.toLowerCase().includes(queryLC)
-      );
-    }
-
-    return _tokens;
-  });
-
-  const tokenDictionary = computed(() => keyBy(tokens.value, 'address'));
-
-  const toggleActiveTokenList = (name: string) => {
-    if (activeTokenLists.value.includes(name)) {
-      activeTokenLists.value = activeTokenLists.value.filter(
-        listName => listName !== name
-      );
+    if (toggled.value.includes(uri)) {
+      toggled.value.splice(toggled.value.indexOf(uri), 1);
     } else {
-      activeTokenLists.value.push(name);
+      toggled.value.push(uri);
     }
-    lsSet('activeTokenLists', activeTokenLists.value);
-  };
 
-  const isActiveList = (name: string) => {
-    return activeTokenLists.value.includes(name);
-  };
+    lsSet(LS_KEYS.TokenLists.Toggled, toggled.value);
+  }
+
+  function isToggled(uri: string): boolean {
+    return toggled.value.includes(uri);
+  }
 
   return {
-    isLoading,
-    lists,
-    toggleActiveTokenList,
-    isActiveList,
-    tokens,
-    listDictionary,
-    tokenDictionary,
-    activeTokenLists
+    // state
+    loading: readonly(loading) as Readonly<Ref<boolean>>,
+    failed: readonly(failed) as Readonly<Ref<boolean>>,
+    all: readonly(tokenLists) as Readonly<Ref<TokenListDict>>,
+    // computed
+    defaultTokenList,
+    balancerTokenLists,
+    approvedTokenLists,
+    vettedTokenList,
+    toggledLists,
+    toggled,
+    // methods
+    toggleList,
+    isToggled
   };
 }

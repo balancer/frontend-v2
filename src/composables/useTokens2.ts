@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue';
-import useTokenLists2 from './useTokenLists2';
+import useTokenLists from './useTokenLists';
 import { getAddress } from '@ethersproject/address';
 import { TokenInfo } from '@/types/TokenList';
 import useConfig from './useConfig';
@@ -24,7 +24,7 @@ export default function useTokens2() {
     failed: tokenListsFailed,
     defaultTokenList: tokenList,
     all: allTokenLists
-  } = useTokenLists2();
+  } = useTokenLists();
 
   // COMPUTED
   /**

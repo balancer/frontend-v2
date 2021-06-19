@@ -25,9 +25,9 @@
           <div class="flex items-center ml-2">
             <span class="mr-1 ">
               <img
-                v-for="(tokenlist, i) in activeTokenLists"
+                v-for="(uri, i) in toggledTokenLists"
                 :key="`activeTokenListIcon-${i}`"
-                :src="_url(listDictionary[tokenlist]?.logoURI)"
+                :src="_url(approvedTokenLists[uri]?.logoURI)"
                 class="rounded-full inline-block bg-white shadow w-6 h-6"
               />
             </span>
@@ -48,15 +48,15 @@
       />
       <div>
         <div
-          v-if="Object.keys(tokenLists).length > 0"
+          v-if="Object.keys(tokenListUris).length > 0"
           class="h-96 overflow-y-scroll"
         >
           <TokenListsListItem
-            v-for="(tokenList, i) in tokenLists"
+            v-for="(uri, i) in tokenListUris"
             :key="i"
-            :isActive="isActiveList(tokenList.name)"
-            :tokenlist="tokenList"
-            @toggle="toggleActiveTokenList(tokenList.name)"
+            :isActive="isToggledList(uri)"
+            :tokenlist="approvedTokenLists[uri]"
+            @toggle="toggleList(uri)"
           />
         </div>
         <div
@@ -108,8 +108,8 @@ import { defineComponent, reactive, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
+import useTokens from '@/composables/useTokens';
 import useTokenLists from '@/composables/useTokenLists';
-// import useTokenLists2 from '@/composables/useTokenLists2';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
@@ -140,20 +140,39 @@ export default defineComponent({
       not: props.excludedTokens,
       queryAddress: ''
     });
+    const { allTokensIncludeEth } = useTokens();
     const {
-      lists: tokenLists,
-      toggleActiveTokenList,
-      isActiveList,
-      tokens,
-      listDictionary,
-      activeTokenLists
-    } = useTokenLists(data);
-    // const {
-    //   approvedTokenLists,
-    //   toggleList,
-    //   toggled: toggledTokenLists,
-    //   isToggled: isToggledList
-    // } = useTokenLists2();
+      approvedTokenLists,
+      toggleList,
+      toggled: toggledTokenLists,
+      isToggled: isToggledList
+    } = useTokenLists();
+
+    const tokens = computed(() => {
+      const allTokens = Object.values(allTokensIncludeEth.value);
+
+      if (data.queryAddress) {
+        const queryAddressLC = data.queryAddress?.toLowerCase();
+
+        return allTokens.filter(
+          token => token.address?.toLowerCase() === queryAddressLC
+        );
+      }
+
+      // search functionality, this can be better
+      if (data.query) {
+        const queryLC = data?.query?.toLowerCase();
+
+        return allTokens.filter(
+          token =>
+            token.name.toLowerCase().includes(queryLC) ||
+            token.symbol.toLowerCase().includes(queryLC)
+        );
+      }
+      return allTokens;
+    });
+
+    const tokenListUris = computed(() => Object.keys(approvedTokenLists.value));
 
     // COMPOSABLES
     const store = useStore();
@@ -212,18 +231,17 @@ export default defineComponent({
       // computed
       title,
       tokens,
-      tokenLists,
-      listDictionary,
-      activeTokenLists,
-
+      approvedTokenLists,
+      toggledTokenLists,
+      tokenListUris,
       // methods
       onTokenSearch,
       onSelectToken,
       onSelectList,
       onListExit,
       toggleSelectTokenList,
-      toggleActiveTokenList,
-      isActiveList
+      toggleList,
+      isToggledList
     };
   }
 });
