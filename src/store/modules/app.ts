@@ -4,7 +4,10 @@ import i18n from '@/plugins/i18n';
 import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { APP } from '@/constants/app';
 
-export type TradeInterface = 'gnosis' | 'balancer';
+export enum TradeInterface {
+  GNOSIS = 'gnosis',
+  BALANCER = 'balancer'
+}
 
 export interface AppState {
   loading: boolean;
@@ -14,6 +17,7 @@ export interface AppState {
   slippage: string;
   tradeLiquidity: LiquiditySelection;
   tradeInterface: TradeInterface;
+  transactionDeadline: number;
   selectedPoolTokens: string[];
 }
 
@@ -25,7 +29,10 @@ const state: AppState = {
   slippage: '0.01',
   tradeLiquidity: LiquiditySelection.Best,
   selectedPoolTokens: [],
-  tradeInterface: APP.IsGnosisIntegration ? 'gnosis' : 'balancer'
+  transactionDeadline: 20, // 20 minutes
+  tradeInterface: APP.IsGnosisIntegration
+    ? TradeInterface.GNOSIS
+    : TradeInterface.BALANCER
 };
 
 const actions = {
@@ -109,6 +116,13 @@ const mutations = {
     if (APP.IsGnosisIntegration) {
       state.tradeInterface = tradeInterface;
     }
+  },
+
+  setTransactionDeadline(
+    state: AppState,
+    transactionDeadline: AppState['transactionDeadline']
+  ) {
+    state.transactionDeadline = transactionDeadline;
   }
 };
 

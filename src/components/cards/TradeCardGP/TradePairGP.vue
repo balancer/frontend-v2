@@ -172,7 +172,7 @@ export default defineComponent({
       type: String,
       required: true
     },
-    isSell: {
+    exactIn: {
       type: Boolean,
       required: true
     },
@@ -186,7 +186,7 @@ export default defineComponent({
     'tokenInAmountChange',
     'tokenOutAddressChange',
     'tokenOutAmountChange',
-    'isSellChange',
+    'exactInChange',
     'change'
   ],
   setup(props, { emit }) {
@@ -198,7 +198,7 @@ export default defineComponent({
       tokenInAddressInput,
       tokenOutAmountInput,
       tokenOutAddressInput,
-      isSell
+      exactIn
     } = toRefs(props);
 
     const getTokens = (params = {}) =>
@@ -242,19 +242,19 @@ export default defineComponent({
     }
 
     function handleInAmountChange(value: string): void {
-      emit('isSellChange', true);
+      emit('exactInChange', true);
       emit('tokenInAmountChange', value);
       emit('change', value);
     }
 
     function handleOutAmountChange(value: string): void {
-      emit('isSellChange', false);
+      emit('exactInChange', false);
       emit('tokenOutAmountChange', value);
       emit('change', value);
     }
 
     function handleSwitchTokens(): void {
-      emit('isSellChange', !isSell.value);
+      emit('exactInChange', !exactIn.value);
       emit('tokenInAmountChange', tokenOutAmountInput.value);
       emit('tokenInAddressChange', tokenOutAddressInput.value);
       emit('tokenOutAmountChange', tokenInAmountInput.value);

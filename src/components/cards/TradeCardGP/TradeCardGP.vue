@@ -12,13 +12,13 @@
         :token-in-address-input="tokenInAddress"
         :token-out-amount-input="tokenOutAmount"
         :token-out-address-input="tokenOutAddress"
-        :is-sell="isSell"
+        :exact-in="exactIn"
         :price-impact="0"
         @token-in-amount-change="value => (tokenInAmount = value)"
         @token-in-address-change="value => (tokenInAddress = value)"
         @token-out-amount-change="value => (tokenOutAmount = value)"
         @token-out-address-change="value => (tokenOutAddress = value)"
-        @is-sell-change="value => (isSell = value)"
+        @exact-in-change="value => (exactIn = value)"
       />
       <BalAlert
         v-if="error"
@@ -32,7 +32,7 @@
         @actionClick="handleErrorButtonClick"
       />
       <BalBtn
-        :label="'Preview trade'"
+        :label="$t('previewTrade')"
         :disabled="tradeDisabled"
         :loading-label="$t('confirming')"
         color="gradient"
@@ -57,9 +57,11 @@
       :address-out="tokenOutAddress"
       :amount-out="tokenOutAmount"
       :trading="trading"
+      :order-id="orderId"
+      :formatted-fee-amount="formattedFeeAmount"
+      :exact-in="exactIn"
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"
-      :order-id="orderId"
     />
   </teleport>
 </template>
@@ -103,8 +105,8 @@ import {
   isOrderFinalized,
   normalizeTokenAddress
 } from '@/services/gnosis/utils';
+import { bnum } from '@/lib/utils';
 
-const DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES = 20 * 60;
 // TODO: get app id
 const GNOSIS_APP_ID = 1;
 
@@ -121,11 +123,12 @@ export default defineComponent({
   setup() {
     const highPiAccepted = ref(false);
     const priceImpact = ref(0);
-    const isSell = ref(true);
+    const exactIn = ref(true);
     const feeQuote = ref<FeeInformation | null>(null);
     const feeExceedsPrice = ref(false);
     const orderId = ref('');
     const orderMetadata = ref<OrderMetaData | null>(null);
+    const updatingQuotes = ref(false);
     const store = useStore();
     const router = useRouter();
     const auth = useAuth();
@@ -137,6 +140,9 @@ export default defineComponent({
       store.getters['registry/getTokens'](params);
     const getConfig = () => store.getters['web3/getConfig']();
     const tokens = computed(() => getTokens({ includeEther: true }));
+    const slippageBufferRate = computed(() =>
+      parseFloat(store.state.app.slippage)
+    );
 
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
@@ -175,6 +181,11 @@ export default defineComponent({
         tokens.value[tokenOutAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
     );
 
+    const feeAmount = computed(() => feeQuote.value?.amount || '0');
+    const formattedFeeAmount = computed(() =>
+      formatUnits(feeAmount.value, tokenInDecimals.value)
+    );
+
     const tradeDisabled = computed(() => {
       if (
         errorMessage.value !== TradeValidation.VALID ||
@@ -204,8 +215,12 @@ export default defineComponent({
       return t('trade');
     });
 
+    const appTransactionDeadline = computed<number>(
+      () => store.state.app.transactionDeadline
+    );
+
     const orderKind = computed(
-      () => (isSell.value ? OrderKind.SELL : OrderKind.BUY) as OrderKind
+      () => (exactIn.value ? OrderKind.SELL : OrderKind.BUY) as OrderKind
     );
 
     const error = computed(() => {
@@ -271,18 +286,18 @@ export default defineComponent({
         const unsignedOrder: UnsignedOrder = {
           sellToken: normalizeTokenAddress(tokenInAddress.value),
           buyToken: normalizeTokenAddress(tokenOutAddress.value),
-          sellAmount: parseUnits(
-            tokenInAmount.value,
-            tokenInDecimals.value
-          ).toString(),
+          sellAmount: parseUnits(tokenInAmount.value, tokenInDecimals.value)
+            .sub(feeAmount.value)
+            .toString(),
           buyAmount: parseUnits(
-            tokenOutAmount.value,
+            bnum(tokenOutAmount.value)
+              .div(1 + slippageBufferRate.value)
+              .toString(),
             tokenOutDecimals.value
           ).toString(),
-          validTo: calculateValidTo(DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES),
-          // TODO: get app id
+          validTo: calculateValidTo(appTransactionDeadline.value),
           appData,
-          feeAmount: feeQuote.value?.amount || '0',
+          feeAmount: feeAmount.value,
           kind: orderKind.value,
           receiver: account.value,
           partiallyFillable: false // Always fill or kill
@@ -312,21 +327,21 @@ export default defineComponent({
     }
 
     async function updateQuotes() {
-      feeExceedsPrice.value = false;
+      const tokenAmount = exactIn.value ? tokenInAmount : tokenOutAmount;
+      const otherTokenAmount = exactIn.value ? tokenOutAmount : tokenInAmount;
 
-      const tokenAmount = isSell.value ? tokenInAmount : tokenOutAmount;
-      const otherTokenAmount = isSell.value ? tokenOutAmount : tokenInAmount;
-      const tokenDecimals = isSell.value
-        ? tokenInDecimals.value
-        : tokenOutDecimals.value;
+      if (tokenAmount.value !== '' && parseFloat(tokenAmount.value) > 0) {
+        updatingQuotes.value = true;
+        feeExceedsPrice.value = false;
 
-      const sellToken = tokenInAddress.value;
-      const buyToken = tokenOutAddress.value;
-      const kind = orderKind.value;
+        const tokenDecimals = exactIn.value
+          ? tokenInDecimals.value
+          : tokenOutDecimals.value;
 
-      let amountToExchange = parseUnits(tokenAmount.value, tokenDecimals);
-
-      if (parseFloat(tokenAmount.value) > 0) {
+        const sellToken = tokenInAddress.value;
+        const buyToken = tokenOutAddress.value;
+        const kind = orderKind.value;
+        let amountToExchange = parseUnits(tokenAmount.value, tokenDecimals);
         try {
           // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
           const feeQuoteResult = await gnosisOperator.getFeeQuote({
@@ -337,7 +352,7 @@ export default defineComponent({
           });
 
           if (feeQuoteResult != null) {
-            if (isSell.value) {
+            if (exactIn.value) {
               // deduct fee if its a sell order
               amountToExchange = amountToExchange.sub(feeQuoteResult.amount);
 
@@ -355,7 +370,7 @@ export default defineComponent({
                 feeQuote.value = feeQuoteResult;
 
                 otherTokenAmount.value = formatUnits(
-                  isSell.value
+                  exactIn.value
                     ? priceQuoteResult.amount
                     : // add the fee for buy orders
                       BigNumber.from(priceQuoteResult.amount)
@@ -369,6 +384,7 @@ export default defineComponent({
         } catch (e) {
           console.log('[Gnosis Quotes] Failed to update quotes', e);
         }
+        updatingQuotes.value = false;
       }
     }
 
@@ -381,14 +397,24 @@ export default defineComponent({
     });
 
     watch(tokenInAmount, () => {
-      updateQuotes();
+      if (tokenInAmount.value !== '') {
+        updateQuotes();
+      } else {
+        tokenOutAmount.value = '';
+      }
     });
 
     watch(tokenOutAmount, async () => {
-      updateQuotes();
+      if (tokenOutAmount.value !== '') {
+        updateQuotes();
+      } else {
+        tokenInAmount.value = '';
+      }
     });
 
     watch(blockNumber, async () => {
+      updateQuotes();
+
       if (orderId.value != '') {
         const order = await gnosisOperator.getOrder(orderId.value);
         if (isOrderFinalized(order)) {
@@ -404,6 +430,8 @@ export default defineComponent({
     populateInitialTokens();
 
     return {
+      updatingQuotes,
+      formattedFeeAmount,
       highPiAccepted,
       title,
       error,
@@ -419,7 +447,7 @@ export default defineComponent({
       isRequired,
       tradeDisabled,
       TradeSettingsContext,
-      isSell,
+      exactIn,
       trade,
       trading,
       orderId,
