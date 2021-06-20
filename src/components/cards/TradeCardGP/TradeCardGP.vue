@@ -2,7 +2,7 @@
   <BalCard class="relative">
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
-        <h4 class="font-bold">{{ title }} Gasless</h4>
+        <h4 class="font-bold">{{ title }}</h4>
         <TradeSettingsPopover :context="TradeSettingsContext.trade" />
       </div>
     </template>
@@ -212,7 +212,7 @@ export default defineComponent({
     const title = computed(() => {
       if (isWrap.value) return t('wrap');
       if (isUnwrap.value) return t('unwrap');
-      return t('trade');
+      return t('tradeGasless');
     });
 
     const appTransactionDeadline = computed<number>(

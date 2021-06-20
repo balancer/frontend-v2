@@ -220,6 +220,7 @@
     "totalValue": "Total value",
     "totalAPY": "Total APY",
     "trade": "Trade",
+    "tradeGasless": "Trade Gasless",
     "tradeEarns": "This trade earns you",
     "tradeLiquidity": "Trade liquidity",
     "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
