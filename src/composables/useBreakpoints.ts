@@ -8,6 +8,7 @@ export default function useBreakpoints() {
   onUnmounted(() => window.removeEventListener('resize', onWidthChange));
 
   const bp = computed(() => {
+    if (windowWidth.value < 440) return 'xs';
     if (windowWidth.value < 640) return 'sm';
     if (windowWidth.value < 748) return 'md';
     if (windowWidth.value < 1024) return 'lg';

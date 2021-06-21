@@ -89,7 +89,7 @@ export default defineComponent({
 }
 
 .modal-bg {
-  @apply absolute h-full w-full bg-black bg-opacity-50;
+  @apply absolute h-full w-full bg-black bg-opacity-80;
 }
 
 .modal-card {

@@ -1,5 +1,5 @@
 import Client from './client';
-import InfuraService from '@/services/infura/service';
+import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
 import PoolActivities from './entities/poolActivities';
@@ -9,15 +9,18 @@ const NETWORK = process.env.VUE_APP_NETWORK || '1';
 
 export default class Service {
   client: Client;
-  infuraService: InfuraService;
+  rpcProviderService: RpcProviderService;
   pools: Pools;
   poolShares: PoolShares;
   poolActivities: PoolActivities;
   poolSnapshots: PoolSnapshots;
 
-  constructor(client = new Client(), infuraService = new InfuraService()) {
+  constructor(
+    client = new Client(),
+    rpcProviderService = new RpcProviderService()
+  ) {
     this.client = client;
-    this.infuraService = infuraService;
+    this.rpcProviderService = rpcProviderService;
 
     // Init entities
     this.pools = new Pools(this);

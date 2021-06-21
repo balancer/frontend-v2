@@ -5,7 +5,7 @@
         circle
         color="white"
         size="sm"
-        class="mb-2 text-gray-500"
+        class="mb-2 text-gray-500 icon-spin-anim"
         @click="onActivatorClick"
       >
         <BalIcon name="settings" size="sm" />
@@ -119,7 +119,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorer } = useWeb3();
+    const { appNetwork, explorer } = useWeb3();
     const { trackGoal, Goals } = useFathom();
 
     // DATA
@@ -136,7 +136,8 @@ export default defineComponent({
       () => store.state.app.transactionDeadline
     );
     const hideLiquidity = computed(
-      () => context.value === TradeSettingsContext.invest
+      () =>
+        !appNetwork.supportsV1 || context.value === TradeSettingsContext.invest
     );
 
     // METHODS

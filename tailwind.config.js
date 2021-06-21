@@ -1,3 +1,4 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
 module.exports = {
   purge: {
     content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
@@ -30,21 +31,17 @@ module.exports = {
         '"Segoe UI Emoji"'
       ],
       display: [
-        'Utopia-Std-Display',
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"Segoe UI"',
-        'Helvetica',
-        'Arial',
-        'sans-serif',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"'
+        '"Tiempos Headline Medium"',
+        'Times',
+        '"Times New Roman"',
+        'serif'
       ]
     },
     boxShadow: {
       sm: '0 2px 4px 0 rgba(0,0,0,0.05)',
       DEFAULT: '0 2px 4px 0 rgba(0,0,0,0.03), 0 10px 20px 0 rgba(0,0,0,0.02)',
       lg: '0 2px 4px 0 rgba(0,0,0,0.03), 0 10px 40px 0 rgba(0,0,0,0.05)',
+      xl: '0 2px 4px 0 rgba(0,0,0,0.05), 0 0px 40px 0 rgba(0,0,0,0.1)',
       inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
       none: 'none'
     },
@@ -52,6 +49,10 @@ module.exports = {
       ...theme('colors'),
       DEFAULT: theme('colors.gray.100', 'currentColor')
     }),
+    screens: {
+      xs: '440px',
+      ...defaultTheme.screens
+    },
     extend: {
       colors: {
         gray: {

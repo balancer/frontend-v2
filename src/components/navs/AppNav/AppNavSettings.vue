@@ -103,7 +103,10 @@
       </div>
       <AppSlippageForm class="mt-1" />
     </div>
-    <div class="px-4 mt-6" v-if="appTradeInterface === TradeInterface.BALANCER">
+    <div
+      v-if="appTradeInterface === TradeInterface.BALANCER && !hideLiquidity"
+      class="px-4 mt-6"
+    >
       <div class="flex items-baseline">
         <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
@@ -179,7 +182,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { explorer } = useWeb3();
+    const { appNetwork, explorer } = useWeb3();
 
     // DATA
     const data = reactive({
@@ -200,6 +203,7 @@ export default defineComponent({
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
+    const hideLiquidity = computed(() => !appNetwork.supportsV1);
 
     const connectorName = computed(() =>
       getConnectorName(store.state.web3.connector)
@@ -245,6 +249,7 @@ export default defineComponent({
       appDarkMode,
       connectorName,
       connectorLogo,
+      hideLiquidity,
       // methods
       logout,
       setDarkMode,

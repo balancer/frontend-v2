@@ -5,7 +5,7 @@ import { loadTokenlist } from '@/lib/utils/tokenlists';
 import {
   ETHER,
   TOKEN_LIST_DEFAULT,
-  ELIGIBLE_TOKEN_LIST,
+  VETTED_TOKEN_LIST,
   TOKEN_LISTS
 } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/lib/utils';
@@ -177,7 +177,7 @@ const actions = {
     if (validResults.length === 0) {
       throw new Error('Failed to load any TokenLists');
     }
-    const eligibleList = await loadTokenlist(ELIGIBLE_TOKEN_LIST);
+    const eligibleList = await loadTokenlist(VETTED_TOKEN_LIST);
     commit('setEligibleList', eligibleList);
     commit('setLoading', false);
   },
@@ -202,7 +202,7 @@ const actions = {
     if (tokens.length === 0) return;
     const lists = {
       ...state.tokenLists,
-      [ELIGIBLE_TOKEN_LIST]: state.eligibleList
+      [VETTED_TOKEN_LIST]: state.eligibleList
     };
     const tokensMeta = await getTokensMeta(tokens, lists);
     const injected = clone(state.injected);
