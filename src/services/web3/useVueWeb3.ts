@@ -1,9 +1,11 @@
 import { getProfile } from '@/lib/utils/profile';
 import axios from 'axios';
-import { computed, inject, reactive, watch } from 'vue';
+import { computed, inject, reactive, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 import { Web3Provider } from '@ethersproject/providers';
+
+const isWalletSelectVisible = ref(false);
 
 export default function useVueWeb3() {
   const {
@@ -15,6 +17,21 @@ export default function useVueWeb3() {
     provider,
     walletState
   } = inject(Web3ProviderSymbol) as Web3Plugin;
+
+  // if the account ref has changed, we know that
+  // the user has successfully connected a wallet
+  watch(account, () => {
+    toggleWalletSelectModal(false);
+  });
+
+  // METHODS
+  const toggleWalletSelectModal = (value: boolean) => {
+    if (value !== undefined && typeof value === 'boolean') {
+      isWalletSelectVisible.value = value;
+      return;
+    }
+    isWalletSelectVisible.value = !isWalletSelectVisible.value;
+  };
 
   const isWalletReady = computed(() => walletState.value === 'connected');
 
@@ -63,6 +80,8 @@ export default function useVueWeb3() {
     connector,
     provider,
     walletState,
-    isWalletReady
+    isWalletReady,
+    toggleWalletSelectModal,
+    isWalletSelectVisible
   };
 }

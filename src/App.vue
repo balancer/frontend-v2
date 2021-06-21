@@ -7,6 +7,10 @@
       <router-view :key="$route.path" class="flex-auto" />
     </div>
     <VueQueryDevTools />
+    <WalletSelectModal
+      :isVisible="isWalletSelectVisible"
+      @close="toggleWalletSelectModal"
+    />
   </div>
 </template>
 
@@ -18,17 +22,21 @@ import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import InfuraService from '@/services/infura/service';
+import WalletSelectModal from '@/services/web3/components/WalletSelectModal.vue';
+import useVueWeb3 from './services/web3/useVueWeb3';
 
 export default defineComponent({
   components: {
     AppNav,
     AppHero,
-    VueQueryDevTools
+    VueQueryDevTools,
+    WalletSelectModal
   },
 
   setup() {
     // COMPOSABLES
     useWeb3Watchers();
+    const { isWalletSelectVisible } = useVueWeb3();
     const store = useStore();
 
     // SERVICES
@@ -57,6 +65,7 @@ export default defineComponent({
     return {
       // computed
       web3Modal,
+      isWalletSelectVisible,
       // methods
       onLogin,
       setAccountModal
