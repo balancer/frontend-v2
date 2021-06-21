@@ -119,12 +119,6 @@
           <BalIcon :name="'chevron-down'" :size="'sm'" class="text-blue-500" />
         </div>
       </template>
-      <template v-slot:info>
-        <div>
-          {{ $t('priceImpact') }}:
-          {{ fNum(priceImpact, 'percent') }}
-        </div>
-      </template>
     </BalTextInput>
   </div>
   <teleport to="#modal">
@@ -174,10 +168,6 @@ export default defineComponent({
     },
     exactIn: {
       type: Boolean,
-      required: true
-    },
-    priceImpact: {
-      type: Number,
       required: true
     }
   },

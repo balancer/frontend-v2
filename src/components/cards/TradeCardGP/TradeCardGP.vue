@@ -13,7 +13,6 @@
         :token-out-amount-input="tokenOutAmount"
         :token-out-address-input="tokenOutAddress"
         :exact-in="exactIn"
-        :price-impact="0"
         @token-in-amount-change="value => (tokenInAmount = value)"
         @token-in-address-change="value => (tokenInAddress = value)"
         @token-out-amount-change="value => (tokenOutAmount = value)"
@@ -122,7 +121,6 @@ export default defineComponent({
 
   setup() {
     const highPiAccepted = ref(false);
-    const priceImpact = ref(0);
     const exactIn = ref(true);
     const feeQuote = ref<FeeInformation | null>(null);
     const feeExceedsPrice = ref(false);
@@ -169,9 +167,6 @@ export default defineComponent({
       );
     });
 
-    const isHighPriceImpact = computed(() => {
-      return priceImpact.value >= 0.05 && !highPiAccepted.value;
-    });
     const tokenInDecimals = computed<number>(
       () =>
         tokens.value[tokenInAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
@@ -187,11 +182,7 @@ export default defineComponent({
     );
 
     const tradeDisabled = computed(() => {
-      if (
-        errorMessage.value !== TradeValidation.VALID ||
-        isHighPriceImpact.value ||
-        feeExceedsPrice.value
-      )
+      if (errorMessage.value !== TradeValidation.VALID || feeExceedsPrice.value)
         return true;
       return false;
     });
@@ -230,13 +221,6 @@ export default defineComponent({
           body: 'Fees exceeds from amount'
         };
       }
-      if (isHighPriceImpact.value) {
-        return {
-          header: t('highPriceImpact'),
-          body: t('highPriceImpactDetailed'),
-          label: t('accept')
-        };
-      }
       switch (errorMessage.value) {
         case TradeValidation.NO_ETHER:
           return {
@@ -259,9 +243,7 @@ export default defineComponent({
     });
 
     function handleErrorButtonClick() {
-      if (isHighPriceImpact.value) {
-        highPiAccepted.value = true;
-      }
+      console.log('TOOD: implement if needed');
     }
 
     async function populateInitialTokens(): Promise<void> {
