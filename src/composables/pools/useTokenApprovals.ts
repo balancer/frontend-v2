@@ -14,7 +14,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
   const approvedAll = ref(false);
   const { allTokens } = useTokens();
   const { txListener } = useNotify();
-  const { getRequiredAllowances } = useAllowances();
+  const { getRequiredAllowances, refetchAllowances } = useAllowances();
 
   const amounts = computed(() =>
     tokens.map((token, index) => {
@@ -45,7 +45,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
 
       txListener(txHashes, {
         onTxConfirmed: async () => {
-          await store.dispatch('account/getAllowances', { tokens });
+          await refetchAllowances.value();
           approving.value = false;
         },
         onTxCancel: () => {
