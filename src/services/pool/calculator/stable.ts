@@ -26,16 +26,22 @@ export default class Stable {
 
   public get scaledBalances(): FixedPointNumber[] {
     return this.calc.poolTokenBalances.map((balance, i) => {
-      const _balance = fnum(balance.toString());
-      const decimals = 18 - this.calc.poolTokenDecimals[i];
-      return scaleFp(_balance, decimals);
+      const normalizedBalance = formatUnits(
+        balance,
+        this.calc.poolTokenDecimals[i]
+      );
+      const scaledBalance = parseUnits(normalizedBalance, 18);
+      return fnum(scaledBalance.toString());
     });
   }
 
   public get scaledPoolTotalSupply(): FixedPointNumber {
-    const totalSupply = fnum(this.calc.poolTotalSupply.toString());
-    const decimals = 18 - this.calc.poolDecimals;
-    return scaleFp(totalSupply, decimals);
+    const normalizedSupply = formatUnits(
+      this.calc.poolTotalSupply,
+      this.calc.poolDecimals
+    );
+    const scaledSupply = parseUnits(normalizedSupply, 18);
+    return fnum(scaledSupply.toString());
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
@@ -109,14 +115,19 @@ export default class Stable {
       this.scaledBalances,
       amp,
       bptAmountIn,
-      fnum(this.calc.poolTotalSupply.toString()),
+      this.scaledPoolTotalSupply,
       fnum(this.calc.poolSwapFee.toString())
     );
 
-    return scaleFp(
-      tokenAmountOut,
-      this.calc.poolTokenDecimals[tokenIndex] - 18
+    const normalizedAmount = bnum(
+      formatUnits(tokenAmountOut.toString(), 18)
+    ).toFixed(this.calc.poolTokenDecimals[tokenIndex], BigNumber.ROUND_DOWN);
+    const scaledAmount = parseUnits(
+      normalizedAmount,
+      this.calc.poolTokenDecimals[tokenIndex]
     );
+
+    return fnum(scaledAmount.toString());
   }
 
   public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
