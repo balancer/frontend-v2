@@ -111,7 +111,7 @@ import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
 import useNotify from '@/composables/useNotify';
 
 // TODO: get app id
-const GNOSIS_APP_ID = 1;
+const GNOSIS_APP_ID = 2;
 
 const appData = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
 
