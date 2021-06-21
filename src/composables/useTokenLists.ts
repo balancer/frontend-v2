@@ -12,8 +12,9 @@ import { getTokensListURL, loadTokenlist } from '@/lib/utils/tokenlists';
 import { lsGet, lsSet } from '@/lib/utils';
 
 import useAccountBalances from './useAccountBalances';
+import { TokenMap } from '@/types';
 
-type TokenListItem = {
+export type TokenListItem = {
   address: string;
   chainId: number;
   decimals: number;
@@ -76,7 +77,9 @@ export default function useTokenLists(request?: TokenListRequest) {
   const queryKey = QUERY_KEYS.TokenLists;
   const queryFn = loadAllTokenLists;
 
-  const { data: lists, isLoading } = useQuery<TokenList[]>(queryKey, queryFn, {
+  const { data: lists, isLoading, refetch: refreshTokenLists } = useQuery<
+    TokenList[]
+  >(queryKey, queryFn, {
     refetchOnMount: false,
     refetchOnWindowFocus: false
   });
@@ -153,7 +156,9 @@ export default function useTokenLists(request?: TokenListRequest) {
     return _tokens;
   });
 
-  const tokenDictionary = computed(() => keyBy(tokens.value, 'address'));
+  const tokenDictionary = computed(
+    () => keyBy(tokens.value, 'address') as TokenMap
+  );
 
   const toggleActiveTokenList = (name: string) => {
     if (activeTokenLists.value.includes(name)) {
@@ -175,6 +180,7 @@ export default function useTokenLists(request?: TokenListRequest) {
     lists,
     toggleActiveTokenList,
     isActiveList,
+    refreshTokenLists,
     tokens,
     listDictionary,
     tokenDictionary,
