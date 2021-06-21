@@ -15,7 +15,6 @@ import {
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import { urlMap as subgraphUrlMap } from '@/services/balancer/subgraph/client';
 
-import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
 import useVueWeb3 from '@/services/web3/useVueWeb3';

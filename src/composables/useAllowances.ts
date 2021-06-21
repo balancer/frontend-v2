@@ -60,7 +60,9 @@ export default function useAllowances(payload?: UseAccountPayload) {
     })
   );
 
-  const isLoadingOrFetching = computed(() => isLoading.value || isFetching.value);
+  const isLoadingOrFetching = computed(
+    () => isLoading.value || isFetching.value
+  );
 
   const getRequiredAllowances = query => {
     const tokens = query.tokens;
