@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showContent" class="bal-modal" @click="hide" @keyup.esc="hide">
+  <div v-if="show" class="bal-modal" @click="hide" @keyup.esc="hide">
     <transition name="modal-bg" mode="out-in" appear>
       <div v-if="showContent" class="modal-bg" @click="hide" />
     </transition>
