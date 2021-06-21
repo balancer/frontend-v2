@@ -51,7 +51,7 @@
         :loading-label="$t('confirming')"
         color="gradient"
         block
-        @click.prevent="modalTradePreviewIsOpen = true"
+        @click.prevent="showTradePreviewModal"
       />
       <TradeRoute
         class="mt-5"
@@ -257,6 +257,10 @@ export default defineComponent({
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
+    function showTradePreviewModal() {
+      modalTradePreviewIsOpen.value = true;
+    }
+
     watch(getConfig, async () => {
       await initSor();
       await handleAmountChange();
@@ -305,7 +309,8 @@ export default defineComponent({
       isRequired,
       tradeDisabled,
       TradeSettingsContext,
-      poolsLoading
+      poolsLoading,
+      showTradePreviewModal
     };
   }
 });

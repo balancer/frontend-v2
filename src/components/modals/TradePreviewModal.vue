@@ -81,6 +81,7 @@ import { useStore } from 'vuex';
 import { ETHER } from '@/constants/tokenlists';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useTokenLists from '@/composables/useTokenLists';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -120,10 +121,8 @@ export default defineComponent({
 
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
     const getConfig = () => store.getters['web3/getConfig']();
-    const tokens = computed(() => getTokens({ includeEther: true }));
+    const { tokenDictionary: tokens } = useTokenLists();
 
     const isWrap = computed(() => {
       const config = getConfig();

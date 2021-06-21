@@ -4,14 +4,13 @@ import { useQuery } from 'vue-query';
 import { getAllowances } from '@/lib/utils/balancer/tokens';
 import getProvider from '@/lib/utils/provider';
 import useTokenLists from './useTokenLists';
-import { TokenMap } from '@/types';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, Ref, ref, watch } from 'vue';
 import { ETHER } from '@/constants/tokenlists';
 import { isAddress } from 'web3-utils';
 
 type UseAccountPayload = {
-  tokens?: string[];
-  dst?: string;
+  tokens?: Ref<string[]>;
+  dstList?: Ref<string[]>;
 };
 
 const dstAllowanceMap = ref({});
@@ -22,29 +21,41 @@ export default function useAllowances(payload?: UseAccountPayload) {
   const provider = getProvider(String(chainId.value));
   // filter out ether and any bad addresses
   const tokens = computed(() =>
-    (payload?.tokens || Object.keys(tokenDictionary.value)).filter(
+    (payload?.tokens?.value || Object.keys(tokenDictionary.value)).filter(
       t => t !== ETHER.address && isAddress(t)
     )
   );
-  const dst = computed(
-    () => payload?.dst || configs[String(chainId.value)].addresses.vault
+  const dstList = computed(() => [
+    ...(payload?.dstList?.value || []),
+    configs[String(chainId.value)].addresses.vault
+  ]);
+
+  watch(
+    () => payload?.tokens,
+    () => console.log('tokens changed', payload?.tokens)
   );
 
   const isQueryEnabled = computed(() => account && tokens.value.length > 0);
   const { data: allowances, isLoading } = useQuery(
-    reactive(['ALLOWANCES', { chainId, account, dst, tokens }]),
+    reactive(['ALLOWANCES', { chainId, account, dstList, tokens }]),
     () =>
-      getAllowances(
-        String(chainId.value),
-        provider,
-        account.value,
-        dst.value,
-        tokens.value
+      Promise.all(
+        dstList.value.map(async dst =>
+          getAllowances(
+            String(chainId.value),
+            provider,
+            account.value,
+            dst,
+            tokens.value
+          )
+        )
       ),
     reactive({
       enabled: isQueryEnabled,
       onSuccess: allowances => {
-        dstAllowanceMap.value[dst.value] = allowances;
+        allowances.forEach((allowance, i) => {
+          dstAllowanceMap.value[dstList.value[i]] = allowance;
+        });
       }
     })
   );
@@ -63,6 +74,7 @@ export default function useAllowances(payload?: UseAccountPayload) {
       return dstAllowanceMap.value[dst][token.toLowerCase()].lt(amount);
     });
 
+    console.log('reqallow', requiredAllowances);
     return requiredAllowances;
   };
   return {
