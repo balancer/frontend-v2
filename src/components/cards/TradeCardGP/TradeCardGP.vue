@@ -78,6 +78,8 @@ import useValidation, {
 } from '@/composables/trade/useValidation';
 import { ETHER } from '@/constants/tokenlists';
 
+import { scale } from '@/lib/utils';
+
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
 
 import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
@@ -105,6 +107,8 @@ import {
   normalizeTokenAddress
 } from '@/services/gnosis/utils';
 import { bnum } from '@/lib/utils';
+import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
+import useNotify from '@/composables/useNotify';
 
 // TODO: get app id
 const GNOSIS_APP_ID = 1;
@@ -127,10 +131,12 @@ export default defineComponent({
     const orderId = ref('');
     const orderMetadata = ref<OrderMetaData | null>(null);
     const updatingQuotes = ref(false);
+    const latestTxHash = ref('');
     const store = useStore();
     const router = useRouter();
     const auth = useAuth();
     const { account, blockNumber } = useWeb3();
+    const { txListener } = useNotify();
 
     const { t } = useI18n();
 
@@ -265,6 +271,37 @@ export default defineComponent({
 
     async function trade() {
       try {
+        const { chainId } = getConfig();
+        const tokenInAmountNumber = bnum(tokenInAmount.value);
+        const tokenInAmountScaled = scale(
+          tokenInAmountNumber,
+          tokenInDecimals.value
+        );
+
+        trading.value = true;
+
+        if (isWrap.value) {
+          try {
+            const tx = await wrap(chainId, auth.web3, tokenInAmountScaled);
+            console.log('Wrap tx', tx);
+            tradeTxListener(tx.hash);
+          } catch (e) {
+            console.log(e);
+            trading.value = false;
+          }
+          return;
+        } else if (isUnwrap.value) {
+          try {
+            const tx = await unwrap(chainId, auth.web3, tokenInAmountScaled);
+            console.log('Unwrap tx', tx);
+            tradeTxListener(tx.hash);
+          } catch (e) {
+            console.log(e);
+            trading.value = false;
+          }
+          return;
+        }
+
         const unsignedOrder: UnsignedOrder = {
           sellToken: normalizeTokenAddress(tokenInAddress.value),
           buyToken: normalizeTokenAddress(tokenOutAddress.value),
@@ -291,7 +328,6 @@ export default defineComponent({
           unsignedOrder,
           signer
         );
-        trading.value = true;
 
         // Call API
         orderId.value = await gnosisOperator.postSignedOrder({
@@ -305,7 +341,23 @@ export default defineComponent({
         });
       } catch (e) {
         console.log(e);
+        trading.value = false;
       }
+    }
+
+    function tradeTxListener(hash: string) {
+      txListener(hash, {
+        onTxConfirmed: () => {
+          trading.value = false;
+          latestTxHash.value = hash;
+        },
+        onTxCancel: () => {
+          trading.value = false;
+        },
+        onTxFailed: () => {
+          trading.value = false;
+        }
+      });
     }
 
     async function updateQuotes() {
@@ -407,6 +459,12 @@ export default defineComponent({
           orderId.value = '';
         }
       }
+    });
+
+    watch(latestTxHash, () => {
+      txHash.value = latestTxHash.value;
+      tradeSuccess.value = true;
+      modalTradePreviewIsOpen.value = false;
     });
 
     populateInitialTokens();

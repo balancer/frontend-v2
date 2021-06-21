@@ -22,7 +22,7 @@
         </div>
       </div>
       <div>
-        <div class="mt-6 mb-3 text-sm">
+        <div v-if="formattedFeeAmount > 0" class="mt-6 mb-3 text-sm">
           Fee: {{ fNum(formattedFeeAmount, 'token') }}
           {{ symbolIn }}
         </div>
