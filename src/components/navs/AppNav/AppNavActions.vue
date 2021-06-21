@@ -18,16 +18,10 @@
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
     </BalBtn>
   </div>
-  <teleport to="#modal">
-    <WalletSelectModal
-      :isVisible="isWalletSelectVisible"
-      @close="toggleWalletSelectModal"
-    />
-  </teleport>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent } from 'vue';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
 
@@ -38,7 +32,6 @@ import useNumbers from '@/composables/useNumbers';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
-import WalletSelectModal from '@/services/web3/components/WalletSelectModal.vue';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
@@ -46,8 +39,7 @@ export default defineComponent({
 
   components: {
     AppNavAccountBtn,
-    AppNavClaimBtn,
-    WalletSelectModal
+    AppNavClaimBtn
   },
 
   setup() {
@@ -56,23 +48,7 @@ export default defineComponent({
     const { profile, loading: web3Loading } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
-    const { connectWallet, account } = useVueWeb3();
-    const isWalletSelectVisible = ref(false);
-
-    // if the account ref has changed, we know that
-    // the user has successfully connected a wallet
-    watch(account, () => {
-      toggleWalletSelectModal(false);
-    });
-
-    // METHODS
-    const toggleWalletSelectModal = (value: boolean) => {
-      if (value !== undefined && typeof value === 'boolean') {
-        isWalletSelectVisible.value = value;
-        return;
-      }
-      isWalletSelectVisible.value = !isWalletSelectVisible.value;
-    };
+    const { connectWallet, account, toggleWalletSelectModal } = useVueWeb3();
 
     function onClickConnect() {
       trackGoal(Goals.ClickNavConnectWallet);
@@ -84,12 +60,11 @@ export default defineComponent({
       profile,
       web3Loading,
       bp,
-      isWalletSelectVisible,
       // methods
-      toggleWalletSelectModal,
       fNum,
       onClickConnect,
       connectWallet,
+      toggleWalletSelectModal,
       // constants
       EXTERNAL_LINKS
     };
