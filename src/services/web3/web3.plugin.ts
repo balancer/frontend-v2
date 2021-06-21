@@ -30,7 +30,7 @@ const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   walletconnect: WalletConnectConnector
 };
 
-type WalletState = 'connecting' | 'connected' | 'empty';
+type WalletState = 'connecting' | 'connected' | 'disconnected';
 type PluginState = {
   connector: any;
   walletState: WalletState;
@@ -44,7 +44,7 @@ export default {
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
       connector: null as any,
-      walletState: 'empty'
+      walletState: 'disconnected'
     });
 
     const account = computed(() => {
@@ -100,7 +100,7 @@ export default {
         pluginState.walletState = 'connected';
       } catch (err) {
         console.error(err);
-        pluginState.walletState = 'empty';
+        pluginState.walletState = 'disconnected';
       }
     };
 
@@ -113,6 +113,7 @@ export default {
       const connector = pluginState.connector as Connector;
       connector.handleDisconnect();
       pluginState.connector = null;
+      pluginState.walletState = 'disconnected';
       // using lsRemove will make make lsGet return an empty
       // object for these values when retrieved, ruining the
       // pre-connected wallet flow
