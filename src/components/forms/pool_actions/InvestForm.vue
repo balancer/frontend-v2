@@ -584,6 +584,10 @@ export default defineComponent({
             data.loading = false;
             await refetchBalances.value();
             setPropMax();
+            if (hasZeroBalance.value) {
+              data.investType = FormTypes.custom;
+              resetSlider();
+            }
           },
           onTxCancel: () => {
             data.loading = false;
