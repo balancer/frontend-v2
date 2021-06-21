@@ -307,9 +307,11 @@ export class SorManager {
 
     if (liquiditySelection === LiquiditySelection.V1) {
       console.log('[SorManager] V1 swap is best by manual choice.');
+      this.selectedPools = this.sorV1.onChainCache.pools;
       return v1return;
     } else if (liquiditySelection === LiquiditySelection.V2) {
       console.log('[SorManager] V2 swap is best by manual choice.');
+      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
       return v2return;
     }
 
@@ -383,9 +385,11 @@ export class SorManager {
 
     if (liquiditySelection === LiquiditySelection.V1) {
       console.log('[SorManager] V1 swap is best by manual choice.');
+      this.selectedPools = this.sorV1.onChainCache.pools;
       return v1return;
     } else if (liquiditySelection === LiquiditySelection.V2) {
       console.log('[SorManager] V2 swap is best by manual choice.');
+      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
       return v2return;
     }
 
