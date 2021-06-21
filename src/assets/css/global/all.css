@@ -1,5 +1,6 @@
 @import "./fonts.css";
 @import "./typography.css";
+@import "./animations.css";
 
 html,
 body {
@@ -16,6 +17,10 @@ body {
 
 * {
   outline: none !important;
+}
+
+input {
+  caret-color: theme('colors.pink.500');
 }
 
 #app {

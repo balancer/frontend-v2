@@ -232,7 +232,7 @@
     "withdrawalSettled": "あなたの撤退は解決しました",
     "withdrawalSuccess": "あなたの投資はこのプールから撤回されました、そして<br>基になるトークンがウォレットに追加されました。",
     "wrap": "ラップ",
-    "wrapInstruction": "ETHをWETHにラップする",
+    "wrapInstruction": "{0}をW{0}にラップする",
     "yearAbbrev": "y",
     "youDidIt": "できたね！",
     "yourTransactions": "このプールでのトランザクション"

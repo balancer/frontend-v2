@@ -1,5 +1,6 @@
 h1, h2 {
   @apply font-display;
+  font-weight: 600;
 }
 
 h3, h4, h5, h6 {
@@ -8,6 +9,6 @@ h3, h4, h5, h6 {
 
 h1 { @apply text-5xl; }
 h2 { @apply text-3xl font-bold; }
-h3 { @apply text-2xl font-medium;; }
+h3 { @apply text-2xl font-semibold; }
 h4 { @apply text-xl font-medium;; }
 h5 { @apply text-lg font-medium;; }

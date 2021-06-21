@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -25,6 +25,7 @@
     "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#john/temp-stable-pool-subgraph-bug-fix",
     "@ensdomains/content-hash": "^2.5.3",
     "@ethersproject/abi": "^5.0.1",
+    "@ethersproject/abstract-signer": "^5.3.0",
     "@ethersproject/address": "^5.0.1",
     "@ethersproject/bignumber": "^5.2.0",
     "@ethersproject/bytes": "^5.0.5",
@@ -35,6 +36,7 @@
     "@ethersproject/strings": "^5.0.5",
     "@ethersproject/units": "^5.0.1",
     "@ethersproject/wallet": "^5.0.1",
+    "@gnosis.pm/gp-v2-contracts": "^0.0.1-alpha.19",
     "@popperjs/core": "^2.9.2",
     "@portis/web3": "^3.0.3",
     "@sentry/browser": "^6.3.2",
@@ -95,7 +97,7 @@
     "@storybook/vue3": "^6.2.8",
     "@types/jest": "^24.0.19",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^14.0.13",
+    "@types/node": "^14.17.1",
     "@types/numeral": "^2.0.1",
     "@types/parse-filepath": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",

@@ -232,7 +232,7 @@
     "withdrawalSettled": "출금이 해결되었습니다.",
     "withdrawalSuccess": "귀하의 투자는이 풀에서 철회되었으며<br> 이제 기본 토큰이 지갑에 있습니다.",
     "wrap": "싸다",
-    "wrapInstruction": "ETH를 WETH로 래핑",
+    "wrapInstruction": "{0}를 W{0}로 래핑",
     "yearAbbrev": "와이",
     "youDidIt": "훌륭해!",
     "yourTransactions": "이 풀의 거래"
