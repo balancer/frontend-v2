@@ -23,7 +23,14 @@ export default function useAccountBalances() {
   );
 
   // TODO separate this out
-  const { data, error, isLoading, isIdle, isError } = useQuery(
+  const {
+    data,
+    error,
+    isLoading,
+    isIdle,
+    isError,
+    refetch: refetchBalances
+  } = useQuery(
     reactive(QUERY_KEYS.Balances.All(account, chainId)),
     () => {
       return Promise.all([
@@ -79,6 +86,7 @@ export default function useAccountBalances() {
     error,
     isLoading,
     isIdle,
-    isError
+    isError,
+    refetchBalances
   };
 }
