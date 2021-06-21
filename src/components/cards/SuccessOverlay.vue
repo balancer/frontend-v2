@@ -15,7 +15,7 @@
       <div class="grid grid-cols-2 gap-4 mt-4 w-full">
         <BalBtn
           tag="a"
-          :href="explorer.txLink(txHash)"
+          :href="explorerLink"
           target="_blank"
           rel="noreferrer"
           flat
@@ -31,7 +31,6 @@
 </template>
 
 <script lang="ts">
-import useWeb3 from '@/composables/useWeb3';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -43,13 +42,7 @@ export default defineComponent({
     title: { type: String, required: true },
     description: { type: String, required: true },
     closeLabel: { type: String, required: true },
-    txHash: { type: String, required: true }
-  },
-
-  setup() {
-    const { explorer } = useWeb3();
-
-    return { explorer };
+    explorerLink: { type: String, required: true }
   }
 });
 </script>

@@ -44,7 +44,7 @@
       :title="$t('tradeSettled')"
       :description="$t('tradeSuccess')"
       :closeLabel="$t('close')"
-      :txHash="txHash"
+      :explorerLink="explorerLink"
       @close="onSuccessOverlayClose"
     />
   </BalCard>
@@ -66,49 +66,50 @@
 </template>
 
 <script lang="ts">
-import { isRequired } from '@/lib/utils/validations';
 import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { isAddress, getAddress } from '@ethersproject/address';
 
-import useGnosisProtocol from '@/composables/useGnosisProtocol';
-import useValidation, {
-  TradeValidation
-} from '@/composables/trade/useValidation';
-import { ETHER } from '@/constants/tokenlists';
-
-import { scale } from '@/lib/utils';
-
-import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-
-import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
-import TradeSettingsPopover, {
-  TradeSettingsContext
-} from '@/components/popovers/TradeSettingsPopover.vue';
 import { useI18n } from 'vue-i18n';
-
-import TradePairGP from './TradePairGP.vue';
+import { isAddress, getAddress } from '@ethersproject/address';
 import { formatUnits, parseUnits } from '@ethersproject/units';
-import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
-import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
 import { BigNumber } from '@ethersproject/bignumber';
-import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+
+import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
 import {
   signOrder,
   UnsignedOrder,
   calculateValidTo
 } from '@/services/gnosis/signing';
-import useWeb3 from '@/composables/useWeb3';
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
-import useAuth from '@/composables/useAuth';
 import {
   isOrderFinalized,
   normalizeTokenAddress
 } from '@/services/gnosis/utils';
-import { bnum } from '@/lib/utils';
-import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
+
 import useNotify from '@/composables/useNotify';
+import useAuth from '@/composables/useAuth';
+import useGnosisProtocol from '@/composables/useGnosisProtocol';
+import useValidation, {
+  TradeValidation
+} from '@/composables/trade/useValidation';
+import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
+import useWeb3 from '@/composables/useWeb3';
+import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+
+import { ETHER } from '@/constants/tokenlists';
+import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
+
+import { bnum, scale } from '@/lib/utils';
+import { isRequired } from '@/lib/utils/validations';
+import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
+
+import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
+import TradeSettingsPopover, {
+  TradeSettingsContext
+} from '@/components/popovers/TradeSettingsPopover.vue';
+
+import TradePairGP from './TradePairGP.vue';
 
 // TODO: get app id
 const GNOSIS_APP_ID = 2;
@@ -124,7 +125,16 @@ export default defineComponent({
   },
 
   setup() {
-    const highPiAccepted = ref(false);
+    // COMPOSABLES
+    const store = useStore();
+    const router = useRouter();
+    const auth = useAuth();
+    const { account, blockNumber, explorer } = useWeb3();
+    const { txListener } = useNotify();
+    const { t } = useI18n();
+    const { gnosisOperator, gnosisExplorer } = useGnosisProtocol();
+
+    // DATA
     const exactIn = ref(true);
     const feeQuote = ref<FeeInformation | null>(null);
     const feeExceedsPrice = ref(false);
@@ -132,14 +142,16 @@ export default defineComponent({
     const orderMetadata = ref<OrderMetaData | null>(null);
     const updatingQuotes = ref(false);
     const latestTxHash = ref('');
-    const store = useStore();
-    const router = useRouter();
-    const auth = useAuth();
-    const { account, blockNumber } = useWeb3();
-    const { txListener } = useNotify();
+    const txHash = ref('');
+    const tokenInAddress = ref('');
+    const tokenInAmount = ref('');
+    const tokenOutAddress = ref('');
+    const tokenOutAmount = ref('');
+    const tradeSuccess = ref(false);
+    const trading = ref(false);
+    const modalTradePreviewIsOpen = ref(false);
 
-    const { t } = useI18n();
-
+    // COMPUTED
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
     const getConfig = () => store.getters['web3/getConfig']();
@@ -147,15 +159,6 @@ export default defineComponent({
     const slippageBufferRate = computed(() =>
       parseFloat(store.state.app.slippage)
     );
-
-    const tokenInAddress = ref('');
-    const tokenInAmount = ref('');
-    const tokenOutAddress = ref('');
-    const tokenOutAmount = ref('');
-    const tradeSuccess = ref(false);
-    const trading = ref(false);
-    const txHash = ref('');
-    const modalTradePreviewIsOpen = ref(false);
 
     const isWrap = computed(() => {
       const config = getConfig();
@@ -182,6 +185,12 @@ export default defineComponent({
         tokens.value[tokenOutAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
     );
 
+    const explorerLink = computed(() =>
+      orderId.value != ''
+        ? gnosisExplorer.orderLink(orderId.value)
+        : explorer.txLink(txHash.value)
+    );
+
     const feeAmount = computed(() => feeQuote.value?.amount || '0');
     const formattedFeeAmount = computed(() =>
       formatUnits(feeAmount.value, tokenInDecimals.value)
@@ -193,10 +202,7 @@ export default defineComponent({
       return false;
     });
 
-    // COMPOSABLES
     useTokenApprovalGP(tokenInAddress, tokenInAmount, tokens);
-
-    const { gnosisOperator } = useGnosisProtocol();
 
     const { errorMessage } = useValidation(
       tokenInAddress,
@@ -248,6 +254,7 @@ export default defineComponent({
       }
     });
 
+    // METHODS
     function handleErrorButtonClick() {
       console.log('TOOD: implement if needed');
     }
@@ -267,6 +274,8 @@ export default defineComponent({
     function onSuccessOverlayClose() {
       tradeSuccess.value = false;
       orderMetadata.value = null;
+      txHash.value = '';
+      orderId.value = '';
     }
 
     async function trade() {
@@ -422,12 +431,17 @@ export default defineComponent({
       }
     }
 
+    // WATCHERS
     watch(tokenInAddress, async () => {
       store.commit('trade/setInputAsset', tokenInAddress.value);
+      feeQuote.value = null;
+      updateQuotes();
     });
 
     watch(tokenOutAddress, async () => {
       store.commit('trade/setOutputAsset', tokenOutAddress.value);
+      feeQuote.value = null;
+      updateQuotes();
     });
 
     watch(tokenInAmount, () => {
@@ -456,7 +470,6 @@ export default defineComponent({
           trading.value = false;
           tradeSuccess.value = true;
           modalTradePreviewIsOpen.value = false;
-          orderId.value = '';
         }
       }
     });
@@ -467,30 +480,38 @@ export default defineComponent({
       modalTradePreviewIsOpen.value = false;
     });
 
+    // INIT
     populateInitialTokens();
 
     return {
-      updatingQuotes,
-      formattedFeeAmount,
-      highPiAccepted,
-      title,
-      error,
-      handleErrorButtonClick,
+      // context
+      TradeSettingsContext,
+
+      // data
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      errorMessage,
       txHash,
       modalTradePreviewIsOpen,
-      tradeSuccess,
+      exactIn,
+      orderId,
+
+      // computed
+      explorerLink,
+      formattedFeeAmount,
+      title,
+      error,
+      errorMessage,
       isRequired,
       tradeDisabled,
-      TradeSettingsContext,
-      exactIn,
-      trade,
       trading,
-      orderId,
+      tradeSuccess,
+
+      // methods
+      handleErrorButtonClick,
+      updatingQuotes,
+      trade,
       onSuccessOverlayClose
     };
   }
