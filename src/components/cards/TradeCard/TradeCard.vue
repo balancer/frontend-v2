@@ -39,7 +39,7 @@
         @actionClick="handleErrorButtonClick"
       />
       <BalBtn
-        v-if="poolsLoading"
+        v-if="poolsLoading || isLoadingApprovals"
         :loading="true"
         :loading-label="$t('loading')"
         block
@@ -111,6 +111,7 @@ import TradeSettingsPopover, {
 import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
 import useTokenLists from '@/composables/useTokenLists';
+import useAccountBalances from '@/composables/useAccountBalances';
 
 export default defineComponent({
   components: {
@@ -128,10 +129,7 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
 
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
     const getConfig = () => store.getters['web3/getConfig']();
-    const tokens = computed(() => getTokens({ includeEther: true }));
     const { tokenDictionary } = useTokenLists();
 
     const tokenInAddress = ref('');
@@ -169,7 +167,7 @@ export default defineComponent({
     });
 
     // COMPOSABLES
-    const { allowanceState } = useTokenApproval(
+    const { allowanceState, isLoading: isLoadingApprovals } = useTokenApproval(
       tokenInAddress,
       tokenInAmount,
       tokenDictionary
@@ -310,7 +308,8 @@ export default defineComponent({
       tradeDisabled,
       TradeSettingsContext,
       poolsLoading,
-      showTradePreviewModal
+      showTradePreviewModal,
+      isLoadingApprovals
     };
   }
 });

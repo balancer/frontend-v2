@@ -1,5 +1,4 @@
 import { useStore } from 'vuex';
-import useAuth from '@/composables/useAuth';
 import { computed, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
@@ -20,7 +19,10 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   const { config } = store.state.web3;
   const dstList = computed(() => [config.addresses.exchangeProxy]);
   const allowanceTokens = computed(() => [tokenInAddress.value]);
-  const { getRequiredAllowances } = useAllowances({
+  const {
+    getRequiredAllowances,
+    isLoading: isLoadingAllowances
+  } = useAllowances({
     dstList,
     tokens: allowanceTokens
   });
@@ -116,6 +118,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     approving,
     approveV1,
     approveV2,
-    allowanceState
+    allowanceState,
+    isLoading: isLoadingAllowances
   };
 }

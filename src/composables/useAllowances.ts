@@ -36,7 +36,7 @@ export default function useAllowances(payload?: UseAccountPayload) {
   );
 
   const isQueryEnabled = computed(() => account && tokens.value.length > 0);
-  const { data: allowances, isLoading } = useQuery(
+  const { data: allowances, isLoading, isFetching } = useQuery(
     reactive(['ALLOWANCES', { chainId, account, dstList, tokens }]),
     () =>
       Promise.all(
@@ -60,6 +60,8 @@ export default function useAllowances(payload?: UseAccountPayload) {
     })
   );
 
+  const isLoadingOrFetching = computed(() => isLoading.value || isFetching.value);
+
   const getRequiredAllowances = query => {
     const tokens = query.tokens;
     const amounts = query.amounts;
@@ -77,9 +79,10 @@ export default function useAllowances(payload?: UseAccountPayload) {
     console.log('reqallow', requiredAllowances);
     return requiredAllowances;
   };
+
   return {
     allowances,
     getRequiredAllowances,
-    isLoading
+    isLoading: isLoadingOrFetching
   };
 }

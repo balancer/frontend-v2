@@ -19,6 +19,7 @@ import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useAccountBalances from '../useAccountBalances';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = 4;
@@ -65,11 +66,11 @@ export default function useSor(
 
   // COMPOSABLES
   const store = useStore();
-  const auth = useAuth();
   const { txListener } = useNotify();
   const { trackGoal, Goals } = useFathom();
   const { getProvider: getWeb3Provider } = useVueWeb3();
   const provider = computed(() => getWeb3Provider());
+  const { refetchBalances } = useAccountBalances();
 
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
@@ -278,10 +279,11 @@ export default function useSor(
 
   function tradeTxListener(hash: string) {
     txListener(hash, {
-      onTxConfirmed: () => {
+      onTxConfirmed: async () => {
         trading.value = false;
         latestTxHash.value = hash;
         trackGoal(Goals.Swapped);
+        await refetchBalances.value();
       },
       onTxCancel: () => {
         trading.value = false;
