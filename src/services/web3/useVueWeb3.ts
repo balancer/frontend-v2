@@ -17,6 +17,7 @@ export default function useVueWeb3() {
     provider,
     walletState
   } = inject(Web3ProviderSymbol) as Web3Plugin;
+  const appChainId = process.env.VUE_APP_NETWORK || '1';
 
   // if the account ref has changed, we know that
   // the user has successfully connected a wallet
@@ -82,6 +83,7 @@ export default function useVueWeb3() {
     walletState,
     isWalletReady,
     toggleWalletSelectModal,
-    isWalletSelectVisible
+    isWalletSelectVisible,
+    appChainId
   };
 }

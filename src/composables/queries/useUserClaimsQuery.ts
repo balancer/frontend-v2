@@ -17,6 +17,8 @@ import {
 } from '@/services/claim';
 
 import { Claim } from '@/types';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import { NetworkId } from '@/constants/network';
 
 type UserClaimsQueryResponse = {
   pendingClaims: Claim[];
@@ -30,21 +32,24 @@ export default function useUserClaimsQuery(
   options: UseQueryOptions<UserClaimsQueryResponse> = {}
 ) {
   // COMPOSABLES
-  const { account, isConnected, appNetwork } = useWeb3();
-  const auth = useAuth();
+  const { account, isWalletReady, appChainId, getProvider } = useVueWeb3();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Claims.All(account));
 
   // COMPUTED
   const isQueryEnabled = computed(
-    () => isConnected.value && account.value != null
+    () => isWalletReady.value && account.value != null
   );
 
   // METHODS
   const queryFn = async () => {
     const [pendingClaims, currentRewardsEstimate] = await Promise.all([
-      getPendingClaims(appNetwork.id, auth.web3, account.value),
+      getPendingClaims(
+        Number(appChainId) as NetworkId,
+        getProvider(),
+        account.value
+      ),
       getCurrentRewardsEstimate(account.value)
     ]);
 
