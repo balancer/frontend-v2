@@ -163,10 +163,10 @@
 
     <div class="p-4">
       <BalBtn
-        v-if="!isAuthenticated"
+        v-if="!isWalletReady"
         :label="$t('connectWallet')"
         block
-        @click.prevent="connectWallet"
+        @click.prevent="toggleWalletSelectModal"
       />
       <template v-else>
         <div
@@ -270,6 +270,9 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useTokenLists from '@/composables/useTokenLists';
+import useAccountBalances from '@/composables/useAccountBalances';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -316,15 +319,20 @@ export default defineComponent({
     });
 
     // COMPOSABLES
-    const store = useStore();
-    const { isAuthenticated } = useAuth();
-    const { account, userNetwork } = useWeb3();
+    const {
+      isWalletReady,
+      account,
+      chainId,
+      toggleWalletSelectModal,
+      getProvider
+    } = useVueWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { txListener } = useNotify();
     const { minusSlippage } = useSlippage();
-    const { allTokens } = useTokens();
+    const { tokenDictionary } = useTokenLists();
     const { trackGoal, Goals } = useFathom();
+    const { refetchBalances } = useAccountBalances();
 
     const { amounts } = toRefs(data);
 
@@ -337,12 +345,17 @@ export default defineComponent({
 
     // SERVICES
     const poolExchange = computed(
-      () => new PoolExchange(props.pool, userNetwork.value.key, allTokens.value)
+      () =>
+        new PoolExchange(
+          props.pool,
+          String(chainId.value),
+          tokenDictionary.value
+        )
     );
 
     const poolCalculator = new PoolCalculator(
       props.pool,
-      allTokens.value,
+      tokenDictionary.value,
       'join'
     );
 
@@ -364,7 +377,7 @@ export default defineComponent({
 
     const balances = computed(() => {
       return props.pool.tokenAddresses.map(
-        token => allTokens.value[token].balance
+        token => tokenDictionary.value[token].balance
       );
     });
 
@@ -463,11 +476,13 @@ export default defineComponent({
 
     // METHODS
     function tokenBalance(index: number): string {
-      return allTokens.value[props.pool.tokenAddresses[index]]?.balance || '0';
+      return (
+        tokenDictionary.value[props.pool.tokenAddresses[index]]?.balance || '0'
+      );
     }
 
     function tokenDecimals(index) {
-      return allTokens.value[props.pool.tokenAddresses[index]].decimals;
+      return tokenDictionary.value[props.pool.tokenAddresses[index]].decimals;
     }
 
     function amountUSD(index) {
@@ -480,7 +495,7 @@ export default defineComponent({
     }
 
     function amountRules(index) {
-      return isAuthenticated.value
+      return isWalletReady.value
         ? [
             isPositive(),
             isLessThanOrEqualTo(
@@ -492,11 +507,7 @@ export default defineComponent({
     }
 
     function symbolFor(token) {
-      return allTokens.value[token]?.symbol || '';
-    }
-
-    function connectWallet() {
-      store.commit('web3/setAccountModal', true);
+      return tokenDictionary.value[token]?.symbol || '';
     }
 
     async function setPropMax() {
@@ -530,6 +541,7 @@ export default defineComponent({
     // Talk to Fernando to see if still needed
     async function calcMinBptOut(): Promise<void> {
       let { bptOut } = await poolExchange.value.queryJoin(
+        getProvider(),
         account.value,
         fullAmounts.value
       );
@@ -559,16 +571,19 @@ export default defineComponent({
         data.loading = true;
         await calcMinBptOut();
         const tx = await poolExchange.value.join(
+          getProvider(),
           account.value,
           fullAmounts.value,
           minBptOut.value
         );
         console.log('Receipt', tx);
         txListener(tx.hash, {
-          onTxConfirmed: (tx: TransactionData) => {
+          onTxConfirmed: async (tx: TransactionData) => {
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
+            await refetchBalances.value();
+            setPropMax();
           },
           onTxCancel: () => {
             data.loading = false;
@@ -583,7 +598,7 @@ export default defineComponent({
       }
     }
 
-    watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
+    watch(tokenDictionary, newTokens => poolCalculator.setAllTokens(newTokens));
 
     watch(
       () => props.pool.onchain.tokens,
@@ -622,7 +637,7 @@ export default defineComponent({
       }
     );
 
-    watch(isAuthenticated, isAuth => {
+    watch(isWalletReady, isAuth => {
       if (!isAuth) {
         data.amounts = [];
         data.propMax = [];
@@ -653,7 +668,7 @@ export default defineComponent({
       Goals,
       TOKENS,
       // computed
-      allTokens,
+      tokenDictionary,
       hasValidInputs,
       hasAmounts,
       approving,
@@ -663,8 +678,8 @@ export default defineComponent({
       tokenBalance,
       amountRules,
       total,
-      isAuthenticated,
-      connectWallet,
+      isWalletReady,
+      toggleWalletSelectModal,
       formatBalance,
       isProportional,
       propPercentage,
@@ -681,7 +696,8 @@ export default defineComponent({
       fNum,
       preventOverflow,
       trackGoal,
-      symbolFor
+      symbolFor,
+      console
     };
   }
 });

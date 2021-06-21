@@ -117,10 +117,10 @@
 
     <div class="p-4">
       <BalBtn
-        v-if="!isAuthenticated"
+        v-if="!isWalletReady"
         :label="$t('connectWallet')"
         block
-        @click.prevent="connectWallet"
+        @click.prevent="toggleWalletSelectModal"
       />
       <template v-else>
         <div
@@ -208,6 +208,9 @@ import FormTypeToggle from './shared/FormTypeToggle.vue';
 import useTokens from '@/composables/useTokens';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useTokenLists from '@/composables/useTokenLists';
+import useAccountBalances from '@/composables/useAccountBalances';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -243,26 +246,28 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { txListener } = useNotify();
-    const { isAuthenticated } = useAuth();
+    const { isWalletReady, toggleWalletSelectModal } = useVueWeb3();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
-    const { allTokens } = useTokens();
+    const { tokenDictionary } = useTokenLists();
+    const { refetchBalances } = useAccountBalances();
     const { trackGoal, Goals } = useFathom();
+    const { getProvider, account, chainId } = useVueWeb3();
 
     // SERVICES
     const poolExchange = computed(
       () =>
         new PoolExchange(
           props.pool,
-          store.state.web3.config.key,
-          allTokens.value
+          String(chainId.value),
+          tokenDictionary.value
         )
     );
 
     const poolCalculator = new PoolCalculator(
       props.pool,
-      allTokens.value,
+      tokenDictionary.value,
       'exit'
     );
 
@@ -289,6 +294,7 @@ export default defineComponent({
     });
 
     const propMaxUSD = computed(() => {
+      console.log('ropmax', data.propMax);
       const total = props.pool.tokenAddresses
         .map((token, i) => toFiat(Number(data.propMax[i]), token))
         .reduce((a, b) => a + b, 0);
@@ -313,7 +319,11 @@ export default defineComponent({
     });
 
     const bptBalance = computed(() => {
-      return allTokens.value[props.pool.address].balance;
+      console.log(
+        'tokendict',
+        tokenDictionary.value[props.pool.address].balance
+      );
+      return tokenDictionary.value[props.pool.address].balance;
     });
 
     function formatPropBalance(index) {
@@ -424,11 +434,11 @@ export default defineComponent({
 
     // METHODS
     function tokenDecimals(index) {
-      return allTokens.value[props.pool.tokenAddresses[index]].decimals;
+      return tokenDictionary.value[props.pool.tokenAddresses[index]].decimals;
     }
 
     function amountRules(index) {
-      if (!isAuthenticated.value || isProportional.value) return [isPositive()];
+      if (!isWalletReady.value || isProportional.value) return [isPositive()];
       return [
         isPositive(),
         isLessThanOrEqualTo(
@@ -438,13 +448,8 @@ export default defineComponent({
       ];
     }
 
-    function connectWallet() {
-      store.commit('web3/setAccountModal', true);
-    }
-
     function setPropMax() {
-      if (!isAuthenticated.value || Number(bptBalance.value) === 0) return;
-
+      if (!isWalletReady.value) return;
       const { send, receive } = poolCalculator.propAmountsGiven(
         bptBalance.value,
         0,
@@ -489,7 +494,8 @@ export default defineComponent({
     // Talk to Fernando to see if still needed
     async function calcBptIn() {
       const { bptIn: queryBptIn } = await poolExchange.value.queryExit(
-        store.state.web3.account,
+        getProvider(),
+        account.value,
         fullAmounts.value,
         bptBalance.value,
         exitTokenIndex.value,
@@ -520,7 +526,8 @@ export default defineComponent({
         data.loading = true;
         await calcBptIn();
         const tx = await poolExchange.value.exit(
-          store.state.web3.account,
+          getProvider(),
+          account.value,
           amountsOut.value,
           `${bptIn.value}`,
           exitTokenIndex.value,
@@ -528,10 +535,12 @@ export default defineComponent({
         );
         console.log('Receipt', tx);
         txListener(tx.hash, {
-          onTxConfirmed: (tx: TransactionData) => {
+          onTxConfirmed: async (tx: TransactionData) => {
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
+            await refetchBalances.value();
+            setPropMax();
           },
           onTxCancel: () => {
             data.loading = false;
@@ -583,10 +592,10 @@ export default defineComponent({
       }
     );
 
-    watch(allTokens, newTokens => poolCalculator.setAllTokens(newTokens));
+    watch(tokenDictionary, newTokens => poolCalculator.setAllTokens(newTokens));
 
-    watch(isAuthenticated, isAuth => {
-      if (!isAuth) {
+    watch(isWalletReady, isReady => {
+      if (!isReady) {
         data.amounts = [];
         data.propMax = [];
       }
@@ -602,12 +611,12 @@ export default defineComponent({
     return {
       ...toRefs(data),
       submit,
-      allTokens,
+      tokenDictionary,
       hasAmounts,
       tokenWeights,
       fNum,
-      isAuthenticated,
-      connectWallet,
+      isWalletReady,
+      toggleWalletSelectModal,
       total,
       isProportional,
       isSingleAsset,
