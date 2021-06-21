@@ -2,17 +2,19 @@ import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
-import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useAllowances from '../useAllowances';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
-  const auth = useAuth();
+  const { getProvider } = useVueWeb3();
   const store = useStore();
   const approving = ref(false);
   const approvedAll = ref(false);
   const { allTokens } = useTokens();
   const { txListener } = useNotify();
+  const { getRequiredAllowances } = useAllowances();
 
   const amounts = computed(() =>
     tokens.map((token, index) => {
@@ -24,7 +26,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
   );
 
   const requiredAllowances = computed(() => {
-    const allowances = store.getters['account/getRequiredAllowances']({
+    const allowances = getRequiredAllowances({
       tokens,
       amounts: amounts.value
     });
@@ -35,7 +37,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
     try {
       approving.value = true;
       const txs = await approveTokens(
-        auth.web3,
+        getProvider(),
         store.state.web3.config.addresses.vault,
         [requiredAllowances.value[0]]
       );
