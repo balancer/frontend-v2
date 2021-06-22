@@ -2,10 +2,7 @@ import useConfig from '@/composables/useConfig';
 
 const { env, networkConfig } = useConfig();
 
-export const ETHER = {
-  ...networkConfig.nativeAsset,
-  id: 'ether'
-};
+export const ETHER = networkConfig.nativeAsset;
 
 type TokenListConfig = {
   Balancer: {

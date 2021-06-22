@@ -22,6 +22,7 @@ export interface Config {
     address: string;
     symbol: string;
     decimals: number;
+    deeplinkId: string;
     logoURI: string;
   };
   addresses: {
