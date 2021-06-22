@@ -73,7 +73,7 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { formatUnits, parseUnits } from '@ethersproject/units';
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber';
 
 import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
 import {
@@ -110,6 +110,7 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
 import TradePairGP from './TradePairGP.vue';
+import BigNumber from 'bignumber.js';
 
 // TODO: get app id
 const GNOSIS_APP_ID = 2;
@@ -281,10 +282,14 @@ export default defineComponent({
     async function trade() {
       try {
         const { chainId } = getConfig();
-        const tokenInAmountNumber = bnum(tokenInAmount.value);
         const tokenInAmountScaled = scale(
-          tokenInAmountNumber,
+          bnum(tokenInAmount.value),
           tokenInDecimals.value
+        );
+
+        const tokenOutAmountScaled = scale(
+          bnum(tokenOutAmount.value),
+          tokenOutDecimals.value
         );
 
         trading.value = true;
@@ -311,18 +316,39 @@ export default defineComponent({
           return;
         }
 
+        let sellAmount: string;
+        let buyAmount: string;
+
+        if (exactIn.value) {
+          sellAmount = parseUnits(tokenInAmount.value, tokenInDecimals.value)
+            .sub(feeAmount.value)
+            .toString();
+          buyAmount = parseUnits(
+            tokenOutAmountScaled
+              .div(1 + slippageBufferRate.value)
+              .integerValue(BigNumber.ROUND_DOWN)
+              .toString(),
+            tokenOutDecimals.value
+          ).toString();
+        } else {
+          sellAmount = parseUnits(
+            tokenInAmountScaled
+              .times(1 + slippageBufferRate.value)
+              .integerValue(BigNumber.ROUND_DOWN)
+              .toString(),
+            tokenInDecimals.value
+          ).toString();
+          buyAmount = parseUnits(
+            tokenOutAmount.value,
+            tokenOutDecimals.value
+          ).toString();
+        }
+
         const unsignedOrder: UnsignedOrder = {
           sellToken: normalizeTokenAddress(tokenInAddress.value),
           buyToken: normalizeTokenAddress(tokenOutAddress.value),
-          sellAmount: parseUnits(tokenInAmount.value, tokenInDecimals.value)
-            .sub(feeAmount.value)
-            .toString(),
-          buyAmount: parseUnits(
-            bnum(tokenOutAmount.value)
-              .div(1 + slippageBufferRate.value)
-              .toString(),
-            tokenOutDecimals.value
-          ).toString(),
+          sellAmount,
+          buyAmount,
           validTo: calculateValidTo(appTransactionDeadline.value),
           appData,
           feeAmount: feeAmount.value,
@@ -416,7 +442,7 @@ export default defineComponent({
                   exactIn.value
                     ? priceQuoteResult.amount
                     : // add the fee for buy orders
-                      BigNumber.from(priceQuoteResult.amount)
+                      EthersBigNumber.from(priceQuoteResult.amount)
                         .add(feeQuoteResult.amount)
                         .toString(),
                   tokenDecimals
