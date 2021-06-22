@@ -112,6 +112,7 @@ import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
 import useTokenLists from '@/composables/useTokenLists';
 import useAccountBalances from '@/composables/useAccountBalances';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   components: {
@@ -129,8 +130,8 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
 
-    const getConfig = () => store.getters['web3/getConfig']();
     const { tokenDictionary } = useTokenLists();
+    const { userNetworkConfig } = useVueWeb3();
 
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
@@ -141,7 +142,7 @@ export default defineComponent({
     const modalTradePreviewIsOpen = ref(false);
 
     const isWrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         tokenInAddress.value === ETHER.address &&
         tokenOutAddress.value === config.addresses.weth
@@ -149,7 +150,7 @@ export default defineComponent({
     });
 
     const isUnwrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         tokenOutAddress.value === ETHER.address &&
         tokenInAddress.value === config.addresses.weth
@@ -259,7 +260,7 @@ export default defineComponent({
       modalTradePreviewIsOpen.value = true;
     }
 
-    watch(getConfig, async () => {
+    watch(userNetworkConfig, async () => {
       await initSor();
       await handleAmountChange();
     });

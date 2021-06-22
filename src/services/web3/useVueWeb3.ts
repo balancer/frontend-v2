@@ -4,6 +4,7 @@ import { computed, inject, reactive, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 import { Web3Provider } from '@ethersproject/providers';
+import configs from '@/lib/config';
 
 const isWalletSelectVisible = ref(false);
 
@@ -18,6 +19,8 @@ export default function useVueWeb3() {
     walletState
   } = inject(Web3ProviderSymbol) as Web3Plugin;
   const appChainId = process.env.VUE_APP_NETWORK || '1';
+  const userNetworkConfig = computed(() => configs[String(chainId.value)]);
+  const appNetworkConfig = computed(() => configs[appChainId]);
 
   // if the account ref has changed, we know that
   // the user has successfully connected a wallet
@@ -84,6 +87,8 @@ export default function useVueWeb3() {
     isWalletReady,
     toggleWalletSelectModal,
     isWalletSelectVisible,
-    appChainId
+    appChainId,
+    userNetworkConfig,
+    appNetworkConfig
   };
 }

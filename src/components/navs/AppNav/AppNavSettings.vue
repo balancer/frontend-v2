@@ -220,7 +220,6 @@ export default defineComponent({
     const connectorLogo = computed(() => getConnectorLogo(connector.value.id));
 
     // METHODS
-    const logout = () => store.dispatch('web3/logout');
     const setDarkMode = val => store.commit('app/setDarkMode', val);
     const setLocale = locale => store.commit('app/setLocale', locale);
 

@@ -129,6 +129,8 @@ import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
 import useNumbers from '@/composables/useNumbers';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { useI18n } from 'vue-i18n';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useTokenLists from '@/composables/useTokenLists';
 
 interface Route {
   share: number;
@@ -178,14 +180,11 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const store = useStore();
     const { fNum } = useNumbers();
     const { t } = useI18n();
 
-    const getConfig = () => store.getters['web3/getConfig']();
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
-    const tokens = computed(() => getTokens({ includeEther: true }));
+    const { userNetworkConfig, chainId } = useVueWeb3();
+    const { tokenDictionary: tokens } = useTokenLists();
 
     const visible = ref(false);
 
@@ -306,7 +305,7 @@ export default defineComponent({
       swaps: SwapV2[],
       addresses: string[]
     ) {
-      const { addresses: constants } = getConfig();
+      const { addresses: constants } = userNetworkConfig.value;
 
       addressIn =
         addressIn === ETHER.address ? constants.weth : getAddress(addressIn);
@@ -425,12 +424,11 @@ export default defineComponent({
     }
 
     function getPoolLink(id: string): string {
-      const { chainId } = getConfig();
       const prefixMap = {
         1: '',
         42: 'kovan.'
       };
-      const prefix = prefixMap[chainId] || '';
+      const prefix = prefixMap[String(chainId.value)] || '';
       return props.sorReturn.isV1swap
         ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
         : `https://${prefix}app.balancer.fi/#pool/${id}`;

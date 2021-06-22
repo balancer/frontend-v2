@@ -103,6 +103,8 @@ import {
   isOrderFinalized,
   normalizeTokenAddress
 } from '@/services/gnosis/utils';
+import useTokenLists from '@/composables/useTokenLists';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 const DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES = 20 * 60;
 // TODO: get app id
@@ -132,11 +134,8 @@ export default defineComponent({
     const { account, blockNumber } = useWeb3();
 
     const { t } = useI18n();
-
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
-    const getConfig = () => store.getters['web3/getConfig']();
-    const tokens = computed(() => getTokens({ includeEther: true }));
+    const { tokenDictionary: tokens } = useTokenLists();
+    const { userNetworkConfig } = useVueWeb3();
 
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
@@ -148,7 +147,7 @@ export default defineComponent({
     const modalTradePreviewIsOpen = ref(false);
 
     const isWrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         tokenInAddress.value === ETHER.address &&
         tokenOutAddress.value === config.addresses.weth
@@ -156,7 +155,7 @@ export default defineComponent({
     });
 
     const isUnwrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         tokenOutAddress.value === ETHER.address &&
         tokenInAddress.value === config.addresses.weth

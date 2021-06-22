@@ -82,6 +82,7 @@ import { ETHER } from '@/constants/tokenlists';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useTokenLists from '@/composables/useTokenLists';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -116,16 +117,15 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const store = useStore();
     const { fNum, toFiat } = useNumbers();
 
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
-    const getConfig = () => store.getters['web3/getConfig']();
     const { tokenDictionary: tokens } = useTokenLists();
+    const { userNetworkConfig } = useVueWeb3();
 
     const isWrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         addressIn.value === ETHER.address &&
         addressOut.value === config.addresses.weth
@@ -133,7 +133,7 @@ export default defineComponent({
     });
 
     const isUnwrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         addressOut.value === ETHER.address &&
         addressIn.value === config.addresses.weth

@@ -88,6 +88,8 @@ import { ETHER } from '@/constants/tokenlists';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 import useGnosisProtocol from '@/composables/useGnosisProtocol';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useTokenLists from '@/composables/useTokenLists';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -121,19 +123,16 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const store = useStore();
     const { fNum, toFiat } = useNumbers();
     const { gnosisExplorer } = useGnosisProtocol();
 
     const { addressIn, amountIn, addressOut } = toRefs(props);
 
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
-    const getConfig = () => store.getters['web3/getConfig']();
-    const tokens = computed(() => getTokens({ includeEther: true }));
+    const { tokenDictionary: tokens } = useTokenLists();
+    const { userNetworkConfig } = useVueWeb3();
 
     const isWrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         addressIn.value === ETHER.address &&
         addressOut.value === config.addresses.weth
@@ -141,7 +140,7 @@ export default defineComponent({
     });
 
     const isUnwrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         addressOut.value === ETHER.address &&
         addressIn.value === config.addresses.weth

@@ -8,7 +8,7 @@ import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useAllowances from '../useAllowances';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
-  const { getProvider } = useVueWeb3();
+  const { getProvider, appNetworkConfig } = useVueWeb3();
   const store = useStore();
   const approving = ref(false);
   const approvedAll = ref(false);
@@ -38,7 +38,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
       approving.value = true;
       const txs = await approveTokens(
         getProvider(),
-        store.state.web3.config.addresses.vault,
+        appNetworkConfig.value.addresses.vault,
         [requiredAllowances.value[0]]
       );
       const txHashes = txs.map(tx => tx.hash);

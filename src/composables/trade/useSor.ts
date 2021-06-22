@@ -67,11 +67,10 @@ export default function useSor(
   const store = useStore();
   const { txListener } = useNotify();
   const { trackGoal, Goals } = useFathom();
-  const { getProvider: getWeb3Provider } = useVueWeb3();
+  const { getProvider: getWeb3Provider, userNetworkConfig, chainId } = useVueWeb3();
   const provider = computed(() => getWeb3Provider());
   const { refetchBalances } = useAccountBalances();
 
-  const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
   onMounted(async () => {
@@ -99,16 +98,16 @@ export default function useSor(
   });
 
   async function initSor(): Promise<void> {
-    const config = getConfig();
+    const config = userNetworkConfig.value;
     const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
     const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
-    const subgraphUrl = subgraphUrlMap[config.chainId];
+    const subgraphUrl = subgraphUrlMap[chainId.value];
 
     sorManager = new SorManager(
-      getProvider(config.chainId),
+      getProvider(String(chainId.value)),
       new BigNumber(GAS_PRICE),
       MAX_POOLS,
-      config.chainId,
+      chainId.value,
       config.addresses.weth,
       poolsUrlV1,
       poolsUrlV2,
@@ -294,7 +293,6 @@ export default function useSor(
   }
 
   async function trade() {
-    const { chainId } = getConfig();
     trackGoal(Goals.ClickSwap);
     trading.value = true;
 
@@ -309,7 +307,7 @@ export default function useSor(
     if (isWrap.value) {
       try {
         const tx = await wrap(
-          chainId,
+          String(chainId.value),
           provider.value as any,
           tokenInAmountScaled
         );
@@ -323,7 +321,7 @@ export default function useSor(
     } else if (isUnwrap.value) {
       try {
         const tx = await unwrap(
-          chainId,
+          String(chainId.value),
           provider.value as any,
           tokenInAmountScaled
         );
@@ -346,7 +344,7 @@ export default function useSor(
 
       try {
         const tx = await swapIn(
-          chainId,
+          String(chainId.value),
           provider.value as any,
           sr,
           tokenInAmountScaled,
@@ -371,7 +369,7 @@ export default function useSor(
 
       try {
         const tx = await swapOut(
-          chainId,
+          String(chainId.value),
           provider.value as any,
           sr,
           tokenInAmountMax,
