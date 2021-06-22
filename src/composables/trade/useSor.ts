@@ -67,7 +67,11 @@ export default function useSor(
   const store = useStore();
   const { txListener } = useNotify();
   const { trackGoal, Goals } = useFathom();
-  const { getProvider: getWeb3Provider, userNetworkConfig, chainId } = useVueWeb3();
+  const {
+    getProvider: getWeb3Provider,
+    userNetworkConfig,
+    chainId
+  } = useVueWeb3();
   const provider = computed(() => getWeb3Provider());
   const { refetchBalances } = useAccountBalances();
 
