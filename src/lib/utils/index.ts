@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js';
 import pkg from '@/../package.json';
-import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
-import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
 
 export function shorten(str = '') {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
@@ -59,13 +57,4 @@ export function scale(input: BigNumber, decimalPlaces: number): BigNumber {
   const scalePow = new BigNumber(decimalPlaces.toString());
   const scaleMul = new BigNumber(10).pow(scalePow);
   return input.times(scaleMul);
-}
-
-export function scaleFp(
-  input: FixedPointNumber,
-  decimalPlaces: number
-): FixedPointNumber {
-  const scalePow = fnum(decimalPlaces.toString());
-  const scaleMul = fnum(10).pow(scalePow);
-  return input.mul(fnum(scaleMul));
 }
