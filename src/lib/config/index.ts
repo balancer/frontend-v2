@@ -11,14 +11,19 @@ export interface Config {
   shortName: string;
   network: string;
   unknown: boolean;
-  nativeAsset: string;
-  nativeAssetLong: string;
   rpc: string;
   ws: string;
   explorer: string;
   subgraph: string;
   poolsUrlV1: string;
   poolsUrlV2: string;
+  nativeAsset: {
+    name: string;
+    address: string;
+    symbol: string;
+    decimals: number;
+    logoURI: string;
+  };
   addresses: {
     exchangeProxy: string;
     merkleRedeem: string;
