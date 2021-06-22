@@ -1,5 +1,5 @@
 <template>
-  <BalCard class="relative">
+  <BalCard class="relative" :shadow="tradeCardShadow" :no-border="bp === 'xs'">
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
@@ -111,8 +111,8 @@ import TradeSettingsPopover, {
 import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
 import useTokenLists from '@/composables/useTokenLists';
-import useAccountBalances from '@/composables/useAccountBalances';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   components: {
@@ -129,6 +129,7 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const { t } = useI18n();
+    const { bp } = useBreakpoints();
 
     const { tokenDictionary } = useTokenLists();
     const { userNetworkConfig } = useVueWeb3();
@@ -140,6 +141,17 @@ export default defineComponent({
     const tradeSuccess = ref(false);
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
+
+    const tradeCardShadow = computed(() => {
+      switch (bp.value) {
+        case 'xs':
+          return 'none';
+        case 'sm':
+          return 'lg';
+        default:
+          return 'xl';
+      }
+    });
 
     const isWrap = computed(() => {
       const config = userNetworkConfig.value;
@@ -310,7 +322,9 @@ export default defineComponent({
       TradeSettingsContext,
       poolsLoading,
       showTradePreviewModal,
-      isLoadingApprovals
+      isLoadingApprovals,
+      bp,
+      tradeCardShadow
     };
   }
 });

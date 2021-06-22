@@ -13,7 +13,7 @@ import {
   SorReturn
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
-import { urlMap as subgraphUrlMap } from '@/services/balancer/subgraph/client';
+import ConfigService from '@/services/config/config.service';
 
 import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
@@ -105,7 +105,7 @@ export default function useSor(
     const config = userNetworkConfig.value;
     const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
     const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
-    const subgraphUrl = subgraphUrlMap[chainId.value];
+    const subgraphUrl = new ConfigService().network.subgraph;
 
     sorManager = new SorManager(
       getProvider(String(chainId.value)),

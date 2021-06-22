@@ -149,6 +149,8 @@ const mutations = {
     if (!configs[chainId]) {
       configs[chainId] = {
         ...configs[defaultConfig],
+        key: chainId.toString(),
+        chainId,
         unknown: true,
         shortName: ''
       };

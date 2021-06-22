@@ -1,6 +1,6 @@
 <template>
-  <div class="px-4 md:px-0">
-    <div class="trade-card-container mx-auto -mt-6">
+  <div>
+    <div class="trade-container">
       <BalLoadingBlock v-if="appLoading || isLoadingTokens" class="h-96" />
       <template v-else>
         <TradeCard v-if="tradeInterface === 'balancer'" />
@@ -17,7 +17,6 @@ import { useStore } from 'vuex';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
 import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
 import useTokenLists from '@/composables/useTokenLists';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   components: {
@@ -53,8 +52,15 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.trade-card-container {
+<style scoped>
+.trade-container {
+  @apply max-w-full mx-auto mt-2 xs:mt-8;
   max-width: 450px;
+}
+
+@media (min-height: 840px) {
+  .trade-container {
+    @apply md:mt-8;
+  }
 }
 </style>

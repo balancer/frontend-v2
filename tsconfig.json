@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "experimentalDecorators": true,
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
@@ -11,6 +12,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
+      "node",
       "webpack-env",
       "jest"
     ],

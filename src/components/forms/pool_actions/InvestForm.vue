@@ -150,7 +150,7 @@
           }"
           class="text-xs text-gray-500 underline"
         >
-          {{ $t('wrapInstruction') }}
+          {{ $t('wrapInstruction', [nativeAsset]) }}
         </router-link>
         <BalTooltip>
           <template v-slot:activator>
@@ -248,19 +248,15 @@ import {
   isLessThanOrEqualTo,
   isRequired
 } from '@/lib/utils/validations';
-import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { TransactionData } from 'bnc-notify';
 import { formatUnits } from '@ethersproject/units';
 import isEqual from 'lodash/isEqual';
 
-import useAuth from '@/composables/useAuth';
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 import useNumbers from '@/composables/useNumbers';
 import useNotify from '@/composables/useNotify';
 import useSlippage from '@/composables/useSlippage';
-import useWeb3 from '@/composables/useWeb3';
-import useTokens from '@/composables/useTokens';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator';
@@ -324,7 +320,8 @@ export default defineComponent({
       account,
       chainId,
       toggleWalletSelectModal,
-      getProvider
+      getProvider,
+      appNetworkConfig
     } = useVueWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
@@ -454,6 +451,8 @@ export default defineComponent({
 
       return minusSlippage(bptOut, props.pool.onchain.decimals);
     });
+
+    const nativeAsset = computed(() => appNetworkConfig.value.nativeAsset);
 
     const isWethPool = computed(() =>
       props.pool.tokenAddresses.includes(TOKENS.AddressMap.WETH)
@@ -670,6 +669,7 @@ export default defineComponent({
       // data
       ...toRefs(data),
       Goals,
+      nativeAsset,
       TOKENS,
       // computed
       tokenDictionary,

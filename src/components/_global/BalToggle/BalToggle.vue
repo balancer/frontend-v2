@@ -48,7 +48,7 @@ export default defineComponent({
 
 <style>
 .bal-toggle {
-  @apply relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in;
+  @apply relative inline-block w-10 align-middle select-none transition duration-200 ease-in;
 }
 
 .bal-toggle-checkbox {

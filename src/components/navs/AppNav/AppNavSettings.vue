@@ -103,7 +103,7 @@
       </div>
       <AppSlippageForm class="mt-1" />
     </div>
-    <div class="px-4 mt-6">
+    <div v-if="!hideLiquidity" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
@@ -182,7 +182,8 @@ export default defineComponent({
       chainId,
       networkName,
       disconnectWallet,
-      connector
+      connector,
+      appNetworkConfig
     } = useVueWeb3();
     // DATA
     const data = reactive({
@@ -214,6 +215,7 @@ export default defineComponent({
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
+    const hideLiquidity = computed(() => !appNetworkConfig.value.supportsV1);
 
     const connectorName = computed(() => getConnectorName(connector.value.id));
 
@@ -253,6 +255,7 @@ export default defineComponent({
       appDarkMode,
       connectorName,
       connectorLogo,
+      hideLiquidity,
       // methods
       disconnectWallet,
       setDarkMode,

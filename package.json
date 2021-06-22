@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.4.1",
+  "version": "1.5.1",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -99,7 +99,7 @@
     "@storybook/vue3": "^6.2.8",
     "@types/jest": "^24.0.19",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^14.0.13",
+    "@types/node": "^14.17.1",
     "@types/numeral": "^2.0.1",
     "@types/parse-filepath": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",

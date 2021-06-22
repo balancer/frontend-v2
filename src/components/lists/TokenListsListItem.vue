@@ -2,7 +2,7 @@
   <div class="flex py-3 px-4 highlight items-center leading-5 text-base">
     <img
       :src="_url(tokenlist.logoURI)"
-      class="rounded-full inline-block align-middle mr-2"
+      class="rounded-full inline-block align-middle mr-3"
       width="34"
       height="34"
     />

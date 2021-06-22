@@ -6,6 +6,7 @@ import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useAllowances from '../useAllowances';
+import { sleep } from '@/lib/utils';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
   const { getProvider, appNetworkConfig } = useVueWeb3();
@@ -45,7 +46,11 @@ export default function useTokenApprovals(tokens, shortAmounts) {
 
       txListener(txHashes, {
         onTxConfirmed: async () => {
+          // REFACTOR: Hack to prevent race condition causing double approvals
+          await txs[0].wait();
+          await sleep(5000);
           await refetchAllowances.value();
+          // END REFACTOR
           approving.value = false;
         },
         onTxCancel: () => {

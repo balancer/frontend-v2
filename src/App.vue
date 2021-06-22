@@ -2,7 +2,7 @@
   <div id="modal" />
   <div id="app">
     <AppNav />
-    <AppHero />
+    <AppHero v-if="isHomePage" />
     <div class="pb-12">
       <router-view :key="$route.path" class="flex-auto" />
     </div>
@@ -21,9 +21,10 @@ import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
-import InfuraService from '@/services/infura/service';
 import WalletSelectModal from '@/services/web3/components/WalletSelectModal.vue';
 import useVueWeb3 from './services/web3/useVueWeb3';
+import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -38,12 +39,14 @@ export default defineComponent({
     useWeb3Watchers();
     const { isWalletSelectVisible } = useVueWeb3();
     const store = useStore();
+    const route = useRoute();
 
     // SERVICES
-    const infuraService = new InfuraService();
+    const providerService = new RpcProviderService();
 
     // COMPUTED
     const web3Modal = computed(() => store.state.web3.modal);
+    const isHomePage = computed(() => route.path === '/');
 
     // METHODS
     const setAccountModal = val => store.commit('web3/setAccountModal', val);
@@ -59,13 +62,14 @@ export default defineComponent({
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
-      infuraService.initBlockListener(setBlockNumber);
+      providerService.initBlockListener(setBlockNumber);
     });
 
     return {
       // computed
       web3Modal,
       isWalletSelectVisible,
+      isHomePage,
       // methods
       onLogin,
       setAccountModal
