@@ -1,7 +1,7 @@
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
 import { parseUnits, formatUnits } from '@ethersproject/units';
-import { bnum, scale, scaleFp } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 
 import {
@@ -24,26 +24,6 @@ export default class Stable {
     this.calc = calculator;
   }
 
-  public get scaledBalances(): FixedPointNumber[] {
-    return this.calc.poolTokenBalances.map((balance, i) => {
-      const normalizedBalance = formatUnits(
-        balance,
-        this.calc.poolTokenDecimals[i]
-      );
-      const scaledBalance = parseUnits(normalizedBalance, 18);
-      return fnum(scaledBalance.toString());
-    });
-  }
-
-  public get scaledPoolTotalSupply(): FixedPointNumber {
-    const normalizedSupply = formatUnits(
-      this.calc.poolTotalSupply,
-      this.calc.poolDecimals
-    );
-    const scaledSupply = parseUnits(normalizedSupply, 18);
-    return fnum(scaledSupply.toString());
-  }
-
   public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
     const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
     const denormAmounts = this.calc.denormAmounts(
@@ -60,7 +40,11 @@ export default class Stable {
       fnum(this.calc.poolSwapFee.toString())
     );
 
-    return scaleFp(bptOut, this.calc.poolDecimals - 18);
+    return this.scaleOutput(
+      bptOut.toString(),
+      this.calc.poolDecimals,
+      BigNumber.ROUND_DOWN // If OUT given IN, round down
+    );
   }
 
   public bptInForExactTokensOut(tokenAmounts: string[]): FixedPointNumber {
@@ -79,7 +63,11 @@ export default class Stable {
       fnum(this.calc.poolSwapFee.toString())
     );
 
-    return scaleFp(bptIn, this.calc.poolDecimals - 18);
+    return this.scaleOutput(
+      bptIn.toString(),
+      this.calc.poolDecimals,
+      BigNumber.ROUND_UP // If IN given OUT, round up
+    );
   }
 
   public bptInForExactTokenOut(
@@ -100,7 +88,11 @@ export default class Stable {
       fnum(this.calc.poolSwapFee.toString())
     );
 
-    return scaleFp(bptIn, this.calc.poolDecimals - 18);
+    return this.scaleOutput(
+      bptIn.toString(),
+      this.calc.poolDecimals,
+      BigNumber.ROUND_UP // If IN given OUT, round up
+    );
   }
 
   public exactBPTInForTokenOut(
@@ -119,15 +111,11 @@ export default class Stable {
       fnum(this.calc.poolSwapFee.toString())
     );
 
-    const normalizedAmount = bnum(
-      formatUnits(tokenAmountOut.toString(), 18)
-    ).toFixed(this.calc.poolTokenDecimals[tokenIndex], BigNumber.ROUND_DOWN);
-    const scaledAmount = parseUnits(
-      normalizedAmount,
-      this.calc.poolTokenDecimals[tokenIndex]
+    return this.scaleOutput(
+      tokenAmountOut.toString(),
+      this.calc.poolTokenDecimals[tokenIndex],
+      BigNumber.ROUND_DOWN // If OUT given IN, round down
     );
-
-    return fnum(scaledAmount.toString());
   }
 
   public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
@@ -169,7 +157,9 @@ export default class Stable {
     }
   }
 
-  public bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
+  // PRIVATE FUNCTIONS
+
+  private bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
     const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
@@ -184,5 +174,39 @@ export default class Stable {
       bnum(this.calc.poolTotalSupply.toString()),
       amp
     );
+  }
+
+  private get scaledBalances(): FixedPointNumber[] {
+    return this.calc.poolTokenBalances.map((balance, i) => {
+      const normalizedBalance = formatUnits(
+        balance,
+        this.calc.poolTokenDecimals[i]
+      );
+      const scaledBalance = parseUnits(normalizedBalance, 18);
+      return fnum(scaledBalance.toString());
+    });
+  }
+
+  private get scaledPoolTotalSupply(): FixedPointNumber {
+    const normalizedSupply = formatUnits(
+      this.calc.poolTotalSupply,
+      this.calc.poolDecimals
+    );
+    const scaledSupply = parseUnits(normalizedSupply, 18);
+    return fnum(scaledSupply.toString());
+  }
+
+  private scaleOutput(
+    amount: string,
+    decimals: number,
+    rounding: BigNumber.RoundingMode
+  ): FixedPointNumber {
+    const normalizedAmount = bnum(formatUnits(amount, 18)).toFixed(
+      decimals,
+      rounding
+    );
+    const scaledAmount = parseUnits(normalizedAmount, decimals);
+
+    return fnum(scaledAmount.toString());
   }
 }
