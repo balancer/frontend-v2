@@ -12,6 +12,7 @@ import {
 import { BPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2/dist/frontendHelpers/stableHelpers';
 import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
 import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
+import { BigNumberish } from '@ethersproject/bignumber';
 
 /**
  * The stableMathEvm works with all values scaled to 18 decimals,
@@ -119,11 +120,12 @@ export default class Stable {
   }
 
   public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
-    let bptAmount, bptZeroPriceImpact;
+    let bptAmount: FixedPointNumber | BigNumberish;
+    let bptZeroPriceImpact: BigNumber;
 
     if (this.calc.action === 'join') {
       bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
-      if (bptAmount < 0) return bnum(0);
+      if (bptAmount.isLessThan(0)) return bnum(0);
       bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
 
       return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
@@ -166,9 +168,10 @@ export default class Stable {
       this.calc.poolTokenDecimals
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
+    const balances = this.calc.poolTokenBalances.map(b => bnum(b.toString()));
 
     return _bptForTokensZeroPriceImpact(
-      this.calc.poolTokenBalances.map(b => bnum(b.toString())),
+      balances,
       this.calc.poolTokenDecimals,
       amounts,
       bnum(this.calc.poolTotalSupply.toString()),
