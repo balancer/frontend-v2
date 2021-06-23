@@ -1,5 +1,5 @@
 import useConfig from '@/composables/useConfig';
-import { getNativeAssetId, getPlatformId } from './coingecko/api/price.service';
+import { getNativeAssetId, getPlatformId } from './coingecko/coingecko.service';
 
 function getChainAddress(chainId: number, address: string) {
   if (!address) {
