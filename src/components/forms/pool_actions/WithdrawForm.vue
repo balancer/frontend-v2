@@ -253,14 +253,14 @@ export default defineComponent({
     const { tokenDictionary } = useTokenLists();
     const { refetchBalances } = useAccountBalances();
     const { trackGoal, Goals } = useFathom();
-    const { getProvider, account, chainId } = useVueWeb3();
+    const { getProvider, account, userNetworkConfig } = useVueWeb3();
 
     // SERVICES
     const poolExchange = computed(
       () =>
         new PoolExchange(
           props.pool,
-          String(chainId.value),
+          String(userNetworkConfig.value.chainId),
           tokenDictionary.value
         )
     );

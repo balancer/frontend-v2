@@ -121,13 +121,13 @@ export default defineComponent({
     const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
-    const { appChainId, account, getProvider } = useVueWeb3();
+    const { appNetworkConfig, account, getProvider } = useVueWeb3();
     const { txListener } = useNotify();
 
     const balPrice = computed(
       () =>
         store.state.market.prices[
-          getOriginalAddress(Number(appChainId), TOKENS.AddressMap.BAL)
+          getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
         ]?.price
     );
 
@@ -202,7 +202,7 @@ export default defineComponent({
         isClaiming.value = true;
         try {
           const tx = await claimRewards(
-            Number(appChainId) as NetworkId,
+            appNetworkConfig.chainId as NetworkId,
             getProvider(),
             account.value,
             userClaims.value.pendingClaims,

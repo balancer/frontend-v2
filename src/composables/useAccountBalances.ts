@@ -12,9 +12,9 @@ import { ETHER } from '@/constants/tokenlists';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default function useAccountBalances() {
-  const { account, chainId, isWalletReady } = useVueWeb3();
+  const { account, userNetworkConfig, isWalletReady } = useVueWeb3();
   const { allTokens: tokens } = useTokens();
-  const provider = getProvider(String(chainId.value));
+  const provider = getProvider(String(userNetworkConfig.value.chainId));
   const isQueryEnabled = computed(
     () =>
       account.value !== null &&
@@ -31,11 +31,11 @@ export default function useAccountBalances() {
     isError,
     refetch: refetchBalances
   } = useQuery(
-    reactive(QUERY_KEYS.Balances.All(account, chainId)),
+    reactive(QUERY_KEYS.Balances.All(account, userNetworkConfig)),
     () => {
       return Promise.all([
         getBalances(
-          String(chainId.value),
+          String(userNetworkConfig.value.chainId),
           provider,
           account.value,
           Object.values(tokens.value).map((token: any) => token.address)

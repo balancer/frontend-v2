@@ -318,10 +318,10 @@ export default defineComponent({
     const {
       isWalletReady,
       account,
-      chainId,
       toggleWalletSelectModal,
       getProvider,
-      appNetworkConfig
+      appNetworkConfig,
+      userNetworkConfig
     } = useVueWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
@@ -345,7 +345,7 @@ export default defineComponent({
       () =>
         new PoolExchange(
           props.pool,
-          String(chainId.value),
+          String(userNetworkConfig.value.chainId),
           tokenDictionary.value
         )
     );

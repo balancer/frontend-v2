@@ -17,9 +17,9 @@ type UseAccountPayload = {
 const dstAllowanceMap = ref({});
 
 export default function useAllowances(payload?: UseAccountPayload) {
-  const { chainId, account } = useVueWeb3();
+  const { userNetworkConfig, account } = useVueWeb3();
   const { tokenDictionary } = useTokenLists();
-  const provider = getProvider(String(chainId.value));
+  const provider = getProvider(String(userNetworkConfig.value.chainId));
   // filter out ether and any bad addresses
   const tokens = computed(() =>
     (payload?.tokens?.value || Object.keys(tokenDictionary.value)).filter(
@@ -28,13 +28,8 @@ export default function useAllowances(payload?: UseAccountPayload) {
   );
   const dstList = computed(() => [
     ...(payload?.dstList?.value || []),
-    configs[String(chainId.value)].addresses.vault
+    configs[String(userNetworkConfig.value.chainId)].addresses.vault
   ]);
-
-  watch(
-    () => payload?.tokens,
-    () => console.log('tokens changed', payload?.tokens)
-  );
 
   const isQueryEnabled = computed(() => account && tokens.value.length > 0);
   const {
@@ -43,12 +38,12 @@ export default function useAllowances(payload?: UseAccountPayload) {
     isFetching,
     refetch: refetchAllowances
   } = useQuery(
-    QUERY_KEYS.Account.Allowances(chainId, account, dstList, tokens),
+    QUERY_KEYS.Account.Allowances(userNetworkConfig, account, dstList, tokens),
     () =>
       Promise.all(
         dstList.value.map(async dst =>
           getAllowances(
-            String(chainId.value),
+            String(userNetworkConfig.value.chainId),
             provider,
             account.value,
             dst,
@@ -73,7 +68,9 @@ export default function useAllowances(payload?: UseAccountPayload) {
   const getRequiredAllowances = query => {
     const tokens = query.tokens;
     const amounts = query.amounts;
-    const dst = query.dst || configs[String(chainId.value)].addresses.vault;
+    const dst =
+      query.dst ||
+      configs[String(userNetworkConfig.value.chainId)].addresses.vault;
 
     const requiredAllowances = tokens.filter((token, index) => {
       const amount = amounts[index];

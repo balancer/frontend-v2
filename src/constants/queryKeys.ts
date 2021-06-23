@@ -1,3 +1,4 @@
+import { Config } from '@/lib/config';
 import { Ref } from 'vue';
 
 export const POOLS_ROOT_KEY = 'pools';
@@ -38,15 +39,15 @@ const QUERY_KEYS = {
       tokens: Ref<string[]>
     ) => ['account', 'balances', { account, networkKey, tokens }],
     Allowances: (
-      chainId: Ref<number>,
+      userNetwork: Ref<Config>,
       account: Ref<string>,
       dstList: Ref<string[]>,
       tokens: Ref<string[]>
-    ) => ['account', 'allowances', { chainId, account, dstList, tokens }],
-    Profile: (account: Ref<string>, chainId: Ref<number>) => [
+    ) => ['account', 'allowances', { userNetwork, account, dstList, tokens }],
+    Profile: (account: Ref<string>, userNetwork: Ref<Config>) => [
       'account',
       'profile',
-      { account, chainId }
+      { account, userNetwork }
     ]
   },
   App: {

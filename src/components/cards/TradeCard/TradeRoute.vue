@@ -183,7 +183,7 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { t } = useI18n();
 
-    const { userNetworkConfig, chainId } = useVueWeb3();
+    const { userNetworkConfig } = useVueWeb3();
     const { tokenDictionary: tokens } = useTokenLists();
 
     const visible = ref(false);
@@ -424,13 +424,14 @@ export default defineComponent({
     }
 
     function getPoolLink(id: string): string {
+      const chainId = userNetworkConfig.value.chainId;
       const prefixMap = {
         1: 'app.',
         42: 'kovan.',
         137: 'polygon.'
       };
-      const prefix = prefixMap[String(chainId.value)] || '';
-      if (props.sorReturn.isV1swap && chainId.value === 1) {
+      const prefix = prefixMap[chainId] || '';
+      if (props.sorReturn.isV1swap && chainId === 1) {
         return `https://pools.balancer.exchange/#/pool/${id}`;
       } else {
         return props.sorReturn.isV1swap

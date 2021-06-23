@@ -67,11 +67,7 @@ export default function useSor(
   const store = useStore();
   const { txListener } = useNotify();
   const { trackGoal, Goals } = useFathom();
-  const {
-    getProvider: getWeb3Provider,
-    userNetworkConfig,
-    chainId
-  } = useVueWeb3();
+  const { getProvider: getWeb3Provider, userNetworkConfig } = useVueWeb3();
   const provider = computed(() => getWeb3Provider());
   const { refetchBalances } = useAccountBalances();
 
@@ -108,10 +104,10 @@ export default function useSor(
     const subgraphUrl = new ConfigService().network.subgraph;
 
     sorManager = new SorManager(
-      getProvider(String(chainId.value)),
+      getProvider(String(userNetworkConfig.value.chainId)),
       new BigNumber(GAS_PRICE),
       MAX_POOLS,
-      chainId.value,
+      userNetworkConfig.value.chainId,
       config.addresses.weth,
       poolsUrlV1,
       poolsUrlV2,
@@ -311,7 +307,7 @@ export default function useSor(
     if (isWrap.value) {
       try {
         const tx = await wrap(
-          String(chainId.value),
+          String(userNetworkConfig.value.chainId),
           provider.value as any,
           tokenInAmountScaled
         );
@@ -325,7 +321,7 @@ export default function useSor(
     } else if (isUnwrap.value) {
       try {
         const tx = await unwrap(
-          String(chainId.value),
+          String(userNetworkConfig.value.chainId),
           provider.value as any,
           tokenInAmountScaled
         );
@@ -348,7 +344,7 @@ export default function useSor(
 
       try {
         const tx = await swapIn(
-          String(chainId.value),
+          String(userNetworkConfig.value.chainId),
           provider.value as any,
           sr,
           tokenInAmountScaled,
@@ -373,7 +369,7 @@ export default function useSor(
 
       try {
         const tx = await swapOut(
-          String(chainId.value),
+          String(userNetworkConfig.value.chainId),
           provider.value as any,
           sr,
           tokenInAmountMax,

@@ -32,7 +32,12 @@ export default function useUserClaimsQuery(
   options: UseQueryOptions<UserClaimsQueryResponse> = {}
 ) {
   // COMPOSABLES
-  const { account, isWalletReady, appChainId, getProvider } = useVueWeb3();
+  const {
+    account,
+    isWalletReady,
+    appNetworkConfig,
+    getProvider
+  } = useVueWeb3();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Claims.All(account));
@@ -46,7 +51,7 @@ export default function useUserClaimsQuery(
   const queryFn = async () => {
     const [pendingClaims, currentRewardsEstimate] = await Promise.all([
       getPendingClaims(
-        Number(appChainId) as NetworkId,
+        appNetworkConfig.chainId as NetworkId,
         getProvider(),
         account.value
       ),
