@@ -87,6 +87,7 @@ import {
   normalizeTokenAddress
 } from '@/services/gnosis/utils';
 
+import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
 import useAuth from '@/composables/useAuth';
 import useGnosisProtocol from '@/composables/useGnosisProtocol';
