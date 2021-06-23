@@ -156,7 +156,7 @@ export default defineComponent({
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
     const getConfig = () => store.getters['web3/getConfig']();
-    const tokens = computed(() => getTokens({ includeEther: true }));
+    const { allTokensIncludeEth: tokens } = useTokens();
     const slippageBufferRate = computed(() =>
       parseFloat(store.state.app.slippage)
     );
