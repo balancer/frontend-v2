@@ -71,8 +71,8 @@ export type Prices = Record<string, Price>;
 export type HistoricalPrices = Record<string, Prices>;
 
 export async function getEtherPrice(): Promise<Price> {
-  const { networkConfig } = useConfig();
-  const nativeAssetId = getNativeAssetId(networkConfig.chainId);
+  const { env } = useConfig();
+  const nativeAssetId = getNativeAssetId(env.NETWORK);
   const uri = `https://api.coingecko.com/api/v3/simple/price?ids=${nativeAssetId}&vs_currencies=usd&include_24hr_change=true`;
   const result = await fetch(uri).then(res => res.json());
   return {
@@ -85,7 +85,7 @@ export async function getTokensPrice(
   chainId: number,
   addresses: string[]
 ): Promise<Prices> {
-  const { networkConfig } = useConfig();
+  const { env } = useConfig();
 
   const max = 175;
   const pages = Math.ceil(addresses.length / max);
@@ -95,7 +95,7 @@ export async function getTokensPrice(
       .slice(max * i, max * (i + 1))
       .map(address => getChainAddress(chainId, address));
     const uri = `https://api.coingecko.com/api/v3/simple/token_price/${getPlatformId(
-      networkConfig.chainId
+      env.NETWORK
     )}?contract_addresses=${addressString}&vs_currencies=usd&include_24hr_change=true`;
     // @ts-ignore
     promises.push(fetch(uri).then(res => res.json()));
@@ -121,7 +121,7 @@ export async function getTokensHistoricalPrice(
   addresses: string[],
   days: number
 ): Promise<HistoricalPrices> {
-  const { networkConfig } = useConfig();
+  const { env } = useConfig();
 
   const DAY = 60 * 60 * 24;
   const now = Math.floor(Date.now() / 1000);
@@ -130,7 +130,7 @@ export async function getTokensHistoricalPrice(
   const priceRequests = addresses.map(address => {
     const chainAddress = getChainAddress(chainId, address);
     const url = `https://api.coingecko.com/api/v3/coins/${getPlatformId(
-      networkConfig.chainId
+      env.NETWORK
     )}/contract/${chainAddress}/market_chart/range?vs_currency=usd&from=${start}&to=${end}`;
     const request = fetch(url).then(res => res.json());
     return request;
