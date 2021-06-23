@@ -38,8 +38,8 @@ type PluginState = {
 
 export default {
   install: async app => {
-    const alreadyConnectedAccount = lsGet('connectedWallet');
-    const alreadyConnectedProvider = lsGet('connectedProvider');
+    const alreadyConnectedAccount = lsGet('connectedWallet', null);
+    const alreadyConnectedProvider = lsGet('connectedProvider', null);
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
@@ -69,6 +69,7 @@ export default {
       pluginState.walletState = 'connecting';
 
       try {
+        console.log('wally', wallet);
         if (!wallet || typeof wallet !== 'string') {
           throw new Error(
             'Please provide a wallet to facilitate a web3 connection.'
@@ -123,6 +124,11 @@ export default {
 
     // previously connected wallet initiation
     if (alreadyConnectedAccount && alreadyConnectedProvider) {
+      console.log(
+        'try this for size',
+        alreadyConnectedAccount,
+        alreadyConnectedProvider
+      );
       connectWallet(alreadyConnectedProvider);
     }
 

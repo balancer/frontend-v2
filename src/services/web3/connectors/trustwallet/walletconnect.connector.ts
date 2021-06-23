@@ -1,10 +1,14 @@
 import { Connector } from '../connector';
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import ConfigService from '@/services/config/config.service';
 export class WalletConnectConnector extends Connector {
   id = 'walletconnect';
   async connect() {
+    const configService = new ConfigService();
     const provider = new WalletConnectProvider({
-      infuraId: process.env.VUE_APP_INFURA_PROJECT_ID
+      rpc: {
+        [configService.env.NETWORK]: configService.network.rpc
+      }
     });
     this.provider = provider;
 
