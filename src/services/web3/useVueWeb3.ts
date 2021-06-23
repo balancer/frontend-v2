@@ -75,6 +75,12 @@ export default function useVueWeb3() {
     return 'Loading...';
   });
 
+  const isMismatchedNetwork = computed(() => {
+    return userNetworkConfig.value.key !== process.env.VUE_APP_NETWORK;
+  });
+
+  const isUnsupportedNetwork = computed(() => !userNetworkConfig.value.key);
+
   return {
     connectWallet,
     account,
@@ -91,6 +97,8 @@ export default function useVueWeb3() {
     toggleWalletSelectModal,
     isWalletSelectVisible,
     userNetworkConfig,
-    appNetworkConfig
+    appNetworkConfig,
+    isMismatchedNetwork,
+    isUnsupportedNetwork
   };
 }
