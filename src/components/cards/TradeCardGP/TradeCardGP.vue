@@ -153,8 +153,6 @@ export default defineComponent({
     const modalTradePreviewIsOpen = ref(false);
 
     // COMPUTED
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
     const getConfig = () => store.getters['web3/getConfig']();
     const { allTokensIncludeEth: tokens } = useTokens();
     const slippageBufferRate = computed(() =>
