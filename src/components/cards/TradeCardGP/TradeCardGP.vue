@@ -2,7 +2,7 @@
   <BalCard class="relative">
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
-        <h4 class="font-bold">{{ title }} Gasless</h4>
+        <h4 class="font-bold">{{ title }}</h4>
         <TradeSettingsPopover :context="TradeSettingsContext.trade" />
       </div>
     </template>
@@ -12,13 +12,12 @@
         :token-in-address-input="tokenInAddress"
         :token-out-amount-input="tokenOutAmount"
         :token-out-address-input="tokenOutAddress"
-        :is-sell="isSell"
-        :price-impact="0"
+        :exact-in="exactIn"
         @token-in-amount-change="value => (tokenInAmount = value)"
         @token-in-address-change="value => (tokenInAddress = value)"
         @token-out-amount-change="value => (tokenOutAmount = value)"
         @token-out-address-change="value => (tokenOutAddress = value)"
-        @is-sell-change="value => (isSell = value)"
+        @exact-in-change="value => (exactIn = value)"
       />
       <BalAlert
         v-if="error"
@@ -32,7 +31,7 @@
         @actionClick="handleErrorButtonClick"
       />
       <BalBtn
-        :label="'Preview trade'"
+        :label="$t('previewTrade')"
         :disabled="tradeDisabled"
         :loading-label="$t('confirming')"
         color="gradient"
@@ -45,7 +44,7 @@
       :title="$t('tradeSettled')"
       :description="$t('tradeSuccess')"
       :closeLabel="$t('close')"
-      :txHash="txHash"
+      :explorerLink="explorerLink"
       @close="onSuccessOverlayClose"
     />
   </BalCard>
@@ -57,56 +56,64 @@
       :address-out="tokenOutAddress"
       :amount-out="tokenOutAmount"
       :trading="trading"
+      :order-id="orderId"
+      :formatted-fee-amount="formattedFeeAmount"
+      :exact-in="exactIn"
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"
-      :order-id="orderId"
     />
   </teleport>
 </template>
 
 <script lang="ts">
-import { isRequired } from '@/lib/utils/validations';
 import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { isAddress, getAddress } from '@ethersproject/address';
+import BigNumber from 'bignumber.js';
 
-import useGnosisProtocol from '@/composables/useGnosisProtocol';
-import useValidation, {
-  TradeValidation
-} from '@/composables/trade/useValidation';
-import { ETHER } from '@/constants/tokenlists';
-
-import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-
-import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
-import TradeSettingsPopover, {
-  TradeSettingsContext
-} from '@/components/popovers/TradeSettingsPopover.vue';
 import { useI18n } from 'vue-i18n';
-
-import TradePairGP from './TradePairGP.vue';
+import { isAddress, getAddress } from '@ethersproject/address';
 import { formatUnits, parseUnits } from '@ethersproject/units';
-import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
+
 import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
-import { BigNumber } from '@ethersproject/bignumber';
-import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 import {
   signOrder,
   UnsignedOrder,
   calculateValidTo
 } from '@/services/gnosis/signing';
-import useWeb3 from '@/composables/useWeb3';
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
-import useAuth from '@/composables/useAuth';
 import {
   isOrderFinalized,
   normalizeTokenAddress
 } from '@/services/gnosis/utils';
 
-const DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES = 20 * 60;
+import useTokens from '@/composables/useTokens';
+import useNotify from '@/composables/useNotify';
+import useAuth from '@/composables/useAuth';
+import useGnosisProtocol from '@/composables/useGnosisProtocol';
+import useValidation, {
+  TradeValidation
+} from '@/composables/trade/useValidation';
+import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
+import useWeb3 from '@/composables/useWeb3';
+import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+
+import { ETHER } from '@/constants/tokenlists';
+import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
+
+import { bnum, scale } from '@/lib/utils';
+import { isRequired } from '@/lib/utils/validations';
+import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
+
+import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
+import TradeSettingsPopover, {
+  TradeSettingsContext
+} from '@/components/popovers/TradeSettingsPopover.vue';
+
+import TradePairGP from './TradePairGP.vue';
+
 // TODO: get app id
-const GNOSIS_APP_ID = 1;
+const GNOSIS_APP_ID = 2;
 
 const appData = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
 
@@ -119,33 +126,39 @@ export default defineComponent({
   },
 
   setup() {
-    const highPiAccepted = ref(false);
-    const priceImpact = ref(0);
-    const isSell = ref(true);
+    // COMPOSABLES
+    const store = useStore();
+    const router = useRouter();
+    const auth = useAuth();
+    const { account, blockNumber, explorer } = useWeb3();
+    const { txListener } = useNotify();
+    const { t } = useI18n();
+    const { gnosisOperator, gnosisExplorer } = useGnosisProtocol();
+
+    // DATA
+    const exactIn = ref(true);
     const feeQuote = ref<FeeInformation | null>(null);
     const feeExceedsPrice = ref(false);
     const orderId = ref('');
     const orderMetadata = ref<OrderMetaData | null>(null);
-    const store = useStore();
-    const router = useRouter();
-    const auth = useAuth();
-    const { account, blockNumber } = useWeb3();
-
-    const { t } = useI18n();
-
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
-    const getConfig = () => store.getters['web3/getConfig']();
-    const tokens = computed(() => getTokens({ includeEther: true }));
-
+    const updatingQuotes = ref(false);
+    const latestTxHash = ref('');
+    const txHash = ref('');
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
     const tradeSuccess = ref(false);
     const trading = ref(false);
-    const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
+
+    // COMPUTED
+    // TODO use web3 composable
+    const getConfig = () => store.getters['web3/getConfig']();
+    const { allTokensIncludeEth: tokens } = useTokens();
+    const slippageBufferRate = computed(() =>
+      parseFloat(store.state.app.slippage)
+    );
 
     const isWrap = computed(() => {
       const config = getConfig();
@@ -163,9 +176,6 @@ export default defineComponent({
       );
     });
 
-    const isHighPriceImpact = computed(() => {
-      return priceImpact.value >= 0.05 && !highPiAccepted.value;
-    });
     const tokenInDecimals = computed<number>(
       () =>
         tokens.value[tokenInAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
@@ -175,20 +185,24 @@ export default defineComponent({
         tokens.value[tokenOutAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
     );
 
+    const explorerLink = computed(() =>
+      orderId.value != ''
+        ? gnosisExplorer.orderLink(orderId.value)
+        : explorer.txLink(txHash.value)
+    );
+
+    const feeAmount = computed(() => feeQuote.value?.amount || '0');
+    const formattedFeeAmount = computed(() =>
+      formatUnits(feeAmount.value, tokenInDecimals.value)
+    );
+
     const tradeDisabled = computed(() => {
-      if (
-        errorMessage.value !== TradeValidation.VALID ||
-        isHighPriceImpact.value ||
-        feeExceedsPrice.value
-      )
+      if (errorMessage.value !== TradeValidation.VALID || feeExceedsPrice.value)
         return true;
       return false;
     });
 
-    // COMPOSABLES
     useTokenApprovalGP(tokenInAddress, tokenInAmount, tokens);
-
-    const { gnosisOperator } = useGnosisProtocol();
 
     const { errorMessage } = useValidation(
       tokenInAddress,
@@ -201,11 +215,15 @@ export default defineComponent({
     const title = computed(() => {
       if (isWrap.value) return t('wrap');
       if (isUnwrap.value) return t('unwrap');
-      return t('trade');
+      return t('tradeGasless');
     });
 
+    const appTransactionDeadline = computed<number>(
+      () => store.state.app.transactionDeadline
+    );
+
     const orderKind = computed(
-      () => (isSell.value ? OrderKind.SELL : OrderKind.BUY) as OrderKind
+      () => (exactIn.value ? OrderKind.SELL : OrderKind.BUY) as OrderKind
     );
 
     const error = computed(() => {
@@ -213,13 +231,6 @@ export default defineComponent({
         return {
           header: 'Low amount',
           body: 'Fees exceeds from amount'
-        };
-      }
-      if (isHighPriceImpact.value) {
-        return {
-          header: t('highPriceImpact'),
-          body: t('highPriceImpactDetailed'),
-          label: t('accept')
         };
       }
       switch (errorMessage.value) {
@@ -243,10 +254,9 @@ export default defineComponent({
       }
     });
 
+    // METHODS
     function handleErrorButtonClick() {
-      if (isHighPriceImpact.value) {
-        highPiAccepted.value = true;
-      }
+      console.log('TOOD: implement if needed');
     }
 
     async function populateInitialTokens(): Promise<void> {
@@ -264,25 +274,68 @@ export default defineComponent({
     function onSuccessOverlayClose() {
       tradeSuccess.value = false;
       orderMetadata.value = null;
+      txHash.value = '';
+      orderId.value = '';
     }
 
-    async function trade() {
+    async function wrapETH(amount: BigNumber) {
       try {
+        trading.value = true;
+
+        const { chainId } = getConfig();
+        const tx = await wrap(chainId, auth.web3, amount);
+        tradeTxListener(tx.hash);
+      } catch (e) {
+        console.log(e);
+        trading.value = false;
+      }
+    }
+
+    async function unwrapETH(amount: BigNumber) {
+      try {
+        trading.value = true;
+
+        const { chainId } = getConfig();
+        const tx = await unwrap(chainId, auth.web3, amount);
+        tradeTxListener(tx.hash);
+      } catch (e) {
+        console.log(e);
+        trading.value = false;
+      }
+    }
+
+    async function postSignedOrder(
+      tokenInAmountScaled: BigNumber,
+      tokenOutAmountScaled: BigNumber
+    ) {
+      try {
+        trading.value = true;
+
+        let sellAmount: string;
+        let buyAmount: string;
+
+        if (exactIn.value) {
+          sellAmount = tokenInAmountScaled.toString();
+          buyAmount = tokenOutAmountScaled
+            .div(1 + slippageBufferRate.value)
+            .integerValue(BigNumber.ROUND_DOWN)
+            .toString();
+        } else {
+          sellAmount = tokenInAmountScaled
+            .times(1 + slippageBufferRate.value)
+            .integerValue(BigNumber.ROUND_DOWN)
+            .toString();
+          buyAmount = tokenOutAmountScaled.toString();
+        }
+
         const unsignedOrder: UnsignedOrder = {
           sellToken: normalizeTokenAddress(tokenInAddress.value),
           buyToken: normalizeTokenAddress(tokenOutAddress.value),
-          sellAmount: parseUnits(
-            tokenInAmount.value,
-            tokenInDecimals.value
-          ).toString(),
-          buyAmount: parseUnits(
-            tokenOutAmount.value,
-            tokenOutDecimals.value
-          ).toString(),
-          validTo: calculateValidTo(DEFAULT_TRANSACTION_DEADLINE_IN_MINUTES),
-          // TODO: get app id
+          sellAmount,
+          buyAmount,
+          validTo: calculateValidTo(appTransactionDeadline.value),
           appData,
-          feeAmount: feeQuote.value?.amount || '0',
+          feeAmount: feeAmount.value,
           kind: orderKind.value,
           receiver: account.value,
           partiallyFillable: false // Always fill or kill
@@ -294,9 +347,7 @@ export default defineComponent({
           unsignedOrder,
           signer
         );
-        trading.value = true;
 
-        // Call API
         orderId.value = await gnosisOperator.postSignedOrder({
           order: {
             ...unsignedOrder,
@@ -308,25 +359,61 @@ export default defineComponent({
         });
       } catch (e) {
         console.log(e);
+        trading.value = false;
       }
     }
 
+    async function trade() {
+      const tokenInAmountScaled = scale(
+        bnum(tokenInAmount.value),
+        tokenInDecimals.value
+      );
+
+      const tokenOutAmountScaled = scale(
+        bnum(tokenOutAmount.value),
+        tokenOutDecimals.value
+      );
+
+      if (isWrap.value) {
+        wrapETH(tokenInAmountScaled);
+      } else if (isUnwrap.value) {
+        unwrapETH(tokenInAmountScaled);
+      } else {
+        postSignedOrder(tokenInAmountScaled, tokenOutAmountScaled);
+      }
+    }
+
+    function tradeTxListener(hash: string) {
+      txListener(hash, {
+        onTxConfirmed: () => {
+          trading.value = false;
+          latestTxHash.value = hash;
+        },
+        onTxCancel: () => {
+          trading.value = false;
+        },
+        onTxFailed: () => {
+          trading.value = false;
+        }
+      });
+    }
+
     async function updateQuotes() {
-      feeExceedsPrice.value = false;
+      const tokenAmount = exactIn.value ? tokenInAmount : tokenOutAmount;
+      const otherTokenAmount = exactIn.value ? tokenOutAmount : tokenInAmount;
 
-      const tokenAmount = isSell.value ? tokenInAmount : tokenOutAmount;
-      const otherTokenAmount = isSell.value ? tokenOutAmount : tokenInAmount;
-      const tokenDecimals = isSell.value
-        ? tokenInDecimals.value
-        : tokenOutDecimals.value;
+      if (tokenAmount.value !== '' && parseFloat(tokenAmount.value) > 0) {
+        updatingQuotes.value = true;
+        feeExceedsPrice.value = false;
 
-      const sellToken = tokenInAddress.value;
-      const buyToken = tokenOutAddress.value;
-      const kind = orderKind.value;
+        const tokenDecimals = exactIn.value
+          ? tokenInDecimals.value
+          : tokenOutDecimals.value;
 
-      let amountToExchange = parseUnits(tokenAmount.value, tokenDecimals);
-
-      if (parseFloat(tokenAmount.value) > 0) {
+        const sellToken = tokenInAddress.value;
+        const buyToken = tokenOutAddress.value;
+        const kind = orderKind.value;
+        let amountToExchange = parseUnits(tokenAmount.value, tokenDecimals);
         try {
           // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
           const feeQuoteResult = await gnosisOperator.getFeeQuote({
@@ -337,7 +424,7 @@ export default defineComponent({
           });
 
           if (feeQuoteResult != null) {
-            if (isSell.value) {
+            if (exactIn.value) {
               // deduct fee if its a sell order
               amountToExchange = amountToExchange.sub(feeQuoteResult.amount);
 
@@ -355,12 +442,7 @@ export default defineComponent({
                 feeQuote.value = feeQuoteResult;
 
                 otherTokenAmount.value = formatUnits(
-                  isSell.value
-                    ? priceQuoteResult.amount
-                    : // add the fee for buy orders
-                      BigNumber.from(priceQuoteResult.amount)
-                        .add(feeQuoteResult.amount)
-                        .toString(),
+                  priceQuoteResult.amount,
                   tokenDecimals
                 );
               }
@@ -369,26 +451,42 @@ export default defineComponent({
         } catch (e) {
           console.log('[Gnosis Quotes] Failed to update quotes', e);
         }
+        updatingQuotes.value = false;
       }
     }
 
+    // WATCHERS
     watch(tokenInAddress, async () => {
       store.commit('trade/setInputAsset', tokenInAddress.value);
+      feeQuote.value = null;
+      updateQuotes();
     });
 
     watch(tokenOutAddress, async () => {
       store.commit('trade/setOutputAsset', tokenOutAddress.value);
+      feeQuote.value = null;
+      updateQuotes();
     });
 
     watch(tokenInAmount, () => {
-      updateQuotes();
+      if (tokenInAmount.value !== '') {
+        updateQuotes();
+      } else {
+        tokenOutAmount.value = '';
+      }
     });
 
     watch(tokenOutAmount, async () => {
-      updateQuotes();
+      if (tokenOutAmount.value !== '') {
+        updateQuotes();
+      } else {
+        tokenInAmount.value = '';
+      }
     });
 
     watch(blockNumber, async () => {
+      updateQuotes();
+
       if (orderId.value != '') {
         const order = await gnosisOperator.getOrder(orderId.value);
         if (isOrderFinalized(order)) {
@@ -396,33 +494,48 @@ export default defineComponent({
           trading.value = false;
           tradeSuccess.value = true;
           modalTradePreviewIsOpen.value = false;
-          orderId.value = '';
         }
       }
     });
 
+    watch(latestTxHash, () => {
+      txHash.value = latestTxHash.value;
+      tradeSuccess.value = true;
+      modalTradePreviewIsOpen.value = false;
+    });
+
+    // INIT
     populateInitialTokens();
 
     return {
-      highPiAccepted,
-      title,
-      error,
-      handleErrorButtonClick,
+      // context
+      TradeSettingsContext,
+
+      // data
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      errorMessage,
       txHash,
       modalTradePreviewIsOpen,
-      tradeSuccess,
+      exactIn,
+      orderId,
+
+      // computed
+      explorerLink,
+      formattedFeeAmount,
+      title,
+      error,
+      errorMessage,
       isRequired,
       tradeDisabled,
-      TradeSettingsContext,
-      isSell,
-      trade,
       trading,
-      orderId,
+      tradeSuccess,
+
+      // methods
+      handleErrorButtonClick,
+      updatingQuotes,
+      trade,
       onSuccessOverlayClose
     };
   }

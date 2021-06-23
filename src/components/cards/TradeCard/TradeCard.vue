@@ -68,7 +68,7 @@
       :title="$t('tradeSettled')"
       :description="$t('tradeSuccess')"
       :closeLabel="$t('close')"
-      :txHash="txHash"
+      :explorer-link="explorer.txLink(txHash)"
       @close="tradeSuccess = false"
     />
   </BalCard>
@@ -111,6 +111,7 @@ import TradeSettingsPopover, {
 import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   components: {
@@ -126,6 +127,7 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
+    const { explorer } = useWeb3();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
@@ -318,7 +320,8 @@ export default defineComponent({
       TradeSettingsContext,
       poolsLoading,
       bp,
-      tradeCardShadow
+      tradeCardShadow,
+      explorer
     };
   }
 });
