@@ -153,6 +153,7 @@ export default defineComponent({
     const modalTradePreviewIsOpen = ref(false);
 
     // COMPUTED
+    // TODO use web3 composable
     const getConfig = () => store.getters['web3/getConfig']();
     const { allTokensIncludeEth: tokens } = useTokens();
     const slippageBufferRate = computed(() =>
