@@ -29,6 +29,33 @@ const TOKEN_LISTS_MAP: Record<string, TokenListConfig> = {
       'https://tokens.coingecko.com/uniswap/all.json',
       'https://umaproject.org/uma.tokenlist.json'
     ]
+  },
+  '42': {
+    Balancer: {
+      Default:
+        'https://storageapi.fleek.co/balancer-team-bucket/assets/listed.tokenlist.json',
+      Vetted:
+        'https://storageapi.fleek.co/balancer-team-bucket/assets/vetted.tokenlist.json'
+    },
+    External: [
+      'ipns://tokens.uniswap.org',
+      'tokenlist.zerion.eth',
+      'tokens.1inch.eth',
+      'tokenlist.aave.eth',
+      'https://tokens.coingecko.com/uniswap/all.json',
+      'https://umaproject.org/uma.tokenlist.json'
+    ]
+  },
+  '137': {
+    Balancer: {
+      Default:
+        'https://storageapi.fleek.co/tomafrench-team-bucket/polygon.listed.tokenlist.json',
+      Vetted:
+        'https://storageapi.fleek.co/tomafrench-team-bucket/polygon.vetted.tokenlist.json'
+    },
+    External: [
+      'https://unpkg.com/quickswap-default-token-list@1.0.67/build/quickswap-default.tokenlist.json'
+    ]
   }
 };
 
