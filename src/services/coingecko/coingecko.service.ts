@@ -3,6 +3,26 @@ import { CoingeckoClient } from './coingecko.client';
 
 const SUPPORTED_FIAT = ['usd'];
 
+export const getNativeAssetId = (chainId: string): string => {
+  const mapping = {
+    '1': 'ethereum',
+    '42': 'ethereum',
+    '137': 'matic-network'
+  };
+
+  return mapping[chainId] || 'ethereum';
+};
+
+export const getPlatformId = (chainId: string): string => {
+  const mapping = {
+    '1': 'ethereum',
+    '42': 'ethereum',
+    '137': 'polygon-pos'
+  };
+
+  return mapping[chainId] || 'ethereum';
+};
+
 export class CoingeckoService {
   supportedFiat: string;
   prices: PriceService;
