@@ -231,7 +231,7 @@ export default defineComponent({
       store.commit('app/setTradeInterface', tradeInterface);
 
     function copyAddress() {
-      navigator.clipboard.writeText(store.state.web3.account);
+      navigator.clipboard.writeText(account.value);
       data.copiedAddress = true;
 
       setTimeout(() => {
