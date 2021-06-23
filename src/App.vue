@@ -21,7 +21,7 @@ import { useStore } from 'vuex';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
-import WalletSelectModal from '@/services/web3/components/WalletSelectModal.vue';
+import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useVueWeb3 from './services/web3/useVueWeb3';
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import { useRoute } from 'vue-router';

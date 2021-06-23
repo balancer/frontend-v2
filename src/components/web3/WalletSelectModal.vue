@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import { SupportedWallets } from '../web3.plugin';
-import WalletButton from './WalletButton.vue';
+import { SupportedWallets } from '@/services/web3/web3.plugin';
+import WalletButton from '@/components/web3/WalletButton.vue';
 import { defineComponent } from 'vue';
 export default defineComponent({
   emits: ['close'],

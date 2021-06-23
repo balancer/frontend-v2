@@ -252,8 +252,7 @@ export default defineComponent({
     const modalSelectTokenIsOpen = ref(false);
 
     function handleMax(): void {
-      const balance =
-        tokens.value[tokenInAddressInput.value]?.balance || '0';
+      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
       const balanceNumber = parseFloat(balance);
       const maxAmount =
         tokenInAddressInput.value !== ETHER.address
