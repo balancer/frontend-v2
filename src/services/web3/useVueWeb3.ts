@@ -58,8 +58,7 @@ export default function useVueWeb3() {
   // load up a list of all the evm chains
   const { data: evmChains, isLoading: isLoadingEvmChains } = useQuery(
     'EVM_CHAINS',
-    async () =>
-      await (await axios.get('https://chainid.network/chains.json')).data
+    async () => (await axios.get('https://chainid.network/chains.json')).data
   );
 
   const networkName = computed(() => {

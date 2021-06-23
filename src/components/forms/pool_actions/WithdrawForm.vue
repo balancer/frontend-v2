@@ -294,7 +294,6 @@ export default defineComponent({
     });
 
     const propMaxUSD = computed(() => {
-      console.log('ropmax', data.propMax);
       const total = props.pool.tokenAddresses
         .map((token, i) => toFiat(Number(data.propMax[i]), token))
         .reduce((a, b) => a + b, 0);
@@ -319,10 +318,6 @@ export default defineComponent({
     });
 
     const bptBalance = computed(() => {
-      console.log(
-        'tokendict',
-        tokenDictionary.value[props.pool.address].balance
-      );
       return tokenDictionary.value[props.pool.address].balance;
     });
 

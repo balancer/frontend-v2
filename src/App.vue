@@ -37,7 +37,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     useWeb3Watchers();
-    const { isWalletSelectVisible } = useVueWeb3();
+    const { isWalletSelectVisible, toggleWalletSelectModal } = useVueWeb3();
     const store = useStore();
     const route = useRoute();
 
@@ -72,7 +72,8 @@ export default defineComponent({
       isHomePage,
       // methods
       onLogin,
-      setAccountModal
+      setAccountModal,
+      toggleWalletSelectModal
     };
   }
 });

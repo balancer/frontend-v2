@@ -149,7 +149,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed, ref, watch } from 'vue';
+import { defineComponent, toRefs, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
@@ -158,7 +158,6 @@ import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import useTokenLists from '@/composables/useTokenLists';
 
 const ETH_BUFFER = 0.1;
 
