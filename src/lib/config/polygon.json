@@ -5,14 +5,20 @@
   "shortName": "Polygon",
   "network": "polygon",
   "unknown": false,
-  "nativeAsset": "MATIC",
-  "nativeAssetLong": "Matic",
   "rpc": "https://polygon-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
   "ws": "wss://rpc-mainnet.maticvigil.com/ws",
   "explorer": "https://polygonscan.com/",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
+  "nativeAsset": {
+    "name": "Matic",
+    "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "symbol": "MATIC",
+    "decimals": 18,
+    "deeplinkId": "matic",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png"
+  },
   "addresses": {
     "bFactory": "",
     "bActions": "",
