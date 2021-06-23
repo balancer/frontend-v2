@@ -69,11 +69,11 @@
 import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import BigNumber from 'bignumber.js';
 
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { formatUnits, parseUnits } from '@ethersproject/units';
-import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber';
 
 import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
 import {
@@ -111,7 +111,6 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
 import TradePairGP from './TradePairGP.vue';
-import BigNumber from 'bignumber.js';
 
 // TODO: get app id
 const GNOSIS_APP_ID = 2;
@@ -279,106 +278,107 @@ export default defineComponent({
     }
 
     async function wrapETH(amount: BigNumber) {
-      const { chainId } = getConfig();
+      try {
+        trading.value = true;
 
-      const tx = await wrap(chainId, auth.web3, amount);
-      tradeTxListener(tx.hash);
+        const { chainId } = getConfig();
+        const tx = await wrap(chainId, auth.web3, amount);
+        tradeTxListener(tx.hash);
+      } catch (e) {
+        console.log(e);
+        trading.value = false;
+      }
     }
 
     async function unwrapETH(amount: BigNumber) {
-      const { chainId } = getConfig();
+      try {
+        trading.value = true;
 
-      const tx = await unwrap(chainId, auth.web3, amount);
-      tradeTxListener(tx.hash);
+        const { chainId } = getConfig();
+        const tx = await unwrap(chainId, auth.web3, amount);
+        tradeTxListener(tx.hash);
+      } catch (e) {
+        console.log(e);
+        trading.value = false;
+      }
     }
 
     async function postSignedOrder(
       tokenInAmountScaled: BigNumber,
       tokenOutAmountScaled: BigNumber
     ) {
-      let sellAmount: string;
-      let buyAmount: string;
-
-      if (exactIn.value) {
-        sellAmount = parseUnits(tokenInAmount.value, tokenInDecimals.value)
-          .sub(feeAmount.value)
-          .toString();
-        buyAmount = parseUnits(
-          tokenOutAmountScaled
-            .div(1 + slippageBufferRate.value)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .toString(),
-          tokenOutDecimals.value
-        ).toString();
-      } else {
-        sellAmount = parseUnits(
-          tokenInAmountScaled
-            .times(1 + slippageBufferRate.value)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .toString(),
-          tokenInDecimals.value
-        ).toString();
-        buyAmount = parseUnits(
-          tokenOutAmount.value,
-          tokenOutDecimals.value
-        ).toString();
-      }
-
-      const unsignedOrder: UnsignedOrder = {
-        sellToken: normalizeTokenAddress(tokenInAddress.value),
-        buyToken: normalizeTokenAddress(tokenOutAddress.value),
-        sellAmount,
-        buyAmount,
-        validTo: calculateValidTo(appTransactionDeadline.value),
-        appData,
-        feeAmount: feeAmount.value,
-        kind: orderKind.value,
-        receiver: account.value,
-        partiallyFillable: false // Always fill or kill
-      };
-
-      const signer = auth.web3.getSigner();
-
-      const { signature, signingScheme } = await signOrder(
-        unsignedOrder,
-        signer
-      );
-
-      orderId.value = await gnosisOperator.postSignedOrder({
-        order: {
-          ...unsignedOrder,
-          signature,
-          receiver: account.value,
-          signingScheme
-        },
-        owner: account.value
-      });
-    }
-
-    async function trade() {
       try {
-        const tokenInAmountScaled = scale(
-          bnum(tokenInAmount.value),
-          tokenInDecimals.value
-        );
-
-        const tokenOutAmountScaled = scale(
-          bnum(tokenOutAmount.value),
-          tokenOutDecimals.value
-        );
-
         trading.value = true;
 
-        if (isWrap.value) {
-          wrapETH(tokenInAmountScaled);
-        } else if (isUnwrap.value) {
-          unwrapETH(tokenInAmountScaled);
+        let sellAmount: string;
+        let buyAmount: string;
+
+        if (exactIn.value) {
+          sellAmount = tokenInAmountScaled.toString();
+          buyAmount = tokenOutAmountScaled
+            .div(1 + slippageBufferRate.value)
+            .integerValue(BigNumber.ROUND_DOWN)
+            .toString();
         } else {
-          postSignedOrder(tokenInAmountScaled, tokenOutAmountScaled);
+          sellAmount = tokenInAmountScaled
+            .times(1 + slippageBufferRate.value)
+            .integerValue(BigNumber.ROUND_DOWN)
+            .toString();
+          buyAmount = tokenOutAmountScaled.toString();
         }
+
+        const unsignedOrder: UnsignedOrder = {
+          sellToken: normalizeTokenAddress(tokenInAddress.value),
+          buyToken: normalizeTokenAddress(tokenOutAddress.value),
+          sellAmount,
+          buyAmount,
+          validTo: calculateValidTo(appTransactionDeadline.value),
+          appData,
+          feeAmount: feeAmount.value,
+          kind: orderKind.value,
+          receiver: account.value,
+          partiallyFillable: false // Always fill or kill
+        };
+
+        const signer = auth.web3.getSigner();
+
+        const { signature, signingScheme } = await signOrder(
+          unsignedOrder,
+          signer
+        );
+
+        orderId.value = await gnosisOperator.postSignedOrder({
+          order: {
+            ...unsignedOrder,
+            signature,
+            receiver: account.value,
+            signingScheme
+          },
+          owner: account.value
+        });
       } catch (e) {
         console.log(e);
         trading.value = false;
+      }
+    }
+
+    async function trade() {
+      const tokenInAmountScaled = scale(
+        bnum(tokenInAmount.value),
+        tokenInDecimals.value
+      );
+
+      const tokenOutAmountScaled = scale(
+        bnum(tokenOutAmount.value),
+        tokenOutDecimals.value
+      );
+
+      if (isWrap.value) {
+        wrapETH(tokenInAmountScaled);
+      } else if (isUnwrap.value) {
+        unwrapETH(tokenInAmountScaled);
+      } else {
+        postSignedOrder(tokenInAmountScaled, tokenOutAmountScaled);
       }
     }
 
@@ -441,12 +441,7 @@ export default defineComponent({
                 feeQuote.value = feeQuoteResult;
 
                 otherTokenAmount.value = formatUnits(
-                  exactIn.value
-                    ? priceQuoteResult.amount
-                    : // add the fee for buy orders
-                      EthersBigNumber.from(priceQuoteResult.amount)
-                        .add(feeQuoteResult.amount)
-                        .toString(),
+                  priceQuoteResult.amount,
                   tokenDecimals
                 );
               }
