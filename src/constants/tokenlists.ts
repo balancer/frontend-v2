@@ -2,6 +2,8 @@ import useConfig from '@/composables/useConfig';
 
 const { env, networkConfig } = useConfig();
 
+// TODO replace imports of ETHER throughout the app so we can remove it from here.
+// It doesn't make sense to have this ETHER definition here, this file should be for tokenlist URIs only.
 export const ETHER = networkConfig.nativeAsset;
 
 type TokenListConfig = {
