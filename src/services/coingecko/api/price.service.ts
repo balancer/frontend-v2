@@ -1,5 +1,9 @@
 import { CoingeckoClient } from '../coingecko.client';
-import { CoingeckoService } from '../coingecko.service';
+import {
+  CoingeckoService,
+  getNativeAssetId,
+  getPlatformId
+} from '../coingecko.service';
 import { TOKENS } from '@/constants/tokens';
 import ConfigService from '@/services/config/config.service';
 import { invert } from 'lodash';
@@ -9,18 +13,6 @@ import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
 export type Price = { [fiat: string]: number };
 export type PriceResponse = { [id: string]: Price };
 export type TokenPrices = { [address: string]: Price };
-
-const nativeAssetIdMap = {
-  '1': 'ethereum',
-  '42': 'ethereum',
-  '137': 'matic-network'
-};
-
-const platformIdMap = {
-  '1': 'ethereum',
-  '42': 'ethereum',
-  '137': 'polygon-pos'
-};
 
 export class PriceService {
   client: CoingeckoClient;
@@ -38,8 +30,8 @@ export class PriceService {
     this.fiatParam = service.supportedFiat;
     this.baseEndpoint = '/simple';
     this.appNetwork = configService.network.key;
-    this.platformId = platformIdMap[this.appNetwork];
-    this.nativeAssetId = nativeAssetIdMap[this.appNetwork];
+    this.platformId = getPlatformId(this.appNetwork);
+    this.nativeAssetId = getNativeAssetId(this.appNetwork);
   }
 
   async getEther(): Promise<Price> {

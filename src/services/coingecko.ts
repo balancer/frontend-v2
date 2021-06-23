@@ -1,4 +1,5 @@
 import useConfig from '@/composables/useConfig';
+import { getNativeAssetId, getPlatformId } from './coingecko/api/price.service';
 
 function getChainAddress(chainId: number, address: string) {
   if (!address) {
@@ -65,25 +66,13 @@ interface Price {
   price24HChange: number;
 }
 
-const nativeAssetIdMap = {
-  1: 'ethereum',
-  42: 'ethereum',
-  137: 'matic-network'
-};
-
-const platformIdMap = {
-  1: 'ethereum',
-  42: 'ethereum',
-  137: 'polygon-pos'
-};
-
 export type Prices = Record<string, Price>;
 
 export type HistoricalPrices = Record<string, Prices>;
 
 export async function getEtherPrice(): Promise<Price> {
   const { networkConfig } = useConfig();
-  const nativeAssetId = nativeAssetIdMap[networkConfig.chainId ?? 1];
+  const nativeAssetId = getNativeAssetId(networkConfig.chainId);
   const uri = `https://api.coingecko.com/api/v3/simple/price?ids=${nativeAssetId}&vs_currencies=usd&include_24hr_change=true`;
   const result = await fetch(uri).then(res => res.json());
   return {
@@ -97,7 +86,6 @@ export async function getTokensPrice(
   addresses: string[]
 ): Promise<Prices> {
   const { networkConfig } = useConfig();
-  const platformId = platformIdMap[networkConfig.chainId ?? 1];
 
   const max = 175;
   const pages = Math.ceil(addresses.length / max);
@@ -106,7 +94,9 @@ export async function getTokensPrice(
     const addressString = addresses
       .slice(max * i, max * (i + 1))
       .map(address => getChainAddress(chainId, address));
-    const uri = `https://api.coingecko.com/api/v3/simple/token_price/${platformId}?contract_addresses=${addressString}&vs_currencies=usd&include_24hr_change=true`;
+    const uri = `https://api.coingecko.com/api/v3/simple/token_price/${getPlatformId(
+      networkConfig.chainId
+    )}?contract_addresses=${addressString}&vs_currencies=usd&include_24hr_change=true`;
     // @ts-ignore
     promises.push(fetch(uri).then(res => res.json()));
   });
