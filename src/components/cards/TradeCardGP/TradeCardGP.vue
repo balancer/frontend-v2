@@ -278,9 +278,85 @@ export default defineComponent({
       orderId.value = '';
     }
 
+    async function wrapETH(amount: BigNumber) {
+      const { chainId } = getConfig();
+
+      const tx = await wrap(chainId, auth.web3, amount);
+      tradeTxListener(tx.hash);
+    }
+
+    async function unwrapETH(amount: BigNumber) {
+      const { chainId } = getConfig();
+
+      const tx = await unwrap(chainId, auth.web3, amount);
+      tradeTxListener(tx.hash);
+    }
+
+    async function postSignedOrder(
+      tokenInAmountScaled: BigNumber,
+      tokenOutAmountScaled: BigNumber
+    ) {
+      let sellAmount: string;
+      let buyAmount: string;
+
+      if (exactIn.value) {
+        sellAmount = parseUnits(tokenInAmount.value, tokenInDecimals.value)
+          .sub(feeAmount.value)
+          .toString();
+        buyAmount = parseUnits(
+          tokenOutAmountScaled
+            .div(1 + slippageBufferRate.value)
+            .integerValue(BigNumber.ROUND_DOWN)
+            .toString(),
+          tokenOutDecimals.value
+        ).toString();
+      } else {
+        sellAmount = parseUnits(
+          tokenInAmountScaled
+            .times(1 + slippageBufferRate.value)
+            .integerValue(BigNumber.ROUND_DOWN)
+            .toString(),
+          tokenInDecimals.value
+        ).toString();
+        buyAmount = parseUnits(
+          tokenOutAmount.value,
+          tokenOutDecimals.value
+        ).toString();
+      }
+
+      const unsignedOrder: UnsignedOrder = {
+        sellToken: normalizeTokenAddress(tokenInAddress.value),
+        buyToken: normalizeTokenAddress(tokenOutAddress.value),
+        sellAmount,
+        buyAmount,
+        validTo: calculateValidTo(appTransactionDeadline.value),
+        appData,
+        feeAmount: feeAmount.value,
+        kind: orderKind.value,
+        receiver: account.value,
+        partiallyFillable: false // Always fill or kill
+      };
+
+      const signer = auth.web3.getSigner();
+
+      const { signature, signingScheme } = await signOrder(
+        unsignedOrder,
+        signer
+      );
+
+      orderId.value = await gnosisOperator.postSignedOrder({
+        order: {
+          ...unsignedOrder,
+          signature,
+          receiver: account.value,
+          signingScheme
+        },
+        owner: account.value
+      });
+    }
+
     async function trade() {
       try {
-        const { chainId } = getConfig();
         const tokenInAmountScaled = scale(
           bnum(tokenInAmount.value),
           tokenInDecimals.value
@@ -294,85 +370,12 @@ export default defineComponent({
         trading.value = true;
 
         if (isWrap.value) {
-          try {
-            const tx = await wrap(chainId, auth.web3, tokenInAmountScaled);
-            console.log('Wrap tx', tx);
-            tradeTxListener(tx.hash);
-          } catch (e) {
-            console.log(e);
-            trading.value = false;
-          }
-          return;
+          wrapETH(tokenInAmountScaled);
         } else if (isUnwrap.value) {
-          try {
-            const tx = await unwrap(chainId, auth.web3, tokenInAmountScaled);
-            console.log('Unwrap tx', tx);
-            tradeTxListener(tx.hash);
-          } catch (e) {
-            console.log(e);
-            trading.value = false;
-          }
-          return;
-        }
-
-        let sellAmount: string;
-        let buyAmount: string;
-
-        if (exactIn.value) {
-          sellAmount = parseUnits(tokenInAmount.value, tokenInDecimals.value)
-            .sub(feeAmount.value)
-            .toString();
-          buyAmount = parseUnits(
-            tokenOutAmountScaled
-              .div(1 + slippageBufferRate.value)
-              .integerValue(BigNumber.ROUND_DOWN)
-              .toString(),
-            tokenOutDecimals.value
-          ).toString();
+          unwrapETH(tokenInAmountScaled);
         } else {
-          sellAmount = parseUnits(
-            tokenInAmountScaled
-              .times(1 + slippageBufferRate.value)
-              .integerValue(BigNumber.ROUND_DOWN)
-              .toString(),
-            tokenInDecimals.value
-          ).toString();
-          buyAmount = parseUnits(
-            tokenOutAmount.value,
-            tokenOutDecimals.value
-          ).toString();
+          postSignedOrder(tokenInAmountScaled, tokenOutAmountScaled);
         }
-
-        const unsignedOrder: UnsignedOrder = {
-          sellToken: normalizeTokenAddress(tokenInAddress.value),
-          buyToken: normalizeTokenAddress(tokenOutAddress.value),
-          sellAmount,
-          buyAmount,
-          validTo: calculateValidTo(appTransactionDeadline.value),
-          appData,
-          feeAmount: feeAmount.value,
-          kind: orderKind.value,
-          receiver: account.value,
-          partiallyFillable: false // Always fill or kill
-        };
-
-        const signer = auth.web3.getSigner();
-
-        const { signature, signingScheme } = await signOrder(
-          unsignedOrder,
-          signer
-        );
-
-        // Call API
-        orderId.value = await gnosisOperator.postSignedOrder({
-          order: {
-            ...unsignedOrder,
-            signature,
-            receiver: account.value,
-            signingScheme
-          },
-          owner: account.value
-        });
       } catch (e) {
         console.log(e);
         trading.value = false;
