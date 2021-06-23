@@ -121,13 +121,17 @@ export async function getTokensHistoricalPrice(
   addresses: string[],
   days: number
 ): Promise<HistoricalPrices> {
+  const { networkConfig } = useConfig();
+
   const DAY = 60 * 60 * 24;
   const now = Math.floor(Date.now() / 1000);
   const end = now - (now % DAY);
   const start = end - days * DAY;
   const priceRequests = addresses.map(address => {
     const chainAddress = getChainAddress(chainId, address);
-    const url = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${chainAddress}/market_chart/range?vs_currency=usd&from=${start}&to=${end}`;
+    const url = `https://api.coingecko.com/api/v3/coins/${getPlatformId(
+      networkConfig.chainId
+    )}/contract/${chainAddress}/market_chart/range?vs_currency=usd&from=${start}&to=${end}`;
     const request = fetch(url).then(res => res.json());
     return request;
   });
