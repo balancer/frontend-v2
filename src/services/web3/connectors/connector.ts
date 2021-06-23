@@ -1,6 +1,7 @@
 import { ref, Ref } from 'vue';
 import Web3 from 'web3';
 import { getAddress } from '@ethersproject/address';
+import { lsSet } from '@/lib/utils';
 
 export type ConnectorPayload = {
   provider: Web3;
@@ -52,6 +53,9 @@ export abstract class Connector {
     this.selectedAccount = '';
     if (this.provider.disconnect) {
       this.provider.disconnect();
+    }
+    if (this.provider.close) {
+      this.provider.close();
     }
   };
 

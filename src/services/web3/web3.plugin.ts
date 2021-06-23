@@ -1,16 +1,22 @@
 import { MetamaskConnector } from './connectors/metamask/metamask.connector';
 import { Connector } from './connectors/connector';
-import { computed, reactive, Ref, toRefs } from 'vue';
+import { computed, reactive, ref, Ref, toRefs } from 'vue';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { getAddress } from '@ethersproject/address';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsGet, lsRemove, lsSet } from '@/lib/utils';
 import { Web3Provider } from '@ethersproject/providers';
+import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 
-export type Wallet = 'metamask' | 'walletconnect';
-export const SupportedWallets = ['metamask', 'walletconnect'] as Wallet[];
+export type Wallet = 'metamask' | 'walletconnect' | 'walletlink';
+export const SupportedWallets = [
+  'metamask',
+  'walletconnect',
+  'walletlink'
+] as Wallet[];
 export const WalletNameDictionary: Record<Wallet, string> = {
   metamask: 'Metamask',
-  walletconnect: 'Wallet Connect'
+  walletconnect: 'WalletConnect',
+  walletlink: 'Coinbase'
 };
 type ConnectorImplementation = new (...args: any[]) => Connector;
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
@@ -27,7 +33,8 @@ export type Web3Plugin = {
 
 const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   metamask: MetamaskConnector,
-  walletconnect: WalletConnectConnector
+  walletconnect: WalletConnectConnector,
+  walletlink: WalletLinkConnector
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -38,8 +45,8 @@ type PluginState = {
 
 export default {
   install: async app => {
-    const alreadyConnectedAccount = lsGet('connectedWallet', null);
-    const alreadyConnectedProvider = lsGet('connectedProvider', null);
+    const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
+    const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
@@ -69,7 +76,6 @@ export default {
       pluginState.walletState = 'connecting';
 
       try {
-        console.log('wally', wallet);
         if (!wallet || typeof wallet !== 'string') {
           throw new Error(
             'Please provide a wallet to facilitate a web3 connection.'
@@ -79,7 +85,7 @@ export default {
         // the wallet parameter will be provided by the front-end by means of
         // modal selection or otherwise
         const connector = new WalletConnectorDictionary[wallet](
-          alreadyConnectedAccount
+          alreadyConnectedAccount.value
         );
         if (!connector) {
           throw new Error(
@@ -96,9 +102,11 @@ export default {
 
         // for when user reloads the app on an already connected wallet
         // need to store address to pre-load that connection
-        lsSet('connectedWallet', account.value);
-        lsSet('connectedProvider', wallet);
-        pluginState.walletState = 'connected';
+        if (account.value) {
+          lsSet('connectedWallet', account.value);
+          lsSet('connectedProvider', wallet);
+          pluginState.walletState = 'connected';
+        }
       } catch (err) {
         console.error(err);
         pluginState.walletState = 'disconnected';
@@ -115,21 +123,15 @@ export default {
       connector.handleDisconnect();
       pluginState.connector = null;
       pluginState.walletState = 'disconnected';
-      // using lsRemove will make make lsGet return an empty
-      // object for these values when retrieved, ruining the
-      // pre-connected wallet flow
-      lsSet('connectedWallet', '');
-      lsSet('connectedProvider', '');
+      lsRemove('connectedWallet');
+      lsRemove('connectedProvider');
+      alreadyConnectedAccount.value = null;
+      alreadyConnectedProvider.value = null;
     };
 
     // previously connected wallet initiation
-    if (alreadyConnectedAccount && alreadyConnectedProvider) {
-      console.log(
-        'try this for size',
-        alreadyConnectedAccount,
-        alreadyConnectedProvider
-      );
-      connectWallet(alreadyConnectedProvider);
+    if (alreadyConnectedAccount.value && alreadyConnectedProvider.value) {
+      connectWallet(alreadyConnectedProvider.value);
     }
 
     const payload: Web3Plugin = {

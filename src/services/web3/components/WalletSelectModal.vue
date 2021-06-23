@@ -1,5 +1,5 @@
 <template>
-  <BalModal :show="isVisible" @close="() => console.log('esh')">
+  <BalModal :show="isVisible" @close="$emit('close')">
     <WalletButton v-for="wallet in wallets" :wallet="wallet" :key="wallet" />
   </BalModal>
 </template>
