@@ -7,6 +7,7 @@ import useTokenLists from './useTokenLists';
 import { computed, reactive, Ref, ref, watch } from 'vue';
 import { ETHER } from '@/constants/tokenlists';
 import { isAddress } from 'web3-utils';
+import QUERY_KEYS from '@/constants/queryKeys';
 
 type UseAccountPayload = {
   tokens?: Ref<string[]>;
@@ -42,7 +43,7 @@ export default function useAllowances(payload?: UseAccountPayload) {
     isFetching,
     refetch: refetchAllowances
   } = useQuery(
-    reactive(['ALLOWANCES', { chainId, account, dstList, tokens }]),
+    QUERY_KEYS.Account.Allowances(chainId, account, dstList, tokens),
     () =>
       Promise.all(
         dstList.value.map(async dst =>

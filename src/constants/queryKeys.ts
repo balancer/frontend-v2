@@ -36,7 +36,21 @@ const QUERY_KEYS = {
       account: Ref<string>,
       networkKey: Ref<string>,
       tokens: Ref<string[]>
-    ) => ['account', 'balances', { account, networkKey, tokens }]
+    ) => ['account', 'balances', { account, networkKey, tokens }],
+    Allowances: (
+      chainId: Ref<number>,
+      account: Ref<string>,
+      dstList: Ref<string[]>,
+      tokens: Ref<string[]>
+    ) => ['account', 'allowances', { chainId, account, dstList, tokens }],
+    Profile: (account: Ref<string>, chainId: Ref<number>) => [
+      'account',
+      'profile',
+      { account, chainId }
+    ]
+  },
+  App: {
+    Chains: ['evm_chains']
   }
 };
 

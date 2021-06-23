@@ -5,6 +5,7 @@ import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 import { Web3Provider } from '@ethersproject/providers';
 import configs from '@/lib/config';
+import QUERY_KEYS from '@/constants/queryKeys';
 
 const isWalletSelectVisible = ref(false);
 
@@ -47,7 +48,7 @@ export default function useVueWeb3() {
 
   // TODO separate this out?
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
-    ['WEB3_PROFILE', { account, chainId }],
+    QUERY_KEYS.Account.Profile(account, chainId),
     () => getProfile(account.value, String(chainId.value)),
     reactive({
       enabled: canLoadProfile
@@ -57,7 +58,7 @@ export default function useVueWeb3() {
   // TODO seperate this out?
   // load up a list of all the evm chains
   const { data: evmChains, isLoading: isLoadingEvmChains } = useQuery(
-    'EVM_CHAINS',
+    QUERY_KEYS.App.Chains,
     async () => (await axios.get('https://chainid.network/chains.json')).data
   );
 

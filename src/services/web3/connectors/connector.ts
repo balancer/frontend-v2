@@ -25,7 +25,7 @@ export abstract class Connector {
   handleAccountsChanged = accounts => {
     if (this.selectedAccount !== '') {
       const account = accounts.find(
-        a => getAddress(a) === getAddress(this.selectedAccount)
+        account => getAddress(account) === getAddress(this.selectedAccount)
       );
       // sense check the account that was previously connected
       if (!account) {
