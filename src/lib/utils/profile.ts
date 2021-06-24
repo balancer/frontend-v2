@@ -37,13 +37,9 @@ async function getEnsName(
 
 export async function getProfile(address: string, network: string) {
   try {
-    const [ensName, _3BoxProfile] = await Promise.all([
-      getEnsName(address, network),
-      get3BoxProfile(address)
-    ]);
+    const ensName = await getEnsName(address, network);
     return {
-      ens: ensName,
-      ...(_3BoxProfile || {})
+      ens: ensName
     };
   } catch (error) {
     console.error(error);
