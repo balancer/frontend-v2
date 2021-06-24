@@ -15,6 +15,8 @@ import { scale } from '@/lib/utils';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { ETHER } from '@/constants/tokenlists';
 
+const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
+
 export enum LiquiditySelection {
   Best = 'best',
   V1 = 'v1',
@@ -86,6 +88,7 @@ export class SorManager {
       maxPools,
       chainId,
       poolsSourceV2,
+      new BigNumber(SWAP_COST),
       disabledOptions
     );
     this.weth = weth;
