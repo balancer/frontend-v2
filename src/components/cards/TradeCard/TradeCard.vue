@@ -68,7 +68,7 @@
       :title="$t('tradeSettled')"
       :description="$t('tradeSuccess')"
       :closeLabel="$t('close')"
-      :txHash="txHash"
+      :explorer-link="explorer.txLink(txHash)"
       @close="tradeSuccess = false"
     />
   </BalCard>
@@ -113,6 +113,7 @@ import { useI18n } from 'vue-i18n';
 import useTokenLists from '@/composables/useTokenLists';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   components: {
@@ -128,6 +129,7 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
+    const { explorer } = useWeb3();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
@@ -258,10 +260,10 @@ export default defineComponent({
 
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (assetIn === ETHER.id) assetIn = ETHER.address;
+      if (assetIn === ETHER.deeplinkId) assetIn = ETHER.address;
       else if (isAddress(assetIn)) assetIn = getAddress(assetIn);
       let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (assetOut === ETHER.id) assetOut = ETHER.address;
+      if (assetOut === ETHER.deeplinkId) assetOut = ETHER.address;
       else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
@@ -324,7 +326,8 @@ export default defineComponent({
       showTradePreviewModal,
       isLoadingApprovals,
       bp,
-      tradeCardShadow
+      tradeCardShadow,
+      explorer
     };
   }
 });

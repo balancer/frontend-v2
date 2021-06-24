@@ -51,7 +51,7 @@ export default defineComponent({
     const { t } = useI18n();
     const BAL = '0xba100000625a3754423978a60c9317c58a424e3d';
 
-    const eligibleAssetMeta = eligibleAssetList[appNetwork.networkName];
+    const eligibleAssetMeta = eligibleAssetList[appNetwork.networkName] ?? {};
     const eligibleAssets = Object.fromEntries(
       Object.entries(eligibleAssetMeta).map(assetEntry => {
         const [address] = assetEntry;

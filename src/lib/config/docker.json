@@ -11,6 +11,14 @@
   "subgraph": "http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
+  "nativeAsset": {
+    "name": "Ether",
+    "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "symbol": "ETH",
+    "decimals": 18,
+    "deeplinkId": "ether",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+  },
   "addresses": {
     "exchangeProxy": "",
     "multicall": "0xfe17B701A8F44D9D18D4f83dB71Bf9442D0003f1",

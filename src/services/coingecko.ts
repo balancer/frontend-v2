@@ -1,3 +1,6 @@
+import useConfig from '@/composables/useConfig';
+import { getNativeAssetId, getPlatformId } from './coingecko/coingecko.service';
+
 function getChainAddress(chainId: number, address: string) {
   if (!address) {
     return;
@@ -19,7 +22,8 @@ function getChainAddress(chainId: number, address: string) {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       '0x04df6e4121c27713ed22341e7c7df330f56f289b':
         '0x6b175474e89094c44da98b954eedeac495271d0f'
-    }
+    },
+    137: {}
   };
   return map[chainId][address.toLowerCase()] || address;
 }
@@ -67,12 +71,13 @@ export type Prices = Record<string, Price>;
 export type HistoricalPrices = Record<string, Prices>;
 
 export async function getEtherPrice(): Promise<Price> {
-  const uri =
-    'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true';
+  const { env } = useConfig();
+  const nativeAssetId = getNativeAssetId(env.NETWORK);
+  const uri = `https://api.coingecko.com/api/v3/simple/price?ids=${nativeAssetId}&vs_currencies=usd&include_24hr_change=true`;
   const result = await fetch(uri).then(res => res.json());
   return {
-    price: result.ethereum.usd,
-    price24HChange: result.ethereum.usd_24h_change
+    price: result[nativeAssetId].usd,
+    price24HChange: result[nativeAssetId].usd_24h_change
   };
 }
 
@@ -80,6 +85,8 @@ export async function getTokensPrice(
   chainId: number,
   addresses: string[]
 ): Promise<Prices> {
+  const { env } = useConfig();
+
   const max = 175;
   const pages = Math.ceil(addresses.length / max);
   const promises = [];
@@ -87,7 +94,9 @@ export async function getTokensPrice(
     const addressString = addresses
       .slice(max * i, max * (i + 1))
       .map(address => getChainAddress(chainId, address));
-    const uri = `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${addressString}&vs_currencies=usd&include_24hr_change=true`;
+    const uri = `https://api.coingecko.com/api/v3/simple/token_price/${getPlatformId(
+      env.NETWORK
+    )}?contract_addresses=${addressString}&vs_currencies=usd&include_24hr_change=true`;
     // @ts-ignore
     promises.push(fetch(uri).then(res => res.json()));
   });
@@ -112,13 +121,17 @@ export async function getTokensHistoricalPrice(
   addresses: string[],
   days: number
 ): Promise<HistoricalPrices> {
+  const { env } = useConfig();
+
   const DAY = 60 * 60 * 24;
   const now = Math.floor(Date.now() / 1000);
   const end = now - (now % DAY);
   const start = end - days * DAY;
   const priceRequests = addresses.map(address => {
     const chainAddress = getChainAddress(chainId, address);
-    const url = `https://api.coingecko.com/api/v3/coins/ethereum/contract/${chainAddress}/market_chart/range?vs_currency=usd&from=${start}&to=${end}`;
+    const url = `https://api.coingecko.com/api/v3/coins/${getPlatformId(
+      env.NETWORK
+    )}/contract/${chainAddress}/market_chart/range?vs_currency=usd&from=${start}&to=${end}`;
     const request = fetch(url).then(res => res.json());
     return request;
   });

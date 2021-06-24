@@ -26,8 +26,6 @@ export default class GnosisOperatorService {
   }) {
     const { order, owner } = params;
 
-    console.log('[Gnosis Operator] Post signed order for network', order);
-
     // Call API
     const response = await axios.post<OrderID>(
       `${this.baseURL}/orders`,
@@ -54,8 +52,6 @@ export default class GnosisOperatorService {
 
   public async getOrder(orderId: OrderID) {
     try {
-      console.log('[Gnosis Operator] Get order for ', orderId);
-
       const response = await axios.get<OrderMetaData>(
         `${this.baseURL}/orders/${orderId}`
       );
@@ -69,8 +65,6 @@ export default class GnosisOperatorService {
 
   public async getFeeQuote(params: FeeQuoteParams) {
     try {
-      console.log('[Gnosis Operator] Get fee from API', params);
-
       const { amount, kind } = params;
 
       const sellToken = normalizeTokenAddress(params.sellToken);
@@ -89,8 +83,6 @@ export default class GnosisOperatorService {
 
   public async getPriceQuote(params: PriceQuoteParams) {
     try {
-      console.log('[Gnosis Operator] Get price from API', params);
-
       const { amount, sellToken, buyToken, kind } = params;
 
       const market = getMarket(sellToken, buyToken, kind);

@@ -1,5 +1,9 @@
 import { CoingeckoClient } from '../coingecko.client';
-import { CoingeckoService } from '../coingecko.service';
+import {
+  CoingeckoService,
+  getNativeAssetId,
+  getPlatformId
+} from '../coingecko.service';
 import { TOKENS } from '@/constants/tokens';
 import ConfigService from '@/services/config/config.service';
 import { invert } from 'lodash';
@@ -15,6 +19,8 @@ export class PriceService {
   fiatParam: string;
   baseEndpoint: string;
   appNetwork: string;
+  platformId: string;
+  nativeAssetId: string;
 
   constructor(
     service: CoingeckoService,
@@ -24,12 +30,14 @@ export class PriceService {
     this.fiatParam = service.supportedFiat;
     this.baseEndpoint = '/simple';
     this.appNetwork = configService.network.key;
+    this.platformId = getPlatformId(this.appNetwork);
+    this.nativeAssetId = getNativeAssetId(this.appNetwork);
   }
 
   async getEther(): Promise<Price> {
     try {
       const { ethereum: price } = await this.client.get<PriceResponse>(
-        `${this.baseEndpoint}/price?ids=ethereum&vs_currencies=${this.fiatParam}`
+        `${this.baseEndpoint}/price?ids=${this.nativeAssetId}&vs_currencies=${this.fiatParam}`
       );
       return price;
     } catch (error) {
@@ -46,7 +54,7 @@ export class PriceService {
       const requests: Promise<PriceResponse>[] = [];
       Array.from(Array(pages).keys()).forEach(page => {
         const addressString = addresses.slice(max * page, max * (page + 1));
-        const endpoint = `${this.baseEndpoint}/token_price/ethereum?contract_addresses=${addressString}&vs_currencies=${this.fiatParam}`;
+        const endpoint = `${this.baseEndpoint}/token_price/${this.platformId}?contract_addresses=${addressString}&vs_currencies=${this.fiatParam}`;
         requests.push(this.client.get<PriceResponse>(endpoint));
       });
       const paginatedResults = await Promise.all(requests);

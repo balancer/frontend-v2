@@ -6,7 +6,6 @@ import useConfig from './useConfig';
 import TokenService from '@/services/token/token.service';
 import useTokenPricesQuery from './queries/useTokenPricesQuery';
 import useAccountBalancesQuery from './queries/useAccountBalancesQuery';
-import { TOKENS } from '@/constants/tokens';
 
 // TYPES
 type TokenDictionary = { [address: string]: TokenInfo };
@@ -59,7 +58,12 @@ export default function useTokens2() {
 
   const ether = computed(
     (): TokenDictionary => {
-      return { [TOKENS.EthMeta.address]: TOKENS.EthMeta };
+      return {
+        [networkConfig.nativeAsset.address]: {
+          ...networkConfig.nativeAsset,
+          chainId: networkConfig.chainId
+        }
+      };
     }
   );
 
