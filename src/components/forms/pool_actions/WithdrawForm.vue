@@ -534,7 +534,6 @@ export default defineComponent({
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
-            await refetchBalances.value();
             setPropMax();
           },
           onTxCancel: () => {
