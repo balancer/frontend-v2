@@ -73,7 +73,7 @@ import BigNumber from 'bignumber.js';
 
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
-import { formatUnits, parseUnits } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 
 import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
 import {
@@ -148,6 +148,8 @@ export default defineComponent({
     const tokenInAmount = ref('');
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
+    const maximumInAmount = ref('');
+    const minimumOutAmount = ref('');
     const tradeSuccess = ref(false);
     const trading = ref(false);
     const modalTradePreviewIsOpen = ref(false);
@@ -204,7 +206,7 @@ export default defineComponent({
 
     useTokenApprovalGP(tokenInAddress, tokenInAmount, tokens);
 
-    const { errorMessage } = useValidation(
+    const { errorMessage, isValidTokenAmount } = useValidation(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
@@ -254,6 +256,14 @@ export default defineComponent({
       }
     });
 
+    const tokenInAmountScaled = computed(() =>
+      scale(bnum(tokenInAmount.value), tokenInDecimals.value)
+    );
+
+    const tokenOutAmountScaled = computed(() =>
+      scale(bnum(tokenOutAmount.value), tokenOutDecimals.value)
+    );
+
     // METHODS
     function handleErrorButtonClick() {
       console.log('TOOD: implement if needed');
@@ -278,12 +288,14 @@ export default defineComponent({
       orderId.value = '';
     }
 
-    async function wrapETH(amount: BigNumber) {
+    async function handleETH(action: 'wrap' | 'unwrap') {
       try {
         trading.value = true;
 
         const { chainId } = getConfig();
-        const tx = await wrap(chainId, auth.web3, amount);
+
+        const fn = action === 'wrap' ? wrap : unwrap;
+        const tx = await fn(chainId, auth.web3, tokenInAmountScaled.value);
         tradeTxListener(tx.hash);
       } catch (e) {
         console.log(e);
@@ -291,48 +303,21 @@ export default defineComponent({
       }
     }
 
-    async function unwrapETH(amount: BigNumber) {
+    async function postSignedOrder() {
       try {
         trading.value = true;
-
-        const { chainId } = getConfig();
-        const tx = await unwrap(chainId, auth.web3, amount);
-        tradeTxListener(tx.hash);
-      } catch (e) {
-        console.log(e);
-        trading.value = false;
-      }
-    }
-
-    async function postSignedOrder(
-      tokenInAmountScaled: BigNumber,
-      tokenOutAmountScaled: BigNumber
-    ) {
-      try {
-        trading.value = true;
-
-        let sellAmount: string;
-        let buyAmount: string;
-
-        if (exactIn.value) {
-          sellAmount = tokenInAmountScaled.toString();
-          buyAmount = tokenOutAmountScaled
-            .div(1 + slippageBufferRate.value)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .toString();
-        } else {
-          sellAmount = tokenInAmountScaled
-            .times(1 + slippageBufferRate.value)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .toString();
-          buyAmount = tokenOutAmountScaled.toString();
-        }
 
         const unsignedOrder: UnsignedOrder = {
           sellToken: normalizeTokenAddress(tokenInAddress.value),
           buyToken: normalizeTokenAddress(tokenOutAddress.value),
-          sellAmount,
-          buyAmount,
+          sellAmount: bnum(
+            exactIn.value ? tokenInAmountScaled.value : maximumInAmount.value
+          )
+            .minus(feeAmount.value)
+            .toString(),
+          buyAmount: exactIn.value
+            ? minimumOutAmount.value.toString()
+            : tokenOutAmountScaled.value.toString(),
           validTo: calculateValidTo(appTransactionDeadline.value),
           appData,
           feeAmount: feeAmount.value,
@@ -364,22 +349,12 @@ export default defineComponent({
     }
 
     async function trade() {
-      const tokenInAmountScaled = scale(
-        bnum(tokenInAmount.value),
-        tokenInDecimals.value
-      );
-
-      const tokenOutAmountScaled = scale(
-        bnum(tokenOutAmount.value),
-        tokenOutDecimals.value
-      );
-
       if (isWrap.value) {
-        wrapETH(tokenInAmountScaled);
+        handleETH('wrap');
       } else if (isUnwrap.value) {
-        unwrapETH(tokenInAmountScaled);
+        handleETH('unwrap');
       } else {
-        postSignedOrder(tokenInAmountScaled, tokenOutAmountScaled);
+        postSignedOrder();
       }
     }
 
@@ -399,52 +374,71 @@ export default defineComponent({
     }
 
     async function updateQuotes() {
-      const tokenAmount = exactIn.value ? tokenInAmount : tokenOutAmount;
-      const otherTokenAmount = exactIn.value ? tokenOutAmount : tokenInAmount;
-
-      if (tokenAmount.value !== '' && parseFloat(tokenAmount.value) > 0) {
-        updatingQuotes.value = true;
-        feeExceedsPrice.value = false;
-
-        const tokenDecimals = exactIn.value
-          ? tokenInDecimals.value
-          : tokenOutDecimals.value;
-
+      if (
+        isValidTokenAmount(
+          exactIn.value ? tokenInAmount.value : tokenOutAmount.value
+        )
+      ) {
         const sellToken = tokenInAddress.value;
         const buyToken = tokenOutAddress.value;
         const kind = orderKind.value;
-        let amountToExchange = parseUnits(tokenAmount.value, tokenDecimals);
+        const amountToExchange = exactIn.value
+          ? tokenInAmountScaled.value
+          : tokenOutAmountScaled.value;
+
+        updatingQuotes.value = true;
+        feeExceedsPrice.value = false;
+
         try {
-          // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
-          const feeQuoteResult = await gnosisOperator.getFeeQuote({
+          const queryParams = {
             sellToken,
             buyToken,
             amount: amountToExchange.toString(),
             kind
-          });
+          };
+          // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
+          const feeQuoteResult = await gnosisOperator.getFeeQuote(queryParams);
 
           if (feeQuoteResult != null) {
             if (exactIn.value) {
-              // deduct fee if its a sell order
-              amountToExchange = amountToExchange.sub(feeQuoteResult.amount);
-
-              feeExceedsPrice.value = amountToExchange.isNegative();
+              feeExceedsPrice.value = amountToExchange
+                .minus(feeQuoteResult.amount)
+                .isNegative();
             }
             if (!feeExceedsPrice.value) {
-              const priceQuoteResult = await gnosisOperator.getPriceQuote({
-                sellToken,
-                buyToken,
-                amount: amountToExchange.toString(),
-                kind
-              });
+              const priceQuoteResult = await gnosisOperator.getPriceQuote(
+                queryParams
+              );
 
               if (priceQuoteResult != null && priceQuoteResult.amount != null) {
                 feeQuote.value = feeQuoteResult;
 
-                otherTokenAmount.value = formatUnits(
-                  priceQuoteResult.amount,
-                  tokenDecimals
-                );
+                if (exactIn.value) {
+                  tokenOutAmount.value = formatUnits(
+                    priceQuoteResult.amount,
+                    tokenOutDecimals.value
+                  );
+                  const feeAmountRateOut = tokenOutAmountScaled.value
+                    .div(tokenInAmountScaled.value)
+                    .times(feeAmount.value);
+
+                  minimumOutAmount.value = tokenOutAmountScaled.value
+                    .minus(feeAmountRateOut)
+                    .div(1 + slippageBufferRate.value)
+                    .integerValue(BigNumber.ROUND_DOWN)
+                    .toString();
+                } else {
+                  maximumInAmount.value = tokenInAmountScaled.value
+                    .plus(feeAmount.value)
+                    .times(1 + slippageBufferRate.value)
+                    .integerValue(BigNumber.ROUND_DOWN)
+                    .toString();
+
+                  tokenInAmount.value = formatUnits(
+                    priceQuoteResult.amount,
+                    tokenInDecimals.value
+                  );
+                }
               }
             }
           }

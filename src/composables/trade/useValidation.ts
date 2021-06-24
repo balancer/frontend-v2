@@ -27,10 +27,8 @@ export default function useValidation(
     const tokenIn = tokens.value[tokenInAddress.value];
 
     if (
-      (parseFloat(tokenInAmount.value) == 0 ||
-        tokenInAmount.value.trim() === '') &&
-      (parseFloat(tokenOutAmount.value) == 0 ||
-        tokenOutAmount.value.trim() === '')
+      !isValidTokenAmount(tokenInAmount.value) ||
+      !isValidTokenAmount(tokenOutAmount.value)
     )
       return TradeValidation.EMPTY;
 
@@ -54,10 +52,15 @@ export default function useValidation(
     return TradeValidation.VALID;
   });
 
+  function isValidTokenAmount(tokenAmount: string) {
+    return parseFloat(tokenAmount) > 0 && tokenAmount.trim() !== '';
+  }
+
   const errorMessage = computed(() => validationStatus.value);
 
   return {
     validationStatus,
-    errorMessage
+    errorMessage,
+    isValidTokenAmount
   };
 }
