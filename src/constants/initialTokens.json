@@ -6,5 +6,9 @@
   "42": {
     "input": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "output": "0x04DF6e4121c27713ED22341E7c7Df330F56f289B"
+  },
+  "137": {
+    "input": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "output": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063"
   }
 }
