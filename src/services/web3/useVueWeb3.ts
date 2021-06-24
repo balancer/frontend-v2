@@ -18,12 +18,12 @@ export default function useVueWeb3() {
     provider,
     walletState
   } = inject(Web3ProviderSymbol) as Web3Plugin;
-  const appConfig = new ConfigService();
-  const appNetworkConfig = appConfig.network;
+  const configService = new ConfigService();
+  const appNetworkConfig = configService.network;
 
   // COMPUTED REFS
   const userNetworkConfig = computed(() =>
-    appConfig.getNetworkConfig(String(chainId.value))
+    configService.getNetworkConfig(String(chainId.value))
   );
   const isWalletReady = computed(() => walletState.value === 'connected');
   const canLoadProfile = computed(
