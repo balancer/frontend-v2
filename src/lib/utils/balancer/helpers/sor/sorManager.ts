@@ -15,7 +15,7 @@ import { scale } from '@/lib/utils';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { ETHER } from '@/constants/tokenlists';
 
-const SWAP_COST = process.env.VUE_APP_GAS_PRICE || '100000';
+const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 
 export enum LiquiditySelection {
   Best = 'best',
