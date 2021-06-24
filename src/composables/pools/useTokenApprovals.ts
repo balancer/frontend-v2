@@ -39,7 +39,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
       approving.value = true;
       const txs = await approveTokens(
         getProvider(),
-        appNetworkConfig.value.addresses.vault,
+        appNetworkConfig.addresses.vault,
         [requiredAllowances.value[0]]
       );
       const txHashes = txs.map(tx => tx.hash);

@@ -1,12 +1,10 @@
 import getProvider from '@/lib/utils/provider';
 import { useQuery } from 'vue-query';
 import useTokens from './useTokens';
-import useWeb3 from './useWeb3';
-import { computed, reactive, watch } from 'vue';
+import { computed, reactive } from 'vue';
 import { getBalances } from '@/lib/utils/balancer/tokens';
 import { formatEther, formatUnits } from '@ethersproject/units';
 import { getAddress } from '@ethersproject/address';
-import { Web3Provider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { ETHER } from '@/constants/tokenlists';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
@@ -14,7 +12,7 @@ import useVueWeb3 from '@/services/web3/useVueWeb3';
 export default function useAccountBalances() {
   const { account, userNetworkConfig, isWalletReady } = useVueWeb3();
   const { allTokens: tokens } = useTokens();
-  const provider = getProvider(String(userNetworkConfig.value.chainId));
+  const provider = getProvider(String(userNetworkConfig.value?.chainId));
   const isQueryEnabled = computed(
     () =>
       account.value !== null &&
@@ -35,7 +33,7 @@ export default function useAccountBalances() {
     () => {
       return Promise.all([
         getBalances(
-          String(userNetworkConfig.value.chainId),
+          String(userNetworkConfig.value?.chainId),
           provider,
           account.value,
           Object.values(tokens.value).map((token: any) => token.address)

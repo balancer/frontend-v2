@@ -19,7 +19,7 @@ const dstAllowanceMap = ref({});
 export default function useAllowances(payload?: UseAccountPayload) {
   const { userNetworkConfig, account } = useVueWeb3();
   const { tokenDictionary } = useTokenLists();
-  const provider = getProvider(String(userNetworkConfig.value.chainId));
+  const provider = getProvider(String(userNetworkConfig.value?.chainId));
   // filter out ether and any bad addresses
   const tokens = computed(() =>
     (payload?.tokens?.value || Object.keys(tokenDictionary.value)).filter(
@@ -28,7 +28,7 @@ export default function useAllowances(payload?: UseAccountPayload) {
   );
   const dstList = computed(() => [
     ...(payload?.dstList?.value || []),
-    configs[String(userNetworkConfig.value.chainId)].addresses.vault
+    userNetworkConfig.value?.addresses.vault
   ]);
 
   const isQueryEnabled = computed(() => account && tokens.value.length > 0);
@@ -43,7 +43,7 @@ export default function useAllowances(payload?: UseAccountPayload) {
       Promise.all(
         dstList.value.map(async dst =>
           getAllowances(
-            String(userNetworkConfig.value.chainId),
+            String(userNetworkConfig.value?.chainId),
             provider,
             account.value,
             dst,
@@ -68,9 +68,7 @@ export default function useAllowances(payload?: UseAccountPayload) {
   const getRequiredAllowances = query => {
     const tokens = query.tokens;
     const amounts = query.amounts;
-    const dst =
-      query.dst ||
-      configs[String(userNetworkConfig.value.chainId)].addresses.vault;
+    const dst = query.dst || userNetworkConfig.value?.addresses.vault;
 
     const requiredAllowances = tokens.filter((token, index) => {
       const amount = amounts[index];

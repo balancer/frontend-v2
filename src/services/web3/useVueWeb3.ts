@@ -44,7 +44,7 @@ export default function useVueWeb3() {
   const isWalletReady = computed(() => walletState.value === 'connected');
 
   const canLoadProfile = computed(
-    () => account.value !== '' && userNetworkConfig.value.chainId !== 0
+    () => account.value !== '' && userNetworkConfig.value?.chainId !== 0
   );
 
   const getProvider = () => new Web3Provider(provider.value as any);
@@ -52,7 +52,7 @@ export default function useVueWeb3() {
   // TODO separate this out?
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
     QUERY_KEYS.Account.Profile(account, userNetworkConfig),
-    () => getProfile(account.value, String(userNetworkConfig.value.chainId)),
+    () => getProfile(account.value, String(userNetworkConfig.value?.chainId)),
     reactive({
       enabled: canLoadProfile
     })
@@ -68,7 +68,7 @@ export default function useVueWeb3() {
   const networkName = computed(() => {
     if (!isLoadingEvmChains.value) {
       const chain = evmChains.value.find(
-        chain => chain.networkId === userNetworkConfig.value.chainId
+        chain => chain.networkId === userNetworkConfig.value?.chainId
       );
       return chain?.name || 'Unknown Network';
     }
@@ -76,10 +76,10 @@ export default function useVueWeb3() {
   });
 
   const isMismatchedNetwork = computed(() => {
-    return userNetworkConfig.value.key !== process.env.VUE_APP_NETWORK;
+    return userNetworkConfig.value?.key !== process.env.VUE_APP_NETWORK;
   });
 
-  const isUnsupportedNetwork = computed(() => !userNetworkConfig.value.key);
+  const isUnsupportedNetwork = computed(() => !userNetworkConfig.value?.key);
 
   return {
     connectWallet,
