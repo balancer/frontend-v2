@@ -13,7 +13,7 @@ export const SupportedWallets = [
   'walletconnect',
   'walletlink'
 ] as Wallet[];
-export const WalletNameDictionary: Record<Wallet, string> = {
+export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
   walletlink: 'Coinbase'

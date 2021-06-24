@@ -7,14 +7,14 @@
       <img :src="require(`../images/${wallet}.svg`)" class="w-10 w-10 mr-4" />
       <h5 class="text-gray-600 text-base">
         Connect with
-        <span class="capitalize">{{ WalletNameDictionary[wallet] }}</span>
+        <span class="capitalize">{{ WalletNameMap[wallet] }}</span>
       </h5>
     </div>
   </button>
 </template>
 
 <script lang="ts">
-import { Wallet, WalletNameDictionary } from '@/services/web3/web3.plugin';
+import { Wallet, WalletNameMap } from '@/services/web3/web3.plugin';
 import { defineComponent, PropType } from 'vue';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 export default defineComponent({
@@ -27,7 +27,7 @@ export default defineComponent({
   setup() {
     const { connectWallet } = useVueWeb3();
     return {
-      WalletNameDictionary,
+      WalletNameMap,
       connectWallet
     };
   }
