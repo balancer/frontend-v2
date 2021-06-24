@@ -5,6 +5,7 @@ import { bnum } from '@/lib/utils';
 import { toUtcTime } from '@/lib/utils/date';
 
 import LiquidityMiningV2 from './LiquidityMiningV2.json';
+import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
 
 type LiquidityMiningSlot = Record<string, string>;
 
