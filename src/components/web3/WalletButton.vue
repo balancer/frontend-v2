@@ -4,7 +4,10 @@
     @click="connectWallet(wallet)"
   >
     <div class="flex items-center" style="width: 70%">
-      <img :src="require(`../images/${wallet}.svg`)" class="w-10 w-10 mr-4" />
+      <img
+        :src="require(`@/assets/images/connectors/${wallet}.svg`)"
+        class="w-10 w-10 mr-4"
+      />
       <h5 class="text-gray-600 text-base">
         Connect with
         <span class="capitalize">{{ WalletNameMap[wallet] }}</span>
