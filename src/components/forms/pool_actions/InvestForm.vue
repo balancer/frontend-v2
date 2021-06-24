@@ -581,7 +581,6 @@ export default defineComponent({
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
-            await refetchBalances.value();
             setPropMax();
             if (hasZeroBalance.value) {
               data.investType = FormTypes.custom;

@@ -444,7 +444,7 @@ export default defineComponent({
     }
 
     function setPropMax() {
-      if (!isWalletReady.value) return;
+      if (!isWalletReady.value || Number(bptBalance.value) === 0) return;
       const { send, receive } = poolCalculator.propAmountsGiven(
         bptBalance.value,
         0,
