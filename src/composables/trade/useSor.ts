@@ -2,6 +2,7 @@ import { Ref, onMounted, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
+import useWeb3 from '@/composables/useWeb3';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase } from '@balancer-labs/sor2';
 
@@ -10,7 +11,8 @@ import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
 import getProvider from '@/lib/utils/provider';
 import {
   SorManager,
-  SorReturn
+  SorReturn,
+  LiquiditySelection
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import ConfigService from '@/services/config/config.service';
@@ -20,7 +22,7 @@ import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
-const MAX_POOLS = 4;
+const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
 const MIN_PRICE_IMPACT = 0.0001;
 
 export default function useSor(
@@ -67,6 +69,7 @@ export default function useSor(
   const auth = useAuth();
   const { txListener } = useNotify();
   const { trackGoal, Goals } = useFathom();
+  const { appNetwork } = useWeb3();
 
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
@@ -101,10 +104,15 @@ export default function useSor(
     const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
     const subgraphUrl = new ConfigService().network.subgraph;
 
+    // If V1 previously selected on another network then it uses this and returns no liquidity.
+    if (!appNetwork.supportsV1) {
+      store.commit('app/setTradeLiquidity', LiquiditySelection.V2);
+    }
+
     sorManager = new SorManager(
       getProvider(config.chainId),
       new BigNumber(GAS_PRICE),
-      MAX_POOLS,
+      Number(MAX_POOLS),
       config.chainId,
       config.addresses.weth,
       poolsUrlV1,
