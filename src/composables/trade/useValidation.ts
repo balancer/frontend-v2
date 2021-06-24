@@ -1,5 +1,4 @@
 import { computed } from 'vue';
-import useAuth from '@/composables/useAuth';
 import { ETHER } from '@/constants/tokenlists';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 

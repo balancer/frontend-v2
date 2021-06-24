@@ -50,7 +50,6 @@ import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import PoolsTable from '@/components/tables/PoolsTable.vue';
 
 import usePools from '@/composables/pools/usePools';
-import useWeb3 from '@/composables/useWeb3';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({

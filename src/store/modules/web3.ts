@@ -1,6 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
-import { formatUnits } from '@ethersproject/units';
 import configs, { Config } from '@/lib/config';
 import { getProfile } from '@/lib/utils/profile';
 import useFathom from '@/composables/useFathom';
@@ -74,7 +73,7 @@ const actions = {
     dispatch('account/resetAccount', null, { root: true });
   },
 
-  async loadProvider({ commit, dispatch }) {
+  async loadProvider({ commit }) {
     try {
       if (
         auth.provider.value.removeAllListeners &&

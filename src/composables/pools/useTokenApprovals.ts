@@ -1,5 +1,4 @@
 import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
 import useTokens from '@/composables/useTokens';
@@ -10,7 +9,6 @@ import { sleep } from '@/lib/utils';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
   const { getProvider, appNetworkConfig } = useVueWeb3();
-  const store = useStore();
   const approving = ref(false);
   const approvedAll = ref(false);
   const { allTokens } = useTokens();

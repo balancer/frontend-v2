@@ -268,7 +268,6 @@ import useFathom from '@/composables/useFathom';
 import { TOKENS } from '@/constants/tokens';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useTokenLists from '@/composables/useTokenLists';
-import useAccountBalances from '@/composables/useAccountBalances';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -329,7 +328,6 @@ export default defineComponent({
     const { minusSlippage } = useSlippage();
     const { tokenDictionary } = useTokenLists();
     const { trackGoal, Goals } = useFathom();
-    const { refetchBalances } = useAccountBalances();
 
     const { amounts } = toRefs(data);
 

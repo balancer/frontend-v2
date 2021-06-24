@@ -192,10 +192,8 @@ import {
 } from '@/lib/utils/validations';
 import { TransactionData } from 'bnc-notify';
 import { useI18n } from 'vue-i18n';
-import { useStore } from 'vuex';
 import isEqual from 'lodash/isEqual';
 
-import useAuth from '@/composables/useAuth';
 import useNumbers from '@/composables/useNumbers';
 import useNotify from '@/composables/useNotify';
 import useSlippage from '@/composables/useSlippage';
@@ -205,12 +203,10 @@ import PoolCalculator from '@/services/pool/calculator';
 import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
-import useTokens from '@/composables/useTokens';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useTokenLists from '@/composables/useTokenLists';
-import useAccountBalances from '@/composables/useAccountBalances';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -244,14 +240,12 @@ export default defineComponent({
     });
 
     // COMPOSABLES
-    const store = useStore();
     const { txListener } = useNotify();
     const { isWalletReady, toggleWalletSelectModal } = useVueWeb3();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
     const { tokenDictionary } = useTokenLists();
-    const { refetchBalances } = useAccountBalances();
     const { trackGoal, Goals } = useFathom();
     const { getProvider, account, userNetworkConfig } = useVueWeb3();
 

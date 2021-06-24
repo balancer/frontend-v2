@@ -1,5 +1,4 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import configs from '@/lib/config';
 import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
 import { default as vaultAbi } from '@/lib/abi/Vault.json';

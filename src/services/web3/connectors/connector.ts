@@ -1,10 +1,8 @@
 import { ref, Ref } from 'vue';
-import Web3 from 'web3';
 import { getAddress } from '@ethersproject/address';
-import { lsSet } from '@/lib/utils';
 
 export type ConnectorPayload = {
-  provider: Web3;
+  provider: unknown;
   account: Ref<string | null>;
   chainId: Ref<number | null>;
 };

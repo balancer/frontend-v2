@@ -1,6 +1,6 @@
 import { useStore } from 'vuex';
 import useAuth from '@/composables/useAuth';
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useNotify from '@/composables/useNotify';
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';

@@ -76,7 +76,6 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import { useStore } from 'vuex';
 
 import { ETHER } from '@/constants/tokenlists';
 import useNumbers from '@/composables/useNumbers';

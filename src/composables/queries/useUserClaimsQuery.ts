@@ -4,9 +4,6 @@ import { UseQueryOptions } from 'react-query/types';
 
 import { bnum } from '@/lib/utils';
 
-import useWeb3 from '@/composables/useWeb3';
-import useAuth from '@/composables/useAuth';
-
 import QUERY_KEYS from '@/constants/queryKeys';
 
 import {

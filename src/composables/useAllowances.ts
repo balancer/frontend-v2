@@ -1,10 +1,9 @@
 import useVueWeb3 from '@/services/web3/useVueWeb3';
-import configs from '@/lib/config';
 import { useQuery } from 'vue-query';
 import { getAllowances } from '@/lib/utils/balancer/tokens';
 import getProvider from '@/lib/utils/provider';
 import useTokenLists from './useTokenLists';
-import { computed, reactive, Ref, ref, watch } from 'vue';
+import { computed, reactive, Ref, ref } from 'vue';
 import { ETHER } from '@/constants/tokenlists';
 import { isAddress } from 'web3-utils';
 import QUERY_KEYS from '@/constants/queryKeys';

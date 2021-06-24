@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, watch } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import usePools from '@/composables/pools/usePools';
