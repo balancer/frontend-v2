@@ -180,11 +180,12 @@ export default defineComponent({
     const {
       account,
       chainId,
-      networkName,
       disconnectWallet,
       connector,
-      appNetworkConfig
+      appNetworkConfig,
+      userNetworkConfig
     } = useVueWeb3();
+
     // DATA
     const data = reactive({
       locales,
@@ -209,8 +210,9 @@ export default defineComponent({
 
     // COMPUTED
     const networkColorClass = computed(
-      () => `network-${store.state.web3.config.shortName.toLowerCase()}`
+      () => `network-${userNetworkConfig.value.shortName}`
     );
+    const networkName = computed(() => userNetworkConfig.value.name);
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
