@@ -4,7 +4,11 @@ import { computed, reactive, ref, Ref, toRefs } from 'vue';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { getAddress } from '@ethersproject/address';
 import { lsGet, lsRemove, lsSet } from '@/lib/utils';
-import { Web3Provider } from '@ethersproject/providers';
+import {
+  JsonRpcProvider,
+  JsonRpcSigner,
+  Web3Provider
+} from '@ethersproject/providers';
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 
 export type Wallet = 'metamask' | 'walletconnect' | 'walletlink';
@@ -24,11 +28,12 @@ export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
 export type Web3Plugin = {
   connectWallet: (wallet: Wallet) => Promise<void>;
   disconnectWallet: () => Promise<void>;
-  provider: Ref<Web3Provider>;
+  provider: Ref<Web3Provider | JsonRpcProvider>;
   account: Ref<string>;
   chainId: Ref<number>;
   connector: Ref<Connector>;
   walletState: Ref<WalletState>;
+  signer: Ref<JsonRpcSigner>;
 };
 
 const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
@@ -70,6 +75,7 @@ export default {
     });
 
     const provider = computed(() => pluginState.connector?.provider);
+    const signer = computed(() => pluginState.connector?.provider?.getSigner());
 
     // user supplied web3 provider. i.e. (web3, ethers)
     const connectWallet = async (wallet: Wallet) => {
@@ -140,7 +146,8 @@ export default {
       ...toRefs(pluginState),
       account,
       chainId,
-      provider
+      provider,
+      signer
     };
 
     app.provide(Web3ProviderSymbol, payload);

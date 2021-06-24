@@ -10,13 +10,13 @@ const isWalletSelectVisible = ref(false);
 
 export default function useVueWeb3() {
   const {
-    connectWallet,
     account,
     chainId,
-    disconnectWallet,
     connector,
     provider,
-    walletState
+    walletState,
+    disconnectWallet,
+    connectWallet
   } = inject(Web3ProviderSymbol) as Web3Plugin;
   const configService = new ConfigService();
   const appNetworkConfig = configService.network;
