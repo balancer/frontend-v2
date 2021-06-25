@@ -47,10 +47,6 @@ const actions = {
         lsGet('tradeLiquidity', LiquiditySelection.Best)
       );
 
-      // Setup web3
-      const auth = getInstance();
-      const connector = await auth.getConnector();
-      if (connector) dispatch('web3/login', connector, { root: true });
 
       // Fetch init data
       await dispatch('registry/get', null, { root: true });
