@@ -1,6 +1,6 @@
 import { getEtherPrice, getTokensPrice } from '@/services/coingecko';
 import { ETHER } from '@/constants/tokenlists';
-import { getGasPrice } from '@/lib/utils/balancer/gasPrices';
+import GasPriceService from '@/services/gas-price/gas-price.service';
 
 type Prices = Record<string, number>;
 
@@ -9,6 +9,8 @@ interface MarketState {
   gasPrice: number;
   loading: boolean;
 }
+
+const gasPriceService = new GasPriceService();
 
 const state: MarketState = {
   prices: {},
@@ -33,7 +35,7 @@ const actions = {
     commit('setLoading', false);
   },
   async getGasPrice({ commit }) {
-    const price = await getGasPrice();
+    const price = await gasPriceService.getLatest();
     commit('setGasPrice', price);
   }
 };
