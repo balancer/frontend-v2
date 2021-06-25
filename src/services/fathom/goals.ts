@@ -19,10 +19,13 @@ export class Goals {
   ClickSwap = '';
   Swapped = '';
 
-  constructor(private readonly configService = new ConfigService()) {
-    const appNetworkGoals = GOALS_MAP[configService.network.key];
-    Object.keys(appNetworkGoals).forEach(key => {
-      this[key] = appNetworkGoals[key];
-    });
+  constructor(configService = new ConfigService(), goalsMap = GOALS_MAP) {
+    const appNetworkGoals = goalsMap[configService.network.key];
+
+    if (appNetworkGoals) {
+      Object.keys(appNetworkGoals).forEach(key => {
+        this[key] = appNetworkGoals[key];
+      });
+    }
   }
 }
