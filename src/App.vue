@@ -45,19 +45,12 @@ export default defineComponent({
     const providerService = new RpcProviderService();
 
     // COMPUTED
-    const web3Modal = computed(() => store.state.web3.modal);
     const isHomePage = computed(() => route.path === '/');
 
     // METHODS
-    const setAccountModal = val => store.commit('web3/setAccountModal', val);
 
     const setBlockNumber = (blockNumber: number) =>
       store.commit('web3/setBlockNumber', blockNumber);
-
-    async function onLogin(connector: string): Promise<void> {
-      setAccountModal(false);
-      await store.dispatch('web3/login', connector);
-    }
 
     // CALLBACKS
     onBeforeMount(() => {
@@ -67,12 +60,9 @@ export default defineComponent({
 
     return {
       // computed
-      web3Modal,
       isWalletSelectVisible,
       isHomePage,
       // methods
-      onLogin,
-      setAccountModal,
       toggleWalletSelectModal
     };
   }
