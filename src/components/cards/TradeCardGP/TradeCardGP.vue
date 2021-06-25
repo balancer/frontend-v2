@@ -88,13 +88,11 @@ import {
 } from '@/services/gnosis/utils';
 
 import useNotify from '@/composables/useNotify';
-import useAuth from '@/composables/useAuth';
 import useGnosisProtocol from '@/composables/useGnosisProtocol';
 import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-import useWeb3 from '@/composables/useWeb3';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 
 import { ETHER } from '@/constants/tokenlists';
