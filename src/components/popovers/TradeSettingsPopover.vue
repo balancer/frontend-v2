@@ -86,7 +86,6 @@ import {
 } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
-import useWeb3 from '@/composables/useWeb3';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import useFathom from '@/composables/useFathom';
 

@@ -72,11 +72,11 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
-import useWeb3 from '@/composables/useWeb3';
 import { TOKENS } from '@/constants/tokens';
 import useTokenLists from '@/composables/useTokenLists';
 import { ETHER } from '@/constants/tokenlists';
 import { getAddress } from '@ethersproject/address';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -100,7 +100,7 @@ export default defineComponent({
       balances,
       isIdle: isNotFetchingBalances
     } = useAccountBalances();
-    const { account } = useWeb3();
+    const { account } = useVueWeb3();
 
     // sorted by biggest bag balance, limited to biggest 5
     const sortedBalances = computed(() => {

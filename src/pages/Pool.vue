@@ -92,10 +92,7 @@
       </div>
 
       <div class="order-1 lg:order-2">
-        <BalLoadingBlock
-          v-if="loadingPool || web3Loading"
-          class="h-96 sticky top-24"
-        />
+        <BalLoadingBlock v-if="loadingPool" class="h-96 sticky top-24" />
         <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
@@ -121,7 +118,6 @@ import { useQueryClient } from 'vue-query';
 
 import useNumbers from '@/composables/useNumbers';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import useWeb3 from '@/composables/useWeb3';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import { useRouter } from 'vue-router';
 
@@ -159,7 +155,7 @@ export default defineComponent({
       30
     );
 
-    const { blockNumber, loading: web3Loading } = useWeb3();
+    const { blockNumber } = useVueWeb3();
 
     // DATA
     const data = reactive<PoolPageData>({
@@ -283,7 +279,6 @@ export default defineComponent({
       EXTERNAL_LINKS,
       // computed
       appLoading,
-      web3Loading,
       pool,
       noInitLiquidity,
       poolTypeLabel,

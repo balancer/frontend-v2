@@ -149,7 +149,6 @@
 import { defineComponent, reactive, computed, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
-import useWeb3 from '@/composables/useWeb3';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
@@ -183,7 +182,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { explorer } = useWeb3();
+    const { explorerLinks } = useVueWeb3();
     const {
       account,
       chainId,
@@ -259,7 +258,7 @@ export default defineComponent({
       setTradeLiquidity,
       setTradeInterface,
       copyAddress,
-      explorer
+      explorer: explorerLinks
     };
   }
 });

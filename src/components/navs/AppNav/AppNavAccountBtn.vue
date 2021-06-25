@@ -52,7 +52,6 @@ export default defineComponent({
 
   setup() {
     const { bp, upToLargeBreakpoint } = useBreakpoints();
-    // const { loading: isLoadingProfile, account, profile } = useWeb3();
     const { isLoadingProfile, profile, account } = useVueWeb3();
 
     const avatarSize = computed(() => {

@@ -113,7 +113,6 @@ import { useI18n } from 'vue-i18n';
 import useTokenLists from '@/composables/useTokenLists';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   components: {
@@ -129,7 +128,7 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
-    const { explorer } = useWeb3();
+    const { explorerLinks } = useVueWeb3();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
@@ -327,7 +326,7 @@ export default defineComponent({
       isLoadingApprovals,
       bp,
       tradeCardShadow,
-      explorer
+      explorer: explorerLinks
     };
   }
 });

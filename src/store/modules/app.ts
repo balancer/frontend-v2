@@ -47,7 +47,6 @@ const actions = {
         lsGet('tradeLiquidity', LiquiditySelection.Best)
       );
 
-
       // Fetch init data
       await dispatch('registry/get', null, { root: true });
       await dispatch('market/loadPrices', [], { root: true });

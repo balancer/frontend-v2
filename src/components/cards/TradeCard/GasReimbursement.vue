@@ -22,11 +22,11 @@ import { ETHER } from '@/constants/tokenlists';
 import BigNumber from 'bignumber.js';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { isBudgetLeft } from '@/lib/utils/balancer/bal4gas';
-import useWeb3 from '@/composables/useWeb3';
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
 import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { getOriginalAddress } from '@/services/coingecko';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   props: {
@@ -46,12 +46,12 @@ export default defineComponent({
 
   setup(props) {
     const store = useStore();
-    const { appNetwork } = useWeb3();
+    const { appNetworkConfig } = useVueWeb3();
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
     const BAL = '0xba100000625a3754423978a60c9317c58a424e3d';
 
-    const eligibleAssetMeta = eligibleAssetList[appNetwork.networkName] ?? {};
+    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.name] ?? {};
     const eligibleAssets = Object.fromEntries(
       Object.entries(eligibleAssetMeta).map(assetEntry => {
         const [address] = assetEntry;
@@ -71,8 +71,9 @@ export default defineComponent({
       const ethPrice =
         store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
       const balPrice =
-        store.state.market.prices[getOriginalAddress(appNetwork.id, BAL)]
-          ?.price || 0;
+        store.state.market.prices[
+          getOriginalAddress(appNetworkConfig.chainId, BAL)
+        ]?.price || 0;
       const gasPrice = store.state.market.gasPrice || 0;
 
       const addressInIsEligible =
@@ -163,7 +164,7 @@ export default defineComponent({
     }
 
     function isActive(): boolean {
-      return appNetwork.key === '1' && isBalForGasBudget.value;
+      return appNetworkConfig.key === '1' && isBalForGasBudget.value;
     }
 
     // CALLBACKS

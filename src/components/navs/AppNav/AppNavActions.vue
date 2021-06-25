@@ -26,7 +26,6 @@ import { defineComponent } from 'vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
 
 import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
@@ -45,7 +44,6 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const { bp } = useBreakpoints();
-    const { profile, loading: web3Loading } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
     const { connectWallet, account, toggleWalletSelectModal } = useVueWeb3();
@@ -57,8 +55,6 @@ export default defineComponent({
     return {
       // computed
       account,
-      profile,
-      web3Loading,
       bp,
       // methods
       fNum,
