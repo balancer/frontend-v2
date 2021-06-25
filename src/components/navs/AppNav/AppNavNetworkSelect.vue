@@ -84,7 +84,14 @@ export default defineComponent({
       }
     ];
 
-    const activeNetwork = networks.find(network => isActive(network));
+    const appNetworkSupported = networks
+      .map(network => network.key)
+      .includes(configService.network.key);
+
+    const activeNetwork = networks.find(network => {
+      if (!appNetworkSupported && network.id === 'ethereum') return true;
+      return isActive(network);
+    });
 
     // METHODS
     function iconSrc(network: Network): string {
@@ -96,6 +103,7 @@ export default defineComponent({
     }
 
     function isActive(network: Network): boolean {
+      if (!appNetworkSupported && network.id === 'ethereum') return true;
       return configService.network.key === network.key;
     }
 
