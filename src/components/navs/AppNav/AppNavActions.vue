@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="$auth.isAuthenticated.value" class="flex items-center">
-      <AppNavClaimBtn />
+      <AppNavClaimBtn v-if="isMainnet" />
       <AppNavAccountBtn />
     </div>
     <BalBtn
@@ -45,7 +45,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { bp } = useBreakpoints();
-    const { account, profile, loading: web3Loading } = useWeb3();
+    const { account, profile, loading: web3Loading, isMainnet } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
 
@@ -60,6 +60,7 @@ export default defineComponent({
 
     return {
       // computed
+      isMainnet,
       account,
       profile,
       web3Loading,
