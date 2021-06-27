@@ -33,24 +33,33 @@ export function getOriginalAddress(chainId: number, address: string) {
     return;
   }
   const map = {
+    // WETH
     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': {
-      42: '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1'
+      42: '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1',
+      137: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'
     },
+    // WBTC
     '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': {
       42: '0x1c8e3bcb3378a443cc591f154c5ce0ebb4da9648'
     },
+    // BAL
     '0xba100000625a3754423978a60c9317c58a424e3d': {
-      42: '0x41286bb1d3e870f3f750eb7e1c25d7e48c8a1ac7'
+      42: '0x41286bb1d3e870f3f750eb7e1c25d7e48c8a1ac7',
+      137: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'
     },
+    // PERP
     '0xbc396689893d065f41bc2c6ecbee5e0085233447': {
       42: '0x8f4bebf498cc624a0797fe64114a6ff169eee078'
     },
+    // MKR
     '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2': {
       42: '0xaf9ac3235be96ed496db7969f60d354fe5e426b0'
     },
+    // USDC
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
       42: '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115'
     },
+    // DAI
     '0x6b175474e89094c44da98b954eedeac495271d0f': {
       42: '0x04df6e4121c27713ed22341e7c7df330f56f289b'
     }
