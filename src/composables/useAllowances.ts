@@ -30,7 +30,9 @@ export default function useAllowances(payload?: UseAccountPayload) {
     userNetworkConfig.value?.addresses.vault
   ]);
 
-  const isQueryEnabled = computed(() => account && tokens.value.length > 0);
+  const isQueryEnabled = computed(
+    () => account.value != '' && tokens.value.length > 0
+  );
   const {
     data: allowances,
     isLoading,
