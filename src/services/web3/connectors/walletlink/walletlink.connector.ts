@@ -2,7 +2,7 @@ import { Connector } from '../connector';
 import WalletLink from 'walletlink';
 import ConfigService from '@/services/config/config.service';
 export class WalletLinkConnector extends Connector {
-  id = 'walletconnect';
+  id = 'walletlink';
   async connect() {
     const configService = new ConfigService();
     const walletLink = new WalletLink({

@@ -207,6 +207,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useTokenLists from '@/composables/useTokenLists';
+import useAccountBalances from '@/composables/useAccountBalances';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -241,13 +242,19 @@ export default defineComponent({
 
     // COMPOSABLES
     const { txListener } = useNotify();
-    const { isWalletReady, toggleWalletSelectModal } = useVueWeb3();
+    const {
+      isWalletReady,
+      toggleWalletSelectModal,
+      getProvider,
+      account,
+      userNetworkConfig
+    } = useVueWeb3();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
     const { tokenDictionary } = useTokenLists();
     const { trackGoal, Goals } = useFathom();
-    const { getProvider, account, userNetworkConfig } = useVueWeb3();
+    const { refetchBalances } = useAccountBalances();
 
     // SERVICES
     const poolExchange = computed(
@@ -437,8 +444,12 @@ export default defineComponent({
       ];
     }
 
-    function setPropMax() {
-      if (!isWalletReady.value || Number(bptBalance.value) === 0) return;
+    function setPropMax(ignoreBptCheck = false) {
+      if (
+        !isWalletReady.value ||
+        (!ignoreBptCheck && Number(bptBalance.value) === 0)
+      )
+        return;
       const { send, receive } = poolCalculator.propAmountsGiven(
         bptBalance.value,
         0,
@@ -528,7 +539,8 @@ export default defineComponent({
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
-            setPropMax();
+            await refetchBalances.value();
+            setPropMax(true);
           },
           onTxCancel: () => {
             data.loading = false;
@@ -580,7 +592,9 @@ export default defineComponent({
       }
     );
 
-    watch(tokenDictionary, newTokens => poolCalculator.setAllTokens(newTokens));
+    watch(tokenDictionary, newTokens => {
+      poolCalculator.setAllTokens(newTokens);
+    });
 
     watch(isWalletReady, isReady => {
       if (!isReady) {
