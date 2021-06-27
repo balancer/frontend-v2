@@ -42,7 +42,6 @@
     "@portis/web3": "^3.0.3",
     "@sentry/browser": "^6.3.2",
     "@sentry/tracing": "^6.3.2",
-    "@snapshot-labs/lock": "^0.1.2",
     "@tailwindcss/postcss7-compat": "^2.0.4",
     "@toruslabs/torus-embed": "^1.9.4",
     "@vue/cli-plugin-babel": "^4.4.0",

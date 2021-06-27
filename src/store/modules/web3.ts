@@ -1,5 +1,4 @@
 import { Web3Provider } from '@ethersproject/providers';
-import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import configs, { Config } from '@/lib/config';
 import { getProfile } from '@/lib/utils/profile';
 import useFathom from '@/composables/useFathom';
@@ -42,9 +41,6 @@ const actions = {
   async login({ dispatch, commit, state }, connector = 'injected') {
     commit('setLoading', true);
 
-    auth = getInstance();
-    await auth.login(connector);
-
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
@@ -67,7 +63,6 @@ const actions = {
   },
 
   async logout({ commit, dispatch }) {
-    auth = getInstance();
     auth.logout();
     commit('logout');
     dispatch('account/resetAccount', null, { root: true });

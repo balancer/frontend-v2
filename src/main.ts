@@ -7,9 +7,7 @@ import i18n from '@/plugins/i18n';
 import blocknative from '@/plugins/blocknative';
 import vueQuery from '@/plugins/vueQuery';
 import initSentry from '@/plugins/sentry';
-import authOptions from '@/plugins/authOptions';
 import registerDirectives from '@/plugins/directives';
-import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 import { registerGlobalComponents } from '@/plugins/components';
 import Web3Plugin from '@/services/web3/web3.plugin';
@@ -48,7 +46,6 @@ const app = createApp(App)
   .use(router)
   .use(store)
   .use(blocknative)
-  .use(LockPlugin, authOptions)
   .use(VueApexCharts)
   .use(vueQuery)
   .use(VueVirtualScroller)

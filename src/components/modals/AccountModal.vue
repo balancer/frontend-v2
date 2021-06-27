@@ -44,7 +44,6 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, reactive, computed } from 'vue';
-import { getInjected } from '@snapshot-labs/lock/src/utils';
 import connectorsList from '@/constants/connectors.json';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
@@ -77,8 +76,6 @@ export default defineComponent({
       return t('account');
     });
 
-    const injected = computed(() => getInjected());
-
     const connectors = computed(() => {
       return Object.fromEntries(
         Object.entries(connectorsList).slice(0, data.connectorsLimit)
@@ -98,7 +95,6 @@ export default defineComponent({
       // computed
       account,
       title,
-      injected,
       connectors,
       invisibleConnectorsCount,
       // methods
