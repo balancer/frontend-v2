@@ -1,21 +1,25 @@
 import { Connector } from '../connector';
+import detectEthereumProvider from '@metamask/detect-provider';
+import { ExternalProvider } from '@ethersproject/providers';
 export class MetamaskConnector extends Connector {
   id = 'injected';
   async connect() {
     // type for window.ethereum is causing conflicts (provided by some library)
-    const provider = window.ethereum as any;
+    const provider = (await detectEthereumProvider()) as ExternalProvider;
     if (provider) {
       this.provider = provider;
       this.active.value = true;
 
       try {
-        const accounts = await provider.request({
-          method: 'eth_requestAccounts'
-        });
+        if (provider.request) {
+          const accounts = await provider.request({
+            method: 'eth_requestAccounts'
+          });
 
-        const chainId = await provider.request({ method: 'eth_chainId' });
-        this.handleChainChanged(chainId);
-        this.handleAccountsChanged(accounts);
+          const chainId = await provider.request({ method: 'eth_chainId' });
+          this.handleChainChanged(chainId);
+          this.handleAccountsChanged(accounts);
+        }
       } catch (err) {
         if (err.code === 4001) {
           // EIP-1193 userRejectedRequest error
