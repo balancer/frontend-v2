@@ -43,7 +43,7 @@ export default function useWeb3() {
   });
 
   const isMainnet = computed(() => {
-    return userNetwork.value.name === 'Mainnet';
+    return appNetwork.name === 'Mainnet';
   });
 
   const unsupportedNetwork = computed(() => {
