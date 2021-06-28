@@ -129,8 +129,6 @@ export default {
       connector.handleDisconnect();
       pluginState.connector = null;
       pluginState.walletState = 'disconnected';
-      lsRemove('connectedWallet');
-      lsRemove('connectedProvider');
       alreadyConnectedAccount.value = null;
       alreadyConnectedProvider.value = null;
     };
