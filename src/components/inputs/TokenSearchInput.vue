@@ -22,7 +22,7 @@
           @closed="removeToken(token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
-          <span class="ml-2">{{ tokenDictionary[token]?.symbol }}</span>
+          <span class="ml-2">{{ tokens[token]?.symbol }}</span>
         </BalChip>
       </div>
       <div
@@ -73,10 +73,11 @@ import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenMo
 import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
 import { TOKENS } from '@/constants/tokens';
-import useTokenLists from '@/composables/useTokenLists';
 import { ETHER } from '@/constants/tokenlists';
 import { getAddress } from '@ethersproject/address';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
+import { TokenMap } from '@/types';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -94,7 +95,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     // COMPOSABLES
-    const { tokenDictionary } = useTokenLists();
+    const { tokens } = useTokens();
     const {
       isLoading: isLoadingBalances,
       balances,
@@ -118,7 +119,7 @@ export default defineComponent({
 
     const hasNoBalances = computed(() => !sortedBalances.value.length);
     const whiteListedTokens = computed(() =>
-      Object.values(tokenDictionary.value)
+      Object.values(tokens.value as TokenMap)
         .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
         .filter(balance => !props.modelValue.includes(balance.address))
     );
@@ -158,7 +159,7 @@ export default defineComponent({
       hasNoBalances,
       whiteListedTokens,
       // computed
-      tokenDictionary,
+      tokens,
       // methods
       addToken,
       removeToken,

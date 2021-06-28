@@ -2,11 +2,11 @@ import useVueWeb3 from '@/services/web3/useVueWeb3';
 import { useQuery } from 'vue-query';
 import { getAllowances } from '@/lib/utils/balancer/tokens';
 import getProvider from '@/lib/utils/provider';
-import useTokenLists from './useTokenLists';
 import { computed, reactive, Ref, ref } from 'vue';
 import { ETHER } from '@/constants/tokenlists';
 import { isAddress } from 'web3-utils';
 import QUERY_KEYS from '@/constants/queryKeys';
+import useTokens from './useTokens';
 
 type UseAccountPayload = {
   tokens?: Ref<string[]>;
@@ -15,13 +15,14 @@ type UseAccountPayload = {
 
 const dstAllowanceMap = ref({});
 
+// THE CONTENTS OF THIS WILL BE REPLACED/ALTERED WITH THE REGISTRY REFACTOR
 export default function useAllowances(payload?: UseAccountPayload) {
   const { userNetworkConfig, account } = useVueWeb3();
-  const { tokenDictionary } = useTokenLists();
+  const { tokens: allTokens } = useTokens();
   const provider = getProvider(String(userNetworkConfig.value?.chainId));
   // filter out ether and any bad addresses
   const tokens = computed(() =>
-    (payload?.tokens?.value || Object.keys(tokenDictionary.value)).filter(
+    (payload?.tokens?.value || Object.keys(allTokens.value)).filter(
       t => t !== ETHER.address && isAddress(t)
     )
   );

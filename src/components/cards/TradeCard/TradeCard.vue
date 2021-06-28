@@ -110,9 +110,9 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
-import useTokenLists from '@/composables/useTokenLists';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   components: {
@@ -132,7 +132,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
-    const { tokenDictionary } = useTokenLists();
+    const { tokens } = useTokens();
     const { userNetworkConfig } = useVueWeb3();
 
     const tokenInAddress = ref('');
@@ -184,7 +184,7 @@ export default defineComponent({
     const { allowanceState, isLoading: isLoadingApprovals } = useTokenApproval(
       tokenInAddress,
       tokenInAmount,
-      tokenDictionary
+      tokens
     );
     const {
       trading,
@@ -203,7 +203,7 @@ export default defineComponent({
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      tokenDictionary,
+      tokens,
       allowanceState,
       isWrap,
       isUnwrap
@@ -213,7 +213,7 @@ export default defineComponent({
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      tokenDictionary
+      tokens
     );
 
     const title = computed(() => {

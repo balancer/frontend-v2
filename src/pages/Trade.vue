@@ -16,7 +16,7 @@ import { useStore } from 'vuex';
 
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
 import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
-import useTokenLists from '@/composables/useTokenLists';
+import useTokenLists from '@/composables/useTokensStore';
 import { TradeInterface } from '@/store/modules/app';
 
 export default defineComponent({

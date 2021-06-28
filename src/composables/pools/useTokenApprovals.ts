@@ -11,7 +11,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
   const { getProvider, appNetworkConfig } = useVueWeb3();
   const approving = ref(false);
   const approvedAll = ref(false);
-  const { allTokens } = useTokens();
+  const { tokens: allTokens } = useTokens();
   const { txListener } = useNotify();
   const { getRequiredAllowances, refetchAllowances } = useAllowances();
 

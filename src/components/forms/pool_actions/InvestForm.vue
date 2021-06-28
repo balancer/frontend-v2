@@ -267,8 +267,8 @@ import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useTokenLists from '@/composables/useTokenLists';
 import useAccountBalances from '@/composables/useAccountBalances';
+import useTokens from '@/composables/useTokens';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -327,7 +327,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { txListener } = useNotify();
     const { minusSlippage } = useSlippage();
-    const { tokenDictionary } = useTokenLists();
+    const { tokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
     const { refetchBalances } = useAccountBalances();
 
@@ -346,15 +346,11 @@ export default defineComponent({
         new PoolExchange(
           props.pool,
           String(userNetworkConfig.value.chainId),
-          tokenDictionary.value
+          tokens.value
         )
     );
 
-    const poolCalculator = new PoolCalculator(
-      props.pool,
-      tokenDictionary.value,
-      'join'
-    );
+    const poolCalculator = new PoolCalculator(props.pool, tokens.value, 'join');
 
     // COMPUTED
     const tokenWeights = computed(() =>
@@ -374,7 +370,7 @@ export default defineComponent({
 
     const balances = computed(() => {
       return props.pool.tokenAddresses.map(
-        token => tokenDictionary.value[token].balance
+        token => tokens.value[token].balance
       );
     });
 
@@ -475,13 +471,11 @@ export default defineComponent({
 
     // METHODS
     function tokenBalance(index: number): string {
-      return (
-        tokenDictionary.value[props.pool.tokenAddresses[index]]?.balance || '0'
-      );
+      return tokens.value[props.pool.tokenAddresses[index]]?.balance || '0';
     }
 
     function tokenDecimals(index) {
-      return tokenDictionary.value[props.pool.tokenAddresses[index]].decimals;
+      return tokens.value[props.pool.tokenAddresses[index]].decimals;
     }
 
     function amountUSD(index) {
@@ -506,7 +500,7 @@ export default defineComponent({
     }
 
     function symbolFor(token) {
-      return tokenDictionary.value[token]?.symbol || '';
+      return tokens.value[token]?.symbol || '';
     }
 
     async function setPropMax() {
@@ -601,7 +595,7 @@ export default defineComponent({
       }
     }
 
-    watch(tokenDictionary, newTokens => {
+    watch(tokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
     });
 
@@ -674,7 +668,7 @@ export default defineComponent({
       nativeAsset,
       TOKENS,
       // computed
-      tokenDictionary,
+      tokens,
       hasValidInputs,
       hasAmounts,
       approving,

@@ -153,7 +153,7 @@ import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import useTokenLists from '@/composables/useTokenLists';
+import useTokens from '@/composables/useTokens';
 
 const ETH_BUFFER = 0.1;
 
@@ -210,7 +210,7 @@ export default defineComponent({
     const modalSelectTokenType = ref('input');
     const modalSelectTokenIsOpen = ref(false);
 
-    const { tokenDictionary: tokens } = useTokenLists();
+    const { tokens } = useTokens();
 
     const tokenInValue = computed(() =>
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
