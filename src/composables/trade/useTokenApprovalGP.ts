@@ -6,12 +6,12 @@ import useNotify from '@/composables/useNotify';
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import { ETHER } from '@/constants/tokenlists';
 import { parseUnits } from '@ethersproject/units';
-import { Token } from '@/types';
+import { TokenMap } from '@/types';
 
 export default function useTokenApprovalGP(
   tokenInAddress: Ref<string>,
   amount: Ref<string>,
-  tokens: ComputedRef<Token[]>
+  tokens: ComputedRef<TokenMap>
 ) {
   const approving = ref(false);
   const approved = ref(false);

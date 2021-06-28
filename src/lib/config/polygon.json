@@ -5,29 +5,30 @@
   "shortName": "Polygon",
   "network": "polygon",
   "unknown": false,
-  "nativeAsset": "MATIC",
-  "nativeAssetLong": "Matic",
   "rpc": "https://polygon-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
-  "ws": "wss://rpc-mainnet.maticvigil.com/ws",
+  "ws": "wss://rpc-mainnet.maticvigil.com/ws/v1/0640daf21d413ff9adc73b043d91264e42d92a87",
   "explorer": "https://polygonscan.com/",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
+  "nativeAsset": {
+    "name": "Matic",
+    "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "symbol": "MATIC",
+    "decimals": 18,
+    "deeplinkId": "matic",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png"
+  },
   "addresses": {
-    "bFactory": "",
-    "bActions": "",
-    "dsProxyRegistry": "",
     "exchangeProxy": "",
     "merkleRedeem": "",
     "multicall": "0xa1B2b503959aedD81512C37e9dce48164ec6a94d",
-    "authorizer": "",
-    "vault": "",
-    "weightedPoolFactory": "",
+    "authorizer": "0xa331d84ec860bf466b4cdccfb4ac09a1b43f3ae6",
+    "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+    "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
     "stablePoolFactory": "",
-    "tokenFactory": "",
     "weth": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
-    "MockFlashLoanReceiver": "",
-    "balancerHelpers": ""
+    "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d"
   },
   "strategies": {
     "0": {

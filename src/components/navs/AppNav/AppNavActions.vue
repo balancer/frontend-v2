@@ -6,12 +6,11 @@
     </div>
     <BalBtn
       v-else
-      class="text-base"
       color="gray"
       outline
       rounded
-      :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
-      :circle="['sm', 'md', 'lg'].includes(bp)"
+      :size="['xs', 'sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
+      :circle="['xs', 'sm', 'md', 'lg'].includes(bp)"
       @click="onClickConnect"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />

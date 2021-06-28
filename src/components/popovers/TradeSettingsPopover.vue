@@ -24,7 +24,10 @@
       </div>
       <AppSlippageForm class="mt-1" />
     </div>
-    <div v-if="!hideLiquidity" class="mt-6">
+    <div
+      v-if="appTradeInterface === TradeInterface.BALANCER && !hideLiquidity"
+      class="mt-6"
+    >
       <div class="flex items-baseline">
         <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
@@ -35,14 +38,37 @@
         </BalTooltip>
       </div>
       <div class="flex mt-1">
-        <div
-          v-for="(tradeLiquidity, i) in tradeLiquidityOptions"
-          :key="i"
-          class="trade-settings-option w-16 mr-2 py-1 text-center border rounded-lg cursor-pointer capitalize"
-          :class="{ active: appTradeLiquidity === tradeLiquidity }"
-          @click="setTradeLiquidity(tradeLiquidity)"
-        >
-          {{ $t(tradeLiquidity.toLowerCase()) }}
+        <BalBtnGroup
+          :options="tradeLiquidityOptions"
+          v-model="appTradeLiquidity"
+          @update:modelValue="setTradeLiquidity"
+        />
+      </div>
+    </div>
+    <div v-if="appTradeInterface === TradeInterface.GNOSIS" class="mt-6">
+      <div class="flex items-baseline">
+        <span v-text="$t('transactionDeadline')" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div v-html="$t('transactionDeadlineTooltip')" class="w-52" />
+        </BalTooltip>
+      </div>
+      <div class="flex mt-1">
+        <div class="flex items-center px-1 border rounded-lg shadow-inner">
+          <input
+            class="w-8 text-right"
+            v-model="appTransactionDeadline"
+            placeholder="20"
+            type="number"
+            step="1"
+            min="0"
+            @update:modelValue="setTransactionDeadline"
+          />
+        </div>
+        <div class="px-2">
+          minutes
         </div>
       </div>
     </div>
@@ -61,9 +87,11 @@ import {
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/composables/useWeb3';
-import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import useFathom from '@/composables/useFathom';
+
+import { TradeInterface } from '@/store/modules/app';
+import { tradeLiquidityOptions } from '@/constants/options';
 
 export enum TradeSettingsContext {
   trade,
@@ -96,13 +124,17 @@ export default defineComponent({
 
     // DATA
     const data = reactive({
-      tradeLiquidityOptions: Object.values(LiquiditySelection).filter(
-        v => typeof v === 'string'
-      )
+      tradeLiquidityOptions
     });
 
     // COMPUTED
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
+    const appTradeInterface = computed<TradeInterface>(
+      () => store.state.app.tradeInterface
+    );
+    const appTransactionDeadline = computed<number>(
+      () => store.state.app.transactionDeadline
+    );
     const hideLiquidity = computed(
       () =>
         !appNetwork.supportsV1 || context.value === TradeSettingsContext.invest
@@ -111,6 +143,8 @@ export default defineComponent({
     // METHODS
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
+    const setTransactionDeadline = transactionDeadline =>
+      store.commit('app/setTransactionDeadline', transactionDeadline);
 
     function onActivatorClick(): void {
       if (context.value === TradeSettingsContext.trade) {
@@ -124,11 +158,16 @@ export default defineComponent({
       // data
       ...toRefs(data),
       Goals,
+      // constants,
+      TradeInterface,
       // computed
       appTradeLiquidity,
+      appTradeInterface,
+      appTransactionDeadline,
       hideLiquidity,
       // methods
       setTradeLiquidity,
+      setTransactionDeadline,
       fNum,
       explorer,
       onActivatorClick

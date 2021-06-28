@@ -11,7 +11,8 @@ const ENV = process.env.VUE_APP_ENV || 'development';
 const NETWORK = process.env.VUE_APP_NETWORK || '42';
 const networkMap = {
   '1': 'mainnet',
-  '42': 'kovan'
+  '42': 'kovan',
+  '137': 'polygon'
 };
 const environment = `${ENV}-${networkMap[NETWORK]}`;
 const release = `frontend-v2@${version}`;
