@@ -2,7 +2,10 @@ import { TransactionEventCode, TransactionData } from 'bnc-notify';
 import castArray from 'lodash/castArray';
 import mapValues from 'lodash/mapValues';
 
+import getProvider from '@/lib/utils/provider';
+
 import useBlocknative from './useBlocknative';
+import useConfig from './useConfig';
 import useWeb3 from './useWeb3';
 
 type TxCallback = (txData: TransactionData) => void;
@@ -74,6 +77,20 @@ export default function useNotify() {
           );
         });
     });
+
+    const provider = getProvider(useConfig().env.NETWORK);
+    new Promise(r => setTimeout(r, 2000)).then(() =>
+      Promise.all(
+        txs.map(async hash => {
+          const tx = await provider.getTransaction(hash);
+          return tx.wait();
+        })
+      ).then(receipts => {
+        if (eventsMap?.txConfirmed) {
+          eventsMap?.txConfirmed(receipts[receipts.length - 1]);
+        }
+      })
+    );
   }
 
   return { txListener };
