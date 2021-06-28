@@ -1,6 +1,6 @@
 <template>
   <button
-    class="bg-white hover:bg-gray-200 p-2 flex justify-center items-center w-full h-14 rounded-md"
+    class="bg-white hover:bg-gray-50 p-4 flex justify-start items-center w-full h-14 rounded-md border mb-3 shadow-lg"
     @click="connectWallet(wallet)"
   >
     <div class="flex items-center" style="width: 70%">
@@ -8,8 +8,7 @@
         :src="require(`@/assets/images/connectors/${wallet}.svg`)"
         class="w-10 w-10 mr-4"
       />
-      <h5 class="text-gray-600 text-base">
-        Connect with
+      <h5 class="text-gray-700 text-base">
         <span class="capitalize">{{ WalletNameMap[wallet] }}</span>
       </h5>
     </div>
