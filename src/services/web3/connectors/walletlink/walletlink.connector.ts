@@ -26,7 +26,7 @@ export class WalletLinkConnector extends Connector {
       if (err.code === 4001) {
         // EIP-1193 userRejectedRequest error
         // If this happens, the user rejected the connection request.
-        console.log('Please connect to WalletConnect.');
+        console.log('Rejected connection.');
       } else {
         console.error(err);
       }

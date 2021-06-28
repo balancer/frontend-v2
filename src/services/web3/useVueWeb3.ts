@@ -38,9 +38,14 @@ export default function useVueWeb3() {
     () => account.value !== '' && userNetworkConfig.value?.chainId !== 0
   );
   const isMismatchedNetwork = computed(() => {
-    return userNetworkConfig.value?.key !== process.env.VUE_APP_NETWORK;
+    return (
+      isWalletReady.value &&
+      userNetworkConfig.value?.key !== process.env.VUE_APP_NETWORK
+    );
   });
-  const isUnsupportedNetwork = computed(() => !userNetworkConfig.value?.key);
+  const isUnsupportedNetwork = computed(
+    () => isWalletReady.value && !userNetworkConfig.value?.key
+  );
   const explorerLinks = {
     txLink: (txHash: string) =>
       `${configService.network.explorer}/tx/${txHash}`,

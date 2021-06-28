@@ -33,10 +33,7 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div
-          v-if="!isLoading && !isLoadingBalances"
-          class="px-6 py-4 -mt-1 flex flex-wrap"
-        >
+        <div v-if="!isLoading" class="px-6 py-4 -mt-1 flex flex-wrap">
           <div
             v-for="token in sortedTokensFor(pool)"
             :key="token"
@@ -173,7 +170,7 @@ export default defineComponent({
         align: 'right',
         id: 'poolVolume',
         sortKey: pool => Number(pool.dynamic.volume),
-        width: 150
+        width: 175
       },
       {
         name: t('apy'),
