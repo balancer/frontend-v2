@@ -10,17 +10,20 @@ import {
   Web3Provider
 } from '@ethersproject/providers';
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
+import { PortisConnector } from './connectors/portis/portis.connector';
 
-export type Wallet = 'metamask' | 'walletconnect' | 'walletlink';
+export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
-  'walletlink'
+  'walletlink',
+  'portis'
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
-  walletlink: 'Coinbase'
+  walletlink: 'Coinbase',
+  portis: 'Portis'
 };
 type ConnectorImplementation = new (...args: any[]) => Connector;
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
@@ -39,7 +42,8 @@ export type Web3Plugin = {
 const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   metamask: MetamaskConnector,
   walletconnect: WalletConnectConnector,
-  walletlink: WalletLinkConnector
+  walletlink: WalletLinkConnector,
+  portis: PortisConnector
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';

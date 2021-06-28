@@ -6,7 +6,7 @@
     <div class="flex items-center" style="width: 70%">
       <img
         :src="require(`@/assets/images/connectors/${wallet}.svg`)"
-        class="w-10 w-10 mr-4"
+        class="h-10 w-10 mr-4"
       />
       <h5 class="text-gray-700 text-base">
         <span class="capitalize">{{ WalletNameMap[wallet] }}</span>
