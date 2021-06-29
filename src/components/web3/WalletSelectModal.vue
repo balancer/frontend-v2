@@ -9,7 +9,13 @@
       <h6 class="font-bold">New to Ethereum?</h6>
       <p class="text-sm">
         Balancer is a DeFi app on Ethereum. To invest and trade here, you'll
-        first need to set up an Ethereum Wallet. Learn More.
+        first need to set up an Ethereum Wallet.
+        <BalLink :href="EXTERNAL_LINKS.Ethereum.Wallets" external>
+          Learn More
+          <span class="align-middle"
+            ><BalIcon name="arrow-up-right" size="sm"
+          /></span>
+        </BalLink>
       </p>
     </div>
   </BalModal>
@@ -18,6 +24,7 @@
 <script lang="ts">
 import { SupportedWallets } from '@/services/web3/web3.plugin';
 import WalletButton from '@/components/web3/WalletButton.vue';
+import { EXTERNAL_LINKS } from '@/constants/links';
 import { defineComponent } from 'vue';
 export default defineComponent({
   emits: ['close'],
@@ -32,7 +39,8 @@ export default defineComponent({
   },
   setup() {
     return {
-      wallets: SupportedWallets
+      wallets: SupportedWallets,
+      EXTERNAL_LINKS
     };
   }
 });
