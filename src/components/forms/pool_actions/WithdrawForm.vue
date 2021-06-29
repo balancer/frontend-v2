@@ -77,11 +77,11 @@
         min="0"
         step="any"
         placeholder="0"
+        :decimal-limit="tokenDecimals(i)"
         validate-on="input"
         prepend-border
         :faded-out="isSingleAsset && singleAsset !== i"
         @click="setSingleAsset(i)"
-        @update:modelValue="preventOverflow($event, i)"
       >
         <template v-slot:prepend>
           <div class="flex items-center h-full w-24">
@@ -502,18 +502,6 @@ export default defineComponent({
       console.log('bptIn (JS)', bptIn.value);
     }
 
-    function preventOverflow(value: number, index: number): void {
-      if (!value.toString().includes('.')) return;
-
-      const decimalLimit = tokenDecimals(index);
-      const [numberStr, decimalStr] = value.toString().split('.');
-
-      if (decimalStr.length > decimalLimit) {
-        const maxLength = numberStr.length + decimalLimit + 1;
-        data.amounts[index] = data.amounts[index].slice(0, maxLength);
-      }
-    }
-
     function blocknativeTxHandler(tx: TransactionResponse): void {
       txListener(tx.hash, {
         onTxConfirmed: (tx: TransactionData) => {
@@ -650,9 +638,9 @@ export default defineComponent({
       singleAssetMaxLabel,
       singleAssetMaxes,
       isRequired,
-      preventOverflow,
       trackGoal,
-      Goals
+      Goals,
+      tokenDecimals
     };
   }
 });
