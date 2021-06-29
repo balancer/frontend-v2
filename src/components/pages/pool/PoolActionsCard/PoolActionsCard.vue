@@ -17,7 +17,7 @@
           :title="$t('investmentSettled')"
           :description="$t('investmentSuccess')"
           :closeLabel="$t('close')"
-          :txHash="txHash"
+          :explorerLink="explorer.txLink(txHash)"
           @close="investmentSuccess = false"
         />
       </template>
@@ -32,7 +32,7 @@
           :title="$t('withdrawalSettled')"
           :description="$t('withdrawalSuccess')"
           :closeLabel="$t('close')"
-          :txHash="txHash"
+          :explorerLink="explorer.txLink(txHash)"
           @close="withdrawalSuccess = false"
         />
       </template>
@@ -50,6 +50,7 @@ import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import useFathom from '@/composables/useFathom';
+import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   name: 'PoolActionsCard',
@@ -72,6 +73,7 @@ export default defineComponent({
     // COMPOSABLES
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
+    const { explorer } = useWeb3();
 
     // DATA
     const tabs = [
@@ -108,7 +110,8 @@ export default defineComponent({
       TradeSettingsContext,
       // methods
       handleInvestment,
-      handleWithdrawal
+      handleWithdrawal,
+      explorer
     };
   }
 });
