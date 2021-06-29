@@ -10,15 +10,16 @@ export class MetamaskConnector extends Connector {
       this.provider = provider;
       this.active.value = true;
 
+      let accounts = null;
+      let chainId = null;
+      // try the best practice way of get accounts with eth_requestAccounts && eth_chainId
       try {
         if (provider.request) {
-          const accounts = await provider.request({
+          accounts = await provider.request({
             method: 'eth_requestAccounts'
           });
 
-          const chainId = await provider.request({ method: 'eth_chainId' });
-          this.handleChainChanged(chainId);
-          this.handleAccountsChanged(accounts);
+          chainId = await provider.request({ method: 'eth_chainId' });
         }
       } catch (err) {
         if (err.code === 4001) {
@@ -28,6 +29,18 @@ export class MetamaskConnector extends Connector {
         } else {
           console.error(err);
         }
+      }
+
+      // if account is still moot, try the bad old way - enable()
+      if (!accounts) {
+        // have to any it, since enable technically shouldn't be there anymore.
+        // but might, for legacy clients.
+        const response = await (provider as any).enable();
+        accounts = response?.result || response;
+      }
+      if (accounts && chainId) {
+        this.handleChainChanged(chainId);
+        this.handleAccountsChanged(accounts);
       }
     } else {
       console.error(
