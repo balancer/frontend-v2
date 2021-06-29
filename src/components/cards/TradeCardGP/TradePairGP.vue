@@ -49,13 +49,13 @@
         </div>
       </template>
       <template v-slot:info>
-        <div class="cursor-pointer" @click="handleMax">
-          {{ $t('balance') }}: {{ fNum(balanceLabel, 'token') }}
+        <div class="cursor-pointer" @click="handleInMax">
+          {{ $t('balance') }}: {{ fNum(tokenInBalance, 'token') }}
         </div>
       </template>
       <template v-slot:append>
         <div class="p-2">
-          <BalBtn size="xs" color="white" @click="handleMax">
+          <BalBtn size="xs" color="white" @click="handleInMax">
             {{ $t('max') }}
           </BalBtn>
         </div>
@@ -120,9 +120,15 @@
         </div>
       </template>
       <template v-slot:info>
-        <div>
-          {{ $t('priceImpact') }}:
-          {{ fNum(priceImpact, 'percent') }}
+        <div class="cursor-pointer" @click="handleOutMax">
+          {{ $t('balance') }}: {{ fNum(tokenOutBalance, 'token') }}
+        </div>
+      </template>
+      <template v-slot:append>
+        <div class="p-2">
+          <BalBtn size="xs" color="white" @click="handleOutMax">
+            {{ $t('max') }}
+          </BalBtn>
         </div>
       </template>
     </BalTextInput>
@@ -172,12 +178,8 @@ export default defineComponent({
       type: String,
       required: true
     },
-    isSell: {
+    exactIn: {
       type: Boolean,
-      required: true
-    },
-    priceImpact: {
-      type: Number,
       required: true
     }
   },
@@ -186,23 +188,31 @@ export default defineComponent({
     'tokenInAmountChange',
     'tokenOutAddressChange',
     'tokenOutAmountChange',
-    'isSellChange',
+    'exactInChange',
     'change'
   ],
   setup(props, { emit }) {
+    // COMPOSABLES
     const store = useStore();
     const { fNum, toFiat } = useNumbers();
 
+    // DATA
     const {
       tokenInAmountInput,
       tokenInAddressInput,
       tokenOutAmountInput,
       tokenOutAddressInput,
-      isSell
+      exactIn
     } = toRefs(props);
+
+    const isInRate = ref(true);
+    const modalSelectTokenType = ref('input');
+    const modalSelectTokenIsOpen = ref(false);
 
     const getTokens = (params = {}) =>
       store.getters['registry/getTokens'](params);
+
+    // COMPUTED
     const tokens = computed(() => getTokens({ includeEther: true }));
 
     const tokenInValue = computed(() =>
@@ -225,36 +235,64 @@ export default defineComponent({
       return symbol;
     });
 
-    const isInRate = ref(true);
-    const modalSelectTokenType = ref('input');
-    const modalSelectTokenIsOpen = ref(false);
+    const tokenInBalance = computed(
+      () => tokens.value[tokenInAddressInput.value]?.balance || '0'
+    );
 
-    function handleMax(): void {
-      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
+    const tokenOutBalance = computed(
+      () => tokens.value[tokenOutAddressInput.value]?.balance || '0'
+    );
+
+    // METHODS
+
+    function getMaxAmount(
+      tokenAddress: string,
+      balance: string,
+      balanceNumber: number
+    ) {
+      return tokenAddress !== ETHER.address
+        ? balance
+        : balanceNumber > ETH_BUFFER
+        ? (balanceNumber - ETH_BUFFER).toString()
+        : '0';
+    }
+    function handleInMax() {
+      const balance = tokenInBalance.value;
       const balanceNumber = parseFloat(balance);
-      const maxAmount =
-        tokenInAddressInput.value !== ETHER.address
-          ? balance
-          : balanceNumber > ETH_BUFFER
-          ? (balanceNumber - ETH_BUFFER).toString()
-          : '0';
+      const maxAmount = getMaxAmount(
+        tokenInAddressInput.value,
+        balance,
+        balanceNumber
+      );
+
       handleInAmountChange(maxAmount);
     }
 
+    function handleOutMax() {
+      const balance = tokenOutBalance.value;
+      const balanceNumber = parseFloat(balance);
+      const maxAmount = getMaxAmount(
+        tokenOutAddressInput.value,
+        balance,
+        balanceNumber
+      );
+      handleOutAmountChange(maxAmount);
+    }
+
     function handleInAmountChange(value: string): void {
-      emit('isSellChange', true);
+      emit('exactInChange', true);
       emit('tokenInAmountChange', value);
       emit('change', value);
     }
 
     function handleOutAmountChange(value: string): void {
-      emit('isSellChange', false);
+      emit('exactInChange', false);
       emit('tokenOutAmountChange', value);
       emit('change', value);
     }
 
     function handleSwitchTokens(): void {
-      emit('isSellChange', !isSell.value);
+      emit('exactInChange', !exactIn.value);
       emit('tokenInAmountChange', tokenOutAmountInput.value);
       emit('tokenInAddressChange', tokenOutAddressInput.value);
       emit('tokenOutAmountChange', tokenInAmountInput.value);
@@ -311,15 +349,13 @@ export default defineComponent({
       modalSelectTokenType.value = type;
     }
 
-    const balanceLabel = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance
-    );
-
     return {
       tokens,
       fNum,
-      handleMax,
-      balanceLabel,
+      handleInMax,
+      handleOutMax,
+      tokenInBalance,
+      tokenOutBalance,
       handleInAmountChange,
       handleOutAmountChange,
       handleSwitchTokens,

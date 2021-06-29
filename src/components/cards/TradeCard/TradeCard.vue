@@ -1,5 +1,5 @@
 <template>
-  <BalCard class="relative" :shadow="tradeCardShadow" :no-border="bp === 'xs'">
+  <BalCard class="relative" :shadow="tradeCardShadow" no-border>
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
@@ -68,7 +68,7 @@
       :title="$t('tradeSettled')"
       :description="$t('tradeSuccess')"
       :closeLabel="$t('close')"
-      :txHash="txHash"
+      :explorer-link="explorer.txLink(txHash)"
       @close="tradeSuccess = false"
     />
   </BalCard>
@@ -111,6 +111,7 @@ import TradeSettingsPopover, {
 import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   components: {
@@ -126,6 +127,7 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
+    const { explorer } = useWeb3();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
@@ -258,10 +260,10 @@ export default defineComponent({
 
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (assetIn === ETHER.id) assetIn = ETHER.address;
+      if (assetIn === ETHER.deeplinkId) assetIn = ETHER.address;
       else if (isAddress(assetIn)) assetIn = getAddress(assetIn);
       let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (assetOut === ETHER.id) assetOut = ETHER.address;
+      if (assetOut === ETHER.deeplinkId) assetOut = ETHER.address;
       else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
@@ -318,7 +320,8 @@ export default defineComponent({
       TradeSettingsContext,
       poolsLoading,
       bp,
-      tradeCardShadow
+      tradeCardShadow,
+      explorer
     };
   }
 });

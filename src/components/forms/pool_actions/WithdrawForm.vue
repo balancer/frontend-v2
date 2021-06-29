@@ -77,11 +77,11 @@
         min="0"
         step="any"
         placeholder="0"
+        :decimal-limit="tokenDecimals(i)"
         validate-on="input"
         prepend-border
         :faded-out="isSingleAsset && singleAsset !== i"
         @click="setSingleAsset(i)"
-        @update:modelValue="preventOverflow($event, i)"
       >
         <template v-slot:prepend>
           <div class="flex items-center h-full w-24">
@@ -204,10 +204,13 @@ import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import useTokens from '@/composables/useTokens';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
+import useEthers from '@/composables/useEthers';
+import useWeb3 from '@/composables/useWeb3';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -242,22 +245,19 @@ export default defineComponent({
 
     // COMPOSABLES
     const store = useStore();
-    const { txListener } = useNotify();
+    const { account, userNetwork } = useWeb3();
+    const { txListener, supportsBlocknative } = useNotify();
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
     const { allTokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
+    const { txListener: ethersTxListener } = useEthers();
 
     // SERVICES
     const poolExchange = computed(
-      () =>
-        new PoolExchange(
-          props.pool,
-          store.state.web3.config.key,
-          allTokens.value
-        )
+      () => new PoolExchange(props.pool, userNetwork.value.key, allTokens.value)
     );
 
     const poolCalculator = new PoolCalculator(
@@ -489,7 +489,7 @@ export default defineComponent({
     // Talk to Fernando to see if still needed
     async function calcBptIn() {
       const { bptIn: queryBptIn } = await poolExchange.value.queryExit(
-        store.state.web3.account,
+        account.value,
         fullAmounts.value,
         bptBalance.value,
         exitTokenIndex.value,
@@ -502,16 +502,35 @@ export default defineComponent({
       console.log('bptIn (JS)', bptIn.value);
     }
 
-    function preventOverflow(value: number, index: number): void {
-      if (!value.toString().includes('.')) return;
+    function blocknativeTxHandler(tx: TransactionResponse): void {
+      txListener(tx.hash, {
+        onTxConfirmed: (tx: TransactionData) => {
+          emit('success', tx);
+          data.amounts = [];
+          data.loading = false;
+          store.dispatch('account/getBalances');
+        },
+        onTxCancel: () => {
+          data.loading = false;
+        },
+        onTxFailed: () => {
+          data.loading = false;
+        }
+      });
+    }
 
-      const decimalLimit = tokenDecimals(index);
-      const [numberStr, decimalStr] = value.toString().split('.');
-
-      if (decimalStr.length > decimalLimit) {
-        const maxLength = numberStr.length + decimalLimit + 1;
-        data.amounts[index] = data.amounts[index].slice(0, maxLength);
-      }
+    function ethersTxHandler(tx: TransactionResponse): void {
+      ethersTxListener(tx, {
+        onTxConfirmed: (tx: TransactionResponse) => {
+          emit('success', tx);
+          data.amounts = [];
+          data.loading = false;
+          store.dispatch('account/getBalances');
+        },
+        onTxFailed: () => {
+          data.loading = false;
+        }
+      });
     }
 
     async function submit(): Promise<void> {
@@ -520,26 +539,18 @@ export default defineComponent({
         data.loading = true;
         await calcBptIn();
         const tx = await poolExchange.value.exit(
-          store.state.web3.account,
+          account.value,
           amountsOut.value,
           `${bptIn.value}`,
           exitTokenIndex.value,
           exactOut.value
         );
         console.log('Receipt', tx);
-        txListener(tx.hash, {
-          onTxConfirmed: (tx: TransactionData) => {
-            emit('success', tx);
-            data.amounts = [];
-            data.loading = false;
-          },
-          onTxCancel: () => {
-            data.loading = false;
-          },
-          onTxFailed: () => {
-            data.loading = false;
-          }
-        });
+        if (supportsBlocknative.value) {
+          blocknativeTxHandler(tx);
+        } else {
+          ethersTxHandler(tx);
+        }
       } catch (error) {
         console.error(error);
         data.loading = false;
@@ -592,6 +603,11 @@ export default defineComponent({
       }
     });
 
+    watch(account, () => {
+      setPropMax();
+      resetSlider();
+    });
+
     onMounted(async () => {
       if (bptBalance.value) {
         setPropMax();
@@ -622,9 +638,9 @@ export default defineComponent({
       singleAssetMaxLabel,
       singleAssetMaxes,
       isRequired,
-      preventOverflow,
       trackGoal,
-      Goals
+      Goals,
+      tokenDecimals
     };
   }
 });

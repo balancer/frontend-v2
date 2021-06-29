@@ -1,18 +1,22 @@
-import BlocknativeSdk from 'bnc-sdk';
+import { computed, inject } from 'vue';
 import Notify from 'bnc-notify';
-import { inject } from 'vue';
-import { bnNotifySymbol, defaultOptions } from '@/plugins/blocknative';
+import { bnNotifySymbol } from '@/plugins/blocknative';
+import useWeb3 from './useWeb3';
+
+const SUPPORTED_NETWORKS = [1, 42];
 
 export default function useBlocknative() {
+  const { appNetwork } = useWeb3();
+
   const notify = inject(bnNotifySymbol) as ReturnType<typeof Notify>;
   if (!notify) throw new Error('Blocknative Notify missing!');
 
-  function blocknative(networkId: number): BlocknativeSdk {
-    return new BlocknativeSdk(Object.assign({}, defaultOptions, { networkId }));
-  }
+  const supportsBlocknative = computed(() => {
+    return SUPPORTED_NETWORKS.includes(appNetwork.id);
+  });
 
   return {
-    blocknative,
-    notify
+    notify,
+    supportsBlocknative
   };
 }

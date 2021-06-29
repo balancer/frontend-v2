@@ -3,8 +3,8 @@
     <div class="trade-container">
       <BalLoadingBlock v-if="appLoading" class="h-96" />
       <template v-else>
-        <TradeCard v-if="tradeInterface === 'balancer'" />
-        <TradeCardGP v-else-if="tradeInterface === 'gnosis'" />
+        <TradeCard v-if="tradeInterface === TradeInterface.BALANCER" />
+        <TradeCardGP v-else-if="tradeInterface === TradeInterface.GNOSIS" />
       </template>
     </div>
   </div>
@@ -16,6 +16,7 @@ import { useStore } from 'vuex';
 
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
 import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
+import { TradeInterface } from '@/store/modules/app';
 
 export default defineComponent({
   components: {
@@ -43,7 +44,8 @@ export default defineComponent({
 
     return {
       appLoading,
-      tradeInterface
+      tradeInterface,
+      TradeInterface
     };
   }
 });

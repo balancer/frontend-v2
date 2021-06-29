@@ -182,8 +182,7 @@ export default defineComponent({
     });
 
     const shadowClasses = computed(() => {
-      if (props.outline || props.flat || props.disabled || props.loading)
-        return '';
+      if (props.flat || props.disabled || props.loading) return '';
       if (props.size === 'sm') return 'shadow-sm hover:shadow-none';
       return 'shadow hover:shadow-none';
     });

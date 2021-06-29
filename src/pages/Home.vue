@@ -9,10 +9,12 @@
         showPoolShares
         class="mb-8"
       />
-      <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
-      <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Dashboard" external>{{
-        $t('goToBalancerV1Site')
-      }}</BalLink>
+      <div v-if="!hideV1Links">
+        <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
+        <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Dashboard" external>{{
+          $t('goToBalancerV1Site')
+        }}</BalLink>
+      </div>
       <div class="mb-16" />
     </template>
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
@@ -30,10 +32,14 @@
       @loadMore="loadMorePools"
       class="mb-8"
     />
-    <div class="text-black-600">{{ $t('tableShowsBalancerV2Pools') }}</div>
-    <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Explore" external>{{
-      $t('exploreBalancerV1Pools')
-    }}</BalLink>
+    <div v-if="!hideV1Links">
+      <div class="text-black-600">
+        {{ $t('tableShowsBalancerV2Pools') }}
+      </div>
+      <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Explore" external>{{
+        $t('exploreBalancerV1Pools')
+      }}</BalLink>
+    </div>
   </div>
 </template>
 
@@ -62,7 +68,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const router = useRouter();
-    const { isConnected } = useWeb3();
+    const { appNetwork, isConnected } = useWeb3();
 
     const selectedPoolTokens = computed(
       () => store.state.app.selectedPoolTokens
@@ -91,6 +97,8 @@ export default defineComponent({
         : pools?.value
     );
 
+    const hideV1Links = computed(() => !appNetwork.supportsV1);
+
     // METHODS
     function updateSelectedPoolTokens(selectedPoolTokens: string[]) {
       store.commit('app/setSelectedPoolTokens', selectedPoolTokens);
@@ -105,6 +113,7 @@ export default defineComponent({
 
       // computed
       isConnected,
+      hideV1Links,
       poolsHasNextPage,
       poolsIsFetchingNextPage,
       selectedPoolTokens,
