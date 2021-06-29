@@ -22,6 +22,8 @@ import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
 
 import { ETHER } from '@/constants/tokenlists';
+import { TransactionResponse } from '@ethersproject/providers';
+import useEthers from '../useEthers';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -70,9 +72,10 @@ export default function useSor(
   // COMPOSABLES
   const store = useStore();
   const auth = useAuth();
-  const { txListener } = useNotify();
+  const { txListener, supportsBlocknative } = useNotify();
   const { trackGoal, Goals } = useFathom();
   const { appNetwork } = useWeb3();
+  const { txListener: ethersTxListener } = useEthers();
 
   const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
@@ -281,7 +284,7 @@ export default function useSor(
     pools.value = sorManager.selectedPools;
   }
 
-  function tradeTxListener(hash: string) {
+  function blocknativeTxHandler(hash: string): void {
     txListener(hash, {
       onTxConfirmed: () => {
         trading.value = false;
@@ -295,6 +298,27 @@ export default function useSor(
         trading.value = false;
       }
     });
+  }
+
+  function ethersTxHandler(tx: TransactionResponse): void {
+    ethersTxListener(tx, {
+      onTxConfirmed: () => {
+        trading.value = false;
+        latestTxHash.value = tx.hash;
+        trackGoal(Goals.Swapped);
+      },
+      onTxFailed: () => {
+        trading.value = false;
+      }
+    });
+  }
+
+  function txHandler(tx: TransactionResponse): void {
+    if (supportsBlocknative.value) {
+      blocknativeTxHandler(tx.hash);
+    } else {
+      ethersTxHandler(tx);
+    }
   }
 
   async function trade() {
@@ -314,7 +338,7 @@ export default function useSor(
       try {
         const tx = await wrap(chainId, auth.web3, tokenInAmountScaled);
         console.log('Wrap tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -324,7 +348,7 @@ export default function useSor(
       try {
         const tx = await unwrap(chainId, auth.web3, tokenInAmountScaled);
         console.log('Unwrap tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -349,7 +373,7 @@ export default function useSor(
           minAmount
         );
         console.log('Swap in tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -374,7 +398,7 @@ export default function useSor(
           tokenOutAmountScaled
         );
         console.log('Swap out tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;

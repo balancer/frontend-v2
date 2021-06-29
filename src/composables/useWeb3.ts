@@ -42,9 +42,7 @@ export default function useWeb3() {
     return getProvider(userNetwork.value.key);
   });
 
-  const isMainnet = computed(() => {
-    return appNetwork.name === 'Mainnet';
-  });
+  const isMainnet = computed(() => appNetwork.id === 1);
 
   const unsupportedNetwork = computed(() => {
     return store.state.web3.config.unknown;
