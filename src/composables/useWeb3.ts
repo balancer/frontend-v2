@@ -42,9 +42,8 @@ export default function useWeb3() {
     return getProvider(userNetwork.value.key);
   });
 
-  const isMainnet = computed(() => {
-    return appNetwork.name === 'Mainnet';
-  });
+  const isMainnet = computed(() => appNetwork.id === 1);
+  const isPolygon = computed(() => appNetwork.id === 137);
 
   const unsupportedNetwork = computed(() => {
     return store.state.web3.config.unknown;
@@ -82,6 +81,7 @@ export default function useWeb3() {
     loading,
     blockNumber,
     isMainnet,
+    isPolygon,
     unsupportedNetwork,
     networkMismatch,
     isConnected,
