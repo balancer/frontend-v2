@@ -29,7 +29,7 @@
     "authorizer": "0xA331D84eC860Bf466b4CdCcFb4aC09a1B43F3aE6",
     "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
     "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
-    "stablePoolFactory": "",
+    "stablePoolFactory": "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24",
     "tokenFactory": "",
     "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     "MockFlashLoanReceiver": "",

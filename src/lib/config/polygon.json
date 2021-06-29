@@ -26,7 +26,7 @@
     "authorizer": "0xa331d84ec860bf466b4cdccfb4ac09a1b43f3ae6",
     "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
     "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
-    "stablePoolFactory": "",
+    "stablePoolFactory": "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24",
     "weth": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
     "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d"
   },
