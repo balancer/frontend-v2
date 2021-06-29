@@ -1,6 +1,5 @@
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import Notify from 'bnc-notify';
-import { inject } from 'vue';
 import { bnNotifySymbol } from '@/plugins/blocknative';
 import useWeb3 from './useWeb3';
 
