@@ -38,6 +38,17 @@ export class MetamaskConnector extends Connector {
         const response = await (provider as any).enable();
         accounts = response?.result || response;
       }
+
+      // if still moot, try an even worser legacy way
+      try {
+        if (provider.send) {
+          const response = await (provider.send as any)('eth_accounts');
+          accounts = response?.result || response;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
       if (accounts && chainId) {
         this.handleChainChanged(chainId);
         this.handleAccountsChanged(accounts);
