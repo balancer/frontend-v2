@@ -99,11 +99,11 @@
         min="0"
         step="any"
         placeholder="0"
+        :decimal-limit="tokenDecimals(i)"
         :disabled="loading"
         validate-on="input"
         prepend-border
         append-shadow
-        @update:modelValue="preventOverflow($event, i)"
       >
         <template v-slot:prepend>
           <div class="flex items-center h-full w-24">
@@ -543,18 +543,6 @@ export default defineComponent({
       console.log('bptOut (JS)', minBptOut.value);
     }
 
-    function preventOverflow(value: number, index: number): void {
-      if (!value.toString().includes('.')) return;
-
-      const decimalLimit = tokenDecimals(index);
-      const [numberStr, decimalStr] = value.toString().split('.');
-
-      if (decimalStr.length > decimalLimit) {
-        const maxLength = numberStr.length + decimalLimit + 1;
-        data.amounts[index] = data.amounts[index].slice(0, maxLength);
-      }
-    }
-
     async function submit(): Promise<void> {
       if (!data.investForm.validate()) return;
       try {
@@ -682,9 +670,9 @@ export default defineComponent({
       submit,
       approveAllowances,
       fNum,
-      preventOverflow,
       trackGoal,
-      symbolFor
+      symbolFor,
+      tokenDecimals
     };
   }
 });
