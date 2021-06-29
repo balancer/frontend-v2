@@ -102,14 +102,14 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
 
   function txHandler(tx: TransactionResponse): void {
     if (supportsBlocknative.value) {
-      blocknativeTxHandler(tx.hash);
+      blocknativeTxHandler(tx);
     } else {
       ethersTxHandler(tx);
     }
   }
 
-  function blocknativeTxHandler(hash: string): void {
-    txListener(hash, {
+  function blocknativeTxHandler(tx: TransactionResponse): void {
+    txListener(tx.hash, {
       onTxConfirmed: () => {
         approving.value = false;
         approved.value = true;

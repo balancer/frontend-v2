@@ -36,7 +36,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
   });
 
   async function blocknativeTxHandler(tx: TransactionResponse): Promise<void> {
-    txListener([tx.hash], {
+    txListener(tx.hash, {
       onTxConfirmed: async () => {
         // REFACTOR: Hack to prevent race condition causing double approvals
         await tx.wait();
@@ -69,6 +69,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
   async function approveAllowances(): Promise<void> {
     try {
       approving.value = true;
+
       const txs = await approveTokens(
         auth.web3,
         store.state.web3.config.addresses.vault,
