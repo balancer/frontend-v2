@@ -5,6 +5,9 @@ import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useNotify from '@/composables/useNotify';
 import { ETHER } from '@/constants/tokenlists';
+import useWeb3 from '../useWeb3';
+import { TransactionResponse } from '@ethersproject/providers';
+import useEthers from '../useEthers';
 
 export default function useTokenApproval(tokenInAddress, amount, tokens) {
   const approving = ref(false);
@@ -14,6 +17,8 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   const store = useStore();
   const auth = useAuth();
   const { txListener } = useNotify();
+  const { isPolygon } = useWeb3();
+  const { txListener: ethersTxListener } = useEthers();
 
   const { config } = store.state.web3;
 
@@ -76,7 +81,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
         config.addresses.exchangeProxy,
         [tokenInAddress.value]
       );
-      approvalTxListener(tx.hash);
+      txHandler(tx);
     } catch (e) {
       console.log(e);
       approving.value = false;
@@ -90,14 +95,22 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
       const [tx] = await approveTokens(auth.web3, config.addresses.vault, [
         tokenInAddress.value
       ]);
-      approvalTxListener(tx.hash);
+      txHandler(tx);
     } catch (e) {
       console.log(e);
       approving.value = false;
     }
   }
 
-  function approvalTxListener(hash: string) {
+  function txHandler(tx: TransactionResponse): void {
+    if (isPolygon.value) {
+      ethersTxHandler(tx);
+    } else {
+      blocknativeTxHandler(tx.hash);
+    }
+  }
+
+  function blocknativeTxHandler(hash: string): void {
     txListener(hash, {
       onTxConfirmed: () => {
         approving.value = false;
@@ -105,6 +118,18 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
       },
       onTxCancel: () => {
         approving.value = false;
+      },
+      onTxFailed: () => {
+        approving.value = false;
+      }
+    });
+  }
+
+  function ethersTxHandler(tx: TransactionResponse): void {
+    ethersTxListener(tx, {
+      onTxConfirmed: () => {
+        approving.value = false;
+        approved.value = true;
       },
       onTxFailed: () => {
         approving.value = false;
