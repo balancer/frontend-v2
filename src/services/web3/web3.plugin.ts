@@ -11,6 +11,7 @@ import {
 } from '@ethersproject/providers';
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 import { PortisConnector } from './connectors/portis/portis.connector';
+import useFathom from '@/composables/useFathom';
 
 export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
 export const SupportedWallets = [
@@ -54,6 +55,7 @@ type PluginState = {
 
 export default {
   install: async app => {
+    const { trackGoal, Goals } = useFathom();
     const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
     const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
     // this data provided is properly typed to all consumers
@@ -116,6 +118,7 @@ export default {
           lsSet('connectedWallet', account.value);
           lsSet('connectedProvider', wallet);
           pluginState.walletState = 'connected';
+          trackGoal(Goals.ConnectedWallet);
         }
       } catch (err) {
         console.error(err);
