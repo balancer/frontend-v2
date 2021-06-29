@@ -39,26 +39,22 @@
         @click.prevent="modalTradePreviewIsOpen = true"
       />
     </div>
-    <SuccessOverlay
-      v-if="tradeSuccess"
-      :title="$t('tradeSettled')"
-      :description="$t('tradeSuccess')"
-      :closeLabel="$t('close')"
-      :explorerLink="explorerLink"
-      @close="onSuccessOverlayClose"
-    />
   </BalCard>
   <teleport to="#modal">
     <TradePreviewModalGP
-      :open="modalTradePreviewIsOpen"
-      :address-in="tokenInAddress"
-      :amount-in="tokenInAmount"
-      :address-out="tokenOutAddress"
-      :amount-out="tokenOutAmount"
-      :trading="trading"
-      :order-id="orderId"
-      :formatted-fee-amount="formattedFeeAmount"
+      v-if="shouldOpenTradePreview"
       :exact-in="exactIn"
+      :trading="trading"
+      :token-in="tokenIn"
+      :token-out="tokenOut"
+      :token-in-amount="tokenInAmount"
+      :token-out-amount="tokenOutAmount"
+      :effective-price-message="effectivePriceMessage"
+      :requires-approval="requiresApproval"
+      :fee-amount-in-token-scaled="feeAmountInTokenScaled"
+      :fee-amount-out-token-scaled="feeAmountOutTokenScaled"
+      :minimum-out-amount-scaled="minimumOutAmountScaled"
+      :maximum-in-amount-scaled="maximumInAmountScaled"
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"
     />
@@ -87,21 +83,19 @@ import {
   normalizeTokenAddress
 } from '@/services/gnosis/utils';
 
-import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
 import useAuth from '@/composables/useAuth';
 import useGnosisProtocol from '@/composables/useGnosisProtocol';
 import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
-import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
+import useTrading from '@/composables/trade/useTrading';
 import useWeb3 from '@/composables/useWeb3';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 
 import { ETHER } from '@/constants/tokenlists';
-import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
 
-import { bnum, scale } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
 import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
 
@@ -119,7 +113,6 @@ const appData = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
 
 export default defineComponent({
   components: {
-    SuccessOverlay,
     TradePairGP,
     TradePreviewModalGP,
     TradeSettingsPopover
@@ -148,43 +141,32 @@ export default defineComponent({
     const tokenInAmount = ref('');
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
-    const maximumInAmount = ref('');
-    const minimumOutAmount = ref('');
-    const tradeSuccess = ref(false);
+    const maximumInAmountScaled = ref('');
+    const minimumOutAmountScaled = ref('');
     const trading = ref(false);
     const modalTradePreviewIsOpen = ref(false);
 
+    const {
+      isWrap,
+      isUnwrap,
+      requiresApproval,
+      getConfig,
+      tokenInAmountScaled,
+      tokenOutAmountScaled,
+      tokens,
+      tokenIn,
+      tokenOut,
+      effectivePriceMessage
+    } = useTrading(
+      tokenInAddress,
+      tokenInAmount,
+      tokenOutAddress,
+      tokenOutAmount
+    );
+
     // COMPUTED
-    // TODO use web3 composable
-    const getConfig = () => store.getters['web3/getConfig']();
-    const { allTokensIncludeEth: tokens } = useTokens();
     const slippageBufferRate = computed(() =>
       parseFloat(store.state.app.slippage)
-    );
-
-    const isWrap = computed(() => {
-      const config = getConfig();
-      return (
-        tokenInAddress.value === ETHER.address &&
-        tokenOutAddress.value === config.addresses.weth
-      );
-    });
-
-    const isUnwrap = computed(() => {
-      const config = getConfig();
-      return (
-        tokenOutAddress.value === ETHER.address &&
-        tokenInAddress.value === config.addresses.weth
-      );
-    });
-
-    const tokenInDecimals = computed<number>(
-      () =>
-        tokens.value[tokenInAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
-    );
-    const tokenOutDecimals = computed(
-      () =>
-        tokens.value[tokenOutAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
     );
 
     const explorerLink = computed(() =>
@@ -193,9 +175,15 @@ export default defineComponent({
         : explorer.txLink(txHash.value)
     );
 
-    const feeAmount = computed(() => feeQuote.value?.amount || '0');
-    const formattedFeeAmount = computed(() =>
-      formatUnits(feeAmount.value, tokenInDecimals.value)
+    const feeAmountInTokenScaled = computed(
+      () => feeQuote.value?.amount ?? '0'
+    );
+    const feeAmountOutTokenScaled = computed(() =>
+      tokenOutAmountScaled.value
+        .div(tokenInAmountScaled.value)
+        .times(feeAmountInTokenScaled.value)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .toString()
     );
 
     const tradeDisabled = computed(() => {
@@ -204,9 +192,13 @@ export default defineComponent({
       return false;
     });
 
-    useTokenApprovalGP(tokenInAddress, tokenInAmount, tokens);
+    useTokenApprovalGP(tokenInAddress, tokenInAmount);
 
-    const { errorMessage, isValidTokenAmount } = useValidation(
+    const {
+      errorMessage,
+      isValidTokenAmount,
+      tokensAmountsValid
+    } = useValidation(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
@@ -217,7 +209,7 @@ export default defineComponent({
     const title = computed(() => {
       if (isWrap.value) return t('wrap');
       if (isUnwrap.value) return t('unwrap');
-      return t('tradeGasless');
+      return t('trade');
     });
 
     const appTransactionDeadline = computed<number>(
@@ -226,6 +218,10 @@ export default defineComponent({
 
     const orderKind = computed(
       () => (exactIn.value ? OrderKind.SELL : OrderKind.BUY) as OrderKind
+    );
+
+    const shouldOpenTradePreview = computed(
+      () => modalTradePreviewIsOpen.value && tokensAmountsValid.value
     );
 
     const error = computed(() => {
@@ -256,14 +252,6 @@ export default defineComponent({
       }
     });
 
-    const tokenInAmountScaled = computed(() =>
-      scale(bnum(tokenInAmount.value), tokenInDecimals.value)
-    );
-
-    const tokenOutAmountScaled = computed(() =>
-      scale(bnum(tokenOutAmount.value), tokenOutDecimals.value)
-    );
-
     // METHODS
     function handleErrorButtonClick() {
       console.log('TOOD: implement if needed');
@@ -279,13 +267,6 @@ export default defineComponent({
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
-    }
-
-    function onSuccessOverlayClose() {
-      tradeSuccess.value = false;
-      orderMetadata.value = null;
-      txHash.value = '';
-      orderId.value = '';
     }
 
     async function handleETH(action: 'wrap' | 'unwrap') {
@@ -311,16 +292,18 @@ export default defineComponent({
           sellToken: normalizeTokenAddress(tokenInAddress.value),
           buyToken: normalizeTokenAddress(tokenOutAddress.value),
           sellAmount: bnum(
-            exactIn.value ? tokenInAmountScaled.value : maximumInAmount.value
+            exactIn.value
+              ? tokenInAmountScaled.value
+              : maximumInAmountScaled.value
           )
-            .minus(feeAmount.value)
+            .minus(feeAmountInTokenScaled.value)
             .toString(),
           buyAmount: exactIn.value
-            ? minimumOutAmount.value.toString()
+            ? minimumOutAmountScaled.value.toString()
             : tokenOutAmountScaled.value.toString(),
           validTo: calculateValidTo(appTransactionDeadline.value),
           appData,
-          feeAmount: feeAmount.value,
+          feeAmount: feeAmountInTokenScaled.value,
           kind: orderKind.value,
           receiver: account.value,
           partiallyFillable: false // Always fill or kill
@@ -416,27 +399,24 @@ export default defineComponent({
                 if (exactIn.value) {
                   tokenOutAmount.value = formatUnits(
                     priceQuoteResult.amount,
-                    tokenOutDecimals.value
+                    tokenOut.value.decimals
                   );
-                  const feeAmountRateOut = tokenOutAmountScaled.value
-                    .div(tokenInAmountScaled.value)
-                    .times(feeAmount.value);
 
-                  minimumOutAmount.value = tokenOutAmountScaled.value
-                    .minus(feeAmountRateOut)
+                  minimumOutAmountScaled.value = tokenOutAmountScaled.value
+                    .minus(feeAmountOutTokenScaled.value)
                     .div(1 + slippageBufferRate.value)
                     .integerValue(BigNumber.ROUND_DOWN)
                     .toString();
                 } else {
-                  maximumInAmount.value = tokenInAmountScaled.value
-                    .plus(feeAmount.value)
+                  maximumInAmountScaled.value = tokenInAmountScaled.value
+                    .plus(feeAmountInTokenScaled.value)
                     .times(1 + slippageBufferRate.value)
                     .integerValue(BigNumber.ROUND_DOWN)
                     .toString();
 
                   tokenInAmount.value = formatUnits(
                     priceQuoteResult.amount,
-                    tokenInDecimals.value
+                    tokenIn.value.decimals
                   );
                 }
               }
@@ -486,7 +466,6 @@ export default defineComponent({
         if (isOrderFinalized(order)) {
           orderMetadata.value = order;
           trading.value = false;
-          tradeSuccess.value = true;
           modalTradePreviewIsOpen.value = false;
         }
       }
@@ -494,7 +473,6 @@ export default defineComponent({
 
     watch(latestTxHash, () => {
       txHash.value = latestTxHash.value;
-      tradeSuccess.value = true;
       modalTradePreviewIsOpen.value = false;
     });
 
@@ -508,6 +486,8 @@ export default defineComponent({
       // data
       tokenInAddress,
       tokenInAmount,
+      tokenIn,
+      tokenOut,
       tokenOutAddress,
       tokenOutAmount,
       txHash,
@@ -517,20 +497,24 @@ export default defineComponent({
 
       // computed
       explorerLink,
-      formattedFeeAmount,
       title,
       error,
       errorMessage,
       isRequired,
       tradeDisabled,
       trading,
-      tradeSuccess,
+      requiresApproval,
+      shouldOpenTradePreview,
+      effectivePriceMessage,
+      feeAmountInTokenScaled,
+      feeAmountOutTokenScaled,
+      minimumOutAmountScaled,
+      maximumInAmountScaled,
 
       // methods
       handleErrorButtonClick,
       updatingQuotes,
-      trade,
-      onSuccessOverlayClose
+      trade
     };
   }
 });

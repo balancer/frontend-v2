@@ -22,15 +22,17 @@ export default function useValidation(
 ) {
   const auth = useAuth();
 
+  const tokensAmountsValid = computed(
+    () =>
+      isValidTokenAmount(tokenInAmount.value) &&
+      isValidTokenAmount(tokenOutAmount.value)
+  );
+
   const validationStatus = computed(() => {
     if (!auth.isAuthenticated.value) return TradeValidation.NO_ACCOUNT;
     const tokenIn = tokens.value[tokenInAddress.value];
 
-    if (
-      !isValidTokenAmount(tokenInAmount.value) ||
-      !isValidTokenAmount(tokenOutAmount.value)
-    )
-      return TradeValidation.EMPTY;
+    if (!tokensAmountsValid.value) return TradeValidation.EMPTY;
 
     const eth = tokens.value[ETHER.address];
     const ethBalance = parseFloat(eth.balance);
@@ -61,6 +63,7 @@ export default function useValidation(
   return {
     validationStatus,
     errorMessage,
-    isValidTokenAmount
+    isValidTokenAmount,
+    tokensAmountsValid
   };
 }

@@ -1,18 +1,23 @@
+import { computed, Ref, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import useAuth from '@/composables/useAuth';
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
-import { approveTokens } from '@/lib/utils/balancer/tokens';
-import useNotify from '@/composables/useNotify';
-import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
-import { ETHER } from '@/constants/tokenlists';
 import { parseUnits } from '@ethersproject/units';
-import { TokenMap } from '@/types';
+
+import { ETHER } from '@/constants/tokenlists';
+
+import useAuth from '@/composables/useAuth';
+import useNotify from '@/composables/useNotify';
+
+import { approveTokens } from '@/lib/utils/balancer/tokens';
+
+import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
+
+import useTokens from '../useTokens';
 
 export default function useTokenApprovalGP(
   tokenInAddress: Ref<string>,
-  amount: Ref<string>,
-  tokens: ComputedRef<TokenMap>
+  amount: Ref<string>
 ) {
+  const { allTokensIncludeEth: tokens } = useTokens();
   const approving = ref(false);
   const approved = ref(false);
 
@@ -72,6 +77,10 @@ export default function useTokenApprovalGP(
     }
   }
 
+  const isApproved = computed(() => {
+    return allowanceState.value.isUnlocked;
+  });
+
   function approvalTxListener(hash: string) {
     txListener(hash, {
       onTxConfirmed: () => {
@@ -99,6 +108,7 @@ export default function useTokenApprovalGP(
   return {
     approving,
     approve,
-    allowanceState
+    allowanceState,
+    isApproved
   };
 }
