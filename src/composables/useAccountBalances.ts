@@ -1,6 +1,5 @@
 import getProvider from '@/lib/utils/provider';
 import { useQuery } from 'vue-query';
-import useTokens from './useTokens';
 import { computed, reactive } from 'vue';
 import { getBalances } from '@/lib/utils/balancer/tokens';
 import { formatEther, formatUnits } from '@ethersproject/units';
@@ -8,41 +7,49 @@ import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { ETHER } from '@/constants/tokenlists';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useTokenStore from './useTokensStore';
 
+// THE CONTENTS OF THIS WILL BE REPLACED/ALTERED WITH THE REGISTRY REFACTOR
 export default function useAccountBalances() {
   const { account, userNetworkConfig, isWalletReady } = useVueWeb3();
-  const { allTokens: tokens } = useTokens();
-  const provider = getProvider(String(userNetworkConfig.value?.chainId));
+  const { allTokens: tokens, isLoading: isLoadingTokens } = useTokenStore();
+
   const isQueryEnabled = computed(
     () =>
       account.value !== null &&
       Object.keys(tokens).length !== 0 &&
-      isWalletReady.value
+      isWalletReady.value &&
+      !isLoadingTokens.value
   );
 
-  // TODO separate this out
   const {
     data,
     error,
     isLoading,
     isIdle,
     isError,
+    isFetching,
     refetch: refetchBalances
   } = useQuery(
-    reactive(QUERY_KEYS.Balances.All(account, userNetworkConfig)),
+    reactive(QUERY_KEYS.Balances.All(account, userNetworkConfig, tokens)),
     () => {
       return Promise.all([
         getBalances(
           String(userNetworkConfig.value?.chainId),
-          provider,
+          getProvider(userNetworkConfig.value?.key),
           account.value,
-          Object.values(tokens.value).map((token: any) => token.address)
+          Object.values(tokens.value)
+            .map(token => token.address)
+            .filter(token => token !== ETHER.address)
         ),
-        provider.getBalance(account.value.toLowerCase())
+        getProvider(userNetworkConfig.value?.key).getBalance(
+          account.value.toLowerCase()
+        )
       ]);
     },
     reactive({
-      enabled: isQueryEnabled
+      enabled: isQueryEnabled,
+      keepPreviousData: true
     })
   );
 
@@ -85,6 +92,7 @@ export default function useAccountBalances() {
     isLoading,
     isIdle,
     isError,
+    isFetching,
     refetchBalances
   };
 }

@@ -206,8 +206,8 @@ import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useTokenLists from '@/composables/useTokenLists';
 import useAccountBalances from '@/composables/useAccountBalances';
+import useTokens from '@/composables/useTokens';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -252,7 +252,7 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
-    const { tokenDictionary } = useTokenLists();
+    const { tokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
     const { refetchBalances } = useAccountBalances();
 
@@ -262,15 +262,11 @@ export default defineComponent({
         new PoolExchange(
           props.pool,
           String(userNetworkConfig.value.chainId),
-          tokenDictionary.value
+          tokens.value
         )
     );
 
-    const poolCalculator = new PoolCalculator(
-      props.pool,
-      tokenDictionary.value,
-      'exit'
-    );
+    const poolCalculator = new PoolCalculator(props.pool, tokens.value, 'exit');
 
     // COMPUTED
     const tokenWeights = computed(() =>
@@ -319,7 +315,7 @@ export default defineComponent({
     });
 
     const bptBalance = computed(() => {
-      return tokenDictionary.value[props.pool.address].balance;
+      return tokens.value[props.pool.address].balance;
     });
 
     function formatPropBalance(index) {
@@ -430,7 +426,7 @@ export default defineComponent({
 
     // METHODS
     function tokenDecimals(index) {
-      return tokenDictionary.value[props.pool.tokenAddresses[index]].decimals;
+      return tokens.value[props.pool.tokenAddresses[index]].decimals;
     }
 
     function amountRules(index) {
@@ -592,7 +588,7 @@ export default defineComponent({
       }
     );
 
-    watch(tokenDictionary, newTokens => {
+    watch(tokens, newTokens => {
       poolCalculator.setAllTokens(newTokens);
     });
 
@@ -613,7 +609,7 @@ export default defineComponent({
     return {
       ...toRefs(data),
       submit,
-      tokenDictionary,
+      tokens,
       hasAmounts,
       tokenWeights,
       fNum,

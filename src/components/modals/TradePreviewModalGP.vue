@@ -97,7 +97,7 @@ import useNumbers from '@/composables/useNumbers';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 import useGnosisProtocol from '@/composables/useGnosisProtocol';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useTokenLists from '@/composables/useTokenLists';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -140,7 +140,7 @@ export default defineComponent({
 
     const { addressIn, amountIn, addressOut } = toRefs(props);
 
-    const { tokenDictionary: tokens } = useTokenLists();
+    const { tokens } = useTokens();
     const { userNetworkConfig } = useVueWeb3();
 
     const isWrap = computed(() => {

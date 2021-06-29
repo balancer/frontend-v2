@@ -147,7 +147,7 @@ export default {
     const { fNum } = useNumbers();
     const { t } = useI18n();
     const { explorerLinks } = useVueWeb3();
-    const { allTokens } = useTokens();
+    const { tokens } = useTokens();
 
     const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
       {
@@ -209,7 +209,7 @@ export default {
       return amounts
         .reduce((total, amount, index) => {
           const address = getAddress(props.tokens[index]);
-          const token: Token = allTokens.value[address];
+          const token: Token = tokens.value[address];
           const price = token.price || 0;
           const amountNumber = bnum(Math.abs(parseFloat(amount)));
 
@@ -221,7 +221,7 @@ export default {
     function getJoinExitDetails(amounts: PoolActivity['amounts']) {
       return amounts.map((amount, index) => {
         const address = getAddress(props.tokens[index]);
-        const token: Token = allTokens.value[address];
+        const token: Token = tokens.value[address];
         const symbol = token ? token.symbol : address;
         const amountNumber = parseFloat(amount);
 

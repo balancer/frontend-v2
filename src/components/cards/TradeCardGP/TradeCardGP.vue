@@ -108,9 +108,9 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
 import TradePairGP from './TradePairGP.vue';
-import useTokenLists from '@/composables/useTokenLists';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import { Web3Provider } from '@ethersproject/providers';
+import useTokens from '@/composables/useTokens';
 
 // TODO: get app id
 const GNOSIS_APP_ID = 2;
@@ -131,7 +131,7 @@ export default defineComponent({
     const router = useRouter();
     const { txListener } = useNotify();
     const { t } = useI18n();
-    const { tokenDictionary: tokens } = useTokenLists();
+    const { tokens } = useTokens();
     const {
       userNetworkConfig,
       account,

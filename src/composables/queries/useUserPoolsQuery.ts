@@ -12,7 +12,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useTokenLists from '../useTokenLists';
+import useTokens from '../useTokens';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -29,7 +29,7 @@ export default function useUserPoolsQuery(
   // COMPOSABLES
   const store = useStore();
   const { account, isWalletReady } = useVueWeb3();
-  const { tokenDictionary: allTokens } = useTokenLists();
+  const { tokens: allTokens } = useTokens();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Pools.User(account));

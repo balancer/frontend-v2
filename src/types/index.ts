@@ -1,6 +1,5 @@
 export type RuleFunction = (val: string | number) => string;
 export type Rules = Array<RuleFunction>;
-import { TokenListItem } from '@/composables/useTokenLists';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 export interface FormRef {
@@ -22,8 +21,7 @@ export interface Token {
   value24HChange: number;
 }
 
-export type TokenMap = Record<string, TokenListItem>;
-export type OgTokenMap = Record<string, Token>;
+export type TokenMap = Record<string, Token>;
 
 export interface Claim {
   id: string;
