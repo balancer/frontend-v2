@@ -284,11 +284,11 @@ export default function useSor(
     pools.value = sorManager.selectedPools;
   }
 
-  function blocknativeTxHandler(hash: string): void {
-    txListener(hash, {
+  function blocknativeTxHandler(tx: TransactionResponse): void {
+    txListener(tx.hash, {
       onTxConfirmed: () => {
         trading.value = false;
-        latestTxHash.value = hash;
+        latestTxHash.value = tx.hash;
         trackGoal(Goals.Swapped);
       },
       onTxCancel: () => {
@@ -315,7 +315,7 @@ export default function useSor(
 
   function txHandler(tx: TransactionResponse): void {
     if (supportsBlocknative.value) {
-      blocknativeTxHandler(tx.hash);
+      blocknativeTxHandler(tx);
     } else {
       ethersTxHandler(tx);
     }
