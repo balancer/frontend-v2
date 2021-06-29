@@ -6,7 +6,6 @@ import { TransactionResponse } from '@ethersproject/providers';
 import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
-import useWeb3 from '@/composables/useWeb3';
 import useEthers from '@/composables/useEthers';
 import { sleep } from '@/lib/utils';
 

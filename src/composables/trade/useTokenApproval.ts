@@ -5,7 +5,6 @@ import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useNotify from '@/composables/useNotify';
 import { ETHER } from '@/constants/tokenlists';
-import useWeb3 from '../useWeb3';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
 
