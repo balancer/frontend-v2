@@ -245,8 +245,8 @@ export default defineComponent({
 
     // COMPOSABLES
     const store = useStore();
-    const { account, userNetwork, isPolygon } = useWeb3();
-    const { txListener } = useNotify();
+    const { account, userNetwork } = useWeb3();
+    const { txListener, supportsBlocknative } = useNotify();
     const { isAuthenticated } = useAuth();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
@@ -558,10 +558,10 @@ export default defineComponent({
           exactOut.value
         );
         console.log('Receipt', tx);
-        if (isPolygon.value) {
-          ethersTxHandler(tx);
-        } else {
+        if (supportsBlocknative.value) {
           blocknativeTxHandler(tx);
+        } else {
+          ethersTxHandler(tx);
         }
       } catch (error) {
         console.error(error);

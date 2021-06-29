@@ -8,7 +8,7 @@ import useWeb3 from './useWeb3';
 type TxCallback = (txData: TransactionData) => void;
 
 export default function useNotify() {
-  const { notify } = useBlocknative();
+  const { notify, supportsBlocknative } = useBlocknative();
   const { explorer } = useWeb3();
 
   function txListener(
@@ -76,5 +76,5 @@ export default function useNotify() {
     });
   }
 
-  return { txListener };
+  return { txListener, supportsBlocknative };
 }

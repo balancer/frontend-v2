@@ -16,8 +16,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
   const approving = ref(false);
   const approvedAll = ref(false);
   const { allTokens } = useTokens();
-  const { txListener } = useNotify();
-  const { isPolygon } = useWeb3();
+  const { txListener, supportsBlocknative } = useNotify();
   const { txListener: ethersTxListener } = useEthers();
 
   const amounts = computed(() =>
@@ -77,10 +76,10 @@ export default function useTokenApprovals(tokens, shortAmounts) {
         [requiredAllowances.value[0]]
       );
 
-      if (isPolygon.value) {
-        ethersTxHandler(txs[0]);
-      } else {
+      if (supportsBlocknative.value) {
         blocknativeTxHandler(txs[0]);
+      } else {
+        ethersTxHandler(txs[0]);
       }
     } catch (error) {
       approving.value = false;

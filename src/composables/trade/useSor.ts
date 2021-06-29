@@ -72,9 +72,9 @@ export default function useSor(
   // COMPOSABLES
   const store = useStore();
   const auth = useAuth();
-  const { txListener } = useNotify();
+  const { txListener, supportsBlocknative } = useNotify();
   const { trackGoal, Goals } = useFathom();
-  const { appNetwork, isPolygon } = useWeb3();
+  const { appNetwork } = useWeb3();
   const { txListener: ethersTxListener } = useEthers();
 
   const getConfig = () => store.getters['web3/getConfig']();
@@ -314,10 +314,10 @@ export default function useSor(
   }
 
   function txHandler(tx: TransactionResponse): void {
-    if (isPolygon.value) {
-      ethersTxHandler(tx);
-    } else {
+    if (supportsBlocknative.value) {
       blocknativeTxHandler(tx.hash);
+    } else {
+      ethersTxHandler(tx);
     }
   }
 

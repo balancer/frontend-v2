@@ -16,8 +16,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   // COMPOSABLES
   const store = useStore();
   const auth = useAuth();
-  const { txListener } = useNotify();
-  const { isPolygon } = useWeb3();
+  const { txListener, supportsBlocknative } = useNotify();
   const { txListener: ethersTxListener } = useEthers();
 
   const { config } = store.state.web3;
@@ -103,10 +102,10 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   }
 
   function txHandler(tx: TransactionResponse): void {
-    if (isPolygon.value) {
-      ethersTxHandler(tx);
-    } else {
+    if (supportsBlocknative.value) {
       blocknativeTxHandler(tx.hash);
+    } else {
+      ethersTxHandler(tx);
     }
   }
 

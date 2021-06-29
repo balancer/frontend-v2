@@ -320,10 +320,10 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { isAuthenticated } = useAuth();
-    const { account, appNetwork, userNetwork, isPolygon } = useWeb3();
+    const { account, appNetwork, userNetwork } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
-    const { txListener } = useNotify();
+    const { txListener, supportsBlocknative } = useNotify();
     const { minusSlippage } = useSlippage();
     const { allTokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
@@ -600,10 +600,10 @@ export default defineComponent({
           minBptOut.value
         );
         console.log('Receipt', tx);
-        if (isPolygon.value) {
-          ethersTxHandler(tx);
-        } else {
+        if (supportsBlocknative.value) {
           blocknativeTxHandler(tx);
+        } else {
+          ethersTxHandler(tx);
         }
       } catch (error) {
         console.error(error);
