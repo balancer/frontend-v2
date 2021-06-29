@@ -103,7 +103,10 @@
       </div>
       <AppSlippageForm class="mt-1" />
     </div>
-    <div class="px-4 mt-6">
+    <div
+      v-if="appTradeInterface === TradeInterface.BALANCER && !hideLiquidity"
+      class="px-4 mt-6"
+    >
       <div class="flex items-baseline">
         <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
@@ -147,11 +150,15 @@ import { defineComponent, reactive, computed, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
 import useWeb3 from '@/composables/useWeb3';
-import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
 
 import { APP } from '@/constants/app';
+import {
+  tradeLiquidityOptions,
+  tradeInterfaceOptions
+} from '@/constants/options';
+import { TradeInterface } from '@/store/modules/app';
 
 const locales = {
   'en-US': 'English',
@@ -175,27 +182,13 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { explorer } = useWeb3();
+    const { appNetwork, explorer } = useWeb3();
 
     // DATA
     const data = reactive({
       locales,
-      tradeLiquidityOptions: Object.values(LiquiditySelection)
-        .filter(v => typeof v === 'string')
-        .map(option => ({
-          label: option,
-          value: option
-        })),
-      tradeInterfaceOptions: [
-        {
-          label: 'Gnosis',
-          value: 'gnosis'
-        },
-        {
-          label: 'Balancer',
-          value: 'balancer'
-        }
-      ],
+      tradeLiquidityOptions,
+      tradeInterfaceOptions,
       copiedAddress: false
     });
 
@@ -210,6 +203,7 @@ export default defineComponent({
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
+    const hideLiquidity = computed(() => !appNetwork.supportsV1);
 
     const connectorName = computed(() =>
       getConnectorName(store.state.web3.connector)
@@ -243,6 +237,7 @@ export default defineComponent({
       ...toRefs(data),
       // constants
       APP,
+      TradeInterface,
       // computed
       account,
       appTradeLiquidity,
@@ -254,6 +249,7 @@ export default defineComponent({
       appDarkMode,
       connectorName,
       connectorLogo,
+      hideLiquidity,
       // methods
       logout,
       setDarkMode,

@@ -1,17 +1,16 @@
 <template>
   <div>
     <div v-if="$auth.isAuthenticated.value" class="flex items-center">
-      <AppNavClaimBtn />
+      <AppNavClaimBtn v-if="isMainnet" />
       <AppNavAccountBtn />
     </div>
     <BalBtn
       v-else
-      class="text-base"
       color="gray"
       outline
       rounded
-      :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
-      :circle="['sm', 'md', 'lg'].includes(bp)"
+      :size="['xs', 'sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
+      :circle="['xs', 'sm', 'md', 'lg'].includes(bp)"
       @click="onClickConnect"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
@@ -46,7 +45,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { bp } = useBreakpoints();
-    const { account, profile, loading: web3Loading } = useWeb3();
+    const { account, profile, loading: web3Loading, isMainnet } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
 
@@ -61,6 +60,7 @@ export default defineComponent({
 
     return {
       // computed
+      isMainnet,
       account,
       profile,
       web3Loading,

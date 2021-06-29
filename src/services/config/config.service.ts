@@ -23,4 +23,8 @@ export default class ConfigService {
   public get network(): Config {
     return configs[this.env.NETWORK];
   }
+
+  public getNetworkConfig(key: string): Config {
+    return configs[key];
+  }
 }

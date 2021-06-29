@@ -17,6 +17,8 @@ import { scale } from '@/lib/utils';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { ETHER } from '@/constants/tokenlists';
 
+const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
+
 export enum LiquiditySelection {
   Best = 'best',
   V1 = 'v1',
@@ -88,6 +90,7 @@ export class SorManager {
       maxPools,
       chainId,
       poolsSourceV2,
+      new BigNumber(SWAP_COST),
       disabledOptions
     );
     this.weth = weth;
@@ -98,7 +101,8 @@ export class SorManager {
   // If previously called the cached value will be used.
   async setCostOutputToken(
     tokenAddr: string,
-    tokenDecimals: number
+    tokenDecimals: number,
+    manualCost: BigNumber | null = null
   ): Promise<BigNumber> {
     tokenAddr = tokenAddr === ETHER.address ? this.weth : tokenAddr;
 
@@ -108,10 +112,21 @@ export class SorManager {
         `[SorManager] Cost for token ${tokenAddr} (cache): ${cost.toString()}`
       );
     } else {
-      cost = await this.sorV2.setCostOutputToken(tokenAddr, tokenDecimals);
-      console.log(
-        `[SorManager] Cost for token ${tokenAddr} (new): ${cost.toString()}`
-      );
+      if (manualCost) {
+        cost = await this.sorV2.setCostOutputToken(
+          tokenAddr,
+          tokenDecimals,
+          manualCost
+        );
+        console.log(
+          `[SorManager] Cost for token ${tokenAddr} (new manual): ${cost.toString()}`
+        );
+      } else {
+        cost = await this.sorV2.setCostOutputToken(tokenAddr, tokenDecimals);
+        console.log(
+          `[SorManager] Cost for token ${tokenAddr} (new): ${cost.toString()}`
+        );
+      }
     }
     this.sorV1.setCostOutputToken(
       tokenAddr,
@@ -317,9 +332,11 @@ export class SorManager {
 
     if (liquiditySelection === LiquiditySelection.V1) {
       console.log('[SorManager] V1 swap is best by manual choice.');
+      this.selectedPools = this.sorV1.onChainCache.pools;
       return v1return;
     } else if (liquiditySelection === LiquiditySelection.V2) {
       console.log('[SorManager] V2 swap is best by manual choice.');
+      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
       return v2return;
     }
 
@@ -393,9 +410,11 @@ export class SorManager {
 
     if (liquiditySelection === LiquiditySelection.V1) {
       console.log('[SorManager] V1 swap is best by manual choice.');
+      this.selectedPools = this.sorV1.onChainCache.pools;
       return v1return;
     } else if (liquiditySelection === LiquiditySelection.V2) {
       console.log('[SorManager] V2 swap is best by manual choice.');
+      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
       return v2return;
     }
 

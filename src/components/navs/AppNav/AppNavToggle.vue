@@ -2,14 +2,20 @@
   <div class="app-nav-toggle">
     <router-link
       :to="{ name: 'home' }"
-      :class="['toggle-link pl-6 pr-4', { [activeClasses]: !isTradePage }]"
+      :class="[
+        'toggle-link pl-6 pr-4 border-l rounded-l-full',
+        { [activeClasses]: !isTradePage }
+      ]"
       @click="trackGoal(Goals.ClickNavInvest)"
     >
       {{ $t('invest') }}
     </router-link>
     <router-link
       :to="{ name: 'trade' }"
-      :class="['toggle-link pl-4 pr-6', { [activeClasses]: isTradePage }]"
+      :class="[
+        'toggle-link pl-4 pr-6 border-r rounded-r-full',
+        { [activeClasses]: isTradePage }
+      ]"
       @click="trackGoal(Goals.ClickNavTrade)"
     >
       {{ $t('trade') }}
@@ -27,7 +33,7 @@ export default defineComponent({
 
   setup() {
     const route = useRoute();
-    const activeClasses = 'bg-black text-white';
+    const activeClasses = 'bg-black border-black text-white';
     const isTradePage = computed(() => route.name === 'trade');
     const { trackGoal, Goals } = useFathom();
 
@@ -43,10 +49,10 @@ export default defineComponent({
 
 <style scoped>
 .app-nav-toggle {
-  @apply h-10 border rounded-full flex items-center font-medium shadow overflow-hidden;
+  @apply h-10 flex items-center font-medium;
 }
 
 .toggle-link {
-  @apply h-full flex items-center;
+  @apply h-full flex items-center shadow border-t border-b;
 }
 </style>

@@ -1,5 +1,9 @@
 <template>
-  <BalModal :show="open" @close="onClose" :title="$t('previewTrade')">
+  <BalModal
+    :show="open"
+    @close="onClose"
+    :title="$t('previewTradeTransactions')"
+  >
     <div>
       <div
         class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-700"
@@ -18,6 +22,10 @@
         </div>
       </div>
       <div>
+        <div v-if="formattedFeeAmount > 0" class="mt-6 mb-3 text-sm">
+          Fee: {{ fNum(formattedFeeAmount, 'token') }}
+          {{ symbolIn }}
+        </div>
         <div class="mt-6 mb-3 text-sm">
           Requires {{ requiresApproval ? 2 : 1 }}
           {{ requiresApproval ? 'transactions' : 'transaction' }}:
@@ -45,7 +53,8 @@
               {{ requiresApproval ? 2 : 1 }}
             </div>
             <div class="ml-3">
-              Trade {{ fNum(valueIn, 'usd') }} {{ symbolIn }} -> {{ symbolOut }}
+              {{ $t('trade') }} {{ fNum(valueIn, 'usd') }} {{ symbolIn }} ->
+              {{ symbolOut }}
             </div>
           </div>
         </div>
@@ -118,6 +127,10 @@ export default defineComponent({
     },
     orderId: {
       type: String
+    },
+    formattedFeeAmount: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {

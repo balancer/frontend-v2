@@ -156,9 +156,9 @@ export async function signOrder(
   return { signature: signature.data.toString(), signingScheme };
 }
 
-export function calculateValidTo(deadline: number): number {
+export function calculateValidTo(deadlineInMinutes: number): number {
   const now = Date.now() / 1000;
-  const validTo = Math.floor(deadline + now);
+  const validTo = Math.floor(deadlineInMinutes * 60 + now);
 
   return Math.min(validTo, MAX_VALID_TO_EPOCH);
 }
