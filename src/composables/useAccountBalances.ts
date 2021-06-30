@@ -49,7 +49,7 @@ export default function useAccountBalances() {
     },
     reactive({
       enabled: isQueryEnabled,
-      keepPreviousData: true
+      keepPreviousData: isWalletReady
     })
   );
 

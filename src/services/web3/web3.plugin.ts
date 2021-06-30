@@ -10,17 +10,21 @@ import {
   Web3Provider
 } from '@ethersproject/providers';
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
+import { PortisConnector } from './connectors/portis/portis.connector';
+import useFathom from '@/composables/useFathom';
 
-export type Wallet = 'metamask' | 'walletconnect' | 'walletlink';
+export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
-  'walletlink'
+  'walletlink',
+  'portis'
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
-  walletlink: 'Coinbase'
+  walletlink: 'Coinbase',
+  portis: 'Portis'
 };
 type ConnectorImplementation = new (...args: any[]) => Connector;
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
@@ -39,7 +43,8 @@ export type Web3Plugin = {
 const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   metamask: MetamaskConnector,
   walletconnect: WalletConnectConnector,
-  walletlink: WalletLinkConnector
+  walletlink: WalletLinkConnector,
+  portis: PortisConnector
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -50,6 +55,7 @@ type PluginState = {
 
 export default {
   install: async app => {
+    const { trackGoal, Goals } = useFathom();
     const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
     const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
     // this data provided is properly typed to all consumers
@@ -112,6 +118,7 @@ export default {
           lsSet('connectedWallet', account.value);
           lsSet('connectedProvider', wallet);
           pluginState.walletState = 'connected';
+          trackGoal(Goals.ConnectedWallet);
         }
       } catch (err) {
         console.error(err);
@@ -129,8 +136,6 @@ export default {
       connector.handleDisconnect();
       pluginState.connector = null;
       pluginState.walletState = 'disconnected';
-      lsRemove('connectedWallet');
-      lsRemove('connectedProvider');
       alreadyConnectedAccount.value = null;
       alreadyConnectedProvider.value = null;
     };

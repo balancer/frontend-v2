@@ -1,5 +1,6 @@
 import { ref, Ref } from 'vue';
 import { getAddress } from '@ethersproject/address';
+import { lsRemove } from '@/lib/utils';
 
 export type ConnectorPayload = {
   provider: unknown;
@@ -55,6 +56,8 @@ export abstract class Connector {
     if (this.provider.close) {
       this.provider.close();
     }
+    lsRemove('connectedWallet');
+    lsRemove('connectedProvider');
   };
 
   registerListeners() {
