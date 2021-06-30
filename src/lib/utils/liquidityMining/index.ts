@@ -42,17 +42,14 @@ export function computeAPYForPool(
   totalLiquidity: string
 ) {
   // Guard against null price
-
-  if (tokenPrice != null) {
-    return bnum(rewards)
-      .div(7)
-      .times(tokenPrice)
-      .times(365)
-      .div(totalLiquidity)
-      .toString();
-  }
-
-  return '0';
+  return tokenPrice != null
+    ? bnum(rewards)
+        .div(7)
+        .times(tokenPrice)
+        .times(365)
+        .div(totalLiquidity)
+        .toString()
+    : '0';
 }
 
 export function computeTotalAPYForPool(
