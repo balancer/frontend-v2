@@ -62,7 +62,8 @@ export default {
 
     return {
       fNum,
-      animateRef
+      animateRef,
+      console
     };
   }
 };

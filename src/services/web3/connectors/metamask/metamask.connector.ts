@@ -6,7 +6,6 @@ export class MetamaskConnector extends Connector {
       (window as any).ethereum ||
       ((window as any).web3 && (window as any).web3.currentProvider);
 
-    console.log('ehsayz', window.ethereum, (window as any).web3);
     if (provider) {
       this.provider = provider;
       this.active.value = true;
@@ -38,18 +37,6 @@ export class MetamaskConnector extends Connector {
         // but might, for legacy clients.
         const response = await (provider as any).enable();
         accounts = response?.result || response;
-      }
-
-      // if still moot, try an even worser legacy way
-      if (!accounts) {
-        try {
-          if (provider.send) {
-            const response = await (provider.send as any)('eth_accounts');
-            accounts = response?.result || response;
-          }
-        } catch (err) {
-          console.error(err);
-        }
       }
 
       if (accounts && chainId) {

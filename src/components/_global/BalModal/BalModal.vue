@@ -14,6 +14,7 @@
         :exit="{ opacity: 0, translateY: 15 }"
         :isVisible="showContent"
         @on-exit="$emit('close')"
+        class="flex justify-center w-full"
       >
         <div class="content" @click.stop>
           <BalCard
