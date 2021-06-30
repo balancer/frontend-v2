@@ -75,7 +75,10 @@
               <span class="break-words" :title="fNum(amountUSD(i), 'usd')">
                 {{ fNum(amountUSD(i), 'usd') }}
               </span>
-              <span class="text-xs text-gray-400">
+              <span
+                v-if="pool.poolType !== 'Stable'"
+                class="text-xs text-gray-400"
+              >
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>

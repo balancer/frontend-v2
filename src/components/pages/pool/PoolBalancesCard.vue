@@ -104,7 +104,7 @@ export default defineComponent({
         align: 'right',
         sortKey: pool => weightFor(pool.address),
         width: 125,
-        hidden: props.pool.poolType === 'Stable'
+        hidden: !props.loading && props.pool.poolType === 'Stable'
       },
       {
         name: t('balance'),
