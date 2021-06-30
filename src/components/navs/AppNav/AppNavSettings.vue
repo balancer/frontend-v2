@@ -103,10 +103,7 @@
       </div>
       <AppSlippageForm class="mt-1" />
     </div>
-    <div
-      v-if="appTradeInterface === TradeInterface.BALANCER && !hideLiquidity"
-      class="px-4 mt-6"
-    >
+    <div v-if="!hideLiquidity" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
