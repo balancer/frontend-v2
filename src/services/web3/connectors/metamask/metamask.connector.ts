@@ -1,11 +1,11 @@
 import { Connector } from '../connector';
-import detectEthereumProvider from '@metamask/detect-provider';
 import { ExternalProvider } from '@ethersproject/providers';
 export class MetamaskConnector extends Connector {
   id = 'injected';
   async connect() {
     // type for window.ethereum is causing conflicts (provided by some library)
-    const provider = (await detectEthereumProvider()) as ExternalProvider;
+    // const provider = (await detectEthereumProvider()) as ExternalProvider;
+    const provider = (window.ethereum as unknown) as ExternalProvider;
     if (provider) {
       this.provider = provider;
       this.active.value = true;
@@ -31,7 +31,7 @@ export class MetamaskConnector extends Connector {
         }
       }
 
-      // if account is still moot, try the bad old way - enable()
+      // if account is still moot, try the bad old way - enable() - not proud of this
       if (!accounts) {
         // have to any it, since enable technically shouldn't be there anymore.
         // but might, for legacy clients.
@@ -39,24 +39,26 @@ export class MetamaskConnector extends Connector {
         accounts = response?.result || response;
       }
 
-      // if still moot, try an even worser legacy way
-      try {
-        if (provider.send) {
-          const response = await (provider.send as any)('eth_accounts');
-          accounts = response?.result || response;
+      // if still moot, try an even worser legacy way - not proud of this one either
+      if (!accounts) {
+        try {
+          if (provider.send) {
+            const response = await (provider.send as any)('eth_accounts');
+            accounts = response?.result || response;
+          }
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) {
-        console.error(err);
-      }
 
-      if (accounts && chainId) {
-        this.handleChainChanged(chainId);
-        this.handleAccountsChanged(accounts);
+        if (accounts && chainId) {
+          this.handleChainChanged(chainId);
+          this.handleAccountsChanged(accounts);
+        }
+      } else {
+        console.error(
+          'Tried to connect to MetaMask but it was not detected. Please install MetaMask.'
+        );
       }
-    } else {
-      console.error(
-        'Tried to connect to MetaMask but it was not detected. Please install MetaMask.'
-      );
     }
     return {
       // TODO type this
