@@ -20,7 +20,7 @@
             class="flex items-center"
           >
             <BalAsset :address="token.address" :size="36" />
-            <span class="pl-4 font-medium">
+            <span class="pl-4 font-medium eth-address">
               {{ symbolFor(token.address) }}
             </span>
             <BalIcon

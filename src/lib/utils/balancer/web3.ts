@@ -6,14 +6,15 @@ import {
 } from '@ethersproject/providers';
 import { ErrorCode } from '@ethersproject/logger';
 import { logFailedTx } from '@/lib/utils/logging';
-
-import { getGasPrice } from './gasPrices';
+import GasPriceService from '@/services/gas-price/gas-price.service';
 
 const ENV = process.env.VUE_APP_ENV || 'development';
 // only disable if set to "false"
 const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
 const GAS_LIMIT_BUFFER = 0.1;
+
+const gasPriceService = new GasPriceService();
 
 export async function sendTransaction(
   web3: Web3Provider | JsonRpcProvider,
@@ -42,7 +43,7 @@ export async function sendTransaction(
     overrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
 
     if (USE_BLOCKNATIVE_GAS_PLATFORM && overrides.gasPrice == null) {
-      const gasPrice = await getGasPrice();
+      const gasPrice = await gasPriceService.getLatest();
       if (gasPrice != null) {
         overrides.gasPrice = gasPrice;
       }

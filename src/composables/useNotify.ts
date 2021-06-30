@@ -8,8 +8,8 @@ import useBlocknative from './useBlocknative';
 type TxCallback = (txData: TransactionData) => void;
 
 export default function useNotify() {
-  const { notify } = useBlocknative();
   const { explorerLinks } = useVueWeb3();
+  const { notify, supportsBlocknative } = useBlocknative();
 
   function txListener(
     txHash: string | string[],
@@ -76,5 +76,5 @@ export default function useNotify() {
     });
   }
 
-  return { txListener };
+  return { txListener, supportsBlocknative };
 }

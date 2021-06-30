@@ -6,14 +6,15 @@
     class="h-20 px-4 lg:px-6 bg-white sticky top-0"
   >
     <div class="h-full flex items-center justify-between">
-      <div class="w-1/3">
+      <div class="w-1/3 flex items-center">
         <router-link
           :to="{ name: 'home' }"
           @click="trackGoal(Goals.ClickNavLogo)"
         >
-          <AppIcon v-if="['sm', 'md'].includes(bp)" />
+          <AppIcon v-if="['xs', 'sm', 'md'].includes(bp)" />
           <AppLogo v-else />
         </router-link>
+        <!-- <AppNavNetworkSelect /> -->
       </div>
 
       <div class="flex-1 md:w-1/3 flex justify-center">
@@ -36,6 +37,7 @@ import AppIcon from '@/components/images/AppIcon.vue';
 import AppNavAlert from './AppNavAlert.vue';
 import AppNavToggle from './AppNavToggle.vue';
 import AppNavActions from './AppNavActions.vue';
+// import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
 import useFathom from '@/composables/useFathom';
 
 export default defineComponent({
@@ -45,6 +47,7 @@ export default defineComponent({
     AppNavAlert,
     AppNavToggle,
     AppNavActions
+    // AppNavNetworkSelect
   },
 
   setup() {

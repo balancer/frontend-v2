@@ -28,7 +28,8 @@ export default defineComponent({
     trigger: {
       type: String as PropType<PopoverTrigger>,
       default: 'click'
-    }
+    },
+    align: { type: String, default: 'right' }
   },
   setup(props) {
     // DATA
@@ -56,7 +57,8 @@ export default defineComponent({
     // COMPUTED
     const popoverWrapperClasses = computed(() => ({
       'bal-popover-wrapper': true,
-      'bal-popover-wrapper-visible': popoverOpened.value
+      'bal-popover-wrapper-visible': popoverOpened.value,
+      [`${props.align}-0`]: true
     }));
 
     return {
@@ -75,7 +77,7 @@ export default defineComponent({
 
 <style>
 .bal-popover-wrapper {
-  @apply top-full invisible opacity-0 absolute z-10 pt-3 right-0;
+  @apply top-full invisible opacity-0 absolute z-10 pt-3;
   transition: all 0.2s ease-in-out;
 }
 

@@ -99,11 +99,11 @@
         min="0"
         step="any"
         placeholder="0"
+        :decimal-limit="tokenDecimals(i)"
         :disabled="loading"
         validate-on="input"
         prepend-border
         append-shadow
-        @update:modelValue="preventOverflow($event, i)"
       >
         <template v-slot:prepend>
           <div class="flex items-center h-full w-24">
@@ -269,6 +269,8 @@ import { TOKENS } from '@/constants/tokens';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useAccountBalances from '@/composables/useAccountBalances';
 import useTokens from '@/composables/useTokens';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import useEthers from '@/composables/useEthers';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -325,11 +327,12 @@ export default defineComponent({
     } = useVueWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
-    const { txListener } = useNotify();
+    const { txListener, supportsBlocknative } = useNotify();
     const { minusSlippage } = useSlippage();
     const { tokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
     const { refetchBalances } = useAccountBalances();
+    const { txListener: ethersTxListener } = useEthers();
 
     const { amounts } = toRefs(data);
 
@@ -546,16 +549,35 @@ export default defineComponent({
       console.log('bptOut (JS)', minBptOut.value);
     }
 
-    function preventOverflow(value: number, index: number): void {
-      if (!value.toString().includes('.')) return;
+    function blocknativeTxHandler(tx: TransactionResponse): void {
+      txListener(tx.hash, {
+        onTxConfirmed: async (tx: TransactionData) => {
+          emit('success', tx);
+          data.amounts = [];
+          data.loading = false;
+          await refetchBalances.value();
+        },
+        onTxCancel: () => {
+          data.loading = false;
+        },
+        onTxFailed: () => {
+          data.loading = false;
+        }
+      });
+    }
 
-      const decimalLimit = tokenDecimals(index);
-      const [numberStr, decimalStr] = value.toString().split('.');
-
-      if (decimalStr.length > decimalLimit) {
-        const maxLength = numberStr.length + decimalLimit + 1;
-        data.amounts[index] = data.amounts[index].slice(0, maxLength);
-      }
+    function ethersTxHandler(tx: TransactionResponse): void {
+      ethersTxListener(tx, {
+        onTxConfirmed: async (tx: TransactionResponse) => {
+          emit('success', tx);
+          data.amounts = [];
+          data.loading = false;
+          await refetchBalances.value();
+        },
+        onTxFailed: () => {
+          data.loading = false;
+        }
+      });
     }
 
     async function submit(): Promise<void> {
@@ -570,25 +592,11 @@ export default defineComponent({
           minBptOut.value
         );
         console.log('Receipt', tx);
-        txListener(tx.hash, {
-          onTxConfirmed: async (tx: TransactionData) => {
-            emit('success', tx);
-            data.amounts = [];
-            data.loading = false;
-            await refetchBalances.value();
-            setPropMax();
-            if (hasZeroBalance.value) {
-              data.investType = FormTypes.custom;
-              resetSlider();
-            }
-          },
-          onTxCancel: () => {
-            data.loading = false;
-          },
-          onTxFailed: () => {
-            data.loading = false;
-          }
-        });
+        if (supportsBlocknative.value) {
+          blocknativeTxHandler(tx);
+        } else {
+          ethersTxHandler(tx);
+        }
       } catch (error) {
         console.error(error);
         data.loading = false;
@@ -694,10 +702,9 @@ export default defineComponent({
       submit,
       approveAllowances,
       fNum,
-      preventOverflow,
       trackGoal,
       symbolFor,
-      console
+      tokenDecimals
     };
   }
 });

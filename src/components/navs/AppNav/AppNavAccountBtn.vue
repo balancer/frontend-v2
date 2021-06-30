@@ -9,20 +9,19 @@
         color="gray"
         :outline="!upToLargeBreakpoint"
         rounded
-        flat
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
         <Avatar :address="account" :profile="profile" :size="avatarSize" />
         <span
-          v-if="profile.name || profile.ens"
-          v-text="profile.name || profile.ens"
+          v-if="profile.ens"
+          v-text="profile.ens"
           class="pl-2 hidden lg:inline-block"
         />
         <span
           v-else
           v-text="_shorten(account)"
-          class="pl-2 hidden lg:inline-block address"
+          class="pl-2 hidden lg:inline-block eth-address"
         />
         <BalIcon
           name="chevron-down"
@@ -76,15 +75,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style scoped>
-.address {
-  font-variant-ligatures: no-contextual;
-}
-.btn {
-  @apply bg-transparent;
-}
-.btn:hover {
-  @apply bg-transparent;
-}
-</style>

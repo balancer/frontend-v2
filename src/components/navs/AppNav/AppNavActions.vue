@@ -1,17 +1,16 @@
 <template>
   <div>
     <div v-if="account" class="flex items-center">
-      <AppNavClaimBtn />
+      <AppNavClaimBtn v-if="isMainnet" />
       <AppNavAccountBtn />
     </div>
     <BalBtn
       v-else
-      class="text-base"
       color="gray"
       outline
       rounded
-      :size="['sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
-      :circle="['sm', 'md', 'lg'].includes(bp)"
+      :size="['xs', 'sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
+      :circle="['xs', 'sm', 'md', 'lg'].includes(bp)"
       @click="toggleWalletSelectModal"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
@@ -46,7 +45,12 @@ export default defineComponent({
     const { bp } = useBreakpoints();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
-    const { connectWallet, account, toggleWalletSelectModal } = useVueWeb3();
+    const {
+      connectWallet,
+      account,
+      toggleWalletSelectModal,
+      isMainnet
+    } = useVueWeb3();
 
     function onClickConnect() {
       trackGoal(Goals.ClickNavConnectWallet);
@@ -54,6 +58,7 @@ export default defineComponent({
 
     return {
       // computed
+      isMainnet,
       account,
       bp,
       // methods

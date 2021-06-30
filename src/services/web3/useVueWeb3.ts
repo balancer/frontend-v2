@@ -34,6 +34,7 @@ export default function useVueWeb3() {
     configService.getNetworkConfig(String(chainId.value))
   );
   const isWalletReady = computed(() => walletState.value === 'connected');
+  const isMainnet = computed(() => appNetworkConfig.chainId === 1);
   const canLoadProfile = computed(
     () => account.value !== '' && userNetworkConfig.value?.chainId !== 0
   );
@@ -102,6 +103,7 @@ export default function useVueWeb3() {
     signer,
     blockNumber,
     isV1Supported,
+    isMainnet,
 
     // methods
     connectWallet,

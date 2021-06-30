@@ -6,6 +6,8 @@ import useNotify from '@/composables/useNotify';
 import { ETHER } from '@/constants/tokenlists';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useAllowances from '../useAllowances';
+import { TransactionResponse } from '@ethersproject/providers';
+import useEthers from '../useEthers';
 
 export default function useTokenApproval(tokenInAddress, amount, tokens) {
   const approving = ref(false);
@@ -13,9 +15,11 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
 
   // COMPOSABLES
   const store = useStore();
-  const { txListener } = useNotify();
   const { getProvider } = useVueWeb3();
   const provider = getProvider();
+  const { txListener, supportsBlocknative } = useNotify();
+  const { txListener: ethersTxListener } = useEthers();
+
   const { config } = store.state.web3;
   const dstList = computed(() => [config.addresses.exchangeProxy]);
   const allowanceTokens = computed(() => [tokenInAddress.value]);
@@ -70,7 +74,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
         config.addresses.exchangeProxy,
         [tokenInAddress.value]
       );
-      approvalTxListener(tx.hash);
+      txHandler(tx);
     } catch (e) {
       console.log(e);
       approving.value = false;
@@ -84,21 +88,41 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
       const [tx] = await approveTokens(provider, config.addresses.vault, [
         tokenInAddress.value
       ]);
-      approvalTxListener(tx.hash);
+      txHandler(tx);
     } catch (e) {
       console.log(e);
       approving.value = false;
     }
   }
 
-  function approvalTxListener(hash: string) {
-    txListener(hash, {
+  function txHandler(tx: TransactionResponse): void {
+    if (supportsBlocknative.value) {
+      blocknativeTxHandler(tx);
+    } else {
+      ethersTxHandler(tx);
+    }
+  }
+
+  function blocknativeTxHandler(tx: TransactionResponse): void {
+    txListener(tx.hash, {
       onTxConfirmed: () => {
         approving.value = false;
         approved.value = true;
       },
       onTxCancel: () => {
         approving.value = false;
+      },
+      onTxFailed: () => {
+        approving.value = false;
+      }
+    });
+  }
+
+  function ethersTxHandler(tx: TransactionResponse): void {
+    ethersTxListener(tx, {
+      onTxConfirmed: () => {
+        approving.value = false;
+        approved.value = true;
       },
       onTxFailed: () => {
         approving.value = false;

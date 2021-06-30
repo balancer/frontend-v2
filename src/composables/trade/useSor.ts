@@ -2,15 +2,17 @@ import { Ref, onMounted, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
+import useWeb3 from '@/composables/useWeb3';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase } from '@balancer-labs/sor2';
 
-import { scale } from '@/lib/utils';
+import { scale, bnum } from '@/lib/utils';
 import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
 import getProvider from '@/lib/utils/provider';
 import {
   SorManager,
-  SorReturn
+  SorReturn,
+  LiquiditySelection
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import ConfigService from '@/services/config/config.service';
@@ -20,8 +22,13 @@ import useFathom from '../useFathom';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useAccountBalances from '../useAccountBalances';
 
+import { ETHER } from '@/constants/tokenlists';
+import { TransactionResponse } from '@ethersproject/providers';
+import useEthers from '../useEthers';
+
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
-const MAX_POOLS = 4;
+const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
+const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 const MIN_PRICE_IMPACT = 0.0001;
 
 export default function useSor(
@@ -65,11 +72,13 @@ export default function useSor(
 
   // COMPOSABLES
   const store = useStore();
-  const { txListener } = useNotify();
-  const { trackGoal, Goals } = useFathom();
   const { getProvider: getWeb3Provider, userNetworkConfig } = useVueWeb3();
   const provider = computed(() => getWeb3Provider());
   const { refetchBalances } = useAccountBalances();
+  const { txListener, supportsBlocknative } = useNotify();
+  const { trackGoal, Goals } = useFathom();
+  const { appNetwork } = useWeb3();
+  const { txListener: ethersTxListener } = useEthers();
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
@@ -103,11 +112,16 @@ export default function useSor(
     const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
     const subgraphUrl = new ConfigService().network.subgraph;
 
+    // If V1 previously selected on another network then it uses this and returns no liquidity.
+    if (!appNetwork.supportsV1) {
+      store.commit('app/setTradeLiquidity', LiquiditySelection.V2);
+    }
+
     sorManager = new SorManager(
       getProvider(String(userNetworkConfig.value.chainId)),
       new BigNumber(GAS_PRICE),
-      MAX_POOLS,
-      userNetworkConfig.value.chainId,
+      Number(MAX_POOLS),
+      config.chainId,
       config.addresses.weth,
       poolsUrlV1,
       poolsUrlV2,
@@ -171,10 +185,10 @@ export default function useSor(
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value]?.decimals;
 
     if (exactIn.value) {
-      // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
-      await sorManager.setCostOutputToken(
+      await setSwapCost(
         tokenOutAddressInput.value,
-        tokenOutDecimals
+        tokenOutDecimals,
+        sorManager
       );
 
       const tokenInAmountNormalised = new BigNumber(amount); // Normalized value
@@ -225,10 +239,7 @@ export default function useSor(
       }
     } else {
       // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
-      await sorManager.setCostOutputToken(
-        tokenInAddressInput.value,
-        tokenInDecimals
-      );
+      await setSwapCost(tokenInAddressInput.value, tokenInDecimals, sorManager);
 
       const tokenOutAmountNormalised = new BigNumber(amount);
       const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
@@ -275,11 +286,11 @@ export default function useSor(
     pools.value = sorManager.selectedPools;
   }
 
-  function tradeTxListener(hash: string) {
-    txListener(hash, {
+  function blocknativeTxHandler(tx: TransactionResponse): void {
+    txListener(tx.hash, {
       onTxConfirmed: async () => {
         trading.value = false;
-        latestTxHash.value = hash;
+        latestTxHash.value = tx.hash;
         trackGoal(Goals.Swapped);
         await refetchBalances.value();
       },
@@ -290,6 +301,27 @@ export default function useSor(
         trading.value = false;
       }
     });
+  }
+
+  function ethersTxHandler(tx: TransactionResponse): void {
+    ethersTxListener(tx, {
+      onTxConfirmed: () => {
+        trading.value = false;
+        latestTxHash.value = tx.hash;
+        trackGoal(Goals.Swapped);
+      },
+      onTxFailed: () => {
+        trading.value = false;
+      }
+    });
+  }
+
+  function txHandler(tx: TransactionResponse): void {
+    if (supportsBlocknative.value) {
+      blocknativeTxHandler(tx);
+    } else {
+      ethersTxHandler(tx);
+    }
   }
 
   async function trade() {
@@ -312,7 +344,7 @@ export default function useSor(
           tokenInAmountScaled
         );
         console.log('Wrap tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -326,7 +358,7 @@ export default function useSor(
           tokenInAmountScaled
         );
         console.log('Unwrap tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -351,7 +383,7 @@ export default function useSor(
           minAmount
         );
         console.log('Swap in tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -376,11 +408,46 @@ export default function useSor(
           tokenOutAmountScaled
         );
         console.log('Swap out tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
       }
+    }
+  }
+
+  // Uses stored market prices to calculate swap cost in token denomination
+  function calculateSwapCost(tokenAddress: string): BigNumber {
+    const ethPriceUsd =
+      store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
+    const tokenPriceUsd =
+      store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;
+    const gasPriceWei = store.state.market.gasPrice || 0;
+    const gasPriceScaled = scale(bnum(gasPriceWei), -18);
+    const ethPriceToken = bnum(Number(ethPriceUsd) / Number(tokenPriceUsd));
+    const swapCost = bnum(SWAP_COST);
+    const costSwapToken = gasPriceScaled.times(swapCost).times(ethPriceToken);
+    return costSwapToken;
+  }
+
+  // Sets SOR swap cost for more efficient routing
+  async function setSwapCost(
+    tokenAddress: string,
+    tokenDecimals: number,
+    sorManager: SorManager
+  ): Promise<void> {
+    const chainId = userNetworkConfig.value.chainId;
+    // If using Polygon get price of swap using stored market prices
+    // If mainnet price retrieved on-chain using SOR
+    if (chainId === 137) {
+      const swapCostToken = calculateSwapCost(tokenOutAddressInput.value);
+      await sorManager.setCostOutputToken(
+        tokenAddress,
+        tokenDecimals,
+        swapCostToken
+      );
+    } else {
+      await sorManager.setCostOutputToken(tokenAddress, tokenDecimals);
     }
   }
 
