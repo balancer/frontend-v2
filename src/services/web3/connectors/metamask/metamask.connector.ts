@@ -5,7 +5,9 @@ export class MetamaskConnector extends Connector {
   async connect() {
     // type for window.ethereum is causing conflicts (provided by some library)
     // const provider = (await detectEthereumProvider()) as ExternalProvider;
-    const provider = (window.ethereum as unknown) as ExternalProvider;
+    const provider =
+      ((window.ethereum as unknown) as ExternalProvider) ||
+      (window as any).web3.currentProvider;
     if (provider) {
       this.provider = provider;
       this.active.value = true;
@@ -31,6 +33,8 @@ export class MetamaskConnector extends Connector {
         }
       }
 
+      console.log('accounts1', accounts);
+
       // if account is still moot, try the bad old way - enable()
       if (!accounts) {
         // have to any it, since enable technically shouldn't be there anymore.
@@ -38,6 +42,7 @@ export class MetamaskConnector extends Connector {
         const response = await (provider as any).enable();
         accounts = response?.result || response;
       }
+      console.log('accounts2', accounts);
 
       // if still moot, try an even worser legacy way
       if (!accounts) {
@@ -50,6 +55,7 @@ export class MetamaskConnector extends Connector {
           console.error(err);
         }
       }
+      console.log('accounts3', accounts);
 
       if (accounts && chainId) {
         this.handleChainChanged(chainId);
