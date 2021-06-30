@@ -112,7 +112,10 @@
               <span class="font-medium text-sm leading-none w-14 truncate">
                 {{ pool.onchain.tokens[token].symbol }}
               </span>
-              <span class="leading-none text-xs mt-1 text-gray-500">
+              <span
+                v-if="pool.poolType !== 'Stable'"
+                class="leading-none text-xs mt-1 text-gray-500"
+              >
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
