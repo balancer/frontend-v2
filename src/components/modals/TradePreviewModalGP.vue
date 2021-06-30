@@ -92,7 +92,7 @@
             </div>
           </div>
         </div>
-        <template v-slot:footer>
+        <template v-slot:footer v-if="tradeRoute === 'gnosis'">
           <div class="w-full p-3 rounded-b-lg bg-white text-sm">
             <div class="summary-item-row font-medium">
               <div>
@@ -239,6 +239,10 @@ export default defineComponent({
     },
     requiresApproval: {
       type: Boolean,
+      required: true
+    },
+    tradeRoute: {
+      type: String,
       required: true
     }
   },

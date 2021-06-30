@@ -55,6 +55,7 @@
       :fee-amount-out-token-scaled="feeAmountOutTokenScaled"
       :minimum-out-amount-scaled="minimumOutAmountScaled"
       :maximum-in-amount-scaled="maximumInAmountScaled"
+      :trade-route="tradeRoute"
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"
     />
@@ -133,13 +134,10 @@ export default defineComponent({
     const orderId = ref('');
     const orderMetadata = ref<OrderMetaData | null>(null);
     const updatingQuotes = ref(false);
-    const txHash = ref('');
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
-    const maximumInAmountScaled = ref('');
-    const minimumOutAmountScaled = ref('');
     const trading = ref(false);
     const modalTradePreviewIsOpen = ref(false);
 
@@ -176,6 +174,22 @@ export default defineComponent({
         .toString()
     );
 
+    const maximumInAmountScaled = computed(() =>
+      tokenInAmountScaled.value
+        .plus(feeAmountInTokenScaled.value)
+        .times(1 + slippageBufferRate.value)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .toString()
+    );
+
+    const minimumOutAmountScaled = computed(() =>
+      tokenOutAmountScaled.value
+        .minus(feeAmountOutTokenScaled.value)
+        .div(1 + slippageBufferRate.value)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .toString()
+    );
+
     const tradeDisabled = computed(() => {
       if (errorMessage.value !== TradeValidation.VALID || feeExceedsPrice.value)
         return true;
@@ -197,10 +211,12 @@ export default defineComponent({
     );
 
     const title = computed(() => {
-      if (tradeRoute.value === 'wrapETH')
-        return `${t('wrap')} ${ETHER.symbol}}`;
-      if (tradeRoute.value === 'unwrapETH')
-        return `${t('unwrap')} ${ETHER.symbol}}`;
+      if (tradeRoute.value === 'wrapETH') {
+        return `${t('wrap')} ${ETHER.symbol}`;
+      }
+      if (tradeRoute.value === 'unwrapETH') {
+        return `${t('unwrap')} ${ETHER.symbol}`;
+      }
       return t('trade');
     });
 
@@ -298,7 +314,7 @@ export default defineComponent({
       }
     }
 
-    async function postSignedOrder() {
+    async function submitGnosisOrder() {
       try {
         trading.value = true;
 
@@ -313,7 +329,7 @@ export default defineComponent({
             .minus(feeAmountInTokenScaled.value)
             .toString(),
           buyAmount: exactIn.value
-            ? minimumOutAmountScaled.value.toString()
+            ? minimumOutAmountScaled.value
             : tokenOutAmountScaled.value.toString(),
           validTo: calculateValidTo(appTransactionDeadline.value),
           appData,
@@ -345,7 +361,7 @@ export default defineComponent({
       }
     }
 
-    async function trade() {
+    function trade() {
       switch (tradeRoute.value) {
         case 'wrapETH': {
           wrapETH();
@@ -360,7 +376,7 @@ export default defineComponent({
           break;
         }
         case 'gnosis': {
-          postSignedOrder();
+          submitGnosisOrder();
           break;
         }
         default:
@@ -368,7 +384,7 @@ export default defineComponent({
       }
     }
 
-    async function updateQuotes() {
+    async function updateGnosisQuotes() {
       if (
         isValidTokenAmount(
           exactIn.value ? tokenInAmount.value : tokenOutAmount.value
@@ -413,19 +429,7 @@ export default defineComponent({
                     priceQuoteResult.amount,
                     tokenOut.value.decimals
                   );
-
-                  minimumOutAmountScaled.value = tokenOutAmountScaled.value
-                    .minus(feeAmountOutTokenScaled.value)
-                    .div(1 + slippageBufferRate.value)
-                    .integerValue(BigNumber.ROUND_DOWN)
-                    .toString();
                 } else {
-                  maximumInAmountScaled.value = tokenInAmountScaled.value
-                    .plus(feeAmountInTokenScaled.value)
-                    .times(1 + slippageBufferRate.value)
-                    .integerValue(BigNumber.ROUND_DOWN)
-                    .toString();
-
                   tokenInAmount.value = formatUnits(
                     priceQuoteResult.amount,
                     tokenIn.value.decimals
@@ -447,42 +451,50 @@ export default defineComponent({
 
       if (tradeRoute.value === 'gnosis') {
         feeQuote.value = null;
-        updateQuotes();
+        updateGnosisQuotes();
+      } else if (['wrapETH', 'unwrapETH'].includes(tradeRoute.value)) {
+        tokenInAmount.value = tokenOutAmount.value;
       }
     });
 
-    watch(tokenOutAddress, async () => {
+    watch(tokenOutAddress, () => {
       store.commit('trade/setOutputAsset', tokenOutAddress.value);
 
       if (tradeRoute.value === 'gnosis') {
         feeQuote.value = null;
-        updateQuotes();
+        updateGnosisQuotes();
+      } else if (['wrapETH', 'unwrapETH'].includes(tradeRoute.value)) {
+        tokenOutAmount.value = tokenInAmount.value;
       }
     });
 
     watch(tokenInAmount, () => {
       if (tradeRoute.value === 'gnosis') {
         if (tokenInAmount.value !== '') {
-          updateQuotes();
+          updateGnosisQuotes();
         } else {
           tokenOutAmount.value = '';
         }
+      } else if (['wrapETH', 'unwrapETH'].includes(tradeRoute.value)) {
+        tokenOutAmount.value = tokenInAmount.value;
       }
     });
 
-    watch(tokenOutAmount, async () => {
+    watch(tokenOutAmount, () => {
       if (tradeRoute.value === 'gnosis') {
         if (tokenOutAmount.value !== '') {
-          updateQuotes();
+          updateGnosisQuotes();
         } else {
           tokenInAmount.value = '';
         }
+      } else if (['wrapETH', 'unwrapETH'].includes(tradeRoute.value)) {
+        tokenInAmount.value = tokenOutAmount.value;
       }
     });
 
     watch(blockNumber, async () => {
       if (tradeRoute.value === 'gnosis') {
-        updateQuotes();
+        updateGnosisQuotes();
 
         if (orderId.value != '') {
           const order = await gnosisOperator.getOrder(orderId.value);
@@ -509,7 +521,6 @@ export default defineComponent({
       tokenOut,
       tokenOutAddress,
       tokenOutAmount,
-      txHash,
       modalTradePreviewIsOpen,
       exactIn,
       orderId,
@@ -532,7 +543,8 @@ export default defineComponent({
       // methods
       handleErrorButtonClick,
       updatingQuotes,
-      trade
+      trade,
+      tradeRoute
     };
   }
 });
