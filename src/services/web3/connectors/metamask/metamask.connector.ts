@@ -7,7 +7,7 @@ export class MetamaskConnector extends Connector {
     // const provider = (await detectEthereumProvider()) as ExternalProvider;
     const provider =
       ((window.ethereum as unknown) as ExternalProvider) ||
-      (window as any).web3.currentProvider;
+      (window as any)?.web3?.currentProvider;
     if (provider) {
       this.provider = provider;
       this.active.value = true;
