@@ -1,9 +1,14 @@
-import { ETHER } from '@/constants/tokenlists';
-import { bnum, scale } from '@/lib/utils';
 import { computed, Ref } from 'vue';
 import { useStore } from 'vuex';
+
+import { ETHER } from '@/constants/tokenlists';
+
+import { bnum, scale } from '@/lib/utils';
+
 import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
+
+type TradeRoute = 'wrapETH' | 'unwrapETH' | 'balancer' | 'gnosis';
 
 export default function useTrading(
   tokenInAddress: Ref<string>,
@@ -69,6 +74,19 @@ export default function useTrading(
     )} ${tokenIn.value?.symbol}`
   }));
 
+  const tradeRoute = computed<TradeRoute>(() => {
+    if (isUnwrap.value) {
+      return 'unwrapETH';
+    }
+    if (isWrap.value) {
+      return 'wrapETH';
+    }
+    if (isEthTrade.value) {
+      return 'balancer';
+    }
+    return 'gnosis';
+  });
+
   return {
     // methods
     getConfig,
@@ -83,6 +101,7 @@ export default function useTrading(
     tokenOutAmountScaled,
     tokens,
     requiresApproval,
-    effectivePriceMessage
+    effectivePriceMessage,
+    tradeRoute
   };
 }

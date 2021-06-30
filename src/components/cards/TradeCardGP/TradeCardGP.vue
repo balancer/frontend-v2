@@ -83,7 +83,6 @@ import {
   normalizeTokenAddress
 } from '@/services/gnosis/utils';
 
-import useNotify from '@/composables/useNotify';
 import useAuth from '@/composables/useAuth';
 import useGnosisProtocol from '@/composables/useGnosisProtocol';
 import useValidation, {
@@ -123,10 +122,9 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const auth = useAuth();
-    const { account, blockNumber, explorer } = useWeb3();
-    const { txListener } = useNotify();
+    const { account, blockNumber } = useWeb3();
     const { t } = useI18n();
-    const { gnosisOperator, gnosisExplorer } = useGnosisProtocol();
+    const { gnosisOperator } = useGnosisProtocol();
 
     // DATA
     const exactIn = ref(true);
@@ -135,7 +133,6 @@ export default defineComponent({
     const orderId = ref('');
     const orderMetadata = ref<OrderMetaData | null>(null);
     const updatingQuotes = ref(false);
-    const latestTxHash = ref('');
     const txHash = ref('');
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
@@ -147,8 +144,7 @@ export default defineComponent({
     const modalTradePreviewIsOpen = ref(false);
 
     const {
-      isWrap,
-      isUnwrap,
+      tradeRoute,
       requiresApproval,
       getConfig,
       tokenInAmountScaled,
@@ -167,12 +163,6 @@ export default defineComponent({
     // COMPUTED
     const slippageBufferRate = computed(() =>
       parseFloat(store.state.app.slippage)
-    );
-
-    const explorerLink = computed(() =>
-      orderId.value != ''
-        ? gnosisExplorer.orderLink(orderId.value)
-        : explorer.txLink(txHash.value)
     );
 
     const feeAmountInTokenScaled = computed(
@@ -207,8 +197,10 @@ export default defineComponent({
     );
 
     const title = computed(() => {
-      if (isWrap.value) return t('wrap');
-      if (isUnwrap.value) return t('unwrap');
+      if (tradeRoute.value === 'wrapETH')
+        return `${t('wrap')} ${ETHER.symbol}}`;
+      if (tradeRoute.value === 'unwrapETH')
+        return `${t('unwrap')} ${ETHER.symbol}}`;
       return t('trade');
     });
 
@@ -259,25 +251,47 @@ export default defineComponent({
 
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (assetIn === ETHER.deeplinkId) assetIn = ETHER.address;
-      else if (isAddress(assetIn)) assetIn = getAddress(assetIn);
+
+      if (assetIn === ETHER.deeplinkId) {
+        assetIn = ETHER.address;
+      } else if (isAddress(assetIn)) {
+        assetIn = getAddress(assetIn);
+      }
+
       let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (assetOut === ETHER.deeplinkId) assetOut = ETHER.address;
-      else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
+
+      if (assetOut === ETHER.deeplinkId) {
+        assetOut = ETHER.address;
+      } else if (isAddress(assetOut)) {
+        assetOut = getAddress(assetOut);
+      }
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
-    async function handleETH(action: 'wrap' | 'unwrap') {
+    async function wrapETH() {
       try {
         trading.value = true;
 
         const { chainId } = getConfig();
 
-        const fn = action === 'wrap' ? wrap : unwrap;
-        const tx = await fn(chainId, auth.web3, tokenInAmountScaled.value);
-        tradeTxListener(tx.hash);
+        const tx = await wrap(chainId, auth.web3, tokenInAmountScaled.value);
+        console.log(tx);
+      } catch (e) {
+        console.log(e);
+        trading.value = false;
+      }
+    }
+
+    async function unwrapETH() {
+      try {
+        trading.value = true;
+
+        const { chainId } = getConfig();
+
+        const tx = await unwrap(chainId, auth.web3, tokenInAmountScaled.value);
+        console.log(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -332,28 +346,26 @@ export default defineComponent({
     }
 
     async function trade() {
-      if (isWrap.value) {
-        handleETH('wrap');
-      } else if (isUnwrap.value) {
-        handleETH('unwrap');
-      } else {
-        postSignedOrder();
-      }
-    }
-
-    function tradeTxListener(hash: string) {
-      txListener(hash, {
-        onTxConfirmed: () => {
-          trading.value = false;
-          latestTxHash.value = hash;
-        },
-        onTxCancel: () => {
-          trading.value = false;
-        },
-        onTxFailed: () => {
-          trading.value = false;
+      switch (tradeRoute.value) {
+        case 'wrapETH': {
+          wrapETH();
+          break;
         }
-      });
+        case 'unwrapETH': {
+          unwrapETH();
+          break;
+        }
+        case 'balancer': {
+          console.log('balancer trade');
+          break;
+        }
+        case 'gnosis': {
+          postSignedOrder();
+          break;
+        }
+        default:
+          throw new Error(`Error: unsupported trade type ${tradeRoute.value}`);
+      }
     }
 
     async function updateQuotes() {
@@ -432,48 +444,55 @@ export default defineComponent({
     // WATCHERS
     watch(tokenInAddress, async () => {
       store.commit('trade/setInputAsset', tokenInAddress.value);
-      feeQuote.value = null;
-      updateQuotes();
+
+      if (tradeRoute.value === 'gnosis') {
+        feeQuote.value = null;
+        updateQuotes();
+      }
     });
 
     watch(tokenOutAddress, async () => {
       store.commit('trade/setOutputAsset', tokenOutAddress.value);
-      feeQuote.value = null;
-      updateQuotes();
+
+      if (tradeRoute.value === 'gnosis') {
+        feeQuote.value = null;
+        updateQuotes();
+      }
     });
 
     watch(tokenInAmount, () => {
-      if (tokenInAmount.value !== '') {
-        updateQuotes();
-      } else {
-        tokenOutAmount.value = '';
-      }
-    });
-
-    watch(tokenOutAmount, async () => {
-      if (tokenOutAmount.value !== '') {
-        updateQuotes();
-      } else {
-        tokenInAmount.value = '';
-      }
-    });
-
-    watch(blockNumber, async () => {
-      updateQuotes();
-
-      if (orderId.value != '') {
-        const order = await gnosisOperator.getOrder(orderId.value);
-        if (isOrderFinalized(order)) {
-          orderMetadata.value = order;
-          trading.value = false;
-          modalTradePreviewIsOpen.value = false;
+      if (tradeRoute.value === 'gnosis') {
+        if (tokenInAmount.value !== '') {
+          updateQuotes();
+        } else {
+          tokenOutAmount.value = '';
         }
       }
     });
 
-    watch(latestTxHash, () => {
-      txHash.value = latestTxHash.value;
-      modalTradePreviewIsOpen.value = false;
+    watch(tokenOutAmount, async () => {
+      if (tradeRoute.value === 'gnosis') {
+        if (tokenOutAmount.value !== '') {
+          updateQuotes();
+        } else {
+          tokenInAmount.value = '';
+        }
+      }
+    });
+
+    watch(blockNumber, async () => {
+      if (tradeRoute.value === 'gnosis') {
+        updateQuotes();
+
+        if (orderId.value != '') {
+          const order = await gnosisOperator.getOrder(orderId.value);
+          if (isOrderFinalized(order)) {
+            orderMetadata.value = order;
+            trading.value = false;
+            modalTradePreviewIsOpen.value = false;
+          }
+        }
+      }
     });
 
     // INIT
@@ -496,7 +515,6 @@ export default defineComponent({
       orderId,
 
       // computed
-      explorerLink,
       title,
       error,
       errorMessage,
