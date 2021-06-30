@@ -1,5 +1,4 @@
 import { Connector } from '../connector';
-import { ExternalProvider } from '@ethersproject/providers';
 export class MetamaskConnector extends Connector {
   id = 'injected';
   async connect() {
@@ -33,8 +32,6 @@ export class MetamaskConnector extends Connector {
         }
       }
 
-      console.log('accounts1', accounts);
-
       // if account is still moot, try the bad old way - enable()
       if (!accounts) {
         // have to any it, since enable technically shouldn't be there anymore.
@@ -42,7 +39,6 @@ export class MetamaskConnector extends Connector {
         const response = await (provider as any).enable();
         accounts = response?.result || response;
       }
-      console.log('accounts2', accounts);
 
       // if still moot, try an even worser legacy way
       if (!accounts) {
@@ -55,7 +51,6 @@ export class MetamaskConnector extends Connector {
           console.error(err);
         }
       }
-      console.log('accounts3', accounts);
 
       if (accounts && chainId) {
         this.handleChainChanged(chainId);
