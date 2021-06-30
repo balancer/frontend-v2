@@ -31,7 +31,7 @@ export class MetamaskConnector extends Connector {
         }
       }
 
-      // if account is still moot, try the bad old way - enable() - not proud of this
+      // if account is still moot, try the bad old way - enable()
       if (!accounts) {
         // have to any it, since enable technically shouldn't be there anymore.
         // but might, for legacy clients.
@@ -39,7 +39,7 @@ export class MetamaskConnector extends Connector {
         accounts = response?.result || response;
       }
 
-      // if still moot, try an even worser legacy way - not proud of this one either
+      // if still moot, try an even worser legacy way
       if (!accounts) {
         try {
           if (provider.send) {
@@ -49,16 +49,16 @@ export class MetamaskConnector extends Connector {
         } catch (err) {
           console.error(err);
         }
-
-        if (accounts && chainId) {
-          this.handleChainChanged(chainId);
-          this.handleAccountsChanged(accounts);
-        }
-      } else {
-        console.error(
-          'Tried to connect to MetaMask but it was not detected. Please install MetaMask.'
-        );
       }
+
+      if (accounts && chainId) {
+        this.handleChainChanged(chainId);
+        this.handleAccountsChanged(accounts);
+      }
+    } else {
+      console.error(
+        'Tried to connect to MetaMask but it was not detected. Please install MetaMask.'
+      );
     }
     return {
       // TODO type this
