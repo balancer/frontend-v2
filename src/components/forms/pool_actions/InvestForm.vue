@@ -73,7 +73,7 @@
             </div>
             <div class="flex flex-col w-1/2 leading-none text-right pl-2">
               <span class="break-words" :title="fNum(amountUSD(i), 'usd')">
-                {{ fNum(amountUSD(i), 'usd') }}
+                {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
               <span
                 v-if="pool.poolType !== 'Stable'"
