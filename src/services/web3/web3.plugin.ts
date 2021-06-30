@@ -3,7 +3,7 @@ import { Connector } from './connectors/connector';
 import { computed, reactive, ref, Ref, toRefs } from 'vue';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { getAddress } from '@ethersproject/address';
-import { lsGet, lsRemove, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils';
 import {
   JsonRpcProvider,
   JsonRpcSigner,
