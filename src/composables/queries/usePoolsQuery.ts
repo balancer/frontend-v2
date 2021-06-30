@@ -26,7 +26,7 @@ export default function usePoolsQuery(
 
   // COMPOSABLES
   const store = useStore();
-  const { allTokens } = useTokens();
+  const { tokens: allTokens } = useTokens();
 
   // DATA
   const queryKey = QUERY_KEYS.Pools.All(tokenList);

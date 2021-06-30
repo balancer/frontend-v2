@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 lg:px-0 pt-10 md:pt-12">
-    <template v-if="isConnected">
+    <template v-if="isWalletReady">
       <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
       <PoolsTable
         :isLoading="isLoadingUserPools"
@@ -56,7 +56,7 @@ import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import PoolsTable from '@/components/tables/PoolsTable.vue';
 
 import usePools from '@/composables/pools/usePools';
-import useWeb3 from '@/composables/useWeb3';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   components: {
@@ -68,7 +68,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const router = useRouter();
-    const { appNetwork, isConnected } = useWeb3();
+    const { isWalletReady, isV1Supported } = useVueWeb3();
 
     const selectedPoolTokens = computed(
       () => store.state.app.selectedPoolTokens
@@ -97,7 +97,7 @@ export default defineComponent({
         : pools?.value
     );
 
-    const hideV1Links = computed(() => !appNetwork.supportsV1);
+    const hideV1Links = computed(() => isV1Supported);
 
     // METHODS
     function updateSelectedPoolTokens(selectedPoolTokens: string[]) {
@@ -112,7 +112,7 @@ export default defineComponent({
       isLoadingUserPools,
 
       // computed
-      isConnected,
+      isWalletReady,
       hideV1Links,
       poolsHasNextPage,
       poolsIsFetchingNextPage,

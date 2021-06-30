@@ -9,5 +9,8 @@ export const EXTERNAL_LINKS = {
   },
   Gauntlet: {
     Home: 'https://gauntlet.network'
+  },
+  Ethereum: {
+    Wallets: 'https://ethereum.org/en/wallets'
   }
 };

@@ -27,7 +27,7 @@
               <img
                 v-for="(tokenlist, i) in activeTokenLists"
                 :key="`activeTokenListIcon-${i}`"
-                :src="_url(listDictionary[tokenlist]?.logoURI)"
+                :src="_url(listMap[tokenlist]?.logoURI)"
                 class="rounded-full inline-block bg-white shadow w-6 h-6"
               />
             </span>
@@ -108,11 +108,12 @@ import { defineComponent, reactive, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
-import useTokenLists from '@/composables/useTokenLists';
+import useTokenLists from '@/composables/useTokensStore';
 // import useTokenLists2 from '@/composables/useTokenLists2';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   components: {
@@ -144,10 +145,11 @@ export default defineComponent({
       lists: tokenLists,
       toggleActiveTokenList,
       isActiveList,
-      tokens,
-      listDictionary,
+      listMap,
       activeTokenLists
-    } = useTokenLists(data);
+    } = useTokenLists();
+    const { tokens: tokenMap } = useTokens(data);
+    const tokens = computed(() => Object.values(tokenMap.value));
     // const {
     //   approvedTokenLists,
     //   toggleList,
@@ -213,7 +215,7 @@ export default defineComponent({
       title,
       tokens,
       tokenLists,
-      listDictionary,
+      listMap,
       activeTokenLists,
 
       // methods

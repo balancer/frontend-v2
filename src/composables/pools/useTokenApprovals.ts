@@ -1,20 +1,20 @@
 import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
-import { TransactionResponse } from '@ethersproject/providers';
-import useAuth from '@/composables/useAuth';
 import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useAllowances from '../useAllowances';
+import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '@/composables/useEthers';
 import { sleep } from '@/lib/utils';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
-  const auth = useAuth();
-  const store = useStore();
+  const { getProvider, appNetworkConfig } = useVueWeb3();
   const approving = ref(false);
   const approvedAll = ref(false);
-  const { allTokens } = useTokens();
+  const { tokens: allTokens } = useTokens();
+  const { getRequiredAllowances, refetchAllowances } = useAllowances();
   const { txListener, supportsBlocknative } = useNotify();
   const { txListener: ethersTxListener } = useEthers();
 
@@ -28,7 +28,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
   );
 
   const requiredAllowances = computed(() => {
-    const allowances = store.getters['account/getRequiredAllowances']({
+    const allowances = getRequiredAllowances({
       tokens,
       amounts: amounts.value
     });
@@ -41,7 +41,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
         // REFACTOR: Hack to prevent race condition causing double approvals
         await tx.wait();
         await sleep(5000);
-        await store.dispatch('account/getAllowances', { tokens });
+        await refetchAllowances.value();
         // END REFACTOR
         approving.value = false;
       },
@@ -57,7 +57,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
   async function ethersTxHandler(tx: TransactionResponse): Promise<void> {
     await ethersTxListener(tx, {
       onTxConfirmed: async () => {
-        await store.dispatch('account/getAllowances', { tokens });
+        await refetchAllowances.value();
         approving.value = false;
       },
       onTxFailed: () => {
@@ -71,8 +71,8 @@ export default function useTokenApprovals(tokens, shortAmounts) {
       approving.value = true;
 
       const txs = await approveTokens(
-        auth.web3,
-        store.state.web3.config.addresses.vault,
+        getProvider(),
+        appNetworkConfig.addresses.vault,
         [requiredAllowances.value[0]]
       );
 

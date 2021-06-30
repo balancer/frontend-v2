@@ -119,7 +119,6 @@
 <script lang="ts">
 import BigNumber from 'bignumber.js';
 import { PropType, defineComponent, ref, computed } from 'vue';
-import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
 import { ETHER } from '@/constants/tokenlists';
@@ -129,6 +128,8 @@ import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
 import useNumbers from '@/composables/useNumbers';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { useI18n } from 'vue-i18n';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useTokens from '@/composables/useTokens';
 
 interface Route {
   share: number;
@@ -178,14 +179,11 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const store = useStore();
     const { fNum } = useNumbers();
     const { t } = useI18n();
 
-    const getConfig = () => store.getters['web3/getConfig']();
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
-    const tokens = computed(() => getTokens({ includeEther: true }));
+    const { userNetworkConfig } = useVueWeb3();
+    const { tokens } = useTokens();
 
     const visible = ref(false);
 
@@ -306,7 +304,7 @@ export default defineComponent({
       swaps: SwapV2[],
       addresses: string[]
     ) {
-      const { addresses: constants } = getConfig();
+      const { addresses: constants } = userNetworkConfig.value;
 
       addressIn =
         addressIn === ETHER.address ? constants.weth : getAddress(addressIn);
@@ -425,7 +423,7 @@ export default defineComponent({
     }
 
     function getPoolLink(id: string): string {
-      const { chainId } = getConfig();
+      const chainId = userNetworkConfig.value.chainId;
       const prefixMap = {
         1: 'app.',
         42: 'kovan.',

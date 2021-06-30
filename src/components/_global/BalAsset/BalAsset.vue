@@ -36,7 +36,7 @@ export default defineComponent({
   },
   setup(props) {
     // COMPOSABLES
-    const { allTokensIncludeEth } = useTokens();
+    const { tokens } = useTokens();
 
     // DATA
     const { address } = toRefs(props);
@@ -44,7 +44,7 @@ export default defineComponent({
 
     // COMPUTED
     const iconURL = computed(() => {
-      const token = allTokensIncludeEth.value[address.value];
+      const token = tokens.value[address.value];
       if (!token) return '';
       return token.logoURI;
     });
