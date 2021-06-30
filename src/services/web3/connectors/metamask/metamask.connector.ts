@@ -3,11 +3,11 @@ import { ExternalProvider } from '@ethersproject/providers';
 export class MetamaskConnector extends Connector {
   id = 'injected';
   async connect() {
-    // type for window.ethereum is causing conflicts (provided by some library)
-    // const provider = (await detectEthereumProvider()) as ExternalProvider;
     const provider =
-      ((window.ethereum as unknown) as ExternalProvider) ||
-      (window as any)?.web3?.currentProvider;
+      (window as any).ethereum ||
+      ((window as any).web3 && (window as any).web3.currentProvider);
+
+    console.log('ehsayz', window.ethereum, (window as any).web3);
     if (provider) {
       this.provider = provider;
       this.active.value = true;
