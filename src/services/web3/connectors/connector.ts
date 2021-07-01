@@ -30,7 +30,7 @@ export abstract class Connector {
       // sense check the account that was previously connected
       if (!account) {
         this.account.value = accounts[0];
-        throw new Error(
+        console.warn(
           `Previously connected account [${this.selectedAccount}] was not found in the connection. Defaulting to the first.`
         );
       }
