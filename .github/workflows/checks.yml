@@ -17,6 +17,10 @@ jobs:
       uses: EndBug/version-check@v2
       with:
         diff-search: true
+    - name: Get package.json version
+      run: 'echo "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: "{ print $2 }" | sed "s/[",]//g")"'
+    - name: Print pkg verson
+      run: echo ${{ env.PACKAGE_VERSION }}
     - name: Log when changed
       if: steps.check.outputs.changed == 'true'
       run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
