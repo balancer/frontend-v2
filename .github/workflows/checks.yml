@@ -15,6 +15,7 @@ jobs:
       uses: EndBug/version-check@v1
       with:
         diff-search: true
+        file-name: ./package.json
     - name: Log PR base
       run: '${{github.event.pull_request.head.ref}}'
     - name: Log when changed
