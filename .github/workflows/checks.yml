@@ -7,6 +7,26 @@ env:
   VUE_APP_FATHOM_SITE_ID: xxx
 
 jobs:
+  Version:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Check if version has been updated
+      id: check
+      uses: EndBug/version-check@v1
+      with:
+        diff-search: true
+        file-name: ./package.js
+    - name: Log PR base
+      run: '${{github.event.pull_request.head.ref}}'
+    - name: Log when changed
+      if: steps.check.outputs.changed == 'true'
+      run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
+    - name: Fail if version not updated
+      if: steps.check.outputs.changed == 'true'
+      run: exit 1
+
   Build:
     runs-on: ubuntu-latest
     steps:
