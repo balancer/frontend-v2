@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import useNumbers from '@/composables/useNumbers';
-import anime from 'animejs/lib/anime.es.js';
+import anime from 'animejs';
 import { onMounted, onUnmounted, ref } from '@vue/runtime-core';
 
 export default {
@@ -62,7 +62,8 @@ export default {
 
     return {
       fNum,
-      animateRef
+      animateRef,
+      console
     };
   }
 };

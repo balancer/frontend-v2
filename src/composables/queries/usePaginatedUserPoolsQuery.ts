@@ -8,13 +8,12 @@ import { getAddress } from '@ethersproject/address';
 
 import { bnum } from '@/lib/utils';
 
-import useWeb3 from '@/composables/useWeb3';
-
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 type UserPaginatedPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -30,7 +29,7 @@ export default function usePaginatedUserPoolsQuery(
 
   // COMPOSABLES
   const store = useStore();
-  const { account, isConnected } = useWeb3();
+  const { account, isWalletReady } = useVueWeb3();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Pools.User(account));
@@ -38,7 +37,7 @@ export default function usePaginatedUserPoolsQuery(
   // COMPUTED
   const prices = computed(() => store.state.market.prices);
   const isQueryEnabled = computed(
-    () => isConnected.value && account.value != null && !isEmpty(prices.value)
+    () => isWalletReady.value && account.value != null && !isEmpty(prices.value)
   );
 
   // METHODS

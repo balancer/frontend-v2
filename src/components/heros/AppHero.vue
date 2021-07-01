@@ -1,7 +1,7 @@
 <template>
   <div :class="['app-hero', classes]">
     <div class="w-full max-w-2xl mx-auto">
-      <template v-if="isConnected">
+      <template v-if="isWalletReady">
         <h1
           v-text="$t('myInvestments')"
           class="text-base font-medium text-white opacity-90 font-body mb-2"
@@ -44,37 +44,31 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
-import useWeb3 from '@/composables/useWeb3';
 import usePools from '@/composables/pools/usePools';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useFathom from '@/composables/useFathom';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   name: 'AppHero',
 
   setup() {
     // COMPOSABLES
-    const store = useStore();
     const { fNum } = useNumbers();
-    const { isConnected } = useWeb3();
+    const { isWalletReady, toggleWalletSelectModal } = useVueWeb3();
     const { trackGoal, Goals } = useFathom();
     const { totalInvestedAmount, isLoadingUserPools } = usePools();
 
-    // COMPUTED
-    const setAccountModal = (val: boolean) =>
-      store.commit('web3/setAccountModal', val);
-
     const classes = computed(() => ({
-      ['h-72']: !isConnected.value,
-      ['h-40']: isConnected.value
+      ['h-72']: !isWalletReady.value,
+      ['h-40']: isWalletReady.value
     }));
 
     function onClickConnect() {
-      setAccountModal(true);
+      toggleWalletSelectModal(true);
       trackGoal(Goals.ClickHeroConnectWallet);
     }
 
@@ -85,11 +79,11 @@ export default defineComponent({
       Goals,
 
       // computed
-      isConnected,
+      isWalletReady,
       classes,
 
       // methods
-      setAccountModal,
+      toggleWalletSelectModal,
       fNum,
       onClickConnect,
       trackGoal,

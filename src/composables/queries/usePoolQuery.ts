@@ -18,7 +18,7 @@ export default function usePoolQuery(
 ) {
   // COMPOSABLES
   const store = useStore();
-  const { allTokens } = useTokens();
+  const { tokens: allTokens } = useTokens();
 
   // SERVICES
   const balancerSubgraph = new BalancerSubgraph();

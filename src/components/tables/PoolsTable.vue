@@ -3,7 +3,7 @@
     <BalTable
       :columns="columns"
       :data="data"
-      :is-loading="isLoading || isLoadingBalances"
+      :is-loading="isLoading"
       :is-loading-more="isLoadingMore"
       skeleton-class="h-64"
       sticky="both"
@@ -33,10 +33,7 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div
-          v-if="!isLoading && !isLoadingBalances"
-          class="px-6 py-4 -mt-1 flex flex-wrap"
-        >
+        <div v-if="!isLoading" class="px-6 py-4 -mt-1 flex flex-wrap">
           <div
             v-for="token in sortedTokensFor(pool)"
             :key="token"
@@ -47,7 +44,7 @@
               class="w-3 h-3 rounded-full border-2 border-white hover:border-gray-50 bg-green-200 absolute top-0 right-0 -mt-1 -mr-1"
             />
             <span>
-              {{ allTokens[getAddress(token.address)]?.symbol }}
+              {{ tokens[getAddress(token.address)]?.symbol }}
             </span>
             <span class="font-medium text-gray-400 text-xs mt-px ml-1">
               {{ fNum(token.weight, 'percent_lg') }}
@@ -79,13 +76,13 @@ import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import { getAddress } from '@ethersproject/address';
 
 import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
 import useFathom from '@/composables/useFathom';
 import useAccountBalances from '@/composables/useAccountBalances';
 
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   components: {
@@ -121,7 +118,7 @@ export default defineComponent({
 
   setup(props) {
     const { fNum } = useNumbers();
-    const { allTokens } = useTokens();
+    const { tokens } = useTokens();
     const router = useRouter();
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
@@ -173,7 +170,7 @@ export default defineComponent({
         align: 'right',
         id: 'poolVolume',
         sortKey: pool => Number(pool.dynamic.volume),
-        width: 150
+        width: 175
       },
       {
         name: t('apy'),
@@ -205,7 +202,7 @@ export default defineComponent({
     return {
       // data
       columns,
-      allTokens,
+      tokens,
       balances,
       isLoadingBalances,
       isBalancesQueryIdle,

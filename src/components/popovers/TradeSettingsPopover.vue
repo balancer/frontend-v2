@@ -86,12 +86,12 @@ import {
 } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
-import useWeb3 from '@/composables/useWeb3';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import useFathom from '@/composables/useFathom';
 
 import { TradeInterface } from '@/store/modules/app';
 import { tradeLiquidityOptions } from '@/constants/options';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export enum TradeSettingsContext {
   trade,
@@ -119,7 +119,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { appNetwork, explorer } = useWeb3();
+    const { explorerLinks, isV1Supported } = useVueWeb3();
     const { trackGoal, Goals } = useFathom();
 
     // DATA
@@ -136,8 +136,7 @@ export default defineComponent({
       () => store.state.app.transactionDeadline
     );
     const hideLiquidity = computed(
-      () =>
-        !appNetwork.supportsV1 || context.value === TradeSettingsContext.invest
+      () => isV1Supported || context.value === TradeSettingsContext.invest
     );
 
     // METHODS
@@ -169,7 +168,7 @@ export default defineComponent({
       setTradeLiquidity,
       setTransactionDeadline,
       fNum,
-      explorer,
+      explorer: explorerLinks,
       onActivatorClick
     };
   }

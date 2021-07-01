@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="$auth.isAuthenticated.value" class="flex items-center">
+    <div v-if="account" class="flex items-center">
       <AppNavClaimBtn v-if="isMainnet" />
       <AppNavAccountBtn />
     </div>
@@ -11,7 +11,7 @@
       rounded
       :size="['xs', 'sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
       :circle="['xs', 'sm', 'md', 'lg'].includes(bp)"
-      @click="onClickConnect"
+      @click="toggleWalletSelectModal"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
       <BalIcon name="log-out" size="sm" class="lg:hidden" />
@@ -21,17 +21,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useStore } from 'vuex';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
 
 import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   name: 'AppNavActions',
@@ -43,18 +42,17 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const store = useStore();
     const { bp } = useBreakpoints();
-    const { account, profile, loading: web3Loading, isMainnet } = useWeb3();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
-
-    // METHODS
-    const setAccountModal = (isOpen: boolean) =>
-      store.commit('web3/setAccountModal', isOpen);
+    const {
+      connectWallet,
+      account,
+      toggleWalletSelectModal,
+      isMainnet
+    } = useVueWeb3();
 
     function onClickConnect() {
-      setAccountModal(true);
       trackGoal(Goals.ClickNavConnectWallet);
     }
 
@@ -62,13 +60,12 @@ export default defineComponent({
       // computed
       isMainnet,
       account,
-      profile,
-      web3Loading,
       bp,
       // methods
-      setAccountModal,
       fNum,
       onClickConnect,
+      connectWallet,
+      toggleWalletSelectModal,
       // constants
       EXTERNAL_LINKS
     };

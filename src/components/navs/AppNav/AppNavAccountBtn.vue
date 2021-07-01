@@ -2,7 +2,9 @@
   <BalPopover no-pad>
     <template v-slot:activator>
       <BalBtn
-        :loading="web3Loading"
+        class="text-base"
+        :class="{ btn: upToLargeBreakpoint }"
+        :loading="isLoadingProfile"
         :loading-label="upToLargeBreakpoint ? '' : $t('connecting')"
         color="gray"
         :outline="!upToLargeBreakpoint"
@@ -28,16 +30,16 @@
         />
       </BalBtn>
     </template>
-    <AppNavSettings v-if="!web3Loading" />
+    <AppNavSettings />
   </BalPopover>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import useWeb3 from '@/composables/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';
 import Avatar from '@/components/images/Avatar.vue';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',
@@ -49,7 +51,7 @@ export default defineComponent({
 
   setup() {
     const { bp, upToLargeBreakpoint } = useBreakpoints();
-    const { account, profile, loading: web3Loading } = useWeb3();
+    const { isLoadingProfile, profile, account } = useVueWeb3();
 
     const avatarSize = computed(() => {
       if (bp.value === 'sm') {
@@ -65,9 +67,10 @@ export default defineComponent({
       bp,
       account,
       profile,
-      web3Loading,
       avatarSize,
-      upToLargeBreakpoint
+      upToLargeBreakpoint,
+      isLoadingProfile,
+      console
     };
   }
 });

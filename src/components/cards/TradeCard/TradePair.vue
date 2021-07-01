@@ -153,11 +153,11 @@ import { defineComponent, toRefs, computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
 import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
+import useTokens from '@/composables/useTokens';
 
 const ETH_BUFFER = 0.1;
 
@@ -202,7 +202,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
-    const { allTokensIncludeEth } = useTokens();
+    const { tokens } = useTokens();
     const { fNum, toFiat } = useNumbers();
 
     const {
@@ -218,7 +218,7 @@ export default defineComponent({
     );
 
     const tokenInSymbol = computed(() => {
-      const tokenIn = allTokensIncludeEth.value[tokenInAddressInput.value];
+      const tokenIn = tokens.value[tokenInAddressInput.value];
       const symbol = tokenIn ? tokenIn.symbol : '';
       return symbol;
     });
@@ -228,21 +228,21 @@ export default defineComponent({
     );
 
     const tokenOutSymbol = computed(() => {
-      const tokenOut = allTokensIncludeEth.value[tokenOutAddressInput.value];
+      const tokenOut = tokens.value[tokenOutAddressInput.value];
       const symbol = tokenOut ? tokenOut.symbol : '';
       return symbol;
     });
 
     const tokenInDecimals = computed(() => {
-      const decimals = allTokensIncludeEth.value[tokenInAddressInput.value]
-        ? allTokensIncludeEth.value[tokenInAddressInput.value].decimals
+      const decimals = tokens.value[tokenInAddressInput.value]
+        ? tokens.value[tokenInAddressInput.value].decimals
         : 18;
       return decimals;
     });
 
     const tokenOutDecimals = computed(() => {
-      const decimals = allTokensIncludeEth.value[tokenOutAddressInput.value]
-        ? allTokensIncludeEth.value[tokenOutAddressInput.value].decimals
+      const decimals = tokens.value[tokenOutAddressInput.value]
+        ? tokens.value[tokenOutAddressInput.value].decimals
         : 18;
       return decimals;
     });
@@ -252,8 +252,7 @@ export default defineComponent({
     const modalSelectTokenIsOpen = ref(false);
 
     function handleMax(): void {
-      const balance =
-        allTokensIncludeEth.value[tokenInAddressInput.value]?.balance || '0';
+      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
       const balanceNumber = parseFloat(balance);
       const maxAmount =
         tokenInAddressInput.value !== ETHER.address
@@ -300,8 +299,8 @@ export default defineComponent({
     }
 
     const rateMessage = computed(() => {
-      const tokenIn = allTokensIncludeEth.value[tokenInAddressInput.value];
-      const tokenOut = allTokensIncludeEth.value[tokenOutAddressInput.value];
+      const tokenIn = tokens.value[tokenInAddressInput.value];
+      const tokenOut = tokens.value[tokenOutAddressInput.value];
       if (!tokenIn || !tokenOut) {
         return '';
       }
@@ -335,7 +334,7 @@ export default defineComponent({
     }
 
     const balanceLabel = computed(
-      () => allTokensIncludeEth.value[tokenInAddressInput.value]?.balance
+      () => tokens.value[tokenInAddressInput.value]?.balance
     );
 
     return {

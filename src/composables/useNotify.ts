@@ -1,15 +1,15 @@
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 import { TransactionEventCode, TransactionData } from 'bnc-notify';
 import castArray from 'lodash/castArray';
 import mapValues from 'lodash/mapValues';
 
 import useBlocknative from './useBlocknative';
-import useWeb3 from './useWeb3';
 
 type TxCallback = (txData: TransactionData) => void;
 
 export default function useNotify() {
-  const { notify } = useBlocknative();
-  const { explorer } = useWeb3();
+  const { explorerLinks } = useVueWeb3();
+  const { notify, supportsBlocknative } = useBlocknative();
 
   function txListener(
     txHash: string | string[],
@@ -41,7 +41,7 @@ export default function useNotify() {
       const { emitter } = notify.hash(txHash);
 
       const defaultNotificationParams = {
-        link: explorer.txLink(txHash)
+        link: explorerLinks.txLink(txHash)
       };
 
       // apply notification defaults to all types
@@ -76,5 +76,5 @@ export default function useNotify() {
     });
   }
 
-  return { txListener };
+  return { txListener, supportsBlocknative };
 }

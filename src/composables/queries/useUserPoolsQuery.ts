@@ -7,12 +7,11 @@ import { getAddress } from '@ethersproject/address';
 
 import { bnum } from '@/lib/utils';
 
-import useWeb3 from '@/composables/useWeb3';
-
 import QUERY_KEYS from '@/constants/queryKeys';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useTokens from '../useTokens';
 
 type UserPoolsQueryResponse = {
@@ -29,8 +28,8 @@ export default function useUserPoolsQuery(
 
   // COMPOSABLES
   const store = useStore();
-  const { account, isConnected } = useWeb3();
-  const { allTokens } = useTokens();
+  const { account, isWalletReady } = useVueWeb3();
+  const { tokens: allTokens } = useTokens();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Pools.User(account));
@@ -38,7 +37,7 @@ export default function useUserPoolsQuery(
   // COMPUTED
   const prices = computed(() => store.state.market.prices);
   const isQueryEnabled = computed(
-    () => isConnected.value && account.value != null && !isEmpty(prices.value)
+    () => isWalletReady.value && account.value != null && !isEmpty(prices.value)
   );
 
   function uninjected(tokens: string[]): string[] {

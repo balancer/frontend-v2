@@ -133,7 +133,8 @@ export default defineComponent({
 
     function onInput(event): void {
       if (props.type === 'number') {
-        event.target.value = preventOverflow(event.target.value);
+        const overflowProtectedVal = overflowProtected(event.target.value);
+        if (overflowProtectedVal) event.target.value = overflowProtectedVal;
       }
       emit('input', event.target.value);
       emit('update:modelValue', event.target.value);
@@ -150,17 +151,13 @@ export default defineComponent({
       ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault();
     }
 
-    function preventOverflow(value: string): string {
-      if (!value.toString().includes('.')) return value;
-
+    function overflowProtected(value: string): string | undefined {
       const [numberStr, decimalStr] = value.toString().split('.');
 
-      if (decimalStr.length > props.decimalLimit) {
+      if (decimalStr && decimalStr.length > props.decimalLimit) {
         const maxLength = numberStr.length + props.decimalLimit + 1;
-        value = value.toString().slice(0, maxLength);
-      }
-
-      return value;
+        return value.toString().slice(0, maxLength);
+      } else return;
     }
 
     watchEffect(() => {
