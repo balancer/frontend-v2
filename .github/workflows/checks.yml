@@ -15,6 +15,8 @@ jobs:
       uses: EndBug/version-check@v1
       with:
         diff-search: true
+    - name: Log PR base
+      run: '${{github.event.pull_request.head.ref}}'
     - name: Log when changed
       if: steps.check.outputs.changed == 'true'
       run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
