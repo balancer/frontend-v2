@@ -28,3 +28,5 @@ export default class ConfigService {
     return configs[key];
   }
 }
+
+export const configService = new ConfigService();

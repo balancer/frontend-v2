@@ -5,7 +5,6 @@ import { parseUnits } from '@ethersproject/units';
 import { ETHER } from '@/constants/tokenlists';
 
 import useAuth from '@/composables/useAuth';
-import useNotify from '@/composables/useNotify';
 
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 
@@ -17,15 +16,16 @@ export default function useTokenApprovalGP(
   tokenInAddress: Ref<string>,
   amount: Ref<string>
 ) {
-  const { allTokensIncludeEth: tokens } = useTokens();
-  const approving = ref(false);
-  const approved = ref(false);
-
   // COMPOSABLES
   const store = useStore();
   const auth = useAuth();
-  const { txListener } = useNotify();
+  const { allTokensIncludeEth: tokens } = useTokens();
 
+  // DATA
+  const approving = ref(false);
+  const approved = ref(false);
+
+  // COMPUTED
   const allowanceState = computed(() => {
     if (tokenInAddress.value === ETHER.address) {
       return {
@@ -70,7 +70,9 @@ export default function useTokenApprovalGP(
         GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS,
         [tokenInAddress.value]
       );
-      approvalTxListener(tx.hash);
+
+      const txRecipient = await tx.wait();
+      console.log(txRecipient);
     } catch (e) {
       console.log(e);
       approving.value = false;
@@ -80,21 +82,6 @@ export default function useTokenApprovalGP(
   const isApproved = computed(() => {
     return allowanceState.value.isUnlocked;
   });
-
-  function approvalTxListener(hash: string) {
-    txListener(hash, {
-      onTxConfirmed: () => {
-        approving.value = false;
-        approved.value = true;
-      },
-      onTxCancel: () => {
-        approving.value = false;
-      },
-      onTxFailed: () => {
-        approving.value = false;
-      }
-    });
-  }
 
   watch(tokenInAddress, async () => {
     if (tokenInAddress.value === ETHER.address) {

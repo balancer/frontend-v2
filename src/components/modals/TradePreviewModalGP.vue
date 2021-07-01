@@ -182,7 +182,6 @@ import { defineComponent, toRefs, computed, PropType, ref } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
-import useGnosisProtocol from '@/composables/useGnosisProtocol';
 import { Token } from '@/types';
 import { formatUnits } from '@ethersproject/units';
 import { bnum } from '@/lib/utils';
@@ -250,7 +249,6 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum, toFiat } = useNumbers();
-    const { gnosisExplorer } = useGnosisProtocol();
 
     // DATA
     const {
@@ -408,7 +406,6 @@ export default defineComponent({
       onClose,
       approve,
       trade,
-      gnosisExplorer,
 
       // computed
       isApproved,
