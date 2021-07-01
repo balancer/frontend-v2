@@ -18,7 +18,7 @@ jobs:
       with:
         diff-search: true
     - name: Get package.json version
-      run: 'echo "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: \"{ print $2 }\" | sed \"s/[\",]//g\")"'
+      run: 'echo "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: "{ print $2 }" | sed "s/[",]//g")"'
     - name: Print pkg verson
       run: echo ${{ env.PACKAGE_VERSION }}
     - name: Log when changed
