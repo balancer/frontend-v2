@@ -53,11 +53,11 @@ export default defineComponent({
     // COMPOSABLES
     const { fNum } = useNumbers();
     const { hasBalance } = useAccountBalances();
-    const { allTokens } = useTokens();
+    const { tokens } = useTokens();
 
     // METHODS
     function symbolFor(token: PoolToken): string {
-      return allTokens.value[getAddress(token.address)]?.symbol;
+      return tokens.value[getAddress(token.address)]?.symbol;
     }
 
     function weightFor(token: PoolToken): string {
