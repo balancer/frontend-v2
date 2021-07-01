@@ -7,7 +7,7 @@ env:
   VUE_APP_FATHOM_SITE_ID: xxx
 
 jobs:
-  Version:
+  Version_check:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repo
