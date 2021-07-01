@@ -16,22 +16,20 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '14.x'
+    - name: Get package.json version
+      run: echo PACKAGE_VERSION=$(node -p -e "require('./package.json').version") >> $GITHUB_ENV
+    - name: Get package-lock.json version
+      run: echo PACKAGE_LOCK_VERSION=$(node -p -e "require('./package-lock.json').version") >> $GITHUB_ENV
+    - name: Check lockfile sync
+      if: env.PACKAGE_VERSION != env.PACKAGE_LOCK_VERSION
+      run: |
+        echo "package-lock.json out of sync"
+        exit 1
     - name: Check if version has been updated
       id: check
       uses: EndBug/version-check@v2
       with:
         diff-search: true
-    - name: Get package.json version
-      run: echo PACKAGE_VERSION=$(node -p -e "require('./package.json').version") >> $GITHUB_ENV
-    - name: Get package-lock.json version
-      run: echo PACKAGE_LOCK_VERSION=$(node -p -e "require('./package-lock.json').version") >> $GITHUB_ENV
-    - name: Print pkg verson
-      run: echo ${{ env.PACKAGE_VERSION }}
-    - name: Print lock verson
-      run: echo ${{ env.PACKAGE_LOCK_VERSION }}
-    - name: Print same v check
-      if: env.PACKAGE_VERSION != env.PACKAGE_LOCK_VERSION
-      run: echo "Versions are the same"
     - name: Log when changed
       if: steps.check.outputs.changed == 'true'
       run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
