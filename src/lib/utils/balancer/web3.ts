@@ -1,5 +1,9 @@
 import { Contract } from '@ethersproject/contracts';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import {
+  JsonRpcProvider,
+  TransactionResponse,
+  Web3Provider
+} from '@ethersproject/providers';
 import { ErrorCode } from '@ethersproject/logger';
 import { logFailedTx } from '@/lib/utils/logging';
 import GasPriceService from '@/services/gas-price/gas-price.service';
@@ -13,7 +17,7 @@ const GAS_LIMIT_BUFFER = 0.1;
 const gasPriceService = new GasPriceService();
 
 export async function sendTransaction(
-  web3: Web3Provider,
+  web3: Web3Provider | JsonRpcProvider,
   contractAddress: string,
   abi: any[],
   action: string,

@@ -4,13 +4,19 @@
       <div v-if="showContent" class="modal-bg" @click="hide" />
     </transition>
     <div class="content-container">
-      <transition
-        name="content"
-        mode="out-in"
-        appear
-        @after-leave="$emit('close')"
+      <AnimatePresence
+        :initial="{ opacity: 0, translateY: 7.5 }"
+        :animate="{
+          opacity: 1,
+          translateY: 0,
+          delay: 100
+        }"
+        :exit="{ opacity: 0, translateY: 15 }"
+        :isVisible="showContent"
+        @on-exit="$emit('close')"
+        class="flex justify-center w-full"
       >
-        <div v-if="showContent" class="content" @click.stop>
+        <div class="content" @click.stop>
           <BalCard
             :title="title"
             shadow="lg"
@@ -28,20 +34,22 @@
             </template>
           </BalCard>
         </div>
-      </transition>
+      </AnimatePresence>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import BalCard from '../BalCard/BalCard.vue';
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { defineComponent, ref, toRefs, watch } from 'vue';
 
 export default defineComponent({
   name: 'BalModal',
 
   components: {
-    BalCard
+    BalCard,
+    AnimatePresence
   },
 
   props: {
@@ -94,20 +102,6 @@ export default defineComponent({
 
 .modal-card {
   @apply mx-auto h-full rounded-b-none sm:rounded-b-lg;
-}
-
-.content-enter-active {
-  transition: all 0.2s ease-in-out;
-}
-
-.content-leave-active {
-  transition: all 0.2s ease-in-out;
-}
-
-.content-enter-from,
-.content-leave-to {
-  opacity: 0;
-  transform: translateY(20px) scale(0.95);
 }
 
 .modal-bg-enter-active {

@@ -7,11 +7,13 @@ export function shorten(str = '') {
 
 export function jsonParse(input, fallback?) {
   if (typeof input !== 'string') {
+    if (fallback === null) return null;
     return fallback || {};
   }
   try {
     return JSON.parse(input);
   } catch (err) {
+    if (fallback === null) return null;
     return fallback || {};
   }
 }

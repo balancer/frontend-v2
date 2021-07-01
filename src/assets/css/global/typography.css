@@ -12,3 +12,7 @@ h2 { @apply text-3xl font-bold; }
 h3 { @apply text-2xl font-semibold; }
 h4 { @apply text-xl font-medium;; }
 h5 { @apply text-lg font-medium;; }
+
+.eth-address {
+  font-variant-ligatures: no-contextual;
+}

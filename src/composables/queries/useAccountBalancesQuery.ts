@@ -3,8 +3,8 @@ import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import TokenService from '@/services/token/token.service';
-import useWeb3 from '../useWeb3';
 import { BalanceDictionary } from '@/services/token/concerns/balance.concern';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 // TYPES
 type Response = BalanceDictionary;
@@ -16,9 +16,9 @@ export default function useAccountBalancesQuery(
   tokens: Ref<string[]> = ref([]),
   options: UseQueryOptions<Response> = {}
 ) {
-  const { account, isConnected, userNetwork } = useWeb3();
+  const { account, isWalletReady, userNetworkConfig } = useVueWeb3();
 
-  const userNetworkKey = computed(() => userNetwork.value.key);
+  const userNetworkKey = computed(() => userNetworkConfig.value.key);
 
   const queryKey = reactive(
     QUERY_KEYS.Account.Balances(account, userNetworkKey, tokens)
@@ -33,7 +33,7 @@ export default function useAccountBalancesQuery(
   };
 
   const queryOptions = reactive({
-    enabled: isConnected,
+    enabled: isWalletReady,
     ...options
   });
 

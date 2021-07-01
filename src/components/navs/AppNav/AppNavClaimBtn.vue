@@ -96,8 +96,6 @@ import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
 
 import useNumbers from '@/composables/useNumbers';
-import useWeb3 from '@/composables/useWeb3';
-import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -107,6 +105,8 @@ import { getOriginalAddress } from '@/services/coingecko';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { claimRewards } from '@/services/claim';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import { NetworkId } from '@/constants/network';
 
 export default defineComponent({
   name: 'AppNavClaimBtn',
@@ -121,14 +121,13 @@ export default defineComponent({
     const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
-    const { appNetwork, account } = useWeb3();
+    const { appNetworkConfig, account, getProvider } = useVueWeb3();
     const { txListener } = useNotify();
-    const auth = useAuth();
 
     const balPrice = computed(
       () =>
         store.state.market.prices[
-          getOriginalAddress(appNetwork.id, TOKENS.AddressMap.BAL)
+          getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
         ]?.price
     );
 
@@ -203,8 +202,8 @@ export default defineComponent({
         isClaiming.value = true;
         try {
           const tx = await claimRewards(
-            appNetwork.id,
-            auth.web3,
+            appNetworkConfig.chainId as NetworkId,
+            getProvider(),
             account.value,
             userClaims.value.pendingClaims,
             userClaims.value.pendingClaimsReports

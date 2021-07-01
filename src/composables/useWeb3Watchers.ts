@@ -1,8 +1,10 @@
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
+import useAccountBalances from './useAccountBalances';
+import useAllowances from './useAllowances';
 import useBlocknative from './useBlocknative';
-import useWeb3 from './useWeb3';
 
 export default function useWeb3Watchers() {
   // COMPOSABLES
@@ -10,25 +12,28 @@ export default function useWeb3Watchers() {
   const { t } = useI18n();
   const { notify } = useBlocknative();
   const {
-    appNetwork,
-    userNetwork,
-    unsupportedNetwork,
-    networkMismatch
-  } = useWeb3();
+    appNetworkConfig,
+    userNetworkConfig,
+    account,
+    isMismatchedNetwork,
+    isUnsupportedNetwork
+  } = useVueWeb3();
+  const { refetchAllowances } = useAllowances();
+  const { refetchBalances } = useAccountBalances();
 
   // Watch for user account change:
   // -> Unsubscribe Blocknative from old account if exits
   // -> Listen to new account for transactions and update balances
   watch(
-    () => store.state.web3.account,
+    () => account.value,
     (newAccount, oldAccount) => {
       if (oldAccount) notify.unsubscribe(oldAccount);
       if (!newAccount) return;
 
       const { emitter } = notify.account(newAccount);
       emitter.on('txConfirmed', () => {
-        store.dispatch('account/getBalances');
-        store.dispatch('account/getAllowances');
+        refetchBalances.value();
+        refetchAllowances.value();
         return false;
       });
     }
@@ -37,20 +42,23 @@ export default function useWeb3Watchers() {
   // Watch for user network switch
   // -> Display alert message if unsupported or not the same as app network.
   watch(
-    () => userNetwork.value.name,
+    () => userNetworkConfig.value?.name,
     () => {
-      if (unsupportedNetwork.value) {
-        const localeKey = userNetwork.value.name
+      if (isUnsupportedNetwork.value) {
+        const localeKey = userNetworkConfig.value?.name
           ? 'unavailableOnNetworkWithName'
           : 'unavailableOnNetwork';
         store.commit('alerts/setCurrent', {
-          label: t(localeKey, [userNetwork.value.name, appNetwork.name]),
+          label: t(localeKey, [
+            userNetworkConfig.value?.name,
+            appNetworkConfig.name
+          ]),
           type: 'error',
           persistant: true
         });
-      } else if (networkMismatch.value) {
+      } else if (isMismatchedNetwork.value) {
         store.commit('alerts/setCurrent', {
-          label: t('networkMismatch', [appNetwork.name]),
+          label: t('networkMismatch', [appNetworkConfig.name]),
           type: 'error',
           persistant: true
         });

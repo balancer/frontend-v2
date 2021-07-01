@@ -33,7 +33,7 @@ import { configService } from '@/services/config/config.service';
 import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
 import useWeb3 from '../useWeb3';
-import useAuth from '../useAuth';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 export type TradeRoute = 'wrapETH' | 'unwrapETH' | 'balancer' | 'gnosis';
 
@@ -55,9 +55,14 @@ export default function useTrading(
   // COMPOSABLES
   const store = useStore();
   const { fNum } = useNumbers();
-  const { allTokensIncludeEth: tokens } = useTokens();
+  const { tokens } = useTokens();
   const { appNetwork, blockNumber, account } = useWeb3();
-  const auth = useAuth();
+  const {
+    getProvider: getWeb3Provider,
+    userNetworkConfig,
+    signer
+  } = useVueWeb3();
+  const provider = computed(() => getWeb3Provider());
 
   // DATA
   let sorManager: SorManager | undefined = undefined;
@@ -400,9 +405,11 @@ export default function useTrading(
     try {
       trading.value = true;
 
-      const { chainId } = getConfig();
-
-      const tx = await wrap(chainId, auth.web3, tokenInAmountScaled.value);
+      const tx = await wrap(
+        String(userNetworkConfig.value.chainId),
+        provider.value as any,
+        tokenInAmountScaled.value
+      );
       console.log(tx);
     } catch (e) {
       console.log(e);
@@ -414,9 +421,12 @@ export default function useTrading(
     try {
       trading.value = true;
 
-      const { chainId } = getConfig();
+      const tx = await unwrap(
+        String(userNetworkConfig.value.chainId),
+        provider.value as any,
+        tokenInAmountScaled.value
+      );
 
-      const tx = await unwrap(chainId, auth.web3, tokenInAmountScaled.value);
       console.log(tx);
     } catch (e) {
       console.log(e);
@@ -449,11 +459,9 @@ export default function useTrading(
         partiallyFillable: false // Always fill or kill
       };
 
-      const signer = auth.web3.getSigner();
-
       const { signature, signingScheme } = await signOrder(
         unsignedOrder,
-        signer
+        provider.value.getSigner()
       );
 
       orderId.value = await gnosisOperator.postSignedOrder({

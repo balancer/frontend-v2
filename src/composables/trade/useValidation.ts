@@ -1,6 +1,6 @@
 import { computed } from 'vue';
-import useAuth from '@/composables/useAuth';
 import { ETHER } from '@/constants/tokenlists';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 const MIN_ETH_REQUIRED = 0.0001;
 
@@ -20,7 +20,7 @@ export default function useValidation(
   tokenOutAmount,
   tokens
 ) {
-  const auth = useAuth();
+  const { isWalletReady } = useVueWeb3();
 
   const tokensAmountsValid = computed(
     () =>
@@ -29,7 +29,7 @@ export default function useValidation(
   );
 
   const validationStatus = computed(() => {
-    if (!auth.isAuthenticated.value) return TradeValidation.NO_ACCOUNT;
+    if (!isWalletReady) return TradeValidation.NO_ACCOUNT;
     const tokenIn = tokens.value[tokenInAddress.value];
 
     if (!tokensAmountsValid.value) return TradeValidation.EMPTY;

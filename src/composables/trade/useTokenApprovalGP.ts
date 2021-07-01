@@ -1,31 +1,40 @@
 import { computed, Ref, ref, watch } from 'vue';
-import { useStore } from 'vuex';
+import { Web3Provider } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
 
 import { ETHER } from '@/constants/tokenlists';
 
-import useAuth from '@/composables/useAuth';
-
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 import useTokens from '../useTokens';
+import useAllowances from '../useAllowances';
+import useEthers from '../useEthers';
 
 export default function useTokenApprovalGP(
   tokenInAddress: Ref<string>,
   amount: Ref<string>
 ) {
-  // COMPOSABLES
-  const store = useStore();
-  const auth = useAuth();
-  const { allTokensIncludeEth: tokens } = useTokens();
-
-  // DATA
   const approving = ref(false);
   const approved = ref(false);
 
-  // COMPUTED
+  // COMPOSABLES
+  const { provider } = useVueWeb3();
+  const { tokens } = useTokens();
+  const { txListener: ethersTxListener } = useEthers();
+
+  const dstList = computed(() => [GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS]);
+  const allowanceTokens = computed(() => [tokenInAddress.value]);
+  const {
+    getRequiredAllowances,
+    isLoading: isLoadingAllowances
+  } = useAllowances({
+    dstList,
+    tokens: allowanceTokens
+  });
+
   const allowanceState = computed(() => {
     if (tokenInAddress.value === ETHER.address) {
       return {
@@ -41,7 +50,7 @@ export default function useTokenApprovalGP(
     const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
     const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
 
-    const requiredAllowances = store.getters['account/getRequiredAllowances']({
+    const requiredAllowances = getRequiredAllowances({
       dst: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS,
       tokens: [tokenInAddress.value],
       amounts: [tokenInAmountDenorm.toString()]
@@ -52,27 +61,24 @@ export default function useTokenApprovalGP(
     };
   });
 
-  async function checkAllowances(): Promise<void> {
-    await Promise.all([
-      store.dispatch('account/getAllowances', {
-        tokens: [tokenInAddress.value],
-        dst: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
-      })
-    ]);
-  }
-
   async function approve(): Promise<void> {
     console.log('[TokenApproval] Unlock token for trading on Gnosis Protocol');
     approving.value = true;
     try {
       const [tx] = await approveTokens(
-        auth.web3,
+        provider.value as Web3Provider,
         GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS,
         [tokenInAddress.value]
       );
-
-      const txRecipient = await tx.wait();
-      console.log(txRecipient);
+      ethersTxListener(tx, {
+        onTxConfirmed: () => {
+          approving.value = false;
+          approved.value = true;
+        },
+        onTxFailed: () => {
+          approving.value = false;
+        }
+      });
     } catch (e) {
       console.log(e);
       approving.value = false;
@@ -88,7 +94,6 @@ export default function useTokenApprovalGP(
       approved.value = true;
     } else {
       approved.value = false;
-      await checkAllowances();
     }
   });
 
@@ -96,6 +101,7 @@ export default function useTokenApprovalGP(
     approving,
     approve,
     allowanceState,
-    isApproved
+    isApproved,
+    isLoading: isLoadingAllowances
   };
 }

@@ -6,12 +6,12 @@ import QUERY_KEYS from '@/constants/queryKeys';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
-import useWeb3 from '../useWeb3';
 import {
   getTokensHistoricalPrice,
   HistoricalPrices
 } from '@/services/coingecko';
 import usePoolQuery from './usePoolQuery';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 interface QueryResponse {
   prices: HistoricalPrices;
@@ -24,7 +24,7 @@ export default function usePoolSnapshotsQuery(
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
   // COMPOSABLES
-  const { appNetwork } = useWeb3();
+  const { appNetworkConfig } = useVueWeb3();
 
   // SERVICES
   const balancerSubgraph = new BalancerSubgraph();
@@ -44,7 +44,7 @@ export default function usePoolSnapshotsQuery(
     if (!pool.value) throw new Error('No pool');
 
     const prices = await getTokensHistoricalPrice(
-      appNetwork.id,
+      appNetworkConfig.chainId,
       pool.value.tokensList,
       days
     );

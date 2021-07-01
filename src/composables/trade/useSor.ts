@@ -17,11 +17,14 @@ import {
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import ConfigService from '@/services/config/config.service';
 
-import useAuth from '@/composables/useAuth';
 import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useAccountBalances from '../useAccountBalances';
 
 import { ETHER } from '@/constants/tokenlists';
+import { TransactionResponse } from '@ethersproject/providers';
+import useEthers from '../useEthers';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -69,12 +72,14 @@ export default function useSor(
 
   // COMPOSABLES
   const store = useStore();
-  const auth = useAuth();
-  const { txListener } = useNotify();
+  const { getProvider: getWeb3Provider, userNetworkConfig } = useVueWeb3();
+  const provider = computed(() => getWeb3Provider());
+  const { refetchBalances } = useAccountBalances();
+  const { txListener, supportsBlocknative } = useNotify();
   const { trackGoal, Goals } = useFathom();
   const { appNetwork } = useWeb3();
+  const { txListener: ethersTxListener } = useEthers();
 
-  const getConfig = () => store.getters['web3/getConfig']();
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
   onMounted(async () => {
@@ -102,7 +107,7 @@ export default function useSor(
   });
 
   async function initSor(): Promise<void> {
-    const config = getConfig();
+    const config = userNetworkConfig.value;
     const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
     const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
     const subgraphUrl = new ConfigService().network.subgraph;
@@ -113,7 +118,7 @@ export default function useSor(
     }
 
     sorManager = new SorManager(
-      getProvider(config.chainId),
+      getProvider(String(userNetworkConfig.value.chainId)),
       new BigNumber(GAS_PRICE),
       Number(MAX_POOLS),
       config.chainId,
@@ -281,12 +286,13 @@ export default function useSor(
     pools.value = sorManager.selectedPools;
   }
 
-  function tradeTxListener(hash: string) {
-    txListener(hash, {
-      onTxConfirmed: () => {
+  function blocknativeTxHandler(tx: TransactionResponse): void {
+    txListener(tx.hash, {
+      onTxConfirmed: async () => {
         trading.value = false;
-        latestTxHash.value = hash;
+        latestTxHash.value = tx.hash;
         trackGoal(Goals.Swapped);
+        await refetchBalances.value();
       },
       onTxCancel: () => {
         trading.value = false;
@@ -297,8 +303,28 @@ export default function useSor(
     });
   }
 
+  function ethersTxHandler(tx: TransactionResponse): void {
+    ethersTxListener(tx, {
+      onTxConfirmed: () => {
+        trading.value = false;
+        latestTxHash.value = tx.hash;
+        trackGoal(Goals.Swapped);
+      },
+      onTxFailed: () => {
+        trading.value = false;
+      }
+    });
+  }
+
+  function txHandler(tx: TransactionResponse): void {
+    if (supportsBlocknative.value) {
+      blocknativeTxHandler(tx);
+    } else {
+      ethersTxHandler(tx);
+    }
+  }
+
   async function trade() {
-    const { chainId } = getConfig();
     trackGoal(Goals.ClickSwap);
     trading.value = true;
 
@@ -312,9 +338,13 @@ export default function useSor(
 
     if (isWrap.value) {
       try {
-        const tx = await wrap(chainId, auth.web3, tokenInAmountScaled);
+        const tx = await wrap(
+          String(userNetworkConfig.value.chainId),
+          provider.value as any,
+          tokenInAmountScaled
+        );
         console.log('Wrap tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -322,9 +352,13 @@ export default function useSor(
       return;
     } else if (isUnwrap.value) {
       try {
-        const tx = await unwrap(chainId, auth.web3, tokenInAmountScaled);
+        const tx = await unwrap(
+          String(userNetworkConfig.value.chainId),
+          provider.value as any,
+          tokenInAmountScaled
+        );
         console.log('Unwrap tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -342,14 +376,14 @@ export default function useSor(
 
       try {
         const tx = await swapIn(
-          chainId,
-          auth.web3,
+          String(userNetworkConfig.value.chainId),
+          provider.value as any,
           sr,
           tokenInAmountScaled,
           minAmount
         );
         console.log('Swap in tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -367,14 +401,14 @@ export default function useSor(
 
       try {
         const tx = await swapOut(
-          chainId,
-          auth.web3,
+          String(userNetworkConfig.value.chainId),
+          provider.value as any,
           sr,
           tokenInAmountMax,
           tokenOutAmountScaled
         );
         console.log('Swap out tx', tx);
-        tradeTxListener(tx.hash);
+        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -402,7 +436,7 @@ export default function useSor(
     tokenDecimals: number,
     sorManager: SorManager
   ): Promise<void> {
-    const { chainId } = getConfig();
+    const chainId = userNetworkConfig.value.chainId;
     // If using Polygon get price of swap using stored market prices
     // If mainnet price retrieved on-chain using SOR
     if (chainId === 137) {
