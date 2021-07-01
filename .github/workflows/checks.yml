@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
+    - name: List directory
+      run: ls -la
     - name: Check if version has been updated
       id: check
       uses: EndBug/version-check@v1
