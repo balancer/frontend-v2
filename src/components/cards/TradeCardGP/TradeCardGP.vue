@@ -87,15 +87,12 @@ import {
   normalizeTokenAddress
 } from '@/services/gnosis/utils';
 
-import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
-import useAuth from '@/composables/useAuth';
 import useGnosisProtocol from '@/composables/useGnosisProtocol';
 import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-import useWeb3 from '@/composables/useWeb3';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 
 import { ETHER } from '@/constants/tokenlists';
@@ -111,6 +108,9 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
 import TradePairGP from './TradePairGP.vue';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import { Web3Provider } from '@ethersproject/providers';
+import useTokens from '@/composables/useTokens';
 
 // TODO: get app id
 const GNOSIS_APP_ID = 2;
@@ -129,12 +129,18 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const router = useRouter();
-    const auth = useAuth();
-    const { account, blockNumber, explorer } = useWeb3();
     const { txListener } = useNotify();
     const { t } = useI18n();
+    const { tokens } = useTokens();
+    const {
+      userNetworkConfig,
+      account,
+      explorerLinks,
+      provider,
+      signer,
+      blockNumber
+    } = useVueWeb3();
     const { gnosisOperator, gnosisExplorer } = useGnosisProtocol();
-
     // DATA
     const exactIn = ref(true);
     const feeQuote = ref<FeeInformation | null>(null);
@@ -153,15 +159,12 @@ export default defineComponent({
     const modalTradePreviewIsOpen = ref(false);
 
     // COMPUTED
-    // TODO use web3 composable
-    const getConfig = () => store.getters['web3/getConfig']();
-    const { allTokensIncludeEth: tokens } = useTokens();
     const slippageBufferRate = computed(() =>
       parseFloat(store.state.app.slippage)
     );
 
     const isWrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         tokenInAddress.value === ETHER.address &&
         tokenOutAddress.value === config.addresses.weth
@@ -169,7 +172,7 @@ export default defineComponent({
     });
 
     const isUnwrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         tokenOutAddress.value === ETHER.address &&
         tokenInAddress.value === config.addresses.weth
@@ -188,7 +191,7 @@ export default defineComponent({
     const explorerLink = computed(() =>
       orderId.value != ''
         ? gnosisExplorer.orderLink(orderId.value)
-        : explorer.txLink(txHash.value)
+        : explorerLinks.txLink(txHash.value)
     );
 
     const feeAmount = computed(() => feeQuote.value?.amount || '0');
@@ -282,8 +285,11 @@ export default defineComponent({
       try {
         trading.value = true;
 
-        const { chainId } = getConfig();
-        const tx = await wrap(chainId, auth.web3, amount);
+        const tx = await wrap(
+          String(userNetworkConfig.value.chainId),
+          provider.value as Web3Provider,
+          amount
+        );
         tradeTxListener(tx.hash);
       } catch (e) {
         console.log(e);
@@ -295,8 +301,11 @@ export default defineComponent({
       try {
         trading.value = true;
 
-        const { chainId } = getConfig();
-        const tx = await unwrap(chainId, auth.web3, amount);
+        const tx = await unwrap(
+          String(userNetworkConfig.value.chainId),
+          provider.value as Web3Provider,
+          amount
+        );
         tradeTxListener(tx.hash);
       } catch (e) {
         console.log(e);
@@ -341,11 +350,9 @@ export default defineComponent({
           partiallyFillable: false // Always fill or kill
         };
 
-        const signer = auth.web3.getSigner();
-
         const { signature, signingScheme } = await signOrder(
           unsignedOrder,
-          signer
+          signer.value
         );
 
         orderId.value = await gnosisOperator.postSignedOrder({

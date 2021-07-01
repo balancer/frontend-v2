@@ -2,20 +2,17 @@ import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import getProvider from '@/lib/utils/provider';
-import useAuth from '@/composables/useAuth';
 import { NetworkId } from '@/constants/network';
 import { isAddress } from '@ethersproject/address';
 import ConfigService from '@/services/config/config.service';
 
 export default function useWeb3() {
   const store = useStore();
-  const { isAuthenticated } = useAuth();
 
   const account = computed(() => store.state.web3.account);
   const profile = computed(() => store.state.web3.profile);
   const blockNumber = computed(() => store.state.web3.blockNumber);
   const loading = computed(() => store.state.web3.loading);
-  const isConnected = computed(() => isAuthenticated.value && !loading.value);
 
   const configService = new ConfigService();
 
@@ -42,9 +39,7 @@ export default function useWeb3() {
     return getProvider(userNetwork.value.key);
   });
 
-  const isMainnet = computed(() => {
-    return userNetwork.value.name === 'Mainnet';
-  });
+  const isMainnet = computed(() => appNetwork.id === 1);
 
   const unsupportedNetwork = computed(() => {
     return store.state.web3.config.unknown;
@@ -84,7 +79,6 @@ export default function useWeb3() {
     isMainnet,
     unsupportedNetwork,
     networkMismatch,
-    isConnected,
     shortenLabel
   };
 }

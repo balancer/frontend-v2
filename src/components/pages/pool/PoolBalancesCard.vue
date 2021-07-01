@@ -20,7 +20,7 @@
             class="flex items-center"
           >
             <BalAsset :address="token.address" :size="36" />
-            <span class="pl-4 font-medium">
+            <span class="pl-4 font-medium eth-address">
               {{ symbolFor(token.address) }}
             </span>
             <BalIcon
@@ -54,10 +54,11 @@
 import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
-import useWeb3 from '@/composables/useWeb3';
 import { useI18n } from 'vue-i18n';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import numeral from 'numeral';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/composables/useWeb3';
 
 export default defineComponent({
   props: {
@@ -71,7 +72,8 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorer, shortenLabel } = useWeb3();
+    const { explorerLinks } = useVueWeb3();
+    const { shortenLabel } = useWeb3();
     const { t } = useI18n();
 
     // DATA
@@ -155,7 +157,7 @@ export default defineComponent({
       weightFor,
       fiatValueFor,
       fNum,
-      explorer,
+      explorer: explorerLinks,
       columns,
       tableData
     };

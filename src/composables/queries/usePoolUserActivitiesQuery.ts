@@ -7,8 +7,7 @@ import { POOLS } from '@/constants/pools';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { PoolActivity } from '@/services/balancer/subgraph/types';
-
-import useWeb3 from '@/composables/useWeb3';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 type UserPoolActivitiesQueryResponse = {
   poolActivities: PoolActivity[];
@@ -23,11 +22,11 @@ export default function usePoolUserActivitiesQuery(
   const balancerSubgraph = new BalancerSubgraph();
 
   // COMPOSABLES
-  const { account, isConnected } = useWeb3();
+  const { account, isWalletReady } = useVueWeb3();
 
   // COMPUTED
   const isQueryEnabled = computed(
-    () => isConnected.value && account.value != null
+    () => isWalletReady.value && account.value != null
   );
 
   // DATA

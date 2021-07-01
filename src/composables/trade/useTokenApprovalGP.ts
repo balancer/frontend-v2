@@ -1,24 +1,25 @@
 import { useStore } from 'vuex';
-import useAuth from '@/composables/useAuth';
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useNotify from '@/composables/useNotify';
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import { ETHER } from '@/constants/tokenlists';
 import { parseUnits } from '@ethersproject/units';
 import { TokenMap } from '@/types';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import { Web3Provider } from '@ethersproject/providers';
 
 export default function useTokenApprovalGP(
   tokenInAddress: Ref<string>,
   amount: Ref<string>,
-  tokens: ComputedRef<TokenMap>
+  tokens: Ref<TokenMap>
 ) {
   const approving = ref(false);
   const approved = ref(false);
 
   // COMPOSABLES
   const store = useStore();
-  const auth = useAuth();
+  const { provider } = useVueWeb3();
   const { txListener } = useNotify();
 
   const allowanceState = computed(() => {
@@ -61,7 +62,7 @@ export default function useTokenApprovalGP(
     approving.value = true;
     try {
       const [tx] = await approveTokens(
-        auth.web3,
+        provider.value as Web3Provider,
         GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS,
         [tokenInAddress.value]
       );

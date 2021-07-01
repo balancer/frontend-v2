@@ -1,38 +1,55 @@
 import getProvider from '@/lib/utils/provider';
 import { useQuery } from 'vue-query';
-import useTokens from './useTokens';
-import useWeb3 from './useWeb3';
 import { computed, reactive } from 'vue';
 import { getBalances } from '@/lib/utils/balancer/tokens';
 import { formatEther, formatUnits } from '@ethersproject/units';
 import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { ETHER } from '@/constants/tokenlists';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useTokenStore from './useTokensStore';
 
+// THE CONTENTS OF THIS WILL BE REPLACED/ALTERED WITH THE REGISTRY REFACTOR
 export default function useAccountBalances() {
-  const { account, userNetwork } = useWeb3();
-  const { allTokens: tokens } = useTokens();
-  const network = userNetwork.value.key;
-  const provider = getProvider(network);
+  const { account, userNetworkConfig, isWalletReady } = useVueWeb3();
+  const { allTokens: tokens, isLoading: isLoadingTokens } = useTokenStore();
+
   const isQueryEnabled = computed(
-    () => account.value !== null && Object.keys(tokens).length !== 0
+    () =>
+      account.value !== null &&
+      Object.keys(tokens).length !== 0 &&
+      isWalletReady.value &&
+      !isLoadingTokens.value
   );
 
-  const { data, error, isLoading, isIdle, isError } = useQuery(
-    reactive(QUERY_KEYS.Balances.All(account, userNetwork)),
+  const {
+    data,
+    error,
+    isLoading,
+    isIdle,
+    isError,
+    isFetching,
+    refetch: refetchBalances
+  } = useQuery(
+    reactive(QUERY_KEYS.Balances.All(account, userNetworkConfig, tokens)),
     () => {
       return Promise.all([
         getBalances(
-          network,
-          provider,
+          String(userNetworkConfig.value?.chainId),
+          getProvider(userNetworkConfig.value?.key),
           account.value,
-          Object.values(tokens.value).map((token: any) => token.address)
+          Object.values(tokens.value)
+            .map(token => token.address)
+            .filter(token => token !== ETHER.address)
         ),
-        provider.getBalance(account.value.toLowerCase())
+        getProvider(userNetworkConfig.value?.key).getBalance(
+          account.value.toLowerCase()
+        )
       ]);
     },
     reactive({
-      enabled: isQueryEnabled
+      enabled: isQueryEnabled,
+      keepPreviousData: isWalletReady
     })
   );
 
@@ -55,7 +72,7 @@ export default function useAccountBalances() {
 
       // separate case for native ether
       balances[ETHER.address.toLowerCase()] = {
-        balance: formatEther(data.value[1]),
+        balance: formatEther(data.value[1] || 0),
         symbol: ETHER.symbol,
         address: ETHER.address
       };
@@ -74,6 +91,8 @@ export default function useAccountBalances() {
     error,
     isLoading,
     isIdle,
-    isError
+    isError,
+    isFetching,
+    refetchBalances
   };
 }
