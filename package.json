@@ -22,7 +22,7 @@
   "dependencies": {
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
     "@balancer-labs/sor": "github:balancer-labs/balancer-sor#john/v1-consideringFees-package",
-    "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#master-V2",
+    "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#develop-V2",
     "@ensdomains/content-hash": "^2.5.3",
     "@ethersproject/abi": "^5.0.1",
     "@ethersproject/abstract-signer": "^5.3.0",
