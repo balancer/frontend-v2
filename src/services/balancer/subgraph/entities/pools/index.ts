@@ -8,13 +8,12 @@ import {
   TimeTravelPeriod,
   DecoratedPool
 } from '../../types';
-import { getOriginalAddress, Prices } from '@/services/coingecko';
+import { Prices } from '@/services/coingecko';
 import { getAddress } from '@ethersproject/address';
 import {
   currentLiquidityMiningRewards,
-  computeAPYForPool
+  computeTotalAPYForPool
 } from '@/lib/utils/liquidityMining';
-import { TOKENS } from '@/constants/tokens';
 import { NetworkId } from '@/constants/network';
 import ConfigService from '@/services/config/config.service';
 
@@ -126,15 +125,15 @@ export default class Pools {
     let liquidityMiningAPY = '0';
 
     const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
+
     const hasLiquidityMiningRewards = IS_LIQUIDITY_MINING_ENABLED
       ? !!liquidityMiningRewards
       : false;
 
     if (hasLiquidityMiningRewards) {
-      liquidityMiningAPY = computeAPYForPool(
+      liquidityMiningAPY = computeTotalAPYForPool(
         liquidityMiningRewards,
-        prices[getOriginalAddress(this.networkId, TOKENS.AddressMap.BAL)]
-          .price || 0,
+        prices,
         pool.totalLiquidity
       );
     }
