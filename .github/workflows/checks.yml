@@ -22,7 +22,7 @@ jobs:
       with:
         diff-search: true
     - name: Get package.json version
-      run: echo "PACKAGE_VERSION=$(node -p -e \"require('./package.json').version\")" >> $GITHUB_ENV
+      run: echo PACKAGE_VERSION=$(node -p -e "require('./package.json').version") >> $GITHUB_ENV
     - name: Print pkg verson
       run: echo ${{ env.PACKAGE_VERSION }}
     - name: Log when changed
