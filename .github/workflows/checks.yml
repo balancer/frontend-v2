@@ -12,20 +12,16 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-    - name: List directory
-      run: ls -la
     - name: Check if version has been updated
       id: check
       uses: EndBug/version-check@v2
       with:
         diff-search: true
-    - name: Log PR base
-      run: 'echo "${{github.event.pull_request.base.ref}}"'
     - name: Log when changed
       if: steps.check.outputs.changed == 'true'
       run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
-    - name: Fail if version not updated
-      if: steps.check.outputs.changed == 'false'
+    - name: Fail if version not updated and PR base is master
+      if: steps.check.outputs.changed == 'false' && github.event.pull_request.base.ref == 'master'
       run: exit 1
 
   Build:
