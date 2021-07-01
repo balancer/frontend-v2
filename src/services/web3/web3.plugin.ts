@@ -12,6 +12,7 @@ import {
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 import { PortisConnector } from './connectors/portis/portis.connector';
 import useFathom from '@/composables/useFathom';
+import getProvider from '@/lib/utils/provider';
 
 export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
 export const SupportedWallets = [
@@ -80,7 +81,10 @@ export default {
       return Number(process.env.VUE_APP_NETWORK);
     });
 
-    const provider = computed(() => pluginState.connector?.provider);
+    const provider = computed(
+      () =>
+        pluginState.connector?.provider ?? getProvider(chainId.value.toString())
+    );
     const signer = computed(() => pluginState.connector?.provider?.getSigner());
 
     // user supplied web3 provider. i.e. (web3, ethers)
