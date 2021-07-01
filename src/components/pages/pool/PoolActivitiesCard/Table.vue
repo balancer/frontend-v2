@@ -79,7 +79,6 @@ import { PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import numeral from 'numeral';
 
-import useWeb3 from '@/composables/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 
@@ -94,6 +93,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import { formatDistanceToNow } from 'date-fns';
 import { Token } from '@/types';
 import { bnum } from '@balancer-labs/sor2/dist/bmath';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 type TokenAmount = {
   address: string;
@@ -146,8 +146,8 @@ export default {
   setup(props) {
     const { fNum } = useNumbers();
     const { t } = useI18n();
-    const { explorer } = useWeb3();
-    const { allTokens } = useTokens();
+    const { explorerLinks } = useVueWeb3();
+    const { tokens } = useTokens();
 
     const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
       {
@@ -209,7 +209,7 @@ export default {
       return amounts
         .reduce((total, amount, index) => {
           const address = getAddress(props.tokens[index]);
-          const token: Token = allTokens.value[address];
+          const token: Token = tokens.value[address];
           const price = token.price || 0;
           const amountNumber = bnum(Math.abs(parseFloat(amount)));
 
@@ -221,7 +221,7 @@ export default {
     function getJoinExitDetails(amounts: PoolActivity['amounts']) {
       return amounts.map((amount, index) => {
         const address = getAddress(props.tokens[index]);
-        const token: Token = allTokens.value[address];
+        const token: Token = tokens.value[address];
         const symbol = token ? token.symbol : address;
         const amountNumber = parseFloat(amount);
 
@@ -236,7 +236,7 @@ export default {
     return {
       columns,
       activityRows,
-      explorer,
+      explorer: explorerLinks,
       fNum
     };
   }

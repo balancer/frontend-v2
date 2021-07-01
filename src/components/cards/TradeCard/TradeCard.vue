@@ -39,7 +39,7 @@
         @actionClick="handleErrorButtonClick"
       />
       <BalBtn
-        v-if="poolsLoading"
+        v-if="poolsLoading || isLoadingApprovals"
         :loading="true"
         :loading-label="$t('loading')"
         block
@@ -51,7 +51,7 @@
         :loading-label="$t('confirming')"
         color="gradient"
         block
-        @click.prevent="modalTradePreviewIsOpen = true"
+        @click.prevent="showTradePreviewModal"
       />
       <TradeRoute
         class="mt-5"
@@ -110,8 +110,9 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useWeb3 from '@/composables/useWeb3';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   components: {
@@ -127,14 +128,12 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
-    const { explorer } = useWeb3();
+    const { explorerLinks } = useVueWeb3();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
-    const getTokens = (params = {}) =>
-      store.getters['registry/getTokens'](params);
-    const getConfig = () => store.getters['web3/getConfig']();
-    const tokens = computed(() => getTokens({ includeEther: true }));
+    const { tokens } = useTokens();
+    const { userNetworkConfig } = useVueWeb3();
 
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
@@ -156,7 +155,7 @@ export default defineComponent({
     });
 
     const isWrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         tokenInAddress.value === ETHER.address &&
         tokenOutAddress.value === config.addresses.weth
@@ -164,7 +163,7 @@ export default defineComponent({
     });
 
     const isUnwrap = computed(() => {
-      const config = getConfig();
+      const config = userNetworkConfig.value;
       return (
         tokenOutAddress.value === ETHER.address &&
         tokenInAddress.value === config.addresses.weth
@@ -182,7 +181,7 @@ export default defineComponent({
     });
 
     // COMPOSABLES
-    const { allowanceState } = useTokenApproval(
+    const { allowanceState, isLoading: isLoadingApprovals } = useTokenApproval(
       tokenInAddress,
       tokenInAmount,
       tokens
@@ -270,7 +269,11 @@ export default defineComponent({
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
-    watch(getConfig, async () => {
+    function showTradePreviewModal() {
+      modalTradePreviewIsOpen.value = true;
+    }
+
+    watch(userNetworkConfig, async () => {
       await initSor();
       await handleAmountChange();
     });
@@ -319,9 +322,11 @@ export default defineComponent({
       tradeDisabled,
       TradeSettingsContext,
       poolsLoading,
+      showTradePreviewModal,
+      isLoadingApprovals,
       bp,
       tradeCardShadow,
-      explorer
+      explorer: explorerLinks
     };
   }
 });

@@ -1,10 +1,11 @@
 import { useStore } from 'vuex';
-import useAuth from '@/composables/useAuth';
 import { computed, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useNotify from '@/composables/useNotify';
 import { ETHER } from '@/constants/tokenlists';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useAllowances from '../useAllowances';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
 
@@ -14,11 +15,21 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
 
   // COMPOSABLES
   const store = useStore();
-  const auth = useAuth();
+  const { getProvider } = useVueWeb3();
+  const provider = getProvider();
   const { txListener, supportsBlocknative } = useNotify();
   const { txListener: ethersTxListener } = useEthers();
 
   const { config } = store.state.web3;
+  const dstList = computed(() => [config.addresses.exchangeProxy]);
+  const allowanceTokens = computed(() => [tokenInAddress.value]);
+  const {
+    getRequiredAllowances,
+    isLoading: isLoadingAllowances
+  } = useAllowances({
+    dstList,
+    tokens: allowanceTokens
+  });
 
   const allowanceState = computed(() => {
     if (tokenInAddress.value === ETHER.address) {
@@ -37,20 +48,16 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
     const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
 
-    const requiredAllowancesV1 = store.getters['account/getRequiredAllowances'](
-      {
-        dst: config.addresses.exchangeProxy,
-        tokens: [tokenInAddress.value],
-        amounts: [tokenInAmountDenorm.toString()]
-      }
-    );
+    const requiredAllowancesV1 = getRequiredAllowances({
+      dst: config.addresses.exchangeProxy,
+      tokens: [tokenInAddress.value],
+      amounts: [tokenInAmountDenorm.toString()]
+    });
 
-    const requiredAllowancesV2 = store.getters['account/getRequiredAllowances'](
-      {
-        tokens: [tokenInAddress.value],
-        amounts: [tokenInAmountDenorm.toString()]
-      }
-    );
+    const requiredAllowancesV2 = getRequiredAllowances({
+      tokens: [tokenInAddress.value],
+      amounts: [tokenInAmountDenorm.toString()]
+    });
 
     return {
       isUnlockedV1: requiredAllowancesV1.length === 0,
@@ -58,24 +65,12 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     };
   });
 
-  async function checkAllowances(): Promise<void> {
-    await Promise.all([
-      store.dispatch('account/getAllowances', {
-        tokens: [tokenInAddress.value]
-      }),
-      store.dispatch('account/getAllowances', {
-        tokens: [tokenInAddress.value],
-        dst: config.addresses.exchangeProxy
-      })
-    ]);
-  }
-
   async function approveV1(): Promise<void> {
     console.log('[TokenApproval] Unlock V1');
     approving.value = true;
     try {
       const [tx] = await approveTokens(
-        auth.web3,
+        provider,
         config.addresses.exchangeProxy,
         [tokenInAddress.value]
       );
@@ -90,7 +85,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     console.log('[TokenApproval] Unlock V2');
     approving.value = true;
     try {
-      const [tx] = await approveTokens(auth.web3, config.addresses.vault, [
+      const [tx] = await approveTokens(provider, config.addresses.vault, [
         tokenInAddress.value
       ]);
       txHandler(tx);
@@ -140,7 +135,6 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
       approved.value = true;
     } else {
       approved.value = false;
-      await checkAllowances();
     }
   });
 
@@ -148,6 +142,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     approving,
     approveV1,
     approveV2,
-    allowanceState
+    allowanceState,
+    isLoading: isLoadingAllowances
   };
 }

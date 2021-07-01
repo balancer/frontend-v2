@@ -3,7 +3,7 @@
     <BalTable
       :columns="columns"
       :data="data"
-      :is-loading="isLoading || isLoadingBalances"
+      :is-loading="isLoading"
       :is-loading-more="isLoadingMore"
       skeleton-class="h-64"
       sticky="both"
@@ -67,14 +67,14 @@ import {
 import { getAddress } from '@ethersproject/address';
 
 import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
 import useFathom from '@/composables/useFathom';
 import useAccountBalances from '@/composables/useAccountBalances';
 
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
-import { ColumnDefinition } from '../../_global/BalTable/BalTable.vue';
+import useTokens from '@/composables/useTokens';
+import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 
 export default defineComponent({
   components: {
@@ -112,7 +112,7 @@ export default defineComponent({
   setup(props) {
     // COMPOSABLES
     const { fNum } = useNumbers();
-    const { allTokens } = useTokens();
+    const { tokens } = useTokens();
     const router = useRouter();
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
@@ -164,7 +164,7 @@ export default defineComponent({
         align: 'right',
         id: 'poolVolume',
         sortKey: pool => Number(pool.dynamic.volume),
-        width: 150
+        width: 175
       },
       {
         name: t('apy'),
@@ -199,7 +199,7 @@ export default defineComponent({
     return {
       // data
       columns,
-      allTokens,
+      tokens,
       balances,
       isLoadingBalances,
       isBalancesQueryIdle,

@@ -91,7 +91,11 @@ export default class CalculatorService {
   }
 
   public propMax(): Amounts {
-    let maxAmounts: Amounts = { send: [], receive: [], fixedToken: 0 };
+    let maxAmounts: Amounts = {
+      send: [],
+      receive: [],
+      fixedToken: 0
+    };
     const type = this.action === 'join' ? 'send' : 'receive';
 
     this.pool.tokenAddresses.forEach((token, tokenIndex) => {

@@ -1,4 +1,3 @@
-import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
 import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
 import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
@@ -46,11 +45,6 @@ const actions = {
         'setTradeLiquidity',
         lsGet('tradeLiquidity', LiquiditySelection.Best)
       );
-
-      // Setup web3
-      const auth = getInstance();
-      const connector = await auth.getConnector();
-      if (connector) dispatch('web3/login', connector, { root: true });
 
       // Fetch init data
       await dispatch('registry/get', null, { root: true });

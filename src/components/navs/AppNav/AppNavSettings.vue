@@ -52,7 +52,7 @@
           </div>
         </div>
         <div class="flex items-center">
-          <BalBtn circle color="white" size="xs" @click="logout">
+          <BalBtn circle color="white" size="xs" @click="disconnectWallet">
             <BalIcon class="text-red-500" name="x" size="sm" />
           </BalBtn>
         </div>
@@ -149,9 +149,9 @@
 import { defineComponent, reactive, computed, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
-import useWeb3 from '@/composables/useWeb3';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 import { APP } from '@/constants/app';
 import {
@@ -182,7 +182,15 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { appNetwork, explorer } = useWeb3();
+    const { explorerLinks } = useVueWeb3();
+    const {
+      account,
+      chainId,
+      disconnectWallet,
+      connector,
+      isV1Supported,
+      userNetworkConfig
+    } = useVueWeb3();
 
     // DATA
     const data = reactive({
@@ -193,28 +201,21 @@ export default defineComponent({
     });
 
     // COMPUTED
-    const account = computed(() => store.state.web3.account);
-    const networkId = computed(() => store.state.web3.config.chainId);
-    const networkName = computed(() => store.state.web3.config.name);
     const networkColorClass = computed(
-      () => `network-${store.state.web3.config.shortName.toLowerCase()}`
+      () => `network-${userNetworkConfig.value.shortName}`
     );
+    const networkName = computed(() => userNetworkConfig.value.name);
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
-    const hideLiquidity = computed(() => !appNetwork.supportsV1);
+    const hideLiquidity = computed(() => isV1Supported);
 
-    const connectorName = computed(() =>
-      getConnectorName(store.state.web3.connector)
-    );
+    const connectorName = computed(() => getConnectorName(connector.value.id));
 
-    const connectorLogo = computed(() =>
-      getConnectorLogo(store.state.web3.connector)
-    );
+    const connectorLogo = computed(() => getConnectorLogo(connector.value.id));
 
     // METHODS
-    const logout = () => store.dispatch('web3/logout');
     const setDarkMode = val => store.commit('app/setDarkMode', val);
     const setLocale = locale => store.commit('app/setLocale', locale);
 
@@ -224,7 +225,7 @@ export default defineComponent({
       store.commit('app/setTradeInterface', tradeInterface);
 
     function copyAddress() {
-      navigator.clipboard.writeText(store.state.web3.account);
+      navigator.clipboard.writeText(account.value);
       data.copiedAddress = true;
 
       setTimeout(() => {
@@ -241,8 +242,8 @@ export default defineComponent({
       // computed
       account,
       appTradeLiquidity,
+      chainId,
       appTradeInterface,
-      networkId,
       networkName,
       networkColorClass,
       appLocale,
@@ -251,13 +252,13 @@ export default defineComponent({
       connectorLogo,
       hideLiquidity,
       // methods
-      logout,
+      disconnectWallet,
       setDarkMode,
       setLocale,
       setTradeLiquidity,
       setTradeInterface,
       copyAddress,
-      explorer
+      explorer: explorerLinks
     };
   }
 });

@@ -7,11 +7,10 @@ import i18n from '@/plugins/i18n';
 import blocknative from '@/plugins/blocknative';
 import vueQuery from '@/plugins/vueQuery';
 import initSentry from '@/plugins/sentry';
-import authOptions from '@/plugins/authOptions';
 import registerDirectives from '@/plugins/directives';
-import { LockPlugin } from '@snapshot-labs/lock/plugins/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 import { registerGlobalComponents } from '@/plugins/components';
+import Web3Plugin from '@/services/web3/web3.plugin';
 import { use } from 'echarts/core';
 import { LineChart } from 'echarts/charts';
 import {
@@ -28,6 +27,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
+import { Web3Provider } from '@ethersproject/providers';
 
 use([
   TitleComponent,
@@ -46,10 +46,10 @@ const app = createApp(App)
   .use(router)
   .use(store)
   .use(blocknative)
-  .use(LockPlugin, authOptions)
   .use(VueApexCharts)
   .use(vueQuery)
   .use(VueVirtualScroller)
+  .use(Web3Plugin, Web3Provider)
   .mixin(mixins);
 
 registerDirectives(app);

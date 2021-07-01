@@ -1,6 +1,4 @@
 import { Web3Provider } from '@ethersproject/providers';
-import { getInstance } from '@snapshot-labs/lock/plugins/vue3';
-import { formatUnits } from '@ethersproject/units';
 import configs, { Config } from '@/lib/config';
 import { getProfile } from '@/lib/utils/profile';
 import useFathom from '@/composables/useFathom';
@@ -43,9 +41,6 @@ const actions = {
   async login({ dispatch, commit, state }, connector = 'injected') {
     commit('setLoading', true);
 
-    auth = getInstance();
-    await auth.login(connector);
-
     if (auth.provider.value) {
       auth.web3 = new Web3Provider(auth.provider.value);
       await dispatch('loadProvider');
@@ -68,45 +63,41 @@ const actions = {
   },
 
   async logout({ commit, dispatch }) {
-    auth = getInstance();
     auth.logout();
     commit('logout');
     dispatch('account/resetAccount', null, { root: true });
   },
 
-  async loadProvider({ commit, dispatch }) {
+  async loadProvider({ commit }) {
     try {
       if (
         auth.provider.value.removeAllListeners &&
         !auth.provider.value.isTorus
       )
-        auth.provider.value.removeAllListeners();
-      if (auth.provider.value.on) {
-        auth.provider.value.on('chainChanged', async chainId => {
-          commit('setLoading', true);
-
-          await dispatch('account/resetAccount', null, { root: true });
-          auth.web3 = new Web3Provider(auth.provider.value);
-
-          commit('setNetwork', parseInt(formatUnits(chainId, 0)));
-          dispatch('loadAccountData');
-          commit('setLoading', false);
-        });
-        auth.provider.value.on('accountsChanged', async accounts => {
-          if (accounts.length !== 0) {
-            commit('setLoading', true);
-
-            await dispatch('account/resetAccount', null, { root: true });
-            auth.web3 = new Web3Provider(auth.provider.value);
-            commit('setAccount', accounts[0]);
-            dispatch('loadAccountData');
-            commit('setLoading', false);
-          }
-        });
-        auth.provider.value.on('disconnect', async () => {
-          dispatch('account/resetAccount', null, { root: true });
-        });
-      }
+        if (auth.provider.value.on) {
+          // auth.provider.value.removeAllListeners();
+          // auth.provider.value.on('chainChanged', async chainId => {
+          //   commit('setLoading', true);
+          //   await dispatch('account/resetAccount', null, { root: true });
+          //   auth.web3 = new Web3Provider(auth.provider.value);
+          //   commit('setNetwork', parseInt(formatUnits(chainId, 0)));
+          //   dispatch('loadAccountData');
+          //   commit('setLoading', false);
+          // });
+          // auth.provider.value.on('accountsChanged', async accounts => {
+          //   if (accounts.length !== 0) {
+          //     commit('setLoading', true);
+          //     await dispatch('account/resetAccount', null, { root: true });
+          //     auth.web3 = new Web3Provider(auth.provider.value);
+          //     commit('setAccount', accounts[0]);
+          //     dispatch('loadAccountData');
+          //     commit('setLoading', false);
+          //   }
+          // });
+          // auth.provider.value.on('disconnect', async () => {
+          //   dispatch('account/resetAccount', null, { root: true });
+          // });
+        }
 
       const [network, accounts] = await Promise.all([
         auth.web3.getNetwork(),

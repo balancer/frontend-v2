@@ -95,10 +95,7 @@
       </div>
 
       <div class="order-1 lg:order-2">
-        <BalLoadingBlock
-          v-if="loadingPool || web3Loading"
-          class="h-96 sticky top-24"
-        />
+        <BalLoadingBlock v-if="loadingPool" class="h-96 sticky top-24" />
         <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
@@ -124,14 +121,13 @@ import { useQueryClient } from 'vue-query';
 
 import useNumbers from '@/composables/useNumbers';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import useWeb3 from '@/composables/useWeb3';
-import useAuth from '@/composables/useAuth';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import { useRouter } from 'vue-router';
 
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 import { EXTERNAL_LINKS } from '@/constants/links';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 interface PoolPageData {
   id: string;
@@ -154,7 +150,7 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const { fNum } = useNumbers();
-    const { isAuthenticated } = useAuth();
+    const { isWalletReady } = useVueWeb3();
     const queryClient = useQueryClient();
     const poolQuery = usePoolQuery(route.params.id as string);
     const poolSnapshotsQuery = usePoolSnapshotsQuery(
@@ -162,7 +158,7 @@ export default defineComponent({
       30
     );
 
-    const { blockNumber, loading: web3Loading } = useWeb3();
+    const { blockNumber } = useVueWeb3();
 
     // DATA
     const data = reactive<PoolPageData>({
@@ -288,7 +284,6 @@ export default defineComponent({
       EXTERNAL_LINKS,
       // computed
       appLoading,
-      web3Loading,
       pool,
       noInitLiquidity,
       poolTypeLabel,
@@ -298,7 +293,7 @@ export default defineComponent({
       isLoadingSnapshots,
       loadingPool,
       titleTokens,
-      isAuthenticated,
+      isWalletReady,
       missingPrices,
       feesManagedByGauntlet,
       swapFeeToolTip,
