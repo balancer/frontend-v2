@@ -25,7 +25,7 @@ import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-import useVueWeb3 from './services/web3/useVueWeb3';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 

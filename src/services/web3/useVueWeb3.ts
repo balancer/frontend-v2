@@ -61,6 +61,7 @@ export default function useVueWeb3() {
     _blockNumber => (blockNumber.value = _blockNumber)
   );
   const getProvider = () => new Web3Provider(provider.value as any);
+  const getSigner = () => getProvider().getSigner();
   const toggleWalletSelectModal = (value: boolean) => {
     if (value !== undefined && typeof value === 'boolean') {
       isWalletSelectVisible.value = value;
@@ -108,6 +109,7 @@ export default function useVueWeb3() {
     // methods
     connectWallet,
     getProvider,
+    getSigner,
     disconnectWallet,
     toggleWalletSelectModal
   };

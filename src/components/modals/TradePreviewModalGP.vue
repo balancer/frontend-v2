@@ -6,9 +6,9 @@
           <div class="w-full p-3 border-b bg-gray-100 rounded-t-lg text-sm">
             {{ $t('effectivePrice') }}
             {{
-              exactIn
-                ? effectivePriceMessage.tokenIn
-                : effectivePriceMessage.tokenOut
+              trading.exactIn.value
+                ? trading.effectivePriceMessage.value.tokenIn
+                : trading.effectivePriceMessage.value.tokenOut
             }}
           </div>
         </template>
@@ -16,12 +16,12 @@
           <div class="p-3 border-gray-100 border-b relative">
             <div class="flex items-center">
               <div class="mr-3">
-                <BalAsset :address="tokenIn.address" :size="36" />
+                <BalAsset :address="trading.tokenIn.value.address" :size="36" />
               </div>
               <div>
                 <div class="font-medium">
-                  {{ tokenInAmountFormatted }}
-                  {{ tokenIn.symbol }}
+                  {{ fNum(trading.tokenInAmountInput.value, 'token') }}
+                  {{ trading.tokenIn.value.symbol }}
                 </div>
                 <div class="text-gray-500 text-sm">
                   {{ tokenInFiatValue }}
@@ -35,22 +35,52 @@
           <div class="p-3">
             <div class="flex items-center">
               <div class="mr-3">
-                <BalAsset :address="tokenOut.address" :size="36" />
+                <BalAsset
+                  :address="trading.tokenOut.value.address"
+                  :size="36"
+                />
               </div>
               <div>
                 <div class="font-medium">
-                  {{ tokenOutAmountFormatted }}
-                  {{ tokenOut.symbol }}
+                  {{ fNum(trading.tokenOutAmountInput.value, 'token') }}
+                  {{ trading.tokenOut.value.symbol }}
                 </div>
                 <div class="text-gray-500 text-sm">
                   {{ tokenOutFiatValue }}
+                  <span v-if="trading.isBalancerTrade.value">
+                    / {{ $t('priceImpact') }}:
+                    {{ fNum(trading.sor.priceImpact.value, 'percent') }}</span
+                  >
                 </div>
               </div>
             </div>
           </div>
         </div>
       </BalCard>
-      <BalCard noPad shadow="none" class="mb-6">
+      <BalCard
+        shadow="none"
+        class="my-5"
+        v-if="
+          trading.isBalancerTrade.value &&
+            !trading.isWrap.value &&
+            !trading.isUnwrap.value
+        "
+      >
+        <TradeRoute
+          :address-in="trading.tokenIn.value.address"
+          :amount-in="trading.tokenInAmountInput.value"
+          :address-out="trading.tokenOut.value.address"
+          :amount-out="trading.tokenOutAmountInput.value"
+          :pools="trading.sor.pools.value"
+          :sor-return="trading.sor.sorReturn.value"
+        />
+      </BalCard>
+      <BalCard
+        noPad
+        shadow="none"
+        class="mb-6"
+        v-if="trading.isGnosisTrade.value"
+      >
         <template v-slot:header>
           <div class="p-3 flex w-full items-center justify-between border-b">
             <div class="font-semibold">{{ $t('summary') }}</div>
@@ -79,12 +109,12 @@
               {{ summary.amountBeforeFees }}
             </div>
           </div>
-          <!-- <div class="summary-item-row">
+          <div class="summary-item-row">
             <div>{{ $t('gasCosts') }}</div>
             <div class="text-green-400">
               0.00
             </div>
-          </div> -->
+          </div>
           <div class="summary-item-row">
             <div>{{ $t('solverFees') }}</div>
             <div>
@@ -92,12 +122,12 @@
             </div>
           </div>
         </div>
-        <template v-slot:footer v-if="tradeRoute === 'gnosis'">
+        <template v-slot:footer>
           <div class="w-full p-3 rounded-b-lg bg-white text-sm">
             <div class="summary-item-row font-medium">
               <div>
                 {{
-                  exactIn
+                  trading.exactIn.value
                     ? $t('expectedReceiveNoSlippage')
                     : $t('expectedSellNoSlippage')
                 }}
@@ -109,7 +139,7 @@
             <div class="summary-item-row">
               <div>
                 {{
-                  exactIn
+                  trading.exactIn.value
                     ? $t('minReceivedWithSlippage', [slippageRatePercent])
                     : $t('maxSoldWithSlippage', [slippageRatePercent])
                 }}
@@ -123,11 +153,14 @@
       </BalCard>
       <BalCard shadow="none">
         <div class="font-semibold mb-2">
-          Requires {{ requiresApproval ? 2 : 1 }}
-          {{ requiresApproval ? 'transactions' : 'transaction' }}:
+          Requires {{ trading.requiresApproval.value ? 2 : 1 }}
+          {{ trading.requiresApproval.value ? 'transactions' : 'transaction' }}:
         </div>
         <div class="text-sm">
-          <div v-if="requiresApproval" class="flex items-center mb-2">
+          <div
+            v-if="trading.requiresApproval.value"
+            class="flex items-center mb-2"
+          >
             <div class="tx-circle text-green-500">
               <BalIcon
                 v-if="isApproved"
@@ -144,21 +177,22 @@
           </div>
           <div class="flex items-center">
             <div class="tx-circle text-gray-500">
-              {{ requiresApproval ? 2 : 1 }}
+              {{ trading.requiresApproval.value ? 2 : 1 }}
             </div>
             <div class="ml-3">
-              {{ $t('trade') }} {{ tokenInFiatValue }} {{ tokenIn.symbol }} ->
-              {{ tokenOut.symbol }}
+              {{ $t('trade') }} {{ tokenInFiatValue }}
+              {{ trading.tokenIn.value.symbol }} ->
+              {{ trading.tokenOut.value.symbol }}
             </div>
           </div>
         </div>
       </BalCard>
       <BalBtn
-        v-if="requiresApproval && !isApproved"
+        v-if="trading.requiresApproval.value && !isApproved"
         class="mt-5"
-        :label="`${$t('approve')} ${tokenIn.symbol}`"
+        :label="`${$t('approve')} ${trading.tokenIn.value.symbol}`"
         :loading="approving"
-        :loading-label="`${$t('approving')} ${tokenIn.symbol}…`"
+        :loading-label="`${$t('approving')} ${trading.tokenIn.value.symbol}…`"
         color="gradient"
         block
         @click.prevent="approve"
@@ -167,8 +201,6 @@
         v-else
         class="mt-5"
         :label="$t('confirmTrade')"
-        :loading="trading"
-        :loading-label="$t('confirming')"
         color="gradient"
         block
         @click.prevent="trade"
@@ -178,70 +210,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed, PropType, ref } from 'vue';
+import { defineComponent, computed, PropType, ref } from 'vue';
+import { useStore } from 'vuex';
+import { formatUnits } from '@ethersproject/units';
 
+import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
-import { Token } from '@/types';
-import { formatUnits } from '@ethersproject/units';
+
+import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
+
 import { bnum } from '@/lib/utils';
-import { useStore } from 'vuex';
 
 import { FiatCurrency } from '@/constants/currency';
 
 export default defineComponent({
+  components: {
+    TradeRoute
+  },
   emits: ['trade', 'close'],
   props: {
-    exactIn: {
-      type: Boolean,
-      required: true
-    },
     trading: {
-      type: Boolean,
-      required: true
-    },
-    tokenIn: {
-      type: Object as PropType<Token>,
-      required: true
-    },
-    tokenOut: {
-      type: Object as PropType<Token>,
-      required: true
-    },
-    tokenInAmount: {
-      type: String,
-      required: true
-    },
-    tokenOutAmount: {
-      type: String,
-      required: true
-    },
-    effectivePriceMessage: {
-      type: Object,
-      required: true
-    },
-    feeAmountInTokenScaled: {
-      type: String,
-      required: true
-    },
-    feeAmountOutTokenScaled: {
-      type: String,
-      required: true
-    },
-    minimumOutAmountScaled: {
-      type: String,
-      required: true
-    },
-    maximumInAmountScaled: {
-      type: String,
-      required: true
-    },
-    requiresApproval: {
-      type: Boolean,
-      required: true
-    },
-    tradeRoute: {
-      type: String,
+      type: Object as PropType<UseTrading>,
       required: true
     }
   },
@@ -251,17 +241,6 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
 
     // DATA
-    const {
-      minimumOutAmountScaled,
-      maximumInAmountScaled,
-      feeAmountOutTokenScaled,
-      feeAmountInTokenScaled,
-      exactIn,
-      tokenIn,
-      tokenInAmount,
-      tokenOut,
-      tokenOutAmount
-    } = toRefs(props);
     const showSummaryInFiat = ref(false);
 
     // COMPUTED
@@ -269,22 +248,26 @@ export default defineComponent({
       fNum(store.state.app.slippage, 'percent')
     );
 
-    const addressIn = computed(() => tokenIn.value.address);
+    const addressIn = computed(() => props.trading.tokenIn.value.address);
 
     const tokenInFiatValue = computed(() =>
-      fNum(toFiat(tokenInAmount.value, tokenIn.value.address), 'usd')
+      fNum(
+        toFiat(
+          props.trading.tokenInAmountInput.value,
+          props.trading.tokenIn.value.address
+        ),
+        'usd'
+      )
     );
 
     const tokenOutFiatValue = computed(() =>
-      fNum(toFiat(tokenOutAmount.value, tokenOut.value.address), 'usd')
-    );
-
-    const tokenInAmountFormatted = computed(() =>
-      fNum(tokenInAmount.value, 'token')
-    );
-
-    const tokenOutAmountFormatted = computed(() =>
-      fNum(tokenOutAmount.value, 'token')
+      fNum(
+        toFiat(
+          props.trading.tokenOutAmountInput.value,
+          props.trading.tokenOut.value.address
+        ),
+        'usd'
+      )
     );
 
     const summary = computed(() => {
@@ -293,85 +276,100 @@ export default defineComponent({
       let totalWithoutSlippage = '';
       let totalWithSlippage = '';
 
-      if (exactIn.value) {
-        amountBeforeFees = tokenOutAmount.value;
-        solverFees = formatUnits(
-          feeAmountOutTokenScaled.value,
-          tokenOut.value.decimals
-        );
-        totalWithoutSlippage = bnum(amountBeforeFees)
-          .minus(solverFees)
-          .toString();
-        totalWithSlippage = formatUnits(
-          minimumOutAmountScaled.value,
-          tokenOut.value.decimals
-        );
+      if (props.trading.isGnosisTrade.value) {
+        if (props.trading.exactIn.value) {
+          amountBeforeFees = props.trading.tokenOutAmountInput.value;
+          solverFees = formatUnits(
+            props.trading.gnosis.feeAmountOutTokenScaled.value,
+            props.trading.tokenOut.value.decimals
+          );
+          totalWithoutSlippage = bnum(amountBeforeFees)
+            .minus(solverFees)
+            .toString();
+          totalWithSlippage = formatUnits(
+            props.trading.gnosis.minimumOutAmountScaled.value,
+            props.trading.tokenOut.value.decimals
+          );
 
-        if (showSummaryInFiat.value) {
-          amountBeforeFees = fNum(
-            toFiat(amountBeforeFees, tokenOut.value.address),
-            'usd'
-          );
-          solverFees = fNum(toFiat(solverFees, tokenOut.value.address), 'usd');
-          totalWithoutSlippage = fNum(
-            toFiat(totalWithoutSlippage, tokenOut.value.address),
-            'usd'
-          );
-          totalWithSlippage = fNum(
-            toFiat(totalWithSlippage, tokenOut.value.address),
-            'usd'
-          );
+          if (showSummaryInFiat.value) {
+            amountBeforeFees = fNum(
+              toFiat(amountBeforeFees, props.trading.tokenOut.value.address),
+              'usd'
+            );
+            solverFees = fNum(
+              toFiat(solverFees, props.trading.tokenOut.value.address),
+              'usd'
+            );
+            totalWithoutSlippage = fNum(
+              toFiat(
+                totalWithoutSlippage,
+                props.trading.tokenOut.value.address
+              ),
+              'usd'
+            );
+            totalWithSlippage = fNum(
+              toFiat(totalWithSlippage, props.trading.tokenOut.value.address),
+              'usd'
+            );
+          } else {
+            amountBeforeFees = `${fNum(amountBeforeFees, 'token')} ${
+              props.trading.tokenOut.value.symbol
+            }`;
+            solverFees = `${fNum(solverFees, 'token')} ${
+              props.trading.tokenOut.value.symbol
+            }`;
+            totalWithoutSlippage = `${fNum(totalWithoutSlippage, 'token')} ${
+              props.trading.tokenOut.value.symbol
+            }`;
+            totalWithSlippage = `${fNum(totalWithSlippage, 'token')} ${
+              props.trading.tokenOut.value.symbol
+            }`;
+          }
         } else {
-          amountBeforeFees = `${fNum(amountBeforeFees, 'token')} ${
-            tokenOut.value.symbol
-          }`;
-          solverFees = `${fNum(solverFees, 'token')} ${tokenOut.value.symbol}`;
-          totalWithoutSlippage = `${fNum(totalWithoutSlippage, 'token')} ${
-            tokenOut.value.symbol
-          }`;
-          totalWithSlippage = `${fNum(totalWithSlippage, 'token')} ${
-            tokenOut.value.symbol
-          }`;
-        }
-      } else {
-        amountBeforeFees = tokenInAmount.value;
-        solverFees = formatUnits(
-          feeAmountInTokenScaled.value,
-          tokenIn.value.decimals
-        );
-        totalWithoutSlippage = bnum(amountBeforeFees)
-          .plus(solverFees)
-          .toString();
-        totalWithSlippage = formatUnits(
-          maximumInAmountScaled.value,
-          tokenIn.value.decimals
-        );
+          amountBeforeFees = props.trading.tokenInAmountInput.value;
+          solverFees = formatUnits(
+            props.trading.gnosis.feeAmountInTokenScaled.value,
+            props.trading.tokenIn.value.decimals
+          );
+          totalWithoutSlippage = bnum(amountBeforeFees)
+            .plus(solverFees)
+            .toString();
+          totalWithSlippage = formatUnits(
+            props.trading.gnosis.maximumInAmountScaled.value,
+            props.trading.tokenIn.value.decimals
+          );
 
-        if (showSummaryInFiat.value) {
-          amountBeforeFees = fNum(
-            toFiat(amountBeforeFees, tokenIn.value.address),
-            'usd'
-          );
-          solverFees = fNum(toFiat(solverFees, tokenIn.value.address), 'usd');
-          totalWithoutSlippage = fNum(
-            toFiat(totalWithoutSlippage, tokenIn.value.address),
-            'usd'
-          );
-          totalWithSlippage = fNum(
-            toFiat(totalWithSlippage, tokenIn.value.address),
-            'usd'
-          );
-        } else {
-          amountBeforeFees = `${fNum(amountBeforeFees, 'token')} ${
-            tokenIn.value.symbol
-          }`;
-          solverFees = `${fNum(solverFees, 'token')} ${tokenIn.value.symbol}`;
-          totalWithoutSlippage = `${fNum(totalWithoutSlippage, 'token')} ${
-            tokenIn.value.symbol
-          }`;
-          totalWithSlippage = `${fNum(totalWithSlippage, 'token')} ${
-            tokenIn.value.symbol
-          }`;
+          if (showSummaryInFiat.value) {
+            amountBeforeFees = fNum(
+              toFiat(amountBeforeFees, props.trading.tokenIn.value.address),
+              'usd'
+            );
+            solverFees = fNum(
+              toFiat(solverFees, props.trading.tokenIn.value.address),
+              'usd'
+            );
+            totalWithoutSlippage = fNum(
+              toFiat(totalWithoutSlippage, props.trading.tokenIn.value.address),
+              'usd'
+            );
+            totalWithSlippage = fNum(
+              toFiat(totalWithSlippage, props.trading.tokenIn.value.address),
+              'usd'
+            );
+          } else {
+            amountBeforeFees = `${fNum(amountBeforeFees, 'token')} ${
+              props.trading.tokenIn.value.symbol
+            }`;
+            solverFees = `${fNum(solverFees, 'token')} ${
+              props.trading.tokenIn.value.symbol
+            }`;
+            totalWithoutSlippage = `${fNum(totalWithoutSlippage, 'token')} ${
+              props.trading.tokenIn.value.symbol
+            }`;
+            totalWithSlippage = `${fNum(totalWithSlippage, 'token')} ${
+              props.trading.tokenIn.value.symbol
+            }`;
+          }
         }
       }
 
@@ -385,7 +383,7 @@ export default defineComponent({
 
     const { approving, isApproved, approve } = useTokenApprovalGP(
       addressIn,
-      tokenInAmount
+      props.trading.tokenInAmountInput
     );
 
     // METHODS
@@ -412,8 +410,6 @@ export default defineComponent({
       approving,
       tokenInFiatValue,
       tokenOutFiatValue,
-      tokenInAmountFormatted,
-      tokenOutAmountFormatted,
       summary,
       showSummaryInFiat,
       slippageRatePercent

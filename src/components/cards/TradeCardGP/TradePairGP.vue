@@ -145,7 +145,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed, ref } from 'vue';
+import { defineComponent, toRefs, computed, ref, PropType } from 'vue';
 import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
@@ -154,6 +154,7 @@ import { ETHER } from '@/constants/tokenlists';
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
+import { UseTrading } from '@/composables/trade/useTrading';
 
 const ETH_BUFFER = 0.1;
 
@@ -181,6 +182,10 @@ export default defineComponent({
     },
     exactIn: {
       type: Boolean,
+      required: true
+    },
+    effectivePriceMessage: {
+      type: Object as PropType<UseTrading['effectivePriceMessage']>,
       required: true
     }
   },
@@ -311,31 +316,11 @@ export default defineComponent({
       store.dispatch('registry/injectTokens', [address]);
     }
 
-    const rateMessage = computed(() => {
-      const tokenIn = tokens.value[tokenInAddressInput.value];
-      const tokenOut = tokens.value[tokenOutAddressInput.value];
-      if (!tokenIn || !tokenOut) {
-        return '';
-      }
-      const tokenInAmount = parseFloat(tokenInAmountInput.value);
-      const tokenOutAmount = parseFloat(tokenOutAmountInput.value);
-      if (!tokenInAmount || !tokenOutAmount) {
-        return '';
-      }
-      if (isInRate.value) {
-        const rate = tokenOutAmount / tokenInAmount;
-        const message = `1 ${tokenIn.symbol} = ${fNum(rate, 'token')} ${
-          tokenOut.symbol
-        }`;
-        return message;
-      } else {
-        const rate = tokenInAmount / tokenOutAmount;
-        const message = `1 ${tokenOut.symbol} = ${fNum(rate, 'token')} ${
-          tokenIn.symbol
-        }`;
-        return message;
-      }
-    });
+    const rateMessage = computed(() =>
+      isInRate.value
+        ? props.effectivePriceMessage.value.tokenIn
+        : props.effectivePriceMessage.value.tokenOut
+    );
 
     function toggleRate(): void {
       isInRate.value = !isInRate.value;

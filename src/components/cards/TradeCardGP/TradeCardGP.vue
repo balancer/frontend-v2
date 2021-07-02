@@ -1,5 +1,5 @@
 <template>
-  <BalCard class="relative">
+  <BalCard class="relative" :shadow="tradeCardShadow" no-border>
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
@@ -13,6 +13,7 @@
         :token-out-amount-input="tokenOutAmount"
         :token-out-address-input="tokenOutAddress"
         :exact-in="exactIn"
+        :effective-price-message="trading.effectivePriceMessage"
         @token-in-amount-change="value => (tokenInAmount = value)"
         @token-in-address-change="value => (tokenInAddress = value)"
         @token-out-amount-change="value => (tokenOutAmount = value)"
@@ -21,7 +22,7 @@
       />
       <BalAlert
         v-if="error"
-        class="mb-4"
+        class="p-3 mb-4"
         type="error"
         size="sm"
         :title="error.header"
@@ -31,7 +32,16 @@
         @actionClick="handleErrorButtonClick"
       />
       <BalBtn
-        :label="$t('previewTrade')"
+        v-if="trading.isLoading.value"
+        :loading="true"
+        :loading-label="
+          trading.isGnosisTrade.value ? $t('loadingBestPrice') : $t('loading')
+        "
+        block
+      />
+      <BalBtn
+        v-else
+        :label="$t('preview')"
         :disabled="tradeDisabled"
         :loading-label="$t('confirming')"
         color="gradient"
@@ -42,20 +52,8 @@
   </BalCard>
   <teleport to="#modal">
     <TradePreviewModalGP
-      v-if="shouldOpenTradePreview"
-      :exact-in="exactIn"
+      v-if="modalTradePreviewIsOpen"
       :trading="trading"
-      :token-in="tokenIn"
-      :token-out="tokenOut"
-      :token-in-amount="tokenInAmount"
-      :token-out-amount="tokenOutAmount"
-      :effective-price-message="effectivePriceMessage"
-      :requires-approval="requiresApproval"
-      :fee-amount-in-token-scaled="feeAmountInTokenScaled"
-      :fee-amount-out-token-scaled="feeAmountOutTokenScaled"
-      :minimum-out-amount-scaled="minimumOutAmountScaled"
-      :maximum-in-amount-scaled="maximumInAmountScaled"
-      :trade-route="tradeRoute"
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"
     />
@@ -85,6 +83,7 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
 import TradePairGP from './TradePairGP.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   components: {
@@ -98,30 +97,29 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const { t } = useI18n();
+    const { bp } = useBreakpoints();
 
     // DATA
+    const exactIn = ref(true);
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
     const modalTradePreviewIsOpen = ref(false);
 
-    const {
-      tradeRoute,
-      requiresApproval,
-      tokens,
-      tokenIn,
-      tokenOut,
-      effectivePriceMessage,
+    const tradeCardShadow = computed(() => {
+      switch (bp.value) {
+        case 'xs':
+          return 'none';
+        case 'sm':
+          return 'lg';
+        default:
+          return 'xl';
+      }
+    });
+
+    const trading = useTrading(
       exactIn,
-      feeExceedsPrice,
-      trading,
-      feeAmountInTokenScaled,
-      feeAmountOutTokenScaled,
-      minimumOutAmountScaled,
-      maximumInAmountScaled,
-      trade
-    } = useTrading(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
@@ -129,39 +127,34 @@ export default defineComponent({
     );
 
     // COMPUTED
-
-    const tradeDisabled = computed(() => {
-      if (errorMessage.value !== TradeValidation.VALID || feeExceedsPrice.value)
-        return true;
-      return false;
-    });
-
-    useTokenApprovalGP(tokenInAddress, tokenInAmount);
-
-    const { errorMessage, tokensAmountsValid } = useValidation(
+    const { errorMessage } = useValidation(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      tokens
+      trading.tokens
     );
 
+    const tradeDisabled = computed(
+      () =>
+        errorMessage.value !== TradeValidation.VALID ||
+        (trading.isGnosisTrade.value && trading.gnosis.hasErrors.value)
+    );
+
+    useTokenApprovalGP(tokenInAddress, tokenInAmount);
+
     const title = computed(() => {
-      if (tradeRoute.value === 'wrapETH') {
+      if (trading.isWrap.value) {
         return `${t('wrap')} ${ETHER.symbol}`;
       }
-      if (tradeRoute.value === 'unwrapETH') {
+      if (trading.isUnwrap.value) {
         return `${t('unwrap')} ${ETHER.symbol}`;
       }
       return t('trade');
     });
 
-    const shouldOpenTradePreview = computed(
-      () => modalTradePreviewIsOpen.value && tokensAmountsValid.value
-    );
-
     const error = computed(() => {
-      if (feeExceedsPrice.value) {
+      if (trading.gnosis.errors.value.feeExceedsPrice) {
         return {
           header: 'Low amount',
           body: 'Fees exceeds from amount'
@@ -191,6 +184,12 @@ export default defineComponent({
     // METHODS
     function handleErrorButtonClick() {
       console.log('TOOD: implement if needed');
+    }
+
+    function trade() {
+      trading.trade(() => {
+        modalTradePreviewIsOpen.value = false;
+      });
     }
 
     async function populateInitialTokens(): Promise<void> {
@@ -224,12 +223,11 @@ export default defineComponent({
       // data
       tokenInAddress,
       tokenInAmount,
-      tokenIn,
-      tokenOut,
       tokenOutAddress,
       tokenOutAmount,
       modalTradePreviewIsOpen,
       exactIn,
+      trading,
 
       // computed
       title,
@@ -237,19 +235,11 @@ export default defineComponent({
       errorMessage,
       isRequired,
       tradeDisabled,
-      trading,
-      requiresApproval,
-      shouldOpenTradePreview,
-      effectivePriceMessage,
-      feeAmountInTokenScaled,
-      feeAmountOutTokenScaled,
-      minimumOutAmountScaled,
-      maximumInAmountScaled,
+      tradeCardShadow,
 
       // methods
       handleErrorButtonClick,
-      trade,
-      tradeRoute
+      trade
     };
   }
 });

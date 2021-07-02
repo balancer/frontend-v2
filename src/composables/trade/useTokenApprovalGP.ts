@@ -1,8 +1,5 @@
-import { computed, Ref, ref, watch } from 'vue';
-import { Web3Provider } from '@ethersproject/providers';
+import { computed, Ref, ref } from 'vue';
 import { parseUnits } from '@ethersproject/units';
-
-import { ETHER } from '@/constants/tokenlists';
 
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 
@@ -17,14 +14,17 @@ export default function useTokenApprovalGP(
   tokenInAddress: Ref<string>,
   amount: Ref<string>
 ) {
-  const approving = ref(false);
-  const approved = ref(false);
-
   // COMPOSABLES
-  const { provider } = useVueWeb3();
+  const { getProvider } = useVueWeb3();
+  const provider = getProvider();
   const { tokens } = useTokens();
   const { txListener: ethersTxListener } = useEthers();
 
+  // DATA
+  const approving = ref(false);
+  const approved = ref(false);
+
+  // COMPUTED
   const dstList = computed(() => [GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS]);
   const allowanceTokens = computed(() => [tokenInAddress.value]);
   const {
@@ -36,24 +36,18 @@ export default function useTokenApprovalGP(
   });
 
   const allowanceState = computed(() => {
-    if (tokenInAddress.value === ETHER.address) {
+    if (!tokenInAddress.value || !amount.value || approved.value) {
       return {
         isUnlocked: true
       };
     }
 
-    if (!tokenInAddress.value || !amount.value || approved.value === true)
-      return {
-        isUnlocked: true
-      };
-
     const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
-    const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
 
     const requiredAllowances = getRequiredAllowances({
       dst: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS,
       tokens: [tokenInAddress.value],
-      amounts: [tokenInAmountDenorm.toString()]
+      amounts: [parseUnits(amount.value, tokenInDecimals).toString()]
     });
 
     return {
@@ -61,12 +55,13 @@ export default function useTokenApprovalGP(
     };
   });
 
+  // METHODS
   async function approve(): Promise<void> {
     console.log('[TokenApproval] Unlock token for trading on Gnosis Protocol');
     approving.value = true;
     try {
       const [tx] = await approveTokens(
-        provider.value as Web3Provider,
+        provider,
         GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS,
         [tokenInAddress.value]
       );
@@ -85,17 +80,7 @@ export default function useTokenApprovalGP(
     }
   }
 
-  const isApproved = computed(() => {
-    return allowanceState.value.isUnlocked;
-  });
-
-  watch(tokenInAddress, async () => {
-    if (tokenInAddress.value === ETHER.address) {
-      approved.value = true;
-    } else {
-      approved.value = false;
-    }
-  });
+  const isApproved = computed(() => allowanceState.value.isUnlocked);
 
   return {
     approving,
