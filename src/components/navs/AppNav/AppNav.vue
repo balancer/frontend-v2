@@ -22,6 +22,7 @@
       </div>
 
       <div class="w-1/3 flex justify-end">
+        <DarkModeToggle class="mr-2" />
         <AppNavActions />
       </div>
     </div>
@@ -39,6 +40,7 @@ import AppNavToggle from './AppNavToggle.vue';
 import AppNavActions from './AppNavActions.vue';
 import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
 import useFathom from '@/composables/useFathom';
+import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
 
 export default defineComponent({
   components: {
@@ -47,7 +49,8 @@ export default defineComponent({
     AppNavAlert,
     AppNavToggle,
     AppNavActions,
-    AppNavNetworkSelect
+    AppNavNetworkSelect,
+    DarkModeToggle
   },
 
   setup() {
