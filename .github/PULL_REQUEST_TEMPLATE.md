@@ -11,14 +11,14 @@ Fixes # (issue)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] Other
 
-# How should this be tested?
+## How should this be tested?
 
 Please provide instructions so we can test. Please also list any relevant details for your test configuration.
 
 - [ ] Test A
 - [ ] Test B
 
-# Checklist:
+## Checklist:
 
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code where relevant, particularly in hard-to-understand areas
