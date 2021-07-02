@@ -21,6 +21,6 @@ Please provide instructions so we can test. Please also list any relevant detail
 # Checklist:
 
 - [ ] I have performed a self-review of my own code
-- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have commented my code where relevant, particularly in hard-to-understand areas
 - [ ] My changes generate no new console warnings
 - [ ] The base of this PR is `master` if hotfix, `develop` if not
