@@ -21,7 +21,7 @@ export default class RpcProviderService {
   }
 
   public async getBlockNumber(): Promise<number> {
-    return await this.wsProvider.getBlockNumber();
+    return await this.jsonProvider.getBlockNumber();
   }
 
   public getJsonProvider(networkKey: string): JsonRpcProvider {
