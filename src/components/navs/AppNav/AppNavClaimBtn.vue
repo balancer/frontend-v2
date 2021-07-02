@@ -122,7 +122,7 @@ export default defineComponent({
     const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
-    const { appNetworkConfig, account, getProvider } = useVueWeb3();
+    const { appNetworkConfig, account, getProvider, isMainnet } = useVueWeb3();
     const { txListener } = useNotify();
 
     const balPrice = computed(
@@ -226,6 +226,7 @@ export default defineComponent({
       isClaiming,
 
       // computed
+      isMainnet,
       userClaims,
       availableToClaimInUSD,
       currentRewards,
