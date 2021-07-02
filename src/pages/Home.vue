@@ -47,7 +47,6 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
@@ -68,7 +67,6 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const store = useStore();
     const router = useRouter();
     const { isWalletReady, isV1Supported } = useVueWeb3();
     const {
