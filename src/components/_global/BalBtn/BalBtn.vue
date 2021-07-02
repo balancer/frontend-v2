@@ -162,7 +162,8 @@ export default defineComponent({
         if (props.outline) return 'text-white';
         else return 'text-black';
       }
-      if (props.outline || props.flat) return `text-${props.color}-500 dark:text-${props.color}-400`;
+      if (props.outline || props.flat)
+        return `text-${props.color}-500 dark:text-${props.color}-400`;
       return 'text-white';
     });
 

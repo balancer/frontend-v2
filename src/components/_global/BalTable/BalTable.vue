@@ -104,7 +104,10 @@
             v-for="(dataItem, index) in tableData"
             :key="`tableRow-${index}`"
             @click="handleRowClick(dataItem)"
-            :class="['bg-white dark:bg-gray-900 z-10 rowBg', { 'cursor-pointer': onRowClick }]"
+            :class="[
+              'bg-white dark:bg-gray-900 z-10 rowBg',
+              { 'cursor-pointer': onRowClick }
+            ]"
           >
             <td
               v-for="(column, columnIndex) in filteredColumns"
