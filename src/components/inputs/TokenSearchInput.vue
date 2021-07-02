@@ -86,7 +86,7 @@ export default defineComponent({
     SelectTokenModal
   },
 
-  emits: ['add', 'remove', 'update:modelValue'],
+  emits: ['add', 'remove'],
 
   props: {
     modelValue: { type: Array as PropType<string[]>, default: () => [] },
@@ -139,11 +139,6 @@ export default defineComponent({
       emit('add', _token);
     }
 
-    function removeToken(token: string) {
-      const newSelected = props.modelValue.filter(t => t !== token);
-      emit('update:modelValue', newSelected);
-    }
-
     function onClick() {
       if (!props.loading) selectTokenModal.value = true;
     }
@@ -162,7 +157,6 @@ export default defineComponent({
       tokens,
       // methods
       addToken,
-      removeToken,
       onClick
     };
   }
