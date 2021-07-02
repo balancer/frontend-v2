@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="account" class="flex items-center">
-      <AppNavClaimBtn v-if="isMainnet" />
+      <AppNavClaimBtn />
       <AppNavAccountBtn />
     </div>
     <BalBtn
