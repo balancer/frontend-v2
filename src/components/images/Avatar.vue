@@ -15,7 +15,7 @@
       v-else
       :address="address"
       :diameter="parseInt(size) || 22"
-      class="leading-none"
+      class="leading-none inline-block align-middle"
     />
   </span>
 </template>
