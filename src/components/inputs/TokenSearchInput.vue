@@ -19,7 +19,7 @@
           color="white"
           iconSize="sm"
           :closeable="true"
-          @closed="removeToken(token)"
+          @closed="$emit('remove', token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
           <span class="ml-2">{{ tokens[token]?.symbol }}</span>
@@ -86,7 +86,7 @@ export default defineComponent({
     SelectTokenModal
   },
 
-  emits: ['update:modelValue'],
+  emits: ['add', 'remove', 'update:modelValue'],
 
   props: {
     modelValue: { type: Array as PropType<string[]>, default: () => [] },
@@ -135,8 +135,8 @@ export default defineComponent({
       if (getAddress(token) === ETHER.address) {
         _token = TOKENS.AddressMap.WETH;
       }
-      const newSelected = [...props.modelValue, _token];
-      emit('update:modelValue', newSelected);
+      // const newSelected = [...props.modelValue, _token];
+      emit('add', _token);
     }
 
     function removeToken(token: string) {
