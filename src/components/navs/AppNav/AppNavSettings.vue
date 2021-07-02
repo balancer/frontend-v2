@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="p-4 border-b">
+    <div class="p-4 border-b dark:border-gray-800">
       <h5 v-text="$t('account')" />
       <div class="flex mt-1 justify-between">
         <div class="flex">

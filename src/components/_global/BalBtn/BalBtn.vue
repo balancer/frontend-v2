@@ -152,7 +152,8 @@ export default defineComponent({
     });
 
     const borderClasses = computed(() => {
-      if (props.outline) return `border border-${props.color}-200`;
+      if (props.outline)
+        return `border border-${props.color}-200 dark:border-${props.color}-700`;
       return 'border-none';
     });
 
@@ -161,7 +162,7 @@ export default defineComponent({
         if (props.outline) return 'text-white';
         else return 'text-black';
       }
-      if (props.outline || props.flat) return `text-${props.color}-500`;
+      if (props.outline || props.flat) return `text-${props.color}-500 dark:text-${props.color}-400`;
       return 'text-white';
     });
 

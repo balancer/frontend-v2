@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-full whitespace-nowrap rounded-lg overflow-hidden">
-    <div class="overflow-hidden" ref="headerRef">
+    <div class="overflow-hidden bg-gray-900" ref="headerRef">
       <table class="w-full table-fixed whitespace-normal">
         <colgroup>
           <col
@@ -9,12 +9,12 @@
             :style="{ width: `${column?.width}px` }"
           />
         </colgroup>
-        <thead class="bg-white z-20">
+        <thead class="bg-white dark:bg-gray-900 z-20">
           <th
             v-for="(column, columnIndex) in filteredColumns"
             :key="`header-${column.id}`"
             :class="[
-              'p-6 bg-white headingShadow border-b',
+              'p-6 bg-white dark:bg-gray-900 headingShadow border-b dark:border-gray-800',
               column.className,
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
@@ -35,7 +35,9 @@
                 :name="column.Header"
               ></slot>
               <div v-else>
-                <h5 class="text-base font-semibold text-gray-800">
+                <h5
+                  class="text-base font-semibold text-gray-800 dark:text-gray-100"
+                >
                   {{ column.name }}
                 </h5>
               </div>
@@ -71,7 +73,7 @@
       />
       <div
         v-if="!isLoading && !tableData.length"
-        class="max-w-full bg-white rowBg h-40 flex items-center justify-center text-gray-500"
+        class="max-w-full bg-white dark:bg-gray-900 rowBg h-40 flex items-center justify-center text-gray-500"
       >
         {{ noResultsLabel || $t('noResults') }}
       </div>
@@ -92,7 +94,7 @@
               column.align === 'right' ? 'text-left' : 'text-right',
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
-              'p-0 m-0 h-0'
+              'bg-white dark:bg-gray-900 p-0 m-0 h-0'
             ]"
           ></td>
         </tr>
@@ -102,7 +104,7 @@
             v-for="(dataItem, index) in tableData"
             :key="`tableRow-${index}`"
             @click="handleRowClick(dataItem)"
-            :class="['bg-white z-10 rowBg', { 'cursor-pointer': onRowClick }]"
+            :class="['bg-white dark:bg-gray-900 z-10 rowBg', { 'cursor-pointer': onRowClick }]"
           >
             <td
               v-for="(column, columnIndex) in filteredColumns"
@@ -110,7 +112,8 @@
               :class="[
                 column.align === 'right' ? 'text-left' : 'text-right',
                 getHorizontalStickyClass(columnIndex),
-                isColumnStuck ? 'isSticky' : ''
+                isColumnStuck ? 'isSticky' : '',
+                'bg-white dark:bg-gray-900'
               ]"
             >
               <router-link

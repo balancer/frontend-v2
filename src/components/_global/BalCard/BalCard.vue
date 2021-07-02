@@ -39,7 +39,7 @@ export default defineComponent({
 
   setup(props) {
     const borderClasses = computed(() => {
-      return 'border dark:border-gray-700';
+      return 'border dark:border-gray-800';
     });
 
     const cardClasses = computed(() => {
@@ -91,6 +91,6 @@ export default defineComponent({
 .footer {
   @apply flex items-center;
   @apply bg-gray-50 dark:bg-gray-800;
-  @apply border-t border-gray-100 dark:border-gray-700;
+  @apply border-t border-gray-100 dark:border-gray-800;
 }
 </style>
