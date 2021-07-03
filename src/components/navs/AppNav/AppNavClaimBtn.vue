@@ -125,7 +125,13 @@ export default defineComponent({
     const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
-    const { appNetworkConfig, account, getProvider, isMainnet, isPolygon } = useVueWeb3();
+    const {
+      appNetworkConfig,
+      account,
+      getProvider,
+      isMainnet,
+      isPolygon
+    } = useVueWeb3();
     const { txListener } = useNotify();
 
     const balPrice = computed(
