@@ -15,7 +15,7 @@ interface PolygonGasStationResponse {
 
 export default class PolygonProvider {
   public async getLatest(
-    txSpeed: TxSpeedOptions = 'fast'
+    txSpeed: TxSpeedOptions = 'standard'
   ): Promise<number | null> {
     try {
       const { data } = await axios.get<PolygonGasStationResponse>(
