@@ -70,7 +70,7 @@ export async function getPendingClaims(
   provider: Web3Provider,
   account: string
 ): Promise<{ claims: Claim[]; reports: Report }> {
-  if (network == 137) {
+  if (!constants[network]) {
     return {
       claims: [],
       reports: {}
