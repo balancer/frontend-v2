@@ -33,6 +33,8 @@ export default function usePoolQuery(
   const isQueryEnabled = computed(() => !appLoading.value);
 
   function tokensInjected(pool: DecoratedPool): boolean {
+    if (!allTokens.value) return false;
+
     const allAddresses = Object.keys(allTokens.value);
     return [...pool.tokenAddresses, pool.address].every(address =>
       allAddresses.includes(address)
