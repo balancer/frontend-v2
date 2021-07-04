@@ -92,7 +92,7 @@
                 <div
                   v-for="hop in route.hops"
                   :key="hop?.pool?.address"
-                  class="p-1.5 ml-4 first:ml-0 flex bg-white rounded shadow"
+                  class="p-1.5 ml-4 first:ml-0 flex bg-white dark:bg-gray-900 dark:border dark:border-gray-500 rounded shadow"
                 >
                   <a :href="getPoolLink(hop.pool.id)" target="_blank">
                     <BalAsset

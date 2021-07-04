@@ -48,7 +48,7 @@
           >
             <div
               v-if="hasBalance(token.address)"
-              class="w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 group-hover:border-gray-50 dark:group-hover:border-gray-800 bg-green-200 absolute top-0 right-0 -mt-1 -mr-1"
+              class="w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 group-hover:border-gray-50 dark:group-hover:border-gray-800 bg-green-200 dark:bg-green-500 absolute top-0 right-0 -mt-1 -mr-1"
             />
             <span>
               {{ tokens[getAddress(token.address)]?.symbol }}

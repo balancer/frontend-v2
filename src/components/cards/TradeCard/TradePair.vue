@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
+      class="p-2 flex justify-between text-sm rounded-t-lg border dark:border-gray-800 border-b-0"
     >
       <div>{{ $t('send') }}</div>
       <div v-if="tokenInValue > 0" class="text-gray-500">
@@ -77,7 +77,7 @@
       </div>
     </div>
     <div
-      class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
+      class="p-2 flex justify-between text-sm rounded-t-lg border dark:border-gray-800 border-b-0"
     >
       <div>{{ $t('receive') }}</div>
       <div v-if="tokenOutValue > 0" class="text-gray-500">

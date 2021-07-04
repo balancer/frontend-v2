@@ -9,8 +9,8 @@
     />
 
     <template v-if="isProportional">
-      <div class="p-4 border-t">
-        <div class="border rounded-lg shadow-inner p-2">
+      <div class="p-4 border-t dark:border-gray-800">
+        <div class="border dark:border-gray-800 rounded-lg shadow-inner p-2">
           <div
             class="flex items-center justify-between mb-3 text-sm text-gray-600"
           >
@@ -39,7 +39,7 @@
 
       <div
         :class="[
-          'px-4 py-3 bg-gray-50 border-b',
+          'px-4 py-3 bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-800',
           hasZeroBalance ? '' : 'border-t'
         ]"
       >
@@ -86,7 +86,10 @@
 
     <div
       v-else
-      :class="['px-4 pt-6 border-b', hasZeroBalance ? '' : 'border-t']"
+      :class="[
+        'px-4 pt-6 border-b dark:border-gray-800',
+        hasZeroBalance ? '' : 'border-t'
+      ]"
     >
       <BalTextInput
         v-for="(token, i) in pool.tokenAddresses"
