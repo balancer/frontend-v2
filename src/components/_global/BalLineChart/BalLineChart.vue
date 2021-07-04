@@ -204,9 +204,15 @@ export default defineComponent({
             show: false
           }
         },
+        backgroundColor: darkMode.value
+          ? tailwind.theme.colors.gray['800']
+          : tailwind.theme.colors.white,
+        borderColor: darkMode.value
+          ? tailwind.theme.colors.gray['900']
+          : tailwind.theme.colors.white,
         formatter: params => {
           return `
-            <div class='flex flex-col font-body'>
+            <div class='flex flex-col font-body bg-white dark:bg-gray-800 dark:text-white'>
               <span>${params[0].value[0]}</span>
               ${params
                 .map(
