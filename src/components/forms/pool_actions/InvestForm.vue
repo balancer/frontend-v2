@@ -9,7 +9,7 @@
     />
 
     <template v-if="isProportional">
-      <div class="p-4 border-t dark:border-gray-700">
+      <div class="p-4 border-t dark:border-gray-900">
         <div class="border dark:border-gray-900 rounded-lg shadow-inner p-2">
           <div
             class="flex items-center justify-between mb-3 text-sm text-gray-600"
