@@ -104,10 +104,7 @@
             v-for="(dataItem, index) in tableData"
             :key="`tableRow-${index}`"
             @click="handleRowClick(dataItem)"
-            :class="[
-              'bg-white dark:bg-gray-900 z-10 rowBg',
-              { 'cursor-pointer': onRowClick }
-            ]"
+            :class="['z-10 row-bg group', { 'cursor-pointer': onRowClick }]"
           >
             <td
               v-for="(column, columnIndex) in filteredColumns"
@@ -115,8 +112,7 @@
               :class="[
                 column.align === 'right' ? 'text-left' : 'text-right',
                 getHorizontalStickyClass(columnIndex),
-                isColumnStuck ? 'isSticky' : '',
-                'bg-white dark:bg-gray-900'
+                isColumnStuck ? 'isSticky' : ''
               ]"
             >
               <router-link
@@ -434,18 +430,18 @@ export default defineComponent({
   box-shadow: inset 10px 0 8px -8px rgb(0 0 0 / 15%);
 }
 
-.rowBg > td {
-  @apply bg-white;
+.row-bg {
+  @apply bg-white dark:bg-gray-900;
 }
 
-.rowBg:hover > td {
-  @apply bg-gray-50;
+.row-bg:hover {
+  @apply bg-gray-50 dark:hover:bg-gray-800;
 }
 
 .bal-table-pagination-btn {
-  @apply flex items-center justify-center h-16;
-  @apply text-gray-500 font-medium hover:text-gray-800;
-  @apply border-t rounded-b-lg;
-  @apply hover:bg-gray-50 cursor-pointer;
+  @apply flex items-center justify-center h-16 transition-all;
+  @apply text-gray-500 font-medium hover:text-gray-800 dark:hover:text-gray-400;
+  @apply border-t dark:border-gray-800 rounded-b-lg;
+  @apply hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer;
 }
 </style>

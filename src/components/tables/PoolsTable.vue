@@ -21,7 +21,14 @@
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
-          <img :src="require('@/assets/images/icons/tokens.svg')" />
+          <img
+            v-if="darkMode"
+            :src="require('@/assets/images/icons/tokens_white.svg')"
+          />
+          <img
+            v-else
+            :src="require('@/assets/images/icons/tokens_black.svg')"
+          />
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
@@ -37,11 +44,11 @@
           <div
             v-for="token in sortedTokensFor(pool)"
             :key="token"
-            class="flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-50 relative"
+            class="flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative"
           >
             <div
               v-if="hasBalance(token.address)"
-              class="w-3 h-3 rounded-full border-2 border-white hover:border-gray-50 bg-green-200 absolute top-0 right-0 -mt-1 -mr-1"
+              class="w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 group-hover:border-gray-50 dark:group-hover:border-gray-800 bg-green-200 absolute top-0 right-0 -mt-1 -mr-1"
             />
             <span>
               {{ tokens[getAddress(token.address)]?.symbol }}
@@ -83,6 +90,7 @@ import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip
 
 import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 import useTokens from '@/composables/useTokens';
+import useDarkMode from '@/composables/useDarkMode';
 
 export default defineComponent({
   components: {
@@ -128,6 +136,7 @@ export default defineComponent({
       isLoading: isLoadingBalances,
       isIdle: isBalancesQueryIdle
     } = useAccountBalances();
+    const { darkMode } = useDarkMode();
 
     // COMPOSABLES
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -206,6 +215,9 @@ export default defineComponent({
       balances,
       isLoadingBalances,
       isBalancesQueryIdle,
+
+      // computed
+      darkMode,
 
       // methods
       handleRowClick,
