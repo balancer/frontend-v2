@@ -209,8 +209,7 @@ export default defineComponent({
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
-    const hideLiquidity = computed(() => isV1Supported);
-
+    const hideLiquidity = computed(() => !isV1Supported);
     const connectorName = computed(() => getConnectorName(connector.value.id));
 
     const connectorLogo = computed(() => getConnectorLogo(connector.value.id));
