@@ -39,7 +39,7 @@ export default defineComponent({
 
   setup(props) {
     const borderClasses = computed(() => {
-      return 'border dark:border-gray-800';
+      return 'border dark:border-gray-900';
     });
 
     const cardClasses = computed(() => {
@@ -81,7 +81,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-card {
-  @apply bg-white dark:bg-gray-900;
+  @apply bg-white dark:bg-gray-800;
 }
 
 .header {
@@ -91,6 +91,6 @@ export default defineComponent({
 .footer {
   @apply flex items-center;
   @apply bg-gray-50 dark:bg-gray-800;
-  @apply border-t border-gray-100 dark:border-gray-800;
+  @apply border-t border-gray-100 dark:border-gray-900;
 }
 </style>

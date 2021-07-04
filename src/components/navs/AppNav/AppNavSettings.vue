@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="p-4 border-b dark:border-gray-800">
+    <div class="p-4 border-b dark:border-gray-900">
       <div class="flex justify-between items-center mb-4">
         <h5 v-text="$t('account')" class="leading-none" />
         <div>
@@ -138,7 +138,7 @@
       <div class="flex mt-1"></div>
     </div>
     <div
-      class="network mt-4 p-4 text-sm border-t dark:border-gray-800 rounded-b-xl"
+      class="network mt-4 p-4 text-sm border-t dark:border-gray-900 rounded-b-xl"
     >
       <div v-text="$t('network')" />
       <div class="flex items-baseline">

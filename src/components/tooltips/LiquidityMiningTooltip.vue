@@ -7,7 +7,7 @@
         v-bind="$attrs"
       />
     </template>
-    <div class="text-sm divide-y dark:divide-gray-800">
+    <div class="text-sm divide-y dark:divide-gray-900">
       <div class="mb-1 px-3 pt-3">
         <div class="text-gray-500">{{ $t('totalAPY') }}</div>
         <div class="text-lg">

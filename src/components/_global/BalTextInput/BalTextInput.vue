@@ -208,8 +208,8 @@ export default defineComponent({
     const inputContainerClasses = computed(() => {
       return {
         [inputHeightClasses()]: true,
-        'border-l dark:border-gray-800': slots.prepend && props.prependBorder,
-        'border-r dark:border-gray-800': slots.append && props.appendBorder
+        'border-l dark:border-gray-700': slots.prepend && props.prependBorder,
+        'border-r dark:border-gray-700': slots.append && props.appendBorder
       };
     });
 
@@ -282,7 +282,7 @@ input:focus {
 }
 
 .input-group {
-  @apply flex items-center overflow-hidden bg-transparent border dark:border-gray-800;
+  @apply flex items-center overflow-hidden bg-white dark:bg-gray-900 border dark:border-gray-700;
 }
 
 .input-container {
@@ -306,6 +306,6 @@ input:focus {
 }
 
 .faded-out-overlay {
-  @apply absolute top-0 left-0 opacity-75 w-full h-full bg-white dark:bg-gray-900 z-10 cursor-pointer;
+  @apply absolute rounded-lg top-0 left-0 opacity-75 w-full h-full bg-white dark:bg-gray-900 z-10 cursor-pointer;
 }
 </style>

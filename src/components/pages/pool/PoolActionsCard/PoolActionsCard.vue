@@ -2,7 +2,7 @@
   <BalCard noPad>
     <div class="relative overflow-hidden">
       <div
-        class="flex justify-between items-end border-b dark:border-gray-800 px-4"
+        class="flex justify-between items-end border-b dark:border-gray-900 px-4"
       >
         <BalTabs v-model="activeTab" :tabs="tabs" class="pt-4 -mb-px" no-pad />
         <TradeSettingsPopover :context="TradeSettingsContext.invest" />

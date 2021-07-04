@@ -41,7 +41,7 @@ function useChipClasses(size: string, color: string) {
   };
 
   const outlineClasses = (): string => {
-    return `border-gray-100 dark:border-gray-800 border shadow-lg`;
+    return `border-gray-100 dark:border-gray-900 border shadow-lg`;
   };
 
   return computed(() => {

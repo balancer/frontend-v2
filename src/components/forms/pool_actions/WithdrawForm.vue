@@ -7,8 +7,8 @@
     />
 
     <template v-if="isProportional">
-      <div class="p-4 border-t dark:border-gray-800">
-        <div class="border dark:border-gray-800 rounded-lg shadow-inner p-2">
+      <div class="p-4 border-t dark:border-gray-900">
+        <div class="border dark:border-gray-900 rounded-lg shadow-inner p-2">
           <div
             class="flex items-center justify-between mb-3 text-sm text-gray-600"
           >
@@ -35,7 +35,7 @@
       </div>
 
       <div
-        class="px-4 py-3 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-800 border-b"
+        class="px-4 py-3 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-900 border-b"
       >
         <div
           v-for="(token, i) in pool.tokenAddresses"
@@ -68,7 +68,7 @@
       </div>
     </template>
 
-    <div v-else class="px-4 pt-6 border-t border-b dark:border-gray-800">
+    <div v-else class="px-4 pt-6 border-t border-b dark:border-gray-900">
       <BalTextInput
         v-for="(token, i) in pool.tokenAddresses"
         :key="i"

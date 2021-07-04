@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-full whitespace-nowrap rounded-lg overflow-hidden">
-    <div class="overflow-hidden bg-gray-900" ref="headerRef">
+    <div class="overflow-hidden" ref="headerRef">
       <table class="w-full table-fixed whitespace-normal">
         <colgroup>
           <col
@@ -14,7 +14,7 @@
             v-for="(column, columnIndex) in filteredColumns"
             :key="`header-${column.id}`"
             :class="[
-              'p-6 bg-white dark:bg-gray-900 headingShadow border-b dark:border-gray-800',
+              'p-6 bg-white dark:bg-gray-800 headingShadow border-b dark:border-gray-900',
               column.className,
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
@@ -73,7 +73,7 @@
       />
       <div
         v-if="!isLoading && !tableData.length"
-        class="max-w-full bg-white dark:bg-gray-900 rowBg h-40 flex items-center justify-center text-gray-500"
+        class="max-w-full bg-white dark:bg-gray-800 rowBg h-40 flex items-center justify-center text-gray-500"
       >
         {{ noResultsLabel || $t('noResults') }}
       </div>
@@ -94,7 +94,7 @@
               column.align === 'right' ? 'text-left' : 'text-right',
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
-              'bg-white dark:bg-gray-900 p-0 m-0 h-0'
+              'bg-white dark:bg-gray-800 p-0 m-0 h-0'
             ]"
           ></td>
         </tr>
@@ -431,17 +431,17 @@ export default defineComponent({
 }
 
 .row-bg {
-  @apply bg-white dark:bg-gray-900;
+  @apply bg-white dark:bg-gray-800;
 }
 
 .row-bg:hover {
-  @apply bg-gray-50 dark:hover:bg-gray-800;
+  @apply bg-gray-50 dark:hover:bg-gray-700;
 }
 
 .bal-table-pagination-btn {
   @apply flex items-center justify-center h-16 transition-all;
   @apply text-gray-500 font-medium hover:text-gray-800 dark:hover:text-gray-400;
-  @apply border-t dark:border-gray-800 rounded-b-lg;
+  @apply border-t dark:border-gray-900 rounded-b-lg;
   @apply hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer;
 }
 </style>
