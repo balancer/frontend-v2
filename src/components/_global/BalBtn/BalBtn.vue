@@ -127,7 +127,7 @@ export default defineComponent({
     const bgFlatClasses = computed(() => {
       return `
         bg-${props.color}-50 hover:bg-${props.color}-100
-        dark:hover:bg-${props.color}-dark-800
+        dark:bg-${props.color}-800 dark:hover:bg-${props.color}-700
       `;
     });
 
