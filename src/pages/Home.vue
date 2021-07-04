@@ -98,7 +98,7 @@ export default defineComponent({
         : pools?.value
     );
 
-    const hideV1Links = computed(() => isV1Supported);
+    const hideV1Links = computed(() => !isV1Supported);
 
     return {
       // data
