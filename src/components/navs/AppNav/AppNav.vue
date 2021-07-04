@@ -11,6 +11,7 @@
           <AppLogo v-else />
         </router-link>
         <AppNavNetworkSelect />
+        <DarkModeToggle class="ml-2" />
       </div>
 
       <div class="flex-1 md:w-1/3 flex justify-center">
@@ -18,7 +19,6 @@
       </div>
 
       <div class="w-1/3 flex justify-end">
-        <DarkModeToggle class="mr-2" />
         <AppNavActions />
       </div>
     </div>
