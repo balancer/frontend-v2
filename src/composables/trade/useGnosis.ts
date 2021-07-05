@@ -62,31 +62,6 @@ export default function useGnosis({
   );
 
   // COMPUTED
-  const feeAmountInTokenScaled = computed(() => feeQuote.value?.amount ?? '0');
-  const feeAmountOutTokenScaled = computed(() =>
-    tokenOutAmountScaled.value
-      .div(tokenInAmountScaled.value)
-      .times(feeAmountInTokenScaled.value)
-      .integerValue(BigNumber.ROUND_DOWN)
-      .toString()
-  );
-
-  const maximumInAmountScaled = computed(() =>
-    tokenInAmountScaled.value
-      .plus(feeAmountInTokenScaled.value)
-      .times(1 + slippageBufferRate.value)
-      .integerValue(BigNumber.ROUND_DOWN)
-      .toString()
-  );
-
-  const minimumOutAmountScaled = computed(() =>
-    tokenOutAmountScaled.value
-      .minus(feeAmountOutTokenScaled.value)
-      .div(1 + slippageBufferRate.value)
-      .integerValue(BigNumber.ROUND_DOWN)
-      .toString()
-  );
-
   const appTransactionDeadline = computed<number>(
     () => store.state.app.transactionDeadline
   );
@@ -106,9 +81,44 @@ export default function useGnosis({
     feeQuote.value = null;
   }
 
+  function getQuote() {
+    const feeAmountInToken = computed(() => feeQuote.value?.amount ?? '0');
+    const feeAmountOutToken = computed(() =>
+      tokenOutAmountScaled.value
+        .div(tokenInAmountScaled.value)
+        .times(feeAmountInToken.value)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .toString()
+    );
+
+    const maximumInAmount = computed(() =>
+      tokenInAmountScaled.value
+        .plus(feeAmountInToken.value)
+        .times(1 + slippageBufferRate.value)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .toString()
+    );
+
+    const minimumOutAmount = computed(() =>
+      tokenOutAmountScaled.value
+        .minus(feeAmountOutToken.value)
+        .div(1 + slippageBufferRate.value)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .toString()
+    );
+
+    return {
+      feeAmountInToken,
+      feeAmountOutToken,
+      maximumInAmount,
+      minimumOutAmount
+    };
+  }
+
   async function trade(successCallback?: () => void) {
     try {
       trading.value = true;
+      const quote = getQuote();
 
       const unsignedOrder: UnsignedOrder = {
         sellToken: normalizeTokenAddress(tokenInAddressInput.value),
@@ -116,16 +126,16 @@ export default function useGnosis({
         sellAmount: bnum(
           exactIn.value
             ? tokenInAmountScaled.value
-            : maximumInAmountScaled.value
+            : quote.maximumInAmount.value
         )
-          .minus(feeAmountInTokenScaled.value)
+          .minus(quote.feeAmountInToken.value)
           .toString(),
         buyAmount: exactIn.value
-          ? minimumOutAmountScaled.value
+          ? quote.minimumOutAmount.value
           : tokenOutAmountScaled.value.toString(),
         validTo: calculateValidTo(appTransactionDeadline.value),
         appData,
-        feeAmount: feeAmountInTokenScaled.value,
+        feeAmount: quote.feeAmountInToken.value,
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
         partiallyFillable: false // Always fill or kill
@@ -234,9 +244,6 @@ export default function useGnosis({
     errors,
     hasErrors,
     trading,
-    feeAmountInTokenScaled,
-    feeAmountOutTokenScaled,
-    minimumOutAmountScaled,
-    maximumInAmountScaled
+    getQuote
   };
 }

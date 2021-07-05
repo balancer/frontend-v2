@@ -276,18 +276,20 @@ export default defineComponent({
       let totalWithoutSlippage = '';
       let totalWithSlippage = '';
 
+      const quote = props.trading.gnosis.getQuote();
+
       if (props.trading.isGnosisTrade.value) {
         if (props.trading.exactIn.value) {
           amountBeforeFees = props.trading.tokenOutAmountInput.value;
           solverFees = formatUnits(
-            props.trading.gnosis.feeAmountOutTokenScaled.value,
+            quote.feeAmountOutToken.value,
             props.trading.tokenOut.value.decimals
           );
           totalWithoutSlippage = bnum(amountBeforeFees)
             .minus(solverFees)
             .toString();
           totalWithSlippage = formatUnits(
-            props.trading.gnosis.minimumOutAmountScaled.value,
+            quote.minimumOutAmount.value,
             props.trading.tokenOut.value.decimals
           );
 
@@ -328,14 +330,14 @@ export default defineComponent({
         } else {
           amountBeforeFees = props.trading.tokenInAmountInput.value;
           solverFees = formatUnits(
-            props.trading.gnosis.feeAmountInTokenScaled.value,
+            quote.feeAmountInToken.value,
             props.trading.tokenIn.value.decimals
           );
           totalWithoutSlippage = bnum(amountBeforeFees)
             .plus(solverFees)
             .toString();
           totalWithSlippage = formatUnits(
-            props.trading.gnosis.maximumInAmountScaled.value,
+            quote.maximumInAmount.value,
             props.trading.tokenIn.value.decimals
           );
 
