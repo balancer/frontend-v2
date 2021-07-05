@@ -127,9 +127,12 @@ export default {
           pluginState.walletState = 'connected';
 
           // special case for polygon
-          if (configService.env.NETWORK === '137') {
+          if (
+            configService.env.NETWORK === '137' &&
+            connector.id === 'metamask'
+          ) {
             // this will also as the user to switch to Polygon, if already added
-            await importPolygonDetailsToWallet(window.ethereum as any);
+            await importPolygonDetailsToWallet(connector.provider);
 
             // after switching, metamask will reset its state, need to call
             // connect again but only if state is reset which we check below
