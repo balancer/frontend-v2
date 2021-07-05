@@ -98,8 +98,12 @@
           </div>
           <div class="summary-item-row">
             <div>{{ $t('gasCosts') }}</div>
-            <div class="text-green-400">
-              {{ gasCosts }}
+            <div v-if="trading.isGnosisTrade.value" class="text-green-400">
+              {{ fNum('0', showSummaryInFiat ? 'usd' : 'token') }}
+            </div>
+            <div v-else>
+              <!-- TODO: in order to calculate this I need to get gasLimit of the transaction + gwei price -->
+              Calculated on confirmation
             </div>
           </div>
           <div class="summary-item-row">
@@ -258,13 +262,6 @@ export default defineComponent({
       )
     );
 
-    const gasCosts = computed(() => {
-      if (props.trading.isGnosisTrade.value) {
-        return fNum('0', showSummaryInFiat.value ? 'usd' : 'token');
-      }
-      return '';
-    });
-
     const showSummary = computed(() => !props.trading.isWrapOrUnwrap.value);
 
     const showTradeRoute = computed(
@@ -373,7 +370,6 @@ export default defineComponent({
       summary,
       showSummaryInFiat,
       slippageRatePercent,
-      gasCosts,
       showSummary,
       showTradeRoute
     };
