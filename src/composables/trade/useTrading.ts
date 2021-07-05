@@ -83,10 +83,10 @@ export default function useTrading(
     };
   });
 
+  const isWrapOrUnwrap = computed(() => isWrap.value || isUnwrap.value);
+
   const tradeRoute = computed<TradeRoute>(() => {
-    return isUnwrap.value || isWrap.value || isEthTrade.value
-      ? 'balancer'
-      : 'gnosis';
+    return isWrapOrUnwrap.value || isEthTrade.value ? 'balancer' : 'gnosis';
   });
 
   const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
@@ -101,6 +101,8 @@ export default function useTrading(
     tokens,
     isWrap,
     isUnwrap,
+    tokenInAmountScaled,
+    tokenOutAmountScaled,
     sorConfig: {
       handleAmountsOnFetchPools: false,
       refetchPools: isBalancerTrade.value,
@@ -128,9 +130,17 @@ export default function useTrading(
   // METHODS
   function trade(successCallback?: () => void) {
     if (isGnosisTrade.value) {
-      gnosis.trade(successCallback);
+      return gnosis.trade(successCallback);
     } else {
-      sor.trade(successCallback);
+      return sor.trade(successCallback);
+    }
+  }
+
+  function getQuote() {
+    if (isGnosisTrade.value) {
+      return gnosis.getQuote();
+    } else {
+      return sor.getQuote();
     }
   }
 
@@ -139,6 +149,7 @@ export default function useTrading(
     store.commit('trade/setInputAsset', tokenInAddressInput.value);
 
     if (isGnosisTrade.value) {
+      gnosis.resetErrors();
       gnosis.resetFees();
       gnosis.handleAmountChange();
     } else {
@@ -150,6 +161,7 @@ export default function useTrading(
     store.commit('trade/setOutputAsset', tokenOutAddressInput.value);
 
     if (isGnosisTrade.value) {
+      gnosis.resetErrors();
       gnosis.resetFees();
       gnosis.handleAmountChange();
     } else {
@@ -183,15 +195,12 @@ export default function useTrading(
     }
   });
 
-  watch(isBalancerTrade, () => {
-    gnosis.resetErrors();
-  });
-
   return {
     // computed
     isWrap,
     isUnwrap,
     isEthTrade,
+    isWrapOrUnwrap,
     tokenIn,
     tokenOut,
     tokenInAmountScaled,
@@ -202,7 +211,6 @@ export default function useTrading(
     tradeRoute,
     exactIn,
     isLoading,
-    trade,
     gnosis,
     sor,
     isGnosisTrade,
@@ -210,6 +218,9 @@ export default function useTrading(
     tokenInAddressInput,
     tokenInAmountInput,
     tokenOutAddressInput,
-    tokenOutAmountInput
+    tokenOutAmountInput,
+    // methods
+    getQuote,
+    trade
   };
 }

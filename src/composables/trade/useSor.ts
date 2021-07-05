@@ -1,4 +1,4 @@
-import { Ref, onMounted, ref, computed } from 'vue';
+import { Ref, onMounted, ref, computed, ComputedRef } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -41,6 +41,8 @@ type Props = {
   tokens: Ref<TokenMap>;
   isWrap: Ref<boolean>;
   isUnwrap: Ref<boolean>;
+  tokenInAmountScaled?: ComputedRef<BigNumber>;
+  tokenOutAmountScaled?: ComputedRef<BigNumber>;
   sorConfig?: {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
@@ -59,6 +61,8 @@ export default function useSor({
   tokens,
   isWrap,
   isUnwrap,
+  tokenInAmountScaled,
+  tokenOutAmountScaled,
   sorConfig = {
     refetchPools: true,
     handleAmountsOnFetchPools: true,
@@ -123,6 +127,10 @@ export default function useSor({
       fetchPools();
     }
   }, 30 * 1e3);
+
+  const slippageBufferRate = computed(() =>
+    parseFloat(store.state.app.slippage)
+  );
 
   async function initSor(): Promise<void> {
     const config = userNetworkConfig.value;
@@ -356,7 +364,6 @@ export default function useSor({
     const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
     const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
     const tokenInAmountScaled = scale(tokenInAmountNumber, tokenInDecimals);
-    const slippageBufferRate = parseFloat(store.state.app.slippage);
 
     if (isWrap.value) {
       try {
@@ -397,9 +404,7 @@ export default function useSor({
     if (exactIn.value) {
       const tokenOutAmountNumber = new BigNumber(tokenOutAmountInput.value);
       const tokenOutAmount = scale(tokenOutAmountNumber, tokenOutDecimals);
-      const minAmount = tokenOutAmount
-        .div(1 + slippageBufferRate)
-        .integerValue(BigNumber.ROUND_DOWN);
+      const minAmount = getMinOut(tokenOutAmount);
       const sr: SorReturn = sorReturn.value as SorReturn;
 
       try {
@@ -420,9 +425,7 @@ export default function useSor({
         trading.value = false;
       }
     } else {
-      const tokenInAmountMax = tokenInAmountScaled
-        .times(1 + slippageBufferRate)
-        .integerValue(BigNumber.ROUND_DOWN);
+      const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
       const sr: SorReturn = sorReturn.value as SorReturn;
       const tokenOutAmountNormalised = new BigNumber(tokenOutAmountInput.value);
       const tokenOutAmountScaled = scale(
@@ -485,6 +488,37 @@ export default function useSor({
     }
   }
 
+  function getMaxIn(amount: BigNumber) {
+    return amount
+      .times(1 + slippageBufferRate.value)
+      .integerValue(BigNumber.ROUND_DOWN);
+  }
+
+  function getMinOut(amount: BigNumber) {
+    return amount
+      .div(1 + slippageBufferRate.value)
+      .integerValue(BigNumber.ROUND_DOWN);
+  }
+
+  function getQuote() {
+    const maximumInAmount =
+      tokenInAmountScaled != null
+        ? getMaxIn(tokenInAmountScaled.value).toString()
+        : '';
+
+    const minimumOutAmount =
+      tokenOutAmountScaled != null
+        ? getMinOut(tokenOutAmountScaled.value).toString()
+        : '';
+
+    return {
+      feeAmountInToken: '0',
+      feeAmountOutToken: '0',
+      maximumInAmount,
+      minimumOutAmount
+    };
+  }
+
   return {
     sorManager,
     sorReturn,
@@ -497,6 +531,7 @@ export default function useSor({
     priceImpact,
     latestTxHash,
     fetchPools,
-    poolsLoading
+    poolsLoading,
+    getQuote
   };
 }

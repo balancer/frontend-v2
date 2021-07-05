@@ -82,30 +82,24 @@ export default function useGnosis({
   }
 
   function getQuote() {
-    const feeAmountInToken = computed(() => feeQuote.value?.amount ?? '0');
-    const feeAmountOutToken = computed(() =>
-      tokenOutAmountScaled.value
-        .div(tokenInAmountScaled.value)
-        .times(feeAmountInToken.value)
-        .integerValue(BigNumber.ROUND_DOWN)
-        .toString()
-    );
+    const feeAmountInToken = feeQuote.value?.amount ?? '0';
+    const feeAmountOutToken = tokenOutAmountScaled.value
+      .div(tokenInAmountScaled.value)
+      .times(feeAmountInToken)
+      .integerValue(BigNumber.ROUND_DOWN)
+      .toString();
 
-    const maximumInAmount = computed(() =>
-      tokenInAmountScaled.value
-        .plus(feeAmountInToken.value)
-        .times(1 + slippageBufferRate.value)
-        .integerValue(BigNumber.ROUND_DOWN)
-        .toString()
-    );
+    const maximumInAmount = tokenInAmountScaled.value
+      .plus(feeAmountInToken)
+      .times(1 + slippageBufferRate.value)
+      .integerValue(BigNumber.ROUND_DOWN)
+      .toString();
 
-    const minimumOutAmount = computed(() =>
-      tokenOutAmountScaled.value
-        .minus(feeAmountOutToken.value)
-        .div(1 + slippageBufferRate.value)
-        .integerValue(BigNumber.ROUND_DOWN)
-        .toString()
-    );
+    const minimumOutAmount = tokenOutAmountScaled.value
+      .minus(feeAmountOutToken)
+      .div(1 + slippageBufferRate.value)
+      .integerValue(BigNumber.ROUND_DOWN)
+      .toString();
 
     return {
       feeAmountInToken,
@@ -124,18 +118,16 @@ export default function useGnosis({
         sellToken: normalizeTokenAddress(tokenInAddressInput.value),
         buyToken: normalizeTokenAddress(tokenOutAddressInput.value),
         sellAmount: bnum(
-          exactIn.value
-            ? tokenInAmountScaled.value
-            : quote.maximumInAmount.value
+          exactIn.value ? tokenInAmountScaled.value : quote.maximumInAmount
         )
-          .minus(quote.feeAmountInToken.value)
+          .minus(quote.feeAmountInToken)
           .toString(),
         buyAmount: exactIn.value
-          ? quote.minimumOutAmount.value
+          ? quote.minimumOutAmount
           : tokenOutAmountScaled.value.toString(),
         validTo: calculateValidTo(appTransactionDeadline.value),
         appData,
-        feeAmount: quote.feeAmountInToken.value,
+        feeAmount: quote.feeAmountInToken,
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
         partiallyFillable: false // Always fill or kill

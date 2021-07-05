@@ -57,15 +57,7 @@
           </div>
         </div>
       </BalCard>
-      <BalCard
-        shadow="none"
-        class="my-5"
-        v-if="
-          trading.isBalancerTrade.value &&
-            !trading.isWrap.value &&
-            !trading.isUnwrap.value
-        "
-      >
+      <BalCard shadow="none" class="my-5" v-if="showTradeRoute">
         <TradeRoute
           :address-in="trading.tokenIn.value.address"
           :amount-in="trading.tokenInAmountInput.value"
@@ -75,12 +67,7 @@
           :sor-return="trading.sor.sorReturn.value"
         />
       </BalCard>
-      <BalCard
-        noPad
-        shadow="none"
-        class="mb-6"
-        v-if="trading.isGnosisTrade.value"
-      >
+      <BalCard noPad shadow="none" class="mb-6" v-if="showSummary">
         <template v-slot:header>
           <div class="p-3 flex w-full items-center justify-between border-b">
             <div class="font-semibold">{{ $t('summary') }}</div>
@@ -112,7 +99,7 @@
           <div class="summary-item-row">
             <div>{{ $t('gasCosts') }}</div>
             <div class="text-green-400">
-              0.00
+              {{ gasCosts }}
             </div>
           </div>
           <div class="summary-item-row">
@@ -223,6 +210,7 @@ import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import { bnum } from '@/lib/utils';
 
 import { FiatCurrency } from '@/constants/currency';
+import { mapValues } from 'lodash';
 
 export default defineComponent({
   components: {
@@ -270,117 +258,87 @@ export default defineComponent({
       )
     );
 
-    const summary = computed(() => {
-      let amountBeforeFees = '';
-      let solverFees = '';
-      let totalWithoutSlippage = '';
-      let totalWithSlippage = '';
-
-      const quote = props.trading.gnosis.getQuote();
-
+    const gasCosts = computed(() => {
       if (props.trading.isGnosisTrade.value) {
-        if (props.trading.exactIn.value) {
-          amountBeforeFees = props.trading.tokenOutAmountInput.value;
-          solverFees = formatUnits(
-            quote.feeAmountOutToken.value,
-            props.trading.tokenOut.value.decimals
-          );
-          totalWithoutSlippage = bnum(amountBeforeFees)
-            .minus(solverFees)
-            .toString();
-          totalWithSlippage = formatUnits(
-            quote.minimumOutAmount.value,
-            props.trading.tokenOut.value.decimals
-          );
+        return fNum('0', showSummaryInFiat.value ? 'usd' : 'token');
+      }
+      return '';
+    });
 
-          if (showSummaryInFiat.value) {
-            amountBeforeFees = fNum(
-              toFiat(amountBeforeFees, props.trading.tokenOut.value.address),
-              'usd'
-            );
-            solverFees = fNum(
-              toFiat(solverFees, props.trading.tokenOut.value.address),
-              'usd'
-            );
-            totalWithoutSlippage = fNum(
-              toFiat(
-                totalWithoutSlippage,
-                props.trading.tokenOut.value.address
-              ),
-              'usd'
-            );
-            totalWithSlippage = fNum(
-              toFiat(totalWithSlippage, props.trading.tokenOut.value.address),
-              'usd'
-            );
-          } else {
-            amountBeforeFees = `${fNum(amountBeforeFees, 'token')} ${
-              props.trading.tokenOut.value.symbol
-            }`;
-            solverFees = `${fNum(solverFees, 'token')} ${
-              props.trading.tokenOut.value.symbol
-            }`;
-            totalWithoutSlippage = `${fNum(totalWithoutSlippage, 'token')} ${
-              props.trading.tokenOut.value.symbol
-            }`;
-            totalWithSlippage = `${fNum(totalWithSlippage, 'token')} ${
-              props.trading.tokenOut.value.symbol
-            }`;
-          }
-        } else {
-          amountBeforeFees = props.trading.tokenInAmountInput.value;
-          solverFees = formatUnits(
-            quote.feeAmountInToken.value,
-            props.trading.tokenIn.value.decimals
-          );
-          totalWithoutSlippage = bnum(amountBeforeFees)
-            .plus(solverFees)
-            .toString();
-          totalWithSlippage = formatUnits(
-            quote.maximumInAmount.value,
-            props.trading.tokenIn.value.decimals
-          );
+    const showSummary = computed(() => !props.trading.isWrapOrUnwrap.value);
 
-          if (showSummaryInFiat.value) {
-            amountBeforeFees = fNum(
-              toFiat(amountBeforeFees, props.trading.tokenIn.value.address),
-              'usd'
-            );
-            solverFees = fNum(
-              toFiat(solverFees, props.trading.tokenIn.value.address),
-              'usd'
-            );
-            totalWithoutSlippage = fNum(
-              toFiat(totalWithoutSlippage, props.trading.tokenIn.value.address),
-              'usd'
-            );
-            totalWithSlippage = fNum(
-              toFiat(totalWithSlippage, props.trading.tokenIn.value.address),
-              'usd'
-            );
-          } else {
-            amountBeforeFees = `${fNum(amountBeforeFees, 'token')} ${
-              props.trading.tokenIn.value.symbol
-            }`;
-            solverFees = `${fNum(solverFees, 'token')} ${
-              props.trading.tokenIn.value.symbol
-            }`;
-            totalWithoutSlippage = `${fNum(totalWithoutSlippage, 'token')} ${
-              props.trading.tokenIn.value.symbol
-            }`;
-            totalWithSlippage = `${fNum(totalWithSlippage, 'token')} ${
-              props.trading.tokenIn.value.symbol
-            }`;
-          }
-        }
+    const showTradeRoute = computed(
+      () =>
+        props.trading.isBalancerTrade.value &&
+        !props.trading.isWrapOrUnwrap.value
+    );
+
+    const summary = computed(() => {
+      if (!showSummary.value) {
+        return;
       }
 
-      return {
-        amountBeforeFees,
-        solverFees,
-        totalWithoutSlippage,
-        totalWithSlippage
+      const summaryItems = {
+        amountBeforeFees: '',
+        solverFees: '',
+        totalWithoutSlippage: '',
+        totalWithSlippage: ''
       };
+
+      const exactIn = props.trading.exactIn.value;
+
+      const tokenIn = props.trading.tokenIn.value;
+      const tokenOut = props.trading.tokenOut.value;
+
+      const tokenInAmountInput = props.trading.tokenInAmountInput.value;
+      const tokenOutAmountInput = props.trading.tokenOutAmountInput.value;
+
+      const quote = props.trading.getQuote();
+
+      if (exactIn) {
+        summaryItems.amountBeforeFees = tokenOutAmountInput;
+        summaryItems.solverFees = formatUnits(
+          quote.feeAmountOutToken,
+          tokenOut.decimals
+        );
+        summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
+          .minus(summaryItems.solverFees)
+          .toString();
+        summaryItems.totalWithSlippage = formatUnits(
+          quote.minimumOutAmount,
+          tokenOut.decimals
+        );
+      } else {
+        summaryItems.amountBeforeFees = tokenInAmountInput;
+        summaryItems.solverFees = formatUnits(
+          quote.feeAmountInToken,
+          tokenIn.decimals
+        );
+        summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
+          .plus(summaryItems.solverFees)
+          .toString();
+        summaryItems.totalWithSlippage = formatUnits(
+          quote.maximumInAmount,
+          tokenIn.decimals
+        );
+      }
+
+      if (showSummaryInFiat.value) {
+        return mapValues(summaryItems, itemValue =>
+          fNum(
+            toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
+            'usd'
+          )
+        );
+      } else {
+        return mapValues(
+          summaryItems,
+          itemValue =>
+            `${fNum(itemValue, 'token')} ${
+              exactIn ? tokenOut.symbol : tokenIn.symbol
+            }`
+        );
+      }
     });
 
     const { approving, isApproved, approve } = useTokenApprovalGP(
@@ -414,7 +372,10 @@ export default defineComponent({
       tokenOutFiatValue,
       summary,
       showSummaryInFiat,
-      slippageRatePercent
+      slippageRatePercent,
+      gasCosts,
+      showSummary,
+      showTradeRoute
     };
   }
 });
