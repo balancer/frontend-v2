@@ -136,7 +136,7 @@ export default defineComponent({
       () => store.state.app.transactionDeadline
     );
     const hideLiquidity = computed(
-      () => isV1Supported || context.value === TradeSettingsContext.invest
+      () => !isV1Supported || context.value === TradeSettingsContext.invest
     );
 
     // METHODS
