@@ -52,7 +52,10 @@ export default function useUserClaimsQuery(
         getProvider(),
         account.value
       ),
-      getCurrentRewardsEstimate(account.value)
+      getCurrentRewardsEstimate(
+        appNetworkConfig.chainId as NetworkId,
+        account.value
+      )
     ]);
 
     const availableToClaim = pendingClaims.claims

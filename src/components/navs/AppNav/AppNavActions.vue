@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="account" class="flex items-center">
-      <AppNavClaimBtn v-if="isMainnet" />
+      <AppNavClaimBtn v-if="liquidityMiningSupported" />
       <AppNavAccountBtn />
     </div>
     <BalBtn
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
 
@@ -49,16 +49,23 @@ export default defineComponent({
       connectWallet,
       account,
       toggleWalletSelectModal,
-      isMainnet
+      isMainnet,
+      isPolygon
     } = useVueWeb3();
 
+    // COMPUTED
+    const liquidityMiningSupported = computed(
+      () => isMainnet.value || isPolygon.value
+    );
+
+    // METHODS
     function onClickConnect() {
       trackGoal(Goals.ClickNavConnectWallet);
     }
 
     return {
       // computed
-      isMainnet,
+      liquidityMiningSupported,
       account,
       bp,
       // methods
