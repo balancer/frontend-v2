@@ -13,6 +13,8 @@ import { WalletLinkConnector } from './connectors/walletlink/walletlink.connecto
 import { PortisConnector } from './connectors/portis/portis.connector';
 import useFathom from '@/composables/useFathom';
 import getProvider from '@/lib/utils/provider';
+import ConfigService from '../config/config.service';
+import { importPolygonDetailsToWallet } from './utils/helpers';
 
 export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
 export const SupportedWallets = [
@@ -59,6 +61,7 @@ export default {
     const { trackGoal, Goals } = useFathom();
     const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
     const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
+    const configService = new ConfigService();
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
@@ -122,6 +125,18 @@ export default {
           lsSet('connectedWallet', account.value);
           lsSet('connectedProvider', wallet);
           pluginState.walletState = 'connected';
+
+          // special case for polygon
+          if (configService.env.NETWORK === '137') {
+            // this will also as the user to switch to Polygon, if already added
+            await importPolygonDetailsToWallet(window.ethereum as any);
+
+            // after switching, metamask will reset its state, need to call
+            // connect again but only if state is reset which we check below
+            if (chainId.value !== 137) {
+              await connectWallet(wallet);
+            }
+          }
           trackGoal(Goals.ConnectedWallet);
         }
       } catch (err) {
