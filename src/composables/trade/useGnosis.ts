@@ -16,6 +16,7 @@ import {
 } from '@/services/gnosis/signing';
 import { gnosisOperator } from '@/services/gnosis/operator.service';
 import { Token } from '@/types';
+import { TradeQuote } from './types';
 
 // TODO: get correct app id
 const GNOSIS_APP_ID = 2;
@@ -80,7 +81,7 @@ export default function useGnosis({
     feeQuote.value = null;
   }
 
-  function getQuote() {
+  function getQuote(): TradeQuote {
     const feeAmountInToken = feeQuote.value?.amount ?? '0';
     const feeAmountOutToken = tokenOutAmountScaled.value
       .div(tokenInAmountScaled.value)

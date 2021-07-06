@@ -26,6 +26,7 @@ import { ETHER } from '@/constants/tokenlists';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
 import { TokenMap } from '@/types';
+import { TradeQuote } from './types';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -500,7 +501,7 @@ export default function useSor({
       .integerValue(BigNumber.ROUND_DOWN);
   }
 
-  function getQuote() {
+  function getQuote(): TradeQuote {
     const maximumInAmount =
       tokenInAmountScaled != null
         ? getMaxIn(tokenInAmountScaled.value).toString()
