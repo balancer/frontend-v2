@@ -152,9 +152,10 @@
         <template v-slot:header>
           <div class="p-3 flex w-full items-center justify-between border-b">
             <div class="font-semibold">
-              Requires {{ trading.requiresApproval.value ? 2 : 1 }}
               {{
-                trading.requiresApproval.value ? 'transactions' : 'transaction'
+                $tc('requiresTransactions', approvalTxCount, {
+                  txCount: approvalTxCount
+                })
               }}
             </div>
           </div>
@@ -274,6 +275,10 @@ export default defineComponent({
       )
     );
 
+    const approvalTxCount = computed(() =>
+      props.trading.requiresApproval.value ? 2 : 1
+    );
+
     const showSummary = computed(() => !props.trading.isWrapOrUnwrap.value);
 
     const showTradeRoute = computed(
@@ -383,7 +388,8 @@ export default defineComponent({
       showSummaryInFiat,
       slippageRatePercent,
       showSummary,
-      showTradeRoute
+      showTradeRoute,
+      approvalTxCount
     };
   }
 });
