@@ -47,7 +47,6 @@ export default function useGnosis({
   // COMPOSABLES
   const store = useStore();
   const { account, getSigner } = useVueWeb3();
-  const signer = getSigner();
 
   // DATA
   const feeQuote = ref<FeeInformation | null>(null);
@@ -135,7 +134,7 @@ export default function useGnosis({
 
       const { signature, signingScheme } = await signOrder(
         unsignedOrder,
-        signer
+        getSigner()
       );
 
       const orderId = await gnosisOperator.postSignedOrder({
