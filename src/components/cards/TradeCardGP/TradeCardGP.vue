@@ -19,6 +19,7 @@
         @token-out-amount-change="value => (tokenOutAmount = value)"
         @token-out-address-change="value => (tokenOutAddress = value)"
         @exact-in-change="value => (exactIn = value)"
+        @change="trading.handleAmountChange"
       />
       <BalAlert
         v-if="error"

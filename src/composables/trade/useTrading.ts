@@ -144,49 +144,34 @@ export default function useTrading(
     }
   }
 
-  // WATCHERS
-  watch(tokenInAddressInput, async () => {
-    store.commit('trade/setInputAsset', tokenInAddressInput.value);
-
+  function handleAmountChange() {
     if (isGnosisTrade.value) {
-      gnosis.resetErrors();
-      gnosis.resetFees();
       gnosis.handleAmountChange();
     } else {
       sor.handleAmountChange();
     }
+  }
+
+  function handleAssetChange() {
+    if (isGnosisTrade.value) {
+      gnosis.resetErrors();
+      gnosis.resetFees();
+    }
+  }
+
+  // WATCHERS
+  watch(tokenInAddressInput, async () => {
+    store.commit('trade/setInputAsset', tokenInAddressInput.value);
+
+    handleAssetChange();
+    handleAmountChange();
   });
 
   watch(tokenOutAddressInput, () => {
     store.commit('trade/setOutputAsset', tokenOutAddressInput.value);
 
-    if (isGnosisTrade.value) {
-      gnosis.resetErrors();
-      gnosis.resetFees();
-      gnosis.handleAmountChange();
-    } else {
-      sor.handleAmountChange();
-    }
-  });
-
-  watch(tokenInAmountInput, () => {
-    if (exactIn.value) {
-      if (isGnosisTrade.value) {
-        gnosis.handleAmountChange();
-      } else {
-        sor.handleAmountChange();
-      }
-    }
-  });
-
-  watch(tokenOutAmountInput, () => {
-    if (!exactIn.value) {
-      if (isGnosisTrade.value) {
-        gnosis.handleAmountChange();
-      } else {
-        sor.handleAmountChange();
-      }
-    }
+    handleAssetChange();
+    handleAmountChange();
   });
 
   watch(blockNumber, () => {
@@ -221,6 +206,7 @@ export default function useTrading(
     tokenOutAmountInput,
     // methods
     getQuote,
-    trade
+    trade,
+    handleAmountChange
   };
 }
