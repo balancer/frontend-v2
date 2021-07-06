@@ -21,18 +21,21 @@
     <div class="divide-y w-72" v-if="userClaims != null">
       <div class="p-3">
         <h5 class="text-lg mb-3">{{ $t('liquidityMining') }}</h5>
+        <div class="text-sm text-gray-600 mb-1" v-if="isPolygon">
+          {{ $t('airdropExplainer') }}
+        </div>
         <BalAlert
-          v-if="shouldShowClaimFreezeWarning"
+          v-if="shouldShowClaimFreezeWarning & isMainnet"
           title="Too many claims"
           :description="$t('claimFreezeWarning')"
           type="warning"
           size="sm"
           class="mb-3"
         />
-        <div class="text-sm text-gray-600 mb-1">
+        <div v-if="isMainnet" class="text-sm text-gray-600 mb-1">
           {{ $t('availableToClaim') }}
         </div>
-        <div class="flex justify-between items-center mb-2">
+        <div v-if="isMainnet" class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
             {{
               fNum(
@@ -51,6 +54,7 @@
           </div>
         </div>
         <BalBtn
+          v-if="isMainnet"
           color="gradient"
           size="md"
           block
@@ -121,7 +125,13 @@ export default defineComponent({
     const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
-    const { appNetworkConfig, account, getProvider } = useVueWeb3();
+    const {
+      appNetworkConfig,
+      account,
+      getProvider,
+      isMainnet,
+      isPolygon
+    } = useVueWeb3();
     const { txListener } = useNotify();
 
     const balPrice = computed(
@@ -225,6 +235,8 @@ export default defineComponent({
       isClaiming,
 
       // computed
+      isMainnet,
+      isPolygon,
       userClaims,
       availableToClaimInUSD,
       currentRewards,

@@ -17,7 +17,6 @@ export interface AppState {
   tradeLiquidity: LiquiditySelection;
   tradeInterface: TradeInterface;
   transactionDeadline: number;
-  selectedPoolTokens: string[];
 }
 
 const state: AppState = {
@@ -27,7 +26,6 @@ const state: AppState = {
   locale: 'en-US',
   slippage: '0.01',
   tradeLiquidity: LiquiditySelection.Best,
-  selectedPoolTokens: [],
   transactionDeadline: 20, // 20 minutes
   tradeInterface: APP.IsGnosisIntegration
     ? TradeInterface.GNOSIS
@@ -94,13 +92,6 @@ const mutations = {
   setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection) {
     state.tradeLiquidity = tradeLiquidity;
     lsSet('tradeLiquidity', state.tradeLiquidity);
-  },
-
-  setSelectedPoolTokens(
-    state: AppState,
-    selectedPoolTokens: AppState['selectedPoolTokens']
-  ) {
-    state.selectedPoolTokens = selectedPoolTokens;
   },
 
   setTradeInterface(

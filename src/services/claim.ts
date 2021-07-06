@@ -12,6 +12,8 @@ import { call, sendTransaction } from '@/lib/utils/balancer/web3';
 import { bnum } from '@/lib/utils';
 import { loadTree } from '@/lib/utils/merkle';
 import configs from '@/lib/config';
+import { getOriginalAddress } from '@/services/coingecko';
+import { TOKENS } from '@/constants/tokens';
 
 import merkleRedeemAbi from '@/lib/abi/MerkleRedeem.json';
 
@@ -68,6 +70,12 @@ export async function getPendingClaims(
   provider: Web3Provider,
   account: string
 ): Promise<{ claims: Claim[]; reports: Report }> {
+  if (!constants[network]) {
+    return {
+      claims: [],
+      reports: {}
+    };
+  }
   const snapshot = await getSnapshot(network);
 
   const claimStatus = await getClaimStatus(
@@ -105,6 +113,8 @@ type CurrentRewardsEstimateResponse = {
     'liquidity-providers': Array<{
       snapshot_timestamp: string;
       address: string;
+      token_address: string;
+      chain_id: number;
       current_estimate: string;
       velocity: string;
       week: number;
@@ -119,14 +129,21 @@ export type CurrentRewardsEstimate = {
 } | null;
 
 export async function getCurrentRewardsEstimate(
+  network: NetworkId,
   account: string
 ): Promise<CurrentRewardsEstimate> {
   try {
     const response = await axios.get<CurrentRewardsEstimateResponse>(
-      `https://api.balancer.finance/liquidity-mining/v1/liquidity-provider/${account}`
+      `https://api.balancer.finance/liquidity-mining/v1/liquidity-provider-multitoken/${account}`
     );
     if (response.data.success) {
-      const liquidityProviders = response.data.result['liquidity-providers'];
+      const liquidityProviders = response.data.result[
+        'liquidity-providers'
+      ].filter(
+        incentive =>
+          incentive.token_address ==
+          getOriginalAddress(network, TOKENS.AddressMap.BAL).toLowerCase()
+      );
       const rewards = liquidityProviders
         .reduce(
           (total, { current_estimate }) => total.plus(current_estimate),
