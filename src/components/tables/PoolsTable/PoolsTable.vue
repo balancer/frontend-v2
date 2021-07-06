@@ -27,29 +27,17 @@
       <template v-slot:iconColumnCell="pool">
         <div v-if="!isLoading" class="px-6 py-4">
           <BalAssetSet
-            :addresses="sortedTokenAddressesFor(pool)"
+            :addresses="orderedTokenAddressesFor(pool)"
             :width="100"
           />
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div v-if="!isLoading" class="px-6 py-4 -mt-1 flex flex-wrap">
-          <div
-            v-for="token in sortedTokensFor(pool)"
-            :key="token"
-            class="flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-50 relative"
-          >
-            <div
-              v-if="hasBalance(token.address)"
-              class="w-3 h-3 rounded-full border-2 border-white hover:border-gray-50 bg-green-200 absolute top-0 right-0 -mt-1 -mr-1"
-            />
-            <span>
-              {{ tokens[getAddress(token.address)]?.symbol }}
-            </span>
-            <span class="font-medium text-gray-400 text-xs mt-px ml-1">
-              {{ fNum(token.weight, 'percent_lg') }}
-            </span>
-          </div>
+        <div v-if="!isLoading && !isLoadingBalances" class="px-6 py-4">
+          <TokenPills
+            :tokens="orderedPoolTokens(pool)"
+            :isStablePool="pool.poolType === 'Stable'"
+          />
         </div>
       </template>
       <template v-slot:apyCell="pool">
@@ -71,7 +59,10 @@ import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
-import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import {
+  DecoratedPoolWithShares,
+  PoolToken
+} from '@/services/balancer/subgraph/types';
 
 import { getAddress } from '@ethersproject/address';
 
@@ -80,13 +71,15 @@ import useFathom from '@/composables/useFathom';
 import useAccountBalances from '@/composables/useAccountBalances';
 
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import TokenPills from './TokenPills/TokenPills.vue';
 
-import { ColumnDefinition } from '../_global/BalTable/BalTable.vue';
 import useTokens from '@/composables/useTokens';
+import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 
 export default defineComponent({
   components: {
-    LiquidityMiningTooltip
+    LiquidityMiningTooltip,
+    TokenPills
   },
 
   emits: ['loadMore'],
@@ -117,6 +110,7 @@ export default defineComponent({
   },
 
   setup(props) {
+    // COMPOSABLES
     const { fNum } = useNumbers();
     const { tokens } = useTokens();
     const router = useRouter();
@@ -129,7 +123,7 @@ export default defineComponent({
       isIdle: isBalancesQueryIdle
     } = useAccountBalances();
 
-    // COMPOSABLES
+    // DATA
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
       {
         name: 'Icons',
@@ -183,12 +177,15 @@ export default defineComponent({
       }
     ]);
 
-    function sortedTokenAddressesFor(pool: DecoratedPoolWithShares) {
-      const sortedTokens = sortedTokensFor(pool);
+    // METHODS
+    function orderedTokenAddressesFor(pool: DecoratedPoolWithShares) {
+      const sortedTokens = orderedPoolTokens(pool);
       return sortedTokens.map(token => getAddress(token.address));
     }
 
-    function sortedTokensFor(pool: DecoratedPoolWithShares) {
+    function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
+      if (pool.poolType === 'Stable') return pool.tokens;
+
       const sortedTokens = pool.tokens.slice();
       sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
       return sortedTokens;
@@ -211,8 +208,8 @@ export default defineComponent({
       handleRowClick,
       getAddress,
       fNum,
-      sortedTokenAddressesFor,
-      sortedTokensFor,
+      orderedTokenAddressesFor,
+      orderedPoolTokens,
       hasBalance
     };
   }

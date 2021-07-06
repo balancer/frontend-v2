@@ -22,6 +22,7 @@ const defaultAttrs = {
   totalShares: true,
   owner: true,
   factory: true,
+  amp: true,
   tokens: {
     address: true,
     balance: true,

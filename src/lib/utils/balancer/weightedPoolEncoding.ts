@@ -3,6 +3,7 @@ import { BigNumberish } from '@ethersproject/bignumber';
 
 const JOIN_WEIGHTED_POOL_INIT_TAG = 0;
 const JOIN_WEIGHTED_POOL_EXACT_TOKENS_IN_FOR_BPT_OUT_TAG = 1;
+const JOIN_WEIGHTED_POOL_TOKEN_IN_FOR_EXACT_BPT_OUT_TAG = 2;
 
 export type JoinWeightedPoolInit = {
   kind: 'Init';
@@ -15,15 +16,24 @@ export type JoinWeightedPoolExactTokensInForBPTOut = {
   minimumBPT: BigNumberish;
 };
 
+export type JoinWeightedPoolTokenInForExactBPTOut = {
+  kind: 'TokenInForExactBPTOut';
+  bptAmountOut: BigNumberish;
+  enterTokenIndex: number;
+};
+
 export function encodeJoinWeightedPool(
-  joinData: JoinWeightedPoolInit | JoinWeightedPoolExactTokensInForBPTOut
+  joinData:
+    | JoinWeightedPoolInit
+    | JoinWeightedPoolExactTokensInForBPTOut
+    | JoinWeightedPoolTokenInForExactBPTOut
 ): string {
   if (joinData.kind == 'Init') {
     return defaultAbiCoder.encode(
       ['uint256', 'uint256[]'],
       [JOIN_WEIGHTED_POOL_INIT_TAG, joinData.amountsIn]
     );
-  } else {
+  } else if (joinData.kind == 'ExactTokensInForBPTOut') {
     return defaultAbiCoder.encode(
       ['uint256', 'uint256[]', 'uint256'],
       [
@@ -32,11 +42,20 @@ export function encodeJoinWeightedPool(
         joinData.minimumBPT
       ]
     );
+  } else {
+    return defaultAbiCoder.encode(
+      ['uint256', 'uint256', 'uint256'],
+      [
+        JOIN_WEIGHTED_POOL_TOKEN_IN_FOR_EXACT_BPT_OUT_TAG,
+        joinData.bptAmountOut,
+        joinData.enterTokenIndex
+      ]
+    );
   }
 }
 
 const EXIT_WEIGHTED_POOL_EXACT_BPT_IN_FOR_ONE_TOKEN_OUT_TAG = 0;
-const EXIT_WEIGHTED_POOL_EXACT_BPT_IN_FOR_ALL_TOKENS_OUT_TAG = 1;
+const EXIT_WEIGHTED_POOL_EXACT_BPT_IN_FOR_TOKENS_OUT_TAG = 1;
 const EXIT_WEIGHTED_POOL_BPT_IN_FOR_EXACT_TOKENS_OUT_TAG = 2;
 
 export type ExitWeightedPoolExactBPTInForOneTokenOut = {
@@ -45,8 +64,8 @@ export type ExitWeightedPoolExactBPTInForOneTokenOut = {
   exitTokenIndex: number;
 };
 
-export type ExitWeightedPoolExactBPTInForAllTokensOut = {
-  kind: 'ExactBPTInForAllTokensOut';
+export type ExitWeightedPoolExactBPTInForTokensOut = {
+  kind: 'ExactBPTInForTokensOut';
   bptAmountIn: BigNumberish;
 };
 
@@ -59,7 +78,7 @@ export type ExitWeightedPoolBPTInForExactTokensOut = {
 export function encodeExitWeightedPool(
   exitData:
     | ExitWeightedPoolExactBPTInForOneTokenOut
-    | ExitWeightedPoolExactBPTInForAllTokensOut
+    | ExitWeightedPoolExactBPTInForTokensOut
     | ExitWeightedPoolBPTInForExactTokensOut
 ): string {
   if (exitData.kind == 'ExactBPTInForOneTokenOut') {
@@ -71,13 +90,10 @@ export function encodeExitWeightedPool(
         exitData.exitTokenIndex
       ]
     );
-  } else if (exitData.kind == 'ExactBPTInForAllTokensOut') {
+  } else if (exitData.kind == 'ExactBPTInForTokensOut') {
     return defaultAbiCoder.encode(
       ['uint256', 'uint256'],
-      [
-        EXIT_WEIGHTED_POOL_EXACT_BPT_IN_FOR_ALL_TOKENS_OUT_TAG,
-        exitData.bptAmountIn
-      ]
+      [EXIT_WEIGHTED_POOL_EXACT_BPT_IN_FOR_TOKENS_OUT_TAG, exitData.bptAmountIn]
     );
   } else {
     return defaultAbiCoder.encode(

@@ -21,7 +21,9 @@ function getChainAddress(chainId: number, address: string) {
       '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115':
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       '0x04df6e4121c27713ed22341e7c7df330f56f289b':
-        '0x6b175474e89094c44da98b954eedeac495271d0f'
+        '0x6b175474e89094c44da98b954eedeac495271d0f',
+      '0xcc08220af469192c53295fdd34cfb8df29aa17ab':
+        '0xdac17f958d2ee523a2206206994597c13d831ec7'
     },
     137: {}
   };
@@ -62,6 +64,9 @@ export function getOriginalAddress(chainId: number, address: string) {
     // DAI
     '0x6b175474e89094c44da98b954eedeac495271d0f': {
       42: '0x04df6e4121c27713ed22341e7c7df330f56f289b'
+    },
+    '0xdac17f958d2ee523a2206206994597c13d831ec7': {
+      42: '0xcc08220af469192c53295fdd34cfb8df29aa17ab'
     }
   };
   if (!map[address] || !map[address][chainId]) {

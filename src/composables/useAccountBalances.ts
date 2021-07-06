@@ -82,7 +82,7 @@ export default function useAccountBalances() {
   });
 
   function hasBalance(address: string): boolean {
-    return (balances.value || {})[address];
+    return !!(balances.value || {})[address];
   }
 
   return {

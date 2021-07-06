@@ -53,12 +53,6 @@ export default function usePoolQuery(
         }
       }
     );
-    const tokens = pick(allTokens.value, pool.tokenAddresses);
-    const onchainData = await balancerContracts.vault.getPoolData(
-      id,
-      pool.poolType,
-      tokens
-    );
 
     if (!tokensInjected(pool)) {
       await store.dispatch('registry/injectTokens', [
@@ -66,6 +60,13 @@ export default function usePoolQuery(
         pool.address
       ]);
     }
+
+    const tokens = pick(allTokens.value, pool.tokenAddresses);
+    const onchainData = await balancerContracts.vault.getPoolData(
+      id,
+      pool.poolType,
+      tokens
+    );
 
     return { ...pool, onchain: onchainData };
   };

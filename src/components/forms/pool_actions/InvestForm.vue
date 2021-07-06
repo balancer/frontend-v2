@@ -73,9 +73,12 @@
             </div>
             <div class="flex flex-col w-1/2 leading-none text-right pl-2">
               <span class="break-words" :title="fNum(amountUSD(i), 'usd')">
-                {{ fNum(amountUSD(i), 'usd') }}
+                {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
-              <span class="text-xs text-gray-400">
+              <span
+                v-if="pool.poolType !== 'Stable'"
+                class="text-xs text-gray-400"
+              >
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
@@ -112,7 +115,10 @@
               <span class="font-medium text-sm leading-none w-14 truncate">
                 {{ pool.onchain.tokens[token].symbol }}
               </span>
-              <span class="leading-none text-xs mt-1 text-gray-500">
+              <span
+                v-if="pool.poolType !== 'Stable'"
+                class="leading-none text-xs mt-1 text-gray-500"
+              >
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
@@ -259,7 +265,7 @@ import useNotify from '@/composables/useNotify';
 import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
-import PoolCalculator from '@/services/pool/calculator';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { bnum } from '@/lib/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';

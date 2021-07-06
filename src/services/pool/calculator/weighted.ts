@@ -1,5 +1,5 @@
-import Calculator from '.';
-import { PiOptions } from '.';
+import Calculator from './calculator.sevice';
+import { PiOptions } from './calculator.sevice';
 import { parseUnits, formatUnits } from '@ethersproject/units';
 import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
@@ -19,45 +19,6 @@ export default class Weighted {
 
   constructor(calculator) {
     this.calc = calculator;
-  }
-
-  public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
-    let bptAmount, bptZeroPriceImpact;
-
-    if (this.calc.action === 'join') {
-      bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
-      if (bptAmount < 0) return bnum(0);
-      bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
-
-      return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
-    } else {
-      // Single asset exit
-      if (opts.exactOut) {
-        bptAmount = this.bptInForExactTokensOut(tokenAmounts);
-        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
-      } else {
-        bptAmount = parseUnits(
-          this.calc.bptBalance,
-          this.calc.poolDecimals
-        ).toString();
-        tokenAmounts = this.calc.pool.tokensList.map((_, i) => {
-          if (i !== opts.tokenIndex) return '0';
-          const tokenAmount = this.exactBPTInForTokenOut(
-            this.calc.bptBalance,
-            opts.tokenIndex
-          ).toString();
-          return formatUnits(
-            tokenAmount,
-            this.calc.poolTokenDecimals[opts.tokenIndex]
-          ).toString();
-        });
-        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
-      }
-
-      return bnum(bptAmount)
-        .div(bptZeroPriceImpact)
-        .minus(1);
-    }
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
@@ -142,6 +103,45 @@ export default class Weighted {
       fnum(this.calc.poolTotalSupply.toString()),
       fnum(this.calc.poolSwapFee.toString())
     );
+  }
+
+  public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
+    let bptAmount, bptZeroPriceImpact;
+
+    if (this.calc.action === 'join') {
+      bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
+      if (bptAmount < 0) return bnum(0);
+      bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+
+      return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
+    } else {
+      // Single asset exit
+      if (opts.exactOut) {
+        bptAmount = this.bptInForExactTokensOut(tokenAmounts);
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      } else {
+        bptAmount = parseUnits(
+          this.calc.bptBalance,
+          this.calc.poolDecimals
+        ).toString();
+        tokenAmounts = this.calc.pool.tokensList.map((_, i) => {
+          if (i !== opts.tokenIndex) return '0';
+          const tokenAmount = this.exactBPTInForTokenOut(
+            this.calc.bptBalance,
+            opts.tokenIndex
+          ).toString();
+          return formatUnits(
+            tokenAmount,
+            this.calc.poolTokenDecimals[opts.tokenIndex]
+          ).toString();
+        });
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      }
+
+      return bnum(bptAmount)
+        .div(bptZeroPriceImpact)
+        .minus(1);
+    }
   }
 
   public bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
