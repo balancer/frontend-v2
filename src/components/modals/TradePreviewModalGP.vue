@@ -1,9 +1,9 @@
 <template>
   <BalModal show @close="onClose" :title="$t('previewTrade')">
     <div>
-      <BalCard noPad class="relative mb-6">
+      <BalCard noPad class="relative mb-6 overflow-hidden">
         <template v-slot:header>
-          <div class="w-full p-3 border-b bg-gray-100 rounded-t-lg text-sm">
+          <div class="w-full p-3 border-b bg-gray-100 text-sm">
             {{ $t('effectivePrice') }}
             {{
               trading.exactIn.value
