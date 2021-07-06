@@ -48,6 +48,30 @@
         block
         @click.prevent="modalTradePreviewIsOpen = true"
       />
+      <div
+        class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600"
+        v-if="trading.isBalancerTrade.value && !trading.isWrapOrUnwrap.value"
+      >
+        <LightBulbIcon />
+        <!-- TODO: translate -->
+        <span
+          >Trades from ETH route through Balancer liquidity pools and incur gas
+          fees.
+          <router-link
+            :to="{
+              name: 'trade',
+              params: {
+                assetIn: TOKENS.AddressMap.WETH,
+                assetOut: trading.tokenOut.value.address
+              }
+            }"
+            class="text-blue-500"
+          >
+            Trade from WETH
+          </router-link>
+          to avoid gas.
+        </span>
+      </div>
     </div>
   </BalCard>
   <teleport to="#modal">
@@ -72,8 +96,10 @@ import useValidation, {
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 import { ETHER } from '@/constants/tokenlists';
+import { TOKENS } from '@/constants/tokens';
 
 import { isRequired } from '@/lib/utils/validations';
 
@@ -83,7 +109,6 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
 import TradePairGP from './TradePairGP.vue';
-import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   components: {
@@ -217,6 +242,8 @@ export default defineComponent({
     populateInitialTokens();
 
     return {
+      // constants
+      TOKENS,
       // context
       TradeSettingsContext,
 
