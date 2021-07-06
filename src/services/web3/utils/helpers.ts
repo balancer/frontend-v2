@@ -1,9 +1,12 @@
-import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
+import { ExternalProvider } from '@ethersproject/providers';
 import ConfigService from '@/services/config/config.service';
+import { Network } from '@/constants/network';
 
 export async function importPolygonDetailsToWallet(provider: ExternalProvider) {
   const configService = new ConfigService();
-  const polygonNetworkConfig = configService.getNetworkConfig('137');
+  const polygonNetworkConfig = configService.getNetworkConfig(
+    String(Network.POLYGON)
+  );
   const hexChainId = `0x${polygonNetworkConfig.chainId.toString(16)}`;
   try {
     const request = {
