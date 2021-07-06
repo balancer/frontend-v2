@@ -3,8 +3,10 @@
     <div>
       <BalCard noPad class="relative mb-6 overflow-hidden">
         <template v-slot:header>
-          <div class="w-full p-3 border-b bg-gray-100 text-sm">
-            {{ $t('effectivePrice') }}
+          <div class="w-full p-3 border-b bg-gray-50 rounded-t-lg text-xs">
+            <span class="text-gray-500">
+              {{ $t('effectivePrice') }}
+            </span>
             {{
               trading.exactIn.value
                 ? trading.effectivePriceMessage.value.tokenIn
@@ -71,17 +73,21 @@
         <template v-slot:header>
           <div class="p-3 flex w-full items-center justify-between border-b">
             <div class="font-semibold">{{ $t('summary') }}</div>
-            <div class="flex divide-x text-sm">
+            <div class="flex divide-x text-xs uppercase">
               <div
-                :class="!showSummaryInFiat && 'text-blue-600 font-medium'"
-                class="pr-1 cursor-pointer"
+                :class="[
+                  'pr-1 cursor-pointer font-medium',
+                  { 'text-blue-600': !showSummaryInFiat }
+                ]"
                 @click="showSummaryInFiat = false"
               >
                 {{ $t('tokens') }}
               </div>
               <div
-                :class="showSummaryInFiat && 'text-blue-600 font-medium'"
-                class="pl-1 cursor-pointer"
+                :class="[
+                  'pl-1 cursor-pointer font-medium',
+                  { 'text-blue-600': showSummaryInFiat }
+                ]"
                 @click="showSummaryInFiat = true"
               >
                 {{ FiatCurrency.USD }}
@@ -142,12 +148,18 @@
           </div>
         </template>
       </BalCard>
-      <BalCard shadow="none">
-        <div class="font-semibold mb-2">
-          Requires {{ trading.requiresApproval.value ? 2 : 1 }}
-          {{ trading.requiresApproval.value ? 'transactions' : 'transaction' }}:
-        </div>
-        <div class="text-sm">
+      <BalCard noPad shadow="none">
+        <template v-slot:header>
+          <div class="p-3 flex w-full items-center justify-between border-b">
+            <div class="font-semibold">
+              Requires {{ trading.requiresApproval.value ? 2 : 1 }}
+              {{
+                trading.requiresApproval.value ? 'transactions' : 'transaction'
+              }}
+            </div>
+          </div>
+        </template>
+        <div class="p-3 text-sm">
           <div
             v-if="trading.requiresApproval.value"
             class="flex items-center mb-2"
