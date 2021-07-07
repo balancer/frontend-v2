@@ -12,7 +12,7 @@ const defaultArgs = {
   }
 };
 
-if (configService.env.HIDE_STABLE_POOLS) {
+if (!configService.env.ENABLE_STABLE_POOLS) {
   defaultArgs.where['poolType_not'] = 'Stable';
 }
 
