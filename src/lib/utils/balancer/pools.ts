@@ -53,6 +53,7 @@ function formatPools(pools) {
   return pools.map(pool => formatPool(pool));
 }
 
+// DELETE THIS LATER IF UNUSED???
 // Load pools data with multicalls
 export async function getPools(
   network: string,
@@ -109,6 +110,7 @@ export async function getPools(
   return formatPools(pools);
 }
 
+// DELETE THIS LATER????
 export async function getPool(
   network: string,
   provider: JsonRpcProvider,
