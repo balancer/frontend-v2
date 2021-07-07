@@ -42,7 +42,8 @@ export const POOLS = {
   BlockList: [''],
   Stable: {
     AllowList: [
-      '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063'
+      '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
+      '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc56000000000000000000000066'
     ]
   },
   Factories: {
