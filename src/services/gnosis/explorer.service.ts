@@ -19,3 +19,5 @@ export default class GnosisExplorerService {
     return `${this.baseURL}/orders/${orderId}`;
   }
 }
+
+export const gnosisExplorer = new GnosisExplorerService();

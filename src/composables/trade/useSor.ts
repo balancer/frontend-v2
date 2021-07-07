@@ -1,4 +1,4 @@
-import { Ref, onMounted, ref, computed, watch } from 'vue';
+import { Ref, onMounted, ref, computed, ComputedRef } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -25,22 +25,51 @@ import useAccountBalances from '../useAccountBalances';
 import { ETHER } from '@/constants/tokenlists';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
+import { TokenMap } from '@/types';
+import { TradeQuote } from './types';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
 const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 const MIN_PRICE_IMPACT = 0.0001;
 
-export default function useSor(
-  tokenInAddressInput: Ref<string>,
-  tokenInAmountInput: Ref<string>,
-  tokenOutAddressInput: Ref<string>,
-  tokenOutAmountInput: Ref<string>,
-  tokens: Ref<any>,
-  allowanceState: any,
-  isWrap: Ref<boolean>,
-  isUnwrap: Ref<boolean>
-) {
+type Props = {
+  exactIn: Ref<boolean>;
+  tokenInAddressInput: Ref<string>;
+  tokenInAmountInput: Ref<string>;
+  tokenOutAddressInput: Ref<string>;
+  tokenOutAmountInput: Ref<string>;
+  tokens: Ref<TokenMap>;
+  isWrap: Ref<boolean>;
+  isUnwrap: Ref<boolean>;
+  tokenInAmountScaled?: ComputedRef<BigNumber>;
+  tokenOutAmountScaled?: ComputedRef<BigNumber>;
+  sorConfig?: {
+    refetchPools: boolean;
+    handleAmountsOnFetchPools: boolean;
+    enableTxHandler: boolean;
+  };
+};
+
+export type UseSor = ReturnType<typeof useSor>;
+
+export default function useSor({
+  exactIn,
+  tokenInAddressInput,
+  tokenInAmountInput,
+  tokenOutAddressInput,
+  tokenOutAmountInput,
+  tokens,
+  isWrap,
+  isUnwrap,
+  tokenInAmountScaled,
+  tokenOutAmountScaled,
+  sorConfig = {
+    refetchPools: true,
+    handleAmountsOnFetchPools: true,
+    enableTxHandler: true
+  }
+}: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
   const sorReturn = ref<SorReturn>({
@@ -65,7 +94,6 @@ export default function useSor(
     }
   });
   const trading = ref(false);
-  const exactIn = ref(true);
   const priceImpact = ref(0);
   const latestTxHash = ref('');
   const poolsLoading = ref(true);
@@ -96,15 +124,14 @@ export default function useSor(
   });
 
   useIntervalFn(async () => {
-    if (sorManager) {
+    if (sorConfig.refetchPools && sorManager) {
       fetchPools();
     }
   }, 30 * 1e3);
 
-  watch(liquiditySelection, () => {
-    // When the liquidity type is changed we need to update the trade to use that selection
-    handleAmountChange();
-  });
+  const slippageBufferRate = computed(() =>
+    parseFloat(store.state.app.slippage)
+  );
 
   async function initSor(): Promise<void> {
     const config = userNetworkConfig.value;
@@ -141,7 +168,9 @@ export default function useSor(
     console.timeEnd('[SOR] fetchPools');
     poolsLoading.value = false;
     // Updates any swaps with up to date pools/balances
-    handleAmountChange();
+    if (sorConfig.handleAmountsOnFetchPools) {
+      handleAmountChange();
+    }
   }
 
   async function handleAmountChange(): Promise<void> {
@@ -317,14 +346,16 @@ export default function useSor(
   }
 
   function txHandler(tx: TransactionResponse): void {
-    if (supportsBlocknative.value) {
-      blocknativeTxHandler(tx);
-    } else {
-      ethersTxHandler(tx);
+    if (sorConfig.enableTxHandler) {
+      if (supportsBlocknative.value) {
+        blocknativeTxHandler(tx);
+      } else {
+        ethersTxHandler(tx);
+      }
     }
   }
 
-  async function trade() {
+  async function trade(successCallback?: () => void) {
     trackGoal(Goals.ClickSwap);
     trading.value = true;
 
@@ -334,7 +365,6 @@ export default function useSor(
     const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
     const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
     const tokenInAmountScaled = scale(tokenInAmountNumber, tokenInDecimals);
-    const slippageBufferRate = parseFloat(store.state.app.slippage);
 
     if (isWrap.value) {
       try {
@@ -344,6 +374,9 @@ export default function useSor(
           tokenInAmountScaled
         );
         console.log('Wrap tx', tx);
+        if (successCallback != null) {
+          successCallback();
+        }
         txHandler(tx);
       } catch (e) {
         console.log(e);
@@ -358,6 +391,9 @@ export default function useSor(
           tokenInAmountScaled
         );
         console.log('Unwrap tx', tx);
+        if (successCallback != null) {
+          successCallback();
+        }
         txHandler(tx);
       } catch (e) {
         console.log(e);
@@ -369,9 +405,7 @@ export default function useSor(
     if (exactIn.value) {
       const tokenOutAmountNumber = new BigNumber(tokenOutAmountInput.value);
       const tokenOutAmount = scale(tokenOutAmountNumber, tokenOutDecimals);
-      const minAmount = tokenOutAmount
-        .div(1 + slippageBufferRate)
-        .integerValue(BigNumber.ROUND_DOWN);
+      const minAmount = getMinOut(tokenOutAmount);
       const sr: SorReturn = sorReturn.value as SorReturn;
 
       try {
@@ -383,15 +417,16 @@ export default function useSor(
           minAmount
         );
         console.log('Swap in tx', tx);
+        if (successCallback != null) {
+          successCallback();
+        }
         txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
       }
     } else {
-      const tokenInAmountMax = tokenInAmountScaled
-        .times(1 + slippageBufferRate)
-        .integerValue(BigNumber.ROUND_DOWN);
+      const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
       const sr: SorReturn = sorReturn.value as SorReturn;
       const tokenOutAmountNormalised = new BigNumber(tokenOutAmountInput.value);
       const tokenOutAmountScaled = scale(
@@ -408,6 +443,9 @@ export default function useSor(
           tokenOutAmountScaled
         );
         console.log('Swap out tx', tx);
+        if (successCallback != null) {
+          successCallback();
+        }
         txHandler(tx);
       } catch (e) {
         console.log(e);
@@ -451,6 +489,37 @@ export default function useSor(
     }
   }
 
+  function getMaxIn(amount: BigNumber) {
+    return amount
+      .times(1 + slippageBufferRate.value)
+      .integerValue(BigNumber.ROUND_DOWN);
+  }
+
+  function getMinOut(amount: BigNumber) {
+    return amount
+      .div(1 + slippageBufferRate.value)
+      .integerValue(BigNumber.ROUND_DOWN);
+  }
+
+  function getQuote(): TradeQuote {
+    const maximumInAmount =
+      tokenInAmountScaled != null
+        ? getMaxIn(tokenInAmountScaled.value).toString()
+        : '';
+
+    const minimumOutAmount =
+      tokenOutAmountScaled != null
+        ? getMinOut(tokenOutAmountScaled.value).toString()
+        : '';
+
+    return {
+      feeAmountInToken: '0',
+      feeAmountOutToken: '0',
+      maximumInAmount,
+      minimumOutAmount
+    };
+  }
+
   return {
     sorManager,
     sorReturn,
@@ -463,6 +532,7 @@ export default function useSor(
     priceImpact,
     latestTxHash,
     fetchPools,
-    poolsLoading
+    poolsLoading,
+    getQuote
   };
 }

@@ -22,17 +22,17 @@ export default function useValidation(
 ) {
   const { isWalletReady } = useVueWeb3();
 
+  const tokensAmountsValid = computed(
+    () =>
+      isValidTokenAmount(tokenInAmount.value) &&
+      isValidTokenAmount(tokenOutAmount.value)
+  );
+
   const validationStatus = computed(() => {
     if (!isWalletReady) return TradeValidation.NO_ACCOUNT;
     const tokenIn = tokens.value[tokenInAddress.value];
 
-    if (
-      (parseFloat(tokenInAmount.value) == 0 ||
-        tokenInAmount.value.trim() === '') &&
-      (parseFloat(tokenOutAmount.value) == 0 ||
-        tokenOutAmount.value.trim() === '')
-    )
-      return TradeValidation.EMPTY;
+    if (!tokensAmountsValid.value) return TradeValidation.EMPTY;
 
     const eth = tokens.value[ETHER.address];
     const ethBalance = parseFloat(eth.balance);
@@ -54,10 +54,16 @@ export default function useValidation(
     return TradeValidation.VALID;
   });
 
+  function isValidTokenAmount(tokenAmount: string) {
+    return parseFloat(tokenAmount) > 0 && tokenAmount.trim() !== '';
+  }
+
   const errorMessage = computed(() => validationStatus.value);
 
   return {
     validationStatus,
-    errorMessage
+    errorMessage,
+    isValidTokenAmount,
+    tokensAmountsValid
   };
 }
