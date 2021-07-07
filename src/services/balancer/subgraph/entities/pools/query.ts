@@ -1,5 +1,6 @@
 import { POOLS } from '@/constants/pools';
 import { merge } from 'lodash';
+import { configService } from '@/services/config/config.service';
 
 const defaultArgs = {
   first: 1000,
@@ -7,9 +8,13 @@ const defaultArgs = {
   orderDirection: 'desc',
   where: {
     totalShares_gt: 0.01,
-    id_not_in: POOLS.BlackList
+    id_not_in: POOLS.BlockList
   }
 };
+
+if (configService.env.HIDE_STABLE_POOLS) {
+  defaultArgs.where['poolType_not'] = 'Stable';
+}
 
 const defaultAttrs = {
   id: true,

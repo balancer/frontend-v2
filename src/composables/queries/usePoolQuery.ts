@@ -11,6 +11,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import BalancerContracts from '@/services/balancer/contracts/service';
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPool, FullPool } from '@/services/balancer/subgraph/types';
+import { POOLS } from '@/constants/pools';
 
 export default function usePoolQuery(
   id: string,
@@ -53,6 +54,11 @@ export default function usePoolQuery(
         }
       }
     );
+
+    if (pool.poolType === 'Stable' && !POOLS.Stable.AllowList.includes(id)) {
+      throw new Error('Pool not allowed');
+    }
+
     const tokens = pick(allTokens.value, pool.tokenAddresses);
     const onchainData = await balancerContracts.vault.getPoolData(
       id,
