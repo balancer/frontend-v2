@@ -8,6 +8,7 @@ interface Env {
   IPFS_NODE: string;
   BLOCKNATIVE_DAPP_ID: string;
   PORTIS_DAPP_ID: string;
+  ENABLE_STABLE_POOLS: boolean;
 }
 
 export default class ConfigService {
@@ -18,6 +19,7 @@ export default class ConfigService {
       APP_DOMAIN: process.env.VUE_APP_DOMAIN || 'app.balancer.fi',
       IPFS_NODE: process.env.VUE_APP_IPFS_NODE || 'ipfs.io',
       BLOCKNATIVE_DAPP_ID: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || 'xxx',
+      ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
       PORTIS_DAPP_ID:
         process.env.PORTIS_DAPP_ID || '3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe'
     };
