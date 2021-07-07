@@ -453,7 +453,7 @@ export default defineComponent({
         .exactTokensInForBPTOut(fullAmounts.value)
         .toString();
       bptOut = formatUnits(bptOut, props.pool.onchain.decimals);
-      console.log(bptOut, `TS EVM _exactTokensInForBPTOut !!!!!!!`);
+      console.log(bptOut, `TS EVM _exactTokensInForBPTOut`);
 
       return minusSlippage(bptOut, props.pool.onchain.decimals);
     });
@@ -549,11 +549,11 @@ export default defineComponent({
         fullAmounts.value
       );
       bptOut = formatUnits(bptOut.toString(), props.pool.onchain.decimals);
-      console.log(bptOut, 'bptOut (queryJoin) !!!!!!!');
-      console.log(minBptOut.value, 'bptOut (JS) minusSlippage !!!!!!!');
+      console.log(bptOut, 'bptOut (queryJoin)');
+      console.log(minBptOut.value, 'bptOut (JS) minusSlippage');
       console.log(
         minusSlippage(bptOut, props.pool.onchain.decimals),
-        'bptOut (queryJoin) minusSlippage !!!!!!!'
+        'bptOut (queryJoin) minusSlippage'
       );
     }
 
@@ -593,15 +593,6 @@ export default defineComponent({
       try {
         data.loading = true;
         await calcMinBptOut();
-        console.log(`!!!!!!! submit join tx`);
-        console.log(
-          fullAmounts.value,
-          ' token amounts (should match input boxes) !!!!!!!'
-        );
-        console.log(
-          minBptOut.value,
-          ' minBpt (should match slippage value) !!!!!!!'
-        );
         const tx = await poolExchange.value.join(
           getProvider(),
           account.value,

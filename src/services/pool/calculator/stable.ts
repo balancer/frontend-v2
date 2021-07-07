@@ -33,13 +33,6 @@ export default class Stable {
     );
     const amounts = denormAmounts.map(a => fnum(a.toString()));
 
-    // console.log(`!!!!!!! TEST`)
-    // console.log(this.scaledBalances, `!!!!!`);
-    // console.log(amp.toString(), `!!!!!`);
-    // console.log(amounts, `!!!!!`);
-    // console.log(this.scaledPoolTotalSupply.toString(), `!!!!!`);
-    // console.log(this.calc.poolSwapFee.toString(), `!!!!!`)
-
     const bptOut = _exactTokensInForBPTOut(
       this.scaledBalances,
       amp,
@@ -135,14 +128,7 @@ export default class Stable {
       if (bptAmount.isLessThan(0)) return bnum(0);
       bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
 
-      // console.log(`PRICE IMPACT !!!!!!!`);
-      // console.log(bptAmount.toString(), 'bptAmount (EVM Maths) !!!!!!!');
-      // console.log(bptZeroPriceImpact.toString(), `bptZeroPriceImpact (Helper) !!!!!!!`);
-
-      const pi = bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
-      // console.log(pi.toString(), `Price Impact Calculated !!!!!!!`);
-
-      return pi;
+      return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
     } else {
       // Single asset exit
       if (opts.exactOut) {
@@ -184,13 +170,16 @@ export default class Stable {
     const amounts = denormAmounts.map(a => bnum(a.toString()));
     const balances = this.calc.poolTokenBalances.map(b => bnum(b.toString()));
 
-    return _bptForTokensZeroPriceImpact(
+    const bptZeroImpact = _bptForTokensZeroPriceImpact(
       balances,
       this.calc.poolTokenDecimals,
       amounts,
       bnum(this.calc.poolTotalSupply.toString()),
       amp
     );
+
+    console.log(bptZeroImpact.toString(), ` BPTForTokensZeroPriceImpact`);
+    return bptZeroImpact;
   }
 
   private get scaledBalances(): FixedPointNumber[] {

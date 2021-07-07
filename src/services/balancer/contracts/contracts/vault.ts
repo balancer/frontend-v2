@@ -71,7 +71,6 @@ export default class Vault {
       };
     });
 
-    // DOUBLE CHECK WITH GARETH LATER
     let amp = '0';
     if (data?.amp) {
       amp = data.amp.value.div(data.amp.precision);
