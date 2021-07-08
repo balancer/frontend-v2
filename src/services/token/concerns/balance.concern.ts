@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 
 // TYPES
-export type BalanceDictionary = { [address: string]: BigNumber };
+export type BalanceMap = { [address: string]: BigNumber };
 
 export default class BalanceConcern {
   constructor(private readonly service: TokenService) {}
@@ -14,7 +14,7 @@ export default class BalanceConcern {
     account: string,
     userNetwork: string,
     addresses: string[]
-  ): Promise<BalanceDictionary> {
+  ): Promise<BalanceMap> {
     try {
       const provider = this.service.rpcProviderService.getJsonProvider(
         userNetwork
@@ -35,7 +35,7 @@ export default class BalanceConcern {
   private associateBalances(
     balances: [BigNumber][],
     addresses: string[]
-  ): BalanceDictionary {
+  ): BalanceMap {
     return Object.fromEntries(
       addresses.map((address, i) => [getAddress(address), balances[i][0]])
     );

@@ -1,32 +1,33 @@
-import { reactive, ref, Ref, computed } from 'vue';
+import { reactive, ref, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { tokenService } from '@/services/token/token.service';
-import { BalanceMap } from '@/services/token/concerns/balance.concern';
+import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 // TYPES
-type Response = BalanceMap;
+type Response = ContractAllowancesMap;
 
-export default function useAccountBalancesQuery(
+export default function useAccountAllowancesQuery(
   tokens: Ref<string[]> = ref([]),
+  contractAddesses: Ref<string[]> = ref([]),
   options: UseQueryOptions<Response> = {}
 ) {
-  const { account, isWalletReady, userNetworkConfig } = useVueWeb3();
-
-  const userNetworkKey = computed(() => userNetworkConfig.value.key);
+  const { account, isWalletReady } = useVueWeb3();
 
   const queryKey = reactive(
-    QUERY_KEYS.Account.Balances(account, userNetworkKey, tokens)
+    QUERY_KEYS.Account.Allowances2(account, contractAddesses, tokens)
   );
 
   const queryFn = async () => {
-    return await tokenService.balance.getMany(
+    const res = await tokenService.allowances.get(
       account.value,
-      userNetworkKey.value,
+      contractAddesses.value,
       tokens.value
     );
+    console.log('allowances', res);
+    return res;
   };
 
   const queryOptions = reactive({

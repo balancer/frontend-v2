@@ -28,6 +28,8 @@ import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
+import useTokenLists2 from './composables/useTokenLists2';
+import useTokens2 from './composables/useTokens2';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -42,6 +44,8 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     useWeb3Watchers();
+    useTokenLists2(); // Init state
+    useTokens2(); // Init state
     const { isWalletSelectVisible, toggleWalletSelectModal } = useVueWeb3();
     const store = useStore();
     const route = useRoute();

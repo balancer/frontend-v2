@@ -109,7 +109,7 @@ import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
 import useTokenLists from '@/composables/useTokensStore';
-// import useTokenLists2 from '@/composables/useTokenLists2';
+import useTokenLists2 from '@/composables/useTokenLists2';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';

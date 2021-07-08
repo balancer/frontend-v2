@@ -3,18 +3,21 @@ import useTokenLists2 from './useTokenLists2';
 import { getAddress } from '@ethersproject/address';
 import { TokenInfo } from '@/types/TokenList';
 import useConfig from './useConfig';
-import TokenService from '@/services/token/token.service';
+import { tokenService } from '@/services/token/token.service';
 import useTokenPricesQuery from './queries/useTokenPricesQuery';
 import useAccountBalancesQuery from './queries/useAccountBalancesQuery';
+import useAccountAllowancesQuery from './queries/useAccountAllowancesQuery';
+import { configService } from '@/services/config/config.service';
 
 // TYPES
 type TokenMap = { [address: string]: TokenInfo };
 
 // STATE
 const injectedTokens = ref<TokenMap>({});
+const allowanceContracts = ref<string[]>([]);
 
-// SERVICES
-const tokenService = new TokenService();
+// INIT STATE
+allowanceContracts.value.push(configService.network.addresses.vault);
 
 export default function useTokens2() {
   // COMPOSABLES
@@ -76,24 +79,29 @@ export default function useTokens2() {
     }
   );
 
-  const allAddresses = computed(() => Object.keys(allTokens.value));
+  const allTokenAddresses = computed(() => Object.keys(allTokens.value));
 
   /**
    * Dynamic metadata
    *
-   * The prices, balances and allowances dictionaries provide dynamic
+   * The prices, balances and allowances maps provide dynamic
    * metadata for each token in allTokens.
    */
-  const pricesQuery = useTokenPricesQuery(allAddresses);
-  const accountBalancesQuery = useAccountBalancesQuery(allAddresses);
+  const pricesQuery = useTokenPricesQuery(allTokenAddresses);
+  const accountBalancesQuery = useAccountBalancesQuery(allTokenAddresses);
+  const accountAllowancesQuery = useAccountAllowancesQuery(
+    allTokenAddresses,
+    allowanceContracts
+  );
 
   const prices = computed(() =>
     pricesQuery.data.value ? pricesQuery.data.value : {}
   );
   const balances = computed(() =>
-    accountBalancesQuery.data.value
-      ? accountBalancesQuery.data.value.balances
-      : {}
+    accountBalancesQuery.data.value ? accountBalancesQuery.data.value : {}
+  );
+  const allowances = computed(() =>
+    accountAllowancesQuery.data.value ? accountAllowancesQuery.data.value : {}
   );
 
   // METHODS
@@ -105,13 +113,23 @@ export default function useTokens2() {
     injectedTokens.value = { ...injectedTokens.value, ...tokens };
   }
 
+  /**
+   * Adds contract address to array of contract addresses used to
+   * track ERC20 allowances.
+   */
+  function addAllowanceContract(address: string): void {
+    allowanceContracts.value.push(address);
+  }
+
   return {
     // computed
     allTokens,
     ether,
     prices,
     balances,
+    allowances,
     // methods
-    injectTokens
+    injectTokens,
+    addAllowanceContract
   };
 }
