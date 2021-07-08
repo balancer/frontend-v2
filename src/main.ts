@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import App from '@/App.vue';
+import AppProviders from '@/AppProviders.vue';
 import store from '@/store';
 import router from '@/plugins/router';
 import mixins from '@/plugins/mixins';
@@ -41,16 +41,16 @@ use([
   MarkLineComponent
 ]);
 
-const app = createApp(App)
+const app = createApp(AppProviders)
   .use(i18n)
   .use(router)
   .use(store)
   .use(blocknative)
   .use(VueApexCharts)
   .use(vueQuery)
-  .use(VueVirtualScroller)
   .use(Web3Plugin, Web3Provider)
-  .mixin(mixins);
+  .mixin(mixins)
+  .use(VueVirtualScroller);
 
 registerDirectives(app);
 registerGlobalComponents(app);

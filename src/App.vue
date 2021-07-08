@@ -25,6 +25,7 @@ import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useVueWeb3 from './services/web3/useVueWeb3';
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import { useRoute } from 'vue-router';
+// import registerProviders from '@/plugins/providers/registerProviders';
 
 export default defineComponent({
   components: {
@@ -54,6 +55,7 @@ export default defineComponent({
 
     // CALLBACKS
     onBeforeMount(() => {
+      // registerProviders();  
       store.dispatch('app/init');
       providerService.initBlockListener(setBlockNumber);
     });
