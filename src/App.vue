@@ -60,6 +60,7 @@ export default defineComponent({
 
     // CALLBACKS
     onBeforeMount(() => {
+      // registerProviders();
       store.dispatch('app/init');
       rpcProviderService.initBlockListener(setBlockNumber);
     });
