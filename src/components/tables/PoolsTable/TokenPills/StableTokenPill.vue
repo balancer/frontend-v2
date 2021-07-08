@@ -10,7 +10,7 @@
     <div class="relative">
       <div
         v-if="!isLast"
-        class="absolute w-1 h-10 -mt-1 -ml-px bg-white group-hover:bg-gray-50 transform rotate-12"
+        class="absolute w-1 h-10 -mt-1 -ml-px bg-white dark:bg-gray-850 group-hover:bg-gray-50 dark:group-hover:bg-gray-800 transform rotate-12"
       />
     </div>
   </div>

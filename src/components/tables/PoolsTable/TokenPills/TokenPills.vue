@@ -1,7 +1,7 @@
 <template>
   <div class="-mt-1 flex flex-wrap">
     <template v-if="isStablePool">
-      <div class="bg-gray-100 rounded-lg flex">
+      <div class="bg-gray-100 dark:bg-gray-700 rounded-lg flex">
         <StableTokenPill
           v-for="(token, i) in tokens"
           :key="token"

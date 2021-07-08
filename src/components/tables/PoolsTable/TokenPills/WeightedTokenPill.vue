@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-100 relative"
+    class="flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative"
   >
     <div
       v-if="hasBalance"
