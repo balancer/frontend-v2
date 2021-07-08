@@ -8,10 +8,10 @@ import useTokenPricesQuery from './queries/useTokenPricesQuery';
 import useAccountBalancesQuery from './queries/useAccountBalancesQuery';
 
 // TYPES
-type TokenDictionary = { [address: string]: TokenInfo };
+type TokenMap = { [address: string]: TokenInfo };
 
 // STATE
-const injectedTokens = ref<TokenDictionary>({});
+const injectedTokens = ref<TokenMap>({});
 
 // SERVICES
 const tokenService = new TokenService();
@@ -34,7 +34,7 @@ export default function useTokens2() {
    * provide the static metadata for each token.
    */
   const baseTokens = computed(
-    (): TokenDictionary => {
+    (): TokenMap => {
       if (loadingTokenLists.value || tokenListsFailed.value) return {};
 
       const baseTokens = {};
@@ -57,7 +57,7 @@ export default function useTokens2() {
   );
 
   const ether = computed(
-    (): TokenDictionary => {
+    (): TokenMap => {
       return {
         [networkConfig.nativeAsset.address]: {
           ...networkConfig.nativeAsset,
@@ -68,7 +68,7 @@ export default function useTokens2() {
   );
 
   const allTokens = computed(
-    (): TokenDictionary => {
+    (): TokenMap => {
       return {
         ...baseTokens.value,
         ...injectedTokens.value
