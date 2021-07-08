@@ -1,5 +1,5 @@
 <template>
-  <BalCard class="relative">
+  <BalCard class="relative" :shadow="tradeCardShadow" no-border>
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
@@ -13,15 +13,17 @@
         :token-out-amount-input="tokenOutAmount"
         :token-out-address-input="tokenOutAddress"
         :exact-in="exactIn"
+        :effective-price-message="trading.effectivePriceMessage"
         @token-in-amount-change="value => (tokenInAmount = value)"
         @token-in-address-change="value => (tokenInAddress = value)"
         @token-out-amount-change="value => (tokenOutAmount = value)"
         @token-out-address-change="value => (tokenOutAddress = value)"
         @exact-in-change="value => (exactIn = value)"
+        @change="trading.handleAmountChange"
       />
       <BalAlert
         v-if="error"
-        class="mb-4"
+        class="p-3 mb-4"
         type="error"
         size="sm"
         :title="error.header"
@@ -31,34 +33,52 @@
         @actionClick="handleErrorButtonClick"
       />
       <BalBtn
-        :label="$t('previewTrade')"
+        v-if="trading.isLoading.value"
+        :loading="true"
+        :loading-label="
+          trading.isGnosisTrade.value ? $t('loadingBestPrice') : $t('loading')
+        "
+        block
+      />
+      <BalBtn
+        v-else
+        :label="$t('preview')"
         :disabled="tradeDisabled"
         :loading-label="$t('confirming')"
         color="gradient"
         block
         @click.prevent="modalTradePreviewIsOpen = true"
       />
+      <div
+        class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600"
+        v-if="trading.isBalancerTrade.value && !trading.isWrapOrUnwrap.value"
+      >
+        <LightBulbIcon />
+        <!-- TODO: translate -->
+        <span
+          >Trades from ETH route through Balancer liquidity pools and incur gas
+          fees.
+          <router-link
+            :to="{
+              name: 'trade',
+              params: {
+                assetIn: TOKENS.AddressMap.WETH,
+                assetOut: trading.tokenOut.value.address
+              }
+            }"
+            class="text-blue-500"
+          >
+            Trade from WETH
+          </router-link>
+          to avoid gas.
+        </span>
+      </div>
     </div>
-    <SuccessOverlay
-      v-if="tradeSuccess"
-      :title="$t('tradeSettled')"
-      :description="$t('tradeSuccess')"
-      :closeLabel="$t('close')"
-      :explorerLink="explorerLink"
-      @close="onSuccessOverlayClose"
-    />
   </BalCard>
   <teleport to="#modal">
     <TradePreviewModalGP
-      :open="modalTradePreviewIsOpen"
-      :address-in="tokenInAddress"
-      :amount-in="tokenInAmount"
-      :address-out="tokenOutAddress"
-      :amount-out="tokenOutAmount"
+      v-if="modalTradePreviewIsOpen"
       :trading="trading"
-      :order-id="orderId"
-      :formatted-fee-amount="formattedFeeAmount"
-      :exact-in="exactIn"
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"
     />
@@ -66,41 +86,23 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, computed, watch } from 'vue';
+import { ref, defineComponent, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import BigNumber from 'bignumber.js';
 
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
-import { formatUnits, parseUnits } from '@ethersproject/units';
-
-import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
-import {
-  signOrder,
-  UnsignedOrder,
-  calculateValidTo
-} from '@/services/gnosis/signing';
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
-import {
-  isOrderFinalized,
-  normalizeTokenAddress
-} from '@/services/gnosis/utils';
-
-import useNotify from '@/composables/useNotify';
-import useGnosisProtocol from '@/composables/useGnosisProtocol';
 import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
-import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
+import useTrading from '@/composables/trade/useTrading';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 import { ETHER } from '@/constants/tokenlists';
-import { DEFAULT_TOKEN_DECIMALS } from '@/constants/tokens';
+import { TOKENS } from '@/constants/tokens';
 
-import { bnum, scale } from '@/lib/utils';
 import { isRequired } from '@/lib/utils/validations';
-import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
 
 import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
@@ -108,18 +110,9 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
 import TradePairGP from './TradePairGP.vue';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-import { Web3Provider } from '@ethersproject/providers';
-import useTokens from '@/composables/useTokens';
-
-// TODO: get app id
-const GNOSIS_APP_ID = 2;
-
-const appData = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
 
 export default defineComponent({
   components: {
-    SuccessOverlay,
     TradePairGP,
     TradePreviewModalGP,
     TradeSettingsPopover
@@ -129,108 +122,65 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const router = useRouter();
-    const { txListener } = useNotify();
     const { t } = useI18n();
-    const { tokens } = useTokens();
-    const {
-      userNetworkConfig,
-      account,
-      explorerLinks,
-      provider,
-      signer,
-      blockNumber
-    } = useVueWeb3();
-    const { gnosisOperator, gnosisExplorer } = useGnosisProtocol();
+    const { bp } = useBreakpoints();
+
     // DATA
     const exactIn = ref(true);
-    const feeQuote = ref<FeeInformation | null>(null);
-    const feeExceedsPrice = ref(false);
-    const orderId = ref('');
-    const orderMetadata = ref<OrderMetaData | null>(null);
-    const updatingQuotes = ref(false);
-    const latestTxHash = ref('');
-    const txHash = ref('');
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
-    const tradeSuccess = ref(false);
-    const trading = ref(false);
     const modalTradePreviewIsOpen = ref(false);
 
+    const tradeCardShadow = computed(() => {
+      switch (bp.value) {
+        case 'xs':
+          return 'none';
+        case 'sm':
+          return 'lg';
+        default:
+          return 'xl';
+      }
+    });
+
+    const trading = useTrading(
+      exactIn,
+      tokenInAddress,
+      tokenInAmount,
+      tokenOutAddress,
+      tokenOutAmount
+    );
+
     // COMPUTED
-    const slippageBufferRate = computed(() =>
-      parseFloat(store.state.app.slippage)
-    );
-
-    const isWrap = computed(() => {
-      const config = userNetworkConfig.value;
-      return (
-        tokenInAddress.value === ETHER.address &&
-        tokenOutAddress.value === config.addresses.weth
-      );
-    });
-
-    const isUnwrap = computed(() => {
-      const config = userNetworkConfig.value;
-      return (
-        tokenOutAddress.value === ETHER.address &&
-        tokenInAddress.value === config.addresses.weth
-      );
-    });
-
-    const tokenInDecimals = computed<number>(
-      () =>
-        tokens.value[tokenInAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
-    );
-    const tokenOutDecimals = computed(
-      () =>
-        tokens.value[tokenOutAddress.value]?.decimals ?? DEFAULT_TOKEN_DECIMALS
-    );
-
-    const explorerLink = computed(() =>
-      orderId.value != ''
-        ? gnosisExplorer.orderLink(orderId.value)
-        : explorerLinks.txLink(txHash.value)
-    );
-
-    const feeAmount = computed(() => feeQuote.value?.amount || '0');
-    const formattedFeeAmount = computed(() =>
-      formatUnits(feeAmount.value, tokenInDecimals.value)
-    );
-
-    const tradeDisabled = computed(() => {
-      if (errorMessage.value !== TradeValidation.VALID || feeExceedsPrice.value)
-        return true;
-      return false;
-    });
-
-    useTokenApprovalGP(tokenInAddress, tokenInAmount, tokens);
-
     const { errorMessage } = useValidation(
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      tokens
+      trading.tokens
     );
+
+    const tradeDisabled = computed(
+      () =>
+        errorMessage.value !== TradeValidation.VALID ||
+        (trading.isGnosisTrade.value && trading.gnosis.hasErrors.value)
+    );
+
+    useTokenApprovalGP(tokenInAddress, tokenInAmount);
 
     const title = computed(() => {
-      if (isWrap.value) return t('wrap');
-      if (isUnwrap.value) return t('unwrap');
-      return t('tradeGasless');
+      if (trading.isWrap.value) {
+        return `${t('wrap')} ${ETHER.symbol}`;
+      }
+      if (trading.isUnwrap.value) {
+        return `${t('unwrap')} ${ETHER.symbol}`;
+      }
+      return t('trade');
     });
 
-    const appTransactionDeadline = computed<number>(
-      () => store.state.app.transactionDeadline
-    );
-
-    const orderKind = computed(
-      () => (exactIn.value ? OrderKind.SELL : OrderKind.BUY) as OrderKind
-    );
-
     const error = computed(() => {
-      if (feeExceedsPrice.value) {
+      if (trading.gnosis.errors.value.feeExceedsPrice) {
         return {
           header: 'Low amount',
           body: 'Fees exceeds from amount'
@@ -262,259 +212,39 @@ export default defineComponent({
       console.log('TOOD: implement if needed');
     }
 
+    function trade() {
+      trading.trade(() => {
+        modalTradePreviewIsOpen.value = false;
+      });
+    }
+
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (assetIn === ETHER.deeplinkId) assetIn = ETHER.address;
-      else if (isAddress(assetIn)) assetIn = getAddress(assetIn);
+
+      if (assetIn === ETHER.deeplinkId) {
+        assetIn = ETHER.address;
+      } else if (isAddress(assetIn)) {
+        assetIn = getAddress(assetIn);
+      }
+
       let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (assetOut === ETHER.deeplinkId) assetOut = ETHER.address;
-      else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
+
+      if (assetOut === ETHER.deeplinkId) {
+        assetOut = ETHER.address;
+      } else if (isAddress(assetOut)) {
+        assetOut = getAddress(assetOut);
+      }
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
-    function onSuccessOverlayClose() {
-      tradeSuccess.value = false;
-      orderMetadata.value = null;
-      txHash.value = '';
-      orderId.value = '';
-    }
-
-    async function wrapETH(amount: BigNumber) {
-      try {
-        trading.value = true;
-
-        const tx = await wrap(
-          String(userNetworkConfig.value.chainId),
-          provider.value as Web3Provider,
-          amount
-        );
-        tradeTxListener(tx.hash);
-      } catch (e) {
-        console.log(e);
-        trading.value = false;
-      }
-    }
-
-    async function unwrapETH(amount: BigNumber) {
-      try {
-        trading.value = true;
-
-        const tx = await unwrap(
-          String(userNetworkConfig.value.chainId),
-          provider.value as Web3Provider,
-          amount
-        );
-        tradeTxListener(tx.hash);
-      } catch (e) {
-        console.log(e);
-        trading.value = false;
-      }
-    }
-
-    async function postSignedOrder(
-      tokenInAmountScaled: BigNumber,
-      tokenOutAmountScaled: BigNumber
-    ) {
-      try {
-        trading.value = true;
-
-        let sellAmount: string;
-        let buyAmount: string;
-
-        if (exactIn.value) {
-          sellAmount = tokenInAmountScaled.toString();
-          buyAmount = tokenOutAmountScaled
-            .div(1 + slippageBufferRate.value)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .toString();
-        } else {
-          sellAmount = tokenInAmountScaled
-            .times(1 + slippageBufferRate.value)
-            .integerValue(BigNumber.ROUND_DOWN)
-            .toString();
-          buyAmount = tokenOutAmountScaled.toString();
-        }
-
-        const unsignedOrder: UnsignedOrder = {
-          sellToken: normalizeTokenAddress(tokenInAddress.value),
-          buyToken: normalizeTokenAddress(tokenOutAddress.value),
-          sellAmount,
-          buyAmount,
-          validTo: calculateValidTo(appTransactionDeadline.value),
-          appData,
-          feeAmount: feeAmount.value,
-          kind: orderKind.value,
-          receiver: account.value,
-          partiallyFillable: false // Always fill or kill
-        };
-
-        const { signature, signingScheme } = await signOrder(
-          unsignedOrder,
-          signer.value
-        );
-
-        orderId.value = await gnosisOperator.postSignedOrder({
-          order: {
-            ...unsignedOrder,
-            signature,
-            receiver: account.value,
-            signingScheme
-          },
-          owner: account.value
-        });
-      } catch (e) {
-        console.log(e);
-        trading.value = false;
-      }
-    }
-
-    async function trade() {
-      const tokenInAmountScaled = scale(
-        bnum(tokenInAmount.value),
-        tokenInDecimals.value
-      );
-
-      const tokenOutAmountScaled = scale(
-        bnum(tokenOutAmount.value),
-        tokenOutDecimals.value
-      );
-
-      if (isWrap.value) {
-        wrapETH(tokenInAmountScaled);
-      } else if (isUnwrap.value) {
-        unwrapETH(tokenInAmountScaled);
-      } else {
-        postSignedOrder(tokenInAmountScaled, tokenOutAmountScaled);
-      }
-    }
-
-    function tradeTxListener(hash: string) {
-      txListener(hash, {
-        onTxConfirmed: () => {
-          trading.value = false;
-          latestTxHash.value = hash;
-        },
-        onTxCancel: () => {
-          trading.value = false;
-        },
-        onTxFailed: () => {
-          trading.value = false;
-        }
-      });
-    }
-
-    async function updateQuotes() {
-      const tokenAmount = exactIn.value ? tokenInAmount : tokenOutAmount;
-      const otherTokenAmount = exactIn.value ? tokenOutAmount : tokenInAmount;
-
-      if (tokenAmount.value !== '' && parseFloat(tokenAmount.value) > 0) {
-        updatingQuotes.value = true;
-        feeExceedsPrice.value = false;
-
-        const tokenDecimals = exactIn.value
-          ? tokenInDecimals.value
-          : tokenOutDecimals.value;
-
-        const sellToken = tokenInAddress.value;
-        const buyToken = tokenOutAddress.value;
-        const kind = orderKind.value;
-        let amountToExchange = parseUnits(tokenAmount.value, tokenDecimals);
-        try {
-          // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
-          const feeQuoteResult = await gnosisOperator.getFeeQuote({
-            sellToken,
-            buyToken,
-            amount: amountToExchange.toString(),
-            kind
-          });
-
-          if (feeQuoteResult != null) {
-            if (exactIn.value) {
-              // deduct fee if its a sell order
-              amountToExchange = amountToExchange.sub(feeQuoteResult.amount);
-
-              feeExceedsPrice.value = amountToExchange.isNegative();
-            }
-            if (!feeExceedsPrice.value) {
-              const priceQuoteResult = await gnosisOperator.getPriceQuote({
-                sellToken,
-                buyToken,
-                amount: amountToExchange.toString(),
-                kind
-              });
-
-              if (priceQuoteResult != null && priceQuoteResult.amount != null) {
-                feeQuote.value = feeQuoteResult;
-
-                otherTokenAmount.value = formatUnits(
-                  priceQuoteResult.amount,
-                  tokenDecimals
-                );
-              }
-            }
-          }
-        } catch (e) {
-          console.log('[Gnosis Quotes] Failed to update quotes', e);
-        }
-        updatingQuotes.value = false;
-      }
-    }
-
-    // WATCHERS
-    watch(tokenInAddress, async () => {
-      store.commit('trade/setInputAsset', tokenInAddress.value);
-      feeQuote.value = null;
-      updateQuotes();
-    });
-
-    watch(tokenOutAddress, async () => {
-      store.commit('trade/setOutputAsset', tokenOutAddress.value);
-      feeQuote.value = null;
-      updateQuotes();
-    });
-
-    watch(tokenInAmount, () => {
-      if (tokenInAmount.value !== '') {
-        updateQuotes();
-      } else {
-        tokenOutAmount.value = '';
-      }
-    });
-
-    watch(tokenOutAmount, async () => {
-      if (tokenOutAmount.value !== '') {
-        updateQuotes();
-      } else {
-        tokenInAmount.value = '';
-      }
-    });
-
-    watch(blockNumber, async () => {
-      updateQuotes();
-
-      if (orderId.value != '') {
-        const order = await gnosisOperator.getOrder(orderId.value);
-        if (isOrderFinalized(order)) {
-          orderMetadata.value = order;
-          trading.value = false;
-          tradeSuccess.value = true;
-          modalTradePreviewIsOpen.value = false;
-        }
-      }
-    });
-
-    watch(latestTxHash, () => {
-      txHash.value = latestTxHash.value;
-      tradeSuccess.value = true;
-      modalTradePreviewIsOpen.value = false;
-    });
-
     // INIT
     populateInitialTokens();
 
     return {
+      // constants
+      TOKENS,
       // context
       TradeSettingsContext,
 
@@ -523,27 +253,21 @@ export default defineComponent({
       tokenInAmount,
       tokenOutAddress,
       tokenOutAmount,
-      txHash,
       modalTradePreviewIsOpen,
       exactIn,
-      orderId,
+      trading,
 
       // computed
-      explorerLink,
-      formattedFeeAmount,
       title,
       error,
       errorMessage,
       isRequired,
       tradeDisabled,
-      trading,
-      tradeSuccess,
+      tradeCardShadow,
 
       // methods
       handleErrorButtonClick,
-      updatingQuotes,
-      trade,
-      onSuccessOverlayClose
+      trade
     };
   }
 });

@@ -26,10 +26,7 @@ export default class ExitParams {
     exactOut: boolean
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
-    const parsedBptIn = parseUnits(
-      bptIn,
-      this.exchange.pool.onchain.decimals
-    ).toString();
+    const parsedBptIn = parseUnits(bptIn, this.exchange.pool.onchain.decimals);
     const txData = this.txData(
       parsedAmountsOut,
       parsedBptIn,
@@ -68,30 +65,22 @@ export default class ExitParams {
   ): string {
     const isSingleAssetOut = exitTokenIndex !== null;
 
-    if (this.isStablePool) {
+    if (isSingleAssetOut) {
       return this.dataEncodeFn({
-        kind: 'ExactBPTInForAllTokensOut',
-        bptAmountIn: bptIn
+        kind: 'ExactBPTInForOneTokenOut',
+        bptAmountIn: bptIn,
+        exitTokenIndex
+      });
+    } else if (exactOut) {
+      return this.dataEncodeFn({
+        amountsOut,
+        maxBPTAmountIn: bptIn
       });
     } else {
-      if (isSingleAssetOut) {
-        return this.dataEncodeFn({
-          kind: 'ExactBPTInForOneTokenOut',
-          bptAmountIn: bptIn,
-          exitTokenIndex
-        });
-      } else if (exactOut) {
-        return this.dataEncodeFn({
-          kind: 'BPTInForExactTokensOut',
-          amountsOut,
-          maxBPTAmountIn: bptIn
-        });
-      } else {
-        return this.dataEncodeFn({
-          kind: 'ExactBPTInForAllTokensOut',
-          bptAmountIn: bptIn
-        });
-      }
+      return this.dataEncodeFn({
+        kind: 'ExactBPTInForTokensOut',
+        bptAmountIn: bptIn
+      });
     }
   }
 }

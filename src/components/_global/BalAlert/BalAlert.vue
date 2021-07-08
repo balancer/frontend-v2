@@ -65,9 +65,9 @@ export default defineComponent({
     const bgColorClass = computed(() => {
       switch (props.type) {
         case 'warning':
-          return 'bg-yellow-100 border border-yellow-500 text-black';
+          return 'bg-yellow-50 text-black';
         case 'error':
-          return 'bg-red-100 border border-red-500 text-black';
+          return 'bg-red-50 text-black';
         default:
           return 'bg-black text-white';
       }

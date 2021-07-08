@@ -55,6 +55,8 @@ export function bnum(val: string | number | BigNumber): BigNumber {
   return new BigNumber(number);
 }
 
+export const bnumZero = bnum(0);
+
 export function scale(input: BigNumber, decimalPlaces: number): BigNumber {
   const scalePow = new BigNumber(decimalPlaces.toString());
   const scaleMul = new BigNumber(10).pow(scalePow);

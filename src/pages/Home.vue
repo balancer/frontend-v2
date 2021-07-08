@@ -53,7 +53,7 @@ import { EXTERNAL_LINKS } from '@/constants/links';
 
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 
-import PoolsTable from '@/components/tables/PoolsTable.vue';
+import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 
 import usePools from '@/composables/pools/usePools';
 import useVueWeb3 from '@/services/web3/useVueWeb3';

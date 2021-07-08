@@ -19,7 +19,7 @@
             <span
               class="mr-2 text-lg font-medium w-1/2 leading-none break-words"
             >
-              {{ total }}
+              {{ missingPrices ? '-' : total }}
             </span>
             <BalRangeInput
               class="w-1/2"
@@ -55,7 +55,7 @@
             </div>
             <div class="w-1/2 flex flex-col leading-none text-right pl-2">
               <span class="break-words">
-                {{ fNum(amountUSD(i), 'usd') }}
+                {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
               <span class="text-xs text-gray-400">
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
@@ -166,7 +166,8 @@
           block
           @click="trackGoal(Goals.ClickWithdraw)"
         >
-          {{ $t('withdraw') }} {{ total.length > 15 ? '' : total }}
+          {{ $t('withdraw') }}
+          {{ missingPrices || total.length > 15 ? '' : total }}
         </BalBtn>
       </template>
     </div>
@@ -199,7 +200,7 @@ import useNotify from '@/composables/useNotify';
 import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
-import PoolCalculator from '@/services/pool/calculator';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -226,7 +227,8 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: { type: Object as PropType<FullPool>, required: true }
+    pool: { type: Object as PropType<FullPool>, required: true },
+    missingPrices: { type: Boolean, default: false }
   },
 
   setup(props: { pool: FullPool }, { emit }) {

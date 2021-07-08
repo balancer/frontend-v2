@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { parseUnits, formatUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
 import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -9,6 +8,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenMap } from '@/types';
 
 import Weighted from './weighted';
+import Stable from './stable';
 
 interface Amounts {
   send: string[];
@@ -23,16 +23,26 @@ export interface PiOptions {
 
 type PoolAction = 'join' | 'exit';
 
-export default class Calculator {
+export default class CalculatorService {
   pool: FullPool;
   allTokens: TokenMap;
   action: PoolAction;
   types = ['send', 'receive'];
+  weighted: Weighted;
+  stable: Stable;
 
-  constructor(pool: FullPool, allTokens: TokenMap, action: PoolAction) {
+  constructor(
+    pool: FullPool,
+    allTokens: TokenMap,
+    action: PoolAction,
+    weightedClass = Weighted,
+    stableClass = Stable
+  ) {
     this.pool = pool;
     this.allTokens = allTokens;
     this.action = action;
+    this.weighted = new weightedClass(this);
+    this.stable = new stableClass(this);
   }
 
   public setAllTokens(tokens: TokenMap): void {
@@ -47,12 +57,16 @@ export default class Calculator {
     tokenAmounts: string[],
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): BigNumber {
-    if (this.isStablePool) return new BigNumber(0); // TODO
+    if (this.isStablePool) {
+      return this.stable.priceImpact(tokenAmounts, opts);
+    }
     return this.weighted.priceImpact(tokenAmounts, opts);
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
-    if (this.isStablePool) return fnum(0); // TODO
+    if (this.isStablePool) {
+      return this.stable.exactTokensInForBPTOut(tokenAmounts);
+    }
     return this.weighted.exactTokensInForBPTOut(tokenAmounts);
   }
 
@@ -60,7 +74,9 @@ export default class Calculator {
     bptAmount: string,
     tokenIndex: number
   ): FixedPointNumber {
-    if (this.isStablePool) return fnum(0); // TODO
+    if (this.isStablePool) {
+      return this.stable.exactBPTInForTokenOut(bptAmount, tokenIndex);
+    }
     return this.weighted.exactBPTInForTokenOut(bptAmount, tokenIndex);
   }
 
@@ -68,7 +84,9 @@ export default class Calculator {
     amount: string,
     tokenIndex: number
   ): FixedPointNumber {
-    if (this.isStablePool) return fnum(0); // TODO
+    if (this.isStablePool) {
+      return this.stable.bptInForExactTokenOut(amount, tokenIndex);
+    }
     return this.weighted.bptInForExactTokenOut(amount, tokenIndex);
   }
 
@@ -152,10 +170,6 @@ export default class Calculator {
 
   public ratioOf(type: string, index: number) {
     return this[`${type}Ratios`][index];
-  }
-
-  public get weighted() {
-    return new Weighted(this);
   }
 
   public get poolTokenBalances(): BigNumberish[] {
