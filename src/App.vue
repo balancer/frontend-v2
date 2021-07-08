@@ -55,7 +55,7 @@ export default defineComponent({
 
     // CALLBACKS
     onBeforeMount(() => {
-      // registerProviders();  
+      // registerProviders();
       store.dispatch('app/init');
       providerService.initBlockListener(setBlockNumber);
     });
