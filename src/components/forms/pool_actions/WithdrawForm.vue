@@ -35,7 +35,7 @@
       </div>
 
       <div
-        class="px-4 py-3 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-900 border-b"
+        class="px-4 py-3 bg-gray-50 dark:bg-gray-850 border-t dark:border-gray-900 border-b"
       >
         <div
           v-for="(token, i) in pool.tokenAddresses"

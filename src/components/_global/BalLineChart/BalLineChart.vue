@@ -212,7 +212,7 @@ export default defineComponent({
           : tailwind.theme.colors.white,
         formatter: params => {
           return `
-            <div class='flex flex-col font-body bg-white dark:bg-gray-800 dark:text-white'>
+            <div class='flex flex-col font-body bg-white dark:bg-gray-850 dark:text-white'>
               <span>${params[0].value[0]}</span>
               ${params
                 .map(

@@ -81,7 +81,7 @@ export default defineComponent({
 
 <style scoped>
 .bal-card {
-  @apply bg-white dark:bg-gray-800;
+  @apply bg-white dark:bg-gray-850;
 }
 
 .header {
@@ -90,7 +90,7 @@ export default defineComponent({
 
 .footer {
   @apply flex items-center;
-  @apply bg-gray-50 dark:bg-gray-800;
+  @apply bg-gray-50 dark:bg-gray-850;
   @apply border-t border-gray-100 dark:border-gray-900;
 }
 </style>

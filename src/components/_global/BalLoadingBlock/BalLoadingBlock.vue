@@ -79,9 +79,9 @@ export default defineComponent({
 }
 
 .shimmer-dark {
-  --startColor: theme('colors.gray.800');
-  --midColor: theme('colors.gray.700');
-  --endColor: theme('colors.gray.800');
+  --startColor: theme('colors.gray.850');
+  --midColor: theme('colors.gray.800');
+  --endColor: theme('colors.gray.850');
 
   animation: shimmerBackground 10s infinite;
   background: linear-gradient(
