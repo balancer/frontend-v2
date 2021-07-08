@@ -17,7 +17,10 @@
               <span class="ml-2">
                 {{ tokenMeta.symbol }}
               </span>
-              <span class="font-medium text-gray-400 text-xs mt-px ml-1">
+              <span
+                v-if="!isStablePool"
+                class="font-medium text-gray-400 text-xs mt-px ml-1"
+              >
                 {{ fNum(tokenMeta.weight, 'percent_lg') }}
               </span>
             </div>
@@ -227,6 +230,8 @@ export default defineComponent({
       return key ? t(key) : t('unknownPoolType');
     });
 
+    const isStablePool = computed(() => pool.value?.poolType === 'Stable');
+
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
       const feeLabel = fNum(pool.value.onchain.swapFee, 'percent');
@@ -292,6 +297,7 @@ export default defineComponent({
       missingPrices,
       feesManagedByGauntlet,
       swapFeeToolTip,
+      isStablePool,
       // methods
       fNum,
       onNewTx

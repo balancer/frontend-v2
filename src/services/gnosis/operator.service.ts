@@ -98,3 +98,5 @@ export default class GnosisOperatorService {
     return null;
   }
 }
+
+export const gnosisOperator = new GnosisOperatorService();

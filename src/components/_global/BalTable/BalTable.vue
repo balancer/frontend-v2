@@ -73,7 +73,7 @@
       />
       <div
         v-if="!isLoading && !tableData.length"
-        class="max-w-full bg-white dark:bg-gray-850 rowBg h-40 flex items-center justify-center text-gray-500"
+        class="max-w-full bg-white dark:bg-gray-850 row-bg h-40 flex items-center justify-center text-gray-500"
       >
         {{ noResultsLabel || $t('noResults') }}
       </div>
@@ -104,7 +104,10 @@
             v-for="(dataItem, index) in tableData"
             :key="`tableRow-${index}`"
             @click="handleRowClick(dataItem)"
-            :class="['z-10 row-bg group', { 'cursor-pointer': onRowClick }]"
+            :class="[
+              'bg-white z-10 row-bg group',
+              { 'cursor-pointer': onRowClick }
+            ]"
           >
             <td
               v-for="(column, columnIndex) in filteredColumns"

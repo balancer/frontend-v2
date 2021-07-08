@@ -137,6 +137,7 @@ export default defineComponent({
     const { userNetworkConfig } = useVueWeb3();
     const { darkMode } = useDarkMode();
 
+    const exactIn = ref(true);
     const tokenInAddress = ref('');
     const tokenInAmount = ref('');
     const tokenOutAddress = ref('');
@@ -144,6 +145,8 @@ export default defineComponent({
     const tradeSuccess = ref(false);
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
+
+    const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
     const tradeCardShadow = computed(() => {
       switch (bp.value) {
@@ -183,7 +186,7 @@ export default defineComponent({
     });
 
     // COMPOSABLES
-    const { allowanceState, isLoading: isLoadingApprovals } = useTokenApproval(
+    const { isLoading: isLoadingApprovals } = useTokenApproval(
       tokenInAddress,
       tokenInAmount,
       tokens
@@ -194,22 +197,21 @@ export default defineComponent({
       initSor,
       handleAmountChange,
       priceImpact,
-      exactIn,
       sorReturn,
       latestTxHash,
       pools,
       fetchPools,
       poolsLoading
-    } = useSor(
-      tokenInAddress,
-      tokenInAmount,
-      tokenOutAddress,
-      tokenOutAmount,
+    } = useSor({
+      exactIn,
+      tokenInAddressInput: tokenInAddress,
+      tokenInAmountInput: tokenInAmount,
+      tokenOutAddressInput: tokenOutAddress,
+      tokenOutAmountInput: tokenOutAmount,
       tokens,
-      allowanceState,
       isWrap,
       isUnwrap
-    );
+    });
     const { errorMessage } = useValidation(
       tokenInAddress,
       tokenInAmount,
@@ -287,6 +289,11 @@ export default defineComponent({
 
     watch(tokenOutAddress, () => {
       store.commit('trade/setOutputAsset', tokenOutAddress.value);
+      handleAmountChange();
+    });
+
+    watch(liquiditySelection, () => {
+      // When the liquidity type is changed we need to update the trade to use that selection
       handleAmountChange();
     });
 

@@ -18,13 +18,18 @@
 import { defineComponent, onBeforeMount, computed } from 'vue';
 import { VueQueryDevTools } from 'vue-query/devtools';
 import { useStore } from 'vuex';
+import BigNumber from 'bignumber.js';
+import { useRoute } from 'vue-router';
+
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-import useVueWeb3 from './services/web3/useVueWeb3';
+import useVueWeb3 from '@/services/web3/useVueWeb3';
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
-import { useRoute } from 'vue-router';
+import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
+
+BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
 export default defineComponent({
   components: {

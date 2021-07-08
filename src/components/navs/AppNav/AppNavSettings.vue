@@ -107,10 +107,7 @@
       </div>
       <AppSlippageForm class="mt-1" />
     </div>
-    <div
-      v-if="appTradeInterface === TradeInterface.BALANCER && !hideLiquidity"
-      class="px-4 mt-6"
-    >
+    <div v-if="!hideLiquidity" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('tradeLiquidity')" class="font-medium mb-2" />
         <BalTooltip>
@@ -215,8 +212,7 @@ export default defineComponent({
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
-    const hideLiquidity = computed(() => isV1Supported);
-
+    const hideLiquidity = computed(() => !isV1Supported);
     const connectorName = computed(() => getConnectorName(connector.value.id));
 
     const connectorLogo = computed(() => getConnectorLogo(connector.value.id));

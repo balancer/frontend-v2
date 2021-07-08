@@ -6,16 +6,13 @@ import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
 import { TokenMap } from '@/types';
 import { OnchainPoolData, PoolType } from '../../subgraph/types';
-
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
+import ConfigService from '@/services/config/config.service';
 
 export default class Vault {
   service: Service;
-  multiCaller: Multicaller;
 
-  constructor(service) {
+  constructor(service, private readonly configService = new ConfigService()) {
     this.service = service;
-    this.multiCaller = new Multicaller(NETWORK, service.provider, vaultAbi);
   }
 
   public async getPoolData(
@@ -25,33 +22,30 @@ export default class Vault {
   ): Promise<OnchainPoolData> {
     const poolAddress = getAddress(id.slice(0, 42));
     let result = {} as Record<any, any>;
-
-    this.multiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
-    result = await this.multiCaller.execute(result);
-    this.service.multiCaller.call('totalSupply', poolAddress, 'totalSupply');
-    this.service.multiCaller.call('decimals', poolAddress, 'decimals');
-    this.service.multiCaller.call(
-      'swapFee',
-      poolAddress,
-      'getSwapFeePercentage'
+    const vaultMultiCaller = new Multicaller(
+      this.configService.network.key,
+      this.service.provider,
+      vaultAbi
+    );
+    const tokenMultiCaller = new Multicaller(
+      this.configService.network.key,
+      this.service.provider,
+      this.service.allABIs
     );
 
+    vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
+    result = await vaultMultiCaller.execute(result);
+    tokenMultiCaller.call('totalSupply', poolAddress, 'totalSupply');
+    tokenMultiCaller.call('decimals', poolAddress, 'decimals');
+    tokenMultiCaller.call('swapFee', poolAddress, 'getSwapFeePercentage');
+
     if (type === 'Weighted') {
-      this.service.multiCaller.call(
-        'weights',
-        poolAddress,
-        'getNormalizedWeights',
-        []
-      );
+      tokenMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
     } else if (type === 'Stable') {
-      this.service.multiCaller.call(
-        'amp',
-        poolAddress,
-        'getAmplificationParameter'
-      );
+      tokenMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
     }
 
-    result = await this.service.multiCaller.execute(result);
+    result = await tokenMultiCaller.execute(result);
 
     return this.serializePoolData(result, type, tokens);
   }
@@ -77,12 +71,17 @@ export default class Vault {
       };
     });
 
+    let amp = '0';
+    if (data?.amp) {
+      amp = data.amp.value.div(data.amp.precision);
+    }
+
     return {
       tokens: _tokens,
       totalSupply: formatUnits(data.totalSupply, data.decimals),
       decimals: data.decimals,
       swapFee: formatUnits(data.swapFee, 18),
-      amp: data?.amp
+      amp: amp
     };
   }
 
@@ -101,7 +100,7 @@ export default class Vault {
       );
     } else if (type === 'Stable') {
       const tokensList = Object.values(tokens);
-      return tokensList.map(() => 100 / tokensList.length);
+      return tokensList.map(() => 1 / tokensList.length);
     } else {
       return [];
     }
