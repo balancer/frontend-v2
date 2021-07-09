@@ -21,7 +21,14 @@
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
-          <img :src="require('@/assets/images/icons/tokens.svg')" />
+          <img
+            v-if="darkMode"
+            :src="require('@/assets/images/icons/tokens_white.svg')"
+          />
+          <img
+            v-else
+            :src="require('@/assets/images/icons/tokens_black.svg')"
+          />
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
@@ -75,6 +82,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
 
 import useTokens from '@/composables/useTokens';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import useDarkMode from '@/composables/useDarkMode';
 
 export default defineComponent({
   components: {
@@ -122,6 +130,7 @@ export default defineComponent({
       isLoading: isLoadingBalances,
       isIdle: isBalancesQueryIdle
     } = useAccountBalances();
+    const { darkMode } = useDarkMode();
 
     // DATA
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -203,6 +212,9 @@ export default defineComponent({
       balances,
       isLoadingBalances,
       isBalancesQueryIdle,
+
+      // computed
+      darkMode,
 
       // methods
       handleRowClick,

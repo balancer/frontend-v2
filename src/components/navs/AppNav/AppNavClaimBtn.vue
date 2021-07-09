@@ -18,7 +18,7 @@
         }}</span>
       </BalBtn>
     </template>
-    <div class="divide-y w-72" v-if="userClaims != null">
+    <div class="divide-y dark:divide-gray-900 w-72" v-if="userClaims != null">
       <div class="p-3">
         <h5 class="text-lg mb-3">{{ $t('liquidityMining') }}</h5>
         <div class="text-sm text-gray-600 mb-1" v-if="isPolygon">

@@ -11,7 +11,6 @@ export enum TradeInterface {
 export interface AppState {
   loading: boolean;
   modalOpen: boolean;
-  darkMode: boolean;
   locale: string;
   slippage: string;
   tradeLiquidity: LiquiditySelection;
@@ -22,7 +21,6 @@ export interface AppState {
 const state: AppState = {
   loading: true,
   modalOpen: false,
-  darkMode: false,
   locale: 'en-US',
   slippage: '0.01',
   tradeLiquidity: LiquiditySelection.Best,
@@ -37,7 +35,6 @@ const actions = {
     try {
       // Set defaults from localStorage
       commit('setLocale', lsGet('locale', 'en-US'));
-      commit('setDarkMode', false);
       commit('setSlippage', lsGet('slippage', '0.01'));
       commit(
         'setTradeLiquidity',
@@ -77,16 +74,6 @@ const mutations = {
   setSlippage(state: AppState, slippage: AppState['slippage']) {
     state.slippage = slippage;
     lsSet('slippage', slippage);
-  },
-
-  setDarkMode(state: AppState, val: AppState['darkMode']) {
-    state.darkMode = val;
-    lsSet('darkMode', state.darkMode);
-    if (state.darkMode) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
-    }
   },
 
   setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection) {

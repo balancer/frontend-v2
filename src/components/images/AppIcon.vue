@@ -9,17 +9,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent } from 'vue';
+import useDarkMode from '@/composables/useDarkMode';
 
 export default defineComponent({
   name: 'AppIcon',
 
   setup() {
-    const store = useStore();
+    const { darkMode } = useDarkMode();
 
     return {
-      darkMode: computed(() => store.state.app.darkMode)
+      darkMode
     };
   }
 });

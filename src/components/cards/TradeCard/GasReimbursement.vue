@@ -188,7 +188,7 @@ export default defineComponent({
 }
 
 .message::before {
-  @apply absolute px-4 py-3 inset-0.5 text-2xl bg-white rounded-lg;
+  @apply absolute px-4 py-3 inset-0.5 text-2xl bg-white dark:bg-gray-900 rounded-lg;
   content: '🤝';
 }
 

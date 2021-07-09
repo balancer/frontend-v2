@@ -27,6 +27,7 @@ import { zip } from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import useTailwind from '@/composables/useTailwind';
+import useDarkMode from '@/composables/useDarkMode';
 
 interface HistoryItem {
   timestamp: number;
@@ -64,10 +65,15 @@ export default defineComponent({
 
     const appLoading = computed(() => store.state.app.loading);
     const tailwind = useTailwind();
-    const chartColors = [
-      tailwind.theme.colors.green['400'],
-      tailwind.theme.colors.black
-    ];
+    const { darkMode } = useDarkMode();
+
+    const hodlColor = computed(() =>
+      darkMode.value
+        ? tailwind.theme.colors.gray['600']
+        : tailwind.theme.colors.black
+    );
+
+    const chartColors = [tailwind.theme.colors.green['400'], hodlColor.value];
 
     const nonEmptySnapshots = computed(() => {
       if (!history.value || !history.value) return [];

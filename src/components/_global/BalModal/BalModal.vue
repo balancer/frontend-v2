@@ -101,7 +101,7 @@ export default defineComponent({
 }
 
 .modal-card {
-  @apply mx-auto h-full rounded-b-none sm:rounded-b-lg;
+  @apply mx-auto h-full rounded-b-none sm:rounded-b-lg dark:border dark:border-gray-800;
 }
 
 .modal-bg-enter-active {

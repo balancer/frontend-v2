@@ -1,7 +1,9 @@
 <template>
   <BalCard noPad>
     <div class="relative overflow-hidden">
-      <div class="flex justify-between items-end border-b px-4">
+      <div
+        class="flex justify-between items-end border-b dark:border-gray-900 px-4"
+      >
         <BalTabs v-model="activeTab" :tabs="tabs" class="pt-4 -mb-px" no-pad />
         <TradeSettingsPopover :context="TradeSettingsContext.invest" />
       </div>

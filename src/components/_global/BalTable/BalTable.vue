@@ -9,12 +9,12 @@
             :style="{ width: `${column?.width}px` }"
           />
         </colgroup>
-        <thead class="bg-white z-20">
+        <thead class="bg-white dark:bg-gray-900 z-20">
           <th
             v-for="(column, columnIndex) in filteredColumns"
             :key="`header-${column.id}`"
             :class="[
-              'p-6 bg-white headingShadow border-b',
+              'p-6 bg-white dark:bg-gray-850 headingShadow border-b dark:border-gray-900',
               column.className,
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
@@ -35,7 +35,9 @@
                 :name="column.Header"
               ></slot>
               <div v-else>
-                <h5 class="text-base font-semibold text-gray-800">
+                <h5
+                  class="text-base font-semibold text-gray-800 dark:text-gray-100"
+                >
                   {{ column.name }}
                 </h5>
               </div>
@@ -71,7 +73,7 @@
       />
       <div
         v-if="!isLoading && !tableData.length"
-        class="max-w-full bg-white rowBg h-40 flex items-center justify-center text-gray-500"
+        class="max-w-full bg-white dark:bg-gray-850 row-bg h-40 flex items-center justify-center text-gray-500"
       >
         {{ noResultsLabel || $t('noResults') }}
       </div>
@@ -92,7 +94,7 @@
               column.align === 'right' ? 'text-left' : 'text-right',
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
-              'p-0 m-0 h-0'
+              'bg-white dark:bg-gray-850 p-0 m-0 h-0'
             ]"
           ></td>
         </tr>
@@ -103,7 +105,7 @@
             :key="`tableRow-${index}`"
             @click="handleRowClick(dataItem)"
             :class="[
-              'bg-white z-10 rowBg group',
+              'bg-white z-10 row-bg group',
               { 'cursor-pointer': onRowClick }
             ]"
           >
@@ -431,18 +433,18 @@ export default defineComponent({
   box-shadow: inset 10px 0 8px -8px rgb(0 0 0 / 15%);
 }
 
-.rowBg > td {
-  @apply bg-white;
+.row-bg {
+  @apply bg-white dark:bg-gray-850;
 }
 
-.rowBg:hover > td {
-  @apply bg-gray-50;
+.row-bg:hover {
+  @apply bg-gray-50 dark:hover:bg-gray-800;
 }
 
 .bal-table-pagination-btn {
-  @apply flex items-center justify-center h-16;
-  @apply text-gray-500 font-medium hover:text-gray-800;
-  @apply border-t rounded-b-lg;
-  @apply hover:bg-gray-50 cursor-pointer;
+  @apply flex items-center justify-center h-16 transition-all;
+  @apply text-gray-500 font-medium hover:text-gray-800 dark:hover:text-gray-400;
+  @apply border-t dark:border-gray-900 rounded-b-lg;
+  @apply hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer;
 }
 </style>
