@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-full whitespace-nowrap rounded-lg overflow-hidden">
+  <div class="max-w-full whitespace-nowrap overflow-hidden">
     <div class="overflow-hidden" ref="headerRef">
       <table class="w-full table-fixed whitespace-normal">
         <colgroup>
