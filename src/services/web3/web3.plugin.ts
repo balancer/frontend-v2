@@ -13,7 +13,7 @@ import { WalletLinkConnector } from './connectors/walletlink/walletlink.connecto
 import { PortisConnector } from './connectors/portis/portis.connector';
 import useFathom from '@/composables/useFathom';
 import getProvider from '@/lib/utils/provider';
-import ConfigService from '../config/config.service';
+import { configService } from '../config/config.service';
 import { switchToAppNetwork } from './utils/helpers';
 
 export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
@@ -61,7 +61,6 @@ export default {
     const { trackGoal, Goals } = useFathom();
     const alreadyConnectedAccount = ref(lsGet('connectedWallet', null));
     const alreadyConnectedProvider = ref(lsGet('connectedProvider', null));
-    const configService = new ConfigService();
     // this data provided is properly typed to all consumers
     // via the 'Web3Provider' type
     const pluginState = reactive<PluginState>({
