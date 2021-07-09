@@ -11,9 +11,10 @@
       :key="i"
       :address="address"
       :size="size"
-      class="z-10 absolute"
+      class="token-set"
       :style="{
-        left: `${leftOffsetFor(i)}px`
+        left: `${leftOffsetFor(i)}px`,
+        zIndex: `${(20 -i)}`
       }"
     />
   </div>
@@ -55,3 +56,16 @@ export default defineComponent({
   }
 });
 </script>
+
+<style scoped>
+.token-set {
+  @apply absolute;
+  box-shadow: 0 0 0 1.5px #FFFFFF;  
+  border-radius: 50%;
+}
+
+.dark .token-set {
+  @apply bg-gray-850;
+  box-shadow: 0 0 0 1px #162031;  
+}
+</style>
