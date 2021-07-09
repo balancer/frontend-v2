@@ -14,8 +14,7 @@ import { PortisConnector } from './connectors/portis/portis.connector';
 import useFathom from '@/composables/useFathom';
 import getProvider from '@/lib/utils/provider';
 import ConfigService from '../config/config.service';
-import { importPolygonDetailsToWallet } from './utils/helpers';
-import { Network } from '@/constants/network';
+import { switchToAppNetwork } from './utils/helpers';
 
 export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
 export const SupportedWallets = [
@@ -127,17 +126,16 @@ export default {
           lsSet('connectedProvider', wallet);
           pluginState.walletState = 'connected';
 
-          // special case for polygon
           if (
-            configService.env.NETWORK === String(Network.POLYGON) &&
+            configService.env.NETWORK !== chainId.value &&
             connector.id === 'injected'
           ) {
             // this will also as the user to switch to Polygon, if already added
-            await importPolygonDetailsToWallet(connector.provider);
-
-            // after switching, metamask will reset its state, need to call
-            // connect again but only if state is reset which we check below
-            if (chainId.value !== Network.POLYGON) {
+            const result = await switchToAppNetwork(connector.provider);
+            if (!result) {
+              return;
+            }
+            if (chainId.value !== configService.network.chainId) {
               await connectWallet(wallet);
             }
           }

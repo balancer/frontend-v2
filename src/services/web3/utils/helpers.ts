@@ -1,13 +1,35 @@
 import { ExternalProvider } from '@ethersproject/providers';
 import ConfigService from '@/services/config/config.service';
-import { Network } from '@/constants/network';
 
-export async function importPolygonDetailsToWallet(provider: ExternalProvider) {
-  const configService = new ConfigService();
-  const polygonNetworkConfig = configService.getNetworkConfig(
-    String(Network.POLYGON)
-  );
-  const hexChainId = `0x${polygonNetworkConfig.chainId.toString(16)}`;
+const configService = new ConfigService();
+
+export async function switchToAppNetwork(provider: ExternalProvider) {
+  const appNetworkConfig = configService.network;
+  const hexChainId = `0x${appNetworkConfig.chainId.toString(16)}`;
+  try {
+    if (provider.request) {
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: hexChainId }]
+      });
+      return true;
+    }
+  } catch (err) {
+    // user rejected request
+    if (err.code === 4001) {
+      return false;
+    }
+    // chain does not exist, let's add it
+    if (err.code === 4902) {
+      return importNetworkDetailsToWallet(provider);
+    }
+  }
+  return false;
+}
+
+export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
+  const appNetworkConfig = configService.network;
+  const hexChainId = `0x${appNetworkConfig.chainId.toString(16)}`;
   try {
     const request = {
       id: '1',
@@ -16,13 +38,13 @@ export async function importPolygonDetailsToWallet(provider: ExternalProvider) {
       params: [
         {
           chainId: hexChainId,
-          chainName: polygonNetworkConfig.name,
-          rpcUrls: ['https://rpc-mainnet.matic.network'],
-          iconUrls: [polygonNetworkConfig.nativeAsset.logoURI],
+          chainName: appNetworkConfig.name,
+          rpcUrls: [appNetworkConfig.publicRpc],
+          iconUrls: [appNetworkConfig.nativeAsset.logoURI],
           nativeCurrency: {
-            name: polygonNetworkConfig.nativeAsset.name,
-            symbol: polygonNetworkConfig.nativeAsset.symbol,
-            decimals: polygonNetworkConfig.nativeAsset.decimals
+            name: appNetworkConfig.nativeAsset.name,
+            symbol: appNetworkConfig.nativeAsset.symbol,
+            decimals: appNetworkConfig.nativeAsset.decimals
           }
         }
       ]
@@ -31,7 +53,7 @@ export async function importPolygonDetailsToWallet(provider: ExternalProvider) {
       const response = await provider.request(request);
       if (response?.error) {
         throw new Error(
-          `Failed to add polygon network information to wallet. ${response.error.code}:${response.error.message}`
+          `Failed to add network information to wallet. ${response.error.code}:${response.error.message}`
         );
       }
       return true;
@@ -40,7 +62,7 @@ export async function importPolygonDetailsToWallet(provider: ExternalProvider) {
     }
   } catch (err) {
     console.error(
-      `An error occurred while attempting to add polygon network information to wallet. ${err.message}`
+      `An error occurred while attempting to add network information to wallet. ${err.message}`
     );
     return false;
   }
