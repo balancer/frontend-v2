@@ -1,7 +1,6 @@
 import { ExternalProvider } from '@ethersproject/providers';
-import ConfigService from '@/services/config/config.service';
+import { configService } from '@/services/config/config.service';
 
-const configService = new ConfigService();
 
 export async function switchToAppNetwork(provider: ExternalProvider) {
   const appNetworkConfig = configService.network;
