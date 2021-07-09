@@ -20,7 +20,7 @@
       <div class="mb-16" />
     </template>
     <div class="px-4 2xl:px-0">
-      <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
+      <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
       <TokenSearchInput
         v-model="selectedTokens"
         :loading="isLoadingPools"
@@ -28,7 +28,7 @@
         @remove="removeSelectedToken"
       />
     </div>
-  
+
     <PoolsTable
       :isLoading="isLoadingPools"
       :data="filteredPools"
