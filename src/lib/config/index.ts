@@ -12,7 +12,7 @@ export interface Config {
   network: string;
   unknown: boolean;
   rpc: string;
-  publicRpc: string;
+  publicRpc?: string;
   ws: string;
   explorer: string;
   subgraph: string;
