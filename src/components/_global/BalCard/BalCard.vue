@@ -32,7 +32,7 @@ export default defineComponent({
       type: String,
       default: '',
       validator: (val: string): boolean => {
-        return ['', 'none', 'sm', 'md', 'lg'].includes(val);
+        return ['', 'none', 'sm', 'md', 'lg', 'xl'].includes(val);
       }
     }
   },

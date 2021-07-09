@@ -35,6 +35,7 @@ export default function useVueWeb3() {
   });
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isMainnet = computed(() => appNetworkConfig.chainId === 1);
+  const isPolygon = computed(() => appNetworkConfig.chainId === 137);
   const canLoadProfile = computed(
     () => account.value !== '' && userNetworkConfig.value?.chainId !== 0
   );
@@ -61,6 +62,7 @@ export default function useVueWeb3() {
     _blockNumber => (blockNumber.value = _blockNumber)
   );
   const getProvider = () => new Web3Provider(provider.value as any);
+  const getSigner = () => getProvider().getSigner();
   const toggleWalletSelectModal = (value: boolean) => {
     if (value !== undefined && typeof value === 'boolean') {
       isWalletSelectVisible.value = value;
@@ -104,10 +106,12 @@ export default function useVueWeb3() {
     blockNumber,
     isV1Supported,
     isMainnet,
+    isPolygon,
 
     // methods
     connectWallet,
     getProvider,
+    getSigner,
     disconnectWallet,
     toggleWalletSelectModal
   };

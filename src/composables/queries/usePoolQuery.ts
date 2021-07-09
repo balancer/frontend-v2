@@ -11,6 +11,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import BalancerContracts from '@/services/balancer/contracts/service';
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPool, FullPool } from '@/services/balancer/subgraph/types';
+import { POOLS } from '@/constants/pools';
 
 export default function usePoolQuery(
   id: string,
@@ -33,6 +34,8 @@ export default function usePoolQuery(
   const isQueryEnabled = computed(() => !appLoading.value);
 
   function tokensInjected(pool: DecoratedPool): boolean {
+    if (!allTokens.value) return false;
+
     const allAddresses = Object.keys(allTokens.value);
     return [...pool.tokenAddresses, pool.address].every(address =>
       allAddresses.includes(address)
@@ -51,12 +54,10 @@ export default function usePoolQuery(
         }
       }
     );
-    const tokens = pick(allTokens.value, pool.tokenAddresses);
-    const onchainData = await balancerContracts.vault.getPoolData(
-      id,
-      pool.poolType,
-      tokens
-    );
+
+    if (pool.poolType === 'Stable' && !POOLS.Stable.AllowList.includes(id)) {
+      throw new Error('Pool not allowed');
+    }
 
     if (!tokensInjected(pool)) {
       await store.dispatch('registry/injectTokens', [
@@ -64,6 +65,13 @@ export default function usePoolQuery(
         pool.address
       ]);
     }
+
+    const tokens = pick(allTokens.value, pool.tokenAddresses);
+    const onchainData = await balancerContracts.vault.getPoolData(
+      id,
+      pool.poolType,
+      tokens
+    );
 
     return { ...pool, onchain: onchainData };
   };

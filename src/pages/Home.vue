@@ -19,9 +19,10 @@
     </template>
     <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
     <TokenSearchInput
-      v-model="selectedPoolTokens"
+      v-model="selectedTokens"
       :loading="isLoadingPools"
-      @update:modelValue="updateSelectedPoolTokens"
+      @add="addSelectedToken"
+      @remove="removeSelectedToken"
     />
     <PoolsTable
       :isLoading="isLoadingPools"
@@ -46,17 +47,17 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
 import { getAddress } from '@ethersproject/address';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
 
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 
-import PoolsTable from '@/components/tables/PoolsTable.vue';
+import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 
 import usePools from '@/composables/pools/usePools';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
+import usePoolFilters from '@/composables/pools/usePoolFilters';
 
 export default defineComponent({
   components: {
@@ -66,13 +67,13 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const store = useStore();
     const router = useRouter();
     const { isWalletReady, isV1Supported } = useVueWeb3();
-
-    const selectedPoolTokens = computed(
-      () => store.state.app.selectedPoolTokens
-    );
+    const {
+      selectedTokens,
+      addSelectedToken,
+      removeSelectedToken
+    } = usePoolFilters();
 
     const {
       pools,
@@ -82,27 +83,22 @@ export default defineComponent({
       loadMorePools,
       poolsHasNextPage,
       poolsIsFetchingNextPage
-    } = usePools(selectedPoolTokens);
+    } = usePools(selectedTokens);
 
     // COMPUTED
     const filteredPools = computed(() =>
-      selectedPoolTokens.value.length > 0
+      selectedTokens.value.length > 0
         ? pools.value?.filter(pool => {
             const poolTokenList = pool.tokensList.map(getAddress);
 
-            return selectedPoolTokens.value.every((selectedToken: string) =>
+            return selectedTokens.value.every((selectedToken: string) =>
               poolTokenList.includes(selectedToken)
             );
           })
         : pools?.value
     );
 
-    const hideV1Links = computed(() => isV1Supported);
-
-    // METHODS
-    function updateSelectedPoolTokens(selectedPoolTokens: string[]) {
-      store.commit('app/setSelectedPoolTokens', selectedPoolTokens);
-    }
+    const hideV1Links = computed(() => !isV1Supported);
 
     return {
       // data
@@ -116,12 +112,13 @@ export default defineComponent({
       hideV1Links,
       poolsHasNextPage,
       poolsIsFetchingNextPage,
-      selectedPoolTokens,
+      selectedTokens,
 
       //methods
       router,
       loadMorePools,
-      updateSelectedPoolTokens,
+      addSelectedToken,
+      removeSelectedToken,
 
       // constants
       EXTERNAL_LINKS

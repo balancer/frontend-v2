@@ -1,6 +1,5 @@
 import Vault from './contracts/vault';
 import configs, { Config } from '@/lib/config';
-import { Multicaller } from '@/lib/utils/balancer/contract';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import getProvider from '@/lib/utils/provider';
 import { default as vaultAbi } from '@/lib/abi/Vault.json';
@@ -14,12 +13,10 @@ export default class Service {
   vault: Vault;
   config: Config;
   provider: JsonRpcProvider;
-  multiCaller: Multicaller;
 
   constructor() {
     this.provider = getProvider(NETWORK);
     this.config = configs[NETWORK];
-    this.multiCaller = new Multicaller(NETWORK, this.provider, this.allABIs);
 
     // Init contracts
     this.vault = new Vault(this);
