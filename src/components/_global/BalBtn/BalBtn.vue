@@ -135,7 +135,7 @@ export default defineComponent({
       if (props.color.includes('gradient')) return bgGradientClasses.value;
       else if (props.outline) return 'bg-transparent';
       else if (props.flat) return bgFlatClasses.value;
-      else if (props.color === 'white') return 'bg-white dark:bg-gray-900';
+      else if (props.color === 'white') return 'bg-white';
       else {
         if (props.disabled) {
           return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
@@ -160,7 +160,7 @@ export default defineComponent({
     const textColorClasses = computed(() => {
       if (props.color === 'white') {
         if (props.outline) return 'text-white';
-        else return 'text-black dark:text-white';
+        else return 'text-black';
       }
       if (props.outline || props.flat)
         return `text-${props.color}-500 dark:text-${props.color}-400`;

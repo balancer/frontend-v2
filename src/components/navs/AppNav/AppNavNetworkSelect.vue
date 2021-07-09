@@ -29,7 +29,7 @@
         v-for="network in networks"
         :key="network.id"
         :href="appUrl(network)"
-        class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
+        class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-850"
         @click="redirectTo(network)"
       >
         <div class="flex items-center">
