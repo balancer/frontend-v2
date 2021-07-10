@@ -7,20 +7,15 @@ import { getAddress } from '@ethersproject/address';
 // TYPES
 export type BalanceMap = { [address: string]: BigNumber };
 
-export default class BalanceConcern {
+export default class BalancesConcern {
   constructor(private readonly service: TokenService) {}
 
-  async getMany(
-    account: string,
-    userNetwork: string,
-    addresses: string[]
-  ): Promise<BalanceMap> {
+  async get(account: string, addresses: string[]): Promise<BalanceMap> {
     try {
-      const provider = this.service.rpcProviderService.getJsonProvider(
-        userNetwork
-      );
+      const network = this.service.configService.network.key;
+      const provider = this.service.rpcProviderService.jsonProvider;
       const balances: [BigNumber][] = await multicall(
-        userNetwork,
+        network,
         provider,
         erc20Abi,
         addresses.map(token => [token, 'balanceOf', [account]])

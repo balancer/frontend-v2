@@ -21,13 +21,11 @@ export default function useAccountAllowancesQuery(
   );
 
   const queryFn = async () => {
-    const res = await tokenService.allowances.get(
+    return await tokenService.allowances.get(
       account.value,
       contractAddesses.value,
       tokens.value
     );
-    console.log('allowances', res);
-    return res;
   };
 
   const queryOptions = reactive({

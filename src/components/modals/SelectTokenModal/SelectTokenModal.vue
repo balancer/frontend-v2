@@ -26,8 +26,8 @@
             <span class="mr-1 ">
               <img
                 v-for="(tokenlist, i) in activeTokenLists"
-                :key="`activeTokenListIcon-${i}`"
-                :src="_url(listMap[tokenlist]?.logoURI)"
+                :key="i"
+                :src="tokenListUrl(tokenlist.logoURI)"
                 class="rounded-full inline-block bg-white shadow w-6 h-6"
               />
             </span>
@@ -48,15 +48,15 @@
       />
       <div>
         <div
-          v-if="Object.keys(tokenLists).length > 0"
+          v-if="Object.keys(filteredTokenLists).length > 0"
           class="h-96 overflow-y-scroll"
         >
           <TokenListsListItem
-            v-for="(tokenList, i) in tokenLists"
-            :key="i"
-            :isActive="isActiveList(tokenList.name)"
+            v-for="(tokenList, uri) in filteredTokenLists"
+            :key="uri"
+            :isActive="isActiveList(uri)"
             :tokenlist="tokenList"
-            @toggle="toggleActiveTokenList(tokenList.name)"
+            @toggle="toggleTokenList(uri)"
           />
         </div>
         <div
@@ -78,8 +78,8 @@
       <div class="overflow-hidden rounded-lg">
         <RecycleScroller
           class="h-96 overflow-y-scroll"
-          v-if="tokens?.length > 0"
-          :items="tokens"
+          v-if="Object.keys(tokens)?.length > 0"
+          :items="Object.values(tokens)"
           :item-size="64"
           key-field="address"
           v-slot="{ item }"
@@ -104,16 +104,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue';
+import { defineComponent, reactive, ref, toRefs, computed, watch, PropType } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
-import useTokenLists from '@/composables/useTokensStore';
 import useTokenLists2 from '@/composables/useTokenLists2';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
 import useTokens from '@/composables/useTokens';
+import useTokens2 from '@/composables/useTokens2';
 
 export default defineComponent({
   components: {
@@ -126,12 +126,13 @@ export default defineComponent({
 
   props: {
     open: { type: Boolean, default: false },
-    excludedTokens: { type: Array, default: () => [] },
+    excludedTokens: { type: Array as PropType<string[]>, default: () => [] },
     includeEther: { type: Boolean, default: false }
   },
 
   setup(props, { emit }) {
     // DATA
+    const selectTokenLists = ref(false);
     const data = reactive({
       loading: false,
       query: '',
@@ -141,21 +142,25 @@ export default defineComponent({
       not: props.excludedTokens,
       queryAddress: ''
     });
+    // const { tokens: tokenMap } = useTokens(data);
+    // const tokens = computed(() => Object.values(tokenMap.value));
+
+    const { allTokens, prices, balances, allowances } = useTokens2();
+    const { searchTokens } = useTokens2({
+      excludeTokens: props.excludedTokens
+    });
+    console.log('tokens', allTokens.value);
+    console.log('prices', prices.value);
+    console.log('balances', balances.value);
+    console.log('allowances', allowances.value);
+
     const {
-      lists: tokenLists,
-      toggleActiveTokenList,
+      approvedTokenLists,
+      activeTokenLists,
+      toggleTokenList,
       isActiveList,
-      listMap,
-      activeTokenLists
-    } = useTokenLists();
-    const { tokens: tokenMap } = useTokens(data);
-    const tokens = computed(() => Object.values(tokenMap.value));
-    // const {
-    //   approvedTokenLists,
-    //   toggleList,
-    //   toggled: toggledTokenLists,
-    //   isToggled: isToggledList
-    // } = useTokenLists2();
+      tokenListUrl
+    } = useTokenLists2();
 
     // COMPOSABLES
     const store = useStore();
@@ -163,29 +168,40 @@ export default defineComponent({
 
     // COMPUTED
     const title = computed(() => {
-      if (data.selectTokenList) return t('manageLists');
+      if (selectTokenLists.value) return t('manageLists');
       return t('selectToken');
     });
 
+    const filteredTokenLists = computed(() => {
+      const query = data.query.toLowerCase();
+      const tokenListArray = Object.entries(approvedTokenLists.value);
+      const results = tokenListArray.filter(([, tokenList]) =>
+        tokenList.name.toLowerCase().includes(query)
+      );
+      return Object.fromEntries(results);
+    });
+
+    const tokens = computed(() => searchTokens(data.query));
+
     // METHODS
     function onTokenSearch(event): void {
-      let address = event.target.value;
-      if (isAddress(address)) {
-        address = getAddress(address);
-        data.queryAddress = address;
-        if (props.excludedTokens.includes(address)) {
-          data.loading = false;
-          data.isTokenSelected = true;
-        } else {
-          data.loading = true;
-          data.isTokenSelected = false;
-          store.dispatch('registry/injectTokens', [address.trim()]);
-        }
-      } else {
-        data.isTokenSelected = false;
-        data.loading = false;
-        data.queryAddress = '';
-      }
+      // let address = event.target.value;
+      // if (isAddress(address)) {
+      //   address = getAddress(address);
+      //   data.queryAddress = address;
+      //   if (props.excludedTokens.includes(address)) {
+      //     data.loading = false;
+      //     data.isTokenSelected = true;
+      //   } else {
+      //     data.loading = true;
+      //     data.isTokenSelected = false;
+      //     store.dispatch('registry/injectTokens', [address.trim()]);
+      //   }
+      // } else {
+      //   data.isTokenSelected = false;
+      //   data.loading = false;
+      //   data.queryAddress = '';
+      // }
     }
 
     function onSelectToken(token: string): void {
@@ -210,12 +226,10 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
-      t,
       // computed
       title,
       tokens,
-      tokenLists,
-      listMap,
+      filteredTokenLists,
       activeTokenLists,
 
       // methods
@@ -224,8 +238,9 @@ export default defineComponent({
       onSelectList,
       onListExit,
       toggleSelectTokenList,
-      toggleActiveTokenList,
-      isActiveList
+      toggleTokenList,
+      isActiveList,
+      tokenListUrl
     };
   }
 });
