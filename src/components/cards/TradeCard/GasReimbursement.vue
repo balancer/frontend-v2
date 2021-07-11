@@ -51,7 +51,7 @@ export default defineComponent({
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
 
-    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.name] ?? {};
+    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? {};
     const eligibleAssets = Object.fromEntries(
       Object.entries(eligibleAssetMeta).map(assetEntry => {
         const [address] = assetEntry;
@@ -79,9 +79,11 @@ export default defineComponent({
       const addressInIsEligible =
         props.addressIn === ETHER.address ||
         props.addressIn.toLowerCase() in eligibleAssets;
+      console.log('addressInIsEligible', addressInIsEligible);
       const addressOutIsEligible =
         props.addressOut === ETHER.address ||
         props.addressOut.toLowerCase() in eligibleAssets;
+      console.log('addressOutIsEligible', addressOutIsEligible);
       const reimburseAllSwaps = addressInIsEligible && addressOutIsEligible;
 
       if (props.sorReturn.isV1swap) {
@@ -148,6 +150,7 @@ export default defineComponent({
     });
 
     const text = computed(() => {
+      console.log('reimburseAmount', reimburseAmount.value.usd.toString());
       const isEligible =
         reimburseAmount.value && reimburseAmount.value.usd.gt(0);
 
