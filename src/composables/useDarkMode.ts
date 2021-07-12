@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import { lsGet, lsSet } from '@/lib/utils';
 import LS_KEYS from '@/constants/local-storage.keys';
+import useBlocknative from './useBlocknative';
 
 const osDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -22,8 +23,11 @@ function setDarkMode(val: boolean): void {
 setDarkMode(darkMode.value);
 
 export default function useDarkMode() {
+  const { updateNotifyConfig } = useBlocknative();
+
   function toggleDarkMode(): void {
     setDarkMode(!darkMode.value);
+    updateNotifyConfig({ darkMode: darkMode.value });
   }
 
   return {

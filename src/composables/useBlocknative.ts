@@ -1,4 +1,4 @@
-import { computed, inject } from 'vue';
+import { computed, inject, watch } from 'vue';
 import Notify from 'bnc-notify';
 import { bnNotifySymbol } from '@/plugins/blocknative';
 import useWeb3 from './useWeb3';
@@ -15,8 +15,13 @@ export default function useBlocknative() {
     return SUPPORTED_NETWORKS.includes(appNetwork.id);
   });
 
+  function updateNotifyConfig(opts): void {
+    notify.config(opts);
+  }
+
   return {
     notify,
-    supportsBlocknative
+    supportsBlocknative,
+    updateNotifyConfig
   };
 }
