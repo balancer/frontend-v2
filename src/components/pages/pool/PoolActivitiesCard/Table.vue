@@ -18,18 +18,22 @@
       <template v-slot:actionCell="action">
         <div class="px-6 py-2">
           <div class="flex items-center">
-            <div>
-              <PlusSquareIcon v-if="action.type === 'Join'" />
-              <MinusSquareIcon v-else />
+            <div class="flex center mr-3">              
+              <BalIcon
+                v-if="action.type === 'Join'" 
+                name="plus"
+                size="sm"
+                class="text-green-500 dark:text-green-400"
+              />
+              <BalIcon
+                v-else
+                name="minus"
+                size="sm"
+                class="text-red-500"
+              />              
             </div>
             <div>{{ action.label }}</div>
           </div>
-        </div>
-      </template>
-
-      <template v-slot:valueCell="action">
-        <div class="px-6 py-4 flex justify-end">
-          {{ fNum(action.value, 'usd_m') }}
         </div>
       </template>
 
@@ -47,6 +51,12 @@
               {{ tokenAmount.amount }}
             </div>
           </template>
+        </div>
+      </template>
+
+      <template v-slot:valueCell="action">
+        <div class="px-6 py-4 flex justify-end">
+          {{ fNum(action.value, 'usd_m') }}
         </div>
       </template>
 
@@ -159,6 +169,14 @@ export default {
         sortable: false
       },
       {
+        name: t('details'),
+        id: 'details',
+        accessor: '',
+        Cell: 'detailsCell',
+        width: 300,
+        sortable: false
+      },
+      {
         name: t('value'),
         id: 'value',
         accessor: 'value',
@@ -167,15 +185,7 @@ export default {
         className: 'align-center w-40',
         sortKey: pool => numeral(pool.value).value(),
         width: 125
-      },
-      {
-        name: t('details'),
-        id: 'details',
-        accessor: '',
-        Cell: 'detailsCell',
-        width: 300,
-        sortable: false
-      },
+      },      
       {
         name: t('time'),
         id: 'timeAgo',
