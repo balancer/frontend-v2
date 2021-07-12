@@ -15,8 +15,12 @@ import {
   UnsignedOrder
 } from '@/services/gnosis/signing';
 import { gnosisOperator } from '@/services/gnosis/operator.service';
+
+import useTransactions from '../useTransactions';
+
 import { Token } from '@/types';
 import { TradeQuote } from './types';
+import useNumbers from '../useNumbers';
 
 // TODO: get correct app id
 const GNOSIS_APP_ID = 2;
@@ -48,6 +52,8 @@ export default function useGnosis({
   // COMPOSABLES
   const store = useStore();
   const { account, getSigner } = useVueWeb3();
+  const { addTransaction } = useTransactions();
+  const { fNum } = useNumbers();
 
   // DATA
   const feeQuote = ref<FeeInformation | null>(null);
@@ -147,7 +153,20 @@ export default function useGnosis({
         },
         owner: account.value
       });
-      console.log(orderId);
+
+      const summary = `${fNum(tokenInAmountInput.value, 'token')} ${
+        tokenIn.value.symbol
+      } -> ${fNum(tokenOutAmountInput.value, 'token')} ${
+        tokenOut.value.symbol
+      }`;
+
+      addTransaction({
+        id: orderId,
+        type: 'order',
+        action: 'trade',
+        summary
+      });
+
       if (successCallback != null) {
         successCallback();
       }

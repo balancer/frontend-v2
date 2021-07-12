@@ -11,6 +11,7 @@
       :isVisible="isWalletSelectVisible"
       @close="toggleWalletSelectModal"
     />
+    <Notifications />
   </div>
 </template>
 
@@ -22,12 +23,15 @@ import BigNumber from 'bignumber.js';
 import { useRoute } from 'vue-router';
 
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
+import useGlobalWatchers from '@/composables/useGlobalWatchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
+
+import Notifications from '@/components/notifications/Notifications.vue';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -36,12 +40,14 @@ export default defineComponent({
     AppNav,
     AppHero,
     VueQueryDevTools,
-    WalletSelectModal
+    WalletSelectModal,
+    Notifications
   },
 
   setup() {
     // COMPOSABLES
     useWeb3Watchers();
+    useGlobalWatchers();
     const { isWalletSelectVisible, toggleWalletSelectModal } = useVueWeb3();
     const store = useStore();
     const route = useRoute();

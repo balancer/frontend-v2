@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType } from 'vue';
+import { defineComponent, ref, computed, PropType, watch } from 'vue';
 
 type PopoverTrigger = 'click' | 'hover';
 
@@ -31,7 +31,8 @@ export default defineComponent({
     },
     align: { type: String, default: 'right' }
   },
-  setup(props) {
+  emits: ['show', 'hide'],
+  setup(props, { emit }) {
     // DATA
     const popoverOpened = ref(false);
 
@@ -60,6 +61,14 @@ export default defineComponent({
       'bal-popover-wrapper-visible': popoverOpened.value,
       [`${props.align}-0`]: true
     }));
+
+    watch(popoverOpened, () => {
+      if (popoverOpened.value) {
+        emit('show');
+      } else {
+        emit('hide');
+      }
+    });
 
     return {
       // methods
