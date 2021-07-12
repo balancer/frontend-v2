@@ -7,7 +7,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import TOKEN_LISTS from '@/constants/tokenlists';
 
 import { getTokensListURL, loadTokenlist } from '@/lib/utils/tokenlists';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsSet } from '@/lib/utils';
 
 import { Token } from '@/types';
 
@@ -65,9 +65,7 @@ const loadAllTokenLists = async () => {
 // for other composables to build upon
 export default function useTokenStore() {
   const store = useStore();
-  const activeTokenLists = ref<string[]>(
-    lsGet('activeTokenLists', ['Balancer'])
-  );
+  const activeTokenLists = ref<string[]>(['Balancer']);
   const queryKey = QUERY_KEYS.TokenLists;
   const queryFn = loadAllTokenLists;
 
