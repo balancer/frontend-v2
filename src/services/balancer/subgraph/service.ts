@@ -1,5 +1,5 @@
 import Client from './client';
-import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
+import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
 import PoolActivities from './entities/poolActivities';
@@ -9,7 +9,6 @@ const NETWORK = process.env.VUE_APP_NETWORK || '1';
 
 export default class Service {
   client: Client;
-  rpcProviderService: RpcProviderService;
   pools: Pools;
   poolShares: PoolShares;
   poolActivities: PoolActivities;
@@ -17,10 +16,9 @@ export default class Service {
 
   constructor(
     client = new Client(),
-    rpcProviderService = new RpcProviderService()
+    readonly rpcProviderService = _rpcProviderService
   ) {
     this.client = client;
-    this.rpcProviderService = rpcProviderService;
 
     // Init entities
     this.pools = new Pools(this);

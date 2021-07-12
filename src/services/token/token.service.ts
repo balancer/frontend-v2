@@ -1,6 +1,6 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
-import RpcProviderService from '../rpc-provider/rpc-provider.service';
-import ConfigService from '../config/config.service';
+import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { configService as _configService } from '../config/config.service';
 import MetadataConcern from './concerns/metadata.concern';
 import BalanceConcern from './concerns/balance.concern';
 
@@ -12,10 +12,10 @@ export default class TokenService {
   constructor(
     readonly metadataConcernClass = MetadataConcern,
     readonly balanceConcernClass = BalanceConcern,
-    readonly rpcProviderService = new RpcProviderService(),
-    readonly configService = new ConfigService()
+    readonly rpcProviderService = _rpcProviderService,
+    readonly configService = _configService
   ) {
-    this.provider = rpcProviderService.jsonProvider;
+    this.provider = this.rpcProviderService.jsonProvider;
     this.metadata = new metadataConcernClass(this);
     this.balance = new balanceConcernClass(this);
   }
