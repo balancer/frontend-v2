@@ -208,8 +208,8 @@ export default defineComponent({
     const inputContainerClasses = computed(() => {
       return {
         [inputHeightClasses()]: true,
-        'border-l': slots.prepend && props.prependBorder,
-        'border-r': slots.append && props.appendBorder
+        'border-l dark:border-gray-850': slots.prepend && props.prependBorder,
+        'border-r dark:border-gray-850': slots.append && props.appendBorder
       };
     });
 
@@ -224,7 +224,7 @@ export default defineComponent({
       return {
         [textSizeClasses()]: true,
         [inputHeightClasses()]: true,
-        ['bg-white']: props.appendBorder
+        ['bg-white dark:bg-gray-900']: props.appendBorder
       };
     });
 
@@ -232,7 +232,7 @@ export default defineComponent({
       return {
         [textSizeClasses()]: true,
         [inputHeightClasses()]: true,
-        ['bg-white']: props.prependBorder
+        ['bg-white dark:bg-gray-900']: props.prependBorder
       };
     });
 
@@ -282,7 +282,7 @@ input:focus {
 }
 
 .input-group {
-  @apply flex items-center overflow-hidden bg-white border;
+  @apply flex items-center overflow-hidden bg-white dark:bg-gray-900 border dark:border-0;
 }
 
 .input-container {
@@ -306,6 +306,6 @@ input:focus {
 }
 
 .faded-out-overlay {
-  @apply absolute top-0 left-0 opacity-75 w-full h-full bg-white z-10 cursor-pointer;
+  @apply absolute rounded-lg top-0 left-0 opacity-75 w-full h-full bg-white dark:bg-gray-900 z-10 cursor-pointer;
 }
 </style>

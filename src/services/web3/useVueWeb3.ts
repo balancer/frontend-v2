@@ -30,9 +30,9 @@ export default function useVueWeb3() {
   );
 
   // COMPUTED REFS + COMPUTED REFS
-  const userNetworkConfig = computed(() =>
-    configService.getNetworkConfig(String(chainId.value))
-  );
+  const userNetworkConfig = computed(() => {
+    return configService.getNetworkConfig(String(chainId.value));
+  });
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isMainnet = computed(() => appNetworkConfig.chainId === 1);
   const isPolygon = computed(() => appNetworkConfig.chainId === 137);
@@ -45,9 +45,9 @@ export default function useVueWeb3() {
       userNetworkConfig.value?.key !== process.env.VUE_APP_NETWORK
     );
   });
-  const isUnsupportedNetwork = computed(
-    () => isWalletReady.value && !userNetworkConfig.value?.key
-  );
+  const isUnsupportedNetwork = computed(() => {
+    return isWalletReady.value && !userNetworkConfig.value?.key;
+  });
   const explorerLinks = {
     txLink: (txHash: string) =>
       `${configService.network.explorer}/tx/${txHash}`,

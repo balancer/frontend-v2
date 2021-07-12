@@ -113,7 +113,7 @@ export default defineComponent({
       }
 
       if (props.disabled) {
-        return `bg-gray-300 text-white`;
+        return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
       }
       if (props.loading) {
         return `bg-gradient-to-tr from-${fromColor}-50 to-${toColor}-50`;
@@ -127,7 +127,7 @@ export default defineComponent({
     const bgFlatClasses = computed(() => {
       return `
         bg-${props.color}-50 hover:bg-${props.color}-100
-        dark:hover:bg-${props.color}-dark-800
+        dark:bg-${props.color}-800 dark:hover:bg-${props.color}-700
       `;
     });
 
@@ -138,7 +138,7 @@ export default defineComponent({
       else if (props.color === 'white') return 'bg-white';
       else {
         if (props.disabled) {
-          return `bg-gray-300 text-white`;
+          return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
         }
         if (props.loading) {
           return `bg-${props.color}-400 dark:bg-${props.color}-dark-400`;
@@ -152,7 +152,8 @@ export default defineComponent({
     });
 
     const borderClasses = computed(() => {
-      if (props.outline) return `border border-${props.color}-200`;
+      if (props.outline)
+        return `border border-${props.color}-200 dark:border-${props.color}-700`;
       return 'border-none';
     });
 
@@ -161,7 +162,8 @@ export default defineComponent({
         if (props.outline) return 'text-white';
         else return 'text-black';
       }
-      if (props.outline || props.flat) return `text-${props.color}-500`;
+      if (props.outline || props.flat)
+        return `text-${props.color}-500 dark:text-${props.color}-400`;
       return 'text-white';
     });
 

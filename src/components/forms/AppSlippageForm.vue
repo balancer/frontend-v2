@@ -6,11 +6,16 @@
       @update:modelValue="onFixedInput"
     />
     <div
-      class="flex items-center px-1 border rounded-lg shadow-inner"
-      :class="{ 'border border-blue-500 text-blue-500': !isFixedSlippage }"
+      :class="[
+        'flex items-center px-1 rounded-lg shadow-inner',
+        {
+          'border border-blue-500 text-blue-500': !isFixedSlippage,
+          'border dark:border-gray-900': isFixedSlippage
+        }
+      ]"
     >
       <input
-        class="w-8 text-right"
+        class="w-8 text-right bg-transparent"
         v-model="customSlippage"
         placeholder="0.1"
         type="number"

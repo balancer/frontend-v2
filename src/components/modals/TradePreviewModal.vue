@@ -6,7 +6,7 @@
   >
     <div>
       <div
-        class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-700"
+        class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-800"
       >
         <BalAssetSet
           :addresses="[addressIn, addressOut]"
@@ -35,16 +35,18 @@
               class="w-9 h-9 flex items-center justify-center border rounded-full text-green-500"
             >
               <BalIcon v-if="isApproved" name="check" class="text-green-500" />
-              <span v-else class="text-gray-500">1</span>
+              <span v-else class="text-gray-500 dark:text-gray-400">1</span>
             </div>
             <div class="ml-3">
               <span v-if="isApproved">{{ $t('approved') }}</span>
               <span v-else>{{ $t('approve') }}</span>
             </div>
           </div>
-          <div class="mt-3 p-3 flex items-center border rounded-lg">
+          <div
+            class="mt-3 p-3 flex items-center border rounded-lg dark:border-gray-800"
+          >
             <div
-              class="w-9 h-9 flex items-center justify-center border rounded-full text-gray-500"
+              class="w-9 h-9 flex items-center justify-center border rounded-full dark:border-gray-700 text-gray-500 dark:text-gray-400"
             >
               {{ requiresApproval ? 2 : 1 }}
             </div>

@@ -15,8 +15,13 @@ export default function useBlocknative() {
     return SUPPORTED_NETWORKS.includes(appNetwork.id);
   });
 
+  function updateNotifyConfig(opts): void {
+    notify.config(opts);
+  }
+
   return {
     notify,
-    supportsBlocknative
+    supportsBlocknative,
+    updateNotifyConfig
   };
 }

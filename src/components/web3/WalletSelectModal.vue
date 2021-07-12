@@ -5,7 +5,9 @@
     title="Connect to a wallet"
   >
     <WalletButton v-for="wallet in wallets" :wallet="wallet" :key="wallet" />
-    <div class="p-4 rounded-lg bg-gradient-to-b from-gray-50 to-gray-100">
+    <div
+      class="p-4 rounded-lg bg-gradient-to-b from-gray-50 dark:from-gray-900 to-gray-100 dark:to-gray-850"
+    >
       <h6 class="font-bold">New to Ethereum?</h6>
       <p class="text-sm">
         Balancer is a DeFi app on Ethereum. To invest and trade here, you'll

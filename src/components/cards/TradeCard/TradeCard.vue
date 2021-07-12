@@ -1,5 +1,5 @@
 <template>
-  <BalCard class="relative" :shadow="tradeCardShadow" no-border>
+  <BalCard class="relative" :shadow="tradeCardShadow" :no-border="!darkMode">
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
@@ -113,6 +113,7 @@ import { useI18n } from 'vue-i18n';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
+import useDarkMode from '@/composables/useDarkMode';
 
 export default defineComponent({
   components: {
@@ -134,6 +135,7 @@ export default defineComponent({
 
     const { tokens } = useTokens();
     const { userNetworkConfig } = useVueWeb3();
+    const { darkMode } = useDarkMode();
 
     const exactIn = ref(true);
     const tokenInAddress = ref('');
@@ -332,6 +334,7 @@ export default defineComponent({
       showTradePreviewModal,
       isLoadingApprovals,
       bp,
+      darkMode,
       tradeCardShadow,
       explorer: explorerLinks
     };

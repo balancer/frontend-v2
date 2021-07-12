@@ -19,15 +19,17 @@
         </span>
       </BalBtn>
     </template>
-    <div class="flex flex-col w-44">
-      <div class="p-3 border-b whitespace-nowrap text-gray-500 font-medium">
+    <div class="flex flex-col w-44 rounded-lg overflow-hidden">
+      <div
+        class="p-3 border-b dark:border-gray-900 whitespace-nowrap text-gray-500 font-medium"
+      >
         Select a network
       </div>
       <a
         v-for="network in networks"
         :key="network.id"
         :href="appUrl(network)"
-        class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 rounded"
+        class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-850"
         @click="redirectTo(network)"
       >
         <div class="flex items-center">
@@ -36,7 +38,7 @@
             :alt="network.name"
             class="w-5 h-5 rounded-full mr-2"
           />
-          <span class="ml-1 text-black font-medium">
+          <span class="ml-1 font-medium">
             {{ network.name }}
           </span>
         </div>

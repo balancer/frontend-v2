@@ -36,12 +36,12 @@ function useChipClasses(size: string, color: string) {
 
   const bgColorClasses = (): string => {
     if (isGradient) return bgGradientClasses();
-    if (color === 'white') return 'bg-white';
-    return `bg-${color}-100`;
+    if (color === 'white') return 'bg-white dark:bg-gray-900';
+    return `bg-${color}-100 dark:bg-${color}-800`;
   };
 
   const outlineClasses = (): string => {
-    return `border-gray-100 border shadow-lg`;
+    return `border-gray-100 dark:border-gray-900 border shadow-lg`;
   };
 
   return computed(() => {

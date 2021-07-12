@@ -1,8 +1,15 @@
 <template>
   <div>
-    <div class="p-4 border-b">
-      <h5 v-text="$t('account')" />
-      <div class="flex mt-1 justify-between">
+    <div class="p-4 border-b dark:border-gray-900">
+      <div class="flex justify-between items-center mb-4">
+        <h5 v-text="$t('account')" class="leading-none" />
+        <div>
+          <BalBtn outline color="gray" size="xs" @click="disconnectWallet">
+            Disconnect
+          </BalBtn>
+        </div>
+      </div>
+      <div class="flex mt-1">
         <div class="flex">
           <div class="relative">
             <Avatar :address="account" size="44" />
@@ -21,8 +28,9 @@
                   <template v-slot:activator>
                     <BalBtn
                       circle
-                      color="white"
+                      color="gray"
                       size="xs"
+                      flat
                       @click="copyAddress"
                       class="mr-2"
                     >
@@ -37,7 +45,8 @@
                 </BalTooltip>
                 <BalBtn
                   circle
-                  color="white"
+                  flat
+                  color="gray"
                   size="xs"
                   tag="a"
                   :href="explorer.addressLink(account)"
@@ -50,11 +59,6 @@
             </div>
             <div class="text-sm">{{ connectorName }}</div>
           </div>
-        </div>
-        <div class="flex items-center">
-          <BalBtn circle color="white" size="xs" @click="disconnectWallet">
-            <BalIcon class="text-red-500" name="x" size="sm" />
-          </BalBtn>
         </div>
       </div>
     </div>
@@ -130,7 +134,9 @@
       />
       <div class="flex mt-1"></div>
     </div>
-    <div class="network mt-4 p-4 text-sm border-t rounded-b-xl">
+    <div
+      class="network mt-4 p-4 text-sm border-t dark:border-gray-900 rounded-b-xl"
+    >
       <div v-text="$t('network')" />
       <div class="flex items-baseline">
         <div

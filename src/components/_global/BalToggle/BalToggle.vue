@@ -52,11 +52,11 @@ export default defineComponent({
 }
 
 .bal-toggle-checkbox {
-  @apply absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 appearance-none cursor-pointer;
+  @apply absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 dark:border-gray-900 appearance-none cursor-pointer;
 }
 
 .bal-toggle-label {
-  @apply block overflow-hidden h-6 rounded-full bg-gray-200 cursor-pointer;
+  @apply block overflow-hidden h-6 rounded-full bg-gray-200 dark:bg-gray-900 cursor-pointer;
 }
 
 .bal-toggle-checkbox:checked {
