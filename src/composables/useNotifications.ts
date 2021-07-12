@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 
 import { TransactionStatus } from './useTransactions';
 
-const DEFAULT_NOTIFICATION_TIMEOUT = 15000;
+const DEFAULT_NOTIFICATION_TIMEOUT = 15 * 1_000; // 15s
 
 export type Notification = {
   id: string;
