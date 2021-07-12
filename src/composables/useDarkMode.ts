@@ -4,14 +4,16 @@ import LS_KEYS from '@/constants/local-storage.keys';
 import useBlocknative from './useBlocknative';
 
 const osDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const lsDarkMode =
+  lsGet(LS_KEYS.App.DarkMode, osDarkMode.toString()) === 'true';
 
 // STATE
-const darkMode = ref<boolean>(lsGet(LS_KEYS.App.DarkMode, osDarkMode));
+const darkMode = ref<boolean>(lsDarkMode);
 
 // MUTATIONS
 function setDarkMode(val: boolean): void {
   darkMode.value = val;
-  lsSet(LS_KEYS.App.DarkMode, darkMode.value);
+  lsSet(LS_KEYS.App.DarkMode, darkMode.value.toString());
   if (darkMode.value) {
     document.documentElement.classList.add('dark');
   } else {
