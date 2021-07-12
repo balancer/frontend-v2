@@ -81,17 +81,17 @@
               :loading="isLoadingSnapshots"
             />
           </div>
-          <div class="px-4 lg:px-0">
+          <div class="px-4 lg:px-0 mb-4">
             <PoolStatCards :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div>
+          <div class="mb-4">
             <h4 v-text="$t('poolComposition')" class="px-4 lg:px-0 mb-4" />
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
           </div>
 
           <div>
-            <h4 v-text="$t('poolTransactions')" class="px-4 lg:px-0 mb-4" />
+            <h4 v-text="$t('poolTransactions')" class="px-4 lg:px-0 mb-2" />
             <PoolActivitiesCard :pool="pool" :loading="loadingPool" />
           </div>
         </div>
