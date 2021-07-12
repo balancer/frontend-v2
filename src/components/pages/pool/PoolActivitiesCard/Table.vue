@@ -67,9 +67,9 @@
               class="ml-2 flex items-center"
             >
               <BalIcon
-                name="external-link"
+                name="arrow-up-right"
                 size="sm"
-                class="text-gray-500 hover:text-blue-500"
+                class="text-gray-500 hover:text-blue-500 transition-colors"
               />
             </BalLink>
           </div>

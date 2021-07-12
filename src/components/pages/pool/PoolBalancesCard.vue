@@ -24,9 +24,9 @@
               {{ symbolFor(token.address) }}
             </span>
             <BalIcon
-              name="external-link"
+              name="arrow-up-right"
               size="sm"
-              class="ml-3 text-gray-500 hover:text-blue-500"
+              class="ml-2 text-gray-500 hover:text-blue-500 transition-colors"
             />
           </BalLink>
         </div>
