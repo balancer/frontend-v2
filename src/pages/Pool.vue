@@ -5,7 +5,7 @@
         <BalLoadingBlock v-if="loadingPool" class="h-16" />
         <div v-else class="px-4 lg:px-0 flex flex-col">
           <div class="flex flex-wrap items-center -mt-2">
-            <h3 class="font-bold mr-4 capitalize mt-2">
+            <h3 class="pool-title">
               {{ poolTypeLabel }}
             </h3>
             <div
@@ -312,5 +312,9 @@ export default defineComponent({
 <style scoped>
 .pool-container {
   @apply w-full max-w-screen-2xl;
+}
+.pool-title {
+  @apply mr-4 capitalize mt-2;
+  font-variation-settings: 'wght' 700;
 }
 </style>

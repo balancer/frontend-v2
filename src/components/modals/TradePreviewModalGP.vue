@@ -72,7 +72,7 @@
       <BalCard noPad shadow="none" class="mb-6" v-if="showSummary">
         <template v-slot:header>
           <div class="p-3 flex w-full items-center justify-between border-b">
-            <div class="font-semibold">{{ $t('summary') }}</div>
+            <div class="">{{ $t('summary') }}</div>
             <div class="flex divide-x text-xs uppercase">
               <div
                 :class="[

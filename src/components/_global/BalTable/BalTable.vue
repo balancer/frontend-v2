@@ -36,7 +36,7 @@
               ></slot>
               <div v-else>
                 <h5
-                  class="text-base font-semibold text-gray-800 dark:text-gray-100"
+                  class="text-base text-gray-800 dark:text-gray-100"
                 >
                   {{ column.name }}
                 </h5>
