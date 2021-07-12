@@ -18,19 +18,14 @@
       <template v-slot:actionCell="action">
         <div class="px-6 py-2">
           <div class="flex items-center">
-            <div class="flex center mr-3">              
+            <div class="flex center mr-3">
               <BalIcon
-                v-if="action.type === 'Join'" 
+                v-if="action.type === 'Join'"
                 name="plus"
                 size="sm"
                 class="text-green-500 dark:text-green-400"
               />
-              <BalIcon
-                v-else
-                name="minus"
-                size="sm"
-                class="text-red-500"
-              />              
+              <BalIcon v-else name="minus" size="sm" class="text-red-500" />
             </div>
             <div>{{ action.label }}</div>
           </div>
@@ -185,7 +180,7 @@ export default {
         className: 'align-center w-40',
         sortKey: pool => numeral(pool.value).value(),
         width: 125
-      },      
+      },
       {
         name: t('time'),
         id: 'timeAgo',

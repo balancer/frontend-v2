@@ -14,7 +14,7 @@
       class="token-set"
       :style="{
         left: `${leftOffsetFor(i)}px`,
-        zIndex: `${(20 -i)}`
+        zIndex: `${20 - i}`
       }"
     />
   </div>
@@ -60,12 +60,12 @@ export default defineComponent({
 <style scoped>
 .token-set {
   @apply absolute;
-  box-shadow: 0 0 0 1.5px #FFFFFF;  
+  box-shadow: 0 0 0 1.5px #ffffff;
   border-radius: 50%;
 }
 
 .dark .token-set {
   @apply bg-gray-850;
-  box-shadow: 0 0 0 1px #162031;  
+  box-shadow: 0 0 0 1px #162031;
 }
 </style>
