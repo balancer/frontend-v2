@@ -2,7 +2,7 @@ import { getProfile } from '@/lib/utils/profile';
 import { computed, inject, reactive, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
-import { Web3Provider } from '@ethersproject/providers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
 import ConfigService from '../config/config.service';
 import { isAddress } from '@ethersproject/address';
@@ -58,7 +58,7 @@ export default function useVueWeb3() {
   };
 
   // METHODS
-  const getProvider = () => new Web3Provider(provider.value as any);
+  const getProvider = () => new JsonRpcProvider(provider.value as any);
   const getSigner = () => getProvider().getSigner();
   const toggleWalletSelectModal = (value: boolean) => {
     if (value !== undefined && typeof value === 'boolean') {

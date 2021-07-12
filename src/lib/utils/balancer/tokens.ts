@@ -1,4 +1,4 @@
-import { Web3Provider, TransactionResponse } from '@ethersproject/providers';
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { multicall, Multicaller } from '@/lib/utils/balancer/contract';
@@ -115,7 +115,7 @@ export async function getTokensMeta(
 }
 
 export async function approveTokens(
-  web3: Web3Provider,
+  web3: JsonRpcProvider,
   spender: string,
   tokens: string[]
 ): Promise<TransactionResponse[]> {

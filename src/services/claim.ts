@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse, JsonRpcProvider } from '@ethersproject/providers';
 import { toWei, soliditySha3 } from 'web3-utils';
 import axios from 'axios';
 
@@ -45,7 +45,7 @@ type ClaimStatus = boolean;
 
 export async function getClaimStatus(
   network: NetworkId,
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
   ids: number,
   account: string
 ): Promise<ClaimStatus[]> {
@@ -67,7 +67,7 @@ export async function getReports(snapshot: Snapshot, weeks: number[]) {
 
 export async function getPendingClaims(
   network: NetworkId,
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
   account: string
 ): Promise<{ claims: Claim[]; reports: Report }> {
   if (!constants[network]) {
@@ -171,7 +171,7 @@ export async function getCurrentRewardsEstimate(
 
 export async function claimRewards(
   network: NetworkId,
-  provider: Web3Provider,
+  provider: JsonRpcProvider,
   account: string,
   pendingClaims: Claim[],
   reports: Report
