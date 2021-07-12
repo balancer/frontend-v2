@@ -5,12 +5,10 @@ import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 import { Web3Provider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
 import ConfigService from '../config/config.service';
-import RpcProviderService from '../rpc-provider/rpc-provider.service';
 import { isAddress } from '@ethersproject/address';
+import { useStore } from 'vuex';
 
 const isWalletSelectVisible = ref(false);
-const rpcProviderService = new RpcProviderService();
-const blockNumber = ref(0);
 
 export default function useVueWeb3() {
   const {
@@ -28,8 +26,10 @@ export default function useVueWeb3() {
   const isV1Supported = isAddress(
     configService.network.addresses.exchangeProxy
   );
+  const store = useStore();
 
   // COMPUTED REFS + COMPUTED REFS
+  const blockNumber = computed(() => store.state.web3.blockNumber);
   const userNetworkConfig = computed(() => {
     return configService.getNetworkConfig(String(chainId.value));
   });
@@ -58,9 +58,6 @@ export default function useVueWeb3() {
   };
 
   // METHODS
-  rpcProviderService.initBlockListener(
-    _blockNumber => (blockNumber.value = _blockNumber)
-  );
   const getProvider = () => new Web3Provider(provider.value as any);
   const getSigner = () => getProvider().getSigner();
   const toggleWalletSelectModal = (value: boolean) => {
