@@ -3,6 +3,8 @@ import { merge, orderBy } from 'lodash';
 import { TransactionReceipt } from '@ethersproject/providers';
 import { useI18n } from 'vue-i18n';
 
+import LS_KEYS from '@/constants/local-storage.keys';
+
 import { configService } from '@/services/config/config.service';
 import { gnosisOperator } from '@/services/gnosis/operator.service';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
@@ -11,8 +13,8 @@ import { gnosisExplorer } from '@/services/gnosis/explorer.service';
 
 import { lsGet, lsSet } from '@/lib/utils';
 
-import LS_KEYS from '@/constants/local-storage.keys';
 import useNotifications from './useNotifications';
+import useAccountBalances from './useAccountBalances';
 
 const DAY_MS = 86_400_000;
 
@@ -197,6 +199,7 @@ export default function useTransactions() {
   const { account, explorerLinks } = useVueWeb3();
   const { getProvider: getWeb3Provider, blockNumber } = useVueWeb3();
   const { addNotification } = useNotifications();
+  const { refetchBalances } = useAccountBalances();
   const { t } = useI18n();
 
   // COMPUTED
@@ -262,6 +265,8 @@ export default function useTransactions() {
   }
 
   async function handlePendingTransactions() {
+    let shouldRefetchBalances = false;
+
     if (pendingOrderActivity.value.length) {
       const orders = await Promise.all(
         pendingOrderActivity.value.map(transaction =>
@@ -272,6 +277,7 @@ export default function useTransactions() {
       orders.forEach((order, orderIndex) => {
         if (order != null && order.status === 'fulfilled') {
           finalizeTransaction(order.uid, 'order', order);
+          shouldRefetchBalances = true;
         } else {
           updateTransaction(
             pendingOrderActivity.value[orderIndex].id,
@@ -296,12 +302,17 @@ export default function useTransactions() {
       txs.forEach((tx, txIndex) => {
         if (tx != null) {
           finalizeTransaction(tx.transactionHash, 'tx', tx);
+          shouldRefetchBalances = true;
         } else {
           updateTransaction(pendingTxActivity.value[txIndex].id, 'tx', {
             lastCheckedBlockNumber: blockNumber.value
           });
         }
       });
+
+      if (shouldRefetchBalances) {
+        refetchBalances.value();
+      }
     }
   }
 
