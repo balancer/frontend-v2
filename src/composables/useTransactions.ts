@@ -77,6 +77,65 @@ export const transactionsState = ref<TransactionState>(
   PERSIST_TRANSACTIONS ? lsGet<TransactionState>(LS_KEYS.Transactions, {}) : {}
 );
 
+// COMPUTED
+const transactions = computed(() =>
+  orderBy(Object.values(getTransactions()), 'addedTime', 'desc').filter(
+    isTransactionRecent
+  )
+);
+
+const pendingTransactions = computed(() =>
+  transactions.value.filter(({ status }) => status === 'pending')
+);
+
+const pendingOrderActivity = computed(() =>
+  pendingTransactions.value.filter(({ type }) => type === 'order')
+);
+
+const pendingTxActivity = computed(() =>
+  pendingTransactions.value.filter(({ type }) => type === 'tx')
+);
+
+// METHODS
+function normalizeTxReceipt(receipt: TransactionReceipt) {
+  return {
+    blockHash: receipt.blockHash,
+    blockNumber: receipt.blockNumber,
+    contractAddress: receipt.contractAddress,
+    from: receipt.from,
+    status: receipt.status,
+    to: receipt.to,
+    transactionHash: receipt.transactionHash,
+    transactionIndex: receipt.transactionIndex
+  };
+}
+
+function isTransactionRecent(transaction: Transaction): boolean {
+  return Date.now() - transaction.addedTime < DAY_MS;
+}
+
+function clearAllTransactions() {
+  setTransactions({});
+}
+
+function getId(id: string, type: TransactionType) {
+  return `${type}_${id}`;
+}
+
+function getTransactions(): TransactionsMap {
+  const transactionsMap = transactionsState.value[networkId] ?? {};
+
+  return transactionsMap;
+}
+
+function setTransactions(transactionsMap: TransactionsMap) {
+  transactionsState.value[networkId] = transactionsMap;
+
+  if (PERSIST_TRANSACTIONS) {
+    lsSet(LS_KEYS.Transactions, transactionsState.value);
+  }
+}
+
 export default function useTransactions() {
   // COMPOSABLES
   const { account, explorerLinks } = useVueWeb3();
@@ -87,42 +146,7 @@ export default function useTransactions() {
   // COMPUTED
   const provider = computed(() => getWeb3Provider());
 
-  const transactions = computed(() =>
-    orderBy(Object.values(getTransactions()), 'addedTime', 'desc').filter(
-      isTransactionRecent
-    )
-  );
-
-  const pendingTransactions = computed(() =>
-    transactions.value.filter(({ status }) => status === 'pending')
-  );
-
-  const pendingOrderActivity = computed(() =>
-    pendingTransactions.value.filter(({ type }) => type === 'order')
-  );
-
-  const pendingTxActivity = computed(() =>
-    pendingTransactions.value.filter(({ type }) => type === 'tx')
-  );
-
   // METHODS
-  function normalizeTxReceipt(receipt: TransactionReceipt) {
-    return {
-      blockHash: receipt.blockHash,
-      blockNumber: receipt.blockNumber,
-      contractAddress: receipt.contractAddress,
-      from: receipt.from,
-      status: receipt.status,
-      to: receipt.to,
-      transactionHash: receipt.transactionHash,
-      transactionIndex: receipt.transactionIndex
-    };
-  }
-
-  function isTransactionRecent(transaction: Transaction): boolean {
-    return Date.now() - transaction.addedTime < DAY_MS;
-  }
-
   function addTransaction(newTransaction: NewTransaction) {
     const transactionsMap = getTransactions();
     const txId = getId(newTransaction.id, newTransaction.type);
@@ -142,23 +166,9 @@ export default function useTransactions() {
     addNotificationForTransaction(transactionsMap[txId]);
   }
 
-  function addNotificationForTransaction(transaction: Transaction) {
-    addNotification({
-      title: `${t(`recentActivityStatus.${transaction.status}`)} ${
-        transaction.action
-      }`,
-      transactionMetadata: {
-        id: transaction.id,
-        status: transaction.status,
-        explorerLink: getExplorerLink(transaction.id, transaction.type)
-      },
-      message: transaction.summary
-    });
-  }
-
   function finalizeTransaction(
     id: string,
-    type: Transaction['type'],
+    type: TransactionType,
     receipt: Transaction['receipt']
   ) {
     const transactionsMap = getTransactions();
@@ -180,33 +190,18 @@ export default function useTransactions() {
     }
   }
 
-  function clearAllTransactions() {
-    setTransactions({});
-  }
-
-  function getExplorerLink(id: string, type: Transaction['type']) {
-    if (type === 'tx') {
-      return explorerLinks.txLink(id);
-    }
-    return gnosisExplorer.orderLink(id);
-  }
-
-  function getId(id: string, type: Transaction['type']) {
-    return `${type}_${id}`;
-  }
-
-  function getTransactions(): TransactionsMap {
-    const transactionsMap = transactionsState.value[networkId] ?? {};
-
-    return transactionsMap;
-  }
-
-  function setTransactions(transactionsMap: TransactionsMap) {
-    transactionsState.value[networkId] = transactionsMap;
-
-    if (PERSIST_TRANSACTIONS) {
-      lsSet(LS_KEYS.Transactions, transactionsState.value);
-    }
+  function addNotificationForTransaction(transaction: Transaction) {
+    addNotification({
+      title: `${t(`recentActivityStatus.${transaction.status}`)} ${
+        transaction.action
+      }`,
+      transactionMetadata: {
+        id: transaction.id,
+        status: transaction.status,
+        explorerLink: getExplorerLink(transaction.id, transaction.type)
+      },
+      message: transaction.summary
+    });
   }
 
   async function handlePendingTransactions() {
@@ -237,6 +232,13 @@ export default function useTransactions() {
         }
       });
     }
+  }
+
+  function getExplorerLink(id: string, type: TransactionType) {
+    if (type === 'tx') {
+      return explorerLinks.txLink(id);
+    }
+    return gnosisExplorer.orderLink(id);
   }
 
   return {
