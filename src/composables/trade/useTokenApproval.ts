@@ -16,7 +16,6 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
   // COMPOSABLES
   const store = useStore();
   const { getProvider } = useVueWeb3();
-  const provider = getProvider();
   const { txListener, supportsBlocknative } = useNotify();
   const { txListener: ethersTxListener } = useEthers();
 
@@ -70,7 +69,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     approving.value = true;
     try {
       const [tx] = await approveTokens(
-        provider,
+        getProvider(),
         config.addresses.exchangeProxy,
         [tokenInAddress.value]
       );
@@ -85,7 +84,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     console.log('[TokenApproval] Unlock V2');
     approving.value = true;
     try {
-      const [tx] = await approveTokens(provider, config.addresses.vault, [
+      const [tx] = await approveTokens(getProvider(), config.addresses.vault, [
         tokenInAddress.value
       ]);
       txHandler(tx);

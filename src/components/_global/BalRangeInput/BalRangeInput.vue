@@ -28,6 +28,7 @@ import { defineComponent, ref, watch, computed } from 'vue';
 import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/antd.css';
 import { theme } from '@/../tailwind.config';
+import useDarkMode from '@/composables/useDarkMode';
 
 export default defineComponent({
   name: 'BalRangeInput',
@@ -46,6 +47,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const range = ref(0);
+    const { darkMode } = useDarkMode();
 
     const colors = theme.extend.colors;
 
@@ -64,7 +66,7 @@ export default defineComponent({
 
     const railSyle = computed(() => {
       return {
-        background: colors.gray['100']
+        background: darkMode.value ? colors.gray['900'] : colors.gray['100']
       };
     });
 

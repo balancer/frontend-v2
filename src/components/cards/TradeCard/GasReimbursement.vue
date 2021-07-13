@@ -51,7 +51,7 @@ export default defineComponent({
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
 
-    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.name] ?? {};
+    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? {};
     const eligibleAssets = Object.fromEntries(
       Object.entries(eligibleAssetMeta).map(assetEntry => {
         const [address] = assetEntry;

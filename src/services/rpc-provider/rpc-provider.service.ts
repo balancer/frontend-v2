@@ -32,3 +32,5 @@ export default class RpcProviderService {
     return new JsonRpcProvider(rpcUrl);
   }
 }
+
+export const rpcProviderService = new RpcProviderService();

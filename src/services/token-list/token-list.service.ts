@@ -2,17 +2,17 @@ import axios from 'axios';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { TokenList, TokenListDict } from '@/types/TokenList';
 import TOKEN_LISTS from '@/constants/tokenlists';
-import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
-import IpfsService from '../ipfs/ipfs.service';
+import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { ipfsService as _ipfsService } from '../ipfs/ipfs.service';
 
 export default class TokenListService {
   provider: JsonRpcProvider;
 
   constructor(
-    private readonly rpcProviderService = new RpcProviderService(),
-    private readonly ipfsService = new IpfsService()
+    private readonly rpcProviderService = _rpcProviderService,
+    private readonly ipfsService = _ipfsService
   ) {
-    this.provider = rpcProviderService.jsonProvider;
+    this.provider = this.rpcProviderService.jsonProvider;
   }
 
   async getAll(): Promise<TokenListDict> {
