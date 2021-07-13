@@ -130,16 +130,71 @@ function getTransactions(): TransactionsMap {
 
 function setTransactions(transactionsMap: TransactionsMap) {
   transactionsState.value[networkId] = transactionsMap;
-
+  console.log(transactionsMap);
   if (PERSIST_TRANSACTIONS) {
     lsSet(LS_KEYS.Transactions, transactionsState.value);
+  }
+}
+
+function getTransaction(id: string, type: TransactionType) {
+  const transactionsMap = getTransactions();
+  const txId = getId(id, type);
+
+  return transactionsMap[txId];
+}
+
+function updateTransaction(
+  id: string,
+  type: TransactionType,
+  updates: Partial<Transaction>
+) {
+  const transactionsMap = getTransactions();
+  const txId = getId(id, type);
+  const transaction = transactionsMap[txId];
+
+  if (transaction != null) {
+    transactionsMap[txId] = merge(transaction, updates);
+
+    setTransactions(transactionsMap);
+
+    return true;
+  }
+
+  return false;
+}
+
+// Adapted from Uniswap code
+function shouldCheckTx(transaction: Transaction, lastBlockNumber: number) {
+  if (transaction.status === 'confirmed') {
+    return false;
+  }
+
+  if (!transaction.lastCheckedBlockNumber) {
+    return true;
+  }
+
+  const blocksSinceCheck = lastBlockNumber - transaction.lastCheckedBlockNumber;
+  if (blocksSinceCheck < 1) {
+    return false;
+  }
+
+  const minutesPending = (Date.now() - transaction.addedTime) / 1000 / 60;
+  if (minutesPending > 60) {
+    // every 10 blocks if pending for longer than an hour
+    return blocksSinceCheck > 9;
+  } else if (minutesPending > 5) {
+    // every 3 blocks if pending more than 5 minutes
+    return blocksSinceCheck > 2;
+  } else {
+    // otherwise every block
+    return true;
   }
 }
 
 export default function useTransactions() {
   // COMPOSABLES
   const { account, explorerLinks } = useVueWeb3();
-  const { getProvider: getWeb3Provider } = useVueWeb3();
+  const { getProvider: getWeb3Provider, blockNumber } = useVueWeb3();
   const { addNotification } = useNotifications();
   const { t } = useI18n();
 
@@ -163,7 +218,7 @@ export default function useTransactions() {
     };
 
     setTransactions(transactionsMap);
-    addNotificationForTransaction(transactionsMap[txId]);
+    addNotificationForTransaction(newTransaction.id, newTransaction.type);
   }
 
   function finalizeTransaction(
@@ -171,12 +226,8 @@ export default function useTransactions() {
     type: TransactionType,
     receipt: Transaction['receipt']
   ) {
-    const transactionsMap = getTransactions();
-    const txId = getId(id, type);
-    const transaction = transactionsMap[txId];
-
-    if (transaction != null && receipt != null) {
-      transactionsMap[txId] = merge(transaction, {
+    if (receipt != null) {
+      const updateSuccessful = updateTransaction(id, type, {
         receipt:
           type === 'tx'
             ? normalizeTxReceipt(receipt as TransactionReceipt)
@@ -184,13 +235,18 @@ export default function useTransactions() {
         status: 'confirmed',
         confirmedTime: Date.now()
       });
-
-      setTransactions(transactionsMap);
-      addNotificationForTransaction(transactionsMap[txId]);
+      if (updateSuccessful) {
+        addNotificationForTransaction(id, type);
+        return true;
+      }
     }
+
+    return false;
   }
 
-  function addNotificationForTransaction(transaction: Transaction) {
+  function addNotificationForTransaction(id: string, type: TransactionType) {
+    const transaction = getTransaction(id, type);
+
     addNotification({
       title: `${t(`recentActivityStatus.${transaction.status}`)} ${
         transaction.action
@@ -212,23 +268,37 @@ export default function useTransactions() {
         )
       );
 
-      orders.forEach(order => {
+      orders.forEach((order, orderIndex) => {
         if (order != null && order.status === 'fulfilled') {
           finalizeTransaction(order.uid, 'order', order);
+        } else {
+          updateTransaction(
+            pendingOrderActivity.value[orderIndex].id,
+            'order',
+            {
+              lastCheckedBlockNumber: blockNumber.value
+            }
+          );
         }
       });
     }
 
     if (pendingTxActivity.value.length) {
       const txs = await Promise.all(
-        pendingTxActivity.value.map(transaction =>
-          provider.value.getTransactionReceipt(transaction.id)
-        )
+        pendingTxActivity.value
+          .filter(transaction => shouldCheckTx(transaction, blockNumber.value))
+          .map(transaction =>
+            provider.value.getTransactionReceipt(transaction.id)
+          )
       );
 
-      txs.forEach(tx => {
+      txs.forEach((tx, txIndex) => {
         if (tx != null) {
           finalizeTransaction(tx.transactionHash, 'tx', tx);
+        } else {
+          updateTransaction(pendingTxActivity.value[txIndex].id, 'tx', {
+            lastCheckedBlockNumber: blockNumber.value
+          });
         }
       });
     }

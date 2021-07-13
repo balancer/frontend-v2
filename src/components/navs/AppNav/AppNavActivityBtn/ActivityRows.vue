@@ -2,7 +2,7 @@
   <div>
     <div v-for="transaction in transactions" :key="transaction.id" class="row">
       <BalLink
-        :href="getExplorerLink(transaction.id, transaction.activityType)"
+        :href="getExplorerLink(transaction.id, transaction.type)"
         external
         noStyle
       >
