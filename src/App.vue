@@ -23,7 +23,6 @@ import BigNumber from 'bignumber.js';
 import { useRoute } from 'vue-router';
 
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
-import useGlobalWatchers from '@/composables/useGlobalWatchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
@@ -47,7 +46,6 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     useWeb3Watchers();
-    useGlobalWatchers();
     const { isWalletSelectVisible, toggleWalletSelectModal } = useVueWeb3();
     const store = useStore();
     const route = useRoute();
