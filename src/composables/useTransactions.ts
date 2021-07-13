@@ -70,9 +70,11 @@ export type TransactionState = {
   [networkId: number]: TransactionsMap;
 };
 
+const PERSIST_TRANSACTIONS = false;
+
 // TODO: What happens if the structure changes? Either keep a version or schema validator.
 export const transactionsState = ref<TransactionState>(
-  lsGet<TransactionState>(LS_KEYS.Transactions, {})
+  PERSIST_TRANSACTIONS ? lsGet<TransactionState>(LS_KEYS.Transactions, {}) : {}
 );
 
 export default function useTransactions() {
@@ -202,7 +204,9 @@ export default function useTransactions() {
   function setTransactions(transactionsMap: TransactionsMap) {
     transactionsState.value[networkId] = transactionsMap;
 
-    lsSet(LS_KEYS.Transactions, transactionsState.value);
+    if (PERSIST_TRANSACTIONS) {
+      lsSet(LS_KEYS.Transactions, transactionsState.value);
+    }
   }
 
   async function handlePendingTransactions() {
