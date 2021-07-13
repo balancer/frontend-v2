@@ -50,7 +50,7 @@
         @click.prevent="modalTradePreviewIsOpen = true"
       />
       <div
-        class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600"
+        class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600 dark:bg-gray-700 dark:text-white"
         v-if="trading.isBalancerTrade.value && !trading.isWrapOrUnwrap.value"
       >
         <LightBulbIcon />

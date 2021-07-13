@@ -1,5 +1,7 @@
 <template>
-  <div class="relative p-3 border rounded bg-white shadow-lg text-sm">
+  <div
+    class="relative p-3 border rounded bg-white dark:bg-gray-800 shadow-lg text-sm dark:text-white dark:border-gray-850"
+  >
     <div class="flex justify-between">
       <BalLink
         v-if="notification.transactionMetadata"
@@ -18,10 +20,13 @@
         </div>
         <div>{{ notification.message }}</div>
       </div>
-      <BalCloseIcon class="cursor-pointer" @click="closeNotification()" />
+      <BalCloseIcon
+        class="cursor-pointer text-black dark:text-white"
+        @click="closeNotification()"
+      />
     </div>
     <div
-      class="progress"
+      class="absolute bottom-0 left-0 opacity-80 w-0 transition duration-300 ease-linear h-1 bg-black dark:bg-white"
       :style="{ width: `${(progress * 100).toFixed(0)}%` }"
     />
   </div>
@@ -88,15 +93,3 @@ export default defineComponent({
   }
 });
 </script>
-<style scoped>
-.progress {
-  width: 0%;
-  height: 4px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  background: black;
-  opacity: 0.8;
-  transition: width 1s linear;
-}
-</style>

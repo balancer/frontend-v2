@@ -8,13 +8,13 @@
   >
     <path
       d="M14.2151 4.5L5.00977 13.5"
-      stroke="black"
+      stroke="currentColor"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
     <path
       d="M5.00977 4.5L14.2151 13.5"
-      stroke="black"
+      stroke="currentColor"
       stroke-linecap="round"
       stroke-linejoin="round"
     />

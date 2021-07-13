@@ -17,8 +17,10 @@
     </template>
     <BalCard class="w-72" noPad noBorder>
       <template v-slot:header>
-        <div class="p-3 w-full flex items-center justify-between border-b">
-          <h5 class="font-semibold">{{ $t('recentActivityTitle') }}</h5>
+        <div
+          class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
+        >
+          <h5>{{ $t('recentActivityTitle') }}</h5>
           <ActivityCounter
             v-if="pendingTransactions.length > 0"
             :count="pendingTransactions.length"
@@ -46,7 +48,7 @@
         <template v-else>{{ $t('noRecentActivity') }}</template>
       </div>
       <template v-if="transactions.length > 0" v-slot:footer>
-        <div class="w-full p-3 rounded-b-lg bg-white text-sm">
+        <div class="w-full p-3 rounded-b-lg bg-white dark:bg-gray-800 text-sm">
           <a @click="clearAllTransactions()" class="text-blue-500">
             {{ $t('clearAllTransactions') }}
           </a>

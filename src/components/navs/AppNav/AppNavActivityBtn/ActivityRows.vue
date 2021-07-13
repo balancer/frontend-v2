@@ -9,7 +9,7 @@
         <div class="font-semibold">
           {{ $t(`recentActivityTypes.${transaction.action}`) }}
         </div>
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-500 dark:text-gray-400">
           {{ transaction.summary }}
         </div>
       </BalLink>
