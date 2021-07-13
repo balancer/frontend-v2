@@ -160,11 +160,26 @@ export default function useGnosis({
         tokenOut.value.symbol
       }`;
 
+      const { validTo, partiallyFillable } = unsignedOrder;
+
       addTransaction({
         id: orderId,
         type: 'order',
         action: 'trade',
-        summary
+        summary,
+        details: {
+          tokenInAddress: tokenInAddressInput.value,
+          tokenOutAddress: tokenOutAddressInput.value,
+          tokenInAmount: tokenInAmountInput.value,
+          tokenOutAmount: tokenOutAmountInput.value,
+          exactIn: exactIn.value,
+          quote,
+          slippageBufferRate: slippageBufferRate.value,
+          order: {
+            validTo,
+            partiallyFillable
+          }
+        }
       });
 
       if (successCallback != null) {

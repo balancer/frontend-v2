@@ -49,6 +49,7 @@ export type Transaction = {
   action: TransactionAction;
   type: TransactionType;
   receipt?: OrderMetaData | TxReceipt;
+  details?: Record<string, any>;
   summary: string;
   addedTime: number;
   confirmedTime?: number;
@@ -59,7 +60,7 @@ export type Transaction = {
 
 export type NewTransaction = Pick<
   Transaction,
-  'id' | 'type' | 'summary' | 'receipt' | 'action'
+  'id' | 'type' | 'summary' | 'receipt' | 'action' | 'details'
 >;
 
 const networkId = Number(configService.env.NETWORK);

@@ -73,7 +73,12 @@ export default function useTokenApprovalGP(
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: tokenInSymbol
+        summary: tokenInSymbol,
+        details: {
+          tokenAddress: tokenInAddress.value,
+          amount: amount.value,
+          spender: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
+        }
       });
       ethersTxListener(tx, {
         onTxConfirmed: () => {

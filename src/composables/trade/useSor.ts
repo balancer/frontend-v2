@@ -385,7 +385,17 @@ export default function useSor({
         id: tx.hash,
         type: 'tx',
         action: 'trade',
-        summary
+        summary,
+        details: {
+          tokenInAddress: tokenInAddressInput.value,
+          tokenOutAddress: tokenOutAddressInput.value,
+          tokenInAmount: tokenInAmountInput.value,
+          tokenOutAmount: tokenOutAmountInput.value,
+          exactIn: exactIn.value,
+          quote: getQuote(),
+          priceImpact: priceImpact.value,
+          slippageBufferRate: slippageBufferRate.value
+        }
       });
     }
   }
