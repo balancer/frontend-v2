@@ -19,6 +19,7 @@ h4 {
 }
 h5 { 
   @apply text-lg;
+  font-weight: unset;
   font-variation-settings: 'wght' 600;
  }
  h6 {
@@ -31,9 +32,14 @@ h5 {
 
 /* Using font-variation-settings instead of font-weight for the Inter variable font */
 
-.font-thin, .font-extralight, .font-light, .font-normal, .font-medium, .font-semibold, .font-bold, .font-extrabold, .font-black {
+th, .font-thin, .font-extralight, .font-light, .font-normal, .font-medium, .font-semibold, .font-bold, .font-extrabold, .font-black {
   font-weight: unset;
 }
+
+th {
+  font-variation-settings: 'wght' 600;
+}
+
 .font-thin {
   font-variation-settings: 'wght' 100;
 }
