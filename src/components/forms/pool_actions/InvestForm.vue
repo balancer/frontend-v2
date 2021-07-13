@@ -9,8 +9,8 @@
     />
 
     <template v-if="isProportional">
-      <div class="p-4 border-t">
-        <div class="border rounded-lg shadow-inner p-2">
+      <div class="p-4 border-t dark:border-gray-900">
+        <div class="border dark:border-gray-900 rounded-lg shadow-inner p-2">
           <div
             class="flex items-center justify-between mb-3 text-sm text-gray-600"
           >
@@ -39,7 +39,7 @@
 
       <div
         :class="[
-          'px-4 py-3 bg-gray-50 border-b',
+          'px-4 py-3 bg-gray-50 dark:bg-gray-850 border-b dark:border-gray-900',
           hasZeroBalance ? '' : 'border-t'
         ]"
       >
@@ -89,7 +89,10 @@
 
     <div
       v-else
-      :class="['px-4 pt-6 border-b', hasZeroBalance ? '' : 'border-t']"
+      :class="[
+        'px-4 pt-6 border-b dark:border-gray-900',
+        hasZeroBalance ? '' : 'border-t'
+      ]"
     >
       <BalTextInput
         v-for="(token, i) in pool.tokenAddresses"
@@ -136,7 +139,8 @@
           <div class="p-2">
             <BalBtn
               size="xs"
-              color="white"
+              color="gray"
+              outline
               @click.prevent="amounts[i] = tokenBalance(i).toString()"
             >
               {{ $t('max') }}
@@ -453,6 +457,7 @@ export default defineComponent({
         .exactTokensInForBPTOut(fullAmounts.value)
         .toString();
       bptOut = formatUnits(bptOut, props.pool.onchain.decimals);
+      console.log(bptOut, `TS EVM _exactTokensInForBPTOut`);
 
       return minusSlippage(bptOut, props.pool.onchain.decimals);
     });
@@ -548,11 +553,12 @@ export default defineComponent({
         fullAmounts.value
       );
       bptOut = formatUnits(bptOut.toString(), props.pool.onchain.decimals);
+      console.log(bptOut, 'bptOut (queryJoin)');
+      console.log(minBptOut.value, 'bptOut (JS) minusSlippage');
       console.log(
-        'bptOut (queryJoin)',
-        minusSlippage(bptOut, props.pool.onchain.decimals)
+        minusSlippage(bptOut, props.pool.onchain.decimals),
+        'bptOut (queryJoin) minusSlippage'
       );
-      console.log('bptOut (JS)', minBptOut.value);
     }
 
     function blocknativeTxHandler(tx: TransactionResponse): void {

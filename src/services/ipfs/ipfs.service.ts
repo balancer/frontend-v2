@@ -1,11 +1,11 @@
 import axios from 'axios';
-import ConfigService from '../config/config.service';
+import { configService as _configService } from '../config/config.service';
 
 export default class IpfsService {
   gateway: string;
 
-  constructor(private readonly configService = new ConfigService()) {
-    this.gateway = configService.env.IPFS_NODE;
+  constructor(private readonly configService = _configService) {
+    this.gateway = this.configService.env.IPFS_NODE;
   }
 
   async get(hash: string, protocol = 'ipfs'): Promise<unknown> {
@@ -15,3 +15,5 @@ export default class IpfsService {
     return data;
   }
 }
+
+export const ipfsService = new IpfsService();

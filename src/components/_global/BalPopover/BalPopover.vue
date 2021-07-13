@@ -9,7 +9,7 @@
       <slot name="activator" />
     </div>
     <div :class="popoverWrapperClasses">
-      <BalCard shadow="lg" v-bind="$attrs">
+      <BalCard shadow="lg" v-bind="$attrs" darkBgColor="800">
         <slot />
       </BalCard>
     </div>

@@ -1,10 +1,6 @@
 <template>
   <AppNavAlert v-if="alert" :alert="alert" />
-  <nav
-    id="app-nav"
-    ref="appNav"
-    class="h-20 px-4 lg:px-6 bg-white sticky top-0"
-  >
+  <nav id="app-nav" ref="appNav" class="h-20 px-4 lg:px-6 sticky top-0">
     <div class="h-full flex items-center justify-between">
       <div class="w-1/3 flex items-center">
         <router-link
@@ -15,6 +11,7 @@
           <AppLogo v-else />
         </router-link>
         <AppNavNetworkSelect />
+        <DarkModeToggle class="ml-2" />
       </div>
 
       <div class="flex-1 md:w-1/3 flex justify-center">
@@ -39,6 +36,7 @@ import AppNavToggle from './AppNavToggle.vue';
 import AppNavActions from './AppNavActions.vue';
 import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
 import useFathom from '@/composables/useFathom';
+import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
 
 export default defineComponent({
   components: {
@@ -47,7 +45,8 @@ export default defineComponent({
     AppNavAlert,
     AppNavToggle,
     AppNavActions,
-    AppNavNetworkSelect
+    AppNavNetworkSelect,
+    DarkModeToggle
   },
 
   setup() {
@@ -98,7 +97,7 @@ export default defineComponent({
 #app-nav {
   @apply w-full;
   @apply bg-white dark:bg-gray-900;
-  @apply border-b border-transparent dark:border-gray-700;
+  @apply border-b border-transparent;
   transition: all 0.2s ease-in-out;
   z-index: 99999999;
 }

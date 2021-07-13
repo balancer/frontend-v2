@@ -170,13 +170,16 @@ export default class Stable {
     const amounts = denormAmounts.map(a => bnum(a.toString()));
     const balances = this.calc.poolTokenBalances.map(b => bnum(b.toString()));
 
-    return _bptForTokensZeroPriceImpact(
+    const bptZeroImpact = _bptForTokensZeroPriceImpact(
       balances,
       this.calc.poolTokenDecimals,
       amounts,
       bnum(this.calc.poolTotalSupply.toString()),
       amp
     );
+
+    console.log(bptZeroImpact.toString(), ` BPTForTokensZeroPriceImpact`);
+    return bptZeroImpact;
   }
 
   private get scaledBalances(): FixedPointNumber[] {

@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts">
+import useDarkMode from '@/composables/useDarkMode';
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
@@ -14,9 +15,11 @@ export default defineComponent({
   },
 
   setup(props) {
+    const { darkMode } = useDarkMode();
+
     const bgClass = computed(() => {
       if (props.white) return 'shimmer-white';
-      return 'shimmer';
+      return darkMode.value ? 'shimmer-dark' : 'shimmer';
     });
 
     const classes = computed(() => {
@@ -64,6 +67,21 @@ export default defineComponent({
   --startColor: theme('colors.gray.50');
   --midColor: theme('colors.gray.100');
   --endColor: theme('colors.gray.50');
+
+  animation: shimmerBackground 10s infinite;
+  background: linear-gradient(
+    to right,
+    var(--startColor) 4%,
+    var(--midColor) 25%,
+    var(--endColor) 36%
+  );
+  background-size: 1000px 100%;
+}
+
+.shimmer-dark {
+  --startColor: theme('colors.gray.850');
+  --midColor: theme('colors.gray.800');
+  --endColor: theme('colors.gray.850');
 
   animation: shimmerBackground 10s infinite;
   background: linear-gradient(

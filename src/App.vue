@@ -27,7 +27,7 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
-import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 
 import Notifications from '@/components/notifications/Notifications.vue';
@@ -50,9 +50,6 @@ export default defineComponent({
     const store = useStore();
     const route = useRoute();
 
-    // SERVICES
-    const providerService = new RpcProviderService();
-
     // COMPUTED
     const isHomePage = computed(() => route.path === '/');
 
@@ -64,7 +61,7 @@ export default defineComponent({
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
-      providerService.initBlockListener(setBlockNumber);
+      rpcProviderService.initBlockListener(setBlockNumber);
     });
 
     return {

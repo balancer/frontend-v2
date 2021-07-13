@@ -71,12 +71,17 @@ export default class Vault {
       };
     });
 
+    let amp = '0';
+    if (data?.amp) {
+      amp = data.amp.value.div(data.amp.precision);
+    }
+
     return {
       tokens: _tokens,
       totalSupply: formatUnits(data.totalSupply, data.decimals),
       decimals: data.decimals,
       swapFee: formatUnits(data.swapFee, 18),
-      amp: data?.amp
+      amp: amp
     };
   }
 

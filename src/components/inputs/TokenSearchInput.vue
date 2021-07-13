@@ -49,7 +49,7 @@
         <span
           v-for="token in whiteListedTokens"
           :key="`popular-${token.symbol}`"
-          class="mr-6 cursor-pointer hover:text-gray-700"
+          class="mr-6 cursor-pointer hover:text-gray-700 dark:hover:text-white"
           @click="addToken(token.address)"
         >
           {{ token?.symbol }}
