@@ -412,7 +412,7 @@ export default defineComponent({
 
 <style>
 .horizontalSticky {
-  @apply z-10;
+  @apply z-10 bg-white dark:bg-gray-850;
   position: sticky;
   left: 0;
 }
