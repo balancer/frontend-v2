@@ -130,7 +130,7 @@ function getTransactions(): TransactionsMap {
 
 function setTransactions(transactionsMap: TransactionsMap) {
   transactionsState.value[networkId] = transactionsMap;
-  console.log(transactionsMap);
+
   if (PERSIST_TRANSACTIONS) {
     lsSet(LS_KEYS.Transactions, transactionsState.value);
   }
