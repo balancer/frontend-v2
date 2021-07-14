@@ -275,7 +275,12 @@ export default function useTransactions() {
       );
 
       orders.forEach((order, orderIndex) => {
-        if (order != null && order.status === 'fulfilled') {
+        // TODO: Once Gnosis mainnet supports "fulfilled" status - switch to it instead of amount checking.
+        if (
+          order != null &&
+          Number(order.executedBuyAmount) > 0 &&
+          Number(order.executedSellAmount) > 0
+        ) {
           finalizeTransaction(order.uid, 'order', order);
           shouldRefetchBalances = true;
         } else {
