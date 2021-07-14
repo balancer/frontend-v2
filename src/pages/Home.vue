@@ -58,6 +58,7 @@ import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePools from '@/composables/pools/usePools';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
+import { currentLiquidityMiningRewards } from '@/lib/utils/liquidityMining';
 
 export default defineComponent({
   components: {
@@ -74,6 +75,9 @@ export default defineComponent({
       addSelectedToken,
       removeSelectedToken
     } = usePoolFilters();
+    const poolsEarningLiquidityMining = Object.keys(
+      currentLiquidityMiningRewards
+    );
 
     const {
       pools,
@@ -83,7 +87,7 @@ export default defineComponent({
       loadMorePools,
       poolsHasNextPage,
       poolsIsFetchingNextPage
-    } = usePools(selectedTokens);
+    } = usePools(selectedTokens, poolsEarningLiquidityMining);
 
     // COMPUTED
     const filteredPools = computed(() =>

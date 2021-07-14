@@ -13,7 +13,7 @@ import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
 
 type PoolId = string;
 
-type LiquidityMiningTokenRewards = {
+export type LiquidityMiningTokenRewards = {
   tokenAddress: string;
   amount: number;
 };

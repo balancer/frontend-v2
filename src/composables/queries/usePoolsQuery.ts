@@ -19,6 +19,7 @@ type PoolsQueryResponse = {
 
 export default function usePoolsQuery(
   tokenList: Ref<string[]> = ref([]),
+  idsList: string[] = [],
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
 ) {
   // SERVICES
@@ -50,7 +51,8 @@ export default function usePoolsQuery(
         first: POOLS.Pagination.PerPage,
         skip: pageParam,
         where: {
-          tokensList_contains: tokenList.value
+          tokensList_contains: tokenList.value,
+          id_in: idsList
         }
       }
     );
