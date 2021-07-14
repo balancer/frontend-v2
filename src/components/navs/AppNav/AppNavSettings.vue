@@ -154,7 +154,7 @@ import { useStore } from 'vuex';
 import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import { APP } from '@/constants/app';
 import {
@@ -185,7 +185,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { explorerLinks } = useVueWeb3();
+    const { explorerLinks } = useWeb3();
     const {
       account,
       chainId,
@@ -193,7 +193,7 @@ export default defineComponent({
       connector,
       isV1Supported,
       userNetworkConfig
-    } = useVueWeb3();
+    } = useWeb3();
 
     // DATA
     const data = reactive({

@@ -62,3 +62,9 @@ export function scale(input: BigNumber, decimalPlaces: number): BigNumber {
   const scaleMul = new BigNumber(10).pow(scalePow);
   return input.times(scaleMul);
 }
+
+export function shortenLabel(str, segLength = 4) {
+  const firstSegment = str.substring(0, segLength + 2);
+  const lastSegment = str.substring(str.length, str.length - segLength);
+  return `${firstSegment}...${lastSegment}`;
+}

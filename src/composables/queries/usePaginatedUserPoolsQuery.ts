@@ -13,7 +13,7 @@ import { POOLS } from '@/constants/pools';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 type UserPaginatedPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -29,7 +29,7 @@ export default function usePaginatedUserPoolsQuery(
 
   // COMPOSABLES
   const store = useStore();
-  const { account, isWalletReady } = useVueWeb3();
+  const { account, isWalletReady } = useWeb3();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Pools.User(account));

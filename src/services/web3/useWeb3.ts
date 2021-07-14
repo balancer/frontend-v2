@@ -10,7 +10,7 @@ import { useStore } from 'vuex';
 
 const isWalletSelectVisible = ref(false);
 
-export default function useVueWeb3() {
+export default function useWeb3() {
   const {
     account,
     chainId,

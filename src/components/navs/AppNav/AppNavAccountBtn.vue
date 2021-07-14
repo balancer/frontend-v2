@@ -39,7 +39,7 @@ import { computed, defineComponent } from 'vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';
 import Avatar from '@/components/images/Avatar.vue';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',
@@ -51,7 +51,7 @@ export default defineComponent({
 
   setup() {
     const { bp, upToLargeBreakpoint } = useBreakpoints();
-    const { isLoadingProfile, profile, account } = useVueWeb3();
+    const { isLoadingProfile, profile, account } = useWeb3();
 
     const avatarSize = computed(() => {
       if (bp.value === 'sm') {

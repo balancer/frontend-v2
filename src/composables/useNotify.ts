@@ -1,4 +1,4 @@
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionEventCode, TransactionData } from 'bnc-notify';
 import castArray from 'lodash/castArray';
 import mapValues from 'lodash/mapValues';
@@ -8,7 +8,7 @@ import useBlocknative from './useBlocknative';
 type TxCallback = (txData: TransactionData) => void;
 
 export default function useNotify() {
-  const { explorerLinks } = useVueWeb3();
+  const { explorerLinks } = useWeb3();
   const { notify, supportsBlocknative } = useBlocknative();
 
   function txListener(

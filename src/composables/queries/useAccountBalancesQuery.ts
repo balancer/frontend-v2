@@ -4,7 +4,7 @@ import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import TokenService from '@/services/token/token.service';
 import { BalanceDictionary } from '@/services/token/concerns/balance.concern';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 // TYPES
 type Response = BalanceDictionary;
@@ -16,7 +16,7 @@ export default function useAccountBalancesQuery(
   tokens: Ref<string[]> = ref([]),
   options: UseQueryOptions<Response> = {}
 ) {
-  const { account, isWalletReady, userNetworkConfig } = useVueWeb3();
+  const { account, isWalletReady, userNetworkConfig } = useWeb3();
 
   const userNetworkKey = computed(() => userNetworkConfig.value.key);
 

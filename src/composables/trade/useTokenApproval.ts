@@ -4,7 +4,7 @@ import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useNotify from '@/composables/useNotify';
 import { ETHER } from '@/constants/tokenlists';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useAllowances from '../useAllowances';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
@@ -15,7 +15,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
 
   // COMPOSABLES
   const store = useStore();
-  const { getProvider } = useVueWeb3();
+  const { getProvider } = useWeb3();
   const { txListener, supportsBlocknative } = useNotify();
   const { txListener: ethersTxListener } = useEthers();
 

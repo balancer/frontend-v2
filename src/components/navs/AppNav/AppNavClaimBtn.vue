@@ -109,7 +109,7 @@ import { getOriginalAddress } from '@/services/coingecko';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { claimRewards } from '@/services/claim';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { NetworkId } from '@/constants/network';
 
 export default defineComponent({
@@ -131,7 +131,7 @@ export default defineComponent({
       getProvider,
       isMainnet,
       isPolygon
-    } = useVueWeb3();
+    } = useWeb3();
     const { txListener } = useNotify();
 
     const balPrice = computed(

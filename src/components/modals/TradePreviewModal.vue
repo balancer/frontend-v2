@@ -86,7 +86,7 @@ import { defineComponent, toRefs, computed } from 'vue';
 import { ETHER } from '@/constants/tokenlists';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
@@ -127,7 +127,7 @@ export default defineComponent({
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
     const { tokens } = useTokens();
-    const { userNetworkConfig } = useVueWeb3();
+    const { userNetworkConfig } = useWeb3();
 
     const isWrap = computed(() => {
       const config = userNetworkConfig.value;

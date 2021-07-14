@@ -6,7 +6,7 @@ import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 
 import { bnum } from '@/lib/utils';
 
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { FeeInformation } from '@/services/gnosis/types';
 import { normalizeTokenAddress } from '@/services/gnosis/utils';
 import {
@@ -47,7 +47,7 @@ export default function useGnosis({
 }: Props) {
   // COMPOSABLES
   const store = useStore();
-  const { account, getSigner } = useVueWeb3();
+  const { account, getSigner } = useWeb3();
 
   // DATA
   const feeQuote = ref<FeeInformation | null>(null);

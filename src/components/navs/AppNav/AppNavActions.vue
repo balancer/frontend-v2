@@ -30,7 +30,7 @@ import useNumbers from '@/composables/useNumbers';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   name: 'AppNavActions',
@@ -51,7 +51,7 @@ export default defineComponent({
       toggleWalletSelectModal,
       isMainnet,
       isPolygon
-    } = useVueWeb3();
+    } = useWeb3();
 
     // COMPUTED
     const liquidityMiningSupported = computed(

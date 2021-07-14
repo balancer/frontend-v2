@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import { ETHER } from '@/constants/tokenlists';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 const MIN_ETH_REQUIRED = 0.0001;
 
@@ -20,7 +20,7 @@ export default function useValidation(
   tokenOutAmount,
   tokens
 ) {
-  const { isWalletReady } = useVueWeb3();
+  const { isWalletReady } = useWeb3();
 
   const tokensAmountsValid = computed(
     () =>

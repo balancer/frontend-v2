@@ -14,7 +14,7 @@ import {
 } from '@/services/claim';
 
 import { Claim } from '@/types';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { NetworkId } from '@/constants/network';
 
 type UserClaimsQueryResponse = {
@@ -29,12 +29,7 @@ export default function useUserClaimsQuery(
   options: UseQueryOptions<UserClaimsQueryResponse> = {}
 ) {
   // COMPOSABLES
-  const {
-    account,
-    isWalletReady,
-    appNetworkConfig,
-    getProvider
-  } = useVueWeb3();
+  const { account, isWalletReady, appNetworkConfig, getProvider } = useWeb3();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Claims.All(account));
