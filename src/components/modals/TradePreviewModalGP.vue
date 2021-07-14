@@ -1,12 +1,12 @@
 <template>
   <BalModal show @close="onClose" :title="$t('previewTrade')">
     <div>
-      <BalCard noPad class="relative mb-6 overflow-hidden">
+      <BalCard noPad class="relative mb-6 overflow-auto">
         <template v-slot:header>
           <div
-            class="w-full p-3 border-b bg-gray-50 rounded-t-lg text-xs dark:border-gray-800 dark:bg-gray-700"
+            class="w-full p-3 border-b bg-gray-50 rounded-t-lg text-sm dark:border-gray-800 dark:bg-gray-800"
           >
-            <span class="text-gray-500 dark:text-gray-400">
+            <span>
               {{ $t('effectivePrice') }}
             </span>
             {{
@@ -18,7 +18,7 @@
         </template>
         <div>
           <div
-            class="p-3 border-gray-100 border-b relative dark:border-gray-700"
+            class="p-3 border-gray-100 border-b relative dark:border-gray-900"
           >
             <div class="flex items-center">
               <div class="mr-3">
@@ -76,13 +76,13 @@
       <BalCard noPad shadow="none" class="mb-6" v-if="showSummary">
         <template v-slot:header>
           <div
-            class="p-3 flex w-full items-center justify-between border-b dark:border-gray-800"
+            class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
           >
             <div class="font-semibold">{{ $t('summary') }}</div>
-            <div class="flex divide-x text-xs uppercase">
+            <div class="flex divide-x dark:divide-gray-500 text-xs uppercase">
               <div
                 :class="[
-                  'pr-1 cursor-pointer font-medium',
+                  'pr-2 cursor-pointer font-medium',
                   { 'text-blue-600': !showSummaryInFiat }
                 ]"
                 @click="showSummaryInFiat = false"
@@ -91,7 +91,7 @@
               </div>
               <div
                 :class="[
-                  'pl-1 cursor-pointer font-medium',
+                  'pl-2 cursor-pointer font-medium',
                   { 'text-blue-600': showSummaryInFiat }
                 ]"
                 @click="showSummaryInFiat = true"
@@ -127,7 +127,7 @@
         </div>
         <template v-slot:footer>
           <div
-            class="w-full p-3 rounded-b-lg bg-white text-sm dark:bg-gray-700"
+            class="w-full p-3 rounded-b-lg bg-white text-sm dark:bg-gray-800"
           >
             <div class="summary-item-row font-medium">
               <div>
@@ -159,7 +159,7 @@
       <BalCard noPad shadow="none">
         <template v-slot:header>
           <div
-            class="p-3 flex w-full items-center justify-between border-b dark:border-gray-800"
+            class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
           >
             <div class="font-semibold">
               {{
