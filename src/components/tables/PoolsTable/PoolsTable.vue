@@ -47,12 +47,12 @@
           />
         </div>
       </template>
-      <template v-slot:apyCell="pool">
+      <template v-slot:aprCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end">
           {{
-            Number(pool.dynamic.apy.pool) > 10000
+            Number(pool.dynamic.apr.pool) > 10000
               ? '-'
-              : fNum(pool.dynamic.apy.total, 'percent')
+              : fNum(pool.dynamic.apr.total, 'percent')
           }}
           <LiquidityMiningTooltip :pool="pool" />
         </div>
@@ -176,12 +176,12 @@ export default defineComponent({
         width: 175
       },
       {
-        name: t('apy'),
-        Cell: 'apyCell',
-        accessor: pool => pool.dynamic.apy.total,
+        name: t('apr'),
+        Cell: 'aprCell',
+        accessor: pool => pool.dynamic.apr.total,
         align: 'right',
-        id: 'poolApy',
-        sortKey: pool => Number(pool.dynamic.apy.total),
+        id: 'poolApr',
+        sortKey: pool => Number(pool.dynamic.apr.total),
         width: 150
       }
     ]);
