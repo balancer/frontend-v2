@@ -1,7 +1,7 @@
 <template>
-  <div class="invest-container mx-auto lg:px-4 xl:px-5 pt-10 md:pt-12">
+  <div class="lg:container lg:mx-auto px-1 lg:px-0 pt-10 md:pt-12">
     <template v-if="isWalletReady">
-      <div class="px-4 lg:px-0">
+      <div class="px-3 lg:px-0">
         <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
       </div>
       <PoolsTable
@@ -9,9 +9,9 @@
         :data="userPools"
         :noPoolsLabel="$t('noInvestments')"
         showPoolShares
-        class="mb-8 sm:ml-4 lg:mx-0 "
+        class="mb-8"
       />
-      <div class="px-4 lg:px-0" v-if="!hideV1Links">
+      <div class="px-3 lg:px-0" v-if="!hideV1Links">
         <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
         <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Dashboard" external>{{
           $t('goToBalancerV1Site')
@@ -19,7 +19,7 @@
       </div>
       <div class="mb-16" />
     </template>
-    <div class="px-4 lg:px-0">
+    <div class="px-3 lg:px-0">
       <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
       <TokenSearchInput
         v-model="selectedTokens"
@@ -36,9 +36,9 @@
       :isPaginated="poolsHasNextPage"
       :isLoadingMore="poolsIsFetchingNextPage"
       @loadMore="loadMorePools"
-      class="mb-8 sm:ml-4 lg:mx-0"
+      class="mb-8"
     />
-    <div class="px-4 lg:px-0" v-if="!hideV1Links">
+    <div class="px-3 lg:px-0" v-if="!hideV1Links">
       <div class="text-black-600">
         {{ $t('tableShowsBalancerV2Pools') }}
       </div>
@@ -131,9 +131,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style scoped>
-.invest-container {
-  @apply w-full max-w-screen-xl;
-}
-</style>

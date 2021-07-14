@@ -1,9 +1,9 @@
 <template>
-  <div class="pool-container sm:pl-4 md:px-4 mx-auto pt-8">
+  <div class="lg:container lg:mx-auto pt-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8">
-      <div class="px-4 sm:pl-0 md:px-0 col-span-2">
+      <div class="col-span-2">
         <BalLoadingBlock v-if="loadingPool" class="h-16" />
-        <div v-else class="flex flex-col">
+        <div v-else class="px-4 lg:px-0 flex flex-col">
           <div class="flex flex-wrap items-center -mt-2">
             <h3 class="pool-title">
               {{ poolTypeLabel }}
@@ -74,30 +74,30 @@
 
       <div class="col-span-2 order-2 lg:order-1">
         <div class="grid grid-cols-1 gap-y-8">
-          <div class="px-4 lg:px-0">
+          <div class="px-1 lg:px-0">
             <PoolChart
               :prices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
             />
           </div>
-          <div class="mb-4 px-4 sm:pl-0 sm:pr-4 md:px-0">
+          <div class="mb-4 px-1 lg:px-0">
             <PoolStatCards :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div class="mb-4">
-            <h4 v-text="$t('poolComposition')" class="px-4 sm:px-0 mb-4" />
+          <div class="mb-4 px-1 lg:px-0">
+            <h4 v-text="$t('poolComposition')" class="px-3 lg:px-0 mb-4" />
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div>
-            <h4 v-text="$t('poolTransactions')" class="px-4 sm:px-0 mb-2" />
+          <div class="px-1 lg:px-0">
+            <h4 v-text="$t('poolTransactions')" class="px-3 lg:px-0 mb-2" />
             <PoolActivitiesCard :pool="pool" :loading="loadingPool" />
           </div>
         </div>
       </div>
 
-      <div class="order-1 lg:order-2">
+      <div class="order-1 lg:order-2 px-1 lg:px-0">
         <BalLoadingBlock v-if="loadingPool" class="h-96 sticky top-24" />
         <PoolActionsCard
           v-else-if="!noInitLiquidity"
@@ -310,9 +310,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.pool-container {
-  @apply w-full max-w-screen-2xl;
-}
 .pool-title {
   @apply mr-4 capitalize mt-2;
   font-variation-settings: 'wght' 700;
