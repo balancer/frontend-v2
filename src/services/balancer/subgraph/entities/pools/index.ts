@@ -93,8 +93,7 @@ export default class Pools {
             pool: poolAPR,
             liquidityMining: liquidityMiningAPR,
             total: totalAPR
-          },
-
+          }
         }
       };
     });
