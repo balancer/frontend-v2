@@ -5,7 +5,10 @@ import { flatten } from 'lodash';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
 
-export default function usePools(poolsTokenList: Ref<string[]> = ref([]), poolsIdsList: string[] = []) {
+export default function usePools(
+  poolsTokenList: Ref<string[]> = ref([]),
+  poolsIdsList: string[] = []
+) {
   // COMPOSABLES
   const poolsQuery = usePoolsQuery(poolsTokenList, poolsIdsList);
   const userPoolsQuery = useUserPoolsQuery();

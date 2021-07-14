@@ -83,7 +83,10 @@ import TokenPills from './TokenPills/TokenPills.vue';
 import useTokens from '@/composables/useTokens';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
-import { currentLiquidityMiningRewards, LiquidityMiningTokenRewards } from '@/lib/utils/liquidityMining';
+import {
+  currentLiquidityMiningRewards,
+  LiquidityMiningTokenRewards
+} from '@/lib/utils/liquidityMining';
 
 export default defineComponent({
   components: {
@@ -141,13 +144,20 @@ export default defineComponent({
       if (tokens.value[getAddress(tokenAddress)]) {
         return tokens.value[getAddress(tokenAddress)].symbol;
       }
-      return tokenAddress.substring(0,8);
+      return tokenAddress.substring(0, 8);
     }
 
-    function getLiquidityMiningRewardsAsText(liquidityMiningRewards : LiquidityMiningTokenRewards[]): string {
-      const rewardsString = liquidityMiningRewards.map(
-        tokenReward => fNum(tokenReward.amount, 'token') + ' ' + symbolFor(tokenReward.tokenAddress)
-      ).join("; ");
+    function getLiquidityMiningRewardsAsText(
+      liquidityMiningRewards: LiquidityMiningTokenRewards[]
+    ): string {
+      const rewardsString = liquidityMiningRewards
+        .map(
+          tokenReward =>
+            fNum(tokenReward.amount, 'token') +
+            ' ' +
+            symbolFor(tokenReward.tokenAddress)
+        )
+        .join('; ');
       return rewardsString;
     }
 
@@ -180,7 +190,10 @@ export default defineComponent({
       },
       {
         name: t('poolRewards'),
-        accessor: pool => getLiquidityMiningRewardsAsText(currentLiquidityMiningRewards[pool.id]),
+        accessor: pool =>
+          getLiquidityMiningRewardsAsText(
+            currentLiquidityMiningRewards[pool.id]
+          ),
         align: 'right',
         id: 'poolRewards',
         hidden: !props.showPoolRewards,
