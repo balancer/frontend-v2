@@ -1,8 +1,8 @@
 <template>
   <div
-    class="flex justify-between items-end border-b dark:border-gray-900 mb-6"
+    class="px-4 sm:px-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
   >
-    <div class="px-4 lg:px-0">
+    <div class="">
       <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
     </div>
   </div>

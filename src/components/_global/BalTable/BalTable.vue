@@ -439,6 +439,7 @@ export default defineComponent({
 
 .row-bg:hover {
   @apply bg-gray-50 dark:hover:bg-gray-800;
+  transition: 0.1s all ease-out 0.04s
 }
 
 .bal-table-pagination-btn {
