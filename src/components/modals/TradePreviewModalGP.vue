@@ -1,7 +1,7 @@
 <template>
   <BalModal show @close="onClose" :title="$t('previewTrade')">
     <div>
-      <BalCard noPad class="relative mb-6 overflow-hidde">
+      <BalCard noPad class="relative mb-6 overflow-hidden">
         <template v-slot:header>
           <div
             class="w-full p-3 border-b bg-gray-50 rounded-t-lg text-xs dark:border-gray-800 dark:bg-gray-700"
