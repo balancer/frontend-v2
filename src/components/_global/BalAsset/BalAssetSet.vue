@@ -61,9 +61,8 @@ export default defineComponent({
 
 <style scoped>
 .token-icon {
-  @apply absolute rounded-full overflow-hidden;
+  @apply absolute rounded-full overflow-hidden shadow-none;
   @apply bg-white dark:bg-gray-850;
-  @apply border border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
-  border-radius: 50%;
+  @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
 }
 </style>
