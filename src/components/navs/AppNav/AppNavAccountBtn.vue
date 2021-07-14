@@ -64,13 +64,13 @@ export default defineComponent({
     });
 
     return {
+      // computed
       bp,
       account,
       profile,
       avatarSize,
       upToLargeBreakpoint,
-      isLoadingProfile,
-      console
+      isLoadingProfile
     };
   }
 });

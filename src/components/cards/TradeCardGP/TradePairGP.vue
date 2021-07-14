@@ -1,11 +1,13 @@
 <template>
   <div>
-    <div
-      class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
-    >
-      <div>{{ $t('send') }}</div>
-      <div v-if="tokenInValue > 0" class="text-gray-500">
-        {{ fNum(tokenInValue, 'usd') }}
+    <div class="dark:border-b dark:border-gray-850">
+      <div
+        class="p-2 flex justify-between text-sm rounded-t-lg dark:bg-gray-900 border dark:border-gray-900 w-full border-b-0"
+      >
+        <div>{{ $t('send') }}</div>
+        <div v-if="tokenInValue > 0" class="text-gray-500">
+          {{ fNum(tokenInValue, 'usd') }}
+        </div>
       </div>
     </div>
     <BalTextInput
@@ -45,7 +47,11 @@
               {{ tokenInSymbol }}
             </span>
           </div>
-          <BalIcon :name="'chevron-down'" :size="'sm'" class="text-blue-500" />
+          <BalIcon
+            :name="'chevron-down'"
+            :size="'sm'"
+            class="text-blue-500 group-hover:text-pink-500"
+          />
         </div>
       </template>
       <template v-slot:info>
@@ -55,7 +61,7 @@
       </template>
       <template v-slot:append>
         <div class="p-2">
-          <BalBtn size="xs" color="white" @click="handleInMax">
+          <BalBtn size="xs" color="gray" outline @click="handleInMax">
             {{ $t('max') }}
           </BalBtn>
         </div>
@@ -71,12 +77,14 @@
         />
       </div>
     </div>
-    <div
-      class="p-2 flex justify-between text-sm rounded-t-lg border border-b-0"
-    >
-      <div>{{ $t('receive') }}</div>
-      <div v-if="tokenOutValue > 0" class="text-gray-500">
-        {{ fNum(tokenOutValue, 'usd') }}
+    <div class="dark:border-b dark:border-gray-850">
+      <div
+        class="p-2 flex justify-between text-sm rounded-t-lg dark:bg-gray-900 border dark:border-gray-900 w-full border-b-0"
+      >
+        <div>{{ $t('receive') }}</div>
+        <div v-if="tokenOutValue > 0" class="text-gray-500">
+          {{ fNum(tokenOutValue, 'usd') }}
+        </div>
       </div>
     </div>
     <BalTextInput
@@ -116,7 +124,11 @@
               {{ tokenOutSymbol }}
             </span>
           </div>
-          <BalIcon :name="'chevron-down'" :size="'sm'" class="text-blue-500" />
+          <BalIcon
+            :name="'chevron-down'"
+            :size="'sm'"
+            class="text-blue-500 group-hover:text-pink-500"
+          />
         </div>
       </template>
       <template v-slot:info>
@@ -126,7 +138,7 @@
       </template>
       <template v-slot:append>
         <div class="p-2">
-          <BalBtn size="xs" color="white" @click="handleOutMax">
+          <BalBtn size="xs" color="gray" outline @click="handleOutMax">
             {{ $t('max') }}
           </BalBtn>
         </div>
