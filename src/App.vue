@@ -26,7 +26,6 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useWeb3 from '@/services/web3/useWeb3';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
@@ -49,15 +48,9 @@ export default defineComponent({
     // COMPUTED
     const isHomePage = computed(() => route.path === '/');
 
-    // METHODS
-
-    const setBlockNumber = (blockNumber: number) =>
-      store.commit('web3/setBlockNumber', blockNumber);
-
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
-      rpcProviderService.initBlockListener(setBlockNumber);
     });
 
     return {
