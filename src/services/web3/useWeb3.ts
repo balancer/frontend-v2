@@ -14,7 +14,6 @@ const isWalletSelectVisible = ref(false);
 
 /** MUTATIONS */
 function setBlockNumber(n: number): void {
-  console.log('New block:', n);
   blockNumber.value = n;
 }
 
