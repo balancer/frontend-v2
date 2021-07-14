@@ -8,14 +8,14 @@ import { SubgraphPoolBase } from '@balancer-labs/sor2';
 
 import { scale, bnum } from '@/lib/utils';
 import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
-import getProvider from '@/lib/utils/provider';
 import {
   SorManager,
   SorReturn,
   LiquiditySelection
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
-import ConfigService from '@/services/config/config.service';
+import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
 import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
@@ -134,10 +134,13 @@ export default function useSor({
   );
 
   async function initSor(): Promise<void> {
-    const config = userNetworkConfig.value;
-    const poolsUrlV1 = `${config.poolsUrlV1}?timestamp=${Date.now()}`;
-    const poolsUrlV2 = `${config.poolsUrlV2}?timestamp=${Date.now()}`;
-    const subgraphUrl = new ConfigService().network.subgraph;
+    const poolsUrlV1 = `${
+      configService.network.poolsUrlV1
+    }?timestamp=${Date.now()}`;
+    const poolsUrlV2 = `${
+      configService.network.poolsUrlV2
+    }?timestamp=${Date.now()}`;
+    const subgraphUrl = configService.network.subgraph;
 
     // If V1 previously selected on another network then it uses this and returns no liquidity.
     if (!appNetwork.supportsV1) {
@@ -145,11 +148,11 @@ export default function useSor({
     }
 
     sorManager = new SorManager(
-      getProvider(String(userNetworkConfig.value.chainId)),
+      rpcProviderService.jsonProvider,
       new BigNumber(GAS_PRICE),
       Number(MAX_POOLS),
-      config.chainId,
-      config.addresses.weth,
+      configService.network.chainId,
+      configService.network.addresses.weth,
       poolsUrlV1,
       poolsUrlV2,
       subgraphUrl
