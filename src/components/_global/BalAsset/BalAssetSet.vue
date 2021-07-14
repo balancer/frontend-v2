@@ -11,10 +11,12 @@
       :key="i"
       :address="address"
       :size="size"
-      class="token-set"
+      class="token-icon"
       :style="{
         left: `${leftOffsetFor(i)}px`,
-        zIndex: `${20 - i}`
+        zIndex: `${20 - i}`,
+        width: `${size}px`,
+        height: `${size}px`
       }"
     />
   </div>
@@ -58,7 +60,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.token-set {
-  @apply absolute bg-white dark:bg-gray-850 border border-white dark:border-gray-850 rounded-full group-hover:border-gray-50 dark:group-hover:border-gray-800;
+.token-icon {
+  @apply absolute rounded-full overflow-hidden;
+  @apply bg-white dark:bg-gray-850;
+  @apply border border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
+  border-radius: 50%;
 }
 </style>
