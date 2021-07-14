@@ -59,13 +59,6 @@ export default defineComponent({
 
 <style scoped>
 .token-set {
-  @apply absolute;
-  box-shadow: 0 0 0 1.5px #ffffff;
-  border-radius: 50%;
-}
-
-.dark .token-set {
-  @apply bg-gray-850;
-  box-shadow: 0 0 0 1px #162031;
+  @apply absolute bg-white dark:bg-gray-850 border border-white dark:border-gray-850 rounded-full group-hover:border-gray-50 dark:group-hover:border-gray-800;
 }
 </style>

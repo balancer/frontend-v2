@@ -35,9 +35,7 @@
                 :name="column.Header"
               ></slot>
               <div v-else>
-                <h5
-                  class="text-base text-gray-800 dark:text-gray-100"
-                >
+                <h5 class="text-base text-gray-800 dark:text-gray-100">
                   {{ column.name }}
                 </h5>
               </div>
@@ -439,7 +437,7 @@ export default defineComponent({
 
 .row-bg:hover {
   @apply bg-gray-50 dark:hover:bg-gray-800;
-  transition: 0.1s all ease-out 0.04s
+  transition: 0.1s all ease-out 0.04s;
 }
 
 .bal-table-pagination-btn {
