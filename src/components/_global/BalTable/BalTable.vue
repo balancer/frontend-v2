@@ -1,5 +1,10 @@
 <template>
-  <div class="max-w-full whitespace-nowrap overflow-hidden">
+  <div
+    :class="[
+      'max-w-full whitespace-nowrap overflow-hidden',
+      { 'rounded-lg': !square }
+    ]"
+  >
     <div class="overflow-hidden" ref="headerRef">
       <table class="w-full table-fixed whitespace-normal">
         <colgroup>
@@ -255,6 +260,10 @@ export default defineComponent({
     },
     sticky: {
       type: String as PropType<Sticky>
+    },
+    square: {
+      type: Boolean,
+      default: false
     },
     isPaginated: {
       type: Boolean,
