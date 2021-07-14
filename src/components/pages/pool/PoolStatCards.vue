@@ -10,7 +10,7 @@
         </div>
         <div class="text-xl font-medium truncate flex items-center">
           {{ stat.value }}
-          <LiquidityMiningTooltip :pool="pool" v-if="stat.id === 'apy'" />
+          <LiquidityMiningTooltip :pool="pool" v-if="stat.id === 'apr'" />
         </div>
       </BalCard>
     </template>
@@ -63,9 +63,9 @@ export default defineComponent({
           value: fNum(props.pool.dynamic.fees, 'usd')
         },
         {
-          id: 'apy',
-          label: 'APY',
-          value: fNum(props.pool.dynamic.apy.total, 'percent')
+          id: 'apr',
+          label: 'APR',
+          value: fNum(props.pool.dynamic.apr.total, 'percent')
         }
       ];
     });

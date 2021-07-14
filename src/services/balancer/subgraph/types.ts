@@ -35,7 +35,7 @@ export interface DecoratedPool extends Pool {
   dynamic: {
     period: TimeTravelPeriod;
     volume: string;
-    apy: {
+    apr: {
       pool: string;
       liquidityMining: string;
       total: string;
