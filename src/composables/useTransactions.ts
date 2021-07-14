@@ -65,7 +65,7 @@ export type NewTransaction = Pick<
   'id' | 'type' | 'summary' | 'receipt' | 'action' | 'details'
 >;
 
-const networkId = configService.network.chainId
+const networkId = configService.network.chainId;
 
 export type TransactionsMap = Record<string, Transaction>;
 

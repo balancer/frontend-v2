@@ -5,7 +5,7 @@
     >
       {{ count }}
     </span>
-    <SpinnerIcon class="h-6 w-6 animate-spin"/>
+    <SpinnerIcon class="h-6 w-6 animate-spin" />
   </span>
 </template>
 
