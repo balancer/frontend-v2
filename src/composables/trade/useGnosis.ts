@@ -8,7 +8,6 @@ import { bnum } from '@/lib/utils';
 
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import { FeeInformation } from '@/services/gnosis/types';
-import { normalizeTokenAddress } from '@/services/gnosis/utils';
 import {
   calculateValidTo,
   signOrder,
@@ -121,8 +120,8 @@ export default function useGnosis({
       const quote = getQuote();
 
       const unsignedOrder: UnsignedOrder = {
-        sellToken: normalizeTokenAddress(tokenInAddressInput.value),
-        buyToken: normalizeTokenAddress(tokenOutAddressInput.value),
+        sellToken: tokenInAddressInput.value,
+        buyToken: tokenOutAddressInput.value,
         sellAmount: bnum(
           exactIn.value ? tokenInAmountScaled.value : quote.maximumInAmount
         )

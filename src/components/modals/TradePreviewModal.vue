@@ -10,7 +10,7 @@
       >
         <BalAssetSet
           :addresses="[addressIn, addressOut]"
-          :size="30"
+          :size="32"
           :width="55"
         />
         <div class="flex flex-col">

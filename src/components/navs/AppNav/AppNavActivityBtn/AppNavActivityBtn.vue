@@ -7,7 +7,7 @@
         rounded
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         circle
-        class="mr-2 relative"
+        class="mr-2 p-1 relative"
       >
         <ActivityIcon
           v-if="pendingTransactions.length === 0 || popoverOpened"
@@ -15,7 +15,7 @@
         <ActivityCounter v-else :count="pendingTransactions.length" />
       </BalBtn>
     </template>
-    <BalCard class="w-72" noPad noBorder>
+    <BalCard class="w-72" noPad noBorder shadow="xl">
       <template v-slot:header>
         <div
           class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
@@ -38,7 +38,7 @@
               unconfirmedTransactions.length > 0 &&
                 confirmedTransactions.length > 0
             "
-            class="bg-gray-100 my-3 h-px"
+            class="bg-gray-100 dark:bg-gray-700 my-3 h-px"
           />
           <ActivityRows
             :transactions="confirmedTransactions"
