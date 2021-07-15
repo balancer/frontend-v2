@@ -11,6 +11,7 @@
       :isVisible="isWalletSelectVisible"
       @close="toggleWalletSelectModal"
     />
+    <Notifications />
   </div>
 </template>
 
@@ -26,10 +27,12 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
-import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 import useTokenLists2 from './composables/useTokenLists2';
 import useTokens2 from './composables/useTokens2';
+
+import Notifications from '@/components/notifications/Notifications.vue';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -38,7 +41,8 @@ export default defineComponent({
     AppNav,
     AppHero,
     VueQueryDevTools,
-    WalletSelectModal
+    WalletSelectModal,
+    Notifications
   },
 
   setup() {
@@ -49,9 +53,6 @@ export default defineComponent({
     const { isWalletSelectVisible, toggleWalletSelectModal } = useVueWeb3();
     const store = useStore();
     const route = useRoute();
-
-    // SERVICES
-    const providerService = new RpcProviderService();
 
     // COMPUTED
     const isHomePage = computed(() => route.path === '/');
@@ -64,7 +65,7 @@ export default defineComponent({
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
-      providerService.initBlockListener(setBlockNumber);
+      rpcProviderService.initBlockListener(setBlockNumber);
     });
 
     return {

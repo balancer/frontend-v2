@@ -111,8 +111,8 @@ export default defineComponent({
 
 <style>
 .bal-radio-input {
-  @apply bg-white rounded-full m-0;
-  @apply border border-gray-200;
+  @apply bg-white dark:bg-gray-900 rounded-full m-0;
+  @apply border border-gray-200 dark:border-gray-900;
   transition: all ease 0.25s;
   -webkit-appearance: none;
   -moz-appearance: none;

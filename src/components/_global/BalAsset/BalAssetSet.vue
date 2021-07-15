@@ -11,9 +11,12 @@
       :key="i"
       :address="address"
       :size="size"
-      class="z-10 absolute"
+      class="token-icon"
       :style="{
-        left: `${leftOffsetFor(i)}px`
+        left: `${leftOffsetFor(i)}px`,
+        zIndex: `${20 - i}`,
+        width: `${size}px`,
+        height: `${size}px`
       }"
     />
   </div>
@@ -39,7 +42,7 @@ export default defineComponent({
     },
     size: {
       type: Number,
-      default: 24
+      default: 26
     }
   },
 
@@ -55,3 +58,12 @@ export default defineComponent({
   }
 });
 </script>
+
+<style scoped>
+.token-icon {
+  margin-left: -2px;
+  @apply absolute rounded-full overflow-hidden shadow-none;
+  @apply bg-white dark:bg-gray-850;
+  @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
+}
+</style>

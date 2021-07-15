@@ -28,6 +28,7 @@ export default defineComponent({
     noPad: { type: Boolean, default: false },
     noContentPad: { type: Boolean, default: false },
     noBorder: { type: Boolean, default: false },
+    darkBgColor: { type: String, default: '850' },
     shadow: {
       type: String,
       default: '',
@@ -39,12 +40,13 @@ export default defineComponent({
 
   setup(props) {
     const borderClasses = computed(() => {
-      return 'border dark:border-gray-700';
+      return 'border dark:border-gray-900';
     });
 
     const cardClasses = computed(() => {
       return {
         'rounded-lg': !props.square,
+        [`bg-white dark:bg-gray-${props.darkBgColor}`]: true,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
         [borderClasses.value]: !props.noBorder
       };
@@ -80,17 +82,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.bal-card {
-  @apply bg-white dark:bg-gray-900;
-}
-
 .header {
   @apply flex items-center;
 }
 
 .footer {
   @apply flex items-center;
-  @apply bg-gray-50 dark:bg-gray-800;
-  @apply border-t border-gray-100 dark:border-gray-700;
+  @apply bg-gray-50 dark:bg-gray-850;
+  @apply border-t border-gray-100 dark:border-gray-900;
 }
 </style>

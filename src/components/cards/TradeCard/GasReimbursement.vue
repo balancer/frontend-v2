@@ -6,7 +6,7 @@
   >
     <div v-if="isActive()" class="message relative px-2 py-3">
       <div class="ml-12">
-        <div v-text="$t('highGasFees')" class="relative text-sm font-bold" />
+        <h6 v-text="$t('highGasFees')" class="relative text-sm" />
         <div class="relative text-sm text-gray-500">
           {{ text }}
         </div>
@@ -51,7 +51,7 @@ export default defineComponent({
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
 
-    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.name] ?? {};
+    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? {};
     const eligibleAssets = Object.fromEntries(
       Object.entries(eligibleAssetMeta).map(assetEntry => {
         const [address] = assetEntry;
@@ -188,7 +188,7 @@ export default defineComponent({
 }
 
 .message::before {
-  @apply absolute px-4 py-3 inset-0.5 text-2xl bg-white rounded-lg;
+  @apply absolute px-4 py-3 inset-0.5 text-2xl bg-white dark:bg-gray-900 rounded-lg;
   content: '🤝';
 }
 

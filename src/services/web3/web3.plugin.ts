@@ -13,6 +13,8 @@ import { WalletLinkConnector } from './connectors/walletlink/walletlink.connecto
 import { PortisConnector } from './connectors/portis/portis.connector';
 import useFathom from '@/composables/useFathom';
 import getProvider from '@/lib/utils/provider';
+import { configService } from '../config/config.service';
+import { switchToAppNetwork } from './utils/helpers';
 
 export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
 export const SupportedWallets = [
@@ -122,6 +124,20 @@ export default {
           lsSet('connectedWallet', account.value);
           lsSet('connectedProvider', wallet);
           pluginState.walletState = 'connected';
+
+          if (
+            configService.env.NETWORK !== chainId.value &&
+            connector.id === 'injected'
+          ) {
+            // this will also as the user to switch to Polygon, if already added
+            const result = await switchToAppNetwork(connector.provider);
+            if (!result) {
+              return;
+            }
+            if (chainId.value !== configService.network.chainId) {
+              await connectWallet(wallet);
+            }
+          }
           trackGoal(Goals.ConnectedWallet);
         }
       } catch (err) {
