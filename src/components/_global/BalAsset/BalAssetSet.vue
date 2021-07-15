@@ -42,7 +42,7 @@ export default defineComponent({
     },
     size: {
       type: Number,
-      default: 24
+      default: 26
     }
   },
 
@@ -61,6 +61,7 @@ export default defineComponent({
 
 <style scoped>
 .token-icon {
+  margin-left: -2px;
   @apply absolute rounded-full overflow-hidden shadow-none;
   @apply bg-white dark:bg-gray-850;
   @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
