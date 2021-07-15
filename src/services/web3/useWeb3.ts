@@ -6,12 +6,19 @@ import { Web3Provider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
 import ConfigService from '../config/config.service';
 import { isAddress } from '@ethersproject/address';
+import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 
-const isWalletSelectVisible = ref(false);
+/** STATE */
 const blockNumber = ref(0);
-function setBlockNumber(_blockNumber: number) {
-  blockNumber.value = _blockNumber;
+const isWalletSelectVisible = ref(false);
+
+/** MUTATIONS */
+function setBlockNumber(n: number): void {
+  blockNumber.value = n;
 }
+
+/** INIT STATE */
+rpcProviderService.initBlockListener(setBlockNumber);
 
 export default function useWeb3() {
   const {

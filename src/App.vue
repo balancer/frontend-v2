@@ -26,7 +26,6 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useWeb3 from '@/services/web3/useWeb3';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
@@ -42,20 +41,16 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     useWeb3Watchers();
-    const {
-      isWalletSelectVisible,
-      toggleWalletSelectModal,
-      setBlockNumber
-    } = useWeb3();
+    const { isWalletSelectVisible, toggleWalletSelectModal } = useWeb3();
     const store = useStore();
     const route = useRoute();
 
     // COMPUTED
     const isHomePage = computed(() => route.path === '/');
+
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
-      rpcProviderService.initBlockListener(setBlockNumber);
     });
 
     return {
