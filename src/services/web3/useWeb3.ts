@@ -1,4 +1,3 @@
-import { getProfile } from '@/lib/utils/profile';
 import { computed, inject, reactive, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
@@ -6,6 +5,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
 import ConfigService from '../config/config.service';
 import { isAddress } from '@ethersproject/address';
+import { web3Service } from './web3.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 
 /** STATE */
@@ -78,7 +78,7 @@ export default function useWeb3() {
 
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
     QUERY_KEYS.Account.Profile(account, userNetworkConfig),
-    () => getProfile(account.value, String(userNetworkConfig.value?.chainId)),
+    () => web3Service.getProfile(account.value),
     reactive({
       enabled: canLoadProfile
     })
