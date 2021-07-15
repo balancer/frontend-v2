@@ -7,7 +7,7 @@ import LS_KEYS from '@/constants/local-storage.keys';
 
 import { configService } from '@/services/config/config.service';
 import { gnosisOperator } from '@/services/gnosis/operator.service';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { OrderMetaData } from '@/services/gnosis/types';
 import { gnosisExplorer } from '@/services/gnosis/explorer.service';
 
@@ -196,8 +196,12 @@ function shouldCheckTx(transaction: Transaction, lastBlockNumber: number) {
 
 export default function useTransactions() {
   // COMPOSABLES
-  const { account, explorerLinks } = useVueWeb3();
-  const { getProvider: getWeb3Provider, blockNumber } = useVueWeb3();
+  const {
+    account,
+    explorerLinks,
+    getProvider: getWeb3Provider,
+    blockNumber
+  } = useWeb3();
   const { addNotification } = useNotifications();
   const { refetchBalances } = useAccountBalances();
   const { t } = useI18n();

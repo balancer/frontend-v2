@@ -63,7 +63,7 @@ import { useI18n } from 'vue-i18n';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import numeral from 'numeral';
 import { shortenLabel } from '@/lib/utils';
-import useWeb3 from '@/composables/useWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
