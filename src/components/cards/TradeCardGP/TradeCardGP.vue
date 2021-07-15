@@ -50,7 +50,7 @@
         @click.prevent="modalTradePreviewIsOpen = true"
       />
       <div
-        class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600"
+        class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600 dark:bg-gray-800 dark:text-gray-400"
         v-if="trading.isBalancerTrade.value && !trading.isWrapOrUnwrap.value"
       >
         <LightBulbIcon />
@@ -58,18 +58,9 @@
         <span
           >Trades from ETH route through Balancer liquidity pools and incur gas
           fees.
-          <router-link
-            :to="{
-              name: 'trade',
-              params: {
-                assetIn: TOKENS.AddressMap.WETH,
-                assetOut: trading.tokenOut.value.address
-              }
-            }"
-            class="text-blue-500"
-          >
+          <a @click="switchToWETH()" class="text-blue-500">
             Trade from WETH
-          </router-link>
+          </a>
           to avoid gas.
         </span>
       </div>
@@ -239,6 +230,10 @@ export default defineComponent({
       tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
+    function switchToWETH() {
+      tokenInAddress.value = TOKENS.AddressMap.WETH;
+    }
+
     // INIT
     populateInitialTokens();
 
@@ -267,7 +262,8 @@ export default defineComponent({
 
       // methods
       handleErrorButtonClick,
-      trade
+      trade,
+      switchToWETH
     };
   }
 });

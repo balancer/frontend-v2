@@ -11,6 +11,7 @@
       :isVisible="isWalletSelectVisible"
       @close="toggleWalletSelectModal"
     />
+    <Notifications />
   </div>
 </template>
 
@@ -29,6 +30,8 @@ import useVueWeb3 from '@/services/web3/useVueWeb3';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 
+import Notifications from '@/components/notifications/Notifications.vue';
+
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
 export default defineComponent({
@@ -36,7 +39,8 @@ export default defineComponent({
     AppNav,
     AppHero,
     VueQueryDevTools,
-    WalletSelectModal
+    WalletSelectModal,
+    Notifications
   },
 
   setup() {

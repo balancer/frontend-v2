@@ -36,6 +36,7 @@
     "claiming": "Claiming...",
     "classic": "Classic",
     "close": "Close",
+    "clearAllTransactions": "Clear all transactions",
     "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
     "configuration": "Configuration",
     "confirmTrade": "Confirm trade",
@@ -199,6 +200,22 @@
     "receive": "Receive",
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
     "receipt": "Receipt",
+    "recentActivityTitle": "Recent activity",
+    "noRecentActivity": "Your activity will appear here...",
+    "recentActivityTypes": {
+        "trade": "Trade",
+        "approve": "Approve",
+        "claim": "Claim",
+        "invest": "Invest",
+        "withdraw": "Withdraw"
+    },
+    "recentActivityStatus": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "expired": "Expired",
+        "cancelling": "Cancelling",
+        "Cancelled": "Cancelled"
+    },
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
     "seeMore": "See more",

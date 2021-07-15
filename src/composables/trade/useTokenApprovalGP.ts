@@ -9,6 +9,7 @@ import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useTokens from '../useTokens';
 import useAllowances from '../useAllowances';
 import useEthers from '../useEthers';
+import useTransactions from '../useTransactions';
 
 export default function useTokenApprovalGP(
   tokenInAddress: Ref<string>,
@@ -19,6 +20,7 @@ export default function useTokenApprovalGP(
   const provider = getProvider();
   const { tokens } = useTokens();
   const { txListener: ethersTxListener } = useEthers();
+  const { addTransaction } = useTransactions();
 
   // DATA
   const approving = ref(false);
@@ -65,6 +67,19 @@ export default function useTokenApprovalGP(
         GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS,
         [tokenInAddress.value]
       );
+      const tokenInSymbol = tokens.value[tokenInAddress.value].symbol;
+
+      addTransaction({
+        id: tx.hash,
+        type: 'tx',
+        action: 'approve',
+        summary: tokenInSymbol,
+        details: {
+          tokenAddress: tokenInAddress.value,
+          amount: amount.value,
+          spender: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
+        }
+      });
       ethersTxListener(tx, {
         onTxConfirmed: () => {
           approving.value = false;
