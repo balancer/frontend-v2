@@ -13,7 +13,7 @@ export default function useWeb3Watchers() {
   // COMPOSABLES
   const store = useStore();
   const { t } = useI18n();
-  const { notify, supportsBlocknative } = useBlocknative();
+  const { blocknative, supportsBlocknative } = useBlocknative();
   const {
     appNetworkConfig,
     userNetworkConfig,
@@ -33,14 +33,13 @@ export default function useWeb3Watchers() {
     () => account.value,
     (newAccount, oldAccount) => {
       if (supportsBlocknative.value) {
-        if (oldAccount) notify.unsubscribe(oldAccount);
+        if (oldAccount) blocknative.unsubscribe(oldAccount);
         if (!newAccount) return;
 
-        const { emitter } = notify.account(newAccount);
+        const { emitter } = blocknative.account(newAccount);
         emitter.on('txConfirmed', () => {
           refetchBalances.value();
           refetchAllowances.value();
-          return false;
         });
       }
     }

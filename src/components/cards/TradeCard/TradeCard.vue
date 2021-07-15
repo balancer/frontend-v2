@@ -146,6 +146,10 @@ export default defineComponent({
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
 
+    const tokenIn = computed(() => tokens.value[tokenInAddress.value]);
+
+    const tokenOut = computed(() => tokens.value[tokenOutAddress.value]);
+
     const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
     const tradeCardShadow = computed(() => {
@@ -210,7 +214,9 @@ export default defineComponent({
       tokenOutAmountInput: tokenOutAmount,
       tokens,
       isWrap,
-      isUnwrap
+      isUnwrap,
+      tokenIn,
+      tokenOut
     });
     const { errorMessage } = useValidation(
       tokenInAddress,

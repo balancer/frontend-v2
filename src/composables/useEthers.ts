@@ -3,6 +3,7 @@ import {
   TransactionResponse
 } from '@ethersproject/providers';
 import useAccountBalances from './useAccountBalances';
+import useBlocknative from './useBlocknative';
 import useTransactions from './useTransactions';
 
 type TxCallback = (
@@ -13,6 +14,7 @@ type TxCallback = (
 export default function useEthers() {
   const { finalizeTransaction } = useTransactions();
   const { refetchBalances } = useAccountBalances();
+  const { supportsBlocknative } = useBlocknative();
 
   async function txListener(
     tx: TransactionResponse,
@@ -29,7 +31,7 @@ export default function useEthers() {
         finalizeTransaction(tx.hash, 'tx', receipt);
       }
       callbacks.onTxConfirmed(tx);
-      if (shouldRefetchBalances) {
+      if (shouldRefetchBalances && !supportsBlocknative.value) {
         refetchBalances.value();
       }
     } catch (error) {
