@@ -42,18 +42,16 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     useWeb3Watchers();
-    const { isWalletSelectVisible, toggleWalletSelectModal } = useWeb3();
+    const {
+      isWalletSelectVisible,
+      toggleWalletSelectModal,
+      setBlockNumber
+    } = useWeb3();
     const store = useStore();
     const route = useRoute();
 
     // COMPUTED
     const isHomePage = computed(() => route.path === '/');
-
-    // METHODS
-
-    const setBlockNumber = (blockNumber: number) =>
-      store.commit('web3/setBlockNumber', blockNumber);
-
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
