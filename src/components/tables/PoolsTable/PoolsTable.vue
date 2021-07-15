@@ -1,5 +1,11 @@
 <template>
-  <BalCard shadow="lg" class="mt-4" no-pad>
+  <BalCard
+    shadow="lg"
+    class="mt-4"
+    :square="upToLargeBreakpoint"
+    :noBorder="upToLargeBreakpoint"
+    noPad
+  >
     <BalTable
       :columns="columns"
       :data="data"
@@ -7,6 +13,7 @@
       :is-loading-more="isLoadingMore"
       skeleton-class="h-64"
       sticky="both"
+      :square="upToLargeBreakpoint"
       :link="{
         to: 'pool',
         getParams: pool => ({ id: pool.id })
@@ -83,6 +90,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
 import useTokens from '@/composables/useTokens';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   components: {
@@ -131,6 +139,7 @@ export default defineComponent({
       isIdle: isBalancesQueryIdle
     } = useAccountBalances();
     const { darkMode } = useDarkMode();
+    const { upToLargeBreakpoint } = useBreakpoints();
 
     // DATA
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -215,6 +224,7 @@ export default defineComponent({
 
       // computed
       darkMode,
+      upToLargeBreakpoint,
 
       // methods
       handleRowClick,

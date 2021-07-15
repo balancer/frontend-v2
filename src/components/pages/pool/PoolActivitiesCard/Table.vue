@@ -1,5 +1,10 @@
 <template>
-  <BalCard class="overflow-x-auto" no-pad>
+  <BalCard
+    class="overflow-x-auto"
+    :square="upToLargeBreakpoint"
+    :noBorder="upToLargeBreakpoint"
+    noPad
+  >
     <BalTable
       :columns="columns"
       :data="activityRows"
@@ -99,6 +104,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Token } from '@/types';
 import { bnum } from '@balancer-labs/sor2/dist/bmath';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 type TokenAmount = {
   address: string;
@@ -153,6 +159,7 @@ export default {
     const { t } = useI18n();
     const { explorerLinks } = useVueWeb3();
     const { tokens } = useTokens();
+    const { upToLargeBreakpoint } = useBreakpoints();
 
     const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
       {
@@ -242,7 +249,8 @@ export default {
       columns,
       activityRows,
       explorer: explorerLinks,
-      fNum
+      fNum,
+      upToLargeBreakpoint
     };
   }
 };

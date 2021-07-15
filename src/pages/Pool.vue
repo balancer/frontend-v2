@@ -85,13 +85,13 @@
             <PoolStatCards :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div class="mb-4 px-1 lg:px-0">
-            <h4 v-text="$t('poolComposition')" class="px-3 lg:px-0 mb-4" />
+          <div class="mb-4">
+            <h4 v-text="$t('poolComposition')" class="px-4 lg:px-0 mb-4" />
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div class="px-1 lg:px-0">
-            <h4 v-text="$t('poolTransactions')" class="px-3 lg:px-0 mb-2" />
+          <div>
+            <h4 v-text="$t('poolTransactions')" class="px-4 lg:px-0 mb-2" />
             <PoolActivitiesCard :pool="pool" :loading="loadingPool" />
           </div>
         </div>

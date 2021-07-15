@@ -1,5 +1,10 @@
 <template>
-  <BalCard class="overflow-x-auto whitespace-nowrap" no-pad>
+  <BalCard
+    class="overflow-x-auto whitespace-nowrap"
+    :square="upToLargeBreakpoint"
+    :noBorder="upToLargeBreakpoint"
+    noPad
+  >
     <BalTable
       :columns="columns"
       :data="tableData"
@@ -59,6 +64,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import numeral from 'numeral';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useWeb3 from '@/composables/useWeb3';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   props: {
@@ -75,6 +81,7 @@ export default defineComponent({
     const { explorerLinks } = useVueWeb3();
     const { shortenLabel } = useWeb3();
     const { t } = useI18n();
+    const { upToLargeBreakpoint } = useBreakpoints();
 
     // DATA
     const { pool }: { pool: Ref<FullPool> } = toRefs(props);
@@ -160,7 +167,8 @@ export default defineComponent({
       fNum,
       explorer: explorerLinks,
       columns,
-      tableData
+      tableData,
+      upToLargeBreakpoint
     };
   }
 });
