@@ -54,9 +54,11 @@
         </BalTooltip>
       </div>
       <div class="flex mt-1">
-        <div class="flex items-center px-1 border rounded-lg shadow-inner">
+        <div
+          class="flex items-center px-1 border rounded-lg shadow-inner dark:border-gray-700"
+        >
           <input
-            class="w-8 text-right"
+            class="w-8 text-right bg-transparent"
             v-model="appTransactionDeadline"
             placeholder="20"
             type="number"

@@ -1,4 +1,4 @@
-<template v-slot:apyCell="pool">
+<template v-slot:aprCell="pool">
   <BalTooltip v-if="pool.hasLiquidityMiningRewards" noPad>
     <template v-slot:activator>
       <StarsIcon
@@ -9,20 +9,20 @@
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="mb-1 px-3 pt-3">
-        <div class="text-gray-500">{{ $t('totalAPY') }}</div>
+        <div class="text-gray-500">{{ $t('totalAPR') }}</div>
         <div class="text-lg">
-          {{ fNum(pool.dynamic.apy.total, 'percent') }}
+          {{ fNum(pool.dynamic.apr.total, 'percent') }}
         </div>
       </div>
       <div class="p-3">
         <div class="whitespace-nowrap flex items-center">
-          {{ fNum(pool.dynamic.apy.pool, 'percent') }}
-          <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPY') }}</span>
+          {{ fNum(pool.dynamic.apr.pool, 'percent') }}
+          <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPR') }}</span>
         </div>
         <div class="whitespace-nowrap flex items-center">
-          {{ fNum(pool.dynamic.apy.liquidityMining, 'percent') }}
+          {{ fNum(pool.dynamic.apr.liquidityMining, 'percent') }}
           <span class="ml-1 text-gray-500 text-xs flex items-center">
-            {{ $t('liquidityMiningAPY') }}
+            {{ $t('liquidityMiningAPR') }}
             <StarsIcon class="h-4 text-yellow-300" />
           </span>
         </div>

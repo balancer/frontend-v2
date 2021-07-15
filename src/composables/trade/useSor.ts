@@ -25,8 +25,11 @@ import useAccountBalances from '../useAccountBalances';
 import { ETHER } from '@/constants/tokenlists';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
-import { TokenMap } from '@/types';
+import { Token, TokenMap } from '@/types';
 import { TradeQuote } from './types';
+import useTransactions from '../useTransactions';
+import useNumbers from '../useNumbers';
+import { APP } from '@/constants/app';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -49,6 +52,8 @@ type Props = {
     handleAmountsOnFetchPools: boolean;
     enableTxHandler: boolean;
   };
+  tokenIn?: ComputedRef<Token>;
+  tokenOut?: ComputedRef<Token>;
 };
 
 export type UseSor = ReturnType<typeof useSor>;
@@ -68,7 +73,9 @@ export default function useSor({
     refetchPools: true,
     handleAmountsOnFetchPools: true,
     enableTxHandler: true
-  }
+  },
+  tokenIn,
+  tokenOut
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
@@ -107,6 +114,8 @@ export default function useSor({
   const { trackGoal, Goals } = useFathom();
   const { appNetwork } = useWeb3();
   const { txListener: ethersTxListener } = useEthers();
+  const { addTransaction } = useTransactions();
+  const { fNum } = useNumbers();
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
@@ -336,25 +345,61 @@ export default function useSor({
   }
 
   function ethersTxHandler(tx: TransactionResponse): void {
-    ethersTxListener(tx, {
-      onTxConfirmed: () => {
-        trading.value = false;
-        latestTxHash.value = tx.hash;
-        trackGoal(Goals.Swapped);
+    ethersTxListener(
+      tx,
+      {
+        onTxConfirmed: () => {
+          trading.value = false;
+          latestTxHash.value = tx.hash;
+          trackGoal(Goals.Swapped);
+        },
+        onTxFailed: () => {
+          trading.value = false;
+        }
       },
-      onTxFailed: () => {
-        trading.value = false;
-      }
-    });
+      APP.IsGnosisIntegration ? true : false
+    );
   }
 
-  function txHandler(tx: TransactionResponse): void {
+  function txHandler(
+    tx: TransactionResponse,
+    action?: 'wrap' | 'unwrap' | 'trade'
+  ): void {
     if (sorConfig.enableTxHandler) {
       if (supportsBlocknative.value) {
         blocknativeTxHandler(tx);
       } else {
         ethersTxHandler(tx);
       }
+    } else if (APP.IsGnosisIntegration) {
+      let summary = '';
+      const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
+      const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
+
+      if (action === 'wrap') {
+        summary = `Wrap ${tokenInAmountFormatted} WETH to ETH`;
+      } else if (action === 'unwrap') {
+        summary = `Unwrap ${tokenInAmountFormatted} ETH to WETH`;
+      } else {
+        summary = `${tokenInAmountFormatted} ${tokenIn?.value.symbol} -> ${tokenOutAmountFormatted} ${tokenOut?.value.symbol}`;
+      }
+
+      addTransaction({
+        id: tx.hash,
+        type: 'tx',
+        action: 'trade',
+        summary,
+        details: {
+          tokenInAddress: tokenInAddressInput.value,
+          tokenOutAddress: tokenOutAddressInput.value,
+          tokenInAmount: tokenInAmountInput.value,
+          tokenOutAmount: tokenOutAmountInput.value,
+          exactIn: exactIn.value,
+          quote: getQuote(),
+          priceImpact: priceImpact.value,
+          slippageBufferRate: slippageBufferRate.value
+        }
+      });
     }
   }
 
@@ -380,7 +425,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx);
+        txHandler(tx, 'wrap');
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -397,7 +442,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx);
+        txHandler(tx, 'unwrap');
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -423,7 +468,7 @@ export default function useSor({
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx);
+        txHandler(tx, 'trade');
       } catch (e) {
         console.log(e);
         trading.value = false;

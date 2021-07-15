@@ -1,25 +1,30 @@
-import useVueWeb3 from '@/services/web3/useVueWeb3';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
+
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+
 import useAccountBalances from './useAccountBalances';
 import useAllowances from './useAllowances';
 import useBlocknative from './useBlocknative';
+import useTransactions from './useTransactions';
 
 export default function useWeb3Watchers() {
   // COMPOSABLES
   const store = useStore();
   const { t } = useI18n();
-  const { notify } = useBlocknative();
+  const { notify, supportsBlocknative } = useBlocknative();
   const {
     appNetworkConfig,
     userNetworkConfig,
     account,
     isMismatchedNetwork,
-    isUnsupportedNetwork
+    isUnsupportedNetwork,
+    blockNumber
   } = useVueWeb3();
   const { refetchAllowances } = useAllowances();
   const { refetchBalances } = useAccountBalances();
+  const { handlePendingTransactions } = useTransactions();
 
   // Watch for user account change:
   // -> Unsubscribe Blocknative from old account if exits
@@ -27,15 +32,17 @@ export default function useWeb3Watchers() {
   watch(
     () => account.value,
     (newAccount, oldAccount) => {
-      if (oldAccount) notify.unsubscribe(oldAccount);
-      if (!newAccount) return;
+      if (supportsBlocknative.value) {
+        if (oldAccount) notify.unsubscribe(oldAccount);
+        if (!newAccount) return;
 
-      const { emitter } = notify.account(newAccount);
-      emitter.on('txConfirmed', () => {
-        refetchBalances.value();
-        refetchAllowances.value();
-        return false;
-      });
+        const { emitter } = notify.account(newAccount);
+        emitter.on('txConfirmed', () => {
+          refetchBalances.value();
+          refetchAllowances.value();
+          return false;
+        });
+      }
     }
   );
 
@@ -67,4 +74,8 @@ export default function useWeb3Watchers() {
       }
     }
   );
+
+  watch(blockNumber, async () => {
+    handlePendingTransactions();
+  });
 }
