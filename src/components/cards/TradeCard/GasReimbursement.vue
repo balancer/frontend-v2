@@ -6,7 +6,7 @@
   >
     <div v-if="isActive()" class="message relative px-2 py-3">
       <div class="ml-12">
-        <div v-text="$t('highGasFees')" class="relative text-sm font-bold" />
+        <h6 v-text="$t('highGasFees')" class="relative text-sm" />
         <div class="relative text-sm text-gray-500">
           {{ text }}
         </div>

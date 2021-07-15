@@ -1,5 +1,10 @@
 <template>
-  <BalCard class="overflow-x-auto" no-pad>
+  <BalCard
+    class="overflow-x-auto"
+    :square="upToLargeBreakpoint"
+    :noBorder="upToLargeBreakpoint"
+    noPad
+  >
     <BalTable
       :columns="columns"
       :data="activityRows"
@@ -18,18 +23,17 @@
       <template v-slot:actionCell="action">
         <div class="px-6 py-2">
           <div class="flex items-center">
-            <div>
-              <PlusSquareIcon v-if="action.type === 'Join'" />
-              <MinusSquareIcon v-else />
+            <div class="flex center mr-3">
+              <BalIcon
+                v-if="action.type === 'Join'"
+                name="plus"
+                size="sm"
+                class="text-green-500 dark:text-green-400"
+              />
+              <BalIcon v-else name="minus" size="sm" class="text-red-500" />
             </div>
             <div>{{ action.label }}</div>
           </div>
-        </div>
-      </template>
-
-      <template v-slot:valueCell="action">
-        <div class="px-6 py-4 flex justify-end">
-          {{ fNum(action.value, 'usd_m') }}
         </div>
       </template>
 
@@ -50,6 +54,12 @@
         </div>
       </template>
 
+      <template v-slot:valueCell="action">
+        <div class="px-6 py-4 flex justify-end">
+          {{ fNum(action.value, 'usd_m') }}
+        </div>
+      </template>
+
       <template v-slot:timeCell="action">
         <div class="px-6 py-4">
           <div
@@ -62,9 +72,9 @@
               class="ml-2 flex items-center"
             >
               <BalIcon
-                name="external-link"
+                name="arrow-up-right"
                 size="sm"
-                class="text-gray-500 hover:text-blue-500"
+                class="text-gray-500 hover:text-blue-500 transition-colors"
               />
             </BalLink>
           </div>
@@ -94,6 +104,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Token } from '@/types';
 import { bnum } from '@balancer-labs/sor2/dist/bmath';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 type TokenAmount = {
   address: string;
@@ -148,6 +159,7 @@ export default {
     const { t } = useI18n();
     const { explorerLinks } = useVueWeb3();
     const { tokens } = useTokens();
+    const { upToLargeBreakpoint } = useBreakpoints();
 
     const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
       {
@@ -159,6 +171,14 @@ export default {
         sortable: false
       },
       {
+        name: t('details'),
+        id: 'details',
+        accessor: '',
+        Cell: 'detailsCell',
+        width: 300,
+        sortable: false
+      },
+      {
         name: t('value'),
         id: 'value',
         accessor: 'value',
@@ -167,14 +187,6 @@ export default {
         className: 'align-center w-40',
         sortKey: pool => numeral(pool.value).value(),
         width: 125
-      },
-      {
-        name: t('details'),
-        id: 'details',
-        accessor: '',
-        Cell: 'detailsCell',
-        width: 300,
-        sortable: false
       },
       {
         name: t('time'),
@@ -237,7 +249,8 @@ export default {
       columns,
       activityRows,
       explorer: explorerLinks,
-      fNum
+      fNum,
+      upToLargeBreakpoint
     };
   }
 };
