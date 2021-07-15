@@ -73,7 +73,7 @@ export default function useTokenApprovalGP(
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: tokenInSymbol,
+        summary: `${tokenInSymbol} for trading`,
         details: {
           tokenAddress: tokenInAddress.value,
           amount: amount.value,

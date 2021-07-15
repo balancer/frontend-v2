@@ -105,7 +105,7 @@ export default function useTokenApproval(
       id: tx.hash,
       type: 'tx',
       action: 'approve',
-      summary: tokens.value[tokenInAddress.value].symbol,
+      summary: `${tokens.value[tokenInAddress.value].symbol} for trading`,
       details: {
         tokenAddress: tokenInAddress.value,
         amount: amount.value,
