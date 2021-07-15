@@ -1,5 +1,3 @@
-import connectors from '@/constants/connectors.json';
-
 import defaultLogo from '@/assets/images/connectors/default.svg';
 import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
 import frameLogo from '@/assets/images/connectors/frame.svg';
@@ -13,13 +11,6 @@ import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import i18n from './i18n';
 
 const options: any = { connectors: [] };
-
-Object.entries(connectors).forEach((connector: any) => {
-  options.connectors.push({
-    key: connector[0],
-    options: connector[1].options
-  });
-});
 
 export function getConnectorName(connectorId: string): string {
   if (connectorId === 'injected') {
