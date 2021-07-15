@@ -47,7 +47,7 @@ export default function useTokenApprovals(tokens, shortAmounts) {
         id: txs[0].hash,
         type: 'tx',
         action: 'approve',
-        summary: allTokens.value[tokens[0]]?.symbol,
+        summary: `${allTokens.value[tokens[0]]?.symbol} for investing`,
         details: {
           tokenAddress: tokens[0],
           amount: amounts.value[0],
