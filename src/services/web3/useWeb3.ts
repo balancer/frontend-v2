@@ -118,6 +118,7 @@ export default function useWeb3() {
     getProvider,
     getSigner,
     disconnectWallet,
-    toggleWalletSelectModal
+    toggleWalletSelectModal,
+    setBlockNumber
   };
 }
