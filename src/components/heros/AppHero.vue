@@ -34,7 +34,7 @@
             @click="trackGoal(Goals.ClickHeroLearnMore)"
           >
             {{ $t('learnMore') }}
-            <BalIcon name="external-link" size="sm" class="ml-2" />
+            <BalIcon name="arrow-up-right" size="sm" class="ml-1" />
           </BalBtn>
         </div>
       </template>

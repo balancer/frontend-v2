@@ -53,7 +53,7 @@
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <BalIcon name="external-link" size="xs" />
+                  <BalIcon name="arrow-up-right" size="xs" />
                 </BalBtn>
               </div>
             </div>

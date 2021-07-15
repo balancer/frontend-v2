@@ -2,7 +2,7 @@
   <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
   <div v-else>
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
-      <h3 class="text-gray-800 font-semibold text-xl tracking-wider">
+      <h3 class="text-gray-800 text-xl tracking-wider">
         {{ currentValue }}
       </h3>
       <span

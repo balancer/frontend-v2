@@ -1,11 +1,13 @@
 <template>
-  <span>
-    <jazzicon
-      :address="address"
-      :diameter="parseInt(size) || 22"
-      class="leading-none inline-block align-middle"
-    />
-  </span>
+  <div
+    class="leading-none rounded-full overflow-hidden"
+    :style="{
+      width: `${parseInt(size) || 22}px`,
+      height: `${parseInt(size) || 22}px`
+    }"
+  >
+    <jazzicon :address="address" :diameter="parseInt(size) || 22" />
+  </div>
 </template>
 
 <script>

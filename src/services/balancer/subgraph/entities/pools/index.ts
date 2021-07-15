@@ -12,7 +12,7 @@ import { Prices } from '@/services/coingecko';
 import { getAddress } from '@ethersproject/address';
 import {
   currentLiquidityMiningRewards,
-  computeTotalAPYForPool
+  computeTotalAPRForPool
 } from '@/lib/utils/liquidityMining';
 import { NetworkId } from '@/constants/network';
 import ConfigService from '@/services/config/config.service';
@@ -74,13 +74,13 @@ export default class Pools {
       pool.totalLiquidity = getPoolLiquidity(pool, prices);
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
-      const poolAPY = this.calcAPY(pool, pastPool);
+      const poolAPR = this.calcAPR(pool, pastPool);
       const fees = this.calcFees(pool, pastPool);
       const {
         hasLiquidityMiningRewards,
-        liquidityMiningAPY
-      } = this.calcLiquidityMiningAPY(pool, prices);
-      const totalAPY = this.calcTotalAPY(poolAPY, liquidityMiningAPY);
+        liquidityMiningAPR
+      } = this.calcLiquidityMiningAPR(pool, prices);
+      const totalAPR = this.calcTotalAPR(poolAPR, liquidityMiningAPR);
 
       return {
         ...pool,
@@ -89,10 +89,10 @@ export default class Pools {
           period,
           volume,
           fees,
-          apy: {
-            pool: poolAPY,
-            liquidityMining: liquidityMiningAPY,
-            total: totalAPY
+          apr: {
+            pool: poolAPR,
+            liquidityMining: liquidityMiningAPR,
+            total: totalAPR
           }
         }
       };
@@ -107,7 +107,7 @@ export default class Pools {
       .toString();
   }
 
-  private calcAPY(pool: Pool, pastPool?: Pool) {
+  private calcAPR(pool: Pool, pastPool?: Pool) {
     if (!pastPool)
       return bnum(pool.totalSwapFee)
         .dividedBy(pool.totalLiquidity)
@@ -121,8 +121,8 @@ export default class Pools {
       .toString();
   }
 
-  private calcLiquidityMiningAPY(pool: Pool, prices: Prices) {
-    let liquidityMiningAPY = '0';
+  private calcLiquidityMiningAPR(pool: Pool, prices: Prices) {
+    let liquidityMiningAPR = '0';
 
     const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
 
@@ -131,7 +131,7 @@ export default class Pools {
       : false;
 
     if (hasLiquidityMiningRewards) {
-      liquidityMiningAPY = computeTotalAPYForPool(
+      liquidityMiningAPR = computeTotalAPRForPool(
         liquidityMiningRewards,
         prices,
         pool.totalLiquidity
@@ -140,13 +140,13 @@ export default class Pools {
 
     return {
       hasLiquidityMiningRewards,
-      liquidityMiningAPY
+      liquidityMiningAPR
     };
   }
 
-  private calcTotalAPY(poolAPY: string, liquidityMiningAPY: string) {
-    return bnum(poolAPY)
-      .plus(liquidityMiningAPY)
+  private calcTotalAPR(poolAPR: string, liquidityMiningAPR: string) {
+    return bnum(poolAPR)
+      .plus(liquidityMiningAPR)
       .toString();
   }
 

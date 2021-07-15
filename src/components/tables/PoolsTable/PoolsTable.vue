@@ -1,5 +1,11 @@
 <template>
-  <BalCard shadow="lg" class="mt-4" no-pad>
+  <BalCard
+    shadow="lg"
+    class="mt-4"
+    :square="upToLargeBreakpoint"
+    :noBorder="upToLargeBreakpoint"
+    noPad
+  >
     <BalTable
       :columns="columns"
       :data="data"
@@ -7,6 +13,7 @@
       :is-loading-more="isLoadingMore"
       skeleton-class="h-64"
       sticky="both"
+      :square="upToLargeBreakpoint"
       :link="{
         to: 'pool',
         getParams: pool => ({ id: pool.id })
@@ -47,12 +54,12 @@
           />
         </div>
       </template>
-      <template v-slot:apyCell="pool">
+      <template v-slot:aprCell="pool">
         <div class="px-6 py-4 -mt-1 flex justify-end">
           {{
-            Number(pool.dynamic.apy.pool) > 10000
+            Number(pool.dynamic.apr.pool) > 10000
               ? '-'
-              : fNum(pool.dynamic.apy.total, 'percent')
+              : fNum(pool.dynamic.apr.total, 'percent')
           }}
           <LiquidityMiningTooltip :pool="pool" />
         </div>
@@ -83,6 +90,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
 import useTokens from '@/composables/useTokens';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   components: {
@@ -131,6 +139,7 @@ export default defineComponent({
       isIdle: isBalancesQueryIdle
     } = useAccountBalances();
     const { darkMode } = useDarkMode();
+    const { upToLargeBreakpoint } = useBreakpoints();
 
     // DATA
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -176,12 +185,12 @@ export default defineComponent({
         width: 175
       },
       {
-        name: t('apy'),
-        Cell: 'apyCell',
-        accessor: pool => pool.dynamic.apy.total,
+        name: t('apr'),
+        Cell: 'aprCell',
+        accessor: pool => pool.dynamic.apr.total,
         align: 'right',
-        id: 'poolApy',
-        sortKey: pool => Number(pool.dynamic.apy.total),
+        id: 'poolApr',
+        sortKey: pool => Number(pool.dynamic.apr.total),
         width: 150
       }
     ]);
@@ -215,6 +224,7 @@ export default defineComponent({
 
       // computed
       darkMode,
+      upToLargeBreakpoint,
 
       // methods
       handleRowClick,

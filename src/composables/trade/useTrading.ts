@@ -107,7 +107,9 @@ export default function useTrading(
       handleAmountsOnFetchPools: false,
       refetchPools: isBalancerTrade.value,
       enableTxHandler: isBalancerTrade.value
-    }
+    },
+    tokenIn,
+    tokenOut
   });
 
   const gnosis = useGnosis({

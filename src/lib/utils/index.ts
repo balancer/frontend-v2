@@ -32,7 +32,7 @@ export function lsSet(key: string, value: any) {
   return localStorage.setItem(`${pkg.name}.${key}`, JSON.stringify(value));
 }
 
-export function lsGet(key: string, fallback?: any) {
+export function lsGet<T = any>(key: string, fallback?: any): T {
   const item = localStorage.getItem(`${pkg.name}.${key}`);
   return jsonParse(item, fallback);
 }

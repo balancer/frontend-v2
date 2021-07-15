@@ -1,7 +1,9 @@
 <template>
-  <div class="container mx-auto px-4 lg:px-0 pt-10 md:pt-12">
+  <div class="lg:container lg:mx-auto pt-10 md:pt-12">
     <template v-if="isWalletReady">
-      <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
+      <div class="px-4 lg:px-0">
+        <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
+      </div>
       <PoolsTable
         :isLoading="isLoadingUserPools"
         :data="userPools"
@@ -9,7 +11,7 @@
         showPoolShares
         class="mb-8"
       />
-      <div v-if="!hideV1Links">
+      <div class="px-4 lg:px-0" v-if="!hideV1Links">
         <div class="text-black-600">{{ $t('seeV1BalancerInvestments') }}</div>
         <BalLink :href="EXTERNAL_LINKS.Balancer.PoolsV1Dashboard" external>{{
           $t('goToBalancerV1Site')
@@ -17,13 +19,16 @@
       </div>
       <div class="mb-16" />
     </template>
-    <h3 class="mb-4">{{ $t('investmentPools') }}</h3>
-    <TokenSearchInput
-      v-model="selectedTokens"
-      :loading="isLoadingPools"
-      @add="addSelectedToken"
-      @remove="removeSelectedToken"
-    />
+    <div class="px-4 lg:px-0">
+      <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
+      <TokenSearchInput
+        v-model="selectedTokens"
+        :loading="isLoadingPools"
+        @add="addSelectedToken"
+        @remove="removeSelectedToken"
+      />
+    </div>
+
     <PoolsTable
       :isLoading="isLoadingPools"
       :data="filteredPools"
@@ -33,7 +38,7 @@
       @loadMore="loadMorePools"
       class="mb-8"
     />
-    <div v-if="!hideV1Links">
+    <div class="px-4 lg:px-0" v-if="!hideV1Links">
       <div class="text-black-600">
         {{ $t('tableShowsBalancerV2Pools') }}
       </div>

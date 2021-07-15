@@ -2,13 +2,7 @@
   <div>
     <div class="flex items-center flex-wrap">
       <div class="flex items-center flex-wrap">
-        <BalBtn
-          color="gray"
-          outline
-          size="sm"
-          @click="onClick"
-          class="mb-2 md:mb-0 mr-4"
-        >
+        <BalBtn color="gray" outline size="sm" @click="onClick" class="mr-4">
           <BalIcon name="search" size="sm" class="mr-2" />
           {{ $t('filterByToken') }}
         </BalBtn>
@@ -34,7 +28,7 @@
         "
         class="text-gray-400 overflow-x-auto"
       >
-        <span class="mr-6">{{ $t('inYourWallet') }}</span>
+        <span class="mr-2">{{ $t('inYourWallet') }}</span>
         <span
           v-for="token in sortedBalances"
           :key="`wallet-${token.symbol}`"
@@ -44,12 +38,12 @@
           {{ token?.symbol }}
         </span>
       </div>
-      <div v-else class="text-gray-400 flex flex-wrap">
-        <span class="mr-6">{{ $t('popularBases') }}</span>
+      <div v-else class="text-gray-400 flex flex-wrap py-3">
+        <span class="mr-2">{{ $t('popularBases') }}</span>
         <span
           v-for="token in whiteListedTokens"
           :key="`popular-${token.symbol}`"
-          class="mr-6 cursor-pointer hover:text-gray-700 dark:hover:text-white"
+          class="mr-3 md:mr-4 cursor-pointer hover:text-gray-700 dark:hover:text-white transition-colors"
           @click="addToken(token.address)"
         >
           {{ token?.symbol }}

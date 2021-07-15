@@ -10,13 +10,13 @@
       cx="9"
       cy="9"
       r="8"
-      stroke="white"
+      stroke="currentColor"
       stroke-opacity="0.5"
       stroke-width="1.5"
     />
     <path
       d="M9 17C4.58172 17 1 13.4183 1 9"
-      stroke="white"
+      stroke="currentColor"
       stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="bevel"
