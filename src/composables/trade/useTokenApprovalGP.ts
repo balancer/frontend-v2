@@ -19,7 +19,7 @@ export default function useTokenApprovalGP(
   const { getProvider } = useVueWeb3();
   const provider = getProvider();
   const { tokens } = useTokens();
-  const { txListener: ethersTxListener } = useEthers();
+  const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
 
   // DATA
@@ -80,7 +80,7 @@ export default function useTokenApprovalGP(
           spender: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
         }
       });
-      ethersTxListener(tx, {
+      txListener(tx, {
         onTxConfirmed: () => {
           approving.value = false;
           approved.value = true;

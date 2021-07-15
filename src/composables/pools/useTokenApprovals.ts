@@ -2,12 +2,10 @@ import { ref, computed } from 'vue';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
 import useTokens from '@/composables/useTokens';
-import useNotify from '@/composables/useNotify';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useAllowances from '../useAllowances';
-import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '@/composables/useEthers';
-import { sleep } from '@/lib/utils';
+import useTransactions from '../useTransactions';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
   const { getProvider, appNetworkConfig } = useVueWeb3();
@@ -15,8 +13,8 @@ export default function useTokenApprovals(tokens, shortAmounts) {
   const approvedAll = ref(false);
   const { tokens: allTokens } = useTokens();
   const { getRequiredAllowances, refetchAllowances } = useAllowances();
-  const { txListener, supportsBlocknative } = useNotify();
-  const { txListener: ethersTxListener } = useEthers();
+  const { txListener } = useEthers();
+  const { addTransaction } = useTransactions();
 
   const amounts = computed(() =>
     tokens.map((token, index) => {
@@ -35,37 +33,6 @@ export default function useTokenApprovals(tokens, shortAmounts) {
     return allowances;
   });
 
-  async function blocknativeTxHandler(tx: TransactionResponse): Promise<void> {
-    txListener(tx.hash, {
-      onTxConfirmed: async () => {
-        // REFACTOR: Hack to prevent race condition causing double approvals
-        await tx.wait();
-        await sleep(5000);
-        await refetchAllowances.value();
-        // END REFACTOR
-        approving.value = false;
-      },
-      onTxCancel: () => {
-        approving.value = false;
-      },
-      onTxFailed: () => {
-        approving.value = false;
-      }
-    });
-  }
-
-  async function ethersTxHandler(tx: TransactionResponse): Promise<void> {
-    await ethersTxListener(tx, {
-      onTxConfirmed: async () => {
-        await refetchAllowances.value();
-        approving.value = false;
-      },
-      onTxFailed: () => {
-        approving.value = false;
-      }
-    });
-  }
-
   async function approveAllowances(): Promise<void> {
     try {
       approving.value = true;
@@ -76,11 +43,27 @@ export default function useTokenApprovals(tokens, shortAmounts) {
         [requiredAllowances.value[0]]
       );
 
-      if (supportsBlocknative.value) {
-        blocknativeTxHandler(txs[0]);
-      } else {
-        ethersTxHandler(txs[0]);
-      }
+      addTransaction({
+        id: txs[0].hash,
+        type: 'tx',
+        action: 'approve',
+        summary: allTokens.value[tokens[0]]?.symbol,
+        details: {
+          tokenAddress: tokens[0],
+          amount: amounts.value[0],
+          spender: appNetworkConfig.addresses.vault
+        }
+      });
+
+      txListener(txs[0], {
+        onTxConfirmed: async () => {
+          await refetchAllowances.value();
+          approving.value = false;
+        },
+        onTxFailed: () => {
+          approving.value = false;
+        }
+      });
     } catch (error) {
       approving.value = false;
       console.error(error);

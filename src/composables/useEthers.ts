@@ -1,4 +1,3 @@
-import { APP } from '@/constants/app';
 import {
   TransactionReceipt,
   TransactionResponse
@@ -21,12 +20,12 @@ export default function useEthers() {
       onTxConfirmed: TxCallback;
       onTxFailed: TxCallback;
     },
-    shouldRefetchBalances = false
+    shouldRefetchBalances = true
   ) {
     try {
       const receipt = await tx.wait();
       // attempt to finalize transaction so that the pending tx watcher won't check the tx again.
-      if (APP.IsGnosisIntegration && receipt != null) {
+      if (receipt != null) {
         finalizeTransaction(tx.hash, 'tx', receipt);
       }
       callbacks.onTxConfirmed(tx);
