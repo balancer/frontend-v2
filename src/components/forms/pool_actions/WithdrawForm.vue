@@ -523,7 +523,7 @@ export default defineComponent({
           id: tx.hash,
           type: 'tx',
           action: 'withdraw',
-          summary: `Withdraw ${total.value}`,
+          summary: `${total.value} from pool`,
           details: {
             total,
             pool: props.pool

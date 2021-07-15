@@ -225,7 +225,7 @@ export default defineComponent({
             id: tx.hash,
             type: 'tx',
             action: 'claim',
-            summary: `Claim ${fNum(
+            summary: `${fNum(
               userClaims.value.availableToClaim,
               'token_fixed'
             )} BAL`

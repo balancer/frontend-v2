@@ -575,7 +575,7 @@ export default defineComponent({
           id: tx.hash,
           type: 'tx',
           action: 'invest',
-          summary: `Invest ${total.value}`,
+          summary: `${total.value} to pool`,
           details: {
             total,
             pool: props.pool
