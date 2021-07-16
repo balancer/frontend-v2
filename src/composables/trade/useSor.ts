@@ -107,7 +107,11 @@ export default function useSor({
 
   // COMPOSABLES
   const store = useStore();
-  const { getProvider: getWeb3Provider, userNetworkConfig } = useVueWeb3();
+  const {
+    getProvider: getWeb3Provider,
+    userNetworkConfig,
+    isV1Supported
+  } = useVueWeb3();
   const provider = computed(() => getWeb3Provider());
   const { refetchBalances } = useAccountBalances();
   const { txListener, supportsBlocknative } = useNotify();
@@ -157,6 +161,7 @@ export default function useSor({
     }
 
     sorManager = new SorManager(
+      isV1Supported,
       rpcProviderService.jsonProvider,
       new BigNumber(GAS_PRICE),
       Number(MAX_POOLS),
