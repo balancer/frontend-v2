@@ -76,7 +76,6 @@ export default function useTokenApprovalGP(
         summary: `${tokenInSymbol} for trading`,
         details: {
           tokenAddress: tokenInAddress.value,
-          amount: amount.value,
           spender: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
         }
       });

@@ -1,25 +1,35 @@
-import { ref, computed } from 'vue';
-import { approveTokens } from '@/lib/utils/balancer/tokens';
+import { ref, computed, Ref } from 'vue';
 import { parseUnits } from '@ethersproject/units';
-import useTokens from '@/composables/useTokens';
+
+import { approveTokens } from '@/lib/utils/balancer/tokens';
+
 import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useAllowances from '../useAllowances';
+
+import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
+import useAllowances from '../useAllowances';
 import useTransactions from '../useTransactions';
 
-export default function useTokenApprovals(tokens, shortAmounts) {
-  const { getProvider, appNetworkConfig } = useVueWeb3();
+export default function useTokenApprovals(
+  tokenAddresses: string[],
+  shortAmounts: Ref<string[]>
+) {
+  // DATA
   const approving = ref(false);
   const approvedAll = ref(false);
-  const { tokens: allTokens } = useTokens();
+
+  // COMPOSABLES
+  const { getProvider, appNetworkConfig } = useVueWeb3();
+  const { tokens } = useTokens();
   const { getRequiredAllowances, refetchAllowances } = useAllowances();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
 
+  // COMPUTED
   const amounts = computed(() =>
-    tokens.map((token, index) => {
+    tokenAddresses.map((token, index) => {
       const shortAmount = shortAmounts.value[index] || '0';
-      const decimals = allTokens.value[token].decimals;
+      const decimals = tokens.value[token].decimals;
       const amount = parseUnits(shortAmount, decimals).toString();
       return amount;
     })
@@ -27,30 +37,31 @@ export default function useTokenApprovals(tokens, shortAmounts) {
 
   const requiredAllowances = computed(() => {
     const allowances = getRequiredAllowances({
-      tokens,
+      tokens: tokenAddresses,
       amounts: amounts.value
     });
     return allowances;
   });
 
+  // METHODS
   async function approveAllowances(): Promise<void> {
     try {
       approving.value = true;
+      const tokenAddress = requiredAllowances.value[0];
 
       const txs = await approveTokens(
         getProvider(),
         appNetworkConfig.addresses.vault,
-        [requiredAllowances.value[0]]
+        [tokenAddress]
       );
 
       addTransaction({
         id: txs[0].hash,
         type: 'tx',
         action: 'approve',
-        summary: `${allTokens.value[tokens[0]]?.symbol} for investing`,
+        summary: `${tokens.value[tokenAddress]?.symbol} for investing`,
         details: {
-          tokenAddress: tokens[0],
-          amount: amounts.value[0],
+          tokenAddress,
           spender: appNetworkConfig.addresses.vault
         }
       });
@@ -70,5 +81,16 @@ export default function useTokenApprovals(tokens, shortAmounts) {
     }
   }
 
-  return { requiredAllowances, approveAllowances, approving, approvedAll };
+  return {
+    // data
+    approving,
+    approvedAll,
+
+    // computed
+    requiredAllowances,
+
+    // methods
+
+    approveAllowances
+  };
 }

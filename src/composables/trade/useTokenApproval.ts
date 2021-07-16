@@ -108,7 +108,6 @@ export default function useTokenApproval(
       summary: `${tokens.value[tokenInAddress.value].symbol} for trading`,
       details: {
         tokenAddress: tokenInAddress.value,
-        amount: amount.value,
         spender
       }
     });
