@@ -2,7 +2,5 @@
 import { defineComponent } from 'vue';
 import * as providers from './providers';
 
-export default defineComponent({
-  
-})
+export default defineComponent({});
 </script>

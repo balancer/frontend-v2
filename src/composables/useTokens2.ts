@@ -58,7 +58,7 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
         .map(list => list.tokens)
         .flat();
 
-        activeTokenListTokens.forEach(token => {
+      activeTokenListTokens.forEach(token => {
         const address: string = getAddress(token.address);
         // Don't include if already included
         if (Object.keys(baseTokens).includes(address)) return;
