@@ -94,7 +94,11 @@
                   :key="hop?.pool?.address"
                   class="ml-4 first:ml-0 flex bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 border border-gray-100 hover:border-gray-300 dark:border-gray-600 dark:hover:border-gray-400 rounded-xl shadow transition-colors"
                 >
-                  <a class="flex p-1.5" :href="getPoolLink(hop.pool.id)" target="_blank" >
+                  <a
+                    class="flex p-1.5"
+                    :href="getPoolLink(hop.pool.id)"
+                    target="_blank"
+                  >
                     <BalAsset
                       class="ml-1.5 first:ml-0"
                       v-for="token in hop.pool.tokens"
