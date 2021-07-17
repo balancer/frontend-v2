@@ -1,5 +1,6 @@
 import { Config } from '@/lib/config';
 import { TokenMap } from '@/types';
+import { TokenInfoMap } from '@/types/TokenList';
 import { Ref } from 'vue';
 
 export const POOLS_ROOT_KEY = 'pools';
@@ -35,7 +36,7 @@ const QUERY_KEYS = {
     Prices: (tokens: Ref<string[]>) => ['tokens', 'prices', { tokens }]
   },
   Account: {
-    Balances: (account: Ref<string>, tokens: Ref<string[]>) => [
+    Balances: (account: Ref<string>, tokens: Ref<TokenInfoMap>) => [
       'account',
       'balances',
       { account, tokens }

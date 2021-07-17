@@ -11,9 +11,9 @@
       </div>
     </div>
     <span class="text-right">
-      <template v-if="token.balance > 0">
-        <template v-if="token.balance >= 0.0001">
-          {{ fNum(token.balance, 'token') }}
+      <template v-if="balance > 0">
+        <template v-if="balance >= 0.0001">
+          {{ fNum(balance, 'token') }}
         </template>
         <template v-else>
           &#60; 0.0001
@@ -21,8 +21,8 @@
       </template>
       <template v-else>-</template>
       <div class="text-gray text-sm">
-        <template v-if="token.value > 0">
-          {{ fNum(token.value, 'usd') }}
+        <template v-if="value > 0">
+          {{ fNum(value, 'usd') }}
         </template>
         <template v-else>-</template>
       </div>
@@ -33,18 +33,35 @@
 <script lang="ts">
 import useNumbers from '@/composables/useNumbers';
 import anime from 'animejs';
-import { onMounted, onUnmounted, ref } from '@vue/runtime-core';
+import { onMounted, onUnmounted, PropType, ref, computed } from 'vue';
+import { TokenInfo } from '@/types/TokenList';
+import useTokens2 from '@/composables/useTokens2';
+import useUserSettings from '@/composables/useUserSettings';
 
 export default {
   name: 'TokenListItem',
 
   props: {
-    token: Object
+    token: { type: Object as PropType<TokenInfo>, required: true }
   },
-  setup() {
+
+  setup(props) {
+    // COMPOSABLES
     const { fNum } = useNumbers();
     const animateRef = ref();
+    const { balances, prices } = useTokens2();
+    const { currency } = useUserSettings();
 
+    // COMPUTED
+    const balance = computed(() => Number(balances.value[props.token.address]));
+    const price = computed(() =>
+      prices.value[props.token.address]
+        ? prices.value[props.token.address][currency.value]
+        : 0
+    );
+    const value = computed(() => balance.value * price.value);
+
+    // CALLBACKS
     onMounted(() => {
       anime({
         opacity: 1,
@@ -63,7 +80,8 @@ export default {
     return {
       fNum,
       animateRef,
-      console
+      balance,
+      value
     };
   }
 };

@@ -2,15 +2,16 @@ import { ref, Ref, readonly, computed } from 'vue';
 import { tokenListService } from '@/services/token-list/token-list.service';
 import { TokenList, TokenListMap } from '@/types/TokenList';
 import { pick } from 'lodash';
-import TOKEN_LISTS from '@/constants/tokenlists';
 import { lsGet, lsSet } from '@/lib/utils';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { configService } from '@/services/config/config.service';
 
+const { uris } = tokenListService;
+
 /* STATE */
 const tokenLists = ref<TokenListMap>({});
 const activeListKeys = ref<string[]>(
-  lsGet(LS_KEYS.TokenLists.Toggled, [TOKEN_LISTS.Balancer.Default])
+  lsGet(LS_KEYS.TokenLists.Toggled, [uris.Balancer.Default])
 );
 const loading = ref(true);
 const failed = ref(false);
@@ -32,21 +33,21 @@ const failed = ref(false);
  * The default Balancer token list.
  */
 const defaultTokenList = computed(
-  (): TokenList => tokenLists.value[TOKEN_LISTS.Balancer.Default]
+  (): TokenList => tokenLists.value[uris.Balancer.Default]
 );
 
 /**
  * The Balancer vetted token list, contains LBP tokens.
  */
 const vettedTokenList = computed(
-  (): TokenList => tokenLists.value[TOKEN_LISTS.Balancer.Vetted]
+  (): TokenList => tokenLists.value[uris.Balancer.Vetted]
 );
 
 /**
  * All Balancer token lists mapped by URI.
  */
 const balancerTokenLists = computed(
-  (): TokenListMap => pick(tokenLists.value, TOKEN_LISTS.Balancer.All)
+  (): TokenListMap => pick(tokenLists.value, uris.Balancer.All)
 );
 
 /**
@@ -55,7 +56,7 @@ const balancerTokenLists = computed(
  * This excludes lists like the Balancer vetted list.
  */
 const approvedTokenLists = computed(
-  (): TokenListMap => pick(tokenLists.value, TOKEN_LISTS.Approved)
+  (): TokenListMap => pick(tokenLists.value, uris.Approved)
 );
 
 /**
@@ -72,7 +73,7 @@ const activeTokenLists = computed(
  * makes additonal tokens available in the token search modal.
  */
 function toggleTokenList(uri: string): void {
-  if (!TOKEN_LISTS.Approved.includes(uri)) return;
+  if (!uris.Approved.includes(uri)) return;
 
   if (activeListKeys.value.includes(uri)) {
     activeListKeys.value.splice(activeListKeys.value.indexOf(uri), 1);

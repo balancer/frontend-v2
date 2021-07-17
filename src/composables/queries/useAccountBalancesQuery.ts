@@ -5,12 +5,13 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { tokenService } from '@/services/token/token.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
+import { TokenInfoMap } from '@/types/TokenList';
 
 // TYPES
 type Response = BalanceMap;
 
 export default function useAccountBalancesQuery(
-  tokens: Ref<string[]> = ref([]),
+  tokens: Ref<TokenInfoMap> = ref({}),
   options: UseQueryOptions<Response> = {}
 ) {
   const { account, isWalletReady } = useVueWeb3();

@@ -1,4 +1,4 @@
-import { ref, Ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import useTokenLists2 from './useTokenLists2';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -22,7 +22,7 @@ const { networkConfig } = useConfig();
 const {
   loading: loadingTokenLists,
   failed: tokenListsFailed,
-  defaultTokenList,
+  activeTokenLists,
   allTokenLists
 } = useTokenLists2();
 
@@ -54,7 +54,11 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
 
       const baseTokens = {};
 
-      defaultTokenList.value.tokens.forEach(token => {
+      const activeTokenListTokens = Object.values(activeTokenLists.value)
+        .map(list => list.tokens)
+        .flat();
+
+        activeTokenListTokens.forEach(token => {
         const address: string = getAddress(token.address);
         // Don't include if already included
         if (Object.keys(baseTokens).includes(address)) return;
@@ -71,16 +75,12 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     }
   );
 
-  const ether = computed(
-    (): TokenInfoMap => {
-      return {
-        [networkConfig.nativeAsset.address]: {
-          ...networkConfig.nativeAsset,
-          chainId: networkConfig.chainId
-        }
-      };
+  const nativeToken: TokenInfoMap = {
+    [networkConfig.nativeAsset.address]: {
+      ...networkConfig.nativeAsset,
+      chainId: networkConfig.chainId
     }
-  );
+  };
 
   const allTokens = computed(
     (): TokenInfoMap => {
@@ -104,7 +104,7 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
    * to vueQuery instance.
    */
   const pricesQuery = useTokenPricesQuery(allTokenAddresses);
-  const accountBalancesQuery = useAccountBalancesQuery(allTokenAddresses);
+  const accountBalancesQuery = useAccountBalancesQuery(allTokens);
   const accountAllowancesQuery = useAccountAllowancesQuery(
     allTokenAddresses,
     allowanceContracts
@@ -130,12 +130,16 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
    * Dynamic metadata fetching for given addresses will be triggered
    * when the injected tokens map is updated, via the relevant vueQueries.
    */
-  async function injectTokens(addresses: string[]): Promise<void> {
+  async function injectTokens(addresses: string[]): Promise<TokenInfoMap> {
+    addresses = addresses.filter(
+      address => !opts.excludeTokens?.includes(address)
+    );
     const tokens = await tokenService.metadata.get(
       addresses,
       allTokenLists.value
     );
     injectedTokens.value = { ...injectedTokens.value, ...tokens };
+    return tokens;
   }
 
   /**
@@ -152,14 +156,19 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
   /**
    * @function searchTokens
    * Given query, filters allTokens map by name, symbol or address.
+   * If address is provided, search for address in allTokens or injectToken
    */
-  function searchTokens(query: string): TokenInfoMap {
+  async function searchTokens(query: string): Promise<TokenInfoMap> {
     if (!query) return allTokens.value;
 
     if (isAddress(query)) {
       const address = getAddress(query);
       const token = allTokens.value[address];
-      return token ? { [address]: token } : {};
+      if (token) {
+        return { [address]: token };
+      } else {
+        return await injectTokens([address]);
+      }
     } else {
       const tokensArray = Object.entries(allTokens.value);
       const results = tokensArray.filter(
@@ -189,7 +198,7 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
   return {
     // computed
     allTokens,
-    ether,
+    nativeToken,
     prices,
     balances,
     allowances,

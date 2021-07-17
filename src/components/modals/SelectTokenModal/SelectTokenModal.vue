@@ -43,7 +43,7 @@
     <template v-if="selectTokenList">
       <Search
         v-model="query"
-        :placeholder="t('searchByName')"
+        :placeholder="$t('searchByName')"
         class="px-4 py-3 flex-auto border-b dark:border-gray-700"
       />
       <div>
@@ -61,7 +61,7 @@
         </div>
         <div
           v-else
-          v-text="t('errorNoLists')"
+          v-text="$t('errorNoLists')"
           class="h-96 flex items-center justify-center"
         />
       </div>
@@ -70,23 +70,23 @@
       <div class="border-b dark:border-gray-700 flex">
         <Search
           v-model="query"
-          @input="onTokenSearch"
-          :placeholder="t('searchBy')"
+          @update:modelValue="onTokenSearch"
+          :placeholder="$t('searchBy')"
           class="px-4 py-3 flex-auto"
         />
       </div>
       <div class="overflow-hidden rounded-lg">
         <RecycleScroller
           class="h-96 overflow-y-scroll"
-          v-if="Object.keys(tokens)?.length > 0"
-          :items="Object.values(tokens)"
+          v-if="tokens.length > 0"
+          :items="tokens"
           :item-size="64"
           key-field="address"
-          v-slot="{ item }"
-          :buffer="100"
+          v-slot="{ item: token }"
+          :buffer="50"
         >
-          <a @click="onSelectToken(item.address)">
-            <TokenListItem :token="item" />
+          <a @click="onSelectToken(token.address)">
+            <TokenListItem :token="token" />
           </a>
         </RecycleScroller>
         <div
@@ -97,7 +97,11 @@
         <div v-else-if="loading" class="h-96 flex items-center justify-center">
           <BalLoadingIcon />
         </div>
-        <div v-else v-text="t('errorNoTokens')" class="h-96 p-4" />
+        <div
+          v-else
+          v-text="$t('errorNoTokens')"
+          class="h-96 p-12 text-center text-gray-500"
+        />
       </div>
     </template>
   </BalModal>
@@ -110,18 +114,18 @@ import {
   ref,
   toRefs,
   computed,
-  watch,
-  PropType
+  PropType,
+  onBeforeMount,
+  onMounted
 } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
-import { isAddress, getAddress } from '@ethersproject/address';
 import useTokenLists2 from '@/composables/useTokenLists2';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
-import useTokens from '@/composables/useTokens';
 import useTokens2 from '@/composables/useTokens2';
+import { TokenInfo } from '@/types/TokenList';
 
 export default defineComponent({
   components: {
@@ -140,6 +144,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     // DATA
+    const tokens = ref<TokenInfo[]>([]);
     const selectTokenLists = ref(false);
     const data = reactive({
       loading: false,
@@ -150,17 +155,9 @@ export default defineComponent({
       not: props.excludedTokens,
       queryAddress: ''
     });
-    // const { tokens: tokenMap } = useTokens(data);
-    // const tokens = computed(() => Object.values(tokenMap.value));
-
-    const { allTokens, prices, balances, allowances } = useTokens2();
-    const { searchTokens } = useTokens2({
+    const { allTokens, searchTokens } = useTokens2({
       excludeTokens: props.excludedTokens
     });
-    console.log('tokens', allTokens.value);
-    console.log('prices', prices.value);
-    console.log('balances', balances.value);
-    console.log('allowances', allowances.value);
 
     const {
       approvedTokenLists,
@@ -189,27 +186,10 @@ export default defineComponent({
       return Object.fromEntries(results);
     });
 
-    const tokens = computed(() => searchTokens(data.query));
-
     // METHODS
-    function onTokenSearch(event): void {
-      // let address = event.target.value;
-      // if (isAddress(address)) {
-      //   address = getAddress(address);
-      //   data.queryAddress = address;
-      //   if (props.excludedTokens.includes(address)) {
-      //     data.loading = false;
-      //     data.isTokenSelected = true;
-      //   } else {
-      //     data.loading = true;
-      //     data.isTokenSelected = false;
-      //     store.dispatch('registry/injectTokens', [address.trim()]);
-      //   }
-      // } else {
-      //   data.isTokenSelected = false;
-      //   data.loading = false;
-      //   data.queryAddress = '';
-      // }
+    async function onTokenSearch(query): Promise<void> {
+      const results = await searchTokens(query);
+      tokens.value = Object.values(results);
     }
 
     function onSelectToken(token: string): void {
@@ -230,6 +210,15 @@ export default defineComponent({
       data.selectTokenList = !data.selectTokenList;
       data.query = '';
     }
+
+    onMounted(() => {
+      console.log(
+        'tokens',
+        Object.keys(allTokens.value).length,
+        allTokens.value
+      );
+      tokens.value = Object.values(allTokens.value);
+    });
 
     return {
       // data

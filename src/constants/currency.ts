@@ -1,3 +1,5 @@
 export enum FiatCurrency {
-  USD = 'USD'
+  usd = 'usd'
 }
+
+export const SUPPORTED_FIAT = [FiatCurrency.usd];

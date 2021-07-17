@@ -1,7 +1,6 @@
+import { SUPPORTED_FIAT } from '@/constants/currency';
 import { PriceService } from './api/price.service';
 import { CoingeckoClient } from './coingecko.client';
-
-const SUPPORTED_FIAT = ['usd'];
 
 export const getNativeAssetId = (chainId: string): string => {
   const mapping = {
