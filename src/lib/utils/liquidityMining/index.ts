@@ -36,7 +36,7 @@ function getWeek(miningWeek: number) {
   return `week_${miningWeek}`;
 }
 
-export function computeAPYForPool(
+export function computeAPRForPool(
   rewards: number,
   tokenPrice: number | null | undefined,
   totalLiquidity: string
@@ -52,7 +52,7 @@ export function computeAPYForPool(
     : '0';
 }
 
-export function computeTotalAPYForPool(
+export function computeTotalAPRForPool(
   tokenRewards: LiquidityMiningTokenRewards[],
   prices: Prices,
   totalLiquidity: string
@@ -61,7 +61,7 @@ export function computeTotalAPYForPool(
     .reduce(
       (totalRewards, { amount, tokenAddress }) =>
         totalRewards.plus(
-          computeAPYForPool(
+          computeAPRForPool(
             amount,
             prices[tokenAddress.toLowerCase()]?.price,
             totalLiquidity

@@ -20,6 +20,7 @@ export type OrderMetaData = {
   kind: string;
   partiallyFillable: false;
   signature: string;
+  status: 'pending' | 'fulfilled' | 'expired' | 'cancelled';
 };
 
 export type FeeQuoteParams = Pick<

@@ -1,5 +1,10 @@
 <template>
-  <div class="max-w-full whitespace-nowrap rounded-lg overflow-hidden">
+  <div
+    :class="[
+      'max-w-full whitespace-nowrap overflow-hidden',
+      { 'rounded-lg': !square }
+    ]"
+  >
     <div class="overflow-hidden" ref="headerRef">
       <table class="w-full table-fixed whitespace-normal">
         <colgroup>
@@ -35,9 +40,7 @@
                 :name="column.Header"
               ></slot>
               <div v-else>
-                <h5
-                  class="text-base font-semibold text-gray-800 dark:text-gray-100"
-                >
+                <h5 class="text-base text-gray-800 dark:text-gray-100">
                   {{ column.name }}
                 </h5>
               </div>
@@ -258,6 +261,10 @@ export default defineComponent({
     sticky: {
       type: String as PropType<Sticky>
     },
+    square: {
+      type: Boolean,
+      default: false
+    },
     isPaginated: {
       type: Boolean,
       default: false
@@ -412,9 +419,11 @@ export default defineComponent({
 
 <style>
 .horizontalSticky {
-  @apply z-10;
+  @apply z-10 bg-white dark:bg-gray-850 group-hover:bg-gray-50 dark:group-hover:bg-gray-800 opacity-95 xs:opacity-90;
   position: sticky;
   left: 0;
+  width: 100%;
+  backdrop-filter: blur(2px);
 }
 
 .horizontalSticky::after {
@@ -434,11 +443,7 @@ export default defineComponent({
 }
 
 .row-bg {
-  @apply bg-white dark:bg-gray-850;
-}
-
-.row-bg:hover {
-  @apply bg-gray-50 dark:hover:bg-gray-800;
+  @apply bg-white dark:bg-gray-850 hover:bg-gray-50 dark:hover:bg-gray-800;
 }
 
 .bal-table-pagination-btn {

@@ -50,7 +50,8 @@ export default defineComponent({
 
 <style scoped>
 .app-nav-toggle {
-  @apply h-10 flex items-center font-medium;
+  @apply h-10 flex items-center;
+  font-variation-settings: 'wght' 600;
 }
 
 .toggle-link {

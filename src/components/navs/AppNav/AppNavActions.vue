@@ -2,6 +2,9 @@
   <div>
     <div v-if="account" class="flex items-center">
       <AppNavClaimBtn v-if="liquidityMiningSupported" />
+      <AppNavActivityBtn
+        v-if="!upToSmallBreakpoint && APP.IsGnosisIntegration"
+      />
       <AppNavAccountBtn />
     </div>
     <BalBtn
@@ -9,8 +12,8 @@
       color="gray"
       outline
       rounded
-      :size="['xs', 'sm', 'md', 'lg'].includes(bp) ? 'md' : 'sm'"
-      :circle="['xs', 'sm', 'md', 'lg'].includes(bp)"
+      :size="upToLargeBreakpoint ? 'md' : 'sm'"
+      :circle="upToLargeBreakpoint"
       @click="toggleWalletSelectModal"
     >
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
@@ -23,26 +26,30 @@
 import { defineComponent, computed } from 'vue';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
+import { APP } from '@/constants/app';
 
 import useFathom from '@/composables/useFathom';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
+import useVueWeb3 from '@/services/web3/useVueWeb3';
+
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
 
 export default defineComponent({
   name: 'AppNavActions',
 
   components: {
     AppNavAccountBtn,
-    AppNavClaimBtn
+    AppNavClaimBtn,
+    AppNavActivityBtn
   },
 
   setup() {
     // COMPOSABLES
-    const { bp } = useBreakpoints();
+    const { upToSmallBreakpoint, upToLargeBreakpoint } = useBreakpoints();
     const { fNum } = useNumbers();
     const { trackGoal, Goals } = useFathom();
     const {
@@ -67,14 +74,16 @@ export default defineComponent({
       // computed
       liquidityMiningSupported,
       account,
-      bp,
+      upToSmallBreakpoint,
+      upToLargeBreakpoint,
       // methods
       fNum,
       onClickConnect,
       connectWallet,
       toggleWalletSelectModal,
       // constants
-      EXTERNAL_LINKS
+      EXTERNAL_LINKS,
+      APP
     };
   }
 });

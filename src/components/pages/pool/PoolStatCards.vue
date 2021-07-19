@@ -5,12 +5,12 @@
     </template>
     <template v-else>
       <BalCard v-for="(stat, i) in stats" :key="i">
-        <div class="text-xs uppercase text-gray-500 font-medium mb-3">
+        <div class="text-sm text-gray-500 font-medium mb-2">
           {{ stat.label }}
         </div>
         <div class="text-xl font-medium truncate flex items-center">
           {{ stat.value }}
-          <LiquidityMiningTooltip :pool="pool" v-if="stat.id === 'apy'" />
+          <LiquidityMiningTooltip :pool="pool" v-if="stat.id === 'apr'" />
         </div>
       </BalCard>
     </template>
@@ -63,9 +63,9 @@ export default defineComponent({
           value: fNum(props.pool.dynamic.fees, 'usd')
         },
         {
-          id: 'apy',
-          label: 'APY',
-          value: fNum(props.pool.dynamic.apy.total, 'percent')
+          id: 'apr',
+          label: 'APR',
+          value: fNum(props.pool.dynamic.apr.total, 'percent')
         }
       ];
     });
