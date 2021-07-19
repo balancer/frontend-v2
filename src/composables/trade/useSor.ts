@@ -159,6 +159,7 @@ export default function useSor({
     }
 
     sorManager = new SorManager(
+      isV1Supported,
       rpcProviderService.jsonProvider,
       new BigNumber(GAS_PRICE),
       Number(MAX_POOLS),

@@ -68,7 +68,7 @@
             v-for="(route, index) in routes"
             :key="index"
             :style="{
-              height: `${19 + 72 * index}px`,
+              height: `${18 + 70 * index}px`,
               width: `calc(100% - ${4 * (routes.length - index - 1)}px + 1px)`,
               margin: `0 ${2 * (routes.length - index - 1) - 1}px`
             }"
@@ -92,9 +92,13 @@
                 <div
                   v-for="hop in route.hops"
                   :key="hop?.pool?.address"
-                  class="p-1.5 ml-4 first:ml-0 flex bg-white dark:bg-gray-900 dark:border dark:border-gray-500 rounded shadow"
+                  class="ml-4 first:ml-0 flex bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 border border-gray-100 hover:border-gray-300 dark:border-gray-600 dark:hover:border-gray-400 rounded-xl shadow transition-colors"
                 >
-                  <a :href="getPoolLink(hop.pool.id)" target="_blank">
+                  <a
+                    class="flex p-1.5"
+                    :href="getPoolLink(hop.pool.id)"
+                    target="_blank"
+                  >
                     <BalAsset
                       class="ml-1.5 first:ml-0"
                       v-for="token in hop.pool.tokens"

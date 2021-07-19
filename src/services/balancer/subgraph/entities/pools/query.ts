@@ -1,6 +1,5 @@
 import { POOLS } from '@/constants/pools';
 import { merge } from 'lodash';
-import { configService } from '@/services/config/config.service';
 
 const defaultArgs = {
   first: 1000,
@@ -11,10 +10,6 @@ const defaultArgs = {
     id_not_in: POOLS.BlockList
   }
 };
-
-if (!configService.env.ENABLE_STABLE_POOLS) {
-  defaultArgs.where['poolType_not'] = 'Stable';
-}
 
 const defaultAttrs = {
   id: true,
