@@ -8,7 +8,7 @@
         class="group"
       >
         <div class="font-semibold flex items-center">
-          {{ $t(`recentActivityTypes.${transaction.action}`) }}
+          {{ $t(`transactionAction.${transaction.action}`) }}
           <BalIcon
             name="arrow-up-right"
             size="sm"

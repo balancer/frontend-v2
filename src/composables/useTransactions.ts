@@ -268,16 +268,16 @@ export default function useTransactions() {
     const transaction = getTransaction(id, type);
 
     addNotification({
-      title: `${t(`recentActivityStatus.${transaction.status}`)} ${
-        transaction.action
-      }`,
+      title: `${t(`transactionAction.${transaction.action}`)} ${t(
+        `transactionStatus.${transaction.status}`
+      )}`,
+      message: transaction.summary,
       transactionMetadata: {
         id: transaction.id,
         status: transaction.status,
         isSuccess: isSuccessfulTransaction(transaction),
         explorerLink: getExplorerLink(transaction.id, transaction.type)
-      },
-      message: transaction.summary
+      }
     });
   }
 
