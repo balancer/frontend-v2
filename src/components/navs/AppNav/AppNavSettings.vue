@@ -151,7 +151,10 @@
 <script>
 import { defineComponent, reactive, computed, toRefs } from 'vue';
 import { useStore } from 'vuex';
-import { getConnectorName, getConnectorLogo } from '@/plugins/authOptions';
+import {
+  getConnectorName,
+  getConnectorLogo
+} from '@/services/web3/web3.plugin';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
