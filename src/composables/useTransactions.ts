@@ -262,53 +262,60 @@ export default function useTransactions() {
     });
   }
 
-  async function handlePendingTransactions() {
-    if (pendingOrderActivity.value.length) {
-      const orders = await Promise.all(
-        pendingOrderActivity.value.map(transaction =>
-          gnosisOperator.getOrder(transaction.id)
-        )
-      );
-
-      orders.forEach((order, orderIndex) => {
-        // TODO: Once Gnosis mainnet supports "fulfilled" status - switch to it instead of amount checking.
+  function checkOrderActivity(transaction: Transaction) {
+    gnosisOperator
+      .getOrder(transaction.id)
+      .then(order => {
         if (
           order != null &&
           Number(order.executedBuyAmount) > 0 &&
           Number(order.executedSellAmount) > 0
         ) {
-          finalizeTransaction(order.uid, 'order', order);
-        } else {
-          updateTransaction(
-            pendingOrderActivity.value[orderIndex].id,
-            'order',
-            {
-              lastCheckedBlockNumber: blockNumber.value
-            }
-          );
+          finalizeTransaction(transaction.id, 'order', order);
         }
+      })
+      .catch(e =>
+        console.log(
+          '[Transactions]: Failed to fetch order information',
+          transaction,
+          e
+        )
+      )
+      .finally(() => {
+        updateTransaction(transaction.id, 'order', {
+          lastCheckedBlockNumber: blockNumber.value
+        });
       });
-    }
+  }
 
-    if (pendingTxActivity.value.length) {
-      const txs = await Promise.all(
-        pendingTxActivity.value
-          .filter(transaction => shouldCheckTx(transaction, blockNumber.value))
-          .map(transaction =>
-            provider.value.getTransactionReceipt(transaction.id)
-          )
-      );
-
-      txs.forEach((tx, txIndex) => {
+  function checkTxActivity(transaction: Transaction) {
+    provider.value
+      .getTransactionReceipt(transaction.id)
+      .then(tx => {
         if (tx != null) {
-          finalizeTransaction(tx.transactionHash, 'tx', tx);
-        } else {
-          updateTransaction(pendingTxActivity.value[txIndex].id, 'tx', {
-            lastCheckedBlockNumber: blockNumber.value
-          });
+          finalizeTransaction(transaction.id, 'tx', tx);
         }
-      });
-    }
+      })
+      .catch(e =>
+        console.log(
+          '[Transactions]: Failed to fetch tx information',
+          transaction,
+          e
+        )
+      )
+      .finally(() =>
+        updateTransaction(transaction.id, 'tx', {
+          lastCheckedBlockNumber: blockNumber.value
+        })
+      );
+  }
+
+  async function handlePendingTransactions() {
+    pendingOrderActivity.value.forEach(checkOrderActivity);
+
+    pendingTxActivity.value
+      .filter(transaction => shouldCheckTx(transaction, blockNumber.value))
+      .forEach(checkTxActivity);
   }
 
   function getExplorerLink(id: string, type: TransactionType) {
