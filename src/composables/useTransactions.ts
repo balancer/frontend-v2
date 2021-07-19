@@ -45,11 +45,13 @@ export type TxReceipt = Pick<
   | 'transactionIndex'
 >;
 
+export type OrderReceipt = OrderMetaData;
+
 export type Transaction = {
   id: string;
   action: TransactionAction;
   type: TransactionType;
-  receipt?: OrderMetaData | TxReceipt;
+  receipt?: OrderReceipt | TxReceipt;
   details?: Record<string, any>;
   summary: string;
   addedTime: number;
@@ -165,6 +167,18 @@ function updateTransaction(
   return false;
 }
 
+function isSuccessfulTransaction(transaction: Transaction) {
+  if (transaction.status === 'confirmed') {
+    if (transaction.type === 'order') {
+      return (transaction.receipt as OrderReceipt)?.status === 'fulfilled';
+    } else {
+      return (transaction.receipt as TxReceipt)?.status === 1;
+    }
+  }
+
+  return false;
+}
+
 // Adapted from Uniswap code
 function shouldCheckTx(transaction: Transaction, lastBlockNumber: number) {
   if (transaction.status === 'confirmed') {
@@ -256,6 +270,7 @@ export default function useTransactions() {
       transactionMetadata: {
         id: transaction.id,
         status: transaction.status,
+        isSuccess: isSuccessfulTransaction(transaction),
         explorerLink: getExplorerLink(transaction.id, transaction.type)
       },
       message: transaction.summary
@@ -333,6 +348,7 @@ export default function useTransactions() {
     handlePendingTransactions,
     finalizeTransaction,
     getExplorerLink,
+    isSuccessfulTransaction,
 
     // computed
     pendingTransactions,
