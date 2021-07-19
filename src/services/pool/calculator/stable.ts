@@ -4,15 +4,9 @@ import { parseUnits, formatUnits } from '@ethersproject/units';
 import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 
-import {
-  _exactTokensInForBPTOut,
-  _exactBPTInForTokenOut,
-  _bptInForExactTokensOut
-} from '@balancer-labs/sor2/dist/pools/stablePool/stableMathEvm';
 import { BPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2/dist/frontendHelpers/stableHelpers';
-import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
-import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
 import { BigNumberish } from '@ethersproject/bignumber';
+import * as SDK from '@georgeroman/balancer-v2-pools';
 
 /**
  * The stableMathEvm works with all values scaled to 18 decimals,
@@ -20,25 +14,27 @@ import { BigNumberish } from '@ethersproject/bignumber';
  */
 export default class Stable {
   calc: Calculator;
+  AMP_PRECISION = bnum(1000);
 
   constructor(calculator) {
     this.calc = calculator;
   }
 
-  public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
-    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
+  public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
+    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const ampAdjusted = this.adjustAmp(amp);
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
       this.calc.poolTokenDecimals.map(() => 18)
     );
-    const amounts = denormAmounts.map(a => fnum(a.toString()));
+    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
-    const bptOut = _exactTokensInForBPTOut(
+    const bptOut = SDK.StableMath._calcBptOutGivenExactTokensIn(
+      ampAdjusted,
       this.scaledBalances,
-      amp,
       amounts,
       this.scaledPoolTotalSupply,
-      fnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolSwapFee.toString())
     );
 
     return this.scaleOutput(
@@ -48,20 +44,22 @@ export default class Stable {
     );
   }
 
-  public bptInForExactTokensOut(tokenAmounts: string[]): FixedPointNumber {
-    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
+  public bptInForExactTokensOut(tokenAmounts: string[]): BigNumber {
+    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const ampAdjusted = this.adjustAmp(amp);
+
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
       this.calc.poolTokenDecimals.map(() => 18)
     );
-    const amounts = denormAmounts.map(a => fnum(a.toString()));
+    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
-    const bptIn = _bptInForExactTokensOut(
+    const bptIn = SDK.StableMath._calcBptInGivenExactTokensOut(
+      ampAdjusted,
       this.scaledBalances,
-      amp,
       amounts,
       this.scaledPoolTotalSupply,
-      fnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolSwapFee.toString())
     );
 
     return this.scaleOutput(
@@ -71,22 +69,20 @@ export default class Stable {
     );
   }
 
-  public bptInForExactTokenOut(
-    amount: string,
-    tokenIndex: number
-  ): FixedPointNumber {
-    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
+  public bptInForExactTokenOut(amount: string, tokenIndex: number): BigNumber {
+    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const ampAdjusted = this.adjustAmp(amp);
     const amounts = this.calc.pool.tokenAddresses.map((address, i) => {
-      if (i === tokenIndex) return fnum(parseUnits(amount, 18).toString());
-      return fnum('0');
+      if (i === tokenIndex) return bnum(parseUnits(amount, 18).toString());
+      return bnum('0');
     });
 
-    const bptIn = _bptInForExactTokensOut(
+    const bptIn = SDK.StableMath._calcBptInGivenExactTokensOut(
+      ampAdjusted,
       this.scaledBalances,
-      amp,
       amounts,
       this.scaledPoolTotalSupply,
-      fnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolSwapFee.toString())
     );
 
     return this.scaleOutput(
@@ -99,17 +95,18 @@ export default class Stable {
   public exactBPTInForTokenOut(
     bptAmount: string,
     tokenIndex: number
-  ): FixedPointNumber {
-    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
-    const bptAmountIn = fnum(parseUnits(bptAmount, 18).toString());
+  ): BigNumber {
+    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const ampAdjusted = this.adjustAmp(amp);
+    const bptAmountIn = bnum(parseUnits(bptAmount, 18).toString());
 
-    const tokenAmountOut = _exactBPTInForTokenOut(
-      tokenIndex,
+    const tokenAmountOut = SDK.StableMath._calcTokenOutGivenExactBptIn(
+      ampAdjusted,
       this.scaledBalances,
-      amp,
+      tokenIndex,
       bptAmountIn,
       this.scaledPoolTotalSupply,
-      fnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolSwapFee.toString())
     );
 
     return this.scaleOutput(
@@ -120,7 +117,7 @@ export default class Stable {
   }
 
   public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
-    let bptAmount: FixedPointNumber | BigNumberish;
+    let bptAmount: BigNumber | BigNumberish;
     let bptZeroPriceImpact: BigNumber;
 
     if (this.calc.action === 'join') {
@@ -162,7 +159,7 @@ export default class Stable {
   // PRIVATE FUNCTIONS
 
   private bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
-    const amp = fnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
       this.calc.poolTokenDecimals
@@ -182,37 +179,42 @@ export default class Stable {
     return bptZeroImpact;
   }
 
-  private get scaledBalances(): FixedPointNumber[] {
+  private get scaledBalances(): BigNumber[] {
     return this.calc.poolTokenBalances.map((balance, i) => {
       const normalizedBalance = formatUnits(
         balance,
         this.calc.poolTokenDecimals[i]
       );
       const scaledBalance = parseUnits(normalizedBalance, 18);
-      return fnum(scaledBalance.toString());
+      return bnum(scaledBalance.toString());
     });
   }
 
-  private get scaledPoolTotalSupply(): FixedPointNumber {
+  private get scaledPoolTotalSupply(): BigNumber {
     const normalizedSupply = formatUnits(
       this.calc.poolTotalSupply,
       this.calc.poolDecimals
     );
     const scaledSupply = parseUnits(normalizedSupply, 18);
-    return fnum(scaledSupply.toString());
+    return bnum(scaledSupply.toString());
   }
 
   private scaleOutput(
     amount: string,
     decimals: number,
     rounding: BigNumber.RoundingMode
-  ): FixedPointNumber {
+  ): BigNumber {
     const normalizedAmount = bnum(formatUnits(amount, 18)).toFixed(
       decimals,
       rounding
     );
     const scaledAmount = parseUnits(normalizedAmount, decimals);
 
-    return fnum(scaledAmount.toString());
+    return bnum(scaledAmount.toString());
+  }
+
+  // Solidity maths uses precison method for amp that must be replicated
+  private adjustAmp(amp: BigNumber): BigNumber {
+    return amp.times(this.AMP_PRECISION);
   }
 }
