@@ -153,11 +153,16 @@ export default function useGnosis({
         owner: account.value
       });
 
-      const summary = `${fNum(tokenInAmountInput.value, 'token')} ${
-        tokenIn.value.symbol
-      } -> ${fNum(tokenOutAmountInput.value, 'token')} ${
-        tokenOut.value.symbol
-      }`;
+      const tokenInAmountEst = exactIn.value ? '' : '~';
+      const tokenOutAmountEst = exactIn.value ? '~' : '';
+
+      const summary = `${tokenInAmountEst}${fNum(
+        tokenInAmountInput.value,
+        'token'
+      )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum(
+        tokenOutAmountInput.value,
+        'token'
+      )} ${tokenOut.value.symbol}`;
 
       const { validTo, partiallyFillable } = unsignedOrder;
 
