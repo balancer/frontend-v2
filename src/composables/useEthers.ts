@@ -1,7 +1,9 @@
+import { ref } from 'vue';
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/providers';
+
 import useAccountBalances from './useAccountBalances';
 import useBlocknative from './useBlocknative';
 import useTransactions from './useTransactions';
@@ -10,6 +12,9 @@ type TxCallback = (
   txData: TransactionResponse,
   receipt?: TransactionReceipt
 ) => void;
+
+// keep a record of processed txs
+export const processedTxs = ref<Set<string>>(new Set(''));
 
 export default function useEthers() {
   const { finalizeTransaction } = useTransactions();
@@ -24,6 +29,8 @@ export default function useEthers() {
     },
     shouldRefetchBalances = true
   ) {
+    processedTxs.value.add(tx.hash);
+
     try {
       const receipt = await tx.wait();
       // attempt to finalize transaction so that the pending tx watcher won't check the tx again.
@@ -38,6 +45,8 @@ export default function useEthers() {
       console.error(error);
       callbacks.onTxFailed(tx);
     }
+
+    processedTxs.value.delete(tx.hash);
   }
 
   return { txListener };

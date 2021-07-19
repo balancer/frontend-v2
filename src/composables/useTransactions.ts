@@ -14,6 +14,7 @@ import { gnosisExplorer } from '@/services/gnosis/explorer.service';
 import { lsGet, lsSet } from '@/lib/utils';
 
 import useNotifications from './useNotifications';
+import { processedTxs } from './useEthers';
 
 const DAY_MS = 86_400_000;
 
@@ -181,7 +182,10 @@ function isSuccessfulTransaction(transaction: Transaction) {
 
 // Adapted from Uniswap code
 function shouldCheckTx(transaction: Transaction, lastBlockNumber: number) {
-  if (transaction.status === 'confirmed') {
+  if (
+    processedTxs.value.has(transaction.id) ||
+    transaction.status === 'confirmed'
+  ) {
     return false;
   }
 
