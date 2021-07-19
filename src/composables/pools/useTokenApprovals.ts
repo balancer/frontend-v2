@@ -3,14 +3,14 @@ import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { parseUnits } from '@ethersproject/units';
 import useTokens from '@/composables/useTokens';
 import useNotify from '@/composables/useNotify';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useAllowances from '../useAllowances';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '@/composables/useEthers';
 import { sleep } from '@/lib/utils';
 
 export default function useTokenApprovals(tokens, shortAmounts) {
-  const { getProvider, appNetworkConfig } = useVueWeb3();
+  const { getProvider, appNetworkConfig } = useWeb3();
   const approving = ref(false);
   const approvedAll = ref(false);
   const { tokens: allTokens } = useTokens();

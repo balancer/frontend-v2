@@ -50,7 +50,7 @@ import usePools from '@/composables/pools/usePools';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useFathom from '@/composables/useFathom';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   name: 'AppHero',
@@ -58,7 +58,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const { fNum } = useNumbers();
-    const { isWalletReady, toggleWalletSelectModal } = useVueWeb3();
+    const { isWalletReady, toggleWalletSelectModal } = useWeb3();
     const { trackGoal, Goals } = useFathom();
     const { totalInvestedAmount, isLoadingUserPools } = usePools();
 

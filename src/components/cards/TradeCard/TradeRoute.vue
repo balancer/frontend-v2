@@ -132,7 +132,7 @@ import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
 import useNumbers from '@/composables/useNumbers';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { useI18n } from 'vue-i18n';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 
 interface Route {
@@ -186,7 +186,7 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { t } = useI18n();
 
-    const { userNetworkConfig } = useVueWeb3();
+    const { userNetworkConfig } = useWeb3();
     const { tokens } = useTokens();
 
     const visible = ref(false);

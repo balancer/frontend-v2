@@ -2,7 +2,6 @@ import { Ref, onMounted, ref, computed, ComputedRef } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
-import useWeb3 from '@/composables/useWeb3';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase } from '@balancer-labs/sor2';
 
@@ -19,7 +18,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 
 import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useAccountBalances from '../useAccountBalances';
 
 import { ETHER } from '@/constants/tokenlists';
@@ -111,12 +110,11 @@ export default function useSor({
     getProvider: getWeb3Provider,
     userNetworkConfig,
     isV1Supported
-  } = useVueWeb3();
+  } = useWeb3();
   const provider = computed(() => getWeb3Provider());
   const { refetchBalances } = useAccountBalances();
   const { txListener, supportsBlocknative } = useNotify();
   const { trackGoal, Goals } = useFathom();
-  const { appNetwork } = useWeb3();
   const { txListener: ethersTxListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
@@ -156,7 +154,7 @@ export default function useSor({
     const subgraphUrl = configService.network.subgraph;
 
     // If V1 previously selected on another network then it uses this and returns no liquidity.
-    if (!appNetwork.supportsV1) {
+    if (!isV1Supported) {
       store.commit('app/setTradeLiquidity', LiquiditySelection.V2);
     }
 

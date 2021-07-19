@@ -4,7 +4,7 @@ import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import useTokens from '../useTokens';
 import useAllowances from '../useAllowances';
@@ -16,7 +16,7 @@ export default function useTokenApprovalGP(
   amount: Ref<string>
 ) {
   // COMPOSABLES
-  const { getProvider } = useVueWeb3();
+  const { getProvider } = useWeb3();
   const provider = getProvider();
   const { tokens } = useTokens();
   const { txListener: ethersTxListener } = useEthers();

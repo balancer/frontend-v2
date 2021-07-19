@@ -32,10 +32,9 @@ import useFathom from '@/composables/useFathom';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
+import useWeb3 from '@/services/web3/useWeb3';
 import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
 
 export default defineComponent({
@@ -58,7 +57,7 @@ export default defineComponent({
       toggleWalletSelectModal,
       isMainnet,
       isPolygon
-    } = useVueWeb3();
+    } = useWeb3();
 
     // COMPUTED
     const liquidityMiningSupported = computed(

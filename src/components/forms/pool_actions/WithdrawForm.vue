@@ -209,7 +209,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useAccountBalances from '@/composables/useAccountBalances';
 import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
@@ -253,7 +253,7 @@ export default defineComponent({
       getProvider,
       account,
       userNetworkConfig
-    } = useVueWeb3();
+    } = useWeb3();
     const { txListener, supportsBlocknative } = useNotify();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();

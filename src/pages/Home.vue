@@ -61,7 +61,7 @@ import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 
 import usePools from '@/composables/pools/usePools';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 
 export default defineComponent({
@@ -73,7 +73,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const router = useRouter();
-    const { isWalletReady, isV1Supported } = useVueWeb3();
+    const { isWalletReady, isV1Supported } = useWeb3();
     const {
       selectedTokens,
       addSelectedToken,
