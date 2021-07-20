@@ -1,4 +1,4 @@
-interface TokenListMap {
+export interface TokenListMap {
   Balancer: {
     Default: string;
     Vetted: string;
@@ -6,8 +6,14 @@ interface TokenListMap {
   External: string[];
 }
 
-// Mapping of the TokenLists used on each network
-export const TOKEN_LIST_MAP: Record<string, TokenListMap> = {
+interface TokenListMapByNetwork {
+  [networkKey: string]: TokenListMap;
+}
+
+/**
+ * Mapping of the TokenLists used on each network
+ */
+export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '1': {
     Balancer: {
       Default:

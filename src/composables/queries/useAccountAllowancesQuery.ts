@@ -10,21 +10,25 @@ import useVueWeb3 from '@/services/web3/useVueWeb3';
 type Response = ContractAllowancesMap;
 
 export default function useAccountAllowancesQuery(
-  tokens: Ref<string[]> = ref([]),
+  trackedTokenAddresses: Ref<string[]> = ref([]),
   contractAddesses: Ref<string[]> = ref([]),
   options: UseQueryOptions<Response> = {}
 ) {
   const { account, isWalletReady } = useVueWeb3();
 
   const queryKey = reactive(
-    QUERY_KEYS.Account.Allowances2(account, contractAddesses, tokens)
+    QUERY_KEYS.Account.Allowances2(
+      account,
+      contractAddesses,
+      trackedTokenAddresses
+    )
   );
 
   const queryFn = async () => {
     return await tokenService.allowances.get(
       account.value,
       contractAddesses.value,
-      tokens.value
+      trackedTokenAddresses.value
     );
   };
 

@@ -1,7 +1,7 @@
 import { Config } from '@/lib/config';
 import { TokenMap } from '@/types';
 import { TokenInfoMap } from '@/types/TokenList';
-import { Ref } from 'vue';
+import { ComputedRef, Ref } from 'vue';
 
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
@@ -29,6 +29,9 @@ const QUERY_KEYS = {
     ) => [BALANCES_ROOT_KEY, { userNetwork, account, tokens }]
   },
   TokenLists: ['tokenLists'],
+  TokenLists2: {
+    All: ['tokenLists', 'all']
+  },
   Claims: {
     All: (account: Ref<string>) => [CLAIMS_ROOT_KEY, { account }]
   },
@@ -36,7 +39,7 @@ const QUERY_KEYS = {
     Prices: (tokens: Ref<string[]>) => ['tokens', 'prices', { tokens }]
   },
   Account: {
-    Balances: (account: Ref<string>, tokens: Ref<TokenInfoMap>) => [
+    Balances: (account: Ref<string>, tokens: ComputedRef<string[]>) => [
       'account',
       'balances',
       { account, tokens }

@@ -57,12 +57,12 @@ export default class TokenListService {
   /**
    * Fetch all token list json and return mapped to URI
    */
-  async getAll(): Promise<TokenListMap> {
-    const allFetchFns = this.uris.All.map(uri => this.get(uri));
+  async getAll(uris: string[] = this.uris.All): Promise<TokenListMap> {
+    const allFetchFns = uris.map(uri => this.get(uri));
     const lists = await Promise.all(
       allFetchFns.map(fetchList => fetchList.catch(e => e))
     );
-    const listsWithKey = lists.map((list, i) => [this.uris.All[i], list]);
+    const listsWithKey = lists.map((list, i) => [uris[i], list]);
     const validLists = listsWithKey.filter(list => !(list[1] instanceof Error));
 
     if (validLists.length === 0) {

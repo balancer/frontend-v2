@@ -1,4 +1,4 @@
-import { reactive, ref, Ref } from 'vue';
+import { reactive, ref, Ref, computed } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -11,15 +11,19 @@ import { TokenInfoMap } from '@/types/TokenList';
 type Response = BalanceMap;
 
 export default function useAccountBalancesQuery(
-  tokens: Ref<TokenInfoMap> = ref({}),
+  trackedTokens: Ref<TokenInfoMap> = ref({}),
   options: UseQueryOptions<Response> = {}
 ) {
   const { account, isWalletReady } = useVueWeb3();
 
-  const queryKey = reactive(QUERY_KEYS.Account.Balances(account, tokens));
+  const tokenAddresses = computed(() => Object.keys(trackedTokens));
+
+  const queryKey = reactive(
+    QUERY_KEYS.Account.Balances(account, tokenAddresses)
+  );
 
   const queryFn = async () => {
-    return await tokenService.balances.get(account.value, tokens.value);
+    return await tokenService.balances.get(account.value, trackedTokens.value);
   };
 
   const queryOptions = reactive({

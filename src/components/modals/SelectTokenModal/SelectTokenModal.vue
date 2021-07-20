@@ -56,7 +56,7 @@
             :key="uri"
             :isActive="isActiveList(uri)"
             :tokenlist="tokenList"
-            @toggle="toggleTokenList(uri)"
+            @toggle="onToggleList(uri)"
           />
         </div>
         <div
@@ -83,7 +83,7 @@
           :item-size="64"
           key-field="address"
           v-slot="{ item: token }"
-          :buffer="50"
+          :buffer="100"
         >
           <a @click="onSelectToken(token.address)">
             <TokenListItem :token="token" />
@@ -115,10 +115,8 @@ import {
   toRefs,
   computed,
   PropType,
-  onBeforeMount,
   onMounted
 } from 'vue';
-import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import useTokenLists2 from '@/composables/useTokenLists2';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
@@ -155,20 +153,17 @@ export default defineComponent({
       not: props.excludedTokens,
       queryAddress: ''
     });
-    const { allTokens, searchTokens } = useTokens2({
-      excludeTokens: props.excludedTokens
-    });
 
     const {
-      approvedTokenLists,
       activeTokenLists,
+      approvedTokenLists,
       toggleTokenList,
       isActiveList,
       tokenListUrl
     } = useTokenLists2();
+    const { allTokens, searchTokens } = useTokens2();
 
     // COMPOSABLES
-    const store = useStore();
     const { t } = useI18n();
 
     // COMPUTED
@@ -188,7 +183,7 @@ export default defineComponent({
 
     // METHODS
     async function onTokenSearch(query): Promise<void> {
-      const results = await searchTokens(query);
+      const results = await searchTokens(query, props.excludedTokens);
       tokens.value = Object.values(results);
     }
 
@@ -197,8 +192,9 @@ export default defineComponent({
       emit('close');
     }
 
-    function onSelectList(list: string): void {
-      store.dispatch('registry/toggleList', list);
+    function onToggleList(uri: string): void {
+      toggleTokenList(uri);
+      tokens.value = Object.values(allTokens.value);
     }
 
     function onListExit(): void {
@@ -212,11 +208,6 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      console.log(
-        'tokens',
-        Object.keys(allTokens.value).length,
-        allTokens.value
-      );
       tokens.value = Object.values(allTokens.value);
     });
 
@@ -228,14 +219,12 @@ export default defineComponent({
       tokens,
       filteredTokenLists,
       activeTokenLists,
-
       // methods
       onTokenSearch,
       onSelectToken,
-      onSelectList,
+      onToggleList,
       onListExit,
       toggleSelectTokenList,
-      toggleTokenList,
       isActiveList,
       tokenListUrl
     };

@@ -1,149 +1,59 @@
-import { ref, computed } from 'vue';
-import useTokenLists2 from './useTokenLists2';
+import { inject } from 'vue';
 import { isAddress, getAddress } from '@ethersproject/address';
 import { TokenInfoMap } from '@/types/TokenList';
-import useConfig from './useConfig';
 import { tokenService } from '@/services/token/token.service';
-import useTokenPricesQuery from './queries/useTokenPricesQuery';
-import useAccountBalancesQuery from './queries/useAccountBalancesQuery';
-import useAccountAllowancesQuery from './queries/useAccountAllowancesQuery';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
+import {
+  TokensProviderResponse,
+  TokensProviderSymbol
+} from '@/providers/tokens.provider';
+import useTokenLists2 from './useTokenLists2';
 
 /** TYPES */
 interface UseTokenOpts {
   allowanceContracts?: string[];
-  excludeTokens?: string[];
 }
 
-/* COMPOSABLES */
-const { networkConfig } = useConfig();
-const {
-  loading: loadingTokenLists,
-  failed: tokenListsFailed,
-  activeTokenLists,
-  allTokenLists
-} = useTokenLists2();
-
-/* STATE */
-const injectedTokens = ref<TokenInfoMap>({});
-const allowanceContracts = ref<string[]>([]);
-
-/* INIT STATE */
-allowanceContracts.value.push(networkConfig.addresses.vault);
+const defaultProviderResponse = {} as TokensProviderResponse;
 
 /**
  * useTokens Composable
  * Interface to all token static and dynamic metatdata.
  */
 export default function useTokens2(opts: UseTokenOpts = {}) {
+  /** SETUP */
+  const {
+    injectedTokens,
+    allowanceContracts,
+    nativeToken,
+    allTokens,
+    prices,
+    balances,
+    allowances
+  } = inject(TokensProviderSymbol, defaultProviderResponse);
+
   if (opts.allowanceContracts) {
     opts.allowanceContracts.forEach(address => addAllowanceContract(address));
   }
 
+  /** COMPOSABLES */
+  const { allTokenLists } = useTokenLists2();
+
+  /** METHODS */
   /**
-   * Static metadata
-   *
-   * The baseTokens, injectedTokens and allTokens dictionaries
-   * provide the static metadata for each token.
-   */
-  const baseTokens = computed(
-    (): TokenInfoMap => {
-      if (loadingTokenLists.value || tokenListsFailed.value) return {};
-
-      const baseTokens = {};
-
-      const activeTokenListTokens = Object.values(activeTokenLists.value)
-        .map(list => list.tokens)
-        .flat();
-
-      activeTokenListTokens.forEach(token => {
-        const address: string = getAddress(token.address);
-        // Don't include if already included
-        if (Object.keys(baseTokens).includes(address)) return;
-        // Don't include if not on app network
-        if (token.chainId !== networkConfig.chainId) return;
-
-        baseTokens[address] = {
-          ...token,
-          address
-        };
-      });
-
-      return baseTokens;
-    }
-  );
-
-  const nativeToken: TokenInfoMap = {
-    [networkConfig.nativeAsset.address]: {
-      ...networkConfig.nativeAsset,
-      chainId: networkConfig.chainId
-    }
-  };
-
-  const allTokens = computed(
-    (): TokenInfoMap => {
-      const allTokens = {
-        ...baseTokens.value,
-        ...injectedTokens.value
-      };
-      return removeExcluded(allTokens);
-    }
-  );
-
-  const allTokenAddresses = computed(() => Object.keys(allTokens.value));
-
-  /**
-   * Dynamic metadata
-   *
-   * The prices, balances and allowances maps provide dynamic
-   * metadata for each token in allTokens.
-   *
-   * Queries need to be initated on component level to have access
-   * to vueQuery instance.
-   */
-  const pricesQuery = useTokenPricesQuery(allTokenAddresses);
-  const accountBalancesQuery = useAccountBalancesQuery(allTokens);
-  const accountAllowancesQuery = useAccountAllowancesQuery(
-    allTokenAddresses,
-    allowanceContracts
-  );
-
-  const prices = computed(
-    (): TokenPrices => (pricesQuery.data.value ? pricesQuery.data.value : {})
-  );
-  const balances = computed(
-    (): BalanceMap =>
-      accountBalancesQuery.data.value ? accountBalancesQuery.data.value : {}
-  );
-  const allowances = computed(
-    (): ContractAllowancesMap =>
-      accountAllowancesQuery.data.value ? accountAllowancesQuery.data.value : {}
-  );
-
-  /**
-   * @function injectTokens
    * Fetches static token metadata for given addresses and injects
    * tokens into injected tokens map.
-   *
-   * Dynamic metadata fetching for given addresses will be triggered
-   * when the injected tokens map is updated, via the relevant vueQueries.
    */
   async function injectTokens(addresses: string[]): Promise<TokenInfoMap> {
-    addresses = addresses.filter(
-      address => !opts.excludeTokens?.includes(address)
-    );
     const tokens = await tokenService.metadata.get(
       addresses,
       allTokenLists.value
     );
     injectedTokens.value = { ...injectedTokens.value, ...tokens };
+
     return tokens;
   }
 
   /**
-   * @function addAllowanceContract
    * Adds contract address to array of contract addresses used to
    * track ERC20 allowances.
    */
@@ -154,12 +64,15 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
   }
 
   /**
-   * @function searchTokens
    * Given query, filters allTokens map by name, symbol or address.
    * If address is provided, search for address in allTokens or injectToken
    */
-  async function searchTokens(query: string): Promise<TokenInfoMap> {
-    if (!query) return allTokens.value;
+  async function searchTokens(
+    query: string,
+    excluded: string[] = []
+  ): Promise<TokenInfoMap> {
+    console.log('Search', allTokens.value);
+    if (!query) return removeExcluded(allTokens.value, excluded);
 
     if (isAddress(query)) {
       const address = getAddress(query);
@@ -176,19 +89,19 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
           token.name.toLowerCase().includes(query.toLowerCase()) ||
           token.symbol.toLowerCase().includes(query.toLowerCase())
       );
-      return Object.fromEntries(results);
+      return removeExcluded(Object.fromEntries(results), excluded);
     }
   }
 
   /**
-   * @function removeExcluded
    * Remove excluded tokens from given token map.
    */
-  function removeExcluded(tokens: TokenInfoMap): TokenInfoMap {
-    if (!opts.excludeTokens) return tokens;
-
+  function removeExcluded(
+    tokens: TokenInfoMap,
+    excluded: string[]
+  ): TokenInfoMap {
     return Object.keys(tokens)
-      .filter(address => !opts.excludeTokens?.includes(address))
+      .filter(address => excluded.includes(address))
       .reduce((result, address) => {
         result[address] = tokens[address];
         return result;
@@ -196,6 +109,9 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
   }
 
   return {
+    // state
+    injectedTokens,
+    allowanceContracts,
     // computed
     allTokens,
     nativeToken,

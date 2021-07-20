@@ -7,13 +7,13 @@ import { flatten } from 'lodash';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
-import useTokens from '../useTokens';
+import useTokens2 from '../useTokens2';
 
 type PoolsQueryResponse = {
   pools: DecoratedPool[];
-  tokens: string[];
+  poolTokenAddresses: string[];
   skip?: number;
 };
 
@@ -21,12 +21,9 @@ export default function usePoolsQuery(
   tokenList: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
 ) {
-  // SERVICES
-  const balancerSubgraph = new BalancerSubgraph();
-
   // COMPOSABLES
   const store = useStore();
-  const { tokens: allTokens } = useTokens();
+  const { injectTokens } = useTokens2();
 
   // DATA
   const queryKey = QUERY_KEYS.Pools.All(tokenList);
@@ -36,14 +33,9 @@ export default function usePoolsQuery(
   const prices = computed(() => store.state.market.prices);
   const isQueryEnabled = computed(() => !appLoading.value);
 
-  function uninjected(tokens: string[]): string[] {
-    const allAddresses = Object.keys(allTokens.value);
-    return tokens.filter(address => !allAddresses.includes(address));
-  }
-
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const pools = await balancerSubgraph.pools.getDecorated(
+    const pools = await balancerSubgraphService.pools.getDecorated(
       '24h',
       prices.value,
       {
@@ -55,15 +47,12 @@ export default function usePoolsQuery(
       }
     );
 
-    const tokens = flatten(pools.map(pool => pool.tokenAddresses));
-    const uninjectedTokens = uninjected(tokens);
-    if (uninjectedTokens.length > 0) {
-      await store.dispatch('registry/injectTokens', uninjectedTokens);
-    }
+    const poolTokenAddresses = flatten(pools.map(pool => pool.tokenAddresses));
+    injectTokens(poolTokenAddresses);
 
     return {
       pools,
-      tokens,
+      poolTokenAddresses,
       skip:
         pools.length >= POOLS.Pagination.PerPage
           ? pageParam + POOLS.Pagination.PerPage

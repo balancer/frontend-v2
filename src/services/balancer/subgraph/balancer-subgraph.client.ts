@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import ConfigService from '@/services/config/config.service';
+import { configService as _configService } from '@/services/config/config.service';
 
-export default class Client {
+export default class BalancerSubgraphClient {
   url: string;
 
-  constructor(private readonly configService = new ConfigService()) {
+  constructor(private readonly configService = _configService) {
     this.url = configService.network.subgraph;
   }
 
@@ -25,3 +25,5 @@ export default class Client {
     return JSON.stringify({ query: jsonToGraphQLQuery({ query }) });
   }
 }
+
+export const balancerSubgraphClient = new BalancerSubgraphClient();

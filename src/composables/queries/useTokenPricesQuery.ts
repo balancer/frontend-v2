@@ -12,13 +12,13 @@ type Response = TokenPrices;
 const coingeckoService = new CoingeckoService();
 
 export default function useTokenPricesQuery(
-  tokens: Ref<string[]> = ref([]),
+  trackedTokenAddresses: Ref<string[]> = ref([]),
   options: UseQueryOptions<Response> = {}
 ) {
-  const queryKey = reactive(QUERY_KEYS.Tokens.Prices(tokens));
+  const queryKey = reactive(QUERY_KEYS.Tokens.Prices(trackedTokenAddresses));
 
   const queryFn = async () => {
-    return await coingeckoService.prices.getTokens(tokens.value);
+    return await coingeckoService.prices.getTokens(trackedTokenAddresses.value);
   };
 
   const queryOptions = reactive({

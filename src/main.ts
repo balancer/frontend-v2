@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import App from '@/App.vue';
+import Root from './Root';
 import store from '@/store';
 import router from '@/plugins/router';
 import mixins from '@/plugins/mixins';
@@ -41,7 +41,7 @@ use([
   MarkLineComponent
 ]);
 
-const app = createApp(App)
+const app = createApp(Root)
   .use(i18n)
   .use(router)
   .use(store)

@@ -1,5 +1,6 @@
 export default {
   Providers: {
-    TokenLists: 'providers.tokenLists'
+    TokenLists: 'providers.tokenLists',
+    Tokens: 'providers.tokens'
   }
 };
