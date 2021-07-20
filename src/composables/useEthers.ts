@@ -16,6 +16,20 @@ type TxCallback = (
 // keep a record of processed txs
 export const processedTxs = ref<Set<string>>(new Set(''));
 
+const waitForTxConfirmation = async (
+  tx: TransactionResponse
+): Promise<TransactionReceipt> => {
+  try {
+    // Sometimes this will throw if we're talking to a service
+    // in front of the RPC that hasn't picked up the tx yet (e.g. Gnosis)
+    return await tx.wait();
+  } catch {
+    // If so then give it a couple of seconds to catch up and try again
+    await new Promise(r => setTimeout(r, 5000));
+    return tx.wait();
+  }
+};
+
 export default function useEthers() {
   const { finalizeTransaction } = useTransactions();
   const { supportsBlocknative } = useBlocknative();
@@ -32,7 +46,7 @@ export default function useEthers() {
     processedTxs.value.add(tx.hash);
 
     try {
-      const receipt = await tx.wait();
+      const receipt = await waitForTxConfirmation(tx);
       // attempt to finalize transaction so that the pending tx watcher won't check the tx again.
       if (receipt != null) {
         finalizeTransaction(tx.hash, 'tx', receipt);
