@@ -15,7 +15,7 @@
         <ActivityCounter v-else :count="pendingTransactions.length" />
       </BalBtn>
     </template>
-    <BalCard class="w-72" noPad noBorder shadow="xl">
+    <BalCard class="w-72" noPad noBorder>
       <template v-slot:header>
         <div
           class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
