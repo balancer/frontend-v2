@@ -14,7 +14,7 @@
             :style="{ width: `${column?.width}px` }"
           />
         </colgroup>
-        <thead class="bg-white dark:bg-gray-900 z-20">
+        <thead class="bg-white dark:bg-gray-900 z-10">
           <th
             v-for="(column, columnIndex) in filteredColumns"
             :key="`header-${column.id}`"

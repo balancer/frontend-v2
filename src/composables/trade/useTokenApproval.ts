@@ -1,22 +1,29 @@
-import { computed, ref, watch } from 'vue';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
-import useNotify from '@/composables/useNotify';
 import { ETHER } from '@/constants/tokenlists';
 import useWeb3 from '@/services/web3/useWeb3';
 import useAllowances from '../useAllowances';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
+import { TokenMap } from '@/types';
+import useTransactions from '../useTransactions';
+
 import { configService } from '@/services/config/config.service';
 
-export default function useTokenApproval(tokenInAddress, amount, tokens) {
+export default function useTokenApproval(
+  tokenInAddress: Ref<string>,
+  amount: Ref<string>,
+  tokens: ComputedRef<TokenMap>
+) {
   const approving = ref(false);
   const approved = ref(false);
+  const { addTransaction } = useTransactions();
 
   // COMPOSABLES
   const { getProvider } = useWeb3();
-  const { txListener, supportsBlocknative } = useNotify();
-  const { txListener: ethersTxListener } = useEthers();
+
+  const { txListener } = useEthers();
 
   const dstList = computed(() => [
     configService.network.addresses.exchangeProxy
@@ -73,7 +80,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
         configService.network.addresses.exchangeProxy,
         [tokenInAddress.value]
       );
-      txHandler(tx);
+      txHandler(tx, configService.network.addresses.exchangeProxy);
     } catch (e) {
       console.log(e);
       approving.value = false;
@@ -89,38 +96,26 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
         configService.network.addresses.vault,
         [tokenInAddress.value]
       );
-      txHandler(tx);
+      txHandler(tx, configService.network.addresses.vault);
     } catch (e) {
       console.log(e);
       approving.value = false;
     }
   }
 
-  function txHandler(tx: TransactionResponse): void {
-    if (supportsBlocknative.value) {
-      blocknativeTxHandler(tx);
-    } else {
-      ethersTxHandler(tx);
-    }
-  }
-
-  function blocknativeTxHandler(tx: TransactionResponse): void {
-    txListener(tx.hash, {
-      onTxConfirmed: () => {
-        approving.value = false;
-        approved.value = true;
-      },
-      onTxCancel: () => {
-        approving.value = false;
-      },
-      onTxFailed: () => {
-        approving.value = false;
+  function txHandler(tx: TransactionResponse, spender: string): void {
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'approve',
+      summary: `${tokens.value[tokenInAddress.value].symbol} for trading`,
+      details: {
+        tokenAddress: tokenInAddress.value,
+        spender
       }
     });
-  }
 
-  function ethersTxHandler(tx: TransactionResponse): void {
-    ethersTxListener(tx, {
+    txListener(tx, {
       onTxConfirmed: () => {
         approving.value = false;
         approved.value = true;

@@ -19,7 +19,7 @@ export default function useTokenApprovalGP(
   const { getProvider } = useWeb3();
   const provider = getProvider();
   const { tokens } = useTokens();
-  const { txListener: ethersTxListener } = useEthers();
+  const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
 
   // DATA
@@ -73,14 +73,13 @@ export default function useTokenApprovalGP(
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: tokenInSymbol,
+        summary: `${tokenInSymbol} for trading`,
         details: {
           tokenAddress: tokenInAddress.value,
-          amount: amount.value,
           spender: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
         }
       });
-      ethersTxListener(tx, {
+      txListener(tx, {
         onTxConfirmed: () => {
           approving.value = false;
           approved.value = true;

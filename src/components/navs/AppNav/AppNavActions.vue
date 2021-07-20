@@ -2,9 +2,7 @@
   <div>
     <div v-if="account" class="flex items-center">
       <AppNavClaimBtn v-if="liquidityMiningSupported" />
-      <AppNavActivityBtn
-        v-if="!upToSmallBreakpoint && APP.IsGnosisIntegration"
-      />
+      <AppNavActivityBtn v-if="!upToSmallBreakpoint" />
       <AppNavAccountBtn />
     </div>
     <BalBtn
@@ -26,7 +24,6 @@
 import { defineComponent, computed } from 'vue';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { APP } from '@/constants/app';
 
 import useFathom from '@/composables/useFathom';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -81,8 +78,7 @@ export default defineComponent({
       connectWallet,
       toggleWalletSelectModal,
       // constants
-      EXTERNAL_LINKS,
-      APP
+      EXTERNAL_LINKS
     };
   }
 });

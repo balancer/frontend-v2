@@ -202,14 +202,14 @@
     "receipt": "Receipt",
     "recentActivityTitle": "Recent activity",
     "noRecentActivity": "Your activity will appear here...",
-    "recentActivityTypes": {
+    "transactionAction": {
         "trade": "Trade",
         "approve": "Approve",
         "claim": "Claim",
         "invest": "Invest",
         "withdraw": "Withdraw"
     },
-    "recentActivityStatus": {
+    "transactionStatus": {
         "pending": "Pending",
         "confirmed": "Confirmed",
         "expired": "Expired",

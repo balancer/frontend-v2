@@ -1,32 +1,34 @@
-import Notify from 'bnc-notify';
+import BlocknativeSdk from 'bnc-sdk';
+import { InitializationOptions } from 'bnc-sdk/dist/types/src/interfaces';
 
-export const bnNotifySymbol = Symbol();
+export const bnSdkSymbol = Symbol();
 
-interface Options {
-  dappId: string;
-  networkId: number;
-  desktopPosition:
-    | 'bottomLeft'
-    | 'bottomRight'
-    | 'topLeft'
-    | 'topRight'
-    | undefined;
-}
-
-export const defaultOptions: Options = {
+export const defaultOptions: InitializationOptions = {
   dappId: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '',
   networkId: Number(process.env.VUE_APP_NETWORK) || 1,
-  desktopPosition: 'bottomLeft'
+  onerror: error => {
+    console.log(`[Blocknative] encountered an error - ${error}`);
+  }
 };
 
 export default {
   install: app => {
-    const notifyInstance = Notify(defaultOptions);
+    const blocknative = new BlocknativeSdk(defaultOptions);
+
+    // filter out pending simulation events
+    blocknative
+      .configuration({
+        scope: 'global',
+        filters: [{ status: 'pending-simulation', _not: true }]
+      })
+      .catch(() => {
+        // swallow server timeout response error as we are not waiting on it
+      });
 
     // Make plugin available in options API
-    app.config.globalProperties.$bnNotify = notifyInstance || {};
+    app.config.globalProperties.$blocknative = blocknative || {};
 
     // Make plugin available in composition API
-    app.provide(bnNotifySymbol, notifyInstance);
+    app.provide(bnSdkSymbol, blocknative);
   }
 };

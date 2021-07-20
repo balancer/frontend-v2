@@ -15,7 +15,7 @@
         <ActivityCounter v-else :count="pendingTransactions.length" />
       </BalBtn>
     </template>
-    <BalCard class="w-72" noPad noBorder shadow="xl">
+    <BalCard class="w-72" noPad noBorder>
       <template v-slot:header>
         <div
           class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
@@ -32,6 +32,7 @@
           <ActivityRows
             :transactions="unconfirmedTransactions"
             :get-explorer-link="getExplorerLink"
+            :is-successful-transaction="isSuccessfulTransaction"
           />
           <div
             v-if="
@@ -43,6 +44,7 @@
           <ActivityRows
             :transactions="confirmedTransactions"
             :get-explorer-link="getExplorerLink"
+            :is-successful-transaction="isSuccessfulTransaction"
           />
         </template>
         <template v-else>{{ $t('noRecentActivity') }}</template>
@@ -86,7 +88,8 @@ export default defineComponent({
       transactions,
       pendingTransactions,
       getExplorerLink,
-      clearAllTransactions
+      clearAllTransactions,
+      isSuccessfulTransaction
     } = useTransactions();
 
     // COMPUTED
@@ -105,6 +108,7 @@ export default defineComponent({
       // methods
       clearAllTransactions,
       getExplorerLink,
+      isSuccessfulTransaction,
 
       // computed
       account,

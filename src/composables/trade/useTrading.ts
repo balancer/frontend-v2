@@ -65,14 +65,21 @@ export default function useTrading(
   });
 
   const effectivePriceMessage = computed(() => {
-    if (tokenInAmountScaled.value.gt(0) && tokenOutAmountScaled.value.gt(0)) {
+    const tokenInAmount = parseFloat(tokenInAmountInput.value);
+    const tokenOutAmount = parseFloat(tokenOutAmountInput.value);
+
+    if (tokenInAmount > 0 && tokenOutAmount > 0) {
       return {
         tokenIn: `1 ${tokenIn.value?.symbol} = ${fNum(
-          tokenOutAmountScaled.value.div(tokenInAmountScaled.value).toString(),
+          bnum(tokenOutAmount)
+            .div(tokenInAmount)
+            .toString(),
           'token'
         )} ${tokenOut.value?.symbol}`,
         tokenOut: `1 ${tokenOut.value?.symbol} = ${fNum(
-          tokenInAmountScaled.value.div(tokenOutAmountScaled.value).toString(),
+          bnum(tokenInAmount)
+            .div(tokenOutAmount)
+            .toString(),
           'token'
         )} ${tokenIn.value?.symbol}`
       };

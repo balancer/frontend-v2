@@ -8,7 +8,7 @@
         class="group"
       >
         <div class="font-semibold flex items-center">
-          {{ $t(`recentActivityTypes.${transaction.action}`) }}
+          {{ $t(`transactionAction.${transaction.action}`) }}
           <BalIcon
             name="arrow-up-right"
             size="sm"
@@ -22,10 +22,13 @@
         </div>
       </BalLink>
       <div>
-        <CheckIcon
-          v-if="transaction.status === 'confirmed'"
-          class="text-green-500"
-        />
+        <template v-if="transaction.status === 'confirmed'">
+          <CheckIcon
+            v-if="isSuccessfulTransaction(transaction)"
+            class="text-green-500"
+          />
+          <BalIcon v-else name="alert-circle" class="text-red-500" />
+        </template>
         <SpinnerIcon v-else class="animate-spin text-yellow-500" />
       </div>
     </div>
@@ -49,6 +52,10 @@ export default defineComponent({
       type: Function as PropType<
         (id: string, type: Transaction['type']) => void
       >,
+      required: true
+    },
+    isSuccessfulTransaction: {
+      type: Function as PropType<(transaction: Transaction) => boolean>,
       required: true
     }
   }

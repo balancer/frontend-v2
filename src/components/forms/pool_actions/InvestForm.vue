@@ -259,13 +259,11 @@ import {
   isRequired
 } from '@/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
-import { TransactionData } from 'bnc-notify';
 import { formatUnits } from '@ethersproject/units';
 import isEqual from 'lodash/isEqual';
 
 import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 import useNumbers from '@/composables/useNumbers';
-import useNotify from '@/composables/useNotify';
 import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
@@ -277,10 +275,10 @@ import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
-import useAccountBalances from '@/composables/useAccountBalances';
 import useTokens from '@/composables/useTokens';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
+import useTransactions from '@/composables/useTransactions';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -337,12 +335,11 @@ export default defineComponent({
     } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
-    const { txListener, supportsBlocknative } = useNotify();
     const { minusSlippage } = useSlippage();
     const { tokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
-    const { refetchBalances } = useAccountBalances();
-    const { txListener: ethersTxListener } = useEthers();
+    const { txListener } = useEthers();
+    const { addTransaction } = useTransactions();
 
     const { amounts } = toRefs(data);
 
@@ -561,37 +558,6 @@ export default defineComponent({
       );
     }
 
-    function blocknativeTxHandler(tx: TransactionResponse): void {
-      txListener(tx.hash, {
-        onTxConfirmed: async (tx: TransactionData) => {
-          emit('success', tx);
-          data.amounts = [];
-          data.loading = false;
-          await refetchBalances.value();
-        },
-        onTxCancel: () => {
-          data.loading = false;
-        },
-        onTxFailed: () => {
-          data.loading = false;
-        }
-      });
-    }
-
-    function ethersTxHandler(tx: TransactionResponse): void {
-      ethersTxListener(tx, {
-        onTxConfirmed: async (tx: TransactionResponse) => {
-          emit('success', tx);
-          data.amounts = [];
-          data.loading = false;
-          await refetchBalances.value();
-        },
-        onTxFailed: () => {
-          data.loading = false;
-        }
-      });
-    }
-
     async function submit(): Promise<void> {
       if (!data.investForm.validate()) return;
       try {
@@ -604,11 +570,28 @@ export default defineComponent({
           minBptOut.value
         );
         console.log('Receipt', tx);
-        if (supportsBlocknative.value) {
-          blocknativeTxHandler(tx);
-        } else {
-          ethersTxHandler(tx);
-        }
+
+        addTransaction({
+          id: tx.hash,
+          type: 'tx',
+          action: 'invest',
+          summary: `${total.value} to pool`,
+          details: {
+            total,
+            pool: props.pool
+          }
+        });
+
+        txListener(tx, {
+          onTxConfirmed: async (tx: TransactionResponse) => {
+            emit('success', tx);
+            data.amounts = [];
+            data.loading = false;
+          },
+          onTxFailed: () => {
+            data.loading = false;
+          }
+        });
       } catch (error) {
         console.error(error);
         data.loading = false;
