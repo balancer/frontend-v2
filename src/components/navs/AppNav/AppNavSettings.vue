@@ -176,7 +176,9 @@ const locales = {
   'ru-RU': 'Россия',
   'ko-KO': '한국어',
   'ja-JP': '日本語',
-  'tr-TR': 'Türk'
+  'tr-TR': 'Türk',
+  'hi-IN': 'हिंदी',
+  'ar-AE': 'عربى'
 };
 
 export default defineComponent({
