@@ -17,16 +17,21 @@ type TxCallback = (
 export const processedTxs = ref<Set<string>>(new Set(''));
 
 const waitForTxConfirmation = async (
-  tx: TransactionResponse
+  tx: TransactionResponse,
+  retries = 10
 ): Promise<TransactionReceipt> => {
   try {
     // Sometimes this will throw if we're talking to a service
     // in front of the RPC that hasn't picked up the tx yet (e.g. Gnosis)
     return await tx.wait();
-  } catch {
+  } catch (e) {
     // If so then give it a couple of seconds to catch up and try again
     await new Promise(r => setTimeout(r, 5000));
-    return tx.wait();
+    if (retries > 0) {
+      return waitForTxConfirmation(tx, retries - 1);
+    } else {
+      throw e;
+    }
   }
 };
 
