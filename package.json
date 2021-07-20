@@ -63,6 +63,7 @@
     "echarts": "^5.1.0",
     "eslint": "^6.7.2",
     "ethereumjs-util": "^7.0.7",
+    "ethers": "^5.4.1",
     "feather-icons": "^4.28.0",
     "fortmatic": "^2.0.6",
     "json-to-graphql-query": "^2.0.0",
