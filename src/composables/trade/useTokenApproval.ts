@@ -1,14 +1,15 @@
-import { useStore } from 'vuex';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { ETHER } from '@/constants/tokenlists';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useAllowances from '../useAllowances';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
 import { TokenMap } from '@/types';
 import useTransactions from '../useTransactions';
+
+import { configService } from '@/services/config/config.service';
 
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,
@@ -20,13 +21,13 @@ export default function useTokenApproval(
   const { addTransaction } = useTransactions();
 
   // COMPOSABLES
-  const store = useStore();
-  const { getProvider } = useVueWeb3();
+  const { getProvider } = useWeb3();
 
   const { txListener } = useEthers();
 
-  const { config } = store.state.web3;
-  const dstList = computed(() => [config.addresses.exchangeProxy]);
+  const dstList = computed(() => [
+    configService.network.addresses.exchangeProxy
+  ]);
   const allowanceTokens = computed(() => [tokenInAddress.value]);
   const {
     getRequiredAllowances,
@@ -54,7 +55,7 @@ export default function useTokenApproval(
     const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
 
     const requiredAllowancesV1 = getRequiredAllowances({
-      dst: config.addresses.exchangeProxy,
+      dst: configService.network.addresses.exchangeProxy,
       tokens: [tokenInAddress.value],
       amounts: [tokenInAmountDenorm.toString()]
     });
@@ -76,10 +77,10 @@ export default function useTokenApproval(
     try {
       const [tx] = await approveTokens(
         getProvider(),
-        config.addresses.exchangeProxy,
+        configService.network.addresses.exchangeProxy,
         [tokenInAddress.value]
       );
-      txHandler(tx, config.addresses.exchangeProxy);
+      txHandler(tx, configService.network.addresses.exchangeProxy);
     } catch (e) {
       console.log(e);
       approving.value = false;
@@ -90,10 +91,12 @@ export default function useTokenApproval(
     console.log('[TokenApproval] Unlock V2');
     approving.value = true;
     try {
-      const [tx] = await approveTokens(getProvider(), config.addresses.vault, [
-        tokenInAddress.value
-      ]);
-      txHandler(tx, config.addresses.vault);
+      const [tx] = await approveTokens(
+        getProvider(),
+        configService.network.addresses.vault,
+        [tokenInAddress.value]
+      );
+      txHandler(tx, configService.network.addresses.vault);
     } catch (e) {
       console.log(e);
       approving.value = false;

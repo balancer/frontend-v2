@@ -49,19 +49,21 @@ interface FetchStatus {
 Aims to manage liquidity between V1 & V2 using SOR.
 */
 export class SorManager {
-  sorV1: SORV1;
-  sorV2: SORV2;
-  selectedPools: (SubgraphPoolBase | Pool)[] = [];
-  weth: string;
-  subgraphUrl: string;
-  fetchStatus: FetchStatus = {
+  private sorV1: SORV1;
+  private sorV2: SORV2;
+  private weth: string;
+  private subgraphUrlV2: string;
+  private fetchStatus: FetchStatus = {
     v1finishedFetch: false,
     v2finishedFetch: false,
     v1success: false,
     v2success: false
   };
+  private isV1Supported: boolean;
+  selectedPools: (SubgraphPoolBase | Pool)[] = [];
 
   constructor(
+    isV1Supported: boolean,
     provider: BaseProvider,
     gasPrice: BigNumber,
     maxPools: number,
@@ -69,12 +71,14 @@ export class SorManager {
     weth: string,
     poolsSourceV1: string,
     poolsSourceV2: SubGraphPoolsBase | string,
-    subgraphUrl: string,
+    subgraphUrlV2: string,
     disabledOptions: DisabledOptions = {
       isOverRide: false,
       disabledTokens: []
     }
   ) {
+    this.isV1Supported = isV1Supported;
+
     // Initialises SOR. Note they use different SOR packages.
     this.sorV1 = new SORV1(
       provider,
@@ -94,7 +98,7 @@ export class SorManager {
       disabledOptions
     );
     this.weth = weth;
-    this.subgraphUrl = subgraphUrl;
+    this.subgraphUrlV2 = subgraphUrlV2;
   }
 
   // Uses SOR V2 to retrieve the cost & reuses for SOR V1 to save time (requires onchain call).
@@ -128,27 +132,34 @@ export class SorManager {
         );
       }
     }
-    this.sorV1.setCostOutputToken(
-      tokenAddr,
-      cost.times(new BigNumber(10 ** tokenDecimals))
-    );
+    if (this.isV1Supported)
+      this.sorV1.setCostOutputToken(
+        tokenAddr,
+        cost.times(new BigNumber(10 ** tokenDecimals))
+      );
     return cost;
   }
 
   // This fetches ALL pool with onchain info.
   async fetchPools(): Promise<void> {
-    console.log(`[SorManager] fetch Subgraph`);
-    const subgraphFetch = fetchSubgraphPools(this.subgraphUrl);
-    console.log('[SorManager] V1 fetchPools started');
-    const v1fetch = this.sorV1.fetchPools();
-    let subgraphPools;
+    let v1fetch;
+    console.log(`[SorManager] fetch Subgraph (V1:${this.isV1Supported})`);
+    // Starts fetch of all pools from V2 subgraph (non-blocking)
+    const subgraphFetchV2 = fetchSubgraphPools(this.subgraphUrlV2);
+
+    if (this.isV1Supported) {
+      console.log('[SorManager] V1 fetchPools started');
+      v1fetch = this.sorV1.fetchPools();
+    }
+
     // This will catch any error fetching Subgraph or onChain data with V2
     try {
-      subgraphPools = await subgraphFetch;
-      console.log('[SorManager] Subgraph fetched');
+      // Wait for V2 subgraph fetch
+      const subgraphPoolsV2 = await subgraphFetchV2;
+      console.log('[SorManager] SubgraphV2 fetched');
       console.time('[SorManager] V2 fetchPools');
       // Use Subgraph pools data and fetch onChain
-      const v2result = await this.sorV2.fetchPools(true, subgraphPools);
+      const v2result = await this.sorV2.fetchPools(true, subgraphPoolsV2);
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = v2result;
     } catch (err) {
@@ -161,19 +172,21 @@ export class SorManager {
     );
     console.timeEnd(`[SorManager] V2 fetchPools`);
 
-    // This will catch any error with OnChain data with V1
-    try {
-      const v1result = await v1fetch;
-      this.fetchStatus.v1finishedFetch = true;
-      this.fetchStatus.v1success = v1result;
-    } catch (err) {
-      console.log(`[SorManager] V1 fetchPools issue: ${err.message}`);
-      this.fetchStatus.v1finishedFetch = true;
-      this.fetchStatus.v1success = false;
+    if (this.isV1Supported) {
+      // This will catch any error with OnChain data with V1
+      try {
+        const v1result = await v1fetch;
+        this.fetchStatus.v1finishedFetch = true;
+        this.fetchStatus.v1success = v1result;
+      } catch (err) {
+        console.log(`[SorManager] V1 fetchPools issue: ${err.message}`);
+        this.fetchStatus.v1finishedFetch = true;
+        this.fetchStatus.v1success = false;
+      }
+      console.log(
+        `[SorManager] V1 fetchPools result: ${this.fetchStatus.v1success}`
+      );
     }
-    console.log(
-      `[SorManager] V1 fetchPools result: ${this.fetchStatus.v1success}`
-    );
 
     this.selectedPools = this.sorV2.onChainBalanceCache.pools;
   }
@@ -189,7 +202,7 @@ export class SorManager {
     liquiditySelection: LiquiditySelection
   ): Promise<SorReturn> {
     console.log(
-      `[SorManager] getBestSwap: ${tokenIn}/${tokenOut} ${liquiditySelection}`
+      `[SorManager] getBestSwap: ${tokenIn}/${tokenOut} (Liq: ${liquiditySelection}) (V1: ${this.isV1Supported})`
     );
     // V2 uses normalised values. V1 uses scaled values.
     const amountNormalised = scale(amountScaled, -swapDecimals);
@@ -197,17 +210,23 @@ export class SorManager {
     const v1TokenIn = tokenIn === ETHER.address ? this.weth : tokenIn;
     const v1TokenOut = tokenOut === ETHER.address ? this.weth : tokenOut;
 
-    const [
-      swapsV1,
-      returnAmountV1,
-      marketSpV1Scaled,
-      returnAmountV1ConsideringFees
-    ] = await this.sorV1.getSwaps(
-      v1TokenIn.toLowerCase(),
-      v1TokenOut.toLowerCase(),
-      swapType,
-      amountScaled
-    );
+    let swapsV1: Swap[][] = [];
+    let returnAmountV1 = new BigNumber(0);
+    let marketSpV1Scaled = new BigNumber(0);
+    let returnAmountV1ConsideringFees = new BigNumber(0);
+
+    if (this.isV1Supported)
+      [
+        swapsV1,
+        returnAmountV1,
+        marketSpV1Scaled,
+        returnAmountV1ConsideringFees
+      ] = await this.sorV1.getSwaps(
+        v1TokenIn.toLowerCase(),
+        v1TokenOut.toLowerCase(),
+        swapType,
+        amountScaled
+      );
 
     const v2TokenIn = tokenIn === ETHER.address ? AddressZero : tokenIn;
     const v2TokenOut = tokenOut === ETHER.address ? AddressZero : tokenOut;
@@ -246,7 +265,7 @@ export class SorManager {
     );
 
     if (swapType === 'swapExactIn') {
-      return this.getBestSwapIn(
+      return this.selectBestSwapIn(
         returnAmountV1,
         returnAmountV1ConsideringFees,
         marketSpV1Scaled,
@@ -259,7 +278,7 @@ export class SorManager {
         liquiditySelection
       );
     } else {
-      return this.getBestSwapOut(
+      return this.selectBestSwapOut(
         returnAmountV1,
         returnAmountV1ConsideringFees,
         marketSpV1Scaled,
@@ -274,7 +293,7 @@ export class SorManager {
     }
   }
 
-  getBestSwapIn(
+  private selectBestSwapIn(
     returnAmountV1: BigNumber,
     returnAmountV1ConsideringFees: BigNumber,
     marketSpV1Scaled: BigNumber,
@@ -328,11 +347,11 @@ export class SorManager {
     };
 
     if (liquiditySelection === LiquiditySelection.V1) {
-      console.log('[SorManager] V1 swap is best by manual choice.');
+      console.log('[SorManager] V1 swap is best by liq.');
       this.selectedPools = this.sorV1.onChainCache.pools;
       return v1return;
     } else if (liquiditySelection === LiquiditySelection.V2) {
-      console.log('[SorManager] V2 swap is best by manual choice.');
+      console.log('[SorManager] V2 swap is best by liq.');
       this.selectedPools = this.sorV2.onChainBalanceCache.pools;
       return v2return;
     }
@@ -349,7 +368,7 @@ export class SorManager {
     }
   }
 
-  getBestSwapOut(
+  private selectBestSwapOut(
     returnAmountV1: BigNumber,
     returnAmountV1ConsideringFees: BigNumber,
     marketSpV1Scaled: BigNumber,
@@ -406,11 +425,11 @@ export class SorManager {
     };
 
     if (liquiditySelection === LiquiditySelection.V1) {
-      console.log('[SorManager] V1 swap is best by manual choice.');
+      console.log('[SorManager] V1 swap is best by liq.');
       this.selectedPools = this.sorV1.onChainCache.pools;
       return v1return;
     } else if (liquiditySelection === LiquiditySelection.V2) {
-      console.log('[SorManager] V2 swap is best by manual choice.');
+      console.log('[SorManager] V2 swap is best by liq.');
       this.selectedPools = this.sorV2.onChainBalanceCache.pools;
       return v2return;
     }
@@ -429,6 +448,15 @@ export class SorManager {
 
   // Check if pool info fetch
   hasPoolData(): boolean {
+    if (!this.isV1Supported && this.fetchStatus.v2finishedFetch) {
+      if (this.fetchStatus.v2success === false) {
+        console.log(
+          `[SorManager] Error Fetching V2 Pools & V1 Not Supported - No Liquidity Sources.`
+        );
+        return false;
+      } else return true;
+    }
+
     if (this.fetchStatus.v1finishedFetch && this.fetchStatus.v2finishedFetch) {
       // TO DO - This could be used to provide more info to UI?
       if (

@@ -11,7 +11,7 @@ import {
   HistoricalPrices
 } from '@/services/coingecko';
 import usePoolQuery from './usePoolQuery';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 interface QueryResponse {
   prices: HistoricalPrices;
@@ -24,7 +24,7 @@ export default function usePoolSnapshotsQuery(
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
   // COMPOSABLES
-  const { appNetworkConfig } = useVueWeb3();
+  const { appNetworkConfig } = useWeb3();
 
   // SERVICES
   const balancerSubgraph = new BalancerSubgraph();

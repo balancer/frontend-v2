@@ -63,7 +63,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '@/composables/useTransactions';
 
 import ActivityCounter from './ActivityCounter.vue';
@@ -83,7 +83,7 @@ export default defineComponent({
 
     // COMPOSABLES
     const { upToLargeBreakpoint } = useBreakpoints();
-    const { isLoadingProfile, profile, account } = useVueWeb3();
+    const { isLoadingProfile, profile, account } = useWeb3();
     const {
       transactions,
       pendingTransactions,

@@ -1,23 +1,13 @@
 <template>
-  <span>
-    <img
-      v-if="profile?.image"
-      :src="_ipfsUrl(profile.image)"
-      :style="{
-        width: `${parseInt(size) || 22}px`,
-        height: `${parseInt(size) || 22}px`,
-        verticalAlign: 'middle'
-      }"
-      @error="error = true"
-      class="rounded-full leading-none"
-    />
-    <jazzicon
-      v-else
-      :address="address"
-      :diameter="parseInt(size) || 22"
-      class="leading-none inline-block align-middle"
-    />
-  </span>
+  <div
+    class="leading-none rounded-full overflow-hidden"
+    :style="{
+      width: `${parseInt(size) || 22}px`,
+      height: `${parseInt(size) || 22}px`
+    }"
+  >
+    <jazzicon :address="address" :diameter="parseInt(size) || 22" />
+  </div>
 </template>
 
 <script>

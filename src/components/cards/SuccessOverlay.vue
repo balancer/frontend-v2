@@ -22,7 +22,7 @@
           color="gray"
         >
           <span v-text="$t('receipt')" />
-          <BalIcon name="external-link" size="sm" class="ml-2" />
+          <BalIcon name="arrow-up-right" size="sm" class="ml-1" />
         </BalBtn>
         <BalBtn :label="closeLabel" color="gray" flat @click="$emit('close')" />
       </div>

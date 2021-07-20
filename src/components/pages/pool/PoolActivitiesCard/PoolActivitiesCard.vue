@@ -1,8 +1,10 @@
 <template>
   <div
-    class="flex justify-between items-end border-b dark:border-gray-900 mb-6"
+    class="px-4 sm:px-0 flex justify-between items-end border-b dark:border-gray-900 mb-6"
   >
-    <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+    <div class="">
+      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+    </div>
   </div>
   <template v-if="activeTab === PoolActivityTab.ALL_ACTIVITY">
     <Activities

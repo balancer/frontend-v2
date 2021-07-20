@@ -1,8 +1,7 @@
+import useWeb3 from '@/services/web3/useWeb3';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
-
-import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 import useAccountBalances from './useAccountBalances';
 import useAllowances from './useAllowances';
@@ -21,7 +20,7 @@ export default function useWeb3Watchers() {
     isMismatchedNetwork,
     isUnsupportedNetwork,
     blockNumber
-  } = useVueWeb3();
+  } = useWeb3();
   const { refetchAllowances } = useAllowances();
   const { refetchBalances } = useAccountBalances();
   const { handlePendingTransactions } = useTransactions();

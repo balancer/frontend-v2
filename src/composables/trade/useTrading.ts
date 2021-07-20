@@ -7,7 +7,7 @@ import { bnum, scale } from '@/lib/utils';
 
 import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useSor from './useSor';
 import useGnosis from './useGnosis';
 
@@ -26,7 +26,7 @@ export default function useTrading(
   const store = useStore();
   const { fNum } = useNumbers();
   const { tokens } = useTokens();
-  const { blockNumber, userNetworkConfig } = useVueWeb3();
+  const { blockNumber, userNetworkConfig } = useWeb3();
 
   // COMPUTED
   const isWrap = computed(

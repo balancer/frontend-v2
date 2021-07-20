@@ -112,7 +112,7 @@
           <div class="flex flex-col ml-3 w-14 leading-none truncate">
             <BalTooltip v-if="tokenOutSymbol.length > 5">
               <template v-slot:activator>
-                <span class="font-bold">
+                <span class="font-semibold">
                   {{ tokenOutSymbol }}
                 </span>
               </template>
@@ -120,7 +120,7 @@
                 {{ tokenOutSymbol }}
               </div>
             </BalTooltip>
-            <span v-else class="font-bold">
+            <span v-else class="font-semibold">
               {{ tokenOutSymbol }}
             </span>
           </div>

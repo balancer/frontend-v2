@@ -1,5 +1,10 @@
 <template>
-  <BalCard class="overflow-x-auto whitespace-nowrap" no-pad>
+  <BalCard
+    class="overflow-x-auto whitespace-nowrap"
+    :square="upToLargeBreakpoint"
+    :noBorder="upToLargeBreakpoint"
+    noPad
+  >
     <BalTable
       :columns="columns"
       :data="tableData"
@@ -24,9 +29,9 @@
               {{ symbolFor(token.address) }}
             </span>
             <BalIcon
-              name="external-link"
+              name="arrow-up-right"
               size="sm"
-              class="ml-3 text-gray-500 hover:text-blue-500"
+              class="ml-2 text-gray-500 hover:text-blue-500 transition-colors"
             />
           </BalLink>
         </div>
@@ -57,8 +62,9 @@ import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import numeral from 'numeral';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useWeb3 from '@/composables/useWeb3';
+import { shortenLabel } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   props: {
@@ -72,9 +78,9 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorerLinks } = useVueWeb3();
-    const { shortenLabel } = useWeb3();
+    const { explorerLinks } = useWeb3();
     const { t } = useI18n();
+    const { upToLargeBreakpoint } = useBreakpoints();
 
     // DATA
     const { pool }: { pool: Ref<FullPool> } = toRefs(props);
@@ -160,7 +166,8 @@ export default defineComponent({
       fNum,
       explorer: explorerLinks,
       columns,
-      tableData
+      tableData,
+      upToLargeBreakpoint
     };
   }
 });

@@ -3,7 +3,7 @@ import { parseUnits } from '@ethersproject/units';
 
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
@@ -19,7 +19,7 @@ export default function useTokenApprovals(
   const approvedAll = ref(false);
 
   // COMPOSABLES
-  const { getProvider, appNetworkConfig } = useVueWeb3();
+  const { getProvider, appNetworkConfig } = useWeb3();
   const { tokens } = useTokens();
   const { getRequiredAllowances, refetchAllowances } = useAllowances();
   const { txListener } = useEthers();

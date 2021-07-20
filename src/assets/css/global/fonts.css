@@ -6,13 +6,6 @@
 }
 
 @font-face {
-  font-family: 'Inter-Variable';
-  src: url('../../fonts/Inter-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
   font-family: "Tiempos Headline Medium";
   src: url("../../fonts/tiemposDispMed.woff2") format("woff2"),
     url("../../fonts/tiemposDispMed.woff") format("woff"), format("opentype"),

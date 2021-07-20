@@ -110,7 +110,7 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import useDarkMode from '@/composables/useDarkMode';
@@ -129,12 +129,12 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
-    const { explorerLinks } = useVueWeb3();
+    const { explorerLinks } = useWeb3();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
     const { tokens } = useTokens();
-    const { userNetworkConfig } = useVueWeb3();
+    const { userNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
 
     const exactIn = ref(true);

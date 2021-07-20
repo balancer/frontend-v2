@@ -108,7 +108,7 @@ import { getOriginalAddress } from '@/services/coingecko';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { claimRewards } from '@/services/claim';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { NetworkId } from '@/constants/network';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
@@ -132,7 +132,7 @@ export default defineComponent({
       getProvider,
       isMainnet,
       isPolygon
-    } = useVueWeb3();
+    } = useWeb3();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
 

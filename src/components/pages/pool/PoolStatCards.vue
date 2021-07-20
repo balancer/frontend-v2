@@ -5,7 +5,7 @@
     </template>
     <template v-else>
       <BalCard v-for="(stat, i) in stats" :key="i">
-        <div class="text-xs uppercase text-gray-500 font-medium mb-3">
+        <div class="text-sm text-gray-500 font-medium mb-2">
           {{ stat.label }}
         </div>
         <div class="text-xl font-medium truncate flex items-center">

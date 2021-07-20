@@ -274,7 +274,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
@@ -332,7 +332,7 @@ export default defineComponent({
       getProvider,
       appNetworkConfig,
       userNetworkConfig
-    } = useVueWeb3();
+    } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { minusSlippage } = useSlippage();
