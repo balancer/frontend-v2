@@ -45,7 +45,7 @@ export abstract class Connector {
 
   handleDisconnect = () => {
     // reset everything
-    this.provider?.removeAllListeners();
+    if (this.provider?.removeAllListeners) this.provider?.removeAllListeners();
     this.account.value = null;
     this.chainId.value = null;
     this.active.value = false;
