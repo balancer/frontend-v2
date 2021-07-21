@@ -25,6 +25,7 @@ export interface Config {
     decimals: number;
     deeplinkId: string;
     logoURI: string;
+    networkName: string;
   };
   addresses: {
     exchangeProxy: string;
