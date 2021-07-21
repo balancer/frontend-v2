@@ -1,5 +1,5 @@
 <template>
-  <BalPopover no-pad @show="popoverOpened = true" @hide="popoverOpened = false">
+  <BalPopover no-pad>
     <template v-slot:activator>
       <BalBtn
         color="gray"
@@ -9,9 +9,7 @@
         circle
         class="mr-2 p-1 relative"
       >
-        <ActivityIcon
-          v-if="pendingTransactions.length === 0 || popoverOpened"
-        />
+        <ActivityIcon v-if="pendingTransactions.length === 0" />
         <ActivityCounter v-else :count="pendingTransactions.length" />
       </BalBtn>
     </template>
@@ -61,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent } from 'vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '@/composables/useTransactions';
@@ -78,9 +76,6 @@ export default defineComponent({
   },
 
   setup() {
-    // DATA
-    const popoverOpened = ref(false);
-
     // COMPOSABLES
     const { upToLargeBreakpoint } = useBreakpoints();
     const { isLoadingProfile, profile, account } = useWeb3();
@@ -102,9 +97,6 @@ export default defineComponent({
     );
 
     return {
-      // data
-      popoverOpened,
-
       // methods
       clearAllTransactions,
       getExplorerLink,
