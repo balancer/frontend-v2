@@ -44,15 +44,12 @@ export default function usePoolQuery(
 
   // METHODS
   const queryFn = async () => {
-    const [pool] = await balancerSubgraph.pools.getDecorated(
-      '24h',
-      {
-        where: {
-          id: id.toLowerCase(),
-          totalShares_gt: -1 // Avoid the filtering for low liquidity pools
-        }
+    const [pool] = await balancerSubgraph.pools.getDecorated('24h', {
+      where: {
+        id: id.toLowerCase(),
+        totalShares_gt: -1 // Avoid the filtering for low liquidity pools
       }
-    );
+    });
 
     if (pool.poolType === 'Stable' && !POOLS.Stable.AllowList.includes(id)) {
       throw new Error('Pool not allowed');

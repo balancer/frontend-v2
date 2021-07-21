@@ -10,7 +10,12 @@ import {
 } from 'vue';
 import useTokenLists2 from '@/composables/useTokenLists2';
 import { getAddress } from '@ethersproject/address';
-import { TokenInfo, TokenInfoMap, TokenList, TokenListMap } from '@/types/TokenList';
+import {
+  TokenInfo,
+  TokenInfoMap,
+  TokenList,
+  TokenListMap
+} from '@/types/TokenList';
 import useConfig from '@/composables/useConfig';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useAccountBalancesQuery from '@/composables/queries/useAccountBalancesQuery';
@@ -121,7 +126,9 @@ export default {
      * The prices, balances and allowances maps provide dynamic
      * metadata for each 'tracked' token.
      ****************************************************************/
-    const pricesQuery = useTokenPricesQuery(toRef(state, 'trackedTokenAddresses'));
+    const pricesQuery = useTokenPricesQuery(
+      toRef(state, 'trackedTokenAddresses')
+    );
     const accountBalancesQuery = useAccountBalancesQuery(trackedTokens);
     const accountAllowancesQuery = useAccountAllowancesQuery(
       toRef(state, 'trackedTokenAddresses'),

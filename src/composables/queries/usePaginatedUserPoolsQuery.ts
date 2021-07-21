@@ -51,16 +51,13 @@ export default function usePaginatedUserPoolsQuery(
     const poolSharesIds = poolShares.map(poolShare => poolShare.poolId.id);
     const poolSharesMap = keyBy(poolShares, poolShare => poolShare.poolId.id);
 
-    const pools = await balancerSubgraph.pools.getDecorated(
-      '24h',
-      {
-        first: POOLS.Pagination.PerPage,
-        skip: pageParam,
-        where: {
-          id_in: poolSharesIds
-        }
+    const pools = await balancerSubgraph.pools.getDecorated('24h', {
+      first: POOLS.Pagination.PerPage,
+      skip: pageParam,
+      where: {
+        id_in: poolSharesIds
       }
-    );
+    });
 
     const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
 
