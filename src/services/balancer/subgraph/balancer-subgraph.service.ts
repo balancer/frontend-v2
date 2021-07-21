@@ -14,7 +14,7 @@ export default class BalancerSubgraphService {
   poolSnapshots: PoolSnapshots;
 
   constructor(
-    private readonly client = balancerSubgraphClient,
+    readonly client = balancerSubgraphClient,
     readonly rpcProviderService = _rpcProviderService
   ) {
     // Init entities
