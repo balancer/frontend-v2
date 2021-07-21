@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, h } from 'vue';
 
-import Provider from '@/plugins/providers/Provider.vue';
+import Provider from '@/providers/Provider.vue';
 import provideTokenStore from '@/providers/tokenstore.provider';
 import provideTokens from '@/providers/tokens.provider';
 import provideAccountBalances from '@/providers/balances.provider';
