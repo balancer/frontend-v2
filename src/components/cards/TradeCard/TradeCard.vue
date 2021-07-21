@@ -114,6 +114,9 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import useDarkMode from '@/composables/useDarkMode';
+import { configService } from '@/services/config/config.service';
+
+const { nativeAsset } = configService.network;
 
 export default defineComponent({
   components: {
@@ -241,10 +244,13 @@ export default defineComponent({
         };
       }
       switch (errorMessage.value) {
-        case TradeValidation.NO_ETHER:
+        case TradeValidation.NO_NATIVE_ASSET:
           return {
-            header: t('noEth'),
-            body: t('noEthDetailed')
+            header: t('noNativeAsset', [nativeAsset.symbol]),
+            body: t('noNativeAssetDetailed', [
+              nativeAsset.symbol,
+              configService.network.chainName
+            ])
           };
         case TradeValidation.NO_BALANCE:
           return {

@@ -1,6 +1,7 @@
 {
   "key": "137",
   "chainId": 137,
+  "chainName": "Polygon",
   "name": "Polygon Mainnet",
   "shortName": "Polygon",
   "network": "polygon",
