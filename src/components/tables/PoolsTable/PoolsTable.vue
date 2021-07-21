@@ -6,7 +6,52 @@
     :noBorder="upToLargeBreakpoint"
     noPad
   >
-    <BalTable
+    <table class="w-full">
+      <thead>
+        <th>tokens</th>
+        <th>Composition</th>
+        <th>value</th>
+        <th>volume</th>
+        <th>APR</th>
+      </thead>
+      <tbody>
+        <tr v-for="(pool, i) in data" :key="i" class="p-4">
+          <td class="px-6 py-4">
+            <BalAssetSet
+              :addresses="orderedTokenAddressesFor(pool)"
+              :width="100"
+            />
+          </td>
+          <td class="px-6 py-4">
+            <TokenPills
+              :tokens="orderedPoolTokens(pool)"
+              :isStablePool="pool.poolType === 'Stable'"
+            />
+          </td>
+          <td class="px-6 py-4">
+            {{ fNum(pool.totalLiquidity, 'usd') }}
+          </td>
+          <td class="px-6 py-4">
+            {{ fNum(pool.dynamic.volume, 'usd') }}
+          </td>
+          <td class="px-6 py-4">
+            {{
+              Number(pool.dynamic.apr.pool) > 10000
+                ? '-'
+                : fNum(pool.dynamic.apr.total, 'percent')
+            }}
+            <LiquidityMiningTooltip :pool="pool" />
+          </td>
+        </tr>
+        <tr @click="$emit('loadMore')" class="cursor-pointer">
+          <td>
+            <span v-if="isLoading || isLoadingMore">Loading...</span>
+            <span v-else>Load more</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <BalTable
       :columns="columns"
       :data="data"
       :is-loading="isLoading"
@@ -64,7 +109,7 @@
           <LiquidityMiningTooltip :pool="pool" />
         </div>
       </template>
-    </BalTable>
+    </BalTable> -->
   </BalCard>
 </template>
 
