@@ -33,7 +33,6 @@ import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 import Notifications from '@/components/notifications/Notifications.vue';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
-import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 
 export default defineComponent({
   components: {
