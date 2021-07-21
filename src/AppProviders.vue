@@ -2,10 +2,10 @@
 import { defineComponent, h } from 'vue';
 
 import Provider from '@/plugins/providers/Provider.vue';
-import provideTokenStore from '@/plugins/providers/tokenstore.provider';
-import provideTokens from '@/plugins/providers/tokens.provider';
-import provideAccountBalances from '@/plugins/providers/balances.provider';
-import provideAccountAllowances from '@/plugins/providers/allowances.provider';
+import provideTokenStore from '@/providers/tokenstore.provider';
+import provideTokens from '@/providers/tokens.provider';
+import provideAccountBalances from '@/providers/balances.provider';
+import provideAccountAllowances from '@/providers/allowances.provider';
 
 const providers = [
   provideTokenStore,

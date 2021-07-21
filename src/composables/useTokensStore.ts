@@ -1,8 +1,8 @@
-import { computed, inject, ref, watch } from 'vue';
+import { inject } from 'vue';
 import {
   TokenStoreProviderPayload,
   TokenStoreProviderSymbol
-} from '@/plugins/providers/tokenstore.provider';
+} from '@/providers/tokenstore.provider';
 
 export type TokenListItem = {
   address: string;

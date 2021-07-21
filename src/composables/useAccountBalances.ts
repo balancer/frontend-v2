@@ -1,7 +1,7 @@
 import {
   BalancesProviderPayload,
   BalancesProviderSymbol
-} from '@/plugins/providers/balances.provider';
+} from '@/providers/balances.provider';
 import { inject } from 'vue';
 
 // THE CONTENTS OF THIS WILL BE REPLACED/ALTERED WITH THE REGISTRY REFACTOR

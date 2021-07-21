@@ -2,7 +2,7 @@ import {
   TokenRequest,
   TokensProviderPayload,
   TokensProviderSymbol
-} from '@/plugins/providers/tokens.provider';
+} from '@/providers/tokens.provider';
 import { inject, onBeforeMount } from 'vue';
 
 export default function useTokens(request?: TokenRequest) {

@@ -2,7 +2,7 @@ import { inject, onBeforeMount, Ref, watch } from 'vue';
 import {
   AllowancesProviderSymbol,
   AllowancesProviderPayload
-} from '@/plugins/providers/allowances.provider';
+} from '@/providers/allowances.provider';
 
 type UseAccountPayload = {
   tokens?: Ref<string[]>;
