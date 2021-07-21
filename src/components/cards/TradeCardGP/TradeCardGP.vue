@@ -174,10 +174,13 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      if (trading.gnosis.errors.value.feeExceedsPrice) {
+      if (
+        trading.isGnosisTrade.value &&
+        trading.gnosis.errors.value.feeExceedsPrice
+      ) {
         return {
-          header: 'Low amount',
-          body: 'Fees exceeds from amount'
+          header: t('gnosisErrors.lowAmount.header'),
+          body: t('gnosisErrors.lowAmount.body')
         };
       }
       switch (errorMessage.value) {

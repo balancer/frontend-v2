@@ -268,6 +268,13 @@
     "unavailableOnNetwork": "Sorry! Balancer is not available on this network",
     "unavailableOnNetworkWithName": "Sorry! Balancer is not available on {0}",
     "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+    "gnosisErrors": {
+        "lowAmount": {
+            "header": "Low amount",
+            "body": "Fees exceeds from amount"
+
+        }
+    }, 
     "unknown": "Unknown",
     "unknownPoolType": "Unknown pool type",
     "unlock": "Unlock",
