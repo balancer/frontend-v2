@@ -94,10 +94,8 @@ export default defineComponent({
     const filteredPools = computed(() =>
       selectedTokens.value.length > 0
         ? pools.value?.filter(pool => {
-            const poolTokenList = pool.tokensList.map(getAddress);
-
             return selectedTokens.value.every((selectedToken: string) =>
-              poolTokenList.includes(selectedToken)
+              pool.tokenAddresses.includes(selectedToken)
             );
           })
         : pools?.value

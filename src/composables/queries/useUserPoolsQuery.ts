@@ -9,10 +9,12 @@ import { bnum } from '@/lib/utils';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 import useTokens from '../useTokens';
+import useTokenLists2 from '../useTokenLists2';
+import useTokens2 from '../useTokens2';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -29,21 +31,17 @@ export default function useUserPoolsQuery(
   // COMPOSABLES
   const store = useStore();
   const { account, isWalletReady } = useVueWeb3();
-  const { tokens: allTokens } = useTokens();
+  const { injectTokens } = useTokens2();
+  const { loadingTokenLists } = useTokenLists2();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Pools.User(account));
 
   // COMPUTED
-  const prices = computed(() => store.state.market.prices);
   const isQueryEnabled = computed(
-    () => isWalletReady.value && account.value != null && !isEmpty(prices.value)
+    () =>
+      isWalletReady.value && account.value != null && !loadingTokenLists.value
   );
-
-  function uninjected(tokens: string[]): string[] {
-    const allAddresses = Object.keys(allTokens.value);
-    return tokens.filter(address => !allAddresses.includes(address));
-  }
 
   // METHODS
   const queryFn = async () => {
@@ -56,21 +54,14 @@ export default function useUserPoolsQuery(
     const poolSharesIds = poolShares.map(poolShare => poolShare.poolId.id);
     const poolSharesMap = keyBy(poolShares, poolShare => poolShare.poolId.id);
 
-    const pools = await balancerSubgraph.pools.getDecorated(
-      '24h',
-      prices.value,
-      {
-        where: {
-          id_in: poolSharesIds
-        }
+    const pools = await balancerSubgraph.pools.getDecorated('24h', {
+      where: {
+        id_in: poolSharesIds
       }
-    );
+    });
 
-    const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
-    const uninjectedTokens = uninjected(tokens);
-    if (uninjectedTokens.length > 0) {
-      await store.dispatch('registry/injectTokens', uninjectedTokens);
-    }
+    const tokens = flatten(pools.map(pool => pool.tokenAddresses));
+    injectTokens(tokens);
 
     const poolsWithShares = pools.map(pool => ({
       ...pool,
@@ -94,9 +85,6 @@ export default function useUserPoolsQuery(
 
   const queryOptions = reactive({
     enabled: isQueryEnabled,
-    onSuccess: async (poolsData: UserPoolsQueryResponse) => {
-      await store.dispatch('registry/injectTokens', poolsData.tokens);
-    },
     ...options
   });
 

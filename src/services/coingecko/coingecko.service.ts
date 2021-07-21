@@ -1,6 +1,6 @@
 import { SUPPORTED_FIAT } from '@/constants/currency';
 import { PriceService } from './api/price.service';
-import { CoingeckoClient } from './coingecko.client';
+import { coingeckoClient } from './coingecko.client';
 
 export const getNativeAssetId = (chainId: string): string => {
   const mapping = {
@@ -27,10 +27,12 @@ export class CoingeckoService {
   prices: PriceService;
 
   constructor(
-    public readonly client = new CoingeckoClient(),
+    public readonly client = coingeckoClient,
     priceServiceClass = PriceService
   ) {
     this.supportedFiat = SUPPORTED_FIAT.join(',');
     this.prices = new priceServiceClass(this);
   }
 }
+
+export const coingeckoService = new CoingeckoService();

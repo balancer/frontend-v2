@@ -23,6 +23,7 @@ export interface TokenListsState {
 
 export interface TokenListsProviderResponse {
   activeListKeys: Ref<string[]>;
+  loadingTokenLists: Ref<boolean>;
   allTokenLists: ComputedRef<TokenListMap>;
   activeTokenLists: ComputedRef<TokenListMap>;
   defaultTokenList: ComputedRef<TokenList>;
@@ -67,6 +68,13 @@ export default {
     const allTokenLists = computed(
       (): TokenListMap =>
         tokenListsQuery.data.value ? tokenListsQuery.data.value : {}
+    );
+
+    /**
+     * Are token lists loading...
+     */
+    const loadingTokenLists = computed(
+      () => tokenListsQuery.isLoading.value || tokenListsQuery.isIdle.value
     );
 
     /**
@@ -146,6 +154,7 @@ export default {
       ...toRefs(state),
       // computed
       allTokenLists,
+      loadingTokenLists,
       activeTokenLists,
       defaultTokenList,
       balancerTokenLists,

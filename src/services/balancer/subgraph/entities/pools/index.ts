@@ -6,16 +6,19 @@ import {
   Pool,
   QueryBuilder,
   TimeTravelPeriod,
-  DecoratedPool
+  DecoratedPool,
+  PoolToken
 } from '../../types';
-import { Prices } from '@/services/coingecko';
 import { getAddress } from '@ethersproject/address';
 import {
   currentLiquidityMiningRewards,
-  computeTotalAPRForPool
+  computeTotalAPRForPool,
+  currentLiquidityMiningRewardTokens
 } from '@/lib/utils/liquidityMining';
 import { NetworkId } from '@/constants/network';
 import ConfigService from '@/services/config/config.service';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -42,7 +45,6 @@ export default class Pools {
 
   public async getDecorated(
     period: TimeTravelPeriod,
-    prices: Prices,
     args = {},
     attrs = {}
   ): Promise<DecoratedPool[]> {
@@ -59,6 +61,13 @@ export default class Pools {
     const pastPoolsQuery = this.query({ where: isCurrentPool, block }, attrs);
     const { pools: pastPools } = await this.service.client.get(pastPoolsQuery);
 
+    // Get pool token prices
+    const allPoolTokens = currentPools.map(pool => pool.tokensList).flat();
+    const prices = await coingeckoService.prices.getTokens([
+      ...allPoolTokens,
+      ...currentLiquidityMiningRewardTokens
+    ]);
+
     return this.serialize(currentPools, pastPools, period, prices);
   }
 
@@ -66,11 +75,12 @@ export default class Pools {
     pools: Pool[],
     pastPools: Pool[],
     period: TimeTravelPeriod,
-    prices: Prices
+    prices: TokenPrices
   ): DecoratedPool[] {
     return pools.map(pool => {
       pool.address = this.extractAddress(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
+      pool.tokens = this.formatPoolTokens(pool);
       pool.totalLiquidity = getPoolLiquidity(pool, prices);
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
@@ -99,6 +109,17 @@ export default class Pools {
     });
   }
 
+  private formatPoolTokens(pool: Pool): PoolToken[] {
+    const tokens = pool.tokens.map(token => ({
+      ...token,
+      address: getAddress(token.address)
+    }));
+
+    if (pool.poolType === 'Stable') return tokens;
+
+    return tokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
+  }
+
   private calcVolume(pool: Pool, pastPool: Pool | undefined): string {
     if (!pastPool) return pool.totalSwapVolume;
 
@@ -121,7 +142,7 @@ export default class Pools {
       .toString();
   }
 
-  private calcLiquidityMiningAPR(pool: Pool, prices: Prices) {
+  private calcLiquidityMiningAPR(pool: Pool, prices: TokenPrices) {
     let liquidityMiningAPR = '0';
 
     const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];

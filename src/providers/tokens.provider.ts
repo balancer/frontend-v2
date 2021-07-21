@@ -10,7 +10,7 @@ import {
 } from 'vue';
 import useTokenLists2 from '@/composables/useTokenLists2';
 import { getAddress } from '@ethersproject/address';
-import { TokenInfoMap } from '@/types/TokenList';
+import { TokenInfo, TokenInfoMap, TokenList, TokenListMap } from '@/types/TokenList';
 import useConfig from '@/composables/useConfig';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useAccountBalancesQuery from '@/composables/queries/useAccountBalancesQuery';
@@ -61,7 +61,7 @@ export default {
 
     /* COMPOSABLES */
     const { networkConfig } = useConfig();
-    const { activeTokenLists } = useTokenLists2();
+    const { activeTokenLists, defaultTokenList } = useTokenLists2();
 
     /* INIT STATE */
     state.allowanceContracts.push(networkConfig.addresses.vault);
@@ -89,27 +89,12 @@ export default {
      */
     const tokenListTokens = computed(
       (): TokenInfoMap => {
-        const tokens = {};
-
-        const activeTokenListTokens = Object.values(activeTokenLists.value)
-          .map(list => list.tokens)
-          .flat();
-
-        activeTokenListTokens.forEach(token => {
-          const address: string = getAddress(token.address);
-          // Don't include if already included
-          if (Object.keys(tokens).includes(address)) return;
-          // Don't include if not on app network
-          if (token.chainId !== networkConfig.chainId) return;
-
-          tokens[address] = {
-            ...token,
-            address
-          };
-        });
-
-        return tokens;
+        return mapTokenListTokens(Object.values(activeTokenLists.value));
       }
+    );
+
+    const defaultTokens = computed(
+      (): TokenInfoMap => mapTokenListTokens([defaultTokenList.value])
     );
 
     const allTokens = computed(
@@ -128,15 +113,15 @@ export default {
       pick(allTokens.value, state.trackedTokenAddresses)
     );
 
+    const allAddresses = computed(() => Object.keys(allTokens.value));
+
     /****************************************************************
      * Dynamic metadata
      *
      * The prices, balances and allowances maps provide dynamic
      * metadata for each 'tracked' token.
      ****************************************************************/
-    const pricesQuery = useTokenPricesQuery(
-      toRef(state, 'trackedTokenAddresses')
-    );
+    const pricesQuery = useTokenPricesQuery(toRef(state, 'trackedTokenAddresses'));
     const accountBalancesQuery = useAccountBalancesQuery(trackedTokens);
     const accountAllowancesQuery = useAccountAllowancesQuery(
       toRef(state, 'trackedTokenAddresses'),
@@ -156,6 +141,27 @@ export default {
           ? accountAllowancesQuery.data.value
           : {}
     );
+
+    /** METHODS */
+    function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
+      const tokensMap = {};
+      const tokens = tokenLists.map(list => list.tokens).flat();
+
+      tokens.forEach(token => {
+        const address: string = getAddress(token.address);
+        // Don't include if already included
+        if (Object.keys(tokensMap).includes(address)) return;
+        // Don't include if not on app network
+        if (token.chainId !== networkConfig.chainId) return;
+
+        tokensMap[address] = {
+          ...token,
+          address
+        };
+      });
+
+      return tokensMap;
+    }
 
     provide(TokensProviderSymbol, {
       // state

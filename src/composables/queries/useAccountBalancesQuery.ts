@@ -11,19 +11,20 @@ import { TokenInfoMap } from '@/types/TokenList';
 type Response = BalanceMap;
 
 export default function useAccountBalancesQuery(
-  trackedTokens: Ref<TokenInfoMap> = ref({}),
+  tokens: Ref<TokenInfoMap> = ref({}),
   options: UseQueryOptions<Response> = {}
 ) {
   const { account, isWalletReady } = useVueWeb3();
 
-  const tokenAddresses = computed(() => Object.keys(trackedTokens));
+  const tokenAddresses = computed(() => Object.keys(tokens.value));
 
   const queryKey = reactive(
     QUERY_KEYS.Account.Balances(account, tokenAddresses)
   );
 
   const queryFn = async () => {
-    return await tokenService.balances.get(account.value, trackedTokens.value);
+    console.log('Fetch balances')
+    return await tokenService.balances.get(account.value, tokens.value);
   };
 
   const queryOptions = reactive({

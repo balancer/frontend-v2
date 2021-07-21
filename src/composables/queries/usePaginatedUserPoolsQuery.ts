@@ -11,7 +11,7 @@ import { bnum } from '@/lib/utils';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import useVueWeb3 from '@/services/web3/useVueWeb3';
 
@@ -53,7 +53,6 @@ export default function usePaginatedUserPoolsQuery(
 
     const pools = await balancerSubgraph.pools.getDecorated(
       '24h',
-      prices.value,
       {
         first: POOLS.Pagination.PerPage,
         skip: pageParam,

@@ -4,7 +4,7 @@ import { QueryObserverOptions } from 'react-query/core';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import {
   getTokensHistoricalPrice,

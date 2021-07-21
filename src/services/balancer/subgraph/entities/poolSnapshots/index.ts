@@ -1,4 +1,4 @@
-import Service from '../../service';
+import Service from '../../balancer-subgraph.service';
 import poolQueryBuilder from './query';
 import { PoolSnapshots, PoolSnapshot, QueryBuilder } from '../../types';
 

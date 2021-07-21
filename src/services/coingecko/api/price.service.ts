@@ -5,7 +5,7 @@ import {
   getPlatformId
 } from '../coingecko.service';
 import { TOKENS } from '@/constants/tokens';
-import ConfigService from '@/services/config/config.service';
+import { configService as _configService } from '@/services/config/config.service';
 import { invert } from 'lodash';
 import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
 
@@ -24,7 +24,7 @@ export class PriceService {
 
   constructor(
     service: CoingeckoService,
-    private readonly configService = new ConfigService()
+    private readonly configService = _configService
   ) {
     this.client = service.client;
     this.fiatParam = service.supportedFiat;

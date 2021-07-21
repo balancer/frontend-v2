@@ -9,7 +9,7 @@ import { pick } from 'lodash';
 import QUERY_KEYS from '@/constants/queryKeys';
 
 import BalancerContracts from '@/services/balancer/contracts/service';
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPool, FullPool } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 
@@ -46,7 +46,6 @@ export default function usePoolQuery(
   const queryFn = async () => {
     const [pool] = await balancerSubgraph.pools.getDecorated(
       '24h',
-      prices.value,
       {
         where: {
           id: id.toLowerCase(),

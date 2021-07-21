@@ -1,15 +1,12 @@
 import { differenceInWeeks } from 'date-fns';
-
 import { bnum } from '@/lib/utils';
 import { toUtcTime } from '@/lib/utils/date';
-
 import { NetworkId } from '@/constants/network';
-
-import ConfigService from '@/services/config/config.service';
-
-import { Prices } from '@/services/coingecko';
-
+import { configService } from '@/services/config/config.service';
 import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
+import useUserSettings from '@/composables/useUserSettings';
+import { getAddress } from '@ethersproject/address';
 
 type PoolId = string;
 
@@ -24,6 +21,8 @@ type LiquidityMiningWeek = Array<{
   chainId: NetworkId;
   pools: LiquidityMiningPools;
 }>;
+
+const { currency } = useUserSettings();
 
 // Liquidity mining started on June 1, 2020 00:00 UTC
 const liquidityMiningStartTime = Date.UTC(2020, 5, 1, 0, 0);
@@ -54,7 +53,7 @@ export function computeAPRForPool(
 
 export function computeTotalAPRForPool(
   tokenRewards: LiquidityMiningTokenRewards[],
-  prices: Prices,
+  prices: TokenPrices,
   totalLiquidity: string
 ) {
   return tokenRewards
@@ -63,7 +62,7 @@ export function computeTotalAPRForPool(
         totalRewards.plus(
           computeAPRForPool(
             amount,
-            prices[tokenAddress.toLowerCase()]?.price,
+            prices[getAddress(tokenAddress)][currency.value],
             totalLiquidity
           )
         ),
@@ -75,8 +74,6 @@ export function computeTotalAPRForPool(
 export function getLiquidityMiningRewards(
   week: number | 'current' = 'current'
 ) {
-  const configService: ConfigService = new ConfigService();
-
   const miningWeek =
     week === 'current' ? getCurrentLiquidityMiningWeek() : week;
 
@@ -99,3 +96,10 @@ export function getLiquidityMiningRewards(
 }
 
 export const currentLiquidityMiningRewards = getLiquidityMiningRewards();
+let tokenAddresses = Object.values(currentLiquidityMiningRewards)
+  .flat()
+  .map(reward => reward.tokenAddress);
+tokenAddresses = [...new Set(tokenAddresses)].map(address =>
+  getAddress(address)
+);
+export const currentLiquidityMiningRewardTokens = tokenAddresses;

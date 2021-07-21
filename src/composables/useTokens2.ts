@@ -44,6 +44,12 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
    * tokens into injected tokens map.
    */
   async function injectTokens(addresses: string[]): Promise<TokenInfoMap> {
+    // Only inject tokens that aren't already in allTokens
+    addresses = addresses.filter(
+      address => !Object.keys(allTokens.value).includes(address)
+    );
+    if (addresses.length === 0) return {};
+
     const tokens = await tokenService.metadata.get(
       addresses,
       allTokenLists.value
@@ -108,6 +114,13 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
       }, {});
   }
 
+  /**
+   * Checks if token has a balance
+   */
+  function hasBalance(address: string): boolean {
+    return Number(balances.value[address]) > 0;
+  }
+
   return {
     // state
     injectedTokens,
@@ -121,6 +134,7 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     // methods
     injectTokens,
     addAllowanceContract,
-    searchTokens
+    searchTokens,
+    hasBalance
   };
 }
