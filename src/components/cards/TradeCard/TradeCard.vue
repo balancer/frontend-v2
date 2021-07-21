@@ -249,7 +249,7 @@ export default defineComponent({
             header: t('noNativeAsset', [nativeAsset.symbol]),
             body: t('noNativeAssetDetailed', [
               nativeAsset.symbol,
-              nativeAsset.networkName
+              configService.network.chainName
             ])
           };
         case TradeValidation.NO_BALANCE:

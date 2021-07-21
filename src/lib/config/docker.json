@@ -1,6 +1,7 @@
 {
   "key": "17",
   "chainId": 17,
+  "chainName": "Ethereum",
   "name": "Docker localhost 8545",
   "shortName": "dockerLocalhost",
   "network": "docker localhost",
@@ -17,8 +18,7 @@
     "symbol": "ETH",
     "decimals": 18,
     "deeplinkId": "ether",
-    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-    "networkName": "Ethereum"
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
   },
   "addresses": {
     "exchangeProxy": "",

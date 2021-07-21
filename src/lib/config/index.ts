@@ -7,6 +7,7 @@ import docker from './docker.json';
 export interface Config {
   key: string;
   chainId: number;
+  chainName: string;
   name: string;
   shortName: string;
   network: string;
@@ -25,7 +26,6 @@ export interface Config {
     decimals: number;
     deeplinkId: string;
     logoURI: string;
-    networkName: string;
   };
   addresses: {
     exchangeProxy: string;
