@@ -16,7 +16,7 @@ import { lsGet, lsSet } from '@/lib/utils';
 import useNotifications from './useNotifications';
 import { processedTxs } from './useEthers';
 
-const DAY_MS = 86_400_000;
+const WEEK_MS = 86_400_000 * 7;
 
 export type TransactionStatus =
   | 'pending'
@@ -116,7 +116,7 @@ function normalizeTxReceipt(receipt: TransactionReceipt) {
 }
 
 function isTransactionRecent(transaction: Transaction): boolean {
-  return Date.now() - transaction.addedTime < DAY_MS;
+  return Date.now() - transaction.addedTime < WEEK_MS;
 }
 
 function clearAllTransactions() {
