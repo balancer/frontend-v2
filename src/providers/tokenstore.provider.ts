@@ -45,68 +45,72 @@ const loadAllTokenLists = async () => {
     .map(result => (result as PromiseFulfilledResult<TokenList>).value);
 };
 
-export default function() {
-  const store = useStore();
-  const activeTokenLists = ref<string[]>(
-    lsGet('activeTokenLists', ['Balancer'])
-  );
-  const queryKey = QUERY_KEYS.TokenLists;
-  const queryFn = loadAllTokenLists;
-
-  const { data: lists, isLoading, refetch: refreshTokenLists } = useQuery<
-    TokenList[]
-  >(queryKey, queryFn, {
-    refetchOnMount: false,
-    refetchOnWindowFocus: false
-  });
-
-  const listMap = computed(() => keyBy(lists.value, 'name'));
-  const injectedTokens = computed(() => store.state.registry.injected);
-
-  const allTokens = computed(() => {
-    // get all the tokens from all the active lists
-    // get all tokens that are injected
-    // get the ETHER token ALWAYS
-    // activeTokenLists;
-    return keyBy(
-      flatten([
-        ...Object.values(injectedTokens.value).map((t: any) => ({ ...t })),
-        ...activeTokenLists.value.map(name => listMap.value[name]?.tokens),
-        store.getters['registry/getEther']()
-      ])
-        // invalid network tokens get filtered out
-        .filter(
-          token => token?.chainId === Number(process.env.VUE_APP_NETWORK || 1)
-        ) as Token[],
-      'address'
+export default {
+  name: 'TokenStoreProvider',
+  setup(props, { slots }) {
+    const store = useStore();
+    const activeTokenLists = ref<string[]>(
+      lsGet('activeTokenLists', ['Balancer'])
     );
-  });
+    const queryKey = QUERY_KEYS.TokenLists;
+    const queryFn = loadAllTokenLists;
 
-  const toggleActiveTokenList = (name: string) => {
-    if (activeTokenLists.value.includes(name)) {
-      activeTokenLists.value = activeTokenLists.value.filter(
-        listName => listName !== name
+    const { data: lists, isLoading, refetch: refreshTokenLists } = useQuery<
+      TokenList[]
+    >(queryKey, queryFn, {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false
+    });
+
+    const listMap = computed(() => keyBy(lists.value, 'name'));
+    const injectedTokens = computed(() => store.state.registry.injected);
+
+    const allTokens = computed(() => {
+      // get all the tokens from all the active lists
+      // get all tokens that are injected
+      // get the ETHER token ALWAYS
+      // activeTokenLists;
+      return keyBy(
+        flatten([
+          ...Object.values(injectedTokens.value).map((t: any) => ({ ...t })),
+          ...activeTokenLists.value.map(name => listMap.value[name]?.tokens),
+          store.getters['registry/getEther']()
+        ])
+          // invalid network tokens get filtered out
+          .filter(
+            token => token?.chainId === Number(process.env.VUE_APP_NETWORK || 1)
+          ) as Token[],
+        'address'
       );
-    } else {
-      activeTokenLists.value = [...activeTokenLists.value, name];
-    }
-    lsSet('activeTokenLists', activeTokenLists.value);
-  };
+    });
 
-  const isActiveList = (name: string) => {
-    return activeTokenLists.value.includes(name);
-  };
+    const toggleActiveTokenList = (name: string) => {
+      if (activeTokenLists.value.includes(name)) {
+        activeTokenLists.value = activeTokenLists.value.filter(
+          listName => listName !== name
+        );
+      } else {
+        activeTokenLists.value = [...activeTokenLists.value, name];
+      }
+      lsSet('activeTokenLists', activeTokenLists.value);
+    };
 
-  const payload: TokenStoreProviderPayload = {
-    isLoading,
-    lists,
-    allTokens,
-    listMap,
-    activeTokenLists,
-    refreshTokenLists,
-    toggleActiveTokenList,
-    isActiveList
-  };
+    const isActiveList = (name: string) => {
+      return activeTokenLists.value.includes(name);
+    };
 
-  provide(TokenStoreProviderSymbol, payload);
-}
+    const payload: TokenStoreProviderPayload = {
+      isLoading,
+      lists,
+      allTokens,
+      listMap,
+      activeTokenLists,
+      refreshTokenLists,
+      toggleActiveTokenList,
+      isActiveList
+    };
+
+    provide(TokenStoreProviderSymbol, payload);
+    return () => slots.default();
+  }
+};
