@@ -260,15 +260,13 @@ export default function useGnosis({
             feeQuote.value = feeQuoteResult;
 
             if (exactIn.value) {
-              tokenOutAmountInput.value = formatUnits(
-                priceQuoteResult.amount,
-                tokenOut.value.decimals
-              );
+              tokenOutAmountInput.value = bnum(
+                formatUnits(priceQuoteResult.amount, tokenOut.value.decimals)
+              ).toFixed(6, BigNumber.ROUND_DOWN);
             } else {
-              tokenInAmountInput.value = formatUnits(
-                priceQuoteResult.amount,
-                tokenIn.value.decimals
-              );
+              tokenInAmountInput.value = bnum(
+                formatUnits(priceQuoteResult.amount, tokenIn.value.decimals)
+              ).toFixed(6, BigNumber.ROUND_DOWN);
             }
           }
         }
