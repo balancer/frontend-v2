@@ -30,7 +30,6 @@
         :description="error.body"
         :action-label="error.label"
         block
-        @actionClick="handleErrorButtonClick"
       />
       <BalBtn
         v-if="trading.isLoading.value"
@@ -206,10 +205,6 @@ export default defineComponent({
     });
 
     // METHODS
-    function handleErrorButtonClick() {
-      console.log('TOOD: implement if needed');
-    }
-
     function trade() {
       trading.trade(() => {
         modalTradePreviewIsOpen.value = false;
@@ -268,7 +263,6 @@ export default defineComponent({
       tradeCardShadow,
 
       // methods
-      handleErrorButtonClick,
       trade,
       switchToWETH
     };
