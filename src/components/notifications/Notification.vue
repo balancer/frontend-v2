@@ -17,13 +17,13 @@
             class="ml-1 text-gray-400 dark:text-gray-600 group-hover:text-pink-500 transition-colors"
           />
         </div>
-        <div>{{ notification.message }}</div>
+        <div class="message">{{ notification.message }}</div>
       </BalLink>
       <div v-else>
         <div class="font-semibold title mb-1">
           {{ notification.title }}
         </div>
-        <div>{{ notification.message }}</div>
+        <div class="message">{{ notification.message }}</div>
       </div>
       <BalCloseIcon
         class="cursor-pointer text-black dark:text-white flex-shrink-0 absolute top-3 right-2"
@@ -126,5 +126,11 @@ export default defineComponent({
 }
 .title::first-letter {
   @apply uppercase;
+}
+.message {
+  @apply overflow-hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>
