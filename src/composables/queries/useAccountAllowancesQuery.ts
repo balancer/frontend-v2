@@ -4,7 +4,7 @@ import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { tokenService } from '@/services/token/token.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 // TYPES
 type Response = ContractAllowancesMap;
@@ -14,7 +14,7 @@ export default function useAccountAllowancesQuery(
   contractAddesses: Ref<string[]> = ref([]),
   options: UseQueryOptions<Response> = {}
 ) {
-  const { account, isWalletReady } = useVueWeb3();
+  const { account, isWalletReady } = useWeb3();
 
   const queryKey = reactive(
     QUERY_KEYS.Account.Allowances2(
