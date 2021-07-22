@@ -14,7 +14,7 @@
 
 <script>
 import { defineComponent, toRefs, ref, computed, watch } from 'vue';
-import useTokens from '@/composables/useTokens';
+import useTokens2 from '@/composables/useTokens2';
 import Avatar from '../../images/Avatar.vue';
 
 export default defineComponent({
@@ -36,7 +36,7 @@ export default defineComponent({
   },
   setup(props) {
     // COMPOSABLES
-    const { tokens } = useTokens();
+    const { allTokens } = useTokens2();
 
     // DATA
     const { address } = toRefs(props);
@@ -44,7 +44,7 @@ export default defineComponent({
 
     // COMPUTED
     const iconURL = computed(() => {
-      const token = tokens.value[address.value];
+      const token = allTokens.value[address.value];
       if (!token) return '';
       return token.logoURI;
     });
