@@ -201,7 +201,7 @@
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
     "receipt": "Receipt",
     "recentActivityTitle": "Recent activity",
-    "noRecentActivity": "Your activity will appear here...",
+    "noRecentActivity": "Your session activity will appear here…",
     "transactionAction": {
         "trade": "Trade",
         "approve": "Approve",
