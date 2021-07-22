@@ -13,7 +13,7 @@
       "type": "image/x-icon"
     }
   ],
-  "iconPath": "logo512.png",
+  "iconPath": "images/logos/logo512.png",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
