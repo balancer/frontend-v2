@@ -423,7 +423,6 @@ export default defineComponent({
   position: sticky;
   left: 0;
   width: 100%;
-  backdrop-filter: blur(2px);
 }
 
 .horizontalSticky::after {
