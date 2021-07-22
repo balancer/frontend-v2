@@ -16,6 +16,10 @@ import { lsGet, lsSet } from '@/lib/utils';
 import useNotifications from './useNotifications';
 import { processedTxs } from './useEthers';
 
+import { GnosisTransactionDetails } from './trade/useGnosis';
+import useNumbers from './useNumbers';
+import { formatUnits } from '@ethersproject/units';
+
 const WEEK_MS = 86_400_000 * 7;
 
 export type TransactionStatus =
@@ -221,11 +225,40 @@ export default function useTransactions() {
   } = useWeb3();
   const { addNotification } = useNotifications();
   const { t } = useI18n();
+  const { fNum } = useNumbers();
 
   // COMPUTED
   const provider = computed(() => getWeb3Provider());
 
   // METHODS
+  function getSettledOrderSummary(
+    transaction: Transaction,
+    receipt: OrderReceipt
+  ) {
+    const details = transaction.details as GnosisTransactionDetails;
+
+    if (details != null) {
+      const { tokenIn, tokenOut } = details;
+
+      const tokenInAmount = formatUnits(
+        receipt.executedSellAmount,
+        tokenIn.decimals
+      );
+
+      const tokenOutAmount = formatUnits(
+        receipt.executedBuyAmount,
+        tokenOut.decimals
+      );
+
+      return `${fNum(tokenInAmount, 'token')} ${tokenIn.symbol} -> ${fNum(
+        tokenOutAmount,
+        'token'
+      )} ${tokenOut.symbol}`;
+    }
+
+    return transaction.summary;
+  }
+
   function addTransaction(newTransaction: NewTransaction) {
     const transactionsMap = getTransactions();
     const txId = getId(newTransaction.id, newTransaction.type);
@@ -251,11 +284,17 @@ export default function useTransactions() {
     receipt: Transaction['receipt']
   ) {
     if (receipt != null) {
+      const transaction = getTransaction(id, type);
+
       const updateSuccessful = updateTransaction(id, type, {
         receipt:
           type === 'tx'
             ? normalizeTxReceipt(receipt as TransactionReceipt)
             : receipt,
+        summary:
+          type === 'order'
+            ? getSettledOrderSummary(transaction, receipt as OrderReceipt)
+            : transaction.summary,
         status: 'confirmed',
         confirmedTime: Date.now()
       });

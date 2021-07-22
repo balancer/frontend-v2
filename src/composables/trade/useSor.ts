@@ -349,6 +349,8 @@ export default function useSor({
       action: 'trade',
       summary,
       details: {
+        tokenIn: tokenIn?.value,
+        tokenOut: tokenOut?.value,
         tokenInAddress: tokenInAddressInput.value,
         tokenOutAddress: tokenOutAddressInput.value,
         tokenInAmount: tokenInAmountInput.value,
