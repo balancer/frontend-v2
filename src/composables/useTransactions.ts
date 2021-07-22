@@ -285,7 +285,7 @@ export default function useTransactions() {
   ) {
     if (receipt != null) {
       const transaction = getTransaction(id, type);
-      console.log(receipt);
+
       const updateSuccessful = updateTransaction(id, type, {
         receipt:
           type === 'tx'
