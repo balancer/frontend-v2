@@ -98,6 +98,7 @@ import { computed, defineComponent, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
+import { useI18n } from 'vue-i18n';
 
 import useNumbers from '@/composables/useNumbers';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
@@ -135,6 +136,7 @@ export default defineComponent({
     } = useWeb3();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
+    const { t } = useI18n();
 
     const balPrice = computed(
       () =>
@@ -225,10 +227,9 @@ export default defineComponent({
             id: tx.hash,
             type: 'tx',
             action: 'claim',
-            summary: `${fNum(
-              userClaims.value.availableToClaim,
-              'token_fixed'
-            )} BAL`
+            summary: t('transactionSummary.claimBAL', [
+              fNum(userClaims.value.availableToClaim, 'token_fixed')
+            ])
           });
 
           txListener(tx, {

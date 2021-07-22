@@ -1,5 +1,6 @@
 import { computed, Ref, ref } from 'vue';
 import { parseUnits } from '@ethersproject/units';
+import { useI18n } from 'vue-i18n';
 
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 
@@ -21,6 +22,7 @@ export default function useTokenApprovalGP(
   const { tokens } = useTokens();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
+  const { t } = useI18n();
 
   // DATA
   const approving = ref(false);
@@ -73,7 +75,7 @@ export default function useTokenApprovalGP(
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: `${tokenInSymbol} for trading`,
+        summary: t('transactionSummary.approveForTrading', [tokenInSymbol]),
         details: {
           tokenAddress: tokenInAddress.value,
           spender: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS

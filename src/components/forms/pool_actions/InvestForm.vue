@@ -280,6 +280,8 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 
+import { getPoolWeights } from './utils';
+
 export enum FormTypes {
   proportional = 'proportional',
   custom = 'custom'
@@ -575,7 +577,10 @@ export default defineComponent({
           id: tx.hash,
           type: 'tx',
           action: 'invest',
-          summary: `${total.value} to pool`,
+          summary: t('transactionSummary.investInPool', [
+            total.value,
+            getPoolWeights(props.pool)
+          ]),
           details: {
             total,
             pool: props.pool

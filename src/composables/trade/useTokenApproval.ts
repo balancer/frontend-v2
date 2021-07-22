@@ -1,15 +1,19 @@
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { parseUnits } from '@ethersproject/units';
+import { TransactionResponse } from '@ethersproject/providers';
+
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { ETHER } from '@/constants/tokenlists';
-import useWeb3 from '@/services/web3/useWeb3';
-import useAllowances from '../useAllowances';
-import { TransactionResponse } from '@ethersproject/providers';
-import useEthers from '../useEthers';
-import { TokenMap } from '@/types';
-import useTransactions from '../useTransactions';
 
+import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
+
+import useAllowances from '../useAllowances';
+import useTransactions from '../useTransactions';
+import useEthers from '../useEthers';
+
+import { TokenMap } from '@/types';
 
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,
@@ -19,6 +23,7 @@ export default function useTokenApproval(
   const approving = ref(false);
   const approved = ref(false);
   const { addTransaction } = useTransactions();
+  const { t } = useI18n();
 
   // COMPOSABLES
   const { getProvider } = useWeb3();
@@ -108,7 +113,9 @@ export default function useTokenApproval(
       id: tx.hash,
       type: 'tx',
       action: 'approve',
-      summary: `${tokens.value[tokenInAddress.value].symbol} for trading`,
+      summary: t('transactionSummary.approveForTrading', [
+        tokens.value[tokenInAddress.value].symbol
+      ]),
       details: {
         tokenAddress: tokenInAddress.value,
         spender

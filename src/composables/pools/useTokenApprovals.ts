@@ -1,4 +1,5 @@
 import { ref, computed, Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { parseUnits } from '@ethersproject/units';
 
 import { approveTokens } from '@/lib/utils/balancer/tokens';
@@ -24,6 +25,7 @@ export default function useTokenApprovals(
   const { getRequiredAllowances, refetchAllowances } = useAllowances();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
+  const { t } = useI18n();
 
   // COMPUTED
   const amounts = computed(() =>
@@ -59,7 +61,9 @@ export default function useTokenApprovals(
         id: txs[0].hash,
         type: 'tx',
         action: 'approve',
-        summary: `${tokens.value[tokenAddress]?.symbol} for investing`,
+        summary: t('transactionSummary.approveForInvesting', [
+          tokens.value[tokenAddress]?.symbol
+        ]),
         details: {
           tokenAddress,
           spender: appNetworkConfig.addresses.vault

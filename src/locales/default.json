@@ -216,6 +216,15 @@
         "cancelling": "Cancelling",
         "Cancelled": "Cancelled"
     },
+    "transactionSummary": {
+        "investInPool": "{0} in {1}",
+        "withdrawFromPool": "{0} from {1}",
+        "claimBAL": "{0} BAL",
+        "approveForInvesting": "Approve {0} for investing",
+        "approveForTrading": "Approve {0} for trading",
+        "wrapETH": "Wrap {0} WETH to ETH",
+        "unwrapETH": "Unwrap {0} ETH to WETH"
+    },
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
     "seeMore": "See more",

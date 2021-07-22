@@ -1,15 +1,15 @@
 <template>
   <div
-    class="relative p-3 border rounded bg-white dark:bg-gray-800 shadow-lg text-sm dark:text-white dark:border-gray-850"
+    class="relative p-3 border rounded bg-white dark:bg-gray-800 shadow-lg text-sm dark:text-white dark:border-gray-850 w-64"
   >
-    <div class="flex justify-between group">
+    <div class="justify-between group">
       <BalLink
         v-if="notification.transactionMetadata"
         :href="notification.transactionMetadata.explorerLink"
         external
         noStyle
       >
-        <div v-if="notification.title" class="font-semibold flex items-center">
+        <div class="font-semibold flex items-center mb-1">
           <span class="title">{{ notification.title }}</span>
           <BalIcon
             name="arrow-up-right"
@@ -20,13 +20,13 @@
         <div>{{ notification.message }}</div>
       </BalLink>
       <div v-else>
-        <div v-if="notification.title" class="font-semibold title">
+        <div class="font-semibold title mb-1">
           {{ notification.title }}
         </div>
         <div>{{ notification.message }}</div>
       </div>
       <BalCloseIcon
-        class="cursor-pointer text-black dark:text-white ml-2"
+        class="cursor-pointer text-black dark:text-white flex-shrink-0 absolute top-3 right-2"
         @click="closeNotification()"
       />
     </div>
@@ -122,9 +122,9 @@ export default defineComponent({
 </script>
 <style scoped>
 .title {
-  text-transform: lowercase;
+  @apply lowercase;
 }
 .title::first-letter {
-  text-transform: uppercase;
+  @apply uppercase;
 }
 </style>

@@ -211,6 +211,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
+import { getPoolWeights } from './utils';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -523,7 +524,10 @@ export default defineComponent({
           id: tx.hash,
           type: 'tx',
           action: 'withdraw',
-          summary: `${total.value} from pool`,
+          summary: t('transactionSummary.withdrawFromPool', [
+            total.value,
+            getPoolWeights(props.pool)
+          ]),
           details: {
             total,
             pool: props.pool
