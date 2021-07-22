@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { merge, orderBy } from 'lodash';
 import { TransactionReceipt } from '@ethersproject/providers';
+import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 
 import LS_KEYS from '@/constants/local-storage.keys';
@@ -15,10 +16,9 @@ import { lsGet, lsSet } from '@/lib/utils';
 
 import useNotifications from './useNotifications';
 import { processedTxs } from './useEthers';
+import useNumbers from './useNumbers';
 
 import { GnosisTransactionDetails } from './trade/useGnosis';
-import useNumbers from './useNumbers';
-import { formatUnits } from '@ethersproject/units';
 
 const WEEK_MS = 86_400_000 * 7;
 
@@ -285,7 +285,7 @@ export default function useTransactions() {
   ) {
     if (receipt != null) {
       const transaction = getTransaction(id, type);
-
+      console.log(receipt);
       const updateSuccessful = updateTransaction(id, type, {
         receipt:
           type === 'tx'
