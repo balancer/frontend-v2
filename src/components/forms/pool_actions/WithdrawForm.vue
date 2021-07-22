@@ -201,6 +201,7 @@ import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -211,7 +212,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
-import { getPoolWeights } from './utils';
 
 export enum FormTypes {
   proportional = 'proportional',

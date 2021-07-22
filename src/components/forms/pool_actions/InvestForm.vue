@@ -268,6 +268,7 @@ import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -279,8 +280,6 @@ import useTokens from '@/composables/useTokens';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
-
-import { getPoolWeights } from './utils';
 
 export enum FormTypes {
   proportional = 'proportional',

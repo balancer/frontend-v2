@@ -1,4 +1,4 @@
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '../balancer/subgraph/types';
 
 export function getPoolWeights(pool: FullPool) {
   return Object.values(pool.onchain.tokens)
