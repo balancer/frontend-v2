@@ -2,7 +2,6 @@ import { Ref, onMounted, ref, computed, ComputedRef } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
-import useWeb3 from '@/composables/useWeb3';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase } from '@balancer-labs/sor2';
 
@@ -17,10 +16,8 @@ import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
-import useNotify from '@/composables/useNotify';
 import useFathom from '../useFathom';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useAccountBalances from '../useAccountBalances';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import { ETHER } from '@/constants/tokenlists';
 import { TransactionResponse } from '@ethersproject/providers';
@@ -29,7 +26,6 @@ import { Token, TokenMap } from '@/types';
 import { TradeQuote } from './types';
 import useTransactions from '../useTransactions';
 import useNumbers from '../useNumbers';
-import { APP } from '@/constants/app';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -111,13 +107,10 @@ export default function useSor({
     getProvider: getWeb3Provider,
     userNetworkConfig,
     isV1Supported
-  } = useVueWeb3();
+  } = useWeb3();
   const provider = computed(() => getWeb3Provider());
-  const { refetchBalances } = useAccountBalances();
-  const { txListener, supportsBlocknative } = useNotify();
   const { trackGoal, Goals } = useFathom();
-  const { appNetwork } = useWeb3();
-  const { txListener: ethersTxListener } = useEthers();
+  const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
 
@@ -156,7 +149,7 @@ export default function useSor({
     const subgraphUrl = configService.network.subgraph;
 
     // If V1 previously selected on another network then it uses this and returns no liquidity.
-    if (!appNetwork.supportsV1) {
+    if (!isV1Supported) {
       store.commit('app/setTradeLiquidity', LiquiditySelection.V2);
     }
 
@@ -332,80 +325,49 @@ export default function useSor({
     pools.value = sorManager.selectedPools;
   }
 
-  function blocknativeTxHandler(tx: TransactionResponse): void {
-    txListener(tx.hash, {
-      onTxConfirmed: async () => {
+  function txHandler(
+    tx: TransactionResponse,
+    action?: 'wrap' | 'unwrap' | 'trade'
+  ): void {
+    let summary = '';
+    const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
+    const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
+
+    if (action === 'wrap') {
+      summary = `Wrap ${tokenInAmountFormatted} WETH to ETH`;
+    } else if (action === 'unwrap') {
+      summary = `Unwrap ${tokenInAmountFormatted} ETH to WETH`;
+    } else {
+      summary = `${tokenInAmountFormatted} ${tokenIn?.value.symbol} -> ${tokenOutAmountFormatted} ${tokenOut?.value.symbol}`;
+    }
+
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'trade',
+      summary,
+      details: {
+        tokenInAddress: tokenInAddressInput.value,
+        tokenOutAddress: tokenOutAddressInput.value,
+        tokenInAmount: tokenInAmountInput.value,
+        tokenOutAmount: tokenOutAmountInput.value,
+        exactIn: exactIn.value,
+        quote: getQuote(),
+        priceImpact: priceImpact.value,
+        slippageBufferRate: slippageBufferRate.value
+      }
+    });
+
+    txListener(tx, {
+      onTxConfirmed: () => {
         trading.value = false;
         latestTxHash.value = tx.hash;
         trackGoal(Goals.Swapped);
-        await refetchBalances.value();
-      },
-      onTxCancel: () => {
-        trading.value = false;
       },
       onTxFailed: () => {
         trading.value = false;
       }
     });
-  }
-
-  function ethersTxHandler(tx: TransactionResponse): void {
-    ethersTxListener(
-      tx,
-      {
-        onTxConfirmed: () => {
-          trading.value = false;
-          latestTxHash.value = tx.hash;
-          trackGoal(Goals.Swapped);
-        },
-        onTxFailed: () => {
-          trading.value = false;
-        }
-      },
-      APP.IsGnosisIntegration ? true : false
-    );
-  }
-
-  function txHandler(
-    tx: TransactionResponse,
-    action?: 'wrap' | 'unwrap' | 'trade'
-  ): void {
-    if (sorConfig.enableTxHandler) {
-      if (supportsBlocknative.value) {
-        blocknativeTxHandler(tx);
-      } else {
-        ethersTxHandler(tx);
-      }
-    } else if (APP.IsGnosisIntegration) {
-      let summary = '';
-      const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
-      const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
-
-      if (action === 'wrap') {
-        summary = `Wrap ${tokenInAmountFormatted} WETH to ETH`;
-      } else if (action === 'unwrap') {
-        summary = `Unwrap ${tokenInAmountFormatted} ETH to WETH`;
-      } else {
-        summary = `${tokenInAmountFormatted} ${tokenIn?.value.symbol} -> ${tokenOutAmountFormatted} ${tokenOut?.value.symbol}`;
-      }
-
-      addTransaction({
-        id: tx.hash,
-        type: 'tx',
-        action: 'trade',
-        summary,
-        details: {
-          tokenInAddress: tokenInAddressInput.value,
-          tokenOutAddress: tokenOutAddressInput.value,
-          tokenInAmount: tokenInAmountInput.value,
-          tokenOutAmount: tokenOutAmountInput.value,
-          exactIn: exactIn.value,
-          quote: getQuote(),
-          priceImpact: priceImpact.value,
-          slippageBufferRate: slippageBufferRate.value
-        }
-      });
-    }
   }
 
   async function trade(successCallback?: () => void) {

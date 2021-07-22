@@ -91,7 +91,7 @@ import useFathom from '@/composables/useFathom';
 
 import { TradeInterface } from '@/store/modules/app';
 import { tradeLiquidityOptions } from '@/constants/options';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export enum TradeSettingsContext {
   trade,
@@ -119,7 +119,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorerLinks, isV1Supported } = useVueWeb3();
+    const { explorerLinks, isV1Supported } = useWeb3();
     const { trackGoal, Goals } = useFathom();
 
     // DATA

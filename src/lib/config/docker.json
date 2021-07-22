@@ -1,6 +1,7 @@
 {
   "key": "17",
   "chainId": 17,
+  "chainName": "Ethereum",
   "name": "Docker localhost 8545",
   "shortName": "dockerLocalhost",
   "network": "docker localhost",

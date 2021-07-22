@@ -100,7 +100,6 @@ import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
 
 import useNumbers from '@/composables/useNumbers';
-import useNotify from '@/composables/useNotify';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 
@@ -109,8 +108,10 @@ import { getOriginalAddress } from '@/services/coingecko';
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { claimRewards } from '@/services/claim';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { NetworkId } from '@/constants/network';
+import useEthers from '@/composables/useEthers';
+import useTransactions from '@/composables/useTransactions';
 
 export default defineComponent({
   name: 'AppNavClaimBtn',
@@ -131,8 +132,9 @@ export default defineComponent({
       getProvider,
       isMainnet,
       isPolygon
-    } = useVueWeb3();
-    const { txListener } = useNotify();
+    } = useWeb3();
+    const { txListener } = useEthers();
+    const { addTransaction } = useTransactions();
 
     const balPrice = computed(
       () =>
@@ -218,11 +220,26 @@ export default defineComponent({
             userClaims.value.pendingClaims,
             userClaims.value.pendingClaimsReports
           );
-          txListener(tx.hash);
 
-          await tx.wait();
-          isClaiming.value = false;
-          userClaimsQuery.refetch.value();
+          addTransaction({
+            id: tx.hash,
+            type: 'tx',
+            action: 'claim',
+            summary: `${fNum(
+              userClaims.value.availableToClaim,
+              'token_fixed'
+            )} BAL`
+          });
+
+          txListener(tx, {
+            onTxConfirmed: () => {
+              isClaiming.value = false;
+              userClaimsQuery.refetch.value();
+            },
+            onTxFailed: () => {
+              isClaiming.value = false;
+            }
+          });
         } catch (e) {
           console.log(e);
           isClaiming.value = false;

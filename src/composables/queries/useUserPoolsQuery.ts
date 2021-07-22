@@ -1,9 +1,7 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
-import { useStore } from 'vuex';
-import { flatten, isEmpty, keyBy } from 'lodash';
-import { getAddress } from '@ethersproject/address';
+import { flatten, keyBy } from 'lodash';
 
 import { bnum } from '@/lib/utils';
 
@@ -11,8 +9,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useTokens from '../useTokens';
+import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists2 from '../useTokenLists2';
 import useTokens2 from '../useTokens2';
 
@@ -29,10 +26,9 @@ export default function useUserPoolsQuery(
   const balancerSubgraph = new BalancerSubgraph();
 
   // COMPOSABLES
-  const store = useStore();
-  const { account, isWalletReady } = useVueWeb3();
   const { injectTokens } = useTokens2();
   const { loadingTokenLists } = useTokenLists2();
+  const { account, isWalletReady } = useWeb3();
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Pools.User(account));

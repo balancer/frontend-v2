@@ -1,4 +1,3 @@
-import { getProfile } from '@/lib/utils/profile';
 import { computed, inject, reactive, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
@@ -6,11 +5,22 @@ import { Web3Provider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
 import ConfigService from '../config/config.service';
 import { isAddress } from '@ethersproject/address';
-import { useStore } from 'vuex';
+import { web3Service } from './web3.service';
+import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 
+/** STATE */
+const blockNumber = ref(0);
 const isWalletSelectVisible = ref(false);
 
-export default function useVueWeb3() {
+/** MUTATIONS */
+function setBlockNumber(n: number): void {
+  blockNumber.value = n;
+}
+
+/** INIT STATE */
+rpcProviderService.initBlockListener(setBlockNumber);
+
+export default function useWeb3() {
   const {
     account,
     chainId,
@@ -26,10 +36,8 @@ export default function useVueWeb3() {
   const isV1Supported = isAddress(
     configService.network.addresses.exchangeProxy
   );
-  const store = useStore();
 
   // COMPUTED REFS + COMPUTED REFS
-  const blockNumber = computed(() => store.state.web3.blockNumber);
   const userNetworkConfig = computed(() => {
     return configService.getNetworkConfig(String(chainId.value));
   });
@@ -70,7 +78,7 @@ export default function useVueWeb3() {
 
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
     QUERY_KEYS.Account.Profile(account, userNetworkConfig),
-    () => getProfile(account.value, String(userNetworkConfig.value?.chainId)),
+    () => web3Service.getProfile(account.value),
     reactive({
       enabled: canLoadProfile
     })
@@ -110,6 +118,7 @@ export default function useVueWeb3() {
     getProvider,
     getSigner,
     disconnectWallet,
-    toggleWalletSelectModal
+    toggleWalletSelectModal,
+    setBlockNumber
   };
 }

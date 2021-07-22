@@ -4,8 +4,8 @@ import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { tokenService } from '@/services/token/token.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
 import { TokenInfoMap } from '@/types/TokenList';
+import useWeb3 from '@/services/web3/useWeb3';
 
 // TYPES
 type Response = BalanceMap;
@@ -14,7 +14,7 @@ export default function useAccountBalancesQuery(
   tokens: Ref<TokenInfoMap> = ref({}),
   options: UseQueryOptions<Response> = {}
 ) {
-  const { account, isWalletReady } = useVueWeb3();
+  const { account, isWalletReady } = useWeb3();
 
   const tokenAddresses = computed(() => Object.keys(tokens.value));
 
