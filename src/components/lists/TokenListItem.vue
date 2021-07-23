@@ -10,7 +10,7 @@
         {{ token.name }}
       </div>
     </div>
-    <span class="text-right">
+    <span class="text-right font-medium">
       <template v-if="balance > 0">
         <template v-if="balance >= 0.0001">
           {{ fNum(balance, 'token') }}
@@ -20,7 +20,7 @@
         </template>
       </template>
       <template v-else>-</template>
-      <div class="text-gray text-sm">
+      <div class="text-gray-500 text-sm font-normal">
         <template v-if="value > 0">
           {{ fNum(value, 'usd') }}
         </template>
