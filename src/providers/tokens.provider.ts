@@ -10,12 +10,7 @@ import {
 } from 'vue';
 import useTokenLists2 from '@/composables/useTokenLists2';
 import { getAddress } from '@ethersproject/address';
-import {
-  TokenInfo,
-  TokenInfoMap,
-  TokenList,
-  TokenListMap
-} from '@/types/TokenList';
+import { TokenInfoMap, TokenList } from '@/types/TokenList';
 import useConfig from '@/composables/useConfig';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useAccountBalancesQuery from '@/composables/queries/useAccountBalancesQuery';
@@ -29,19 +24,21 @@ import { pick } from 'lodash';
 /** TYPES */
 export interface TokensProviderState {
   injectedTokens: TokenInfoMap;
-  trackedTokenAddresses: string[];
+  trackedAddresses: string[];
   allowanceContracts: string[];
 }
 
 export interface TokensProviderResponse {
   injectedTokens: Ref<TokenInfoMap>;
-  trackedTokenAddresses: Ref<string[]>;
+  trackedAddresses: Ref<string[]>;
   allowanceContracts: Ref<string[]>;
   nativeToken: TokenInfoMap;
   allTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
   allowances: ComputedRef<ContractAllowancesMap>;
+  dynamicDataSuccess: ComputedRef<boolean>;
+  dynamicDataLoading: ComputedRef<boolean>;
 }
 
 /** SETUP */
@@ -60,7 +57,7 @@ export default {
     /* STATE */
     const state: TokensProviderState = reactive({
       injectedTokens: {},
-      trackedTokenAddresses: [],
+      trackedAddresses: [],
       allowanceContracts: []
     });
 
@@ -115,7 +112,7 @@ export default {
      * We should only fetch dynamic data for tokens we absolutely have to.
      */
     const trackedTokens = computed(() =>
-      pick(allTokens.value, state.trackedTokenAddresses)
+      pick(allTokens.value, state.trackedAddresses)
     );
 
     const allAddresses = computed(() => Object.keys(allTokens.value));
@@ -126,12 +123,10 @@ export default {
      * The prices, balances and allowances maps provide dynamic
      * metadata for each 'tracked' token.
      ****************************************************************/
-    const pricesQuery = useTokenPricesQuery(
-      toRef(state, 'trackedTokenAddresses')
-    );
-    const accountBalancesQuery = useAccountBalancesQuery(trackedTokens);
+    const pricesQuery = useTokenPricesQuery(allAddresses);
+    const accountBalancesQuery = useAccountBalancesQuery(allTokens);
     const accountAllowancesQuery = useAccountAllowancesQuery(
-      toRef(state, 'trackedTokenAddresses'),
+      allAddresses,
       toRef(state, 'allowanceContracts')
     );
 
@@ -147,6 +142,20 @@ export default {
         accountAllowancesQuery.data.value
           ? accountAllowancesQuery.data.value
           : {}
+    );
+
+    const dynamicDataSuccess = computed(
+      () =>
+        pricesQuery.isSuccess.value &&
+        accountBalancesQuery.isSuccess.value &&
+        accountAllowancesQuery.isSuccess.value
+    );
+
+    const dynamicDataLoading = computed(
+      () =>
+        pricesQuery.isLoading.value ||
+        accountBalancesQuery.isLoading.value ||
+        accountAllowancesQuery.isLoading.value
     );
 
     /** METHODS */
@@ -178,7 +187,9 @@ export default {
       allTokens,
       prices,
       balances,
-      allowances
+      allowances,
+      dynamicDataSuccess,
+      dynamicDataLoading
     });
 
     return () => slots.default();

@@ -11,7 +11,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import localStorageKeys from '@/constants/local-storage.keys';
 import { TokenList, TokenListMap } from '@/types/TokenList';
 import { tokenListService } from '@/services/token-list/token-list.service';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsSet } from '@/lib/utils';
 import { pick } from 'lodash';
 import { configService } from '@/services/config/config.service';
 import useTokenListsQuery from '@/composables/queries/useTokenListsQuery';
@@ -24,6 +24,7 @@ export interface TokenListsState {
 export interface TokenListsProviderResponse {
   activeListKeys: Ref<string[]>;
   loadingTokenLists: Ref<boolean>;
+  tokenListsLoaded: ComputedRef<boolean>;
   allTokenLists: ComputedRef<TokenListMap>;
   activeTokenLists: ComputedRef<TokenListMap>;
   defaultTokenList: ComputedRef<TokenList>;
@@ -45,17 +46,9 @@ export default {
   name: 'TokenListsProvider',
 
   setup(props, { slots }) {
-    /**
-     * Token list keys that have been activated in a previous session
-     * or return the Balancer default list.
-     */
-    const lsListKeys = lsGet(localStorageKeys.TokenLists.Toggled, [
-      uris.Balancer.Default
-    ]);
-
     /** STATE */
     const state: TokenListsState = reactive({
-      activeListKeys: lsListKeys
+      activeListKeys: [uris.Balancer.Default]
     });
 
     /** QUERIES */
@@ -76,6 +69,11 @@ export default {
     const loadingTokenLists = computed(
       () => tokenListsQuery.isLoading.value || tokenListsQuery.isIdle.value
     );
+
+    /**
+     * All available token lists are loaded
+     */
+    const tokenListsLoaded = computed(() => tokenListsQuery.isSuccess.value);
 
     /**
      * All active (toggled) tokenlists
@@ -155,6 +153,7 @@ export default {
       // computed
       allTokenLists,
       loadingTokenLists,
+      tokenListsLoaded,
       activeTokenLists,
       defaultTokenList,
       balancerTokenLists,

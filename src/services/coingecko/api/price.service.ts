@@ -8,6 +8,7 @@ import { TOKENS } from '@/constants/tokens';
 import { configService as _configService } from '@/services/config/config.service';
 import { invert } from 'lodash';
 import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
+import { retryPromiseWithDelay } from '@/lib/utils/promise';
 
 // TYPES
 export type Price = { [fiat: string]: number };
@@ -55,7 +56,12 @@ export class PriceService {
       Array.from(Array(pages).keys()).forEach(page => {
         const addressString = addresses.slice(max * page, max * (page + 1));
         const endpoint = `${this.baseEndpoint}/token_price/${this.platformId}?contract_addresses=${addressString}&vs_currencies=${this.fiatParam}`;
-        requests.push(this.client.get<PriceResponse>(endpoint));
+        const request = retryPromiseWithDelay(
+          this.client.get<PriceResponse>(endpoint),
+          3,
+          2000
+        );
+        requests.push(request);
       });
       const paginatedResults = await Promise.all(requests);
       return this.parsePaginatedTokens(paginatedResults);

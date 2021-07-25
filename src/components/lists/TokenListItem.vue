@@ -10,17 +10,28 @@
         {{ token.name }}
       </div>
     </div>
-    <span class="text-right font-medium">
-      <template v-if="balance > 0">
-        <template v-if="balance >= 0.0001">
-          {{ fNum(balance, 'token') }}
+    <span class="flex flex-col items-end text-right font-medium">
+      <BalLoadingNumber v-if="balanceLoading" type="token" />
+      <template v-else>
+        <template v-if="balance > 0">
+          <template v-if="balance >= 0.0001">
+            {{ fNum(balance, 'token') }}
+          </template>
+          <template v-else>
+            &#60; 0.0001
+          </template>
         </template>
-        <template v-else>
-          &#60; 0.0001
-        </template>
+        <template v-else>-</template>
       </template>
-      <template v-else>-</template>
-      <div class="text-gray-500 text-sm font-normal">
+
+      <BalLoadingNumber
+        v-if="balanceLoading"
+        type="fiat"
+        numberWidth="2"
+        numberHeight="4"
+        class="text-sm font-normal"
+      />
+      <div v-else class="text-gray-500 text-sm font-normal">
         <template v-if="value > 0">
           {{ fNum(value, 'usd') }}
         </template>
@@ -42,7 +53,8 @@ export default {
   name: 'TokenListItem',
 
   props: {
-    token: { type: Object as PropType<TokenInfo>, required: true }
+    token: { type: Object as PropType<TokenInfo>, required: true },
+    balanceLoading: { type: Boolean, default: true }
   },
 
   setup(props) {

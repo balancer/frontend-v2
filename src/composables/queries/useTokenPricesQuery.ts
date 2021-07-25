@@ -18,7 +18,7 @@ export default function useTokenPricesQuery(
   const queryKey = reactive(QUERY_KEYS.Tokens.Prices(trackedTokenAddresses));
 
   const queryFn = async () => {
-    console.log('Fetch prices');
+    console.log('Fetching', trackedTokenAddresses.value.length, 'prices');
     return await coingeckoService.prices.getTokens(trackedTokenAddresses.value);
   };
 

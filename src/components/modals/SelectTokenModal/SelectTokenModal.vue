@@ -86,7 +86,10 @@
           :buffer="100"
         >
           <a @click="onSelectToken(token.address)">
-            <TokenListItem :token="token" />
+            <TokenListItem
+              :token="token"
+              :balanceLoading="dynamicDataLoading"
+            />
           </a>
         </RecycleScroller>
         <div
@@ -115,7 +118,8 @@ import {
   toRefs,
   computed,
   PropType,
-  onMounted
+  onMounted,
+  watch
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useTokenLists2 from '@/composables/useTokenLists2';
@@ -123,7 +127,9 @@ import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
 import useTokens2 from '@/composables/useTokens2';
-import { TokenInfo } from '@/types/TokenList';
+import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+import { orderBy } from 'lodash';
+import useUserSettings from '@/composables/useUserSettings';
 
 export default defineComponent({
   components: {
@@ -161,7 +167,15 @@ export default defineComponent({
       isActiveList,
       tokenListUrl
     } = useTokenLists2();
-    const { allTokens, searchTokens } = useTokens2();
+    const {
+      allTokens,
+      searchTokens,
+      balances,
+      prices,
+      dynamicDataSuccess,
+      dynamicDataLoading
+    } = useTokens2();
+    const { currency } = useUserSettings();
 
     // COMPOSABLES
     const { t } = useI18n();
@@ -184,7 +198,7 @@ export default defineComponent({
     // METHODS
     async function onTokenSearch(query): Promise<void> {
       const results = await searchTokens(query, props.excludedTokens);
-      tokens.value = Object.values(results);
+      setTokens(Object.values(results));
     }
 
     function onSelectToken(token: string): void {
@@ -194,7 +208,7 @@ export default defineComponent({
 
     function onToggleList(uri: string): void {
       toggleTokenList(uri);
-      tokens.value = Object.values(allTokens.value);
+      setTokens(Object.values(allTokens.value));
     }
 
     function onListExit(): void {
@@ -207,8 +221,39 @@ export default defineComponent({
       data.query = '';
     }
 
+    function setTokens(_tokens: TokenInfo[]): void {
+      const tokensWithValues = _tokens.map(token => {
+        const balance = Number(balances.value[token.address]) || 0;
+        const price = prices.value[token.address]
+          ? prices.value[token.address][currency.value] || 0
+          : 0;
+        const value = balance * price;
+        return {
+          ...token,
+          price,
+          balance,
+          value
+        };
+      });
+
+      tokens.value = orderBy(
+        tokensWithValues,
+        ['value', 'balance'],
+        ['desc', 'desc']
+      );
+    }
+
     onMounted(() => {
-      tokens.value = Object.values(allTokens.value);
+      setTokens(Object.values(allTokens.value));
+    });
+
+    watch(dynamicDataSuccess, dataAvailable => {
+      console.log('Dynamic data available?', dataAvailable);
+      setTokens(tokens.value);
+    });
+
+    watch(dynamicDataLoading, isLoading => {
+      console.log('Dynamic data isLoading', isLoading);
     });
 
     return {
@@ -219,6 +264,7 @@ export default defineComponent({
       tokens,
       filteredTokenLists,
       activeTokenLists,
+      dynamicDataLoading,
       // methods
       onTokenSearch,
       onSelectToken,

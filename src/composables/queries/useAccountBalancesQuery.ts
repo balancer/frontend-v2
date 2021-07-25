@@ -6,6 +6,7 @@ import { tokenService } from '@/services/token/token.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { TokenInfoMap } from '@/types/TokenList';
 import useWeb3 from '@/services/web3/useWeb3';
+import useTokenLists2 from '../useTokenLists2';
 
 // TYPES
 type Response = BalanceMap;
@@ -15,7 +16,8 @@ export default function useAccountBalancesQuery(
   options: UseQueryOptions<Response> = {}
 ) {
   const { account, isWalletReady } = useWeb3();
-
+  const { tokenListsLoaded } = useTokenLists2();
+  const enabled = computed(() => isWalletReady.value && tokenListsLoaded.value);
   const tokenAddresses = computed(() => Object.keys(tokens.value));
 
   const queryKey = reactive(
@@ -23,12 +25,12 @@ export default function useAccountBalancesQuery(
   );
 
   const queryFn = async () => {
-    console.log('Fetch balances');
+    console.log('Fetching', tokenAddresses.value.length, 'balances');
     return await tokenService.balances.get(account.value, tokens.value);
   };
 
   const queryOptions = reactive({
-    enabled: isWalletReady,
+    enabled,
     ...options
   });
 

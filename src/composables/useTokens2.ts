@@ -28,7 +28,9 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     allTokens,
     prices,
     balances,
-    allowances
+    allowances,
+    dynamicDataSuccess,
+    dynamicDataLoading
   } = inject(TokensProviderSymbol, defaultProviderResponse);
 
   if (opts.allowanceContracts) {
@@ -77,7 +79,6 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     query: string,
     excluded: string[] = []
   ): Promise<TokenInfoMap> {
-    console.log('Search', allTokens.value);
     if (!query) return removeExcluded(allTokens.value, excluded);
 
     if (isAddress(query)) {
@@ -107,7 +108,7 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     excluded: string[]
   ): TokenInfoMap {
     return Object.keys(tokens)
-      .filter(address => excluded.includes(address))
+      .filter(address => !excluded.includes(address))
       .reduce((result, address) => {
         result[address] = tokens[address];
         return result;
@@ -131,6 +132,8 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     prices,
     balances,
     allowances,
+    dynamicDataSuccess,
+    dynamicDataLoading,
     // methods
     injectTokens,
     addAllowanceContract,
