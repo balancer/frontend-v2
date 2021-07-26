@@ -6,7 +6,7 @@ import { formatEther, formatUnits } from '@ethersproject/units';
 import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { ETHER } from '@/constants/tokenlists';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useTokenStore from '@/composables/useTokensStore';
 
 export const BalancesProviderSymbol = Symbol('BALANCES_PROVIDER');
@@ -26,7 +26,7 @@ export type BalancesProviderPayload = {
 export default {
   name: 'BalancesProvider',
   setup(props, { slots }) {
-    const { account, userNetworkConfig, isWalletReady } = useVueWeb3();
+    const { account, userNetworkConfig, isWalletReady } = useWeb3();
     const { allTokens: tokens, isLoading: isLoadingTokens } = useTokenStore();
 
     const isQueryEnabled = computed(

@@ -86,7 +86,7 @@ export default defineComponent({
 
 <style>
 .bal-popover-wrapper {
-  @apply top-full invisible opacity-0 absolute z-10 pt-3;
+  @apply top-full invisible opacity-0 absolute z-30 pt-3;
   transition: all 0.2s ease-in-out;
 }
 

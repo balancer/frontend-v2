@@ -103,7 +103,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import { formatDistanceToNow } from 'date-fns';
 import { Token } from '@/types';
 import { bnum } from '@balancer-labs/sor2/dist/bmath';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 type TokenAmount = {
@@ -157,7 +157,7 @@ export default {
   setup(props) {
     const { fNum } = useNumbers();
     const { t } = useI18n();
-    const { explorerLinks } = useVueWeb3();
+    const { explorerLinks } = useWeb3();
     const { tokens } = useTokens();
     const { upToLargeBreakpoint } = useBreakpoints();
 

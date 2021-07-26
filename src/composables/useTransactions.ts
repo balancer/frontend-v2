@@ -1,22 +1,26 @@
 import { computed, ref } from 'vue';
 import { merge, orderBy } from 'lodash';
 import { TransactionReceipt } from '@ethersproject/providers';
+import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 
 import LS_KEYS from '@/constants/local-storage.keys';
 
 import { configService } from '@/services/config/config.service';
 import { gnosisOperator } from '@/services/gnosis/operator.service';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { OrderMetaData } from '@/services/gnosis/types';
 import { gnosisExplorer } from '@/services/gnosis/explorer.service';
 
 import { lsGet, lsSet } from '@/lib/utils';
 
 import useNotifications from './useNotifications';
-import useAccountBalances from './useAccountBalances';
+import { processedTxs } from './useEthers';
+import useNumbers from './useNumbers';
 
-const DAY_MS = 86_400_000;
+import { GnosisTransactionDetails } from './trade/useGnosis';
+
+const WEEK_MS = 86_400_000 * 7;
 
 export type TransactionStatus =
   | 'pending'
@@ -46,11 +50,13 @@ export type TxReceipt = Pick<
   | 'transactionIndex'
 >;
 
+export type OrderReceipt = OrderMetaData;
+
 export type Transaction = {
   id: string;
   action: TransactionAction;
   type: TransactionType;
-  receipt?: OrderMetaData | TxReceipt;
+  receipt?: OrderReceipt | TxReceipt;
   details?: Record<string, any>;
   summary: string;
   addedTime: number;
@@ -114,7 +120,7 @@ function normalizeTxReceipt(receipt: TransactionReceipt) {
 }
 
 function isTransactionRecent(transaction: Transaction): boolean {
-  return Date.now() - transaction.addedTime < DAY_MS;
+  return Date.now() - transaction.addedTime < WEEK_MS;
 }
 
 function clearAllTransactions() {
@@ -166,9 +172,24 @@ function updateTransaction(
   return false;
 }
 
+function isSuccessfulTransaction(transaction: Transaction) {
+  if (transaction.status === 'confirmed') {
+    if (transaction.type === 'order') {
+      return (transaction.receipt as OrderReceipt)?.status === 'fulfilled';
+    } else {
+      return (transaction.receipt as TxReceipt)?.status === 1;
+    }
+  }
+
+  return false;
+}
+
 // Adapted from Uniswap code
 function shouldCheckTx(transaction: Transaction, lastBlockNumber: number) {
-  if (transaction.status === 'confirmed') {
+  if (
+    processedTxs.value.has(transaction.id) ||
+    transaction.status === 'confirmed'
+  ) {
     return false;
   }
 
@@ -196,16 +217,48 @@ function shouldCheckTx(transaction: Transaction, lastBlockNumber: number) {
 
 export default function useTransactions() {
   // COMPOSABLES
-  const { account, explorerLinks } = useVueWeb3();
-  const { getProvider: getWeb3Provider, blockNumber } = useVueWeb3();
+  const {
+    account,
+    explorerLinks,
+    getProvider: getWeb3Provider,
+    blockNumber
+  } = useWeb3();
   const { addNotification } = useNotifications();
-  const { refetchBalances } = useAccountBalances();
   const { t } = useI18n();
+  const { fNum } = useNumbers();
 
   // COMPUTED
   const provider = computed(() => getWeb3Provider());
 
   // METHODS
+  function getSettledOrderSummary(
+    transaction: Transaction,
+    receipt: OrderReceipt
+  ) {
+    const details = transaction.details as GnosisTransactionDetails;
+
+    if (details != null) {
+      const { tokenIn, tokenOut } = details;
+
+      const tokenInAmount = formatUnits(
+        receipt.executedSellAmount,
+        tokenIn.decimals
+      );
+
+      const tokenOutAmount = formatUnits(
+        receipt.executedBuyAmount,
+        tokenOut.decimals
+      );
+
+      return `${fNum(tokenInAmount, 'token')} ${tokenIn.symbol} -> ${fNum(
+        tokenOutAmount,
+        'token'
+      )} ${tokenOut.symbol}`;
+    }
+
+    return transaction.summary;
+  }
+
   function addTransaction(newTransaction: NewTransaction) {
     const transactionsMap = getTransactions();
     const txId = getId(newTransaction.id, newTransaction.type);
@@ -231,11 +284,17 @@ export default function useTransactions() {
     receipt: Transaction['receipt']
   ) {
     if (receipt != null) {
+      const transaction = getTransaction(id, type);
+
       const updateSuccessful = updateTransaction(id, type, {
         receipt:
           type === 'tx'
             ? normalizeTxReceipt(receipt as TransactionReceipt)
             : receipt,
+        summary:
+          type === 'order'
+            ? getSettledOrderSummary(transaction, receipt as OrderReceipt)
+            : transaction.summary,
         status: 'confirmed',
         confirmedTime: Date.now()
       });
@@ -252,73 +311,73 @@ export default function useTransactions() {
     const transaction = getTransaction(id, type);
 
     addNotification({
-      title: `${t(`recentActivityStatus.${transaction.status}`)} ${
-        transaction.action
-      }`,
+      title: `${t(`transactionAction.${transaction.action}`)} ${t(
+        `transactionStatus.${transaction.status}`
+      )}`,
+      message: transaction.summary,
       transactionMetadata: {
         id: transaction.id,
         status: transaction.status,
+        isSuccess: isSuccessfulTransaction(transaction),
         explorerLink: getExplorerLink(transaction.id, transaction.type)
-      },
-      message: transaction.summary
+      }
     });
   }
 
-  async function handlePendingTransactions() {
-    let shouldRefetchBalances = false;
-
-    if (pendingOrderActivity.value.length) {
-      const orders = await Promise.all(
-        pendingOrderActivity.value.map(transaction =>
-          gnosisOperator.getOrder(transaction.id)
-        )
-      );
-
-      orders.forEach((order, orderIndex) => {
-        // TODO: Once Gnosis mainnet supports "fulfilled" status - switch to it instead of amount checking.
+  function checkOrderActivity(transaction: Transaction) {
+    gnosisOperator
+      .getOrder(transaction.id)
+      .then(order => {
         if (
           order != null &&
           Number(order.executedBuyAmount) > 0 &&
           Number(order.executedSellAmount) > 0
         ) {
-          finalizeTransaction(order.uid, 'order', order);
-          shouldRefetchBalances = true;
-        } else {
-          updateTransaction(
-            pendingOrderActivity.value[orderIndex].id,
-            'order',
-            {
-              lastCheckedBlockNumber: blockNumber.value
-            }
-          );
+          finalizeTransaction(transaction.id, 'order', order);
         }
+      })
+      .catch(e =>
+        console.log(
+          '[Transactions]: Failed to fetch order information',
+          transaction,
+          e
+        )
+      )
+      .finally(() => {
+        updateTransaction(transaction.id, 'order', {
+          lastCheckedBlockNumber: blockNumber.value
+        });
       });
-    }
+  }
 
-    if (pendingTxActivity.value.length) {
-      const txs = await Promise.all(
-        pendingTxActivity.value
-          .filter(transaction => shouldCheckTx(transaction, blockNumber.value))
-          .map(transaction =>
-            provider.value.getTransactionReceipt(transaction.id)
-          )
-      );
-
-      txs.forEach((tx, txIndex) => {
+  function checkTxActivity(transaction: Transaction) {
+    provider.value
+      .getTransactionReceipt(transaction.id)
+      .then(tx => {
         if (tx != null) {
-          finalizeTransaction(tx.transactionHash, 'tx', tx);
-          shouldRefetchBalances = true;
-        } else {
-          updateTransaction(pendingTxActivity.value[txIndex].id, 'tx', {
-            lastCheckedBlockNumber: blockNumber.value
-          });
+          finalizeTransaction(transaction.id, 'tx', tx);
         }
-      });
+      })
+      .catch(e =>
+        console.log(
+          '[Transactions]: Failed to fetch tx information',
+          transaction,
+          e
+        )
+      )
+      .finally(() =>
+        updateTransaction(transaction.id, 'tx', {
+          lastCheckedBlockNumber: blockNumber.value
+        })
+      );
+  }
 
-      if (shouldRefetchBalances) {
-        refetchBalances.value();
-      }
-    }
+  async function handlePendingTransactions() {
+    pendingOrderActivity.value.forEach(checkOrderActivity);
+
+    pendingTxActivity.value
+      .filter(transaction => shouldCheckTx(transaction, blockNumber.value))
+      .forEach(checkTxActivity);
   }
 
   function getExplorerLink(id: string, type: TransactionType) {
@@ -336,6 +395,7 @@ export default function useTransactions() {
     handlePendingTransactions,
     finalizeTransaction,
     getExplorerLink,
+    isSuccessfulTransaction,
 
     // computed
     pendingTransactions,

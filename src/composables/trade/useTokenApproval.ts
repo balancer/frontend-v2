@@ -1,26 +1,38 @@
-import { useStore } from 'vuex';
-import { computed, ref, watch } from 'vue';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { parseUnits } from '@ethersproject/units';
-import { approveTokens } from '@/lib/utils/balancer/tokens';
-import useNotify from '@/composables/useNotify';
-import { ETHER } from '@/constants/tokenlists';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useAllowances from '../useAllowances';
 import { TransactionResponse } from '@ethersproject/providers';
+
+import { approveTokens } from '@/lib/utils/balancer/tokens';
+import { ETHER } from '@/constants/tokenlists';
+
+import useWeb3 from '@/services/web3/useWeb3';
+import { configService } from '@/services/config/config.service';
+
+import useAllowances from '../useAllowances';
+import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
 
-export default function useTokenApproval(tokenInAddress, amount, tokens) {
+import { TokenMap } from '@/types';
+
+export default function useTokenApproval(
+  tokenInAddress: Ref<string>,
+  amount: Ref<string>,
+  tokens: ComputedRef<TokenMap>
+) {
   const approving = ref(false);
   const approved = ref(false);
+  const { addTransaction } = useTransactions();
+  const { t } = useI18n();
 
   // COMPOSABLES
-  const store = useStore();
-  const { getProvider } = useVueWeb3();
-  const { txListener, supportsBlocknative } = useNotify();
-  const { txListener: ethersTxListener } = useEthers();
+  const { getProvider } = useWeb3();
 
-  const { config } = store.state.web3;
-  const dstList = computed(() => [config.addresses.exchangeProxy]);
+  const { txListener } = useEthers();
+
+  const dstList = computed(() => [
+    configService.network.addresses.exchangeProxy
+  ]);
   const allowanceTokens = computed(() => [tokenInAddress.value]);
   const {
     getRequiredAllowances,
@@ -48,7 +60,7 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
 
     const requiredAllowancesV1 = getRequiredAllowances({
-      dst: config.addresses.exchangeProxy,
+      dst: configService.network.addresses.exchangeProxy,
       tokens: [tokenInAddress.value],
       amounts: [tokenInAmountDenorm.toString()]
     });
@@ -70,10 +82,10 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     try {
       const [tx] = await approveTokens(
         getProvider(),
-        config.addresses.exchangeProxy,
+        configService.network.addresses.exchangeProxy,
         [tokenInAddress.value]
       );
-      txHandler(tx);
+      txHandler(tx, configService.network.addresses.exchangeProxy);
     } catch (e) {
       console.log(e);
       approving.value = false;
@@ -84,41 +96,33 @@ export default function useTokenApproval(tokenInAddress, amount, tokens) {
     console.log('[TokenApproval] Unlock V2');
     approving.value = true;
     try {
-      const [tx] = await approveTokens(getProvider(), config.addresses.vault, [
-        tokenInAddress.value
-      ]);
-      txHandler(tx);
+      const [tx] = await approveTokens(
+        getProvider(),
+        configService.network.addresses.vault,
+        [tokenInAddress.value]
+      );
+      txHandler(tx, configService.network.addresses.vault);
     } catch (e) {
       console.log(e);
       approving.value = false;
     }
   }
 
-  function txHandler(tx: TransactionResponse): void {
-    if (supportsBlocknative.value) {
-      blocknativeTxHandler(tx);
-    } else {
-      ethersTxHandler(tx);
-    }
-  }
-
-  function blocknativeTxHandler(tx: TransactionResponse): void {
-    txListener(tx.hash, {
-      onTxConfirmed: () => {
-        approving.value = false;
-        approved.value = true;
-      },
-      onTxCancel: () => {
-        approving.value = false;
-      },
-      onTxFailed: () => {
-        approving.value = false;
+  function txHandler(tx: TransactionResponse, spender: string): void {
+    addTransaction({
+      id: tx.hash,
+      type: 'tx',
+      action: 'approve',
+      summary: t('transactionSummary.approveForTrading', [
+        tokens.value[tokenInAddress.value].symbol
+      ]),
+      details: {
+        tokenAddress: tokenInAddress.value,
+        spender
       }
     });
-  }
 
-  function ethersTxHandler(tx: TransactionResponse): void {
-    ethersTxListener(tx, {
+    txListener(tx, {
       onTxConfirmed: () => {
         approving.value = false;
         approved.value = true;

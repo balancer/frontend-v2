@@ -193,26 +193,25 @@ import {
   isLessThanOrEqualTo,
   isRequired
 } from '@/lib/utils/validations';
-import { TransactionData } from 'bnc-notify';
 import { useI18n } from 'vue-i18n';
 import isEqual from 'lodash/isEqual';
 
 import useNumbers from '@/composables/useNumbers';
-import useNotify from '@/composables/useNotify';
 import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useAccountBalances from '@/composables/useAccountBalances';
+import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
+import useTransactions from '@/composables/useTransactions';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -253,15 +252,14 @@ export default defineComponent({
       getProvider,
       account,
       userNetworkConfig
-    } = useVueWeb3();
-    const { txListener, supportsBlocknative } = useNotify();
+    } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
     const { tokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
-    const { txListener: ethersTxListener } = useEthers();
-    const { refetchBalances } = useAccountBalances();
+    const { txListener } = useEthers();
+    const { addTransaction } = useTransactions();
 
     // SERVICES
     const poolExchange = computed(
@@ -507,39 +505,6 @@ export default defineComponent({
       console.log('bptIn (JS)', bptIn.value);
     }
 
-    function blocknativeTxHandler(tx: TransactionResponse): void {
-      txListener(tx.hash, {
-        onTxConfirmed: async (tx: TransactionData) => {
-          emit('success', tx);
-          data.amounts = [];
-          data.loading = false;
-          await refetchBalances.value();
-          setPropMax(true);
-        },
-        onTxCancel: () => {
-          data.loading = false;
-        },
-        onTxFailed: () => {
-          data.loading = false;
-        }
-      });
-    }
-
-    function ethersTxHandler(tx: TransactionResponse): void {
-      ethersTxListener(tx, {
-        onTxConfirmed: async (tx: TransactionResponse) => {
-          emit('success', tx);
-          data.amounts = [];
-          data.loading = false;
-          await refetchBalances.value();
-          setPropMax(true);
-        },
-        onTxFailed: () => {
-          data.loading = false;
-        }
-      });
-    }
-
     async function submit(): Promise<void> {
       if (!data.withdrawForm.validate()) return;
       try {
@@ -554,11 +519,32 @@ export default defineComponent({
           exactOut.value
         );
         console.log('Receipt', tx);
-        if (supportsBlocknative.value) {
-          blocknativeTxHandler(tx);
-        } else {
-          ethersTxHandler(tx);
-        }
+
+        addTransaction({
+          id: tx.hash,
+          type: 'tx',
+          action: 'withdraw',
+          summary: t('transactionSummary.withdrawFromPool', [
+            total.value,
+            getPoolWeights(props.pool)
+          ]),
+          details: {
+            total,
+            pool: props.pool
+          }
+        });
+
+        txListener(tx, {
+          onTxConfirmed: async (tx: TransactionResponse) => {
+            emit('success', tx);
+            data.amounts = [];
+            data.loading = false;
+            setPropMax(true);
+          },
+          onTxFailed: () => {
+            data.loading = false;
+          }
+        });
       } catch (error) {
         console.error(error);
         data.loading = false;

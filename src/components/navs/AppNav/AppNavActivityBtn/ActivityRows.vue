@@ -8,7 +8,7 @@
         class="group"
       >
         <div class="font-semibold flex items-center">
-          {{ $t(`recentActivityTypes.${transaction.action}`) }}
+          {{ $t(`transactionAction.${transaction.action}`) }}
           <BalIcon
             name="arrow-up-right"
             size="sm"
@@ -16,16 +16,19 @@
           />
         </div>
         <div
-          class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors"
+          class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors summary"
         >
           {{ transaction.summary }}
         </div>
       </BalLink>
       <div>
-        <CheckIcon
-          v-if="transaction.status === 'confirmed'"
-          class="text-green-500"
-        />
+        <template v-if="transaction.status === 'confirmed'">
+          <CheckIcon
+            v-if="isSuccessfulTransaction(transaction)"
+            class="text-green-500"
+          />
+          <BalIcon v-else name="alert-circle" class="text-red-500" />
+        </template>
         <SpinnerIcon v-else class="animate-spin text-yellow-500" />
       </div>
     </div>
@@ -50,6 +53,10 @@ export default defineComponent({
         (id: string, type: Transaction['type']) => void
       >,
       required: true
+    },
+    isSuccessfulTransaction: {
+      type: Function as PropType<(transaction: Transaction) => boolean>,
+      required: true
     }
   }
 });
@@ -60,5 +67,11 @@ export default defineComponent({
 }
 .row:last-child {
   @apply mb-0;
+}
+.summary {
+  @apply overflow-hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>

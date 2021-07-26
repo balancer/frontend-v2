@@ -1,6 +1,7 @@
 {
   "key": "1",
   "chainId": 1,
+  "chainName": "Ethereum",
   "name": "Ethereum Mainnet",
   "shortName": "Mainnet",
   "network": "homestead",

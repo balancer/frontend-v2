@@ -1,8 +1,7 @@
+import useWeb3 from '@/services/web3/useWeb3';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
-
-import useVueWeb3 from '@/services/web3/useVueWeb3';
 
 import useAccountBalances from './useAccountBalances';
 import useAllowances from './useAllowances';
@@ -13,7 +12,7 @@ export default function useWeb3Watchers() {
   // COMPOSABLES
   const store = useStore();
   const { t } = useI18n();
-  const { notify, supportsBlocknative } = useBlocknative();
+  const { blocknative, supportsBlocknative } = useBlocknative();
   const {
     appNetworkConfig,
     userNetworkConfig,
@@ -21,7 +20,7 @@ export default function useWeb3Watchers() {
     isMismatchedNetwork,
     isUnsupportedNetwork,
     blockNumber
-  } = useVueWeb3();
+  } = useWeb3();
   const { refetchAllowances } = useAllowances();
   const { refetchBalances } = useAccountBalances();
   const { handlePendingTransactions } = useTransactions();
@@ -33,14 +32,13 @@ export default function useWeb3Watchers() {
     () => account.value,
     (newAccount, oldAccount) => {
       if (supportsBlocknative.value) {
-        if (oldAccount) notify.unsubscribe(oldAccount);
+        if (oldAccount) blocknative.unsubscribe(oldAccount);
         if (!newAccount) return;
 
-        const { emitter } = notify.account(newAccount);
+        const { emitter } = blocknative.account(newAccount);
         emitter.on('txConfirmed', () => {
           refetchBalances.value();
           refetchAllowances.value();
-          return false;
         });
       }
     }

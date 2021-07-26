@@ -2,9 +2,7 @@
   <div>
     <div v-if="account" class="flex items-center">
       <AppNavClaimBtn v-if="liquidityMiningSupported" />
-      <AppNavActivityBtn
-        v-if="!upToSmallBreakpoint && APP.IsGnosisIntegration"
-      />
+      <AppNavActivityBtn v-if="!upToSmallBreakpoint" />
       <AppNavAccountBtn />
     </div>
     <BalBtn
@@ -26,16 +24,14 @@
 import { defineComponent, computed } from 'vue';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { APP } from '@/constants/app';
 
 import useFathom from '@/composables/useFathom';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
+import useWeb3 from '@/services/web3/useWeb3';
 import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
 
 export default defineComponent({
@@ -58,7 +54,7 @@ export default defineComponent({
       toggleWalletSelectModal,
       isMainnet,
       isPolygon
-    } = useVueWeb3();
+    } = useWeb3();
 
     // COMPUTED
     const liquidityMiningSupported = computed(
@@ -82,8 +78,7 @@ export default defineComponent({
       connectWallet,
       toggleWalletSelectModal,
       // constants
-      EXTERNAL_LINKS,
-      APP
+      EXTERNAL_LINKS
     };
   }
 });
