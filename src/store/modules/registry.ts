@@ -39,13 +39,6 @@ const getters = {
     ether.price24HChange =
       rootState.market.prices[ether.address.toLowerCase()]?.price24HChange || 0;
     ether.chainId = Number(process.env.VUE_APP_NETWORK || 1);
-    if (rootState.web3.account) {
-      ether.balanceDenorm = rootState.account.balances.ether || '0';
-      ether.balance = formatUnits(ether.balanceDenorm, ether.decimals);
-      ether.value = ether.balance * ether.price;
-      ether.value24HChange =
-        (parseFloat(ether.value) / 100) * ether.price24HChange;
-    }
     return ether;
   },
 
@@ -84,19 +77,6 @@ const getters = {
         rootState.market.prices[address]?.price24HChange || 0;
       return token;
     });
-
-    if (rootState?.web3?.account) {
-      tokens = tokens.map(token => {
-        const address = token.address.toLowerCase();
-        token.balanceDenorm = rootState.account.balances[address] || '0';
-        token.balance = formatUnits(token.balanceDenorm, token.decimals);
-        token.value = token.balance * token.price;
-        token.value24HChange =
-          (parseFloat(token.value) / 100) * token.price24HChange;
-        return token;
-      });
-      tokens = orderBy(tokens, ['value', 'balance'], ['desc', 'desc']);
-    }
 
     // Query filters
 
