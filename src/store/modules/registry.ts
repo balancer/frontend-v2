@@ -1,6 +1,4 @@
-import { formatUnits } from '@ethersproject/units';
 import { getAddress, isAddress } from '@ethersproject/address';
-import orderBy from 'lodash/orderBy';
 import { loadTokenlist } from '@/lib/utils/tokenlists';
 import TOKEN_LISTS, { ETHER } from '@/constants/tokenlists';
 import { clone, lsGet, lsSet } from '@/lib/utils';
