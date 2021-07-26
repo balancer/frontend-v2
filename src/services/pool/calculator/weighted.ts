@@ -4,15 +4,8 @@ import { parseUnits, formatUnits } from '@ethersproject/units';
 import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 
-import {
-  _exactTokensInForBPTOut,
-  _exactBPTInForTokenOut,
-  _bptInForExactTokenOut,
-  _bptInForExactTokensOut
-} from '@balancer-labs/sor2/dist/pools/weightedPool/weightedMathEvm';
+import * as SDK from '@georgeroman/balancer-v2-pools';
 import { BPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2/dist/frontendHelpers/weightedHelpers';
-import { fnum } from '@balancer-labs/sor2/dist/math/lib/fixedPoint';
-import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
 
 export default class Weighted {
   calc: Calculator;
@@ -21,59 +14,56 @@ export default class Weighted {
     this.calc = calculator;
   }
 
-  public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
-    const balances = this.calc.poolTokenBalances.map(b => fnum(b.toString()));
-    const weights = this.calc.poolTokenWeights.map(w => fnum(w.toString()));
+  public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
+    const balances = this.calc.poolTokenBalances.map(b => bnum(b.toString()));
+    const weights = this.calc.poolTokenWeights.map(w => bnum(w.toString()));
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
       this.calc.poolTokenDecimals
     );
-    const amounts = denormAmounts.map(a => fnum(a.toString()));
+    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
-    return _exactTokensInForBPTOut(
+    return SDK.WeightedMath._calcBptOutGivenExactTokensIn(
       balances,
       weights,
       amounts,
-      fnum(this.calc.poolTotalSupply.toString()),
-      fnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolTotalSupply.toString()),
+      bnum(this.calc.poolSwapFee.toString())
     );
   }
 
-  public bptInForExactTokensOut(tokenAmounts: string[]): FixedPointNumber {
-    const balances = this.calc.poolTokenBalances.map(b => fnum(b.toString()));
-    const weights = this.calc.poolTokenWeights.map(w => fnum(w.toString()));
+  public bptInForExactTokensOut(tokenAmounts: string[]): BigNumber {
+    const balances = this.calc.poolTokenBalances.map(b => bnum(b.toString()));
+    const weights = this.calc.poolTokenWeights.map(w => bnum(w.toString()));
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
       this.calc.poolTokenDecimals
     );
-    const amounts = denormAmounts.map(a => fnum(a.toString()));
+    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
-    return _bptInForExactTokensOut(
+    return SDK.WeightedMath._calcBptInGivenExactTokensOut(
       balances,
       weights,
       amounts,
-      fnum(this.calc.poolTotalSupply.toString()),
-      fnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolTotalSupply.toString()),
+      bnum(this.calc.poolSwapFee.toString())
     );
   }
 
-  public bptInForExactTokenOut(
-    amount: string,
-    tokenIndex: number
-  ): FixedPointNumber {
-    const tokenBalance = fnum(
+  public bptInForExactTokenOut(amount: string, tokenIndex: number): BigNumber {
+    const tokenBalance = bnum(
       this.calc.poolTokenBalances[tokenIndex].toString()
     );
-    const tokenNormalizedWeight = fnum(
+    const tokenNormalizedWeight = bnum(
       this.calc.poolTokenWeights[tokenIndex].toString()
     );
-    const bptAmountIn = fnum(
+    const bptAmountIn = bnum(
       parseUnits(amount, this.calc.poolTokenDecimals[tokenIndex]).toString()
     );
-    const bptTotalSupply = fnum(this.calc.poolTotalSupply.toString());
-    const swapFee = fnum(this.calc.poolSwapFee.toString());
+    const bptTotalSupply = bnum(this.calc.poolTotalSupply.toString());
+    const swapFee = bnum(this.calc.poolSwapFee.toString());
 
-    return _bptInForExactTokenOut(
+    return SDK.WeightedMath._calcBptInGivenExactTokenOut(
       tokenBalance,
       tokenNormalizedWeight,
       bptAmountIn,
@@ -85,23 +75,23 @@ export default class Weighted {
   public exactBPTInForTokenOut(
     bptAmount: string,
     tokenIndex: number
-  ): FixedPointNumber {
-    const tokenBalance = fnum(
+  ): BigNumber {
+    const tokenBalance = bnum(
       this.calc.poolTokenBalances[tokenIndex].toString()
     );
-    const tokenNormalizedWeight = fnum(
+    const tokenNormalizedWeight = bnum(
       this.calc.poolTokenWeights[tokenIndex].toString()
     );
-    const bptAmountIn = fnum(
+    const bptAmountIn = bnum(
       parseUnits(bptAmount, this.calc.poolDecimals).toString()
     );
 
-    return _exactBPTInForTokenOut(
+    return SDK.WeightedMath._calcTokenOutGivenExactBptIn(
       tokenBalance,
       tokenNormalizedWeight,
       bptAmountIn,
-      fnum(this.calc.poolTotalSupply.toString()),
-      fnum(this.calc.poolSwapFee.toString())
+      bnum(this.calc.poolTotalSupply.toString()),
+      bnum(this.calc.poolSwapFee.toString())
     );
   }
 
