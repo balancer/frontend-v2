@@ -1,4 +1,4 @@
-import { inject, onBeforeMount, Ref, watch } from 'vue';
+import { inject, onBeforeMount, Ref } from 'vue';
 import {
   AllowancesProviderSymbol,
   AllowancesProviderPayload

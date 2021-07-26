@@ -1,4 +1,4 @@
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/providers';
@@ -18,7 +18,7 @@ import { TokenMap } from '@/types';
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,
   amount: Ref<string>,
-  tokens: ComputedRef<TokenMap>
+  tokens: Ref<TokenMap>
 ) {
   const approving = ref(false);
   const approved = ref(false);

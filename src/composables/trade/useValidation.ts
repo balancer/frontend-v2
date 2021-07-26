@@ -1,4 +1,4 @@
-import { computed, ComputedRef, Ref } from 'vue';
+import { computed, Ref } from 'vue';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
@@ -21,7 +21,7 @@ export default function useValidation(
   tokenInAmount: Ref<string>,
   tokenOutAddress: Ref<string>,
   tokenOutAmount: Ref<string>,
-  tokens: ComputedRef<TokenMap>
+  tokens: Ref<TokenMap>
 ) {
   const { isWalletReady } = useWeb3();
 
