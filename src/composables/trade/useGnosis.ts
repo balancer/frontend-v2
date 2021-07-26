@@ -223,6 +223,8 @@ export default function useGnosis({
         }
       });
 
+      resetState();
+
       if (successCallback != null) {
         successCallback();
       }
@@ -233,15 +235,21 @@ export default function useGnosis({
     }
   }
 
-  function handleAssetChange() {
+  function resetState(shouldResetFees = true) {
     resetErrors();
     resetWarnings();
-    resetFees();
+
+    if (shouldResetFees) {
+      resetFees();
+    }
+  }
+
+  function handleAssetChange() {
+    resetState();
   }
 
   async function handleAmountChange() {
-    resetErrors();
-    resetWarnings();
+    resetState(false);
 
     const amountToExchange = exactIn.value
       ? tokenInAmountScaled.value

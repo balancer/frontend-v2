@@ -232,6 +232,8 @@ export default defineComponent({
     // METHODS
     function trade() {
       trading.trade(() => {
+        tokenInAmount.value = '';
+        tokenOutAmount.value = '';
         modalTradePreviewIsOpen.value = false;
       });
     }
