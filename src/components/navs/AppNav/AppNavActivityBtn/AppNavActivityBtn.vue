@@ -19,10 +19,6 @@
           class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
         >
           <h5>{{ $t('recentActivityTitle') }}</h5>
-          <ActivityCounter
-            v-if="pendingTransactions.length > 0"
-            :count="pendingTransactions.length"
-          />
         </div>
       </template>
       <div :class="['p-3', { 'h-72 overflow-auto': transactions.length > 5 }]">
