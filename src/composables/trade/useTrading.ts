@@ -163,8 +163,7 @@ export default function useTrading(
 
   function handleAssetChange() {
     if (isGnosisTrade.value) {
-      gnosis.resetErrors();
-      gnosis.resetFees();
+      gnosis.handleAssetChange();
     }
   }
 

@@ -31,6 +31,15 @@
         :action-label="error.label"
         block
       />
+      <BalAlert
+        v-else-if="warning"
+        class="p-3 mb-4"
+        type="warning"
+        size="sm"
+        :title="warning.header"
+        :description="warning.body"
+        block
+      />
       <BalBtn
         v-if="trading.isLoading.value"
         :loading="true"
@@ -174,15 +183,15 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      if (
-        trading.isGnosisTrade.value &&
-        trading.gnosis.errors.value.feeExceedsPrice
-      ) {
-        return {
-          header: t('gnosisErrors.lowAmount.header'),
-          body: t('gnosisErrors.lowAmount.body')
-        };
+      if (trading.isGnosisTrade.value) {
+        if (trading.gnosis.errors.value.feeExceedsPrice) {
+          return {
+            header: t('gnosisErrors.lowAmount.header'),
+            body: t('gnosisErrors.lowAmount.body')
+          };
+        }
       }
+
       switch (errorMessage.value) {
         case TradeValidation.NO_NATIVE_ASSET:
           return {
@@ -205,6 +214,19 @@ export default defineComponent({
         default:
           return undefined;
       }
+    });
+
+    const warning = computed(() => {
+      if (trading.isGnosisTrade.value) {
+        if (trading.gnosis.warnings.value.highFees) {
+          return {
+            header: t('gnosisWarnings.highFees.header'),
+            body: t('gnosisWarnings.highFees.body')
+          };
+        }
+      }
+
+      return undefined;
     });
 
     // METHODS
@@ -260,6 +282,7 @@ export default defineComponent({
       // computed
       title,
       error,
+      warning,
       errorMessage,
       isRequired,
       tradeDisabled,

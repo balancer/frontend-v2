@@ -23,7 +23,16 @@ import useNumbers from '../useNumbers';
 
 // TODO: get correct app id
 const GNOSIS_APP_ID = 2;
-const appData = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
+const APP_DATA = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
+const HIGH_FEE_THRESHOLD = 0.2;
+const INITIAL_STATE = {
+  errors: {
+    feeExceedsPrice: false
+  },
+  warnings: {
+    highFees: false
+  }
+};
 
 export type GnosisTransactionDetails = {
   tokenIn: Token;
@@ -72,9 +81,8 @@ export default function useGnosis({
 
   // DATA
   const feeQuote = ref<FeeInformation | null>(null);
-  const errors = ref({
-    feeExceedsPrice: false
-  });
+  const errors = ref(INITIAL_STATE.errors);
+  const warnings = ref(INITIAL_STATE.warnings);
   const updatingQuotes = ref(false);
   const trading = ref(false);
 
@@ -93,22 +101,33 @@ export default function useGnosis({
 
   // METHODS
   function resetErrors() {
-    errors.value = {
-      feeExceedsPrice: false
-    };
+    errors.value = INITIAL_STATE.errors;
+  }
+
+  function resetWarnings() {
+    warnings.value = INITIAL_STATE.warnings;
   }
 
   function resetFees() {
     feeQuote.value = null;
   }
 
-  function getQuote(): TradeQuote {
+  function getFeeAmount() {
     const feeAmountInToken = feeQuote.value?.amount ?? '0';
     const feeAmountOutToken = tokenOutAmountScaled.value
       .div(tokenInAmountScaled.value)
       .times(feeAmountInToken)
       .integerValue(BigNumber.ROUND_DOWN)
       .toString();
+
+    return {
+      feeAmountInToken,
+      feeAmountOutToken
+    };
+  }
+
+  function getQuote(): TradeQuote {
+    const { feeAmountInToken, feeAmountOutToken } = getFeeAmount();
 
     const maximumInAmount = tokenInAmountScaled.value
       .plus(feeAmountInToken)
@@ -147,7 +166,7 @@ export default function useGnosis({
           ? quote.minimumOutAmount
           : tokenOutAmountScaled.value.toString(),
         validTo: calculateValidTo(appTransactionDeadline.value),
-        appData,
+        appData: APP_DATA,
         feeAmount: quote.feeAmountInToken,
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
@@ -214,7 +233,16 @@ export default function useGnosis({
     }
   }
 
+  function handleAssetChange() {
+    resetErrors();
+    resetWarnings();
+    resetFees();
+  }
+
   async function handleAmountChange() {
+    resetErrors();
+    resetWarnings();
+
     const amountToExchange = exactIn.value
       ? tokenInAmountScaled.value
       : tokenOutAmountScaled.value;
@@ -231,7 +259,6 @@ export default function useGnosis({
       return;
     }
 
-    resetErrors();
     updatingQuotes.value = true;
 
     try {
@@ -268,6 +295,14 @@ export default function useGnosis({
                 formatUnits(priceQuoteResult.amount, tokenIn.value.decimals)
               ).toFixed(6, BigNumber.ROUND_DOWN);
             }
+
+            const { feeAmountInToken, feeAmountOutToken } = getFeeAmount();
+
+            warnings.value.highFees = bnum(
+              exactIn.value ? feeAmountInToken : feeAmountOutToken
+            )
+              .div(amountToExchange)
+              .gt(HIGH_FEE_THRESHOLD);
           }
         }
       }
@@ -281,13 +316,14 @@ export default function useGnosis({
     // methods
     trade,
     handleAmountChange,
-    resetErrors,
+    handleAssetChange,
     resetFees,
 
     // computed
     feeQuote,
     updatingQuotes,
     errors,
+    warnings,
     hasErrors,
     trading,
     getQuote

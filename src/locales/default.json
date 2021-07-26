@@ -274,6 +274,12 @@
             "body": "The fees for this transactions exceeds the amount you want to trade."
         }
     },
+    "gnosisWarnings": {
+        "highFees": {
+            "header": "The fees on this transaction exceed 20% of the trade amount.",
+            "body": "You can still proceed with the trade but a high percentage of it will be consumed by trade fees."
+        }
+    },
     "unknown": "Unknown",
     "unknownPoolType": "Unknown pool type",
     "unlock": "Unlock",
