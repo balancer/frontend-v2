@@ -270,11 +270,10 @@
     "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
     "gnosisErrors": {
         "lowAmount": {
-            "header": "Low amount",
-            "body": "Fees exceeds from amount"
-
+            "header": "Your trade amount is too low",
+            "body": "The fees for this transactions exceeds the amount you want to trade."
         }
-    }, 
+    },
     "unknown": "Unknown",
     "unknownPoolType": "Unknown pool type",
     "unlock": "Unlock",
