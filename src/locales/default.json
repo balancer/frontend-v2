@@ -264,7 +264,7 @@
     "tradeLiquidity": "Trade liquidity",
     "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
     "transactionDeadline": "Transaction deadline",
-    "transactionDeadlineTooltip": "Your swap expires and will not execute if it is pending for longer than the selected duration. Only executed swaps incur fees.",
+    "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
     "unavailableOnNetwork": "Sorry! Balancer is not available on this network",
     "unavailableOnNetworkWithName": "Sorry! Balancer is not available on {0}",
     "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
