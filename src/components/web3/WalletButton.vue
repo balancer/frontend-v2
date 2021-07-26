@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Wallet, WalletNameMap } from '@/services/web3/web3.plugin';
 import { defineComponent, PropType } from 'vue';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 export default defineComponent({
   props: {
     wallet: {
@@ -24,7 +24,7 @@ export default defineComponent({
     }
   },
   setup() {
-    const { connectWallet } = useVueWeb3();
+    const { connectWallet } = useWeb3();
     return {
       WalletNameMap,
       connectWallet

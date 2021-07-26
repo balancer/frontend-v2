@@ -26,8 +26,7 @@ import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import useWeb3 from '@/services/web3/useWeb3';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 
 import Notifications from '@/components/notifications/Notifications.vue';
@@ -46,22 +45,16 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     useWeb3Watchers();
-    const { isWalletSelectVisible, toggleWalletSelectModal } = useVueWeb3();
+    const { isWalletSelectVisible, toggleWalletSelectModal } = useWeb3();
     const store = useStore();
     const route = useRoute();
 
     // COMPUTED
     const isHomePage = computed(() => route.path === '/');
 
-    // METHODS
-
-    const setBlockNumber = (blockNumber: number) =>
-      store.commit('web3/setBlockNumber', blockNumber);
-
     // CALLBACKS
     onBeforeMount(() => {
       store.dispatch('app/init');
-      rpcProviderService.initBlockListener(setBlockNumber);
     });
 
     return {

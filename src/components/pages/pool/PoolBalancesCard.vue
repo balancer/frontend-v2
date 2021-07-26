@@ -62,8 +62,8 @@ import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import numeral from 'numeral';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-import useWeb3 from '@/composables/useWeb3';
+import { shortenLabel } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
@@ -78,8 +78,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorerLinks } = useVueWeb3();
-    const { shortenLabel } = useWeb3();
+    const { explorerLinks } = useWeb3();
     const { t } = useI18n();
     const { upToLargeBreakpoint } = useBreakpoints();
 

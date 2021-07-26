@@ -1,9 +1,11 @@
-import { APP } from '@/constants/app';
+import { ref } from 'vue';
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/providers';
+
 import useAccountBalances from './useAccountBalances';
+import useBlocknative from './useBlocknative';
 import useTransactions from './useTransactions';
 
 type TxCallback = (
@@ -11,9 +13,13 @@ type TxCallback = (
   receipt?: TransactionReceipt
 ) => void;
 
+// keep a record of processed txs
+export const processedTxs = ref<Set<string>>(new Set(''));
+
 export default function useEthers() {
   const { finalizeTransaction } = useTransactions();
   const { refetchBalances } = useAccountBalances();
+  const { supportsBlocknative } = useBlocknative();
 
   async function txListener(
     tx: TransactionResponse,
@@ -21,22 +27,26 @@ export default function useEthers() {
       onTxConfirmed: TxCallback;
       onTxFailed: TxCallback;
     },
-    shouldRefetchBalances = false
+    shouldRefetchBalances = true
   ) {
+    processedTxs.value.add(tx.hash);
+
     try {
       const receipt = await tx.wait();
       // attempt to finalize transaction so that the pending tx watcher won't check the tx again.
-      if (APP.IsGnosisIntegration && receipt != null) {
+      if (receipt != null) {
         finalizeTransaction(tx.hash, 'tx', receipt);
       }
       callbacks.onTxConfirmed(tx);
-      if (shouldRefetchBalances) {
+      if (shouldRefetchBalances && !supportsBlocknative.value) {
         refetchBalances.value();
       }
     } catch (error) {
       console.error(error);
       callbacks.onTxFailed(tx);
     }
+
+    processedTxs.value.delete(tx.hash);
   }
 
   return { txListener };

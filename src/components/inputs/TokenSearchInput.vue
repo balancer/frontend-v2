@@ -69,7 +69,7 @@ import { sortBy, take } from 'lodash';
 import { TOKENS } from '@/constants/tokens';
 import { ETHER } from '@/constants/tokenlists';
 import { getAddress } from '@ethersproject/address';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { TokenMap } from '@/types';
 import useTokens from '@/composables/useTokens';
 
@@ -95,7 +95,7 @@ export default defineComponent({
       balances,
       isIdle: isNotFetchingBalances
     } = useAccountBalances();
-    const { account } = useVueWeb3();
+    const { account } = useWeb3();
 
     // sorted by biggest bag balance, limited to biggest 5
     const sortedBalances = computed(() => {

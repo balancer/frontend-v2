@@ -26,7 +26,7 @@ import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
 import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { getOriginalAddress } from '@/services/coingecko';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { TOKENS } from '@/constants/tokens';
 
 export default defineComponent({
@@ -47,7 +47,7 @@ export default defineComponent({
 
   setup(props) {
     const store = useStore();
-    const { appNetworkConfig } = useVueWeb3();
+    const { appNetworkConfig } = useWeb3();
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
 

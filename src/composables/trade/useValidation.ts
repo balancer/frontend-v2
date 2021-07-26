@@ -1,26 +1,29 @@
-import { computed } from 'vue';
-import { ETHER } from '@/constants/tokenlists';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import { computed, ComputedRef, Ref } from 'vue';
 
-const MIN_ETH_REQUIRED = 0.0001;
+import useWeb3 from '@/services/web3/useWeb3';
+import { configService } from '@/services/config/config.service';
+
+import { TokenMap } from '@/types';
+
+const MIN_NATIVE_ASSET_REQUIRED = 0.0001;
 
 export enum TradeValidation {
   VALID,
   NO_ACCOUNT,
   EMPTY,
-  NO_ETHER,
+  NO_NATIVE_ASSET,
   NO_BALANCE,
   NO_LIQUIDITY
 }
 
 export default function useValidation(
-  tokenInAddress,
-  tokenInAmount,
-  tokenOutAddress,
-  tokenOutAmount,
-  tokens
+  tokenInAddress: Ref<string>,
+  tokenInAmount: Ref<string>,
+  tokenOutAddress: Ref<string>,
+  tokenOutAmount: Ref<string>,
+  tokens: ComputedRef<TokenMap>
 ) {
-  const { isWalletReady } = useVueWeb3();
+  const { isWalletReady } = useWeb3();
 
   const tokensAmountsValid = computed(
     () =>
@@ -34,13 +37,16 @@ export default function useValidation(
 
     if (!tokensAmountsValid.value) return TradeValidation.EMPTY;
 
-    const eth = tokens.value[ETHER.address];
-    const ethBalance = parseFloat(eth.balance);
-    if (ethBalance < MIN_ETH_REQUIRED) {
-      return TradeValidation.NO_ETHER;
+    const nativeAsset = tokens.value[configService.network.nativeAsset.address];
+    const nativeAssetBalance = parseFloat(nativeAsset.balance);
+    if (nativeAssetBalance < MIN_NATIVE_ASSET_REQUIRED) {
+      return TradeValidation.NO_NATIVE_ASSET;
     }
 
-    if (!tokenIn?.balance || tokenIn.balance < parseFloat(tokenInAmount.value))
+    if (
+      !tokenIn?.balance ||
+      parseFloat(tokenIn.balance) < parseFloat(tokenInAmount.value)
+    )
       return TradeValidation.NO_BALANCE;
 
     if (
