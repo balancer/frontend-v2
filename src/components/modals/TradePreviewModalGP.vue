@@ -134,13 +134,15 @@
               Calculated on confirmation
             </div>
           </div>
-          <div class="summary-item-row" v-if="trading.isGnosisTrade.value">
+          <div class="summary-item-row">
             <div>{{ $t('tradeSummary.tradeFees') }}</div>
             <div>
               {{
-                trading.exactIn.value
-                  ? `-${summary.tradeFees}`
-                  : `+${summary.tradeFees}`
+                trading.isGnosisTrade.value
+                  ? trading.exactIn.value
+                    ? `-${summary.tradeFees}`
+                    : `+${summary.tradeFees}`
+                  : summary.tradeFees
               }}
             </div>
           </div>
@@ -150,7 +152,7 @@
             class="w-full p-3 rounded-b-lg bg-white text-sm dark:bg-gray-800"
           >
             <div class="summary-item-row font-medium">
-              <div>
+              <div class="w-64">
                 {{
                   trading.exactIn.value
                     ? $t('tradeSummary.exactIn.totalAfterFees')

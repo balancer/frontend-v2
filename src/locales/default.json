@@ -224,7 +224,7 @@
         "exactIn": {
             "title": "Trade from {0} details",
             "totalBeforeFees": "Total to receive before gas and fees",
-            "totalAfterFees": "Total expected after gas and fees",
+            "totalAfterFees": "Total expected after fees",
             "totalWithSlippage": "The least you’ll get at {0} slippage"
         },
         "exactOut": {
