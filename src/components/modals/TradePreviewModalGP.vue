@@ -156,7 +156,7 @@
           </div>
         </template>
       </BalCard>
-      <BalCard noPad shadow="none">
+      <BalCard noPad shadow="none" v-if="approvalTxCount > 1">
         <template v-slot:header>
           <div
             class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
