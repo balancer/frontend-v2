@@ -100,7 +100,11 @@ import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
+import { configService } from '@/services/config/config.service';
+
 import TradePairGP from './TradePairGP.vue';
+
+const { nativeAsset } = configService.network;
 
 export default defineComponent({
   components: {
@@ -178,10 +182,13 @@ export default defineComponent({
         };
       }
       switch (errorMessage.value) {
-        case TradeValidation.NO_ETHER:
+        case TradeValidation.NO_NATIVE_ASSET:
           return {
-            header: t('noEth'),
-            body: t('noEthDetailed')
+            header: t('noNativeAsset', [nativeAsset.symbol]),
+            body: t('noNativeAssetDetailed', [
+              nativeAsset.symbol,
+              configService.network.chainName
+            ])
           };
         case TradeValidation.NO_BALANCE:
           return {

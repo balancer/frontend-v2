@@ -1,4 +1,4 @@
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 import { useQuery } from 'vue-query';
 import { getAllowances } from '@/lib/utils/balancer/tokens';
 import getProvider from '@/lib/utils/provider';
@@ -17,7 +17,7 @@ const dstAllowanceMap = ref({});
 
 // THE CONTENTS OF THIS WILL BE REPLACED/ALTERED WITH THE REGISTRY REFACTOR
 export default function useAllowances(payload?: UseAccountPayload) {
-  const { userNetworkConfig, account } = useVueWeb3();
+  const { userNetworkConfig, account } = useWeb3();
   const { tokens: allTokens } = useTokens();
   const provider = getProvider(String(userNetworkConfig.value?.chainId));
   // filter out ether and any bad addresses

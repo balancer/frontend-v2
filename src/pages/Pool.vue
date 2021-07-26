@@ -130,7 +130,7 @@ import { useRouter } from 'vue-router';
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 interface PoolPageData {
   id: string;
@@ -153,7 +153,7 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const { fNum } = useNumbers();
-    const { isWalletReady } = useVueWeb3();
+    const { isWalletReady } = useWeb3();
     const queryClient = useQueryClient();
     const poolQuery = usePoolQuery(route.params.id as string);
     const poolSnapshotsQuery = usePoolSnapshotsQuery(
@@ -161,7 +161,7 @@ export default defineComponent({
       30
     );
 
-    const { blockNumber } = useVueWeb3();
+    const { blockNumber } = useWeb3();
 
     // DATA
     const data = reactive<PoolPageData>({

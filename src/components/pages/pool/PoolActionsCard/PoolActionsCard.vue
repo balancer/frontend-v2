@@ -52,7 +52,7 @@ import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/composables/useWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   name: 'PoolActionsCard',
@@ -75,7 +75,7 @@ export default defineComponent({
     // COMPOSABLES
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
-    const { explorer } = useWeb3();
+    const { explorerLinks: explorer } = useWeb3();
 
     // DATA
     const tabs = [

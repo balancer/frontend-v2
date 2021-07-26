@@ -1,10 +1,11 @@
 import { computed, Ref, ref } from 'vue';
 import { parseUnits } from '@ethersproject/units';
+import { useI18n } from 'vue-i18n';
 
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
-import useVueWeb3 from '@/services/web3/useVueWeb3';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import useTokens from '../useTokens';
 import useAllowances from '../useAllowances';
@@ -16,11 +17,12 @@ export default function useTokenApprovalGP(
   amount: Ref<string>
 ) {
   // COMPOSABLES
-  const { getProvider } = useVueWeb3();
+  const { getProvider } = useWeb3();
   const provider = getProvider();
   const { tokens } = useTokens();
-  const { txListener: ethersTxListener } = useEthers();
+  const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
+  const { t } = useI18n();
 
   // DATA
   const approving = ref(false);
@@ -73,14 +75,13 @@ export default function useTokenApprovalGP(
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: tokenInSymbol,
+        summary: t('transactionSummary.approveForTrading', [tokenInSymbol]),
         details: {
           tokenAddress: tokenInAddress.value,
-          amount: amount.value,
           spender: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
         }
       });
-      ethersTxListener(tx, {
+      txListener(tx, {
         onTxConfirmed: () => {
           approving.value = false;
           approved.value = true;

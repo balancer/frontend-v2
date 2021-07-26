@@ -6,8 +6,8 @@ import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 
 import { bnum } from '@/lib/utils';
 
-import useVueWeb3 from '@/services/web3/useVueWeb3';
-import { FeeInformation } from '@/services/gnosis/types';
+import useWeb3 from '@/services/web3/useWeb3';
+import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
 import {
   calculateValidTo,
   signOrder,
@@ -24,6 +24,22 @@ import useNumbers from '../useNumbers';
 // TODO: get correct app id
 const GNOSIS_APP_ID = 2;
 const appData = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
+
+export type GnosisTransactionDetails = {
+  tokenIn: Token;
+  tokenOut: Token;
+  tokenInAddress: string;
+  tokenOutAddress: string;
+  tokenInAmount: string;
+  tokenOutAmount: string;
+  exactIn: boolean;
+  quote: TradeQuote;
+  slippageBufferRate: number;
+  order: {
+    validTo: OrderMetaData['validTo'];
+    partiallyFillable: OrderMetaData['partiallyFillable'];
+  };
+};
 
 type Props = {
   exactIn: Ref<boolean>;
@@ -50,7 +66,7 @@ export default function useGnosis({
 }: Props) {
   // COMPOSABLES
   const store = useStore();
-  const { account, getSigner } = useVueWeb3();
+  const { account, getSigner } = useWeb3();
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
 
@@ -153,11 +169,16 @@ export default function useGnosis({
         owner: account.value
       });
 
-      const summary = `${fNum(tokenInAmountInput.value, 'token')} ${
-        tokenIn.value.symbol
-      } -> ${fNum(tokenOutAmountInput.value, 'token')} ${
-        tokenOut.value.symbol
-      }`;
+      const tokenInAmountEst = exactIn.value ? '' : '~';
+      const tokenOutAmountEst = exactIn.value ? '~' : '';
+
+      const summary = `${tokenInAmountEst}${fNum(
+        tokenInAmountInput.value,
+        'token'
+      )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum(
+        tokenOutAmountInput.value,
+        'token'
+      )} ${tokenOut.value.symbol}`;
 
       const { validTo, partiallyFillable } = unsignedOrder;
 
@@ -167,6 +188,8 @@ export default function useGnosis({
         action: 'trade',
         summary,
         details: {
+          tokenIn: tokenIn.value,
+          tokenOut: tokenOut.value,
           tokenInAddress: tokenInAddressInput.value,
           tokenOutAddress: tokenOutAddressInput.value,
           tokenInAmount: tokenInAmountInput.value,

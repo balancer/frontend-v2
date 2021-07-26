@@ -85,7 +85,7 @@ const getters = {
       return token;
     });
 
-    if (rootState.web3.account) {
+    if (rootState?.web3?.account) {
       tokens = tokens.map(token => {
         const address = token.address.toLowerCase();
         token.balanceDenorm = rootState.account.balances[address] || '0';
@@ -209,8 +209,6 @@ const actions = {
       if (meta) injected.push({ ...meta, injected: true });
     });
     commit('setInjected', injected);
-    await dispatch('account/getBalances', null, { root: true });
-    await dispatch('account/getAllowances', { tokens }, { root: true });
     await dispatch('market/loadPrices', tokens, { root: true });
   },
 

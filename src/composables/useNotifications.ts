@@ -11,9 +11,10 @@ export type Notification = {
   transactionMetadata?: {
     id: string;
     status: TransactionStatus;
+    isSuccess: boolean;
     explorerLink: string;
   };
-  title?: string;
+  title: string;
   message: string;
   autoCloseAfterMs?: number; // set 0 to disable
   addedTime?: number;
