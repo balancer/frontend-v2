@@ -16,7 +16,7 @@
           />
         </div>
         <div
-          class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors"
+          class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors summary"
         >
           {{ transaction.summary }}
         </div>
@@ -67,5 +67,11 @@ export default defineComponent({
 }
 .row:last-child {
   @apply mb-0;
+}
+.summary {
+  @apply overflow-hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>

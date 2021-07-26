@@ -1,5 +1,5 @@
 <template>
-  <BalPopover no-pad @show="popoverOpened = true" @hide="popoverOpened = false">
+  <BalPopover no-pad>
     <template v-slot:activator>
       <BalBtn
         color="gray"
@@ -9,9 +9,7 @@
         circle
         class="mr-2 p-1 relative"
       >
-        <ActivityIcon
-          v-if="pendingTransactions.length === 0 || popoverOpened"
-        />
+        <ActivityIcon v-if="pendingTransactions.length === 0" />
         <ActivityCounter v-else :count="pendingTransactions.length" />
       </BalBtn>
     </template>
@@ -21,10 +19,6 @@
           class="p-3 w-full flex items-center justify-between border-b dark:border-gray-900"
         >
           <h5>{{ $t('recentActivityTitle') }}</h5>
-          <ActivityCounter
-            v-if="pendingTransactions.length > 0"
-            :count="pendingTransactions.length"
-          />
         </div>
       </template>
       <div :class="['p-3', { 'h-72 overflow-auto': transactions.length > 5 }]">
@@ -49,19 +43,19 @@
         </template>
         <template v-else>{{ $t('noRecentActivity') }}</template>
       </div>
-      <template v-if="transactions.length > 0" v-slot:footer>
+      <!-- <template v-if="transactions.length > 0" v-slot:footer>
         <div class="w-full p-3 rounded-b-lg bg-white dark:bg-gray-800 text-sm">
           <a @click="clearAllTransactions()" class="text-blue-500">
-            {{ $t('clearAllTransactions') }}
+            {{ $t('clearTransactions') }}
           </a>
         </div>
-      </template>
+      </template> -->
     </BalCard>
   </BalPopover>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent } from 'vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '@/composables/useTransactions';
@@ -78,9 +72,6 @@ export default defineComponent({
   },
 
   setup() {
-    // DATA
-    const popoverOpened = ref(false);
-
     // COMPOSABLES
     const { upToLargeBreakpoint } = useBreakpoints();
     const { isLoadingProfile, profile, account } = useWeb3();
@@ -102,9 +93,6 @@ export default defineComponent({
     );
 
     return {
-      // data
-      popoverOpened,
-
       // methods
       clearAllTransactions,
       getExplorerLink,

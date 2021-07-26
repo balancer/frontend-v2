@@ -1,44 +1,51 @@
 <template>
   <div
-    class="relative p-3 border rounded bg-white dark:bg-gray-800 shadow-lg text-sm dark:text-white dark:border-gray-850"
+    class="relative p-3 border rounded bg-white dark:bg-gray-800 shadow-lg text-sm dark:text-white dark:border-gray-850 w-64"
   >
-    <div class="flex justify-between group">
+    <div class="justify-between group">
       <BalLink
         v-if="notification.transactionMetadata"
         :href="notification.transactionMetadata.explorerLink"
         external
         noStyle
       >
-        <div v-if="notification.title" class="font-semibold flex items-center">
-          {{ notification.title }}
+        <div class="font-semibold flex items-center mb-1">
+          <span class="title">{{ notification.title }}</span>
           <BalIcon
             name="arrow-up-right"
             size="sm"
             class="ml-1 text-gray-400 dark:text-gray-600 group-hover:text-pink-500 transition-colors"
           />
         </div>
-        <div>{{ notification.message }}</div>
+        <div class="message">{{ notification.message }}</div>
       </BalLink>
       <div v-else>
-        <div v-if="notification.title" class="font-semibold">
+        <div class="font-semibold title mb-1">
           {{ notification.title }}
         </div>
-        <div>{{ notification.message }}</div>
+        <div class="message">{{ notification.message }}</div>
       </div>
       <BalCloseIcon
-        class="cursor-pointer text-black dark:text-white"
+        class="cursor-pointer text-black dark:text-white flex-shrink-0 absolute top-3 right-2"
         @click="closeNotification()"
       />
     </div>
     <div
-      class="absolute bottom-0 left-0 opacity-80 w-0 transition duration-300 ease-linear h-1 bg-yellow-600 dark:bg-yellow-500"
+      :class="progressClasses"
       :style="{ width: `${(progress * 100).toFixed(0)}%` }"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, PropType, ref } from 'vue';
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  PropType,
+  ref
+} from 'vue';
 import { TransitionPresets, useTransition } from '@vueuse/core';
 
 import useNotifications, { Notification } from '@/composables/useNotifications';
@@ -87,14 +94,43 @@ export default defineComponent({
       }
     });
 
+    // COMPUTED
+    const progressClasses = computed(() => {
+      let bgClasses = 'bg-yellow-600 dark:bg-yellow-500';
+      if (props.notification.transactionMetadata?.status === 'confirmed') {
+        bgClasses = props.notification.transactionMetadata.isSuccess
+          ? 'bg-green-500 dark:bg-green-500'
+          : 'bg-red-500 dark:bg-red-500';
+      }
+
+      return `
+          absolute bottom-0 left-0 opacity-80 w-0 transition duration-300 ease-linear h-1 ${bgClasses}
+        `;
+    });
+
     return {
       // methods
       closeNotification,
 
       // computed
       notifications,
+      progressClasses,
       progress
     };
   }
 });
 </script>
+<style scoped>
+.title {
+  @apply lowercase;
+}
+.title::first-letter {
+  @apply uppercase;
+}
+.message {
+  @apply overflow-hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+</style>

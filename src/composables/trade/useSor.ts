@@ -4,6 +4,7 @@ import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase } from '@balancer-labs/sor2';
+import { useI18n } from 'vue-i18n';
 
 import { scale, bnum } from '@/lib/utils';
 import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
@@ -113,6 +114,7 @@ export default function useSor({
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
+  const { t } = useI18n();
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
@@ -334,9 +336,9 @@ export default function useSor({
     const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
 
     if (action === 'wrap') {
-      summary = `Wrap ${tokenInAmountFormatted} WETH to ETH`;
+      summary = t('transactionSummary.wrapETH', [tokenInAmountFormatted]);
     } else if (action === 'unwrap') {
-      summary = `Unwrap ${tokenInAmountFormatted} ETH to WETH`;
+      summary = t('transactionSummary.unwrapETH', [tokenInAmountFormatted]);
     } else {
       summary = `${tokenInAmountFormatted} ${tokenIn?.value.symbol} -> ${tokenOutAmountFormatted} ${tokenOut?.value.symbol}`;
     }
@@ -347,6 +349,8 @@ export default function useSor({
       action: 'trade',
       summary,
       details: {
+        tokenIn: tokenIn?.value,
+        tokenOut: tokenOut?.value,
         tokenInAddress: tokenInAddressInput.value,
         tokenOutAddress: tokenOutAddressInput.value,
         tokenInAmount: tokenInAmountInput.value,

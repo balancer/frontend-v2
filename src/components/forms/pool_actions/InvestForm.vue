@@ -268,6 +268,7 @@ import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -575,7 +576,10 @@ export default defineComponent({
           id: tx.hash,
           type: 'tx',
           action: 'invest',
-          summary: `${total.value} to pool`,
+          summary: t('transactionSummary.investInPool', [
+            total.value,
+            getPoolWeights(props.pool)
+          ]),
           details: {
             total,
             pool: props.pool

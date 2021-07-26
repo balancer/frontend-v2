@@ -201,6 +201,7 @@ import useSlippage from '@/composables/useSlippage';
 
 import PoolExchange from '@/services/pool/exchange';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -523,7 +524,10 @@ export default defineComponent({
           id: tx.hash,
           type: 'tx',
           action: 'withdraw',
-          summary: `${total.value} from pool`,
+          summary: t('transactionSummary.withdrawFromPool', [
+            total.value,
+            getPoolWeights(props.pool)
+          ]),
           details: {
             total,
             pool: props.pool
