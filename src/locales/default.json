@@ -76,8 +76,6 @@
     "explore": "Explore",
     "explorePools": "Explore pools",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
-    "expectedReceiveNoSlippage": "Expected to receive with no slippage",
-    "expectedSellNoSlippage": "Expected to sell with no slippage",
     "feesTime": "Fees ({0})",
     "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every trade utilizing the Liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
     "filter": "Filter",
@@ -87,7 +85,6 @@
     "fixedSwapFeeLabel": "Fixed swap fees: <b>{0}</b>",
     "flashLoanFee": "Flash loan fee",
     "goToBalancerV1Site": "Go to the Balancer V1 site ->",
-    "gasCosts": "Gas costs",
     "highGasFees": "High gas fees? Here's a helping hand",
     "highPriceImpact": "High price impact",
     "highPriceImpactDetailed": "This trade is significantly moving the market price.",
@@ -124,9 +121,7 @@
     "manageLists": "Manage lists",
     "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
     "max": "Max",
-    "maxSoldWithSlippage": "Max sold with {0} slippage",
     "menu": "Menu",
-    "minReceivedWithSlippage": "Min received with {0} slippage",
     "month": "month",
     "months": "months",
     "mustBeAtLeast": "must be at least {0} characters",
@@ -225,6 +220,23 @@
         "wrapETH": "Wrap {0} ETH to WETH",
         "unwrapETH": "Unwrap {0} WETH to ETH"
     },
+    "tradeSummary": {
+        "exactIn": {
+            "title": "Trade from {0} details",
+            "totalBeforeFees": "Total to receive before gas and fees",
+            "totalAfterFees": "Total expected after gas and fees",
+            "totalWithSlippage": "The least you’ll get at {0} slippage"
+        },
+        "exactOut": {
+            "title": "Trade to {0} details",
+            "totalBeforeFees": "Total to trade before gas and fees",
+            "totalAfterFees": "Total expected to trade after fees",
+            "totalWithSlippage": "The most you’ll spend to get 100 DAI at 1.00% slippage"
+        },
+        "gasCosts": "Estimated gas costs",
+        "tradeFees": "Trade fees",
+        "approveOnBalancer": "Approve {0} to be traded on Balancer"
+    },
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
     "seeMore": "See more",
@@ -246,7 +258,6 @@
     "swapFee": "Swap fee",
     "swapFeeAPR": "Swap fees APR",
     "symbol": "Symbol",
-    "solverFees": "Solver fees",
     "theme": "Theme",
     "threeMonths": "3M",
     "token": "Token",

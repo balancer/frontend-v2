@@ -78,7 +78,17 @@
           <div
             class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
           >
-            <div class="font-semibold">{{ $t('summary') }}</div>
+            <div class="font-semibold">
+              {{
+                trading.exactIn.value
+                  ? $t('tradeSummary.exactIn.title', [
+                      trading.tokenIn.value.symbol
+                    ])
+                  : $t('tradeSummary.exactOut.title', [
+                      trading.tokenIn.value.symbol
+                    ])
+              }}
+            </div>
             <div class="flex divide-x dark:divide-gray-500 text-xs uppercase">
               <div
                 :class="[
@@ -103,25 +113,35 @@
         </template>
         <div class="p-3 text-sm">
           <div class="summary-item-row">
-            <div>{{ $t('amountBeforeFees') }}</div>
+            <div>
+              {{
+                trading.exactIn.value
+                  ? $t('tradeSummary.exactIn.totalBeforeFees')
+                  : $t('tradeSummary.exactIn.totalBeforeFees')
+              }}
+            </div>
             <div>
               {{ summary.amountBeforeFees }}
             </div>
           </div>
           <div class="summary-item-row">
-            <div>{{ $t('gasCosts') }}</div>
+            <div>{{ $t('tradeSummary.gasCosts') }}</div>
             <div v-if="trading.isGnosisTrade.value" class="text-green-400">
-              {{ fNum('0', showSummaryInFiat ? 'usd' : 'token') }}
+              -{{ showSummaryInFiat ? fNum('0', 'usd') : '0.0 ETH' }}
             </div>
             <div v-else>
               <!-- TODO: in order to calculate this I need to get gasLimit of the transaction + gwei price -->
               Calculated on confirmation
             </div>
           </div>
-          <div class="summary-item-row">
-            <div>{{ $t('solverFees') }}</div>
+          <div class="summary-item-row" v-if="trading.isGnosisTrade.value">
+            <div>{{ $t('tradeSummary.tradeFees') }}</div>
             <div>
-              {{ summary.solverFees }}
+              {{
+                trading.exactIn.value
+                  ? `-${summary.tradeFees}`
+                  : `+${summary.tradeFees}`
+              }}
             </div>
           </div>
         </div>
@@ -133,20 +153,24 @@
               <div>
                 {{
                   trading.exactIn.value
-                    ? $t('expectedReceiveNoSlippage')
-                    : $t('expectedSellNoSlippage')
+                    ? $t('tradeSummary.exactIn.totalAfterFees')
+                    : $t('tradeSummary.exactOut.totalAfterFees')
                 }}
               </div>
               <div>
                 {{ summary.totalWithoutSlippage }}
               </div>
             </div>
-            <div class="summary-item-row">
-              <div>
+            <div class="summary-item-row text-gray-500 dark:text-gray-400">
+              <div class="w-64">
                 {{
                   trading.exactIn.value
-                    ? $t('minReceivedWithSlippage', [slippageRatePercent])
-                    : $t('maxSoldWithSlippage', [slippageRatePercent])
+                    ? $t('tradeSummary.exactIn.totalWithSlippage', [
+                        slippageRatePercent
+                      ])
+                    : $t('tradeSummary.exactOut.totalWithSlippage', [
+                        slippageRatePercent
+                      ])
                 }}
               </div>
               <div>
@@ -156,7 +180,7 @@
           </div>
         </template>
       </BalCard>
-      <BalCard noPad shadow="none" v-if="approvalTxCount > 1">
+      <BalCard noPad shadow="none">
         <template v-slot:header>
           <div
             class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
@@ -186,7 +210,11 @@
             </div>
             <div class="ml-3">
               <span v-if="isApproved">{{ $t('approved') }}</span>
-              <span v-else>{{ $t('approve') }}</span>
+              <span v-else>{{
+                $t('tradeSummary.approveOnBalancer', [
+                  trading.tokenIn.value.symbol
+                ])
+              }}</span>
             </div>
           </div>
           <div class="flex items-center">
@@ -194,7 +222,7 @@
               {{ trading.requiresApproval.value ? 2 : 1 }}
             </div>
             <div class="ml-3">
-              {{ $t('trade') }} {{ tokenInFiatValue }}
+              {{ $t('trade') }} {{ tradeFiatValue }}
               {{ trading.tokenIn.value.symbol }} ->
               {{ trading.tokenOut.value.symbol }}
             </div>
@@ -297,14 +325,14 @@ export default defineComponent({
         !props.trading.isWrapOrUnwrap.value
     );
 
-    const summary = computed(() => {
+    const summaryItems = computed(() => {
       if (!showSummary.value) {
         return;
       }
 
       const summaryItems = {
         amountBeforeFees: '',
-        solverFees: '',
+        tradeFees: '',
         totalWithoutSlippage: '',
         totalWithSlippage: ''
       };
@@ -321,12 +349,12 @@ export default defineComponent({
 
       if (exactIn) {
         summaryItems.amountBeforeFees = tokenOutAmountInput;
-        summaryItems.solverFees = formatUnits(
+        summaryItems.tradeFees = formatUnits(
           quote.feeAmountOutToken,
           tokenOut.decimals
         );
         summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
-          .minus(summaryItems.solverFees)
+          .minus(summaryItems.tradeFees)
           .toString();
         summaryItems.totalWithSlippage = formatUnits(
           quote.minimumOutAmount,
@@ -334,12 +362,12 @@ export default defineComponent({
         );
       } else {
         summaryItems.amountBeforeFees = tokenInAmountInput;
-        summaryItems.solverFees = formatUnits(
+        summaryItems.tradeFees = formatUnits(
           quote.feeAmountInToken,
           tokenIn.decimals
         );
         summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
-          .plus(summaryItems.solverFees)
+          .plus(summaryItems.tradeFees)
           .toString();
         summaryItems.totalWithSlippage = formatUnits(
           quote.maximumInAmount,
@@ -347,8 +375,21 @@ export default defineComponent({
         );
       }
 
+      return summaryItems;
+    });
+
+    const summary = computed(() => {
+      if (!showSummary.value) {
+        return;
+      }
+
+      const exactIn = props.trading.exactIn.value;
+
+      const tokenIn = props.trading.tokenIn.value;
+      const tokenOut = props.trading.tokenOut.value;
+
       if (showSummaryInFiat.value) {
-        return mapValues(summaryItems, itemValue =>
+        return mapValues(summaryItems.value, itemValue =>
           fNum(
             toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
             'usd'
@@ -356,13 +397,29 @@ export default defineComponent({
         );
       } else {
         return mapValues(
-          summaryItems,
+          summaryItems.value,
           itemValue =>
             `${fNum(itemValue, 'token')} ${
               exactIn ? tokenOut.symbol : tokenIn.symbol
             }`
         );
       }
+    });
+
+    const tradeFiatValue = computed(() => {
+      if (showSummary.value && !props.trading.exactIn.value) {
+        return fNum(
+          toFiat(
+            summaryItems.value?.totalWithoutSlippage ?? 0,
+            props.trading.exactIn.value
+              ? props.trading.tokenOut.value.address
+              : props.trading.tokenIn.value.address
+          ),
+          'usd'
+        );
+      }
+
+      return tokenInFiatValue.value;
     });
 
     const { approving, isApproved, approve } = useTokenApprovalGP(
@@ -399,7 +456,8 @@ export default defineComponent({
       slippageRatePercent,
       showSummary,
       showTradeRoute,
-      approvalTxCount
+      approvalTxCount,
+      tradeFiatValue
     };
   }
 });
