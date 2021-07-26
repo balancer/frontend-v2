@@ -222,8 +222,8 @@
         "claimBAL": "{0} BAL",
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
-        "wrapETH": "Wrap {0} WETH to ETH",
-        "unwrapETH": "Unwrap {0} ETH to WETH"
+        "wrapETH": "Wrap {0} ETH to WETH",
+        "unwrapETH": "Unwrap {0} WETH to ETH"
     },
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
