@@ -85,7 +85,7 @@
                       trading.tokenIn.value.symbol
                     ])
                   : $t('tradeSummary.exactOut.title', [
-                      trading.tokenIn.value.symbol
+                      trading.tokenOut.value.symbol
                     ])
               }}
             </div>
@@ -117,7 +117,7 @@
               {{
                 trading.exactIn.value
                   ? $t('tradeSummary.exactIn.totalBeforeFees')
-                  : $t('tradeSummary.exactIn.totalBeforeFees')
+                  : $t('tradeSummary.exactOut.totalBeforeFees')
               }}
             </div>
             <div>
@@ -169,6 +169,9 @@
                         slippageRatePercent
                       ])
                     : $t('tradeSummary.exactOut.totalWithSlippage', [
+                        `${fNum(trading.tokenOutAmountInput.value, 'token')} ${
+                          trading.tokenOut.value.symbol
+                        }`,
                         slippageRatePercent
                       ])
                 }}

@@ -231,7 +231,7 @@
             "title": "Trade to {0} details",
             "totalBeforeFees": "Total to trade before gas and fees",
             "totalAfterFees": "Total expected to trade after fees",
-            "totalWithSlippage": "The most you’ll spend to get 100 DAI at 1.00% slippage"
+            "totalWithSlippage": "The most you’ll spend to get {0} at {1} slippage"
         },
         "gasCosts": "Estimated gas costs",
         "tradeFees": "Trade fees",
