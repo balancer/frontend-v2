@@ -101,11 +101,11 @@ export default function useGnosis({
 
   // METHODS
   function resetErrors() {
-    errors.value = INITIAL_STATE.errors;
+    errors.value = { ...INITIAL_STATE.errors };
   }
 
   function resetWarnings() {
-    warnings.value = INITIAL_STATE.warnings;
+    warnings.value = { ...INITIAL_STATE.warnings };
   }
 
   function resetFees() {
