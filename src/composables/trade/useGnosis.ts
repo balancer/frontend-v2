@@ -317,8 +317,6 @@ export default function useGnosis({
               errors.value.priceExceedsBalance = bnum(
                 formatUnits(maximumInAmount, tokenIn.value.decimals)
               ).gt(tokenIn.value.balance);
-
-              console.log(maximumInAmount, tokenIn.value.balance);
             }
           }
         }
