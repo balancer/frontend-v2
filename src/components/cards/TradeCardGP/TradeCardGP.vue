@@ -91,12 +91,14 @@ import { useRouter } from 'vue-router';
 
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
 import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useNumbers from '@/composables/useNumbers';
 
 import { ETHER } from '@/constants/tokenlists';
 import { TOKENS } from '@/constants/tokens';
@@ -127,6 +129,7 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
+    const { fNum } = useNumbers();
 
     // DATA
     const exactIn = ref(true);
@@ -183,17 +186,8 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      if (trading.isGnosisTrade.value) {
-        if (trading.gnosis.errors.value.feeExceedsPrice) {
-          return {
-            header: t('gnosisErrors.lowAmount.header'),
-            body: t('gnosisErrors.lowAmount.body')
-          };
-        }
-      }
-
       switch (errorMessage.value) {
-        case TradeValidation.NO_NATIVE_ASSET:
+        case TradeValidation.NO_NATIVE_ASSET: {
           return {
             header: t('noNativeAsset', [nativeAsset.symbol]),
             body: t('noNativeAssetDetailed', [
@@ -201,19 +195,49 @@ export default defineComponent({
               configService.network.chainName
             ])
           };
-        case TradeValidation.NO_BALANCE:
+        }
+        case TradeValidation.NO_BALANCE: {
           return {
             header: t('insufficientBalance'),
             body: t('insufficientBalanceDetailed')
           };
-        case TradeValidation.NO_LIQUIDITY:
+        }
+        case TradeValidation.NO_LIQUIDITY: {
           return {
             header: t('insufficientLiquidity'),
             body: t('insufficientLiquidityDetailed')
           };
+        }
         default:
-          return undefined;
       }
+
+      if (trading.isGnosisTrade.value) {
+        if (trading.gnosis.errors.value.feeExceedsPrice) {
+          return {
+            header: t('gnosisErrors.lowAmount.header'),
+            body: t('gnosisErrors.lowAmount.body')
+          };
+        }
+        if (trading.gnosis.errors.value.priceExceedsBalance) {
+          return {
+            header: t('gnosisErrors.lowBalance.header', [
+              trading.tokenIn.value.symbol
+            ]),
+            body: t('gnosisErrors.lowBalance.body', [
+              trading.tokenIn.value.symbol,
+              fNum(
+                formatUnits(
+                  trading.getQuote().maximumInAmount,
+                  trading.tokenIn.value.decimals
+                ),
+                'token'
+              )
+            ])
+          };
+        }
+      }
+
+      return undefined;
     });
 
     const warning = computed(() => {

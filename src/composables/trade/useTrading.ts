@@ -29,6 +29,10 @@ export default function useTrading(
   const { blockNumber, userNetworkConfig } = useWeb3();
 
   // COMPUTED
+  const slippageBufferRate = computed(() =>
+    parseFloat(store.state.app.slippage)
+  );
+
   const isWrap = computed(
     () =>
       tokenInAddressInput.value === ETHER.address &&
@@ -116,7 +120,8 @@ export default function useTrading(
       enableTxHandler: isBalancerTrade.value
     },
     tokenIn,
-    tokenOut
+    tokenOut,
+    slippageBufferRate
   });
 
   const gnosis = useGnosis({
@@ -128,7 +133,8 @@ export default function useTrading(
     tokenInAmountScaled,
     tokenOutAmountScaled,
     tokenIn,
-    tokenOut
+    tokenOut,
+    slippageBufferRate
   });
 
   // initial loading
@@ -186,6 +192,10 @@ export default function useTrading(
     if (isGnosisTrade.value && !gnosis.hasErrors.value) {
       gnosis.handleAmountChange();
     }
+  });
+
+  watch(slippageBufferRate, () => {
+    handleAmountChange();
   });
 
   return {

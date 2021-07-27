@@ -51,6 +51,7 @@ type Props = {
   };
   tokenIn?: ComputedRef<Token>;
   tokenOut?: ComputedRef<Token>;
+  slippageBufferRate: ComputedRef<number>;
 };
 
 export type UseSor = ReturnType<typeof useSor>;
@@ -72,7 +73,8 @@ export default function useSor({
     enableTxHandler: true
   },
   tokenIn,
-  tokenOut
+  tokenOut,
+  slippageBufferRate
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
@@ -136,10 +138,6 @@ export default function useSor({
       fetchPools();
     }
   }, 30 * 1e3);
-
-  const slippageBufferRate = computed(() =>
-    parseFloat(store.state.app.slippage)
-  );
 
   async function initSor(): Promise<void> {
     const poolsUrlV1 = `${

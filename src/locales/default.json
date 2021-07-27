@@ -282,7 +282,11 @@
     "gnosisErrors": {
         "lowAmount": {
             "header": "Your trade amount is too low",
-            "body": "The fees for this transactions exceeds the amount you want to trade."
+            "body": "The fees for this transaction exceeds the amount you want to trade."
+        },
+        "lowBalance": {
+            "header": "Insufficient {0} balance",
+            "body": "The fees and slippage set for this transaction exceeds the {0} balance you have. You need at least {1} {0} to proceed."
         }
     },
     "gnosisWarnings": {

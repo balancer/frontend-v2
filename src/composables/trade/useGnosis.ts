@@ -27,7 +27,8 @@ const APP_DATA = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
 const HIGH_FEE_THRESHOLD = 0.2;
 const INITIAL_STATE = {
   errors: {
-    feeExceedsPrice: false
+    feeExceedsPrice: false,
+    priceExceedsBalance: false
   },
   warnings: {
     highFees: false
@@ -60,6 +61,7 @@ type Props = {
   tokenOutAmountScaled: ComputedRef<BigNumber>;
   tokenIn: ComputedRef<Token>;
   tokenOut: ComputedRef<Token>;
+  slippageBufferRate: ComputedRef<number>;
 };
 
 export default function useGnosis({
@@ -71,7 +73,8 @@ export default function useGnosis({
   tokenInAmountScaled,
   tokenOutAmountScaled,
   tokenIn,
-  tokenOut
+  tokenOut,
+  slippageBufferRate
 }: Props) {
   // COMPOSABLES
   const store = useStore();
@@ -85,10 +88,6 @@ export default function useGnosis({
   const warnings = ref(INITIAL_STATE.warnings);
   const updatingQuotes = ref(false);
   const trading = ref(false);
-
-  const slippageBufferRate = computed(() =>
-    parseFloat(store.state.app.slippage)
-  );
 
   // COMPUTED
   const appTransactionDeadline = computed<number>(
@@ -298,19 +297,29 @@ export default function useGnosis({
               tokenOutAmountInput.value = bnum(
                 formatUnits(priceQuoteResult.amount, tokenOut.value.decimals)
               ).toFixed(6, BigNumber.ROUND_DOWN);
+
+              const { feeAmountInToken } = getQuote();
+
+              warnings.value.highFees = bnum(feeAmountInToken)
+                .div(amountToExchange)
+                .gt(HIGH_FEE_THRESHOLD);
             } else {
               tokenInAmountInput.value = bnum(
                 formatUnits(priceQuoteResult.amount, tokenIn.value.decimals)
               ).toFixed(6, BigNumber.ROUND_DOWN);
+
+              const { feeAmountOutToken, maximumInAmount } = getQuote();
+
+              warnings.value.highFees = bnum(feeAmountOutToken)
+                .div(amountToExchange)
+                .gt(HIGH_FEE_THRESHOLD);
+
+              errors.value.priceExceedsBalance = bnum(
+                formatUnits(maximumInAmount, tokenIn.value.decimals)
+              ).gt(tokenIn.value.balance);
+
+              console.log(maximumInAmount, tokenIn.value.balance);
             }
-
-            const { feeAmountInToken, feeAmountOutToken } = getFeeAmount();
-
-            warnings.value.highFees = bnum(
-              exactIn.value ? feeAmountInToken : feeAmountOutToken
-            )
-              .div(amountToExchange)
-              .gt(HIGH_FEE_THRESHOLD);
           }
         }
       }
