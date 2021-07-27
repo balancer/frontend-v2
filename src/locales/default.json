@@ -286,7 +286,7 @@
         },
         "lowBalance": {
             "header": "Insufficient {0} balance",
-            "body": "The fees and slippage set for this transaction exceeds the {0} balance you have. You need at least {1} {0} to proceed."
+            "body": "The fees and potential slippage (up to {2}) set for this trade exceeds your {0} balance. You need at least {1} {0} to proceed."
         }
     },
     "gnosisWarnings": {

@@ -222,6 +222,8 @@ export default function useTrading(
     tokenInAmountInput,
     tokenOutAddressInput,
     tokenOutAmountInput,
+    slippageBufferRate,
+
     // methods
     getQuote,
     trade,

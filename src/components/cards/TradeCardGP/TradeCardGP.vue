@@ -245,7 +245,8 @@ export default defineComponent({
                   trading.tokenIn.value.decimals
                 ),
                 'token'
-              )
+              ),
+              fNum(trading.slippageBufferRate.value, 'percent')
             ])
           };
         }
