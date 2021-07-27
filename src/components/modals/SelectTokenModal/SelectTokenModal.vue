@@ -108,7 +108,7 @@ import { defineComponent, reactive, toRefs, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
-import useTokenLists from '@/composables/useTokensStore';
+import useTokenStore from '@/composables/useTokensStore';
 // import useTokenLists2 from '@/composables/useTokenLists2';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
@@ -147,15 +147,18 @@ export default defineComponent({
       isActiveList,
       listMap,
       activeTokenLists
-    } = useTokenLists();
-    const { tokens: tokenMap } = useTokens(data);
-    const tokens = computed(() => Object.values(tokenMap.value));
+    } = useTokenStore();
+
+    const { tokens: tokenMap } = useTokens(toRefs(data));
+    const tokens = computed(() => {
+      return Object.values(tokenMap.value);
+    });
     // const {
     //   approvedTokenLists,
     //   toggleList,
     //   toggled: toggledTokenLists,
     //   isToggled: isToggledList
-    // } = useTokenLists2();
+    // } = useTokenStore2();
 
     // COMPOSABLES
     const store = useStore();
