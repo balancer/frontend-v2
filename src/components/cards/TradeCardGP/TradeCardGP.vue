@@ -30,6 +30,7 @@
         :description="error.body"
         :action-label="error.label"
         block
+        @actionClick="handleErrorButtonClick"
       />
       <BalAlert
         v-else-if="warning"
@@ -138,6 +139,9 @@ export default defineComponent({
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
     const modalTradePreviewIsOpen = ref(false);
+    const dismissedErrors = ref({
+      highPriceImpact: false
+    });
 
     const tradeCardShadow = computed(() => {
       switch (bp.value) {
@@ -167,11 +171,21 @@ export default defineComponent({
       trading.tokens
     );
 
-    const tradeDisabled = computed(
+    const isHighPriceImpact = computed(
       () =>
-        errorMessage.value !== TradeValidation.VALID ||
-        (trading.isGnosisTrade.value && trading.gnosis.hasErrors.value)
+        trading.sor.errors.value.highPriceImpact &&
+        !dismissedErrors.value.highPriceImpact
     );
+
+    const tradeDisabled = computed(() => {
+      const hasValidationErrors = errorMessage.value !== TradeValidation.VALID;
+      const hasGnosisErrors =
+        trading.isGnosisTrade.value && trading.gnosis.hasErrors.value;
+      const hasBalancerErrors =
+        trading.isBalancerTrade.value && isHighPriceImpact.value;
+
+      return hasValidationErrors || hasGnosisErrors || hasBalancerErrors;
+    });
 
     useTokenApprovalGP(tokenInAddress, tokenInAmount);
 
@@ -235,6 +249,14 @@ export default defineComponent({
             ])
           };
         }
+      } else if (trading.isBalancerTrade.value) {
+        if (isHighPriceImpact.value) {
+          return {
+            header: t('highPriceImpact'),
+            body: t('highPriceImpactDetailed'),
+            label: t('accept')
+          };
+        }
       }
 
       return undefined;
@@ -260,6 +282,12 @@ export default defineComponent({
         tokenOutAmount.value = '';
         modalTradePreviewIsOpen.value = false;
       });
+    }
+
+    function handleErrorButtonClick() {
+      if (trading.sor.errors.value.highPriceImpact) {
+        dismissedErrors.value.highPriceImpact = true;
+      }
     }
 
     async function populateInitialTokens(): Promise<void> {
@@ -316,7 +344,8 @@ export default defineComponent({
 
       // methods
       trade,
-      switchToWETH
+      switchToWETH,
+      handleErrorButtonClick
     };
   }
 });

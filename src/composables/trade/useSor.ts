@@ -32,6 +32,12 @@ const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
 const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 const MIN_PRICE_IMPACT = 0.0001;
+const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
+const INITIAL_STATE = {
+  errors: {
+    highPriceImpact: false
+  }
+};
 
 type Props = {
   exactIn: Ref<boolean>;
@@ -103,6 +109,7 @@ export default function useSor({
   const priceImpact = ref(0);
   const latestTxHash = ref('');
   const poolsLoading = ref(true);
+  const errors = ref(INITIAL_STATE.errors);
 
   // COMPOSABLES
   const store = useStore();
@@ -138,6 +145,10 @@ export default function useSor({
       fetchPools();
     }
   }, 30 * 1e3);
+
+  function resetState() {
+    errors.value = { ...INITIAL_STATE.errors };
+  }
 
   async function initSor(): Promise<void> {
     const poolsUrlV1 = `${
@@ -184,6 +195,8 @@ export default function useSor({
   }
 
   async function handleAmountChange(): Promise<void> {
+    resetState();
+
     const amount = exactIn.value
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
@@ -323,6 +336,9 @@ export default function useSor({
     }
 
     pools.value = sorManager.selectedPools;
+
+    errors.value.highPriceImpact =
+      priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
   }
 
   function txHandler(
@@ -550,6 +566,7 @@ export default function useSor({
     latestTxHash,
     fetchPools,
     poolsLoading,
-    getQuote
+    getQuote,
+    errors
   };
 }

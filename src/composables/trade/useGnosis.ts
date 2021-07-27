@@ -99,18 +99,6 @@ export default function useGnosis({
   );
 
   // METHODS
-  function resetErrors() {
-    errors.value = { ...INITIAL_STATE.errors };
-  }
-
-  function resetWarnings() {
-    warnings.value = { ...INITIAL_STATE.warnings };
-  }
-
-  function resetFees() {
-    feeQuote.value = null;
-  }
-
   function getFeeAmount() {
     const feeAmountInToken = feeQuote.value?.amount ?? '0';
     const feeAmountOutToken = tokenOutAmountScaled.value
@@ -235,11 +223,11 @@ export default function useGnosis({
   }
 
   function resetState(shouldResetFees = true) {
-    resetErrors();
-    resetWarnings();
+    errors.value = { ...INITIAL_STATE.errors };
+    warnings.value = { ...INITIAL_STATE.warnings };
 
     if (shouldResetFees) {
-      resetFees();
+      feeQuote.value = null;
     }
   }
 
@@ -332,7 +320,6 @@ export default function useGnosis({
     trade,
     handleAmountChange,
     handleAssetChange,
-    resetFees,
 
     // computed
     feeQuote,
