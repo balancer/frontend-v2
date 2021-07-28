@@ -142,6 +142,8 @@ export default function useTrading(
     isBalancerTrade.value ? sor.poolsLoading.value : gnosis.updatingQuotes.value
   );
 
+  const isTrading = computed(() => sor.trading.value || gnosis.trading.value);
+
   // METHODS
   function trade(successCallback?: () => void) {
     if (isGnosisTrade.value) {
@@ -160,6 +162,12 @@ export default function useTrading(
   }
 
   function handleAmountChange() {
+    if (exactIn.value) {
+      tokenOutAmountInput.value = '';
+    } else {
+      tokenInAmountInput.value = '';
+    }
+
     if (isGnosisTrade.value) {
       gnosis.handleAmountChange();
     } else {
@@ -223,6 +231,7 @@ export default function useTrading(
     tokenOutAddressInput,
     tokenOutAmountInput,
     slippageBufferRate,
+    isTrading,
 
     // methods
     getQuote,

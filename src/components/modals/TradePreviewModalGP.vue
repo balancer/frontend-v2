@@ -124,14 +124,10 @@
               {{ summary.amountBeforeFees }}
             </div>
           </div>
-          <div class="summary-item-row">
+          <div class="summary-item-row" v-if="trading.isGnosisTrade.value">
             <div>{{ $t('tradeSummary.gasCosts') }}</div>
-            <div v-if="trading.isGnosisTrade.value" class="text-green-400">
+            <div class="text-green-400">
               -{{ showSummaryInFiat ? fNum('0', 'usd') : '0.0 ETH' }}
-            </div>
-            <div v-else>
-              <!-- TODO: in order to calculate this I need to get gasLimit of the transaction + gwei price -->
-              Calculated on confirmation
             </div>
           </div>
           <div class="summary-item-row">
@@ -185,73 +181,56 @@
           </div>
         </template>
       </BalCard>
-      <BalCard noPad shadow="none">
-        <template v-slot:header>
-          <div
-            class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
-          >
-            <div class="font-semibold">
-              {{
-                $tc('requiresTransactions', approvalTxCount, {
-                  txCount: approvalTxCount
-                })
-              }}
-            </div>
-          </div>
-        </template>
-        <div class="p-3 text-sm">
-          <div
-            v-if="trading.requiresApproval.value"
-            class="flex items-center mb-2"
-          >
-            <div class="tx-circle text-green-500">
+      <div v-if="trading.requiresApproval.value" class="flex justify-between">
+        <BalBtn
+          v-if="!isUnlocked || approved"
+          :loading="approving"
+          :loading-label="`${$t('approving')}...`"
+          color="gradient"
+          block
+          :disabled="isUnlocked"
+          @click.prevent="approve"
+          class="mr-5"
+        >
+          <div :class="['button-step', { 'button-step-disabled': isUnlocked }]">
+            <template v-if="isUnlocked">
               <BalIcon
-                v-if="isApproved"
                 name="check"
                 size="sm"
-                class="text-green-500"
+                class="text-gray-300 dark:text-gray-700 mt-0.5"
               />
-              <span v-else class="text-gray-500 dark:text-gray-400">1</span>
-            </div>
-            <div class="ml-3">
-              <span v-if="isApproved">{{ $t('approved') }}</span>
-              <span v-else>{{
-                $t('tradeSummary.approveOnBalancer', [
-                  trading.tokenIn.value.symbol
-                ])
-              }}</span>
-            </div>
+            </template>
+            <template v-else>1</template>
           </div>
-          <div class="flex items-center">
-            <div class="tx-circle text-gray-500 dark:text-gray-400">
-              {{ trading.requiresApproval.value ? 2 : 1 }}
-            </div>
-            <div class="ml-3">
-              {{ $t('trade') }} {{ tradeFiatValue }}
-              {{ trading.tokenIn.value.symbol }} ->
-              {{ trading.tokenOut.value.symbol }}
-            </div>
+          {{ `${$t('approve')} ${trading.tokenIn.value.symbol}` }}
+        </BalBtn>
+        <BalBtn
+          color="gradient"
+          block
+          @click.prevent="trade"
+          :loading="trading.isTrading.value"
+          :loading-label="$t('confirming')"
+          :disabled="!isUnlocked"
+        >
+          <div
+            v-if="!isUnlocked || approved"
+            :class="['button-step', { 'button-step-disabled': !isUnlocked }]"
+          >
+            2
           </div>
-        </div>
-      </BalCard>
-      <BalBtn
-        v-if="trading.requiresApproval.value && !isApproved"
-        class="mt-5"
-        :label="`${$t('approve')} ${trading.tokenIn.value.symbol}`"
-        :loading="approving"
-        :loading-label="`${$t('approving')} ${trading.tokenIn.value.symbol}…`"
-        color="gradient"
-        block
-        @click.prevent="approve"
-      />
+          {{ $t('confirmTrade') }}
+        </BalBtn>
+      </div>
       <BalBtn
         v-else
-        class="mt-5"
-        :label="$t('confirmTrade')"
         color="gradient"
         block
         @click.prevent="trade"
-      />
+        :loading="trading.isTrading.value"
+        :loading-label="$t('confirming')"
+      >
+        {{ $t('confirmTrade') }}
+      </BalBtn>
     </div>
   </BalModal>
 </template>
@@ -316,10 +295,6 @@ export default defineComponent({
         ),
         'usd'
       )
-    );
-
-    const approvalTxCount = computed(() =>
-      props.trading.requiresApproval.value ? 2 : 1
     );
 
     const showSummary = computed(() => !props.trading.isWrapOrUnwrap.value);
@@ -427,7 +402,7 @@ export default defineComponent({
       return tokenInFiatValue.value;
     });
 
-    const { approving, isApproved, approve } = useTokenApprovalGP(
+    const { approving, isUnlocked, approve, approved } = useTokenApprovalGP(
       addressIn,
       props.trading.tokenInAmountInput
     );
@@ -452,8 +427,9 @@ export default defineComponent({
       trade,
 
       // computed
-      isApproved,
+      isUnlocked,
       approving,
+      approved,
       tokenInFiatValue,
       tokenOutFiatValue,
       summary,
@@ -461,7 +437,6 @@ export default defineComponent({
       slippageRatePercent,
       showSummary,
       showTradeRoute,
-      approvalTxCount,
       tradeFiatValue
     };
   }
@@ -479,5 +454,11 @@ export default defineComponent({
 
 .tx-circle {
   @apply w-6 h-6 flex items-center justify-center border rounded-full;
+}
+.button-step {
+  @apply rounded-full w-6 h-6 bg-white  mr-2 flex items-center justify-center text-purple-500 overflow-hidden overflow-ellipsis;
+}
+.button-step-disabled {
+  @apply text-gray-300 dark:text-gray-700;
 }
 </style>
