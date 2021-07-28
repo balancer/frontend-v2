@@ -22,6 +22,7 @@ export class PriceService {
   appNetwork: string;
   platformId: string;
   nativeAssetId: string;
+  nativeAssetAddress: string;
 
   constructor(
     service: CoingeckoService,
@@ -30,17 +31,18 @@ export class PriceService {
     this.client = service.client;
     this.fiatParam = service.supportedFiat;
     this.baseEndpoint = '/simple';
-    this.appNetwork = configService.network.key;
+    this.appNetwork = this.configService.network.key;
     this.platformId = getPlatformId(this.appNetwork);
     this.nativeAssetId = getNativeAssetId(this.appNetwork);
+    this.nativeAssetAddress = this.configService.network.nativeAsset.address;
   }
 
-  async getEther(): Promise<Price> {
+  async getNativeAssetPrice(): Promise<Price> {
     try {
-      const { ethereum: price } = await this.client.get<PriceResponse>(
+      const response = await this.client.get<PriceResponse>(
         `${this.baseEndpoint}/price?ids=${this.nativeAssetId}&vs_currencies=${this.fiatParam}`
       );
-      return price;
+      return response[this.nativeAssetId];
     } catch (error) {
       console.error('Unable to fetch Ether price', error);
       throw error;
@@ -75,7 +77,14 @@ export class PriceService {
       });
 
       const paginatedResults = await Promise.all(requests);
-      return this.parsePaginatedTokens(paginatedResults);
+      const results = this.parsePaginatedTokens(paginatedResults);
+
+      // Inject native asset price if included in requested addresses
+      if (addresses.includes(this.nativeAssetAddress)) {
+        results[this.nativeAssetAddress] = await this.getNativeAssetPrice();
+      }
+
+      return results;
     } catch (error) {
       console.error('Unable to fetch token prices', addresses, error);
       throw error;

@@ -152,8 +152,7 @@ export default defineComponent({
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount,
-      trading.tokens
+      tokenOutAmount
     );
 
     const tradeDisabled = computed(

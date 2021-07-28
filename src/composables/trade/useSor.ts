@@ -23,10 +23,10 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { ETHER } from '@/constants/tokenlists';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
-import { Token, TokenMap } from '@/types';
 import { TradeQuote } from './types';
 import useTransactions from '../useTransactions';
 import useNumbers from '../useNumbers';
+import { TokenInfoMap, TokenInfo } from '@/types/TokenList';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -39,7 +39,7 @@ type Props = {
   tokenInAmountInput: Ref<string>;
   tokenOutAddressInput: Ref<string>;
   tokenOutAmountInput: Ref<string>;
-  tokens: Ref<TokenMap>;
+  tokens: Ref<TokenInfoMap>;
   isWrap: Ref<boolean>;
   isUnwrap: Ref<boolean>;
   tokenInAmountScaled?: ComputedRef<BigNumber>;
@@ -49,8 +49,8 @@ type Props = {
     handleAmountsOnFetchPools: boolean;
     enableTxHandler: boolean;
   };
-  tokenIn?: ComputedRef<Token>;
-  tokenOut?: ComputedRef<Token>;
+  tokenIn?: ComputedRef<TokenInfo>;
+  tokenOut?: ComputedRef<TokenInfo>;
 };
 
 export type UseSor = ReturnType<typeof useSor>;

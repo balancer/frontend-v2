@@ -13,12 +13,12 @@ import useAllowances from '../useAllowances';
 import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
 
-import { TokenMap } from '@/types';
+import { TokenInfoMap } from '@/types/TokenList';
 
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,
   amount: Ref<string>,
-  tokens: ComputedRef<TokenMap>
+  tokens: ComputedRef<TokenInfoMap>
 ) {
   const approving = ref(false);
   const approved = ref(false);

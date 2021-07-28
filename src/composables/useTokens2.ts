@@ -24,7 +24,7 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
   const {
     injectedTokens,
     allowanceContracts,
-    nativeToken,
+    nativeAsset,
     allTokens,
     prices,
     balances,
@@ -128,7 +128,7 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     allowanceContracts,
     // computed
     allTokens,
-    nativeToken,
+    nativeAsset,
     prices,
     balances,
     allowances,

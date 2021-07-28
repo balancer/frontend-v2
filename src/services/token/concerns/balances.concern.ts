@@ -6,12 +6,23 @@ import { getAddress } from '@ethersproject/address';
 import { TokenInfoMap } from '@/types/TokenList';
 import { formatUnits } from '@ethersproject/units';
 import { chunk } from 'lodash';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
 // TYPES
 export type BalanceMap = { [address: string]: string };
 
 export default class BalancesConcern {
-  constructor(private readonly service: TokenService) {}
+  network: string;
+  provider: JsonRpcProvider;
+  nativeAssetAddress: string;
+  nativeAssetDecimals: number;
+
+  constructor(private readonly service: TokenService) {
+    this.network = this.service.configService.network.key;
+    this.provider = this.service.rpcProviderService.jsonProvider;
+    this.nativeAssetAddress = this.service.configService.network.nativeAsset.address;
+    this.nativeAssetDecimals = this.service.configService.network.nativeAsset.decimals;
+  }
 
   async get(account: string, tokens: TokenInfoMap): Promise<BalanceMap> {
     const paginatedAddresses = chunk(Object.keys(tokens), 1000);
@@ -33,26 +44,44 @@ export default class BalancesConcern {
   }
 
   private async fetchBalances(
-    account,
+    account: string,
     addresses: string[],
     tokens: TokenInfoMap
   ): Promise<BalanceMap> {
     try {
-      const network = this.service.configService.network.key;
-      const provider = this.service.rpcProviderService.jsonProvider;
+      const balanceMap = {};
+
+      // If native asset included in addresses, filter out for
+      // multicall, but fetch indpendently and inject.
+      if (addresses.includes(this.nativeAssetAddress)) {
+        addresses = addresses.filter(
+          address => address !== this.nativeAssetAddress
+        );
+        balanceMap[this.nativeAssetAddress] = await this.fetchNativeBalance(
+          account
+        );
+      }
 
       const balances: [BigNumber][] = await multicall(
-        network,
-        provider,
+        this.network,
+        this.provider,
         erc20Abi,
         addresses.map(address => [address, 'balanceOf', [account]])
       );
 
-      return this.associateBalances(balances, addresses, tokens);
+      return {
+        ...this.associateBalances(balances, addresses, tokens),
+        ...balanceMap
+      };
     } catch (error) {
       console.log('Failed to fetch balances for:', addresses);
       throw error;
     }
+  }
+
+  private async fetchNativeBalance(account: string): Promise<string> {
+    const balance = await this.provider.getBalance(account);
+    return formatUnits(balance.toString(), this.nativeAssetDecimals);
   }
 
   private associateBalances(

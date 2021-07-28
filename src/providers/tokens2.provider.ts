@@ -10,7 +10,7 @@ import {
 } from 'vue';
 import useTokenLists2 from '@/composables/useTokenLists2';
 import { getAddress } from '@ethersproject/address';
-import { TokenInfoMap, TokenList } from '@/types/TokenList';
+import { TokenInfo, TokenInfoMap, TokenList } from '@/types/TokenList';
 import useConfig from '@/composables/useConfig';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useAccountBalancesQuery from '@/composables/queries/useAccountBalancesQuery';
@@ -29,7 +29,7 @@ export interface TokensProviderState {
 export interface TokensProviderResponse {
   injectedTokens: Ref<TokenInfoMap>;
   allowanceContracts: Ref<string[]>;
-  nativeToken: TokenInfoMap;
+  nativeAsset: TokenInfo;
   allTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
@@ -71,11 +71,9 @@ export default {
      * provide the static metadata for each token.
      *****************************************************************/
 
-    const nativeToken: TokenInfoMap = {
-      [networkConfig.nativeAsset.address]: {
-        ...networkConfig.nativeAsset,
-        chainId: networkConfig.chainId
-      }
+    const nativeAsset: TokenInfo = {
+      ...networkConfig.nativeAsset,
+      chainId: networkConfig.chainId
     };
 
     /**
@@ -97,7 +95,8 @@ export default {
     const allTokens = computed(
       (): TokenInfoMap => ({
         ...tokenListTokens.value,
-        ...state.injectedTokens
+        ...state.injectedTokens,
+        [networkConfig.nativeAsset.address]: nativeAsset
       })
     );
 
@@ -113,7 +112,8 @@ export default {
         ...mapTokenListTokens(
           defaultTokenList.value ? [defaultTokenList.value] : []
         ),
-        ...state.injectedTokens
+        ...state.injectedTokens,
+        [networkConfig.nativeAsset.address]: nativeAsset
       })
     );
 
@@ -187,7 +187,7 @@ export default {
       // state
       ...toRefs(state),
       // computed
-      nativeToken,
+      nativeAsset,
       allTokens,
       prices,
       balances,

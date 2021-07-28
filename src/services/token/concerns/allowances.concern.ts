@@ -9,7 +9,11 @@ export type AllowanceMap = { [address: string]: BigNumber };
 export type ContractAllowancesMap = { [address: string]: AllowanceMap };
 
 export default class AllowancesConcern {
-  constructor(private readonly service: TokenService) {}
+  nativeAssetAddress: string;
+
+  constructor(private readonly service: TokenService) {
+    this.nativeAssetAddress = this.service.configService.network.nativeAsset.address;
+  }
 
   async get(
     account: string,
@@ -17,6 +21,11 @@ export default class AllowancesConcern {
     tokenAddresses: string[]
   ): Promise<ContractAllowancesMap> {
     try {
+      // Filter out eth (or native asset) since it's not relevant for allowances.
+      tokenAddresses = tokenAddresses.filter(
+        address => address !== this.nativeAssetAddress
+      );
+
       const allContractAllowances = await Promise.all(
         contractAddresses.map(contractAddress =>
           this.getForContract(account, contractAddress, tokenAddresses)
@@ -30,7 +39,7 @@ export default class AllowancesConcern {
         ])
       );
     } catch (error) {
-      console.error('Failed to fetch balances', account, error);
+      console.error('Failed to fetch allowances', account, error);
       return {};
     }
   }

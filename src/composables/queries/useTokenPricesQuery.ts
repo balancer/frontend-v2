@@ -35,7 +35,7 @@ export default function useTokenPricesQuery(
         ...(await coingeckoService.prices.getTokens(pageAddresses))
       };
     }
-
+    console.log('prices', Object.keys(prices).length);
     return prices;
   };
 
