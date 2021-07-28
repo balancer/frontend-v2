@@ -38,8 +38,8 @@ export default function useTokenApproval(
     getRequiredAllowances,
     isLoading: isLoadingAllowances
   } = useAllowances({
-    dstList,
-    tokens: allowanceTokens
+    dstList: dstList.value,
+    tokens: allowanceTokens.value
   });
 
   const allowanceState = computed(() => {

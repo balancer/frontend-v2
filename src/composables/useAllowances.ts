@@ -5,8 +5,8 @@ import {
 } from '@/providers/allowances.provider';
 
 type UseAccountPayload = {
-  tokens?: Ref<string[]>;
-  dstList?: Ref<string[]>;
+  tokens?: string[];
+  dstList?: string[];
 };
 
 // THE CONTENTS OF THIS WILL BE REPLACED/ALTERED WITH THE REGISTRY REFACTOR
