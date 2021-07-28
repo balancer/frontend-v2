@@ -19,18 +19,15 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import symbolKeys from '@/constants/symbol.keys';
-import { pick } from 'lodash';
 
 /** TYPES */
 export interface TokensProviderState {
   injectedTokens: TokenInfoMap;
-  trackedAddresses: string[];
   allowanceContracts: string[];
 }
 
 export interface TokensProviderResponse {
   injectedTokens: Ref<TokenInfoMap>;
-  trackedAddresses: Ref<string[]>;
   allowanceContracts: Ref<string[]>;
   nativeToken: TokenInfoMap;
   allTokens: ComputedRef<TokenInfoMap>;
@@ -57,7 +54,6 @@ export default {
     /* STATE */
     const state: TokensProviderState = reactive({
       injectedTokens: {},
-      trackedAddresses: [],
       allowanceContracts: []
     });
 
@@ -95,10 +91,9 @@ export default {
       }
     );
 
-    const defaultTokens = computed(
-      (): TokenInfoMap => mapTokenListTokens([defaultTokenList.value])
-    );
-
+    /**
+     * Combination of all active token list tokens and injected tokens.
+     */
     const allTokens = computed(
       (): TokenInfoMap => ({
         ...tokenListTokens.value,
@@ -107,15 +102,24 @@ export default {
     );
 
     /**
-     * Tokens that we should fetch dynamic data for.
+     * Tokens we want to track dynamic data for.
      *
-     * We should only fetch dynamic data for tokens we absolutely have to.
+     * Should only be the default balancer list and injected tokens.
+     * Otherwise, if large token lists such as Coingecko is toggled
+     * it can really slow the app down.
      */
-    const trackedTokens = computed(() =>
-      pick(allTokens.value, state.trackedAddresses)
+    const trackedTokens = computed(
+      (): TokenInfoMap => ({
+        ...mapTokenListTokens(
+          defaultTokenList.value ? [defaultTokenList.value] : []
+        ),
+        ...state.injectedTokens
+      })
     );
 
-    const allAddresses = computed(() => Object.keys(allTokens.value));
+    const trackedTokenAddresses = computed(() =>
+      Object.keys(trackedTokens.value)
+    );
 
     /****************************************************************
      * Dynamic metadata
@@ -123,10 +127,10 @@ export default {
      * The prices, balances and allowances maps provide dynamic
      * metadata for each 'tracked' token.
      ****************************************************************/
-    const pricesQuery = useTokenPricesQuery(allAddresses);
-    const accountBalancesQuery = useAccountBalancesQuery(allTokens);
+    const pricesQuery = useTokenPricesQuery(trackedTokenAddresses);
+    const accountBalancesQuery = useAccountBalancesQuery(trackedTokens);
     const accountAllowancesQuery = useAccountAllowancesQuery(
-      allAddresses,
+      trackedTokenAddresses,
       toRef(state, 'allowanceContracts')
     );
 

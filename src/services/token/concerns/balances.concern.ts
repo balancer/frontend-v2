@@ -14,24 +14,22 @@ export default class BalancesConcern {
   constructor(private readonly service: TokenService) {}
 
   async get(account: string, tokens: TokenInfoMap): Promise<BalanceMap> {
-    try {
-      const paginatedAddresses = chunk(Object.keys(tokens), 100);
-      const multicalls: Promise<any>[] = [];
+    const paginatedAddresses = chunk(Object.keys(tokens), 1000);
+    const multicalls: Promise<any>[] = [];
 
-      paginatedAddresses.forEach(addresses => {
-        const request = this.fetchBalances(account, addresses, tokens);
-        multicalls.push(request);
-      });
+    paginatedAddresses.forEach(addresses => {
+      const request = this.fetchBalances(account, addresses, tokens);
+      multicalls.push(request);
+    });
 
-      const paginatedBalances = await Promise.all<BalanceMap>(multicalls);
+    const paginatedBalances = await Promise.all<BalanceMap>(multicalls);
+    const validPages = paginatedBalances.filter(
+      page => !(page instanceof Error)
+    );
 
-      return paginatedBalances.reduce((result, current) =>
-        Object.assign(result, current)
-      );
-    } catch (error) {
-      console.error('Failed to fetch balances', account, error);
-      return {};
-    }
+    return validPages.reduce((result, current) =>
+      Object.assign(result, current)
+    );
   }
 
   private async fetchBalances(
@@ -39,17 +37,22 @@ export default class BalancesConcern {
     addresses: string[],
     tokens: TokenInfoMap
   ): Promise<BalanceMap> {
-    const network = this.service.configService.network.key;
-    const provider = this.service.rpcProviderService.jsonProvider;
+    try {
+      const network = this.service.configService.network.key;
+      const provider = this.service.rpcProviderService.jsonProvider;
 
-    const balances: [BigNumber][] = await multicall(
-      network,
-      provider,
-      erc20Abi,
-      addresses.map(address => [address, 'balanceOf', [account]])
-    );
+      const balances: [BigNumber][] = await multicall(
+        network,
+        provider,
+        erc20Abi,
+        addresses.map(address => [address, 'balanceOf', [account]])
+      );
 
-    return this.associateBalances(balances, addresses, tokens);
+      return this.associateBalances(balances, addresses, tokens);
+    } catch (error) {
+      console.log('Failed to fetch balances for:', addresses);
+      throw error;
+    }
   }
 
   private associateBalances(

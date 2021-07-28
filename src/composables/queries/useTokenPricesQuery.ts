@@ -2,24 +2,41 @@ import { reactive, ref, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { CoingeckoService } from '@/services/coingecko/coingecko.service';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { sleep } from '@/lib/utils';
 
 // TYPES
 type Response = TokenPrices;
 
-// SERVICES
-const coingeckoService = new CoingeckoService();
+const perPage = 1000;
 
 export default function useTokenPricesQuery(
-  trackedTokenAddresses: Ref<string[]> = ref([]),
+  addresses: Ref<string[]> = ref([]),
   options: UseQueryOptions<Response> = {}
 ) {
-  const queryKey = reactive(QUERY_KEYS.Tokens.Prices(trackedTokenAddresses));
+  const queryKey = reactive(QUERY_KEYS.Tokens.Prices(addresses));
 
   const queryFn = async () => {
-    console.log('Fetching', trackedTokenAddresses.value.length, 'prices');
-    return await coingeckoService.prices.getTokens(trackedTokenAddresses.value);
+    // Sequential pagination required to avoid coingecko rate limits.
+    let prices: TokenPrices = {};
+    const pageCount = Math.ceil(addresses.value.length / perPage);
+    const pages = Array.from(Array(pageCount).keys());
+
+    for (const page of pages) {
+      if (page !== 0) await sleep(1000);
+      const pageAddresses = addresses.value.slice(
+        perPage * page,
+        perPage * (page + 1)
+      );
+      console.log('Fetching', pageAddresses.length, 'prices');
+      prices = {
+        ...prices,
+        ...(await coingeckoService.prices.getTokens(pageAddresses))
+      };
+    }
+
+    return prices;
   };
 
   const queryOptions = reactive({

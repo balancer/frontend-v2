@@ -71,7 +71,7 @@ import { ETHER } from '@/constants/tokenlists';
 import { getAddress } from '@ethersproject/address';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenMap } from '@/types';
-import useTokens from '@/composables/useTokens';
+import useTokens2 from '@/composables/useTokens2';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -89,7 +89,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     // COMPOSABLES
-    const { tokens } = useTokens();
+    const { allTokens: tokens } = useTokens2();
     const {
       isLoading: isLoadingBalances,
       balances,

@@ -214,11 +214,13 @@ export default defineComponent({
     function onListExit(): void {
       data.selectTokenList = false;
       data.query = '';
+      setTokens(Object.values(allTokens.value));
     }
 
     function toggleSelectTokenList(): void {
       data.selectTokenList = !data.selectTokenList;
       data.query = '';
+      setTokens(Object.values(allTokens.value));
     }
 
     function setTokens(_tokens: TokenInfo[]): void {

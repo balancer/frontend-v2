@@ -47,13 +47,23 @@ export class PriceService {
     }
   }
 
-  async getTokens(addresses: string[]): Promise<TokenPrices> {
+  /**
+   *  Rate limit for the CoinGecko API is 10 calls each second per IP address.
+   */
+  async getTokens(
+    addresses: string[],
+    addressesPerRequest = 100
+  ): Promise<TokenPrices> {
     try {
+      if (addresses.length / addressesPerRequest > 10)
+        throw new Error('To many requests for rate limit.');
       addresses = addresses.map(address => this.addressMapIn(address));
       const max = 100;
-      const pages = Math.ceil(addresses.length / max);
+      const pageCount = Math.ceil(addresses.length / max);
+      const pages = Array.from(Array(pageCount).keys());
       const requests: Promise<PriceResponse>[] = [];
-      Array.from(Array(pages).keys()).forEach(page => {
+
+      pages.forEach(page => {
         const addressString = addresses.slice(max * page, max * (page + 1));
         const endpoint = `${this.baseEndpoint}/token_price/${this.platformId}?contract_addresses=${addressString}&vs_currencies=${this.fiatParam}`;
         const request = retryPromiseWithDelay(
@@ -63,6 +73,7 @@ export class PriceService {
         );
         requests.push(request);
       });
+
       const paginatedResults = await Promise.all(requests);
       return this.parsePaginatedTokens(paginatedResults);
     } catch (error) {

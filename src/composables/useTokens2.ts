@@ -5,7 +5,7 @@ import { tokenService } from '@/services/token/token.service';
 import {
   TokensProviderResponse,
   TokensProviderSymbol
-} from '@/providers/tokens.provider';
+} from '@/providers/tokens2.provider';
 import useTokenLists2 from './useTokenLists2';
 
 /** TYPES */

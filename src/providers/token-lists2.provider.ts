@@ -127,6 +127,7 @@ export default {
       }
 
       lsSet(localStorageKeys.TokenLists.Toggled, state.activeListKeys);
+      console.log('Toggled list', state.activeListKeys);
     }
 
     /**
