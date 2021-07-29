@@ -63,17 +63,7 @@
           </div>
         </div>
       </BalCard>
-      <BalCard shadow="none" class="my-5" v-if="showTradeRoute">
-        <TradeRoute
-          :address-in="trading.tokenIn.value.address"
-          :amount-in="trading.tokenInAmountInput.value"
-          :address-out="trading.tokenOut.value.address"
-          :amount-out="trading.tokenOutAmountInput.value"
-          :pools="trading.sor.pools.value"
-          :sor-return="trading.sor.sorReturn.value"
-        />
-      </BalCard>
-      <BalCard noPad shadow="none" class="mb-6">
+      <BalCard noPad shadow="none" class="mb-3">
         <template v-slot:header>
           <div
             class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
@@ -207,6 +197,16 @@
         {{ labels.confirmTrade }}
       </BalBtn>
     </div>
+    <BalCard shadow="none" class="mt-3" v-if="showTradeRoute">
+      <TradeRoute
+        :address-in="trading.tokenIn.value.address"
+        :amount-in="trading.tokenInAmountInput.value"
+        :address-out="trading.tokenOut.value.address"
+        :amount-out="trading.tokenOutAmountInput.value"
+        :pools="trading.sor.pools.value"
+        :sor-return="trading.sor.sorReturn.value"
+      />
+    </BalCard>
   </BalModal>
 </template>
 
@@ -300,7 +300,7 @@ export default defineComponent({
       const tokenInAmountInput = props.trading.tokenInAmountInput.value;
       const tokenOutAmountInput = props.trading.tokenOutAmountInput.value;
 
-      if (props.trading.isWrapOrUnwrap) {
+      if (props.trading.isWrapOrUnwrap.value) {
         summaryItems.amountBeforeFees = tokenInAmountInput;
         summaryItems.tradeFees = '0';
         summaryItems.totalWithoutSlippage = tokenInAmountInput;
@@ -353,7 +353,7 @@ export default defineComponent({
           summaryItems,
           itemValue =>
             `${fNum(itemValue, 'token')} ${
-              exactIn || props.trading.isWrapOrUnwrap
+              exactIn || props.trading.isWrapOrUnwrap.value
                 ? tokenOut.symbol
                 : tokenIn.symbol
             }`

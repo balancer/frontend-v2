@@ -253,7 +253,7 @@
             "totalAfterFees": "Total to receive",
             "totalWithSlippage": "Zero slippage to wrap ETH"
         },
-        "gasCosts": "Estimated gas costs"
+        "gasCosts": "Gas costs"
     },
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
