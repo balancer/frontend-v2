@@ -82,12 +82,11 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-
 import { ETHER } from '@/constants/tokenlists';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
+import useTokens2 from '@/composables/useTokens2';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -126,7 +125,7 @@ export default defineComponent({
 
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
-    const { tokens } = useTokens();
+    const { allTokens } = useTokens2();
     const { userNetworkConfig } = useWeb3();
 
     const isWrap = computed(() => {
@@ -150,12 +149,12 @@ export default defineComponent({
       approveV1,
       approveV2,
       allowanceState
-    } = useTokenApproval(addressIn, amountIn, tokens);
+    } = useTokenApproval(addressIn, amountIn, allTokens);
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 
     const symbolIn = computed(() => {
-      const token = tokens.value[addressIn.value];
+      const token = allTokens.value[addressIn.value];
       if (!token) {
         return '';
       }
@@ -163,7 +162,7 @@ export default defineComponent({
     });
 
     const symbolOut = computed(() => {
-      const token = tokens.value[addressOut.value];
+      const token = allTokens.value[addressOut.value];
       if (!token) {
         return '';
       }

@@ -133,7 +133,7 @@ import useNumbers from '@/composables/useNumbers';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
+import useTokens2 from '@/composables/useTokens2';
 
 interface Route {
   share: number;
@@ -187,7 +187,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     const { userNetworkConfig } = useWeb3();
-    const { tokens } = useTokens();
+    const { allTokens: tokens } = useTokens2();
 
     const visible = ref(false);
 

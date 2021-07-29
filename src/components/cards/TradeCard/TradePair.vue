@@ -206,7 +206,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
-    const { allTokens: tokens } = useTokens2();
+    const { allTokens: tokens, balances } = useTokens2();
     const { fNum, toFiat } = useNumbers();
 
     const {
@@ -256,7 +256,7 @@ export default defineComponent({
     const modalSelectTokenIsOpen = ref(false);
 
     function handleMax(): void {
-      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
+      const balance = balances.value[tokenInAddressInput.value] || '0';
       const balanceNumber = parseFloat(balance);
       const maxAmount =
         tokenInAddressInput.value !== ETHER.address
@@ -338,7 +338,7 @@ export default defineComponent({
     }
 
     const balanceLabel = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance
+      () => balances.value[tokenInAddressInput.value]
     );
 
     return {

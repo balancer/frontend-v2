@@ -7,6 +7,7 @@ import {
   TokensProviderSymbol
 } from '@/providers/tokens2.provider';
 import useTokenLists2 from './useTokenLists2';
+import useUserSettings from './useUserSettings';
 import { configService } from '@/services/config/config.service';
 import { bnum } from '@/lib/utils';
 
@@ -35,10 +36,12 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
    * COMPOSABLES
    */
   const { allTokenLists } = useTokenLists2();
+  const { currency } = useUserSettings();
   const {
     injectedTokens,
     allowanceContracts,
     allTokens,
+    prices,
     balances,
     allowances
   } = provider;
@@ -147,6 +150,17 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     });
   }
 
+  /**
+   * Fetch price for a token
+   */
+  function priceFor(address: string): number {
+    try {
+      return prices.value[address][currency.value];
+    } catch {
+      return 0;
+    }
+  }
+
   return {
     ...provider,
     // methods
@@ -154,6 +168,7 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     addAllowanceContract,
     searchTokens,
     hasBalance,
-    approvalsRequired
+    approvalsRequired,
+    priceFor
   };
 }

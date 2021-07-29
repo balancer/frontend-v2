@@ -209,7 +209,7 @@ import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
+import useTokens2 from '@/composables/useTokens2';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 
@@ -256,7 +256,7 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
-    const { tokens } = useTokens();
+    const { allTokens: tokens, balances } = useTokens2();
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
@@ -267,7 +267,12 @@ export default defineComponent({
         new PoolExchange(props.pool, userNetworkConfig.value.key, tokens.value)
     );
 
-    const poolCalculator = new PoolCalculator(props.pool, tokens.value, 'exit');
+    const poolCalculator = new PoolCalculator(
+      props.pool,
+      tokens.value,
+      balances,
+      'exit'
+    );
 
     // COMPUTED
     const tokenWeights = computed(() =>
@@ -316,7 +321,7 @@ export default defineComponent({
     });
 
     const bptBalance = computed(() => {
-      return tokens.value[props.pool.address].balance;
+      return balances.value[props.pool.address];
     });
 
     function formatPropBalance(index) {

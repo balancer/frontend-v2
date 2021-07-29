@@ -52,14 +52,9 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAddress } from '@ethersproject/address';
-
 import { EXTERNAL_LINKS } from '@/constants/links';
-
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
-
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
-
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';

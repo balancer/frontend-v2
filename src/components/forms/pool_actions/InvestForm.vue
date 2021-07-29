@@ -276,7 +276,7 @@ import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
+import useTokens2 from '@/composables/useTokens2';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
@@ -337,7 +337,7 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { minusSlippage } = useSlippage();
-    const { tokens } = useTokens();
+    const { allTokens: tokens, balances: allBalances } = useTokens2();
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
@@ -361,7 +361,12 @@ export default defineComponent({
         )
     );
 
-    const poolCalculator = new PoolCalculator(props.pool, tokens.value, 'join');
+    const poolCalculator = new PoolCalculator(
+      props.pool,
+      tokens.value,
+      allBalances,
+      'join'
+    );
 
     // COMPUTED
     const tokenWeights = computed(() =>
@@ -380,9 +385,7 @@ export default defineComponent({
     });
 
     const balances = computed(() => {
-      return props.pool.tokenAddresses.map(
-        token => tokens.value[token].balance
-      );
+      return props.pool.tokenAddresses.map(token => allBalances.value[token]);
     });
 
     const hasZeroBalance = computed(() => {
@@ -483,7 +486,7 @@ export default defineComponent({
 
     // METHODS
     function tokenBalance(index: number): string {
-      return tokens.value[props.pool.tokenAddresses[index]]?.balance || '0';
+      return balances.value[props.pool.tokenAddresses[index]] || '0';
     }
 
     function tokenDecimals(index) {

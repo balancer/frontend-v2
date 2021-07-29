@@ -127,9 +127,8 @@ import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
 import useTokens2 from '@/composables/useTokens2';
-import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+import { TokenInfo } from '@/types/TokenList';
 import { orderBy } from 'lodash';
-import useUserSettings from '@/composables/useUserSettings';
 
 export default defineComponent({
   components: {
@@ -171,11 +170,10 @@ export default defineComponent({
       allTokens,
       searchTokens,
       balances,
-      prices,
+      priceFor,
       dynamicDataSuccess,
       dynamicDataLoading
     } = useTokens2();
-    const { currency } = useUserSettings();
 
     // COMPOSABLES
     const { t } = useI18n();
@@ -226,9 +224,7 @@ export default defineComponent({
     function setTokens(_tokens: TokenInfo[]): void {
       const tokensWithValues = _tokens.map(token => {
         const balance = Number(balances.value[token.address]) || 0;
-        const price = prices.value[token.address]
-          ? prices.value[token.address][currency.value] || 0
-          : 0;
+        const price = priceFor(token.address);
         const value = balance * price;
         return {
           ...token,

@@ -159,13 +159,11 @@
 <script lang="ts">
 import { defineComponent, toRefs, computed, ref, PropType } from 'vue';
 import { useStore } from 'vuex';
-
 import useNumbers from '@/composables/useNumbers';
 import { ETHER } from '@/constants/tokenlists';
-
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import useTokens from '@/composables/useTokens';
+import useTokens2 from '@/composables/useTokens2';
 import { UseTrading } from '@/composables/trade/useTrading';
 
 const ETH_BUFFER = 0.1;
@@ -227,7 +225,7 @@ export default defineComponent({
     const modalSelectTokenType = ref('input');
     const modalSelectTokenIsOpen = ref(false);
 
-    const { tokens } = useTokens();
+    const { allTokens: tokens, balances } = useTokens2();
 
     const tokenInValue = computed(() =>
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
@@ -250,11 +248,11 @@ export default defineComponent({
     });
 
     const tokenInBalance = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance || '0'
+      () => balances.value[tokenInAddressInput.value] || '0'
     );
 
     const tokenOutBalance = computed(
-      () => tokens.value[tokenOutAddressInput.value]?.balance || '0'
+      () => balances.value[tokenOutAddressInput.value] || '0'
     );
 
     // METHODS

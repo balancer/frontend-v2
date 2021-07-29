@@ -1,9 +1,5 @@
-import { computed, ComputedRef, Ref } from 'vue';
-
+import { computed, Ref } from 'vue';
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
-
-import { TokenInfoMap } from '@/types/TokenList';
 import useTokens2 from '../useTokens2';
 
 const MIN_NATIVE_ASSET_REQUIRED = 0.0001;
