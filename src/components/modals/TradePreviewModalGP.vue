@@ -126,7 +126,7 @@
             class="w-full p-3 rounded-b-lg bg-white text-sm dark:bg-gray-800"
           >
             <div class="summary-item-row font-medium">
-              <div class="w-64">
+              <div class="w-72">
                 {{ labels.tradeSummary.totalAfterFees }}
               </div>
               <div>
@@ -134,7 +134,7 @@
               </div>
             </div>
             <div class="summary-item-row text-gray-500 dark:text-gray-400">
-              <div class="w-64">
+              <div class="w-72">
                 {{ labels.tradeSummary.totalWithSlippage }}
               </div>
               <div>
@@ -415,9 +415,6 @@ export default defineComponent({
           totalBeforeFees: t('tradeSummary.exactOut.totalBeforeFees'),
           totalAfterFees: t('tradeSummary.exactOut.totalAfterFees'),
           totalWithSlippage: t('tradeSummary.exactOut.totalWithSlippage', [
-            `${fNum(props.trading.tokenOutAmountInput.value, 'token')} ${
-              props.trading.tokenOut.value.symbol
-            }`,
             slippageRatePercent.value
           ])
         }

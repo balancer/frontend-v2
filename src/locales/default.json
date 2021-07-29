@@ -237,7 +237,7 @@
             "tradeFees": "Trade fees",
             "totalBeforeFees": "Total to trade before fees",
             "totalAfterFees": "Total expected to trade after fees",
-            "totalWithSlippage": "The most you’ll spend to get {0} at {1} slippage"
+            "totalWithSlippage": "The most you’ll send at {0} slippage"
         },
         "wrapETH": {
             "title": "Summary",
