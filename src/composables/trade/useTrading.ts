@@ -169,6 +169,7 @@ export default function useTrading(
     }
 
     if (isGnosisTrade.value) {
+      gnosis.resetState(false);
       gnosis.handleAmountChange();
     } else {
       sor.handleAmountChange();
@@ -177,7 +178,7 @@ export default function useTrading(
 
   function handleAssetChange() {
     if (isGnosisTrade.value) {
-      gnosis.handleAssetChange();
+      gnosis.resetState();
     }
   }
 

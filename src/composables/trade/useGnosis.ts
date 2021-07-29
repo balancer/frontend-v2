@@ -231,13 +231,7 @@ export default function useGnosis({
     }
   }
 
-  function handleAssetChange() {
-    resetState();
-  }
-
   async function handleAmountChange() {
-    resetState(false);
-
     const amountToExchange = exactIn.value
       ? tokenInAmountScaled.value
       : tokenOutAmountScaled.value;
@@ -319,7 +313,7 @@ export default function useGnosis({
     // methods
     trade,
     handleAmountChange,
-    handleAssetChange,
+    resetState,
 
     // computed
     feeQuote,
