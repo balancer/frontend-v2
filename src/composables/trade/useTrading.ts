@@ -6,10 +6,10 @@ import { ETHER } from '@/constants/tokenlists';
 import { bnum, scale } from '@/lib/utils';
 
 import useNumbers from '../useNumbers';
-import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useSor from './useSor';
 import useGnosis from './useGnosis';
+import useTokens2 from '../useTokens2';
 
 export type TradeRoute = 'balancer' | 'gnosis';
 
@@ -25,7 +25,7 @@ export default function useTrading(
   // COMPOSABLES
   const store = useStore();
   const { fNum } = useNumbers();
-  const { tokens } = useTokens();
+  const { allTokens: tokens } = useTokens2();
   const { blockNumber, userNetworkConfig } = useWeb3();
 
   // COMPUTED

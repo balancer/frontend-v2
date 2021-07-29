@@ -20,7 +20,9 @@ import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import symbolKeys from '@/constants/symbol.keys';
 
-/** TYPES */
+/**
+ * TYPES
+ */
 export interface TokensProviderState {
   injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
@@ -36,16 +38,21 @@ export interface TokensProviderResponse {
   allowances: ComputedRef<ContractAllowancesMap>;
   dynamicDataSuccess: ComputedRef<boolean>;
   dynamicDataLoading: ComputedRef<boolean>;
+  refetchPrices: Ref<Function>;
+  refetchBalances: Ref<Function>;
+  refetchAllowances: Ref<Function>;
 }
 
-/** SETUP */
+/**
+ * SETUP
+ */
 export const TokensProviderSymbol: InjectionKey<TokensProviderResponse> = Symbol(
   symbolKeys.Providers.Tokens
 );
 
 /**
- * useTokens Composable
- * Interface to all token static and dynamic metatdata.
+ * TokensProvider
+ * Provides an interface to all token static and dynamic metatdata.
  */
 export default {
   name: 'TokensProvider',
@@ -127,39 +134,53 @@ export default {
      * The prices, balances and allowances maps provide dynamic
      * metadata for each 'tracked' token.
      ****************************************************************/
-    const pricesQuery = useTokenPricesQuery(trackedTokenAddresses);
-    const accountBalancesQuery = useAccountBalancesQuery(trackedTokens);
-    const accountAllowancesQuery = useAccountAllowancesQuery(
+    const {
+      data: priceData,
+      isSuccess: priceQuerySuccess,
+      isLoading: priceQueryLoading,
+      refetch: refetchPrices
+    } = useTokenPricesQuery(trackedTokenAddresses);
+
+    const {
+      data: balanceData,
+      isSuccess: balanceQuerySuccess,
+      isLoading: balanceQueryLoading,
+      refetch: refetchBalances
+    } = useAccountBalancesQuery(trackedTokens);
+
+    const {
+      data: allowanceData,
+      isSuccess: allowanceQuerySuccess,
+      isLoading: allowanceQueryLoading,
+      refetch: refetchAllowances
+    } = useAccountAllowancesQuery(
       trackedTokenAddresses,
       toRef(state, 'allowanceContracts')
     );
 
     const prices = computed(
-      (): TokenPrices => (pricesQuery.data.value ? pricesQuery.data.value : {})
+      (): TokenPrices => (priceData.value ? priceData.value : {})
     );
     const balances = computed(
-      (): BalanceMap =>
-        accountBalancesQuery.data.value ? accountBalancesQuery.data.value : {}
+      (): BalanceMap => (balanceData.value ? balanceData.value : {})
     );
     const allowances = computed(
       (): ContractAllowancesMap =>
-        accountAllowancesQuery.data.value
-          ? accountAllowancesQuery.data.value
-          : {}
+        allowanceData.value ? allowanceData.value : {}
     );
 
     const dynamicDataSuccess = computed(
       () =>
-        pricesQuery.isSuccess.value &&
-        accountBalancesQuery.isSuccess.value &&
-        accountAllowancesQuery.isSuccess.value
+        priceQuerySuccess.value &&
+        balanceQuerySuccess.value &&
+        allowanceQuerySuccess.value
     );
 
     const dynamicDataLoading = computed(
       () =>
-        pricesQuery.isLoading.value ||
-        accountBalancesQuery.isLoading.value ||
-        accountAllowancesQuery.isLoading.value
+        priceQueryLoading.value ||
+        balanceQueryLoading.value ||
+        allowanceQueryLoading.value
     );
 
     /** METHODS */
@@ -193,7 +214,10 @@ export default {
       balances,
       allowances,
       dynamicDataSuccess,
-      dynamicDataLoading
+      dynamicDataLoading,
+      refetchPrices,
+      refetchBalances,
+      refetchAllowances
     });
 
     return () => slots.default();

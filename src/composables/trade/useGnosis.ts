@@ -20,6 +20,7 @@ import useTransactions from '../useTransactions';
 import { Token } from '@/types';
 import { TradeQuote } from './types';
 import useNumbers from '../useNumbers';
+import { TokenInfo } from '@/types/TokenList';
 
 // TODO: get correct app id
 const GNOSIS_APP_ID = 2;
@@ -49,8 +50,8 @@ type Props = {
   tokenOutAmountInput: Ref<string>;
   tokenInAmountScaled: ComputedRef<BigNumber>;
   tokenOutAmountScaled: ComputedRef<BigNumber>;
-  tokenIn: ComputedRef<Token>;
-  tokenOut: ComputedRef<Token>;
+  tokenIn: ComputedRef<TokenInfo>;
+  tokenOut: ComputedRef<TokenInfo>;
 };
 
 export default function useGnosis({

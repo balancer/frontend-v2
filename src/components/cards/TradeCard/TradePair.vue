@@ -161,7 +161,7 @@ import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import useTokens from '@/composables/useTokens';
+import useTokens2 from '@/composables/useTokens2';
 
 const ETH_BUFFER = 0.1;
 
@@ -206,7 +206,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
-    const { tokens } = useTokens();
+    const { allTokens: tokens } = useTokens2();
     const { fNum, toFiat } = useNumbers();
 
     const {

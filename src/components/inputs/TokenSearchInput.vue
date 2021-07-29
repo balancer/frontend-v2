@@ -16,16 +16,11 @@
           @closed="$emit('remove', token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
-          <span class="ml-2">{{ tokens[token]?.symbol }}</span>
+          <span class="ml-2">{{ allTokens[token]?.symbol }}</span>
         </BalChip>
       </div>
       <div
-        v-if="
-          account &&
-            !isNotFetchingBalances &&
-            !isLoadingBalances &&
-            !hasNoBalances
-        "
+        v-if="account && !dynamicDataLoading && !hasNoBalances"
         class="text-gray-400 overflow-x-auto"
       >
         <span class="mr-2">{{ $t('inYourWallet') }}</span>
@@ -64,13 +59,11 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import useAccountBalances from '@/composables/useAccountBalances';
 import { sortBy, take } from 'lodash';
 import { TOKENS } from '@/constants/tokens';
 import { ETHER } from '@/constants/tokenlists';
 import { getAddress } from '@ethersproject/address';
 import useWeb3 from '@/services/web3/useWeb3';
-import { TokenMap } from '@/types';
 import useTokens2 from '@/composables/useTokens2';
 
 export default defineComponent({
@@ -88,15 +81,20 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    // COMPOSABLES
-    const { allTokens: tokens } = useTokens2();
-    const {
-      isLoading: isLoadingBalances,
-      balances,
-      isIdle: isNotFetchingBalances
-    } = useAccountBalances();
+    /**
+     * STATE
+     */
+    const selectTokenModal = ref(false);
+
+    /**
+     * COMPOSABLES
+     */
+    const { allTokens, balances, dynamicDataLoading } = useTokens2();
     const { account } = useWeb3();
 
+    /**
+     * COMPUTED
+     */
     // sorted by biggest bag balance, limited to biggest 5
     const sortedBalances = computed(() => {
       return take(
@@ -112,16 +110,16 @@ export default defineComponent({
     });
 
     const hasNoBalances = computed(() => !sortedBalances.value.length);
+
     const whiteListedTokens = computed(() =>
-      Object.values(tokens.value as TokenMap)
+      Object.values(allTokens.value)
         .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
-        .filter(balance => !props.modelValue.includes(balance.address))
+        .filter(token => !props.modelValue.includes(token.address))
     );
 
-    // DATA
-    const selectTokenModal = ref(false);
-
-    // METHODS
+    /**
+     * METHODS
+     */
     function addToken(token: string) {
       let _token = token;
       // special case for ETH where we want it to filter as WETH regardless
@@ -138,17 +136,16 @@ export default defineComponent({
     }
 
     return {
-      // data
+      // state
       selectTokenModal,
-      isNotFetchingBalances,
-      isLoadingBalances,
+      // computed
+      allTokens,
+      dynamicDataLoading,
       balances,
       sortedBalances,
       account,
       hasNoBalances,
       whiteListedTokens,
-      // computed
-      tokens,
       // methods
       addToken,
       onClick

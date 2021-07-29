@@ -7,6 +7,8 @@ import {
   TokensProviderSymbol
 } from '@/providers/tokens2.provider';
 import useTokenLists2 from './useTokenLists2';
+import { configService } from '@/services/config/config.service';
+import { bnum } from '@/lib/utils';
 
 /** TYPES */
 interface UseTokenOpts {
@@ -20,27 +22,31 @@ const defaultProviderResponse = {} as TokensProviderResponse;
  * Interface to all token static and dynamic metatdata.
  */
 export default function useTokens2(opts: UseTokenOpts = {}) {
-  /** SETUP */
-  const {
-    injectedTokens,
-    allowanceContracts,
-    nativeAsset,
-    allTokens,
-    prices,
-    balances,
-    allowances,
-    dynamicDataSuccess,
-    dynamicDataLoading
-  } = inject(TokensProviderSymbol, defaultProviderResponse);
+  /**
+   * SETUP
+   */
+  const provider = inject(TokensProviderSymbol, defaultProviderResponse);
 
   if (opts.allowanceContracts) {
     opts.allowanceContracts.forEach(address => addAllowanceContract(address));
   }
 
-  /** COMPOSABLES */
+  /**
+   * COMPOSABLES
+   */
   const { allTokenLists } = useTokenLists2();
+  const {
+    injectedTokens,
+    allowanceContracts,
+    allTokens,
+    balances,
+    allowances
+  } = provider;
 
-  /** METHODS */
+  /**
+   * METHODS
+   */
+
   /**
    * Fetches static token metadata for given addresses and injects
    * tokens into injected tokens map.
@@ -122,22 +128,32 @@ export default function useTokens2(opts: UseTokenOpts = {}) {
     return Number(balances.value[address]) > 0;
   }
 
+  /**
+   * Check which tokens require approvals for given amounts
+   * @returns a subset of the token addresses passed in.
+   */
+  function approvalsRequired(
+    tokenAddresses: string[],
+    amounts: string[],
+    contractAddress: string = configService.network.addresses.vault
+  ): string[] {
+    return tokenAddresses.filter((address, index) => {
+      const amount = Number(amounts[index]);
+      const allowance = bnum(allowances.value[contractAddress][address]);
+
+      if (amount === 0) return false;
+
+      return allowance.lt(amount);
+    });
+  }
+
   return {
-    // state
-    injectedTokens,
-    allowanceContracts,
-    // computed
-    allTokens,
-    nativeAsset,
-    prices,
-    balances,
-    allowances,
-    dynamicDataSuccess,
-    dynamicDataLoading,
+    ...provider,
     // methods
     injectTokens,
     addAllowanceContract,
     searchTokens,
-    hasBalance
+    hasBalance,
+    approvalsRequired
   };
 }

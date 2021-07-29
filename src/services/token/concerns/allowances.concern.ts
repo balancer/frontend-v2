@@ -3,9 +3,10 @@ import { default as erc20Abi } from '@/lib/abi/ERC20.json';
 import { multicall } from '@/lib/utils/balancer/contract';
 import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
 
 // TYPES
-export type AllowanceMap = { [address: string]: BigNumber };
+export type AllowanceMap = { [address: string]: string };
 export type ContractAllowancesMap = { [address: string]: AllowanceMap };
 
 export default class AllowancesConcern {
@@ -32,12 +33,14 @@ export default class AllowancesConcern {
         )
       );
 
-      return Object.fromEntries(
+      const result = Object.fromEntries(
         contractAddresses.map((contract, i) => [
           getAddress(contract),
           allContractAllowances[i]
         ])
       );
+      console.log('Allowances, could be wrong because of decimals', result);
+      return result;
     } catch (error) {
       console.error('Failed to fetch allowances', account, error);
       return {};
@@ -64,7 +67,10 @@ export default class AllowancesConcern {
     );
 
     return Object.fromEntries(
-      tokenAddresses.map((token, i) => [getAddress(token), allowances[i][0]])
+      tokenAddresses.map((token, i) => [
+        getAddress(token),
+        formatUnits(allowances[i][0].toString(), 18) // TODO, use token decimals
+      ])
     );
   }
 }
