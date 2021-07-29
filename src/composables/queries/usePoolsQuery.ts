@@ -11,6 +11,7 @@ import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-s
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import useTokens2 from '../useTokens2';
 import useTokenLists2 from '../useTokenLists2';
+import useUserSettings from '../useUserSettings';
 
 type PoolsQueryResponse = {
   pools: DecoratedPool[];
@@ -26,6 +27,7 @@ export default function usePoolsQuery(
   const store = useStore();
   const { injectTokens } = useTokens2();
   const { loadingTokenLists } = useTokenLists2();
+  const { currency } = useUserSettings();
 
   // DATA
   const queryKey = QUERY_KEYS.Pools.All(tokenList);
@@ -38,13 +40,17 @@ export default function usePoolsQuery(
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const pools = await balancerSubgraphService.pools.getDecorated('24h', {
-      first: POOLS.Pagination.PerPage,
-      skip: pageParam,
-      where: {
-        tokensList_contains: tokenList.value
+    const pools = await balancerSubgraphService.pools.getDecorated(
+      '24h',
+      currency.value,
+      {
+        first: POOLS.Pagination.PerPage,
+        skip: pageParam,
+        where: {
+          tokensList_contains: tokenList.value
+        }
       }
-    });
+    );
 
     const tokens = flatten(pools.map(pool => pool.tokenAddresses));
     injectTokens(tokens);

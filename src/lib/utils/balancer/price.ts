@@ -1,10 +1,12 @@
-import useUserSettings from '@/composables/useUserSettings';
+import { FiatCurrency } from '@/constants/currency';
 import { Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
-const { currency } = useUserSettings();
-
-export function getPoolLiquidity(pool: Pool, prices: TokenPrices) {
+export function getPoolLiquidity(
+  pool: Pool,
+  prices: TokenPrices,
+  currency: FiatCurrency
+) {
   if (pool.poolType == 'Weighted') {
     const totalWeight = pool.tokens.reduce(
       (total, token) => total + parseFloat(token.weight),
@@ -18,7 +20,7 @@ export function getPoolLiquidity(pool: Pool, prices: TokenPrices) {
       if (!prices[token.address]) {
         continue;
       }
-      const price = prices[token.address][currency.value];
+      const price = prices[token.address][currency];
       const balance = parseFloat(pool.tokens[i].balance);
 
       const value = balance * price;
@@ -45,7 +47,7 @@ export function getPoolLiquidity(pool: Pool, prices: TokenPrices) {
       if (!prices[token.address]) {
         continue;
       }
-      const price = prices[token.address][currency.value];
+      const price = prices[token.address][currency];
       const balance = parseFloat(pool.tokens[i].balance);
 
       const value = balance * price;

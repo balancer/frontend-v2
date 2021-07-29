@@ -9,6 +9,7 @@ import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-s
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
+import useUserSettings from '../useUserSettings';
 
 export default function usePoolQuery(
   id: string,
@@ -19,6 +20,7 @@ export default function usePoolQuery(
    */
   const { allTokens, injectTokens } = useTokens2();
   const { appLoading } = useApp();
+  const { currency } = useUserSettings();
 
   /**
    * COMPUTED
@@ -31,12 +33,16 @@ export default function usePoolQuery(
   const queryKey = QUERY_KEYS.Pools.Current(id);
 
   const queryFn = async () => {
-    const [pool] = await balancerSubgraphService.pools.getDecorated('24h', {
-      where: {
-        id: id.toLowerCase(),
-        totalShares_gt: -1 // Avoid the filtering for low liquidity pools
+    const [pool] = await balancerSubgraphService.pools.getDecorated(
+      '24h',
+      currency.value,
+      {
+        where: {
+          id: id.toLowerCase(),
+          totalShares_gt: -1 // Avoid the filtering for low liquidity pools
+        }
       }
-    });
+    );
 
     if (pool.poolType === 'Stable' && !POOLS.Stable.AllowList.includes(id)) {
       throw new Error('Pool not allowed');

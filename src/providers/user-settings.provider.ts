@@ -26,6 +26,13 @@ export const UserSettingsProviderSymbol: InjectionKey<UserSettingsProviderRespon
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
 
 /**
+ * STATE
+ */
+const state: UserSettingsState = reactive({
+  currency: lsCurrency
+});
+
+/**
  * UserSettingsProvider
  * Provides global user settings interface
  */
@@ -33,13 +40,6 @@ export default {
   name: 'UserSettingsProvider',
 
   setup(props, { slots }) {
-    /**
-     * STATE
-     */
-    const state: UserSettingsState = reactive({
-      currency: lsCurrency
-    });
-
     /**
      * METHODS
      */

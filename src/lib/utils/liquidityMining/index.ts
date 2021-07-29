@@ -5,8 +5,8 @@ import { NetworkId } from '@/constants/network';
 import { configService } from '@/services/config/config.service';
 import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import useUserSettings from '@/composables/useUserSettings';
 import { getAddress } from '@ethersproject/address';
+import { FiatCurrency } from '@/constants/currency';
 
 type PoolId = string;
 
@@ -21,8 +21,6 @@ type LiquidityMiningWeek = Array<{
   chainId: NetworkId;
   pools: LiquidityMiningPools;
 }>;
-
-const { currency } = useUserSettings();
 
 // Liquidity mining started on June 1, 2020 00:00 UTC
 const liquidityMiningStartTime = Date.UTC(2020, 5, 1, 0, 0);
@@ -54,6 +52,7 @@ export function computeAPRForPool(
 export function computeTotalAPRForPool(
   tokenRewards: LiquidityMiningTokenRewards[],
   prices: TokenPrices,
+  currency: FiatCurrency,
   totalLiquidity: string
 ) {
   return tokenRewards
@@ -62,7 +61,7 @@ export function computeTotalAPRForPool(
         totalRewards.plus(
           computeAPRForPool(
             amount,
-            prices[getAddress(tokenAddress)][currency.value],
+            prices[getAddress(tokenAddress)][currency],
             totalLiquidity
           )
         ),

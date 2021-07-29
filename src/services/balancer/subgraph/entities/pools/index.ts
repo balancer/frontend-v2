@@ -16,9 +16,10 @@ import {
   currentLiquidityMiningRewardTokens
 } from '@/lib/utils/liquidityMining';
 import { NetworkId } from '@/constants/network';
-import ConfigService from '@/services/config/config.service';
+import { configService as _configService } from '@/services/config/config.service';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { FiatCurrency } from '@/constants/currency';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -30,7 +31,7 @@ export default class Pools {
   constructor(
     service: Service,
     query: QueryBuilder = queryBuilder,
-    private readonly configService = new ConfigService()
+    private readonly configService = _configService
   ) {
     this.service = service;
     this.query = query;
@@ -45,6 +46,7 @@ export default class Pools {
 
   public async getDecorated(
     period: TimeTravelPeriod,
+    currency: FiatCurrency,
     args = {},
     attrs = {}
   ): Promise<DecoratedPool[]> {
@@ -68,20 +70,22 @@ export default class Pools {
       ...currentLiquidityMiningRewardTokens
     ]);
 
-    return this.serialize(currentPools, pastPools, period, prices);
+    return this.serialize(currentPools, pastPools, period, prices, currency);
   }
 
   private serialize(
     pools: Pool[],
     pastPools: Pool[],
     period: TimeTravelPeriod,
-    prices: TokenPrices
+    prices: TokenPrices,
+    currency: FiatCurrency
   ): DecoratedPool[] {
     return pools.map(pool => {
       pool.address = this.extractAddress(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.tokens = this.formatPoolTokens(pool);
-      pool.totalLiquidity = getPoolLiquidity(pool, prices);
+      pool.totalLiquidity = getPoolLiquidity(pool, prices, currency);
+
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
       const poolAPR = this.calcAPR(pool, pastPool);
@@ -89,7 +93,7 @@ export default class Pools {
       const {
         hasLiquidityMiningRewards,
         liquidityMiningAPR
-      } = this.calcLiquidityMiningAPR(pool, prices);
+      } = this.calcLiquidityMiningAPR(pool, prices, currency);
       const totalAPR = this.calcTotalAPR(poolAPR, liquidityMiningAPR);
 
       return {
@@ -142,7 +146,11 @@ export default class Pools {
       .toString();
   }
 
-  private calcLiquidityMiningAPR(pool: Pool, prices: TokenPrices) {
+  private calcLiquidityMiningAPR(
+    pool: Pool,
+    prices: TokenPrices,
+    currency: FiatCurrency
+  ) {
     let liquidityMiningAPR = '0';
 
     const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
@@ -155,6 +163,7 @@ export default class Pools {
       liquidityMiningAPR = computeTotalAPRForPool(
         liquidityMiningRewards,
         prices,
+        currency,
         pool.totalLiquidity
       );
     }
