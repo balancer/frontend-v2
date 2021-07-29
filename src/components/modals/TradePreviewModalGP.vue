@@ -1,5 +1,5 @@
 <template>
-  <BalModal show @close="onClose" :title="$t('previewTrade')">
+  <BalModal show @close="onClose" :title="labels.modalTitle">
     <div>
       <BalCard noPad class="relative mb-6 overflow-auto">
         <template v-slot:header>
@@ -73,21 +73,13 @@
           :sor-return="trading.sor.sorReturn.value"
         />
       </BalCard>
-      <BalCard noPad shadow="none" class="mb-6" v-if="showSummary">
+      <BalCard noPad shadow="none" class="mb-6">
         <template v-slot:header>
           <div
             class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
           >
             <div class="font-semibold">
-              {{
-                trading.exactIn.value
-                  ? $t('tradeSummary.exactIn.title', [
-                      trading.tokenIn.value.symbol
-                    ])
-                  : $t('tradeSummary.exactOut.title', [
-                      trading.tokenOut.value.symbol
-                    ])
-              }}
+              {{ labels.tradeSummary.title }}
             </div>
             <div class="flex divide-x dark:divide-gray-500 text-xs uppercase">
               <div
@@ -114,11 +106,7 @@
         <div class="p-3 text-sm">
           <div class="summary-item-row">
             <div>
-              {{
-                trading.exactIn.value
-                  ? $t('tradeSummary.exactIn.totalBeforeFees')
-                  : $t('tradeSummary.exactOut.totalBeforeFees')
-              }}
+              {{ labels.tradeSummary.totalBeforeFees }}
             </div>
             <div>
               {{ summary.amountBeforeFees }}
@@ -126,15 +114,15 @@
           </div>
           <div class="summary-item-row" v-if="trading.isGnosisTrade.value">
             <div>{{ $t('tradeSummary.gasCosts') }}</div>
-            <div class="text-green-400">
-              -{{ showSummaryInFiat ? fNum('0', 'usd') : '0.0 ETH' }}
-            </div>
+            <div class="text-green-400">-{{ zeroFee }}</div>
           </div>
           <div class="summary-item-row">
-            <div>{{ $t('tradeSummary.tradeFees') }}</div>
+            <div>{{ labels.tradeSummary.tradeFees }}</div>
             <div>
               {{
-                trading.isGnosisTrade.value
+                trading.isWrapOrUnwrap.value
+                  ? zeroFee
+                  : trading.isGnosisTrade.value
                   ? trading.exactIn.value
                     ? `-${summary.tradeFees}`
                     : `+${summary.tradeFees}`
@@ -149,11 +137,7 @@
           >
             <div class="summary-item-row font-medium">
               <div class="w-64">
-                {{
-                  trading.exactIn.value
-                    ? $t('tradeSummary.exactIn.totalAfterFees')
-                    : $t('tradeSummary.exactOut.totalAfterFees')
-                }}
+                {{ labels.tradeSummary.totalAfterFees }}
               </div>
               <div>
                 {{ summary.totalWithoutSlippage }}
@@ -161,21 +145,12 @@
             </div>
             <div class="summary-item-row text-gray-500 dark:text-gray-400">
               <div class="w-64">
-                {{
-                  trading.exactIn.value
-                    ? $t('tradeSummary.exactIn.totalWithSlippage', [
-                        slippageRatePercent
-                      ])
-                    : $t('tradeSummary.exactOut.totalWithSlippage', [
-                        `${fNum(trading.tokenOutAmountInput.value, 'token')} ${
-                          trading.tokenOut.value.symbol
-                        }`,
-                        slippageRatePercent
-                      ])
-                }}
+                {{ labels.tradeSummary.totalWithSlippage }}
               </div>
               <div>
-                {{ summary.totalWithSlippage }}
+                {{
+                  trading.isWrapOrUnwrap.value ? '' : summary.totalWithSlippage
+                }}
               </div>
             </div>
           </div>
@@ -218,7 +193,7 @@
           >
             2
           </div>
-          {{ $t('confirmTrade') }}
+          {{ labels.confirmTrade }}
         </BalBtn>
       </div>
       <BalBtn
@@ -229,7 +204,7 @@
         :loading="trading.isTrading.value"
         :loading-label="$t('confirming')"
       >
-        {{ $t('confirmTrade') }}
+        {{ labels.confirmTrade }}
       </BalBtn>
     </div>
   </BalModal>
@@ -250,6 +225,7 @@ import { bnum } from '@/lib/utils';
 
 import { FiatCurrency } from '@/constants/currency';
 import { mapValues } from 'lodash';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: {
@@ -265,6 +241,7 @@ export default defineComponent({
   setup(props, { emit }) {
     // COMPOSABLES
     const store = useStore();
+    const { t } = useI18n();
     const { fNum, toFiat } = useNumbers();
 
     // DATA
@@ -297,19 +274,17 @@ export default defineComponent({
       )
     );
 
-    const showSummary = computed(() => !props.trading.isWrapOrUnwrap.value);
-
     const showTradeRoute = computed(
       () =>
         props.trading.isBalancerTrade.value &&
         !props.trading.isWrapOrUnwrap.value
     );
 
-    const summaryItems = computed(() => {
-      if (!showSummary.value) {
-        return;
-      }
+    const zeroFee = computed(() =>
+      showSummaryInFiat.value ? fNum('0', 'usd') : '0.0 ETH'
+    );
 
+    const summary = computed(() => {
       const summaryItems = {
         amountBeforeFees: '',
         tradeFees: '',
@@ -325,51 +300,49 @@ export default defineComponent({
       const tokenInAmountInput = props.trading.tokenInAmountInput.value;
       const tokenOutAmountInput = props.trading.tokenOutAmountInput.value;
 
-      const quote = props.trading.getQuote();
-
-      if (exactIn) {
-        summaryItems.amountBeforeFees = tokenOutAmountInput;
-        summaryItems.tradeFees = formatUnits(
-          quote.feeAmountOutToken,
-          tokenOut.decimals
-        );
-        summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
-          .minus(summaryItems.tradeFees)
-          .toString();
-        summaryItems.totalWithSlippage = formatUnits(
-          quote.minimumOutAmount,
-          tokenOut.decimals
-        );
-      } else {
+      if (props.trading.isWrapOrUnwrap) {
         summaryItems.amountBeforeFees = tokenInAmountInput;
-        summaryItems.tradeFees = formatUnits(
-          quote.feeAmountInToken,
-          tokenIn.decimals
-        );
-        summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
-          .plus(summaryItems.tradeFees)
-          .toString();
-        summaryItems.totalWithSlippage = formatUnits(
-          quote.maximumInAmount,
-          tokenIn.decimals
-        );
+        summaryItems.tradeFees = '0';
+        summaryItems.totalWithoutSlippage = tokenInAmountInput;
+        summaryItems.totalWithSlippage = tokenInAmountInput;
+      } else {
+        const quote = props.trading.getQuote();
+
+        if (exactIn) {
+          summaryItems.amountBeforeFees = tokenOutAmountInput;
+          summaryItems.tradeFees = formatUnits(
+            quote.feeAmountOutToken,
+            tokenOut.decimals
+          );
+          summaryItems.totalWithoutSlippage = bnum(
+            summaryItems.amountBeforeFees
+          )
+            .minus(summaryItems.tradeFees)
+            .toString();
+          summaryItems.totalWithSlippage = formatUnits(
+            quote.minimumOutAmount,
+            tokenOut.decimals
+          );
+        } else {
+          summaryItems.amountBeforeFees = tokenInAmountInput;
+          summaryItems.tradeFees = formatUnits(
+            quote.feeAmountInToken,
+            tokenIn.decimals
+          );
+          summaryItems.totalWithoutSlippage = bnum(
+            summaryItems.amountBeforeFees
+          )
+            .plus(summaryItems.tradeFees)
+            .toString();
+          summaryItems.totalWithSlippage = formatUnits(
+            quote.maximumInAmount,
+            tokenIn.decimals
+          );
+        }
       }
-
-      return summaryItems;
-    });
-
-    const summary = computed(() => {
-      if (!showSummary.value) {
-        return;
-      }
-
-      const exactIn = props.trading.exactIn.value;
-
-      const tokenIn = props.trading.tokenIn.value;
-      const tokenOut = props.trading.tokenOut.value;
 
       if (showSummaryInFiat.value) {
-        return mapValues(summaryItems.value, itemValue =>
+        return mapValues(summaryItems, itemValue =>
           fNum(
             toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
             'usd'
@@ -377,29 +350,78 @@ export default defineComponent({
         );
       } else {
         return mapValues(
-          summaryItems.value,
+          summaryItems,
           itemValue =>
             `${fNum(itemValue, 'token')} ${
-              exactIn ? tokenOut.symbol : tokenIn.symbol
+              exactIn || props.trading.isWrapOrUnwrap
+                ? tokenOut.symbol
+                : tokenIn.symbol
             }`
         );
       }
     });
 
-    const tradeFiatValue = computed(() => {
-      if (showSummary.value && !props.trading.exactIn.value) {
-        return fNum(
-          toFiat(
-            summaryItems.value?.totalWithoutSlippage ?? 0,
-            props.trading.exactIn.value
-              ? props.trading.tokenOut.value.address
-              : props.trading.tokenIn.value.address
-          ),
-          'usd'
-        );
+    const labels = computed(() => {
+      if (props.trading.isWrap.value) {
+        return {
+          modalTitle: t('previewETHWrap'),
+          confirmTrade: t('confirmETHWrap'),
+          tradeSummary: {
+            title: t('tradeSummary.wrapETH.title'),
+            tradeFees: t('tradeSummary.wrapETH.tradeFees'),
+            totalBeforeFees: t('tradeSummary.wrapETH.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.wrapETH.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.wrapETH.totalWithSlippage')
+          }
+        };
+      } else if (props.trading.isUnwrap.value) {
+        return {
+          modalTitle: t('previewETHUnwrap'),
+          confirmTrade: t('confirmETHUnwrap'),
+          tradeSummary: {
+            title: t('tradeSummary.unwrapETH.title'),
+            tradeFees: t('tradeSummary.unwrapETH.tradeFees'),
+            totalBeforeFees: t('tradeSummary.unwrapETH.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.unwrapETH.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.unwrapETH.totalWithSlippage')
+          }
+        };
+      } else if (props.trading.exactIn.value) {
+        return {
+          modalTitle: t('previewTrade'),
+          confirmTrade: t('confirmTrade'),
+          tradeSummary: {
+            title: t('tradeSummary.exactIn.title', [
+              props.trading.tokenIn.value.symbol
+            ]),
+            tradeFees: t('tradeSummary.exactIn.tradeFees'),
+            totalBeforeFees: t('tradeSummary.exactIn.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.exactIn.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.exactIn.totalWithSlippage', [
+              slippageRatePercent.value
+            ])
+          }
+        };
       }
-
-      return tokenInFiatValue.value;
+      // exact out
+      return {
+        modalTitle: t('previewTrade'),
+        confirmTrade: t('confirmTrade'),
+        tradeSummary: {
+          title: t('tradeSummary.exactOut.title', [
+            props.trading.tokenOut.value.symbol
+          ]),
+          tradeFees: t('tradeSummary.exactOut.tradeFees'),
+          totalBeforeFees: t('tradeSummary.exactOut.totalBeforeFees'),
+          totalAfterFees: t('tradeSummary.exactOut.totalAfterFees'),
+          totalWithSlippage: t('tradeSummary.exactOut.totalWithSlippage', [
+            `${fNum(props.trading.tokenOutAmountInput.value, 'token')} ${
+              props.trading.tokenOut.value.symbol
+            }`,
+            slippageRatePercent.value
+          ])
+        }
+      };
     });
 
     const { approving, isUnlocked, approve, approved } = useTokenApprovalGP(
@@ -435,9 +457,9 @@ export default defineComponent({
       summary,
       showSummaryInFiat,
       slippageRatePercent,
-      showSummary,
       showTradeRoute,
-      tradeFiatValue
+      labels,
+      zeroFee
     };
   }
 });
