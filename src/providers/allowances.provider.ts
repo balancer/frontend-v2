@@ -9,8 +9,8 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import useTokens from '@/composables/useTokens';
 
 type UseAccountPayload = {
-  tokens?: Ref<string[]>;
-  dstList?: Ref<string[]>;
+  tokens?: string[];
+  dstList?: string[];
 };
 
 export type AllowancesProviderPayload = {
@@ -35,12 +35,12 @@ export default {
     const provider = getProvider(String(userNetworkConfig.value?.chainId));
     // filter out ether and any bad addresses
     const tokens = computed(() =>
-      (
-        requestPayload?.value?.tokens?.value || Object.keys(allTokens.value)
-      ).filter(t => t !== ETHER.address && isAddress(t))
+      (requestPayload?.value?.tokens || Object.keys(allTokens.value)).filter(
+        t => t !== ETHER.address && isAddress(t)
+      )
     );
     const dstList = computed(() => [
-      ...(requestPayload?.value?.dstList?.value || []),
+      ...(requestPayload?.value?.dstList || []),
       userNetworkConfig.value?.addresses.vault
     ]);
 
@@ -98,7 +98,6 @@ export default {
         if (!dstAllowanceMap.value[dst][token.toLowerCase()]) return true;
         return dstAllowanceMap.value[dst][token.toLowerCase()].lt(amount);
       });
-
       return requiredAllowances;
     };
 
