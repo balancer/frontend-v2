@@ -12,7 +12,7 @@ import {
 import { getAddress } from '@ethersproject/address';
 import {
   currentLiquidityMiningRewards,
-  computeTotalAPRForPool,
+  computeTotalAPRForPool
 } from '@/lib/utils/liquidityMining';
 import { NetworkId } from '@/constants/network';
 import { configService as _configService } from '@/services/config/config.service';
