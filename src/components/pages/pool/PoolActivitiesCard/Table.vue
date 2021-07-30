@@ -153,7 +153,7 @@ export default {
     const { fNum } = useNumbers();
     const { t } = useI18n();
     const { explorerLinks } = useWeb3();
-    const { allTokens, priceFor } = useTokens2();
+    const { tokens, priceFor } = useTokens2();
     const { upToLargeBreakpoint } = useBreakpoints();
 
     const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
@@ -216,7 +216,7 @@ export default {
       return amounts
         .reduce((total, amount, index) => {
           const address = getAddress(props.tokens[index]);
-          const token = allTokens.value[address];
+          const token = tokens.value[address];
           const price = priceFor(token.address);
           const amountNumber = bnum(Math.abs(parseFloat(amount)));
 
@@ -228,7 +228,7 @@ export default {
     function getJoinExitDetails(amounts: PoolActivity['amounts']) {
       return amounts.map((amount, index) => {
         const address = getAddress(props.tokens[index]);
-        const token = allTokens.value[address];
+        const token = tokens.value[address];
         const symbol = token ? token.symbol : address;
         const amountNumber = parseFloat(amount);
 

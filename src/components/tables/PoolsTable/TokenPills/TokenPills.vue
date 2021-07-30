@@ -48,13 +48,17 @@ export default defineComponent({
   },
 
   setup() {
-    // COMPOSABLES
+    /**
+     * COMPOSABLES
+     */
     const { fNum } = useNumbers();
-    const { allTokens, hasBalance } = useTokens2();
+    const { tokens, hasBalance } = useTokens2();
 
-    // METHODS
+    /**
+     * METHODS
+     */
     function symbolFor(token: PoolToken): string {
-      return allTokens.value[token.address]?.symbol || 'zzz';
+      return tokens.value[token.address]?.symbol || '???';
     }
 
     function weightFor(token: PoolToken): string {

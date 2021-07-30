@@ -167,11 +167,11 @@ export default defineComponent({
       tokenListUrl
     } = useTokenLists2();
     const {
-      allTokens,
+      tokens: allTokens,
       searchTokens,
       balances,
       priceFor,
-      dynamicDataSuccess,
+      dynamicDataLoaded,
       dynamicDataLoading
     } = useTokens2();
 
@@ -245,7 +245,7 @@ export default defineComponent({
       setTokens(Object.values(allTokens.value));
     });
 
-    watch(dynamicDataSuccess, dataAvailable => {
+    watch(dynamicDataLoaded, dataAvailable => {
       console.log('Dynamic data available?', dataAvailable);
       setTokens(tokens.value);
     });

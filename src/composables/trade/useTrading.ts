@@ -25,7 +25,7 @@ export default function useTrading(
   // COMPOSABLES
   const store = useStore();
   const { fNum } = useNumbers();
-  const { allTokens: tokens } = useTokens2();
+  const { tokens } = useTokens2();
   const { blockNumber, userNetworkConfig } = useWeb3();
 
   // COMPUTED

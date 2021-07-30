@@ -59,7 +59,10 @@
               <span class="break-words">
                 {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
-              <span class="text-xs text-gray-400">
+              <span
+                v-if="pool.poolType !== 'Stable'"
+                class="text-xs text-gray-400"
+              >
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
@@ -256,7 +259,7 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
-    const { allTokens: tokens, balances } = useTokens2();
+    const { tokens, balances } = useTokens2();
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
@@ -321,6 +324,7 @@ export default defineComponent({
     });
 
     const bptBalance = computed(() => {
+      console.log(props.pool.address, balances.value);
       return balances.value[props.pool.address];
     });
 

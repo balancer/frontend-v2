@@ -337,7 +337,7 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { minusSlippage } = useSlippage();
-    const { allTokens: tokens, balances: allBalances } = useTokens2();
+    const { tokens, balances: allBalances } = useTokens2();
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
@@ -385,7 +385,9 @@ export default defineComponent({
     });
 
     const balances = computed(() => {
-      return props.pool.tokenAddresses.map(token => allBalances.value[token]);
+      return props.pool.tokenAddresses.map(
+        token => allBalances.value[token] || '0'
+      );
     });
 
     const hasZeroBalance = computed(() => {

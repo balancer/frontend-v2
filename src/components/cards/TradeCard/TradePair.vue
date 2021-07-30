@@ -206,7 +206,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
-    const { allTokens: tokens, balances } = useTokens2();
+    const { tokens, balances } = useTokens2();
     const { fNum, toFiat } = useNumbers();
 
     const {

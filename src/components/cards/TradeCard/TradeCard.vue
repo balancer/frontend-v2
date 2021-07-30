@@ -136,7 +136,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
-    const { allTokens: tokens } = useTokens2();
+    const { tokens } = useTokens2();
     const { userNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
 

@@ -6,10 +6,11 @@ import {
   provide,
   InjectionKey,
   Ref,
-  ComputedRef
+  ComputedRef,
+  onBeforeMount
 } from 'vue';
 import useTokenLists2 from '@/composables/useTokenLists2';
-import { getAddress } from '@ethersproject/address';
+import { getAddress, isAddress } from '@ethersproject/address';
 import { TokenInfo, TokenInfoMap, TokenList } from '@/types/TokenList';
 import useConfig from '@/composables/useConfig';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
@@ -19,28 +20,41 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import symbolKeys from '@/constants/symbol.keys';
+import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
+import { tokenService } from '@/services/token/token.service';
+import useUserSettings from '@/composables/useUserSettings';
+import { bnum } from '@/lib/utils';
+import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
+import { pick } from 'lodash';
 
 /**
  * TYPES
  */
 export interface TokensProviderState {
-  injectedTokens: TokenInfoMap;
+  loading: boolean;
+  tokens: TokenInfoMap;
   allowanceContracts: string[];
 }
 
 export interface TokensProviderResponse {
-  injectedTokens: Ref<TokenInfoMap>;
+  loading: Ref<boolean>;
+  tokens: Ref<TokenInfoMap>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: TokenInfo;
-  allTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
   allowances: ComputedRef<ContractAllowancesMap>;
-  dynamicDataSuccess: ComputedRef<boolean>;
+  dynamicDataLoaded: ComputedRef<boolean>;
   dynamicDataLoading: ComputedRef<boolean>;
   refetchPrices: Ref<Function>;
   refetchBalances: Ref<Function>;
   refetchAllowances: Ref<Function>;
+  injectTokens: Function;
+  searchTokens: Function;
+  hasBalance: Function;
+  approvalsRequired: Function;
+  priceFor: Function;
+  getTokens: Function;
 }
 
 /**
@@ -58,95 +72,57 @@ export default {
   name: 'TokensProvider',
 
   setup(props, { slots }) {
-    /* STATE */
-    const state: TokensProviderState = reactive({
-      injectedTokens: {},
-      allowanceContracts: []
-    });
-
-    /* COMPOSABLES */
+    /**
+     * COMPOSABLES
+     */
     const { networkConfig } = useConfig();
-    const { activeTokenLists, defaultTokenList } = useTokenLists2();
+    const { allTokenLists } = useTokenLists2();
+    const { currency } = useUserSettings();
 
-    /* INIT STATE */
-    state.allowanceContracts.push(networkConfig.addresses.vault);
-
-    /****************************************************************
-     * Static metadata
-     *
-     * The tokenListTokens, injectedTokens and allTokens dictionaries
-     * provide the static metadata for each token.
-     *****************************************************************/
-
+    /**
+     * STATE
+     */
     const nativeAsset: TokenInfo = {
       ...networkConfig.nativeAsset,
       chainId: networkConfig.chainId
     };
 
-    /**
-     * All tokens from active (toggled) token lists.
-     *
-     * Because only approved tokenlists can be activated
-     * this list cannot contain unapproved tokens such as those
-     * in the Blancer vetted list, e.g. LBP tokens.
-     */
-    const tokenListTokens = computed(
-      (): TokenInfoMap => {
-        return mapTokenListTokens(Object.values(activeTokenLists.value));
-      }
-    );
-
-    /**
-     * Combination of all active token list tokens and injected tokens.
-     */
-    const allTokens = computed(
-      (): TokenInfoMap => ({
-        ...tokenListTokens.value,
-        ...state.injectedTokens,
+    const state: TokensProviderState = reactive({
+      loading: true,
+      tokens: {
         [networkConfig.nativeAsset.address]: nativeAsset
-      })
-    );
+      },
+      allowanceContracts: [
+        networkConfig.addresses.vault,
+        networkConfig.addresses.exchangeProxy,
+        GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
+      ]
+    });
 
     /**
-     * Tokens we want to track dynamic data for.
-     *
-     * Should only be the default balancer list and injected tokens.
-     * Otherwise, if large token lists such as Coingecko is toggled
-     * it can really slow the app down.
+     * COMPUTED
      */
-    const trackedTokens = computed(
-      (): TokenInfoMap => ({
-        ...mapTokenListTokens(
-          defaultTokenList.value ? [defaultTokenList.value] : []
-        ),
-        ...state.injectedTokens,
-        [networkConfig.nativeAsset.address]: nativeAsset
-      })
-    );
-
-    const trackedTokenAddresses = computed(() =>
-      Object.keys(trackedTokens.value)
-    );
+    const tokenAddresses = computed(() => Object.keys(state.tokens));
 
     /****************************************************************
      * Dynamic metadata
      *
      * The prices, balances and allowances maps provide dynamic
-     * metadata for each 'tracked' token.
+     * metadata for each token in the tokens state array.
      ****************************************************************/
     const {
       data: priceData,
       isSuccess: priceQuerySuccess,
       isLoading: priceQueryLoading,
       refetch: refetchPrices
-    } = useTokenPricesQuery(trackedTokenAddresses);
+    } = useTokenPricesQuery(tokenAddresses);
 
     const {
       data: balanceData,
       isSuccess: balanceQuerySuccess,
       isLoading: balanceQueryLoading,
       refetch: refetchBalances
-    } = useAccountBalancesQuery(trackedTokens);
+    } = useAccountBalancesQuery(toRef(state, 'tokens'));
 
     const {
       data: allowanceData,
@@ -154,7 +130,7 @@ export default {
       isLoading: allowanceQueryLoading,
       refetch: refetchAllowances
     } = useAccountAllowancesQuery(
-      trackedTokenAddresses,
+      toRef(state, 'tokens'),
       toRef(state, 'allowanceContracts')
     );
 
@@ -169,7 +145,7 @@ export default {
         allowanceData.value ? allowanceData.value : {}
     );
 
-    const dynamicDataSuccess = computed(
+    const dynamicDataLoaded = computed(
       () =>
         priceQuerySuccess.value &&
         balanceQuerySuccess.value &&
@@ -183,7 +159,12 @@ export default {
         allowanceQueryLoading.value
     );
 
-    /** METHODS */
+    /**
+     * METHODS
+     */
+    /**
+     * Create token map from a token list tokens array.
+     */
     function mapTokenListTokens(tokenLists: TokenList[]): TokenInfoMap {
       const tokensMap = {};
       const tokens = tokenLists.map(list => list.tokens).flat();
@@ -204,20 +185,144 @@ export default {
       return tokensMap;
     }
 
+    /**
+     * Fetches static token metadata for given addresses and injects
+     * tokens into state tokens map.
+     */
+    async function injectTokens(addresses: string[]): Promise<void> {
+      addresses = addresses.map(address => getAddress(address));
+
+      // Only inject tokens that aren't already in tokens
+      const injectable = addresses.filter(
+        address => !Object.keys(state.tokens).includes(address)
+      );
+      if (injectable.length === 0) return;
+
+      const newTokens = await tokenService.metadata.get(
+        injectable,
+        allTokenLists.value
+      );
+
+      state.tokens = { ...state.tokens, ...newTokens };
+    }
+
+    /**
+     * Given query, filters tokens map by name, symbol or address.
+     * If address is provided, search for address in tokens or injectToken
+     */
+    async function searchTokens(
+      query: string,
+      excluded: string[] = []
+    ): Promise<TokenInfoMap> {
+      if (!query) return removeExcluded(state.tokens, excluded);
+
+      if (isAddress(query)) {
+        const address = getAddress(query);
+        const token = state.tokens[address];
+        if (token) {
+          return { [address]: token };
+        } else {
+          await injectTokens([address]);
+          return pick(state.tokens, address);
+        }
+      } else {
+        const tokensArray = Object.entries(state.tokens);
+        const results = tokensArray.filter(
+          ([, token]) =>
+            token.name.toLowerCase().includes(query.toLowerCase()) ||
+            token.symbol.toLowerCase().includes(query.toLowerCase())
+        );
+        return removeExcluded(Object.fromEntries(results), excluded);
+      }
+    }
+
+    /**
+     * Remove excluded tokens from given token map.
+     */
+    function removeExcluded(
+      tokens: TokenInfoMap,
+      excluded: string[]
+    ): TokenInfoMap {
+      return Object.keys(tokens)
+        .filter(address => !excluded.includes(address))
+        .reduce((result, address) => {
+          result[address] = tokens[address];
+          return result;
+        }, {});
+    }
+
+    /**
+     * Checks if token has a balance
+     */
+    function hasBalance(address: string): boolean {
+      return Number(balances.value[address]) > 0;
+    }
+
+    /**
+     * Check which tokens require approvals for given amounts
+     * @returns a subset of the token addresses passed in.
+     */
+    function approvalsRequired(
+      tokenAddresses: string[],
+      amounts: string[],
+      contractAddress: string = networkConfig.addresses.vault
+    ): string[] {
+      return tokenAddresses.filter((address, index) => {
+        const amount = Number(amounts[index]);
+        const allowance = bnum(allowances.value[contractAddress][address]);
+
+        if (amount === 0) return false;
+
+        return allowance.lt(amount);
+      });
+    }
+
+    /**
+     * Fetch price for a token
+     */
+    function priceFor(address: string): number {
+      try {
+        return prices.value[address][currency.value];
+      } catch {
+        return 0;
+      }
+    }
+
+    /**
+     * Get subset of tokens from state
+     */
+    function getTokens(addresses: string[]): TokenInfoMap {
+      return pick(state.tokens, addresses);
+    }
+
+    /**
+     * CALLBACKS
+     */
+    onBeforeMount(async () => {
+      await injectTokens(currentLiquidityMiningRewardTokens);
+      state.loading = false;
+    });
+
     provide(TokensProviderSymbol, {
       // state
       ...toRefs(state),
       // computed
       nativeAsset,
-      allTokens,
       prices,
       balances,
       allowances,
-      dynamicDataSuccess,
+      dynamicDataLoaded,
       dynamicDataLoading,
+      // methods
       refetchPrices,
       refetchBalances,
-      refetchAllowances
+      refetchAllowances,
+      injectTokens,
+      searchTokens,
+      hasBalance,
+      approvalsRequired,
+      priceFor,
+      getTokens
     });
 
     return () => slots.default();

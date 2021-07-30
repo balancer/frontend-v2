@@ -113,6 +113,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { NetworkId } from '@/constants/network';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
+import useTokens2 from '@/composables/useTokens2';
 
 export default defineComponent({
   name: 'AppNavClaimBtn',
@@ -137,12 +138,12 @@ export default defineComponent({
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
     const { t } = useI18n();
+    const { priceFor } = useTokens2();
 
-    const balPrice = computed(
-      () =>
-        store.state.market.prices[
-          getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
-        ]?.price
+    const balPrice = computed(() =>
+      priceFor(
+        getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
+      )
     );
 
     // COMPUTED

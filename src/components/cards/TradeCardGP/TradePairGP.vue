@@ -225,7 +225,7 @@ export default defineComponent({
     const modalSelectTokenType = ref('input');
     const modalSelectTokenIsOpen = ref(false);
 
-    const { allTokens: tokens, balances } = useTokens2();
+    const { tokens, balances } = useTokens2();
 
     const tokenInValue = computed(() =>
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value)

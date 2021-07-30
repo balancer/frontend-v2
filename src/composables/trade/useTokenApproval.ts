@@ -1,4 +1,4 @@
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/providers';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
@@ -14,7 +14,7 @@ import { useI18n } from 'vue-i18n';
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,
   amount: Ref<string>,
-  tokens: ComputedRef<TokenInfoMap>
+  tokens: Ref<TokenInfoMap>
 ) {
   /**
    * STATE
@@ -30,9 +30,7 @@ export default function useTokenApproval(
   const { getProvider } = useWeb3();
   const { txListener } = useEthers();
   const { networkConfig } = useConfig();
-  const { approvalsRequired, dynamicDataLoading } = useTokens2({
-    allowanceContracts: [configService.network.addresses.exchangeProxy]
-  });
+  const { approvalsRequired, dynamicDataLoading } = useTokens2();
 
   /**
    * COMPUTED

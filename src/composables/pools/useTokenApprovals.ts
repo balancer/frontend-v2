@@ -21,7 +21,7 @@ export default function useTokenApprovals(
    * COMPOSABLES
    */
   const { getProvider, appNetworkConfig } = useWeb3();
-  const { allTokens, refetchAllowances, approvalsRequired } = useTokens2();
+  const { tokens, refetchAllowances, approvalsRequired } = useTokens2();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
@@ -32,7 +32,7 @@ export default function useTokenApprovals(
   const amounts = computed(() =>
     tokenAddresses.map((token, index) => {
       const shortAmount = shortAmounts.value[index] || '0';
-      const decimals = allTokens.value[token].decimals;
+      const decimals = tokens.value[token].decimals;
       const amount = parseUnits(shortAmount, decimals).toString();
       return amount;
     })
@@ -61,7 +61,7 @@ export default function useTokenApprovals(
         type: 'tx',
         action: 'approve',
         summary: t('transactionSummary.approveForInvesting', [
-          allTokens.value[tokenAddress]?.symbol
+          tokens.value[tokenAddress]?.symbol
         ]),
         details: {
           tokenAddress,

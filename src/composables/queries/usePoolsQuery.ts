@@ -1,17 +1,16 @@
 import { computed, reactive, ref, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
-import { useStore } from 'vuex';
 import { flatten } from 'lodash';
-
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
-
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import useTokens2 from '../useTokens2';
-import useTokenLists2 from '../useTokenLists2';
 import useUserSettings from '../useUserSettings';
+import useApp from '../useApp';
+import { getAddress } from '@ethersproject/address';
+import { forChange } from '@/lib/utils';
 
 type PoolsQueryResponse = {
   pools: DecoratedPool[];
@@ -24,39 +23,37 @@ export default function usePoolsQuery(
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
 ) {
   // COMPOSABLES
-  const store = useStore();
-  const { injectTokens } = useTokens2();
-  const { loadingTokenLists } = useTokenLists2();
+  const { injectTokens, dynamicDataLoading, prices } = useTokens2();
   const { currency } = useUserSettings();
+  const { appLoading } = useApp();
 
   // DATA
   const queryKey = QUERY_KEYS.Pools.All(tokenList);
 
   // COMPUTED
-  const appLoading = computed(() => store.state.app.loading);
-  const isQueryEnabled = computed(
-    () => !appLoading.value && !loadingTokenLists.value
-  );
+  const enabled = computed(() => !appLoading.value);
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const pools = await balancerSubgraphService.pools.getDecorated(
-      '24h',
-      currency.value,
-      {
-        first: POOLS.Pagination.PerPage,
-        skip: pageParam,
-        where: {
-          tokensList_contains: tokenList.value
-        }
+    const pools = await balancerSubgraphService.pools.get({
+      first: POOLS.Pagination.PerPage,
+      skip: pageParam,
+      where: {
+        tokensList_contains: tokenList.value
       }
+    });
+    const tokens = flatten(pools.map(pool => pool.tokensList));
+    await injectTokens(tokens);
+    await forChange(dynamicDataLoading, false);
+    const decoratedPools = await balancerSubgraphService.pools.decorate(
+      pools,
+      '24h',
+      prices.value,
+      currency.value
     );
 
-    const tokens = flatten(pools.map(pool => pool.tokenAddresses));
-    injectTokens(tokens);
-
     return {
-      pools,
+      pools: decoratedPools,
       tokens,
       skip:
         pools.length >= POOLS.Pagination.PerPage
@@ -66,7 +63,7 @@ export default function usePoolsQuery(
   };
 
   const queryOptions = reactive({
-    enabled: isQueryEnabled,
+    enabled,
     getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
     ...options
   });

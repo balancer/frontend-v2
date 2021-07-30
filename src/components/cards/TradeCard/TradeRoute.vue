@@ -187,7 +187,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     const { userNetworkConfig } = useWeb3();
-    const { allTokens: tokens } = useTokens2();
+    const { tokens } = useTokens2();
 
     const visible = ref(false);
 

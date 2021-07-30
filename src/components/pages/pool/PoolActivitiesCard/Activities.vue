@@ -18,14 +18,10 @@
 import { defineComponent, computed, PropType } from 'vue';
 import { useRoute } from 'vue-router';
 import { flatten } from 'lodash';
-
 import Table from './Table.vue';
-
 import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
 import usePoolUserActivitiesQuery from '@/composables/queries/usePoolUserActivitiesQuery';
-
 import { FullPool } from '@/services/balancer/subgraph/types';
-
 import { PoolActivityTab } from './types';
 
 export default defineComponent({
@@ -49,17 +45,27 @@ export default defineComponent({
   },
 
   setup(props) {
-    // COMPOSABLES
+    /**
+     * COMPOSABLES
+     */
     const route = useRoute();
 
+    /**
+     * STATE
+     */
     const id = route.params.id as string;
 
+    /**
+     * QUERIES
+     */
     const poolActivitiesQuery =
       props.poolActivityType === PoolActivityTab.ALL_ACTIVITY
         ? usePoolActivitiesQuery(id)
         : usePoolUserActivitiesQuery(id);
 
-    // COMPUTED
+    /**
+     * COMPUTED
+     */
     const poolActivities = computed(() =>
       poolActivitiesQuery.data.value
         ? flatten(
@@ -82,7 +88,9 @@ export default defineComponent({
       () => poolActivitiesQuery.isFetchingNextPage?.value
     );
 
-    // METHODS
+    /**
+     * METHODS
+     */
     function loadMorePoolActivities() {
       poolActivitiesQuery.fetchNextPage.value();
     }

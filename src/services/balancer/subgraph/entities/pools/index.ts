@@ -13,11 +13,9 @@ import { getAddress } from '@ethersproject/address';
 import {
   currentLiquidityMiningRewards,
   computeTotalAPRForPool,
-  currentLiquidityMiningRewardTokens
 } from '@/lib/utils/liquidityMining';
 import { NetworkId } from '@/constants/network';
 import { configService as _configService } from '@/services/config/config.service';
-import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { FiatCurrency } from '@/constants/currency';
 
@@ -44,33 +42,20 @@ export default class Pools {
     return data.pools;
   }
 
-  public async getDecorated(
+  public async decorate(
+    pools: Pool[],
     period: TimeTravelPeriod,
-    currency: FiatCurrency,
-    args = {},
-    attrs = {}
+    prices: TokenPrices,
+    currency: FiatCurrency
   ): Promise<DecoratedPool[]> {
-    // Get current pools
-    const currentPoolsQuery = this.query(args, attrs);
-    const [{ pools: currentPools }, blockNumber] = await Promise.all([
-      this.service.client.get(currentPoolsQuery),
-      this.timeTravelBlock(period)
-    ]);
-
-    // Get past state of current pools
+    // Get past state of pools
+    const blockNumber = await this.timeTravelBlock(period);
     const block = { number: blockNumber };
-    const isCurrentPool = { id_in: currentPools.map(pool => pool.id) };
-    const pastPoolsQuery = this.query({ where: isCurrentPool, block }, attrs);
+    const isInPoolIds = { id_in: pools.map(pool => pool.id) };
+    const pastPoolsQuery = this.query({ where: isInPoolIds, block });
     const { pools: pastPools } = await this.service.client.get(pastPoolsQuery);
 
-    // Get pool token prices
-    const allPoolTokens = currentPools.map(pool => pool.tokensList).flat();
-    const prices = await coingeckoService.prices.getTokens([
-      ...allPoolTokens,
-      ...currentLiquidityMiningRewardTokens
-    ]);
-
-    return this.serialize(currentPools, pastPools, period, prices, currency);
+    return this.serialize(pools, pastPools, period, prices, currency);
   }
 
   private serialize(
@@ -81,7 +66,7 @@ export default class Pools {
     currency: FiatCurrency
   ): DecoratedPool[] {
     return pools.map(pool => {
-      pool.address = this.extractAddress(pool.id);
+      pool.address = this.addressFor(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.tokens = this.formatPoolTokens(pool);
       pool.totalLiquidity = getPoolLiquidity(pool, prices, currency);
@@ -201,7 +186,7 @@ export default class Pools {
     }
   }
 
-  private extractAddress(poolId: string): string {
+  public addressFor(poolId: string): string {
     return getAddress(poolId.slice(0, 42));
   }
 }

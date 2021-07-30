@@ -125,7 +125,7 @@ export default defineComponent({
 
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
-    const { allTokens } = useTokens2();
+    const { tokens } = useTokens2();
     const { userNetworkConfig } = useWeb3();
 
     const isWrap = computed(() => {
@@ -149,12 +149,12 @@ export default defineComponent({
       approveV1,
       approveV2,
       allowanceState
-    } = useTokenApproval(addressIn, amountIn, allTokens);
+    } = useTokenApproval(addressIn, amountIn, tokens);
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 
     const symbolIn = computed(() => {
-      const token = allTokens.value[addressIn.value];
+      const token = tokens.value[addressIn.value];
       if (!token) {
         return '';
       }
@@ -162,7 +162,7 @@ export default defineComponent({
     });
 
     const symbolOut = computed(() => {
-      const token = allTokens.value[addressOut.value];
+      const token = tokens.value[addressOut.value];
       if (!token) {
         return '';
       }

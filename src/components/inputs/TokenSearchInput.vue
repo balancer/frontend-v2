@@ -16,7 +16,7 @@
           @closed="$emit('remove', token)"
         >
           <BalAsset :address="token" :size="20" class="flex-auto" />
-          <span class="ml-2">{{ allTokens[token]?.symbol }}</span>
+          <span class="ml-2">{{ tokens[token]?.symbol }}</span>
         </BalChip>
       </div>
       <div
@@ -89,7 +89,7 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    const { allTokens, balances, dynamicDataLoading } = useTokens2();
+    const { tokens, balances, dynamicDataLoading } = useTokens2();
     const { account } = useWeb3();
 
     /**
@@ -112,7 +112,7 @@ export default defineComponent({
     const hasNoBalances = computed(() => !sortedBalances.value.length);
 
     const whiteListedTokens = computed(() =>
-      Object.values(allTokens.value)
+      Object.values(tokens.value)
         .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
         .filter(token => !props.modelValue.includes(token.address))
     );
@@ -139,7 +139,7 @@ export default defineComponent({
       // state
       selectTokenModal,
       // computed
-      allTokens,
+      tokens,
       dynamicDataLoading,
       balances,
       sortedBalances,

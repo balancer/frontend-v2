@@ -35,20 +35,29 @@ export default defineComponent({
     }
   },
   setup(props) {
-    // COMPOSABLES
-    const { allTokens } = useTokens2();
+    /**
+     * COMPOSABLES
+     */
+    const { tokens } = useTokens2();
 
-    // DATA
+    /**
+     * STATE
+     */
     const { address } = toRefs(props);
     const error = ref(false);
 
-    // COMPUTED
+    /**
+     * COMPUTED
+     */
     const iconURL = computed(() => {
-      const token = allTokens.value[address.value];
+      const token = tokens.value[address.value];
       if (!token) return '';
       return token.logoURI;
     });
 
+    /**
+     * WATCHERS
+     */
     watch(iconURL, newURL => {
       if (newURL !== '') error.value = false;
     });

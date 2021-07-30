@@ -4,6 +4,7 @@ import { multicall } from '@/lib/utils/balancer/contract';
 import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
+import { TokenInfoMap } from '@/types/TokenList';
 
 // TYPES
 export type AllowanceMap = { [address: string]: string };
@@ -19,17 +20,17 @@ export default class AllowancesConcern {
   async get(
     account: string,
     contractAddresses: string[],
-    tokenAddresses: string[]
+    tokens: TokenInfoMap
   ): Promise<ContractAllowancesMap> {
     try {
       // Filter out eth (or native asset) since it's not relevant for allowances.
-      tokenAddresses = tokenAddresses.filter(
+      const tokenAddresses = Object.keys(tokens).filter(
         address => address !== this.nativeAssetAddress
       );
 
       const allContractAllowances = await Promise.all(
         contractAddresses.map(contractAddress =>
-          this.getForContract(account, contractAddress, tokenAddresses)
+          this.getForContract(account, contractAddress, tokenAddresses, tokens)
         )
       );
 
@@ -39,7 +40,6 @@ export default class AllowancesConcern {
           allContractAllowances[i]
         ])
       );
-      console.log('Allowances, could be wrong because of decimals', result);
       return result;
     } catch (error) {
       console.error('Failed to fetch allowances', account, error);
@@ -50,7 +50,8 @@ export default class AllowancesConcern {
   async getForContract(
     account: string,
     contractAddress: string,
-    tokenAddresses: string[]
+    tokenAddresses: string[],
+    tokens: TokenInfoMap
   ): Promise<AllowanceMap> {
     const network = this.service.configService.network.key;
     const provider = this.service.rpcProviderService.jsonProvider;
@@ -69,7 +70,7 @@ export default class AllowancesConcern {
     return Object.fromEntries(
       tokenAddresses.map((token, i) => [
         getAddress(token),
-        formatUnits(allowances[i][0].toString(), 18) // TODO, use token decimals
+        formatUnits(allowances[i][0].toString(), tokens[token].decimals)
       ])
     );
   }

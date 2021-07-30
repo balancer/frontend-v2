@@ -26,13 +26,7 @@ export default function useTokenApprovalGP(
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
-  const {
-    allTokens: tokens,
-    approvalsRequired,
-    dynamicDataLoading
-  } = useTokens2({
-    allowanceContracts: [GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS]
-  });
+  const { tokens, approvalsRequired, dynamicDataLoading } = useTokens2();
 
   /**
    * COMPUTED

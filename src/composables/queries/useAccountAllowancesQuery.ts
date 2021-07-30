@@ -6,33 +6,41 @@ import { tokenService } from '@/services/token/token.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists2 from '../useTokenLists2';
+import { TokenInfoMap } from '@/types/TokenList';
 
 // TYPES
 type Response = ContractAllowancesMap;
 
 export default function useAccountAllowancesQuery(
-  trackedTokenAddresses: Ref<string[]> = ref([]),
+  tokens: Ref<TokenInfoMap> = ref({}),
   contractAddesses: Ref<string[]> = ref([]),
   options: UseQueryOptions<Response> = {}
 ) {
+  /**
+   * COMPOSABLES
+   */
   const { account, isWalletReady } = useWeb3();
   const { tokenListsLoaded } = useTokenLists2();
-  const enabled = computed(() => isWalletReady.value && tokenListsLoaded.value);
 
+  /**
+   * COMPUTED
+   */
+  const enabled = computed(() => isWalletReady.value && tokenListsLoaded.value);
+  const tokenAddresses = computed(() => Object.keys(tokens.value));
+
+  /**
+   * QUERY INPUTS
+   */
   const queryKey = reactive(
-    QUERY_KEYS.Account.Allowances2(
-      account,
-      contractAddesses,
-      trackedTokenAddresses
-    )
+    QUERY_KEYS.Account.Allowances2(account, contractAddesses, tokenAddresses)
   );
 
   const queryFn = async () => {
-    console.log('Fetching', trackedTokenAddresses.value.length, 'allownances');
+    console.log('Fetching', tokenAddresses.value.length, 'allownances');
     return await tokenService.allowances.get(
       account.value,
       contractAddesses.value,
-      trackedTokenAddresses.value
+      tokens.value
     );
   };
 
