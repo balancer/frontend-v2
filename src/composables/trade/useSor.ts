@@ -490,7 +490,7 @@ export default function useSor({
         );
         console.log('Swap out tx', tx);
 
-        txHandler(tx);
+        txHandler(tx, 'trade');
 
         if (successCallback != null) {
           successCallback();
