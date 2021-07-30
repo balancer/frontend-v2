@@ -1,4 +1,4 @@
-import { computed, ComputedRef, ref, Ref } from 'vue';
+import { computed, ComputedRef, reactive, ref, Ref, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { BigNumber } from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
@@ -25,7 +25,8 @@ import useNumbers from '../useNumbers';
 const GNOSIS_APP_ID = 2;
 const APP_DATA = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
 const HIGH_FEE_THRESHOLD = 0.2;
-const INITIAL_STATE = {
+
+const state = reactive({
   errors: {
     feeExceedsPrice: false,
     priceExceedsBalance: false
@@ -33,7 +34,7 @@ const INITIAL_STATE = {
   warnings: {
     highFees: false
   }
-};
+});
 
 export type GnosisTransactionDetails = {
   tokenIn: Token;
@@ -84,8 +85,6 @@ export default function useGnosis({
 
   // DATA
   const feeQuote = ref<FeeInformation | null>(null);
-  const errors = ref(INITIAL_STATE.errors);
-  const warnings = ref(INITIAL_STATE.warnings);
   const updatingQuotes = ref(false);
   const trading = ref(false);
 
@@ -95,7 +94,7 @@ export default function useGnosis({
   );
 
   const hasErrors = computed(() =>
-    Object.values(errors.value).some(hasError => hasError)
+    Object.values(state.errors).some(hasError => hasError)
   );
 
   // METHODS
@@ -223,8 +222,10 @@ export default function useGnosis({
   }
 
   function resetState(shouldResetFees = true) {
-    errors.value = { ...INITIAL_STATE.errors };
-    warnings.value = { ...INITIAL_STATE.warnings };
+    state.errors.feeExceedsPrice = false;
+    state.errors.priceExceedsBalance = false;
+
+    state.warnings.highFees = false;
 
     if (shouldResetFees) {
       feeQuote.value = null;
@@ -263,11 +264,11 @@ export default function useGnosis({
 
       if (feeQuoteResult != null) {
         if (exactIn.value) {
-          errors.value.feeExceedsPrice = amountToExchange
+          state.errors.feeExceedsPrice = amountToExchange
             .minus(feeQuoteResult.amount)
             .isNegative();
         }
-        if (!errors.value.feeExceedsPrice) {
+        if (!state.errors.feeExceedsPrice) {
           const priceQuoteResult = await gnosisOperator.getPriceQuote(
             queryParams
           );
@@ -282,7 +283,7 @@ export default function useGnosis({
 
               const { feeAmountInToken } = getQuote();
 
-              warnings.value.highFees = bnum(feeAmountInToken)
+              state.warnings.highFees = bnum(feeAmountInToken)
                 .div(amountToExchange)
                 .gt(HIGH_FEE_THRESHOLD);
             } else {
@@ -292,11 +293,11 @@ export default function useGnosis({
 
               const { feeAmountOutToken, maximumInAmount } = getQuote();
 
-              warnings.value.highFees = bnum(feeAmountOutToken)
+              state.warnings.highFees = bnum(feeAmountOutToken)
                 .div(amountToExchange)
                 .gt(HIGH_FEE_THRESHOLD);
 
-              errors.value.priceExceedsBalance = bnum(
+              state.errors.priceExceedsBalance = bnum(
                 formatUnits(maximumInAmount, tokenIn.value.decimals)
               ).gt(tokenIn.value.balance);
             }
@@ -316,10 +317,9 @@ export default function useGnosis({
     resetState,
 
     // computed
+    ...toRefs(state),
     feeQuote,
     updatingQuotes,
-    errors,
-    warnings,
     hasErrors,
     trading,
     getQuote

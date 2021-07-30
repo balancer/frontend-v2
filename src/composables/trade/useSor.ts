@@ -1,4 +1,12 @@
-import { Ref, onMounted, ref, computed, ComputedRef } from 'vue';
+import {
+  Ref,
+  onMounted,
+  ref,
+  computed,
+  ComputedRef,
+  reactive,
+  toRefs
+} from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -33,11 +41,11 @@ const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
 const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 const MIN_PRICE_IMPACT = 0.0001;
 const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
-const INITIAL_STATE = {
+const state = reactive({
   errors: {
     highPriceImpact: false
   }
-};
+});
 
 type Props = {
   exactIn: Ref<boolean>;
@@ -109,7 +117,6 @@ export default function useSor({
   const priceImpact = ref(0);
   const latestTxHash = ref('');
   const poolsLoading = ref(true);
-  const errors = ref(INITIAL_STATE.errors);
 
   // COMPOSABLES
   const store = useStore();
@@ -147,7 +154,7 @@ export default function useSor({
   }, 30 * 1e3);
 
   function resetState() {
-    errors.value = { ...INITIAL_STATE.errors };
+    state.errors.highPriceImpact = false;
   }
 
   async function initSor(): Promise<void> {
@@ -337,7 +344,7 @@ export default function useSor({
 
     pools.value = sorManager.selectedPools;
 
-    errors.value.highPriceImpact =
+    state.errors.highPriceImpact =
       priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
   }
 
@@ -554,6 +561,7 @@ export default function useSor({
   }
 
   return {
+    ...toRefs(state),
     sorManager,
     sorReturn,
     pools,
@@ -566,7 +574,6 @@ export default function useSor({
     latestTxHash,
     fetchPools,
     poolsLoading,
-    getQuote,
-    errors
+    getQuote
   };
 }
