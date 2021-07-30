@@ -1,4 +1,12 @@
-import { Ref, onMounted, ref, computed, ComputedRef } from 'vue';
+import {
+  Ref,
+  onMounted,
+  ref,
+  computed,
+  ComputedRef,
+  reactive,
+  toRefs
+} from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -32,6 +40,12 @@ const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
 const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 const MIN_PRICE_IMPACT = 0.0001;
+const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
+const state = reactive({
+  errors: {
+    highPriceImpact: false
+  }
+});
 
 type Props = {
   exactIn: Ref<boolean>;
@@ -51,6 +65,7 @@ type Props = {
   };
   tokenIn?: ComputedRef<Token>;
   tokenOut?: ComputedRef<Token>;
+  slippageBufferRate: ComputedRef<number>;
 };
 
 export type UseSor = ReturnType<typeof useSor>;
@@ -72,7 +87,8 @@ export default function useSor({
     enableTxHandler: true
   },
   tokenIn,
-  tokenOut
+  tokenOut,
+  slippageBufferRate
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
@@ -137,9 +153,9 @@ export default function useSor({
     }
   }, 30 * 1e3);
 
-  const slippageBufferRate = computed(() =>
-    parseFloat(store.state.app.slippage)
-  );
+  function resetState() {
+    state.errors.highPriceImpact = false;
+  }
 
   async function initSor(): Promise<void> {
     const poolsUrlV1 = `${
@@ -186,6 +202,8 @@ export default function useSor({
   }
 
   async function handleAmountChange(): Promise<void> {
+    resetState();
+
     const amount = exactIn.value
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
@@ -325,6 +343,9 @@ export default function useSor({
     }
 
     pools.value = sorManager.selectedPools;
+
+    state.errors.highPriceImpact =
+      priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
   }
 
   function txHandler(
@@ -540,6 +561,7 @@ export default function useSor({
   }
 
   return {
+    ...toRefs(state),
     sorManager,
     sorReturn,
     pools,
