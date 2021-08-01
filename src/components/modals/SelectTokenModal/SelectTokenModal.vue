@@ -70,7 +70,6 @@
       <div class="border-b dark:border-gray-700 flex">
         <Search
           v-model="query"
-          @update:modelValue="onTokenSearch"
           :placeholder="$t('searchBy')"
           class="px-4 py-3 flex-auto"
         />
