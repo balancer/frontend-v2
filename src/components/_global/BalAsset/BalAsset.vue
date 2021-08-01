@@ -1,7 +1,7 @@
 <template>
   <img
     v-if="iconSRC && !error"
-    :src="_url(iconSRC)"
+    :src="iconSRC"
     :style="{
       width: `${size}px`,
       height: `${size}px`

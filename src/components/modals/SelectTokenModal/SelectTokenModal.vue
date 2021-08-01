@@ -242,7 +242,6 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      console.log(activeTokenListTokens.value)
       setTokens(Object.values(activeTokenListTokens.value));
     });
 
