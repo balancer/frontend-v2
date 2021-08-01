@@ -488,7 +488,7 @@ export default defineComponent({
 
     // METHODS
     function tokenBalance(index: number): string {
-      return balances.value[props.pool.tokenAddresses[index]] || '0';
+      return balances.value[index] || '0';
     }
 
     function tokenDecimals(index) {

@@ -324,7 +324,6 @@ export default defineComponent({
     });
 
     const bptBalance = computed(() => {
-      console.log(props.pool.address, balances.value);
       return balances.value[props.pool.address];
     });
 
