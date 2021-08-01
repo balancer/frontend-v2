@@ -29,7 +29,6 @@ import { getOriginalAddress } from '@/services/coingecko';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TOKENS } from '@/constants/tokens';
 import useTokens2 from '@/composables/useTokens2';
-import useConfig from '@/composables/useConfig';
 
 export default defineComponent({
   props: {

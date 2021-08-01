@@ -154,7 +154,6 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed, ref } from 'vue';
-import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
 import { ETHER } from '@/constants/tokenlists';
@@ -205,7 +204,6 @@ export default defineComponent({
     'change'
   ],
   setup(props, { emit }) {
-    const store = useStore();
     const { tokens, balances, injectTokens } = useTokens2();
     const { fNum, toFiat } = useNumbers();
 

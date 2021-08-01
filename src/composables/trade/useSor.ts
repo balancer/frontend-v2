@@ -28,13 +28,12 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import useFathom from '../useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { ETHER } from '@/constants/tokenlists';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
 import { TradeQuote } from './types';
 import useTransactions from '../useTransactions';
 import useNumbers from '../useNumbers';
-import { TokenInfoMap, TokenInfo } from '@/types/TokenList';
+import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
 import useTokens2 from '../useTokens2';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
@@ -64,8 +63,8 @@ type Props = {
     handleAmountsOnFetchPools: boolean;
     enableTxHandler: boolean;
   };
-  tokenIn?: ComputedRef<Token>;
-  tokenOut?: ComputedRef<Token>;
+  tokenIn?: ComputedRef<TokenInfo>;
+  tokenOut?: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
 };
 

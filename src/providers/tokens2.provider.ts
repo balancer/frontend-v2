@@ -294,11 +294,11 @@ export default {
     /**
      * Fetch balance for a token
      */
-    function balanceFor(address: string): number {
+    function balanceFor(address: string): string {
       try {
-        return Number(balances.value[address]) || 0;
+        return balances.value[address] || '0';
       } catch {
-        return 0;
+        return '0';
       }
     }
 

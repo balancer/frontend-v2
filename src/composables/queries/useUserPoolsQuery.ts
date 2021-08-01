@@ -10,7 +10,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists2 from '../useTokenLists2';
 import useTokens2 from '../useTokens2';
 import useUserSettings from '../useUserSettings';
-import { getAddress } from '@ethersproject/address';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];

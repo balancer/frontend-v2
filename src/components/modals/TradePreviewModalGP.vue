@@ -148,17 +148,17 @@
       </BalCard>
       <div v-if="trading.requiresApproval.value" class="flex justify-between">
         <BalBtn
-          v-if="!isUnlocked || approved"
+          v-if="!isApproved || approved"
           :loading="approving"
           :loading-label="`${$t('approving')}...`"
           color="gradient"
           block
-          :disabled="isUnlocked"
+          :disabled="isApproved"
           @click.prevent="approve"
           class="mr-5"
         >
-          <div :class="['button-step', { 'button-step-disabled': isUnlocked }]">
-            <template v-if="isUnlocked">
+          <div :class="['button-step', { 'button-step-disabled': isApproved }]">
+            <template v-if="isApproved">
               <BalIcon
                 name="check"
                 size="sm"
@@ -175,11 +175,11 @@
           @click.prevent="trade"
           :loading="trading.isTrading.value"
           :loading-label="$t('confirming')"
-          :disabled="!isUnlocked"
+          :disabled="!isApproved"
         >
           <div
-            v-if="!isUnlocked || approved"
-            :class="['button-step', { 'button-step-disabled': !isUnlocked }]"
+            v-if="!isApproved || approved"
+            :class="['button-step', { 'button-step-disabled': !isApproved }]"
           >
             2
           </div>
@@ -421,7 +421,7 @@ export default defineComponent({
       };
     });
 
-    const { approving, isUnlocked, approve, approved } = useTokenApprovalGP(
+    const { approving, isApproved, approve, approved } = useTokenApprovalGP(
       addressIn,
       props.trading.tokenInAmountInput
     );
@@ -446,7 +446,7 @@ export default defineComponent({
       trade,
 
       // computed
-      isUnlocked,
+      isApproved,
       approving,
       approved,
       tokenInFiatValue,

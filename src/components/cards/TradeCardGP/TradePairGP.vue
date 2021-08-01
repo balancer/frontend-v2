@@ -158,7 +158,6 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed, ref, PropType } from 'vue';
-import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import { ETHER } from '@/constants/tokenlists';
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
@@ -209,7 +208,6 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     // COMPOSABLES
-    const store = useStore();
     const { fNum, toFiat } = useNumbers();
 
     // DATA

@@ -95,7 +95,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
-import { useStore } from 'vuex';
 import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
 import { useI18n } from 'vue-i18n';
@@ -125,7 +124,6 @@ export default defineComponent({
 
     // COMPOSABLES
     const { upToLargeBreakpoint } = useBreakpoints();
-    const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
     const {

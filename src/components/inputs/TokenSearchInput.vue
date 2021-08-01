@@ -59,7 +59,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import { pick, sortBy, take } from 'lodash';
+import { pick, take } from 'lodash';
 import { TOKENS } from '@/constants/tokens';
 import { ETHER } from '@/constants/tokenlists';
 import { getAddress } from '@ethersproject/address';
