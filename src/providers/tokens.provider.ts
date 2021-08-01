@@ -115,7 +115,7 @@ export default {
     );
 
     /**
-     * All tokens
+     * The main tokens map
      * A combination of activated token list tokens
      * and any injected tokens. Static and dynamic
      * meta data should be available for these tokens.
