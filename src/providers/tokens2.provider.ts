@@ -41,6 +41,7 @@ export interface TokensProviderResponse {
   tokens: Ref<TokenInfoMap>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: TokenInfo;
+  activeTokenListTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
   allowances: ComputedRef<ContractAllowancesMap>;
@@ -76,7 +77,7 @@ export default {
      * COMPOSABLES
      */
     const { networkConfig } = useConfig();
-    const { allTokenLists } = useTokenLists2();
+    const { allTokenLists, activeTokenLists } = useTokenLists2();
     const { currency } = useUserSettings();
 
     /**
@@ -103,6 +104,11 @@ export default {
      * COMPUTED
      */
     const tokenAddresses = computed(() => Object.keys(state.tokens));
+
+    const activeTokenListTokens = computed(
+      (): TokenInfoMap =>
+        mapTokenListTokens(Object.values(activeTokenLists.value))
+    );
 
     /****************************************************************
      * Dynamic metadata
@@ -214,7 +220,7 @@ export default {
       query: string,
       excluded: string[] = []
     ): Promise<TokenInfoMap> {
-      if (!query) return removeExcluded(state.tokens, excluded);
+      if (!query) return removeExcluded(activeTokenListTokens.value, excluded);
 
       if (isAddress(query)) {
         const address = getAddress(query);
@@ -226,7 +232,7 @@ export default {
           return pick(state.tokens, address);
         }
       } else {
-        const tokensArray = Object.entries(state.tokens);
+        const tokensArray = Object.entries(activeTokenListTokens.value);
         const results = tokensArray.filter(
           ([, token]) =>
             token.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -308,6 +314,7 @@ export default {
       ...toRefs(state),
       // computed
       nativeAsset,
+      activeTokenListTokens,
       prices,
       balances,
       allowances,

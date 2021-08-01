@@ -167,7 +167,7 @@ export default defineComponent({
       tokenListUrl
     } = useTokenLists2();
     const {
-      tokens: allTokens,
+      activeTokenListTokens,
       searchTokens,
       balances,
       priceFor,
@@ -206,19 +206,19 @@ export default defineComponent({
 
     function onToggleList(uri: string): void {
       toggleTokenList(uri);
-      setTokens(Object.values(allTokens.value));
+      setTokens(Object.values(activeTokenListTokens.value));
     }
 
     function onListExit(): void {
       data.selectTokenList = false;
       data.query = '';
-      setTokens(Object.values(allTokens.value));
+      setTokens(Object.values(activeTokenListTokens.value));
     }
 
     function toggleSelectTokenList(): void {
       data.selectTokenList = !data.selectTokenList;
       data.query = '';
-      setTokens(Object.values(allTokens.value));
+      setTokens(Object.values(activeTokenListTokens.value));
     }
 
     function setTokens(_tokens: TokenInfo[]): void {
@@ -242,7 +242,8 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      setTokens(Object.values(allTokens.value));
+      console.log(activeTokenListTokens.value)
+      setTokens(Object.values(activeTokenListTokens.value));
     });
 
     watch(dynamicDataLoaded, dataAvailable => {
