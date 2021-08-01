@@ -105,14 +105,24 @@ export default {
     /**
      * COMPUTED
      */
+
+    /**
+     * All tokens from token lists that are toggled on.
+     */
     const activeTokenListTokens = computed(
       (): TokenInfoMap =>
         mapTokenListTokens(Object.values(activeTokenLists.value))
     );
 
+    /**
+     * All tokens
+     * A combination of activated token list tokens
+     * and any injected tokens. Static and dynamic
+     * meta data should be available for these tokens.
+     */
     const tokens = computed(() => ({
-      ...state.injectedTokens,
-      ...activeTokenListTokens.value
+      ...activeTokenListTokens.value,
+      ...state.injectedTokens
     }));
 
     const tokenAddresses = computed(() => Object.keys(tokens.value));
