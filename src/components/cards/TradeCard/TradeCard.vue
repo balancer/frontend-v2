@@ -149,6 +149,10 @@ export default defineComponent({
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
 
+    const slippageBufferRate = computed(() =>
+      parseFloat(store.state.app.slippage)
+    );
+
     const tokenIn = computed(() => tokens.value[tokenInAddress.value]);
 
     const tokenOut = computed(() => tokens.value[tokenOutAddress.value]);
@@ -219,7 +223,8 @@ export default defineComponent({
       isWrap,
       isUnwrap,
       tokenIn,
-      tokenOut
+      tokenOut,
+      slippageBufferRate
     });
     const { errorMessage } = useValidation(
       tokenInAddress,

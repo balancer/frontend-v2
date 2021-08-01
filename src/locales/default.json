@@ -40,6 +40,8 @@
     "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
     "configuration": "Configuration",
     "confirmTrade": "Confirm trade",
+    "confirmETHWrap": "Confirm ETH wrap",
+    "confirmETHUnwrap": "Confirm ETH unwrap",
     "confirming": "Confirming...",
     "connect": "Connect",
     "connecting": "Connecting...",
@@ -76,8 +78,6 @@
     "explore": "Explore",
     "explorePools": "Explore pools",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
-    "expectedReceiveNoSlippage": "Expected to receive with no slippage",
-    "expectedSellNoSlippage": "Expected to sell with no slippage",
     "feesTime": "Fees ({0})",
     "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every trade utilizing the Liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
     "filter": "Filter",
@@ -87,7 +87,6 @@
     "fixedSwapFeeLabel": "Fixed swap fees: <b>{0}</b>",
     "flashLoanFee": "Flash loan fee",
     "goToBalancerV1Site": "Go to the Balancer V1 site ->",
-    "gasCosts": "Gas costs",
     "highGasFees": "High gas fees? Here's a helping hand",
     "highPriceImpact": "High price impact",
     "highPriceImpactDetailed": "This trade is significantly moving the market price.",
@@ -124,9 +123,7 @@
     "manageLists": "Manage lists",
     "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
     "max": "Max",
-    "maxSoldWithSlippage": "Max sold with {0} slippage",
     "menu": "Menu",
-    "minReceivedWithSlippage": "Min received with {0} slippage",
     "month": "month",
     "months": "months",
     "mustBeAtLeast": "must be at least {0} characters",
@@ -189,6 +186,8 @@
     "popularBases": "Popular:",
     "preview": "Preview",
     "previewTrade": "Preview trade",
+    "previewETHWrap": "Preview ETH Wrap",
+    "previewETHUnwrap": "Preview ETH Unwrap",
     "previewTradeTransactions": "Preview trade transactions",
     "priceImpact": "Price impact",
     "priceImpactAccept": "I accept the high price impact from withdrawing single token amounts, moving the market price based on the depth of the market.",
@@ -225,6 +224,37 @@
         "wrapETH": "Wrap {0} ETH to WETH",
         "unwrapETH": "Unwrap {0} WETH to ETH"
     },
+    "tradeSummary": {
+        "exactIn": {
+            "title": "Trade from {0} details",
+            "tradeFees": "Trade fees",
+            "totalBeforeFees": "Total to receive before fees",
+            "totalAfterFees": "Total expected after fees",
+            "totalWithSlippage": "The least you’ll get at {0} slippage"
+        },
+        "exactOut": {
+            "title": "Trade to {0} details",
+            "tradeFees": "Trade fees",
+            "totalBeforeFees": "Total to trade before fees",
+            "totalAfterFees": "Total expected to trade after fees",
+            "totalWithSlippage": "The most you’ll send at {0} slippage"
+        },
+        "wrapETH": {
+            "title": "Summary",
+            "tradeFees": "Wrap fees",
+            "totalBeforeFees": "Amount before fees",
+            "totalAfterFees": "Total to receive",
+            "totalWithSlippage": "Zero slippage to wrap ETH"
+        },
+        "unwrapETH": {
+            "title": "Summary",
+            "tradeFees": "Unwrap fees",
+            "totalBeforeFees": "Amount before fees",
+            "totalAfterFees": "Total to receive",
+            "totalWithSlippage": "Zero slippage to wrap ETH"
+        },
+        "gasCosts": "Gas costs"
+    },
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
     "seeMore": "See more",
@@ -246,7 +276,6 @@
     "swapFee": "Swap fee",
     "swapFeeAPR": "Swap fees APR",
     "symbol": "Symbol",
-    "solverFees": "Solver fees",
     "theme": "Theme",
     "threeMonths": "3M",
     "token": "Token",
@@ -264,10 +293,26 @@
     "tradeLiquidity": "Trade liquidity",
     "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
     "transactionDeadline": "Transaction deadline",
-    "transactionDeadlineTooltip": "Your swap expires and will not execute if it is pending for longer than the selected duration. Only executed swaps incur fees.",
+    "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
     "unavailableOnNetwork": "Sorry! Balancer is not available on this network",
     "unavailableOnNetworkWithName": "Sorry! Balancer is not available on {0}",
     "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+    "gnosisErrors": {
+        "lowAmount": {
+            "header": "Your trade amount is too low",
+            "body": "The fees for this transaction exceeds the amount you want to trade."
+        },
+        "lowBalance": {
+            "header": "Insufficient {0} balance",
+            "body": "The fees and potential slippage (up to {2}) set for this trade exceeds your {0} balance. You need at least {1} {0} to proceed."
+        }
+    },
+    "gnosisWarnings": {
+        "highFees": {
+            "header": "The fees on this transaction exceed 20% of the trade amount.",
+            "body": "You can still proceed with the trade but a high percentage of it will be consumed by trade fees."
+        }
+    },
     "unknown": "Unknown",
     "unknownPoolType": "Unknown pool type",
     "unlock": "Unlock",

@@ -95,6 +95,7 @@ export default function useTokenApprovalGP(
   return {
     approving,
     approve,
+    approved,
     allowanceState,
     isApproved,
     isLoading: dynamicDataLoading
