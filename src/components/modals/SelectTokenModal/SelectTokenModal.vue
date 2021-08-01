@@ -48,11 +48,11 @@
       />
       <div>
         <div
-          v-if="Object.keys(filteredTokenLists).length > 0"
+          v-if="Object.keys(tokenLists).length > 0"
           class="h-96 overflow-y-scroll"
         >
           <TokenListsListItem
-            v-for="(tokenList, uri) in filteredTokenLists"
+            v-for="(tokenList, uri) in tokenLists"
             :key="uri"
             :isActive="isActiveList(uri)"
             :tokenlist="tokenList"
@@ -170,7 +170,8 @@ export default defineComponent({
       searchTokens,
       priceFor,
       balanceFor,
-      dynamicDataLoading
+      dynamicDataLoading,
+      nativeAsset
     } = useTokens2();
     const { t } = useI18n();
     const { resolve } = useUrls();
@@ -183,7 +184,7 @@ export default defineComponent({
       return t('selectToken');
     });
 
-    const filteredTokenLists = computed(() => {
+    const tokenLists = computed(() => {
       const query = state.query.toLowerCase();
       const tokenListArray = Object.entries(approvedTokenLists.value);
       const results = tokenListArray.filter(([, tokenList]) =>
@@ -208,6 +209,11 @@ export default defineComponent({
       return orderBy(tokensWithValues, ['value', 'balance'], ['desc', 'desc']);
     });
 
+    const excludedTokens = computed(() => [
+      ...props.excludedTokens,
+      ...(props.includeEther ? [] : [nativeAsset.address])
+    ]);
+
     /**
      * METHODS
      */
@@ -218,7 +224,7 @@ export default defineComponent({
 
     async function onToggleList(uri: string): Promise<void> {
       toggleTokenList(uri);
-      state.results = await searchTokens(state.query, props.excludedTokens);
+      state.results = await searchTokens(state.query, excludedTokens.value);
     }
 
     function onListExit(): void {
@@ -237,7 +243,7 @@ export default defineComponent({
     watch(
       toRef(state, 'query'),
       async newQuery => {
-        state.results = await searchTokens(newQuery, props.excludedTokens);
+        state.results = await searchTokens(newQuery, excludedTokens.value);
       },
       { immediate: true }
     );
@@ -248,7 +254,7 @@ export default defineComponent({
       // computed
       title,
       tokens,
-      filteredTokenLists,
+      tokenLists,
       activeTokenLists,
       dynamicDataLoading,
       // methods

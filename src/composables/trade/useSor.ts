@@ -27,6 +27,7 @@ import { TradeQuote } from './types';
 import useTransactions from '../useTransactions';
 import useNumbers from '../useNumbers';
 import { TokenInfoMap, TokenInfo } from '@/types/TokenList';
+import useTokens2 from '../useTokens2';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -107,7 +108,8 @@ export default function useSor({
   const {
     getProvider: getWeb3Provider,
     userNetworkConfig,
-    isV1Supported
+    isV1Supported,
+    appNetworkConfig
   } = useWeb3();
   const provider = computed(() => getWeb3Provider());
   const { trackGoal, Goals } = useFathom();
@@ -115,6 +117,7 @@ export default function useSor({
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
   const { t } = useI18n();
+  const { injectTokens, priceFor } = useTokens2();
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
@@ -126,7 +129,7 @@ export default function useSor({
     if (!tokens.value[tokenOutAddressInput.value]) {
       unknownAssets.push(tokenOutAddressInput.value);
     }
-    await store.dispatch('registry/injectTokens', unknownAssets);
+    await injectTokens(unknownAssets);
     await initSor();
     await handleAmountChange();
   });
@@ -475,13 +478,11 @@ export default function useSor({
 
   // Uses stored market prices to calculate swap cost in token denomination
   function calculateSwapCost(tokenAddress: string): BigNumber {
-    const ethPriceUsd =
-      store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
-    const tokenPriceUsd =
-      store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;
+    const ethPriceFiat = priceFor(appNetworkConfig.nativeAsset.address);
+    const tokenPriceFiat = priceFor(tokenAddress);
     const gasPriceWei = store.state.market.gasPrice || 0;
     const gasPriceScaled = scale(bnum(gasPriceWei), -18);
-    const ethPriceToken = bnum(Number(ethPriceUsd) / Number(tokenPriceUsd));
+    const ethPriceToken = bnum(Number(ethPriceFiat) / Number(tokenPriceFiat));
     const swapCost = bnum(SWAP_COST);
     const costSwapToken = gasPriceScaled.times(swapCost).times(ethPriceToken);
     return costSwapToken;

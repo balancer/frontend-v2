@@ -225,7 +225,7 @@ export default defineComponent({
     const modalSelectTokenType = ref('input');
     const modalSelectTokenIsOpen = ref(false);
 
-    const { tokens, balances } = useTokens2();
+    const { tokens, balances, injectTokens } = useTokens2();
 
     const tokenInValue = computed(() =>
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
@@ -323,7 +323,7 @@ export default defineComponent({
           return;
         } else emit('tokenOutAddressChange', address);
       }
-      store.dispatch('registry/injectTokens', [address]);
+      injectTokens([address]);
     }
 
     const rateMessage = computed(() =>

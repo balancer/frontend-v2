@@ -206,7 +206,7 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const store = useStore();
-    const { tokens, balances } = useTokens2();
+    const { tokens, balances, injectTokens } = useTokens2();
     const { fNum, toFiat } = useNumbers();
 
     const {
@@ -299,7 +299,7 @@ export default defineComponent({
           return;
         } else emit('tokenOutAddressChange', address);
       }
-      store.dispatch('registry/injectTokens', [address]);
+      injectTokens([address]);
     }
 
     const rateMessage = computed(() => {

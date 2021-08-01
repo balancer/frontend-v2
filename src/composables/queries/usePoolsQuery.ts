@@ -9,7 +9,6 @@ import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import useTokens2 from '../useTokens2';
 import useUserSettings from '../useUserSettings';
 import useApp from '../useApp';
-import { getAddress } from '@ethersproject/address';
 import { forChange } from '@/lib/utils';
 
 type PoolsQueryResponse = {

@@ -224,7 +224,7 @@ export default {
       query: string,
       excluded: string[] = []
     ): Promise<TokenInfoMap> {
-      if (!query) return removeExcluded(activeTokenListTokens.value, excluded);
+      if (!query) return removeExcluded(tokens.value, excluded);
 
       if (isAddress(query)) {
         const address = getAddress(query);
@@ -236,7 +236,7 @@ export default {
           return pick(tokens.value, address);
         }
       } else {
-        const tokensArray = Object.entries(activeTokenListTokens.value);
+        const tokensArray = Object.entries(tokens.value);
         const results = tokensArray.filter(
           ([, token]) =>
             token.name.toLowerCase().includes(query.toLowerCase()) ||
