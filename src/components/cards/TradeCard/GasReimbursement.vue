@@ -28,6 +28,8 @@ import { EXTERNAL_LINKS } from '@/constants/links';
 import { getOriginalAddress } from '@/services/coingecko';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TOKENS } from '@/constants/tokens';
+import useTokens2 from '@/composables/useTokens2';
+import useConfig from '@/composables/useConfig';
 
 export default defineComponent({
   props: {
@@ -50,6 +52,7 @@ export default defineComponent({
     const { appNetworkConfig } = useWeb3();
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
+    const { priceFor } = useTokens2();
 
     const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? {};
     const eligibleAssets = Object.fromEntries(
@@ -68,12 +71,10 @@ export default defineComponent({
         };
       }
 
-      const ethPrice =
-        store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
-      const balPrice =
-        store.state.market.prices[
-          getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
-        ]?.price || 0;
+      const ethPrice = priceFor(appNetworkConfig.nativeAsset.address);
+      const balPrice = priceFor(
+        getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
+      );
       const gasPrice = store.state.market.gasPrice || 0;
 
       const addressInIsEligible =
