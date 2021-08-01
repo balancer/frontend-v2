@@ -32,13 +32,14 @@ import { pick } from 'lodash';
  */
 export interface TokensProviderState {
   loading: boolean;
-  tokens: TokenInfoMap;
+  injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
 }
 
 export interface TokensProviderResponse {
   loading: Ref<boolean>;
-  tokens: Ref<TokenInfoMap>;
+  tokens: ComputedRef<TokenInfoMap>;
+  injectedTokens: Ref<TokenInfoMap>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: TokenInfo;
   activeTokenListTokens: ComputedRef<TokenInfoMap>;
@@ -55,6 +56,7 @@ export interface TokensProviderResponse {
   hasBalance: Function;
   approvalsRequired: Function;
   priceFor: Function;
+  balanceFor: Function;
   getTokens: Function;
 }
 
@@ -90,7 +92,7 @@ export default {
 
     const state: TokensProviderState = reactive({
       loading: true,
-      tokens: {
+      injectedTokens: {
         [networkConfig.nativeAsset.address]: nativeAsset
       },
       allowanceContracts: [
@@ -103,12 +105,17 @@ export default {
     /**
      * COMPUTED
      */
-    const tokenAddresses = computed(() => Object.keys(state.tokens));
-
     const activeTokenListTokens = computed(
       (): TokenInfoMap =>
         mapTokenListTokens(Object.values(activeTokenLists.value))
     );
+
+    const tokens = computed(() => ({
+      ...state.injectedTokens,
+      ...activeTokenListTokens.value
+    }));
+
+    const tokenAddresses = computed(() => Object.keys(tokens.value));
 
     /****************************************************************
      * Dynamic metadata
@@ -128,17 +135,14 @@ export default {
       isSuccess: balanceQuerySuccess,
       isLoading: balanceQueryLoading,
       refetch: refetchBalances
-    } = useAccountBalancesQuery(toRef(state, 'tokens'));
+    } = useAccountBalancesQuery(tokens);
 
     const {
       data: allowanceData,
       isSuccess: allowanceQuerySuccess,
       isLoading: allowanceQueryLoading,
       refetch: refetchAllowances
-    } = useAccountAllowancesQuery(
-      toRef(state, 'tokens'),
-      toRef(state, 'allowanceContracts')
-    );
+    } = useAccountAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
 
     const prices = computed(
       (): TokenPrices => (priceData.value ? priceData.value : {})
@@ -200,7 +204,7 @@ export default {
 
       // Only inject tokens that aren't already in tokens
       const injectable = addresses.filter(
-        address => !Object.keys(state.tokens).includes(address)
+        address => !Object.keys(tokens.value).includes(address)
       );
       if (injectable.length === 0) return;
 
@@ -209,7 +213,7 @@ export default {
         allTokenLists.value
       );
 
-      state.tokens = { ...state.tokens, ...newTokens };
+      state.injectedTokens = { ...state.injectedTokens, ...newTokens };
     }
 
     /**
@@ -224,12 +228,12 @@ export default {
 
       if (isAddress(query)) {
         const address = getAddress(query);
-        const token = state.tokens[address];
+        const token = tokens.value[address];
         if (token) {
           return { [address]: token };
         } else {
           await injectTokens([address]);
-          return pick(state.tokens, address);
+          return pick(tokens.value, address);
         }
       } else {
         const tokensArray = Object.entries(activeTokenListTokens.value);
@@ -258,13 +262,6 @@ export default {
     }
 
     /**
-     * Checks if token has a balance
-     */
-    function hasBalance(address: string): boolean {
-      return Number(balances.value[address]) > 0;
-    }
-
-    /**
      * Check which tokens require approvals for given amounts
      * @returns a subset of the token addresses passed in.
      */
@@ -288,17 +285,35 @@ export default {
      */
     function priceFor(address: string): number {
       try {
-        return prices.value[address][currency.value];
+        return prices.value[address][currency.value] || 0;
       } catch {
         return 0;
       }
     }
 
     /**
+     * Fetch balance for a token
+     */
+    function balanceFor(address: string): number {
+      try {
+        return Number(balances.value[address]) || 0;
+      } catch {
+        return 0;
+      }
+    }
+
+    /**
+     * Checks if token has a balance
+     */
+    function hasBalance(address: string): boolean {
+      return Number(balances.value[address]) > 0;
+    }
+
+    /**
      * Get subset of tokens from state
      */
     function getTokens(addresses: string[]): TokenInfoMap {
-      return pick(state.tokens, addresses);
+      return pick(tokens.value, addresses);
     }
 
     /**
@@ -313,6 +328,7 @@ export default {
       // state
       ...toRefs(state),
       // computed
+      tokens,
       nativeAsset,
       activeTokenListTokens,
       prices,
@@ -329,6 +345,7 @@ export default {
       hasBalance,
       approvalsRequired,
       priceFor,
+      balanceFor,
       getTokens
     });
 

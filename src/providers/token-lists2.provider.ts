@@ -13,7 +13,6 @@ import { TokenList, TokenListMap } from '@/types/TokenList';
 import { tokenListService } from '@/services/token-list/token-list.service';
 import { lsSet } from '@/lib/utils';
 import { pick } from 'lodash';
-import { configService } from '@/services/config/config.service';
 import useTokenListsQuery from '@/composables/queries/useTokenListsQuery';
 
 /** TYPES */
@@ -33,7 +32,6 @@ export interface TokenListsProviderResponse {
   vettedTokenList: ComputedRef<TokenList>;
   toggleTokenList: Function;
   isActiveList: Function;
-  tokenListUrl: Function;
 }
 
 /** SETUP */
@@ -46,15 +44,22 @@ export default {
   name: 'TokenListsProvider',
 
   setup(props, { slots }) {
-    /** STATE */
+    /**
+     * STATE
+     */
     const state: TokenListsState = reactive({
       activeListKeys: [uris.Balancer.Default]
     });
 
-    /** QUERIES */
+    /**
+     * QUERIES
+     */
     const tokenListsQuery = useTokenListsQuery();
 
-    /* COMPUTED */
+    /**
+     * COMPUTED
+     */
+
     /**
      * All token lists
      */
@@ -112,7 +117,10 @@ export default {
       (): TokenListMap => pick(allTokenLists.value, uris.Approved)
     );
 
-    /* METHODS */
+    /**
+     * METHODS
+     */
+
     /**
      * Adds a token list to the active lists which
      * makes additonal tokens available in the token search modal.
@@ -121,8 +129,10 @@ export default {
       if (!uris.Approved.includes(uri)) return;
 
       if (state.activeListKeys.includes(uri)) {
+        // Deactivate token list
         state.activeListKeys.splice(state.activeListKeys.indexOf(uri), 1);
       } else {
+        // Activate token list
         state.activeListKeys.push(uri);
       }
 
@@ -135,16 +145,6 @@ export default {
      */
     function isActiveList(uri: string): boolean {
       return state.activeListKeys.includes(uri);
-    }
-
-    /**
-     * Given a token list URI returns a URL
-     */
-    function tokenListUrl(uri: string): string {
-      const { IPFS_NODE } = configService.env;
-      return uri
-        .replace('ipfs://', `https://${IPFS_NODE}/ipfs/`)
-        .replace('ipns://', `https://${IPFS_NODE}/ipns/`);
     }
 
     provide(TokenListsProviderSymbol, {
@@ -161,8 +161,7 @@ export default {
       vettedTokenList,
       // methods
       toggleTokenList,
-      isActiveList,
-      tokenListUrl
+      isActiveList
     });
 
     return () => slots.default();

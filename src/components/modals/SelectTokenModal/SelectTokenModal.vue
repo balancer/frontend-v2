@@ -27,7 +27,7 @@
               <img
                 v-for="(tokenlist, i) in activeTokenLists"
                 :key="i"
-                :src="tokenListUrl(tokenlist.logoURI)"
+                :src="resolve(tokenlist.logoURI)"
                 class="rounded-full inline-block bg-white shadow w-6 h-6"
               />
             </span>
@@ -92,11 +92,6 @@
             />
           </a>
         </RecycleScroller>
-        <div
-          v-else-if="isTokenSelected"
-          v-text="$t('tokenAlreadySelected')"
-          class="h-96 flex items-center justify-center"
-        />
         <div v-else-if="loading" class="h-96 flex items-center justify-center">
           <BalLoadingIcon />
         </div>
@@ -114,12 +109,11 @@
 import {
   defineComponent,
   reactive,
-  ref,
   toRefs,
   computed,
   PropType,
-  onMounted,
-  watch
+  watch,
+  toRef
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useTokenLists2 from '@/composables/useTokenLists2';
@@ -127,8 +121,16 @@ import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
 import useTokens2 from '@/composables/useTokens2';
-import { TokenInfo } from '@/types/TokenList';
 import { orderBy } from 'lodash';
+import useUrls from '@/composables/useUrls';
+import { TokenInfoMap } from '@/types/TokenList';
+
+interface ComponentState {
+  loading: boolean;
+  selectTokenList: boolean;
+  query: string;
+  results: TokenInfoMap;
+}
 
 export default defineComponent({
   components: {
@@ -146,46 +148,44 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    // DATA
-    const tokens = ref<TokenInfo[]>([]);
-    const selectTokenLists = ref(false);
-    const data = reactive({
+    /**
+     * STATE
+     */
+    const state: ComponentState = reactive({
       loading: false,
-      query: '',
       selectTokenList: false,
-      isTokenSelected: false,
-      includeEther: props.includeEther,
-      not: props.excludedTokens,
-      queryAddress: ''
+      query: '',
+      results: {}
     });
 
+    /**
+     * COMPOSABLES
+     */
     const {
       activeTokenLists,
       approvedTokenLists,
       toggleTokenList,
-      isActiveList,
-      tokenListUrl
+      isActiveList
     } = useTokenLists2();
     const {
-      activeTokenListTokens,
       searchTokens,
-      balances,
       priceFor,
-      dynamicDataLoaded,
+      balanceFor,
       dynamicDataLoading
     } = useTokens2();
-
-    // COMPOSABLES
     const { t } = useI18n();
+    const { resolve } = useUrls();
 
-    // COMPUTED
+    /**
+     * COMPUTED
+     */
     const title = computed(() => {
-      if (selectTokenLists.value) return t('manageLists');
+      if (state.selectTokenList) return t('manageLists');
       return t('selectToken');
     });
 
     const filteredTokenLists = computed(() => {
-      const query = data.query.toLowerCase();
+      const query = state.query.toLowerCase();
       const tokenListArray = Object.entries(approvedTokenLists.value);
       const results = tokenListArray.filter(([, tokenList]) =>
         tokenList.name.toLowerCase().includes(query)
@@ -193,37 +193,9 @@ export default defineComponent({
       return Object.fromEntries(results);
     });
 
-    // METHODS
-    async function onTokenSearch(query): Promise<void> {
-      const results = await searchTokens(query, props.excludedTokens);
-      setTokens(Object.values(results));
-    }
-
-    function onSelectToken(token: string): void {
-      emit('select', token);
-      emit('close');
-    }
-
-    function onToggleList(uri: string): void {
-      toggleTokenList(uri);
-      setTokens(Object.values(activeTokenListTokens.value));
-    }
-
-    function onListExit(): void {
-      data.selectTokenList = false;
-      data.query = '';
-      setTokens(Object.values(activeTokenListTokens.value));
-    }
-
-    function toggleSelectTokenList(): void {
-      data.selectTokenList = !data.selectTokenList;
-      data.query = '';
-      setTokens(Object.values(activeTokenListTokens.value));
-    }
-
-    function setTokens(_tokens: TokenInfo[]): void {
-      const tokensWithValues = _tokens.map(token => {
-        const balance = Number(balances.value[token.address]) || 0;
+    const tokens = computed(() => {
+      const tokensWithValues = Object.values(state.results).map(token => {
+        const balance = balanceFor(token.address);
         const price = priceFor(token.address);
         const value = balance * price;
         return {
@@ -234,29 +206,46 @@ export default defineComponent({
         };
       });
 
-      tokens.value = orderBy(
-        tokensWithValues,
-        ['value', 'balance'],
-        ['desc', 'desc']
-      );
+      return orderBy(tokensWithValues, ['value', 'balance'], ['desc', 'desc']);
+    });
+
+    /**
+     * METHODS
+     */
+    function onSelectToken(token: string): void {
+      emit('select', token);
+      emit('close');
     }
 
-    onMounted(() => {
-      setTokens(Object.values(activeTokenListTokens.value));
-    });
+    async function onToggleList(uri: string): Promise<void> {
+      toggleTokenList(uri);
+      state.results = await searchTokens(state.query, props.excludedTokens);
+    }
 
-    watch(dynamicDataLoaded, dataAvailable => {
-      console.log('Dynamic data available?', dataAvailable);
-      setTokens(tokens.value);
-    });
+    function onListExit(): void {
+      state.selectTokenList = false;
+      state.query = '';
+    }
 
-    watch(dynamicDataLoading, isLoading => {
-      console.log('Dynamic data isLoading', isLoading);
-    });
+    function toggleSelectTokenList(): void {
+      state.selectTokenList = !state.selectTokenList;
+      state.query = '';
+    }
+
+    /**
+     * WATCHERS
+     */
+    watch(
+      toRef(state, 'query'),
+      async newQuery => {
+        state.results = await searchTokens(newQuery, props.excludedTokens);
+      },
+      { immediate: true }
+    );
 
     return {
       // data
-      ...toRefs(data),
+      ...toRefs(state),
       // computed
       title,
       tokens,
@@ -264,13 +253,12 @@ export default defineComponent({
       activeTokenLists,
       dynamicDataLoading,
       // methods
-      onTokenSearch,
       onSelectToken,
       onToggleList,
       onListExit,
       toggleSelectTokenList,
       isActiveList,
-      tokenListUrl
+      resolve
     };
   }
 });

@@ -59,7 +59,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import { sortBy, take } from 'lodash';
+import { pick, sortBy, take } from 'lodash';
 import { TOKENS } from '@/constants/tokens';
 import { ETHER } from '@/constants/tokenlists';
 import { getAddress } from '@ethersproject/address';
@@ -97,16 +97,14 @@ export default defineComponent({
      */
     // sorted by biggest bag balance, limited to biggest 5
     const sortedBalances = computed(() => {
-      return take(
-        sortBy(Object.values(balances.value || {}), 'balance')
-          .reverse()
-          .filter(
-            (balance: any) =>
-              !props.modelValue.includes(balance.address) &&
-              balance.address !== ETHER.address
-          ),
-        6
+      const addressesWithBalance = Object.entries(balances.value)
+        .filter(balance => balance[1] !== '0.0')
+        .map(balance => balance[0]);
+      const tokensWithBalance = Object.values(
+        pick(tokens.value, addressesWithBalance)
       );
+
+      return take(tokensWithBalance, 6);
     });
 
     const hasNoBalances = computed(() => !sortedBalances.value.length);

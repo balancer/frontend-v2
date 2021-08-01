@@ -63,13 +63,17 @@ export default {
   },
 
   setup(props) {
-    // COMPOSABLES
+    /**
+     * COMPOSABLES
+     */
     const { fNum } = useNumbers();
     const animateRef = ref();
     const { balances, prices } = useTokens2();
     const { currency } = useUserSettings();
 
-    // COMPUTED
+    /**
+     * COMPUTED
+     */
     const balance = computed(() => Number(balances.value[props.token.address]));
     const price = computed(() =>
       prices.value[props.token.address]
@@ -78,7 +82,9 @@ export default {
     );
     const value = computed(() => balance.value * price.value);
 
-    // CALLBACKS
+    /**
+     * CALLBACKS
+     */
     onMounted(() => {
       anime({
         opacity: 1,
