@@ -28,7 +28,7 @@ import { EXTERNAL_LINKS } from '@/constants/links';
 import { getOriginalAddress } from '@/services/coingecko';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TOKENS } from '@/constants/tokens';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   props: {
@@ -51,7 +51,7 @@ export default defineComponent({
     const { appNetworkConfig } = useWeb3();
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
-    const { priceFor } = useTokens2();
+    const { priceFor } = useTokens();
 
     const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? {};
     const eligibleAssets = Object.fromEntries(

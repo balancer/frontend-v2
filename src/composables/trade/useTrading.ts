@@ -9,7 +9,7 @@ import useNumbers from '../useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import useSor from './useSor';
 import useGnosis from './useGnosis';
-import useTokens2 from '../useTokens2';
+import useTokens from '../useTokens';
 
 export type TradeRoute = 'balancer' | 'gnosis';
 
@@ -25,7 +25,7 @@ export default function useTrading(
   // COMPOSABLES
   const store = useStore();
   const { fNum } = useNumbers();
-  const { tokens } = useTokens2();
+  const { tokens } = useTokens();
   const { blockNumber, userNetworkConfig } = useWeb3();
 
   // COMPUTED

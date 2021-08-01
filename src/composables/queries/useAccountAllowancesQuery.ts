@@ -5,7 +5,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { tokenService } from '@/services/token/token.service';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokenLists2 from '../useTokenLists2';
+import useTokenLists from '../useTokenLists';
 import { TokenInfoMap } from '@/types/TokenList';
 
 // TYPES
@@ -20,7 +20,7 @@ export default function useAccountAllowancesQuery(
    * COMPOSABLES
    */
   const { account, isWalletReady } = useWeb3();
-  const { tokenListsLoaded } = useTokenLists2();
+  const { tokenListsLoaded } = useTokenLists();
 
   /**
    * COMPUTED

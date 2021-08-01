@@ -34,7 +34,7 @@ import { TradeQuote } from './types';
 import useTransactions from '../useTransactions';
 import useNumbers from '../useNumbers';
 import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
-import useTokens2 from '../useTokens2';
+import useTokens from '../useTokens';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -132,7 +132,7 @@ export default function useSor({
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
   const { t } = useI18n();
-  const { injectTokens, priceFor } = useTokens2();
+  const { injectTokens, priceFor } = useTokens();
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 

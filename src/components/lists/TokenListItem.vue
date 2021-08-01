@@ -51,7 +51,7 @@ import useNumbers from '@/composables/useNumbers';
 import anime from 'animejs';
 import { onMounted, onUnmounted, PropType, ref, computed } from 'vue';
 import { TokenInfo } from '@/types/TokenList';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 
 export default {
@@ -68,7 +68,7 @@ export default {
      */
     const { fNum } = useNumbers();
     const animateRef = ref();
-    const { balances, prices } = useTokens2();
+    const { balances, prices } = useTokens();
     const { currency } = useUserSettings();
 
     /**

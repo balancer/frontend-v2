@@ -1,6 +1,6 @@
 import { computed, Ref } from 'vue';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens2 from '../useTokens2';
+import useTokens from '../useTokens';
 
 const MIN_NATIVE_ASSET_REQUIRED = 0.0001;
 
@@ -20,7 +20,7 @@ export default function useValidation(
   tokenOutAmount: Ref<string>
 ) {
   const { isWalletReady } = useWeb3();
-  const { nativeAsset, balances } = useTokens2();
+  const { nativeAsset, balances } = useTokens();
 
   const tokensAmountsValid = computed(
     () =>

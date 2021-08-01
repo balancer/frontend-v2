@@ -127,7 +127,7 @@ import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import useApp from '@/composables/useApp';
 
 interface PoolPageData {
@@ -155,7 +155,7 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isWalletReady } = useWeb3();
     const queryClient = useQueryClient();
-    const { prices } = useTokens2();
+    const { prices } = useTokens();
     const { blockNumber } = useWeb3();
 
     /**

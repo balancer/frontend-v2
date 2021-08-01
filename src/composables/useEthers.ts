@@ -6,7 +6,7 @@ import {
 
 import useBlocknative from './useBlocknative';
 import useTransactions from './useTransactions';
-import useTokens2 from './useTokens2';
+import useTokens from './useTokens';
 
 type TxCallback = (
   txData: TransactionResponse,
@@ -19,7 +19,7 @@ export const processedTxs = ref<Set<string>>(new Set(''));
 export default function useEthers() {
   const { finalizeTransaction } = useTransactions();
   const { supportsBlocknative } = useBlocknative();
-  const { refetchBalances } = useTokens2();
+  const { refetchBalances } = useTokens();
 
   async function txListener(
     tx: TransactionResponse,

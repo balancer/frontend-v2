@@ -3,7 +3,7 @@ import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
 import { useI18n } from 'vue-i18n';
@@ -26,7 +26,7 @@ export default function useTokenApprovalGP(
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
-  const { tokens, approvalsRequired, dynamicDataLoading } = useTokens2();
+  const { tokens, approvalsRequired, dynamicDataLoading } = useTokens();
 
   /**
    * COMPUTED

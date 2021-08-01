@@ -4,7 +4,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { configService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
-import useTokens2 from '../useTokens2';
+import useTokens from '../useTokens';
 import useConfig from '../useConfig';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '../useTransactions';
@@ -30,7 +30,7 @@ export default function useTokenApproval(
   const { getProvider } = useWeb3();
   const { txListener } = useEthers();
   const { networkConfig } = useConfig();
-  const { approvalsRequired, dynamicDataLoading } = useTokens2();
+  const { approvalsRequired, dynamicDataLoading } = useTokens();
 
   /**
    * COMPUTED

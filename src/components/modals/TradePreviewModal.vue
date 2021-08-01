@@ -86,7 +86,7 @@ import { ETHER } from '@/constants/tokenlists';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -125,7 +125,7 @@ export default defineComponent({
 
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
-    const { tokens } = useTokens2();
+    const { tokens } = useTokens();
     const { userNetworkConfig } = useWeb3();
 
     const isWrap = computed(() => {

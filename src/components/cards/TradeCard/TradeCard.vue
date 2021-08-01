@@ -112,7 +112,7 @@ import GasReimbursement from './GasReimbursement.vue';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import useDarkMode from '@/composables/useDarkMode';
 import { configService } from '@/services/config/config.service';
 
@@ -136,7 +136,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
-    const { tokens } = useTokens2();
+    const { tokens } = useTokens();
     const { userNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
 

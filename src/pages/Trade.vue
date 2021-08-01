@@ -16,7 +16,7 @@ import { useStore } from 'vuex';
 
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
 import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
-import useTokenLists2 from '@/composables/useTokenLists2';
+import useTokenLists from '@/composables/useTokenLists';
 import { TradeInterface } from '@/store/modules/app';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 
@@ -29,7 +29,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { loadingTokenLists } = useTokenLists2();
+    const { loadingTokenLists } = useTokenLists();
     const { setSelectedTokens } = usePoolFilters();
 
     // COMPUTED

@@ -17,7 +17,7 @@ import { Token } from '@/types';
 import { TradeQuote } from './types';
 import useNumbers from '../useNumbers';
 import { TokenInfo } from '@/types/TokenList';
-import useTokens2 from '../useTokens2';
+import useTokens from '../useTokens';
 
 // TODO: get correct app id
 const GNOSIS_APP_ID = 2;
@@ -80,7 +80,7 @@ export default function useGnosis({
   const { account, getSigner } = useWeb3();
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
-  const { balanceFor } = useTokens2();
+  const { balanceFor } = useTokens();
 
   // DATA
   const feeQuote = ref<FeeInformation | null>(null);

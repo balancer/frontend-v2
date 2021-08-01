@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '../useTransactions';
 
@@ -21,7 +21,7 @@ export default function useTokenApprovals(
    * COMPOSABLES
    */
   const { getProvider, appNetworkConfig } = useWeb3();
-  const { tokens, refetchAllowances, approvalsRequired } = useTokens2();
+  const { tokens, refetchAllowances, approvalsRequired } = useTokens();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();

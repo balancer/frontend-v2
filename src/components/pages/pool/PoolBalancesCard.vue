@@ -64,7 +64,7 @@ import numeral from 'numeral';
 import { shortenLabel } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   props: {
@@ -87,7 +87,7 @@ export default defineComponent({
     const { explorerLinks } = useWeb3();
     const { t } = useI18n();
     const { upToLargeBreakpoint } = useBreakpoints();
-    const { priceFor } = useTokens2();
+    const { priceFor } = useTokens();
 
     /**
      * COMPUTED

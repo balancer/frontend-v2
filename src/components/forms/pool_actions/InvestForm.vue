@@ -276,7 +276,7 @@ import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
@@ -337,7 +337,7 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
     const { t } = useI18n();
     const { minusSlippage } = useSlippage();
-    const { tokens, balances: allBalances } = useTokens2();
+    const { tokens, balances: allBalances } = useTokens();
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();

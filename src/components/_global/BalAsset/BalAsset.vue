@@ -14,7 +14,7 @@
 
 <script>
 import { defineComponent, toRefs, ref, computed, watch } from 'vue';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import Avatar from '../../images/Avatar.vue';
 import useUrls from '@/composables/useUrls';
 
@@ -40,7 +40,7 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    const { tokens } = useTokens2();
+    const { tokens } = useTokens();
     const { resolve } = useUrls();
 
     /**

@@ -7,8 +7,8 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokenLists2 from '../useTokenLists2';
-import useTokens2 from '../useTokens2';
+import useTokenLists from '../useTokenLists';
+import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 
 type UserPoolsQueryResponse = {
@@ -23,8 +23,8 @@ export default function useUserPoolsQuery(
   /**
    * COMPOSABLES
    */
-  const { injectTokens, prices, dynamicDataLoading } = useTokens2();
-  const { loadingTokenLists } = useTokenLists2();
+  const { injectTokens, prices, dynamicDataLoading } = useTokens();
+  const { loadingTokenLists } = useTokenLists();
   const { account, isWalletReady } = useWeb3();
   const { currency } = useUserSettings();
 

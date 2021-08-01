@@ -64,7 +64,7 @@ import { TOKENS } from '@/constants/tokens';
 import { ETHER } from '@/constants/tokenlists';
 import { getAddress } from '@ethersproject/address';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -89,7 +89,7 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    const { tokens, balances, dynamicDataLoading } = useTokens2();
+    const { tokens, balances, dynamicDataLoading } = useTokens();
     const { account } = useWeb3();
 
     /**

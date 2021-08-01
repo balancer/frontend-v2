@@ -115,11 +115,11 @@ import {
   toRef
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import useTokenLists2 from '@/composables/useTokenLists2';
+import useTokenLists from '@/composables/useTokenLists';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import { orderBy } from 'lodash';
 import useUrls from '@/composables/useUrls';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -165,14 +165,14 @@ export default defineComponent({
       approvedTokenLists,
       toggleTokenList,
       isActiveList
-    } = useTokenLists2();
+    } = useTokenLists();
     const {
       searchTokens,
       priceFor,
       balanceFor,
       dynamicDataLoading,
       nativeAsset
-    } = useTokens2();
+    } = useTokens();
     const { t } = useI18n();
     const { resolve } = useUrls();
 

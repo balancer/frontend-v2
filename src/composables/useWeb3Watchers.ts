@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 
 import useBlocknative from './useBlocknative';
-import useTokens2 from './useTokens2';
+import useTokens from './useTokens';
 import useTransactions from './useTransactions';
 
 export default function useWeb3Watchers() {
@@ -20,7 +20,7 @@ export default function useWeb3Watchers() {
     isUnsupportedNetwork,
     blockNumber
   } = useWeb3();
-  const { refetchBalances, refetchAllowances } = useTokens2();
+  const { refetchBalances, refetchAllowances } = useTokens();
   const { handlePendingTransactions } = useTransactions();
 
   // Watch for user account change:

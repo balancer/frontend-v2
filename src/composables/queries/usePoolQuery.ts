@@ -1,7 +1,7 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
@@ -18,7 +18,7 @@ export default function usePoolQuery(
   /**
    * COMPOSABLES
    */
-  const { getTokens, injectTokens, prices, dynamicDataLoading } = useTokens2();
+  const { getTokens, injectTokens, prices, dynamicDataLoading } = useTokens();
   const { appLoading } = useApp();
   const { currency } = useUserSettings();
 

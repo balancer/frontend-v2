@@ -88,7 +88,7 @@
 import { PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import numeral from 'numeral';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
 import {
@@ -153,7 +153,7 @@ export default {
     const { fNum } = useNumbers();
     const { t } = useI18n();
     const { explorerLinks } = useWeb3();
-    const { tokens, priceFor } = useTokens2();
+    const { tokens, priceFor } = useTokens();
     const { upToLargeBreakpoint } = useBreakpoints();
 
     const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [

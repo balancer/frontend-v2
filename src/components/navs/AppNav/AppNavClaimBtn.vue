@@ -112,7 +112,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { NetworkId } from '@/constants/network';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
-import useTokens2 from '@/composables/useTokens2';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   name: 'AppNavClaimBtn',
@@ -136,7 +136,7 @@ export default defineComponent({
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
     const { t } = useI18n();
-    const { priceFor } = useTokens2();
+    const { priceFor } = useTokens();
 
     const balPrice = computed(() =>
       priceFor(

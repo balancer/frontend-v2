@@ -6,7 +6,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
-import useTokens2 from '../useTokens2';
+import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useApp from '../useApp';
 import { forChange } from '@/lib/utils';
@@ -22,7 +22,7 @@ export default function usePoolsQuery(
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
 ) {
   // COMPOSABLES
-  const { injectTokens, dynamicDataLoading, prices } = useTokens2();
+  const { injectTokens, dynamicDataLoading, prices } = useTokens();
   const { currency } = useUserSettings();
   const { appLoading } = useApp();
 
