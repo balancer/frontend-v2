@@ -414,10 +414,12 @@ export default function useSor({
           tokenInAmountScaled
         );
         console.log('Wrap tx', tx);
+
+        txHandler(tx, 'wrap');
+
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx, 'wrap');
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -431,10 +433,12 @@ export default function useSor({
           tokenInAmountScaled
         );
         console.log('Unwrap tx', tx);
+
+        txHandler(tx, 'unwrap');
+
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx, 'unwrap');
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -457,10 +461,12 @@ export default function useSor({
           minAmount
         );
         console.log('Swap in tx', tx);
+
+        txHandler(tx, 'trade');
+
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx, 'trade');
       } catch (e) {
         console.log(e);
         trading.value = false;
@@ -483,10 +489,12 @@ export default function useSor({
           tokenOutAmountScaled
         );
         console.log('Swap out tx', tx);
+
+        txHandler(tx, 'trade');
+
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
