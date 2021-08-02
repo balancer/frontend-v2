@@ -22,6 +22,7 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
+        {{ console.log('steble', pool )}}
         <div class="px-6 py-4">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
@@ -123,7 +124,8 @@ export default defineComponent({
         distributions: weeks.value.map(week => ({
           week: week.week,
           distribution: week.distributions[pool.id.toLowerCase()]
-        }))
+        })),
+        poolType: pool.poolType
       }));
     });
 
@@ -223,7 +225,8 @@ export default defineComponent({
       totals,
       tokens,
       prices,
-      calculatePricesFor
+      calculatePricesFor,
+      console
     };
   }
 });
