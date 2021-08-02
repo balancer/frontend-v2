@@ -22,7 +22,7 @@ module.exports = {
   publicPath: './',
   pluginOptions: {
     webpackBundleAnalyzer: {
-      openAnalyzer: true
+      openAnalyzer: false
     }
   },
   configureWebpack: {
