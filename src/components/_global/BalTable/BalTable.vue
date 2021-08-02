@@ -25,7 +25,10 @@
               column.className,
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
-              column.sortKey ? 'cursor-pointer' : ''
+              column.sortKey ? 'cursor-pointer' : '',
+              currentSortColumn === column.id && currentSortDirection
+                ? 'text-blue-400'
+                : 'text-gray-800 dark:text-gray-100'
             ]"
             :ref="setHeaderRef(columnIndex)"
             @click="handleSort(column.id)"
@@ -42,7 +45,7 @@
                 :name="column.Header"
               ></slot>
               <div v-else>
-                <h5 class="text-base text-gray-800 dark:text-gray-100">
+                <h5 class="text-base">
                   {{ column.name }}
                 </h5>
               </div>
