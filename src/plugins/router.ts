@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import Home from '@/pages/Home.vue';
 import Pool from '@/pages/Pool.vue';
+import LiquidityMining from '@/pages/LiquidityMining.vue';
 import Trade from '@/pages/Trade.vue';
 
 const routes: RouteRecordRaw[] = [
@@ -13,6 +14,11 @@ const routes: RouteRecordRaw[] = [
     }
   },
   { path: '/pool/:id', name: 'pool', component: Pool },
+  {
+    path: '/liquidity-mining',
+    name: 'liquidity-mining',
+    component: LiquidityMining
+  },
   { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/' }
 ];
 
