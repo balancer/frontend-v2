@@ -42,7 +42,7 @@ export default class AllowancesConcern {
       );
       return result;
     } catch (error) {
-      console.error('Failed to fetch allowances', account, error);
+      console.error('Failed to fetch allowances for:', account, error);
       return {};
     }
   }

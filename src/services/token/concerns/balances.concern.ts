@@ -74,7 +74,7 @@ export default class BalancesConcern {
         ...balanceMap
       };
     } catch (error) {
-      console.log('Failed to fetch balances for:', addresses);
+      console.error('Failed to fetch balances for:', addresses);
       throw error;
     }
   }
