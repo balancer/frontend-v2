@@ -17,9 +17,15 @@ type PoolsQueryResponse = {
   skip?: number;
 };
 
+type FilterOptions = {
+  poolIds?: Ref<string[]>;
+  pageSize?: number;
+};
+
 export default function usePoolsQuery(
   tokenList: Ref<string[]> = ref([]),
-  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
+  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
+  filterOptions?: FilterOptions
 ) {
   // SERVICES
   const balancerSubgraph = new BalancerSubgraph();
@@ -29,7 +35,7 @@ export default function usePoolsQuery(
   const { tokens: allTokens } = useTokens();
 
   // DATA
-  const queryKey = QUERY_KEYS.Pools.All(tokenList);
+  const queryKey = QUERY_KEYS.Pools.All(tokenList, filterOptions?.poolIds);
 
   // COMPUTED
   const appLoading = computed(() => store.state.app.loading);
@@ -43,16 +49,20 @@ export default function usePoolsQuery(
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
+    const queryArgs: any = {
+      first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
+      skip: pageParam,
+      where: {
+        tokensList_contains: tokenList.value
+      }
+    };
+
+    if (filterOptions?.poolIds?.value.length)
+      queryArgs.where.id_in = filterOptions.poolIds.value;
     const pools = await balancerSubgraph.pools.getDecorated(
       '24h',
       prices.value,
-      {
-        first: POOLS.Pagination.PerPage,
-        skip: pageParam,
-        where: {
-          tokensList_contains: tokenList.value
-        }
-      }
+      queryArgs
     );
 
     const tokens = flatten(pools.map(pool => pool.tokenAddresses));
