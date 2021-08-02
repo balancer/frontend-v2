@@ -5,11 +5,16 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { TokenListMap } from '@/types/TokenList';
 import { tokenListService } from '@/services/token-list/token-list.service';
 
-// TYPES
-type Response = TokenListMap;
+/**
+ * TYPES
+ */
+type QueryResponse = TokenListMap;
 
+/**
+ * Fetch all token lists, should only happen once.
+ */
 export default function useTokenListsQuery(
-  options: UseQueryOptions<Response> = {}
+  options: UseQueryOptions<QueryResponse> = {}
 ) {
   const queryKey = reactive(QUERY_KEYS.TokenLists2.All);
 
@@ -26,5 +31,5 @@ export default function useTokenListsQuery(
     ...options
   });
 
-  return useQuery<Response>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
 }
