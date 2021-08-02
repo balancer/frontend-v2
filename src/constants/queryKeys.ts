@@ -8,7 +8,11 @@ export const CLAIMS_ROOT_KEY = 'claims';
 
 const QUERY_KEYS = {
   Pools: {
-    All: (tokens: Ref<string[]>) => [POOLS_ROOT_KEY, 'all', { tokens }],
+    All: (tokens: Ref<string[]>, poolIds: Ref<string[]> | undefined) => [
+      POOLS_ROOT_KEY,
+      'all',
+      { tokens, poolIds }
+    ],
     User: (account: Ref<string>) => [POOLS_ROOT_KEY, 'user', { account }],
     Current: (id: string) => [POOLS_ROOT_KEY, 'current', { id }],
     Snapshot: (id: string) => [POOLS_ROOT_KEY, 'snapshot', { id }],
