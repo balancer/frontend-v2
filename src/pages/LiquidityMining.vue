@@ -3,7 +3,11 @@
     <div class="px-4">
       <h3>{{ title }}</h3>
       <span class="text-black-600">{{ description }}</span>
-      <LMTable :poolMetadata="pools" :weeks="distributions" />
+      <LMTable
+        :is-loading="isLoadingPools || isLoadingPoolsIdle"
+        :poolMetadata="pools"
+        :weeks="distributions"
+      />
       <div class="mt-20">
         <h4 class="font-bold">About liquidity mining</h4>
         <p class="mt-2">
@@ -91,11 +95,11 @@ export default defineComponent({
 
     // there shouldn't be too many pools for the LM distribution for each chain
     // so we won't need to get a paginated response, just get all
-    const { data: poolsResponse } = usePoolsQuery(
-      undefined,
-      {},
-      { poolIds, pageSize: 1000 }
-    );
+    const {
+      data: poolsResponse,
+      isLoading: isLoadingPools,
+      isIdle: isLoadingPoolsIdle
+    } = usePoolsQuery(undefined, {}, { poolIds, pageSize: 1000 });
 
     const pools = computed(() => poolsResponse.value?.pages);
 
@@ -125,7 +129,9 @@ export default defineComponent({
       distributions,
       pools,
       title,
-      description
+      description,
+      isLoadingPools,
+      isLoadingPoolsIdle
     };
   }
 });

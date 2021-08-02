@@ -1,6 +1,12 @@
 <template>
   <BalCard shadow="lg" class="mt-4" noPad>
-    <BalTable sticky="both" :columns="columns" :data="data" :is-loading="false">
+    <BalTable
+      sticky="both"
+      :columns="columns"
+      :data="data"
+      :is-loading="isLoading"
+      skeleton-class="h-64"
+    >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
           <img
@@ -22,7 +28,7 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        {{ console.log('steble', pool )}}
+        {{ console.log('steble', pool) }}
         <div class="px-6 py-4">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
@@ -106,6 +112,9 @@ export default defineComponent({
     poolMetadata: {
       type: Object,
       required: true
+    },
+    isLoading: {
+      type: Boolean
     }
   },
   setup(props) {
