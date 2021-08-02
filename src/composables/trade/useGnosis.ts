@@ -209,8 +209,6 @@ export default function useGnosis({
         }
       });
 
-      resetState();
-
       if (successCallback != null) {
         successCallback();
       }

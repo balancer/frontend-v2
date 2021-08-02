@@ -172,13 +172,8 @@ export default function useTrading(
       gnosis.resetState(false);
       gnosis.handleAmountChange();
     } else {
+      sor.resetState();
       sor.handleAmountChange();
-    }
-  }
-
-  function handleAssetChange() {
-    if (isGnosisTrade.value) {
-      gnosis.resetState();
     }
   }
 
@@ -186,14 +181,12 @@ export default function useTrading(
   watch(tokenInAddressInput, async () => {
     store.commit('trade/setInputAsset', tokenInAddressInput.value);
 
-    handleAssetChange();
     handleAmountChange();
   });
 
   watch(tokenOutAddressInput, () => {
     store.commit('trade/setOutputAsset', tokenOutAddressInput.value);
 
-    handleAssetChange();
     handleAmountChange();
   });
 

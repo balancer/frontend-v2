@@ -202,8 +202,6 @@ export default function useSor({
   }
 
   async function handleAmountChange(): Promise<void> {
-    resetState();
-
     const amount = exactIn.value
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
@@ -582,6 +580,7 @@ export default function useSor({
     latestTxHash,
     fetchPools,
     poolsLoading,
-    getQuote
+    getQuote,
+    resetState
   };
 }
