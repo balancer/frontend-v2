@@ -1,19 +1,25 @@
-import { reactive, ref, computed, Ref } from 'vue';
+import { reactive, ref, Ref, computed } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { tokenService } from '@/services/token/token.service';
-import { BalanceMap } from '@/services/token/concerns/balances.concern';
+import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists from '../useTokenLists';
 import { TokenInfoMap } from '@/types/TokenList';
 
-// TYPES
-type Response = BalanceMap;
+/**
+ * TYPES
+ */
+type QueryResponse = ContractAllowancesMap;
 
-export default function useAccountBalancesQuery(
+/**
+ * Fetches all allowances for given tokens for each provided contract address.
+ */
+export default function useAllowancesQuery(
   tokens: Ref<TokenInfoMap> = ref({}),
-  options: UseQueryOptions<Response> = {}
+  contractAddesses: Ref<string[]> = ref([]),
+  options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
    * COMPOSABLES
@@ -31,12 +37,16 @@ export default function useAccountBalancesQuery(
    * QUERY INPUTS
    */
   const queryKey = reactive(
-    QUERY_KEYS.Account.Balances(account, tokenAddresses)
+    QUERY_KEYS.Account.Allowances2(account, contractAddesses, tokenAddresses)
   );
 
   const queryFn = async () => {
-    console.log('Fetching', tokenAddresses.value.length, 'balances');
-    return await tokenService.balances.get(account.value, tokens.value);
+    console.log('Fetching', tokenAddresses.value.length, 'allownances');
+    return await tokenService.allowances.get(
+      account.value,
+      contractAddesses.value,
+      tokens.value
+    );
   };
 
   const queryOptions = reactive({
@@ -44,5 +54,5 @@ export default function useAccountBalancesQuery(
     ...options
   });
 
-  return useQuery<Response>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
 }

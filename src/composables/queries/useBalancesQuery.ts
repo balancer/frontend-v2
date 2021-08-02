@@ -1,20 +1,24 @@
-import { reactive, ref, Ref, computed } from 'vue';
+import { reactive, ref, computed, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { tokenService } from '@/services/token/token.service';
-import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
+import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists from '../useTokenLists';
 import { TokenInfoMap } from '@/types/TokenList';
 
-// TYPES
-type Response = ContractAllowancesMap;
+/**
+ * TYPES
+ */
+type QueryResponse = BalanceMap;
 
-export default function useAccountAllowancesQuery(
+/**
+ * Fetches all balances for provided tokens.
+ */
+export default function useBalancesQuery(
   tokens: Ref<TokenInfoMap> = ref({}),
-  contractAddesses: Ref<string[]> = ref([]),
-  options: UseQueryOptions<Response> = {}
+  options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
    * COMPOSABLES
@@ -32,16 +36,12 @@ export default function useAccountAllowancesQuery(
    * QUERY INPUTS
    */
   const queryKey = reactive(
-    QUERY_KEYS.Account.Allowances2(account, contractAddesses, tokenAddresses)
+    QUERY_KEYS.Account.Balances(account, tokenAddresses)
   );
 
   const queryFn = async () => {
-    console.log('Fetching', tokenAddresses.value.length, 'allownances');
-    return await tokenService.allowances.get(
-      account.value,
-      contractAddesses.value,
-      tokens.value
-    );
+    console.log('Fetching', tokenAddresses.value.length, 'balances');
+    return await tokenService.balances.get(account.value, tokens.value);
   };
 
   const queryOptions = reactive({
@@ -49,5 +49,5 @@ export default function useAccountAllowancesQuery(
     ...options
   });
 
-  return useQuery<Response>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
 }

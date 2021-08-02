@@ -14,8 +14,8 @@ import { getAddress, isAddress } from '@ethersproject/address';
 import { TokenInfo, TokenInfoMap, TokenList } from '@/types/TokenList';
 import useConfig from '@/composables/useConfig';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
-import useAccountBalancesQuery from '@/composables/queries/useAccountBalancesQuery';
-import useAccountAllowancesQuery from '@/composables/queries/useAccountAllowancesQuery';
+import useBalancesQuery from '@/composables/queries/useBalancesQuery';
+import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
@@ -145,14 +145,14 @@ export default {
       isSuccess: balanceQuerySuccess,
       isLoading: balanceQueryLoading,
       refetch: refetchBalances
-    } = useAccountBalancesQuery(tokens);
+    } = useBalancesQuery(tokens);
 
     const {
       data: allowanceData,
       isSuccess: allowanceQuerySuccess,
       isLoading: allowanceQueryLoading,
       refetch: refetchAllowances
-    } = useAccountAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
+    } = useAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
 
     const prices = computed(
       (): TokenPrices => (priceData.value ? priceData.value : {})
