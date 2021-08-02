@@ -1,5 +1,4 @@
 import { Config } from '@/lib/config';
-import { TokenMap } from '@/types';
 import { Ref } from 'vue';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
@@ -19,15 +18,7 @@ const QUERY_KEYS = {
       { account, id }
     ]
   },
-  Balances: {
-    All: (
-      account: Ref<string>,
-      userNetwork: Ref<unknown>,
-      tokens?: Ref<TokenMap>
-    ) => [BALANCES_ROOT_KEY, { userNetwork, account, tokens }]
-  },
-  TokenLists: ['tokenLists'],
-  TokenLists2: {
+  TokenLists: {
     All: ['tokenLists', 'all']
   },
   Claims: {
@@ -42,17 +33,11 @@ const QUERY_KEYS = {
       'balances',
       { account, tokens }
     ],
-    Allowances2: (
+    Allowances: (
       account: Ref<string>,
       contractAddresses: Ref<string[]>,
       tokens: Ref<string[]>
     ) => ['account', 'allowances', { account, contractAddresses, tokens }],
-    Allowances: (
-      userNetwork: Ref<Config>,
-      account: Ref<string>,
-      dstList: Ref<string[]>,
-      tokens: Ref<string[]>
-    ) => ['account', 'allowances', { userNetwork, account, dstList, tokens }],
     Profile: (account: Ref<string>, userNetwork: Ref<Config>) => [
       'account',
       'profile',

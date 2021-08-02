@@ -16,7 +16,7 @@ type QueryResponse = TokenListMap;
 export default function useTokenListsQuery(
   options: UseQueryOptions<QueryResponse> = {}
 ) {
-  const queryKey = reactive(QUERY_KEYS.TokenLists2.All);
+  const queryKey = reactive(QUERY_KEYS.TokenLists.All);
 
   const queryFn = async () => {
     console.log('Fetching tokenLists');

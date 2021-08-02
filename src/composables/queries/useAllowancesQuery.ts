@@ -37,7 +37,7 @@ export default function useAllowancesQuery(
    * QUERY INPUTS
    */
   const queryKey = reactive(
-    QUERY_KEYS.Account.Allowances2(account, contractAddesses, tokenAddresses)
+    QUERY_KEYS.Account.Allowances(account, contractAddesses, tokenAddresses)
   );
 
   const queryFn = async () => {
