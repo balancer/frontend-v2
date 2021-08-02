@@ -1,12 +1,4 @@
-import useConfig from '@/composables/useConfig';
-
-const { env, networkConfig } = useConfig();
-
-// TODO replace imports of ETHER throughout the app so we can remove it from here.
-// It doesn't make sense to have this ETHER definition here, this file should be for tokenlist URIs only.
-export const ETHER = networkConfig.nativeAsset;
-
-interface TokenListConfig {
+export interface TokenListMap {
   Balancer: {
     Default: string;
     Vetted: string;
@@ -14,10 +6,14 @@ interface TokenListConfig {
   External: string[];
 }
 
-type TokenListMap = Record<string, TokenListConfig>;
+interface TokenListMapByNetwork {
+  [networkKey: string]: TokenListMap;
+}
 
-// Mapping of the TokenLists used on each network
-const TOKEN_LISTS_MAP: TokenListMap = {
+/**
+ * Mapping of the TokenLists used on each network
+ */
+export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '1': {
     Balancer: {
       Default:
@@ -62,41 +58,3 @@ const TOKEN_LISTS_MAP: TokenListMap = {
     ]
   }
 };
-
-type TokenLists = {
-  All: string[];
-  Balancer: {
-    All: string[];
-    // Compliant list for exchange
-    Default: string;
-    // Extended list to include LBP tokens
-    Vetted: string;
-  };
-  Approved: string[];
-  External: string[];
-};
-
-/**
- * Convert TokenList config into a more usable structure
- */
-const processTokenLists = (config: TokenListConfig): TokenLists => {
-  const { Balancer, External } = config;
-
-  const balancerLists = [Balancer.Default, Balancer.Vetted];
-  const All = [...balancerLists, ...External];
-  const Approved = [Balancer.Default, ...External];
-
-  return {
-    All,
-    Balancer: {
-      All: balancerLists,
-      ...Balancer
-    },
-    Approved,
-    External
-  };
-};
-
-const TOKEN_LISTS = processTokenLists(TOKEN_LISTS_MAP[env.NETWORK]);
-
-export default TOKEN_LISTS;

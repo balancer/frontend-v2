@@ -18,7 +18,6 @@
 <script lang="ts">
 import { PropType, defineComponent, computed, onBeforeMount, ref } from 'vue';
 import { useStore } from 'vuex';
-import { ETHER } from '@/constants/tokenlists';
 import BigNumber from 'bignumber.js';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { isBudgetLeft } from '@/lib/utils/balancer/bal4gas';
@@ -27,7 +26,7 @@ import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { getOriginalAddress } from '@/services/coingecko';
 import useWeb3 from '@/services/web3/useWeb3';
-import { TOKENS } from '@/constants/tokens';
+import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
 import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
@@ -77,10 +76,10 @@ export default defineComponent({
       const gasPrice = store.state.market.gasPrice || 0;
 
       const addressInIsEligible =
-        props.addressIn === ETHER.address ||
+        props.addressIn === NATIVE_ASSET_ADDRESS ||
         props.addressIn.toLowerCase() in eligibleAssets;
       const addressOutIsEligible =
-        props.addressOut === ETHER.address ||
+        props.addressOut === NATIVE_ASSET_ADDRESS ||
         props.addressOut.toLowerCase() in eligibleAssets;
       const reimburseAllSwaps = addressInIsEligible && addressOutIsEligible;
 

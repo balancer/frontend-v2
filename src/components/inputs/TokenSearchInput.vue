@@ -60,8 +60,7 @@
 import { computed, defineComponent, PropType, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import { pick, take } from 'lodash';
-import { TOKENS } from '@/constants/tokens';
-import { ETHER } from '@/constants/tokenlists';
+import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
 import { getAddress } from '@ethersproject/address';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
@@ -122,7 +121,7 @@ export default defineComponent({
       let _token = token;
       // special case for ETH where we want it to filter as WETH regardless
       // as ETH is the native asset
-      if (getAddress(token) === ETHER.address) {
+      if (getAddress(token) === NATIVE_ASSET_ADDRESS) {
         _token = TOKENS.AddressMap.WETH;
       }
       // const newSelected = [...props.modelValue, _token];
