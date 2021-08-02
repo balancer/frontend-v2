@@ -142,7 +142,9 @@ export default function useTrading(
     isBalancerTrade.value ? sor.poolsLoading.value : gnosis.updatingQuotes.value
   );
 
-  const isTrading = computed(() => sor.trading.value || gnosis.trading.value);
+  const isConfirming = computed(
+    () => sor.confirming.value || gnosis.confirming.value
+  );
 
   // METHODS
   function trade(successCallback?: () => void) {
@@ -225,7 +227,7 @@ export default function useTrading(
     tokenOutAddressInput,
     tokenOutAmountInput,
     slippageBufferRate,
-    isTrading,
+    isConfirming,
 
     // methods
     getQuote,

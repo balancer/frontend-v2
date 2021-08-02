@@ -173,7 +173,7 @@
           color="gradient"
           block
           @click.prevent="trade"
-          :loading="trading.isTrading.value"
+          :loading="trading.isConfirming.value"
           :loading-label="$t('confirming')"
           :disabled="!isUnlocked"
         >
@@ -191,7 +191,7 @@
         color="gradient"
         block
         @click.prevent="trade"
-        :loading="trading.isTrading.value"
+        :loading="trading.isConfirming.value"
         :loading-label="$t('confirming')"
       >
         {{ labels.confirmTrade }}
