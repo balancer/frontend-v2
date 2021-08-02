@@ -61,7 +61,6 @@ type Props = {
   sorConfig?: {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
-    enableTxHandler: boolean;
   };
   tokenIn?: ComputedRef<Token>;
   tokenOut?: ComputedRef<Token>;
@@ -83,8 +82,7 @@ export default function useSor({
   tokenOutAmountScaled,
   sorConfig = {
     refetchPools: true,
-    handleAmountsOnFetchPools: true,
-    enableTxHandler: true
+    handleAmountsOnFetchPools: true
   },
   tokenIn,
   tokenOut,

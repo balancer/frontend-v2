@@ -255,6 +255,11 @@
         },
         "gasCosts": "Gas costs"
     },
+    "priceUpdatedAlert": {
+        "title": "Price updated",
+        "description": "The trade price has updated by more than {0}",
+        "actionLabel": "Accept"
+    },
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
     "seeMore": "See more",

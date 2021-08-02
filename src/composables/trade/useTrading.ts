@@ -116,8 +116,7 @@ export default function useTrading(
     tokenOutAmountScaled,
     sorConfig: {
       handleAmountsOnFetchPools: false,
-      refetchPools: isBalancerTrade.value,
-      enableTxHandler: isBalancerTrade.value
+      refetchPools: false
     },
     tokenIn,
     tokenOut,
@@ -193,8 +192,13 @@ export default function useTrading(
   });
 
   watch(blockNumber, () => {
-    if (isGnosisTrade.value && !gnosis.hasErrors.value) {
-      gnosis.handleAmountChange();
+    if (isGnosisTrade.value) {
+      if (!gnosis.hasErrors.value) {
+        gnosis.handleAmountChange();
+      }
+    } else if (!isWrapOrUnwrap.value) {
+      // only fetch for ETH -> ERC20 trades
+      sor.fetchPools();
     }
   });
 
