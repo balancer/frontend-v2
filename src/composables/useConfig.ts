@@ -1,8 +1,6 @@
-import ConfigService from '@/services/config/config.service';
+import { configService } from '@/services/config/config.service';
 
-export default function useConfig(
-  configService: ConfigService = new ConfigService()
-) {
+export default function useConfig() {
   return {
     env: configService.env,
     networkConfig: configService.network

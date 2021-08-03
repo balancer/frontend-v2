@@ -99,7 +99,6 @@ import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import useSor from '@/composables/trade/useSor';
-import { ETHER } from '@/constants/tokenlists';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
 import TradePair from '@/components/cards/TradeCard/TradePair.vue';
@@ -173,7 +172,7 @@ export default defineComponent({
     const isWrap = computed(() => {
       const config = userNetworkConfig.value;
       return (
-        tokenInAddress.value === ETHER.address &&
+        tokenInAddress.value === nativeAsset.address &&
         tokenOutAddress.value === config.addresses.weth
       );
     });
@@ -181,7 +180,7 @@ export default defineComponent({
     const isUnwrap = computed(() => {
       const config = userNetworkConfig.value;
       return (
-        tokenOutAddress.value === ETHER.address &&
+        tokenOutAddress.value === nativeAsset.address &&
         tokenInAddress.value === config.addresses.weth
       );
     });
@@ -230,8 +229,7 @@ export default defineComponent({
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount,
-      tokens
+      tokenOutAmount
     );
 
     const title = computed(() => {
@@ -280,10 +278,10 @@ export default defineComponent({
 
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (assetIn === ETHER.deeplinkId) assetIn = ETHER.address;
+      if (assetIn === nativeAsset.deeplinkId) assetIn = nativeAsset.address;
       else if (isAddress(assetIn)) assetIn = getAddress(assetIn);
       let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (assetOut === ETHER.deeplinkId) assetOut = ETHER.address;
+      if (assetOut === nativeAsset.deeplinkId) assetOut = nativeAsset.address;
       else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;

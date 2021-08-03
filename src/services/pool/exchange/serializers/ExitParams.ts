@@ -3,6 +3,7 @@ import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
+import { isStable } from '@/composables/usePool';
 
 export default class ExitParams {
   private exchange: PoolExchange;
@@ -12,7 +13,7 @@ export default class ExitParams {
 
   constructor(exchange) {
     this.exchange = exchange;
-    this.isStablePool = exchange.pool.poolType === 'Stable';
+    this.isStablePool = isStable(exchange.pool);
     this.dataEncodeFn = this.isStablePool
       ? encodeExitStablePool
       : encodeExitWeightedPool;

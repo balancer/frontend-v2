@@ -34,5 +34,5 @@ export interface TokenList {
   readonly logoURI?: string;
 }
 
-export type TokenListDict = { [address: string]: TokenList };
-export type TokenInfoDict = { [address: string]: TokenInfo };
+export type TokenListMap = { [address: string]: TokenList };
+export type TokenInfoMap = { [address: string]: TokenInfo };

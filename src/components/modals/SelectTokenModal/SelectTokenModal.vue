@@ -26,8 +26,8 @@
             <span class="mr-1 ">
               <img
                 v-for="(tokenlist, i) in activeTokenLists"
-                :key="`activeTokenListIcon-${i}`"
-                :src="_url(listMap[tokenlist]?.logoURI)"
+                :key="i"
+                :src="resolve(tokenlist.logoURI)"
                 class="rounded-full inline-block bg-white shadow w-6 h-6"
               />
             </span>
@@ -43,7 +43,7 @@
     <template v-if="selectTokenList">
       <Search
         v-model="query"
-        :placeholder="t('searchByName')"
+        :placeholder="$t('searchByName')"
         class="px-4 py-3 flex-auto border-b dark:border-gray-700"
       />
       <div>
@@ -52,16 +52,16 @@
           class="h-96 overflow-y-scroll"
         >
           <TokenListsListItem
-            v-for="(tokenList, i) in tokenLists"
-            :key="i"
-            :isActive="isActiveList(tokenList.name)"
+            v-for="(tokenList, uri) in tokenLists"
+            :key="uri"
+            :isActive="isActiveList(uri)"
             :tokenlist="tokenList"
-            @toggle="toggleActiveTokenList(tokenList.name)"
+            @toggle="onToggleList(uri)"
           />
         </div>
         <div
           v-else
-          v-text="t('errorNoLists')"
+          v-text="$t('errorNoLists')"
           class="h-96 flex items-center justify-center"
         />
       </div>
@@ -70,50 +70,66 @@
       <div class="border-b dark:border-gray-700 flex">
         <Search
           v-model="query"
-          @input="onTokenSearch"
-          :placeholder="t('searchBy')"
+          :placeholder="$t('searchBy')"
           class="px-4 py-3 flex-auto"
         />
       </div>
       <div class="overflow-hidden rounded-lg">
         <RecycleScroller
           class="h-96 overflow-y-scroll"
-          v-if="tokens?.length > 0"
+          v-if="tokens.length > 0"
           :items="tokens"
           :item-size="64"
           key-field="address"
-          v-slot="{ item }"
+          v-slot="{ item: token }"
           :buffer="100"
         >
-          <a @click="onSelectToken(item.address)">
-            <TokenListItem :token="item" />
+          <a @click="onSelectToken(token.address)">
+            <TokenListItem
+              :token="token"
+              :balanceLoading="dynamicDataLoading"
+            />
           </a>
         </RecycleScroller>
-        <div
-          v-else-if="isTokenSelected"
-          v-text="$t('tokenAlreadySelected')"
-          class="h-96 flex items-center justify-center"
-        />
         <div v-else-if="loading" class="h-96 flex items-center justify-center">
           <BalLoadingIcon />
         </div>
-        <div v-else v-text="t('errorNoTokens')" class="h-96 p-4" />
+        <div
+          v-else
+          v-text="$t('errorNoTokens')"
+          class="h-96 p-12 text-center text-gray-500"
+        />
       </div>
     </template>
   </BalModal>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue';
-import { useStore } from 'vuex';
+import {
+  defineComponent,
+  reactive,
+  toRefs,
+  computed,
+  PropType,
+  watch,
+  toRef
+} from 'vue';
 import { useI18n } from 'vue-i18n';
-import { isAddress, getAddress } from '@ethersproject/address';
-import useTokenStore from '@/composables/useTokensStore';
-// import useTokenLists2 from '@/composables/useTokenLists2';
+import useTokenLists from '@/composables/useTokenLists';
 import TokenListItem from '@/components/lists/TokenListItem.vue';
 import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
 import useTokens from '@/composables/useTokens';
+import { orderBy } from 'lodash';
+import useUrls from '@/composables/useUrls';
+import { TokenInfoMap } from '@/types/TokenList';
+
+interface ComponentState {
+  loading: boolean;
+  selectTokenList: boolean;
+  query: string;
+  results: TokenInfoMap;
+}
 
 export default defineComponent({
   components: {
@@ -126,109 +142,128 @@ export default defineComponent({
 
   props: {
     open: { type: Boolean, default: false },
-    excludedTokens: { type: Array, default: () => [] },
+    excludedTokens: { type: Array as PropType<string[]>, default: () => [] },
     includeEther: { type: Boolean, default: false }
   },
 
   setup(props, { emit }) {
-    // DATA
-    const data = reactive({
+    /**
+     * STATE
+     */
+    const state: ComponentState = reactive({
       loading: false,
-      query: '',
       selectTokenList: false,
-      isTokenSelected: false,
-      includeEther: props.includeEther,
-      not: props.excludedTokens,
-      queryAddress: ''
+      query: '',
+      results: {}
     });
+
+    /**
+     * COMPOSABLES
+     */
     const {
-      lists: tokenLists,
-      toggleActiveTokenList,
-      isActiveList,
-      listMap,
-      activeTokenLists
-    } = useTokenStore();
-
-    const { tokens: tokenMap } = useTokens(toRefs(data));
-    const tokens = computed(() => {
-      return Object.values(tokenMap.value);
-    });
-    // const {
-    //   approvedTokenLists,
-    //   toggleList,
-    //   toggled: toggledTokenLists,
-    //   isToggled: isToggledList
-    // } = useTokenStore2();
-
-    // COMPOSABLES
-    const store = useStore();
+      activeTokenLists,
+      approvedTokenLists,
+      toggleTokenList,
+      isActiveList
+    } = useTokenLists();
+    const {
+      searchTokens,
+      priceFor,
+      balanceFor,
+      dynamicDataLoading,
+      nativeAsset
+    } = useTokens();
     const { t } = useI18n();
+    const { resolve } = useUrls();
 
-    // COMPUTED
+    /**
+     * COMPUTED
+     */
     const title = computed(() => {
-      if (data.selectTokenList) return t('manageLists');
+      if (state.selectTokenList) return t('manageLists');
       return t('selectToken');
     });
 
-    // METHODS
-    function onTokenSearch(event): void {
-      let address = event.target.value;
-      if (isAddress(address)) {
-        address = getAddress(address);
-        data.queryAddress = address;
-        if (props.excludedTokens.includes(address)) {
-          data.loading = false;
-          data.isTokenSelected = true;
-        } else {
-          data.loading = true;
-          data.isTokenSelected = false;
-          store.dispatch('registry/injectTokens', [address.trim()]);
-        }
-      } else {
-        data.isTokenSelected = false;
-        data.loading = false;
-        data.queryAddress = '';
-      }
-    }
+    const tokenLists = computed(() => {
+      const query = state.query.toLowerCase();
+      const tokenListArray = Object.entries(approvedTokenLists.value);
+      const results = tokenListArray.filter(([, tokenList]) =>
+        tokenList.name.toLowerCase().includes(query)
+      );
+      return Object.fromEntries(results);
+    });
 
+    const tokens = computed(() => {
+      const tokensWithValues = Object.values(state.results).map(token => {
+        const balance = balanceFor(token.address);
+        const price = priceFor(token.address);
+        const value = balance * price;
+        return {
+          ...token,
+          price,
+          balance,
+          value
+        };
+      });
+
+      return orderBy(tokensWithValues, ['value', 'balance'], ['desc', 'desc']);
+    });
+
+    const excludedTokens = computed(() => [
+      ...props.excludedTokens,
+      ...(props.includeEther ? [] : [nativeAsset.address])
+    ]);
+
+    /**
+     * METHODS
+     */
     function onSelectToken(token: string): void {
       emit('select', token);
       emit('close');
     }
 
-    function onSelectList(list: string): void {
-      store.dispatch('registry/toggleList', list);
+    async function onToggleList(uri: string): Promise<void> {
+      toggleTokenList(uri);
+      state.results = await searchTokens(state.query, excludedTokens.value);
     }
 
     function onListExit(): void {
-      data.selectTokenList = false;
-      data.query = '';
+      state.selectTokenList = false;
+      state.query = '';
     }
 
     function toggleSelectTokenList(): void {
-      data.selectTokenList = !data.selectTokenList;
-      data.query = '';
+      state.selectTokenList = !state.selectTokenList;
+      state.query = '';
     }
+
+    /**
+     * WATCHERS
+     */
+    watch(
+      toRef(state, 'query'),
+      async newQuery => {
+        state.results = await searchTokens(newQuery, excludedTokens.value);
+      },
+      { immediate: true }
+    );
 
     return {
       // data
-      ...toRefs(data),
-      t,
+      ...toRefs(state),
       // computed
       title,
       tokens,
       tokenLists,
-      listMap,
       activeTokenLists,
-
+      dynamicDataLoading,
       // methods
-      onTokenSearch,
       onSelectToken,
-      onSelectList,
+      onToggleList,
       onListExit,
       toggleSelectTokenList,
-      toggleActiveTokenList,
-      isActiveList
+      isActiveList,
+      resolve
     };
   }
 });

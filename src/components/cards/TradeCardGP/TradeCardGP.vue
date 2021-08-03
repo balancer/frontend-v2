@@ -101,7 +101,6 @@ import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
-import { ETHER } from '@/constants/tokenlists';
 import { TOKENS } from '@/constants/tokens';
 
 import { isRequired } from '@/lib/utils/validations';
@@ -167,8 +166,7 @@ export default defineComponent({
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount,
-      trading.tokens
+      tokenOutAmount
     );
 
     const isHighPriceImpact = computed(
@@ -191,10 +189,10 @@ export default defineComponent({
 
     const title = computed(() => {
       if (trading.isWrap.value) {
-        return `${t('wrap')} ${ETHER.symbol}`;
+        return `${t('wrap')} ${nativeAsset.symbol}`;
       }
       if (trading.isUnwrap.value) {
-        return `${t('unwrap')} ${ETHER.symbol}`;
+        return `${t('unwrap')} ${nativeAsset.symbol}`;
       }
       return t('trade');
     });
@@ -294,16 +292,16 @@ export default defineComponent({
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
 
-      if (assetIn === ETHER.deeplinkId) {
-        assetIn = ETHER.address;
+      if (assetIn === nativeAsset.deeplinkId) {
+        assetIn = nativeAsset.address;
       } else if (isAddress(assetIn)) {
         assetIn = getAddress(assetIn);
       }
 
       let assetOut = router.currentRoute.value.params.assetOut as string;
 
-      if (assetOut === ETHER.deeplinkId) {
-        assetOut = ETHER.address;
+      if (assetOut === nativeAsset.deeplinkId) {
+        assetOut = nativeAsset.address;
       } else if (isAddress(assetOut)) {
         assetOut = getAddress(assetOut);
       }

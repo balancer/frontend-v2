@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import pkg from '@/../package.json';
+import { Ref } from 'vue';
 
 export function shorten(str = '') {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
@@ -85,4 +86,19 @@ export function shortenLabel(str, segLength = 4) {
   const firstSegment = str.substring(0, segLength + 2);
   const lastSegment = str.substring(str.length, str.length - segLength);
   return `${firstSegment}...${lastSegment}`;
+}
+
+/**
+ * Wait for a reactive variable to change to an expected value.
+ */
+export async function forChange(
+  reactiveVar: Ref<any>,
+  expected: any,
+  checkCount = 0,
+  checkDelay = 500,
+  checkLimit = 20
+): Promise<void> {
+  if (reactiveVar.value === expected || checkCount >= checkLimit) return;
+  await sleep(checkDelay);
+  forChange(reactiveVar, expected, checkCount++);
 }

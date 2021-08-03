@@ -23,7 +23,12 @@
         </BalLink>
       </div>
     </div>
-    <BalToggle name="active" :checked="isActive" @toggle="$emit('toggle')" />
+    <BalToggle
+      v-if="notBalancer"
+      name="active"
+      :checked="isActive"
+      @toggle="$emit('toggle')"
+    />
   </div>
 </template>
 
@@ -47,11 +52,14 @@ export default {
 
   emits: ['toggle'],
 
-  setup() {
+  setup(props) {
     const { fNum } = useNumbers();
 
+    const notBalancer = props.tokenlist?.name !== 'Balancer';
+
     return {
-      fNum
+      fNum,
+      notBalancer
     };
   }
 };

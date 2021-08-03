@@ -4,9 +4,9 @@ import {
   TransactionResponse
 } from '@ethersproject/providers';
 
-import useAccountBalances from './useAccountBalances';
 import useBlocknative from './useBlocknative';
 import useTransactions from './useTransactions';
+import useTokens from './useTokens';
 
 type TxCallback = (
   txData: TransactionResponse,
@@ -18,8 +18,8 @@ export const processedTxs = ref<Set<string>>(new Set(''));
 
 export default function useEthers() {
   const { finalizeTransaction } = useTransactions();
-  const { refetchBalances } = useAccountBalances();
   const { supportsBlocknative } = useBlocknative();
+  const { refetchBalances } = useTokens();
 
   async function txListener(
     tx: TransactionResponse,

@@ -1,22 +1,15 @@
+import { inject } from 'vue';
 import {
-  TokenRequest,
-  TokensProviderPayload,
+  TokensProviderResponse,
   TokensProviderSymbol
 } from '@/providers/tokens.provider';
-import { inject, onBeforeMount } from 'vue';
 
-export default function useTokens(request?: TokenRequest) {
-  const { tokens, updateTokenRequest } = inject(
-    TokensProviderSymbol
-  ) as TokensProviderPayload;
+const defaultProviderResponse = {} as TokensProviderResponse;
 
-  onBeforeMount(() => {
-    if (request) {
-      updateTokenRequest(request);
-    }
-  });
-
-  return {
-    tokens
-  };
+/**
+ * useTokens Composable
+ * Interface to all token static and dynamic metatdata.
+ */
+export default function useTokens(): TokensProviderResponse {
+  return inject(TokensProviderSymbol, defaultProviderResponse);
 }

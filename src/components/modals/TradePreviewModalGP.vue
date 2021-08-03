@@ -83,7 +83,7 @@
               </div>
               <div
                 :class="[
-                  'pl-2 cursor-pointer font-medium',
+                  'pl-2 cursor-pointer font-medium uppercase',
                   { 'text-blue-600': showSummaryInFiat }
                 ]"
                 @click="showSummaryInFiat = true"

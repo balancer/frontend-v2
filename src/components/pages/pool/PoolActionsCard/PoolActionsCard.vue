@@ -72,12 +72,16 @@ export default defineComponent({
   },
 
   setup(_, { emit }) {
-    // COMPOSABLES
+    /**
+     * COMPOSABLES
+     */
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
     const { explorerLinks: explorer } = useWeb3();
 
-    // DATA
+    /**
+     * STATE
+     */
     const tabs = [
       { value: 'invest', label: t('invest') },
       { value: 'withdraw', label: t('withdraw') }
@@ -87,7 +91,9 @@ export default defineComponent({
     const withdrawalSuccess = ref(false);
     const txHash = ref('');
 
-    // METHODS
+    /**
+     * METHODS
+     */
     function handleInvestment(txReceipt): void {
       investmentSuccess.value = true;
       txHash.value = txReceipt.hash;

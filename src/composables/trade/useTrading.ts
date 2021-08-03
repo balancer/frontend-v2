@@ -1,15 +1,12 @@
 import { computed, Ref, watch } from 'vue';
 import { useStore } from 'vuex';
-
-import { ETHER } from '@/constants/tokenlists';
-
 import { bnum, scale } from '@/lib/utils';
-
 import useNumbers from '../useNumbers';
-import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useSor from './useSor';
 import useGnosis from './useGnosis';
+import useTokens from '../useTokens';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 export type TradeRoute = 'balancer' | 'gnosis';
 
@@ -35,13 +32,13 @@ export default function useTrading(
 
   const isWrap = computed(
     () =>
-      tokenInAddressInput.value === ETHER.address &&
+      tokenInAddressInput.value === NATIVE_ASSET_ADDRESS &&
       tokenOutAddressInput.value === userNetworkConfig.value.addresses.weth
   );
 
   const isUnwrap = computed(
     () =>
-      tokenOutAddressInput.value === ETHER.address &&
+      tokenOutAddressInput.value === NATIVE_ASSET_ADDRESS &&
       tokenInAddressInput.value === userNetworkConfig.value.addresses.weth
   );
 
@@ -50,7 +47,7 @@ export default function useTrading(
   const tokenOut = computed(() => tokens.value[tokenOutAddressInput.value]);
 
   const isEthTrade = computed(
-    () => tokenInAddressInput.value === ETHER.address
+    () => tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
   );
 
   const tokenInAmountScaled = computed(() =>

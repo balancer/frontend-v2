@@ -1,9 +1,6 @@
 import { computed, Ref } from 'vue';
-
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
-
-import { TokenMap } from '@/types';
+import useTokens from '../useTokens';
 
 const MIN_NATIVE_ASSET_REQUIRED = 0.0001;
 
@@ -20,10 +17,10 @@ export default function useValidation(
   tokenInAddress: Ref<string>,
   tokenInAmount: Ref<string>,
   tokenOutAddress: Ref<string>,
-  tokenOutAmount: Ref<string>,
-  tokens: Ref<TokenMap>
+  tokenOutAmount: Ref<string>
 ) {
   const { isWalletReady } = useWeb3();
+  const { nativeAsset, balances } = useTokens();
 
   const tokensAmountsValid = computed(
     () =>
@@ -33,19 +30,18 @@ export default function useValidation(
 
   const validationStatus = computed(() => {
     if (!isWalletReady) return TradeValidation.NO_ACCOUNT;
-    const tokenIn = tokens.value[tokenInAddress.value];
 
     if (!tokensAmountsValid.value) return TradeValidation.EMPTY;
 
-    const nativeAsset = tokens.value[configService.network.nativeAsset.address];
-    const nativeAssetBalance = parseFloat(nativeAsset.balance);
+    const nativeAssetBalance = parseFloat(balances.value[nativeAsset.address]);
     if (nativeAssetBalance < MIN_NATIVE_ASSET_REQUIRED) {
       return TradeValidation.NO_NATIVE_ASSET;
     }
 
     if (
-      !tokenIn?.balance ||
-      parseFloat(tokenIn.balance) < parseFloat(tokenInAmount.value)
+      !balances.value[tokenInAddress.value] ||
+      parseFloat(balances.value[tokenInAddress.value]) <
+        parseFloat(tokenInAmount.value)
     )
       return TradeValidation.NO_BALANCE;
 

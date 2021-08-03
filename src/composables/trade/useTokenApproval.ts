@@ -1,49 +1,42 @@
 import { computed, Ref, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/providers';
-
 import { approveTokens } from '@/lib/utils/balancer/tokens';
-import { ETHER } from '@/constants/tokenlists';
-
-import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
-
-import useAllowances from '../useAllowances';
+import { TokenInfoMap } from '@/types/TokenList';
+import useTokens from '../useTokens';
+import useConfig from '../useConfig';
+import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
-
-import { TokenMap } from '@/types';
+import { useI18n } from 'vue-i18n';
 
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,
   amount: Ref<string>,
-  tokens: Ref<TokenMap>
+  tokens: Ref<TokenInfoMap>
 ) {
+  /**
+   * STATE
+   */
   const approving = ref(false);
   const approved = ref(false);
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
 
-  // COMPOSABLES
+  /**
+   * COMPOSABLES
+   */
   const { getProvider } = useWeb3();
-
   const { txListener } = useEthers();
+  const { networkConfig } = useConfig();
+  const { approvalsRequired, dynamicDataLoading } = useTokens();
 
-  const dstList = computed(() => [
-    configService.network.addresses.exchangeProxy
-  ]);
-  const allowanceTokens = computed(() => [tokenInAddress.value]);
-  const {
-    getRequiredAllowances,
-    isLoading: isLoadingAllowances
-  } = useAllowances({
-    dstList: dstList.value,
-    tokens: allowanceTokens.value
-  });
-
+  /**
+   * COMPUTED
+   */
   const allowanceState = computed(() => {
-    if (tokenInAddress.value === ETHER.address) {
+    if (tokenInAddress.value === networkConfig.nativeAsset.address) {
       return {
         isUnlockedV1: true,
         isUnlockedV2: true
@@ -59,16 +52,16 @@ export default function useTokenApproval(
     const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
     const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
 
-    const requiredAllowancesV1 = getRequiredAllowances({
-      dst: configService.network.addresses.exchangeProxy,
-      tokens: [tokenInAddress.value],
-      amounts: [tokenInAmountDenorm.toString()]
-    });
+    const requiredAllowancesV1 = approvalsRequired(
+      [tokenInAddress.value],
+      [tokenInAmountDenorm.toString()],
+      configService.network.addresses.exchangeProxy
+    );
 
-    const requiredAllowancesV2 = getRequiredAllowances({
-      tokens: [tokenInAddress.value],
-      amounts: [tokenInAmountDenorm.toString()]
-    });
+    const requiredAllowancesV2 = approvalsRequired(
+      [tokenInAddress.value],
+      [tokenInAmountDenorm.toString()]
+    );
 
     return {
       isUnlockedV1: requiredAllowancesV1.length === 0,
@@ -76,6 +69,9 @@ export default function useTokenApproval(
     };
   });
 
+  /**
+   * METHODS
+   */
   async function approveV1(): Promise<void> {
     console.log('[TokenApproval] Unlock V1');
     approving.value = true;
@@ -133,8 +129,11 @@ export default function useTokenApproval(
     });
   }
 
+  /**
+   * WATCHERS
+   */
   watch(tokenInAddress, async () => {
-    if (tokenInAddress.value === ETHER.address) {
+    if (tokenInAddress.value === networkConfig.nativeAsset.address) {
       approved.value = true;
     } else {
       approved.value = false;
@@ -146,6 +145,6 @@ export default function useTokenApproval(
     approveV1,
     approveV2,
     allowanceState,
-    isLoading: isLoadingAllowances
+    isLoading: dynamicDataLoading
   };
 }

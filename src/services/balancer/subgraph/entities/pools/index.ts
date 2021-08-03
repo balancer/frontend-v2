@@ -1,4 +1,4 @@
-import Service from '../../service';
+import Service from '../../balancer-subgraph.service';
 import queryBuilder from './query';
 import { getPoolLiquidity } from '@/lib/utils/balancer/price';
 import { bnum } from '@/lib/utils';
@@ -6,16 +6,19 @@ import {
   Pool,
   QueryBuilder,
   TimeTravelPeriod,
-  DecoratedPool
+  DecoratedPool,
+  PoolToken
 } from '../../types';
-import { Prices } from '@/services/coingecko';
 import { getAddress } from '@ethersproject/address';
 import {
   currentLiquidityMiningRewards,
   computeTotalAPRForPool
 } from '@/lib/utils/liquidityMining';
 import { NetworkId } from '@/constants/network';
-import ConfigService from '@/services/config/config.service';
+import { configService as _configService } from '@/services/config/config.service';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { FiatCurrency } from '@/constants/currency';
+import { isStable } from '@/composables/usePool';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -27,7 +30,7 @@ export default class Pools {
   constructor(
     service: Service,
     query: QueryBuilder = queryBuilder,
-    private readonly configService = new ConfigService()
+    private readonly configService = _configService
   ) {
     this.service = service;
     this.query = query;
@@ -40,38 +43,35 @@ export default class Pools {
     return data.pools;
   }
 
-  public async getDecorated(
+  public async decorate(
+    pools: Pool[],
     period: TimeTravelPeriod,
-    prices: Prices,
-    args = {},
-    attrs = {}
+    prices: TokenPrices,
+    currency: FiatCurrency
   ): Promise<DecoratedPool[]> {
-    // Get current pools
-    const currentPoolsQuery = this.query(args, attrs);
-    const [{ pools: currentPools }, blockNumber] = await Promise.all([
-      this.service.client.get(currentPoolsQuery),
-      this.timeTravelBlock(period)
-    ]);
-
-    // Get past state of current pools
+    // Get past state of pools
+    const blockNumber = await this.timeTravelBlock(period);
     const block = { number: blockNumber };
-    const isCurrentPool = { id_in: currentPools.map(pool => pool.id) };
-    const pastPoolsQuery = this.query({ where: isCurrentPool, block }, attrs);
+    const isInPoolIds = { id_in: pools.map(pool => pool.id) };
+    const pastPoolsQuery = this.query({ where: isInPoolIds, block });
     const { pools: pastPools } = await this.service.client.get(pastPoolsQuery);
 
-    return this.serialize(currentPools, pastPools, period, prices);
+    return this.serialize(pools, pastPools, period, prices, currency);
   }
 
   private serialize(
     pools: Pool[],
     pastPools: Pool[],
     period: TimeTravelPeriod,
-    prices: Prices
+    prices: TokenPrices,
+    currency: FiatCurrency
   ): DecoratedPool[] {
     return pools.map(pool => {
-      pool.address = this.extractAddress(pool.id);
+      pool.address = this.addressFor(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
-      pool.totalLiquidity = getPoolLiquidity(pool, prices);
+      pool.tokens = this.formatPoolTokens(pool);
+      pool.totalLiquidity = getPoolLiquidity(pool, prices, currency);
+
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
       const poolAPR = this.calcAPR(pool, pastPool);
@@ -79,7 +79,7 @@ export default class Pools {
       const {
         hasLiquidityMiningRewards,
         liquidityMiningAPR
-      } = this.calcLiquidityMiningAPR(pool, prices);
+      } = this.calcLiquidityMiningAPR(pool, prices, currency);
       const totalAPR = this.calcTotalAPR(poolAPR, liquidityMiningAPR);
 
       return {
@@ -97,6 +97,17 @@ export default class Pools {
         }
       };
     });
+  }
+
+  private formatPoolTokens(pool: Pool): PoolToken[] {
+    const tokens = pool.tokens.map(token => ({
+      ...token,
+      address: getAddress(token.address)
+    }));
+
+    if (isStable(pool)) return tokens;
+
+    return tokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
   }
 
   private calcVolume(pool: Pool, pastPool: Pool | undefined): string {
@@ -121,7 +132,11 @@ export default class Pools {
       .toString();
   }
 
-  private calcLiquidityMiningAPR(pool: Pool, prices: Prices) {
+  private calcLiquidityMiningAPR(
+    pool: Pool,
+    prices: TokenPrices,
+    currency: FiatCurrency
+  ) {
     let liquidityMiningAPR = '0';
 
     const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
@@ -134,6 +149,7 @@ export default class Pools {
       liquidityMiningAPR = computeTotalAPRForPool(
         liquidityMiningRewards,
         prices,
+        currency,
         pool.totalLiquidity
       );
     }
@@ -171,7 +187,7 @@ export default class Pools {
     }
   }
 
-  private extractAddress(poolId: string): string {
+  public addressFor(poolId: string): string {
     return getAddress(poolId.slice(0, 42));
   }
 }

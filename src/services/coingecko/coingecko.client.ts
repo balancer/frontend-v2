@@ -12,3 +12,5 @@ export class CoingeckoClient {
     return data;
   }
 }
+
+export const coingeckoClient = new CoingeckoClient();
