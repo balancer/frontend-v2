@@ -5,7 +5,6 @@ export type QueryBuilder = (
   attrs?: QueryAttrs
 ) => Record<string, any>;
 
-// export type PoolType = 'Weighted' | 'Stable';
 export enum PoolType {
   Weighted = 'Weighted',
   Stable = 'Stable'
