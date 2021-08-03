@@ -21,6 +21,7 @@ import { VueQueryDevTools } from 'vue-query/devtools';
 import { useStore } from 'vuex';
 import BigNumber from 'bignumber.js';
 import { useRoute } from 'vue-router';
+import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
@@ -32,6 +33,18 @@ import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 import Notifications from '@/components/notifications/Notifications.vue';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
+
+const isGnosisSafeApp = async (): Promise<boolean> => {
+  // Can't be a safe app if we're not running in an iframe
+  if (window.self === window.top) return false;
+
+  const safe = await Promise.race([
+    new SafeAppsSDK().safe.getInfo(),
+    new Promise<undefined>(resolve => setTimeout(resolve, 1000))
+  ]);
+
+  return !!safe;
+};
 
 export default defineComponent({
   components: {
@@ -45,7 +58,11 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     useWeb3Watchers();
-    const { isWalletSelectVisible, toggleWalletSelectModal } = useWeb3();
+    const {
+      isWalletSelectVisible,
+      connectWallet,
+      toggleWalletSelectModal
+    } = useWeb3();
     const store = useStore();
     const route = useRoute();
 
@@ -53,7 +70,13 @@ export default defineComponent({
     const isHomePage = computed(() => route.path === '/');
 
     // CALLBACKS
-    onBeforeMount(() => {
+    onBeforeMount(async () => {
+      // If we're running as a Safe App we want to automatically
+      // connect to the provided safe.
+      if (await isGnosisSafeApp()) {
+        await connectWallet('gnosis');
+      }
+
       store.dispatch('app/init');
     });
 
