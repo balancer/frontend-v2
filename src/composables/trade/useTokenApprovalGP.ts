@@ -35,8 +35,8 @@ export default function useTokenApprovalGP(
     getRequiredAllowances,
     isLoading: isLoadingAllowances
   } = useAllowances({
-    dstList,
-    tokens: allowanceTokens
+    dstList: dstList.value,
+    tokens: allowanceTokens.value
   });
 
   const allowanceState = computed(() => {
@@ -96,13 +96,14 @@ export default function useTokenApprovalGP(
     }
   }
 
-  const isApproved = computed(() => allowanceState.value.isUnlocked);
+  const isUnlocked = computed(() => allowanceState.value.isUnlocked);
 
   return {
     approving,
     approve,
+    approved,
     allowanceState,
-    isApproved,
+    isUnlocked,
     isLoading: isLoadingAllowances
   };
 }

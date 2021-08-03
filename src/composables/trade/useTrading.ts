@@ -29,6 +29,10 @@ export default function useTrading(
   const { blockNumber, userNetworkConfig } = useWeb3();
 
   // COMPUTED
+  const slippageBufferRate = computed(() =>
+    parseFloat(store.state.app.slippage)
+  );
+
   const isWrap = computed(
     () =>
       tokenInAddressInput.value === ETHER.address &&
@@ -116,7 +120,8 @@ export default function useTrading(
       enableTxHandler: isBalancerTrade.value
     },
     tokenIn,
-    tokenOut
+    tokenOut,
+    slippageBufferRate
   });
 
   const gnosis = useGnosis({
@@ -128,13 +133,16 @@ export default function useTrading(
     tokenInAmountScaled,
     tokenOutAmountScaled,
     tokenIn,
-    tokenOut
+    tokenOut,
+    slippageBufferRate
   });
 
   // initial loading
   const isLoading = computed(() =>
     isBalancerTrade.value ? sor.poolsLoading.value : gnosis.updatingQuotes.value
   );
+
+  const isTrading = computed(() => sor.trading.value || gnosis.trading.value);
 
   // METHODS
   function trade(successCallback?: () => void) {
@@ -154,7 +162,14 @@ export default function useTrading(
   }
 
   function handleAmountChange() {
+    if (exactIn.value) {
+      tokenOutAmountInput.value = '';
+    } else {
+      tokenInAmountInput.value = '';
+    }
+
     if (isGnosisTrade.value) {
+      gnosis.resetState(false);
       gnosis.handleAmountChange();
     } else {
       sor.handleAmountChange();
@@ -163,8 +178,7 @@ export default function useTrading(
 
   function handleAssetChange() {
     if (isGnosisTrade.value) {
-      gnosis.resetErrors();
-      gnosis.resetFees();
+      gnosis.resetState();
     }
   }
 
@@ -187,6 +201,10 @@ export default function useTrading(
     if (isGnosisTrade.value && !gnosis.hasErrors.value) {
       gnosis.handleAmountChange();
     }
+  });
+
+  watch(slippageBufferRate, () => {
+    handleAmountChange();
   });
 
   return {
@@ -213,6 +231,9 @@ export default function useTrading(
     tokenInAmountInput,
     tokenOutAddressInput,
     tokenOutAmountInput,
+    slippageBufferRate,
+    isTrading,
+
     // methods
     getQuote,
     trade,
