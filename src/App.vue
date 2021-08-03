@@ -23,6 +23,7 @@ import BigNumber from 'bignumber.js';
 import { useRoute } from 'vue-router';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 
+import useDarkMode from './composables/useDarkMode';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
@@ -65,6 +66,7 @@ export default defineComponent({
     } = useWeb3();
     const store = useStore();
     const route = useRoute();
+    const { darkMode, toggleDarkMode } = useDarkMode();
 
     // COMPUTED
     const isHomePage = computed(() => route.path === '/');
@@ -75,6 +77,8 @@ export default defineComponent({
       // connect to the provided safe.
       if (await isGnosisSafeApp()) {
         await connectWallet('gnosis');
+        // Disable darkmode by default
+        if (darkMode) toggleDarkMode();
       }
 
       store.dispatch('app/init');
