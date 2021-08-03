@@ -51,7 +51,7 @@ export default function useTokenApprovalGP(
     };
   });
 
-  const isApproved = computed(() => allowanceState.value.isUnlocked);
+  const isUnlocked = computed(() => allowanceState.value.isUnlocked);
 
   /**
    * METHODS
@@ -97,7 +97,7 @@ export default function useTokenApprovalGP(
     approve,
     approved,
     allowanceState,
-    isApproved,
+    isUnlocked,
     isLoading: dynamicDataLoading
   };
 }
