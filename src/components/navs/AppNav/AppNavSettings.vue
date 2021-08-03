@@ -3,7 +3,7 @@
     <div class="p-4 border-b dark:border-gray-900">
       <div class="flex justify-between items-center mb-4">
         <h5 v-text="$t('account')" class="leading-none" />
-        <div>
+        <div v-if="!hideDisconnect">
           <BalBtn outline color="gray" size="xs" @click="disconnectWallet">
             Disconnect
           </BalBtn>
@@ -221,6 +221,7 @@ export default defineComponent({
     const connectorName = computed(() => getConnectorName(connector.value.id));
 
     const connectorLogo = computed(() => getConnectorLogo(connector.value.id));
+    const hideDisconnect = computed(() => connector.value.id == 'gnosis');
 
     // METHODS
     const setDarkMode = val => store.commit('app/setDarkMode', val);
@@ -258,6 +259,7 @@ export default defineComponent({
       connectorName,
       connectorLogo,
       hideLiquidity,
+      hideDisconnect,
       // methods
       disconnectWallet,
       setDarkMode,
