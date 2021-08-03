@@ -85,7 +85,7 @@ export default function useGnosis({
   // DATA
   const feeQuote = ref<FeeInformation | null>(null);
   const updatingQuotes = ref(false);
-  const trading = ref(false);
+  const confirming = ref(false);
 
   // COMPUTED
   const appTransactionDeadline = computed<number>(
@@ -136,7 +136,7 @@ export default function useGnosis({
 
   async function trade(successCallback?: () => void) {
     try {
-      trading.value = true;
+      confirming.value = true;
       const quote = getQuote();
 
       const unsignedOrder: UnsignedOrder = {
@@ -208,15 +208,13 @@ export default function useGnosis({
         }
       });
 
-      resetState();
-
       if (successCallback != null) {
         successCallback();
       }
-      trading.value = false;
+      confirming.value = false;
     } catch (e) {
       console.log(e);
-      trading.value = false;
+      confirming.value = false;
     }
   }
 
@@ -320,7 +318,7 @@ export default function useGnosis({
     feeQuote,
     updatingQuotes,
     hasErrors,
-    trading,
+    confirming,
     getQuote
   };
 }

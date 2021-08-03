@@ -146,6 +146,21 @@
           </div>
         </template>
       </BalCard>
+      <BalAlert
+        v-if="showPriceUpdateError"
+        class="p-3 mb-4"
+        type="error"
+        size="md"
+        :title="$t('priceUpdatedAlert.title')"
+        :description="
+          $t('priceUpdatedAlert.description', [
+            fNum(PRICE_UPDATE_THRESHOLD, 'percent')
+          ])
+        "
+        :action-label="$t('priceUpdatedAlert.actionLabel')"
+        block
+        @actionClick="cofirmPriceUpdate"
+      />
       <div v-if="trading.requiresApproval.value" class="flex justify-between">
         <BalBtn
           v-if="!isUnlocked || approved"
@@ -173,9 +188,9 @@
           color="gradient"
           block
           @click.prevent="trade"
-          :loading="trading.isTrading.value"
+          :loading="trading.isConfirming.value"
           :loading-label="$t('confirming')"
-          :disabled="!isUnlocked"
+          :disabled="tradeDisabled"
         >
           <div
             v-if="!isUnlocked || approved"
@@ -190,8 +205,9 @@
         v-else
         color="gradient"
         block
+        :disabled="tradeDisabled"
         @click.prevent="trade"
-        :loading="trading.isTrading.value"
+        :loading="trading.isConfirming.value"
         :loading-label="$t('confirming')"
       >
         {{ labels.confirmTrade }}
@@ -211,21 +227,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref } from 'vue';
+import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { formatUnits } from '@ethersproject/units';
+import { useI18n } from 'vue-i18n';
+import { mapValues } from 'lodash';
 
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import { TradeQuote } from '@/composables/trade/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 
 import { bnum } from '@/lib/utils';
 
 import { FiatCurrency } from '@/constants/currency';
-import { mapValues } from 'lodash';
-import { useI18n } from 'vue-i18n';
+
+const PRICE_UPDATE_THRESHOLD = 0.02;
 
 export default defineComponent({
   components: {
@@ -243,6 +263,12 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const { fNum, toFiat } = useNumbers();
+    const { blockNumber } = useWeb3();
+    const lastQuote = ref<TradeQuote | null>(
+      props.trading.isWrapOrUnwrap.value ? null : props.trading.getQuote()
+    );
+    const priceUpdated = ref(false);
+    const priceUpdateAccepted = ref(false);
 
     // DATA
     const showSummaryInFiat = ref(false);
@@ -282,6 +308,16 @@ export default defineComponent({
 
     const zeroFee = computed(() =>
       showSummaryInFiat.value ? fNum('0', 'usd') : '0.0 ETH'
+    );
+
+    const showPriceUpdateError = computed(
+      () => priceUpdated.value && !priceUpdateAccepted.value
+    );
+
+    const tradeDisabled = computed(
+      () =>
+        (props.trading.requiresApproval.value && !isUnlocked.value) ||
+        showPriceUpdateError.value
     );
 
     const summary = computed(() => {
@@ -435,6 +471,41 @@ export default defineComponent({
       emit('close');
     }
 
+    function cofirmPriceUpdate() {
+      priceUpdated.value = false;
+      priceUpdateAccepted.value = true;
+      lastQuote.value = props.trading.getQuote();
+    }
+
+    function handlePriceUpdate() {
+      if (lastQuote.value != null) {
+        const newQuote = props.trading.getQuote();
+
+        if (props.trading.exactIn.value) {
+          priceUpdated.value = bnum(lastQuote.value.minimumOutAmount)
+            .minus(newQuote.minimumOutAmount)
+            .abs()
+            .div(lastQuote.value.minimumOutAmount)
+            .gt(PRICE_UPDATE_THRESHOLD);
+        } else {
+          priceUpdated.value = bnum(lastQuote.value.maximumInAmount)
+            .minus(newQuote.maximumInAmount)
+            .abs()
+            .div(lastQuote.value.maximumInAmount)
+            .gt(PRICE_UPDATE_THRESHOLD);
+        }
+
+        if (priceUpdated.value) {
+          priceUpdateAccepted.value = false;
+        }
+      }
+    }
+
+    // WATCHERS
+    watch(blockNumber, () => {
+      handlePriceUpdate();
+    });
+
     return {
       // constants
       FiatCurrency,
@@ -444,6 +515,7 @@ export default defineComponent({
       onClose,
       approve,
       trade,
+      cofirmPriceUpdate,
 
       // computed
       isUnlocked,
@@ -456,7 +528,13 @@ export default defineComponent({
       slippageRatePercent,
       showTradeRoute,
       labels,
-      zeroFee
+      zeroFee,
+      priceUpdated,
+      tradeDisabled,
+      showPriceUpdateError,
+
+      // consants
+      PRICE_UPDATE_THRESHOLD
     };
   }
 });

@@ -7,6 +7,7 @@
   >
     <div class="overflow-hidden" ref="headerRef">
       <table class="w-full table-fixed whitespace-normal">
+        <!-- header width handled by colgroup  -->
         <colgroup>
           <col
             v-for="column in filteredColumns"
@@ -14,6 +15,7 @@
             :style="{ width: `${column?.width}px` }"
           />
         </colgroup>
+        <!-- header is rendered as a row - seperated by columns -->
         <thead class="bg-white dark:bg-gray-900 z-10">
           <th
             v-for="(column, columnIndex) in filteredColumns"
@@ -23,7 +25,10 @@
               column.className,
               getHorizontalStickyClass(columnIndex),
               isColumnStuck ? 'isSticky' : '',
-              column.sortKey ? 'cursor-pointer' : ''
+              column.sortKey ? 'cursor-pointer' : '',
+              currentSortColumn === column.id && currentSortDirection
+                ? 'text-blue-400'
+                : 'text-gray-800 dark:text-gray-100'
             ]"
             :ref="setHeaderRef(columnIndex)"
             @click="handleSort(column.id)"
@@ -40,7 +45,7 @@
                 :name="column.Header"
               ></slot>
               <div v-else>
-                <h5 class="text-base text-gray-800 dark:text-gray-100">
+                <h5 class="text-base">
                   {{ column.name }}
                 </h5>
               </div>
@@ -169,6 +174,42 @@
               </template>
             </td>
           </tr>
+          <tr
+            :class="[
+              'bg-white z-10 row-bg group',
+              { 'cursor-pointer': onRowClick }
+            ]"
+            v-if="shouldRenderTotals"
+          >
+            <td
+              :class="[
+                getHorizontalStickyClass(0),
+                isColumnStuck ? 'isSticky' : '',
+                'text-left p-6 bg-white dark:bg-gray-850 border-t dark:border-gray-900 align-top'
+              ]"
+            >
+              <span class="font-semibold text-left">
+                Total
+              </span>
+            </td>
+            <td
+              v-for="(column, columnIndex) in tail(filteredColumns)"
+              :key="column.id"
+              :class="[
+                column.align === 'right' ? 'text-left' : 'text-right',
+                getHorizontalStickyClass(columnIndex + 1),
+                isColumnStuck ? 'isSticky' : '',
+                'p-6 bg-white dark:bg-gray-850 border-t dark:border-gray-900'
+              ]"
+            >
+              <slot
+                v-if="column.totalsCell"
+                v-bind="dataItem"
+                :name="column.totalsCell"
+              >
+              </slot>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -194,7 +235,7 @@ import {
   watch,
   computed
 } from 'vue';
-import { sortBy, sumBy } from 'lodash';
+import { sortBy, sumBy, tail } from 'lodash';
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;
@@ -229,6 +270,8 @@ export type ColumnDefinition<T = Data> = {
   sortKey?: string | ((row: T) => unknown);
 
   width?: number;
+
+  totalsCell?: string;
 };
 
 export default defineComponent({
@@ -380,6 +423,10 @@ export default defineComponent({
       props.columns.filter(column => !column.hidden)
     );
 
+    const shouldRenderTotals = computed(() =>
+      props.columns.some(column => column.totalsCell !== undefined)
+    );
+
     watch(
       () => props.data,
       newData => {
@@ -402,6 +449,7 @@ export default defineComponent({
       getHorizontalStickyClass,
       handleSort,
       handleRowClick,
+      tail,
 
       //data
       isColumnStuck,
@@ -411,7 +459,8 @@ export default defineComponent({
       placeholderBlockWidth,
 
       // computed
-      filteredColumns
+      filteredColumns,
+      shouldRenderTotals
     };
   }
 });

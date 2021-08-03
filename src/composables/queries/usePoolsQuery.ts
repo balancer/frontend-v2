@@ -17,9 +17,15 @@ type PoolsQueryResponse = {
   skip?: number;
 };
 
+type FilterOptions = {
+  poolIds?: Ref<string[]>;
+  pageSize?: number;
+};
+
 export default function usePoolsQuery(
   tokenList: Ref<string[]> = ref([]),
-  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {}
+  options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
+  filterOptions?: FilterOptions
 ) {
   // COMPOSABLES
   const { injectTokens, dynamicDataLoading, prices } = useTokens();
@@ -27,23 +33,27 @@ export default function usePoolsQuery(
   const { appLoading } = useApp();
 
   // DATA
-  const queryKey = QUERY_KEYS.Pools.All(tokenList);
+  const queryKey = QUERY_KEYS.Pools.All(tokenList, filterOptions?.poolIds);
 
   // COMPUTED
   const enabled = computed(() => !appLoading.value);
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const pools = await balancerSubgraphService.pools.get({
-      first: POOLS.Pagination.PerPage,
+    const queryArgs: any = {
+      first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
       skip: pageParam,
       where: {
         tokensList_contains: tokenList.value
       }
-    });
+    };
+
+    const pools = await balancerSubgraphService.pools.get(queryArgs);
+
     const tokens = flatten(pools.map(pool => pool.tokensList));
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
+
     const decoratedPools = await balancerSubgraphService.pools.decorate(
       pools,
       '24h',
