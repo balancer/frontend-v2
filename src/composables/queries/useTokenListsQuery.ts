@@ -4,6 +4,7 @@ import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { TokenListMap } from '@/types/TokenList';
 import { tokenListService } from '@/services/token-list/token-list.service';
+import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
 
 /**
  * TYPES
@@ -25,9 +26,7 @@ export default function useTokenListsQuery(
 
   const queryOptions = reactive({
     enabled: true,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    ...FETCH_ONCE_OPTIONS,
     ...options
   });
 
