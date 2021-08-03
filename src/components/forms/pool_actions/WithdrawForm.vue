@@ -258,7 +258,7 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
     const { t } = useI18n();
-    const { tokens, balances } = useTokens();
+    const { tokens, balances, balanceFor } = useTokens();
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
@@ -324,7 +324,7 @@ export default defineComponent({
     });
 
     const bptBalance = computed(() => {
-      return balances.value[props.pool.address];
+      return balanceFor(props.pool.address);
     });
 
     function formatPropBalance(index) {
