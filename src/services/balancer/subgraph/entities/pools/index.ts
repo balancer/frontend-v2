@@ -18,6 +18,7 @@ import { NetworkId } from '@/constants/network';
 import { configService as _configService } from '@/services/config/config.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { FiatCurrency } from '@/constants/currency';
+import { isStable } from '@/composables/usePool';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -104,7 +105,7 @@ export default class Pools {
       address: getAddress(token.address)
     }));
 
-    if (pool.poolType === 'Stable') return tokens;
+    if (isStable(pool)) return tokens;
 
     return tokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
   }

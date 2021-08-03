@@ -7,6 +7,7 @@ import Stable from './stable';
 import { TokenInfoMap } from '@/types/TokenList';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ComputedRef } from 'vue';
+import { isStable } from '@/composables/usePool';
 
 interface Amounts {
   send: string[];
@@ -207,7 +208,7 @@ export default class CalculatorService {
   }
 
   public get isStablePool(): boolean {
-    return this.pool.poolType === 'Stable';
+    return isStable(this.pool);
   }
 
   public get sendTokens(): string[] {

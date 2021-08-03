@@ -65,6 +65,7 @@ import { shortenLabel } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
+import { usePool } from '@/composables/usePool';
 
 export default defineComponent({
   props: {
@@ -88,6 +89,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { upToLargeBreakpoint } = useBreakpoints();
     const { priceFor } = useTokens();
+    const { isStablePool } = usePool(pool);
 
     /**
      * COMPUTED
@@ -116,7 +118,7 @@ export default defineComponent({
         align: 'right',
         sortKey: pool => weightFor(pool.address),
         width: 125,
-        hidden: !props.loading && props.pool.poolType === 'Stable'
+        hidden: !props.loading && isStablePool.value
       },
       {
         name: t('balance'),

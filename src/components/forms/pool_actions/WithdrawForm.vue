@@ -59,10 +59,7 @@
               <span class="break-words">
                 {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
-              <span
-                v-if="pool.poolType !== 'Stable'"
-                class="text-xs text-gray-400"
-              >
+              <span v-if="!isStablePool" class="text-xs text-gray-400">
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
@@ -188,7 +185,8 @@ import {
   reactive,
   toRefs,
   ref,
-  PropType
+  PropType,
+  toRef
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -215,6 +213,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
+import { usePool } from '@/composables/usePool';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -263,6 +262,7 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
+    const { isStablePool } = usePool(toRef(props, 'pool'));
 
     // SERVICES
     const poolExchange = computed(
@@ -637,6 +637,7 @@ export default defineComponent({
       priceImpactClasses,
       amountRules,
       formTypes,
+      isStablePool,
       formatPropBalance,
       amountUSD,
       singleAssetMaxLabel,

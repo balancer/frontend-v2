@@ -10,6 +10,7 @@ import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
 import { forChange } from '@/lib/utils';
+import { isStable } from '../usePool';
 
 export default function usePoolQuery(
   id: string,
@@ -42,7 +43,7 @@ export default function usePoolQuery(
       }
     });
 
-    if (pool.poolType === 'Stable' && !POOLS.Stable.AllowList.includes(id)) {
+    if (isStable(pool) && !POOLS.Stable.AllowList.includes(id)) {
       throw new Error('Pool not allowed');
     }
 
