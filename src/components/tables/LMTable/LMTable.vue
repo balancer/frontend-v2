@@ -28,7 +28,6 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        {{ console.log('steble', pool) }}
         <div class="px-6 py-4">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
@@ -79,26 +78,25 @@
 
 <script lang="ts">
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import { WeeklyDistributions } from '@/pages/LiquidityMining.vue';
+import { TokenTotal, WeeklyDistributions } from '@/pages/LiquidityMining.vue';
 import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
 import {
   DecoratedPoolWithShares,
   PoolToken
 } from '@/services/balancer/subgraph/types';
 import { getAddress } from '@ethersproject/address';
-import { computed, defineComponent, PropType, toRefs } from 'vue';
+import { computed, defineComponent, PropType, Ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { sum } from 'lodash';
 import { useStore } from 'vuex';
+import useDarkMode from '@/composables/useDarkMode';
 
 function getWeekName(week: string) {
   const parts = week.split('_');
   return `Week ${parts[1]}`;
 }
-
-type TokenTotal = { token: string; total: number };
 
 export default defineComponent({
   components: {
@@ -110,11 +108,14 @@ export default defineComponent({
       required: true
     },
     poolMetadata: {
-      type: Object,
-      required: true
+      type: Object
     },
     isLoading: {
       type: Boolean
+    },
+    totals: {
+      type: Object as PropType<Ref<Record<string, TokenTotal[]>>>,
+      required: true
     }
   },
   setup(props) {
@@ -123,6 +124,7 @@ export default defineComponent({
     const { tokens } = useTokens();
     const { fNum } = useNumbers();
     const store = useStore();
+    const { darkMode } = useDarkMode();
 
     const prices = computed(() => store.state.market.prices);
     const data = computed(() => {
@@ -173,34 +175,6 @@ export default defineComponent({
       ];
     });
 
-    const totals = computed(() => {
-      // map tracking a list of token totals for each week
-      const weeklyTotals: Record<string, TokenTotal[]> = {};
-      for (const week of weeks.value) {
-        // map tracking totals for each token
-        const tokenTotals: Record<string, TokenTotal> = {};
-        // this will be an array of pools with their token distributions,
-        // we just want the values, not the pool id
-        const distributions = Object.values(week.distributions);
-        for (const distribution of distributions) {
-          for (const allocation of distribution) {
-            if (!tokenTotals[allocation.tokenAddress]) {
-              tokenTotals[allocation.tokenAddress] = {
-                token: allocation.tokenAddress,
-                total: allocation.amount
-              };
-              continue;
-            } else {
-              tokenTotals[allocation.tokenAddress].total =
-                tokenTotals[allocation.tokenAddress].total + allocation.amount;
-            }
-          }
-        }
-        weeklyTotals[week.week] = Object.values(tokenTotals);
-      }
-      return weeklyTotals;
-    });
-
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
       if (pool.poolType === 'Stable') return pool.tokens;
 
@@ -225,17 +199,16 @@ export default defineComponent({
     }
 
     return {
-      columns,
-      data,
       orderedTokenAddressesFor,
       orderedPoolTokens,
       fNum,
       getAddress,
-      totals,
+      calculatePricesFor,
+      columns,
+      data,
       tokens,
       prices,
-      calculatePricesFor,
-      console
+      darkMode
     };
   }
 });
