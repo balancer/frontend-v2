@@ -5,19 +5,6 @@ export function shorten(str = '') {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
 }
 
-export function jsonParse(input, fallback?) {
-  if (typeof input !== 'string') {
-    if (fallback === null) return null;
-    return fallback || {};
-  }
-  try {
-    return JSON.parse(input);
-  } catch (err) {
-    if (fallback === null) return null;
-    return fallback || {};
-  }
-}
-
 export async function sleep(time) {
   return new Promise(resolve => {
     setTimeout(resolve, time);
@@ -28,17 +15,48 @@ export function clone(item) {
   return JSON.parse(JSON.stringify(item));
 }
 
-export function lsSet(key: string, value: any) {
-  return localStorage.setItem(`${pkg.name}.${key}`, JSON.stringify(value));
+function lsAddVersion(value: any, version: string) {
+  return {
+    data: value,
+    _version: version
+  };
 }
 
-export function lsGet<T = any>(key: string, fallback?: any): T {
-  const item = localStorage.getItem(`${pkg.name}.${key}`);
-  return jsonParse(item, fallback);
+function lsGetKey(key: string) {
+  return `${pkg.name}.${key}`;
+}
+
+export function lsSet(key: string, value: any, version?: string) {
+  const data = version != null ? lsAddVersion(value, version) : value;
+
+  return localStorage.setItem(lsGetKey(key), JSON.stringify(data));
+}
+
+export function lsGet<T = any>(
+  key: string,
+  defaultValue: any = null,
+  version?: string
+): T {
+  const rawValue = localStorage.getItem(lsGetKey(key));
+
+  if (rawValue != null) {
+    try {
+      const value = JSON.parse(rawValue);
+
+      if (version != null) {
+        return value._version === version ? value.data : defaultValue;
+      }
+      return value;
+    } catch (e) {
+      return defaultValue;
+    }
+  }
+
+  return defaultValue;
 }
 
 export function lsRemove(key: string) {
-  return localStorage.removeItem(`${pkg.name}.${key}`);
+  return localStorage.removeItem(lsGetKey(key));
 }
 
 export function getCurrentTs() {
