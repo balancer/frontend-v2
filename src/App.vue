@@ -36,9 +36,11 @@ import Notifications from '@/components/notifications/Notifications.vue';
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
 const isGnosisSafeApp = async (): Promise<boolean> => {
-  // Can't be a safe app if we're not running in an iframe
+  // Can't be a Safe app if we're not running in an iframe
   if (window.self === window.top) return false;
 
+  // Try to connect to the Gnosis UI by querying Safe info
+  // If we get no response then we're not in a Safe app
   const safe = await Promise.race([
     new SafeAppsSDK().safe.getInfo(),
     new Promise<undefined>(resolve => setTimeout(resolve, 1000))
