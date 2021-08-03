@@ -116,8 +116,7 @@ export default function useTrading(
     tokenOutAmountScaled,
     sorConfig: {
       handleAmountsOnFetchPools: false,
-      refetchPools: isBalancerTrade.value,
-      enableTxHandler: isBalancerTrade.value
+      refetchPools: false
     },
     tokenIn,
     tokenOut,
@@ -142,7 +141,9 @@ export default function useTrading(
     isBalancerTrade.value ? sor.poolsLoading.value : gnosis.updatingQuotes.value
   );
 
-  const isTrading = computed(() => sor.trading.value || gnosis.trading.value);
+  const isConfirming = computed(
+    () => sor.confirming.value || gnosis.confirming.value
+  );
 
   // METHODS
   function trade(successCallback?: () => void) {
@@ -172,13 +173,8 @@ export default function useTrading(
       gnosis.resetState(false);
       gnosis.handleAmountChange();
     } else {
+      sor.resetState();
       sor.handleAmountChange();
-    }
-  }
-
-  function handleAssetChange() {
-    if (isGnosisTrade.value) {
-      gnosis.resetState();
     }
   }
 
@@ -186,20 +182,23 @@ export default function useTrading(
   watch(tokenInAddressInput, async () => {
     store.commit('trade/setInputAsset', tokenInAddressInput.value);
 
-    handleAssetChange();
     handleAmountChange();
   });
 
   watch(tokenOutAddressInput, () => {
     store.commit('trade/setOutputAsset', tokenOutAddressInput.value);
 
-    handleAssetChange();
     handleAmountChange();
   });
 
   watch(blockNumber, () => {
-    if (isGnosisTrade.value && !gnosis.hasErrors.value) {
-      gnosis.handleAmountChange();
+    if (isGnosisTrade.value) {
+      if (!gnosis.hasErrors.value) {
+        gnosis.handleAmountChange();
+      }
+    } else if (!isWrapOrUnwrap.value) {
+      // only fetch for ETH -> ERC20 trades
+      sor.fetchPools();
     }
   });
 
@@ -232,7 +231,7 @@ export default function useTrading(
     tokenOutAddressInput,
     tokenOutAmountInput,
     slippageBufferRate,
-    isTrading,
+    isConfirming,
 
     // methods
     getQuote,

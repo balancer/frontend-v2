@@ -61,7 +61,6 @@ type Props = {
   sorConfig?: {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
-    enableTxHandler: boolean;
   };
   tokenIn?: ComputedRef<Token>;
   tokenOut?: ComputedRef<Token>;
@@ -83,8 +82,7 @@ export default function useSor({
   tokenOutAmountScaled,
   sorConfig = {
     refetchPools: true,
-    handleAmountsOnFetchPools: true,
-    enableTxHandler: true
+    handleAmountsOnFetchPools: true
   },
   tokenIn,
   tokenOut,
@@ -114,6 +112,7 @@ export default function useSor({
     }
   });
   const trading = ref(false);
+  const confirming = ref(false);
   const priceImpact = ref(0);
   const latestTxHash = ref('');
   const poolsLoading = ref(true);
@@ -202,8 +201,6 @@ export default function useSor({
   }
 
   async function handleAmountChange(): Promise<void> {
-    resetState();
-
     const amount = exactIn.value
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
@@ -352,6 +349,8 @@ export default function useSor({
     tx: TransactionResponse,
     action?: 'wrap' | 'unwrap' | 'trade'
   ): void {
+    confirming.value = false;
+
     let summary = '';
     const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
     const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
@@ -398,6 +397,7 @@ export default function useSor({
   async function trade(successCallback?: () => void) {
     trackGoal(Goals.ClickSwap);
     trading.value = true;
+    confirming.value = true;
 
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
@@ -423,6 +423,7 @@ export default function useSor({
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
       return;
     } else if (isUnwrap.value) {
@@ -442,6 +443,7 @@ export default function useSor({
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
       return;
     }
@@ -470,6 +472,7 @@ export default function useSor({
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
@@ -498,6 +501,7 @@ export default function useSor({
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
     }
   }
@@ -582,6 +586,8 @@ export default function useSor({
     latestTxHash,
     fetchPools,
     poolsLoading,
-    getQuote
+    getQuote,
+    resetState,
+    confirming
   };
 }
