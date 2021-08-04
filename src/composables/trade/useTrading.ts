@@ -107,6 +107,12 @@ export default function useTrading(
 
   const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
 
+  const hasTradeQuote = computed(
+    () =>
+      parseFloat(tokenInAmountInput.value) > 0 &&
+      parseFloat(tokenOutAmountInput.value) > 0
+  );
+
   const sor = useSor({
     exactIn,
     tokenInAddressInput,
@@ -140,9 +146,8 @@ export default function useTrading(
     slippageBufferRate
   });
 
-  // initial loading
   const isLoading = computed(() => {
-    if (isWrapUnwrapTrade.value) {
+    if (hasTradeQuote.value || isWrapUnwrapTrade.value) {
       return false;
     }
 
