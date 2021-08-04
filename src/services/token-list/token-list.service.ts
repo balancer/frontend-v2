@@ -83,9 +83,7 @@ export default class TokenListService {
         const { data } = await axios.get<TokenList>(uri);
         return data;
       } else if (protocol === 'ipns') {
-        return (await this.ipfsService.get(path, protocol)) as Promise<
-          TokenList
-        >;
+        return await this.ipfsService.get<TokenList>(path, protocol);
       } else {
         console.error('Unhandled TokenList protocol', uri);
         throw new Error('Unhandled TokenList protocol');
@@ -99,7 +97,7 @@ export default class TokenListService {
   private async getByEns(ensName: string): Promise<TokenList> {
     const resolver = await this.provider.getResolver(ensName);
     const [, ipfsHash] = (await resolver.getContentHash()).split('://');
-    return (await this.ipfsService.get(ipfsHash)) as Promise<TokenList>;
+    return await this.ipfsService.get<TokenList>(ipfsHash);
   }
 }
 
