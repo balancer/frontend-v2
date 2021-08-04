@@ -145,9 +145,21 @@ export default function useTrading(
   // METHODS
   function trade(successCallback?: () => void) {
     if (isGnosisTrade.value) {
-      return gnosis.trade(successCallback);
+      return gnosis.trade(() => {
+        if (successCallback) {
+          successCallback();
+        }
+
+        gnosis.resetState();
+      });
     } else {
-      return sor.trade(successCallback);
+      return sor.trade(() => {
+        if (successCallback) {
+          successCallback();
+        }
+
+        sor.resetState();
+      });
     }
   }
 
