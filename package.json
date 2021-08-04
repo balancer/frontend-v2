@@ -48,7 +48,6 @@
     "ethereumjs-util": "^7.0.7",
     "ethers": "^5.4.1",
     "feather-icons": "^4.28.0",
-    "fortmatic": "^2.0.6",
     "json-to-graphql-query": "^2.0.0",
     "lodash": "^4.17.15",
     "numeral": "^2.0.4",
