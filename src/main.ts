@@ -7,7 +7,6 @@ import blocknative from '@/plugins/blocknative';
 import vueQuery from '@/plugins/vueQuery';
 import initSentry from '@/plugins/sentry';
 import registerDirectives from '@/plugins/directives';
-import VueApexCharts from 'vue3-apexcharts';
 import { registerGlobalComponents } from '@/plugins/components';
 import Web3Plugin from '@/services/web3/web3.plugin';
 import { use } from 'echarts/core';
@@ -46,7 +45,6 @@ const app = createApp(Root)
   .use(router)
   .use(store)
   .use(blocknative)
-  .use(VueApexCharts)
   .use(vueQuery)
   .use(Web3Plugin, Web3Provider)
   .mixin(mixins)
