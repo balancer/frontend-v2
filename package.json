@@ -54,7 +54,6 @@
     "parse-filepath": "1.0.2",
     "postcss": "^7.0.35",
     "postcss-nesting": "^7.0.1",
-    "pretty-ms": "^7.0.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4",
     "typescript": "~3.9.3",
     "vue": "^3.1.5",
