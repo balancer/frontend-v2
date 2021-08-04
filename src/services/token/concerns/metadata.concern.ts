@@ -1,9 +1,9 @@
 import TokenService from '../token.service';
 import {
   TokenInfo,
-  TokenInfoDict,
+  TokenInfoMap,
   TokenList,
-  TokenListDict
+  TokenListMap
 } from '@/types/TokenList';
 import { getAddress } from '@ethersproject/address';
 import { Multicaller } from '@/lib/utils/balancer/contract';
@@ -20,8 +20,8 @@ export default class MetadataConcern {
    */
   async get(
     addresses: string[],
-    tokenLists: TokenListDict
-  ): Promise<TokenInfoDict> {
+    tokenLists: TokenListMap
+  ): Promise<TokenInfoMap> {
     addresses = addresses.map(address => getAddress(address));
     const tokenListTokens = this.tokenListsTokensFrom(tokenLists);
     let metaDict = this.getMetaFromLists(addresses, tokenListTokens);
@@ -38,7 +38,7 @@ export default class MetadataConcern {
     return metaDict;
   }
 
-  private tokenListsTokensFrom(lists: TokenListDict): TokenInfo[] {
+  private tokenListsTokensFrom(lists: TokenListMap): TokenInfo[] {
     return Object.values<TokenList>(lists)
       .map(list => list.tokens)
       .flat();
@@ -47,7 +47,7 @@ export default class MetadataConcern {
   private getMetaFromLists(
     addresses: string[],
     tokens: TokenInfo[]
-  ): TokenInfoDict {
+  ): TokenInfoMap {
     const metaDict = {};
 
     addresses.forEach(async address => {
@@ -64,7 +64,7 @@ export default class MetadataConcern {
     return metaDict;
   }
 
-  private async getMetaOnchain(addresses: string[]): Promise<TokenInfoDict> {
+  private async getMetaOnchain(addresses: string[]): Promise<TokenInfoMap> {
     try {
       const network = this.service.configService.network.key;
       const multi = new Multicaller(network, this.service.provider, erc20Abi);

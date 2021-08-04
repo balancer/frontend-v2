@@ -2,23 +2,48 @@ import { reactive, ref, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { CoingeckoService } from '@/services/coingecko/coingecko.service';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { sleep } from '@/lib/utils';
 
-// TYPES
-type Response = TokenPrices;
+/**
+ * TYPES
+ */
+type QueryResponse = TokenPrices;
 
-// SERVICES
-const coingeckoService = new CoingeckoService();
+/**
+ * CONSTANTS
+ */
+const PER_PAGE = 1000;
 
+/**
+ * Fetches token prices for all provided addresses.
+ */
 export default function useTokenPricesQuery(
-  tokens: Ref<string[]> = ref([]),
-  options: UseQueryOptions<Response> = {}
+  addresses: Ref<string[]> = ref([]),
+  options: UseQueryOptions<QueryResponse> = {}
 ) {
-  const queryKey = reactive(QUERY_KEYS.Tokens.Prices(tokens));
+  const queryKey = reactive(QUERY_KEYS.Tokens.Prices(addresses));
 
   const queryFn = async () => {
-    return await coingeckoService.prices.getTokens(tokens.value);
+    // Sequential pagination required to avoid coingecko rate limits.
+    let prices: TokenPrices = {};
+    const pageCount = Math.ceil(addresses.value.length / PER_PAGE);
+    const pages = Array.from(Array(pageCount).keys());
+
+    for (const page of pages) {
+      if (page !== 0) await sleep(1000);
+      const pageAddresses = addresses.value.slice(
+        PER_PAGE * page,
+        PER_PAGE * (page + 1)
+      );
+      console.log('Fetching', pageAddresses.length, 'prices');
+      prices = {
+        ...prices,
+        ...(await coingeckoService.prices.getTokens(pageAddresses))
+      };
+    }
+    return prices;
   };
 
   const queryOptions = reactive({
@@ -26,5 +51,5 @@ export default function useTokenPricesQuery(
     ...options
   });
 
-  return useQuery<Response>(queryKey, queryFn, queryOptions);
+  return useQuery<QueryResponse>(queryKey, queryFn, queryOptions);
 }

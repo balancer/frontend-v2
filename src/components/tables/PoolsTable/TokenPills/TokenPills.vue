@@ -27,8 +27,6 @@
 import useNumbers from '@/composables/useNumbers';
 import { PoolToken } from '@/services/balancer/subgraph/types';
 import { defineComponent, PropType } from 'vue';
-import { getAddress } from '@ethersproject/address';
-import useAccountBalances from '@/composables/useAccountBalances';
 import useTokens from '@/composables/useTokens';
 import WeightedTokenPill from './WeightedTokenPill.vue';
 import StableTokenPill from './StableTokenPill.vue';
@@ -50,14 +48,17 @@ export default defineComponent({
   },
 
   setup() {
-    // COMPOSABLES
+    /**
+     * COMPOSABLES
+     */
     const { fNum } = useNumbers();
-    const { hasBalance } = useAccountBalances();
-    const { tokens } = useTokens();
+    const { tokens, hasBalance } = useTokens();
 
-    // METHODS
+    /**
+     * METHODS
+     */
     function symbolFor(token: PoolToken): string {
-      return tokens.value[getAddress(token.address)]?.symbol;
+      return tokens.value[token.address]?.symbol || '---';
     }
 
     function weightFor(token: PoolToken): string {

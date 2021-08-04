@@ -1,26 +1,68 @@
 import axios from 'axios';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { TokenList, TokenListDict } from '@/types/TokenList';
-import TOKEN_LISTS from '@/constants/tokenlists';
+import { TokenList, TokenListMap } from '@/types/TokenList';
 import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { ipfsService as _ipfsService } from '../ipfs/ipfs.service';
+import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
+import { configService as _configService } from '../config/config.service';
+
+interface TokenListUris {
+  All: string[];
+  Balancer: {
+    All: string[];
+    // Compliant list for exchange
+    Default: string;
+    // Extended list to include LBP tokens
+    Vetted: string;
+  };
+  Approved: string[];
+  External: string[];
+}
 
 export default class TokenListService {
   provider: JsonRpcProvider;
+  appNetworkKey: string;
 
   constructor(
+    private readonly configService = _configService,
     private readonly rpcProviderService = _rpcProviderService,
     private readonly ipfsService = _ipfsService
   ) {
     this.provider = this.rpcProviderService.jsonProvider;
+    this.appNetworkKey = this.configService.network.key;
   }
 
-  async getAll(): Promise<TokenListDict> {
-    const allFetchFns = TOKEN_LISTS.All.map(uri => this.get(uri));
+  /**
+   * Return all token list URIs for the app network in
+   * a structured object.
+   */
+  public get uris(): TokenListUris {
+    const { Balancer, External } = TOKEN_LIST_MAP[this.appNetworkKey];
+
+    const balancerLists = [Balancer.Default, Balancer.Vetted];
+    const All = [...balancerLists, ...External];
+    const Approved = [Balancer.Default, ...External];
+
+    return {
+      All,
+      Balancer: {
+        All: balancerLists,
+        ...Balancer
+      },
+      Approved,
+      External
+    };
+  }
+
+  /**
+   * Fetch all token list json and return mapped to URI
+   */
+  async getAll(uris: string[] = this.uris.All): Promise<TokenListMap> {
+    const allFetchFns = uris.map(uri => this.get(uri));
     const lists = await Promise.all(
       allFetchFns.map(fetchList => fetchList.catch(e => e))
     );
-    const listsWithKey = lists.map((list, i) => [TOKEN_LISTS.All[i], list]);
+    const listsWithKey = lists.map((list, i) => [uris[i], list]);
     const validLists = listsWithKey.filter(list => !(list[1] instanceof Error));
 
     if (validLists.length === 0) {
@@ -60,3 +102,5 @@ export default class TokenListService {
     return (await this.ipfsService.get(ipfsHash)) as Promise<TokenList>;
   }
 }
+
+export const tokenListService = new TokenListService();

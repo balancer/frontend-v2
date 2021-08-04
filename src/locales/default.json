@@ -200,7 +200,7 @@
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
     "receipt": "Receipt",
     "recentActivityTitle": "Recent activity",
-    "noRecentActivity": "Your session activity will appear here…",
+    "noRecentActivity": "Your recent activity will appear here…",
     "transactionAction": {
         "trade": "Trade",
         "approve": "Approve",
@@ -254,6 +254,11 @@
             "totalWithSlippage": "Zero slippage to wrap ETH"
         },
         "gasCosts": "Gas costs"
+    },
+    "priceUpdatedAlert": {
+        "title": "Price updated",
+        "description": "The trade price has updated by more than {0}",
+        "actionLabel": "Accept"
     },
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",

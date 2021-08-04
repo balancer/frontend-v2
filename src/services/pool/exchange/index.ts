@@ -3,20 +3,20 @@ import configs from '@/lib/config';
 import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
 import { default as vaultAbi } from '@/lib/abi/Vault.json';
 import { default as helpersAbi } from '@/lib/abi/BalancerHelpers.json';
-import { TokenMap } from '@/types';
 import JoinParams from './serializers/JoinParams';
 import ExitParams from './serializers/ExitParams';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { TokenInfoMap } from '@/types/TokenList';
 
 export default class Exchange {
   pool: FullPool;
   network: string;
   vaultAddress: string;
   helpersAddress: string;
-  tokens: TokenMap;
+  tokens: TokenInfoMap;
 
-  constructor(pool: FullPool, network: string, tokens: TokenMap) {
+  constructor(pool: FullPool, network: string, tokens: TokenInfoMap) {
     this.pool = pool;
     this.network = network;
     this.tokens = tokens;

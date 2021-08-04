@@ -154,14 +154,13 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed, ref } from 'vue';
-import { useStore } from 'vuex';
 
 import useNumbers from '@/composables/useNumbers';
-import { ETHER } from '@/constants/tokenlists';
 
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 const ETH_BUFFER = 0.1;
 
@@ -205,8 +204,7 @@ export default defineComponent({
     'change'
   ],
   setup(props, { emit }) {
-    const store = useStore();
-    const { tokens } = useTokens();
+    const { tokens, balances, injectTokens } = useTokens();
     const { fNum, toFiat } = useNumbers();
 
     const {
@@ -256,10 +254,10 @@ export default defineComponent({
     const modalSelectTokenIsOpen = ref(false);
 
     function handleMax(): void {
-      const balance = tokens.value[tokenInAddressInput.value]?.balance || '0';
+      const balance = balances.value[tokenInAddressInput.value] || '0';
       const balanceNumber = parseFloat(balance);
       const maxAmount =
-        tokenInAddressInput.value !== ETHER.address
+        tokenInAddressInput.value !== NATIVE_ASSET_ADDRESS
           ? balance
           : balanceNumber > ETH_BUFFER
           ? (balanceNumber - ETH_BUFFER).toString()
@@ -299,7 +297,7 @@ export default defineComponent({
           return;
         } else emit('tokenOutAddressChange', address);
       }
-      store.dispatch('registry/injectTokens', [address]);
+      injectTokens([address]);
     }
 
     const rateMessage = computed(() => {
@@ -338,7 +336,7 @@ export default defineComponent({
     }
 
     const balanceLabel = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance
+      () => balances.value[tokenInAddressInput.value]
     );
 
     return {

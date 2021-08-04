@@ -1,15 +1,15 @@
 import { computed, reactive, ref, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
-import { useStore } from 'vuex';
 import { flatten } from 'lodash';
-
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
-
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import useTokens from '../useTokens';
+import useUserSettings from '../useUserSettings';
+import useApp from '../useApp';
+import { forChange } from '@/lib/utils';
 
 type PoolsQueryResponse = {
   pools: DecoratedPool[];
@@ -27,25 +27,16 @@ export default function usePoolsQuery(
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
   filterOptions?: FilterOptions
 ) {
-  // SERVICES
-  const balancerSubgraph = new BalancerSubgraph();
-
   // COMPOSABLES
-  const store = useStore();
-  const { tokens: allTokens } = useTokens();
+  const { injectTokens, dynamicDataLoading, prices } = useTokens();
+  const { currency } = useUserSettings();
+  const { appLoading } = useApp();
 
   // DATA
   const queryKey = QUERY_KEYS.Pools.All(tokenList, filterOptions?.poolIds);
 
   // COMPUTED
-  const appLoading = computed(() => store.state.app.loading);
-  const prices = computed(() => store.state.market.prices);
-  const isQueryEnabled = computed(() => !appLoading.value);
-
-  function uninjected(tokens: string[]): string[] {
-    const allAddresses = Object.keys(allTokens.value);
-    return tokens.filter(address => !allAddresses.includes(address));
-  }
+  const enabled = computed(() => !appLoading.value);
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
@@ -57,22 +48,21 @@ export default function usePoolsQuery(
       }
     };
 
-    if (filterOptions?.poolIds?.value.length)
-      queryArgs.where.id_in = filterOptions.poolIds.value;
-    const pools = await balancerSubgraph.pools.getDecorated(
+    const pools = await balancerSubgraphService.pools.get(queryArgs);
+
+    const tokens = flatten(pools.map(pool => pool.tokensList));
+    await injectTokens(tokens);
+    await forChange(dynamicDataLoading, false);
+
+    const decoratedPools = await balancerSubgraphService.pools.decorate(
+      pools,
       '24h',
       prices.value,
-      queryArgs
+      currency.value
     );
 
-    const tokens = flatten(pools.map(pool => pool.tokenAddresses));
-    const uninjectedTokens = uninjected(tokens);
-    if (uninjectedTokens.length > 0) {
-      await store.dispatch('registry/injectTokens', uninjectedTokens);
-    }
-
     return {
-      pools,
+      pools: decoratedPools,
       tokens,
       skip:
         pools.length >= POOLS.Pagination.PerPage
@@ -82,7 +72,7 @@ export default function usePoolsQuery(
   };
 
   const queryOptions = reactive({
-    enabled: isQueryEnabled,
+    enabled,
     getNextPageParam: (lastPage: PoolsQueryResponse) => lastPage.skip,
     ...options
   });

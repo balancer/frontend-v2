@@ -1,10 +1,10 @@
-import { APP_NETWORK_ID } from '@/constants/network';
-import { ETHER } from '@/constants/tokenlists';
-import configs from '@/lib/config';
+import { configService } from '../config/config.service';
 
 export function normalizeTokenAddress(tokenAddress: string) {
-  if (tokenAddress.toLowerCase() === ETHER.address.toLowerCase()) {
-    return configs[APP_NETWORK_ID].addresses.weth;
+  const nativeAssetAddress = configService.network.nativeAsset.address;
+
+  if (tokenAddress.toLowerCase() === nativeAssetAddress.toLowerCase()) {
+    return configService.network.addresses.weth;
   }
 
   return tokenAddress;

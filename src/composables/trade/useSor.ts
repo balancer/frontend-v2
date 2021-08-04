@@ -28,13 +28,13 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import useFathom from '../useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { ETHER } from '@/constants/tokenlists';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
-import { Token, TokenMap } from '@/types';
 import { TradeQuote } from './types';
 import useTransactions from '../useTransactions';
 import useNumbers from '../useNumbers';
+import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+import useTokens from '../useTokens';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -53,7 +53,7 @@ type Props = {
   tokenInAmountInput: Ref<string>;
   tokenOutAddressInput: Ref<string>;
   tokenOutAmountInput: Ref<string>;
-  tokens: Ref<TokenMap>;
+  tokens: Ref<TokenInfoMap>;
   isWrap: Ref<boolean>;
   isUnwrap: Ref<boolean>;
   tokenInAmountScaled?: ComputedRef<BigNumber>;
@@ -61,10 +61,9 @@ type Props = {
   sorConfig?: {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
-    enableTxHandler: boolean;
   };
-  tokenIn?: ComputedRef<Token>;
-  tokenOut?: ComputedRef<Token>;
+  tokenIn?: ComputedRef<TokenInfo>;
+  tokenOut?: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
 };
 
@@ -83,8 +82,7 @@ export default function useSor({
   tokenOutAmountScaled,
   sorConfig = {
     refetchPools: true,
-    handleAmountsOnFetchPools: true,
-    enableTxHandler: true
+    handleAmountsOnFetchPools: true
   },
   tokenIn,
   tokenOut,
@@ -114,6 +112,7 @@ export default function useSor({
     }
   });
   const trading = ref(false);
+  const confirming = ref(false);
   const priceImpact = ref(0);
   const latestTxHash = ref('');
   const poolsLoading = ref(true);
@@ -123,7 +122,8 @@ export default function useSor({
   const {
     getProvider: getWeb3Provider,
     userNetworkConfig,
-    isV1Supported
+    isV1Supported,
+    appNetworkConfig
   } = useWeb3();
   const provider = computed(() => getWeb3Provider());
   const { trackGoal, Goals } = useFathom();
@@ -131,6 +131,7 @@ export default function useSor({
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
   const { t } = useI18n();
+  const { injectTokens, priceFor } = useTokens();
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
@@ -142,7 +143,7 @@ export default function useSor({
     if (!tokens.value[tokenOutAddressInput.value]) {
       unknownAssets.push(tokenOutAddressInput.value);
     }
-    await store.dispatch('registry/injectTokens', unknownAssets);
+    await injectTokens(unknownAssets);
     await initSor();
     await handleAmountChange();
   });
@@ -202,8 +203,6 @@ export default function useSor({
   }
 
   async function handleAmountChange(): Promise<void> {
-    resetState();
-
     const amount = exactIn.value
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
@@ -352,6 +351,8 @@ export default function useSor({
     tx: TransactionResponse,
     action?: 'wrap' | 'unwrap' | 'trade'
   ): void {
+    confirming.value = false;
+
     let summary = '';
     const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
     const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
@@ -398,6 +399,7 @@ export default function useSor({
   async function trade(successCallback?: () => void) {
     trackGoal(Goals.ClickSwap);
     trading.value = true;
+    confirming.value = true;
 
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
@@ -423,6 +425,7 @@ export default function useSor({
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
       return;
     } else if (isUnwrap.value) {
@@ -442,6 +445,7 @@ export default function useSor({
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
       return;
     }
@@ -470,6 +474,7 @@ export default function useSor({
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
@@ -498,19 +503,18 @@ export default function useSor({
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
     }
   }
 
   // Uses stored market prices to calculate swap cost in token denomination
   function calculateSwapCost(tokenAddress: string): BigNumber {
-    const ethPriceUsd =
-      store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
-    const tokenPriceUsd =
-      store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;
+    const ethPriceFiat = priceFor(appNetworkConfig.nativeAsset.address);
+    const tokenPriceFiat = priceFor(tokenAddress);
     const gasPriceWei = store.state.market.gasPrice || 0;
     const gasPriceScaled = scale(bnum(gasPriceWei), -18);
-    const ethPriceToken = bnum(Number(ethPriceUsd) / Number(tokenPriceUsd));
+    const ethPriceToken = bnum(Number(ethPriceFiat) / Number(tokenPriceFiat));
     const swapCost = bnum(SWAP_COST);
     const costSwapToken = gasPriceScaled.times(swapCost).times(ethPriceToken);
     return costSwapToken;
@@ -582,6 +586,8 @@ export default function useSor({
     latestTxHash,
     fetchPools,
     poolsLoading,
-    getQuote
+    getQuote,
+    resetState,
+    confirming
   };
 }

@@ -1,18 +1,15 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
-import { useStore } from 'vuex';
-import { flatten, isEmpty, keyBy } from 'lodash';
-import { getAddress } from '@ethersproject/address';
-
-import { bnum } from '@/lib/utils';
-
+import { flatten, keyBy } from 'lodash';
+import { bnum, forChange } from '@/lib/utils';
 import QUERY_KEYS from '@/constants/queryKeys';
-
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import useTokenLists from '../useTokenLists';
 import useTokens from '../useTokens';
+import useUserSettings from '../useUserSettings';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -23,31 +20,29 @@ type UserPoolsQueryResponse = {
 export default function useUserPoolsQuery(
   options: UseQueryOptions<UserPoolsQueryResponse> = {}
 ) {
-  // SERVICES
-  const balancerSubgraph = new BalancerSubgraph();
-
-  // COMPOSABLES
-  const store = useStore();
+  /**
+   * COMPOSABLES
+   */
+  const { injectTokens, prices, dynamicDataLoading } = useTokens();
+  const { loadingTokenLists } = useTokenLists();
   const { account, isWalletReady } = useWeb3();
-  const { tokens: allTokens } = useTokens();
+  const { currency } = useUserSettings();
 
-  // DATA
-  const queryKey = reactive(QUERY_KEYS.Pools.User(account));
-
-  // COMPUTED
-  const prices = computed(() => store.state.market.prices);
-  const isQueryEnabled = computed(
-    () => isWalletReady.value && account.value != null && !isEmpty(prices.value)
+  /**
+   * COMPUTED
+   */
+  const enabled = computed(
+    () =>
+      isWalletReady.value && account.value != null && !loadingTokenLists.value
   );
 
-  function uninjected(tokens: string[]): string[] {
-    const allAddresses = Object.keys(allTokens.value);
-    return tokens.filter(address => !allAddresses.includes(address));
-  }
+  /**
+   * QUERY PROPERTIES
+   */
+  const queryKey = reactive(QUERY_KEYS.Pools.User(account));
 
-  // METHODS
   const queryFn = async () => {
-    const poolShares = await balancerSubgraph.poolShares.get({
+    const poolShares = await balancerSubgraphService.poolShares.get({
       where: {
         userAddress: account.value.toLowerCase()
       }
@@ -56,23 +51,23 @@ export default function useUserPoolsQuery(
     const poolSharesIds = poolShares.map(poolShare => poolShare.poolId.id);
     const poolSharesMap = keyBy(poolShares, poolShare => poolShare.poolId.id);
 
-    const pools = await balancerSubgraph.pools.getDecorated(
+    const pools = await balancerSubgraphService.pools.get({
+      where: {
+        id_in: poolSharesIds
+      }
+    });
+
+    const tokens = flatten(pools.map(pool => pool.tokensList));
+    await injectTokens(tokens);
+    await forChange(dynamicDataLoading, false);
+    const decoratedPools = await balancerSubgraphService.pools.decorate(
+      pools,
       '24h',
       prices.value,
-      {
-        where: {
-          id_in: poolSharesIds
-        }
-      }
+      currency.value
     );
 
-    const tokens = flatten(pools.map(pool => pool.tokensList.map(getAddress)));
-    const uninjectedTokens = uninjected(tokens);
-    if (uninjectedTokens.length > 0) {
-      await store.dispatch('registry/injectTokens', uninjectedTokens);
-    }
-
-    const poolsWithShares = pools.map(pool => ({
+    const poolsWithShares = decoratedPools.map(pool => ({
       ...pool,
       shares: bnum(pool.totalLiquidity)
         .div(pool.totalShares)
@@ -93,10 +88,7 @@ export default function useUserPoolsQuery(
   };
 
   const queryOptions = reactive({
-    enabled: isQueryEnabled,
-    onSuccess: async (poolsData: UserPoolsQueryResponse) => {
-      await store.dispatch('registry/injectTokens', poolsData.tokens);
-    },
+    enabled,
     ...options
   });
 
