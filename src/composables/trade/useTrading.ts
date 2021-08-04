@@ -30,6 +30,8 @@ export default function useTrading(
     parseFloat(store.state.app.slippage)
   );
 
+  const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
+
   const isWrap = computed(
     () =>
       tokenInAddressInput.value === NATIVE_ASSET_ADDRESS &&
@@ -224,6 +226,12 @@ export default function useTrading(
 
   watch(slippageBufferRate, () => {
     handleAmountChange();
+  });
+
+  watch(liquiditySelection, () => {
+    if (isBalancerTrade.value) {
+      handleAmountChange();
+    }
   });
 
   return {
