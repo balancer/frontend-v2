@@ -5,7 +5,7 @@
         >Week {{ currentWeek }} Liquidity mining incentives</span
       >
       <h1 class="font-body mt-2 text-white font-semi  bold">
-        ~{{ fNum(currentWeekTotalUsd, 'usd') }}
+        ~{{ fNum(currentWeekTotalFiat, 'usd') }}
       </h1>
     </div>
     <div class="lg:container lg:mx-auto pt-10 md:pt-12">
@@ -66,6 +66,8 @@ import { flatten, last, takeRight, uniq } from 'lodash';
 import { Network } from '@/constants/network';
 import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import { getAddress } from '@ethersproject/address';
 
 type TokenDistribution = {
   tokenAddress: string;
@@ -93,9 +95,8 @@ export default defineComponent({
     LMTable
   },
   setup() {
-    const store = useStore();
-    const prices = computed(() => store.state.market.prices);
     const { fNum } = useNumbers();
+    const { priceFor } = useTokens();
 
     // seperate variable to type the JSON
     const weeksJSON = (LiquidityMiningDistributions as unknown) as LiquidityMiningDistribution;
@@ -128,17 +129,16 @@ export default defineComponent({
       return weeklyTotals;
     });
 
-    const currentWeekTotalUsd = computed(() => {
-      let totalUsd = 0;
+    const currentWeekTotalFiat = computed(() => {
+      let totalFiat = 0;
       const currentWeek = last(Object.values(totals.value));
       if (currentWeek) {
         for (const total of currentWeek) {
-          const usdValue =
-            prices.value[total.token.toLowerCase()]?.price * total.total;
-          totalUsd = totalUsd + usdValue;
+          const fiatValue = priceFor(getAddress(total.token)) * total.total;
+          totalFiat = totalFiat + fiatValue;
         }
       }
-      return totalUsd;
+      return totalFiat;
     });
 
     // only concerned with past 3 weeks
@@ -196,7 +196,7 @@ export default defineComponent({
       isLoadingPools,
       isLoadingPoolsIdle,
       currentWeek,
-      currentWeekTotalUsd,
+      currentWeekTotalFiat,
       fNum
     };
   }

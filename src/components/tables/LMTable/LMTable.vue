@@ -121,12 +121,10 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
     const { weeks, poolMetadata } = toRefs(props);
-    const { tokens } = useTokens();
+    const { tokens, priceFor } = useTokens();
     const { fNum } = useNumbers();
-    const store = useStore();
     const { darkMode } = useDarkMode();
 
-    const prices = computed(() => store.state.market.prices);
     const data = computed(() => {
       if (!poolMetadata.value) return [];
       return poolMetadata.value[0].pools.map(pool => ({
@@ -189,13 +187,12 @@ export default defineComponent({
     }
 
     function calculatePricesFor(totals: TokenTotal[]) {
-      let totalUsd = 0;
+      let totalFiat = 0;
       for (const total of totals) {
-        const usdValue =
-          prices.value[total.token.toLowerCase()].price * total.total;
-        totalUsd = totalUsd + usdValue;
+        const usdValue = priceFor(getAddress(total.token)) * total.total;
+        totalFiat = totalFiat + usdValue;
       }
-      return totalUsd;
+      return totalFiat;
     }
 
     return {
@@ -207,7 +204,7 @@ export default defineComponent({
       columns,
       data,
       tokens,
-      prices,
+      priceFor,
       darkMode
     };
   }

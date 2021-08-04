@@ -47,6 +47,9 @@ export default function usePoolsQuery(
         tokensList_contains: tokenList.value
       }
     };
+    if (filterOptions?.poolIds?.value.length) {
+      queryArgs.where.id_in = filterOptions.poolIds.value;
+    }
 
     const pools = await balancerSubgraphService.pools.get(queryArgs);
 
