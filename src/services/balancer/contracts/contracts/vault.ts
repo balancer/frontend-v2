@@ -1,12 +1,12 @@
-import Service from '../service';
+import Service from '../balancer-contracts.service';
 import { default as vaultAbi } from '@/lib/abi/Vault.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
-import { TokenMap } from '@/types';
 import { OnchainPoolData, PoolType } from '../../subgraph/types';
 import ConfigService from '@/services/config/config.service';
+import { TokenInfoMap } from '@/types/TokenList';
 
 export default class Vault {
   service: Service;
@@ -18,7 +18,7 @@ export default class Vault {
   public async getPoolData(
     id: string,
     type: PoolType,
-    tokens: TokenMap
+    tokens: TokenInfoMap
   ): Promise<OnchainPoolData> {
     const poolAddress = getAddress(id.slice(0, 42));
     let result = {} as Record<any, any>;
@@ -53,7 +53,7 @@ export default class Vault {
   public serializePoolData(
     data,
     type: PoolType,
-    tokens: TokenMap
+    tokens: TokenInfoMap
   ): OnchainPoolData {
     const _tokens = {};
     const weights = this.normalizeWeights(data?.weights, type, tokens);
@@ -88,7 +88,7 @@ export default class Vault {
   public normalizeWeights(
     weights: BigNumber[],
     type: PoolType,
-    tokens: TokenMap
+    tokens: TokenInfoMap
   ) {
     if (type == 'Weighted') {
       const totalWeight = weights.reduce((a, b) => a.add(b), BigNumber.from(0));

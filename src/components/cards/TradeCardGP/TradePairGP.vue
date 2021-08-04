@@ -158,15 +158,12 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed, ref, PropType } from 'vue';
-import { useStore } from 'vuex';
-
 import useNumbers from '@/composables/useNumbers';
-import { ETHER } from '@/constants/tokenlists';
-
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
 import { UseTrading } from '@/composables/trade/useTrading';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 const ETH_BUFFER = 0.1;
 
@@ -211,7 +208,6 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     // COMPOSABLES
-    const store = useStore();
     const { fNum, toFiat } = useNumbers();
 
     // DATA
@@ -227,7 +223,7 @@ export default defineComponent({
     const modalSelectTokenType = ref('input');
     const modalSelectTokenIsOpen = ref(false);
 
-    const { tokens } = useTokens();
+    const { tokens, balances, injectTokens } = useTokens();
 
     const tokenInValue = computed(() =>
       toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
@@ -250,11 +246,11 @@ export default defineComponent({
     });
 
     const tokenInBalance = computed(
-      () => tokens.value[tokenInAddressInput.value]?.balance || '0'
+      () => balances.value[tokenInAddressInput.value] || '0'
     );
 
     const tokenOutBalance = computed(
-      () => tokens.value[tokenOutAddressInput.value]?.balance || '0'
+      () => balances.value[tokenOutAddressInput.value] || '0'
     );
 
     // METHODS
@@ -264,7 +260,7 @@ export default defineComponent({
       balance: string,
       balanceNumber: number
     ) {
-      return tokenAddress !== ETHER.address
+      return tokenAddress !== NATIVE_ASSET_ADDRESS
         ? balance
         : balanceNumber > ETH_BUFFER
         ? (balanceNumber - ETH_BUFFER).toString()
@@ -325,7 +321,7 @@ export default defineComponent({
           return;
         } else emit('tokenOutAddressChange', address);
       }
-      store.dispatch('registry/injectTokens', [address]);
+      injectTokens([address]);
     }
 
     const rateMessage = computed(() =>

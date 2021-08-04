@@ -95,7 +95,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
-import { useStore } from 'vuex';
 import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
 import { useI18n } from 'vue-i18n';
@@ -113,6 +112,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { NetworkId } from '@/constants/network';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
+import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
   name: 'AppNavClaimBtn',
@@ -124,7 +124,6 @@ export default defineComponent({
 
     // COMPOSABLES
     const { upToLargeBreakpoint } = useBreakpoints();
-    const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
     const {
@@ -137,12 +136,12 @@ export default defineComponent({
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
     const { t } = useI18n();
+    const { priceFor } = useTokens();
 
-    const balPrice = computed(
-      () =>
-        store.state.market.prices[
-          getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
-        ]?.price
+    const balPrice = computed(() =>
+      priceFor(
+        getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
+      )
     );
 
     // COMPUTED

@@ -20,12 +20,7 @@
         </BalChip>
       </div>
       <div
-        v-if="
-          account &&
-            !isNotFetchingBalances &&
-            !isLoadingBalances &&
-            !hasNoBalances
-        "
+        v-if="account && !dynamicDataLoading && !hasNoBalances"
         class="text-gray-400 overflow-x-auto"
       >
         <span class="mr-2">{{ $t('inYourWallet') }}</span>
@@ -64,13 +59,10 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import useAccountBalances from '@/composables/useAccountBalances';
-import { sortBy, take } from 'lodash';
-import { TOKENS } from '@/constants/tokens';
-import { ETHER } from '@/constants/tokenlists';
+import { pick, take } from 'lodash';
+import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
 import { getAddress } from '@ethersproject/address';
 import useWeb3 from '@/services/web3/useWeb3';
-import { TokenMap } from '@/types';
 import useTokens from '@/composables/useTokens';
 
 export default defineComponent({
@@ -88,45 +80,48 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    // COMPOSABLES
-    const { tokens } = useTokens();
-    const {
-      isLoading: isLoadingBalances,
-      balances,
-      isIdle: isNotFetchingBalances
-    } = useAccountBalances();
+    /**
+     * STATE
+     */
+    const selectTokenModal = ref(false);
+
+    /**
+     * COMPOSABLES
+     */
+    const { tokens, balances, dynamicDataLoading } = useTokens();
     const { account } = useWeb3();
 
+    /**
+     * COMPUTED
+     */
     // sorted by biggest bag balance, limited to biggest 5
     const sortedBalances = computed(() => {
-      return take(
-        sortBy(Object.values(balances.value || {}), 'balance')
-          .reverse()
-          .filter(
-            (balance: any) =>
-              !props.modelValue.includes(balance.address) &&
-              balance.address !== ETHER.address
-          ),
-        6
+      const addressesWithBalance = Object.entries(balances.value)
+        .filter(balance => balance[1] !== '0.0')
+        .map(balance => balance[0]);
+      const tokensWithBalance = Object.values(
+        pick(tokens.value, addressesWithBalance)
       );
+
+      return take(tokensWithBalance, 6);
     });
 
     const hasNoBalances = computed(() => !sortedBalances.value.length);
+
     const whiteListedTokens = computed(() =>
-      Object.values(tokens.value as TokenMap)
+      Object.values(tokens.value)
         .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
-        .filter(balance => !props.modelValue.includes(balance.address))
+        .filter(token => !props.modelValue.includes(token.address))
     );
 
-    // DATA
-    const selectTokenModal = ref(false);
-
-    // METHODS
+    /**
+     * METHODS
+     */
     function addToken(token: string) {
       let _token = token;
       // special case for ETH where we want it to filter as WETH regardless
       // as ETH is the native asset
-      if (getAddress(token) === ETHER.address) {
+      if (getAddress(token) === NATIVE_ASSET_ADDRESS) {
         _token = TOKENS.AddressMap.WETH;
       }
       // const newSelected = [...props.modelValue, _token];
@@ -138,17 +133,16 @@ export default defineComponent({
     }
 
     return {
-      // data
+      // state
       selectTokenModal,
-      isNotFetchingBalances,
-      isLoadingBalances,
+      // computed
+      tokens,
+      dynamicDataLoading,
       balances,
       sortedBalances,
       account,
       hasNoBalances,
       whiteListedTokens,
-      // computed
-      tokens,
       // methods
       addToken,
       onClick

@@ -1,17 +1,14 @@
 import { computed, Ref, watch } from 'vue';
 import { useStore } from 'vuex';
-
-import { ETHER } from '@/constants/tokenlists';
-
 import { bnum, scale } from '@/lib/utils';
-
 import useNumbers from '../useNumbers';
-import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useSor from './useSor';
 import useGnosis from './useGnosis';
+import useTokens from '../useTokens';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
-export type TradeRoute = 'balancer' | 'gnosis';
+export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 
 export type UseTrading = ReturnType<typeof useTrading>;
 
@@ -29,15 +26,21 @@ export default function useTrading(
   const { blockNumber, userNetworkConfig } = useWeb3();
 
   // COMPUTED
+  const slippageBufferRate = computed(() =>
+    parseFloat(store.state.app.slippage)
+  );
+
+  const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
+
   const isWrap = computed(
     () =>
-      tokenInAddressInput.value === ETHER.address &&
+      tokenInAddressInput.value === NATIVE_ASSET_ADDRESS &&
       tokenOutAddressInput.value === userNetworkConfig.value.addresses.weth
   );
 
   const isUnwrap = computed(
     () =>
-      tokenOutAddressInput.value === ETHER.address &&
+      tokenOutAddressInput.value === NATIVE_ASSET_ADDRESS &&
       tokenInAddressInput.value === userNetworkConfig.value.addresses.weth
   );
 
@@ -46,7 +49,7 @@ export default function useTrading(
   const tokenOut = computed(() => tokens.value[tokenOutAddressInput.value]);
 
   const isEthTrade = computed(
-    () => tokenInAddressInput.value === ETHER.address
+    () => tokenInAddressInput.value === NATIVE_ASSET_ADDRESS
   );
 
   const tokenInAmountScaled = computed(() =>
@@ -90,14 +93,25 @@ export default function useTrading(
     };
   });
 
-  const isWrapOrUnwrap = computed(() => isWrap.value || isUnwrap.value);
-
   const tradeRoute = computed<TradeRoute>(() => {
-    return isWrapOrUnwrap.value || isEthTrade.value ? 'balancer' : 'gnosis';
+    if (isWrap.value || isUnwrap.value) {
+      return 'wrapUnwrap';
+    }
+
+    return isEthTrade.value ? 'balancer' : 'gnosis';
   });
 
   const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
+
   const isBalancerTrade = computed(() => tradeRoute.value === 'balancer');
+
+  const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
+
+  const hasTradeQuote = computed(
+    () =>
+      parseFloat(tokenInAmountInput.value) > 0 &&
+      parseFloat(tokenOutAmountInput.value) > 0
+  );
 
   const sor = useSor({
     exactIn,
@@ -112,11 +126,11 @@ export default function useTrading(
     tokenOutAmountScaled,
     sorConfig: {
       handleAmountsOnFetchPools: false,
-      refetchPools: isBalancerTrade.value,
-      enableTxHandler: isBalancerTrade.value
+      refetchPools: false
     },
     tokenIn,
-    tokenOut
+    tokenOut,
+    slippageBufferRate
   });
 
   const gnosis = useGnosis({
@@ -128,20 +142,43 @@ export default function useTrading(
     tokenInAmountScaled,
     tokenOutAmountScaled,
     tokenIn,
-    tokenOut
+    tokenOut,
+    slippageBufferRate
   });
 
-  // initial loading
-  const isLoading = computed(() =>
-    isBalancerTrade.value ? sor.poolsLoading.value : gnosis.updatingQuotes.value
+  const isLoading = computed(() => {
+    if (hasTradeQuote.value || isWrapUnwrapTrade.value) {
+      return false;
+    }
+
+    return isBalancerTrade.value
+      ? sor.poolsLoading.value
+      : gnosis.updatingQuotes.value;
+  });
+
+  const isConfirming = computed(
+    () => sor.confirming.value || gnosis.confirming.value
   );
 
   // METHODS
   function trade(successCallback?: () => void) {
     if (isGnosisTrade.value) {
-      return gnosis.trade(successCallback);
+      return gnosis.trade(() => {
+        if (successCallback) {
+          successCallback();
+        }
+
+        gnosis.resetState();
+      });
     } else {
-      return sor.trade(successCallback);
+      // handles both Balancer and Wrap/Unwrap trades
+      return sor.trade(() => {
+        if (successCallback) {
+          successCallback();
+        }
+
+        sor.resetState();
+      });
     }
   }
 
@@ -154,17 +191,18 @@ export default function useTrading(
   }
 
   function handleAmountChange() {
+    if (exactIn.value) {
+      tokenOutAmountInput.value = '';
+    } else {
+      tokenInAmountInput.value = '';
+    }
+
     if (isGnosisTrade.value) {
+      gnosis.resetState(false);
       gnosis.handleAmountChange();
     } else {
+      sor.resetState();
       sor.handleAmountChange();
-    }
-  }
-
-  function handleAssetChange() {
-    if (isGnosisTrade.value) {
-      gnosis.resetErrors();
-      gnosis.resetFees();
     }
   }
 
@@ -172,20 +210,32 @@ export default function useTrading(
   watch(tokenInAddressInput, async () => {
     store.commit('trade/setInputAsset', tokenInAddressInput.value);
 
-    handleAssetChange();
     handleAmountChange();
   });
 
   watch(tokenOutAddressInput, () => {
     store.commit('trade/setOutputAsset', tokenOutAddressInput.value);
 
-    handleAssetChange();
     handleAmountChange();
   });
 
   watch(blockNumber, () => {
-    if (isGnosisTrade.value && !gnosis.hasErrors.value) {
-      gnosis.handleAmountChange();
+    if (isGnosisTrade.value) {
+      if (!gnosis.hasErrors.value) {
+        gnosis.handleAmountChange();
+      }
+    } else if (isBalancerTrade.value) {
+      sor.fetchPools();
+    }
+  });
+
+  watch(slippageBufferRate, () => {
+    handleAmountChange();
+  });
+
+  watch(liquiditySelection, () => {
+    if (isBalancerTrade.value) {
+      handleAmountChange();
     }
   });
 
@@ -194,7 +244,6 @@ export default function useTrading(
     isWrap,
     isUnwrap,
     isEthTrade,
-    isWrapOrUnwrap,
     tokenIn,
     tokenOut,
     tokenInAmountScaled,
@@ -209,10 +258,14 @@ export default function useTrading(
     sor,
     isGnosisTrade,
     isBalancerTrade,
+    isWrapUnwrapTrade,
     tokenInAddressInput,
     tokenInAmountInput,
     tokenOutAddressInput,
     tokenOutAmountInput,
+    slippageBufferRate,
+    isConfirming,
+
     // methods
     getQuote,
     trade,

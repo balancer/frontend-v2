@@ -1,6 +1,6 @@
 import numeral from 'numeral';
 import BigNumber from 'bignumber.js';
-import { useStore } from 'vuex';
+import useTokens from './useTokens';
 
 export type Preset =
   | 'default'
@@ -52,13 +52,12 @@ export function fNum(
 }
 
 export default function useNumbers() {
-  const store = useStore();
+  const { priceFor } = useTokens();
 
   function toFiat(amount: number | string, tokenAddress: string): number {
-    const rate =
-      store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;
+    const price = priceFor(tokenAddress);
     const tokenAmount = new BigNumber(amount);
-    return tokenAmount.times(rate).toNumber();
+    return tokenAmount.times(price).toNumber();
   }
 
   return { fNum, toFiat };

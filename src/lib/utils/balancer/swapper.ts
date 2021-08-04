@@ -7,8 +7,8 @@ import { sendTransaction } from '@/lib/utils/balancer/web3';
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
 import vaultAbi from '@/lib/abi/Vault.json';
 import configs from '@/lib/config';
-import { ETHER } from '@/constants/tokenlists';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 const SWAP_KIND_IN = 0;
 const SWAP_KIND_OUT = 1;
@@ -102,7 +102,7 @@ export async function batchSwapGivenInV1(
   console.log('[Swapper] batchSwapGivenInV1');
   const overrides: any = {};
 
-  if (tokenIn === ETHER.address) {
+  if (tokenIn === NATIVE_ASSET_ADDRESS) {
     overrides.value = `0x${tokenInAmount.toString(16)}`;
   }
 
@@ -138,7 +138,7 @@ export async function batchSwapGivenOutV1(
   console.log('[Swapper] batchSwapGivenOutV1');
   const overrides: any = {};
 
-  if (tokenIn === ETHER.address) {
+  if (tokenIn === NATIVE_ASSET_ADDRESS) {
     overrides.value = `0x${tokenInAmountMax.toString(16)}`;
   }
 

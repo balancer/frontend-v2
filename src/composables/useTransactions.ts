@@ -21,6 +21,7 @@ import useNumbers from './useNumbers';
 import { GnosisTransactionDetails } from './trade/useGnosis';
 
 const WEEK_MS = 86_400_000 * 7;
+const TRANSACTIONS_SCHEMA_VERSION = '1.0';
 
 export type TransactionStatus =
   | 'pending'
@@ -79,11 +80,9 @@ export type TransactionState = {
   [networkId: number]: TransactionsMap;
 };
 
-const PERSIST_TRANSACTIONS = false;
-
 // TODO: What happens if the structure changes? Either keep a version or schema validator.
 export const transactionsState = ref<TransactionState>(
-  PERSIST_TRANSACTIONS ? lsGet<TransactionState>(LS_KEYS.Transactions, {}) : {}
+  lsGet<TransactionState>(LS_KEYS.Transactions, {}, TRANSACTIONS_SCHEMA_VERSION)
 );
 
 // COMPUTED
@@ -140,9 +139,11 @@ function getTransactions(): TransactionsMap {
 function setTransactions(transactionsMap: TransactionsMap) {
   transactionsState.value[networkId] = transactionsMap;
 
-  if (PERSIST_TRANSACTIONS) {
-    lsSet(LS_KEYS.Transactions, transactionsState.value);
-  }
+  lsSet(
+    LS_KEYS.Transactions,
+    transactionsState.value,
+    TRANSACTIONS_SCHEMA_VERSION
+  );
 }
 
 function getTransaction(id: string, type: TransactionType) {

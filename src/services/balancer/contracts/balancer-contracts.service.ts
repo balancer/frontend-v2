@@ -9,7 +9,7 @@ import { default as TokenAbi } from '@/lib/abi/ERC20.json';
 
 const NETWORK = process.env.VUE_APP_NETWORK || '1';
 
-export default class Service {
+export default class BalancerContractsService {
   vault: Vault;
   config: Config;
   provider: JsonRpcProvider;
@@ -36,3 +36,5 @@ export default class Service {
     );
   }
 }
+
+export const balancerContractsService = new BalancerContractsService();

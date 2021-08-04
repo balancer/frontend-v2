@@ -1,14 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { parseUnits, formatUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { FixedPointNumber } from '@balancer-labs/sor2/dist/math/FixedPointNumber';
-
 import { FullPool } from '@/services/balancer/subgraph/types';
-
-import { TokenMap } from '@/types';
-
 import Weighted from './weighted';
 import Stable from './stable';
+import { TokenInfoMap } from '@/types/TokenList';
+import { BalanceMap } from '@/services/token/concerns/balances.concern';
+import { ComputedRef } from 'vue';
+import { isStable } from '@/composables/usePool';
 
 interface Amounts {
   send: string[];
@@ -25,7 +24,8 @@ type PoolAction = 'join' | 'exit';
 
 export default class CalculatorService {
   pool: FullPool;
-  allTokens: TokenMap;
+  allTokens: TokenInfoMap;
+  balances: ComputedRef<BalanceMap>;
   action: PoolAction;
   types = ['send', 'receive'];
   weighted: Weighted;
@@ -33,19 +33,21 @@ export default class CalculatorService {
 
   constructor(
     pool: FullPool,
-    allTokens: TokenMap,
+    allTokens: TokenInfoMap,
+    balances: ComputedRef<BalanceMap>,
     action: PoolAction,
     weightedClass = Weighted,
     stableClass = Stable
   ) {
     this.pool = pool;
     this.allTokens = allTokens;
+    this.balances = balances;
     this.action = action;
     this.weighted = new weightedClass(this);
     this.stable = new stableClass(this);
   }
 
-  public setAllTokens(tokens: TokenMap): void {
+  public setAllTokens(tokens: TokenInfoMap): void {
     this.allTokens = tokens;
   }
 
@@ -63,7 +65,7 @@ export default class CalculatorService {
     return this.weighted.priceImpact(tokenAmounts, opts);
   }
 
-  public exactTokensInForBPTOut(tokenAmounts: string[]): FixedPointNumber {
+  public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
     if (this.isStablePool) {
       return this.stable.exactTokensInForBPTOut(tokenAmounts);
     }
@@ -73,17 +75,14 @@ export default class CalculatorService {
   public exactBPTInForTokenOut(
     bptAmount: string,
     tokenIndex: number
-  ): FixedPointNumber {
+  ): BigNumber {
     if (this.isStablePool) {
       return this.stable.exactBPTInForTokenOut(bptAmount, tokenIndex);
     }
     return this.weighted.exactBPTInForTokenOut(bptAmount, tokenIndex);
   }
 
-  public bptInForExactTokenOut(
-    amount: string,
-    tokenIndex: number
-  ): FixedPointNumber {
+  public bptInForExactTokenOut(amount: string, tokenIndex: number): BigNumber {
     if (this.isStablePool) {
       return this.stable.bptInForExactTokenOut(amount, tokenIndex);
     }
@@ -100,13 +99,13 @@ export default class CalculatorService {
 
     this.pool.tokenAddresses.forEach((token, tokenIndex) => {
       let hasBalance = true;
-      const balance = this.allTokens[token].balance.toString();
+      const balance = this.balances.value[token];
       const amounts = this.propAmountsGiven(balance, tokenIndex, type);
 
       amounts.send.forEach((amount, amountIndex) => {
         const greaterThanBalance =
           Number(amount) >
-          Number(this.allTokens[this.tokenOf(type, amountIndex)].balance);
+          Number(this.balances.value[this.tokenOf(type, amountIndex)]);
         if (greaterThanBalance) hasBalance = false;
       });
 
@@ -205,11 +204,11 @@ export default class CalculatorService {
   }
 
   public get bptBalance(): string {
-    return this.allTokens[this.pool.address].balance;
+    return this.balances.value[this.pool.address];
   }
 
   public get isStablePool(): boolean {
-    return this.pool.poolType === 'Stable';
+    return isStable(this.pool);
   }
 
   public get sendTokens(): string[] {

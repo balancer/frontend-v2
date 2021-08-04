@@ -1,5 +1,4 @@
 import { createApp } from 'vue';
-import App from '@/App.vue';
 import store from '@/store';
 import router from '@/plugins/router';
 import mixins from '@/plugins/mixins';
@@ -28,6 +27,7 @@ import '@/assets/css/tailwind.css';
 import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 import { Web3Provider } from '@ethersproject/providers';
+import Root from './Root';
 
 use([
   TitleComponent,
@@ -41,16 +41,16 @@ use([
   MarkLineComponent
 ]);
 
-const app = createApp(App)
+const app = createApp(Root)
   .use(i18n)
   .use(router)
   .use(store)
   .use(blocknative)
   .use(VueApexCharts)
   .use(vueQuery)
-  .use(VueVirtualScroller)
   .use(Web3Plugin, Web3Provider)
-  .mixin(mixins);
+  .mixin(mixins)
+  .use(VueVirtualScroller);
 
 registerDirectives(app);
 registerGlobalComponents(app);

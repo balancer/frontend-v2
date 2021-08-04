@@ -57,7 +57,6 @@
 
 <script lang="ts">
 import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
-import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -65,6 +64,8 @@ import numeral from 'numeral';
 import { shortenLabel } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useTokens from '@/composables/useTokens';
+import { usePool } from '@/composables/usePool';
 
 export default defineComponent({
   props: {
@@ -75,19 +76,24 @@ export default defineComponent({
     loading: { type: Boolean, default: false }
   },
   setup(props) {
-    // COMPOSABLES
-    const store = useStore();
+    /**
+     * STATE
+     */
+    const { pool }: { pool: Ref<FullPool> } = toRefs(props);
+
+    /**
+     * COMPOSABLES
+     */
     const { fNum } = useNumbers();
     const { explorerLinks } = useWeb3();
     const { t } = useI18n();
     const { upToLargeBreakpoint } = useBreakpoints();
+    const { priceFor } = useTokens();
+    const { isStablePool } = usePool(pool);
 
-    // DATA
-    const { pool }: { pool: Ref<FullPool> } = toRefs(props);
-
-    // COMPUTED
-    const prices = computed(() => store.state.market.prices);
-
+    /**
+     * COMPUTED
+     */
     const tableData = computed(() => {
       if (!pool || !pool.value || props.loading) return [];
       return Object.keys(pool.value.onchain.tokens).map((address, index) => ({
@@ -112,7 +118,7 @@ export default defineComponent({
         align: 'right',
         sortKey: pool => weightFor(pool.address),
         width: 125,
-        hidden: !props.loading && props.pool.poolType === 'Stable'
+        hidden: !props.loading && isStablePool.value
       },
       {
         name: t('balance'),
@@ -134,6 +140,9 @@ export default defineComponent({
       }
     ]);
 
+    /**
+     * METHODS
+     */
     function symbolFor(address: string) {
       if (!pool || !pool.value) return '-';
       const symbol = pool.value.onchain.tokens[address].symbol;
@@ -151,8 +160,8 @@ export default defineComponent({
     }
 
     function fiatValueFor(address: string): string {
-      const price = prices.value[address.toLowerCase()]?.price;
-      if (!pool || !pool.value || !price) return '-';
+      const price = priceFor(address);
+      if (!pool || !pool.value || price === 0) return '-';
 
       const balance = Number(pool.value.onchain.tokens[address].balance);
       return fNum(balance * price, 'usd');

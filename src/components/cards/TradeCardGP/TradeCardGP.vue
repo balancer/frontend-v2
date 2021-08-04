@@ -32,6 +32,15 @@
         block
         @actionClick="handleErrorButtonClick"
       />
+      <BalAlert
+        v-else-if="warning"
+        class="p-3 mb-4"
+        type="warning"
+        size="sm"
+        :title="warning.header"
+        :description="warning.body"
+        block
+      />
       <BalBtn
         v-if="trading.isLoading.value"
         :loading="true"
@@ -51,7 +60,7 @@
       />
       <div
         class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-        v-if="trading.isBalancerTrade.value && !trading.isWrapOrUnwrap.value"
+        v-if="trading.isBalancerTrade.value"
       >
         <LightBulbIcon />
         <!-- TODO: translate -->
@@ -83,14 +92,15 @@ import { useRouter } from 'vue-router';
 
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
+import { formatUnits } from '@ethersproject/units';
 import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useNumbers from '@/composables/useNumbers';
 
-import { ETHER } from '@/constants/tokenlists';
 import { TOKENS } from '@/constants/tokens';
 
 import { isRequired } from '@/lib/utils/validations';
@@ -119,6 +129,7 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
+    const { fNum } = useNumbers();
 
     // DATA
     const exactIn = ref(true);
@@ -127,6 +138,9 @@ export default defineComponent({
     const tokenOutAddress = ref('');
     const tokenOutAmount = ref('');
     const modalTradePreviewIsOpen = ref(false);
+    const dismissedErrors = ref({
+      highPriceImpact: false
+    });
 
     const tradeCardShadow = computed(() => {
       switch (bp.value) {
@@ -152,37 +166,40 @@ export default defineComponent({
       tokenInAddress,
       tokenInAmount,
       tokenOutAddress,
-      tokenOutAmount,
-      trading.tokens
+      tokenOutAmount
     );
 
-    const tradeDisabled = computed(
+    const isHighPriceImpact = computed(
       () =>
-        errorMessage.value !== TradeValidation.VALID ||
-        (trading.isGnosisTrade.value && trading.gnosis.hasErrors.value)
+        trading.sor.errors.value.highPriceImpact &&
+        !dismissedErrors.value.highPriceImpact
     );
+
+    const tradeDisabled = computed(() => {
+      const hasValidationErrors = errorMessage.value !== TradeValidation.VALID;
+      const hasGnosisErrors =
+        trading.isGnosisTrade.value && trading.gnosis.hasErrors.value;
+      const hasBalancerErrors =
+        trading.isBalancerTrade.value && isHighPriceImpact.value;
+
+      return hasValidationErrors || hasGnosisErrors || hasBalancerErrors;
+    });
 
     useTokenApprovalGP(tokenInAddress, tokenInAmount);
 
     const title = computed(() => {
       if (trading.isWrap.value) {
-        return `${t('wrap')} ${ETHER.symbol}`;
+        return `${t('wrap')} ${nativeAsset.symbol}`;
       }
       if (trading.isUnwrap.value) {
-        return `${t('unwrap')} ${ETHER.symbol}`;
+        return `${t('unwrap')} ${nativeAsset.symbol}`;
       }
       return t('trade');
     });
 
     const error = computed(() => {
-      if (trading.gnosis.errors.value.feeExceedsPrice) {
-        return {
-          header: 'Low amount',
-          body: 'Fees exceeds from amount'
-        };
-      }
       switch (errorMessage.value) {
-        case TradeValidation.NO_NATIVE_ASSET:
+        case TradeValidation.NO_NATIVE_ASSET: {
           return {
             header: t('noNativeAsset', [nativeAsset.symbol]),
             body: t('noNativeAssetDetailed', [
@@ -190,45 +207,101 @@ export default defineComponent({
               configService.network.chainName
             ])
           };
-        case TradeValidation.NO_BALANCE:
+        }
+        case TradeValidation.NO_BALANCE: {
           return {
             header: t('insufficientBalance'),
             body: t('insufficientBalanceDetailed')
           };
-        case TradeValidation.NO_LIQUIDITY:
+        }
+        case TradeValidation.NO_LIQUIDITY: {
           return {
             header: t('insufficientLiquidity'),
             body: t('insufficientLiquidityDetailed')
           };
+        }
         default:
-          return undefined;
       }
+
+      if (trading.isGnosisTrade.value) {
+        if (trading.gnosis.errors.value.feeExceedsPrice) {
+          return {
+            header: t('gnosisErrors.lowAmount.header'),
+            body: t('gnosisErrors.lowAmount.body')
+          };
+        }
+        if (trading.gnosis.errors.value.priceExceedsBalance) {
+          return {
+            header: t('gnosisErrors.lowBalance.header', [
+              trading.tokenIn.value.symbol
+            ]),
+            body: t('gnosisErrors.lowBalance.body', [
+              trading.tokenIn.value.symbol,
+              fNum(
+                formatUnits(
+                  trading.getQuote().maximumInAmount,
+                  trading.tokenIn.value.decimals
+                ),
+                'token'
+              ),
+              fNum(trading.slippageBufferRate.value, 'percent')
+            ])
+          };
+        }
+      } else if (trading.isBalancerTrade.value) {
+        if (isHighPriceImpact.value) {
+          return {
+            header: t('highPriceImpact'),
+            body: t('highPriceImpactDetailed'),
+            label: t('accept')
+          };
+        }
+      }
+
+      return undefined;
+    });
+
+    const warning = computed(() => {
+      if (trading.isGnosisTrade.value) {
+        if (trading.gnosis.warnings.value.highFees) {
+          return {
+            header: t('gnosisWarnings.highFees.header'),
+            body: t('gnosisWarnings.highFees.body')
+          };
+        }
+      }
+
+      return undefined;
     });
 
     // METHODS
-    function handleErrorButtonClick() {
-      console.log('TOOD: implement if needed');
-    }
-
     function trade() {
       trading.trade(() => {
+        tokenInAmount.value = '';
+        tokenOutAmount.value = '';
         modalTradePreviewIsOpen.value = false;
       });
+    }
+
+    function handleErrorButtonClick() {
+      if (trading.sor.errors.value.highPriceImpact) {
+        dismissedErrors.value.highPriceImpact = true;
+      }
     }
 
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
 
-      if (assetIn === ETHER.deeplinkId) {
-        assetIn = ETHER.address;
+      if (assetIn === nativeAsset.deeplinkId) {
+        assetIn = nativeAsset.address;
       } else if (isAddress(assetIn)) {
         assetIn = getAddress(assetIn);
       }
 
       let assetOut = router.currentRoute.value.params.assetOut as string;
 
-      if (assetOut === ETHER.deeplinkId) {
-        assetOut = ETHER.address;
+      if (assetOut === nativeAsset.deeplinkId) {
+        assetOut = nativeAsset.address;
       } else if (isAddress(assetOut)) {
         assetOut = getAddress(assetOut);
       }
@@ -262,15 +335,16 @@ export default defineComponent({
       // computed
       title,
       error,
+      warning,
       errorMessage,
       isRequired,
       tradeDisabled,
       tradeCardShadow,
 
       // methods
-      handleErrorButtonClick,
       trade,
-      switchToWETH
+      switchToWETH,
+      handleErrorButtonClick
     };
   }
 });

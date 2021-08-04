@@ -15,10 +15,9 @@ import { AddressZero } from '@ethersproject/constants';
 import BigNumber from 'bignumber.js';
 import { scale } from '@/lib/utils';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
-import { ETHER } from '@/constants/tokenlists';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
-
 export enum LiquiditySelection {
   Best = 'best',
   V1 = 'v1',
@@ -108,7 +107,7 @@ export class SorManager {
     tokenDecimals: number,
     manualCost: BigNumber | null = null
   ): Promise<BigNumber> {
-    tokenAddr = tokenAddr === ETHER.address ? this.weth : tokenAddr;
+    tokenAddr = tokenAddr === NATIVE_ASSET_ADDRESS ? this.weth : tokenAddr;
 
     let cost = this.sorV2.tokenCost[tokenAddr.toLowerCase()];
     if (cost) {
@@ -207,8 +206,8 @@ export class SorManager {
     // V2 uses normalised values. V1 uses scaled values.
     const amountNormalised = scale(amountScaled, -swapDecimals);
 
-    const v1TokenIn = tokenIn === ETHER.address ? this.weth : tokenIn;
-    const v1TokenOut = tokenOut === ETHER.address ? this.weth : tokenOut;
+    const v1TokenIn = tokenIn === NATIVE_ASSET_ADDRESS ? this.weth : tokenIn;
+    const v1TokenOut = tokenOut === NATIVE_ASSET_ADDRESS ? this.weth : tokenOut;
 
     let swapsV1: Swap[][] = [];
     let returnAmountV1 = new BigNumber(0);
@@ -228,8 +227,9 @@ export class SorManager {
         amountScaled
       );
 
-    const v2TokenIn = tokenIn === ETHER.address ? AddressZero : tokenIn;
-    const v2TokenOut = tokenOut === ETHER.address ? AddressZero : tokenOut;
+    const v2TokenIn = tokenIn === NATIVE_ASSET_ADDRESS ? AddressZero : tokenIn;
+    const v2TokenOut =
+      tokenOut === NATIVE_ASSET_ADDRESS ? AddressZero : tokenOut;
 
     const swapTypeV2: SwapTypes =
       swapType === 'swapExactIn'

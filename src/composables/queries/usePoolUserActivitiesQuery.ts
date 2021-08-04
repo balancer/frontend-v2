@@ -5,7 +5,7 @@ import { UseInfiniteQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolActivity } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 

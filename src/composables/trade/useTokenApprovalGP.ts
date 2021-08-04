@@ -1,44 +1,36 @@
 import { computed, Ref, ref } from 'vue';
 import { parseUnits } from '@ethersproject/units';
-import { useI18n } from 'vue-i18n';
-
 import { approveTokens } from '@/lib/utils/balancer/tokens';
-
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
-
-import useTokens from '../useTokens';
-import useAllowances from '../useAllowances';
+import useTokens from '@/composables/useTokens';
 import useEthers from '../useEthers';
 import useTransactions from '../useTransactions';
+import { useI18n } from 'vue-i18n';
 
 export default function useTokenApprovalGP(
   tokenInAddress: Ref<string>,
   amount: Ref<string>
 ) {
-  // COMPOSABLES
-  const { getProvider } = useWeb3();
-  const provider = getProvider();
-  const { tokens } = useTokens();
-  const { txListener } = useEthers();
-  const { addTransaction } = useTransactions();
-  const { t } = useI18n();
-
-  // DATA
+  /**
+   * STATE
+   */
   const approving = ref(false);
   const approved = ref(false);
 
-  // COMPUTED
-  const dstList = computed(() => [GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS]);
-  const allowanceTokens = computed(() => [tokenInAddress.value]);
-  const {
-    getRequiredAllowances,
-    isLoading: isLoadingAllowances
-  } = useAllowances({
-    dstList,
-    tokens: allowanceTokens
-  });
+  /**
+   * COMPOSABLES
+   */
+  const { getProvider } = useWeb3();
+  const provider = getProvider();
+  const { txListener } = useEthers();
+  const { addTransaction } = useTransactions();
+  const { t } = useI18n();
+  const { tokens, approvalsRequired, dynamicDataLoading } = useTokens();
 
+  /**
+   * COMPUTED
+   */
   const allowanceState = computed(() => {
     if (!tokenInAddress.value || !amount.value || approved.value) {
       return {
@@ -48,18 +40,22 @@ export default function useTokenApprovalGP(
 
     const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
 
-    const requiredAllowances = getRequiredAllowances({
-      dst: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS,
-      tokens: [tokenInAddress.value],
-      amounts: [parseUnits(amount.value, tokenInDecimals).toString()]
-    });
+    const requiredApprovals = approvalsRequired(
+      [tokenInAddress.value],
+      [parseUnits(amount.value, tokenInDecimals).toString()],
+      GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
+    );
 
     return {
-      isUnlocked: requiredAllowances.length === 0
+      isUnlocked: requiredApprovals.length === 0
     };
   });
 
-  // METHODS
+  const isUnlocked = computed(() => allowanceState.value.isUnlocked);
+
+  /**
+   * METHODS
+   */
   async function approve(): Promise<void> {
     console.log('[TokenApproval] Unlock token for trading on Gnosis Protocol');
     approving.value = true;
@@ -96,13 +92,12 @@ export default function useTokenApprovalGP(
     }
   }
 
-  const isApproved = computed(() => allowanceState.value.isUnlocked);
-
   return {
     approving,
     approve,
+    approved,
     allowanceState,
-    isApproved,
-    isLoading: isLoadingAllowances
+    isUnlocked,
+    isLoading: dynamicDataLoading
   };
 }

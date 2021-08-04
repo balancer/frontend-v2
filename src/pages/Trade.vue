@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="trade-container">
-      <BalLoadingBlock v-if="appLoading || isLoadingTokens" class="h-96" />
+      <BalLoadingBlock v-if="appLoading || loadingTokenLists" class="h-96" />
       <template v-else>
         <TradeCard v-if="tradeInterface === TradeInterface.BALANCER" />
         <TradeCardGP v-else-if="tradeInterface === TradeInterface.GNOSIS" />
@@ -16,7 +16,7 @@ import { useStore } from 'vuex';
 
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
 import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
-import useTokenLists from '@/composables/useTokensStore';
+import useTokenLists from '@/composables/useTokenLists';
 import { TradeInterface } from '@/store/modules/app';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 
@@ -29,7 +29,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { isLoading: isLoadingTokens } = useTokenLists();
+    const { loadingTokenLists } = useTokenLists();
     const { setSelectedTokens } = usePoolFilters();
 
     // COMPUTED
@@ -44,7 +44,7 @@ export default defineComponent({
     return {
       appLoading,
       tradeInterface,
-      isLoadingTokens,
+      loadingTokenLists,
       TradeInterface
     };
   }

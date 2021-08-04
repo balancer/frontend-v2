@@ -116,21 +116,19 @@ import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import * as PoolPageComponents from '@/components/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
-
-import { useStore } from 'vuex';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { useQueryClient } from 'vue-query';
-
 import useNumbers from '@/composables/useNumbers';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import { useRouter } from 'vue-router';
-
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useWeb3 from '@/services/web3/useWeb3';
+import useTokens from '@/composables/useTokens';
+import useApp from '@/composables/useApp';
 
 interface PoolPageData {
   id: string;
@@ -147,31 +145,39 @@ export default defineComponent({
   },
 
   setup() {
-    // COMPOSABLES
-    const store = useStore();
+    /**
+     * COMPOSABLES
+     */
+    const { appLoading } = useApp();
     const router = useRouter();
     const { t } = useI18n();
     const route = useRoute();
     const { fNum } = useNumbers();
     const { isWalletReady } = useWeb3();
     const queryClient = useQueryClient();
+    const { prices } = useTokens();
+    const { blockNumber } = useWeb3();
+
+    /**
+     * QUERIES
+     */
     const poolQuery = usePoolQuery(route.params.id as string);
     const poolSnapshotsQuery = usePoolSnapshotsQuery(
       route.params.id as string,
       30
     );
 
-    const { blockNumber } = useWeb3();
-
-    // DATA
+    /**
+     * STATE
+     */
     const data = reactive<PoolPageData>({
       id: route.params.id as string,
       refetchQueriesOnBlockNumber: 0
     });
 
-    // COMPUTED
-    const appLoading = computed(() => store.state.app.loading);
-
+    /**
+     * COMPUTED
+     */
     const pool = computed(() => poolQuery.data.value);
 
     const noInitLiquidity = computed(
@@ -253,22 +259,26 @@ export default defineComponent({
 
     const missingPrices = computed(() => {
       if (pool.value) {
-        const tokensWithPrice = Object.keys(store.state.market.prices);
-        return !pool.value.tokensList.every(token =>
+        const tokensWithPrice = Object.keys(prices.value);
+        return !pool.value.tokenAddresses.every(token =>
           tokensWithPrice.includes(token)
         );
       }
       return false;
     });
 
-    // METHODS
+    /**
+     * METHODS
+     */
     function onNewTx(): void {
       queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
       data.refetchQueriesOnBlockNumber =
         blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
     }
 
-    // WATCHERS
+    /**
+     * WATCHERS
+     */
     watch(blockNumber, () => {
       if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
         queryClient.invalidateQueries([POOLS_ROOT_KEY]);
