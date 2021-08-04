@@ -296,7 +296,7 @@ export default function useGnosis({
 
               state.errors.priceExceedsBalance = bnum(
                 formatUnits(maximumInAmount, tokenIn.value.decimals)
-              ).gt(balanceFor(tokenIn.value));
+              ).gt(balanceFor(tokenIn.value.address));
             }
           }
         }
