@@ -64,7 +64,6 @@ import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiToken
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { flatten, last, takeRight, uniq } from 'lodash';
 import { Network } from '@/constants/network';
-import { useStore } from 'vuex';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';

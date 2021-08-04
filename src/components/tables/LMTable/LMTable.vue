@@ -90,7 +90,6 @@ import { useI18n } from 'vue-i18n';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { sum } from 'lodash';
-import { useStore } from 'vuex';
 import useDarkMode from '@/composables/useDarkMode';
 
 function getWeekName(week: string) {
