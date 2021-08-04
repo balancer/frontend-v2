@@ -56,7 +56,7 @@ export interface TokensProviderResponse {
   hasBalance: Function;
   approvalsRequired: Function;
   priceFor: Function;
-  balanceFor: Function;
+  balanceFor: (address: string) => string;
   getTokens: Function;
 }
 

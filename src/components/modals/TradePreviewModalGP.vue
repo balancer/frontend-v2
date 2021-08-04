@@ -53,7 +53,12 @@
                 </div>
                 <div class="text-gray-500 dark:text-gray-400 text-sm">
                   {{ tokenOutFiatValue }}
-                  <span v-if="trading.isBalancerTrade.value">
+                  <span
+                    v-if="
+                      trading.isBalancerTrade.value ||
+                        trading.isWrapUnwrapTrade.value
+                    "
+                  >
                     / {{ $t('priceImpact') }}:
                     {{ fNum(trading.sor.priceImpact.value, 'percent') }}</span
                   >
@@ -88,7 +93,7 @@
                 ]"
                 @click="showSummaryInFiat = true"
               >
-                {{ FiatCurrency.USD }}
+                {{ FiatCurrency.usd }}
               </div>
             </div>
           </div>
@@ -110,7 +115,7 @@
             <div>{{ labels.tradeSummary.tradeFees }}</div>
             <div>
               {{
-                trading.isWrapOrUnwrap.value
+                trading.isWrapUnwrapTrade.value
                   ? zeroFee
                   : trading.isGnosisTrade.value
                   ? trading.exactIn.value
@@ -139,7 +144,9 @@
               </div>
               <div>
                 {{
-                  trading.isWrapOrUnwrap.value ? '' : summary.totalWithSlippage
+                  trading.isWrapUnwrapTrade.value
+                    ? ''
+                    : summary.totalWithSlippage
                 }}
               </div>
             </div>
@@ -265,7 +272,7 @@ export default defineComponent({
     const { fNum, toFiat } = useNumbers();
     const { blockNumber } = useWeb3();
     const lastQuote = ref<TradeQuote | null>(
-      props.trading.isWrapOrUnwrap.value ? null : props.trading.getQuote()
+      props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
     );
     const priceUpdated = ref(false);
     const priceUpdateAccepted = ref(false);
@@ -300,11 +307,7 @@ export default defineComponent({
       )
     );
 
-    const showTradeRoute = computed(
-      () =>
-        props.trading.isBalancerTrade.value &&
-        !props.trading.isWrapOrUnwrap.value
-    );
+    const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
 
     const zeroFee = computed(() =>
       showSummaryInFiat.value ? fNum('0', 'usd') : '0.0 ETH'
@@ -336,7 +339,7 @@ export default defineComponent({
       const tokenInAmountInput = props.trading.tokenInAmountInput.value;
       const tokenOutAmountInput = props.trading.tokenOutAmountInput.value;
 
-      if (props.trading.isWrapOrUnwrap.value) {
+      if (props.trading.isWrapUnwrapTrade.value) {
         summaryItems.amountBeforeFees = tokenInAmountInput;
         summaryItems.tradeFees = '0';
         summaryItems.totalWithoutSlippage = tokenInAmountInput;
@@ -389,7 +392,7 @@ export default defineComponent({
           summaryItems,
           itemValue =>
             `${fNum(itemValue, 'token')} ${
-              exactIn || props.trading.isWrapOrUnwrap.value
+              exactIn || props.trading.isWrapUnwrapTrade.value
                 ? tokenOut.symbol
                 : tokenIn.symbol
             }`

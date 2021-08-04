@@ -8,7 +8,7 @@ import useGnosis from './useGnosis';
 import useTokens from '../useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
-export type TradeRoute = 'balancer' | 'gnosis';
+export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 
 export type UseTrading = ReturnType<typeof useTrading>;
 
@@ -29,6 +29,8 @@ export default function useTrading(
   const slippageBufferRate = computed(() =>
     parseFloat(store.state.app.slippage)
   );
+
+  const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
   const isWrap = computed(
     () =>
@@ -91,14 +93,25 @@ export default function useTrading(
     };
   });
 
-  const isWrapOrUnwrap = computed(() => isWrap.value || isUnwrap.value);
-
   const tradeRoute = computed<TradeRoute>(() => {
-    return isWrapOrUnwrap.value || isEthTrade.value ? 'balancer' : 'gnosis';
+    if (isWrap.value || isUnwrap.value) {
+      return 'wrapUnwrap';
+    }
+
+    return isEthTrade.value ? 'balancer' : 'gnosis';
   });
 
   const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
+
   const isBalancerTrade = computed(() => tradeRoute.value === 'balancer');
+
+  const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
+
+  const hasTradeQuote = computed(
+    () =>
+      parseFloat(tokenInAmountInput.value) > 0 &&
+      parseFloat(tokenOutAmountInput.value) > 0
+  );
 
   const sor = useSor({
     exactIn,
@@ -133,10 +146,15 @@ export default function useTrading(
     slippageBufferRate
   });
 
-  // initial loading
-  const isLoading = computed(() =>
-    isBalancerTrade.value ? sor.poolsLoading.value : gnosis.updatingQuotes.value
-  );
+  const isLoading = computed(() => {
+    if (hasTradeQuote.value || isWrapUnwrapTrade.value) {
+      return false;
+    }
+
+    return isBalancerTrade.value
+      ? sor.poolsLoading.value
+      : gnosis.updatingQuotes.value;
+  });
 
   const isConfirming = computed(
     () => sor.confirming.value || gnosis.confirming.value
@@ -145,9 +163,22 @@ export default function useTrading(
   // METHODS
   function trade(successCallback?: () => void) {
     if (isGnosisTrade.value) {
-      return gnosis.trade(successCallback);
+      return gnosis.trade(() => {
+        if (successCallback) {
+          successCallback();
+        }
+
+        gnosis.resetState();
+      });
     } else {
-      return sor.trade(successCallback);
+      // handles both Balancer and Wrap/Unwrap trades
+      return sor.trade(() => {
+        if (successCallback) {
+          successCallback();
+        }
+
+        sor.resetState();
+      });
     }
   }
 
@@ -193,8 +224,7 @@ export default function useTrading(
       if (!gnosis.hasErrors.value) {
         gnosis.handleAmountChange();
       }
-    } else if (!isWrapOrUnwrap.value) {
-      // only fetch for ETH -> ERC20 trades
+    } else if (isBalancerTrade.value) {
       sor.fetchPools();
     }
   });
@@ -203,12 +233,17 @@ export default function useTrading(
     handleAmountChange();
   });
 
+  watch(liquiditySelection, () => {
+    if (isBalancerTrade.value) {
+      handleAmountChange();
+    }
+  });
+
   return {
     // computed
     isWrap,
     isUnwrap,
     isEthTrade,
-    isWrapOrUnwrap,
     tokenIn,
     tokenOut,
     tokenInAmountScaled,
@@ -223,6 +258,7 @@ export default function useTrading(
     sor,
     isGnosisTrade,
     isBalancerTrade,
+    isWrapUnwrapTrade,
     tokenInAddressInput,
     tokenInAmountInput,
     tokenOutAddressInput,
