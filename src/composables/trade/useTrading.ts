@@ -8,7 +8,7 @@ import useGnosis from './useGnosis';
 import useTokens from '../useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
-export type TradeRoute = 'balancer' | 'gnosis';
+export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 
 export type UseTrading = ReturnType<typeof useTrading>;
 
@@ -91,14 +91,19 @@ export default function useTrading(
     };
   });
 
-  const isWrapOrUnwrap = computed(() => isWrap.value || isUnwrap.value);
-
   const tradeRoute = computed<TradeRoute>(() => {
-    return isWrapOrUnwrap.value || isEthTrade.value ? 'balancer' : 'gnosis';
+    if (isWrap.value || isUnwrap.value) {
+      return 'wrapUnwrap';
+    }
+
+    return isEthTrade.value ? 'balancer' : 'gnosis';
   });
 
   const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
+
   const isBalancerTrade = computed(() => tradeRoute.value === 'balancer');
+
+  const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
 
   const sor = useSor({
     exactIn,
@@ -134,9 +139,15 @@ export default function useTrading(
   });
 
   // initial loading
-  const isLoading = computed(() =>
-    isBalancerTrade.value ? sor.poolsLoading.value : gnosis.updatingQuotes.value
-  );
+  const isLoading = computed(() => {
+    if (isWrapUnwrapTrade.value) {
+      return false;
+    }
+
+    return isBalancerTrade.value
+      ? sor.poolsLoading.value
+      : gnosis.updatingQuotes.value;
+  });
 
   const isConfirming = computed(
     () => sor.confirming.value || gnosis.confirming.value
@@ -153,6 +164,7 @@ export default function useTrading(
         gnosis.resetState();
       });
     } else {
+      // handles both Balancer and Wrap/Unwrap trades
       return sor.trade(() => {
         if (successCallback) {
           successCallback();
@@ -205,8 +217,7 @@ export default function useTrading(
       if (!gnosis.hasErrors.value) {
         gnosis.handleAmountChange();
       }
-    } else if (!isWrapOrUnwrap.value) {
-      // only fetch for ETH -> ERC20 trades
+    } else if (isBalancerTrade.value) {
       sor.fetchPools();
     }
   });
@@ -220,7 +231,6 @@ export default function useTrading(
     isWrap,
     isUnwrap,
     isEthTrade,
-    isWrapOrUnwrap,
     tokenIn,
     tokenOut,
     tokenInAmountScaled,
@@ -235,6 +245,7 @@ export default function useTrading(
     sor,
     isGnosisTrade,
     isBalancerTrade,
+    isWrapUnwrapTrade,
     tokenInAddressInput,
     tokenInAmountInput,
     tokenOutAddressInput,

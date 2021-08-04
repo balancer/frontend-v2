@@ -60,7 +60,7 @@
       />
       <div
         class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-        v-if="trading.isBalancerTrade.value && !trading.isWrapOrUnwrap.value"
+        v-if="trading.isBalancerTrade.value"
       >
         <LightBulbIcon />
         <!-- TODO: translate -->
