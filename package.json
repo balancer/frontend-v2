@@ -59,7 +59,7 @@
     "vue-echarts": "^6.0.0-rc.4",
     "vue-i18n": "^9.0.0-rc.1",
     "vue-query": "^1.6.0",
-    "vue-router": "^4.0.0-alpha.6",
+    "vue-router": "^4.0.10",
     "vue-slider-component": "^4.0.0-beta.3",
     "vue3-jazzicon": "^0.1.2",
     "vue3-virtual-scroller": "^0.2.1",
