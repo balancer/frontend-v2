@@ -88,7 +88,7 @@
                 ]"
                 @click="showSummaryInFiat = true"
               >
-                {{ FiatCurrency.USD }}
+                {{ FiatCurrency.usd }}
               </div>
             </div>
           </div>
