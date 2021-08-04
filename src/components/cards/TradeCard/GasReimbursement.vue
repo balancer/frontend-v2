@@ -24,10 +24,10 @@ import { isBudgetLeft } from '@/lib/utils/balancer/bal4gas';
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
 import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { getOriginalAddress } from '@/services/coingecko';
 import useWeb3 from '@/services/web3/useWeb3';
 import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
 import useTokens from '@/composables/useTokens';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
 
 export default defineComponent({
   props: {
@@ -71,7 +71,7 @@ export default defineComponent({
 
       const ethPrice = priceFor(appNetworkConfig.nativeAsset.address);
       const balPrice = priceFor(
-        getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
+        coingeckoService.prices.addressMapOut(TOKENS.AddressMap.BAL)
       );
       const gasPrice = store.state.market.gasPrice || 0;
 

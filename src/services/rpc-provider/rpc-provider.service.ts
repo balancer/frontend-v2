@@ -1,10 +1,15 @@
 import { WebSocketProvider, JsonRpcProvider } from '@ethersproject/providers';
 import ConfigService, { configService } from '@/services/config/config.service';
+import { AlchemyProvider } from '@ethersproject/providers';
 
 type NewBlockHandler = (blockNumber: number) => any;
 
 const _wsProvider = new WebSocketProvider(configService.network.ws);
 const _jsonProvider = new JsonRpcProvider(configService.network.rpc);
+const _alchemyProvider = new AlchemyProvider(
+  configService.network.chainId,
+  configService.env.ALCHEMY_KEY
+);
 
 export default class RpcProviderService {
   network: string;
@@ -12,7 +17,8 @@ export default class RpcProviderService {
   constructor(
     private readonly config: ConfigService = configService,
     readonly wsProvider: WebSocketProvider = _wsProvider,
-    readonly jsonProvider: JsonRpcProvider = _jsonProvider
+    readonly jsonProvider: JsonRpcProvider = _jsonProvider,
+    readonly alchemyProvider: AlchemyProvider = _alchemyProvider
   ) {
     this.network = this.config.network.shortName;
   }

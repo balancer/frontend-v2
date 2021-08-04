@@ -7,17 +7,15 @@ import { NetworkId } from '@/constants/network';
 
 import { Claim } from '@/types';
 
-import { ipfsGet } from '@/lib/utils/balancer/ipfs';
+import { ipfsService } from './ipfs/ipfs.service';
 import { call, sendTransaction } from '@/lib/utils/balancer/web3';
 import { bnum } from '@/lib/utils';
 import { loadTree } from '@/lib/utils/merkle';
 import configs from '@/lib/config';
-import { getOriginalAddress } from '@/services/coingecko';
 import { TOKENS } from '@/constants/tokens';
 
 import merkleRedeemAbi from '@/lib/abi/MerkleRedeem.json';
-
-const gateway = process.env.VUE_APP_IPFS_NODE || 'ipfs.io';
+import { coingeckoService } from './coingecko/coingecko.service';
 
 type Snapshot = Record<number, string>;
 
@@ -36,7 +34,10 @@ export const constants: Record<NetworkId, Record<string, string>> = {
 
 export async function getSnapshot(network: NetworkId) {
   if (constants[network]?.snapshot) {
-    return (await ipfsGet(gateway, constants[network].snapshot, 'ipns')) || {};
+    return (
+      (await ipfsService.get<Snapshot>(constants[network].snapshot, 'ipns')) ||
+      {}
+    );
   }
   return {};
 }
@@ -60,7 +61,7 @@ export type Report = Record<string, any>;
 
 export async function getReports(snapshot: Snapshot, weeks: number[]) {
   const reports = await Promise.all<Report>(
-    weeks.map(week => ipfsGet(gateway, snapshot[week]))
+    weeks.map(week => ipfsService.get(snapshot[week]))
   );
   return Object.fromEntries(reports.map((report, i) => [weeks[i], report]));
 }
@@ -142,7 +143,9 @@ export async function getCurrentRewardsEstimate(
       ].filter(
         incentive =>
           incentive.token_address ==
-          getOriginalAddress(network, TOKENS.AddressMap.BAL).toLowerCase()
+          coingeckoService.prices
+            .addressMapOut(TOKENS.AddressMap.BAL)
+            .toLowerCase()
       );
       const rewards = liquidityProviders
         .reduce(
