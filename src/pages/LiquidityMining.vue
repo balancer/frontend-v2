@@ -61,7 +61,10 @@
 import { computed, defineComponent } from 'vue';
 import LMTable from '@/components/tables/LMTable/LMTable.vue';
 import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
-import { getCurrentLiquidityMiningWeek, getWeek } from '@/lib/utils/liquidityMining/index';
+import {
+  getCurrentLiquidityMiningWeek,
+  getWeek
+} from '@/lib/utils/liquidityMining/index';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { flatten, last, takeRight, uniq } from 'lodash';
 import { Network } from '@/constants/network';
