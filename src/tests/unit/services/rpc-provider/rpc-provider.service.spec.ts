@@ -35,7 +35,7 @@ describe('RPC provider service', () => {
       it('Returns mainnet provider by default', () => {
         expect(rpcProviderService.wsProvider).toBeInstanceOf(WebSocketProvider);
         expect(rpcProviderService.wsProvider.connection.url).toContain(
-          'localhost'
+          '127.0.0.1'
         );
       });
     });
