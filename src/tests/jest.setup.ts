@@ -11,7 +11,9 @@ import { WebSocket, Server } from 'mock-socket';
 nock.disableNetConnect();
 // Enable for mocked websockets
 // nock.enableNetConnect('127.0.0.1');
-nock(/127.0.0.1/).get('/').reply(101)
+nock(/127.0.0.1/)
+  .get('/')
+  .reply(101);
 
 /**
  * WebSockets
@@ -26,7 +28,7 @@ window.WebSocket = WebSocket;
 const mockServer = new Server('ws://127.0.0.1:1234');
 
 mockServer.on('connection', socket => {
-  console.log('WS COPNNNECT')
+  console.log('WS COPNNNECT');
   socket.on('message', () => 'Default message');
   socket.on('close', () => 'Default close');
 
