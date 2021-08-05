@@ -2,6 +2,7 @@ import nock from 'nock';
 import { WebSocket, Server } from 'mock-socket';
 
 process.on('uncaughtException', error => {
+  if (error.message.includes('mockwebsocket')) return;
   console.log('UNCAUGHT EXCEPTION - keeping process alive:', error);
 });
 
