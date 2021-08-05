@@ -61,7 +61,7 @@
 import { computed, defineComponent } from 'vue';
 import LMTable from '@/components/tables/LMTable/LMTable.vue';
 import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
-import { getCurrentLiquidityMiningWeek } from '@/lib/utils/liquidityMining/index';
+import { getCurrentLiquidityMiningWeek, getWeek } from '@/lib/utils/liquidityMining/index';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { flatten, last, takeRight, uniq } from 'lodash';
 import { Network } from '@/constants/network';
@@ -131,7 +131,9 @@ export default defineComponent({
 
     const currentWeekTotalFiat = computed(() => {
       let totalFiat = 0;
-      const currentWeek = totals[getCurrentLiquidityMiningWeek()];
+      const currentWeekNumber = getCurrentLiquidityMiningWeek();
+      const currentWeekKey = getWeek(currentWeekNumber);
+      const currentWeek = totals.value[currentWeekKey];
       if (currentWeek) {
         for (const total of currentWeek) {
           const fiatValue = priceFor(getAddress(total.token)) * total.total;

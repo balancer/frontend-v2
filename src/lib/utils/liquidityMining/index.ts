@@ -29,7 +29,7 @@ export function getCurrentLiquidityMiningWeek() {
   return differenceInWeeks(toUtcTime(new Date()), liquidityMiningStartTime) + 1;
 }
 
-function getWeek(miningWeek: number) {
+export function getWeek(miningWeek: number) {
   return `week_${miningWeek}`;
 }
 
