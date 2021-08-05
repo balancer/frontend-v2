@@ -213,7 +213,7 @@
         "confirmed": "Confirmed",
         "expired": "Expired",
         "cancelling": "Cancelling",
-        "Cancelled": "Cancelled"
+        "cancelled": "Cancelled"
     },
     "transactionSummary": {
         "investInPool": "{0} in {1}",

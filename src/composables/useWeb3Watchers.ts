@@ -1,11 +1,12 @@
 import useWeb3 from '@/services/web3/useWeb3';
+import { EthereumTransactionData } from 'bnc-sdk/dist/types/src/interfaces';
 import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 
 import useBlocknative from './useBlocknative';
 import useTokens from './useTokens';
-import useTransactions from './useTransactions';
+import useTransactions, { ReplacementReason } from './useTransactions';
 
 export default function useWeb3Watchers() {
   // COMPOSABLES
@@ -21,7 +22,22 @@ export default function useWeb3Watchers() {
     blockNumber
   } = useWeb3();
   const { refetchBalances, refetchAllowances } = useTokens();
-  const { handlePendingTransactions } = useTransactions();
+  const { handlePendingTransactions, updateTransaction } = useTransactions();
+
+  function handleTransactionReplacement(
+    tx: EthereumTransactionData,
+    replacementReason: ReplacementReason
+  ) {
+    const originalHash = tx.replaceHash;
+
+    if (originalHash != null) {
+      updateTransaction(originalHash, 'tx', {
+        // new id
+        id: tx.hash,
+        replacementReason
+      });
+    }
+  }
 
   // Watch for user account change:
   // -> Unsubscribe Blocknative from old account if exits
@@ -38,6 +54,20 @@ export default function useWeb3Watchers() {
           refetchBalances.value();
           refetchAllowances.value();
         });
+
+        emitter.on('txSpeedUp', tx =>
+          handleTransactionReplacement(
+            tx as EthereumTransactionData,
+            'txSpeedUp'
+          )
+        );
+
+        emitter.on('txCancel', tx =>
+          handleTransactionReplacement(
+            tx as EthereumTransactionData,
+            'txCancel'
+          )
+        );
       }
     }
   );

@@ -21,7 +21,8 @@ import useNumbers from './useNumbers';
 import { GnosisTransactionDetails } from './trade/useGnosis';
 
 const WEEK_MS = 86_400_000 * 7;
-const TRANSACTIONS_SCHEMA_VERSION = '1.0';
+// Please update the schema version when making changes to the transaction structure.
+const TRANSACTIONS_SCHEMA_VERSION = '1.1';
 
 export type TransactionStatus =
   | 'pending'
@@ -53,8 +54,12 @@ export type TxReceipt = Pick<
 
 export type OrderReceipt = OrderMetaData;
 
+export type ReplacementReason = 'txSpeedUp' | 'txCancel';
+
 export type Transaction = {
   id: string;
+  originalId?: string;
+  replacementReason?: ReplacementReason;
   action: TransactionAction;
   type: TransactionType;
   receipt?: OrderReceipt | TxReceipt;
@@ -150,7 +155,7 @@ function getTransaction(id: string, type: TransactionType) {
   const transactionsMap = getTransactions();
   const txId = getId(id, type);
 
-  return transactionsMap[txId];
+  return transactionsMap[txId] ?? null;
 }
 
 function updateTransaction(
@@ -163,7 +168,17 @@ function updateTransaction(
   const transaction = transactionsMap[txId];
 
   if (transaction != null) {
-    transactionsMap[txId] = merge(transaction, updates);
+    // id change requires a replacement of the transaction
+    if (updates.id != null) {
+      const newTxId = getId(updates.id, type);
+
+      transactionsMap[newTxId] = merge({}, transaction, updates, {
+        originalId: id
+      });
+      delete transactionsMap[txId];
+    } else {
+      transactionsMap[txId] = merge({}, transaction, updates);
+    }
 
     setTransactions(transactionsMap);
 
@@ -174,7 +189,10 @@ function updateTransaction(
 }
 
 function isSuccessfulTransaction(transaction: Transaction) {
-  if (transaction.status === 'confirmed') {
+  if (
+    transaction.status === 'confirmed' &&
+    transaction.replacementReason !== 'txCancel'
+  ) {
     if (transaction.type === 'order') {
       return (transaction.receipt as OrderReceipt)?.status === 'fulfilled';
     } else {
@@ -287,21 +305,23 @@ export default function useTransactions() {
     if (receipt != null) {
       const transaction = getTransaction(id, type);
 
-      const updateSuccessful = updateTransaction(id, type, {
-        receipt:
-          type === 'tx'
-            ? normalizeTxReceipt(receipt as TransactionReceipt)
-            : receipt,
-        summary:
-          type === 'order'
-            ? getSettledOrderSummary(transaction, receipt as OrderReceipt)
-            : transaction.summary,
-        status: 'confirmed',
-        confirmedTime: Date.now()
-      });
-      if (updateSuccessful) {
-        addNotificationForTransaction(id, type);
-        return true;
+      if (transaction != null) {
+        const updateSuccessful = updateTransaction(id, type, {
+          receipt:
+            type === 'tx'
+              ? normalizeTxReceipt(receipt as TransactionReceipt)
+              : receipt,
+          summary:
+            type === 'order'
+              ? getSettledOrderSummary(transaction, receipt as OrderReceipt)
+              : transaction.summary,
+          status: 'confirmed',
+          confirmedTime: Date.now()
+        });
+        if (updateSuccessful) {
+          addNotificationForTransaction(id, type);
+          return true;
+        }
       }
     }
 
@@ -311,18 +331,25 @@ export default function useTransactions() {
   function addNotificationForTransaction(id: string, type: TransactionType) {
     const transaction = getTransaction(id, type);
 
-    addNotification({
-      title: `${t(`transactionAction.${transaction.action}`)} ${t(
-        `transactionStatus.${transaction.status}`
-      )}`,
-      message: transaction.summary,
-      transactionMetadata: {
-        id: transaction.id,
-        status: transaction.status,
-        isSuccess: isSuccessfulTransaction(transaction),
-        explorerLink: getExplorerLink(transaction.id, transaction.type)
-      }
-    });
+    if (transaction != null) {
+      const transactionStatus: TransactionStatus =
+        transaction.replacementReason === 'txCancel'
+          ? 'cancelled'
+          : transaction.status;
+
+      addNotification({
+        title: `${t(`transactionAction.${transaction.action}`)} ${t(
+          `transactionStatus.${transactionStatus}`
+        )}`,
+        message: transaction.summary,
+        transactionMetadata: {
+          id: transaction.id,
+          status: transaction.status,
+          isSuccess: isSuccessfulTransaction(transaction),
+          explorerLink: getExplorerLink(transaction.id, transaction.type)
+        }
+      });
+    }
   }
 
   function checkOrderActivity(transaction: Transaction) {
@@ -397,6 +424,7 @@ export default function useTransactions() {
     finalizeTransaction,
     getExplorerLink,
     isSuccessfulTransaction,
+    updateTransaction,
 
     // computed
     pendingTransactions,
