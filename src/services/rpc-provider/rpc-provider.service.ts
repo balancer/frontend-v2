@@ -1,6 +1,9 @@
-import { WebSocketProvider, JsonRpcProvider } from '@ethersproject/providers';
+import {
+  WebSocketProvider,
+  JsonRpcProvider,
+  AlchemyProvider
+} from '@ethersproject/providers';
 import ConfigService, { configService } from '@/services/config/config.service';
-import { AlchemyProvider } from '@ethersproject/providers';
 
 type NewBlockHandler = (blockNumber: number) => any;
 
