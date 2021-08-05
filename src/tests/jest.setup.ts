@@ -10,10 +10,7 @@ import { WebSocket, Server } from 'mock-socket';
  */
 nock.disableNetConnect();
 // Enable for mocked websockets
-// nock.enableNetConnect('127.0.0.1');
-nock(/127.0.0.1/)
-  .get('/')
-  .reply(101);
+nock.enableNetConnect('localhost');
 
 /**
  * WebSockets
