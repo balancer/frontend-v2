@@ -6,11 +6,8 @@
         :class="{ btn: upToLargeBreakpoint }"
         :loading="isLoadingProfile"
         :loading-label="upToLargeBreakpoint ? '' : $t('connecting')"
-        color="gray"
-        :outline="!upToLargeBreakpoint"
-        rounded
+        color="white"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
-        :circle="upToLargeBreakpoint"
       >
         <Avatar :address="account" :profile="profile" :size="avatarSize" />
         <span
@@ -22,11 +19,6 @@
           v-else
           v-text="_shorten(account)"
           class="pl-2 hidden lg:inline-block eth-address"
-        />
-        <BalIcon
-          name="chevron-down"
-          size="sm"
-          class="pl-1 hidden lg:inline-block"
         />
       </BalBtn>
     </template>
