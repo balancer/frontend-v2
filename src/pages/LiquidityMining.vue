@@ -66,7 +66,7 @@ import {
   getWeek
 } from '@/lib/utils/liquidityMining/index';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
-import { flatten, last, takeRight, uniq } from 'lodash';
+import { flatten, takeRight, uniq } from 'lodash';
 import { Network } from '@/constants/network';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
