@@ -11,6 +11,7 @@ import { WebSocket, Server } from 'mock-socket';
 nock.disableNetConnect();
 // Enable for mocked websockets
 nock.enableNetConnect(/localhost:1234/);
+nock.enableNetConnect(/127.0.0.1:1234/);
 
 /**
  * WebSockets
