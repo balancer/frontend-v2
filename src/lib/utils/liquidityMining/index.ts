@@ -25,7 +25,7 @@ type LiquidityMiningWeek = Array<{
 // Liquidity mining started on June 1, 2020 00:00 UTC
 const liquidityMiningStartTime = Date.UTC(2020, 5, 1, 0, 0);
 
-function getCurrentLiquidityMiningWeek() {
+export function getCurrentLiquidityMiningWeek() {
   return differenceInWeeks(toUtcTime(new Date()), liquidityMiningStartTime) + 1;
 }
 
