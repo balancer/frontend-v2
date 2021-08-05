@@ -1,11 +1,17 @@
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import {
   AlchemyProvider,
   JsonRpcProvider,
   WebSocketProvider
 } from '@ethersproject/providers';
 
+let rpcProviderService;
+
 describe('RPC provider service', () => {
+  beforeAll(() => {
+    rpcProviderService = new RpcProviderService();
+  });
+
   describe('JSON providers', () => {
     describe('Get default app provider', () => {
       it('Returns mainnet provider by default', () => {
