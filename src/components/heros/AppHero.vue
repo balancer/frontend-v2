@@ -21,7 +21,11 @@
           class="text-white text-center text-4xl md:text-5xl pb-2"
         />
         <div class="flex justify-center mt-4">
-          <BalBtn color="white" class="mr-3" @click="onClickConnect">
+          <BalBtn
+            color="gradient-pink-yellow"
+            class="mr-3"
+            @click="onClickConnect"
+          >
             {{ $t('connectWallet') }}
           </BalBtn>
           <BalBtn

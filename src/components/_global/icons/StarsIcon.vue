@@ -15,8 +15,8 @@
         y2="16.3182"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#F21BF6" />
-        <stop offset="1" stop-color="#FBBF24" />
+        <stop :stop-color="theme.colors.pink['500']" />
+        <stop offset="1" :stop-color="theme.colors.yellow['500']" />
       </linearGradient>
     </defs>
     <path
@@ -27,3 +27,18 @@
     />
   </svg>
 </template>
+
+<script lang="ts">
+import useTailwind from '@/composables/useTailwind';
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'StarsIcon',
+
+  setup() {
+    const { theme } = useTailwind();
+
+    return { theme };
+  }
+});
+</script>
