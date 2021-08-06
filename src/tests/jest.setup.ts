@@ -1,6 +1,13 @@
 import nock from 'nock';
 import { WebSocket, Server } from 'mock-socket';
 
+/**
+ * Had to add this to mock websockets and prevent async
+ * exceptions emitted from the ethers provider classes.
+ *
+ * Please watch for the uncaught exception log when running
+ * tests and investigate/fix.
+ */
 process.on('uncaughtException', error => {
   if (error.message.includes('mockwebsocket')) return;
   console.log('UNCAUGHT EXCEPTION - keeping process alive:', error);
