@@ -7,7 +7,7 @@
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
       >
         <StarsIcon
-          class="mr-1"
+          class="mr-2"
           v-if="upToLargeBreakpoint ? !userClaimsLoading : true"
         />
         <BalLoadingIcon size="sm" color="white" v-if="userClaimsLoading" />

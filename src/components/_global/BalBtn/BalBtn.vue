@@ -136,7 +136,7 @@ export default defineComponent({
       else if (props.outline) return 'bg-transparent';
       else if (props.flat) return bgFlatClasses.value;
       else if (props.color === 'white') {
-        return 'bg-gray-50';
+        return 'bg-gray-50 dark:bg-gray-800';
       } else {
         if (props.disabled) {
           return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
@@ -161,7 +161,7 @@ export default defineComponent({
     const textColorClasses = computed(() => {
       if (props.color === 'white') {
         if (props.outline) return 'text-white';
-        else return 'text-gray-800';
+        else return 'text-gray-800 dark:text-gray-100';
       }
       if (props.outline || props.flat)
         return `text-${props.color}-500 dark:text-${props.color}-400`;
