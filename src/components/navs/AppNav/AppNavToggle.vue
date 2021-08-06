@@ -1,9 +1,11 @@
 <template>
-  <div class="app-nav-toggle">
+  <div
+    :class="`app-nav-toggle bg-gray-50 dark:bg-gray-${darkModeBg} rounded-lg`"
+  >
     <router-link
       :to="{ name: 'home' }"
       :class="[
-        'toggle-link pl-6 pr-4 border-l rounded-l-full',
+        'toggle-link px-6 rounded-l-lg',
         { [activeClasses]: !isTradePage }
       ]"
       @click="trackGoal(Goals.ClickNavInvest)"
@@ -13,7 +15,7 @@
     <router-link
       :to="{ name: 'trade' }"
       :class="[
-        'toggle-link pl-4 pr-6 border-r rounded-r-full',
+        'toggle-link px-6 rounded-r-lg',
         { [activeClasses]: isTradePage }
       ]"
       @click="trackGoal(Goals.ClickNavTrade)"
@@ -31,10 +33,13 @@ import { useRoute } from 'vue-router';
 export default defineComponent({
   name: 'AppNavToggle',
 
+  props: {
+    darkModeBg: { type: String, default: '800' }
+  },
+
   setup() {
     const route = useRoute();
-    const activeClasses =
-      'bg-black dark:bg-white border-black dark:border-white text-white dark:text-black';
+    const activeClasses = 'gradient-blue-l-to-r text-white rounded-lg';
     const isTradePage = computed(() => route.name === 'trade');
     const { trackGoal, Goals } = useFathom();
 
@@ -55,6 +60,6 @@ export default defineComponent({
 }
 
 .toggle-link {
-  @apply h-full flex items-center shadow border-t border-b;
+  @apply h-full flex items-center shadow;
 }
 </style>

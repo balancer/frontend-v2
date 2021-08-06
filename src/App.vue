@@ -6,6 +6,7 @@
     <div class="pb-12">
       <router-view :key="$route.path" class="flex-auto" />
     </div>
+    <AppFooterNav v-if="upToLargeBreakpoint" />
     <VueQueryDevTools />
     <WalletSelectModal
       :isVisible="isWalletSelectVisible"
@@ -21,21 +22,22 @@ import { VueQueryDevTools } from 'vue-query/devtools';
 import { useStore } from 'vuex';
 import BigNumber from 'bignumber.js';
 import { useRoute } from 'vue-router';
-
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
+import AppFooterNav from '@/components/navs/AppFooterNav/AppFooterNav.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
-
 import Notifications from '@/components/notifications/Notifications.vue';
+import useBreakpoints from './composables/useBreakpoints';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
 export default defineComponent({
   components: {
     AppNav,
+    AppFooterNav,
     AppHero,
     VueQueryDevTools,
     WalletSelectModal,
@@ -48,6 +50,7 @@ export default defineComponent({
     const { isWalletSelectVisible, toggleWalletSelectModal } = useWeb3();
     const store = useStore();
     const route = useRoute();
+    const { upToLargeBreakpoint } = useBreakpoints();
 
     // COMPUTED
     const isHomePage = computed(() => route.path === '/');
@@ -61,6 +64,7 @@ export default defineComponent({
       // computed
       isWalletSelectVisible,
       isHomePage,
+      upToLargeBreakpoint,
       // methods
       toggleWalletSelectModal
     };
