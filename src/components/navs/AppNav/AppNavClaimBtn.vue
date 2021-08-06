@@ -5,9 +5,10 @@
         color="white"
         class="mr-2 text-base"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
+        :circle="upToLargeBreakpoint"
       >
         <StarsIcon
-          class="mr-2"
+          :class="{ 'mr-2': !upToLargeBreakpoint }"
           v-if="upToLargeBreakpoint ? !userClaimsLoading : true"
         />
         <BalLoadingIcon size="sm" color="white" v-if="userClaimsLoading" />

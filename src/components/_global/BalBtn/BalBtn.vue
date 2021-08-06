@@ -90,11 +90,11 @@ export default defineComponent({
         case 'sm':
           return 'w-9 h-9 text-lg';
         case 'md':
-          return 'w-10 h-10 text-lg';
+          return 'w-12 h-12 text-lg';
         case 'lg':
           return 'w-16 h-16 text-2xl';
         default:
-          return 'w-10 h-10 text-base';
+          return 'w-12 h-12 text-base';
       }
     });
 

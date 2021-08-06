@@ -8,6 +8,7 @@
         :loading-label="upToLargeBreakpoint ? '' : $t('connecting')"
         color="white"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
+        :circle="upToLargeBreakpoint"
       >
         <Avatar :address="account" :profile="profile" :size="avatarSize" />
         <span

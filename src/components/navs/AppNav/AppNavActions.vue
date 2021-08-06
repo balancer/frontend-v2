@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="account" class="flex items-center">
-      <AppNavActivityBtn v-if="!upToSmallBreakpoint" />
+      <AppNavActivityBtn />
       <AppNavClaimBtn v-if="liquidityMiningSupported" />
       <AppNavAccountBtn />
     </div>
