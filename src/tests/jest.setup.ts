@@ -8,7 +8,5 @@ import nock from 'nock';
  * See nock docs for details: https://github.com/nock/nock
  */
 nock.disableNetConnect();
-// Catch all websocket requests
-nock(/mockwebsocket/)
-  .get('/')
-  .reply(200);
+// Enable for mocked websockets
+nock.enableNetConnect('balancer.fi');
