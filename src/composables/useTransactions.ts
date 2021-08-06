@@ -35,6 +35,8 @@ export type TransactionAction =
   | 'claim'
   | 'approve'
   | 'trade'
+  | 'wrap'
+  | 'unwrap'
   | 'invest'
   | 'withdraw';
 
