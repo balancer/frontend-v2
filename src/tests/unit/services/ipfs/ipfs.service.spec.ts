@@ -8,7 +8,7 @@ describe('IPFS service', () => {
         .get('/ipfs/xyz')
         .reply(200, 'some data');
       const data = await ipfsService.get('xyz');
-      expect(data).toBe('some data')
+      expect(data).toBe('some data');
     });
   });
 });
