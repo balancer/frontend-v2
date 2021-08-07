@@ -3,6 +3,7 @@ import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/providers';
+import { retryPromiseWithDelay } from '@/lib/utils/promise';
 
 import useBlocknative from './useBlocknative';
 import useTransactions from './useTransactions';
@@ -15,25 +16,6 @@ type TxCallback = (
 
 // keep a record of processed txs
 export const processedTxs = ref<Set<string>>(new Set(''));
-
-const waitForTxConfirmation = async (
-  tx: TransactionResponse,
-  retries = 10
-): Promise<TransactionReceipt> => {
-  try {
-    // Sometimes this will throw if we're talking to a service
-    // in front of the RPC that hasn't picked up the tx yet (e.g. Gnosis)
-    return await tx.wait();
-  } catch (e) {
-    // If so then give it a couple of seconds to catch up and try again
-    await new Promise(r => setTimeout(r, 5000));
-    if (retries > 0) {
-      return waitForTxConfirmation(tx, retries - 1);
-    } else {
-      throw e;
-    }
-  }
-};
 
 export default function useEthers() {
   const { finalizeTransaction } = useTransactions();
@@ -51,7 +33,9 @@ export default function useEthers() {
     processedTxs.value.add(tx.hash);
 
     try {
-      const receipt = await waitForTxConfirmation(tx);
+      // Sometimes this will throw if we're talking to a service
+      // in front of the RPC that hasn't picked up the tx yet (e.g. Gnosis)
+      const receipt = await retryPromiseWithDelay(tx.wait(), 10, 5000);
       // attempt to finalize transaction so that the pending tx watcher won't check the tx again.
       if (receipt != null) {
         finalizeTransaction(tx.hash, 'tx', receipt);
