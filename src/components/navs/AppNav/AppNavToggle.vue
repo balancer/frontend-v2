@@ -1,7 +1,5 @@
 <template>
-  <div
-    :class="`app-nav-toggle bg-gray-50 dark:bg-gray-${darkModeBg} rounded-lg`"
-  >
+  <div :class="`app-nav-toggle bg-gray-50 dark:bg-gray-${darkModeBg}`">
     <router-link
       :to="{ name: 'home' }"
       :class="[
@@ -55,11 +53,11 @@ export default defineComponent({
 
 <style scoped>
 .app-nav-toggle {
-  @apply h-10 flex items-center;
+  @apply h-10 flex items-center rounded-lg shadow;
   font-variation-settings: 'wght' 600;
 }
 
 .toggle-link {
-  @apply h-full flex items-center shadow;
+  @apply h-full flex items-center;
 }
 </style>
