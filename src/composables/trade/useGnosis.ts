@@ -173,16 +173,25 @@ export default function useGnosis({
         owner: account.value
       });
 
+      const sellAmount = exactIn.value
+        ? tokenInAmountInput.value
+        : formatUnits(quote.maximumInAmount, tokenIn.value.decimals).toString();
+
+      const buyAmount = exactIn.value
+        ? formatUnits(
+            quote.minimumOutAmount,
+            tokenOut.value.decimals
+          ).toString()
+        : tokenOutAmountInput.value;
+
       const tokenInAmountEst = exactIn.value ? '' : '~';
       const tokenOutAmountEst = exactIn.value ? '~' : '';
 
-      const summary = `${tokenInAmountEst}${fNum(
-        tokenInAmountInput.value,
-        'token'
-      )} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum(
-        tokenOutAmountInput.value,
-        'token'
-      )} ${tokenOut.value.symbol}`;
+      const summary = `${tokenInAmountEst}${fNum(sellAmount, 'token')} ${
+        tokenIn.value.symbol
+      } -> ${tokenOutAmountEst}${fNum(buyAmount, 'token')} ${
+        tokenOut.value.symbol
+      }`;
 
       const { validTo, partiallyFillable } = unsignedOrder;
 

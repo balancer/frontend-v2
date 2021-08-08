@@ -22,7 +22,7 @@ import { GnosisTransactionDetails } from './trade/useGnosis';
 
 const WEEK_MS = 86_400_000 * 7;
 // Please update the schema version when making changes to the transaction structure.
-const TRANSACTIONS_SCHEMA_VERSION = '1.1';
+const TRANSACTIONS_SCHEMA_VERSION = '1.1.1';
 
 export type TransactionStatus =
   | 'pending'
@@ -35,6 +35,8 @@ export type TransactionAction =
   | 'claim'
   | 'approve'
   | 'trade'
+  | 'wrap'
+  | 'unwrap'
   | 'invest'
   | 'withdraw';
 
