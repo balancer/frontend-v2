@@ -111,11 +111,10 @@ import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useBatchRelayerApproval from '@/composables/trade/useBatchRelayerApproval';
 import useTokens from '@/composables/useTokens';
 
-import useWeb3 from '@/services/web3/useWeb3';
-
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from '@ethersproject/address';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -155,23 +154,12 @@ export default defineComponent({
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
     const { tokens } = useTokens();
-    const { userNetworkConfig } = useWeb3();
 
-    const isWrap = computed(() => {
-      const config = userNetworkConfig.value;
-      return (
-        addressIn.value === NATIVE_ASSET_ADDRESS &&
-        addressOut.value === config.addresses.weth
-      );
-    });
-
-    const isUnwrap = computed(() => {
-      const config = userNetworkConfig.value;
-      return (
-        addressOut.value === NATIVE_ASSET_ADDRESS &&
-        addressIn.value === config.addresses.weth
-      );
-    });
+    const wrapType = computed(() =>
+      getWrapAction(addressIn.value, addressOut.value)
+    );
+    const isWrap = computed(() => wrapType.value === WrapType.Wrap);
+    const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
 
     const isStETHTrade = computed(
       () =>

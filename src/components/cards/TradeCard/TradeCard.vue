@@ -115,6 +115,8 @@ import useTokens from '@/composables/useTokens';
 import useDarkMode from '@/composables/useDarkMode';
 import { configService } from '@/services/config/config.service';
 
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+
 const { nativeAsset } = configService.network;
 
 export default defineComponent({
@@ -169,21 +171,11 @@ export default defineComponent({
       }
     });
 
-    const isWrap = computed(() => {
-      const config = userNetworkConfig.value;
-      return (
-        tokenInAddress.value === nativeAsset.address &&
-        tokenOutAddress.value === config.addresses.weth
-      );
-    });
-
-    const isUnwrap = computed(() => {
-      const config = userNetworkConfig.value;
-      return (
-        tokenOutAddress.value === nativeAsset.address &&
-        tokenInAddress.value === config.addresses.weth
-      );
-    });
+    const wrapType = computed(() =>
+      getWrapAction(tokenInAddress.value, tokenOutAddress.value)
+    );
+    const isWrap = computed(() => wrapType.value === WrapType.Wrap);
+    const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
 
     const isHighPriceImpact = computed(() => {
       return priceImpact.value >= 0.05 && !highPiAccepted.value;
@@ -219,8 +211,7 @@ export default defineComponent({
       tokenOutAddressInput: tokenOutAddress,
       tokenOutAmountInput: tokenOutAmount,
       tokens,
-      isWrap,
-      isUnwrap,
+      wrapType,
       tokenIn,
       tokenOut,
       slippageBufferRate

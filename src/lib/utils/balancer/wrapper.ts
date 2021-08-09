@@ -2,22 +2,45 @@ import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import configs from '@/lib/config';
-import abi from '@/lib/abi/Weth.json';
+import { configService } from '@/services/config/config.service';
+
+export enum WrapType {
+  NonWrap = 0,
+  Wrap,
+  Unwrap
+}
+
+export const isNativeAssetWrap = (
+  tokenIn: string,
+  tokenOut: string
+): boolean => {
+  const nativeAddress = configService.network.nativeAsset.address;
+  const { weth } = configService.network.addresses;
+  return tokenIn === nativeAddress && tokenOut === weth;
+};
+
+export const getWrapAction = (tokenIn: string, tokenOut: string): WrapType => {
+  const nativeAddress = configService.network.nativeAsset.address;
+  const { weth } = configService.network.addresses;
+
+  if (tokenIn === nativeAddress && tokenOut === weth) return WrapType.Wrap;
+
+  if (tokenOut === nativeAddress && tokenIn === weth) return WrapType.Unwrap;
+
+  return WrapType.NonWrap;
+};
 
 export async function wrap(
   network: string,
   web3: Web3Provider,
+  wrapper: string,
   amount: BigNumber
 ): Promise<TransactionResponse> {
   try {
-    return sendTransaction(
-      web3,
-      configs[network].addresses.weth,
-      abi,
-      'deposit',
-      [],
-      { value: amount.toString() }
-    );
+    if (wrapper === configs[network].addresses.weth) {
+      return wrapNative(network, web3, amount);
+    }
+    throw new Error('Unrecognised wrapper contract');
   } catch (e) {
     console.log('[Wrapper] Wrap error:', e);
     return Promise.reject(e);
@@ -27,18 +50,43 @@ export async function wrap(
 export async function unwrap(
   network: string,
   web3: Web3Provider,
+  wrapper: string,
   amount: BigNumber
 ): Promise<TransactionResponse> {
   try {
-    return sendTransaction(
-      web3,
-      configs[network].addresses.weth,
-      abi,
-      'withdraw',
-      [amount.toString()]
-    );
+    if (wrapper === configs[network].addresses.weth) {
+      return unwrapNative(network, web3, amount);
+    }
+    throw new Error('Unrecognised wrapper contract');
   } catch (e) {
-    console.log('[Wrapper] Unwrap error:', e);
+    console.log('[Wrapper] Wrap error:', e);
     return Promise.reject(e);
   }
 }
+
+const wrapNative = async (
+  network: string,
+  web3: Web3Provider,
+  amount: BigNumber
+): Promise<TransactionResponse> =>
+  sendTransaction(
+    web3,
+    configs[network].addresses.weth,
+    ['function deposit()'],
+    'deposit',
+    [],
+    { value: amount.toString() }
+  );
+
+const unwrapNative = (
+  network: string,
+  web3: Web3Provider,
+  amount: BigNumber
+): Promise<TransactionResponse> =>
+  sendTransaction(
+    web3,
+    configs[network].addresses.weth,
+    ['function withdraw(uint256 wad)'],
+    'withdraw',
+    [amount.toString()]
+  );
