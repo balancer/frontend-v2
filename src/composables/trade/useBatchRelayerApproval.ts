@@ -11,6 +11,7 @@ import useTokens from '@/composables/useTokens';
 import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
 import { configService } from '@/services/config/config.service';
+import { getAddress } from 'ethers/lib/utils';
 
 const stETHAddress = configService.network.addresses.stETH;
 const batchRelayerAddress = configService.network.addresses.stETH;
@@ -45,10 +46,10 @@ export default function useBatchRelayerApproval(
       };
     }
 
-    const tokenInDecimals = tokens.value[stETHAddress].decimals;
+    const tokenInDecimals = tokens.value[getAddress(stETHAddress)].decimals;
 
     const requiredApprovals = approvalsRequired(
-      [stETHAddress],
+      [getAddress(stETHAddress)],
       [parseUnits(amount.value, tokenInDecimals).toString()],
       batchRelayerAddress
     );
