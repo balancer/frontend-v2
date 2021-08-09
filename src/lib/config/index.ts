@@ -35,6 +35,8 @@ export interface Config {
     weightedPoolFactory: string;
     stablePoolFactory: string;
     weth: string;
+    stETH: string;
+    wstETH: string;
     balancerHelpers: string;
   };
   strategies: Record<
