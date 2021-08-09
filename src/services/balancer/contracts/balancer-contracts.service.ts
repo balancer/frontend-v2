@@ -1,22 +1,24 @@
 import Vault from './contracts/vault';
-import configs, { Config } from '@/lib/config';
+import { Config } from '@/lib/config';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import getProvider from '@/lib/utils/provider';
 import { default as vaultAbi } from '@/lib/abi/Vault.json';
 import { default as weightedPoolAbi } from '@/lib/abi/WeightedPool.json';
 import { default as stablePoolAbi } from '@/lib/abi/StablePool.json';
 import { default as TokenAbi } from '@/lib/abi/ERC20.json';
+import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { configService as _configService } from '@/services/config/config.service';
 
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
-
-export default class Service {
+export default class BalancerContractsService {
   vault: Vault;
   config: Config;
   provider: JsonRpcProvider;
 
-  constructor() {
-    this.provider = getProvider(NETWORK);
-    this.config = configs[NETWORK];
+  constructor(
+    readonly configService = _configService,
+    readonly rpcProviderService = _rpcProviderService
+  ) {
+    this.provider = this.rpcProviderService.jsonProvider;
+    this.config = this.configService.network;
 
     // Init contracts
     this.vault = new Vault(this);
@@ -36,3 +38,5 @@ export default class Service {
     );
   }
 }
+
+export const balancerContractsService = new BalancerContractsService();

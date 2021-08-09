@@ -1,7 +1,7 @@
 <template>
   <img
-    v-if="iconURL && !error"
-    :src="_url(iconURL)"
+    v-if="iconSRC && !error"
+    :src="iconSRC"
     :style="{
       width: `${size}px`,
       height: `${size}px`
@@ -16,6 +16,7 @@
 import { defineComponent, toRefs, ref, computed, watch } from 'vue';
 import useTokens from '@/composables/useTokens';
 import Avatar from '../../images/Avatar.vue';
+import useUrls from '@/composables/useUrls';
 
 export default defineComponent({
   name: 'BalAsset',
@@ -29,32 +30,45 @@ export default defineComponent({
       type: String,
       required: true
     },
+    iconURI: { type: String },
     size: {
       type: Number,
       default: 24
     }
   },
   setup(props) {
-    // COMPOSABLES
+    /**
+     * COMPOSABLES
+     */
     const { tokens } = useTokens();
+    const { resolve } = useUrls();
 
-    // DATA
+    /**
+     * STATE
+     */
     const { address } = toRefs(props);
     const error = ref(false);
 
-    // COMPUTED
-    const iconURL = computed(() => {
+    /**
+     * COMPUTED
+     */
+    const iconSRC = computed(() => {
+      if (props.iconURI) return resolve(props.iconURI);
+
       const token = tokens.value[address.value];
       if (!token) return '';
-      return token.logoURI;
+      return resolve(token.logoURI);
     });
 
-    watch(iconURL, newURL => {
+    /**
+     * WATCHERS
+     */
+    watch(iconSRC, newURL => {
       if (newURL !== '') error.value = false;
     });
 
     return {
-      iconURL,
+      iconSRC,
       error
     };
   }

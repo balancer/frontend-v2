@@ -18,16 +18,16 @@
 <script lang="ts">
 import { PropType, defineComponent, computed, onBeforeMount, ref } from 'vue';
 import { useStore } from 'vuex';
-import { ETHER } from '@/constants/tokenlists';
 import BigNumber from 'bignumber.js';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { isBudgetLeft } from '@/lib/utils/balancer/bal4gas';
 import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
 import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
-import { getOriginalAddress } from '@/services/coingecko';
 import useWeb3 from '@/services/web3/useWeb3';
-import { TOKENS } from '@/constants/tokens';
+import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
+import useTokens from '@/composables/useTokens';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
 
 export default defineComponent({
   props: {
@@ -50,6 +50,7 @@ export default defineComponent({
     const { appNetworkConfig } = useWeb3();
     const isBalForGasBudget = ref<boolean>(false);
     const { t } = useI18n();
+    const { priceFor } = useTokens();
 
     const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? {};
     const eligibleAssets = Object.fromEntries(
@@ -68,19 +69,17 @@ export default defineComponent({
         };
       }
 
-      const ethPrice =
-        store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
-      const balPrice =
-        store.state.market.prices[
-          getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
-        ]?.price || 0;
+      const ethPrice = priceFor(appNetworkConfig.nativeAsset.address);
+      const balPrice = priceFor(
+        coingeckoService.prices.addressMapOut(TOKENS.AddressMap.BAL)
+      );
       const gasPrice = store.state.market.gasPrice || 0;
 
       const addressInIsEligible =
-        props.addressIn === ETHER.address ||
+        props.addressIn === NATIVE_ASSET_ADDRESS ||
         props.addressIn.toLowerCase() in eligibleAssets;
       const addressOutIsEligible =
-        props.addressOut === ETHER.address ||
+        props.addressOut === NATIVE_ASSET_ADDRESS ||
         props.addressOut.toLowerCase() in eligibleAssets;
       const reimburseAllSwaps = addressInIsEligible && addressOutIsEligible;
 

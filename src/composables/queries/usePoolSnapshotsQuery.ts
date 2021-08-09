@@ -1,18 +1,16 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
-
 import QUERY_KEYS from '@/constants/queryKeys';
-
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
-import {
-  getTokensHistoricalPrice,
-  HistoricalPrices
-} from '@/services/coingecko';
 import usePoolQuery from './usePoolQuery';
-import useWeb3 from '@/services/web3/useWeb3';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
+import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 
+/**
+ * TYPES
+ */
 interface QueryResponse {
   prices: HistoricalPrices;
   snapshots: PoolSnapshots;
@@ -23,32 +21,30 @@ export default function usePoolSnapshotsQuery(
   days: number,
   options: QueryObserverOptions<QueryResponse> = {}
 ) {
-  // COMPOSABLES
-  const { appNetworkConfig } = useWeb3();
-
-  // SERVICES
-  const balancerSubgraph = new BalancerSubgraph();
-
-  // DEPENDENT QUERIES
+  /**
+   * QUERY DEPENDENCIES
+   */
   const poolQuery = usePoolQuery(id);
 
-  // COMPUTED
+  /**
+   * COMPUTED
+   */
   const pool = computed(() => poolQuery.data.value);
   const enabled = computed(() => !!pool.value?.id);
 
-  // DATA
+  /**
+   * QUERY INPUTS
+   */
   const queryKey = QUERY_KEYS.Pools.Snapshot(id);
 
-  // METHODS
   const queryFn = async () => {
     if (!pool.value) throw new Error('No pool');
 
-    const prices = await getTokensHistoricalPrice(
-      appNetworkConfig.chainId,
+    const prices = await coingeckoService.prices.getTokensHistorical(
       pool.value.tokensList,
       days
     );
-    const snapshots = await balancerSubgraph.poolSnapshots.get(id, days);
+    const snapshots = await balancerSubgraphService.poolSnapshots.get(id, days);
 
     return { prices, snapshots };
   };

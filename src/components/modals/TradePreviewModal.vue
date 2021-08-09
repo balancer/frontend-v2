@@ -82,12 +82,11 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-
-import { ETHER } from '@/constants/tokenlists';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -132,7 +131,7 @@ export default defineComponent({
     const isWrap = computed(() => {
       const config = userNetworkConfig.value;
       return (
-        addressIn.value === ETHER.address &&
+        addressIn.value === NATIVE_ASSET_ADDRESS &&
         addressOut.value === config.addresses.weth
       );
     });
@@ -140,7 +139,7 @@ export default defineComponent({
     const isUnwrap = computed(() => {
       const config = userNetworkConfig.value;
       return (
-        addressOut.value === ETHER.address &&
+        addressOut.value === NATIVE_ASSET_ADDRESS &&
         addressIn.value === config.addresses.weth
       );
     });
@@ -170,7 +169,7 @@ export default defineComponent({
       return token.symbol;
     });
 
-    const isEthTrade = computed(() => addressIn.value === ETHER.address);
+    const isEthTrade = computed(() => addressIn.value === NATIVE_ASSET_ADDRESS);
 
     const requiresApproval = computed(() => {
       if (isWrap.value || isUnwrap.value || isEthTrade.value) return false;

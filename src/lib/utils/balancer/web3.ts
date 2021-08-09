@@ -52,9 +52,8 @@ export async function sendTransaction(
     return await contractWithSigner[action](...params, overrides);
   } catch (e) {
     if (e.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT && ENV !== 'development') {
-      const network = (await web3.getNetwork()).name;
       const sender = await web3.getSigner().getAddress();
-      logFailedTx(network, sender, contract, action, params, overrides);
+      logFailedTx(sender, contract, action, params, overrides);
     }
     return Promise.reject(e);
   }

@@ -8,7 +8,7 @@ export default class IpfsService {
     this.gateway = this.configService.env.IPFS_NODE;
   }
 
-  async get(hash: string, protocol = 'ipfs'): Promise<unknown> {
+  async get<T>(hash: string, protocol = 'ipfs'): Promise<T> {
     const { data } = await axios.get(
       `https://${this.gateway}/${protocol}/${hash}`
     );

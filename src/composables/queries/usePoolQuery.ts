@@ -2,82 +2,75 @@ import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
 import useTokens from '@/composables/useTokens';
-
-import { useStore } from 'vuex';
-import { pick } from 'lodash';
-
 import QUERY_KEYS from '@/constants/queryKeys';
-
-import BalancerContracts from '@/services/balancer/contracts/service';
-import BalancerSubgraph from '@/services/balancer/subgraph/service';
-import { DecoratedPool, FullPool } from '@/services/balancer/subgraph/types';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { FullPool } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
+import useApp from '../useApp';
+import useUserSettings from '../useUserSettings';
+import { forChange } from '@/lib/utils';
+import { isStable } from '../usePool';
 
 export default function usePoolQuery(
   id: string,
   options: QueryObserverOptions<FullPool> = {}
 ) {
-  // COMPOSABLES
-  const store = useStore();
-  const { tokens: allTokens } = useTokens();
+  /**
+   * COMPOSABLES
+   */
+  const { getTokens, injectTokens, prices, dynamicDataLoading } = useTokens();
+  const { appLoading } = useApp();
+  const { currency } = useUserSettings();
 
-  // SERVICES
-  const balancerSubgraph = new BalancerSubgraph();
-  const balancerContracts = new BalancerContracts();
+  /**
+   * COMPUTED
+   */
+  const enabled = computed(
+    () => !appLoading.value && !dynamicDataLoading.value
+  );
 
-  // DATA
+  /**
+   * QUERY INPUTS
+   */
   const queryKey = QUERY_KEYS.Pools.Current(id);
 
-  // COMPUTED
-  const appLoading = computed(() => store.state.app.loading);
-  const prices = computed(() => store.state.market.prices);
-  const isQueryEnabled = computed(() => !appLoading.value);
-
-  function tokensInjected(pool: DecoratedPool): boolean {
-    if (!allTokens.value) return false;
-
-    const allAddresses = Object.keys(allTokens.value);
-    return [...pool.tokenAddresses, pool.address].every(address =>
-      allAddresses.includes(address)
-    );
-  }
-
-  // METHODS
   const queryFn = async () => {
-    const [pool] = await balancerSubgraph.pools.getDecorated(
-      '24h',
-      prices.value,
-      {
-        where: {
-          id: id.toLowerCase(),
-          totalShares_gt: -1 // Avoid the filtering for low liquidity pools
-        }
+    const [pool] = await balancerSubgraphService.pools.get({
+      where: {
+        id: id.toLowerCase(),
+        totalShares_gt: -1 // Avoid the filtering for low liquidity pools
       }
-    );
+    });
 
-    if (pool.poolType === 'Stable' && !POOLS.Stable.AllowList.includes(id)) {
+    if (isStable(pool) && !POOLS.Stable.AllowList.includes(id)) {
       throw new Error('Pool not allowed');
     }
 
-    if (!tokensInjected(pool)) {
-      await store.dispatch('registry/injectTokens', [
-        ...pool.tokenAddresses,
-        pool.address
-      ]);
-    }
+    await injectTokens([
+      ...pool.tokensList,
+      balancerSubgraphService.pools.addressFor(pool.id)
+    ]);
+    await forChange(dynamicDataLoading, false);
 
-    const tokens = pick(allTokens.value, pool.tokenAddresses);
-    const onchainData = await balancerContracts.vault.getPoolData(
-      id,
-      pool.poolType,
-      tokens
+    const [decoratedPool] = await balancerSubgraphService.pools.decorate(
+      [pool],
+      '24h',
+      prices.value,
+      currency.value
     );
 
-    return { ...pool, onchain: onchainData };
+    const onchainData = await balancerContractsService.vault.getPoolData(
+      id,
+      pool.poolType,
+      getTokens(decoratedPool.tokenAddresses)
+    );
+
+    return { ...decoratedPool, onchain: onchainData };
   };
 
   const queryOptions = reactive({
-    enabled: isQueryEnabled,
+    enabled,
     ...options
   });
 

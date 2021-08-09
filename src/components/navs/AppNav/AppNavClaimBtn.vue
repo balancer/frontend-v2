@@ -95,7 +95,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
-import { useStore } from 'vuex';
 import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
 import { useI18n } from 'vue-i18n';
@@ -104,8 +103,6 @@ import useNumbers from '@/composables/useNumbers';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 
-import { getOriginalAddress } from '@/services/coingecko';
-
 import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { claimRewards } from '@/services/claim';
@@ -113,6 +110,8 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { NetworkId } from '@/constants/network';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
+import useTokens from '@/composables/useTokens';
+import { coingeckoService } from '@/services/coingecko/coingecko.service';
 
 export default defineComponent({
   name: 'AppNavClaimBtn',
@@ -124,7 +123,6 @@ export default defineComponent({
 
     // COMPOSABLES
     const { upToLargeBreakpoint } = useBreakpoints();
-    const store = useStore();
     const userClaimsQuery = useUserClaimsQuery();
     const { fNum } = useNumbers();
     const {
@@ -137,12 +135,10 @@ export default defineComponent({
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
     const { t } = useI18n();
+    const { priceFor } = useTokens();
 
-    const balPrice = computed(
-      () =>
-        store.state.market.prices[
-          getOriginalAddress(appNetworkConfig.chainId, TOKENS.AddressMap.BAL)
-        ]?.price
+    const balPrice = computed(() =>
+      priceFor(coingeckoService.prices.addressMapOut(TOKENS.AddressMap.BAL))
     );
 
     // COMPUTED

@@ -7,7 +7,7 @@ export const defaultOptions: InitializationOptions = {
   dappId: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '',
   networkId: Number(process.env.VUE_APP_NETWORK) || 1,
   onerror: error => {
-    console.log(`[Blocknative] encountered an error - ${error}`);
+    console.log(`[Blocknative] encountered an error`, error);
   }
 };
 

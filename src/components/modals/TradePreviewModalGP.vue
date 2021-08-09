@@ -1,5 +1,5 @@
 <template>
-  <BalModal show @close="onClose" :title="$t('previewTrade')">
+  <BalModal show @close="onClose" :title="labels.modalTitle">
     <div>
       <BalCard noPad class="relative mb-6 overflow-auto">
         <template v-slot:header>
@@ -53,7 +53,12 @@
                 </div>
                 <div class="text-gray-500 dark:text-gray-400 text-sm">
                   {{ tokenOutFiatValue }}
-                  <span v-if="trading.isBalancerTrade.value">
+                  <span
+                    v-if="
+                      trading.isBalancerTrade.value ||
+                        trading.isWrapUnwrapTrade.value
+                    "
+                  >
                     / {{ $t('priceImpact') }}:
                     {{ fNum(trading.sor.priceImpact.value, 'percent') }}</span
                   >
@@ -63,22 +68,14 @@
           </div>
         </div>
       </BalCard>
-      <BalCard shadow="none" class="my-5" v-if="showTradeRoute">
-        <TradeRoute
-          :address-in="trading.tokenIn.value.address"
-          :amount-in="trading.tokenInAmountInput.value"
-          :address-out="trading.tokenOut.value.address"
-          :amount-out="trading.tokenOutAmountInput.value"
-          :pools="trading.sor.pools.value"
-          :sor-return="trading.sor.sorReturn.value"
-        />
-      </BalCard>
-      <BalCard noPad shadow="none" class="mb-6" v-if="showSummary">
+      <BalCard noPad shadow="none" class="mb-3">
         <template v-slot:header>
           <div
             class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
           >
-            <div class="font-semibold">{{ $t('summary') }}</div>
+            <div class="font-semibold">
+              {{ labels.tradeSummary.title }}
+            </div>
             <div class="flex divide-x dark:divide-gray-500 text-xs uppercase">
               <div
                 :class="[
@@ -91,37 +88,41 @@
               </div>
               <div
                 :class="[
-                  'pl-2 cursor-pointer font-medium',
+                  'pl-2 cursor-pointer font-medium uppercase',
                   { 'text-blue-600': showSummaryInFiat }
                 ]"
                 @click="showSummaryInFiat = true"
               >
-                {{ FiatCurrency.USD }}
+                {{ FiatCurrency.usd }}
               </div>
             </div>
           </div>
         </template>
         <div class="p-3 text-sm">
           <div class="summary-item-row">
-            <div>{{ $t('amountBeforeFees') }}</div>
+            <div>
+              {{ labels.tradeSummary.totalBeforeFees }}
+            </div>
             <div>
               {{ summary.amountBeforeFees }}
             </div>
           </div>
-          <div class="summary-item-row">
-            <div>{{ $t('gasCosts') }}</div>
-            <div v-if="trading.isGnosisTrade.value" class="text-green-400">
-              {{ fNum('0', showSummaryInFiat ? 'usd' : 'token') }}
-            </div>
-            <div v-else>
-              <!-- TODO: in order to calculate this I need to get gasLimit of the transaction + gwei price -->
-              Calculated on confirmation
-            </div>
+          <div class="summary-item-row" v-if="trading.isGnosisTrade.value">
+            <div>{{ $t('tradeSummary.gasCosts') }}</div>
+            <div class="text-green-400">-{{ zeroFee }}</div>
           </div>
           <div class="summary-item-row">
-            <div>{{ $t('solverFees') }}</div>
+            <div>{{ labels.tradeSummary.tradeFees }}</div>
             <div>
-              {{ summary.solverFees }}
+              {{
+                trading.isWrapUnwrapTrade.value
+                  ? zeroFee
+                  : trading.isGnosisTrade.value
+                  ? trading.exactIn.value
+                    ? `-${summary.tradeFees}`
+                    : `+${summary.tradeFees}`
+                  : summary.tradeFees
+              }}
             </div>
           </div>
         </div>
@@ -130,114 +131,128 @@
             class="w-full p-3 rounded-b-lg bg-white text-sm dark:bg-gray-800"
           >
             <div class="summary-item-row font-medium">
-              <div>
-                {{
-                  trading.exactIn.value
-                    ? $t('expectedReceiveNoSlippage')
-                    : $t('expectedSellNoSlippage')
-                }}
+              <div class="w-72">
+                {{ labels.tradeSummary.totalAfterFees }}
               </div>
               <div>
                 {{ summary.totalWithoutSlippage }}
               </div>
             </div>
-            <div class="summary-item-row">
+            <div class="summary-item-row text-gray-500 dark:text-gray-400">
+              <div class="w-72">
+                {{ labels.tradeSummary.totalWithSlippage }}
+              </div>
               <div>
                 {{
-                  trading.exactIn.value
-                    ? $t('minReceivedWithSlippage', [slippageRatePercent])
-                    : $t('maxSoldWithSlippage', [slippageRatePercent])
+                  trading.isWrapUnwrapTrade.value
+                    ? ''
+                    : summary.totalWithSlippage
                 }}
               </div>
-              <div>
-                {{ summary.totalWithSlippage }}
-              </div>
             </div>
           </div>
         </template>
       </BalCard>
-      <BalCard noPad shadow="none">
-        <template v-slot:header>
-          <div
-            class="p-3 flex w-full items-center justify-between border-b dark:border-gray-900"
-          >
-            <div class="font-semibold">
-              {{
-                $tc('requiresTransactions', approvalTxCount, {
-                  txCount: approvalTxCount
-                })
-              }}
-            </div>
-          </div>
-        </template>
-        <div class="p-3 text-sm">
-          <div
-            v-if="trading.requiresApproval.value"
-            class="flex items-center mb-2"
-          >
-            <div class="tx-circle text-green-500">
+      <BalAlert
+        v-if="showPriceUpdateError"
+        class="p-3 mb-4"
+        type="error"
+        size="md"
+        :title="$t('priceUpdatedAlert.title')"
+        :description="
+          $t('priceUpdatedAlert.description', [
+            fNum(PRICE_UPDATE_THRESHOLD, 'percent')
+          ])
+        "
+        :action-label="$t('priceUpdatedAlert.actionLabel')"
+        block
+        @actionClick="cofirmPriceUpdate"
+      />
+      <div v-if="trading.requiresApproval.value" class="flex justify-between">
+        <BalBtn
+          v-if="!isUnlocked || approved"
+          :loading="approving"
+          :loading-label="`${$t('approving')}...`"
+          color="gradient"
+          block
+          :disabled="isUnlocked"
+          @click.prevent="approve"
+          class="mr-5"
+        >
+          <div :class="['button-step', { 'button-step-disabled': isUnlocked }]">
+            <template v-if="isUnlocked">
               <BalIcon
-                v-if="isApproved"
                 name="check"
                 size="sm"
-                class="text-green-500"
+                class="text-gray-300 dark:text-gray-700 mt-0.5"
               />
-              <span v-else class="text-gray-500 dark:text-gray-400">1</span>
-            </div>
-            <div class="ml-3">
-              <span v-if="isApproved">{{ $t('approved') }}</span>
-              <span v-else>{{ $t('approve') }}</span>
-            </div>
+            </template>
+            <template v-else>1</template>
           </div>
-          <div class="flex items-center">
-            <div class="tx-circle text-gray-500 dark:text-gray-400">
-              {{ trading.requiresApproval.value ? 2 : 1 }}
-            </div>
-            <div class="ml-3">
-              {{ $t('trade') }} {{ tokenInFiatValue }}
-              {{ trading.tokenIn.value.symbol }} ->
-              {{ trading.tokenOut.value.symbol }}
-            </div>
+          {{ `${$t('approve')} ${trading.tokenIn.value.symbol}` }}
+        </BalBtn>
+        <BalBtn
+          color="gradient"
+          block
+          @click.prevent="trade"
+          :loading="trading.isConfirming.value"
+          :loading-label="$t('confirming')"
+          :disabled="tradeDisabled"
+        >
+          <div
+            v-if="!isUnlocked || approved"
+            :class="['button-step', { 'button-step-disabled': !isUnlocked }]"
+          >
+            2
           </div>
-        </div>
-      </BalCard>
-      <BalBtn
-        v-if="trading.requiresApproval.value && !isApproved"
-        class="mt-5"
-        :label="`${$t('approve')} ${trading.tokenIn.value.symbol}`"
-        :loading="approving"
-        :loading-label="`${$t('approving')} ${trading.tokenIn.value.symbol}…`"
-        color="gradient"
-        block
-        @click.prevent="approve"
-      />
+          {{ labels.confirmTrade }}
+        </BalBtn>
+      </div>
       <BalBtn
         v-else
-        class="mt-5"
-        :label="$t('confirmTrade')"
         color="gradient"
         block
+        :disabled="tradeDisabled"
         @click.prevent="trade"
-      />
+        :loading="trading.isConfirming.value"
+        :loading-label="$t('confirming')"
+      >
+        {{ labels.confirmTrade }}
+      </BalBtn>
     </div>
+    <BalCard shadow="none" class="mt-3" v-if="showTradeRoute">
+      <TradeRoute
+        :address-in="trading.tokenIn.value.address"
+        :amount-in="trading.tokenInAmountInput.value"
+        :address-out="trading.tokenOut.value.address"
+        :amount-out="trading.tokenOutAmountInput.value"
+        :pools="trading.sor.pools.value"
+        :sor-return="trading.sor.sorReturn.value"
+      />
+    </BalCard>
   </BalModal>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref } from 'vue';
+import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { formatUnits } from '@ethersproject/units';
+import { useI18n } from 'vue-i18n';
+import { mapValues } from 'lodash';
 
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import { TradeQuote } from '@/composables/trade/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 
 import { bnum } from '@/lib/utils';
 
 import { FiatCurrency } from '@/constants/currency';
-import { mapValues } from 'lodash';
+
+const PRICE_UPDATE_THRESHOLD = 0.02;
 
 export default defineComponent({
   components: {
@@ -253,7 +268,14 @@ export default defineComponent({
   setup(props, { emit }) {
     // COMPOSABLES
     const store = useStore();
+    const { t } = useI18n();
     const { fNum, toFiat } = useNumbers();
+    const { blockNumber } = useWeb3();
+    const lastQuote = ref<TradeQuote | null>(
+      props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
+    );
+    const priceUpdated = ref(false);
+    const priceUpdateAccepted = ref(false);
 
     // DATA
     const showSummaryInFiat = ref(false);
@@ -285,26 +307,26 @@ export default defineComponent({
       )
     );
 
-    const approvalTxCount = computed(() =>
-      props.trading.requiresApproval.value ? 2 : 1
+    const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
+
+    const zeroFee = computed(() =>
+      showSummaryInFiat.value ? fNum('0', 'usd') : '0.0 ETH'
     );
 
-    const showSummary = computed(() => !props.trading.isWrapOrUnwrap.value);
+    const showPriceUpdateError = computed(
+      () => priceUpdated.value && !priceUpdateAccepted.value
+    );
 
-    const showTradeRoute = computed(
+    const tradeDisabled = computed(
       () =>
-        props.trading.isBalancerTrade.value &&
-        !props.trading.isWrapOrUnwrap.value
+        (props.trading.requiresApproval.value && !isUnlocked.value) ||
+        showPriceUpdateError.value
     );
 
     const summary = computed(() => {
-      if (!showSummary.value) {
-        return;
-      }
-
       const summaryItems = {
         amountBeforeFees: '',
-        solverFees: '',
+        tradeFees: '',
         totalWithoutSlippage: '',
         totalWithSlippage: ''
       };
@@ -317,34 +339,45 @@ export default defineComponent({
       const tokenInAmountInput = props.trading.tokenInAmountInput.value;
       const tokenOutAmountInput = props.trading.tokenOutAmountInput.value;
 
-      const quote = props.trading.getQuote();
-
-      if (exactIn) {
-        summaryItems.amountBeforeFees = tokenOutAmountInput;
-        summaryItems.solverFees = formatUnits(
-          quote.feeAmountOutToken,
-          tokenOut.decimals
-        );
-        summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
-          .minus(summaryItems.solverFees)
-          .toString();
-        summaryItems.totalWithSlippage = formatUnits(
-          quote.minimumOutAmount,
-          tokenOut.decimals
-        );
-      } else {
+      if (props.trading.isWrapUnwrapTrade.value) {
         summaryItems.amountBeforeFees = tokenInAmountInput;
-        summaryItems.solverFees = formatUnits(
-          quote.feeAmountInToken,
-          tokenIn.decimals
-        );
-        summaryItems.totalWithoutSlippage = bnum(summaryItems.amountBeforeFees)
-          .plus(summaryItems.solverFees)
-          .toString();
-        summaryItems.totalWithSlippage = formatUnits(
-          quote.maximumInAmount,
-          tokenIn.decimals
-        );
+        summaryItems.tradeFees = '0';
+        summaryItems.totalWithoutSlippage = tokenInAmountInput;
+        summaryItems.totalWithSlippage = tokenInAmountInput;
+      } else {
+        const quote = props.trading.getQuote();
+
+        if (exactIn) {
+          summaryItems.amountBeforeFees = tokenOutAmountInput;
+          summaryItems.tradeFees = formatUnits(
+            quote.feeAmountOutToken,
+            tokenOut.decimals
+          );
+          summaryItems.totalWithoutSlippage = bnum(
+            summaryItems.amountBeforeFees
+          )
+            .minus(summaryItems.tradeFees)
+            .toString();
+          summaryItems.totalWithSlippage = formatUnits(
+            quote.minimumOutAmount,
+            tokenOut.decimals
+          );
+        } else {
+          summaryItems.amountBeforeFees = tokenInAmountInput;
+          summaryItems.tradeFees = formatUnits(
+            quote.feeAmountInToken,
+            tokenIn.decimals
+          );
+          summaryItems.totalWithoutSlippage = bnum(
+            summaryItems.amountBeforeFees
+          )
+            .plus(summaryItems.tradeFees)
+            .toString();
+          summaryItems.totalWithSlippage = formatUnits(
+            quote.maximumInAmount,
+            tokenIn.decimals
+          );
+        }
       }
 
       if (showSummaryInFiat.value) {
@@ -359,13 +392,75 @@ export default defineComponent({
           summaryItems,
           itemValue =>
             `${fNum(itemValue, 'token')} ${
-              exactIn ? tokenOut.symbol : tokenIn.symbol
+              exactIn || props.trading.isWrapUnwrapTrade.value
+                ? tokenOut.symbol
+                : tokenIn.symbol
             }`
         );
       }
     });
 
-    const { approving, isApproved, approve } = useTokenApprovalGP(
+    const labels = computed(() => {
+      if (props.trading.isWrap.value) {
+        return {
+          modalTitle: t('previewETHWrap'),
+          confirmTrade: t('confirmETHWrap'),
+          tradeSummary: {
+            title: t('tradeSummary.wrapETH.title'),
+            tradeFees: t('tradeSummary.wrapETH.tradeFees'),
+            totalBeforeFees: t('tradeSummary.wrapETH.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.wrapETH.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.wrapETH.totalWithSlippage')
+          }
+        };
+      } else if (props.trading.isUnwrap.value) {
+        return {
+          modalTitle: t('previewETHUnwrap'),
+          confirmTrade: t('confirmETHUnwrap'),
+          tradeSummary: {
+            title: t('tradeSummary.unwrapETH.title'),
+            tradeFees: t('tradeSummary.unwrapETH.tradeFees'),
+            totalBeforeFees: t('tradeSummary.unwrapETH.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.unwrapETH.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.unwrapETH.totalWithSlippage')
+          }
+        };
+      } else if (props.trading.exactIn.value) {
+        return {
+          modalTitle: t('previewTrade'),
+          confirmTrade: t('confirmTrade'),
+          tradeSummary: {
+            title: t('tradeSummary.exactIn.title', [
+              props.trading.tokenIn.value.symbol
+            ]),
+            tradeFees: t('tradeSummary.exactIn.tradeFees'),
+            totalBeforeFees: t('tradeSummary.exactIn.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.exactIn.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.exactIn.totalWithSlippage', [
+              slippageRatePercent.value
+            ])
+          }
+        };
+      }
+      // exact out
+      return {
+        modalTitle: t('previewTrade'),
+        confirmTrade: t('confirmTrade'),
+        tradeSummary: {
+          title: t('tradeSummary.exactOut.title', [
+            props.trading.tokenOut.value.symbol
+          ]),
+          tradeFees: t('tradeSummary.exactOut.tradeFees'),
+          totalBeforeFees: t('tradeSummary.exactOut.totalBeforeFees'),
+          totalAfterFees: t('tradeSummary.exactOut.totalAfterFees'),
+          totalWithSlippage: t('tradeSummary.exactOut.totalWithSlippage', [
+            slippageRatePercent.value
+          ])
+        }
+      };
+    });
+
+    const { approving, isUnlocked, approve, approved } = useTokenApprovalGP(
       addressIn,
       props.trading.tokenInAmountInput
     );
@@ -379,6 +474,41 @@ export default defineComponent({
       emit('close');
     }
 
+    function cofirmPriceUpdate() {
+      priceUpdated.value = false;
+      priceUpdateAccepted.value = true;
+      lastQuote.value = props.trading.getQuote();
+    }
+
+    function handlePriceUpdate() {
+      if (lastQuote.value != null) {
+        const newQuote = props.trading.getQuote();
+
+        if (props.trading.exactIn.value) {
+          priceUpdated.value = bnum(lastQuote.value.minimumOutAmount)
+            .minus(newQuote.minimumOutAmount)
+            .abs()
+            .div(lastQuote.value.minimumOutAmount)
+            .gt(PRICE_UPDATE_THRESHOLD);
+        } else {
+          priceUpdated.value = bnum(lastQuote.value.maximumInAmount)
+            .minus(newQuote.maximumInAmount)
+            .abs()
+            .div(lastQuote.value.maximumInAmount)
+            .gt(PRICE_UPDATE_THRESHOLD);
+        }
+
+        if (priceUpdated.value) {
+          priceUpdateAccepted.value = false;
+        }
+      }
+    }
+
+    // WATCHERS
+    watch(blockNumber, () => {
+      handlePriceUpdate();
+    });
+
     return {
       // constants
       FiatCurrency,
@@ -388,18 +518,26 @@ export default defineComponent({
       onClose,
       approve,
       trade,
+      cofirmPriceUpdate,
 
       // computed
-      isApproved,
+      isUnlocked,
       approving,
+      approved,
       tokenInFiatValue,
       tokenOutFiatValue,
       summary,
       showSummaryInFiat,
       slippageRatePercent,
-      showSummary,
       showTradeRoute,
-      approvalTxCount
+      labels,
+      zeroFee,
+      priceUpdated,
+      tradeDisabled,
+      showPriceUpdateError,
+
+      // consants
+      PRICE_UPDATE_THRESHOLD
     };
   }
 });
@@ -416,5 +554,11 @@ export default defineComponent({
 
 .tx-circle {
   @apply w-6 h-6 flex items-center justify-center border rounded-full;
+}
+.button-step {
+  @apply rounded-full w-6 h-6 bg-white  mr-2 flex items-center justify-center text-purple-500 overflow-hidden overflow-ellipsis;
+}
+.button-step-disabled {
+  @apply text-gray-300 dark:text-gray-700;
 }
 </style>

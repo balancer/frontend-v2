@@ -125,7 +125,6 @@ import BigNumber from 'bignumber.js';
 import { PropType, defineComponent, ref, computed } from 'vue';
 import { getAddress } from '@ethersproject/address';
 import { AddressZero } from '@ethersproject/constants';
-import { ETHER } from '@/constants/tokenlists';
 import { Pool, Swap } from '@balancer-labs/sor/dist/types';
 import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
 
@@ -134,6 +133,7 @@ import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 interface Route {
   share: number;
@@ -311,9 +311,13 @@ export default defineComponent({
       const { addresses: constants } = userNetworkConfig.value;
 
       addressIn =
-        addressIn === ETHER.address ? constants.weth : getAddress(addressIn);
+        addressIn === NATIVE_ASSET_ADDRESS
+          ? constants.weth
+          : getAddress(addressIn);
       addressOut =
-        addressOut === ETHER.address ? constants.weth : getAddress(addressOut);
+        addressOut === NATIVE_ASSET_ADDRESS
+          ? constants.weth
+          : getAddress(addressOut);
 
       if (
         !pools.length ||

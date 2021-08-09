@@ -1,4 +1,12 @@
-import { Ref, onMounted, ref, computed, ComputedRef } from 'vue';
+import {
+  Ref,
+  onMounted,
+  ref,
+  computed,
+  ComputedRef,
+  reactive,
+  toRefs
+} from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
@@ -20,18 +28,24 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import useFathom from '../useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { ETHER } from '@/constants/tokenlists';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
-import { Token, TokenMap } from '@/types';
 import { TradeQuote } from './types';
-import useTransactions from '../useTransactions';
+import useTransactions, { TransactionAction } from '../useTransactions';
 import useNumbers from '../useNumbers';
+import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+import useTokens from '../useTokens';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
 const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 const MIN_PRICE_IMPACT = 0.0001;
+const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
+const state = reactive({
+  errors: {
+    highPriceImpact: false
+  }
+});
 
 type Props = {
   exactIn: Ref<boolean>;
@@ -39,7 +53,7 @@ type Props = {
   tokenInAmountInput: Ref<string>;
   tokenOutAddressInput: Ref<string>;
   tokenOutAmountInput: Ref<string>;
-  tokens: Ref<TokenMap>;
+  tokens: Ref<TokenInfoMap>;
   isWrap: Ref<boolean>;
   isUnwrap: Ref<boolean>;
   tokenInAmountScaled?: ComputedRef<BigNumber>;
@@ -47,10 +61,10 @@ type Props = {
   sorConfig?: {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
-    enableTxHandler: boolean;
   };
-  tokenIn?: ComputedRef<Token>;
-  tokenOut?: ComputedRef<Token>;
+  tokenIn?: ComputedRef<TokenInfo>;
+  tokenOut?: ComputedRef<TokenInfo>;
+  slippageBufferRate: ComputedRef<number>;
 };
 
 export type UseSor = ReturnType<typeof useSor>;
@@ -68,11 +82,11 @@ export default function useSor({
   tokenOutAmountScaled,
   sorConfig = {
     refetchPools: true,
-    handleAmountsOnFetchPools: true,
-    enableTxHandler: true
+    handleAmountsOnFetchPools: true
   },
   tokenIn,
-  tokenOut
+  tokenOut,
+  slippageBufferRate
 }: Props) {
   let sorManager: SorManager | undefined = undefined;
   const pools = ref<(Pool | SubgraphPoolBase)[]>([]);
@@ -98,6 +112,7 @@ export default function useSor({
     }
   });
   const trading = ref(false);
+  const confirming = ref(false);
   const priceImpact = ref(0);
   const latestTxHash = ref('');
   const poolsLoading = ref(true);
@@ -107,7 +122,8 @@ export default function useSor({
   const {
     getProvider: getWeb3Provider,
     userNetworkConfig,
-    isV1Supported
+    isV1Supported,
+    appNetworkConfig
   } = useWeb3();
   const provider = computed(() => getWeb3Provider());
   const { trackGoal, Goals } = useFathom();
@@ -115,6 +131,7 @@ export default function useSor({
   const { addTransaction } = useTransactions();
   const { fNum } = useNumbers();
   const { t } = useI18n();
+  const { injectTokens, priceFor } = useTokens();
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
@@ -126,7 +143,7 @@ export default function useSor({
     if (!tokens.value[tokenOutAddressInput.value]) {
       unknownAssets.push(tokenOutAddressInput.value);
     }
-    await store.dispatch('registry/injectTokens', unknownAssets);
+    await injectTokens(unknownAssets);
     await initSor();
     await handleAmountChange();
   });
@@ -137,9 +154,9 @@ export default function useSor({
     }
   }, 30 * 1e3);
 
-  const slippageBufferRate = computed(() =>
-    parseFloat(store.state.app.slippage)
-  );
+  function resetState() {
+    state.errors.highPriceImpact = false;
+  }
 
   async function initSor(): Promise<void> {
     const poolsUrlV1 = `${
@@ -325,12 +342,14 @@ export default function useSor({
     }
 
     pools.value = sorManager.selectedPools;
+
+    state.errors.highPriceImpact =
+      priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
   }
 
-  function txHandler(
-    tx: TransactionResponse,
-    action?: 'wrap' | 'unwrap' | 'trade'
-  ): void {
+  function txHandler(tx: TransactionResponse, action: TransactionAction): void {
+    confirming.value = false;
+
     let summary = '';
     const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
     const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
@@ -346,7 +365,7 @@ export default function useSor({
     addTransaction({
       id: tx.hash,
       type: 'tx',
-      action: 'trade',
+      action,
       summary,
       details: {
         tokenIn: tokenIn?.value,
@@ -377,6 +396,7 @@ export default function useSor({
   async function trade(successCallback?: () => void) {
     trackGoal(Goals.ClickSwap);
     trading.value = true;
+    confirming.value = true;
 
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
@@ -393,13 +413,16 @@ export default function useSor({
           tokenInAmountScaled
         );
         console.log('Wrap tx', tx);
+
+        txHandler(tx, 'wrap');
+
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx, 'wrap');
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
       return;
     } else if (isUnwrap.value) {
@@ -410,13 +433,16 @@ export default function useSor({
           tokenInAmountScaled
         );
         console.log('Unwrap tx', tx);
+
+        txHandler(tx, 'unwrap');
+
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx, 'unwrap');
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
       return;
     }
@@ -436,13 +462,16 @@ export default function useSor({
           minAmount
         );
         console.log('Swap in tx', tx);
+
+        txHandler(tx, 'trade');
+
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx, 'trade');
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
@@ -462,26 +491,27 @@ export default function useSor({
           tokenOutAmountScaled
         );
         console.log('Swap out tx', tx);
+
+        txHandler(tx, 'trade');
+
         if (successCallback != null) {
           successCallback();
         }
-        txHandler(tx);
       } catch (e) {
         console.log(e);
         trading.value = false;
+        confirming.value = false;
       }
     }
   }
 
   // Uses stored market prices to calculate swap cost in token denomination
   function calculateSwapCost(tokenAddress: string): BigNumber {
-    const ethPriceUsd =
-      store.state.market.prices[ETHER.address.toLowerCase()]?.price || 0;
-    const tokenPriceUsd =
-      store.state.market.prices[tokenAddress.toLowerCase()]?.price || 0;
+    const ethPriceFiat = priceFor(appNetworkConfig.nativeAsset.address);
+    const tokenPriceFiat = priceFor(tokenAddress);
     const gasPriceWei = store.state.market.gasPrice || 0;
     const gasPriceScaled = scale(bnum(gasPriceWei), -18);
-    const ethPriceToken = bnum(Number(ethPriceUsd) / Number(tokenPriceUsd));
+    const ethPriceToken = bnum(Number(ethPriceFiat) / Number(tokenPriceFiat));
     const swapCost = bnum(SWAP_COST);
     const costSwapToken = gasPriceScaled.times(swapCost).times(ethPriceToken);
     return costSwapToken;
@@ -540,6 +570,7 @@ export default function useSor({
   }
 
   return {
+    ...toRefs(state),
     sorManager,
     sorReturn,
     pools,
@@ -552,6 +583,8 @@ export default function useSor({
     latestTxHash,
     fetchPools,
     poolsLoading,
-    getQuote
+    getQuote,
+    resetState,
+    confirming
   };
 }

@@ -47,10 +47,10 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div v-if="!isLoading && !isLoadingBalances" class="px-6 py-4">
+        <div v-if="!isLoading" class="px-6 py-4">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
-            :isStablePool="pool.poolType === 'Stable'"
+            :isStablePool="isStable(pool)"
           />
         </div>
       </template>
@@ -82,15 +82,14 @@ import { getAddress } from '@ethersproject/address';
 
 import useNumbers from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
-import useAccountBalances from '@/composables/useAccountBalances';
 
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
-import useTokens from '@/composables/useTokens';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
+import { isStable } from '@/composables/usePool';
 
 export default defineComponent({
   components: {
@@ -128,16 +127,9 @@ export default defineComponent({
   setup(props) {
     // COMPOSABLES
     const { fNum } = useNumbers();
-    const { tokens } = useTokens();
     const router = useRouter();
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
-    const {
-      balances,
-      hasBalance,
-      isLoading: isLoadingBalances,
-      isIdle: isBalancesQueryIdle
-    } = useAccountBalances();
     const { darkMode } = useDarkMode();
     const { upToLargeBreakpoint } = useBreakpoints();
 
@@ -202,7 +194,7 @@ export default defineComponent({
     }
 
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
-      if (pool.poolType === 'Stable') return pool.tokens;
+      if (isStable(pool)) return pool.tokens;
 
       const sortedTokens = pool.tokens.slice();
       sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
@@ -217,10 +209,6 @@ export default defineComponent({
     return {
       // data
       columns,
-      tokens,
-      balances,
-      isLoadingBalances,
-      isBalancesQueryIdle,
 
       // computed
       darkMode,
@@ -232,7 +220,7 @@ export default defineComponent({
       fNum,
       orderedTokenAddressesFor,
       orderedPoolTokens,
-      hasBalance
+      isStable
     };
   }
 });

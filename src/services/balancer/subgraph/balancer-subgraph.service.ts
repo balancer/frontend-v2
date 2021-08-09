@@ -1,4 +1,4 @@
-import Client from './client';
+import { balancerSubgraphClient } from './balancer-subgraph.client';
 import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
@@ -7,19 +7,16 @@ import PoolSnapshots from './entities/poolSnapshots';
 
 const NETWORK = process.env.VUE_APP_NETWORK || '1';
 
-export default class Service {
-  client: Client;
+export default class BalancerSubgraphService {
   pools: Pools;
   poolShares: PoolShares;
   poolActivities: PoolActivities;
   poolSnapshots: PoolSnapshots;
 
   constructor(
-    client = new Client(),
+    readonly client = balancerSubgraphClient,
     readonly rpcProviderService = _rpcProviderService
   ) {
-    this.client = client;
-
     // Init entities
     this.pools = new Pools(this);
     this.poolShares = new PoolShares(this);
@@ -41,3 +38,5 @@ export default class Service {
     }
   }
 }
+
+export const balancerSubgraphService = new BalancerSubgraphService();

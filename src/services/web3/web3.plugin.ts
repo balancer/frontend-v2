@@ -12,7 +12,6 @@ import {
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 import { PortisConnector } from './connectors/portis/portis.connector';
 import useFathom from '@/composables/useFathom';
-import getProvider from '@/lib/utils/provider';
 import { configService } from '../config/config.service';
 import { switchToAppNetwork } from './utils/helpers';
 
@@ -27,6 +26,7 @@ import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import i18n from '@/plugins/i18n';
+import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 
 export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
 export const SupportedWallets = [
@@ -97,7 +97,8 @@ export default {
 
     const provider = computed(
       () =>
-        pluginState.connector?.provider ?? getProvider(chainId.value.toString())
+        pluginState.connector?.provider ??
+        rpcProviderService.getJsonProvider(chainId.value.toString())
     );
     const signer = computed(() => pluginState.connector?.provider?.getSigner());
 
