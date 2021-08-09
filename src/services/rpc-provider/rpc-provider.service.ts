@@ -6,10 +6,13 @@ type NewBlockHandler = (blockNumber: number) => any;
 
 const _wsProvider = new WebSocketProvider(configService.network.ws);
 const _jsonProvider = new JsonRpcProvider(configService.network.rpc);
-const _alchemyProvider = new AlchemyProvider(
-  configService.network.chainId,
-  configService.env.ALCHEMY_KEY
-);
+const _alchemyProvider =
+  configService.network.chainId === 137
+    ? new AlchemyProvider(1, configService.env.ALCHEMY_KEY)
+    : new AlchemyProvider(
+        configService.network.chainId,
+        configService.env.ALCHEMY_KEY
+      );
 
 export default class RpcProviderService {
   network: string;
