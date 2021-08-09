@@ -97,8 +97,12 @@ export default {
       },
       allowanceContracts: [
         networkConfig.addresses.vault,
-        networkConfig.addresses.exchangeProxy,
-        GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
+        ...(networkConfig.addresses.exchangeProxy
+          ? [networkConfig.addresses.exchangeProxy]
+          : []),
+        ...(GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
+          ? [GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS]
+          : [])
       ]
     });
 
@@ -281,6 +285,8 @@ export default {
       contractAddress: string = networkConfig.addresses.vault
     ): string[] {
       return tokenAddresses.filter((address, index) => {
+        if (!contractAddress) return false;
+
         const amount = Number(amounts[index]);
         const allowance = bnum(allowances.value[contractAddress][address]);
 
