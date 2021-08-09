@@ -21,11 +21,13 @@ export const isNativeAssetWrap = (
 
 export const getWrapAction = (tokenIn: string, tokenOut: string): WrapType => {
   const nativeAddress = configService.network.nativeAsset.address;
-  const { weth } = configService.network.addresses;
+  const { weth, stETH, wstETH } = configService.network.addresses;
 
   if (tokenIn === nativeAddress && tokenOut === weth) return WrapType.Wrap;
+  if (tokenIn === stETH && tokenOut === wstETH) return WrapType.Wrap;
 
   if (tokenOut === nativeAddress && tokenIn === weth) return WrapType.Unwrap;
+  if (tokenOut === stETH && tokenIn === wstETH) return WrapType.Unwrap;
 
   return WrapType.NonWrap;
 };
@@ -39,6 +41,8 @@ export async function wrap(
   try {
     if (wrapper === configs[network].addresses.weth) {
       return wrapNative(network, web3, amount);
+    } else if (wrapper === configs[network].addresses.wstETH) {
+      return wrapLido(network, web3, amount);
     }
     throw new Error('Unrecognised wrapper contract');
   } catch (e) {
@@ -56,6 +60,8 @@ export async function unwrap(
   try {
     if (wrapper === configs[network].addresses.weth) {
       return unwrapNative(network, web3, amount);
+    } else if (wrapper === configs[network].addresses.wstETH) {
+      return unwrapLido(network, web3, amount);
     }
     throw new Error('Unrecognised wrapper contract');
   } catch (e) {
@@ -88,5 +94,31 @@ const unwrapNative = (
     configs[network].addresses.weth,
     ['function withdraw(uint256 wad)'],
     'withdraw',
+    [amount.toString()]
+  );
+
+const wrapLido = async (
+  network: string,
+  web3: Web3Provider,
+  amount: BigNumber
+): Promise<TransactionResponse> =>
+  sendTransaction(
+    web3,
+    configs[network].addresses.wstETH,
+    ['function wrap(uint256 _stETHAmount) returns (uint256)'],
+    'wrap',
+    [amount.toString()]
+  );
+
+const unwrapLido = async (
+  network: string,
+  web3: Web3Provider,
+  amount: BigNumber
+): Promise<TransactionResponse> =>
+  sendTransaction(
+    web3,
+    configs[network].addresses.wstETH,
+    ['function unwrap(uint256 _wstETHAmount) returns (uint256)'],
+    'unwrap',
     [amount.toString()]
   );

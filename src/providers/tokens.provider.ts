@@ -108,6 +108,7 @@ export default {
       allowanceContracts: [
         networkConfig.addresses.vault,
         networkConfig.addresses.exchangeProxy,
+        networkConfig.addresses.wstETH,
         GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
       ]
     });
