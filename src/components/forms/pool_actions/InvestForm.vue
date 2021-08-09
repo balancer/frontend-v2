@@ -157,13 +157,38 @@
           }"
           class="text-xs text-gray-500 underline"
         >
-          {{ $t('wrapInstruction', [nativeAsset]) }}
+          {{ $t('wrapInstruction', [nativeAsset, `W${nativeAsset}`]) }}
         </router-link>
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
           <div class="w-52" v-html="$t('ethBufferInstruction')" />
+        </BalTooltip>
+      </div>
+      <div v-else-if="isStETHPool" class="flex items-center mb-4">
+        <router-link
+          :to="{
+            name: 'trade',
+            params: {
+              assetIn: configService.network.addresses.stETH,
+              assetOut: configService.network.addresses.wstETH
+            }
+          }"
+          class="text-xs text-gray-500 underline"
+        >
+          {{
+            $t('wrapInstruction', [
+              symbolFor(configService.network.addresses.stETH),
+              symbolFor(configService.network.addresses.wstETH)
+            ])
+          }}
+        </router-link>
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
+          </template>
+          <div class="w-52" v-html="$t('wrapStEthTooltip')" />
         </BalTooltip>
       </div>
     </div>
@@ -279,6 +304,8 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
+import { configService } from '@/services/config/config.service';
+import { getAddress } from '@ethersproject/address';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -340,7 +367,9 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStablePool, isWethPool } = usePool(toRef(props, 'pool'));
+    const { isStablePool, isWethPool, isStETHPool } = usePool(
+      toRef(props, 'pool')
+    );
 
     const { amounts } = toRefs(data);
 
@@ -512,8 +541,8 @@ export default defineComponent({
         : [isPositive()];
     }
 
-    function symbolFor(token) {
-      return tokens.value[token]?.symbol || '';
+    function symbolFor(token: string) {
+      return tokens.value[getAddress(token)]?.symbol || '';
     }
 
     async function setPropMax() {
@@ -675,6 +704,7 @@ export default defineComponent({
       Goals,
       nativeAsset,
       TOKENS,
+      configService,
       // computed
       tokens,
       hasValidInputs,
@@ -698,6 +728,7 @@ export default defineComponent({
       isRequired,
       hasZeroBalance,
       isWethPool,
+      isStETHPool,
       isStablePool,
       // methods
       submit,

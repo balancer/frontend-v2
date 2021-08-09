@@ -341,7 +341,7 @@
     "withdrawalSuccess": "Your investment has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
     "withdrawWarning": "Withdrawing single asset amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees.",
     "wrap": "Wrap",
-    "wrapInstruction": "Wrap your {0} to W{0}",
+    "wrapInstruction": "Wrap your {0} to {1}",
     "unwrap": "Unwrap",
     "week": "Week",
     "weekAbbrev": "w",
@@ -350,6 +350,7 @@
     "withdraw": "Withdraw",
     "withdrawal": "Withdrawal",
     "withdrawFee": "Withdraw fee",
+    "wrapStEthTooltip": "This pool requires Wrapped Liquid Staked ETH 2.0 (wstETH). To maximize your investment, you could wrap some additional stETH.",
     "yearAbbrev": "y",
     "youDidIt": "You did it!",
     "yourTransactions": "Your transactions in this pool"
