@@ -37,6 +37,7 @@ export interface Config {
     weth: string;
     stETH: string;
     wstETH: string;
+    batchRelayer: string;
     balancerHelpers: string;
   };
   strategies: Record<

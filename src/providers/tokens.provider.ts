@@ -60,7 +60,11 @@ export interface TokensProviderResponse {
   injectTokens: Function;
   searchTokens: Function;
   hasBalance: Function;
-  approvalsRequired: Function;
+  approvalsRequired: (
+    tokenAddresses: string[],
+    amounts: string[],
+    contractAddress?: string
+  ) => string[];
   priceFor: Function;
   balanceFor: (address: string) => string;
   getTokens: Function;

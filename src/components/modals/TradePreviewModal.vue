@@ -23,12 +23,12 @@
       </div>
       <div>
         <div class="mt-6 mb-3 text-sm">
-          Requires {{ requiresApproval ? 2 : 1 }}
+          Requires {{ approvalTxCount }}
           {{ requiresApproval ? 'transactions' : 'transaction' }}:
         </div>
         <div>
           <div
-            v-if="requiresApproval"
+            v-if="requiresApproval && requiresBatchRelayerApproval"
             class="p-3 flex items-center border rounded-lg"
           >
             <div
@@ -39,7 +39,24 @@
             </div>
             <div class="ml-3">
               <span v-if="isApproved">{{ $t('approved') }}</span>
-              <span v-else>{{ $t('approve') }}</span>
+              <span v-else>{{ $t('approve') }} batch relayer</span>
+            </div>
+          </div>
+          <div
+            v-if="requiresApproval"
+            class="p-3 flex items-center border rounded-lg"
+          >
+            <div
+              class="w-9 h-9 flex items-center justify-center border rounded-full text-green-500"
+            >
+              <BalIcon v-if="isApproved" name="check" class="text-green-500" />
+              <span v-else class="text-gray-500 dark:text-gray-400">{{
+                requiresBatchRelayerApproval ? 2 : 1
+              }}</span>
+            </div>
+            <div class="ml-3">
+              <span v-if="isApproved">{{ $t('approved') }}</span>
+              <span v-else>{{ $t('approve') }} token</span>
             </div>
           </div>
           <div
@@ -48,10 +65,11 @@
             <div
               class="w-9 h-9 flex items-center justify-center border rounded-full dark:border-gray-700 text-gray-500 dark:text-gray-400"
             >
-              {{ requiresApproval ? 2 : 1 }}
+              {{ approvalTxCount }}
             </div>
             <div class="ml-3">
-              Trade {{ fNum(valueIn, 'usd') }} {{ symbolIn }} -> {{ symbolOut }}
+              {{ $t('trade') }} {{ fNum(valueIn, 'usd') }} {{ symbolIn }} ->
+              {{ symbolOut }}
             </div>
           </div>
         </div>
@@ -84,9 +102,14 @@
 import { defineComponent, toRefs, computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useWeb3 from '@/services/web3/useWeb3';
+import useBatchRelayerApproval from '@/composables/trade/useBatchRelayerApproval';
 import useTokens from '@/composables/useTokens';
+
+import useWeb3 from '@/services/web3/useWeb3';
+
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { configService } from '@/services/config/config.service';
+import { getAddress } from '@ethersproject/address';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -144,12 +167,19 @@ export default defineComponent({
       );
     });
 
-    const {
-      approving,
-      approveV1,
-      approveV2,
-      allowanceState
-    } = useTokenApproval(addressIn, amountIn, tokens);
+    const isStETHTrade = computed(
+      () =>
+        [addressIn.value, addressOut.value].includes(
+          getAddress(configService.network.addresses.stETH)
+        ) || true
+    );
+
+    const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
+
+    const batchRelayerApproval = useBatchRelayerApproval(
+      isStETHTrade.value,
+      amountIn
+    );
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 
@@ -171,24 +201,45 @@ export default defineComponent({
 
     const isEthTrade = computed(() => addressIn.value === NATIVE_ASSET_ADDRESS);
 
-    const requiresApproval = computed(() => {
-      if (isWrap.value || isUnwrap.value || isEthTrade.value) return false;
-      return true;
-    });
+    const requiresApproval = computed(() =>
+      isWrap.value || isUnwrap.value || isEthTrade.value ? false : true
+    );
 
-    const isApproved = computed(() => {
-      return isV1Swap.value
-        ? allowanceState.value.isUnlockedV1
-        : allowanceState.value.isUnlockedV2;
-    });
+    const requiresBatchRelayerApproval = computed(
+      () => (isStETHTrade.value && !batchRelayerApproval.isUnlocked) || true
+    );
+
+    const isApproved = computed(
+      () =>
+        (isV1Swap.value
+          ? tokenApproval.allowanceState.value.isUnlockedV1
+          : tokenApproval.allowanceState.value.isUnlockedV2) &&
+        batchRelayerApproval.isUnlocked
+    );
 
     async function approve(): Promise<void> {
-      if (isV1Swap.value) {
-        await approveV1();
+      if (requiresBatchRelayerApproval.value) {
+        await batchRelayerApproval.approve();
       } else {
-        await approveV2();
+        if (isV1Swap.value) {
+          await tokenApproval.approveV1();
+        } else {
+          await tokenApproval.approveV2();
+        }
       }
     }
+
+    const approving = computed(
+      () =>
+        tokenApproval.approving.value || batchRelayerApproval.approving.value
+    );
+
+    const approvalTxCount = computed(() => {
+      if (requiresApproval.value) {
+        return requiresBatchRelayerApproval.value ? 3 : 2;
+      }
+      return 1;
+    });
 
     function trade() {
       emit('trade');
@@ -199,16 +250,21 @@ export default defineComponent({
     }
 
     return {
+      // methods
       fNum,
+      onClose,
+      approve,
+      trade,
+      // computed
       requiresApproval,
+      requiresBatchRelayerApproval,
       isApproved,
       valueIn,
       symbolIn,
       symbolOut,
-      onClose,
-      approve,
       approving,
-      trade
+      batchRelayerApproval,
+      approvalTxCount
     };
   }
 });
