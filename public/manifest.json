@@ -1,7 +1,7 @@
 {
   "short_name": "Balancer",
   "name": "Balancer",
-  "description": "Exchange tokens and manage liquidity from your Gnosis Safe",
+  "description": "Swap tokens and manage your assets on Balancer Protocol",
   "providedBy": {
     "name": "Balancer Labs",
     "url": "https://balancer.fi"
