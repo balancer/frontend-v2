@@ -205,11 +205,11 @@ export default defineComponent({
       isNativeWrap.value || isUnwrap.value || isEthTrade.value ? false : true
     );
 
+    const isBatchRelayerApproved = computed(
+      () => batchRelayerApproval.isUnlocked.value
+    );
     const requiresBatchRelayerApproval = computed(
-      () =>
-        requiresTokenApproval.value &&
-        isStETHTrade.value &&
-        !batchRelayerApproval.isUnlocked.value
+      () => isStETHTrade.value && !isBatchRelayerApproved.value
     );
 
     const requiresApproval = computed(
@@ -229,10 +229,6 @@ export default defineComponent({
       }
       return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
     });
-
-    const isBatchRelayerApproved = computed(
-      () => batchRelayerApproval.isUnlocked.value
-    );
 
     const isApproved = computed(
       () => isTokenApproved.value || isBatchRelayerApproved.value
