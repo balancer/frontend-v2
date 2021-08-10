@@ -146,10 +146,9 @@ export class PriceService {
       {}
     );
     const entries = Object.entries(results);
-    const parsedEntries = entries.map(result => [
-      this.addressMapOut(result[0]),
-      result[1]
-    ]);
+    const parsedEntries = entries
+      .filter(result => Object.keys(result[1]).length > 0)
+      .map(result => [this.addressMapOut(result[0]), result[1]]);
     return Object.fromEntries(parsedEntries);
   }
 
