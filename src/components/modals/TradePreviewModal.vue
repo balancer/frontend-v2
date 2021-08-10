@@ -111,11 +111,14 @@ import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useBatchRelayerApproval from '@/composables/trade/useBatchRelayerApproval';
 import useTokens from '@/composables/useTokens';
 
-import useWeb3 from '@/services/web3/useWeb3';
-
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from '@ethersproject/address';
+import {
+  getWrapAction,
+  isNativeAssetWrap,
+  WrapType
+} from '@/lib/utils/balancer/wrapper';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -155,29 +158,23 @@ export default defineComponent({
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
     const { tokens } = useTokens();
-    const { userNetworkConfig } = useWeb3();
 
-    const isWrap = computed(() => {
-      const config = userNetworkConfig.value;
-      return (
-        addressIn.value === NATIVE_ASSET_ADDRESS &&
-        addressOut.value === config.addresses.weth
-      );
-    });
-
-    const isUnwrap = computed(() => {
-      const config = userNetworkConfig.value;
-      return (
-        addressOut.value === NATIVE_ASSET_ADDRESS &&
-        addressIn.value === config.addresses.weth
-      );
-    });
+    const wrapType = computed(() =>
+      getWrapAction(addressIn.value, addressOut.value)
+    );
+    const isWrap = computed(() => wrapType.value === WrapType.Wrap);
+    const isNativeWrap = computed(() =>
+      isNativeAssetWrap(addressIn.value, addressOut.value)
+    );
+    const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
 
     const isStETHTrade = computed(
       () =>
-        [addressIn.value, addressOut.value].includes(
+        ([addressIn.value, addressOut.value].includes(
           getAddress(configService.network.addresses.stETH)
-        ) || true
+        ) &&
+          wrapType.value === WrapType.NonWrap) ||
+        true
     );
 
     const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
@@ -208,7 +205,7 @@ export default defineComponent({
     const isEthTrade = computed(() => addressIn.value === NATIVE_ASSET_ADDRESS);
 
     const requiresTokenApproval = computed(() =>
-      isWrap.value || isUnwrap.value || isEthTrade.value ? false : true
+      isNativeWrap.value || isUnwrap.value || isEthTrade.value ? false : true
     );
 
     const requiresBatchRelayerApproval = computed(
@@ -223,11 +220,19 @@ export default defineComponent({
       () => requiresTokenApproval.value || requiresBatchRelayerApproval.value
     );
 
-    const isTokenApproved = computed(() =>
-      isV1Swap.value
-        ? tokenApproval.allowanceState.value.isUnlockedV1
-        : tokenApproval.allowanceState.value.isUnlockedV2
-    );
+    const isTokenApproved = computed(() => {
+      const {
+        approvedSpenders,
+        isUnlockedV1,
+        isUnlockedV2
+      } = tokenApproval.allowanceState.value;
+      if (isWrap.value && !isNativeWrap.value) {
+        // If we're wrapping a token other than native ETH
+        // we need to approve the underlying on the wrapper
+        return approvedSpenders[addressOut.value];
+      }
+      return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
+    });
 
     const isBatchRelayerApproved = computed(
       () => batchRelayerApproval.isUnlocked.value
@@ -242,7 +247,11 @@ export default defineComponent({
     }
 
     async function approveToken(): Promise<void> {
-      if (isV1Swap.value) {
+      if (isWrap.value && !isNativeWrap.value) {
+        // If we're wrapping a token other than native ETH
+        // we need to approve the underlying on the wrapper
+        await tokenApproval.approveSpender(addressOut.value);
+      } else if (isV1Swap.value) {
         await tokenApproval.approveV1();
       } else {
         await tokenApproval.approveV2();

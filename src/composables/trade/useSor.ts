@@ -15,7 +15,7 @@ import { SubgraphPoolBase } from '@balancer-labs/sor2';
 import { useI18n } from 'vue-i18n';
 
 import { scale, bnum } from '@/lib/utils';
-import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
+import { unwrap, wrap, WrapType } from '@/lib/utils/balancer/wrapper';
 import {
   SorManager,
   SorReturn,
@@ -54,8 +54,7 @@ type Props = {
   tokenOutAddressInput: Ref<string>;
   tokenOutAmountInput: Ref<string>;
   tokens: Ref<TokenInfoMap>;
-  isWrap: Ref<boolean>;
-  isUnwrap: Ref<boolean>;
+  wrapType: Ref<WrapType>;
   tokenInAmountScaled?: ComputedRef<BigNumber>;
   tokenOutAmountScaled?: ComputedRef<BigNumber>;
   sorConfig?: {
@@ -76,8 +75,7 @@ export default function useSor({
   tokenOutAddressInput,
   tokenOutAmountInput,
   tokens,
-  isWrap,
-  isUnwrap,
+  wrapType,
   tokenInAmountScaled,
   tokenOutAmountScaled,
   sorConfig = {
@@ -217,7 +215,7 @@ export default function useSor({
       return;
     }
 
-    if (isWrap.value || isUnwrap.value) {
+    if (wrapType.value !== WrapType.NonWrap) {
       tokenInAmountInput.value = amount;
       tokenOutAmountInput.value = amount;
       sorReturn.value.hasSwaps = false;
@@ -405,11 +403,12 @@ export default function useSor({
     const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
     const tokenInAmountScaled = scale(tokenInAmountNumber, tokenInDecimals);
 
-    if (isWrap.value) {
+    if (wrapType.value == WrapType.Wrap) {
       try {
         const tx = await wrap(
           String(userNetworkConfig.value.chainId),
           provider.value as any,
+          tokenOutAddress,
           tokenInAmountScaled
         );
         console.log('Wrap tx', tx);
@@ -425,11 +424,12 @@ export default function useSor({
         confirming.value = false;
       }
       return;
-    } else if (isUnwrap.value) {
+    } else if (wrapType.value == WrapType.Unwrap) {
       try {
         const tx = await unwrap(
           String(userNetworkConfig.value.chainId),
           provider.value as any,
+          tokenInAddress,
           tokenInAmountScaled
         );
         console.log('Unwrap tx', tx);
