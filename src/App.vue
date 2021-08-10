@@ -32,6 +32,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 
 import Notifications from '@/components/notifications/Notifications.vue';
+import { tryPromiseWithTimeout } from './lib/utils/promise';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -41,12 +42,12 @@ const isGnosisSafeApp = async (): Promise<boolean> => {
 
   // Try to connect to the Gnosis UI by querying Safe info
   // If we get no response then we're not in a Safe app
-  const safe = await Promise.race([
-    new SafeAppsSDK().safe.getInfo(),
-    new Promise<undefined>(resolve => setTimeout(resolve, 1000))
-  ]);
-
-  return !!safe;
+  try {
+    await tryPromiseWithTimeout(new SafeAppsSDK().safe.getInfo(), 1000);
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 export default defineComponent({

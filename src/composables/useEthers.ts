@@ -3,7 +3,10 @@ import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/providers';
-import { retryPromiseWithDelay } from '@/lib/utils/promise';
+import {
+  retryPromiseWithDelay,
+  tryPromiseWithTimeout
+} from '@/lib/utils/promise';
 
 import useBlocknative from './useBlocknative';
 import useTransactions from './useTransactions';
@@ -36,13 +39,16 @@ export default function useEthers() {
     try {
       // Sometimes this will throw if we're talking to a service
       // in front of the RPC that hasn't picked up the tx yet (e.g. Gnosis)
-      const receipt = await retryPromiseWithDelay(tx.wait(), 10, 5000);
+      const receipt = await retryPromiseWithDelay(tx.wait(), 5, 5000);
 
       let txHash = tx.hash;
       try {
         // If we're using a Gnosis safe then the transaction we were tracking is really a "SafeTx"
         // We need to query the backend to get the actual transaction hash for the block explorer link
-        const realTx = await new SafeAppsSDK().txs.getBySafeTxHash(tx.hash);
+        const realTx = await tryPromiseWithTimeout(
+          new SafeAppsSDK().txs.getBySafeTxHash(tx.hash),
+          1000
+        );
         if (realTx.txHash !== null) {
           txHash = realTx.txHash;
           updateTransaction(tx.hash, 'tx', {

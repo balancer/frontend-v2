@@ -17,3 +17,13 @@ export async function retryPromiseWithDelay(
     return retryPromiseWithDelay(promise, retryCount - 1, delayTime);
   }
 }
+
+export async function tryPromiseWithTimeout<T>(
+  promise: Promise<T>,
+  timeout: number
+): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(reject, timeout))
+  ]);
+}
