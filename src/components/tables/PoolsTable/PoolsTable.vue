@@ -165,7 +165,11 @@ export default defineComponent({
         accessor: pool => fNum(pool.totalLiquidity, 'usd'),
         align: 'right',
         id: 'poolValue',
-        sortKey: pool => Number(pool.totalLiquidity),
+        sortKey: pool => {
+          const apr = Number(pool.totalLiquidity);
+          if (apr === Infinity || isNaN(apr)) return 0;
+          return apr;
+        },
         width: 150
       },
       {
@@ -173,7 +177,11 @@ export default defineComponent({
         accessor: pool => fNum(pool.dynamic.volume, 'usd'),
         align: 'right',
         id: 'poolVolume',
-        sortKey: pool => Number(pool.dynamic.volume),
+        sortKey: pool => {
+          const apr = Number(pool.dynamic.volume);
+          if (apr === Infinity || isNaN(apr)) return 0;
+          return apr;
+        },
         width: 175
       },
       {
