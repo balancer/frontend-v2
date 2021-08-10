@@ -1,10 +1,10 @@
 import { sleep } from '.';
 
-export async function retryPromiseWithDelay(
-  promise: Promise<any>,
+export async function retryPromiseWithDelay<T>(
+  promise: Promise<T>,
   retryCount: number,
   delayTime: number
-) {
+): Promise<T> {
   try {
     return await promise;
   } catch (e) {
