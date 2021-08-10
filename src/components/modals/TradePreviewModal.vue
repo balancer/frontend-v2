@@ -116,11 +116,7 @@ import useTokens from '@/composables/useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from '@ethersproject/address';
-import {
-  getWrapAction,
-  isNativeAssetWrap,
-  WrapType
-} from '@/lib/utils/balancer/wrapper';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -165,9 +161,6 @@ export default defineComponent({
       getWrapAction(addressIn.value, addressOut.value)
     );
     const isWrap = computed(() => wrapType.value === WrapType.Wrap);
-    const isNativeWrap = computed(() =>
-      isNativeAssetWrap(addressIn.value, addressOut.value)
-    );
     const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
 
     const isStETHTrade = computed(
@@ -202,7 +195,7 @@ export default defineComponent({
     const isEthTrade = computed(() => addressIn.value === NATIVE_ASSET_ADDRESS);
 
     const requiresTokenApproval = computed(() =>
-      isNativeWrap.value || isUnwrap.value || isEthTrade.value ? false : true
+      isUnwrap.value || isEthTrade.value ? false : true
     );
 
     const isBatchRelayerApproved = computed(
@@ -222,7 +215,7 @@ export default defineComponent({
         isUnlockedV1,
         isUnlockedV2
       } = tokenApproval.allowanceState.value;
-      if (isWrap.value && !isNativeWrap.value) {
+      if (isWrap.value && !isEthTrade.value) {
         // If we're wrapping a token other than native ETH
         // we need to approve the underlying on the wrapper
         return Number(approvedSpenders[addressOut.value]) > Number(amountIn);
@@ -239,7 +232,7 @@ export default defineComponent({
     }
 
     async function approveToken(): Promise<void> {
-      if (isWrap.value && !isNativeWrap.value) {
+      if (isWrap.value && !isEthTrade.value) {
         // If we're wrapping a token other than native ETH
         // we need to approve the underlying on the wrapper
         await tokenApproval.approveSpender(addressOut.value);
