@@ -19,7 +19,7 @@ export function logFailedTx(
   overrides.gasPrice = sender;
   const dummyPrivateKey =
     '0x651bd555534625dc2fd85e13369dc61547b2e3f2cfc8b98cee868b449c17a4d6';
-  const provider = rpcProviderService.alchemyProvider;
+  const provider = rpcProviderService.loggingProvider;
   const dummyWallet = new Wallet(dummyPrivateKey).connect(provider);
   const loggingContract = contract.connect(dummyWallet);
   loggingContract[action](...params, overrides);

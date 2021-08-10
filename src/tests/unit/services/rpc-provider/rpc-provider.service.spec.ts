@@ -1,9 +1,5 @@
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
-import {
-  AlchemyProvider,
-  JsonRpcProvider,
-  WebSocketProvider
-} from '@ethersproject/providers';
+import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
 import { mocked } from 'ts-jest/utils';
 
 jest.mock('@ethersproject/providers', () => {
@@ -13,9 +9,6 @@ jest.mock('@ethersproject/providers', () => {
     }),
     WebSocketProvider: jest.fn().mockImplementation(() => {
       return {};
-    }),
-    AlchemyProvider: jest.fn().mockImplementation(() => {
-      return {};
     })
   };
 });
@@ -23,12 +16,10 @@ jest.mock('@ethersproject/providers', () => {
 describe('RPC provider service', () => {
   const MockedJsonRpcProvider = mocked(JsonRpcProvider, true);
   const MockedWebSocketProvider = mocked(WebSocketProvider, true);
-  const MockedAlchemyProvider = mocked(AlchemyProvider, true);
 
   beforeEach(() => {
     MockedJsonRpcProvider.mockClear();
     MockedWebSocketProvider.mockClear();
-    MockedAlchemyProvider.mockClear();
   });
 
   it('Instantiates the provider service', () => {
@@ -38,16 +29,12 @@ describe('RPC provider service', () => {
 
   it('Calls the JsonProvider constructor', () => {
     new RpcProviderService();
-    expect(JsonRpcProvider).toHaveBeenCalledTimes(1);
+    // Expect 2 calls since logging provider is also a JSON provider
+    expect(JsonRpcProvider).toHaveBeenCalledTimes(2);
   });
 
   it('Calls the WebSocketProvider constructor', () => {
     new RpcProviderService();
     expect(WebSocketProvider).toHaveBeenCalledTimes(1);
-  });
-
-  it('Calls the AlchemyProvider constructor', () => {
-    new RpcProviderService();
-    expect(AlchemyProvider).toHaveBeenCalledTimes(1);
   });
 });

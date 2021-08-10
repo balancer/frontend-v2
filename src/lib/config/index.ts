@@ -16,6 +16,7 @@ export interface Config {
   rpc: string;
   publicRpc?: string;
   ws: string;
+  loggingRpc: string;
   explorer: string;
   subgraph: string;
   poolsUrlV1: string;
