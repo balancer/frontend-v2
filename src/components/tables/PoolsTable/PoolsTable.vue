@@ -182,7 +182,11 @@ export default defineComponent({
         accessor: pool => pool.dynamic.apr.total,
         align: 'right',
         id: 'poolApr',
-        sortKey: pool => Number(pool.dynamic.apr.total),
+        sortKey: pool => {
+          const apr = Number(pool.dynamic.apr.total);
+          if (apr === Infinity || isNaN(apr)) return 0;
+          return apr;
+        },
         width: 150
       }
     ]);
