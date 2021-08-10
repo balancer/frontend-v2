@@ -209,7 +209,7 @@ export default defineComponent({
       () =>
         requiresTokenApproval.value &&
         isStETHTrade.value &&
-        !batchRelayerApproval.isUnlocked
+        !batchRelayerApproval.isUnlocked.value
     );
 
     const requiresApproval = computed(
