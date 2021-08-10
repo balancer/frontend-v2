@@ -73,7 +73,7 @@
         </div>
       </div>
       <BalBtn
-        v-if="requiresBatchRelayerApproval && !isApproved"
+        v-if="requiresBatchRelayerApproval && !isBatchRelayerApproved"
         class="mt-5"
         :label="$t('approveBatchRelayer')"
         :loading="approvingBatchRelayer"
@@ -223,10 +223,6 @@ export default defineComponent({
       return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
     });
 
-    const isApproved = computed(
-      () => isTokenApproved.value || isBatchRelayerApproved.value
-    );
-
     async function approveBatchRelayer(): Promise<void> {
       await batchRelayerApproval.approve();
     }
@@ -277,7 +273,6 @@ export default defineComponent({
       requiresBatchRelayerApproval,
       isTokenApproved,
       isBatchRelayerApproved,
-      isApproved,
       valueIn,
       symbolIn,
       symbolOut,
