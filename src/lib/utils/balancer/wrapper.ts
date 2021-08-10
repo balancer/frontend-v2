@@ -65,7 +65,7 @@ export async function unwrap(
     }
     throw new Error('Unrecognised wrapper contract');
   } catch (e) {
-    console.log('[Wrapper] Wrap error:', e);
+    console.log('[Wrapper] Unwrap error:', e);
     return Promise.reject(e);
   }
 }
