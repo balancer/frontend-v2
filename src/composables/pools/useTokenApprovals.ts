@@ -48,7 +48,7 @@ export default function useTokenApprovals(
   async function approveAllowances(): Promise<void> {
     try {
       approving.value = true;
-      const tokenAddress = tokenAddresses[0];
+      const tokenAddress = requiredAllowances.value[0];
 
       const txs = await approveTokens(
         getProvider(),

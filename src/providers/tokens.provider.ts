@@ -9,7 +9,7 @@ import {
   ComputedRef,
   onBeforeMount
 } from 'vue';
-import { pick } from 'lodash';
+import { compact, pick } from 'lodash';
 import { getAddress, isAddress } from '@ethersproject/address';
 
 import { bnum } from '@/lib/utils';
@@ -105,12 +105,12 @@ export default {
       injectedTokens: {
         [networkConfig.nativeAsset.address]: nativeAsset
       },
-      allowanceContracts: [
+      allowanceContracts: compact([
         networkConfig.addresses.vault,
-        networkConfig.addresses.exchangeProxy,
         networkConfig.addresses.wstETH,
+        networkConfig.addresses.exchangeProxy,
         GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
-      ]
+      ])
     });
 
     /**
@@ -292,6 +292,8 @@ export default {
       contractAddress: string = networkConfig.addresses.vault
     ): string[] {
       return tokenAddresses.filter((address, index) => {
+        if (!contractAddress) return false;
+
         const amount = Number(amounts[index]);
         const allowance = bnum(allowances.value[contractAddress][address]);
 

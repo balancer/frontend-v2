@@ -117,7 +117,11 @@ export class PriceService {
     const requests: Promise<HistoricalPriceResponse>[] = [];
 
     addresses.forEach(address => {
-      const endpoint = `/coins/${this.platformId}/contract/${address}/market_chart/range?vs_currency=${this.fiatParam}&from=${start}&to=${end}`;
+      const endpoint = `/coins/${
+        this.platformId
+      }/contract/${address.toLowerCase()}/market_chart/range?vs_currency=${
+        this.fiatParam
+      }&from=${start}&to=${end}`;
       const request = retryPromiseWithDelay(
         this.client.get<HistoricalPriceResponse>(endpoint),
         3, // retryCount
