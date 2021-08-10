@@ -1,29 +1,19 @@
 import { WebSocketProvider, JsonRpcProvider } from '@ethersproject/providers';
 import ConfigService, { configService } from '@/services/config/config.service';
-import { AlchemyProvider } from '@ethersproject/providers';
 
 type NewBlockHandler = (blockNumber: number) => any;
 
-const _wsProvider = new WebSocketProvider(configService.network.ws);
-const _jsonProvider = new JsonRpcProvider(configService.network.rpc);
-const _alchemyProvider =
-  configService.network.chainId === 137
-    ? new AlchemyProvider(1, configService.env.ALCHEMY_KEY)
-    : new AlchemyProvider(
-        configService.network.chainId,
-        configService.env.ALCHEMY_KEY
-      );
-
 export default class RpcProviderService {
-  network: string;
+  readonly network: string;
+  jsonProvider: JsonRpcProvider;
+  wsProvider: WebSocketProvider;
+  loggingProvider: JsonRpcProvider;
 
-  constructor(
-    private readonly config: ConfigService = configService,
-    readonly wsProvider: WebSocketProvider = _wsProvider,
-    readonly jsonProvider: JsonRpcProvider = _jsonProvider,
-    readonly alchemyProvider: AlchemyProvider = _alchemyProvider
-  ) {
+  constructor(private readonly config: ConfigService = configService) {
     this.network = this.config.network.shortName;
+    this.jsonProvider = new JsonRpcProvider(this.config.network.rpc);
+    this.wsProvider = new WebSocketProvider(this.config.network.ws);
+    this.loggingProvider = new JsonRpcProvider(this.config.network.loggingRpc);
   }
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {

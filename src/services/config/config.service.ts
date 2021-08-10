@@ -33,6 +33,8 @@ export default class ConfigService {
   }
 
   public getNetworkConfig(key: string): Config {
+    if (!Object.keys(configs).includes(key))
+      throw new Error(`No config for network key: ${key}`);
     return configs[key];
   }
 }
