@@ -29,7 +29,6 @@ import useUserSettings from '@/composables/useUserSettings';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
-import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import { tokenService } from '@/services/token/token.service';
 import { configService } from '@/services/config/config.service';
 
@@ -117,8 +116,7 @@ export default {
       allowanceContracts: compact([
         networkConfig.addresses.vault,
         networkConfig.addresses.wstETH,
-        networkConfig.addresses.exchangeProxy,
-        GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
+        networkConfig.addresses.exchangeProxy
       ])
     });
 

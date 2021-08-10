@@ -97,7 +97,8 @@ import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
-import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
@@ -133,6 +134,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
     const { fNum } = useNumbers();
     const { appNetworkConfig } = useWeb3();
+    const { tokens } = useTokens();
 
     // DATA
     const exactIn = ref(true);
@@ -188,7 +190,7 @@ export default defineComponent({
       return hasValidationErrors || hasGnosisErrors || hasBalancerErrors;
     });
 
-    useTokenApprovalGP(tokenInAddress, tokenInAmount);
+    useTokenApproval(tokenInAddress, tokenInAmount, tokens);
 
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {

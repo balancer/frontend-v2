@@ -168,19 +168,38 @@
         block
         @actionClick="cofirmPriceUpdate"
       />
-      <div v-if="trading.requiresApproval.value" class="flex justify-between">
+      <BalBtn
+        v-if="!isGPUnlocked || !approvedGP"
+        color="gradient"
+        block
+        :disabled="isGPUnlocked"
+        @click.prevent="approveGP"
+        :loading="approvingGP"
+        :loading-label="`${$t('approving')}...`"
+      >
+        {{ $t('approveGP') }}
+      </BalBtn>
+      <div
+        v-else-if="trading.requiresApproval.value"
+        class="flex justify-between"
+      >
         <BalBtn
-          v-if="!isUnlocked || approved"
-          :loading="approving"
+          v-if="!isVaultUnlocked || approvedVault"
+          :loading="approvingVault"
           :loading-label="`${$t('approving')}...`"
           color="gradient"
           block
-          :disabled="isUnlocked"
-          @click.prevent="approve"
+          :disabled="isVaultUnlocked"
+          @click.prevent="approveVault"
           class="mr-5"
         >
-          <div :class="['button-step', { 'button-step-disabled': isUnlocked }]">
-            <template v-if="isUnlocked">
+          <div
+            :class="[
+              'button-step',
+              { 'button-step-disabled': isVaultUnlocked }
+            ]"
+          >
+            <template v-if="isVaultUnlocked">
               <BalIcon
                 name="check"
                 size="sm"
@@ -200,8 +219,11 @@
           :disabled="tradeDisabled"
         >
           <div
-            v-if="!isUnlocked || approved"
-            :class="['button-step', { 'button-step-disabled': !isUnlocked }]"
+            v-if="!isVaultUnlocked || approvedVault"
+            :class="[
+              'button-step',
+              { 'button-step-disabled': !isVaultUnlocked }
+            ]"
           >
             2
           </div>
@@ -242,7 +264,9 @@ import { mapValues } from 'lodash';
 
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers from '@/composables/useNumbers';
-import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import useGPApproval from '@/composables/trade/useGPApproval';
+import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useTokens from '@/composables/useTokens';
 import { TradeQuote } from '@/composables/trade/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -270,6 +294,7 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const { fNum, toFiat } = useNumbers();
+    const { tokens } = useTokens();
     const { blockNumber } = useWeb3();
     const lastQuote = ref<TradeQuote | null>(
       props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
@@ -319,7 +344,7 @@ export default defineComponent({
 
     const tradeDisabled = computed(
       () =>
-        (props.trading.requiresApproval.value && !isUnlocked.value) ||
+        (props.trading.requiresApproval.value && !isVaultUnlocked.value) ||
         showPriceUpdateError.value
     );
 
@@ -460,10 +485,20 @@ export default defineComponent({
       };
     });
 
-    const { approving, isUnlocked, approve, approved } = useTokenApprovalGP(
-      addressIn,
-      props.trading.tokenInAmountInput
-    );
+    const {
+      allowanceState,
+      approved: approvedVault,
+      approving: approvingVault,
+      approveV2: approveVault
+    } = useTokenApproval(addressIn, props.trading.tokenInAmountInput, tokens);
+    const isVaultUnlocked = computed(() => allowanceState.value.isUnlockedV2);
+
+    const {
+      approved: approvedGP,
+      approving: approvingGP,
+      approve: approveGP,
+      isUnlocked: isGPUnlocked
+    } = useGPApproval();
 
     // METHODS
     function trade() {
@@ -516,14 +551,18 @@ export default defineComponent({
       // methods
       fNum,
       onClose,
-      approve,
+      approveVault,
+      approveGP,
       trade,
       cofirmPriceUpdate,
 
       // computed
-      isUnlocked,
-      approving,
-      approved,
+      isVaultUnlocked,
+      approvingVault,
+      approvedVault,
+      isGPUnlocked,
+      approvingGP,
+      approvedGP,
       tokenInFiatValue,
       tokenOutFiatValue,
       summary,
