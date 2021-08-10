@@ -1,7 +1,6 @@
 import { lsGet, lsSet } from '@/lib/utils';
 import i18n from '@/plugins/i18n';
 import { LiquiditySelection } from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { APP } from '@/constants/app';
 
 export enum TradeInterface {
   GNOSIS = 'gnosis',
@@ -25,9 +24,7 @@ const state: AppState = {
   slippage: '0.01',
   tradeLiquidity: LiquiditySelection.Best,
   transactionDeadline: 20, // 20 minutes
-  tradeInterface: APP.IsGnosisIntegration
-    ? TradeInterface.GNOSIS
-    : TradeInterface.BALANCER
+  tradeInterface: TradeInterface.BALANCER
 };
 
 const actions = {
@@ -83,9 +80,7 @@ const mutations = {
     state: AppState,
     tradeInterface: AppState['tradeInterface']
   ) {
-    if (APP.IsGnosisIntegration) {
-      state.tradeInterface = tradeInterface;
-    }
+    state.tradeInterface = tradeInterface;
   },
 
   setTransactionDeadline(
