@@ -144,9 +144,10 @@ export async function getCurrentRewardsEstimate(
         incentive =>
           incentive.token_address ==
           coingeckoService.prices
-            .addressMapOut(TOKENS.AddressMap.BAL)
+            .addressMapOut(TOKENS.AddressMap[String(network)].BAL)
             .toLowerCase()
       );
+
       const rewards = liquidityProviders
         .reduce(
           (total, { current_estimate }) => total.plus(current_estimate),
