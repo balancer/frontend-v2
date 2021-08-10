@@ -46,7 +46,15 @@ const QUERY_KEYS = {
       'account',
       'profile',
       { account, userNetwork }
-    ]
+    ],
+    Approvals: {
+      BatchRelayer: (account: Ref<string>) => [
+        'account',
+        'approvals',
+        'batchRelayer',
+        { account }
+      ]
+    }
   },
   App: {
     Chains: ['evm_chains']

@@ -18,7 +18,7 @@ type QueryResponse = ContractAllowancesMap;
  */
 export default function useAllowancesQuery(
   tokens: Ref<TokenInfoMap> = ref({}),
-  contractAddesses: Ref<string[]> = ref([]),
+  contractAddresses: Ref<string[]> = ref([]),
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
@@ -37,14 +37,14 @@ export default function useAllowancesQuery(
    * QUERY INPUTS
    */
   const queryKey = reactive(
-    QUERY_KEYS.Account.Allowances(account, contractAddesses, tokenAddresses)
+    QUERY_KEYS.Account.Allowances(account, contractAddresses, tokenAddresses)
   );
 
   const queryFn = async () => {
     console.log('Fetching', tokenAddresses.value.length, 'allowances');
     return await tokenService.allowances.get(
       account.value,
-      contractAddesses.value,
+      contractAddresses.value,
       tokens.value
     );
   };

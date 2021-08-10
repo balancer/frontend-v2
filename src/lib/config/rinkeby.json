@@ -35,7 +35,7 @@
     "weth": "0xc778417e063141139fce010982780140aa0cd5ab",
     "stETH": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
     "wstETH": "0xba453033d328bfdd7799a4643611b616d80ddd97",
-    "batchRelayer": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+    "batchRelayer": "0x2C606C7D152D745633665F4De17F34c213BCCA2F",
     "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d"
   },
   "strategies": {

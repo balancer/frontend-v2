@@ -1,20 +1,18 @@
 import { computed, Ref, ref } from 'vue';
-import { parseUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 
-import { approveTokens } from '@/lib/utils/balancer/tokens';
-
 import useWeb3 from '@/services/web3/useWeb3';
-
-import useTokens from '@/composables/useTokens';
 
 import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
 import { configService } from '@/services/config/config.service';
-import { getAddress } from 'ethers/lib/utils';
 
-const stETHAddress = configService.network.addresses.stETH;
-const batchRelayerAddress = configService.network.addresses.stETH;
+import vaultAbi from '@/lib/abi/Vault.json';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
+import useBatchRelayerApprovalQuery from '../queries/useBatchRelayerApprovalQuery';
+
+const batchRelayerAddress = configService.network.addresses.batchRelayer;
+const vaultAddress = configService.network.addresses.vault;
 
 export default function useBatchRelayerApproval(
   isStETHTrade: boolean,
@@ -29,16 +27,17 @@ export default function useBatchRelayerApproval(
   /**
    * COMPOSABLES
    */
-  const { getProvider } = useWeb3();
-  const provider = getProvider();
+  const { getProvider, account } = useWeb3();
+
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
-  const { tokens, approvalsRequired, dynamicDataLoading } = useTokens();
+  const batchRelayerApproval = useBatchRelayerApprovalQuery();
 
   /**
    * COMPUTED
    */
+
   const allowanceState = computed(() => {
     if (!isStETHTrade || !amount.value || approved.value) {
       return {
@@ -46,16 +45,8 @@ export default function useBatchRelayerApproval(
       };
     }
 
-    const tokenInDecimals = tokens.value[getAddress(stETHAddress)].decimals;
-
-    const requiredApprovals = approvalsRequired(
-      [getAddress(stETHAddress)],
-      [parseUnits(amount.value, tokenInDecimals).toString()],
-      batchRelayerAddress
-    );
-
     return {
-      isUnlocked: requiredApprovals.length === 0
+      isUnlocked: !!batchRelayerApproval.data.value
     };
   });
 
@@ -70,9 +61,13 @@ export default function useBatchRelayerApproval(
     );
     approving.value = true;
     try {
-      const [tx] = await approveTokens(provider, batchRelayerAddress, [
-        stETHAddress
-      ]);
+      const tx = await sendTransaction(
+        getProvider(),
+        configService.network.addresses.vault,
+        vaultAbi,
+        'setRelayerApproval',
+        [account.value, batchRelayerAddress, true]
+      );
 
       addTransaction({
         id: tx.hash,
@@ -80,7 +75,7 @@ export default function useBatchRelayerApproval(
         action: 'approve',
         summary: t('transactionSummary.approveBatchRelayer'),
         details: {
-          tokenAddress: stETHAddress,
+          contractAddress: vaultAddress,
           spender: batchRelayerAddress
         }
       });
@@ -104,7 +99,6 @@ export default function useBatchRelayerApproval(
     approve,
     approved,
     allowanceState,
-    isUnlocked,
-    isLoading: dynamicDataLoading
+    isUnlocked
   };
 }

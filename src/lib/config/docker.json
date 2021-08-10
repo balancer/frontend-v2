@@ -32,7 +32,7 @@
     "weth": "0x6c37Fa9557C135dF4323004D3f0549f3e94F112D",
     "stETH": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
     "wstETH": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
-    "batchRelayer": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+    "batchRelayer": "0x2C606C7D152D745633665F4De17F34c213BCCA2F",
     "MockFlashLoanReceiver": "",
     "balancerHelpers": ""
   },

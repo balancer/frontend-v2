@@ -114,7 +114,7 @@ export default function useTokenApproval(
         tokens.value[tokenInAddress.value].symbol
       ]),
       details: {
-        tokenAddress: tokenInAddress.value,
+        contractAddress: tokenInAddress.value,
         spender
       }
     });

@@ -28,7 +28,7 @@
         </div>
         <div>
           <div v-if="requiresBatchRelayerApproval" class="mb-3 card-container">
-            <div class="card-content text-green-500">
+            <div class="card-step text-green-500">
               <BalIcon
                 v-if="isBatchRelayerApproved"
                 name="check"
@@ -37,12 +37,14 @@
               <span v-else class="text-gray-500 dark:text-gray-400">1</span>
             </div>
             <div class="ml-3">
-              <span v-if="isBatchRelayerApproved">{{ $t('approved') }}</span>
+              <span v-if="isBatchRelayerApproved">{{
+                $t('approvedBatchRelayer')
+              }}</span>
               <span v-else>{{ $t('approveBatchRelayer') }}</span>
             </div>
           </div>
           <div v-if="requiresTokenApproval" class="card-container">
-            <div class="card-content text-green-500">
+            <div class="card-step text-green-500">
               <BalIcon
                 v-if="isTokenApproved"
                 name="check"
@@ -53,14 +55,14 @@
               }}</span>
             </div>
             <div class="ml-3">
-              <span v-if="isTokenApproved">{{ $t('approved') }}</span>
+              <span v-if="isTokenApproved"
+                >{{ $t('approved') }} {{ symbolIn }}</span
+              >
               <span v-else>{{ $t('approve') }} {{ symbolIn }}</span>
             </div>
           </div>
           <div class="mt-3 card-container">
-            <div
-              class="card-content dark:border-gray-700 text-gray-500 dark:text-gray-400"
-            >
+            <div class="card-step text-gray-500 dark:text-gray-400">
               {{ approvalTxCount }}
             </div>
             <div class="ml-3">
@@ -75,7 +77,7 @@
         class="mt-5"
         :label="$t('approveBatchRelayer')"
         :loading="approvingBatchRelayer"
-        :loading-label="`${$t('approveBatchRelayer')}…`"
+        :loading-label="`${$t('approvingBatchRelayer')}…`"
         color="gradient"
         block
         @click.prevent="approveBatchRelayer"
@@ -308,7 +310,7 @@ export default defineComponent({
 .card-container {
   @apply p-3 flex items-center border rounded-lg dark:border-gray-800;
 }
-.card-content {
-  @apply w-9 h-9 flex items-center justify-center border rounded-full;
+.card-step {
+  @apply w-9 h-9 flex items-center justify-center border rounded-full dark:border-gray-700;
 }
 </style>
