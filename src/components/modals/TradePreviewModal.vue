@@ -225,7 +225,7 @@ export default defineComponent({
       if (isWrap.value && !isNativeWrap.value) {
         // If we're wrapping a token other than native ETH
         // we need to approve the underlying on the wrapper
-        return approvedSpenders[addressOut.value];
+        return Number(approvedSpenders[addressOut.value]) > Number(amountIn);
       }
       return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
     });
