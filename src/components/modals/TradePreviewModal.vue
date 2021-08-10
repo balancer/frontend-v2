@@ -172,19 +172,14 @@ export default defineComponent({
 
     const isStETHTrade = computed(
       () =>
-        ([addressIn.value, addressOut.value].includes(
+        [addressIn.value, addressOut.value].includes(
           getAddress(configService.network.addresses.stETH)
-        ) &&
-          wrapType.value === WrapType.NonWrap) ||
-        true
+        ) && wrapType.value === WrapType.NonWrap
     );
 
     const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
 
-    const batchRelayerApproval = useBatchRelayerApproval(
-      isStETHTrade.value,
-      amountIn
-    );
+    const batchRelayerApproval = useBatchRelayerApproval(isStETHTrade);
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 
@@ -212,10 +207,9 @@ export default defineComponent({
 
     const requiresBatchRelayerApproval = computed(
       () =>
-        (requiresTokenApproval.value &&
-          isStETHTrade.value &&
-          !batchRelayerApproval.isUnlocked) ||
-        true
+        requiresTokenApproval.value &&
+        isStETHTrade.value &&
+        !batchRelayerApproval.isUnlocked
     );
 
     const requiresApproval = computed(

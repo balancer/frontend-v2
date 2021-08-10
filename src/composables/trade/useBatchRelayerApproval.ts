@@ -14,10 +14,7 @@ import useBatchRelayerApprovalQuery from '../queries/useBatchRelayerApprovalQuer
 const batchRelayerAddress = configService.network.addresses.batchRelayer;
 const vaultAddress = configService.network.addresses.vault;
 
-export default function useBatchRelayerApproval(
-  isStETHTrade: boolean,
-  amount: Ref<string>
-) {
+export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
   /**
    * STATE
    */
@@ -32,33 +29,22 @@ export default function useBatchRelayerApproval(
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
-  const batchRelayerApproval = useBatchRelayerApprovalQuery();
+  const batchRelayerApproval = useBatchRelayerApprovalQuery(isStETHTrade);
 
   /**
    * COMPUTED
    */
 
-  const allowanceState = computed(() => {
-    if (!isStETHTrade || !amount.value || approved.value) {
-      return {
-        isUnlocked: true
-      };
-    }
-
-    return {
-      isUnlocked: !!batchRelayerApproval.data.value
-    };
-  });
-
-  const isUnlocked = computed(() => allowanceState.value.isUnlocked);
+  const isUnlocked = computed(() =>
+    approved.value || !isStETHTrade.value
+      ? true
+      : !!batchRelayerApproval.data.value
+  );
 
   /**
    * METHODS
    */
   async function approve(): Promise<void> {
-    console.log(
-      '[TokenApproval] Unlock token for trading using the batch relayer'
-    );
     approving.value = true;
     try {
       const tx = await sendTransaction(
@@ -98,7 +84,6 @@ export default function useBatchRelayerApproval(
     approving,
     approve,
     approved,
-    allowanceState,
     isUnlocked
   };
 }

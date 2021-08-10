@@ -1,9 +1,10 @@
-import { reactive, computed } from 'vue';
+import { reactive, computed, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import { Contract } from 'ethers/lib/ethers';
 
 import QUERY_KEYS from '@/constants/queryKeys';
+import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
@@ -15,10 +16,8 @@ import vaultAbi from '@/lib/abi/Vault.json';
  */
 type QueryResponse = boolean;
 
-/**
- * Fetches all allowances for given tokens for each provided contract address.
- */
 export default function useBatchRelayerApprovalQuery(
+  isStETHTrade: Ref<boolean>,
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   /**
@@ -29,7 +28,7 @@ export default function useBatchRelayerApprovalQuery(
   /**
    * COMPUTED
    */
-  const enabled = computed(() => isWalletReady.value);
+  const enabled = computed(() => isWalletReady.value && isStETHTrade.value);
 
   const vaultContract = computed(
     () =>
@@ -56,6 +55,7 @@ export default function useBatchRelayerApprovalQuery(
 
   const queryOptions = reactive({
     enabled,
+    ...FETCH_ONCE_OPTIONS,
     ...options
   });
 
