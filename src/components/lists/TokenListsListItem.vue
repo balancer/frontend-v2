@@ -10,11 +10,7 @@
       {{ tokenlist.name }}
       <div class="text-gray text-sm flex items-center">
         {{ fNum(tokenlist.tokens.length) }} {{ $t('tokensLowerCase') }}
-        <BalLink
-          :href="tokenlist.tokenListsURL"
-          external
-          class="flex items-center"
-        >
+        <BalLink :href="listUrl" external class="flex items-center">
           <BalIcon
             name="arrow-up-right"
             size="sm"
@@ -33,9 +29,10 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import { PropType, reactive, toRefs } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import { TokenList } from '@/types/TokenList';
+import useUrls from '@/composables/useUrls';
 
 export default {
   name: 'TokenListsListItem',
@@ -43,6 +40,10 @@ export default {
   props: {
     tokenlist: {
       type: Object as PropType<TokenList>
+    },
+    uri: {
+      type: String,
+      required: true
     },
     isActive: {
       type: Boolean,
@@ -53,13 +54,23 @@ export default {
   emits: ['toggle'],
 
   setup(props) {
+    /**
+     * COMPOSABLES
+     */
     const { fNum } = useNumbers();
+    const { resolve } = useUrls();
 
-    const notBalancer = props.tokenlist?.name !== 'Balancer';
+    /**
+     * STATE
+     */
+    const state = reactive({
+      notBalancer: props.tokenlist?.name !== 'Balancer',
+      listUrl: resolve(props.uri)
+    });
 
     return {
-      fNum,
-      notBalancer
+      ...toRefs(state),
+      fNum
     };
   }
 };

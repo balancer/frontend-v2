@@ -23,7 +23,7 @@ import symbolKeys from '@/constants/symbol.keys';
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import { tokenService } from '@/services/token/token.service';
 import useUserSettings from '@/composables/useUserSettings';
-import { bnum } from '@/lib/utils';
+import { bnum, forChange } from '@/lib/utils';
 import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
 import { pick } from 'lodash';
 
@@ -79,7 +79,11 @@ export default {
      * COMPOSABLES
      */
     const { networkConfig } = useConfig();
-    const { allTokenLists, activeTokenLists } = useTokenLists();
+    const {
+      allTokenLists,
+      activeTokenLists,
+      loadingTokenLists
+    } = useTokenLists();
     const { currency } = useUserSettings();
 
     /**
@@ -336,6 +340,7 @@ export default {
      * CALLBACKS
      */
     onBeforeMount(async () => {
+      await forChange(loadingTokenLists, false);
       await injectTokens(currentLiquidityMiningRewardTokens);
       state.loading = false;
     });
