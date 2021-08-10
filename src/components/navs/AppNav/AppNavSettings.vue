@@ -123,7 +123,7 @@
         @update:modelValue="setTradeLiquidity"
       />
     </div>
-    <div v-if="APP.IsGnosisIntegration" class="px-4 mt-6">
+    <div v-if="!isPolygon" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="'Trade interface'" class="font-medium mb-2" />
       </div>
@@ -190,7 +190,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { explorerLinks } = useWeb3();
+    const { explorerLinks, isPolygon } = useWeb3();
     const {
       account,
       chainId,
@@ -260,6 +260,7 @@ export default defineComponent({
       connectorLogo,
       hideLiquidity,
       hideDisconnect,
+      isPolygon,
       // methods
       disconnectWallet,
       setDarkMode,
