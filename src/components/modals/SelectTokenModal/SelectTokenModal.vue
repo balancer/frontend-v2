@@ -56,6 +56,7 @@
             :key="uri"
             :isActive="isActiveList(uri)"
             :tokenlist="tokenList"
+            :uri="uri"
             @toggle="onToggleList(uri)"
           />
         </div>
