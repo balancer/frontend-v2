@@ -1,8 +1,4 @@
-import {
-  WebSocketProvider,
-  JsonRpcProvider,
-  AlchemyProvider
-} from '@ethersproject/providers';
+import { WebSocketProvider, JsonRpcProvider } from '@ethersproject/providers';
 import ConfigService, { configService } from '@/services/config/config.service';
 
 type NewBlockHandler = (blockNumber: number) => any;
@@ -11,16 +7,13 @@ export default class RpcProviderService {
   readonly network: string;
   jsonProvider: JsonRpcProvider;
   wsProvider: WebSocketProvider;
-  alchemyProvider: AlchemyProvider;
+  loggingProvider: JsonRpcProvider;
 
   constructor(private readonly config: ConfigService = configService) {
     this.network = this.config.network.shortName;
     this.jsonProvider = new JsonRpcProvider(this.config.network.rpc);
     this.wsProvider = new WebSocketProvider(this.config.network.ws);
-    this.alchemyProvider = new AlchemyProvider(
-      this.config.network.chainId,
-      this.config.env.ALCHEMY_KEY
-    );
+    this.loggingProvider = new JsonRpcProvider(this.config.network.loggingRpc);
   }
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {

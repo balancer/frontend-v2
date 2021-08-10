@@ -26,7 +26,7 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
       'tokenlist.zerion.eth',
       'tokens.1inch.eth',
       'tokenlist.aave.eth',
-      'https://tokens.coingecko.com/uniswap/all.json',
+      // 'https://tokens.coingecko.com/uniswap/all.json', Breaks balance/allowance fetching
       'https://umaproject.org/uma.tokenlist.json'
     ]
   },
@@ -42,7 +42,7 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
       'tokenlist.zerion.eth',
       'tokens.1inch.eth',
       'tokenlist.aave.eth',
-      'https://tokens.coingecko.com/uniswap/all.json',
+      // 'https://tokens.coingecko.com/uniswap/all.json',
       'https://umaproject.org/uma.tokenlist.json'
     ]
   },

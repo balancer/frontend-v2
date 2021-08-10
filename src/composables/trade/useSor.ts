@@ -31,7 +31,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
 import { TradeQuote } from './types';
-import useTransactions from '../useTransactions';
+import useTransactions, { TransactionAction } from '../useTransactions';
 import useNumbers from '../useNumbers';
 import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
 import useTokens from '../useTokens';
@@ -347,10 +347,7 @@ export default function useSor({
       priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
   }
 
-  function txHandler(
-    tx: TransactionResponse,
-    action?: 'wrap' | 'unwrap' | 'trade'
-  ): void {
+  function txHandler(tx: TransactionResponse, action: TransactionAction): void {
     confirming.value = false;
 
     let summary = '';
@@ -368,7 +365,7 @@ export default function useSor({
     addTransaction({
       id: tx.hash,
       type: 'tx',
-      action: 'trade',
+      action,
       summary,
       details: {
         tokenIn: tokenIn?.value,

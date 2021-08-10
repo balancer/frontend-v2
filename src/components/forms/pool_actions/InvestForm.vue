@@ -592,6 +592,8 @@ export default defineComponent({
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
+            setPropMax();
+            resetSlider();
           },
           onTxFailed: () => {
             data.loading = false;
