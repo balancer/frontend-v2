@@ -42,10 +42,23 @@ export async function sendTransaction(
     const gasLimit = gasLimitNumber.toNumber();
     overrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
 
-    if (USE_BLOCKNATIVE_GAS_PLATFORM && overrides.gasPrice == null) {
+    if (
+      USE_BLOCKNATIVE_GAS_PLATFORM &&
+      overrides.gasPrice == null &&
+      overrides.maxFeePerGas == null &&
+      overrides.maxPriorityFeePerGas == null
+    ) {
       const gasPrice = await gasPriceService.getLatest();
       if (gasPrice != null) {
-        overrides.gasPrice = gasPrice;
+        if (
+          gasPrice.maxFeePerGas != null &&
+          gasPrice.maxPriorityFeePerGas != null
+        ) {
+          overrides.maxFeePerGas = gasPrice.maxFeePerGas;
+          overrides.maxPriorityFeePerGas = gasPrice.maxPriorityFeePerGas;
+        } else {
+          overrides.gasPrice = gasPrice.price;
+        }
       }
     }
 
