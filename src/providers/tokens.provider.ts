@@ -12,7 +12,7 @@ import {
 import { compact, pick } from 'lodash';
 import { getAddress, isAddress } from '@ethersproject/address';
 
-import { bnum } from '@/lib/utils';
+import { bnum, forChange } from '@/lib/utils';
 import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
 
 import { TokenInfo, TokenInfoMap, TokenList } from '@/types/TokenList';
@@ -89,7 +89,11 @@ export default {
      * COMPOSABLES
      */
     const { networkConfig } = useConfig();
-    const { allTokenLists, activeTokenLists } = useTokenLists();
+    const {
+      allTokenLists,
+      activeTokenLists,
+      loadingTokenLists
+    } = useTokenLists();
     const { currency } = useUserSettings();
 
     /**
@@ -348,8 +352,9 @@ export default {
         configService.network.addresses.stETH,
         configService.network.addresses.wstETH
       ];
-      await injectTokens(tokensToInject);
 
+      await forChange(loadingTokenLists, false);
+      await injectTokens(tokensToInject);
       state.loading = false;
     });
 

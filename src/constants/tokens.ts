@@ -5,9 +5,15 @@ export const TOKENS = {
     Symbols: ['WBTC', 'DAI', 'USDC', 'BAL', 'AAVE', 'WETH']
   },
   AddressMap: {
-    ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-    WETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-    BAL: '0xba100000625a3754423978a60c9317c58a424e3d'
+    '1': {
+      ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      WETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      BAL: '0xba100000625a3754423978a60c9317c58a424e3d'
+    },
+    '137': {
+      WETH: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
+      BAL: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'
+    }
   },
   Prices: {
     ChainMap: {

@@ -114,6 +114,7 @@ import TradeSettingsPopover, {
 import { configService } from '@/services/config/config.service';
 
 import TradePairGP from './TradePairGP.vue';
+import useWeb3 from '@/services/web3/useWeb3';
 
 const { nativeAsset } = configService.network;
 
@@ -131,6 +132,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
     const { fNum } = useNumbers();
+    const { appNetworkConfig } = useWeb3();
 
     // DATA
     const exactIn = ref(true);
@@ -312,7 +314,7 @@ export default defineComponent({
     }
 
     function switchToWETH() {
-      tokenInAddress.value = TOKENS.AddressMap.WETH;
+      tokenInAddress.value = TOKENS.AddressMap[appNetworkConfig.key].WETH;
     }
 
     // INIT

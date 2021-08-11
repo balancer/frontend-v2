@@ -8,6 +8,7 @@
   "unknown": false,
   "rpc": "https://polygon-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
   "ws": "wss://rpc-mainnet.maticvigil.com/ws/v1/0640daf21d413ff9adc73b043d91264e42d92a87",
+  "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/hsAEQ4l4c6uz3ciAdQ9w3ODWjVcND-Ti",
   "publicRpc": "https://rpc-mainnet.matic.network",
   "explorer": "https://polygonscan.com",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",

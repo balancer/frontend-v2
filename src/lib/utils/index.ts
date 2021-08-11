@@ -100,5 +100,5 @@ export async function forChange(
 ): Promise<void> {
   if (reactiveVar.value === expected || checkCount >= checkLimit) return;
   await sleep(checkDelay);
-  forChange(reactiveVar, expected, checkCount++);
+  await forChange(reactiveVar, expected, checkCount++);
 }

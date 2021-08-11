@@ -8,6 +8,7 @@
   "unknown": false,
   "rpc": "http://localhost:8545",
   "ws": "ws://localhost:8546",
+  "loggingRpc": "http://localhost:8545",
   "explorer": "",
   "subgraph": "http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2",
   "poolsUrlV1": "",

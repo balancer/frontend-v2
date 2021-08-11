@@ -151,8 +151,8 @@
           :to="{
             name: 'trade',
             params: {
-              assetIn: TOKENS.AddressMap.ETH,
-              assetOut: TOKENS.AddressMap.WETH
+              assetIn: TOKENS.AddressMap[appNetworkConfig.key].ETH,
+              assetOut: TOKENS.AddressMap[appNetworkConfig.key].WETH
             }
           }"
           class="text-xs text-gray-500 underline"
@@ -709,6 +709,7 @@ export default defineComponent({
       configService,
       // computed
       tokens,
+      appNetworkConfig,
       hasValidInputs,
       hasAmounts,
       approving,

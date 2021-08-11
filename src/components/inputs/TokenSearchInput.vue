@@ -89,7 +89,7 @@ export default defineComponent({
      * COMPOSABLES
      */
     const { tokens, balances, dynamicDataLoading } = useTokens();
-    const { account } = useWeb3();
+    const { account, appNetworkConfig } = useWeb3();
 
     /**
      * COMPUTED
@@ -122,7 +122,7 @@ export default defineComponent({
       // special case for ETH where we want it to filter as WETH regardless
       // as ETH is the native asset
       if (getAddress(token) === NATIVE_ASSET_ADDRESS) {
-        _token = TOKENS.AddressMap.WETH;
+        _token = TOKENS.AddressMap[appNetworkConfig.key].WETH;
       }
       // const newSelected = [...props.modelValue, _token];
       emit('add', _token);
