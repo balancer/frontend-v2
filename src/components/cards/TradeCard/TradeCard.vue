@@ -136,7 +136,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
 
     const { tokens } = useTokens();
-    const { userNetworkConfig } = useWeb3();
+    const { userNetworkConfig, appNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
 
     const exactIn = ref(true);
@@ -170,18 +170,16 @@ export default defineComponent({
     });
 
     const isWrap = computed(() => {
-      const config = userNetworkConfig.value;
       return (
         tokenInAddress.value === nativeAsset.address &&
-        tokenOutAddress.value === config.addresses.weth
+        tokenOutAddress.value === appNetworkConfig.addresses.weth
       );
     });
 
     const isUnwrap = computed(() => {
-      const config = userNetworkConfig.value;
       return (
         tokenOutAddress.value === nativeAsset.address &&
-        tokenInAddress.value === config.addresses.weth
+        tokenInAddress.value === appNetworkConfig.addresses.weth
       );
     });
 

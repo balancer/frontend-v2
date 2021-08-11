@@ -50,7 +50,7 @@ export default function useWeb3() {
   const isMismatchedNetwork = computed(() => {
     return (
       isWalletReady.value &&
-      userNetworkConfig.value?.key !== process.env.VUE_APP_NETWORK
+      userNetworkConfig.value?.key !== appNetworkConfig.key
     );
   });
   const isUnsupportedNetwork = computed(() => {

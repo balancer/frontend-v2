@@ -39,9 +39,6 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [
       'ipns://tokens.uniswap.org',
-      'tokenlist.zerion.eth',
-      'tokens.1inch.eth',
-      'tokenlist.aave.eth',
       // 'https://tokens.coingecko.com/uniswap/all.json',
       'https://umaproject.org/uma.tokenlist.json'
     ]
