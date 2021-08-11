@@ -126,21 +126,19 @@ export default defineComponent({
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
     const { tokens } = useTokens();
-    const { userNetworkConfig } = useWeb3();
+    const { appNetworkConfig } = useWeb3();
 
     const isWrap = computed(() => {
-      const config = userNetworkConfig.value;
       return (
         addressIn.value === NATIVE_ASSET_ADDRESS &&
-        addressOut.value === config.addresses.weth
+        addressOut.value === appNetworkConfig.addresses.weth
       );
     });
 
     const isUnwrap = computed(() => {
-      const config = userNetworkConfig.value;
       return (
         addressOut.value === NATIVE_ASSET_ADDRESS &&
-        addressIn.value === config.addresses.weth
+        addressIn.value === appNetworkConfig.addresses.weth
       );
     });
 

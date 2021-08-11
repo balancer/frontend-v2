@@ -523,10 +523,9 @@ export default function useSor({
     tokenDecimals: number,
     sorManager: SorManager
   ): Promise<void> {
-    const chainId = userNetworkConfig.value.chainId;
     // If using Polygon get price of swap using stored market prices
     // If mainnet price retrieved on-chain using SOR
-    if (chainId === 137) {
+    if (appNetworkConfig.chainId === 137) {
       const swapCostToken = calculateSwapCost(tokenOutAddressInput.value);
       await sorManager.setCostOutputToken(
         tokenAddress,
