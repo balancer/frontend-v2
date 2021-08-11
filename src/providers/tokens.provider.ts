@@ -292,7 +292,7 @@ export default {
         if (!contractAddress) return false;
 
         const amount = amounts[index];
-        if (!amount || Number(amount) === 0) return false;
+        if (!amount || bnum(amount).eq(0)) return false;
 
         const allowance = bnum(allowances.value[contractAddress][address]);
 
