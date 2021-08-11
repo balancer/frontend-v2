@@ -10,7 +10,7 @@ import batchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 import configs from '@/lib/config';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { isStETHTrade } from './lido';
+import { isStETH } from './lido';
 
 const SWAP_KIND_IN = 0;
 const SWAP_KIND_OUT = 1;
@@ -38,7 +38,7 @@ export async function swapIn(
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber
 ): Promise<TransactionResponse> {
-  if (isStETHTrade(sorReturn.v2result.tokenIn, sorReturn.v2result.tokenOut)) {
+  if (isStETH(sorReturn.v2result.tokenIn, sorReturn.v2result.tokenOut)) {
     return lidoBatchSwapGivenIn(
       network,
       provider,
@@ -80,7 +80,7 @@ export async function swapOut(
   tokenInAmountMax: BigNumber,
   tokenOutAmount: BigNumber
 ): Promise<TransactionResponse> {
-  if (isStETHTrade(sorReturn.v2result.tokenIn, sorReturn.v2result.tokenOut)) {
+  if (isStETH(sorReturn.v2result.tokenIn, sorReturn.v2result.tokenOut)) {
     return lidoBatchSwapGivenOut(
       network,
       provider,

@@ -114,9 +114,8 @@ import useBatchRelayerApproval from '@/composables/trade/useBatchRelayerApproval
 import useTokens from '@/composables/useTokens';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { configService } from '@/services/config/config.service';
-import { getAddress } from '@ethersproject/address';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { isStETH } from '@/lib/utils/balancer/lido';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -165,9 +164,8 @@ export default defineComponent({
 
     const isStETHTrade = computed(
       () =>
-        [addressIn.value, addressOut.value].includes(
-          getAddress(configService.network.addresses.stETH)
-        ) && wrapType.value === WrapType.NonWrap
+        isStETH(addressIn.value, addressOut.value) &&
+        wrapType.value === WrapType.NonWrap
     );
 
     const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);

@@ -3,16 +3,14 @@ import { useI18n } from 'vue-i18n';
 
 import useWeb3 from '@/services/web3/useWeb3';
 
+import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
+
 import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
 import { configService } from '@/services/config/config.service';
 
 import vaultAbi from '@/lib/abi/Vault.json';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
-import useBatchRelayerApprovalQuery from '../queries/useBatchRelayerApprovalQuery';
-
-const batchRelayerAddress = configService.network.addresses.batchRelayer;
-const vaultAddress = configService.network.addresses.vault;
 
 export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
   /**
@@ -20,6 +18,7 @@ export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
    */
   const approving = ref(false);
   const approved = ref(false);
+  const batchRelayerAddress = ref(configService.network.addresses.batchRelayer);
 
   /**
    * COMPOSABLES
@@ -29,7 +28,7 @@ export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
-  const batchRelayerApproval = useBatchRelayerApprovalQuery(isStETHTrade);
+  const batchRelayerApproval = useRelayerApprovalQuery(batchRelayerAddress);
 
   /**
    * COMPUTED
@@ -52,7 +51,7 @@ export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
         configService.network.addresses.vault,
         vaultAbi,
         'setRelayerApproval',
-        [account.value, batchRelayerAddress, true]
+        [account.value, batchRelayerAddress.value, true]
       );
 
       addTransaction({
@@ -61,8 +60,8 @@ export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
         action: 'approve',
         summary: t('transactionSummary.approveBatchRelayer'),
         details: {
-          contractAddress: vaultAddress,
-          spender: batchRelayerAddress
+          contractAddress: configService.network.addresses.vault,
+          spender: batchRelayerAddress.value
         }
       });
       txListener(tx, {
