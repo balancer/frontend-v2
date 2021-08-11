@@ -86,7 +86,7 @@ export function getLiquidityMiningRewards(
     Object.assign(
       miningRewards,
       liquidityMiningWeek.find(
-        pool => pool.chainId === Number(configService.env.NETWORK)
+        pool => pool.chainId === configService.network.chainId
       )?.pools
     );
   }

@@ -23,7 +23,7 @@ export default function useTrading(
   const store = useStore();
   const { fNum } = useNumbers();
   const { tokens } = useTokens();
-  const { blockNumber, userNetworkConfig } = useWeb3();
+  const { blockNumber, appNetworkConfig } = useWeb3();
 
   // COMPUTED
   const slippageBufferRate = computed(() =>
@@ -35,13 +35,13 @@ export default function useTrading(
   const isWrap = computed(
     () =>
       tokenInAddressInput.value === NATIVE_ASSET_ADDRESS &&
-      tokenOutAddressInput.value === userNetworkConfig.value.addresses.weth
+      tokenOutAddressInput.value === appNetworkConfig.addresses.weth
   );
 
   const isUnwrap = computed(
     () =>
       tokenOutAddressInput.value === NATIVE_ASSET_ADDRESS &&
-      tokenInAddressInput.value === userNetworkConfig.value.addresses.weth
+      tokenInAddressInput.value === appNetworkConfig.addresses.weth
   );
 
   const tokenIn = computed(() => tokens.value[tokenInAddressInput.value]);

@@ -186,7 +186,7 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { t } = useI18n();
 
-    const { userNetworkConfig } = useWeb3();
+    const { userNetworkConfig, appNetworkConfig } = useWeb3();
     const { tokens } = useTokens();
 
     const visible = ref(false);
@@ -431,7 +431,7 @@ export default defineComponent({
     }
 
     function getPoolLink(id: string): string {
-      const chainId = userNetworkConfig.value.chainId;
+      const chainId = appNetworkConfig.chainId;
       const prefixMap = {
         1: 'app.',
         42: 'kovan.',
