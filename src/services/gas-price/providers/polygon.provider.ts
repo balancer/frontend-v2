@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GWEI_UNIT } from '@/constants/units';
 
 import { GasPrice } from './types';
 
@@ -21,7 +22,7 @@ export default class PolygonProvider {
       const { data } = await axios.get<PolygonGasStationResponse>(
         'https://gasstation-mainnet.matic.network'
       );
-      return { price: data[txSpeed] };
+      return { price: data[txSpeed] * GWEI_UNIT };
     } catch (error) {
       console.log('[Polygon] Gas Platform Error', error);
       return null;
