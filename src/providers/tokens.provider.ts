@@ -291,10 +291,10 @@ export default {
       return tokenAddresses.filter((address, index) => {
         if (!contractAddress) return false;
 
-        const amount = Number(amounts[index]);
-        const allowance = bnum(allowances.value[contractAddress][address]);
+        const amount = amounts[index];
+        if (!amount || Number(amount) === 0) return false;
 
-        if (amount === 0) return false;
+        const allowance = bnum(allowances.value[contractAddress][address]);
 
         return allowance.lt(amount);
       });
