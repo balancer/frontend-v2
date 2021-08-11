@@ -121,7 +121,6 @@ export default function useSor({
   const store = useStore();
   const {
     getProvider: getWeb3Provider,
-    userNetworkConfig,
     isV1Supported,
     appNetworkConfig
   } = useWeb3();
@@ -408,7 +407,7 @@ export default function useSor({
     if (isWrap.value) {
       try {
         const tx = await wrap(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           tokenInAmountScaled
         );
@@ -428,7 +427,7 @@ export default function useSor({
     } else if (isUnwrap.value) {
       try {
         const tx = await unwrap(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           tokenInAmountScaled
         );
@@ -455,7 +454,7 @@ export default function useSor({
 
       try {
         const tx = await swapIn(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           sr,
           tokenInAmountScaled,
@@ -484,7 +483,7 @@ export default function useSor({
 
       try {
         const tx = await swapOut(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           sr,
           tokenInAmountMax,
