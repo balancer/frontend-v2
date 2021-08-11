@@ -11,6 +11,7 @@ import configs from '@/lib/config';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { isStETH } from './lido';
+import { configService } from '@/services/config/config.service';
 
 const SWAP_KIND_IN = 0;
 const SWAP_KIND_OUT = 1;
@@ -358,6 +359,14 @@ async function lidoBatchSwapGivenIn(
     overrides.value = `0x${tokenInAmount.toString(16)}`;
   }
 
+  // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
+  const { stETH, wstETH } = configService.network.addresses;
+  if (tokenIn === stETH.toLowerCase()) {
+    tokenIn = wstETH.toLowerCase();
+  } else if (tokenOut === stETH.toLowerCase()) {
+    tokenOut = wstETH.toLowerCase();
+  }
+
   const address = await web3.getSigner().getAddress();
 
   const funds: FundManagement = {
@@ -436,6 +445,14 @@ async function lidoBatchSwapGivenOut(
 
   if (tokenIn === AddressZero) {
     overrides.value = `0x${tokenInAmountMax.toString(16)}`;
+  }
+
+  // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
+  const { stETH, wstETH } = configService.network.addresses;
+  if (tokenIn === stETH.toLowerCase()) {
+    tokenIn = wstETH.toLowerCase();
+  } else if (tokenOut === stETH.toLowerCase()) {
+    tokenOut = wstETH.toLowerCase();
   }
 
   const address = await web3.getSigner().getAddress();
