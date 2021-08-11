@@ -15,7 +15,12 @@ import { SubgraphPoolBase } from '@balancer-labs/sor2';
 import { useI18n } from 'vue-i18n';
 
 import { scale, bnum } from '@/lib/utils';
-import { unwrap, wrap, WrapType } from '@/lib/utils/balancer/wrapper';
+import {
+  getWrapOutput,
+  unwrap,
+  wrap,
+  WrapType
+} from '@/lib/utils/balancer/wrapper';
 import {
   SorManager,
   SorReturn,
@@ -215,23 +220,10 @@ export default function useSor({
       return;
     }
 
-    if (wrapType.value !== WrapType.NonWrap) {
-      tokenInAmountInput.value = amount;
-      tokenOutAmountInput.value = amount;
-      sorReturn.value.hasSwaps = false;
-      priceImpact.value = 0;
-      return;
-    }
-
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
 
-    if (
-      !tokenInAddress ||
-      !tokenOutAddress ||
-      !sorManager ||
-      !sorManager.hasPoolData()
-    ) {
+    if (!tokenInAddress || !tokenOutAddress) {
       if (exactIn.value) tokenOutAmountInput.value = '';
       else tokenInAmountInput.value = '';
       return;
@@ -239,6 +231,47 @@ export default function useSor({
 
     const tokenInDecimals = tokens.value[tokenInAddressInput.value]?.decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value]?.decimals;
+
+    if (wrapType.value !== WrapType.NonWrap) {
+      const wrapper =
+        wrapType.value === WrapType.Wrap ? tokenOutAddress : tokenInAddress;
+
+      if (exactIn.value) {
+        tokenInAmountInput.value = amount;
+
+        const outputAmount = await getWrapOutput(
+          wrapper,
+          wrapType.value,
+          scale(bnum(amount), tokenInDecimals).toString()
+        );
+        tokenOutAmountInput.value = scale(
+          bnum(outputAmount),
+          -tokenInDecimals
+        ).toString();
+      } else {
+        tokenOutAmountInput.value = amount;
+
+        const inputAmount = await getWrapOutput(
+          wrapper,
+          wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
+          scale(bnum(amount), tokenOutDecimals).toString()
+        );
+        tokenInAmountInput.value = scale(
+          bnum(inputAmount),
+          -tokenOutDecimals
+        ).toString();
+      }
+
+      sorReturn.value.hasSwaps = false;
+      priceImpact.value = 0;
+      return;
+    }
+
+    if (!sorManager || !sorManager.hasPoolData()) {
+      if (exactIn.value) tokenOutAmountInput.value = '';
+      else tokenInAmountInput.value = '';
+      return;
+    }
 
     if (exactIn.value) {
       await setSwapCost(
