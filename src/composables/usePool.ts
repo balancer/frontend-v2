@@ -25,9 +25,9 @@ export function isWeth(pool: AnyPool, networkId: string): boolean {
 }
 
 export function isStETH(pool: AnyPool): boolean {
-  return pool.tokenAddresses
-    .map(getAddress)
-    .includes(getAddress(configService.network.addresses.stETH));
+  return pool.tokenAddresses.includes(
+    getAddress(configService.network.addresses.stETH)
+  );
 }
 
 export function usePool(pool: Ref<AnyPool>) {
