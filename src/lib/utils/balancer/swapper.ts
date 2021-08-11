@@ -504,7 +504,7 @@ async function lidoBatchSwapGivenOut(
       return sendTransaction(
         web3,
         configs[network].addresses.batchRelayer,
-        vaultAbi,
+        batchRelayerAbi,
         'lidoSwap',
         [single, funds, tokenInAmountMax.toString(), MaxUint256],
         overrides
@@ -514,7 +514,7 @@ async function lidoBatchSwapGivenOut(
     return sendTransaction(
       web3,
       configs[network].addresses.batchRelayer,
-      vaultAbi,
+      batchRelayerAbi,
       'lidoBatchSwap',
       [SWAP_KIND_OUT, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
