@@ -10,8 +10,9 @@ import batchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 import configs from '@/lib/config';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { isStETH } from './lido';
+import { getWstETHByStETH, isStETH } from './lido';
 import { configService } from '@/services/config/config.service';
+import { bnum } from '..';
 
 const SWAP_KIND_IN = 0;
 const SWAP_KIND_OUT = 1;
@@ -365,6 +366,9 @@ async function lidoBatchSwapGivenIn(
     tokenIn = wstETH.toLowerCase();
   } else if (tokenOut === stETH.toLowerCase()) {
     tokenOut = wstETH.toLowerCase();
+    tokenOutAmountMin = bnum(
+      await getWstETHByStETH(tokenOutAmountMin.toString())
+    );
   }
 
   const address = await web3.getSigner().getAddress();
@@ -451,6 +455,9 @@ async function lidoBatchSwapGivenOut(
   const { stETH, wstETH } = configService.network.addresses;
   if (tokenIn === stETH.toLowerCase()) {
     tokenIn = wstETH.toLowerCase();
+    tokenInAmountMax = bnum(
+      await getWstETHByStETH(tokenInAmountMax.toString())
+    );
   } else if (tokenOut === stETH.toLowerCase()) {
     tokenOut = wstETH.toLowerCase();
   }
