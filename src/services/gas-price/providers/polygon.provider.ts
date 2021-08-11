@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { GWEI_UNIT } from '@/constants/units';
 
 import { GasPrice } from './types';

@@ -1,5 +1,7 @@
-import { GWEI_UNIT } from '@/constants/units';
 import axios from 'axios';
+
+import { GWEI_UNIT } from '@/constants/units';
+
 import { GasPrice } from './types';
 
 type BlocknativeGasPriceConfidence = 70 | 80 | 90 | 95 | 99;
