@@ -1,9 +1,5 @@
 <template>
-  <BalModal
-    :show="open"
-    @close="onClose"
-    :title="$t('previewTradeTransactions')"
-  >
+  <BalModal show @close="onClose" :title="$t('previewTradeTransactions')">
     <div>
       <div
         class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-800"
