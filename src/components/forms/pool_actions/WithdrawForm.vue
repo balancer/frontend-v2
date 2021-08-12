@@ -253,7 +253,7 @@ export default defineComponent({
       toggleWalletSelectModal,
       getProvider,
       account,
-      userNetworkConfig
+      appNetworkConfig
     } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
@@ -266,8 +266,7 @@ export default defineComponent({
 
     // SERVICES
     const poolExchange = computed(
-      () =>
-        new PoolExchange(props.pool, userNetworkConfig.value.key, tokens.value)
+      () => new PoolExchange(props.pool, appNetworkConfig.key, tokens.value)
     );
 
     const poolCalculator = new PoolCalculator(
