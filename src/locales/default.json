@@ -227,8 +227,7 @@
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
         "approveBatchRelayer": "Approve batch relayer for stETH",
-        "wrapETH": "{0} ETH to WETH",
-        "unwrapETH": "{0} WETH to ETH"
+        "wrapUnwrap": "{0} {1} to {2}"
     },
     "tradeSummary": {
         "exactIn": {

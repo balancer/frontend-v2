@@ -66,8 +66,8 @@ type Props = {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
   };
-  tokenIn?: ComputedRef<TokenInfo>;
-  tokenOut?: ComputedRef<TokenInfo>;
+  tokenIn: ComputedRef<TokenInfo>;
+  tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
 };
 
@@ -385,12 +385,17 @@ export default function useSor({
     const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
     const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
 
-    if (action === 'wrap') {
-      summary = t('transactionSummary.wrapETH', [tokenInAmountFormatted]);
-    } else if (action === 'unwrap') {
-      summary = t('transactionSummary.unwrapETH', [tokenInAmountFormatted]);
+    const tokenInSymbol = tokenIn.value.symbol;
+    const tokenOutSymbol = tokenOut.value.symbol;
+
+    if (['wrap', 'unwrap'].includes(action)) {
+      summary = t('transactionSummary.wrapUnwrap', [
+        tokenInAmountFormatted,
+        tokenInSymbol,
+        tokenOutSymbol
+      ]);
     } else {
-      summary = `${tokenInAmountFormatted} ${tokenIn?.value.symbol} -> ${tokenOutAmountFormatted} ${tokenOut?.value.symbol}`;
+      summary = `${tokenInAmountFormatted} ${tokenInSymbol} -> ${tokenOutAmountFormatted} ${tokenOutSymbol}`;
     }
 
     addTransaction({
@@ -399,8 +404,8 @@ export default function useSor({
       action,
       summary,
       details: {
-        tokenIn: tokenIn?.value,
-        tokenOut: tokenOut?.value,
+        tokenIn: tokenIn.value,
+        tokenOut: tokenOut.value,
         tokenInAddress: tokenInAddressInput.value,
         tokenOutAddress: tokenOutAddressInput.value,
         tokenInAmount: tokenInAmountInput.value,
