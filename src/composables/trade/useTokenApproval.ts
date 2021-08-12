@@ -142,6 +142,7 @@ export default function useTokenApproval(
   });
 
   return {
+    approved,
     approving,
     approveV1,
     approveV2,
