@@ -13,9 +13,15 @@ import { getAddress } from 'ethers/lib/utils';
 type AnyPool = Pool | FullPool | DecoratedPoolWithShares;
 
 export function isStable(pool: AnyPool): boolean {
-  return (
-    pool.poolType === PoolType.Stable || pool.poolType === PoolType.MetaStable
-  );
+  return pool.poolType === PoolType.Stable;
+}
+
+export function isMetaStable(pool: AnyPool): boolean {
+  return pool.poolType === PoolType.MetaStable;
+}
+
+export function isStableLike(pool: AnyPool): boolean {
+  return isStable(pool) || isMetaStable(pool);
 }
 
 export function isWeighted(pool: AnyPool): boolean {
@@ -35,6 +41,8 @@ export function isStETH(pool: AnyPool): boolean {
 export function usePool(pool: Ref<AnyPool>) {
   const { appNetworkConfig } = useWeb3();
   const isStablePool = computed(() => isStable(pool.value));
+  const isMetaStablePool = computed(() => isMetaStable(pool.value));
+  const isStableLikePool = computed(() => isStableLike(pool.value));
   const isWeightedPool = computed(() => isWeighted(pool.value));
   const isWethPool = computed(() => isWeth(pool.value, appNetworkConfig.key));
   const isStETHPool = computed(() => isStETH(pool.value));
@@ -42,11 +50,15 @@ export function usePool(pool: Ref<AnyPool>) {
   return {
     // computed
     isStablePool,
+    isMetaStablePool,
+    isStableLikePool,
     isWeightedPool,
     isWethPool,
     isStETHPool,
     // methods
     isStable,
+    isMetaStable,
+    isStableLike,
     isWeighted,
     isWeth
   };

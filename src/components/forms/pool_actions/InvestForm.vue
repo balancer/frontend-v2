@@ -75,7 +75,7 @@
               <span class="break-words" :title="fNum(amountUSD(i), 'usd')">
                 {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
-              <span v-if="!isStablePool" class="text-xs text-gray-400">
+              <span v-if="!isStableLikePool" class="text-xs text-gray-400">
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
@@ -116,7 +116,7 @@
                 {{ pool.onchain.tokens[token].symbol }}
               </span>
               <span
-                v-if="!isStablePool"
+                v-if="!isStableLikePool"
                 class="leading-none text-xs mt-1 text-gray-500"
               >
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
@@ -366,7 +366,7 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStablePool, isWethPool, isStETHPool } = usePool(
+    const { isStableLikePool, isWethPool, isStETHPool } = usePool(
       toRef(props, 'pool')
     );
 
@@ -726,7 +726,7 @@ export default defineComponent({
       hasZeroBalance,
       isWethPool,
       isStETHPool,
-      isStablePool,
+      isStableLikePool,
       // methods
       submit,
       approveAllowances,
