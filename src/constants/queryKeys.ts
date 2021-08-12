@@ -1,4 +1,3 @@
-import { Config } from '@/lib/config';
 import { Ref } from 'vue';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';

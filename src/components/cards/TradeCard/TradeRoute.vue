@@ -186,7 +186,7 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { t } = useI18n();
 
-    const { userNetworkConfig, appNetworkConfig } = useWeb3();
+    const { appNetworkConfig } = useWeb3();
     const { tokens } = useTokens();
 
     const visible = ref(false);
