@@ -23,7 +23,7 @@
       </div>
       <div>
         <div class="mt-6 mb-3 text-sm">
-          Requires {{ approvalTxCount }}
+          Requires {{ totalRequiredTransactions }}
           {{ requiresApproval ? 'transactions' : 'transaction' }}:
         </div>
         <div>
@@ -63,7 +63,7 @@
           </div>
           <div class="mt-3 card-container">
             <div class="card-step text-gray-500 dark:text-gray-400">
-              {{ approvalTxCount }}
+              {{ totalRequiredTransactions }}
             </div>
             <div class="ml-3">
               {{ $t('trade') }} {{ fNum(valueIn, 'usd') }} {{ symbolIn }} ->
@@ -245,11 +245,16 @@ export default defineComponent({
       () => batchRelayerApproval.approving.value
     );
 
-    const approvalTxCount = computed(() => {
+    const totalRequiredTransactions = computed(() => {
+      let txCount = 1; // trade
+
       if (requiresTokenApproval.value) {
-        return requiresBatchRelayerApproval.value ? 3 : 2;
+        txCount++;
       }
-      return 1;
+      if (requiresBatchRelayerApproval.value) {
+        txCount++;
+      }
+      return txCount;
     });
 
     function trade() {
@@ -279,7 +284,7 @@ export default defineComponent({
       approvingBatchRelayer,
       approvingToken,
       batchRelayerApproval,
-      approvalTxCount
+      totalRequiredTransactions
     };
   }
 });
