@@ -30,15 +30,8 @@
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-
-      // https://developers.google.com/gtagjs/devguide/consent#in-page-code
-      gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'analytics_storage': 'denied'
-      });
-
       gtag('js', new Date());
-      gtag('config', '<%= VUE_APP_GA_ID %>', { 'anonymize_ip': true });
+      gtag('config', '<%= VUE_APP_GA_ID %>', { 'client_storage': 'none', 'anonymize_ip': true });
     </script>
     <!-- Fathom Analytics -->
     <script src="https://chipmunk.balancer.fi/script.js" data-spa="hash" data-site="<%= VUE_APP_FATHOM_SITE_ID %>" defer></script>
