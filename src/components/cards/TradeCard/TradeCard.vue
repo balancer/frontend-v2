@@ -74,7 +74,7 @@
   </BalCard>
   <teleport to="#modal">
     <TradePreviewModal
-      :v-if="modalTradePreviewIsOpen"
+      v-if="modalTradePreviewIsOpen"
       :is-v1-swap="sorReturn.isV1swap"
       :address-in="tokenInAddress"
       :amount-in="tokenInAmount"
