@@ -50,13 +50,15 @@ export const POOLS = {
       '0x9f19a375709baf0e8e35c2c5c65aca676c4c719100000000000000000000006e',
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012', // polygon
       '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e', // polgon
-      '0x6b15a01b5d46a5321b627bd7deef1af57bc629070000000000000000000000d4' // kovan
+      '0x6b15a01b5d46a5321b627bd7deef1af57bc629070000000000000000000000d4', // kovan
+      '0xe08590bde837eb9b2d42aa1196469d6e08fe96ec000200000000000000000101' //kovan
     ]
   },
   Factories: {
     '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0': 'oracleWeightedPool',
     '0x8e9aa87e45e92bad84d5f8dd1bff34fb92637de9': 'weightedPool',
     '0xc66ba2b6595d3613ccab350c886ace23866ede24': 'stablePool',
-    '0x751dfdace1ad995ff13c927f6f761c6604532c79': 'stablePool' // Kovan
+    '0x751dfdace1ad995ff13c927f6f761c6604532c79': 'stablePool', // Kovan
+    '0x590e544e7ca956bb878f8c873e82e65550d67d2f': 'stablePool' // Kovan Metastable
   }
 };

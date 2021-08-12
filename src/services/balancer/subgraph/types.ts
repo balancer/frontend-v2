@@ -7,7 +7,8 @@ export type QueryBuilder = (
 
 export enum PoolType {
   Weighted = 'Weighted',
-  Stable = 'Stable'
+  Stable = 'Stable',
+  MetaStable = 'MetaStable'
 }
 export type TimeTravelPeriod = '24h';
 

@@ -13,7 +13,9 @@ import { getAddress } from 'ethers/lib/utils';
 type AnyPool = Pool | FullPool | DecoratedPoolWithShares;
 
 export function isStable(pool: AnyPool): boolean {
-  return pool.poolType === PoolType.Stable;
+  return (
+    pool.poolType === PoolType.Stable || pool.poolType === PoolType.MetaStable
+  );
 }
 
 export function isWeighted(pool: AnyPool): boolean {

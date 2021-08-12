@@ -120,6 +120,7 @@ import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { useQueryClient } from 'vue-query';
 import useNumbers from '@/composables/useNumbers';
+import { isStable } from '@/composables/usePool';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import { useRouter } from 'vue-router';
@@ -239,7 +240,9 @@ export default defineComponent({
       return key ? t(key) : t('unknownPoolType');
     });
 
-    const isStablePool = computed(() => pool.value?.poolType === 'Stable');
+    const isStablePool = computed(() =>
+      pool.value ? isStable(pool.value) : false
+    );
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
