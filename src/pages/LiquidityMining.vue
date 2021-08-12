@@ -67,6 +67,7 @@ import { Network } from '@/constants/network';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
+import useConfig from '@/composables/useConfig';
 
 type TokenDistribution = {
   tokenAddress: string;
@@ -82,8 +83,6 @@ export type TokenTotal = { token: string; total: number };
 
 type LiquidityMiningDistribution = Record<string, PoolDistribution[]>;
 
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
-
 export type WeeklyDistributions = {
   week: string;
   distributions: TokenDistribution[];
@@ -96,6 +95,7 @@ export default defineComponent({
   setup() {
     const { fNum } = useNumbers();
     const { priceFor } = useTokens();
+    const { networkConfig } = useConfig();
 
     // seperate variable to type the JSON
     const weeksJSON = (LiquidityMiningDistributions as unknown) as LiquidityMiningDistribution;
@@ -144,7 +144,7 @@ export default defineComponent({
     const weeks = takeRight(Object.keys(weeksJSON), 3).map(week => ({
       week: week,
       distributions: weeksJSON[week]
-        .filter(d => d.chainId === Number(NETWORK))
+        .filter(d => d.chainId === networkConfig.chainId)
         .map(d => d.pools)[0]
     }));
 
@@ -163,21 +163,21 @@ export default defineComponent({
     const pools = computed(() => poolsResponse.value?.pages);
 
     const title = computed(() => {
-      if (Number(NETWORK) === Network.MAINNET) {
+      if (networkConfig.chainId === Network.MAINNET) {
         return 'Ethereum Network';
       }
-      if (Number(NETWORK) === Network.POLYGON) {
+      if (networkConfig.chainId === Network.POLYGON) {
         return 'Polygon Network';
       }
       return 'Unknown Network';
     });
 
     const description = computed(() => {
-      if (Number(NETWORK) === Network.MAINNET) {
+      if (networkConfig.chainId === Network.MAINNET) {
         return `BAL distributions on Ethereum can be claimed weekly by tapping the
         liquidity mining claim tool in the header.`;
       }
-      if (Number(NETWORK) === Network.POLYGON) {
+      if (networkConfig.chainId === Network.POLYGON) {
         return `BAL distributions on Polygon are automatically airdropped to eligible
         addresses weekly.`;
       }

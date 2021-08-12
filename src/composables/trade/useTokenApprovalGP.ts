@@ -1,5 +1,4 @@
 import { computed, Ref, ref } from 'vue';
-import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -38,11 +37,9 @@ export default function useTokenApprovalGP(
       };
     }
 
-    const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
-
     const requiredApprovals = approvalsRequired(
       [tokenInAddress.value],
-      [parseUnits(amount.value, tokenInDecimals).toString()],
+      [amount.value],
       GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
     );
 

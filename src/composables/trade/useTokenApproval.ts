@@ -1,5 +1,4 @@
 import { computed, Ref, ref, watch } from 'vue';
-import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/providers';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { configService } from '@/services/config/config.service';
@@ -51,18 +50,15 @@ export default function useTokenApproval(
         approvedSpenders: {}
       };
 
-    const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
-    const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
-
     const requiredAllowancesV1 = approvalsRequired(
       [tokenInAddress.value],
-      [tokenInAmountDenorm.toString()],
+      [amount.value],
       configService.network.addresses.exchangeProxy
     );
 
     const requiredAllowancesV2 = approvalsRequired(
       [tokenInAddress.value],
-      [tokenInAmountDenorm.toString()]
+      [amount.value]
     );
 
     const approvedSpenders = Object.fromEntries(

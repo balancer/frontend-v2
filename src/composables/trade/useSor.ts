@@ -124,7 +124,6 @@ export default function useSor({
   const store = useStore();
   const {
     getProvider: getWeb3Provider,
-    userNetworkConfig,
     isV1Supported,
     appNetworkConfig
   } = useWeb3();
@@ -444,7 +443,7 @@ export default function useSor({
     if (wrapType.value == WrapType.Wrap) {
       try {
         const tx = await wrap(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           tokenOutAddress,
           tokenInAmountScaled
@@ -465,7 +464,7 @@ export default function useSor({
     } else if (wrapType.value == WrapType.Unwrap) {
       try {
         const tx = await unwrap(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           tokenInAddress,
           tokenInAmountScaled
@@ -493,7 +492,7 @@ export default function useSor({
 
       try {
         const tx = await swapIn(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           sr,
           tokenInAmountScaled,
@@ -522,7 +521,7 @@ export default function useSor({
 
       try {
         const tx = await swapOut(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           sr,
           tokenInAmountMax,
@@ -561,10 +560,9 @@ export default function useSor({
     tokenDecimals: number,
     sorManager: SorManager
   ): Promise<void> {
-    const chainId = userNetworkConfig.value.chainId;
     // If using Polygon get price of swap using stored market prices
     // If mainnet price retrieved on-chain using SOR
-    if (chainId === 137) {
+    if (appNetworkConfig.chainId === 137) {
       const swapCostToken = calculateSwapCost(tokenOutAddressInput.value);
       await sorManager.setCostOutputToken(
         tokenAddress,

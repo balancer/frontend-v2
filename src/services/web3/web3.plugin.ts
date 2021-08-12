@@ -89,10 +89,7 @@ export default {
     });
 
     const chainId = computed(() => {
-      if (pluginState.connector) {
-        return pluginState.connector.chainId;
-      }
-      return Number(process.env.VUE_APP_NETWORK);
+      return pluginState.connector?.chainId;
     });
 
     const provider = computed(

@@ -138,7 +138,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
 
     const { tokens } = useTokens();
-    const { userNetworkConfig } = useWeb3();
+    const { userNetworkConfig, appNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
 
     const exactIn = ref(true);
