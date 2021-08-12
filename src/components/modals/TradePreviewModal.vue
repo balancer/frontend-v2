@@ -200,7 +200,9 @@ export default defineComponent({
       () => batchRelayerApproval.isUnlocked.value
     );
     const requiresBatchRelayerApproval = computed(
-      () => isStETHTrade.value && !isBatchRelayerApproved.value
+      () =>
+        isStETHTrade.value &&
+        (!isBatchRelayerApproved.value || batchRelayerApproval.approved.value)
     );
 
     const requiresApproval = computed(
