@@ -39,7 +39,9 @@ export default function useWeb3() {
 
   // COMPUTED REFS + COMPUTED REFS
   const userNetworkConfig = computed(() => {
-    return configService.getNetworkConfig(String(chainId.value));
+    if (chainId.value)
+      return configService.getNetworkConfig(String(chainId.value));
+    return null;
   });
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isMainnet = computed(() => appNetworkConfig.chainId === 1);
@@ -77,7 +79,7 @@ export default function useWeb3() {
   };
 
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
-    QUERY_KEYS.Account.Profile(account, userNetworkConfig),
+    QUERY_KEYS.Account.Profile(account, chainId),
     () => web3Service.getProfile(account.value),
     reactive({
       enabled: canLoadProfile

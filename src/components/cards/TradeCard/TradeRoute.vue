@@ -308,7 +308,7 @@ export default defineComponent({
       swaps: SwapV2[],
       addresses: string[]
     ) {
-      const { addresses: constants } = userNetworkConfig.value;
+      const { addresses: constants } = appNetworkConfig;
 
       addressIn =
         addressIn === NATIVE_ASSET_ADDRESS

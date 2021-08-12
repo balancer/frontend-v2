@@ -42,10 +42,10 @@ const QUERY_KEYS = {
       contractAddresses: Ref<string[]>,
       tokens: Ref<string[]>
     ) => ['account', 'allowances', { account, contractAddresses, tokens }],
-    Profile: (account: Ref<string>, userNetwork: Ref<Config>) => [
+    Profile: (account: Ref<string>, chainId: Ref<number | undefined>) => [
       'account',
       'profile',
-      { account, userNetwork }
+      { account, chainId }
     ]
   },
   App: {
