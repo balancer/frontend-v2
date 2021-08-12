@@ -25,24 +25,28 @@
     <meta property="twitter:description" content="Automated portfolio manager and trading platform">
     <meta property="twitter:image" content="https://balancer.fi/images/og_image.jpg">
 
-    <script src="https://chipmunk.balancer.fi/script.js" data-spa="hash" data-site="<%= VUE_APP_FATHOM_SITE_ID %>" defer></script>
-    <script>
-      window.intercomSettings = {
-        app_id: "odpifrqb",
-      };
-    </script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EQ0ETJWLKD"></script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<%= VUE_APP_GA_ID %>"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+
       // https://developers.google.com/gtagjs/devguide/consent#in-page-code
       gtag('consent', 'default', {
         'ad_storage': 'denied',
         'analytics_storage': 'denied'
       });
+
+      gtag('js', new Date());
       gtag('config', '<%= VUE_APP_GA_ID %>', { 'anonymize_ip': true });
+    </script>
+    <!-- Fathom Analytics -->
+    <script src="https://chipmunk.balancer.fi/script.js" data-spa="hash" data-site="<%= VUE_APP_FATHOM_SITE_ID %>" defer></script>
+    <!-- Intercom -->
+    <script>
+      window.intercomSettings = {
+        app_id: "odpifrqb",
+      };
     </script>
     <script>
     // We pre-filled your app ID in the widget URL: 'https://widget.intercom.io/widget/odpifrqb'
@@ -51,7 +55,7 @@
   </head>
   <body>
     <noscript>
-      <strong>We're sorry but Balancer doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong>We're sorry but the Balancer app will not work without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
