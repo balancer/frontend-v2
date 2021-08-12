@@ -208,21 +208,21 @@ export default defineComponent({
     const isTokenApproved = computed(() => {
       if (tokenApproval.approved.value) {
         return true;
-      } else {
-        const {
-          approvedSpenders,
-          isUnlockedV1,
-          isUnlockedV2
-        } = tokenApproval.allowanceState.value;
-        if (isWrap.value && !isEthTrade.value) {
-          // If we're wrapping a token other than native ETH
-          // we need to approve the underlying on the wrapper
-          return (
-            Number(approvedSpenders[addressOut.value]) > Number(amountIn.value)
-          );
-        }
-        return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
       }
+
+      const {
+        approvedSpenders,
+        isUnlockedV1,
+        isUnlockedV2
+      } = tokenApproval.allowanceState.value;
+      if (isWrap.value && !isEthTrade.value) {
+        // If we're wrapping a token other than native ETH
+        // we need to approve the underlying on the wrapper
+        return (
+          Number(approvedSpenders[addressOut.value]) > Number(amountIn.value)
+        );
+      }
+      return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
     });
 
     async function approveBatchRelayer(): Promise<void> {
