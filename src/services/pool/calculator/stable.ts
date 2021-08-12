@@ -185,7 +185,9 @@ export default class Stable {
         balance,
         this.calc.poolTokenDecimals[i]
       );
-      const scaledBalance = parseUnits(normalizedBalance, 18);
+      const scaledBalance = parseUnits(normalizedBalance, 18)
+        .mul(parseUnits(this.calc.pool.tokens[i].priceRate ?? '1', 18))
+        .div(parseUnits('1', 18));
       return bnum(scaledBalance.toString());
     });
   }
