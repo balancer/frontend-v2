@@ -1827,6 +1827,10 @@
           {
             "tokenAddress": "0xba100000625a3754423978a60c9317c58a424e3d",
             "amount": 2500
+          },
+          {
+            "tokenAddress": "0x5a98fcbea516cf06857215779fd812ca3bef1b32",
+            "amount": 25000
           }
         ],
         "0x148ce9b50be946a96e94a4f5479b771bab9b1c59000100000000000000000054": [
