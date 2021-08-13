@@ -38,14 +38,20 @@ export function isStETH(pool: AnyPool): boolean {
   );
 }
 
-export function usePool(pool: Ref<AnyPool>) {
+export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const { appNetworkConfig } = useWeb3();
-  const isStablePool = computed(() => isStable(pool.value));
-  const isMetaStablePool = computed(() => isMetaStable(pool.value));
-  const isStableLikePool = computed(() => isStableLike(pool.value));
-  const isWeightedPool = computed(() => isWeighted(pool.value));
-  const isWethPool = computed(() => isWeth(pool.value, appNetworkConfig.key));
-  const isStETHPool = computed(() => isStETH(pool.value));
+  const isStablePool = computed(() => pool.value && isStable(pool.value));
+  const isMetaStablePool = computed(
+    () => pool.value && isMetaStable(pool.value)
+  );
+  const isStableLikePool = computed(
+    () => pool.value && isStableLike(pool.value)
+  );
+  const isWeightedPool = computed(() => pool.value && isWeighted(pool.value));
+  const isWethPool = computed(
+    () => pool.value && isWeth(pool.value, appNetworkConfig.key)
+  );
+  const isStETHPool = computed(() => pool.value && isStETH(pool.value));
 
   return {
     // computed
