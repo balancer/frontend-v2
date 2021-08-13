@@ -41,6 +41,11 @@ const QUERY_KEYS = {
       contractAddresses: Ref<string[]>,
       tokens: Ref<string[]>
     ) => ['account', 'allowances', { account, contractAddresses, tokens }],
+    RelayerApprovals: (account: Ref<string>, relayer: Ref<string>) => [
+      'account',
+      'relayer',
+      { account, relayer }
+    ],
     Profile: (account: Ref<string>, chainId: Ref<number | undefined>) => [
       'account',
       'profile',

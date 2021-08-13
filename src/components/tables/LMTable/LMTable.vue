@@ -31,7 +31,7 @@
         <div class="px-6 py-4">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
-            :isStablePool="pool.poolType === 'Stable'"
+            :isStablePool="isStableLike(pool)"
           />
         </div>
       </template>
@@ -91,6 +91,7 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { sum } from 'lodash';
 import useDarkMode from '@/composables/useDarkMode';
+import { isStableLike } from '@/composables/usePool';
 
 function getWeekName(week: string) {
   const parts = week.split('_');
@@ -173,7 +174,7 @@ export default defineComponent({
     });
 
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
-      if (pool.poolType === 'Stable') return pool.tokens;
+      if (isStableLike(pool)) return pool.tokens;
 
       const sortedTokens = pool.tokens.slice();
       sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
@@ -200,6 +201,7 @@ export default defineComponent({
       fNum,
       getAddress,
       calculatePricesFor,
+      isStableLike,
       columns,
       data,
       tokens,

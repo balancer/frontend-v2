@@ -41,7 +41,7 @@ export default class Vault {
 
     if (type === 'Weighted') {
       tokenMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
-    } else if (type === 'Stable') {
+    } else if (type === 'Stable' || type === 'MetaStable') {
       tokenMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
     }
 

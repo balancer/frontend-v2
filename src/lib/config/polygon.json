@@ -31,6 +31,9 @@
     "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
     "stablePoolFactory": "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24",
     "weth": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+    "stETH": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+    "wstETH": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+    "lidoRelayer": "",
     "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d"
   },
   "strategies": {

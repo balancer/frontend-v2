@@ -34,6 +34,9 @@
     "stablePoolFactory": "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24",
     "tokenFactory": "",
     "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "stETH": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+    "wstETH": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+    "lidoRelayer": "",
     "MockFlashLoanReceiver": "",
     "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E"
   },

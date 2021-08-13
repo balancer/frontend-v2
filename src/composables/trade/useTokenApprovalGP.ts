@@ -70,7 +70,7 @@ export default function useTokenApprovalGP(
         action: 'approve',
         summary: t('transactionSummary.approveForTrading', [tokenInSymbol]),
         details: {
-          tokenAddress: tokenInAddress.value,
+          contractAddress: tokenInAddress.value,
           spender: GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
         }
       });

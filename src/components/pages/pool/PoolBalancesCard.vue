@@ -89,7 +89,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { upToLargeBreakpoint } = useBreakpoints();
     const { priceFor } = useTokens();
-    const { isStablePool } = usePool(pool);
+    const { isStableLikePool } = usePool(pool);
 
     /**
      * COMPUTED
@@ -118,7 +118,7 @@ export default defineComponent({
         align: 'right',
         sortKey: pool => weightFor(pool.address),
         width: 125,
-        hidden: !props.loading && isStablePool.value
+        hidden: !props.loading && isStableLikePool.value
       },
       {
         name: t('balance'),

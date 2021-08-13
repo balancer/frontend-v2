@@ -75,7 +75,7 @@
               <span class="break-words" :title="fNum(amountUSD(i), 'usd')">
                 {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
-              <span v-if="!isStablePool" class="text-xs text-gray-400">
+              <span v-if="!isStableLikePool" class="text-xs text-gray-400">
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
@@ -116,7 +116,7 @@
                 {{ pool.onchain.tokens[token].symbol }}
               </span>
               <span
-                v-if="!isStablePool"
+                v-if="!isStableLikePool"
                 class="leading-none text-xs mt-1 text-gray-500"
               >
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
@@ -157,13 +157,38 @@
           }"
           class="text-xs text-gray-500 underline"
         >
-          {{ $t('wrapInstruction', [nativeAsset]) }}
+          {{ $t('wrapInstruction', [nativeAsset, `W${nativeAsset}`]) }}
         </router-link>
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
           <div class="w-52" v-html="$t('ethBufferInstruction')" />
+        </BalTooltip>
+      </div>
+      <div v-if="isWstETHPool" class="flex items-center mb-4">
+        <router-link
+          :to="{
+            name: 'trade',
+            params: {
+              assetIn: appNetworkConfig.addresses.stETH,
+              assetOut: appNetworkConfig.addresses.wstETH
+            }
+          }"
+          class="text-xs text-gray-500 underline"
+        >
+          {{
+            $t('wrapInstruction', [
+              symbolFor(appNetworkConfig.addresses.stETH),
+              symbolFor(appNetworkConfig.addresses.wstETH)
+            ])
+          }}
+        </router-link>
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
+          </template>
+          <div class="w-52" v-html="$t('wrapStEthTooltip')" />
         </BalTooltip>
       </div>
     </div>
@@ -339,7 +364,9 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStablePool, isWethPool } = usePool(toRef(props, 'pool'));
+    const { isStableLikePool, isWethPool, isWstETHPool } = usePool(
+      toRef(props, 'pool')
+    );
 
     const { amounts } = toRefs(data);
 
@@ -506,7 +533,7 @@ export default defineComponent({
         : [isPositive()];
     }
 
-    function symbolFor(token) {
+    function symbolFor(token: string) {
       return tokens.value[token]?.symbol || '';
     }
 
@@ -695,7 +722,8 @@ export default defineComponent({
       isRequired,
       hasZeroBalance,
       isWethPool,
-      isStablePool,
+      isWstETHPool,
+      isStableLikePool,
       // methods
       submit,
       approveAllowances,

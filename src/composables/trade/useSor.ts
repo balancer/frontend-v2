@@ -15,7 +15,12 @@ import { SubgraphPoolBase } from '@balancer-labs/sor2';
 import { useI18n } from 'vue-i18n';
 
 import { scale, bnum } from '@/lib/utils';
-import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
+import {
+  getWrapOutput,
+  unwrap,
+  wrap,
+  WrapType
+} from '@/lib/utils/balancer/wrapper';
 import {
   SorManager,
   SorReturn,
@@ -54,16 +59,15 @@ type Props = {
   tokenOutAddressInput: Ref<string>;
   tokenOutAmountInput: Ref<string>;
   tokens: Ref<TokenInfoMap>;
-  isWrap: Ref<boolean>;
-  isUnwrap: Ref<boolean>;
+  wrapType: Ref<WrapType>;
   tokenInAmountScaled?: ComputedRef<BigNumber>;
   tokenOutAmountScaled?: ComputedRef<BigNumber>;
   sorConfig?: {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
   };
-  tokenIn?: ComputedRef<TokenInfo>;
-  tokenOut?: ComputedRef<TokenInfo>;
+  tokenIn: ComputedRef<TokenInfo>;
+  tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
 };
 
@@ -76,8 +80,7 @@ export default function useSor({
   tokenOutAddressInput,
   tokenOutAmountInput,
   tokens,
-  isWrap,
-  isUnwrap,
+  wrapType,
   tokenInAmountScaled,
   tokenOutAmountScaled,
   sorConfig = {
@@ -216,23 +219,10 @@ export default function useSor({
       return;
     }
 
-    if (isWrap.value || isUnwrap.value) {
-      tokenInAmountInput.value = amount;
-      tokenOutAmountInput.value = amount;
-      sorReturn.value.hasSwaps = false;
-      priceImpact.value = 0;
-      return;
-    }
-
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
 
-    if (
-      !tokenInAddress ||
-      !tokenOutAddress ||
-      !sorManager ||
-      !sorManager.hasPoolData()
-    ) {
+    if (!tokenInAddress || !tokenOutAddress) {
       if (exactIn.value) tokenOutAmountInput.value = '';
       else tokenInAmountInput.value = '';
       return;
@@ -240,6 +230,47 @@ export default function useSor({
 
     const tokenInDecimals = tokens.value[tokenInAddressInput.value]?.decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value]?.decimals;
+
+    if (wrapType.value !== WrapType.NonWrap) {
+      const wrapper =
+        wrapType.value === WrapType.Wrap ? tokenOutAddress : tokenInAddress;
+
+      if (exactIn.value) {
+        tokenInAmountInput.value = amount;
+
+        const outputAmount = await getWrapOutput(
+          wrapper,
+          wrapType.value,
+          scale(bnum(amount), tokenInDecimals).toString()
+        );
+        tokenOutAmountInput.value = scale(
+          bnum(outputAmount),
+          -tokenInDecimals
+        ).toString();
+      } else {
+        tokenOutAmountInput.value = amount;
+
+        const inputAmount = await getWrapOutput(
+          wrapper,
+          wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
+          scale(bnum(amount), tokenOutDecimals).toString()
+        );
+        tokenInAmountInput.value = scale(
+          bnum(inputAmount),
+          -tokenOutDecimals
+        ).toString();
+      }
+
+      sorReturn.value.hasSwaps = false;
+      priceImpact.value = 0;
+      return;
+    }
+
+    if (!sorManager || !sorManager.hasPoolData()) {
+      if (exactIn.value) tokenOutAmountInput.value = '';
+      else tokenInAmountInput.value = '';
+      return;
+    }
 
     if (exactIn.value) {
       await setSwapCost(
@@ -353,12 +384,17 @@ export default function useSor({
     const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
     const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
 
-    if (action === 'wrap') {
-      summary = t('transactionSummary.wrapETH', [tokenInAmountFormatted]);
-    } else if (action === 'unwrap') {
-      summary = t('transactionSummary.unwrapETH', [tokenInAmountFormatted]);
+    const tokenInSymbol = tokenIn.value.symbol;
+    const tokenOutSymbol = tokenOut.value.symbol;
+
+    if (['wrap', 'unwrap'].includes(action)) {
+      summary = t('transactionSummary.wrapUnwrap', [
+        tokenInAmountFormatted,
+        tokenInSymbol,
+        tokenOutSymbol
+      ]);
     } else {
-      summary = `${tokenInAmountFormatted} ${tokenIn?.value.symbol} -> ${tokenOutAmountFormatted} ${tokenOut?.value.symbol}`;
+      summary = `${tokenInAmountFormatted} ${tokenInSymbol} -> ${tokenOutAmountFormatted} ${tokenOutSymbol}`;
     }
 
     addTransaction({
@@ -367,8 +403,8 @@ export default function useSor({
       action,
       summary,
       details: {
-        tokenIn: tokenIn?.value,
-        tokenOut: tokenOut?.value,
+        tokenIn: tokenIn.value,
+        tokenOut: tokenOut.value,
         tokenInAddress: tokenInAddressInput.value,
         tokenOutAddress: tokenOutAddressInput.value,
         tokenInAmount: tokenInAmountInput.value,
@@ -404,11 +440,12 @@ export default function useSor({
     const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
     const tokenInAmountScaled = scale(tokenInAmountNumber, tokenInDecimals);
 
-    if (isWrap.value) {
+    if (wrapType.value == WrapType.Wrap) {
       try {
         const tx = await wrap(
           appNetworkConfig.key,
           provider.value as any,
+          tokenOutAddress,
           tokenInAmountScaled
         );
         console.log('Wrap tx', tx);
@@ -424,11 +461,12 @@ export default function useSor({
         confirming.value = false;
       }
       return;
-    } else if (isUnwrap.value) {
+    } else if (wrapType.value == WrapType.Unwrap) {
       try {
         const tx = await unwrap(
           appNetworkConfig.key,
           provider.value as any,
+          tokenInAddress,
           tokenInAmountScaled
         );
         console.log('Unwrap tx', tx);

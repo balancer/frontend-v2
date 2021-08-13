@@ -18,7 +18,7 @@
                 {{ tokenMeta.symbol }}
               </span>
               <span
-                v-if="!isStablePool"
+                v-if="!isStableLikePool"
                 class="font-medium text-gray-400 text-xs mt-px ml-1"
               >
                 {{ fNum(tokenMeta.weight, 'percent_lg') }}
@@ -120,6 +120,7 @@ import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { useQueryClient } from 'vue-query';
 import useNumbers from '@/composables/useNumbers';
+import { usePool } from '@/composables/usePool';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
 import { useRouter } from 'vue-router';
@@ -179,6 +180,7 @@ export default defineComponent({
      * COMPUTED
      */
     const pool = computed(() => poolQuery.data.value);
+    const { isStableLikePool } = usePool(poolQuery.data);
 
     const noInitLiquidity = computed(
       () =>
@@ -238,8 +240,6 @@ export default defineComponent({
 
       return key ? t(key) : t('unknownPoolType');
     });
-
-    const isStablePool = computed(() => pool.value?.poolType === 'Stable');
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
@@ -310,7 +310,7 @@ export default defineComponent({
       missingPrices,
       feesManagedByGauntlet,
       swapFeeToolTip,
-      isStablePool,
+      isStableLikePool,
       // methods
       fNum,
       onNewTx

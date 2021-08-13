@@ -9,23 +9,29 @@ import {
   ComputedRef,
   onBeforeMount
 } from 'vue';
-import useTokenLists from '@/composables/useTokenLists';
+import { compact, pick } from 'lodash';
 import { getAddress, isAddress } from '@ethersproject/address';
+
+import { bnum, forChange } from '@/lib/utils';
+import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
+
 import { TokenInfo, TokenInfoMap, TokenList } from '@/types/TokenList';
+
+import symbolKeys from '@/constants/symbol.keys';
+
+import useTokenLists from '@/composables/useTokenLists';
 import useConfig from '@/composables/useConfig';
 import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
+import useUserSettings from '@/composables/useUserSettings';
+
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
-import symbolKeys from '@/constants/symbol.keys';
 import { GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import { tokenService } from '@/services/token/token.service';
-import useUserSettings from '@/composables/useUserSettings';
-import { bnum, forChange } from '@/lib/utils';
-import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
-import { pick } from 'lodash';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -54,7 +60,16 @@ export interface TokensProviderResponse {
   injectTokens: Function;
   searchTokens: Function;
   hasBalance: Function;
-  approvalsRequired: Function;
+  approvalRequired: (
+    tokenAddress: string,
+    amount: string,
+    contractAddress?: string
+  ) => boolean;
+  approvalsRequired: (
+    tokenAddresses: string[],
+    amounts: string[],
+    contractAddress?: string
+  ) => string[];
   priceFor: Function;
   balanceFor: (address: string) => string;
   getTokens: Function;
@@ -99,15 +114,12 @@ export default {
       injectedTokens: {
         [networkConfig.nativeAsset.address]: nativeAsset
       },
-      allowanceContracts: [
+      allowanceContracts: compact([
         networkConfig.addresses.vault,
-        ...(networkConfig.addresses.exchangeProxy
-          ? [networkConfig.addresses.exchangeProxy]
-          : []),
-        ...(GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
-          ? [GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS]
-          : [])
-      ]
+        networkConfig.addresses.wstETH,
+        networkConfig.addresses.exchangeProxy,
+        GP_ALLOWANCE_MANAGER_CONTRACT_ADDRESS
+      ])
     });
 
     /**
@@ -280,6 +292,21 @@ export default {
     }
 
     /**
+     * Check if approval is required for given contract address
+     * for a token and amount.
+     */
+    function approvalRequired(
+      tokenAddress: string,
+      amount: string,
+      contractAddress = networkConfig.addresses.vault
+    ): boolean {
+      if (!amount || bnum(amount).eq(0)) return false;
+
+      const allowance = bnum(allowances.value[contractAddress][tokenAddress]);
+      return allowance.lt(amount);
+    }
+
+    /**
      * Check which tokens require approvals for given amounts
      * @returns a subset of the token addresses passed in.
      */
@@ -291,12 +318,7 @@ export default {
       return tokenAddresses.filter((address, index) => {
         if (!contractAddress) return false;
 
-        const amount = amounts[index];
-        if (!amount || bnum(amount).eq(0)) return false;
-
-        const allowance = bnum(allowances.value[contractAddress][address]);
-
-        return allowance.lt(amount);
+        return approvalRequired(address, amounts[index], contractAddress);
       });
     }
 
@@ -340,8 +362,14 @@ export default {
      * CALLBACKS
      */
     onBeforeMount(async () => {
+      const tokensToInject = [
+        ...currentLiquidityMiningRewardTokens,
+        configService.network.addresses.stETH,
+        configService.network.addresses.wstETH
+      ];
+
       await forChange(loadingTokenLists, false);
-      await injectTokens(currentLiquidityMiningRewardTokens);
+      await injectTokens(tokensToInject);
       state.loading = false;
     });
 
@@ -364,6 +392,7 @@ export default {
       injectTokens,
       searchTokens,
       hasBalance,
+      approvalRequired,
       approvalsRequired,
       priceFor,
       balanceFor,

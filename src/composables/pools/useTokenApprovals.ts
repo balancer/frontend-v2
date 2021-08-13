@@ -54,7 +54,7 @@ export default function useTokenApprovals(
           tokens.value[tokenAddress]?.symbol
         ]),
         details: {
-          tokenAddress,
+          contractAddress: tokenAddress,
           spender: appNetworkConfig.addresses.vault
         }
       });
