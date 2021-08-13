@@ -6,7 +6,7 @@ import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
 import vaultAbi from '@/lib/abi/Vault.json';
-import batchRelayerAbi from '@/lib/abi/BatchRelayer.json';
+import lidoRelayerAbi from '@/lib/abi/LidoRelayer.json';
 import configs from '@/lib/config';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
@@ -400,7 +400,7 @@ async function lidoBatchSwapGivenIn(
   try {
     // Do a single swap instead of a batch to save gas
     if (swaps.length == 1) {
-      console.log('[Swapper] Overriding with single lidoSwap() GivenIn');
+      console.log('[Swapper] Overriding with single swap() GivenIn');
 
       const single: SingleSwap = {
         poolId: swaps[0].poolId,
@@ -413,9 +413,9 @@ async function lidoBatchSwapGivenIn(
 
       return sendTransaction(
         web3,
-        configs[network].addresses.batchRelayer,
-        batchRelayerAbi,
-        'lidoSwap',
+        configs[network].addresses.lidoRelayer,
+        lidoRelayerAbi,
+        'swap',
         [single, funds, tokenOutAmountMin.toString(), MaxUint256],
         overrides
       );
@@ -423,14 +423,14 @@ async function lidoBatchSwapGivenIn(
 
     return sendTransaction(
       web3,
-      configs[network].addresses.batchRelayer,
-      batchRelayerAbi,
-      'lidoBatchSwap',
+      configs[network].addresses.lidoRelayer,
+      lidoRelayerAbi,
+      'batchSwap',
       [SWAP_KIND_IN, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
     );
   } catch (e) {
-    console.log('[Swapper] lidoBatchSwapGivenIn Error:', e);
+    console.log('[Swapper] batchSwapGivenIn Error:', e);
     return Promise.reject(e);
   }
 }
@@ -492,7 +492,7 @@ async function lidoBatchSwapGivenOut(
   try {
     // Do a single swap instead of a batch to save gas
     if (swaps.length == 1) {
-      console.log('[Swapper] Overriding with single lidoSwap() GivenOut');
+      console.log('[Swapper] Overriding with single swap() GivenOut');
 
       const single: SingleSwap = {
         poolId: swaps[0].poolId,
@@ -505,9 +505,9 @@ async function lidoBatchSwapGivenOut(
 
       return sendTransaction(
         web3,
-        configs[network].addresses.batchRelayer,
-        batchRelayerAbi,
-        'lidoSwap',
+        configs[network].addresses.lidoRelayer,
+        lidoRelayerAbi,
+        'swap',
         [single, funds, tokenInAmountMax.toString(), MaxUint256],
         overrides
       );
@@ -515,14 +515,14 @@ async function lidoBatchSwapGivenOut(
 
     return sendTransaction(
       web3,
-      configs[network].addresses.batchRelayer,
-      batchRelayerAbi,
-      'lidoBatchSwap',
+      configs[network].addresses.lidoRelayer,
+      lidoRelayerAbi,
+      'batchSwap',
       [SWAP_KIND_OUT, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
     );
   } catch (e) {
-    console.log('[Swapper] lidoBatchSwapGivenOut Error:', e);
+    console.log('[Swapper] batchSwapGivenOut Error:', e);
     return Promise.reject(e);
   }
 }

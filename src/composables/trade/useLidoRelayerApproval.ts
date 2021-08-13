@@ -12,13 +12,13 @@ import { configService } from '@/services/config/config.service';
 import vaultAbi from '@/lib/abi/Vault.json';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 
-export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
+export default function useLidoRelayerApproval(isStETHTrade: Ref<boolean>) {
   /**
    * STATE
    */
   const approving = ref(false);
   const approved = ref(false);
-  const batchRelayerAddress = ref(configService.network.addresses.batchRelayer);
+  const lidoRelayerAddress = ref(configService.network.addresses.lidoRelayer);
 
   /**
    * COMPOSABLES
@@ -28,7 +28,7 @@ export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
-  const batchRelayerApproval = useRelayerApprovalQuery(batchRelayerAddress);
+  const lidoRelayerApproval = useRelayerApprovalQuery(lidoRelayerAddress);
 
   /**
    * COMPUTED
@@ -37,7 +37,7 @@ export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
   const isUnlocked = computed(() =>
     approved.value || !isStETHTrade.value
       ? true
-      : !!batchRelayerApproval.data.value
+      : !!lidoRelayerApproval.data.value
   );
 
   /**
@@ -51,17 +51,17 @@ export default function useBatchRelayerApproval(isStETHTrade: Ref<boolean>) {
         configService.network.addresses.vault,
         vaultAbi,
         'setRelayerApproval',
-        [account.value, batchRelayerAddress.value, true]
+        [account.value, lidoRelayerAddress.value, true]
       );
 
       addTransaction({
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: t('transactionSummary.approveBatchRelayer'),
+        summary: t('transactionSummary.approveLidoRelayer'),
         details: {
           contractAddress: configService.network.addresses.vault,
-          spender: batchRelayerAddress.value
+          spender: lidoRelayerAddress.value
         }
       });
       txListener(tx, {

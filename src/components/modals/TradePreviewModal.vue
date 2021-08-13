@@ -23,20 +23,20 @@
           {{ requiresApproval ? 'transactions' : 'transaction' }}:
         </div>
         <div>
-          <div v-if="requiresBatchRelayerApproval" class="mb-3 card-container">
+          <div v-if="requiresLidoRelayerApproval" class="mb-3 card-container">
             <div class="card-step text-green-500">
               <BalIcon
-                v-if="isBatchRelayerApproved"
+                v-if="isLidoRelayerApproved"
                 name="check"
                 class="text-green-500"
               />
               <span v-else class="text-gray-500 dark:text-gray-400">1</span>
             </div>
             <div class="ml-3">
-              <span v-if="isBatchRelayerApproved">{{
-                $t('approvedBatchRelayer')
+              <span v-if="isLidoRelayerApproved">{{
+                $t('approvedLidoRelayer')
               }}</span>
-              <span v-else>{{ $t('approveBatchRelayer') }}</span>
+              <span v-else>{{ $t('approveLidoRelayer') }}</span>
             </div>
           </div>
           <div v-if="requiresTokenApproval" class="card-container">
@@ -47,7 +47,7 @@
                 class="text-green-500"
               />
               <span v-else class="text-gray-500 dark:text-gray-400">{{
-                requiresBatchRelayerApproval ? 2 : 1
+                requiresLidoRelayerApproval ? 2 : 1
               }}</span>
             </div>
             <div class="ml-3">
@@ -69,14 +69,14 @@
         </div>
       </div>
       <BalBtn
-        v-if="requiresBatchRelayerApproval && !isBatchRelayerApproved"
+        v-if="requiresLidoRelayerApproval && !isLidoRelayerApproved"
         class="mt-5"
-        :label="$t('approveBatchRelayer')"
-        :loading="approvingBatchRelayer"
-        :loading-label="`${$t('approvingBatchRelayer')}…`"
+        :label="$t('approveLidoRelayer')"
+        :loading="approvingLidoRelayer"
+        :loading-label="`${$t('approvingLidoRelayer')}…`"
         color="gradient"
         block
-        @click.prevent="approveBatchRelayer"
+        @click.prevent="approveLidoRelayer"
       />
       <BalBtn
         v-else-if="requiresTokenApproval && !isTokenApproved"
@@ -106,7 +106,7 @@
 import { defineComponent, toRefs, computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useBatchRelayerApproval from '@/composables/trade/useBatchRelayerApproval';
+import useLidoRelayerApproval from '@/composables/trade/useLidoRelayerApproval';
 import useTokens from '@/composables/useTokens';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
@@ -166,7 +166,7 @@ export default defineComponent({
 
     const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
 
-    const batchRelayerApproval = useBatchRelayerApproval(isStETHTrade);
+    const lidoRelayerApproval = useLidoRelayerApproval(isStETHTrade);
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 
@@ -192,17 +192,17 @@ export default defineComponent({
       isUnwrap.value || isEthTrade.value ? false : true
     );
 
-    const isBatchRelayerApproved = computed(
-      () => batchRelayerApproval.isUnlocked.value
+    const isLidoRelayerApproved = computed(
+      () => lidoRelayerApproval.isUnlocked.value
     );
-    const requiresBatchRelayerApproval = computed(
+    const requiresLidoRelayerApproval = computed(
       () =>
         isStETHTrade.value &&
-        (!isBatchRelayerApproved.value || batchRelayerApproval.approved.value)
+        (!isLidoRelayerApproved.value || lidoRelayerApproval.approved.value)
     );
 
     const requiresApproval = computed(
-      () => requiresTokenApproval.value || requiresBatchRelayerApproval.value
+      () => requiresTokenApproval.value || requiresLidoRelayerApproval.value
     );
 
     const isTokenApproved = computed(() => {
@@ -223,8 +223,8 @@ export default defineComponent({
       return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
     });
 
-    async function approveBatchRelayer(): Promise<void> {
-      await batchRelayerApproval.approve();
+    async function approveLidoRelayer(): Promise<void> {
+      await lidoRelayerApproval.approve();
     }
 
     async function approveToken(): Promise<void> {
@@ -241,8 +241,8 @@ export default defineComponent({
 
     const approvingToken = computed(() => tokenApproval.approving.value);
 
-    const approvingBatchRelayer = computed(
-      () => batchRelayerApproval.approving.value
+    const approvingLidoRelayer = computed(
+      () => lidoRelayerApproval.approving.value
     );
 
     const totalRequiredTransactions = computed(() => {
@@ -251,7 +251,7 @@ export default defineComponent({
       if (requiresTokenApproval.value) {
         txCount++;
       }
-      if (requiresBatchRelayerApproval.value) {
+      if (requiresLidoRelayerApproval.value) {
         txCount++;
       }
       return txCount;
@@ -269,21 +269,21 @@ export default defineComponent({
       // methods
       fNum,
       onClose,
-      approveBatchRelayer,
+      approveLidoRelayer,
       approveToken,
       trade,
       // computed
       requiresApproval,
       requiresTokenApproval,
-      requiresBatchRelayerApproval,
+      requiresLidoRelayerApproval,
       isTokenApproved,
-      isBatchRelayerApproved,
+      isLidoRelayerApproved,
       valueIn,
       symbolIn,
       symbolOut,
-      approvingBatchRelayer,
+      approvingLidoRelayer,
       approvingToken,
-      batchRelayerApproval,
+      lidoRelayerApproval,
       totalRequiredTransactions
     };
   }
