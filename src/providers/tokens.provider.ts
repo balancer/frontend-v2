@@ -60,6 +60,11 @@ export interface TokensProviderResponse {
   injectTokens: Function;
   searchTokens: Function;
   hasBalance: Function;
+  approvalRequired: (
+    tokenAddress: string,
+    amount: string,
+    contractAddress?: string
+  ) => boolean;
   approvalsRequired: (
     tokenAddresses: string[],
     amounts: string[],
@@ -287,6 +292,21 @@ export default {
     }
 
     /**
+     * Check if approval is required for given contract address
+     * for a token and amount.
+     */
+    function approvalRequired(
+      tokenAddress: string,
+      amount: string,
+      contractAddress = networkConfig.addresses.vault
+    ): boolean {
+      if (!amount || bnum(amount).eq(0)) return false;
+
+      const allowance = bnum(allowances.value[contractAddress][tokenAddress]);
+      return allowance.lt(amount);
+    }
+
+    /**
      * Check which tokens require approvals for given amounts
      * @returns a subset of the token addresses passed in.
      */
@@ -298,12 +318,7 @@ export default {
       return tokenAddresses.filter((address, index) => {
         if (!contractAddress) return false;
 
-        const amount = amounts[index];
-        if (!amount || bnum(amount).eq(0)) return false;
-
-        const allowance = bnum(allowances.value[contractAddress][address]);
-
-        return allowance.lt(amount);
+        return approvalRequired(address, amounts[index], contractAddress);
       });
     }
 
@@ -377,6 +392,7 @@ export default {
       injectTokens,
       searchTokens,
       hasBalance,
+      approvalRequired,
       approvalsRequired,
       priceFor,
       balanceFor,

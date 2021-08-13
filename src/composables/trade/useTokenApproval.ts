@@ -30,7 +30,7 @@ export default function useTokenApproval(
   const { getProvider } = useWeb3();
   const { txListener } = useEthers();
   const { networkConfig } = useConfig();
-  const { allowances, approvalsRequired, dynamicDataLoading } = useTokens();
+  const { approvalsRequired, dynamicDataLoading } = useTokens();
 
   /**
    * COMPUTED
@@ -65,17 +65,9 @@ export default function useTokenApproval(
       [tokenInAmountDenorm.toString()]
     );
 
-    const approvedSpenders = Object.fromEntries(
-      Object.entries(allowances.value).map(([contract, tokenAllowances]) => [
-        contract,
-        tokenAllowances[tokenInAddress.value]
-      ])
-    );
-
     return {
       isUnlockedV1: requiredAllowancesV1.length === 0,
-      isUnlockedV2: requiredAllowancesV2.length === 0,
-      approvedSpenders
+      isUnlockedV2: requiredAllowancesV2.length === 0
     };
   });
 

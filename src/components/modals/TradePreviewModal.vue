@@ -150,7 +150,7 @@ export default defineComponent({
 
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
-    const { tokens } = useTokens();
+    const { tokens, approvalRequired } = useTokens();
 
     const wrapType = computed(() =>
       getWrapAction(addressIn.value, addressOut.value)
@@ -210,16 +210,14 @@ export default defineComponent({
         return true;
       }
 
-      const {
-        approvedSpenders,
-        isUnlockedV1,
-        isUnlockedV2
-      } = tokenApproval.allowanceState.value;
+      const { isUnlockedV1, isUnlockedV2 } = tokenApproval.allowanceState.value;
       if (isWrap.value && !isEthTrade.value) {
         // If we're wrapping a token other than native ETH
         // we need to approve the underlying on the wrapper
-        return (
-          Number(approvedSpenders[addressOut.value]) > Number(amountIn.value)
+        return !approvalRequired(
+          addressIn.value,
+          amountIn.value,
+          addressOut.value
         );
       }
       return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
