@@ -171,16 +171,16 @@
           :to="{
             name: 'trade',
             params: {
-              assetIn: configService.network.addresses.stETH,
-              assetOut: configService.network.addresses.wstETH
+              assetIn: appNetworkConfig.addresses.stETH,
+              assetOut: appNetworkConfig.addresses.wstETH
             }
           }"
           class="text-xs text-gray-500 underline"
         >
           {{
             $t('wrapInstruction', [
-              symbolFor(configService.network.addresses.stETH),
-              symbolFor(configService.network.addresses.wstETH)
+              symbolFor(appNetworkConfig.addresses.stETH),
+              symbolFor(appNetworkConfig.addresses.wstETH)
             ])
           }}
         </router-link>
@@ -304,7 +304,6 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
-import { configService } from '@/services/config/config.service';
 import { getAddress } from '@ethersproject/address';
 
 export enum FormTypes {
@@ -700,7 +699,6 @@ export default defineComponent({
       Goals,
       nativeAsset,
       TOKENS,
-      configService,
       // computed
       tokens,
       appNetworkConfig,
