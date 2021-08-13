@@ -10,7 +10,7 @@ export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
 }
 
 /**
- * @notice Get amount of wstETH for a one stETH
+ * @notice Get amount of wstETH for a given amount of stETH
  */
 export function getWstETHByStETH(stETHAmount: BigNumberish) {
   const wstETH = new Contract(
