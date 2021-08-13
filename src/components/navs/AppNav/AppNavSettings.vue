@@ -218,10 +218,10 @@ export default defineComponent({
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
     const hideLiquidity = computed(() => !isV1Supported);
-    const connectorName = computed(() => getConnectorName(connector.value.id));
+    const connectorName = computed(() => getConnectorName(connector.value?.id));
 
-    const connectorLogo = computed(() => getConnectorLogo(connector.value.id));
-    const hideDisconnect = computed(() => connector.value.id == 'gnosis');
+    const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
+    const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
 
     // METHODS
     const setDarkMode = val => store.commit('app/setDarkMode', val);
