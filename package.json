@@ -25,6 +25,8 @@
     "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#john/ui-629-sor-integrate-sdk-maths",
     "@ensdomains/content-hash": "^2.5.3",
     "@gnosis.pm/gp-v2-contracts": "^0.0.1-alpha.19",
+    "@gnosis.pm/safe-apps-provider": "^0.6.0",
+    "@gnosis.pm/safe-apps-sdk": "^4.0.0",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.9.2",
     "@portis/web3": "^3.0.3",

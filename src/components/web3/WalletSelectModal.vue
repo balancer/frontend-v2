@@ -41,7 +41,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      wallets: SupportedWallets,
+      wallets: SupportedWallets.filter(id => id !== 'gnosis'),
       EXTERNAL_LINKS
     };
   }
