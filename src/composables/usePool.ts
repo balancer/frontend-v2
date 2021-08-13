@@ -32,9 +32,9 @@ export function isWeth(pool: AnyPool, networkId: string): boolean {
   return pool.tokenAddresses.includes(TOKENS.AddressMap[networkId].WETH);
 }
 
-export function isStETH(pool: AnyPool): boolean {
+export function isWstETH(pool: AnyPool): boolean {
   return pool.tokenAddresses.includes(
-    getAddress(configService.network.addresses.stETH)
+    getAddress(configService.network.addresses.wstETH)
   );
 }
 
@@ -51,7 +51,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isWethPool = computed(
     () => pool.value && isWeth(pool.value, appNetworkConfig.key)
   );
-  const isStETHPool = computed(() => pool.value && isStETH(pool.value));
+  const isWstETHPool = computed(() => pool.value && isWstETH(pool.value));
 
   return {
     // computed
@@ -60,7 +60,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isStableLikePool,
     isWeightedPool,
     isWethPool,
-    isStETHPool,
+    isWstETHPool,
     // methods
     isStable,
     isMetaStable,

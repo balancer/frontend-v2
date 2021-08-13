@@ -166,7 +166,7 @@
           <div class="w-52" v-html="$t('ethBufferInstruction')" />
         </BalTooltip>
       </div>
-      <div v-else-if="isStETHPool" class="flex items-center mb-4">
+      <div v-if="isWstETHPool" class="flex items-center mb-4">
         <router-link
           :to="{
             name: 'trade',
@@ -364,7 +364,7 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStableLikePool, isWethPool, isStETHPool } = usePool(
+    const { isStableLikePool, isWethPool, isWstETHPool } = usePool(
       toRef(props, 'pool')
     );
 
@@ -722,7 +722,7 @@ export default defineComponent({
       isRequired,
       hasZeroBalance,
       isWethPool,
-      isStETHPool,
+      isWstETHPool,
       isStableLikePool,
       // methods
       submit,
