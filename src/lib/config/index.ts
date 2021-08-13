@@ -56,7 +56,6 @@ const config: Record<string, Config> = {
   '42': kovan,
   '4': rinkeby,
   '137': polygon,
-  // @ts-ignore
   '12345': test,
   // @ts-ignore
   '17': docker
