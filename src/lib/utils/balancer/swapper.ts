@@ -364,6 +364,7 @@ async function lidoBatchSwapGivenIn(
   const { stETH, wstETH } = configService.network.addresses;
   if (tokenIn === stETH.toLowerCase()) {
     tokenIn = wstETH.toLowerCase();
+    tokenInAmount = bnum(await getWstETHByStETH(tokenInAmount.toString()));
   } else if (tokenOut === stETH.toLowerCase()) {
     tokenOut = wstETH.toLowerCase();
     tokenOutAmountMin = bnum(
@@ -460,6 +461,7 @@ async function lidoBatchSwapGivenOut(
     );
   } else if (tokenOut === stETH.toLowerCase()) {
     tokenOut = wstETH.toLowerCase();
+    tokenOutAmount = bnum(await getWstETHByStETH(tokenOutAmount.toString()));
   }
 
   const address = await web3.getSigner().getAddress();
