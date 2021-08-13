@@ -304,7 +304,6 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
-import { getAddress } from '@ethersproject/address';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -535,7 +534,7 @@ export default defineComponent({
     }
 
     function symbolFor(token: string) {
-      return tokens.value[getAddress(token)]?.symbol || '';
+      return tokens.value[token]?.symbol || '';
     }
 
     async function setPropMax() {
