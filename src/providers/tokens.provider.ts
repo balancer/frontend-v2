@@ -327,6 +327,15 @@ export default {
      */
     function priceFor(address: string): number {
       try {
+        // TODO: kill this with fire as soon as Coingecko supports wstETH
+        if (address === configService.network.addresses.wstETH) {
+          // If we're asking for the wstETH price then return 1.03x stETH price
+          const stETHPrice =
+            prices.value[configService.network.addresses.stETH][
+              currency.value
+            ] || 0;
+          return 1.0352 * stETHPrice;
+        }
         return prices.value[address][currency.value] || 0;
       } catch {
         return 0;
