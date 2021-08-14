@@ -362,11 +362,11 @@ export default {
      * CALLBACKS
      */
     onBeforeMount(async () => {
-      const tokensToInject = [
+      const tokensToInject = compact([
         ...currentLiquidityMiningRewardTokens,
         configService.network.addresses.stETH,
         configService.network.addresses.wstETH
-      ];
+      ]);
 
       await forChange(loadingTokenLists, false);
       await injectTokens(tokensToInject);
