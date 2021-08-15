@@ -1,12 +1,16 @@
 import axios from 'axios';
 
-const GWEI_UNIT = 1e9;
+import { GWEI_UNIT } from '@/constants/units';
+
+import { GasPrice } from './types';
 
 type BlocknativeGasPriceConfidence = 70 | 80 | 90 | 95 | 99;
 
 type BlocknativeEstimatedPrice = {
   confidence: BlocknativeGasPriceConfidence;
   price: number;
+  maxPriorityFeePerGas: number;
+  maxFeePerGas: number;
 };
 
 type BlocknativeBlockPrice = {
@@ -28,7 +32,7 @@ type BlocknativeGasPlatformResponse = {
 export default class BlocknativeProvider {
   public async getLatest(
     confidence: BlocknativeGasPriceConfidence | 'best' = 'best'
-  ): Promise<number | null> {
+  ): Promise<GasPrice | null> {
     try {
       const response = await axios.get<BlocknativeGasPlatformResponse>(
         'https://api.blocknative.com/gasprices/blockprices',
@@ -64,10 +68,16 @@ export default class BlocknativeProvider {
       }
 
       // gas price is in gwei
-      return gasPrice != null ? gasPrice.price * GWEI_UNIT : null;
+      if (gasPrice != null) {
+        return {
+          price: gasPrice.price * GWEI_UNIT,
+          maxFeePerGas: gasPrice.maxFeePerGas * GWEI_UNIT,
+          maxPriorityFeePerGas: gasPrice.maxPriorityFeePerGas * GWEI_UNIT
+        };
+      }
     } catch (e) {
       console.log('[Blocknative] Gas Platform Error', e);
-      return null;
     }
+    return null;
   }
 }

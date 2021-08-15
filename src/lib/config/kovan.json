@@ -8,6 +8,7 @@
   "unknown": false,
   "rpc": "https://eth-kovan.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "ws": "wss://eth-kovan.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
+  "loggingRpc": "https://eth-kovan.alchemyapi.io/v2/oGLgncMVHNWltnK0nTfiryxQ6gYemKQO",
   "explorer": "https://kovan.etherscan.io",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-kovan/pools",
@@ -33,6 +34,9 @@
     "stablePoolFactory": "",
     "tokenFactory": "0xEaa391544B268018C0FA848204E984Bd7FF7f20c",
     "weth": "0xdFCeA9088c8A88A76FF74892C1457C17dfeef9C1",
+    "stETH": "0x4803BB90d18a1Cb7a2187344Fe4feb0E07878D05",
+    "wstETH": "0xA387B91e393cFB9356A460370842BC8dBB2F29aF",
+    "lidoRelayer": "0x41B953164995c11C81DA73D212ED8Af25741b7Ac",
     "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d"
   },
   "strategies": {

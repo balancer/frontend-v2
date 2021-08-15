@@ -1,9 +1,5 @@
 <template>
-  <BalModal
-    :show="open"
-    @close="onClose"
-    :title="$t('previewTradeTransactions')"
-  >
+  <BalModal show @close="onClose" :title="$t('previewTradeTransactions')">
     <div>
       <div
         class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-800"
@@ -23,48 +19,74 @@
       </div>
       <div>
         <div class="mt-6 mb-3 text-sm">
-          Requires {{ requiresApproval ? 2 : 1 }}
+          Requires {{ totalRequiredTransactions }}
           {{ requiresApproval ? 'transactions' : 'transaction' }}:
         </div>
         <div>
-          <div
-            v-if="requiresApproval"
-            class="p-3 flex items-center border rounded-lg"
-          >
-            <div
-              class="w-9 h-9 flex items-center justify-center border rounded-full text-green-500"
-            >
-              <BalIcon v-if="isApproved" name="check" class="text-green-500" />
+          <div v-if="requiresLidoRelayerApproval" class="mb-3 card-container">
+            <div class="card-step text-green-500">
+              <BalIcon
+                v-if="isLidoRelayerApproved"
+                name="check"
+                class="text-green-500"
+              />
               <span v-else class="text-gray-500 dark:text-gray-400">1</span>
             </div>
             <div class="ml-3">
-              <span v-if="isApproved">{{ $t('approved') }}</span>
-              <span v-else>{{ $t('approve') }}</span>
+              <span v-if="isLidoRelayerApproved">{{
+                $t('approvedLidoRelayer')
+              }}</span>
+              <span v-else>{{ $t('approveLidoRelayer') }}</span>
             </div>
           </div>
-          <div
-            class="mt-3 p-3 flex items-center border rounded-lg dark:border-gray-800"
-          >
-            <div
-              class="w-9 h-9 flex items-center justify-center border rounded-full dark:border-gray-700 text-gray-500 dark:text-gray-400"
-            >
-              {{ requiresApproval ? 2 : 1 }}
+          <div v-if="requiresTokenApproval" class="card-container">
+            <div class="card-step text-green-500">
+              <BalIcon
+                v-if="isTokenApproved"
+                name="check"
+                class="text-green-500"
+              />
+              <span v-else class="text-gray-500 dark:text-gray-400">{{
+                requiresLidoRelayerApproval ? 2 : 1
+              }}</span>
             </div>
             <div class="ml-3">
-              Trade {{ fNum(valueIn, 'usd') }} {{ symbolIn }} -> {{ symbolOut }}
+              <span v-if="isTokenApproved"
+                >{{ $t('approved') }} {{ symbolIn }}</span
+              >
+              <span v-else>{{ $t('approve') }} {{ symbolIn }}</span>
+            </div>
+          </div>
+          <div class="mt-3 card-container">
+            <div class="card-step text-gray-500 dark:text-gray-400">
+              {{ totalRequiredTransactions }}
+            </div>
+            <div class="ml-3">
+              {{ $t('trade') }} {{ fNum(valueIn, 'usd') }} {{ symbolIn }} ->
+              {{ symbolOut }}
             </div>
           </div>
         </div>
       </div>
       <BalBtn
-        v-if="requiresApproval && !isApproved"
+        v-if="requiresLidoRelayerApproval && !isLidoRelayerApproved"
+        class="mt-5"
+        :label="$t('approveLidoRelayer')"
+        :loading="approvingLidoRelayer"
+        :loading-label="`${$t('approvingLidoRelayer')}…`"
+        color="gradient"
+        block
+        @click.prevent="approveLidoRelayer"
+      />
+      <BalBtn
+        v-else-if="requiresTokenApproval && !isTokenApproved"
         class="mt-5"
         :label="`${$t('approve')} ${symbolIn}`"
-        :loading="approving"
+        :loading="approvingToken"
         :loading-label="`${$t('approving')} ${symbolIn}…`"
         color="gradient"
         block
-        @click.prevent="approve"
+        @click.prevent="approveToken"
       />
       <BalBtn
         v-else
@@ -84,9 +106,12 @@
 import { defineComponent, toRefs, computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useWeb3 from '@/services/web3/useWeb3';
+import useLidoRelayerApproval from '@/composables/trade/useLidoRelayerApproval';
 import useTokens from '@/composables/useTokens';
+
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { isStETH } from '@/lib/utils/balancer/lido';
 
 export default defineComponent({
   emits: ['trade', 'close'],
@@ -125,29 +150,23 @@ export default defineComponent({
 
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
-    const { tokens } = useTokens();
-    const { appNetworkConfig } = useWeb3();
+    const { tokens, approvalRequired } = useTokens();
 
-    const isWrap = computed(() => {
-      return (
-        addressIn.value === NATIVE_ASSET_ADDRESS &&
-        addressOut.value === appNetworkConfig.addresses.weth
-      );
-    });
+    const wrapType = computed(() =>
+      getWrapAction(addressIn.value, addressOut.value)
+    );
+    const isWrap = computed(() => wrapType.value === WrapType.Wrap);
+    const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
 
-    const isUnwrap = computed(() => {
-      return (
-        addressOut.value === NATIVE_ASSET_ADDRESS &&
-        addressIn.value === appNetworkConfig.addresses.weth
-      );
-    });
+    const isStETHTrade = computed(
+      () =>
+        isStETH(addressIn.value, addressOut.value) &&
+        wrapType.value === WrapType.NonWrap
+    );
 
-    const {
-      approving,
-      approveV1,
-      approveV2,
-      allowanceState
-    } = useTokenApproval(addressIn, amountIn, tokens);
+    const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
+
+    const lidoRelayerApproval = useLidoRelayerApproval(isStETHTrade);
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 
@@ -169,24 +188,74 @@ export default defineComponent({
 
     const isEthTrade = computed(() => addressIn.value === NATIVE_ASSET_ADDRESS);
 
-    const requiresApproval = computed(() => {
-      if (isWrap.value || isUnwrap.value || isEthTrade.value) return false;
-      return true;
+    const requiresTokenApproval = computed(() =>
+      isUnwrap.value || isEthTrade.value ? false : true
+    );
+
+    const isLidoRelayerApproved = computed(
+      () => lidoRelayerApproval.isUnlocked.value
+    );
+    const requiresLidoRelayerApproval = computed(
+      () =>
+        isStETHTrade.value &&
+        (!isLidoRelayerApproved.value || lidoRelayerApproval.approved.value)
+    );
+
+    const requiresApproval = computed(
+      () => requiresTokenApproval.value || requiresLidoRelayerApproval.value
+    );
+
+    const isTokenApproved = computed(() => {
+      if (tokenApproval.approved.value) {
+        return true;
+      }
+
+      const { isUnlockedV1, isUnlockedV2 } = tokenApproval.allowanceState.value;
+      if (isWrap.value && !isEthTrade.value) {
+        // If we're wrapping a token other than native ETH
+        // we need to approve the underlying on the wrapper
+        return !approvalRequired(
+          addressIn.value,
+          amountIn.value,
+          addressOut.value
+        );
+      }
+      return isV1Swap.value ? isUnlockedV1 : isUnlockedV2;
     });
 
-    const isApproved = computed(() => {
-      return isV1Swap.value
-        ? allowanceState.value.isUnlockedV1
-        : allowanceState.value.isUnlockedV2;
-    });
+    async function approveLidoRelayer(): Promise<void> {
+      await lidoRelayerApproval.approve();
+    }
 
-    async function approve(): Promise<void> {
-      if (isV1Swap.value) {
-        await approveV1();
+    async function approveToken(): Promise<void> {
+      if (isWrap.value && !isEthTrade.value) {
+        // If we're wrapping a token other than native ETH
+        // we need to approve the underlying on the wrapper
+        await tokenApproval.approveSpender(addressOut.value);
+      } else if (isV1Swap.value) {
+        await tokenApproval.approveV1();
       } else {
-        await approveV2();
+        await tokenApproval.approveV2();
       }
     }
+
+    const approvingToken = computed(() => tokenApproval.approving.value);
+
+    const approvingLidoRelayer = computed(
+      () => lidoRelayerApproval.approving.value
+    );
+
+    const totalRequiredTransactions = computed(() => {
+      let txCount = 1; // trade
+
+      if (requiresTokenApproval.value) {
+        txCount++;
+      }
+      if (requiresLidoRelayerApproval.value) {
+        txCount++;
+      }
+      return txCount;
+    });
 
     function trade() {
       emit('trade');
@@ -197,17 +266,34 @@ export default defineComponent({
     }
 
     return {
+      // methods
       fNum,
+      onClose,
+      approveLidoRelayer,
+      approveToken,
+      trade,
+      // computed
       requiresApproval,
-      isApproved,
+      requiresTokenApproval,
+      requiresLidoRelayerApproval,
+      isTokenApproved,
+      isLidoRelayerApproved,
       valueIn,
       symbolIn,
       symbolOut,
-      onClose,
-      approve,
-      approving,
-      trade
+      approvingLidoRelayer,
+      approvingToken,
+      lidoRelayerApproval,
+      totalRequiredTransactions
     };
   }
 });
 </script>
+<style scoped>
+.card-container {
+  @apply p-3 flex items-center border rounded-lg dark:border-gray-800;
+}
+.card-step {
+  @apply w-9 h-9 flex items-center justify-center border rounded-full dark:border-gray-700;
+}
+</style>

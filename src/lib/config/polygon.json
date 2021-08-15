@@ -8,6 +8,7 @@
   "unknown": false,
   "rpc": "https://polygon-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
   "ws": "wss://polygon-mainnet.g.alchemy.com/v2/ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
+  "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/hsAEQ4l4c6uz3ciAdQ9w3ODWjVcND-Ti",
   "publicRpc": "https://rpc-mainnet.matic.network",
   "explorer": "https://polygonscan.com",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
@@ -30,6 +31,9 @@
     "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
     "stablePoolFactory": "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24",
     "weth": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+    "stETH": "",
+    "wstETH": "",
+    "lidoRelayer": "",
     "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d"
   },
   "strategies": {

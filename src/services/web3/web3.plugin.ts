@@ -9,6 +9,7 @@ import {
   JsonRpcSigner,
   Web3Provider
 } from '@ethersproject/providers';
+import { GnosisSafeConnector } from './connectors/gnosis/gnosis.connector';
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 import { PortisConnector } from './connectors/portis/portis.connector';
 import useFathom from '@/composables/useFathom';
@@ -28,16 +29,23 @@ import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import i18n from '@/plugins/i18n';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 
-export type Wallet = 'metamask' | 'walletconnect' | 'walletlink' | 'portis';
+export type Wallet =
+  | 'metamask'
+  | 'walletconnect'
+  | 'gnosis'
+  | 'walletlink'
+  | 'portis';
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
+  'gnosis',
   'walletlink',
   'portis'
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',
   walletconnect: 'WalletConnect',
+  gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase',
   portis: 'Portis'
 };
@@ -58,6 +66,7 @@ export type Web3Plugin = {
 const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   metamask: MetamaskConnector,
   walletconnect: WalletConnectConnector,
+  gnosis: GnosisSafeConnector,
   walletlink: WalletLinkConnector,
   portis: PortisConnector
 };
@@ -220,6 +229,9 @@ export function getConnectorName(connectorId: string): string {
   }
   if (connectorId === 'walletlink') {
     return `Coinbase ${i18n.global.t('wallet')}`;
+  }
+  if (connectorId === 'gnosis') {
+    return 'Gnosis Safe';
   }
   return i18n.global.t('unknown');
 }

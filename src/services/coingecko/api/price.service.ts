@@ -67,6 +67,11 @@ export class PriceService {
       if (addresses.length / addressesPerRequest > 10)
         throw new Error('To many requests for rate limit.');
 
+      // TODO - remove once wsteth is supported
+      addresses = addresses.filter(
+        address => address !== this.configService.network.addresses.wstETH
+      );
+
       addresses = addresses.map(address => this.addressMapIn(address));
       const pageCount = Math.ceil(addresses.length / addressesPerRequest);
       const pages = Array.from(Array(pageCount).keys());
@@ -112,6 +117,12 @@ export class PriceService {
     const now = Math.floor(Date.now() / 1000);
     const end = now - (now % twentyFourHourseInSecs);
     const start = end - days * twentyFourHourseInSecs;
+
+    // TODO - remove once wsteth is supported
+    addresses = addresses.filter(
+      address =>
+        address !== this.configService.network.addresses.wstETH.toLowerCase()
+    );
 
     addresses = addresses.map(address => this.addressMapIn(address));
     const requests: Promise<HistoricalPriceResponse>[] = [];

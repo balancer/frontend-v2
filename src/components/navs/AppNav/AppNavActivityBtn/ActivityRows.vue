@@ -3,6 +3,7 @@
     <div v-for="transaction in transactions" :key="transaction.id" class="row">
       <BalLink
         :href="getExplorerLink(transaction.id, transaction.type)"
+        :disabled="disablePending && transaction.status === 'pending'"
         external
         noStyle
         class="group"
@@ -10,6 +11,7 @@
         <div class="font-semibold flex items-center">
           {{ $t(`transactionAction.${transaction.action}`) }}
           <BalIcon
+            v-if="!(disablePending && transaction.status === 'pending')"
             name="arrow-up-right"
             size="sm"
             class="ml-1 text-gray-400 dark:text-gray-600 group-hover:text-pink-500 transition-colors"
@@ -36,9 +38,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 
 import { Transaction } from '@/composables/useTransactions';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   name: 'ActivityRows',
@@ -58,6 +61,15 @@ export default defineComponent({
       type: Function as PropType<(transaction: Transaction) => boolean>,
       required: true
     }
+  },
+
+  setup() {
+    const { connector } = useWeb3();
+
+    const disablePending = computed(() => connector.value?.id === 'gnosis');
+    return {
+      disablePending
+    };
   }
 });
 </script>

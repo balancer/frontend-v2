@@ -50,7 +50,7 @@
         <div v-if="!isLoading" class="px-6 py-4">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
-            :isStablePool="isStable(pool)"
+            :isStablePool="isStableLike(pool)"
           />
         </div>
       </template>
@@ -89,7 +89,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { isStable } from '@/composables/usePool';
+import { isStableLike } from '@/composables/usePool';
 
 export default defineComponent({
   components: {
@@ -206,7 +206,7 @@ export default defineComponent({
     }
 
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
-      if (isStable(pool)) return pool.tokens;
+      if (isStableLike(pool)) return pool.tokens;
 
       const sortedTokens = pool.tokens.slice();
       sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
@@ -232,7 +232,7 @@ export default defineComponent({
       fNum,
       orderedTokenAddressesFor,
       orderedPoolTokens,
-      isStable
+      isStableLike
     };
   }
 });

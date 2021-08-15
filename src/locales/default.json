@@ -17,6 +17,9 @@
     "amountBeforeFees": "Amount before fees",
     "amplification": "Amplification",
     "approve": "Approve",
+    "approveLidoRelayer": "Approve Lido Relayer",
+    "approvedLidoRelayer": "Approved Lido Relayer",
+    "approvingLidoRelayer": "Approving Lido Relayer",
     "approved": "Approved",
     "approveTokens": "Approve tokens",
     "approving": "Approving",
@@ -119,7 +122,7 @@
     "liquidityMiningAPR": "Liquidity Mining APR",
     "loadMore": "Load more",
     "logOut": "Log out",
-    "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",    
+    "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
     "manageLists": "Manage lists",
     "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
     "max": "Max",
@@ -223,8 +226,8 @@
         "claimBAL": "{0} BAL",
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
-        "wrapETH": "{0} ETH to WETH",
-        "unwrapETH": "{0} WETH to ETH"
+        "approveLidoRelayer": "Approve Lido Relayer",
+        "wrapUnwrap": "{0} {1} to {2}"
     },
     "tradeSummary": {
         "exactIn": {
@@ -341,7 +344,7 @@
     "withdrawalSuccess": "Your investment has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
     "withdrawWarning": "Withdrawing single asset amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees.",
     "wrap": "Wrap",
-    "wrapInstruction": "Wrap your {0} to W{0}",
+    "wrapInstruction": "Wrap your {0} to {1}",
     "unwrap": "Unwrap",
     "week": "Week",
     "weekAbbrev": "w",
@@ -350,6 +353,7 @@
     "withdraw": "Withdraw",
     "withdrawal": "Withdrawal",
     "withdrawFee": "Withdraw fee",
+    "wrapStEthTooltip": "This pool requires Wrapped Liquid Staked ETH 2.0 (wstETH). To maximize your investment, you could wrap some additional stETH.",
     "yearAbbrev": "y",
     "youDidIt": "You did it!",
     "yourTransactions": "Your transactions in this pool"

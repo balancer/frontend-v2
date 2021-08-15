@@ -3,6 +3,7 @@ import kovan from './kovan.json';
 import rinkeby from './rinkeby.json';
 import polygon from './polygon.json';
 import docker from './docker.json';
+import test from './test.json';
 
 export interface Config {
   key: string;
@@ -15,6 +16,7 @@ export interface Config {
   rpc: string;
   publicRpc?: string;
   ws: string;
+  loggingRpc: string;
   explorer: string;
   subgraph: string;
   poolsUrlV1: string;
@@ -35,6 +37,9 @@ export interface Config {
     weightedPoolFactory: string;
     stablePoolFactory: string;
     weth: string;
+    stETH: string;
+    wstETH: string;
+    lidoRelayer: string;
     balancerHelpers: string;
   };
   strategies: Record<
@@ -51,6 +56,7 @@ const config: Record<string, Config> = {
   '42': kovan,
   '4': rinkeby,
   '137': polygon,
+  '12345': test,
   // @ts-ignore
   '17': docker
 };

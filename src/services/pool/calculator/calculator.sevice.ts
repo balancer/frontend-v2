@@ -7,7 +7,7 @@ import Stable from './stable';
 import { TokenInfoMap } from '@/types/TokenList';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ComputedRef } from 'vue';
-import { isStable } from '@/composables/usePool';
+import { isStable, isStableLike } from '@/composables/usePool';
 
 interface Amounts {
   send: string[];
@@ -59,14 +59,14 @@ export default class CalculatorService {
     tokenAmounts: string[],
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
   ): BigNumber {
-    if (this.isStablePool) {
+    if (this.isStableLikePool) {
       return this.stable.priceImpact(tokenAmounts, opts);
     }
     return this.weighted.priceImpact(tokenAmounts, opts);
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
-    if (this.isStablePool) {
+    if (this.isStableLikePool) {
       return this.stable.exactTokensInForBPTOut(tokenAmounts);
     }
     return this.weighted.exactTokensInForBPTOut(tokenAmounts);
@@ -76,14 +76,14 @@ export default class CalculatorService {
     bptAmount: string,
     tokenIndex: number
   ): BigNumber {
-    if (this.isStablePool) {
+    if (this.isStableLikePool) {
       return this.stable.exactBPTInForTokenOut(bptAmount, tokenIndex);
     }
     return this.weighted.exactBPTInForTokenOut(bptAmount, tokenIndex);
   }
 
   public bptInForExactTokenOut(amount: string, tokenIndex: number): BigNumber {
-    if (this.isStablePool) {
+    if (this.isStableLikePool) {
       return this.stable.bptInForExactTokenOut(amount, tokenIndex);
     }
     return this.weighted.bptInForExactTokenOut(amount, tokenIndex);
@@ -209,6 +209,10 @@ export default class CalculatorService {
 
   public get isStablePool(): boolean {
     return isStable(this.pool);
+  }
+
+  public get isStableLikePool(): boolean {
+    return isStableLike(this.pool);
   }
 
   public get sendTokens(): string[] {

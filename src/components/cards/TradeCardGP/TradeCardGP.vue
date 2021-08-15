@@ -104,6 +104,7 @@ import useNumbers from '@/composables/useNumbers';
 import { TOKENS } from '@/constants/tokens';
 
 import { isRequired } from '@/lib/utils/validations';
+import { WrapType } from '@/lib/utils/balancer/wrapper';
 
 import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
@@ -190,10 +191,10 @@ export default defineComponent({
     useTokenApprovalGP(tokenInAddress, tokenInAmount);
 
     const title = computed(() => {
-      if (trading.isWrap.value) {
+      if (trading.wrapType.value === WrapType.Wrap) {
         return `${t('wrap')} ${nativeAsset.symbol}`;
       }
-      if (trading.isUnwrap.value) {
+      if (trading.wrapType.value === WrapType.Unwrap) {
         return `${t('unwrap')} ${nativeAsset.symbol}`;
       }
       return t('trade');

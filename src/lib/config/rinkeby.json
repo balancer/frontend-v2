@@ -8,6 +8,7 @@
   "unknown": false,
   "rpc": "https://eth-rinkeby.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
   "ws": "wss://eth-rinkeby.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
+  "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
   "explorer": "https://rinkeby.etherscan.io",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-rinkeby-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-rinkeby/pools",
@@ -33,6 +34,9 @@
     "stablePoolFactory": "",
     "tokenFactory": "0xEaa391544B268018C0FA848204E984Bd7FF7f20c",
     "weth": "0xc778417e063141139fce010982780140aa0cd5ab",
+    "stETH": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+    "wstETH": "0xba453033d328bfdd7799a4643611b616d80ddd97",
+    "lidoRelayer": "",
     "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d"
   },
   "strategies": {

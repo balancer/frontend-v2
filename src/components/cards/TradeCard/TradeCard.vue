@@ -74,7 +74,7 @@
   </BalCard>
   <teleport to="#modal">
     <TradePreviewModal
-      :open="modalTradePreviewIsOpen"
+      v-if="modalTradePreviewIsOpen"
       :is-v1-swap="sorReturn.isV1swap"
       :address-in="tokenInAddress"
       :amount-in="tokenInAmount"
@@ -115,6 +115,8 @@ import useTokens from '@/composables/useTokens';
 import useDarkMode from '@/composables/useDarkMode';
 import { configService } from '@/services/config/config.service';
 
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+
 const { nativeAsset } = configService.network;
 
 export default defineComponent({
@@ -136,7 +138,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
 
     const { tokens } = useTokens();
-    const { userNetworkConfig, appNetworkConfig } = useWeb3();
+    const { userNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
 
     const exactIn = ref(true);
@@ -169,19 +171,11 @@ export default defineComponent({
       }
     });
 
-    const isWrap = computed(() => {
-      return (
-        tokenInAddress.value === nativeAsset.address &&
-        tokenOutAddress.value === appNetworkConfig.addresses.weth
-      );
-    });
-
-    const isUnwrap = computed(() => {
-      return (
-        tokenOutAddress.value === nativeAsset.address &&
-        tokenInAddress.value === appNetworkConfig.addresses.weth
-      );
-    });
+    const wrapType = computed(() =>
+      getWrapAction(tokenInAddress.value, tokenOutAddress.value)
+    );
+    const isWrap = computed(() => wrapType.value === WrapType.Wrap);
+    const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
 
     const isHighPriceImpact = computed(() => {
       return priceImpact.value >= 0.05 && !highPiAccepted.value;
@@ -217,8 +211,7 @@ export default defineComponent({
       tokenOutAddressInput: tokenOutAddress,
       tokenOutAmountInput: tokenOutAmount,
       tokens,
-      isWrap,
-      isUnwrap,
+      wrapType,
       tokenIn,
       tokenOut,
       slippageBufferRate
