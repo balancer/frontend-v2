@@ -16,7 +16,7 @@ export interface PoolToken {
   address: string;
   balance: string;
   weight: string;
-  priceRate: string;
+  priceRate?: string;
 }
 
 export interface Pool {
