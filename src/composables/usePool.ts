@@ -33,6 +33,8 @@ export function isWeth(pool: AnyPool, networkId: string): boolean {
 }
 
 export function isWstETH(pool: AnyPool): boolean {
+  if (!configService.network.addresses.wstETH) return false;
+
   return pool.tokenAddresses.includes(
     getAddress(configService.network.addresses.wstETH)
   );
