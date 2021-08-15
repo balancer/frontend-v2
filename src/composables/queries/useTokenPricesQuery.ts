@@ -5,6 +5,8 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { sleep } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
+import useUserSettings from '@/composables/useUserSettings';
 
 /**
  * TYPES
@@ -24,6 +26,19 @@ export default function useTokenPricesQuery(
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   const queryKey = reactive(QUERY_KEYS.Tokens.Prices(addresses));
+  const { currency } = useUserSettings();
+
+  // TODO: kill this with fire as soon as Coingecko supports wstETH
+  function injectWstEth(prices: TokenPrices): TokenPrices {
+    const stEthAddress = configService.network.addresses.stETH;
+    const wstEthAddress = configService.network.addresses.wstETH;
+    if (prices[stEthAddress]) {
+      const stETHPrice = prices[stEthAddress][currency.value] || 0;
+      prices[wstEthAddress] = { [currency.value]: 1.0352 * stETHPrice };
+    }
+
+    return prices;
+  }
 
   const queryFn = async () => {
     // Sequential pagination required to avoid coingecko rate limits.
@@ -43,6 +58,8 @@ export default function useTokenPricesQuery(
         ...(await coingeckoService.prices.getTokens(pageAddresses))
       };
     }
+
+    prices = injectWstEth(prices);
     return prices;
   };
 
