@@ -156,8 +156,9 @@ export default class Stable {
     }
   }
 
-  // PRIVATE FUNCTIONS
-
+  /**
+   * PRIVATE FUNCTIONS
+   */
   private bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
     const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
     const denormAmounts = this.calc.denormAmounts(
@@ -165,10 +166,9 @@ export default class Stable {
       this.calc.poolTokenDecimals
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
-    const balances = this.calc.poolTokenBalances.map(b => bnum(b.toString()));
 
     const bptZeroImpact = _bptForTokensZeroPriceImpact(
-      balances,
+      this.scaledBalances,
       this.calc.poolTokenDecimals,
       amounts,
       bnum(this.calc.poolTotalSupply.toString()),
