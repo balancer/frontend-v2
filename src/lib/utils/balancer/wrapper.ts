@@ -97,7 +97,7 @@ const wrapNative = async (
   sendTransaction(
     web3,
     configs[network].addresses.weth,
-    ['function deposit()'],
+    ['function deposit() payable'],
     'deposit',
     [],
     { value: amount.toString() }
