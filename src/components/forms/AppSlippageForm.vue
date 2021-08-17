@@ -15,7 +15,7 @@
       ]"
     >
       <input
-        class="w-8 text-right bg-transparent"
+        class="w-12 text-right bg-transparent"
         v-model="customSlippage"
         placeholder="0.1"
         type="number"
