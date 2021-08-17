@@ -194,10 +194,10 @@ export default defineComponent({
 
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {
-        return `${t('wrap')} ${nativeAsset.symbol}`;
+        return `${t('wrap')} ${trading.tokenIn.value.symbol}`;
       }
       if (trading.wrapType.value === WrapType.Unwrap) {
-        return `${t('unwrap')} ${nativeAsset.symbol}`;
+        return `${t('unwrap')} ${trading.tokenOut.value.symbol}`;
       }
       return t('trade');
     });

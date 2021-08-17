@@ -426,26 +426,32 @@ export default defineComponent({
     const labels = computed(() => {
       if (props.trading.isWrap.value) {
         return {
-          modalTitle: t('previewETHWrap'),
-          confirmTrade: t('confirmETHWrap'),
+          modalTitle: t('previewWrap', [props.trading.tokenIn.value.symbol]),
+          confirmTrade: t('confirmWrap', [props.trading.tokenIn.value.symbol]),
           tradeSummary: {
-            title: t('tradeSummary.wrapETH.title'),
-            tradeFees: t('tradeSummary.wrapETH.tradeFees'),
-            totalBeforeFees: t('tradeSummary.wrapETH.totalBeforeFees'),
-            totalAfterFees: t('tradeSummary.wrapETH.totalAfterFees'),
-            totalWithSlippage: t('tradeSummary.wrapETH.totalWithSlippage')
+            title: t('tradeSummary.wrap.title'),
+            tradeFees: t('tradeSummary.wrap.tradeFees'),
+            totalBeforeFees: t('tradeSummary.wrap.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.wrap.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.wrap.totalWithSlippage', [
+              props.trading.tokenIn.value.symbol
+            ])
           }
         };
       } else if (props.trading.isUnwrap.value) {
         return {
-          modalTitle: t('previewETHUnwrap'),
-          confirmTrade: t('confirmETHUnwrap'),
+          modalTitle: t('previewUnwrap', [props.trading.tokenOut.value.symbol]),
+          confirmTrade: t('confirmUnwrap', [
+            props.trading.tokenOut.value.symbol
+          ]),
           tradeSummary: {
-            title: t('tradeSummary.unwrapETH.title'),
-            tradeFees: t('tradeSummary.unwrapETH.tradeFees'),
-            totalBeforeFees: t('tradeSummary.unwrapETH.totalBeforeFees'),
-            totalAfterFees: t('tradeSummary.unwrapETH.totalAfterFees'),
-            totalWithSlippage: t('tradeSummary.unwrapETH.totalWithSlippage')
+            title: t('tradeSummary.unwrap.title'),
+            tradeFees: t('tradeSummary.unwrap.tradeFees'),
+            totalBeforeFees: t('tradeSummary.unwrap.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.unwrap.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.unwrap.totalWithSlippage', [
+              props.trading.tokenOut.value.symbol
+            ])
           }
         };
       } else if (props.trading.exactIn.value) {

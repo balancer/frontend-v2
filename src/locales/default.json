@@ -44,8 +44,8 @@
     "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
     "configuration": "Configuration",
     "confirmTrade": "Confirm trade",
-    "confirmETHWrap": "Confirm ETH wrap",
-    "confirmETHUnwrap": "Confirm ETH unwrap",
+    "confirmWrap": "Confirm {0} wrap",
+    "confirmUnwrap": "Confirm {0} unwrap",
     "confirming": "Confirming...",
     "connect": "Connect",
     "connecting": "Connecting...",
@@ -190,8 +190,8 @@
     "popularBases": "Popular:",
     "preview": "Preview",
     "previewTrade": "Preview trade",
-    "previewETHWrap": "Preview ETH Wrap",
-    "previewETHUnwrap": "Preview ETH Unwrap",
+    "previewWrap": "Preview {0} Wrap",
+    "previewUnwrap": "Preview {0} Unwrap",
     "previewTradeTransactions": "Preview trade transactions",
     "priceImpact": "Price impact",
     "priceImpactAccept": "I accept the high price impact from withdrawing single token amounts, moving the market price based on the depth of the market.",
@@ -246,19 +246,19 @@
             "totalAfterFees": "Total expected to trade after fees",
             "totalWithSlippage": "The most you’ll send at {0} slippage"
         },
-        "wrapETH": {
+        "wrap": {
             "title": "Summary",
             "tradeFees": "Wrap fees",
             "totalBeforeFees": "Amount before fees",
             "totalAfterFees": "Total to receive",
-            "totalWithSlippage": "Zero slippage to wrap ETH"
+            "totalWithSlippage": "Zero slippage to wrap {0}"
         },
-        "unwrapETH": {
+        "unwrap": {
             "title": "Summary",
             "tradeFees": "Unwrap fees",
             "totalBeforeFees": "Amount before fees",
             "totalAfterFees": "Total to receive",
-            "totalWithSlippage": "Zero slippage to wrap ETH"
+            "totalWithSlippage": "Zero slippage to unwrap {0}"
         },
         "gasCosts": "Gas costs"
     },
