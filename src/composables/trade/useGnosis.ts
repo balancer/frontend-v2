@@ -2,7 +2,7 @@ import { computed, ComputedRef, reactive, ref, Ref, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { BigNumber } from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
@@ -155,7 +155,8 @@ export default function useGnosis({
         feeAmount: quote.feeAmountInToken,
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
-        partiallyFillable: false // Always fill or kill
+        partiallyFillable: false, // Always fill or kill,
+        sellTokenBalance: OrderBalance.EXTERNAL
       };
 
       const { signature, signingScheme } = await signOrder(
