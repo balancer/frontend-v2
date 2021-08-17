@@ -40,6 +40,8 @@ import useTransactions, { TransactionAction } from '../useTransactions';
 import useNumbers from '../useNumbers';
 import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
 import useTokens from '../useTokens';
+import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
+import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -311,10 +313,17 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        const returnAmtNormalised = scale(
+        let returnAmtNormalised = scale(
           swapReturn.returnAmount,
           -tokenOutDecimals
         );
+
+        returnAmtNormalised = await adjustedPiAmount(
+          returnAmtNormalised,
+          tokenOutAddress,
+          tokenOutDecimals
+        );
+
         const effectivePrice = tokenInAmountNormalised.div(returnAmtNormalised);
         const priceImpactCalc = effectivePrice
           .div(swapReturn.marketSpNormalised)
@@ -329,7 +338,7 @@ export default function useSor({
       // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
       await setSwapCost(tokenInAddressInput.value, tokenInDecimals, sorManager);
 
-      const tokenOutAmountNormalised = new BigNumber(amount);
+      let tokenOutAmountNormalised = new BigNumber(amount);
       const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
 
       console.log('[SOR Manager] swapExactOut');
@@ -357,6 +366,12 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
+        tokenOutAmountNormalised = await adjustedPiAmount(
+          tokenOutAmountNormalised,
+          tokenOutAddress,
+          tokenOutDecimals
+        );
+
         const effectivePrice = tokenInAmountNormalised.div(
           tokenOutAmountNormalised
         );
@@ -603,6 +618,24 @@ export default function useSor({
       maximumInAmount,
       minimumOutAmount
     };
+  }
+
+  /**
+   * Under certain circumstance we need to adjust an amount
+   * for the price impact calc due to background wrapping taking place
+   * e.g. when trading weth to wstEth.
+   */
+  async function adjustedPiAmount(
+    amount: BigNumber,
+    address: string,
+    decimals: number
+  ): Promise<BigNumber> {
+    if (address === appNetworkConfig.addresses.wstETH) {
+      const denormAmount = parseUnits(amount.toString(), decimals);
+      const denormStEthAmount = await getStETHByWstETH(denormAmount);
+      return bnum(formatUnits(denormStEthAmount, decimals));
+    }
+    return amount;
   }
 
   return {
