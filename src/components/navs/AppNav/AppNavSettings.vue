@@ -123,6 +123,22 @@
         @update:modelValue="setTradeLiquidity"
       />
     </div>
+    <div v-if="!isPolygon" class="px-4 mt-6">
+      <div class="flex items-baseline">
+        <span v-text="$t('transactionType')" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div v-text="$t('ethereumTxTypeTooltip')" class="w-52" />
+        </BalTooltip>
+      </div>
+      <BalBtnGroup
+        :options="ethereumTxTypeOptions"
+        v-model="ethereumTxType"
+        @update:modelValue="setEthereumTxType"
+      />
+    </div>
     <div v-if="APP.IsGnosisIntegration" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="'Trade interface'" class="font-medium mb-2" />
@@ -162,9 +178,11 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { APP } from '@/constants/app';
 import {
   tradeLiquidityOptions,
-  tradeInterfaceOptions
+  tradeInterfaceOptions,
+  ethereumTxTypeOptions
 } from '@/constants/options';
 import { TradeInterface } from '@/store/modules/app';
+import useEthereumTxType from '@/composables/useEthereumTxType';
 
 const locales = {
   'en-US': 'English',
@@ -197,8 +215,10 @@ export default defineComponent({
       disconnectWallet,
       connector,
       isV1Supported,
-      userNetworkConfig
+      userNetworkConfig,
+      isPolygon
     } = useWeb3();
+    const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
     // DATA
     const data = reactive({
@@ -267,7 +287,11 @@ export default defineComponent({
       setTradeLiquidity,
       setTradeInterface,
       copyAddress,
-      explorer: explorerLinks
+      explorer: explorerLinks,
+      isPolygon,
+      ethereumTxType,
+      setEthereumTxType,
+      ethereumTxTypeOptions
     };
   }
 });
