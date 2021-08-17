@@ -4,6 +4,8 @@ import { BigNumberish, Contract } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 
 export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
+  if (!tokenInAddress || !tokenOutAddress) return false;
+
   return [tokenInAddress, tokenOutAddress]
     .map(getAddress)
     .includes(getAddress(configService.network.addresses.stETH));
