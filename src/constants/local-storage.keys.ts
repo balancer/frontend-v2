@@ -1,6 +1,7 @@
 export default {
   App: {
-    DarkMode: 'app.darkMode'
+    DarkMode: 'app.darkMode',
+    EthereumTxType: 'app.ethereumTxType'
   },
   UserSettings: {
     Currency: 'userSettings.currency'

@@ -7,6 +7,10 @@ import {
 import { ErrorCode } from '@ethersproject/logger';
 import { logFailedTx } from '@/lib/utils/logging';
 import GasPriceService from '@/services/gas-price/gas-price.service';
+import {
+  EthereumTxType,
+  ethereumTxType
+} from '@/composables/useEthereumTxType';
 
 const ENV = process.env.VUE_APP_ENV || 'development';
 // only disable if set to "false"
@@ -51,6 +55,7 @@ export async function sendTransaction(
       const gasPrice = await gasPriceService.getLatest();
       if (gasPrice != null) {
         if (
+          ethereumTxType.value === EthereumTxType.EIP1559 &&
           gasPrice.maxFeePerGas != null &&
           gasPrice.maxPriorityFeePerGas != null
         ) {

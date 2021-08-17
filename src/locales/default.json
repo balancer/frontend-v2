@@ -75,6 +75,7 @@
     "investmentPoolsAbout": "Stake your assets to get $BAL tokens for participating in Balancer V2 liquidity mining.",
     "investmentPoolsAboutLink": "Learn more ->",
     "earnBAL": "Earn BAL when swapping eligible tokens",
+    "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
     "errorNoLists": "Sorry, we can't find any lists",
     "errorNoMatch": "Sorry, we can't find any matches",
     "errorNoTokens": "Sorry, we can't find any tokens",
@@ -307,6 +308,7 @@
     "unavailableOnNetwork": "Sorry! Balancer is not available on this network",
     "unavailableOnNetworkWithName": "Sorry! Balancer is not available on {0}",
     "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+    "transactionType": "Transaction type",
     "gnosisErrors": {
         "lowAmount": {
             "header": "Your trade amount is too low",
