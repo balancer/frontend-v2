@@ -55,7 +55,10 @@
         v-slot:[week.week]="pool"
         :key="week.week"
       >
-        <div class="px-6 py-4 text-right flex flex-col" v-if="pool.distributions[i].distribution">
+        <div
+          class="px-6 py-4 text-right flex flex-col"
+          v-if="pool.distributions[i].distribution"
+        >
           <span
             v-for="(tokenDist, tokenIndex) in pool.distributions[i]
               .distribution"
@@ -154,7 +157,7 @@ export default defineComponent({
           distribution: week.distributions[pool.id.toLowerCase()]
         })),
         poolType: pool.poolType,
-        id: pool.id,
+        id: pool.id
       }));
     });
 
@@ -219,7 +222,7 @@ export default defineComponent({
     }
 
     function getWeekStart(howManyWeeksToSubtract: number) {
-      return format(startOfWeek(subWeeks(new Date(), 0)), 'dd/MM/yyyy');
+      return format(startOfWeek(subWeeks(new Date(), howManyWeeksToSubtract)), 'dd/MM/yyyy');
     }
 
     return {

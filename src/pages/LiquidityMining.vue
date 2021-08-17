@@ -40,7 +40,7 @@
             Many DeFi protocols distribute tokens to users who perform certain
             activities that help the network grow. Liquidity Mining aligns
             incentives between a protocol and its community by distributing
-            voting power to the people who help create a more liquid market.<br/><br/>The
+            voting power to the people who help create a more liquid market.<br /><br />The
             Balancer Protocol, via the community Ballers, has allocated BAL
             tokens to go to Liquidity Providers in certain eligible pools (as
             listed in the tables above). Tokens are distributed proportional to
@@ -106,7 +106,7 @@ export type WeeklyDistributions = {
 
 export default defineComponent({
   components: {
-    LMTable,
+    LMTable
   },
   setup() {
     const { fNum } = useNumbers();
@@ -114,8 +114,7 @@ export default defineComponent({
     const { networkConfig } = useConfig();
 
     // seperate variable to type the JSON
-    const weeksJSON =
-      LiquidityMiningDistributions as unknown as LiquidityMiningDistribution;
+    const weeksJSON = (LiquidityMiningDistributions as unknown) as LiquidityMiningDistribution;
 
     const totals = computed(() => {
       // map tracking a list of token totals for each week
@@ -131,7 +130,7 @@ export default defineComponent({
             if (!tokenTotals[allocation.tokenAddress]) {
               tokenTotals[allocation.tokenAddress] = {
                 token: allocation.tokenAddress,
-                total: allocation.amount,
+                total: allocation.amount
               };
               continue;
             } else {
@@ -158,15 +157,15 @@ export default defineComponent({
     });
 
     // only concerned with past 3 weeks
-    const weeks = takeRight(Object.keys(weeksJSON), 3).map((week) => ({
+    const weeks = takeRight(Object.keys(weeksJSON), 3).map(week => ({
       week: week,
       distributions: weeksJSON[week]
-        .filter((d) => d.chainId === networkConfig.chainId)
-        .map((d) => d.pools)[0],
+        .filter(d => d.chainId === networkConfig.chainId)
+        .map(d => d.pools)[0]
     }));
 
     const poolIds = computed(() =>
-      uniq(flatten(weeks.map((d) => Object.keys(d.distributions))))
+      uniq(flatten(weeks.map(d => Object.keys(d.distributions))))
     );
 
     // there shouldn't be too many pools for the LM distribution for each chain
@@ -174,7 +173,7 @@ export default defineComponent({
     const {
       data: poolsResponse,
       isLoading: isLoadingPools,
-      isIdle: isLoadingPoolsIdle,
+      isIdle: isLoadingPoolsIdle
     } = usePoolsQuery(undefined, {}, { poolIds, pageSize: 1000 });
 
     const pools = computed(() => poolsResponse.value?.pages);
@@ -219,9 +218,9 @@ export default defineComponent({
       currentWeek,
       currentWeekTotalFiat,
       fNum,
-      otherNetwork,
+      otherNetwork
     };
-  },
+  }
 });
 </script>
 
