@@ -131,7 +131,7 @@
             class="w-full p-3 rounded-b-lg bg-white text-sm dark:bg-gray-800"
           >
             <div class="summary-item-row font-medium">
-              <div class="w-72">
+              <div class="w-64">
                 {{ labels.tradeSummary.totalAfterFees }}
               </div>
               <div>
@@ -139,7 +139,7 @@
               </div>
             </div>
             <div class="summary-item-row text-gray-500 dark:text-gray-400">
-              <div class="w-72">
+              <div class="w-64">
                 {{ labels.tradeSummary.totalWithSlippage }}
               </div>
               <div>
@@ -169,20 +169,18 @@
         @actionClick="cofirmPriceUpdate"
       />
       <BalBtn
-        v-if="!isGPUnlocked || !approvedGP"
+        v-if="trading.isGnosisTrade.value && (!isGPUnlocked || approvedGP)"
         color="gradient"
         block
         :disabled="isGPUnlocked"
         @click.prevent="approveGP"
         :loading="approvingGP"
         :loading-label="`${$t('approving')}...`"
+        class="mb-5"
       >
         {{ $t('approveGP') }}
       </BalBtn>
-      <div
-        v-else-if="trading.requiresApproval.value"
-        class="flex justify-between"
-      >
+      <div v-if="trading.requiresApproval.value" class="flex justify-between">
         <BalBtn
           v-if="!isVaultUnlocked || approvedVault"
           :loading="approvingVault"
@@ -264,7 +262,7 @@ import { mapValues } from 'lodash';
 
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers from '@/composables/useNumbers';
-import useGPApproval from '@/composables/trade/useGPApproval';
+import useRelayerApproval from '@/composables/trade/useRelayerApproval';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useTokens from '@/composables/useTokens';
 import { TradeQuote } from '@/composables/trade/types';
@@ -498,7 +496,7 @@ export default defineComponent({
       approving: approvingGP,
       approve: approveGP,
       isUnlocked: isGPUnlocked
-    } = useGPApproval();
+    } = useRelayerApproval('gnosis', props.trading.isGnosisTrade);
 
     // METHODS
     function trade() {

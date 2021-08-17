@@ -17,9 +17,9 @@
     "amountBeforeFees": "Amount before fees",
     "amplification": "Amplification",
     "approve": "Approve",
-    "approveLidoRelayer": "Approve Lido Relayer",
-    "approvedLidoRelayer": "Approved Lido Relayer",
-    "approvingLidoRelayer": "Approving Lido Relayer",
+    "approveLidoRelayer": "Approve Lido relayer",
+    "approvedLidoRelayer": "Approved Lido relayer",
+    "approvingLidoRelayer": "Approving Lido relayer",
     "approved": "Approved",
     "approveGP": "Approve trading on Gnosis Protocol",
     "approveTokens": "Approve tokens",
@@ -228,6 +228,7 @@
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
         "approveLidoRelayer": "Approve Lido Relayer",
+        "approveGnosisRelayer": "Approve Gnosis relayer",
         "wrapUnwrap": "{0} {1} to {2}"
     },
     "tradeSummary": {
