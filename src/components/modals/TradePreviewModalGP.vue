@@ -253,7 +253,7 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const { fNum, toFiat } = useNumbers();
-    const { tokens } = useTokens();
+    const { tokens, approvalRequired } = useTokens();
     const { blockNumber } = useWeb3();
     const lastQuote = ref<TradeQuote | null>(
       props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
@@ -451,11 +451,20 @@ export default defineComponent({
       props.trading.isGnosisTrade
     );
 
-    const requiresTokenApproval = computed(
-      () =>
-        props.trading.requiresTokenApproval.value &&
-        !tokenApproval.isUnlockedV2.value
-    );
+    const requiresTokenApproval = computed(() => {
+      if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
+        return approvalRequired(
+          props.trading.tokenIn.value.address,
+          props.trading.tokenInAmountInput.value,
+          props.trading.tokenOut.value.address
+        );
+      } else {
+        return (
+          props.trading.requiresTokenApproval.value &&
+          !tokenApproval.isUnlockedV2.value
+        );
+      }
+    });
 
     const requiresGnosisRelayerApproval = computed(
       () =>
