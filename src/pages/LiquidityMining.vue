@@ -202,8 +202,8 @@ export default defineComponent({
 
     const currentWeek = computed(() => last(last(weeks)?.week.split('_')));
     const otherNetwork = computed(() => {
-      if (networkConfig.key === '1') return 'Polygon';
-      if (networkConfig.key === '137') return 'Ethereum';
+      if (networkConfig.chainId === Network.MAINNET) return 'Polygon';
+      if (networkConfig.chainId === Network.POLYGON) return 'Ethereum';
       return 'Ethereum';
     });
 

@@ -222,7 +222,10 @@ export default defineComponent({
     }
 
     function getWeekStart(howManyWeeksToSubtract: number) {
-      return format(startOfWeek(subWeeks(new Date(), howManyWeeksToSubtract)), 'dd/MM/yyyy');
+      return format(
+        startOfWeek(subWeeks(new Date(), howManyWeeksToSubtract)),
+        'dd/MM/yyyy'
+      );
     }
 
     return {
