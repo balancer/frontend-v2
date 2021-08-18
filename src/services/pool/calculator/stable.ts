@@ -174,6 +174,8 @@ export default class Stable {
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
 
+    // _bptForTokensZeroPriceImpact is the only stable pool function
+    // that requires balances be scaled by the token decimals and not 18
     const balances = this.scaledBalances.map((balance, i) => {
       const normalizedBalance = formatUnits(balance.toString(), 18);
       const denormBalance = parseUnits(
