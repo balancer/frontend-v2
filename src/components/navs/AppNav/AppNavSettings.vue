@@ -139,8 +139,7 @@
         @update:modelValue="setEthereumTxType"
       />
     </div>
-    <div v-if="APP.IsGnosisIntegration" class="px-4 mt-6">
-      >>>>>>> 38d975892fb9bdc911bcc9c15cfe33d2c4feb957
+    <div class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="'Trade interface'" class="font-medium mb-2" />
       </div>
