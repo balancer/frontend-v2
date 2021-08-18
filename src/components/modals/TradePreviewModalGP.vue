@@ -168,6 +168,36 @@
         block
         @actionClick="cofirmPriceUpdate"
       />
+      <div
+        v-if="totalRequiredTransactions > 1"
+        class="grid my-5 grid-flow-col gap-6 justify-center"
+      >
+        <div
+          :class="['step', { 'step-approved': tokenApproval.approved.value }]"
+          v-if="showGnosisRelayerApprovalStep"
+        >
+          <BalIcon
+            v-if="gnosisRelayerApproval.approved.value"
+            name="check"
+            class="text-green-500"
+          />
+          <template v-else>1</template>
+        </div>
+        <div
+          :class="['step', { 'step-approved': tokenApproval.approved.value }]"
+          v-if="showTokenApprovalStep"
+        >
+          <BalIcon
+            v-if="tokenApproval.approved.value"
+            name="check"
+            class="text-green-500"
+          />
+          <template v-else>{{
+            showGnosisRelayerApprovalStep ? 2 : 1
+          }}</template>
+        </div>
+        <div class="step">{{ totalRequiredTransactions }}</div>
+      </div>
       <BalBtn
         v-if="requiresGnosisRelayerApproval"
         color="gradient"
@@ -473,13 +503,26 @@ export default defineComponent({
         !gnosisRelayerApproval.isUnlocked.value
     );
 
+    const showTokenApprovalStep = computed(
+      () =>
+        requiresTokenApproval.value ||
+        tokenApproval.approved.value ||
+        tokenApproval.approving.value
+    );
+
+    const showGnosisRelayerApprovalStep = computed(
+      () =>
+        requiresGnosisRelayerApproval.value ||
+        gnosisRelayerApproval.approved.value ||
+        gnosisRelayerApproval.approving.value
+    );
+
     const totalRequiredTransactions = computed(() => {
       let txCount = 1; // trade
-
-      if (requiresTokenApproval.value) {
+      if (showTokenApprovalStep.value) {
         txCount++;
       }
-      if (requiresGnosisRelayerApproval.value) {
+      if (showGnosisRelayerApprovalStep.value) {
         txCount++;
       }
       return txCount;
@@ -585,6 +628,8 @@ export default defineComponent({
       requiresTokenApproval,
       requiresGnosisRelayerApproval,
       approveToken,
+      showTokenApprovalStep,
+      showGnosisRelayerApprovalStep,
 
       // consants
       PRICE_UPDATE_THRESHOLD
@@ -602,10 +647,11 @@ export default defineComponent({
   @apply flex justify-between mb-1;
 }
 
-.button-step {
-  @apply rounded-full w-6 h-6 bg-white flex items-center justify-center text-purple-500 overflow-hidden overflow-ellipsis absolute left-2;
+.step {
+  @apply rounded-full w-7 h-7 border border-purple-500 flex items-center justify-center text-purple-500 overflow-hidden overflow-ellipsis;
 }
-.button-step-disabled {
-  @apply text-gray-300 dark:text-gray-700;
+
+.step-approved {
+  @apply border-green-500;
 }
 </style>

@@ -80,6 +80,7 @@ export default function useRelayerApproval(
         onTxConfirmed: () => {
           approving.value = false;
           approved.value = true;
+          relayerApproval.refetch.value();
         },
         onTxFailed: () => {
           approving.value = false;
