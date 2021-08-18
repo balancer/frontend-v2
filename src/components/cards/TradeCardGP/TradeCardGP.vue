@@ -116,6 +116,7 @@ import { configService } from '@/services/config/config.service';
 
 import TradePairGP from './TradePairGP.vue';
 import useWeb3 from '@/services/web3/useWeb3';
+import useRelayerApproval from '@/composables/trade/useRelayerApproval';
 
 const { nativeAsset } = configService.network;
 
@@ -191,6 +192,7 @@ export default defineComponent({
     });
 
     useTokenApproval(tokenInAddress, tokenInAmount, tokens);
+    useRelayerApproval('gnosis', trading.isGnosisTrade);
 
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {

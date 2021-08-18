@@ -55,7 +55,7 @@ export default function useTrading(
     scale(bnum(tokenOutAmountInput.value), tokenOut.value.decimals)
   );
 
-  const requiresApproval = computed(() => {
+  const requiresTokenApproval = computed(() => {
     if (wrapType.value === WrapType.Unwrap || isEthTrade.value) {
       return false;
     }
@@ -243,7 +243,7 @@ export default function useTrading(
     tokenInAmountScaled,
     tokenOutAmountScaled,
     tokens,
-    requiresApproval,
+    requiresTokenApproval,
     effectivePriceMessage,
     tradeRoute,
     exactIn,
