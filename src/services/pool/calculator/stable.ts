@@ -175,13 +175,16 @@ export default class Stable {
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
 
-    // TODO - investigate why this conditional is required.
-    // This is a hotfix to get the UI working. It appears
-    // this function call (_bptForTokensZeroPriceImpact) will
-    // break if we have a metastable poole with non 18 decimal tokens.
-    const balances = isMetaStable(this.calc.pool)
-      ? this.scaledBalances
-      : this.calc.poolTokenBalances.map(b => bnum(b.toString()));
+    // _bptForTokensZeroPriceImpact is the only stable pool function
+    // that requires balances be scaled by the token decimals and not 18
+    const balances = this.scaledBalances.map((balance, i) => {
+      const normalizedBalance = formatUnits(balance.toString(), 18);
+      const denormBalance = parseUnits(
+        normalizedBalance,
+        this.calc.poolTokenDecimals[i]
+      );
+      return bnum(denormBalance.toString());
+    });
 
     const bptZeroImpact = _bptForTokensZeroPriceImpact(
       balances,
@@ -191,7 +194,6 @@ export default class Stable {
       amp
     );
 
-    console.log(bptZeroImpact.toString(), ` BPTForTokensZeroPriceImpact`);
     return bptZeroImpact;
   }
 
