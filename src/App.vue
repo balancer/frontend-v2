@@ -7,6 +7,16 @@
       <router-view :key="$route.path" class="flex-auto" />
     </div>
     <AppFooterNav v-if="upToLargeBreakpoint" />
+    <BalBtn
+      v-else
+      id="intercom-activator"
+      circle
+      size="lg"
+      color="blue"
+      class="fixed bottom-0 right-0 m-4 z-100"
+    >
+      <BalIcon name="message-square" size="lg" />
+    </BalBtn>
     <VueQueryDevTools />
     <WalletSelectModal
       :isVisible="isWalletSelectVisible"
@@ -105,5 +115,9 @@ export default defineComponent({
 <style>
 .VueQueryDevtoolsPanel + button {
   @apply text-black bg-gray-100 p-2 rounded text-sm;
+}
+
+#intercom-activator {
+  z-index: 2147483004;
 }
 </style>
