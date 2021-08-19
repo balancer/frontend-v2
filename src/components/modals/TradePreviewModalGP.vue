@@ -172,54 +172,110 @@
         v-if="totalRequiredTransactions > 1"
         class="flex my-5 justify-center items-center"
       >
-        <div
-          :class="[
-            'step',
-            {
-              'step-active': activeTransactionType === 'gnosisRelayerApproval',
-              'step-approved': gnosisRelayerApproval.approved.value
-            }
-          ]"
-          v-if="showGnosisRelayerApprovalStep"
-        >
-          <BalIcon
-            v-if="gnosisRelayerApproval.approved.value"
-            name="check"
-            class="text-green-500"
-          />
-          <template v-else>1</template>
-        </div>
+        <BalTooltip>
+          <template v-slot:activator>
+            <div
+              :class="[
+                'step',
+                {
+                  'step-active':
+                    activeTransactionType === 'gnosisRelayerApproval',
+                  'step-approved': gnosisRelayerApproval.approved.value
+                }
+              ]"
+              v-if="showGnosisRelayerApprovalStep"
+            >
+              <BalIcon
+                v-if="gnosisRelayerApproval.approved.value"
+                name="check"
+                class="text-green-500"
+              />
+              <template v-else>1</template>
+            </div>
+          </template>
+          <div class="w-64">
+            <div class="mb-2 font-semibold">
+              <div>
+                {{
+                  $t(
+                    'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.title'
+                  )
+                }}
+              </div>
+            </div>
+            <div>
+              {{
+                $t(
+                  'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.content'
+                )
+              }}
+            </div>
+          </div>
+        </BalTooltip>
         <div class="step-seperator" v-if="showGnosisRelayerApprovalStep" />
-        <div
-          :class="[
-            'step',
-            {
-              'step-active': activeTransactionType === 'tokenApproval',
-              'step-approved': tokenApproval.approved.value
-            }
-          ]"
-          v-if="showTokenApprovalStep"
-        >
-          <BalIcon
-            v-if="tokenApproval.approved.value"
-            name="check"
-            class="text-green-500"
-          />
-          <template v-else>{{
-            showGnosisRelayerApprovalStep ? 2 : 1
-          }}</template>
-        </div>
+        <BalTooltip>
+          <template v-slot:activator>
+            <div
+              :class="[
+                'step',
+                {
+                  'step-active': activeTransactionType === 'tokenApproval',
+                  'step-approved': tokenApproval.approved.value
+                }
+              ]"
+              v-if="showTokenApprovalStep"
+            >
+              <BalIcon
+                v-if="tokenApproval.approved.value"
+                name="check"
+                class="text-green-500"
+              />
+              <template v-else>{{
+                showGnosisRelayerApprovalStep ? 2 : 1
+              }}</template>
+            </div>
+          </template>
+          <div class="w-64">
+            <div class="mb-2 font-semibold">
+              {{
+                $t(
+                  'tradeSummary.transactionTypesTooltips.tokenApproval.title',
+                  [trading.tokenIn.value.symbol]
+                )
+              }}
+            </div>
+            <div>
+              {{
+                $t(
+                  'tradeSummary.transactionTypesTooltips.tokenApproval.content'
+                )
+              }}
+            </div>
+          </div>
+        </BalTooltip>
         <div class="step-seperator" v-if="showTokenApprovalStep" />
-        <div
-          :class="[
-            'step',
-            {
-              'step-active': activeTransactionType === 'trade'
-            }
-          ]"
-        >
-          {{ totalRequiredTransactions }}
-        </div>
+        <BalTooltip>
+          <template v-slot:activator>
+            <div
+              :class="[
+                'step',
+                {
+                  'step-active': activeTransactionType === 'trade'
+                }
+              ]"
+            >
+              {{ totalRequiredTransactions }}
+            </div>
+          </template>
+          <div class="w-64">
+            <div class="mb-2 font-semibold">
+              {{ $t('tradeSummary.transactionTypesTooltips.trade.title') }}
+            </div>
+            <div>
+              {{ $t('tradeSummary.transactionTypesTooltips.trade.content') }}
+            </div>
+          </div>
+        </BalTooltip>
       </div>
       <BalBtn
         v-if="requiresGnosisRelayerApproval"

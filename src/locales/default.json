@@ -264,7 +264,21 @@
             "totalAfterFees": "Total to receive",
             "totalWithSlippage": "Zero slippage to unwrap {0}"
         },
-        "gasCosts": "Gas costs"
+        "gasCosts": "Gas costs",
+        "transactionTypesTooltips": {
+            "gnosisRelayerApproval": {
+                "title": "Approve Gnosis relayer",
+                "content": "Your permission is required to trade this token on Balancer. This is a one-time approval."                
+            },
+            "tokenApproval": {
+                "title": "Approve {0}",
+                "content": "Your permission is required to trade this token on Balancer. Approvals are required once per token, per wallet."
+            },
+            "trade": {
+                "title": "Confirm trade",
+                "content": "Confirm this transaction in your wallet."
+            }
+        }
     },
     "priceUpdatedAlert": {
         "title": "Price updated",
