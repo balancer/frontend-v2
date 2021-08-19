@@ -172,7 +172,10 @@
         v-if="totalRequiredTransactions > 1"
         class="flex my-5 justify-center items-center"
       >
-        <BalTooltip>
+        <BalTooltip
+          v-if="showGnosisRelayerApprovalStep"
+          :disabled="!requiresGnosisRelayerApproval"
+        >
           <template v-slot:activator>
             <div
               :class="[
@@ -180,13 +183,12 @@
                 {
                   'step-active':
                     activeTransactionType === 'gnosisRelayerApproval',
-                  'step-approved': gnosisRelayerApproval.approved.value
+                  'step-approved': !requiresGnosisRelayerApproval
                 }
               ]"
-              v-if="showGnosisRelayerApprovalStep"
             >
               <BalIcon
-                v-if="gnosisRelayerApproval.approved.value"
+                v-if="!requiresGnosisRelayerApproval"
                 name="check"
                 class="text-green-500"
               />
@@ -213,20 +215,22 @@
           </div>
         </BalTooltip>
         <div class="step-seperator" v-if="showGnosisRelayerApprovalStep" />
-        <BalTooltip>
+        <BalTooltip
+          v-if="showTokenApprovalStep"
+          :disabled="!requiresTokenApproval"
+        >
           <template v-slot:activator>
             <div
               :class="[
                 'step',
                 {
                   'step-active': activeTransactionType === 'tokenApproval',
-                  'step-approved': tokenApproval.approved.value
+                  'step-approved': !requiresTokenApproval
                 }
               ]"
-              v-if="showTokenApprovalStep"
             >
               <BalIcon
-                v-if="tokenApproval.approved.value"
+                v-if="!requiresTokenApproval"
                 name="check"
                 class="text-green-500"
               />
