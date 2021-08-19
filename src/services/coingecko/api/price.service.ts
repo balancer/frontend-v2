@@ -4,12 +4,12 @@ import {
   getNativeAssetId,
   getPlatformId
 } from '../coingecko.service';
-import { TOKENS } from '@/constants/tokens';
-import { configService as _configService } from '@/services/config/config.service';
+import { TOKENS } from '~/constants/tokens';
+import { configService as _configService } from '~/services/config/config.service';
 import { invert } from 'lodash';
-import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
-import { retryPromiseWithDelay } from '@/lib/utils/promise';
-import { twentyFourHourseInSecs } from '@/composables/useTime';
+import { returnChecksum } from '~/lib/decorators/return-checksum.decorator';
+import { retryPromiseWithDelay } from '~/lib/utils/promise';
+import { twentyFourHourseInSecs } from '~/composables/useTime';
 
 /**
  * TYPES

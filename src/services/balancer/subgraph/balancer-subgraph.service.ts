@@ -1,11 +1,11 @@
 import { balancerSubgraphClient } from './balancer-subgraph.client';
-import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { rpcProviderService as _rpcProviderService } from '~/services/rpc-provider/rpc-provider.service';
 import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
 import PoolActivities from './entities/poolActivities';
 import PoolSnapshots from './entities/poolSnapshots';
 
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
+const NETWORK = import.meta.env.VUE_APP_NETWORK || '1';
 
 export default class BalancerSubgraphService {
   pools: Pools;

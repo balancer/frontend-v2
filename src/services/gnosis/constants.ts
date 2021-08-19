@@ -1,5 +1,5 @@
-import { IS_DEV } from '@/constants/env';
-import { APP_NETWORK_ID, Network } from '@/constants/network';
+import { IS_DEV } from '~/constants/env';
+import { APP_NETWORK_ID, Network } from '~/constants/network';
 import {
   GPv2Settlement,
   GPv2VaultRelayer

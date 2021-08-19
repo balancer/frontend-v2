@@ -1,7 +1,7 @@
-import { isStableLike, isWeighted } from '@/composables/usePool';
-import { FiatCurrency } from '@/constants/currency';
-import { Pool } from '@/services/balancer/subgraph/types';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { isStableLike, isWeighted } from '~/composables/usePool';
+import { FiatCurrency } from '~/constants/currency';
+import { Pool } from '~/services/balancer/subgraph/types';
+import { TokenPrices } from '~/services/coingecko/api/price.service';
 
 export function getPoolLiquidity(
   pool: Pool,

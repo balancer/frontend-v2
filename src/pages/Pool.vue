@@ -113,23 +113,23 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
-import * as PoolPageComponents from '@/components/pages/pool';
-import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import * as PoolPageComponents from '~/components/pages/pool';
+import GauntletIcon from '~/components/images/icons/GauntletIcon.vue';
+import LiquidityMiningTooltip from '~/components/tooltips/LiquidityMiningTooltip.vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { useQueryClient } from 'vue-query';
-import useNumbers from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
-import usePoolQuery from '@/composables/queries/usePoolQuery';
-import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
+import useNumbers from '~/composables/useNumbers';
+import { usePool } from '~/composables/usePool';
+import usePoolQuery from '~/composables/queries/usePoolQuery';
+import usePoolSnapshotsQuery from '~/composables/queries/usePoolSnapshotsQuery';
 import { useRouter } from 'vue-router';
-import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
-import { POOLS } from '@/constants/pools';
-import { EXTERNAL_LINKS } from '@/constants/links';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
-import useApp from '@/composables/useApp';
+import { POOLS_ROOT_KEY } from '~/constants/queryKeys';
+import { POOLS } from '~/constants/pools';
+import { EXTERNAL_LINKS } from '~/constants/links';
+import useWeb3 from '~/services/web3/useWeb3';
+import useTokens from '~/composables/useTokens';
+import useApp from '~/composables/useApp';
 
 interface PoolPageData {
   id: string;

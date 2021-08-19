@@ -48,7 +48,7 @@ import {
 } from 'vue';
 import { TransitionPresets, useTransition } from '@vueuse/core';
 
-import useNotifications, { Notification } from '@/composables/useNotifications';
+import useNotifications, { Notification } from '~/composables/useNotifications';
 
 export default defineComponent({
   name: 'Notification',

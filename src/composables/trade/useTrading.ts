@@ -1,13 +1,13 @@
 import { computed, Ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { bnum, scale } from '@/lib/utils';
+import { bnum, scale } from '~/lib/utils';
 import useNumbers from '../useNumbers';
-import useWeb3 from '@/services/web3/useWeb3';
+import useWeb3 from '~/services/web3/useWeb3';
 import useSor from './useSor';
 import useGnosis from './useGnosis';
 import useTokens from '../useTokens';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { NATIVE_ASSET_ADDRESS } from '~/constants/tokens';
+import { getWrapAction, WrapType } from '~/lib/utils/balancer/wrapper';
 
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 

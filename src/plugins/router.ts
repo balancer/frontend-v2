@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import Home from '@/pages/Home.vue';
-import Pool from '@/pages/Pool.vue';
-import LiquidityMining from '@/pages/LiquidityMining.vue';
-import Trade from '@/pages/Trade.vue';
+import Home from '~/pages/Home.vue';
+import Pool from '~/pages/Pool.vue';
+import LiquidityMining from '~/pages/LiquidityMining.vue';
+import Trade from '~/pages/Trade.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: Home },

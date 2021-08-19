@@ -2,20 +2,20 @@ import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 
-import { bnum } from '@/lib/utils';
+import { bnum } from '~/lib/utils';
 
-import QUERY_KEYS from '@/constants/queryKeys';
+import QUERY_KEYS from '~/constants/queryKeys';
 
 import {
   getPendingClaims,
   getCurrentRewardsEstimate,
   Report,
   CurrentRewardsEstimate
-} from '@/services/claim';
+} from '~/services/claim';
 
-import { Claim } from '@/types';
-import useWeb3 from '@/services/web3/useWeb3';
-import { NetworkId } from '@/constants/network';
+import { Claim } from '~/types';
+import useWeb3 from '~/services/web3/useWeb3';
+import { NetworkId } from '~/constants/network';
 
 type UserClaimsQueryResponse = {
   pendingClaims: Claim[];

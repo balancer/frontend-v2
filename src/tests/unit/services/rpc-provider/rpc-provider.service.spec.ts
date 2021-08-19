@@ -1,4 +1,4 @@
-import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
+import RpcProviderService from '~/services/rpc-provider/rpc-provider.service';
 import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
 import { mocked } from 'ts-jest/utils';
 

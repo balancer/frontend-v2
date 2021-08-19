@@ -26,7 +26,7 @@
 import { defineComponent, PropType, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '~/services/balancer/subgraph/types';
 
 import Activities from './Activities.vue';
 

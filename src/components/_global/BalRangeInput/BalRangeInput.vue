@@ -27,8 +27,8 @@
 import { defineComponent, ref, watch, computed } from 'vue';
 import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/antd.css';
-import { theme } from '@/../tailwind.config';
-import useDarkMode from '@/composables/useDarkMode';
+import { theme } from '~/../tailwind.config';
+import useDarkMode from '~/composables/useDarkMode';
 
 export default defineComponent({
   name: 'BalRangeInput',

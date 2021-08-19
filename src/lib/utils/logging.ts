@@ -1,4 +1,4 @@
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { rpcProviderService } from '~/services/rpc-provider/rpc-provider.service';
 import { Contract } from '@ethersproject/contracts';
 import { Wallet } from '@ethersproject/wallet';
 import { captureException } from '@sentry/browser';

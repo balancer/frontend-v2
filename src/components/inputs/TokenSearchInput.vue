@@ -58,12 +58,12 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
-import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
+import SelectTokenModal from '~/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import { pick, take } from 'lodash';
-import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
+import { NATIVE_ASSET_ADDRESS, TOKENS } from '~/constants/tokens';
 import { getAddress } from '@ethersproject/address';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
+import useWeb3 from '~/services/web3/useWeb3';
+import useTokens from '~/composables/useTokens';
 
 export default defineComponent({
   name: 'TokenSearchInput',

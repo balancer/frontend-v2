@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import useTailwind from '@/composables/useTailwind';
+import useTailwind from '~/composables/useTailwind';
 import { defineComponent } from 'vue';
 
 export default defineComponent({

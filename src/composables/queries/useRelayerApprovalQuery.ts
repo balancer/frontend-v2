@@ -3,13 +3,13 @@ import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import { Contract } from 'ethers/lib/ethers';
 
-import QUERY_KEYS from '@/constants/queryKeys';
-import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
+import QUERY_KEYS from '~/constants/queryKeys';
+import { FETCH_ONCE_OPTIONS } from '~/constants/vue-query';
 
-import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
+import useWeb3 from '~/services/web3/useWeb3';
+import { configService } from '~/services/config/config.service';
 
-import vaultAbi from '@/lib/abi/Vault.json';
+import vaultAbi from '~/lib/abi/Vault.json';
 
 /**
  * TYPES

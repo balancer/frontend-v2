@@ -1,5 +1,5 @@
 import BalSelectInput from './BalSelectInput.vue';
-import { Rules } from '@/types';
+import { Rules } from '~/types';
 import { generateTemplate } from '../../../../.storybook/helpers/templates';
 
 export default {

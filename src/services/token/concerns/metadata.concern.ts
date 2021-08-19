@@ -4,10 +4,10 @@ import {
   TokenInfoMap,
   TokenList,
   TokenListMap
-} from '@/types/TokenList';
+} from '~/types/TokenList';
 import { getAddress } from '@ethersproject/address';
-import { Multicaller } from '@/lib/utils/balancer/contract';
-import { default as erc20Abi } from '@/lib/abi/ERC20.json';
+import { Multicaller } from '~/lib/utils/balancer/contract';
+import { default as erc20Abi } from '~/lib/abi/ERC20.json';
 import { set } from 'lodash';
 
 export default class MetadataConcern {

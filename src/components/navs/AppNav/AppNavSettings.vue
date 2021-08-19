@@ -170,19 +170,19 @@ import { useStore } from 'vuex';
 import {
   getConnectorName,
   getConnectorLogo
-} from '@/services/web3/web3.plugin';
-import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
-import Avatar from '@/components/images/Avatar.vue';
-import useWeb3 from '@/services/web3/useWeb3';
+} from '~/services/web3/web3.plugin';
+import AppSlippageForm from '~/components/forms/AppSlippageForm.vue';
+import Avatar from '~/components/images/Avatar.vue';
+import useWeb3 from '~/services/web3/useWeb3';
 
-import { APP } from '@/constants/app';
+import { APP } from '~/constants/app';
 import {
   tradeLiquidityOptions,
   tradeInterfaceOptions,
   ethereumTxTypeOptions
-} from '@/constants/options';
-import { TradeInterface } from '@/store/modules/app';
-import useEthereumTxType from '@/composables/useEthereumTxType';
+} from '~/constants/options';
+import { TradeInterface } from '~/store/modules/app';
+import useEthereumTxType from '~/composables/useEthereumTxType';
 
 const locales = {
   'en-US': 'English',

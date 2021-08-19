@@ -1,9 +1,9 @@
 import { computed, inject } from 'vue';
 import BlocknativeSdk from 'bnc-sdk';
-import { bnSdkSymbol } from '@/plugins/blocknative';
+import { bnSdkSymbol } from '~/plugins/blocknative';
 
-import { Network } from '@/constants/network';
-import useWeb3 from '@/services/web3/useWeb3';
+import { Network } from '~/constants/network';
+import useWeb3 from '~/services/web3/useWeb3';
 
 const SUPPORTED_NETWORKS = [Network.MAINNET, Network.KOVAN];
 

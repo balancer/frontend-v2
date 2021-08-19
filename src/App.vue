@@ -35,14 +35,14 @@ import { useRoute } from 'vue-router';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 
 import useDarkMode from './composables/useDarkMode';
-import useWeb3Watchers from '@/composables/useWeb3Watchers';
-import AppNav from '@/components/navs/AppNav/AppNav.vue';
-import AppHero from '@/components/heros/AppHero.vue';
-import AppFooterNav from '@/components/navs/AppFooterNav/AppFooterNav.vue';
-import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
-import useWeb3 from '@/services/web3/useWeb3';
+import useWeb3Watchers from '~/composables/useWeb3Watchers';
+import AppNav from '~/components/navs/AppNav/AppNav.vue';
+import AppHero from '~/components/heros/AppHero.vue';
+import AppFooterNav from '~/components/navs/AppFooterNav/AppFooterNav.vue';
+import WalletSelectModal from '~/components/web3/WalletSelectModal.vue';
+import useWeb3 from '~/services/web3/useWeb3';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
-import Notifications from '@/components/notifications/Notifications.vue';
+import Notifications from '~/components/notifications/Notifications.vue';
 import useBreakpoints from './composables/useBreakpoints';
 import { tryPromiseWithTimeout } from './lib/utils/promise';
 

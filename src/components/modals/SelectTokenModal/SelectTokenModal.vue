@@ -116,14 +116,14 @@ import {
   toRef
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import useTokenLists from '@/composables/useTokenLists';
-import TokenListItem from '@/components/lists/TokenListItem.vue';
-import TokenListsListItem from '@/components/lists/TokenListsListItem.vue';
+import useTokenLists from '~/composables/useTokenLists';
+import TokenListItem from '~/components/lists/TokenListItem.vue';
+import TokenListsListItem from '~/components/lists/TokenListsListItem.vue';
 import Search from './Search.vue';
-import useTokens from '@/composables/useTokens';
+import useTokens from '~/composables/useTokens';
 import { orderBy } from 'lodash';
-import useUrls from '@/composables/useUrls';
-import { TokenInfoMap } from '@/types/TokenList';
+import useUrls from '~/composables/useUrls';
+import { TokenInfoMap } from '~/types/TokenList';
 
 interface ComponentState {
   loading: boolean;

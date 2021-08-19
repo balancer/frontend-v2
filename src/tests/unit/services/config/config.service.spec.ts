@@ -1,4 +1,4 @@
-import ConfigService, { configService } from '@/services/config/config.service';
+import ConfigService, { configService } from '~/services/config/config.service';
 
 describe('Config service', () => {
   describe('Get network config with key', () => {
@@ -16,7 +16,7 @@ describe('Config service', () => {
 
   describe('Get app network config', () => {
     it('Returns the correct config for app network key', () => {
-      process.env.VUE_APP_NETWORK = '137';
+      import.meta.env.VUE_APP_NETWORK = '137';
       const _configService = new ConfigService();
       expect(_configService.network.shortName).toBe('Polygon');
     });

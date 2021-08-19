@@ -1,12 +1,12 @@
 import { computed, Ref, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/providers';
-import { approveTokens } from '@/lib/utils/balancer/tokens';
-import { configService } from '@/services/config/config.service';
-import { TokenInfoMap } from '@/types/TokenList';
+import { approveTokens } from '~/lib/utils/balancer/tokens';
+import { configService } from '~/services/config/config.service';
+import { TokenInfoMap } from '~/types/TokenList';
 import useTokens from '../useTokens';
 import useConfig from '../useConfig';
-import useWeb3 from '@/services/web3/useWeb3';
+import useWeb3 from '~/services/web3/useWeb3';
 import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
 import { useI18n } from 'vue-i18n';

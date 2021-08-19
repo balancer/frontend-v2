@@ -1,5 +1,5 @@
 import { WebSocketProvider, JsonRpcProvider } from '@ethersproject/providers';
-import ConfigService, { configService } from '@/services/config/config.service';
+import ConfigService, { configService } from '~/services/config/config.service';
 
 type NewBlockHandler = (blockNumber: number) => any;
 

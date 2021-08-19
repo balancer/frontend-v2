@@ -6,17 +6,17 @@
       height: `${parseInt(size) || 22}px`
     }"
   >
-    <jazzicon :address="address" :diameter="parseInt(size) || 22" />
+    <!-- <jazzicon :address="address" :diameter="parseInt(size) || 22" /> -->
   </div>
 </template>
 
 <script>
-import Jazzicon from 'vue3-jazzicon/src/components';
+// import Jazzicon from 'vue3-jazzicon/src/components';
 
 export default {
-  components: {
-    Jazzicon
-  },
+  // components: {
+  //   Jazzicon
+  // },
 
   props: ['address', 'size', 'profile']
 };

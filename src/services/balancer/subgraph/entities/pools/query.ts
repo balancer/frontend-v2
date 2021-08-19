@@ -1,6 +1,6 @@
-import { Network } from '@/constants/network';
-import { POOLS } from '@/constants/pools';
-import { configService } from '@/services/config/config.service';
+import { Network } from '~/constants/network';
+import { POOLS } from '~/constants/pools';
+import { configService } from '~/services/config/config.service';
 import { merge } from 'lodash';
 
 const defaultArgs = {

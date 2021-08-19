@@ -1,9 +1,9 @@
 import { ref, computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { approveTokens } from '@/lib/utils/balancer/tokens';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
-import useEthers from '@/composables/useEthers';
+import { approveTokens } from '~/lib/utils/balancer/tokens';
+import useWeb3 from '~/services/web3/useWeb3';
+import useTokens from '~/composables/useTokens';
+import useEthers from '~/composables/useEthers';
 import useTransactions from '../useTransactions';
 
 export default function useTokenApprovals(

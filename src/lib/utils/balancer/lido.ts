@@ -1,5 +1,5 @@
-import { configService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { configService } from '~/services/config/config.service';
+import { rpcProviderService } from '~/services/rpc-provider/rpc-provider.service';
 import { BigNumberish, Contract } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 

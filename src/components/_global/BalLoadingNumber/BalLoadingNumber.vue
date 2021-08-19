@@ -23,8 +23,8 @@
 </template>
 
 <script lang="ts">
-import useUserSettings from '@/composables/useUserSettings';
-import { FiatSymbol } from '@/constants/currency';
+import useUserSettings from '~/composables/useUserSettings';
+import { FiatSymbol } from '~/constants/currency';
 import { defineComponent, computed } from 'vue';
 import BalLoadingBlock from '../BalLoadingBlock/BalLoadingBlock.vue';
 

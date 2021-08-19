@@ -1,9 +1,9 @@
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { BigNumberish } from 'ethers';
 import { BigNumber } from 'bignumber.js';
-import { sendTransaction } from '@/lib/utils/balancer/web3';
-import configs from '@/lib/config';
-import { configService } from '@/services/config/config.service';
+import { sendTransaction } from '~/lib/utils/balancer/web3';
+import configs from '~/lib/config';
+import { configService } from '~/services/config/config.service';
 import { getStETHByWstETH, getWstETHByStETH } from './lido';
 
 export enum WrapType {

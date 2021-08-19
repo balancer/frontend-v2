@@ -1,4 +1,4 @@
-import { twentyFourHoursInMs } from '@/composables/useTime';
+import { twentyFourHoursInMs } from '~/composables/useTime';
 
 export const FETCH_ONCE_OPTIONS = {
   refetchOnMount: false,

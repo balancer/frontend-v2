@@ -98,19 +98,19 @@ import { differenceInSeconds } from 'date-fns';
 import { useIntervalFn } from '@vueuse/core';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers from '@/composables/useNumbers';
-import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
-import useBreakpoints from '@/composables/useBreakpoints';
+import useNumbers from '~/composables/useNumbers';
+import useUserClaimsQuery from '~/composables/queries/useUserClaimsQuery';
+import useBreakpoints from '~/composables/useBreakpoints';
 
-import { TOKENS } from '@/constants/tokens';
-import { bnum } from '@/lib/utils';
-import { claimRewards } from '@/services/claim';
-import useWeb3 from '@/services/web3/useWeb3';
-import { NetworkId } from '@/constants/network';
-import useEthers from '@/composables/useEthers';
-import useTransactions from '@/composables/useTransactions';
-import useTokens from '@/composables/useTokens';
-import { coingeckoService } from '@/services/coingecko/coingecko.service';
+import { TOKENS } from '~/constants/tokens';
+import { bnum } from '~/lib/utils';
+import { claimRewards } from '~/services/claim';
+import useWeb3 from '~/services/web3/useWeb3';
+import { NetworkId } from '~/constants/network';
+import useEthers from '~/composables/useEthers';
+import useTransactions from '~/composables/useTransactions';
+import useTokens from '~/composables/useTokens';
+import { coingeckoService } from '~/services/coingecko/coingecko.service';
 
 export default defineComponent({
   name: 'AppNavClaimBtn',

@@ -6,7 +6,7 @@ import {
 import {
   retryPromiseWithDelay,
   tryPromiseWithTimeout
-} from '@/lib/utils/promise';
+} from '~/lib/utils/promise';
 
 import useBlocknative from './useBlocknative';
 import useTransactions from './useTransactions';

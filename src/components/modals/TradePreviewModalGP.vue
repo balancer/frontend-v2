@@ -262,19 +262,19 @@ import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 import { mapValues } from 'lodash';
 
-import { UseTrading } from '@/composables/trade/useTrading';
-import useNumbers from '@/composables/useNumbers';
-import useGPApproval from '@/composables/trade/useGPApproval';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useTokens from '@/composables/useTokens';
-import { TradeQuote } from '@/composables/trade/types';
-import useWeb3 from '@/services/web3/useWeb3';
+import { UseTrading } from '~/composables/trade/useTrading';
+import useNumbers from '~/composables/useNumbers';
+import useGPApproval from '~/composables/trade/useGPApproval';
+import useTokenApproval from '~/composables/trade/useTokenApproval';
+import useTokens from '~/composables/useTokens';
+import { TradeQuote } from '~/composables/trade/types';
+import useWeb3 from '~/services/web3/useWeb3';
 
-import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
+import TradeRoute from '~/components/cards/TradeCard/TradeRoute.vue';
 
-import { bnum } from '@/lib/utils';
+import { bnum } from '~/lib/utils';
 
-import { FiatCurrency } from '@/constants/currency';
+import { FiatCurrency } from '~/constants/currency';
 
 const PRICE_UPDATE_THRESHOLD = 0.02;
 

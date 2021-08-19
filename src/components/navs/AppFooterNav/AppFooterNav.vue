@@ -16,9 +16,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import AppNavToggle from '@/components/navs/AppNav/AppNavToggle.vue';
-import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
-import IntercomToggle from '@/components/btns/IntercomToggle.vue';
+import AppNavToggle from '~/components/navs/AppNav/AppNavToggle.vue';
+import DarkModeToggle from '~/components/btns/DarkModeToggle.vue';
+import IntercomToggle from '~/components/btns/IntercomToggle.vue';
 
 export default defineComponent({
   name: 'AppFooterNav',

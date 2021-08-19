@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
+import { GP_RELAYER_CONTRACT_ADDRESS } from '~/services/gnosis/constants';
 import useRelayerApproval from './useRelayerApproval';
 
 export default function useGPApproval() {

@@ -75,15 +75,15 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import LMTable from '@/components/tables/LMTable/LMTable.vue';
-import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
-import usePoolsQuery from '@/composables/queries/usePoolsQuery';
+import LMTable from '~/components/tables/LMTable/LMTable.vue';
+import LiquidityMiningDistributions from '~/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
+import usePoolsQuery from '~/composables/queries/usePoolsQuery';
 import { flatten, last, takeRight, uniq } from 'lodash';
-import { Network } from '@/constants/network';
-import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
+import { Network } from '~/constants/network';
+import useNumbers from '~/composables/useNumbers';
+import useTokens from '~/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
-import useConfig from '@/composables/useConfig';
+import useConfig from '~/composables/useConfig';
 
 type TokenDistribution = {
   tokenAddress: string;

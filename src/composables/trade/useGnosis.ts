@@ -3,20 +3,20 @@ import { useStore } from 'vuex';
 import { BigNumber } from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
-import { bnum } from '@/lib/utils';
-import useWeb3 from '@/services/web3/useWeb3';
-import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
+import { bnum } from '~/lib/utils';
+import useWeb3 from '~/services/web3/useWeb3';
+import { FeeInformation, OrderMetaData } from '~/services/gnosis/types';
 import {
   calculateValidTo,
   signOrder,
   UnsignedOrder
-} from '@/services/gnosis/signing';
-import { gnosisOperator } from '@/services/gnosis/operator.service';
+} from '~/services/gnosis/signing';
+import { gnosisOperator } from '~/services/gnosis/operator.service';
 import useTransactions from '../useTransactions';
-import { Token } from '@/types';
+import { Token } from '~/types';
 import { TradeQuote } from './types';
 import useNumbers from '../useNumbers';
-import { TokenInfo } from '@/types/TokenList';
+import { TokenInfo } from '~/types/TokenList';
 import useTokens from '../useTokens';
 
 // TODO: get correct app id

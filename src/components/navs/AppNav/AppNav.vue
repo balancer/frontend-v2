@@ -31,16 +31,16 @@
 <script>
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
 import { useStore } from 'vuex';
-import useBreakpoints from '@/composables/useBreakpoints';
-import AppLogo from '@/components/images/AppLogo.vue';
-import AppIcon from '@/components/images/AppIcon.vue';
+import useBreakpoints from '~/composables/useBreakpoints';
+import AppLogo from '~/components/images/AppLogo.vue';
+import AppIcon from '~/components/images/AppIcon.vue';
 import AppNavAlert from './AppNavAlert.vue';
 import AppNavToggle from './AppNavToggle.vue';
 import AppNavActions from './AppNavActions.vue';
 import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
-import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/services/web3/useWeb3';
-import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
+import useFathom from '~/composables/useFathom';
+import useWeb3 from '~/services/web3/useWeb3';
+import DarkModeToggle from '~/components/btns/DarkModeToggle.vue';
 
 export default defineComponent({
   components: {

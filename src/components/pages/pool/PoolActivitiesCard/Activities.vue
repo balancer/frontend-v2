@@ -19,9 +19,9 @@ import { defineComponent, computed, PropType } from 'vue';
 import { useRoute } from 'vue-router';
 import { flatten } from 'lodash';
 import Table from './Table.vue';
-import usePoolActivitiesQuery from '@/composables/queries/usePoolActivitiesQuery';
-import usePoolUserActivitiesQuery from '@/composables/queries/usePoolUserActivitiesQuery';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import usePoolActivitiesQuery from '~/composables/queries/usePoolActivitiesQuery';
+import usePoolUserActivitiesQuery from '~/composables/queries/usePoolUserActivitiesQuery';
+import { FullPool } from '~/services/balancer/subgraph/types';
 import { PoolActivityTab } from './types';
 
 export default defineComponent({

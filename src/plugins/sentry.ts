@@ -7,8 +7,8 @@ import { version } from '../../package.json';
 // the official vue package (@sentry/vue) because it doesn't support vue 3 yet.
 // https://github.com/getsentry/sentry-javascript/issues/2925
 
-const ENV = process.env.VUE_APP_ENV || 'development';
-const NETWORK = process.env.VUE_APP_NETWORK || '42';
+const ENV = import.meta.env.VUE_APP_ENV || 'development';
+const NETWORK = import.meta.env.VUE_APP_NETWORK || '42';
 const networkMap = {
   '1': 'mainnet',
   '42': 'kovan',

@@ -2,14 +2,14 @@ import { computed, reactive, ref, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
 import { flatten } from 'lodash';
-import QUERY_KEYS from '@/constants/queryKeys';
-import { POOLS } from '@/constants/pools';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import QUERY_KEYS from '~/constants/queryKeys';
+import { POOLS } from '~/constants/pools';
+import { balancerSubgraphService } from '~/services/balancer/subgraph/balancer-subgraph.service';
+import { DecoratedPool } from '~/services/balancer/subgraph/types';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useApp from '../useApp';
-import { forChange } from '@/lib/utils';
+import { forChange } from '~/lib/utils';
 
 type PoolsQueryResponse = {
   pools: DecoratedPool[];

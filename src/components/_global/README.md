@@ -17,8 +17,8 @@ Forms are difficult to demo via the storybook UI because they include stitching 
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue';
-import { isRequired, isEmail, minChar } from '@/lib/utils/validations';
-import { FormRef } from '@/types';
+import { isRequired, isEmail, minChar } from '~/lib/utils/validations';
+import { FormRef } from '~/types';
 
 export default defineComponent({
   name: 'exampleUserForm',

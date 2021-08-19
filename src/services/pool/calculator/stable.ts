@@ -1,7 +1,7 @@
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
 import { parseUnits, formatUnits } from '@ethersproject/units';
-import { bnum } from '@/lib/utils';
+import { bnum } from '~/lib/utils';
 import BigNumber from 'bignumber.js';
 
 import { BPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2/dist/frontendHelpers/stableHelpers';

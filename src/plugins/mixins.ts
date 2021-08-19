@@ -1,4 +1,4 @@
-import { shorten } from '@/lib/utils';
+import { shorten } from '~/lib/utils';
 
 export default {
   methods: {
@@ -13,13 +13,13 @@ export default {
       return shorten(str);
     },
     _ipfsUrl(ipfsHash: string): string {
-      return `https://${process.env.VUE_APP_IPFS_NODE}/ipfs/${ipfsHash}`;
+      return `https://${import.meta.env.VUE_APP_IPFS_NODE}/ipfs/${ipfsHash}`;
     },
     _url(url) {
       if (!url) return '';
       return url
-        .replace('ipfs://', `https://${process.env.VUE_APP_IPFS_NODE}/ipfs/`)
-        .replace('ipns://', `https://${process.env.VUE_APP_IPFS_NODE}/ipns/`);
+        .replace('ipfs://', `https://${import.meta.env.VUE_APP_IPFS_NODE}/ipfs/`)
+        .replace('ipns://', `https://${import.meta.env.VUE_APP_IPFS_NODE}/ipns/`);
     }
   }
 };

@@ -1,15 +1,15 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
-import useTokens from '@/composables/useTokens';
-import QUERY_KEYS from '@/constants/queryKeys';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { POOLS } from '@/constants/pools';
+import useTokens from '~/composables/useTokens';
+import QUERY_KEYS from '~/constants/queryKeys';
+import { balancerContractsService } from '~/services/balancer/contracts/balancer-contracts.service';
+import { balancerSubgraphService } from '~/services/balancer/subgraph/balancer-subgraph.service';
+import { FullPool } from '~/services/balancer/subgraph/types';
+import { POOLS } from '~/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
-import { forChange } from '@/lib/utils';
+import { forChange } from '~/lib/utils';
 import { isStableLike } from '../usePool';
 
 export default function usePoolQuery(

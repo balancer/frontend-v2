@@ -1,5 +1,5 @@
-import { Config } from '@/lib/config';
-import configs from '@/lib/config';
+import { Config } from '~/lib/config';
+import configs from '~/lib/config';
 
 interface Env {
   APP_ENV: string;
@@ -15,16 +15,16 @@ interface Env {
 export default class ConfigService {
   public get env(): Env {
     return {
-      APP_ENV: process.env.VUE_APP_ENV || 'development',
-      NETWORK: process.env.VUE_APP_NETWORK || '1',
-      APP_DOMAIN: process.env.VUE_APP_DOMAIN || 'app.balancer.fi',
-      IPFS_NODE: process.env.VUE_APP_IPFS_NODE || 'ipfs.io',
-      BLOCKNATIVE_DAPP_ID: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || 'xxx',
+      APP_ENV: import.meta.env.VUE_APP_ENV || 'development',
+      NETWORK: import.meta.env.VUE_APP_NETWORK || '1',
+      APP_DOMAIN: import.meta.env.VUE_APP_DOMAIN || 'app.balancer.fi',
+      IPFS_NODE: import.meta.env.VUE_APP_IPFS_NODE || 'ipfs.io',
+      BLOCKNATIVE_DAPP_ID: import.meta.env.VUE_APP_BLOCKNATIVE_DAPP_ID || 'xxx',
       ALCHEMY_KEY:
-        process.env.VUE_APP_ALCHEMY_KEY || 'cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
-      ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
+        import.meta.env.VUE_APP_ALCHEMY_KEY || 'cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
+      ENABLE_STABLE_POOLS: import.meta.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
       PORTIS_DAPP_ID:
-        process.env.PORTIS_DAPP_ID || '3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe'
+        import.meta.env.PORTIS_DAPP_ID || '3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe'
     };
   }
 

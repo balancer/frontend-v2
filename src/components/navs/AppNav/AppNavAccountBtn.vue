@@ -29,10 +29,10 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import useBreakpoints from '@/composables/useBreakpoints';
+import useBreakpoints from '~/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';
-import Avatar from '@/components/images/Avatar.vue';
-import useWeb3 from '@/services/web3/useWeb3';
+import Avatar from '~/components/images/Avatar.vue';
+import useWeb3 from '~/services/web3/useWeb3';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',

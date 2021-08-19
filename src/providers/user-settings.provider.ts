@@ -1,8 +1,8 @@
 import { provide, InjectionKey, reactive, Ref, toRefs } from 'vue';
-import symbolKeys from '@/constants/symbol.keys';
-import LS_KEYS from '@/constants/local-storage.keys';
-import { FiatCurrency } from '@/constants/currency';
-import { lsGet } from '@/lib/utils';
+import symbolKeys from '~/constants/symbol.keys';
+import LS_KEYS from '~/constants/local-storage.keys';
+import { FiatCurrency } from '~/constants/currency';
+import { lsGet } from '~/lib/utils';
 
 /**
  * TYPES

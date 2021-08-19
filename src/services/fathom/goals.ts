@@ -1,5 +1,5 @@
 import ConfigService from '../config/config.service';
-import { GOALS_MAP } from '@/constants/fathom';
+import { GOALS_MAP } from '~/constants/fathom';
 
 export class Goals {
   ClickPoolsTableRow = '';

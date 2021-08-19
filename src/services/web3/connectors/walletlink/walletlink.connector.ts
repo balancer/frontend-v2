@@ -1,13 +1,13 @@
 import { Connector } from '../connector';
 import WalletLink from 'walletlink';
-import ConfigService from '@/services/config/config.service';
+import ConfigService from '~/services/config/config.service';
 export class WalletLinkConnector extends Connector {
   id = 'walletlink';
   async connect() {
     const configService = new ConfigService();
     const walletLink = new WalletLink({
       appName: 'Balancer',
-      appLogoUrl: '~@/assets/images/logo-dark.svg',
+      appLogoUrl: '~~/assets/images/logo-dark.svg',
       darkMode: false
     });
     const provider = walletLink.makeWeb3Provider(

@@ -2,7 +2,7 @@ import { computed, inject, reactive, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 import { Web3Provider } from '@ethersproject/providers';
-import QUERY_KEYS from '@/constants/queryKeys';
+import QUERY_KEYS from '~/constants/queryKeys';
 import ConfigService from '../config/config.service';
 import { isAddress } from '@ethersproject/address';
 import { web3Service } from './web3.service';

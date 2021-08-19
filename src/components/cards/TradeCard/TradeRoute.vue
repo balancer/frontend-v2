@@ -128,12 +128,12 @@ import { AddressZero } from '@ethersproject/constants';
 import { Pool, Swap } from '@balancer-labs/sor/dist/types';
 import { SwapV2, SubgraphPoolBase } from '@balancer-labs/sor2';
 
-import useNumbers from '@/composables/useNumbers';
-import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
+import useNumbers from '~/composables/useNumbers';
+import { SorReturn } from '~/lib/utils/balancer/helpers/sor/sorManager';
 import { useI18n } from 'vue-i18n';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import useWeb3 from '~/services/web3/useWeb3';
+import useTokens from '~/composables/useTokens';
+import { NATIVE_ASSET_ADDRESS } from '~/constants/tokens';
 
 interface Route {
   share: number;

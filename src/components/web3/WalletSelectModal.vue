@@ -24,9 +24,9 @@
 </template>
 
 <script lang="ts">
-import { SupportedWallets } from '@/services/web3/web3.plugin';
-import WalletButton from '@/components/web3/WalletButton.vue';
-import { EXTERNAL_LINKS } from '@/constants/links';
+import { SupportedWallets } from '~/services/web3/web3.plugin';
+import WalletButton from '~/components/web3/WalletButton.vue';
+import { EXTERNAL_LINKS } from '~/constants/links';
 import { defineComponent } from 'vue';
 export default defineComponent({
   emits: ['close'],

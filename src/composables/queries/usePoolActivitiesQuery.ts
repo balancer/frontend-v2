@@ -2,11 +2,11 @@ import { reactive } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
 
-import QUERY_KEYS from '@/constants/queryKeys';
-import { POOLS } from '@/constants/pools';
+import QUERY_KEYS from '~/constants/queryKeys';
+import { POOLS } from '~/constants/pools';
 
-import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolActivity } from '@/services/balancer/subgraph/types';
+import BalancerSubgraph from '~/services/balancer/subgraph/balancer-subgraph.service';
+import { PoolActivity } from '~/services/balancer/subgraph/types';
 
 type PoolActivitiesQueryResponse = {
   poolActivities: PoolActivity[];

@@ -44,15 +44,15 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import InvestForm from '@/components/forms/pool_actions/InvestForm.vue';
-import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm.vue';
-import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
+import InvestForm from '~/components/forms/pool_actions/InvestForm.vue';
+import WithdrawForm from '~/components/forms/pool_actions/WithdrawForm.vue';
+import SuccessOverlay from '~/components/cards/SuccessOverlay.vue';
 import { useI18n } from 'vue-i18n';
 import TradeSettingsPopover, {
   TradeSettingsContext
-} from '@/components/popovers/TradeSettingsPopover.vue';
-import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/services/web3/useWeb3';
+} from '~/components/popovers/TradeSettingsPopover.vue';
+import useFathom from '~/composables/useFathom';
+import useWeb3 from '~/services/web3/useWeb3';
 
 export default defineComponent({
   name: 'PoolActionsCard',

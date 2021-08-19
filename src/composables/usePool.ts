@@ -4,10 +4,10 @@ import {
   DecoratedPoolWithShares,
   FullPool,
   PoolType
-} from '@/services/balancer/subgraph/types';
-import { TOKENS } from '@/constants/tokens';
-import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
+} from '~/services/balancer/subgraph/types';
+import { TOKENS } from '~/constants/tokens';
+import useWeb3 from '~/services/web3/useWeb3';
+import { configService } from '~/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
 
 type AnyPool = Pool | FullPool | DecoratedPoolWithShares;

@@ -1,4 +1,4 @@
-import { Goals } from '@/services/fathom/goals';
+import { Goals } from '~/services/fathom/goals';
 
 interface Fathom {
   trackPageview: (opts?: PageViewOptions) => void;

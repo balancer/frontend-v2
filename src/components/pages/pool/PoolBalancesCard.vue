@@ -57,15 +57,15 @@
 
 <script lang="ts">
 import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers from '~/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '~/services/balancer/subgraph/types';
 import numeral from 'numeral';
-import { shortenLabel } from '@/lib/utils';
-import useWeb3 from '@/services/web3/useWeb3';
-import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens from '@/composables/useTokens';
-import { usePool } from '@/composables/usePool';
+import { shortenLabel } from '~/lib/utils';
+import useWeb3 from '~/services/web3/useWeb3';
+import useBreakpoints from '~/composables/useBreakpoints';
+import useTokens from '~/composables/useTokens';
+import { usePool } from '~/composables/usePool';
 
 export default defineComponent({
   props: {

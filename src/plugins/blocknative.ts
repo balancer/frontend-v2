@@ -4,8 +4,8 @@ import { InitializationOptions } from 'bnc-sdk/dist/types/src/interfaces';
 export const bnSdkSymbol = Symbol();
 
 export const defaultOptions: InitializationOptions = {
-  dappId: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '',
-  networkId: Number(process.env.VUE_APP_NETWORK) || 1,
+  dappId: import.meta.env.VUE_APP_BLOCKNATIVE_DAPP_ID || '',
+  networkId: Number(import.meta.env.VUE_APP_NETWORK) || 1,
   onerror: error => {
     console.log(`[Blocknative] encountered an error`, error);
   }

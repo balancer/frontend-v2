@@ -31,9 +31,9 @@ import numeral from 'numeral';
 import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
 import { last } from 'lodash';
-import useNumbers, { Preset } from '@/composables/useNumbers';
-import useTailwind from '@/composables/useTailwind';
-import useDarkMode from '@/composables/useDarkMode';
+import useNumbers, { Preset } from '~/composables/useNumbers';
+import useTailwind from '~/composables/useTailwind';
+import useDarkMode from '~/composables/useDarkMode';
 
 type AxisMoveEvent = {
   seriesIndex: number;

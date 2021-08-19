@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import pkg from '@/../package.json';
+import pkg from '~/../package.json';
 import { Ref } from 'vue';
 
 export function shorten(str = '') {

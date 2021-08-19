@@ -33,7 +33,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers from '~/composables/useNumbers';
 
 const FIXED_OPTIONS = ['0.005', '0.01', '0.02'];
 

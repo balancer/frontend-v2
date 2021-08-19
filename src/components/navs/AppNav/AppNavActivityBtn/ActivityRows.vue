@@ -40,8 +40,8 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 
-import { Transaction } from '@/composables/useTransactions';
-import useWeb3 from '@/services/web3/useWeb3';
+import { Transaction } from '~/composables/useTransactions';
+import useWeb3 from '~/services/web3/useWeb3';
 
 export default defineComponent({
   name: 'ActivityRows',

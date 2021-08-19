@@ -30,9 +30,9 @@
 
 <script lang="ts">
 import { PropType, reactive, toRefs } from 'vue';
-import useNumbers from '@/composables/useNumbers';
-import { TokenList } from '@/types/TokenList';
-import useUrls from '@/composables/useUrls';
+import useNumbers from '~/composables/useNumbers';
+import { TokenList } from '~/types/TokenList';
+import useUrls from '~/composables/useUrls';
 
 export default {
   name: 'TokenListsListItem',

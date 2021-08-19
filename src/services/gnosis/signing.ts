@@ -1,4 +1,4 @@
-import { APP_NETWORK_ID } from '@/constants/network';
+import { APP_NETWORK_ID } from '~/constants/network';
 import { Signer } from '@ethersproject/abstract-signer';
 import { BigNumber } from '@ethersproject/bignumber';
 

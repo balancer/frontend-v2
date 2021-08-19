@@ -1,12 +1,12 @@
 import { reactive, ref, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
-import QUERY_KEYS from '@/constants/queryKeys';
-import { coingeckoService } from '@/services/coingecko/coingecko.service';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { sleep } from '@/lib/utils';
-import { configService } from '@/services/config/config.service';
-import useUserSettings from '@/composables/useUserSettings';
+import QUERY_KEYS from '~/constants/queryKeys';
+import { coingeckoService } from '~/services/coingecko/coingecko.service';
+import { TokenPrices } from '~/services/coingecko/api/price.service';
+import { sleep } from '~/lib/utils';
+import { configService } from '~/services/config/config.service';
+import useUserSettings from '~/composables/useUserSettings';
 
 /**
  * TYPES

@@ -9,4 +9,4 @@ export enum Network {
   POLYGON = 137
 }
 
-export const APP_NETWORK_ID = Number(process.env.VUE_APP_NETWORK) as NetworkId;
+export const APP_NETWORK_ID = Number(import.meta.env.VUE_APP_NETWORK) as NetworkId;

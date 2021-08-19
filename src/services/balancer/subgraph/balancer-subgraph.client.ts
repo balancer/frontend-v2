@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { configService as _configService } from '@/services/config/config.service';
+import { configService as _configService } from '~/services/config/config.service';
 
 export default class BalancerSubgraphClient {
   url: string;

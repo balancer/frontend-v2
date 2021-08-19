@@ -2,7 +2,7 @@
   <button class="wallet-connect-btn" @click="connectWallet(wallet)">
     <div class="flex items-center" style="width: 70%">
       <img
-        :src="require(`@/assets/images/connectors/${wallet}.svg`)"
+        :src="require(`~/assets/images/connectors/${wallet}.svg`)"
         class="h-10 w-10 mr-4"
       />
       <h5 class="text-gray-700 dark:text-white text-base">
@@ -13,9 +13,9 @@
 </template>
 
 <script lang="ts">
-import { Wallet, WalletNameMap } from '@/services/web3/web3.plugin';
+import { Wallet, WalletNameMap } from '~/services/web3/web3.plugin';
 import { defineComponent, PropType } from 'vue';
-import useWeb3 from '@/services/web3/useWeb3';
+import useWeb3 from '~/services/web3/useWeb3';
 export default defineComponent({
   props: {
     wallet: {

@@ -1,6 +1,6 @@
 import { Connector } from '../connector';
 import Portis from '@portis/web3';
-import ConfigService from '@/services/config/config.service';
+import ConfigService from '~/services/config/config.service';
 
 export class PortisConnector extends Connector {
   id = 'portis';

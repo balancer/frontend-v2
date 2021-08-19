@@ -1,4 +1,4 @@
-const ENV = process.env.VUE_APP_ENV || 'development';
+const ENV = import.meta.env.VUE_APP_ENV || 'development';
 
 const IS_DEV = ENV === 'development';
 const IS_STAGING = ENV === 'staging';

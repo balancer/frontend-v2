@@ -21,11 +21,11 @@
 import { PropType, defineComponent, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers from '~/composables/useNumbers';
 
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import { DecoratedPool } from '~/services/balancer/subgraph/types';
 
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityMiningTooltip from '~/components/tooltips/LiquidityMiningTooltip.vue';
 
 export default defineComponent({
   components: {

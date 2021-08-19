@@ -16,11 +16,11 @@
         <div class="flex items-center">
           <img
             v-if="darkMode"
-            :src="require('@/assets/images/icons/tokens_white.svg')"
+            :src="require('~/assets/images/icons/tokens_white.svg')"
           />
           <img
             v-else
-            :src="require('@/assets/images/icons/tokens_black.svg')"
+            :src="require('~/assets/images/icons/tokens_black.svg')"
           />
         </div>
       </template>
@@ -98,21 +98,21 @@
 </template>
 
 <script lang="ts">
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import { TokenTotal, WeeklyDistributions } from '@/pages/LiquidityMining.vue';
+import { ColumnDefinition } from '~/components/_global/BalTable/BalTable.vue';
+import { TokenTotal, WeeklyDistributions } from '~/pages/LiquidityMining.vue';
 import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
 import {
   DecoratedPoolWithShares,
   PoolToken
-} from '@/services/balancer/subgraph/types';
+} from '~/services/balancer/subgraph/types';
 import { getAddress } from '@ethersproject/address';
 import { computed, defineComponent, PropType, Ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useTokens from '~/composables/useTokens';
+import useNumbers from '~/composables/useNumbers';
 import { last, sum } from 'lodash';
-import useDarkMode from '@/composables/useDarkMode';
-import { isStableLike } from '@/composables/usePool';
+import useDarkMode from '~/composables/useDarkMode';
+import { isStableLike } from '~/composables/usePool';
 import { startOfWeek, subWeeks, format } from 'date-fns';
 
 function getWeekName(week: string) {

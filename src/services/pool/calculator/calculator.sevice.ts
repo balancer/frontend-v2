@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { parseUnits, formatUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '~/services/balancer/subgraph/types';
 import Weighted from './weighted';
 import Stable from './stable';
-import { TokenInfoMap } from '@/types/TokenList';
-import { BalanceMap } from '@/services/token/concerns/balances.concern';
+import { TokenInfoMap } from '~/types/TokenList';
+import { BalanceMap } from '~/services/token/concerns/balances.concern';
 import { ComputedRef } from 'vue';
-import { isStable, isStableLike } from '@/composables/usePool';
+import { isStable, isStableLike } from '~/composables/usePool';
 
 interface Amounts {
   send: string[];

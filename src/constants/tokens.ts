@@ -1,4 +1,4 @@
-import { configService } from '@/services/config/config.service';
+import { configService } from '~/services/config/config.service';
 
 export const TOKENS = {
   Popular: {

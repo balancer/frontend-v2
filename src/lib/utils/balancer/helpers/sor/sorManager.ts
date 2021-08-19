@@ -13,11 +13,11 @@ import { SOR as SORV1 } from '@balancer-labs/sor';
 import { BaseProvider } from '@ethersproject/providers';
 import { AddressZero } from '@ethersproject/constants';
 import BigNumber from 'bignumber.js';
-import { scale } from '@/lib/utils';
+import { scale } from '~/lib/utils';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { NATIVE_ASSET_ADDRESS } from '~/constants/tokens';
 
-const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
+const SWAP_COST = import.meta.env.VUE_APP_SWAP_COST || '100000';
 export enum LiquiditySelection {
   Best = 'best',
   V1 = 'v1',

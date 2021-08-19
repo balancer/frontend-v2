@@ -1,7 +1,7 @@
 import Service from '../../balancer-subgraph.service';
 import queryBuilder from './query';
-import { getPoolLiquidity } from '@/lib/utils/balancer/price';
-import { bnum } from '@/lib/utils';
+import { getPoolLiquidity } from '~/lib/utils/balancer/price';
+import { bnum } from '~/lib/utils';
 import {
   Pool,
   QueryBuilder,
@@ -13,12 +13,12 @@ import { getAddress } from '@ethersproject/address';
 import {
   currentLiquidityMiningRewards,
   computeTotalAPRForPool
-} from '@/lib/utils/liquidityMining';
-import { NetworkId } from '@/constants/network';
-import { configService as _configService } from '@/services/config/config.service';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { FiatCurrency } from '@/constants/currency';
-import { isStable } from '@/composables/usePool';
+} from '~/lib/utils/liquidityMining';
+import { NetworkId } from '~/constants/network';
+import { configService as _configService } from '~/services/config/config.service';
+import { TokenPrices } from '~/services/coingecko/api/price.service';
+import { FiatCurrency } from '~/constants/currency';
+import { isStable } from '~/composables/usePool';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 

@@ -1,7 +1,7 @@
-import { lsGet, lsSet } from '@/lib/utils';
-import initialTokens from '@/constants/initialTokens.json';
+import { lsGet, lsSet } from '~/lib/utils';
+import initialTokens from '~/constants/initialTokens.json';
 
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
+const NETWORK = import.meta.env.VUE_APP_NETWORK || '1';
 
 export interface TradeState {
   inputAsset: string;

@@ -1,4 +1,4 @@
-import { ipfsService } from '@/services/ipfs/ipfs.service';
+import { ipfsService } from '~/services/ipfs/ipfs.service';
 import nock from 'nock';
 
 describe('IPFS service', () => {

@@ -52,7 +52,7 @@ import {
   watchEffect,
   watch
 } from 'vue';
-import { Rules, RuleFunction } from '@/types';
+import { Rules, RuleFunction } from '~/types';
 
 export default defineComponent({
   name: 'BalTextInput',

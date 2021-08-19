@@ -1,4 +1,4 @@
-import GasPriceService from '@/services/gas-price/gas-price.service';
+import GasPriceService from '~/services/gas-price/gas-price.service';
 
 type Prices = Record<string, number>;
 

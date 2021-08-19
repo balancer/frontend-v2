@@ -1,10 +1,10 @@
 import TokenService from '../token.service';
-import { default as erc20Abi } from '@/lib/abi/ERC20.json';
-import { multicall } from '@/lib/utils/balancer/contract';
+import { default as erc20Abi } from '~/lib/abi/ERC20.json';
+import { multicall } from '~/lib/utils/balancer/contract';
 import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
-import { TokenInfoMap } from '@/types/TokenList';
+import { TokenInfoMap } from '~/types/TokenList';
 
 // TYPES
 export type AllowanceMap = { [address: string]: string };

@@ -5,17 +5,17 @@ import {
   Web3Provider
 } from '@ethersproject/providers';
 import { ErrorCode } from '@ethersproject/logger';
-import { logFailedTx } from '@/lib/utils/logging';
-import GasPriceService from '@/services/gas-price/gas-price.service';
+import { logFailedTx } from '~/lib/utils/logging';
+import GasPriceService from '~/services/gas-price/gas-price.service';
 import {
   EthereumTxType,
   ethereumTxType
-} from '@/composables/useEthereumTxType';
+} from '~/composables/useEthereumTxType';
 
-const ENV = process.env.VUE_APP_ENV || 'development';
+const ENV = import.meta.env.VUE_APP_ENV || 'development';
 // only disable if set to "false"
 const USE_BLOCKNATIVE_GAS_PLATFORM =
-  process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
+  import.meta.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
 const GAS_LIMIT_BUFFER = 0.1;
 
 const gasPriceService = new GasPriceService();

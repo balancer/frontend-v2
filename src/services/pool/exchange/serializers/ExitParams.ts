@@ -1,9 +1,9 @@
 import PoolExchange from '..';
-import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
-import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
+import { encodeExitStablePool } from '~/lib/utils/balancer/stablePoolEncoding';
+import { encodeExitWeightedPool } from '~/lib/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { isStable } from '@/composables/usePool';
+import { isStable } from '~/composables/usePool';
 
 export default class ExitParams {
   private exchange: PoolExchange;

@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import useFathom from '@/composables/useFathom';
+import useFathom from '~/composables/useFathom';
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 

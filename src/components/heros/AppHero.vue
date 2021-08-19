@@ -49,13 +49,13 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 
-import useNumbers from '@/composables/useNumbers';
-import usePools from '@/composables/pools/usePools';
+import useNumbers from '~/composables/useNumbers';
+import usePools from '~/composables/pools/usePools';
 
-import { EXTERNAL_LINKS } from '@/constants/links';
-import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/services/web3/useWeb3';
-import useDarkMode from '@/composables/useDarkMode';
+import { EXTERNAL_LINKS } from '~/constants/links';
+import useFathom from '~/composables/useFathom';
+import useWeb3 from '~/services/web3/useWeb3';
+import useDarkMode from '~/composables/useDarkMode';
 
 export default defineComponent({
   name: 'AppHero',

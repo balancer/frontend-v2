@@ -1,4 +1,4 @@
-import { SUPPORTED_FIAT } from '@/constants/currency';
+import { SUPPORTED_FIAT } from '~/constants/currency';
 import { PriceService } from './api/price.service';
 import { coingeckoClient } from './coingecko.client';
 

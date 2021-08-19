@@ -102,18 +102,18 @@ import {
   Ref
 } from 'vue';
 import { useStore } from 'vuex';
-import useNumbers from '@/composables/useNumbers';
-import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
-import useFathom from '@/composables/useFathom';
+import useNumbers from '~/composables/useNumbers';
+import AppSlippageForm from '~/components/forms/AppSlippageForm.vue';
+import useFathom from '~/composables/useFathom';
 
-import { TradeInterface } from '@/store/modules/app';
+import { TradeInterface } from '~/store/modules/app';
 import {
   tradeLiquidityOptions,
   ethereumTxTypeOptions
-} from '@/constants/options';
-import useWeb3 from '@/services/web3/useWeb3';
+} from '~/constants/options';
+import useWeb3 from '~/services/web3/useWeb3';
 
-import useEthereumTxType from '@/composables/useEthereumTxType';
+import useEthereumTxType from '~/composables/useEthereumTxType';
 
 export enum TradeSettingsContext {
   trade,

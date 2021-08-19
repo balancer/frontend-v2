@@ -34,8 +34,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 
-import useNumbers from '@/composables/useNumbers';
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import useNumbers from '~/composables/useNumbers';
+import { DecoratedPool } from '~/services/balancer/subgraph/types';
 
 export default defineComponent({
   name: 'LiquidityMiningTooltip',

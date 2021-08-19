@@ -21,15 +21,15 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 
-import { EXTERNAL_LINKS } from '@/constants/links';
+import { EXTERNAL_LINKS } from '~/constants/links';
 
-import useFathom from '@/composables/useFathom';
-import useBreakpoints from '@/composables/useBreakpoints';
-import useNumbers from '@/composables/useNumbers';
+import useFathom from '~/composables/useFathom';
+import useBreakpoints from '~/composables/useBreakpoints';
+import useNumbers from '~/composables/useNumbers';
 
 import AppNavAccountBtn from './AppNavAccountBtn.vue';
 import AppNavClaimBtn from './AppNavClaimBtn.vue';
-import useWeb3 from '@/services/web3/useWeb3';
+import useWeb3 from '~/services/web3/useWeb3';
 import AppNavActivityBtn from './AppNavActivityBtn/AppNavActivityBtn.vue';
 
 export default defineComponent({

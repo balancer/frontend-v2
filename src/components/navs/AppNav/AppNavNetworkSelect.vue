@@ -47,8 +47,8 @@
 </template>
 
 <script lang="ts">
-import useBreakpoints from '@/composables/useBreakpoints';
-import ConfigService from '@/services/config/config.service';
+import useBreakpoints from '~/composables/useBreakpoints';
+import ConfigService from '~/services/config/config.service';
 import { defineComponent } from 'vue';
 
 interface Network {
@@ -95,7 +95,7 @@ export default defineComponent({
 
     // METHODS
     function iconSrc(network: Network): string {
-      return require(`@/assets/images/icons/networks/${network.id}.svg`);
+      return require(`~/assets/images/icons/networks/${network.id}.svg`);
     }
 
     function appUrl(network: Network): string {

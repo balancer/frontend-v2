@@ -95,27 +95,27 @@ import { isAddress, getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import useValidation, {
   TradeValidation
-} from '@/composables/trade/useValidation';
-import useTrading from '@/composables/trade/useTrading';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useTokens from '@/composables/useTokens';
-import useBreakpoints from '@/composables/useBreakpoints';
-import useNumbers from '@/composables/useNumbers';
+} from '~/composables/trade/useValidation';
+import useTrading from '~/composables/trade/useTrading';
+import useTokenApproval from '~/composables/trade/useTokenApproval';
+import useTokens from '~/composables/useTokens';
+import useBreakpoints from '~/composables/useBreakpoints';
+import useNumbers from '~/composables/useNumbers';
 
-import { TOKENS } from '@/constants/tokens';
+import { TOKENS } from '~/constants/tokens';
 
-import { isRequired } from '@/lib/utils/validations';
-import { WrapType } from '@/lib/utils/balancer/wrapper';
+import { isRequired } from '~/lib/utils/validations';
+import { WrapType } from '~/lib/utils/balancer/wrapper';
 
-import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
+import TradePreviewModalGP from '~/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
-} from '@/components/popovers/TradeSettingsPopover.vue';
+} from '~/components/popovers/TradeSettingsPopover.vue';
 
-import { configService } from '@/services/config/config.service';
+import { configService } from '~/services/config/config.service';
 
 import TradePairGP from './TradePairGP.vue';
-import useWeb3 from '@/services/web3/useWeb3';
+import useWeb3 from '~/services/web3/useWeb3';
 
 const { nativeAsset } = configService.network;
 

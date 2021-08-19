@@ -1,6 +1,6 @@
 import { ref } from 'vue';
-import { lsGet, lsSet } from '@/lib/utils';
-import LS_KEYS from '@/constants/local-storage.keys';
+import { lsGet, lsSet } from '~/lib/utils';
+import LS_KEYS from '~/constants/local-storage.keys';
 
 const osDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 const lsDarkMode =

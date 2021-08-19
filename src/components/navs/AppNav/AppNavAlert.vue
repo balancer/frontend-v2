@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
-import { Alert } from '@/store/modules/alerts';
+import { Alert } from '~/store/modules/alerts';
 import { useStore } from 'vuex';
 
 export default defineComponent({

@@ -1,47 +1,27 @@
-# Balancer Frontend App (v2)
-Frontend Vue app for Balancer exchange and pool management.
+# Vue 3 + Typescript + Vite
 
-## Development
-To setup the development environment first clone the repo:
-```bash
-git clone https://github.com/balancer-labs/frontend-v2.git && cd frontend-v2
-```
+This template should help get you started developing with Vue 3 and Typescript in Vite.
 
-### Local env
-Install dependencies:
-```bash
-npm install
-```
+## Recommended IDE Setup
 
-Start the app:
-```bash
-npm run serve
-```
+[VSCode](https://code.visualstudio.com/) + [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur). Make sure to enable `vetur.experimental.templateInterpolationService` in settings!
 
-The app should be live at [http://localhost:8080](http://localhost:8080)
+### If Using `<script setup>`
 
-### Docker
-If you'd rather spin up the app in a docker container:
+[`<script setup>`](https://github.com/vuejs/rfcs/pull/227) is a feature that is currently in RFC stage. To get proper IDE support for the syntax, use [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) instead of Vetur (and disable Vetur).
 
-```bash
-docker-compose up
-```
+## Type Support For `.vue` Imports in TS
 
-The app should be live at [http://localhost:8080](http://localhost:8080)
+Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can use the following:
 
+### If Using Volar
 
-## Design System
-The app is using [Tailwind](https://tailwindcss.com/) to configure base styles. In development these styles can be viewed by running:
+Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
 
-```bash
-npm run tailwind-viewer
-```
-Your browser should load the app at [http://localhost:3000](http://localhost:3000).
+### If Using Vetur
 
-### Component Library
-We are using [Storybook](https://storybook.js.org/) to document our commonly used components. You can browse the component library in development by running:
-
-```bash
-npm run storybook
-```
-Your browser should load the app at [http://localhost:6006](http://localhost:6006).
+1. Install and add `@vuedx/typescript-plugin-vue` to the [plugins section](https://www.typescriptlang.org/tsconfig#plugins) in `tsconfig.json`
+2. Delete `src/shims-vue.d.ts` as it is no longer needed to provide module info to Typescript
+3. Open `src/main.ts` in VSCode
+4. Open the VSCode command palette
+5. Search and run "Select TypeScript version" -> "Use workspace version"

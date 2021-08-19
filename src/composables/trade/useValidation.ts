@@ -1,5 +1,5 @@
 import { computed, Ref } from 'vue';
-import useWeb3 from '@/services/web3/useWeb3';
+import useWeb3 from '~/services/web3/useWeb3';
 import useTokens from '../useTokens';
 
 const MIN_NATIVE_ASSET_REQUIRED = 0.0001;

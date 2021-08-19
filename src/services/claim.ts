@@ -3,18 +3,18 @@ import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { toWei, soliditySha3 } from 'web3-utils';
 import axios from 'axios';
 
-import { NetworkId } from '@/constants/network';
+import { NetworkId } from '~/constants/network';
 
-import { Claim } from '@/types';
+import { Claim } from '~/types';
 
 import { ipfsService } from './ipfs/ipfs.service';
-import { call, sendTransaction } from '@/lib/utils/balancer/web3';
-import { bnum } from '@/lib/utils';
-import { loadTree } from '@/lib/utils/merkle';
-import configs from '@/lib/config';
-import { TOKENS } from '@/constants/tokens';
+import { call, sendTransaction } from '~/lib/utils/balancer/web3';
+import { bnum } from '~/lib/utils';
+import { loadTree } from '~/lib/utils/merkle';
+import configs from '~/lib/config';
+import { TOKENS } from '~/constants/tokens';
 
-import merkleRedeemAbi from '@/lib/abi/MerkleRedeem.json';
+import merkleRedeemAbi from '~/lib/abi/MerkleRedeem.json';
 import { coingeckoService } from './coingecko/coingecko.service';
 
 type Snapshot = Record<number, string>;

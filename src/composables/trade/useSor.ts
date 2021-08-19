@@ -14,38 +14,38 @@ import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sor2';
 import { useI18n } from 'vue-i18n';
 
-import { scale, bnum } from '@/lib/utils';
+import { scale, bnum } from '~/lib/utils';
 import {
   getWrapOutput,
   unwrap,
   wrap,
   WrapType
-} from '@/lib/utils/balancer/wrapper';
+} from '~/lib/utils/balancer/wrapper';
 import {
   SorManager,
   SorReturn,
   LiquiditySelection
-} from '@/lib/utils/balancer/helpers/sor/sorManager';
-import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
-import { configService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+} from '~/lib/utils/balancer/helpers/sor/sorManager';
+import { swapIn, swapOut } from '~/lib/utils/balancer/swapper';
+import { configService } from '~/services/config/config.service';
+import { rpcProviderService } from '~/services/rpc-provider/rpc-provider.service';
 
 import useFathom from '../useFathom';
-import useWeb3 from '@/services/web3/useWeb3';
+import useWeb3 from '~/services/web3/useWeb3';
 
 import { TransactionResponse } from '@ethersproject/providers';
 import useEthers from '../useEthers';
 import { TradeQuote } from './types';
 import useTransactions, { TransactionAction } from '../useTransactions';
 import useNumbers from '../useNumbers';
-import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+import { TokenInfo, TokenInfoMap } from '~/types/TokenList';
 import useTokens from '../useTokens';
-import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
+import { getStETHByWstETH } from '~/lib/utils/balancer/lido';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
-const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
-const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
-const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
+const GAS_PRICE = import.meta.env.VUE_APP_GAS_PRICE || '100000000000';
+const MAX_POOLS = import.meta.env.VUE_APP_MAX_POOLS || '4';
+const SWAP_COST = import.meta.env.VUE_APP_SWAP_COST || '100000';
 const MIN_PRICE_IMPACT = 0.0001;
 const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
 const state = reactive({

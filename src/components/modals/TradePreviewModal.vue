@@ -104,14 +104,14 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
-import useNumbers from '@/composables/useNumbers';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useLidoRelayerApproval from '@/composables/trade/useLidoRelayerApproval';
-import useTokens from '@/composables/useTokens';
+import useNumbers from '~/composables/useNumbers';
+import useTokenApproval from '~/composables/trade/useTokenApproval';
+import useLidoRelayerApproval from '~/composables/trade/useLidoRelayerApproval';
+import useTokens from '~/composables/useTokens';
 
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
-import { isStETH } from '@/lib/utils/balancer/lido';
+import { NATIVE_ASSET_ADDRESS } from '~/constants/tokens';
+import { getWrapAction, WrapType } from '~/lib/utils/balancer/wrapper';
+import { isStETH } from '~/lib/utils/balancer/lido';
 
 export default defineComponent({
   emits: ['trade', 'close'],

@@ -158,12 +158,12 @@
 
 <script lang="ts">
 import { defineComponent, toRefs, computed, ref, PropType } from 'vue';
-import useNumbers from '@/composables/useNumbers';
-import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
-import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
-import useTokens from '@/composables/useTokens';
-import { UseTrading } from '@/composables/trade/useTrading';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import useNumbers from '~/composables/useNumbers';
+import TradePairToggle from '~/components/cards/TradeCard/TradePairToggle.vue';
+import SelectTokenModal from '~/components/modals/SelectTokenModal/SelectTokenModal.vue';
+import useTokens from '~/composables/useTokens';
+import { UseTrading } from '~/composables/trade/useTrading';
+import { NATIVE_ASSET_ADDRESS } from '~/constants/tokens';
 
 const ETH_BUFFER = 0.1;
 

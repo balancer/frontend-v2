@@ -30,11 +30,11 @@
         <div class="flex items-center">
           <img
             v-if="darkMode"
-            :src="require('@/assets/images/icons/tokens_white.svg')"
+            :src="require('~/assets/images/icons/tokens_white.svg')"
           />
           <img
             v-else
-            :src="require('@/assets/images/icons/tokens_black.svg')"
+            :src="require('~/assets/images/icons/tokens_black.svg')"
           />
         </div>
       </template>
@@ -76,20 +76,20 @@ import { useI18n } from 'vue-i18n';
 import {
   DecoratedPoolWithShares,
   PoolToken
-} from '@/services/balancer/subgraph/types';
+} from '~/services/balancer/subgraph/types';
 
 import { getAddress } from '@ethersproject/address';
 
-import useNumbers from '@/composables/useNumbers';
-import useFathom from '@/composables/useFathom';
+import useNumbers from '~/composables/useNumbers';
+import useFathom from '~/composables/useFathom';
 
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityMiningTooltip from '~/components/tooltips/LiquidityMiningTooltip.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import useDarkMode from '@/composables/useDarkMode';
-import useBreakpoints from '@/composables/useBreakpoints';
-import { isStableLike } from '@/composables/usePool';
+import { ColumnDefinition } from '~/components/_global/BalTable/BalTable.vue';
+import useDarkMode from '~/composables/useDarkMode';
+import useBreakpoints from '~/composables/useBreakpoints';
+import { isStableLike } from '~/composables/usePool';
 
 export default defineComponent({
   components: {

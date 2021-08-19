@@ -14,7 +14,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import useNotifications from '@/composables/useNotifications';
+import useNotifications from '~/composables/useNotifications';
 
 import Notification from './Notification.vue';
 

@@ -54,9 +54,9 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import useBreakpoints from '@/composables/useBreakpoints';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '@/composables/useTransactions';
+import useBreakpoints from '~/composables/useBreakpoints';
+import useWeb3 from '~/services/web3/useWeb3';
+import useTransactions from '~/composables/useTransactions';
 
 import ActivityCounter from './ActivityCounter.vue';
 import ActivityRows from './ActivityRows.vue';

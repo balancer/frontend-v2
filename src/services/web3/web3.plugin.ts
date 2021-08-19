@@ -3,7 +3,7 @@ import { Connector } from './connectors/connector';
 import { computed, reactive, ref, Ref, toRefs } from 'vue';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { getAddress } from '@ethersproject/address';
-import { lsGet, lsSet } from '@/lib/utils';
+import { lsGet, lsSet } from '~/lib/utils';
 import {
   JsonRpcProvider,
   JsonRpcSigner,
@@ -12,21 +12,21 @@ import {
 import { GnosisSafeConnector } from './connectors/gnosis/gnosis.connector';
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 import { PortisConnector } from './connectors/portis/portis.connector';
-import useFathom from '@/composables/useFathom';
+import useFathom from '~/composables/useFathom';
 import { configService } from '../config/config.service';
 import { switchToAppNetwork } from './utils/helpers';
 
-import defaultLogo from '@/assets/images/connectors/default.svg';
-import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
-import frameLogo from '@/assets/images/connectors/frame.svg';
-import imtokenLogo from '@/assets/images/connectors/imtoken.svg';
-import metamaskLogo from '@/assets/images/connectors/metamask.svg';
-import portisLogo from '@/assets/images/connectors/portis.svg';
-import statusLogo from '@/assets/images/connectors/status.svg';
-import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
-import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
-import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
-import i18n from '@/plugins/i18n';
+import defaultLogo from '~/assets/images/connectors/default.svg';
+import fortmaticLogo from '~/assets/images/connectors/fortmatic.svg';
+import frameLogo from '~/assets/images/connectors/frame.svg';
+import imtokenLogo from '~/assets/images/connectors/imtoken.svg';
+import metamaskLogo from '~/assets/images/connectors/metamask.svg';
+import portisLogo from '~/assets/images/connectors/portis.svg';
+import statusLogo from '~/assets/images/connectors/status.svg';
+import trustwalletLogo from '~/assets/images/connectors/trustwallet.svg';
+import walletconnectLogo from '~/assets/images/connectors/walletconnect.svg';
+import walletlinkLogo from '~/assets/images/connectors/walletlink.svg';
+import i18n from '~/plugins/i18n';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 
 export type Wallet =

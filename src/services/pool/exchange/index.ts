@@ -1,13 +1,13 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import configs from '@/lib/config';
-import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
-import { default as vaultAbi } from '@/lib/abi/Vault.json';
-import { default as helpersAbi } from '@/lib/abi/BalancerHelpers.json';
+import configs from '~/lib/config';
+import { callStatic, sendTransaction } from '~/lib/utils/balancer/web3';
+import { default as vaultAbi } from '~/lib/abi/Vault.json';
+import { default as helpersAbi } from '~/lib/abi/BalancerHelpers.json';
 import JoinParams from './serializers/JoinParams';
 import ExitParams from './serializers/ExitParams';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool } from '~/services/balancer/subgraph/types';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
-import { TokenInfoMap } from '@/types/TokenList';
+import { TokenInfoMap } from '~/types/TokenList';
 
 export default class Exchange {
   pool: FullPool;

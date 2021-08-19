@@ -1,12 +1,12 @@
 import Vault from './contracts/vault';
-import { Config } from '@/lib/config';
+import { Config } from '~/lib/config';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { default as vaultAbi } from '@/lib/abi/Vault.json';
-import { default as weightedPoolAbi } from '@/lib/abi/WeightedPool.json';
-import { default as stablePoolAbi } from '@/lib/abi/StablePool.json';
-import { default as TokenAbi } from '@/lib/abi/ERC20.json';
-import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { configService as _configService } from '@/services/config/config.service';
+import { default as vaultAbi } from '~/lib/abi/Vault.json';
+import { default as weightedPoolAbi } from '~/lib/abi/WeightedPool.json';
+import { default as stablePoolAbi } from '~/lib/abi/StablePool.json';
+import { default as TokenAbi } from '~/lib/abi/ERC20.json';
+import { rpcProviderService as _rpcProviderService } from '~/services/rpc-provider/rpc-provider.service';
+import { configService as _configService } from '~/services/config/config.service';
 
 export default class BalancerContractsService {
   vault: Vault;

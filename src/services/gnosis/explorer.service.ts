@@ -1,4 +1,4 @@
-import { IS_DEV, IS_STAGING } from '@/constants/env';
+import { IS_DEV, IS_STAGING } from '~/constants/env';
 
 import { OrderID } from './types';
 

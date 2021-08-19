@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import useNumbers from '@/composables/useNumbers';
-import { PoolToken } from '@/services/balancer/subgraph/types';
+import useNumbers from '~/composables/useNumbers';
+import { PoolToken } from '~/services/balancer/subgraph/types';
 import { defineComponent, PropType } from 'vue';
-import useTokens from '@/composables/useTokens';
+import useTokens from '~/composables/useTokens';
 import WeightedTokenPill from './WeightedTokenPill.vue';
 import StableTokenPill from './StableTokenPill.vue';
 

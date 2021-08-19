@@ -11,8 +11,8 @@
 </template>
 
 <script lang="ts">
-import useBreakpoints from '@/composables/useBreakpoints';
-import useDarkMode from '@/composables/useDarkMode';
+import useBreakpoints from '~/composables/useBreakpoints';
+import useDarkMode from '~/composables/useDarkMode';
 import { defineComponent } from 'vue';
 
 export default defineComponent({

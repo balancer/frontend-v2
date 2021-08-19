@@ -34,7 +34,7 @@
 <script lang="ts">
 import BalIcon from '../BalIcon/BalIcon.vue';
 import { defineComponent, ref, computed, PropType } from 'vue';
-import { Rules, RuleFunction } from '@/types';
+import { Rules, RuleFunction } from '~/types';
 
 export default defineComponent({
   name: 'BalSelectInput',

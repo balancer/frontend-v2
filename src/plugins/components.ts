@@ -2,9 +2,9 @@ import { App } from 'vue';
 import parsePath from 'parse-filepath';
 
 export function registerGlobalComponents(app: App): void {
-  // Load global components from @/components/_global
+  // Load global components from ~/components/_global
   const req = require.context(
-    '@/components/_global',
+    '~/components/_global',
     true,
     /^((?!stories).)*\.(js|ts|vue)$/i
   );

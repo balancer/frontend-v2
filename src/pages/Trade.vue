@@ -14,11 +14,11 @@
 import { defineComponent, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
-import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
-import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
-import useTokenLists from '@/composables/useTokenLists';
-import { TradeInterface } from '@/store/modules/app';
-import usePoolFilters from '@/composables/pools/usePoolFilters';
+import TradeCard from '~/components/cards/TradeCard/TradeCard.vue';
+import TradeCardGP from '~/components/cards/TradeCardGP/TradeCardGP.vue';
+import useTokenLists from '~/composables/useTokenLists';
+import { TradeInterface } from '~/store/modules/app';
+import usePoolFilters from '~/composables/pools/usePoolFilters';
 
 export default defineComponent({
   components: {

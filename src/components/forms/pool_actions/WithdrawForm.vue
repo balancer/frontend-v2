@@ -188,32 +188,32 @@ import {
   PropType,
   toRef
 } from 'vue';
-import { FormRef } from '@/types';
+import { FormRef } from '~/types';
 import {
   isPositive,
   isLessThanOrEqualTo,
   isRequired
-} from '@/lib/utils/validations';
+} from '~/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
 import isEqual from 'lodash/isEqual';
 
-import useNumbers from '@/composables/useNumbers';
-import useSlippage from '@/composables/useSlippage';
+import useNumbers from '~/composables/useNumbers';
+import useSlippage from '~/composables/useSlippage';
 
-import PoolExchange from '@/services/pool/exchange';
-import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-import { getPoolWeights } from '@/services/pool/pool.helper';
-import { bnum } from '@/lib/utils';
+import PoolExchange from '~/services/pool/exchange';
+import PoolCalculator from '~/services/pool/calculator/calculator.sevice';
+import { getPoolWeights } from '~/services/pool/pool.helper';
+import { bnum } from '~/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
-import useEthers from '@/composables/useEthers';
-import useTransactions from '@/composables/useTransactions';
-import { usePool } from '@/composables/usePool';
+import { FullPool } from '~/services/balancer/subgraph/types';
+import useFathom from '~/composables/useFathom';
+import useWeb3 from '~/services/web3/useWeb3';
+import useTokens from '~/composables/useTokens';
+import useEthers from '~/composables/useEthers';
+import useTransactions from '~/composables/useTransactions';
+import { usePool } from '~/composables/usePool';
 
 export enum FormTypes {
   proportional = 'proportional',

@@ -1,4 +1,4 @@
-import { fNum } from '@/composables/useNumbers';
+import { fNum } from '~/composables/useNumbers';
 
 import { FullPool } from '../balancer/subgraph/types';
 
