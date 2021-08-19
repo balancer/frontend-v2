@@ -19,9 +19,6 @@ import useNumbers from '../useNumbers';
 import { TokenInfo } from '@/types/TokenList';
 import useTokens from '../useTokens';
 
-// TODO: get correct app id
-const GNOSIS_APP_ID = 2;
-const APP_DATA = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
 const HIGH_FEE_THRESHOLD = 0.2;
 
 const state = reactive({
@@ -151,7 +148,8 @@ export default function useGnosis({
           ? quote.minimumOutAmount
           : tokenOutAmountScaled.value.toString(),
         validTo: calculateValidTo(appTransactionDeadline.value),
-        appData: APP_DATA,
+        appData:
+          '0xE9F29AE547955463ED535162AEFEE525D8D309571A2B18BC26086C8C35D781EB',
         feeAmount: quote.feeAmountInToken,
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
