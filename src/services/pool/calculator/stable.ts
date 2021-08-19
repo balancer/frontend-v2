@@ -7,7 +7,6 @@ import BigNumber from 'bignumber.js';
 import { BPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2/dist/frontendHelpers/stableHelpers';
 import { BigNumberish } from '@ethersproject/bignumber';
 import * as SDK from '@georgeroman/balancer-v2-pools';
-import { isMetaStable } from '@/composables/usePool';
 
 /**
  * The stableMathEvm works with all values scaled to 18 decimals,
