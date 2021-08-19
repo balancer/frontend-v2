@@ -3,6 +3,7 @@
     ref="activator"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
+    :class="[{ 'cursor-default': disabled }]"
   >
     <slot name="activator">
       <BalIcon name="info" size="md" class="text-gray-400" />
@@ -32,7 +33,8 @@ export default defineComponent({
     placement: { type: String as PropType<Placement>, default: 'top' },
     onShow: { type: Function },
     onHide: { type: Function },
-    noPad: { type: Boolean, default: false }
+    noPad: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false }
   },
   setup(props) {
     const activator = ref<HTMLElement>();
@@ -47,7 +49,7 @@ export default defineComponent({
 
     // show the tooltip
     const handleMouseEnter = () => {
-      if (content.value && popper.value) {
+      if (!props.disabled && content.value && popper.value) {
         content.value.setAttribute('data-show', '');
         popper.value.update();
         props.onShow && props.onShow();
@@ -56,7 +58,7 @@ export default defineComponent({
 
     // hide the tooltip
     const handleMouseLeave = () => {
-      if (content.value) {
+      if (!props.disabled && content.value) {
         content.value.removeAttribute('data-show');
         props.onHide && props.onHide();
       }
