@@ -6,6 +6,11 @@
       :data="data"
       :is-loading="isLoading"
       skeleton-class="h-64"
+      :link="{
+        to: 'pool',
+        getParams: pool => ({ id: pool.id })
+      }"
+      :initial-state="{ sortDirection: 'desc', sortColumn: latestWeek }"
     >
       <template v-slot:iconColumnHeader>
         <div class="flex items-center">
@@ -17,6 +22,16 @@
             v-else
             :src="require('@/assets/images/icons/tokens_black.svg')"
           />
+        </div>
+      </template>
+      <template
+        v-for="(week, i) in weeks"
+        v-slot:[`header-${week.week}`]
+        :key="week.week"
+      >
+        <div class="text-right flex flex-col">
+          <span>{{ getWeekName(week.week) }}</span>
+          <span class="text-xs">Starts {{ getWeekStart(i) }}</span>
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
@@ -40,7 +55,10 @@
         v-slot:[week.week]="pool"
         :key="week.week"
       >
-        <div class="px-6 py-4 text-right flex flex-col">
+        <div
+          class="px-6 py-4 text-right flex flex-col"
+          v-if="pool.distributions[i].distribution"
+        >
           <span
             v-for="(tokenDist, tokenIndex) in pool.distributions[i]
               .distribution"
@@ -50,6 +68,9 @@
             {{ fNum(tokenDist.amount, 'token_lg') }}
             {{ tokens[getAddress(tokenDist.tokenAddress)]?.symbol || 'N/A' }}
           </span>
+        </div>
+        <div class="px-6 py-4 text-right flex flex-col" v-else>
+          -
         </div>
       </template>
       <template
@@ -89,9 +110,10 @@ import { computed, defineComponent, PropType, Ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
-import { sum } from 'lodash';
+import { last, sum } from 'lodash';
 import useDarkMode from '@/composables/useDarkMode';
 import { isStableLike } from '@/composables/usePool';
+import { startOfWeek, subWeeks, format } from 'date-fns';
 
 function getWeekName(week: string) {
   const parts = week.split('_');
@@ -134,7 +156,8 @@ export default defineComponent({
           week: week.week,
           distribution: week.distributions[pool.id.toLowerCase()]
         })),
-        poolType: pool.poolType
+        poolType: pool.poolType,
+        id: pool.id
       }));
     });
 
@@ -161,6 +184,7 @@ export default defineComponent({
           accessor: week,
           id: week,
           Cell: week,
+          Header: `header-${week}`,
           width: 135,
           align: 'right' as any,
           sortKey: pool => {
@@ -172,6 +196,8 @@ export default defineComponent({
         }))
       ];
     });
+
+    const latestWeek = computed(() => last(weeks.value)?.week);
 
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
       if (isStableLike(pool)) return pool.tokens;
@@ -195,6 +221,13 @@ export default defineComponent({
       return totalFiat;
     }
 
+    function getWeekStart(howManyWeeksToSubtract: number) {
+      return format(
+        startOfWeek(subWeeks(new Date(), howManyWeeksToSubtract)),
+        'dd/MM/yyyy'
+      );
+    }
+
     return {
       orderedTokenAddressesFor,
       orderedPoolTokens,
@@ -202,11 +235,14 @@ export default defineComponent({
       getAddress,
       calculatePricesFor,
       isStableLike,
+      getWeekName,
       columns,
       data,
       tokens,
       priceFor,
-      darkMode
+      darkMode,
+      latestWeek,
+      getWeekStart
     };
   }
 });

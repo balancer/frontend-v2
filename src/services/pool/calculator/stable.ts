@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import { BPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2/dist/frontendHelpers/stableHelpers';
 import { BigNumberish } from '@ethersproject/bignumber';
 import * as SDK from '@georgeroman/balancer-v2-pools';
+import { isMetaStable } from '@/composables/usePool';
 
 /**
  * The stableMathEvm works with all values scaled to 18 decimals,
@@ -96,6 +97,13 @@ export default class Stable {
     bptAmount: string,
     tokenIndex: number
   ): BigNumber {
+    if (bnum(bptAmount).eq(0))
+      return this.scaleOutput(
+        '0',
+        this.calc.poolTokenDecimals[tokenIndex],
+        BigNumber.ROUND_DOWN // If OUT given IN, round down
+      );
+
     const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
     const bptAmountIn = bnum(parseUnits(bptAmount, 18).toString());
@@ -167,15 +175,25 @@ export default class Stable {
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
 
+    // _bptForTokensZeroPriceImpact is the only stable pool function
+    // that requires balances be scaled by the token decimals and not 18
+    const balances = this.scaledBalances.map((balance, i) => {
+      const normalizedBalance = formatUnits(balance.toString(), 18);
+      const denormBalance = parseUnits(
+        normalizedBalance,
+        this.calc.poolTokenDecimals[i]
+      );
+      return bnum(denormBalance.toString());
+    });
+
     const bptZeroImpact = _bptForTokensZeroPriceImpact(
-      this.scaledBalances,
+      balances,
       this.calc.poolTokenDecimals,
       amounts,
       bnum(this.calc.poolTotalSupply.toString()),
       amp
     );
 
-    console.log(bptZeroImpact.toString(), ` BPTForTokensZeroPriceImpact`);
     return bptZeroImpact;
   }
 
