@@ -114,6 +114,8 @@
     "tableShowsBalancerV2Pools": "This table only shows Balancer V2 pools.",
     "tradeSettled": "Your trade has settled",
     "tradeSuccess": "Successfully traded your tokens",
+    "tradeInterface": "Trade interface",
+    "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders that are settled peer-to-peer among its users or into any on-chain liquidity source while providing MEV protection.",
     "investmentPools": "Investment pools",
     "investmentSettled": "Your investment has settled",
     "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",

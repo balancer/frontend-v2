@@ -141,7 +141,13 @@
     </div>
     <div class="px-4 mt-6">
       <div class="flex items-baseline">
-        <span v-text="'Trade interface'" class="font-medium mb-2" />
+        <span v-text="$t('tradeInterface')" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div v-text="$t('tradeInterfaceTooltip')" class="w-52" />
+        </BalTooltip>
       </div>
       <BalBtnGroup
         :options="tradeInterfaceOptions"
