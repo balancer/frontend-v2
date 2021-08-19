@@ -39,14 +39,16 @@ export default function useTokenApproval(
     if (tokenInAddress.value === networkConfig.nativeAsset.address) {
       return {
         isUnlockedV1: true,
-        isUnlockedV2: true
+        isUnlockedV2: true,
+        approvedSpenders: {}
       };
     }
 
     if (!tokenInAddress.value || !amount.value || approved.value === true)
       return {
         isUnlockedV1: true,
-        isUnlockedV2: true
+        isUnlockedV2: true,
+        approvedSpenders: {}
       };
 
     const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
@@ -72,36 +74,27 @@ export default function useTokenApproval(
   /**
    * METHODS
    */
-  async function approveV1(): Promise<void> {
-    console.log('[TokenApproval] Unlock V1');
+  async function approveSpender(spender: string): Promise<void> {
     approving.value = true;
     try {
-      const [tx] = await approveTokens(
-        getProvider(),
-        configService.network.addresses.exchangeProxy,
-        [tokenInAddress.value]
-      );
-      txHandler(tx, configService.network.addresses.exchangeProxy);
+      const [tx] = await approveTokens(getProvider(), spender, [
+        tokenInAddress.value
+      ]);
+      txHandler(tx, spender);
     } catch (e) {
       console.log(e);
       approving.value = false;
     }
   }
 
+  async function approveV1(): Promise<void> {
+    console.log('[TokenApproval] Unlock V1');
+    approveSpender(configService.network.addresses.exchangeProxy);
+  }
+
   async function approveV2(): Promise<void> {
     console.log('[TokenApproval] Unlock V2');
-    approving.value = true;
-    try {
-      const [tx] = await approveTokens(
-        getProvider(),
-        configService.network.addresses.vault,
-        [tokenInAddress.value]
-      );
-      txHandler(tx, configService.network.addresses.vault);
-    } catch (e) {
-      console.log(e);
-      approving.value = false;
-    }
+    approveSpender(configService.network.addresses.vault);
   }
 
   function txHandler(tx: TransactionResponse, spender: string): void {
@@ -113,7 +106,7 @@ export default function useTokenApproval(
         tokens.value[tokenInAddress.value].symbol
       ]),
       details: {
-        tokenAddress: tokenInAddress.value,
+        contractAddress: tokenInAddress.value,
         spender
       }
     });
@@ -141,9 +134,11 @@ export default function useTokenApproval(
   });
 
   return {
+    approved,
     approving,
     approveV1,
     approveV2,
+    approveSpender,
     allowanceState,
     isLoading: dynamicDataLoading
   };

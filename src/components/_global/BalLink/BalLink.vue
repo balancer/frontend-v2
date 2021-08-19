@@ -1,7 +1,10 @@
 <template>
-  <a :class="[classes]" v-bind="attrs_">
+  <a v-if="!disabled" :class="[classes]" v-bind="attrs_">
     <slot />
   </a>
+  <div v-if="disabled" :class="[classes]" v-bind="attrs_">
+    <slot />
+  </div>
 </template>
 
 <script>
@@ -12,6 +15,10 @@ export default defineComponent({
 
   props: {
     external: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
       type: Boolean,
       default: false
     },

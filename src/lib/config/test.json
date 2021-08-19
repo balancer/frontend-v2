@@ -1,0 +1,57 @@
+{
+  "key": "1",
+  "chainId": 1,
+  "chainName": "test",
+  "name": "test",
+  "shortName": "test",
+  "network": "test",
+  "unknown": false,
+  "rpc": "https://mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
+  "ws": "ws://balancer.fi:1234",
+  "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
+  "explorer": "https://etherscan.io",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
+  "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange/pools",
+  "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
+  "nativeAsset": {
+    "name": "Ether",
+    "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "symbol": "ETH",
+    "decimals": 18,
+    "deeplinkId": "ether",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+  },
+  "addresses": {
+    "bFactory": "0x9424B1412450D0f8Fc2255FAf6046b98213B76Bd",
+    "bActions": "0xde4A25A0b9589689945d842c5ba0CF4f0D4eB3ac",
+    "dsProxyRegistry": "0x4678f0a6958e4D2Bc4F1BAF7Bc52E8F3564f3fE4",
+    "exchangeProxy": "0x3E66B66Fd1d0b02fDa6C811Da9E0547970DB2f21",
+    "merkleRedeem": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
+    "multicall": "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
+    "authorizer": "0xA331D84eC860Bf466b4CdCcFb4aC09a1B43F3aE6",
+    "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+    "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
+    "stablePoolFactory": "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24",
+    "tokenFactory": "",
+    "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "stETH": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+    "wstETH": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+    "lidoRelayer": "",
+    "MockFlashLoanReceiver": "",
+    "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E"
+  },
+  "strategies": {
+    "0": {
+      "type": "0",
+      "name": "stablePool"
+    },
+    "1": {
+      "type": "1",
+      "name": "weightedPool"
+    },
+    "2": {
+      "type": "2",
+      "name": "weightedPool"
+    }
+  }
+}

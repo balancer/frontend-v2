@@ -1,6 +1,5 @@
 import { ref, computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { parseUnits } from '@ethersproject/units';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
@@ -9,7 +8,7 @@ import useTransactions from '../useTransactions';
 
 export default function useTokenApprovals(
   tokenAddresses: string[],
-  shortAmounts: Ref<string[]>
+  amounts: Ref<string[]>
 ) {
   /**
    * STATE
@@ -29,15 +28,6 @@ export default function useTokenApprovals(
   /**
    * COMPUTED
    */
-  const amounts = computed(() =>
-    tokenAddresses.map((token, index) => {
-      const shortAmount = shortAmounts.value[index] || '0';
-      const decimals = tokens.value[token].decimals;
-      const amount = parseUnits(shortAmount, decimals).toString();
-      return amount;
-    })
-  );
-
   const requiredAllowances = computed(() =>
     approvalsRequired(tokenAddresses, amounts.value)
   );
@@ -48,7 +38,7 @@ export default function useTokenApprovals(
   async function approveAllowances(): Promise<void> {
     try {
       approving.value = true;
-      const tokenAddress = tokenAddresses[0];
+      const tokenAddress = requiredAllowances.value[0];
 
       const txs = await approveTokens(
         getProvider(),
@@ -64,7 +54,7 @@ export default function useTokenApprovals(
           tokens.value[tokenAddress]?.symbol
         ]),
         details: {
-          tokenAddress,
+          contractAddress: tokenAddress,
           spender: appNetworkConfig.addresses.vault
         }
       });

@@ -8,6 +8,7 @@
   "unknown": false,
   "rpc": "https://mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
   "ws": "wss://mainnet.infura.io/ws/v3/daaa68ec242643719749dd1caba2fc66",
+  "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
   "explorer": "https://etherscan.io",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange/pools",
@@ -33,6 +34,9 @@
     "stablePoolFactory": "0xc66Ba2B6595D3613CCab350C886aCE23866EDe24",
     "tokenFactory": "",
     "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "stETH": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+    "wstETH": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+    "lidoRelayer": "0xdcdbf71A870cc60C6F9B621E28a7D3Ffd6Dd4965",
     "MockFlashLoanReceiver": "",
     "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E"
   },

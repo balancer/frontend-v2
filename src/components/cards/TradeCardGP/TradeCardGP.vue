@@ -97,13 +97,15 @@ import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
-import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
 import { TOKENS } from '@/constants/tokens';
 
 import { isRequired } from '@/lib/utils/validations';
+import { WrapType } from '@/lib/utils/balancer/wrapper';
 
 import TradePreviewModalGP from '@/components/modals/TradePreviewModalGP.vue';
 import TradeSettingsPopover, {
@@ -113,6 +115,7 @@ import TradeSettingsPopover, {
 import { configService } from '@/services/config/config.service';
 
 import TradePairGP from './TradePairGP.vue';
+import useWeb3 from '@/services/web3/useWeb3';
 
 const { nativeAsset } = configService.network;
 
@@ -130,6 +133,8 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
     const { fNum } = useNumbers();
+    const { appNetworkConfig } = useWeb3();
+    const { tokens } = useTokens();
 
     // DATA
     const exactIn = ref(true);
@@ -185,13 +190,13 @@ export default defineComponent({
       return hasValidationErrors || hasGnosisErrors || hasBalancerErrors;
     });
 
-    useTokenApprovalGP(tokenInAddress, tokenInAmount);
+    useTokenApproval(tokenInAddress, tokenInAmount, tokens);
 
     const title = computed(() => {
-      if (trading.isWrap.value) {
+      if (trading.wrapType.value === WrapType.Wrap) {
         return `${t('wrap')} ${nativeAsset.symbol}`;
       }
-      if (trading.isUnwrap.value) {
+      if (trading.wrapType.value === WrapType.Unwrap) {
         return `${t('unwrap')} ${nativeAsset.symbol}`;
       }
       return t('trade');
@@ -311,7 +316,7 @@ export default defineComponent({
     }
 
     function switchToWETH() {
-      tokenInAddress.value = TOKENS.AddressMap.WETH;
+      tokenInAddress.value = TOKENS.AddressMap[appNetworkConfig.key].WETH;
     }
 
     // INIT

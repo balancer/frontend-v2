@@ -11,11 +11,16 @@ import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
 import { BigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
-import { SubgraphPoolBase } from '@balancer-labs/sor2';
+import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sor2';
 import { useI18n } from 'vue-i18n';
 
 import { scale, bnum } from '@/lib/utils';
-import { unwrap, wrap } from '@/lib/utils/balancer/wrapper';
+import {
+  getWrapOutput,
+  unwrap,
+  wrap,
+  WrapType
+} from '@/lib/utils/balancer/wrapper';
 import {
   SorManager,
   SorReturn,
@@ -35,6 +40,8 @@ import useTransactions, { TransactionAction } from '../useTransactions';
 import useNumbers from '../useNumbers';
 import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
 import useTokens from '../useTokens';
+import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
+import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
@@ -54,16 +61,15 @@ type Props = {
   tokenOutAddressInput: Ref<string>;
   tokenOutAmountInput: Ref<string>;
   tokens: Ref<TokenInfoMap>;
-  isWrap: Ref<boolean>;
-  isUnwrap: Ref<boolean>;
+  wrapType: Ref<WrapType>;
   tokenInAmountScaled?: ComputedRef<BigNumber>;
   tokenOutAmountScaled?: ComputedRef<BigNumber>;
   sorConfig?: {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
   };
-  tokenIn?: ComputedRef<TokenInfo>;
-  tokenOut?: ComputedRef<TokenInfo>;
+  tokenIn: ComputedRef<TokenInfo>;
+  tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
 };
 
@@ -76,8 +82,7 @@ export default function useSor({
   tokenOutAddressInput,
   tokenOutAmountInput,
   tokens,
-  isWrap,
-  isUnwrap,
+  wrapType,
   tokenInAmountScaled,
   tokenOutAmountScaled,
   sorConfig = {
@@ -121,7 +126,6 @@ export default function useSor({
   const store = useStore();
   const {
     getProvider: getWeb3Provider,
-    userNetworkConfig,
     isV1Supported,
     appNetworkConfig
   } = useWeb3();
@@ -217,23 +221,10 @@ export default function useSor({
       return;
     }
 
-    if (isWrap.value || isUnwrap.value) {
-      tokenInAmountInput.value = amount;
-      tokenOutAmountInput.value = amount;
-      sorReturn.value.hasSwaps = false;
-      priceImpact.value = 0;
-      return;
-    }
-
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
 
-    if (
-      !tokenInAddress ||
-      !tokenOutAddress ||
-      !sorManager ||
-      !sorManager.hasPoolData()
-    ) {
+    if (!tokenInAddress || !tokenOutAddress) {
       if (exactIn.value) tokenOutAmountInput.value = '';
       else tokenInAmountInput.value = '';
       return;
@@ -241,6 +232,47 @@ export default function useSor({
 
     const tokenInDecimals = tokens.value[tokenInAddressInput.value]?.decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddressInput.value]?.decimals;
+
+    if (wrapType.value !== WrapType.NonWrap) {
+      const wrapper =
+        wrapType.value === WrapType.Wrap ? tokenOutAddress : tokenInAddress;
+
+      if (exactIn.value) {
+        tokenInAmountInput.value = amount;
+
+        const outputAmount = await getWrapOutput(
+          wrapper,
+          wrapType.value,
+          scale(bnum(amount), tokenInDecimals).toString()
+        );
+        tokenOutAmountInput.value = scale(
+          bnum(outputAmount),
+          -tokenInDecimals
+        ).toString();
+      } else {
+        tokenOutAmountInput.value = amount;
+
+        const inputAmount = await getWrapOutput(
+          wrapper,
+          wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
+          scale(bnum(amount), tokenOutDecimals).toString()
+        );
+        tokenInAmountInput.value = scale(
+          bnum(inputAmount),
+          -tokenOutDecimals
+        ).toString();
+      }
+
+      sorReturn.value.hasSwaps = false;
+      priceImpact.value = 0;
+      return;
+    }
+
+    if (!sorManager || !sorManager.hasPoolData()) {
+      if (exactIn.value) tokenOutAmountInput.value = '';
+      else tokenInAmountInput.value = '';
+      return;
+    }
 
     if (exactIn.value) {
       await setSwapCost(
@@ -262,7 +294,7 @@ export default function useSor({
         tokenOutAddress,
         tokenInDecimals,
         tokenOutDecimals,
-        'swapExactIn',
+        SwapTypes.SwapExactIn,
         tokenInAmountScaled,
         tokenInDecimals,
         liquiditySelection.value
@@ -281,10 +313,17 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        const returnAmtNormalised = scale(
+        let returnAmtNormalised = scale(
           swapReturn.returnAmount,
           -tokenOutDecimals
         );
+
+        returnAmtNormalised = await adjustedPiAmount(
+          returnAmtNormalised,
+          tokenOutAddress,
+          tokenOutDecimals
+        );
+
         const effectivePrice = tokenInAmountNormalised.div(returnAmtNormalised);
         const priceImpactCalc = effectivePrice
           .div(swapReturn.marketSpNormalised)
@@ -299,7 +338,7 @@ export default function useSor({
       // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
       await setSwapCost(tokenInAddressInput.value, tokenInDecimals, sorManager);
 
-      const tokenOutAmountNormalised = new BigNumber(amount);
+      let tokenOutAmountNormalised = new BigNumber(amount);
       const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
 
       console.log('[SOR Manager] swapExactOut');
@@ -309,7 +348,7 @@ export default function useSor({
         tokenOutAddress,
         tokenInDecimals,
         tokenOutDecimals,
-        'swapExactOut',
+        SwapTypes.SwapExactOut,
         tokenOutAmount,
         tokenOutDecimals,
         liquiditySelection.value
@@ -327,6 +366,12 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
+        tokenOutAmountNormalised = await adjustedPiAmount(
+          tokenOutAmountNormalised,
+          tokenOutAddress,
+          tokenOutDecimals
+        );
+
         const effectivePrice = tokenInAmountNormalised.div(
           tokenOutAmountNormalised
         );
@@ -354,12 +399,17 @@ export default function useSor({
     const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
     const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
 
-    if (action === 'wrap') {
-      summary = t('transactionSummary.wrapETH', [tokenInAmountFormatted]);
-    } else if (action === 'unwrap') {
-      summary = t('transactionSummary.unwrapETH', [tokenInAmountFormatted]);
+    const tokenInSymbol = tokenIn.value.symbol;
+    const tokenOutSymbol = tokenOut.value.symbol;
+
+    if (['wrap', 'unwrap'].includes(action)) {
+      summary = t('transactionSummary.wrapUnwrap', [
+        tokenInAmountFormatted,
+        tokenInSymbol,
+        tokenOutSymbol
+      ]);
     } else {
-      summary = `${tokenInAmountFormatted} ${tokenIn?.value.symbol} -> ${tokenOutAmountFormatted} ${tokenOut?.value.symbol}`;
+      summary = `${tokenInAmountFormatted} ${tokenInSymbol} -> ${tokenOutAmountFormatted} ${tokenOutSymbol}`;
     }
 
     addTransaction({
@@ -368,8 +418,8 @@ export default function useSor({
       action,
       summary,
       details: {
-        tokenIn: tokenIn?.value,
-        tokenOut: tokenOut?.value,
+        tokenIn: tokenIn.value,
+        tokenOut: tokenOut.value,
         tokenInAddress: tokenInAddressInput.value,
         tokenOutAddress: tokenOutAddressInput.value,
         tokenInAmount: tokenInAmountInput.value,
@@ -405,11 +455,12 @@ export default function useSor({
     const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
     const tokenInAmountScaled = scale(tokenInAmountNumber, tokenInDecimals);
 
-    if (isWrap.value) {
+    if (wrapType.value == WrapType.Wrap) {
       try {
         const tx = await wrap(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
+          tokenOutAddress,
           tokenInAmountScaled
         );
         console.log('Wrap tx', tx);
@@ -425,11 +476,12 @@ export default function useSor({
         confirming.value = false;
       }
       return;
-    } else if (isUnwrap.value) {
+    } else if (wrapType.value == WrapType.Unwrap) {
       try {
         const tx = await unwrap(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
+          tokenInAddress,
           tokenInAmountScaled
         );
         console.log('Unwrap tx', tx);
@@ -455,7 +507,7 @@ export default function useSor({
 
       try {
         const tx = await swapIn(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           sr,
           tokenInAmountScaled,
@@ -484,7 +536,7 @@ export default function useSor({
 
       try {
         const tx = await swapOut(
-          String(userNetworkConfig.value.chainId),
+          appNetworkConfig.key,
           provider.value as any,
           sr,
           tokenInAmountMax,
@@ -523,10 +575,9 @@ export default function useSor({
     tokenDecimals: number,
     sorManager: SorManager
   ): Promise<void> {
-    const chainId = userNetworkConfig.value.chainId;
     // If using Polygon get price of swap using stored market prices
     // If mainnet price retrieved on-chain using SOR
-    if (chainId === 137) {
+    if (appNetworkConfig.chainId === 137) {
       const swapCostToken = calculateSwapCost(tokenOutAddressInput.value);
       await sorManager.setCostOutputToken(
         tokenAddress,
@@ -567,6 +618,24 @@ export default function useSor({
       maximumInAmount,
       minimumOutAmount
     };
+  }
+
+  /**
+   * Under certain circumstance we need to adjust an amount
+   * for the price impact calc due to background wrapping taking place
+   * e.g. when trading weth to wstEth.
+   */
+  async function adjustedPiAmount(
+    amount: BigNumber,
+    address: string,
+    decimals: number
+  ): Promise<BigNumber> {
+    if (address === appNetworkConfig.addresses.wstETH) {
+      const denormAmount = parseUnits(amount.toString(), decimals);
+      const denormStEthAmount = await getStETHByWstETH(denormAmount);
+      return bnum(formatUnits(denormStEthAmount, decimals));
+    }
+    return amount;
   }
 
   return {

@@ -1,4 +1,6 @@
+import { Network } from '@/constants/network';
 import { POOLS } from '@/constants/pools';
+import { configService } from '@/services/config/config.service';
 import { merge } from 'lodash';
 
 const defaultArgs = {
@@ -30,6 +32,10 @@ const defaultAttrs = {
     weight: true
   }
 };
+
+if (configService.network.chainId !== Network.POLYGON) {
+  defaultAttrs.tokens['priceRate'] = true;
+}
 
 export default (args = {}, attrs = {}) => ({
   pools: {

@@ -10,7 +10,7 @@
           <AppIcon v-if="['xs', 'sm', 'md'].includes(bp)" />
           <AppLogo v-else />
         </router-link>
-        <AppNavNetworkSelect />
+        <AppNavNetworkSelect v-if="!hideNetworkSelect" />
         <DarkModeToggle v-if="!upToLargeBreakpoint" class="ml-2" />
       </div>
 
@@ -39,6 +39,7 @@ import AppNavToggle from './AppNavToggle.vue';
 import AppNavActions from './AppNavActions.vue';
 import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
 import useFathom from '@/composables/useFathom';
+import useWeb3 from '@/services/web3/useWeb3';
 import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
 
 export default defineComponent({
@@ -57,12 +58,14 @@ export default defineComponent({
     const store = useStore();
     const { bp, upToLargeBreakpoint } = useBreakpoints();
     const { trackGoal, Goals } = useFathom();
+    const { connector } = useWeb3();
 
     // DATA
     const appNav = ref(null);
 
     // COMPUTED
     const alert = computed(() => store.state.alerts.current);
+    const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
 
     // METHODS
     function handleScroll() {
@@ -89,6 +92,7 @@ export default defineComponent({
       bp,
       alert,
       upToLargeBreakpoint,
+      hideNetworkSelect,
       // methods
       trackGoal,
       Goals

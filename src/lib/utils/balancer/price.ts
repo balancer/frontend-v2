@@ -1,4 +1,4 @@
-import { isStable, isWeighted } from '@/composables/usePool';
+import { isStableLike, isWeighted } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -37,7 +37,7 @@ export function getPoolLiquidity(
     }
   }
   // TODO [improvement]: if price is missing, compute spot price based on balances and amp factor
-  if (isStable(pool)) {
+  if (isStableLike(pool)) {
     let sumBalance = 0;
     let sumValue = 0;
 

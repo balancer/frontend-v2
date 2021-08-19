@@ -137,7 +137,11 @@ export default defineComponent({
     const { priceFor } = useTokens();
 
     const balPrice = computed(() =>
-      priceFor(coingeckoService.prices.addressMapOut(TOKENS.AddressMap.BAL))
+      priceFor(
+        coingeckoService.prices.addressMapOut(
+          TOKENS.AddressMap[appNetworkConfig.key].BAL
+        )
+      )
     );
 
     // COMPUTED

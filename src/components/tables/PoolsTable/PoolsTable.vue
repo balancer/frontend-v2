@@ -50,7 +50,7 @@
         <div v-if="!isLoading" class="px-6 py-4">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
-            :isStablePool="isStable(pool)"
+            :isStablePool="isStableLike(pool)"
           />
         </div>
       </template>
@@ -89,7 +89,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { isStable } from '@/composables/usePool';
+import { isStableLike } from '@/composables/usePool';
 
 export default defineComponent({
   components: {
@@ -165,7 +165,11 @@ export default defineComponent({
         accessor: pool => fNum(pool.totalLiquidity, 'usd'),
         align: 'right',
         id: 'poolValue',
-        sortKey: pool => Number(pool.totalLiquidity),
+        sortKey: pool => {
+          const apr = Number(pool.totalLiquidity);
+          if (apr === Infinity || isNaN(apr)) return 0;
+          return apr;
+        },
         width: 150
       },
       {
@@ -173,7 +177,11 @@ export default defineComponent({
         accessor: pool => fNum(pool.dynamic.volume, 'usd'),
         align: 'right',
         id: 'poolVolume',
-        sortKey: pool => Number(pool.dynamic.volume),
+        sortKey: pool => {
+          const apr = Number(pool.dynamic.volume);
+          if (apr === Infinity || isNaN(apr)) return 0;
+          return apr;
+        },
         width: 175
       },
       {
@@ -182,7 +190,11 @@ export default defineComponent({
         accessor: pool => pool.dynamic.apr.total,
         align: 'right',
         id: 'poolApr',
-        sortKey: pool => Number(pool.dynamic.apr.total),
+        sortKey: pool => {
+          const apr = Number(pool.dynamic.apr.total);
+          if (apr === Infinity || isNaN(apr)) return 0;
+          return apr;
+        },
         width: 150
       }
     ]);
@@ -194,7 +206,7 @@ export default defineComponent({
     }
 
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
-      if (isStable(pool)) return pool.tokens;
+      if (isStableLike(pool)) return pool.tokens;
 
       const sortedTokens = pool.tokens.slice();
       sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
@@ -220,7 +232,7 @@ export default defineComponent({
       fNum,
       orderedTokenAddressesFor,
       orderedPoolTokens,
-      isStable
+      isStableLike
     };
   }
 });

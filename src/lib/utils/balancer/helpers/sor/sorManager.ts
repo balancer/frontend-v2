@@ -195,7 +195,7 @@ export class SorManager {
     tokenOut: string,
     tokenInDecimals: number,
     tokenOutDecimals: number,
-    swapType: string,
+    swapType: SwapTypes,
     amountScaled: BigNumber,
     swapDecimals: number,
     liquiditySelection: LiquiditySelection
@@ -223,18 +223,13 @@ export class SorManager {
       ] = await this.sorV1.getSwaps(
         v1TokenIn.toLowerCase(),
         v1TokenOut.toLowerCase(),
-        swapType,
+        swapType === SwapTypes.SwapExactIn ? 'swapExactIn' : 'swapExactOut',
         amountScaled
       );
 
     const v2TokenIn = tokenIn === NATIVE_ASSET_ADDRESS ? AddressZero : tokenIn;
     const v2TokenOut =
       tokenOut === NATIVE_ASSET_ADDRESS ? AddressZero : tokenOut;
-
-    const swapTypeV2: SwapTypes =
-      swapType === 'swapExactIn'
-        ? SwapTypes.SwapExactIn
-        : SwapTypes.SwapExactOut;
 
     const timestampSeconds = Math.floor(Date.now() / 1000);
 
@@ -247,7 +242,7 @@ export class SorManager {
     const swapInfoV2: SwapInfo = await this.sorV2.getSwaps(
       v2TokenIn.toLowerCase(),
       v2TokenOut.toLowerCase(),
-      swapTypeV2,
+      swapType,
       amountNormalised,
       swapOptions
     );
@@ -264,7 +259,7 @@ export class SorManager {
       `[SorManager] ${swapInfoV2.returnAmountConsideringFees.toString()}: V2 return amount with fees`
     );
 
-    if (swapType === 'swapExactIn') {
+    if (swapType === SwapTypes.SwapExactIn) {
       return this.selectBestSwapIn(
         returnAmountV1,
         returnAmountV1ConsideringFees,

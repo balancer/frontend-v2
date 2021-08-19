@@ -67,6 +67,11 @@ export class PriceService {
       if (addresses.length / addressesPerRequest > 10)
         throw new Error('To many requests for rate limit.');
 
+      // TODO - remove once wsteth is supported
+      addresses = addresses.filter(
+        address => address !== this.configService.network.addresses.wstETH
+      );
+
       addresses = addresses.map(address => this.addressMapIn(address));
       const pageCount = Math.ceil(addresses.length / addressesPerRequest);
       const pages = Array.from(Array(pageCount).keys());
@@ -113,11 +118,21 @@ export class PriceService {
     const end = now - (now % twentyFourHourseInSecs);
     const start = end - days * twentyFourHourseInSecs;
 
+    // TODO - remove once wsteth is supported
+    addresses = addresses.filter(
+      address =>
+        address !== this.configService.network.addresses.wstETH.toLowerCase()
+    );
+
     addresses = addresses.map(address => this.addressMapIn(address));
     const requests: Promise<HistoricalPriceResponse>[] = [];
 
     addresses.forEach(address => {
-      const endpoint = `/coins/${this.platformId}/contract/${address}/market_chart/range?vs_currency=${this.fiatParam}&from=${start}&to=${end}`;
+      const endpoint = `/coins/${
+        this.platformId
+      }/contract/${address.toLowerCase()}/market_chart/range?vs_currency=${
+        this.fiatParam
+      }&from=${start}&to=${end}`;
       const request = retryPromiseWithDelay(
         this.client.get<HistoricalPriceResponse>(endpoint),
         3, // retryCount
@@ -142,10 +157,9 @@ export class PriceService {
       {}
     );
     const entries = Object.entries(results);
-    const parsedEntries = entries.map(result => [
-      this.addressMapOut(result[0]),
-      result[1]
-    ]);
+    const parsedEntries = entries
+      .filter(result => Object.keys(result[1]).length > 0)
+      .map(result => [this.addressMapOut(result[0]), result[1]]);
     return Object.fromEntries(parsedEntries);
   }
 

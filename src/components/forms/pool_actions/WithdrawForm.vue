@@ -59,7 +59,7 @@
               <span class="break-words">
                 {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
-              <span v-if="!isStablePool" class="text-xs text-gray-400">
+              <span v-if="!isStableLikePool" class="text-xs text-gray-400">
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
@@ -253,7 +253,7 @@ export default defineComponent({
       toggleWalletSelectModal,
       getProvider,
       account,
-      userNetworkConfig
+      appNetworkConfig
     } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
@@ -262,12 +262,11 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStablePool } = usePool(toRef(props, 'pool'));
+    const { isStableLikePool } = usePool(toRef(props, 'pool'));
 
     // SERVICES
     const poolExchange = computed(
-      () =>
-        new PoolExchange(props.pool, userNetworkConfig.value.key, tokens.value)
+      () => new PoolExchange(props.pool, appNetworkConfig.key, tokens.value)
     );
 
     const poolCalculator = new PoolCalculator(
@@ -637,7 +636,7 @@ export default defineComponent({
       priceImpactClasses,
       amountRules,
       formTypes,
-      isStablePool,
+      isStableLikePool,
       formatPropBalance,
       amountUSD,
       singleAssetMaxLabel,
