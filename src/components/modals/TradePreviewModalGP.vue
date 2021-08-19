@@ -170,10 +170,16 @@
       />
       <div
         v-if="totalRequiredTransactions > 1"
-        class="grid my-5 grid-flow-col gap-6 justify-center"
+        class="flex my-5 justify-center items-center"
       >
         <div
-          :class="['step', { 'step-approved': tokenApproval.approved.value }]"
+          :class="[
+            'step',
+            {
+              'step-active': activeTransactionType === 'gnosisRelayerApproval',
+              'step-approved': gnosisRelayerApproval.approved.value
+            }
+          ]"
           v-if="showGnosisRelayerApprovalStep"
         >
           <BalIcon
@@ -183,8 +189,15 @@
           />
           <template v-else>1</template>
         </div>
+        <div class="step-seperator" v-if="showGnosisRelayerApprovalStep" />
         <div
-          :class="['step', { 'step-approved': tokenApproval.approved.value }]"
+          :class="[
+            'step',
+            {
+              'step-active': activeTransactionType === 'tokenApproval',
+              'step-approved': tokenApproval.approved.value
+            }
+          ]"
           v-if="showTokenApprovalStep"
         >
           <BalIcon
@@ -196,7 +209,17 @@
             showGnosisRelayerApprovalStep ? 2 : 1
           }}</template>
         </div>
-        <div class="step">{{ totalRequiredTransactions }}</div>
+        <div class="step-seperator" v-if="showTokenApprovalStep" />
+        <div
+          :class="[
+            'step',
+            {
+              'step-active': activeTransactionType === 'trade'
+            }
+          ]"
+        >
+          {{ totalRequiredTransactions }}
+        </div>
       </div>
       <BalBtn
         v-if="requiresGnosisRelayerApproval"
@@ -528,6 +551,18 @@ export default defineComponent({
       return txCount;
     });
 
+    const activeTransactionType = computed<
+      'gnosisRelayerApproval' | 'tokenApproval' | 'trade'
+    >(() => {
+      if (requiresGnosisRelayerApproval.value) {
+        return 'gnosisRelayerApproval';
+      }
+      if (requiresTokenApproval.value) {
+        return 'tokenApproval';
+      }
+      return 'trade';
+    });
+
     const requiresApproval = computed(
       () => requiresGnosisRelayerApproval.value || requiresTokenApproval.value
     );
@@ -630,6 +665,7 @@ export default defineComponent({
       approveToken,
       showTokenApprovalStep,
       showGnosisRelayerApprovalStep,
+      activeTransactionType,
 
       // consants
       PRICE_UPDATE_THRESHOLD
@@ -648,10 +684,16 @@ export default defineComponent({
 }
 
 .step {
-  @apply rounded-full w-7 h-7 border border-purple-500 flex items-center justify-center text-purple-500 overflow-hidden overflow-ellipsis;
+  @apply rounded-full w-7 h-7 border border-gray-100 dark:border-gray-700 flex items-center justify-center text-purple-500 relative;
+}
+.step-seperator {
+  @apply bg-gray-200 dark:bg-gray-700 h-px w-6;
 }
 
+.step-active {
+  @apply border-purple-500 dark:border-purple-500;
+}
 .step-approved {
-  @apply border-green-500;
+  @apply border-green-500 dark:border-green-500;
 }
 </style>
