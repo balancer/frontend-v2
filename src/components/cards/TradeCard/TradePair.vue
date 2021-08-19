@@ -62,7 +62,7 @@
       </template>
       <template v-slot:append>
         <div class="p-2">
-          <BalBtn size="xs" color="gray" outline @click="handleMax">
+          <BalBtn size="xs" color="white" @click="handleMax">
             {{ $t('max') }}
           </BalBtn>
         </div>

@@ -3,8 +3,7 @@
     <template v-slot:activator>
       <BalBtn
         circle
-        outline
-        color="gray"
+        color="white"
         size="sm"
         class="mb-2 text-gray-500 icon-spin-anim"
         @click="onActivatorClick"

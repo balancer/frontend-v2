@@ -39,7 +39,7 @@ export default defineComponent({
     const colorClasses = computed(() => {
       switch (props.color) {
         case 'white':
-          return 'bg-white';
+          return 'bg-white dark:bg-opacity-50';
         default:
           return `bg-${props.color}-500`;
       }

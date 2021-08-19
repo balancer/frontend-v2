@@ -1,14 +1,12 @@
 <template>
   <BalBtn
-    color="gray"
+    color="white"
     :size="upToLargeBreakpoint ? 'md' : 'sm'"
-    outline
-    circle
     @click="toggleDarkMode"
     class="hidden xs:inline-block"
   >
-    <BalIcon v-if="darkMode" name="moon" />
-    <BalIcon v-else name="sun" />
+    <MoonIcon v-if="darkMode" />
+    <SunIcon v-else />
   </BalBtn>
 </template>
 

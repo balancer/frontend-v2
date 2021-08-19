@@ -1,15 +1,13 @@
 <template>
   <div>
     <div v-if="account" class="flex items-center">
+      <AppNavActivityBtn />
       <AppNavClaimBtn v-if="liquidityMiningSupported" />
-      <AppNavActivityBtn v-if="!upToSmallBreakpoint" />
       <AppNavAccountBtn />
     </div>
     <BalBtn
       v-else
-      color="gray"
-      outline
-      rounded
+      color="white"
       :size="upToLargeBreakpoint ? 'md' : 'sm'"
       :circle="upToLargeBreakpoint"
       @click="toggleWalletSelectModal"
