@@ -267,16 +267,16 @@
         "gasCosts": "Gas costs",
         "transactionTypesTooltips": {
             "gnosisRelayerApproval": {
-                "title": "Approve Gnosis relayer",
-                "content": "Your permission is required to trade this token on Balancer. This is a one-time approval."                
+                "title": "Approve trading on Gnosis protocol",
+                "content": "Your permission is required to use a batch relayer for gas-free, MEV protected transactions."
             },
             "tokenApproval": {
                 "title": "Approve {0}",
                 "content": "Your permission is required to trade this token on Balancer. Approvals are required once per token, per wallet."
             },
             "trade": {
-                "title": "Confirm trade",
-                "content": "Confirm this transaction in your wallet."
+                "title": "Confirm transaction",
+                "content": "Finalize the transaction by submitting it for inclusion on the blockchain."
             }
         }
     },
