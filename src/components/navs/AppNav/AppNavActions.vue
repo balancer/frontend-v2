@@ -9,11 +9,11 @@
       v-else
       color="white"
       :size="upToLargeBreakpoint ? 'md' : 'sm'"
-      :circle="upToLargeBreakpoint"
       @click="toggleWalletSelectModal"
     >
+      <WalletIcon class="mr-2" />
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
-      <BalIcon name="log-out" size="sm" class="lg:hidden" />
+      <span class="lg:hidden" v-text="$t('connect')" />
     </BalBtn>
   </div>
 </template>
