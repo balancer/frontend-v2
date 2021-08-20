@@ -17,9 +17,12 @@
     "amountBeforeFees": "Amount before fees",
     "amplification": "Amplification",
     "approve": "Approve",
-    "approveLidoRelayer": "Approve Lido Relayer",
-    "approvedLidoRelayer": "Approved Lido Relayer",
-    "approvingLidoRelayer": "Approving Lido Relayer",
+    "approveLidoRelayer": "Approve Lido relayer",
+    "approvedLidoRelayer": "Approved Lido relayer",
+    "approvingLidoRelayer": "Approving Lido relayer",
+    "approveGnosisRelayer": "Approve Gnosis relayer",
+    "approvedGnosisRelayer": "Approved Gnosis relayer",
+    "approvingGnosisRelayer": "Approving Gnosis relayer",
     "approved": "Approved",
     "approveGP": "Approve trading on Gnosis Protocol",
     "approveTokens": "Approve tokens",
@@ -44,8 +47,8 @@
     "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
     "configuration": "Configuration",
     "confirmTrade": "Confirm trade",
-    "confirmETHWrap": "Confirm ETH wrap",
-    "confirmETHUnwrap": "Confirm ETH unwrap",
+    "confirmWrap": "Confirm {0} wrap",
+    "confirmUnwrap": "Confirm {0} unwrap",
     "confirming": "Confirming...",
     "connect": "Connect",
     "connecting": "Connecting...",
@@ -111,6 +114,8 @@
     "tableShowsBalancerV2Pools": "This table only shows Balancer V2 pools.",
     "tradeSettled": "Your trade has settled",
     "tradeSuccess": "Successfully traded your tokens",
+    "tradeInterface": "Trade interface",
+    "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across Balancer V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders while providing MEV protection.",
     "investmentPools": "Investment pools",
     "investmentSettled": "Your investment has settled",
     "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",
@@ -191,8 +196,8 @@
     "popularBases": "Popular:",
     "preview": "Preview",
     "previewTrade": "Preview trade",
-    "previewETHWrap": "Preview ETH Wrap",
-    "previewETHUnwrap": "Preview ETH Unwrap",
+    "previewWrap": "Preview {0} Wrap",
+    "previewUnwrap": "Preview {0} Unwrap",
     "previewTradeTransactions": "Preview trade transactions",
     "priceImpact": "Price impact",
     "priceImpactAccept": "I accept the high price impact from withdrawing single token amounts, moving the market price based on the depth of the market.",
@@ -229,6 +234,7 @@
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
         "approveLidoRelayer": "Approve Lido Relayer",
+        "approveGnosisRelayer": "Approve Gnosis relayer",
         "wrapUnwrap": "{0} {1} to {2}"
     },
     "tradeSummary": {
@@ -246,21 +252,35 @@
             "totalAfterFees": "Total expected to trade after fees",
             "totalWithSlippage": "The most you’ll send at {0} slippage"
         },
-        "wrapETH": {
+        "wrap": {
             "title": "Summary",
             "tradeFees": "Wrap fees",
             "totalBeforeFees": "Amount before fees",
             "totalAfterFees": "Total to receive",
-            "totalWithSlippage": "Zero slippage to wrap ETH"
+            "totalWithSlippage": "Zero slippage to wrap {0}"
         },
-        "unwrapETH": {
+        "unwrap": {
             "title": "Summary",
             "tradeFees": "Unwrap fees",
             "totalBeforeFees": "Amount before fees",
             "totalAfterFees": "Total to receive",
-            "totalWithSlippage": "Zero slippage to wrap ETH"
+            "totalWithSlippage": "Zero slippage to unwrap {0}"
         },
-        "gasCosts": "Gas costs"
+        "gasCosts": "Gas costs",
+        "transactionTypesTooltips": {
+            "gnosisRelayerApproval": {
+                "title": "Approve trading on Gnosis protocol",
+                "content": "Your permission is required to use a batch relayer for gas-free, MEV protected transactions."
+            },
+            "tokenApproval": {
+                "title": "Approve {0}",
+                "content": "Your permission is required to trade this token on Balancer. Approvals are required once per token, per wallet."
+            },
+            "trade": {
+                "title": "Confirm transaction",
+                "content": "Finalize the transaction by submitting it for inclusion on the blockchain."
+            }
+        }
     },
     "priceUpdatedAlert": {
         "title": "Price updated",

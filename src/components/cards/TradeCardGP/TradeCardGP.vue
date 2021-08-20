@@ -116,6 +116,9 @@ import { configService } from '@/services/config/config.service';
 
 import TradePairGP from './TradePairGP.vue';
 import useWeb3 from '@/services/web3/useWeb3';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 
 const { nativeAsset } = configService.network;
 
@@ -191,13 +194,14 @@ export default defineComponent({
     });
 
     useTokenApproval(tokenInAddress, tokenInAmount, tokens);
+    useRelayerApproval(Relayer.GNOSIS, trading.isGnosisTrade);
 
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {
-        return `${t('wrap')} ${nativeAsset.symbol}`;
+        return `${t('wrap')} ${trading.tokenIn.value.symbol}`;
       }
       if (trading.wrapType.value === WrapType.Unwrap) {
-        return `${t('unwrap')} ${nativeAsset.symbol}`;
+        return `${t('unwrap')} ${trading.tokenOut.value.symbol}`;
       }
       return t('trade');
     });
