@@ -106,7 +106,9 @@
 import { defineComponent, toRefs, computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
-import useRelayerApproval from '@/composables/trade/useRelayerApproval';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 import useTokens from '@/composables/useTokens';
 
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
@@ -166,7 +168,7 @@ export default defineComponent({
 
     const tokenApproval = useTokenApproval(addressIn, amountIn, tokens);
 
-    const lidoRelayerApproval = useRelayerApproval('lido', isStETHTrade);
+    const lidoRelayerApproval = useRelayerApproval(Relayer.LIDO, isStETHTrade);
 
     const valueIn = computed(() => toFiat(amountIn.value, addressIn.value));
 

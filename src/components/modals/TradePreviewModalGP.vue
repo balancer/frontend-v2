@@ -336,7 +336,9 @@ import { mapValues } from 'lodash';
 
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers from '@/composables/useNumbers';
-import useRelayerApproval from '@/composables/trade/useRelayerApproval';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useTokens from '@/composables/useTokens';
 import { TradeQuote } from '@/composables/trade/types';
@@ -560,7 +562,7 @@ export default defineComponent({
     );
 
     const gnosisRelayerApproval = useRelayerApproval(
-      'gnosis',
+      Relayer.GNOSIS,
       props.trading.isGnosisTrade
     );
 

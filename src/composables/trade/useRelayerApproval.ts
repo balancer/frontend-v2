@@ -14,7 +14,10 @@ import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 
 const vaultAddress = configService.network.addresses.vault;
 
-type Relayer = 'gnosis' | 'lido';
+export enum Relayer {
+  GNOSIS = 'gnosis',
+  LIDO = 'lido'
+}
 
 export default function useRelayerApproval(
   relayer: Relayer,
@@ -31,7 +34,7 @@ export default function useRelayerApproval(
    */
   const { getProvider, account } = useWeb3();
   const relayerAddress = ref(
-    relayer === 'lido'
+    relayer === Relayer.LIDO
       ? configService.network.addresses.lidoRelayer
       : GP_RELAYER_CONTRACT_ADDRESS
   );
@@ -67,7 +70,7 @@ export default function useRelayerApproval(
         type: 'tx',
         action: 'approve',
         summary:
-          relayer === 'lido'
+          relayer === Relayer.LIDO
             ? t('transactionSummary.approveLidoRelayer')
             : t('transactionSummary.approveGnosisRelayer'),
         details: {
