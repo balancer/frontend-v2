@@ -27,12 +27,13 @@
             >Liquidity Mining is also on {{ otherNetwork }}</span
           >
 
-          <BalLink>
-            <div class="flex items-center">
-              View {{ otherNetwork }} liquidity mining incentives
-              <BalIcon name="arrow-right" />
-            </div>
-          </BalLink>
+          <BalLink external>
+            <a :href="otherNetworkLink">
+              <div class="flex items-center">
+                View {{ otherNetwork }} liquidity mining incentives
+                <BalIcon name="arrow-right" />
+              </div>
+            </a>
         </div>
         <div class="mt-12 max-w-6xl">
           <h4 class="font-bold">About liquidity mining</h4>
@@ -207,6 +208,14 @@ export default defineComponent({
       return 'Ethereum';
     });
 
+    const otherNetworkLink = computed(() => {
+      if (networkConfig.chainId === Network.MAINNET)
+        return 'https://polygon.balancer.fi/#/liquidity-mining';
+      if (networkConfig.chainId === Network.POLYGON)
+        return 'https://app.balancer.fi/#/liquidity-mining';
+      return 'https://app.balancer.fi/#/liquidity-mining';
+    });
+
     return {
       weeks,
       pools,
@@ -218,7 +227,8 @@ export default defineComponent({
       currentWeek,
       currentWeekTotalFiat,
       fNum,
-      otherNetwork
+      otherNetwork,
+      otherNetworkLink
     };
   }
 });
@@ -226,6 +236,7 @@ export default defineComponent({
 
 <style>
 .lm-banner {
+  @apply bg-cover bg-center;
   background-image: url('/images/backgrounds/bg-header.svg');
 }
 </style>
