@@ -43,8 +43,9 @@ export default class GnosisOperatorService {
       return response.data as OrderID;
     }
 
-    const errorMessage = OperatorError.getErrorForUnsuccessfulPostOrder(
-      response
+    const errorMessage = OperatorError.getErrorFromStatusCode(
+      response,
+      'create'
     );
 
     throw new Error(errorMessage);

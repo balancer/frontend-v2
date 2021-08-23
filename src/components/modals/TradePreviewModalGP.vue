@@ -313,6 +313,17 @@
       >
         {{ labels.confirmTrade }}
       </BalBtn>
+      <BalAlert
+        v-if="trading.submissionError.value != null"
+        class="p-3 mt-4"
+        type="error"
+        size="md"
+        :title="$t('tradeSubmissionError.title')"
+        :description="trading.submissionError.value"
+        block
+        :action-label="$t('tradeSubmissionError.actionLabel')"
+        @actionClick="trading.resetSubmissionError"
+      />
     </div>
     <BalCard shadow="none" class="mt-3" v-if="showTradeRoute">
       <TradeRoute
