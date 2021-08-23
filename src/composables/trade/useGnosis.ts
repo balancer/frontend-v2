@@ -157,7 +157,7 @@ export default function useGnosis({
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
         partiallyFillable: false, // Always fill or kill,
-        sellTokenBalance: OrderBalance.INTERNAL
+        sellTokenBalance: OrderBalance.EXTERNAL
       };
 
       const { signature, signingScheme } = await signOrder(
