@@ -210,11 +210,11 @@ export default defineComponent({
     });
 
     const otherNetworkLink = computed(() => {
-      if (networkConfig.chainId === Network.MAINNET)
-        return 'https://polygon.balancer.fi/#/liquidity-mining';
-      if (networkConfig.chainId === Network.POLYGON)
-        return 'https://app.balancer.fi/#/liquidity-mining';
-      return 'https://app.balancer.fi/#/liquidity-mining';
+      let networkDomain = 'polygon';
+      if (networkConfig.chainId === Network.POLYGON) {
+        networkDomain = 'app'
+      }
+      return `https://${networkDomain}.balancer.fi/#/liquidity-mining`;
     });
 
     return {
