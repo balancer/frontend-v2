@@ -212,7 +212,7 @@ export default defineComponent({
     const otherNetworkLink = computed(() => {
       let networkDomain = 'polygon';
       if (networkConfig.chainId === Network.POLYGON) {
-        networkDomain = 'app'
+        networkDomain = 'app';
       }
       return `https://${networkDomain}.balancer.fi/#/liquidity-mining`;
     });
