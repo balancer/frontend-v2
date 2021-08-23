@@ -3,7 +3,6 @@
     color="white"
     :size="upToLargeBreakpoint ? 'md' : 'sm'"
     @click="toggleDarkMode"
-    class="hidden xs:inline-block"
   >
     <MoonIcon v-if="darkMode" />
     <SunIcon v-else />
