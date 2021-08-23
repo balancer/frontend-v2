@@ -34,6 +34,7 @@
                 <BalIcon name="arrow-right" />
               </div>
             </a>
+          </BalLink>
         </div>
         <div class="mt-12 max-w-6xl">
           <h4 class="font-bold">About liquidity mining</h4>
