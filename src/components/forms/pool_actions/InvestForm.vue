@@ -136,8 +136,7 @@
           <div class="p-2">
             <BalBtn
               size="xs"
-              color="gray"
-              outline
+              color="white"
               @click.prevent="amounts[i] = tokenBalance(i).toString()"
             >
               {{ $t('max') }}

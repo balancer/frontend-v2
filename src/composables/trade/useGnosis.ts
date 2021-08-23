@@ -2,7 +2,7 @@ import { computed, ComputedRef, reactive, ref, Ref, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { BigNumber } from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
@@ -19,9 +19,6 @@ import useNumbers from '../useNumbers';
 import { TokenInfo } from '@/types/TokenList';
 import useTokens from '../useTokens';
 
-// TODO: get correct app id
-const GNOSIS_APP_ID = 2;
-const APP_DATA = '0x' + GNOSIS_APP_ID.toString(16).padStart(64, '0');
 const HIGH_FEE_THRESHOLD = 0.2;
 
 const state = reactive({
@@ -151,11 +148,13 @@ export default function useGnosis({
           ? quote.minimumOutAmount
           : tokenOutAmountScaled.value.toString(),
         validTo: calculateValidTo(appTransactionDeadline.value),
-        appData: APP_DATA,
+        appData:
+          '0xE9F29AE547955463ED535162AEFEE525D8D309571A2B18BC26086C8C35D781EB',
         feeAmount: quote.feeAmountInToken,
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
-        partiallyFillable: false // Always fill or kill
+        partiallyFillable: false, // Always fill or kill,
+        sellTokenBalance: OrderBalance.EXTERNAL
       };
 
       const { signature, signingScheme } = await signOrder(

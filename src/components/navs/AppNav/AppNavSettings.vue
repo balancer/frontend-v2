@@ -139,9 +139,15 @@
         @update:modelValue="setEthereumTxType"
       />
     </div>
-    <div v-if="APP.IsGnosisIntegration" class="px-4 mt-6">
+    <div v-if="!isPolygon" class="px-4 mt-6">
       <div class="flex items-baseline">
-        <span v-text="'Trade interface'" class="font-medium mb-2" />
+        <span v-text="$t('tradeInterface')" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div v-text="$t('tradeInterfaceTooltip')" class="w-52" />
+        </BalTooltip>
       </div>
       <BalBtnGroup
         :options="tradeInterfaceOptions"
@@ -208,15 +214,15 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { explorerLinks } = useWeb3();
     const {
+      explorerLinks,
+      isPolygon,
       account,
       chainId,
       disconnectWallet,
       connector,
       isV1Supported,
-      userNetworkConfig,
-      isPolygon
+      userNetworkConfig
     } = useWeb3();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
@@ -280,6 +286,7 @@ export default defineComponent({
       connectorLogo,
       hideLiquidity,
       hideDisconnect,
+      isPolygon,
       // methods
       disconnectWallet,
       setDarkMode,
@@ -288,7 +295,6 @@ export default defineComponent({
       setTradeInterface,
       copyAddress,
       explorer: explorerLinks,
-      isPolygon,
       ethereumTxType,
       setEthereumTxType,
       ethereumTxTypeOptions

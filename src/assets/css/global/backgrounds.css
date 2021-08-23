@@ -1,0 +1,3 @@
+.gradient-blue-l-to-r {
+  @apply bg-gradient-to-r from-blue-900 to-blue-50;
+}

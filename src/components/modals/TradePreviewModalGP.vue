@@ -131,7 +131,7 @@
             class="w-full p-3 rounded-b-lg bg-white text-sm dark:bg-gray-800"
           >
             <div class="summary-item-row font-medium">
-              <div class="w-72">
+              <div class="w-64">
                 {{ labels.tradeSummary.totalAfterFees }}
               </div>
               <div>
@@ -139,7 +139,7 @@
               </div>
             </div>
             <div class="summary-item-row text-gray-500 dark:text-gray-400">
-              <div class="w-72">
+              <div class="w-64">
                 {{ labels.tradeSummary.totalWithSlippage }}
               </div>
               <div>
@@ -168,54 +168,148 @@
         block
         @actionClick="cofirmPriceUpdate"
       />
-      <div v-if="trading.requiresApproval.value" class="flex justify-between">
-        <BalBtn
-          v-if="!isUnlocked || approved"
-          :loading="approving"
-          :loading-label="`${$t('approving')}...`"
-          color="gradient"
-          block
-          :disabled="isUnlocked"
-          @click.prevent="approve"
-          class="mr-5"
+      <div
+        v-if="totalRequiredTransactions > 1"
+        class="flex my-5 justify-center items-center"
+      >
+        <BalTooltip
+          v-if="showGnosisRelayerApprovalStep"
+          :disabled="!requiresGnosisRelayerApproval"
         >
-          <div :class="['button-step', { 'button-step-disabled': isUnlocked }]">
-            <template v-if="isUnlocked">
+          <template v-slot:activator>
+            <div
+              :class="[
+                'step',
+                {
+                  'step-active':
+                    activeTransactionType === 'gnosisRelayerApproval',
+                  'step-approved': !requiresGnosisRelayerApproval
+                }
+              ]"
+            >
               <BalIcon
+                v-if="!requiresGnosisRelayerApproval"
                 name="check"
-                size="sm"
-                class="text-gray-300 dark:text-gray-700 mt-0.5"
+                class="text-green-500"
               />
-            </template>
-            <template v-else>1</template>
+              <template v-else>1</template>
+            </div>
+          </template>
+          <div class="w-64">
+            <div class="mb-2 font-semibold">
+              <div>
+                {{
+                  $t(
+                    'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.title'
+                  )
+                }}
+              </div>
+            </div>
+            <div>
+              {{
+                $t(
+                  'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.content'
+                )
+              }}
+            </div>
           </div>
-          {{ `${$t('approve')} ${trading.tokenIn.value.symbol}` }}
-        </BalBtn>
-        <BalBtn
-          color="gradient"
-          block
-          @click.prevent="trade"
-          :loading="trading.isConfirming.value"
-          :loading-label="$t('confirming')"
-          :disabled="tradeDisabled"
+        </BalTooltip>
+        <div class="step-seperator" v-if="showGnosisRelayerApprovalStep" />
+        <BalTooltip
+          v-if="showTokenApprovalStep"
+          :disabled="!requiresTokenApproval"
         >
-          <div
-            v-if="!isUnlocked || approved"
-            :class="['button-step', { 'button-step-disabled': !isUnlocked }]"
-          >
-            2
+          <template v-slot:activator>
+            <div
+              :class="[
+                'step',
+                {
+                  'step-active': activeTransactionType === 'tokenApproval',
+                  'step-approved': !requiresTokenApproval
+                }
+              ]"
+            >
+              <BalIcon
+                v-if="!requiresTokenApproval"
+                name="check"
+                class="text-green-500"
+              />
+              <template v-else>{{
+                showGnosisRelayerApprovalStep ? 2 : 1
+              }}</template>
+            </div>
+          </template>
+          <div class="w-64">
+            <div class="mb-2 font-semibold">
+              {{
+                $t(
+                  'tradeSummary.transactionTypesTooltips.tokenApproval.title',
+                  [trading.tokenIn.value.symbol]
+                )
+              }}
+            </div>
+            <div>
+              {{
+                $t(
+                  'tradeSummary.transactionTypesTooltips.tokenApproval.content'
+                )
+              }}
+            </div>
           </div>
-          {{ labels.confirmTrade }}
-        </BalBtn>
+        </BalTooltip>
+        <div class="step-seperator" v-if="showTokenApprovalStep" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <div
+              :class="[
+                'step',
+                {
+                  'step-active': activeTransactionType === 'trade'
+                }
+              ]"
+            >
+              {{ totalRequiredTransactions }}
+            </div>
+          </template>
+          <div class="w-64">
+            <div class="mb-2 font-semibold">
+              {{ $t('tradeSummary.transactionTypesTooltips.trade.title') }}
+            </div>
+            <div>
+              {{ $t('tradeSummary.transactionTypesTooltips.trade.content') }}
+            </div>
+          </div>
+        </BalTooltip>
       </div>
+      <BalBtn
+        v-if="requiresGnosisRelayerApproval"
+        color="gradient"
+        block
+        @click.prevent="gnosisRelayerApproval.approve"
+        :loading="gnosisRelayerApproval.approving.value"
+        :loading-label="`${$t('approvingGnosisRelayer')}...`"
+      >
+        {{ $t('approveGnosisRelayer') }}
+      </BalBtn>
+      <BalBtn
+        v-else-if="requiresTokenApproval"
+        :loading="tokenApproval.approving.value"
+        :loading-label="`${$t('approving')} ${trading.tokenIn.value.symbol}...`"
+        color="gradient"
+        block
+        @click.prevent="approveToken"
+      >
+        {{ `${$t('approve')} ${trading.tokenIn.value.symbol}` }}
+      </BalBtn>
       <BalBtn
         v-else
         color="gradient"
         block
-        :disabled="tradeDisabled"
         @click.prevent="trade"
         :loading="trading.isConfirming.value"
         :loading-label="$t('confirming')"
+        :disabled="tradeDisabled"
+        class="relative"
       >
         {{ labels.confirmTrade }}
       </BalBtn>
@@ -242,7 +336,11 @@ import { mapValues } from 'lodash';
 
 import { UseTrading } from '@/composables/trade/useTrading';
 import useNumbers from '@/composables/useNumbers';
-import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
+import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useTokens from '@/composables/useTokens';
 import { TradeQuote } from '@/composables/trade/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -270,6 +368,7 @@ export default defineComponent({
     const store = useStore();
     const { t } = useI18n();
     const { fNum, toFiat } = useNumbers();
+    const { tokens, approvalRequired } = useTokens();
     const { blockNumber } = useWeb3();
     const lastQuote = ref<TradeQuote | null>(
       props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
@@ -311,16 +410,6 @@ export default defineComponent({
 
     const zeroFee = computed(() =>
       showSummaryInFiat.value ? fNum('0', 'usd') : '0.0 ETH'
-    );
-
-    const showPriceUpdateError = computed(
-      () => priceUpdated.value && !priceUpdateAccepted.value
-    );
-
-    const tradeDisabled = computed(
-      () =>
-        (props.trading.requiresApproval.value && !isUnlocked.value) ||
-        showPriceUpdateError.value
     );
 
     const summary = computed(() => {
@@ -403,26 +492,32 @@ export default defineComponent({
     const labels = computed(() => {
       if (props.trading.isWrap.value) {
         return {
-          modalTitle: t('previewETHWrap'),
-          confirmTrade: t('confirmETHWrap'),
+          modalTitle: t('previewWrap', [props.trading.tokenIn.value.symbol]),
+          confirmTrade: t('confirmWrap', [props.trading.tokenIn.value.symbol]),
           tradeSummary: {
-            title: t('tradeSummary.wrapETH.title'),
-            tradeFees: t('tradeSummary.wrapETH.tradeFees'),
-            totalBeforeFees: t('tradeSummary.wrapETH.totalBeforeFees'),
-            totalAfterFees: t('tradeSummary.wrapETH.totalAfterFees'),
-            totalWithSlippage: t('tradeSummary.wrapETH.totalWithSlippage')
+            title: t('tradeSummary.wrap.title'),
+            tradeFees: t('tradeSummary.wrap.tradeFees'),
+            totalBeforeFees: t('tradeSummary.wrap.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.wrap.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.wrap.totalWithSlippage', [
+              props.trading.tokenIn.value.symbol
+            ])
           }
         };
       } else if (props.trading.isUnwrap.value) {
         return {
-          modalTitle: t('previewETHUnwrap'),
-          confirmTrade: t('confirmETHUnwrap'),
+          modalTitle: t('previewUnwrap', [props.trading.tokenOut.value.symbol]),
+          confirmTrade: t('confirmUnwrap', [
+            props.trading.tokenOut.value.symbol
+          ]),
           tradeSummary: {
-            title: t('tradeSummary.unwrapETH.title'),
-            tradeFees: t('tradeSummary.unwrapETH.tradeFees'),
-            totalBeforeFees: t('tradeSummary.unwrapETH.totalBeforeFees'),
-            totalAfterFees: t('tradeSummary.unwrapETH.totalAfterFees'),
-            totalWithSlippage: t('tradeSummary.unwrapETH.totalWithSlippage')
+            title: t('tradeSummary.unwrap.title'),
+            tradeFees: t('tradeSummary.unwrap.tradeFees'),
+            totalBeforeFees: t('tradeSummary.unwrap.totalBeforeFees'),
+            totalAfterFees: t('tradeSummary.unwrap.totalAfterFees'),
+            totalWithSlippage: t('tradeSummary.unwrap.totalWithSlippage', [
+              props.trading.tokenOut.value.symbol
+            ])
           }
         };
       } else if (props.trading.exactIn.value) {
@@ -460,9 +555,89 @@ export default defineComponent({
       };
     });
 
-    const { approving, isUnlocked, approve, approved } = useTokenApprovalGP(
+    const tokenApproval = useTokenApproval(
       addressIn,
-      props.trading.tokenInAmountInput
+      props.trading.tokenInAmountInput,
+      tokens
+    );
+
+    const gnosisRelayerApproval = useRelayerApproval(
+      Relayer.GNOSIS,
+      props.trading.isGnosisTrade
+    );
+
+    const requiresTokenApproval = computed(() => {
+      if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
+        return approvalRequired(
+          props.trading.tokenIn.value.address,
+          props.trading.tokenInAmountInput.value,
+          props.trading.tokenOut.value.address
+        );
+      } else {
+        return (
+          props.trading.requiresTokenApproval.value &&
+          !tokenApproval.isUnlockedV2.value
+        );
+      }
+    });
+
+    const requiresGnosisRelayerApproval = computed(
+      () =>
+        props.trading.isGnosisTrade.value &&
+        props.trading.requiresTokenApproval.value &&
+        !gnosisRelayerApproval.isUnlocked.value
+    );
+
+    const showTokenApprovalStep = computed(
+      () =>
+        requiresTokenApproval.value ||
+        tokenApproval.approved.value ||
+        tokenApproval.approving.value
+    );
+
+    const showGnosisRelayerApprovalStep = computed(
+      () =>
+        requiresGnosisRelayerApproval.value ||
+        gnosisRelayerApproval.approved.value ||
+        gnosisRelayerApproval.approving.value
+    );
+
+    const totalRequiredTransactions = computed(() => {
+      let txCount = 1; // trade
+      if (showTokenApprovalStep.value) {
+        txCount++;
+      }
+      if (showGnosisRelayerApprovalStep.value) {
+        txCount++;
+      }
+      return txCount;
+    });
+
+    const activeTransactionType = computed<
+      'gnosisRelayerApproval' | 'tokenApproval' | 'trade'
+    >(() => {
+      if (requiresGnosisRelayerApproval.value) {
+        return 'gnosisRelayerApproval';
+      }
+      if (requiresTokenApproval.value) {
+        return 'tokenApproval';
+      }
+      return 'trade';
+    });
+
+    const requiresApproval = computed(
+      () => requiresGnosisRelayerApproval.value || requiresTokenApproval.value
+    );
+
+    const showPriceUpdateError = computed(
+      () =>
+        !requiresApproval.value &&
+        priceUpdated.value &&
+        !priceUpdateAccepted.value
+    );
+
+    const tradeDisabled = computed(
+      () => requiresApproval.value || showPriceUpdateError.value
     );
 
     // METHODS
@@ -504,6 +679,18 @@ export default defineComponent({
       }
     }
 
+    async function approveToken(): Promise<void> {
+      if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
+        // If we're wrapping a token other than native ETH
+        // we need to approve the underlying on the wrapper
+        await tokenApproval.approveSpender(
+          props.trading.tokenOut.value.address
+        );
+      } else {
+        tokenApproval.approveV2();
+      }
+    }
+
     // WATCHERS
     watch(blockNumber, () => {
       handlePriceUpdate();
@@ -516,14 +703,10 @@ export default defineComponent({
       // methods
       fNum,
       onClose,
-      approve,
       trade,
       cofirmPriceUpdate,
 
       // computed
-      isUnlocked,
-      approving,
-      approved,
       tokenInFiatValue,
       tokenOutFiatValue,
       summary,
@@ -535,6 +718,16 @@ export default defineComponent({
       priceUpdated,
       tradeDisabled,
       showPriceUpdateError,
+      totalRequiredTransactions,
+      requiresApproval,
+      gnosisRelayerApproval,
+      tokenApproval,
+      requiresTokenApproval,
+      requiresGnosisRelayerApproval,
+      approveToken,
+      showTokenApprovalStep,
+      showGnosisRelayerApprovalStep,
+      activeTransactionType,
 
       // consants
       PRICE_UPDATE_THRESHOLD
@@ -552,13 +745,17 @@ export default defineComponent({
   @apply flex justify-between mb-1;
 }
 
-.tx-circle {
-  @apply w-6 h-6 flex items-center justify-center border rounded-full;
+.step {
+  @apply rounded-full w-7 h-7 border border-gray-100 dark:border-gray-700 flex items-center justify-center text-purple-500 relative;
 }
-.button-step {
-  @apply rounded-full w-6 h-6 bg-white  mr-2 flex items-center justify-center text-purple-500 overflow-hidden overflow-ellipsis;
+.step-seperator {
+  @apply bg-gray-200 dark:bg-gray-700 h-px w-6;
 }
-.button-step-disabled {
-  @apply text-gray-300 dark:text-gray-700;
+
+.step-active {
+  @apply border-purple-500 dark:border-purple-500;
+}
+.step-approved {
+  @apply border-green-500 dark:border-green-500;
 }
 </style>

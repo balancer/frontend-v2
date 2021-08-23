@@ -21,7 +21,11 @@
           class="text-white text-center text-4xl md:text-5xl pb-2"
         />
         <div class="flex justify-center mt-4">
-          <BalBtn color="white" class="mr-3" @click="onClickConnect">
+          <BalBtn
+            :color="darkMode ? 'gray' : 'white'"
+            class="mr-3"
+            @click="onClickConnect"
+          >
             {{ $t('connectWallet') }}
           </BalBtn>
           <BalBtn
@@ -51,6 +55,7 @@ import usePools from '@/composables/pools/usePools';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
+import useDarkMode from '@/composables/useDarkMode';
 
 export default defineComponent({
   name: 'AppHero',
@@ -61,6 +66,7 @@ export default defineComponent({
     const { isWalletReady, toggleWalletSelectModal } = useWeb3();
     const { trackGoal, Goals } = useFathom();
     const { totalInvestedAmount, isLoadingUserPools } = usePools();
+    const { darkMode } = useDarkMode();
 
     const classes = computed(() => ({
       ['h-72']: !isWalletReady.value,
@@ -81,6 +87,7 @@ export default defineComponent({
       // computed
       isWalletReady,
       classes,
+      darkMode,
 
       // methods
       toggleWalletSelectModal,

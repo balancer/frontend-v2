@@ -97,7 +97,8 @@ import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
-import useTokenApprovalGP from '@/composables/trade/useTokenApprovalGP';
+import useTokenApproval from '@/composables/trade/useTokenApproval';
+import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 
@@ -115,6 +116,9 @@ import { configService } from '@/services/config/config.service';
 
 import TradePairGP from './TradePairGP.vue';
 import useWeb3 from '@/services/web3/useWeb3';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 
 const { nativeAsset } = configService.network;
 
@@ -133,6 +137,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
     const { fNum } = useNumbers();
     const { appNetworkConfig } = useWeb3();
+    const { tokens } = useTokens();
 
     // DATA
     const exactIn = ref(true);
@@ -188,14 +193,15 @@ export default defineComponent({
       return hasValidationErrors || hasGnosisErrors || hasBalancerErrors;
     });
 
-    useTokenApprovalGP(tokenInAddress, tokenInAmount);
+    useTokenApproval(tokenInAddress, tokenInAmount, tokens);
+    useRelayerApproval(Relayer.GNOSIS, trading.isGnosisTrade);
 
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {
-        return `${t('wrap')} ${nativeAsset.symbol}`;
+        return `${t('wrap')} ${trading.tokenIn.value.symbol}`;
       }
       if (trading.wrapType.value === WrapType.Unwrap) {
-        return `${t('unwrap')} ${nativeAsset.symbol}`;
+        return `${t('unwrap')} ${trading.tokenOut.value.symbol}`;
       }
       return t('trade');
     });

@@ -4,36 +4,52 @@
       <span class="text-white font-semibold"
         >Week {{ currentWeek }} Liquidity mining incentives</span
       >
-      <h1 class="font-body mt-2 text-white font-semi  bold">
+      <h1 class="font-body mt-2 text-white font-semi bold">
         ~{{ fNum(currentWeekTotalFiat, 'usd') }}
       </h1>
     </div>
     <div class="lg:container lg:mx-auto pt-10 md:pt-12">
       <div class="px-4">
-        <h3>{{ title }}</h3>
+        <h3 class="mb-1">Liquidity mining on {{ shortNetworkName }}</h3>
         <span class="text-black-600">{{ description }}</span>
+      </div>
+      <div class="md:px-4">
         <LMTable
           :is-loading="isLoadingPools || isLoadingPoolsIdle"
           :poolMetadata="pools"
           :weeks="weeks"
           :totals="totals"
         />
-        <div class="mt-20">
+      </div>
+      <div class="px-4">
+        <div class="flex flex-col">
+          <span class="font-medium mb-1 mt-8"
+            >Liquidity Mining is also on {{ otherNetwork }}</span
+          >
+
+          <BalLink>
+            <div class="flex items-center">
+              View {{ otherNetwork }} liquidity mining incentives
+              <BalIcon name="arrow-right" />
+            </div>
+          </BalLink>
+        </div>
+        <div class="mt-12 max-w-6xl">
           <h4 class="font-bold">About liquidity mining</h4>
           <p class="mt-2">
-            Liquidity mining is a form of ‘yield farming’ used to align
-            incentives between a protocol and its community. Typically, DeFi
-            protocols distribute tokens to users who perform certain activities
-            which help the network grow.<br /><br />
-            The Balancer protocol via the community Ballers, has allocated BAL
-            tokens to go to liquidity providers in certain eligible pools (as
+            Many DeFi protocols distribute tokens to users who perform certain
+            activities that help the network grow. Liquidity Mining aligns
+            incentives between a protocol and its community by distributing
+            voting power to the people who help create a more liquid market.<br /><br />The
+            Balancer Protocol, via the community Ballers, has allocated BAL
+            tokens to go to Liquidity Providers in certain eligible pools (as
             listed in the tables above). Tokens are distributed proportional to
             the amount of liquidity each address contributed, relative to the
-            total liquidity in eligible Balancer pools. BAL tokens represent an
-            ownership stake in the platform and voting rights in community
-            governance. In addition, other protocols like Polygon are further
-            incentivizing liquidity by also distributing MATIC tokens to
-            Balancer liquidity providers in certain pools on Polygon.
+            total liquidity in eligible Balancer pools. BAL tokens give voting
+            rights in community governance. In addition, other protocols like
+            Polygon are further incentivizing liquidity by also distributing
+            MATIC tokens to Balancer Liquidity Providers in certain pools on
+            Polygon.
           </p>
           <div class="mt-6">
             <h5>Liquidity mining details</h5>
@@ -162,12 +178,12 @@ export default defineComponent({
 
     const pools = computed(() => poolsResponse.value?.pages);
 
-    const title = computed(() => {
+    const shortNetworkName = computed(() => {
       if (networkConfig.chainId === Network.MAINNET) {
-        return 'Ethereum Network';
+        return 'Ethereum';
       }
       if (networkConfig.chainId === Network.POLYGON) {
-        return 'Polygon Network';
+        return 'Polygon';
       }
       return 'Unknown Network';
     });
@@ -185,18 +201,24 @@ export default defineComponent({
     });
 
     const currentWeek = computed(() => last(last(weeks)?.week.split('_')));
+    const otherNetwork = computed(() => {
+      if (networkConfig.chainId === Network.MAINNET) return 'Polygon';
+      if (networkConfig.chainId === Network.POLYGON) return 'Ethereum';
+      return 'Ethereum';
+    });
 
     return {
       weeks,
       pools,
-      title,
+      shortNetworkName,
       totals,
       description,
       isLoadingPools,
       isLoadingPoolsIdle,
       currentWeek,
       currentWeekTotalFiat,
-      fNum
+      fNum,
+      otherNetwork
     };
   }
 });

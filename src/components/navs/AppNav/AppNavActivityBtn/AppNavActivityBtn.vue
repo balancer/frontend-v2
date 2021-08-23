@@ -2,12 +2,10 @@
   <BalPopover no-pad>
     <template v-slot:activator>
       <BalBtn
-        color="gray"
-        outline
-        rounded
+        color="white"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
-        circle
         class="mr-2 p-1 relative"
+        :circle="upToLargeBreakpoint"
       >
         <ActivityIcon v-if="pendingTransactions.length === 0" />
         <ActivityCounter v-else :count="pendingTransactions.length" />

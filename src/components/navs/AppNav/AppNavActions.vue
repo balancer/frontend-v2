@@ -1,21 +1,19 @@
 <template>
   <div>
     <div v-if="account" class="flex items-center">
+      <AppNavActivityBtn />
       <AppNavClaimBtn v-if="liquidityMiningSupported" />
-      <AppNavActivityBtn v-if="!upToSmallBreakpoint" />
       <AppNavAccountBtn />
     </div>
     <BalBtn
       v-else
-      color="gray"
-      outline
-      rounded
+      color="white"
       :size="upToLargeBreakpoint ? 'md' : 'sm'"
-      :circle="upToLargeBreakpoint"
       @click="toggleWalletSelectModal"
     >
+      <WalletIcon class="mr-2" />
       <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
-      <BalIcon name="log-out" size="sm" class="lg:hidden" />
+      <span class="lg:hidden" v-text="$t('connect')" />
     </BalBtn>
   </div>
 </template>

@@ -90,11 +90,11 @@ export default defineComponent({
         case 'sm':
           return 'w-9 h-9 text-lg';
         case 'md':
-          return 'w-10 h-10 text-lg';
+          return 'w-12 h-12 text-lg';
         case 'lg':
           return 'w-16 h-16 text-2xl';
         default:
-          return 'w-10 h-10 text-base';
+          return 'w-12 h-12 text-base';
       }
     });
 
@@ -135,8 +135,9 @@ export default defineComponent({
       if (props.color.includes('gradient')) return bgGradientClasses.value;
       else if (props.outline) return 'bg-transparent';
       else if (props.flat) return bgFlatClasses.value;
-      else if (props.color === 'white') return 'bg-white';
-      else {
+      else if (props.color === 'white') {
+        return 'bg-gray-50 dark:bg-gray-800';
+      } else {
         if (props.disabled) {
           return `bg-gray-300 dark:bg-gray-700 text-white dark:text-gray-500`;
         }
@@ -160,7 +161,7 @@ export default defineComponent({
     const textColorClasses = computed(() => {
       if (props.color === 'white') {
         if (props.outline) return 'text-white';
-        else return 'text-black';
+        else return 'text-gray-800 dark:text-gray-100';
       }
       if (props.outline || props.flat)
         return `text-${props.color}-500 dark:text-${props.color}-400`;
@@ -185,7 +186,7 @@ export default defineComponent({
 
     const shadowClasses = computed(() => {
       if (props.flat || props.disabled || props.loading) return '';
-      if (props.size === 'sm') return 'shadow-sm hover:shadow-none';
+      if (props.size === 'sm') return 'shadow hover:shadow-none';
       return 'shadow hover:shadow-none';
     });
 
@@ -205,7 +206,7 @@ export default defineComponent({
 
     const iconColor = computed(() => {
       if (props.outline) return props.color;
-      return 'white';
+      return 'gray';
     });
 
     return {
