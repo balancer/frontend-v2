@@ -31,7 +31,7 @@
       >
         <div class="text-right flex flex-col">
           <span>{{ getWeekName(week.week) }}</span>
-          <span class="text-xs">Starts {{ getWeekStart(i) }}</span>
+          <span class="text-xs">Starts {{ getWeekStart(weeks.length - i - 1) }}</span>
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
@@ -222,6 +222,7 @@ export default defineComponent({
     }
 
     function getWeekStart(howManyWeeksToSubtract: number) {
+      console.log('lmao', howManyWeeksToSubtract)
       return format(
         startOfWeek(subWeeks(new Date(), howManyWeeksToSubtract)),
         'dd/MM/yyyy'
