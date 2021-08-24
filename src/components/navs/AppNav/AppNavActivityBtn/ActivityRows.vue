@@ -114,12 +114,7 @@ export default defineComponent({
     /**
      * COMPUTED
      */
-
     const disablePending = computed(() => connector.value?.id === 'gnosis');
-
-    /**
-     * METHODS
-     */
 
     return {
       // computed
