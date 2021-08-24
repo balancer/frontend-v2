@@ -22,13 +22,14 @@ import useTokens from '../useTokens';
 const HIGH_FEE_THRESHOLD = 0.2;
 
 const state = reactive({
-  errors: {
+  validationErrors: {
     feeExceedsPrice: false,
     priceExceedsBalance: false
   },
   warnings: {
     highFees: false
-  }
+  },
+  submissionError: null
 });
 
 export type GnosisTransactionDetails = {
@@ -89,8 +90,8 @@ export default function useGnosis({
     () => store.state.app.transactionDeadline
   );
 
-  const hasErrors = computed(() =>
-    Object.values(state.errors).some(hasError => hasError)
+  const hasValidationErrors = computed(() =>
+    Object.values(state.validationErrors).some(hasError => hasError)
   );
 
   // METHODS
@@ -134,6 +135,8 @@ export default function useGnosis({
   async function trade(successCallback?: () => void) {
     try {
       confirming.value = true;
+      state.submissionError = null;
+
       const quote = getQuote();
 
       const unsignedOrder: UnsignedOrder = {
@@ -221,16 +224,18 @@ export default function useGnosis({
       }
       confirming.value = false;
     } catch (e) {
-      console.log(e);
+      state.submissionError = e.message;
       confirming.value = false;
     }
   }
 
   function resetState(shouldResetFees = true) {
-    state.errors.feeExceedsPrice = false;
-    state.errors.priceExceedsBalance = false;
+    state.validationErrors.feeExceedsPrice = false;
+    state.validationErrors.priceExceedsBalance = false;
 
     state.warnings.highFees = false;
+
+    state.submissionError = null;
 
     if (shouldResetFees) {
       feeQuote.value = null;
@@ -269,11 +274,11 @@ export default function useGnosis({
 
       if (feeQuoteResult != null) {
         if (exactIn.value) {
-          state.errors.feeExceedsPrice = amountToExchange
+          state.validationErrors.feeExceedsPrice = amountToExchange
             .minus(feeQuoteResult.amount)
             .isNegative();
         }
-        if (!state.errors.feeExceedsPrice) {
+        if (!state.validationErrors.feeExceedsPrice) {
           const priceQuoteResult = await gnosisOperator.getPriceQuote(
             queryParams
           );
@@ -302,7 +307,7 @@ export default function useGnosis({
                 .div(amountToExchange)
                 .gt(HIGH_FEE_THRESHOLD);
 
-              state.errors.priceExceedsBalance = bnum(
+              state.validationErrors.priceExceedsBalance = bnum(
                 formatUnits(maximumInAmount, tokenIn.value.decimals)
               ).gt(balanceFor(tokenIn.value.address));
             }
@@ -325,7 +330,7 @@ export default function useGnosis({
     ...toRefs(state),
     feeQuote,
     updatingQuotes,
-    hasErrors,
+    hasValidationErrors,
     confirming,
     getQuote
   };
