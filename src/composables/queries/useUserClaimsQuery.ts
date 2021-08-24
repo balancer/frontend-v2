@@ -74,7 +74,6 @@ export default function useUserClaimsQuery(
   const queryOptions = reactive({
     enabled: isQueryEnabled,
     refetchOnMount: false,
-    refetchOnWindowFocus: false,
     ...options
   });
 
