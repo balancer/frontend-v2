@@ -139,7 +139,8 @@
         @update:modelValue="setEthereumTxType"
       />
     </div>
-    <div v-if="!isPolygon" class="px-4 mt-6">
+    <!-- Hide Gnosis interface switch for now -->
+    <div v-if="!isPolygon && false" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('tradeInterface')" class="font-medium mb-2" />
         <BalTooltip>
