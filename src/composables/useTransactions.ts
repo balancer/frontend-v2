@@ -107,8 +107,8 @@ const pendingTransactions = computed(() =>
 );
 
 const finalizedTransactions = computed(() =>
-  transactions.value.filter(
-    transaction => !isPendingTransactionStatus(transaction.status)
+  transactions.value.filter(transaction =>
+    isFinalizedTransactionStatus(transaction.status)
   )
 );
 
