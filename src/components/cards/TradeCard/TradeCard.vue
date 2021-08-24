@@ -133,7 +133,7 @@ export default defineComponent({
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
-    const { explorerLinks } = useWeb3();
+    const { explorerLinks, isMismatchedNetwork } = useWeb3();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
@@ -182,6 +182,7 @@ export default defineComponent({
     });
 
     const tradeDisabled = computed(() => {
+      if (isMismatchedNetwork.value) return true;
       if (errorMessage.value !== TradeValidation.VALID) return true;
       if (isHighPriceImpact.value) return true;
       return false;
