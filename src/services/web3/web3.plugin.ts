@@ -13,7 +13,6 @@ import { GnosisSafeConnector } from './connectors/gnosis/gnosis.connector';
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 import { PortisConnector } from './connectors/portis/portis.connector';
 import useFathom from '@/composables/useFathom';
-import { configService } from '../config/config.service';
 
 import defaultLogo from '@/assets/images/connectors/default.svg';
 import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
