@@ -115,7 +115,7 @@ import useNumbers from '@/composables/useNumbers';
 import { last, sum } from 'lodash';
 import useDarkMode from '@/composables/useDarkMode';
 import { isStableLike } from '@/composables/usePool';
-import { startOfWeek, subWeeks, format } from 'date-fns';
+import { startOfWeek, subWeeks, format, addDays } from 'date-fns';
 
 function getWeekName(week: string) {
   const parts = week.split('_');
@@ -224,9 +224,9 @@ export default defineComponent({
     }
 
     function getWeekStart(howManyWeeksToSubtract: number) {
-      console.log('lmao', howManyWeeksToSubtract);
       return format(
-        startOfWeek(subWeeks(new Date(), howManyWeeksToSubtract)),
+        // startOfWeek is Sunday for date-fns
+        addDays(startOfWeek(subWeeks(new Date(), howManyWeeksToSubtract)), 1),
         'dd/MM/yyyy'
       );
     }
