@@ -36,6 +36,8 @@
     "browserWallet": "Browser Wallet",
     "buy": "Buy",
     "changeTheme": "Change theme",
+    "cancel": "Cancel",
+    "cancelling": "Cancelling",
     "claim": "Claim",
     "claimBAL": "Claim BAL for",
     "claimSuccess": "You successfully claimed BAL!",
@@ -83,6 +85,7 @@
     "errorNoLists": "Sorry, we can't find any lists",
     "errorNoMatch": "Sorry, we can't find any matches",
     "errorNoTokens": "Sorry, we can't find any tokens",
+    "errorCancellingOrder": "Error cancelling order",
     "explore": "Explore",
     "explorePools": "Explore pools",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
@@ -222,7 +225,8 @@
     },
     "transactionStatus": {
         "pending": "Pending",
-        "confirmed": "Confirmed",
+        "fulfilled": "Confirmed",
+        "failed": "Failed",
         "expired": "Expired",
         "cancelling": "Cancelling",
         "cancelled": "Cancelled"

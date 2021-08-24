@@ -22,21 +22,24 @@
       <div :class="['p-3', { 'h-72 overflow-auto': transactions.length > 5 }]">
         <template v-if="transactions.length > 0">
           <ActivityRows
-            :transactions="unconfirmedTransactions"
+            :transactions="pendingTransactions"
             :get-explorer-link="getExplorerLink"
             :is-successful-transaction="isSuccessfulTransaction"
+            :is-pending-transaction-status="isPendingTransactionStatus"
+            :cancel-order="cancelOrder"
           />
           <div
             v-if="
-              unconfirmedTransactions.length > 0 &&
-                confirmedTransactions.length > 0
+              pendingTransactions.length > 0 && finalizedTransactions.length > 0
             "
             class="bg-gray-100 dark:bg-gray-700 my-3 h-px"
           />
           <ActivityRows
-            :transactions="confirmedTransactions"
+            :transactions="finalizedTransactions"
             :get-explorer-link="getExplorerLink"
             :is-successful-transaction="isSuccessfulTransaction"
+            :is-pending-transaction-status="isPendingTransactionStatus"
+            :cancel-order="cancelOrder"
           />
         </template>
         <template v-else>{{ $t('noRecentActivity') }}</template>
@@ -53,10 +56,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import useBreakpoints from '@/composables/useBreakpoints';
-import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '@/composables/useTransactions';
+import useNotifications from '@/composables/useNotifications';
+
+import useWeb3 from '@/services/web3/useWeb3';
+import { signOrderCancellation } from '@/services/gnosis/signing';
+import { gnosisOperator } from '@/services/gnosis/operator.service';
 
 import ActivityCounter from './ActivityCounter.vue';
 import ActivityRows from './ActivityRows.vue';
@@ -70,31 +79,65 @@ export default defineComponent({
   },
 
   setup() {
-    // COMPOSABLES
+    /**
+     * COMPOSABLES
+     */
     const { upToLargeBreakpoint } = useBreakpoints();
-    const { isLoadingProfile, profile, account } = useWeb3();
+    const { isLoadingProfile, profile, account, getSigner } = useWeb3();
+    const { t } = useI18n();
+
     const {
       transactions,
       pendingTransactions,
+      finalizedTransactions,
       getExplorerLink,
       clearAllTransactions,
-      isSuccessfulTransaction
+      isSuccessfulTransaction,
+      updateTransaction,
+      isPendingTransactionStatus
     } = useTransactions();
 
-    // COMPUTED
-    const unconfirmedTransactions = computed(() =>
-      transactions.value.filter(({ status }) => status !== 'confirmed')
-    );
+    const { addNotification } = useNotifications();
 
-    const confirmedTransactions = computed(() =>
-      transactions.value.filter(({ status }) => status === 'confirmed')
-    );
+    /**
+     * METHODS
+     */
+    async function cancelOrder(orderId: string) {
+      try {
+        const { signature, signingScheme } = await signOrderCancellation(
+          orderId,
+          getSigner()
+        );
+
+        await gnosisOperator.sendSignedOrderCancellation({
+          cancellation: {
+            orderUid: orderId,
+            signature,
+            signingScheme
+          },
+          owner: account.value
+        });
+
+        updateTransaction(orderId, 'order', {
+          status: 'cancelling'
+        });
+      } catch (e) {
+        console.log(e);
+        addNotification({
+          type: 'error',
+          title: t('errorCancellingOrder'),
+          message: e.message
+        });
+      }
+    }
 
     return {
       // methods
       clearAllTransactions,
       getExplorerLink,
       isSuccessfulTransaction,
+      isPendingTransactionStatus,
+      cancelOrder,
 
       // computed
       account,
@@ -103,8 +146,7 @@ export default defineComponent({
       isLoadingProfile,
       transactions,
       pendingTransactions,
-      unconfirmedTransactions,
-      confirmedTransactions
+      finalizedTransactions
     };
   }
 });
