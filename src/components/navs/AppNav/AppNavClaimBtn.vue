@@ -11,7 +11,7 @@
           :class="{ 'mr-2': !upToLargeBreakpoint }"
           v-if="upToLargeBreakpoint ? !userClaimsLoading : true"
         />
-        <BalLoadingIcon size="sm" color="white" v-if="userClaimsLoading" />
+        <BalLoadingIcon size="sm" v-if="userClaimsLoading" />
         <span class="hidden lg:block" v-else>{{
           fNum(totalRewards, totalRewards > 0 ? 'token_fixed' : 'token')
         }}</span>

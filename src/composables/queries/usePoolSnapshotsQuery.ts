@@ -7,6 +7,7 @@ import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import usePoolQuery from './usePoolQuery';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
+import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -15,6 +16,11 @@ interface QueryResponse {
   prices: HistoricalPrices;
   snapshots: PoolSnapshots;
 }
+
+/**
+ * HELPERS
+ */
+const { addresses } = configService.network;
 
 export default function usePoolSnapshotsQuery(
   id: string,
@@ -40,8 +46,13 @@ export default function usePoolSnapshotsQuery(
   const queryFn = async () => {
     if (!pool.value) throw new Error('No pool');
 
+    // TODO - remove this once coingecko supports wstEth
+    const tokens = pool.value.tokenAddresses.includes(addresses.wstETH)
+      ? [...pool.value.tokenAddresses, addresses.stETH]
+      : pool.value.tokenAddresses;
+
     const prices = await coingeckoService.prices.getTokensHistorical(
-      pool.value.tokensList,
+      tokens,
       days
     );
     const snapshots = await balancerSubgraphService.poolSnapshots.get(id, days);

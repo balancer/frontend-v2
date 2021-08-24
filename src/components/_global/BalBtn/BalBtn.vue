@@ -206,7 +206,7 @@ export default defineComponent({
 
     const iconColor = computed(() => {
       if (props.outline) return props.color;
-      return 'white';
+      return 'gray';
     });
 
     return {
