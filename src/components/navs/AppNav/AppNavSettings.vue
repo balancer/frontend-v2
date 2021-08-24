@@ -140,7 +140,7 @@
       />
     </div>
     <!-- Hide Gnosis interface switch for now -->
-    <div v-if="!isPolygon && false" class="px-4 mt-6">
+    <div v-if="!isPolygon && APP_ENV === 'staging'" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('tradeInterface')" class="font-medium mb-2" />
         <BalTooltip>
@@ -190,6 +190,7 @@ import {
 } from '@/constants/options';
 import { TradeInterface } from '@/store/modules/app';
 import useEthereumTxType from '@/composables/useEthereumTxType';
+import useConfig from '@/composables/useConfig';
 
 const locales = {
   'en-US': 'English',
@@ -226,6 +227,9 @@ export default defineComponent({
       userNetworkConfig
     } = useWeb3();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
+    const {
+      env: { APP_ENV }
+    } = useConfig();
 
     // DATA
     const data = reactive({
@@ -273,6 +277,7 @@ export default defineComponent({
       ...toRefs(data),
       // constants
       APP,
+      APP_ENV,
       TradeInterface,
       // computed
       account,
