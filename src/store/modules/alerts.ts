@@ -1,7 +1,7 @@
 export interface Alert {
   label: string;
   type: 'error' | 'info';
-  actionLabel: string;
+  actionLabel?: string;
   action?: () => void;
   persistant?: boolean;
 }
