@@ -91,7 +91,6 @@ export default defineComponent({
     const { priceFor } = useTokens();
     const { isStablePool } = usePool(pool);
 
-
     /**
      * COMPUTED
      */
