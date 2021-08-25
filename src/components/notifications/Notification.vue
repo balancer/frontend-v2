@@ -97,10 +97,11 @@ export default defineComponent({
     // COMPUTED
     const progressClasses = computed(() => {
       let bgClasses = 'bg-yellow-600 dark:bg-yellow-500';
-      if (props.notification.transactionMetadata?.status === 'confirmed') {
-        bgClasses = props.notification.transactionMetadata.isSuccess
-          ? 'bg-green-500 dark:bg-green-500'
-          : 'bg-red-500 dark:bg-red-500';
+
+      if (props.notification.type === 'success') {
+        bgClasses = 'bg-green-500 dark:bg-green-500';
+      } else if (props.notification.type === 'error') {
+        bgClasses = 'bg-red-500 dark:bg-red-500';
       }
 
       return `

@@ -2,7 +2,11 @@ import axios from 'axios';
 
 import { OPERATOR_URL } from './constants';
 import OperatorError from './error';
-import { getSigningSchemeApiValue, OrderCreation } from './signing';
+import {
+  getSigningSchemeApiValue,
+  OrderCreation,
+  OrderCancellation
+} from './signing';
 import {
   FeeInformation,
   FeeQuoteParams,
@@ -20,7 +24,7 @@ export default class GnosisOperatorService {
     this.baseURL = `${OPERATOR_URL}/${apiVersion}`;
   }
 
-  public async postSignedOrder(params: {
+  public async sendSignedOrder(params: {
     order: OrderCreation;
     owner: string;
   }) {
@@ -46,6 +50,37 @@ export default class GnosisOperatorService {
     const errorMessage = OperatorError.getErrorFromStatusCode(
       response,
       'create'
+    );
+
+    throw new Error(errorMessage);
+  }
+
+  public async sendSignedOrderCancellation(params: {
+    cancellation: OrderCancellation;
+    owner: string;
+  }) {
+    const { cancellation, owner } = params;
+
+    // Call API
+    const response = await axios.delete<OrderID>(
+      `${this.baseURL}/orders/${cancellation.orderUid}`,
+      {
+        data: {
+          signature: cancellation.signature,
+          signingScheme: getSigningSchemeApiValue(cancellation.signingScheme),
+          from: owner
+        },
+        validateStatus: () => true
+      }
+    );
+
+    if (response.status >= 200 && response.status < 300) {
+      return response.data as OrderID;
+    }
+
+    const errorMessage = OperatorError.getErrorFromStatusCode(
+      response,
+      'delete'
     );
 
     throw new Error(errorMessage);

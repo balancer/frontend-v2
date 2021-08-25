@@ -20,7 +20,7 @@ export default defineComponent({
     size: {
       type: String,
       default: 'md',
-      validator: value => ['sm', 'md', 'lg'].includes(value)
+      validator: value => ['xs', 'sm', 'md', 'lg'].includes(value)
     }
   },
 
@@ -31,6 +31,8 @@ export default defineComponent({
           return 'lg';
         case 'sm':
           return 'sm';
+        case 'xs':
+          return 'xs';
         default:
           return 'md';
       }
@@ -58,6 +60,11 @@ export default defineComponent({
 <style scoped>
 .spinner {
   position: relative;
+}
+
+.xs {
+  width: 12px;
+  height: 12px;
 }
 
 .sm {

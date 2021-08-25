@@ -3,20 +3,22 @@ import { useStore } from 'vuex';
 import { BigNumber } from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
+
 import { bnum } from '@/lib/utils';
-import useWeb3 from '@/services/web3/useWeb3';
 import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
-import {
-  calculateValidTo,
-  signOrder,
-  UnsignedOrder
-} from '@/services/gnosis/signing';
+import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
+import useWeb3 from '@/services/web3/useWeb3';
+import { calculateValidTo } from '@/services/gnosis/utils';
 import { gnosisOperator } from '@/services/gnosis/operator.service';
+
 import useTransactions from '../useTransactions';
+
 import { Token } from '@/types';
-import { TradeQuote } from './types';
-import useNumbers from '../useNumbers';
 import { TokenInfo } from '@/types/TokenList';
+
+import { TradeQuote } from './types';
+
+import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
 
 const HIGH_FEE_THRESHOLD = 0.2;
@@ -165,7 +167,7 @@ export default function useGnosis({
         getSigner()
       );
 
-      const orderId = await gnosisOperator.postSignedOrder({
+      const orderId = await gnosisOperator.sendSignedOrder({
         order: {
           ...unsignedOrder,
           signature,

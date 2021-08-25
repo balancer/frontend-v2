@@ -11,7 +11,6 @@ export type Notification = {
   transactionMetadata?: {
     id: string;
     status: TransactionStatus;
-    isSuccess: boolean;
     explorerLink: string;
   };
   title: string;
