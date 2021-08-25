@@ -154,6 +154,10 @@ export default function useTrading(
     () => sor.confirming.value || gnosis.confirming.value
   );
 
+  const submissionError = computed(
+    () => sor.submissionError.value || gnosis.submissionError.value
+  );
+
   // METHODS
   function trade(successCallback?: () => void) {
     if (isGnosisTrade.value) {
@@ -174,6 +178,11 @@ export default function useTrading(
         sor.resetState();
       });
     }
+  }
+
+  function resetSubmissionError() {
+    sor.submissionError.value = null;
+    gnosis.submissionError.value = null;
   }
 
   function getQuote() {
@@ -215,7 +224,7 @@ export default function useTrading(
 
   watch(blockNumber, () => {
     if (isGnosisTrade.value) {
-      if (!gnosis.hasErrors.value) {
+      if (!gnosis.hasValidationErrors.value) {
         gnosis.handleAmountChange();
       }
     } else if (isBalancerTrade.value) {
@@ -260,6 +269,8 @@ export default function useTrading(
     tokenOutAmountInput,
     slippageBufferRate,
     isConfirming,
+    submissionError,
+    resetSubmissionError,
 
     // methods
     getQuote,

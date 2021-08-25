@@ -49,9 +49,10 @@ const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 const MIN_PRICE_IMPACT = 0.0001;
 const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
 const state = reactive({
-  errors: {
+  validationErrors: {
     highPriceImpact: false
-  }
+  },
+  submissionError: null
 });
 
 type Props = {
@@ -159,7 +160,9 @@ export default function useSor({
   }, 30 * 1e3);
 
   function resetState() {
-    state.errors.highPriceImpact = false;
+    state.validationErrors.highPriceImpact = false;
+
+    state.submissionError = null;
   }
 
   async function initSor(): Promise<void> {
@@ -388,7 +391,7 @@ export default function useSor({
 
     pools.value = sorManager.selectedPools;
 
-    state.errors.highPriceImpact =
+    state.validationErrors.highPriceImpact =
       priceImpact.value >= HIGH_PRICE_IMPACT_THRESHOLD;
   }
 
@@ -447,6 +450,7 @@ export default function useSor({
     trackGoal(Goals.ClickSwap);
     trading.value = true;
     confirming.value = true;
+    state.submissionError = null;
 
     const tokenInAddress = tokenInAddressInput.value;
     const tokenOutAddress = tokenOutAddressInput.value;
@@ -472,6 +476,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
+        state.submissionError = e.message;
         trading.value = false;
         confirming.value = false;
       }
@@ -493,6 +498,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
+        state.submissionError = e.message;
         trading.value = false;
         confirming.value = false;
       }
@@ -522,6 +528,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
+        state.submissionError = e.message;
         trading.value = false;
         confirming.value = false;
       }
@@ -551,6 +558,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
+        state.submissionError = e.message;
         trading.value = false;
         confirming.value = false;
       }

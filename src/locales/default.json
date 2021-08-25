@@ -36,6 +36,8 @@
     "browserWallet": "Browser Wallet",
     "buy": "Buy",
     "changeTheme": "Change theme",
+    "cancel": "Cancel",
+    "cancelling": "Cancelling",
     "claim": "Claim",
     "claimBAL": "Claim BAL for",
     "claimSuccess": "You successfully claimed BAL!",
@@ -83,6 +85,7 @@
     "errorNoLists": "Sorry, we can't find any lists",
     "errorNoMatch": "Sorry, we can't find any matches",
     "errorNoTokens": "Sorry, we can't find any tokens",
+    "errorCancellingOrder": "Error cancelling order",
     "explore": "Explore",
     "explorePools": "Explore pools",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
@@ -222,7 +225,8 @@
     },
     "transactionStatus": {
         "pending": "Pending",
-        "confirmed": "Confirmed",
+        "fulfilled": "Confirmed",
+        "failed": "Failed",
         "expired": "Expired",
         "cancelling": "Cancelling",
         "cancelled": "Cancelled"
@@ -327,6 +331,10 @@
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
     "transactionType": "Transaction type",
+    "tradeSubmissionError": {
+        "title": "An error has occurred",
+        "actionLabel": "Dismiss"
+    },
     "unavailableOnNetwork": "Sorry! Balancer is not available on this network",
     "unavailableOnNetworkWithName": "Sorry! Balancer is not available on {0}",
     "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",

@@ -22,14 +22,15 @@ import { GnosisTransactionDetails } from './trade/useGnosis';
 
 const WEEK_MS = 86_400_000 * 7;
 // Please update the schema version when making changes to the transaction structure.
-const TRANSACTIONS_SCHEMA_VERSION = '1.1.2';
+const TRANSACTIONS_SCHEMA_VERSION = '1.1.3';
 
 export type TransactionStatus =
   | 'pending'
-  | 'confirmed'
+  | 'fulfilled'
   | 'expired'
   | 'cancelling'
-  | 'cancelled';
+  | 'cancelled'
+  | 'failed';
 
 export type TransactionAction =
   | 'claim'
@@ -68,7 +69,7 @@ export type Transaction = {
   details?: Record<string, any>;
   summary: string;
   addedTime: number;
-  confirmedTime?: number;
+  finalizedTime?: number;
   from: string;
   lastCheckedBlockNumber?: number;
   status: TransactionStatus;
@@ -100,7 +101,15 @@ const transactions = computed(() =>
 );
 
 const pendingTransactions = computed(() =>
-  transactions.value.filter(({ status }) => status === 'pending')
+  transactions.value.filter(transaction =>
+    isPendingTransactionStatus(transaction.status)
+  )
+);
+
+const finalizedTransactions = computed(() =>
+  transactions.value.filter(transaction =>
+    isFinalizedTransactionStatus(transaction.status)
+  )
 );
 
 const pendingOrderActivity = computed(() =>
@@ -191,25 +200,25 @@ function updateTransaction(
 }
 
 function isSuccessfulTransaction(transaction: Transaction) {
-  if (
-    transaction.status === 'confirmed' &&
+  return (
+    transaction.status === 'fulfilled' &&
     transaction.replacementReason !== 'txCancel'
-  ) {
-    if (transaction.type === 'order') {
-      return (transaction.receipt as OrderReceipt)?.status === 'fulfilled';
-    } else {
-      return (transaction.receipt as TxReceipt)?.status === 1;
-    }
-  }
+  );
+}
 
-  return false;
+function isPendingTransactionStatus(status: TransactionStatus) {
+  return !isFinalizedTransactionStatus(status);
+}
+
+function isFinalizedTransactionStatus(status: TransactionStatus) {
+  return ['fulfilled', 'cancelled', 'failed', 'expired'].includes(status);
 }
 
 // Adapted from Uniswap code
 function shouldCheckTx(transaction: Transaction, lastBlockNumber: number) {
   if (
     processedTxs.value.has(transaction.id) ||
-    transaction.status === 'confirmed'
+    isFinalizedTransactionStatus(transaction.status)
   ) {
     return false;
   }
@@ -308,18 +317,27 @@ export default function useTransactions() {
       const transaction = getTransaction(id, type);
 
       if (transaction != null) {
-        const updateSuccessful = updateTransaction(id, type, {
-          receipt:
-            type === 'tx'
-              ? normalizeTxReceipt(receipt as TransactionReceipt)
-              : receipt,
-          summary:
-            type === 'order'
-              ? getSettledOrderSummary(transaction, receipt as OrderReceipt)
-              : transaction.summary,
-          status: 'confirmed',
-          confirmedTime: Date.now()
-        });
+        const updates: Partial<Transaction> = {
+          finalizedTime: Date.now()
+        };
+
+        if (type === 'tx') {
+          const txReceipt = receipt as TransactionReceipt;
+
+          updates.receipt = normalizeTxReceipt(txReceipt);
+          updates.status = txReceipt?.status === 1 ? 'fulfilled' : 'failed';
+        } else {
+          const orderReceipt = receipt as OrderReceipt;
+
+          updates.receipt = orderReceipt;
+          updates.status = orderReceipt.status;
+          if (orderReceipt.status === 'fulfilled') {
+            updates.summary = getSettledOrderSummary(transaction, orderReceipt);
+          }
+        }
+
+        const updateSuccessful = updateTransaction(id, type, updates);
+
         if (updateSuccessful) {
           addNotificationForTransaction(id, type);
           return true;
@@ -340,6 +358,11 @@ export default function useTransactions() {
           : transaction.status;
 
       addNotification({
+        type: isFinalizedTransactionStatus(transaction.status)
+          ? isSuccessfulTransaction(transaction)
+            ? 'success'
+            : 'error'
+          : 'info',
         title: `${t(`transactionAction.${transaction.action}`)} ${t(
           `transactionStatus.${transactionStatus}`
         )}`,
@@ -347,7 +370,6 @@ export default function useTransactions() {
         transactionMetadata: {
           id: transaction.id,
           status: transaction.status,
-          isSuccess: isSuccessfulTransaction(transaction),
           explorerLink: getExplorerLink(transaction.id, transaction.type)
         }
       });
@@ -358,11 +380,8 @@ export default function useTransactions() {
     gnosisOperator
       .getOrder(transaction.id)
       .then(order => {
-        if (
-          order != null &&
-          Number(order.executedBuyAmount) > 0 &&
-          Number(order.executedSellAmount) > 0
-        ) {
+        console.log(order);
+        if (order != null && isFinalizedTransactionStatus(order.status)) {
           finalizeTransaction(transaction.id, 'order', order);
         }
       })
@@ -419,6 +438,7 @@ export default function useTransactions() {
 
   return {
     // methods
+    getTransaction,
     getTransactions,
     addTransaction,
     clearAllTransactions,
@@ -426,10 +446,12 @@ export default function useTransactions() {
     finalizeTransaction,
     getExplorerLink,
     isSuccessfulTransaction,
+    isPendingTransactionStatus,
     updateTransaction,
 
     // computed
     pendingTransactions,
+    finalizedTransactions,
     transactions
   };
 }
