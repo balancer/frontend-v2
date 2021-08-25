@@ -199,7 +199,7 @@ export class PriceService {
         if (!(timestamp in prices)) {
           prices[timestamp] = [];
         }
-        prices[timestamp].unshift(price);
+        prices[timestamp].push(price);
       }
     }
     return prices;
