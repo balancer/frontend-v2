@@ -85,6 +85,9 @@ export default defineComponent({
       poolsIsFetchingNextPage
     } = usePools(selectedTokens);
 
+    console.log('isLoadingPools', isLoadingPools);
+    console.log('pools', pools.value);
+
     // COMPUTED
     const filteredPools = computed(() =>
       selectedTokens.value.length > 0

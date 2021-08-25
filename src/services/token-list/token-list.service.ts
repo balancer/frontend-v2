@@ -70,6 +70,7 @@ export default class TokenListService {
     } else if (lists[0] instanceof Error) {
       throw new Error('Failed to load default TokenList');
     }
+
     return Object.fromEntries(validLists);
   }
 
@@ -79,7 +80,7 @@ export default class TokenListService {
 
       if (uri.endsWith('.eth')) {
         return await this.getByEns(uri);
-      } else if (protocol === 'https') {
+      } else if (protocol === 'https' || protocol === 'http') {
         const { data } = await axios.get<TokenList>(uri);
         return data;
       } else if (protocol === 'ipns') {

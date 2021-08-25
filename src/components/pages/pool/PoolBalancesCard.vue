@@ -91,11 +91,13 @@ export default defineComponent({
     const { priceFor } = useTokens();
     const { isStablePool } = usePool(pool);
 
+
     /**
      * COMPUTED
      */
     const tableData = computed(() => {
       if (!pool || !pool.value || props.loading) return [];
+      console.log('pool.value.onchain.tokens', pool.value.onchain.tokens);
       return Object.keys(pool.value.onchain.tokens).map((address, index) => ({
         address,
         index
@@ -146,6 +148,7 @@ export default defineComponent({
     function symbolFor(address: string) {
       if (!pool || !pool.value) return '-';
       const symbol = pool.value.onchain.tokens[address].symbol;
+      console.log('symbol', pool.value.onchain.tokens[address]);
       return symbol ? symbol : shortenLabel(address);
     }
 

@@ -11,6 +11,7 @@ import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
 import { forChange } from '@/lib/utils';
 import { isStable } from '../usePool';
+import { getAddress } from '@ethersproject/address';
 
 export default function usePoolQuery(
   id: string,
@@ -43,6 +44,8 @@ export default function usePoolQuery(
       }
     });
 
+    console.log('pool', pool);
+
     if (isStable(pool) && !POOLS.Stable.AllowList.includes(id)) {
       throw new Error('Pool not allowed');
     }
@@ -65,6 +68,8 @@ export default function usePoolQuery(
       pool.poolType,
       getTokens(decoratedPool.tokenAddresses)
     );
+
+    console.log('pool.tokenAddresses', pool.tokensList);
 
     return { ...decoratedPool, onchain: onchainData };
   };

@@ -1,0 +1,43 @@
+{
+  "name": "Beethoven Fuji",
+  "timestamp": "2021-02-27T18:18:18.181Z",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "tags": {},
+  "logoURI": "https://app2.acsi.finance/images/tokens/acsi.svg",
+  "keywords": [
+    "beethoven",
+    "default",
+    "avax",
+    "fuji"
+  ],
+  "tokens": [
+    {
+      "name": "Wrapped Avalanche",
+      "address": "0xd00ae08403B9bbb9124bB305C09058E32C39A48c",
+      "symbol": "WAVAX",
+      "decimals": 18,
+      "chainId": 43113,
+      "logoURI": "https://assets.coingecko.com/coins/images/12559/large/coin-round-red.png"
+    },
+    {
+      "name": "Chainlink",
+      "address": "0x83eE4DA0ac6557bD3B7439FD28C0A7ed77C73c4e",
+      "symbol": "LINK",
+      "decimals": 18,
+      "chainId": 43113,
+      "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x514910771AF9Ca656af840dff83E8264EcF986CA/logo.png"
+    },
+    {
+      "name": "Pangolin",
+      "address": "0x83080D4b5fC60e22dFFA8d14AD3BB41Dde48F199",
+      "symbol": "PNG",
+      "decimals": 18,
+      "chainId": 43113,
+      "logoURI": "https://app.pangolin.exchange/static/media/icon.adcff230.svg"
+    }
+  ]
+}

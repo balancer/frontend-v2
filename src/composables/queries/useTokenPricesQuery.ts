@@ -43,6 +43,7 @@ export default function useTokenPricesQuery(
         ...(await coingeckoService.prices.getTokens(pageAddresses))
       };
     }
+
     return prices;
   };
 

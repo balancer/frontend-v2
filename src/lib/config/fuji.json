@@ -1,0 +1,50 @@
+{
+  "key": "43113",
+  "chainId": 43113,
+  "chainName": "Avalanche FUJI C-Chain",
+  "name": "Avalanche Fuji",
+  "shortName": "Fuji",
+  "network": "fuji",
+  "unknown": false,
+  "rpc": "https://api.avax-test.network/ext/bc/C/rpc",
+  "ws": "ws://api.avax-test.network/ext/bc/C/ws",
+  "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/hsAEQ4l4c6uz3ciAdQ9w3ODWjVcND-Ti",
+  "publicRpc": "https://api.avax-test.network/ext/bc/C/rpc",
+  "explorer": "https://cchain.explorer.avax-test.network",
+  "subgraph": "https://api.studio.thegraph.com/query/6909/beethovenx/v0.0.5",
+  "poolsUrlV1": "",
+  "poolsUrlV2": "",
+  "nativeAsset": {
+    "name": "Avalanche",
+    "address": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+    "symbol": "AVAX",
+    "decimals": 18,
+    "deeplinkId": "avax",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/avalanche/info/logo.png"
+  },
+  "addresses": {
+    "exchangeProxy": "",
+    "merkleRedeem": "",
+    "multicall": "0x5E5713a0d915701F464DEbb66015adD62B2e6AE9",
+    "authorizer": "0xf4AE7E15B1012edceD8103510eeB560a9343AFd3",
+    "vault": "0x97fd63D049089cd70D9D139ccf9338c81372DE68",
+    "weightedPoolFactory": "0xC0BF43A4Ca27e0976195E6661b099742f10507e5",
+    "stablePoolFactory": "0x43cA9bAe8dF108684E5EAaA720C25e1b32B0A075",
+    "weth": "0xc981ec845488b8479539e6B22dc808Fb824dB00a",
+    "balancerHelpers": "0x9D3DA37d36BB0B825CD319ed129c2872b893f538"
+  },
+  "strategies": {
+    "0": {
+      "type": "0",
+      "name": "stablePool"
+    },
+    "1": {
+      "type": "1",
+      "name": "weightedPool"
+    },
+    "2": {
+      "type": "2",
+      "name": "weightedPool"
+    }
+  }
+}
