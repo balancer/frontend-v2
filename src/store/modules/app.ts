@@ -25,9 +25,7 @@ const state: AppState = {
   slippage: lsGet(LS_KEYS.App.TradeSlippage, '0.01'),
   tradeLiquidity: lsGet(LS_KEYS.App.TradeLiquidity, LiquiditySelection.Best),
   transactionDeadline: lsGet(LS_KEYS.App.TradeDeadline, 20), // minutes
-  // Force Balancer interface for now
-  tradeInterface:
-    TradeInterface.BALANCER /* lsGet(LS_KEYS.App.TradeInterface, TradeInterface.BALANCER), */
+  tradeInterface: lsGet(LS_KEYS.App.TradeInterface, TradeInterface.BALANCER)
 };
 
 const actions = {
