@@ -31,6 +31,9 @@
     "oneToOneSwapValidator": "0x2e7950e645CbA3eD9B376df081F2FA0fE53d30f0",
     "tokenFactory": "0xc9d340Bc37C57e70383b217De2c07FB252E36D55",
     "weth": "0x6c37Fa9557C135dF4323004D3f0549f3e94F112D",
+    "stETH": "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+    "wstETH": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+    "lidoRelayer": "",
     "MockFlashLoanReceiver": "",
     "balancerHelpers": ""
   },

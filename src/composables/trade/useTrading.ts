@@ -7,6 +7,7 @@ import useSor from './useSor';
 import useGnosis from './useGnosis';
 import useTokens from '../useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 
@@ -23,7 +24,7 @@ export default function useTrading(
   const store = useStore();
   const { fNum } = useNumbers();
   const { tokens } = useTokens();
-  const { blockNumber, appNetworkConfig } = useWeb3();
+  const { blockNumber } = useWeb3();
 
   // COMPUTED
   const slippageBufferRate = computed(() =>
@@ -32,17 +33,11 @@ export default function useTrading(
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
-  const isWrap = computed(
-    () =>
-      tokenInAddressInput.value === NATIVE_ASSET_ADDRESS &&
-      tokenOutAddressInput.value === appNetworkConfig.addresses.weth
+  const wrapType = computed(() =>
+    getWrapAction(tokenInAddressInput.value, tokenOutAddressInput.value)
   );
-
-  const isUnwrap = computed(
-    () =>
-      tokenOutAddressInput.value === NATIVE_ASSET_ADDRESS &&
-      tokenInAddressInput.value === appNetworkConfig.addresses.weth
-  );
+  const isWrap = computed(() => wrapType.value === WrapType.Wrap);
+  const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
 
   const tokenIn = computed(() => tokens.value[tokenInAddressInput.value]);
 
@@ -60,8 +55,8 @@ export default function useTrading(
     scale(bnum(tokenOutAmountInput.value), tokenOut.value.decimals)
   );
 
-  const requiresApproval = computed(() => {
-    if (isWrap.value || isUnwrap.value || isEthTrade.value) {
+  const requiresTokenApproval = computed(() => {
+    if (wrapType.value === WrapType.Unwrap || isEthTrade.value) {
       return false;
     }
     return true;
@@ -94,7 +89,7 @@ export default function useTrading(
   });
 
   const tradeRoute = computed<TradeRoute>(() => {
-    if (isWrap.value || isUnwrap.value) {
+    if (wrapType.value !== WrapType.NonWrap) {
       return 'wrapUnwrap';
     }
 
@@ -120,8 +115,7 @@ export default function useTrading(
     tokenOutAddressInput,
     tokenOutAmountInput,
     tokens,
-    isWrap,
-    isUnwrap,
+    wrapType,
     tokenInAmountScaled,
     tokenOutAmountScaled,
     sorConfig: {
@@ -160,6 +154,10 @@ export default function useTrading(
     () => sor.confirming.value || gnosis.confirming.value
   );
 
+  const submissionError = computed(
+    () => sor.submissionError.value || gnosis.submissionError.value
+  );
+
   // METHODS
   function trade(successCallback?: () => void) {
     if (isGnosisTrade.value) {
@@ -180,6 +178,11 @@ export default function useTrading(
         sor.resetState();
       });
     }
+  }
+
+  function resetSubmissionError() {
+    sor.submissionError.value = null;
+    gnosis.submissionError.value = null;
   }
 
   function getQuote() {
@@ -221,7 +224,7 @@ export default function useTrading(
 
   watch(blockNumber, () => {
     if (isGnosisTrade.value) {
-      if (!gnosis.hasErrors.value) {
+      if (!gnosis.hasValidationErrors.value) {
         gnosis.handleAmountChange();
       }
     } else if (isBalancerTrade.value) {
@@ -249,7 +252,7 @@ export default function useTrading(
     tokenInAmountScaled,
     tokenOutAmountScaled,
     tokens,
-    requiresApproval,
+    requiresTokenApproval,
     effectivePriceMessage,
     tradeRoute,
     exactIn,
@@ -258,6 +261,7 @@ export default function useTrading(
     sor,
     isGnosisTrade,
     isBalancerTrade,
+    wrapType,
     isWrapUnwrapTrade,
     tokenInAddressInput,
     tokenInAmountInput,
@@ -265,6 +269,8 @@ export default function useTrading(
     tokenOutAmountInput,
     slippageBufferRate,
     isConfirming,
+    submissionError,
+    resetSubmissionError,
 
     // methods
     getQuote,

@@ -2,11 +2,8 @@
   <BalPopover align="left" no-pad>
     <template v-slot:activator>
       <BalBtn
-        color="gray"
-        outline
-        rounded
+        color="white"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
-        :circle="upToLargeBreakpoint"
         class="ml-4"
       >
         <img
@@ -14,9 +11,10 @@
           :alt="activeNetwork.name"
           class="w-5 h-5 rounded-full shadow-sm"
         />
-        <span class="hidden lg:block ml-2">
+        <span class="ml-2">
           {{ activeNetwork.name }}
         </span>
+        <BalIcon name="chevron-down" size="sm" class="ml-2" />
       </BalBtn>
     </template>
     <div class="flex flex-col w-44 rounded-lg overflow-hidden">

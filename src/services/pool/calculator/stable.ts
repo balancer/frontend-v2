@@ -96,6 +96,13 @@ export default class Stable {
     bptAmount: string,
     tokenIndex: number
   ): BigNumber {
+    if (bnum(bptAmount).eq(0))
+      return this.scaleOutput(
+        '0',
+        this.calc.poolTokenDecimals[tokenIndex],
+        BigNumber.ROUND_DOWN // If OUT given IN, round down
+      );
+
     const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
     const bptAmountIn = bnum(parseUnits(bptAmount, 18).toString());
@@ -156,8 +163,9 @@ export default class Stable {
     }
   }
 
-  // PRIVATE FUNCTIONS
-
+  /**
+   * PRIVATE FUNCTIONS
+   */
   private bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
     const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
     const denormAmounts = this.calc.denormAmounts(
@@ -165,7 +173,17 @@ export default class Stable {
       this.calc.poolTokenDecimals
     );
     const amounts = denormAmounts.map(a => bnum(a.toString()));
-    const balances = this.calc.poolTokenBalances.map(b => bnum(b.toString()));
+
+    // _bptForTokensZeroPriceImpact is the only stable pool function
+    // that requires balances be scaled by the token decimals and not 18
+    const balances = this.scaledBalances.map((balance, i) => {
+      const normalizedBalance = formatUnits(balance.toString(), 18);
+      const denormBalance = parseUnits(
+        normalizedBalance,
+        this.calc.poolTokenDecimals[i]
+      );
+      return bnum(denormBalance.toString());
+    });
 
     const bptZeroImpact = _bptForTokensZeroPriceImpact(
       balances,
@@ -175,7 +193,6 @@ export default class Stable {
       amp
     );
 
-    console.log(bptZeroImpact.toString(), ` BPTForTokensZeroPriceImpact`);
     return bptZeroImpact;
   }
 
@@ -185,7 +202,9 @@ export default class Stable {
         balance,
         this.calc.poolTokenDecimals[i]
       );
-      const scaledBalance = parseUnits(normalizedBalance, 18);
+      const scaledBalance = parseUnits(normalizedBalance, 18)
+        .mul(parseUnits(this.calc.pool.tokens[i].priceRate ?? '1', 18))
+        .div(parseUnits('1', 18));
       return bnum(scaledBalance.toString());
     });
   }

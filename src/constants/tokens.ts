@@ -38,6 +38,12 @@ export const TOKENS = {
         '0x04df6e4121c27713ed22341e7c7df330f56f289b':
           '0x6b175474e89094c44da98b954eedeac495271d0f'
       }
+    },
+    // TODO - remove once coingecko supports wstETH
+    ExchangeRates: {
+      wstETH: {
+        stETH: 1.0352
+      }
     }
   }
 };

@@ -1,16 +1,18 @@
 import { APP_NETWORK_ID } from '@/constants/network';
 import { Signer } from '@ethersproject/abstract-signer';
-import { BigNumber } from '@ethersproject/bignumber';
 
 import {
   domain as domainGp,
   signOrder as signOrderGp,
+  signOrderCancellation as signOrderCancellationGp,
   Order,
   EcdsaSigningScheme,
   Signature,
   SigningScheme,
   EcdsaSignature,
-  TypedDataV3Signer
+  TypedDataV3Signer,
+  OrderCancellation as OrderCancellationGp,
+  IntChainIdTypedDataV4Signer
 } from '@gnosis.pm/gp-v2-contracts';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
@@ -23,7 +25,7 @@ const METHOD_NOT_FOUND_ERROR_CODE = -32601;
 const V4_ERROR_MSG_REGEX = /eth_signTypedData_v4 does not exist/i;
 const V3_ERROR_MSG_REGEX = /eth_signTypedData_v3 does not exist/i;
 const RPC_REQUEST_FAILED_REGEX = /RPC request failed/i;
-const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber(); // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
+const METAMASK_STRING_CHAINID_REGEX = /provided chainid .* must match the active chainid/i;
 
 export type UnsignedOrder = Omit<Order, 'receiver'> & { receiver: string };
 
@@ -33,12 +35,20 @@ export interface SignOrderParams {
   signingScheme: EcdsaSigningScheme;
 }
 
-// posted to /api/v1/orders on Order creation
-// serializable, so no BigNumbers
-//  See https://protocol-rinkeby.dev.gnosisdev.com/api/
 export interface OrderCreation extends UnsignedOrder {
   signature: string; // 65 bytes encoded as hex without `0x` prefix. v + r + s from the spec
   signingScheme: EcdsaSigningScheme; // value of
+}
+
+export interface SingOrderCancellationParams {
+  signer: Signer;
+  orderId: string;
+  signingScheme: EcdsaSigningScheme;
+}
+
+export interface OrderCancellation extends OrderCancellationGp {
+  signature: string;
+  signingScheme: EcdsaSigningScheme;
 }
 
 interface SchemaInfo {
@@ -77,6 +87,7 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
   const { signer, order, signingScheme } = params;
 
   const domain = domainGp(APP_NETWORK_ID, GP_SETTLEMENT_CONTRACT_ADDRESS);
+
   console.log('[Gnosis Signing] signOrder', {
     domain,
     order,
@@ -86,38 +97,67 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
   return signOrderGp(
     domain,
     order,
-    // @ts-ignore
     signer,
     getSigningSchemeLibValue(signingScheme)
   );
 }
 
-export async function signOrder(
-  unsignedOrder: UnsignedOrder,
+async function _signOrderCancellation(
+  params: SingOrderCancellationParams
+): Promise<Signature> {
+  const { signer, signingScheme, orderId } = params;
+
+  const domain = domainGp(APP_NETWORK_ID, GP_SETTLEMENT_CONTRACT_ADDRESS);
+
+  console.log('[Gnosis Signing] signOrderCancellation', {
+    domain,
+    orderId,
+    signer
+  });
+
+  return signOrderCancellationGp(
+    domain,
+    orderId,
+    signer,
+    getSigningSchemeLibValue(signingScheme)
+  );
+}
+
+type SigningResult = { signature: string; signingScheme: EcdsaSigningScheme };
+
+async function _signPayload(
+  payload: any,
+  signFn: typeof _signOrder | typeof _signOrderCancellation,
   signer: Signer,
-  signingMethod: 'v4' | 'v3' | 'eth_sign' = 'v4'
-): Promise<{ signature: string; signingScheme: EcdsaSigningScheme }> {
+  signingMethod: 'v4' | 'int_v4' | 'v3' | 'eth_sign' = 'v4'
+): Promise<SigningResult> {
   const signingScheme =
     signingMethod === 'eth_sign' ? SigningScheme.ETHSIGN : SigningScheme.EIP712;
   let signature: Signature | null = null;
 
-  let _signer = signer;
+  let _signer;
   try {
-    // @ts-ignore
-    _signer = signingMethod === 'v3' ? new TypedDataV3Signer(signer) : signer;
+    switch (signingMethod) {
+      case 'v3':
+        _signer = new TypedDataV3Signer(signer);
+        break;
+      case 'int_v4':
+        _signer = new IntChainIdTypedDataV4Signer(signer);
+        break;
+      default:
+        _signer = signer;
+    }
   } catch (e) {
     console.error('Wallet not supported:', e);
     throw new Error('Wallet not supported');
   }
 
-  const signatureParams: SignOrderParams = {
-    signer: _signer,
-    order: unsignedOrder,
-    signingScheme
-  };
-
   try {
-    signature = (await _signOrder(signatureParams)) as EcdsaSignature; // Only ECDSA signing supported for now
+    signature = (await signFn({
+      ...payload,
+      signer: _signer,
+      signingScheme
+    })) as EcdsaSignature; // Only ECDSA signing supported for now
   } catch (e) {
     if (
       e.code === METHOD_NOT_FOUND_ERROR_CODE ||
@@ -128,25 +168,28 @@ export async function signOrder(
       // with other methods...
       switch (signingMethod) {
         case 'v4':
-          return signOrder(unsignedOrder, signer, 'v3');
+          return _signPayload(payload, signFn, signer, 'v3');
         case 'v3':
-          return signOrder(unsignedOrder, signer, 'eth_sign');
+          return _signPayload(payload, signFn, signer, 'eth_sign');
         default:
           throw e;
       }
+    } else if (METAMASK_STRING_CHAINID_REGEX.test(e.message)) {
+      // Metamask now enforces chainId to be an integer
+      return _signPayload(payload, signFn, signer, 'int_v4');
     } else if (e.code === METAMASK_SIGNATURE_ERROR_CODE) {
       // We tried to sign order the nice way.
       // That works fine for regular MM addresses. Does not work for Hardware wallets, though.
       // See https://github.com/MetaMask/metamask-extension/issues/10240#issuecomment-810552020
       // So, when that specific error occurs, we know this is a problem with MM + HW.
       // Then, we fallback to ETHSIGN.
-      return signOrder(unsignedOrder, signer, 'eth_sign');
+      return _signPayload(payload, signFn, signer, 'eth_sign');
     } else if (V4_ERROR_MSG_REGEX.test(e.message)) {
       // Failed with `v4`, and the wallet does not set the proper error code
-      return signOrder(unsignedOrder, signer, 'v3');
+      return _signPayload(payload, signFn, signer, 'v3');
     } else if (V3_ERROR_MSG_REGEX.test(e.message)) {
       // Failed with `v3`, and the wallet does not set the proper error code
-      return signOrder(unsignedOrder, signer, 'eth_sign');
+      return _signPayload(payload, signFn, signer, 'eth_sign');
     } else {
       // Some other error signing. Let it bubble up.
       console.error(e);
@@ -156,9 +199,16 @@ export async function signOrder(
   return { signature: signature.data.toString(), signingScheme };
 }
 
-export function calculateValidTo(deadlineInMinutes: number): number {
-  const now = Date.now() / 1000;
-  const validTo = Math.floor(deadlineInMinutes * 60 + now);
+export async function signOrder(
+  order: UnsignedOrder,
+  signer: Signer
+): Promise<SigningResult> {
+  return _signPayload({ order }, _signOrder, signer);
+}
 
-  return Math.min(validTo, MAX_VALID_TO_EPOCH);
+export async function signOrderCancellation(
+  orderId: string,
+  signer: Signer
+): Promise<SigningResult> {
+  return _signPayload({ orderId }, _signOrderCancellation, signer);
 }

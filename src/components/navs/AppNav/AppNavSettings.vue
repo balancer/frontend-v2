@@ -3,7 +3,7 @@
     <div class="p-4 border-b dark:border-gray-900">
       <div class="flex justify-between items-center mb-4">
         <h5 v-text="$t('account')" class="leading-none" />
-        <div>
+        <div v-if="!hideDisconnect">
           <BalBtn outline color="gray" size="xs" @click="disconnectWallet">
             Disconnect
           </BalBtn>
@@ -123,9 +123,32 @@
         @update:modelValue="setTradeLiquidity"
       />
     </div>
-    <div v-if="APP.IsGnosisIntegration" class="px-4 mt-6">
+    <div v-if="!isPolygon" class="px-4 mt-6">
       <div class="flex items-baseline">
-        <span v-text="'Trade interface'" class="font-medium mb-2" />
+        <span v-text="$t('transactionType')" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div v-text="$t('ethereumTxTypeTooltip')" class="w-52" />
+        </BalTooltip>
+      </div>
+      <BalBtnGroup
+        :options="ethereumTxTypeOptions"
+        v-model="ethereumTxType"
+        @update:modelValue="setEthereumTxType"
+      />
+    </div>
+    <!-- Hide Gnosis interface switch for now -->
+    <div v-if="!isPolygon" class="px-4 mt-6">
+      <div class="flex items-baseline">
+        <span v-text="$t('tradeInterface')" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div v-text="$t('tradeInterfaceTooltip')" class="w-52" />
+        </BalTooltip>
       </div>
       <BalBtnGroup
         :options="tradeInterfaceOptions"
@@ -162,9 +185,11 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { APP } from '@/constants/app';
 import {
   tradeLiquidityOptions,
-  tradeInterfaceOptions
+  tradeInterfaceOptions,
+  ethereumTxTypeOptions
 } from '@/constants/options';
 import { TradeInterface } from '@/store/modules/app';
+import useEthereumTxType from '@/composables/useEthereumTxType';
 
 const locales = {
   'en-US': 'English',
@@ -190,8 +215,9 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { explorerLinks } = useWeb3();
     const {
+      explorerLinks,
+      isPolygon,
       account,
       chainId,
       disconnectWallet,
@@ -199,6 +225,7 @@ export default defineComponent({
       isV1Supported,
       userNetworkConfig
     } = useWeb3();
+    const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
     // DATA
     const data = reactive({
@@ -218,9 +245,10 @@ export default defineComponent({
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
     const appTradeInterface = computed(() => store.state.app.tradeInterface);
     const hideLiquidity = computed(() => !isV1Supported);
-    const connectorName = computed(() => getConnectorName(connector.value.id));
+    const connectorName = computed(() => getConnectorName(connector.value?.id));
 
-    const connectorLogo = computed(() => getConnectorLogo(connector.value.id));
+    const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
+    const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
 
     // METHODS
     const setDarkMode = val => store.commit('app/setDarkMode', val);
@@ -258,6 +286,8 @@ export default defineComponent({
       connectorName,
       connectorLogo,
       hideLiquidity,
+      hideDisconnect,
+      isPolygon,
       // methods
       disconnectWallet,
       setDarkMode,
@@ -265,7 +295,10 @@ export default defineComponent({
       setTradeLiquidity,
       setTradeInterface,
       copyAddress,
-      explorer: explorerLinks
+      explorer: explorerLinks,
+      ethereumTxType,
+      setEthereumTxType,
+      ethereumTxTypeOptions
     };
   }
 });

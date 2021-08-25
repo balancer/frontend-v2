@@ -2,7 +2,7 @@
   <AppNavAlert v-if="alert" :alert="alert" />
   <nav id="app-nav" ref="appNav" class="h-20 px-4 lg:px-6 sticky top-0">
     <div class="h-full flex items-center justify-between">
-      <div class="w-1/3 flex items-center">
+      <div class="w-2/3 lg:w-1/3 flex items-center">
         <router-link
           :to="{ name: 'home' }"
           @click="trackGoal(Goals.ClickNavLogo)"
@@ -10,11 +10,14 @@
           <AppIcon v-if="['xs', 'sm', 'md'].includes(bp)" />
           <AppLogo v-else />
         </router-link>
-        <AppNavNetworkSelect />
-        <DarkModeToggle class="ml-2" />
+        <AppNavNetworkSelect v-if="!hideNetworkSelect" />
+        <DarkModeToggle v-if="!upToLargeBreakpoint" class="ml-2" />
       </div>
 
-      <div class="flex-1 md:w-1/3 flex justify-center">
+      <div
+        v-if="!upToLargeBreakpoint"
+        class="flex-1 md:w-1/3 flex justify-center"
+      >
         <AppNavToggle />
       </div>
 
@@ -36,6 +39,7 @@ import AppNavToggle from './AppNavToggle.vue';
 import AppNavActions from './AppNavActions.vue';
 import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
 import useFathom from '@/composables/useFathom';
+import useWeb3 from '@/services/web3/useWeb3';
 import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
 
 export default defineComponent({
@@ -52,14 +56,16 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const store = useStore();
-    const { bp } = useBreakpoints();
+    const { bp, upToLargeBreakpoint } = useBreakpoints();
     const { trackGoal, Goals } = useFathom();
+    const { connector } = useWeb3();
 
     // DATA
     const appNav = ref(null);
 
     // COMPUTED
     const alert = computed(() => store.state.alerts.current);
+    const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
 
     // METHODS
     function handleScroll() {
@@ -85,6 +91,8 @@ export default defineComponent({
       // computed
       bp,
       alert,
+      upToLargeBreakpoint,
+      hideNetworkSelect,
       // methods
       trackGoal,
       Goals

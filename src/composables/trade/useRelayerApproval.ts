@@ -10,10 +10,19 @@ import { configService } from '@/services/config/config.service';
 import vaultAbi from '@/lib/abi/Vault.json';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
+import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 
 const vaultAddress = configService.network.addresses.vault;
 
-export default function useRelayerApproval(relayerAddress: Ref<string>) {
+export enum Relayer {
+  GNOSIS = 'gnosis',
+  LIDO = 'lido'
+}
+
+export default function useRelayerApproval(
+  relayer: Relayer,
+  isEnabled: Ref<boolean>
+) {
   /**
    * STATE
    */
@@ -24,7 +33,11 @@ export default function useRelayerApproval(relayerAddress: Ref<string>) {
    * COMPOSABLES
    */
   const { getProvider, account } = useWeb3();
-
+  const relayerAddress = ref(
+    relayer === Relayer.LIDO
+      ? configService.network.addresses.lidoRelayer
+      : GP_RELAYER_CONTRACT_ADDRESS
+  );
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
@@ -35,7 +48,7 @@ export default function useRelayerApproval(relayerAddress: Ref<string>) {
    */
 
   const isUnlocked = computed(() =>
-    approved.value ? true : !!relayerApproval.data.value
+    approved.value || !isEnabled.value ? true : !!relayerApproval.data.value
   );
 
   /**
@@ -56,7 +69,10 @@ export default function useRelayerApproval(relayerAddress: Ref<string>) {
         id: tx.hash,
         type: 'tx',
         action: 'approve',
-        summary: t('transactionSummary.approveRelayer'),
+        summary:
+          relayer === Relayer.LIDO
+            ? t('transactionSummary.approveLidoRelayer')
+            : t('transactionSummary.approveGnosisRelayer'),
         details: {
           contractAddress: vaultAddress,
           spender: relayerAddress.value
@@ -67,6 +83,7 @@ export default function useRelayerApproval(relayerAddress: Ref<string>) {
         onTxConfirmed: () => {
           approving.value = false;
           approved.value = true;
+          relayerApproval.refetch.value();
         },
         onTxFailed: () => {
           approving.value = false;

@@ -61,7 +61,7 @@
       </template>
       <template v-slot:append>
         <div class="p-2">
-          <BalBtn size="xs" color="gray" outline @click="handleInMax">
+          <BalBtn size="xs" color="white" @click="handleInMax">
             {{ $t('max') }}
           </BalBtn>
         </div>
@@ -138,7 +138,7 @@
       </template>
       <template v-slot:append>
         <div class="p-2">
-          <BalBtn size="xs" color="gray" outline @click="handleOutMax">
+          <BalBtn size="xs" color="white" @click="handleOutMax">
             {{ $t('max') }}
           </BalBtn>
         </div>

@@ -7,7 +7,8 @@ export type QueryBuilder = (
 
 export enum PoolType {
   Weighted = 'Weighted',
-  Stable = 'Stable'
+  Stable = 'Stable',
+  MetaStable = 'MetaStable'
 }
 export type TimeTravelPeriod = '24h';
 
@@ -15,6 +16,7 @@ export interface PoolToken {
   address: string;
   balance: string;
   weight: string;
+  priceRate?: string;
 }
 
 export interface Pool {

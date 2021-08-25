@@ -31,6 +31,7 @@ export class PriceService {
   platformId: string;
   nativeAssetId: string;
   nativeAssetAddress: string;
+  appAddresses: { [key: string]: string };
 
   constructor(
     service: CoingeckoService,
@@ -42,6 +43,7 @@ export class PriceService {
     this.platformId = getPlatformId(this.appNetwork);
     this.nativeAssetId = getNativeAssetId(this.appNetwork);
     this.nativeAssetAddress = this.configService.network.nativeAsset.address;
+    this.appAddresses = this.configService.network.addresses;
   }
 
   async getNativeAssetPrice(): Promise<Price> {
@@ -66,6 +68,11 @@ export class PriceService {
     try {
       if (addresses.length / addressesPerRequest > 10)
         throw new Error('To many requests for rate limit.');
+
+      // TODO - remove once wsteth is supported
+      addresses = addresses.filter(
+        address => address !== this.appAddresses.wstETH
+      );
 
       addresses = addresses.map(address => this.addressMapIn(address));
       const pageCount = Math.ceil(addresses.length / addressesPerRequest);
@@ -112,6 +119,11 @@ export class PriceService {
     const now = Math.floor(Date.now() / 1000);
     const end = now - (now % twentyFourHourseInSecs);
     const start = end - days * twentyFourHourseInSecs;
+
+    // TODO - remove once wsteth is supported
+    addresses = addresses.filter(
+      address => address !== this.appAddresses.wstETH
+    );
 
     addresses = addresses.map(address => this.addressMapIn(address));
     const requests: Promise<HistoricalPriceResponse>[] = [];
@@ -167,7 +179,11 @@ export class PriceService {
           const value = result[key];
           const [timestamp, price] = value;
           if (timestamp > dayTimestamp * 1000) {
-            prices[dayTimestamp * 1000] = price;
+            // TODO - remove this conditional once coingecko supports wstETH
+            prices[dayTimestamp * 1000] =
+              address === this.appAddresses.stETH
+                ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
+                : price;
             dayTimestamp += twentyFourHourseInSecs;
           }
         }
