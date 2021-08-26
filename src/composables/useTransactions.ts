@@ -200,10 +200,7 @@ function updateTransaction(
 }
 
 function isSuccessfulTransaction(transaction: Transaction) {
-  return (
-    transaction.status === 'fulfilled' &&
-    transaction.replacementReason !== 'txCancel'
-  );
+  return transaction.status === 'fulfilled';
 }
 
 function isPendingTransactionStatus(status: TransactionStatus) {
@@ -325,7 +322,11 @@ export default function useTransactions() {
           const txReceipt = receipt as TransactionReceipt;
 
           updates.receipt = normalizeTxReceipt(txReceipt);
-          updates.status = txReceipt?.status === 1 ? 'fulfilled' : 'failed';
+          if (transaction.replacementReason === 'txCancel') {
+            updates.status = 'cancelled';
+          } else {
+            updates.status = txReceipt?.status === 1 ? 'fulfilled' : 'failed';
+          }
         } else {
           const orderReceipt = receipt as OrderReceipt;
 
@@ -352,11 +353,6 @@ export default function useTransactions() {
     const transaction = getTransaction(id, type);
 
     if (transaction != null) {
-      const transactionStatus: TransactionStatus =
-        transaction.replacementReason === 'txCancel'
-          ? 'cancelled'
-          : transaction.status;
-
       addNotification({
         type: isFinalizedTransactionStatus(transaction.status)
           ? isSuccessfulTransaction(transaction)
@@ -364,7 +360,7 @@ export default function useTransactions() {
             : 'error'
           : 'info',
         title: `${t(`transactionAction.${transaction.action}`)} ${t(
-          `transactionStatus.${transactionStatus}`
+          `transactionStatus.${transaction.status}`
         )}`,
         message: transaction.summary,
         transactionMetadata: {
