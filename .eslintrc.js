@@ -10,11 +10,13 @@ module.exports = {
     'eslint:recommended',
     '@vue/typescript/recommended',
     '@vue/prettier',
-    '@vue/prettier/@typescript-eslint'
+    '@vue/prettier/@typescript-eslint',
+    '@vue/typescript'
   ],
 
   parserOptions: {
-    ecmaVersion: 2020
+    ecmaVersion: 2020,
+    parser: '@typescript-eslint/parser'
   },
 
   rules: {
