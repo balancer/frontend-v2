@@ -45,8 +45,17 @@
               <template v-slot:activator>
                 <BalIcon name="alert-circle" class="text-red-500" />
               </template>
-              <div>
-                {{ $t(`transactionStatus.${transaction.status}`) }}
+              <div class="failed-reason-tooltip">
+                {{ $t(`transactionAction.${transaction.action}`) }}
+                {{
+                  $t(
+                    `transactionStatus.${
+                      transaction.replacementReason === 'txCancel'
+                        ? 'cancelled'
+                        : transaction.status
+                    }`
+                  )
+                }}
               </div>
             </BalTooltip>
           </template>
@@ -135,5 +144,11 @@ export default defineComponent({
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+.failed-reason-tooltip {
+  @apply lowercase;
+}
+.failed-reason-tooltip::first-letter {
+  @apply uppercase;
 }
 </style>
