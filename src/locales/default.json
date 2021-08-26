@@ -214,6 +214,7 @@
     "receipt": "Receipt",
     "recentActivityTitle": "Recent activity",
     "noRecentActivity": "Your recent activity will appear here…",
+    "switchNetwork": "Switch Network",
     "transactionAction": {
         "trade": "Trade",
         "approve": "Approve",
