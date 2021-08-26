@@ -5,6 +5,10 @@ module.exports = {
     node: true
   },
 
+  globals: {
+    NodeJS: true
+  },
+
   extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
@@ -27,7 +31,9 @@ module.exports = {
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/no-undef': 'off',
     '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/no-use-before-define': 'off'
+    '@typescript-eslint/no-use-before-define': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off'
   },
 
   overrides: [

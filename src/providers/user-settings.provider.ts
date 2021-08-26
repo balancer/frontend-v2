@@ -13,7 +13,7 @@ export interface UserSettingsState {
 
 export interface UserSettingsProviderResponse {
   currency: Ref<FiatCurrency>;
-  setCurrency: Function;
+  setCurrency: (newCurrency: FiatCurrency) => void;
 }
 
 /**
