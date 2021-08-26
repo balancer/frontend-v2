@@ -47,15 +47,7 @@
               </template>
               <div class="failed-reason-tooltip">
                 {{ $t(`transactionAction.${transaction.action}`) }}
-                {{
-                  $t(
-                    `transactionStatus.${
-                      transaction.replacementReason === 'txCancel'
-                        ? 'cancelled'
-                        : transaction.status
-                    }`
-                  )
-                }}
+                {{ $t(`transactionStatus.${transaction.status}`) }}
               </div>
             </BalTooltip>
           </template>
