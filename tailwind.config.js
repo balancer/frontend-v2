@@ -40,7 +40,8 @@ module.exports = {
     },
     boxShadow: {
       sm: '0 2px 4px 0 rgba(0,0,0,0.05)',
-      DEFAULT: '0 2px 4px 0 rgba(0,0,0,0.03), 0 10px 20px 0 rgba(0,0,0,0.02)',
+      DEFAULT:
+        '0px 4px 6px -1px rgba(0, 0, 0, 0.05), 0px 2px 4px -1px rgba(0, 0, 0, 0.05)',
       lg: '0 2px 4px 0 rgba(0,0,0,0.03), 0 10px 40px 0 rgba(0,0,0,0.05)',
       xl: '0 2px 4px 0 rgba(0,0,0,0.05), 0 0px 40px 0 rgba(0,0,0,0.1)',
       inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
@@ -106,16 +107,16 @@ module.exports = {
           900: '#1022d7'
         },
         pink: {
-          50: '#ff32ff',
-          100: '#ff28ff',
-          200: '#ff1eff',
-          300: '#ff14ff',
-          400: '#ff0aff',
-          500: '#ff00ff',
-          600: '#f500f5',
-          700: '#eb00eb',
-          800: '#e100e1',
-          900: '#d700d7'
+          50: '#ff4dff',
+          100: '#ff43ff',
+          200: '#ff39ff',
+          300: '#ff2fff',
+          400: '#fc25ff',
+          500: '#f21bf6',
+          600: '#e811ec',
+          700: '#de07e2',
+          800: '#d400d8',
+          900: '#ca00ce'
         }
       }
     }

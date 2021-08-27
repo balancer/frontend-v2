@@ -7,6 +7,7 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { sleep } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useUserSettings from '@/composables/useUserSettings';
+import { TOKENS } from '@/constants/tokens';
 
 /**
  * TYPES
@@ -34,7 +35,9 @@ export default function useTokenPricesQuery(
     const wstEthAddress = configService.network.addresses.wstETH;
     if (prices[stEthAddress]) {
       const stETHPrice = prices[stEthAddress][currency.value] || 0;
-      prices[wstEthAddress] = { [currency.value]: 1.0352 * stETHPrice };
+      prices[wstEthAddress] = {
+        [currency.value]: TOKENS.Prices.ExchangeRates.wstETH.stETH * stETHPrice
+      };
     }
 
     return prices;

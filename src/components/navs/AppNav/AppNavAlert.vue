@@ -2,8 +2,16 @@
   <div :class="['app-nav-alert', classes]">
     <div class="w-8" />
     <div class="flex-1 text-center flex items-center justify-center">
-      <BalIcon :name="iconName" class="mr-4" />
+      <BalIcon :name="iconName" size="lg" class="mr-4" />
       <span>{{ alert.label }}</span>
+      <BalBtn
+        v-if="alert.action && alert.actionLabel"
+        class="ml-4 cursor-pointer"
+        color="white"
+        size="xs"
+        :label="alert.actionLabel"
+        @click="alert.action"
+      />
     </div>
     <div v-if="!alert.persistant" class="w-8">
       <BalIcon name="x" class="cursor-pointer" @click="handleClose" />

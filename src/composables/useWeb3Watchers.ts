@@ -19,7 +19,8 @@ export default function useWeb3Watchers() {
     account,
     isMismatchedNetwork,
     isUnsupportedNetwork,
-    blockNumber
+    blockNumber,
+    connectToAppNetwork
   } = useWeb3();
   const { refetchBalances, refetchAllowances } = useTokens();
   const { handlePendingTransactions, updateTransaction } = useTransactions();
@@ -93,7 +94,9 @@ export default function useWeb3Watchers() {
         store.commit('alerts/setCurrent', {
           label: t('networkMismatch', [appNetworkConfig.name]),
           type: 'error',
-          persistant: true
+          persistant: true,
+          action: connectToAppNetwork,
+          actionLabel: t('switchNetwork')
         });
       } else {
         store.commit('alerts/setCurrent', null);

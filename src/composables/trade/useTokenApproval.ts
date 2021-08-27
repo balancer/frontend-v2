@@ -71,6 +71,9 @@ export default function useTokenApproval(
     };
   });
 
+  const isUnlockedV1 = computed(() => allowanceState.value.isUnlockedV1);
+  const isUnlockedV2 = computed(() => allowanceState.value.isUnlockedV2);
+
   /**
    * METHODS
    */
@@ -140,6 +143,8 @@ export default function useTokenApproval(
     approveV2,
     approveSpender,
     allowanceState,
+    isUnlockedV1,
+    isUnlockedV2,
     isLoading: dynamicDataLoading
   };
 }

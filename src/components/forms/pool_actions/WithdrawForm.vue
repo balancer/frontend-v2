@@ -163,7 +163,7 @@
           type="submit"
           :loading-label="$t('confirming')"
           color="gradient"
-          :disabled="!hasAmounts"
+          :disabled="!hasAmounts || isMismatchedNetwork"
           :loading="loading"
           block
           @click="trackGoal(Goals.ClickWithdraw)"
@@ -250,6 +250,7 @@ export default defineComponent({
     // COMPOSABLES
     const {
       isWalletReady,
+      isMismatchedNetwork,
       toggleWalletSelectModal,
       getProvider,
       account,
@@ -626,6 +627,7 @@ export default defineComponent({
       tokenWeights,
       fNum,
       isWalletReady,
+      isMismatchedNetwork,
       toggleWalletSelectModal,
       total,
       isProportional,

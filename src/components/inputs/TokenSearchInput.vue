@@ -2,7 +2,7 @@
   <div>
     <div class="flex items-center flex-wrap">
       <div class="flex items-center flex-wrap">
-        <BalBtn color="gray" outline size="sm" @click="onClick" class="mr-4">
+        <BalBtn color="white" size="sm" @click="onClick" class="mr-4">
           <BalIcon name="search" size="sm" class="mr-2" />
           {{ $t('filterByToken') }}
         </BalBtn>

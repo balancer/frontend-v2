@@ -3,8 +3,7 @@
     <template v-slot:activator>
       <BalBtn
         circle
-        outline
-        color="gray"
+        color="white"
         size="sm"
         class="mb-2 text-gray-500 icon-spin-anim"
         @click="onActivatorClick"
@@ -40,6 +39,24 @@
           :options="tradeLiquidityOptions"
           v-model="appTradeLiquidity"
           @update:modelValue="setTradeLiquidity"
+        />
+      </div>
+    </div>
+    <div v-if="!isPolygon" class="mt-6">
+      <div class="flex items-baseline">
+        <span v-text="$t('transactionType')" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div v-text="$t('ethereumTxTypeTooltip')" class="w-52" />
+        </BalTooltip>
+      </div>
+      <div class="flex mt-1">
+        <BalBtnGroup
+          :options="ethereumTxTypeOptions"
+          v-model="ethereumTxType"
+          @update:modelValue="setEthereumTxType"
         />
       </div>
     </div>
@@ -90,8 +107,13 @@ import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import useFathom from '@/composables/useFathom';
 
 import { TradeInterface } from '@/store/modules/app';
-import { tradeLiquidityOptions } from '@/constants/options';
+import {
+  tradeLiquidityOptions,
+  ethereumTxTypeOptions
+} from '@/constants/options';
 import useWeb3 from '@/services/web3/useWeb3';
+
+import useEthereumTxType from '@/composables/useEthereumTxType';
 
 export enum TradeSettingsContext {
   trade,
@@ -119,8 +141,9 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorerLinks, isV1Supported } = useWeb3();
+    const { explorerLinks, isV1Supported, isPolygon } = useWeb3();
     const { trackGoal, Goals } = useFathom();
+    const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
     // DATA
     const data = reactive({
@@ -169,7 +192,11 @@ export default defineComponent({
       setTransactionDeadline,
       fNum,
       explorer: explorerLinks,
-      onActivatorClick
+      onActivatorClick,
+      isPolygon,
+      ethereumTxType,
+      setEthereumTxType,
+      ethereumTxTypeOptions
     };
   }
 });

@@ -2,17 +2,16 @@
   <BalPopover no-pad>
     <template v-slot:activator>
       <BalBtn
-        color="gradient-pink-yellow"
-        rounded
+        color="white"
         class="mr-2 text-base"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
         <StarsIcon
-          class="stars-icon"
+          :class="{ 'mr-2': !upToLargeBreakpoint }"
           v-if="upToLargeBreakpoint ? !userClaimsLoading : true"
         />
-        <BalLoadingIcon size="sm" color="white" v-if="userClaimsLoading" />
+        <BalLoadingIcon size="sm" v-if="userClaimsLoading" />
         <span class="hidden lg:block" v-else>{{
           fNum(totalRewards, totalRewards > 0 ? 'token_fixed' : 'token')
         }}</span>
@@ -130,7 +129,8 @@ export default defineComponent({
       account,
       getProvider,
       isMainnet,
-      isPolygon
+      isPolygon,
+      isMismatchedNetwork
     } = useWeb3();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
@@ -210,6 +210,10 @@ export default defineComponent({
       rewardsEstimateSinceTimestamp.value = '0';
     });
 
+    watch(isMismatchedNetwork, () => {
+      userClaimsQuery.refetch.value();
+    });
+
     // METHODS
     async function claimAvailableRewards() {
       if (userClaims.value != null) {
@@ -271,8 +275,3 @@ export default defineComponent({
   }
 });
 </script>
-<style scoped>
-.stars-icon + * {
-  @apply ml-1;
-}
-</style>

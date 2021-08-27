@@ -53,10 +53,9 @@
         v-else
         :label="$t('preview')"
         :disabled="tradeDisabled"
-        :loading-label="$t('confirming')"
         color="gradient"
         block
-        @click.prevent="modalTradePreviewIsOpen = true"
+        @click.prevent="handlePreviewButton"
       />
       <div
         class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600 dark:bg-gray-800 dark:text-gray-400"
@@ -80,7 +79,7 @@
       v-if="modalTradePreviewIsOpen"
       :trading="trading"
       @trade="trade"
-      @close="modalTradePreviewIsOpen = false"
+      @close="handlePreviewModalClose"
     />
   </teleport>
 </template>
@@ -116,6 +115,9 @@ import { configService } from '@/services/config/config.service';
 
 import TradePairGP from './TradePairGP.vue';
 import useWeb3 from '@/services/web3/useWeb3';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 
 const { nativeAsset } = configService.network;
 
@@ -176,14 +178,14 @@ export default defineComponent({
 
     const isHighPriceImpact = computed(
       () =>
-        trading.sor.errors.value.highPriceImpact &&
+        trading.sor.validationErrors.value.highPriceImpact &&
         !dismissedErrors.value.highPriceImpact
     );
 
     const tradeDisabled = computed(() => {
       const hasValidationErrors = errorMessage.value !== TradeValidation.VALID;
       const hasGnosisErrors =
-        trading.isGnosisTrade.value && trading.gnosis.hasErrors.value;
+        trading.isGnosisTrade.value && trading.gnosis.hasValidationErrors.value;
       const hasBalancerErrors =
         trading.isBalancerTrade.value && isHighPriceImpact.value;
 
@@ -191,13 +193,14 @@ export default defineComponent({
     });
 
     useTokenApproval(tokenInAddress, tokenInAmount, tokens);
+    useRelayerApproval(Relayer.GNOSIS, trading.isGnosisTrade);
 
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {
-        return `${t('wrap')} ${nativeAsset.symbol}`;
+        return `${t('wrap')} ${trading.tokenIn.value.symbol}`;
       }
       if (trading.wrapType.value === WrapType.Unwrap) {
-        return `${t('unwrap')} ${nativeAsset.symbol}`;
+        return `${t('unwrap')} ${trading.tokenOut.value.symbol}`;
       }
       return t('trade');
     });
@@ -229,13 +232,13 @@ export default defineComponent({
       }
 
       if (trading.isGnosisTrade.value) {
-        if (trading.gnosis.errors.value.feeExceedsPrice) {
+        if (trading.gnosis.validationErrors.value.feeExceedsPrice) {
           return {
             header: t('gnosisErrors.lowAmount.header'),
             body: t('gnosisErrors.lowAmount.body')
           };
         }
-        if (trading.gnosis.errors.value.priceExceedsBalance) {
+        if (trading.gnosis.validationErrors.value.priceExceedsBalance) {
           return {
             header: t('gnosisErrors.lowBalance.header', [
               trading.tokenIn.value.symbol
@@ -289,7 +292,7 @@ export default defineComponent({
     }
 
     function handleErrorButtonClick() {
-      if (trading.sor.errors.value.highPriceImpact) {
+      if (trading.sor.validationErrors.value.highPriceImpact) {
         dismissedErrors.value.highPriceImpact = true;
       }
     }
@@ -319,6 +322,18 @@ export default defineComponent({
       tokenInAddress.value = TOKENS.AddressMap[appNetworkConfig.key].WETH;
     }
 
+    function handlePreviewButton() {
+      trading.resetSubmissionError();
+
+      modalTradePreviewIsOpen.value = true;
+    }
+
+    function handlePreviewModalClose() {
+      trading.resetSubmissionError();
+
+      modalTradePreviewIsOpen.value = false;
+    }
+
     // INIT
     populateInitialTokens();
 
@@ -345,6 +360,8 @@ export default defineComponent({
       isRequired,
       tradeDisabled,
       tradeCardShadow,
+      handlePreviewButton,
+      handlePreviewModalClose,
 
       // methods
       trade,

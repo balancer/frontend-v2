@@ -136,8 +136,7 @@
           <div class="p-2">
             <BalBtn
               size="xs"
-              color="gray"
-              outline
+              color="white"
               @click.prevent="amounts[i] = tokenBalance(i).toString()"
             >
               {{ $t('max') }}
@@ -249,7 +248,7 @@
             type="submit"
             :loading-label="$t('confirming')"
             color="gradient"
-            :disabled="!hasAmounts || !hasValidInputs"
+            :disabled="!hasAmounts || !hasValidInputs || isMismatchedNetwork"
             :loading="loading"
             block
             @click="trackGoal(Goals.ClickInvest)"
@@ -352,6 +351,7 @@ export default defineComponent({
     // COMPOSABLES
     const {
       isWalletReady,
+      isMismatchedNetwork,
       account,
       toggleWalletSelectModal,
       getProvider,
@@ -711,6 +711,7 @@ export default defineComponent({
       amountRules,
       total,
       isWalletReady,
+      isMismatchedNetwork,
       toggleWalletSelectModal,
       formatBalance,
       isProportional,
