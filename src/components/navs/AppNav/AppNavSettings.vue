@@ -140,7 +140,7 @@
       />
     </div>
     <!-- Hide Gnosis interface switch for now -->
-    <div v-if="!isPolygon" class="px-4 mt-6">
+    <div v-if="isGnosisSupportedNetwork" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('tradeInterface')" class="font-medium mb-2" />
         <BalTooltip>
@@ -178,6 +178,7 @@ import {
   getConnectorName,
   getConnectorLogo
 } from '@/services/web3/web3.plugin';
+import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -250,6 +251,9 @@ export default defineComponent({
     const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
     const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
     const supportsEIP1559 = computed(() => appNetworkConfig.supportsEIP1559);
+    const isGnosisSupportedNetwork = computed(() =>
+      GP_SUPPORTED_NETWORKS.includes(chainId)
+    );
 
     // METHODS
     const setDarkMode = val => store.commit('app/setDarkMode', val);
@@ -289,6 +293,7 @@ export default defineComponent({
       hideLiquidity,
       hideDisconnect,
       supportsEIP1559,
+      isGnosisSupportedNetwork,
       // methods
       disconnectWallet,
       setDarkMode,
