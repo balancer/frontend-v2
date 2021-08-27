@@ -30,6 +30,9 @@ export default class BalancerSubgraphService {
         return 13;
       case '137':
         return 2;
+      case '42161':
+        // TODO: Replace this with a more realistic number once activity picks up
+        return 13;
       case '42':
         // Should be ~4s but this causes subgraph to return with unindexed block error.
         return 1;
