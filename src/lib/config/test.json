@@ -13,6 +13,7 @@
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange/pools",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
+  "supportsEIP1559": true,
   "nativeAsset": {
     "name": "Ether",
     "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",

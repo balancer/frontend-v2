@@ -47,6 +47,9 @@ export default function useWeb3() {
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isMainnet = computed(() => appNetworkConfig.chainId === 1);
   const isPolygon = computed(() => appNetworkConfig.chainId === 137);
+  const isEIP1559SupportedNetwork = computed(
+    () => appNetworkConfig.supportsEIP1559
+  );
   const canLoadProfile = computed(
     () => account.value !== '' && userNetworkConfig.value?.chainId !== 0
   );
@@ -116,6 +119,7 @@ export default function useWeb3() {
     isV1Supported,
     isMainnet,
     isPolygon,
+    isEIP1559SupportedNetwork,
 
     // methods
     connectWallet,

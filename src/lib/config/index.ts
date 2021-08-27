@@ -21,6 +21,7 @@ export interface Config {
   subgraph: string;
   poolsUrlV1: string;
   poolsUrlV2: string;
+  supportsEIP1559: boolean;
   nativeAsset: {
     name: string;
     address: string;
