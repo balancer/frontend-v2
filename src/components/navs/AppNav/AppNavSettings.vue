@@ -123,7 +123,7 @@
         @update:modelValue="setTradeLiquidity"
       />
     </div>
-    <div v-if="supportsEIP1559" class="px-4 mt-6">
+    <div v-if="isEIP1559SupportedNetwork" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('transactionType')" class="font-medium mb-2" />
         <BalTooltip>
@@ -250,7 +250,9 @@ export default defineComponent({
 
     const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
     const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
-    const supportsEIP1559 = computed(() => appNetworkConfig.supportsEIP1559);
+    const isEIP1559SupportedNetwork = computed(
+      () => appNetworkConfig.supportsEIP1559
+    );
     const isGnosisSupportedNetwork = computed(() =>
       GP_SUPPORTED_NETWORKS.includes(chainId)
     );
@@ -292,7 +294,7 @@ export default defineComponent({
       connectorLogo,
       hideLiquidity,
       hideDisconnect,
-      supportsEIP1559,
+      isEIP1559SupportedNetwork,
       isGnosisSupportedNetwork,
       // methods
       disconnectWallet,

@@ -42,7 +42,7 @@
         />
       </div>
     </div>
-    <div v-if="supportsEIP1559" class="mt-6">
+    <div v-if="isEIP1559SupportedNetwork" class="mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('transactionType')" class="font-medium mb-2" />
         <BalTooltip>
@@ -161,7 +161,9 @@ export default defineComponent({
     const hideLiquidity = computed(
       () => !isV1Supported || context.value === TradeSettingsContext.invest
     );
-    const supportsEIP1559 = computed(() => appNetworkConfig.supportsEIP1559);
+    const isEIP1559SupportedNetwork = computed(
+      () => appNetworkConfig.supportsEIP1559
+    );
 
     // METHODS
     const setTradeLiquidity = tradeLiquidity =>
@@ -188,13 +190,13 @@ export default defineComponent({
       appTradeInterface,
       appTransactionDeadline,
       hideLiquidity,
+      isEIP1559SupportedNetwork,
       // methods
       setTradeLiquidity,
       setTransactionDeadline,
       fNum,
       explorer: explorerLinks,
       onActivatorClick,
-      supportsEIP1559,
       ethereumTxType,
       setEthereumTxType,
       ethereumTxTypeOptions
