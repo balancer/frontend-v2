@@ -43,6 +43,7 @@ export interface DecoratedPool extends Pool {
     apr: {
       pool: string;
       liquidityMining: string;
+      liquidityMiningBreakdown: { [address: string]: string };
       total: string;
     };
     fees: string;
