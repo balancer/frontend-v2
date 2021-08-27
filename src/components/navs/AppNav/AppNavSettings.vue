@@ -139,7 +139,6 @@
         @update:modelValue="setEthereumTxType"
       />
     </div>
-    <!-- Hide Gnosis interface switch for now -->
     <div v-if="isGnosisSupportedNetwork" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('tradeInterface')" class="font-medium mb-2" />
