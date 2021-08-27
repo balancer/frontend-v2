@@ -250,7 +250,7 @@ export default defineComponent({
     const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
     const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
     const isGnosisSupportedNetwork = computed(() =>
-      GP_SUPPORTED_NETWORKS.includes(chainId)
+      GP_SUPPORTED_NETWORKS.includes(chainId.value)
     );
 
     // METHODS
