@@ -8,7 +8,7 @@ import { isStable } from '@/composables/usePool';
 export default class ExitParams {
   private exchange: PoolExchange;
   private isStablePool: boolean;
-  private dataEncodeFn: Function;
+  private dataEncodeFn: (data: any) => string;
   private toInternalBalance = false;
 
   constructor(exchange) {

@@ -52,7 +52,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { priceFor } = useTokens();
 
-    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? {};
+    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? [];
     const eligibleAssets = Object.fromEntries(
       eligibleAssetMeta.map(address => {
         return [address.toLowerCase(), ''];
