@@ -29,13 +29,6 @@ import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import useTailwind from '@/composables/useTailwind';
 import useDarkMode from '@/composables/useDarkMode';
 
-interface HistoryItem {
-  timestamp: number;
-  price: number[];
-  amounts: string[];
-  totalShares: string;
-}
-
 export default defineComponent({
   name: 'PoolChart',
 

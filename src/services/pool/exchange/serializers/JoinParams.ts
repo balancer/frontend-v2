@@ -8,7 +8,7 @@ import { isStable } from '@/composables/usePool';
 export default class JoinParams {
   private exchange: PoolExchange;
   private isStablePool: boolean;
-  private dataEncodeFn: Function;
+  private dataEncodeFn: (data: any) => string;
   private fromInternalBalance = false;
 
   constructor(exchange) {

@@ -242,7 +242,7 @@
             name="highPiAccepted"
             class="text-gray-500 mb-12"
             size="sm"
-            :label="$t('priceImpactAccept')"
+            :label="$t('priceImpactAccept', [$t('depositing')])"
           />
           <BalBtn
             type="submit"

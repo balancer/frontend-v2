@@ -7,10 +7,14 @@
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
+    "allowJs": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
     "types": [
       "node",
       "webpack-env",
@@ -26,10 +30,7 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ],
-    "noImplicitAny": false,
-    "resolveJsonModule": true,
-    "skipLibCheck": true
+    ]
   },
   "include": [
     "src/**/*.ts",

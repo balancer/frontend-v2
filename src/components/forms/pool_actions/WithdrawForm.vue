@@ -157,7 +157,7 @@
           name="highPiAccepted"
           class="text-gray-500 mb-8"
           size="sm"
-          :label="$t('priceImpactAccept')"
+          :label="$t('priceImpactAccept', [$t('withdrawing')])"
         />
         <BalBtn
           type="submit"
