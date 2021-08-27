@@ -72,6 +72,7 @@ export interface TokensProviderResponse {
   priceFor: (address: string) => number;
   balanceFor: (address: string) => string;
   getTokens: (addresses: string[]) => TokenInfoMap;
+  getToken: (address: string) => TokenInfo;
 }
 
 /**
@@ -357,6 +358,13 @@ export default {
     }
 
     /**
+     * Get single token from state
+     */
+    function getToken(address: string): TokenInfo {
+      return tokens.value[address];
+    }
+
+    /**
      * CALLBACKS
      */
     onBeforeMount(async () => {
@@ -394,7 +402,8 @@ export default {
       approvalsRequired,
       priceFor,
       balanceFor,
-      getTokens
+      getTokens,
+      getToken
     });
 
     return () => slots.default();

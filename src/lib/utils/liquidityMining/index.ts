@@ -49,6 +49,23 @@ export function computeAPRForPool(
     : '0';
 }
 
+export function computeAPRsForPool(
+  tokenRewards: LiquidityMiningTokenRewards[],
+  prices: TokenPrices,
+  currency: FiatCurrency,
+  totalLiquidity: string
+): { [address: string]: string } {
+  const rewardAPRs = tokenRewards.map(reward => [
+    getAddress(reward.tokenAddress),
+    computeAPRForPool(
+      reward.amount,
+      prices[getAddress(reward.tokenAddress)][currency],
+      totalLiquidity
+    )
+  ]);
+  return Object.fromEntries(rewardAPRs);
+}
+
 export function computeTotalAPRForPool(
   tokenRewards: LiquidityMiningTokenRewards[],
   prices: TokenPrices,
