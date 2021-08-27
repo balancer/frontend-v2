@@ -35,7 +35,7 @@
     "animejs": "^3.2.1",
     "autoprefixer": "^9.8.6",
     "axios": "0.21.1",
-    "bnc-sdk": "^3.4.1",
+    "bnc-sdk": "^3.5.0",
     "date-fns": "^2.21.1",
     "echarts": "^5.1.0",
     "ethereumjs-util": "^7.0.7",
