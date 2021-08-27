@@ -141,7 +141,7 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorerLinks, isV1Supported, appNetworkConfig } = useWeb3();
+    const { explorerLinks, isV1Supported, isEIP1559SupportedNetwork } = useWeb3();
     const { trackGoal, Goals } = useFathom();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
@@ -160,9 +160,6 @@ export default defineComponent({
     );
     const hideLiquidity = computed(
       () => !isV1Supported || context.value === TradeSettingsContext.invest
-    );
-    const isEIP1559SupportedNetwork = computed(
-      () => appNetworkConfig.supportsEIP1559
     );
 
     // METHODS
