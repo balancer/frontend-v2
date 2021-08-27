@@ -141,7 +141,11 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorerLinks, isV1Supported, isEIP1559SupportedNetwork } = useWeb3();
+    const {
+      explorerLinks,
+      isV1Supported,
+      isEIP1559SupportedNetwork
+    } = useWeb3();
     const { trackGoal, Goals } = useFathom();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
