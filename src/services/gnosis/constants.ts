@@ -5,6 +5,10 @@ import {
   GPv2VaultRelayer
 } from '@gnosis.pm/gp-v2-contracts/networks.json';
 
+export const GP_SUPPORTED_NETWORKS = Object.keys(GPv2VaultRelayer).map(
+  parseInt
+);
+
 export const OPERATOR_URLS = {
   [Network.MAINNET]: IS_DEV
     ? 'https://protocol-mainnet.dev.gnosisdev.com/api'

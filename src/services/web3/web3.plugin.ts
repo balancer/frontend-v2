@@ -13,8 +13,6 @@ import { GnosisSafeConnector } from './connectors/gnosis/gnosis.connector';
 import { WalletLinkConnector } from './connectors/walletlink/walletlink.connector';
 import { PortisConnector } from './connectors/portis/portis.connector';
 import useFathom from '@/composables/useFathom';
-import { configService } from '../config/config.service';
-import { switchToAppNetwork } from './utils/helpers';
 
 import defaultLogo from '@/assets/images/connectors/default.svg';
 import fortmaticLogo from '@/assets/images/connectors/fortmatic.svg';
@@ -144,19 +142,6 @@ export default {
           lsSet('connectedProvider', wallet);
           pluginState.walletState = 'connected';
 
-          if (
-            configService.env.NETWORK !== chainId.value &&
-            connector.id === 'injected'
-          ) {
-            // this will also as the user to switch to Polygon, if already added
-            const result = await switchToAppNetwork(connector.provider);
-            if (!result) {
-              return;
-            }
-            if (chainId.value !== configService.network.chainId) {
-              await connectWallet(wallet);
-            }
-          }
           trackGoal(Goals.ConnectedWallet);
         }
       } catch (err) {

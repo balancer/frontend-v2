@@ -15,11 +15,12 @@ export default function useWeb3Watchers() {
   const { blocknative, supportsBlocknative } = useBlocknative();
   const {
     appNetworkConfig,
-    userNetworkConfig,
+    chainId,
     account,
     isMismatchedNetwork,
     isUnsupportedNetwork,
-    blockNumber
+    blockNumber,
+    connectToAppNetwork
   } = useWeb3();
   const { refetchBalances, refetchAllowances } = useTokens();
   const { handlePendingTransactions, updateTransaction } = useTransactions();
@@ -74,32 +75,19 @@ export default function useWeb3Watchers() {
 
   // Watch for user network switch
   // -> Display alert message if unsupported or not the same as app network.
-  watch(
-    () => userNetworkConfig.value?.name,
-    () => {
-      if (isUnsupportedNetwork.value) {
-        const localeKey = userNetworkConfig.value?.name
-          ? 'unavailableOnNetworkWithName'
-          : 'unavailableOnNetwork';
-        store.commit('alerts/setCurrent', {
-          label: t(localeKey, [
-            userNetworkConfig.value?.name,
-            appNetworkConfig.name
-          ]),
-          type: 'error',
-          persistant: true
-        });
-      } else if (isMismatchedNetwork.value) {
-        store.commit('alerts/setCurrent', {
-          label: t('networkMismatch', [appNetworkConfig.name]),
-          type: 'error',
-          persistant: true
-        });
-      } else {
-        store.commit('alerts/setCurrent', null);
-      }
+  watch(chainId, () => {
+    if (isUnsupportedNetwork.value || isMismatchedNetwork.value) {
+      store.commit('alerts/setCurrent', {
+        label: t('networkMismatch', [appNetworkConfig.name]),
+        type: 'error',
+        persistant: true,
+        action: connectToAppNetwork,
+        actionLabel: t('switchNetwork')
+      });
+    } else {
+      store.commit('alerts/setCurrent', null);
     }
-  );
+  });
 
   watch(blockNumber, async () => {
     handlePendingTransactions();

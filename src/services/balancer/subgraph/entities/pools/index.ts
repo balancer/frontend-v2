@@ -12,7 +12,8 @@ import {
 import { getAddress } from '@ethersproject/address';
 import {
   currentLiquidityMiningRewards,
-  computeTotalAPRForPool
+  computeTotalAPRForPool,
+  computeAPRsForPool
 } from '@/lib/utils/liquidityMining';
 import { NetworkId } from '@/constants/network';
 import { configService as _configService } from '@/services/config/config.service';
@@ -78,7 +79,8 @@ export default class Pools {
       const fees = this.calcFees(pool, pastPool);
       const {
         hasLiquidityMiningRewards,
-        liquidityMiningAPR
+        liquidityMiningAPR,
+        liquidityMiningBreakdown
       } = this.calcLiquidityMiningAPR(pool, prices, currency);
       const totalAPR = this.calcTotalAPR(poolAPR, liquidityMiningAPR);
 
@@ -92,6 +94,7 @@ export default class Pools {
           apr: {
             pool: poolAPR,
             liquidityMining: liquidityMiningAPR,
+            liquidityMiningBreakdown,
             total: totalAPR
           }
         }
@@ -138,6 +141,7 @@ export default class Pools {
     currency: FiatCurrency
   ) {
     let liquidityMiningAPR = '0';
+    let liquidityMiningBreakdown = {};
 
     const liquidityMiningRewards = currentLiquidityMiningRewards[pool.id];
 
@@ -152,15 +156,22 @@ export default class Pools {
         currency,
         pool.totalLiquidity
       );
+      liquidityMiningBreakdown = computeAPRsForPool(
+        liquidityMiningRewards,
+        prices,
+        currency,
+        pool.totalLiquidity
+      );
     }
 
     return {
       hasLiquidityMiningRewards,
-      liquidityMiningAPR
+      liquidityMiningAPR,
+      liquidityMiningBreakdown
     };
   }
 
-  private calcTotalAPR(poolAPR: string, liquidityMiningAPR: string) {
+  private calcTotalAPR(poolAPR: string, liquidityMiningAPR: string): string {
     return bnum(poolAPR)
       .plus(liquidityMiningAPR)
       .toString();

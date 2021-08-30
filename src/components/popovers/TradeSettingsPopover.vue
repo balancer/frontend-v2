@@ -42,7 +42,7 @@
         />
       </div>
     </div>
-    <div v-if="!isPolygon" class="mt-6">
+    <div v-if="isEIP1559SupportedNetwork" class="mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('transactionType')" class="font-medium mb-2" />
         <BalTooltip>
@@ -141,7 +141,11 @@ export default defineComponent({
     // COMPOSABLES
     const store = useStore();
     const { fNum } = useNumbers();
-    const { explorerLinks, isV1Supported, isPolygon } = useWeb3();
+    const {
+      explorerLinks,
+      isV1Supported,
+      isEIP1559SupportedNetwork
+    } = useWeb3();
     const { trackGoal, Goals } = useFathom();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
@@ -187,13 +191,13 @@ export default defineComponent({
       appTradeInterface,
       appTransactionDeadline,
       hideLiquidity,
+      isEIP1559SupportedNetwork,
       // methods
       setTradeLiquidity,
       setTransactionDeadline,
       fNum,
       explorer: explorerLinks,
       onActivatorClick,
-      isPolygon,
       ethereumTxType,
       setEthereumTxType,
       ethereumTxTypeOptions

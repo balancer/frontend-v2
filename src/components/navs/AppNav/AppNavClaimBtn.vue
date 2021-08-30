@@ -129,7 +129,8 @@ export default defineComponent({
       account,
       getProvider,
       isMainnet,
-      isPolygon
+      isPolygon,
+      isMismatchedNetwork
     } = useWeb3();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
@@ -207,6 +208,10 @@ export default defineComponent({
 
     watch(account, () => {
       rewardsEstimateSinceTimestamp.value = '0';
+    });
+
+    watch(isMismatchedNetwork, () => {
+      userClaimsQuery.refetch.value();
     });
 
     // METHODS

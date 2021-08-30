@@ -36,7 +36,27 @@ export const POLYGON_GOALS = {
   Swapped: 'I7LE2TCF'
 };
 
+export const ARBITRUM_GOALS = {
+  ClickPoolsTableRow: 'GKYSMFMZ',
+  ClickHeroConnectWallet: 'IRWB5VYE',
+  ClickHeroLearnMore: 'KPAIEVXF',
+  ClickNavConnectWallet: '6HAIHTDA',
+  ClickNavTrade: 'UVPTCRLT',
+  ClickNavInvest: 'PY4Y2MVQ',
+  ClickNavLogo: 'CM7GNSUL',
+  ClickInvestSettings: 'Q116SYIE',
+  ClickTradeSettings: 'NO9X5OES',
+  ClickInvest: 'CHQGCNCH',
+  ClickWithdraw: 'DFD61BMK',
+  Invested: 'SVKASX5R',
+  Withdrawal: 'KHW0PABJ',
+  ConnectedWallet: '4V2BGAGL',
+  ClickSwap: '9MAKWBEK',
+  Swapped: 'NXCV9WGC'
+};
+
 export const GOALS_MAP = {
   '1': MAINNET_GOALS,
-  '137': POLYGON_GOALS
+  '137': POLYGON_GOALS,
+  '42161': ARBITRUM_GOALS
 };

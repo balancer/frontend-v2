@@ -1,7 +1,5 @@
 import GasPriceService from '@/services/gas-price/gas-price.service';
 
-type Prices = Record<string, number>;
-
 interface MarketState {
   gasPrice: number;
   loading: boolean;

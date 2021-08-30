@@ -30,8 +30,8 @@ export interface TokenListsProviderResponse {
   balancerTokenLists: ComputedRef<TokenListMap>;
   approvedTokenLists: ComputedRef<TokenListMap>;
   vettedTokenList: ComputedRef<TokenList>;
-  toggleTokenList: Function;
-  isActiveList: Function;
+  toggleTokenList: (uri: string) => void;
+  isActiveList: (uri: string) => boolean;
 }
 
 /** SETUP */
