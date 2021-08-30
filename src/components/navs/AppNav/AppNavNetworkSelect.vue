@@ -81,6 +81,12 @@ export default defineComponent({
         name: 'Polygon',
         subdomain: 'polygon',
         key: '137'
+      },
+      {
+        id: 'arbitrum',
+        name: 'Arbitrum',
+        subdomain: 'arbitrum',
+        key: '42161'
       }
     ];
 

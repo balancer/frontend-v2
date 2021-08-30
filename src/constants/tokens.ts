@@ -18,6 +18,10 @@ export const TOKENS = {
     '137': {
       WETH: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
       BAL: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'
+    },
+    '42161': {
+      WETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+      BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8'
     }
   },
   Prices: {
@@ -37,6 +41,16 @@ export const TOKENS = {
           '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         '0x04df6e4121c27713ed22341e7c7df330f56f289b':
           '0x6b175474e89094c44da98b954eedeac495271d0f'
+      },
+      '42161': {
+        '0x82af49447d8a07e3bd95bd0d56f35241523fbab1':
+          '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        '0x040d1edc9569d4bab2d15287dc5a4f10f56a56b8':
+          '0xba100000625a3754423978a60c9317c58a424e3d',
+        '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f':
+          '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+        '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8':
+          '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
       }
     },
     // TODO - remove once coingecko supports wstETH
