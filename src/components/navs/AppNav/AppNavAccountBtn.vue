@@ -10,10 +10,10 @@
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
-        <Avatar :address="account" :profile="profile" :size="avatarSize" />
+        <Avatar :address="account" :size="avatarSize" />
         <span
-          v-if="profile.ens"
-          v-text="profile.ens"
+          v-if="profile && profile.ens"
+          v-text="profile && profile.ens"
           class="pl-2 hidden lg:inline-block"
         />
         <span

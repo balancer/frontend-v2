@@ -18,6 +18,6 @@ export default {
     Jazzicon
   },
 
-  props: ['address', 'size', 'profile']
+  props: ['address', 'size']
 };
 </script>
