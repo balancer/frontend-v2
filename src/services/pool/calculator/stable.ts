@@ -23,11 +23,9 @@ export default class Stable {
   public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
     const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
-    const denormAmounts = this.calc.denormAmounts(
-      tokenAmounts,
-      this.calc.poolTokenDecimals.map(() => 18)
+    const amounts = this.calc.pool.tokens.map(({ priceRate }, i) =>
+      this.scaleInput(tokenAmounts[i], priceRate)
     );
-    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
     const bptOut = SDK.StableMath._calcBptOutGivenExactTokensIn(
       ampAdjusted,
@@ -40,6 +38,7 @@ export default class Stable {
     return this.scaleOutput(
       bptOut.toString(),
       this.calc.poolDecimals,
+      '1',
       BigNumber.ROUND_DOWN // If OUT given IN, round down
     );
   }
@@ -48,11 +47,9 @@ export default class Stable {
     const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
 
-    const denormAmounts = this.calc.denormAmounts(
-      tokenAmounts,
-      this.calc.poolTokenDecimals.map(() => 18)
+    const amounts = this.calc.pool.tokens.map(({ priceRate }, i) =>
+      this.scaleInput(tokenAmounts[i], priceRate)
     );
-    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
     const bptIn = SDK.StableMath._calcBptInGivenExactTokensOut(
       ampAdjusted,
@@ -65,6 +62,7 @@ export default class Stable {
     return this.scaleOutput(
       bptIn.toString(),
       this.calc.poolDecimals,
+      '1',
       BigNumber.ROUND_UP // If IN given OUT, round up
     );
   }
@@ -72,8 +70,8 @@ export default class Stable {
   public bptInForExactTokenOut(amount: string, tokenIndex: number): BigNumber {
     const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
-    const amounts = this.calc.pool.tokenAddresses.map((address, i) => {
-      if (i === tokenIndex) return bnum(parseUnits(amount, 18).toString());
+    const amounts = this.calc.pool.tokens.map(({ priceRate }, i) => {
+      if (i === tokenIndex) return this.scaleInput(amount, priceRate);
       return bnum('0');
     });
 
@@ -88,6 +86,7 @@ export default class Stable {
     return this.scaleOutput(
       bptIn.toString(),
       this.calc.poolDecimals,
+      '1',
       BigNumber.ROUND_UP // If IN given OUT, round up
     );
   }
@@ -100,12 +99,13 @@ export default class Stable {
       return this.scaleOutput(
         '0',
         this.calc.poolTokenDecimals[tokenIndex],
+        this.calc.pool.tokens[tokenIndex]?.priceRate ?? '1',
         BigNumber.ROUND_DOWN // If OUT given IN, round down
       );
 
     const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
-    const bptAmountIn = bnum(parseUnits(bptAmount, 18).toString());
+    const bptAmountIn = this.scaleInput(bptAmount);
 
     const tokenAmountOut = SDK.StableMath._calcTokenOutGivenExactBptIn(
       ampAdjusted,
@@ -119,6 +119,7 @@ export default class Stable {
     return this.scaleOutput(
       tokenAmountOut.toString(),
       this.calc.poolTokenDecimals[tokenIndex],
+      this.calc.pool.tokens[tokenIndex]?.priceRate ?? '1',
       BigNumber.ROUND_DOWN // If OUT given IN, round down
     );
   }
@@ -202,9 +203,10 @@ export default class Stable {
         balance,
         this.calc.poolTokenDecimals[i]
       );
-      const scaledBalance = parseUnits(normalizedBalance, 18)
-        .mul(parseUnits(this.calc.pool.tokens[i].priceRate ?? '1', 18))
-        .div(parseUnits('1', 18));
+      const scaledBalance = this.scaleInput(
+        normalizedBalance,
+        this.calc.pool.tokens[i].priceRate
+      );
       return bnum(scaledBalance.toString());
     });
   }
@@ -218,15 +220,27 @@ export default class Stable {
     return bnum(scaledSupply.toString());
   }
 
+  private scaleInput(normalizedAmount: string, priceRate = '1'): BigNumber {
+    const denormAmount = bnum(parseUnits(normalizedAmount, 18).toString())
+      .times(priceRate)
+      .toFixed(0, BigNumber.ROUND_UP);
+
+    return bnum(denormAmount.toString());
+  }
+
   private scaleOutput(
     amount: string,
     decimals: number,
+    priceRate: string,
     rounding: BigNumber.RoundingMode
   ): BigNumber {
-    const normalizedAmount = bnum(formatUnits(amount, 18)).toFixed(
-      decimals,
-      rounding
-    );
+    const amountAfterPriceRate = bnum(amount)
+      .div(priceRate)
+      .toString();
+
+    const normalizedAmount = bnum(amountAfterPriceRate)
+      .div(parseUnits('1', 18).toString())
+      .toFixed(decimals, rounding);
     const scaledAmount = parseUnits(normalizedAmount, decimals);
 
     return bnum(scaledAmount.toString());
