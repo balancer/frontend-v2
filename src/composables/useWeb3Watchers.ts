@@ -15,7 +15,6 @@ export default function useWeb3Watchers() {
   const { blocknative, supportsBlocknative } = useBlocknative();
   const {
     appNetworkConfig,
-    userNetworkConfig,
     chainId,
     account,
     isMismatchedNetwork,
