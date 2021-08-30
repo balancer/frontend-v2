@@ -46,6 +46,11 @@
         $t('exploreBalancerV1Pools')
       }}</BalLink>
     </div>
+
+    <div class="mt-16">
+
+    <FeaturedPools />
+    </div>
   </div>
 </template>
 
@@ -55,6 +60,7 @@ import { useRouter } from 'vue-router';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
+import FeaturedPools from '@/components/sections/FeaturedPools.vue';
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
@@ -62,7 +68,8 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 export default defineComponent({
   components: {
     TokenSearchInput,
-    PoolsTable
+    PoolsTable,
+    FeaturedPools
   },
 
   setup() {

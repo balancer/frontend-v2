@@ -1,5 +1,5 @@
 <template>
-  <div :class="['bal-card', cardClasses]">
+  <div :class="['bal-card overflow-hidden', cardClasses]">
     <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
       <component :is="titleTag" v-if="!!title" v-text="title" />
       <div v-if="$slots.header" class="flex-1 flex items-center">
@@ -29,6 +29,7 @@ export default defineComponent({
     noContentPad: { type: Boolean, default: false },
     noBorder: { type: Boolean, default: false },
     darkBgColor: { type: String, default: '850' },
+    maxHeight: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: '',
@@ -48,7 +49,8 @@ export default defineComponent({
         'rounded-lg': !props.square,
         [`bg-white dark:bg-gray-${props.darkBgColor}`]: true,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
-        [borderClasses.value]: !props.noBorder
+        [borderClasses.value]: !props.noBorder,
+        'h-full': props.maxHeight
       };
     });
 
