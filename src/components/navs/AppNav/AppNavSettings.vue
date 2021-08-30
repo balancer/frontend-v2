@@ -219,12 +219,12 @@ export default defineComponent({
     const {
       explorerLinks,
       account,
-      chainId,
       disconnectWallet,
       connector,
       isV1Supported,
       isEIP1559SupportedNetwork,
-      userNetworkConfig
+      userNetworkConfig,
+      appNetworkConfig
     } = useWeb3();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
@@ -262,7 +262,7 @@ export default defineComponent({
     const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
     const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
     const isGnosisSupportedNetwork = computed(() =>
-      GP_SUPPORTED_NETWORKS.includes(chainId.value)
+      GP_SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId)
     );
 
     // METHODS
@@ -292,7 +292,6 @@ export default defineComponent({
       // computed
       account,
       appTradeLiquidity,
-      chainId,
       appTradeInterface,
       networkName,
       networkColorClass,
