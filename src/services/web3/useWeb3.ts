@@ -40,9 +40,14 @@ export default function useWeb3() {
 
   // COMPUTED REFS + COMPUTED REFS
   const userNetworkConfig = computed(() => {
-    if (chainId.value)
-      return configService.getNetworkConfig(String(chainId.value));
-    return null;
+    try {
+      if (chainId.value)
+        return configService.getNetworkConfig(String(chainId.value));
+      return null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   });
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isMainnet = computed(() => appNetworkConfig.chainId === 1);
@@ -51,7 +56,7 @@ export default function useWeb3() {
     () => appNetworkConfig.supportsEIP1559
   );
   const canLoadProfile = computed(
-    () => account.value !== '' && userNetworkConfig.value?.chainId !== 0
+    () => account.value !== '' && userNetworkConfig.value !== null
   );
   const isMismatchedNetwork = computed(() => {
     return (
@@ -60,7 +65,7 @@ export default function useWeb3() {
     );
   });
   const isUnsupportedNetwork = computed(() => {
-    return isWalletReady.value && !userNetworkConfig.value?.key;
+    return isWalletReady.value && userNetworkConfig.value === null;
   });
   const explorerLinks = {
     txLink: (txHash: string) =>

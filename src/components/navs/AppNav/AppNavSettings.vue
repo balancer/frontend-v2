@@ -123,7 +123,7 @@
         @update:modelValue="setTradeLiquidity"
       />
     </div>
-    <div v-if="isEIP1559SupportedNetwork" class="px-4 mt-6">
+    <div v-if="isEIP1559SupportedNetwork" class="px-4 pb-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('transactionType')" class="font-medium mb-2" />
         <BalTooltip>
@@ -157,7 +157,8 @@
       <div class="flex mt-1"></div>
     </div>
     <div
-      class="network mt-4 p-4 text-sm border-t dark:border-gray-900 rounded-b-xl"
+      v-if="networkName"
+      class="network p-4 text-sm border-t dark:border-gray-900 rounded-b-xl"
     >
       <div v-text="$t('network')" />
       <div class="flex items-baseline">
@@ -236,10 +237,21 @@ export default defineComponent({
     });
 
     // COMPUTED
-    const networkColorClass = computed(
-      () => `network-${userNetworkConfig.value.shortName}`
-    );
-    const networkName = computed(() => userNetworkConfig.value.name);
+    const networkColorClass = computed(() => {
+      switch (userNetworkConfig.value?.shortName) {
+        case 'Kovan':
+          return 'bg-purple-500';
+        case 'Ropsten':
+          return 'bg-pink-500';
+        case 'Rinkeby':
+          return 'bg-yellow-500';
+        case 'Goerli':
+          return 'bg-blue-500';
+        default:
+          return 'bg-green-500';
+      }
+    });
+    const networkName = computed(() => userNetworkConfig.value?.name);
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
@@ -328,21 +340,5 @@ export default defineComponent({
 
 .slippage-input.active {
   @apply text-blue-500 border-blue-500;
-}
-
-.network-kovan {
-  background: #9064ff;
-}
-
-.network-ropsten {
-  background: #ff4a8d;
-}
-
-.network-rinkeby {
-  background: #f6c343;
-}
-
-.network-goerli {
-  background: #3099f2;
 }
 </style>
