@@ -3,55 +3,61 @@
     <h3 class="mb-4">Featured ecosystem protocol</h3>
     <div class="grid grid-cols-12 gap-x-4">
       <div class="mb-4 col-span-12 lg:col-span-6">
-        <BalFeatureCard imgSrc="/images/banners/element.png">
-          <div class="flex flex-col justify-between h-full">
-            <div>
-              <h4 class="mb-2">Element Finance</h4>
-              <p class="mb-4">
-                Element is an open source protocol for fixed and variable yield
-                markets. It is built on Balancer V2. View and manage your
-                liquidity positions directly on Element.fi.
-              </p>
-            </div>
+        <BalCard
+          title="Element Finance"
+          imgSrc="/images/banners/element.png"
+          hFull
+          growContent
+        >
+          <p>
+            Element is an open source protocol for fixed and variable yield
+            markets. It is built on Balancer V2. View and manage your liquidity
+            positions directly on Element.fi.
+          </p>
+          <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
               <span>View and manage all pools on Element.fi 🡥</span>
             </BalLink>
-          </div>
-        </BalFeatureCard>
+          </template>
+        </BalCard>
       </div>
       <div
         class="flex mb-4 col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-3"
       >
-        <BalFeatureCard imgSrc="/images/banners/element-lusd.png">
-          <div class="flex flex-col justify-between h-full">
-            <div class="">
-              <h4 class="mb-1">LUSD</h4>
-              <h6>LUSD3CRV-f—ePyvCurveLUSD</h6>
-              <p class="mb-4">
-                Element principal pool Yearn crvLUSD v2 vault.
-              </p>
-            </div>
+        <BalCard
+          title="LUSD"
+          imgSrc="/images/banners/element-lusd.png"
+          hFull
+          growContent
+        >
+          <h6>LUSD3CRV-f—ePyvCurveLUSD</h6>
+          <p>
+            Element principal pool Yearn crvLUSD v2 vault.
+          </p>
+          <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
               <span>View on Element.fi 🡥</span>
             </BalLink>
-          </div>
-        </BalFeatureCard>
+          </template>
+        </BalCard>
       </div>
       <div class="mb-4 col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-3">
-        <BalFeatureCard imgSrc="/images/banners/element-usdc.png">
-          <div class="flex flex-col justify-between h-full">
-            <div class="">
-              <h4 class="mb-1">USDC</h4>
-              <h6>USDC—ePyvUSDC</h6>
-              <p class="mb-4">
-                Element principal pool Yearn USDC v2 vault.
-              </p>
-            </div>
+        <BalCard
+          title="USDC"
+          imgSrc="/images/banners/element-usdc.png"
+          hFull
+          growContent
+        >
+          <h6>USDC—ePyvUSDC</h6>
+          <p>
+            Element principal pool Yearn USDC v2 vault.
+          </p>
+          <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
               <span>View on Element.fi 🡥</span>
             </BalLink>
-          </div>
-        </BalFeatureCard>
+          </template>
+        </BalCard>
       </div>
     </div>
   </div>
