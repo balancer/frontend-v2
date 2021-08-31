@@ -20,7 +20,7 @@
         </BalFeatureCard>
       </div>
       <div
-        class="flex mb-4 col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-3"
+        class="mb-4 col-span-12 md:col-span-6 md:col-span-6 lg:col-span-3"
       >
         <BalFeatureCard imgSrc="/images/banners/element-lusd.png">
           <div class="flex flex-col justify-between h-full">
@@ -37,7 +37,7 @@
           </div>
         </BalFeatureCard>
       </div>
-      <div class="mb-4 col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-3">
+      <div class="mb-4 col-span-12 md:col-span-6 md:col-span-6 lg:col-span-3">
         <BalFeatureCard imgSrc="/images/banners/element-usdc.png">
           <div class="flex flex-col justify-between h-full">
             <div class="">

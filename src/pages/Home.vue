@@ -47,7 +47,7 @@
       }}</BalLink>
     </div>
 
-    <div class="mt-16 p-4 md:p-0">
+    <div class="mt-16 p-4 lg:p-0">
       <FeaturedPools />
     </div>
   </div>

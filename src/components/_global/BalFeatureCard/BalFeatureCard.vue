@@ -2,7 +2,7 @@
   <BalCard greedyContent noPad maxHeight>
     <template v-slot:header>
       <div
-        class="w-full h-40 bg-center"
+        class="w-full h-40 bg-center sm:bg-cover"
         :style="{
           backgroundImage: `url('${imgSrc}')`
         }"
