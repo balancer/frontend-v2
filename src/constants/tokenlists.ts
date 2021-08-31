@@ -53,5 +53,14 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     External: [
       'https://unpkg.com/quickswap-default-token-list@1.0.67/build/quickswap-default.tokenlist.json'
     ]
+  },
+  '42161': {
+    Balancer: {
+      Default:
+        'https://storageapi.fleek.co/tomafrench-team-bucket/arbitrum.listed.tokenlist.json',
+      Vetted:
+        'https://storageapi.fleek.co/tomafrench-team-bucket/arbitrum.vetted.tokenlist.json'
+    },
+    External: []
   }
 };
