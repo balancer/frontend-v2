@@ -5,13 +5,15 @@ import ConfigService from '@/services/config/config.service';
 export class PortisConnector extends Connector {
   id = 'portis';
   async connect() {
-    const configService = new ConfigService();
+  const configService = new ConfigService();
     // The portis type is compeletely messed up and only
     // exports the default class and no extra types
     const portis = new Portis(
       configService.env.PORTIS_DAPP_ID,
       configService.network.network
     ) as any;
+
+    
     const provider = portis.provider;
 
     if (provider) {
@@ -19,12 +21,9 @@ export class PortisConnector extends Connector {
       this.active.value = true;
 
       try {
-        if (provider.request) {
-          const accounts = await provider.request({
-            method: 'eth_requestAccounts'
-          });
-
-          const chainId = await provider.request({ method: 'eth_chainId' });
+        if (provider.send) {
+          const accounts = await provider.send('eth_accounts');
+          const chainId = await provider.send('eth_chainId');
           this.handleChainChanged(chainId);
           this.handleAccountsChanged(accounts);
         }
