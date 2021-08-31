@@ -1,5 +1,6 @@
 <template>
-  <div :class="['bal-card overflow-hidden', cardClasses]">
+  <div :class="['bal-card', cardClasses]">
+    <div v-if="imgSrc" class="feature" :style="featureStyles" />
     <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
       <component :is="titleTag" v-if="!!title" v-text="title" />
       <div v-if="$slots.header" class="flex-1 flex items-center">
@@ -23,14 +24,15 @@ export default defineComponent({
 
   props: {
     title: { type: String, default: '' },
-    titleTag: { type: String, default: 'h5' },
+    titleTag: { type: String, default: 'h4' },
     square: { type: Boolean, default: false },
     noPad: { type: Boolean, default: false },
     noContentPad: { type: Boolean, default: false },
     noBorder: { type: Boolean, default: false },
     darkBgColor: { type: String, default: '850' },
-    maxHeight: { type: Boolean, default: false },
-    greedyContent: { type: Boolean, default: false },
+    imgSrc: { type: String, default: '' },
+    hFull: { type: Boolean, default: false },
+    growContent: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: '',
@@ -51,49 +53,58 @@ export default defineComponent({
         [`bg-white dark:bg-gray-${props.darkBgColor}`]: true,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
         [borderClasses.value]: !props.noBorder,
-        'h-full': props.maxHeight,
-        'flex flex-col': props.greedyContent
+        'h-full': props.hFull
       };
     });
 
     const headerClasses = computed(() => {
       return {
-        'p-4 pb-3': !props.noPad
+        'p-4 pb-0': !props.noPad
       };
     });
 
     const contentClasses = computed(() => {
       return {
-        'p-4 pt-3': !props.noPad && !props.noContentPad,
-        'flex flex-grow': props.greedyContent
+        'px-4 py-2': !props.noPad && !props.noContentPad,
+        'flex-grow': props.growContent
       };
     });
 
     const footerClasses = computed(() => {
       return {
         'rounded-b-lg': !props.square,
-        'p-4 pt-3': !props.noPad
+        'p-4 pt-2': !props.noPad
       };
     });
+
+    const featureStyles = computed(() => ({
+      backgroundImage: `url('${props.imgSrc}')`
+    }));
 
     return {
       cardClasses,
       contentClasses,
       headerClasses,
-      footerClasses
+      footerClasses,
+      featureStyles
     };
   }
 });
 </script>
 
 <style scoped>
+.bal-card {
+  @apply overflow-hidden flex flex-col;
+}
 .header {
   @apply flex items-center;
 }
 
 .footer {
   @apply flex items-center;
-  @apply bg-gray-50 dark:bg-gray-850;
-  @apply border-t border-gray-100 dark:border-gray-900;
+}
+
+.feature {
+  @apply w-full h-40 bg-center;
 }
 </style>
