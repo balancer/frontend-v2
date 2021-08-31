@@ -33,6 +33,7 @@ import { useStore } from 'vuex';
 import BigNumber from 'bignumber.js';
 import { useRoute } from 'vue-router';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
+import { useI18n } from 'vue-i18n';
 
 import useDarkMode from './composables/useDarkMode';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
@@ -47,7 +48,6 @@ import useBreakpoints from './composables/useBreakpoints';
 import { tryPromiseWithTimeout } from './lib/utils/promise';
 import useTokens from './composables/useTokens';
 import useAlerts, { AlertPriority, AlertType } from './composables/useAlerts';
-import { useI18n } from 'vue-i18n';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
