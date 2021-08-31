@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import useAlerts, { Alert } from '@/composables/useAlerts';
+import useAlerts, { Alert, AlertType } from '@/composables/useAlerts';
 import { computed, defineComponent, PropType } from 'vue';
 
 export default defineComponent({
@@ -35,7 +35,7 @@ export default defineComponent({
 
     const colorClass = computed(() => {
       switch (props.alert.type) {
-        case 'error':
+        case AlertType.ERROR:
           return 'bg-red-500 text-white';
         default:
           return 'bg-black text-white';
@@ -44,7 +44,7 @@ export default defineComponent({
 
     const iconName = computed(() => {
       switch (props.alert.type) {
-        case 'error':
+        case AlertType.ERROR:
           return 'alert-triangle';
         default:
           return 'info';
