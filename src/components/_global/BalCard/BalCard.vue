@@ -65,7 +65,7 @@ export default defineComponent({
 
     const contentClasses = computed(() => {
       return {
-        'px-4 py-2': !props.noPad && !props.noContentPad,
+        'p-4': !props.noPad && !props.noContentPad,
         'flex-grow': props.growContent
       };
     });
@@ -73,7 +73,7 @@ export default defineComponent({
     const footerClasses = computed(() => {
       return {
         'rounded-b-lg': !props.square,
-        'p-4 pt-2': !props.noPad
+        'p-4 pt-0': !props.noPad
       };
     });
 
