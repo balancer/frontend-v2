@@ -5,7 +5,7 @@ import ConfigService from '@/services/config/config.service';
 export class PortisConnector extends Connector {
   id = 'portis';
   async connect() {
-  const configService = new ConfigService();
+    const configService = new ConfigService();
     // The portis type is compeletely messed up and only
     // exports the default class and no extra types
     const portis = new Portis(
@@ -13,7 +13,6 @@ export class PortisConnector extends Connector {
       configService.network.network
     ) as any;
 
-    
     const provider = portis.provider;
 
     if (provider) {
