@@ -53,6 +53,7 @@ export interface TokensProviderResponse {
   allowances: ComputedRef<ContractAllowancesMap>;
   dynamicDataLoaded: ComputedRef<boolean>;
   dynamicDataLoading: ComputedRef<boolean>;
+  priceQueryError: Ref<boolean>;
   refetchPrices: Ref<() => void>;
   refetchBalances: Ref<() => void>;
   refetchAllowances: Ref<() => void>;
@@ -156,6 +157,7 @@ export default {
       data: priceData,
       isSuccess: priceQuerySuccess,
       isLoading: priceQueryLoading,
+      isError: priceQueryError,
       refetch: refetchPrices
     } = useTokenPricesQuery(tokenAddresses);
 
@@ -391,6 +393,7 @@ export default {
       allowances,
       dynamicDataLoaded,
       dynamicDataLoading,
+      priceQueryError,
       // methods
       refetchPrices,
       refetchBalances,

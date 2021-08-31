@@ -1,4 +1,8 @@
 {
+    "alerts": {
+        "price-provider-down": "Our pricing provider, Coingecko is currently down.",
+        "retry-label": "Refresh to try again"
+    },
     "account": "Account",
     "accept": "Accept",
     "action": "Action",
