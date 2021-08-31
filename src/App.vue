@@ -3,7 +3,7 @@
   <div id="app">
     <AppNav />
     <AppHero v-if="isHomePage" />
-    <div class="pb-12">
+    <div class="pb-16">
       <router-view :key="$route.path" class="flex-auto" />
     </div>
     <AppFooterNav v-if="upToLargeBreakpoint" />

@@ -30,6 +30,7 @@ export default defineComponent({
     noBorder: { type: Boolean, default: false },
     darkBgColor: { type: String, default: '850' },
     maxHeight: { type: Boolean, default: false },
+    greedyContent: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: '',
@@ -50,7 +51,8 @@ export default defineComponent({
         [`bg-white dark:bg-gray-${props.darkBgColor}`]: true,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
         [borderClasses.value]: !props.noBorder,
-        'h-full': props.maxHeight
+        'h-full': props.maxHeight,
+        'flex flex-col': props.greedyContent
       };
     });
 
@@ -62,7 +64,8 @@ export default defineComponent({
 
     const contentClasses = computed(() => {
       return {
-        'p-4 pt-3': !props.noPad && !props.noContentPad
+        'p-4 pt-3': !props.noPad && !props.noContentPad,
+        'flex flex-grow': props.greedyContent
       };
     });
 

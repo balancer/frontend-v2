@@ -1,11 +1,14 @@
 <template>
-  <BalCard noPad maxHeight>
+  <BalCard greedyContent noPad maxHeight>
     <template v-slot:header>
-      <div class="w-full h-40 bg-center " :style="{
-          backgroundImage: `url('${imgSrc}')`,
-      }"/>
+      <div
+        class="w-full h-40 bg-center"
+        :style="{
+          backgroundImage: `url('${imgSrc}')`
+        }"
+      />
     </template>
-    <div class="p-4 flex flex-grow flex-col">
+    <div class="p-4">
       <slot />
     </div>
   </BalCard>
