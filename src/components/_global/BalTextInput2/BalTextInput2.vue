@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 // https://v3.vuejs.org/api/sfc-script-setup.html#usage-alongside-normal-script
 export default {
   inheritAttrs: false
@@ -6,9 +6,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, withDefaults } from 'vue';
-
-export enum InputType {
+enum InputType {
   text = 'text',
   number = 'number',
   date = 'date',
