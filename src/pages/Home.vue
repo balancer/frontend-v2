@@ -47,7 +47,7 @@
       }}</BalLink>
     </div>
 
-    <div class="mt-16 p-4 lg:p-0">
+    <div v-if="isEthereum" class="mt-16 p-4 lg:p-0">
       <FeaturedPools />
     </div>
   </div>
@@ -63,6 +63,7 @@ import FeaturedPools from '@/components/sections/FeaturedPools.vue';
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
+import { Network } from '@/constants/network';
 
 export default defineComponent({
   components: {
@@ -74,7 +75,10 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const router = useRouter();
-    const { isWalletReady, isV1Supported } = useWeb3();
+    const { isWalletReady, isV1Supported, appNetworkConfig } = useWeb3();
+    const isEthereum = computed(() =>
+      [Network.KOVAN, Network.MAINNET].includes(appNetworkConfig.chainId)
+    );
     const {
       selectedTokens,
       addSelectedToken,
@@ -117,6 +121,7 @@ export default defineComponent({
       poolsHasNextPage,
       poolsIsFetchingNextPage,
       selectedTokens,
+      isEthereum,
 
       //methods
       router,
