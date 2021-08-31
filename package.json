@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.17.3",
+  "version": "1.17.4",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -29,7 +29,7 @@
     "@gnosis.pm/safe-apps-sdk": "^4.0.0",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.9.2",
-    "@portis/web3": "^3.0.3",
+    "@portis/web3": "^3.0.10",
     "@sentry/browser": "^6.3.2",
     "@sentry/tracing": "^6.3.2",
     "@tailwindcss/postcss7-compat": "^2.0.4",
