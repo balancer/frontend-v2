@@ -21,7 +21,7 @@ import { useStore } from 'vuex';
 import BigNumber from 'bignumber.js';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { isBudgetLeft } from '@/lib/utils/balancer/bal4gas';
-import eligibleAssetList from '@balancer-labs/assets/lists/eligible.json';
+import eligibleAssetList from '@balancer-labs/assets/generated/bal-for-gas.json';
 import { useI18n } from 'vue-i18n';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -52,10 +52,9 @@ export default defineComponent({
     const { t } = useI18n();
     const { priceFor } = useTokens();
 
-    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? {};
+    const eligibleAssetMeta = eligibleAssetList[appNetworkConfig.network] ?? [];
     const eligibleAssets = Object.fromEntries(
-      Object.entries(eligibleAssetMeta).map(assetEntry => {
-        const [address] = assetEntry;
+      eligibleAssetMeta.map(address => {
         return [address.toLowerCase(), ''];
       })
     );

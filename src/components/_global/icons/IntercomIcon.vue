@@ -1,9 +1,3 @@
-<script setup lang="ts">
-import useDarkMode from '@/composables/useDarkMode';
-
-const { darkMode } = useDarkMode();
-</script>
-
 <template>
   <svg
     width="21"
@@ -46,3 +40,16 @@ const { darkMode } = useDarkMode();
     </defs>
   </svg>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import useDarkMode from '@/composables/useDarkMode';
+
+export default defineComponent({
+  setup() {
+    const { darkMode } = useDarkMode();
+
+    return { darkMode };
+  }
+});
+</script>

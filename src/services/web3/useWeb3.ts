@@ -7,6 +7,7 @@ import ConfigService from '../config/config.service';
 import { isAddress } from '@ethersproject/address';
 import { web3Service } from './web3.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { switchToAppNetwork } from './utils/helpers';
 
 /** STATE */
 const blockNumber = ref(0);
@@ -39,15 +40,25 @@ export default function useWeb3() {
 
   // COMPUTED REFS + COMPUTED REFS
   const userNetworkConfig = computed(() => {
-    if (chainId.value)
-      return configService.getNetworkConfig(String(chainId.value));
-    return null;
+    try {
+      if (chainId.value)
+        return configService.getNetworkConfig(String(chainId.value));
+      return null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   });
   const isWalletReady = computed(() => walletState.value === 'connected');
   const isMainnet = computed(() => appNetworkConfig.chainId === 1);
   const isPolygon = computed(() => appNetworkConfig.chainId === 137);
+  const isArbitrum = computed(() => appNetworkConfig.chainId === 42161);
+  const isEIP1559SupportedNetwork = computed(
+    () => appNetworkConfig.supportsEIP1559
+  );
+
   const canLoadProfile = computed(
-    () => account.value !== '' && userNetworkConfig.value?.chainId !== 0
+    () => account.value !== '' && userNetworkConfig.value !== null
   );
   const isMismatchedNetwork = computed(() => {
     return (
@@ -56,7 +67,7 @@ export default function useWeb3() {
     );
   });
   const isUnsupportedNetwork = computed(() => {
-    return isWalletReady.value && !userNetworkConfig.value?.key;
+    return isWalletReady.value && userNetworkConfig.value === null;
   });
   const explorerLinks = {
     txLink: (txHash: string) =>
@@ -70,6 +81,7 @@ export default function useWeb3() {
   // METHODS
   const getProvider = () => new Web3Provider(provider.value as any);
   const getSigner = () => getProvider().getSigner();
+  const connectToAppNetwork = () => switchToAppNetwork(provider.value as any);
   const toggleWalletSelectModal = (value: boolean) => {
     if (value !== undefined && typeof value === 'boolean') {
       isWalletSelectVisible.value = value;
@@ -114,9 +126,12 @@ export default function useWeb3() {
     isV1Supported,
     isMainnet,
     isPolygon,
+    isArbitrum,
+    isEIP1559SupportedNetwork,
 
     // methods
     connectWallet,
+    connectToAppNetwork,
     getProvider,
     getSigner,
     disconnectWallet,

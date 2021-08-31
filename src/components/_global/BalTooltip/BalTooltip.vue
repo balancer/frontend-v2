@@ -4,6 +4,7 @@
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
     :class="[{ 'cursor-default': disabled }]"
+    v-bind="$attrs"
   >
     <slot name="activator">
       <BalIcon name="info" size="md" class="text-gray-400" />

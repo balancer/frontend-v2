@@ -31,6 +31,7 @@ export class PriceService {
   platformId: string;
   nativeAssetId: string;
   nativeAssetAddress: string;
+  appAddresses: { [key: string]: string };
 
   constructor(
     service: CoingeckoService,
@@ -42,6 +43,7 @@ export class PriceService {
     this.platformId = getPlatformId(this.appNetwork);
     this.nativeAssetId = getNativeAssetId(this.appNetwork);
     this.nativeAssetAddress = this.configService.network.nativeAsset.address;
+    this.appAddresses = this.configService.network.addresses;
   }
 
   async getNativeAssetPrice(): Promise<Price> {
@@ -69,7 +71,7 @@ export class PriceService {
 
       // TODO - remove once wsteth is supported
       addresses = addresses.filter(
-        address => address !== this.configService.network.addresses.wstETH
+        address => address !== this.appAddresses.wstETH
       );
 
       addresses = addresses.map(address => this.addressMapIn(address));
@@ -120,8 +122,7 @@ export class PriceService {
 
     // TODO - remove once wsteth is supported
     addresses = addresses.filter(
-      address =>
-        address !== this.configService.network.addresses.wstETH.toLowerCase()
+      address => address !== this.appAddresses.wstETH
     );
 
     addresses = addresses.map(address => this.addressMapIn(address));
@@ -178,7 +179,11 @@ export class PriceService {
           const value = result[key];
           const [timestamp, price] = value;
           if (timestamp > dayTimestamp * 1000) {
-            prices[dayTimestamp * 1000] = price;
+            // TODO - remove this conditional once coingecko supports wstETH
+            prices[dayTimestamp * 1000] =
+              address === this.appAddresses.stETH
+                ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
+                : price;
             dayTimestamp += twentyFourHourseInSecs;
           }
         }

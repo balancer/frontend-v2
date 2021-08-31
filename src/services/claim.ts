@@ -23,21 +23,20 @@ type Snapshot = Record<number, string>;
 export const constants: Record<NetworkId, Record<string, string>> = {
   1: {
     merkleRedeem: '0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8',
-    snapshot: 'balancer-team-bucket.storage.fleek.co/balancer-claim/snapshot'
+    snapshot:
+      'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json'
   },
   42: {
     merkleRedeem: '0x3bc73D276EEE8cA9424Ecb922375A0357c1833B3',
     snapshot:
-      'balancer-team-bucket.storage.fleek.co/balancer-claim-kovan/snapshot'
+      'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports-kovan/_current.json'
   }
 };
 
 export async function getSnapshot(network: NetworkId) {
   if (constants[network]?.snapshot) {
-    return (
-      (await ipfsService.get<Snapshot>(constants[network].snapshot, 'ipns')) ||
-      {}
-    );
+    const response = await axios.get<Snapshot>(constants[network].snapshot);
+    return response.data || {};
   }
   return {};
 }

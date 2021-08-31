@@ -53,12 +53,12 @@ export interface TokensProviderResponse {
   allowances: ComputedRef<ContractAllowancesMap>;
   dynamicDataLoaded: ComputedRef<boolean>;
   dynamicDataLoading: ComputedRef<boolean>;
-  refetchPrices: Ref<Function>;
-  refetchBalances: Ref<Function>;
-  refetchAllowances: Ref<Function>;
-  injectTokens: Function;
-  searchTokens: Function;
-  hasBalance: Function;
+  refetchPrices: Ref<() => void>;
+  refetchBalances: Ref<() => void>;
+  refetchAllowances: Ref<() => void>;
+  injectTokens: (addresses: string[]) => Promise<void>;
+  searchTokens: (query: string, excluded: string[]) => Promise<TokenInfoMap>;
+  hasBalance: (address: string) => boolean;
   approvalRequired: (
     tokenAddress: string,
     amount: string,
@@ -69,9 +69,10 @@ export interface TokensProviderResponse {
     amounts: string[],
     contractAddress?: string
   ) => string[];
-  priceFor: Function;
+  priceFor: (address: string) => number;
   balanceFor: (address: string) => string;
-  getTokens: Function;
+  getTokens: (addresses: string[]) => TokenInfoMap;
+  getToken: (address: string) => TokenInfo;
 }
 
 /**
@@ -357,6 +358,13 @@ export default {
     }
 
     /**
+     * Get single token from state
+     */
+    function getToken(address: string): TokenInfo {
+      return tokens.value[address];
+    }
+
+    /**
      * CALLBACKS
      */
     onBeforeMount(async () => {
@@ -394,7 +402,8 @@ export default {
       approvalsRequired,
       priceFor,
       balanceFor,
-      getTokens
+      getTokens,
+      getToken
     });
 
     return () => slots.default();

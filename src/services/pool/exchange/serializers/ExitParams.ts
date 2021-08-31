@@ -2,13 +2,13 @@ import PoolExchange from '..';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
-import { BigNumberish } from '@ethersproject/bignumber';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { isStable } from '@/composables/usePool';
 
 export default class ExitParams {
   private exchange: PoolExchange;
   private isStablePool: boolean;
-  private dataEncodeFn: Function;
+  private dataEncodeFn: (data: any) => string;
   private toInternalBalance = false;
 
   constructor(exchange) {
@@ -41,14 +41,18 @@ export default class ExitParams {
       account,
       {
         assets: this.exchange.pool.tokenAddresses,
-        minAmountsOut: parsedAmountsOut,
+        minAmountsOut: parsedAmountsOut.map(amount =>
+          // This is a hack to get around rounding issues for MetaStable pools
+          // TODO: do this more elegantly
+          amount.gt(0) ? amount.sub(1) : amount
+        ),
         userData: txData,
         toInternalBalance: this.toInternalBalance
       }
     ];
   }
 
-  private parseAmounts(amounts: string[]): BigNumberish[] {
+  private parseAmounts(amounts: string[]): BigNumber[] {
     return amounts.map((amount, i) => {
       const token = this.exchange.pool.tokenAddresses[i];
       return parseUnits(

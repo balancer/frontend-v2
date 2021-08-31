@@ -3,7 +3,6 @@
     id="intercom-activator"
     color="white"
     :size="upToLargeBreakpoint ? 'md' : 'sm'"
-    class="hidden xs:inline-block"
   >
     <IntercomIcon />
   </BalBtn>

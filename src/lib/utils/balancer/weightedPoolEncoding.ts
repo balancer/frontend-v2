@@ -22,12 +22,17 @@ export type JoinWeightedPoolTokenInForExactBPTOut = {
   enterTokenIndex: number;
 };
 
-export function encodeJoinWeightedPool(
-  joinData:
-    | JoinWeightedPoolInit
-    | JoinWeightedPoolExactTokensInForBPTOut
-    | JoinWeightedPoolTokenInForExactBPTOut
-): string {
+export type JoinData =
+  | JoinWeightedPoolInit
+  | JoinWeightedPoolExactTokensInForBPTOut
+  | JoinWeightedPoolTokenInForExactBPTOut;
+
+export type ExitData =
+  | ExitWeightedPoolExactBPTInForOneTokenOut
+  | ExitWeightedPoolExactBPTInForTokensOut
+  | ExitWeightedPoolBPTInForExactTokensOut;
+
+export function encodeJoinWeightedPool(joinData: JoinData): string {
   if (joinData.kind == 'Init') {
     return defaultAbiCoder.encode(
       ['uint256', 'uint256[]'],
@@ -75,12 +80,7 @@ export type ExitWeightedPoolBPTInForExactTokensOut = {
   maxBPTAmountIn: BigNumberish;
 };
 
-export function encodeExitWeightedPool(
-  exitData:
-    | ExitWeightedPoolExactBPTInForOneTokenOut
-    | ExitWeightedPoolExactBPTInForTokensOut
-    | ExitWeightedPoolBPTInForExactTokensOut
-): string {
+export function encodeExitWeightedPool(exitData: ExitData): string {
   if (exitData.kind == 'ExactBPTInForOneTokenOut') {
     return defaultAbiCoder.encode(
       ['uint256', 'uint256', 'uint256'],
