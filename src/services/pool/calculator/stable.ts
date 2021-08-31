@@ -99,7 +99,7 @@ export default class Stable {
       return this.scaleOutput(
         '0',
         this.calc.poolTokenDecimals[tokenIndex],
-        this.calc.pool.tokens[tokenIndex]?.priceRate ?? '1',
+        this.calc.pool.tokens[tokenIndex].priceRate,
         BigNumber.ROUND_DOWN // If OUT given IN, round down
       );
 
@@ -119,7 +119,7 @@ export default class Stable {
     return this.scaleOutput(
       tokenAmountOut.toString(),
       this.calc.poolTokenDecimals[tokenIndex],
-      this.calc.pool.tokens[tokenIndex]?.priceRate ?? '1',
+      this.calc.pool.tokens[tokenIndex].priceRate,
       BigNumber.ROUND_DOWN // If OUT given IN, round down
     );
   }
@@ -220,7 +220,12 @@ export default class Stable {
     return bnum(scaledSupply.toString());
   }
 
-  private scaleInput(normalizedAmount: string, priceRate = '1'): BigNumber {
+  private scaleInput(
+    normalizedAmount: string,
+    priceRate: string | null = null
+  ): BigNumber {
+    if (priceRate === null) priceRate = '1';
+
     const denormAmount = bnum(parseUnits(normalizedAmount, 18).toString())
       .times(priceRate)
       .toFixed(0, BigNumber.ROUND_UP);
@@ -231,9 +236,11 @@ export default class Stable {
   private scaleOutput(
     amount: string,
     decimals: number,
-    priceRate: string,
+    priceRate: string | null,
     rounding: BigNumber.RoundingMode
   ): BigNumber {
+    if (priceRate === null) priceRate = '1';
+
     const amountAfterPriceRate = bnum(amount)
       .div(priceRate)
       .toString();
