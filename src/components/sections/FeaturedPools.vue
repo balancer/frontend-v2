@@ -21,9 +21,7 @@
           </template>
         </BalCard>
       </div>
-      <div
-        class="mb-4 col-span-12 md:col-span-6 md:col-span-6 lg:col-span-3"
-      >
+      <div class="mb-4 col-span-12 md:col-span-6 md:col-span-6 lg:col-span-3">
         <BalCard
           title="LUSD"
           imgSrc="/images/banners/element-lusd.png"
