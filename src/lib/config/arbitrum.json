@@ -8,6 +8,7 @@
   "unknown": false,
   "rpc": "https://arbitrum-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
   "ws": "wss://arb-mainnet.g.alchemy.com/v2/ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
+  "publicRpc": "https://arb1.arbitrum.io/rpc",
   "loggingRpc": "https://arb-mainnet.g.alchemy.com/v2/ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
   "explorer": "https://arbiscan.io",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2",
