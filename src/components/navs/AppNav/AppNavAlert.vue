@@ -13,16 +13,15 @@
         @click="alert.action"
       />
     </div>
-    <div v-if="!alert.persistant" class="w-8">
+    <div v-if="!alert.persistent" class="w-8">
       <BalIcon name="x" class="cursor-pointer" @click="handleClose" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import useAlerts, { Alert } from '@/composables/useAlerts';
 import { computed, defineComponent, PropType } from 'vue';
-import { Alert } from '@/store/modules/alerts';
-import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'NavAlert',
@@ -32,7 +31,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const store = useStore();
+    const { removeAlert } = useAlerts();
 
     const colorClass = computed(() => {
       switch (props.alert.type) {
@@ -59,7 +58,7 @@ export default defineComponent({
     });
 
     function handleClose() {
-      store.commit('alerts/setCurrent', null);
+      removeAlert(props.alert.id);
     }
 
     return { classes, iconName, handleClose };

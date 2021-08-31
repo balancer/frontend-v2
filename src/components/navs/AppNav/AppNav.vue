@@ -1,5 +1,5 @@
 <template>
-  <AppNavAlert v-if="alert" :alert="alert" />
+  <AppNavAlert v-if="currentAlert" :alert="currentAlert" />
   <nav id="app-nav" ref="appNav" class="h-20 px-4 lg:px-6 sticky top-0">
     <div class="h-full flex items-center justify-between">
       <div class="w-2/3 lg:w-1/3 flex items-center">
@@ -30,7 +30,6 @@
 
 <script>
 import { computed, defineComponent, onMounted, onUnmounted, ref } from 'vue';
-import { useStore } from 'vuex';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppLogo from '@/components/images/AppLogo.vue';
 import AppIcon from '@/components/images/AppIcon.vue';
@@ -41,6 +40,7 @@ import AppNavNetworkSelect from './AppNavNetworkSelect.vue';
 import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
 import DarkModeToggle from '@/components/btns/DarkModeToggle.vue';
+import useAlerts from '@/composables/useAlerts';
 
 export default defineComponent({
   components: {
@@ -55,16 +55,15 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const store = useStore();
     const { bp, upToLargeBreakpoint } = useBreakpoints();
     const { trackGoal, Goals } = useFathom();
     const { connector } = useWeb3();
+    const { currentAlert } = useAlerts();
 
     // DATA
     const appNav = ref(null);
 
     // COMPUTED
-    const alert = computed(() => store.state.alerts.current);
     const hideNetworkSelect = computed(() => connector.value?.id === 'gnosis');
 
     // METHODS
@@ -90,7 +89,7 @@ export default defineComponent({
       appNav,
       // computed
       bp,
-      alert,
+      currentAlert,
       upToLargeBreakpoint,
       hideNetworkSelect,
       // methods
