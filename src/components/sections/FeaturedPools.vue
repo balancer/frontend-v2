@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="mb-4">Featured ecosystem protocol</h3>
+    <h3 class="mb-4">{{ $t('featuredProtocol') }}</h3>
     <div class="grid grid-cols-12 gap-x-4">
       <div class="mb-4 col-span-12 lg:col-span-6">
         <BalCard
@@ -10,13 +10,11 @@
           growContent
         >
           <p>
-            Element is an open source protocol for fixed and variable yield
-            markets. It is built on Balancer V2. View and manage your liquidity
-            positions directly on Element.fi.
+            {{ $t('aboutElementFinance') }}
           </p>
           <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
-              <span>View and manage all pools on Element.fi 🡥</span>
+              <span>{{ $t('viewAndManangeOnElement') }}</span>
             </BalLink>
           </template>
         </BalCard>
@@ -34,7 +32,7 @@
           </p>
           <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
-              <span>View on Element.fi 🡥</span>
+              <span>{{ $t('viewOnElement') }}</span>
             </BalLink>
           </template>
         </BalCard>
@@ -52,7 +50,7 @@
           </p>
           <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
-              <span>View on Element.fi 🡥</span>
+              <span>{{ $t('viewOnElement') }}</span>
             </BalLink>
           </template>
         </BalCard>
@@ -64,11 +62,14 @@
 <script lang="ts">
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   setup() {
+    const { t } = useI18n();
     return {
-      EXTERNAL_LINKS
+      EXTERNAL_LINKS,
+      t
     };
   }
 });
