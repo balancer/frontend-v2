@@ -21,8 +21,6 @@ export default function useInputValidation(props, emit) {
       const result = rule(val);
       if (typeof result === 'string') errors.value.push(result);
     });
-    console.log('errors', errors.value)
-    console.log('isInvalid', isInvalid.value)
   }
 
   /**
