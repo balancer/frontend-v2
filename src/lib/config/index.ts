@@ -23,6 +23,7 @@ export interface Config {
   poolsUrlV1: string;
   poolsUrlV2: string;
   supportsEIP1559: boolean;
+  supportsElementPools: boolean;
   nativeAsset: {
     name: string;
     address: string;

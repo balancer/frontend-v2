@@ -12,5 +12,8 @@ export const EXTERNAL_LINKS = {
   },
   Ethereum: {
     Wallets: 'https://ethereum.org/en/wallets'
+  },
+  Element: {
+    Earn: 'https://app.element.fi/earn'
   }
 };

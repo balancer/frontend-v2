@@ -46,6 +46,10 @@
         $t('exploreBalancerV1Pools')
       }}</BalLink>
     </div>
+
+    <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
+      <FeaturedPools />
+    </div>
   </div>
 </template>
 
@@ -55,6 +59,7 @@ import { useRouter } from 'vue-router';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
+import FeaturedPools from '@/components/sections/FeaturedPools.vue';
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
@@ -62,13 +67,15 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 export default defineComponent({
   components: {
     TokenSearchInput,
-    PoolsTable
+    PoolsTable,
+    FeaturedPools
   },
 
   setup() {
     // COMPOSABLES
     const router = useRouter();
-    const { isWalletReady, isV1Supported } = useWeb3();
+    const { isWalletReady, isV1Supported, appNetworkConfig } = useWeb3();
+    const isElementSupported = appNetworkConfig.supportsElementPools;
     const {
       selectedTokens,
       addSelectedToken,
@@ -111,6 +118,7 @@ export default defineComponent({
       poolsHasNextPage,
       poolsIsFetchingNextPage,
       selectedTokens,
+      isElementSupported,
 
       //methods
       router,
