@@ -47,7 +47,7 @@
       }}</BalLink>
     </div>
 
-    <div v-if="isEthereum" class="mt-16 p-4 lg:p-0">
+    <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
       <FeaturedPools />
     </div>
   </div>
@@ -76,9 +76,7 @@ export default defineComponent({
     // COMPOSABLES
     const router = useRouter();
     const { isWalletReady, isV1Supported, appNetworkConfig } = useWeb3();
-    const isEthereum = computed(() =>
-      [Network.KOVAN, Network.MAINNET].includes(appNetworkConfig.chainId)
-    );
+    const isElementSupported = appNetworkConfig.supportsElementPools;
     const {
       selectedTokens,
       addSelectedToken,
@@ -121,7 +119,7 @@ export default defineComponent({
       poolsHasNextPage,
       poolsIsFetchingNextPage,
       selectedTokens,
-      isEthereum,
+      isElementSupported,
 
       //methods
       router,
