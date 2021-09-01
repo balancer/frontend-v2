@@ -1,0 +1,54 @@
+{
+  "key": "42161",
+  "chainId": 42161,
+  "chainName": "Arbitrum One",
+  "name": "Arbitrum One",
+  "shortName": "Arbitrum",
+  "network": "arbitrum-one",
+  "unknown": false,
+  "rpc": "https://arbitrum-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
+  "ws": "wss://arb-mainnet.g.alchemy.com/v2/ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
+  "publicRpc": "https://arb1.arbitrum.io/rpc",
+  "loggingRpc": "https://arb-mainnet.g.alchemy.com/v2/ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
+  "explorer": "https://arbiscan.io",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2",
+  "poolsUrlV1": "",
+  "poolsUrlV2": "",
+  "supportsEIP1559": false,
+  "nativeAsset": {
+    "name": "Ether",
+    "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "symbol": "ETH",
+    "decimals": 18,
+    "deeplinkId": "ether",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png"
+  },
+  "addresses": {
+    "exchangeProxy": "",
+    "merkleRedeem": "",
+    "multicall": "0x269ff446d9892c9e19082564df3f5e8741e190a1",
+    "authorizer": "0x6207ed574152496c9B072C24FD87cE9cd9E17320",
+    "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+    "weightedPoolFactory": "0x7dFdEF5f355096603419239CE743BfaF1120312B",
+    "stablePoolFactory": "0x2433477A10FC5d31B9513C638F19eE85CaED53Fd",
+    "weth": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+    "stETH": "",
+    "wstETH": "",
+    "lidoRelayer": "",
+    "balancerHelpers": "0x77d46184d22CA6a3726a2F500c776767b6A3d6Ab"
+  },
+  "strategies": {
+    "0": {
+      "type": "0",
+      "name": "stablePool"
+    },
+    "1": {
+      "type": "1",
+      "name": "weightedPool"
+    },
+    "2": {
+      "type": "2",
+      "name": "weightedPool"
+    }
+  }
+}
