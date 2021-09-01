@@ -63,7 +63,6 @@ import FeaturedPools from '@/components/sections/FeaturedPools.vue';
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-import { Network } from '@/constants/network';
 
 export default defineComponent({
   components: {
