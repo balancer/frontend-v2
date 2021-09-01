@@ -5,25 +5,52 @@ export default {
   component: BalTextInput2,
   title: 'Components/inputs/BalTextInput2',
   args: {
-    darkMode: false
+    darkMode: false,
+    inputAlignRight: false,
+    decimalLimit: 18
   },
-  argTypes: {}
+  argTypes: {
+    size: {
+      type: { name: 'string', default: 'md' },
+      control: {
+        type: 'select',
+        options: ['sm', 'md', 'lg']
+      }
+    },
+    type: {
+      type: { name: 'string', default: 'text' },
+      control: {
+        type: 'select',
+        options: ['text', 'number', 'password', 'email', 'date']
+      }
+    }
+  }
 };
 
-type Props = {};
-
-const Template = (args: Props) => ({
+const Template = args => ({
   components: { BalTextInput2 },
   setup() {
     return { args };
   },
   template: generateTemplate(`
 <div class="max-w-lg mx-auto">
-  <BalTextInput2 v-model="args.modelValue" v-bind="args"></BalTextInput2>
+  <BalTextInput2 v-model="args.modelValue" v-bind="args">
+  </BalTextInput2>
 </div>
 `)
 });
 
+export function isRequired() {
+  return v => !!v || 'is required';
+}
+
 export const Default = Template.bind({});
 // @ts-ignore
-Default.args = { modelValue: 'A value' };
+Default.args = {
+  modelValue: '',
+  placeholder: '0.0',
+  name: 'input-1',
+  label: 'A label',
+  type: 'number',
+  rules: [isRequired()]
+};
