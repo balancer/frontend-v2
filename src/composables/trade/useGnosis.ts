@@ -3,17 +3,22 @@ import { useStore } from 'vuex';
 import { BigNumber } from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
+import { orderBy } from 'lodash';
 
 import { bnum } from '@/lib/utils';
 import {
   FeeInformation,
   OrderMetaData,
-  PriceInformation
+  PriceInformation,
+  PriceQuoteParams
 } from '@/services/gnosis/types';
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
 import useWeb3 from '@/services/web3/useWeb3';
 import { calculateValidTo } from '@/services/gnosis/utils';
 import { gnosisOperator } from '@/services/gnosis/operator.service';
+import { match0xService } from '@/services/gnosis/match0x.service';
+import { paraSwapService } from '@/services/gnosis/paraswap.service';
 
 import useTransactions from '../useTransactions';
 
@@ -24,11 +29,6 @@ import { TradeQuote } from './types';
 
 import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
-import { match0xService } from '@/services/gnosis/match0x.service';
-import { orderBy } from 'lodash';
-import ParaSwapService, {
-  paraSwapService
-} from '@/services/gnosis/paraswap.service';
 
 const HIGH_FEE_THRESHOLD = 0.2;
 
@@ -71,6 +71,21 @@ type Props = {
   tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
 };
+
+const priceQuotesResolveLast = onlyResolvesLast(getPriceQuotes);
+const feeQuotesResolveLast = onlyResolvesLast(getFeeQuote);
+
+function getPriceQuotes(queryParams: PriceQuoteParams) {
+  return Promise.allSettled([
+    gnosisOperator.getPriceQuote(queryParams),
+    match0xService.getPriceQuote(queryParams),
+    paraSwapService.getPriceQuote(queryParams)
+  ]);
+}
+
+function getFeeQuote(queryParams: PriceQuoteParams) {
+  return gnosisOperator.getFeeQuote(queryParams);
+}
 
 export default function useGnosis({
   exactIn,
@@ -283,7 +298,7 @@ export default function useGnosis({
       };
 
       // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
-      const feeQuoteResult = await gnosisOperator.getFeeQuote(queryParams);
+      const feeQuoteResult = await feeQuotesResolveLast(queryParams);
 
       if (feeQuoteResult != null) {
         if (exactIn.value) {
@@ -294,11 +309,7 @@ export default function useGnosis({
         if (!state.validationErrors.feeExceedsPrice) {
           let priceQuoteAmount: string | null = null;
 
-          const priceQuotes = await Promise.allSettled([
-            gnosisOperator.getPriceQuote(queryParams),
-            match0xService.getPriceQuote(queryParams),
-            paraSwapService.getPriceQuote(queryParams)
-          ]);
+          const priceQuotes = await priceQuotesResolveLast(queryParams);
 
           const priceQuotesToCompare = priceQuotes.reduce<PriceInformation[]>(
             (fulfilledPriceQuotes, priceQuote) => {
