@@ -244,7 +244,6 @@ export default defineComponent({
     watch(
       toRef(state, 'query'),
       async newQuery => {
-        console.log(excludedTokens.value)
         state.results = await searchTokens(newQuery, excludedTokens.value);
       },
       { immediate: true }
