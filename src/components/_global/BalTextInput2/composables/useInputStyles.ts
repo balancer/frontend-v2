@@ -4,11 +4,22 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>) {
   const paddingClass = (): string => {
     switch (props.size) {
       case 'sm':
-        return 'py-px px-1';
+        return 'p-px';
       case 'lg':
-        return 'py-2 px-3';
+        return 'p-2';
       default:
-        return 'py-1 px-2';
+        return 'p-1';
+    }
+  };
+
+  const inputTextSize = (): string => {
+    switch (props.size) {
+      case 'sm':
+        return 'text-base';
+      case 'lg':
+        return 'text-xl';
+      default:
+        return 'text-lg';
     }
   };
 
@@ -43,6 +54,7 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>) {
 
   const inputClasses = {
     [inputHeightClass()]: true,
+    [inputTextSize()]: true,
     'text-right': props.inputAlignRight
   };
 

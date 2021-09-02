@@ -182,7 +182,7 @@ export default defineComponent({
      */
     const title = computed(() => {
       if (state.selectTokenList) return t('manageLists');
-      return t('selectToken');
+      return t('tokenSearch');
     });
 
     const tokenLists = computed(() => {
@@ -244,6 +244,7 @@ export default defineComponent({
     watch(
       toRef(state, 'query'),
       async newQuery => {
+        console.log(excludedTokens.value)
         state.results = await searchTokens(newQuery, excludedTokens.value);
       },
       { immediate: true }
