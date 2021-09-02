@@ -579,13 +579,6 @@ export default function useSor({
     tokenDecimals: number,
     sorManager: SorManager
   ): Promise<void> {
-    if (appNetworkConfig.chainId === 1) {
-      // On mainnet the SOR will pull the price automatically
-      await sorManager.setCostOutputToken(tokenAddress);
-      return;
-    }
-
-    // On other networks get price of swap using stored market prices
     const ethPriceToken = calculateEthPriceInToken(tokenAddress).times(
       new BigNumber(10 ** tokenDecimals)
     );
