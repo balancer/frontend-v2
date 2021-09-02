@@ -5,7 +5,11 @@ import { formatUnits } from '@ethersproject/units';
 import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
 
 import { bnum } from '@/lib/utils';
-import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
+import {
+  FeeInformation,
+  OrderMetaData,
+  PriceInformation
+} from '@/services/gnosis/types';
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
 import useWeb3 from '@/services/web3/useWeb3';
 import { calculateValidTo } from '@/services/gnosis/utils';
@@ -20,6 +24,11 @@ import { TradeQuote } from './types';
 
 import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
+import { match0xService } from '@/services/gnosis/match0x.service';
+import { orderBy } from 'lodash';
+import ParaSwapService, {
+  paraSwapService
+} from '@/services/gnosis/paraswap.service';
 
 const HIGH_FEE_THRESHOLD = 0.2;
 
@@ -268,7 +277,9 @@ export default function useGnosis({
         sellToken: tokenInAddressInput.value,
         buyToken: tokenOutAddressInput.value,
         amount: amountToExchange.toString(),
-        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY
+        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
+        fromDecimals: tokenIn.value.decimals,
+        toDecimals: tokenOut.value.decimals
       };
 
       // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
@@ -281,16 +292,44 @@ export default function useGnosis({
             .isNegative();
         }
         if (!state.validationErrors.feeExceedsPrice) {
-          const priceQuoteResult = await gnosisOperator.getPriceQuote(
-            queryParams
+          let priceQuoteAmount: string | null = null;
+
+          const priceQuotes = await Promise.allSettled([
+            gnosisOperator.getPriceQuote(queryParams),
+            match0xService.getPriceQuote(queryParams),
+            paraSwapService.getPriceQuote(queryParams)
+          ]);
+
+          const priceQuotesToCompare = priceQuotes.reduce<PriceInformation[]>(
+            (fulfilledPriceQuotes, priceQuote) => {
+              if (priceQuote.status === 'fulfilled' && priceQuote.value) {
+                fulfilledPriceQuotes.push(priceQuote.value);
+              }
+              return fulfilledPriceQuotes;
+            },
+            []
           );
 
-          if (priceQuoteResult != null && priceQuoteResult.amount != null) {
+          if (priceQuotesToCompare.length > 0) {
+            const sortedPriceQuotes = orderBy(
+              priceQuotesToCompare,
+              'amount',
+              exactIn.value ? 'desc' : 'asc'
+            );
+
+            const winningPriceQuote = sortedPriceQuotes[0];
+
+            if (winningPriceQuote.amount != null) {
+              priceQuoteAmount = bnum(winningPriceQuote.amount).toString(10);
+            }
+          }
+
+          if (priceQuoteAmount != null) {
             feeQuote.value = feeQuoteResult;
 
             if (exactIn.value) {
               tokenOutAmountInput.value = bnum(
-                formatUnits(priceQuoteResult.amount, tokenOut.value.decimals)
+                formatUnits(priceQuoteAmount, tokenOut.value.decimals)
               ).toFixed(6, BigNumber.ROUND_DOWN);
 
               const { feeAmountInToken } = getQuote();
@@ -300,7 +339,7 @@ export default function useGnosis({
                 .gt(HIGH_FEE_THRESHOLD);
             } else {
               tokenInAmountInput.value = bnum(
-                formatUnits(priceQuoteResult.amount, tokenIn.value.decimals)
+                formatUnits(priceQuoteAmount, tokenIn.value.decimals)
               ).toFixed(6, BigNumber.ROUND_DOWN);
 
               const { feeAmountOutToken, maximumInAmount } = getQuote();
