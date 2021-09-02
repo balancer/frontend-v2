@@ -3,7 +3,7 @@ export const oneMinInMs = 60 * oneSecondInMs;
 export const oneHourInMs = 60 * oneMinInMs;
 
 export const twentyFourHoursInMs = 24 * oneHourInMs;
-export const twentyFourHourseInSecs = twentyFourHoursInMs / oneSecondInMs;
+export const twentyFourHoursInSecs = twentyFourHoursInMs / oneSecondInMs;
 
 export const timeNowInMs = Math.floor(Date.now() / oneSecondInMs);
 
@@ -13,6 +13,6 @@ export default function useTime() {
     oneMinInMs,
     oneHourInMs,
     twentyFourHoursInMs,
-    twentyFourHourseInSecs
+    twentyFourHoursInSecs
   };
 }
