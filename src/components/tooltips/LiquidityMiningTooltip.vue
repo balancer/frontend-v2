@@ -19,6 +19,15 @@
           {{ fNum(pool.dynamic.apr.pool, 'percent') }}
           <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPR') }}</span>
         </div>
+        <div
+          v-if="hasThirdPartyAPR"
+          class="whitespace-nowrap flex items-center mb-1"
+        >
+          {{ fNum(pool.dynamic.apr.thirdParty, 'percent') }}
+          <span class="ml-1 text-gray-500 text-xs">
+            {{ thirdPartyAPRLabel }}
+          </span>
+        </div>
         <div class="whitespace-nowrap flex items-center">
           {{ fNum(pool.dynamic.apr.liquidityMining, 'percent') }}
           <span class="ml-1 text-gray-500 text-xs flex items-center">
@@ -54,6 +63,9 @@ import { defineComponent, PropType, computed } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import { bnum } from '@/lib/utils';
+import { isWstETH } from '@/composables/usePool';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'LiquidityMiningTooltip',
@@ -71,6 +83,7 @@ export default defineComponent({
      */
     const { fNum } = useNumbers();
     const { getTokens } = useTokens();
+    const { t } = useI18n();
 
     /**
      * COMPUTED
@@ -85,11 +98,22 @@ export default defineComponent({
       () => Object.keys(lmTokens.value).length > 1
     );
 
+    const hasThirdPartyAPR = computed(() =>
+      bnum(props.pool.dynamic.apr.thirdParty).gt(0)
+    );
+
+    const thirdPartyAPRLabel = computed(() => {
+      if (isWstETH(props.pool)) return t('thirdPartyAPR.steth');
+      return '';
+    });
+
     return {
       lmBreakdown,
       fNum,
       lmTokens,
-      multiRewardPool
+      multiRewardPool,
+      hasThirdPartyAPR,
+      thirdPartyAPRLabel
     };
   }
 });
