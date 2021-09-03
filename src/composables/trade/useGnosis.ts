@@ -6,6 +6,7 @@ import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
 import { orderBy } from 'lodash';
 
+import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import { bnum } from '@/lib/utils';
 import {
   FeeInformation,
@@ -72,14 +73,22 @@ type Props = {
   slippageBufferRate: ComputedRef<number>;
 };
 
+const PRICE_QUOTE_TIMEOUT = 10000;
+
 const priceQuotesResolveLast = onlyResolvesLast(getPriceQuotes);
 const feeQuotesResolveLast = onlyResolvesLast(getFeeQuote);
 
 function getPriceQuotes(queryParams: PriceQuoteParams) {
   return Promise.allSettled([
-    gnosisOperator.getPriceQuote(queryParams),
-    match0xService.getPriceQuote(queryParams),
-    paraSwapService.getPriceQuote(queryParams)
+    // gnosisOperator.getPriceQuote(queryParams),
+    tryPromiseWithTimeout(
+      match0xService.getPriceQuote(queryParams),
+      PRICE_QUOTE_TIMEOUT
+    ),
+    tryPromiseWithTimeout(
+      paraSwapService.getPriceQuote(queryParams),
+      PRICE_QUOTE_TIMEOUT
+    )
   ]);
 }
 
