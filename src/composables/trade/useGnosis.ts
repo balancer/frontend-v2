@@ -17,7 +17,7 @@ import {
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
 import useWeb3 from '@/services/web3/useWeb3';
 import { calculateValidTo } from '@/services/gnosis/utils';
-import { gnosisOperator } from '@/services/gnosis/operator.service';
+import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
 import { match0xService } from '@/services/gnosis/match0x.service';
 import { paraSwapService } from '@/services/gnosis/paraswap.service';
 
@@ -80,7 +80,10 @@ const feeQuotesResolveLast = onlyResolvesLast(getFeeQuote);
 
 function getPriceQuotes(queryParams: PriceQuoteParams) {
   return Promise.allSettled([
-    // gnosisOperator.getPriceQuote(queryParams),
+    tryPromiseWithTimeout(
+      gnosisProtocolService.getPriceQuote(queryParams),
+      PRICE_QUOTE_TIMEOUT
+    ),
     tryPromiseWithTimeout(
       match0xService.getPriceQuote(queryParams),
       PRICE_QUOTE_TIMEOUT
@@ -93,7 +96,7 @@ function getPriceQuotes(queryParams: PriceQuoteParams) {
 }
 
 function getFeeQuote(queryParams: PriceQuoteParams) {
-  return gnosisOperator.getFeeQuote(queryParams);
+  return gnosisProtocolService.getFeeQuote(queryParams);
 }
 
 export default function useGnosis({
@@ -200,7 +203,7 @@ export default function useGnosis({
         getSigner()
       );
 
-      const orderId = await gnosisOperator.sendSignedOrder({
+      const orderId = await gnosisProtocolService.sendSignedOrder({
         order: {
           ...unsignedOrder,
           signature,

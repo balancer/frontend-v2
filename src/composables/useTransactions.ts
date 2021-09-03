@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import LS_KEYS from '@/constants/local-storage.keys';
 
 import { configService } from '@/services/config/config.service';
-import { gnosisOperator } from '@/services/gnosis/operator.service';
+import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { OrderMetaData } from '@/services/gnosis/types';
 import { gnosisExplorer } from '@/services/gnosis/explorer.service';
@@ -373,7 +373,7 @@ export default function useTransactions() {
   }
 
   function checkOrderActivity(transaction: Transaction) {
-    gnosisOperator
+    gnosisProtocolService
       .getOrder(transaction.id)
       .then(order => {
         console.log(order);

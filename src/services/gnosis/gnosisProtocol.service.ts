@@ -27,7 +27,7 @@ export const API_URLS = {
     : 'https://protocol-rinkeby.gnosis.io/api'
 };
 
-export default class GnosisOperatorService {
+export default class GnosisProtocolService {
   baseURL: string;
 
   constructor(apiVersion = 'v1') {
@@ -105,7 +105,7 @@ export default class GnosisOperatorService {
       );
       return response.data;
     } catch (e) {
-      console.log(`[Gnosis Operator]: Failed to get order ${orderId}`, e);
+      console.log(`[Gnosis Protocol]: Failed to get order ${orderId}`, e);
     }
 
     return null;
@@ -123,7 +123,7 @@ export default class GnosisOperatorService {
       );
       return response.data;
     } catch (e) {
-      console.log(`[Gnosis Operator]: Failed to get fee from API`, e);
+      console.log(`[Gnosis Protocol]: Failed to get fee from API`, e);
     }
 
     return null;
@@ -147,11 +147,11 @@ export default class GnosisOperatorService {
       );
       return response.data;
     } catch (e) {
-      console.log(`[Gnosis Operator]: Failed to get price from API`, e);
+      console.log(`[Gnosis Protocol]: Failed to get price from API`, e);
     }
 
     return null;
   }
 }
 
-export const gnosisOperator = new GnosisOperatorService();
+export const gnosisProtocolService = new GnosisProtocolService();
