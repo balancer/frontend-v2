@@ -4,14 +4,12 @@ import { BigNumber } from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
-import { orderBy } from 'lodash';
 
 import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import { bnum } from '@/lib/utils';
 import {
   FeeInformation,
   OrderMetaData,
-  PriceInformation,
   PriceQuoteParams
 } from '@/services/gnosis/types';
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
@@ -323,28 +321,26 @@ export default function useGnosis({
 
           const priceQuotes = await priceQuotesResolveLast(queryParams);
 
-          const priceQuotesToCompare = priceQuotes.reduce<PriceInformation[]>(
+          const priceQuoteAmounts = priceQuotes.reduce<string[]>(
             (fulfilledPriceQuotes, priceQuote) => {
-              if (priceQuote.status === 'fulfilled' && priceQuote.value) {
-                fulfilledPriceQuotes.push(priceQuote.value);
+              if (
+                priceQuote.status === 'fulfilled' &&
+                priceQuote.value &&
+                priceQuote.value.amount != null
+              ) {
+                fulfilledPriceQuotes.push(priceQuote.value.amount);
               }
               return fulfilledPriceQuotes;
             },
             []
           );
 
-          if (priceQuotesToCompare.length > 0) {
-            const sortedPriceQuotes = orderBy(
-              priceQuotesToCompare,
-              'amount',
-              exactIn.value ? 'desc' : 'asc'
-            );
-
-            const winningPriceQuote = sortedPriceQuotes[0];
-
-            if (winningPriceQuote.amount != null) {
-              priceQuoteAmount = bnum(winningPriceQuote.amount).toString(10);
-            }
+          if (priceQuoteAmounts.length > 0) {
+            // For sell orders get the largest (max) quote. For buy orders get the smallest (min) quote.
+            priceQuoteAmount = (exactIn.value
+              ? BigNumber.max(...priceQuoteAmounts)
+              : BigNumber.min(...priceQuoteAmounts)
+            ).toString(10);
           }
 
           if (priceQuoteAmount != null) {
