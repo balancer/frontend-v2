@@ -49,7 +49,7 @@ export const API_URLS = {
 // GPV2Settlement
 // https://etherscan.io/address/0x9008d19f58aabd9ed0d60971565aa8510560ab41
 const AFFILIATE_ADDRESS = GP_SETTLEMENT_CONTRACT_ADDRESS;
-const EXCLUDED_SOURCES = '';
+const EXCLUDED_SOURCES = 'Mooniswap'; // getting incorrect quotes for DAI/USDT
 const MATCHA_DEFAULT_OPTIONS = `affiliateAddress=${AFFILIATE_ADDRESS}&excludedSources=${EXCLUDED_SOURCES}`;
 
 export default class Match0xService {
@@ -74,6 +74,7 @@ export default class Match0xService {
           buyToken
         )}&${swapSide}=${amount}&${MATCHA_DEFAULT_OPTIONS}`
       );
+      console.log(response);
       return this.toPriceInformation(response.data, kind);
     } catch (e) {
       console.log(`[Matcha 0x]: Failed to get price from API`, e);
