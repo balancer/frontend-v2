@@ -49,8 +49,8 @@
             the amount of liquidity each address contributed, relative to the
             total liquidity in eligible Balancer pools. BAL tokens give voting
             rights in community governance. In addition, other protocols may
-            further incentivize liquidity by also distributing tokens to Balancer 
-            Liquidity Providers in certain pools.
+            further incentivize liquidity by also distributing tokens to
+            Balancer Liquidity Providers in certain pools.
           </p>
           <div class="mt-6">
             <h5>Liquidity mining details</h5>
