@@ -48,10 +48,9 @@
             listed in the tables above). Tokens are distributed proportional to
             the amount of liquidity each address contributed, relative to the
             total liquidity in eligible Balancer pools. BAL tokens give voting
-            rights in community governance. In addition, other protocols like
-            Polygon are further incentivizing liquidity by also distributing
-            MATIC tokens to Balancer Liquidity Providers in certain pools on
-            Polygon.
+            rights in community governance. In addition, other protocols may
+            further incentivize liquidity by also distributing tokens to
+            Balancer Liquidity Providers in certain pools.
           </p>
           <div class="mt-6">
             <h5>Liquidity mining details</h5>
@@ -187,6 +186,9 @@ export default defineComponent({
       if (networkConfig.chainId === Network.POLYGON) {
         return 'Polygon';
       }
+      if (networkConfig.chainId === Network.ARBITRUM) {
+        return 'Arbitrum';
+      }
       return 'Unknown Network';
     });
 
@@ -199,6 +201,10 @@ export default defineComponent({
         return `BAL distributions on Polygon are automatically airdropped to eligible
         addresses weekly.`;
       }
+      if (networkConfig.chainId === Network.ARBITRUM) {
+        return `BAL distributions on Arbitrum are automatically airdropped to eligible
+        addresses weekly.`;
+      }
       return '';
     });
 
@@ -206,13 +212,14 @@ export default defineComponent({
     const otherNetwork = computed(() => {
       if (networkConfig.chainId === Network.MAINNET) return 'Polygon';
       if (networkConfig.chainId === Network.POLYGON) return 'Ethereum';
+      if (networkConfig.chainId === Network.ARBITRUM) return 'Ethereum';
       return 'Ethereum';
     });
 
     const otherNetworkLink = computed(() => {
-      let networkDomain = 'polygon';
-      if (networkConfig.chainId === Network.POLYGON) {
-        networkDomain = 'app';
+      let networkDomain = 'app';
+      if (networkConfig.chainId === Network.MAINNET) {
+        networkDomain = 'polygon';
       }
       return `https://${networkDomain}.balancer.fi/#/liquidity-mining`;
     });
