@@ -1,6 +1,8 @@
 {
     "alerts": {
-        "price-provider-down": "Our pricing provider, Coingecko is currently down.",
+        "price-fetch-error": "Our pricing provider, Coingecko is currently down.",
+        "balances-fetch-error": "Failed to fetch token balances.",
+        "allowances-fetch-error": "Failed to fetch token allowances.",
         "retry-label": "Refresh to try again"
     },
     "account": "Account",
