@@ -16,8 +16,10 @@ export const EXTERNAL_LINKS = {
   Element: {
     Earn: 'https://app.element.fi/earn',
     Pools: {
-      LUSD: 'https://app.element.fi/pools/0xA8D4433BAdAa1A35506804B43657B0694deA928d',
-      USDC: 'https://app.element.fi/pools/0x787546Bf2c05e3e19e2b6BDE57A203da7f682efF'
+      LUSD:
+        'https://app.element.fi/pools/0xA8D4433BAdAa1A35506804B43657B0694deA928d',
+      USDC:
+        'https://app.element.fi/pools/0x787546Bf2c05e3e19e2b6BDE57A203da7f682efF'
     }
   }
 };
