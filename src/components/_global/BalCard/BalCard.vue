@@ -105,6 +105,6 @@ export default defineComponent({
 }
 
 .feature {
-  @apply w-full h-40 bg-center;
+  @apply w-full h-40 bg-center bg-cover;
 }
 </style>
