@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { Container } from 'typedi';
+import { Service } from 'typedi';
 import { ConfigService } from '../config/config.service';
 
-export default class IpfsService {
+@Service()
+export class IpfsService {
   gateway: string;
 
-  constructor(private readonly configService = Container.get(ConfigService)) {
+  constructor(private readonly configService: ConfigService) {
     this.gateway = this.configService.env.IPFS_NODE;
   }
 
@@ -16,5 +17,3 @@ export default class IpfsService {
     return data;
   }
 }
-
-export const ipfsService = new IpfsService();

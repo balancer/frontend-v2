@@ -2,12 +2,13 @@ import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { toWei, soliditySha3 } from 'web3-utils';
 import axios from 'axios';
+import { Container } from 'typedi';
 
 import { NetworkId } from '@/constants/network';
 
 import { Claim } from '@/types';
 
-import { ipfsService } from './ipfs/ipfs.service';
+import { IpfsService } from './ipfs/ipfs.service';
 import { call, sendTransaction } from '@/lib/utils/balancer/web3';
 import { bnum } from '@/lib/utils';
 import { loadTree } from '@/lib/utils/merkle';
@@ -60,7 +61,7 @@ export type Report = Record<string, any>;
 
 export async function getReports(snapshot: Snapshot, weeks: number[]) {
   const reports = await Promise.all<Report>(
-    weeks.map(week => ipfsService.get(snapshot[week]))
+    weeks.map(week => Container.get(IpfsService).get(snapshot[week]))
   );
   return Object.fromEntries(reports.map((report, i) => [weeks[i], report]));
 }
