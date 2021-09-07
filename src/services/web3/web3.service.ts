@@ -1,5 +1,6 @@
 import { JsonRpcProvider } from '@balancer-labs/sor2/node_modules/@ethersproject/providers';
-import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { Container } from 'typedi';
+import { RpcProviderService } from '../rpc-provider/rpc-provider.service';
 
 interface Web3Profile {
   ens: string | null;
@@ -8,7 +9,7 @@ interface Web3Profile {
 export default class Web3Service {
   provider: JsonRpcProvider;
 
-  constructor(readonly rpcProviderService = _rpcProviderService) {
+  constructor(readonly rpcProviderService = Container.get(RpcProviderService)) {
     this.provider = this.rpcProviderService.jsonProvider;
   }
 

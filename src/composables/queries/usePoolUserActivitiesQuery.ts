@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import { reactive, computed } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
@@ -5,7 +6,7 @@ import { UseInfiniteQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 
-import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { BalancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolActivity } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -19,7 +20,7 @@ export default function usePoolUserActivitiesQuery(
   options: UseInfiniteQueryOptions<UserPoolActivitiesQueryResponse> = {}
 ) {
   // SERVICES
-  const balancerSubgraph = new BalancerSubgraph();
+  const balancerSubgraph = Container.get(BalancerSubgraphService);
 
   // COMPOSABLES
   const { account, isWalletReady } = useWeb3();

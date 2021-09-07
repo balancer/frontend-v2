@@ -7,7 +7,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { ConfigService } from '../config/config.service';
 import { isAddress } from '@ethersproject/address';
 import { web3Service } from './web3.service';
-import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { RpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { switchToAppNetwork } from './utils/helpers';
 
 /** STATE */
@@ -20,7 +20,7 @@ function setBlockNumber(n: number): void {
 }
 
 /** INIT STATE */
-rpcProviderService.initBlockListener(setBlockNumber);
+Container.get(RpcProviderService).initBlockListener(setBlockNumber);
 
 export default function useWeb3() {
   const {

@@ -1,11 +1,12 @@
 import { reactive } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
+import { Container } from 'typedi';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 
-import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { BalancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolActivity } from '@/services/balancer/subgraph/types';
 
 type PoolActivitiesQueryResponse = {
@@ -18,7 +19,7 @@ export default function usePoolActivitiesQuery(
   options: UseInfiniteQueryOptions<PoolActivitiesQueryResponse> = {}
 ) {
   // SERVICES
-  const balancerSubgraph = new BalancerSubgraph();
+  const balancerSubgraph = Container.get(BalancerSubgraphService);
 
   // DATA
   const queryKey = reactive(QUERY_KEYS.Pools.Activities(id));

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { TokenList, TokenListMap } from '@/types/TokenList';
-import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { RpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { IpfsService } from '../ipfs/ipfs.service';
 import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
 import { ConfigService } from '../config/config.service';
@@ -26,7 +26,7 @@ export default class TokenListService {
 
   constructor(
     private readonly configService = Container.get(ConfigService),
-    private readonly rpcProviderService = _rpcProviderService,
+    private readonly rpcProviderService = Container.get(RpcProviderService),
     private readonly ipfsService = Container.get(IpfsService)
   ) {
     this.provider = this.rpcProviderService.jsonProvider;

@@ -6,7 +6,7 @@ import { default as vaultAbi } from '@/lib/abi/Vault.json';
 import { default as weightedPoolAbi } from '@/lib/abi/WeightedPool.json';
 import { default as stablePoolAbi } from '@/lib/abi/StablePool.json';
 import { default as TokenAbi } from '@/lib/abi/ERC20.json';
-import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { RpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { ConfigService } from '@/services/config/config.service';
 
 export default class BalancerContractsService {
@@ -16,7 +16,7 @@ export default class BalancerContractsService {
 
   constructor(
     readonly configService = Container.get(ConfigService),
-    readonly rpcProviderService = _rpcProviderService
+    readonly rpcProviderService = Container.get(RpcProviderService)
   ) {
     this.provider = this.rpcProviderService.jsonProvider;
     this.config = this.configService.network;

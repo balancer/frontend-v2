@@ -3,6 +3,7 @@ import { Connector } from './connectors/connector';
 import { computed, reactive, ref, Ref, toRefs } from 'vue';
 import { WalletConnectConnector } from './connectors/trustwallet/walletconnect.connector';
 import { getAddress } from '@ethersproject/address';
+import { Container } from 'typedi';
 import { lsGet, lsSet } from '@/lib/utils';
 import {
   JsonRpcProvider,
@@ -25,7 +26,7 @@ import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
 import i18n from '@/plugins/i18n';
-import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { RpcProviderService } from '../rpc-provider/rpc-provider.service';
 
 export type Wallet =
   | 'metamask'
@@ -102,7 +103,9 @@ export default {
     const provider = computed(
       () =>
         pluginState.connector?.provider ??
-        rpcProviderService.getJsonProvider(chainId.value.toString())
+        Container.get(RpcProviderService).getJsonProvider(
+          chainId.value.toString()
+        )
     );
     const signer = computed(() => pluginState.connector?.provider?.getSigner());
 
