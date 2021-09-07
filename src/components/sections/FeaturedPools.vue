@@ -1,8 +1,8 @@
 <template>
   <div>
     <h3 class="mb-4">{{ $t('featuredProtocol') }}</h3>
-    <div class="grid grid-cols-12 gap-x-4">
-      <div class="mb-4 col-span-12 lg:col-span-6">
+    <div class="grid grid-cols-12 gap-4">
+      <div class="col-span-12 lg:col-span-6">
         <BalCard
           title="Element Finance"
           imgSrc="/images/banners/element.png"
@@ -15,11 +15,12 @@
           <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
               <span>{{ $t('viewAndManangeOnElement') }}</span>
+              <BalIcon name="arrow-up-right" size="sm" class="ml-1" />
             </BalLink>
           </template>
         </BalCard>
       </div>
-      <div class="mb-4 col-span-12 md:col-span-6 md:col-span-6 lg:col-span-3">
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
         <BalCard
           title="LUSD"
           imgSrc="/images/banners/element-lusd.png"
@@ -31,13 +32,14 @@
             Element principal pool Yearn crvLUSD v2 vault.
           </p>
           <template v-slot:footer>
-            <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
+            <BalLink :href="EXTERNAL_LINKS.Element.Pools.LUSD" external>
               <span>{{ $t('viewOnElement') }}</span>
+              <BalIcon name="arrow-up-right" size="sm" class="ml-1" />
             </BalLink>
           </template>
         </BalCard>
       </div>
-      <div class="mb-4 col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-3">
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
         <BalCard
           title="USDC"
           imgSrc="/images/banners/element-usdc.png"
@@ -49,8 +51,9 @@
             Element principal pool Yearn USDC v2 vault.
           </p>
           <template v-slot:footer>
-            <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
+            <BalLink :href="EXTERNAL_LINKS.Element.Pools.USDC" external>
               <span>{{ $t('viewOnElement') }}</span>
+              <BalIcon name="arrow-up-right" size="sm" class="ml-1" />
             </BalLink>
           </template>
         </BalCard>

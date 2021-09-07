@@ -402,6 +402,6 @@
     "yourTransactions": "Your transactions in this pool",
     "featuredProtocol": "Featured ecosystem protocol",
     "aboutElementFinance": "Element is an open source protocol for fixed and variable yield markets. It is built on Balancer V2. View and manage your liquidity positions directly on Element.fi.",
-    "viewAndManangeOnElement": "View and manage all pools on Element.fi 🡥",
-    "viewOnElement": "View on Element.fi 🡥"
+    "viewAndManangeOnElement": "View and manage all pools on Element.fi",
+    "viewOnElement": "View on Element.fi"
 }
