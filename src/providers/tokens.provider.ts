@@ -55,6 +55,8 @@ export interface TokensProviderResponse {
   dynamicDataLoaded: ComputedRef<boolean>;
   dynamicDataLoading: ComputedRef<boolean>;
   priceQueryError: Ref<boolean>;
+  balancesQueryError: Ref<boolean>;
+  allowancesQueryError: Ref<boolean>;
   refetchPrices: Ref<() => void>;
   refetchBalances: Ref<() => void>;
   refetchAllowances: Ref<() => void>;
@@ -166,6 +168,7 @@ export default {
       data: balanceData,
       isSuccess: balanceQuerySuccess,
       isLoading: balanceQueryLoading,
+      isError: balancesQueryError,
       refetch: refetchBalances
     } = useBalancesQuery(tokens);
 
@@ -173,6 +176,7 @@ export default {
       data: allowanceData,
       isSuccess: allowanceQuerySuccess,
       isLoading: allowanceQueryLoading,
+      isError: allowancesQueryError,
       refetch: refetchAllowances
     } = useAllowancesQuery(tokens, toRef(state, 'allowanceContracts'));
 
@@ -396,6 +400,8 @@ export default {
       dynamicDataLoaded,
       dynamicDataLoading,
       priceQueryError,
+      balancesQueryError,
+      allowancesQueryError,
       // methods
       refetchPrices,
       refetchBalances,
