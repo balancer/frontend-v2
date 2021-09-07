@@ -15,7 +15,7 @@
           <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Earn" external>
               <span>{{ $t('viewAndManangeOnElement') }}</span>
-              <BalIcon name="arrow-up-right" size="sm" />
+              <BalIcon name="arrow-up-right" size="sm" class="ml-1" />
             </BalLink>
           </template>
         </BalCard>
@@ -34,7 +34,7 @@
           <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Pools.LUSD" external>
               <span>{{ $t('viewOnElement') }}</span>
-              <BalIcon name="arrow-up-right" size="sm" />
+              <BalIcon name="arrow-up-right" size="sm" class="ml-1" />
             </BalLink>
           </template>
         </BalCard>
@@ -53,7 +53,7 @@
           <template v-slot:footer>
             <BalLink :href="EXTERNAL_LINKS.Element.Pools.USDC" external>
               <span>{{ $t('viewOnElement') }}</span>
-              <BalIcon name="arrow-up-right" size="sm" />
+              <BalIcon name="arrow-up-right" size="sm" class="ml-1" />
             </BalLink>
           </template>
         </BalCard>
