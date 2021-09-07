@@ -4,7 +4,7 @@ import { ConfigService } from '@/services/config/config.service';
 
 type NewBlockHandler = (blockNumber: number) => any;
 
-Service();
+@Service()
 export class RpcProviderService {
   readonly network: string;
   jsonProvider: JsonRpcProvider;
