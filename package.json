@@ -52,7 +52,6 @@
     "postcss": "^7.0.35",
     "postcss-nesting": "^7.0.1",
     "reflect-metadata": "^0.1.13",
-    "source-map-support": "^0.5.19",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4",
     "typedi": "^0.10.0",
     "vue": "^3.2.6",
