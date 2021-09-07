@@ -13,6 +13,7 @@ import { BigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sor2';
 import { useI18n } from 'vue-i18n';
+import { Container } from 'typedi';
 
 import { scale, bnum } from '@/lib/utils';
 import {
@@ -27,7 +28,7 @@ import {
   LiquiditySelection
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
 import useFathom from '../useFathom';
@@ -166,6 +167,8 @@ export default function useSor({
   }
 
   async function initSor(): Promise<void> {
+    const configService = Container.get(ConfigService);
+
     const poolsUrlV1 = `${
       configService.network.poolsUrlV1
     }?timestamp=${Date.now()}`;

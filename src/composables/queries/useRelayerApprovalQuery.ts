@@ -2,12 +2,13 @@ import { reactive, computed, Ref } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import { Contract } from 'ethers/lib/ethers';
+import { Container } from 'typedi';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
 
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 
 import vaultAbi from '@/lib/abi/Vault.json';
 
@@ -33,7 +34,7 @@ export default function useRelayerApprovalQuery(
   const vaultContract = computed(
     () =>
       new Contract(
-        configService.network.addresses.vault,
+        Container.get(ConfigService).network.addresses.vault,
         vaultAbi,
         getProvider()
       )

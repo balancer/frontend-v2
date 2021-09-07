@@ -1,12 +1,12 @@
-import { configService } from '@/services/config/config.service';
+import { Container } from 'typedi';
+import { ConfigService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BigNumberish, Contract } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 
-const {
-  stETH: stEthAddress,
-  wstETH: wstEthAddress
-} = configService.network.addresses;
+const { stETH: stEthAddress, wstETH: wstEthAddress } = Container.get(
+  ConfigService
+).network.addresses;
 
 export function isStETH(tokenInAddress: string, tokenOutAddress: string) {
   if (!tokenInAddress || !tokenOutAddress || !stEthAddress) return false;

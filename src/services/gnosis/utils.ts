@@ -1,7 +1,9 @@
+import { Container } from 'typedi';
 import { BigNumber } from '@ethersproject/bignumber';
-import { configService } from '../config/config.service';
+import { ConfigService } from '../config/config.service';
 
 export function normalizeTokenAddress(tokenAddress: string) {
+  const configService = Container.get(ConfigService);
   const nativeAssetAddress = configService.network.nativeAsset.address;
 
   if (tokenAddress.toLowerCase() === nativeAssetAddress.toLowerCase()) {

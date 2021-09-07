@@ -88,6 +88,7 @@
 import { ref, defineComponent, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { Container } from 'typedi';
 
 import { useI18n } from 'vue-i18n';
 import { isAddress, getAddress } from '@ethersproject/address';
@@ -111,7 +112,7 @@ import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 
 import TradePairGP from './TradePairGP.vue';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -119,7 +120,7 @@ import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
 
-const { nativeAsset } = configService.network;
+const { nativeAsset } = Container.get(ConfigService).network;
 
 export default defineComponent({
   components: {
@@ -212,7 +213,7 @@ export default defineComponent({
             header: t('noNativeAsset', [nativeAsset.symbol]),
             body: t('noNativeAssetDetailed', [
               nativeAsset.symbol,
-              configService.network.chainName
+              Container.get(ConfigService).network.chainName
             ])
           };
         }

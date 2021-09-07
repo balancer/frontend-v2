@@ -4,7 +4,8 @@ import { TokenList, TokenListMap } from '@/types/TokenList';
 import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { ipfsService as _ipfsService } from '../ipfs/ipfs.service';
 import { TOKEN_LIST_MAP } from '@/constants/tokenlists';
-import { configService as _configService } from '../config/config.service';
+import { ConfigService } from '../config/config.service';
+import { Container } from 'typedi';
 
 interface TokenListUris {
   All: string[];
@@ -24,7 +25,7 @@ export default class TokenListService {
   appNetworkKey: string;
 
   constructor(
-    private readonly configService = _configService,
+    private readonly configService = Container.get(ConfigService),
     private readonly rpcProviderService = _rpcProviderService,
     private readonly ipfsService = _ipfsService
   ) {

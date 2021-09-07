@@ -47,8 +47,9 @@
 </template>
 
 <script lang="ts">
+import { Container } from 'typedi';
 import useBreakpoints from '@/composables/useBreakpoints';
-import ConfigService from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { defineComponent } from 'vue';
 
 interface Network {
@@ -63,7 +64,7 @@ export default defineComponent({
 
   setup() {
     // SERVICES
-    const configService = new ConfigService();
+    const configService = Container.get(ConfigService);
 
     // COMPOSABLES
     const { upToLargeBreakpoint } = useBreakpoints();

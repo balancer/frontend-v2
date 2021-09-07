@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { configService as _configService } from '../config/config.service';
+import { Container } from 'typedi';
+import { ConfigService } from '../config/config.service';
 
 export default class IpfsService {
   gateway: string;
 
-  constructor(private readonly configService = _configService) {
+  constructor(private readonly configService = Container.get(ConfigService)) {
     this.gateway = this.configService.env.IPFS_NODE;
   }
 

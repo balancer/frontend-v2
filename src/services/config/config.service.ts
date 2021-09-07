@@ -1,3 +1,4 @@
+import { Service } from 'typedi';
 import { Config } from '@/lib/config';
 import configs from '@/lib/config';
 
@@ -12,7 +13,8 @@ interface Env {
   ENABLE_STABLE_POOLS: boolean;
 }
 
-export default class ConfigService {
+@Service()
+export class ConfigService {
   public get env(): Env {
     return {
       APP_ENV: process.env.VUE_APP_ENV || 'development',
@@ -38,5 +40,3 @@ export default class ConfigService {
     return configs[key];
   }
 }
-
-export const configService = new ConfigService();

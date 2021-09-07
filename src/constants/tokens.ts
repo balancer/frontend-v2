@@ -1,4 +1,5 @@
-import { configService } from '@/services/config/config.service';
+import { Container } from 'typedi';
+import { ConfigService } from '@/services/config/config.service';
 
 export const TOKENS = {
   Popular: {
@@ -86,5 +87,6 @@ export const TOKENS = {
   }
 };
 
-export const NATIVE_ASSET_ADDRESS = configService.network.nativeAsset.address;
+export const NATIVE_ASSET_ADDRESS = Container.get(ConfigService).network
+  .nativeAsset.address;
 export const DEFAULT_TOKEN_DECIMALS = 18;

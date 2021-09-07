@@ -1,3 +1,5 @@
+// NOTE: reflect-metadata must be defined as the first import in order for TypeDI to function correctly
+import 'reflect-metadata';
 import nock from 'nock';
 
 /**

@@ -1,8 +1,9 @@
+import { Container } from 'typedi';
 import { differenceInWeeks } from 'date-fns';
 import { bnum } from '@/lib/utils';
 import { toUtcTime } from '@/lib/utils/date';
 import { NetworkId } from '@/constants/network';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { getAddress } from '@ethersproject/address';
@@ -103,7 +104,7 @@ export function getLiquidityMiningRewards(
     Object.assign(
       miningRewards,
       liquidityMiningWeek.find(
-        pool => pool.chainId === configService.network.chainId
+        pool => pool.chainId === Container.get(ConfigService).network.chainId
       )?.pools
     );
   }

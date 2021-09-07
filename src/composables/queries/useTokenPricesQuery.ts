@@ -5,9 +5,10 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { sleep } from '@/lib/utils';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import useUserSettings from '@/composables/useUserSettings';
 import { TOKENS } from '@/constants/tokens';
+import { Container } from 'typedi';
 
 /**
  * TYPES
@@ -31,8 +32,10 @@ export default function useTokenPricesQuery(
 
   // TODO: kill this with fire as soon as Coingecko supports wstETH
   function injectWstEth(prices: TokenPrices): TokenPrices {
-    const stEthAddress = configService.network.addresses.stETH;
-    const wstEthAddress = configService.network.addresses.wstETH;
+    const { stETH: stEthAddress, wstETH: wstEthAddress } = Container.get(
+      ConfigService
+    ).network.addresses;
+
     if (prices[stEthAddress]) {
       const stETHPrice = prices[stEthAddress][currency.value] || 0;
       prices[wstEthAddress] = {

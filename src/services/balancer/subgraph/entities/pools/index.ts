@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import Service from '../../balancer-subgraph.service';
 import queryBuilder from './query';
 import { getPoolLiquidity } from '@/lib/utils/balancer/price';
@@ -16,7 +17,7 @@ import {
   computeAPRsForPool
 } from '@/lib/utils/liquidityMining';
 import { NetworkId } from '@/constants/network';
-import { configService as _configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { FiatCurrency } from '@/constants/currency';
 import { isStable, isWstETH } from '@/composables/usePool';
@@ -33,7 +34,7 @@ export default class Pools {
   constructor(
     service: Service,
     query: QueryBuilder = queryBuilder,
-    private readonly configService = _configService
+    private readonly configService = Container.get(ConfigService)
   ) {
     this.service = service;
     this.query = query;

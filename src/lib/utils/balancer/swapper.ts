@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { AddressZero, MaxUint256 } from '@ethersproject/constants';
@@ -11,7 +12,7 @@ import configs from '@/lib/config';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWstETHByStETH, isStETH } from './lido';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { bnum } from '..';
 
 const SWAP_KIND_IN = 0;
@@ -361,7 +362,8 @@ async function lidoBatchSwapGivenIn(
   }
 
   // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
-  const { stETH, wstETH } = configService.network.addresses;
+  const { stETH, wstETH } = Container.get(ConfigService).network.addresses;
+
   if (tokenIn === stETH.toLowerCase()) {
     tokenIn = wstETH.toLowerCase();
     tokenInAmount = bnum(await getWstETHByStETH(tokenInAmount.toString()));
@@ -453,7 +455,7 @@ async function lidoBatchSwapGivenOut(
   }
 
   // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
-  const { stETH, wstETH } = configService.network.addresses;
+  const { stETH, wstETH } = Container.get(ConfigService).network.addresses;
   if (tokenIn === stETH.toLowerCase()) {
     tokenIn = wstETH.toLowerCase();
     tokenInAmountMax = bnum(

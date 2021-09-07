@@ -1,18 +1,19 @@
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Container } from 'typedi';
 
 import useWeb3 from '@/services/web3/useWeb3';
 
 import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 
 import vaultAbi from '@/lib/abi/Vault.json';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
 import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 
-const vaultAddress = configService.network.addresses.vault;
+const vaultAddress = Container.get(ConfigService).network.addresses.vault;
 
 export enum Relayer {
   GNOSIS = 'gnosis',
@@ -35,7 +36,7 @@ export default function useRelayerApproval(
   const { getProvider, account } = useWeb3();
   const relayerAddress = ref(
     relayer === Relayer.LIDO
-      ? configService.network.addresses.lidoRelayer
+      ? Container.get(ConfigService).network.addresses.lidoRelayer
       : GP_RELAYER_CONTRACT_ADDRESS
   );
   const { txListener } = useEthers();
@@ -59,7 +60,7 @@ export default function useRelayerApproval(
     try {
       const tx = await sendTransaction(
         getProvider(),
-        configService.network.addresses.vault,
+        Container.get(ConfigService).network.addresses.vault,
         vaultAbi,
         'setRelayerApproval',
         [account.value, relayerAddress.value, true]

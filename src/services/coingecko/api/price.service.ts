@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import { CoingeckoClient } from '../coingecko.client';
 import {
   CoingeckoService,
@@ -5,7 +6,7 @@ import {
   getPlatformId
 } from '../coingecko.service';
 import { TOKENS } from '@/constants/tokens';
-import { configService as _configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { invert } from 'lodash';
 import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
 import { retryPromiseWithDelay } from '@/lib/utils/promise';
@@ -35,7 +36,7 @@ export class PriceService {
 
   constructor(
     service: CoingeckoService,
-    private readonly configService = _configService
+    private readonly configService = Container.get(ConfigService)
   ) {
     this.client = service.client;
     this.fiatParam = service.supportedFiat;

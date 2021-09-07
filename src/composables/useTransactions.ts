@@ -3,10 +3,11 @@ import { merge, orderBy } from 'lodash';
 import { TransactionReceipt } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
+import { Container } from 'typedi';
 
 import LS_KEYS from '@/constants/local-storage.keys';
 
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { gnosisOperator } from '@/services/gnosis/operator.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { OrderMetaData } from '@/services/gnosis/types';
@@ -80,7 +81,7 @@ export type NewTransaction = Pick<
   'id' | 'type' | 'summary' | 'receipt' | 'action' | 'details'
 >;
 
-const networkId = configService.network.chainId;
+const networkId = Container.get(ConfigService).network.chainId;
 
 export type TransactionsMap = Record<string, Transaction>;
 

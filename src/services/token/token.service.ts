@@ -1,6 +1,7 @@
+import { Container } from 'typedi';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
-import { configService as _configService } from '../config/config.service';
+import { ConfigService } from '../config/config.service';
 import MetadataConcern from './concerns/metadata.concern';
 import BalancesConcern from './concerns/balances.concern';
 import AllowancesConcern from './concerns/allowances.concern';
@@ -16,7 +17,7 @@ export default class TokenService {
     readonly balancesConcernClass = BalancesConcern,
     readonly allowancesConcernClass = AllowancesConcern,
     readonly rpcProviderService = _rpcProviderService,
-    readonly configService = _configService
+    readonly configService = Container.get(ConfigService)
   ) {
     this.provider = this.rpcProviderService.jsonProvider;
     this.metadata = new metadataConcernClass(this);

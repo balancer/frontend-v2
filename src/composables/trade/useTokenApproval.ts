@@ -2,7 +2,7 @@ import { computed, Ref, ref, watch } from 'vue';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/providers';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 import useTokens from '../useTokens';
 import useConfig from '../useConfig';
@@ -10,6 +10,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
 import { useI18n } from 'vue-i18n';
+import { Container } from 'typedi';
 
 export default function useTokenApproval(
   tokenInAddress: Ref<string>,
@@ -57,7 +58,7 @@ export default function useTokenApproval(
     const requiredAllowancesV1 = approvalsRequired(
       [tokenInAddress.value],
       [tokenInAmountDenorm.toString()],
-      configService.network.addresses.exchangeProxy
+      Container.get(ConfigService).network.addresses.exchangeProxy
     );
 
     const requiredAllowancesV2 = approvalsRequired(
@@ -92,12 +93,14 @@ export default function useTokenApproval(
 
   async function approveV1(): Promise<void> {
     console.log('[TokenApproval] Unlock V1');
-    approveSpender(configService.network.addresses.exchangeProxy);
+    approveSpender(
+      Container.get(ConfigService).network.addresses.exchangeProxy
+    );
   }
 
   async function approveV2(): Promise<void> {
     console.log('[TokenApproval] Unlock V2');
-    approveSpender(configService.network.addresses.vault);
+    approveSpender(Container.get(ConfigService).network.addresses.vault);
   }
 
   function txHandler(tx: TransactionResponse, spender: string): void {

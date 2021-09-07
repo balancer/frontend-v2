@@ -11,6 +11,7 @@ import {
 } from 'vue';
 import { compact, pick } from 'lodash';
 import { getAddress, isAddress } from '@ethersproject/address';
+import { Container } from 'typedi';
 
 import { bnum, forChange } from '@/lib/utils';
 import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
@@ -30,7 +31,7 @@ import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import { tokenService } from '@/services/token/token.service';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -370,6 +371,7 @@ export default {
      * CALLBACKS
      */
     onBeforeMount(async () => {
+      const configService = Container.get(ConfigService);
       const tokensToInject = compact([
         ...currentLiquidityMiningRewardTokens,
         configService.network.addresses.stETH,

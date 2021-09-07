@@ -1,8 +1,9 @@
 import { ExternalProvider } from '@ethersproject/providers';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
+import { Container } from 'typedi';
 
 export async function switchToAppNetwork(provider: ExternalProvider) {
-  const appNetworkConfig = configService.network;
+  const appNetworkConfig = Container.get(ConfigService).network;
   const hexChainId = `0x${appNetworkConfig.chainId.toString(16)}`;
   try {
     if (provider.request) {
@@ -26,7 +27,7 @@ export async function switchToAppNetwork(provider: ExternalProvider) {
 }
 
 export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
-  const appNetworkConfig = configService.network;
+  const appNetworkConfig = Container.get(ConfigService).network;
   const hexChainId = `0x${appNetworkConfig.chainId.toString(16)}`;
   try {
     const request = {

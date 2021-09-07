@@ -7,7 +7,8 @@ import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import usePoolQuery from './usePoolQuery';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
+import { Container } from 'typedi';
 
 /**
  * TYPES
@@ -20,7 +21,7 @@ interface QueryResponse {
 /**
  * HELPERS
  */
-const { addresses } = configService.network;
+const { addresses } = Container.get(ConfigService).network;
 
 export default function usePoolSnapshotsQuery(
   id: string,

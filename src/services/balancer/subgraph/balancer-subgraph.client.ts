@@ -1,11 +1,12 @@
 import axios from 'axios';
+import { Container } from 'typedi';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { configService as _configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 
 export default class BalancerSubgraphClient {
   url: string;
 
-  constructor(private readonly configService = _configService) {
+  constructor(private readonly configService = Container.get(ConfigService)) {
     this.url = configService.network.subgraph;
   }
 

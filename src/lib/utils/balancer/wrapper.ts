@@ -1,9 +1,10 @@
+import { Container } from 'typedi';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { BigNumberish } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import configs from '@/lib/config';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { getStETHByWstETH, getWstETHByStETH } from './lido';
 
 export enum WrapType {
@@ -16,12 +17,14 @@ export const isNativeAssetWrap = (
   tokenIn: string,
   tokenOut: string
 ): boolean => {
+  const configService = Container.get(ConfigService);
   const nativeAddress = configService.network.nativeAsset.address;
   const { weth } = configService.network.addresses;
   return tokenIn === nativeAddress && tokenOut === weth;
 };
 
 export const getWrapAction = (tokenIn: string, tokenOut: string): WrapType => {
+  const configService = Container.get(ConfigService);
   const nativeAddress = configService.network.nativeAsset.address;
   const { weth, stETH, wstETH } = configService.network.addresses;
 
@@ -40,7 +43,7 @@ export const getWrapOutput = (
   wrapAmount: BigNumberish
 ) => {
   if (wrapType === WrapType.NonWrap) throw new Error('Invalid wrap type');
-  const { weth, wstETH } = configService.network.addresses;
+  const { weth, wstETH } = Container.get(ConfigService).network.addresses;
 
   if (wrapper === weth) return wrapAmount;
   if (wrapper === wstETH) {

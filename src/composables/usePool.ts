@@ -7,8 +7,9 @@ import {
 } from '@/services/balancer/subgraph/types';
 import { TOKENS } from '@/constants/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
+import { Container } from 'typedi';
 
 type AnyPool = Pool | FullPool | DecoratedPoolWithShares;
 
@@ -33,10 +34,10 @@ export function isWeth(pool: AnyPool, networkId: string): boolean {
 }
 
 export function isWstETH(pool: AnyPool): boolean {
-  if (!configService.network.addresses.wstETH) return false;
+  if (!Container.get(ConfigService).network.addresses.wstETH) return false;
 
   return pool.tokenAddresses.includes(
-    getAddress(configService.network.addresses.wstETH)
+    getAddress(Container.get(ConfigService).network.addresses.wstETH)
   );
 }
 

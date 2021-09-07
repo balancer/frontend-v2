@@ -1,9 +1,10 @@
+import { Container } from 'typedi';
 import { computed, inject, reactive, ref, watch } from 'vue';
 import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 import { Web3Provider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { configService } from '../config/config.service';
+import { ConfigService } from '../config/config.service';
 import { isAddress } from '@ethersproject/address';
 import { web3Service } from './web3.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
@@ -32,10 +33,9 @@ export default function useWeb3() {
     disconnectWallet,
     connectWallet
   } = inject(Web3ProviderSymbol) as Web3Plugin;
+  const configService = Container.get(ConfigService);
   const appNetworkConfig = configService.network;
-  const isV1Supported = isAddress(
-    configService.network.addresses.exchangeProxy
-  );
+  const isV1Supported = isAddress(appNetworkConfig.addresses.exchangeProxy);
 
   // COMPUTED REFS + COMPUTED REFS
   const userNetworkConfig = computed(() => {

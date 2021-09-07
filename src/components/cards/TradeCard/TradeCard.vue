@@ -93,6 +93,7 @@ import { ref, defineComponent, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { isAddress, getAddress } from '@ethersproject/address';
+import { Container } from 'typedi';
 
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation, {
@@ -113,11 +114,11 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import useDarkMode from '@/composables/useDarkMode';
-import { configService } from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
-const { nativeAsset } = configService.network;
+const { nativeAsset } = Container.get(ConfigService).network;
 
 export default defineComponent({
   components: {
@@ -244,7 +245,7 @@ export default defineComponent({
             header: t('noNativeAsset', [nativeAsset.symbol]),
             body: t('noNativeAssetDetailed', [
               nativeAsset.symbol,
-              configService.network.chainName
+              Container.get(ConfigService).network.chainName
             ])
           };
         case TradeValidation.NO_BALANCE:
