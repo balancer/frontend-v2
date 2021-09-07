@@ -53,5 +53,6 @@
       "type": "2",
       "name": "weightedPool"
     }
-  }
+  },
+  "supportsElementPools": false
 }

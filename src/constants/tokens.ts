@@ -16,10 +16,12 @@ export const TOKENS = {
       BAL: '0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7'
     },
     '137': {
+      ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
       WETH: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
       BAL: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'
     },
     '42161': {
+      ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
       WETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
       BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8'
     }
