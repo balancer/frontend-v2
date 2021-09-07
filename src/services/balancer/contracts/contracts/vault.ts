@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import Service from '../balancer-contracts.service';
 import { default as vaultAbi } from '@/lib/abi/Vault.json';
 import { Multicaller } from '@/lib/utils/balancer/contract';
@@ -5,13 +6,16 @@ import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
 import { OnchainPoolData, PoolType } from '../../subgraph/types';
-import ConfigService from '@/services/config/config.service';
+import { ConfigService } from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 
 export default class Vault {
   service: Service;
 
-  constructor(service, private readonly configService = new ConfigService()) {
+  constructor(
+    service,
+    private readonly configService = Container.get(ConfigService)
+  ) {
     this.service = service;
   }
 

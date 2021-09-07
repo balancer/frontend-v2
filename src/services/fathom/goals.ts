@@ -1,4 +1,5 @@
-import ConfigService from '../config/config.service';
+import { Container } from 'typedi';
+import { ConfigService } from '../config/config.service';
 import { GOALS_MAP } from '@/constants/fathom';
 
 export class Goals {
@@ -19,7 +20,10 @@ export class Goals {
   ClickSwap = '';
   Swapped = '';
 
-  constructor(configService = new ConfigService(), goalsMap = GOALS_MAP) {
+  constructor(
+    configService = Container.get(ConfigService),
+    goalsMap = GOALS_MAP
+  ) {
     const appNetworkGoals = goalsMap[configService.network.key];
 
     if (appNetworkGoals) {

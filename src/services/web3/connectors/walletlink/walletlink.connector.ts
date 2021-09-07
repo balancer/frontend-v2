@@ -1,10 +1,12 @@
-import { Connector } from '../connector';
 import WalletLink from 'walletlink';
-import ConfigService from '@/services/config/config.service';
+import { Container } from 'typedi';
+import { Connector } from '../connector';
+import { ConfigService } from '@/services/config/config.service';
+
 export class WalletLinkConnector extends Connector {
   id = 'walletlink';
   async connect() {
-    const configService = new ConfigService();
+    const configService = Container.get(ConfigService);
     const walletLink = new WalletLink({
       appName: 'Balancer',
       appLogoUrl: '~@/assets/images/logo-dark.svg',

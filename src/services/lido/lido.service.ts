@@ -1,7 +1,8 @@
 import { bnum } from '@/lib/utils';
 import axios from 'axios';
+import { Container } from 'typedi';
 import { Pool } from '../balancer/subgraph/types';
-import ConfigService, { configService } from '../config/config.service';
+import { ConfigService } from '../config/config.service';
 
 type LidoAPRs = {
   eth: string;
@@ -16,9 +17,9 @@ export default class LidoService {
   wethAddress: string;
   wstEthAddress: string;
 
-  constructor(readonly config: ConfigService = configService) {
-    this.wethAddress = config.network.addresses.weth;
-    this.wstEthAddress = config.network.addresses.wstETH;
+  constructor(private readonly config = Container.get(ConfigService)) {
+    this.wethAddress = this.config.network.addresses.weth;
+    this.wstEthAddress = this.config.network.addresses.wstETH;
   }
 
   async getStEthAPR(): Promise<string> {

@@ -1,11 +1,12 @@
-import { Connector } from '../connector';
+import { Container } from 'typedi';
 import Portis from '@portis/web3';
-import ConfigService from '@/services/config/config.service';
+import { Connector } from '../connector';
+import { ConfigService } from '@/services/config/config.service';
 
 export class PortisConnector extends Connector {
   id = 'portis';
   async connect() {
-    const configService = new ConfigService();
+    const configService = Container.get(ConfigService);
     // The portis type is compeletely messed up and only
     // exports the default class and no extra types
     const portis = new Portis(
