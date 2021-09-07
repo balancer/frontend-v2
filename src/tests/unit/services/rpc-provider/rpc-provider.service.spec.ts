@@ -6,10 +6,10 @@ import { mocked } from 'ts-jest/utils';
 jest.mock('@ethersproject/providers', () => {
   return {
     JsonRpcProvider: jest.fn().mockImplementation(() => {
-      return { json: true };
+      return {};
     }),
     WebSocketProvider: jest.fn().mockImplementation(() => {
-      return { ws: true };
+      return {};
     })
   };
 });
@@ -19,6 +19,8 @@ describe('RPC provider service', () => {
   const MockedWebSocketProvider = mocked(WebSocketProvider, true);
 
   beforeEach(() => {
+    // Explicitly reset Container each test case to allow for instantiating the service multiple times
+    // TODO: if we were to implement TypeDI we should come up with a uniform approach of testing these services
     Container.reset();
     MockedJsonRpcProvider.mockClear();
     MockedWebSocketProvider.mockClear();
