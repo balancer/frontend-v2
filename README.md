@@ -8,6 +8,11 @@ git clone https://github.com/balancer-labs/frontend-v2.git && cd frontend-v2
 ```
 
 ### Local env
+Copy .env.development to .env
+```bash
+cp .env.development .env
+```
+
 Install dependencies:
 ```bash
 npm install
