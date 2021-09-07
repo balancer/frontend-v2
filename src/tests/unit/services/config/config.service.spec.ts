@@ -18,8 +18,7 @@ describe('Config service', () => {
   describe('Get app network config', () => {
     it('Returns the correct config for app network key', () => {
       process.env.VUE_APP_NETWORK = '137';
-      const configService = Container.get(ConfigService);
-      expect(configService.network.shortName).toBe('Polygon');
+      expect(Container.get(ConfigService).network.shortName).toBe('Polygon');
     });
   });
 });
