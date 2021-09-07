@@ -1,6 +1,6 @@
 import { Container } from 'typedi';
 import { ConfigService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { RpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BigNumberish, Contract } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 
@@ -25,7 +25,7 @@ export function getWstETHByStETH(stETHAmount: BigNumberish) {
     [
       'function getWstETHByStETH(uint256 stETHAmount) external view returns (uint256)'
     ],
-    rpcProviderService.jsonProvider
+    Container.get(RpcProviderService).jsonProvider
   );
   return wstETH.getWstETHByStETH(stETHAmount);
 }
@@ -39,7 +39,7 @@ export function getStETHByWstETH(wstETHAmount: BigNumberish) {
     [
       'function getStETHByWstETH(uint256 wstETHAmount) external view returns (uint256)'
     ],
-    rpcProviderService.jsonProvider
+    Container.get(RpcProviderService).jsonProvider
   );
   return wstETH.getStETHByWstETH(wstETHAmount);
 }

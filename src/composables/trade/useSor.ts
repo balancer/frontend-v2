@@ -29,7 +29,7 @@ import {
 } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { swapIn, swapOut } from '@/lib/utils/balancer/swapper';
 import { ConfigService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { RpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
 import useFathom from '../useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -184,7 +184,7 @@ export default function useSor({
 
     sorManager = new SorManager(
       isV1Supported,
-      rpcProviderService.jsonProvider,
+      Container.get(RpcProviderService).jsonProvider,
       new BigNumber(GAS_PRICE),
       Number(MAX_POOLS),
       configService.network.chainId,

@@ -1,14 +1,17 @@
-import Service from '../../balancer-subgraph.service';
+import { BalancerSubgraphService } from '../../balancer-subgraph.service';
 import poolQueryBuilder from './query';
 import { PoolSnapshots, PoolSnapshot, QueryBuilder } from '../../types';
 
 const DAY = 60 * 60 * 24;
 
 export default class PoolShares {
-  service: Service;
+  service: BalancerSubgraphService;
   query: QueryBuilder;
 
-  constructor(service: Service, query: QueryBuilder = poolQueryBuilder) {
+  constructor(
+    service: BalancerSubgraphService,
+    query: QueryBuilder = poolQueryBuilder
+  ) {
     this.service = service;
     this.query = query;
   }

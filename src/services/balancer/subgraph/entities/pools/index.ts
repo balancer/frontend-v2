@@ -1,5 +1,5 @@
 import { Container } from 'typedi';
-import Service from '../../balancer-subgraph.service';
+import { BalancerSubgraphService } from '../../balancer-subgraph.service';
 import queryBuilder from './query';
 import { getPoolLiquidity } from '@/lib/utils/balancer/price';
 import { bnum } from '@/lib/utils';
@@ -27,18 +27,18 @@ import { lidoService } from '@/services/lido/lido.service';
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
 export default class Pools {
-  service: Service;
+  service: BalancerSubgraphService;
   query: QueryBuilder;
   networkId: NetworkId;
 
   constructor(
-    service: Service,
+    service: BalancerSubgraphService,
     query: QueryBuilder = queryBuilder,
     private readonly configService = Container.get(ConfigService)
   ) {
     this.service = service;
     this.query = query;
-    this.networkId = Number(configService.env.NETWORK) as NetworkId;
+    this.networkId = Number(this.configService.env.NETWORK) as NetworkId;
   }
 
   public async get(args = {}, attrs = {}): Promise<Pool[]> {

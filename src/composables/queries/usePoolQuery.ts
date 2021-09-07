@@ -1,10 +1,11 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
+import { Container } from 'typedi';
 import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { BalancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
@@ -36,7 +37,7 @@ export default function usePoolQuery(
   const queryKey = QUERY_KEYS.Pools.Current(id);
 
   const queryFn = async () => {
-    const [pool] = await balancerSubgraphService.pools.get({
+    const [pool] = await Container.get(BalancerSubgraphService).pools.get({
       where: {
         id: id.toLowerCase(),
         totalShares_gt: -1 // Avoid the filtering for low liquidity pools
@@ -49,16 +50,13 @@ export default function usePoolQuery(
 
     await injectTokens([
       ...pool.tokensList,
-      balancerSubgraphService.pools.addressFor(pool.id)
+      Container.get(BalancerSubgraphService).pools.addressFor(pool.id)
     ]);
     await forChange(dynamicDataLoading, false);
 
-    const [decoratedPool] = await balancerSubgraphService.pools.decorate(
-      [pool],
-      '24h',
-      prices.value,
-      currency.value
-    );
+    const [decoratedPool] = await Container.get(
+      BalancerSubgraphService
+    ).pools.decorate([pool], '24h', prices.value, currency.value);
 
     const onchainData = await balancerContractsService.vault.getPoolData(
       id,

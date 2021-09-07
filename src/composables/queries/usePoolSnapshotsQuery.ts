@@ -2,7 +2,7 @@ import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { BalancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import usePoolQuery from './usePoolQuery';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
@@ -56,7 +56,9 @@ export default function usePoolSnapshotsQuery(
       tokens,
       days
     );
-    const snapshots = await balancerSubgraphService.poolSnapshots.get(id, days);
+    const snapshots = await Container.get(
+      BalancerSubgraphService
+    ).poolSnapshots.get(id, days);
 
     return { prices, snapshots };
   };

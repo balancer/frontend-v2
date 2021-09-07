@@ -2,9 +2,10 @@ import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import { flatten, keyBy } from 'lodash';
+import { Container } from 'typedi';
 import { bnum, forChange } from '@/lib/utils';
 import QUERY_KEYS from '@/constants/queryKeys';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { BalancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists from '../useTokenLists';
@@ -42,7 +43,9 @@ export default function useUserPoolsQuery(
   const queryKey = reactive(QUERY_KEYS.Pools.User(account));
 
   const queryFn = async () => {
-    const poolShares = await balancerSubgraphService.poolShares.get({
+    const poolShares = await Container.get(
+      BalancerSubgraphService
+    ).poolShares.get({
       where: {
         userAddress: account.value.toLowerCase()
       }
@@ -51,7 +54,7 @@ export default function useUserPoolsQuery(
     const poolSharesIds = poolShares.map(poolShare => poolShare.poolId.id);
     const poolSharesMap = keyBy(poolShares, poolShare => poolShare.poolId.id);
 
-    const pools = await balancerSubgraphService.pools.get({
+    const pools = await Container.get(BalancerSubgraphService).pools.get({
       where: {
         id_in: poolSharesIds
       }
@@ -60,12 +63,9 @@ export default function useUserPoolsQuery(
     const tokens = flatten(pools.map(pool => pool.tokensList));
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
-    const decoratedPools = await balancerSubgraphService.pools.decorate(
-      pools,
-      '24h',
-      prices.value,
-      currency.value
-    );
+    const decoratedPools = await Container.get(
+      BalancerSubgraphService
+    ).pools.decorate(pools, '24h', prices.value, currency.value);
 
     const poolsWithShares = decoratedPools.map(pool => ({
       ...pool,

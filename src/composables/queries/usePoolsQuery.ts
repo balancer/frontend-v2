@@ -2,9 +2,10 @@ import { computed, reactive, ref, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
 import { flatten } from 'lodash';
+import { Container } from 'typedi';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { BalancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
@@ -51,18 +52,17 @@ export default function usePoolsQuery(
       queryArgs.where.id_in = filterOptions.poolIds.value;
     }
 
-    const pools = await balancerSubgraphService.pools.get(queryArgs);
+    const pools = await Container.get(BalancerSubgraphService).pools.get(
+      queryArgs
+    );
 
     const tokens = flatten(pools.map(pool => pool.tokensList));
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
 
-    const decoratedPools = await balancerSubgraphService.pools.decorate(
-      pools,
-      '24h',
-      prices.value,
-      currency.value
-    );
+    const decoratedPools = await Container.get(
+      BalancerSubgraphService
+    ).pools.decorate(pools, '24h', prices.value, currency.value);
 
     return {
       pools: decoratedPools,

@@ -1,12 +1,15 @@
-import Service from '../../balancer-subgraph.service';
+import { BalancerSubgraphService } from '../../balancer-subgraph.service';
 import queryBuilder from './query';
 import { PoolActivity, QueryBuilder } from '../../types';
 
 export default class PoolActivities {
-  service: Service;
+  service: BalancerSubgraphService;
   query: QueryBuilder;
 
-  constructor(service: Service, query: QueryBuilder = queryBuilder) {
+  constructor(
+    service: BalancerSubgraphService,
+    query: QueryBuilder = queryBuilder
+  ) {
     this.service = service;
     this.query = query;
   }

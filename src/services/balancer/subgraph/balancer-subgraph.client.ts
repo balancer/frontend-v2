@@ -7,7 +7,7 @@ export default class BalancerSubgraphClient {
   url: string;
 
   constructor(private readonly configService = Container.get(ConfigService)) {
-    this.url = configService.network.subgraph;
+    this.url = this.configService.network.subgraph;
   }
 
   public async get(query) {

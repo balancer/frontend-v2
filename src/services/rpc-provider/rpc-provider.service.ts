@@ -1,16 +1,17 @@
-import { Container } from 'typedi';
+import { Service } from 'typedi';
 import { WebSocketProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { ConfigService } from '@/services/config/config.service';
 
 type NewBlockHandler = (blockNumber: number) => any;
 
-export default class RpcProviderService {
+Service();
+export class RpcProviderService {
   readonly network: string;
   jsonProvider: JsonRpcProvider;
   wsProvider: WebSocketProvider;
   loggingProvider: JsonRpcProvider;
 
-  constructor(private readonly config = Container.get(ConfigService)) {
+  constructor(private readonly config: ConfigService) {
     this.network = this.config.network.shortName;
     this.jsonProvider = new JsonRpcProvider(this.config.network.rpc);
     this.wsProvider = new WebSocketProvider(this.config.network.ws);
@@ -32,5 +33,3 @@ export default class RpcProviderService {
     return new JsonRpcProvider(rpcUrl);
   }
 }
-
-export const rpcProviderService = new RpcProviderService();
