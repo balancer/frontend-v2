@@ -59,6 +59,7 @@ const { currency } = useUserSettings();
 const hasToken = computed(() => !!tokenAddress.value);
 const hasAmount = computed(() => bnum(amount.value).gt(0));
 const tokenBalance = computed(() => balanceFor(tokenAddress.value));
+const hasBalance = computed(() => bnum(tokenBalance.value).gt(0));
 const isMaxed = computed(() => amount.value === tokenBalance.value);
 
 const token = computed(() => {
@@ -114,15 +115,12 @@ onBeforeMount(() => {
         <div
           class="flex items-center justify-between text-sm text-gray-500 leading-none"
         >
-          <div>
+          <div v-if="!hasBalance">Balance: -</div>
+          <div v-else class="cursor-pointer" @click="setMax">
             Balance:
             {{ fNum(tokenBalance, 'token') }}
             {{ token?.symbol }}
-            <span
-              v-if="!isMaxed"
-              class="text-blue-500 cursor-pointer lowercase"
-              @click="setMax"
-            >
+            <span v-if="!isMaxed" class="text-blue-500 lowercase">
               {{ $t('max') }}
             </span>
             <span v-else class="text-gray-400 dark:text-gray-600 lowercase">

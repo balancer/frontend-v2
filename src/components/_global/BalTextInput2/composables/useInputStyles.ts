@@ -1,7 +1,18 @@
 import { Ref, computed } from 'vue';
 
 export default function useInputStyles(props, isInvalid: Ref<boolean>) {
-  const paddingClass = (): string => {
+  const extPaddingClass = (): string => {
+    switch (props.size) {
+      case 'sm':
+        return 'p-1';
+      case 'lg':
+        return 'p-3';
+      default:
+        return 'p-2';
+    }
+  };
+
+  const intPaddingClass = (): string => {
     switch (props.size) {
       case 'sm':
         return 'p-px';
@@ -17,9 +28,9 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>) {
       case 'sm':
         return 'text-base';
       case 'lg':
-        return 'text-xl';
+        return 'text-2xl';
       default:
-        return 'text-lg';
+        return 'text-xl';
     }
   };
 
@@ -36,20 +47,20 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>) {
 
   const inputContainerClasses = computed(() => ({
     'border border-gray-100 dark:border-gray-700': true,
-    [paddingClass()]: true,
+    [extPaddingClass()]: true,
     'border-red-500 dark:border-red-500': isInvalid.value
   }));
 
   const inputGroupClasses = {
-    [paddingClass()]: true
+    [intPaddingClass()]: true
   };
 
   const headerClasses = {
-    [paddingClass()]: true
+    [intPaddingClass()]: true
   };
 
   const footerClasses = {
-    [paddingClass()]: true
+    [intPaddingClass()]: true
   };
 
   const inputClasses = {

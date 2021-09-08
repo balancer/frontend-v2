@@ -55,11 +55,14 @@ const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
       @click="toggleModal"
     >
       <BalAsset :address="token.address" class="shadow mr-2" />
-      {{ token.symbol }}
+      <span class="mr-2">
+        {{ token.symbol }}
+      </span>
+      <div class="w-6" />
       <BalIcon
         name="chevron-down"
         size="sm"
-        class="ml-2 text-blue-500 group-hover:text-pink-500"
+        class="text-blue-500 group-hover:text-pink-500"
       />
     </div>
     <div v-else class="token-select-input unselected" @click="toggleModal">
@@ -80,7 +83,7 @@ const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
 
 <style scoped>
 .token-select-input {
-  @apply rounded-lg flex items-center p-2 cursor-pointer;
+  @apply rounded-lg flex items-center h-10 px-2 cursor-pointer whitespace-nowrap;
   @apply text-sm font-bold;
   @apply shadow-xl hover:shadow-none transition-shadow;
 }

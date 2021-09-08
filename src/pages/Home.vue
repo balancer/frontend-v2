@@ -47,7 +47,7 @@
       }}</BalLink>
     </div>
 
-    <div class="w-1/3 mx-auto">
+    <div class="max-w-md mx-auto mb-12">
       <TokenInput v-model="amount" :address="address" name="token1" />
     </div>
   </div>

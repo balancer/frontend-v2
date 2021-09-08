@@ -127,7 +127,7 @@ const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
 }
 
 .input {
-  @apply flex-grow bg-transparent;
+  @apply flex-grow bg-transparent overflow-hidden;
 }
 
 .label {
