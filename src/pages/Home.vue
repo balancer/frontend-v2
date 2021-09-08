@@ -46,11 +46,17 @@
         $t('exploreBalancerV1Pools')
       }}</BalLink>
     </div>
+
+    <div class="w-1/3 mx-auto">
+      <BalCard>
+        <TokenInput v-model="amount" :address="address" name="token1" />
+      </BalCard>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
@@ -58,14 +64,21 @@ import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 
 export default defineComponent({
   components: {
     TokenSearchInput,
-    PoolsTable
+    PoolsTable,
+    TokenInput
   },
 
   setup() {
+    const amount = ref('');
+    const address = ref('');
+
+    watch(amount, newAmount => console.log('amount', newAmount));
+
     // COMPOSABLES
     const router = useRouter();
     const { isWalletReady, isV1Supported } = useWeb3();
@@ -99,6 +112,10 @@ export default defineComponent({
     const hideV1Links = computed(() => !isV1Supported);
 
     return {
+      amount,
+      address,
+      console,
+
       // data
       filteredPools,
       userPools,
