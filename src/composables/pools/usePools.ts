@@ -57,6 +57,7 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     isLoadingUserPools,
     poolsHasNextPage,
     poolsIsFetchingNextPage,
+    poolsQuery,
 
     // methods
     loadMorePools
