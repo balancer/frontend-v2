@@ -48,9 +48,7 @@
     </div>
 
     <div class="w-1/3 mx-auto">
-      <BalCard>
-        <TokenInput v-model="amount" :address="address" name="token1" />
-      </BalCard>
+      <TokenInput v-model="amount" :address="address" name="token1" />
     </div>
   </div>
 </template>
