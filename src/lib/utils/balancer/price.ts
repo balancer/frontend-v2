@@ -1,4 +1,4 @@
-import { isStableLike, isWeighted } from '@/composables/usePool';
+import { isStableLike, isWeightedLike } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -8,7 +8,7 @@ export function getPoolLiquidity(
   prices: TokenPrices,
   currency: FiatCurrency
 ) {
-  if (isWeighted(pool)) {
+  if (isWeightedLike(pool)) {
     const totalWeight = pool.tokens.reduce(
       (total, token) => total + parseFloat(token.weight),
       0

@@ -28,6 +28,14 @@ export function isWeighted(pool: AnyPool): boolean {
   return pool.poolType === PoolType.Weighted;
 }
 
+export function isInvestment(pool: AnyPool): boolean {
+  return pool.poolType === PoolType.Investment;
+}
+
+export function isWeightedLike(pool: AnyPool): boolean {
+  return isWeighted(pool) || isInvestment(pool);
+}
+
 export function isWeth(pool: AnyPool, networkId: string): boolean {
   return pool.tokenAddresses.includes(TOKENS.AddressMap[networkId].WETH);
 }
@@ -50,6 +58,10 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     () => pool.value && isStableLike(pool.value)
   );
   const isWeightedPool = computed(() => pool.value && isWeighted(pool.value));
+  const isWeightedLikePool = computed(
+    () => pool.value && isWeightedLike(pool.value)
+  );
+
   const isWethPool = computed(
     () => pool.value && isWeth(pool.value, appNetworkConfig.key)
   );
@@ -61,6 +73,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMetaStablePool,
     isStableLikePool,
     isWeightedPool,
+    isWeightedLikePool,
     isWethPool,
     isWstETHPool,
     // methods
@@ -68,6 +81,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMetaStable,
     isStableLike,
     isWeighted,
+    isWeightedLike,
     isWeth
   };
 }
