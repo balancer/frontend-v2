@@ -44,5 +44,6 @@ const barStyles = computed(() => ({
 
 .progress-bar {
   @apply rounded-full;
+  transition: all 0.3s ease;
 }
 </style>
