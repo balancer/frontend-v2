@@ -1,10 +1,3 @@
-<script lang="ts">
-// https://v3.vuejs.org/api/sfc-script-setup.html#usage-alongside-normal-script
-export default {
-  inheritAttrs: false
-};
-</script>
-
 <script setup lang="ts">
 import { HtmlInputEvent } from '@/types';
 import { onBeforeMount, ref, computed } from 'vue';

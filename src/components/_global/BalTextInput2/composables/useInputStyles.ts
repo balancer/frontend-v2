@@ -1,6 +1,6 @@
 import { Ref, computed } from 'vue';
 
-export default function useInputStyles(props, isInvalid: Ref<boolean>) {
+export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const extPaddingClass = (): string => {
     switch (props.size) {
       case 'sm':
@@ -45,6 +45,8 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>) {
     }
   };
 
+  const parentClasses = computed(() => attrs.class);
+
   const inputContainerClasses = computed(() => ({
     'border border-gray-100 dark:border-gray-700': true,
     [extPaddingClass()]: true,
@@ -78,6 +80,7 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>) {
   };
 
   return {
+    parentClasses,
     inputContainerClasses,
     inputGroupClasses,
     headerClasses,

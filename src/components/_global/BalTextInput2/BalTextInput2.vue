@@ -6,10 +6,12 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { useAttrs, computed } from 'vue';
 import { HtmlInputEvent } from '@/types';
 import useInputStyles from './composables/useInputStyles';
 import useInputEvents from './composables/useInputEvents';
 import useInputValidation from './composables/useInputValidation';
+import { omit } from 'lodash';
 
 /**
  * TYPES
@@ -61,8 +63,10 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
+const attrs = useAttrs();
 const { errors, isInvalid, validate } = useInputValidation(props, emit);
 const {
+  parentClasses,
   inputContainerClasses,
   inputGroupClasses,
   headerClasses,
@@ -70,46 +74,56 @@ const {
   inputClasses,
   prependClasses,
   appendClasses
-} = useInputStyles(props, isInvalid);
+} = useInputStyles(props, isInvalid, attrs);
 const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
+
+/**
+ * COMPUTED
+ */
+
+// We don't want to pass on parent level classes to the html
+// input element. So we need to remove it from the attrs object.
+const inputAttrs = computed(() => omit(attrs, 'class'));
 </script>
 
 <template>
-  <div class="bal-text-input">
-    <div :class="['input-container', inputContainerClasses]">
-      <div v-if="$slots.header || label" :class="['header', headerClasses]">
-        <slot name="header">
-          <span class="label">
-            {{ label }}
-          </span>
-        </slot>
-      </div>
-      <div :class="['input-group', inputGroupClasses]">
-        <div v-if="$slots.prepend" :class="['prepend', prependClasses]">
-          <slot name="prepend" />
+  <div :class="[parentClasses]">
+    <div class="bal-text-input">
+      <div :class="['input-container', inputContainerClasses]">
+        <div v-if="$slots.header || label" :class="['header', headerClasses]">
+          <slot name="header">
+            <span class="label">
+              {{ label }}
+            </span>
+          </slot>
         </div>
-        <input
-          :type="type"
-          :name="name"
-          :value="modelValue"
-          v-bind="$attrs"
-          :disabled="disabled"
-          @blur="onBlur"
-          @input="onInput"
-          @keydown="onKeydown"
-          :class="['input', inputClasses]"
-        />
-        <div v-if="$slots.append" :class="['append', appendClasses]">
-          <slot name="append" />
+        <div :class="['input-group', inputGroupClasses]">
+          <div v-if="$slots.prepend" :class="['prepend', prependClasses]">
+            <slot name="prepend" />
+          </div>
+          <input
+            :type="type"
+            :name="name"
+            :value="modelValue"
+            v-bind="inputAttrs"
+            :disabled="disabled"
+            @blur="onBlur"
+            @input="onInput"
+            @keydown="onKeydown"
+            :class="['input', inputClasses]"
+          />
+          <div v-if="$slots.append" :class="['append', appendClasses]">
+            <slot name="append" />
+          </div>
         </div>
-      </div>
-      <div v-if="$slots.footer" :class="['footer', footerClasses]">
-        <slot name="footer" />
+        <div v-if="$slots.footer" :class="['footer', footerClasses]">
+          <slot name="footer" />
+        </div>
       </div>
     </div>
-  </div>
-  <div v-if="isInvalid" :class="['error']">
-    {{ errors[0] }}
+    <div v-if="isInvalid" :class="['error']">
+      {{ errors[0] }}
+    </div>
   </div>
 </template>
 

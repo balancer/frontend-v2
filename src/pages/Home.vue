@@ -48,13 +48,14 @@
     </div>
 
     <div class="max-w-md mx-auto mb-12">
-      <TokenInput v-model="amount" :address="address" name="token1" />
+      <TokenInput v-model="amount" :address="address" name="token1" class="mb-4" />
+      <TokenInput v-model="amount2" :address="address" name="token2" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
@@ -73,6 +74,7 @@ export default defineComponent({
 
   setup() {
     const amount = ref('');
+    const amount2 = ref('');
     const address = ref('');
 
     // COMPOSABLES
@@ -109,8 +111,8 @@ export default defineComponent({
 
     return {
       amount,
+      amount2,
       address,
-      console,
 
       // data
       filteredPools,
