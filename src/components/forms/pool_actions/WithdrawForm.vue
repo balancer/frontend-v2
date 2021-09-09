@@ -301,15 +301,21 @@ export default defineComponent({
 
     const propMaxUSD = computed(() => {
       const total = props.pool.tokenAddresses
-        .map((token, i) => toFiat(Number(data.propMax[i]), token))
-        .reduce((a, b) => a + b, 0);
+        .map((token, i) => toFiat(data.propMax[i], token))
+        .reduce(
+          (a, b) =>
+            bnum(a)
+              .plus(b)
+              .toNumber(),
+          0
+        );
 
       return fNum(total, 'usd');
     });
 
     const singleMaxUSD = computed(() => {
       const maxes = props.pool.tokenAddresses.map((token, i) =>
-        toFiat(singleAssetMaxes.value[i], token)
+        Number(toFiat(singleAssetMaxes.value[i], token))
       );
 
       return fNum(Math.max(...maxes), 'usd');
@@ -343,7 +349,13 @@ export default defineComponent({
     const total = computed(() => {
       const total = props.pool.tokenAddresses
         .map((_, i) => amountUSD(i))
-        .reduce((a, b) => a + b, 0);
+        .reduce(
+          (a, b) =>
+            bnum(a)
+              .plus(b)
+              .toNumber(),
+          0
+        );
 
       if (total < 0) return fNum(0, 'usd');
       return fNum(total, 'usd');

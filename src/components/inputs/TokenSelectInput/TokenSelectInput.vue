@@ -54,9 +54,9 @@ const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
       class="token-select-input selected group"
       @click="toggleModal"
     >
-      <BalAsset :address="token.address" class="shadow mr-2" />
+      <BalAsset :address="token?.address" class="shadow mr-2" />
       <span class="mr-2">
-        {{ token.symbol }}
+        {{ token?.symbol }}
       </span>
       <BalIcon
         name="chevron-down"
@@ -72,7 +72,8 @@ const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
     <teleport to="#modal">
       <SelectTokenModal
         v-if="openTokenModal"
-        :excluded-tokens="[modelValue]"
+        :excludedTokens="[modelValue]"
+        :includeEther="true"
         @close="openTokenModal = false"
         @select="emit('update:modelValue', $event)"
       />
@@ -84,7 +85,7 @@ const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
 .token-select-input {
   @apply rounded-lg flex items-center h-10 px-2 cursor-pointer whitespace-nowrap;
   @apply text-sm;
-  @apply shadow-xl hover:shadow-none transition-shadow;
+  @apply shadow hover:shadow-none transition-shadow;
   font-variation-settings: 'wght' 700;
 }
 
@@ -93,6 +94,6 @@ const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
 }
 
 .selected {
-  @apply bg-white dark:bg-gray-800 border dark:border-gray-700 text-black dark:text-white;
+  @apply bg-gray-50 dark:bg-gray-700 text-black dark:text-white;
 }
 </style>

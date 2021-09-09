@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { HtmlInputEvent } from '@/types';
-import { onBeforeMount, ref, computed } from 'vue';
+import { ref, computed, watchEffect } from 'vue';
 import useTokens from '@/composables/useTokens';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 import useNumbers from '@/composables/useNumbers';
@@ -16,22 +16,27 @@ import useWeb3 from '@/services/web3/useWeb3';
 type InputValue = string | number;
 
 type Props = {
-  modelValue: InputValue;
+  amount: InputValue;
   address?: string;
+  noRules?: boolean;
+  noMax?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: '',
-  address: ''
+  amount: '',
+  address: '',
+  noRules: false,
+  noMax: false
 });
 
 const emit = defineEmits<{
   (e: 'blur', value: string): void;
   (e: 'input', value: string): void;
-  (e: 'update:modelValue', value: string): void;
+  (e: 'update:amount', value: string): void;
+  (e: 'update:address', value: string): void;
   (e: 'update:isValid', value: boolean): void;
   (e: 'keydown', value: HtmlInputEvent);
 }>();
@@ -39,14 +44,15 @@ const emit = defineEmits<{
 /**
  * STATE
  */
-const amount = ref<InputValue>('');
-const tokenAddress = ref<string>('');
+const _amount = ref<InputValue>('');
+const _address = ref<string>('');
+const ETH_BUFFER = 0.1;
 
 /**
  * COMPOSABLEs
  */
-const { getToken, balanceFor, priceFor } = useTokens();
-const { fNum } = useNumbers();
+const { getToken, balanceFor, nativeAsset } = useTokens();
+const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
@@ -54,26 +60,24 @@ const { isWalletReady } = useWeb3();
 /**
  * COMPUTED
  */
-const hasToken = computed(() => !!tokenAddress.value);
-const hasAmount = computed(() => bnum(amount.value).gt(0));
-const tokenBalance = computed(() => balanceFor(tokenAddress.value));
+const hasToken = computed(() => !!_address.value);
+const hasAmount = computed(() => bnum(_amount.value).gt(0));
+const tokenBalance = computed(() => balanceFor(_address.value));
 const hasBalance = computed(() => bnum(tokenBalance.value).gt(0));
-const isMaxed = computed(() => amount.value === tokenBalance.value);
+const isMaxed = computed(() => _amount.value === tokenBalance.value);
 
 const token = computed(() => {
   if (!hasToken.value) return {};
-  return getToken(tokenAddress.value);
+  return getToken(_address.value);
 });
 
 const tokenValue = computed(() => {
-  const price = priceFor(tokenAddress.value);
-  return bnum(price)
-    .times(amount.value)
-    .toString();
+  return toFiat(_amount.value, _address.value);
 });
 
 const rules = computed(() => {
-  if (!hasToken.value || !isWalletReady.value) return [isPositive()];
+  if (!hasToken.value || !isWalletReady.value || props.noRules)
+    return [isPositive()];
   return [
     isPositive(),
     isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance'))
@@ -81,9 +85,9 @@ const rules = computed(() => {
 });
 
 const maxPercentage = computed(() => {
-  if (!hasBalance.value) return '0';
+  if (!hasBalance.value || !hasAmount.value) return '0';
 
-  return bnum(amount.value)
+  return bnum(_amount.value)
     .div(tokenBalance.value)
     .times(100)
     .toFixed(1);
@@ -93,22 +97,32 @@ const maxPercentage = computed(() => {
  * METHODS
  */
 const setMax = () => {
-  amount.value = tokenBalance.value;
-  emit('update:modelValue', amount.value);
+  if (_address.value === nativeAsset.address) {
+    // Subtract buffer for gas
+    _amount.value = bnum(tokenBalance.value).gt(ETH_BUFFER)
+      ? bnum(tokenBalance.value)
+          .minus(ETH_BUFFER)
+          .toString()
+      : '0';
+  } else {
+    _amount.value = tokenBalance.value;
+  }
+
+  emit('update:amount', _amount.value);
 };
 
 /**
  * CALLBACKS
  */
-onBeforeMount(() => {
-  amount.value = props.modelValue;
-  tokenAddress.value = props.address;
+watchEffect(() => {
+  _amount.value = props.amount;
+  _address.value = props.address;
 });
 </script>
 
 <template>
   <BalTextInput2
-    v-model="amount"
+    v-model="_amount"
     placeholder="0.0"
     type="number"
     :decimalLimit="token?.decimals || 18"
@@ -121,35 +135,48 @@ onBeforeMount(() => {
     inputAlignRight
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
-    @update:modelValue="emit('update:modelValue', $event)"
+    @update:modelValue="emit('update:amount', $event)"
     @update:isValid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
     <template v-slot:prepend>
-      <TokenSelectInput v-model="tokenAddress" class="mr-2" />
+      <TokenSelectInput
+        v-model="_address"
+        class="mr-2"
+        @update:modelValue="emit('update:address', $event)"
+      />
     </template>
     <template v-slot:footer>
-      <div class="flex flex-col pt-1">
+      <div
+        v-if="isWalletReady || (hasAmount && hasToken)"
+        class="flex flex-col pt-1"
+      >
         <div
           class="flex items-center justify-between text-sm text-gray-500 leading-none"
         >
-          <div v-if="!hasBalance">{{ $t('balance') }}: 0</div>
+          <div v-if="!isWalletReady" />
           <div v-else class="cursor-pointer" @click="setMax">
             {{ $t('balance') }}:
             {{ fNum(tokenBalance, 'token') }}
             {{ token?.symbol }}
-            <span v-if="!isMaxed" class="text-blue-500 lowercase">
-              {{ $t('max') }}
-            </span>
-            <span v-else class="text-gray-400 dark:text-gray-600 lowercase">
-              {{ $t('maxed') }}
-            </span>
+            <template v-if="hasBalance && !noMax">
+              <span v-if="!isMaxed" class="text-blue-500 lowercase">
+                {{ $t('max') }}
+              </span>
+              <span v-else class="text-gray-400 dark:text-gray-600 lowercase">
+                {{ $t('maxed') }}
+              </span>
+            </template>
           </div>
           <div v-if="hasAmount && hasToken">
             {{ fNum(tokenValue, currency) }}
           </div>
         </div>
-        <BalProgressBar :width="maxPercentage" class="mt-2" />
+        <BalProgressBar
+          v-if="hasBalance && !noMax"
+          :width="maxPercentage"
+          class="mt-2"
+        />
       </div>
     </template>
   </BalTextInput2>

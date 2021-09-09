@@ -54,10 +54,10 @@ export function fNum(
 export default function useNumbers() {
   const { priceFor } = useTokens();
 
-  function toFiat(amount: number | string, tokenAddress: string): number {
+  function toFiat(amount: number | string, tokenAddress: string): string {
     const price = priceFor(tokenAddress);
     const tokenAmount = new BigNumber(amount);
-    return tokenAmount.times(price).toNumber();
+    return tokenAmount.times(price).toString();
   }
 
   return { fNum, toFiat };

@@ -7,7 +7,16 @@
       </div>
     </template>
     <div>
-      <TradePair
+      <TradePair2
+        v-model:tokenInAmount="tokenInAmount"
+        v-model:tokenInAddress="tokenInAddress"
+        v-model:tokenOutAmount="tokenOutAmount"
+        v-model:tokenOutAddress="tokenOutAddress"
+        v-model:exactIn="exactIn"
+        @amountChange="handleAmountChange"
+        class="mb-4"
+      />
+      <!-- <TradePair
         :token-in-amount-input="tokenInAmount"
         :token-in-address-input="tokenInAddress"
         :token-out-amount-input="tokenOutAmount"
@@ -20,7 +29,7 @@
         @token-out-address-change="value => (tokenOutAddress = value)"
         @exact-in-change="value => (exactIn = value)"
         @change="handleAmountChange"
-      />
+      /> -->
       <GasReimbursement
         class="mb-5"
         :address-in="tokenInAddress"
@@ -117,16 +126,19 @@ import { configService } from '@/services/config/config.service';
 
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
+import TradePair2 from '@/components/cards/TradeCard/TradePair2.vue';
+
 const { nativeAsset } = configService.network;
 
 export default defineComponent({
   components: {
     SuccessOverlay,
-    TradePair,
+    // TradePair,
     TradePreviewModal,
     TradeRoute,
     TradeSettingsPopover,
-    GasReimbursement
+    GasReimbursement,
+    TradePair2
   },
 
   setup() {
@@ -277,7 +289,7 @@ export default defineComponent({
       else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
-      tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
+      tokenOutAddress.value = assetOut || '';
     }
 
     function showTradePreviewModal() {

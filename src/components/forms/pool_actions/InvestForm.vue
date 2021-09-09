@@ -418,7 +418,13 @@ export default defineComponent({
     const total = computed(() => {
       const total = props.pool.tokenAddresses
         .map((_, i) => amountUSD(i))
-        .reduce((a, b) => a + b, 0);
+        .reduce(
+          (a, b) =>
+            bnum(a)
+              .plus(b)
+              .toNumber(),
+          0
+        );
 
       if (total < 0) return fNum(0, 'usd');
       return fNum(total, 'usd');
@@ -450,8 +456,14 @@ export default defineComponent({
 
     const propMaxUSD = computed(() => {
       const total = props.pool.tokenAddresses
-        .map((token, i) => toFiat(Number(data.propMax[i]), token))
-        .reduce((a, b) => a + b, 0);
+        .map((token, i) => toFiat(data.propMax[i], token))
+        .reduce(
+          (a, b) =>
+            bnum(a)
+              .plus(b)
+              .toNumber(),
+          0
+        );
 
       return fNum(total, 'usd');
     });
@@ -459,7 +471,13 @@ export default defineComponent({
     const balanceMaxUSD = computed(() => {
       const total = props.pool.tokenAddresses
         .map((token, i) => toFiat(balances.value[i], token))
-        .reduce((a, b) => a + b, 0);
+        .reduce(
+          (a, b) =>
+            bnum(a)
+              .plus(b)
+              .toNumber(),
+          0
+        );
 
       return fNum(total, 'usd');
     });
@@ -513,7 +531,7 @@ export default defineComponent({
     }
 
     function amountUSD(index) {
-      const amount = fullAmounts.value[index] || 0;
+      const amount = fullAmounts.value[index] || '0';
       return toFiat(amount, props.pool.tokenAddresses[index]);
     }
 

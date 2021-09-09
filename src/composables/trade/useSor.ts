@@ -142,10 +142,13 @@ export default function useSor({
 
   onMounted(async () => {
     const unknownAssets: string[] = [];
-    if (!tokens.value[tokenInAddressInput.value]) {
+    if (tokenInAddressInput.value && !tokens.value[tokenInAddressInput.value]) {
       unknownAssets.push(tokenInAddressInput.value);
     }
-    if (!tokens.value[tokenOutAddressInput.value]) {
+    if (
+      tokenOutAddressInput.value &&
+      !tokens.value[tokenOutAddressInput.value]
+    ) {
       unknownAssets.push(tokenOutAddressInput.value);
     }
     await injectTokens(unknownAssets);

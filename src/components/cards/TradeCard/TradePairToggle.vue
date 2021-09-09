@@ -1,6 +1,6 @@
 <template>
   <div
-    class="toggle-btn w-9 h-9 flex justify-center items-center cursor-pointer rounded-full dark:bg-gray-900 shadow-sm group"
+    class="toggle-btn w-9 h-9 flex justify-center items-center cursor-pointer rounded-full bg-gray-50 dark:bg-gray-900 shadow group"
     @click="toggle"
   >
     <div

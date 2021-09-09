@@ -46,16 +46,6 @@
         $t('exploreBalancerV1Pools')
       }}</BalLink>
     </div>
-
-    <div class="max-w-md mx-auto mb-12">
-      <TokenInput
-        v-model="amount"
-        :address="address"
-        name="token1"
-        class="mb-4"
-      />
-      <TokenInput v-model="amount2" :address="address" name="token2" />
-    </div>
   </div>
 </template>
 
@@ -68,20 +58,14 @@ import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
-import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 
 export default defineComponent({
   components: {
     TokenSearchInput,
-    PoolsTable,
-    TokenInput
+    PoolsTable
   },
 
   setup() {
-    const amount = ref('');
-    const amount2 = ref('');
-    const address = ref('');
-
     // COMPOSABLES
     const router = useRouter();
     const { isWalletReady, isV1Supported } = useWeb3();
@@ -115,10 +99,6 @@ export default defineComponent({
     const hideV1Links = computed(() => !isV1Supported);
 
     return {
-      amount,
-      amount2,
-      address,
-
       // data
       filteredPools,
       userPools,
