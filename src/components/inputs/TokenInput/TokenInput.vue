@@ -13,6 +13,9 @@ import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectIn
 import useNumbers from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import useUserSettings from '@/composables/useUserSettings';
+import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
+import { useI18n } from 'vue-i18n';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -52,6 +55,8 @@ const tokenAddress = ref<string>('');
 const { getToken, balanceFor, priceFor } = useTokens();
 const { fNum } = useNumbers();
 const { currency } = useUserSettings();
+const { t } = useI18n();
+const { isWalletReady } = useWeb3();
 
 /**
  * COMPUTED
@@ -72,6 +77,14 @@ const tokenValue = computed(() => {
   return bnum(price)
     .times(amount.value)
     .toString();
+});
+
+const rules = computed(() => {
+  if (!hasToken.value || !isWalletReady.value) return [isPositive()];
+  return [
+    isPositive(),
+    isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance'))
+  ];
 });
 
 /**
@@ -98,6 +111,7 @@ onBeforeMount(() => {
     type="number"
     :decimalLimit="token?.decimals || 18"
     :rules="rules"
+    validateOn="input"
     autocomplete="off"
     autocorrect="off"
     spellcheck="false"
