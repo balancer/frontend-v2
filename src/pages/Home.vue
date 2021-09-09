@@ -48,7 +48,12 @@
     </div>
 
     <div class="max-w-md mx-auto mb-12">
-      <TokenInput v-model="amount" :address="address" name="token1" class="mb-4" />
+      <TokenInput
+        v-model="amount"
+        :address="address"
+        name="token1"
+        class="mb-4"
+      />
       <TokenInput v-model="amount2" :address="address" name="token2" />
     </div>
   </div>
