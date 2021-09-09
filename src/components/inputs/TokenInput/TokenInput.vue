@@ -80,6 +80,15 @@ const rules = computed(() => {
   ];
 });
 
+const maxPercentage = computed(() => {
+  if (!hasBalance.value) return '0';
+
+  return bnum(amount.value)
+    .div(tokenBalance.value)
+    .times(100)
+    .toFixed(1);
+});
+
 /**
  * METHODS
  */
@@ -140,6 +149,7 @@ onBeforeMount(() => {
             {{ fNum(tokenValue, currency) }}
           </div>
         </div>
+        <BalProgressBar :width="maxPercentage" class="mt-2" />
       </div>
     </template>
   </BalTextInput2>
