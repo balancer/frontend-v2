@@ -97,8 +97,10 @@ onBeforeMount(() => {
     placeholder="0.0"
     type="number"
     :decimalLimit="token?.decimals || 18"
-    :disabled="!hasToken"
     :rules="rules"
+    autocomplete="off"
+    autocorrect="off"
+    spellcheck="false"
     v-bind="$attrs"
     inputAlignRight
     @blur="emit('blur', $event)"
@@ -127,7 +129,7 @@ onBeforeMount(() => {
               {{ $t('maxed') }}
             </span>
           </div>
-          <div v-if="hasAmount">
+          <div v-if="hasAmount && hasToken">
             {{ fNum(tokenValue, currency) }}
           </div>
         </div>

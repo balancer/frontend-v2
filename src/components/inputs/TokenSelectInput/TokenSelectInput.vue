@@ -84,8 +84,9 @@ const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
 <style scoped>
 .token-select-input {
   @apply rounded-lg flex items-center h-10 px-2 cursor-pointer whitespace-nowrap;
-  @apply text-sm font-bold;
+  @apply text-sm;
   @apply shadow-xl hover:shadow-none transition-shadow;
+  font-variation-settings: 'wght' 700;
 }
 
 .unselected {
