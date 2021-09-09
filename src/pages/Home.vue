@@ -75,8 +75,6 @@ export default defineComponent({
     const amount = ref('');
     const address = ref('');
 
-    watch(amount, newAmount => console.log('amount', newAmount));
-
     // COMPOSABLES
     const router = useRouter();
     const { isWalletReady, isV1Supported } = useWeb3();
