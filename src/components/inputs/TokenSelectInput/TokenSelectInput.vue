@@ -58,7 +58,6 @@ const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
       <span class="mr-2">
         {{ token.symbol }}
       </span>
-      <div class="w-6" />
       <BalIcon
         name="chevron-down"
         size="sm"

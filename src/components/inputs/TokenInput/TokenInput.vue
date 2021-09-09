@@ -117,9 +117,9 @@ onBeforeMount(() => {
         <div
           class="flex items-center justify-between text-sm text-gray-500 leading-none"
         >
-          <div v-if="!hasBalance">Balance: -</div>
+          <div v-if="!hasBalance">{{ $t('balance') }}: 0</div>
           <div v-else class="cursor-pointer" @click="setMax">
-            Balance:
+            {{ $t('balance') }}:
             {{ fNum(tokenBalance, 'token') }}
             {{ token?.symbol }}
             <span v-if="!isMaxed" class="text-blue-500 lowercase">
