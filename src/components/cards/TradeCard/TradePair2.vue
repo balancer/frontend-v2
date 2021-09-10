@@ -15,6 +15,7 @@ type Props = {
   tokenOutAmount: string;
   tokenOutAddress: string;
   exactIn: boolean;
+  priceImpact: number;
 };
 
 /**
@@ -127,7 +128,7 @@ watchEffect(() => {
 
     <div class="flex items-center my-2">
       <TradePairToggle @toggle="handleTokenSwitch" />
-      <div class="h-px mx-2 bg-gray-100 flex-grow" />
+      <div class="h-px mx-2 bg-gray-100 dark:bg-gray-700 flex-grow" />
       <div
         v-if="rateLabel"
         class="flex items-center text-xs text-gray-500 cursor-pointer"
@@ -140,6 +141,7 @@ watchEffect(() => {
       v-model:amount="_tokenOutAmount"
       v-model:address="_tokenOutAddress"
       name="tokenOut"
+      :priceImpact="priceImpact"
       @update:amount="handleOutAmountChange"
       @update:address="emit('update:tokenOutAddress', $event)"
       noRules

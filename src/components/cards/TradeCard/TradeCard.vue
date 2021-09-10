@@ -13,6 +13,7 @@
         v-model:tokenOutAmount="tokenOutAmount"
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
+        :priceImpact="priceImpact"
         @amountChange="handleAmountChange"
         class="mb-4"
       />

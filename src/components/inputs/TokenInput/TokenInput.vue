@@ -20,6 +20,7 @@ type Props = {
   address?: string;
   noRules?: boolean;
   noMax?: boolean;
+  priceImpact?: number;
 };
 
 /**
@@ -97,6 +98,10 @@ const barColor = computed(() => {
   if (bnum(_amount.value).gt(tokenBalance.value)) return 'red';
   return 'green';
 });
+
+const priceImpactSign = computed(() =>
+  props.priceImpact || 0 >= 0 ? '-' : '+'
+);
 
 /**
  * METHODS
@@ -176,6 +181,9 @@ watchEffect(() => {
           </div>
           <div v-if="hasAmount && hasToken" class="font-numeric">
             {{ fNum(tokenValue, currency) }}
+            <span v-if="priceImpact">
+              ({{ priceImpactSign + fNum(priceImpact, 'percent') }})
+            </span>
           </div>
         </div>
         <BalProgressBar
