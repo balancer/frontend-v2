@@ -23,6 +23,7 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [
       'ipns://tokens.uniswap.org',
+      'https://raw.githubusercontent.com/element-fi/elf-tokenlist/main/dist/mainnet.tokenlist.json',
       'tokenlist.zerion.eth',
       'tokens.1inch.eth',
       'tokenlist.aave.eth',
