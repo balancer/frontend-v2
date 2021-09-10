@@ -52,7 +52,8 @@ export const POOLS = {
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012', // polygon
       '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e', // polgon
       '0x6b15a01b5d46a5321b627bd7deef1af57bc629070000000000000000000000d4', // kovan
-      '0xe08590bde837eb9b2d42aa1196469d6e08fe96ec000200000000000000000101' //kovan
+      '0xe08590bde837eb9b2d42aa1196469d6e08fe96ec000200000000000000000101', //kovan
+      '0x4fd63966879300cafafbb35d157dc5229278ed23000100000000000000000169' //kovan Investment
     ]
   },
   Factories: {
@@ -62,6 +63,7 @@ export const POOLS = {
     '0x67d27634e44793fe63c467035e31ea8635117cd4': 'stablePool', // Metastable
     '0x751dfdace1ad995ff13c927f6f761c6604532c79': 'stablePool', // Kovan
     '0x590e544e7ca956bb878f8c873e82e65550d67d2f': 'stablePool', // Kovan Metastable
+    '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'investmentPool', // Kovan Investment
     '0x7dfdef5f355096603419239ce743bfaf1120312b': 'weightedPool', // Arbitrum Weighted
     '0xcf0a32bbef8f064969f21f7e02328fb577382018': 'weightedPool', // Arbitrum WeightedOracle
     '0x2433477a10fc5d31b9513c638f19ee85caed53fd': 'stablePool', // Arbitrum Stable

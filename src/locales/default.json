@@ -129,6 +129,7 @@
     "thirdPartyAPR": {
         "steth": "stETH staking rewards APR"
     },
+    "investmentPool": "Investment pool",
     "investmentPools": "Investment pools",
     "investmentSettled": "Your investment has settled",
     "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",
