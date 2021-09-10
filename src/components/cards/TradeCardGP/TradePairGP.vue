@@ -5,7 +5,7 @@
         class="p-2 flex justify-between text-sm rounded-t-lg dark:bg-gray-900 border dark:border-gray-900 w-full border-b-0"
       >
         <div>{{ $t('send') }}</div>
-        <div v-if="tokenInValue > 0" class="text-gray-500">
+        <div v-if="tokenInValue > 0" class="text-gray-500 font-numeric">
           {{ fNum(tokenInValue, 'usd') }}
         </div>
       </div>
@@ -56,7 +56,8 @@
       </template>
       <template v-slot:info>
         <div class="cursor-pointer" @click="handleInMax">
-          {{ $t('balance') }}: {{ fNum(tokenInBalance, 'token') }}
+          {{ $t('balance') }}:
+          <span class="font-numeric">{{ fNum(tokenInBalance, 'token') }}</span>
         </div>
       </template>
       <template v-slot:append>
@@ -69,11 +70,11 @@
     </BalTextInput>
     <div class="flex items-center mb-4">
       <TradePairToggle @toggle="handleSwitchTokens" />
-      <div v-if="rateMessage" class="flex-auto ml-4">
+      <div v-if="rateMessage" class="flex-auto ml-4 numeric">
         <span
           class="text-sm text-gray-500 cursor-pointer"
           @click="toggleRate"
-          v-text="rateMessage"
+          v-html="rateMessage"
         />
       </div>
     </div>
@@ -82,7 +83,7 @@
         class="p-2 flex justify-between text-sm rounded-t-lg dark:bg-gray-900 border dark:border-gray-900 w-full border-b-0"
       >
         <div>{{ $t('receive') }}</div>
-        <div v-if="tokenOutValue > 0" class="text-gray-500">
+        <div v-if="tokenOutValue > 0" class="text-gray-500 font-numeric">
           {{ fNum(tokenOutValue, 'usd') }}
         </div>
       </div>
@@ -133,7 +134,8 @@
       </template>
       <template v-slot:info>
         <div class="cursor-pointer" @click="handleOutMax">
-          {{ $t('balance') }}: {{ fNum(tokenOutBalance, 'token') }}
+          {{ $t('balance') }}:
+          <span class="font-numeric">{{ fNum(tokenOutBalance, 'token') }}</span>
         </div>
       </template>
       <template v-slot:append>
