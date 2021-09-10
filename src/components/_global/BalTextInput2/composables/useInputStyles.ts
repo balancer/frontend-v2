@@ -53,32 +53,32 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
     'border-red-500 dark:border-red-500': isInvalid.value
   }));
 
-  const inputGroupClasses = {
+  const inputGroupClasses = computed(() => ({
     [intPaddingClass()]: true
-  };
+  }));
 
-  const headerClasses = {
+  const headerClasses = computed(() => ({
     [intPaddingClass()]: true
-  };
+  }));
 
-  const footerClasses = {
+  const footerClasses = computed(() => ({
     [intPaddingClass()]: true
-  };
+  }));
 
-  const inputClasses = {
+  const inputClasses = computed(() => ({
     [inputHeightClass()]: true,
     [inputTextSize()]: true,
     'text-right': props.inputAlignRight,
     'font-numeric': props.type === 'number'
-  };
+  }));
 
-  const prependClasses = {
+  const prependClasses = computed(() => ({
     [inputHeightClass()]: true
-  };
+  }));
 
-  const appendClasses = {
+  const appendClasses = computed(() => ({
     [inputHeightClass()]: true
-  };
+  }));
 
   return {
     parentClasses,
