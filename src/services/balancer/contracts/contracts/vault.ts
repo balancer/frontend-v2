@@ -98,7 +98,7 @@ export default class Vault {
             Number(formatUnits(w, 10))) /
           100
       );
-    } else if (type === 'Stable') {
+    } else if (type === 'Stable' || type === 'MetaStable') {
       const tokensList = Object.values(tokens);
       return tokensList.map(() => 1 / tokensList.length);
     } else {
