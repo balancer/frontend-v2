@@ -143,7 +143,7 @@ watchEffect(() => {
         v-if="rateLabel"
         class="flex items-center text-xs text-gray-500 cursor-pointer"
         @click="isInRate = !isInRate"
-        v-text="rateLabel"
+        v-html="rateLabel"
       />
     </div>
 
