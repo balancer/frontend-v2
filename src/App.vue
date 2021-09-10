@@ -1,9 +1,9 @@
 <template>
   <div id="modal" />
-  <div id="app">
+  <div id="app" class='relative'>
     <AppNav />
     <AppHero v-if="isHomePage" />
-    <div class="pb-16">
+    <div class="pb-32">
       <router-view :key="$route.path" class="flex-auto" />
     </div>
     <AppFooterNav v-if="upToLargeBreakpoint" />
@@ -23,6 +23,7 @@
       @close="toggleWalletSelectModal"
     />
     <Notifications />
+    <AppFooter />
   </div>
 </template>
 
@@ -40,6 +41,7 @@ import useWeb3Watchers from '@/composables/useWeb3Watchers';
 import AppNav from '@/components/navs/AppNav/AppNav.vue';
 import AppHero from '@/components/heros/AppHero.vue';
 import AppFooterNav from '@/components/navs/AppFooterNav/AppFooterNav.vue';
+import AppFooter from '@/components/navs/AppFooter/AppFooter.vue';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
@@ -69,6 +71,7 @@ export default defineComponent({
   components: {
     AppNav,
     AppFooterNav,
+    AppFooter,
     AppHero,
     VueQueryDevTools,
     WalletSelectModal,

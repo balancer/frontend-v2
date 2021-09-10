@@ -5,7 +5,13 @@ export const EXTERNAL_LINKS = {
       'https://docs.balancer.finance/core-concepts/bal-balancer-governance-token/bal-for-gas',
     Claim: (account: string) => `https://claim.balancer.finance/#/${account}`,
     PoolsV1Dashboard: 'https://pools.balancer.exchange/#/dashboard',
-    PoolsV1Explore: 'https://pools.balancer.exchange/#/explore'
+    PoolsV1Explore: 'https://pools.balancer.exchange/#/explore',
+    Vote: 'https://snapshot.org/#/balancer.eth',
+    Chat: 'https://discord.gg/balancer',
+    Blog: 'https://medium.com/balancer-protocol',
+    Docs: 'https://docs.balancer.fi/',
+    Dune: 'https://dune.xyz/balancerlabs/balancer-pools',
+    LiquidityMining: 'https://app.balancer.fi/#/liquidity-mining'
   },
   Gauntlet: {
     Home: 'https://gauntlet.network'
