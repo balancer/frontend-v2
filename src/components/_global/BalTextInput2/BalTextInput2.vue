@@ -87,42 +87,40 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 </script>
 
 <template>
-  <div :class="[parentClasses]">
-    <div class="bal-text-input">
-      <div :class="['input-container', inputContainerClasses]">
-        <div v-if="$slots.header || label" :class="['header', headerClasses]">
-          <slot name="header">
-            <span class="label">
-              {{ label }}
-            </span>
-          </slot>
+  <div :class="['bal-text-input', parentClasses]">
+    <div :class="['input-container', inputContainerClasses]">
+      <div v-if="$slots.header || label" :class="['header', headerClasses]">
+        <slot name="header">
+          <span class="label">
+            {{ label }}
+          </span>
+        </slot>
+      </div>
+      <div :class="['input-group', inputGroupClasses]">
+        <div v-if="$slots.prepend" :class="['prepend', prependClasses]">
+          <slot name="prepend" />
         </div>
-        <div :class="['input-group', inputGroupClasses]">
-          <div v-if="$slots.prepend" :class="['prepend', prependClasses]">
-            <slot name="prepend" />
-          </div>
-          <input
-            :type="type"
-            :name="name"
-            :value="modelValue"
-            v-bind="inputAttrs"
-            :disabled="disabled"
-            @blur="onBlur"
-            @input="onInput"
-            @keydown="onKeydown"
-            :class="['input', inputClasses]"
-          />
-          <div v-if="$slots.append" :class="['append', appendClasses]">
-            <slot name="append" />
-          </div>
-        </div>
-        <div v-if="$slots.footer" :class="['footer', footerClasses]">
-          <slot name="footer" />
+        <input
+          :type="type"
+          :name="name"
+          :value="modelValue"
+          v-bind="inputAttrs"
+          :disabled="disabled"
+          @blur="onBlur"
+          @input="onInput"
+          @keydown="onKeydown"
+          :class="['input', inputClasses]"
+        />
+        <div v-if="$slots.append" :class="['append', appendClasses]">
+          <slot name="append" />
         </div>
       </div>
-    </div>
-    <div v-if="isInvalid" :class="['error']">
-      {{ errors[0] }}
+      <div v-if="$slots.footer" :class="['footer', footerClasses]">
+        <slot name="footer" />
+      </div>
+      <div v-if="isInvalid" :class="['error']">
+        {{ errors[0] }}
+      </div>
     </div>
   </div>
 </template>
@@ -149,6 +147,6 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 }
 
 .error {
-  @apply text-sm text-red-500 mt-1;
+  @apply text-xs text-red-500 mt-1;
 }
 </style>
