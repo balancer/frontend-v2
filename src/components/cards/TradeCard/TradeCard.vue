@@ -7,7 +7,7 @@
       </div>
     </template>
     <div>
-      <TradePair2
+      <TradePair
         v-model:tokenInAmount="tokenInAmount"
         v-model:tokenInAddress="tokenInAddress"
         v-model:tokenOutAmount="tokenOutAmount"
@@ -97,7 +97,7 @@ import useValidation, {
 import useSor from '@/composables/trade/useSor';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-import TradePair2 from '@/components/cards/TradeCard/TradePair2.vue';
+import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import TradeSettingsPopover, {
@@ -118,7 +118,7 @@ const { nativeAsset } = configService.network;
 export default defineComponent({
   components: {
     SuccessOverlay,
-    TradePair2,
+    TradePair,
     TradePreviewModal,
     TradeRoute,
     TradeSettingsPopover,
