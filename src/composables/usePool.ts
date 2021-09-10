@@ -36,6 +36,10 @@ export function isWeightedLike(pool: AnyPool): boolean {
   return isWeighted(pool) || isInvestment(pool);
 }
 
+export function isElement(pool: AnyPool): boolean {
+  return pool.poolType === PoolType.Element;
+}
+
 export function isWeth(pool: AnyPool, networkId: string): boolean {
   return pool.tokenAddresses.includes(TOKENS.AddressMap[networkId].WETH);
 }
