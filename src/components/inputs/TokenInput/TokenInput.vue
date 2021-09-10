@@ -93,6 +93,11 @@ const maxPercentage = computed(() => {
     .toFixed(1);
 });
 
+const barColor = computed(() => {
+  if (bnum(_amount.value).gt(tokenBalance.value)) return 'red';
+  return 'green';
+});
+
 /**
  * METHODS
  */
@@ -158,7 +163,6 @@ watchEffect(() => {
           <div v-else class="cursor-pointer" @click="setMax">
             {{ $t('balance') }}:
             {{ fNum(tokenBalance, 'token') }}
-            {{ token?.symbol }}
             <template v-if="hasBalance && !noMax">
               <span v-if="!isMaxed" class="text-blue-500 lowercase">
                 {{ $t('max') }}
@@ -175,6 +179,7 @@ watchEffect(() => {
         <BalProgressBar
           v-if="hasBalance && !noMax"
           :width="maxPercentage"
+          :color="barColor"
           class="mt-2"
         />
       </div>
