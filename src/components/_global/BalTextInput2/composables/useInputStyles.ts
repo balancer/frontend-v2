@@ -68,7 +68,8 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const inputClasses = {
     [inputHeightClass()]: true,
     [inputTextSize()]: true,
-    'text-right': props.inputAlignRight
+    'text-right': props.inputAlignRight,
+    'font-numeric': props.type === 'number'
   };
 
   const prependClasses = {

@@ -162,7 +162,9 @@ watchEffect(() => {
           <div v-if="!isWalletReady" />
           <div v-else class="cursor-pointer" @click="setMax">
             {{ $t('balance') }}:
-            {{ fNum(tokenBalance, 'token') }}
+            <span class="font-numeric mr-2">
+              {{ fNum(tokenBalance, 'token') }}
+            </span>
             <template v-if="hasBalance && !noMax">
               <span v-if="!isMaxed" class="text-blue-500 lowercase">
                 {{ $t('max') }}
@@ -172,7 +174,7 @@ watchEffect(() => {
               </span>
             </template>
           </div>
-          <div v-if="hasAmount && hasToken">
+          <div v-if="hasAmount && hasToken" class="font-numeric">
             {{ fNum(tokenValue, currency) }}
           </div>
         </div>
