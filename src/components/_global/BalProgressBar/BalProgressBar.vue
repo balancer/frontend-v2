@@ -37,7 +37,7 @@ const barStyles = computed(() => ({
   </div>
 </template>
 
-<style>
+<style scoped>
 .progress-track {
   @apply w-full rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden;
 }
