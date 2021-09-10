@@ -48,14 +48,14 @@
                 :address="tokenAmount.address"
                 class="mr-2 flex-shrink-0"
               />
-              {{ tokenAmount.amount }}
+              <span class="font-numeric">{{ tokenAmount.amount }}</span>
             </div>
           </template>
         </div>
       </template>
 
       <template v-slot:valueCell="action">
-        <div class="px-6 py-4 flex justify-end">
+        <div class="px-6 py-4 flex justify-end font-numeric">
           {{ fNum(action.value, 'usd_m') }}
         </div>
       </template>

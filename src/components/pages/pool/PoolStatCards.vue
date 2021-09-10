@@ -9,7 +9,7 @@
           {{ stat.label }}
         </div>
         <div class="text-xl font-medium truncate flex items-center">
-          {{ stat.value }}
+          <span class="font-numeric">{{ stat.value }}</span>
           <LiquidityMiningTooltip :pool="pool" v-if="stat.id === 'apr'" />
         </div>
       </BalCard>

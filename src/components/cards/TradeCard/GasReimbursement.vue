@@ -7,9 +7,7 @@
     <div v-if="isActive()" class="message relative px-2 py-3">
       <div class="ml-12">
         <h6 v-text="$t('highGasFees')" class="relative text-sm" />
-        <div class="relative text-sm text-gray-500">
-          {{ text }}
-        </div>
+        <div class="relative text-sm text-gray-500" v-html="text" />
       </div>
     </div>
   </BalLink>
@@ -152,10 +150,14 @@ export default defineComponent({
         reimburseAmount.value && reimburseAmount.value.usd.gt(0);
 
       return isEligible
-        ? `${t('tradeEarns')} ~${reimburseAmount.value.bal.toFixed(
+        ? `${t(
+            'tradeEarns'
+          )} <span class="font-numeric">~${reimburseAmount.value.bal.toFixed(
             1,
             BigNumber.ROUND_DOWN
-          )} BAL (${formatUSD(reimburseAmount.value.usd)})`
+          )}</span> BAL (<span class="font-numeric">${formatUSD(
+            reimburseAmount.value.usd
+          )}</span>)`
         : t('earnBAL');
     });
 
