@@ -21,6 +21,7 @@ type Props = {
   noRules?: boolean;
   noMax?: boolean;
   priceImpact?: number;
+  label?: string;
 };
 
 /**
@@ -135,6 +136,7 @@ watchEffect(() => {
     v-model="_amount"
     placeholder="0.0"
     type="number"
+    :label="label"
     :decimalLimit="token?.decimals || 18"
     :rules="rules"
     validateOn="input"
