@@ -16,20 +16,6 @@
         @amountChange="handleAmountChange"
         class="mb-4"
       />
-      <!-- <TradePair
-        :token-in-amount-input="tokenInAmount"
-        :token-in-address-input="tokenInAddress"
-        :token-out-amount-input="tokenOutAmount"
-        :token-out-address-input="tokenOutAddress"
-        :exact-in="exactIn"
-        :price-impact="priceImpact"
-        @token-in-amount-change="value => (tokenInAmount = value)"
-        @token-in-address-change="value => (tokenInAddress = value)"
-        @token-out-amount-change="value => (tokenOutAmount = value)"
-        @token-out-address-change="value => (tokenOutAddress = value)"
-        @exact-in-change="value => (exactIn = value)"
-        @change="handleAmountChange"
-      /> -->
       <GasReimbursement
         class="mb-5"
         :address-in="tokenInAddress"
@@ -110,7 +96,7 @@ import useValidation, {
 import useSor from '@/composables/trade/useSor';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-import TradePair from '@/components/cards/TradeCard/TradePair.vue';
+import TradePair2 from '@/components/cards/TradeCard/TradePair2.vue';
 import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import TradeSettingsPopover, {
@@ -126,19 +112,16 @@ import { configService } from '@/services/config/config.service';
 
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
-import TradePair2 from '@/components/cards/TradeCard/TradePair2.vue';
-
 const { nativeAsset } = configService.network;
 
 export default defineComponent({
   components: {
     SuccessOverlay,
-    // TradePair,
+    TradePair2,
     TradePreviewModal,
     TradeRoute,
     TradeSettingsPopover,
-    GasReimbursement,
-    TradePair2
+    GasReimbursement
   },
 
   setup() {
