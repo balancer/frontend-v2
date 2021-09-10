@@ -1,7 +1,11 @@
-import { BigNumber } from '@ethersproject/bignumber';
-import { configService } from '../config/config.service';
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 
-export function normalizeTokenAddress(tokenAddress: string) {
+import { configService } from '../config/config.service';
+import { MAX_VALID_TO_EPOCH } from './constants';
+
+import { CanonicalMarketParams, Market } from './types';
+
+export function toErc20Address(tokenAddress: string) {
   const nativeAssetAddress = configService.network.nativeAsset.address;
 
   if (tokenAddress.toLowerCase() === nativeAssetAddress.toLowerCase()) {
@@ -11,21 +15,23 @@ export function normalizeTokenAddress(tokenAddress: string) {
   return tokenAddress;
 }
 
-export function getMarket(sellToken: string, buyToken: string, kind: string) {
-  let baseToken = buyToken;
-  let quoteToken = sellToken;
-
-  if (kind === 'sell') {
-    baseToken = sellToken;
-    quoteToken = buyToken;
+export function getCanonicalMarket<T>({
+  sellToken,
+  buyToken,
+  kind
+}: CanonicalMarketParams<T>): Market<T> {
+  if (kind === OrderKind.SELL) {
+    return {
+      baseToken: sellToken,
+      quoteToken: buyToken
+    };
+  } else {
+    return {
+      baseToken: buyToken,
+      quoteToken: sellToken
+    };
   }
-
-  return `${normalizeTokenAddress(baseToken)}-${normalizeTokenAddress(
-    quoteToken
-  )}`;
 }
-
-const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber(); // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
 
 export function calculateValidTo(deadlineInMinutes: number): number {
   const now = Date.now() / 1000;
