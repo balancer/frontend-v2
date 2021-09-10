@@ -1,30 +1,37 @@
-h1, h2 {
+h1,
+h2 {
   @apply font-display;
   font-weight: 600;
 }
-h1 { @apply text-5xl; }
-h2 { @apply text-3xl font-bold; }
+h1 {
+  @apply text-5xl;
+}
+h2 {
+  @apply text-3xl font-bold;
+}
 
-
-h3, h4, h5, h6 {
+h3,
+h4,
+h5,
+h6 {
   @apply font-body;
 }
-h3 { 
-  @apply text-2xl tracking-tight;   
+h3 {
+  @apply text-2xl tracking-tight;
   font-variation-settings: 'wght' 600;
 }
-h4 { 
-  @apply text-xl tracking-tight; 
+h4 {
+  @apply text-xl tracking-tight;
   font-variation-settings: 'wght' 600;
 }
-h5 { 
+h5 {
   @apply text-lg;
   font-weight: unset;
   font-variation-settings: 'wght' 600;
- }
- h6 {
+}
+h6 {
   font-variation-settings: 'wght' 600;
- }
+}
 
 .eth-address {
   font-variant-ligatures: no-contextual;
@@ -32,7 +39,16 @@ h5 {
 
 /* Using font-variation-settings instead of font-weight for the Inter variable font */
 
-th, .font-thin, .font-extralight, .font-light, .font-normal, .font-medium, .font-semibold, .font-bold, .font-extrabold, .font-black {
+th,
+.font-thin,
+.font-extralight,
+.font-light,
+.font-normal,
+.font-medium,
+.font-semibold,
+.font-bold,
+.font-extrabold,
+.font-black {
   font-weight: unset;
 }
 
@@ -66,4 +82,9 @@ th {
 }
 .font-black {
   font-variation-settings: 'wght' 900;
+}
+
+.font-numeric {
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.5px;
 }

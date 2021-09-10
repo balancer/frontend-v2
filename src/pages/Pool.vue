@@ -19,7 +19,7 @@
               </span>
               <span
                 v-if="!isStableLikePool"
-                class="font-medium text-gray-400 text-xs mt-px ml-1"
+                class="font-medium text-gray-400 text-xs mt-px ml-1 font-numeric"
               >
                 {{ fNum(tokenMeta.weight, 'percent_lg') }}
               </span>
@@ -98,13 +98,13 @@
       </div>
 
       <div class="order-1 lg:order-2 px-1 lg:px-0">
-        <BalLoadingBlock v-if="loadingPool" class="h-96 sticky top-24" />
+        <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-96" />
         <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
           :missing-prices="missingPrices"
           @on-tx="onNewTx"
-          class="sticky top-24"
+          class="pool-actions-card"
         />
       </div>
     </div>
@@ -243,7 +243,10 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      const feeLabel = fNum(pool.value.onchain.swapFee, 'percent');
+      const feeLabel = `<span class="font-numeric">${fNum(
+        pool.value.onchain.swapFee,
+        'percent'
+      )}</span>`;
 
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);
@@ -323,5 +326,15 @@ export default defineComponent({
 .pool-title {
   @apply mr-4 capitalize mt-2;
   font-variation-settings: 'wght' 700;
+}
+
+.pool-actions-card {
+  @apply relative;
+}
+
+@media (min-width: 768px) and (min-height: 600px) {
+  .pool-actions-card {
+    @apply sticky top-24;
+  }
 }
 </style>

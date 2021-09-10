@@ -11,15 +11,20 @@
         />
         <div class="flex flex-col">
           <div class="font-bold">
-            {{ fNum(amountIn, 'token') }} {{ symbolIn }} ->
-            {{ fNum(amountOut, 'token') }} {{ symbolOut }}
+            <span class="font-numeric">{{ fNum(amountIn, 'token') }}</span>
+            {{ symbolIn }} ->
+            <span class="font-numeric">{{ fNum(amountOut, 'token') }}</span>
+            {{ symbolOut }}
           </div>
-          <div class="text-gray-500 text-sm">{{ fNum(valueIn, 'usd') }}</div>
+          <div class="text-gray-500 text-sm font-numeric">
+            {{ fNum(valueIn, 'usd') }}
+          </div>
         </div>
       </div>
       <div>
         <div class="mt-6 mb-3 text-sm">
-          Requires {{ totalRequiredTransactions }}
+          Requires
+          <span class="font-numeric">{{ totalRequiredTransactions }}</span>
           {{ requiresApproval ? 'transactions' : 'transaction' }}:
         </div>
         <div>
@@ -62,7 +67,9 @@
               {{ totalRequiredTransactions }}
             </div>
             <div class="ml-3">
-              {{ $t('trade') }} {{ fNum(valueIn, 'usd') }} {{ symbolIn }} ->
+              {{ $t('trade') }}
+              <span class="font-numeric">{{ fNum(valueIn, 'usd') }}</span>
+              {{ symbolIn }} ->
               {{ symbolOut }}
             </div>
           </div>

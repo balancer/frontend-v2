@@ -3,13 +3,21 @@ import { useStore } from 'vuex';
 import { BigNumber } from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
 import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
 
+import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import { bnum } from '@/lib/utils';
-import { FeeInformation, OrderMetaData } from '@/services/gnosis/types';
+import {
+  FeeInformation,
+  OrderMetaData,
+  PriceQuoteParams
+} from '@/services/gnosis/types';
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
 import useWeb3 from '@/services/web3/useWeb3';
 import { calculateValidTo } from '@/services/gnosis/utils';
-import { gnosisOperator } from '@/services/gnosis/operator.service';
+import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
+import { match0xService } from '@/services/gnosis/match0x.service';
+import { paraSwapService } from '@/services/gnosis/paraswap.service';
 
 import useTransactions from '../useTransactions';
 
@@ -62,6 +70,32 @@ type Props = {
   tokenOut: ComputedRef<TokenInfo>;
   slippageBufferRate: ComputedRef<number>;
 };
+
+const PRICE_QUOTE_TIMEOUT = 10000;
+
+const priceQuotesResolveLast = onlyResolvesLast(getPriceQuotes);
+const feeQuotesResolveLast = onlyResolvesLast(getFeeQuote);
+
+function getPriceQuotes(queryParams: PriceQuoteParams) {
+  return Promise.allSettled([
+    tryPromiseWithTimeout(
+      gnosisProtocolService.getPriceQuote(queryParams),
+      PRICE_QUOTE_TIMEOUT
+    ),
+    tryPromiseWithTimeout(
+      match0xService.getPriceQuote(queryParams),
+      PRICE_QUOTE_TIMEOUT
+    ),
+    tryPromiseWithTimeout(
+      paraSwapService.getPriceQuote(queryParams),
+      PRICE_QUOTE_TIMEOUT
+    )
+  ]);
+}
+
+function getFeeQuote(queryParams: PriceQuoteParams) {
+  return gnosisProtocolService.getFeeQuote(queryParams);
+}
 
 export default function useGnosis({
   exactIn,
@@ -167,7 +201,7 @@ export default function useGnosis({
         getSigner()
       );
 
-      const orderId = await gnosisOperator.sendSignedOrder({
+      const orderId = await gnosisProtocolService.sendSignedOrder({
         order: {
           ...unsignedOrder,
           signature,
@@ -268,11 +302,13 @@ export default function useGnosis({
         sellToken: tokenInAddressInput.value,
         buyToken: tokenOutAddressInput.value,
         amount: amountToExchange.toString(),
-        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY
+        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
+        fromDecimals: tokenIn.value.decimals,
+        toDecimals: tokenOut.value.decimals
       };
 
       // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
-      const feeQuoteResult = await gnosisOperator.getFeeQuote(queryParams);
+      const feeQuoteResult = await feeQuotesResolveLast(queryParams);
 
       if (feeQuoteResult != null) {
         if (exactIn.value) {
@@ -281,16 +317,38 @@ export default function useGnosis({
             .isNegative();
         }
         if (!state.validationErrors.feeExceedsPrice) {
-          const priceQuoteResult = await gnosisOperator.getPriceQuote(
-            queryParams
+          let priceQuoteAmount: string | null = null;
+
+          const priceQuotes = await priceQuotesResolveLast(queryParams);
+
+          const priceQuoteAmounts = priceQuotes.reduce<string[]>(
+            (fulfilledPriceQuotes, priceQuote) => {
+              if (
+                priceQuote.status === 'fulfilled' &&
+                priceQuote.value &&
+                priceQuote.value.amount != null
+              ) {
+                fulfilledPriceQuotes.push(priceQuote.value.amount);
+              }
+              return fulfilledPriceQuotes;
+            },
+            []
           );
 
-          if (priceQuoteResult != null && priceQuoteResult.amount != null) {
+          if (priceQuoteAmounts.length > 0) {
+            // For sell orders get the largest (max) quote. For buy orders get the smallest (min) quote.
+            priceQuoteAmount = (exactIn.value
+              ? BigNumber.max(...priceQuoteAmounts)
+              : BigNumber.min(...priceQuoteAmounts)
+            ).toString(10);
+          }
+
+          if (priceQuoteAmount != null) {
             feeQuote.value = feeQuoteResult;
 
             if (exactIn.value) {
               tokenOutAmountInput.value = bnum(
-                formatUnits(priceQuoteResult.amount, tokenOut.value.decimals)
+                formatUnits(priceQuoteAmount, tokenOut.value.decimals)
               ).toFixed(6, BigNumber.ROUND_DOWN);
 
               const { feeAmountInToken } = getQuote();
@@ -300,7 +358,7 @@ export default function useGnosis({
                 .gt(HIGH_FEE_THRESHOLD);
             } else {
               tokenInAmountInput.value = bnum(
-                formatUnits(priceQuoteResult.amount, tokenIn.value.decimals)
+                formatUnits(priceQuoteAmount, tokenIn.value.decimals)
               ).toFixed(6, BigNumber.ROUND_DOWN);
 
               const { feeAmountOutToken, maximumInAmount } = getQuote();

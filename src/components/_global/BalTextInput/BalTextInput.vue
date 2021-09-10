@@ -216,7 +216,8 @@ export default defineComponent({
     const inputClasses = computed(() => {
       return {
         [textSizeClasses()]: true,
-        'text-right': props.textRight
+        'text-right': props.textRight,
+        'font-numeric': props.type === 'number'
       };
     });
 

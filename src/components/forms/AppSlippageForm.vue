@@ -4,6 +4,7 @@
       :options="options"
       v-model="fixedSlippage"
       @update:modelValue="onFixedInput"
+      class="font-numeric"
     />
     <div
       :class="[
@@ -15,7 +16,7 @@
       ]"
     >
       <input
-        class="w-12 text-right bg-transparent"
+        class="w-12 text-right bg-transparent font-numeric"
         v-model="customSlippage"
         placeholder="0.1"
         type="number"

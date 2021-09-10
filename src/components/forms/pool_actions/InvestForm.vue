@@ -15,14 +15,15 @@
             class="flex items-center justify-between mb-3 text-sm text-gray-600"
           >
             <span v-text="$t('amountToInvest')" />
-            <span>{{ propPercentage }}%</span>
+            <span class="font-numeric">{{ propPercentage }}%</span>
           </div>
           <div class="flex items-end">
             <span
               class="mr-2 text-lg font-medium w-1/2 break-words leading-none"
               :title="total"
             >
-              {{ missingPrices ? '-' : total }}
+              <template v-if="missingPrices">-</template>
+              <span class="font-numeric" v-else>{{ total }}</span>
             </span>
             <BalRangeInput
               class="w-1/2"
@@ -53,7 +54,7 @@
               <BalAsset :address="token" class="mr-2" />
               <div class="flex flex-col w-3/4 leading-none">
                 <span
-                  class="break-words"
+                  class="break-words font-numeric"
                   :title="
                     `${fNum(amounts[i], 'token')} ${
                       pool.onchain.tokens[token].symbol
@@ -67,15 +68,22 @@
                   class="text-xs text-gray-400 break-words"
                   :title="`${formatBalance(i)} balance`"
                 >
-                  {{ $t('balance') }}: {{ formatBalance(i) }}
+                  {{ $t('balance') }}:
+                  <span class="font-numeric">{{ formatBalance(i) }}</span>
                 </span>
               </div>
             </div>
             <div class="flex flex-col w-1/2 leading-none text-right pl-2">
-              <span class="break-words" :title="fNum(amountUSD(i), 'usd')">
+              <span
+                class="break-words font-numeric"
+                :title="fNum(amountUSD(i), 'usd')"
+              >
                 {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
-              <span v-if="!isStableLikePool" class="text-xs text-gray-400">
+              <span
+                v-if="!isStableLikePool"
+                class="text-xs text-gray-400 font-numeric"
+              >
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
               </span>
             </div>
@@ -205,7 +213,10 @@
           @click.prevent
         >
           <span
-            >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
+            >{{ $t('priceImpact') }}:
+            <span class="font-numeric">{{
+              fNum(priceImpact, 'percent')
+            }}</span></span
           >
           <BalTooltip>
             <template v-slot:activator>
@@ -253,8 +264,12 @@
             block
             @click="trackGoal(Goals.ClickInvest)"
           >
-            {{ $t('invest') }}
-            {{ missingPrices || total.length > 15 ? '' : total }}
+            <span>{{ $t('invest') }}</span>
+            <span
+              v-if="!(missingPrices || total.length > 15)"
+              class="font-numeric"
+              >&nbsp;{{ total }}</span
+            >
           </BalBtn>
         </template>
       </template>

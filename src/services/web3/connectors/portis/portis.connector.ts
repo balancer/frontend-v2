@@ -12,6 +12,7 @@ export class PortisConnector extends Connector {
       configService.env.PORTIS_DAPP_ID,
       configService.network.network
     ) as any;
+
     const provider = portis.provider;
 
     if (provider) {
@@ -19,12 +20,9 @@ export class PortisConnector extends Connector {
       this.active.value = true;
 
       try {
-        if (provider.request) {
-          const accounts = await provider.request({
-            method: 'eth_requestAccounts'
-          });
-
-          const chainId = await provider.request({ method: 'eth_chainId' });
+        if (provider.send) {
+          const accounts = await provider.send('eth_accounts');
+          const chainId = await provider.send('eth_chainId');
           this.handleChainChanged(chainId);
           this.handleAccountsChanged(accounts);
         }

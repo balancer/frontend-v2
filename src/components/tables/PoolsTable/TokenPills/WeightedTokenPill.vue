@@ -9,7 +9,7 @@
     <span>
       {{ symbol }}
     </span>
-    <span class="font-medium text-gray-400 text-xs mt-px ml-1">
+    <span class="font-medium text-gray-400 text-xs mt-px ml-1 font-numeric">
       {{ weight }}
     </span>
   </div>

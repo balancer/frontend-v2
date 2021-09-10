@@ -65,7 +65,7 @@ import useNotifications from '@/composables/useNotifications';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { signOrderCancellation } from '@/services/gnosis/signing';
-import { gnosisOperator } from '@/services/gnosis/operator.service';
+import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
 
 import ActivityCounter from './ActivityCounter.vue';
 import ActivityRows from './ActivityRows.vue';
@@ -109,7 +109,7 @@ export default defineComponent({
           getSigner()
         );
 
-        await gnosisOperator.sendSignedOrderCancellation({
+        await gnosisProtocolService.sendSignedOrderCancellation({
           cancellation: {
             orderUid: orderId,
             signature,

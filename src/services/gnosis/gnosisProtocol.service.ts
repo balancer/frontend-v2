@@ -1,7 +1,8 @@
+import { IS_DEV } from '@/constants/env';
+import { APP_NETWORK_ID, Network } from '@/constants/network';
 import axios from 'axios';
 
-import { OPERATOR_URL } from './constants';
-import OperatorError from './error';
+import OperatorError from './errors/OperatorError';
 import {
   getSigningSchemeApiValue,
   OrderCreation,
@@ -15,13 +16,24 @@ import {
   PriceInformation,
   PriceQuoteParams
 } from './types';
-import { getMarket, normalizeTokenAddress } from './utils';
+import { getCanonicalMarket, toErc20Address } from './utils';
 
-export default class GnosisOperatorService {
+export const API_URLS = {
+  [Network.MAINNET]: IS_DEV
+    ? 'https://protocol-mainnet.dev.gnosisdev.com/api'
+    : 'https://protocol-mainnet.gnosis.io/api',
+  [Network.RINKEBY]: IS_DEV
+    ? 'https://protocol-rinkeby.dev.gnosisdev.com/api'
+    : 'https://protocol-rinkeby.gnosis.io/api'
+};
+
+export default class GnosisProtocolService {
   baseURL: string;
 
   constructor(apiVersion = 'v1') {
-    this.baseURL = `${OPERATOR_URL}/${apiVersion}`;
+    const baseURL = API_URLS[APP_NETWORK_ID] ?? API_URLS[Network.MAINNET];
+
+    this.baseURL = `${baseURL}/${apiVersion}`;
   }
 
   public async sendSignedOrder(params: {
@@ -93,7 +105,7 @@ export default class GnosisOperatorService {
       );
       return response.data;
     } catch (e) {
-      console.log(`[Gnosis Operator]: Failed to get order ${orderId}`, e);
+      console.log(`[Gnosis Protocol]: Failed to get order ${orderId}`, e);
     }
 
     return null;
@@ -103,15 +115,15 @@ export default class GnosisOperatorService {
     try {
       const { amount, kind } = params;
 
-      const sellToken = normalizeTokenAddress(params.sellToken);
-      const buyToken = normalizeTokenAddress(params.buyToken);
+      const sellToken = toErc20Address(params.sellToken);
+      const buyToken = toErc20Address(params.buyToken);
 
       const response = await axios.get<FeeInformation>(
         `${this.baseURL}/fee?sellToken=${sellToken}&buyToken=${buyToken}&amount=${amount}&kind=${kind}`
       );
       return response.data;
     } catch (e) {
-      console.log(`[Gnosis Operator]: Failed to get fee from API`, e);
+      console.log(`[Gnosis Protocol]: Failed to get fee from API`, e);
     }
 
     return null;
@@ -121,18 +133,25 @@ export default class GnosisOperatorService {
     try {
       const { amount, sellToken, buyToken, kind } = params;
 
-      const market = getMarket(sellToken, buyToken, kind);
+      const { baseToken, quoteToken } = getCanonicalMarket({
+        sellToken,
+        buyToken,
+        kind
+      });
+      const market = `${toErc20Address(baseToken)}-${toErc20Address(
+        quoteToken
+      )}`;
 
       const response = await axios.get<PriceInformation>(
         `${this.baseURL}/markets/${market}/${kind}/${amount}`
       );
       return response.data;
     } catch (e) {
-      console.log(`[Gnosis Operator]: Failed to get price from API`, e);
+      console.log(`[Gnosis Protocol]: Failed to get price from API`, e);
     }
 
     return null;
   }
 }
 
-export const gnosisOperator = new GnosisOperatorService();
+export const gnosisProtocolService = new GnosisProtocolService();

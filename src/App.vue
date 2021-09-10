@@ -3,7 +3,7 @@
   <div id="app">
     <AppNav />
     <AppHero v-if="isHomePage" />
-    <div class="pb-12">
+    <div class="pb-16">
       <router-view :key="$route.path" class="flex-auto" />
     </div>
     <AppFooterNav v-if="upToLargeBreakpoint" />
@@ -27,12 +27,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, computed } from 'vue';
+import { defineComponent, onBeforeMount, computed, watch } from 'vue';
 import { VueQueryDevTools } from 'vue-query/devtools';
 import { useStore } from 'vuex';
 import BigNumber from 'bignumber.js';
 import { useRoute } from 'vue-router';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
+import { useI18n } from 'vue-i18n';
 
 import useDarkMode from './composables/useDarkMode';
 import useWeb3Watchers from '@/composables/useWeb3Watchers';
@@ -45,6 +46,8 @@ import { DEFAULT_TOKEN_DECIMALS } from './constants/tokens';
 import Notifications from '@/components/notifications/Notifications.vue';
 import useBreakpoints from './composables/useBreakpoints';
 import { tryPromiseWithTimeout } from './lib/utils/promise';
+import useTokens from './composables/useTokens';
+import useAlerts, { AlertPriority, AlertType } from './composables/useAlerts';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -80,10 +83,20 @@ export default defineComponent({
       connectWallet,
       toggleWalletSelectModal
     } = useWeb3();
+    const {
+      priceQueryError,
+      refetchPrices,
+      balancesQueryError,
+      refetchBalances,
+      allowancesQueryError,
+      refetchAllowances
+    } = useTokens();
     const store = useStore();
     const route = useRoute();
     const { upToLargeBreakpoint } = useBreakpoints();
     const { darkMode, toggleDarkMode } = useDarkMode();
+    const { addAlert, removeAlert } = useAlerts();
+    const { t } = useI18n();
 
     // COMPUTED
     const isHomePage = computed(() => route.path === '/');
@@ -99,6 +112,54 @@ export default defineComponent({
       }
 
       store.dispatch('app/init');
+    });
+
+    watch(priceQueryError, () => {
+      if (priceQueryError.value) {
+        addAlert({
+          id: 'price-fetch-error',
+          label: t('alerts.price-fetch-error'),
+          type: AlertType.ERROR,
+          persistent: true,
+          action: refetchPrices.value,
+          actionLabel: t('alerts.retry-label'),
+          priority: AlertPriority.MEDIUM
+        });
+      } else {
+        removeAlert('price-fetch-error');
+      }
+    });
+
+    watch(balancesQueryError, () => {
+      if (balancesQueryError.value) {
+        addAlert({
+          id: 'balances-fetch-error',
+          label: t('alerts.balances-fetch-error'),
+          type: AlertType.ERROR,
+          persistent: true,
+          action: refetchBalances.value,
+          actionLabel: t('alerts.retry-label'),
+          priority: AlertPriority.MEDIUM
+        });
+      } else {
+        removeAlert('balances-fetch-error');
+      }
+    });
+
+    watch(allowancesQueryError, () => {
+      if (allowancesQueryError.value) {
+        addAlert({
+          id: 'allowances-fetch-error',
+          label: t('alerts.allowances-fetch-error'),
+          type: AlertType.ERROR,
+          persistent: true,
+          action: refetchAllowances.value,
+          actionLabel: t('alerts.retry-label'),
+          priority: AlertPriority.MEDIUM
+        });
+      } else {
+        removeAlert('allowances-fetch-error');
+      }
     });
 
     return {
