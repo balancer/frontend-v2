@@ -9,7 +9,7 @@ import { configService as _configService } from '@/services/config/config.servic
 import { invert } from 'lodash';
 import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
 import { retryPromiseWithDelay } from '@/lib/utils/promise';
-import { twentyFourHourseInSecs } from '@/composables/useTime';
+import { twentyFourHoursInSecs } from '@/composables/useTime';
 
 /**
  * TYPES
@@ -117,8 +117,8 @@ export class PriceService {
       throw new Error('To many requests for rate limit.');
 
     const now = Math.floor(Date.now() / 1000);
-    const end = now - (now % twentyFourHourseInSecs);
-    const start = end - days * twentyFourHourseInSecs;
+    const end = now - (now % twentyFourHoursInSecs);
+    const start = end - days * twentyFourHoursInSecs;
 
     // TODO - remove once wsteth is supported
     addresses = addresses.filter(
@@ -184,7 +184,7 @@ export class PriceService {
               address === this.appAddresses.stETH
                 ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
                 : price;
-            dayTimestamp += twentyFourHourseInSecs;
+            dayTimestamp += twentyFourHoursInSecs;
           }
         }
         return [address, prices];

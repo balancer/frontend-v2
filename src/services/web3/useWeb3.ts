@@ -3,7 +3,7 @@ import { useQuery } from 'vue-query';
 import { Web3Plugin, Web3ProviderSymbol } from './web3.plugin';
 import { Web3Provider } from '@ethersproject/providers';
 import QUERY_KEYS from '@/constants/queryKeys';
-import ConfigService from '../config/config.service';
+import { configService } from '../config/config.service';
 import { isAddress } from '@ethersproject/address';
 import { web3Service } from './web3.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
@@ -32,7 +32,6 @@ export default function useWeb3() {
     disconnectWallet,
     connectWallet
   } = inject(Web3ProviderSymbol) as Web3Plugin;
-  const configService = new ConfigService();
   const appNetworkConfig = configService.network;
   const isV1Supported = isAddress(
     configService.network.addresses.exchangeProxy

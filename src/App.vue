@@ -3,7 +3,7 @@
   <div id="app">
     <AppNav />
     <AppHero v-if="isHomePage" />
-    <div class="pb-12">
+    <div class="pb-16">
       <router-view :key="$route.path" class="flex-auto" />
     </div>
     <AppFooterNav v-if="upToLargeBreakpoint" />
@@ -83,7 +83,14 @@ export default defineComponent({
       connectWallet,
       toggleWalletSelectModal
     } = useWeb3();
-    const { priceQueryError, refetchPrices } = useTokens();
+    const {
+      priceQueryError,
+      refetchPrices,
+      balancesQueryError,
+      refetchBalances,
+      allowancesQueryError,
+      refetchAllowances
+    } = useTokens();
     const store = useStore();
     const route = useRoute();
     const { upToLargeBreakpoint } = useBreakpoints();
@@ -110,8 +117,8 @@ export default defineComponent({
     watch(priceQueryError, () => {
       if (priceQueryError.value) {
         addAlert({
-          id: 'price-error',
-          label: t('alerts.price-provider-down'),
+          id: 'price-fetch-error',
+          label: t('alerts.price-fetch-error'),
           type: AlertType.ERROR,
           persistent: true,
           action: refetchPrices.value,
@@ -119,7 +126,39 @@ export default defineComponent({
           priority: AlertPriority.MEDIUM
         });
       } else {
-        removeAlert('price-error');
+        removeAlert('price-fetch-error');
+      }
+    });
+
+    watch(balancesQueryError, () => {
+      if (balancesQueryError.value) {
+        addAlert({
+          id: 'balances-fetch-error',
+          label: t('alerts.balances-fetch-error'),
+          type: AlertType.ERROR,
+          persistent: true,
+          action: refetchBalances.value,
+          actionLabel: t('alerts.retry-label'),
+          priority: AlertPriority.MEDIUM
+        });
+      } else {
+        removeAlert('balances-fetch-error');
+      }
+    });
+
+    watch(allowancesQueryError, () => {
+      if (allowancesQueryError.value) {
+        addAlert({
+          id: 'allowances-fetch-error',
+          label: t('alerts.allowances-fetch-error'),
+          type: AlertType.ERROR,
+          persistent: true,
+          action: refetchAllowances.value,
+          actionLabel: t('alerts.retry-label'),
+          priority: AlertPriority.MEDIUM
+        });
+      } else {
+        removeAlert('allowances-fetch-error');
       }
     });
 

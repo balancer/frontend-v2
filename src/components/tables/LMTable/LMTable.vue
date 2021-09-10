@@ -67,7 +67,9 @@
             :key="tokenDist.tokenAddress"
           >
             <span v-if="tokenIndex !== 0">+</span>&nbsp;
-            {{ fNum(tokenDist.amount, 'token_lg') }}
+            <span class="font-numeric">{{
+              fNum(tokenDist.amount, 'token_lg')
+            }}</span>
             {{ tokens[getAddress(tokenDist.tokenAddress)]?.symbol || 'N/A' }}
           </span>
         </div>
@@ -87,10 +89,10 @@
             class="font-semibold text-right"
           >
             <span v-if="i !== 0">+</span>&nbsp;
-            {{ fNum(total, 'token_lg') }}
+            <span class="font-numeric">{{ fNum(total, 'token_lg') }}</span>
             {{ tokens[getAddress(token)]?.symbol || 'N/A' }}
           </span>
-          <span class="mt-2 text-gray-500"
+          <span class="mt-2 text-gray-500 font-numeric"
             >~${{ fNum(calculatePricesFor(totals[week.week])) }}</span
           >
         </div>

@@ -68,18 +68,22 @@ export default function useTrading(
 
     if (tokenInAmount > 0 && tokenOutAmount > 0) {
       return {
-        tokenIn: `1 ${tokenIn.value?.symbol} = ${fNum(
+        tokenIn: `<span class="font-numeric">1</span> ${
+          tokenIn.value?.symbol
+        } = <span class="font-numeric">${fNum(
           bnum(tokenOutAmount)
             .div(tokenInAmount)
             .toString(),
           'token'
-        )} ${tokenOut.value?.symbol}`,
-        tokenOut: `1 ${tokenOut.value?.symbol} = ${fNum(
+        )}</span> ${tokenOut.value?.symbol}`,
+        tokenOut: `<span class="font-numeric">1</span> ${
+          tokenOut.value?.symbol
+        } = <span class="font-numeric">${fNum(
           bnum(tokenInAmount)
             .div(tokenOutAmount)
             .toString(),
           'token'
-        )} ${tokenIn.value?.symbol}`
+        )}</span> ${tokenIn.value?.symbol}`
       };
     }
     return {

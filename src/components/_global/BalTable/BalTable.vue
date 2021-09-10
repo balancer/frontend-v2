@@ -140,10 +140,13 @@
                 ></slot>
                 <div
                   v-else
-                  :class="[
-                    'px-6 py-4',
-                    column.align === 'right' ? 'text-right' : 'text-left'
-                  ]"
+                  :class="
+                    compact([
+                      'px-6 py-4',
+                      column.align === 'right' ? 'text-right' : 'text-left',
+                      column.cellClassName
+                    ])
+                  "
                 >
                   {{
                     typeof column.accessor === 'string'
@@ -160,10 +163,13 @@
                 ></slot>
                 <div
                   v-else
-                  :class="[
-                    'px-6 py-4',
-                    column.align === 'right' ? 'text-right' : 'text-left'
-                  ]"
+                  :class="
+                    compact([
+                      'px-6 py-4',
+                      column.align === 'right' ? 'text-right' : 'text-left',
+                      column.cellClassName
+                    ])
+                  "
                 >
                   {{
                     typeof column.accessor === 'string'
@@ -230,7 +236,7 @@ import {
   watch,
   computed
 } from 'vue';
-import { sortBy, sumBy, tail } from 'lodash';
+import { sortBy, sumBy, tail, compact } from 'lodash';
 
 type Sticky = 'horizontal' | 'vertical' | 'both';
 type Data = any;
@@ -267,6 +273,8 @@ export type ColumnDefinition<T = Data> = {
   width?: number;
 
   totalsCell?: string;
+
+  cellClassName?: string;
 };
 
 export default defineComponent({
@@ -445,6 +453,7 @@ export default defineComponent({
       handleSort,
       handleRowClick,
       tail,
+      compact,
 
       //data
       isColumnStuck,

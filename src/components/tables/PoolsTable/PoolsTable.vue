@@ -55,7 +55,7 @@
         </div>
       </template>
       <template v-slot:aprCell="pool">
-        <div class="px-6 py-4 -mt-1 flex justify-end">
+        <div class="px-6 py-4 -mt-1 flex justify-end font-numeric">
           {{
             Number(pool.dynamic.apr.pool) > 10000
               ? '-'
@@ -158,7 +158,8 @@ export default defineComponent({
         id: 'myBalance',
         hidden: !props.showPoolShares,
         sortKey: pool => Number(pool.shares),
-        width: 150
+        width: 150,
+        cellClassName: 'font-numeric'
       },
       {
         name: t('poolValue'),
@@ -170,7 +171,8 @@ export default defineComponent({
           if (apr === Infinity || isNaN(apr)) return 0;
           return apr;
         },
-        width: 150
+        width: 150,
+        cellClassName: 'font-numeric'
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
@@ -182,7 +184,8 @@ export default defineComponent({
           if (apr === Infinity || isNaN(apr)) return 0;
           return apr;
         },
-        width: 175
+        width: 175,
+        cellClassName: 'font-numeric'
       },
       {
         name: t('apr'),
