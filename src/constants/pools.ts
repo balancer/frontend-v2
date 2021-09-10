@@ -63,7 +63,7 @@ export const POOLS = {
     '0x67d27634e44793fe63c467035e31ea8635117cd4': 'stablePool', // Metastable
     '0x751dfdace1ad995ff13c927f6f761c6604532c79': 'stablePool', // Kovan
     '0x590e544e7ca956bb878f8c873e82e65550d67d2f': 'stablePool', // Kovan Metastable
-    '0xb08E16cFc07C684dAA2f93C70323BAdb2A6CBFd2': 'investmentPool', // Kovan Investment
+    '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'investmentPool', // Kovan Investment
     '0x7dfdef5f355096603419239ce743bfaf1120312b': 'weightedPool', // Arbitrum Weighted
     '0xcf0a32bbef8f064969f21f7e02328fb577382018': 'weightedPool', // Arbitrum WeightedOracle
     '0x2433477a10fc5d31b9513c638f19ee85caed53fd': 'stablePool', // Arbitrum Stable
