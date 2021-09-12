@@ -69,8 +69,11 @@
         <div class="text-sm text-gray-600 mb-1">
           {{ $t('pendingEstimate') }}
         </div>
-        <div class="flex justify-between items-center mb-2">
-          <div class="text-lg font-bold font-numeric">
+        <div v-if="isArbitrum" class="p-3 text-sm">
+          Sorry, estimates for Arbitrum are not available at the moment
+        </div>
+        <div v-else class="flex justify-between items-center mb-2">
+          <div class="text-lg font-bold">
             {{
               fNum(currentRewards, currentRewards > 0 ? 'token_fixed' : 'token')
             }}
@@ -130,6 +133,7 @@ export default defineComponent({
       getProvider,
       isMainnet,
       isPolygon,
+      isArbitrum,
       isMismatchedNetwork
     } = useWeb3();
     const { txListener } = useEthers();
@@ -259,6 +263,7 @@ export default defineComponent({
       // computed
       isMainnet,
       isPolygon,
+      isArbitrum,
       userClaims,
       availableToClaimInUSD,
       currentRewards,
