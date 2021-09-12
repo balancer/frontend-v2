@@ -69,10 +69,10 @@
         <div class="text-sm text-gray-600 mb-1">
           {{ $t('pendingEstimate') }}
         </div>
-        <div class="p-3 text-sm" v-if="isArbitrum">
+        <div v-if="isArbitrum" class="p-3 text-sm">
           Sorry, estimates for Arbitrum are not available at the moment
         </div>
-        <div class="flex justify-between items-center mb-2" v-if="!isArbitrum">
+        <div v-else class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
             {{
               fNum(currentRewards, currentRewards > 0 ? 'token_fixed' : 'token')
