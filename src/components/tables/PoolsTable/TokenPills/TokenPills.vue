@@ -20,7 +20,11 @@
         :weight="weightFor(token)"
       />
     </template>
-    <HiddenTokensPills v-if="hiddenTokens.length > 0" :tokens="hiddenTokens" />
+    <HiddenTokensPills
+      v-if="hiddenTokens.length > 0"
+      :tokens="hiddenTokens"
+      :hasBalance="hasBalanceInHiddenTokens"
+    />
   </div>
 </template>
 
@@ -65,9 +69,13 @@ export default defineComponent({
     /**
      * COMPUTED
      */
-
     const visibleTokens = computed(() => props.tokens.slice(0, MAX_PILLS));
+
     const hiddenTokens = computed(() => props.tokens.slice(MAX_PILLS));
+
+    const hasBalanceInHiddenTokens = computed(() =>
+      hiddenTokens.value.some(token => hasBalance(token.address))
+    );
 
     /**
      * METHODS
@@ -84,6 +92,7 @@ export default defineComponent({
       // computed
       visibleTokens,
       hiddenTokens,
+      hasBalanceInHiddenTokens,
 
       // methods
       symbolFor,

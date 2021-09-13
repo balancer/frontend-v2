@@ -4,14 +4,19 @@
       {{ $t('tokenPills.hiddenTokens', [tokens.length]) }}
     </div>
     <div
-      v-for="n in 2"
-      :key="`hidden-pill-${n}`"
-      class="pill hidden-pill"
-      :style="{
-        transform: `translateX(${n * 8}px)`,
-        zIndex: tokens.length - n
-      }"
+      v-if="hasBalance"
+      class="balance-indicator"
+      :style="{ zIndex: tokens.length }"
     />
+    <template v-for="n in 2" :key="`hidden-pill-${n}`">
+      <div
+        class="pill hidden-pill"
+        :style="{
+          transform: `translateX(${n * 8}px)`,
+          zIndex: tokens.length - n
+        }"
+      />
+    </template>
   </div>
 </template>
 
@@ -27,17 +32,32 @@ export default defineComponent({
     tokens: {
       type: Array as PropType<PoolToken[]>,
       required: true
+    },
+    hasBalance: {
+      type: Boolean,
+      default: false
     }
   }
 });
 </script>
 <style scoped>
 .pill {
-  @apply px-2 py-1 rounded-lg bg-gray-50 dark:bg-gray-600;
+  @apply px-2 py-1;
+  @apply rounded-lg;
+  @apply bg-gray-50 dark:bg-gray-600;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.07);
 }
+
+.balance-indicator {
+  @apply w-3 h-3;
+  @apply rounded-full border-2 border-white dark:border-gray-850;
+  @apply bg-green-200 dark:bg-green-500;
+  @apply absolute top-0 right-0 -mt-1 -mr-1;
+}
+
 .hidden-pill {
-  @apply absolute top-0 left-0 h-full w-full;
+  @apply h-full w-full;
+  @apply absolute top-0 left-0;
   box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.07);
 }
 </style>
