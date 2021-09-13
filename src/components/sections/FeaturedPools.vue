@@ -2,10 +2,11 @@
   <div>
     <h3 class="mb-4">{{ $t('featuredProtocol') }}</h3>
     <div class="grid grid-cols-12 gap-4">
-      <div class="col-span-12 lg:col-span-6 transition-shadow hover:shadow-lg">
+      <div class="col-span-12 lg:col-span-6">
         <BalCard
           title="Element Finance"
           imgSrc="/images/banners/element.jpg"
+          class="transition-shadow hover:shadow-xl"
           hFull
           growContent
         >
@@ -20,12 +21,11 @@
           </template>
         </BalCard>
       </div>
-      <div
-        class="col-span-12 md:col-span-6 lg:col-span-3 transition-shadow hover:shadow-lg"
-      >
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
         <BalCard
           title="LUSD"
           imgSrc="/images/banners/element-lusd.svg"
+          class="transition-shadow hover:shadow-xl"
           hFull
           growContent
         >
@@ -41,12 +41,11 @@
           </template>
         </BalCard>
       </div>
-      <div
-        class="col-span-12 md:col-span-6 lg:col-span-3 transition-shadow hover:shadow-lg"
-      >
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
         <BalCard
           title="USDC"
           imgSrc="/images/banners/element-usdc.svg"
+          class="transition-shadow hover:shadow-xl"
           hFull
           growContent
         >
