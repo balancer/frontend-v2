@@ -3,6 +3,8 @@
         "price-fetch-error": "Our pricing provider, Coingecko is currently down.",
         "balances-fetch-error": "Failed to fetch token balances.",
         "allowances-fetch-error": "Failed to fetch token allowances.",
+        "pool-fetch-error": "Failed to fetch pool.",
+        "pools-fetch-error": "Failed to fetch pools.",
         "retry-label": "Refresh to try again"
     },
     "account": "Account",

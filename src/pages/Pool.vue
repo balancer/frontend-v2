@@ -123,13 +123,13 @@ import useNumbers from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
-import { useRouter } from 'vue-router';
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useApp from '@/composables/useApp';
+import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 
 interface PoolPageData {
   id: string;
@@ -150,7 +150,6 @@ export default defineComponent({
      * COMPOSABLES
      */
     const { appLoading } = useApp();
-    const router = useRouter();
     const { t } = useI18n();
     const route = useRoute();
     const { fNum } = useNumbers();
@@ -158,6 +157,7 @@ export default defineComponent({
     const queryClient = useQueryClient();
     const { prices } = useTokens();
     const { blockNumber } = useWeb3();
+    const { addAlert, removeAlert } = useAlerts();
 
     /**
      * QUERIES
@@ -291,7 +291,19 @@ export default defineComponent({
     });
 
     watch(poolQuery.error, () => {
-      router.push({ name: 'home' });
+      if (poolQuery.error.value) {
+        addAlert({
+          id: 'pool-fetch-error',
+          label: t('alerts.pool-fetch-error'),
+          type: AlertType.ERROR,
+          persistent: true,
+          action: poolQuery.refetch.value,
+          actionLabel: t('alerts.retry-label'),
+          priority: AlertPriority.MEDIUM
+        });
+      } else {
+        removeAlert('pool-fetch-error');
+      }
     });
 
     return {
