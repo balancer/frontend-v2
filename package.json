@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.18.3",
+  "version": "1.19.0",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
-    "@balancer-labs/sor": "github:balancer-labs/balancer-sor#john/v1-consideringFees-package",
+    "@balancer-labs/sor": "^1.1.0",
     "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#john/ui-694-sor-lido-add-static-route-refactor",
     "@ensdomains/content-hash": "^2.5.3",
     "@gnosis.pm/gp-v2-contracts": "^1.0.2",
@@ -38,7 +38,8 @@
     "@walletconnect/web3-provider": "^1.5.2",
     "animejs": "^3.2.1",
     "autoprefixer": "^9.8.6",
-    "axios": "0.21.1",
+    "awesome-only-resolves-last-promise": "^1.0.3",
+    "axios": "0.21.2",
     "bnc-sdk": "^3.5.0",
     "date-fns": "^2.21.1",
     "echarts": "^5.1.0",
@@ -48,6 +49,7 @@
     "json-to-graphql-query": "^2.0.0",
     "lodash": "^4.17.15",
     "numeral": "^2.0.4",
+    "paraswap": "^4.18.0",
     "parse-filepath": "1.0.2",
     "postcss": "^7.0.35",
     "postcss-nesting": "^7.0.1",

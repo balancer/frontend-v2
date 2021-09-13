@@ -1,3 +1,5 @@
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
+
 export type OrderID = string;
 
 export type OrderMetaData = {
@@ -17,7 +19,7 @@ export type OrderMetaData = {
   validTo: number;
   appData: number;
   feeAmount: string;
-  kind: string;
+  kind: OrderKind;
   partiallyFillable: false;
   signature: string;
   status: 'pending' | 'fulfilled' | 'expired' | 'cancelled';
@@ -28,6 +30,8 @@ export type FeeQuoteParams = Pick<
   'sellToken' | 'buyToken' | 'kind'
 > & {
   amount: string;
+  fromDecimals: number;
+  toDecimals: number;
 };
 
 export type PriceQuoteParams = FeeQuoteParams;
@@ -42,9 +46,17 @@ export type PriceInformation = {
   amount: string | null;
 };
 
-export type QuoteInformationObject = FeeQuoteParams & {
-  fee: FeeInformation;
-  price: PriceInformation;
-  lastCheck: number;
-  feeExceedsPrice: boolean;
-};
+export interface Market<T = string> {
+  baseToken: T;
+  quoteToken: T;
+}
+
+export interface CanonicalMarketParams<T> {
+  sellToken: T;
+  buyToken: T;
+  kind: OrderKind;
+}
+
+export interface TokensFromMarketParams<T> extends Market<T> {
+  kind: OrderKind;
+}

@@ -19,7 +19,7 @@
               </span>
               <span
                 v-if="!isStableLikePool"
-                class="font-medium text-gray-400 text-xs mt-px ml-1"
+                class="font-medium text-gray-400 text-xs mt-px ml-1 font-numeric"
               >
                 {{ fNum(tokenMeta.weight, 'percent_lg') }}
               </span>
@@ -98,13 +98,13 @@
       </div>
 
       <div class="order-1 lg:order-2 px-1 lg:px-0">
-        <BalLoadingBlock v-if="loadingPool" class="h-96 sticky top-24" />
+        <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-96" />
         <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
           :missing-prices="missingPrices"
           @on-tx="onNewTx"
-          class="sticky top-24"
+          class="pool-actions-card"
         />
       </div>
     </div>
@@ -123,13 +123,13 @@ import useNumbers from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
-import { useRouter } from 'vue-router';
 import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useApp from '@/composables/useApp';
+import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 
 interface PoolPageData {
   id: string;
@@ -150,7 +150,6 @@ export default defineComponent({
      * COMPOSABLES
      */
     const { appLoading } = useApp();
-    const router = useRouter();
     const { t } = useI18n();
     const route = useRoute();
     const { fNum } = useNumbers();
@@ -158,6 +157,7 @@ export default defineComponent({
     const queryClient = useQueryClient();
     const { prices } = useTokens();
     const { blockNumber } = useWeb3();
+    const { addAlert, removeAlert } = useAlerts();
 
     /**
      * QUERIES
@@ -243,7 +243,10 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      const feeLabel = fNum(pool.value.onchain.swapFee, 'percent');
+      const feeLabel = `<span class="font-numeric">${fNum(
+        pool.value.onchain.swapFee,
+        'percent'
+      )}</span>`;
 
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);
@@ -288,7 +291,19 @@ export default defineComponent({
     });
 
     watch(poolQuery.error, () => {
-      router.push({ name: 'home' });
+      if (poolQuery.error.value) {
+        addAlert({
+          id: 'pool-fetch-error',
+          label: t('alerts.pool-fetch-error'),
+          type: AlertType.ERROR,
+          persistent: true,
+          action: poolQuery.refetch.value,
+          actionLabel: t('alerts.retry-label'),
+          priority: AlertPriority.MEDIUM
+        });
+      } else {
+        removeAlert('pool-fetch-error');
+      }
     });
 
     return {
@@ -323,5 +338,15 @@ export default defineComponent({
 .pool-title {
   @apply mr-4 capitalize mt-2;
   font-variation-settings: 'wght' 700;
+}
+
+.pool-actions-card {
+  @apply relative;
+}
+
+@media (min-width: 768px) and (min-height: 600px) {
+  .pool-actions-card {
+    @apply sticky top-24;
+  }
 }
 </style>

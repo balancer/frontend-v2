@@ -122,7 +122,7 @@ export default defineComponent({
       // special case for ETH where we want it to filter as WETH regardless
       // as ETH is the native asset
       if (getAddress(token) === NATIVE_ASSET_ADDRESS) {
-        _token = TOKENS.AddressMap[appNetworkConfig.key].WETH;
+        _token = appNetworkConfig.addresses.weth;
       }
       // const newSelected = [...props.modelValue, _token];
       emit('add', _token);

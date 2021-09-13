@@ -1,5 +1,5 @@
 <template>
-  <BalCard class="relative" :shadow="tradeCardShadow" no-border>
+  <BalCard class="relative card-container" :shadow="tradeCardShadow" no-border>
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
@@ -319,7 +319,7 @@ export default defineComponent({
     }
 
     function switchToWETH() {
-      tokenInAddress.value = TOKENS.AddressMap[appNetworkConfig.key].WETH;
+      tokenInAddress.value = appNetworkConfig.addresses.weth;
     }
 
     function handlePreviewButton() {
@@ -371,3 +371,9 @@ export default defineComponent({
   }
 });
 </script>
+<style scoped>
+/* This is needed because the trade settings popover overflows */
+.card-container {
+  overflow: unset;
+}
+</style>

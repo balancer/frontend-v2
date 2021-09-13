@@ -5,7 +5,8 @@
       <div class="col-span-12 lg:col-span-6">
         <BalCard
           title="Element Finance"
-          imgSrc="/images/banners/element.png"
+          imgSrc="/images/banners/element.jpg"
+          class="transition-shadow hover:shadow-xl"
           hFull
           growContent
         >
@@ -23,7 +24,8 @@
       <div class="col-span-12 md:col-span-6 lg:col-span-3">
         <BalCard
           title="LUSD"
-          imgSrc="/images/banners/element-lusd.png"
+          imgSrc="/images/banners/element-lusd.svg"
+          class="transition-shadow hover:shadow-xl"
           hFull
           growContent
         >
@@ -42,7 +44,8 @@
       <div class="col-span-12 md:col-span-6 lg:col-span-3">
         <BalCard
           title="USDC"
-          imgSrc="/images/banners/element-usdc.png"
+          imgSrc="/images/banners/element-usdc.svg"
+          class="transition-shadow hover:shadow-xl"
           hFull
           growContent
         >

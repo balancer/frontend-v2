@@ -12,7 +12,7 @@
           v-if="upToLargeBreakpoint ? !userClaimsLoading : true"
         />
         <BalLoadingIcon size="sm" v-if="userClaimsLoading" />
-        <span class="hidden lg:block" v-else>{{
+        <span class="hidden lg:block font-numeric" v-else>{{
           fNum(totalRewards, totalRewards > 0 ? 'token_fixed' : 'token')
         }}</span>
       </BalBtn>
@@ -35,7 +35,7 @@
           {{ $t('availableToClaim') }}
         </div>
         <div v-if="isMainnet" class="flex justify-between items-center mb-2">
-          <div class="text-lg font-bold">
+          <div class="text-lg font-bold font-numeric">
             {{
               fNum(
                 userClaims.availableToClaim,
@@ -44,7 +44,7 @@
             }}
             BAL
           </div>
-          <div>
+          <div class="font-numeric">
             {{
               availableToClaimInUSD != null
                 ? fNum(availableToClaimInUSD, 'usd')
@@ -57,7 +57,7 @@
           color="gradient"
           size="md"
           block
-          class="mb-1"
+          class="mb-1 "
           :loading="isClaiming"
           :loading-label="$t('claiming')"
           @click="claimAvailableRewards"
@@ -79,7 +79,7 @@
             }}
             BAL
           </div>
-          <div>
+          <div class="font-numeric">
             {{
               currentRewardsInUSD != null
                 ? fNum(currentRewardsInUSD, 'usd')

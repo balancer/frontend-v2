@@ -1,25 +1,15 @@
-import { IS_DEV } from '@/constants/env';
+import { BigNumber } from '@ethersproject/bignumber';
 import { APP_NETWORK_ID, Network } from '@/constants/network';
 import {
   GPv2Settlement,
   GPv2VaultRelayer
 } from '@gnosis.pm/gp-v2-contracts/networks.json';
 
+export const MAX_VALID_TO_EPOCH = BigNumber.from('0xFFFFFFFF').toNumber(); // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
+
 export const GP_SUPPORTED_NETWORKS = Object.keys(GPv2VaultRelayer).map(
   parseInt
 );
-
-export const OPERATOR_URLS = {
-  [Network.MAINNET]: IS_DEV
-    ? 'https://protocol-mainnet.dev.gnosisdev.com/api'
-    : 'https://protocol-mainnet.gnosis.io/api',
-  [Network.RINKEBY]: IS_DEV
-    ? 'https://protocol-rinkeby.dev.gnosisdev.com/api'
-    : 'https://protocol-rinkeby.gnosis.io/api'
-};
-
-export const OPERATOR_URL =
-  OPERATOR_URLS[APP_NETWORK_ID] ?? OPERATOR_URLS[Network.MAINNET];
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: string = (
   GPv2Settlement[APP_NETWORK_ID] ?? GPv2Settlement[Network.MAINNET]
