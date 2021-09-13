@@ -158,8 +158,8 @@
           :to="{
             name: 'trade',
             params: {
-              assetIn: TOKENS.AddressMap[appNetworkConfig.key].ETH,
-              assetOut: TOKENS.AddressMap[appNetworkConfig.key].WETH
+              assetIn: appNetworkConfig.nativeAsset.address,
+              assetOut: appNetworkConfig.addresses.weth
             }
           }"
           class="text-xs text-gray-500 underline"

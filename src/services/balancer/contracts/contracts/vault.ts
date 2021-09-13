@@ -39,7 +39,7 @@ export default class Vault {
     tokenMultiCaller.call('decimals', poolAddress, 'decimals');
     tokenMultiCaller.call('swapFee', poolAddress, 'getSwapFeePercentage');
 
-    if (type === 'Weighted') {
+    if (type === 'Weighted' || type === 'Investment') {
       tokenMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
     } else if (type === 'Stable' || type === 'MetaStable') {
       tokenMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
@@ -90,7 +90,7 @@ export default class Vault {
     type: PoolType,
     tokens: TokenInfoMap
   ) {
-    if (type == 'Weighted') {
+    if (type == 'Weighted' || type === 'Investment') {
       const totalWeight = weights.reduce((a, b) => a.add(b), BigNumber.from(0));
       return weights.map(
         w =>
@@ -98,7 +98,7 @@ export default class Vault {
             Number(formatUnits(w, 10))) /
           100
       );
-    } else if (type === 'Stable') {
+    } else if (type === 'Stable' || type === 'MetaStable') {
       const tokensList = Object.values(tokens);
       return tokensList.map(() => 1 / tokensList.length);
     } else {

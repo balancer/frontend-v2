@@ -54,8 +54,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+
 import { EXTERNAL_LINKS } from '@/constants/links';
 import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
@@ -63,6 +65,7 @@ import FeaturedPools from '@/components/sections/FeaturedPools.vue';
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
+import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 
 export default defineComponent({
   components: {
@@ -74,6 +77,7 @@ export default defineComponent({
   setup() {
     // COMPOSABLES
     const router = useRouter();
+    const { t } = useI18n();
     const { isWalletReady, isV1Supported, appNetworkConfig } = useWeb3();
     const isElementSupported = appNetworkConfig.supportsElementPools;
     const {
@@ -89,8 +93,10 @@ export default defineComponent({
       isLoadingUserPools,
       loadMorePools,
       poolsHasNextPage,
-      poolsIsFetchingNextPage
+      poolsIsFetchingNextPage,
+      poolsQuery
     } = usePools(selectedTokens);
+    const { addAlert, removeAlert } = useAlerts();
 
     // COMPUTED
     const filteredPools = computed(() =>
@@ -104,6 +110,22 @@ export default defineComponent({
     );
 
     const hideV1Links = computed(() => !isV1Supported);
+
+    watch(poolsQuery.error, () => {
+      if (poolsQuery.error.value) {
+        addAlert({
+          id: 'pools-fetch-error',
+          label: t('alerts.pools-fetch-error'),
+          type: AlertType.ERROR,
+          persistent: true,
+          action: poolsQuery.refetch.value,
+          actionLabel: t('alerts.retry-label'),
+          priority: AlertPriority.MEDIUM
+        });
+      } else {
+        removeAlert('pools-fetch-error');
+      }
+    });
 
     return {
       // data

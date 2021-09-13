@@ -7,6 +7,7 @@ export type QueryBuilder = (
 
 export enum PoolType {
   Weighted = 'Weighted',
+  Investment = 'Investment',
   Stable = 'Stable',
   MetaStable = 'MetaStable'
 }

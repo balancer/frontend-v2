@@ -315,7 +315,7 @@ export default defineComponent({
     }
 
     function switchToWETH() {
-      tokenInAddress.value = TOKENS.AddressMap[appNetworkConfig.key].WETH;
+      tokenInAddress.value = appNetworkConfig.addresses.weth;
     }
 
     function handlePreviewButton() {

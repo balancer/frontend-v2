@@ -3,6 +3,8 @@
         "price-fetch-error": "Our pricing provider, Coingecko is currently down.",
         "balances-fetch-error": "Failed to fetch token balances.",
         "allowances-fetch-error": "Failed to fetch token allowances.",
+        "pool-fetch-error": "Failed to fetch pool.",
+        "pools-fetch-error": "Failed to fetch pools.",
         "retry-label": "Refresh to try again"
     },
     "account": "Account",
@@ -129,6 +131,7 @@
     "thirdPartyAPR": {
         "steth": "stETH staking rewards APR"
     },
+    "investmentPool": "Investment pool",
     "investmentPools": "Investment pools",
     "investmentSettled": "Your investment has settled",
     "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",
