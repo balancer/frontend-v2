@@ -101,7 +101,11 @@ const barColor = computed(() => {
 });
 
 const priceImpactSign = computed(() =>
-  props.priceImpact || 0 >= 0 ? '-' : '+'
+  (props.priceImpact || 0) >= 0 ? '-' : '+'
+);
+
+const priceImpactClass = computed(() =>
+  (props.priceImpact || 0) >= 0.01 ? 'text-red-500' : ''
 );
 
 /**
@@ -183,7 +187,7 @@ watchEffect(() => {
           </div>
           <div v-if="hasAmount && hasToken" class="font-numeric">
             {{ fNum(tokenValue, currency) }}
-            <span v-if="priceImpact">
+            <span v-if="priceImpact" :class="priceImpactClass">
               ({{ priceImpactSign + fNum(priceImpact, 'percent') }})
             </span>
           </div>
