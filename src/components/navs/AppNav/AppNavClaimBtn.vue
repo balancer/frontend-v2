@@ -24,17 +24,17 @@
           {{ $t('airdropExplainer') }}
         </div>
         <BalAlert
-          v-if="shouldShowClaimFreezeWarning & isMainnet"
+          v-if="shouldShowClaimFreezeWarning & !isPolygon"
           title="Too many claims"
           :description="$t('claimFreezeWarning')"
           type="warning"
           size="sm"
           class="mb-3"
         />
-        <div v-if="isMainnet" class="text-sm text-gray-600 mb-1">
+        <div v-if="!isPolygon" class="text-sm text-gray-600 mb-1">
           {{ $t('availableToClaim') }}
         </div>
-        <div v-if="isMainnet" class="flex justify-between items-center mb-2">
+        <div v-if="!isPolygon" class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold font-numeric">
             {{
               fNum(
@@ -53,7 +53,7 @@
           </div>
         </div>
         <BalBtn
-          v-if="isMainnet"
+          v-if="!isPolygon"
           color="gradient"
           size="md"
           block
