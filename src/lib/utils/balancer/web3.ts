@@ -78,6 +78,7 @@ export async function sendTransaction(
       e.code === RPC_INVALID_PARAMS_ERROR_CODE &&
       EIP1559_UNSUPPORTED_REGEX.test(e.message)
     ) {
+      // Sending tx as EIP1559 has failed, retry with legacy tx type
       return sendTransaction(
         web3,
         contractAddress,
