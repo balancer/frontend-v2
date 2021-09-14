@@ -18,10 +18,12 @@ type InputValue = string | number;
 type Props = {
   amount: InputValue;
   address?: string;
+  weight?: number;
   noRules?: boolean;
   noMax?: boolean;
   priceImpact?: number;
   label?: string;
+  fixedToken?: boolean;
 };
 
 /**
@@ -30,8 +32,10 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   amount: '',
   address: '',
+  weight: 0,
   noRules: false,
-  noMax: false
+  noMax: false,
+  fixedToken: false
 });
 
 const emit = defineEmits<{
@@ -158,6 +162,8 @@ watchEffect(() => {
     <template v-slot:prepend>
       <TokenSelectInput
         v-model="_address"
+        :fixed="fixedToken"
+        :weight="weight"
         class="mr-2"
         @update:modelValue="emit('update:address', $event)"
       />

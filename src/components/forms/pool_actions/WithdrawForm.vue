@@ -69,7 +69,19 @@
     </template>
 
     <div v-else class="px-4 pt-6 border-t border-b dark:border-gray-900">
-      <BalTextInput
+      <TokenInput
+        v-for="(tokenAddress, i) in tokenAddresses"
+        :key="tokenAddress"
+        v-model:amount="amounts[i]"
+        v-model:address="tokenAddresses[i]"
+        :weight="isStableLikePool ? 0 : tokenWeights[i]"
+        :name="tokenAddress"
+        class="mb-4"
+        fixedToken
+        @click="setSingleAsset(i)"
+      />
+
+      <!-- <BalTextInput
         v-for="(token, i) in pool.tokenAddresses"
         :key="i"
         :name="token"
@@ -114,7 +126,7 @@
             </BalBtn>
           </div>
         </template>
-      </BalTextInput>
+      </BalTextInput> -->
     </div>
 
     <div class="p-4">
@@ -214,6 +226,7 @@ import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -224,7 +237,8 @@ export default defineComponent({
   name: 'WithdrawalForm',
 
   components: {
-    FormTypeToggle
+    FormTypeToggle,
+    TokenInput
   },
 
   emits: ['success'],
@@ -238,6 +252,7 @@ export default defineComponent({
     const data = reactive({
       withdrawForm: {} as FormRef,
       loading: false,
+      tokenAddresses: props.pool.tokenAddresses,
       amounts: [] as string[],
       propMax: [] as string[],
       bptIn: '',

@@ -2,19 +2,24 @@
 import { ref, computed } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
+import useNumbers from '@/composables/useNumbers';
 
 /**
  * TYPES
  */
 type Props = {
   modelValue: string;
+  fixed?: boolean;
+  weight?: number;
 };
 
 /**
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: ''
+  modelValue: '',
+  fixed: false,
+  weight: 0
 });
 
 const emit = defineEmits<{
@@ -30,6 +35,7 @@ const openTokenModal = ref(false);
  * COMPOSABLEs
  */
 const { getToken } = useTokens();
+const { fNum } = useNumbers();
 
 /**
  * COMPUTED
@@ -44,21 +50,27 @@ const token = computed(() => {
 /**
  * METHODS
  */
-const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
+const toggleModal = () => {
+  if (!props.fixed) openTokenModal.value = !openTokenModal.value;
+};
 </script>
 
 <template>
   <div>
     <div
       v-if="hasToken"
-      class="token-select-input selected group"
+      :class="['token-select-input selected group', { selectable: !fixed }]"
       @click="toggleModal"
     >
       <BalAsset :address="token?.address" class="shadow mr-2" />
       <span class="mr-2">
         {{ token?.symbol }}
       </span>
+      <span v-if="weight > 0" class="text-gray-500">
+        {{ fNum(weight, 'percent_lg') }}
+      </span>
       <BalIcon
+        v-if="!fixed"
         name="chevron-down"
         size="sm"
         class="text-blue-500 group-hover:text-pink-500"
@@ -83,10 +95,13 @@ const toggleModal = () => (openTokenModal.value = !openTokenModal.value);
 
 <style scoped>
 .token-select-input {
-  @apply rounded-lg flex items-center h-10 px-2 cursor-pointer whitespace-nowrap;
+  @apply shadow rounded-lg flex items-center h-10 px-2 whitespace-nowrap;
   @apply text-sm;
-  @apply shadow hover:shadow-none transition-shadow;
   font-variation-settings: 'wght' 700;
+}
+
+.selectable {
+  @apply cursor-pointer hover:shadow-none transition-shadow;
 }
 
 .unselected {
