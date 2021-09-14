@@ -75,58 +75,13 @@
         v-model:amount="amounts[i]"
         v-model:address="tokenAddresses[i]"
         :weight="isStableLikePool ? 0 : tokenWeights[i]"
+        :customBalance="singleAssetMaxes[i]"
         :name="tokenAddress"
         class="mb-4"
         fixedToken
         @click="setSingleAsset(i)"
+        @update:amount="setSingleAsset(i)"
       />
-
-      <!-- <BalTextInput
-        v-for="(token, i) in pool.tokenAddresses"
-        :key="i"
-        :name="token"
-        v-model="amounts[i]"
-        :rules="amountRules(i)"
-        type="number"
-        min="0"
-        step="any"
-        placeholder="0"
-        :decimal-limit="tokenDecimals(i)"
-        validate-on="input"
-        prepend-border
-        :faded-out="isSingleAsset && singleAsset !== i"
-        @click="setSingleAsset(i)"
-      >
-        <template v-slot:prepend>
-          <div class="flex items-center h-full w-24">
-            <BalAsset :address="token" />
-            <div class="flex flex-col ml-3">
-              <span class="font-medium text-sm leading-none w-14 truncate">
-                {{ pool.onchain.tokens[token].symbol }}
-              </span>
-            </div>
-          </div>
-        </template>
-        <template v-if="isSingleAsset" v-slot:info>
-          <div
-            class="cursor-pointer"
-            @click.prevent="amounts[i] = singleAssetMaxes[i]"
-          >
-            {{ $t('singleTokenMax') }}: {{ singleAssetMaxLabel(i) }}
-          </div>
-        </template>
-        <template v-slot:append>
-          <div class="p-2">
-            <BalBtn
-              size="xs"
-              color="white"
-              @click.prevent="amounts[i] = singleAssetMaxes[i]"
-            >
-              {{ $t('max') }}
-            </BalBtn>
-          </div>
-        </template>
-      </BalTextInput> -->
     </div>
 
     <div class="p-4">
@@ -350,10 +305,6 @@ export default defineComponent({
 
     function formatPropBalance(index) {
       return fNum(data.propMax[index] || '0', 'token');
-    }
-
-    function singleAssetMaxLabel(index) {
-      return fNum(singleAssetMaxes.value[index] || '0', 'token');
     }
 
     function amountUSD(index) {
@@ -668,7 +619,6 @@ export default defineComponent({
       isStableLikePool,
       formatPropBalance,
       amountUSD,
-      singleAssetMaxLabel,
       singleAssetMaxes,
       isRequired,
       trackGoal,

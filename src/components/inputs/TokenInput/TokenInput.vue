@@ -24,6 +24,8 @@ type Props = {
   priceImpact?: number;
   label?: string;
   fixedToken?: boolean;
+  customBalance?: string;
+  disableMax?: boolean;
 };
 
 /**
@@ -35,7 +37,8 @@ const props = withDefaults(defineProps<Props>(), {
   weight: 0,
   noRules: false,
   noMax: false,
-  fixedToken: false
+  fixedToken: false,
+  disableMax: false
 });
 
 const emit = defineEmits<{
@@ -68,9 +71,13 @@ const { isWalletReady } = useWeb3();
  */
 const hasToken = computed(() => !!_address.value);
 const hasAmount = computed(() => bnum(_amount.value).gt(0));
-const tokenBalance = computed(() => balanceFor(_address.value));
 const hasBalance = computed(() => bnum(tokenBalance.value).gt(0));
 const isMaxed = computed(() => _amount.value === tokenBalance.value);
+
+const tokenBalance = computed(() => {
+  if (props.customBalance) return props.customBalance;
+  return balanceFor(_address.value);
+});
 
 const token = computed(() => {
   if (!hasToken.value) return {};
@@ -116,6 +123,8 @@ const priceImpactClass = computed(() =>
  * METHODS
  */
 const setMax = () => {
+  if (props.disableMax) return;
+
   if (_address.value === nativeAsset.address) {
     // Subtract buffer for gas
     _amount.value = bnum(tokenBalance.value).gt(ETH_BUFFER)
@@ -182,7 +191,7 @@ watchEffect(() => {
             <span class="font-numeric mr-2">
               {{ fNum(tokenBalance, 'token') }}
             </span>
-            <template v-if="hasBalance && !noMax">
+            <template v-if="hasBalance && !noMax && !disableMax">
               <span v-if="!isMaxed" class="text-blue-500 lowercase">
                 {{ $t('max') }}
               </span>

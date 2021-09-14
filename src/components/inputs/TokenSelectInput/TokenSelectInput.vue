@@ -62,7 +62,9 @@ const toggleModal = () => {
       :class="['token-select-input selected group', { selectable: !fixed }]"
       @click="toggleModal"
     >
-      <BalAsset :address="token?.address" class="shadow mr-2" />
+      <div class="w-6 mr-2">
+        <BalAsset :address="token?.address" class="shadow" />
+      </div>
       <span class="mr-2">
         {{ token?.symbol }}
       </span>
