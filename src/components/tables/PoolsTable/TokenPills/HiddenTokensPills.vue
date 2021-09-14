@@ -8,15 +8,15 @@
       class="balance-indicator"
       :style="{ zIndex: tokens.length }"
     />
-    <template v-for="n in 2" :key="`hidden-pill-${n}`">
-      <div
-        class="pill hidden-pill"
-        :style="{
-          transform: `translateX(${n * 8}px)`,
-          zIndex: tokens.length - n
-        }"
-      />
-    </template>
+    <div
+      v-for="n in 2"
+      :key="`hidden-pill-${n}`"
+      class="pill hidden-pill"
+      :style="{
+        transform: `translateX(${n * 8}px)`,
+        zIndex: tokens.length - n
+      }"
+    />
   </div>
 </template>
 
@@ -44,7 +44,8 @@ export default defineComponent({
 .pill {
   @apply px-2 py-1;
   @apply rounded-lg;
-  @apply bg-gray-50 dark:bg-gray-600;
+  @apply bg-gray-50 dark:bg-gray-600 text-gray-500 dark:text-gray-400;
+  @apply text-sm;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.07);
 }
 

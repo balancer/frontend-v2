@@ -227,7 +227,7 @@
     "noRecentActivity": "Your recent activity will appear here…",
     "switchNetwork": "Switch Network",
     "tokenPills": {
-        "hiddenTokens": "+ {0} tokens"
+        "hiddenTokens": "+{0} tokens"
     },
     "transactionAction": {
         "trade": "Trade",
