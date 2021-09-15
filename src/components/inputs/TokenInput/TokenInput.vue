@@ -149,7 +149,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <BalTextInput2
+  <BalTextInput
     v-model="_amount"
     placeholder="0.0"
     type="number"
@@ -215,5 +215,5 @@ watchEffect(() => {
         />
       </div>
     </template>
-  </BalTextInput2>
+  </BalTextInput>
 </template>

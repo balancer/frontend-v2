@@ -6,11 +6,8 @@ export default {
   title: 'Components/inputs/BalTextInput',
   args: {
     darkMode: false,
-    name: 'input1',
-    label: 'An input',
-    size: 'md',
-    validateOn: 'blur',
-    type: 'text'
+    inputAlignRight: false,
+    decimalLimit: 18
   },
   argTypes: {
     size: {
@@ -24,55 +21,36 @@ export default {
       type: { name: 'string', default: 'text' },
       control: {
         type: 'select',
-        options: ['text', 'number', 'date']
-      }
-    },
-    validateOn: {
-      type: { name: 'string', default: 'blur' },
-      control: {
-        type: 'select',
-        options: ['blur', 'input']
+        options: ['text', 'number', 'password', 'email', 'date']
       }
     }
   }
 };
 
-type Props = {
-  name: string;
-  label: string;
-  type: string;
-  size: string;
-};
-
-const Template = (args: Props) => ({
+const Template = args => ({
   components: { BalTextInput },
   setup() {
     return { args };
   },
   template: generateTemplate(`
-<BalTextInput v-model="args.modelValue" v-bind="args">
-  <template v-if="args.prepend" v-slot:prepend>
-  $
-  </template>
-  <template v-if="args.append" v-slot:append>
-    BAL
-  </template>
-</BalTextInput>
+<div class="max-w-lg mx-auto">
+  <BalTextInput v-model="args.modelValue" v-bind="args">
+  </BalTextInput>
+</div>
 `)
 });
 
+export function isRequired() {
+  return v => !!v || 'is required';
+}
+
 export const Default = Template.bind({});
 // @ts-ignore
-Default.args = { modelValue: 'A value' };
-
-export const WithPrepend = Template.bind({});
-// @ts-ignore
-WithPrepend.args = { prepend: true };
-
-export const WithAppend = Template.bind({});
-// @ts-ignore
-WithAppend.args = { append: true };
-
-export const Complete = Template.bind({});
-// @ts-ignore
-Complete.args = { prepend: true, append: true };
+Default.args = {
+  modelValue: '',
+  placeholder: '0.0',
+  name: 'input-1',
+  label: 'A label',
+  type: 'number',
+  rules: [isRequired()]
+};

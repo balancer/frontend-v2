@@ -78,7 +78,11 @@ const toggleModal = () => {
         class="text-blue-500 group-hover:text-pink-500"
       />
     </div>
-    <div v-else class="token-select-input unselected" @click="toggleModal">
+    <div
+      v-else
+      class="token-select-input unselected selectable"
+      @click="toggleModal"
+    >
       {{ $t('selectToken') }}
       <BalIcon name="chevron-down" size="sm" class="ml-2" />
     </div>
