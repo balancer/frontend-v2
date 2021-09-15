@@ -9,7 +9,8 @@ export enum PoolType {
   Weighted = 'Weighted',
   Investment = 'Investment',
   Stable = 'Stable',
-  MetaStable = 'MetaStable'
+  MetaStable = 'MetaStable',
+  LiquidityBootstrapping = 'LiquidityBootstrapping'
 }
 export type TimeTravelPeriod = '24h';
 
