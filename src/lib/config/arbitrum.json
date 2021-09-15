@@ -25,7 +25,7 @@
   },
   "addresses": {
     "exchangeProxy": "",
-    "merkleRedeem": "",
+    "merkleRedeem": "0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809",
     "multicall": "0x269ff446d9892c9e19082564df3f5e8741e190a1",
     "authorizer": "0x6207ed574152496c9B072C24FD87cE9cd9E17320",
     "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
