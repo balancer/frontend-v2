@@ -1,7 +1,7 @@
 <template>
   <template
     v-for="(addressesChunk, addressChunkIndex) in addressesChunks"
-    :key="`addressChunk-${addressChunkIndex}`"
+    :key="addressChunkIndex"
   >
     <div
       class="addresses-row"

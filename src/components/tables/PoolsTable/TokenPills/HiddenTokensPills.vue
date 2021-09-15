@@ -10,7 +10,7 @@
     />
     <div
       v-for="n in 2"
-      :key="`hidden-pill-${n}`"
+      :key="n"
       class="pill hidden-pill"
       :style="{
         transform: `translateX(${n * 8}px)`,
