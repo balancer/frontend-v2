@@ -73,7 +73,7 @@ const toggleModal = () => {
         v-if="!fixed"
         name="chevron-down"
         size="sm"
-        class="text-blue-500 group-hover:text-pink-500"
+        class="text-blue-500 group-hover:text-pink-500 ml-2"
       />
     </div>
     <div
