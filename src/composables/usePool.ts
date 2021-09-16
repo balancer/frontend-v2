@@ -18,6 +18,10 @@ export function isMetaStable(pool: AnyPool): boolean {
   return pool.poolType === PoolType.MetaStable;
 }
 
+export function isLiquidityBootstrapping(pool: AnyPool): boolean {
+  return pool.poolType === PoolType.LiquidityBootstrapping;
+}
+
 export function isStableLike(pool: AnyPool): boolean {
   return isStable(pool) || isMetaStable(pool);
 }
@@ -31,7 +35,9 @@ export function isInvestment(pool: AnyPool): boolean {
 }
 
 export function isWeightedLike(pool: AnyPool): boolean {
-  return isWeighted(pool) || isInvestment(pool);
+  return (
+    isWeighted(pool) || isInvestment(pool) || isLiquidityBootstrapping(pool)
+  );
 }
 
 export function isWeth(pool: AnyPool): boolean {
@@ -59,6 +65,10 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     () => pool.value && isWeightedLike(pool.value)
   );
 
+  const isLiquidityBootstrappingPool = computed(
+    () => pool.value && isLiquidityBootstrapping(pool.value)
+  );
+
   const isWethPool = computed(() => pool.value && isWeth(pool.value));
   const isWstETHPool = computed(() => pool.value && isWstETH(pool.value));
 
@@ -69,6 +79,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isStableLikePool,
     isWeightedPool,
     isWeightedLikePool,
+    isLiquidityBootstrappingPool,
     isWethPool,
     isWstETHPool,
     // methods
@@ -76,6 +87,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isMetaStable,
     isStableLike,
     isWeighted,
+    isLiquidityBootstrapping,
     isWeightedLike,
     isWeth
   };
