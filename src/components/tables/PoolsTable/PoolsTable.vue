@@ -209,7 +209,7 @@ export default defineComponent({
     }
 
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
-      if (isStableLike(pool)) return pool.tokens;
+      if (isStableLike(pool.poolType)) return pool.tokens;
 
       const sortedTokens = pool.tokens.slice();
       sortedTokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
