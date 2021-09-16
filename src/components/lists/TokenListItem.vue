@@ -15,7 +15,7 @@
         {{ token.name }}
       </div>
     </div>
-    <span class="flex flex-col items-end text-right font-medium font-numeric">
+    <span class="flex flex-col items-end text-right font-medium">
       <BalLoadingNumber v-if="balanceLoading" type="token" />
       <template v-else>
         <template v-if="balance > 0">
@@ -36,7 +36,7 @@
         numberHeight="4"
         class="text-sm font-normal"
       />
-      <div v-else class="text-gray-500 text-sm font-normal font-numeric">
+      <div v-else class="text-gray-500 text-sm font-normal">
         <template v-if="value > 0">
           {{ fNum(value, 'usd') }}
         </template>
