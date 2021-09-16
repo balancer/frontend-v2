@@ -118,7 +118,7 @@ export default class Pools {
       address: getAddress(token.address)
     }));
 
-    if (isStable(pool)) return tokens;
+    if (isStable(pool.poolType)) return tokens;
 
     return tokens.sort((a, b) => parseFloat(b.weight) - parseFloat(a.weight));
   }
