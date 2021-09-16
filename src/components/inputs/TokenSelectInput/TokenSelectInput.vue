@@ -62,13 +62,11 @@ const toggleModal = () => {
       :class="['token-select-input selected group', { selectable: !fixed }]"
       @click="toggleModal"
     >
-      <div class="w-6 mr-2">
-        <BalAsset :address="token?.address" class="shadow" />
-      </div>
-      <span class="mr-2">
+      <BalAsset :address="token?.address" class="shadow mr-2" />
+      <span>
         {{ token?.symbol }}
       </span>
-      <span v-if="weight > 0" class="text-gray-500">
+      <span v-if="weight > 0" class="text-gray-500 mx-2">
         {{ fNum(weight, 'percent_lg') }}
       </span>
       <BalIcon
