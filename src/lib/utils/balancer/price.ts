@@ -1,6 +1,10 @@
 import { isStableLike, isWeightedLike } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
-import { Pool } from '@/services/balancer/subgraph/types';
+import {
+  OnchainTokenData,
+  Pool,
+  PoolToken
+} from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
 export function getPoolLiquidity(
@@ -8,8 +12,14 @@ export function getPoolLiquidity(
   prices: TokenPrices,
   currency: FiatCurrency
 ) {
+  const onchainTokenData: OnchainTokenData[] = pool.onchain
+    ? Object.values(pool.onchain.tokens)
+    : [];
+  const poolTokens =
+    onchainTokenData.length > 0 ? onchainTokenData : pool.tokens;
+
   if (isWeightedLike(pool)) {
-    const totalWeight = pool.tokens.reduce(
+    const totalWeight = poolTokens.reduce(
       (total, token) => total + parseFloat(token.weight),
       0
     );
@@ -80,3 +90,5 @@ export function getPoolLiquidity(
   }
   return '0';
 }
+
+function calcWeightedPoolLiquidity() {}

@@ -56,18 +56,20 @@ export default function usePoolQuery(
     ]);
     await forChange(dynamicDataLoading, false);
 
+    const onchainData = await balancerContractsService.vault.getPoolData(
+      id,
+      pool.poolType,
+      getTokens(pool.tokenAddresses)
+    );
+
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
-      [pool],
+      [{ ...pool, onchain: onchainData }],
       '24h',
       prices.value,
       currency.value
     );
 
-    const onchainData = await balancerContractsService.vault.getPoolData(
-      id,
-      pool.poolType,
-      getTokens(decoratedPool.tokenAddresses)
-    );
+    console.log('onchainData', onchainData);
 
     return { ...decoratedPool, onchain: onchainData };
   };

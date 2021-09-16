@@ -1,44 +1,37 @@
 import { Ref, computed } from 'vue';
-import {
-  Pool,
-  DecoratedPoolWithShares,
-  FullPool,
-  PoolType
-} from '@/services/balancer/subgraph/types';
+import { PoolType, Poolish } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
 
-type AnyPool = Pool | FullPool | DecoratedPoolWithShares;
-
-export function isStable(pool: AnyPool): boolean {
+export function isStable(pool: Poolish): boolean {
   return pool.poolType === PoolType.Stable;
 }
 
-export function isMetaStable(pool: AnyPool): boolean {
+export function isMetaStable(pool: Poolish): boolean {
   return pool.poolType === PoolType.MetaStable;
 }
 
-export function isStableLike(pool: AnyPool): boolean {
+export function isStableLike(pool: Poolish): boolean {
   return isStable(pool) || isMetaStable(pool);
 }
 
-export function isWeighted(pool: AnyPool): boolean {
+export function isWeighted(pool: Poolish): boolean {
   return pool.poolType === PoolType.Weighted;
 }
 
-export function isInvestment(pool: AnyPool): boolean {
+export function isInvestment(pool: Poolish): boolean {
   return pool.poolType === PoolType.Investment;
 }
 
-export function isWeightedLike(pool: AnyPool): boolean {
+export function isWeightedLike(pool: Poolish): boolean {
   return isWeighted(pool) || isInvestment(pool);
 }
 
-export function isWeth(pool: AnyPool): boolean {
+export function isWeth(pool: Poolish): boolean {
   return pool.tokenAddresses.includes(configService.network.addresses.weth);
 }
 
-export function isWstETH(pool: AnyPool): boolean {
+export function isWstETH(pool: Poolish): boolean {
   if (!configService.network.addresses.wstETH) return false;
 
   return pool.tokenAddresses.includes(
@@ -46,7 +39,7 @@ export function isWstETH(pool: AnyPool): boolean {
   );
 }
 
-export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
+export function usePool(pool: Ref<Poolish> | Ref<undefined>) {
   const isStablePool = computed(() => pool.value && isStable(pool.value));
   const isMetaStablePool = computed(
     () => pool.value && isMetaStable(pool.value)
