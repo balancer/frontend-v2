@@ -50,7 +50,7 @@
         <div v-if="!isLoading" class="px-6 py-4">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
-            :isStablePool="isStableLike(pool)"
+            :isStablePool="isStableLike(pool.poolType)"
           />
         </div>
       </template>
