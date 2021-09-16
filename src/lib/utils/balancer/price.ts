@@ -1,10 +1,6 @@
 import { isStableLike, isWeightedLike } from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
-import {
-  OnchainTokenData,
-  Pool,
-  PoolToken
-} from '@/services/balancer/subgraph/types';
+import { Pool } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 
 export function getPoolLiquidity(
@@ -12,14 +8,8 @@ export function getPoolLiquidity(
   prices: TokenPrices,
   currency: FiatCurrency
 ) {
-  const onchainTokenData: OnchainTokenData[] = pool.onchain
-    ? Object.values(pool.onchain.tokens)
-    : [];
-  const poolTokens =
-    onchainTokenData.length > 0 ? onchainTokenData : pool.tokens;
-
-  if (isWeightedLike(pool)) {
-    const totalWeight = poolTokens.reduce(
+  if (isWeightedLike(pool.poolType)) {
+    const totalWeight = pool.tokens.reduce(
       (total, token) => total + parseFloat(token.weight),
       0
     );
@@ -47,7 +37,7 @@ export function getPoolLiquidity(
     }
   }
   // TODO [improvement]: if price is missing, compute spot price based on balances and amp factor
-  if (isStableLike(pool)) {
+  if (isStableLike(pool.poolType)) {
     let sumBalance = 0;
     let sumValue = 0;
 
@@ -90,5 +80,3 @@ export function getPoolLiquidity(
   }
   return '0';
 }
-
-function calcWeightedPoolLiquidity() {}

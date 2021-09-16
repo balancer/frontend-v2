@@ -97,7 +97,10 @@
         </div>
       </div>
 
-      <div class="order-1 lg:order-2 px-1 lg:px-0">
+      <div
+        v-if="!isLiquidityBootstrappingPool"
+        class="order-1 lg:order-2 px-1 lg:px-0"
+      >
         <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-96" />
         <PoolActionsCard
           v-else-if="!noInitLiquidity"
@@ -173,7 +176,9 @@ export default defineComponent({
      * COMPUTED
      */
     const pool = computed(() => poolQuery.data.value);
-    const { isStableLikePool } = usePool(poolQuery.data);
+    const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
+      poolQuery.data
+    );
 
     const noInitLiquidity = computed(
       () =>
@@ -313,6 +318,7 @@ export default defineComponent({
       feesManagedByGauntlet,
       swapFeeToolTip,
       isStableLikePool,
+      isLiquidityBootstrappingPool,
       // methods
       fNum,
       onNewTx
