@@ -35,11 +35,11 @@ export function isWeightedLike(poolType: PoolType): boolean {
   );
 }
 
-export function isWeth(pool: Poolish): boolean {
+export function isWeth(pool: AnyPool): boolean {
   return pool.tokenAddresses.includes(configService.network.addresses.weth);
 }
 
-export function isWstETH(pool: Poolish): boolean {
+export function isWstETH(pool: AnyPool): boolean {
   if (!configService.network.addresses.wstETH) return false;
 
   return pool.tokenAddresses.includes(

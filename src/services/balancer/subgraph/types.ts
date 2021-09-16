@@ -75,7 +75,7 @@ export interface FullPool extends DecoratedPool {
   onchain: OnchainPoolData;
 }
 
-export type Poolish = Pool | FullPool | DecoratedPoolWithShares;
+export type AnyPool = Pool | FullPool | DecoratedPoolWithShares;
 
 export interface PoolShare {
   poolId: {
