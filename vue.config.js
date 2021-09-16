@@ -19,6 +19,7 @@ const sentryWebpack = new SentryWebpackPlugin({
 const plugins = ['production', 'staging'].includes(ENV) ? [sentryWebpack] : [];
 
 module.exports = {
+  parallel: false, // Fixes <script setup> components not compiling: https://github.com/vuejs/vue-cli/issues/6282
   publicPath: './',
   pluginOptions: {
     webpackBundleAnalyzer: {
