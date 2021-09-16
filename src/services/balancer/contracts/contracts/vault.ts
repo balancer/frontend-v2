@@ -7,6 +7,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { OnchainPoolData, PoolType } from '../../subgraph/types';
 import ConfigService from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
+import { isWeightedLike, isStableLike } from '@/composables/usePool';
 
 export default class Vault {
   service: Service;
@@ -39,9 +40,9 @@ export default class Vault {
     tokenMultiCaller.call('decimals', poolAddress, 'decimals');
     tokenMultiCaller.call('swapFee', poolAddress, 'getSwapFeePercentage');
 
-    if (this.isWeightedLikePool(type)) {
+    if (isWeightedLike(type)) {
       tokenMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
-    } else if (this.isStableLikePool(type)) {
+    } else if (isStableLike(type)) {
       tokenMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
     }
 
@@ -90,7 +91,7 @@ export default class Vault {
     type: PoolType,
     tokens: TokenInfoMap
   ) {
-    if (this.isWeightedLikePool(type)) {
+    if (isWeightedLike(type)) {
       const totalWeight = weights.reduce((a, b) => a.add(b), BigNumber.from(0));
       return weights.map(
         w =>
@@ -98,20 +99,12 @@ export default class Vault {
             Number(formatUnits(w, 10))) /
           100
       );
-    } else if (this.isStableLikePool(type)) {
+    } else if (isStableLike(type)) {
       const tokensList = Object.values(tokens);
       return tokensList.map(() => 1 / tokensList.length);
     } else {
       return [];
     }
-  }
-
-  public isWeightedLikePool(type: PoolType) {
-    return ['Weighted', 'Investment', 'LiquidityBootstrapping'].includes(type);
-  }
-
-  public isStableLikePool(type: PoolType) {
-    return ['Stable', 'MetaStable'].includes(type);
   }
 
   public get address(): string {

@@ -208,11 +208,11 @@ export default class CalculatorService {
   }
 
   public get isStablePool(): boolean {
-    return isStable(this.pool);
+    return isStable(this.pool.poolType);
   }
 
   public get isStableLikePool(): boolean {
-    return isStableLike(this.pool);
+    return isStableLike(this.pool.poolType);
   }
 
   public get sendTokens(): string[] {

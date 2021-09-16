@@ -10,33 +10,35 @@ import { getAddress } from 'ethers/lib/utils';
 
 type AnyPool = Pool | FullPool | DecoratedPoolWithShares;
 
-export function isStable(pool: AnyPool): boolean {
-  return pool.poolType === PoolType.Stable;
+export function isStable(poolType: PoolType): boolean {
+  return poolType === PoolType.Stable;
 }
 
-export function isMetaStable(pool: AnyPool): boolean {
-  return pool.poolType === PoolType.MetaStable;
+export function isMetaStable(poolType: PoolType): boolean {
+  return poolType === PoolType.MetaStable;
 }
 
-export function isLiquidityBootstrapping(pool: AnyPool): boolean {
-  return pool.poolType === PoolType.LiquidityBootstrapping;
+export function isLiquidityBootstrapping(poolType: PoolType): boolean {
+  return poolType === PoolType.LiquidityBootstrapping;
 }
 
-export function isStableLike(pool: AnyPool): boolean {
-  return isStable(pool) || isMetaStable(pool);
+export function isStableLike(poolType: PoolType): boolean {
+  return isStable(poolType) || isMetaStable(poolType);
 }
 
-export function isWeighted(pool: AnyPool): boolean {
-  return pool.poolType === PoolType.Weighted;
+export function isWeighted(poolType: PoolType): boolean {
+  return poolType === PoolType.Weighted;
 }
 
-export function isInvestment(pool: AnyPool): boolean {
-  return pool.poolType === PoolType.Investment;
+export function isInvestment(poolType: PoolType): boolean {
+  return poolType === PoolType.Investment;
 }
 
-export function isWeightedLike(pool: AnyPool): boolean {
+export function isWeightedLike(poolType: PoolType): boolean {
   return (
-    isWeighted(pool) || isInvestment(pool) || isLiquidityBootstrapping(pool)
+    isWeighted(poolType) ||
+    isInvestment(poolType) ||
+    isLiquidityBootstrapping(poolType)
   );
 }
 
@@ -53,20 +55,24 @@ export function isWstETH(pool: AnyPool): boolean {
 }
 
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
-  const isStablePool = computed(() => pool.value && isStable(pool.value));
+  const isStablePool = computed(
+    () => pool.value && isStable(pool.value.poolType)
+  );
   const isMetaStablePool = computed(
-    () => pool.value && isMetaStable(pool.value)
+    () => pool.value && isMetaStable(pool.value.poolType)
   );
   const isStableLikePool = computed(
-    () => pool.value && isStableLike(pool.value)
+    () => pool.value && isStableLike(pool.value.poolType)
   );
-  const isWeightedPool = computed(() => pool.value && isWeighted(pool.value));
+  const isWeightedPool = computed(
+    () => pool.value && isWeighted(pool.value.poolType)
+  );
   const isWeightedLikePool = computed(
-    () => pool.value && isWeightedLike(pool.value)
+    () => pool.value && isWeightedLike(pool.value.poolType)
   );
 
   const isLiquidityBootstrappingPool = computed(
-    () => pool.value && isLiquidityBootstrapping(pool.value)
+    () => pool.value && isLiquidityBootstrapping(pool.value.poolType)
   );
 
   const isWethPool = computed(() => pool.value && isWeth(pool.value));
