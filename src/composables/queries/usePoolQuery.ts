@@ -11,6 +11,7 @@ import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
 import { forChange } from '@/lib/utils';
 import { isInvestment, isStableLike } from '../usePool';
+import { getAddress } from '@ethersproject/address';
 
 export default function usePoolQuery(
   id: string,
@@ -56,20 +57,22 @@ export default function usePoolQuery(
     ]);
     await forChange(dynamicDataLoading, false);
 
+    // Need to fetch onchain pool data first so that calculations can be
+    // performed in the decoration step.
+    const onchainData = await balancerContractsService.vault.getPoolData(
+      id,
+      pool.poolType,
+      getTokens(pool.tokensList.map(address => getAddress(address)))
+    );
+
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
-      [pool],
+      [{ ...pool, onchain: onchainData }],
       '24h',
       prices.value,
       currency.value
     );
 
-    const onchainData = await balancerContractsService.vault.getPoolData(
-      id,
-      pool.poolType,
-      getTokens(decoratedPool.tokenAddresses)
-    );
-
-    return { ...decoratedPool, onchain: onchainData };
+    return { onchain: onchainData, ...decoratedPool };
   };
 
   const queryOptions = reactive({
