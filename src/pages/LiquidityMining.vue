@@ -202,8 +202,8 @@ export default defineComponent({
         addresses weekly.`;
       }
       if (networkConfig.chainId === Network.ARBITRUM) {
-        return `BAL distributions on Arbitrum are automatically airdropped to eligible
-        addresses weekly.`;
+        return `BAL distributions on Arbitrum can be claimed weekly by tapping the
+        liquidity mining claim tool in the header.`;
       }
       return '';
     });
