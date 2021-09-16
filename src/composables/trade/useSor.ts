@@ -168,10 +168,6 @@ export default function useSor({
     const poolsUrlV1 = `${
       configService.network.poolsUrlV1
     }?timestamp=${Date.now()}`;
-    // TODO: pull a set of SubgraphPoolBase[] data from here
-    // const poolsUrlV2 = `${
-    //   configService.network.poolsUrlV2
-    // }?timestamp=${Date.now()}`;
     const subgraphUrl = configService.network.subgraph;
 
     // If V1 previously selected on another network then it uses this and returns no liquidity.
@@ -187,7 +183,6 @@ export default function useSor({
       configService.network.chainId,
       configService.network.addresses.weth,
       poolsUrlV1,
-      [], // poolsUrlV2,
       subgraphUrl
     );
 

@@ -68,7 +68,6 @@ export class SorManager {
     chainId: number,
     weth: string,
     poolsSourceV1: string,
-    poolsSourceV2: SubgraphPoolBase[],
     subgraphUrlV2: string
   ) {
     this.isV1Supported = isV1Supported;
@@ -82,7 +81,7 @@ export class SorManager {
       poolsSourceV1
     );
 
-    this.sorV2 = new SORV2(provider, chainId, subgraphUrlV2, poolsSourceV2);
+    this.sorV2 = new SORV2(provider, chainId, subgraphUrlV2);
     this.weth = weth;
     this.gasPrice = gasPrice;
     this.maxPools = maxPools;
