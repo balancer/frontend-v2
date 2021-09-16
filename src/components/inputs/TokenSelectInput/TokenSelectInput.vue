@@ -63,10 +63,10 @@ const toggleModal = () => {
       @click="toggleModal"
     >
       <BalAsset :address="token?.address" class="shadow mr-2" />
-      <span>
+      <span class="text-base font-medium">
         {{ token?.symbol }}
       </span>
-      <span v-if="weight > 0" class="text-gray-500 mx-2">
+      <span v-if="weight > 0" class="text-gray-500 ml-2 mr-4">
         {{ fNum(weight, 'percent_lg') }}
       </span>
       <BalIcon
