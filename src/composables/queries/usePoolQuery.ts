@@ -44,8 +44,8 @@ export default function usePoolQuery(
     });
 
     if (
-      (isStableLike(pool) && !POOLS.Stable.AllowList.includes(id)) ||
-      (isInvestment(pool) && !POOLS.Investment.AllowList.includes(id))
+      (isStableLike(pool.poolType) && !POOLS.Stable.AllowList.includes(id)) ||
+      (isInvestment(pool.poolType) && !POOLS.Investment.AllowList.includes(id))
     ) {
       throw new Error('Pool not allowed');
     }

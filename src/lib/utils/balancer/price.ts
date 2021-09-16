@@ -8,7 +8,7 @@ export function getPoolLiquidity(
   prices: TokenPrices,
   currency: FiatCurrency
 ) {
-  if (isWeightedLike(pool)) {
+  if (isWeightedLike(pool.poolType)) {
     const totalWeight = pool.tokens.reduce(
       (total, token) => total + parseFloat(token.weight),
       0
@@ -37,7 +37,7 @@ export function getPoolLiquidity(
     }
   }
   // TODO [improvement]: if price is missing, compute spot price based on balances and amp factor
-  if (isStableLike(pool)) {
+  if (isStableLike(pool.poolType)) {
     let sumBalance = 0;
     let sumValue = 0;
 
