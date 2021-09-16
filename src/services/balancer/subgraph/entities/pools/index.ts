@@ -1,6 +1,5 @@
 import Service from '../../balancer-subgraph.service';
 import queryBuilder from './query';
-import { getPoolLiquidity } from '@/lib/utils/balancer/price';
 import { bnum } from '@/lib/utils';
 import {
   Pool,
