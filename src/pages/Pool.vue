@@ -97,7 +97,10 @@
         </div>
       </div>
 
-      <div class="order-1 lg:order-2 px-1 lg:px-0">
+      <div
+        v-if="!isLiquidityBootstrappingPool"
+        class="order-1 lg:order-2 px-1 lg:px-0"
+      >
         <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-96" />
         <PoolActionsCard
           v-else-if="!noInitLiquidity"
@@ -118,12 +121,10 @@ import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import { useQueryClient } from 'vue-query';
 import useNumbers from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
-import { POOLS_ROOT_KEY } from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -133,10 +134,7 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 
 interface PoolPageData {
   id: string;
-  refetchQueriesOnBlockNumber: number;
 }
-
-const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 
 export default defineComponent({
   components: {
@@ -154,7 +152,6 @@ export default defineComponent({
     const route = useRoute();
     const { fNum } = useNumbers();
     const { isWalletReady } = useWeb3();
-    const queryClient = useQueryClient();
     const { prices } = useTokens();
     const { blockNumber } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
@@ -172,15 +169,16 @@ export default defineComponent({
      * STATE
      */
     const data = reactive<PoolPageData>({
-      id: route.params.id as string,
-      refetchQueriesOnBlockNumber: 0
+      id: route.params.id as string
     });
 
     /**
      * COMPUTED
      */
     const pool = computed(() => poolQuery.data.value);
-    const { isStableLikePool } = usePool(poolQuery.data);
+    const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
+      poolQuery.data
+    );
 
     const noInitLiquidity = computed(
       () =>
@@ -274,20 +272,14 @@ export default defineComponent({
      * METHODS
      */
     function onNewTx(): void {
-      queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', data.id]);
-      data.refetchQueriesOnBlockNumber =
-        blockNumber.value + REFETCH_QUERIES_BLOCK_BUFFER;
+      poolQuery.refetch.value();
     }
 
     /**
      * WATCHERS
      */
     watch(blockNumber, () => {
-      if (data.refetchQueriesOnBlockNumber === blockNumber.value) {
-        queryClient.invalidateQueries([POOLS_ROOT_KEY]);
-      } else {
-        poolQuery.refetch.value();
-      }
+      poolQuery.refetch.value();
     });
 
     watch(poolQuery.error, () => {
@@ -326,6 +318,7 @@ export default defineComponent({
       feesManagedByGauntlet,
       swapFeeToolTip,
       isStableLikePool,
+      isLiquidityBootstrappingPool,
       // methods
       fNum,
       onNewTx

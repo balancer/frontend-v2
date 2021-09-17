@@ -18,6 +18,9 @@ const USE_BLOCKNATIVE_GAS_PLATFORM =
   process.env.VUE_APP_USE_BLOCKNATIVE_GAS_PLATFORM === 'false' ? false : true;
 const GAS_LIMIT_BUFFER = 0.1;
 
+const RPC_INVALID_PARAMS_ERROR_CODE = -32602;
+const EIP1559_UNSUPPORTED_REGEX = /network does not support EIP-1559/i;
+
 const gasPriceService = new GasPriceService();
 
 export async function sendTransaction(
@@ -26,7 +29,8 @@ export async function sendTransaction(
   abi: any[],
   action: string,
   params: any[],
-  overrides: Record<string, any> = {}
+  overrides: Record<string, any> = {},
+  forceEthereumLegacyTxType = false
 ): Promise<TransactionResponse> {
   console.log('Sending transaction');
   console.log('Contract', contractAddress);
@@ -35,41 +39,59 @@ export async function sendTransaction(
   const signer = web3.getSigner();
   const contract = new Contract(contractAddress, abi, web3);
   const contractWithSigner = contract.connect(signer);
+  const paramsOverrides = { ...overrides };
 
   try {
     // Gas estimation
     const gasLimitNumber = await contractWithSigner.estimateGas[action](
       ...params,
-      overrides
+      paramsOverrides
     );
 
     const gasLimit = gasLimitNumber.toNumber();
-    overrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
+    paramsOverrides.gasLimit = Math.floor(gasLimit * (1 + GAS_LIMIT_BUFFER));
 
     if (
       USE_BLOCKNATIVE_GAS_PLATFORM &&
-      overrides.gasPrice == null &&
-      overrides.maxFeePerGas == null &&
-      overrides.maxPriorityFeePerGas == null
+      paramsOverrides.gasPrice == null &&
+      paramsOverrides.maxFeePerGas == null &&
+      paramsOverrides.maxPriorityFeePerGas == null
     ) {
       const gasPrice = await gasPriceService.getLatest();
       if (gasPrice != null) {
         if (
           ethereumTxType.value === EthereumTxType.EIP1559 &&
           gasPrice.maxFeePerGas != null &&
-          gasPrice.maxPriorityFeePerGas != null
+          gasPrice.maxPriorityFeePerGas != null &&
+          !forceEthereumLegacyTxType
         ) {
-          overrides.maxFeePerGas = gasPrice.maxFeePerGas;
-          overrides.maxPriorityFeePerGas = gasPrice.maxPriorityFeePerGas;
+          paramsOverrides.maxFeePerGas = gasPrice.maxFeePerGas;
+          paramsOverrides.maxPriorityFeePerGas = gasPrice.maxPriorityFeePerGas;
         } else {
-          overrides.gasPrice = gasPrice.price;
+          paramsOverrides.gasPrice = gasPrice.price;
         }
       }
     }
-
-    return await contractWithSigner[action](...params, overrides);
+    return await contractWithSigner[action](...params, paramsOverrides);
   } catch (e) {
-    if (e.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT && ENV !== 'development') {
+    if (
+      e.code === RPC_INVALID_PARAMS_ERROR_CODE &&
+      EIP1559_UNSUPPORTED_REGEX.test(e.message)
+    ) {
+      // Sending tx as EIP1559 has failed, retry with legacy tx type
+      return sendTransaction(
+        web3,
+        contractAddress,
+        abi,
+        action,
+        params,
+        overrides,
+        true
+      );
+    } else if (
+      e.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT &&
+      ENV !== 'development'
+    ) {
       const sender = await web3.getSigner().getAddress();
       logFailedTx(sender, contract, action, params, overrides);
     }

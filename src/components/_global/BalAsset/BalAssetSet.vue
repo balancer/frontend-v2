@@ -1,29 +1,36 @@
 <template>
-  <div
-    class="relative"
-    :style="{
-      width: `${width}px`,
-      height: `${size}px`
-    }"
+  <template
+    v-for="(addressesChunk, addressChunkIndex) in addressesChunks"
+    :key="addressChunkIndex"
   >
-    <BalAsset
-      v-for="(address, i) in addresses"
-      :key="i"
-      :address="address"
-      :size="size"
-      class="token-icon"
+    <div
+      class="addresses-row"
       :style="{
-        left: `${leftOffsetFor(i)}px`,
-        zIndex: `${20 - i}`,
-        width: `${size}px`,
+        width: `${width}px`,
         height: `${size}px`
       }"
-    />
-  </div>
+    >
+      <BalAsset
+        v-for="(address, i) in addressesChunk"
+        :key="i"
+        :address="address"
+        :size="size"
+        class="token-icon"
+        :style="{
+          left: `${leftOffsetFor(i)}px`,
+          zIndex: `${20 - i}`,
+          width: `${size}px`,
+          height: `${size}px`
+        }"
+      />
+    </div>
+  </template>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
+import { chunk } from 'lodash';
+
 import BalAsset from './BalAsset.vue';
 
 export default defineComponent({
@@ -43,23 +50,58 @@ export default defineComponent({
     size: {
       type: Number,
       default: 26
+    },
+    maxAssetsPerLine: {
+      type: Number,
+      default: 8
     }
   },
 
   setup(props) {
-    function leftOffsetFor(i: number): number {
-      const maxCount = 8;
-      const radius = props.size / 2;
-      const spacer = (maxCount / props.addresses.length - 1) * (radius * 2);
-      return ((props.width - radius * 2 + spacer) / (maxCount - 1)) * i;
+    /**
+     * COMPUTED
+     */
+    const addressesChunks = computed(() =>
+      chunk(props.addresses, props.maxAssetsPerLine)
+    );
+
+    const radius = computed(() => props.size / 2);
+
+    const spacer = computed(
+      () =>
+        (props.maxAssetsPerLine / props.addresses.length - 1) *
+        (radius.value * 2)
+    );
+
+    /**
+     * METHODS
+     */
+    function leftOffsetFor(i: number) {
+      return (
+        ((props.width - radius.value * 2 + spacer.value) /
+          (props.maxAssetsPerLine - 1)) *
+        i
+      );
     }
 
-    return { leftOffsetFor };
+    return {
+      // computed
+      addressesChunks,
+
+      // methods
+      leftOffsetFor
+    };
   }
 });
 </script>
 
 <style scoped>
+.addresses-row {
+  @apply relative mb-3;
+}
+.addresses-row:last-child {
+  @apply mb-0;
+}
 .token-icon {
   margin-left: -2px;
   @apply absolute rounded-full overflow-hidden shadow-none;
