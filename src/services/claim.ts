@@ -30,6 +30,11 @@ export const constants: Record<NetworkId, Record<string, string>> = {
     merkleRedeem: '0x3bc73D276EEE8cA9424Ecb922375A0357c1833B3',
     snapshot:
       'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports-kovan/_current.json'
+  },
+  42161: {
+    merkleRedeem: '0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809',
+    snapshot:
+      'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-arbitrum.json'
   }
 };
 

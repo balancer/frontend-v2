@@ -1,6 +1,5 @@
 import Service from '../../balancer-subgraph.service';
 import queryBuilder from './query';
-import { getPoolLiquidity } from '@/lib/utils/balancer/price';
 import { bnum } from '@/lib/utils';
 import {
   Pool,
@@ -22,6 +21,7 @@ import { FiatCurrency } from '@/constants/currency';
 import { isStable, isWstETH } from '@/composables/usePool';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
 import { lidoService } from '@/services/lido/lido.service';
+import PoolService from '@/services/pool/pool.service';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -33,7 +33,8 @@ export default class Pools {
   constructor(
     service: Service,
     query: QueryBuilder = queryBuilder,
-    private readonly configService = _configService
+    private readonly configService = _configService,
+    private readonly poolServiceClass = PoolService
   ) {
     this.service = service;
     this.query = query;
@@ -70,10 +71,12 @@ export default class Pools {
     currency: FiatCurrency
   ): Promise<DecoratedPool[]> {
     const promises = pools.map(async pool => {
+      const poolService = new this.poolServiceClass(pool);
+
       pool.address = this.addressFor(pool.id);
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.tokens = this.formatPoolTokens(pool);
-      pool.totalLiquidity = getPoolLiquidity(pool, prices, currency);
+      pool.totalLiquidity = poolService.calcTotalLiquidity(prices, currency);
 
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
