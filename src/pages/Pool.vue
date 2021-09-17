@@ -13,7 +13,7 @@
               :key="i"
               class="mt-2 mr-2 flex items-center px-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
             >
-              <BalAsset :address="address" :size="24" />
+              <BalAsset :address="address" />
               <span class="ml-2">
                 {{ tokenMeta.symbol }}
               </span>
