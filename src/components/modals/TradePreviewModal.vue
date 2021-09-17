@@ -1,6 +1,20 @@
 <template>
-  <BalModal show @close="onClose" :title="$t('previewTradeTransactions')">
-    <div>
+  <BalModal
+    show
+    @close="onClose"
+    :title="
+      slippageError
+        ? $t('slippageErrorHeadline')
+        : $t('previewTradeTransactions')
+    "
+  >
+    <div v-if="slippageError">
+      <div class="mb-6 text-md">
+        {{ $t('slippageErrorBody') }}
+      </div>
+      <BalBtn class="mt-5" label="Close" color="red" block @click="onClose" />
+    </div>
+    <div v-else>
       <div
         class="-mx-4 p-4 flex items-center border-b border-t dark:border-gray-800"
       >
@@ -145,6 +159,10 @@ export default defineComponent({
       required: true
     },
     trading: {
+      type: Boolean,
+      required: true
+    },
+    slippageError: {
       type: Boolean,
       required: true
     }

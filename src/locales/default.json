@@ -410,5 +410,7 @@
     "featuredProtocol": "Featured ecosystem protocol",
     "aboutElementFinance": "Element is an open source protocol for fixed and variable yield markets. It is built on Balancer V2. View and manage your liquidity positions directly on Element.fi.",
     "viewAndManangeOnElement": "View and manage all pools on Element.fi",
-    "viewOnElement": "View on Element.fi"
+    "viewOnElement": "View on Element.fi",
+    "slippageErrorHeadline": "Trade failure",
+    "slippageErrorBody": "Your trade failed because of excessive slippage. You can attempt to increase your slippage and try again."
 }
