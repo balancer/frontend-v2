@@ -1,373 +1,161 @@
-<template>
-  <div>
-    <div class="dark:border-b dark:border-gray-850">
-      <div
-        class="p-2 flex justify-between text-sm rounded-t-lg dark:bg-gray-900 border dark:border-gray-900 w-full border-b-0"
-      >
-        <div>{{ $t('send') }}</div>
-        <div v-if="tokenInValue > 0" class="text-gray-500 font-numeric">
-          {{ fNum(tokenInValue, 'usd') }}
-        </div>
-      </div>
-    </div>
-    <BalTextInput
-      name="tokenIn"
-      :model-value="tokenInAmountInput"
-      @input="value => handleInAmountChange(value)"
-      type="number"
-      :decimal-limit="tokenInDecimals"
-      min="0"
-      step="any"
-      placeholder="0"
-      validate-on="input"
-      square-top
-      prepend-border
-    >
-      <template v-slot:prepend>
-        <div
-          class="flex items-center w-28 h-full cursor-pointer"
-          @click="openModalSelectToken('input')"
-        >
-          <BalAsset
-            v-if="tokenInAddressInput"
-            :address="tokenInAddressInput"
-            :size="28"
-          />
-          <div class="flex flex-col ml-3 w-14 leading-none truncate">
-            <BalTooltip v-if="tokenInSymbol.length > 5">
-              <template v-slot:activator>
-                <span class="font-bold">
-                  {{ tokenInSymbol }}
-                </span>
-              </template>
-              <div>
-                {{ tokenInSymbol }}
-              </div>
-            </BalTooltip>
-            <span v-else class="font-bold">
-              {{ tokenInSymbol }}
-            </span>
-          </div>
-          <BalIcon
-            :name="'chevron-down'"
-            :size="'sm'"
-            class="text-blue-500 group-hover:text-pink-500"
-          />
-        </div>
-      </template>
-      <template v-slot:info>
-        <div class="cursor-pointer" @click="handleMax">
-          {{ $t('balance') }}:
-          <span class="font-numeric">{{ fNum(balanceLabel, 'token') }}</span>
-        </div>
-      </template>
-      <template v-slot:append>
-        <div class="p-2">
-          <BalBtn size="xs" color="white" @click="handleMax">
-            {{ $t('max') }}
-          </BalBtn>
-        </div>
-      </template>
-    </BalTextInput>
-    <div class="flex items-center mb-4">
-      <TradePairToggle @toggle="handleSwitchTokens" />
-      <div v-if="rateMessage" class="flex-auto ml-4">
-        <span
-          class="text-sm text-gray-500 cursor-pointer"
-          @click="toggleRate"
-          v-html="rateMessage"
-        />
-      </div>
-    </div>
-    <div class="dark:border-b dark:border-gray-850">
-      <div
-        class="p-2 flex justify-between text-sm rounded-t-lg dark:bg-gray-900 border dark:border-gray-900 w-full border-b-0"
-      >
-        <div>{{ $t('receive') }}</div>
-        <div v-if="tokenOutValue > 0" class="text-gray-500 font-numeric">
-          {{ fNum(tokenOutValue, 'usd') }}
-        </div>
-      </div>
-    </div>
-    <BalTextInput
-      :name="'tokenOut'"
-      :model-value="tokenOutAmountInput"
-      @input="value => handleOutAmountChange(value)"
-      type="number"
-      :decimal-limit="tokenOutDecimals"
-      min="0"
-      step="any"
-      placeholder="0"
-      validate-on="input"
-      prepend-border
-      square-top
-    >
-      <template v-slot:prepend>
-        <div
-          class="flex items-center w-28 h-full cursor-pointer"
-          @click="openModalSelectToken('output')"
-        >
-          <BalAsset
-            v-if="tokenOutAddressInput"
-            :address="tokenOutAddressInput"
-            :size="28"
-          />
-          <div class="flex flex-col ml-3 w-14 leading-none truncate">
-            <BalTooltip v-if="tokenOutSymbol.length > 5">
-              <template v-slot:activator>
-                <span class="font-bold">
-                  {{ tokenOutSymbol }}
-                </span>
-              </template>
-              <div>
-                {{ tokenOutSymbol }}
-              </div>
-            </BalTooltip>
-            <span v-else class="font-bold">
-              {{ tokenOutSymbol }}
-            </span>
-          </div>
-          <BalIcon
-            :name="'chevron-down'"
-            :size="'sm'"
-            class="text-blue-500 group-hover:text-pink-500"
-          />
-        </div>
-      </template>
-      <template v-slot:info>
-        <div>
-          {{ $t('priceImpact') }}:
-          <span class="font-numeric">{{ fNum(priceImpact, 'percent') }}</span>
-        </div>
-      </template>
-    </BalTextInput>
-  </div>
-  <teleport to="#modal">
-    <SelectTokenModal
-      v-if="modalSelectTokenIsOpen"
-      :excludedTokens="[tokenInAddressInput, tokenOutAddressInput]"
-      @close="modalSelectTokenIsOpen = false"
-      @select="handleSelectToken"
-      include-ether
-    />
-  </teleport>
-</template>
-
-<script lang="ts">
-import { defineComponent, toRefs, computed, ref } from 'vue';
-
+<script setup lang="ts">
+import { ref, watchEffect, computed } from 'vue';
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import TradePairToggle from './TradePairToggle.vue';
+import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
-
-import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
-import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { UseTrading } from '@/composables/trade/useTrading';
 
-const ETH_BUFFER = 0.1;
+/**
+ * TYPES
+ */
+type Props = {
+  tokenInAmount: string;
+  tokenInAddress: string;
+  tokenOutAmount: string;
+  tokenOutAddress: string;
+  exactIn: boolean;
+  priceImpact?: number;
+  effectivePriceMessage?: UseTrading['effectivePriceMessage'];
+};
 
-export default defineComponent({
-  components: {
-    TradePairToggle,
-    SelectTokenModal
-  },
-  props: {
-    tokenInAmountInput: {
-      type: String,
-      required: true
-    },
-    tokenInAddressInput: {
-      type: String,
-      required: true
-    },
-    tokenOutAmountInput: {
-      type: String,
-      required: true
-    },
-    tokenOutAddressInput: {
-      type: String,
-      required: true
-    },
-    exactIn: {
-      type: Boolean,
-      required: true
-    },
-    priceImpact: {
-      type: Number,
-      required: true
-    }
-  },
-  emits: [
-    'tokenInAddressChange',
-    'tokenInAmountChange',
-    'tokenOutAddressChange',
-    'tokenOutAmountChange',
-    'exactInChange',
-    'change'
-  ],
-  setup(props, { emit }) {
-    const { tokens, balances, injectTokens } = useTokens();
-    const { fNum, toFiat } = useNumbers();
+/**
+ * PROPS & EMITS
+ */
+const props = defineProps<Props>();
 
-    const {
-      tokenInAmountInput,
-      tokenInAddressInput,
-      tokenOutAmountInput,
-      tokenOutAddressInput,
-      exactIn
-    } = toRefs(props);
+const emit = defineEmits<{
+  (e: 'update:tokenInAmount', value: string): void;
+  (e: 'update:tokenInAddress', value: string): void;
+  (e: 'update:tokenOutAmount', value: string): void;
+  (e: 'update:tokenOutAddress', value: string): void;
+  (e: 'update:exactIn', value: boolean): void;
+  (e: 'amountChange'): void;
+}>();
 
-    const tokenInValue = computed(() =>
-      toFiat(tokenInAmountInput.value, tokenInAddressInput.value)
-    );
+/**
+ * COMPOSABLES
+ */
+const { fNum } = useNumbers();
+const { getToken } = useTokens();
 
-    const tokenInSymbol = computed(() => {
-      const tokenIn = tokens.value[tokenInAddressInput.value];
-      const symbol = tokenIn ? tokenIn.symbol : '';
-      return symbol;
-    });
+/**
+ * STATE
+ */
+const _tokenInAmount = ref<string>('');
+const _tokenInAddress = ref<string>('');
+const _tokenOutAmount = ref<string>('');
+const _tokenOutAddress = ref<string>('');
 
-    const tokenOutValue = computed(() =>
-      toFiat(tokenOutAmountInput.value, tokenOutAddressInput.value)
-    );
+const isInRate = ref<boolean>(true);
 
-    const tokenOutSymbol = computed(() => {
-      const tokenOut = tokens.value[tokenOutAddressInput.value];
-      const symbol = tokenOut ? tokenOut.symbol : '';
-      return symbol;
-    });
+/**
+ * COMPUTED
+ */
+const missingToken = computed(
+  () => !_tokenInAddress.value || !_tokenOutAddress.value
+);
 
-    const tokenInDecimals = computed(() => {
-      const decimals = tokens.value[tokenInAddressInput.value]
-        ? tokens.value[tokenInAddressInput.value].decimals
-        : 18;
-      return decimals;
-    });
+const missingAmount = computed(
+  () => !_tokenInAmount.value || !_tokenOutAmount.value
+);
 
-    const tokenOutDecimals = computed(() => {
-      const decimals = tokens.value[tokenOutAddressInput.value]
-        ? tokens.value[tokenOutAddressInput.value].decimals
-        : 18;
-      return decimals;
-    });
+const tokenIn = computed(() => getToken(_tokenInAddress.value));
+const tokenOut = computed(() => getToken(_tokenOutAddress.value));
 
-    const isInRate = ref(true);
-    const modalSelectTokenType = ref('input');
-    const modalSelectTokenIsOpen = ref(false);
+const rateLabel = computed(() => {
+  if (missingToken.value || missingAmount.value) return '';
 
-    function handleMax(): void {
-      const balance = balances.value[tokenInAddressInput.value] || '0';
-      const balanceNumber = parseFloat(balance);
-      const maxAmount =
-        tokenInAddressInput.value !== NATIVE_ASSET_ADDRESS
-          ? balance
-          : balanceNumber > ETH_BUFFER
-          ? (balanceNumber - ETH_BUFFER).toString()
-          : '0';
-      handleInAmountChange(maxAmount);
-    }
+  if (props.effectivePriceMessage)
+    return isInRate.value
+      ? props.effectivePriceMessage.value.tokenIn
+      : props.effectivePriceMessage.value.tokenOut;
 
-    function handleInAmountChange(value: string): void {
-      emit('exactInChange', true);
-      emit('tokenInAmountChange', value);
-      emit('change', value);
-    }
+  let rate, inSymbol, outSymbol;
 
-    function handleOutAmountChange(value: string): void {
-      emit('exactInChange', false);
-      emit('tokenOutAmountChange', value);
-      emit('change', value);
-    }
-
-    function handleSwitchTokens(): void {
-      emit('exactInChange', !exactIn.value);
-      emit('tokenInAmountChange', tokenOutAmountInput.value);
-      emit('tokenInAddressChange', tokenOutAddressInput.value);
-      emit('tokenOutAmountChange', tokenInAmountInput.value);
-      emit('tokenOutAddressChange', tokenInAddressInput.value);
-    }
-
-    function handleSelectToken(address: string): void {
-      if (modalSelectTokenType.value === 'input') {
-        if (address === tokenOutAddressInput.value) {
-          handleSwitchTokens();
-          return;
-        } else emit('tokenInAddressChange', address);
-      } else {
-        if (address === tokenInAddressInput.value) {
-          handleSwitchTokens();
-          return;
-        } else emit('tokenOutAddressChange', address);
-      }
-      injectTokens([address]);
-    }
-
-    const rateMessage = computed(() => {
-      const tokenIn = tokens.value[tokenInAddressInput.value];
-      const tokenOut = tokens.value[tokenOutAddressInput.value];
-      if (!tokenIn || !tokenOut) {
-        return '';
-      }
-      const tokenInAmount = parseFloat(tokenInAmountInput.value);
-      const tokenOutAmount = parseFloat(tokenOutAmountInput.value);
-      if (!tokenInAmount || !tokenOutAmount) {
-        return '';
-      }
-      if (isInRate.value) {
-        const rate = tokenOutAmount / tokenInAmount;
-        const message = `<span class="font-numeric">1</span> ${
-          tokenIn.symbol
-        } = <span class="font-numeric">${fNum(rate, 'token')}</span> ${
-          tokenOut.symbol
-        }`;
-        return message;
-      } else {
-        const rate = tokenInAmount / tokenOutAmount;
-        const message = `<span class="font-numeric">1</span> ${
-          tokenOut.symbol
-        } = <span class="font-numeric">${fNum(rate, 'token')}</span> ${
-          tokenIn.symbol
-        }`;
-        return message;
-      }
-    });
-
-    function toggleRate(): void {
-      isInRate.value = !isInRate.value;
-    }
-
-    function openModalSelectToken(type: string): void {
-      modalSelectTokenIsOpen.value = true;
-      modalSelectTokenType.value = type;
-    }
-
-    const balanceLabel = computed(
-      () => balances.value[tokenInAddressInput.value]
-    );
-
-    return {
-      fNum,
-      handleMax,
-      balanceLabel,
-      handleInAmountChange,
-      handleOutAmountChange,
-      handleSwitchTokens,
-      rateMessage,
-      toggleRate,
-      tokenInValue,
-      tokenInSymbol,
-      tokenOutValue,
-      tokenOutSymbol,
-      modalSelectTokenIsOpen,
-      openModalSelectToken,
-      handleSelectToken,
-      tokenInDecimals,
-      tokenOutDecimals
-    };
+  if (isInRate.value) {
+    rate = bnum(_tokenOutAmount.value)
+      .div(_tokenInAmount.value)
+      .toString();
+    inSymbol = tokenIn.value.symbol;
+    outSymbol = tokenOut.value.symbol;
+  } else {
+    rate = bnum(_tokenInAmount.value)
+      .div(_tokenOutAmount.value)
+      .toString();
+    inSymbol = tokenOut.value.symbol;
+    outSymbol = tokenIn.value.symbol;
   }
+
+  return `1 ${inSymbol} = ${fNum(rate, 'token')} ${outSymbol}`;
+});
+
+/**
+ * METHODS
+ */
+function handleInAmountChange(value: string): void {
+  emit('update:exactIn', true);
+  emit('update:tokenInAmount', value);
+  emit('amountChange');
+}
+
+function handleOutAmountChange(value: string): void {
+  emit('update:exactIn', false);
+  emit('update:tokenOutAmount', value);
+  emit('amountChange');
+}
+
+function handleTokenSwitch(): void {
+  emit('update:exactIn', !props.exactIn);
+  emit('update:tokenInAmount', _tokenOutAmount.value);
+  emit('update:tokenInAddress', _tokenOutAddress.value);
+  emit('update:tokenOutAmount', _tokenInAmount.value);
+  emit('update:tokenOutAddress', _tokenInAddress.value);
+  emit('amountChange');
+}
+
+/**
+ * CALLBACKS
+ */
+watchEffect(() => {
+  _tokenInAmount.value = props.tokenInAmount;
+  _tokenInAddress.value = props.tokenInAddress;
+  _tokenOutAmount.value = props.tokenOutAmount;
+  _tokenOutAddress.value = props.tokenOutAddress;
 });
 </script>
-<style>
-.prepend {
-  @apply group;
-}
-</style>
+
+<template>
+  <div>
+    <TokenInput
+      v-model:amount="_tokenInAmount"
+      v-model:address="_tokenInAddress"
+      name="tokenIn"
+      @update:amount="handleInAmountChange"
+      @update:address="emit('update:tokenInAddress', $event)"
+    />
+
+    <div class="flex items-center my-2">
+      <TradePairToggle @toggle="handleTokenSwitch" />
+      <div class="h-px mx-2 bg-gray-100 dark:bg-gray-700 flex-grow" />
+      <div
+        v-if="rateLabel"
+        class="flex items-center text-xs text-gray-500 cursor-pointer"
+        @click="isInRate = !isInRate"
+        v-html="rateLabel"
+      />
+    </div>
+
+    <TokenInput
+      v-model:amount="_tokenOutAmount"
+      v-model:address="_tokenOutAddress"
+      name="tokenOut"
+      :priceImpact="priceImpact"
+      @update:amount="handleOutAmountChange"
+      @update:address="emit('update:tokenOutAddress', $event)"
+      noRules
+      noMax
+    />
+  </div>
+</template>

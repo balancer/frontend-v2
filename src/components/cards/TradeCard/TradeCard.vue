@@ -8,18 +8,14 @@
     </template>
     <div>
       <TradePair
-        :token-in-amount-input="tokenInAmount"
-        :token-in-address-input="tokenInAddress"
-        :token-out-amount-input="tokenOutAmount"
-        :token-out-address-input="tokenOutAddress"
-        :exact-in="exactIn"
-        :price-impact="priceImpact"
-        @token-in-amount-change="value => (tokenInAmount = value)"
-        @token-in-address-change="value => (tokenInAddress = value)"
-        @token-out-amount-change="value => (tokenOutAmount = value)"
-        @token-out-address-change="value => (tokenOutAddress = value)"
-        @exact-in-change="value => (exactIn = value)"
-        @change="handleAmountChange"
+        v-model:tokenInAmount="tokenInAmount"
+        v-model:tokenInAddress="tokenInAddress"
+        v-model:tokenOutAmount="tokenOutAmount"
+        v-model:tokenOutAddress="tokenOutAddress"
+        v-model:exactIn="exactIn"
+        :priceImpact="priceImpact"
+        @amountChange="handleAmountChange"
+        class="mb-4"
       />
       <GasReimbursement
         class="mb-5"
@@ -277,7 +273,7 @@ export default defineComponent({
       else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
 
       tokenInAddress.value = assetIn || store.state.trade.inputAsset;
-      tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
+      tokenOutAddress.value = assetOut || '';
     }
 
     function showTradePreviewModal() {

@@ -28,14 +28,10 @@
               </div>
               <div>
                 <div class="font-medium">
-                  <span class="font-numeric">{{
-                    fNum(trading.tokenInAmountInput.value, 'token')
-                  }}</span>
+                  {{ fNum(trading.tokenInAmountInput.value, 'token') }}
                   {{ trading.tokenIn.value.symbol }}
                 </div>
-                <div
-                  class="text-gray-500 dark:text-gray-400 text-sm font-numeric"
-                >
+                <div class="text-gray-500 dark:text-gray-400 text-sm">
                   {{ tokenInFiatValue }}
                 </div>
               </div>
@@ -54,13 +50,11 @@
               </div>
               <div>
                 <div class="font-medium">
-                  <span class="font-numeric">{{
-                    fNum(trading.tokenOutAmountInput.value, 'token')
-                  }}</span>
+                  {{ fNum(trading.tokenOutAmountInput.value, 'token') }}
                   {{ trading.tokenOut.value.symbol }}
                 </div>
                 <div class="text-gray-500 dark:text-gray-400 text-sm">
-                  <span class="font-numeric">{{ tokenOutFiatValue }}</span>
+                  {{ tokenOutFiatValue }}
                   <span
                     v-if="
                       trading.isBalancerTrade.value ||
@@ -68,9 +62,7 @@
                     "
                   >
                     / {{ $t('priceImpact') }}:
-                    <span class="font-numeric">{{
-                      fNum(trading.sor.priceImpact.value, 'percent')
-                    }}</span>
+                    {{ fNum(trading.sor.priceImpact.value, 'percent') }}
                   </span>
                 </div>
               </div>
@@ -490,7 +482,7 @@ export default defineComponent({
         return mapValues(
           summaryItems,
           itemValue =>
-            `<span class="font-numeric">${fNum(
+            `${fNum(
               toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
               'usd'
             )}`
@@ -499,7 +491,7 @@ export default defineComponent({
         return mapValues(
           summaryItems,
           itemValue =>
-            `<span class="font-numeric">${fNum(itemValue, 'token')}</span> ${
+            `${fNum(itemValue, 'token')} ${
               exactIn || props.trading.isWrapUnwrapTrade.value
                 ? tokenOut.symbol
                 : tokenIn.symbol

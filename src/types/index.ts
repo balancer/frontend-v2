@@ -28,3 +28,9 @@ export interface Claim {
   amount: string;
   amountDenorm: BigNumberish;
 }
+
+export interface HtmlInputEvent {
+  target: HTMLInputElement;
+  key: string;
+  preventDefault();
+}
