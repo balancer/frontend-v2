@@ -27,7 +27,7 @@ withDefaults(defineProps<Props>(), {
     <span>
       {{ symbol }}
     </span>
-    <span class="pill-weight font-numeric">
+    <span class="pill-weight">
       {{ weight }}
     </span>
   </div>

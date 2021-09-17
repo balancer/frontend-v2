@@ -11,7 +11,7 @@
           class="h-10 w-40 mx-auto"
           white
         />
-        <span v-else class="text-3xl font-bold text-white font-numeric">
+        <span v-else class="text-3xl font-bold text-white">
           {{ fNum(totalInvestedAmount, 'usd', { forcePreset: true }) }}
         </span>
       </template>
