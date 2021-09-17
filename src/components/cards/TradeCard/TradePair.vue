@@ -5,7 +5,7 @@
         class="p-2 flex justify-between text-sm rounded-t-lg dark:bg-gray-900 border dark:border-gray-900 w-full border-b-0"
       >
         <div>{{ $t('send') }}</div>
-        <div v-if="tokenInValue > 0" class="text-gray-500 font-numeric">
+        <div v-if="tokenInValue > 0" class="text-gray-500">
           {{ fNum(tokenInValue, 'usd') }}
         </div>
       </div>
@@ -57,8 +57,7 @@
       </template>
       <template v-slot:info>
         <div class="cursor-pointer" @click="handleMax">
-          {{ $t('balance') }}:
-          <span class="font-numeric">{{ fNum(balanceLabel, 'token') }}</span>
+          {{ $t('balance') }}: {{ fNum(balanceLabel, 'token') }}
         </div>
       </template>
       <template v-slot:append>
@@ -84,7 +83,7 @@
         class="p-2 flex justify-between text-sm rounded-t-lg dark:bg-gray-900 border dark:border-gray-900 w-full border-b-0"
       >
         <div>{{ $t('receive') }}</div>
-        <div v-if="tokenOutValue > 0" class="text-gray-500 font-numeric">
+        <div v-if="tokenOutValue > 0" class="text-gray-500">
           {{ fNum(tokenOutValue, 'usd') }}
         </div>
       </div>
@@ -135,10 +134,7 @@
         </div>
       </template>
       <template v-slot:info>
-        <div>
-          {{ $t('priceImpact') }}:
-          <span class="font-numeric">{{ fNum(priceImpact, 'percent') }}</span>
-        </div>
+        <div>{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</div>
       </template>
     </BalTextInput>
   </div>
@@ -314,17 +310,13 @@ export default defineComponent({
       }
       if (isInRate.value) {
         const rate = tokenOutAmount / tokenInAmount;
-        const message = `<span class="font-numeric">1</span> ${
-          tokenIn.symbol
-        } = <span class="font-numeric">${fNum(rate, 'token')}</span> ${
+        const message = `1 ${tokenIn.symbol} = ${fNum(rate, 'token')} ${
           tokenOut.symbol
         }`;
         return message;
       } else {
         const rate = tokenInAmount / tokenOutAmount;
-        const message = `<span class="font-numeric">1</span> ${
-          tokenOut.symbol
-        } = <span class="font-numeric">${fNum(rate, 'token')}</span> ${
+        const message = `1 ${tokenOut.symbol} = ${fNum(rate, 'token')} ${
           tokenIn.symbol
         }`;
         return message;
