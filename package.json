@@ -22,7 +22,7 @@
   "dependencies": {
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
     "@balancer-labs/sor": "^1.1.0",
-    "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#john/ui-694-sor-lido-add-static-route-refactor",
+    "@balancer-labs/sor2": "npm:@balancer-labs/sor@^2.0.0-beta.0",
     "@ensdomains/content-hash": "^2.5.3",
     "@gnosis.pm/gp-v2-contracts": "^1.0.2",
     "@gnosis.pm/safe-apps-provider": "^0.6.0",

@@ -1,13 +1,11 @@
 import {
   SOR as SORV2,
   SwapInfo,
-  DisabledOptions,
-  SubGraphPoolsBase,
   SubgraphPoolBase,
   SwapTypes,
-  fetchSubgraphPools,
   SwapOptions,
-  PoolFilter
+  PoolFilter,
+  bnum
 } from '@balancer-labs/sor2';
 import { SOR as SORV1 } from '@balancer-labs/sor';
 import { BaseProvider } from '@ethersproject/providers';
@@ -51,7 +49,6 @@ export class SorManager {
   private sorV1: SORV1;
   private sorV2: SORV2;
   private weth: string;
-  private subgraphUrlV2: string;
   private fetchStatus: FetchStatus = {
     v1finishedFetch: false,
     v2finishedFetch: false,
@@ -59,6 +56,8 @@ export class SorManager {
     v2success: false
   };
   private isV1Supported: boolean;
+  maxPools: number;
+  gasPrice: BigNumber;
   selectedPools: (SubgraphPoolBase | Pool)[] = [];
 
   constructor(
@@ -69,12 +68,7 @@ export class SorManager {
     chainId: number,
     weth: string,
     poolsSourceV1: string,
-    poolsSourceV2: SubGraphPoolsBase | string,
-    subgraphUrlV2: string,
-    disabledOptions: DisabledOptions = {
-      isOverRide: false,
-      disabledTokens: []
-    }
+    subgraphUrlV2: string
   ) {
     this.isV1Supported = isV1Supported;
 
@@ -87,55 +81,45 @@ export class SorManager {
       poolsSourceV1
     );
 
-    this.sorV2 = new SORV2(
-      provider,
-      gasPrice,
-      maxPools,
-      chainId,
-      poolsSourceV2,
-      new BigNumber(SWAP_COST),
-      disabledOptions
-    );
+    this.sorV2 = new SORV2(provider, chainId, subgraphUrlV2);
     this.weth = weth;
-    this.subgraphUrlV2 = subgraphUrlV2;
+    this.gasPrice = gasPrice;
+    this.maxPools = maxPools;
   }
 
   // Uses SOR V2 to retrieve the cost & reuses for SOR V1 to save time (requires onchain call).
   // If previously called the cached value will be used.
   async setCostOutputToken(
     tokenAddr: string,
-    tokenDecimals: number,
     manualCost: BigNumber | null = null
   ): Promise<BigNumber> {
     tokenAddr = tokenAddr === NATIVE_ASSET_ADDRESS ? this.weth : tokenAddr;
 
-    let cost = this.sorV2.tokenCost[tokenAddr.toLowerCase()];
-    if (cost) {
-      console.log(
-        `[SorManager] Cost for token ${tokenAddr} (cache): ${cost.toString()}`
-      );
-    } else {
-      if (manualCost) {
-        cost = await this.sorV2.setCostOutputToken(
-          tokenAddr,
-          tokenDecimals,
-          manualCost
-        );
-        console.log(
-          `[SorManager] Cost for token ${tokenAddr} (new manual): ${cost.toString()}`
-        );
-      } else {
-        cost = await this.sorV2.setCostOutputToken(tokenAddr, tokenDecimals);
-        console.log(
-          `[SorManager] Cost for token ${tokenAddr} (new): ${cost.toString()}`
-        );
-      }
-    }
-    if (this.isV1Supported)
-      this.sorV1.setCostOutputToken(
+    if (manualCost) {
+      await this.sorV2.swapCostCalculator.setNativeAssetPriceInToken(
         tokenAddr,
-        cost.times(new BigNumber(10 ** tokenDecimals))
+        manualCost.toString()
       );
+
+      const cost = await this.sorV2.getCostOfSwapInToken(
+        tokenAddr,
+        this.gasPrice
+      );
+      console.log(
+        `[SorManager] Cost for token ${tokenAddr} (new manual): ${cost.toString()}`
+      );
+    }
+
+    const cost = await this.sorV2.getCostOfSwapInToken(
+      tokenAddr,
+      this.gasPrice
+    );
+
+    console.log(`[SorManager] Cost for token ${tokenAddr}: ${cost.toString()}`);
+
+    if (this.isV1Supported) {
+      this.sorV1.setCostOutputToken(tokenAddr, cost);
+    }
     return cost;
   }
 
@@ -143,9 +127,6 @@ export class SorManager {
   async fetchPools(): Promise<void> {
     let v1fetch;
     console.log(`[SorManager] fetch Subgraph (V1:${this.isV1Supported})`);
-    // Starts fetch of all pools from V2 subgraph (non-blocking)
-    const subgraphFetchV2 = fetchSubgraphPools(this.subgraphUrlV2);
-
     if (this.isV1Supported) {
       console.log('[SorManager] V1 fetchPools started');
       v1fetch = this.sorV1.fetchPools();
@@ -153,12 +134,9 @@ export class SorManager {
 
     // This will catch any error fetching Subgraph or onChain data with V2
     try {
-      // Wait for V2 subgraph fetch
-      const subgraphPoolsV2 = await subgraphFetchV2;
-      console.log('[SorManager] SubgraphV2 fetched');
       console.time('[SorManager] V2 fetchPools');
-      // Use Subgraph pools data and fetch onChain
-      const v2result = await this.sorV2.fetchPools(true, subgraphPoolsV2);
+      // Fetch of all pools from V2 subgraph and pull onchain data
+      const v2result = await this.sorV2.fetchPools();
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = v2result;
     } catch (err) {
@@ -187,7 +165,7 @@ export class SorManager {
       );
     }
 
-    this.selectedPools = this.sorV2.onChainBalanceCache.pools;
+    this.selectedPools = this.sorV2.getPools();
   }
   // Gets swaps for V1 & V2 liquidity and determined best result
   async getBestSwap(
@@ -235,8 +213,12 @@ export class SorManager {
 
     // The poolTypeFilter can be used to filter to different pool types. Useful for debug/testing.
     const swapOptions: SwapOptions = {
+      maxPools: this.maxPools,
+      gasPrice: this.gasPrice,
+      swapGas: bnum(SWAP_COST),
       poolTypeFilter: PoolFilter.All,
-      timestamp: timestampSeconds
+      timestamp: timestampSeconds,
+      forceRefresh: true
     };
 
     const swapInfoV2: SwapInfo = await this.sorV2.getSwaps(
@@ -347,7 +329,7 @@ export class SorManager {
       return v1return;
     } else if (liquiditySelection === LiquiditySelection.V2) {
       console.log('[SorManager] V2 swap is best by liq.');
-      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
+      this.selectedPools = this.sorV2.getPools();
       return v2return;
     }
 
@@ -358,7 +340,7 @@ export class SorManager {
       return v1return;
     } else {
       console.log('[SorManager]  V2 swap is best.');
-      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
+      this.selectedPools = this.sorV2.getPools();
       return v2return;
     }
   }
@@ -425,7 +407,7 @@ export class SorManager {
       return v1return;
     } else if (liquiditySelection === LiquiditySelection.V2) {
       console.log('[SorManager] V2 swap is best by liq.');
-      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
+      this.selectedPools = this.sorV2.getPools();
       return v2return;
     }
 
@@ -436,7 +418,7 @@ export class SorManager {
       return v1return;
     } else {
       console.log('[SorManager] V2 swap is best.');
-      this.selectedPools = this.sorV2.onChainBalanceCache.pools;
+      this.selectedPools = this.sorV2.getPools();
       return v2return;
     }
   }

@@ -97,9 +97,9 @@ import {
 } from '@/services/balancer/subgraph/types';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import { formatDistanceToNow } from 'date-fns';
-import { bnum } from '@balancer-labs/sor2/dist/bmath';
 import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
+import { bnum } from '@balancer-labs/sor2';
 
 type TokenAmount = {
   address: string;

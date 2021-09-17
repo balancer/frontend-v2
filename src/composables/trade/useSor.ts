@@ -45,7 +45,6 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
-const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 const MIN_PRICE_IMPACT = 0.0001;
 const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
 const state = reactive({
@@ -172,9 +171,6 @@ export default function useSor({
     const poolsUrlV1 = `${
       configService.network.poolsUrlV1
     }?timestamp=${Date.now()}`;
-    const poolsUrlV2 = `${
-      configService.network.poolsUrlV2
-    }?timestamp=${Date.now()}`;
     const subgraphUrl = configService.network.subgraph;
 
     // If V1 previously selected on another network then it uses this and returns no liquidity.
@@ -190,7 +186,6 @@ export default function useSor({
       configService.network.chainId,
       configService.network.addresses.weth,
       poolsUrlV1,
-      poolsUrlV2,
       subgraphUrl
     );
 
@@ -568,16 +563,13 @@ export default function useSor({
     }
   }
 
-  // Uses stored market prices to calculate swap cost in token denomination
-  function calculateSwapCost(tokenAddress: string): BigNumber {
+  // Uses stored market prices to calculate price of native asset in terms of token
+  function calculateEthPriceInToken(tokenAddress: string): BigNumber {
     const ethPriceFiat = priceFor(appNetworkConfig.nativeAsset.address);
     const tokenPriceFiat = priceFor(tokenAddress);
-    const gasPriceWei = store.state.market.gasPrice || 0;
-    const gasPriceScaled = scale(bnum(gasPriceWei), -18);
-    const ethPriceToken = bnum(Number(ethPriceFiat) / Number(tokenPriceFiat));
-    const swapCost = bnum(SWAP_COST);
-    const costSwapToken = gasPriceScaled.times(swapCost).times(ethPriceToken);
-    return costSwapToken;
+    if (tokenPriceFiat === 0) return bnum(0);
+    const ethPriceToken = bnum(ethPriceFiat / tokenPriceFiat);
+    return ethPriceToken;
   }
 
   // Sets SOR swap cost for more efficient routing
@@ -586,18 +578,10 @@ export default function useSor({
     tokenDecimals: number,
     sorManager: SorManager
   ): Promise<void> {
-    // If using Polygon get price of swap using stored market prices
-    // If mainnet price retrieved on-chain using SOR
-    if (appNetworkConfig.chainId === 137) {
-      const swapCostToken = calculateSwapCost(tokenOutAddressInput.value);
-      await sorManager.setCostOutputToken(
-        tokenAddress,
-        tokenDecimals,
-        swapCostToken
-      );
-    } else {
-      await sorManager.setCostOutputToken(tokenAddress, tokenDecimals);
-    }
+    const ethPriceToken = calculateEthPriceInToken(tokenAddress).times(
+      new BigNumber(10 ** tokenDecimals)
+    );
+    await sorManager.setCostOutputToken(tokenAddress, ethPriceToken);
   }
 
   function getMaxIn(amount: BigNumber) {
