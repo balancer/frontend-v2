@@ -8,6 +8,7 @@ import { OnchainPoolData, PoolType } from '../../subgraph/types';
 import ConfigService from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 import { isWeightedLike, isStableLike } from '@/composables/usePool';
+import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 
 export default class Vault {
   service: Service;
@@ -92,13 +93,8 @@ export default class Vault {
     tokens: TokenInfoMap
   ) {
     if (isWeightedLike(type)) {
-      const totalWeight = weights.reduce((a, b) => a.add(b), BigNumber.from(0));
-      return weights.map(
-        w =>
-          ((100 / Number(formatUnits(totalWeight, 10))) *
-            Number(formatUnits(w, 10))) /
-          100
-      );
+      // toNormalizedWeights returns weights as 18 decimal fixed point
+      return toNormalizedWeights(weights).map(w => formatUnits(w, 18));
     } else if (isStableLike(type)) {
       const tokensList = Object.values(tokens);
       return tokensList.map(() => 1 / tokensList.length);
