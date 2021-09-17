@@ -9,6 +9,7 @@
         :data="userPools"
         :noPoolsLabel="$t('noInvestments')"
         showPoolShares
+        :selectedTokens="selectedTokens"
         class="mb-8"
       />
       <div class="px-4 lg:px-0" v-if="!hideV1Links">
@@ -36,6 +37,7 @@
       :isPaginated="poolsHasNextPage"
       :isLoadingMore="poolsIsFetchingNextPage"
       @loadMore="loadMorePools"
+      :selectedTokens="selectedTokens"
       class="mb-8"
     />
     <div class="px-4 lg:px-0" v-if="!hideV1Links">

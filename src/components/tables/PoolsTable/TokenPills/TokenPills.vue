@@ -1,15 +1,13 @@
 <template>
   <div class="-mt-1 flex flex-wrap">
     <template v-if="isStablePool">
-      <div class="bg-gray-100 dark:bg-gray-700 rounded-lg flex">
-        <StableTokenPill
-          v-for="(token, i) in visibleTokens"
-          :key="token"
-          :hasBalance="hasBalance(token.address)"
-          :symbol="symbolFor(token)"
-          :isLast="visibleTokens.length - 1 === i"
-        />
-      </div>
+      <StableTokenPill
+        v-for="token in visibleTokens"
+        :key="token"
+        :hasBalance="hasBalance(token.address)"
+        :symbol="symbolFor(token)"
+        :isSelected="selectedTokens.includes(token.address)"
+      />
     </template>
     <template v-else>
       <WeightedTokenPill
@@ -18,13 +16,15 @@
         :hasBalance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
         :weight="weightFor(token)"
+        :isSelected="selectedTokens.includes(token.address)"
+      />
+      <HiddenTokensPills
+        v-if="hiddenTokens.length > 0"
+        :tokens="hiddenTokens"
+        :hasBalance="hasBalanceInHiddenTokens"
+        :isSelected="true"
       />
     </template>
-    <HiddenTokensPills
-      v-if="hiddenTokens.length > 0"
-      :tokens="hiddenTokens"
-      :hasBalance="hasBalanceInHiddenTokens"
-    />
   </div>
 </template>
 
@@ -56,7 +56,13 @@ export default defineComponent({
       type: Array as PropType<PoolToken[]>,
       required: true
     },
-    isStablePool: { type: Boolean, required: true }
+    isStablePool: {
+      type: Boolean,
+      required: true
+    },
+    selectedTokens: {
+      type: Array as PropType<string[]>
+    }
   },
 
   setup(props) {
@@ -77,6 +83,12 @@ export default defineComponent({
       hiddenTokens.value.some(token => hasBalance(token.address))
     );
 
+    const isSelectedInHiddenTokens = computed(() =>
+      hiddenTokens.value.some(token =>
+        props.selectedTokens?.includes(token.address)
+      )
+    );
+
     /**
      * METHODS
      */
@@ -93,6 +105,7 @@ export default defineComponent({
       visibleTokens,
       hiddenTokens,
       hasBalanceInHiddenTokens,
+      isSelectedInHiddenTokens,
 
       // methods
       symbolFor,

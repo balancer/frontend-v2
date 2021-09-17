@@ -51,6 +51,7 @@
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
             :isStablePool="isStableLike(pool.poolType)"
+            :selectedTokens="selectedTokens"
           />
         </div>
       </template>
@@ -69,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -121,6 +122,9 @@ export default defineComponent({
     isPaginated: {
       type: Boolean,
       default: false
+    },
+    selectedTokens: {
+      type: Array as PropType<string[]>
     }
   },
 
