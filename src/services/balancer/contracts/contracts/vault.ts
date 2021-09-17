@@ -1,5 +1,5 @@
 import Service from '../balancer-contracts.service';
-import { default as vaultAbi } from '@/lib/abi/Vault.json';
+import { Vault__factory } from '@balancer-labs/typechain';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
@@ -26,7 +26,7 @@ export default class Vault {
     const vaultMultiCaller = new Multicaller(
       this.configService.network.key,
       this.service.provider,
-      vaultAbi
+      Vault__factory.abi
     );
     const tokenMultiCaller = new Multicaller(
       this.configService.network.key,

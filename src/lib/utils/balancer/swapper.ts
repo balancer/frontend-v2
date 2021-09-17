@@ -1,12 +1,11 @@
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { AddressZero, MaxUint256 } from '@ethersproject/constants';
+import { Vault__factory, LidoRelayer__factory } from '@balancer-labs/typechain';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { SwapV2 } from '@balancer-labs/sor2';
 import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
-import vaultAbi from '@/lib/abi/Vault.json';
-import lidoRelayerAbi from '@/lib/abi/LidoRelayer.json';
 import configs from '@/lib/config';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
@@ -242,7 +241,7 @@ async function batchSwapGivenInV2(
       return sendTransaction(
         web3,
         configs[network].addresses.vault,
-        vaultAbi,
+        Vault__factory.abi,
         'swap',
         [single, funds, tokenOutAmountMin.toString(), MaxUint256],
         overrides
@@ -252,7 +251,7 @@ async function batchSwapGivenInV2(
     return sendTransaction(
       web3,
       configs[network].addresses.vault,
-      vaultAbi,
+      Vault__factory.abi,
       'batchSwap',
       [SWAP_KIND_IN, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
@@ -322,7 +321,7 @@ async function batchSwapGivenOutV2(
       return sendTransaction(
         web3,
         configs[network].addresses.vault,
-        vaultAbi,
+        Vault__factory.abi,
         'swap',
         [single, funds, tokenInAmountMax.toString(), MaxUint256],
         overrides
@@ -332,7 +331,7 @@ async function batchSwapGivenOutV2(
     return sendTransaction(
       web3,
       configs[network].addresses.vault,
-      vaultAbi,
+      Vault__factory.abi,
       'batchSwap',
       [SWAP_KIND_OUT, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
@@ -414,7 +413,7 @@ async function lidoBatchSwapGivenIn(
       return sendTransaction(
         web3,
         configs[network].addresses.lidoRelayer,
-        lidoRelayerAbi,
+        LidoRelayer__factory.abi,
         'swap',
         [single, funds, tokenOutAmountMin.toString(), MaxUint256],
         overrides
@@ -424,7 +423,7 @@ async function lidoBatchSwapGivenIn(
     return sendTransaction(
       web3,
       configs[network].addresses.lidoRelayer,
-      lidoRelayerAbi,
+      LidoRelayer__factory.abi,
       'batchSwap',
       [SWAP_KIND_IN, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
@@ -506,7 +505,7 @@ async function lidoBatchSwapGivenOut(
       return sendTransaction(
         web3,
         configs[network].addresses.lidoRelayer,
-        lidoRelayerAbi,
+        LidoRelayer__factory.abi,
         'swap',
         [single, funds, tokenInAmountMax.toString(), MaxUint256],
         overrides
@@ -516,7 +515,7 @@ async function lidoBatchSwapGivenOut(
     return sendTransaction(
       web3,
       configs[network].addresses.lidoRelayer,
-      lidoRelayerAbi,
+      LidoRelayer__factory.abi,
       'batchSwap',
       [SWAP_KIND_OUT, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
