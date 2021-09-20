@@ -1,3 +1,57 @@
+<script setup lang="ts">
+import { computed, defineProps } from 'vue';
+
+import useNumbers from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+
+import { PoolToken } from '@/services/balancer/subgraph/types';
+
+import WeightedTokenPill from './WeightedTokenPill.vue';
+import StableTokenPill from './StableTokenPill.vue';
+import HiddenTokensPills from './HiddenTokensPills.vue';
+
+type Props = {
+  tokens: PoolToken[];
+  isStablePool: boolean;
+  selectedTokens: string[];
+};
+
+const props = defineProps<Props>();
+
+const { fNum } = useNumbers();
+const { tokens, hasBalance } = useTokens();
+
+/**
+ * COMPUTED
+ */
+const visibleTokens = computed(() => props.tokens.slice(0, MAX_PILLS));
+
+const hiddenTokens = computed(() => props.tokens.slice(MAX_PILLS));
+
+const hasBalanceInHiddenTokens = computed(() =>
+  hiddenTokens.value.some(token => hasBalance(token.address))
+);
+
+const isSelectedInHiddenTokens = computed(() =>
+  hiddenTokens.value.some(token =>
+    props.selectedTokens?.includes(token.address)
+  )
+);
+
+/**
+ * METHODS
+ */
+function symbolFor(token: PoolToken): string {
+  return tokens.value[token.address]?.symbol || '---';
+}
+
+function weightFor(token: PoolToken): string {
+  return fNum(token.weight, 'percent_lg');
+}
+
+const MAX_PILLS = 11;
+</script>
+
 <template>
   <div class="-mt-1 flex flex-wrap">
     <template v-if="isStablePool">
@@ -22,96 +76,8 @@
         v-if="hiddenTokens.length > 0"
         :tokens="hiddenTokens"
         :hasBalance="hasBalanceInHiddenTokens"
-        :isSelected="true"
+        :isSelected="isSelectedInHiddenTokens"
       />
     </template>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
-
-import useNumbers from '@/composables/useNumbers';
-import useTokens from '@/composables/useTokens';
-
-import { PoolToken } from '@/services/balancer/subgraph/types';
-
-import WeightedTokenPill from './WeightedTokenPill.vue';
-import StableTokenPill from './StableTokenPill.vue';
-import HiddenTokensPills from './HiddenTokensPills.vue';
-
-const MAX_PILLS = 11;
-
-export default defineComponent({
-  name: 'TokenPills',
-
-  components: {
-    WeightedTokenPill,
-    StableTokenPill,
-    HiddenTokensPills
-  },
-
-  props: {
-    tokens: {
-      type: Array as PropType<PoolToken[]>,
-      required: true
-    },
-    isStablePool: {
-      type: Boolean,
-      required: true
-    },
-    selectedTokens: {
-      type: Array as PropType<string[]>
-    }
-  },
-
-  setup(props) {
-    /**
-     * COMPOSABLES
-     */
-    const { fNum } = useNumbers();
-    const { tokens, hasBalance } = useTokens();
-
-    /**
-     * COMPUTED
-     */
-    const visibleTokens = computed(() => props.tokens.slice(0, MAX_PILLS));
-
-    const hiddenTokens = computed(() => props.tokens.slice(MAX_PILLS));
-
-    const hasBalanceInHiddenTokens = computed(() =>
-      hiddenTokens.value.some(token => hasBalance(token.address))
-    );
-
-    const isSelectedInHiddenTokens = computed(() =>
-      hiddenTokens.value.some(token =>
-        props.selectedTokens?.includes(token.address)
-      )
-    );
-
-    /**
-     * METHODS
-     */
-    function symbolFor(token: PoolToken): string {
-      return tokens.value[token.address]?.symbol || '---';
-    }
-
-    function weightFor(token: PoolToken): string {
-      return fNum(token.weight, 'percent_lg');
-    }
-
-    return {
-      // computed
-      visibleTokens,
-      hiddenTokens,
-      hasBalanceInHiddenTokens,
-      isSelectedInHiddenTokens,
-
-      // methods
-      symbolFor,
-      weightFor,
-      hasBalance
-    };
-  }
-});
-</script>
