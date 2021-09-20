@@ -1,5 +1,6 @@
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Vault__factory } from '@balancer-labs/typechain';
 
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -7,7 +8,6 @@ import useTransactions from '../useTransactions';
 import useEthers from '../useEthers';
 import { configService } from '@/services/config/config.service';
 
-import vaultAbi from '@/lib/abi/Vault.json';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
 import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
@@ -60,7 +60,7 @@ export default function useRelayerApproval(
       const tx = await sendTransaction(
         getProvider(),
         configService.network.addresses.vault,
-        vaultAbi,
+        Vault__factory.abi,
         'setRelayerApproval',
         [account.value, relayerAddress.value, true]
       );

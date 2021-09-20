@@ -123,7 +123,7 @@
         @update:modelValue="setTradeLiquidity"
       />
     </div>
-    <div v-if="isEIP1559SupportedNetwork" class="px-4 pb-4 mt-6">
+    <div v-if="isEIP1559SupportedNetwork" class="px-4 mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('transactionType')" class="font-medium mb-2" />
         <BalTooltip>
@@ -158,7 +158,7 @@
     </div>
     <div
       v-if="networkName"
-      class="network p-4 text-sm border-t dark:border-gray-900 rounded-b-xl"
+      class="network p-4 mt-4 text-sm border-t dark:border-gray-900 rounded-b-xl"
     >
       <div v-text="$t('network')" />
       <div class="flex items-baseline">

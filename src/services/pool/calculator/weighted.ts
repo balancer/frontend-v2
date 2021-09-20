@@ -5,7 +5,7 @@ import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 
 import * as SDK from '@georgeroman/balancer-v2-pools';
-import { BPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2/dist/frontendHelpers/weightedHelpers';
+import { weightedBPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2';
 
 export default class Weighted {
   calc: Calculator;

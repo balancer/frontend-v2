@@ -6,7 +6,10 @@ module.exports = {
   },
 
   globals: {
-    NodeJS: true
+    NodeJS: true,
+    withDefaults: true,
+    defineProps: true,
+    defineEmits: true
   },
 
   extends: [

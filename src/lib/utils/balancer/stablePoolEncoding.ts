@@ -1,9 +1,5 @@
-import { defaultAbiCoder } from '@ethersproject/abi';
+import { StablePoolEncoder } from '@balancer-labs/balancer-js';
 import { BigNumberish } from '@ethersproject/bignumber';
-
-const JOIN_STABLE_POOL_INIT_TAG = 0;
-const JOIN_STABLE_POOL_EXACT_TOKENS_IN_FOR_BPT_OUT_TAG = 1;
-const JOIN_STABLE_POOL_TOKEN_IN_FOR_EXACT_BPT_OUT_TAG = 2;
 
 export type JoinStablePoolInit = {
   kind: 'Init';
@@ -29,34 +25,19 @@ export function encodeJoinStablePool(
     | JoinStablePoolTokenInForExactBPTOut
 ): string {
   if (joinData.kind == 'Init') {
-    return defaultAbiCoder.encode(
-      ['uint256', 'uint256[]'],
-      [JOIN_STABLE_POOL_INIT_TAG, joinData.amountsIn]
-    );
+    return StablePoolEncoder.joinInit(joinData.amountsIn);
   } else if (joinData.kind == 'ExactTokensInForBPTOut') {
-    return defaultAbiCoder.encode(
-      ['uint256', 'uint256[]', 'uint256'],
-      [
-        JOIN_STABLE_POOL_EXACT_TOKENS_IN_FOR_BPT_OUT_TAG,
-        joinData.amountsIn,
-        joinData.minimumBPT
-      ]
+    return StablePoolEncoder.joinExactTokensInForBPTOut(
+      joinData.amountsIn,
+      joinData.minimumBPT
     );
   } else {
-    return defaultAbiCoder.encode(
-      ['uint256', 'uint256', 'uint256'],
-      [
-        JOIN_STABLE_POOL_TOKEN_IN_FOR_EXACT_BPT_OUT_TAG,
-        joinData.bptAmountOut,
-        joinData.enterTokenIndex
-      ]
+    return StablePoolEncoder.joinTokenInForExactBPTOut(
+      joinData.bptAmountOut,
+      joinData.enterTokenIndex
     );
   }
 }
-
-const EXIT_STABLE_POOL_EXACT_BPT_IN_FOR_ONE_TOKEN_OUT_TAG = 0;
-const EXIT_STABLE_POOL_EXACT_BPT_IN_FOR_TOKENS_OUT_TAG = 1;
-const EXIT_STABLE_POOL_BPT_IN_FOR_EXACT_TOKENS_OUT_TAG = 2;
 
 export type ExitStablePoolExactBPTInForOneTokenOut = {
   kind: 'ExactBPTInForOneTokenOut';
@@ -82,27 +63,16 @@ export function encodeExitStablePool(
     | ExitStablePoolBPTInForExactTokensOut
 ): string {
   if (exitData.kind == 'ExactBPTInForOneTokenOut') {
-    return defaultAbiCoder.encode(
-      ['uint256', 'uint256', 'uint256'],
-      [
-        EXIT_STABLE_POOL_EXACT_BPT_IN_FOR_ONE_TOKEN_OUT_TAG,
-        exitData.bptAmountIn,
-        exitData.exitTokenIndex
-      ]
+    return StablePoolEncoder.exitExactBPTInForOneTokenOut(
+      exitData.bptAmountIn,
+      exitData.exitTokenIndex
     );
   } else if (exitData.kind == 'ExactBPTInForTokensOut') {
-    return defaultAbiCoder.encode(
-      ['uint256', 'uint256'],
-      [EXIT_STABLE_POOL_EXACT_BPT_IN_FOR_TOKENS_OUT_TAG, exitData.bptAmountIn]
-    );
+    return StablePoolEncoder.exitExactBPTInForTokensOut(exitData.bptAmountIn);
   } else {
-    return defaultAbiCoder.encode(
-      ['uint256', 'uint256[]', 'uint256'],
-      [
-        EXIT_STABLE_POOL_BPT_IN_FOR_EXACT_TOKENS_OUT_TAG,
-        exitData.amountsOut,
-        exitData.maxBPTAmountIn
-      ]
+    return StablePoolEncoder.exitBPTInForExactTokensOut(
+      exitData.amountsOut,
+      exitData.maxBPTAmountIn
     );
   }
 }

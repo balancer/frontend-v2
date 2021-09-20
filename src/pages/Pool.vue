@@ -13,13 +13,13 @@
               :key="i"
               class="mt-2 mr-2 flex items-center px-2 h-10 bg-gray-50 dark:bg-gray-850 rounded-lg"
             >
-              <BalAsset :address="address" :size="24" />
+              <BalAsset :address="address" />
               <span class="ml-2">
                 {{ tokenMeta.symbol }}
               </span>
               <span
                 v-if="!isStableLikePool"
-                class="font-medium text-gray-400 text-xs mt-px ml-1 font-numeric"
+                class="font-medium text-gray-400 text-xs mt-px ml-1"
               >
                 {{ fNum(tokenMeta.weight, 'percent_lg') }}
               </span>
@@ -241,10 +241,7 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      const feeLabel = `<span class="font-numeric">${fNum(
-        pool.value.onchain.swapFee,
-        'percent'
-      )}</span>`;
+      const feeLabel = `${fNum(pool.value.onchain.swapFee, 'percent')}`;
 
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);

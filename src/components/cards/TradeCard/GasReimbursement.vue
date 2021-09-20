@@ -150,14 +150,10 @@ export default defineComponent({
         reimburseAmount.value && reimburseAmount.value.usd.gt(0);
 
       return isEligible
-        ? `${t(
-            'tradeEarns'
-          )} <span class="font-numeric">~${reimburseAmount.value.bal.toFixed(
+        ? `${t('tradeEarns')} ~${reimburseAmount.value.bal.toFixed(
             1,
             BigNumber.ROUND_DOWN
-          )}</span> BAL (<span class="font-numeric">${formatUSD(
-            reimburseAmount.value.usd
-          )}</span>)`
+          )} BAL (${formatUSD(reimburseAmount.value.usd)})`
         : t('earnBAL');
     });
 

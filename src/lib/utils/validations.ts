@@ -1,4 +1,5 @@
 import i18n from '@/plugins/i18n';
+import { bnum } from '.';
 
 export function isRequired(field = '') {
   const _field = field ? `${field} ` : 'Input ';
@@ -13,17 +14,17 @@ export function minChar(minLength: number, field = '') {
     `${_field}${i18n.global.t('mustBeAtLeast', [minLength])}`;
 }
 
-export function isPositiveCheck(number: number) {
-  return number >= 0;
+export function isPositiveCheck(number: number | string) {
+  return bnum(number).isGreaterThanOrEqualTo(0);
 }
 export function isPositive() {
   return v => !v || isPositiveCheck(v) || i18n.global.t('mustBePositive');
 }
 
-export function isLessThanOrEqualTo(max: number, msg = '') {
+export function isLessThanOrEqualTo(max: number | string, msg = '') {
   return v =>
     !v ||
-    parseFloat(v) <= max ||
+    bnum(v).isLessThanOrEqualTo(max) ||
     (msg ? msg : i18n.global.t('mustBeLessThan', [max]));
 }
 

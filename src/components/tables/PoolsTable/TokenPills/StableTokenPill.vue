@@ -1,31 +1,74 @@
+<script setup lang="ts">
+import { defineProps, withDefaults } from 'vue';
+
+type Props = {
+  hasBalance: boolean;
+  symbol: string;
+  isSelected: boolean;
+};
+
+withDefaults(defineProps<Props>(), {
+  hasBalance: false,
+  isSelected: false
+});
+</script>
+
 <template>
-  <div class="flex relative">
-    <div
-      v-if="hasBalance"
-      class="w-3 h-3 rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800   bg-green-200 dark:bg-green-500 absolute top-0 right-0 -mt-1 -mr-1"
-    />
-    <div class="px-2 py-1">
+  <div
+    :class="[
+      'pill',
+      {
+        'pill-selected': isSelected
+      }
+    ]"
+  >
+    <div v-if="hasBalance" class="balance-indicator" />
+    <div class="pill-text">
       {{ symbol }}
-    </div>
-    <div class="relative">
-      <div
-        v-if="!isLast"
-        class="absolute w-1 h-10 -mt-1 -ml-px bg-white dark:bg-gray-850 group-hover:bg-gray-50 dark:group-hover:bg-gray-800 transform rotate-12"
-      />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<style scoped>
+.pill {
+  @apply flex;
+  @apply relative;
+  @apply mr-1;
+}
 
-export default defineComponent({
-  name: 'StableTokenPill',
+.pill::before {
+  @apply w-full h-full;
+  @apply absolute;
+  @apply bg-gray-100 dark:bg-gray-700;
+  content: '';
+  transform: skew(-12deg);
+}
 
-  props: {
-    hasBalance: { type: Boolean, default: false },
-    symbol: { type: String, required: true },
-    isLast: { type: Boolean, default: false }
-  }
-});
-</script>
+.pill:first-child::before {
+  border-radius: 4px 0px 0px 4px;
+}
+
+.pill:last-child::before {
+  border-radius: 0px 4px 4px 0px;
+}
+
+.pill-text {
+  @apply px-2 py-1;
+  z-index: 1;
+}
+
+.pill-selected::before {
+  @apply bg-blue-600 dark:bg-blue-600;
+}
+
+.pill-selected .pill-text {
+  @apply text-white;
+}
+
+.balance-indicator {
+  @apply w-3 h-3;
+  @apply rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
+  @apply bg-green-200 dark:bg-green-500;
+  @apply absolute top-0 right-0 -mt-1 -mr-1;
+}
+</style>

@@ -182,7 +182,7 @@ export default defineComponent({
      */
     const title = computed(() => {
       if (state.selectTokenList) return t('manageLists');
-      return t('selectToken');
+      return t('tokenSearch');
     });
 
     const tokenLists = computed(() => {

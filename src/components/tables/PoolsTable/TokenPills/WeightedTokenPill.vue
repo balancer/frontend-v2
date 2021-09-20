@@ -1,30 +1,57 @@
+<script setup lang="ts">
+import { defineProps, withDefaults } from 'vue';
+
+type Props = {
+  hasBalance: boolean;
+  symbol: string;
+  weight: string;
+  isSelected: boolean;
+};
+
+withDefaults(defineProps<Props>(), {
+  hasBalance: false,
+  isSelected: false
+});
+</script>
+
 <template>
   <div
-    class="flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative"
+    :class="[
+      'pill',
+      {
+        'pill-selected': isSelected
+      }
+    ]"
   >
-    <div
-      v-if="hasBalance"
-      class="w-3 h-3 rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800 bg-green-200 dark:bg-green-500 absolute top-0 right-0 -mt-1 -mr-1"
-    />
+    <div v-if="hasBalance" class="balance-indicator" />
     <span>
       {{ symbol }}
     </span>
-    <span class="font-medium text-gray-400 text-xs mt-px ml-1 font-numeric">
+    <span class="pill-weight">
       {{ weight }}
     </span>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<style scoped>
+.pill {
+  @apply flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative;
+}
 
-export default defineComponent({
-  name: 'WeightedTokenPill',
+.pill-selected {
+  @apply bg-blue-600 dark:bg-blue-600;
+  @apply text-white;
+}
 
-  props: {
-    hasBalance: { type: Boolean, default: false },
-    symbol: { type: String, required: true },
-    weight: { type: String, required: true }
-  }
-});
-</script>
+.pill-weight {
+  @apply font-medium text-gray-400 text-xs;
+  @apply mt-px ml-1;
+}
+
+.balance-indicator {
+  @apply w-3 h-3;
+  @apply rounded-full border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
+  @apply bg-green-200 dark:bg-green-500;
+  @apply absolute top-0 right-0 -mt-1 -mr-1;
+}
+</style>

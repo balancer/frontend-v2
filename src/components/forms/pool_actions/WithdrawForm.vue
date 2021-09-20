@@ -69,52 +69,19 @@
     </template>
 
     <div v-else class="px-4 pt-6 border-t border-b dark:border-gray-900">
-      <BalTextInput
-        v-for="(token, i) in pool.tokenAddresses"
-        :key="i"
-        :name="token"
-        v-model="amounts[i]"
-        :rules="amountRules(i)"
-        type="number"
-        min="0"
-        step="any"
-        placeholder="0"
-        :decimal-limit="tokenDecimals(i)"
-        validate-on="input"
-        prepend-border
-        :faded-out="isSingleAsset && singleAsset !== i"
+      <TokenInput
+        v-for="(tokenAddress, i) in tokenAddresses"
+        :key="tokenAddress"
+        v-model:amount="amounts[i]"
+        v-model:address="tokenAddresses[i]"
+        :weight="isStableLikePool ? 0 : tokenWeights[i]"
+        :customBalance="singleAssetMaxes[i]"
+        :name="tokenAddress"
+        class="mb-4"
+        fixedToken
         @click="setSingleAsset(i)"
-      >
-        <template v-slot:prepend>
-          <div class="flex items-center h-full w-24">
-            <BalAsset :address="token" />
-            <div class="flex flex-col ml-3">
-              <span class="font-medium text-sm leading-none w-14 truncate">
-                {{ pool.onchain.tokens[token].symbol }}
-              </span>
-            </div>
-          </div>
-        </template>
-        <template v-if="isSingleAsset" v-slot:info>
-          <div
-            class="cursor-pointer"
-            @click.prevent="amounts[i] = singleAssetMaxes[i]"
-          >
-            {{ $t('singleTokenMax') }}: {{ singleAssetMaxLabel(i) }}
-          </div>
-        </template>
-        <template v-slot:append>
-          <div class="p-2">
-            <BalBtn
-              size="xs"
-              color="white"
-              @click.prevent="amounts[i] = singleAssetMaxes[i]"
-            >
-              {{ $t('max') }}
-            </BalBtn>
-          </div>
-        </template>
-      </BalTextInput>
+        @update:amount="setSingleAsset(i)"
+      />
     </div>
 
     <div class="p-4">
@@ -214,6 +181,7 @@ import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -224,7 +192,8 @@ export default defineComponent({
   name: 'WithdrawalForm',
 
   components: {
-    FormTypeToggle
+    FormTypeToggle,
+    TokenInput
   },
 
   emits: ['success'],
@@ -238,6 +207,7 @@ export default defineComponent({
     const data = reactive({
       withdrawForm: {} as FormRef,
       loading: false,
+      tokenAddresses: props.pool.tokenAddresses,
       amounts: [] as string[],
       propMax: [] as string[],
       bptIn: '',
@@ -301,15 +271,21 @@ export default defineComponent({
 
     const propMaxUSD = computed(() => {
       const total = props.pool.tokenAddresses
-        .map((token, i) => toFiat(Number(data.propMax[i]), token))
-        .reduce((a, b) => a + b, 0);
+        .map((token, i) => toFiat(data.propMax[i], token))
+        .reduce(
+          (a, b) =>
+            bnum(a)
+              .plus(b)
+              .toNumber(),
+          0
+        );
 
       return fNum(total, 'usd');
     });
 
     const singleMaxUSD = computed(() => {
       const maxes = props.pool.tokenAddresses.map((token, i) =>
-        toFiat(singleAssetMaxes.value[i], token)
+        Number(toFiat(singleAssetMaxes.value[i], token))
       );
 
       return fNum(Math.max(...maxes), 'usd');
@@ -331,10 +307,6 @@ export default defineComponent({
       return fNum(data.propMax[index] || '0', 'token');
     }
 
-    function singleAssetMaxLabel(index) {
-      return fNum(singleAssetMaxes.value[index] || '0', 'token');
-    }
-
     function amountUSD(index) {
       const amount = fullAmounts.value[index] || '0';
       return toFiat(amount, props.pool.tokenAddresses[index]);
@@ -343,7 +315,13 @@ export default defineComponent({
     const total = computed(() => {
       const total = props.pool.tokenAddresses
         .map((_, i) => amountUSD(i))
-        .reduce((a, b) => a + b, 0);
+        .reduce(
+          (a, b) =>
+            bnum(a)
+              .plus(b)
+              .toNumber(),
+          0
+        );
 
       if (total < 0) return fNum(0, 'usd');
       return fNum(total, 'usd');
@@ -641,7 +619,6 @@ export default defineComponent({
       isStableLikePool,
       formatPropBalance,
       amountUSD,
-      singleAssetMaxLabel,
       singleAssetMaxes,
       isRequired,
       trackGoal,

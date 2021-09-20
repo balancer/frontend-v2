@@ -20,7 +20,7 @@
         <div>
           <div class="flex justify-between text-xs">
             <div>
-              <div class="font-bold font-numeric">
+              <div class="font-bold">
                 {{ input.amount }}
               </div>
               <div>
@@ -28,7 +28,7 @@
               </div>
             </div>
             <div class="flex flex-col items-end">
-              <div class="font-bold font-numeric">
+              <div class="font-bold">
                 {{ output.amount }}
               </div>
               <div>
@@ -109,9 +109,7 @@
                   </a>
                 </div>
               </div>
-              <div
-                class="w-10 mr-4 text-xs text-right text-gray-500 font-numeric"
-              >
+              <div class="w-10 mr-4 text-xs text-right text-gray-500">
                 {{ formatShare(route.share) }}
               </div>
             </div>
@@ -445,7 +443,7 @@ export default defineComponent({
       } else {
         return props.sorReturn.isV1swap
           ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
-          : `https://${prefix}balancer.fi/#pool/${id}`;
+          : `https://${prefix}balancer.fi/#/pool/${id}`;
       }
     }
 

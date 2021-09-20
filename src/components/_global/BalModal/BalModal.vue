@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import BalCard from '../BalCard/BalCard.vue';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import AnimatePresence from '../../animate/AnimatePresence.vue';
 import { defineComponent, ref, toRefs, watch } from 'vue';
 
 export default defineComponent({

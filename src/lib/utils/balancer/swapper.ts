@@ -1,37 +1,22 @@
-import { Swap } from '@balancer-labs/sor/dist/types';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { AddressZero, MaxUint256 } from '@ethersproject/constants';
-import { SwapV2 } from '@balancer-labs/sor2/dist/types';
+import { Vault__factory, LidoRelayer__factory } from '@balancer-labs/typechain';
+import { Swap } from '@balancer-labs/sor/dist/types';
+import { SwapV2 } from '@balancer-labs/sor2';
 import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
-import vaultAbi from '@/lib/abi/Vault.json';
-import lidoRelayerAbi from '@/lib/abi/LidoRelayer.json';
 import configs from '@/lib/config';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWstETHByStETH, isStETH } from './lido';
 import { configService } from '@/services/config/config.service';
 import { bnum } from '..';
-
-const SWAP_KIND_IN = 0;
-const SWAP_KIND_OUT = 1;
-
-type FundManagement = {
-  sender: string;
-  recipient: string;
-  fromInternalBalance: boolean;
-  toInternalBalance: boolean;
-};
-
-type SingleSwap = {
-  poolId: string;
-  kind: number;
-  assetIn: string;
-  assetOut: string;
-  amount: string;
-  userData: string;
-};
+import {
+  FundManagement,
+  SingleSwap,
+  SwapKind
+} from '@balancer-labs/balancer-js';
 
 export async function swapIn(
   network: string,
@@ -232,7 +217,7 @@ async function batchSwapGivenInV2(
 
       const single: SingleSwap = {
         poolId: swaps[0].poolId,
-        kind: SWAP_KIND_IN,
+        kind: SwapKind.GivenIn,
         assetIn: tokenAddresses[swaps[0].assetInIndex],
         assetOut: tokenAddresses[swaps[0].assetOutIndex],
         amount: swaps[0].amount,
@@ -242,7 +227,7 @@ async function batchSwapGivenInV2(
       return sendTransaction(
         web3,
         configs[network].addresses.vault,
-        vaultAbi,
+        Vault__factory.abi,
         'swap',
         [single, funds, tokenOutAmountMin.toString(), MaxUint256],
         overrides
@@ -252,9 +237,9 @@ async function batchSwapGivenInV2(
     return sendTransaction(
       web3,
       configs[network].addresses.vault,
-      vaultAbi,
+      Vault__factory.abi,
       'batchSwap',
-      [SWAP_KIND_IN, swaps, tokenAddresses, funds, limits, MaxUint256],
+      [SwapKind.GivenIn, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
     );
   } catch (e) {
@@ -312,7 +297,7 @@ async function batchSwapGivenOutV2(
 
       const single: SingleSwap = {
         poolId: swaps[0].poolId,
-        kind: SWAP_KIND_OUT,
+        kind: SwapKind.GivenOut,
         assetIn: tokenAddresses[swaps[0].assetInIndex],
         assetOut: tokenAddresses[swaps[0].assetOutIndex],
         amount: swaps[0].amount,
@@ -322,7 +307,7 @@ async function batchSwapGivenOutV2(
       return sendTransaction(
         web3,
         configs[network].addresses.vault,
-        vaultAbi,
+        Vault__factory.abi,
         'swap',
         [single, funds, tokenInAmountMax.toString(), MaxUint256],
         overrides
@@ -332,9 +317,9 @@ async function batchSwapGivenOutV2(
     return sendTransaction(
       web3,
       configs[network].addresses.vault,
-      vaultAbi,
+      Vault__factory.abi,
       'batchSwap',
-      [SWAP_KIND_OUT, swaps, tokenAddresses, funds, limits, MaxUint256],
+      [SwapKind.GivenOut, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
     );
   } catch (e) {
@@ -404,7 +389,7 @@ async function lidoBatchSwapGivenIn(
 
       const single: SingleSwap = {
         poolId: swaps[0].poolId,
-        kind: SWAP_KIND_IN,
+        kind: SwapKind.GivenIn,
         assetIn: tokenAddresses[swaps[0].assetInIndex],
         assetOut: tokenAddresses[swaps[0].assetOutIndex],
         amount: swaps[0].amount,
@@ -414,7 +399,7 @@ async function lidoBatchSwapGivenIn(
       return sendTransaction(
         web3,
         configs[network].addresses.lidoRelayer,
-        lidoRelayerAbi,
+        LidoRelayer__factory.abi,
         'swap',
         [single, funds, tokenOutAmountMin.toString(), MaxUint256],
         overrides
@@ -424,9 +409,9 @@ async function lidoBatchSwapGivenIn(
     return sendTransaction(
       web3,
       configs[network].addresses.lidoRelayer,
-      lidoRelayerAbi,
+      LidoRelayer__factory.abi,
       'batchSwap',
-      [SWAP_KIND_IN, swaps, tokenAddresses, funds, limits, MaxUint256],
+      [SwapKind.GivenIn, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
     );
   } catch (e) {
@@ -496,7 +481,7 @@ async function lidoBatchSwapGivenOut(
 
       const single: SingleSwap = {
         poolId: swaps[0].poolId,
-        kind: SWAP_KIND_OUT,
+        kind: SwapKind.GivenOut,
         assetIn: tokenAddresses[swaps[0].assetInIndex],
         assetOut: tokenAddresses[swaps[0].assetOutIndex],
         amount: swaps[0].amount,
@@ -506,7 +491,7 @@ async function lidoBatchSwapGivenOut(
       return sendTransaction(
         web3,
         configs[network].addresses.lidoRelayer,
-        lidoRelayerAbi,
+        LidoRelayer__factory.abi,
         'swap',
         [single, funds, tokenInAmountMax.toString(), MaxUint256],
         overrides
@@ -516,9 +501,9 @@ async function lidoBatchSwapGivenOut(
     return sendTransaction(
       web3,
       configs[network].addresses.lidoRelayer,
-      lidoRelayerAbi,
+      LidoRelayer__factory.abi,
       'batchSwap',
-      [SWAP_KIND_OUT, swaps, tokenAddresses, funds, limits, MaxUint256],
+      [SwapKind.GivenOut, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
     );
   } catch (e) {
