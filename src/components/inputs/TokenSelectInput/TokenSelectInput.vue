@@ -69,7 +69,7 @@ const toggleModal = () => {
       <span class="text-base font-medium">
         {{ token?.symbol }}
       </span>
-      <span v-if="weight > 0" class="text-gray-500 ml-2 mr-4">
+      <span v-if="weight > 0" class="text-gray-500 ml-2">
         {{ fNum(weight, 'percent_lg') }}
       </span>
       <BalIcon
