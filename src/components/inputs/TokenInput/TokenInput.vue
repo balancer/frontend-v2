@@ -159,6 +159,7 @@ watchEffect(() => {
     validateOn="input"
     autocomplete="off"
     autocorrect="off"
+    step="any"
     spellcheck="false"
     v-bind="$attrs"
     inputAlignRight
