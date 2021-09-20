@@ -80,7 +80,7 @@
         class="mb-4"
         fixedToken
         @click="setSingleAsset(i)"
-        @update:amount="setSingleAsset(i)"
+        @update:amount="setSingleAsset(i, $event)"
       />
     </div>
 
@@ -459,13 +459,15 @@ export default defineComponent({
       data.amounts = receive;
     }
 
-    function setSingleAsset(index) {
+    function setSingleAsset(index, value = '0') {
       if (!isSingleAsset.value) return;
       data.singleAsset = index;
 
+      const newAmount = value === '0' ? singleAssetMaxes.value[index] : value;
+
       props.pool.tokenAddresses.forEach((_, i) => {
         if (i === index) {
-          data.amounts[i] = singleAssetMaxes.value[index];
+          data.amounts[i] = newAmount;
         } else {
           data.amounts[i] = '0';
         }
