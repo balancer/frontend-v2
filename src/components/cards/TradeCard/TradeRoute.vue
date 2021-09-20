@@ -443,7 +443,7 @@ export default defineComponent({
       } else {
         return props.sorReturn.isV1swap
           ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
-          : `https://${prefix}balancer.fi/#pool/${id}`;
+          : `https://${prefix}balancer.fi/#/pool/${id}`;
       }
     }
 
