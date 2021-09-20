@@ -163,10 +163,9 @@
           :class="['flex items-center text-sm mb-4', priceImpactClasses]"
           @click.prevent
         >
-          <span
-            >{{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}</span
-          >
-          >
+          <span>
+            {{ $t('priceImpact') }}: {{ fNum(priceImpact, 'percent') }}
+          </span>
           <BalTooltip>
             <template v-slot:activator>
               <BalIcon
