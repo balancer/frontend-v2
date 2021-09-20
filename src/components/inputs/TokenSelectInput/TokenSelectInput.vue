@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenModal.vue';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
+import { TokenInfo } from '@/types/TokenList';
 
 /**
  * TYPES
@@ -42,8 +43,8 @@ const { fNum } = useNumbers();
  */
 const hasToken = computed(() => !!props.modelValue);
 
-const token = computed(() => {
-  if (!hasToken.value) return {};
+const token = computed((): TokenInfo | null => {
+  if (!hasToken.value) return null;
   return getToken(props.modelValue);
 });
 
@@ -62,7 +63,9 @@ const toggleModal = () => {
       :class="['token-select-input selected group', { selectable: !fixed }]"
       @click="toggleModal"
     >
-      <BalAsset :address="token?.address" class="shadow mr-2" />
+      <div class="w-8">
+        <BalAsset :address="token?.address" class="shadow" />
+      </div>
       <span class="text-base font-medium">
         {{ token?.symbol }}
       </span>
