@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineProps } from 'vue';
+import { computed, defineProps, withDefaults } from 'vue';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
@@ -13,10 +13,12 @@ import HiddenTokensPills from './HiddenTokensPills.vue';
 type Props = {
   tokens: PoolToken[];
   isStablePool: boolean;
-  selectedTokens: string[];
+  selectedTokens?: string[];
 };
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  selectedTokens: () => []
+});
 
 const { fNum } = useNumbers();
 const { tokens, hasBalance } = useTokens();
@@ -33,9 +35,7 @@ const hasBalanceInHiddenTokens = computed(() =>
 );
 
 const isSelectedInHiddenTokens = computed(() =>
-  hiddenTokens.value.some(token =>
-    props.selectedTokens?.includes(token.address)
-  )
+  hiddenTokens.value.some(token => props.selectedTokens.includes(token.address))
 );
 
 /**
