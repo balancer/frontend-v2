@@ -45,11 +45,17 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div class="px-6 py-4">
+        <div class="px-6 py-4 items-center">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
             :isStablePool="isStableLike(pool.poolType)"
           />
+          <div
+            v-if="pool.dynamic.isNewPool"
+            class="rounded bg-red-500 text-xs px-1 shadow-sm text-white uppercase ml-2"
+          >
+            {{ $t('new') }}
+          </div>
         </div>
       </template>
       <template
