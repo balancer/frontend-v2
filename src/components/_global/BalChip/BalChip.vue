@@ -6,7 +6,7 @@ import useCloseIconClasses from './composables/useCloseIconClasses';
 
 import BalIcon from '../BalIcon/BalIcon.vue';
 
-export type Props = {
+type Props = {
   label?: string;
   closeable?: boolean;
   size?: 'sm' | 'md' | 'lg';
