@@ -50,12 +50,15 @@
             :tokens="orderedPoolTokens(pool)"
             :isStablePool="isStableLike(pool.poolType)"
           />
-          <div
+          <BalChip
             v-if="pool.dynamic.isNewPool"
-            class="rounded bg-red-500 text-xs px-1 shadow-sm text-white uppercase ml-2"
+            color="red"
+            size="sm"
+            class="ml-2 uppercase"
+            :outline="false"
           >
             {{ $t('new') }}
-          </div>
+          </BalChip>
         </div>
       </template>
       <template
