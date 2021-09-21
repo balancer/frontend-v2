@@ -58,8 +58,15 @@ export default class Pools {
     const block = { number: blockNumber };
     const isInPoolIds = { id_in: pools.map(pool => pool.id) };
     const pastPoolsQuery = this.query({ where: isInPoolIds, block });
-    const { pools: pastPools } = await this.service.client.get(pastPoolsQuery);
-
+    let pastPools: Pool[] = [];
+    try {
+      const data: { pools: Pool[] } = await this.service.client.get(
+        pastPoolsQuery
+      );
+      pastPools = data.pools;
+    } catch {
+      // eslint-disable-previous-line no-empty
+    }
     return this.serialize(pools, pastPools, period, prices, currency);
   }
 
