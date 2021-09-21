@@ -233,7 +233,7 @@ export default class Pools {
   }
 
   private isNewPool(pool: Pool): boolean {
-    return differenceInWeeks(Date.now(), pool.createTime * 1000) < 1;
+    return differenceInWeeks(Date.now(), pool.createTime * oneSecondInMs) < 1;
   }
 
   public addressFor(poolId: string): string {
