@@ -171,6 +171,7 @@
     "namePlaceholder": "Name, symbol or contract address",
     "network": "Network",
     "networkMismatch": "Please switch to {0}",
+    "new": "New",
     "newInvestment": "New investment",
     "newWithdrawal": "New withdrawal",
     "newTrade": "New Trade",

@@ -24,7 +24,16 @@
                 {{ fNum(tokenMeta.weight, 'percent_lg') }}
               </span>
             </div>
-            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-2" />
+            <BalChip
+              v-if="pool.dynamic.isNewPool"
+              color="red"
+              size="sm"
+              class="uppercase mt-2 mr-2"
+              :outline="false"
+            >
+              {{ $t('new') }}
+            </BalChip>
+            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-1" />
           </div>
           <div class="flex items-center mt-2">
             <div v-html="poolFeeLabel" class="text-sm text-gray-600" />

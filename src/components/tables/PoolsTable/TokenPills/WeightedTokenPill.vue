@@ -37,6 +37,9 @@ withDefaults(defineProps<Props>(), {
 .pill {
   @apply flex items-center px-2 mr-2 my-1 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 relative;
 }
+.pill:last-child {
+  @apply mr-0;
+}
 
 .pill-selected {
   @apply bg-blue-600 dark:bg-blue-600;
