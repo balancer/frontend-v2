@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { withDefaults, defineEmits } from 'vue';
 
-import useChipClasses from './composables/useChipClasses';
-import useCloseIconClasses from './composables/useCloseIconClasses';
+import {
+  useChipClasses,
+  useCloseIconClasses
+} from './composables/useChipStyles';
 
 import BalIcon from '../BalIcon/BalIcon.vue';
 
