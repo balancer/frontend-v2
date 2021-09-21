@@ -1,11 +1,20 @@
 <template>
-  <div>
+  <div class="flex justify-center">
+    <div class="mt-8 mr-6 flex flex-col widget-card">
+      <MyWallet />
+      <div class="mt-4">
+        <TrendingPairs />
+      </div>
+    </div>
     <div class="trade-container">
       <BalLoadingBlock v-if="appLoading || loadingTokenLists" class="h-96" />
       <template v-else>
         <TradeCard v-if="tradeInterface === TradeInterface.BALANCER" />
         <TradeCardGP v-else-if="tradeInterface === TradeInterface.GNOSIS" />
       </template>
+    </div>
+    <div class="mt-8 ml-6 flex flex-col widget-card relative">
+      <PairPriceGraph />
     </div>
   </div>
 </template>
@@ -19,11 +28,17 @@ import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
 import useTokenLists from '@/composables/useTokenLists';
 import { TradeInterface } from '@/store/modules/app';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
+import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
+import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
+import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
 
 export default defineComponent({
   components: {
     TradeCard,
-    TradeCardGP
+    TradeCardGP,
+    MyWallet,
+    TrendingPairs,
+    PairPriceGraph
   },
 
   setup() {
@@ -53,7 +68,7 @@ export default defineComponent({
 
 <style scoped>
 .trade-container {
-  @apply max-w-full mx-auto mt-2 xs:mt-8;
+  @apply max-w-full mt-2 xs:mt-8;
   max-width: 450px;
 }
 
@@ -61,5 +76,10 @@ export default defineComponent({
   .trade-container {
     @apply md:mt-8;
   }
+}
+
+.widget-card {
+  width: 260px;
+  max-width: 260px;
 }
 </style>

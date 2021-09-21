@@ -57,7 +57,7 @@
     "postcss-nesting": "^7.0.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.4",
     "vue": "^3.2.6",
-    "vue-echarts": "^6.0.0-rc.4",
+    "vue-echarts": "^6.0.0",
     "vue-i18n": "^9.0.0-rc.1",
     "vue-query": "^1.6.0",
     "vue-router": "^4.0.10",
