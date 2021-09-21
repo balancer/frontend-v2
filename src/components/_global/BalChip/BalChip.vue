@@ -29,9 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   outline: true
 });
 
-const emit = defineEmits<{
-  (e: 'closed', value: any): void;
-}>();
+const emit = defineEmits(['closed']);
 
 const classes = useChipClasses(props);
 const { classes: iconClasses, iconSize } = useCloseIconClasses(props);
@@ -44,7 +42,7 @@ const { classes: iconClasses, iconSize } = useCloseIconClasses(props);
         {{ label }}
       </span>
       <slot v-else />
-      <div v-if="closeable" @click="emit('closed', $event)">
+      <div v-if="closeable" @click="emit('closed')">
         <BalIcon name="x" :size="iconSize" :class="['close', iconClasses]" />
       </div>
     </div>
