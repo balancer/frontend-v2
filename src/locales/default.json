@@ -54,6 +54,12 @@
     "classic": "Classic",
     "close": "Close",
     "clearTransactions": "Clear transactions",
+    "copperLaunchPromo": {
+        "title": "A Copper fair launch auction pool (FLA)",
+        "description": "Copper is the platform for FLAs—a simple crowdfunding mechanism that enables projects and ideas from across the world to raise money from individuals without barriers to entry.",
+        "poweredByBalancer": "Copper is built on Balancer V2 and uses Liquidity Bootstapping Pools to power it’s FLAs",
+        "buttonLabel": "View this auction on Copper"
+    },
     "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
     "configuration": "Configuration",
     "confirmTrade": "Confirm trade",

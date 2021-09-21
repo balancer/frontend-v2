@@ -21,5 +21,9 @@ export const EXTERNAL_LINKS = {
       USDC:
         'https://app.element.fi/pools/0x787546Bf2c05e3e19e2b6BDE57A203da7f682efF'
     }
+  },
+  Copper: {
+    Auctions: (poolAddress: string) =>
+      `https://copperlaunch.com/auctions/${poolAddress}`
   }
 };
