@@ -3,7 +3,7 @@
     <AppNav />
     <AppHero v-if="isHomePage" />
     <div class="pb-16">
-      <router-view :key="$route.path" class="flex-auto" />
+      <router-view :key="$route.path" />
     </div>
     <AppFooterNav v-if="upToLargeBreakpoint" />
     <BalBtn
