@@ -112,7 +112,7 @@
 
 <script lang="ts">
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import { TokenTotal, WeeklyDistributions } from '@/pages/LiquidityMining.vue';
+import { TokenTotal, WeeklyDistributions } from '@/pages/liquidity-mining.vue';
 import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
 import {
   DecoratedPoolWithShares,
