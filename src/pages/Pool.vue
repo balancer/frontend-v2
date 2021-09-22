@@ -110,7 +110,7 @@
           class="pool-actions-card"
         />
       </div>
-      <div class="order-1 lg:order-2 px-1 lg:px-0" v-else>
+      <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
         <BalCard noPad imgSrc="/images/partners/copper-launch.png">
           <div class="p-4 mt-2">
             <div class="mb-4 font-semibold">
