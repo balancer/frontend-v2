@@ -119,6 +119,31 @@
           class="pool-actions-card"
         />
       </div>
+      <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
+        <BalCard noPad imgSrc="/images/partners/copper-launch.png">
+          <div class="p-4 mt-2">
+            <div class="mb-4 font-semibold">
+              {{ $t('copperLaunchPromo.title') }}
+            </div>
+            <div class="mb-4 text-sm">
+              {{ $t('copperLaunchPromo.description') }}
+            </div>
+            <div class="italic mb-4 text-sm">
+              {{ $t('copperLaunchPromo.poweredByBalancer') }}
+            </div>
+            <BalLink
+              :href="EXTERNAL_LINKS.Copper.Auctions(pool.address)"
+              external
+              class="block hover:no-underline"
+            >
+              <BalBtn color="blue" block
+                >{{ $t('copperLaunchPromo.buttonLabel') }}
+                <BalIcon name="arrow-up-right" size="sm" class="ml-1"
+              /></BalBtn>
+            </BalLink>
+          </div>
+        </BalCard>
+      </div>
     </div>
   </div>
 </template>
