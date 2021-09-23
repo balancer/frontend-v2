@@ -53,7 +53,7 @@ export const POOLS = {
       '0x9f19a375709baf0e8e35c2c5c65aca676c4c719100000000000000000000006e',
       '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080', // Lido Metastable
       '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000012', // polygon
-      '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e', // polgon
+      '0xfeadd389a5c427952d8fdb8057d6c8ba1156cc5600020000000000000000001e', // polygon
       '0x6b15a01b5d46a5321b627bd7deef1af57bc629070000000000000000000000d4', // kovan
       '0xe08590bde837eb9b2d42aa1196469d6e08fe96ec000200000000000000000101', // kovan,
       '0x9be7de742865d021c0e8fb9d64311b2c040c1ec1000200000000000000000012', // arbitrum
@@ -62,7 +62,8 @@ export const POOLS = {
   },
   Investment: {
     AllowList: [
-      '0x4fd63966879300cafafbb35d157dc5229278ed23000100000000000000000169' // kovan
+      '0x4fd63966879300cafafbb35d157dc5229278ed23000100000000000000000169', // kovan
+      '0xe7b1d394f3b40abeaa0b64a545dbcf89da1ecb3f00010000000000000000009a' // mainnet
     ]
   },
   Factories: {
@@ -77,6 +78,7 @@ export const POOLS = {
     '0xcf0a32bbef8f064969f21f7e02328fb577382018': 'weightedPool', // Arbitrum WeightedOracle
     '0x2433477a10fc5d31b9513c638f19ee85caed53fd': 'stablePool', // Arbitrum Stable
     '0xebfd5681977e38af65a7487dc70b8221d089ccad': 'stablePool', // Arbitrum MetaStable
-    '0x751a0bc0e3f75b38e01cf25bfce7ff36de1c87de': 'liquidityBootstrappingPool' // Mainnet LBP
+    '0x751a0bc0e3f75b38e01cf25bfce7ff36de1c87de': 'liquidityBootstrappingPool', // Mainnet LBP
+    '0x48767F9F868a4A7b86A90736632F6E44C2df7fa9': 'investmentPool' // Mainnet Investment
   }
 };
