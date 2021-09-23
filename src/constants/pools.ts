@@ -63,7 +63,7 @@ export const POOLS = {
   Investment: {
     AllowList: [
       '0x4fd63966879300cafafbb35d157dc5229278ed23000100000000000000000169', // kovan
-      '0xe7b1d394f3b40abeaa0b64a545dbcf89da1ecb3f00010000000000000000009a'  // mainnet
+      '0xe7b1d394f3b40abeaa0b64a545dbcf89da1ecb3f00010000000000000000009a' // mainnet
     ]
   },
   Factories: {
