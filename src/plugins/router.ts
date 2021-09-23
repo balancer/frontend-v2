@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import HomePage from '@/pages/index.vue';
 import PoolPage from '@/pages/pool/_id.vue';
+import PoolInvestPage from '@/pages/pool/invest.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/pages/trade.vue';
 
@@ -25,6 +26,11 @@ const routes: RouteRecordRaw[] = [
     path: '/pool/:id',
     name: 'pool',
     component: PoolPage
+  },
+  {
+    path: '/pool/:id/invest',
+    component: PoolInvestPage,
+    meta: { layout: 'BlankLayout' }
   },
   {
     path: '/liquidity-mining',
