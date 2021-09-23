@@ -31,7 +31,11 @@ export default function useValidation(
   const validationStatus = computed(() => {
     if (!isWalletReady) return TradeValidation.NO_ACCOUNT;
 
-    if (!tokensAmountsValid.value) return TradeValidation.EMPTY;
+    if (
+      !isValidTokenAmount(tokenInAmount.value) &&
+      !isValidTokenAmount(tokenOutAmount.value)
+    )
+      return TradeValidation.EMPTY;
 
     const nativeAssetBalance = parseFloat(balances.value[nativeAsset.address]);
     if (nativeAssetBalance < MIN_NATIVE_ASSET_REQUIRED) {
