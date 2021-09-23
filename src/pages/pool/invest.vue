@@ -48,9 +48,9 @@ const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
       </router-link>
     </div>
     <div class="invest-container">
-      <BalCard class="h-64 mt-12" />
-      <BalCard class="h-64" />
-      <BalCard class="h-64 mt-12" />
+      <BalCard class="h-64 mt-12 col-span-2" />
+      <BalCard class="h-64 col-span-3" />
+      <BalCard class="h-64 mt-12 col-span-2" />
     </div>
   </div>
 </template>
@@ -62,6 +62,6 @@ const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
 
 .invest-container {
   @apply container mx-auto;
-  @apply grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-0 lg:gap-x-8;
+  @apply grid grid-cols-1 lg:grid-cols-7 gap-y-8 gap-x-0 lg:gap-x-8;
 }
 </style>
