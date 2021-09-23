@@ -22,32 +22,21 @@ export default function useValidation(
   const { isWalletReady } = useWeb3();
   const { nativeAsset, balances } = useTokens();
 
-  const tokensAmountsValid = computed(
+  const invalidTokenAmounts = computed(
     () =>
-      isValidTokenAmount(tokenInAmount.value) &&
-      isValidTokenAmount(tokenOutAmount.value)
+      !isValidTokenAmount(tokenInAmount.value) &&
+      !isValidTokenAmount(tokenOutAmount.value)
   );
 
   const validationStatus = computed(() => {
     if (!isWalletReady) return TradeValidation.NO_ACCOUNT;
 
-    if (
-      !isValidTokenAmount(tokenInAmount.value) &&
-      !isValidTokenAmount(tokenOutAmount.value)
-    )
-      return TradeValidation.EMPTY;
+    if (invalidTokenAmounts.value) return TradeValidation.EMPTY;
 
     const nativeAssetBalance = parseFloat(balances.value[nativeAsset.address]);
     if (nativeAssetBalance < MIN_NATIVE_ASSET_REQUIRED) {
       return TradeValidation.NO_NATIVE_ASSET;
     }
-
-    if (
-      !balances.value[tokenInAddress.value] ||
-      parseFloat(balances.value[tokenInAddress.value]) <
-        parseFloat(tokenInAmount.value)
-    )
-      return TradeValidation.NO_BALANCE;
 
     if (
       parseFloat(tokenOutAmount.value) == 0 ||
@@ -56,6 +45,13 @@ export default function useValidation(
       tokenInAmount.value.trim() === ''
     )
       return TradeValidation.NO_LIQUIDITY;
+
+    if (
+      !balances.value[tokenInAddress.value] ||
+      parseFloat(balances.value[tokenInAddress.value]) <
+        parseFloat(tokenInAmount.value)
+    )
+      return TradeValidation.NO_BALANCE;
 
     return TradeValidation.VALID;
   });
@@ -69,7 +65,6 @@ export default function useValidation(
   return {
     validationStatus,
     errorMessage,
-    isValidTokenAmount,
-    tokensAmountsValid
+    isValidTokenAmount
   };
 }
