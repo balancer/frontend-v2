@@ -42,7 +42,7 @@ const priceImpactClasses = computed(() => ({
       <div class="p-2">{{ $t('total') }}</div>
       <div class="data-table-number-col">
         {{ fNum(total, 'usd') }}
-        <div class="text-sm p-1 pr-0">
+        <div class="text-sm">
           <span v-if="maximized" class="text-gray-400 dark:text-gray-600">
             {{ $t('maxed') }}
           </span>
@@ -60,7 +60,7 @@ const priceImpactClasses = computed(() => ({
       <div class="p-2">{{ $t('priceImpact') }}</div>
       <div class="data-table-number-col">
         {{ fNum(priceImpact, 'percent') }}
-        <div class="text-sm font-semibold p-1 pr-0">
+        <div class="text-sm font-semibold">
           <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
             {{ $t('optimized') }}
           </span>

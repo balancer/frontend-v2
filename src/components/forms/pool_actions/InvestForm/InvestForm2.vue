@@ -23,7 +23,7 @@ type FormState = {
 /**
  * PROPS
  */
-const props = withDefaults(defineProps<Props>(), {});
+const props = defineProps<Props>();
 
 /**
  * STATE
