@@ -1,8 +1,7 @@
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import axios from 'axios';
-import { networkId } from '@/composables/useNetwork';
+import { Network, networkId } from '@/composables/useNetwork';
 
-import { Network } from '@/composables/useNetwork';
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
 
 import { PriceInformation, PriceQuoteParams } from './types';

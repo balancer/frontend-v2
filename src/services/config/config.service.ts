@@ -1,7 +1,6 @@
 import { Config } from '@/lib/config';
 import configs from '@/lib/config';
-import { networkId } from '@/composables/useNetwork';
-import { NetworkId } from '@/composables/useNetwork';
+import { NetworkId, networkId } from '@/composables/useNetwork';
 
 interface Env {
   APP_ENV: string;

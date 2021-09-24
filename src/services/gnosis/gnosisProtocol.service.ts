@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-import { networkId } from '@/composables/useNetwork';
+import { Network, networkId } from '@/composables/useNetwork';
 
 import { IS_DEV } from '@/constants/env';
-import { Network } from '@/composables/useNetwork';
 
 import OperatorError from './errors/OperatorError';
 import {
