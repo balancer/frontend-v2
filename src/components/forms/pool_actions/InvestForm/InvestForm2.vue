@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, toRef } from 'vue';
+import { reactive, toRef, computed } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { isStableLike } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
@@ -39,6 +39,7 @@ const state = reactive<FormState>({
  * COMPOSABLES
  */
 const {
+  hasAmounts,
   fiatTotal,
   priceImpact,
   highPriceImpact,
@@ -47,6 +48,13 @@ const {
   optimizeAmounts,
   optimized
 } = useInvestFormMath(toRef(props, 'pool'), toRef(state, 'amounts'));
+
+/**
+ * COMPUTED
+ */
+const hasValidInputs = computed(() =>
+  state.validInputs.every(validInput => validInput === true)
+);
 
 /**
  * METHODS
@@ -96,6 +104,10 @@ function submit() {
       />
     </div>
 
-    <InvestFormActions class="mt-4" />
+    <InvestFormActions
+      :hasAmounts="hasAmounts"
+      :hasValidInputs="hasValidInputs"
+      class="mt-4"
+    />
   </BalForm>
 </template>
