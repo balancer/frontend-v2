@@ -19,7 +19,7 @@ const DEFAULT_NETWORK =
 
 export const networkId = ref<NetworkId>(DEFAULT_NETWORK);
 
-function setNetworkId(id: NetworkId) {
+export function setNetworkId(id: NetworkId) {
   networkId.value = id;
 }
 
