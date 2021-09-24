@@ -3,7 +3,8 @@ import { reactive, toRef } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { isStableLike } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import FormTotals from './components/FormTotals.vue';
+import InvestFormTotals from './components/InvestFormTotals.vue';
+import InvestFormActions from './components/InvestFormActions.vue';
 import useInvestFormMath from './composables/useInvestFormMath';
 import { isRequired } from '@/lib/utils/validations';
 
@@ -73,7 +74,8 @@ function submit() {
       class="mb-4"
       fixedToken
     />
-    <FormTotals
+
+    <InvestFormTotals
       :total="fiatTotal"
       :priceImpact="priceImpact"
       :highPriceImpact="highPriceImpact"
@@ -82,6 +84,7 @@ function submit() {
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
+
     <div v-if="highPriceImpact" class="border rounded-lg p-4 pb-2 mt-4">
       <BalCheckbox
         v-model="state.highPriceImpactAccepted"
@@ -92,5 +95,7 @@ function submit() {
         :label="$t('priceImpactAccept', [$t('depositing')])"
       />
     </div>
+
+    <InvestFormActions class="mt-4" />
   </BalForm>
 </template>

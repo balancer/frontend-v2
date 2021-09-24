@@ -53,7 +53,9 @@ export default function useInvestFormMath(
     return poolCalculator.priceImpact(fullAmounts.value).toNumber() || 0;
   });
 
-  const highPriceImpact = computed(() => bnum(priceImpact.value).gt(0.01));
+  const highPriceImpact = computed(() =>
+    bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01)
+  );
 
   const maximized = computed(() =>
     fullAmounts.value.every(

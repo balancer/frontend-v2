@@ -34,6 +34,11 @@ const { fNum } = useNumbers();
 const priceImpactClasses = computed(() => ({
   'bg-red-500 text-white divide-red-400': props.highPriceImpact
 }));
+
+const optimizeBtnClasses = computed(() => ({
+  'text-blue-500': !props.highPriceImpact,
+  'text-red-500 px-2 py-1 bg-white rounded-lg': props.highPriceImpact
+}));
 </script>
 
 <template>
@@ -59,18 +64,39 @@ const priceImpactClasses = computed(() => ({
     <div :class="['data-table-row price-impact-row', priceImpactClasses]">
       <div class="p-2">{{ $t('priceImpact') }}</div>
       <div class="data-table-number-col">
-        {{ fNum(priceImpact, 'percent') }}
+        <div>
+          {{ fNum(priceImpact, 'percent') }}
+
+          <BalTooltip>
+            <template v-slot:activator>
+              <BalIcon
+                v-if="highPriceImpact"
+                name="alert-triangle"
+                size="xs"
+                class="-mb-px ml-1"
+              />
+              <BalIcon
+                v-else
+                name="info"
+                size="xs"
+                class="text-gray-400 -mb-px ml-1"
+              />
+            </template>
+            <div v-html="$t('customAmountsTip')" class="text-black w-52" />
+          </BalTooltip>
+        </div>
+
         <div class="text-sm font-semibold">
           <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
             {{ $t('optimized') }}
           </span>
-          <span
+          <div
             v-else
-            class="text-blue-500 cursor-pointer"
+            :class="['cursor-pointer', optimizeBtnClasses]"
             @click="emit('optimize')"
           >
             {{ $t('optimize') }}
-          </span>
+          </div>
         </div>
       </div>
     </div>
@@ -83,7 +109,7 @@ const priceImpactClasses = computed(() => ({
 }
 
 .data-table-row {
-  @apply grid grid-cols-4 divide-x;
+  @apply grid grid-cols-4 divide-x flex items-center;
 }
 
 .data-table-number-col {
