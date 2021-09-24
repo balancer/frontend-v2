@@ -42,7 +42,9 @@ const {
   priceImpact,
   highPriceImpact,
   maximizeAmounts,
-  maximized
+  maximized,
+  optimizeAmounts,
+  optimized
 } = useInvestFormMath(toRef(props, 'pool'), toRef(state, 'amounts'));
 
 /**
@@ -76,7 +78,9 @@ function submit() {
       :priceImpact="priceImpact"
       :highPriceImpact="highPriceImpact"
       :maximized="maximized"
+      :optimized="optimized"
       @maximize="maximizeAmounts"
+      @optimize="optimizeAmounts"
     />
     <div v-if="highPriceImpact" class="border rounded-lg p-4 pb-2 mt-4">
       <BalCheckbox

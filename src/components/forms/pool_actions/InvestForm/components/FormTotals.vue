@@ -10,6 +10,7 @@ type Props = {
   priceImpact: number;
   highPriceImpact: boolean;
   maximized: boolean;
+  optimized: boolean;
 };
 
 /**
@@ -19,6 +20,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'maximize'): void;
+  (e: 'optimize'): void;
 }>();
 
 /**
@@ -40,7 +42,7 @@ const priceImpactClasses = computed(() => ({
       <div class="p-2">{{ $t('total') }}</div>
       <div class="data-table-number-col">
         {{ fNum(total, 'usd') }}
-        <div class="text-sm font-light p-1 pr-0">
+        <div class="text-sm p-1 pr-0">
           <span v-if="maximized" class="text-gray-400 dark:text-gray-600">
             {{ $t('maxed') }}
           </span>
@@ -58,6 +60,18 @@ const priceImpactClasses = computed(() => ({
       <div class="p-2">{{ $t('priceImpact') }}</div>
       <div class="data-table-number-col">
         {{ fNum(priceImpact, 'percent') }}
+        <div class="text-sm font-semibold p-1 pr-0">
+          <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
+            {{ $t('optimized') }}
+          </span>
+          <span
+            v-else
+            class="text-blue-500 cursor-pointer"
+            @click="emit('optimize')"
+          >
+            {{ $t('optimize') }}
+          </span>
+        </div>
       </div>
     </div>
   </div>

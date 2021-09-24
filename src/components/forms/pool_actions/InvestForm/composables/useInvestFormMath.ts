@@ -55,10 +55,15 @@ export default function useInvestFormMath(
 
   const highPriceImpact = computed(() => bnum(priceImpact.value).gt(0.01));
 
-  const maximized = computed(() => {
-    return fullAmounts.value.every(
-      (_, i) => amounts.value[i] === balanceFor(tokenAddresses.value[i])
-    );
+  const maximized = computed(() =>
+    fullAmounts.value.every(
+      (amount, i) => amount === balanceFor(tokenAddresses.value[i])
+    )
+  );
+
+  const optimized = computed(() => {
+    const { send } = poolCalculator.propMax();
+    return fullAmounts.value.every((amount, i) => amount === send[i]);
   });
 
   /**
@@ -78,13 +83,20 @@ export default function useInvestFormMath(
     });
   }
 
+  function optimizeAmounts(): void {
+    const { send } = poolCalculator.propMax();
+    amounts.value = [...send];
+  }
+
   return {
     // computed
     fiatTotal,
     priceImpact,
     highPriceImpact,
     maximized,
+    optimized,
     // methods
-    maximizeAmounts
+    maximizeAmounts,
+    optimizeAmounts
   };
 }

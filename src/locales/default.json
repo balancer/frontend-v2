@@ -200,6 +200,8 @@
     "oneDay": "1D",
     "oneMonth": "1M",
     "oneWeek": "1W",
+    "optimize": "Optimize",
+    "optimized": "Optimized",
     "oracleWeightedPool": "Oracle Weighted Pool",
     "overview": "Overview",
     "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the Liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
