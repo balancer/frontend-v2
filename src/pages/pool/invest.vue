@@ -3,7 +3,10 @@ import { computed, ref } from 'vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { useRoute } from 'vue-router';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { usePool } from '@/composables/usePool';
+import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.vue';
+import TradeSettingsPopover, {
+  TradeSettingsContext
+} from '@/components/popovers/TradeSettingsPopover.vue';
 
 /**
  * COMPOSABLES
@@ -33,10 +36,6 @@ const loadingPool = computed(
     (poolQuery.isIdle.value as boolean) ||
     (poolQuery.error.value as boolean)
 );
-
-const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
-  poolQuery.data
-);
 </script>
 
 <template>
@@ -48,9 +47,25 @@ const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
       </router-link>
     </div>
     <div class="invest-container">
-      <BalCard class="h-64 mt-12 col-span-2" />
-      <BalCard class="h-64 col-span-3" />
-      <BalCard class="h-64 mt-12 col-span-2" />
+      <BalCard class="h-64 mt-12 col-span-2" shadow="none" />
+
+      <div class="col-span-3">
+        <BalLoadingBlock v-if="loadingPool" class="h-96" />
+        <BalCard
+          v-else
+          title="Invest in pool"
+          shadow="xl"
+          rightAlignHeader
+          exposeOverflow
+        >
+          <template v-slot:header>
+            <TradeSettingsPopover :context="TradeSettingsContext.invest" />
+          </template>
+          <InvestForm :pool="pool" />
+        </BalCard>
+      </div>
+
+      <BalCard class="h-64 mt-12 col-span-2" shadow="none" />
     </div>
   </div>
 </template>
