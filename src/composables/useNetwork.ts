@@ -12,12 +12,12 @@ export enum Network {
   ARBITRUM = 42161
 }
 
-const DEFAULT_NETWORK =
+const DEFAULT_NETWORK_ID =
   process.env.VUE_APP_NETWORK != null
     ? (Number(process.env.VUE_APP_NETWORK) as NetworkId)
     : Network.MAINNET;
 
-export const networkId = ref<NetworkId>(DEFAULT_NETWORK);
+export const networkId = ref<NetworkId>(DEFAULT_NETWORK_ID);
 
 export function setNetworkId(id: NetworkId) {
   networkId.value = id;
