@@ -4,7 +4,7 @@ import { MerkleRedeem__factory } from '@balancer-labs/typechain';
 import { toWei, soliditySha3 } from 'web3-utils';
 import axios from 'axios';
 
-import { NetworkId } from '@/constants/network';
+import { NetworkId } from '@/composables/useNetwork';
 
 import { Claim } from '@/types';
 

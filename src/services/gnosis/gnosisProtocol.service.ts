@@ -1,6 +1,9 @@
-import { IS_DEV } from '@/constants/env';
-import { APP_NETWORK_ID, Network } from '@/constants/network';
 import axios from 'axios';
+
+import { networkId } from '@/composables/useNetwork';
+
+import { IS_DEV } from '@/constants/env';
+import { Network } from '@/composables/useNetwork';
 
 import OperatorError from './errors/OperatorError';
 import {
@@ -31,7 +34,7 @@ export default class GnosisProtocolService {
   baseURL: string;
 
   constructor(apiVersion = 'v1') {
-    const baseURL = API_URLS[APP_NETWORK_ID] ?? API_URLS[Network.MAINNET];
+    const baseURL = API_URLS[networkId.value] ?? API_URLS[Network.MAINNET];
 
     this.baseURL = `${baseURL}/${apiVersion}`;
   }

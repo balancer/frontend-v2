@@ -1,7 +1,7 @@
 import { differenceInWeeks } from 'date-fns';
 import { bnum } from '@/lib/utils';
 import { toUtcTime } from '@/lib/utils/date';
-import { NetworkId } from '@/constants/network';
+import { NetworkId } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
 import { TokenPrices } from '@/services/coingecko/api/price.service';

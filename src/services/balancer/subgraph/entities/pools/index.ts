@@ -14,7 +14,7 @@ import {
   computeTotalAPRForPool,
   computeAPRsForPool
 } from '@/lib/utils/liquidityMining';
-import { NetworkId } from '@/constants/network';
+import { NetworkId } from '@/composables/useNetwork';
 import { configService as _configService } from '@/services/config/config.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { FiatCurrency } from '@/constants/currency';

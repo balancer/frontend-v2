@@ -5,6 +5,7 @@ import polygon from './polygon.json';
 import arbitrum from './arbitrum.json';
 import docker from './docker.json';
 import test from './test.json';
+import { Network, NetworkId } from '@/composables/useNetwork';
 
 export interface Config {
   key: string;
@@ -54,15 +55,15 @@ export interface Config {
   >;
 }
 
-const config: Record<string, Config> = {
-  '1': homestead,
-  '42': kovan,
-  '4': rinkeby,
-  '137': polygon,
-  '42161': arbitrum,
-  '12345': test,
+const config: Record<NetworkId | 12345 | 17, Config> = {
+  [Network.MAINNET]: homestead,
+  [Network.KOVAN]: kovan,
+  [Network.RINKEBY]: rinkeby,
+  [Network.POLYGON]: polygon,
+  [Network.ARBITRUM]: arbitrum,
+  12345: test,
   // @ts-ignore
-  '17': docker
+  17: docker
 };
 
 export default config;

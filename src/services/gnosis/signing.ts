@@ -1,4 +1,3 @@
-import { APP_NETWORK_ID } from '@/constants/network';
 import { Signer } from '@ethersproject/abstract-signer';
 
 import {
@@ -14,6 +13,7 @@ import {
   OrderCancellation as OrderCancellationGp,
   IntChainIdTypedDataV4Signer
 } from '@gnosis.pm/gp-v2-contracts';
+import { networkId } from '@/composables/useNetwork';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
 
@@ -86,7 +86,7 @@ export function getSigningSchemeLibValue(
 async function _signOrder(params: SignOrderParams): Promise<Signature> {
   const { signer, order, signingScheme } = params;
 
-  const domain = domainGp(APP_NETWORK_ID, GP_SETTLEMENT_CONTRACT_ADDRESS);
+  const domain = domainGp(networkId.value, GP_SETTLEMENT_CONTRACT_ADDRESS);
 
   console.log('[Gnosis Signing] signOrder', {
     domain,
@@ -107,7 +107,7 @@ async function _signOrderCancellation(
 ): Promise<Signature> {
   const { signer, signingScheme, orderId } = params;
 
-  const domain = domainGp(APP_NETWORK_ID, GP_SETTLEMENT_CONTRACT_ADDRESS);
+  const domain = domainGp(networkId.value, GP_SETTLEMENT_CONTRACT_ADDRESS);
 
   console.log('[Gnosis Signing] signOrderCancellation', {
     domain,

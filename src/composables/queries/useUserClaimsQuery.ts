@@ -15,7 +15,7 @@ import {
 
 import { Claim } from '@/types';
 import useWeb3 from '@/services/web3/useWeb3';
-import { NetworkId } from '@/constants/network';
+import { NetworkId } from '@/composables/useNetwork';
 
 type UserClaimsQueryResponse = {
   pendingClaims: Claim[];
