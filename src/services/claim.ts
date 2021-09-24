@@ -4,7 +4,7 @@ import { MerkleRedeem__factory } from '@balancer-labs/typechain';
 import { toWei, soliditySha3 } from 'web3-utils';
 import axios from 'axios';
 
-import { NetworkId } from '@/composables/useNetwork';
+import { Network, NetworkId } from '@/composables/useNetwork';
 
 import { Claim } from '@/types';
 
@@ -21,17 +21,17 @@ type Snapshot = Record<number, string>;
 
 // @ts-ignore
 export const constants: Record<NetworkId, Record<string, string>> = {
-  1: {
+  [Network.MAINNET]: {
     merkleRedeem: '0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8',
     snapshot:
       'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json'
   },
-  42: {
+  [Network.KOVAN]: {
     merkleRedeem: '0x3bc73D276EEE8cA9424Ecb922375A0357c1833B3',
     snapshot:
       'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports-kovan/_current.json'
   },
-  42161: {
+  [Network.ARBITRUM]: {
     merkleRedeem: '0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809',
     snapshot:
       'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-arbitrum.json'

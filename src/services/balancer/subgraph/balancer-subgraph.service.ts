@@ -4,7 +4,7 @@ import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
 import PoolActivities from './entities/poolActivities';
 import PoolSnapshots from './entities/poolSnapshots';
-import { networkId } from '@/composables/useNetwork';
+import { Network, networkId } from '@/composables/useNetwork';
 
 export default class BalancerSubgraphService {
   pools: Pools;
@@ -25,14 +25,14 @@ export default class BalancerSubgraphService {
 
   public get blockTime(): number {
     switch (networkId.value) {
-      case 1:
+      case Network.MAINNET:
         return 13;
-      case 137:
+      case Network.POLYGON:
         return 2;
-      case 42161:
+      case Network.ARBITRUM:
         // TODO: Replace this with a more realistic number once activity picks up
         return 13;
-      case 42:
+      case Network.KOVAN:
         // Should be ~4s but this causes subgraph to return with unindexed block error.
         return 1;
       default:
