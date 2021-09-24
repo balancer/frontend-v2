@@ -57,7 +57,7 @@
             </div>
             <div class="w-1/2 flex flex-col leading-none text-right pl-2">
               <span class="break-words">
-                {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
+                {{ amountUSD(i) === '0' ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
               <span v-if="!isStableLikePool" class="text-xs text-gray-400">
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
@@ -241,8 +241,8 @@ export default defineComponent({
     );
 
     const poolCalculator = new PoolCalculator(
-      props.pool,
-      tokens.value,
+      toRef(props, 'pool'),
+      tokens,
       balances,
       'exit'
     );
@@ -542,7 +542,6 @@ export default defineComponent({
     watch(
       () => props.pool.onchain.tokens,
       (newTokens, oldTokens) => {
-        poolCalculator.setPool(props.pool);
         const tokensChanged = !isEqual(newTokens, oldTokens);
         if (tokensChanged) {
           setPropMax();
@@ -575,10 +574,6 @@ export default defineComponent({
         setPropAmountsFor(newVal);
       }
     );
-
-    watch(tokens, newTokens => {
-      poolCalculator.setAllTokens(newTokens);
-    });
 
     watch(isWalletReady, isReady => {
       if (!isReady) {

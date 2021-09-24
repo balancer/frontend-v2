@@ -74,7 +74,7 @@
             </div>
             <div class="flex flex-col w-1/2 leading-none text-right pl-2">
               <span class="break-words" :title="fNum(amountUSD(i), 'usd')">
-                {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
+                {{ amountUSD(i) === '0' ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
               <span v-if="!isStableLikePool" class="text-xs text-gray-400">
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
@@ -197,7 +197,7 @@
           <BalCheckbox
             v-if="priceImpact >= 0.01"
             v-model="highPiAccepted"
-            :rules="[isRequired(this.$t('priceImpactCheckbox'))]"
+            :rules="[isRequired($t('priceImpactCheckbox'))]"
             name="highPiAccepted"
             class="text-gray-500 mb-12"
             size="sm"
@@ -348,8 +348,8 @@ export default defineComponent({
     );
 
     const poolCalculator = new PoolCalculator(
-      props.pool,
-      tokens.value,
+      toRef(props, 'pool'),
+      tokens,
       allBalances,
       'join'
     );
@@ -609,14 +609,9 @@ export default defineComponent({
       }
     }
 
-    watch(tokens, newTokens => {
-      poolCalculator.setAllTokens(newTokens);
-    });
-
     watch(
       () => props.pool.onchain.tokens,
       (newTokens, oldTokens) => {
-        poolCalculator.setPool(props.pool);
         const tokensChanged = !isEqual(newTokens, oldTokens);
         if (tokensChanged) {
           setPropMax();
