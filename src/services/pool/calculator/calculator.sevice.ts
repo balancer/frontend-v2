@@ -8,6 +8,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { Ref } from 'vue';
 import { isStable, isStableLike } from '@/composables/usePool';
+import { bnum } from '@/lib/utils';
 
 interface Amounts {
   send: string[];
@@ -91,13 +92,13 @@ export default class CalculatorService {
 
     this.pool.value.tokenAddresses.forEach((token, tokenIndex) => {
       let hasBalance = true;
-      const balance = this.balances.value[token];
+      const balance = this.balances.value[token] || '0';
       const amounts = this.propAmountsGiven(balance, tokenIndex, type);
 
       amounts.send.forEach((amount, amountIndex) => {
-        const greaterThanBalance =
-          Number(amount) >
-          Number(this.balances.value[this.tokenOf(type, amountIndex)]);
+        const greaterThanBalance = bnum(amount).gt(
+          this.balances.value[this.tokenOf(type, amountIndex)]
+        );
         if (greaterThanBalance) hasBalance = false;
       });
 
