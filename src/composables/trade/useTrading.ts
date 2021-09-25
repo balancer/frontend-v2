@@ -1,5 +1,6 @@
 import { computed, Ref, watch } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import { bnum, scale } from '@/lib/utils';
 import useNumbers from '../useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -25,6 +26,7 @@ export default function useTrading(
   const { fNum } = useNumbers();
   const { tokens } = useTokens();
   const { blockNumber } = useWeb3();
+  const router = useRouter();
 
   // COMPUTED
   const slippageBufferRate = computed(() =>
@@ -89,7 +91,9 @@ export default function useTrading(
   });
 
   const tradeRoute = computed<TradeRoute>(() => {
-    if (wrapType.value !== WrapType.NonWrap) {
+    if (router.currentRoute.value.query?.route === 'balancer') {
+      return 'balancer';
+    } else if (wrapType.value !== WrapType.NonWrap) {
       return 'wrapUnwrap';
     }
 
