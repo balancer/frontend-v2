@@ -61,7 +61,6 @@ export default class Vault {
     if (isTradingHaltable(type)) {
       result['swapEnabled'] = 'false';
     }
-    console.log(JSON.stringify(result));
 
     return this.serializePoolData(result, type, tokens);
   }

@@ -231,7 +231,6 @@ import {
   onMounted,
   reactive,
   toRefs,
-  ref,
   PropType,
   toRef
 } from 'vue';
@@ -265,6 +264,7 @@ import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import { PoolType } from '@/services/balancer/subgraph/types';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -471,20 +471,31 @@ export default defineComponent({
 
     const nativeAsset = computed(() => appNetworkConfig.nativeAsset.symbol);
 
-    const formTypes = ref([
-      {
-        label: t('noPriceImpact'),
-        max: propMaxUSD,
-        value: FormTypes.proportional,
-        tooltip: t('noPriceImpactTip')
-      },
-      {
-        label: t('customAmounts'),
-        max: balanceMaxUSD,
-        value: FormTypes.custom,
-        tooltip: t('customAmountsTip')
+    // Investment pools with trading halted only allow proportional joins/exits
+    const formTypes = computed(() => {
+      let validTypes = [
+        {
+          label: t('noPriceImpact'),
+          max: propMaxUSD,
+          value: FormTypes.proportional,
+          tooltip: t('noPriceImpactTip')
+        }
+      ];
+
+      if (
+        props.pool.poolType != PoolType.Investment ||
+        props.pool.onchain.swapEnabled
+      ) {
+        validTypes.push({
+          label: t('customAmounts'),
+          max: balanceMaxUSD,
+          value: FormTypes.custom,
+          tooltip: t('customAmountsTip')
+        });
       }
-    ]);
+      console.log(JSON.stringify(validTypes));
+      return validTypes;
+    });
 
     // METHODS
     function tokenBalance(index: number): string {

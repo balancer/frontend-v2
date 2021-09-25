@@ -151,7 +151,6 @@ import {
   onMounted,
   reactive,
   toRefs,
-  ref,
   PropType,
   toRef
 } from 'vue';
@@ -182,6 +181,7 @@ import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import { PoolType } from '@/services/balancer/subgraph/types';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -398,18 +398,28 @@ export default defineComponent({
       });
     });
 
-    const formTypes = ref([
-      {
-        label: t('noPriceImpact'),
-        max: propMaxUSD,
-        value: FormTypes.proportional
-      },
-      {
-        label: t('singleToken'),
-        max: singleMaxUSD,
-        value: FormTypes.single
+    // Investment pools with trading halted only allow proportional joins/exits
+    const formTypes = computed(() => {
+      let validTypes = [
+        {
+          label: t('noPriceImpact'),
+          max: propMaxUSD,
+          value: FormTypes.proportional
+        }
+      ];
+
+      if (
+        props.pool.poolType != PoolType.Investment ||
+        props.pool.onchain.swapEnabled
+      ) {
+        validTypes.push({
+          label: t('singleToken'),
+          max: singleMaxUSD,
+          value: FormTypes.single
+        });
       }
-    ]);
+      return validTypes;
+    });
 
     // METHODS
     function tokenDecimals(index) {
