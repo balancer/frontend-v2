@@ -102,7 +102,6 @@ export default class Pools {
         thirdPartyAPR
       );
       const isNewPool = this.isNewPool(pool);
-      const swapEnabled = pool.swapEnabled;
 
       return {
         ...pool,
@@ -118,8 +117,7 @@ export default class Pools {
             liquidityMiningBreakdown,
             total: totalAPR
           },
-          isNewPool,
-          swapEnabled
+          isNewPool
         }
       };
     });
