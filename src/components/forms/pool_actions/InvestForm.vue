@@ -553,7 +553,9 @@ export default defineComponent({
       let { bptOut } = await poolExchange.value.queryJoin(
         getProvider(),
         account.value,
-        fullAmounts.value
+        fullAmounts.value,
+        minBptOut.value,
+        isProportional.value
       );
       bptOut = formatUnits(bptOut.toString(), props.pool.onchain.decimals);
       console.log(bptOut, 'bptOut (queryJoin)');
@@ -573,7 +575,8 @@ export default defineComponent({
           getProvider(),
           account.value,
           fullAmounts.value,
-          minBptOut.value
+          minBptOut.value,
+          isProportional.value
         );
         console.log('Receipt', tx);
 

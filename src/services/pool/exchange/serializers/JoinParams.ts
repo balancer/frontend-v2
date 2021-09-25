@@ -3,17 +3,22 @@ import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { isStable } from '@/composables/usePool';
+import { isInvestment, isStable } from '@/composables/usePool';
 
 export default class JoinParams {
   private exchange: PoolExchange;
   private isStablePool: boolean;
+  private isInvestmentPool: boolean;
+  private isSwapEnabled: boolean;
   private dataEncodeFn: (data: any) => string;
   private fromInternalBalance = false;
 
   constructor(exchange) {
     this.exchange = exchange;
-    this.isStablePool = isStable(exchange.pool);
+    this.isStablePool = isStable(exchange.pool.poolType);
+    this.isInvestmentPool = isInvestment(exchange.pool.poolType);
+    this.isSwapEnabled =
+      this.isInvestmentPool && exchange.pool.onchain.swapEnabled;
     this.dataEncodeFn = this.isStablePool
       ? encodeJoinStablePool
       : encodeJoinWeightedPool;
@@ -22,14 +27,15 @@ export default class JoinParams {
   public serialize(
     account: string,
     amountsIn: string[],
-    bptOut: string
+    bptOut: string,
+    isProportional: boolean
   ): any[] {
     const parsedAmountsIn = this.parseAmounts(amountsIn);
     const parsedBptOut = parseUnits(
       bptOut,
       this.exchange.pool.onchain.decimals
     );
-    const txData = this.txData(parsedAmountsIn, parsedBptOut);
+    const txData = this.txData(parsedAmountsIn, parsedBptOut, isProportional);
 
     return [
       this.exchange.pool.id,
@@ -54,15 +60,26 @@ export default class JoinParams {
     });
   }
 
-  private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {
+  private txData(
+    amountsIn: BigNumberish[],
+    minimumBPT: BigNumberish,
+    isProportional: boolean
+  ): string {
     if (this.exchange.pool.onchain.totalSupply === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
-      return this.dataEncodeFn({
-        kind: 'ExactTokensInForBPTOut',
-        amountsIn,
-        minimumBPT
-      });
+      if (this.isInvestmentPool && isProportional && !this.isSwapEnabled) {
+        return this.dataEncodeFn({
+          kind: 'AllTokensInForExactBPTOut',
+          bptAmountOut: minimumBPT
+        });
+      } else {
+        return this.dataEncodeFn({
+          kind: 'ExactTokensInForBPTOut',
+          amountsIn,
+          minimumBPT
+        });
+      }
     }
   }
 }
