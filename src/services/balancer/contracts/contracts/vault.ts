@@ -7,11 +7,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { OnchainPoolData, PoolType } from '../../subgraph/types';
 import ConfigService from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
-import {
-  isWeightedLike,
-  isStableLike,
-  isTradingHaltable
-} from '@/composables/usePool';
+import { isWeightedLike, isStableLike } from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 
 export default class Vault {
@@ -47,20 +43,11 @@ export default class Vault {
 
     if (isWeightedLike(type)) {
       tokenMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
-
-      if (isTradingHaltable(type)) {
-        //TODO: This says Error: no matching function (argument="name", value="getSwapEnabled", code=INVALID_ARGUMENT, version=abi/5.4.0)
-        //tokenMultiCaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
-      }
     } else if (isStableLike(type)) {
       tokenMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
     }
 
     result = await tokenMultiCaller.execute(result);
-    //TODO: remove test code
-    if (isTradingHaltable(type)) {
-      result['swapEnabled'] = 'false';
-    }
 
     return this.serializePoolData(result, type, tokens);
   }
@@ -91,18 +78,12 @@ export default class Vault {
       amp = data.amp.value.div(data.amp.precision);
     }
 
-    let swapEnabled = true;
-    if (data?.swapEnabled) {
-      swapEnabled = data.swapEnabled.value == 'true';
-    }
-
     return {
       tokens: _tokens,
       totalSupply: formatUnits(data.totalSupply, data.decimals),
       decimals: data.decimals,
       swapFee: formatUnits(data.swapFee, 18),
-      amp: amp,
-      swapEnabled: swapEnabled
+      amp: amp
     };
   }
 

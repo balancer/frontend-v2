@@ -484,7 +484,7 @@ export default defineComponent({
 
       if (
         props.pool.poolType != PoolType.Investment ||
-        props.pool.onchain.swapEnabled
+        props.pool.swapEnabled
       ) {
         validTypes.push({
           label: t('customAmounts'),
@@ -493,7 +493,6 @@ export default defineComponent({
           tooltip: t('customAmountsTip')
         });
       }
-      console.log(JSON.stringify(validTypes));
       return validTypes;
     });
 
