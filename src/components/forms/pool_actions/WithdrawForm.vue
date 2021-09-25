@@ -181,7 +181,6 @@ import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import { PoolType } from '@/services/balancer/subgraph/types';
 
 export enum FormTypes {
   proportional = 'proportional',
@@ -233,7 +232,9 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStableLikePool } = usePool(toRef(props, 'pool'));
+    const { isStableLikePool, isInvestmentPool } = usePool(
+      toRef(props, 'pool')
+    );
 
     // SERVICES
     const poolExchange = computed(
@@ -398,7 +399,6 @@ export default defineComponent({
       });
     });
 
-    // Investment pools with trading halted only allow proportional joins/exits
     const formTypes = computed(() => {
       let validTypes = [
         {
@@ -408,16 +408,15 @@ export default defineComponent({
         }
       ];
 
-      if (
-        props.pool.poolType != PoolType.Investment ||
-        props.pool.onchain.swapEnabled
-      ) {
+      // Investment pools with trading halted only allow proportional joins/exits
+      if (isInvestmentPool.value || props.pool.onchain.swapEnabled) {
         validTypes.push({
           label: t('singleToken'),
           max: singleMaxUSD,
           value: FormTypes.single
         });
       }
+
       return validTypes;
     });
 

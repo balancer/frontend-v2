@@ -67,6 +67,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isWeightedLikePool = computed(
     () => pool.value && isWeightedLike(pool.value.poolType)
   );
+  const isInvestmentPool = computed(
+    () => pool.value && isInvestment(pool.value.poolType)
+  );
   const isLiquidityBootstrappingPool = computed(
     () => pool.value && isLiquidityBootstrapping(pool.value.poolType)
   );
@@ -81,6 +84,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isStableLikePool,
     isWeightedPool,
     isWeightedLikePool,
+    isInvestmentPool,
     isLiquidityBootstrappingPool,
     isWethPool,
     isWstETHPool,

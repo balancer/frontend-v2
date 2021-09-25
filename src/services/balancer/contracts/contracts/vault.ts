@@ -49,18 +49,13 @@ export default class Vault {
       tokenMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
 
       if (isTradingHaltable(type)) {
-        //TODO: This says Error: no matching function (argument="name", value="getSwapEnabled", code=INVALID_ARGUMENT, version=abi/5.4.0)
-        //tokenMultiCaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
+        tokenMultiCaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
       }
     } else if (isStableLike(type)) {
       tokenMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
     }
 
     result = await tokenMultiCaller.execute(result);
-    //TODO: remove test code
-    if (isTradingHaltable(type)) {
-      result['swapEnabled'] = 'false';
-    }
 
     return this.serializePoolData(result, type, tokens);
   }
