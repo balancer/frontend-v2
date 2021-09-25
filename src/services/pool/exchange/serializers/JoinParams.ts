@@ -68,6 +68,7 @@ export default class JoinParams {
     if (this.exchange.pool.onchain.totalSupply === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
+      // Investment Pools can only be joined proportionally if trading is hallted
       if (this.isInvestmentPool && isProportional && !this.isSwapEnabled) {
         return this.dataEncodeFn({
           kind: 'AllTokensInForExactBPTOut',
