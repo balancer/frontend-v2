@@ -11,9 +11,9 @@ export default class ExitParams {
   private dataEncodeFn: (data: any) => string;
   private toInternalBalance = false;
 
-  constructor(exchange) {
+  constructor(exchange: PoolExchange) {
     this.exchange = exchange;
-    this.isStablePool = isStable(exchange.pool);
+    this.isStablePool = isStable(exchange.pool.poolType);
     this.dataEncodeFn = this.isStablePool
       ? encodeExitStablePool
       : encodeExitWeightedPool;

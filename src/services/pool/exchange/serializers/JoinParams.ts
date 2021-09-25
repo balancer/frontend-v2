@@ -13,12 +13,13 @@ export default class JoinParams {
   private dataEncodeFn: (data: any) => string;
   private fromInternalBalance = false;
 
-  constructor(exchange) {
+  constructor(exchange: PoolExchange) {
     this.exchange = exchange;
     this.isStablePool = isStable(exchange.pool.poolType);
     this.isInvestmentPool = isInvestment(exchange.pool.poolType);
-    this.isSwapEnabled =
-      this.isInvestmentPool && exchange.pool.onchain.swapEnabled;
+    this.isSwapEnabled = !!(
+      this.isInvestmentPool && exchange.pool.onchain.swapEnabled
+    );
     this.dataEncodeFn = this.isStablePool
       ? encodeJoinStablePool
       : encodeJoinWeightedPool;
