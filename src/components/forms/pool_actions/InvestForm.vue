@@ -264,7 +264,6 @@ import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import { PoolType } from '@/services/balancer/subgraph/types';
 
 export enum FormTypes {
   proportional = 'proportional',
