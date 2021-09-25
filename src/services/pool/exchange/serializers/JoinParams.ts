@@ -28,15 +28,14 @@ export default class JoinParams {
   public serialize(
     account: string,
     amountsIn: string[],
-    bptOut: string,
-    isProportional: boolean
+    bptOut: string
   ): any[] {
     const parsedAmountsIn = this.parseAmounts(amountsIn);
     const parsedBptOut = parseUnits(
       bptOut,
       this.exchange.pool.onchain.decimals
     );
-    const txData = this.txData(parsedAmountsIn, parsedBptOut, isProportional);
+    const txData = this.txData(parsedAmountsIn, parsedBptOut);
 
     return [
       this.exchange.pool.id,
@@ -61,16 +60,14 @@ export default class JoinParams {
     });
   }
 
-  private txData(
-    amountsIn: BigNumberish[],
-    minimumBPT: BigNumberish,
-    isProportional: boolean
-  ): string {
+  private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {
     if (this.exchange.pool.onchain.totalSupply === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
-      // Investment Pools can only be joined proportionally if trading is hallted
-      if (this.isInvestmentPool && isProportional && !this.isSwapEnabled) {
+      // Investment Pools can only be joined proportionally if trading is halted
+      // This code assumes the UI has disabled non-proportional "exact in for BPT out"
+      // joins in this case
+      if (this.isInvestmentPool && !this.isSwapEnabled) {
         return this.dataEncodeFn({
           kind: 'AllTokensInForExactBPTOut',
           bptAmountOut: minimumBPT

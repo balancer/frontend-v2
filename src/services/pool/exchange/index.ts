@@ -30,15 +30,9 @@ export default class Exchange {
     provider: Web3Provider | JsonRpcProvider,
     account: string,
     amountsIn: string[],
-    bptOut = '0',
-    isProportional = false
+    bptOut = '0'
   ) {
-    const txParams = this.joinParams.serialize(
-      account,
-      amountsIn,
-      bptOut,
-      isProportional
-    );
+    const txParams = this.joinParams.serialize(account, amountsIn, bptOut);
 
     return await callStatic(
       provider,
@@ -53,15 +47,9 @@ export default class Exchange {
     provider: Web3Provider | JsonRpcProvider,
     account: string,
     amountsIn: string[],
-    bptOut = '0',
-    isProportional = false
+    bptOut = '0'
   ): Promise<TransactionResponse> {
-    const txParams = this.joinParams.serialize(
-      account,
-      amountsIn,
-      bptOut,
-      isProportional
-    );
+    const txParams = this.joinParams.serialize(account, amountsIn, bptOut);
 
     return await sendTransaction(
       provider,

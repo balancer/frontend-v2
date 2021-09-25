@@ -564,8 +564,7 @@ export default defineComponent({
         getProvider(),
         account.value,
         fullAmounts.value,
-        minBptOut.value,
-        isProportional.value
+        minBptOut.value
       );
       bptOut = formatUnits(bptOut.toString(), props.pool.onchain.decimals);
       console.log(bptOut, 'bptOut (queryJoin)');
@@ -585,8 +584,7 @@ export default defineComponent({
           getProvider(),
           account.value,
           fullAmounts.value,
-          minBptOut.value,
-          isProportional.value
+          minBptOut.value
         );
         console.log('Receipt', tx);
 
