@@ -329,9 +329,12 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStableLikePool, isWethPool, isWstETHPool } = usePool(
-      toRef(props, 'pool')
-    );
+    const {
+      isStableLikePool,
+      isWethPool,
+      isWstETHPool,
+      isInvestmentPool
+    } = usePool(toRef(props, 'pool'));
 
     const { amounts } = toRefs(data);
 
@@ -471,7 +474,6 @@ export default defineComponent({
 
     const nativeAsset = computed(() => appNetworkConfig.nativeAsset.symbol);
 
-    // Investment pools with trading halted only allow proportional joins/exits
     const formTypes = computed(() => {
       let validTypes = [
         {
@@ -482,10 +484,8 @@ export default defineComponent({
         }
       ];
 
-      if (
-        props.pool.poolType != PoolType.Investment ||
-        props.pool.onchain.swapEnabled
-      ) {
+      // Investment pools with trading halted only allow proportional joins/exits
+      if (isInvestmentPool.value || props.pool.onchain.swapEnabled) {
         validTypes.push({
           label: t('customAmounts'),
           max: balanceMaxUSD,
@@ -493,7 +493,7 @@ export default defineComponent({
           tooltip: t('customAmountsTip')
         });
       }
-      console.log(JSON.stringify(validTypes));
+
       return validTypes;
     });
 
