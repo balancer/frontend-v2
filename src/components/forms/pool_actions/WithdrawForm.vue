@@ -93,6 +93,14 @@
       />
       <template v-else>
         <div
+          v-if="inputAmountExceedsPoolBalance"
+          class="flex items-center text-sm mb-4 text-red-500 font-medium"
+          @click.prevent
+        >
+          {{ $t('inputAmountExceedsPoolBalance') }}
+        </div>
+        <div
+          v-else
           :class="['flex items-center text-sm mb-4', priceImpactClasses]"
           @click.prevent
         >
@@ -130,7 +138,9 @@
           type="submit"
           :loading-label="$t('confirming')"
           color="gradient"
-          :disabled="!hasAmounts || isMismatchedNetwork"
+          :disabled="
+            !hasAmounts || isMismatchedNetwork || inputAmountExceedsPoolBalance
+          "
           :loading="loading"
           block
           @click="trackGoal(Goals.ClickWithdraw)"
@@ -361,8 +371,20 @@ export default defineComponent({
       return isSingleAsset.value && !singleAssetMaxed.value;
     });
 
+    const inputAmountExceedsPoolBalance = computed(() => {
+      if (!hasAmounts.value || isProportional.value) return false;
+
+      return poolCalculator.inputAmountExceedsPoolBalance(fullAmounts.value);
+    });
+
     const priceImpact = computed(() => {
-      if (!hasAmounts.value || isProportional.value) return 0;
+      if (
+        !hasAmounts.value ||
+        isProportional.value ||
+        inputAmountExceedsPoolBalance.value
+      )
+        return 0;
+
       return poolCalculator
         .priceImpact(fullAmounts.value, {
           exactOut: exactOut.value,
@@ -625,7 +647,8 @@ export default defineComponent({
       isRequired,
       trackGoal,
       Goals,
-      tokenDecimals
+      tokenDecimals,
+      inputAmountExceedsPoolBalance
     };
   }
 });

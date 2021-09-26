@@ -8,6 +8,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ComputedRef } from 'vue';
 import { isStable, isStableLike } from '@/composables/usePool';
+import { bnum } from '@/lib/utils';
 
 interface Amounts {
   send: string[];
@@ -169,6 +170,23 @@ export default class CalculatorService {
 
   public ratioOf(type: string, index: number) {
     return this[`${type}Ratios`][index];
+  }
+
+  public inputAmountExceedsPoolBalance(tokenAmounts: string[]): boolean {
+    const balances = this.poolTokenBalances.map(b => bnum(b.toString()));
+    const denormAmounts = this.denormAmounts(
+      tokenAmounts,
+      this.poolTokenDecimals
+    );
+    const amounts = denormAmounts.map(a => bnum(a.toString()));
+
+    for (let i = 0; i < amounts.length; i++) {
+      if (amounts[i].gt(bnum(balances[i]))) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public get poolTokenBalances(): BigNumberish[] {
