@@ -332,7 +332,7 @@ export default defineComponent({
       isStableLikePool,
       isWethPool,
       isWstETHPool,
-      isInvestmentPool
+      investmentPoolWithTradingHalted
     } = usePool(toRef(props, 'pool'));
 
     const { amounts } = toRefs(data);
@@ -461,14 +461,16 @@ export default defineComponent({
       };
     });
 
-    const minBptOut = computed(() => {
+    const bptOut = computed(() => {
       let bptOut = poolCalculator
         .exactTokensInForBPTOut(fullAmounts.value)
         .toString();
-      bptOut = formatUnits(bptOut, props.pool.onchain.decimals);
-      console.log(bptOut, `TS EVM _exactTokensInForBPTOut`);
 
-      return minusSlippage(bptOut, props.pool.onchain.decimals);
+      return formatUnits(bptOut, props.pool.onchain.decimals);
+    });
+
+    const minBptOut = computed(() => {
+      return minusSlippage(bptOut.value, props.pool.onchain.decimals);
     });
 
     const nativeAsset = computed(() => appNetworkConfig.nativeAsset.symbol);
@@ -484,7 +486,7 @@ export default defineComponent({
       ];
 
       // Investment pools with trading halted only allow proportional joins/exits
-      if (isInvestmentPool.value || props.pool.onchain.swapEnabled) {
+      if (!investmentPoolWithTradingHalted.value) {
         validTypes.push({
           label: t('customAmounts'),
           max: balanceMaxUSD,
@@ -560,17 +562,20 @@ export default defineComponent({
     // Left here so numbers can be debugged in conosle
     // Talk to Fernando to see if still needed
     async function calcMinBptOut(): Promise<void> {
-      let { bptOut } = await poolExchange.value.queryJoin(
+      let { bptOut: queryBptOut } = await poolExchange.value.queryJoin(
         getProvider(),
         account.value,
         fullAmounts.value,
         minBptOut.value
       );
-      bptOut = formatUnits(bptOut.toString(), props.pool.onchain.decimals);
-      console.log(bptOut, 'bptOut (queryJoin)');
+      queryBptOut = formatUnits(
+        queryBptOut.toString(),
+        props.pool.onchain.decimals
+      );
+      console.log(queryBptOut, 'bptOut (queryJoin)');
       console.log(minBptOut.value, 'bptOut (JS) minusSlippage');
       console.log(
-        minusSlippage(bptOut, props.pool.onchain.decimals),
+        minusSlippage(queryBptOut, props.pool.onchain.decimals),
         'bptOut (queryJoin) minusSlippage'
       );
     }
@@ -580,11 +585,15 @@ export default defineComponent({
       try {
         data.loading = true;
         await calcMinBptOut();
+        const _bptOut = investmentPoolWithTradingHalted.value
+          ? bptOut.value
+          : minBptOut.value;
+
         const tx = await poolExchange.value.join(
           getProvider(),
           account.value,
           fullAmounts.value,
-          minBptOut.value
+          _bptOut
         );
         console.log('Receipt', tx);
 
