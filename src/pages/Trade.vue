@@ -1,11 +1,19 @@
 <template>
-  <div class="flex justify-center">
-    <div class="mt-8 mr-6 flex flex-col widget-card">
+  <div class="flex justify-center flex-col lg:flex-row">
+    <div
+      v-if="!upToLargeBreakpoint"
+      class="mt-8 mr-6 flex flex-col widget-card"
+    >
       <MyWallet />
       <div class="mt-4">
         <TrendingPairs />
       </div>
     </div>
+    <BalCarousel v-if="upToLargeBreakpoint">
+      <MyWallet />
+      <TrendingPairs />
+      <PairPriceGraph />
+    </BalCarousel>
     <div class="trade-container">
       <BalLoadingBlock v-if="appLoading || loadingTokenLists" class="h-96" />
       <template v-else>
@@ -13,7 +21,10 @@
         <TradeCardGP v-else-if="tradeInterface === TradeInterface.GNOSIS" />
       </template>
     </div>
-    <div class="mt-8 ml-6 flex flex-col widget-card relative">
+    <div
+      v-if="!upToLargeBreakpoint"
+      class="mt-8 ml-6 flex flex-col widget-card relative"
+    >
       <PairPriceGraph />
     </div>
   </div>
@@ -31,6 +42,7 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   components: {
@@ -46,7 +58,7 @@ export default defineComponent({
     const store = useStore();
     const { loadingTokenLists } = useTokenLists();
     const { setSelectedTokens } = usePoolFilters();
-
+    const { upToLargeBreakpoint } = useBreakpoints();
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
     const tradeInterface = computed(() => store.state.app.tradeInterface);
@@ -60,7 +72,8 @@ export default defineComponent({
       appLoading,
       tradeInterface,
       loadingTokenLists,
-      TradeInterface
+      TradeInterface,
+      upToLargeBreakpoint
     };
   }
 });

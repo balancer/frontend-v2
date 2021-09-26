@@ -152,7 +152,10 @@ export default defineComponent({
       let color = tailwind.theme.colors.green['400'];
       const _priceData = priceData.value || [];
       if (_priceData.length > 2) {
-        if (_priceData[_priceData.length - 1][1] < _priceData[_priceData.length - 2][1]) {
+        if (
+          _priceData[_priceData.length - 1][1] <
+          _priceData[_priceData.length - 2][1]
+        ) {
           color = tailwind.theme.colors.red['400'];
         }
       }
