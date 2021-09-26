@@ -16,17 +16,20 @@
     </div>
     <ECharts
       ref="chartInstance"
-      :class="[height ? `h-${height}` : '', 'w-full']"
+      :class="[
+        height && typeof (height === 'string') ? `h-full` : '',
+        'w-full'
+      ]"
       :option="chartConfig"
-      autoresize
       @updateAxisPointer="handleAxisMoved"
       :update-options="{ replaceMerge: 'series' }"
+      :style="[styleOverrides]"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from 'vue';
+import { defineComponent, PropType, ref, computed, watch } from 'vue';
 import numeral from 'numeral';
 import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
@@ -92,12 +95,21 @@ export default defineComponent({
       type: Array as PropType<string[]>
     },
     height: {
-      type: String
+      type: Object as PropType<string | number>
     },
     showLegend: {
       type: Boolean
     },
     legendState: {
+      type: Object
+    },
+    forceResizeTick: {
+      type: Number
+    },
+    isLastValueChipVisible: {
+      type: Boolean
+    },
+    customGrid: {
       type: Object
     }
   },
@@ -137,7 +149,7 @@ export default defineComponent({
             format: props.axisLabelFormatter.yAxis
           })}`;
         },
-        selected: props.legendState,
+        selected: props.legendState || {},
         textStyle: {
           color: darkMode.value
             ? tailwind.theme.colors.gray['100']
@@ -167,7 +179,7 @@ export default defineComponent({
       // controlling the display of the Y-Axis
       yAxis: {
         axisLine: {
-          show: true,
+          show: !props.hideYAxis,
           lineStyle: { color: axisColor.value }
         },
         type: 'value',
@@ -178,7 +190,7 @@ export default defineComponent({
         },
         position: 'right',
         axisLabel: {
-          show: true,
+          show: !props.hideYAxis,
           formatter: props.axisLabelFormatter.yAxis
             ? value =>
                 fNum(value, null, { format: props.axisLabelFormatter.yAxis })
@@ -189,7 +201,7 @@ export default defineComponent({
       },
       color: props.color,
       // Controls the boundaries of the chart from the HTML defined rectangle
-      grid: {
+      grid: props.customGrid || {
         left: '2.5%',
         right: 0,
         top: '10%',
@@ -198,6 +210,7 @@ export default defineComponent({
       },
       tooltip: {
         trigger: 'axis',
+        confine: true,
         axisPointer: {
           type: 'shadow',
           label: {
@@ -267,43 +280,83 @@ export default defineComponent({
             color: '#FFF',
             fontSize: 10
           },
-          data: [
-            {
-              name: 'Latest',
-              yAxis: (last(props.data[i].values) || [])[1]
-            }
-          ]
+          data: props.isLastValueChipVisible
+            ? [
+                {
+                  name: 'Latest',
+                  yAxis: (last(props.data[i]?.values) || [])[1]
+                }
+              ]
+            : [],
+          animation: false
         }
       }))
     }));
 
+    const styleOverrides = computed(() => {
+      let style: any = {};
+      if (props.height && typeof props.height === 'number') {
+        style.height = `${props.height}px`;
+      }
+      return style;
+    });
+
+    watch(
+      () => props.forceResizeTick,
+      () => {
+        if (chartInstance.value) {
+          chartInstance.value.resize();
+        }
+      }
+    );
+
+    watch(
+      () => props.data,
+      () => {
+        currentValue.value = numeral(props.data[0].values[props.data[0].values.length - 1][1]).format(
+          props.axisLabelFormatter.yAxis || '$0,0.00'
+        );
+
+        
+      }
+    );
+
     // Triggered when hovering mouse over different xAxis points
     const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       if (!props.showHeader) return;
-      props.onAxisMoved &&
-        props.onAxisMoved(props.data[seriesIndex].values[dataIndex]);
-      currentValue.value = numeral(props.data[dataIndex]).format('$0,0.00');
+      if (props.data[seriesIndex]?.values) {
+        props.onAxisMoved &&
+          props.onAxisMoved(props.data[seriesIndex].values[dataIndex]);
 
-      // no change if first point in the chart
-      if (dataIndex === 0) {
-        change.value = 0;
-      } else {
-        const prev = props.data[seriesIndex].values[dataIndex - 1] as number;
-        const current = props.data[seriesIndex].values[dataIndex] as number;
-        const _change = (current - prev) / prev;
+        currentValue.value = numeral(
+          props.data[seriesIndex].values[dataIndex][1]
+        ).format(props.axisLabelFormatter.yAxis || '$0,0.00');
 
-        // 100% increase if coming from a 0!
-        if (prev === 0 && current !== 0) {
-          change.value = 1;
-          return;
-        }
-
-        // any errors or 0 division, fall back to 0
-        if (isNaN(_change)) {
+        // no change if first point in the chart
+        if (dataIndex === 0) {
           change.value = 0;
-          return;
+        } else {
+          const prev = props.data[seriesIndex].values[
+            dataIndex - 1
+          ][1] as number;
+          const current = props.data[seriesIndex].values[
+            dataIndex
+          ][1] as number;
+          const _change = (current - prev) / prev;
+
+          // 100% increase if coming from a 0!
+          if (prev === 0 && current !== 0) {
+            change.value = 1;
+            return;
+          }
+
+          // any errors or 0 division, fall back to 0
+          if (isNaN(_change)) {
+            change.value = 0;
+            return;
+          }
+          change.value = _change;
         }
-        change.value = _change;
       }
     };
 
@@ -321,7 +374,8 @@ export default defineComponent({
       change,
 
       // computed
-      chartConfig
+      chartConfig,
+      styleOverrides
     };
   }
 });
