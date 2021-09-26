@@ -75,8 +75,16 @@ export const TOKENS = {
           '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
         '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8':
           '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        '0xdeba25af35e4097146d7629055e0ec3c71706324':
+          '0xfa6de2697d59e88ed7fc4dfe5a33dac43565ea41',
+        '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9':
+          '0xdac17f958d2ee523a2206206994597c13d831ec7',
         '0x965772e0e9c84b6f359c8597c891108dcf1c5b1a':
-          '0x429881672b9ae42b8eba0e26cd9c73711b891ca5'
+          '0x429881672b9ae42b8eba0e26cd9c73711b891ca5',
+        '0x8038f3c971414fd1fc220ba727f2d4a0fc98cb65':
+          '0xca1207647ff814039530d7d35df0e1dd2e91fa84',
+        '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1':
+          '0x6b175474e89094c44da98b954eedeac495271d0f'
       }
     },
     // TODO - remove once coingecko supports wstETH
