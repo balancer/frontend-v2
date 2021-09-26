@@ -17,9 +17,8 @@ export default class JoinParams {
     this.exchange = exchange;
     this.isStableLikePool = isStableLike(exchange.pool.poolType);
     this.isInvestmentPool = isInvestment(exchange.pool.poolType);
-    this.isSwapEnabled = !!(
-      this.isInvestmentPool && exchange.pool.onchain.swapEnabled
-    );
+    this.isSwapEnabled =
+      this.isInvestmentPool && exchange.pool.onchain.swapEnabled;
     this.dataEncodeFn = this.isStableLikePool
       ? encodeJoinStablePool
       : encodeJoinWeightedPool;

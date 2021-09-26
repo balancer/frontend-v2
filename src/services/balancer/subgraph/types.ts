@@ -71,7 +71,7 @@ export interface OnchainPoolData {
   decimals: number;
   swapFee: string;
   amp?: string;
-  swapEnabled?: boolean;
+  swapEnabled: boolean;
 }
 
 export interface FullPool extends DecoratedPool {

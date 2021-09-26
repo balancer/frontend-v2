@@ -87,17 +87,19 @@ export default class Vault {
     }
 
     let swapEnabled = true;
-    if (data?.swapEnabled) {
-      swapEnabled = data.swapEnabled.value == 'true';
+    if (Object.keys(data).includes('swapEnabled')) {
+      swapEnabled = data.swapEnabled;
     }
+
+    console.log('swapEnabled', swapEnabled);
 
     return {
       tokens: _tokens,
       totalSupply: formatUnits(data.totalSupply, data.decimals),
       decimals: data.decimals,
       swapFee: formatUnits(data.swapFee, 18),
-      amp: amp,
-      swapEnabled: swapEnabled
+      amp,
+      swapEnabled
     };
   }
 
