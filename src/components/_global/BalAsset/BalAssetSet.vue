@@ -15,6 +15,7 @@
         :key="i"
         :address="address"
         :size="size"
+        @click="$emit('click', address)"
         class="token-icon"
         :style="{
           left: `${leftOffsetFor(i)}px`,
@@ -37,7 +38,7 @@ export default defineComponent({
   components: {
     BalAsset
   },
-
+  emits: ['click'],
   props: {
     addresses: {
       type: Array as PropType<string[]>,

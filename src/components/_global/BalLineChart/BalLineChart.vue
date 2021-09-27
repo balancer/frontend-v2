@@ -314,7 +314,7 @@ export default defineComponent({
       () => props.data,
       () => {
         currentValue.value = numeral(
-          props.data[0].values[props.data[0].values.length - 1][1]
+          (props.data[0].values[props.data[0].values.length - 1] || [])[1]
         ).format(props.axisLabelFormatter.yAxis || '$0,0.00');
       }
     );

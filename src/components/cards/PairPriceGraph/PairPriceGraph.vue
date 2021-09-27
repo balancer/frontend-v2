@@ -1,17 +1,29 @@
 <template>
   <div ref="elementToAnimate" class="priceGraphCard">
     <BalCard hFull noShadow>
-      <div class="relative">
-        <button v-if="!upToLargeBreakpoint" @click="toggle" class="maximise">
+      <div class="relative h-full">
+        <button
+          v-if="
+            !upToLargeBreakpoint &&
+              !failedToLoadPriceData &&
+              !(isLoadingPriceData || appLoading)
+          "
+          @click="toggle"
+          class="maximise"
+        >
           <BalIcon name="maximize-2" class="text-gray-500" />
         </button>
-        <div>
+        <div
+          v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
+        >
           <h6 class="font-medium">{{ inputSym }}/{{ outputSym }}</h6>
         </div>
-        <BalLoadingBlock v-if="isLoadingPriceData" class="h-24" />
-        <div class="">
+        <div v-if="failedToLoadPriceData" class="h-full w-full flex justify-center items-center">
+          <span class="text-sm text-gray-400">Not enough data</span>
+        </div>
+        <BalLoadingBlock v-if='isLoadingPriceData' class="h-32" />
+        <div v-if="!failedToLoadPriceData && !isLoadingPriceData">
           <BalLineChart
-            :isLoading="isLoadingPriceData || appLoading"
             :data="chartData"
             :height="chartHeight"
             hide-y-axis
@@ -29,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from 'vue';
+import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import anime from 'animejs';
 import { useStore } from 'vuex';
 import useTokens from '@/composables/useTokens';
@@ -39,6 +51,8 @@ import { last, mapKeys, mapValues, nth, toPairs } from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
 import useTailwind from '@/composables/useTailwind';
 import useBreakpoints from '@/composables/useBreakpoints';
+import { useTradeState } from '@/composables/trade/useTradeState';
+import { getAddress } from '@ethersproject/address';
 const easing = 'spring(0.5, 100, 18, 0)';
 
 async function getPairPriceData(
@@ -77,18 +91,21 @@ export default defineComponent({
     const { tokens } = useTokens();
     const tailwind = useTailwind();
     const resizeTick = ref(0);
-    const inputAsset = computed(() => store.state.trade.inputAsset);
-    const outputAsset = computed(() => store.state.trade.outputAsset);
+    const { tokenInAddress, tokenOutAddress } = useTradeState();
     const appLoading = computed(() => store.state.app.loading);
 
-    const inputSym = computed(() => tokens.value[inputAsset.value]?.symbol);
-    const outputSym = computed(() => tokens.value[outputAsset.value]?.symbol);
+    const inputSym = computed(() => tokens.value[getAddress(tokenInAddress.value)]?.symbol);
+    const outputSym = computed(() => tokens.value[getAddress(tokenOutAddress.value)]?.symbol);
 
     const {
       isLoading: isLoadingPriceData,
-      data: priceData
-    } = useQuery(reactive(['pairPriceData', { inputAsset, outputAsset }]), () =>
-      getPairPriceData(inputAsset.value, outputAsset.value, 7)
+      data: priceData,
+      error: failedToLoadPriceData
+    } = useQuery(reactive(['pairPriceData', { tokenInAddress, tokenOutAddress }]), () =>
+      getPairPriceData(tokenInAddress.value, tokenOutAddress.value, 7),
+      {
+        retry: false
+      }
     );
 
     const maximise = () => {
@@ -186,7 +203,8 @@ export default defineComponent({
       resizeTick,
       chartHeight,
       chartGrid,
-      upToLargeBreakpoint
+      upToLargeBreakpoint,
+      failedToLoadPriceData
     };
   }
 });

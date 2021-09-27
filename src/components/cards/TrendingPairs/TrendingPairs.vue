@@ -9,8 +9,9 @@
           class="py-1 px-2 bg-gray-50 rounded-lg shadow mb-2 mr-2"
           v-for="(pair, i) in trendingPairs"
           :key="`trendingPair-${i}`"
+          @click="setTradePair(pair)"
         >
-          {{ pair[0] }}/{{ pair[1] }}
+          {{ pair[0].symbol }}/{{ pair[1].symbol }}
         </button>
       </div>
     </div>
@@ -18,7 +19,9 @@
 </template>
 
 <script lang="ts">
+import { useTradeState } from '@/composables/trade/useTradeState';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { getAddress } from '@ethersproject/address';
 import { startOfDay } from 'date-fns';
 import { computed, defineComponent, reactive } from 'vue';
 import { useQuery } from 'vue-query';
@@ -36,19 +39,32 @@ const getTrendingTradePairs = async () => {
 
 export default defineComponent({
   setup() {
+    const { setTokenOutAddress, setTokenInAddress } = useTradeState();
+
     const { data: tradePairSnapshots } = useQuery(
       reactive(['trendingTradePairs']),
       () => getTrendingTradePairs()
     );
     const trendingPairs = computed(() => {
       return (tradePairSnapshots.value || []).map(pairSnapshot => [
-        pairSnapshot.pair.token0.symbol,
-        pairSnapshot.pair.token1.symbol
+        {
+          symbol: pairSnapshot.pair.token0.symbol,
+          address: getAddress(pairSnapshot.pair.token0.address)
+        },
+        {
+          symbol: pairSnapshot.pair.token1.symbol,
+          address: getAddress(pairSnapshot.pair.token1.address)
+        }
       ]);
     });
 
+    const setTradePair = pair => {
+      setTokenInAddress(pair[0].address);
+      setTokenOutAddress(pair[1].address);
+    };
     return {
-      trendingPairs
+      trendingPairs,
+      setTradePair
     };
   }
 });
