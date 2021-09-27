@@ -2,7 +2,7 @@ import { App } from 'vue';
 import { captureException, init, setTag } from '@sentry/browser';
 import { Integrations } from '@sentry/tracing';
 import { version } from '../../package.json';
-import { networkId } from '@/composables/useNetwork';
+import { Network, networkId } from '@/composables/useNetwork';
 
 // Using Sentry's vanila JS package (@sentry/browser) here instead of
 // the official vue package (@sentry/vue) because it doesn't support vue 3 yet.
@@ -10,10 +10,10 @@ import { networkId } from '@/composables/useNetwork';
 
 const ENV = process.env.VUE_APP_ENV || 'development';
 const networkMap = {
-  '1': 'mainnet',
-  '42': 'kovan',
-  '137': 'polygon',
-  '42161': 'arbitrum-one'
+  [Network.MAINNET]: 'mainnet',
+  [Network.KOVAN]: 'kovan',
+  [Network.POLYGON]: 'polygon',
+  [Network.ARBITRUM]: 'arbitrum-one'
 };
 const environment = `${ENV}-${networkMap[networkId.value]}`;
 const release = `frontend-v2@${version}`;
