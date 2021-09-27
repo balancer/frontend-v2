@@ -37,6 +37,7 @@ export interface Pool {
   totalSwapVolume: string;
   hasLiquidityMiningRewards: boolean;
   onchain?: OnchainPoolData;
+  createTime: number;
 }
 
 export interface DecoratedPool extends Pool {
@@ -51,6 +52,7 @@ export interface DecoratedPool extends Pool {
       total: string;
     };
     fees: string;
+    isNewPool: boolean;
   };
 }
 
@@ -69,6 +71,7 @@ export interface OnchainPoolData {
   decimals: number;
   swapFee: string;
   amp?: string;
+  swapEnabled: boolean;
 }
 
 export interface FullPool extends DecoratedPool {

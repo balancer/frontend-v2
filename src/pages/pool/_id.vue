@@ -24,7 +24,16 @@
                 {{ fNum(tokenMeta.weight, 'percent_lg') }}
               </span>
             </div>
-            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-2" />
+            <BalChip
+              v-if="pool.dynamic.isNewPool"
+              color="red"
+              size="sm"
+              class="uppercase mt-2 mr-2"
+              :outline="false"
+            >
+              {{ $t('new') }}
+            </BalChip>
+            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-1" />
           </div>
           <div class="flex items-center mt-2">
             <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
@@ -109,6 +118,31 @@
           @on-tx="onNewTx"
           class="pool-actions-card"
         />
+      </div>
+      <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
+        <BalCard noPad imgSrc="/images/partners/copper-launch.png">
+          <div class="p-4 mt-2">
+            <div class="mb-4 font-semibold">
+              {{ $t('copperLaunchPromo.title') }}
+            </div>
+            <div class="mb-4 text-sm">
+              {{ $t('copperLaunchPromo.description') }}
+            </div>
+            <div class="italic mb-4 text-sm">
+              {{ $t('copperLaunchPromo.poweredByBalancer') }}
+            </div>
+            <BalLink
+              :href="EXTERNAL_LINKS.Copper.Auctions(pool.address)"
+              external
+              class="block hover:no-underline"
+            >
+              <BalBtn color="blue" block
+                >{{ $t('copperLaunchPromo.buttonLabel') }}
+                <BalIcon name="arrow-up-right" size="sm" class="ml-1"
+              /></BalBtn>
+            </BalLink>
+          </div>
+        </BalCard>
       </div>
     </div>
   </div>

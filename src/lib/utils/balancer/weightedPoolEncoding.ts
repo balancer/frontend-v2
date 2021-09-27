@@ -18,10 +18,16 @@ export type JoinWeightedPoolTokenInForExactBPTOut = {
   enterTokenIndex: number;
 };
 
+export type JoinWeightedPoolAllTokensInForExactBPTOut = {
+  kind: 'AllTokensInForExactBPTOut';
+  bptAmountOut: BigNumberish;
+};
+
 export type JoinData =
   | JoinWeightedPoolInit
   | JoinWeightedPoolExactTokensInForBPTOut
-  | JoinWeightedPoolTokenInForExactBPTOut;
+  | JoinWeightedPoolTokenInForExactBPTOut
+  | JoinWeightedPoolAllTokensInForExactBPTOut;
 
 export type ExitData =
   | ExitWeightedPoolExactBPTInForOneTokenOut
@@ -35,6 +41,10 @@ export function encodeJoinWeightedPool(joinData: JoinData): string {
     return WeightedPoolEncoder.joinExactTokensInForBPTOut(
       joinData.amountsIn,
       joinData.minimumBPT
+    );
+  } else if (joinData.kind == 'AllTokensInForExactBPTOut') {
+    return WeightedPoolEncoder.joinAllTokensInForExactBPTOut(
+      joinData.bptAmountOut
     );
   } else {
     return WeightedPoolEncoder.joinTokenInForExactBPTOut(

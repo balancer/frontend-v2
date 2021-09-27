@@ -1,11 +1,13 @@
 <template v-slot:aprCell="pool">
   <BalTooltip v-if="pool.hasLiquidityMiningRewards" noPad>
     <template v-slot:activator>
-      <StarsIcon
-        class="ml-1 h-5 text-yellow-300"
-        v-if="pool.hasLiquidityMiningRewards"
-        v-bind="$attrs"
-      />
+      <div class="ml-1">
+        <StarsIcon
+          class="h-5 text-yellow-300"
+          v-if="pool.hasLiquidityMiningRewards"
+          v-bind="$attrs"
+        />
+      </div>
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">

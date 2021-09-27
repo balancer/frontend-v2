@@ -45,11 +45,20 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div class="px-6 py-4">
+        <div class="px-6 py-4 items-center">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
             :isStablePool="isStableLike(pool.poolType)"
           />
+          <BalChip
+            v-if="pool.dynamic.isNewPool"
+            color="red"
+            size="sm"
+            class="ml-2 uppercase"
+            :outline="false"
+          >
+            {{ $t('new') }}
+          </BalChip>
         </div>
       </template>
       <template
@@ -103,7 +112,7 @@
 
 <script lang="ts">
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
-import { TokenTotal, WeeklyDistributions } from '@/pages/LiquidityMining.vue';
+import { TokenTotal, WeeklyDistributions } from '@/pages/liquidity-mining.vue';
 import TokenPills from '../PoolsTable/TokenPills/TokenPills.vue';
 import {
   DecoratedPoolWithShares,

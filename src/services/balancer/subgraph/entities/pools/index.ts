@@ -19,9 +19,10 @@ import { configService as _configService } from '@/services/config/config.servic
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { FiatCurrency } from '@/constants/currency';
 import { isStable, isWstETH } from '@/composables/usePool';
-import { twentyFourHoursInSecs } from '@/composables/useTime';
+import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
 import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
+import { differenceInWeeks } from 'date-fns';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -100,6 +101,7 @@ export default class Pools {
         liquidityMiningAPR,
         thirdPartyAPR
       );
+      const isNewPool = this.isNewPool(pool);
 
       return {
         ...pool,
@@ -114,7 +116,8 @@ export default class Pools {
             liquidityMining: liquidityMiningAPR,
             liquidityMiningBreakdown,
             total: totalAPR
-          }
+          },
+          isNewPool
         }
       };
     });
@@ -234,6 +237,10 @@ export default class Pools {
       default:
         return currentBlock - blocksInDay;
     }
+  }
+
+  private isNewPool(pool: Pool): boolean {
+    return differenceInWeeks(Date.now(), pool.createTime * oneSecondInMs) < 1;
   }
 
   public addressFor(poolId: string): string {

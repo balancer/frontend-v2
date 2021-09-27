@@ -57,7 +57,7 @@ const MAX_PILLS = 11;
     <template v-if="isStablePool">
       <StableTokenPill
         v-for="token in visibleTokens"
-        :key="token"
+        :key="token.address"
         :hasBalance="hasBalance(token.address)"
         :symbol="symbolFor(token)"
         :isSelected="selectedTokens.includes(token.address)"
