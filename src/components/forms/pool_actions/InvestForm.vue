@@ -479,7 +479,7 @@ export default defineComponent({
       let validTypes = [
         {
           label: t('noPriceImpact'),
-          max: propMaxUSD,
+          max: propMaxUSD.value,
           value: FormTypes.proportional,
           tooltip: t('noPriceImpactTip')
         }
@@ -489,7 +489,7 @@ export default defineComponent({
       if (!investmentPoolWithTradingHalted.value) {
         validTypes.push({
           label: t('customAmounts'),
-          max: balanceMaxUSD,
+          max: balanceMaxUSD.value,
           value: FormTypes.custom,
           tooltip: t('customAmountsTip')
         });

@@ -403,7 +403,7 @@ export default defineComponent({
       let validTypes = [
         {
           label: t('noPriceImpact'),
-          max: propMaxUSD,
+          max: propMaxUSD.value,
           value: FormTypes.proportional
         }
       ];
@@ -412,7 +412,7 @@ export default defineComponent({
       if (isInvestmentPool.value || props.pool.onchain.swapEnabled) {
         validTypes.push({
           label: t('singleToken'),
-          max: singleMaxUSD,
+          max: singleMaxUSD.value,
           value: FormTypes.single
         });
       }
