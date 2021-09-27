@@ -18,10 +18,13 @@
         >
           <h6 class="font-medium">{{ inputSym }}/{{ outputSym }}</h6>
         </div>
-        <div v-if="failedToLoadPriceData" class="h-full w-full flex justify-center items-center">
+        <div
+          v-if="failedToLoadPriceData"
+          class="h-full w-full flex justify-center items-center"
+        >
           <span class="text-sm text-gray-400">Not enough data</span>
         </div>
-        <BalLoadingBlock v-if='isLoadingPriceData' class="h-32" />
+        <BalLoadingBlock v-if="isLoadingPriceData" class="h-52" />
         <div v-if="!failedToLoadPriceData && !isLoadingPriceData">
           <BalLineChart
             :data="chartData"
@@ -94,15 +97,20 @@ export default defineComponent({
     const { tokenInAddress, tokenOutAddress } = useTradeState();
     const appLoading = computed(() => store.state.app.loading);
 
-    const inputSym = computed(() => tokens.value[getAddress(tokenInAddress.value)]?.symbol);
-    const outputSym = computed(() => tokens.value[getAddress(tokenOutAddress.value)]?.symbol);
+    const inputSym = computed(
+      () => tokens.value[getAddress(tokenInAddress.value)]?.symbol
+    );
+    const outputSym = computed(
+      () => tokens.value[getAddress(tokenOutAddress.value)]?.symbol
+    );
 
     const {
       isLoading: isLoadingPriceData,
       data: priceData,
       error: failedToLoadPriceData
-    } = useQuery(reactive(['pairPriceData', { tokenInAddress, tokenOutAddress }]), () =>
-      getPairPriceData(tokenInAddress.value, tokenOutAddress.value, 7),
+    } = useQuery(
+      reactive(['pairPriceData', { tokenInAddress, tokenOutAddress }]),
+      () => getPairPriceData(tokenInAddress.value, tokenOutAddress.value, 7),
       {
         retry: false
       }

@@ -3,16 +3,24 @@
     <div class="flex flex-col bg-white w-full">
       <div class="flex justify-between p-3 shadow-lg">
         <h6>My Wallet</h6>
-        <div>{{ etherBalance }} ETH</div>
+        <div v-if="!isLoadingBalances">{{ etherBalance }} ETH</div>
+        <BalLoadingBlock v-else class="h-8 w-12" />
       </div>
       <div class="p-3">
+        <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <BalAssetSet
+          v-else-if="isWalletReady"
           @click="setTokenInAddress"
           :width="230"
           wrap
           :size="32"
           :addresses="tokensWithBalance"
         ></BalAssetSet>
+        <div v-else class="w-full flex justify-center">
+          <BalBtn size="xs" @click="toggleWalletSelectModal"
+            >Connect your wallet</BalBtn
+          >
+        </div>
       </div>
     </div>
   </BalCard>
@@ -27,13 +35,24 @@ import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
   setup() {
-    const { balanceFor, balances } = useTokens();
-    const { appNetworkConfig } = useWeb3();
+    const {
+      balanceFor,
+      balances,
+      dynamicDataLoading: isLoadingBalances
+    } = useTokens();
+    const {
+      appNetworkConfig,
+      isWalletReady,
+      toggleWalletSelectModal
+    } = useWeb3();
     const { upToLargeBreakpoint } = useBreakpoints();
     const { setTokenInAddress } = useTradeState();
-    const etherBalance = computed(() =>
-      Number(balanceFor(appNetworkConfig.nativeAsset.address)).toFixed(4)
-    );
+    const etherBalance = computed(() => {
+      if (!isWalletReady.value) return '-';
+      return Number(balanceFor(appNetworkConfig.nativeAsset.address)).toFixed(
+        4
+      );
+    });
 
     const tokensWithBalance = computed(() => {
       return Object.keys(balances.value).filter(
@@ -47,7 +66,10 @@ export default defineComponent({
       etherBalance,
       tokensWithBalance,
       upToLargeBreakpoint,
+      isWalletReady,
+      isLoadingBalances,
       setTokenInAddress,
+      toggleWalletSelectModal
     };
   }
 });
