@@ -29,7 +29,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from 'vue';
+import {
+  defineComponent,
+  PropType,
+  ref,
+  computed,
+  watch,
+  onMounted
+} from 'vue';
 import numeral from 'numeral';
 import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
@@ -313,11 +320,36 @@ export default defineComponent({
     watch(
       () => props.data,
       () => {
-        currentValue.value = numeral(
+        const currentDayValue = numeral(
           (props.data[0].values[props.data[0].values.length - 1] || [])[1]
-        ).format(props.axisLabelFormatter.yAxis || '$0,0.00');
+        );
+        currentValue.value = currentDayValue.format(
+          props.axisLabelFormatter.yAxis || '$0,0.00'
+        );
+        const previousDayValue = numeral(
+          (props.data[0].values[props.data[0].values.length - 2] || [])[1]
+        );
+        change.value =
+          ((currentDayValue.value() || 0) -
+          (previousDayValue.value() || 0)) / (previousDayValue.value() || 0);
       }
     );
+
+    onMounted(() => {
+        const currentDayValue = numeral(
+          (props.data[0].values[props.data[0].values.length - 1] || [])[1]
+        );
+        currentValue.value = currentDayValue.format(
+          props.axisLabelFormatter.yAxis || '$0,0.00'
+        );
+        const previousDayValue = numeral(
+          (props.data[0].values[props.data[0].values.length - 2] || [])[1]
+        );
+
+        change.value =
+          ((currentDayValue.value() || 0) -
+          (previousDayValue.value() || 0)) / (previousDayValue.value() || 0);
+    });
 
     // Triggered when hovering mouse over different xAxis points
     const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {

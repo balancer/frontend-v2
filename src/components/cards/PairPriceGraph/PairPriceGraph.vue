@@ -104,6 +104,10 @@ export default defineComponent({
       () => tokens.value[getAddress(tokenOutAddress.value)]?.symbol
     );
 
+    const shouldLoadPriceData = computed(
+      () => tokenInAddress.value !== '' && tokenOutAddress.value !== ''
+    );
+
     const {
       isLoading: isLoadingPriceData,
       data: priceData,
@@ -111,9 +115,10 @@ export default defineComponent({
     } = useQuery(
       reactive(['pairPriceData', { tokenInAddress, tokenOutAddress }]),
       () => getPairPriceData(tokenInAddress.value, tokenOutAddress.value, 7),
-      {
-        retry: false
-      }
+      reactive({
+        retry: false,
+        shouldLoadPriceData
+      })
     );
 
     const maximise = () => {
@@ -205,7 +210,6 @@ export default defineComponent({
       outputSym,
       isLoadingPriceData,
       chartData,
-      console,
       chartColors,
       appLoading,
       resizeTick,
