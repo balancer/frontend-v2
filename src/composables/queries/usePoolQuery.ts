@@ -12,6 +12,7 @@ import useUserSettings from '../useUserSettings';
 import { forChange } from '@/lib/utils';
 import { isInvestment, isStableLike } from '../usePool';
 import { getAddress } from '@ethersproject/address';
+import useNetwork from '../useNetwork';
 
 export default function usePoolQuery(
   id: string,
@@ -23,6 +24,7 @@ export default function usePoolQuery(
   const { getTokens, injectTokens, prices, dynamicDataLoading } = useTokens();
   const { appLoading } = useApp();
   const { currency } = useUserSettings();
+  const { networkId } = useNetwork();
 
   /**
    * COMPUTED
@@ -34,7 +36,7 @@ export default function usePoolQuery(
   /**
    * QUERY INPUTS
    */
-  const queryKey = QUERY_KEYS.Pools.Current(id);
+  const queryKey = QUERY_KEYS.Pools.Current(networkId, id);
 
   const queryFn = async () => {
     const [pool] = await balancerSubgraphService.pools.get({

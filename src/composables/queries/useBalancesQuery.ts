@@ -7,6 +7,7 @@ import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists from '../useTokenLists';
 import { TokenInfoMap } from '@/types/TokenList';
+import useNetwork from '../useNetwork';
 
 /**
  * TYPES
@@ -25,6 +26,7 @@ export default function useBalancesQuery(
    */
   const { account, isWalletReady } = useWeb3();
   const { tokenListsLoaded } = useTokenLists();
+  const { networkId } = useNetwork();
 
   /**
    * COMPUTED
@@ -36,7 +38,7 @@ export default function useBalancesQuery(
    * QUERY INPUTS
    */
   const queryKey = reactive(
-    QUERY_KEYS.Account.Balances(account, tokenAddresses)
+    QUERY_KEYS.Account.Balances(networkId, account, tokenAddresses)
   );
 
   const queryFn = async () => {

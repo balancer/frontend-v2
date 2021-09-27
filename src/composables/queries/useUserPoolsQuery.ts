@@ -10,6 +10,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists from '../useTokenLists';
 import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
+import useNetwork from '../useNetwork';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -27,6 +28,7 @@ export default function useUserPoolsQuery(
   const { loadingTokenLists } = useTokenLists();
   const { account, isWalletReady } = useWeb3();
   const { currency } = useUserSettings();
+  const { networkId } = useNetwork();
 
   /**
    * COMPUTED
@@ -39,7 +41,7 @@ export default function useUserPoolsQuery(
   /**
    * QUERY PROPERTIES
    */
-  const queryKey = reactive(QUERY_KEYS.Pools.User(account));
+  const queryKey = reactive(QUERY_KEYS.Pools.User(networkId, account));
 
   const queryFn = async () => {
     const poolShares = await balancerSubgraphService.poolShares.get({

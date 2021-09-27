@@ -8,7 +8,7 @@ import { isAddress } from '@ethersproject/address';
 import { web3Service } from './web3.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { switchToAppNetwork } from './utils/helpers';
-import { Network } from '@/composables/useNetwork';
+import useNetwork, { Network } from '@/composables/useNetwork';
 
 /** STATE */
 const blockNumber = ref(0);
@@ -37,6 +37,8 @@ export default function useWeb3() {
   const isV1Supported = isAddress(
     configService.network.addresses.exchangeProxy
   );
+
+  const { networkId } = useNetwork();
 
   // COMPUTED REFS + COMPUTED REFS
   const userNetworkConfig = computed(() => {
@@ -97,7 +99,7 @@ export default function useWeb3() {
   };
 
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
-    QUERY_KEYS.Account.Profile(account, chainId),
+    QUERY_KEYS.Account.Profile(networkId, account, chainId),
     () => web3Service.getProfile(account.value),
     reactive({
       enabled: canLoadProfile
