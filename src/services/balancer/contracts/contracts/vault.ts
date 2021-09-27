@@ -7,7 +7,11 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { OnchainPoolData, PoolType } from '../../subgraph/types';
 import ConfigService from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
-import { isWeightedLike, isStableLike } from '@/composables/usePool';
+import {
+  isWeightedLike,
+  isStableLike,
+  isTradingHaltable
+} from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 
 export default class Vault {
@@ -43,6 +47,10 @@ export default class Vault {
 
     if (isWeightedLike(type)) {
       tokenMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
+
+      if (isTradingHaltable(type)) {
+        tokenMultiCaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
+      }
     } else if (isStableLike(type)) {
       tokenMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
     }
@@ -78,12 +86,20 @@ export default class Vault {
       amp = data.amp.value.div(data.amp.precision);
     }
 
+    let swapEnabled = true;
+    if (Object.keys(data).includes('swapEnabled')) {
+      swapEnabled = data.swapEnabled;
+    }
+
+    console.log('swapEnabled', swapEnabled);
+
     return {
       tokens: _tokens,
       totalSupply: formatUnits(data.totalSupply, data.decimals),
       decimals: data.decimals,
       swapFee: formatUnits(data.swapFee, 18),
-      amp: amp
+      amp,
+      swapEnabled
     };
   }
 
