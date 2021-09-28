@@ -134,6 +134,7 @@ import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { Network } from '@/composables/useNetwork';
 
 interface Route {
   share: number;
@@ -433,9 +434,9 @@ export default defineComponent({
     function getPoolLink(id: string): string {
       const chainId = appNetworkConfig.chainId;
       const prefixMap = {
-        1: 'app.',
-        42: 'kovan.',
-        137: 'polygon.'
+        [Network.MAINNET]: 'app.',
+        [Network.KOVAN]: 'kovan.',
+        [Network.POLYGON]: 'polygon.'
       };
       const prefix = prefixMap[chainId] || '';
       if (props.sorReturn.isV1swap && chainId === 1) {

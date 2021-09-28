@@ -1,7 +1,7 @@
 import { differenceInWeeks } from 'date-fns';
 import { bnum } from '@/lib/utils';
 import { toUtcTime } from '@/lib/utils/date';
-import { NetworkId } from '@/constants/network';
+import { Network } from '@/composables/useNetwork';
 import { configService } from '@/services/config/config.service';
 import MultiTokenLiquidityMining from './MultiTokenLiquidityMining.json';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
@@ -18,7 +18,7 @@ type LiquidityMiningTokenRewards = {
 type LiquidityMiningPools = Record<PoolId, LiquidityMiningTokenRewards[]>;
 
 type LiquidityMiningWeek = Array<{
-  chainId: NetworkId;
+  chainId: Network;
   pools: LiquidityMiningPools;
 }>;
 

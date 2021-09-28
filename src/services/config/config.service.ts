@@ -1,9 +1,10 @@
 import { Config } from '@/lib/config';
 import configs from '@/lib/config';
+import { Network, networkId } from '@/composables/useNetwork';
 
 interface Env {
   APP_ENV: string;
-  NETWORK: string;
+  NETWORK: Network;
   APP_DOMAIN: string;
   IPFS_NODE: string;
   BLOCKNATIVE_DAPP_ID: string;
@@ -16,7 +17,7 @@ export default class ConfigService {
   public get env(): Env {
     return {
       APP_ENV: process.env.VUE_APP_ENV || 'development',
-      NETWORK: process.env.VUE_APP_NETWORK || '1',
+      NETWORK: networkId.value,
       APP_DOMAIN: process.env.VUE_APP_DOMAIN || 'app.balancer.fi',
       IPFS_NODE: process.env.VUE_APP_IPFS_NODE || 'ipfs.io',
       BLOCKNATIVE_DAPP_ID: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || 'xxx',
@@ -29,7 +30,7 @@ export default class ConfigService {
   }
 
   public get network(): Config {
-    return configs[this.env.NETWORK];
+    return configs[networkId.value];
   }
 
   public getNetworkConfig(key: string): Config {
