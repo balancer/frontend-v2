@@ -1,4 +1,3 @@
-import { APP_NETWORK_ID } from '@/constants/network';
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import {
   APIError,
@@ -8,6 +7,8 @@ import {
   SwapSide
 } from 'paraswap';
 import { RateOptions } from 'paraswap/build/types';
+
+import { networkId } from '@/composables/useNetwork';
 
 import { PriceInformation, PriceQuoteParams } from './types';
 import { toErc20Address } from './utils';
@@ -19,7 +20,7 @@ export default class ParaSwapService {
   paraSwap: ParaSwap;
 
   constructor() {
-    this.paraSwap = new ParaSwap(APP_NETWORK_ID as NetworkID, API_URL);
+    this.paraSwap = new ParaSwap(networkId.value as NetworkID, API_URL);
   }
 
   public async getPriceQuote(params: PriceQuoteParams) {

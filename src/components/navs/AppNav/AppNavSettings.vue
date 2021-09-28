@@ -183,7 +183,6 @@ import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 
-import { APP } from '@/constants/app';
 import {
   tradeLiquidityOptions,
   tradeInterfaceOptions,
@@ -286,8 +285,6 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
-      // constants
-      APP,
       TradeInterface,
       // computed
       account,
