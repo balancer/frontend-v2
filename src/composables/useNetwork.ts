@@ -1,7 +1,5 @@
 import { ref } from 'vue';
 
-export type NetworkId = 1 | 3 | 4 | 5 | 42 | 137 | 42161;
-
 export enum Network {
   MAINNET = 1,
   ROPSTEN = 3,
@@ -14,12 +12,12 @@ export enum Network {
 
 const DEFAULT_NETWORK_ID =
   process.env.VUE_APP_NETWORK != null
-    ? (Number(process.env.VUE_APP_NETWORK) as NetworkId)
+    ? (Number(process.env.VUE_APP_NETWORK) as Network)
     : Network.MAINNET;
 
-export const networkId = ref<NetworkId>(DEFAULT_NETWORK_ID);
+export const networkId = ref<Network>(DEFAULT_NETWORK_ID);
 
-export function setNetworkId(id: NetworkId) {
+export function setNetworkId(id: Network) {
   networkId.value = id;
 }
 

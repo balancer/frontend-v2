@@ -1,10 +1,10 @@
 import { Config } from '@/lib/config';
 import configs from '@/lib/config';
-import { NetworkId, networkId } from '@/composables/useNetwork';
+import { Network, networkId } from '@/composables/useNetwork';
 
 interface Env {
   APP_ENV: string;
-  NETWORK: NetworkId;
+  NETWORK: Network;
   APP_DOMAIN: string;
   IPFS_NODE: string;
   BLOCKNATIVE_DAPP_ID: string;

@@ -5,11 +5,11 @@ import polygon from './polygon.json';
 import arbitrum from './arbitrum.json';
 import docker from './docker.json';
 import test from './test.json';
-import { Network, NetworkId } from '@/composables/useNetwork';
+import { Network } from '@/composables/useNetwork';
 
 export interface Config {
   key: string;
-  chainId: number;
+  chainId: Network | 12345 | 17;
   chainName: string;
   name: string;
   shortName: string;
@@ -55,7 +55,7 @@ export interface Config {
   >;
 }
 
-const config: Record<NetworkId | 12345 | 17, Config> = {
+const config: Record<Config['chainId'], Config> = {
   [Network.MAINNET]: homestead,
   [Network.KOVAN]: kovan,
   [Network.RINKEBY]: rinkeby,
