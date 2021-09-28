@@ -50,7 +50,7 @@ import { useStore } from 'vuex';
 import useTokens from '@/composables/useTokens';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { useQuery } from 'vue-query';
-import { last, mapKeys, mapValues, nth, toPairs } from 'lodash';
+import { Dictionary, filter, last, mapKeys, mapValues, nth, pickBy, toPairs } from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
 import useTailwind from '@/composables/useTailwind';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -65,21 +65,30 @@ async function getPairPriceData(
 ) {
   const inputAssetData = await coingeckoService.prices.getTokensHistorical(
     [inputAsset],
-    days
-  );
-  const outputAssetData = await coingeckoService.prices.getTokensHistorical(
-    [outputAsset],
-    days
+    days,
+    1,
+    'hour'
   );
 
+  const outputAssetData = await coingeckoService.prices.getTokensHistorical(
+    [outputAsset],
+    days,
+    1,
+    'hour'
+  );
+
+  console.log('bingo', inputAssetData)
+
   const calculatedPricing = mapValues(inputAssetData, (value, timestamp) => {
+    if (!outputAssetData[timestamp]) return null;
     return (1 / value[0]) * outputAssetData[timestamp][0];
   });
 
-  const formatTimestamps = mapKeys(calculatedPricing, (_, timestamp: any) =>
-    format(fromUnixTime(timestamp / 1000), 'yyyy/MM/dd')
-  );
+  const calculatedPricingNoNulls = pickBy(calculatedPricing) as Dictionary<number>;
 
+  const formatTimestamps = mapKeys(calculatedPricingNoNulls, (_, timestamp: any) =>
+    format(fromUnixTime(timestamp), 'yyyy/MM/dd HH:mm')
+  );
   return toPairs(formatTimestamps);
 }
 
@@ -114,7 +123,7 @@ export default defineComponent({
       error: failedToLoadPriceData
     } = useQuery(
       reactive(['pairPriceData', { tokenInAddress, tokenOutAddress }]),
-      () => getPairPriceData(tokenInAddress.value, tokenOutAddress.value, 7),
+      () => getPairPriceData(tokenInAddress.value, tokenOutAddress.value, 1),
       reactive({
         retry: false,
         shouldLoadPriceData

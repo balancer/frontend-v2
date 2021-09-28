@@ -330,25 +330,25 @@ export default defineComponent({
           (props.data[0].values[props.data[0].values.length - 2] || [])[1]
         );
         change.value =
-          ((currentDayValue.value() || 0) -
-          (previousDayValue.value() || 0)) / (previousDayValue.value() || 0);
+          ((currentDayValue.value() || 0) - (previousDayValue.value() || 0)) /
+          (previousDayValue.value() || 0);
       }
     );
 
     onMounted(() => {
-        const currentDayValue = numeral(
-          (props.data[0].values[props.data[0].values.length - 1] || [])[1]
-        );
-        currentValue.value = currentDayValue.format(
-          props.axisLabelFormatter.yAxis || '$0,0.00'
-        );
-        const previousDayValue = numeral(
-          (props.data[0].values[props.data[0].values.length - 2] || [])[1]
-        );
+      const currentDayValue = numeral(
+        (props.data[0].values[props.data[0].values.length - 1] || [])[1]
+      );
+      currentValue.value = currentDayValue.format(
+        props.axisLabelFormatter.yAxis || '$0,0.00'
+      );
+      const previousDayValue = numeral(
+        (props.data[0].values[props.data[0].values.length - 2] || [])[1]
+      );
 
-        change.value =
-          ((currentDayValue.value() || 0) -
-          (previousDayValue.value() || 0)) / (previousDayValue.value() || 0);
+      change.value =
+        ((currentDayValue.value() || 0) - (previousDayValue.value() || 0)) /
+        (previousDayValue.value() || 0);
     });
 
     // Triggered when hovering mouse over different xAxis points
