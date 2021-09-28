@@ -91,6 +91,7 @@ export class SorManager {
   // If previously called the cached value will be used.
   async setCostOutputToken(
     tokenAddr: string,
+    tokenDecimals: number,
     manualCost: BigNumber | null = null
   ): Promise<BigNumber> {
     tokenAddr = tokenAddr === NATIVE_ASSET_ADDRESS ? this.weth : tokenAddr;
@@ -100,25 +101,22 @@ export class SorManager {
         tokenAddr,
         manualCost.toString()
       );
-
-      const cost = await this.sorV2.getCostOfSwapInToken(
-        tokenAddr,
-        this.gasPrice
-      );
-      console.log(
-        `[SorManager] Cost for token ${tokenAddr} (new manual): ${cost.toString()}`
-      );
     }
 
     const cost = await this.sorV2.getCostOfSwapInToken(
       tokenAddr,
-      this.gasPrice
+      this.gasPrice,
+      bnum(SWAP_COST)
     );
 
     console.log(`[SorManager] Cost for token ${tokenAddr}: ${cost.toString()}`);
 
     if (this.isV1Supported) {
-      this.sorV1.setCostOutputToken(tokenAddr, cost);
+      // V1 uses EVM scaled value but V2 returns cost in human scale
+      this.sorV1.setCostOutputToken(
+        tokenAddr,
+        scale(cost, tokenDecimals).dp(0)
+      );
     }
     return cost;
   }
