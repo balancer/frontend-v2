@@ -35,7 +35,9 @@ const tokensWithBalance = computed(() => {
     <div class="flex flex-col bg-white w-full">
       <div class="flex justify-between p-3 shadow-lg">
         <h6>My Wallet</h6>
-        <div v-if="!isLoadingBalances">{{ etherBalance }} {{ nativeCurrency }}</div>
+        <div v-if="!isLoadingBalances">
+          {{ etherBalance }} {{ nativeCurrency }}
+        </div>
         <BalLoadingBlock v-else class="h-8 w-12" />
       </div>
       <div class="p-3">

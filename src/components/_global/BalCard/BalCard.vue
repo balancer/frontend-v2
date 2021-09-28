@@ -1,5 +1,5 @@
 <template>
-  <div :class="['bal-card', cardClasses]" :style="style">
+  <div :class="['bal-card', cardClasses]">
     <div v-if="imgSrc" class="feature" :style="featureStyles" />
     <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
       <component :is="titleTag" v-if="!!title" v-text="title" />
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, Ref, PropType } from 'vue';
+import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   name: 'BalCard',
@@ -39,13 +39,6 @@ export default defineComponent({
       validator: (val: string): boolean => {
         return ['', 'none', 'sm', 'md', 'lg', 'xl'].includes(val);
       }
-    },
-    style: {
-      type: Object,
-      default: () => ({})
-    },
-    ref: {
-      type: Object as PropType<Ref<HTMLElement>>
     }
   },
 
