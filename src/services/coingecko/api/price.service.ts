@@ -185,7 +185,7 @@ export class PriceService {
           for (const key of Object.keys(pricesByHour)) {
             const price = (last(pricesByHour[key]) || [])[1];
             // TODO - remove this conditional once coingecko supports wstETH
-            prices[key] =
+            prices[Number(key) * 1000] =
               address === this.appAddresses.stETH
                 ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
                 : price;
@@ -194,10 +194,9 @@ export class PriceService {
           for (const key in result) {
             const value = result[key];
             const [timestamp, price] = value;
-            const timestampKey = aggregateBy ? timestamp : dayTimestamp * 1000;
-            if (timestamp > dayTimestamp * 1000 || aggregateBy) {
+            if (timestamp > dayTimestamp * 1000) {
               // TODO - remove this conditional once coingecko supports wstETH
-              prices[timestampKey] =
+              prices[dayTimestamp * 1000] =
                 address === this.appAddresses.stETH
                   ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
                   : price;

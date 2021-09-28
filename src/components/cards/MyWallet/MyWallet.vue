@@ -1,5 +1,5 @@
 <template>
-  <BalCard noPad :hFull="upToLargeBreakpoint" noShadow>
+  <BalCard noPad :hFull="upToLargeBreakpoint" :shadow="false">
     <div class="flex flex-col bg-white w-full">
       <div class="flex justify-between p-3 shadow-lg">
         <h6>My Wallet</h6>

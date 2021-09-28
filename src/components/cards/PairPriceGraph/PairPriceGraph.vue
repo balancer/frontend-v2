@@ -1,7 +1,13 @@
 <template>
   <div ref="elementToAnimate" class="priceGraphCard">
-    <BalLoadingBlock v-if="isLoadingPriceData" class="h-64" />
-    <BalCard hFull noShadow v-else>
+    <BalLoadingBlock
+      v-if="isLoadingPriceData"
+      :class="{
+        'h-64': !isExpanded,
+        'h-96': isExpanded
+      }"
+    />
+    <BalCard hFull :shadow="false" v-else>
       <div class="relative h-full">
         <button
           v-if="
@@ -25,19 +31,50 @@
         >
           <span class="text-sm text-gray-400">Not enough data</span>
         </div>
-        <div v-if="!failedToLoadPriceData && !isLoadingPriceData">
+        <div
+          v-if="!failedToLoadPriceData && !isLoadingPriceData"
+          class="flex-col"
+        >
           <BalLineChart
             :data="chartData"
             :height="chartHeight"
+            :show-legend="false"
+            :color="chartColors"
+            :force-resize-tick="resizeTick"
+            :custom-grid="chartGrid"
+            :axis-label-formatter="{ yAxis: '0.0000000' }"
             hide-y-axis
             hide-x-axis
-            :showLegend="false"
-            :color="chartColors"
-            showHeader
-            :forceResizeTick="resizeTick"
-            :customGrid="chartGrid"
-            :axisLabelFormatter="{ yAxis: '0.0000000' }"
+            show-header
           />
+          <div class="w-full flex justify-between" v-if="isExpanded">
+            <div>
+              <button
+                v-for="timespan in chartTimespans"
+                @click="activeTimespan = timespan"
+                :key="timespan.value"
+                :class="[
+                  'py-1 px-2 text-sm rounded-lg mr-2',
+                  {
+                    'bg-green-500 text-white':
+                      activeTimespan.value === timespan.value,
+                    'text-gray-500': activeTimespan.value !== timespan.value
+                  }
+                ]"
+              >
+                {{ timespan.option }}
+              </button>
+            </div>
+            <div>
+              <span class="text-sm text-gray-500 mr-4">Low: {{ dataMin.toPrecision(6) }}</span>
+              <span class="text-sm text-gray-500">High: {{ dataMax.toPrecision(6) }}</span>
+            </div>
+          </div>
+          <div class="mt-2" v-else>
+            <span class="text-sm text-gray-500 w-full flex justify-end">{{
+              activeTimespan.option
+            }}</span>
+          </div>
         </div>
       </div>
     </BalCard>
@@ -45,19 +82,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from 'vue';
+import { computed, defineComponent, reactive, ref } from 'vue';
 import anime from 'animejs';
 import { useStore } from 'vuex';
 import useTokens from '@/composables/useTokens';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { useQuery } from 'vue-query';
-import {
-  Dictionary,
-  mapKeys,
-  mapValues,
-  pickBy,
-  toPairs
-} from 'lodash';
+import { Dictionary, mapKeys, mapValues, maxBy, minBy, pickBy, toPairs } from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
 import useTailwind from '@/composables/useTailwind';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -70,18 +101,19 @@ async function getPairPriceData(
   outputAsset: string,
   days: number
 ) {
+  const aggregateBy = days === 1 ? 'hour' : 'day';
   const inputAssetData = await coingeckoService.prices.getTokensHistorical(
     [inputAsset],
     days,
     1,
-    'hour'
+    aggregateBy
   );
 
   const outputAssetData = await coingeckoService.prices.getTokensHistorical(
     [outputAsset],
     days,
     1,
-    'hour'
+    aggregateBy
   );
 
   const calculatedPricing = mapValues(inputAssetData, (value, timestamp) => {
@@ -95,16 +127,41 @@ async function getPairPriceData(
 
   const formatTimestamps = mapKeys(
     calculatedPricingNoNulls,
-    (_, timestamp: any) => format(fromUnixTime(timestamp), 'yyyy/MM/dd HH:mm')
+    (_, timestamp: any) =>
+      format(fromUnixTime(timestamp / 1000), 'yyyy/MM/dd HH:mm')
   );
   return toPairs(formatTimestamps);
 }
+
+const chartTimespans = [
+  {
+    option: '1d',
+    value: 1
+  },
+  {
+    option: '1w',
+    value: 7
+  },
+  {
+    option: '1m',
+    value: 30
+  },
+  {
+    option: '1y',
+    value: 365
+  },
+  {
+    option: 'All',
+    value: -1
+  }
+];
 
 export default defineComponent({
   setup() {
     const elementToAnimate = ref<HTMLElement>();
     const { upToLargeBreakpoint } = useBreakpoints();
     const chartHeight = ref(upToLargeBreakpoint ? 75 : 100);
+    const activeTimespan = ref(chartTimespans[0]);
     const isExpanded = ref(false);
     const animateInstance = ref();
     const store = useStore();
@@ -130,8 +187,16 @@ export default defineComponent({
       data: priceData,
       error: failedToLoadPriceData
     } = useQuery(
-      reactive(['pairPriceData', { tokenInAddress, tokenOutAddress }]),
-      () => getPairPriceData(tokenInAddress.value, tokenOutAddress.value, 1),
+      reactive([
+        'pairPriceData',
+        { tokenInAddress, tokenOutAddress, activeTimespan }
+      ]),
+      () =>
+        getPairPriceData(
+          tokenInAddress.value,
+          tokenOutAddress.value,
+          activeTimespan.value.value
+        ),
       reactive({
         retry: false,
         shouldLoadPriceData,
@@ -140,6 +205,14 @@ export default defineComponent({
         refetchOnWindowFocus: false
       })
     );
+
+    const dataMin = computed(() => {
+      return (minBy(priceData.value || [], v => v[1]) || [])[1] || 0;
+    });
+
+    const dataMax = computed(() => {
+      return (maxBy(priceData.value || [], v => v[1]) || [])[1] || 0;
+    });
 
     const maximise = () => {
       if (elementToAnimate.value) {
@@ -152,13 +225,14 @@ export default defineComponent({
         animateInstance.value = anime({
           targets: elementToAnimate.value,
           width: '750px',
-          height: '440px',
+          // h-96
+          height: '384px',
           right: '130px',
           easing,
           update: () => {
             resizeTick.value = resizeTick.value + 1;
             chartHeight.value =
-              (elementToAnimate.value?.offsetHeight || 0) * 0.7;
+              (elementToAnimate.value?.offsetHeight || 0) * 0.6;
           }
         });
         isExpanded.value = true;
@@ -170,13 +244,12 @@ export default defineComponent({
         anime({
           targets: elementToAnimate.value,
           width: '250px',
-          height: '250px',
+          height: '225px',
           right: '0',
           easing,
           update: () => {
             resizeTick.value = resizeTick.value + 1;
-            chartHeight.value =
-              (elementToAnimate.value?.offsetHeight || 0) * 0.5;
+            chartHeight.value = upToLargeBreakpoint ? 75 : 100;
           }
         });
         isExpanded.value = false;
@@ -236,7 +309,12 @@ export default defineComponent({
       chartHeight,
       chartGrid,
       upToLargeBreakpoint,
-      failedToLoadPriceData
+      failedToLoadPriceData,
+      chartTimespans,
+      activeTimespan,
+      isExpanded,
+      dataMin,
+      dataMax,
     };
   }
 });
@@ -250,6 +328,6 @@ export default defineComponent({
 }
 
 .priceGraphCard {
-  height: 200px;
+  height: 225px;
 }
 </style>

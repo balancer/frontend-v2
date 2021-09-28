@@ -1,5 +1,5 @@
 <template>
-  <BalCard noPad hFull noShadow>
+  <BalCard noPad hFull :shadow="false">
     <div class="flex flex-col bg-white widget-card">
       <div class="flex justify-between p-3 shadow-lg">
         <h6>Trending Pairs</h6>
