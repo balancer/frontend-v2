@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineComponent, reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import anime from 'animejs';
 import { useStore } from 'vuex';
 import useTokens from '@/composables/useTokens';

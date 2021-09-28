@@ -1,32 +1,32 @@
-import { readonly, ref } from 'vue';
+import { reactive, toRefs } from 'vue';
 
 // globals
-const tokenInAddress = ref('');
-const tokenInAmount = ref('');
-const tokenOutAddress = ref('');
-const tokenOutAmount = ref('');
+const tradeState = reactive({
+  tokenInAddress: '',
+  tokenOutAddress: '',
+  tokenInAmount: '',
+  tokenOutAmount: ''
+});
 
 export function useTradeState() {
   function setTokenInAddress(address: string) {
-    tokenInAddress.value = address;
+    tradeState.tokenInAddress = address;
   }
   function setTokenOutAddress(address: string) {
-    tokenOutAddress.value = address;
+    tradeState.tokenOutAddress = address;
   }
 
   function setTokenInAmount(amount: string) {
-    tokenInAmount.value = amount;
+    tradeState.tokenInAmount = amount;
   }
   function setTokenOutAmount(amount: string) {
-    tokenOutAmount.value = amount;
+    tradeState.tokenOutAmount = amount;
   }
 
   return {
-    tokenInAddress,
-    tokenOutAddress,
-    tokenInAmount,
-    tokenOutAmount,
-
+    // can't set to read only refs as these vars are used as
+    // model values
+    ...toRefs(tradeState),
     setTokenInAddress,
     setTokenOutAddress,
     setTokenInAmount,

@@ -312,8 +312,8 @@ export default defineComponent({
     });
 
     // sometimes the autoresize doesn't resize as often as we'd like
-    // for page size changes, its own mechanism is fine however for 
-    // usages where we need to animate the size of the graph, it's not as 
+    // for page size changes, its own mechanism is fine however for
+    // usages where we need to animate the size of the graph, it's not as
     // smooth so we can use this little tick (updated by anim tick) to resize
     // smoothly.
     watch(
