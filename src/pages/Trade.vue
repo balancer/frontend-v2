@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center flex-col lg:flex-row">
     <div
-      v-if="!upToLargeBreakpoint"
+      v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists)"
       class="mt-8 mr-6 flex flex-col widget-card"
     >
       <MyWallet />
@@ -22,7 +22,7 @@
       </template>
     </div>
     <div
-      v-if="!upToLargeBreakpoint"
+      v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists)"
       class="mt-8 ml-6 flex flex-col widget-card relative"
     >
       <PairPriceGraph />

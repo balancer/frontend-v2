@@ -186,9 +186,9 @@ export class PriceService {
             const price = (last(pricesByHour[key]) || [])[1];
             // TODO - remove this conditional once coingecko supports wstETH
             prices[key] =
-            address === this.appAddresses.stETH
-              ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
-              : price;
+              address === this.appAddresses.stETH
+                ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
+                : price;
           }
         } else if (aggregateBy === 'day') {
           for (const key in result) {

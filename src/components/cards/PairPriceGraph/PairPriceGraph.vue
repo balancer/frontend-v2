@@ -1,6 +1,11 @@
 <template>
   <div ref="elementToAnimate" class="priceGraphCard">
-    <BalCard hFull noShadow>
+    <BalLoadingBlock v-if="isLoadingPriceData" class="h-64" />
+    <BalCard
+      hFull
+      noShadow
+      v-else
+    >
       <div class="relative h-full">
         <button
           v-if="
@@ -24,7 +29,6 @@
         >
           <span class="text-sm text-gray-400">Not enough data</span>
         </div>
-        <BalLoadingBlock v-if="isLoadingPriceData" class="h-52" />
         <div v-if="!failedToLoadPriceData && !isLoadingPriceData">
           <BalLineChart
             :data="chartData"
@@ -50,7 +54,16 @@ import { useStore } from 'vuex';
 import useTokens from '@/composables/useTokens';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { useQuery } from 'vue-query';
-import { Dictionary, filter, last, mapKeys, mapValues, nth, pickBy, toPairs } from 'lodash';
+import {
+  Dictionary,
+  filter,
+  last,
+  mapKeys,
+  mapValues,
+  nth,
+  pickBy,
+  toPairs
+} from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
 import useTailwind from '@/composables/useTailwind';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -77,17 +90,20 @@ async function getPairPriceData(
     'hour'
   );
 
-  console.log('bingo', inputAssetData)
+  console.log('bingo', inputAssetData);
 
   const calculatedPricing = mapValues(inputAssetData, (value, timestamp) => {
     if (!outputAssetData[timestamp]) return null;
     return (1 / value[0]) * outputAssetData[timestamp][0];
   });
 
-  const calculatedPricingNoNulls = pickBy(calculatedPricing) as Dictionary<number>;
+  const calculatedPricingNoNulls = pickBy(calculatedPricing) as Dictionary<
+    number
+  >;
 
-  const formatTimestamps = mapKeys(calculatedPricingNoNulls, (_, timestamp: any) =>
-    format(fromUnixTime(timestamp), 'yyyy/MM/dd HH:mm')
+  const formatTimestamps = mapKeys(
+    calculatedPricingNoNulls,
+    (_, timestamp: any) => format(fromUnixTime(timestamp), 'yyyy/MM/dd HH:mm')
   );
   return toPairs(formatTimestamps);
 }
@@ -126,7 +142,10 @@ export default defineComponent({
       () => getPairPriceData(tokenInAddress.value, tokenOutAddress.value, 1),
       reactive({
         retry: false,
-        shouldLoadPriceData
+        shouldLoadPriceData,
+        // when refetch on window focus in enabled, it causes a flash
+        // in the loading state of the card which is jarring. disabling it
+        refetchOnWindowFocus: false
       })
     );
 
