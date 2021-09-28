@@ -1,4 +1,4 @@
-import { NetworkId } from '@/composables/useNetwork';
+import { Network } from '@/composables/useNetwork';
 import { Ref } from 'vue';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
@@ -7,48 +7,48 @@ export const CLAIMS_ROOT_KEY = 'claims';
 const QUERY_KEYS = {
   Pools: {
     All: (
-      networkId: Ref<NetworkId>,
+      networkId: Ref<Network>,
       tokens: Ref<string[]>,
       poolIds: Ref<string[]> | undefined
     ) => [POOLS_ROOT_KEY, 'all', { networkId, tokens, poolIds }],
-    User: (networkId: Ref<NetworkId>, account: Ref<string>) => [
+    User: (networkId: Ref<Network>, account: Ref<string>) => [
       POOLS_ROOT_KEY,
       'user',
       { networkId, account }
     ],
-    Current: (networkId: Ref<NetworkId>, id: string) => [
+    Current: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'current',
       { networkId, id }
     ],
-    Snapshot: (networkId: Ref<NetworkId>, id: string) => [
+    Snapshot: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'snapshot',
       { networkId, id }
     ],
-    Activities: (networkId: Ref<NetworkId>, id: string) => [
+    Activities: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'activities',
       'all',
       { networkId, id }
     ],
     UserActivities: (
-      networkId: Ref<NetworkId>,
+      networkId: Ref<Network>,
       id: string,
       account: Ref<string>
     ) => [POOLS_ROOT_KEY, 'activities', 'user', { networkId, account, id }]
   },
   TokenLists: {
-    All: (networkId: Ref<NetworkId>) => ['tokenLists', 'all', { networkId }]
+    All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }]
   },
   Claims: {
-    All: (networkId: Ref<NetworkId>, account: Ref<string>) => [
+    All: (networkId: Ref<Network>, account: Ref<string>) => [
       CLAIMS_ROOT_KEY,
       { networkId, account }
     ]
   },
   Tokens: {
-    Prices: (networkId: Ref<NetworkId>, tokens: Ref<string[]>) => [
+    Prices: (networkId: Ref<Network>, tokens: Ref<string[]>) => [
       'tokens',
       'prices',
       { networkId, tokens }
@@ -56,12 +56,12 @@ const QUERY_KEYS = {
   },
   Account: {
     Balances: (
-      networkId: Ref<NetworkId>,
+      networkId: Ref<Network>,
       account: Ref<string>,
       tokens: Ref<string[]>
     ) => ['account', 'balances', { networkId, account, tokens }],
     Allowances: (
-      networkId: Ref<NetworkId>,
+      networkId: Ref<Network>,
       account: Ref<string>,
       contractAddresses: Ref<string[]>,
       tokens: Ref<string[]>
@@ -71,12 +71,12 @@ const QUERY_KEYS = {
       { networkId, account, contractAddresses, tokens }
     ],
     RelayerApprovals: (
-      networkId: Ref<NetworkId>,
+      networkId: Ref<Network>,
       account: Ref<string>,
       relayer: Ref<string>
     ) => ['account', 'relayer', { networkId, account, relayer }],
     Profile: (
-      networkId: Ref<NetworkId>,
+      networkId: Ref<Network>,
       account: Ref<string>,
       chainId: Ref<number | undefined>
     ) => ['account', 'profile', { networkId, account, chainId }]
