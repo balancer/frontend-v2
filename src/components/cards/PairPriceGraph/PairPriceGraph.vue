@@ -66,8 +66,12 @@
               </button>
             </div>
             <div>
-              <span class="text-sm text-gray-500 mr-4">Low: {{ dataMin.toPrecision(6) }}</span>
-              <span class="text-sm text-gray-500">High: {{ dataMax.toPrecision(6) }}</span>
+              <span class="text-sm text-gray-500 mr-4"
+                >Low: {{ dataMin.toPrecision(6) }}</span
+              >
+              <span class="text-sm text-gray-500"
+                >High: {{ dataMax.toPrecision(6) }}</span
+              >
             </div>
           </div>
           <div class="mt-2" v-else>
@@ -88,13 +92,21 @@ import { useStore } from 'vuex';
 import useTokens from '@/composables/useTokens';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { useQuery } from 'vue-query';
-import { Dictionary, mapKeys, mapValues, maxBy, minBy, pickBy, toPairs } from 'lodash';
+import {
+  Dictionary,
+  mapKeys,
+  mapValues,
+  maxBy,
+  minBy,
+  pickBy,
+  toPairs
+} from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
 import useTailwind from '@/composables/useTailwind';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import { getAddress } from '@ethersproject/address';
-const easing = 'spring(0.5, 100, 18, 0)';
+const easing = 'spring(1, 150, 18, 0)';
 
 async function getPairPriceData(
   inputAsset: string,
@@ -217,17 +229,18 @@ export default defineComponent({
     const maximise = () => {
       if (elementToAnimate.value) {
         anime.set(elementToAnimate.value, {
-          position: 'absolute',
-          right: 0
+          transformOrigin: 'center'
         });
       }
       window.requestAnimationFrame(() => {
         animateInstance.value = anime({
           targets: elementToAnimate.value,
-          width: '750px',
+          // delay needed to avoid major wonkiness
+          width: { value: '750px', delay: 20 },
           // h-96
           height: '384px',
-          right: '130px',
+          // delay needed to avoid major wonkiness
+          translateX: { value: '-85%', delay: 10 },
           easing,
           update: () => {
             resizeTick.value = resizeTick.value + 1;
@@ -245,7 +258,8 @@ export default defineComponent({
           targets: elementToAnimate.value,
           width: '250px',
           height: '225px',
-          right: '0',
+          // delay needed to avoid major wonkiness
+          translateX: { value: '0%', delay: 135 },
           easing,
           update: () => {
             resizeTick.value = resizeTick.value + 1;
@@ -314,7 +328,7 @@ export default defineComponent({
       activeTimespan,
       isExpanded,
       dataMin,
-      dataMax,
+      dataMax
     };
   }
 });
