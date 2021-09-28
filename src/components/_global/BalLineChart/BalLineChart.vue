@@ -189,6 +189,8 @@ export default defineComponent({
           show: !props.hideYAxis,
           lineStyle: { color: axisColor.value }
         },
+        min: 'dataMin',
+        max: 'dataMax',
         type: 'value',
         show: !props.hideYAxis,
         splitNumber: 4,

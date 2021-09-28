@@ -1,11 +1,7 @@
 <template>
   <div ref="elementToAnimate" class="priceGraphCard">
     <BalLoadingBlock v-if="isLoadingPriceData" class="h-64" />
-    <BalCard
-      hFull
-      noShadow
-      v-else
-    >
+    <BalCard hFull noShadow v-else>
       <div class="relative h-full">
         <button
           v-if="
@@ -34,6 +30,7 @@
             :data="chartData"
             :height="chartHeight"
             hide-y-axis
+            hide-x-axis
             :showLegend="false"
             :color="chartColors"
             showHeader
@@ -56,11 +53,8 @@ import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { useQuery } from 'vue-query';
 import {
   Dictionary,
-  filter,
-  last,
   mapKeys,
   mapValues,
-  nth,
   pickBy,
   toPairs
 } from 'lodash';
@@ -90,8 +84,6 @@ async function getPairPriceData(
     'hour'
   );
 
-  console.log('bingo', inputAssetData);
-
   const calculatedPricing = mapValues(inputAssetData, (value, timestamp) => {
     if (!outputAssetData[timestamp]) return null;
     return (1 / value[0]) * outputAssetData[timestamp][0];
@@ -112,7 +104,7 @@ export default defineComponent({
   setup() {
     const elementToAnimate = ref<HTMLElement>();
     const { upToLargeBreakpoint } = useBreakpoints();
-    const chartHeight = ref(upToLargeBreakpoint ? 125 : 200);
+    const chartHeight = ref(upToLargeBreakpoint ? 75 : 100);
     const isExpanded = ref(false);
     const animateInstance = ref();
     const store = useStore();
@@ -258,6 +250,6 @@ export default defineComponent({
 }
 
 .priceGraphCard {
-  height: 250px;
+  height: 200px;
 }
 </style>
