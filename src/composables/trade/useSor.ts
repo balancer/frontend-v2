@@ -580,6 +580,7 @@ export default function useSor({
   ): Promise<void> {
     await sorManager.setCostOutputToken(
       tokenAddress,
+      tokenDecimals,
       calculateEthPriceInToken(tokenAddress)
     );
   }
