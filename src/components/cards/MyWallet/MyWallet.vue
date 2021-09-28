@@ -2,6 +2,7 @@
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
+import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed } from 'vue';
 
@@ -13,6 +14,7 @@ const {
   balances,
   dynamicDataLoading: isLoadingBalances
 } = useTokens();
+const nativeCurrency = configService.network.nativeAsset.symbol;
 
 const etherBalance = computed(() => {
   if (!isWalletReady.value) return '-';
@@ -33,7 +35,7 @@ const tokensWithBalance = computed(() => {
     <div class="flex flex-col bg-white w-full">
       <div class="flex justify-between p-3 shadow-lg">
         <h6>My Wallet</h6>
-        <div v-if="!isLoadingBalances">{{ etherBalance }} ETH</div>
+        <div v-if="!isLoadingBalances">{{ etherBalance }} {{ nativeCurrency }}</div>
         <BalLoadingBlock v-else class="h-8 w-12" />
       </div>
       <div class="p-3">
