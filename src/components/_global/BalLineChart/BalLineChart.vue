@@ -21,6 +21,7 @@
         'w-full'
       ]"
       :option="chartConfig"
+      autoresize
       @updateAxisPointer="handleAxisMoved"
       :update-options="{ replaceMerge: 'series' }"
       :style="[styleOverrides]"
@@ -310,6 +311,11 @@ export default defineComponent({
       return style;
     });
 
+    // sometimes the autoresize doesn't resize as often as we'd like
+    // for page size changes, its own mechanism is fine however for 
+    // usages where we need to animate the size of the graph, it's not as 
+    // smooth so we can use this little tick (updated by anim tick) to resize
+    // smoothly.
     watch(
       () => props.forceResizeTick,
       () => {
@@ -319,6 +325,7 @@ export default defineComponent({
       }
     );
 
+    // make sure to update the latest values when we get a fresh set of data
     watch(
       () => props.data,
       () => {
@@ -337,6 +344,9 @@ export default defineComponent({
       }
     );
 
+    // make sure to update the latest values when we get a fresh set of data
+    // need to do this onMount as well since the data doesn't change on mount
+    // it simply is there without change so it won't trigger the watcher
     onMounted(() => {
       const currentDayValue = numeral(
         (props.data[0].values[props.data[0].values.length - 1] || [])[1]
