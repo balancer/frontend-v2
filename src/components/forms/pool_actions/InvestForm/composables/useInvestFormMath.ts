@@ -93,6 +93,7 @@ export default function useInvestFormMath(
   return {
     // computed
     hasAmounts,
+    fullAmounts,
     fiatTotal,
     priceImpact,
     highPriceImpact,

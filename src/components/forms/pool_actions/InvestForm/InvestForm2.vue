@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { reactive, toRef, computed } from 'vue';
+import { reactive, toRef, computed, ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { isStableLike } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestFormActions from './components/InvestFormActions.vue';
+import InvestPreviewModal from './components/InvestPreviewModal.vue';
 import useInvestFormMath from './composables/useInvestFormMath';
 import { isRequired } from '@/lib/utils/validations';
 
@@ -22,9 +23,13 @@ type FormState = {
 };
 
 /**
- * PROPS
+ * PROPS & EMITS
  */
 const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: 'preview'): void;
+}>();
 
 /**
  * STATE
@@ -35,11 +40,14 @@ const state = reactive<FormState>({
   highPriceImpactAccepted: false
 });
 
+const showInvestPreview = ref(false);
+
 /**
  * COMPOSABLES
  */
 const {
   hasAmounts,
+  fullAmounts,
   fiatTotal,
   priceImpact,
   highPriceImpact,
@@ -108,6 +116,16 @@ function submit() {
       :hasAmounts="hasAmounts"
       :hasValidInputs="hasValidInputs"
       class="mt-4"
+      @preview="showInvestPreview = true"
     />
+
+    <teleport to="#modal">
+      <InvestPreviewModal
+        v-if="showInvestPreview"
+        :pool="pool"
+        :amounts="fullAmounts"
+        @close="showInvestPreview = false"
+      />
+    </teleport>
   </BalForm>
 </template>

@@ -50,7 +50,7 @@ const loadingPool = computed(
       <BalCard class="h-64 mt-12 col-span-2" shadow="none" />
 
       <div class="col-span-3">
-        <BalLoadingBlock v-if="loadingPool" class="h-96" />
+        <BalLoadingBlock v-if="loadingPool || !pool" class="h-96" />
         <BalCard
           v-else
           title="Invest in pool"
