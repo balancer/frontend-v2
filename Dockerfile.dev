@@ -1,15 +1,29 @@
-FROM node:14
+FROM node:14 AS base
 
 RUN npm install -g npm@7
-
 ENV APP_ROOT /app
-
 RUN mkdir ${APP_ROOT}
 WORKDIR ${APP_ROOT}
 ADD . ${APP_ROOT}
 
+FROM base AS dependencies
+
 RUN npm install
 
-EXPOSE 8080
+FROM dependencies AS dev
 
+EXPOSE 8080
 CMD [ "npm", "run", "serve" ]
+
+FROM dependencies AS build
+
+RUN npm install -g http-server
+
+ENV VUE_APP_GA_ID 0
+ENV VUE_APP_FATHOM_SITE_ID 0
+RUN npm run build
+
+FROM build AS release
+
+expose 8080
+CMD [ "http-server", "-a", "0.0.0.0", "./dist" ]
