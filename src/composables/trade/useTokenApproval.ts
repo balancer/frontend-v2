@@ -1,5 +1,4 @@
 import { computed, Ref, ref, watch } from 'vue';
-import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse } from '@ethersproject/providers';
 import { approveTokens } from '@/lib/utils/balancer/tokens';
 import { configService } from '@/services/config/config.service';
@@ -30,7 +29,7 @@ export default function useTokenApproval(
   const { getProvider } = useWeb3();
   const { txListener } = useEthers();
   const { networkConfig } = useConfig();
-  const { approvalsRequired, dynamicDataLoading } = useTokens();
+  const { approvalRequired, dynamicDataLoading } = useTokens();
 
   /**
    * COMPUTED
@@ -51,23 +50,20 @@ export default function useTokenApproval(
         approvedSpenders: {}
       };
 
-    const tokenInDecimals = tokens.value[tokenInAddress.value].decimals;
-    const tokenInAmountDenorm = parseUnits(amount.value, tokenInDecimals);
-
-    const requiredAllowancesV1 = approvalsRequired(
-      [tokenInAddress.value],
-      [tokenInAmountDenorm.toString()],
+    const v1ApprovalRequired = approvalRequired(
+      tokenInAddress.value,
+      amount.value,
       configService.network.addresses.exchangeProxy
     );
 
-    const requiredAllowancesV2 = approvalsRequired(
-      [tokenInAddress.value],
-      [tokenInAmountDenorm.toString()]
+    const v2ApprovalRequired = approvalRequired(
+      tokenInAddress.value,
+      amount.value
     );
 
     return {
-      isUnlockedV1: requiredAllowancesV1.length === 0,
-      isUnlockedV2: requiredAllowancesV2.length === 0
+      isUnlockedV1: !v1ApprovalRequired,
+      isUnlockedV2: !v2ApprovalRequired
     };
   });
 

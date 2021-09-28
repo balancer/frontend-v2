@@ -57,7 +57,8 @@ export const POOLS = {
       '0x6b15a01b5d46a5321b627bd7deef1af57bc629070000000000000000000000d4', // kovan
       '0xe08590bde837eb9b2d42aa1196469d6e08fe96ec000200000000000000000101', // kovan,
       '0x9be7de742865d021c0e8fb9d64311b2c040c1ec1000200000000000000000012', // arbitrum
-      '0x9f19a375709baf0e8e35c2c5c65aca676c4c7191000200000000000000000022' // polygon PAR/PAR
+      '0x9f19a375709baf0e8e35c2c5c65aca676c4c7191000200000000000000000022', // polygon PAR/PAR,
+      '0x1533a3278f3f9141d5f820a184ea4b017fce2382000000000000000000000016' // arbitrum
     ]
   },
   Investment: {
@@ -79,6 +80,8 @@ export const POOLS = {
     '0x2433477a10fc5d31b9513c638f19ee85caed53fd': 'stablePool', // Arbitrum Stable
     '0xebfd5681977e38af65a7487dc70b8221d089ccad': 'stablePool', // Arbitrum MetaStable
     '0x751a0bc0e3f75b38e01cf25bfce7ff36de1c87de': 'liquidityBootstrappingPool', // Mainnet LBP
-    '0x48767F9F868a4A7b86A90736632F6E44C2df7fa9': 'investmentPool' // Mainnet Investment
+    '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'investmentPool', // Mainnet Investment
+    '0x0f7bb7ce7b6ed9366f9b6b910adefe72dc538193': 'investmentPool', // Polygon Investment
+    '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'investmentPool' // Arbitrum Investment
   }
 };
