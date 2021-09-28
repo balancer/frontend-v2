@@ -316,6 +316,7 @@
         "description": "The trade price has updated by more than {0}",
         "actionLabel": "Accept"
     },
+    "saveGas": " to save gas.",
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
     "seeMore": "See more",
@@ -351,6 +352,8 @@
     "totalValue": "Total value",
     "totalAPR": "Total APR",
     "trade": "Trade",
+    "tradeFromWeth": "Trade from WETH",
+    "tradesThroughWeth": "Trades from ETH route through Balancer liquidity pools and incur gas fees.",
     "tradeEarns": "This trade earns you",
     "tradeLiquidity": "Trade liquidity",
     "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
