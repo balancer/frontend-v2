@@ -578,10 +578,11 @@ export default function useSor({
     tokenDecimals: number,
     sorManager: SorManager
   ): Promise<void> {
-    const ethPriceToken = calculateEthPriceInToken(tokenAddress).times(
-      new BigNumber(10 ** tokenDecimals)
+    await sorManager.setCostOutputToken(
+      tokenAddress,
+      tokenDecimals,
+      calculateEthPriceInToken(tokenAddress)
     );
-    await sorManager.setCostOutputToken(tokenAddress, ethPriceToken);
   }
 
   function getMaxIn(amount: BigNumber) {

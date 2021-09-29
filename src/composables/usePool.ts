@@ -35,6 +35,10 @@ export function isWeightedLike(poolType: PoolType): boolean {
   );
 }
 
+export function isTradingHaltable(poolType: PoolType): boolean {
+  return isInvestment(poolType) || isLiquidityBootstrapping(poolType);
+}
+
 export function isWeth(pool: AnyPool): boolean {
   return pool.tokenAddresses.includes(configService.network.addresses.weth);
 }
@@ -63,9 +67,16 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isWeightedLikePool = computed(
     () => pool.value && isWeightedLike(pool.value.poolType)
   );
-
+  const isInvestmentPool = computed(
+    () => pool.value && isInvestment(pool.value.poolType)
+  );
   const isLiquidityBootstrappingPool = computed(
     () => pool.value && isLiquidityBootstrapping(pool.value.poolType)
+  );
+
+  const investmentPoolWithTradingHalted = computed(
+    () =>
+      pool.value && isInvestmentPool.value && pool.value.onchain?.swapEnabled
   );
 
   const isWethPool = computed(() => pool.value && isWeth(pool.value));
@@ -78,7 +89,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isStableLikePool,
     isWeightedPool,
     isWeightedLikePool,
+    isInvestmentPool,
     isLiquidityBootstrappingPool,
+    investmentPoolWithTradingHalted,
     isWethPool,
     isWstETHPool,
     // methods
@@ -88,6 +101,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeighted,
     isLiquidityBootstrapping,
     isWeightedLike,
+    isTradingHaltable,
     isWeth
   };
 }

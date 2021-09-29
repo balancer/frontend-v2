@@ -30,6 +30,8 @@ import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
 
 const HIGH_FEE_THRESHOLD = 0.2;
+const GNOSIS_FEE_SUBSIDY_ENABLED = true;
+const GNOSIS_FEE_SUBSIDY = 0.625;
 
 const state = reactive({
   validationErrors: {
@@ -311,6 +313,12 @@ export default function useGnosis({
       const feeQuoteResult = await feeQuotesResolveLast(queryParams);
 
       if (feeQuoteResult != null) {
+        if (GNOSIS_FEE_SUBSIDY_ENABLED) {
+          feeQuoteResult.amount = bnum(feeQuoteResult.amount)
+            .times(GNOSIS_FEE_SUBSIDY)
+            .toString();
+        }
+
         if (exactIn.value) {
           state.validationErrors.feeExceedsPrice = amountToExchange
             .minus(feeQuoteResult.amount)
