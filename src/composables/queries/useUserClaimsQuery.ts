@@ -15,6 +15,7 @@ import {
 
 import { Claim } from '@/types';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNetwork from '@/composables/useNetwork';
 
 type UserClaimsQueryResponse = {
   pendingClaims: Claim[];
@@ -29,9 +30,10 @@ export default function useUserClaimsQuery(
 ) {
   // COMPOSABLES
   const { account, isWalletReady, appNetworkConfig, getProvider } = useWeb3();
+  const { networkId } = useNetwork();
 
   // DATA
-  const queryKey = reactive(QUERY_KEYS.Claims.All(account));
+  const queryKey = reactive(QUERY_KEYS.Claims.All(networkId, account));
 
   // COMPUTED
   const isQueryEnabled = computed(
