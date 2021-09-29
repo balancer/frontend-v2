@@ -183,7 +183,7 @@ export class PriceService {
             getUnixTime(startOfHour(fromUnixTime(r[0] / 1000)))
           );
           for (const key of Object.keys(pricesByHour)) {
-            const price = (last(pricesByHour[key]) || [])[1];
+            const price = (last(pricesByHour[key]) || [])[1] || 0;
             // TODO - remove this conditional once coingecko supports wstETH
             prices[Number(key) * 1000] =
               address === this.appAddresses.stETH
