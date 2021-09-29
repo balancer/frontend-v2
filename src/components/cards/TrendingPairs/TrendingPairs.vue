@@ -6,6 +6,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { getAddress } from '@ethersproject/address';
 import { startOfDay } from 'date-fns';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useQuery } from 'vue-query';
 
 type TrendingPair = {
@@ -15,6 +16,7 @@ type TrendingPair = {
 
 const { setTokenOutAddress, setTokenInAddress } = useTradeState();
 const { chainId: userNetworkId } = useWeb3();
+const { t } = useI18n();
 
 const getTrendingTradePairs = async () => {
   return await balancerSubgraphService.tradePairSnapshots.get({
@@ -54,7 +56,7 @@ const setTradePair = (pair: TrendingPair[]) => {
   <BalCard noPad hFull growContent :shadow="false">
     <div class="flex flex-col bg-gray-50 lg:bg-white widget-card h-full">
       <div class="flex justify-between p-3 lg:shadow-lg">
-        <h6>Trending Pairs</h6>
+        <h6>{{ $t('trendingPairs') }}</h6>
       </div>
       <div class="px-1 lg:p-3 flex flex-wrap">
         <button

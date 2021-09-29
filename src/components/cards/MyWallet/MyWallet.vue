@@ -5,9 +5,11 @@ import useTokens from '@/composables/useTokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const { appNetworkConfig, isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { t } = useI18n();
 const { setTokenInAddress } = useTradeState();
 const {
   balanceFor,
@@ -34,7 +36,7 @@ const tokensWithBalance = computed(() => {
   <BalCard noPad growContent :hFull="upToLargeBreakpoint" :shadow="false">
     <div class="flex flex-col bg-white w-full h-full bg-gray-50 lg:bg-white ">
       <div class="flex lg:justify-between p-3 lg:shadow-lg">
-        <h6>My Wallet<span v-if="upToLargeBreakpoint">:</span></h6>
+        <h6>{{ $t('myWallet') }}<span v-if="upToLargeBreakpoint">:</span></h6>
         <div
           class="font-semibold lg:font-normal ml-1 lg:ml-0"
           v-if="!isLoadingBalances"
