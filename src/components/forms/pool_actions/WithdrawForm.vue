@@ -166,7 +166,7 @@ import isEqual from 'lodash/isEqual';
 import useNumbers from '@/composables/useNumbers';
 import useSlippage from '@/composables/useSlippage';
 
-import PoolExchange from '@/services/pool/exchange';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
@@ -222,8 +222,7 @@ export default defineComponent({
       isMismatchedNetwork,
       toggleWalletSelectModal,
       getProvider,
-      account,
-      appNetworkConfig
+      account
     } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
@@ -237,9 +236,7 @@ export default defineComponent({
     );
 
     // SERVICES
-    const poolExchange = computed(
-      () => new PoolExchange(props.pool, appNetworkConfig.key, tokens.value)
-    );
+    const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
     const poolCalculator = new PoolCalculator(
       toRef(props, 'pool'),
@@ -487,7 +484,7 @@ export default defineComponent({
     // Left here so numbers can be debugged in conosle
     // Talk to Fernando to see if still needed
     async function calcBptIn() {
-      const { bptIn: queryBptIn } = await poolExchange.value.queryExit(
+      const { bptIn: queryBptIn } = await poolExchange.queryExit(
         getProvider(),
         account.value,
         fullAmounts.value,
@@ -507,7 +504,7 @@ export default defineComponent({
       try {
         data.loading = true;
         await calcBptIn();
-        const tx = await poolExchange.value.exit(
+        const tx = await poolExchange.exit(
           getProvider(),
           account.value,
           amountsOut.value,

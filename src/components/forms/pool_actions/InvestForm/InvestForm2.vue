@@ -8,8 +8,15 @@ import InvestFormActions from './components/InvestFormActions.vue';
 import InvestPreviewModal from './components/InvestPreviewModal.vue';
 import useInvestFormMath from './composables/useInvestFormMath';
 import { isRequired } from '@/lib/utils/validations';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
+import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
+import { FormRef } from '@/types';
+import useWeb3 from '@/services/web3/useWeb3';
+import useTransactions from '@/composables/useTransactions';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import useEthers from '@/composables/useEthers';
 
 /**
  * TYPES
@@ -23,12 +30,17 @@ type FormState = {
   propAmounts: string[];
   validInputs: boolean[];
   highPriceImpactAccepted: boolean;
+  submitting: boolean;
 };
 
 /**
  * PROPS
  */
 const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: 'success', value: TransactionResponse): void;
+}>();
 
 /**
  * STATE
@@ -37,9 +49,11 @@ const state = reactive<FormState>({
   amounts: [],
   propAmounts: [],
   validInputs: [],
-  highPriceImpactAccepted: false
+  highPriceImpactAccepted: false,
+  submitting: false
 });
 
+const investForm = ref<FormRef>({} as FormRef);
 const showInvestPreview = ref(false);
 
 /**
@@ -49,16 +63,29 @@ const {
   hasAmounts,
   fullAmounts,
   fiatTotal,
+  fiatTotalLabel,
   priceImpact,
   highPriceImpact,
   maximizeAmounts,
   maximized,
   optimizeAmounts,
   optimized,
-  propSuggestions
+  propSuggestions,
+  bptOut
 } = useInvestFormMath(toRef(props, 'pool'), toRef(state, 'amounts'));
 
 const { t } = useI18n();
+
+const { account, getProvider } = useWeb3();
+
+const { addTransaction } = useTransactions();
+
+const { txListener } = useEthers();
+
+/**
+ * SERVICES
+ */
+const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -89,8 +116,56 @@ function hint(index: number): string {
   return bnum(propSuggestion(index)).gt(0) ? t('proportionalSuggestion') : '';
 }
 
-function submit() {
-  console.log('submit');
+async function handleTransaction(tx): Promise<void> {
+  addTransaction({
+    id: tx.hash,
+    type: 'tx',
+    action: 'invest',
+    summary: t('transactionSummary.investInPool', [
+      fiatTotalLabel.value,
+      getPoolWeights(props.pool)
+    ]),
+    details: {
+      total: fiatTotalLabel.value,
+      pool: props.pool
+    }
+  });
+
+  txListener(tx, {
+    onTxConfirmed: (tx: TransactionResponse) => {
+      emit('success', tx);
+      state.amounts = [];
+      state.submitting = false;
+      showInvestPreview.value = false;
+    },
+    onTxFailed: () => {
+      state.submitting = false;
+    }
+  });
+}
+
+async function submit(): Promise<void> {
+  if (!investForm.value.validate()) {
+    showInvestPreview.value = false;
+    return;
+  }
+  try {
+    state.submitting = true;
+
+    const tx = await poolExchange.join(
+      getProvider(),
+      account.value,
+      fullAmounts.value,
+      bptOut.value
+    );
+
+    console.log('Receipt', tx);
+
+    handleTransaction(tx);
+  } catch (error) {
+    console.error(error);
+    state.submitting = false;
+  }
 }
 </script>
 
@@ -144,7 +219,10 @@ function submit() {
         v-if="showInvestPreview"
         :pool="pool"
         :amounts="fullAmounts"
+        :priceImpact="priceImpact"
+        :submitting="state.submitting"
         @close="showInvestPreview = false"
+        @invest="submit"
       />
     </teleport>
   </BalForm>

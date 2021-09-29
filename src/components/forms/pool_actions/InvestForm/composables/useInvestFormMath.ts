@@ -1,9 +1,14 @@
 import { computed, Ref, watch, ref } from 'vue';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { fNum } from '@/composables/useNumbers';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
+import { formatUnits } from '@ethersproject/units';
+import useSlippage from '@/composables/useSlippage';
+import { usePool } from '@/composables/usePool';
+import { curry } from 'lodash';
+import useUserSettings from '@/composables/useUserSettings';
 
 export default function useInvestFormMath(
   pool: Ref<FullPool>,
@@ -19,6 +24,9 @@ export default function useInvestFormMath(
    */
   const { toFiat } = useNumbers();
   const { tokens, balances, balanceFor } = useTokens();
+  const { minusSlippage } = useSlippage();
+  const { investmentPoolWithTradingHalted } = usePool(pool);
+  const { currency } = useUserSettings();
 
   /**
    * Services
@@ -51,6 +59,10 @@ export default function useInvestFormMath(
     )
   );
 
+  const fiatTotalLabel = computed((): string =>
+    fNum(fiatTotal.value, currency.value)
+  );
+
   const hasAmounts = computed(() => bnum(fiatTotal.value).gt(0));
 
   const priceImpact = computed((): number => {
@@ -71,6 +83,16 @@ export default function useInvestFormMath(
   const optimized = computed(() => {
     const { send } = poolCalculator.propMax();
     return fullAmounts.value.every((amount, i) => amount === send[i]);
+  });
+
+  const bptOut = computed(() => {
+    let _bptOut = poolCalculator
+      .exactTokensInForBPTOut(fullAmounts.value)
+      .toString();
+    _bptOut = formatUnits(_bptOut, pool.value.onchain.decimals);
+
+    if (investmentPoolWithTradingHalted.value) return _bptOut;
+    return minusSlippage(_bptOut, pool.value.onchain.decimals);
   });
 
   /**
@@ -114,11 +136,13 @@ export default function useInvestFormMath(
     hasAmounts,
     fullAmounts,
     fiatTotal,
+    fiatTotalLabel,
     priceImpact,
     highPriceImpact,
     maximized,
     optimized,
     propSuggestions,
+    bptOut,
     // methods
     maximizeAmounts,
     optimizeAmounts
