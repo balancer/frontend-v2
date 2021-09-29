@@ -7,7 +7,6 @@ import useTokens from '@/composables/useTokens';
 import { formatUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
-import { curry } from 'lodash';
 import useUserSettings from '@/composables/useUserSettings';
 
 export default function useInvestFormMath(
