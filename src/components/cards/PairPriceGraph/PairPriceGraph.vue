@@ -148,14 +148,16 @@ const {
 const maximise = () => {
   if (elementToAnimate.value) {
     anime.set(elementToAnimate.value, {
-      transformOrigin: 'center'
+      transformOrigin: 'right middle'
     });
   }
+  // unfortunately we need to animate height and width
+  // instead of transforms due to the chart relying on it
   window.requestAnimationFrame(() => {
     animateInstance.value = anime({
       targets: elementToAnimate.value,
       // delay needed to avoid major wonkiness
-      width: { value: '750px', delay: 20 },
+      width: { value: '750px', delay: 150 },
       // h-96
       height: '384px',
       // delay needed to avoid major wonkiness
@@ -171,6 +173,8 @@ const maximise = () => {
 };
 
 const minimise = () => {
+  // unfortunately we need to animate height and width
+  // instead of transforms due to the chart relying on it
   requestAnimationFrame(() => {
     anime({
       targets: elementToAnimate.value,
@@ -239,6 +243,7 @@ const chartGrid = computed(() => {
       }"
     />
     <BalCard hFull :shadow="false" v-else>
+      <div>
       <div class="relative h-full">
         <button
           v-if="
@@ -311,6 +316,7 @@ const chartGrid = computed(() => {
             }}</span>
           </div>
         </div>
+      </div>
       </div>
     </BalCard>
   </div>
