@@ -16,11 +16,7 @@ const QUERY_KEYS = {
       'user',
       { networkId, account }
     ],
-    Current: (networkId: Ref<Network>, id: string) => [
-      POOLS_ROOT_KEY,
-      'current',
-      { networkId, id }
-    ],
+    Current: (id: string) => [POOLS_ROOT_KEY, 'current', { id }],
     Snapshot: (networkId: Ref<Network>, id: string) => [
       POOLS_ROOT_KEY,
       'snapshot',
