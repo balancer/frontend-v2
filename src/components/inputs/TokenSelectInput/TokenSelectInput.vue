@@ -12,6 +12,7 @@ type Props = {
   modelValue: string;
   fixed?: boolean;
   weight?: number;
+  excludedTokens?: string[];
 };
 
 /**
@@ -20,7 +21,8 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   fixed: false,
-  weight: 0
+  weight: 0,
+  excludedTokens: () => []
 });
 
 const emit = defineEmits<{
@@ -91,7 +93,7 @@ const toggleModal = () => {
     <teleport to="#modal">
       <SelectTokenModal
         v-if="openTokenModal"
-        :excludedTokens="[modelValue]"
+        :excludedTokens="[...excludedTokens, modelValue]"
         :includeEther="true"
         @close="openTokenModal = false"
         @select="emit('update:modelValue', $event)"
