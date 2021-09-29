@@ -4,6 +4,10 @@ import Swiper from 'swiper';
 import SwiperCore, { Pagination } from 'swiper/core';
 import 'swiper/swiper-bundle.css';
 
+
+type Props = { height: string };
+const props = defineProps<Props>();
+
 // modules styles
 import 'swiper/components/pagination/pagination.min.css';
 SwiperCore.use([Pagination]);
@@ -29,7 +33,7 @@ onMounted(() => {
 
 <template>
   <div class="p-4">
-    <div class="swiper-container">
+    <div :class="`swiper-container h-${height}`">
       <div class="swiper-wrapper h-full">
         <div
           class="swiper-slide h-full pr-4"
@@ -47,7 +51,6 @@ onMounted(() => {
 <style scoped>
 .swiper-container {
   @apply w-full;
-  height: 250px;
 }
 .swiper-pagination {
   @apply relative;

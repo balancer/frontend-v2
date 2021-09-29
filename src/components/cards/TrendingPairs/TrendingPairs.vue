@@ -51,14 +51,14 @@ const setTradePair = (pair: TrendingPair[]) => {
 </script>
 
 <template>
-  <BalCard noPad hFull :shadow="false">
-    <div class="flex flex-col bg-white widget-card">
-      <div class="flex justify-between p-3 shadow-lg">
+  <BalCard noPad hFull growContent :shadow="false">
+    <div class="flex flex-col bg-gray-50 lg:bg-white widget-card h-full">
+      <div class="flex justify-between p-3 lg:shadow-lg">
         <h6>Trending Pairs</h6>
       </div>
-      <div class="p-3 flex flex-wrap">
+      <div class="px-1 lg:p-3 flex flex-wrap">
         <button
-          class="py-1 px-2 bg-gray-50 rounded-lg shadow mb-2 mr-2"
+          class="py-1 px-2 bg-gray-50 rounded-lg lg:shadow mb-2 mr-2 font-medium lg:font-normal"
           v-for="(pair, i) in trendingPairs"
           :key="`trendingPair-${i}`"
           @click="setTradePair(pair)"

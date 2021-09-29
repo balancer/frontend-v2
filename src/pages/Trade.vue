@@ -9,7 +9,7 @@
         <TrendingPairs />
       </div>
     </div>
-    <BalCarousel v-if="upToLargeBreakpoint">
+    <BalCarousel v-if="upToLargeBreakpoint" height="40">
       <MyWallet />
       <TrendingPairs />
       <PairPriceGraph />

@@ -234,7 +234,7 @@ const chartGrid = computed(() => {
 </script>
 
 <template>
-  <div ref="elementToAnimate" class="priceGraphCard">
+  <div ref="elementToAnimate" class="h-40 lg:h-56">
     <BalLoadingBlock
       v-if="isLoadingPriceData"
       :class="{
@@ -242,9 +242,8 @@ const chartGrid = computed(() => {
         'h-96': isExpanded
       }"
     />
-    <BalCard hFull :shadow="false" v-else>
-      <div>
-      <div class="relative h-full">
+    <BalCard hFull growContent noPad :shadow="false" v-else>
+      <div class="relative h-full bg-gray-50 lg:bg-white p-4">
         <button
           v-if="
             !upToLargeBreakpoint &&
@@ -279,6 +278,7 @@ const chartGrid = computed(() => {
             :force-resize-tick="resizeTick"
             :custom-grid="chartGrid"
             :axis-label-formatter="{ yAxis: '0.0000000' }"
+            chart-class="-mt-14 lg:mt-0"
             hide-y-axis
             hide-x-axis
             show-header
@@ -310,13 +310,12 @@ const chartGrid = computed(() => {
               >
             </div>
           </div>
-          <div class="mt-2" v-else>
+          <div class="-mt-2 lg:mt-2" v-else>
             <span class="text-sm text-gray-500 w-full flex justify-end">{{
               activeTimespan.option
             }}</span>
           </div>
         </div>
-      </div>
       </div>
     </BalCard>
   </div>
@@ -327,9 +326,5 @@ const chartGrid = computed(() => {
   @apply absolute;
   right: 0;
   top: 0;
-}
-
-.priceGraphCard {
-  height: 225px;
 }
 </style>

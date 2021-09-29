@@ -18,7 +18,8 @@
       ref="chartInstance"
       :class="[
         height && typeof (height === 'string') ? `h-full` : '',
-        'w-full'
+        'w-full',
+        chartClass
       ]"
       :option="chartConfig"
       autoresize
@@ -119,6 +120,9 @@ export default defineComponent({
     },
     customGrid: {
       type: Object
+    },
+    chartClass: {
+      type: String
     }
   },
   components: {
