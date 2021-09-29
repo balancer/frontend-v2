@@ -5,7 +5,7 @@ import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-s
 import useWeb3 from '@/services/web3/useWeb3';
 import { getAddress } from '@ethersproject/address';
 import { startOfDay } from 'date-fns';
-import { computed, reactive } from 'vue';
+import { computed } from 'vue';
 import { useQuery } from 'vue-query';
 
 type TrendingPair = {

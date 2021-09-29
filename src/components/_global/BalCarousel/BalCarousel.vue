@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useSlots, h, renderSlot, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import Swiper from 'swiper';
-import SwiperCore, { Pagination, Navigation } from 'swiper/core';
+import SwiperCore, { Pagination } from 'swiper/core';
 import 'swiper/swiper-bundle.css';
 
 // modules styles
@@ -9,7 +9,7 @@ import 'swiper/components/pagination/pagination.min.css';
 SwiperCore.use([Pagination]);
 
 onMounted(() => {
-  const swiper = new Swiper('.swiper-container', {
+  new Swiper('.swiper-container', {
     direction: 'horizontal',
     loop: false,
     slidesPerView: 1,
