@@ -19,6 +19,8 @@ import useTailwind from '@/composables/useTailwind';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import { getAddress } from '@ethersproject/address';
+import QUERY_KEYS from '@/constants/queryKeys';
+import useWeb3 from '@/services/web3/useWeb3';
 
 const EASING = 'spring(1, 150, 18, 0)';
 
@@ -87,6 +89,7 @@ const store = useStore();
 const { tokens } = useTokens();
 const { tokenInAddress, tokenOutAddress } = useTradeState();
 const tailwind = useTailwind();
+const { chainId: userNetworkId } = useWeb3();
 
 const animateInstance = ref();
 const elementToAnimate = ref<HTMLElement>();
@@ -121,10 +124,12 @@ const {
   data: priceData,
   error: failedToLoadPriceData
 } = useQuery(
-  reactive([
-    'pairPriceData',
-    { tokenInAddress, tokenOutAddress, activeTimespan }
-  ]),
+  QUERY_KEYS.Tokens.PairPriceData(
+    tokenInAddress,
+    tokenOutAddress,
+    activeTimespan,
+    userNetworkId
+  ),
   () =>
     getPairPriceData(
       tokenInAddress.value,
