@@ -28,7 +28,8 @@ const QUERY_KEYS = {
     All: (account: Ref<string>) => [CLAIMS_ROOT_KEY, { account }]
   },
   Tokens: {
-    Prices: (tokens: Ref<string[]>) => ['tokens', 'prices', { tokens }]
+    Prices: (tokens: Ref<string[]>) => ['tokens', 'prices', { tokens }],
+    TrendingPairs: (userNetworkId: Ref<number>) => ['trendingTradePairs', { userNetworkId }]
   },
   Account: {
     Balances: (account: Ref<string>, tokens: Ref<string[]>) => [

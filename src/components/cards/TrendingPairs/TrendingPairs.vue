@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useTradeState } from '@/composables/trade/useTradeState';
+import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import useWeb3 from '@/services/web3/useWeb3';
 import { getAddress } from '@ethersproject/address';
 import { startOfDay } from 'date-fns';
 import { computed, reactive } from 'vue';
@@ -12,6 +14,7 @@ type TrendingPair = {
 };
 
 const { setTokenOutAddress, setTokenInAddress } = useTradeState();
+const { chainId: userNetworkId } = useWeb3();
 
 const getTrendingTradePairs = async () => {
   return await balancerSubgraphService.tradePairSnapshots.get({
@@ -25,7 +28,7 @@ const getTrendingTradePairs = async () => {
 };
 
 const { data: tradePairSnapshots } = useQuery(
-  reactive(['trendingTradePairs']),
+  QUERY_KEYS.Tokens.TrendingPairs(userNetworkId),
   () => getTrendingTradePairs()
 );
 const trendingPairs = computed(() => {
