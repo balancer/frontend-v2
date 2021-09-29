@@ -243,7 +243,7 @@ const chartGrid = computed(() => {
       }"
     />
     <BalCard hFull growContent noPad :shadow="false" v-else>
-      <div class="relative h-full bg-gray-50 lg:bg-white p-4">
+      <div class="relative h-full bg-gray-50 lg:bg-white m-4">
         <button
           v-if="
             !upToLargeBreakpoint &&
