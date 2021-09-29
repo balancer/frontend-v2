@@ -19,7 +19,8 @@ import useTailwind from '@/composables/useTailwind';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import { getAddress } from '@ethersproject/address';
-const easing = 'spring(1, 150, 18, 0)';
+
+const EASING = 'spring(1, 150, 18, 0)';
 
 async function getPairPriceData(
   inputAsset: string,
@@ -154,7 +155,7 @@ const maximise = () => {
       height: '384px',
       // delay needed to avoid major wonkiness
       translateX: { value: '-85%', delay: 10 },
-      easing,
+      easing: EASING,
       update: () => {
         resizeTick.value = resizeTick.value + 1;
         chartHeight.value = (elementToAnimate.value?.offsetHeight || 0) * 0.6;
@@ -172,7 +173,7 @@ const minimise = () => {
       height: '225px',
       // delay needed to avoid major wonkiness
       translateX: { value: '0%', delay: 135 },
-      easing,
+      easing: EASING,
       update: () => {
         resizeTick.value = resizeTick.value + 1;
         chartHeight.value = upToLargeBreakpoint ? 75 : 100;

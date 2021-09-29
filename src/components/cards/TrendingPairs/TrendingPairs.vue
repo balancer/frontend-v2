@@ -9,7 +9,7 @@ import { useQuery } from 'vue-query';
 type TrendingPair = {
   symbol: string;
   address: string;
-}
+};
 
 const { setTokenOutAddress, setTokenInAddress } = useTradeState();
 
