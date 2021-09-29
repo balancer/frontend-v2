@@ -4,9 +4,8 @@ import Swiper from 'swiper';
 import SwiperCore, { Pagination } from 'swiper/core';
 import 'swiper/swiper-bundle.css';
 
-
 type Props = { height: string };
-const props = defineProps<Props>();
+defineProps<Props>();
 
 // modules styles
 import 'swiper/components/pagination/pagination.min.css';

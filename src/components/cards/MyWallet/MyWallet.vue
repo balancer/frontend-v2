@@ -35,7 +35,10 @@ const tokensWithBalance = computed(() => {
     <div class="flex flex-col bg-white w-full h-full bg-gray-50 lg:bg-white ">
       <div class="flex lg:justify-between p-3 lg:shadow-lg">
         <h6>My Wallet<span v-if="upToLargeBreakpoint">:</span></h6>
-        <div class="font-semibold lg:font-normal ml-1 lg:ml-0" v-if="!isLoadingBalances">
+        <div
+          class="font-semibold lg:font-normal ml-1 lg:ml-0"
+          v-if="!isLoadingBalances"
+        >
           {{ etherBalance }} {{ nativeCurrency }}
         </div>
         <BalLoadingBlock v-else class="h-8 w-12" />
