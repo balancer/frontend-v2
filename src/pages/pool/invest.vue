@@ -70,9 +70,11 @@ const loadingPool = computed(
   </div>
 </template>
 
-<style>
+<style scoped>
 .invest-header {
-  @apply h-16 border-b px-4 lg:px-6 flex items-center justify-between;
+  @apply h-16 border-b;
+  @apply px-4 lg:px-6;
+  @apply flex items-center justify-between;
 }
 
 .invest-container {
