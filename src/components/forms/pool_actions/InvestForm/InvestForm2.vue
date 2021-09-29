@@ -8,6 +8,8 @@ import InvestFormActions from './components/InvestFormActions.vue';
 import InvestPreviewModal from './components/InvestPreviewModal.vue';
 import useInvestFormMath from './composables/useInvestFormMath';
 import { isRequired } from '@/lib/utils/validations';
+import { bnum } from '@/lib/utils';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -18,6 +20,7 @@ type Props = {
 
 type FormState = {
   amounts: string[];
+  propAmounts: string[];
   validInputs: boolean[];
   highPriceImpactAccepted: boolean;
 };
@@ -32,6 +35,7 @@ const props = defineProps<Props>();
  */
 const state = reactive<FormState>({
   amounts: [],
+  propAmounts: [],
   validInputs: [],
   highPriceImpactAccepted: false
 });
@@ -50,8 +54,11 @@ const {
   maximizeAmounts,
   maximized,
   optimizeAmounts,
-  optimized
+  optimized,
+  propSuggestions
 } = useInvestFormMath(toRef(props, 'pool'), toRef(state, 'amounts'));
+
+const { t } = useI18n();
 
 /**
  * COMPUTED
@@ -72,6 +79,16 @@ function onAmountChange(newAmount: string, index: number): void {
   state.amounts[index] = newAmount;
 }
 
+function propSuggestion(index: number): string {
+  return bnum(propSuggestions.value[index]).gt(0)
+    ? propSuggestions.value[index]
+    : '0.0';
+}
+
+function hint(index: number): string {
+  return bnum(propSuggestion(index)).gt(0) ? t('proportionalSuggestion') : '';
+}
+
 function submit() {
   console.log('submit');
 }
@@ -87,6 +104,8 @@ function submit() {
       :weight="tokenWeight(tokenAddress)"
       v-model:amount="state.amounts[i]"
       v-model:isValid="state.validInputs[i]"
+      :hintAmount="propSuggestion(i)"
+      :hint="hint(i)"
       class="mb-4"
       fixedToken
       @update:amount="onAmountChange($event, i)"

@@ -231,6 +231,7 @@
     "priceImpactTolerance": "Price impact tolerance",
     "profit": "Profit (1{0})",
     "protocolFees": "Protocol fees",
+    "proportionalSuggestion": "Proportional suggestion",
     "rank": "Rank (1{0})",
     "receive": "Receive",
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",

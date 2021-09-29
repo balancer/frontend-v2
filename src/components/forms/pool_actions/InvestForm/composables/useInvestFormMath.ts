@@ -1,4 +1,4 @@
-import { computed, Ref } from 'vue';
+import { computed, Ref, watch, ref } from 'vue';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useNumbers from '@/composables/useNumbers';
@@ -9,6 +9,11 @@ export default function useInvestFormMath(
   pool: Ref<FullPool>,
   amounts: Ref<string[]>
 ) {
+  /**
+   * STATE
+   */
+  const propSuggestions = ref<string[]>([]);
+
   /**
    * COMPOSABLES
    */
@@ -90,6 +95,20 @@ export default function useInvestFormMath(
     amounts.value = [...send];
   }
 
+  watch(fullAmounts, (newAmounts, oldAmounts) => {
+    const changedIndex = newAmounts.findIndex(
+      (amount, i) => oldAmounts[i] !== amount
+    );
+    if (changedIndex >= 0) {
+      const { send } = poolCalculator.propAmountsGiven(
+        fullAmounts.value[changedIndex],
+        changedIndex,
+        'send'
+      );
+      propSuggestions.value = send;
+    }
+  });
+
   return {
     // computed
     hasAmounts,
@@ -99,6 +118,7 @@ export default function useInvestFormMath(
     highPriceImpact,
     maximized,
     optimized,
+    propSuggestions,
     // methods
     maximizeAmounts,
     optimizeAmounts
