@@ -23,13 +23,9 @@ type FormState = {
 };
 
 /**
- * PROPS & EMITS
+ * PROPS
  */
 const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  (e: 'preview'): void;
-}>();
 
 /**
  * STATE
@@ -72,6 +68,10 @@ function tokenWeight(address: string): number {
   return props.pool.onchain.tokens[address].weight;
 }
 
+function onAmountChange(newAmount: string, index: number): void {
+  state.amounts[index] = newAmount;
+}
+
 function submit() {
   console.log('submit');
 }
@@ -89,6 +89,7 @@ function submit() {
       v-model:isValid="state.validInputs[i]"
       class="mb-4"
       fixedToken
+      @update:amount="onAmountChange($event, i)"
     />
 
     <InvestFormTotals

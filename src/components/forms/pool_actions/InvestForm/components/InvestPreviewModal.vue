@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import useTokens from '@/composables/useTokens';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { TokenInfo, TokenInfoMap } from '@/types/TokenList';
+import { TokenInfoMap } from '@/types/TokenList';
 import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 
