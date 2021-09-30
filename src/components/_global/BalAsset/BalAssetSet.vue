@@ -16,7 +16,7 @@
         :address="address"
         :size="size"
         @click="$emit('click', address)"
-        class="token-icon"
+        :class="['token-icon', { 'absolute': !wrap, 'relative': wrap }]"
         :style="{
           left: `${leftOffsetFor(i)}px`,
           zIndex: `${20 - i}`,
@@ -55,6 +55,9 @@ export default defineComponent({
     maxAssetsPerLine: {
       type: Number,
       default: 8
+    },
+    wrap: {
+      type: Boolean
     }
   },
 

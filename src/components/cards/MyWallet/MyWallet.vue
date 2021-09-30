@@ -25,11 +25,14 @@ const etherBalance = computed(() => {
 });
 
 const tokensWithBalance = computed(() => {
-  return take(Object.keys(balances.value).filter(
-    tokenAddress =>
-      Number(balances.value[tokenAddress]) > 0 &&
-      tokenAddress !== appNetworkConfig.nativeAsset.address
-  ), 21);
+  return take(
+    Object.keys(balances.value).filter(
+      tokenAddress =>
+        Number(balances.value[tokenAddress]) > 0 &&
+        tokenAddress !== appNetworkConfig.nativeAsset.address
+    ),
+    21
+  );
 });
 </script>
 
