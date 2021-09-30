@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
-          file: 'Dockerfile.dev'
+          file: 'Dockerfile'
           push: true
           tags: balancerfi/frontend-v2:latest,balancerfi/frontend-v2:${{ steps.package-version.outputs.current-version}}

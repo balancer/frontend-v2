@@ -11,8 +11,8 @@ export default class RpcProviderService {
 
   constructor(private readonly config: ConfigService = configService) {
     this.network = this.config.network.shortName;
-    this.jsonProvider = new JsonRpcProvider(this.config.network.rpc);
-    this.wsProvider = new WebSocketProvider(this.config.network.ws);
+    this.jsonProvider = new JsonRpcProvider(this.config.rpc);
+    this.wsProvider = new WebSocketProvider(this.config.ws);
     this.loggingProvider = new JsonRpcProvider(this.config.network.loggingRpc);
   }
 
@@ -27,7 +27,9 @@ export default class RpcProviderService {
   }
 
   public getJsonProvider(networkKey: string): JsonRpcProvider {
-    const rpcUrl = this.config.getNetworkConfig(networkKey).rpc;
+    const rpcUrl = `${this.config.getNetworkConfig(networkKey).rpc}/${
+      this.config.env.INFURA_KEY
+    }`;
     return new JsonRpcProvider(rpcUrl);
   }
 }

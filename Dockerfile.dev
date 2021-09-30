@@ -14,16 +14,3 @@ FROM dependencies AS dev
 
 EXPOSE 8080
 CMD [ "npm", "run", "serve" ]
-
-FROM dependencies AS build
-
-RUN npm install -g http-server
-
-ENV VUE_APP_GA_ID 0
-ENV VUE_APP_FATHOM_SITE_ID 0
-RUN npm run build
-
-FROM build AS release
-
-expose 8080
-CMD [ "http-server", "-a", "0.0.0.0", "./dist" ]
