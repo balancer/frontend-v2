@@ -36,7 +36,7 @@ const priceImpactClasses = computed(() => ({
 }));
 
 const optimizeBtnClasses = computed(() => ({
-  'text-blue-500': !props.highPriceImpact,
+  'text-gradient': !props.highPriceImpact,
   'text-red-500 px-2 py-1 bg-white rounded-lg': props.highPriceImpact
 }));
 </script>
