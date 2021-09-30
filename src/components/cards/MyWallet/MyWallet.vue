@@ -45,7 +45,7 @@ const tokensWithBalance = computed(() => {
         </div>
         <BalLoadingBlock v-else class="h-8 w-12" />
       </div>
-      <div class="p-3">
+      <div class="h-full p-3">
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <BalAssetSet
           v-else-if="isWalletReady"
@@ -55,7 +55,7 @@ const tokensWithBalance = computed(() => {
           :size="32"
           :addresses="tokensWithBalance"
         ></BalAssetSet>
-        <div v-else class="w-full flex justify-center">
+        <div v-else class="w-full mt-4 flex justify-center">
           <BalBtn size="xs" @click="toggleWalletSelectModal"
             >Connect your wallet</BalBtn
           >

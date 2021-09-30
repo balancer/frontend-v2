@@ -158,8 +158,8 @@ const maximise = () => {
       targets: elementToAnimate.value,
       // delay needed to avoid major wonkiness
       width: { value: '750px', delay: 150 },
-      // h-96
-      height: '384px',
+      // h-112
+      height: '448px',
       // delay needed to avoid major wonkiness
       translateX: { value: '-85%', delay: 10 },
       easing: EASING,
@@ -239,11 +239,11 @@ const chartGrid = computed(() => {
       v-if="isLoadingPriceData"
       :class="{
         'h-64': !isExpanded,
-        'h-96': isExpanded
+        'h-112': isExpanded
       }"
     />
     <BalCard hFull growContent noPad :shadow="false" v-else>
-      <div class="relative h-full bg-gray-50 lg:bg-white m-4">
+      <div class="relative h-full bg-gray-50 lg:bg-white p-4">
         <button
           v-if="
             !upToLargeBreakpoint &&
@@ -251,7 +251,7 @@ const chartGrid = computed(() => {
               !(isLoadingPriceData || appLoading)
           "
           @click="toggle"
-          class="maximise"
+          class="maximise m-4"
         >
           <BalIcon name="maximize-2" class="text-gray-500" />
         </button>
@@ -277,13 +277,13 @@ const chartGrid = computed(() => {
             :color="chartColors"
             :force-resize-tick="resizeTick"
             :custom-grid="chartGrid"
-            :axis-label-formatter="{ yAxis: '0.0000000' }"
-            chart-class="-mt-14 lg:mt-0"
+            :axis-label-formatter="{ yAxis: '0.000000' }"
+            wrapper-class="flex flex-row lg:flex-col"
             hide-y-axis
             hide-x-axis
             show-header
           />
-          <div class="w-full flex justify-between" v-if="isExpanded">
+          <div class="w-full flex justify-between mt-6" v-if="isExpanded">
             <div>
               <button
                 v-for="timespan in chartTimespans"

@@ -1,6 +1,6 @@
 <template>
   <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
-  <div v-else>
+  <div :class="[wrapperClass]" v-else>
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
       <h3 class="text-gray-800 text-xl tracking-wider">
         {{ currentValue }}
@@ -122,6 +122,9 @@ export default defineComponent({
       type: Object
     },
     chartClass: {
+      type: String
+    },
+    wrapperClass: {
       type: String
     }
   },
