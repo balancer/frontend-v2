@@ -33,6 +33,7 @@ const {
     <BalBtn
       v-if="!isWalletReady"
       :label="$t('connectWallet')"
+      color="gradient"
       block
       @click.prevent="toggleWalletSelectModal"
     />
