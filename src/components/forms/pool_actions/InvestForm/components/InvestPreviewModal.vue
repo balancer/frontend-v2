@@ -6,6 +6,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
+import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
 
 /**
  * TYPES
@@ -83,6 +84,12 @@ const fiatTotal = computed((): string =>
   )
 );
 
+const lmBreakdown = computed(() => [
+  { amount: '0', symbol: 'XXX' },
+  { amount: '0', symbol: 'XXX' },
+  { amount: '0', symbol: 'XXX' }
+]);
+
 /**
  * METHODS
  */
@@ -141,6 +148,11 @@ function amountShare(address: string): string {
           </div>
           <div class="summary-table-number">
             {{ fNum(fiatTotal, currency) }}
+            <BalTooltip
+              :text="$t('tooltips.invest.total')"
+              icon-size="sm"
+              class="ml-2"
+            />
           </div>
         </div>
         <div class="summary-table-row">
@@ -149,14 +161,42 @@ function amountShare(address: string): string {
           </div>
           <div class="summary-table-number">
             {{ fNum(priceImpact, 'percent') }}
+            <BalTooltip
+              :text="$t('tooltips.invest.priceImpact')"
+              icon-size="sm"
+              width="72"
+              class="ml-2"
+            />
           </div>
         </div>
         <div class="summary-table-row">
           <div class="summary-table-label">
-            Expected liquidty mining
+            Potential weekly yield
           </div>
           <div class="summary-table-number">
-            X BAL / wk
+            $0.00
+            <BalTooltip icon-size="sm" width="72" class="ml-2" noPad>
+              <div class="p-2 bg-gray-50 border-b">
+                <span class="text-sm">Yield earnings</span>
+                <span class="ml-1 text-gray-500">(based on the last 24h)</span>
+                <div class="text-base font-semibold mt-1">
+                  $X.XX per week
+                </div>
+              </div>
+              <div class="p-2">
+                <BalStatBreakdown :items="lmBreakdown">
+                  <div class="flex items-center">
+                    <span>$X.XX</span>
+                    <span class="ml-1 text-gray-500">Liquidity mining</span>
+                    <StarsIcon class="h-4 text-yellow-300" />
+                  </div>
+                  <template v-slot:item="{ item }">
+                    {{ fNum(item.amount, currency) }}
+                    {{ item.symbol }}
+                  </template>
+                </BalStatBreakdown>
+              </div>
+            </BalTooltip>
           </div>
         </div>
       </div>
@@ -177,7 +217,7 @@ function amountShare(address: string): string {
 
 <style scoped>
 .token-input-table {
-  @apply border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg;
+  @apply shadow-lg border dark:border-gray-700 divide-y dark:divide-gray-700 rounded-lg;
 }
 
 .token-input-table-content {
