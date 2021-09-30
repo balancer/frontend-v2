@@ -6,11 +6,9 @@ import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { take } from 'lodash';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { appNetworkConfig, isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { t } = useI18n();
 const { setTokenInAddress } = useTradeState();
 const {
   balanceFor,

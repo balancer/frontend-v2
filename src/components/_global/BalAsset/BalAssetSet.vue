@@ -16,7 +16,7 @@
         :address="address"
         :size="size"
         @click="$emit('click', address)"
-        :class="['token-icon', { 'absolute': !wrap, 'relative': wrap }]"
+        :class="['token-icon', { absolute: !wrap, relative: wrap }]"
         :style="{
           left: `${leftOffsetFor(i)}px`,
           zIndex: `${20 - i}`,
@@ -81,6 +81,7 @@ export default defineComponent({
      * METHODS
      */
     function leftOffsetFor(i: number) {
+      if (props.wrap) return 0;
       return (
         ((props.width - radius.value * 2 + spacer.value) /
           (props.maxAssetsPerLine - 1)) *
