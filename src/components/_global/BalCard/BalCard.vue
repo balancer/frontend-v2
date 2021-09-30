@@ -55,7 +55,7 @@ export default defineComponent({
     const cardClasses = computed(() => {
       return {
         'rounded-lg': !props.square,
-        'overflow-hidden': props.exposeOverflow,
+        'overflow-hidden': !props.exposeOverflow,
         [`bg-white dark:bg-gray-${props.darkBgColor}`]: true,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
         [borderClasses.value]: !props.noBorder,
