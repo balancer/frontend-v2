@@ -4,6 +4,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import useTokens from '@/composables/useTokens';
 import { configService } from '@/services/config/config.service';
 import useWeb3 from '@/services/web3/useWeb3';
+import { take } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -24,11 +25,11 @@ const etherBalance = computed(() => {
 });
 
 const tokensWithBalance = computed(() => {
-  return Object.keys(balances.value).filter(
+  return take(Object.keys(balances.value).filter(
     tokenAddress =>
       Number(balances.value[tokenAddress]) > 0 &&
       tokenAddress !== appNetworkConfig.nativeAsset.address
-  );
+  ), 21);
 });
 </script>
 
@@ -54,6 +55,7 @@ const tokensWithBalance = computed(() => {
           wrap
           :size="32"
           :addresses="tokensWithBalance"
+          :max-asssets-per-line="7"
         ></BalAssetSet>
         <div v-else class="w-full mt-4 lg:mt-0 flex justify-center">
           <BalBtn size="xs" @click="toggleWalletSelectModal"
