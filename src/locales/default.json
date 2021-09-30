@@ -37,6 +37,7 @@
     "approving": "Approving",
     "apr": "APR",
     "availableToClaim": "Available to claim:",
+    "basedOnLast24h": "based on the last 24h",
     "balance": "Balance",
     "balances": "Balances",
     "best": "Best",
@@ -134,8 +135,13 @@
     "tradeSuccess": "Successfully traded your tokens",
     "tradeInterface": "Trade interface",
     "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across Balancer V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders while providing MEV protection.",
-    "thirdPartyAPR": {
-        "steth": "stETH staking rewards APR"
+    "thirdPartyRewards": {
+        "apr": {
+            "steth": "stETH staking rewards APR"
+        },
+        "fiat": {
+            "steth": "stETH staking rewards"
+        }
     },
     "investmentPool": "Investment pool",
     "investmentPools": "Investment pools",
@@ -208,6 +214,7 @@
     "payload": "Payload",
     "pendingClaims": "Pending claims",
     "pendingEstimate": "Pending: (estimate)",
+    "perWeek": "per week",
     "pool": "Pool",
     "poolBalance": "Pool balance",
     "poolComposition": "Pool composition",
@@ -219,6 +226,7 @@
     "poolType": "Pool type",
     "poolValue": "Pool value",
     "portfolio": "Portfolio",
+    "potentialWeeklyYield": "Potential weekly yield",
     "popularBases": "Popular:",
     "preview": "Preview",
     "previewTrade": "Preview trade",
@@ -424,6 +432,7 @@
     "withdrawFee": "Withdraw fee",
     "wrapStEthTooltip": "This pool requires Wrapped Liquid Staked ETH 2.0 (wstETH). To maximize your investment, you could wrap some additional stETH.",
     "yearAbbrev": "y",
+    "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
     "yourTransactions": "Your transactions in this pool",
     "featuredProtocol": "Featured ecosystem protocol",

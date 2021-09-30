@@ -96,7 +96,7 @@ export default defineComponent({
     );
 
     const thirdPartyAPRLabel = computed(() => {
-      if (isWstETH(props.pool)) return t('thirdPartyAPR.steth');
+      if (isWstETH(props.pool)) return t('thirdPartyRewards.apr.steth');
       return '';
     });
 
