@@ -70,7 +70,7 @@ const BALTokenAddress = getAddress(TOKENS.AddressMap[appNetworkConfig.key].BAL);
 
 // COMPUTED
 
-const isAirdrop = computed(() => isPolygon.value || true);
+const isAirdrop = computed(() => isPolygon.value);
 
 const userClaims = computed(() =>
   userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null
