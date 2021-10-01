@@ -28,7 +28,7 @@ export default class RpcProviderService {
 
   public getJsonProvider(networkKey: string): JsonRpcProvider {
     const rpcUrl = `${this.config.getNetworkConfig(networkKey).rpc}/${
-      this.config.env.INFURA_KEY
+      this.config.env.INFURA_PROJECT_ID
     }`;
     return new JsonRpcProvider(rpcUrl);
   }

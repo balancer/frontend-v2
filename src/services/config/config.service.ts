@@ -8,7 +8,7 @@ interface Env {
   IPFS_NODE: string;
   BLOCKNATIVE_DAPP_ID: string;
   ALCHEMY_KEY: string;
-  INFURA_KEY: string;
+  INFURA_PROJECT_ID: string;
   PORTIS_DAPP_ID: string;
   ENABLE_STABLE_POOLS: boolean;
 }
@@ -23,8 +23,8 @@ export default class ConfigService {
       BLOCKNATIVE_DAPP_ID: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || 'xxx',
       ALCHEMY_KEY:
         process.env.VUE_APP_ALCHEMY_KEY || 'cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
-      INFURA_KEY:
-        process.env.VUE_APP_INFURA_KEY || 'daaa68ec242643719749dd1caba2fc66',
+      INFURA_PROJECT_ID:
+        process.env.VUE_APP_INFURA_PROJECT_ID || 'daaa68ec242643719749dd1caba2fc66',
       ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
       PORTIS_DAPP_ID:
         process.env.PORTIS_DAPP_ID || '3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe'
@@ -42,11 +42,11 @@ export default class ConfigService {
   }
 
   public get rpc(): string {
-    return `${this.network.rpc}/${this.env.INFURA_KEY}`;
+    return `${this.network.rpc}/${this.env.INFURA_PROJECT_ID}`;
   }
 
   public get ws(): string {
-    return `${this.network.ws}/${this.env.INFURA_KEY}`;
+    return `${this.network.ws}/${this.env.INFURA_PROJECT_ID}`;
   }
 }
 

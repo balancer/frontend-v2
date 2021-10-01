@@ -4,22 +4,26 @@
 
 FROM node:14 AS base
 
-RUN npm install -g npm@7
 ENV APP_ROOT /app
 RUN mkdir ${APP_ROOT}
 WORKDIR ${APP_ROOT}
-ADD . ${APP_ROOT}
 
 FROM base AS dependencies
 
+COPY package*.json ./
+
+RUN npm install -g npm@7
 RUN npm install
+
 FROM dependencies AS build
 
-RUN npm install -g http-server
+COPY . .
 RUN npm run build -- --mode production
 
-FROM build AS release
+FROM nginx:stable-alpine as release
 
-EXPOSE 8080
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/scripts/docker-init.sh /
+EXPOSE 80
 
-CMD ./set-env.sh && http-server -a 0.0.0.0 -p 8080 ./dist
+CMD ["/docker-init.sh"]
