@@ -70,7 +70,7 @@ const BALTokenAddress = getAddress(TOKENS.AddressMap[appNetworkConfig.key].BAL);
 
 // COMPUTED
 
-const isAirdrop = computed(() => isPolygon.value);
+const isAirdrop = computed(() => isPolygon.value || true);
 
 const userClaims = computed(() =>
   userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null
@@ -249,7 +249,7 @@ async function claimAvailableRewards() {
     <div class="w-80 sm:w-96  p-3" v-if="userClaims != null">
       <h5 class="text-lg mb-3">{{ $t('liquidityMiningPopover.title') }}</h5>
       <div class="text-sm text-gray-600 mb-1" v-if="isAirdrop">
-        {{ $t('liquidityMiningPopover.airdrop', ['Polygon']) }}
+        {{ $t('liquidityMiningPopover.airdropExplainer', ['Polygon']) }}
       </div>
       <BalAlert
         v-if="shouldShowClaimFreezeWarning && !isAirdrop"
@@ -344,7 +344,7 @@ async function claimAvailableRewards() {
           ></BalBtn
         >
       </div>
-      <div class="text-sm">
+      <div v-if="!isAirdrop" class="text-sm">
         <div v-if="!hasRewards" class="mb-4">
           <div class="font-semibold mb-1">
             {{ $t('liquidityMiningPopover.noRewards.title') }}
@@ -376,6 +376,9 @@ async function claimAvailableRewards() {
             >Arbitrum</BalLink
           >.
         </div>
+      </div>
+      <div v-else class="mt-4 text-sm">
+        <div>{{ $t('liquidityMiningPopover.airdropEligibility') }}</div>
       </div>
     </div>
   </BalPopover>
