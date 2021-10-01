@@ -1,5 +1,6 @@
 import { Config } from '@/lib/config';
 import configs from '@/lib/config';
+import template from 'es6-dynamic-template';
 
 interface Env {
   APP_ENV: string;
@@ -15,16 +16,19 @@ interface Env {
 
 export default class ConfigService {
   public get env(): Env {
+    const NETWORK = process.env.VUE_APP_NETWORK || '1';
     return {
       APP_ENV: process.env.VUE_APP_ENV || 'development',
-      NETWORK: process.env.VUE_APP_NETWORK || '1',
+      NETWORK: NETWORK,
       APP_DOMAIN: process.env.VUE_APP_DOMAIN || 'app.balancer.fi',
       IPFS_NODE: process.env.VUE_APP_IPFS_NODE || 'ipfs.io',
       BLOCKNATIVE_DAPP_ID: process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || 'xxx',
       ALCHEMY_KEY:
-        process.env.VUE_APP_ALCHEMY_KEY || 'cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
+        process.env.VUE_APP_ALCHEMY_KEY ||
+        this.getNetworkConfig(NETWORK).keys.alchemy,
       INFURA_PROJECT_ID:
-        process.env.VUE_APP_INFURA_PROJECT_ID || 'daaa68ec242643719749dd1caba2fc66',
+        process.env.VUE_APP_INFURA_PROJECT_ID ||
+        this.getNetworkConfig(NETWORK).keys.infura,
       ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
       PORTIS_DAPP_ID:
         process.env.PORTIS_DAPP_ID || '3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe'
@@ -42,11 +46,24 @@ export default class ConfigService {
   }
 
   public get rpc(): string {
-    return `${this.network.rpc}/${this.env.INFURA_PROJECT_ID}`;
+    return template(this.network.rpc, {
+      INFURA_KEY: this.env.INFURA_PROJECT_ID,
+      ALCHEMY_KEY: this.env.ALCHEMY_KEY
+    });
   }
 
   public get ws(): string {
-    return `${this.network.ws}/${this.env.INFURA_PROJECT_ID}`;
+    return template(this.network.ws, {
+      INFURA_KEY: this.env.INFURA_PROJECT_ID,
+      ALCHEMY_KEY: this.env.ALCHEMY_KEY
+    });
+  }
+
+  public get loggingRpc(): string {
+    return template(this.network.loggingRpc, {
+      INFURA_KEY: this.env.INFURA_PROJECT_ID,
+      ALCHEMY_KEY: this.env.ALCHEMY_KEY
+    });
   }
 }
 

@@ -45,6 +45,7 @@
     "bnc-sdk": "^3.5.0",
     "date-fns": "^2.21.1",
     "echarts": "^5.1.0",
+    "es6-dynamic-template": "^2.0.0",
     "ethereumjs-util": "^7.0.7",
     "ethers": "^5.4.1",
     "feather-icons": "^4.28.0",

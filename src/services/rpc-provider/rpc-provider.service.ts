@@ -13,7 +13,7 @@ export default class RpcProviderService {
     this.network = this.config.network.shortName;
     this.jsonProvider = new JsonRpcProvider(this.config.rpc);
     this.wsProvider = new WebSocketProvider(this.config.ws);
-    this.loggingProvider = new JsonRpcProvider(this.config.network.loggingRpc);
+    this.loggingProvider = new JsonRpcProvider(this.config.loggingRpc);
   }
 
   public initBlockListener(newBlockHandler: NewBlockHandler): void {
