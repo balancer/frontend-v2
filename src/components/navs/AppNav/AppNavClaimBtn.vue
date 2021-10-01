@@ -345,13 +345,13 @@ async function claimAvailableRewards() {
         >
       </div>
       <div class="text-sm">
-        <div v-if="!hasRewards">
-          <div class="font-semibold mb-2">
+        <div v-if="!hasRewards" class="mb-4">
+          <div class="font-semibold mb-1">
             {{ $t('liquidityMiningPopover.noRewards.title') }}
           </div>
           <div>{{ $t('liquidityMiningPopover.noRewards.description') }}</div>
         </div>
-        <div class="mb-2">
+        <div class="mb-1">
           <router-link
             :to="{ name: 'liquidity-mining' }"
             class="text-blue-500 hover:underline"
