@@ -187,7 +187,7 @@ function weeklyYieldForAPR(apr: string): string {
           <div class="summary-table-number">
             {{ fNum(fiatTotal, currency) }}
             <BalTooltip
-              :text="$t('tooltips.invest.total')"
+              :text="$t('tooltips.invest.total', [currency.toUpperCase()])"
               icon-size="sm"
               class="ml-2"
             />

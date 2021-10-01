@@ -252,7 +252,7 @@
     },
     "tooltips": {
         "invest": {
-            "total": "The total value in USD you’ll be investing into this pool.",
+            "total": "The total value in {0} you’ll be investing into this pool.",
             "priceImpact": "Price impact from adding liquidity results when  the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position."
         }
     },
