@@ -2,27 +2,22 @@ import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 
-import { bnum } from '@/lib/utils';
-
 import QUERY_KEYS from '@/constants/queryKeys';
 
+import { claimService } from '@/services/claim/claim.service';
 import {
-  getPendingClaims,
-  getCurrentRewardsEstimate,
-  Report,
-  CurrentRewardsEstimate
-} from '@/services/claim';
+  PendingClaims,
+  PendingClaimsMap,
+  MultiTokenCurrentRewardsEstimate
+} from '@/services/claim/types';
 
-import { Claim } from '@/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '@/composables/useNetwork';
 
 type UserClaimsQueryResponse = {
-  pendingClaims: Claim[];
-  pendingClaimsReports: Report;
-  availableToClaim: string;
-  currentRewardsEstimate: CurrentRewardsEstimate;
-  totalRewards: string;
+  pendingClaims: PendingClaims[];
+  pendingClaimsMap: PendingClaimsMap | null;
+  multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate | null;
 };
 
 export default function useUserClaimsQuery(
@@ -42,26 +37,21 @@ export default function useUserClaimsQuery(
 
   // METHODS
   const queryFn = async () => {
-    const [pendingClaims, currentRewardsEstimate] = await Promise.all([
-      getPendingClaims(appNetworkConfig.chainId, getProvider(), account.value),
-      getCurrentRewardsEstimate(appNetworkConfig.chainId, account.value)
+    const [
+      multiTokenPendingClaims,
+      multiTokenCurrentRewardsEstimate
+    ] = await Promise.all([
+      claimService.getMultiTokenPendingClaims(getProvider(), account.value),
+      claimService.getMultiTokenCurrentRewardsEstimate(
+        appNetworkConfig.chainId,
+        account.value
+      )
     ]);
 
-    const availableToClaim = pendingClaims.claims
-      .map(claim => parseFloat(claim.amount))
-      .reduce((total, amount) => total.plus(amount), bnum(0));
-
-    const totalRewards =
-      currentRewardsEstimate != null
-        ? availableToClaim.plus(currentRewardsEstimate.rewards)
-        : availableToClaim;
-
     return {
-      pendingClaims: pendingClaims.claims,
-      pendingClaimsReports: pendingClaims.reports,
-      availableToClaim: availableToClaim.toString(),
-      totalRewards: totalRewards.toString(),
-      currentRewardsEstimate
+      pendingClaims: multiTokenPendingClaims?.pendingClaims ?? [],
+      pendingClaimsMap: multiTokenPendingClaims?.pendingClaimsMap ?? null,
+      multiTokenCurrentRewardsEstimate
     };
   };
 

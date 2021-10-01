@@ -3,7 +3,11 @@ export const EXTERNAL_LINKS = {
     Home: 'https://balancer.fi',
     BalForGas:
       'https://docs.balancer.finance/core-concepts/bal-balancer-governance-token/bal-for-gas',
-    Claim: (account: string) => `https://claim.balancer.finance/#/${account}`,
+    Claim: (account: string, rewarder?: string) => {
+      const subdomain = rewarder ? `claim-${rewarder.toLowerCase()}` : 'claim';
+
+      return `https://${subdomain}.balancer.fi/#/${account}`;
+    },
     PoolsV1Dashboard: 'https://pools.balancer.exchange/#/dashboard',
     PoolsV1Explore: 'https://pools.balancer.exchange/#/explore'
   },

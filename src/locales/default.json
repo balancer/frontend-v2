@@ -13,7 +13,6 @@
     "actions": "Actions",
     "activity": "Activity",
     "addToken": "Add a token",
-    "airdropExplainer": "Weekly distributions from liquidity mining on Polygon are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
     "allow": "Allow",
     "allowing": "Allowing...",
     "allPools": "All pools",
@@ -47,9 +46,9 @@
     "cancel": "Cancel",
     "cancelling": "Cancelling",
     "claim": "Claim",
+    "claimAll": "Claim all",
     "claimBAL": "Claim BAL for",
-    "claimSuccess": "You successfully claimed BAL!",
-    "claimFreezeWarning": "Since you have several weeks worth of $BAL unclaimed, your screen may appear to freeze after pressing the claim button while it is processed. Just leave your browser open and your wallet will eventually pop open for you to complete the claim.",
+    "claimSuccess": "You successfully claimed BAL!",    
     "claiming": "Claiming...",
     "classic": "Classic",
     "close": "Close",
@@ -149,6 +148,25 @@
     "loadingBestPrice": "Looking for the best price...",
     "liquidityMining": "Liquidity mining",
     "liquidityMiningAPR": "Liquidity Mining APR",
+    "liquidityMiningPopover": {
+        "title": "Token incentives",
+        "tabs": {
+            "claimable": "Claimable now",
+            "currentEstimate": "Current week"
+        },
+        "noRewards": {
+            "title": "You have no token incentives to claim",
+            "description": "Certain eligible pools have ‘liquidity mining’ token incentives which are distributed to investors weekly in proportion to their contribution."
+        },
+        "claimFreezeWarning": {
+            "title": "Too many claims",
+            "description": "Since you have several weeks worth of $BAL unclaimed, your screen may appear to freeze after pressing the claim button while it is processed. Just leave your browser open and your wallet will eventually pop open for you to complete the claim."
+        },
+        "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
+        "viewLMLink": "View liquidity mining incentives ->",
+        "viewLegacyClaimLink": "View legacy claim tool ->",
+        "networksExplainer": "Switch networks in the header to see your current cumulative BAL incentives on {0} and {1}."
+    },
     "loadMore": "Load more",
     "logOut": "Log out",
     "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
@@ -238,7 +256,7 @@
     "switchNetwork": "Switch Network",
     "tokenPills": {
         "hiddenTokens": "+{0} tokens"
-    },
+    },    
     "transactionAction": {
         "trade": "Trade",
         "approve": "Approve",
@@ -259,7 +277,6 @@
     "transactionSummary": {
         "investInPool": "{0} in {1}",
         "withdrawFromPool": "{0} from {1}",
-        "claimBAL": "{0} BAL",
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
         "approveLidoRelayer": "Approve Lido Relayer",
@@ -366,7 +383,6 @@
     },
     "unavailableOnNetwork": "Sorry! Balancer is not available on this network",
     "unavailableOnNetworkWithName": "Sorry! Balancer is not available on {0}",
-    "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
     "liquidityBootstrappingPool": "Liquidity Bootstrapping Pool",
     "gnosisErrors": {
         "lowAmount": {
