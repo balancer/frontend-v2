@@ -6,8 +6,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 
 import { claimService } from '@/services/claim/claim.service';
 import {
-  PendingClaims,
-  PendingClaimsMap,
+  MultiTokenPendingClaims,
   MultiTokenCurrentRewardsEstimate
 } from '@/services/claim/types';
 
@@ -15,16 +14,15 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '@/composables/useNetwork';
 
 type UserClaimsQueryResponse = {
-  pendingClaims: PendingClaims[];
-  pendingClaimsMap: PendingClaimsMap | null;
-  multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate | null;
+  multiTokenPendingClaims: MultiTokenPendingClaims[];
+  multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate[];
 };
 
 export default function useUserClaimsQuery(
   options: UseQueryOptions<UserClaimsQueryResponse> = {}
 ) {
   // COMPOSABLES
-  const { account, isWalletReady, appNetworkConfig, getProvider } = useWeb3();
+  const { account, isWalletReady, getProvider } = useWeb3();
   const { networkId } = useNetwork();
 
   // DATA
@@ -41,16 +39,12 @@ export default function useUserClaimsQuery(
       multiTokenPendingClaims,
       multiTokenCurrentRewardsEstimate
     ] = await Promise.all([
-      claimService.getMultiTokenPendingClaims(getProvider(), account.value),
-      claimService.getMultiTokenCurrentRewardsEstimate(
-        appNetworkConfig.chainId,
-        account.value
-      )
+      claimService.getMultiTokensPendingClaims(getProvider(), account.value),
+      claimService.getMultiTokensCurrentRewardsEstimate(account.value)
     ]);
 
     return {
-      pendingClaims: multiTokenPendingClaims?.pendingClaims ?? [],
-      pendingClaimsMap: multiTokenPendingClaims?.pendingClaimsMap ?? null,
+      multiTokenPendingClaims,
       multiTokenCurrentRewardsEstimate
     };
   };

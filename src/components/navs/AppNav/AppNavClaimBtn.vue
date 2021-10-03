@@ -7,7 +7,6 @@ import useNumbers from '@/composables/useNumbers';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
 
-import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { claimService } from '@/services/claim/claim.service';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -15,10 +14,12 @@ import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import useTokens from '@/composables/useTokens';
 // import { oneSecondInMs } from '@/composables/useTime';
-import { getAddress } from '@ethersproject/address';
 import BalLink from '@/components/_global/BalLink/BalLink.vue';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import { useI18n } from 'vue-i18n';
+import { getAddress } from 'ethers/lib/utils';
+import { TOKENS } from '@/constants/tokens';
+import { networkId } from '@/composables/useNetwork';
 
 const { t } = useI18n();
 
@@ -45,7 +46,6 @@ const { upToLargeBreakpoint } = useBreakpoints();
 const userClaimsQuery = useUserClaimsQuery();
 const { fNum } = useNumbers();
 const {
-  appNetworkConfig,
   account,
   getProvider,
   isArbitrum,
@@ -61,15 +61,17 @@ type ClaimableToken = {
   symbol: string;
   amount: string;
   fiatValue: string;
-  currentEstimateAmount: string;
-  currentEstimateAmountFiatValue: string;
-  totalFiatValue: string;
-  totalAmount: string;
 };
 
-const BALTokenAddress = getAddress(TOKENS.AddressMap[appNetworkConfig.key].BAL);
+const BALTokenAddress = getAddress(TOKENS.AddressMap[networkId.value].BAL);
 
 // COMPUTED
+const BALTokenPlaceholder = computed<ClaimableToken>(() => ({
+  token: BALTokenAddress,
+  symbol: tokens.value[BALTokenAddress]?.symbol,
+  amount: '0',
+  fiatValue: '0'
+}));
 
 const isAirdrop = computed(() => isPolygon.value);
 
@@ -83,80 +85,79 @@ const userClaimsLoading = computed(
 
 // having multiple unclaimed weeks may cause the browser to freeze (> 5)
 const shouldShowClaimFreezeWarning = computed(() =>
-  userClaims.value != null ? userClaims.value.pendingClaims.length > 5 : false
+  userClaims.value != null
+    ? userClaims.value.multiTokenPendingClaims.length > 5
+    : false
 );
 
 const claimableTokens = computed<ClaimableToken[]>(() => {
-  if (userClaims.value != null) {
-    return userClaims.value.pendingClaims.map(
-      ({ availableToClaim, tokenClaimInfo }) => {
-        let currentEstimateAmount = '0';
-
-        if (userClaims.value?.multiTokenCurrentRewardsEstimate != null) {
-          const currentEstimate =
-            userClaims.value.multiTokenCurrentRewardsEstimate[
-              tokenClaimInfo.token
-            ];
-
-          if (currentEstimate != null) {
-            currentEstimateAmount = currentEstimate.rewards;
-          }
-        }
-
-        const fiatValue = bnum(availableToClaim).times(
-          priceFor(tokenClaimInfo.token)
-        );
-
-        const currentEstimateAmountFiatValue = bnum(
-          currentEstimateAmount
-        ).times(priceFor(tokenClaimInfo.token));
-
-        const totalFiatValue = fiatValue.plus(currentEstimateAmountFiatValue);
-        const totalAmount = bnum(availableToClaim).plus(currentEstimateAmount);
-
-        return {
-          token: tokenClaimInfo.token,
-          symbol: tokens.value[tokenClaimInfo.token]?.symbol,
-          amount: availableToClaim,
-          fiatValue: fiatValue.toString(),
-          currentEstimateAmount,
-          currentEstimateAmountFiatValue: currentEstimateAmountFiatValue.toString(),
-          totalFiatValue: totalFiatValue.toString(),
-          totalAmount: totalAmount.toString()
-        };
-      }
+  if (
+    userClaims.value != null &&
+    userClaims.value.multiTokenPendingClaims.length > 0
+  ) {
+    return userClaims.value.multiTokenPendingClaims.map(
+      ({ availableToClaim, tokenClaimInfo }) => ({
+        token: tokenClaimInfo.token,
+        symbol: tokens.value[tokenClaimInfo.token]?.symbol,
+        amount: availableToClaim,
+        fiatValue: bnum(availableToClaim)
+          .times(priceFor(tokenClaimInfo.token))
+          .toString()
+      })
     );
   }
-  return [];
+  return [BALTokenPlaceholder.value];
 });
 
-const claimableTokensWithPlaceholder = computed(() =>
-  claimableTokens.value.length === 0
-    ? [
-        {
-          token: BALTokenAddress,
-          symbol: tokens.value[BALTokenAddress]?.symbol,
-          amount: '0',
-          fiatValue: '0',
-          currentEstimateAmount: '0',
-          currentEstimateAmountFiatValue: '0',
-          totalFiatValue: '0',
-          totalAmount: '0'
-        }
-      ]
-    : claimableTokens.value
-);
+const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
+  if (
+    userClaims.value != null &&
+    userClaims.value.multiTokenCurrentRewardsEstimate.length > 0
+  ) {
+    return userClaims.value.multiTokenCurrentRewardsEstimate.map(
+      ({ token, rewards }) => ({
+        token,
+        symbol: tokens.value[token]?.symbol,
+        amount: rewards,
+        fiatValue: bnum(rewards)
+          .times(priceFor(token))
+          .toString()
+      })
+    );
+  }
+  return [BALTokenPlaceholder.value];
+});
 
-const totalRewardsFiatValue = computed(() =>
+const totalClaimableTokensFiatValue = computed(() =>
   claimableTokens.value
-    .reduce(
-      (totalValue, { totalFiatValue }) => totalValue.plus(totalFiatValue),
-      bnum(0)
-    )
+    .reduce((totalValue, { fiatValue }) => totalValue.plus(fiatValue), bnum(0))
     .toString()
 );
 
-const hasRewards = computed(() => claimableTokens.value.length > 0);
+const totalCurrentEstimateClaimableTokensFiatValue = computed(() =>
+  currentEstimateClaimableTokens.value
+    .reduce((totalValue, { fiatValue }) => totalValue.plus(fiatValue), bnum(0))
+    .toString()
+);
+
+const totalRewardsFiatValue = computed(() =>
+  bnum(totalClaimableTokensFiatValue.value)
+    .plus(totalCurrentEstimateClaimableTokensFiatValue.value)
+    .toString()
+);
+
+const hasClaimableTokens = computed(() =>
+  claimableTokens.value.some(
+    claimableToken => Number(claimableToken.amount) > 0
+  )
+);
+
+const hasCurrentEstimateClaimableTokens = computed(() =>
+  currentEstimateClaimableTokens.value.some(
+    claimableToken => Number(claimableToken.amount) > 0
+  )
+);
+
 /*
 TODO: support "live" rewards
 
@@ -192,7 +193,7 @@ async function claimAvailableRewards() {
       const tx = await claimService.multiTokenClaimRewards(
         getProvider(),
         account.value,
-        userClaims.value.pendingClaims
+        userClaims.value.multiTokenPendingClaims
       );
 
       const summary = claimableTokens.value
@@ -278,7 +279,7 @@ async function claimAvailableRewards() {
           </template>
           <template v-if="activeTab === Tabs.CLAIMABLE">
             <template
-              v-for="claimableToken in claimableTokensWithPlaceholder"
+              v-for="claimableToken in claimableTokens"
               :key="claimableToken.token"
             >
               <div
@@ -303,7 +304,7 @@ async function claimAvailableRewards() {
           </template>
           <template v-if="activeTab === Tabs.CURRENT_ESTIMATE">
             <template
-              v-for="claimableToken in claimableTokensWithPlaceholder"
+              v-for="claimableToken in currentEstimateClaimableTokens"
               :key="claimableToken.token"
             >
               <div
@@ -316,13 +317,11 @@ async function claimAvailableRewards() {
                 />
                 <div>
                   <div class="font-medium">
-                    {{ fNum(claimableToken.currentEstimateAmount, 'token') }}
+                    {{ fNum(claimableToken.amount, 'token') }}
                     {{ claimableToken.symbol }}
                   </div>
                   <div class="font-sm text-gray-400">
-                    {{
-                      fNum(claimableToken.currentEstimateAmountFiatValue, 'usd')
-                    }}
+                    {{ fNum(claimableToken.fiatValue, 'usd') }}
                   </div>
                 </div>
               </div>
@@ -338,15 +337,18 @@ async function claimAvailableRewards() {
           :loading="isClaiming"
           :loading-label="$t('claiming')"
           @click="claimAvailableRewards"
-          :disabled="!hasRewards"
+          :disabled="!hasClaimableTokens"
           >{{ $t('claimAll') }}
-          <template v-if="hasRewards"
-            >~{{ fNum(totalRewardsFiatValue, 'usd') }}</template
+          <template v-if="hasClaimableTokens"
+            >~{{ fNum(totalClaimableTokensFiatValue, 'usd') }}</template
           ></BalBtn
         >
       </div>
       <div v-if="!isAirdrop" class="text-sm">
-        <div v-if="!hasRewards" class="mb-4">
+        <div
+          v-if="!hasClaimableTokens && !hasCurrentEstimateClaimableTokens"
+          class="mb-4"
+        >
           <div class="font-semibold mb-1">
             {{ $t('liquidityMiningPopover.noRewards.title') }}
           </div>

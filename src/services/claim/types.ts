@@ -9,14 +9,12 @@ export type TokenClaimInfo = {
   manifest: string;
 };
 
-export type PendingClaims = {
+export type MultiTokenPendingClaims = {
   claims: Claim[];
   reports: Report;
   tokenClaimInfo: TokenClaimInfo;
   availableToClaim: string;
 };
-
-export type PendingClaimsMap = Record<string, PendingClaims>;
 
 export type ClaimStatus = boolean;
 
@@ -38,14 +36,11 @@ export type MultiTokenCurrentRewardsEstimateResponse = {
   };
 };
 
-export type MultiTokenCurrentRewardsEstimate = Record<
-  string,
-  {
-    rewards: string;
-    velocity: string;
-    timestamp: string;
-    token: string;
-  }
->;
+export type MultiTokenCurrentRewardsEstimate = {
+  rewards: string;
+  velocity: string;
+  timestamp: string;
+  token: string;
+};
 
 export type ClaimProofTuple = [number, string, string[]];

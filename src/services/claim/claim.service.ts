@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { groupBy, keyBy } from 'lodash';
+import { groupBy } from 'lodash';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { MerkleRedeem__factory } from '@balancer-labs/typechain';
 import { toWei, soliditySha3 } from 'web3-utils';
 import { getAddress } from '@ethersproject/address';
 
-import { Network, networkId } from '@/composables/useNetwork';
+import { networkId } from '@/composables/useNetwork';
 
 import { call, sendTransaction } from '@/lib/utils/balancer/web3';
 import { bnum } from '@/lib/utils';
@@ -22,49 +22,39 @@ import {
   ClaimStatus,
   MultiTokenCurrentRewardsEstimate,
   MultiTokenCurrentRewardsEstimateResponse,
-  PendingClaims,
-  PendingClaimsMap,
+  MultiTokenPendingClaims,
   Report,
   Snapshot,
   TokenClaimInfo
 } from './types';
 
 export class ClaimService {
-  public async getMultiTokenPendingClaims(
+  public async getMultiTokensPendingClaims(
     provider: Web3Provider,
     account: string
-  ): Promise<{
-    pendingClaims: PendingClaims[];
-    pendingClaimsMap: PendingClaimsMap;
-  } | null> {
+  ): Promise<MultiTokenPendingClaims[]> {
     const tokenClaimsInfo = this.getTokenClaimsInfo();
     if (tokenClaimsInfo != null) {
-      const pendingClaims = await Promise.all(
+      const multiTokenPendingClaims = await Promise.all(
         tokenClaimsInfo.map(tokenClaimInfo =>
           this.getTokenPendingClaims(tokenClaimInfo, provider, account)
         )
       );
 
-      const pendingClaimsWithRewards = pendingClaims.filter(
+      const multiTokenPendingClaimsWithRewards = multiTokenPendingClaims.filter(
         pendingClaim => Number(pendingClaim.availableToClaim) > 0
       );
 
-      return {
-        pendingClaims: pendingClaimsWithRewards,
-        pendingClaimsMap: keyBy(
-          pendingClaimsWithRewards,
-          pendingClaim => pendingClaim.tokenClaimInfo.token
-        )
-      };
+      return multiTokenPendingClaimsWithRewards;
     }
-    return null;
+    return [];
   }
 
   public async getTokenPendingClaims(
     tokenClaimInfo: TokenClaimInfo,
     provider: Web3Provider,
     account: string
-  ): Promise<PendingClaims> {
+  ): Promise<MultiTokenPendingClaims> {
     const snapshot = await this.getSnapshot(tokenClaimInfo.manifest);
 
     const claimStatus = await this.getClaimStatus(
@@ -103,10 +93,9 @@ export class ClaimService {
     };
   }
 
-  public async getMultiTokenCurrentRewardsEstimate(
-    network: Network,
+  public async getMultiTokensCurrentRewardsEstimate(
     account: string
-  ): Promise<MultiTokenCurrentRewardsEstimate | null> {
+  ): Promise<MultiTokenCurrentRewardsEstimate[]> {
     try {
       const response = await axios.get<
         MultiTokenCurrentRewardsEstimateResponse
@@ -123,7 +112,7 @@ export class ClaimService {
             token_address: getAddress(incentive.token_address)
           }));
 
-        const multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate = {};
+        const multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate[] = [];
 
         const multiTokenLiquidityProvidersByToken = Object.entries(
           groupBy(multiTokenLiquidityProviders, 'token_address')
@@ -146,12 +135,12 @@ export class ClaimService {
               ?.velocity.toString() ?? '0';
 
           if (Number(velocity) > 0) {
-            multiTokenCurrentRewardsEstimate[token] = {
+            multiTokenCurrentRewardsEstimate.push({
               rewards,
               velocity,
               timestamp: response.data.result.current_timestamp,
-              token
-            };
+              token: getAddress(token)
+            });
           }
         }
 
@@ -160,13 +149,13 @@ export class ClaimService {
     } catch (e) {
       console.log('[Claim] Current Rewards Estimate Error', e);
     }
-    return null;
+    return [];
   }
 
   public async multiTokenClaimRewards(
     provider: Web3Provider,
     account: string,
-    multiTokenPendingClaims: PendingClaims[]
+    multiTokenPendingClaims: MultiTokenPendingClaims[]
   ): Promise<TransactionResponse> {
     try {
       const multiTokenClaims: ClaimProofTuple[] = [];
@@ -193,7 +182,7 @@ export class ClaimService {
   }
 
   private computeClaimProofs(
-    tokenPendingClaims: PendingClaims,
+    tokenPendingClaims: MultiTokenPendingClaims,
     account: string
   ): ClaimProofTuple[] {
     const reports = tokenPendingClaims.reports;
