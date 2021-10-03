@@ -5,14 +5,13 @@ import { isStableLike } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestFormActions from './components/InvestFormActions.vue';
-import InvestPreviewModal from './components/InvestPreviewModal.vue';
+import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
 import useInvestFormMath from './composables/useInvestFormMath';
 import { isRequired } from '@/lib/utils/validations';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
-import { FormRef } from '@/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '@/composables/useTransactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
@@ -53,7 +52,6 @@ const state = reactive<FormState>({
   submitting: false
 });
 
-const investForm = ref<FormRef>({} as FormRef);
 const showInvestPreview = ref(false);
 
 /**
@@ -115,62 +113,10 @@ function propSuggestion(index: number): string {
 function hint(index: number): string {
   return bnum(propSuggestion(index)).gt(0) ? t('proportionalSuggestion') : '';
 }
-
-async function handleTransaction(tx): Promise<void> {
-  addTransaction({
-    id: tx.hash,
-    type: 'tx',
-    action: 'invest',
-    summary: t('transactionSummary.investInPool', [
-      fiatTotalLabel.value,
-      getPoolWeights(props.pool)
-    ]),
-    details: {
-      total: fiatTotalLabel.value,
-      pool: props.pool
-    }
-  });
-
-  txListener(tx, {
-    onTxConfirmed: (tx: TransactionResponse) => {
-      emit('success', tx);
-      state.amounts = [];
-      state.submitting = false;
-      showInvestPreview.value = false;
-    },
-    onTxFailed: () => {
-      state.submitting = false;
-    }
-  });
-}
-
-async function submit(): Promise<void> {
-  if (!investForm.value.validate()) {
-    showInvestPreview.value = false;
-    return;
-  }
-  try {
-    state.submitting = true;
-
-    const tx = await poolExchange.join(
-      getProvider(),
-      account.value,
-      fullAmounts.value,
-      bptOut.value
-    );
-
-    console.log('Receipt', tx);
-
-    handleTransaction(tx);
-  } catch (error) {
-    console.error(error);
-    state.submitting = false;
-  }
-}
 </script>
 
 <template>
-  <BalForm ref="investForm" @on-submit="submit">
+  <BalForm ref="investForm">
     <TokenInput
       v-for="(tokenAddress, i) in pool.tokenAddresses"
       :key="tokenAddress"
@@ -218,11 +164,9 @@ async function submit(): Promise<void> {
       <InvestPreviewModal
         v-if="showInvestPreview"
         :pool="pool"
-        :amounts="fullAmounts"
+        :fullAmounts="fullAmounts"
         :priceImpact="priceImpact"
-        :submitting="state.submitting"
         @close="showInvestPreview = false"
-        @invest="submit"
       />
     </teleport>
   </BalForm>

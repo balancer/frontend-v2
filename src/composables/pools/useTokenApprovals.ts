@@ -1,10 +1,12 @@
 import { ref, computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { approveTokens } from '@/lib/utils/balancer/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '../useTransactions';
+import { MaxUint256 } from '@ethersproject/constants';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
+import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
 
 export default function useTokenApprovals(
   tokenAddresses: string[],
@@ -14,7 +16,6 @@ export default function useTokenApprovals(
    * STATE
    */
   const approving = ref(false);
-  const approvedAll = ref(false);
 
   /**
    * COMPOSABLES
@@ -35,31 +36,32 @@ export default function useTokenApprovals(
   /**
    * METHODS
    */
-  async function approveAllowances(): Promise<void> {
+  async function approveToken(address: string): Promise<void> {
     try {
       approving.value = true;
-      const tokenAddress = requiredAllowances.value[0];
 
-      const txs = await approveTokens(
+      const tx = await sendTransaction(
         getProvider(),
-        appNetworkConfig.addresses.vault,
-        [tokenAddress]
+        address,
+        ERC20ABI,
+        'approve',
+        [[appNetworkConfig.addresses.vault, MaxUint256.toString()]]
       );
 
       addTransaction({
-        id: txs[0].hash,
+        id: tx.hash,
         type: 'tx',
         action: 'approve',
         summary: t('transactionSummary.approveForInvesting', [
-          tokens.value[tokenAddress]?.symbol
+          tokens.value[address]?.symbol
         ]),
         details: {
-          contractAddress: tokenAddress,
+          contractAddress: address,
           spender: appNetworkConfig.addresses.vault
         }
       });
 
-      txListener(txs[0], {
+      txListener(tx, {
         onTxConfirmed: async () => {
           await refetchAllowances.value();
           approving.value = false;
@@ -74,13 +76,16 @@ export default function useTokenApprovals(
     }
   }
 
+  async function approveNextAllowance(): Promise<void> {
+    return await approveToken(requiredAllowances.value[0]);
+  }
+
   return {
     // data
     approving,
-    approvedAll,
     // computed
     requiredAllowances,
     // methods
-    approveAllowances
+    approveNextAllowance
   };
 }

@@ -191,7 +191,7 @@
           :loading-label="$t('approving')"
           :disabled="!hasAmounts || !hasValidInputs"
           block
-          @click.prevent="approveAllowances"
+          @click.prevent="approveNextAllowance"
         />
         <template v-else>
           <BalCheckbox
@@ -339,9 +339,8 @@ export default defineComponent({
 
     const {
       requiredAllowances,
-      approveAllowances,
-      approving,
-      approvedAll
+      approveNextAllowance,
+      approving
     } = useTokenApprovals(props.pool.tokenAddresses, amounts);
 
     // SERVICES
@@ -397,7 +396,6 @@ export default defineComponent({
 
     const requireApproval = computed(() => {
       if (!hasAmounts.value) return false;
-      if (approvedAll.value) return false;
       return requiredAllowances.value.length > 0;
     });
 
@@ -723,7 +721,7 @@ export default defineComponent({
       isStableLikePool,
       // methods
       submit,
-      approveAllowances,
+      approveNextAllowance,
       fNum,
       trackGoal,
       symbolFor,
