@@ -48,6 +48,7 @@ const {
   appNetworkConfig,
   account,
   getProvider,
+  isArbitrum,
   isPolygon,
   isMismatchedNetwork
 } = useWeb3();
@@ -368,13 +369,33 @@ async function claimAvailableRewards() {
           <!-- TODO: translate with component interpolation -->
           Switch networks in the header to see your current cumulative BAL
           incentives on
-          <BalLink href="https://polygon.balancer.fi" external>
-            Polygon
-          </BalLink>
-          and
-          <BalLink href="https://arbitrum.balancer.fi" external
-            >Arbitrum</BalLink
-          >.
+          <template v-if="isArbitrum">
+            <BalLink href="https://balancer.fi" external>
+              Ethereum
+            </BalLink>
+            and
+            <BalLink href="https://polygon.balancer.fi" external
+              >Polygon</BalLink
+            >.
+          </template>
+          <template v-else-if="isPolygon">
+            <BalLink href="https://balancer.fi" external>
+              Ethereum
+            </BalLink>
+            and
+            <BalLink href="https://arbitrum.balancer.fi" external
+              >Arbitrum</BalLink
+            >.
+          </template>
+          <template v-else>
+            <BalLink href="https://polygon.balancer.fi" external>
+              Polygon
+            </BalLink>
+            and
+            <BalLink href="https://arbitrum.balancer.fi" external
+              >Arbitrum</BalLink
+            >.
+          </template>
         </div>
       </div>
       <div v-else class="mt-4 text-sm">
