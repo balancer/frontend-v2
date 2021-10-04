@@ -63,7 +63,12 @@ const {
 } = useWeb3();
 const { txListener } = useEthers();
 const { addTransaction } = useTransactions();
-const { priceFor, tokens } = useTokens();
+const {
+  priceFor,
+  tokens,
+  priceQueryLoading,
+  loading: tokensLoading
+} = useTokens();
 
 const BALTokenAddress = getAddress(TOKENS.AddressMap[networkId.value].BAL);
 
@@ -82,7 +87,11 @@ const userClaims = computed(() =>
 );
 
 const userClaimsLoading = computed(
-  () => userClaimsQuery.isLoading.value || userClaimsQuery.isIdle.value
+  () =>
+    userClaimsQuery.isLoading.value ||
+    userClaimsQuery.isIdle.value ||
+    priceQueryLoading.value ||
+    tokensLoading.value
 );
 
 // having multiple unclaimed weeks may cause the browser to freeze (> 5)
