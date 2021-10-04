@@ -9,7 +9,9 @@ import {
 } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
-import { BigNumber } from 'bignumber.js';
+import { BigNumber } from '@ethersproject/bignumber';
+import { Zero } from '@ethersproject/constants';
+import { BigNumber as OldBigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sor2';
 import { useI18n } from 'vue-i18n';
@@ -62,8 +64,8 @@ type Props = {
   tokenOutAmountInput: Ref<string>;
   tokens: Ref<TokenInfoMap>;
   wrapType: Ref<WrapType>;
-  tokenInAmountScaled?: ComputedRef<BigNumber>;
-  tokenOutAmountScaled?: ComputedRef<BigNumber>;
+  tokenInAmountScaled?: ComputedRef<OldBigNumber>;
+  tokenOutAmountScaled?: ComputedRef<OldBigNumber>;
   sorConfig?: {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
@@ -102,18 +104,18 @@ export default function useSor({
     tokenIn: '',
     tokenOut: '',
     returnDecimals: 18,
-    returnAmount: new BigNumber(0),
-    marketSpNormalised: new BigNumber(0),
-    v1result: [[], new BigNumber(0), new BigNumber(0)],
+    returnAmount: new OldBigNumber(0),
+    marketSpNormalised: new OldBigNumber(0),
+    v1result: [[], new OldBigNumber(0), new OldBigNumber(0)],
     v2result: {
       tokenAddresses: [],
       swaps: [],
-      swapAmount: new BigNumber(0),
-      returnAmount: new BigNumber(0),
-      returnAmountConsideringFees: new BigNumber(0),
+      swapAmount: Zero,
+      returnAmount: Zero,
+      returnAmountConsideringFees: Zero,
       tokenIn: '',
       tokenOut: '',
-      marketSp: new BigNumber(0)
+      marketSp: new OldBigNumber(0)
     }
   });
   const trading = ref(false);
@@ -181,7 +183,7 @@ export default function useSor({
     sorManager = new SorManager(
       isV1Supported,
       rpcProviderService.jsonProvider,
-      new BigNumber(GAS_PRICE),
+      BigNumber.from(GAS_PRICE),
       Number(MAX_POOLS),
       configService.network.chainId,
       configService.network.addresses.weth,
@@ -212,13 +214,13 @@ export default function useSor({
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping trade
-    const zeroValueTrade = amount === '' || new BigNumber(amount).isZero();
+    const zeroValueTrade = amount === '' || new OldBigNumber(amount).isZero();
     if (zeroValueTrade) {
       tokenInAmountInput.value = amount;
       tokenOutAmountInput.value = amount;
       priceImpact.value = 0;
       sorReturn.value.hasSwaps = false;
-      sorReturn.value.returnAmount = new BigNumber(0);
+      sorReturn.value.returnAmount = new OldBigNumber(0);
       return;
     }
 
@@ -282,7 +284,7 @@ export default function useSor({
         sorManager
       );
 
-      const tokenInAmountNormalised = new BigNumber(amount); // Normalized value
+      const tokenInAmountNormalised = new OldBigNumber(amount); // Normalized value
       const tokenInAmountScaled = scale(
         tokenInAmountNormalised,
         tokenInDecimals
@@ -308,7 +310,7 @@ export default function useSor({
       );
       tokenOutAmountInput.value =
         tokenOutAmountNormalised.toNumber() > 0
-          ? tokenOutAmountNormalised.toFixed(6, BigNumber.ROUND_DOWN)
+          ? tokenOutAmountNormalised.toFixed(6, OldBigNumber.ROUND_DOWN)
           : '';
 
       if (!sorReturn.value.hasSwaps) {
@@ -330,7 +332,7 @@ export default function useSor({
           .div(swapReturn.marketSpNormalised)
           .minus(1);
 
-        priceImpact.value = BigNumber.max(
+        priceImpact.value = OldBigNumber.max(
           priceImpactCalc,
           MIN_PRICE_IMPACT
         ).toNumber();
@@ -339,7 +341,7 @@ export default function useSor({
       // Notice that outputToken is tokenOut if swapType == 'swapExactIn' and tokenIn if swapType == 'swapExactOut'
       await setSwapCost(tokenInAddressInput.value, tokenInDecimals, sorManager);
 
-      let tokenOutAmountNormalised = new BigNumber(amount);
+      let tokenOutAmountNormalised = new OldBigNumber(amount);
       const tokenOutAmount = scale(tokenOutAmountNormalised, tokenOutDecimals);
 
       console.log('[SOR Manager] swapExactOut');
@@ -357,11 +359,11 @@ export default function useSor({
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
 
-      const tradeAmount: BigNumber = swapReturn.returnAmount;
+      const tradeAmount: OldBigNumber = swapReturn.returnAmount;
       const tokenInAmountNormalised = scale(tradeAmount, -tokenInDecimals);
       tokenInAmountInput.value =
         tokenInAmountNormalised.toNumber() > 0
-          ? tokenInAmountNormalised.toFixed(6, BigNumber.ROUND_UP)
+          ? tokenInAmountNormalised.toFixed(6, OldBigNumber.ROUND_UP)
           : '';
 
       if (!sorReturn.value.hasSwaps) {
@@ -380,7 +382,7 @@ export default function useSor({
           .div(swapReturn.marketSpNormalised)
           .minus(1);
 
-        priceImpact.value = BigNumber.max(
+        priceImpact.value = OldBigNumber.max(
           priceImpactCalc,
           MIN_PRICE_IMPACT
         ).toNumber();
@@ -454,7 +456,7 @@ export default function useSor({
     const tokenOutAddress = tokenOutAddressInput.value;
     const tokenInDecimals = tokens.value[tokenInAddress].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
-    const tokenInAmountNumber = new BigNumber(tokenInAmountInput.value);
+    const tokenInAmountNumber = new OldBigNumber(tokenInAmountInput.value);
     const tokenInAmountScaled = scale(tokenInAmountNumber, tokenInDecimals);
 
     if (wrapType.value == WrapType.Wrap) {
@@ -504,7 +506,7 @@ export default function useSor({
     }
 
     if (exactIn.value) {
-      const tokenOutAmountNumber = new BigNumber(tokenOutAmountInput.value);
+      const tokenOutAmountNumber = new OldBigNumber(tokenOutAmountInput.value);
       const tokenOutAmount = scale(tokenOutAmountNumber, tokenOutDecimals);
       const minAmount = getMinOut(tokenOutAmount);
       const sr: SorReturn = sorReturn.value as SorReturn;
@@ -533,7 +535,9 @@ export default function useSor({
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
       const sr: SorReturn = sorReturn.value as SorReturn;
-      const tokenOutAmountNormalised = new BigNumber(tokenOutAmountInput.value);
+      const tokenOutAmountNormalised = new OldBigNumber(
+        tokenOutAmountInput.value
+      );
       const tokenOutAmountScaled = scale(
         tokenOutAmountNormalised,
         tokenOutDecimals
@@ -564,7 +568,7 @@ export default function useSor({
   }
 
   // Uses stored market prices to calculate price of native asset in terms of token
-  function calculateEthPriceInToken(tokenAddress: string): BigNumber {
+  function calculateEthPriceInToken(tokenAddress: string): OldBigNumber {
     const ethPriceFiat = priceFor(appNetworkConfig.nativeAsset.address);
     const tokenPriceFiat = priceFor(tokenAddress);
     if (tokenPriceFiat === 0) return bnum(0);
@@ -585,16 +589,16 @@ export default function useSor({
     );
   }
 
-  function getMaxIn(amount: BigNumber) {
+  function getMaxIn(amount: OldBigNumber) {
     return amount
       .times(1 + slippageBufferRate.value)
-      .integerValue(BigNumber.ROUND_DOWN);
+      .integerValue(OldBigNumber.ROUND_DOWN);
   }
 
-  function getMinOut(amount: BigNumber) {
+  function getMinOut(amount: OldBigNumber) {
     return amount
       .div(1 + slippageBufferRate.value)
-      .integerValue(BigNumber.ROUND_DOWN);
+      .integerValue(OldBigNumber.ROUND_DOWN);
   }
 
   function getQuote(): TradeQuote {
@@ -622,10 +626,10 @@ export default function useSor({
    * e.g. when trading weth to wstEth.
    */
   async function adjustedPiAmount(
-    amount: BigNumber,
+    amount: OldBigNumber,
     address: string,
     decimals: number
-  ): Promise<BigNumber> {
+  ): Promise<OldBigNumber> {
     if (address === appNetworkConfig.addresses.wstETH) {
       const denormAmount = parseUnits(amount.toString(), decimals);
       const denormStEthAmount = await getStETHByWstETH(denormAmount);
