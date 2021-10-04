@@ -1,34 +1,42 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { getAddress } from 'ethers/lib/utils';
 // import { differenceInSeconds } from 'date-fns';
 // import { useIntervalFn } from '@vueuse/core';
 
 import useNumbers from '@/composables/useNumbers';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
 import useBreakpoints from '@/composables/useBreakpoints';
-
-import { bnum } from '@/lib/utils';
-import { claimService } from '@/services/claim/claim.service';
-import useWeb3 from '@/services/web3/useWeb3';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import useTokens from '@/composables/useTokens';
-// import { oneSecondInMs } from '@/composables/useTime';
-import BalLink from '@/components/_global/BalLink/BalLink.vue';
-import { EXTERNAL_LINKS } from '@/constants/links';
-import { useI18n } from 'vue-i18n';
-import { getAddress } from 'ethers/lib/utils';
-import { TOKENS } from '@/constants/tokens';
 import { networkId } from '@/composables/useNetwork';
+// import { oneSecondInMs } from '@/composables/useTime';
 
-const { t } = useI18n();
+import { bnum } from '@/lib/utils';
 
-const isClaiming = ref(false);
+import { claimService } from '@/services/claim/claim.service';
+import useWeb3 from '@/services/web3/useWeb3';
+
+import BalLink from '@/components/_global/BalLink/BalLink.vue';
+
+import { EXTERNAL_LINKS } from '@/constants/links';
+import { TOKENS } from '@/constants/tokens';
+
+type ClaimableToken = {
+  token: string;
+  symbol: string;
+  amount: string;
+  fiatValue: string;
+};
 
 enum Tabs {
   CLAIMABLE = 'claimable',
   CURRENT_ESTIMATE = 'currentEstimate'
 }
+
+const { t } = useI18n();
 
 const tabs = [
   { value: Tabs.CLAIMABLE, label: t('liquidityMiningPopover.tabs.claimable') },
@@ -37,8 +45,9 @@ const tabs = [
     label: t('liquidityMiningPopover.tabs.currentEstimate')
   }
 ];
-const activeTab = ref(tabs[0].value);
 
+const activeTab = ref(tabs[0].value);
+const isClaiming = ref(false);
 // const rewardsEstimateSinceTimestamp = ref('0');
 
 // COMPOSABLES
@@ -55,13 +64,6 @@ const {
 const { txListener } = useEthers();
 const { addTransaction } = useTransactions();
 const { priceFor, tokens } = useTokens();
-
-type ClaimableToken = {
-  token: string;
-  symbol: string;
-  amount: string;
-  fiatValue: string;
-};
 
 const BALTokenAddress = getAddress(TOKENS.AddressMap[networkId.value].BAL);
 
