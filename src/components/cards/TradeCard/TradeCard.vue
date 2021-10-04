@@ -112,6 +112,7 @@ import useDarkMode from '@/composables/useDarkMode';
 import { configService } from '@/services/config/config.service';
 
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import useUserSettings from '@/composables/useUserSettings';
 
 const { nativeAsset } = configService.network;
 
@@ -136,6 +137,7 @@ export default defineComponent({
     const { tokens } = useTokens();
     const { userNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
+    const { slippage } = useUserSettings();
 
     const exactIn = ref(true);
     const tokenInAddress = ref('');
@@ -146,9 +148,7 @@ export default defineComponent({
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
 
-    const slippageBufferRate = computed(() =>
-      parseFloat(store.state.app.slippage)
-    );
+    const slippageBufferRate = computed(() => parseFloat(slippage.value));
 
     const tokenIn = computed(() => tokens.value[tokenInAddress.value]);
 

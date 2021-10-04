@@ -2,18 +2,21 @@ import { provide, InjectionKey, reactive, Ref, toRefs } from 'vue';
 import symbolKeys from '@/constants/symbol.keys';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { FiatCurrency } from '@/constants/currency';
-import { lsGet } from '@/lib/utils';
+import { lsGet, lsSet } from '@/lib/utils';
 
 /**
  * TYPES
  */
 export interface UserSettingsState {
   currency: FiatCurrency;
+  slippage: string;
 }
 
 export interface UserSettingsProviderResponse {
   currency: Ref<FiatCurrency>;
+  slippage: Ref<string>;
   setCurrency: (newCurrency: FiatCurrency) => void;
+  setSlippage: (newSlippage: string) => void;
 }
 
 /**
@@ -24,13 +27,28 @@ export const UserSettingsProviderSymbol: InjectionKey<UserSettingsProviderRespon
 );
 
 const lsCurrency = lsGet(LS_KEYS.UserSettings.Currency, FiatCurrency.usd);
+const lsSlippage = lsGet(LS_KEYS.App.TradeSlippage, '0.01');
 
 /**
  * STATE
  */
 const state: UserSettingsState = reactive({
-  currency: lsCurrency
+  currency: lsCurrency,
+  slippage: lsSlippage
 });
+
+/**
+ * METHODS
+ */
+function setCurrency(newCurrency: FiatCurrency): void {
+  lsSet(LS_KEYS.UserSettings.Currency, newCurrency);
+  state.currency = newCurrency;
+}
+
+function setSlippage(newSlippage: string): void {
+  lsSet(LS_KEYS.App.TradeSlippage, newSlippage);
+  state.slippage = newSlippage;
+}
 
 /**
  * UserSettingsProvider
@@ -40,17 +58,11 @@ export default {
   name: 'UserSettingsProvider',
 
   setup(props, { slots }) {
-    /**
-     * METHODS
-     */
-    function setCurrency(newCurrency: FiatCurrency): void {
-      state.currency = newCurrency;
-    }
-
     provide(UserSettingsProviderSymbol, {
       ...toRefs(state),
       // methods
-      setCurrency
+      setCurrency,
+      setSlippage
     });
 
     return () => slots.default();
