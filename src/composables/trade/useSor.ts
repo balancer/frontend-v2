@@ -106,7 +106,7 @@ export default function useSor({
     returnDecimals: 18,
     returnAmount: Zero,
     marketSpNormalised: new OldBigNumber(0),
-    v1result: [[], new OldBigNumber(0), new OldBigNumber(0)],
+    v1result: [[], Zero, new OldBigNumber(0)],
     v2result: {
       tokenAddresses: [],
       swaps: [],

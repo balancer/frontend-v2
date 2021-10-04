@@ -30,7 +30,7 @@ export interface SorReturn {
   hasSwaps: boolean;
   returnAmount: BigNumber;
   marketSpNormalised: OldBigNumber;
-  v1result: [Swap[][], OldBigNumber, OldBigNumber];
+  v1result: [Swap[][], BigNumber, OldBigNumber];
   v2result: SwapInfo;
 }
 
@@ -238,8 +238,8 @@ export class SorManager {
 
     if (swapType === SwapTypes.SwapExactIn) {
       return this.selectBestSwapIn(
-        returnAmountV1,
-        returnAmountV1ConsideringFees,
+        BigNumber.from(returnAmountV1.toString()),
+        BigNumber.from(returnAmountV1ConsideringFees.toString()),
         marketSpV1Scaled,
         swapsV1,
         swapInfoV2,
@@ -251,8 +251,8 @@ export class SorManager {
       );
     } else {
       return this.selectBestSwapOut(
-        returnAmountV1,
-        returnAmountV1ConsideringFees,
+        BigNumber.from(returnAmountV1.toString()),
+        BigNumber.from(returnAmountV1ConsideringFees.toString()),
         marketSpV1Scaled,
         swapsV1,
         swapInfoV2,
@@ -266,8 +266,8 @@ export class SorManager {
   }
 
   private selectBestSwapIn(
-    returnAmountV1: OldBigNumber,
-    returnAmountV1ConsideringFees: OldBigNumber,
+    returnAmountV1: BigNumber,
+    returnAmountV1ConsideringFees: BigNumber,
     marketSpV1Scaled: OldBigNumber,
     swapsV1: Swap[][],
     swapInfoV2: SwapInfo,
@@ -343,8 +343,8 @@ export class SorManager {
   }
 
   private selectBestSwapOut(
-    returnAmountV1: OldBigNumber,
-    returnAmountV1ConsideringFees: OldBigNumber,
+    returnAmountV1: BigNumber,
+    returnAmountV1ConsideringFees: BigNumber,
     marketSpV1Scaled: OldBigNumber,
     swapsV1: Swap[][],
     swapInfoV2: SwapInfo,
