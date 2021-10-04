@@ -104,7 +104,7 @@ export default function useSor({
     tokenIn: '',
     tokenOut: '',
     returnDecimals: 18,
-    returnAmount: new OldBigNumber(0),
+    returnAmount: Zero,
     marketSpNormalised: new OldBigNumber(0),
     v1result: [[], new OldBigNumber(0), new OldBigNumber(0)],
     v2result: {
@@ -220,7 +220,7 @@ export default function useSor({
       tokenOutAmountInput.value = amount;
       priceImpact.value = 0;
       sorReturn.value.hasSwaps = false;
-      sorReturn.value.returnAmount = new OldBigNumber(0);
+      sorReturn.value.returnAmount = Zero;
       return;
     }
 
@@ -304,9 +304,8 @@ export default function useSor({
       );
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
-      const tokenOutAmountNormalised = scale(
-        swapReturn.returnAmount,
-        -tokenOutDecimals
+      const tokenOutAmountNormalised = bnum(
+        formatFixed(swapReturn.returnAmount, tokenOutDecimals)
       );
       tokenOutAmountInput.value =
         tokenOutAmountNormalised.toNumber() > 0
@@ -316,9 +315,8 @@ export default function useSor({
       if (!sorReturn.value.hasSwaps) {
         priceImpact.value = 0;
       } else {
-        let returnAmtNormalised = scale(
-          swapReturn.returnAmount,
-          -tokenOutDecimals
+        let returnAmtNormalised = bnum(
+          formatFixed(swapReturn.returnAmount, tokenOutDecimals)
         );
 
         returnAmtNormalised = await adjustedPiAmount(
@@ -359,8 +357,10 @@ export default function useSor({
 
       sorReturn.value = swapReturn; // TO DO - is it needed?
 
-      const tradeAmount: OldBigNumber = swapReturn.returnAmount;
-      const tokenInAmountNormalised = scale(tradeAmount, -tokenInDecimals);
+      const tradeAmount: BigNumber = swapReturn.returnAmount;
+      const tokenInAmountNormalised = bnum(
+        formatFixed(tradeAmount, tokenInDecimals)
+      );
       tokenInAmountInput.value =
         tokenInAmountNormalised.toNumber() > 0
           ? tokenInAmountNormalised.toFixed(6, OldBigNumber.ROUND_UP)

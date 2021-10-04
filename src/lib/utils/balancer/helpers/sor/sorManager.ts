@@ -28,7 +28,7 @@ export interface SorReturn {
   tokenOut: string;
   returnDecimals: number;
   hasSwaps: boolean;
-  returnAmount: OldBigNumber;
+  returnAmount: BigNumber;
   marketSpNormalised: OldBigNumber;
   v1result: [Swap[][], OldBigNumber, OldBigNumber];
   v2result: SwapInfo;
@@ -301,7 +301,7 @@ export class SorManager {
       tokenOut: tokenOut,
       returnDecimals: tokenOutDecimals,
       hasSwaps: swapsV1.length > 0,
-      returnAmount: returnAmountV1,
+      returnAmount: BigNumber.from(returnAmountV1.toString()),
       v1result: [swapsV1, returnAmountV1, marketSpV1Scaled],
       v2result: swapInfoV2,
       marketSpNormalised: marketSpV1Normalised
@@ -314,7 +314,7 @@ export class SorManager {
       tokenOut: tokenOut,
       returnDecimals: tokenOutDecimals,
       hasSwaps: swapInfoV2.swaps.length > 0,
-      returnAmount: new OldBigNumber(swapInfoV2.returnAmount.toString()),
+      returnAmount: swapInfoV2.returnAmount,
       v1result: [swapsV1, returnAmountV1, marketSpV1Scaled],
       v2result: swapInfoV2,
       marketSpNormalised: swapInfoV2.marketSp
@@ -379,7 +379,7 @@ export class SorManager {
       tokenOut: tokenOut,
       returnDecimals: tokenInDecimals,
       hasSwaps: swapsV1.length > 0,
-      returnAmount: returnAmountV1,
+      returnAmount: BigNumber.from(returnAmountV1.toString()),
       v1result: [swapsV1, returnAmountV1, marketSpV1Scaled],
       v2result: swapInfoV2,
       marketSpNormalised: marketSpV1Normalised
@@ -392,7 +392,7 @@ export class SorManager {
       tokenOut: tokenOut,
       returnDecimals: tokenInDecimals,
       hasSwaps: swapInfoV2.swaps.length > 0,
-      returnAmount: new OldBigNumber(swapInfoV2.returnAmount.toString()),
+      returnAmount: swapInfoV2.returnAmount,
       v1result: [swapsV1, returnAmountV1, marketSpV1Scaled],
       v2result: swapInfoV2,
       marketSpNormalised: swapInfoV2.marketSp
