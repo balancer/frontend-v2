@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { APP_NETWORK_ID, Network } from '@/constants/network';
+import { networkId, Network } from '@/composables/useNetwork';
 import {
   GPv2Settlement,
   GPv2VaultRelayer
@@ -12,9 +12,9 @@ export const GP_SUPPORTED_NETWORKS = Object.keys(GPv2VaultRelayer).map(
 );
 
 export const GP_SETTLEMENT_CONTRACT_ADDRESS: string = (
-  GPv2Settlement[APP_NETWORK_ID] ?? GPv2Settlement[Network.MAINNET]
+  GPv2Settlement[networkId.value] ?? GPv2Settlement[Network.MAINNET]
 ).address;
 
 export const GP_RELAYER_CONTRACT_ADDRESS: string = (
-  GPv2VaultRelayer[APP_NETWORK_ID] ?? GPv2VaultRelayer[Network.MAINNET]
+  GPv2VaultRelayer[networkId.value] ?? GPv2VaultRelayer[Network.MAINNET]
 ).address;

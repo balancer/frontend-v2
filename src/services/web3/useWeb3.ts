@@ -8,6 +8,7 @@ import { isAddress } from '@ethersproject/address';
 import { web3Service } from './web3.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { switchToAppNetwork } from './utils/helpers';
+import useNetwork, { Network } from '@/composables/useNetwork';
 
 /** STATE */
 const blockNumber = ref(0);
@@ -37,6 +38,8 @@ export default function useWeb3() {
     configService.network.addresses.exchangeProxy
   );
 
+  const { networkId } = useNetwork();
+
   // COMPUTED REFS + COMPUTED REFS
   const userNetworkConfig = computed(() => {
     try {
@@ -49,9 +52,15 @@ export default function useWeb3() {
     }
   });
   const isWalletReady = computed(() => walletState.value === 'connected');
-  const isMainnet = computed(() => appNetworkConfig.chainId === 1);
-  const isPolygon = computed(() => appNetworkConfig.chainId === 137);
-  const isArbitrum = computed(() => appNetworkConfig.chainId === 42161);
+  const isMainnet = computed(
+    () => appNetworkConfig.chainId === Network.MAINNET
+  );
+  const isPolygon = computed(
+    () => appNetworkConfig.chainId === Network.POLYGON
+  );
+  const isArbitrum = computed(
+    () => appNetworkConfig.chainId === Network.ARBITRUM
+  );
   const isEIP1559SupportedNetwork = computed(
     () => appNetworkConfig.supportsEIP1559
   );
@@ -90,7 +99,7 @@ export default function useWeb3() {
   };
 
   const { isLoading: isLoadingProfile, data: profile } = useQuery(
-    QUERY_KEYS.Account.Profile(account, chainId),
+    QUERY_KEYS.Account.Profile(networkId, account, chainId),
     () => web3Service.getProfile(account.value),
     reactive({
       enabled: canLoadProfile

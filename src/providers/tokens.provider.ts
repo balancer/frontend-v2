@@ -305,7 +305,7 @@ export default {
       amount: string,
       contractAddress = networkConfig.addresses.vault
     ): boolean {
-      if (!amount || bnum(amount).eq(0)) return false;
+      if (!amount || bnum(amount).eq(0) || !contractAddress) return false;
 
       const allowance = bnum(
         allowances.value[contractAddress][getAddress(tokenAddress)]

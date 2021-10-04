@@ -106,7 +106,6 @@ import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { claimRewards } from '@/services/claim';
 import useWeb3 from '@/services/web3/useWeb3';
-import { NetworkId } from '@/constants/network';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import useTokens from '@/composables/useTokens';
@@ -221,7 +220,7 @@ export default defineComponent({
         isClaiming.value = true;
         try {
           const tx = await claimRewards(
-            appNetworkConfig.chainId as NetworkId,
+            appNetworkConfig.chainId,
             getProvider(),
             account.value,
             userClaims.value.pendingClaims,

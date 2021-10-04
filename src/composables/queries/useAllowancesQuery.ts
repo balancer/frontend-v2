@@ -7,6 +7,7 @@ import { ContractAllowancesMap } from '@/services/token/concerns/allowances.conc
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists from '../useTokenLists';
 import { TokenInfoMap } from '@/types/TokenList';
+import useNetwork from '../useNetwork';
 
 /**
  * TYPES
@@ -26,6 +27,7 @@ export default function useAllowancesQuery(
    */
   const { account, isWalletReady } = useWeb3();
   const { tokenListsLoaded } = useTokenLists();
+  const { networkId } = useNetwork();
 
   /**
    * COMPUTED
@@ -37,7 +39,12 @@ export default function useAllowancesQuery(
    * QUERY INPUTS
    */
   const queryKey = reactive(
-    QUERY_KEYS.Account.Allowances(account, contractAddresses, tokenAddresses)
+    QUERY_KEYS.Account.Allowances(
+      networkId,
+      account,
+      contractAddresses,
+      tokenAddresses
+    )
   );
 
   const queryFn = async () => {

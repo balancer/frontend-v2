@@ -4,7 +4,7 @@ import { MerkleRedeem__factory } from '@balancer-labs/typechain';
 import { toWei, soliditySha3 } from 'web3-utils';
 import axios from 'axios';
 
-import { NetworkId } from '@/constants/network';
+import { Network } from '@/composables/useNetwork';
 
 import { Claim } from '@/types';
 
@@ -20,25 +20,25 @@ import { coingeckoService } from './coingecko/coingecko.service';
 type Snapshot = Record<number, string>;
 
 // @ts-ignore
-export const constants: Record<NetworkId, Record<string, string>> = {
-  1: {
+export const constants: Record<Network, Record<string, string>> = {
+  [Network.MAINNET]: {
     merkleRedeem: '0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8',
     snapshot:
       'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json'
   },
-  42: {
+  [Network.KOVAN]: {
     merkleRedeem: '0x3bc73D276EEE8cA9424Ecb922375A0357c1833B3',
     snapshot:
       'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports-kovan/_current.json'
   },
-  42161: {
+  [Network.ARBITRUM]: {
     merkleRedeem: '0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809',
     snapshot:
       'https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-arbitrum.json'
   }
 };
 
-export async function getSnapshot(network: NetworkId) {
+export async function getSnapshot(network: Network) {
   if (constants[network]?.snapshot) {
     const response = await axios.get<Snapshot>(constants[network].snapshot);
     return response.data || {};
@@ -49,7 +49,7 @@ export async function getSnapshot(network: NetworkId) {
 type ClaimStatus = boolean;
 
 export async function getClaimStatus(
-  network: NetworkId,
+  network: Network,
   provider: Web3Provider,
   ids: number,
   account: string
@@ -71,7 +71,7 @@ export async function getReports(snapshot: Snapshot, weeks: number[]) {
 }
 
 export async function getPendingClaims(
-  network: NetworkId,
+  network: Network,
   provider: Web3Provider,
   account: string
 ): Promise<{ claims: Claim[]; reports: Report }> {
@@ -134,7 +134,7 @@ export type CurrentRewardsEstimate = {
 } | null;
 
 export async function getCurrentRewardsEstimate(
-  network: NetworkId,
+  network: Network,
   account: string
 ): Promise<CurrentRewardsEstimate> {
   try {
@@ -178,7 +178,7 @@ export async function getCurrentRewardsEstimate(
 }
 
 export async function claimRewards(
-  network: NetworkId,
+  network: Network,
   provider: Web3Provider,
   account: string,
   pendingClaims: Claim[],
