@@ -9,8 +9,8 @@ import {
 } from 'vue';
 import { useStore } from 'vuex';
 import { useIntervalFn } from '@vueuse/core';
-import { BigNumber } from '@ethersproject/bignumber';
-import { Zero } from '@ethersproject/constants';
+import { BigNumber, parseFixed, formatFixed } from '@ethersproject/bignumber';
+import { Zero, WeiPerEther as ONE } from '@ethersproject/constants';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
 import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sor2';
@@ -64,8 +64,8 @@ type Props = {
   tokenOutAmountInput: Ref<string>;
   tokens: Ref<TokenInfoMap>;
   wrapType: Ref<WrapType>;
-  tokenInAmountScaled?: ComputedRef<OldBigNumber>;
-  tokenOutAmountScaled?: ComputedRef<OldBigNumber>;
+  tokenInAmountScaled?: ComputedRef<BigNumber>;
+  tokenOutAmountScaled?: ComputedRef<BigNumber>;
   sorConfig?: {
     refetchPools: boolean;
     handleAmountsOnFetchPools: boolean;
@@ -214,7 +214,7 @@ export default function useSor({
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping trade
-    const zeroValueTrade = amount === '' || new OldBigNumber(amount).isZero();
+    const zeroValueTrade = amount === '' || BigNumber.from(amount).isZero();
     if (zeroValueTrade) {
       tokenInAmountInput.value = amount;
       tokenOutAmountInput.value = amount;
@@ -248,10 +248,7 @@ export default function useSor({
           wrapType.value,
           scale(bnum(amount), tokenInDecimals).toString()
         );
-        tokenOutAmountInput.value = scale(
-          bnum(outputAmount),
-          -tokenInDecimals
-        ).toString();
+        tokenOutAmountInput.value = formatFixed(outputAmount, tokenInDecimals);
       } else {
         tokenOutAmountInput.value = amount;
 
@@ -260,10 +257,7 @@ export default function useSor({
           wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
           scale(bnum(amount), tokenOutDecimals).toString()
         );
-        tokenInAmountInput.value = scale(
-          bnum(inputAmount),
-          -tokenOutDecimals
-        ).toString();
+        tokenInAmountInput.value = formatFixed(inputAmount, tokenOutDecimals);
       }
 
       sorReturn.value.hasSwaps = false;
@@ -456,8 +450,10 @@ export default function useSor({
     const tokenOutAddress = tokenOutAddressInput.value;
     const tokenInDecimals = tokens.value[tokenInAddress].decimals;
     const tokenOutDecimals = tokens.value[tokenOutAddress].decimals;
-    const tokenInAmountNumber = new OldBigNumber(tokenInAmountInput.value);
-    const tokenInAmountScaled = scale(tokenInAmountNumber, tokenInDecimals);
+    const tokenInAmountScaled = parseFixed(
+      tokenInAmountInput.value,
+      tokenInDecimals
+    );
 
     if (wrapType.value == WrapType.Wrap) {
       try {
@@ -506,8 +502,10 @@ export default function useSor({
     }
 
     if (exactIn.value) {
-      const tokenOutAmountNumber = new OldBigNumber(tokenOutAmountInput.value);
-      const tokenOutAmount = scale(tokenOutAmountNumber, tokenOutDecimals);
+      const tokenOutAmount = parseFixed(
+        tokenOutAmountInput.value,
+        tokenOutDecimals
+      );
       const minAmount = getMinOut(tokenOutAmount);
       const sr: SorReturn = sorReturn.value as SorReturn;
 
@@ -535,11 +533,8 @@ export default function useSor({
     } else {
       const tokenInAmountMax = getMaxIn(tokenInAmountScaled);
       const sr: SorReturn = sorReturn.value as SorReturn;
-      const tokenOutAmountNormalised = new OldBigNumber(
-        tokenOutAmountInput.value
-      );
-      const tokenOutAmountScaled = scale(
-        tokenOutAmountNormalised,
+      const tokenOutAmountScaled = parseFixed(
+        tokenOutAmountInput.value,
         tokenOutDecimals
       );
 
@@ -589,16 +584,16 @@ export default function useSor({
     );
   }
 
-  function getMaxIn(amount: OldBigNumber) {
+  function getMaxIn(amount: BigNumber) {
     return amount
-      .times(1 + slippageBufferRate.value)
-      .integerValue(OldBigNumber.ROUND_DOWN);
+      .mul(parseFixed(String(1 + slippageBufferRate.value), 18))
+      .div(ONE);
   }
 
-  function getMinOut(amount: OldBigNumber) {
+  function getMinOut(amount: BigNumber) {
     return amount
-      .div(1 + slippageBufferRate.value)
-      .integerValue(OldBigNumber.ROUND_DOWN);
+      .mul(ONE)
+      .div(parseFixed(String(1 + slippageBufferRate.value), 18));
   }
 
   function getQuote(): TradeQuote {

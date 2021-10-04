@@ -3,7 +3,7 @@ import { AddressZero, MaxUint256 } from '@ethersproject/constants';
 import { Vault__factory, LidoRelayer__factory } from '@balancer-labs/typechain';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { SwapV2 } from '@balancer-labs/sor2';
-import { BigNumber } from 'bignumber.js';
+import { BigNumber } from '@ethersproject/bignumber';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
 import configs from '@/lib/config';
@@ -11,7 +11,6 @@ import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWstETHByStETH, isStETH } from './lido';
 import { configService } from '@/services/config/config.service';
-import { bnum } from '..';
 import {
   FundManagement,
   SingleSwap,
@@ -114,7 +113,7 @@ export async function batchSwapGivenInV1(
   const overrides: any = {};
 
   if (tokenIn === NATIVE_ASSET_ADDRESS) {
-    overrides.value = `0x${tokenInAmount.toString(16)}`;
+    overrides.value = `0x${tokenInAmount.toHexString()}`;
   }
 
   try {
@@ -150,7 +149,7 @@ export async function batchSwapGivenOutV1(
   const overrides: any = {};
 
   if (tokenIn === NATIVE_ASSET_ADDRESS) {
-    overrides.value = `0x${tokenInAmountMax.toString(16)}`;
+    overrides.value = `0x${tokenInAmountMax.toHexString()}`;
   }
 
   try {
@@ -182,7 +181,7 @@ async function batchSwapGivenInV2(
   const overrides: any = {};
 
   if (tokenIn === AddressZero) {
-    overrides.value = `0x${tokenInAmount.toString(16)}`;
+    overrides.value = `0x${tokenInAmount.toHexString()}`;
   }
 
   const address = await web3.getSigner().getAddress();
@@ -203,7 +202,7 @@ async function batchSwapGivenInV2(
     if (token.toLowerCase() === tokenIn.toLowerCase()) {
       limits[i] = tokenInAmount.toString();
     } else if (token.toLowerCase() === tokenOut.toLowerCase()) {
-      limits[i] = tokenOutAmountMin.times(-1).toString();
+      limits[i] = tokenOutAmountMin.mul(-1).toString();
     } else {
       limits[i] = '0';
     }
@@ -262,7 +261,7 @@ async function batchSwapGivenOutV2(
   const overrides: any = {};
 
   if (tokenIn === AddressZero) {
-    overrides.value = `0x${tokenInAmountMax.toString(16)}`;
+    overrides.value = `0x${tokenInAmountMax.toHexString()}`;
   }
 
   const address = await web3.getSigner().getAddress();
@@ -283,7 +282,7 @@ async function batchSwapGivenOutV2(
     if (token.toLowerCase() === tokenIn.toLowerCase()) {
       limits[i] = tokenInAmountMax.toString();
     } else if (token.toLowerCase() === tokenOut.toLowerCase()) {
-      limits[i] = tokenOutAmount.times(-1).toString();
+      limits[i] = tokenOutAmount.mul(-1).toString();
     } else {
       limits[i] = '0';
     }
@@ -342,19 +341,17 @@ async function lidoBatchSwapGivenIn(
   const overrides: any = {};
 
   if (tokenIn === AddressZero) {
-    overrides.value = `0x${tokenInAmount.toString(16)}`;
+    overrides.value = `0x${tokenInAmount.toHexString()}`;
   }
 
   // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
   const { stETH, wstETH } = configService.network.addresses;
   if (tokenIn === stETH.toLowerCase()) {
     tokenIn = wstETH.toLowerCase();
-    tokenInAmount = bnum(await getWstETHByStETH(tokenInAmount.toString()));
+    tokenInAmount = await getWstETHByStETH(tokenInAmount);
   } else if (tokenOut === stETH.toLowerCase()) {
     tokenOut = wstETH.toLowerCase();
-    tokenOutAmountMin = bnum(
-      await getWstETHByStETH(tokenOutAmountMin.toString())
-    );
+    tokenOutAmountMin = await getWstETHByStETH(tokenOutAmountMin);
   }
 
   const address = await web3.getSigner().getAddress();
@@ -375,7 +372,7 @@ async function lidoBatchSwapGivenIn(
     if (token.toLowerCase() === tokenIn.toLowerCase()) {
       limits[i] = tokenInAmount.toString();
     } else if (token.toLowerCase() === tokenOut.toLowerCase()) {
-      limits[i] = tokenOutAmountMin.times(-1).toString();
+      limits[i] = tokenOutAmountMin.mul(-1).toString();
     } else {
       limits[i] = '0';
     }
@@ -434,19 +431,17 @@ async function lidoBatchSwapGivenOut(
   const overrides: any = {};
 
   if (tokenIn === AddressZero) {
-    overrides.value = `0x${tokenInAmountMax.toString(16)}`;
+    overrides.value = `0x${tokenInAmountMax.toHexString()}`;
   }
 
   // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
   const { stETH, wstETH } = configService.network.addresses;
   if (tokenIn === stETH.toLowerCase()) {
     tokenIn = wstETH.toLowerCase();
-    tokenInAmountMax = bnum(
-      await getWstETHByStETH(tokenInAmountMax.toString())
-    );
+    tokenInAmountMax = await getWstETHByStETH(tokenInAmountMax);
   } else if (tokenOut === stETH.toLowerCase()) {
     tokenOut = wstETH.toLowerCase();
-    tokenOutAmount = bnum(await getWstETHByStETH(tokenOutAmount.toString()));
+    tokenOutAmount = await getWstETHByStETH(tokenOutAmount);
   }
 
   const address = await web3.getSigner().getAddress();
@@ -467,7 +462,7 @@ async function lidoBatchSwapGivenOut(
     if (token.toLowerCase() === tokenIn.toLowerCase()) {
       limits[i] = tokenInAmountMax.toString();
     } else if (token.toLowerCase() === tokenOut.toLowerCase()) {
-      limits[i] = tokenOutAmount.times(-1).toString();
+      limits[i] = tokenOutAmount.mul(-1).toString();
     } else {
       limits[i] = '0';
     }
