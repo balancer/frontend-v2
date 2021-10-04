@@ -580,7 +580,7 @@ export default function useSor({
     await sorManager.setCostOutputToken(
       tokenAddress,
       tokenDecimals,
-      calculateEthPriceInToken(tokenAddress)
+      calculateEthPriceInToken(tokenAddress).toString()
     );
   }
 

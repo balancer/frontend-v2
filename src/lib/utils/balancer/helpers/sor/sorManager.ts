@@ -91,14 +91,14 @@ export class SorManager {
   async setCostOutputToken(
     tokenAddr: string,
     tokenDecimals: number,
-    manualCost: OldBigNumber | null = null
+    manualCost: string | null = null
   ): Promise<BigNumber> {
     tokenAddr = tokenAddr === NATIVE_ASSET_ADDRESS ? this.weth : tokenAddr;
 
     if (manualCost) {
       await this.sorV2.swapCostCalculator.setNativeAssetPriceInToken(
         tokenAddr,
-        manualCost.toString()
+        manualCost
       );
     }
 
