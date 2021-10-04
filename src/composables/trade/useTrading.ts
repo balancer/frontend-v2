@@ -9,6 +9,7 @@ import useGnosis from './useGnosis';
 import useTokens from '../useTokens';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import useUserSettings from '../useUserSettings';
 
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 
@@ -27,11 +28,10 @@ export default function useTrading(
   const { tokens } = useTokens();
   const { blockNumber } = useWeb3();
   const router = useRouter();
+  const { slippage } = useUserSettings();
 
   // COMPUTED
-  const slippageBufferRate = computed(() =>
-    parseFloat(store.state.app.slippage)
-  );
+  const slippageBufferRate = computed(() => parseFloat(slippage.value));
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
