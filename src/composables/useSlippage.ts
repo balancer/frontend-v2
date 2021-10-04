@@ -1,12 +1,15 @@
 import { computed } from 'vue';
-import { useStore } from 'vuex';
 import { parseUnits, formatUnits } from '@ethersproject/units';
+import useUserSettings from './useUserSettings';
+import { bnum } from '@/lib/utils';
 
 export default function useSlippage() {
-  const store = useStore();
+  const { slippage } = useUserSettings();
 
-  const slippageBasisPoints = computed(() => {
-    return Number(store.state.app.slippage) * 10000;
+  const slippageBasisPoints = computed((): string => {
+    return bnum(slippage.value)
+      .times(10000)
+      .toString();
   });
 
   function minusSlippage(_amount: string, decimals: number): string {

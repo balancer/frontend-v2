@@ -12,7 +12,6 @@ export interface AppState {
   loading: boolean;
   modalOpen: boolean;
   locale: string;
-  slippage: string;
   tradeLiquidity: LiquiditySelection;
   tradeInterface: TradeInterface;
   transactionDeadline: number;
@@ -22,7 +21,6 @@ const state: AppState = {
   loading: true,
   modalOpen: false,
   locale: lsGet(LS_KEYS.App.Locale, 'en-US'),
-  slippage: lsGet(LS_KEYS.App.TradeSlippage, '0.01'),
   tradeLiquidity: lsGet(LS_KEYS.App.TradeLiquidity, LiquiditySelection.Best),
   transactionDeadline: lsGet(LS_KEYS.App.TradeDeadline, 20), // minutes
   tradeInterface: lsGet(LS_KEYS.App.TradeInterface, TradeInterface.BALANCER)
@@ -57,11 +55,6 @@ const mutations = {
     state.locale = locale;
     lsSet(LS_KEYS.App.Locale, locale);
     i18n.global.locale = locale;
-  },
-
-  setSlippage(state: AppState, slippage: AppState['slippage']) {
-    state.slippage = slippage;
-    lsSet(LS_KEYS.App.TradeSlippage, slippage);
   },
 
   setTradeLiquidity(state: AppState, tradeLiquidity: LiquiditySelection) {
