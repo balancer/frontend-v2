@@ -37,18 +37,33 @@ async function toggleSection(section: string) {
     isContentVisible.value = false;
   }
 
+    handleBarElements.value.forEach((handleBar, i) => {
+    anime({
+      targets: handleBar,
+      translateY: `0px`
+    });
+  });
 
-  const activeSectionIndex = props.sections.findIndex(s => s.id === activeSection.value);
-  const handleBarsToTransform = takeRight(handleBarElements.value, handleBarElements.value.length - (activeSectionIndex + 1))
+  const activeSectionIndex = props.sections.findIndex(
+    s => s.id === activeSection.value
+  );
+  const handleBarsToTransform = takeRight(
+    handleBarElements.value,
+    handleBarElements.value.length - (activeSectionIndex + 1)
+  );
 
+  anime({
+    targets: wrapperElement.value,
+    height: `${minimisedWrapperHeight.value + height.value}px`
+  })
   handleBarsToTransform.forEach((handleBar, i) => {
     anime({
       targets: handleBar,
       translateY: `${height.value}px`
-    })
-  })
+    });
+  });
 
-  console.log('bars', handleBarsToTransform)
+  console.log('bars', handleBarsToTransform);
 }
 
 // all of this happens without the user seeing any feedback
@@ -79,11 +94,11 @@ onMounted(async () => {
   activeSection.value = '';
   isContentVisible.value = false;
 
-  if (wrapperElement.value) {
-    anime.set(wrapperElement.value, {
-      height: totalHeight.value
-    });
-  }
+  // if (wrapperElement.value) {
+  //   anime.set(wrapperElement.value, {
+  //     height: totalHeight.value
+  //   });
+  // }
 });
 
 function setHandleBars(el: HTMLElement) {
@@ -119,7 +134,6 @@ function setHandleBars(el: HTMLElement) {
           <div ref="activeSectionElement" v-if="isContentVisible">
             <slot :name="section.id" />
           </div>
-
         </div>
       </div>
     </BalCard>
