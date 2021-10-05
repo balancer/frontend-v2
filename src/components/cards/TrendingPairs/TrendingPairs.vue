@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTradeState } from '@/composables/trade/useTradeState';
+import useBreakpoints from '@/composables/useBreakpoints';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -15,6 +16,7 @@ type TrendingPair = {
 
 const { setTokenOutAddress, setTokenInAddress } = useTradeState();
 const { chainId: userNetworkId } = useWeb3();
+const { upToLargeBreakpoint } = useBreakpoints();
 
 const getTrendingTradePairs = async () => {
   return await balancerSubgraphService.tradePairSnapshots.get({
@@ -54,7 +56,7 @@ const setTradePair = (pair: TrendingPair[]) => {
   <BalCard noPad hFull growContent :shadow="false">
     <div class="flex flex-col bg-gray-50 lg:bg-white widget-card h-full">
       <div class="flex justify-between p-3 lg:shadow-lg">
-        <h6>{{ $t('trendingPairs') }}</h6>
+        <h6 v-if="!upToLargeBreakpoint">{{ $t('trendingPairs') }}</h6>
       </div>
       <div class="px-1 lg:p-3 flex flex-wrap">
         <button
