@@ -28,6 +28,8 @@ const height = ref();
 const handleBarHeight = ref(0);
 const totalHeight = ref(0);
 
+const easing = 'spring(1, 150, 18, 0)';
+
 async function toggleSection(section: string) {
   activeSection.value = section;
   isContentVisible.value = true;
@@ -37,10 +39,11 @@ async function toggleSection(section: string) {
     isContentVisible.value = false;
   }
 
-    handleBarElements.value.forEach((handleBar, i) => {
+  handleBarElements.value.forEach((handleBar, i) => {
     anime({
       targets: handleBar,
-      translateY: `0px`
+      translateY: `0px`,
+      easing
     });
   });
 
@@ -52,18 +55,39 @@ async function toggleSection(section: string) {
     handleBarElements.value.length - (activeSectionIndex + 1)
   );
 
+  // unfortunately this does introduce reflow (animating height of total)
+  // but it way better than having to animate the height of 2 sections 
+  // the one minimising + the one maximising
   anime({
     targets: wrapperElement.value,
-    height: `${minimisedWrapperHeight.value + height.value}px`
-  })
+    height: `${minimisedWrapperHeight.value + height.value}px`,
+    easing
+  });
   handleBarsToTransform.forEach((handleBar, i) => {
     anime({
       targets: handleBar,
-      translateY: `${height.value}px`
+      translateY: `${height.value}px`,
+      easing
     });
   });
 
-  console.log('bars', handleBarsToTransform);
+  setTimeout(async () => {
+    isContentVisible.value = true;
+    await nextTick();
+    if (activeSectionElement.value) {
+      anime.set(activeSectionElement.value, {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        right: '0',
+        opacity: 0
+      });
+      anime({
+        targets: activeSectionElement.value,
+        opacity: 1,
+      });
+    }
+  }, 300);
 }
 
 // all of this happens without the user seeing any feedback
@@ -94,11 +118,11 @@ onMounted(async () => {
   activeSection.value = '';
   isContentVisible.value = false;
 
-  // if (wrapperElement.value) {
-  //   anime.set(wrapperElement.value, {
-  //     height: totalHeight.value
-  //   });
-  // }
+  if (wrapperElement.value) {
+    anime.set(wrapperElement.value, {
+      height: totalHeight.value
+    });
+  }
 });
 
 function setHandleBars(el: HTMLElement) {
