@@ -94,13 +94,6 @@ const userClaimsLoading = computed(
     tokensLoading.value
 );
 
-// having multiple unclaimed weeks may cause the browser to freeze (> 5)
-const shouldShowClaimFreezeWarning = computed(() =>
-  userClaims.value != null
-    ? userClaims.value.multiTokenPendingClaims.length > 5
-    : false
-);
-
 const claimableTokens = computed<ClaimableToken[]>(() => {
   if (
     userClaims.value != null &&
@@ -264,16 +257,6 @@ async function claimAvailableRewards() {
       <div class="text-sm text-gray-600 mb-1" v-if="isAirdrop">
         {{ $t('liquidityMiningPopover.airdropExplainer', ['Polygon']) }}
       </div>
-      <BalAlert
-        v-if="shouldShowClaimFreezeWarning && !isAirdrop"
-        :title="$t('liquidityMiningPopover.claimFreezeWarning.title')"
-        :description="
-          $t('liquidityMiningPopover.claimFreezeWarning.description')
-        "
-        type="warning"
-        size="sm"
-        class="mb-3"
-      />
       <div v-if="!isAirdrop">
         <BalCard no-pad class="mb-4">
           <template v-slot:header>
