@@ -30,7 +30,7 @@ async function toggleSection(section: string) {
     await nextTick();
     anime.set(accordionHeightSetterElement.value, {
       maxHeight: '0px',
-      opacity: 0,
+      opacity: 0
     });
 
     isContentVisible.value = true;
@@ -38,7 +38,7 @@ async function toggleSection(section: string) {
       targets: accordionHeightSetterElement.value,
       maxHeight: `${height.value}px`,
       easing: 'spring(.25, 100, 18, 0)',
-      opacity: 1,
+      opacity: 1
     });
   }
 }

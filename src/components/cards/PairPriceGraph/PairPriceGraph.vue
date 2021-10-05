@@ -242,7 +242,14 @@ const chartGrid = computed(() => {
         'h-112': isExpanded
       }"
     />
-    <BalCard :square="upToLargeBreakpoint" hFull growContent noPad :shadow="false" v-else>
+    <BalCard
+      :square="upToLargeBreakpoint"
+      hFull
+      growContent
+      noPad
+      :shadow="false"
+      v-else
+    >
       <div class="relative h-full bg-transparent p-4">
         <button
           v-if="

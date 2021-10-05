@@ -35,7 +35,13 @@ const tokensWithBalance = computed(() => {
 </script>
 
 <template>
-  <BalCard :square="upToLargeBreakpoint" noPad growContent :hFull="upToLargeBreakpoint" :shadow="false">
+  <BalCard
+    :square="upToLargeBreakpoint"
+    noPad
+    growContent
+    :hFull="upToLargeBreakpoint"
+    :shadow="false"
+  >
     <div
       class="flex flex-col bg-white w-full h-full bg-transparent lg:bg-white "
     >

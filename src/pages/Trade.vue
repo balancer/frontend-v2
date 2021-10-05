@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="lg:flex justify-center flex-col lg:flex-row"
-  >
+  <div class="lg:flex justify-center flex-col lg:flex-row">
     <div
       v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists)"
       class="mt-16 mr-6 flex flex-col widget-card"
