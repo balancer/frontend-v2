@@ -28,7 +28,7 @@ const height = ref();
 const handleBarHeight = ref(0);
 const totalHeight = ref(0);
 
-const easing = 'spring(1, 150, 18, 0)';
+const easing = 'spring(0.2, 150, 18, 0)';
 
 async function toggleSection(section: string) {
   activeSection.value = section;
@@ -56,7 +56,7 @@ async function toggleSection(section: string) {
   );
 
   // unfortunately this does introduce reflow (animating height of total)
-  // but it way better than having to animate the height of 2 sections 
+  // but it way better than having to animate the height of 2 sections
   // the one minimising + the one maximising
   anime({
     targets: wrapperElement.value,
@@ -84,7 +84,7 @@ async function toggleSection(section: string) {
       });
       anime({
         targets: activeSectionElement.value,
-        opacity: 1,
+        opacity: 1
       });
     }
   }, 300);
@@ -117,12 +117,6 @@ onMounted(async () => {
   // was never active
   activeSection.value = '';
   isContentVisible.value = false;
-
-  if (wrapperElement.value) {
-    anime.set(wrapperElement.value, {
-      height: totalHeight.value
-    });
-  }
 });
 
 function setHandleBars(el: HTMLElement) {
