@@ -257,7 +257,7 @@
     "switchNetwork": "Switch Network",
     "tokenPills": {
         "hiddenTokens": "+{0} tokens"
-    },    
+    },
     "transactionAction": {
         "trade": "Trade",
         "approve": "Approve",
