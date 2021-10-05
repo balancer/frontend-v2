@@ -44,3 +44,13 @@ export type MultiTokenCurrentRewardsEstimate = {
 };
 
 export type ClaimProofTuple = [number, string, string[]];
+
+export type ComputeClaimProofPayload = {
+  tokenPendingClaims: MultiTokenPendingClaims;
+  account: string;
+};
+
+export type ClaimWorkerMessage = {
+  type: 'computeClaimProofs';
+  payload: ComputeClaimProofPayload;
+};

@@ -3,23 +3,29 @@ import { groupBy } from 'lodash';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { MerkleRedeem__factory } from '@balancer-labs/typechain';
-import { toWei, soliditySha3 } from 'web3-utils';
 import { getAddress } from '@ethersproject/address';
+import PromiseWorker from 'promise-worker';
 
 import { networkId } from '@/composables/useNetwork';
 
 import { call, sendTransaction } from '@/lib/utils/balancer/web3';
-import { bnum } from '@/lib/utils';
-import { loadTree } from '@/lib/utils/merkle';
+import { bnum, clone } from '@/lib/utils';
 import configs from '@/lib/config';
 
 import { ipfsService } from '../ipfs/ipfs.service';
 
 import MultiTokenClaim from './MultiTokenClaim.json';
 
+// @ts-ignore
+import ClaimWorker from 'worker-loader!./claim.worker';
+
+const claimWorker = new ClaimWorker();
+const claimPromiseWorker = new PromiseWorker(claimWorker);
+
 import {
   ClaimProofTuple,
   ClaimStatus,
+  ClaimWorkerMessage,
   MultiTokenCurrentRewardsEstimate,
   MultiTokenCurrentRewardsEstimateResponse,
   MultiTokenPendingClaims,
@@ -158,15 +164,11 @@ export class ClaimService {
     multiTokenPendingClaims: MultiTokenPendingClaims[]
   ): Promise<TransactionResponse> {
     try {
-      const multiTokenClaims: ClaimProofTuple[] = [];
-
-      multiTokenPendingClaims.forEach(tokenPendingClaims => {
-        const tokenClaims = this.computeClaimProofs(
-          tokenPendingClaims,
-          account
-        );
-        multiTokenClaims.push(...tokenClaims);
-      });
+      const [multiTokenClaims] = await Promise.all(
+        multiTokenPendingClaims.map(tokenPendingClaims =>
+          this.computeClaimProofs(tokenPendingClaims, account)
+        )
+      );
 
       return sendTransaction(
         provider,
@@ -184,19 +186,16 @@ export class ClaimService {
   private computeClaimProofs(
     tokenPendingClaims: MultiTokenPendingClaims,
     account: string
-  ): ClaimProofTuple[] {
-    const reports = tokenPendingClaims.reports;
+  ): Promise<ClaimProofTuple[]> {
+    const message: ClaimWorkerMessage = {
+      type: 'computeClaimProofs',
+      payload: {
+        account,
+        tokenPendingClaims: clone(tokenPendingClaims)
+      }
+    };
 
-    return tokenPendingClaims.claims.map(week => {
-      const claimBalance = week.amount;
-      const merkleTree = loadTree(reports[week.id]);
-
-      const proof = merkleTree.getHexProof(
-        soliditySha3(account, toWei(claimBalance))
-      ) as string[];
-
-      return [parseInt(week.id), toWei(claimBalance), proof];
-    });
+    return claimPromiseWorker.postMessage<ClaimProofTuple[]>(message);
   }
 
   private getTokenClaimsInfo() {
@@ -217,13 +216,13 @@ export class ClaimService {
     return response.data || {};
   }
 
-  private async getClaimStatus(
+  private getClaimStatus(
     provider: Web3Provider,
     ids: number,
     account: string,
     rewarder: string
   ): Promise<ClaimStatus[]> {
-    return await call(provider, MerkleRedeem__factory.abi, [
+    return call(provider, MerkleRedeem__factory.abi, [
       rewarder,
       'claimStatus',
       [account, 1, ids]
