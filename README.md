@@ -29,6 +29,18 @@ docker-compose up
 
 The app should be live at [http://localhost:8080](http://localhost:8080)
 
+### Docker Production Image
+We've created a production ready [docker image](./Dockerfile) that connects to Mainnet and runs
+a pre-built version of Balancer Frontend-v2 using nginx. You'll need your own [Infura](https://infura.io) and [Alchemy](https://www.alchemy.com/) API keys in order to fetch data.
+
+```bash
+docker run 
+  -e INFURA_PROJECT_ID=abc123 
+  -e ALCHEMY_KEY=def456
+  balancerfi/frontend-v2
+```
+
+
 
 ## Design System
 The app is using [Tailwind](https://tailwindcss.com/) to configure base styles. In development these styles can be viewed by running:
