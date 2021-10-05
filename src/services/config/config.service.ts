@@ -1,6 +1,6 @@
 import { Config } from '@/lib/config';
 import configs from '@/lib/config';
-import template from 'es6-dynamic-template';
+import template from '@/lib/utils/template';
 
 interface Env {
   APP_ENV: string;
