@@ -1,5 +1,7 @@
 <template>
-  <div class="flex justify-center items-center flex-col lg:flex-row">
+  <div
+    class="lg:flex justify-center flex-col lg:flex-row"
+  >
     <div
       v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists)"
       class="mt-16 mr-6 flex flex-col widget-card"
@@ -9,40 +11,39 @@
         <TrendingPairs />
       </div>
     </div>
-    <div class="trade-container">
+    <div class="trade-container mx-auto lg:mx-0">
       <BalLoadingBlock v-if="appLoading || loadingTokenLists" class="h-96" />
       <template v-else>
         <TradeCard v-if="tradeInterface === TradeInterface.BALANCER" />
         <TradeCardGP v-else-if="tradeInterface === TradeInterface.GNOSIS" />
       </template>
+      <div class="mt-8">
+        <BalAccordion
+          class="accordion-mw w-full"
+          v-if="upToLargeBreakpoint"
+          :sections="[
+            { title: 'My wallet', id: 'my-wallet' },
+            { title: 'Trending pairs', id: 'trending-pairs' },
+            { title: 'Price chart', id: 'price-chart' }
+          ]"
+        >
+          <template v-slot:my-wallet>
+            <MyWallet />
+          </template>
+          <template v-slot:trending-pairs>
+            <TrendingPairs />
+          </template>
+          <template v-slot:price-chart>
+            <PairPriceGraph />
+          </template>
+        </BalAccordion>
+      </div>
     </div>
     <div
       v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists)"
       class="mt-16 ml-6 flex flex-col widget-card relative"
     >
       <PairPriceGraph />
-    </div>
-    <div class="px-4 mt-8">
-
-    <BalAccordion
-      class="accordion-mw"
-      v-if="upToLargeBreakpoint"
-      :sections="[
-        { title: 'My wallet', id: 'my-wallet' },
-        { title: 'Trending pairs', id: 'trending-pairs' },
-        { title: 'Price chart', id: 'price-chart' }
-      ]"
-    >
-      <template v-slot:my-wallet>
-        <MyWallet />
-      </template>
-      <template v-slot:trending-pairs>
-        <TrendingPairs />
-      </template>
-      <template v-slot:price-chart>
-        <PairPriceGraph />
-      </template>
-    </BalAccordion>
     </div>
   </div>
 </template>
@@ -106,12 +107,10 @@ export default defineComponent({
   .trade-container {
     @apply md:mt-8;
   }
+  .accordion-mw {
+  }
 }
 .widget-card {
   width: 260px;
-}
-
-.accordion-mw {
-  min-width: 450px;
 }
 </style>

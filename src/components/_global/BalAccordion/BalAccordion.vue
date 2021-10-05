@@ -17,7 +17,6 @@ const props = defineProps<Props>();
 const activeSection = ref('');
 const activeSectionElement = ref<HTMLElement>();
 const accordionHeightSetterElement = ref<HTMLElement>();
-const wrapperElement = ref<HTMLElement>();
 const isContentVisible = ref(false);
 const height = ref();
 
@@ -30,16 +29,16 @@ async function toggleSection(section: string) {
     isContentVisible.value = false;
     await nextTick();
     anime.set(accordionHeightSetterElement.value, {
-      height: '0px',
-      opacity: 0
+      maxHeight: '0px',
+      opacity: 0,
     });
 
     isContentVisible.value = true;
     anime({
       targets: accordionHeightSetterElement.value,
-      height: `${height.value}px`,
+      maxHeight: `${height.value}px`,
       easing: 'spring(.25, 100, 18, 0)',
-      opacity: 1
+      opacity: 1,
     });
   }
 }
