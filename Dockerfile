@@ -18,7 +18,7 @@ RUN npm install
 FROM dependencies AS build
 
 COPY . .
-RUN npm run build -- --mode production
+RUN npm run build -- --mode docker --skip-plugins webpack-bundle-analyzer
 
 FROM nginx:stable-alpine as release
 
