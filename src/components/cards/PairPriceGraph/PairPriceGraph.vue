@@ -84,6 +84,12 @@ const chartTimespans = [
   }
 ];
 
+type Props = {
+  expand?: boolean;
+};
+
+const props = defineProps<Props>();
+const emits = defineEmits(['update:modelValue']);
 const { upToLargeBreakpoint } = useBreakpoints();
 const store = useStore();
 const { tokens } = useTokens();
@@ -93,7 +99,7 @@ const { chainId: userNetworkId } = useWeb3();
 
 const animateInstance = ref();
 const elementToAnimate = ref<HTMLElement>();
-const chartHeight = ref(upToLargeBreakpoint ? 75 : 100);
+const chartHeight = ref(upToLargeBreakpoint ? (props.expand ? 250 : 75) : 100);
 const activeTimespan = ref(chartTimespans[0]);
 const isExpanded = ref(false);
 const resizeTick = ref(0);
@@ -234,7 +240,16 @@ const chartGrid = computed(() => {
 </script>
 
 <template>
-  <div ref="elementToAnimate" class="h-40 lg:h-56">
+  <div
+    ref="elementToAnimate"
+    :class="[
+      'lg:h-56',
+      {
+        'h-40': !expand,
+        'h-full': expand
+      }
+    ]"
+  >
     <BalLoadingBlock
       v-if="isLoadingPriceData"
       :class="{
@@ -265,7 +280,7 @@ const chartGrid = computed(() => {
         <div
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
         >
-          <h6 class="font-medium">{{ inputSym }}/{{ outputSym }}</h6>
+          <h6 @click="$emit('update:modelValue', true)" class="font-medium">{{ inputSym }}/{{ outputSym }}</h6>
         </div>
         <div
           v-if="failedToLoadPriceData"
@@ -285,12 +300,15 @@ const chartGrid = computed(() => {
             :force-resize-tick="resizeTick"
             :custom-grid="chartGrid"
             :axis-label-formatter="{ yAxis: '0.000000' }"
-            wrapper-class="flex flex-row lg:flex-col"
+            :wrapper-class="['flex flex-row lg:flex-col', {
+              'flex-row': !expand,
+              'flex-col': expand
+            }]"
             hide-y-axis
             hide-x-axis
             show-header
           />
-          <div class="w-full flex justify-between mt-6" v-if="isExpanded">
+          <div class="w-full flex justify-between mt-6" v-if="isExpanded || expand">
             <div>
               <button
                 v-for="timespan in chartTimespans"

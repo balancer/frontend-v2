@@ -32,7 +32,7 @@
             <TrendingPairs />
           </template>
           <template v-slot:price-chart>
-            <PairPriceGraph />
+            <PairPriceGraph v-model="showMobileExpandedPriceGraph" />
           </template>
         </BalAccordion>
       </div>
@@ -43,11 +43,16 @@
     >
       <PairPriceGraph />
     </div>
+    <BalModal :show="showMobileExpandedPriceGraph" @close="onMobilePriceGraphClose">
+      <div class="graph-modal">
+        <PairPriceGraph expand />
+      </div>
+    </BalModal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from 'vue';
+import { defineComponent, computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
@@ -75,6 +80,7 @@ export default defineComponent({
     const { loadingTokenLists } = useTokenLists();
     const { setSelectedTokens } = usePoolFilters();
     const { upToLargeBreakpoint } = useBreakpoints();
+    const showMobileExpandedPriceGraph = ref(false);
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
     const tradeInterface = computed(() => store.state.app.tradeInterface);
@@ -84,12 +90,18 @@ export default defineComponent({
       setSelectedTokens([]);
     });
 
+    const onMobilePriceGraphClose = () => {
+      showMobileExpandedPriceGraph.value = false;
+    }
+
     return {
       appLoading,
       tradeInterface,
       loadingTokenLists,
       TradeInterface,
-      upToLargeBreakpoint
+      upToLargeBreakpoint,
+      showMobileExpandedPriceGraph,
+      onMobilePriceGraphClose
     };
   }
 });
@@ -99,6 +111,10 @@ export default defineComponent({
 .trade-container {
   @apply max-w-full mt-2 xs:mt-8;
   max-width: 450px;
+}
+
+.graph-modal {
+  height: 450px;
 }
 
 @media (min-height: 840px) {

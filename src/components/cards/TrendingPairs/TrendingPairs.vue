@@ -61,12 +61,12 @@ const setTradePair = (pair: TrendingPair[]) => {
     :shadow="false"
   >
     <div class="flex flex-col bg-transparent lg:bg-white widget-card h-full">
-      <div class="flex justify-between p-3 lg:shadow-lg">
-        <h6 v-if="!upToLargeBreakpoint">{{ $t('trendingPairs') }}</h6>
+      <div v-if="!upToLargeBreakpoint" class="flex justify-between p-3 lg:shadow-lg">
+        <h6>{{ $t('trendingPairs') }}</h6>
       </div>
       <div class="px-1 lg:p-3 flex flex-wrap">
         <button
-          class="py-1 px-2 bg-transparent rounded-lg lg:shadow mb-2 mr-2 font-medium lg:font-normal"
+          class="py-1 px-2 bg-transparent rounded-lg lg:shadow my-2 mr-2 font-medium lg:font-normal"
           v-for="(pair, i) in trendingPairs"
           :key="`trendingPair-${i}`"
           @click="setTradePair(pair)"
