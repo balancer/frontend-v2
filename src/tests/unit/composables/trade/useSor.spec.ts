@@ -82,6 +82,16 @@ jest.mock('@/services/web3/useWeb3', () => {
   });
 });
 
+jest.mock('vue-i18n', () => {
+  return {
+    useI18n: jest.fn().mockImplementation(() => {
+      return {
+        t: jest.fn().mockImplementation()
+      };
+    })
+  };
+});
+
 const mockTokenInfo = {
   chainId: 1,
   address: '0x0',
@@ -111,3 +121,11 @@ describe('useSor', () => {
     expect(sorResult).toBeTruthy();
   });
 });
+
+// describe('setSwapCost', () => {
+//   it("Should pass a correct gas price to sorManager", () =>  {
+//     const sor = useSor(mockProps);
+//     const mockSorManager = jest.fn.mockImplementation();
+//     sor.setSwapCost('0x0', 0, )
+//   });
+// })
