@@ -4,18 +4,13 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import { isStableLike } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
-import InvestFormActions from './components/InvestFormActions.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
 import useInvestFormMath from './composables/useInvestFormMath';
 import { isRequired } from '@/lib/utils/validations';
-import PoolExchange from '@/services/pool/exchange/exchange.service';
-import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '@/composables/useTransactions';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import useEthers from '@/composables/useEthers';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -57,33 +52,31 @@ const showInvestPreview = ref(false);
 /**
  * COMPOSABLES
  */
+const { t } = useI18n();
+
+const investMath = useInvestFormMath(
+  toRef(props, 'pool'),
+  toRef(state, 'amounts')
+);
+
 const {
   hasAmounts,
   fullAmounts,
   fiatTotal,
-  fiatTotalLabel,
   priceImpact,
   highPriceImpact,
   maximizeAmounts,
   maximized,
   optimizeAmounts,
   optimized,
-  propSuggestions,
-  bptOut
-} = useInvestFormMath(toRef(props, 'pool'), toRef(state, 'amounts'));
+  propSuggestions
+} = investMath;
 
-const { t } = useI18n();
-
-const { account, getProvider } = useWeb3();
-
-const { addTransaction } = useTransactions();
-
-const { txListener } = useEthers();
-
-/**
- * SERVICES
- */
-const poolExchange = new PoolExchange(toRef(props, 'pool'));
+const {
+  isWalletReady,
+  toggleWalletSelectModal,
+  isMismatchedNetwork
+} = useWeb3();
 
 /**
  * COMPUTED
@@ -153,17 +146,29 @@ function hint(index: number): string {
       />
     </div>
 
-    <InvestFormActions
-      :hasAmounts="hasAmounts"
-      :hasValidInputs="hasValidInputs"
-      class="mt-4"
-      @preview="showInvestPreview = true"
-    />
+    <div class="mt-4">
+      <BalBtn
+        v-if="!isWalletReady"
+        :label="$t('connectWallet')"
+        color="gradient"
+        block
+        @click.prevent="toggleWalletSelectModal"
+      />
+      <BalBtn
+        v-else
+        :label="$t('preview')"
+        color="gradient"
+        :disabled="!hasAmounts || !hasValidInputs || isMismatchedNetwork"
+        block
+        @click.prevent="showInvestPreview = true"
+      />
+    </div>
 
     <teleport to="#modal">
       <InvestPreviewModal
         v-if="showInvestPreview"
         :pool="pool"
+        :investMath="investMath"
         :fullAmounts="fullAmounts"
         :priceImpact="priceImpact"
         @close="showInvestPreview = false"
