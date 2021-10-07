@@ -71,8 +71,14 @@ const {
 /**
  * COMPUTED
  */
-const hasValidInputs = computed(() =>
-  state.validInputs.every(validInput => validInput === true)
+const hasValidInputs = computed(
+  () =>
+    state.validInputs.every(validInput => validInput === true) &&
+    hasAcceptedHighPriceImpact.value
+);
+
+const hasAcceptedHighPriceImpact = computed(() =>
+  highPriceImpact.value ? state.highPriceImpactAccepted : true
 );
 
 /**
