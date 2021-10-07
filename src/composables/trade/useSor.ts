@@ -214,7 +214,7 @@ export default function useSor({
       ? tokenInAmountInput.value
       : tokenOutAmountInput.value;
     // Avoid using SOR if querying a zero value or (un)wrapping trade
-    const zeroValueTrade = amount === '' || BigNumber.from(amount).isZero();
+    const zeroValueTrade = amount === '' || amount === '0';
     if (zeroValueTrade) {
       tokenInAmountInput.value = amount;
       tokenOutAmountInput.value = amount;
