@@ -48,6 +48,7 @@ const tabs = [
 const activeTab = ref(tabs[0].value);
 const isClaiming = ref(false);
 const elapstedTimeSinceEstimateTimestamp = ref(0);
+const claimError = ref<string | null>(null);
 
 // COMPOSABLES
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -203,6 +204,8 @@ watch(isMismatchedNetwork, () => {
 async function claimAvailableRewards() {
   if (userClaims.value != null) {
     isClaiming.value = true;
+    claimError.value = null;
+
     try {
       const tx = await claimService.multiTokenClaimRewards(
         getProvider(),
@@ -237,6 +240,7 @@ async function claimAvailableRewards() {
       });
     } catch (e) {
       console.log(e);
+      claimError.value = e.message;
       isClaiming.value = false;
     }
   }
@@ -347,6 +351,17 @@ async function claimAvailableRewards() {
             >~{{ fNum(totalClaimableTokensFiatValue, 'usd') }}</template
           ></BalBtn
         >
+        <BalAlert
+          v-if="claimError != null"
+          class="mb-6 -mt-4"
+          type="error"
+          size="md"
+          title="An error has occurred"
+          :description="claimError"
+          block
+          action-label="Dismiss"
+          @actionClick="claimError = null"
+        />
       </div>
       <div v-if="!isAirdrop" class="text-sm">
         <div
