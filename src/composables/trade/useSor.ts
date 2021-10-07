@@ -246,7 +246,7 @@ export default function useSor({
         const outputAmount = await getWrapOutput(
           wrapper,
           wrapType.value,
-          scale(bnum(amount), tokenInDecimals).toString()
+          parseFixed(amount, tokenInDecimals)
         );
         tokenOutAmountInput.value = formatFixed(outputAmount, tokenInDecimals);
       } else {
@@ -255,7 +255,7 @@ export default function useSor({
         const inputAmount = await getWrapOutput(
           wrapper,
           wrapType.value === WrapType.Wrap ? WrapType.Unwrap : WrapType.Wrap,
-          scale(bnum(amount), tokenOutDecimals).toString()
+          parseFixed(amount, tokenOutDecimals)
         );
         tokenInAmountInput.value = formatFixed(inputAmount, tokenOutDecimals);
       }
