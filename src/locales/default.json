@@ -259,7 +259,7 @@
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
     "receipt": "Receipt",
     "recentActivityTitle": "Recent activity",
-    "returnToPool": "Return to pool",
+    "returnToPool": "Return to pool page",
     "noRecentActivity": "Your recent activity will appear here…",
     "switchNetwork": "Switch Network",
     "tokenPills": {
