@@ -8,15 +8,20 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
 
+export type ApprovalState = {
+  init: boolean;
+  confirming: boolean;
+  approved: boolean;
+};
+
+export type ApprovalStateMap = {
+  [address: string]: ApprovalState;
+};
+
 export default function useTokenApprovals(
   tokenAddresses: string[],
   amounts: Ref<string[]>
 ) {
-  /**
-   * STATE
-   */
-  const approving = ref(false);
-
   /**
    * COMPOSABLES
    */
@@ -27,26 +32,44 @@ export default function useTokenApprovals(
   const { t } = useI18n();
 
   /**
+   * STATE
+   */
+  const requiredApprovalState = ref<ApprovalStateMap>(
+    Object.fromEntries(
+      approvalsRequired(tokenAddresses, amounts.value).map(address => [
+        address,
+        { init: false, confirming: false, approved: false }
+      ])
+    )
+  );
+
+  /**
    * COMPUTED
    */
-  const requiredAllowances = computed(() =>
+  const requiredApprovals = computed(() =>
     approvalsRequired(tokenAddresses, amounts.value)
   );
 
   /**
    * METHODS
    */
-  async function approveToken(address: string): Promise<void> {
+  async function approveToken(address: string): Promise<boolean> {
+    const state = requiredApprovalState.value[address];
+    let confirmed = false;
+
     try {
-      approving.value = true;
+      state.init = true;
 
       const tx = await sendTransaction(
         getProvider(),
         address,
         ERC20ABI,
         'approve',
-        [[appNetworkConfig.addresses.vault, MaxUint256.toString()]]
+        [appNetworkConfig.addresses.vault, MaxUint256.toString()]
       );
+
+      state.init = false;
+      state.confirming = true;
 
       addTransaction({
         id: tx.hash,
@@ -61,31 +84,36 @@ export default function useTokenApprovals(
         }
       });
 
-      txListener(tx, {
+      confirmed = await txListener(tx, {
         onTxConfirmed: async () => {
           await refetchAllowances.value();
-          approving.value = false;
+          state.confirming = false;
+          state.approved = true;
         },
         onTxFailed: () => {
-          approving.value = false;
+          state.confirming = false;
         }
       });
     } catch (error) {
-      approving.value = false;
+      state.confirming = false;
+      state.init = false;
       console.error(error);
     }
+
+    return confirmed;
   }
 
-  async function approveNextAllowance(): Promise<void> {
-    return await approveToken(requiredAllowances.value[0]);
+  async function approveNextAllowance(): Promise<boolean> {
+    return await approveToken(requiredApprovals.value[0]);
   }
 
   return {
-    // data
-    approving,
+    // state
+    requiredApprovalState,
     // computed
-    requiredAllowances,
+    requiredApprovals,
     // methods
-    approveNextAllowance
+    approveNextAllowance,
+    approveToken
   };
 }
