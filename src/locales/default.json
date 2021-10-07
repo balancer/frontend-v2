@@ -127,6 +127,7 @@
     "insufficientLiquidity": "Not enough liquidity",
     "insufficientLiquidityDetailed": "Try trading with a smaller amount or check back when liquidity for this pool has increased.",
     "invest": "Invest",
+    "investInPool": "Invest in pool",
     "inYourWallet": "In your wallet:",
     "time": "Time",
     "timeAgo": "{0} ago",

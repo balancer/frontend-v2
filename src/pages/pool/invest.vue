@@ -53,7 +53,7 @@ const loadingPool = computed(
         <BalLoadingBlock v-if="loadingPool || !pool" class="h-96" />
         <BalCard
           v-else
-          title="Invest in pool"
+          :title="$t('investInPool')"
           shadow="xl"
           rightAlignHeader
           exposeOverflow
