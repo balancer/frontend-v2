@@ -3,7 +3,7 @@ import PromiseWorker from 'promise-worker';
 // @ts-ignore
 import ClaimWorker from 'worker-loader!./claim.worker';
 
-class ClaimWorkerPool {
+class ClaimWorkerPoolService {
   workers: PromiseWorker[];
   workerIndex: number;
 
@@ -21,4 +21,4 @@ class ClaimWorkerPool {
   }
 }
 
-export const claimWorkerPool = new ClaimWorkerPool(8);
+export const claimWorkerPoolService = new ClaimWorkerPoolService(8);

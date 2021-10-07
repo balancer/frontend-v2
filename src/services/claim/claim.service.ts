@@ -28,7 +28,7 @@ import {
   TokenClaimInfo
 } from './types';
 import { Claim } from '@/types';
-import { claimWorkerPool } from './claim-worker-pool';
+import { claimWorkerPoolService } from './claim-worker-pool.service';
 
 export class ClaimService {
   public async getMultiTokensPendingClaims(
@@ -216,7 +216,7 @@ export class ClaimService {
       }
     };
 
-    return claimWorkerPool.worker.postMessage<ClaimProofTuple>(message);
+    return claimWorkerPoolService.worker.postMessage<ClaimProofTuple>(message);
   }
 
   private getTokenClaimsInfo() {
