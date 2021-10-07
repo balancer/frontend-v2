@@ -3,11 +3,11 @@ const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const { version } = require('./package.json');
 
 const release = `frontend-v2@${version}`;
-const ENV = process.env.VUE_APP_SENTRY_AUTH_TOKEN || 'development';
+const ENV = process.env.VUE_APP_ENV || 'development';
 
 const sentryWebpack = new SentryWebpackPlugin({
   // sentry-cli configuration
-  authToken: process.env.SENTRY_AUTH_TOKEN,
+  authToken: process.env.VUE_APP_SENTRY_AUTH_TOKEN,
   org: 'balancer-labs',
   project: 'app',
   release: release,
