@@ -165,7 +165,6 @@
         "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
         "airdropEligibility": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
         "viewLMLink": "View liquidity mining incentives ->",
-        "viewLegacyClaimLink": "View legacy claim tool ->",
         "networksExplainer": "Switch networks in the header to see your current cumulative BAL incentives on {0} and {1}."
     },
     "loadMore": "Load more",

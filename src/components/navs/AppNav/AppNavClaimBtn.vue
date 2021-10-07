@@ -21,7 +21,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import BalLink from '@/components/_global/BalLink/BalLink.vue';
 
-import { EXTERNAL_LINKS } from '@/constants/links';
 import { TOKENS } from '@/constants/tokens';
 
 type ClaimableToken = {
@@ -58,6 +57,7 @@ const {
   account,
   getProvider,
   isArbitrum,
+  isMainnet,
   isPolygon,
   isMismatchedNetwork
 } = useWeb3();
@@ -81,6 +81,24 @@ const BALTokenPlaceholder = computed<ClaimableToken>(() => ({
 }));
 
 const isAirdrop = computed(() => isPolygon.value);
+
+const legacyClaimUI = computed(() => {
+  if (isMainnet.value) {
+    return [
+      { token: '$BAL', subdomain: 'claim' },
+      { token: '$VITA', subdomain: 'claim-vita' },
+      { token: '$LDO', subdomain: 'claim-lido' }
+    ];
+  } else if (isArbitrum.value) {
+    return [
+      { token: '$BAL', subdomain: 'claim-arbitrum' },
+      { token: '$MCDEX', subdomain: 'claim-mcdex' },
+      { token: '$PICKLE', subdomain: 'claim-pickle' }
+    ];
+  }
+
+  return [];
+});
 
 const userClaims = computed(() =>
   userClaimsQuery.isSuccess.value ? userClaimsQuery.data?.value : null
@@ -357,9 +375,21 @@ async function claimAvailableRewards() {
           </router-link>
         </div>
         <div class="mb-4">
-          <BalLink :href="EXTERNAL_LINKS.Balancer.Claim(account)" external>
-            {{ $t('liquidityMiningPopover.viewLegacyClaimLink') }}
-          </BalLink>
+          <template v-if="legacyClaimUI.length > 0">
+            View
+            <span class="inline-grid grid-flow-col gap-1">
+              <BalLink
+                v-for="legacyClaim in legacyClaimUI"
+                :key="legacyClaim.token"
+                :href="
+                  `https://${legacyClaim.subdomain}.balancer.fi/#/${account}`
+                "
+                external
+                >{{ legacyClaim.token }}</BalLink
+              >
+            </span>
+            legacy claim tool
+          </template>
         </div>
         <div class="text-xs">
           <!-- TODO: translate with component interpolation -->
@@ -383,7 +413,7 @@ async function claimAvailableRewards() {
               >Arbitrum</BalLink
             >.
           </template>
-          <template v-else>
+          <template v-else-if="isMainnet">
             <BalLink href="https://polygon.balancer.fi" external>
               Polygon
             </BalLink>
