@@ -1,7 +1,22 @@
 import { ref, computed } from 'vue';
 import useSor from '@/composables/trade/useSor';
-import { UserSettingsProvider } from '@/providers';
 import { configService } from '@/services/config/config.service';
+import { mocked } from 'ts-jest/utils';
+import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import BigNumber from 'bignumber.js';
+
+jest.mock('@/lib/utils/balancer/helpers/sor/sorManager', () => {
+  return {
+    SorManager: jest.fn().mockImplementation(() => {
+      return {
+        setCostOutputToken: jest.fn().mockImplementation()
+      };
+    })
+  };
+});
+
+jest.mock('@/lib/utils/balancer/helpers/sor/sorManager');
 
 jest.mock('@/locales', () => {
   return [];
@@ -47,10 +62,20 @@ jest.mock('@/composables/useUserSettings', () => {
   });
 });
 
+const mockNativeAssetAddress = configService.network.nativeAsset.address;
+const mockEthPrice = 3000;
+const mockTokenPrice = 0.2;
+
 jest.mock('@/composables/useTokens', () => {
   return jest.fn().mockImplementation(() => {
     return {
-      useTokens: jest.fn().mockImplementation()
+      useTokens: jest.fn().mockImplementation(),
+      priceFor: jest.fn().mockImplementation(address => {
+        if (address === mockNativeAssetAddress) {
+          return mockEthPrice;
+        }
+        return mockTokenPrice;
+      })
     };
   });
 });
@@ -77,7 +102,11 @@ jest.mock('@/services/web3/useWeb3', () => {
     return {
       getProvider: jest.fn().mockImplementation(),
       isV1Supported: false,
-      appNetworkConfig: {}
+      appNetworkConfig: {
+        nativeAsset: {
+          address: mockNativeAssetAddress
+        }
+      }
     };
   });
 });
@@ -122,10 +151,38 @@ describe('useSor', () => {
   });
 });
 
-// describe('setSwapCost', () => {
-//   it("Should pass a correct gas price to sorManager", () =>  {
-//     const sor = useSor(mockProps);
-//     const mockSorManager = jest.fn.mockImplementation();
-//     sor.setSwapCost('0x0', 0, )
-//   });
-// })
+describe('setSwapCost', () => {
+  const sorManager = new SorManager(
+    false,
+    rpcProviderService.jsonProvider,
+    new BigNumber(1),
+    1,
+    1,
+    '1',
+    'source',
+    'sg'
+  );
+
+  const mockedSorManager = mocked(sorManager);
+
+  beforeEach(() => {
+    mockedSorManager.setCostOutputToken.mockClear();
+  });
+
+  it('Should pass a correct gas price to sorManager', async () => {
+    const sor = useSor(mockProps);
+
+    const tokenAddress = '0x0';
+    const tokenDecimals = 5;
+    const expectedTokenPriceInEth = new BigNumber(
+      mockEthPrice / mockTokenPrice
+    );
+
+    await sor.setSwapCost(tokenAddress, tokenDecimals, mockedSorManager as any);
+    expect(mockedSorManager.setCostOutputToken).toBeCalledWith(
+      tokenAddress,
+      tokenDecimals,
+      expectedTokenPriceInEth
+    );
+  });
+});
