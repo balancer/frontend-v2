@@ -32,10 +32,6 @@ type FormState = {
  */
 const props = defineProps<Props>();
 
-const emit = defineEmits<{
-  (e: 'success', value: TransactionResponse): void;
-}>();
-
 /**
  * STATE
  */
