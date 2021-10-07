@@ -9,10 +9,27 @@ import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
 
+export type InvestMath = {
+  // computed
+  hasAmounts: Ref<boolean>;
+  fullAmounts: Ref<string[]>;
+  fiatTotal: Ref<string>;
+  fiatTotalLabel: Ref<string>;
+  priceImpact: Ref<number>;
+  highPriceImpact: Ref<boolean>;
+  maximized: Ref<boolean>;
+  optimized: Ref<boolean>;
+  propSuggestions: Ref<string[]>;
+  bptOut: Ref<string>;
+  // methods
+  maximizeAmounts: () => void;
+  optimizeAmounts: () => void;
+};
+
 export default function useInvestFormMath(
   pool: Ref<FullPool>,
   amounts: Ref<string[]>
-) {
+): InvestMath {
   /**
    * STATE
    */
