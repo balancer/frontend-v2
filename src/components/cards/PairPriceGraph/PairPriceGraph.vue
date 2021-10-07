@@ -80,16 +80,17 @@ const chartTimespans = [
   },
   {
     option: 'All',
-    value: -1
+    value: 4000
   }
 ];
 
 type Props = {
-  expand?: boolean;
+  isMobileModal?: boolean;
+  onCloseModal?: () => void;
 };
 
 const props = defineProps<Props>();
-const emits = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
 const { upToLargeBreakpoint } = useBreakpoints();
 const store = useStore();
 const { tokens } = useTokens();
@@ -99,7 +100,9 @@ const { chainId: userNetworkId } = useWeb3();
 
 const animateInstance = ref();
 const elementToAnimate = ref<HTMLElement>();
-const chartHeight = ref(upToLargeBreakpoint ? (props.expand ? 250 : 75) : 100);
+const chartHeight = ref(
+  upToLargeBreakpoint ? (props.isMobileModal ? 250 : 75) : 100
+);
 const activeTimespan = ref(chartTimespans[0]);
 const isExpanded = ref(false);
 const resizeTick = ref(0);
@@ -199,6 +202,14 @@ const minimise = () => {
 };
 
 const toggle = () => {
+  if (upToLargeBreakpoint.value) {
+    if (props.isMobileModal) {
+      props.onCloseModal && props.onCloseModal();
+    } else {
+      emit('update:modelValue', true);
+    }
+    return;
+  }
   if (isExpanded.value) {
     minimise();
   } else {
@@ -213,17 +224,22 @@ const chartData = computed(() => [
   }
 ]);
 
-const chartColors = computed(() => {
-  let color = tailwind.theme.colors.green['400'];
+const isNegativeTrend = computed(() => {
   const _priceData = priceData.value || [];
   if (_priceData.length > 2) {
     if (
       _priceData[_priceData.length - 1][1] <
       _priceData[_priceData.length - 2][1]
     ) {
-      color = tailwind.theme.colors.red['400'];
+      return true;
     }
   }
+  return false;
+});
+
+const chartColors = computed(() => {
+  let color = tailwind.theme.colors.green['400'];
+  if (isNegativeTrend.value) color = tailwind.theme.colors.red['400'];
   return [color];
 });
 
@@ -245,8 +261,8 @@ const chartGrid = computed(() => {
     :class="[
       'lg:h-56',
       {
-        'h-40': !expand,
-        'h-full': expand
+        'h-40': !isMobileModal,
+        'h-full': isMobileModal
       }
     ]"
   >
@@ -254,33 +270,39 @@ const chartGrid = computed(() => {
       v-if="isLoadingPriceData"
       :class="{
         'h-64': !isExpanded,
-        'h-112': isExpanded
+        'h-112': isExpanded || isMobileModal
       }"
     />
     <BalCard
       :square="upToLargeBreakpoint"
+      :shadow="false"
       hFull
       growContent
       noPad
-      :shadow="false"
+      :noBorder="upToLargeBreakpoint"
       v-else
     >
       <div class="relative h-full bg-transparent p-4">
         <button
-          v-if="
-            !upToLargeBreakpoint &&
-              !failedToLoadPriceData &&
-              !(isLoadingPriceData || appLoading)
-          "
+          v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
           @click="toggle"
-          class="maximise m-4"
+          class="maximise border m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
         >
-          <BalIcon name="maximize-2" class="text-gray-500" />
+          <BalIcon
+            v-if="!isExpanded && !isMobileModal"
+            name="maximize-2"
+            class="text-gray-500"
+          />
+          <BalIcon
+            v-if="isExpanded || isMobileModal"
+            name="x"
+            class="text-gray-500"
+          />
         </button>
         <div
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
         >
-          <h6 @click="$emit('update:modelValue', true)" class="font-medium">{{ inputSym }}/{{ outputSym }}</h6>
+          <h6 class="font-medium">{{ inputSym }}/{{ outputSym }}</h6>
         </div>
         <div
           v-if="failedToLoadPriceData"
@@ -300,15 +322,27 @@ const chartGrid = computed(() => {
             :force-resize-tick="resizeTick"
             :custom-grid="chartGrid"
             :axis-label-formatter="{ yAxis: '0.000000' }"
-            :wrapper-class="['flex flex-row lg:flex-col', {
-              'flex-row': !expand,
-              'flex-col': expand
-            }]"
+            :wrapper-class="[
+              'flex flex-row lg:flex-col',
+              {
+                'flex-row': !isMobileModal,
+                'flex-col': isMobileModal
+              }
+            ]"
+            :show-tooltip="!upToLargeBreakpoint || isMobileModal"
             hide-y-axis
             hide-x-axis
             show-header
           />
-          <div class="w-full flex justify-between mt-6" v-if="isExpanded || expand">
+          <div
+            :class="[
+              'w-full flex justify-between mt-6',
+              {
+                'flex-col': isMobileModal
+              }
+            ]"
+            v-if="isExpanded || isMobileModal"
+          >
             <div>
               <button
                 v-for="timespan in chartTimespans"
@@ -317,16 +351,23 @@ const chartGrid = computed(() => {
                 :class="[
                   'py-1 px-2 text-sm rounded-lg mr-2',
                   {
-                    'bg-green-500 text-white':
+                    'text-white': activeTimespan.value === timespan.value,
+                    'text-gray-500': activeTimespan.value !== timespan.value,
+                    'bg-green-400':
+                      !isNegativeTrend &&
                       activeTimespan.value === timespan.value,
-                    'text-gray-500': activeTimespan.value !== timespan.value
+                    'bg-red-400':
+                      isNegativeTrend &&
+                      activeTimespan.value === timespan.value,
+                    'hover:bg-red-200': isNegativeTrend,
+                    'hover:bg-green-200': !isNegativeTrend
                   }
                 ]"
               >
                 {{ timespan.option }}
               </button>
             </div>
-            <div>
+            <div :class="{ 'mt-4': isMobileModal }">
               <span class="text-sm text-gray-500 mr-4"
                 >Low: {{ dataMin.toPrecision(6) }}</span
               >

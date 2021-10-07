@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted, watch } from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import anime from 'animejs';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-import { findIndex, takeRight } from 'lodash';
+import { takeRight } from 'lodash';
 
 type Section = {
   title: string;
@@ -39,7 +38,7 @@ async function toggleSection(section: string) {
     isContentVisible.value = false;
   }
 
-  handleBarElements.value.forEach((handleBar, i) => {
+  handleBarElements.value.forEach(handleBar => {
     anime({
       targets: handleBar,
       translateY: `0px`,
@@ -63,7 +62,7 @@ async function toggleSection(section: string) {
     height: `${minimisedWrapperHeight.value + height.value}px`,
     easing
   });
-  handleBarsToTransform.forEach((handleBar, i) => {
+  handleBarsToTransform.forEach(handleBar => {
     anime({
       targets: handleBar,
       translateY: `${height.value}px`,
@@ -131,14 +130,19 @@ function setHandleBars(el: HTMLElement) {
     <BalCard hFull no-pad>
       <div
         class="flex flex-col"
-        v-for="section in sections"
+        v-for="(section, i) in sections"
         :key="section.id"
         :ref="setHandleBars"
       >
         <button
           ref="handleBarElement"
           @click="toggleSection(section.id)"
-          class="w-full flex justify-between p-3"
+          :class="[
+            'w-full flex justify-between p-3',
+            {
+              'border-b dark:border-gray-900': i !== sections.length - 1
+            }
+          ]"
         >
           <h6>{{ section.title }}</h6>
           <BalIcon class="text-blue-400" name="chevron-down" />

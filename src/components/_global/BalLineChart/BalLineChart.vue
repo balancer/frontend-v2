@@ -126,6 +126,10 @@ export default defineComponent({
     },
     wrapperClass: {
       type: String
+    },
+    showTooltip: {
+      type: Boolean,
+      default: () => true
     }
   },
   components: {
@@ -226,6 +230,7 @@ export default defineComponent({
         containLabel: true
       },
       tooltip: {
+        show: props.showTooltip,
         trigger: 'axis',
         confine: true,
         axisPointer: {

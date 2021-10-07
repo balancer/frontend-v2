@@ -15,7 +15,7 @@
         <TradeCard v-if="tradeInterface === TradeInterface.BALANCER" />
         <TradeCardGP v-else-if="tradeInterface === TradeInterface.GNOSIS" />
       </template>
-      <div class="mt-8">
+      <div class="mt-8 p-4 sm:p-0 lg:p-0">
         <BalAccordion
           class="accordion-mw w-full"
           v-if="upToLargeBreakpoint"
@@ -43,9 +43,12 @@
     >
       <PairPriceGraph />
     </div>
-    <BalModal :show="showMobileExpandedPriceGraph" @close="onMobilePriceGraphClose">
+    <BalModal
+      :show="showMobileExpandedPriceGraph"
+      @close="onMobilePriceGraphClose"
+    >
       <div class="graph-modal">
-        <PairPriceGraph expand />
+        <PairPriceGraph isMobileModal :onCloseModal="onMobilePriceGraphClose" />
       </div>
     </BalModal>
   </div>
@@ -92,7 +95,7 @@ export default defineComponent({
 
     const onMobilePriceGraphClose = () => {
       showMobileExpandedPriceGraph.value = false;
-    }
+    };
 
     return {
       appLoading,

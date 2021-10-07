@@ -58,10 +58,14 @@ const setTradePair = (pair: TrendingPair[]) => {
     noPad
     hFull
     growContent
+    :noBorder="upToLargeBreakpoint"
     :shadow="false"
   >
     <div class="flex flex-col bg-transparent lg:bg-white widget-card h-full">
-      <div v-if="!upToLargeBreakpoint" class="flex justify-between p-3 lg:shadow-lg">
+      <div
+        v-if="!upToLargeBreakpoint"
+        class="flex justify-between p-3 lg:shadow-lg"
+      >
         <h6>{{ $t('trendingPairs') }}</h6>
       </div>
       <div class="px-1 lg:p-3 flex flex-wrap">

@@ -38,6 +38,7 @@ const tokensWithBalance = computed(() => {
   <BalCard
     :square="upToLargeBreakpoint"
     noPad
+    :noBorder="upToLargeBreakpoint"
     growContent
     :hFull="upToLargeBreakpoint"
     :shadow="false"
@@ -45,7 +46,7 @@ const tokensWithBalance = computed(() => {
     <div
       class="flex flex-col bg-white w-full h-full bg-transparent lg:bg-white "
     >
-      <div class="flex lg:justify-between p-3 lg:shadow-lg">
+      <div class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:shadow-lg">
         <h6 v-if="!upToLargeBreakpoint">{{ $t('myWallet') }}</h6>
         <div
           class="font-semibold lg:font-normal ml-1 lg:ml-0"
