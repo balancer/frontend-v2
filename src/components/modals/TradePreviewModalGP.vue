@@ -8,14 +8,12 @@
           >
             <span>
               {{ $t('effectivePrice') }}
-            </span>
-            <span
-              v-html="
+              {{
                 trading.exactIn.value
                   ? trading.effectivePriceMessage.value.tokenIn
                   : trading.effectivePriceMessage.value.tokenOut
-              "
-            />
+              }}
+            </span>
           </div>
         </template>
         <div>
