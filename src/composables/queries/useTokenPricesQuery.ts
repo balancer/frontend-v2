@@ -8,6 +8,7 @@ import { sleep } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 import useUserSettings from '@/composables/useUserSettings';
 import { TOKENS } from '@/constants/tokens';
+import useNetwork from '../useNetwork';
 
 /**
  * TYPES
@@ -26,7 +27,8 @@ export default function useTokenPricesQuery(
   addresses: Ref<string[]> = ref([]),
   options: UseQueryOptions<QueryResponse> = {}
 ) {
-  const queryKey = reactive(QUERY_KEYS.Tokens.Prices(addresses));
+  const { networkId } = useNetwork();
+  const queryKey = reactive(QUERY_KEYS.Tokens.Prices(networkId, addresses));
   const { currency } = useUserSettings();
 
   // TODO: kill this with fire as soon as Coingecko supports wstETH

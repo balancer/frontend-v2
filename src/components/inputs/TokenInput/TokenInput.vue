@@ -29,6 +29,7 @@ type Props = {
   disableMax?: boolean;
   hint?: string;
   hintAmount?: string;
+  excludedTokens?: string[];
 };
 
 /**
@@ -180,6 +181,7 @@ watchEffect(() => {
         :weight="weight"
         class="mr-2"
         @update:modelValue="emit('update:address', $event)"
+        :excludedTokens="excludedTokens"
       />
     </template>
     <template v-slot:footer>

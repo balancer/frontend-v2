@@ -58,14 +58,14 @@
         v-if="trading.isBalancerTrade.value"
       >
         <LightBulbIcon />
-        <!-- TODO: translate -->
-        <span
-          >Trades from ETH route through Balancer liquidity pools and incur gas
-          fees.
-          <a @click="switchToWETH()" class="text-blue-500">
-            Trade from WETH
-          </a>
-          to avoid gas.
+        <span>
+          {{ $t('tradesThroughWeth') }}
+          <a
+            @click="switchToWETH()"
+            class="text-blue-500"
+            v-text="$t('tradeFromWeth')"
+          />
+          {{ $t('saveGas') }}
         </span>
       </div>
     </div>

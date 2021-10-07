@@ -91,8 +91,6 @@ export default class Vault {
       swapEnabled = data.swapEnabled;
     }
 
-    console.log('swapEnabled', swapEnabled);
-
     return {
       tokens: _tokens,
       totalSupply: formatUnits(data.totalSupply, data.decimals),

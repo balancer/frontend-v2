@@ -10,6 +10,7 @@ import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import useApp from '../useApp';
 import { forChange } from '@/lib/utils';
+import useNetwork from '../useNetwork';
 
 type PoolsQueryResponse = {
   pools: DecoratedPool[];
@@ -31,9 +32,14 @@ export default function usePoolsQuery(
   const { injectTokens, dynamicDataLoading, prices } = useTokens();
   const { currency } = useUserSettings();
   const { appLoading } = useApp();
+  const { networkId } = useNetwork();
 
   // DATA
-  const queryKey = QUERY_KEYS.Pools.All(tokenList, filterOptions?.poolIds);
+  const queryKey = QUERY_KEYS.Pools.All(
+    networkId,
+    tokenList,
+    filterOptions?.poolIds
+  );
 
   // COMPUTED
   const enabled = computed(() => !appLoading.value);

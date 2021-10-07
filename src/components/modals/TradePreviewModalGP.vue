@@ -338,7 +338,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType, ref, watch } from 'vue';
-import { useStore } from 'vuex';
 import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 import { mapValues } from 'lodash';
@@ -358,6 +357,7 @@ import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import { bnum } from '@/lib/utils';
 
 import { FiatCurrency } from '@/constants/currency';
+import useUserSettings from '@/composables/useUserSettings';
 
 const PRICE_UPDATE_THRESHOLD = 0.02;
 
@@ -374,11 +374,13 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // COMPOSABLES
-    const store = useStore();
     const { t } = useI18n();
     const { fNum, toFiat } = useNumbers();
     const { tokens, approvalRequired } = useTokens();
     const { blockNumber } = useWeb3();
+    const { slippage } = useUserSettings();
+
+    // state
     const lastQuote = ref<TradeQuote | null>(
       props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
     );
@@ -389,9 +391,7 @@ export default defineComponent({
     const showSummaryInFiat = ref(false);
 
     // COMPUTED
-    const slippageRatePercent = computed(() =>
-      fNum(store.state.app.slippage, 'percent')
-    );
+    const slippageRatePercent = computed(() => fNum(slippage.value, 'percent'));
 
     const addressIn = computed(() => props.trading.tokenIn.value.address);
 
