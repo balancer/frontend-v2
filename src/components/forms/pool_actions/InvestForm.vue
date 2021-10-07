@@ -186,7 +186,7 @@
         </div>
         <BalBtn
           v-if="requireApproval"
-          :label="`${$t('approve')} ${symbolFor(requiredAllowances[0])}`"
+          :label="`${$t('approve')} ${symbolFor(requiredApprovals[0])}`"
           :loading="approving"
           :loading-label="$t('approving')"
           :disabled="!hasAmounts || !hasValidInputs"
@@ -259,7 +259,7 @@ import useFathom from '@/composables/useFathom';
 import { TOKENS } from '@/constants/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
@@ -338,9 +338,9 @@ export default defineComponent({
     const { amounts } = toRefs(data);
 
     const {
-      requiredAllowances,
-      approveNextAllowance,
-      approving
+      requiredApprovalState,
+      requiredApprovals,
+      approveNextAllowance
     } = useTokenApprovals(props.pool.tokenAddresses, amounts);
 
     // SERVICES
@@ -396,8 +396,12 @@ export default defineComponent({
 
     const requireApproval = computed(() => {
       if (!hasAmounts.value) return false;
-      return requiredAllowances.value.length > 0;
+      return requiredApprovals.value.length > 0;
     });
+
+    const approving = computed(
+      () => requiredApprovalState.value[requiredApprovals.value[0]].confirming
+    );
 
     const isProportional = computed(() => {
       return data.investType === FormTypes.proportional;
@@ -608,7 +612,7 @@ export default defineComponent({
         });
 
         txListener(tx, {
-          onTxConfirmed: async (tx: TransactionResponse) => {
+          onTxConfirmed: async (tx: TransactionReceipt) => {
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
@@ -699,7 +703,7 @@ export default defineComponent({
       hasAmounts,
       approving,
       requireApproval,
-      requiredAllowances,
+      requiredApprovals,
       tokenWeights,
       tokenBalance,
       amountRules,

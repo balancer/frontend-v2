@@ -171,7 +171,7 @@ import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
@@ -529,7 +529,7 @@ export default defineComponent({
         });
 
         txListener(tx, {
-          onTxConfirmed: async (tx: TransactionResponse) => {
+          onTxConfirmed: async (tx: TransactionReceipt) => {
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
