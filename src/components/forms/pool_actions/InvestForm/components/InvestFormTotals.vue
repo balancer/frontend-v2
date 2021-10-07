@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, toRefs } from 'vue';
 import useNumbers from '@/composables/useNumbers';
+import { InvestMath } from '../composables/useInvestFormMath';
 
 /**
  * TYPES
  */
 type Props = {
-  total: string;
-  priceImpact: number;
-  highPriceImpact: boolean;
-  maximized: boolean;
-  optimized: boolean;
+  investMath: InvestMath;
 };
 
 /**
@@ -28,16 +25,24 @@ const emit = defineEmits<{
  */
 const { fNum } = useNumbers();
 
+const {
+  fiatTotal,
+  priceImpact,
+  highPriceImpact,
+  maximized,
+  optimized
+} = toRefs(props.investMath);
+
 /**
  * COMPUTED
  */
 const priceImpactClasses = computed(() => ({
-  'bg-red-500 text-white divide-red-400': props.highPriceImpact
+  'bg-red-500 text-white divide-red-400': highPriceImpact.value
 }));
 
 const optimizeBtnClasses = computed(() => ({
-  'text-gradient': !props.highPriceImpact,
-  'text-red-500 px-2 py-1 bg-white rounded-lg': props.highPriceImpact
+  'text-gradient': !highPriceImpact.value,
+  'text-red-500 px-2 py-1 bg-white rounded-lg': highPriceImpact.value
 }));
 </script>
 
@@ -46,7 +51,7 @@ const optimizeBtnClasses = computed(() => ({
     <div class="data-table-row total-row">
       <div class="p-2">{{ $t('total') }}</div>
       <div class="data-table-number-col">
-        {{ fNum(total, 'usd') }}
+        {{ fNum(fiatTotal, 'usd') }}
         <div class="text-sm">
           <span v-if="maximized" class="text-gray-400 dark:text-gray-600">
             {{ $t('maxed') }}

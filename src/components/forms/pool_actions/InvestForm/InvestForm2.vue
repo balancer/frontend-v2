@@ -57,13 +57,10 @@ const investMath = useInvestFormMath(
 const {
   hasAmounts,
   fullAmounts,
-  fiatTotal,
   priceImpact,
   highPriceImpact,
   maximizeAmounts,
-  maximized,
   optimizeAmounts,
-  optimized,
   propSuggestions
 } = investMath;
 
@@ -121,11 +118,7 @@ function hint(index: number): string {
     />
 
     <InvestFormTotals
-      :total="fiatTotal"
-      :priceImpact="priceImpact"
-      :highPriceImpact="highPriceImpact"
-      :maximized="maximized"
-      :optimized="optimized"
+      :investMath="investMath"
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
@@ -164,8 +157,6 @@ function hint(index: number): string {
         v-if="showInvestPreview"
         :pool="pool"
         :investMath="investMath"
-        :fullAmounts="fullAmounts"
-        :priceImpact="priceImpact"
         @close="showInvestPreview = false"
       />
     </teleport>
