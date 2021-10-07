@@ -76,14 +76,14 @@ export const POOLS = {
     '0x67d27634e44793fe63c467035e31ea8635117cd4': 'stablePool', // Metastable
     '0x751dfdace1ad995ff13c927f6f761c6604532c79': 'stablePool', // Kovan
     '0x590e544e7ca956bb878f8c873e82e65550d67d2f': 'stablePool', // Kovan Metastable
-    '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'investmentPool', // Kovan Investment
+    '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'managedPool', // Kovan Managed
     '0x7dfdef5f355096603419239ce743bfaf1120312b': 'weightedPool', // Arbitrum Weighted
     '0xcf0a32bbef8f064969f21f7e02328fb577382018': 'weightedPool', // Arbitrum WeightedOracle
     '0x2433477a10fc5d31b9513c638f19ee85caed53fd': 'stablePool', // Arbitrum Stable
     '0xebfd5681977e38af65a7487dc70b8221d089ccad': 'stablePool', // Arbitrum MetaStable
     '0x751a0bc0e3f75b38e01cf25bfce7ff36de1c87de': 'liquidityBootstrappingPool', // Mainnet LBP
-    '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'investmentPool', // Mainnet Investment
-    '0x0f7bb7ce7b6ed9366f9b6b910adefe72dc538193': 'investmentPool', // Polygon Investment
-    '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'investmentPool' // Arbitrum Investment
+    '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'managedPool', // Mainnet Managed
+    '0x0f7bb7ce7b6ed9366f9b6b910adefe72dc538193': 'managedPool', // Polygon Managed
+    '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'managedPool' // Arbitrum Managed
   }
 };

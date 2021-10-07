@@ -3,12 +3,12 @@ import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { isInvestment, isStableLike } from '@/composables/usePool';
+import { isManaged, isStableLike } from '@/composables/usePool';
 
 export default class JoinParams {
   private exchange: PoolExchange;
   private isStableLikePool: boolean;
-  private isInvestmentPool: boolean;
+  private isManagedPool: boolean;
   private isSwapEnabled: boolean;
   private dataEncodeFn: (data: any) => string;
   private fromInternalBalance = false;
@@ -16,9 +16,9 @@ export default class JoinParams {
   constructor(exchange: PoolExchange) {
     this.exchange = exchange;
     this.isStableLikePool = isStableLike(exchange.pool.poolType);
-    this.isInvestmentPool = isInvestment(exchange.pool.poolType);
+    this.isManagedPool = isManaged(exchange.pool.poolType);
     this.isSwapEnabled =
-      this.isInvestmentPool && exchange.pool.onchain.swapEnabled;
+      this.isManagedPool && exchange.pool.onchain.swapEnabled;
     this.dataEncodeFn = this.isStableLikePool
       ? encodeJoinStablePool
       : encodeJoinWeightedPool;
@@ -63,10 +63,10 @@ export default class JoinParams {
     if (this.exchange.pool.onchain.totalSupply === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
-      // Investment Pools can only be joined proportionally if trading is halted
+      // Managed Pools can only be joined proportionally if trading is halted
       // This code assumes the UI has disabled non-proportional "exact in for BPT out"
       // joins in this case
-      if (this.isInvestmentPool && !this.isSwapEnabled) {
+      if (this.isManagedPool && !this.isSwapEnabled) {
         return this.dataEncodeFn({
           kind: 'AllTokensInForExactBPTOut',
           bptAmountOut: minimumBPT

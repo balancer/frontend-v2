@@ -232,7 +232,7 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStableLikePool, isInvestmentPool } = usePool(
+    const { isStableLikePool, managedPoolWithTradingHalted } = usePool(
       toRef(props, 'pool')
     );
 
@@ -408,8 +408,8 @@ export default defineComponent({
         }
       ];
 
-      // Investment pools with trading halted only allow proportional joins/exits
-      if (isInvestmentPool.value || props.pool.onchain.swapEnabled) {
+      // Managed pools with trading halted only allow proportional joins/exits
+      if (!managedPoolWithTradingHalted.value) {
         validTypes.push({
           label: t('singleToken'),
           max: singleMaxUSD.value,
