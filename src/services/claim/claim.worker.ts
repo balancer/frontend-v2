@@ -3,22 +3,20 @@ import { toWei, soliditySha3 } from 'web3-utils';
 import { loadTree } from '../../lib/utils/merkle';
 
 import registerPromiseWorker from 'promise-worker/register';
-import { ComputeClaimProofPayload, ClaimWorkerMessage } from './types';
+import { ClaimWorkerMessage, ComputeClaimProofPayload } from './types';
 
 registerPromiseWorker((message: ClaimWorkerMessage) => {
-  if (message.type === 'computeClaimProofs') {
+  if (message.type === 'computeClaimProof') {
     const payload = message.payload as ComputeClaimProofPayload;
-    const { tokenPendingClaims, account } = payload;
+    const { report, account, claim } = payload;
 
-    return tokenPendingClaims.claims.map(week => {
-      const claimBalance = week.amount;
-      const merkleTree = loadTree(tokenPendingClaims.reports[week.id]);
+    const claimBalance = claim.amount;
+    const merkleTree = loadTree(report);
 
-      const proof = merkleTree.getHexProof(
-        soliditySha3(account, toWei(claimBalance))
-      ) as string[];
+    const proof = merkleTree.getHexProof(
+      soliditySha3(account, toWei(claimBalance))
+    ) as string[];
 
-      return [parseInt(week.id), toWei(claimBalance), proof];
-    });
+    return [parseInt(claim.id), toWei(claimBalance), proof];
   }
 });

@@ -45,11 +45,12 @@ export type MultiTokenCurrentRewardsEstimate = {
 export type ClaimProofTuple = [number, string, string[]];
 
 export type ComputeClaimProofPayload = {
-  tokenPendingClaims: MultiTokenPendingClaims;
+  report: Report;
   account: string;
+  claim: Claim;
 };
 
-export type ClaimWorkerMessage = {
-  type: 'computeClaimProofs';
-  payload: ComputeClaimProofPayload;
+export type ClaimWorkerMessage<P = any> = {
+  type: 'computeClaimProof';
+  payload: P;
 };

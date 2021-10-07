@@ -4,28 +4,22 @@ import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { MerkleRedeem__factory } from '@balancer-labs/typechain';
 import { getAddress } from '@ethersproject/address';
-import PromiseWorker from 'promise-worker';
 
 import { networkId } from '@/composables/useNetwork';
 
 import { call, sendTransaction } from '@/lib/utils/balancer/web3';
-import { bnum, clone } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import configs from '@/lib/config';
 
 import { ipfsService } from '../ipfs/ipfs.service';
 
 import MultiTokenClaim from './MultiTokenClaim.json';
 
-// @ts-ignore
-import ClaimWorker from 'worker-loader!./claim.worker';
-
-const claimWorker = new ClaimWorker();
-const claimPromiseWorker = new PromiseWorker(claimWorker);
-
 import {
   ClaimProofTuple,
   ClaimStatus,
   ClaimWorkerMessage,
+  ComputeClaimProofPayload,
   MultiTokenCurrentRewardsEstimate,
   MultiTokenCurrentRewardsEstimateResponse,
   MultiTokenPendingClaims,
@@ -33,6 +27,8 @@ import {
   Snapshot,
   TokenClaimInfo
 } from './types';
+import { Claim } from '@/types';
+import { claimWorkerPool } from './claim-worker-pool';
 
 export class ClaimService {
   public async getMultiTokensPendingClaims(
@@ -191,19 +187,36 @@ export class ClaimService {
     }
   }
 
-  private computeClaimProofs(
+  private async computeClaimProofs(
     tokenPendingClaims: MultiTokenPendingClaims,
     account: string
-  ): Promise<ClaimProofTuple[]> {
-    const message: ClaimWorkerMessage = {
-      type: 'computeClaimProofs',
+  ): Promise<Promise<ClaimProofTuple[]>> {
+    return Promise.all(
+      tokenPendingClaims.claims.map(claim =>
+        this.computeClaimProof(
+          { ...tokenPendingClaims.reports[claim.id] },
+          account,
+          { ...claim }
+        )
+      )
+    );
+  }
+
+  private computeClaimProof(
+    report: Report,
+    account: string,
+    claim: Claim
+  ): Promise<ClaimProofTuple> {
+    const message: ClaimWorkerMessage<ComputeClaimProofPayload> = {
+      type: 'computeClaimProof',
       payload: {
         account,
-        tokenPendingClaims: clone(tokenPendingClaims)
+        report,
+        claim
       }
     };
 
-    return claimPromiseWorker.postMessage<ClaimProofTuple[]>(message);
+    return claimWorkerPool.worker.postMessage<ClaimProofTuple>(message);
   }
 
   private getTokenClaimsInfo() {
