@@ -83,10 +83,6 @@ function tokenWeight(address: string): number {
   return props.pool.onchain.tokens[address].weight;
 }
 
-function onAmountChange(newAmount: string, index: number): void {
-  state.amounts[index] = newAmount;
-}
-
 function propSuggestion(index: number): string {
   return bnum(propSuggestions.value[index]).gt(0)
     ? propSuggestions.value[index]
@@ -112,7 +108,6 @@ function hint(index: number): string {
       :hint="hint(i)"
       class="mb-4"
       fixedToken
-      @update:amount="onAmountChange($event, i)"
     />
 
     <InvestFormTotals
