@@ -1,13 +1,30 @@
-<script setup lang="ts">
+<script lang="ts">
 /**
  * TYPES
  */
-export type StepState = 'todo' | 'active' | 'pending' | 'success';
+export enum StepState {
+  Todo,
+  Active,
+  WalletOpen,
+  Pending,
+  Success
+}
+
 export type Step = {
   tooltip: string;
   state: StepState;
 };
+</script>
 
+<script setup lang="ts">
+import { computed } from 'vue';
+import useWeb3 from '@/services/web3/useWeb3';
+import { getConnectorLogo } from '@/services/web3/web3.plugin';
+const stepState = StepState;
+
+/**
+ * TYPES
+ */
 type Props = {
   steps: Step[];
 };
@@ -17,23 +34,36 @@ type Props = {
  */
 withDefaults(defineProps<Props>(), {
   steps: () => [
-    { tooltip: 'You did this', state: 'success' },
-    { tooltip: 'This is pending', state: 'pending' },
-    { tooltip: 'Do this now', state: 'active' },
-    { tooltip: 'Do this next', state: 'todo' }
+    { tooltip: 'You did this', state: StepState.Success },
+    { tooltip: 'Wallet is tiggered', state: StepState.WalletOpen },
+    { tooltip: 'This is pending', state: StepState.Pending },
+    { tooltip: 'Do this now', state: StepState.Active },
+    { tooltip: 'Do this next', state: StepState.Todo }
   ]
 });
+
+/**
+ * COMPOSABLES
+ */
+const { connector } = useWeb3();
+
+/**
+ * COMPUTED
+ */
+const walletLogo = computed((): string => getConnectorLogo(connector.value.id));
 
 /**
  * METHODS
  */
 function stateClasses(state: StepState): string {
   switch (state) {
-    case 'success':
+    case StepState.Success:
       return 'border-green-500 text-green-500';
-    case 'pending':
+    case StepState.Pending:
       return 'border-none text-yellow-500';
-    case 'active':
+    case StepState.Active:
+      return 'border-purple-500 text-gradient';
+    case StepState.WalletOpen:
       return 'border-purple-500 text-gradient';
     default:
       return '';
@@ -48,8 +78,13 @@ function stateClasses(state: StepState): string {
       <BalTooltip :text="step.tooltip" width="44" textCenter>
         <template v-slot:activator>
           <div :class="['step', stateClasses(step.state)]">
-            <BalIcon v-if="step.state === 'success'" name="check" />
-            <template v-else-if="step.state === 'pending'">
+            <BalIcon v-if="step.state === stepState.Success" name="check" />
+            <img
+              v-else-if="step.state === stepState.WalletOpen"
+              :src="walletLogo"
+              class="w-4 h-4"
+            />
+            <template v-else-if="step.state === stepState.Pending">
               <span
                 class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
               >
