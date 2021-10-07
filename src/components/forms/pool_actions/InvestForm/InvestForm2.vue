@@ -9,7 +9,6 @@ import useInvestFormMath from './composables/useInvestFormMath';
 import { isRequired } from '@/lib/utils/validations';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
