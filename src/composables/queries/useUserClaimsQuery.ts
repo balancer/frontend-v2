@@ -16,6 +16,7 @@ import useNetwork from '@/composables/useNetwork';
 type UserClaimsQueryResponse = {
   multiTokenPendingClaims: MultiTokenPendingClaims[];
   multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate[];
+  timestamp: string | null;
 };
 
 export default function useUserClaimsQuery(
@@ -45,7 +46,8 @@ export default function useUserClaimsQuery(
 
     return {
       multiTokenPendingClaims,
-      multiTokenCurrentRewardsEstimate
+      multiTokenCurrentRewardsEstimate: multiTokenCurrentRewardsEstimate.data,
+      timestamp: multiTokenCurrentRewardsEstimate.timestamp
     };
   };
 

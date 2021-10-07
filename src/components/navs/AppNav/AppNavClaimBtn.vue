@@ -2,8 +2,8 @@
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getAddress } from 'ethers/lib/utils';
-// import { differenceInSeconds } from 'date-fns';
-// import { useIntervalFn } from '@vueuse/core';
+import { differenceInSeconds } from 'date-fns';
+import { useIntervalFn } from '@vueuse/core';
 
 import useNumbers from '@/composables/useNumbers';
 import useUserClaimsQuery from '@/composables/queries/useUserClaimsQuery';
@@ -12,7 +12,7 @@ import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import useTokens from '@/composables/useTokens';
 import { networkId } from '@/composables/useNetwork';
-// import { oneSecondInMs } from '@/composables/useTime';
+import { oneSecondInMs } from '@/composables/useTime';
 
 import { bnum } from '@/lib/utils';
 
@@ -47,7 +47,7 @@ const tabs = [
 
 const activeTab = ref(tabs[0].value);
 const isClaiming = ref(false);
-// const rewardsEstimateSinceTimestamp = ref('0');
+const elapstedTimeSinceEstimateTimestamp = ref(0);
 
 // COMPOSABLES
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -137,14 +137,19 @@ const currentEstimateClaimableTokens = computed<ClaimableToken[]>(() => {
     userClaims.value.multiTokenCurrentRewardsEstimate.length > 0
   ) {
     return userClaims.value.multiTokenCurrentRewardsEstimate.map(
-      ({ token, rewards }) => ({
-        token,
-        symbol: tokens.value[token]?.symbol,
-        amount: rewards,
-        fiatValue: bnum(rewards)
-          .times(priceFor(token))
-          .toString()
-      })
+      ({ token, rewards, velocity }) => {
+        const rewardsSinceTimestamp = bnum(velocity).times(
+          elapstedTimeSinceEstimateTimestamp.value
+        );
+        const totalRewards = bnum(rewards).plus(rewardsSinceTimestamp);
+
+        return {
+          token,
+          symbol: tokens.value[token]?.symbol,
+          amount: totalRewards.toString(),
+          fiatValue: totalRewards.times(priceFor(token)).toString()
+        };
+      }
     );
   }
   return [BALTokenPlaceholder.value];
@@ -180,28 +185,15 @@ const hasCurrentEstimateClaimableTokens = computed(() =>
   )
 );
 
-/*
-TODO: support "live" rewards
-
 useIntervalFn(async () => {
-  if (
-    userClaims.value != null &&
-    userClaims.value.currentRewardsEstimate != null
-  ) {
+  if (userClaims.value != null && userClaims.value.timestamp != null) {
     const diffInSeconds = differenceInSeconds(
       new Date(),
-      new Date(userClaims.value.currentRewardsEstimate.timestamp)
+      new Date(userClaims.value.timestamp)
     );
-    rewardsEstimateSinceTimestamp.value = bnum(diffInSeconds)
-      .times(userClaims.value.currentRewardsEstimate.velocity)
-      .toString();
+    elapstedTimeSinceEstimateTimestamp.value = diffInSeconds;
   }
 }, oneSecondInMs);
-
-watch(account, () => {
-  rewardsEstimateSinceTimestamp.value = '0';
-});
-*/
 
 watch(isMismatchedNetwork, () => {
   userClaimsQuery.refetch.value();

@@ -39,7 +39,6 @@ export type MultiTokenCurrentRewardsEstimateResponse = {
 export type MultiTokenCurrentRewardsEstimate = {
   rewards: string;
   velocity: string;
-  timestamp: string;
   token: string;
 };
 

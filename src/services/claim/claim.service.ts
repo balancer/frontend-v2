@@ -101,7 +101,10 @@ export class ClaimService {
 
   public async getMultiTokensCurrentRewardsEstimate(
     account: string
-  ): Promise<MultiTokenCurrentRewardsEstimate[]> {
+  ): Promise<{
+    data: MultiTokenCurrentRewardsEstimate[];
+    timestamp: string | null;
+  }> {
     try {
       const response = await axios.get<
         MultiTokenCurrentRewardsEstimateResponse
@@ -144,18 +147,23 @@ export class ClaimService {
             multiTokenCurrentRewardsEstimate.push({
               rewards,
               velocity,
-              timestamp: response.data.result.current_timestamp,
               token: getAddress(token)
             });
           }
         }
 
-        return multiTokenCurrentRewardsEstimate;
+        return {
+          data: multiTokenCurrentRewardsEstimate,
+          timestamp: response.data.result.current_timestamp
+        };
       }
     } catch (e) {
       console.log('[Claim] Current Rewards Estimate Error', e);
     }
-    return [];
+    return {
+      data: [],
+      timestamp: null
+    };
   }
 
   public async multiTokenClaimRewards(
