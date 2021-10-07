@@ -110,15 +110,6 @@
         v-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-1 lg:px-0"
       >
-        <BalCard class="mb-4">
-          <BalBtn
-            tag="router-link"
-            :to="{ name: 'poolInvest', params: { id: $route.params.id } }"
-            block
-          >
-            Invest
-          </BalBtn>
-        </BalCard>
         <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-96" />
         <PoolActionsCard
           v-else-if="!noInitLiquidity"
