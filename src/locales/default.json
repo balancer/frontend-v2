@@ -92,6 +92,7 @@
     "emptyInvestmentPools": "You have not joined any Balancer investment pools.",
     "emptyInvestmentPoolsLink": "View investment pools ->",
     "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>investment, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
+    "etherscan": "Etherscan",
     "exceedsBalance": "Exceeds balance",
     "enterAmount": "Enter amount",
     "investmentPoolsAbout": "Stake your assets to get $BAL tokens for participating in Balancer V2 liquidity mining.",
@@ -126,7 +127,6 @@
     "insufficientLiquidity": "Not enough liquidity",
     "insufficientLiquidityDetailed": "Try trading with a smaller amount or check back when liquidity for this pool has increased.",
     "invest": "Invest",
-    "investment": "Investment",
     "inYourWallet": "In your wallet:",
     "time": "Time",
     "timeAgo": "{0} ago",
@@ -147,6 +147,19 @@
     "investmentPools": "Investment pools",
     "investmentSettled": "Your investment has settled",
     "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",
+    "investmentTooltip": "Confirm investment into this pool",
+    "investment": {
+        "label": "Investment",
+        "preview": {
+            "tooltips": {
+                "approval": "You must approve {0} to invest this token on Balancer. Approvals are required once per token, per wallet."
+            },
+            "loadingLabel": {
+                "approval": "Confirm approval in wallet",
+                "investment": "Confirm investment in wallet"
+            }
+        }
+    },
     "isRequired": "is required",
     "language": "Language",
     "learnMore": "Learn more",
@@ -245,6 +258,7 @@
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
     "receipt": "Receipt",
     "recentActivityTitle": "Recent activity",
+    "returnToPool": "Return to pool",
     "noRecentActivity": "Your recent activity will appear here…",
     "switchNetwork": "Switch Network",
     "tokenPills": {
