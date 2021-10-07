@@ -56,8 +56,6 @@ const investMath = useInvestFormMath(
 
 const {
   hasAmounts,
-  fullAmounts,
-  priceImpact,
   highPriceImpact,
   maximizeAmounts,
   optimizeAmounts,

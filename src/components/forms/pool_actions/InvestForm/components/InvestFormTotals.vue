@@ -2,6 +2,7 @@
 import { computed, toRefs } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import { InvestMath } from '../composables/useInvestFormMath';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -24,9 +25,11 @@ const emit = defineEmits<{
  * COMPOSABLES
  */
 const { fNum } = useNumbers();
+const { isWalletReady } = useWeb3();
 
 const {
   fiatTotal,
+  hasNoBalances,
   priceImpact,
   highPriceImpact,
   maximized,
@@ -52,7 +55,7 @@ const optimizeBtnClasses = computed(() => ({
       <div class="p-2">{{ $t('total') }}</div>
       <div class="data-table-number-col">
         {{ fNum(fiatTotal, 'usd') }}
-        <div class="text-sm">
+        <div v-if="isWalletReady && !hasNoBalances" class="text-sm">
           <span v-if="maximized" class="text-gray-400 dark:text-gray-600">
             {{ $t('maxed') }}
           </span>
@@ -72,7 +75,7 @@ const optimizeBtnClasses = computed(() => ({
         <div>
           {{ fNum(priceImpact, 'percent') }}
 
-          <BalTooltip>
+          <BalTooltip :text="$t('customAmountsTip')">
             <template v-slot:activator>
               <BalIcon
                 v-if="highPriceImpact"
@@ -87,11 +90,13 @@ const optimizeBtnClasses = computed(() => ({
                 class="text-gray-400 -mb-px ml-1"
               />
             </template>
-            <div v-html="$t('customAmountsTip')" class="text-black w-52" />
           </BalTooltip>
         </div>
 
-        <div class="text-sm font-semibold">
+        <div
+          v-if="isWalletReady && !hasNoBalances"
+          class="text-sm font-semibold"
+        >
           <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
             {{ $t('optimized') }}
           </span>

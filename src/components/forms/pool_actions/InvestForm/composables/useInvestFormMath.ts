@@ -21,6 +21,8 @@ export type InvestMath = {
   optimized: Ref<boolean>;
   propSuggestions: Ref<string[]>;
   bptOut: Ref<string>;
+  hasZeroBalance: Ref<boolean>;
+  hasNoBalances: Ref<boolean>;
   // methods
   maximizeAmounts: () => void;
   optimizeAmounts: () => void;
@@ -111,6 +113,18 @@ export default function useInvestFormMath(
     return minusSlippage(_bptOut, pool.value.onchain.decimals);
   });
 
+  const poolTokenBalances = computed((): string[] =>
+    tokenAddresses.value.map(token => balanceFor(token))
+  );
+
+  const hasZeroBalance = computed((): boolean =>
+    poolTokenBalances.value.map(balance => bnum(balance).eq(0)).includes(true)
+  );
+
+  const hasNoBalances = computed((): boolean =>
+    poolTokenBalances.value.every(balance => bnum(balance).eq(0))
+  );
+
   /**
    * METHODS
    */
@@ -159,6 +173,8 @@ export default function useInvestFormMath(
     optimized,
     propSuggestions,
     bptOut,
+    hasZeroBalance,
+    hasNoBalances,
     // methods
     maximizeAmounts,
     optimizeAmounts
