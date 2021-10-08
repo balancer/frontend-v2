@@ -11,6 +11,7 @@
   "publicRpc": "https://arb1.arbitrum.io/rpc",
   "loggingRpc": "https://arb-mainnet.g.alchemy.com/v2/ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
   "explorer": "https://arbiscan.io",
+  "explorerName": "Arbiscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
