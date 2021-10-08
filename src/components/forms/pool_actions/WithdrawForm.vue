@@ -231,9 +231,7 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStableLikePool, isInvestmentPool } = usePool(
-      toRef(props, 'pool')
-    );
+    const { isStableLikePool, isManagedPool } = usePool(toRef(props, 'pool'));
 
     // SERVICES
     const poolExchange = new PoolExchange(toRef(props, 'pool'));
@@ -406,7 +404,7 @@ export default defineComponent({
       ];
 
       // Investment pools with trading halted only allow proportional joins/exits
-      if (isInvestmentPool.value || props.pool.onchain.swapEnabled) {
+      if (isManagedPool.value || props.pool.onchain.swapEnabled) {
         validTypes.push({
           label: t('singleToken'),
           max: singleMaxUSD.value,

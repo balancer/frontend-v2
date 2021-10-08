@@ -62,7 +62,7 @@ export default class JoinParams {
       // Investment Pools can only be joined proportionally if trading is halted
       // This code assumes the UI has disabled non-proportional "exact in for BPT out"
       // joins in this case
-      if (this.isInvestmentPool && !this.isSwapEnabled) {
+      if (this.isManagedPool && !this.isSwapEnabled) {
         return this.dataEncodeFn({
           kind: 'AllTokensInForExactBPTOut',
           bptAmountOut: minimumBPT

@@ -68,7 +68,7 @@ const {
   isMismatchedNetwork
 } = useWeb3();
 
-const { investmentPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
+const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -84,7 +84,7 @@ const hasAcceptedHighPriceImpact = computed(() =>
 );
 
 const forceProportionalInputs = computed(
-  () => investmentPoolWithTradingHalted.value
+  () => managedPoolWithTradingHalted.value
 );
 
 /**
