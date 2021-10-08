@@ -102,7 +102,7 @@ function handleAmountChange(value: string, index: number): void {
 
 function tokenWeight(address: string): number {
   if (isStableLike(props.pool.poolType)) return 0;
-  return props.pool.onchain.tokens[address].weight;
+  return Number(props.pool.onchain.tokens[address].weight);
 }
 
 function propAmountFor(index: number): string {
