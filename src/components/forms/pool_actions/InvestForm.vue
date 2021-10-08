@@ -332,7 +332,7 @@ export default defineComponent({
       isStableLikePool,
       isWethPool,
       isWstETHPool,
-      investmentPoolWithTradingHalted
+      managedPoolWithTradingHalted
     } = usePool(toRef(props, 'pool'));
 
     const { amounts } = toRefs(data);
@@ -485,8 +485,8 @@ export default defineComponent({
         }
       ];
 
-      // Investment pools with trading halted only allow proportional joins/exits
-      if (!investmentPoolWithTradingHalted.value) {
+      // Managed pools with trading halted only allow proportional joins/exits
+      if (!managedPoolWithTradingHalted.value) {
         validTypes.push({
           label: t('customAmounts'),
           max: balanceMaxUSD.value,
@@ -585,7 +585,7 @@ export default defineComponent({
       try {
         data.loading = true;
         await calcMinBptOut();
-        const _bptOut = investmentPoolWithTradingHalted.value
+        const _bptOut = managedPoolWithTradingHalted.value
           ? bptOut.value
           : minBptOut.value;
 
