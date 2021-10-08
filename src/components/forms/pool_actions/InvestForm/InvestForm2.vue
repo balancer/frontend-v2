@@ -121,8 +121,10 @@ function hint(index: number): string {
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
-      title="Trading halted - proportional investments only"
-      description="A trading halt has been issued by the manager of this pool. For your safety, while the trading halt is in effect, you may only invest in proportional amounts."
+      :title="$t('investment.warning.managedPoolTradingHaulted.title')"
+      :description="
+        $t('investment.warning.managedPoolTradingHaulted.description')
+      "
       class="mb-4"
     />
 
