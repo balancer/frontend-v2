@@ -403,7 +403,7 @@ export default defineComponent({
         }
       ];
 
-      // Investment pools with trading halted only allow proportional joins/exits
+      // Managed pools with trading halted only allow proportional joins/exits
       if (isManagedPool.value || props.pool.onchain.swapEnabled) {
         validTypes.push({
           label: t('singleToken'),

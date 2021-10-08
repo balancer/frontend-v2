@@ -485,7 +485,7 @@ export default defineComponent({
         }
       ];
 
-      // Investment pools with trading halted only allow proportional joins/exits
+      // Managed pools with trading halted only allow proportional joins/exits
       if (!managedPoolWithTradingHalted.value) {
         validTypes.push({
           label: t('customAmounts'),
