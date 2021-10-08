@@ -31,7 +31,7 @@ export default class ConfigService {
         this.getNetworkConfig(NETWORK).keys.infura,
       ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
       PORTIS_DAPP_ID:
-        process.env.PORTIS_DAPP_ID || '3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe'
+        process.env.VUE_APP_PORTIS_DAPP_ID || '3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe'
     };
   }
 
