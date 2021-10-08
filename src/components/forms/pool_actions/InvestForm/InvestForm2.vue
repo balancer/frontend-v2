@@ -139,7 +139,7 @@ function hint(index: number): string {
         :label="$t('connectWallet')"
         color="gradient"
         block
-        @click.prevent="toggleWalletSelectModal"
+        @click="toggleWalletSelectModal"
       />
       <BalBtn
         v-else
@@ -147,7 +147,7 @@ function hint(index: number): string {
         color="gradient"
         :disabled="!hasAmounts || !hasValidInputs || isMismatchedNetwork"
         block
-        @click.prevent="showInvestPreview = true"
+        @click="showInvestPreview = true"
       />
     </div>
 

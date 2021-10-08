@@ -230,56 +230,58 @@ async function submit(): Promise<void> {
 </script>
 
 <template>
-  <BalHorizSteps
-    v-if="actions.length > 1 && !investmentState.confirmed"
-    :steps="steps"
-    class="flex justify-center mt-4"
-  />
-  <BalBtn
-    v-if="!investmentState.confirmed"
-    color="gradient"
-    class="mt-4"
-    :disabled="currentAction.pending"
-    :loading="currentAction.pending"
-    :loading-label="currentAction.loadingLabel"
-    block
-    @click="currentAction.promise()"
-  >
-    {{ currentAction.label }}
-  </BalBtn>
-  <template v-else>
-    <div
-      class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
-    >
-      <div class="flex items-center">
-        <BalIcon name="clock" />
-        <span class="ml-2">
-          {{ investmentState.confirmedAt }}
-        </span>
-      </div>
-      <BalLink
-        :href="explorerLink"
-        external
-        noStyle
-        class="group flex items-center"
-      >
-        {{ networkConfig.explorerName }}
-        <BalIcon
-          name="arrow-up-right"
-          size="sm"
-          class="ml-px group-hover:text-pink-500 transition-colors"
-        />
-      </BalLink>
-    </div>
+  <div>
+    <BalHorizSteps
+      v-if="actions.length > 1 && !investmentState.confirmed"
+      :steps="steps"
+      class="flex justify-center"
+    />
     <BalBtn
-      tag="router-link"
-      :to="{ name: 'pool', params: { id: route.params.id } }"
-      color="gray"
-      outline
+      v-if="!investmentState.confirmed"
+      color="gradient"
+      class="mt-4"
+      :disabled="currentAction.pending"
+      :loading="currentAction.pending"
+      :loading-label="currentAction.loadingLabel"
       block
-      class="mt-2"
+      @click="currentAction.promise()"
     >
-      {{ $t('returnToPool') }}
+      {{ currentAction.label }}
     </BalBtn>
-  </template>
+    <template v-else>
+      <div
+        class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
+      >
+        <div class="flex items-center">
+          <BalIcon name="clock" />
+          <span class="ml-2">
+            {{ investmentState.confirmedAt }}
+          </span>
+        </div>
+        <BalLink
+          :href="explorerLink"
+          external
+          noStyle
+          class="group flex items-center"
+        >
+          {{ networkConfig.explorerName }}
+          <BalIcon
+            name="arrow-up-right"
+            size="sm"
+            class="ml-px group-hover:text-pink-500 transition-colors"
+          />
+        </BalLink>
+      </div>
+      <BalBtn
+        tag="router-link"
+        :to="{ name: 'pool', params: { id: route.params.id } }"
+        color="gray"
+        outline
+        block
+        class="mt-2"
+      >
+        {{ $t('returnToPool') }}
+      </BalBtn>
+    </template>
+  </div>
 </template>

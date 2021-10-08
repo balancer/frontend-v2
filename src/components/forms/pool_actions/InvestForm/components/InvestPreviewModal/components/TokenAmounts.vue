@@ -49,7 +49,7 @@ function amountShare(address: string): string {
       class="relative"
     >
       <div class="token-amount-table-content">
-        <BalAsset :iconURI="tokenMap[address].logoURI" size="36" />
+        <BalAsset :address="address" :size="36" />
         <div class="flex flex-col ml-3">
           <div class="font-medium text-lg">
             <span class="font-numeric">

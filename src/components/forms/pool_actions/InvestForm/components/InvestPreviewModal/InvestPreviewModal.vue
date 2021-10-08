@@ -138,7 +138,7 @@ function hasAmount(index: number): boolean {
     <InvestActions
       :pool="pool"
       :investMath="investMath"
-      class="my-4 flex justify-center"
+      class="mt-4"
       @success="investmentConfirmed = true"
     />
   </BalModal>
