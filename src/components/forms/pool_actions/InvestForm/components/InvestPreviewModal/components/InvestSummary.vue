@@ -173,7 +173,7 @@ function weeklyYieldForAPR(apr: string): string {
 }
 
 .summary-table-row {
-  @apply grid grid-cols-2 flex items-center px-2 py-1;
+  @apply grid grid-cols-2 px-2 py-1;
 }
 
 .summary-table-label {
