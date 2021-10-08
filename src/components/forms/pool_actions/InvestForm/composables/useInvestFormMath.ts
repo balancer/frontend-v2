@@ -19,7 +19,7 @@ export type InvestMath = {
   highPriceImpact: Ref<boolean>;
   maximized: Ref<boolean>;
   optimized: Ref<boolean>;
-  propSuggestions: Ref<string[]>;
+  proportionalAmounts: Ref<string[]>;
   bptOut: Ref<string>;
   hasZeroBalance: Ref<boolean>;
   hasNoBalances: Ref<boolean>;
@@ -35,7 +35,7 @@ export default function useInvestFormMath(
   /**
    * STATE
    */
-  const propSuggestions = ref<string[]>([]);
+  const proportionalAmounts = ref<string[]>([]);
 
   /**
    * COMPOSABLES
@@ -157,7 +157,7 @@ export default function useInvestFormMath(
         changedIndex,
         'send'
       );
-      propSuggestions.value = send;
+      proportionalAmounts.value = send;
     }
   });
 
@@ -171,7 +171,7 @@ export default function useInvestFormMath(
     highPriceImpact,
     maximized,
     optimized,
-    propSuggestions,
+    proportionalAmounts,
     bptOut,
     hasZeroBalance,
     hasNoBalances,

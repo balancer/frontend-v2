@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { reactive, toRef, computed, ref } from 'vue';
+import { reactive, toRef, computed, ref, nextTick } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { isStableLike } from '@/composables/usePool';
+import { isStableLike, usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
@@ -59,7 +59,7 @@ const {
   highPriceImpact,
   maximizeAmounts,
   optimizeAmounts,
-  propSuggestions
+  proportionalAmounts
 } = investMath;
 
 const {
@@ -67,6 +67,8 @@ const {
   toggleWalletSelectModal,
   isMismatchedNetwork
 } = useWeb3();
+
+const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -81,27 +83,51 @@ const hasAcceptedHighPriceImpact = computed(() =>
   highPriceImpact.value ? state.highPriceImpactAccepted : true
 );
 
+const forceProportionalInputs = computed(
+  () => managedPoolWithTradingHalted.value
+);
+
 /**
  * METHODS
  */
+function handleAmountChange(value: string, index: number): void {
+  state.amounts[index] = value;
+
+  nextTick(() => {
+    if (forceProportionalInputs.value) {
+      state.amounts = [...proportionalAmounts.value];
+    }
+  });
+}
+
 function tokenWeight(address: string): number {
   if (isStableLike(props.pool.poolType)) return 0;
   return Number(props.pool.onchain.tokens[address].weight);
 }
 
-function propSuggestion(index: number): string {
-  return bnum(propSuggestions.value[index]).gt(0)
-    ? propSuggestions.value[index]
+function propAmountFor(index: number): string {
+  return bnum(proportionalAmounts.value[index]).gt(0)
+    ? proportionalAmounts.value[index]
     : '0.0';
 }
 
 function hint(index: number): string {
-  return bnum(propSuggestion(index)).gt(0) ? t('proportionalSuggestion') : '';
+  return bnum(propAmountFor(index)).gt(0) ? t('proportionalSuggestion') : '';
 }
 </script>
 
 <template>
   <div>
+    <BalAlert
+      v-if="forceProportionalInputs"
+      type="warning"
+      :title="$t('investment.warning.managedPoolTradingHaulted.title')"
+      :description="
+        $t('investment.warning.managedPoolTradingHaulted.description')
+      "
+      class="mb-4"
+    />
+
     <TokenInput
       v-for="(tokenAddress, i) in pool.tokenAddresses"
       :key="tokenAddress"
@@ -110,10 +136,11 @@ function hint(index: number): string {
       :weight="tokenWeight(tokenAddress)"
       v-model:amount="state.amounts[i]"
       v-model:isValid="state.validInputs[i]"
-      :hintAmount="propSuggestion(i)"
+      :hintAmount="propAmountFor(i)"
       :hint="hint(i)"
       class="mb-4"
       fixedToken
+      @update:amount="handleAmountChange($event, i)"
     />
 
     <InvestFormTotals
