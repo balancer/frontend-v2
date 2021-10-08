@@ -3,7 +3,6 @@ import { reactive, toRef, computed, ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { isStableLike } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
 import useInvestFormMath from './composables/useInvestFormMath';
 import { isRequired } from '@/lib/utils/validations';
@@ -114,12 +113,6 @@ function hint(index: number): string {
       :hint="hint(i)"
       class="mb-4"
       fixedToken
-    />
-
-    <InvestFormTotals
-      :investMath="investMath"
-      @maximize="maximizeAmounts"
-      @optimize="optimizeAmounts"
     />
 
     <div v-if="highPriceImpact" class="border rounded-lg p-4 pb-2 mt-4">
