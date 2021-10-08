@@ -115,7 +115,9 @@ function weeklyYieldForAPR(apr: string): string {
         <div class="summary-table-number">
           {{ fNum(totalWeeklyYield, currency) }}
           <BalTooltip icon-size="sm" width="72" class="ml-2" noPad>
-            <div class="p-2 bg-gray-50 border-b">
+            <div
+              class="p-2 bg-gray-50 dark:bg-gray-700 rounded-t-lg border-b dark:border-gray-700"
+            >
               <span class="text-sm" v-text="$t('yieldEarnings')" />
               <span class="ml-1 text-gray-500">
                 ({{ $t('basedOnLast24h') }})
