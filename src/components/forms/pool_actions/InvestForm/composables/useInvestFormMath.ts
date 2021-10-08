@@ -43,7 +43,7 @@ export default function useInvestFormMath(
   const { toFiat } = useNumbers();
   const { tokens, balances, balanceFor } = useTokens();
   const { minusSlippage } = useSlippage();
-  const { investmentPoolWithTradingHalted } = usePool(pool);
+  const { managedPoolWithTradingHalted } = usePool(pool);
   const { currency } = useUserSettings();
 
   /**
@@ -109,7 +109,7 @@ export default function useInvestFormMath(
       .toString();
     _bptOut = formatUnits(_bptOut, pool.value.onchain.decimals);
 
-    if (investmentPoolWithTradingHalted.value) return _bptOut;
+    if (managedPoolWithTradingHalted.value) return _bptOut;
     return minusSlippage(_bptOut, pool.value.onchain.decimals);
   });
 

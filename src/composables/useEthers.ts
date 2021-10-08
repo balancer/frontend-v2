@@ -13,7 +13,7 @@ import useTransactions from './useTransactions';
 import useTokens from './useTokens';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { oneSecondInMs } from './useTime';
+import { toJsTimestamp } from './useTime';
 
 type ConfirmedTxCallback = (receipt: TransactionReceipt) => void;
 type FailedTxCallback = (txData: TransactionResponse) => void;
@@ -30,7 +30,8 @@ export default function useEthers() {
     const block = await rpcProviderService.jsonProvider.getBlock(
       receipt.blockNumber
     );
-    return new Date(block.timestamp * oneSecondInMs);
+
+    return new Date(toJsTimestamp(block.timestamp));
   }
 
   async function txListener(

@@ -20,6 +20,10 @@ export function dateTimeLabelFor(date: Date): string {
   });
 }
 
+export function toJsTimestamp(unixTimestamp: number): number {
+  return unixTimestamp * oneSecondInMs;
+}
+
 export default function useTime() {
   return {
     oneSecondInMs,

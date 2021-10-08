@@ -3,14 +3,14 @@ import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { isInvestment, isStableLike } from '@/composables/usePool';
 import { Ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { isManaged, isStableLike } from '@/composables/usePool';
 
 export default class JoinParams {
   private pool: Ref<FullPool>;
   private isStableLikePool: boolean;
-  private isInvestmentPool: boolean;
+  private isManagedPool: boolean;
   private isSwapEnabled: boolean;
   private dataEncodeFn: (data: any) => string;
   private fromInternalBalance = false;
@@ -18,9 +18,9 @@ export default class JoinParams {
   constructor(exchange: PoolExchange) {
     this.pool = exchange.pool;
     this.isStableLikePool = isStableLike(this.pool.value.poolType);
-    this.isInvestmentPool = isInvestment(this.pool.value.poolType);
+    this.isManagedPool = isManaged(this.pool.value.poolType);
     this.isSwapEnabled =
-      this.isInvestmentPool && this.pool.value.onchain.swapEnabled;
+      this.isManagedPool && this.pool.value.onchain.swapEnabled;
     this.dataEncodeFn = this.isStableLikePool
       ? encodeJoinStablePool
       : encodeJoinWeightedPool;

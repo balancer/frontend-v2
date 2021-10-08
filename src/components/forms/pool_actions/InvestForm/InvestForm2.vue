@@ -117,7 +117,7 @@ function hint(index: number): string {
 </script>
 
 <template>
-  <BalForm ref="investForm">
+  <div>
     <BalAlert
       v-if="forceProportionalInputs"
       type="warning"
@@ -164,7 +164,7 @@ function hint(index: number): string {
         :label="$t('connectWallet')"
         color="gradient"
         block
-        @click.prevent="toggleWalletSelectModal"
+        @click="toggleWalletSelectModal"
       />
       <BalBtn
         v-else
@@ -172,7 +172,7 @@ function hint(index: number): string {
         color="gradient"
         :disabled="!hasAmounts || !hasValidInputs || isMismatchedNetwork"
         block
-        @click.prevent="showInvestPreview = true"
+        @click="showInvestPreview = true"
       />
     </div>
 
@@ -184,5 +184,5 @@ function hint(index: number): string {
         @close="showInvestPreview = false"
       />
     </teleport>
-  </BalForm>
+  </div>
 </template>

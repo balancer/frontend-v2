@@ -6,9 +6,10 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import InvestSummary from './components/InvestSummary.vue';
-import TokenInputs from './components/TokenInputs.vue';
 import InvestActions from './components/InvestActions.vue';
+import TokenAmounts from './components/TokenAmounts.vue';
 import { InvestMath } from '../../composables/useInvestFormMath';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -39,6 +40,7 @@ const investmentConfirmed = ref(false);
 /**
  * COMPOSABLES
  */
+const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
 const { fullAmounts, priceImpact } = toRefs(props.investMath);
@@ -47,7 +49,9 @@ const { fullAmounts, priceImpact } = toRefs(props.investMath);
  * COMPUTED
  */
 const title = computed((): string =>
-  investmentConfirmed.value ? 'Investment confirmed' : 'Investment preview'
+  investmentConfirmed.value
+    ? t('investment.preview.titles.confirmed')
+    : t('investment.preview.titles.default')
 );
 
 const tokenAddresses = computed((): string[] => props.pool.tokenAddresses);
@@ -118,7 +122,7 @@ function hasAmount(index: number): boolean {
       </div>
     </template>
 
-    <TokenInputs
+    <TokenAmounts
       :amountMap="amountMap"
       :tokenMap="tokenMap"
       :fiatAmountMap="fiatAmountMap"
@@ -134,7 +138,7 @@ function hasAmount(index: number): boolean {
     <InvestActions
       :pool="pool"
       :investMath="investMath"
-      class="my-4 flex justify-center"
+      class="mt-4"
       @success="investmentConfirmed = true"
     />
   </BalModal>

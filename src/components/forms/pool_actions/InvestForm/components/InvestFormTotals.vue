@@ -119,7 +119,7 @@ const optimizeBtnClasses = computed(() => ({
 }
 
 .data-table-row {
-  @apply grid grid-cols-4 divide-x dark:divide-gray-700 flex items-center;
+  @apply grid grid-cols-4 divide-x dark:divide-gray-700;
 }
 
 .data-table-number-col {
