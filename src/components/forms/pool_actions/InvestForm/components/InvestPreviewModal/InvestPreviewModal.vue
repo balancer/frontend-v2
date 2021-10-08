@@ -6,8 +6,8 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import InvestSummary from './components/InvestSummary.vue';
-import InvestActions from './components/InvestActions.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
+import InvestActions from './components/InvestActions.vue';
 import { InvestMath } from '../../composables/useInvestFormMath';
 import { useI18n } from 'vue-i18n';
 
