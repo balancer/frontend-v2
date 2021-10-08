@@ -21,6 +21,7 @@ export interface Config {
   ws: string;
   loggingRpc: string;
   explorer: string;
+  explorerName: string;
   subgraph: string;
   poolsUrlV1: string;
   poolsUrlV2: string;

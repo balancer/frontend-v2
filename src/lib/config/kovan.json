@@ -10,6 +10,7 @@
   "ws": "wss://kovan.infura.io/ws/v3/daaa68ec242643719749dd1caba2fc66",
   "loggingRpc": "https://eth-kovan.alchemyapi.io/v2/oGLgncMVHNWltnK0nTfiryxQ6gYemKQO",
   "explorer": "https://kovan.etherscan.io",
+  "explorerName": "Etherscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-kovan/pools",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",

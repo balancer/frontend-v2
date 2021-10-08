@@ -1,19 +1,21 @@
-import PoolExchange from '..';
+import PoolExchange from '../exchange.service';
 import { encodeExitStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeExitWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { isStableLike } from '@/composables/usePool';
+import { Ref } from 'vue';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 export default class ExitParams {
-  private exchange: PoolExchange;
+  private pool: Ref<FullPool>;
   private isStableLike: boolean;
   private dataEncodeFn: (data: any) => string;
   private toInternalBalance = false;
 
   constructor(exchange: PoolExchange) {
-    this.exchange = exchange;
-    this.isStableLike = isStableLike(exchange.pool.poolType);
+    this.pool = exchange.pool;
+    this.isStableLike = isStableLike(exchange.pool.value.poolType);
     this.dataEncodeFn = this.isStableLike
       ? encodeExitStablePool
       : encodeExitWeightedPool;
@@ -27,7 +29,7 @@ export default class ExitParams {
     exactOut: boolean
   ): any[] {
     const parsedAmountsOut = this.parseAmounts(amountsOut);
-    const parsedBptIn = parseUnits(bptIn, this.exchange.pool.onchain.decimals);
+    const parsedBptIn = parseUnits(bptIn, this.pool.value.onchain.decimals);
     const txData = this.txData(
       parsedAmountsOut,
       parsedBptIn,
@@ -36,11 +38,11 @@ export default class ExitParams {
     );
 
     return [
-      this.exchange.pool.id,
+      this.pool.value.id,
       account,
       account,
       {
-        assets: this.exchange.pool.tokenAddresses,
+        assets: this.pool.value.tokenAddresses,
         minAmountsOut: parsedAmountsOut.map(amount =>
           // This is a hack to get around rounding issues for MetaStable pools
           // TODO: do this more elegantly
@@ -54,11 +56,8 @@ export default class ExitParams {
 
   private parseAmounts(amounts: string[]): BigNumber[] {
     return amounts.map((amount, i) => {
-      const token = this.exchange.pool.tokenAddresses[i];
-      return parseUnits(
-        amount,
-        this.exchange.pool.onchain.tokens[token].decimals
-      );
+      const token = this.pool.value.tokenAddresses[i];
+      return parseUnits(amount, this.pool.value.onchain.tokens[token].decimals);
     });
   }
 

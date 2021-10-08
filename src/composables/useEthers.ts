@@ -12,11 +12,11 @@ import useBlocknative from './useBlocknative';
 import useTransactions from './useTransactions';
 import useTokens from './useTokens';
 import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { toJsTimestamp } from './useTime';
 
-type TxCallback = (
-  txData: TransactionResponse,
-  receipt?: TransactionReceipt
-) => void;
+type ConfirmedTxCallback = (receipt: TransactionReceipt) => void;
+type FailedTxCallback = (txData: TransactionResponse) => void;
 
 // keep a record of processed txs
 export const processedTxs = ref<Set<string>>(new Set(''));
@@ -26,14 +26,23 @@ export default function useEthers() {
   const { supportsBlocknative } = useBlocknative();
   const { refetchBalances } = useTokens();
 
+  async function getTxConfirmedAt(receipt: TransactionReceipt): Promise<Date> {
+    const block = await rpcProviderService.jsonProvider.getBlock(
+      receipt.blockNumber
+    );
+
+    return new Date(toJsTimestamp(block.timestamp));
+  }
+
   async function txListener(
     tx: TransactionResponse,
     callbacks: {
-      onTxConfirmed: TxCallback;
-      onTxFailed: TxCallback;
+      onTxConfirmed: ConfirmedTxCallback;
+      onTxFailed: FailedTxCallback;
     },
     shouldRefetchBalances = true
-  ) {
+  ): Promise<boolean> {
+    let confirmed = false;
     processedTxs.value.add(tx.hash);
 
     try {
@@ -63,17 +72,20 @@ export default function useEthers() {
       if (receipt != null) {
         finalizeTransaction(txHash, 'tx', receipt);
       }
-      callbacks.onTxConfirmed(tx);
+      callbacks.onTxConfirmed(receipt);
       if (shouldRefetchBalances && !supportsBlocknative.value) {
         refetchBalances.value();
       }
+      confirmed = true;
     } catch (error) {
       console.error(error);
       callbacks.onTxFailed(tx);
     }
 
     processedTxs.value.delete(tx.hash);
+
+    return confirmed;
   }
 
-  return { txListener };
+  return { txListener, getTxConfirmedAt };
 }

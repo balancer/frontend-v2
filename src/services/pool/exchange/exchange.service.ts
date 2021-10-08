@@ -1,5 +1,5 @@
+import { Ref } from 'vue';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import configs from '@/lib/config';
 import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
 import {
   Vault__factory,
@@ -9,21 +9,20 @@ import JoinParams from './serializers/JoinParams';
 import ExitParams from './serializers/ExitParams';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
-import { TokenInfoMap } from '@/types/TokenList';
+import ConfigService, { configService } from '@/services/config/config.service';
 
-export default class Exchange {
-  pool: FullPool;
-  network: string;
+export default class ExchangeService {
+  pool: Ref<FullPool>;
   vaultAddress: string;
   helpersAddress: string;
-  tokens: TokenInfoMap;
 
-  constructor(pool: FullPool, network: string, tokens: TokenInfoMap) {
+  constructor(
+    pool: Ref<FullPool>,
+    private readonly config: ConfigService = configService
+  ) {
     this.pool = pool;
-    this.network = network;
-    this.tokens = tokens;
-    this.vaultAddress = configs[network].addresses.vault;
-    this.helpersAddress = configs[network].addresses.balancerHelpers;
+    this.vaultAddress = this.config.network.addresses.vault;
+    this.helpersAddress = this.config.network.addresses.balancerHelpers;
   }
 
   public async queryJoin(

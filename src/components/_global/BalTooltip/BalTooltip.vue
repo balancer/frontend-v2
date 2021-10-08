@@ -3,11 +3,11 @@
     ref="activator"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
-    :class="[{ 'cursor-default': disabled }]"
+    :class="['leading-none', { 'cursor-default': disabled }]"
     v-bind="$attrs"
   >
     <slot name="activator">
-      <BalIcon name="info" size="md" class="text-gray-400" />
+      <BalIcon name="info" :size="iconSize" class="text-gray-300" />
     </slot>
   </button>
   <div
@@ -16,7 +16,8 @@
     :class="tooltipClasses"
     v-bind="$attrs"
   >
-    <slot />
+    <p v-if="text" v-text="text" />
+    <slot v-else />
   </div>
 </template>
 
@@ -31,11 +32,15 @@ export default defineComponent({
   name: 'Tooltip',
   components: { BalIcon },
   props: {
+    text: { type: String, default: '' },
     placement: { type: String as PropType<Placement>, default: 'top' },
     onShow: { type: Function },
     onHide: { type: Function },
     noPad: { type: Boolean, default: false },
-    disabled: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
+    iconSize: { type: String, defailt: 'md' },
+    width: { type: String, default: '52' },
+    textCenter: { type: Boolean, default: false }
   },
   setup(props) {
     const activator = ref<HTMLElement>();
@@ -44,7 +49,9 @@ export default defineComponent({
 
     const tooltipClasses = computed(() => {
       return {
-        'p-3': !props.noPad
+        'p-3': !props.noPad,
+        [`w-${props.width}`]: true,
+        'text-center': props.textCenter
       };
     });
 

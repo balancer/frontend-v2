@@ -12,6 +12,7 @@
   "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/hsAEQ4l4c6uz3ciAdQ9w3ODWjVcND-Ti",
   "publicRpc": "https://rpc-mainnet.matic.network",
   "explorer": "https://polygonscan.com",
+  "explorerName": "Polygonscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
