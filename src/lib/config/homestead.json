@@ -5,6 +5,7 @@
   "name": "Ethereum Mainnet",
   "shortName": "Mainnet",
   "network": "homestead",
+  "portisNetwork": "mainnet",
   "unknown": false,
   "rpc": "https://mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
   "ws": "wss://mainnet.infura.io/ws/v3/daaa68ec242643719749dd1caba2fc66",

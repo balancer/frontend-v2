@@ -24,6 +24,7 @@ export function isWeighted(poolType: PoolType): boolean {
 }
 
 export function isManaged(poolType: PoolType): boolean {
+  // Correct terminology is managed pools but subgraph still returns poolType = "Investment"
   return poolType === PoolType.Investment;
 }
 
