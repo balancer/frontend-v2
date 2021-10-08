@@ -19,6 +19,7 @@ import {
   Step,
   StepState
 } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+import useConfig from '@/composables/useConfig';
 
 /**
  * TYPES
@@ -69,11 +70,11 @@ const investmentState = reactive<InvestmentState>({
  */
 const route = useRoute();
 const { t } = useI18n();
+const { networkConfig } = useConfig();
 const { getToken } = useTokens();
 const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-
 const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.investMath);
 
 const { requiredApprovalState, approveToken } = useTokenApprovals(
@@ -150,7 +151,7 @@ const currentAction = computed(
 
 const steps = computed((): Step[] => actions.value.map(action => action.step));
 
-const etherscanLink = computed((): string =>
+const explorerLink = computed((): string =>
   investmentState.receipt
     ? explorerLinks.txLink(investmentState.receipt.transactionHash)
     : ''
@@ -257,12 +258,12 @@ async function submit(): Promise<void> {
         </span>
       </div>
       <BalLink
-        :href="etherscanLink"
+        :href="explorerLink"
         external
         noStyle
         class="group flex items-center"
       >
-        {{ $t('etherscan') }}
+        {{ networkConfig.explorerName }}
         <BalIcon
           name="arrow-up-right"
           size="sm"
@@ -273,6 +274,7 @@ async function submit(): Promise<void> {
     <BalBtn
       tag="router-link"
       :to="{ name: 'pool', params: { id: route.params.id } }"
+      color="gray"
       outline
       block
       class="mt-2"
