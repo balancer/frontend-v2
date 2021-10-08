@@ -43,7 +43,7 @@ const loadingPool = computed(
     <div class="invest-header mb-12">
       <div></div>
       <router-link :to="{ name: 'pool', params: { id } }">
-        <BalIcon name="x" />
+        <BalIcon name="x" size="lg" />
       </router-link>
     </div>
     <div class="invest-container">
@@ -72,7 +72,7 @@ const loadingPool = computed(
 
 <style scoped>
 .invest-header {
-  @apply h-16 border-b;
+  @apply h-16;
   @apply px-4 lg:px-6;
   @apply flex items-center justify-between;
 }
