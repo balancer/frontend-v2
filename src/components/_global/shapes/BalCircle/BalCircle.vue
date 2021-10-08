@@ -23,7 +23,7 @@ const classes = computed(() => ({
   </div>
 </template>
 
-<style>
+<style scoped>
 .bal-circle {
   @apply rounded-full flex items-center justify-center;
 }
