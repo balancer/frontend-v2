@@ -10,13 +10,13 @@ registerPromiseWorker((message: ClaimWorkerMessage) => {
     const payload = message.payload as ComputeClaimProofPayload;
     const { report, account, claim } = payload;
 
-    const claimBalance = claim.amount;
+    const claimAmount = claim.amount;
     const merkleTree = loadTree(report);
 
-    const proof = merkleTree.getHexProof(
-      soliditySha3(account, toWei(claimBalance))
+    const proofs = merkleTree.getHexProof(
+      soliditySha3(account, toWei(claimAmount))
     ) as string[];
 
-    return [parseInt(claim.id), toWei(claimBalance), proof];
+    return [parseInt(claim.id), toWei(claimAmount), proofs];
   }
 });
