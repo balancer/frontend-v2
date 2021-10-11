@@ -1,5 +1,6 @@
 import { WebSocketProvider, JsonRpcProvider } from '@ethersproject/providers';
 import ConfigService, { configService } from '@/services/config/config.service';
+import { Network } from '@/composables/useNetwork';
 
 type NewBlockHandler = (blockNumber: number) => any;
 
@@ -26,7 +27,7 @@ export default class RpcProviderService {
     return await this.jsonProvider.getBlockNumber();
   }
 
-  public getJsonProvider(networkKey: string): JsonRpcProvider {
+  public getJsonProvider(networkKey: Network): JsonRpcProvider {
     const rpcUrl = `${this.config.getNetworkConfig(networkKey).rpc}/${
       this.config.env.INFURA_PROJECT_ID
     }`;
