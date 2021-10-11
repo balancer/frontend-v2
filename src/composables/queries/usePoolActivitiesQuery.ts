@@ -7,6 +7,7 @@ import { POOLS } from '@/constants/pools';
 
 import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolActivity } from '@/services/balancer/subgraph/types';
+import useNetwork from '../useNetwork';
 
 type PoolActivitiesQueryResponse = {
   poolActivities: PoolActivity[];
@@ -20,8 +21,11 @@ export default function usePoolActivitiesQuery(
   // SERVICES
   const balancerSubgraph = new BalancerSubgraph();
 
+  // COMPOSABLES
+  const { networkId } = useNetwork();
+
   // DATA
-  const queryKey = reactive(QUERY_KEYS.Pools.Activities(id));
+  const queryKey = reactive(QUERY_KEYS.Pools.Activities(networkId, id));
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {

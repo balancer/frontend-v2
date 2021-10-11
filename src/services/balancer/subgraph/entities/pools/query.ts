@@ -25,6 +25,7 @@ const defaultAttrs = {
   factory: true,
   amp: true,
   createTime: true,
+  swapEnabled: true,
   tokens: {
     address: true,
     balance: true,

@@ -51,7 +51,7 @@
             :isStablePool="isStableLike(pool.poolType)"
           />
           <BalChip
-            v-if="pool.dynamic.isNewPool"
+            v-if="pool.dynamic?.isNewPool"
             color="red"
             size="sm"
             class="ml-2 uppercase"

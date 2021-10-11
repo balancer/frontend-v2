@@ -5,6 +5,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { TokenListMap } from '@/types/TokenList';
 import { tokenListService } from '@/services/token-list/token-list.service';
 import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
+import useNetwork from '../useNetwork';
 
 /**
  * TYPES
@@ -17,7 +18,9 @@ type QueryResponse = TokenListMap;
 export default function useTokenListsQuery(
   options: UseQueryOptions<QueryResponse> = {}
 ) {
-  const queryKey = reactive(QUERY_KEYS.TokenLists.All);
+  const { networkId } = useNetwork();
+
+  const queryKey = reactive(QUERY_KEYS.TokenLists.All(networkId));
 
   const queryFn = async () => {
     console.log('Fetching tokenLists');

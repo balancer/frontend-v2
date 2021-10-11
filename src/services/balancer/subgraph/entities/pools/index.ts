@@ -14,7 +14,7 @@ import {
   computeTotalAPRForPool,
   computeAPRsForPool
 } from '@/lib/utils/liquidityMining';
-import { NetworkId } from '@/constants/network';
+import { Network } from '@/composables/useNetwork';
 import { configService as _configService } from '@/services/config/config.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { FiatCurrency } from '@/constants/currency';
@@ -29,7 +29,7 @@ const IS_LIQUIDITY_MINING_ENABLED = true;
 export default class Pools {
   service: Service;
   query: QueryBuilder;
-  networkId: NetworkId;
+  networkId: Network;
 
   constructor(
     service: Service,
@@ -39,7 +39,7 @@ export default class Pools {
   ) {
     this.service = service;
     this.query = query;
-    this.networkId = Number(configService.env.NETWORK) as NetworkId;
+    this.networkId = configService.env.NETWORK;
   }
 
   public async get(args = {}, attrs = {}): Promise<Pool[]> {
@@ -103,6 +103,9 @@ export default class Pools {
       );
       const isNewPool = this.isNewPool(pool);
 
+      // TODO - remove hasLiquidityMiningRewards from schema
+      // Add a conditional to usePool or somewhere else that
+      // checks what rewards are available.
       return {
         ...pool,
         hasLiquidityMiningRewards,

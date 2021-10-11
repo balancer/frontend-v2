@@ -114,7 +114,7 @@ export default class Weighted {
           this.calc.bptBalance,
           this.calc.poolDecimals
         ).toString();
-        tokenAmounts = this.calc.pool.tokensList.map((_, i) => {
+        tokenAmounts = this.calc.pool.value.tokensList.map((_, i) => {
           if (i !== opts.tokenIndex) return '0';
           const tokenAmount = this.exactBPTInForTokenOut(
             this.calc.bptBalance,

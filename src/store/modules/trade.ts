@@ -1,7 +1,6 @@
 import { lsGet, lsSet } from '@/lib/utils';
 import initialTokens from '@/constants/initialTokens.json';
-
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
+import { networkId } from '@/composables/useNetwork';
 
 export interface TradeState {
   inputAsset: string;
@@ -17,11 +16,11 @@ const actions = {
   init({ commit }) {
     commit(
       'setInputAsset',
-      lsGet('trade.inputAsset', initialTokens[NETWORK].input)
+      lsGet('trade.inputAsset', initialTokens[networkId.value].input)
     );
     commit(
       'setOutputAsset',
-      lsGet('trade.outputAsset', initialTokens[NETWORK].output)
+      lsGet('trade.outputAsset', initialTokens[networkId.value].output)
     );
   }
 };

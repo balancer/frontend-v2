@@ -9,6 +9,7 @@ import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
+import useNetwork from '../useNetwork';
 
 /**
  * TYPES
@@ -23,6 +24,7 @@ export default function useRelayerApprovalQuery(
    * COMPOSABLES
    */
   const { getProvider, account, isWalletReady } = useWeb3();
+  const { networkId } = useNetwork();
 
   /**
    * COMPUTED
@@ -42,7 +44,7 @@ export default function useRelayerApprovalQuery(
    * QUERY INPUTS
    */
   const queryKey = reactive(
-    QUERY_KEYS.Account.RelayerApprovals(account, relayer)
+    QUERY_KEYS.Account.RelayerApprovals(networkId, account, relayer)
   );
 
   const queryFn = async (): Promise<boolean> => {

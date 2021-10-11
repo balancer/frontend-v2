@@ -1,6 +1,7 @@
-import { APP_NETWORK_ID, Network } from '@/constants/network';
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import axios from 'axios';
+import { Network, networkId } from '@/composables/useNetwork';
+
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
 
 import { PriceInformation, PriceQuoteParams } from './types';
@@ -56,7 +57,7 @@ export default class Match0xService {
   baseURL: string;
 
   constructor(apiVersion = 'v1') {
-    const baseURL = API_URLS[APP_NETWORK_ID] ?? API_URLS[Network.MAINNET];
+    const baseURL = API_URLS[networkId.value] ?? API_URLS[Network.MAINNET];
 
     this.baseURL = `${baseURL}/${apiVersion}`;
   }

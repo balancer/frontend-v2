@@ -23,16 +23,21 @@ export function isWeighted(poolType: PoolType): boolean {
   return poolType === PoolType.Weighted;
 }
 
-export function isInvestment(poolType: PoolType): boolean {
+export function isManaged(poolType: PoolType): boolean {
+  // Correct terminology is managed pools but subgraph still returns poolType = "Investment"
   return poolType === PoolType.Investment;
 }
 
 export function isWeightedLike(poolType: PoolType): boolean {
   return (
     isWeighted(poolType) ||
-    isInvestment(poolType) ||
+    isManaged(poolType) ||
     isLiquidityBootstrapping(poolType)
   );
+}
+
+export function isTradingHaltable(poolType: PoolType): boolean {
+  return isManaged(poolType) || isLiquidityBootstrapping(poolType);
 }
 
 export function isWeth(pool: AnyPool): boolean {
@@ -63,9 +68,15 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isWeightedLikePool = computed(
     () => pool.value && isWeightedLike(pool.value.poolType)
   );
-
+  const isManagedPool = computed(
+    () => pool.value && isManaged(pool.value.poolType)
+  );
   const isLiquidityBootstrappingPool = computed(
     () => pool.value && isLiquidityBootstrapping(pool.value.poolType)
+  );
+
+  const managedPoolWithTradingHalted = computed(
+    () => pool.value && isManagedPool.value && pool.value.onchain?.swapEnabled
   );
 
   const isWethPool = computed(() => pool.value && isWeth(pool.value));
@@ -78,7 +89,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isStableLikePool,
     isWeightedPool,
     isWeightedLikePool,
+    isManagedPool,
     isLiquidityBootstrappingPool,
+    managedPoolWithTradingHalted,
     isWethPool,
     isWstETHPool,
     // methods
@@ -88,6 +101,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWeighted,
     isLiquidityBootstrapping,
     isWeightedLike,
+    isTradingHaltable,
     isWeth
   };
 }

@@ -53,6 +53,7 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 
 export default defineComponent({
   name: 'PoolActionsCard',
@@ -94,16 +95,16 @@ export default defineComponent({
     /**
      * METHODS
      */
-    function handleInvestment(txReceipt): void {
+    function handleInvestment(txReceipt: TransactionReceipt): void {
       investmentSuccess.value = true;
-      txHash.value = txReceipt.hash;
+      txHash.value = txReceipt.transactionHash;
       trackGoal(Goals.Invested);
       emit('onTx', txReceipt);
     }
 
-    function handleWithdrawal(txReceipt): void {
+    function handleWithdrawal(txReceipt: TransactionReceipt): void {
       withdrawalSuccess.value = true;
-      txHash.value = txReceipt.hash;
+      txHash.value = txReceipt.transactionHash;
       trackGoal(Goals.Withdrawal);
       emit('onTx', txReceipt);
     }
