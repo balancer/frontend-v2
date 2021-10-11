@@ -14,6 +14,7 @@ export interface Config {
   name: string;
   shortName: string;
   network: string;
+  portisNetwork?: string;
   unknown: boolean;
   rpc: string;
   publicRpc?: string;
