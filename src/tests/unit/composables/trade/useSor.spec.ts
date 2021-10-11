@@ -6,61 +6,14 @@ import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import BigNumber from 'bignumber.js';
 
-jest.mock('@/lib/utils/balancer/helpers/sor/sorManager', () => {
-  return {
-    SorManager: jest.fn().mockImplementation(() => {
-      return {
-        setCostOutputToken: jest.fn().mockImplementation()
-      };
-    })
-  };
-});
-
+jest.mock('vue-i18n');
+jest.mock('@/composables/useEthereumTxType');
+jest.mock('@/composables/useEthers');
+jest.mock('@/composables/useUserSettings');
+jest.mock('@/composables/useTransactions');
 jest.mock('@/lib/utils/balancer/helpers/sor/sorManager');
-
-jest.mock('@/locales', () => {
-  return [];
-});
-
-jest.mock('@/services/rpc-provider/rpc-provider.service', () => {
-  const RpcProviderService = jest.fn().mockImplementation(() => {
-    return {
-      _isProvider: true,
-      getSigner: () => {
-        return {
-          _isSigner: true,
-          getAddress: jest.fn().mockImplementation(() => {
-            return '0x0';
-          })
-        };
-      },
-      initBlockListener: jest.fn().mockImplementation()
-    };
-  });
-
-  return {
-    rpcProviderService: new RpcProviderService()
-  };
-});
-
-jest.mock('@/composables/useEthereumTxType', () => {
-  return {
-    EthereumTxType: {
-      EIP1559: 'EIP1559'
-    },
-    ethereumTxType: {
-      value: 'EIP1559'
-    }
-  };
-});
-
-jest.mock('@/composables/useUserSettings', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      useUserSettings: jest.fn().mockImplementation()
-    };
-  });
-});
+jest.mock('@/locales');
+jest.mock('@/services/web3/useWeb3');
 
 const mockNativeAssetAddress = configService.network.nativeAsset.address;
 const mockEthPrice = 3000;
@@ -78,47 +31,6 @@ jest.mock('@/composables/useTokens', () => {
       })
     };
   });
-});
-
-jest.mock('@/composables/useEthers', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      txListener: jest.fn().mockImplementation()
-    };
-  });
-});
-
-jest.mock('@/composables/useTransactions', () => {
-  return jest.fn().mockImplementation(() => {
-    return {
-      addTransaction: jest.fn().mockImplementation()
-    };
-  });
-});
-
-jest.mock('@/services/web3/useWeb3', () => {
-  // const mockAppNetworkConfig = configService.network;
-  return jest.fn().mockImplementation(() => {
-    return {
-      getProvider: jest.fn().mockImplementation(),
-      isV1Supported: false,
-      appNetworkConfig: {
-        nativeAsset: {
-          address: mockNativeAssetAddress
-        }
-      }
-    };
-  });
-});
-
-jest.mock('vue-i18n', () => {
-  return {
-    useI18n: jest.fn().mockImplementation(() => {
-      return {
-        t: jest.fn().mockImplementation()
-      };
-    })
-  };
 });
 
 const mockTokenInfo = {
