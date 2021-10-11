@@ -98,7 +98,7 @@
         v-model:amount="amounts[i]"
         v-model:address="tokenAddresses[i]"
         v-model:isValid="validInputs[i]"
-        :weight="isStableLikePool ? 0 : tokenWeights[i]"
+        :weight="isStableLikePool ? 0 : Number(tokenWeights[i])"
         :name="tokenAddress"
         class="mb-4"
         fixedToken
