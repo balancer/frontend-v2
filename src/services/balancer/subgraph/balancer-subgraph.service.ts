@@ -30,8 +30,7 @@ export default class BalancerSubgraphService {
       case Network.POLYGON:
         return 2;
       case Network.ARBITRUM:
-        // TODO: Replace this with a more realistic number once activity picks up
-        return 13;
+        return 3;
       case Network.KOVAN:
         // Should be ~4s but this causes subgraph to return with unindexed block error.
         return 1;
