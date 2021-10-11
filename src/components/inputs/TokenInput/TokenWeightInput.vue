@@ -93,7 +93,7 @@ watchEffect(() => {
   <BalTextInput
     v-model="_weight"
     :placeholder="hintAmount || '0.0'"
-    type="number"
+    type="string"
     :label="label"
     :decimalLimit="token?.decimals || 18"
     :rules="rules"

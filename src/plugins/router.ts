@@ -43,7 +43,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     redirect: '/'
-  },
+  }
 ];
 
 // Temp solution to limit new invest flow to staging and dev apps.
