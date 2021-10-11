@@ -36,6 +36,7 @@ export interface Config {
   addresses: {
     exchangeProxy: string;
     merkleRedeem: string;
+    merkleOrchard: string;
     multicall: string;
     vault: string;
     weightedPoolFactory: string;

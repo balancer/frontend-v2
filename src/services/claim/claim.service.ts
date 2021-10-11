@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { groupBy } from 'lodash';
-import { parseUnits } from '@ethersproject/units';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
-import { MerkleRedeem__factory } from '@balancer-labs/typechain';
+import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
+
 import { getAddress } from '@ethersproject/address';
 
 import { networkId } from '@/composables/useNetwork';
@@ -27,8 +27,9 @@ import {
   Snapshot,
   TokenClaimInfo
 } from './types';
-import { Claim } from '@/types';
 import { claimWorkerPoolService } from './claim-worker-pool.service';
+import { configService } from '../config/config.service';
+import { TOKENS } from '@/constants/tokens';
 
 export class ClaimService {
   public async getMultiTokensPendingClaims(
@@ -63,7 +64,7 @@ export class ClaimService {
       provider,
       Object.keys(snapshot).length,
       account,
-      tokenClaimInfo.rewarder
+      tokenClaimInfo
     );
 
     const pendingWeeks = claimStatus
@@ -72,13 +73,13 @@ export class ClaimService {
       .map(([i]) => i) as number[];
 
     const reports = await this.getReports(snapshot, pendingWeeks);
+
     const claims = Object.entries(reports)
       .filter((report: Report) => report[1][account])
       .map((report: Report) => {
         return {
           id: report[0],
-          amount: report[1][account],
-          amountDenorm: parseUnits(report[1][account], 18)
+          amount: report[1][account]
         };
       });
 
@@ -168,18 +169,22 @@ export class ClaimService {
     multiTokenPendingClaims: MultiTokenPendingClaims[]
   ): Promise<TransactionResponse> {
     try {
+      const tokens = multiTokenPendingClaims.map(
+        tokenPendingClaims => tokenPendingClaims.tokenClaimInfo.token
+      );
+
       const [multiTokenClaims] = await Promise.all(
-        multiTokenPendingClaims.map(tokenPendingClaims =>
-          this.computeClaimProofs(tokenPendingClaims, account)
+        multiTokenPendingClaims.map((tokenPendingClaims, tokenIndex) =>
+          this.computeClaimProofs(tokenPendingClaims, account, tokenIndex)
         )
       );
 
       return sendTransaction(
         provider,
-        configs[networkId.value].addresses.merkleRedeem,
-        MerkleRedeem__factory.abi,
-        'claimWeeks',
-        [account, multiTokenClaims]
+        configs[networkId.value].addresses.merkleOrchard,
+        merkleOrchardAbi,
+        'claimDistributions',
+        [account, multiTokenClaims, tokens]
       );
     } catch (e) {
       console.log('[Claim] Claim Rewards Error:', e);
@@ -189,31 +194,31 @@ export class ClaimService {
 
   private async computeClaimProofs(
     tokenPendingClaims: MultiTokenPendingClaims,
-    account: string
+    account: string,
+    tokenIndex: number
   ): Promise<Promise<ClaimProofTuple[]>> {
     return Promise.all(
-      tokenPendingClaims.claims.map(claim =>
-        this.computeClaimProof(
-          { ...tokenPendingClaims.reports[claim.id] },
+      tokenPendingClaims.claims.map(claim => {
+        const payload: ComputeClaimProofPayload = {
           account,
-          { ...claim }
-        )
-      )
+          distributor: tokenPendingClaims.tokenClaimInfo.distributor,
+          tokenIndex,
+          // objects must be cloned
+          report: { ...tokenPendingClaims.reports[claim.id] },
+          claim: { ...claim }
+        };
+
+        return this.computeClaimProof(payload);
+      })
     );
   }
 
   private computeClaimProof(
-    report: Report,
-    account: string,
-    claim: Claim
+    payload: ComputeClaimProofPayload
   ): Promise<ClaimProofTuple> {
     const message: ClaimWorkerMessage<ComputeClaimProofPayload> = {
       type: 'computeClaimProof',
-      payload: {
-        account,
-        report,
-        claim
-      }
+      payload
     };
 
     return claimWorkerPoolService.worker.postMessage<ClaimProofTuple>(message);
@@ -239,14 +244,23 @@ export class ClaimService {
 
   private getClaimStatus(
     provider: Web3Provider,
-    ids: number,
+    totalWeeks: number,
     account: string,
-    rewarder: string
+    tokenClaimInfo: TokenClaimInfo
   ): Promise<ClaimStatus[]> {
-    return call(provider, MerkleRedeem__factory.abi, [
-      rewarder,
+    const { token, distributor } = tokenClaimInfo;
+
+    const weekStart =
+      getAddress(token) === TOKENS.AddressMap[configService.network.key].BAL
+        ? 72
+        : 1;
+
+    const weekEnd = totalWeeks + weekStart - 1;
+
+    return call(provider, merkleOrchardAbi, [
+      configService.network.addresses.merkleOrchard,
       'claimStatus',
-      [account, 1, ids]
+      [token, distributor, account, weekStart, weekEnd]
     ]);
   }
 

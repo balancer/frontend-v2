@@ -8,15 +8,21 @@ import { ClaimWorkerMessage, ComputeClaimProofPayload } from './types';
 registerPromiseWorker((message: ClaimWorkerMessage) => {
   if (message.type === 'computeClaimProof') {
     const payload = message.payload as ComputeClaimProofPayload;
-    const { report, account, claim } = payload;
+    const { report, account, claim, distributor, tokenIndex } = payload;
 
     const claimAmount = claim.amount;
     const merkleTree = loadTree(report);
 
-    const proofs = merkleTree.getHexProof(
+    const proof = merkleTree.getHexProof(
       soliditySha3(account, toWei(claimAmount))
     ) as string[];
 
-    return [parseInt(claim.id), toWei(claimAmount), proofs];
+    return [
+      parseInt(claim.id),
+      toWei(claimAmount),
+      distributor,
+      tokenIndex,
+      proof
+    ];
   }
 });

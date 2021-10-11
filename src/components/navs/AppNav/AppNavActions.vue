@@ -57,7 +57,7 @@ export default defineComponent({
 
     // COMPUTED
     const liquidityMiningSupported = computed(
-      () => isMainnet.value || isPolygon.value || isArbitrum.value
+      () => isMainnet.value || isPolygon.value || isArbitrum.value || true
     );
 
     // METHODS

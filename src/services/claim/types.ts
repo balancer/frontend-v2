@@ -4,7 +4,7 @@ export type Snapshot = Record<number, string>;
 
 export type TokenClaimInfo = {
   label: string;
-  rewarder: string;
+  distributor: string;
   token: string;
   manifest: string;
 };
@@ -48,6 +48,8 @@ export type ComputeClaimProofPayload = {
   report: Report;
   account: string;
   claim: Claim;
+  distributor: string;
+  tokenIndex: number;
 };
 
 export type ClaimWorkerMessage<P = any> = {
