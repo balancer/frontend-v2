@@ -37,6 +37,7 @@
     "approving": "Approving",
     "apr": "APR",
     "availableToClaim": "Available to claim:",
+    "basedOnLast24h": "based on the last 24h",
     "balance": "Balance",
     "balances": "Balances",
     "best": "Best",
@@ -91,6 +92,7 @@
     "emptyInvestmentPools": "You have not joined any Balancer investment pools.",
     "emptyInvestmentPoolsLink": "View investment pools ->",
     "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>investment, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
+    "etherscan": "Etherscan",
     "exceedsBalance": "Exceeds balance",
     "enterAmount": "Enter amount",
     "investmentPoolsAbout": "Stake your assets to get $BAL tokens for participating in Balancer V2 liquidity mining.",
@@ -125,7 +127,7 @@
     "insufficientLiquidity": "Not enough liquidity",
     "insufficientLiquidityDetailed": "Try trading with a smaller amount or check back when liquidity for this pool has increased.",
     "invest": "Invest",
-    "investment": "Investment",
+    "investInPool": "Invest in pool",
     "inYourWallet": "In your wallet:",
     "time": "Time",
     "timeAgo": "{0} ago",
@@ -134,13 +136,41 @@
     "tradeSuccess": "Successfully traded your tokens",
     "tradeInterface": "Trade interface",
     "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across Balancer V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders while providing MEV protection.",
-    "thirdPartyAPR": {
-        "steth": "stETH staking rewards APR"
+    "thirdPartyRewards": {
+        "apr": {
+            "steth": "stETH staking rewards APR"
+        },
+        "fiat": {
+            "steth": "stETH staking rewards"
+        }
     },
     "investmentPool": "Investment pool",
     "investmentPools": "Investment pools",
     "investmentSettled": "Your investment has settled",
     "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",
+    "investmentTooltip": "Confirm investment into this pool",
+    "investment": {
+        "label": "Investment",
+        "preview": {
+            "titles": {
+                "default": "Investment preview",
+                "confirmed": "Investment confirmed"
+            },
+            "tooltips": {
+                "approval": "You must approve {0} to invest this token on Balancer. Approvals are required once per token, per wallet."
+            },
+            "loadingLabel": {
+                "approval": "Confirm approval in wallet",
+                "investment": "Confirm investment in wallet"
+            }
+        },
+        "warning": {
+            "managedPoolTradingHaulted": {
+                "title": "Trading halted - proportional investments only",
+                "description": "A trading halt has been issued by the manager of this pool. For your safety, while the trading halt is in effect, you may only invest in proportional amounts."
+            }
+        }
+    },
     "isRequired": "is required",
     "language": "Language",
     "learnMore": "Learn more",
@@ -153,6 +183,7 @@
     "logOut": "Log out",
     "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
     "manageLists": "Manage lists",
+    "managedPool": "Managed pool",
     "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
     "max": "Max",
     "maxed": "Maxed",
@@ -200,12 +231,15 @@
     "oneDay": "1D",
     "oneMonth": "1M",
     "oneWeek": "1W",
+    "optimize": "Optimize",
+    "optimized": "Optimized",
     "oracleWeightedPool": "Oracle Weighted Pool",
     "overview": "Overview",
     "ownerFeesTooltip": "Liquidity providers earn dynamic swap fees on every trade utilizing the Liquidity in this pool. Dynamic swap fees are controlled by the pool owner.",
     "payload": "Payload",
     "pendingClaims": "Pending claims",
     "pendingEstimate": "Pending: (estimate)",
+    "perWeek": "per week",
     "pool": "Pool",
     "poolBalance": "Pool balance",
     "poolComposition": "Pool composition",
@@ -217,6 +251,7 @@
     "poolType": "Pool type",
     "poolValue": "Pool value",
     "portfolio": "Portfolio",
+    "potentialWeeklyYield": "Potential weekly yield",
     "popularBases": "Popular:",
     "preview": "Preview",
     "previewTrade": "Preview trade",
@@ -229,15 +264,23 @@
     "priceImpactTolerance": "Price impact tolerance",
     "profit": "Profit (1{0})",
     "protocolFees": "Protocol fees",
+    "proportionalSuggestion": "Proportional suggestion",
     "rank": "Rank (1{0})",
     "receive": "Receive",
     "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
     "receipt": "Receipt",
     "recentActivityTitle": "Recent activity",
+    "returnToPool": "Return to pool page",
     "noRecentActivity": "Your recent activity will appear here…",
     "switchNetwork": "Switch Network",
     "tokenPills": {
         "hiddenTokens": "+{0} tokens"
+    },
+    "tooltips": {
+        "invest": {
+            "total": "The total value in {0} you’ll be investing into this pool.",
+            "priceImpact": "Price impact from adding liquidity results when  the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position."
+        }
     },
     "transactionAction": {
         "trade": "Trade",
@@ -348,6 +391,7 @@
     "tokens": "Tokens",
     "tokensParen": "Token(s)",
     "tokensLowerCase": "tokens",
+    "total": "Total",
     "totalSupply": "Total supply",
     "totalValue": "Total value",
     "totalAPR": "Total APR",
@@ -417,6 +461,7 @@
     "withdrawFee": "Withdraw fee",
     "wrapStEthTooltip": "This pool requires Wrapped Liquid Staked ETH 2.0 (wstETH). To maximize your investment, you could wrap some additional stETH.",
     "yearAbbrev": "y",
+    "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
     "yourTransactions": "Your transactions in this pool",
     "featuredProtocol": "Featured ecosystem protocol",

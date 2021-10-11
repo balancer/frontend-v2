@@ -57,7 +57,7 @@
             </div>
             <div class="w-1/2 flex flex-col leading-none text-right pl-2">
               <span class="break-words">
-                {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
+                {{ amountUSD(i) === '0' ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
               <span v-if="!isStableLikePool" class="text-xs text-gray-400">
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
@@ -166,12 +166,12 @@ import isEqual from 'lodash/isEqual';
 import useNumbers from '@/composables/useNumbers';
 import useSlippage from '@/composables/useSlippage';
 
-import PoolExchange from '@/services/pool/exchange';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import FormTypeToggle from './shared/FormTypeToggle.vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useFathom from '@/composables/useFathom';
@@ -222,8 +222,7 @@ export default defineComponent({
       isMismatchedNetwork,
       toggleWalletSelectModal,
       getProvider,
-      account,
-      appNetworkConfig
+      account
     } = useWeb3();
     const { fNum, toFiat } = useNumbers();
     const { minusSlippage, addSlippage } = useSlippage();
@@ -232,18 +231,16 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStableLikePool, isInvestmentPool } = usePool(
+    const { isStableLikePool, managedPoolWithTradingHalted } = usePool(
       toRef(props, 'pool')
     );
 
     // SERVICES
-    const poolExchange = computed(
-      () => new PoolExchange(props.pool, appNetworkConfig.key, tokens.value)
-    );
+    const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
     const poolCalculator = new PoolCalculator(
-      props.pool,
-      tokens.value,
+      toRef(props, 'pool'),
+      tokens,
       balances,
       'exit'
     );
@@ -408,8 +405,8 @@ export default defineComponent({
         }
       ];
 
-      // Investment pools with trading halted only allow proportional joins/exits
-      if (isInvestmentPool.value || props.pool.onchain.swapEnabled) {
+      // Managed pools with trading halted only allow proportional joins/exits
+      if (!managedPoolWithTradingHalted.value) {
         validTypes.push({
           label: t('singleToken'),
           max: singleMaxUSD.value,
@@ -487,7 +484,7 @@ export default defineComponent({
     // Left here so numbers can be debugged in conosle
     // Talk to Fernando to see if still needed
     async function calcBptIn() {
-      const { bptIn: queryBptIn } = await poolExchange.value.queryExit(
+      const { bptIn: queryBptIn } = await poolExchange.queryExit(
         getProvider(),
         account.value,
         fullAmounts.value,
@@ -507,7 +504,7 @@ export default defineComponent({
       try {
         data.loading = true;
         await calcBptIn();
-        const tx = await poolExchange.value.exit(
+        const tx = await poolExchange.exit(
           getProvider(),
           account.value,
           amountsOut.value,
@@ -532,7 +529,7 @@ export default defineComponent({
         });
 
         txListener(tx, {
-          onTxConfirmed: async (tx: TransactionResponse) => {
+          onTxConfirmed: async (tx: TransactionReceipt) => {
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
@@ -551,7 +548,6 @@ export default defineComponent({
     watch(
       () => props.pool.onchain.tokens,
       (newTokens, oldTokens) => {
-        poolCalculator.setPool(props.pool);
         const tokensChanged = !isEqual(newTokens, oldTokens);
         if (tokensChanged) {
           setPropMax();
@@ -584,10 +580,6 @@ export default defineComponent({
         setPropAmountsFor(newVal);
       }
     );
-
-    watch(tokens, newTokens => {
-      poolCalculator.setAllTokens(newTokens);
-    });
 
     watch(isWalletReady, isReady => {
       if (!isReady) {

@@ -10,6 +10,7 @@
   "ws": "ws://localhost:8546",
   "loggingRpc": "http://localhost:8545",
   "explorer": "",
+  "explorerName": "",
   "subgraph": "http://localhost:8000/subgraphs/name/balancer-labs/balancer-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
@@ -38,6 +39,7 @@
     "MockFlashLoanReceiver": "",
     "balancerHelpers": ""
   },
+  "keys": {},
   "strategies": {
     "0": {
       "type": "0",

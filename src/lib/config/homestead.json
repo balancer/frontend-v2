@@ -7,10 +7,11 @@
   "network": "homestead",
   "portisNetwork": "mainnet",
   "unknown": false,
-  "rpc": "https://mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
-  "ws": "wss://mainnet.infura.io/ws/v3/daaa68ec242643719749dd1caba2fc66",
-  "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
+  "rpc": "https://mainnet.infura.io/v3/{{INFURA_KEY}}",
+  "ws": "wss://mainnet.infura.io/ws/v3/{{INFURA_KEY}}",
+  "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://etherscan.io",
+  "explorerName": "Etherscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange/pools",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
@@ -41,6 +42,10 @@
     "lidoRelayer": "0xdcdbf71A870cc60C6F9B621E28a7D3Ffd6Dd4965",
     "MockFlashLoanReceiver": "",
     "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E"
+  },
+  "keys": {
+    "infura": "daaa68ec242643719749dd1caba2fc66",
+    "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88"
   },
   "strategies": {
     "0": {

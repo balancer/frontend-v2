@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import HomePage from '@/pages/index.vue';
 import PoolPage from '@/pages/pool/_id.vue';
+import PoolInvestPage from '@/pages/pool/invest.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/pages/trade.vue';
 
@@ -37,6 +38,18 @@ const routes: RouteRecordRaw[] = [
     redirect: '/'
   }
 ];
+
+// Temp solution to limit new invest flow to staging and dev apps.
+if (
+  ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
+) {
+  routes.push({
+    path: '/pool/:id/invest',
+    name: 'poolInvest',
+    component: PoolInvestPage,
+    meta: { layout: 'BlankLayout' }
+  });
+}
 
 const router = createRouter({
   history: createWebHashHistory(),

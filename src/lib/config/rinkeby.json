@@ -6,10 +6,11 @@
   "shortName": "Rinkeby",
   "network": "rinkeby",
   "unknown": false,
-  "rpc": "https://eth-rinkeby.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
-  "ws": "wss://eth-rinkeby.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
-  "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
+  "rpc": "https://eth-rinkeby.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
+  "ws": "wss://eth-rinkeby.ws.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
+  "loggingRpc": "https://eth-rinkeby.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://rinkeby.etherscan.io",
+  "explorerName": "Etherscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-rinkeby-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-rinkeby/pools",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
@@ -39,6 +40,10 @@
     "wstETH": "0xba453033d328bfdd7799a4643611b616d80ddd97",
     "lidoRelayer": "",
     "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d"
+  },
+  "keys": {
+    "infura": "daaa68ec242643719749dd1caba2fc66",
+    "alchemy": "QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO-Ti"
   },
   "strategies": {
     "0": {

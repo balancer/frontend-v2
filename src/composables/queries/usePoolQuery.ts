@@ -10,7 +10,7 @@ import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
 import { forChange } from '@/lib/utils';
-import { isInvestment, isStableLike } from '../usePool';
+import { isManaged, isStableLike } from '../usePool';
 import { getAddress } from '@ethersproject/address';
 
 export default function usePoolQuery(
@@ -46,7 +46,7 @@ export default function usePoolQuery(
 
     if (
       (isStableLike(pool.poolType) && !POOLS.Stable.AllowList.includes(id)) ||
-      (isInvestment(pool.poolType) && !POOLS.Investment.AllowList.includes(id))
+      (isManaged(pool.poolType) && !POOLS.Investment.AllowList.includes(id))
     ) {
       throw new Error('Pool not allowed');
     }
