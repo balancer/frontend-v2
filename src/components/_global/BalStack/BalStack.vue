@@ -48,7 +48,8 @@ const spacingClass = computed(() => {
       :class="{
         [spacingClass]: i !== $slots.default().length - 1,
         'border-b': i !== $slots.default().length - 1 && withBorder && vertical,
-        'border-r': i !== $slots.default().length - 1 && withBorder && horizontal
+        'border-r':
+          i !== $slots.default().length - 1 && withBorder && horizontal
       }"
     >
       <component :is="child" />
