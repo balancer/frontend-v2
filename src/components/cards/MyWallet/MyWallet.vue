@@ -44,7 +44,7 @@ const tokensWithBalance = computed(() => {
     :shadow="false"
   >
     <div
-      class="flex flex-col bg-white w-full h-full bg-transparent lg:bg-white "
+      class="flex flex-col bg-white w-full h-full bg-transparent lg:bg-white"
     >
       <div class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:shadow-lg">
         <h6 v-if="!upToLargeBreakpoint">{{ $t('myWallet') }}</h6>
@@ -56,7 +56,7 @@ const tokensWithBalance = computed(() => {
         </div>
         <BalLoadingBlock v-else class="h-8 w-12" />
       </div>
-      <div class="h-full p-3">
+      <div class="h-full p-3 z-0">
         <BalLoadingBlock v-if="isLoadingBalances" class="h-8" />
         <BalAssetSet
           v-else-if="isWalletReady"
@@ -68,8 +68,8 @@ const tokensWithBalance = computed(() => {
           :max-asssets-per-line="7"
         ></BalAssetSet>
         <div v-else class="w-full mt-4 lg:mt-0 flex justify-center">
-          <BalBtn size="xs" @click="toggleWalletSelectModal"
-            >Connect your wallet</BalBtn
+          <BalLink @click="toggleWalletSelectModal"
+            >Connect your wallet</BalLink
           >
         </div>
       </div>
