@@ -48,6 +48,10 @@ export interface Config {
     lidoRelayer: string;
     balancerHelpers: string;
   };
+  keys: {
+    infura: string;
+    alchemy: string;
+  };
   strategies: Record<
     string,
     {

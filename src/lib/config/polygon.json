@@ -7,9 +7,9 @@
   "network": "polygon",
   "portisNetwork": "matic",
   "unknown": false,
-  "rpc": "https://polygon-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
-  "ws": "wss://polygon-mainnet.g.alchemy.com/v2/ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
-  "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/hsAEQ4l4c6uz3ciAdQ9w3ODWjVcND-Ti",
+  "rpc": "https://polygon-mainnet.infura.io/v3/{{INFURA_KEY}}",
+  "ws": "wss://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
+  "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "publicRpc": "https://rpc-mainnet.matic.network",
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
@@ -38,6 +38,10 @@
     "wstETH": "",
     "lidoRelayer": "",
     "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d"
+  },
+  "keys": {
+    "infura": "daaa68ec242643719749dd1caba2fc66",
+    "alchemy": "ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2"
   },
   "strategies": {
     "0": {

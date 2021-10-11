@@ -39,6 +39,7 @@
     "MockFlashLoanReceiver": "",
     "balancerHelpers": ""
   },
+  "keys": {},
   "strategies": {
     "0": {
       "type": "0",

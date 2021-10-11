@@ -6,10 +6,10 @@
   "shortName": "Arbitrum",
   "network": "arbitrum-one",
   "unknown": false,
-  "rpc": "https://arbitrum-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66",
-  "ws": "wss://arb-mainnet.g.alchemy.com/v2/ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
+  "rpc": "https://arbitrum-mainnet.infura.io/v3/{{INFURA_KEY}}",
+  "ws": "wss://arb-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "publicRpc": "https://arb1.arbitrum.io/rpc",
-  "loggingRpc": "https://arb-mainnet.g.alchemy.com/v2/ODJ9G5Ipv-Hb2zTWMNbUFIqv9WtqBOc2",
+  "loggingRpc": "https://arb-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://arbiscan.io",
   "explorerName": "Arbiscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2",
@@ -37,6 +37,10 @@
     "wstETH": "",
     "lidoRelayer": "",
     "balancerHelpers": "0x77d46184d22CA6a3726a2F500c776767b6A3d6Ab"
+  },
+  "keys": {
+    "infura": "daaa68ec242643719749dd1caba2fc66",
+    "alchemy": "VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh"
   },
   "strategies": {
     "0": {
