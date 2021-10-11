@@ -98,7 +98,7 @@
         v-model:amount="amounts[i]"
         v-model:address="tokenAddresses[i]"
         v-model:isValid="validInputs[i]"
-        :weight="isStableLikePool ? 0 : tokenWeights[i]"
+        :weight="isStableLikePool ? 0 : Number(tokenWeights[i])"
         :name="tokenAddress"
         class="mb-4"
         fixedToken
@@ -335,14 +335,6 @@ export default defineComponent({
       managedPoolWithTradingHalted
     } = usePool(toRef(props, 'pool'));
 
-    const { amounts } = toRefs(data);
-
-    const {
-      requiredApprovalState,
-      requiredApprovals,
-      approveNextAllowance
-    } = useTokenApprovals(props.pool.tokenAddresses, amounts);
-
     // SERVICES
     const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
@@ -398,10 +390,6 @@ export default defineComponent({
       if (!hasAmounts.value) return false;
       return requiredApprovals.value.length > 0;
     });
-
-    const approving = computed(
-      () => requiredApprovalState.value[requiredApprovals.value[0]].confirming
-    );
 
     const isProportional = computed(() => {
       return data.investType === FormTypes.proportional;
@@ -497,6 +485,12 @@ export default defineComponent({
 
       return validTypes;
     });
+
+    const {
+      approving,
+      requiredApprovals,
+      approveNextAllowance
+    } = useTokenApprovals(props.pool.tokenAddresses, fullAmounts);
 
     // METHODS
     function tokenBalance(index: number): string {
