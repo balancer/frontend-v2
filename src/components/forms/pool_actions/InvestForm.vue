@@ -400,7 +400,9 @@ export default defineComponent({
     });
 
     const approving = computed(
-      () => requiredApprovalState.value[requiredApprovals.value[0]].confirming
+      () =>
+        requiredApprovalState.value[requiredApprovals.value[0]]?.confirming ??
+        false
     );
 
     const isProportional = computed(() => {
