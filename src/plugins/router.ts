@@ -5,6 +5,7 @@ import PoolInvestPage from '@/pages/pool/invest.vue';
 import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/pages/trade.vue';
+import CreatePoolPage from '@/pages/pool/create.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -24,6 +25,11 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/pool/create',
+    name: 'create-pool',
+    component: CreatePoolPage
+  },
+  {
     path: '/pool/:id',
     name: 'pool',
     component: PoolPage
@@ -37,7 +43,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     redirect: '/'
-  }
+  },
 ];
 
 // Temp solution to limit new invest flow to staging and dev apps.
