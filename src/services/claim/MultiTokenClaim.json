@@ -12,14 +12,14 @@
             "distributor": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
             "token": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-lido.json",
-            "weekStart": 72
+            "weekStart": 1
         },
         {
             "label": "VITA",
             "distributor": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
             "token": "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-vita.json",
-            "weekStart": 72
+            "weekStart": 1
         }
     ],
     "42": [
@@ -27,9 +27,16 @@
           "label": "BAL",
           "distributor": "0x95FaE1C936B4Cd6c5099d7A705D792ee6aC9FEc3",
           "token": "0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7",
-          "manifest": " https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/sample-tree/reports-kovan/_current.json",
+          "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/sample-tree/reports-kovan/_current.json",
           "weekStart": 72
-      }
+      },
+      {
+        "label": "DAI",
+        "distributor": "0x95FaE1C936B4Cd6c5099d7A705D792ee6aC9FEc3",
+        "token": "0x04DF6e4121c27713ED22341E7c7Df330F56f289B",
+        "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/sample-tree/reports-kovan/_current-dai.json",
+        "weekStart": 1
+    }
     ],
     "42161": [
         {
@@ -44,7 +51,7 @@
             "distributor": "0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809",
             "token": "0x4e352cF164E64ADCBad318C3a1e222E9EBa4Ce42",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-mcdex-arbitrum.json",
-            "weekStart": 72
+            "weekStart": 1
         }
     ]
   }
