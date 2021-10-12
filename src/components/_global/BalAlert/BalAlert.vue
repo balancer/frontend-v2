@@ -1,8 +1,10 @@
 <template>
   <div :class="['bal-alert', classes]">
     <div :class="['bal-alert-container', containerClasses]">
-      <div :class="['bal-alert-icon', iconClasses]">
-        <BalIcon name="alert-circle" :size="iconSize" />
+      <div>
+        <div :class="['bal-alert-icon', iconClasses]">
+          <BalIcon name="alert-circle" :size="iconSize" />
+        </div>
       </div>
       <div :class="['bal-alert-content', contentClasses]">
         <div class="">
@@ -65,11 +67,11 @@ export default defineComponent({
     const bgColorClass = computed(() => {
       switch (props.type) {
         case 'warning':
-          return 'bg-yellow-50 text-black';
+          return 'bg-yellow-50 dark:bg-yellow-500 border border-yellow-200 dark:border-0 text-black dark:text-white';
         case 'error':
-          return 'bg-red-50 text-black';
+          return 'bg-red-50 dark:bg-red-500 border border-red-200 dark:border-0 text-black dark:text-white';
         default:
-          return 'bg-black text-white';
+          return 'bg-gray-100 dark:bg-gray-500 border dark:border-0 border-gray-200 text-black dark:text-white';
       }
     });
 
@@ -125,11 +127,11 @@ export default defineComponent({
     const iconColorClasses = computed(() => {
       switch (props.type) {
         case 'warning':
-          return 'text-yellow-500 bg-yellow-500 bg-opacity-10';
+          return 'text-yellow-500 dark:text-white bg-yellow-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
         case 'error':
-          return 'text-red-500 bg-red-500 bg-opacity-10';
+          return 'text-red-500 dark:text-white bg-red-500 dark:bg-white bg-opacity-10 dark:bg-opacity-10';
         default:
-          return 'text-white bg-white bg-opacity-20';
+          return 'text-gray-500 dark:text-white bg-black dark:bg-white bg-opacity-10 dark:bg-opacity-10';
       }
     });
 
@@ -145,8 +147,9 @@ export default defineComponent({
     }));
 
     const descriptionColor = computed(() => {
-      if (props.type === 'info') return 'text-white text-opacity-70';
-      return 'text-black text-opacity-70';
+      if (props.type === 'info')
+        return 'text-black dark:text-white text-opacity-70';
+      return 'text-black dark:text-white text-opacity-70';
     });
 
     const iconSize = computed(() => {
@@ -165,7 +168,7 @@ export default defineComponent({
         case 'error':
           return 'red';
         default:
-          return 'white';
+          return 'gray';
       }
     });
 

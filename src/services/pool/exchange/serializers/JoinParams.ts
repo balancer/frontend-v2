@@ -1,24 +1,26 @@
-import PoolExchange from '..';
+import PoolExchange from '../exchange.service';
 import { encodeJoinStablePool } from '@/lib/utils/balancer/stablePoolEncoding';
 import { encodeJoinWeightedPool } from '@/lib/utils/balancer/weightedPoolEncoding';
 import { parseUnits } from '@ethersproject/units';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { isInvestment, isStableLike } from '@/composables/usePool';
+import { Ref } from 'vue';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import { isManaged, isStableLike } from '@/composables/usePool';
 
 export default class JoinParams {
-  private exchange: PoolExchange;
+  private pool: Ref<FullPool>;
   private isStableLikePool: boolean;
-  private isInvestmentPool: boolean;
+  private isManagedPool: boolean;
   private isSwapEnabled: boolean;
   private dataEncodeFn: (data: any) => string;
   private fromInternalBalance = false;
 
   constructor(exchange: PoolExchange) {
-    this.exchange = exchange;
-    this.isStableLikePool = isStableLike(exchange.pool.poolType);
-    this.isInvestmentPool = isInvestment(exchange.pool.poolType);
+    this.pool = exchange.pool;
+    this.isStableLikePool = isStableLike(this.pool.value.poolType);
+    this.isManagedPool = isManaged(this.pool.value.poolType);
     this.isSwapEnabled =
-      this.isInvestmentPool && exchange.pool.onchain.swapEnabled;
+      this.isManagedPool && this.pool.value.onchain.swapEnabled;
     this.dataEncodeFn = this.isStableLikePool
       ? encodeJoinStablePool
       : encodeJoinWeightedPool;
@@ -30,18 +32,15 @@ export default class JoinParams {
     bptOut: string
   ): any[] {
     const parsedAmountsIn = this.parseAmounts(amountsIn);
-    const parsedBptOut = parseUnits(
-      bptOut,
-      this.exchange.pool.onchain.decimals
-    );
+    const parsedBptOut = parseUnits(bptOut, this.pool.value.onchain.decimals);
     const txData = this.txData(parsedAmountsIn, parsedBptOut);
 
     return [
-      this.exchange.pool.id,
+      this.pool.value.id,
       account,
       account,
       {
-        assets: this.exchange.pool.tokenAddresses,
+        assets: this.pool.value.tokenAddresses,
         maxAmountsIn: parsedAmountsIn,
         userData: txData,
         fromInternalBalance: this.fromInternalBalance
@@ -51,22 +50,19 @@ export default class JoinParams {
 
   private parseAmounts(amounts: string[]): BigNumberish[] {
     return amounts.map((amount, i) => {
-      const token = this.exchange.pool.tokenAddresses[i];
-      return parseUnits(
-        amount,
-        this.exchange.pool.onchain.tokens[token].decimals
-      );
+      const token = this.pool.value.tokenAddresses[i];
+      return parseUnits(amount, this.pool.value.onchain.tokens[token].decimals);
     });
   }
 
   private txData(amountsIn: BigNumberish[], minimumBPT: BigNumberish): string {
-    if (this.exchange.pool.onchain.totalSupply === '0') {
+    if (this.pool.value.onchain.totalSupply === '0') {
       return this.dataEncodeFn({ kind: 'Init', amountsIn });
     } else {
-      // Investment Pools can only be joined proportionally if trading is halted
+      // Managed Pools can only be joined proportionally if trading is halted
       // This code assumes the UI has disabled non-proportional "exact in for BPT out"
       // joins in this case
-      if (this.isInvestmentPool && !this.isSwapEnabled) {
+      if (this.isManagedPool && !this.isSwapEnabled) {
         return this.dataEncodeFn({
           kind: 'AllTokensInForExactBPTOut',
           bptAmountOut: minimumBPT

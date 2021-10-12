@@ -1,7 +1,12 @@
 <template>
   <div v-if="show" class="bal-modal" @click="hide" @keyup.esc="hide">
     <transition name="modal-bg" mode="out-in" appear>
-      <div v-if="showContent" class="modal-bg" @click="hide" />
+      <div v-if="showContent" class="modal-bg" @click="hide">
+        <div v-if="fireworks" class="fireworks">
+          <div class="before"></div>
+          <div class="after"></div>
+        </div>
+      </div>
     </transition>
     <div class="content-container">
       <AnimatePresence
@@ -56,7 +61,8 @@ export default defineComponent({
     show: { type: Boolean, default: false },
     title: { type: String, default: '' },
     noPad: { type: Boolean, default: false },
-    noContentPad: { type: Boolean, default: false }
+    noContentPad: { type: Boolean, default: false },
+    fireworks: { type: Boolean, default: false }
   },
 
   setup(props) {

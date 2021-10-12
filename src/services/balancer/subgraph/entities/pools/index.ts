@@ -103,6 +103,9 @@ export default class Pools {
       );
       const isNewPool = this.isNewPool(pool);
 
+      // TODO - remove hasLiquidityMiningRewards from schema
+      // Add a conditional to usePool or somewhere else that
+      // checks what rewards are available.
       return {
         ...pool,
         hasLiquidityMiningRewards,

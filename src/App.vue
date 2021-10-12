@@ -52,6 +52,8 @@ export default defineComponent({
     watch(route, newRoute => {
       if (newRoute.meta.layout) {
         layout.value = newRoute.meta.layout as string;
+      } else {
+        layout.value = 'DefaultLayout';
       }
     });
 

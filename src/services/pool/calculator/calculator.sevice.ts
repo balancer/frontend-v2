@@ -6,8 +6,9 @@ import Weighted from './weighted';
 import Stable from './stable';
 import { TokenInfoMap } from '@/types/TokenList';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { ComputedRef } from 'vue';
+import { Ref } from 'vue';
 import { isStable, isStableLike } from '@/composables/usePool';
+import { bnum } from '@/lib/utils';
 
 interface Amounts {
   send: string[];
@@ -23,18 +24,18 @@ export interface PiOptions {
 type PoolAction = 'join' | 'exit';
 
 export default class CalculatorService {
-  pool: FullPool;
-  allTokens: TokenInfoMap;
-  balances: ComputedRef<BalanceMap>;
+  pool: Ref<FullPool>;
+  allTokens: Ref<TokenInfoMap>;
+  balances: Ref<BalanceMap>;
   action: PoolAction;
   types = ['send', 'receive'];
   weighted: Weighted;
   stable: Stable;
 
   constructor(
-    pool: FullPool,
-    allTokens: TokenInfoMap,
-    balances: ComputedRef<BalanceMap>,
+    pool: Ref<FullPool>,
+    allTokens: Ref<TokenInfoMap>,
+    balances: Ref<BalanceMap>,
     action: PoolAction,
     weightedClass = Weighted,
     stableClass = Stable
@@ -45,14 +46,6 @@ export default class CalculatorService {
     this.action = action;
     this.weighted = new weightedClass(this);
     this.stable = new stableClass(this);
-  }
-
-  public setAllTokens(tokens: TokenInfoMap): void {
-    this.allTokens = tokens;
-  }
-
-  public setPool(pool: FullPool): void {
-    this.pool = pool;
   }
 
   public priceImpact(
@@ -97,15 +90,15 @@ export default class CalculatorService {
     };
     const type = this.action === 'join' ? 'send' : 'receive';
 
-    this.pool.tokenAddresses.forEach((token, tokenIndex) => {
+    this.pool.value.tokenAddresses.forEach((token, tokenIndex) => {
       let hasBalance = true;
-      const balance = this.balances.value[token];
+      const balance = this.balances.value[token] || '0';
       const amounts = this.propAmountsGiven(balance, tokenIndex, type);
 
       amounts.send.forEach((amount, amountIndex) => {
-        const greaterThanBalance =
-          Number(amount) >
-          Number(this.balances.value[this.tokenOf(type, amountIndex)]);
+        const greaterThanBalance = bnum(amount).gt(
+          this.balances.value[this.tokenOf(type, amountIndex)]
+        );
         if (greaterThanBalance) hasBalance = false;
       });
 
@@ -132,7 +125,7 @@ export default class CalculatorService {
 
     const types = ['send', 'receive'];
     const fixedTokenAddress = this.tokenOf(type, index);
-    const fixedToken = this.allTokens[fixedTokenAddress];
+    const fixedToken = this.allTokens.value[fixedTokenAddress];
     const fixedDenormAmount = parseUnits(fixedAmount, fixedToken.decimals);
     const fixedRatio = this.ratioOf(type, index);
     const amounts = {
@@ -147,7 +140,7 @@ export default class CalculatorService {
       ratios.forEach((ratio, i) => {
         if (i !== index || type !== types[ratioType]) {
           const tokenAddress = this.tokenOf(types[ratioType], i);
-          const token = this.allTokens[tokenAddress];
+          const token = this.allTokens.value[tokenAddress];
           amounts[types[ratioType]][i] = formatUnits(
             fixedDenormAmount.mul(ratio).div(fixedRatio),
             token.decimals
@@ -172,57 +165,57 @@ export default class CalculatorService {
   }
 
   public get poolTokenBalances(): BigNumberish[] {
-    const normalizedBalances = Object.values(this.pool.onchain.tokens).map(
-      t => t.balance
-    );
+    const normalizedBalances = Object.values(
+      this.pool.value.onchain.tokens
+    ).map(t => t.balance);
     return normalizedBalances.map((balance, i) =>
       parseUnits(balance, this.poolTokenDecimals[i])
     );
   }
 
   public get poolTokenDecimals(): number[] {
-    return Object.values(this.pool.onchain.tokens).map(t => t.decimals);
+    return Object.values(this.pool.value.onchain.tokens).map(t => t.decimals);
   }
 
   public get poolTokenWeights(): BigNumberish[] {
-    const normalizedWeights = Object.values(this.pool.onchain.tokens).map(
+    const normalizedWeights = Object.values(this.pool.value.onchain.tokens).map(
       t => t.weight
     );
     return normalizedWeights.map(weight => parseUnits(weight.toString(), 18));
   }
 
   public get poolTotalSupply(): BigNumberish {
-    return parseUnits(this.pool.onchain.totalSupply, this.poolDecimals);
+    return parseUnits(this.pool.value.onchain.totalSupply, this.poolDecimals);
   }
 
   public get poolSwapFee(): BigNumberish {
-    return parseUnits(this.pool.onchain.swapFee, 18);
+    return parseUnits(this.pool.value.onchain.swapFee, 18);
   }
 
   public get poolDecimals(): number {
-    return this.pool.onchain.decimals;
+    return this.pool.value.onchain.decimals;
   }
 
   public get bptBalance(): string {
-    return this.balances.value[this.pool.address];
+    return this.balances.value[this.pool.value.address];
   }
 
   public get isStablePool(): boolean {
-    return isStable(this.pool.poolType);
+    return isStable(this.pool.value.poolType);
   }
 
   public get isStableLikePool(): boolean {
-    return isStableLike(this.pool.poolType);
+    return isStableLike(this.pool.value.poolType);
   }
 
   public get sendTokens(): string[] {
-    if (this.action === 'join') return this.pool.tokenAddresses;
-    return [this.pool.address];
+    if (this.action === 'join') return this.pool.value.tokenAddresses;
+    return [this.pool.value.address];
   }
 
   public get receiveTokens(): string[] {
-    if (this.action === 'join') return [this.pool.address];
-    return this.pool.tokenAddresses;
+    if (this.action === 'join') return [this.pool.value.address];
+    return this.pool.value.tokenAddresses;
   }
 
   public get sendRatios(): BigNumberish[] {

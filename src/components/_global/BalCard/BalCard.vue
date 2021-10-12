@@ -3,7 +3,10 @@
     <div v-if="imgSrc" class="feature" :style="featureStyles" />
     <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
       <component :is="titleTag" v-if="!!title" v-text="title" />
-      <div v-if="$slots.header" class="flex-1 flex items-center">
+      <div
+        v-if="$slots.header"
+        :class="['header-content', headerContentClasses]"
+      >
         <slot name="header" />
       </div>
     </div>
@@ -33,6 +36,8 @@ export default defineComponent({
     imgSrc: { type: String, default: '' },
     hFull: { type: Boolean, default: false },
     growContent: { type: Boolean, default: false },
+    rightAlignHeader: { type: Boolean, default: false },
+    exposeOverflow: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: '',
@@ -50,6 +55,7 @@ export default defineComponent({
     const cardClasses = computed(() => {
       return {
         'rounded-lg': !props.square,
+        'overflow-hidden': !props.exposeOverflow,
         [`bg-white dark:bg-gray-${props.darkBgColor}`]: true,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
         [borderClasses.value]: !props.noBorder,
@@ -60,6 +66,12 @@ export default defineComponent({
     const headerClasses = computed(() => {
       return {
         'p-4 pb-0': !props.noPad
+      };
+    });
+
+    const headerContentClasses = computed(() => {
+      return {
+        'justify-end': props.rightAlignHeader
       };
     });
 
@@ -85,6 +97,7 @@ export default defineComponent({
       cardClasses,
       contentClasses,
       headerClasses,
+      headerContentClasses,
       footerClasses,
       featureStyles
     };
@@ -94,10 +107,15 @@ export default defineComponent({
 
 <style scoped>
 .bal-card {
-  @apply overflow-hidden flex flex-col;
+  @apply flex flex-col;
 }
+
 .header {
   @apply flex items-center;
+}
+
+.header-content {
+  @apply flex-1 flex items-center;
 }
 
 .footer {
