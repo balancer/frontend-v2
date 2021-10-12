@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { groupBy } from 'lodash';
+import { flatten, groupBy } from 'lodash';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
 
@@ -173,7 +173,7 @@ export class ClaimService {
         tokenPendingClaims => tokenPendingClaims.tokenClaimInfo.token
       );
 
-      const [multiTokenClaims] = await Promise.all(
+      const multiTokenClaims = await Promise.all(
         multiTokenPendingClaims.map((tokenPendingClaims, tokenIndex) =>
           this.computeClaimProofs(tokenPendingClaims, account, tokenIndex)
         )
@@ -184,7 +184,7 @@ export class ClaimService {
         configs[networkId.value].addresses.merkleOrchard,
         merkleOrchardAbi,
         'claimDistributions',
-        [account, multiTokenClaims, tokens]
+        [account, flatten(multiTokenClaims), tokens]
       );
     } catch (e) {
       console.log('[Claim] Claim Rewards Error:', e);

@@ -43,7 +43,7 @@ export type MultiTokenCurrentRewardsEstimate = {
   token: string;
 };
 
-export type ClaimProofTuple = [number, string, string[]];
+export type ClaimProofTuple = [number, string, string, number, string[]]; // claimId, claimAmount, distributor, tokenIndex, proof
 
 export type ComputeClaimProofPayload = {
   report: Report;
