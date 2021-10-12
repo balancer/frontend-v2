@@ -7,7 +7,8 @@ import { getAddress } from '@ethersproject/address';
 
 import { networkId } from '@/composables/useNetwork';
 
-import { call, sendTransaction } from '@/lib/utils/balancer/web3';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
+import { multicall } from '@/lib/utils/balancer/contract';
 import { bnum } from '@/lib/utils';
 import configs from '@/lib/config';
 
@@ -250,13 +251,18 @@ export class ClaimService {
   ): Promise<ClaimStatus[]> {
     const { token, distributor, weekStart } = tokenClaimInfo;
 
-    const weekEnd = totalWeeks + weekStart - 1;
-
-    return call(provider, merkleOrchardAbi, [
+    const claimStatusCalls = Array.from({ length: totalWeeks }).map((_, i) => [
       configService.network.addresses.merkleOrchard,
-      'claimStatus',
-      [token, distributor, account, weekStart, weekEnd]
+      'isClaimed',
+      [token, distributor, weekStart + i, account]
     ]);
+
+    return multicall(
+      String(networkId.value),
+      provider,
+      merkleOrchardAbi,
+      claimStatusCalls
+    );
   }
 
   private async getReports(snapshot: Snapshot, weeks: number[]) {
