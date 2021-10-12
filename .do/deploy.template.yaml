@@ -1,21 +1,25 @@
 spec:
-  name: balancer-frontend-v2
+  alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+  name: frontend-v2
   services:
-  - name: frontend-v2
-    http_port: 80
-    envs:
+  - envs:
     - key: INFURA_PROJECT_ID
       scope: RUN_AND_BUILD_TIME
     - key: ALCHEMY_KEY
       scope: RUN_AND_BUILD_TIME
     - key: BLOCKNATIVE_DAPP_ID
       scope: RUN_AND_BUILD_TIME
-    git:
-      branch: UI-769-one-click-deploy-to-digital-ocean
-      repo_clone_url: https://github.com/balancer-labs/frontend-v2.git
+    http_port: 80
     image:
-      registry: docker.io
       registry_type: DOCKER_HUB
-      repository: balancerfi/frontend-v2
+      registry: balancerfi
+      repository: frontend-v2
       tag: latest
+    instance_count: 1
     instance_size_slug: basic-xxs
+    name: frontend-v2
+    routes:
+    - path: /
+    source_dir: /
