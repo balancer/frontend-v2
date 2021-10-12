@@ -1,0 +1,17 @@
+spec:
+  name: balancer-frontend-v2
+  services:
+  - name: frontend-v2
+    git:
+      branch: UI-769-one-click-deploy-to-digital-ocean
+      repo_clone_url: https://github.com/balancer-labs/frontend-v2.git
+    dockerfile_path: Dockerfile
+    envs:
+    - key: INFURA_PROJECT_ID
+      scope: RUN_AND_BUILD_TIME
+    - key: ALCHEMY_KEY
+      scope: RUN_AND_BUILD_TIME
+    - key: BLOCKNATIVE_DAPP_ID
+      scope: RUN_AND_BUILD_TIME
+    http_port: 80
+    instance_size_slug: basic-xs
