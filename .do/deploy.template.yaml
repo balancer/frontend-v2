@@ -2,10 +2,7 @@ spec:
   name: balancer-frontend-v2
   services:
   - name: frontend-v2
-    image:
-      registry_type: "DOCKER_HUB"
-      registry: "registry.hub.docker"
-      repository: "balancerfi/frontend-v2"
+    http_port: 80
     envs:
     - key: INFURA_PROJECT_ID
       scope: RUN_AND_BUILD_TIME
@@ -13,5 +10,12 @@ spec:
       scope: RUN_AND_BUILD_TIME
     - key: BLOCKNATIVE_DAPP_ID
       scope: RUN_AND_BUILD_TIME
-    http_port: 80
-    instance_size_slug: basic-xs
+    git:
+      branch: UI-769-one-click-deploy-to-digital-ocean
+      repo_clone_url: https://github.com/balancer-labs/frontend-v2.git
+    image:
+      registry: docker.io
+      registry_type: DOCKER_HUB
+      repository: balancerfi/frontend-v2
+      tag: latest
+    instance_size_slug: basic-xxs
