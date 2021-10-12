@@ -59,7 +59,7 @@ const distributeWeights = () => {
   for (const tokenWeight of tokenWeights) {
     tokenWeight.weight = fNum(evenDistributionWeight, 'percent');
   }
-}
+};
 </script>
 
 <template>
