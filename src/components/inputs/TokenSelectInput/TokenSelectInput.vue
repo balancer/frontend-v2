@@ -11,7 +11,7 @@ import { TokenInfo } from '@/types/TokenList';
 type Props = {
   modelValue: string;
   fixed?: boolean;
-  weight?: number;
+  weight?: number | string;
   excludedTokens?: string[];
 };
 
@@ -71,7 +71,7 @@ const toggleModal = () => {
       <span class="text-base font-medium">
         {{ token?.symbol }}
       </span>
-      <span v-if="weight > 0" class="text-gray-500 ml-2">
+      <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
         {{ fNum(weight, 'percent_lg') }}
       </span>
       <BalIcon

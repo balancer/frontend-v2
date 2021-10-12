@@ -19,7 +19,7 @@ type InputValue = string | number;
 type Props = {
   amount: InputValue;
   address?: string;
-  weight?: number;
+  weight?: number | string;
   noRules?: boolean;
   noMax?: boolean;
   priceImpact?: number;
