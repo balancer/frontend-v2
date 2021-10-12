@@ -33,30 +33,39 @@ export default function useValidation(
     () => !tokenInAddress.value || !tokenOutAddress.value
   );
 
+  const exceedsBalance = computed(
+    () =>
+      !balances.value[tokenInAddress.value] ||
+      bnum(balances.value[tokenInAddress.value]).lt(tokenInAmount.value)
+  );
+
+  const notEnoughForGas = computed(() => {
+    const nativeAssetBalance = bnum(balances.value[nativeAsset.address]);
+    return nativeAssetBalance.lt(MIN_NATIVE_ASSET_REQUIRED);
+  });
+
+  /**
+   * Not definitive. Only probably true if no other exceptions,
+   * i.e. valid inputs, wallet connected, enough balance, etc.
+   */
+  const probablyNotEnoughLiquidity = computed(
+    () =>
+      bnum(tokenOutAmount.value).eq(0) ||
+      tokenOutAmount.value.trim() === '' ||
+      bnum(tokenInAmount.value).eq(0) ||
+      tokenInAmount.value.trim() === ''
+  );
+
   const validationStatus = computed(() => {
     if (!isWalletReady.value) return TradeValidation.NO_ACCOUNT;
 
     if (noAmounts.value || missingToken.value) return TradeValidation.EMPTY;
 
-    const nativeAssetBalance = parseFloat(balances.value[nativeAsset.address]);
-    if (nativeAssetBalance < MIN_NATIVE_ASSET_REQUIRED) {
-      return TradeValidation.NO_NATIVE_ASSET;
-    }
+    if (notEnoughForGas.value) return TradeValidation.NO_NATIVE_ASSET;
 
-    if (
-      !balances.value[tokenInAddress.value] ||
-      parseFloat(balances.value[tokenInAddress.value]) <
-        parseFloat(tokenInAmount.value)
-    )
-      return TradeValidation.NO_BALANCE;
+    if (exceedsBalance.value) return TradeValidation.NO_BALANCE;
 
-    if (
-      parseFloat(tokenOutAmount.value) == 0 ||
-      tokenOutAmount.value.trim() === '' ||
-      parseFloat(tokenInAmount.value) == 0 ||
-      tokenInAmount.value.trim() === ''
-    )
-      return TradeValidation.NO_LIQUIDITY;
+    if (probablyNotEnoughLiquidity.value) return TradeValidation.NO_LIQUIDITY;
 
     return TradeValidation.VALID;
   });
