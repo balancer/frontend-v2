@@ -32,7 +32,7 @@
             <TrendingPairs />
           </template>
           <template v-slot:price-chart>
-            <PairPriceGraph v-model="showMobileExpandedPriceGraph" />
+            <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
           </template>
         </BalAccordion>
       </div>
@@ -41,21 +41,21 @@
       v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists)"
       class="mt-16 ml-6 flex flex-col widget-card relative"
     >
-      <PairPriceGraph />
+      <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
     </div>
     <BalModal
-      :show="showMobileExpandedPriceGraph"
-      @close="onMobilePriceGraphClose"
+      :show="showPriceGraphModal"
+      @close="onPriceGraphModalClose"
     >
       <div class="graph-modal">
-        <PairPriceGraph isMobileModal :onCloseModal="onMobilePriceGraphClose" />
+        <PairPriceGraph :toggleModal="togglePairPriceGraphModal" isModal :onCloseModal="onPriceGraphModalClose" />
       </div>
     </BalModal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref } from 'vue';
+import { defineComponent, computed, onMounted, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
@@ -83,7 +83,7 @@ export default defineComponent({
     const { loadingTokenLists } = useTokenLists();
     const { setSelectedTokens } = usePoolFilters();
     const { upToLargeBreakpoint } = useBreakpoints();
-    const showMobileExpandedPriceGraph = ref(false);
+    const showPriceGraphModal = ref(false);
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
     const tradeInterface = computed(() => store.state.app.tradeInterface);
@@ -93,9 +93,17 @@ export default defineComponent({
       setSelectedTokens([]);
     });
 
-    const onMobilePriceGraphClose = () => {
-      showMobileExpandedPriceGraph.value = false;
+    const onPriceGraphModalClose = () => {
+      showPriceGraphModal.value = false;
     };
+
+    const togglePairPriceGraphModal = () => {
+      showPriceGraphModal.value = !showPriceGraphModal.value;
+    }
+
+    watch(showPriceGraphModal, () => {
+      console.log('wwop')
+    })
 
     return {
       appLoading,
@@ -103,8 +111,9 @@ export default defineComponent({
       loadingTokenLists,
       TradeInterface,
       upToLargeBreakpoint,
-      showMobileExpandedPriceGraph,
-      onMobilePriceGraphClose
+      showPriceGraphModal,
+      togglePairPriceGraphModal,
+      onPriceGraphModalClose
     };
   }
 });

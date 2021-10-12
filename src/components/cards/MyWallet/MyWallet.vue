@@ -41,13 +41,13 @@ const tokensWithBalance = computed(() => {
     :noBorder="upToLargeBreakpoint"
     growContent
     :hFull="upToLargeBreakpoint"
-    :shadow="false"
+    shadow="false"
   >
     <div
       class="flex flex-col bg-white w-full h-full bg-transparent lg:bg-white"
     >
       <div class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:shadow-lg">
-        <h6 v-if="!upToLargeBreakpoint">{{ $t('myWallet') }}</h6>
+        <h6 v-if="!upToLargeBreakpoint">{{ $t('myWallet2') }}</h6>
         <div
           class="font-semibold lg:font-normal ml-1 lg:ml-0"
           v-if="!isLoadingBalances"

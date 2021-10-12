@@ -85,8 +85,9 @@ const chartTimespans = [
 ];
 
 type Props = {
-  isMobileModal?: boolean;
+  isModal?: boolean;
   onCloseModal?: () => void;
+  toggleModal: () => void;
 };
 
 const props = defineProps<Props>();
@@ -101,7 +102,7 @@ const { chainId: userNetworkId } = useWeb3();
 const animateInstance = ref();
 const elementToAnimate = ref<HTMLElement>();
 const chartHeight = ref(
-  upToLargeBreakpoint ? (props.isMobileModal ? 250 : 75) : 100
+  upToLargeBreakpoint ? (props.isModal ? 250 : 75) : (props.isModal ? 250 : 100)
 );
 const activeTimespan = ref(chartTimespans[0]);
 const isExpanded = ref(false);
@@ -154,67 +155,8 @@ const {
   })
 );
 
-const maximise = () => {
-  if (elementToAnimate.value) {
-    anime.set(elementToAnimate.value, {
-      transformOrigin: 'right middle'
-    });
-  }
-  // unfortunately we need to animate height and width
-  // instead of transforms due to the chart relying on it
-  window.requestAnimationFrame(() => {
-    animateInstance.value = anime({
-      targets: elementToAnimate.value,
-      // delay needed to avoid major wonkiness
-      width: { value: '750px', delay: 150 },
-      // h-112
-      height: '448px',
-      // delay needed to avoid major wonkiness
-      translateX: { value: '-85%', delay: 10 },
-      easing: EASING,
-      update: () => {
-        resizeTick.value = resizeTick.value + 1;
-        chartHeight.value = (elementToAnimate.value?.offsetHeight || 0) * 0.6;
-      }
-    });
-    isExpanded.value = true;
-  });
-};
-
-const minimise = () => {
-  // unfortunately we need to animate height and width
-  // instead of transforms due to the chart relying on it
-  requestAnimationFrame(() => {
-    anime({
-      targets: elementToAnimate.value,
-      width: '250px',
-      height: '225px',
-      // delay needed to avoid major wonkiness
-      translateX: { value: '0%', delay: 135 },
-      easing: EASING,
-      update: () => {
-        resizeTick.value = resizeTick.value + 1;
-        chartHeight.value = upToLargeBreakpoint ? 75 : 100;
-      }
-    });
-    isExpanded.value = false;
-  });
-};
-
 const toggle = () => {
-  if (upToLargeBreakpoint.value) {
-    if (props.isMobileModal) {
-      props.onCloseModal && props.onCloseModal();
-    } else {
-      emit('update:modelValue', true);
-    }
-    return;
-  }
-  if (isExpanded.value) {
-    minimise();
-  } else {
-    maximise();
-  }
+  props.toggleModal();
 };
 
 const chartData = computed(() => [
@@ -244,12 +186,11 @@ const chartColors = computed(() => {
 });
 
 const chartGrid = computed(() => {
-  const bottom = isExpanded.value ? '7.5%' : '15%';
   return {
     left: '2.5%',
     right: '0',
     top: '10%',
-    bottom,
+    bottom: '15%',
     containLabel: false
   };
 });
@@ -259,10 +200,10 @@ const chartGrid = computed(() => {
   <div
     ref="elementToAnimate"
     :class="[
-      'lg:h-56',
+      '',
       {
-        'h-40': !isMobileModal,
-        'h-full': isMobileModal
+        'h-40 lg:h-56': !isModal,
+        'h-full lg:h-full': isModal,
       }
     ]"
   >
@@ -270,16 +211,16 @@ const chartGrid = computed(() => {
       v-if="isLoadingPriceData"
       :class="{
         'h-64': !isExpanded,
-        'h-112': isExpanded || isMobileModal
+        'h-112': isExpanded || isModal
       }"
     />
     <BalCard
       :square="upToLargeBreakpoint"
-      :shadow="false"
+      shadow="false"
       hFull
       growContent
       noPad
-      :noBorder="upToLargeBreakpoint"
+      :noBorder="upToLargeBreakpoint || isModal"
       v-else
     >
       <div class="relative h-full bg-transparent p-4">
@@ -289,12 +230,12 @@ const chartGrid = computed(() => {
           class="maximise border m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
         >
           <BalIcon
-            v-if="!isExpanded && !isMobileModal"
+            v-if="!isExpanded && !isModal"
             name="maximize-2"
             class="text-gray-500"
           />
           <BalIcon
-            v-if="isExpanded || isMobileModal"
+            v-if="isExpanded || isModal"
             name="x"
             class="text-gray-500"
           />
@@ -305,10 +246,16 @@ const chartGrid = computed(() => {
           <h6 class="font-medium">{{ inputSym }}/{{ outputSym }}</h6>
         </div>
         <div
-          v-if="failedToLoadPriceData"
+          v-if="failedToLoadPriceData && tokenOutAddress"
           class="h-full w-full flex justify-center items-center"
         >
-          <span class="text-sm text-gray-400">Not enough data</span>
+          <span class="text-sm text-gray-400">{{ $t('insufficientData') }}</span>
+        </div>
+        <div
+          v-if="failedToLoadPriceData && !tokenOutAddress"
+          class="h-full w-full flex justify-center items-center"
+        >
+          <span class="text-sm text-gray-400 text-center">{{ $t('chooseAPair') }}</span>
         </div>
         <div
           v-if="!failedToLoadPriceData && !isLoadingPriceData"
@@ -325,11 +272,11 @@ const chartGrid = computed(() => {
             :wrapper-class="[
               'flex flex-row lg:flex-col',
               {
-                'flex-row': !isMobileModal,
-                'flex-col': isMobileModal
+                'flex-row': !isModal,
+                'flex-col': isModal
               }
             ]"
-            :show-tooltip="!upToLargeBreakpoint || isMobileModal"
+            :show-tooltip="!upToLargeBreakpoint || isModal"
             hide-y-axis
             hide-x-axis
             show-header
@@ -338,10 +285,10 @@ const chartGrid = computed(() => {
             :class="[
               'w-full flex justify-between mt-6',
               {
-                'flex-col': isMobileModal
+                'flex-col': isModal
               }
             ]"
-            v-if="isExpanded || isMobileModal"
+            v-if="isExpanded || isModal"
           >
             <div>
               <button
@@ -367,7 +314,7 @@ const chartGrid = computed(() => {
                 {{ timespan.option }}
               </button>
             </div>
-            <div :class="{ 'mt-4': isMobileModal }">
+            <div :class="{ 'mt-4': isModal }">
               <span class="text-sm text-gray-500 mr-4"
                 >Low: {{ dataMin.toPrecision(6) }}</span
               >

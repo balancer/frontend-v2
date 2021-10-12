@@ -2,6 +2,7 @@
 import { ref, nextTick, onMounted } from 'vue';
 import anime from 'animejs';
 import { takeRight } from 'lodash';
+import { arrow } from '@popperjs/core';
 
 type Section = {
   title: string;
@@ -19,6 +20,7 @@ const activeSectionElement = ref<HTMLElement>();
 const accordionHeightSetterElement = ref<HTMLElement>();
 const wrapperElement = ref<HTMLElement>();
 const handleBarElement = ref<HTMLElement>();
+const arrowElement = ref<HTMLElement>();
 const handleBarElements = ref<HTMLElement[]>([]);
 
 const minimisedWrapperHeight = ref(0);
@@ -30,8 +32,14 @@ const totalHeight = ref(0);
 const easing = 'spring(0.2, 150, 18, 0)';
 
 async function toggleSection(section: string) {
-  activeSection.value = section;
-  isContentVisible.value = true;
+  const collapseCurrentSection = activeSection.value === section;
+  if (collapseCurrentSection) {
+    activeSection.value = '';
+    isContentVisible.value = false;
+  } else {
+    activeSection.value = section;
+    isContentVisible.value = true;
+  }
   await nextTick();
   if (activeSectionElement.value && accordionHeightSetterElement.value) {
     height.value = activeSectionElement.value.clientHeight;
@@ -57,18 +65,27 @@ async function toggleSection(section: string) {
   // unfortunately this does introduce reflow (animating height of total)
   // but it way better than having to animate the height of 2 sections
   // the one minimising + the one maximising
+  const heightToAnimate = collapseCurrentSection ? minimisedWrapperHeight.value : minimisedWrapperHeight.value + height.value;
   anime({
     targets: wrapperElement.value,
-    height: `${minimisedWrapperHeight.value + height.value}px`,
+    height: `${heightToAnimate}px`,
     easing
   });
   handleBarsToTransform.forEach(handleBar => {
+    const y = collapseCurrentSection ? 0 : height.value;
     anime({
       targets: handleBar,
-      translateY: `${height.value}px`,
+      translateY: `${y}px`,
       easing
     });
   });
+
+  // animate the arrow
+  console.log('lmao', arrowElement.value)
+  anime({
+    targets: arrowElement.value,
+    rotate: '90deg'
+  })
 
   setTimeout(async () => {
     isContentVisible.value = true;
@@ -138,7 +155,7 @@ function setHandleBars(el: HTMLElement) {
           ref="handleBarElement"
           @click="toggleSection(section.id)"
           :class="[
-            'w-full flex justify-between p-3',
+            'w-full flex justify-between p-3 hover:bg-gray-50',
             {
               'border-b dark:border-gray-900': i !== sections.length - 1
             }
@@ -153,7 +170,11 @@ function setHandleBars(el: HTMLElement) {
           v-if="activeSection === section.id"
         >
           <!-- content -->
-          <div ref="activeSectionElement" v-if="isContentVisible">
+          <div
+            ref="activeSectionElement"
+            :class="{ 'border-b': isContentVisible }"
+            v-if="isContentVisible"
+          >
             <slot :name="section.id" />
           </div>
         </div>
