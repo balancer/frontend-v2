@@ -2,10 +2,10 @@ spec:
   name: balancer-frontend-v2
   services:
   - name: frontend-v2
-    git:
-      branch: UI-769-one-click-deploy-to-digital-ocean
-      repo_clone_url: https://github.com/balancer-labs/frontend-v2.git
-    dockerfile_path: Dockerfile
+    image:
+      registry_type: "DOCKER_HUB"
+      registry: "registry.hub.docker"
+      repository: "balancerfi/frontend-v2"
     envs:
     - key: INFURA_PROJECT_ID
       scope: RUN_AND_BUILD_TIME
