@@ -7,6 +7,7 @@ export type TokenClaimInfo = {
   distributor: string;
   token: string;
   manifest: string;
+  weekStart: number;
 };
 
 export type MultiTokenPendingClaims = {

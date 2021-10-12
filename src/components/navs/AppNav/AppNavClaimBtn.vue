@@ -59,6 +59,7 @@ const {
   getProvider,
   isArbitrum,
   isMainnet,
+  isKovan,
   isPolygon,
   isMismatchedNetwork
 } = useWeb3();
@@ -84,7 +85,7 @@ const BALTokenPlaceholder = computed<ClaimableToken>(() => ({
 const isAirdrop = computed(() => isPolygon.value);
 
 const legacyClaimUI = computed(() => {
-  if (isMainnet.value) {
+  if (isMainnet.value || isKovan.value) {
     return [
       { token: '$BAL', subdomain: 'claim' },
       { token: '$VITA', subdomain: 'claim-vita' },
@@ -420,7 +421,7 @@ async function claimAvailableRewards() {
               >Arbitrum</BalLink
             >.
           </template>
-          <template v-else-if="isMainnet">
+          <template v-else-if="isMainnet || isKovan">
             <BalLink href="https://polygon.balancer.fi" external>
               Polygon
             </BalLink>

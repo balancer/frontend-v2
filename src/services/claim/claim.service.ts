@@ -29,7 +29,6 @@ import {
 } from './types';
 import { claimWorkerPoolService } from './claim-worker-pool.service';
 import { configService } from '../config/config.service';
-import { TOKENS } from '@/constants/tokens';
 
 export class ClaimService {
   public async getMultiTokensPendingClaims(
@@ -59,6 +58,7 @@ export class ClaimService {
     account: string
   ): Promise<MultiTokenPendingClaims> {
     const snapshot = await this.getSnapshot(tokenClaimInfo.manifest);
+    const weekStart = tokenClaimInfo.weekStart;
 
     const claimStatus = await this.getClaimStatus(
       provider,
@@ -68,7 +68,7 @@ export class ClaimService {
     );
 
     const pendingWeeks = claimStatus
-      .map((status, i) => [i + 1, status])
+      .map((status, i) => [i + weekStart, status])
       .filter(([, status]) => !status)
       .map(([i]) => i) as number[];
 
@@ -248,12 +248,7 @@ export class ClaimService {
     account: string,
     tokenClaimInfo: TokenClaimInfo
   ): Promise<ClaimStatus[]> {
-    const { token, distributor } = tokenClaimInfo;
-
-    const weekStart =
-      getAddress(token) === TOKENS.AddressMap[configService.network.key].BAL
-        ? 72
-        : 1;
+    const { token, distributor, weekStart } = tokenClaimInfo;
 
     const weekEnd = totalWeeks + weekStart - 1;
 
