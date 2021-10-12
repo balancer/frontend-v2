@@ -2,7 +2,6 @@
 import { ref, nextTick, onMounted } from 'vue';
 import anime from 'animejs';
 import { takeRight } from 'lodash';
-import { arrow } from '@popperjs/core';
 
 type Section = {
   title: string;
@@ -65,7 +64,9 @@ async function toggleSection(section: string) {
   // unfortunately this does introduce reflow (animating height of total)
   // but it way better than having to animate the height of 2 sections
   // the one minimising + the one maximising
-  const heightToAnimate = collapseCurrentSection ? minimisedWrapperHeight.value : minimisedWrapperHeight.value + height.value;
+  const heightToAnimate = collapseCurrentSection
+    ? minimisedWrapperHeight.value
+    : minimisedWrapperHeight.value + height.value;
   anime({
     targets: wrapperElement.value,
     height: `${heightToAnimate}px`,
@@ -81,11 +82,11 @@ async function toggleSection(section: string) {
   });
 
   // animate the arrow
-  console.log('lmao', arrowElement.value)
+  console.log('lmao', arrowElement.value);
   anime({
     targets: arrowElement.value,
     rotate: '90deg'
-  })
+  });
 
   setTimeout(async () => {
     isContentVisible.value = true;

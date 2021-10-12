@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
-import anime from 'animejs';
 import { useStore } from 'vuex';
 import useTokens from '@/composables/useTokens';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
@@ -21,8 +20,6 @@ import { useTradeState } from '@/composables/trade/useTradeState';
 import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
-
-const EASING = 'spring(1, 150, 18, 0)';
 
 async function getPairPriceData(
   inputAsset: string,
@@ -91,7 +88,6 @@ type Props = {
 };
 
 const props = defineProps<Props>();
-const emit = defineEmits(['update:modelValue']);
 const { upToLargeBreakpoint } = useBreakpoints();
 const store = useStore();
 const { tokens } = useTokens();
@@ -99,15 +95,10 @@ const { tokenInAddress, tokenOutAddress } = useTradeState();
 const tailwind = useTailwind();
 const { chainId: userNetworkId } = useWeb3();
 
-const animateInstance = ref();
-const elementToAnimate = ref<HTMLElement>();
 const chartHeight = ref(
-  upToLargeBreakpoint ? (props.isModal ? 250 : 75) : (props.isModal ? 250 : 100)
+  upToLargeBreakpoint ? (props.isModal ? 250 : 75) : props.isModal ? 250 : 100
 );
 const activeTimespan = ref(chartTimespans[0]);
-const isExpanded = ref(false);
-const resizeTick = ref(0);
-
 const appLoading = computed(() => store.state.app.loading);
 
 const inputSym = computed(
@@ -203,15 +194,15 @@ const chartGrid = computed(() => {
       '',
       {
         'h-40 lg:h-56': !isModal,
-        'h-full lg:h-full': isModal,
+        'h-full lg:h-full': isModal
       }
     ]"
   >
     <BalLoadingBlock
       v-if="isLoadingPriceData"
       :class="{
-        'h-64': !isExpanded,
-        'h-112': isExpanded || isModal
+        'h-64': !isModal,
+        'h-112': isModal
       }"
     />
     <BalCard
@@ -229,16 +220,8 @@ const chartGrid = computed(() => {
           @click="toggle"
           class="maximise border m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
         >
-          <BalIcon
-            v-if="!isExpanded && !isModal"
-            name="maximize-2"
-            class="text-gray-500"
-          />
-          <BalIcon
-            v-if="isExpanded || isModal"
-            name="x"
-            class="text-gray-500"
-          />
+          <BalIcon v-if="!isModal" name="maximize-2" class="text-gray-500" />
+          <BalIcon v-if="isModal" name="x" class="text-gray-500" />
         </button>
         <div
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
@@ -249,13 +232,17 @@ const chartGrid = computed(() => {
           v-if="failedToLoadPriceData && tokenOutAddress"
           class="h-full w-full flex justify-center items-center"
         >
-          <span class="text-sm text-gray-400">{{ $t('insufficientData') }}</span>
+          <span class="text-sm text-gray-400">{{
+            $t('insufficientData')
+          }}</span>
         </div>
         <div
           v-if="failedToLoadPriceData && !tokenOutAddress"
           class="h-full w-full flex justify-center items-center"
         >
-          <span class="text-sm text-gray-400 text-center">{{ $t('chooseAPair') }}</span>
+          <span class="text-sm text-gray-400 text-center">{{
+            $t('chooseAPair')
+          }}</span>
         </div>
         <div
           v-if="!failedToLoadPriceData && !isLoadingPriceData"
@@ -266,7 +253,6 @@ const chartGrid = computed(() => {
             :height="chartHeight"
             :show-legend="false"
             :color="chartColors"
-            :force-resize-tick="resizeTick"
             :custom-grid="chartGrid"
             :axis-label-formatter="{ yAxis: '0.000000' }"
             :wrapper-class="[
@@ -288,7 +274,7 @@ const chartGrid = computed(() => {
                 'flex-col': isModal
               }
             ]"
-            v-if="isExpanded || isModal"
+            v-if="isModal"
           >
             <div>
               <button

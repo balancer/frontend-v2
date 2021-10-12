@@ -43,12 +43,13 @@
     >
       <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
     </div>
-    <BalModal
-      :show="showPriceGraphModal"
-      @close="onPriceGraphModalClose"
-    >
+    <BalModal :show="showPriceGraphModal" @close="onPriceGraphModalClose">
       <div class="graph-modal">
-        <PairPriceGraph :toggleModal="togglePairPriceGraphModal" isModal :onCloseModal="onPriceGraphModalClose" />
+        <PairPriceGraph
+          :toggleModal="togglePairPriceGraphModal"
+          isModal
+          :onCloseModal="onPriceGraphModalClose"
+        />
       </div>
     </BalModal>
   </div>
@@ -99,11 +100,11 @@ export default defineComponent({
 
     const togglePairPriceGraphModal = () => {
       showPriceGraphModal.value = !showPriceGraphModal.value;
-    }
+    };
 
     watch(showPriceGraphModal, () => {
-      console.log('wwop')
-    })
+      console.log('wwop');
+    });
 
     return {
       appLoading,
