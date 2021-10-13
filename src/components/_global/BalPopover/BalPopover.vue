@@ -4,8 +4,8 @@ import { ref, computed, watch } from 'vue';
 type PopoverTrigger = 'click' | 'hover';
 
 type Props = {
-  trigger: PopoverTrigger;
-  align: string;
+  trigger?: PopoverTrigger;
+  align?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
