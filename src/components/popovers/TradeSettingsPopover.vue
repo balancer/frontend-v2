@@ -60,7 +60,7 @@
         />
       </div>
     </div>
-    <div v-if="appTradeInterface === TradeInterface.GNOSIS" class="mt-6">
+    <div class="mt-6">
       <div class="flex items-baseline">
         <span v-text="$t('transactionDeadline')" class="font-medium mb-2" />
         <BalTooltip>
@@ -106,7 +106,6 @@ import useNumbers from '@/composables/useNumbers';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import useFathom from '@/composables/useFathom';
 
-import { TradeInterface } from '@/store/modules/app';
 import {
   tradeLiquidityOptions,
   ethereumTxTypeOptions
@@ -156,9 +155,6 @@ export default defineComponent({
 
     // COMPUTED
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
-    const appTradeInterface = computed<TradeInterface>(
-      () => store.state.app.tradeInterface
-    );
     const appTransactionDeadline = computed<number>(
       () => store.state.app.transactionDeadline
     );
@@ -185,10 +181,8 @@ export default defineComponent({
       ...toRefs(data),
       Goals,
       // constants,
-      TradeInterface,
       // computed
       appTradeLiquidity,
-      appTradeInterface,
       appTransactionDeadline,
       hideLiquidity,
       isEIP1559SupportedNetwork,

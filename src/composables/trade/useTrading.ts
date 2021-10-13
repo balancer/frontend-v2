@@ -1,7 +1,7 @@
-import { computed, Ref, watch } from 'vue';
+import { computed, ref, Ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import { bnum, scale } from '@/lib/utils';
+import { bnum, lsGet, lsSet, scale } from '@/lib/utils';
 import useNumbers from '../useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import useSor from './useSor';
@@ -11,9 +11,15 @@ import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import useUserSettings from '../useUserSettings';
 
+import LS_KEYS from '@/constants/local-storage.keys';
+
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 
 export type UseTrading = ReturnType<typeof useTrading>;
+
+export const tradeGasless = ref<boolean>(
+  lsGet<boolean>(LS_KEYS.Trade.Gasless, true)
+);
 
 export default function useTrading(
   exactIn: Ref<boolean>,
@@ -95,9 +101,11 @@ export default function useTrading(
       return 'balancer';
     } else if (wrapType.value !== WrapType.NonWrap) {
       return 'wrapUnwrap';
+    } else if (isEthTrade.value) {
+      return 'balancer';
     }
 
-    return isEthTrade.value ? 'balancer' : 'gnosis';
+    return tradeGasless.value ? 'gnosis' : 'balancer';
   });
 
   const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
@@ -189,6 +197,14 @@ export default function useTrading(
     gnosis.submissionError.value = null;
   }
 
+  function toggleTradeGasless() {
+    tradeGasless.value = !tradeGasless.value;
+
+    lsSet(LS_KEYS.Trade.Gasless, tradeGasless.value);
+
+    handleAmountChange();
+  }
+
   function getQuote() {
     if (isGnosisTrade.value) {
       return gnosis.getQuote();
@@ -275,6 +291,8 @@ export default function useTrading(
     isConfirming,
     submissionError,
     resetSubmissionError,
+    tradeGasless,
+    toggleTradeGasless,
 
     // methods
     getQuote,

@@ -53,20 +53,22 @@
         block
         @click.prevent="handlePreviewButton"
       />
-      <div
-        class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-        v-if="trading.isBalancerTrade.value"
-      >
-        <LightBulbIcon />
-        <span>
-          {{ $t('tradesThroughWeth') }}
-          <a
-            @click="switchToWETH()"
-            class="text-blue-500"
-            v-text="$t('tradeFromWeth')"
-          />
-          {{ $t('saveGas') }}
-        </span>
+      <div class="mt-6 text-sm flex items-center">
+        <BalToggle
+          name="tradeGasless"
+          :label="$t('tradeGaslessToggle.label')"
+          :checked="trading.tradeGasless.value"
+          @toggle="trading.toggleTradeGasless"
+          :disabled="
+            trading.isEthTrade.value || trading.isWrapUnwrapTrade.value
+          "
+        />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="text-gray-400 ml-1" />
+          </template>
+          <div class="w-52" v-html="$t('tradeGaslessToggle.tooltip')" />
+        </BalTooltip>
       </div>
     </div>
   </BalCard>
