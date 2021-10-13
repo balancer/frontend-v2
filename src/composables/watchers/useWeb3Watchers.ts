@@ -19,7 +19,8 @@ export default function useWeb3Watchers() {
     isMismatchedNetwork,
     isUnsupportedNetwork,
     blockNumber,
-    connectToAppNetwork
+    connectToAppNetwork,
+    isWalletReady
   } = useWeb3();
   const { addAlert, removeAlert } = useAlerts();
   const { refetchBalances, refetchAllowances } = useTokens();
@@ -92,6 +93,8 @@ export default function useWeb3Watchers() {
   });
 
   watch(blockNumber, async () => {
-    handlePendingTransactions();
+    if (isWalletReady.value) {
+      handlePendingTransactions();
+    }
   });
 }
