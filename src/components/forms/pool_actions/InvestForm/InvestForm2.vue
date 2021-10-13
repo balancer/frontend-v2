@@ -10,7 +10,6 @@ import { isRequired } from '@/lib/utils/validations';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
 import useTokens from '@/composables/useTokens';
 
 /**
@@ -52,7 +51,7 @@ const showInvestPreview = ref(false);
  * COMPOSABLES
  */
 const { t } = useI18n();
-const { balanceFor } = useTokens();
+const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 
 const investMath = useInvestFormMath(
   toRef(props, 'pool'),
@@ -76,8 +75,6 @@ const {
 const { managedPoolWithTradingHalted, isWethPool } = usePool(
   toRef(props, 'pool')
 );
-
-const { addresses: networkAddresses, nativeAsset } = configService.network;
 
 /**
  * COMPUTED
@@ -112,7 +109,7 @@ function handleAmountChange(value: string, index: number): void {
 function tokenWeight(address: string): number {
   if (isStableLike(props.pool.poolType)) return 0;
   if (address === nativeAsset.address) {
-    return props.pool.onchain.tokens[networkAddresses.weth].weight;
+    return props.pool.onchain.tokens[wrappedNativeAsset.value.address].weight;
   }
 
   return props.pool.onchain.tokens[address].weight;
@@ -129,21 +126,23 @@ function hint(index: number): string {
 }
 
 function tokenOptions(index: number): string[] {
-  return props.pool.tokenAddresses[index] === networkAddresses.weth
-    ? [networkAddresses.weth, nativeAsset.address]
+  return props.pool.tokenAddresses[index] === wrappedNativeAsset.value.address
+    ? [wrappedNativeAsset.value.address, nativeAsset.address]
     : [];
 }
 
-// If WETH pool, if ETH has a higher balance then use it
-// instead of WETH.
-function useEthIfHigherBalance(): void {
-  if (isWethPool.value) {
-    const wethBalance = balanceFor(networkAddresses.weth);
-    const ethBalance = balanceFor(nativeAsset.address);
-    if (bnum(ethBalance).gt(wethBalance)) {
-      const indexOfWeth = state.tokenAddresses.indexOf(networkAddresses.weth);
-      state.tokenAddresses[indexOfWeth] = nativeAsset.address;
-    }
+// If ETH has a higher balance than WETH then use it for the input.
+function setNativeAssetToken(): void {
+  const nativeAssetBalance = balanceFor(nativeAsset.address);
+  const wrappedNativeAssetBalance = balanceFor(
+    wrappedNativeAsset.value.address
+  );
+
+  if (bnum(nativeAssetBalance).gt(wrappedNativeAssetBalance)) {
+    const indexOfWeth = state.tokenAddresses.indexOf(
+      wrappedNativeAsset.value.address
+    );
+    state.tokenAddresses[indexOfWeth] = nativeAsset.address;
   }
 }
 
@@ -151,7 +150,7 @@ function useEthIfHigherBalance(): void {
  * CALLBACKS
  */
 onBeforeMount(() => {
-  useEthIfHigherBalance();
+  if (isWethPool.value) setNativeAssetToken();
 });
 </script>
 
