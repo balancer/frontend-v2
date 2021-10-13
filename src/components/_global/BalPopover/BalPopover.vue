@@ -10,7 +10,7 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   trigger: 'click',
-  algin: 'right'
+  align: 'right'
 });
 
 const emit = defineEmits<{
@@ -72,7 +72,7 @@ function handleClickOutside() {
       <slot name="activator" />
     </div>
     <div :class="['bal-popover-wrapper', popoverWrapperClasses]">
-      <BalCard shadow="lg" v-bind="$attrs" darkBgColor="800">
+      <BalCard shadow="lg" v-bind="$attrs" darkBgColor="800" class="">
         <slot :close="hidePopover" />
       </BalCard>
     </div>

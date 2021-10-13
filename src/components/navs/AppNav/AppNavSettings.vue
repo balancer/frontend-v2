@@ -24,7 +24,7 @@
             <div class="address flex items-baseline">
               <div v-text="_shorten(account)" />
               <div class="ml-3 flex">
-                <BalTooltip>
+                <BalTooltip width="auto">
                   <template v-slot:activator>
                     <BalBtn
                       circle
@@ -40,7 +40,7 @@
                   </template>
                   <div
                     v-text="copiedAddress ? $t('copied') : $t('copyAddress')"
-                    class="w-20 text-center"
+                    class="text-center"
                   />
                 </BalTooltip>
                 <BalBtn
@@ -102,7 +102,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-html="$t('marketConditionsWarning')" class="w-52" />
+          <div v-html="$t('marketConditionsWarning')" />
         </BalTooltip>
       </div>
       <AppSlippageForm class="mt-1" />
@@ -114,7 +114,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-text="$t('whichPools')" class="w-52" />
+          <div v-text="$t('whichPools')" />
         </BalTooltip>
       </div>
       <BalBtnGroup
@@ -130,7 +130,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-text="$t('ethereumTxTypeTooltip')" class="w-52" />
+          <div v-text="$t('ethereumTxTypeTooltip')" />
         </BalTooltip>
       </div>
       <BalBtnGroup
@@ -146,7 +146,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-text="$t('tradeInterfaceTooltip')" class="w-52" />
+          <div v-text="$t('tradeInterfaceTooltip')" />
         </BalTooltip>
       </div>
       <BalBtnGroup
