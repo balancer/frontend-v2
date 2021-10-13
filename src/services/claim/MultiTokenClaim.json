@@ -5,7 +5,7 @@
             "distributor": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
             "token": "0xba100000625a3754423978a60c9317c58a424e3d",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json",
-            "weekStart": 72
+            "weekStart": 52
         },
         {
             "label": "LIDO",
@@ -28,7 +28,7 @@
           "distributor": "0x95FaE1C936B4Cd6c5099d7A705D792ee6aC9FEc3",
           "token": "0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7",
           "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/sample-tree/reports-kovan/_current.json",
-          "weekStart": 72
+          "weekStart": 52
       },
       {
         "label": "DAI",
@@ -44,7 +44,7 @@
             "distributor": "0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809",
             "token": "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-arbitrum.json",
-            "weekStart": 72
+            "weekStart": 52
         },
         {
             "label": "MCDEX",

@@ -289,7 +289,7 @@ async function claimAvailableRewards() {
           <template v-if="activeTab === Tabs.CLAIMABLE">
             <template
               v-for="claimableToken in claimableTokens"
-              :key="claimableToken.token"
+              :key="`token-${claimableToken.token}`"
             >
               <div
                 class="px-3 py-2 flex items-center mb-2 border-b dark:border-gray-900 last:border-0"
@@ -314,7 +314,7 @@ async function claimAvailableRewards() {
           <template v-if="activeTab === Tabs.CURRENT_ESTIMATE">
             <template
               v-for="claimableToken in currentEstimateClaimableTokens"
-              :key="claimableToken.token"
+              :key="`token-${claimableToken.token}`"
             >
               <div
                 class="px-3 py-2 flex items-center mb-2 border-b dark:border-gray-900 last:border-0"

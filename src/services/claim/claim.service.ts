@@ -68,7 +68,7 @@ export class ClaimService {
       tokenClaimInfo
     );
 
-    const pendingWeeks = claimStatus
+    const pendingWeeks = flatten(claimStatus)
       .map((status, i) => [i + weekStart, status])
       .filter(([, status]) => !status)
       .map(([i]) => i) as number[];
@@ -267,7 +267,9 @@ export class ClaimService {
 
   private async getReports(snapshot: Snapshot, weeks: number[]) {
     const reports = await Promise.all<Report>(
-      weeks.map(week => ipfsService.get(snapshot[week]))
+      weeks
+        .filter(week => snapshot[week] != null)
+        .map(week => ipfsService.get(snapshot[week]))
     );
     return Object.fromEntries(reports.map((report, i) => [weeks[i], report]));
   }
