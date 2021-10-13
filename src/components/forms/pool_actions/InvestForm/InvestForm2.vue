@@ -72,7 +72,7 @@ const {
   isMismatchedNetwork
 } = useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool } = usePool(
+const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
   toRef(props, 'pool')
 );
 
@@ -116,6 +116,8 @@ function tokenWeight(address: string): number {
 }
 
 function propAmountFor(index: number): string {
+  if (isStableLikePool.value) return '0.0';
+
   return bnum(proportionalAmounts.value[index]).gt(0)
     ? proportionalAmounts.value[index]
     : '0.0';
