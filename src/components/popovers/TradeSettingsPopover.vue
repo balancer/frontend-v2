@@ -19,7 +19,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-html="$t('marketConditionsWarning')" class="w-52" />
+          <div v-html="$t('marketConditionsWarning')" />
         </BalTooltip>
       </div>
       <AppSlippageForm class="mt-1" />
@@ -31,7 +31,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-text="$t('whichPools')" class="w-52" />
+          <div v-text="$t('whichPools')" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">
@@ -49,7 +49,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-text="$t('ethereumTxTypeTooltip')" class="w-52" />
+          <div v-text="$t('ethereumTxTypeTooltip')" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">
@@ -67,7 +67,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-html="$t('transactionDeadlineTooltip')" class="w-52" />
+          <div v-html="$t('transactionDeadlineTooltip')" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">

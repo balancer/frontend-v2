@@ -47,6 +47,7 @@ export interface TokensProviderResponse {
   injectedTokens: Ref<TokenInfoMap>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: TokenInfo;
+  wrappedNativeAsset: ComputedRef<TokenInfo>;
   activeTokenListTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
@@ -147,7 +148,11 @@ export default {
       ...state.injectedTokens
     }));
 
-    const tokenAddresses = computed(() => Object.keys(tokens.value));
+    const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
+
+    const wrappedNativeAsset = computed(
+      (): TokenInfo => getToken(networkConfig.addresses.weth)
+    );
 
     /****************************************************************
      * Dynamic metadata
@@ -390,9 +395,10 @@ export default {
     provide(TokensProviderSymbol, {
       // state
       ...toRefs(state),
+      nativeAsset,
       // computed
       tokens,
-      nativeAsset,
+      wrappedNativeAsset,
       activeTokenListTokens,
       prices,
       balances,

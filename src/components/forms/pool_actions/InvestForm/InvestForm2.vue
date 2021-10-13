@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, toRef, computed, ref, nextTick } from 'vue';
+import { reactive, toRef, computed, ref, nextTick, onBeforeMount } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { isStableLike, usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
@@ -10,6 +10,7 @@ import { isRequired } from '@/lib/utils/validations';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
+import useTokens from '@/composables/useTokens';
 
 /**
  * TYPES
@@ -20,6 +21,7 @@ type Props = {
 
 type FormState = {
   amounts: string[];
+  tokenAddresses: string[];
   propAmounts: string[];
   validInputs: boolean[];
   highPriceImpactAccepted: boolean;
@@ -36,6 +38,7 @@ const props = defineProps<Props>();
  */
 const state = reactive<FormState>({
   amounts: [],
+  tokenAddresses: [...props.pool.tokenAddresses],
   propAmounts: [],
   validInputs: [],
   highPriceImpactAccepted: false,
@@ -48,6 +51,7 @@ const showInvestPreview = ref(false);
  * COMPOSABLES
  */
 const { t } = useI18n();
+const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 
 const investMath = useInvestFormMath(
   toRef(props, 'pool'),
@@ -68,23 +72,25 @@ const {
   isMismatchedNetwork
 } = useWeb3();
 
-const { managedPoolWithTradingHalted } = usePool(toRef(props, 'pool'));
+const { managedPoolWithTradingHalted, isWethPool } = usePool(
+  toRef(props, 'pool')
+);
 
 /**
  * COMPUTED
  */
 const hasValidInputs = computed(
-  () =>
+  (): boolean =>
     state.validInputs.every(validInput => validInput === true) &&
     hasAcceptedHighPriceImpact.value
 );
 
-const hasAcceptedHighPriceImpact = computed(() =>
+const hasAcceptedHighPriceImpact = computed((): boolean =>
   highPriceImpact.value ? state.highPriceImpactAccepted : true
 );
 
 const forceProportionalInputs = computed(
-  () => managedPoolWithTradingHalted.value
+  (): boolean => managedPoolWithTradingHalted.value
 );
 
 /**
@@ -102,7 +108,11 @@ function handleAmountChange(value: string, index: number): void {
 
 function tokenWeight(address: string): number {
   if (isStableLike(props.pool.poolType)) return 0;
-  return Number(props.pool.onchain.tokens[address].weight);
+  if (address === nativeAsset.address) {
+    return props.pool.onchain.tokens[wrappedNativeAsset.value.address].weight;
+  }
+
+  return props.pool.onchain.tokens[address].weight;
 }
 
 function propAmountFor(index: number): string {
@@ -114,6 +124,34 @@ function propAmountFor(index: number): string {
 function hint(index: number): string {
   return bnum(propAmountFor(index)).gt(0) ? t('proportionalSuggestion') : '';
 }
+
+function tokenOptions(index: number): string[] {
+  return props.pool.tokenAddresses[index] === wrappedNativeAsset.value.address
+    ? [wrappedNativeAsset.value.address, nativeAsset.address]
+    : [];
+}
+
+// If ETH has a higher balance than WETH then use it for the input.
+function setNativeAssetToken(): void {
+  const nativeAssetBalance = balanceFor(nativeAsset.address);
+  const wrappedNativeAssetBalance = balanceFor(
+    wrappedNativeAsset.value.address
+  );
+
+  if (bnum(nativeAssetBalance).gt(wrappedNativeAssetBalance)) {
+    const indexOfWeth = state.tokenAddresses.indexOf(
+      wrappedNativeAsset.value.address
+    );
+    state.tokenAddresses[indexOfWeth] = nativeAsset.address;
+  }
+}
+
+/**
+ * CALLBACKS
+ */
+onBeforeMount(() => {
+  if (isWethPool.value) setNativeAssetToken();
+});
 </script>
 
 <template>
@@ -129,17 +167,18 @@ function hint(index: number): string {
     />
 
     <TokenInput
-      v-for="(tokenAddress, i) in pool.tokenAddresses"
-      :key="tokenAddress"
-      :name="tokenAddress"
-      :address="tokenAddress"
-      :weight="tokenWeight(tokenAddress)"
+      v-for="(n, i) in state.tokenAddresses.length"
+      :key="i"
+      :name="state.tokenAddresses[i]"
+      v-model:address="state.tokenAddresses[i]"
       v-model:amount="state.amounts[i]"
       v-model:isValid="state.validInputs[i]"
+      :weight="tokenWeight(state.tokenAddresses[i])"
       :hintAmount="propAmountFor(i)"
       :hint="hint(i)"
       class="mb-4"
       fixedToken
+      :options="tokenOptions(i)"
       @update:amount="handleAmountChange($event, i)"
     />
 
@@ -183,6 +222,7 @@ function hint(index: number): string {
         v-if="showInvestPreview"
         :pool="pool"
         :investMath="investMath"
+        :tokenAddresses="state.tokenAddresses"
         @close="showInvestPreview = false"
       />
     </teleport>

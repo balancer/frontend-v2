@@ -27,6 +27,7 @@ import useConfig from '@/composables/useConfig';
 type Props = {
   pool: FullPool;
   investMath: InvestMath;
+  tokenAddresses: string[];
 };
 
 type Action = {
@@ -212,6 +213,7 @@ async function submit(): Promise<void> {
       getProvider(),
       account.value,
       fullAmounts.value,
+      props.tokenAddresses,
       bptOut.value
     );
 
