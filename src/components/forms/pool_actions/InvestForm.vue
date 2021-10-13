@@ -560,6 +560,7 @@ export default defineComponent({
         getProvider(),
         account.value,
         fullAmounts.value,
+        props.pool.tokenAddresses,
         minBptOut.value
       );
       queryBptOut = formatUnits(
@@ -587,6 +588,7 @@ export default defineComponent({
           getProvider(),
           account.value,
           fullAmounts.value,
+          props.pool.tokenAddresses,
           _bptOut
         );
         console.log('Receipt', tx);
