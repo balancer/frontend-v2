@@ -7,6 +7,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import BigNumber from 'bignumber.js';
 
 jest.mock('vue-i18n');
+jest.mock('vuex');
 jest.mock('@/composables/useEthereumTxType');
 jest.mock('@/composables/useEthers');
 jest.mock('@/composables/useUserSettings');
