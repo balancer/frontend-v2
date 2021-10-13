@@ -1,6 +1,8 @@
 module.exports = {
-  testEnvironment: 'node',
+  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   roots: ['<rootDir>/src/'],
-  setupFilesAfterEnv: ['./src/tests/jest.setup.ts'],
-  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel'
+  setupFilesAfterEnv: ['./src/jest.setup.ts'],
+  testEnvironment: 'node',
+  testMatch: null,
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$'
 };
