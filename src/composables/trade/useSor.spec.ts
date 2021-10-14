@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue';
+import { mount } from 'vue-composable-tester';
 import useSor from '@/composables/trade/useSor';
 import { configService } from '@/services/config/config.service';
 import { mocked } from 'ts-jest/utils';
@@ -15,6 +16,7 @@ jest.mock('@/composables/useTransactions');
 jest.mock('@/lib/utils/balancer/helpers/sor/sorManager');
 jest.mock('@/locales');
 jest.mock('@/services/web3/useWeb3');
+jest.mock('@/services/rpc-provider/rpc-provider.service');
 
 const mockNativeAssetAddress = configService.network.nativeAsset.address;
 const mockEthPrice = 3000;
@@ -23,13 +25,14 @@ const mockTokenPrice = 0.2;
 jest.mock('@/composables/useTokens', () => {
   return jest.fn().mockImplementation(() => {
     return {
-      useTokens: jest.fn().mockImplementation(),
+      injectTokens: jest.fn().mockImplementation(),
       priceFor: jest.fn().mockImplementation(address => {
         if (address === mockNativeAssetAddress) {
           return mockEthPrice;
         }
         return mockTokenPrice;
-      })
+      }),
+      useTokens: jest.fn().mockImplementation()
     };
   });
 });
@@ -59,8 +62,8 @@ const mockProps = {
 
 describe('useSor', () => {
   it('Should load', () => {
-    const sorResult = useSor(mockProps);
-    expect(sorResult).toBeTruthy();
+    const { result } = mount(() => useSor(mockProps));
+    expect(result).toBeTruthy();
   });
 });
 
@@ -83,7 +86,7 @@ describe('setSwapCost', () => {
   });
 
   it('Should pass a correct gas price to sorManager', async () => {
-    const sor = useSor(mockProps);
+    const { result: sor } = mount(() => useSor(mockProps));
 
     const tokenAddress = '0x0';
     const tokenDecimals = 5;
