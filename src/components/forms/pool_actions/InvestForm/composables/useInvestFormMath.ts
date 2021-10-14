@@ -30,7 +30,9 @@ export type InvestMath = {
 
 export default function useInvestFormMath(
   pool: Ref<FullPool>,
-  amounts: Ref<string[]>
+  tokenAddresses: Ref<string[]>,
+  amounts: Ref<string[]>,
+  useNativeAsset: Ref<boolean>
 ): InvestMath {
   /**
    * STATE
@@ -49,12 +51,17 @@ export default function useInvestFormMath(
   /**
    * Services
    */
-  const poolCalculator = new PoolCalculator(pool, tokens, balances, 'join');
+  const poolCalculator = new PoolCalculator(
+    pool,
+    tokens,
+    balances,
+    'join',
+    useNativeAsset
+  );
 
   /**
    * COMPUTED
    */
-  const tokenAddresses = computed(() => pool.value.tokenAddresses);
   const tokenCount = computed(() => tokenAddresses.value.length);
 
   // Input amounts can be null so fullAmounts returns amounts for all tokens

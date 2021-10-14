@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { reactive, toRef, computed, ref, nextTick, onBeforeMount } from 'vue';
+import {
+  reactive,
+  toRef,
+  computed,
+  ref,
+  nextTick,
+  onBeforeMount,
+  watch
+} from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { isStableLike, usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
@@ -15,8 +23,14 @@ import useTokens from '@/composables/useTokens';
 /**
  * TYPES
  */
+enum NativeAsset {
+  wrapped = 'wrapped',
+  unwrapped = 'unwrapped'
+}
+
 type Props = {
   pool: FullPool;
+  useNativeAsset: boolean;
 };
 
 type FormState = {
@@ -29,9 +43,13 @@ type FormState = {
 };
 
 /**
- * PROPS
+ * PROPS & EMITS
  */
 const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: 'update:useNativeAsset', value: boolean): void;
+}>();
 
 /**
  * STATE
@@ -55,7 +73,9 @@ const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 
 const investMath = useInvestFormMath(
   toRef(props, 'pool'),
-  toRef(state, 'amounts')
+  toRef(state, 'tokenAddresses'),
+  toRef(state, 'amounts'),
+  toRef(props, 'useNativeAsset')
 );
 
 const {
@@ -134,17 +154,31 @@ function tokenOptions(index: number): string[] {
 }
 
 // If ETH has a higher balance than WETH then use it for the input.
-function setNativeAssetToken(): void {
+function setNativeAssetByBalance(): void {
   const nativeAssetBalance = balanceFor(nativeAsset.address);
   const wrappedNativeAssetBalance = balanceFor(
     wrappedNativeAsset.value.address
   );
 
   if (bnum(nativeAssetBalance).gt(wrappedNativeAssetBalance)) {
-    const indexOfWeth = state.tokenAddresses.indexOf(
-      wrappedNativeAsset.value.address
-    );
-    state.tokenAddresses[indexOfWeth] = nativeAsset.address;
+    setNativeAsset(NativeAsset.unwrapped);
+  }
+}
+
+function setNativeAsset(to: NativeAsset): void {
+  const fromAddress =
+    to === NativeAsset.wrapped
+      ? nativeAsset.address
+      : wrappedNativeAsset.value.address;
+  const toAddress =
+    to === NativeAsset.wrapped
+      ? wrappedNativeAsset.value.address
+      : nativeAsset.address;
+
+  const indexOfAsset = state.tokenAddresses.indexOf(fromAddress);
+
+  if (indexOfAsset >= 0) {
+    state.tokenAddresses[indexOfAsset] = toAddress;
   }
 }
 
@@ -152,8 +186,26 @@ function setNativeAssetToken(): void {
  * CALLBACKS
  */
 onBeforeMount(() => {
-  if (isWethPool.value) setNativeAssetToken();
+  if (isWethPool.value) setNativeAssetByBalance();
 });
+
+/**
+ * WATCHERS
+ */
+watch(state.tokenAddresses, newAddresses => {
+  emit('update:useNativeAsset', newAddresses.includes(nativeAsset.address));
+});
+
+watch(
+  () => props.useNativeAsset,
+  shouldUseNativeAsset => {
+    if (shouldUseNativeAsset) {
+      setNativeAsset(NativeAsset.unwrapped);
+    } else {
+      setNativeAsset(NativeAsset.wrapped);
+    }
+  }
+);
 </script>
 
 <template>

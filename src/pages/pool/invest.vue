@@ -4,6 +4,7 @@ import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { useRoute } from 'vue-router';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.vue';
+import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -17,6 +18,7 @@ const route = useRoute();
  * STATE
  */
 const id = ref<string>(route.params.id as string);
+const useNativeAsset = ref(false);
 
 /**
  * QUERIES
@@ -47,7 +49,14 @@ const loadingPool = computed(
       </router-link>
     </div>
     <div class="invest-container">
-      <BalCard class="h-64 mt-12 col-span-2" shadow="none" />
+      <div class="col-span-2 mt-12">
+        <BalLoadingBlock v-if="loadingPool || !pool" class="h-64" />
+        <MyWalletTokensCard
+          v-else
+          :pool="pool"
+          v-model:useNativeAsset="useNativeAsset"
+        />
+      </div>
 
       <div class="col-span-3">
         <BalLoadingBlock v-if="loadingPool || !pool" class="h-96" />
@@ -57,11 +66,12 @@ const loadingPool = computed(
           shadow="xl"
           rightAlignHeader
           exposeOverflow
+          noBorder
         >
           <template v-slot:header>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </template>
-          <InvestForm :pool="pool" />
+          <InvestForm :pool="pool" v-model:useNativeAsset="useNativeAsset" />
         </BalCard>
       </div>
 
