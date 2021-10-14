@@ -89,7 +89,7 @@ function isSelectedNativeAsset(address: string): boolean {
       </div>
     </template>
 
-    <div class="divide-y dark:divide-gray-700 -mt-3 p-4">
+    <div class="-mt-3 p-4">
       <div v-for="(token, address) in tokens" :key="address" class="py-3">
         <div v-if="address === wrappedNativeAsset.address">
           <div class="flex items-start justify-between">
