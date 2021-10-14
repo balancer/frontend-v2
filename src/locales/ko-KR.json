@@ -264,8 +264,6 @@
     "trade": "무역",
     "tradeEarns": "이 거래는 당신을 얻습니다",
     "tradeFromWeth": "WETH에서 거래",
-    "tradeInterface": "무역 인터페이스",
-    "tradeInterfaceTooltip": "Balancer V1 및 V2 풀에서 최고의 유동성을 위해 Balancer를 선택하십시오. MEV 보호를 제공하면서 가스 없는 주문을 사용하여 토큰을 사고 팔려면 Gnosis를 선택하십시오.",
     "tradeLiquidity": "무역 유동성",
     "tradeSettled": "거래가 해결되었습니다",
     "tradeSubmissionError": {"title":"오류가 발생했습니다", "actionLabel":"해고하다"},

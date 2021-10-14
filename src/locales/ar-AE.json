@@ -264,8 +264,6 @@
     "trade": "تجارة",
     "tradeEarns": "هذه التجارة تكسبك",
     "tradeFromWeth": "تداول من WETH",
-    "tradeInterface": "واجهة التجارة",
-    "tradeInterfaceTooltip": "اختر Balancer للحصول على أفضل سيولة عبر مجمعات Balancer V1 و V2. اختر Gnosis لشراء وبيع الرموز المميزة باستخدام أوامر بدون غاز مع توفير حماية MEV.",
     "tradeLiquidity": "سيولة التجارة",
     "tradeSettled": "استقر تجارتك",
     "tradeSubmissionError": {"title":"حدث خطأ", "actionLabel":"رفض"},

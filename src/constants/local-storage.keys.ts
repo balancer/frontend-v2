@@ -4,7 +4,6 @@ export default {
     Locale: 'app.locale',
     TradeSlippage: 'app.tradeSlippage',
     TradeLiquidity: 'app.tradeLiquidity',
-    TradeInterface: 'app.tradeInterface',
     TradeDeadline: 'app.tradeDeadline',
     EthereumTxType: 'app.ethereumTxType'
   },

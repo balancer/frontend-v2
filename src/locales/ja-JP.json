@@ -264,8 +264,6 @@
     "trade": "トレード",
     "tradeEarns": "この取引はあなたを稼ぎます",
     "tradeFromWeth": "WETHからの取引",
-    "tradeInterface": "貿易インターフェース",
-    "tradeInterfaceTooltip": "バランサーV1およびV2プール全体で最高の流動性を得るには、バランサーを選択してください。 MEV保護を提供しながら、ガスレス注文を使用してトークンを売買するには、Gnosisを選択します。",
     "tradeLiquidity": "貿易流動性",
     "tradeSettled": "あなたの取引は解決しました",
     "tradeSubmissionError": {"title":"エラーが発生しました", "actionLabel":"退出させる"},
