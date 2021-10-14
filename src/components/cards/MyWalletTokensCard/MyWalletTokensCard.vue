@@ -82,14 +82,14 @@ function isSelectedNativeAsset(address: string): boolean {
 <template>
   <BalCard shadow="none" noPad>
     <template #header>
-      <div class="p-4 w-full border-b">
+      <div class="p-4 w-full border-b dark:border-gray-700">
         <h6>
           {{ $t('investment.myWalletTokensCard.title') }}
         </h6>
       </div>
     </template>
 
-    <div class="divide-y -mt-3 p-4">
+    <div class="divide-y dark:divide-gray-700 -mt-3 p-4">
       <div v-for="(token, address) in tokens" :key="address" class="py-3">
         <div v-if="address === wrappedNativeAsset.address">
           <div class="flex items-start justify-between">
