@@ -4,6 +4,7 @@ import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { useRoute } from 'vue-router';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.vue';
+import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -65,7 +66,10 @@ const loadingPool = computed(
         </BalCard>
       </div>
 
-      <BalCard class="h-64 mt-12 col-span-2" shadow="none" />
+      <div class="col-span-2 mt-12">
+        <BalLoadingBlock v-if="loadingPool || !pool" class="h-64" />
+        <MyPoolBalancesCard v-else :pool="pool" />
+      </div>
     </div>
   </div>
 </template>
