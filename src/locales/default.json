@@ -134,8 +134,6 @@
     "tableShowsBalancerV2Pools": "This table only shows Balancer V2 pools.",
     "tradeSettled": "Your trade has settled",
     "tradeSuccess": "Successfully traded your tokens",
-    "tradeInterface": "Trade interface",
-    "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across Balancer V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders while providing MEV protection.",
     "thirdPartyRewards": {
         "apr": {
             "steth": "stETH staking rewards APR"
@@ -396,6 +394,14 @@
     "totalValue": "Total value",
     "totalAPR": "Total APR",
     "trade": "Trade",
+    "tradeGaslessToggle": {
+        "label": "Trade gasless",
+        "tooltip": "‘Trade gasless’ on the Balancer-Gnosis-Protocol for zero gas trades with MEV protection. These trades require a free signature rather than a noraml gas transaction. Turn it off to trade via normal Balancer liqudity pools.",
+        "disabledTooltip": {
+            "wrapUnwrap": "This option has been disabled because Wrap/Unwrap transactions always require a gas transaction.",
+            "eth": "This option has been disabled because ETH transactions always require a gas transaction."
+        }        
+    },
     "tradeFromWeth": "Trade from WETH",
     "tradesThroughWeth": "Trades from ETH route through Balancer liquidity pools and incur gas fees.",
     "tradeEarns": "This trade earns you",

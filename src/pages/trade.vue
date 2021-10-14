@@ -2,10 +2,7 @@
   <div>
     <div class="trade-container">
       <BalLoadingBlock v-if="appLoading || loadingTokenLists" class="h-96" />
-      <template v-else>
-        <TradeCard v-if="tradeInterface === TradeInterface.BALANCER" />
-        <TradeCardGP v-else-if="tradeInterface === TradeInterface.GNOSIS" />
-      </template>
+      <TradeCardGP v-else />
     </div>
   </div>
 </template>
@@ -14,15 +11,12 @@
 import { defineComponent, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
-import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
 import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
 import useTokenLists from '@/composables/useTokenLists';
-import { TradeInterface } from '@/store/modules/app';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 
 export default defineComponent({
   components: {
-    TradeCard,
     TradeCardGP
   },
 
@@ -34,7 +28,6 @@ export default defineComponent({
 
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
-    const tradeInterface = computed(() => store.state.app.tradeInterface);
 
     onMounted(() => {
       // selectedPoolTokens are only persisted between the Home/Pool pages
@@ -43,9 +36,7 @@ export default defineComponent({
 
     return {
       appLoading,
-      tradeInterface,
-      loadingTokenLists,
-      TradeInterface
+      loadingTokenLists
     };
   }
 });
