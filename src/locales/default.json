@@ -167,6 +167,9 @@
                 "title": "Trading halted - proportional investments only",
                 "description": "A trading halt has been issued by the manager of this pool. For your safety, while the trading halt is in effect, you may only invest in proportional amounts."
             }
+        },
+        "myPoolBalancesCard": {
+            "title": "My pool balance"
         }
     },
     "isRequired": "is required",
