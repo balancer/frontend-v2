@@ -11,8 +11,9 @@ import { TokenInfo } from '@/types/TokenList';
 type Props = {
   modelValue: string;
   fixed?: boolean;
-  weight?: number;
+  weight?: number | string;
   excludedTokens?: string[];
+  options?: string[];
 };
 
 /**
@@ -22,7 +23,8 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   fixed: false,
   weight: 0,
-  excludedTokens: () => []
+  excludedTokens: () => [],
+  options: () => []
 });
 
 const emit = defineEmits<{
@@ -53,15 +55,19 @@ const token = computed((): TokenInfo | null => {
 /**
  * METHODS
  */
-const toggleModal = () => {
+function toggleModal(): void {
   if (!props.fixed) openTokenModal.value = !openTokenModal.value;
-};
+}
+
+function tokenFor(option: string): TokenInfo {
+  return getToken(option);
+}
 </script>
 
 <template>
   <div>
     <div
-      v-if="hasToken"
+      v-if="hasToken && options.length === 0"
       :class="['token-select-input selected group', { selectable: !fixed }]"
       @click="toggleModal"
     >
@@ -71,7 +77,7 @@ const toggleModal = () => {
       <span class="text-base font-medium">
         {{ token?.symbol }}
       </span>
-      <span v-if="weight > 0" class="text-gray-500 ml-2">
+      <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
         {{ fNum(weight, 'percent_lg') }}
       </span>
       <BalIcon
@@ -81,6 +87,57 @@ const toggleModal = () => {
         class="text-blue-500 group-hover:text-pink-500 ml-2"
       />
     </div>
+    <BalPopover
+      v-else-if="hasToken && fixed && options.length > 0"
+      align="left"
+      no-pad
+    >
+      <template #activator>
+        <div class="token-select-input selected group selectable">
+          <div class="w-8">
+            <BalAsset :address="token?.address" class="shadow" />
+          </div>
+          <span class="text-base font-medium">
+            {{ token?.symbol }}
+          </span>
+          <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
+            {{ fNum(weight, 'percent_lg') }}
+          </span>
+          <BalIcon
+            name="chevron-down"
+            size="sm"
+            class="text-blue-500 group-hover:text-pink-500 ml-2"
+          />
+        </div>
+      </template>
+      <template #default="scope">
+        <div class="flex flex-col w-44 rounded-lg overflow-hidden">
+          <div
+            v-for="option in options"
+            :key="option"
+            :set="(optionToken = tokenFor(option) || {})"
+            class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-850"
+            @click="
+              scope.close;
+              emit('update:modelValue', option);
+            "
+          >
+            <div class="flex items-center">
+              <BalAsset :address="optionToken?.address" class="shadow" />
+              <span class="ml-1 font-medium">
+                {{ optionToken?.symbol }}
+              </span>
+            </div>
+            <BalIcon
+              v-if="optionToken.address === modelValue"
+              name="check"
+              class="text-blue-500"
+            />
+          </div>
+        </div>
+      </template>
+    </BalPopover>
+
     <div
       v-else
       class="token-select-input unselected selectable"

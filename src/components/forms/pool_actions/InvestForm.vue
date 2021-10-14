@@ -121,7 +121,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52" v-html="$t('ethBufferInstruction')" />
+          <div v-html="$t('ethBufferInstruction')" />
         </BalTooltip>
       </div>
       <div v-if="isWstETHPool" class="flex items-center mb-4">
@@ -146,7 +146,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52" v-html="$t('wrapStEthTooltip')" />
+          <div v-html="$t('wrapStEthTooltip')" />
         </BalTooltip>
       </div>
     </div>
@@ -181,7 +181,7 @@
                 class="text-gray-400 -mb-px ml-2"
               />
             </template>
-            <div v-html="$t('customAmountsTip')" class="w-52" />
+            <div v-html="$t('customAmountsTip')" />
           </BalTooltip>
         </div>
         <BalBtn
@@ -560,6 +560,7 @@ export default defineComponent({
         getProvider(),
         account.value,
         fullAmounts.value,
+        props.pool.tokenAddresses,
         minBptOut.value
       );
       queryBptOut = formatUnits(
@@ -587,6 +588,7 @@ export default defineComponent({
           getProvider(),
           account.value,
           fullAmounts.value,
+          props.pool.tokenAddresses,
           _bptOut
         );
         console.log('Receipt', tx);

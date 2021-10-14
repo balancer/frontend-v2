@@ -114,7 +114,7 @@
                 class="text-gray-400 -mb-px ml-2"
               />
             </template>
-            <div v-html="$t('withdrawWarning')" class="w-52" />
+            <div v-html="$t('withdrawWarning')" />
           </BalTooltip>
         </div>
         <BalCheckbox
