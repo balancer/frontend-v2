@@ -216,29 +216,30 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      switch (errorMessage.value) {
-        case TradeValidation.NO_NATIVE_ASSET: {
-          return {
-            header: t('noNativeAsset', [nativeAsset.symbol]),
-            body: t('noNativeAssetDetailed', [
-              nativeAsset.symbol,
-              configService.network.chainName
-            ])
-          };
-        }
-        case TradeValidation.NO_BALANCE: {
-          return {
-            header: t('insufficientBalance'),
-            body: t('insufficientBalanceDetailed')
-          };
-        }
-        case TradeValidation.NO_LIQUIDITY: {
+      if (errorMessage.value === TradeValidation.NO_NATIVE_ASSET) {
+        return {
+          header: t('noNativeAsset', [nativeAsset.symbol]),
+          body: t('noNativeAssetDetailed', [
+            nativeAsset.symbol,
+            configService.network.chainName
+          ])
+        };
+      }
+
+      if (errorMessage.value === TradeValidation.NO_BALANCE) {
+        return {
+          header: t('insufficientBalance'),
+          body: t('insufficientBalanceDetailed')
+        };
+      }
+
+      if (trading.isBalancerTrade.value) {
+        if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {
             header: t('insufficientLiquidity'),
             body: t('insufficientLiquidityDetailed')
           };
         }
-        default:
       }
 
       if (trading.isGnosisTrade.value) {
