@@ -53,7 +53,10 @@
         block
         @click.prevent="handlePreviewButton"
       />
-      <div class="mt-6 text-sm flex items-center">
+      <div
+        v-if="trading.isGnosisSupportedOnNetwork.value"
+        class="mt-6 text-sm flex items-center"
+      >
         <BalTooltip
           width="64"
           :disabled="!trading.isGaslessTradingDisabled.value"
