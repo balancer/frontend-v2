@@ -152,7 +152,8 @@ import {
   reactive,
   toRefs,
   PropType,
-  toRef
+  toRef,
+  ref
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -242,7 +243,8 @@ export default defineComponent({
       toRef(props, 'pool'),
       tokens,
       balances,
-      'exit'
+      'exit',
+      ref(false)
     );
 
     // COMPUTED
