@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { TokenInfoMap } from '@/types/TokenList';
+// Composables
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
-import { bnum } from '@/lib/utils';
+import useTokens from '@/composables/useTokens';
+// Components
 import AssetRow from './components/AssetRow.vue';
 
 /**
@@ -28,7 +29,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { getTokens, balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 
@@ -46,10 +47,6 @@ const tokenAddresses = computed(() => {
 
   return props.pool.tokenAddresses;
 });
-
-const tokens = computed(
-  (): TokenInfoMap => getTokens(props.pool.tokenAddresses)
-);
 
 const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
@@ -90,7 +87,7 @@ function isSelectedNativeAsset(address: string): boolean {
     </template>
 
     <div class="-mt-3 p-4">
-      <div v-for="(token, address) in tokens" :key="address" class="py-3">
+      <div v-for="address in pool.tokenAddresses" :key="address" class="py-3">
         <div v-if="address === wrappedNativeAsset.address">
           <div class="flex items-start justify-between">
             <BalBreakdown
