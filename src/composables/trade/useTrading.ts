@@ -1,6 +1,5 @@
-import { computed, ref, Ref, watch } from 'vue';
+import { computed, onMounted, ref, Ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 import { bnum, lsGet, lsSet, scale } from '@/lib/utils';
 import useNumbers from '../useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -33,7 +32,6 @@ export default function useTrading(
   const { fNum } = useNumbers();
   const { tokens } = useTokens();
   const { blockNumber } = useWeb3();
-  const router = useRouter();
   const { slippage } = useUserSettings();
 
   // COMPUTED
@@ -97,9 +95,7 @@ export default function useTrading(
   });
 
   const tradeRoute = computed<TradeRoute>(() => {
-    if (router.currentRoute.value.query?.route === 'balancer') {
-      return 'balancer';
-    } else if (wrapType.value !== WrapType.NonWrap) {
+    if (wrapType.value !== WrapType.NonWrap) {
       return 'wrapUnwrap';
     } else if (isEthTrade.value) {
       return 'balancer';
@@ -113,6 +109,10 @@ export default function useTrading(
   const isBalancerTrade = computed(() => tradeRoute.value === 'balancer');
 
   const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
+
+  const isGaslessTradingDisabled = computed(
+    () => isEthTrade.value || isWrapUnwrapTrade.value
+  );
 
   const hasTradeQuote = computed(
     () =>
@@ -197,10 +197,14 @@ export default function useTrading(
     gnosis.submissionError.value = null;
   }
 
-  function toggleTradeGasless() {
-    tradeGasless.value = !tradeGasless.value;
+  function setTradeGasless(flag: boolean) {
+    tradeGasless.value = flag;
 
     lsSet(LS_KEYS.Trade.Gasless, tradeGasless.value);
+  }
+
+  function toggleTradeGasless() {
+    setTradeGasless(!tradeGasless.value);
 
     handleAmountChange();
   }
@@ -240,6 +244,14 @@ export default function useTrading(
     store.commit('trade/setOutputAsset', tokenOutAddressInput.value);
 
     handleAmountChange();
+  });
+
+  onMounted(() => {
+    const gaslessDisabled = window.location.href.includes('gasless=false');
+
+    if (gaslessDisabled) {
+      setTradeGasless(false);
+    }
   });
 
   watch(blockNumber, () => {
@@ -293,6 +305,7 @@ export default function useTrading(
     resetSubmissionError,
     tradeGasless,
     toggleTradeGasless,
+    isGaslessTradingDisabled,
 
     // methods
     getQuote,

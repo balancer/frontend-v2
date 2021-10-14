@@ -398,7 +398,11 @@
     "trade": "Trade",
     "tradeGaslessToggle": {
         "label": "Trade gasless",
-        "tooltip": "‘Trade gasless’ on the Balancer-Gnosis-Protocol for zero gas trades with MEV protection. These trades require a free signature rather than a noraml gas transaction. Turn it off to trade via normal Balancer liqudity pools."
+        "tooltip": "‘Trade gasless’ on the Balancer-Gnosis-Protocol for zero gas trades with MEV protection. These trades require a free signature rather than a noraml gas transaction. Turn it off to trade via normal Balancer liqudity pools.",
+        "disabledTooltip": {
+            "wrapUnwrap": "This option has been disabled because Wrap/Unwrap transactions always require a gas transaction.",
+            "eth": "This option has been disabled because ETH transactions always require a gas transaction."
+        }        
     },
     "tradeFromWeth": "Trade from WETH",
     "tradesThroughWeth": "Trades from ETH route through Balancer liquidity pools and incur gas fees.",

@@ -67,9 +67,9 @@ export default defineComponent({
   @apply bg-green-400;
 }
 .bal-toggle-checkbox[disabled] {
-  @apply border-gray-400 cursor-not-allowed;
+  @apply border-gray-300 dark:border-gray-700 cursor-not-allowed;
 }
 .bal-toggle-checkbox[disabled] + .bal-toggle-track {
-  @apply bg-gray-400 cursor-not-allowed;
+  @apply bg-gray-300 dark:bg-gray-700 cursor-not-allowed;
 }
 </style>

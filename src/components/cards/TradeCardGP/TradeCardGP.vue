@@ -54,20 +54,32 @@
         @click.prevent="handlePreviewButton"
       />
       <div class="mt-6 text-sm flex items-center">
-        <BalToggle
-          name="tradeGasless"
-          :label="$t('tradeGaslessToggle.label')"
-          :checked="trading.tradeGasless.value"
-          @toggle="trading.toggleTradeGasless"
-          :disabled="
-            trading.isEthTrade.value || trading.isWrapUnwrapTrade.value
-          "
-        />
-        <BalTooltip>
+        <BalTooltip
+          width="64"
+          :disabled="!trading.isGaslessTradingDisabled.value"
+        >
+          <template v-slot:activator>
+            <BalToggle
+              name="tradeGasless"
+              :checked="trading.tradeGasless.value"
+              @toggle="trading.toggleTradeGasless"
+              :disabled="trading.isGaslessTradingDisabled.value"
+            />
+          </template>
+          <div
+            v-text="
+              trading.isWrapUnwrapTrade.value
+                ? $t('tradeGaslessToggle.disabledTooltip.wrapUnwrap')
+                : $t('tradeGaslessToggle.disabledTooltip.eth')
+            "
+          ></div>
+        </BalTooltip>
+        <span class="text-xs pl-2">{{ $t('tradeGaslessToggle.label') }}</span>
+        <BalTooltip width="64">
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-1" />
           </template>
-          <div class="w-52" v-html="$t('tradeGaslessToggle.tooltip')" />
+          <div v-html="$t('tradeGaslessToggle.tooltip')" />
         </BalTooltip>
       </div>
     </div>
