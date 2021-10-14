@@ -8,7 +8,7 @@ export default {
     EthereumTxType: 'app.ethereumTxType'
   },
   Trade: {
-    Gasless: 'Trade.Gasless'
+    Gasless: 'trade.gasless'
   },
   UserSettings: {
     Currency: 'userSettings.currency'
