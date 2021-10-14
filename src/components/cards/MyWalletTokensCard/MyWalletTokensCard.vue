@@ -35,12 +35,24 @@ const { currency } = useUserSettings();
 /**
  * COMPUTED
  */
+const tokenAddresses = computed(() => {
+  if (props.useNativeAsset) {
+    return props.pool.tokenAddresses.map(address => {
+      if (address === wrappedNativeAsset.value.address)
+        return nativeAsset.address;
+      return address;
+    });
+  }
+
+  return props.pool.tokenAddresses;
+});
+
 const tokens = computed(
   (): TokenInfoMap => getTokens(props.pool.tokenAddresses)
 );
 
 const fiatTotal = computed(() => {
-  const fiatValue = props.pool.tokenAddresses
+  const fiatValue = tokenAddresses.value
     .map(address => {
       if (address === nativeAsset.address && !props.useNativeAsset) return '0';
       if (address === wrappedNativeAsset.value.address && props.useNativeAsset)
@@ -87,9 +99,7 @@ function isSelectedNativeAsset(address: string): boolean {
               size="lg"
             >
               <div class="flex justify-between">
-                <span>
-                  {{ $t('nativeTokens') }}
-                </span>
+                <span>{{ nativeAsset.name }} {{ $t('tokens') }}</span>
                 <BalTooltip
                   :text="
                     $t(
