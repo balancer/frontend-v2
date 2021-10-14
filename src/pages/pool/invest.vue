@@ -8,6 +8,7 @@ import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTo
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
+import { configService } from '@/services/config/config.service';
 
 /**
  * COMPOSABLES
@@ -19,6 +20,7 @@ const route = useRoute();
  */
 const id = ref<string>(route.params.id as string);
 const useNativeAsset = ref(false);
+const { network } = configService;
 
 /**
  * QUERIES
@@ -60,16 +62,17 @@ const loadingPool = computed(
 
       <div class="col-span-3">
         <BalLoadingBlock v-if="loadingPool || !pool" class="h-96" />
-        <BalCard
-          v-else
-          :title="$t('investInPool')"
-          shadow="xl"
-          rightAlignHeader
-          exposeOverflow
-          noBorder
-        >
-          <template v-slot:header>
-            <TradeSettingsPopover :context="TradeSettingsContext.invest" />
+        <BalCard v-else shadow="xl" exposeOverflow noBorder>
+          <template #header>
+            <div class="w-full">
+              <div class="text-sm text-gray-500 leading-none">
+                {{ network.chainName }}
+              </div>
+              <div class="flex items-center justify-between">
+                <h4>{{ $t('investInPool') }}</h4>
+                <TradeSettingsPopover :context="TradeSettingsContext.invest" />
+              </div>
+            </div>
           </template>
           <InvestForm :pool="pool" v-model:useNativeAsset="useNativeAsset" />
         </BalCard>
