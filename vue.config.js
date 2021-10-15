@@ -1,9 +1,6 @@
 const path = require('path');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
-const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const { version } = require('./package.json');
-
-const smp = new SpeedMeasurePlugin();
 
 const plugins = [];
 
@@ -35,9 +32,9 @@ module.exports = {
       openAnalyzer: false
     }
   },
-  configureWebpack: smp.wrap({
+  configureWebpack: {
     plugins
-  }),
+  },
   chainWebpack: config => {
     // config.devtool('source-map');
 
