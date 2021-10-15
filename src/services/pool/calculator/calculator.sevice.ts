@@ -9,6 +9,7 @@ import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { Ref } from 'vue';
 import { isStable, isStableLike } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
+import { configService } from '@/services/config/config.service';
 
 interface Amounts {
   send: string[];
@@ -24,26 +25,20 @@ export interface PiOptions {
 type PoolAction = 'join' | 'exit';
 
 export default class CalculatorService {
-  pool: Ref<FullPool>;
-  allTokens: Ref<TokenInfoMap>;
-  balances: Ref<BalanceMap>;
-  action: PoolAction;
   types = ['send', 'receive'];
   weighted: Weighted;
   stable: Stable;
 
   constructor(
-    pool: Ref<FullPool>,
-    allTokens: Ref<TokenInfoMap>,
-    balances: Ref<BalanceMap>,
-    action: PoolAction,
+    public pool: Ref<FullPool>,
+    public allTokens: Ref<TokenInfoMap>,
+    public balances: Ref<BalanceMap>,
+    public action: PoolAction,
+    public useNativeAsset: Ref<boolean>,
     weightedClass = Weighted,
-    stableClass = Stable
+    stableClass = Stable,
+    public readonly config = configService
   ) {
-    this.pool = pool;
-    this.allTokens = allTokens;
-    this.balances = balances;
-    this.action = action;
     this.weighted = new weightedClass(this);
     this.stable = new stableClass(this);
   }
@@ -90,7 +85,7 @@ export default class CalculatorService {
     };
     const type = this.action === 'join' ? 'send' : 'receive';
 
-    this.pool.value.tokenAddresses.forEach((token, tokenIndex) => {
+    this.tokenAddresses.forEach((token, tokenIndex) => {
       let hasBalance = true;
       const balance = this.balances.value[token] || '0';
       const amounts = this.propAmountsGiven(balance, tokenIndex, type);
@@ -164,6 +159,17 @@ export default class CalculatorService {
     return this[`${type}Ratios`][index];
   }
 
+  public get tokenAddresses(): string[] {
+    if (this.useNativeAsset.value) {
+      return this.pool.value.tokenAddresses.map(address => {
+        if (address === this.config.network.addresses.weth)
+          return this.config.network.nativeAsset.address;
+        return address;
+      });
+    }
+    return this.pool.value.tokenAddresses;
+  }
+
   public get poolTokenBalances(): BigNumberish[] {
     const normalizedBalances = Object.values(
       this.pool.value.onchain.tokens
@@ -209,13 +215,13 @@ export default class CalculatorService {
   }
 
   public get sendTokens(): string[] {
-    if (this.action === 'join') return this.pool.value.tokenAddresses;
+    if (this.action === 'join') return this.tokenAddresses;
     return [this.pool.value.address];
   }
 
   public get receiveTokens(): string[] {
     if (this.action === 'join') return [this.pool.value.address];
-    return this.pool.value.tokenAddresses;
+    return this.tokenAddresses;
   }
 
   public get sendRatios(): BigNumberish[] {

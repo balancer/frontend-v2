@@ -170,6 +170,12 @@
         },
         "myPoolBalancesCard": {
             "title": "My pool balance"
+        },
+        "myWalletTokensCard": {
+            "title": "Pool tokens in my wallet",
+            "tooltips": {
+                "nativeAssetSelection": "Select {0} or {1} to invest in this pool. Wrap or unwrap {0} to invest a larger amount and maximize your investment."
+            }
         }
     },
     "isRequired": "is required",
@@ -188,6 +194,7 @@
     "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
     "max": "Max",
     "maxed": "Maxed",
+    "maximum": "Maximum",
     "menu": "Menu",
     "month": "month",
     "months": "months",
@@ -207,6 +214,7 @@
     "myTransactions": "My transactions",
     "name": "Name",
     "namePlaceholder": "Name, symbol or contract address",
+    "nativeTokens": "Native tokens",
     "network": "Network",
     "networkMismatch": "Please switch to {0}",
     "new": "New",
