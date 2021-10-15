@@ -28,7 +28,7 @@ if (process.env.VUE_APP_SENTRY_AUTH_TOKEN) {
 }
 
 module.exports = {
-  parallel: true, // Fixes <script setup> components not compiling: https://github.com/vuejs/vue-cli/issues/6282
+  parallel: false, // Fixes <script setup> components not compiling: https://github.com/vuejs/vue-cli/issues/6282
   publicPath: './',
   pluginOptions: {
     webpackBundleAnalyzer: {
