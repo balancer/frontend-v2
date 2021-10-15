@@ -31,6 +31,7 @@ import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { ContractAllowancesMap } from '@/services/token/concerns/allowances.concern';
 import { tokenService } from '@/services/token/token.service';
 import { configService } from '@/services/config/config.service';
+import { FiatCurrency } from '@/constants/currency';
 
 /**
  * TYPES
@@ -73,7 +74,7 @@ export interface TokensProviderResponse {
     amounts: string[],
     contractAddress?: string
   ) => string[];
-  priceFor: (address: string) => number;
+  priceFor: (address: string, currency?: FiatCurrency) => number;
   balanceFor: (address: string) => string;
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
@@ -103,7 +104,7 @@ export default {
       activeTokenLists,
       loadingTokenLists
     } = useTokenLists();
-    const { currency } = useUserSettings();
+    const { currency: currencySetting } = useUserSettings();
 
     /**
      * STATE
@@ -337,9 +338,12 @@ export default {
     /**
      * Fetch price for a token
      */
-    function priceFor(address: string): number {
+    function priceFor(
+      address: string,
+      currency: FiatCurrency = currencySetting.value
+    ): number {
       try {
-        return prices.value[address][currency.value] || 0;
+        return prices.value[address][currency] || 0;
       } catch {
         return 0;
       }

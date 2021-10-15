@@ -1,9 +1,11 @@
 export enum FiatCurrency {
-  usd = 'usd'
+  usd = 'usd',
+  eur = 'eur'
 }
 
 export enum FiatSymbol {
-  usd = '$'
+  usd = '$',
+  eur = '€'
 }
 
 export const SUPPORTED_FIAT = [FiatCurrency.usd];

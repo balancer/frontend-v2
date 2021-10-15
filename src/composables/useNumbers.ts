@@ -1,6 +1,7 @@
 import numeral from 'numeral';
 import BigNumber from 'bignumber.js';
 import useTokens from './useTokens';
+import { FiatCurrency } from '@/constants/currency';
 
 export type Preset =
   | 'default'
@@ -54,8 +55,12 @@ export function fNum(
 export default function useNumbers() {
   const { priceFor } = useTokens();
 
-  function toFiat(amount: number | string, tokenAddress: string): string {
-    const price = priceFor(tokenAddress);
+  function toFiat(
+    amount: number | string,
+    tokenAddress: string,
+    currency: FiatCurrency = FiatCurrency.usd
+  ): string {
+    const price = priceFor(tokenAddress, currency);
     const tokenAmount = new BigNumber(amount);
     return tokenAmount.times(price).toString();
   }
