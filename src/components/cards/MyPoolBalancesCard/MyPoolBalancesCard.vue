@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue';
+import { computed, toRef, ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
@@ -35,7 +35,8 @@ const poolCalculator = new PoolCalculator(
   toRef(props, 'pool'),
   tokens,
   balances,
-  'exit'
+  'exit',
+  ref(false)
 );
 
 /**
