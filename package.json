@@ -7,7 +7,7 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --modern",
+    "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit --passWithNoTests",
     "lint": "vue-cli-service lint --no-fix --max-warnings 0",
     "import-abis": "cp ../core/deployments/artifacts/dockerParity/*.json ./src/utils/balancer/abi/.",
@@ -71,6 +71,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
+    "@babel/plugin-proposal-numeric-separator": "^7.14.5",
     "@sentry/webpack-plugin": "^1.15.1",
     "@storybook/addon-actions": "^6.3.7",
     "@storybook/addon-console": "^1.2.3",
@@ -102,10 +103,11 @@
     "husky": "^6.0.0",
     "nock": "^13.1.1",
     "prettier": "^1.19.1",
+    "speed-measure-webpack-plugin": "^1.5.0",
     "tailwind-config-viewer": "^1.5.0",
     "typescript": "^4.3.5",
     "vue-cli-plugin-webpack-bundle-analyzer": "^2.0.0",
-    "vue-loader": "^16.5.0"
+    "vue-loader": "^16.8.1"
   },
   "license": "MIT",
   "repository": "balancer-labs/frontend-v2"
