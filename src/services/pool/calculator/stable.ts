@@ -1,11 +1,12 @@
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { parseUnits, formatUnits } from '@ethersproject/units';
+
 import { bnum } from '@/lib/utils';
-import BigNumber from 'bignumber.js';
+import OldBigNumber from 'bignumber.js';
 
 import { stableBPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2';
-import { BigNumberish } from '@ethersproject/bignumber';
 import * as SDK from '@georgeroman/balancer-v2-pools';
 
 /**
@@ -20,7 +21,7 @@ export default class Stable {
     this.calc = calculator;
   }
 
-  public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
+  public exactTokensInForBPTOut(tokenAmounts: string[]): OldBigNumber {
     const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
     const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
@@ -39,11 +40,11 @@ export default class Stable {
       bptOut.toString(),
       this.calc.poolDecimals,
       '1',
-      BigNumber.ROUND_DOWN // If OUT given IN, round down
+      OldBigNumber.ROUND_DOWN // If OUT given IN, round down
     );
   }
 
-  public bptInForExactTokensOut(tokenAmounts: string[]): BigNumber {
+  public bptInForExactTokensOut(tokenAmounts: string[]): OldBigNumber {
     const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
 
@@ -63,11 +64,14 @@ export default class Stable {
       bptIn.toString(),
       this.calc.poolDecimals,
       '1',
-      BigNumber.ROUND_UP // If IN given OUT, round up
+      OldBigNumber.ROUND_UP // If IN given OUT, round up
     );
   }
 
-  public bptInForExactTokenOut(amount: string, tokenIndex: number): BigNumber {
+  public bptInForExactTokenOut(
+    amount: string,
+    tokenIndex: number
+  ): OldBigNumber {
     const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
     const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) => {
@@ -87,20 +91,20 @@ export default class Stable {
       bptIn.toString(),
       this.calc.poolDecimals,
       '1',
-      BigNumber.ROUND_UP // If IN given OUT, round up
+      OldBigNumber.ROUND_UP // If IN given OUT, round up
     );
   }
 
   public exactBPTInForTokenOut(
     bptAmount: string,
     tokenIndex: number
-  ): BigNumber {
+  ): OldBigNumber {
     if (bnum(bptAmount).eq(0))
       return this.scaleOutput(
         '0',
         this.calc.poolTokenDecimals[tokenIndex],
         this.calc.pool.value.tokens[tokenIndex].priceRate,
-        BigNumber.ROUND_DOWN // If OUT given IN, round down
+        OldBigNumber.ROUND_DOWN // If OUT given IN, round down
       );
 
     const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
@@ -120,13 +124,13 @@ export default class Stable {
       tokenAmountOut.toString(),
       this.calc.poolTokenDecimals[tokenIndex],
       this.calc.pool.value.tokens[tokenIndex].priceRate,
-      BigNumber.ROUND_DOWN // If OUT given IN, round down
+      OldBigNumber.ROUND_DOWN // If OUT given IN, round down
     );
   }
 
-  public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
-    let bptAmount: BigNumber | BigNumberish;
-    let bptZeroPriceImpact: BigNumber;
+  public priceImpact(tokenAmounts: string[], opts: PiOptions): OldBigNumber {
+    let bptAmount: OldBigNumber | BigNumberish;
+    let bptZeroPriceImpact: OldBigNumber;
 
     if (this.calc.action === 'join') {
       bptAmount = this.exactTokensInForBPTOut(tokenAmounts);
@@ -167,13 +171,13 @@ export default class Stable {
   /**
    * PRIVATE FUNCTIONS
    */
-  private bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
+  private bptForTokensZeroPriceImpact(tokenAmounts: string[]): OldBigNumber {
     const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
+    const ampAdjusted = BigNumber.from(this.adjustAmp(amp).toString());
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
       this.calc.poolTokenDecimals
     );
-    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
     // _bptForTokensZeroPriceImpact is the only stable pool function
     // that requires balances be scaled by the token decimals and not 18
@@ -183,21 +187,21 @@ export default class Stable {
         normalizedBalance,
         this.calc.poolTokenDecimals[i]
       );
-      return bnum(denormBalance.toString());
+      return denormBalance;
     });
 
     const bptZeroImpact = _bptForTokensZeroPriceImpact(
       balances,
       this.calc.poolTokenDecimals,
-      amounts,
-      bnum(this.calc.poolTotalSupply.toString()),
-      amp
+      denormAmounts,
+      this.calc.poolTotalSupply,
+      ampAdjusted
     );
 
-    return bptZeroImpact;
+    return bnum(bptZeroImpact.toString());
   }
 
-  private get scaledBalances(): BigNumber[] {
+  private get scaledBalances(): OldBigNumber[] {
     return this.calc.poolTokenBalances.map((balance, i) => {
       const normalizedBalance = formatUnits(
         balance,
@@ -211,7 +215,7 @@ export default class Stable {
     });
   }
 
-  private get scaledPoolTotalSupply(): BigNumber {
+  private get scaledPoolTotalSupply(): OldBigNumber {
     const normalizedSupply = formatUnits(
       this.calc.poolTotalSupply,
       this.calc.poolDecimals
@@ -223,12 +227,12 @@ export default class Stable {
   private scaleInput(
     normalizedAmount: string,
     priceRate: string | null = null
-  ): BigNumber {
+  ): OldBigNumber {
     if (priceRate === null) priceRate = '1';
 
     const denormAmount = bnum(parseUnits(normalizedAmount, 18).toString())
       .times(priceRate)
-      .toFixed(0, BigNumber.ROUND_UP);
+      .toFixed(0, OldBigNumber.ROUND_UP);
 
     return bnum(denormAmount.toString());
   }
@@ -237,8 +241,8 @@ export default class Stable {
     amount: string,
     decimals: number,
     priceRate: string | null,
-    rounding: BigNumber.RoundingMode
-  ): BigNumber {
+    rounding: OldBigNumber.RoundingMode
+  ): OldBigNumber {
     if (priceRate === null) priceRate = '1';
 
     const amountAfterPriceRate = bnum(amount)
@@ -254,7 +258,7 @@ export default class Stable {
   }
 
   // Solidity maths uses precison method for amp that must be replicated
-  private adjustAmp(amp: BigNumber): BigNumber {
+  private adjustAmp(amp: OldBigNumber): OldBigNumber {
     return amp.times(this.AMP_PRECISION);
   }
 }
