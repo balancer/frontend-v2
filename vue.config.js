@@ -1,6 +1,9 @@
 const path = require('path');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const { version } = require('./package.json');
+
+const smp = new SpeedMeasurePlugin();
 
 const plugins = [];
 
@@ -25,28 +28,30 @@ if (process.env.VUE_APP_SENTRY_AUTH_TOKEN) {
 }
 
 module.exports = {
-  parallel: false, // Fixes <script setup> components not compiling: https://github.com/vuejs/vue-cli/issues/6282
+  parallel: true, // Fixes <script setup> components not compiling: https://github.com/vuejs/vue-cli/issues/6282
   publicPath: './',
   pluginOptions: {
     webpackBundleAnalyzer: {
       openAnalyzer: false
     }
   },
-  configureWebpack: {
-    plugins,
-    devServer: {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-        'Access-Control-Allow-Headers':
-          'X-Requested-With, content-type, Authorization'
-      }
-    }
-  },
+  configureWebpack: smp.wrap({
+    plugins
+  }),
   chainWebpack: config => {
+    // config.devtool('source-map');
+
     config.resolve.alias.set(
       'bn.js',
       path.resolve(path.join(__dirname, 'node_modules', 'bn.js'))
     );
+  },
+  devServer: {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, content-type, Authorization'
+    }
   }
 };
