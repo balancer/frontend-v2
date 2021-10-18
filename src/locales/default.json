@@ -407,7 +407,7 @@
     "trade": "Trade",
     "tradeGaslessToggle": {
         "label": "Trade gasless",
-        "tooltip": "‘Trade gasless’ on the Balancer-Gnosis-Protocol for zero gas trades with MEV protection. These trades require a free signature rather than a noraml gas transaction. Turn it off to trade via normal Balancer liqudity pools.",
+        "tooltip": "‘Trade gasless’ on the Balancer-Gnosis-Protocol (CowSwap) for free signature trades, MEV protection, and the best prices with intelligent trade routing across DeFi exchanges. Turn it off to only trade through Balancer liquidity pools using gas.",
         "disabledTooltip": {
             "wrapUnwrap": "This option has been disabled because Wrap/Unwrap transactions always require a gas transaction.",
             "eth": "This option has been disabled because ETH transactions always require a gas transaction."
