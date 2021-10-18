@@ -388,7 +388,7 @@ async function claimAvailableRewards() {
             <span class="inline-grid grid-flow-col gap-1">
               <BalLink
                 v-for="legacyClaim in legacyClaimUI"
-                :key="legacyClaim.token"
+                :key="`token-${legacyClaim.token}`"
                 :href="
                   `https://${legacyClaim.subdomain}.balancer.fi/#/${account}`
                 "

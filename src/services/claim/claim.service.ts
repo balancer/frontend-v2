@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { flatten, groupBy } from 'lodash';
+import { chunk, flatten, groupBy } from 'lodash';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
 
 import { getAddress } from '@ethersproject/address';
+import { parseBytes32String } from '@ethersproject/strings';
 
 import { networkId } from '@/composables/useNetwork';
 
@@ -68,7 +69,7 @@ export class ClaimService {
       tokenClaimInfo
     );
 
-    const pendingWeeks = flatten(claimStatus)
+    const pendingWeeks = claimStatus
       .map((status, i) => [i + weekStart, status])
       .filter(([, status]) => !status)
       .map(([i]) => i) as number[];
@@ -243,7 +244,7 @@ export class ClaimService {
     return response.data || {};
   }
 
-  private getClaimStatus(
+  private async getClaimStatus(
     provider: Web3Provider,
     totalWeeks: number,
     account: string,
@@ -257,12 +258,27 @@ export class ClaimService {
       [token, distributor, weekStart + i, account]
     ]);
 
-    return multicall(
+    const rootCalls = Array.from({ length: totalWeeks }).map((_, i) => [
+      configService.network.addresses.merkleOrchard,
+      'getDistributionRoot',
+      [token, distributor, weekStart + i]
+    ]);
+
+    const result = (await multicall(
       String(networkId.value),
       provider,
       merkleOrchardAbi,
-      claimStatusCalls
+      [...claimStatusCalls, ...rootCalls]
+    )) as [boolean | string][];
+
+    const chunks = chunk(flatten(result), totalWeeks);
+
+    const claimedResult = chunks[0] as boolean[];
+    const distributionRootResult = (chunks[1] as string[]).map(id =>
+      parseBytes32String(id)
     );
+
+    return claimedResult.filter((_, index) => distributionRootResult[index]);
   }
 
   private async getReports(snapshot: Snapshot, weeks: number[]) {
