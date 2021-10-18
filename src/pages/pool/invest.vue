@@ -127,7 +127,6 @@ const loadingPool = computed(
       </div>
     </div>
   </div>
-  z
 </template>
 
 <style scoped>
