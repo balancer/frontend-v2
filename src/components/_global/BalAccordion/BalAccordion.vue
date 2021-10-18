@@ -82,7 +82,6 @@ async function toggleSection(section: string) {
   });
 
   // animate the arrow
-  console.log('lmao', arrowElement.value);
   anime({
     targets: arrowElement.value,
     rotate: '90deg'
