@@ -15,11 +15,14 @@ import AssetRow from './components/AssetRow.vue';
  */
 type Props = {
   pool: FullPool;
+  hideHeader?: boolean;
 };
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  hideHeader: false
+});
 
 /**
  * COMPOSABLES
@@ -68,7 +71,7 @@ const fiatTotal = computed(() => {
 
 <template>
   <BalCard shadow="none" noPad>
-    <template #header>
+    <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-700">
         <h6>
           {{ $t('investment.myPoolBalancesCard.title') }}

@@ -1,20 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import usePoolQuery from '@/composables/queries/usePoolQuery';
-import { useRoute } from 'vue-router';
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { configService } from '@/services/config/config.service';
+// Composables
+import usePoolQuery from '@/composables/queries/usePoolQuery';
+import useBreakpoints from '@/composables/useBreakpoints';
+import { useRoute } from 'vue-router';
+// Components
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.vue';
 import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
 import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
+import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
-import { configService } from '@/services/config/config.service';
 
 /**
  * COMPOSABLES
  */
 const route = useRoute();
+const { upToLargeBreakpoint } = useBreakpoints();
 
 /**
  * STATE
@@ -52,7 +57,7 @@ const loadingPool = computed(
       </router-link>
     </div>
     <div class="invest-container">
-      <div class="col-span-2 mt-12">
+      <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-12">
         <BalLoadingBlock v-if="loadingPool || !pool" class="h-64" />
         <MyWalletTokensCard
           v-else
@@ -62,6 +67,43 @@ const loadingPool = computed(
       </div>
 
       <div class="col-span-3">
+        <BalAccordion
+          v-if="upToLargeBreakpoint"
+          class="mb-4"
+          :sections="[
+            {
+              title: $t('investment.myWalletTokensCard.title'),
+              id: 'myWalletTokens'
+            },
+            {
+              title: $t('investment.myPoolBalancesCard.title'),
+              id: 'myPoolBalances'
+            }
+          ]"
+        >
+          <template #myWalletTokens>
+            <BalLoadingBlock v-if="loadingPool || !pool" class="h-64" />
+            <MyWalletTokensCard
+              v-else
+              :pool="pool"
+              v-model:useNativeAsset="useNativeAsset"
+              hideHeader
+              noBorder
+              square
+            />
+          </template>
+          <template #myPoolBalances>
+            <BalLoadingBlock v-if="loadingPool || !pool" class="h-64" />
+            <MyPoolBalancesCard
+              v-else
+              :pool="pool"
+              hideHeader
+              noBorder
+              square
+            />
+          </template>
+        </BalAccordion>
+
         <BalLoadingBlock v-if="loadingPool || !pool" class="h-96" />
         <BalCard v-else shadow="xl" exposeOverflow noBorder>
           <template #header>
@@ -79,7 +121,7 @@ const loadingPool = computed(
         </BalCard>
       </div>
 
-      <div class="col-span-2 mt-12">
+      <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-12">
         <BalLoadingBlock v-if="loadingPool || !pool" class="h-64" />
         <MyPoolBalancesCard v-else :pool="pool" />
       </div>
@@ -95,7 +137,7 @@ const loadingPool = computed(
 }
 
 .invest-container {
-  @apply container mx-auto;
+  @apply max-w-xl lg:container mx-auto;
   @apply grid grid-cols-1 lg:grid-cols-7 gap-y-8 gap-x-0 lg:gap-x-8;
 }
 </style>
