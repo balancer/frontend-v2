@@ -92,7 +92,6 @@ const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
 // We don't want to pass on parent level classes to the html
 // input element. So we need to remove it from the attrs object.
 const inputAttrs = computed(() => omit(attrs, 'class'));
-
 </script>
 
 <template>

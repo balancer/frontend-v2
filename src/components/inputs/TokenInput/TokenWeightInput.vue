@@ -172,8 +172,8 @@ watchEffect(() => {
       />
     </template>
     <template v-slot:append>
-      <BalStack align='center' horizontal spacing='none'>
-        <BalIcon name='percent' size='sm' class="mt-3 text-gray-600" />
+      <BalStack align="center" horizontal spacing="none">
+        <BalIcon name="percent" size="sm" class="mt-3 text-gray-600" />
         <button
           @click="lockWeight(false)"
           :class="[
