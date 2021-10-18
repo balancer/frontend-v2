@@ -10,6 +10,7 @@ import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
+import LockSvg from './unlock.svg';
 
 /**
  * TYPES
@@ -41,6 +42,7 @@ const emit = defineEmits<{
   (e: 'update:weight', value: string): void;
   (e: 'update:address', value: string): void;
   (e: 'update:isValid', value: boolean): void;
+  (e: 'update:isLocked', value: boolean): void;
   (e: 'keydown', value: HtmlInputEvent);
 }>();
 
@@ -49,7 +51,9 @@ const emit = defineEmits<{
  */
 const _weight = ref<InputValue>('');
 const _address = ref<string>('');
-const ETH_BUFFER = 0.1;
+const lockPath = ref<HTMLElement>();
+const lockIcon = ref<HTMLElement>();
+const isLocked = ref(false);
 
 /**
  * COMPOSABLEs
@@ -59,12 +63,12 @@ const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
+import anime from 'animejs';
 
 /**
  * COMPUTED
  */
 const hasToken = computed(() => !!_address.value);
-const hasWeight = computed(() => bnum(_weight.value).gt(0));
 
 const token = computed((): TokenInfo | undefined => {
   if (!hasToken.value) return undefined;
@@ -79,6 +83,51 @@ const rules = computed(() => {
 /**
  * METHODS
  */
+function lockWeight(keepLocked?: boolean) {
+  if (isLocked.value && !keepLocked) {
+    anime({
+      targets: lockPath.value,
+      d: 'M7 11V7a5 4 0 0 1 10 -2v-1',
+      easing: 'spring(0.2, 80, 10, 0)'
+    });
+    isLocked.value = false;
+  } else {
+    if (!isLocked.value) {
+      anime({
+        targets: lockPath.value,
+        d: 'M7 11V7a5 5 0 0 1 10 0v4',
+        easing: 'spring(0.2, 80, 10, 0)'
+      });
+
+      anime({
+        delay: 125,
+        targets: lockIcon.value,
+        translateY: '1px',
+        easing: 'linear',
+        duration: 100,
+        complete: () => {
+          anime({
+            targets: lockIcon.value,
+            translateY: '0px',
+            easing: 'linear',
+            duration: 100
+          });
+        }
+      });
+    }
+    isLocked.value = true;
+  }
+  emit('update:isLocked', isLocked.value);
+}
+
+function onInput(event) {
+  emit('input', event);
+  lockWeight(true);
+}
+
+function formatInputAsPct(input: string | number) {
+  return fNum(input, 'percent');
+}
 
 /**
  * CALLBACKS
@@ -100,12 +149,15 @@ watchEffect(() => {
     validateOn="input"
     autocomplete="off"
     autocorrect="off"
+    :rounded="false"
+    :border="false"
+    :shadow="false"
     step="any"
     spellcheck="false"
     v-bind="$attrs"
     inputAlignRight
     @blur="emit('blur', $event)"
-    @input="emit('input', $event)"
+    @input="onInput"
     @update:modelValue="emit('update:weight', $event)"
     @update:isValid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
@@ -114,33 +166,48 @@ watchEffect(() => {
       <TokenSelectInput
         v-model="_address"
         :fixed="fixedToken"
-        :weight="weight"
         class="mr-2"
         @update:modelValue="emit('update:address', $event)"
         :excludedTokens="excludedTokens"
       />
     </template>
-    <template v-slot:footer>
-      <div
-        v-if="isWalletReady || (hasWeight && hasToken)"
-        class="flex flex-col pt-1"
-      >
-        <div
-          class="flex items-center justify-between text-sm text-gray-500 leading-none"
+    <template v-slot:append>
+      <BalStack align='center' horizontal spacing='none'>
+        <BalIcon name='percent' size='sm' class="mt-3 text-gray-600" />
+        <button
+          @click="lockWeight(false)"
+          :class="[
+            'ml-2 ease-color mt-1 text-gray-500 hover:text-blue-500 flex items-center shadow-sm border bg-gray-50 rounded-full p-1 justify-center',
+            {
+              'text-blue-500': isLocked,
+              'border-transparent': !isLocked
+            }
+          ]"
         >
-          <div>
-            <template v-if="hasWeight && hasToken"> </template>
-            <template v-else-if="hint">
-              <span
-                class="text-blue-500 lowercase cursor-pointer"
-                @click="emit('update:weight', hintAmount)"
-              >
-                {{ hint }}
-              </span>
-            </template>
-          </div>
-        </div>
-      </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-unlock"
+            ref="lockIcon"
+          >
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path ref="lockPath" d="M7 11V7a5 4 0 0 1 10 -2v-1"></path>
+          </svg>
+        </button>
+      </BalStack>
     </template>
   </BalTextInput>
 </template>
+
+<style scoped>
+.ease-color {
+  transition: color border-color easeOut 0.1s;
+}
+</style>

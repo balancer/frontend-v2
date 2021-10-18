@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { useClassName } from '@/components/utils';
-import { computed } from 'vue';
+import { computed, useSlots } from 'vue';
 
-type StackOrientation = 'horizontal' | 'vertical';
 type Spacing = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | 'none';
 type Props = {
   vertical?: boolean;
   horizontal?: boolean;
   spacing: Spacing;
   withBorder?: boolean;
+  ref?: any;
+  align?: 'center' | 'start' | 'end',
+  justify?: 'center' | 'start' | 'end'
 };
 
 const SpacingMap: Record<Spacing, number> = {
@@ -22,7 +23,6 @@ const SpacingMap: Record<Spacing, number> = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  vertical: true,
   spacing: 'base'
 });
 
@@ -30,6 +30,8 @@ const spacingClass = computed(() => {
   const spacingType = props.vertical ? 'mb' : 'mr';
   return `${spacingType}-${SpacingMap[props.spacing]}`;
 });
+
+const stackId = Math.random();
 </script>
 
 <template>
@@ -38,13 +40,19 @@ const spacingClass = computed(() => {
       'flex',
       {
         'flex-row': horizontal,
-        'flex-col': vertical
+        'flex-col': vertical,
+        'items-center': align === 'center',
+        'items-start': align === 'start',
+        'items-end': align === 'end',
+        'justify-center': align === 'center',
+        'justify-start': align === 'start',
+        'justify-end': align === 'end',
       }
     ]"
   >
     <div
       v-for="(child, i) in $slots.default()"
-      :key="`stack-child-${i}`"
+      :key="`stack-${stackId}-child-${i}`"
       :class="{
         [spacingClass]: i !== $slots.default().length - 1,
         'border-b': i !== $slots.default().length - 1 && withBorder && vertical,

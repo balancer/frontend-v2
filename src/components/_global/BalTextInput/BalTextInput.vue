@@ -35,6 +35,10 @@ type Props = {
   decimalLimit?: number;
   validateOn?: ValidationTrigger;
   rules?: Rules;
+  rounded?: boolean;
+  shadow?: boolean;
+  border?: boolean;
+  format?: (input: string | number) => string | number;
 };
 
 /**
@@ -49,7 +53,10 @@ const props = withDefaults(defineProps<Props>(), {
   inputAlignRight: false,
   decimalLimit: 18,
   validateOn: 'blur',
-  rules: () => []
+  rules: () => [],
+  rounded: true,
+  shadow: true,
+  border: true
 });
 
 const emit = defineEmits<{
@@ -73,7 +80,8 @@ const {
   footerClasses,
   inputClasses,
   prependClasses,
-  appendClasses
+  appendClasses,
+  borderRadiusClasses
 } = useInputStyles(props, isInvalid, attrs);
 const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
 
@@ -84,11 +92,14 @@ const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
 // We don't want to pass on parent level classes to the html
 // input element. So we need to remove it from the attrs object.
 const inputAttrs = computed(() => omit(attrs, 'class'));
+
 </script>
 
 <template>
-  <div :class="['bal-text-input', parentClasses]">
-    <div :class="['input-container', inputContainerClasses]">
+  <div :class="['bal-text-input', parentClasses, borderRadiusClasses]">
+    <div
+      :class="['input-container', inputContainerClasses, borderRadiusClasses]"
+    >
       <div v-if="$slots.header || label" :class="['header', headerClasses]">
         <slot name="header">
           <span class="label">
@@ -127,11 +138,10 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 
 <style scoped>
 .bal-text-input {
-  @apply shadow-lg rounded-lg;
 }
 
 .input-container {
-  @apply shadow-inner rounded-lg bg-white dark:bg-gray-800;
+  @apply bg-white dark:bg-gray-800;
 }
 
 .input-group {
