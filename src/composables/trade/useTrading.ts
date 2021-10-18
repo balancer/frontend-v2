@@ -17,6 +17,7 @@ import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
 import useSor from './useSor';
 import useGnosis from './useGnosis';
+import { ENABLE_LEGACY_TRADE_INTERFACE } from './constants';
 
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 
@@ -109,6 +110,10 @@ export default function useTrading(
       return 'wrapUnwrap';
     } else if (isEthTrade.value) {
       return 'balancer';
+    }
+
+    if (ENABLE_LEGACY_TRADE_INTERFACE) {
+      return isEthTrade.value ? 'balancer' : 'gnosis';
     }
 
     return tradeGasless.value && isGnosisSupportedOnNetwork.value

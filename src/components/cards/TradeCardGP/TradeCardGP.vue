@@ -54,7 +54,10 @@
         @click.prevent="handlePreviewButton"
       />
       <div
-        v-if="trading.isGnosisSupportedOnNetwork.value"
+        v-if="
+          !ENABLE_LEGACY_TRADE_INTERFACE &&
+            trading.isGnosisSupportedOnNetwork.value
+        "
         class="mt-6 text-sm flex items-center"
       >
         <BalTooltip
@@ -109,6 +112,7 @@ import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
+import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -354,6 +358,7 @@ export default defineComponent({
     return {
       // constants
       TOKENS,
+      ENABLE_LEGACY_TRADE_INTERFACE,
       // context
       TradeSettingsContext,
 

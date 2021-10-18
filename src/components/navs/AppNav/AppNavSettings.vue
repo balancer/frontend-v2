@@ -140,6 +140,26 @@
       />
     </div>
     <div
+      v-if="ENABLE_LEGACY_TRADE_INTERFACE && isGnosisSupportedNetwork"
+      class="px-4 mt-6"
+    >
+      <div class="flex items-baseline">
+        <span v-text="$t('tradeInterface')" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div v-text="$t('tradeInterfaceTooltip')" class="w-52" />
+        </BalTooltip>
+      </div>
+      <BalBtnGroup
+        :options="tradeInterfaceOptions"
+        v-model="appTradeInterface"
+        @update:modelValue="setTradeInterface"
+      />
+      <div class="flex mt-1"></div>
+    </div>
+    <div
       v-if="networkName"
       class="network p-4 mt-4 text-sm border-t dark:border-gray-900 rounded-b-xl"
     >
@@ -161,15 +181,19 @@ import {
   getConnectorName,
   getConnectorLogo
 } from '@/services/web3/web3.plugin';
+import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import {
   tradeLiquidityOptions,
+  tradeInterfaceOptions,
   ethereumTxTypeOptions
 } from '@/constants/options';
+import { TradeInterface } from '@/store/modules/app';
 import useEthereumTxType from '@/composables/useEthereumTxType';
+import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 
 const locales = {
   'en-US': 'English',
@@ -202,7 +226,8 @@ export default defineComponent({
       connector,
       isV1Supported,
       isEIP1559SupportedNetwork,
-      userNetworkConfig
+      userNetworkConfig,
+      appNetworkConfig
     } = useWeb3();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
@@ -210,6 +235,7 @@ export default defineComponent({
     const data = reactive({
       locales,
       tradeLiquidityOptions,
+      tradeInterfaceOptions,
       copiedAddress: false
     });
 
@@ -232,11 +258,15 @@ export default defineComponent({
     const appLocale = computed(() => store.state.app.locale);
     const appDarkMode = computed(() => store.state.app.darkMode);
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
+    const appTradeInterface = computed(() => store.state.app.tradeInterface);
     const hideLiquidity = computed(() => !isV1Supported);
     const connectorName = computed(() => getConnectorName(connector.value?.id));
 
     const connectorLogo = computed(() => getConnectorLogo(connector.value?.id));
     const hideDisconnect = computed(() => connector.value?.id == 'gnosis');
+    const isGnosisSupportedNetwork = computed(() =>
+      GP_SUPPORTED_NETWORKS.includes(appNetworkConfig.chainId)
+    );
 
     // METHODS
     const setDarkMode = val => store.commit('app/setDarkMode', val);
@@ -244,6 +274,8 @@ export default defineComponent({
 
     const setTradeLiquidity = tradeLiquidity =>
       store.commit('app/setTradeLiquidity', tradeLiquidity);
+    const setTradeInterface = tradeInterface =>
+      store.commit('app/setTradeInterface', tradeInterface);
 
     function copyAddress() {
       navigator.clipboard.writeText(account.value);
@@ -257,9 +289,12 @@ export default defineComponent({
     return {
       // data
       ...toRefs(data),
+      TradeInterface,
+      ENABLE_LEGACY_TRADE_INTERFACE,
       // computed
       account,
       appTradeLiquidity,
+      appTradeInterface,
       networkName,
       networkColorClass,
       appLocale,
@@ -269,11 +304,13 @@ export default defineComponent({
       hideLiquidity,
       hideDisconnect,
       isEIP1559SupportedNetwork,
+      isGnosisSupportedNetwork,
       // methods
       disconnectWallet,
       setDarkMode,
       setLocale,
       setTradeLiquidity,
+      setTradeInterface,
       copyAddress,
       explorer: explorerLinks,
       ethereumTxType,

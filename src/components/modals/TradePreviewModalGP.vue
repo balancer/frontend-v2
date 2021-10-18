@@ -171,6 +171,7 @@
         <BalTooltip
           v-if="showGnosisRelayerApprovalStep"
           :disabled="!requiresGnosisRelayerApproval"
+          width="64"
         >
           <template v-slot:activator>
             <div
@@ -191,7 +192,7 @@
               <template v-else>1</template>
             </div>
           </template>
-          <div class="w-64">
+          <div>
             <div class="mb-2 font-semibold">
               <div>
                 {{
@@ -214,6 +215,7 @@
         <BalTooltip
           v-if="showTokenApprovalStep"
           :disabled="!requiresTokenApproval"
+          width="64"
         >
           <template v-slot:activator>
             <div
@@ -235,7 +237,7 @@
               }}</template>
             </div>
           </template>
-          <div class="w-64">
+          <div>
             <div class="mb-2 font-semibold">
               {{
                 $t(
@@ -254,7 +256,7 @@
           </div>
         </BalTooltip>
         <div class="step-seperator" v-if="showTokenApprovalStep" />
-        <BalTooltip>
+        <BalTooltip width="64">
           <template v-slot:activator>
             <div
               :class="[
@@ -267,7 +269,7 @@
               {{ totalRequiredTransactions }}
             </div>
           </template>
-          <div class="w-64">
+          <div>
             <div class="mb-2 font-semibold">
               {{ $t('tradeSummary.transactionTypesTooltips.trade.title') }}
             </div>

@@ -134,6 +134,8 @@
     "tableShowsBalancerV2Pools": "This table only shows Balancer V2 pools.",
     "tradeSettled": "Your trade has settled",
     "tradeSuccess": "Successfully traded your tokens",
+    "tradeInterface": "Trade interface",
+    "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across Balancer V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders while providing MEV protection.",       
     "thirdPartyRewards": {
         "apr": {
             "steth": "stETH staking rewards APR"
