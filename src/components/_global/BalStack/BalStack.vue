@@ -8,8 +8,8 @@ type Props = {
   spacing: Spacing;
   withBorder?: boolean;
   ref?: any;
-  align?: 'center' | 'start' | 'end',
-  justify?: 'center' | 'start' | 'end'
+  align?: 'center' | 'start' | 'end';
+  justify?: 'center' | 'start' | 'end';
 };
 
 const SpacingMap: Record<Spacing, number> = {
@@ -46,7 +46,7 @@ const stackId = Math.random();
         'items-end': align === 'end',
         'justify-center': align === 'center',
         'justify-start': align === 'start',
-        'justify-end': align === 'end',
+        'justify-end': align === 'end'
       }
     ]"
   >
