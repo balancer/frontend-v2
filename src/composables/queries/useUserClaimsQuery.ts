@@ -23,7 +23,7 @@ export default function useUserClaimsQuery(
   options: UseQueryOptions<UserClaimsQueryResponse> = {}
 ) {
   // COMPOSABLES
-  const { account, isWalletReady, getProvider } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
   const { networkId } = useNetwork();
 
   // DATA
@@ -40,7 +40,7 @@ export default function useUserClaimsQuery(
       multiTokenPendingClaims,
       multiTokenCurrentRewardsEstimate
     ] = await Promise.all([
-      claimService.getMultiTokensPendingClaims(getProvider(), account.value),
+      claimService.getMultiTokensPendingClaims(account.value),
       claimService.getMultiTokensCurrentRewardsEstimate(account.value)
     ]);
 

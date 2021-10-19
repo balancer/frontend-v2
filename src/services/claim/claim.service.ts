@@ -2,6 +2,7 @@ import axios from 'axios';
 import { chunk, flatten, groupBy } from 'lodash';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
+import { ethers } from 'ethers';
 
 import { getAddress } from '@ethersproject/address';
 
@@ -12,7 +13,8 @@ import { multicall } from '@/lib/utils/balancer/contract';
 import { bnum } from '@/lib/utils';
 import configs from '@/lib/config';
 
-import { ipfsService } from '../ipfs/ipfs.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { ipfsService } from '@/services/ipfs/ipfs.service';
 
 import MultiTokenClaim from './MultiTokenClaim.json';
 
@@ -29,19 +31,18 @@ import {
   TokenClaimInfo
 } from './types';
 import { claimWorkerPoolService } from './claim-worker-pool.service';
+
 import { configService } from '../config/config.service';
-import { ethers } from 'ethers';
 
 export class ClaimService {
   public async getMultiTokensPendingClaims(
-    provider: Web3Provider,
     account: string
   ): Promise<MultiTokenPendingClaims[]> {
     const tokenClaimsInfo = this.getTokenClaimsInfo();
     if (tokenClaimsInfo != null) {
       const multiTokenPendingClaims = await Promise.all(
         tokenClaimsInfo.map(tokenClaimInfo =>
-          this.getTokenPendingClaims(tokenClaimInfo, provider, account)
+          this.getTokenPendingClaims(tokenClaimInfo, account)
         )
       );
 
@@ -56,14 +57,11 @@ export class ClaimService {
 
   public async getTokenPendingClaims(
     tokenClaimInfo: TokenClaimInfo,
-    provider: Web3Provider,
     account: string
   ): Promise<MultiTokenPendingClaims> {
     const snapshot = await this.getSnapshot(tokenClaimInfo.manifest);
     const weekStart = tokenClaimInfo.weekStart;
-
     const claimStatus = await this.getClaimStatus(
-      provider,
       Object.keys(snapshot).length,
       account,
       tokenClaimInfo
@@ -245,7 +243,6 @@ export class ClaimService {
   }
 
   private async getClaimStatus(
-    provider: Web3Provider,
     totalWeeks: number,
     account: string,
     tokenClaimInfo: TokenClaimInfo
@@ -264,23 +261,27 @@ export class ClaimService {
       [token, distributor, weekStart + i]
     ]);
 
-    const result = (await multicall(
-      String(networkId.value),
-      provider,
-      merkleOrchardAbi,
-      [...claimStatusCalls, ...rootCalls]
-    )) as [boolean | string][];
+    try {
+      const result = (await multicall(
+        String(networkId.value),
+        rpcProviderService.jsonProvider,
+        merkleOrchardAbi,
+        [...claimStatusCalls, ...rootCalls]
+      )) as [boolean | string][];
 
-    if (result.length > 0) {
-      const chunks = chunk(flatten(result), totalWeeks);
+      if (result.length > 0) {
+        const chunks = chunk(flatten(result), totalWeeks);
 
-      const claimedResult = chunks[0] as boolean[];
-      const distributionRootResult = chunks[1] as string[];
+        const claimedResult = chunks[0] as boolean[];
+        const distributionRootResult = chunks[1] as string[];
 
-      return claimedResult.filter(
-        (_, index) =>
-          distributionRootResult[index] !== ethers.constants.HashZero
-      );
+        return claimedResult.filter(
+          (_, index) =>
+            distributionRootResult[index] !== ethers.constants.HashZero
+        );
+      }
+    } catch (e) {
+      console.log('[Claim] Claim Status Error:', e);
     }
 
     return [];
