@@ -2,23 +2,16 @@
     "1": [
         {
             "label": "BAL",
-            "distributor": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
+            "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
             "token": "0xba100000625a3754423978a60c9317c58a424e3d",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json",
             "weekStart": 52
         },
         {
-            "label": "LIDO",
-            "distributor": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
-            "token": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
-            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-lido.json",
-            "weekStart": 1
-        },
-        {
-            "label": "VITA",
-            "distributor": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
-            "token": "0x81f8f0bb1cB2A06649E51913A151F0E7Ef6FA321",
-            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-vita.json",
+            "label": "UNN",
+            "distributor": "0xBfbd6e720ffdF0497f69C95E5C03a4861C65A6E7",
+            "token": "0x226f7b842E0F0120b7E194D05432b3fd14773a9D",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-union.json",
             "weekStart": 1
         }
     ],
@@ -41,7 +34,7 @@
     "137": [
         {
             "label": "BAL",
-            "distributor": "0xd2eb7bd802a7ca68d9acd209bec4e664a9abdd7b",
+            "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
             "token": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-polygon.json",
             "weekStart": 1
@@ -50,17 +43,10 @@
     "42161": [
         {
             "label": "BAL",
-            "distributor": "0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809",
+            "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
             "token": "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-arbitrum.json",
-            "weekStart": 52
-        },
-        {
-            "label": "MCDEX",
-            "distributor": "0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809",
-            "token": "0x4e352cF164E64ADCBad318C3a1e222E9EBa4Ce42",
-            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-mcdex-arbitrum.json",
-            "weekStart": 1
+            "weekStart": 6
         }
     ]
   }
