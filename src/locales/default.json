@@ -464,6 +464,7 @@
     "volume24h": "Volume (24{0})",
     "wallet": "Wallet",
     "whichPools": "Which liquidity pools should be used when you make a trade.",
+    "withdrawFromPool": "Withdraw from pool",
     "withdrawalSettled": "Your withdrawal has settled",
     "withdrawalSuccess": "Your investment has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
     "withdrawWarning": "Withdrawing single asset amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees.",

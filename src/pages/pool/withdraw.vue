@@ -2,7 +2,7 @@
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 // Components
-import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.vue';
+import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -37,12 +37,12 @@ const { useNativeAsset, poolLoaded } = usePoolTransfers();
             {{ network.chainName }}
           </div>
           <div class="flex items-center justify-between">
-            <h4>{{ $t('investInPool') }}</h4>
+            <h4>{{ $t('withdrawFromPool') }}</h4>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>
         </div>
       </template>
-      <InvestForm :pool="pool" v-model:useNativeAsset="useNativeAsset" />
+      <WithdrawForm :pool="pool" v-model:useNativeAsset="useNativeAsset" />
     </BalCard>
   </div>
 </template>

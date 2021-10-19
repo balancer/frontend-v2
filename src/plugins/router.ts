@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import HomePage from '@/pages/index.vue';
 import PoolPage from '@/pages/pool/_id.vue';
 import PoolInvestPage from '@/pages/pool/invest.vue';
+import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/pages/trade.vue';
 
@@ -47,7 +48,14 @@ if (
     path: '/pool/:id/invest',
     name: 'poolInvest',
     component: PoolInvestPage,
-    meta: { layout: 'BlankLayout' }
+    meta: { layout: 'PoolTransferLayout' }
+  });
+
+  routes.push({
+    path: '/pool/:id/withdraw',
+    name: 'poolWithdraw',
+    component: PoolWithdrawPage,
+    meta: { layout: 'PoolTransferLayout' }
   });
 }
 
