@@ -3,13 +3,10 @@ import configs from '@/lib/config';
 import { SwapToken } from '../swap/swap.service';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { Web3Provider } from '@ethersproject/providers';
-import { Contract } from '@ethersproject/contracts';
-import useWeb3 from '@/services/web3/useWeb3';
+import { contractCaller } from './contract-caller.service';
 
 export default class ExchangeProxyService {
   network: string;
-  provider: Web3Provider;
   address: string;
   abi: any;
   signer: any;
@@ -20,56 +17,54 @@ export default class ExchangeProxyService {
     this.network = 'homestead';
     this.address = configs[this.network].addresses.exchangeProxy;
     this.abi = exchangeProxyAbi;
-    const { getProvider } = useWeb3();
-    this.provider = getProvider();
-    this.signer = this.provider.getSigner();
-    this.contract = new Contract(this.address, this.abi, this.provider);
-    this.contractWithSigner = this.contract.connect(this.signer);
   }
 
   public async multihopBatchSwap(
     swaps: Swap[][],
     tokenIn: SwapToken,
-    tokenOut: SwapToken
+    tokenOut: SwapToken,
+    options: Record<string, any> = {}
   ) : Promise<TransactionResponse> {
-    if (tokenIn.amount && tokenOut.amountMin) {
+    if (tokenOut.type == 'min') {
       return this.multihopBatchSwapExactIn(
         swaps,
         tokenIn.address,
         tokenOut.address,
         tokenIn.amount.toString(),
-        tokenOut.amountMin.toString()
+        tokenOut.amount.toString(),
+        options
       );
     }
 
-    if (tokenIn.amountMax) {
+    if (tokenIn.type == 'max') {
       return this.multihopBatchSwapExactOut(
         swaps,
         tokenIn.address,
         tokenOut.address,
-        tokenIn.amountMax.toString()
+        tokenIn.amount.toString(),
+        options
       );
     }
 
-    return Promise.reject(new Error("Invalid swap, must specify minimum out, or maximum in."));
+    return Promise.reject(
+      new Error('Invalid swap, must specify minimum out, or maximum in.')
+    );
   }
 
   public async multihopBatchSwapExactIn(
     swaps: Swap[][],
     tokenIn: string,
     tokenOut: string,
-    tokenInAmount: string,
-    tokenOutAmountMin: string
-  ) : Promise<TransactionResponse> {
-
-    // Get gas overrides
-
-    return this.contractWithSigner.multihopBatchSwapExactIn(
-      swaps,
-      tokenIn,
-      tokenOut,
-      tokenInAmount,
-      tokenOutAmountMin
+    totalAmountIn: string,
+    minTotalAmountOut: string,
+    options: Record<string, any> = {}
+  ): Promise<TransactionResponse> {
+    return contractCaller.sendTransaction(
+      this.address,
+      this.abi,
+      'multihopBatchSwapExactIn',
+      [swaps, tokenIn, tokenOut, totalAmountIn, minTotalAmountOut],
+      options
     );
   }
 
@@ -77,16 +72,15 @@ export default class ExchangeProxyService {
     swaps: Swap[][],
     tokenIn: string,
     tokenOut: string,
-    tokenInAmountMax: string
-  ) : Promise<TransactionResponse> {
-
-    // Get gas overrides
-
-    return this.contractWithSigner.multihopBatchSwapExactOut(
-      swaps,
-      tokenIn,
-      tokenOut,
-      tokenInAmountMax
+    maxTotalAmountIn: string,
+    options: Record<string, any> = {}
+  ): Promise<TransactionResponse> {
+    return contractCaller.sendTransaction(
+      this.address,
+      this.abi,
+      'multihopBatchSwapExactOut',
+      [swaps, tokenIn, tokenOut, maxTotalAmountIn],
+      options
     );
   }
 }
