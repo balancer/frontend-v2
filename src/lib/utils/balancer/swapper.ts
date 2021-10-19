@@ -11,6 +11,8 @@ import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWstETHByStETH, isStETH } from './lido';
 import { configService } from '@/services/config/config.service';
+import { SwapToken, swapService } from '@/services/swap/swap.service';
+import { bnum } from '..';
 import {
   FundManagement,
   SingleSwap,
@@ -26,6 +28,37 @@ export async function swapIn(
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber
 ): Promise<TransactionResponse> {
+  swapService.setNetwork(network);
+  swapService.setProvider(provider);
+
+  const tokenInAddress = sorReturn.isV1swap
+    ? sorReturn.tokenIn
+    : sorReturn.v2result.tokenIn;
+  const tokenOutAddress = sorReturn.isV1swap
+    ? sorReturn.tokenOut
+    : sorReturn.v2result.tokenOut;
+
+  const tokenIn: SwapToken = {
+    address: tokenInAddress,
+    amount: tokenInAmount
+  };
+
+  const tokenOut: SwapToken = {
+    address: tokenOutAddress,
+    amountMin: tokenOutAmountMin
+  };
+
+  if (sorReturn.isV1swap) {
+    return swapService.batchSwapV1(tokenIn, tokenOut, sorReturn.v1result[0]);
+  }
+
+  return swapService.batchSwapV2(
+    tokenIn,
+    tokenOut,
+    sorReturn.v2result.swaps,
+    sorReturn.v2result.tokenAddresses
+  );
+
   if (isStETH(sorReturn.v2result.tokenIn, sorReturn.v2result.tokenOut)) {
     return lidoBatchSwapGivenIn(
       network,
@@ -68,6 +101,30 @@ export async function swapOut(
   tokenInAmountMax: BigNumber,
   tokenOutAmount: BigNumber
 ): Promise<TransactionResponse> {
+
+  const tokenInAddress = sorReturn.isV1swap
+    ? sorReturn.tokenIn
+    : sorReturn.v2result.tokenIn;
+  const tokenOutAddress = sorReturn.isV1swap
+    ? sorReturn.tokenOut
+    : sorReturn.v2result.tokenOut;
+
+  const tokenIn: SwapToken = {
+    address: tokenInAddress,
+    amountMax: tokenInAmountMax
+  };
+
+  const tokenOut: SwapToken = {
+    address: tokenOutAddress,
+    amount: tokenOutAmount
+  };
+
+  if (sorReturn.isV1swap) {
+    swapService.batchSwapV1(tokenIn, tokenOut, sorReturn.v1result[0]);
+  }
+
+  return swapService.batchSwapV2(tokenIn, tokenOut, sorReturn.v2result.swaps, sorReturn.v2result.tokenAddresses);
+
   if (isStETH(sorReturn.v2result.tokenIn, sorReturn.v2result.tokenOut)) {
     return lidoBatchSwapGivenOut(
       network,
@@ -179,7 +236,7 @@ async function batchSwapGivenInV2(
   swaps: SwapV2[],
   tokenAddresses: string[]
 ): Promise<TransactionResponse> {
-  console.log('[Swapper] batchSwapGivenInV2');
+  console.log('[Swapper] batchSwapGivenInVy2');
   const overrides: any = {};
 
   if (tokenIn === AddressZero) {
