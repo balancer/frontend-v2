@@ -104,7 +104,7 @@ export default defineComponent({
       type: Array as PropType<string[]>
     },
     height: {
-      type: Object as PropType<string | number>
+      type: [Number, String]
     },
     showLegend: {
       type: Boolean
