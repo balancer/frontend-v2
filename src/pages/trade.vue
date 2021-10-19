@@ -1,7 +1,11 @@
 <template>
   <div class="lg:flex justify-center flex-col lg:flex-row">
     <div
-      v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists) && !hideWidgets"
+      v-if="
+        !upToLargeBreakpoint &&
+          !(appLoading || loadingTokenLists) &&
+          !hideWidgets
+      "
       class="mt-16 mr-6 flex flex-col widget-card"
     >
       <MyWallet />
@@ -43,12 +47,19 @@
       </div>
     </div>
     <div
-      v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists) && !hideWidgets"
+      v-if="
+        !upToLargeBreakpoint &&
+          !(appLoading || loadingTokenLists) &&
+          !hideWidgets
+      "
       class="mt-16 ml-6 flex flex-col widget-card relative"
     >
       <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
     </div>
-    <BalModal :show="showPriceGraphModal && !hideWidgets" @close="onPriceGraphModalClose">
+    <BalModal
+      :show="showPriceGraphModal && !hideWidgets"
+      @close="onPriceGraphModalClose"
+    >
       <div class="graph-modal">
         <PairPriceGraph
           :toggleModal="togglePairPriceGraphModal"
@@ -61,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, watch } from 'vue';
+import { defineComponent, computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
 import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';

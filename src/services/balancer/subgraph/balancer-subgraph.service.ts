@@ -6,7 +6,6 @@ import PoolActivities from './entities/poolActivities';
 import PoolSnapshots from './entities/poolSnapshots';
 import TradePairSnapshots from './entities/tradePairs';
 
-const NETWORK = process.env.VUE_APP_NETWORK || '1';
 import { Network, networkId } from '@/composables/useNetwork';
 
 export default class BalancerSubgraphService {

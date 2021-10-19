@@ -112,11 +112,8 @@ import useDarkMode from '@/composables/useDarkMode';
 import { configService } from '@/services/config/config.service';
 
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
-<<<<<<< HEAD
 import { useTradeState } from '@/composables/trade/useTradeState';
-=======
 import useUserSettings from '@/composables/useUserSettings';
->>>>>>> origin/develop
 
 const { nativeAsset } = configService.network;
 
