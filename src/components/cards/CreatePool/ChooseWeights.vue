@@ -8,13 +8,10 @@ import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import anime from 'animejs';
 import { sum, sumBy } from 'lodash';
-const { userNetworkConfig } = useWeb3();
-const networkName = configService.network.name;
 
-const _tokenOutAmount = ref();
-const _tokenOutAddress = ref();
+const emit = defineEmits(['update:tokenWeights'])
 
-type TokenWeight = {
+export type TokenWeight = {
   tokenAddress: string;
   weight: number;
   isLocked: boolean;
@@ -27,6 +24,12 @@ const emptyTokenWeight: TokenWeight = {
   id: 0,
   isLocked: false
 };
+
+const { userNetworkConfig } = useWeb3();
+const networkName = configService.network.name;
+
+const _tokenOutAmount = ref();
+const _tokenOutAddress = ref();
 
 const tokenWeights = reactive<TokenWeight[]>([]);
 const tokenWeightListWrapper = ref<HTMLElement>();
@@ -48,10 +51,8 @@ onMounted(async () => {
   wrapperHeight.value = tokenWeightListWrapper.value?.offsetHeight || 0;
 
   // add in the first token list item
-  // tokenWeights.push({ ...emptyTokenWeight, id: 0 });
   addTokenToPool();
   addTokenToPool();
-  // tokenWeights.push({ ...emptyTokenWeight, id: 1 });
 
   // wait for vue to reflect the changes of above
   await nextTick();
@@ -86,6 +87,7 @@ const addTokenToPool = async () => {
   wrapperHeight.value += tokenWeightItemHeight.value;
 
   tokenWeights.push({ ...emptyTokenWeight, id: tokenWeights.length - 1 });
+  emit('update:tokenWeights', tokenWeights)
 
   // to avoid reflow we are going to transform the totals + add token
   // down instead of having the new token weight item shift them

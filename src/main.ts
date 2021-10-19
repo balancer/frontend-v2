@@ -10,7 +10,7 @@ import registerDirectives from '@/plugins/directives';
 import { registerGlobalComponents } from '@/plugins/components';
 import Web3Plugin from '@/services/web3/web3.plugin';
 import { use } from 'echarts/core';
-import { LineChart } from 'echarts/charts';
+import { LineChart, PieChart, BarChart } from 'echarts/charts';
 import {
   TitleComponent,
   TooltipComponent,
@@ -18,7 +18,8 @@ import {
   LegendComponent,
   ToolboxComponent,
   MarkPointComponent,
-  MarkLineComponent
+  MarkLineComponent,
+  PolarComponent
 } from 'echarts/components';
 import VueVirtualScroller from 'vue3-virtual-scroller';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -37,7 +38,10 @@ use([
   LegendComponent,
   ToolboxComponent,
   MarkPointComponent,
-  MarkLineComponent
+  MarkLineComponent,
+  PieChart,
+  PolarComponent,
+  BarChart
 ]);
 
 const app = createApp(Root)
