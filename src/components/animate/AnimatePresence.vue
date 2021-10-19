@@ -41,7 +41,6 @@ export default defineComponent({
     });
 
     const enter = (el, done) => {
-      console.log('lmao', el);
       // on mount we set initial values, but the issue is that enter will run at
       // the same time, setTimeout(0) makes the animation run on the next
       // available tick, so it's instant visually but on a tick delay for code

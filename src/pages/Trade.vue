@@ -1,7 +1,7 @@
 <template>
   <div class="lg:flex justify-center flex-col lg:flex-row">
     <div
-      v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists)"
+      v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists) && !hideWidgets"
       class="mt-16 mr-6 flex flex-col widget-card"
     >
       <MyWallet />
@@ -15,7 +15,7 @@
         <TradeCard v-if="tradeInterface === TradeInterface.BALANCER" />
         <TradeCardGP v-else-if="tradeInterface === TradeInterface.GNOSIS" />
       </template>
-      <div class="mt-8 p-4 sm:p-0 lg:p-0">
+      <div v-if="!hideWidgets" class="mt-8 p-4 sm:p-0 lg:p-0">
         <BalAccordion
           class="accordion-mw w-full"
           v-if="upToLargeBreakpoint"
@@ -38,12 +38,12 @@
       </div>
     </div>
     <div
-      v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists)"
+      v-if="!upToLargeBreakpoint && !(appLoading || loadingTokenLists) && !hideWidgets"
       class="mt-16 ml-6 flex flex-col widget-card relative"
     >
       <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
     </div>
-    <BalModal :show="showPriceGraphModal" @close="onPriceGraphModalClose">
+    <BalModal :show="showPriceGraphModal && !hideWidgets" @close="onPriceGraphModalClose">
       <div class="graph-modal">
         <PairPriceGraph
           :toggleModal="togglePairPriceGraphModal"
@@ -85,6 +85,8 @@ export default defineComponent({
     const { setSelectedTokens } = usePoolFilters();
     const { upToLargeBreakpoint } = useBreakpoints();
     const showPriceGraphModal = ref(false);
+    // manual flag while subgraph syncs
+    const hideWidgets = true;
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
     const tradeInterface = computed(() => store.state.app.tradeInterface);
@@ -102,10 +104,6 @@ export default defineComponent({
       showPriceGraphModal.value = !showPriceGraphModal.value;
     };
 
-    watch(showPriceGraphModal, () => {
-      console.log('wwop');
-    });
-
     return {
       appLoading,
       tradeInterface,
@@ -113,6 +111,7 @@ export default defineComponent({
       TradeInterface,
       upToLargeBreakpoint,
       showPriceGraphModal,
+      hideWidgets,
       togglePairPriceGraphModal,
       onPriceGraphModalClose
     };
