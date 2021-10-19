@@ -271,14 +271,18 @@ export class ClaimService {
       [...claimStatusCalls, ...rootCalls]
     )) as [boolean | string][];
 
-    const chunks = chunk(flatten(result), totalWeeks);
+    if (result.length > 0) {
+      const chunks = chunk(flatten(result), totalWeeks);
 
-    const claimedResult = chunks[0] as boolean[];
-    const distributionRootResult = (chunks[1] as string[]).map(id =>
-      parseBytes32String(id)
-    );
+      const claimedResult = chunks[0] as boolean[];
+      const distributionRootResult = (chunks[1] as string[]).map(id =>
+        parseBytes32String(id)
+      );
 
-    return claimedResult.filter((_, index) => distributionRootResult[index]);
+      return claimedResult.filter((_, index) => distributionRootResult[index]);
+    }
+
+    return [];
   }
 
   private async getReports(snapshot: Snapshot, weeks: number[]) {

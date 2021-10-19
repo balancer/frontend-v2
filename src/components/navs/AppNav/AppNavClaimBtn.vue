@@ -82,7 +82,8 @@ const BALTokenPlaceholder = computed<ClaimableToken>(() => ({
   fiatValue: '0'
 }));
 
-const isAirdrop = computed(() => isPolygon.value);
+// Polygon used to be an airdrop, now its claimable - leaving it here in case new networks will need to be airdropped first.
+const isAirdrop = false;
 
 const legacyClaimUI = computed(() => {
   if (isMainnet.value || isKovan.value) {
