@@ -6,10 +6,11 @@ import {
 } from '../coingecko.service';
 import { TOKENS } from '@/constants/tokens';
 import { configService as _configService } from '@/services/config/config.service';
-import { invert } from 'lodash';
+import { groupBy, invert, last } from 'lodash';
 import { returnChecksum } from '@/lib/decorators/return-checksum.decorator';
 import { retryPromiseWithDelay } from '@/lib/utils/promise';
 import { twentyFourHoursInSecs } from '@/composables/useTime';
+import { fromUnixTime, getUnixTime, startOfHour } from 'date-fns';
 
 /**
  * TYPES
@@ -111,7 +112,8 @@ export class PriceService {
   async getTokensHistorical(
     addresses: string[],
     days: number,
-    addressesPerRequest = 1
+    addressesPerRequest = 1,
+    aggregateBy: 'hour' | 'day' = 'day'
   ) {
     if (addresses.length / addressesPerRequest > 10)
       throw new Error('To many requests for rate limit.');
@@ -146,9 +148,9 @@ export class PriceService {
     const results = this.parseHistoricalPrices(
       paginatedResults,
       addresses,
-      start
+      start,
+      aggregateBy
     );
-
     return results;
   }
 
@@ -167,7 +169,8 @@ export class PriceService {
   private parseHistoricalPrices(
     results: HistoricalPriceResponse[],
     addresses: string[],
-    start: number
+    start: number,
+    aggregateBy: 'day' | 'hour' = 'day'
   ): HistoricalPrices {
     const assetPrices = Object.fromEntries(
       addresses.map((address, index) => {
@@ -175,16 +178,30 @@ export class PriceService {
         const result = results[index].prices;
         const prices = {};
         let dayTimestamp = start;
-        for (const key in result) {
-          const value = result[key];
-          const [timestamp, price] = value;
-          if (timestamp > dayTimestamp * 1000) {
+        if (aggregateBy === 'hour') {
+          const pricesByHour = groupBy(result, r =>
+            getUnixTime(startOfHour(fromUnixTime(r[0] / 1000)))
+          );
+          for (const key of Object.keys(pricesByHour)) {
+            const price = (last(pricesByHour[key]) || [])[1] || 0;
             // TODO - remove this conditional once coingecko supports wstETH
-            prices[dayTimestamp * 1000] =
+            prices[Number(key) * 1000] =
               address === this.appAddresses.stETH
                 ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
                 : price;
-            dayTimestamp += twentyFourHoursInSecs;
+          }
+        } else if (aggregateBy === 'day') {
+          for (const key in result) {
+            const value = result[key];
+            const [timestamp, price] = value;
+            if (timestamp > dayTimestamp * 1000) {
+              // TODO - remove this conditional once coingecko supports wstETH
+              prices[dayTimestamp * 1000] =
+                address === this.appAddresses.stETH
+                  ? price * TOKENS.Prices.ExchangeRates.wstETH.stETH
+                  : price;
+              dayTimestamp += twentyFourHoursInSecs;
+            }
           }
         }
         return [address, prices];
