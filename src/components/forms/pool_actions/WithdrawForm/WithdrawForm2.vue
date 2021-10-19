@@ -210,16 +210,6 @@ watch(
 
 <template>
   <div>
-    <BalAlert
-      v-if="forceProportionalInputs"
-      type="warning"
-      :title="$t('investment.warning.managedPoolTradingHaulted.title')"
-      :description="
-        $t('investment.warning.managedPoolTradingHaulted.description')
-      "
-      class="mb-4"
-    />
-
     <TokenInput
       v-for="(n, i) in state.tokenAddresses.length"
       :key="i"
