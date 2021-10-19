@@ -14,21 +14,22 @@ import {
   computeTotalAPRForPool,
   computeAPRsForPool
 } from '@/lib/utils/liquidityMining';
-import { NetworkId } from '@/constants/network';
+import { Network } from '@/composables/useNetwork';
 import { configService as _configService } from '@/services/config/config.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { FiatCurrency } from '@/constants/currency';
 import { isStable, isWstETH } from '@/composables/usePool';
-import { twentyFourHoursInSecs } from '@/composables/useTime';
+import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
 import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
+import { differenceInWeeks } from 'date-fns';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
 export default class Pools {
   service: Service;
   query: QueryBuilder;
-  networkId: NetworkId;
+  networkId: Network;
 
   constructor(
     service: Service,
@@ -38,7 +39,7 @@ export default class Pools {
   ) {
     this.service = service;
     this.query = query;
-    this.networkId = Number(configService.env.NETWORK) as NetworkId;
+    this.networkId = configService.env.NETWORK;
   }
 
   public async get(args = {}, attrs = {}): Promise<Pool[]> {
@@ -58,8 +59,15 @@ export default class Pools {
     const block = { number: blockNumber };
     const isInPoolIds = { id_in: pools.map(pool => pool.id) };
     const pastPoolsQuery = this.query({ where: isInPoolIds, block });
-    const { pools: pastPools } = await this.service.client.get(pastPoolsQuery);
-
+    let pastPools: Pool[] = [];
+    try {
+      const data: { pools: Pool[] } = await this.service.client.get(
+        pastPoolsQuery
+      );
+      pastPools = data.pools;
+    } catch {
+      // eslint-disable-previous-line no-empty
+    }
     return this.serialize(pools, pastPools, period, prices, currency);
   }
 
@@ -93,7 +101,11 @@ export default class Pools {
         liquidityMiningAPR,
         thirdPartyAPR
       );
+      const isNewPool = this.isNewPool(pool);
 
+      // TODO - remove hasLiquidityMiningRewards from schema
+      // Add a conditional to usePool or somewhere else that
+      // checks what rewards are available.
       return {
         ...pool,
         hasLiquidityMiningRewards,
@@ -107,7 +119,8 @@ export default class Pools {
             liquidityMining: liquidityMiningAPR,
             liquidityMiningBreakdown,
             total: totalAPR
-          }
+          },
+          isNewPool
         }
       };
     });
@@ -227,6 +240,10 @@ export default class Pools {
       default:
         return currentBlock - blocksInDay;
     }
+  }
+
+  private isNewPool(pool: Pool): boolean {
+    return differenceInWeeks(Date.now(), pool.createTime * oneSecondInMs) < 1;
   }
 
   public addressFor(poolId: string): string {

@@ -1,11 +1,13 @@
 <template v-slot:aprCell="pool">
-  <BalTooltip v-if="pool.hasLiquidityMiningRewards" noPad>
+  <BalTooltip v-if="pool.hasLiquidityMiningRewards" width="auto" noPad>
     <template v-slot:activator>
-      <StarsIcon
-        class="ml-1 h-5 text-yellow-300"
-        v-if="pool.hasLiquidityMiningRewards"
-        v-bind="$attrs"
-      />
+      <div class="ml-1">
+        <StarsIcon
+          class="h-5 text-yellow-300"
+          v-if="pool.hasLiquidityMiningRewards"
+          v-bind="$attrs"
+        />
+      </div>
     </template>
     <div class="text-sm divide-y dark:divide-gray-900">
       <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
@@ -28,31 +30,24 @@
             {{ thirdPartyAPRLabel }}
           </span>
         </div>
-        <div class="whitespace-nowrap flex items-center">
-          {{ fNum(pool.dynamic.apr.liquidityMining, 'percent') }}
-          <span class="ml-1 text-gray-500 text-xs flex items-center">
-            {{ $t('liquidityMiningAPR') }}
-            <StarsIcon class="h-4 text-yellow-300" />
-          </span>
-        </div>
-        <div
-          v-if="multiRewardPool"
-          class="whitespace-nowrap flex flex-col mt-2 ml-px"
+        <BalBreakdown
+          :items="Object.entries(lmBreakdown)"
+          :hideItems="!multiRewardPool"
         >
-          <div
-            v-for="(apr, address, index) in lmBreakdown"
-            :key="address"
-            class="flex items-center"
-          >
-            <div v-if="index === 0" class="init-vert-bar" />
-            <div v-else class="vert-bar" />
-            <div class="horiz-bar" />
-            {{ fNum(apr, 'percent') }}
-            <span class="text-gray-500 text-xs ml-2">
-              {{ lmTokens[address].symbol }} {{ $t('apr') }}
+          <div class="flex items-center">
+            {{ fNum(pool.dynamic.apr.liquidityMining, 'percent') }}
+            <span class="ml-1 text-gray-500 text-xs flex items-center">
+              {{ $t('liquidityMiningAPR') }}
+              <StarsIcon class="h-4 text-yellow-300" />
             </span>
           </div>
-        </div>
+          <template v-if="multiRewardPool" #item="{ item }">
+            {{ fNum(item[1], 'percent') }}
+            <span class="text-gray-500 text-xs ml-1">
+              {{ lmTokens[item[0]].symbol }} {{ $t('apr') }}
+            </span>
+          </template>
+        </BalBreakdown>
       </div>
     </div>
   </BalTooltip>
@@ -103,7 +98,7 @@ export default defineComponent({
     );
 
     const thirdPartyAPRLabel = computed(() => {
-      if (isWstETH(props.pool)) return t('thirdPartyAPR.steth');
+      if (isWstETH(props.pool)) return t('thirdPartyRewards.apr.steth');
       return '';
     });
 
@@ -118,17 +113,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style scoped>
-.horiz-bar {
-  @apply h-px w-3 bg-gray-200 dark:bg-gray-700 mr-2;
-}
-
-.init-vert-bar {
-  @apply w-px h-4 bg-gray-200 dark:bg-gray-700 -mt-4 -mr-px;
-}
-
-.vert-bar {
-  @apply w-px h-8 bg-gray-200 dark:bg-gray-700 -mt-8 -mr-px;
-}
-</style>

@@ -134,6 +134,7 @@ watchEffect(() => {
       name="tokenIn"
       @update:amount="handleInAmountChange"
       @update:address="emit('update:tokenInAddress', $event)"
+      :excludedTokens="[_tokenOutAddress]"
     />
 
     <div class="flex items-center my-2">
@@ -156,6 +157,7 @@ watchEffect(() => {
       @update:address="emit('update:tokenOutAddress', $event)"
       noRules
       noMax
+      :excludedTokens="[_tokenInAddress]"
     />
   </div>
 </template>

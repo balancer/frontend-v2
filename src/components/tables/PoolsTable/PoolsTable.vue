@@ -47,12 +47,21 @@
         </div>
       </template>
       <template v-slot:poolNameCell="pool">
-        <div v-if="!isLoading" class="px-6 py-4">
+        <div v-if="!isLoading" class="px-6 py-4 flex items-center">
           <TokenPills
             :tokens="orderedPoolTokens(pool)"
             :isStablePool="isStableLike(pool.poolType)"
             :selectedTokens="selectedTokens"
           />
+          <BalChip
+            v-if="pool.dynamic.isNewPool"
+            color="red"
+            size="sm"
+            class="ml-2 uppercase"
+            :outline="false"
+          >
+            {{ $t('new') }}
+          </BalChip>
         </div>
       </template>
       <template v-slot:aprCell="pool">

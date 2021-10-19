@@ -1,17 +1,31 @@
-import { computed, Ref, watch } from 'vue';
+import { computed, onMounted, ref, Ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { bnum, scale } from '@/lib/utils';
-import useNumbers from '../useNumbers';
+
 import useWeb3 from '@/services/web3/useWeb3';
+import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
+
+import useNumbers from '../useNumbers';
+import useTokens from '../useTokens';
+import useUserSettings from '../useUserSettings';
+import { networkId } from '../useNetwork';
+
+import { bnum, lsGet, lsSet, scale } from '@/lib/utils';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+
+import LS_KEYS from '@/constants/local-storage.keys';
+import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+
 import useSor from './useSor';
 import useGnosis from './useGnosis';
-import useTokens from '../useTokens';
-import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { ENABLE_LEGACY_TRADE_INTERFACE } from './constants';
 
 export type TradeRoute = 'wrapUnwrap' | 'balancer' | 'gnosis';
 
 export type UseTrading = ReturnType<typeof useTrading>;
+
+export const tradeGasless = ref<boolean>(
+  lsGet<boolean>(LS_KEYS.Trade.Gasless, true)
+);
 
 export default function useTrading(
   exactIn: Ref<boolean>,
@@ -25,11 +39,10 @@ export default function useTrading(
   const { fNum } = useNumbers();
   const { tokens } = useTokens();
   const { blockNumber } = useWeb3();
+  const { slippage } = useUserSettings();
 
   // COMPUTED
-  const slippageBufferRate = computed(() =>
-    parseFloat(store.state.app.slippage)
-  );
+  const slippageBufferRate = computed(() => parseFloat(slippage.value));
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
@@ -88,12 +101,24 @@ export default function useTrading(
     };
   });
 
+  const isGnosisSupportedOnNetwork = computed(() =>
+    GP_SUPPORTED_NETWORKS.includes(networkId.value)
+  );
+
   const tradeRoute = computed<TradeRoute>(() => {
     if (wrapType.value !== WrapType.NonWrap) {
       return 'wrapUnwrap';
+    } else if (isEthTrade.value) {
+      return 'balancer';
     }
 
-    return isEthTrade.value ? 'balancer' : 'gnosis';
+    if (ENABLE_LEGACY_TRADE_INTERFACE) {
+      return isEthTrade.value ? 'balancer' : 'gnosis';
+    }
+
+    return tradeGasless.value && isGnosisSupportedOnNetwork.value
+      ? 'gnosis'
+      : 'balancer';
   });
 
   const isGnosisTrade = computed(() => tradeRoute.value === 'gnosis');
@@ -101,6 +126,10 @@ export default function useTrading(
   const isBalancerTrade = computed(() => tradeRoute.value === 'balancer');
 
   const isWrapUnwrapTrade = computed(() => tradeRoute.value === 'wrapUnwrap');
+
+  const isGaslessTradingDisabled = computed(
+    () => isEthTrade.value || isWrapUnwrapTrade.value
+  );
 
   const hasTradeQuote = computed(
     () =>
@@ -185,6 +214,18 @@ export default function useTrading(
     gnosis.submissionError.value = null;
   }
 
+  function setTradeGasless(flag: boolean) {
+    tradeGasless.value = flag;
+
+    lsSet(LS_KEYS.Trade.Gasless, tradeGasless.value);
+  }
+
+  function toggleTradeGasless() {
+    setTradeGasless(!tradeGasless.value);
+
+    handleAmountChange();
+  }
+
   function getQuote() {
     if (isGnosisTrade.value) {
       return gnosis.getQuote();
@@ -220,6 +261,14 @@ export default function useTrading(
     store.commit('trade/setOutputAsset', tokenOutAddressInput.value);
 
     handleAmountChange();
+  });
+
+  onMounted(() => {
+    const gaslessDisabled = window.location.href.includes('gasless=false');
+
+    if (gaslessDisabled) {
+      setTradeGasless(false);
+    }
   });
 
   watch(blockNumber, () => {
@@ -271,6 +320,10 @@ export default function useTrading(
     isConfirming,
     submissionError,
     resetSubmissionError,
+    tradeGasless,
+    toggleTradeGasless,
+    isGaslessTradingDisabled,
+    isGnosisSupportedOnNetwork,
 
     // methods
     getQuote,

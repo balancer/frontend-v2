@@ -69,10 +69,7 @@
         <div class="text-sm text-gray-600 mb-1">
           {{ $t('pendingEstimate') }}
         </div>
-        <div v-if="isArbitrum" class="p-3 text-sm">
-          Sorry, estimates for Arbitrum are not available at the moment
-        </div>
-        <div v-else class="flex justify-between items-center mb-2">
+        <div class="flex justify-between items-center mb-2">
           <div class="text-lg font-bold">
             {{
               fNum(currentRewards, currentRewards > 0 ? 'token_fixed' : 'token')
@@ -109,7 +106,6 @@ import { TOKENS } from '@/constants/tokens';
 import { bnum } from '@/lib/utils';
 import { claimRewards } from '@/services/claim';
 import useWeb3 from '@/services/web3/useWeb3';
-import { NetworkId } from '@/constants/network';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import useTokens from '@/composables/useTokens';
@@ -224,7 +220,7 @@ export default defineComponent({
         isClaiming.value = true;
         try {
           const tx = await claimRewards(
-            appNetworkConfig.chainId as NetworkId,
+            appNetworkConfig.chainId,
             getProvider(),
             account.value,
             userClaims.value.pendingClaims,

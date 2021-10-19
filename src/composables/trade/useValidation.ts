@@ -1,6 +1,7 @@
 import { computed, Ref } from 'vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '../useTokens';
+import { bnum } from '@/lib/utils';
 
 const MIN_NATIVE_ASSET_REQUIRED = 0.0001;
 
@@ -22,42 +23,55 @@ export default function useValidation(
   const { isWalletReady } = useWeb3();
   const { nativeAsset, balances } = useTokens();
 
-  const tokensAmountsValid = computed(
+  const noAmounts = computed(
     () =>
-      isValidTokenAmount(tokenInAmount.value) &&
-      isValidTokenAmount(tokenOutAmount.value)
+      !isValidTokenAmount(tokenInAmount.value) &&
+      !isValidTokenAmount(tokenOutAmount.value)
+  );
+
+  const missingToken = computed(
+    () => !tokenInAddress.value || !tokenOutAddress.value
+  );
+
+  const exceedsBalance = computed(
+    () =>
+      !balances.value[tokenInAddress.value] ||
+      bnum(balances.value[tokenInAddress.value]).lt(tokenInAmount.value)
+  );
+
+  const notEnoughForGas = computed(() => {
+    const nativeAssetBalance = bnum(balances.value[nativeAsset.address]);
+    return nativeAssetBalance.lt(MIN_NATIVE_ASSET_REQUIRED);
+  });
+
+  /**
+   * Not definitive. Only probably true if no other exceptions,
+   * i.e. valid inputs, wallet connected, enough balance, etc.
+   */
+  const probablyNotEnoughLiquidity = computed(
+    () =>
+      bnum(tokenOutAmount.value).eq(0) ||
+      tokenOutAmount.value.trim() === '' ||
+      bnum(tokenInAmount.value).eq(0) ||
+      tokenInAmount.value.trim() === ''
   );
 
   const validationStatus = computed(() => {
-    if (!isWalletReady) return TradeValidation.NO_ACCOUNT;
+    if (!isWalletReady.value) return TradeValidation.NO_ACCOUNT;
 
-    if (!tokensAmountsValid.value) return TradeValidation.EMPTY;
+    if (noAmounts.value || missingToken.value) return TradeValidation.EMPTY;
 
-    const nativeAssetBalance = parseFloat(balances.value[nativeAsset.address]);
-    if (nativeAssetBalance < MIN_NATIVE_ASSET_REQUIRED) {
-      return TradeValidation.NO_NATIVE_ASSET;
-    }
+    if (notEnoughForGas.value) return TradeValidation.NO_NATIVE_ASSET;
 
-    if (
-      !balances.value[tokenInAddress.value] ||
-      parseFloat(balances.value[tokenInAddress.value]) <
-        parseFloat(tokenInAmount.value)
-    )
-      return TradeValidation.NO_BALANCE;
+    if (exceedsBalance.value) return TradeValidation.NO_BALANCE;
 
-    if (
-      parseFloat(tokenOutAmount.value) == 0 ||
-      tokenOutAmount.value.trim() === '' ||
-      parseFloat(tokenInAmount.value) == 0 ||
-      tokenInAmount.value.trim() === ''
-    )
-      return TradeValidation.NO_LIQUIDITY;
+    if (probablyNotEnoughLiquidity.value) return TradeValidation.NO_LIQUIDITY;
 
     return TradeValidation.VALID;
   });
 
   function isValidTokenAmount(tokenAmount: string) {
-    return parseFloat(tokenAmount) > 0 && tokenAmount.trim() !== '';
+    return bnum(tokenAmount).gt(0) && tokenAmount.trim() !== '';
   }
 
   const errorMessage = computed(() => validationStatus.value);
@@ -65,7 +79,6 @@ export default function useValidation(
   return {
     validationStatus,
     errorMessage,
-    isValidTokenAmount,
-    tokensAmountsValid
+    isValidTokenAmount
   };
 }

@@ -8,6 +8,7 @@ import usePoolQuery from './usePoolQuery';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
+import useNetwork from '../useNetwork';
 
 /**
  * TYPES
@@ -31,6 +32,7 @@ export default function usePoolSnapshotsQuery(
    * QUERY DEPENDENCIES
    */
   const poolQuery = usePoolQuery(id);
+  const { networkId } = useNetwork();
 
   /**
    * COMPUTED
@@ -41,7 +43,7 @@ export default function usePoolSnapshotsQuery(
   /**
    * QUERY INPUTS
    */
-  const queryKey = QUERY_KEYS.Pools.Snapshot(id);
+  const queryKey = QUERY_KEYS.Pools.Snapshot(networkId, id);
 
   const queryFn = async () => {
     if (!pool.value) throw new Error('No pool');

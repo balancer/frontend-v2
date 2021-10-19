@@ -112,7 +112,11 @@ import useDarkMode from '@/composables/useDarkMode';
 import { configService } from '@/services/config/config.service';
 
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+<<<<<<< HEAD
 import { useTradeState } from '@/composables/trade/useTradeState';
+=======
+import useUserSettings from '@/composables/useUserSettings';
+>>>>>>> origin/develop
 
 const { nativeAsset } = configService.network;
 
@@ -145,6 +149,7 @@ export default defineComponent({
       setTokenInAddress,
       setTokenOutAddress
     } = useTradeState();
+    const { slippage } = useUserSettings();
 
     const exactIn = ref(true);
 
@@ -152,9 +157,7 @@ export default defineComponent({
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
 
-    const slippageBufferRate = computed(() =>
-      parseFloat(store.state.app.slippage)
-    );
+    const slippageBufferRate = computed(() => parseFloat(slippage.value));
 
     const tokenIn = computed(() => tokens.value[tokenInAddress.value]);
 

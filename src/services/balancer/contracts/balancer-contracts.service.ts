@@ -2,7 +2,8 @@ import Vault from './contracts/vault';
 import {
   Vault__factory,
   WeightedPool__factory,
-  StablePool__factory
+  StablePool__factory,
+  InvestmentPool__factory
 } from '@balancer-labs/typechain';
 import { Config } from '@/lib/config';
 import { JsonRpcProvider } from '@ethersproject/providers';
@@ -34,6 +35,7 @@ export default class BalancerContractsService {
           ...Vault__factory.abi,
           ...WeightedPool__factory.abi,
           ...StablePool__factory.abi,
+          ...InvestmentPool__factory.abi,
           ...TokenAbi
         ].map(row => [row.name, row])
       )

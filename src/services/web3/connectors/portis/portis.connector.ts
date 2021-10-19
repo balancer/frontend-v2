@@ -10,7 +10,7 @@ export class PortisConnector extends Connector {
     // exports the default class and no extra types
     const portis = new Portis(
       configService.env.PORTIS_DAPP_ID,
-      configService.network.network
+      configService.network.portisNetwork || configService.network.network
     ) as any;
 
     const provider = portis.provider;

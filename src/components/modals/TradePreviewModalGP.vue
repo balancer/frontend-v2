@@ -8,14 +8,12 @@
           >
             <span>
               {{ $t('effectivePrice') }}
-            </span>
-            <span
-              v-html="
+              {{
                 trading.exactIn.value
                   ? trading.effectivePriceMessage.value.tokenIn
                   : trading.effectivePriceMessage.value.tokenOut
-              "
-            />
+              }}
+            </span>
           </div>
         </template>
         <div>
@@ -173,6 +171,7 @@
         <BalTooltip
           v-if="showGnosisRelayerApprovalStep"
           :disabled="!requiresGnosisRelayerApproval"
+          width="64"
         >
           <template v-slot:activator>
             <div
@@ -193,7 +192,7 @@
               <template v-else>1</template>
             </div>
           </template>
-          <div class="w-64">
+          <div>
             <div class="mb-2 font-semibold">
               <div>
                 {{
@@ -216,6 +215,7 @@
         <BalTooltip
           v-if="showTokenApprovalStep"
           :disabled="!requiresTokenApproval"
+          width="64"
         >
           <template v-slot:activator>
             <div
@@ -237,7 +237,7 @@
               }}</template>
             </div>
           </template>
-          <div class="w-64">
+          <div>
             <div class="mb-2 font-semibold">
               {{
                 $t(
@@ -256,7 +256,7 @@
           </div>
         </BalTooltip>
         <div class="step-seperator" v-if="showTokenApprovalStep" />
-        <BalTooltip>
+        <BalTooltip width="64">
           <template v-slot:activator>
             <div
               :class="[
@@ -269,7 +269,7 @@
               {{ totalRequiredTransactions }}
             </div>
           </template>
-          <div class="w-64">
+          <div>
             <div class="mb-2 font-semibold">
               {{ $t('tradeSummary.transactionTypesTooltips.trade.title') }}
             </div>
@@ -338,7 +338,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType, ref, watch } from 'vue';
-import { useStore } from 'vuex';
 import { formatUnits } from '@ethersproject/units';
 import { useI18n } from 'vue-i18n';
 import { mapValues } from 'lodash';
@@ -358,6 +357,7 @@ import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import { bnum } from '@/lib/utils';
 
 import { FiatCurrency } from '@/constants/currency';
+import useUserSettings from '@/composables/useUserSettings';
 
 const PRICE_UPDATE_THRESHOLD = 0.02;
 
@@ -374,11 +374,13 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // COMPOSABLES
-    const store = useStore();
     const { t } = useI18n();
     const { fNum, toFiat } = useNumbers();
     const { tokens, approvalRequired } = useTokens();
     const { blockNumber } = useWeb3();
+    const { slippage } = useUserSettings();
+
+    // state
     const lastQuote = ref<TradeQuote | null>(
       props.trading.isWrapUnwrapTrade.value ? null : props.trading.getQuote()
     );
@@ -389,9 +391,7 @@ export default defineComponent({
     const showSummaryInFiat = ref(false);
 
     // COMPUTED
-    const slippageRatePercent = computed(() =>
-      fNum(store.state.app.slippage, 'percent')
-    );
+    const slippageRatePercent = computed(() => fNum(slippage.value, 'percent'));
 
     const addressIn = computed(() => props.trading.tokenIn.value.address);
 

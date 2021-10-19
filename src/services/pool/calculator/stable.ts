@@ -21,9 +21,9 @@ export default class Stable {
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
-    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
-    const amounts = this.calc.pool.tokens.map(({ priceRate }, i) =>
+    const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
       this.scaleInput(tokenAmounts[i], priceRate)
     );
 
@@ -44,10 +44,10 @@ export default class Stable {
   }
 
   public bptInForExactTokensOut(tokenAmounts: string[]): BigNumber {
-    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
 
-    const amounts = this.calc.pool.tokens.map(({ priceRate }, i) =>
+    const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
       this.scaleInput(tokenAmounts[i], priceRate)
     );
 
@@ -68,9 +68,9 @@ export default class Stable {
   }
 
   public bptInForExactTokenOut(amount: string, tokenIndex: number): BigNumber {
-    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
-    const amounts = this.calc.pool.tokens.map(({ priceRate }, i) => {
+    const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) => {
       if (i === tokenIndex) return this.scaleInput(amount, priceRate);
       return bnum('0');
     });
@@ -99,11 +99,11 @@ export default class Stable {
       return this.scaleOutput(
         '0',
         this.calc.poolTokenDecimals[tokenIndex],
-        this.calc.pool.tokens[tokenIndex].priceRate,
+        this.calc.pool.value.tokens[tokenIndex].priceRate,
         BigNumber.ROUND_DOWN // If OUT given IN, round down
       );
 
-    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const ampAdjusted = this.adjustAmp(amp);
     const bptAmountIn = this.scaleInput(bptAmount);
 
@@ -119,7 +119,7 @@ export default class Stable {
     return this.scaleOutput(
       tokenAmountOut.toString(),
       this.calc.poolTokenDecimals[tokenIndex],
-      this.calc.pool.tokens[tokenIndex].priceRate,
+      this.calc.pool.value.tokens[tokenIndex].priceRate,
       BigNumber.ROUND_DOWN // If OUT given IN, round down
     );
   }
@@ -144,7 +144,7 @@ export default class Stable {
           this.calc.bptBalance,
           this.calc.poolDecimals
         ).toString();
-        tokenAmounts = this.calc.pool.tokensList.map((_, i) => {
+        tokenAmounts = this.calc.pool.value.tokensList.map((_, i) => {
           if (i !== opts.tokenIndex) return '0';
           const tokenAmount = this.exactBPTInForTokenOut(
             this.calc.bptBalance,
@@ -168,7 +168,7 @@ export default class Stable {
    * PRIVATE FUNCTIONS
    */
   private bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
-    const amp = bnum(this.calc.pool.onchain.amp?.toString() || '0');
+    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
       this.calc.poolTokenDecimals
@@ -205,7 +205,7 @@ export default class Stable {
       );
       const scaledBalance = this.scaleInput(
         normalizedBalance,
-        this.calc.pool.tokens[i].priceRate
+        this.calc.pool.value.tokens[i].priceRate
       );
       return bnum(scaledBalance.toString());
     });

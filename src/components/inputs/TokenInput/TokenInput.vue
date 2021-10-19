@@ -9,6 +9,7 @@ import useUserSettings from '@/composables/useUserSettings';
 import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
+import { TokenInfo } from '@/types/TokenList';
 
 /**
  * TYPES
@@ -18,7 +19,7 @@ type InputValue = string | number;
 type Props = {
   amount: InputValue;
   address?: string;
-  weight?: number;
+  weight?: number | string;
   noRules?: boolean;
   noMax?: boolean;
   priceImpact?: number;
@@ -26,6 +27,10 @@ type Props = {
   fixedToken?: boolean;
   customBalance?: string;
   disableMax?: boolean;
+  hint?: string;
+  hintAmount?: string;
+  excludedTokens?: string[];
+  options?: string[];
 };
 
 /**
@@ -38,7 +43,9 @@ const props = withDefaults(defineProps<Props>(), {
   noRules: false,
   noMax: false,
   fixedToken: false,
-  disableMax: false
+  disableMax: false,
+  hintAmount: '',
+  options: () => []
 });
 
 const emit = defineEmits<{
@@ -79,8 +86,8 @@ const tokenBalance = computed(() => {
   return balanceFor(_address.value);
 });
 
-const token = computed(() => {
-  if (!hasToken.value) return {};
+const token = computed((): TokenInfo | undefined => {
+  if (!hasToken.value) return undefined;
   return getToken(_address.value);
 });
 
@@ -151,7 +158,7 @@ watchEffect(() => {
 <template>
   <BalTextInput
     v-model="_amount"
-    placeholder="0.0"
+    :placeholder="hintAmount || '0.0'"
     type="number"
     :label="label"
     :decimalLimit="token?.decimals || 18"
@@ -172,10 +179,12 @@ watchEffect(() => {
     <template v-slot:prepend>
       <TokenSelectInput
         v-model="_address"
-        :fixed="fixedToken"
         :weight="weight"
+        :fixed="fixedToken"
+        :options="options"
         class="mr-2"
         @update:modelValue="emit('update:address', $event)"
+        :excludedTokens="excludedTokens"
       />
     </template>
     <template v-slot:footer>
@@ -201,11 +210,21 @@ watchEffect(() => {
               </span>
             </template>
           </div>
-          <div v-if="hasAmount && hasToken" class="font-numeric">
-            {{ fNum(tokenValue, currency) }}
-            <span v-if="priceImpact" :class="priceImpactClass">
-              ({{ priceImpactSign + fNum(priceImpact, 'percent') }})
-            </span>
+          <div>
+            <template v-if="hasAmount && hasToken">
+              {{ fNum(tokenValue, currency) }}
+              <span v-if="priceImpact" :class="priceImpactClass">
+                ({{ priceImpactSign + fNum(priceImpact, 'percent') }})
+              </span>
+            </template>
+            <template v-else-if="hint">
+              <span
+                class="text-blue-500 lowercase cursor-pointer"
+                @click="emit('update:amount', hintAmount)"
+              >
+                {{ hint }}
+              </span>
+            </template>
           </div>
         </div>
         <BalProgressBar

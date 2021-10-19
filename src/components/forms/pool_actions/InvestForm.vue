@@ -74,7 +74,7 @@
             </div>
             <div class="flex flex-col w-1/2 leading-none text-right pl-2">
               <span class="break-words" :title="fNum(amountUSD(i), 'usd')">
-                {{ amountUSD(i) === 0 ? '-' : fNum(amountUSD(i), 'usd') }}
+                {{ amountUSD(i) === '0' ? '-' : fNum(amountUSD(i), 'usd') }}
               </span>
               <span v-if="!isStableLikePool" class="text-xs text-gray-400">
                 {{ fNum(tokenWeights[i], 'percent_lg') }}
@@ -98,7 +98,7 @@
         v-model:amount="amounts[i]"
         v-model:address="tokenAddresses[i]"
         v-model:isValid="validInputs[i]"
-        :weight="isStableLikePool ? 0 : tokenWeights[i]"
+        :weight="isStableLikePool ? 0 : Number(tokenWeights[i])"
         :name="tokenAddress"
         class="mb-4"
         fixedToken
@@ -121,7 +121,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52" v-html="$t('ethBufferInstruction')" />
+          <div v-html="$t('ethBufferInstruction')" />
         </BalTooltip>
       </div>
       <div v-if="isWstETHPool" class="flex items-center mb-4">
@@ -146,7 +146,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52" v-html="$t('wrapStEthTooltip')" />
+          <div v-html="$t('wrapStEthTooltip')" />
         </BalTooltip>
       </div>
     </div>
@@ -181,23 +181,23 @@
                 class="text-gray-400 -mb-px ml-2"
               />
             </template>
-            <div v-html="$t('customAmountsTip')" class="w-52" />
+            <div v-html="$t('customAmountsTip')" />
           </BalTooltip>
         </div>
         <BalBtn
           v-if="requireApproval"
-          :label="`${$t('approve')} ${symbolFor(requiredAllowances[0])}`"
+          :label="`${$t('approve')} ${symbolFor(requiredApprovals[0])}`"
           :loading="approving"
           :loading-label="$t('approving')"
           :disabled="!hasAmounts || !hasValidInputs"
           block
-          @click.prevent="approveAllowances"
+          @click.prevent="approveNextAllowance"
         />
         <template v-else>
           <BalCheckbox
             v-if="priceImpact >= 0.01"
             v-model="highPiAccepted"
-            :rules="[isRequired(this.$t('priceImpactCheckbox'))]"
+            :rules="[isRequired($t('priceImpactCheckbox'))]"
             name="highPiAccepted"
             class="text-gray-500 mb-12"
             size="sm"
@@ -231,9 +231,9 @@ import {
   onMounted,
   reactive,
   toRefs,
-  ref,
   PropType,
-  toRef
+  toRef,
+  ref
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -249,7 +249,7 @@ import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 import useNumbers from '@/composables/useNumbers';
 import useSlippage from '@/composables/useSlippage';
 
-import PoolExchange from '@/services/pool/exchange';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 import { bnum } from '@/lib/utils';
@@ -260,7 +260,7 @@ import useFathom from '@/composables/useFathom';
 import { TOKENS } from '@/constants/tokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '@/composables/useTransactions';
 import { usePool } from '@/composables/usePool';
@@ -329,29 +329,22 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { txListener } = useEthers();
     const { addTransaction } = useTransactions();
-    const { isStableLikePool, isWethPool, isWstETHPool } = usePool(
-      toRef(props, 'pool')
-    );
-
-    const { amounts } = toRefs(data);
-
     const {
-      requiredAllowances,
-      approveAllowances,
-      approving,
-      approvedAll
-    } = useTokenApprovals(props.pool.tokenAddresses, amounts);
+      isStableLikePool,
+      isWethPool,
+      isWstETHPool,
+      managedPoolWithTradingHalted
+    } = usePool(toRef(props, 'pool'));
 
     // SERVICES
-    const poolExchange = computed(
-      () => new PoolExchange(props.pool, appNetworkConfig.key, tokens.value)
-    );
+    const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
     const poolCalculator = new PoolCalculator(
-      props.pool,
-      tokens.value,
+      toRef(props, 'pool'),
+      tokens,
       allBalances,
-      'join'
+      'join',
+      ref(false)
     );
 
     // COMPUTED
@@ -397,8 +390,7 @@ export default defineComponent({
 
     const requireApproval = computed(() => {
       if (!hasAmounts.value) return false;
-      if (approvedAll.value) return false;
-      return requiredAllowances.value.length > 0;
+      return requiredApprovals.value.length > 0;
     });
 
     const isProportional = computed(() => {
@@ -459,32 +451,48 @@ export default defineComponent({
       };
     });
 
-    const minBptOut = computed(() => {
+    const bptOut = computed(() => {
       let bptOut = poolCalculator
         .exactTokensInForBPTOut(fullAmounts.value)
         .toString();
-      bptOut = formatUnits(bptOut, props.pool.onchain.decimals);
-      console.log(bptOut, `TS EVM _exactTokensInForBPTOut`);
 
-      return minusSlippage(bptOut, props.pool.onchain.decimals);
+      return formatUnits(bptOut, props.pool.onchain.decimals);
+    });
+
+    const minBptOut = computed(() => {
+      return minusSlippage(bptOut.value, props.pool.onchain.decimals);
     });
 
     const nativeAsset = computed(() => appNetworkConfig.nativeAsset.symbol);
 
-    const formTypes = ref([
-      {
-        label: t('noPriceImpact'),
-        max: propMaxUSD,
-        value: FormTypes.proportional,
-        tooltip: t('noPriceImpactTip')
-      },
-      {
-        label: t('customAmounts'),
-        max: balanceMaxUSD,
-        value: FormTypes.custom,
-        tooltip: t('customAmountsTip')
+    const formTypes = computed(() => {
+      let validTypes = [
+        {
+          label: t('noPriceImpact'),
+          max: propMaxUSD.value,
+          value: FormTypes.proportional,
+          tooltip: t('noPriceImpactTip')
+        }
+      ];
+
+      // Managed pools with trading halted only allow proportional joins/exits
+      if (!managedPoolWithTradingHalted.value) {
+        validTypes.push({
+          label: t('customAmounts'),
+          max: balanceMaxUSD.value,
+          value: FormTypes.custom,
+          tooltip: t('customAmountsTip')
+        });
       }
-    ]);
+
+      return validTypes;
+    });
+
+    const {
+      approving,
+      requiredApprovals,
+      approveNextAllowance
+    } = useTokenApprovals(props.pool.tokenAddresses, fullAmounts);
 
     // METHODS
     function tokenBalance(index: number): string {
@@ -550,16 +558,21 @@ export default defineComponent({
     // Left here so numbers can be debugged in conosle
     // Talk to Fernando to see if still needed
     async function calcMinBptOut(): Promise<void> {
-      let { bptOut } = await poolExchange.value.queryJoin(
+      let { bptOut: queryBptOut } = await poolExchange.queryJoin(
         getProvider(),
         account.value,
-        fullAmounts.value
+        fullAmounts.value,
+        props.pool.tokenAddresses,
+        minBptOut.value
       );
-      bptOut = formatUnits(bptOut.toString(), props.pool.onchain.decimals);
-      console.log(bptOut, 'bptOut (queryJoin)');
+      queryBptOut = formatUnits(
+        queryBptOut.toString(),
+        props.pool.onchain.decimals
+      );
+      console.log(queryBptOut, 'bptOut (queryJoin)');
       console.log(minBptOut.value, 'bptOut (JS) minusSlippage');
       console.log(
-        minusSlippage(bptOut, props.pool.onchain.decimals),
+        minusSlippage(queryBptOut, props.pool.onchain.decimals),
         'bptOut (queryJoin) minusSlippage'
       );
     }
@@ -569,11 +582,16 @@ export default defineComponent({
       try {
         data.loading = true;
         await calcMinBptOut();
-        const tx = await poolExchange.value.join(
+        const _bptOut = managedPoolWithTradingHalted.value
+          ? bptOut.value
+          : minBptOut.value;
+
+        const tx = await poolExchange.join(
           getProvider(),
           account.value,
           fullAmounts.value,
-          minBptOut.value
+          props.pool.tokenAddresses,
+          _bptOut
         );
         console.log('Receipt', tx);
 
@@ -592,7 +610,7 @@ export default defineComponent({
         });
 
         txListener(tx, {
-          onTxConfirmed: async (tx: TransactionResponse) => {
+          onTxConfirmed: async (tx: TransactionReceipt) => {
             emit('success', tx);
             data.amounts = [];
             data.loading = false;
@@ -609,14 +627,9 @@ export default defineComponent({
       }
     }
 
-    watch(tokens, newTokens => {
-      poolCalculator.setAllTokens(newTokens);
-    });
-
     watch(
       () => props.pool.onchain.tokens,
       (newTokens, oldTokens) => {
-        poolCalculator.setPool(props.pool);
         const tokensChanged = !isEqual(newTokens, oldTokens);
         if (tokensChanged) {
           setPropMax();
@@ -688,7 +701,7 @@ export default defineComponent({
       hasAmounts,
       approving,
       requireApproval,
-      requiredAllowances,
+      requiredApprovals,
       tokenWeights,
       tokenBalance,
       amountRules,
@@ -710,7 +723,7 @@ export default defineComponent({
       isStableLikePool,
       // methods
       submit,
-      approveAllowances,
+      approveNextAllowance,
       fNum,
       trackGoal,
       symbolFor,

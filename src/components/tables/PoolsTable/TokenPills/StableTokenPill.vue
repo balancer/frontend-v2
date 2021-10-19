@@ -35,6 +35,9 @@ withDefaults(defineProps<Props>(), {
   @apply relative;
   @apply mr-1;
 }
+.pill:last-child {
+  @apply mr-0;
+}
 
 .pill::before {
   @apply w-full h-full;

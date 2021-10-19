@@ -155,7 +155,7 @@ function setHandleBars(el: HTMLElement) {
           ref="handleBarElement"
           @click="toggleSection(section.id)"
           :class="[
-            'w-full flex justify-between p-3 hover:bg-gray-50',
+            'w-full flex justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-800',
             {
               'border-b dark:border-gray-900': i !== sections.length - 1
             }
