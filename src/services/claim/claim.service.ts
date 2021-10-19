@@ -4,7 +4,6 @@ import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
 
 import { getAddress } from '@ethersproject/address';
-import { parseBytes32String } from '@ethersproject/strings';
 
 import { networkId } from '@/composables/useNetwork';
 
@@ -31,6 +30,7 @@ import {
 } from './types';
 import { claimWorkerPoolService } from './claim-worker-pool.service';
 import { configService } from '../config/config.service';
+import { ethers } from 'ethers';
 
 export class ClaimService {
   public async getMultiTokensPendingClaims(
@@ -275,11 +275,12 @@ export class ClaimService {
       const chunks = chunk(flatten(result), totalWeeks);
 
       const claimedResult = chunks[0] as boolean[];
-      const distributionRootResult = (chunks[1] as string[]).map(id =>
-        parseBytes32String(id)
-      );
+      const distributionRootResult = chunks[1] as string[];
 
-      return claimedResult.filter((_, index) => distributionRootResult[index]);
+      return claimedResult.filter(
+        (_, index) =>
+          distributionRootResult[index] !== ethers.constants.HashZero
+      );
     }
 
     return [];
