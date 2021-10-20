@@ -415,8 +415,8 @@
                 "title": "Approve {0}"
             },
             "trade": {
-                "content": "Finalize the transaction by submitting it for inclusion on the blockchain.",
-                "title": "Confirm transaction"
+                "content": "Upon your signature, CowSwap will find an optimal route amongst other traders or DeFi exchanges, with MEV protection.",
+                "title": "Sign a free message to trade"
             }
         },
         "unwrap": {
