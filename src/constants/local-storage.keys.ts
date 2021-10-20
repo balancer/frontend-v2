@@ -8,6 +8,9 @@ export default {
     TradeDeadline: 'app.tradeDeadline',
     EthereumTxType: 'app.ethereumTxType'
   },
+  Trade: {
+    Gasless: 'trade.gasless'
+  },
   UserSettings: {
     Currency: 'userSettings.currency'
   },

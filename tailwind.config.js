@@ -56,6 +56,9 @@ module.exports = {
       ...defaultTheme.screens
     },
     extend: {
+      height: {
+        '112': '28rem'
+      },
       colors: {
         gray: {
           50: '#F8FAFC',

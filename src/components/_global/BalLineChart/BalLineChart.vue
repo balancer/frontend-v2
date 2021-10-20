@@ -1,6 +1,6 @@
 <template>
   <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
-  <div v-else>
+  <div :class="[wrapperClass]" v-else>
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
       <h3 class="text-gray-800 text-xl tracking-wider">
         {{ currentValue }}
@@ -16,17 +16,29 @@
     </div>
     <ECharts
       ref="chartInstance"
-      :class="[height ? `h-${height}` : '', 'w-full']"
+      :class="[
+        height && typeof (height === 'string') ? `h-${height}` : '',
+        'w-full',
+        chartClass
+      ]"
       :option="chartConfig"
       autoresize
       @updateAxisPointer="handleAxisMoved"
       :update-options="{ replaceMerge: 'series' }"
+      :style="[styleOverrides]"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from 'vue';
+import {
+  defineComponent,
+  PropType,
+  ref,
+  computed,
+  watch,
+  onMounted
+} from 'vue';
 import numeral from 'numeral';
 import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
@@ -92,13 +104,48 @@ export default defineComponent({
       type: Array as PropType<string[]>
     },
     height: {
-      type: String
+      type: [Number, String]
     },
     showLegend: {
       type: Boolean
     },
     legendState: {
       type: Object
+    },
+    // manually uptick this variable to
+    // force a resize calculation on the chart
+    forceResizeTick: {
+      type: Number
+    },
+    // whether to show the little rectangle with the
+    // last value of the data
+    isLastValueChipVisible: {
+      type: Boolean
+    },
+    // provide a custom grid for the chart
+    customGrid: {
+      type: Object
+    },
+    // sets the class for the chart container
+    chartClass: {
+      type: String
+    },
+    // sets the class for the element which wraps
+    // the chart and the header
+    wrapperClass: {
+      type: String
+    },
+    // hides the tooltip
+    showTooltip: {
+      type: Boolean,
+      default: () => true
+    },
+    // whether to constrain the y-axis
+    // based on the min and max values of the
+    // data passed in
+    useMinMax: {
+      type: Boolean,
+      default: () => false
     }
   },
   components: {
@@ -137,7 +184,7 @@ export default defineComponent({
             format: props.axisLabelFormatter.yAxis
           })}`;
         },
-        selected: props.legendState,
+        selected: props.legendState || {},
         textStyle: {
           color: darkMode.value
             ? tailwind.theme.colors.gray['100']
@@ -167,9 +214,11 @@ export default defineComponent({
       // controlling the display of the Y-Axis
       yAxis: {
         axisLine: {
-          show: true,
+          show: !props.hideYAxis,
           lineStyle: { color: axisColor.value }
         },
+        min: props.useMinMax ? 'dataMin' : null,
+        max: props.useMinMax ? 'dataMax' : null,
         type: 'value',
         show: !props.hideYAxis,
         splitNumber: 4,
@@ -178,7 +227,7 @@ export default defineComponent({
         },
         position: 'right',
         axisLabel: {
-          show: true,
+          show: !props.hideYAxis,
           formatter: props.axisLabelFormatter.yAxis
             ? value =>
                 fNum(value, null, { format: props.axisLabelFormatter.yAxis })
@@ -189,7 +238,7 @@ export default defineComponent({
       },
       color: props.color,
       // Controls the boundaries of the chart from the HTML defined rectangle
-      grid: {
+      grid: props.customGrid || {
         left: '2.5%',
         right: 0,
         top: '10%',
@@ -197,7 +246,9 @@ export default defineComponent({
         containLabel: true
       },
       tooltip: {
+        show: props.showTooltip,
         trigger: 'axis',
+        confine: true,
         axisPointer: {
           type: 'shadow',
           label: {
@@ -267,43 +318,115 @@ export default defineComponent({
             color: '#FFF',
             fontSize: 10
           },
-          data: [
-            {
-              name: 'Latest',
-              yAxis: (last(props.data[i].values) || [])[1]
-            }
-          ]
+          data: props.isLastValueChipVisible
+            ? [
+                {
+                  name: 'Latest',
+                  yAxis: (last(props.data[i]?.values) || [])[1]
+                }
+              ]
+            : [],
+          animation: false
         }
       }))
     }));
 
+    const styleOverrides = computed(() => {
+      let style: any = {};
+      if (props.height && typeof props.height === 'number') {
+        style.height = `${props.height}px`;
+      }
+      return style;
+    });
+
+    // sometimes the autoresize doesn't resize as often as we'd like
+    // for page size changes, its own mechanism is fine however for
+    // usages where we need to animate the size of the graph, it's not as
+    // smooth so we can use this little tick (updated by anim tick) to resize
+    // smoothly.
+    watch(
+      () => props.forceResizeTick,
+      () => {
+        if (chartInstance.value) {
+          chartInstance.value.resize();
+        }
+      }
+    );
+
+    // make sure to update the latest values when we get a fresh set of data
+    watch(
+      () => props.data,
+      () => {
+        const currentDayValue = numeral(
+          (props.data[0].values[props.data[0].values.length - 1] || [])[1]
+        );
+        currentValue.value = currentDayValue.format(
+          props.axisLabelFormatter.yAxis || '$0,0.00'
+        );
+        const previousDayValue = numeral(
+          (props.data[0].values[props.data[0].values.length - 2] || [])[1]
+        );
+        change.value =
+          ((currentDayValue.value() || 0) - (previousDayValue.value() || 0)) /
+          (previousDayValue.value() || 0);
+      }
+    );
+
+    // make sure to update the latest values when we get a fresh set of data
+    // need to do this onMount as well since the data doesn't change on mount
+    // it simply is there without change so it won't trigger the watcher
+    onMounted(() => {
+      const currentDayValue = numeral(
+        (props.data[0].values[props.data[0].values.length - 1] || [])[1]
+      );
+      currentValue.value = currentDayValue.format(
+        props.axisLabelFormatter.yAxis || '$0,0.00'
+      );
+      const previousDayValue = numeral(
+        (props.data[0].values[props.data[0].values.length - 2] || [])[1]
+      );
+
+      change.value =
+        ((currentDayValue.value() || 0) - (previousDayValue.value() || 0)) /
+        (previousDayValue.value() || 0);
+    });
+
     // Triggered when hovering mouse over different xAxis points
     const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
       if (!props.showHeader) return;
-      props.onAxisMoved &&
-        props.onAxisMoved(props.data[seriesIndex].values[dataIndex]);
-      currentValue.value = numeral(props.data[dataIndex]).format('$0,0.00');
+      if (props.data[seriesIndex]?.values) {
+        props.onAxisMoved &&
+          props.onAxisMoved(props.data[seriesIndex].values[dataIndex]);
 
-      // no change if first point in the chart
-      if (dataIndex === 0) {
-        change.value = 0;
-      } else {
-        const prev = props.data[seriesIndex].values[dataIndex - 1] as number;
-        const current = props.data[seriesIndex].values[dataIndex] as number;
-        const _change = (current - prev) / prev;
+        currentValue.value = numeral(
+          props.data[seriesIndex].values[dataIndex][1]
+        ).format(props.axisLabelFormatter.yAxis || '$0,0.00');
 
-        // 100% increase if coming from a 0!
-        if (prev === 0 && current !== 0) {
-          change.value = 1;
-          return;
-        }
-
-        // any errors or 0 division, fall back to 0
-        if (isNaN(_change)) {
+        // no change if first point in the chart
+        if (dataIndex === 0) {
           change.value = 0;
-          return;
+        } else {
+          const prev = props.data[seriesIndex].values[
+            dataIndex - 1
+          ][1] as number;
+          const current = props.data[seriesIndex].values[
+            dataIndex
+          ][1] as number;
+          const _change = (current - prev) / prev;
+
+          // 100% increase if coming from a 0!
+          if (prev === 0 && current !== 0) {
+            change.value = 1;
+            return;
+          }
+
+          // any errors or 0 division, fall back to 0
+          if (isNaN(_change)) {
+            change.value = 0;
+            return;
+          }
+          change.value = _change;
         }
-        change.value = _change;
       }
     };
 
@@ -321,7 +444,8 @@ export default defineComponent({
       change,
 
       // computed
-      chartConfig
+      chartConfig,
+      styleOverrides
     };
   }
 });

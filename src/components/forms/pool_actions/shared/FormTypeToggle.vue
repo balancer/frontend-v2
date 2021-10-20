@@ -20,7 +20,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 -mb-px ml-2" />
           </template>
-          <div class="w-52">
+          <div>
             {{ type.tooltip }}
           </div>
         </BalTooltip>

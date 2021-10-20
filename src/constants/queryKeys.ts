@@ -44,6 +44,19 @@ const QUERY_KEYS = {
     ]
   },
   Tokens: {
+    TrendingPairs: (userNetworkId: Ref<number>) => [
+      'trendingTradePairs',
+      { userNetworkId }
+    ],
+    PairPriceData: (
+      tokenInAddress: Ref<string>,
+      tokenOutAddress: Ref<string>,
+      activeTimespan: Ref<{ option: string; value: number }>,
+      userNetworkId: Ref<number>
+    ) => [
+      'pairPriceData',
+      { tokenInAddress, tokenOutAddress, activeTimespan, userNetworkId }
+    ],
     Prices: (networkId: Ref<Network>, tokens: Ref<string[]>) => [
       'tokens',
       'prices',

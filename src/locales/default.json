@@ -1,77 +1,78 @@
 {
-    "alerts": {
-        "price-fetch-error": "Our pricing provider, Coingecko is currently down.",
-        "balances-fetch-error": "Failed to fetch token balances.",
-        "allowances-fetch-error": "Failed to fetch token allowances.",
-        "pool-fetch-error": "Failed to fetch pool.",
-        "pools-fetch-error": "Failed to fetch pools.",
-        "retry-label": "Refresh to try again"
-    },
-    "account": "Account",
+    "aboutElementFinance": "Element is an open source protocol for fixed and variable yield markets. It is built on Balancer V2. View and manage your liquidity positions directly on Element.fi.",
     "accept": "Accept",
+    "account": "Account",
     "action": "Action",
     "actions": "Actions",
     "activity": "Activity",
     "addToken": "Add a token",
+    "alerts": {
+        "allowances-fetch-error": "Failed to fetch token allowances.",
+        "balances-fetch-error": "Failed to fetch token balances.",
+        "pool-fetch-error": "Failed to fetch pool.",
+        "pools-fetch-error": "Failed to fetch pools.",
+        "price-fetch-error": "Our pricing provider, Coingecko is currently down.",
+        "retry-label": "Refresh to try again"
+    },
     "allow": "Allow",
     "allowing": "Allowing...",
     "allPools": "All pools",
     "allTransactions": "All transactions",
     "ammPlatform": "Automated portfolio manager and trading platform",
     "amount": "Amount",
+    "amountBeforeFees": "Amount before fees",
     "amountToInvest": "Amount to invest",
     "amountToWithdraw": "Amount to withdraw",
-    "amountBeforeFees": "Amount before fees",
     "amplification": "Amplification",
     "approve": "Approve",
-    "approveLidoRelayer": "Approve Lido relayer",
-    "approvedLidoRelayer": "Approved Lido relayer",
-    "approvingLidoRelayer": "Approving Lido relayer",
-    "approveGnosisRelayer": "Approve Gnosis relayer",
-    "approvedGnosisRelayer": "Approved Gnosis relayer",
-    "approvingGnosisRelayer": "Approving Gnosis relayer",
     "approved": "Approved",
+    "approvedGnosisRelayer": "Approved Gnosis relayer",
+    "approvedLidoRelayer": "Approved Lido relayer",
+    "approveGnosisRelayer": "Approve Gnosis relayer",
     "approveGP": "Approve trading on Gnosis Protocol",
+    "approveLidoRelayer": "Approve Lido relayer",
     "approveTokens": "Approve tokens",
     "approving": "Approving",
+    "approvingGnosisRelayer": "Approving Gnosis relayer",
+    "approvingLidoRelayer": "Approving Lido relayer",
     "apr": "APR",
     "availableToClaim": "Available to claim:",
-    "basedOnLast24h": "based on the last 24h",
     "balance": "Balance",
     "balances": "Balances",
+    "basedOnLast24h": "based on the last 24h",
     "best": "Best",
     "browseLists": "Browse lists",
     "browserWallet": "Browser Wallet",
     "buy": "Buy",
-    "changeTheme": "Change theme",
     "cancel": "Cancel",
     "cancelling": "Cancelling",
+    "changeTheme": "Change theme",
     "claim": "Claim",
     "claimAll": "Claim all",
     "claimBAL": "Claim BAL for",
-    "claimSuccess": "You successfully claimed BAL!",    
     "claiming": "Claiming...",
+    "claimSuccess": "You successfully claimed BAL!",
     "classic": "Classic",
-    "close": "Close",
     "clearTransactions": "Clear transactions",
-    "copperLaunchPromo": {
-        "title": "A Copper fair launch auction pool (FLA)",
-        "description": "Copper is the platform for FLAs—a simple crowdfunding mechanism that enables projects and ideas from across the world to raise money from individuals without barriers to entry.",
-        "poweredByBalancer": "Copper is built on Balancer V2 and uses Liquidity Bootstapping Pools to power it’s FLAs",
-        "buttonLabel": "View this auction on Copper"
-    },
+    "close": "Close",
     "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
+    "composition": "Composition",
     "configuration": "Configuration",
-    "confirmTrade": "Confirm trade",
-    "confirmWrap": "Confirm {0} wrap",
-    "confirmUnwrap": "Confirm {0} unwrap",
     "confirming": "Confirming...",
+    "confirmTrade": "Confirm trade",
+    "confirmUnwrap": "Confirm {0} unwrap",
+    "confirmWrap": "Confirm {0} wrap",
     "connect": "Connect",
     "connecting": "Connecting...",
     "connectWallet": "Connect wallet",
-    "composition": "Composition",
-    "copyAddress": "Copy address",
     "copied": "Copied!",
+    "copperLaunchPromo": {
+        "buttonLabel": "View this auction on Copper",
+        "description": "Copper is the platform for FLAs—a simple crowdfunding mechanism that enables projects and ideas from across the world to raise money from individuals without barriers to entry.",
+        "poweredByBalancer": "Copper is built on Balancer V2 and uses Liquidity Bootstapping Pools to power it’s FLAs",
+        "title": "A Copper fair launch auction pool (FLA)"
+    },
+    "copyAddress": "Copy address",
     "create": "Create",
     "createPool": "Create a pool",
     "currentNetwork": "Current network",
@@ -85,34 +86,49 @@
     "depositing": "depositing",
     "details": "Details",
     "dynamicSwapFeeLabel": "Dynamic swap fees: Currently <b>{0}</b>",
-    "editoTitle": "Put your money to work",
+    "earnBAL": "Earn BAL when swapping eligible tokens",
     "editoAbout": "Earn more on your Ethereum-based assets. Add tokens to pools and earn compounding fees when people trade on the exchange utilizing your liquidity.",
+    "editoTitle": "Put your money to work",
     "effectivePrice": "Effective price:",
     "emptyInvestmentPools": "You have not joined any Balancer investment pools.",
     "emptyInvestmentPoolsLink": "View investment pools ->",
-    "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>investment, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
-    "etherscan": "Etherscan",
-    "exceedsBalance": "Exceeds balance",
     "enterAmount": "Enter amount",
-    "investmentPoolsAbout": "Stake your assets to get $BAL tokens for participating in Balancer V2 liquidity mining.",
-    "investmentPoolsAboutLink": "Learn more ->",
-    "earnBAL": "Earn BAL when swapping eligible tokens",
-    "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
+    "errorCancellingOrder": "Error cancelling order",
     "errorNoLists": "Sorry, we can't find any lists",
     "errorNoMatch": "Sorry, we can't find any matches",
     "errorNoTokens": "Sorry, we can't find any tokens",
-    "errorCancellingOrder": "Error cancelling order",
+    "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>investment, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
+    "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
+    "etherscan": "Etherscan",
+    "exceedsBalance": "Exceeds balance",
     "explore": "Explore",
-    "explorePools": "Explore pools",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
-    "feesTime": "Fees ({0})",
+    "explorePools": "Explore pools",
+    "featuredProtocol": "Featured ecosystem protocol",
     "feesManagedByGauntlet": "Liquidity providers earn dynamic swap fees on every trade utilizing the Liquidity in this pool. Dynamic swap fees are controlled by governance and are currently set by Gauntlet.",
+    "feesTime": "Fees ({0})",
     "filter": "Filter",
-    "filters": "Filters",
     "filterByToken": "Filter by token",
+    "filters": "Filters",
     "fixedFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every trade utilizing the liquidity in this pool.",
     "fixedSwapFeeLabel": "Fixed swap fees: <b>{0}</b>",
     "flashLoanFee": "Flash loan fee",
+    "gnosisErrors": {
+        "lowAmount": {
+            "body": "The fees for this transaction exceeds the amount you want to trade.",
+            "header": "Your trade amount is too low"
+        },
+        "lowBalance": {
+            "body": "The fees and potential slippage (up to {2}) set for this trade exceeds your {0} balance. You need at least {1} {0} to proceed.",
+            "header": "Insufficient {0} balance"
+        }
+    },
+    "gnosisWarnings": {
+        "highFees": {
+            "body": "You can still proceed with the trade but a high percentage of it will be consumed by trade fees.",
+            "header": "The fees on this transaction exceed 20% of the trade amount."
+        }
+    },
     "goToBalancerV1Site": "Go to the Balancer V1 site ->",
     "highGasFees": "High gas fees? Here's a helping hand",
     "highPriceImpact": "High price impact",
@@ -127,84 +143,83 @@
     "insufficientLiquidityDetailed": "Try trading with a smaller amount or check back when liquidity for this pool has increased.",
     "invest": "Invest",
     "investInPool": "Invest in pool",
-    "inYourWallet": "In your wallet:",
-    "time": "Time",
-    "timeAgo": "{0} ago",
-    "tableShowsBalancerV2Pools": "This table only shows Balancer V2 pools.",
-    "tradeSettled": "Your trade has settled",
-    "tradeSuccess": "Successfully traded your tokens",
-    "tradeInterface": "Trade interface",
-    "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across Balancer V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders while providing MEV protection.",
-    "thirdPartyRewards": {
-        "apr": {
-            "steth": "stETH staking rewards APR"
-        },
-        "fiat": {
-            "steth": "stETH staking rewards"
-        }
-    },
-    "investmentPool": "Investment pool",
-    "investmentPools": "Investment pools",
-    "investmentSettled": "Your investment has settled",
-    "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",
-    "investmentTooltip": "Confirm investment into this pool",
     "investment": {
         "label": "Investment",
-        "preview": {
-            "titles": {
-                "default": "Investment preview",
-                "confirmed": "Investment confirmed"
-            },
+        "myPoolBalancesCard": {
+            "title": "My pool balance"
+        },
+        "myWalletTokensCard": {
+            "title": "Pool tokens in my wallet",
             "tooltips": {
-                "approval": "You must approve {0} to invest this token on Balancer. Approvals are required once per token, per wallet."
-            },
+                "nativeAssetSelection": "Select {0} or {1} to invest in this pool. Wrap or unwrap {0} to invest a larger amount and maximize your investment."
+            }
+        },
+        "preview": {
             "loadingLabel": {
                 "approval": "Confirm approval in wallet",
                 "investment": "Confirm investment in wallet"
+            },
+            "titles": {
+                "confirmed": "Investment confirmed",
+                "default": "Investment preview"
+            },
+            "tooltips": {
+                "approval": "You must approve {0} to invest this token on Balancer. Approvals are required once per token, per wallet."
             }
         },
         "warning": {
             "managedPoolTradingHaulted": {
-                "title": "Trading halted - proportional investments only",
-                "description": "A trading halt has been issued by the manager of this pool. For your safety, while the trading halt is in effect, you may only invest in proportional amounts."
+                "description": "A trading halt has been issued by the manager of this pool. For your safety, while the trading halt is in effect, you may only invest in proportional amounts.",
+                "title": "Trading halted - proportional investments only"
             }
         }
     },
+    "investmentPool": "Investment pool",
+    "investmentPools": "Investment pools",
+    "investmentPoolsAbout": "Stake your assets to get $BAL tokens for participating in Balancer V2 liquidity mining.",
+    "investmentPoolsAboutLink": "Learn more ->",
+    "investmentSettled": "Your investment has settled",
+    "investmentSuccess": "Your tokens have been added to this pool, and you have received a new LP token representing this investment.",
+    "investmentTooltip": "Confirm investment into this pool",
+    "inYourWallet": "In your wallet:",
     "isRequired": "is required",
     "language": "Language",
     "learnMore": "Learn more",
     "light": "Light",
-    "loading": "Loading...",
-    "loadingBestPrice": "Looking for the best price...",
+    "liquidityBootstrappingPool": "Liquidity Bootstrapping Pool",
     "liquidityMining": "Liquidity mining",
     "liquidityMiningAPR": "Liquidity Mining APR",
     "liquidityMiningPopover": {
-        "title": "Token incentives",
+        "airdropEligibility": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+        "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
+        "claimFreezeWarning": {
+            "description": "Since you have several weeks worth of tokens unclaimed, your screen may appear to freeze after pressing the claim button while it is processed. Just leave your browser open and your wallet will eventually pop open for you to complete the claim.",
+            "title": "Too many claims"
+        },
+        "networksExplainer": "Switch networks in the header to see your current cumulative BAL incentives on {0} and {1}.",
+        "noRewards": {
+            "description": "Certain eligible pools have ‘liquidity mining’ token incentives which are distributed to investors weekly in proportion to their contribution.",
+            "title": "You have no token incentives to claim"
+        },
         "tabs": {
             "claimable": "Claimable now",
             "currentEstimate": "Current week"
         },
-        "noRewards": {
-            "title": "You have no token incentives to claim",
-            "description": "Certain eligible pools have ‘liquidity mining’ token incentives which are distributed to investors weekly in proportion to their contribution."
-        },
-        "claimFreezeWarning": {
-            "title": "Too many claims",
-            "description": "Since you have several weeks worth of tokens unclaimed, your screen may appear to freeze after pressing the claim button while it is processed. Just leave your browser open and your wallet will eventually pop open for you to complete the claim."
-        },
-        "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
-        "airdropEligibility": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
-        "viewLMLink": "View liquidity mining incentives ->",
-        "networksExplainer": "Switch networks in the header to see your current cumulative BAL incentives on {0} and {1}."
+        "title": "Token incentives",
+        "viewLMLink": "View liquidity mining incentives ->"
     },
+    "liquidityProviderCopy": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
+    "loading": "Loading...",
+    "loadingBestPrice": "Looking for the best price...",
     "loadMore": "Load more",
     "logOut": "Log out",
     "lpsEarnFee": "<span>LPs earn <b>{0}</b> in fees</span>",
-    "manageLists": "Manage lists",
     "managedPool": "Managed pool",
+    "manageLists": "Manage lists",
     "marketConditionsWarning": "Market conditions may change between the time your order is submitted and the time it gets executed on Ethereum. Slippage tolerance is the maximum change in price you are willing to accept. This protects you from front-running bots and miner extractable value (MEV).",
     "max": "Max",
     "maxed": "Maxed",
+    "maximum": "Maximum",
     "menu": "Menu",
     "month": "month",
     "months": "months",
@@ -217,34 +232,36 @@
     "mustBeValidNum": "must be a valid number",
     "myBalance": "My balance",
     "myInvestments": "My V2 Balancer investments",
-    "myWallet": "My Ethereum wallet",
-    "myV2Investments": "My V2 investments",
     "myPortfolio": "My portfolio",
     "myShare": "My share",
     "myTransactions": "My transactions",
+    "myV2Investments": "My V2 investments",
+    "myWallet": "My Ethereum wallet",
     "name": "Name",
     "namePlaceholder": "Name, symbol or contract address",
+    "nativeTokens": "Native tokens",
     "network": "Network",
     "networkMismatch": "Please switch to {0}",
     "new": "New",
     "newInvestment": "New investment",
-    "newWithdrawal": "New withdrawal",
     "newTrade": "New Trade",
+    "newWithdrawal": "New withdrawal",
     "noContent": "No content",
     "noData": "No data available",
-    "noNativeAsset": "You don't have {0}",
-    "noNativeAssetDetailed": "You’ll need to add some {0} to trade with this wallet in order to pay for {1} gas fees.",
     "noInitLiquidity": "This pool has no initial liquidity",
     "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
     "noInvestments": "No investments",
+    "noInvestmentsPool": "No investments in this pool",
+    "noNativeAsset": "You don't have {0}",
+    "noNativeAssetDetailed": "You’ll need to add some {0} to trade with this wallet in order to pay for {1} gas fees.",
     "noPoolsFound": "No pools found",
     "noPriceImpact": "Best price",
     "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
     "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
-    "noInvestmentsPool": "No investments in this pool",
+    "noRecentActivity": "Your recent activity will appear here…",
+    "noResults": "No results.",
     "noTransactionsPool": "No transactions in this pool.",
     "noTransactionsUserPool": "You haven't made any transactions in this pool.",
-    "noResults": "No results.",
     "numberOfPools": "Number of pools",
     "oneDay": "1D",
     "oneMonth": "1M",
@@ -268,114 +285,32 @@
     "poolTransactions": "Pool transactions",
     "poolType": "Pool type",
     "poolValue": "Pool value",
+    "popularBases": "Popular:",
     "portfolio": "Portfolio",
     "potentialWeeklyYield": "Potential weekly yield",
-    "popularBases": "Popular:",
     "preview": "Preview",
     "previewTrade": "Preview trade",
-    "previewWrap": "Preview {0} Wrap",
-    "previewUnwrap": "Preview {0} Unwrap",
     "previewTradeTransactions": "Preview trade transactions",
+    "previewUnwrap": "Preview {0} Unwrap",
+    "previewWrap": "Preview {0} Wrap",
     "priceImpact": "Price impact",
     "priceImpactAccept": "I accept the high price impact from {0} single token amounts, moving the market price based on the depth of the market.",
     "priceImpactCheckbox": "Price impact acknowledgement",
     "priceImpactTolerance": "Price impact tolerance",
-    "profit": "Profit (1{0})",
-    "protocolFees": "Protocol fees",
-    "proportionalSuggestion": "Proportional suggestion",
-    "rank": "Rank (1{0})",
-    "receive": "Receive",
-    "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
-    "receipt": "Receipt",
-    "recentActivityTitle": "Recent activity",
-    "returnToPool": "Return to pool page",
-    "noRecentActivity": "Your recent activity will appear here…",
-    "switchNetwork": "Switch Network",
-    "tokenPills": {
-        "hiddenTokens": "+{0} tokens"
-    },
-    "tooltips": {
-        "invest": {
-            "total": "The total value in {0} you’ll be investing into this pool.",
-            "priceImpact": "Price impact from adding liquidity results when  the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position."
-        }
-    },
-    "transactionAction": {
-        "trade": "Trade",
-        "approve": "Approve",
-        "claim": "Claim",
-        "invest": "Invest",
-        "withdraw": "Withdraw",
-        "wrap": "Wrap",
-        "unwrap": "Unwrap"
-    },
-    "transactionStatus": {
-        "pending": "Pending",
-        "fulfilled": "Confirmed",
-        "failed": "Failed",
-        "expired": "Expired",
-        "cancelling": "Cancelling",
-        "cancelled": "Cancelled"
-    },
-    "transactionSummary": {
-        "investInPool": "{0} in {1}",
-        "withdrawFromPool": "{0} from {1}",
-        "approveForInvesting": "Approve {0} for investing",
-        "approveForTrading": "Approve {0} for trading",
-        "approveLidoRelayer": "Approve Lido Relayer",
-        "approveGnosisRelayer": "Approve Gnosis relayer",
-        "wrapUnwrap": "{0} {1} to {2}"
-    },
-    "tradeSummary": {
-        "exactIn": {
-            "title": "Trade from {0} details",
-            "tradeFees": "Trade fees",
-            "totalBeforeFees": "Total to receive before fees",
-            "totalAfterFees": "Total expected after fees",
-            "totalWithSlippage": "The least you’ll get at {0} slippage"
-        },
-        "exactOut": {
-            "title": "Trade to {0} details",
-            "tradeFees": "Trade fees",
-            "totalBeforeFees": "Total to trade before fees",
-            "totalAfterFees": "Total expected to trade after fees",
-            "totalWithSlippage": "The most you’ll send at {0} slippage"
-        },
-        "wrap": {
-            "title": "Summary",
-            "tradeFees": "Wrap fees",
-            "totalBeforeFees": "Amount before fees",
-            "totalAfterFees": "Total to receive",
-            "totalWithSlippage": "Zero slippage to wrap {0}"
-        },
-        "unwrap": {
-            "title": "Summary",
-            "tradeFees": "Unwrap fees",
-            "totalBeforeFees": "Amount before fees",
-            "totalAfterFees": "Total to receive",
-            "totalWithSlippage": "Zero slippage to unwrap {0}"
-        },
-        "gasCosts": "Gas costs",
-        "transactionTypesTooltips": {
-            "gnosisRelayerApproval": {
-                "title": "Approve trading on Gnosis protocol",
-                "content": "Your permission is required to use a batch relayer for gas-free, MEV protected transactions."
-            },
-            "tokenApproval": {
-                "title": "Approve {0}",
-                "content": "Your permission is required to trade this token on Balancer. Approvals are required once per token, per wallet."
-            },
-            "trade": {
-                "title": "Confirm transaction",
-                "content": "Finalize the transaction by submitting it for inclusion on the blockchain."
-            }
-        }
-    },
     "priceUpdatedAlert": {
-        "title": "Price updated",
+        "actionLabel": "Accept",
         "description": "The trade price has updated by more than {0}",
-        "actionLabel": "Accept"
+        "title": "Price updated"
     },
+    "profit": "Profit (1{0})",
+    "proportionalSuggestion": "Proportional suggestion",
+    "protocolFees": "Protocol fees",
+    "rank": "Rank (1{0})",
+    "receipt": "Receipt",
+    "receive": "Receive",
+    "recentActivityTitle": "Recent activity",
+    "requiresTransactions": "Requires 1 transaction | Requires {txCount} transactions",
+    "returnToPool": "Return to pool page",
     "saveGas": " to save gas.",
     "searchBy": "Name, symbol or address",
     "searchByName": "Search by Name",
@@ -385,7 +320,6 @@
     "seeV1BalancerInvestments": "Want to see your Balancer V1 investments?",
     "select": "Select",
     "selectToken": "Select token",
-    "tokenSearch": "Token search",
     "sell": "Sell",
     "send": "Send",
     "settings": "Settings",
@@ -398,90 +332,176 @@
     "swap": "Swap",
     "swapFee": "Swap fee",
     "swapFeeAPR": "Swap fees APR",
+    "switchNetwork": "Switch Network",
     "symbol": "Symbol",
+    "tableShowsBalancerV2Pools": "This table only shows Balancer V2 pools.",
     "theme": "Theme",
+    "thirdPartyRewards": {
+        "apr": {
+            "steth": "stETH staking rewards APR"
+        },
+        "fiat": {
+            "steth": "stETH staking rewards"
+        }
+    },
     "threeMonths": "3M",
+    "time": "Time",
+    "timeAgo": "{0} ago",
     "token": "Token",
-    "tokenLists": "Token lists",
     "tokenAlreadySelected": "Token Already Selected",
     "tokenInjected": "This token is injected",
+    "tokenLists": "Token lists",
+    "tokenPills": {
+        "hiddenTokens": "+{0} tokens"
+    },
     "tokens": "Tokens",
-    "tokensParen": "Token(s)",
+    "tokenSearch": "Token search",
     "tokensLowerCase": "tokens",
+    "tokensParen": "Token(s)",
+    "tooltips": {
+        "invest": {
+            "priceImpact": "Price impact from adding liquidity results when  the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",
+            "total": "The total value in {0} you’ll be investing into this pool."
+        }
+    },
     "total": "Total",
+    "totalAPR": "Total APR",
     "totalSupply": "Total supply",
     "totalValue": "Total value",
-    "totalAPR": "Total APR",
     "trade": "Trade",
-    "tradeFromWeth": "Trade from WETH",
-    "tradesThroughWeth": "Trades from ETH route through Balancer liquidity pools and incur gas fees.",
     "tradeEarns": "This trade earns you",
+    "tradeFromWeth": "Trade from WETH",
+    "tradeGaslessToggle": {
+        "disabledTooltip": {
+            "eth": "This option has been disabled because ETH transactions always require a gas transaction.",
+            "wrapUnwrap": "This option has been disabled because Wrap/Unwrap transactions always require a gas transaction."
+        },
+        "label": "Trade gasless",
+        "tooltip": "‘Trade gasless’ on the Balancer-Gnosis-Protocol (CowSwap) for free signature trades, MEV protection, and the best prices with intelligent trade routing across DeFi exchanges. Turn it off to only trade through Balancer liquidity pools using gas."
+    },
+    "tradeInterface": "Trade interface",
+    "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across Balancer V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders while providing MEV protection.",
     "tradeLiquidity": "Trade liquidity",
-    "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
+    "tradeSettled": "Your trade has settled",
+    "tradesThroughWeth": "Trades from ETH route through Balancer liquidity pools and incur gas fees.",
+    "tradeSubmissionError": {
+        "actionLabel": "Dismiss",
+        "title": "An error has occurred"
+    },
+    "tradeSuccess": "Successfully traded your tokens",
+    "tradeSummary": {
+        "exactIn": {
+            "title": "Trade from {0} details",
+            "totalAfterFees": "Total expected after fees",
+            "totalBeforeFees": "Total to receive before fees",
+            "totalWithSlippage": "The least you’ll get at {0} slippage",
+            "tradeFees": "Trade fees"
+        },
+        "exactOut": {
+            "title": "Trade to {0} details",
+            "totalAfterFees": "Total expected to trade after fees",
+            "totalBeforeFees": "Total to trade before fees",
+            "totalWithSlippage": "The most you’ll send at {0} slippage",
+            "tradeFees": "Trade fees"
+        },
+        "gasCosts": "Gas costs",
+        "transactionTypesTooltips": {
+            "gnosisRelayerApproval": {
+                "content": "Your permission is required to use a batch relayer for gas-free, MEV protected transactions.",
+                "title": "Approve trading on Gnosis protocol"
+            },
+            "tokenApproval": {
+                "content": "Your permission is required to trade this token on Balancer. Approvals are required once per token, per wallet.",
+                "title": "Approve {0}"
+            },
+            "trade": {
+                "content": "Finalize the transaction by submitting it for inclusion on the blockchain.",
+                "title": "Confirm transaction"
+            }
+        },
+        "unwrap": {
+            "title": "Summary",
+            "totalAfterFees": "Total to receive",
+            "totalBeforeFees": "Amount before fees",
+            "totalWithSlippage": "Zero slippage to unwrap {0}",
+            "tradeFees": "Unwrap fees"
+        },
+        "wrap": {
+            "title": "Summary",
+            "totalAfterFees": "Total to receive",
+            "totalBeforeFees": "Amount before fees",
+            "totalWithSlippage": "Zero slippage to wrap {0}",
+            "tradeFees": "Wrap fees"
+        }
+    },
+    "transactionAction": {
+        "approve": "Approve",
+        "claim": "Claim",
+        "invest": "Invest",
+        "trade": "Trade",
+        "unwrap": "Unwrap",
+        "withdraw": "Withdraw",
+        "wrap": "Wrap"
+    },
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
-    "transactionType": "Transaction type",
-    "tradeSubmissionError": {
-        "title": "An error has occurred",
-        "actionLabel": "Dismiss"
+    "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
+    "transactionStatus": {
+        "cancelled": "Cancelled",
+        "cancelling": "Cancelling",
+        "expired": "Expired",
+        "failed": "Failed",
+        "fulfilled": "Confirmed",
+        "pending": "Pending"
     },
+    "transactionSummary": {
+        "approveForInvesting": "Approve {0} for investing",
+        "approveForTrading": "Approve {0} for trading",
+        "approveGnosisRelayer": "Approve Gnosis relayer",
+        "approveLidoRelayer": "Approve Lido Relayer",
+        "investInPool": "{0} in {1}",
+        "withdrawFromPool": "{0} from {1}",
+        "wrapUnwrap": "{0} {1} to {2}"
+    },
+    "transactionType": "Transaction type",
     "unavailableOnNetwork": "Sorry! Balancer is not available on this network",
     "unavailableOnNetworkWithName": "Sorry! Balancer is not available on {0}",
-    "liquidityBootstrappingPool": "Liquidity Bootstrapping Pool",
-    "gnosisErrors": {
-        "lowAmount": {
-            "header": "Your trade amount is too low",
-            "body": "The fees for this transaction exceeds the amount you want to trade."
-        },
-        "lowBalance": {
-            "header": "Insufficient {0} balance",
-            "body": "The fees and potential slippage (up to {2}) set for this trade exceeds your {0} balance. You need at least {1} {0} to proceed."
-        }
-    },
-    "gnosisWarnings": {
-        "highFees": {
-            "header": "The fees on this transaction exceed 20% of the trade amount.",
-            "body": "You can still proceed with the trade but a high percentage of it will be consumed by trade fees."
-        }
-    },
     "unknown": "Unknown",
     "unknownPoolType": "Unknown pool type",
     "unlock": "Unlock",
     "unlocking": "Unlocking",
+    "unwrap": "Unwrap",
     "usingLiquidity": "Using {0} liquidity",
     "v1": "V1",
     "v2": "V2",
     "value": "Value",
     "vault": "Vault",
+    "viewAllAssets": "View all assets ({0})",
+    "viewAndManangeOnElement": "View and manage all pools on Element.fi",
     "viewFullWallet": "View full wallet",
     "viewLess": "View less",
-    "viewAllAssets": "View all assets ({0})",
+    "viewOnElement": "View on Element.fi",
     "viewTransaction": "View transaction",
-    "volumeTime": "Volume ({0})",
     "volume24h": "Volume (24{0})",
+    "volumeTime": "Volume ({0})",
     "wallet": "Wallet",
-    "whichPools": "Which liquidity pools should be used when you make a trade.",
-    "withdrawalSettled": "Your withdrawal has settled",
-    "withdrawalSuccess": "Your investment has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
-    "withdrawWarning": "Withdrawing single asset amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees.",
-    "wrap": "Wrap",
-    "wrapInstruction": "Wrap your {0} to {1}",
-    "unwrap": "Unwrap",
     "week": "Week",
     "weekAbbrev": "w",
     "weight": "Weight",
     "weightedPool": "Weighted pool",
+    "whichPools": "Which liquidity pools should be used when you make a trade.",
     "withdraw": "Withdraw",
     "withdrawal": "Withdrawal",
-    "withdrawing": "withdrawing",
+    "withdrawalSettled": "Your withdrawal has settled",
+    "withdrawalSuccess": "Your investment has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
     "withdrawFee": "Withdraw fee",
+    "withdrawing": "withdrawing",
+    "withdrawWarning": "Withdrawing single asset amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees.",
+    "wrap": "Wrap",
+    "wrapInstruction": "Wrap your {0} to {1}",
     "wrapStEthTooltip": "This pool requires Wrapped Liquid Staked ETH 2.0 (wstETH). To maximize your investment, you could wrap some additional stETH.",
     "yearAbbrev": "y",
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
-    "yourTransactions": "Your transactions in this pool",
-    "featuredProtocol": "Featured ecosystem protocol",
-    "aboutElementFinance": "Element is an open source protocol for fixed and variable yield markets. It is built on Balancer V2. View and manage your liquidity positions directly on Element.fi.",
-    "viewAndManangeOnElement": "View and manage all pools on Element.fi",
-    "viewOnElement": "View on Element.fi"
+    "yourTransactions": "Your transactions in this pool"
 }

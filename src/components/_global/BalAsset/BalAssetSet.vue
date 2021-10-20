@@ -15,7 +15,8 @@
         :key="i"
         :address="address"
         :size="size"
-        class="token-icon"
+        @click="$emit('click', address)"
+        :class="['token-icon', { absolute: !wrap, relative: wrap }]"
         :style="{
           left: `${leftOffsetFor(i)}px`,
           zIndex: `${20 - i}`,
@@ -37,7 +38,7 @@ export default defineComponent({
   components: {
     BalAsset
   },
-
+  emits: ['click'],
   props: {
     addresses: {
       type: Array as PropType<string[]>,
@@ -54,6 +55,9 @@ export default defineComponent({
     maxAssetsPerLine: {
       type: Number,
       default: 8
+    },
+    wrap: {
+      type: Boolean
     }
   },
 
@@ -77,6 +81,7 @@ export default defineComponent({
      * METHODS
      */
     function leftOffsetFor(i: number) {
+      if (props.wrap) return 0;
       return (
         ((props.width - radius.value * 2 + spacer.value) /
           (props.maxAssetsPerLine - 1)) *
@@ -104,7 +109,7 @@ export default defineComponent({
 }
 .token-icon {
   margin-left: -2px;
-  @apply absolute rounded-full overflow-hidden shadow-none;
+  @apply rounded-full overflow-hidden shadow-none;
   @apply bg-white dark:bg-gray-850;
   @apply border-2 border-white dark:border-gray-850 group-hover:border-gray-50 dark:group-hover:border-gray-800;
 }

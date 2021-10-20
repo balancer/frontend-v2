@@ -54,33 +54,36 @@ export function isWstETH(pool: AnyPool): boolean {
 
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isStablePool = computed(
-    () => pool.value && isStable(pool.value.poolType)
+    (): boolean => !!pool.value && isStable(pool.value.poolType)
   );
   const isMetaStablePool = computed(
-    () => pool.value && isMetaStable(pool.value.poolType)
+    (): boolean => !!pool.value && isMetaStable(pool.value.poolType)
   );
   const isStableLikePool = computed(
-    () => pool.value && isStableLike(pool.value.poolType)
+    (): boolean => !!pool.value && isStableLike(pool.value.poolType)
   );
   const isWeightedPool = computed(
-    () => pool.value && isWeighted(pool.value.poolType)
+    (): boolean => !!pool.value && isWeighted(pool.value.poolType)
   );
   const isWeightedLikePool = computed(
-    () => pool.value && isWeightedLike(pool.value.poolType)
+    (): boolean => !!pool.value && isWeightedLike(pool.value.poolType)
   );
   const isManagedPool = computed(
-    () => pool.value && isManaged(pool.value.poolType)
+    (): boolean => !!pool.value && isManaged(pool.value.poolType)
   );
   const isLiquidityBootstrappingPool = computed(
-    () => pool.value && isLiquidityBootstrapping(pool.value.poolType)
+    (): boolean => !!pool.value && isLiquidityBootstrapping(pool.value.poolType)
   );
-
   const managedPoolWithTradingHalted = computed(
-    () => pool.value && isManagedPool.value && pool.value.onchain?.swapEnabled
+    (): boolean =>
+      !!pool.value && isManagedPool.value && !!pool.value.onchain?.swapEnabled
   );
-
-  const isWethPool = computed(() => pool.value && isWeth(pool.value));
-  const isWstETHPool = computed(() => pool.value && isWstETH(pool.value));
+  const isWethPool = computed(
+    (): boolean => !!pool.value && isWeth(pool.value)
+  );
+  const isWstETHPool = computed(
+    (): boolean => !!pool.value && isWstETH(pool.value)
+  );
 
   return {
     // computed

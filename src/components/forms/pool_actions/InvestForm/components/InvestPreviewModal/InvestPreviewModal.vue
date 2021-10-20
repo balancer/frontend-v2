@@ -17,6 +17,7 @@ import { useI18n } from 'vue-i18n';
 type Props = {
   pool: FullPool;
   investMath: InvestMath;
+  tokenAddresses: string[];
 };
 
 type AmountMap = {
@@ -54,13 +55,11 @@ const title = computed((): string =>
     : t('investment.preview.titles.default')
 );
 
-const tokenAddresses = computed((): string[] => props.pool.tokenAddresses);
-
 const amountMap = computed(
   (): AmountMap => {
     const amountMap = {};
     fullAmounts.value.forEach((amount, i) => {
-      if (hasAmount(i)) amountMap[tokenAddresses.value[i]] = amount;
+      if (hasAmount(i)) amountMap[props.tokenAddresses[i]] = amount;
     });
     return amountMap;
   }
@@ -138,6 +137,7 @@ function hasAmount(index: number): boolean {
     <InvestActions
       :pool="pool"
       :investMath="investMath"
+      :tokenAddresses="tokenAddresses"
       class="mt-4"
       @success="investmentConfirmed = true"
     />
