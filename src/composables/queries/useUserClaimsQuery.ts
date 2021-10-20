@@ -2,34 +2,28 @@ import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 
-import { bnum } from '@/lib/utils';
-
 import QUERY_KEYS from '@/constants/queryKeys';
 
+import { claimService } from '@/services/claim/claim.service';
 import {
-  getPendingClaims,
-  getCurrentRewardsEstimate,
-  Report,
-  CurrentRewardsEstimate
-} from '@/services/claim';
+  MultiTokenPendingClaims,
+  MultiTokenCurrentRewardsEstimate
+} from '@/services/claim/types';
 
-import { Claim } from '@/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNetwork from '@/composables/useNetwork';
 
 type UserClaimsQueryResponse = {
-  pendingClaims: Claim[];
-  pendingClaimsReports: Report;
-  availableToClaim: string;
-  currentRewardsEstimate: CurrentRewardsEstimate;
-  totalRewards: string;
+  multiTokenPendingClaims: MultiTokenPendingClaims[];
+  multiTokenCurrentRewardsEstimate: MultiTokenCurrentRewardsEstimate[];
+  timestamp: string | null;
 };
 
 export default function useUserClaimsQuery(
   options: UseQueryOptions<UserClaimsQueryResponse> = {}
 ) {
   // COMPOSABLES
-  const { account, isWalletReady, appNetworkConfig, getProvider } = useWeb3();
+  const { account, isWalletReady } = useWeb3();
   const { networkId } = useNetwork();
 
   // DATA
@@ -42,26 +36,18 @@ export default function useUserClaimsQuery(
 
   // METHODS
   const queryFn = async () => {
-    const [pendingClaims, currentRewardsEstimate] = await Promise.all([
-      getPendingClaims(appNetworkConfig.chainId, getProvider(), account.value),
-      getCurrentRewardsEstimate(appNetworkConfig.chainId, account.value)
+    const [
+      multiTokenPendingClaims,
+      multiTokenCurrentRewardsEstimate
+    ] = await Promise.all([
+      claimService.getMultiTokensPendingClaims(account.value),
+      claimService.getMultiTokensCurrentRewardsEstimate(account.value)
     ]);
 
-    const availableToClaim = pendingClaims.claims
-      .map(claim => parseFloat(claim.amount))
-      .reduce((total, amount) => total.plus(amount), bnum(0));
-
-    const totalRewards =
-      currentRewardsEstimate != null
-        ? availableToClaim.plus(currentRewardsEstimate.rewards)
-        : availableToClaim;
-
     return {
-      pendingClaims: pendingClaims.claims,
-      pendingClaimsReports: pendingClaims.reports,
-      availableToClaim: availableToClaim.toString(),
-      totalRewards: totalRewards.toString(),
-      currentRewardsEstimate
+      multiTokenPendingClaims,
+      multiTokenCurrentRewardsEstimate: multiTokenCurrentRewardsEstimate.data,
+      timestamp: multiTokenCurrentRewardsEstimate.timestamp
     };
   };
 

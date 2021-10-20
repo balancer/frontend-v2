@@ -1,0 +1,52 @@
+{
+    "1": [
+        {
+            "label": "BAL",
+            "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
+            "token": "0xba100000625a3754423978a60c9317c58a424e3d",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json",
+            "weekStart": 52
+        },
+        {
+            "label": "UNN",
+            "distributor": "0xBfbd6e720ffdF0497f69C95E5C03a4861C65A6E7",
+            "token": "0x226f7b842E0F0120b7E194D05432b3fd14773a9D",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-union.json",
+            "weekStart": 1
+        }
+    ],
+    "42": [
+      {
+          "label": "BAL",
+          "distributor": "0x95FaE1C936B4Cd6c5099d7A705D792ee6aC9FEc3",
+          "token": "0x41286Bb1D3E870f3F750eB7E1C25d7E48c8A1Ac7",
+          "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/sample-tree/reports-kovan/_current.json",
+          "weekStart": 52
+      },
+      {
+        "label": "DAI",
+        "distributor": "0x95FaE1C936B4Cd6c5099d7A705D792ee6aC9FEc3",
+        "token": "0x04DF6e4121c27713ED22341E7c7Df330F56f289B",
+        "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/sample-tree/reports-kovan/_current-dai.json",
+        "weekStart": 1
+    }
+    ],
+    "137": [
+        {
+            "label": "BAL",
+            "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
+            "token": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-polygon.json",
+            "weekStart": 1
+        }
+      ],
+    "42161": [
+        {
+            "label": "BAL",
+            "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
+            "token": "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-arbitrum.json",
+            "weekStart": 6
+        }
+    ]
+  }
