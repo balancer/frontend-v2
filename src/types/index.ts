@@ -26,7 +26,6 @@ export type TokenMap = Record<string, Token>;
 export interface Claim {
   id: string;
   amount: string;
-  amountDenorm: BigNumberish;
 }
 
 export interface HtmlInputEvent {

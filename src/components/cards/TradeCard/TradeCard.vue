@@ -112,6 +112,7 @@ import useDarkMode from '@/composables/useDarkMode';
 import { configService } from '@/services/config/config.service';
 
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { useTradeState } from '@/composables/trade/useTradeState';
 import useUserSettings from '@/composables/useUserSettings';
 
 const { nativeAsset } = configService.network;
@@ -137,13 +138,18 @@ export default defineComponent({
     const { tokens } = useTokens();
     const { userNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
+    const {
+      tokenInAddress,
+      tokenOutAddress,
+      tokenInAmount,
+      tokenOutAmount,
+      setTokenInAddress,
+      setTokenOutAddress
+    } = useTradeState();
     const { slippage } = useUserSettings();
 
     const exactIn = ref(true);
-    const tokenInAddress = ref('');
-    const tokenInAmount = ref('');
-    const tokenOutAddress = ref('');
-    const tokenOutAmount = ref('');
+
     const tradeSuccess = ref(false);
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
@@ -272,8 +278,8 @@ export default defineComponent({
       if (assetOut === nativeAsset.deeplinkId) assetOut = nativeAsset.address;
       else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
 
-      tokenInAddress.value = assetIn || store.state.trade.inputAsset;
-      tokenOutAddress.value = assetOut || '';
+      setTokenInAddress(assetIn || store.state.trade.inputAsset);
+      setTokenOutAddress(assetOut || '');
     }
 
     function showTradePreviewModal() {

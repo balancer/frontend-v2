@@ -60,7 +60,10 @@
         />
       </div>
     </div>
-    <div class="mt-6">
+    <div
+      class="mt-6"
+      v-if="isGassless && context === TradeSettingsContext.trade"
+    >
       <div class="flex items-baseline">
         <span v-text="$t('transactionDeadline')" class="font-medium mb-2" />
         <BalTooltip>
@@ -130,7 +133,8 @@ export default defineComponent({
     context: {
       type: [String, Number] as PropType<TradeSettingsContext>,
       required: true
-    }
+    },
+    isGassless: { type: Boolean, default: false }
   },
 
   setup(props) {
@@ -180,7 +184,8 @@ export default defineComponent({
       // data
       ...toRefs(data),
       Goals,
-      // constants,
+      // types,
+      TradeSettingsContext,
       // computed
       appTradeLiquidity,
       appTransactionDeadline,
