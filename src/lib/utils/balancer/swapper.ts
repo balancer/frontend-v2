@@ -10,8 +10,6 @@ export async function swapIn(
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber
 ): Promise<TransactionResponse> {
-  swapService.setNetwork(network);
-
   const tokenInAddress = sorReturn.isV1swap
     ? sorReturn.tokenIn
     : sorReturn.v2result.tokenIn;

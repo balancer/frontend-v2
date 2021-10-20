@@ -28,16 +28,6 @@ export interface SwapToken {
 }
 
 export default class SwapService {
-  network: string;
-
-  constructor() {
-    this.network = 'homestead';
-  }
-
-  public setNetwork(network: string) {
-    this.network = network;
-  }
-
   public async batchSwapV1(
     tokenIn: SwapToken,
     tokenOut: SwapToken,

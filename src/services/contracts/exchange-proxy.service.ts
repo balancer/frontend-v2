@@ -4,19 +4,17 @@ import { SwapToken } from '../swap/swap.service';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { contractCaller } from './contract-caller.service';
+import { networkId } from '@/composables/useNetwork';
 
 export default class ExchangeProxyService {
-  network: string;
-  address: string;
   abi: any;
-  signer: any;
-  contract: any;
-  contractWithSigner: any;
 
   constructor() {
-    this.network = 'homestead';
-    this.address = configs[this.network].addresses.exchangeProxy;
     this.abi = exchangeProxyAbi;
+  }
+
+  private get address() {
+    return configs[networkId.value].addresses.exchangeProxy;
   }
 
   public async multihopBatchSwap(
