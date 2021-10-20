@@ -3,7 +3,10 @@
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
-        <TradeSettingsPopover :context="TradeSettingsContext.trade" />
+        <TradeSettingsPopover
+          :context="TradeSettingsContext.trade"
+          :isGasless="trading.tradeGasless.value"
+        />
       </div>
     </template>
     <div>
@@ -54,7 +57,10 @@
         @click.prevent="handlePreviewButton"
       />
       <div
-        v-if="trading.isGnosisSupportedOnNetwork.value"
+        v-if="
+          !ENABLE_LEGACY_TRADE_INTERFACE &&
+            trading.isGnosisSupportedOnNetwork.value
+        "
         class="mt-6 text-sm flex items-center"
       >
         <BalTooltip
@@ -109,6 +115,7 @@ import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
+import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -354,6 +361,7 @@ export default defineComponent({
     return {
       // constants
       TOKENS,
+      ENABLE_LEGACY_TRADE_INTERFACE,
       // context
       TradeSettingsContext,
 

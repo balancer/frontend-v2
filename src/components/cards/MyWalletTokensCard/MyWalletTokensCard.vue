@@ -15,12 +15,15 @@ import AssetRow from './components/AssetRow.vue';
 type Props = {
   pool: FullPool;
   useNativeAsset: boolean;
+  hideHeader?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  hideHeader: false
+});
 
 const emit = defineEmits<{
   (e: 'update:useNativeAsset', value: boolean): void;
@@ -78,7 +81,7 @@ function isSelectedNativeAsset(address: string): boolean {
 
 <template>
   <BalCard shadow="none" noPad>
-    <template #header>
+    <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-700">
         <h6>
           {{ $t('investment.myWalletTokensCard.title') }}

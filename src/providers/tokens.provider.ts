@@ -55,6 +55,7 @@ export interface TokensProviderResponse {
   dynamicDataLoaded: ComputedRef<boolean>;
   dynamicDataLoading: ComputedRef<boolean>;
   priceQueryError: Ref<boolean>;
+  priceQueryLoading: Ref<boolean>;
   balancesQueryError: Ref<boolean>;
   allowancesQueryError: Ref<boolean>;
   refetchPrices: Ref<() => void>;
@@ -406,6 +407,7 @@ export default {
       dynamicDataLoaded,
       dynamicDataLoading,
       priceQueryError,
+      priceQueryLoading,
       balancesQueryError,
       allowancesQueryError,
       // methods
