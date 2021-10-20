@@ -112,12 +112,12 @@ export default defineComponent({
     legendState: {
       type: Object
     },
-    // manually uptick this variable to 
+    // manually uptick this variable to
     // force a resize calculation on the chart
     forceResizeTick: {
       type: Number
     },
-    // whether to show the little rectangle with the 
+    // whether to show the little rectangle with the
     // last value of the data
     isLastValueChipVisible: {
       type: Boolean
@@ -141,7 +141,7 @@ export default defineComponent({
       default: () => true
     },
     // whether to constrain the y-axis
-    // based on the min and max values of the 
+    // based on the min and max values of the
     // data passed in
     useMinMax: {
       type: Boolean,
