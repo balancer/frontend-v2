@@ -2,7 +2,7 @@
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 // Components
-import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
+import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm2.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';

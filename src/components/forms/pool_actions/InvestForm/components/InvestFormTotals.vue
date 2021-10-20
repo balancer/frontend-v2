@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import useNumbers from '@/composables/useNumbers';
-import { InvestMath } from '../composables/useInvestFormMath';
+import { InvestMath } from '../composables/useInvestMath';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**

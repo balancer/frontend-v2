@@ -8,7 +8,7 @@ import useNumbers from '@/composables/useNumbers';
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
 import InvestActions from './components/InvestActions.vue';
-import { InvestMath } from '../../composables/useInvestFormMath';
+import { InvestMath } from '../../composables/useInvestMath';
 import { useI18n } from 'vue-i18n';
 
 /**

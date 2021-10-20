@@ -9,7 +9,7 @@ import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { useI18n } from 'vue-i18n';
 import { getPoolWeights } from '@/services/pool/pool.helper';
-import { InvestMath } from '../../../composables/useInvestFormMath';
+import { InvestMath } from '../../../composables/useInvestMath';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
 import useTokenApprovals, {

@@ -13,10 +13,9 @@ import { isStableLike, usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
-import useInvestFormMath from './composables/useInvestFormMath';
+import useWithdrawMath from './composables/useWithdrawMath';
 import { isRequired } from '@/lib/utils/validations';
 import { bnum } from '@/lib/utils';
-import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 
@@ -64,18 +63,19 @@ const state = reactive<FormState>({
 });
 
 const showInvestPreview = ref(false);
+const isProportional = ref(false);
 
 /**
  * COMPOSABLES
  */
-const { t } = useI18n();
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 
-const investMath = useInvestFormMath(
+const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
   toRef(state, 'tokenAddresses'),
   toRef(state, 'amounts'),
-  toRef(props, 'useNativeAsset')
+  toRef(props, 'useNativeAsset'),
+  isProportional
 );
 
 const {
@@ -84,7 +84,7 @@ const {
   maximizeAmounts,
   optimizeAmounts,
   proportionalAmounts
-} = investMath;
+} = withdrawMath;
 
 const {
   isWalletReady,
@@ -92,7 +92,7 @@ const {
   isMismatchedNetwork
 } = useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
+const { managedPoolWithTradingHalted, isWethPool } = usePool(
   toRef(props, 'pool')
 );
 
@@ -110,7 +110,7 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
 );
 
 const forceProportionalInputs = computed(
-  (): boolean => managedPoolWithTradingHalted.value
+  (): boolean => managedPoolWithTradingHalted.value || isProportional.value
 );
 
 /**
@@ -133,18 +133,6 @@ function tokenWeight(address: string): number {
   }
 
   return props.pool.onchain.tokens[address].weight;
-}
-
-function propAmountFor(index: number): string {
-  if (isStableLikePool.value) return '0.0';
-
-  return bnum(proportionalAmounts.value[index]).gt(0)
-    ? proportionalAmounts.value[index]
-    : '0.0';
-}
-
-function hint(index: number): string {
-  return bnum(propAmountFor(index)).gt(0) ? t('proportionalSuggestion') : '';
 }
 
 function tokenOptions(index: number): string[] {
@@ -210,6 +198,12 @@ watch(
 
 <template>
   <div>
+    <BalToggle
+      v-model="isProportional"
+      name="isProportional"
+      label="Withdraw proportionally for best price"
+    />
+
     <TokenInput
       v-for="(n, i) in state.tokenAddresses.length"
       :key="i"
@@ -218,16 +212,14 @@ watch(
       v-model:amount="state.amounts[i]"
       v-model:isValid="state.validInputs[i]"
       :weight="tokenWeight(state.tokenAddresses[i])"
-      :hintAmount="propAmountFor(i)"
-      :hint="hint(i)"
-      class="mb-4"
+      class="my-4"
       fixedToken
       :options="tokenOptions(i)"
       @update:amount="handleAmountChange($event, i)"
     />
 
     <InvestFormTotals
-      :investMath="investMath"
+      :investMath="withdrawMath"
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
@@ -265,7 +257,7 @@ watch(
       <InvestPreviewModal
         v-if="showInvestPreview"
         :pool="pool"
-        :investMath="investMath"
+        :investMath="withdrawMath"
         :tokenAddresses="state.tokenAddresses"
         @close="showInvestPreview = false"
       />

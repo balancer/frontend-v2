@@ -32,7 +32,8 @@ export default function useInvestFormMath(
   pool: Ref<FullPool>,
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
-  useNativeAsset: Ref<boolean>
+  useNativeAsset: Ref<boolean>,
+  isProportional: Ref<boolean>
 ): InvestMath {
   /**
    * STATE
@@ -43,7 +44,7 @@ export default function useInvestFormMath(
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { tokens, balances, balanceFor } = useTokens();
+  const { tokens: allTokens, balances, balanceFor, getToken } = useTokens();
   const { minusSlippage } = useSlippage();
   const { managedPoolWithTradingHalted } = usePool(pool);
   const { currency } = useUserSettings();
@@ -53,9 +54,9 @@ export default function useInvestFormMath(
    */
   const poolCalculator = new PoolCalculator(
     pool,
-    tokens,
+    allTokens,
     balances,
-    'join',
+    'exit',
     useNativeAsset
   );
 
@@ -63,6 +64,10 @@ export default function useInvestFormMath(
    * COMPUTED
    */
   const tokenCount = computed(() => tokenAddresses.value.length);
+
+  const tokens = computed(() =>
+    tokenAddresses.value.map(address => getToken(address))
+  );
 
   // Input amounts can be null so fullAmounts returns amounts for all tokens
   // and zero if null.
@@ -98,6 +103,30 @@ export default function useInvestFormMath(
   const highPriceImpact = computed(() =>
     bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01)
   );
+
+  const bptBalance = computed(() => {
+    return balanceFor(pool.value.address);
+  });
+
+  const singleAssetMaxes = computed(() => {
+    return tokens.value.map((token, tokenIndex) => {
+      return formatUnits(
+        poolCalculator
+          .exactBPTInForTokenOut(bptBalance.value, tokenIndex)
+          .toString(),
+        token.decimals
+      );
+    });
+  });
+
+  const proportionalMaxes = computed(() => {
+    const { receive } = poolCalculator.propAmountsGiven(
+      bptBalance.value,
+      0,
+      'send'
+    );
+    return receive;
+  });
 
   const maximized = computed(() =>
     fullAmounts.value.every(
