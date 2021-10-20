@@ -75,7 +75,6 @@ export default class Match0xService {
           buyToken
         )}&${swapSide}=${amount}&${MATCHA_DEFAULT_OPTIONS}`
       );
-      console.log(response);
       return this.toPriceInformation(response.data, kind);
     } catch (e) {
       console.log(`[Matcha 0x]: Failed to get price from API`, e);

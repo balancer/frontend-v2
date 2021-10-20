@@ -17,7 +17,7 @@
     <ECharts
       ref="chartInstance"
       :class="[
-        height && typeof (height === 'string') ? `h-full` : '',
+        height && typeof (height === 'string') ? `h-${height}` : '',
         'w-full',
         chartClass
       ]"
@@ -104,7 +104,7 @@ export default defineComponent({
       type: Array as PropType<string[]>
     },
     height: {
-      type: Object as PropType<string | number>
+      type: [Number, String]
     },
     showLegend: {
       type: Boolean
@@ -112,24 +112,40 @@ export default defineComponent({
     legendState: {
       type: Object
     },
+    // manually uptick this variable to
+    // force a resize calculation on the chart
     forceResizeTick: {
       type: Number
     },
+    // whether to show the little rectangle with the
+    // last value of the data
     isLastValueChipVisible: {
       type: Boolean
     },
+    // provide a custom grid for the chart
     customGrid: {
       type: Object
     },
+    // sets the class for the chart container
     chartClass: {
       type: String
     },
+    // sets the class for the element which wraps
+    // the chart and the header
     wrapperClass: {
       type: String
     },
+    // hides the tooltip
     showTooltip: {
       type: Boolean,
       default: () => true
+    },
+    // whether to constrain the y-axis
+    // based on the min and max values of the
+    // data passed in
+    useMinMax: {
+      type: Boolean,
+      default: () => false
     }
   },
   components: {
@@ -201,8 +217,8 @@ export default defineComponent({
           show: !props.hideYAxis,
           lineStyle: { color: axisColor.value }
         },
-        min: 'dataMin',
-        max: 'dataMax',
+        min: props.useMinMax ? 'dataMin' : null,
+        max: props.useMinMax ? 'dataMax' : null,
         type: 'value',
         show: !props.hideYAxis,
         splitNumber: 4,

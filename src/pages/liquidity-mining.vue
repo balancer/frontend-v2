@@ -198,8 +198,8 @@ export default defineComponent({
         liquidity mining claim tool in the header.`;
       }
       if (networkConfig.chainId === Network.POLYGON) {
-        return `BAL distributions on Polygon are automatically airdropped to eligible
-        addresses weekly.`;
+        return `BAL distributions on Polygon can be claimed weekly by tapping the
+        liquidity mining claim tool in the header.`;
       }
       if (networkConfig.chainId === Network.ARBITRUM) {
         return `BAL distributions on Arbitrum can be claimed weekly by tapping the

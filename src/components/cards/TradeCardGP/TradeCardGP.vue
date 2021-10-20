@@ -3,7 +3,10 @@
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
-        <TradeSettingsPopover :context="TradeSettingsContext.trade" />
+        <TradeSettingsPopover
+          :context="TradeSettingsContext.trade"
+          :isGasless="trading.tradeGasless.value"
+        />
       </div>
     </template>
     <div>
