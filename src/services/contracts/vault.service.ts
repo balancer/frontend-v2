@@ -11,9 +11,6 @@ import { contractCaller } from './contract-caller.service';
 
 export class VaultService {
   abi: any;
-  signer: any;
-  contract: any;
-  contractWithSigner: any;
 
   constructor() {
     this.abi = Vault__factory;
