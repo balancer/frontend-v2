@@ -90,10 +90,10 @@
             "
           ></div>
         </BalTooltip>
-        <span class="text-xs pl-2">{{ $t('tradeGaslessToggle.label') }}</span>
+        <span class="text-sm pl-2">{{ $t('tradeGaslessToggle.label') }}</span>
         <BalTooltip width="64">
           <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="text-gray-400 ml-1" />
+            <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
           </template>
           <div v-html="$t('tradeGaslessToggle.tooltip')" />
         </BalTooltip>
