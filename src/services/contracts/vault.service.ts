@@ -1,4 +1,5 @@
 import { MaxUint256 } from '@ethersproject/constants';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { SwapV2 } from '@balancer-labs/sor2';
 import { configService } from '@/services/config/config.service';
@@ -20,12 +21,12 @@ export class VaultService {
     return configService.network.addresses.vault;
   }
 
-  public async swap(
+  public swap(
     single: SingleSwap,
     funds: FundManagement,
     tokenOutAmount: string,
     options: Record<string, any> = {}
-  ) {
+  ): Promise<TransactionResponse> {
     return contractCaller.sendTransaction(
       this.address,
       this.abi,
@@ -35,14 +36,14 @@ export class VaultService {
     );
   }
 
-  public async batchSwap(
+  public batchSwap(
     swapKind: SwapKind,
     swaps: SwapV2[],
     tokenAddresses: string[],
     funds: FundManagement,
     limits: string[],
     options: Record<string, any> = {}
-  ) {
+  ): Promise<TransactionResponse> {
     return contractCaller.sendTransaction(
       this.address,
       this.abi,
@@ -51,8 +52,6 @@ export class VaultService {
       options
     );
   }
-
-
 }
 
 export const vaultService = new VaultService();

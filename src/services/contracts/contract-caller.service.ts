@@ -1,5 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { ErrorCode } from '@ethersproject/logger';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { logFailedTx } from '@/lib/utils/logging';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -16,9 +17,9 @@ export default class ContractCaller {
     params: any[],
     options: Record<string, any>,
     forceEthereumLegacyTxType = false
-  ) {
+  ): Promise<TransactionResponse> {
     const { getProvider } = useWeb3();
-    const provider = getProvider();
+    const provider: Web3Provider = getProvider();
 
     const signer = provider.getSigner();
     const contract = new Contract(contractAddress, abi, provider);

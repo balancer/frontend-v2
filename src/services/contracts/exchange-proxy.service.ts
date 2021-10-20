@@ -1,6 +1,6 @@
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
 import configs from '@/lib/config';
-import { SwapToken } from '../swap/swap.service';
+import { SwapToken, SwapTokenType } from '../swap/swap.service';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { contractCaller } from './contract-caller.service';
@@ -17,13 +17,13 @@ export default class ExchangeProxyService {
     return configs[networkId.value].addresses.exchangeProxy;
   }
 
-  public async multihopBatchSwap(
+  public multihopBatchSwap(
     swaps: Swap[][],
     tokenIn: SwapToken,
     tokenOut: SwapToken,
     options: Record<string, any> = {}
   ) : Promise<TransactionResponse> {
-    if (tokenOut.type == 'min') {
+    if (tokenOut.type === SwapTokenType.min) {
       return this.multihopBatchSwapExactIn(
         swaps,
         tokenIn.address,
@@ -34,7 +34,7 @@ export default class ExchangeProxyService {
       );
     }
 
-    if (tokenIn.type == 'max') {
+    if (tokenIn.type === SwapTokenType.max) {
       return this.multihopBatchSwapExactOut(
         swaps,
         tokenIn.address,
@@ -49,7 +49,7 @@ export default class ExchangeProxyService {
     );
   }
 
-  public async multihopBatchSwapExactIn(
+  public multihopBatchSwapExactIn(
     swaps: Swap[][],
     tokenIn: string,
     tokenOut: string,
@@ -66,7 +66,7 @@ export default class ExchangeProxyService {
     );
   }
 
-  public async multihopBatchSwapExactOut(
+  public multihopBatchSwapExactOut(
     swaps: Swap[][],
     tokenIn: string,
     tokenOut: string,

@@ -17,14 +17,16 @@ import {
 import { bnum } from '@/lib/utils';
 import useWeb3 from '../web3/useWeb3';
 
-export type Amount = BigNumber;
-export type AmountMin = BigNumber;
-export type AmountMax = BigNumber;
+export enum SwapTokenType {
+  fixed,
+  min,
+  max
+}
 
 export interface SwapToken {
   address: string;
   amount: BigNumber;
-  type: 'fixed' | 'min' | 'max';
+  type: SwapTokenType;
 }
 
 export default class SwapService {
@@ -72,7 +74,9 @@ export default class SwapService {
     }
 
     const swapKind =
-      tokenOut.type == 'min' ? SwapKind.GivenIn : SwapKind.GivenOut;
+      tokenOut.type === SwapTokenType.min
+        ? SwapKind.GivenIn
+        : SwapKind.GivenOut;
 
     const funds = await this.getFundManagement();
 
@@ -135,7 +139,9 @@ export default class SwapService {
     }
 
     const swapKind =
-      tokenOut.type == 'min' ? SwapKind.GivenIn : SwapKind.GivenOut;
+      tokenOut.type === SwapTokenType.min
+        ? SwapKind.GivenIn
+        : SwapKind.GivenOut;
 
     const funds = await this.getFundManagement();
 
@@ -193,7 +199,9 @@ export default class SwapService {
     tokenAddresses: string[]
   ): string[] {
     const swapKind =
-      tokenOut.type == 'min' ? SwapKind.GivenIn : SwapKind.GivenOut;
+      tokenOut.type === SwapTokenType.min
+        ? SwapKind.GivenIn
+        : SwapKind.GivenOut;
 
     const limits: string[] = [];
 
