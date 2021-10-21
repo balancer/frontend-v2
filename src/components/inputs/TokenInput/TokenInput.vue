@@ -26,6 +26,7 @@ type Props = {
   label?: string;
   fixedToken?: boolean;
   customBalance?: string;
+  balanceLabel?: string;
   disableMax?: boolean;
   hint?: string;
   hintAmount?: string;
@@ -197,7 +198,7 @@ watchEffect(() => {
         >
           <div v-if="!isWalletReady" />
           <div v-else class="cursor-pointer" @click="setMax">
-            {{ $t('balance') }}:
+            {{ balanceLabel ? balanceLabel : $t('balance') }}:
             <span class="font-numeric mr-2">
               {{ fNum(tokenBalance, 'token') }}
             </span>

@@ -9,10 +9,13 @@ import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
 
-export type InvestMath = {
+export type WithdrawMathResponse = {
   // computed
   hasAmounts: Ref<boolean>;
   fullAmounts: Ref<string[]>;
+  fiatAmounts: Ref<string[]>;
+  bptIn: Ref<string>;
+  bptBalance: Ref<string>;
   fiatTotal: Ref<string>;
   fiatTotalLabel: Ref<string>;
   priceImpact: Ref<number>;
@@ -20,25 +23,27 @@ export type InvestMath = {
   maximized: Ref<boolean>;
   optimized: Ref<boolean>;
   proportionalAmounts: Ref<string[]>;
-  bptOut: Ref<string>;
+  proportionalMaxes: Ref<string[]>;
   hasZeroBalance: Ref<boolean>;
   hasNoBalances: Ref<boolean>;
+  maxAmounts: Ref<string[]>;
   // methods
   maximizeAmounts: () => void;
   optimizeAmounts: () => void;
 };
 
-export default function useInvestFormMath(
+export default function useWithdrawMath(
   pool: Ref<FullPool>,
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
   useNativeAsset: Ref<boolean>,
   isProportional: Ref<boolean>
-): InvestMath {
+): WithdrawMathResponse {
   /**
    * STATE
    */
   const proportionalAmounts = ref<string[]>([]);
+  const bptIn = ref('');
 
   /**
    * COMPOSABLES
@@ -108,7 +113,7 @@ export default function useInvestFormMath(
     return balanceFor(pool.value.address);
   });
 
-  const singleAssetMaxes = computed(() => {
+  const singleAssetMaxes = computed((): string[] => {
     return tokens.value.map((token, tokenIndex) => {
       return formatUnits(
         poolCalculator
@@ -119,7 +124,7 @@ export default function useInvestFormMath(
     });
   });
 
-  const proportionalMaxes = computed(() => {
+  const proportionalMaxes = computed((): string[] => {
     const { receive } = poolCalculator.propAmountsGiven(
       bptBalance.value,
       0,
@@ -128,10 +133,13 @@ export default function useInvestFormMath(
     return receive;
   });
 
+  const maxAmounts = computed((): string[] => {
+    if (isProportional.value) return proportionalMaxes.value;
+    return singleAssetMaxes.value;
+  });
+
   const maximized = computed(() =>
-    fullAmounts.value.every(
-      (amount, i) => amount === balanceFor(tokenAddresses.value[i])
-    )
+    fullAmounts.value.every((amount, i) => amount === maxAmounts.value[i])
   );
 
   const optimized = computed(() => {
@@ -139,18 +147,8 @@ export default function useInvestFormMath(
     return fullAmounts.value.every((amount, i) => amount === send[i]);
   });
 
-  const bptOut = computed(() => {
-    let _bptOut = poolCalculator
-      .exactTokensInForBPTOut(fullAmounts.value)
-      .toString();
-    _bptOut = formatUnits(_bptOut, pool.value.onchain.decimals);
-
-    if (managedPoolWithTradingHalted.value) return _bptOut;
-    return minusSlippage(_bptOut, pool.value.onchain.decimals);
-  });
-
   const poolTokenBalances = computed((): string[] =>
-    tokenAddresses.value.map(token => balanceFor(token))
+    tokenAddresses.value.map((_, i) => maxAmounts.value[i])
   );
 
   const hasZeroBalance = computed((): boolean =>
@@ -174,7 +172,7 @@ export default function useInvestFormMath(
 
   function maximizeAmounts(): void {
     fullAmounts.value.forEach((_, i) => {
-      amounts.value[i] = balanceFor(tokenAddresses.value[i]);
+      amounts.value[i] = maxAmounts.value[i];
     });
   }
 
@@ -188,12 +186,39 @@ export default function useInvestFormMath(
       (amount, i) => oldAmounts[i] !== amount
     );
     if (changedIndex >= 0) {
-      const { send } = poolCalculator.propAmountsGiven(
-        fullAmounts.value[changedIndex],
-        changedIndex,
-        'send'
-      );
-      proportionalAmounts.value = send;
+      console.log('Input amount', fullAmounts.value[changedIndex])
+      if (isProportional.value) {
+        if (
+          fullAmounts.value[changedIndex] ===
+          proportionalMaxes.value[changedIndex]
+        ) {
+          bptIn.value = bptBalance.value;
+          amounts.value = [...proportionalMaxes.value];
+          proportionalAmounts.value = [...proportionalMaxes.value];
+        } else {
+          const { send, receive } = poolCalculator.propAmountsGiven(
+            fullAmounts.value[changedIndex],
+            changedIndex,
+            'receive'
+          );
+          console.log('BPT balance', bptBalance.value);
+          console.log('send BPT', send);
+          console.log('receive', receive);
+          bptIn.value = send[0];
+          amounts.value = [...receive];
+          proportionalAmounts.value = [...receive];
+        }
+      } else {
+        const { send, receive } = poolCalculator.propAmountsGiven(
+          fullAmounts.value[changedIndex],
+          changedIndex,
+          'receive'
+        );
+        console.log('BPT balance', bptBalance.value);
+        console.log('send BPT', send);
+        console.log('receive', receive);
+        proportionalAmounts.value = [...receive];
+      }
     }
   });
 
@@ -201,6 +226,9 @@ export default function useInvestFormMath(
     // computed
     hasAmounts,
     fullAmounts,
+    fiatAmounts,
+    bptIn,
+    bptBalance,
     fiatTotal,
     fiatTotalLabel,
     priceImpact,
@@ -208,9 +236,10 @@ export default function useInvestFormMath(
     maximized,
     optimized,
     proportionalAmounts,
-    bptOut,
+    proportionalMaxes,
     hasZeroBalance,
     hasNoBalances,
+    maxAmounts,
     // methods
     maximizeAmounts,
     optimizeAmounts

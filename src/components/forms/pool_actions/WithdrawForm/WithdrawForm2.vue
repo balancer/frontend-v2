@@ -83,7 +83,8 @@ const {
   highPriceImpact,
   maximizeAmounts,
   optimizeAmounts,
-  proportionalAmounts
+  proportionalAmounts,
+  maxAmounts
 } = withdrawMath;
 
 const {
@@ -111,6 +112,10 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
 
 const forceProportionalInputs = computed(
   (): boolean => managedPoolWithTradingHalted.value || isProportional.value
+);
+
+const balanceLabel = computed(() =>
+  isProportional.value ? 'Max' : 'Single asset max'
 );
 
 /**
@@ -170,6 +175,10 @@ function setNativeAsset(to: NativeAsset): void {
   }
 }
 
+function resetForm(): void {
+  state.amounts = state.amounts.map(() => '');
+}
+
 /**
  * CALLBACKS
  */
@@ -194,6 +203,22 @@ watch(
     }
   }
 );
+
+// watch(proportionalAmounts, newPropAmounts => {
+//   console.log('maxPropAmounts', maxAmounts.value);
+//   console.log('inputAmounts', state.amounts);
+//   console.log('newPropAmounts', newPropAmounts);
+//   if (isProportional.value && !isEqual(state.amounts, newPropAmounts)) {
+//     console.log('change');
+//     state.amounts = [...newPropAmounts];
+//   }
+// });
+
+watch(isProportional, proportional => {
+  if (!proportional) {
+    resetForm();
+  }
+});
 </script>
 
 <template>
@@ -204,7 +229,14 @@ watch(
       label="Withdraw proportionally for best price"
     />
 
+    <ProportionalWithdrawalInput
+      v-if="isProportional"
+      :pool="pool"
+      :tokenAddresses="state.tokenAddresses"
+      :math="withdrawMath"
+    />
     <TokenInput
+      v-else
       v-for="(n, i) in state.tokenAddresses.length"
       :key="i"
       :name="state.tokenAddresses[i]"
@@ -212,6 +244,8 @@ watch(
       v-model:amount="state.amounts[i]"
       v-model:isValid="state.validInputs[i]"
       :weight="tokenWeight(state.tokenAddresses[i])"
+      :customBalance="maxAmounts[i]"
+      :balanceLabel="balanceLabel"
       class="my-4"
       fixedToken
       :options="tokenOptions(i)"

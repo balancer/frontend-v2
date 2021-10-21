@@ -3,6 +3,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 // Composables
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { useRoute } from 'vue-router';
+import useTokens from '@/composables/useTokens';
 
 /**
  * STATE
@@ -12,6 +13,11 @@ const useNativeAsset = ref(false);
 export default function usePoolTransfers() {
   const route = useRoute();
   const id = ref<string>(route.params.id as string);
+
+  /**
+   * COMPOSABLES
+   */
+  const { prices } = useTokens();
 
   /**
    * QUERIES
@@ -36,9 +42,20 @@ export default function usePoolTransfers() {
     (): boolean => !loadingPool.value && !!pool.value
   );
 
+  const missingPrices = computed(() => {
+    if (pool.value) {
+      const tokensWithPrice = Object.keys(prices.value);
+      return !pool.value.tokenAddresses.every(token =>
+        tokensWithPrice.includes(token)
+      );
+    }
+    return false;
+  });
+
   return {
     pool,
     poolLoaded,
-    useNativeAsset
+    useNativeAsset,
+    missingPrices
   };
 }
