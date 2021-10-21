@@ -47,6 +47,13 @@
             "token": "0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-arbitrum.json",
             "weekStart": 6
+        },
+        {
+            "label": "MCB",
+            "distributor": "0x25c646adf184051b35a405b9aaeba321e8d5342a",
+            "token": "0x4e352cf164e64adcbad318c3a1e222e9eba4ce42",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-mcdex-arbitrum.json",
+            "weekStart": 4
         }
     ]
   }
