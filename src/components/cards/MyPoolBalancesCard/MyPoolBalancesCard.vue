@@ -79,11 +79,11 @@ const fiatTotal = computed(() => {
       </div>
     </template>
 
-    <div class="-mt-3 p-4">
+    <div class="-mt-2 p-4">
       <div
         v-for="(address, i) in pool.tokenAddresses"
         :key="address"
-        class="py-3"
+        class="py-2"
       >
         <AssetRow :address="address" :balance="propTokenAmounts[i]" />
       </div>

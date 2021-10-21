@@ -89,8 +89,8 @@ function isSelectedNativeAsset(address: string): boolean {
       </div>
     </template>
 
-    <div class="-mt-3 p-4">
-      <div v-for="address in pool.tokenAddresses" :key="address" class="py-3">
+    <div class="-mt-2 p-4">
+      <div v-for="address in pool.tokenAddresses" :key="address" class="py-2">
         <div v-if="address === wrappedNativeAsset.address">
           <div class="flex items-start justify-between">
             <BalBreakdown
@@ -99,7 +99,10 @@ function isSelectedNativeAsset(address: string): boolean {
               size="lg"
             >
               <div class="flex justify-between">
-                <span>{{ nativeAsset.name }} {{ $t('tokens') }}</span>
+                <span>
+                  {{ nativeAsset.name }}
+                  <span class="lowercase">{{ $t('tokens') }}</span>
+                </span>
                 <BalTooltip
                   :text="
                     $t(

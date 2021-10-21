@@ -31,7 +31,7 @@ const { pool, poolLoaded, useNativeAsset } = usePoolTransfers();
       </router-link>
     </div>
     <div class="layout-container">
-      <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-12">
+      <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-6">
         <BalLoadingBlock v-if="!poolLoaded" class="h-64" />
         <MyWalletTokensCard
           v-else
@@ -81,7 +81,7 @@ const { pool, poolLoaded, useNativeAsset } = usePoolTransfers();
         <router-view :key="$route.path" :pool="pool" />
       </div>
 
-      <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-12">
+      <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-6">
         <BalLoadingBlock v-if="!poolLoaded" class="h-64" />
         <MyPoolBalancesCard v-else :pool="pool" />
       </div>
