@@ -1,3 +1,4 @@
+import { BLOCKED_ADDRESSES } from '@/constants/blocked';
 import useWeb3 from '@/services/web3/useWeb3';
 import { EthereumTransactionData } from 'bnc-sdk/dist/types/src/interfaces';
 import { watch } from 'vue';
@@ -20,7 +21,8 @@ export default function useWeb3Watchers() {
     isUnsupportedNetwork,
     blockNumber,
     connectToAppNetwork,
-    isWalletReady
+    isWalletReady,
+    disconnectWallet
   } = useWeb3();
   const { addAlert, removeAlert } = useAlerts();
   const { refetchBalances, refetchAllowances } = useTokens();
@@ -95,6 +97,12 @@ export default function useWeb3Watchers() {
   watch(blockNumber, async () => {
     if (isWalletReady.value) {
       handlePendingTransactions();
+    }
+  });
+
+  watch(account, () => {
+    if (BLOCKED_ADDRESSES.includes(account.value)) {
+      disconnectWallet();
     }
   });
 }
