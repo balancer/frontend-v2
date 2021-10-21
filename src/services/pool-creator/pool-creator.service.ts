@@ -1,6 +1,6 @@
 import {
   Vault__factory,
-  WeightedPool__factory
+  WeightedPoolFactory__factory
 } from '@balancer-labs/typechain';
 import { Contract } from '@ethersproject/contracts';
 import { AddressZero } from '@ethersproject/constants';
@@ -8,7 +8,7 @@ import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { configService } from '../config/config.service';
 import { BigNumber } from 'bignumber.js';
 import useWeb3 from '@/services/web3/useWeb3';
-import { ethers } from 'ethers';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
 
 export interface PoolToken {
   address: string;
@@ -16,23 +16,24 @@ export interface PoolToken {
 }
 
 export class PoolCreator {
-  constructor() {}
 
   public async createWeightedPool(
+    provider: Web3Provider,
     name: string,
     symbol: string,
     swapFee: string,
     tokens: PoolToken[]
   ) {
-    const { getProvider } = useWeb3();
-    const provider: Web3Provider = getProvider();
+    // const { getProvider } = useWeb3();
+    // const provider: Web3Provider = getProvider();
     const signer = provider.getSigner();
 
     const weightedPoolFactoryAddress =
       configService.network.addresses.weightedPoolFactory;
     const factoryContract = new Contract(
       weightedPoolFactoryAddress,
-      WeightedPool__factory.abi
+      WeightedPoolFactory__factory.abi,
+      provider
     );
     const factoryContractWithSigner = factoryContract.connect(signer);
 
@@ -48,17 +49,33 @@ export class PoolCreator {
     });
 
     const tokenWeights = tokens.map((token: PoolToken) => {
-      return token.weight;
+      return token.weight.toString();
     });
 
-    const tx: TransactionResponse = await factoryContractWithSigner.create(
-      name,
-      symbol,
-      tokenAddresses,
-      tokenWeights,
-      swapFee,
-      AddressZero
+    const swapFeeScaled = new BigNumber(`${swapFee}e16`);
+    const tx = await sendTransaction(
+      provider,
+      weightedPoolFactoryAddress,
+      WeightedPoolFactory__factory.abi,
+      'create',
+      [
+        name,
+        symbol,
+        tokenAddresses,
+        tokenWeights,
+        swapFeeScaled.toString(),
+        AddressZero
+      ]
     );
+
+    // const tx: TransactionResponse = await factoryContractWithSigner.create(
+    //   name,
+    //   symbol,
+    //   tokenAddresses,
+    //   tokenWeights,
+    //   swapFee,
+    //   AddressZero
+    // );
 
     console.log("TX is: ", tx);
 
