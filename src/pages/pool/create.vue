@@ -12,6 +12,7 @@ import { ref, watch } from 'vue';
  */
 const route = useRoute();
 const tokenWeights = ref<TokenWeight>();
+const tokenColors = ref<string[]>([]);
 
 watch(tokenWeights, () => {
   console.log('esh');
@@ -37,8 +38,8 @@ watch(tokenWeights, () => {
     </div>
     <div class="col-span-3">
       <BalStack vertical spacing="base">
-        <PoolSummary :tokens="tokenWeights" />
-        <WalletPoolTokens :tokens="tokenWeights" />
+        <PoolSummary v-model:colors="tokenColors" :tokens="tokenWeights" />
+        <WalletPoolTokens :colors="tokenColors" :tokenWeights="tokenWeights" />
       </BalStack>
     </div>
   </div>

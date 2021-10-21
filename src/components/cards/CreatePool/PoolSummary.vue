@@ -6,7 +6,8 @@ import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
 import Vibrant from 'node-vibrant/dist/vibrant';
 import { prominent } from 'color.js';
-import { eq } from 'lodash';
+import { eq, sumBy } from 'lodash';
+import echarts from 'echarts';
 
 type Props = {
   tokens: TokenWeight[];
@@ -14,14 +15,19 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   tokens: [] as any
 });
+const emit = defineEmits(['update:colors']);
+
 const { tokens } = useTokens();
 const { resolve } = useUrls();
 const colors = ref<(string | null)[]>([]);
+const chartInstance = ref<echarts.ECharts>();
 
 watch(
   () => props.tokens,
   async (oldValue, newValue) => {
     await calculateColors();
+    const colors = chartInstance.value?.getOption().color;
+    emit('update:colors', colors);
   },
   { deep: true }
 );
@@ -49,10 +55,19 @@ const calculateColors = async () => {
   colors.value = _colors;
 };
 
+const unallocatedTokenWeight = computed(() =>
+  sumBy(
+    props.tokens.filter(t => t.tokenAddress === ''),
+    'weight'
+  )
+);
+
 const chartConfig = computed(() => {
   return {
     tooltip: {
-      show: true
+      show: true,
+      borderRadius: 50,
+      confine: true
     },
     legend: {
       show: false
@@ -81,26 +96,35 @@ const chartConfig = computed(() => {
         labelLine: {
           show: false
         },
-        data: props.tokens
-          .filter(t => t.tokenAddress !== '')
-          .map((t, i) => {
-            const tokenLogoURI = resolve(
-              tokens.value[t.tokenAddress].logoURI || ''
-            );
-            return {
-              name: t.tokenAddress,
-              value: t.weight,
-              tooltip: {
-                formatter: params => {
-                  return `<img width="32" height="32" src="${tokenLogoURI}" />`;
+        data: [
+          ...props.tokens
+            .filter(t => t.tokenAddress !== '')
+            .map((t, i) => {
+              const tokenLogoURI = resolve(
+                tokens.value[t.tokenAddress].logoURI || ''
+              );
+              return {
+                name: t.tokenAddress,
+                value: t.weight,
+                tooltip: {
+                  formatter: params => {
+                    return `<img width="32" height="32" src="${tokenLogoURI}" />`;
+                  },
+                  borderWidth: '0'
                 },
-                borderWidth: '0'
-              },
-              itemStyle: {
-                color: colors.value[i]
-              }
-            };
-          })
+                itemStyle: {
+                  color: colors.value[i]
+                }
+              };
+            }),
+          {
+            name: 'Unallocated',
+            value: unallocatedTokenWeight.value,
+            itemStyle: {
+              color: 'darkGray'
+            }
+          }
+        ]
       }
     ]
   };
@@ -113,7 +137,12 @@ const chartConfig = computed(() => {
       <h6>Pool Summary</h6>
     </div>
     <div class="p-2">
-      <ECharts class="w-full h-56" :option="chartConfig" autoresize />
+      <ECharts
+        ref="chartInstance"
+        class="w-full h-56"
+        :option="chartConfig"
+        autoresize
+      />
     </div>
   </BalCard>
 </template>
