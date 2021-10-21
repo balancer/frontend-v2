@@ -14,7 +14,7 @@ export default defineComponent({
 
 <style>
 .bal-blank-slate {
-  @apply border border-dashed p-8 flex flex-col items-center justify-center text-gray-500 rounded-lg;
+  @apply border border-dashed p-8 flex flex-col items-center justify-center text-gray-500 rounded-2xl;
   min-height: 5px;
 }
 </style>

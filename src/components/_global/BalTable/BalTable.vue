@@ -2,7 +2,7 @@
   <div
     :class="[
       'max-w-full whitespace-nowrap overflow-hidden',
-      { 'rounded-lg': !square }
+      { 'rounded-2xl': !square }
     ]"
   >
     <div class="overflow-hidden" ref="headerRef">

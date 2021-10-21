@@ -282,7 +282,7 @@ const chartGrid = computed(() => {
                 @click="activeTimespan = timespan"
                 :key="timespan.value"
                 :class="[
-                  'py-1 px-2 text-sm rounded-lg mr-2',
+                  'py-1 px-2 text-sm rounded-2xl mr-2',
                   {
                     'text-white': activeTimespan.value === timespan.value,
                     'text-gray-500': activeTimespan.value !== timespan.value,

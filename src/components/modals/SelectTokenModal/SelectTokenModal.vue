@@ -75,7 +75,7 @@
           class="px-4 py-3 flex-auto"
         />
       </div>
-      <div class="overflow-hidden rounded-lg">
+      <div class="overflow-hidden rounded-2xl">
         <RecycleScroller
           class="h-96 overflow-y-scroll"
           v-if="tokens.length > 0"

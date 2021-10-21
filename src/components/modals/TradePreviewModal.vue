@@ -295,7 +295,7 @@ export default defineComponent({
 </script>
 <style scoped>
 .card-container {
-  @apply p-3 flex items-center border rounded-lg dark:border-gray-800;
+  @apply p-3 flex items-center border rounded-2xl dark:border-gray-800;
 }
 .card-step {
   @apply w-9 h-9 flex items-center justify-center border rounded-full dark:border-gray-700;

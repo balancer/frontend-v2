@@ -1,6 +1,6 @@
 <template>
   <div
-    class="absolute top-0 left-0 w-full h-full bg-white dark:bg-gray-850 rounded-lg z-10 text-center"
+    class="absolute top-0 left-0 w-full h-full bg-white dark:bg-gray-850 rounded-2xl z-10 text-center"
   >
     <div class="flex flex-col justify-between items-center h-full p-4">
       <h3 v-text="title" />
