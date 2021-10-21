@@ -20,6 +20,13 @@
         @amountChange="trading.handleAmountChange"
         class="mb-4"
       />
+      <GasReimbursement
+        v-if="!ENABLE_LEGACY_TRADE_INTERFACE && trading.isBalancerTrade.value"
+        class="mb-5"
+        :address-in="tokenInAddress"
+        :address-out="tokenOutAddress"
+        :sorReturn="trading.sor.sorReturn.value"
+      />
       <BalAlert
         v-if="error"
         class="p-3 mb-4"
@@ -83,10 +90,10 @@
             "
           ></div>
         </BalTooltip>
-        <span class="text-xs pl-2">{{ $t('tradeGaslessToggle.label') }}</span>
+        <span class="text-sm pl-2">{{ $t('tradeGaslessToggle.label') }}</span>
         <BalTooltip width="64">
           <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="text-gray-400 ml-1" />
+            <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
           </template>
           <div v-html="$t('tradeGaslessToggle.tooltip')" />
         </BalTooltip>
@@ -133,6 +140,7 @@ import TradeSettingsPopover, {
 
 import { configService } from '@/services/config/config.service';
 
+import GasReimbursement from '../TradeCard/GasReimbursement.vue';
 import TradePair from '../TradeCard/TradePair.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useRelayerApproval, {
@@ -145,7 +153,8 @@ export default defineComponent({
   components: {
     TradePair,
     TradePreviewModalGP,
-    TradeSettingsPopover
+    TradeSettingsPopover,
+    GasReimbursement
   },
 
   setup() {
