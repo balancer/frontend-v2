@@ -316,6 +316,7 @@ export default function useGnosis({
         if (GNOSIS_FEE_SUBSIDY_ENABLED) {
           feeQuoteResult.amount = bnum(feeQuoteResult.amount)
             .times(GNOSIS_FEE_SUBSIDY)
+            .integerValue(BigNumber.ROUND_CEIL)
             .toString();
         }
 
