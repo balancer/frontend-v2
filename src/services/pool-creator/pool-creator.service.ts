@@ -1,6 +1,7 @@
 import {
   Vault__factory,
-  WeightedPoolFactory__factory
+  WeightedPoolFactory__factory,
+  WeightedPool__factory
 } from '@balancer-labs/typechain';
 import { Contract } from '@ethersproject/contracts';
 import { AddressZero } from '@ethersproject/constants';
@@ -30,16 +31,6 @@ export class PoolCreator {
 
     const weightedPoolFactoryAddress =
       configService.network.addresses.weightedPoolFactory;
-    const factoryContract = new Contract(
-      weightedPoolFactoryAddress,
-      WeightedPoolFactory__factory.abi,
-      provider
-    );
-    const factoryContractWithSigner = factoryContract.connect(signer);
-
-    const vaultAddress = configService.network.addresses.vault;
-    const vaultContract = new Contract(vaultAddress, Vault__factory.abi);
-    const vaultContractWithSigner = vaultContract.connect(signer);
 
     // Tokens must be sorted in order of addresses
     tokens = this.sortTokens(tokens);
@@ -48,52 +39,71 @@ export class PoolCreator {
       return token.address;
     });
 
-    const tokenWeights = tokens.map((token: PoolToken) => {
-      return token.weight.toString();
-    });
-
+    const tokenWeights = this.calculateTokenWeights(tokens);
     const swapFeeScaled = new BigNumber(`${swapFee}e16`);
+
+    const params = [
+      name,
+      symbol,
+      tokenAddresses,
+      tokenWeights,
+      swapFeeScaled.toString(),
+      AddressZero
+    ];
+
+    console.log("Params: ", params);
+
     const tx = await sendTransaction(
       provider,
       weightedPoolFactoryAddress,
       WeightedPoolFactory__factory.abi,
       'create',
-      [
-        name,
-        symbol,
-        tokenAddresses,
-        tokenWeights,
-        swapFeeScaled.toString(),
-        AddressZero
-      ]
+      params
     );
-
-    // const tx: TransactionResponse = await factoryContractWithSigner.create(
-    //   name,
-    //   symbol,
-    //   tokenAddresses,
-    //   tokenWeights,
-    //   swapFee,
-    //   AddressZero
-    // );
 
     console.log("TX is: ", tx);
 
-    const receipt = await tx.wait();
+    const receipt: any = await tx.wait();
 
     console.log("Receipt is: ", receipt);
 
-    // const events = receipt.events.filter((e) => e.event === 'PoolCreated');
-    // const poolAddress = events[0].args.pool;
+    const events = receipt.events.filter((e) => e.event === 'PoolCreated');
+
+    console.log("Pool created events: ", events);
+    const poolAddress = events[0].args[0];
+
+    console.log("Pool address: ", poolAddress);
     
-    // const pool = await ethers.getContractAt('WeightedPool', poolAddress);
-    // const poolId = await pool.getPoolId();
+    const pool = new Contract(poolAddress, WeightedPool__factory.abi, provider);
+    const poolId = await pool.getPoolId();
+
+    console.log("Pool ID: ", poolId);
+
   }
 
   public sortTokens(tokens: PoolToken[]) {
     return [...tokens].sort((tokenA, tokenB) => {
       return tokenA.address > tokenB.address ? 1 : -1;
     });
+  }
+
+  public calculateTokenWeights(tokens: PoolToken[]): string[] {
+    let totalWeight = new BigNumber(0);
+    const expectedTotalWeight = new BigNumber(1e18);
+
+    tokens.forEach((token) => {
+      totalWeight = totalWeight.plus(token.weight);
+    });
+
+    // If weights don't add to exactly 1e18, add missing weight to first token
+    const remainingWeight = expectedTotalWeight.minus(totalWeight);
+    tokens[0].weight = tokens[0].weight.plus(remainingWeight);
+
+    const weights: string[] = tokens.map((token: PoolToken) => {
+      return token.weight.toString();
+    });
+
+    return weights;
   }
 }
 
