@@ -373,7 +373,7 @@
     "tradeFromWeth": "Trade from WETH",
     "tradeGaslessToggle": {
         "disabledTooltip": {
-            "eth": "This option has been disabled because ETH transactions always require a gas transaction.",
+            "eth": "This option is disabled because gasless trades only work with ERC-20 tokens. 'ETH' is not an ERC-20 token.",
             "wrapUnwrap": "This option has been disabled because Wrap/Unwrap transactions always require a gas transaction."
         },
         "label": "Trade gasless",
