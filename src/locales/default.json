@@ -373,7 +373,7 @@
     "tradeFromWeth": "Trade from WETH",
     "tradeGaslessToggle": {
         "disabledTooltip": {
-            "eth": "This option has been disabled because ETH transactions always require a gas transaction.",
+            "eth": "This option is disabled because gasless trades only work with ERC-20 tokens. 'ETH' is not an ERC-20 token.",
             "wrapUnwrap": "This option has been disabled because Wrap/Unwrap transactions always require a gas transaction."
         },
         "label": "Trade gasless",
@@ -415,8 +415,8 @@
                 "title": "Approve {0}"
             },
             "trade": {
-                "content": "Finalize the transaction by submitting it for inclusion on the blockchain.",
-                "title": "Confirm transaction"
+                "content": "Upon your signature, CowSwap will find an optimal route amongst other traders or DeFi exchanges, with MEV protection.",
+                "title": "Sign a free message to trade"
             }
         },
         "unwrap": {
