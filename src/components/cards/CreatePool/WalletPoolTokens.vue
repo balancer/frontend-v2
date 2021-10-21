@@ -1,5 +1,30 @@
 <script lang="ts" setup>
-import Vue from 'vue';
+import useTokens from '@/composables/useTokens';
+import { TokenWeight } from './ChooseWeights.vue';
+import { computed } from 'vue';
+import { sumBy } from 'lodash';
+
+type Props = {
+  tokenWeights: TokenWeight[];
+  colors: string[];
+};
+
+const props = withDefaults(defineProps<Props>(), {
+  tokenWeights: [] as any,
+  colors: [] as any
+});
+
+const { tokens } = useTokens();
+
+const allocatedTokenWeights = computed(() =>
+  props.tokenWeights.filter(t => t.tokenAddress !== '')
+);
+const unallocatedTokenWeight = computed(() =>
+  sumBy(
+    props.tokenWeights.filter(t => t.tokenAddress === ''),
+    'weight'
+  )
+);
 </script>
 
 <template>
@@ -16,7 +41,37 @@ import Vue from 'vue';
           <span class="text-sm font-semibold">USD Value</span>
         </div>
         <div class="col-span-3 text-right">
-          <span class="text-sm font-semibold">%</span>
+          <span class="text-sm font-semibold">Pool %</span>
+        </div>
+        <template
+          v-for="(token, i) in allocatedTokenWeights"
+          :key="token.tokenAddress"
+        >
+          <div class="col-span-5 text-left">
+            <div class="flex flex-row items-center">
+              <div
+                class="rounded-full w-1.5 h-1.5 mr-2"
+                :style="{ backgroundColor: colors[i] }"
+              ></div>
+              <span>{{ tokens[token.tokenAddress]?.symbol }}</span>
+            </div>
+            <div v-if="token.tokenAddress === 'unallocated'"></div>
+          </div>
+          <div class="col-span-4 text-right">
+            0
+          </div>
+          <div class="col-span-3 text-right">
+            {{ token.weight }}
+          </div>
+        </template>
+        <div class="col-span-5 text-left" v-if="unallocatedTokenWeight > 0">
+          Unallocated
+        </div>
+        <div class="col-span-4 text-right" v-if="unallocatedTokenWeight > 0">
+          0
+        </div>
+        <div class="col-span-3 text-right" v-if="unallocatedTokenWeight > 0">
+          {{ unallocatedTokenWeight }}
         </div>
       </div>
     </div>
