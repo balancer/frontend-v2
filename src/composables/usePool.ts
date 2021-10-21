@@ -1,5 +1,9 @@
 import { Ref, computed } from 'vue';
-import { PoolType, AnyPool, PoolToken } from '@/services/balancer/subgraph/types';
+import {
+  PoolType,
+  AnyPool,
+  PoolToken
+} from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
 

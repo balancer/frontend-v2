@@ -186,7 +186,7 @@ export default function useWithdrawMath(
       (amount, i) => oldAmounts[i] !== amount
     );
     if (changedIndex >= 0) {
-      console.log('Input amount', fullAmounts.value[changedIndex])
+      console.log('Input amount', fullAmounts.value[changedIndex]);
       if (isProportional.value) {
         if (
           fullAmounts.value[changedIndex] ===
