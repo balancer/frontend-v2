@@ -9,7 +9,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import anime from 'animejs';
 import { sum, sumBy } from 'lodash';
 
-const emit = defineEmits(['update:tokenWeights'])
+const emit = defineEmits(['update:tokenWeights']);
 
 export type TokenWeight = {
   tokenAddress: string;
@@ -87,7 +87,7 @@ const addTokenToPool = async () => {
   wrapperHeight.value += tokenWeightItemHeight.value;
 
   tokenWeights.push({ ...emptyTokenWeight, id: tokenWeights.length - 1 });
-  emit('update:tokenWeights', tokenWeights)
+  emit('update:tokenWeights', tokenWeights);
 
   // to avoid reflow we are going to transform the totals + add token
   // down instead of having the new token weight item shift them
@@ -191,6 +191,7 @@ const addTokenListElementRef = (el: HTMLElement) => {
           </div>
         </div>
       </BalCard>
+      <BalBtn block color="gradient">Next</BalBtn>
     </BalStack>
   </BalCard>
 </template>

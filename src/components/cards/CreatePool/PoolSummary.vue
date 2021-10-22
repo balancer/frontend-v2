@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TokenWeight } from './ChooseWeights.vue';
 import ECharts from 'vue-echarts';
-import { computed, ref, toRef, toRefs, watch } from 'vue';
+import { computed, nextTick, ref, toRef, toRefs, watch } from 'vue';
 import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
 import Vibrant from 'node-vibrant/dist/vibrant';
@@ -25,7 +25,9 @@ const chartInstance = ref<echarts.ECharts>();
 watch(
   () => props.tokens,
   async (oldValue, newValue) => {
+    await nextTick();
     await calculateColors();
+    await nextTick();
     const colors = chartInstance.value?.getOption().color;
     emit('update:colors', colors);
   },
@@ -52,7 +54,9 @@ const calculateColors = async () => {
       }
     });
   const _colors = await Promise.all(colorPromises);
+  await nextTick();
   colors.value = _colors;
+  await nextTick();
 };
 
 const unallocatedTokenWeight = computed(() =>
