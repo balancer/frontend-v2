@@ -7,7 +7,6 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 // Composables
 import useUserSettings from '@/composables/useUserSettings';
-import { usePool } from '@/composables/usePool';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
@@ -52,7 +51,6 @@ export default function useWithdrawMath(
   const { toFiat, fNum } = useNumbers();
   const { tokens: allTokens, balances, balanceFor, getToken } = useTokens();
   const { minusSlippage, addSlippage } = useSlippage();
-  const { managedPoolWithTradingHalted } = usePool(pool);
   const { currency } = useUserSettings();
 
   /**
