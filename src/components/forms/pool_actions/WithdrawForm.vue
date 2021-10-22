@@ -506,12 +506,6 @@ export default defineComponent({
       try {
         data.loading = true;
         await calcBptIn();
-
-        console.log('amountsOut:', amountsOut.value);
-        console.log('bptIn:', bptIn.value);
-        console.log('tokenOutIndex:', exitTokenIndex.value);
-        console.log('exactOut:', exactOut.value);
-
         const tx = await poolExchange.exit(
           getProvider(),
           account.value,
