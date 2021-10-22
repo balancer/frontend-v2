@@ -15,7 +15,7 @@ import { TokenInfo } from '@gnosis.pm/safe-apps-sdk';
  * TYPES
  */
 type Props = {
-  pool: FullPool
+  pool: FullPool;
   tokenAddresses: string[];
   math: WithdrawMathResponse;
 };
