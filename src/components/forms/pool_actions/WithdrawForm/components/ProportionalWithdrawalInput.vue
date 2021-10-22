@@ -130,7 +130,7 @@ onBeforeMount(() => {
         <div class="flex items-center justify-between">
           <div class="flex items-center">
             <BalAsset :address="address" class="mr-2" />
-            <div class="w-3/4 flex flex-col leading-none">
+            <div class="flex flex-col leading-none">
               <span class="text-lg font-medium">
                 {{ token.symbol }}
                 <span v-if="!isStableLikePool">
