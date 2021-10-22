@@ -89,13 +89,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     (): boolean => !!pool.value && isWstETH(pool.value)
   );
 
-  const tokenWeights = computed((): string[] => {
-    if (!pool.value && !pool.value.onchain) return [];
-    return Object.values<PoolToken>(pool.value.onchain.tokens).map(
-      token => token.weight
-    );
-  });
-
   return {
     // computed
     isStablePool,
@@ -108,7 +101,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     managedPoolWithTradingHalted,
     isWethPool,
     isWstETHPool,
-    tokenWeights,
     // methods
     isStable,
     isMetaStable,

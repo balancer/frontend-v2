@@ -42,7 +42,6 @@ export default function useWithdrawMath(
   /**
    * STATE
    */
-  const proportionalAmounts = ref<string[]>([]);
   const bptIn = ref('');
 
   /**
@@ -80,9 +79,13 @@ export default function useWithdrawMath(
     new Array(tokenCount.value).fill('0').map((_, i) => amounts.value[i] || '0')
   );
 
-  const fiatAmounts = computed((): string[] =>
-    fullAmounts.value.map((_, i) => fiatAmount(i))
-  );
+  const fiatAmounts = computed((): string[] => {
+    if (isProportional.value)
+      return proportionalAmounts.value.map((amount, i) =>
+        fiatAmount(i, amount)
+      );
+    return fullAmounts.value.map((amount, i) => fiatAmount(i, amount));
+  });
 
   const fiatTotal = computed((): string =>
     fiatAmounts.value.reduce(
@@ -122,6 +125,11 @@ export default function useWithdrawMath(
         token.decimals
       );
     });
+  });
+
+  const proportionalAmounts = computed((): string[] => {
+    const { receive } = poolCalculator.propAmountsGiven(bptIn.value, 0, 'send');
+    return receive;
   });
 
   const proportionalMaxes = computed((): string[] => {
@@ -166,8 +174,8 @@ export default function useWithdrawMath(
     return fullAmounts.value[index] || '0';
   }
 
-  function fiatAmount(index: number): string {
-    return toFiat(tokenAmount(index), pool.value.tokenAddresses[index]);
+  function fiatAmount(index: number, amount: string): string {
+    return toFiat(amount, pool.value.tokenAddresses[index]);
   }
 
   function maximizeAmounts(): void {
@@ -186,39 +194,7 @@ export default function useWithdrawMath(
       (amount, i) => oldAmounts[i] !== amount
     );
     if (changedIndex >= 0) {
-      console.log('Input amount', fullAmounts.value[changedIndex]);
-      if (isProportional.value) {
-        if (
-          fullAmounts.value[changedIndex] ===
-          proportionalMaxes.value[changedIndex]
-        ) {
-          bptIn.value = bptBalance.value;
-          amounts.value = [...proportionalMaxes.value];
-          proportionalAmounts.value = [...proportionalMaxes.value];
-        } else {
-          const { send, receive } = poolCalculator.propAmountsGiven(
-            fullAmounts.value[changedIndex],
-            changedIndex,
-            'receive'
-          );
-          console.log('BPT balance', bptBalance.value);
-          console.log('send BPT', send);
-          console.log('receive', receive);
-          bptIn.value = send[0];
-          amounts.value = [...receive];
-          proportionalAmounts.value = [...receive];
-        }
-      } else {
-        const { send, receive } = poolCalculator.propAmountsGiven(
-          fullAmounts.value[changedIndex],
-          changedIndex,
-          'receive'
-        );
-        console.log('BPT balance', bptBalance.value);
-        console.log('send BPT', send);
-        console.log('receive', receive);
-        proportionalAmounts.value = [...receive];
-      }
+      // Do something
     }
   });
 

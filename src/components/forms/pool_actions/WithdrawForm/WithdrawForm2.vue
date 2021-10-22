@@ -9,15 +9,18 @@ import {
   watch
 } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { isRequired } from '@/lib/utils/validations';
+import { bnum } from '@/lib/utils';
+// Composables
+import useWithdrawMath from './composables/useWithdrawMath';
 import { isStableLike, usePool } from '@/composables/usePool';
+import useWeb3 from '@/services/web3/useWeb3';
+import useTokens from '@/composables/useTokens';
+// Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
-import useWithdrawMath from './composables/useWithdrawMath';
-import { isRequired } from '@/lib/utils/validations';
-import { bnum } from '@/lib/utils';
-import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
+import ProportionalWithdrawalInput from './components/ProportionalWithdrawalInput.vue';
 
 /**
  * TYPES
@@ -234,6 +237,7 @@ watch(isProportional, proportional => {
       :pool="pool"
       :tokenAddresses="state.tokenAddresses"
       :math="withdrawMath"
+      class="mt-4"
     />
     <TokenInput
       v-else
