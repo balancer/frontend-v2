@@ -10,10 +10,35 @@ import { configService } from '../config/config.service';
 import { BigNumber } from 'bignumber.js';
 import useWeb3 from '@/services/web3/useWeb3';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
+import { Pool, PoolType } from '../balancer/subgraph/types';
+import { defaultAbiCoder } from '@ethersproject/abi';
+import ts from 'typescript';
 
-export interface PoolToken {
-  address: string;
+type Address = string;
+
+export interface PoolInitToken {
+  address: Address;
+  symbol: string;
   weight: BigNumber;
+}
+
+export interface CreatePoolOptions {
+  symbol?: string;
+  owner?: Address;
+}
+
+export interface CreatePoolReturn {
+  id: string;
+  address: Address;
+}
+
+const JOIN_KIND_INIT = 0;
+
+export interface JoinPoolRequest {
+  assets: Address[];
+  maxAmountsIn: string[];
+  userData: any;
+  fromInternalBalance: boolean;
 }
 
 export class PoolCreator {
@@ -21,13 +46,10 @@ export class PoolCreator {
   public async createWeightedPool(
     provider: Web3Provider,
     name: string,
-    symbol: string,
     swapFee: string,
-    tokens: PoolToken[]
-  ) {
-    // const { getProvider } = useWeb3();
-    // const provider: Web3Provider = getProvider();
-    const signer = provider.getSigner();
+    tokens: PoolInitToken[],
+    options: CreatePoolOptions = {}
+  ): Promise<CreatePoolReturn> {
 
     const weightedPoolFactoryAddress =
       configService.network.addresses.weightedPoolFactory;
@@ -35,12 +57,17 @@ export class PoolCreator {
     // Tokens must be sorted in order of addresses
     tokens = this.sortTokens(tokens);
 
-    const tokenAddresses = tokens.map((token: PoolToken) => {
+    const symbol = options.symbol ?? this.calculatePoolSymbol(tokens)
+
+    const tokenAddresses: Address[] = tokens.map((token: PoolInitToken) => {
       return token.address;
     });
 
+
     const tokenWeights = this.calculateTokenWeights(tokens);
     const swapFeeScaled = new BigNumber(`${swapFee}e16`);
+
+    const owner = options.owner ?? AddressZero;
 
     const params = [
       name,
@@ -48,7 +75,7 @@ export class PoolCreator {
       tokenAddresses,
       tokenWeights,
       swapFeeScaled.toString(),
-      AddressZero
+      owner
     ];
 
     console.log("Params: ", params);
@@ -79,19 +106,76 @@ export class PoolCreator {
 
     console.log("Pool ID: ", poolId);
 
+    const poolDetails: CreatePoolReturn = {
+      id: poolId,
+      address: poolAddress
+    }
+
+    return poolDetails;
   }
 
-  public sortTokens(tokens: PoolToken[]) {
+  public async joinPool(
+    provider: Web3Provider,
+    poolId: string,
+    sender: Address,
+    receiver: Address,
+    tokens: PoolInitToken[],
+    initialBalances: BigNumber[]
+  ) {
+
+    const initialBalancesString: string[] = initialBalances.map(n => n.toString());
+    const initUserData = defaultAbiCoder.encode(['uint256', 'uint256[]'], [JOIN_KIND_INIT, initialBalancesString]);
+
+    const tokenAddresses: Address[] = tokens.map((token: PoolInitToken) => {
+      return token.address;
+    });
+
+    const joinPoolRequest: JoinPoolRequest = {
+      assets: tokenAddresses,
+      maxAmountsIn: initialBalancesString,
+      userData: initUserData,
+      fromInternalBalance: false
+    };
+
+    // Get approval for all tokens here
+
+    const vaultAddress = configService.network.addresses.vault;
+    const tx = await sendTransaction(
+      provider,
+      vaultAddress,
+      Vault__factory.abi,
+      'joinPool',
+      [poolId, sender, receiver, joinPoolRequest]
+    )
+
+    console.log("tx is: ", tx);
+
+    const receipt: any = await tx.wait();
+
+    console.log("Receipt is: ", receipt);
+  }
+
+  public sortTokens(tokens: PoolInitToken[]) {
     return [...tokens].sort((tokenA, tokenB) => {
       return tokenA.address > tokenB.address ? 1 : -1;
     });
   }
 
-  public calculateTokenWeights(tokens: PoolToken[]): string[] {
+  public calculatePoolSymbol(tokens: PoolInitToken[]) {
+    const tokenWeights = tokens.map((token: PoolInitToken) => {
+      const tokenWeightScaled = token.weight
+        .div(new BigNumber(1e16))
+        .toNumber();
+      return `${Math.round(tokenWeightScaled)}${token.symbol}`;
+    });
+    return tokenWeights.join('-');
+  }
+
+  public calculateTokenWeights(tokens: PoolInitToken[]): string[] {
     let totalWeight = new BigNumber(0);
     const expectedTotalWeight = new BigNumber(1e18);
 
-    tokens.forEach((token) => {
+    tokens.forEach((token: PoolInitToken) => {
       totalWeight = totalWeight.plus(token.weight);
     });
 
@@ -99,7 +183,7 @@ export class PoolCreator {
     const remainingWeight = expectedTotalWeight.minus(totalWeight);
     tokens[0].weight = tokens[0].weight.plus(remainingWeight);
 
-    const weights: string[] = tokens.map((token: PoolToken) => {
+    const weights: string[] = tokens.map((token: PoolInitToken) => {
       return token.weight.toString();
     });
 
