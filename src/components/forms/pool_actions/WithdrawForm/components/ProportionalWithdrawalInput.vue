@@ -97,9 +97,7 @@ onBeforeMount(() => {
 <template>
   <div>
     <div class="proportional-input">
-      <div
-        class="shadow-inner p-3 pb-1 rounded-lg border border-gray-100 dark:border-gray-800"
-      >
+      <div class="proportional-input-container">
         <div class="flex">
           <WithdrawalTokenSelect :pool="pool" />
           <div class="flex-grow text-right text-xl">
@@ -156,6 +154,11 @@ onBeforeMount(() => {
 <style scoped>
 .proportional-input {
   @apply shadow-lg rounded-lg mb-4 w-full;
+}
+
+.proportional-input-container {
+  @apply shadow-inner p-3 pb-1 rounded-lg;
+  @apply border border-gray-100 dark:border-gray-800;
 }
 
 .token-amounts {
