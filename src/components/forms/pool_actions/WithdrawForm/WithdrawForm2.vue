@@ -5,9 +5,7 @@ import { isRequired } from '@/lib/utils/validations';
 // Composables
 import useWithdrawMath from './composables/useWithdrawMath';
 import useWithdrawalState from './composables/useWithdrawalState';
-import { usePool } from '@/composables/usePool';
 import useWeb3 from '@/services/web3/useWeb3';
-import useTokens from '@/composables/useTokens';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import WithdrawTotals from './components/WithdrawTotals.vue';
@@ -18,20 +16,9 @@ import WithdrawalTokenSelect from './components/WithdrawalTokenSelect.vue';
 /**
  * TYPES
  */
-enum NativeAsset {
-  wrapped = 'wrapped',
-  unwrapped = 'unwrapped'
-}
-
 type Props = {
   pool: FullPool;
   useNativeAsset: boolean;
-};
-
-type FormState = {
-  validInput: boolean;
-  highPriceImpactAccepted: boolean;
-  submitting: boolean;
 };
 
 /**
@@ -39,32 +26,16 @@ type FormState = {
  */
 const props = defineProps<Props>();
 
-const emit = defineEmits<{
-  (e: 'update:useNativeAsset', value: boolean): void;
-}>();
-
-/**
- * STATE
- */
-// const state = reactive<FormState>({
-//   validInput: true,
-//   highPriceImpactAccepted: false,
-//   submitting: false
-// });
-
 const showPreview = ref(false);
 
 /**
  * COMPOSABLES
  */
-const { nativeAsset, wrappedNativeAsset } = useTokens();
-
 const {
   isProportional,
   tokenOut,
   tokenOutIndex,
   highPriceImpactAccepted,
-  submitting,
   validInput
 } = useWithdrawalState(toRef(props, 'pool'));
 
@@ -88,10 +59,6 @@ const {
   toggleWalletSelectModal,
   isMismatchedNetwork
 } = useWeb3();
-
-const { managedPoolWithTradingHalted, isWethPool } = usePool(
-  toRef(props, 'pool')
-);
 
 /**
  * COMPUTED
