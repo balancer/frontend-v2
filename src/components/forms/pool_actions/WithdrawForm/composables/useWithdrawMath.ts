@@ -159,7 +159,9 @@ export default function useWithdrawMath(
   );
 
   const fiatAmounts = computed((): string[] =>
-    fullAmounts.value.map((amount, i) => fiatAmount(i, amount))
+    fullAmounts.value.map((amount, i) =>
+      toFiat(amount, tokens.value[i].address)
+    )
   );
 
   const fiatTotal = computed((): string =>
@@ -177,12 +179,8 @@ export default function useWithdrawMath(
   );
 
   /**
-   * METHODS
+   * WATCHERS
    */
-  function fiatAmount(index: number, amount: string): string {
-    return toFiat(amount, pool.value.tokenAddresses[index]);
-  }
-
   watch(tokenOut, () => (tokenOutAmount.value = ''));
 
   return {
