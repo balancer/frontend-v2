@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { PoolToken, poolCreator } from './pool-creator.service';
+import { PoolInitToken, poolCreator } from './pool-creator.service';
 
-const tokens: Record<string, PoolToken> = {};
+const tokens: Record<string, PoolInitToken> = {};
 
 describe('PoolCreator', () => {
-
   beforeEach(() => {
     tokens.MKR = {
       address: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
@@ -21,18 +20,16 @@ describe('PoolCreator', () => {
       symbol: 'USDT',
       weight: new BigNumber(0.1e18)
     };
-
-  })
-
-  describe('createWeightedPool', () => {
-
-
   });
 
+  describe('createWeightedPool', () => {});
+
   describe('sortTokens', () => {
-    it ('Should sort tokens by their address', () => {
-      const unsortedTokens: PoolToken[] = [
-        tokens.WETH, tokens.MKR, tokens.USDT
+    it('Should sort tokens by their address', () => {
+      const unsortedTokens: PoolInitToken[] = [
+        tokens.WETH,
+        tokens.MKR,
+        tokens.USDT
       ];
 
       const sortedTokens = poolCreator.sortTokens(unsortedTokens);
@@ -64,11 +61,8 @@ describe('PoolCreator', () => {
       tokens.MKR.weight = new BigNumber(0.6666e18);
       tokens.WETH.weight = new BigNumber(0.3333e18);
 
-      const symbol = poolCreator.calculatePoolSymbol([
-        tokens.MKR,
-        tokens.WETH,
-      ]);
+      const symbol = poolCreator.calculatePoolSymbol([tokens.MKR, tokens.WETH]);
       expect(symbol).toEqual('67MKR-33WETH');
     });
-  })
+  });
 });
