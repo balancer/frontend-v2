@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { toRefs, computed, reactive, toRef, watch, ref } from 'vue';
+import { toRefs, computed, reactive, toRef, onBeforeMount } from 'vue';
 import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
+// Types
+import { FullPool } from '@/services/balancer/subgraph/types';
+// Composables
+import useNumbers from '@/composables/useNumbers';
+import { usePool } from '@/composables/usePool';
+import useTokens from '@/composables/useTokens';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useTokens from '@/composables/useTokens';
-import { usePool } from '@/composables/usePool';
-import useNumbers from '@/composables/useNumbers';
+// Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
-import { TokenInfo } from '@gnosis.pm/safe-apps-sdk';
 
 /**
  * TYPES
@@ -39,12 +41,10 @@ const slider = reactive({
  * COMPOSABLES
  */
 const {
-  bptIn,
+  propBptIn,
   bptBalance,
   fiatTotalLabel,
   fiatAmounts,
-  fullAmounts,
-  proportionalMaxes,
   proportionalAmounts
 } = toRefs(props.math);
 
@@ -60,7 +60,7 @@ const tokens = computed(() => getTokens(props.tokenAddresses));
 
 const percentageLabel = computed(() => {
   try {
-    return bnum(bptIn.value)
+    return bnum(propBptIn.value)
       .div(bptBalance.value)
       .times(100)
       .integerValue(BigNumber.ROUND_CEIL)
@@ -80,24 +80,33 @@ const tokenWeights = computed((): number[] =>
  */
 function handleSliderChange(newVal: number): void {
   const fractionBasisPoints = (newVal / slider.max) * 10000;
-  bptIn.value = bnum(bptBalance.value)
+  propBptIn.value = bnum(bptBalance.value)
     .times(fractionBasisPoints)
     .div(10000)
     .toFixed(props.pool.onchain.decimals);
 }
+
+/**
+ * CALLBACKS
+ */
+onBeforeMount(() => {
+  propBptIn.value = bptBalance.value;
+});
 </script>
 
 <template>
   <div>
     <div class="proportional-input">
-      <div class="shadow-inner p-4 rounded-lg">
+      <div
+        class="shadow-inner p-3 pb-1 rounded-lg border border-gray-100 dark:border-gray-800"
+      >
         <div class="flex">
-          <WithdrawalTokenSelect :tokenAddresses="pool.tokenAddresses" />
+          <WithdrawalTokenSelect :pool="pool" />
           <div class="flex-grow text-right text-xl">
             {{ missingPrices ? '-' : fiatTotalLabel }}
           </div>
         </div>
-        <div class="flex">
+        <div class="flex mt-2 text-sm text-gray-500">
           <span>Proportional withdrawal</span>
           <span class="flex-grow text-right">{{ percentageLabel }}%</span>
         </div>
@@ -150,7 +159,7 @@ function handleSliderChange(newVal: number): void {
 }
 
 .token-amounts {
-  @apply rounded-lg mb-4;
+  @apply rounded-lg;
   @apply bg-gray-50 dark:bg-gray-850;
   @apply border dark:border-gray-900 divide-y;
 }

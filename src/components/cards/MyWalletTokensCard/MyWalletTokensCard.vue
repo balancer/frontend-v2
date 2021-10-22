@@ -84,7 +84,7 @@ function isSelectedNativeAsset(address: string): boolean {
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-700">
         <h6>
-          {{ $t('investment.myWalletTokensCard.title') }}
+          {{ $t('poolTransfer.myWalletTokensCard.title') }}
         </h6>
       </div>
     </template>
@@ -106,7 +106,7 @@ function isSelectedNativeAsset(address: string): boolean {
                 <BalTooltip
                   :text="
                     $t(
-                      'investment.myWalletTokensCard.tooltips.nativeAssetSelection',
+                      'poolTransfer.myWalletTokensCard.tooltips.nativeAssetSelection',
                       [nativeAsset.symbol, wrappedNativeAsset.symbol]
                     )
                   "

@@ -145,15 +145,6 @@
     "investInPool": "Invest in pool",
     "investment": {
         "label": "Investment",
-        "myPoolBalancesCard": {
-            "title": "My pool balance"
-        },
-        "myWalletTokensCard": {
-            "title": "Pool tokens in my wallet",
-            "tooltips": {
-                "nativeAssetSelection": "Select {0} or {1} to invest in this pool. Wrap or unwrap {0} to invest a larger amount and maximize your investment."
-            }
-        },
         "preview": {
             "loadingLabel": {
                 "approval": "Confirm approval in wallet",
@@ -283,6 +274,17 @@
     "poolReturns": "Pool returns",
     "poolTokenName": "Pool token name",
     "poolTransactions": "Pool transactions",
+    "poolTransfer": {
+        "myPoolBalancesCard": {
+            "title": "My pool balance"
+        },
+        "myWalletTokensCard": {
+            "title": "Pool tokens in my wallet",
+            "tooltips": {
+                "nativeAssetSelection": "Select {0} or {1} to invest in this pool. Wrap or unwrap {0} to invest a larger amount and maximize your investment."
+            }
+        }
+    },
     "poolType": "Pool type",
     "poolValue": "Pool value",
     "popularBases": "Popular:",
@@ -362,6 +364,10 @@
         "invest": {
             "priceImpact": "Price impact from adding liquidity results when  the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",
             "total": "The total value in {0} you’ll be investing into this pool."
+        },
+        "withdraw": {
+            "priceImpact": "Price impact from removing liquidity results when the value of each token added is not proportional to the weights of the pool. Removing non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get for exiting your position.",
+            "total": "The total value in {0} you’ll be withdrawing from this pool."
         }
     },
     "total": "Total",
@@ -490,7 +496,24 @@
     "weight": "Weight",
     "weightedPool": "Weighted pool",
     "whichPools": "Which liquidity pools should be used when you make a trade.",
-    "withdraw": "Withdraw",
+    "withdraw": {
+        "label": "Withdraw",
+        "tooltips": {
+            "priceImpact": "Withdrawing custom amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
+        },
+        "preview": {
+            "loadingLabel": {
+                "withdraw": "Confirm withdrawal in wallet"
+            },
+            "titles": {
+                "confirmed": "Withdrawal confirmed",
+                "default": "Withdrawal preview"
+            },
+            "tooltips": {
+                "withdrawStep": "Confirm withdrawal from this pool"
+            }
+        }
+    },
     "withdrawal": "Withdrawal",
     "withdrawFromPool": "Withdraw from pool",
     "withdrawalSettled": "Your withdrawal has settled",

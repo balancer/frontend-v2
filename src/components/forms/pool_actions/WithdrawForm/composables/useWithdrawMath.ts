@@ -1,55 +1,57 @@
-import { computed, Ref, watch, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { bnum } from '@/lib/utils';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import useNumbers, { fNum } from '@/composables/useNumbers';
-import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-import useTokens from '@/composables/useTokens';
 import { formatUnits } from '@ethersproject/units';
-import useSlippage from '@/composables/useSlippage';
-import { usePool } from '@/composables/usePool';
+// Types
+import { FullPool } from '@/services/balancer/subgraph/types';
+// Services
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+// Composables
 import useUserSettings from '@/composables/useUserSettings';
+import { usePool } from '@/composables/usePool';
+import useSlippage from '@/composables/useSlippage';
+import useTokens from '@/composables/useTokens';
+import useNumbers from '@/composables/useNumbers';
 
+/**
+ * TYPES
+ */
 export type WithdrawMathResponse = {
-  // computed
   hasAmounts: Ref<boolean>;
   fullAmounts: Ref<string[]>;
+  amountsOut: Ref<string[]>;
   fiatAmounts: Ref<string[]>;
+  tokenOutAmount: Ref<string>;
+  propBptIn: Ref<string>;
   bptIn: Ref<string>;
   bptBalance: Ref<string>;
-  fiatTotal: Ref<string>;
   fiatTotalLabel: Ref<string>;
   priceImpact: Ref<number>;
   highPriceImpact: Ref<boolean>;
-  maximized: Ref<boolean>;
-  optimized: Ref<boolean>;
   proportionalAmounts: Ref<string[]>;
-  proportionalMaxes: Ref<string[]>;
-  hasZeroBalance: Ref<boolean>;
-  hasNoBalances: Ref<boolean>;
-  maxAmounts: Ref<string[]>;
-  // methods
-  maximizeAmounts: () => void;
-  optimizeAmounts: () => void;
+  singleAssetMaxes: Ref<string[]>;
+  exactOut: Ref<boolean>;
+  singleAssetMaxOut: Ref<boolean>;
 };
 
 export default function useWithdrawMath(
   pool: Ref<FullPool>,
-  tokenAddresses: Ref<string[]>,
-  amounts: Ref<string[]>,
   useNativeAsset: Ref<boolean>,
-  isProportional: Ref<boolean>
+  isProportional: Ref<boolean>,
+  tokenOut: Ref<string>,
+  tokenOutIndex: Ref<number>
 ): WithdrawMathResponse {
   /**
    * STATE
    */
-  const bptIn = ref('');
+  const propBptIn = ref('');
+  const tokenOutAmount = ref('');
 
   /**
    * COMPOSABLES
    */
-  const { toFiat } = useNumbers();
+  const { toFiat, fNum } = useNumbers();
   const { tokens: allTokens, balances, balanceFor, getToken } = useTokens();
-  const { minusSlippage } = useSlippage();
+  const { minusSlippage, addSlippage } = useSlippage();
   const { managedPoolWithTradingHalted } = usePool(pool);
   const { currency } = useUserSettings();
 
@@ -67,25 +69,98 @@ export default function useWithdrawMath(
   /**
    * COMPUTED
    */
-  const tokenCount = computed(() => tokenAddresses.value.length);
+  const tokenCount = computed(() => pool.value.tokenAddresses.length);
 
   const tokens = computed(() =>
-    tokenAddresses.value.map(address => getToken(address))
+    pool.value.tokenAddresses.map(address => getToken(address))
   );
 
-  // Input amounts can be null so fullAmounts returns amounts for all tokens
-  // and zero if null.
-  const fullAmounts = computed((): string[] =>
-    new Array(tokenCount.value).fill('0').map((_, i) => amounts.value[i] || '0')
-  );
-
-  const fiatAmounts = computed((): string[] => {
-    if (isProportional.value)
-      return proportionalAmounts.value.map((amount, i) =>
-        fiatAmount(i, amount)
-      );
-    return fullAmounts.value.map((amount, i) => fiatAmount(i, amount));
+  const bptBalance = computed(() => {
+    return balanceFor(pool.value.address);
   });
+
+  const proportionalAmounts = computed((): string[] => {
+    const { receive } = poolCalculator.propAmountsGiven(
+      propBptIn.value,
+      0,
+      'send'
+    );
+    return receive;
+  });
+
+  const fullAmounts = computed(() => {
+    if (isProportional.value) return proportionalAmounts.value;
+    return new Array(tokenCount.value).fill('0').map((_, i) => {
+      return i === tokenOutIndex.value ? tokenOutAmount.value : '0';
+    });
+  });
+
+  const amountsOut = computed(() => {
+    return fullAmounts.value.map((amount, i) => {
+      if (amount === '0' || exactOut.value) return amount;
+      return minusSlippage(amount, tokens.value[i].decimals);
+    });
+  });
+
+  const bptIn = computed(() => {
+    if (isProportional.value) return propBptIn.value;
+    if (!exactOut.value) return bptBalance.value; // Single asset max withdrawal
+
+    // Else single asset exact amount case
+    let _bptIn = poolCalculator
+      .bptInForExactTokenOut(tokenOutAmount.value, tokenOutIndex.value)
+      .toString();
+
+    _bptIn = formatUnits(_bptIn, pool.value.onchain.decimals);
+
+    return addSlippage(_bptIn, pool.value.onchain.decimals);
+  });
+
+  const hasAmounts = computed(() => bnum(fiatTotal.value).gt(0));
+
+  const singleAssetMaxes = computed((): string[] => {
+    return tokens.value.map((token, tokenIndex) => {
+      return formatUnits(
+        poolCalculator
+          .exactBPTInForTokenOut(bptBalance.value, tokenIndex)
+          .toString(),
+        token.decimals
+      );
+    });
+  });
+
+  const singleAssetMaxed = computed(() => {
+    return (
+      singleAssetMaxes.value[tokenOutIndex.value] ===
+      fullAmounts.value[tokenOutIndex.value]
+    );
+  });
+
+  const exactOut = computed(() => {
+    return !isProportional.value && !singleAssetMaxed.value;
+  });
+
+  const singleAssetMaxOut = computed(
+    () => !isProportional.value && singleAssetMaxed.value
+  );
+
+  const priceImpact = computed((): number => {
+    if (!hasAmounts.value || isProportional.value) return 0;
+    return poolCalculator
+      .priceImpact(fullAmounts.value, {
+        exactOut: exactOut.value,
+        tokenIndex: tokenOutIndex.value
+      })
+      .toNumber();
+  });
+
+  const highPriceImpact = computed(() =>
+    bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01)
+  );
+
+  const fiatAmounts = computed((): string[] =>
+    fullAmounts.value.map((amount, i) => fiatAmount(i, amount))
+  );
 
   const fiatTotal = computed((): string =>
     fiatAmounts.value.reduce(
@@ -101,123 +176,29 @@ export default function useWithdrawMath(
     fNum(fiatTotal.value, currency.value)
   );
 
-  const hasAmounts = computed(() => bnum(fiatTotal.value).gt(0));
-
-  const priceImpact = computed((): number => {
-    if (!hasAmounts.value) return 0;
-    return poolCalculator.priceImpact(fullAmounts.value).toNumber() || 0;
-  });
-
-  const highPriceImpact = computed(() =>
-    bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01)
-  );
-
-  const bptBalance = computed(() => {
-    return balanceFor(pool.value.address);
-  });
-
-  const singleAssetMaxes = computed((): string[] => {
-    return tokens.value.map((token, tokenIndex) => {
-      return formatUnits(
-        poolCalculator
-          .exactBPTInForTokenOut(bptBalance.value, tokenIndex)
-          .toString(),
-        token.decimals
-      );
-    });
-  });
-
-  const proportionalAmounts = computed((): string[] => {
-    const { receive } = poolCalculator.propAmountsGiven(bptIn.value, 0, 'send');
-    return receive;
-  });
-
-  const proportionalMaxes = computed((): string[] => {
-    const { receive } = poolCalculator.propAmountsGiven(
-      bptBalance.value,
-      0,
-      'send'
-    );
-    return receive;
-  });
-
-  const maxAmounts = computed((): string[] => {
-    if (isProportional.value) return proportionalMaxes.value;
-    return singleAssetMaxes.value;
-  });
-
-  const maximized = computed(() =>
-    fullAmounts.value.every((amount, i) => amount === maxAmounts.value[i])
-  );
-
-  const optimized = computed(() => {
-    const { send } = poolCalculator.propMax();
-    return fullAmounts.value.every((amount, i) => amount === send[i]);
-  });
-
-  const poolTokenBalances = computed((): string[] =>
-    tokenAddresses.value.map((_, i) => maxAmounts.value[i])
-  );
-
-  const hasZeroBalance = computed((): boolean =>
-    poolTokenBalances.value.map(balance => bnum(balance).eq(0)).includes(true)
-  );
-
-  const hasNoBalances = computed((): boolean =>
-    poolTokenBalances.value.every(balance => bnum(balance).eq(0))
-  );
-
   /**
    * METHODS
    */
-  function tokenAmount(index: number): string {
-    return fullAmounts.value[index] || '0';
-  }
-
   function fiatAmount(index: number, amount: string): string {
     return toFiat(amount, pool.value.tokenAddresses[index]);
   }
-
-  function maximizeAmounts(): void {
-    fullAmounts.value.forEach((_, i) => {
-      amounts.value[i] = maxAmounts.value[i];
-    });
-  }
-
-  function optimizeAmounts(): void {
-    const { send } = poolCalculator.propMax();
-    amounts.value = [...send];
-  }
-
-  watch(fullAmounts, (newAmounts, oldAmounts) => {
-    const changedIndex = newAmounts.findIndex(
-      (amount, i) => oldAmounts[i] !== amount
-    );
-    if (changedIndex >= 0) {
-      // Do something
-    }
-  });
 
   return {
     // computed
     hasAmounts,
     fullAmounts,
+    amountsOut,
     fiatAmounts,
+    tokenOutAmount,
+    propBptIn,
     bptIn,
     bptBalance,
-    fiatTotal,
     fiatTotalLabel,
     priceImpact,
     highPriceImpact,
-    maximized,
-    optimized,
     proportionalAmounts,
-    proportionalMaxes,
-    hasZeroBalance,
-    hasNoBalances,
-    maxAmounts,
-    // methods
-    maximizeAmounts,
-    optimizeAmounts
+    singleAssetMaxes,
+    exactOut,
+    singleAssetMaxOut
   };
 }

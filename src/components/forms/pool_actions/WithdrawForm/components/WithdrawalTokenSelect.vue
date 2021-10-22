@@ -1,51 +1,114 @@
 <script setup lang="ts">
+import { computed, ref, toRef } from 'vue';
+// Types
+import { FullPool } from '@/services/balancer/subgraph/types';
+import { TokenInfo } from '@/types/TokenList';
+// Composables
 import useTokens from '@/composables/useTokens';
-import { computed, ref } from 'vue';
+import useWithdrawalState from '../composables/useWithdrawalState';
 
 /**
  * TYPES
  */
 type Props = {
-  tokenAddresses: string[];
+  pool: FullPool;
+  initToken?: string;
 };
 
 /**
  * Props
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  initToken: 'all'
+});
 
 /**
  * STATE
  */
-const selectedOption = ref('all');
+const selectedOption = ref(props.initToken);
 
 /**
  * COMPOSABLES
  */
-const { getTokens } = useTokens();
+const { getTokens, getToken } = useTokens();
+const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
 
 /**
  * COMPUTED
  */
-const tokens = computed(() => getTokens(props.tokenAddresses));
+const tokens = computed(() => getTokens(props.pool.tokenAddresses));
 
-const options = computed(() => ['all', ...Object.values(tokens.value)]);
+const options = computed(() => ['all', ...props.pool.tokenAddresses]);
+
+const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
+
+/**
+ * METHODS
+ */
+function handleSelected(newToken: string): void {
+  if (newToken === 'all') {
+    isProportional.value = true;
+    selectedOption.value = 'all';
+  } else {
+    isProportional.value = false;
+    selectedOption.value = newToken;
+    tokenOut.value = newToken;
+  }
+}
 </script>
 
 <template>
-  <BalDropdown :options="options">
+  <BalDropdown :options="options" @selected="handleSelected">
     <template #activator>
-      <div class="w-24 h-8 bg-gray-500"></div>
+      <div class="token-select-input selected group selectable">
+        <div>
+          <BalAssetSet
+            v-if="isProportional"
+            :addresses="pool.tokenAddresses"
+            :width="50"
+          />
+          <BalAsset
+            v-else
+            :address="selectedToken.address"
+            class="shadow mr-2"
+          />
+        </div>
+        <span class="text-base font-medium">
+          <span v-if="isProportional">All tokens</span>
+          <span v-else>{{ selectedToken.symbol }}</span>
+        </span>
+        <BalIcon
+          name="chevron-down"
+          size="sm"
+          class="text-blue-500 group-hover:text-pink-500 ml-2"
+        />
+      </div>
     </template>
     <template #option="{ option }">
       <div v-if="option === 'all'" class="flex items-center">
-        <BalAssetSet :addresses="tokenAddresses" :width="70" />
+        <BalAssetSet :addresses="pool.tokenAddresses" :width="70" />
         All tokens
       </div>
       <div v-else class="flex items-center justify-between">
-        <BalAsset :address="option.address" class="mr-2" />
-        {{ option.symbol }}
+        <BalAsset :address="option" class="mr-2" />
+        {{ tokens[option]?.symbol }}
       </div>
     </template>
   </BalDropdown>
 </template>
+
+<style scoped>
+.token-select-input {
+  @apply shadow rounded-lg flex items-center h-10 px-2 whitespace-nowrap;
+  @apply text-sm;
+  font-variation-settings: 'wght' 700;
+}
+
+.selectable {
+  @apply cursor-pointer hover:shadow-none transition-shadow;
+}
+
+.selected {
+  @apply bg-gray-50 dark:bg-gray-700 text-black dark:text-white;
+}
+</style>

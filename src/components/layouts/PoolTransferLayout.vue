@@ -46,11 +46,11 @@ const { pool, poolLoaded, useNativeAsset } = usePoolTransfers();
           class="mb-4"
           :sections="[
             {
-              title: $t('investment.myWalletTokensCard.title'),
+              title: $t('poolTransfer.myWalletTokensCard.title'),
               id: 'myWalletTokens'
             },
             {
-              title: $t('investment.myPoolBalancesCard.title'),
+              title: $t('poolTransfer.myPoolBalancesCard.title'),
               id: 'myPoolBalances'
             }
           ]"

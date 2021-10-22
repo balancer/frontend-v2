@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import { computed, toRefs, ref } from 'vue';
-import useTokens from '@/composables/useTokens';
+import { bnum } from '@/lib/utils';
+// Types
+import { WithdrawMathResponse } from '../../composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfoMap } from '@/types/TokenList';
-import { bnum } from '@/lib/utils';
+// Composables
 import useNumbers from '@/composables/useNumbers';
-import InvestSummary from './components/InvestSummary.vue';
-import TokenAmounts from './components/TokenAmounts.vue';
-import InvestActions from './components/InvestActions.vue';
-import { InvestMath } from '../../composables/useInvestFormMath';
 import { useI18n } from 'vue-i18n';
+import useTokens from '@/composables/useTokens';
+// Components
+import WithdrawSummary from './components/WithdrawSummary.vue';
+import TokenAmounts from './components/TokenAmounts.vue';
+import WithdrawActions from './components/WithdrawActions.vue';
 
 /**
  * TYPES
  */
 type Props = {
   pool: FullPool;
-  investMath: InvestMath;
-  tokenAddresses: string[];
+  math: WithdrawMathResponse;
 };
 
 type AmountMap = {
@@ -36,7 +38,7 @@ const emit = defineEmits<{
 /**
  * STATE
  */
-const investmentConfirmed = ref(false);
+const withdrawalConfirmed = ref(false);
 
 /**
  * COMPOSABLES
@@ -44,22 +46,22 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact } = toRefs(props.investMath);
+const { fullAmounts, priceImpact } = toRefs(props.math);
 
 /**
  * COMPUTED
  */
 const title = computed((): string =>
-  investmentConfirmed.value
-    ? t('investment.preview.titles.confirmed')
-    : t('investment.preview.titles.default')
+  withdrawalConfirmed.value
+    ? t('withdraw.preview.titles.confirmed')
+    : t('withdraw.preview.titles.default')
 );
 
 const amountMap = computed(
   (): AmountMap => {
     const amountMap = {};
     fullAmounts.value.forEach((amount, i) => {
-      if (hasAmount(i)) amountMap[props.tokenAddresses[i]] = amount;
+      if (hasAmount(i)) amountMap[props.pool.tokenAddresses[i]] = amount;
     });
     return amountMap;
   }
@@ -104,11 +106,11 @@ function hasAmount(index: number): boolean {
 </script>
 
 <template>
-  <BalModal show :fireworks="investmentConfirmed" @close="emit('close')">
+  <BalModal show :fireworks="withdrawalConfirmed" @close="emit('close')">
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle
-          v-if="investmentConfirmed"
+          v-if="withdrawalConfirmed"
           size="8"
           color="green"
           class="text-white mr-2"
@@ -128,18 +130,17 @@ function hasAmount(index: number): boolean {
       :fiatTotal="fiatTotal"
     />
 
-    <InvestSummary
+    <WithdrawSummary
       :pool="pool"
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
     />
 
-    <InvestActions
+    <WithdrawActions
       :pool="pool"
-      :investMath="investMath"
-      :tokenAddresses="tokenAddresses"
+      :math="math"
       class="mt-4"
-      @success="investmentConfirmed = true"
+      @success="withdrawalConfirmed = true"
     />
   </BalModal>
 </template>

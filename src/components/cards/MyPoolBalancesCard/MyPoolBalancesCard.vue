@@ -74,7 +74,7 @@ const fiatTotal = computed(() => {
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-700">
         <h6>
-          {{ $t('investment.myPoolBalancesCard.title') }}
+          {{ $t('poolTransfer.myPoolBalancesCard.title') }}
         </h6>
       </div>
     </template>

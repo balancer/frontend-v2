@@ -177,18 +177,20 @@ watchEffect(() => {
     @update:isValid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
-    <template v-slot:prepend>
-      <TokenSelectInput
-        v-model="_address"
-        :weight="weight"
-        :fixed="fixedToken"
-        :options="options"
-        class="mr-2"
-        @update:modelValue="emit('update:address', $event)"
-        :excludedTokens="excludedTokens"
-      />
+    <template #prepend>
+      <slot name="tokenSelect">
+        <TokenSelectInput
+          v-model="_address"
+          :weight="weight"
+          :fixed="fixedToken"
+          :options="options"
+          class="mr-2"
+          @update:modelValue="emit('update:address', $event)"
+          :excludedTokens="excludedTokens"
+        />
+      </slot>
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <div
         v-if="isWalletReady || (hasAmount && hasToken)"
         class="flex flex-col pt-1"
