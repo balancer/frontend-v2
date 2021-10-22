@@ -47,7 +47,7 @@ const unallocatedTokenWeight = computed(() =>
           v-for="(token, i) in allocatedTokenWeights"
           :key="token.tokenAddress"
         >
-          <div class="col-span-5 text-left">
+          <div class="col-span-5 text-left  font-medium">
             <div class="flex flex-row items-center">
               <div
                 class="rounded-full w-1.5 h-1.5 mr-2"
@@ -60,18 +60,24 @@ const unallocatedTokenWeight = computed(() =>
           <div class="col-span-4 text-right">
             0
           </div>
-          <div class="col-span-3 text-right">
-            {{ token.weight }}
+          <div class="col-span-3 text-right  font-medium">
+            {{ token.weight }}%
           </div>
         </template>
-        <div class="col-span-5 text-left" v-if="unallocatedTokenWeight > 0">
+        <div
+          class="col-span-5 text-left font-medium"
+          v-if="unallocatedTokenWeight > 0"
+        >
           Unallocated
         </div>
         <div class="col-span-4 text-right" v-if="unallocatedTokenWeight > 0">
-          0
+          -
         </div>
-        <div class="col-span-3 text-right" v-if="unallocatedTokenWeight > 0">
-          {{ unallocatedTokenWeight }}
+        <div
+          class="col-span-3 text-right font-medium"
+          v-if="unallocatedTokenWeight > 0"
+        >
+          {{ unallocatedTokenWeight }}%
         </div>
       </div>
     </div>
