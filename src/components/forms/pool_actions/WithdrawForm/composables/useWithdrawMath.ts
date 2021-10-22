@@ -1,4 +1,4 @@
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 // Types
@@ -182,6 +182,8 @@ export default function useWithdrawMath(
   function fiatAmount(index: number, amount: string): string {
     return toFiat(amount, pool.value.tokenAddresses[index]);
   }
+
+  watch(tokenOut, () => (tokenOutAmount.value = ''));
 
   return {
     // computed
