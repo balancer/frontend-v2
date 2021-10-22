@@ -105,7 +105,9 @@ onBeforeMount(() => {
           </div>
         </div>
         <div class="flex mt-2 text-sm text-gray-500">
-          <span>Proportional withdrawal</span>
+          <span>
+            {{ $t('proportionalWithdrawal') }}
+          </span>
           <span class="flex-grow text-right">{{ percentageLabel }}%</span>
         </div>
         <BalRangeInput
