@@ -63,7 +63,8 @@ const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
     .map(address => {
       if (pageContext.value === 'invest') {
-        if (address === nativeAsset.address && !props.useNativeAsset) return '0';
+        if (address === nativeAsset.address && !props.useNativeAsset)
+          return '0';
         if (
           address === wrappedNativeAsset.value.address &&
           props.useNativeAsset
