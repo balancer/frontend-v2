@@ -59,10 +59,13 @@ function handleRowClick(option: any): void {
 
 <style>
 .bal-dropdown {
-  @apply absolute bg-white shadow border rounded-lg z-10 divide-y;
+  @apply absolute shadow rounded-lg z-10;
+  @apply bg-white dark:bg-gray-800;
+  @apply border dark:border-gray-900 divide-y dark:divide-gray-900;
 }
 
 .bal-dropdown-row {
-  @apply p-3 whitespace-nowrap hover:bg-gray-50 cursor-pointer;
+  @apply p-3 whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-850 cursor-pointer;
+  @apply first:rounded-t-lg last:rounded-b-lg;
 }
 </style>

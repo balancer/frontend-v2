@@ -155,7 +155,7 @@ onBeforeMount(() => {
 
 <style scoped>
 .proportional-input {
-  @apply shadow-lg rounded-lg mb-4 w-full;
+  @apply shadow-lg rounded-lg mb-4 w-full dark:bg-gray-800;
 }
 
 .proportional-input-container {
@@ -165,7 +165,7 @@ onBeforeMount(() => {
 
 .token-amounts {
   @apply rounded-lg;
-  @apply bg-gray-50 dark:bg-gray-850;
-  @apply border dark:border-gray-900 divide-y;
+  @apply bg-gray-50 dark:bg-gray-800;
+  @apply border dark:border-gray-900 divide-y dark:divide-gray-900;
 }
 </style>
