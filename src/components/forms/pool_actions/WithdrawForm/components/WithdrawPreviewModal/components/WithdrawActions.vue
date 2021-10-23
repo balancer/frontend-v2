@@ -75,7 +75,7 @@ const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 
-const { tokenOutIndex } = useWithdrawalState(toRef(props, 'pool'));
+const { tokenOutIndex, tokensOut } = useWithdrawalState(toRef(props, 'pool'));
 
 const {
   bptIn,
@@ -171,6 +171,7 @@ async function submit(): Promise<void> {
       getProvider(),
       account.value,
       amountsOut.value,
+      tokensOut.value,
       bptIn.value,
       singleAssetMaxOut.value ? tokenOutIndex.value : null,
       exactOut.value

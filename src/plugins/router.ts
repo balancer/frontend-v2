@@ -46,14 +46,14 @@ if (
 ) {
   routes.push({
     path: '/pool/:id/invest',
-    name: 'poolInvest',
+    name: 'invest',
     component: PoolInvestPage,
     meta: { layout: 'PoolTransferLayout' }
   });
 
   routes.push({
     path: '/pool/:id/withdraw',
-    name: 'poolWithdraw',
+    name: 'withdraw',
     component: PoolWithdrawPage,
     meta: { layout: 'PoolTransferLayout' }
   });

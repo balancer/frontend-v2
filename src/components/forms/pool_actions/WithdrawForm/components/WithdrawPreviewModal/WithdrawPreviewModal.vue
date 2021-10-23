@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRefs, ref } from 'vue';
+import { computed, toRefs, ref, toRef } from 'vue';
 import { bnum } from '@/lib/utils';
 // Types
 import { WithdrawMathResponse } from '../../composables/useWithdrawMath';
@@ -13,6 +13,7 @@ import useTokens from '@/composables/useTokens';
 import WithdrawSummary from './components/WithdrawSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
 import WithdrawActions from './components/WithdrawActions.vue';
+import useWithdrawalState from '../../composables/useWithdrawalState';
 
 /**
  * TYPES
@@ -47,6 +48,7 @@ const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
 const { fullAmounts, priceImpact } = toRefs(props.math);
+const { tokensOut } = useWithdrawalState(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -61,7 +63,7 @@ const amountMap = computed(
   (): AmountMap => {
     const amountMap = {};
     fullAmounts.value.forEach((amount, i) => {
-      if (hasAmount(i)) amountMap[props.pool.tokenAddresses[i]] = amount;
+      if (hasAmount(i)) amountMap[tokensOut.value[i]] = amount;
     });
     return amountMap;
   }

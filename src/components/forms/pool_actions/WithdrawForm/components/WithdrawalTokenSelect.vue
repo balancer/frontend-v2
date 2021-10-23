@@ -6,6 +6,7 @@ import { TokenInfo } from '@/types/TokenList';
 // Composables
 import useTokens from '@/composables/useTokens';
 import useWithdrawalState from '../composables/useWithdrawalState';
+import { usePool } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -30,15 +31,22 @@ const selectedOption = ref(props.initToken);
 /**
  * COMPOSABLES
  */
-const { getTokens, getToken } = useTokens();
+const { getTokens, getToken, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
+const { isWethPool } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
  */
-const tokens = computed(() => getTokens(props.pool.tokenAddresses));
+const tokenAddresses = computed(() => {
+  if (isWethPool.value)
+    return [nativeAsset.address, ...props.pool.tokenAddresses];
+  return props.pool.tokenAddresses;
+});
 
-const options = computed(() => ['all', ...props.pool.tokenAddresses]);
+const tokens = computed(() => getTokens(tokenAddresses.value));
+
+const options = computed(() => ['all', ...tokenAddresses.value]);
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 
