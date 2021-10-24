@@ -226,6 +226,7 @@ export default function useWithdrawMath(
     exactOut,
     singleAssetMaxOut,
     tokenOutPoolBalance,
+    // methods
     resetMath
   };
 }
