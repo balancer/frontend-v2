@@ -96,8 +96,9 @@ const singleAssetRules = computed(() => [
       v-model:isValid="validInput"
       :customBalance="singleAssetMaxes[tokenOutIndex]"
       :rules="singleAssetRules"
-      balanceLabel="Single asset max"
+      :balanceLabel="$t('singleTokenMax')"
       fixedToken
+      disableEthBuffer
     >
       <template #tokenSelect>
         <WithdrawalTokenSelect :pool="pool" :initToken="tokenOut" />

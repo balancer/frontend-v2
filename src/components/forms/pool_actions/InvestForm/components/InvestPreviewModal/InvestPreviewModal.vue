@@ -8,7 +8,7 @@ import useNumbers from '@/composables/useNumbers';
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
 import InvestActions from './components/InvestActions.vue';
-import { InvestMath } from '../../composables/useInvestMath';
+import { InvestMathResponse } from '../../composables/useInvestMath';
 import { useI18n } from 'vue-i18n';
 
 /**
@@ -16,7 +16,7 @@ import { useI18n } from 'vue-i18n';
  */
 type Props = {
   pool: FullPool;
-  investMath: InvestMath;
+  math: InvestMathResponse;
   tokenAddresses: string[];
 };
 
@@ -44,7 +44,7 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact } = toRefs(props.investMath);
+const { fullAmounts, priceImpact } = toRefs(props.math);
 
 /**
  * COMPUTED
@@ -136,7 +136,7 @@ function hasAmount(index: number): boolean {
 
     <InvestActions
       :pool="pool"
-      :investMath="investMath"
+      :math="math"
       :tokenAddresses="tokenAddresses"
       class="mt-4"
       @success="investmentConfirmed = true"

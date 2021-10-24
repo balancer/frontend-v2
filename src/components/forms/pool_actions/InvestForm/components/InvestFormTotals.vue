@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import useNumbers from '@/composables/useNumbers';
-import { InvestMath } from '../composables/useInvestMath';
+import { InvestMathResponse } from '../composables/useInvestMath';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
  */
 type Props = {
-  investMath: InvestMath;
+  math: InvestMathResponse;
 };
 
 /**
@@ -34,7 +34,7 @@ const {
   highPriceImpact,
   maximized,
   optimized
-} = toRefs(props.investMath);
+} = toRefs(props.math);
 
 /**
  * COMPUTED

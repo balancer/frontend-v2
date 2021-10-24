@@ -237,7 +237,7 @@ watch(
     />
 
     <InvestFormTotals
-      :investMath="investMath"
+      :math="investMath"
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
@@ -275,7 +275,7 @@ watch(
       <InvestPreviewModal
         v-if="showInvestPreview"
         :pool="pool"
-        :investMath="investMath"
+        :math="investMath"
         :tokenAddresses="state.tokenAddresses"
         @close="showInvestPreview = false"
       />

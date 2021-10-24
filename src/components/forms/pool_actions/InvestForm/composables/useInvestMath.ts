@@ -9,7 +9,7 @@ import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
 
-export type InvestMath = {
+export type InvestMathResponse = {
   // computed
   hasAmounts: Ref<boolean>;
   fullAmounts: Ref<string[]>;
@@ -33,7 +33,7 @@ export default function useInvestFormMath(
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
   useNativeAsset: Ref<boolean>
-): InvestMath {
+): InvestMathResponse {
   /**
    * STATE
    */
