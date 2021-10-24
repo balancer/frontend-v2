@@ -37,7 +37,6 @@ export type WithdrawMathResponse = {
 
 export default function useWithdrawMath(
   pool: Ref<FullPool>,
-  useNativeAsset: Ref<boolean>,
   isProportional: Ref<boolean>,
   tokenOut: Ref<string>,
   tokenOutIndex: Ref<number>
@@ -59,13 +58,7 @@ export default function useWithdrawMath(
   /**
    * Services
    */
-  const poolCalculator = new PoolCalculator(
-    pool,
-    allTokens,
-    balances,
-    'exit',
-    useNativeAsset
-  );
+  const poolCalculator = new PoolCalculator(pool, allTokens, balances, 'exit');
 
   /**
    * COMPUTED

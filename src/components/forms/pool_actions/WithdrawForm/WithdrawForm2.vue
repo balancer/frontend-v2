@@ -19,7 +19,6 @@ import WithdrawalTokenSelect from './components/WithdrawalTokenSelect.vue';
  */
 type Props = {
   pool: FullPool;
-  useNativeAsset: boolean;
 };
 
 /**
@@ -44,7 +43,6 @@ const {
 
 const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
-  toRef(props, 'useNativeAsset'),
   isProportional,
   tokenOut,
   tokenOutIndex

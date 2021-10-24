@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
+// Composables
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Components
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm2.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 /**
  * TYPES
@@ -24,7 +25,7 @@ defineProps<Props>();
  * STATE
  */
 const { network } = configService;
-const { useNativeAsset, poolLoaded } = usePoolTransfers();
+const { poolLoaded } = usePoolTransfers();
 </script>
 
 <template>
@@ -42,7 +43,7 @@ const { useNativeAsset, poolLoaded } = usePoolTransfers();
           </div>
         </div>
       </template>
-      <WithdrawForm :pool="pool" v-model:useNativeAsset="useNativeAsset" />
+      <WithdrawForm :pool="pool" />
     </BalCard>
   </div>
 </template>
