@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, computed, ref } from 'vue';
+import { toRef, computed, ref, onBeforeMount } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 // Composables
@@ -78,6 +78,13 @@ const hasValidInputs = computed(
 const singleAssetRules = computed(() => [
   isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance'))
 ]);
+
+/**
+ * CALLBACKS
+ */
+onBeforeMount(() => {
+  isProportional.value = true;
+});
 </script>
 
 <template>
