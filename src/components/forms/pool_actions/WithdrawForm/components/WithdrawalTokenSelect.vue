@@ -97,13 +97,30 @@ function handleSelected(newToken: string): void {
       </div>
     </template>
     <template #option="{ option }">
-      <div v-if="option === 'all'" class="flex items-center">
-        <BalAssetSet :addresses="pool.tokenAddresses" :width="assetSetWidth" />
-        All tokens
+      <div v-if="option === 'all'" class="flex items-center justify-between">
+        <div class="flex items-center">
+          <BalAssetSet
+            :addresses="pool.tokenAddresses"
+            :width="assetSetWidth"
+          />
+          {{ $t('allTokens') }}
+        </div>
+        <BalIcon
+          v-if="selectedOption === option"
+          name="check"
+          class="text-blue-500 ml-2"
+        />
       </div>
-      <div v-else class="flex items-center">
-        <BalAsset :address="option" class="mr-2" />
-        {{ tokens[option]?.symbol }}
+      <div v-else class="flex items-center justify-between">
+        <div class="flex items-center">
+          <BalAsset :address="option" class="mr-2" />
+          {{ tokens[option]?.symbol }}
+        </div>
+        <BalIcon
+          v-if="selectedOption === option"
+          name="check"
+          class="text-blue-500 ml-2"
+        />
       </div>
     </template>
   </BalDropdown>
