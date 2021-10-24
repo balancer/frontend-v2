@@ -66,14 +66,14 @@ const priceImpactClasses = computed(() => ({
 }
 
 .data-table-row {
-  @apply grid grid-cols-4;
+  @apply flex;
   @apply rounded-lg;
   @apply divide-x dark:divide-gray-900 border dark:border-gray-900;
   @apply dark:bg-gray-800;
 }
 
 .data-table-number-col {
-  @apply col-span-3 p-2 flex items-center justify-between;
+  @apply p-2 flex flex-grow items-center justify-between;
 }
 
 .total-row {
