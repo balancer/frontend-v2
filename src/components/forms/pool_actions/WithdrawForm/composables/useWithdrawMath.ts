@@ -32,6 +32,7 @@ export type WithdrawMathResponse = {
   exactOut: Ref<boolean>;
   singleAssetMaxOut: Ref<boolean>;
   tokenOutPoolBalance: Ref<string>;
+  resetMath: () => void;
 };
 
 export default function useWithdrawMath(
@@ -194,6 +195,14 @@ export default function useWithdrawMath(
   );
 
   /**
+   * METHODS
+   */
+  function resetMath(): void {
+    propBptIn.value = bptBalance.value;
+    tokenOutAmount.value = '';
+  }
+
+  /**
    * WATCHERS
    */
   watch(tokenOut, () => (tokenOutAmount.value = ''));
@@ -216,6 +225,7 @@ export default function useWithdrawMath(
     singleAssetMaxes,
     exactOut,
     singleAssetMaxOut,
-    tokenOutPoolBalance
+    tokenOutPoolBalance,
+    resetMath
   };
 }

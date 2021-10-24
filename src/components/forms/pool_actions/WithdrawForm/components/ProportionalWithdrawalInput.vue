@@ -11,6 +11,7 @@ import useTokens from '@/composables/useTokens';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import useWeb3 from '@/services/web3/useWeb3';
+import useWithdrawalState from '../composables/useWithdrawalState';
 // Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
 
@@ -29,16 +30,6 @@ type Props = {
 const props = defineProps<Props>();
 
 /**
- * STATE
- */
-const slider = reactive({
-  val: 1000,
-  max: 1000,
-  min: 0,
-  interval: 1
-});
-
-/**
  * COMPOSABLES
  */
 const {
@@ -49,6 +40,8 @@ const {
   fiatAmounts,
   proportionalAmounts
 } = toRefs(props.math);
+
+const { slider } = useWithdrawalState(toRef(props, 'pool'));
 
 const { isWalletReady } = useWeb3();
 const { missingPrices } = usePoolTransfers();
@@ -84,7 +77,7 @@ const tokenWeights = computed((): number[] =>
  * METHODS
  */
 function handleSliderChange(newVal: number): void {
-  const fractionBasisPoints = (newVal / slider.max) * 10000;
+  const fractionBasisPoints = (newVal / slider.value.max) * 10000;
   propBptIn.value = bnum(bptBalance.value)
     .times(fractionBasisPoints)
     .div(10000)

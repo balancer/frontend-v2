@@ -47,8 +47,8 @@ const withdrawalConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact } = toRefs(props.math);
-const { tokensOut } = useWithdrawalState(toRef(props, 'pool'));
+const { fullAmounts, priceImpact, resetMath } = toRefs(props.math);
+const { tokensOut, maxSlider } = useWithdrawalState(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -105,10 +105,18 @@ const fiatTotal = computed((): string =>
 function hasAmount(index: number): boolean {
   return bnum(fullAmounts.value[index]).gt(0);
 }
+
+function handleClose(): void {
+  if (withdrawalConfirmed.value) {
+    resetMath.value();
+    maxSlider();
+  }
+  emit('close');
+}
 </script>
 
 <template>
-  <BalModal show :fireworks="withdrawalConfirmed" @close="emit('close')">
+  <BalModal show :fireworks="withdrawalConfirmed" @close="handleClose">
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle

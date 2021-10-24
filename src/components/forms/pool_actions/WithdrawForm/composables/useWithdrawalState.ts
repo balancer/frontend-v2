@@ -10,7 +10,13 @@ const state = reactive({
   tokenOut: '',
   validInput: true,
   highPriceImpactAccepted: false,
-  submitting: false
+  submitting: false,
+  slider: {
+    val: 1000,
+    max: 1000,
+    min: 0,
+    interval: 1
+  }
 });
 
 export default function useWithdrawalState(pool: Ref<FullPool>) {
@@ -39,9 +45,18 @@ export default function useWithdrawalState(pool: Ref<FullPool>) {
     return tokensOut.value.indexOf(state.tokenOut);
   });
 
+  /**
+   * METHODS
+   */
+  function maxSlider(): void {
+    state.slider.val = state.slider.max;
+  }
+
   return {
     ...toRefs(state),
     tokensOut,
-    tokenOutIndex
+    tokenOutIndex,
+    // methods
+    maxSlider
   };
 }
