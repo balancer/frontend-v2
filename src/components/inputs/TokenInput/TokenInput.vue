@@ -105,8 +105,8 @@ const inputRules = computed(() => {
   if (!hasToken.value || !isWalletReady.value || props.noRules)
     return [isPositive()];
   return [
-    isPositive(),
     ...props.rules,
+    isPositive(),
     isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance'))
   ];
 });
