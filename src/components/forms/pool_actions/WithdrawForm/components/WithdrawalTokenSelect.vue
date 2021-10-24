@@ -50,6 +50,10 @@ const options = computed(() => ['all', ...tokenAddresses.value]);
 
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 
+const assetSetWidth = computed(
+  () => 40 + (props.pool.tokenAddresses.length - 2) * 10
+);
+
 /**
  * METHODS
  */
@@ -94,10 +98,10 @@ function handleSelected(newToken: string): void {
     </template>
     <template #option="{ option }">
       <div v-if="option === 'all'" class="flex items-center">
-        <BalAssetSet :addresses="pool.tokenAddresses" :width="70" />
+        <BalAssetSet :addresses="pool.tokenAddresses" :width="assetSetWidth" />
         All tokens
       </div>
-      <div v-else class="flex items-center justify-between">
+      <div v-else class="flex items-center">
         <BalAsset :address="option" class="mr-2" />
         {{ tokens[option]?.symbol }}
       </div>
