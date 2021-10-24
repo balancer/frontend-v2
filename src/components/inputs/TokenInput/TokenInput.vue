@@ -105,7 +105,7 @@ const inputRules = computed(() => {
   return [
     isPositive(),
     ...props.rules,
-    isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance')),
+    isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance'))
   ];
 });
 
