@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs, computed, reactive, toRef, onBeforeMount } from 'vue';
+import { toRefs, computed, reactive, toRef, onBeforeMount, watch } from 'vue';
 import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 // Types
@@ -10,6 +10,7 @@ import { usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
+import useWeb3 from '@/services/web3/useWeb3';
 // Components
 import WithdrawalTokenSelect from './WithdrawalTokenSelect.vue';
 
@@ -43,11 +44,13 @@ const slider = reactive({
 const {
   propBptIn,
   bptBalance,
+  hasBpt,
   fiatTotalLabel,
   fiatAmounts,
   proportionalAmounts
 } = toRefs(props.math);
 
+const { isWalletReady } = useWeb3();
 const { missingPrices } = usePoolTransfers();
 const { getTokens } = useTokens();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
@@ -60,6 +63,8 @@ const tokens = computed(() => getTokens(props.tokenAddresses));
 
 const percentageLabel = computed(() => {
   try {
+    if (!hasBpt.value) return '100';
+
     return bnum(propBptIn.value)
       .div(bptBalance.value)
       .times(100)
@@ -85,6 +90,13 @@ function handleSliderChange(newVal: number): void {
     .div(10000)
     .toFixed(props.pool.onchain.decimals);
 }
+
+/**
+ * WATCHERS
+ */
+watch(isWalletReady, () => {
+  propBptIn.value = bptBalance.value;
+});
 
 /**
  * CALLBACKS
@@ -116,6 +128,7 @@ onBeforeMount(() => {
           :interval="slider.interval"
           :min="slider.min"
           tooltip="none"
+          :disabled="!hasBpt"
           @update:modelValue="handleSliderChange"
         />
       </div>

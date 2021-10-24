@@ -23,6 +23,7 @@ export type WithdrawMathResponse = {
   propBptIn: Ref<string>;
   bptIn: Ref<string>;
   bptBalance: Ref<string>;
+  hasBpt: Ref<boolean>;
   fiatTotalLabel: Ref<string>;
   priceImpact: Ref<number>;
   highPriceImpact: Ref<boolean>;
@@ -76,6 +77,8 @@ export default function useWithdrawMath(
   const bptBalance = computed(() => {
     return balanceFor(pool.value.address);
   });
+
+  const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
   const proportionalAmounts = computed((): string[] => {
     const { receive } = poolCalculator.propAmountsGiven(
@@ -191,6 +194,7 @@ export default function useWithdrawMath(
     propBptIn,
     bptIn,
     bptBalance,
+    hasBpt,
     fiatTotalLabel,
     priceImpact,
     highPriceImpact,
