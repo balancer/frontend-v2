@@ -34,6 +34,7 @@ type Props = {
   excludedTokens?: string[];
   options?: string[];
   rules?: Rules;
+  disableEthBuffer?: boolean;
 };
 
 /**
@@ -48,6 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
   fixedToken: false,
   disableMax: false,
   hintAmount: '',
+  disableEthBuffer: false,
   options: () => [],
   rules: () => []
 });
@@ -137,7 +139,7 @@ const priceImpactClass = computed(() =>
 const setMax = () => {
   if (props.disableMax) return;
 
-  if (_address.value === nativeAsset.address) {
+  if (_address.value === nativeAsset.address && !props.disableEthBuffer) {
     // Subtract buffer for gas
     _amount.value = bnum(tokenBalance.value).gt(ETH_BUFFER)
       ? bnum(tokenBalance.value)
