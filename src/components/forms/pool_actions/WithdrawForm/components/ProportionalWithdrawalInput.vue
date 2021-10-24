@@ -112,7 +112,7 @@ onBeforeMount(() => {
       <div class="proportional-input-container">
         <div class="flex">
           <WithdrawalTokenSelect :pool="pool" />
-          <div class="flex-grow text-right text-xl">
+          <div class="flex-grow text-right text-xl font-numeric">
             {{ missingPrices ? '-' : fiatTotalLabel }}
           </div>
         </div>
@@ -152,7 +152,7 @@ onBeforeMount(() => {
               </span>
             </div>
           </div>
-          <div class="flex flex-col flex-grow text-right pl-2">
+          <div class="flex flex-col flex-grow text-right pl-2 font-numeric">
             <span class="break-words text-xl">
               {{ fNum(proportionalAmounts[i], 'token') }}
             </span>

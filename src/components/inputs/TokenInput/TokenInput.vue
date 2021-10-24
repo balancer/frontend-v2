@@ -205,7 +205,7 @@ watchEffect(() => {
           <div v-if="!isWalletReady" />
           <div v-else class="cursor-pointer" @click="setMax">
             {{ balanceLabel ? balanceLabel : $t('balance') }}:
-            <span class="font-numeric mr-2">
+            <span class="mr-2">
               {{ fNum(tokenBalance, 'token') }}
             </span>
             <template v-if="hasBalance && !noMax && !disableMax">
