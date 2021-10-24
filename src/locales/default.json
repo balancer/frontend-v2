@@ -101,6 +101,7 @@
     "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
     "etherscan": "Etherscan",
     "exceedsBalance": "Exceeds balance",
+    "exceedsPoolBalance": "Exceeds pool balance for this token",
     "explore": "Explore",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
     "explorePools": "Explore pools",

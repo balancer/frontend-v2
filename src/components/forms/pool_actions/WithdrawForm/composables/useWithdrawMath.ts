@@ -31,6 +31,7 @@ export type WithdrawMathResponse = {
   singleAssetMaxes: Ref<string[]>;
   exactOut: Ref<boolean>;
   singleAssetMaxOut: Ref<boolean>;
+  tokenOutPoolBalance: Ref<string>;
 };
 
 export default function useWithdrawMath(
@@ -79,6 +80,17 @@ export default function useWithdrawMath(
   });
 
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
+
+  const tokenOutPoolBalance = computed(() => {
+    const balances = Object.values(pool.value.onchain.tokens).map(
+      token => token.balance
+    );
+    return balances[tokenOutIndex.value];
+  });
+
+  const amountExceedsPoolBalance = computed(() =>
+    bnum(tokenOutAmount.value).gt(tokenOutPoolBalance.value)
+  );
 
   const proportionalAmounts = computed((): string[] => {
     const { receive } = poolCalculator.propAmountsGiven(
@@ -146,7 +158,9 @@ export default function useWithdrawMath(
   );
 
   const priceImpact = computed((): number => {
+    if (amountExceedsPoolBalance.value) return 1;
     if (!hasAmounts.value || isProportional.value) return 0;
+
     return poolCalculator
       .priceImpact(fullAmounts.value, {
         exactOut: exactOut.value,
@@ -201,6 +215,7 @@ export default function useWithdrawMath(
     proportionalAmounts,
     singleAssetMaxes,
     exactOut,
-    singleAssetMaxOut
+    singleAssetMaxOut,
+    tokenOutPoolBalance
   };
 }

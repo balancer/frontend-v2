@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { toRef, computed, ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { isRequired } from '@/lib/utils/validations';
+import { isLessThanOrEqualTo, isRequired } from '@/lib/utils/validations';
 // Composables
 import useWithdrawMath from './composables/useWithdrawMath';
 import useWithdrawalState from './composables/useWithdrawalState';
 import useWeb3 from '@/services/web3/useWeb3';
+import { useI18n } from 'vue-i18n';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import WithdrawTotals from './components/WithdrawTotals.vue';
@@ -31,6 +32,8 @@ const showPreview = ref(false);
 /**
  * COMPOSABLES
  */
+const { t } = useI18n();
+
 const {
   isProportional,
   tokenOut,
@@ -51,7 +54,8 @@ const {
   hasAmounts,
   highPriceImpact,
   singleAssetMaxes,
-  tokenOutAmount
+  tokenOutAmount,
+  tokenOutPoolBalance
 } = withdrawMath;
 
 const {
@@ -70,6 +74,10 @@ const hasAcceptedHighPriceImpact = computed((): boolean =>
 const hasValidInputs = computed(
   (): boolean => validInput.value && hasAcceptedHighPriceImpact.value
 );
+
+const singleAssetRules = computed(() => [
+  isLessThanOrEqualTo(tokenOutPoolBalance.value, t('exceedsPoolBalance'))
+]);
 </script>
 
 <template>
@@ -87,6 +95,7 @@ const hasValidInputs = computed(
       v-model:amount="tokenOutAmount"
       v-model:isValid="validInput"
       :customBalance="singleAssetMaxes[tokenOutIndex]"
+      :rules="singleAssetRules"
       balanceLabel="Single asset max"
       fixedToken
     >

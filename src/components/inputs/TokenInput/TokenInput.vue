@@ -10,6 +10,7 @@ import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
+import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
 
 /**
  * TYPES
@@ -32,6 +33,7 @@ type Props = {
   hintAmount?: string;
   excludedTokens?: string[];
   options?: string[];
+  rules?: Rules;
 };
 
 /**
@@ -46,7 +48,8 @@ const props = withDefaults(defineProps<Props>(), {
   fixedToken: false,
   disableMax: false,
   hintAmount: '',
-  options: () => []
+  options: () => [],
+  rules: () => []
 });
 
 const emit = defineEmits<{
@@ -96,12 +99,13 @@ const tokenValue = computed(() => {
   return toFiat(_amount.value, _address.value);
 });
 
-const rules = computed(() => {
+const inputRules = computed(() => {
   if (!hasToken.value || !isWalletReady.value || props.noRules)
     return [isPositive()];
   return [
     isPositive(),
-    isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance'))
+    ...props.rules,
+    isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance')),
   ];
 });
 
@@ -163,7 +167,7 @@ watchEffect(() => {
     type="number"
     :label="label"
     :decimalLimit="token?.decimals || 18"
-    :rules="rules"
+    :rules="inputRules"
     validateOn="input"
     autocomplete="off"
     autocorrect="off"
