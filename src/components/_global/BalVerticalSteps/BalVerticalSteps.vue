@@ -23,8 +23,8 @@ const props = defineProps<Props>();
 const stepTextClasses = computed(() => {
   return props.steps.map(step => {
     return useClassName(step.state, [
-      [StepState.Active, 'text-blue-400 font-semibold'],
-      [StepState.Todo, 'text-gray-500 font-normal'],
+      [StepState.Active, 'text-blue-400 font-semibold hover:text-blue-800'],
+      [StepState.Todo, 'text-gray-400 font-normal hover:text-blue-500'],
       [StepState.Success, 'text-green-500 font-semibold']
     ]);
   });
@@ -72,9 +72,9 @@ const stepCircleClasses = computed(() => {
             {{ i }}
           </div>
         </div>
-        <div :class="['text-gray-500', stepTextClasses[i]]">
+        <button :class="['text-gray-500 text-sm', stepTextClasses[i]]">
           {{ step.tooltip }}
-        </div>
+        </button>
       </BalStack>
     </div>
   </BalCard>
