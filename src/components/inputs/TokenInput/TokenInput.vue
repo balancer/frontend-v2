@@ -10,6 +10,7 @@ import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
+import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
 
 /**
  * TYPES
@@ -26,11 +27,14 @@ type Props = {
   label?: string;
   fixedToken?: boolean;
   customBalance?: string;
+  balanceLabel?: string;
   disableMax?: boolean;
   hint?: string;
   hintAmount?: string;
   excludedTokens?: string[];
   options?: string[];
+  rules?: Rules;
+  disableEthBuffer?: boolean;
 };
 
 /**
@@ -45,7 +49,9 @@ const props = withDefaults(defineProps<Props>(), {
   fixedToken: false,
   disableMax: false,
   hintAmount: '',
-  options: () => []
+  disableEthBuffer: false,
+  options: () => [],
+  rules: () => []
 });
 
 const emit = defineEmits<{
@@ -95,10 +101,11 @@ const tokenValue = computed(() => {
   return toFiat(_amount.value, _address.value);
 });
 
-const rules = computed(() => {
+const inputRules = computed(() => {
   if (!hasToken.value || !isWalletReady.value || props.noRules)
     return [isPositive()];
   return [
+    ...props.rules,
     isPositive(),
     isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance'))
   ];
@@ -132,7 +139,7 @@ const priceImpactClass = computed(() =>
 const setMax = () => {
   if (props.disableMax) return;
 
-  if (_address.value === nativeAsset.address) {
+  if (_address.value === nativeAsset.address && !props.disableEthBuffer) {
     // Subtract buffer for gas
     _amount.value = bnum(tokenBalance.value).gt(ETH_BUFFER)
       ? bnum(tokenBalance.value)
@@ -159,10 +166,10 @@ watchEffect(() => {
   <BalTextInput
     v-model="_amount"
     :placeholder="hintAmount || '0.0'"
-    type="number"
+    type="decimal"
     :label="label"
     :decimalLimit="token?.decimals || 18"
-    :rules="rules"
+    :rules="inputRules"
     validateOn="input"
     autocomplete="off"
     autocorrect="off"
@@ -176,18 +183,20 @@ watchEffect(() => {
     @update:isValid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
-    <template v-slot:prepend>
-      <TokenSelectInput
-        v-model="_address"
-        :weight="weight"
-        :fixed="fixedToken"
-        :options="options"
-        class="mr-2"
-        @update:modelValue="emit('update:address', $event)"
-        :excludedTokens="excludedTokens"
-      />
+    <template #prepend>
+      <slot name="tokenSelect">
+        <TokenSelectInput
+          v-model="_address"
+          :weight="weight"
+          :fixed="fixedToken"
+          :options="options"
+          class="mr-2"
+          @update:modelValue="emit('update:address', $event)"
+          :excludedTokens="excludedTokens"
+        />
+      </slot>
     </template>
-    <template v-slot:footer>
+    <template #footer>
       <div
         v-if="isWalletReady || (hasAmount && hasToken)"
         class="flex flex-col pt-1"
@@ -197,12 +206,12 @@ watchEffect(() => {
         >
           <div v-if="!isWalletReady" />
           <div v-else class="cursor-pointer" @click="setMax">
-            {{ $t('balance') }}:
-            <span class="font-numeric mr-2">
+            {{ balanceLabel ? balanceLabel : $t('balance') }}:
+            <span class="mr-2">
               {{ fNum(tokenBalance, 'token') }}
             </span>
             <template v-if="hasBalance && !noMax && !disableMax">
-              <span v-if="!isMaxed" class="text-blue-500 lowercase">
+              <span v-if="!isMaxed" class="text-blue-500">
                 {{ $t('max') }}
               </span>
               <span v-else class="text-gray-400 dark:text-gray-600 lowercase">

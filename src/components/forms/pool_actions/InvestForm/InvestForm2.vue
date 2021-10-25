@@ -13,7 +13,7 @@ import { isStableLike, usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
-import useInvestFormMath from './composables/useInvestFormMath';
+import useInvestMath from './composables/useInvestMath';
 import { isRequired } from '@/lib/utils/validations';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
@@ -71,7 +71,7 @@ const showInvestPreview = ref(false);
 const { t } = useI18n();
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 
-const investMath = useInvestFormMath(
+const investMath = useInvestMath(
   toRef(props, 'pool'),
   toRef(state, 'tokenAddresses'),
   toRef(state, 'amounts'),
@@ -237,7 +237,7 @@ watch(
     />
 
     <InvestFormTotals
-      :investMath="investMath"
+      :math="investMath"
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
@@ -275,7 +275,7 @@ watch(
       <InvestPreviewModal
         v-if="showInvestPreview"
         :pool="pool"
-        :investMath="investMath"
+        :math="investMath"
         :tokenAddresses="state.tokenAddresses"
         @close="showInvestPreview = false"
       />
