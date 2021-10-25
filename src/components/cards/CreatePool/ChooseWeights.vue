@@ -9,7 +9,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import anime from 'animejs';
 import { sum, sumBy } from 'lodash';
 
-const emit = defineEmits(['update:tokenWeights']);
+const emit = defineEmits(['update:tokenWeights', 'nextStep']);
 
 export type TokenWeight = {
   tokenAddress: string;
@@ -133,7 +133,7 @@ const distributeWeights = () => {
 };
 
 const totalWeight = computed(() => {
-  return Math.ceil(sumBy(tokenWeights, w => w.weight));
+  return Math.floor(sumBy(tokenWeights.filter(w => w.tokenAddress !== ''), w => w.weight));
 });
 
 const addTokenListElementRef = (el: HTMLElement) => {
@@ -183,15 +183,18 @@ const addTokenListElementRef = (el: HTMLElement) => {
             </div>
             <div
               ref="totalsRowElement"
-              class="bg-gray-50 w-full flex justify-between p-2 px-4"
+              class="bg-gray-50 w-full p-2 px-4"
             >
-              <h6>Total</h6>
-              <h6>{{ totalWeight }}%</h6>
+              <div class="w-full flex justify-between">
+                <h6>Total</h6>
+                <h6>{{ totalWeight }}%</h6>
+              </div>
+                <BalProgressBar :width="totalWeight" class="my-2" />
             </div>
           </div>
         </div>
       </BalCard>
-      <BalBtn block color="gradient">Next</BalBtn>
+      <BalBtn block color="gradient" @click="emit('nextStep')">Next</BalBtn>
     </BalStack>
   </BalCard>
 </template>
