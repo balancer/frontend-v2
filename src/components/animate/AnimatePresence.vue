@@ -1,6 +1,6 @@
 <template>
   <transition appear @enter="enter" @leave="leave" :css="false">
-    <div id="animateContainer" ref="animateContainer" v-if="isVisible">
+    <div id="animateContainer" ref="animateContainer" v-if="isVisible || _isVisible">
       <slot></slot>
     </div>
   </transition>
@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import anime, { AnimeParams } from 'animejs';
-import { defineComponent, onMounted, PropType, ref } from 'vue';
+import { defineComponent, onMounted, PropType, ref, watch, nextTick } from 'vue';
 export default defineComponent({
   emits: ['on-exit'],
   props: {
@@ -25,20 +25,35 @@ export default defineComponent({
       required: true
     },
     isVisible: {
-      type: Boolean,
-      required: true
+      type: Boolean
     }
   },
   setup(props, { emit }) {
     const animateContainer = ref<HTMLElement>();
+    const _isVisible = ref(false);
 
     onMounted(() => {
+      console.log('besketit', props.isVisible);
       if (animateContainer.value) {
         anime.set(animateContainer.value, {
           ...props.initial
         });
       }
     });
+
+    watch(
+      () => props.isVisible,
+      async () => {
+        if (props.isVisible) {
+          await nextTick();
+          if (animateContainer.value) {
+            anime.set(animateContainer.value, {
+              ...props.initial
+            });
+          }
+        }
+      }
+    );
 
     const enter = (el, done) => {
       // on mount we set initial values, but the issue is that enter will run at
@@ -57,6 +72,7 @@ export default defineComponent({
     };
 
     const leave = (el, done) => {
+      console.log('bing')
       anime.set(el, {
         'pointer-events': 'none'
       });
@@ -74,7 +90,8 @@ export default defineComponent({
     return {
       animateContainer,
       enter,
-      leave
+      leave,
+      _isVisible
     };
   }
 });
