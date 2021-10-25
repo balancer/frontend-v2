@@ -14,7 +14,7 @@ export class VaultService {
   abi: any;
 
   constructor() {
-    this.abi = Vault__factory;
+    this.abi = Vault__factory.abi;
   }
 
   get address() {

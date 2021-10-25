@@ -2,6 +2,7 @@ import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from 'bignumber.js';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { swapService, SwapToken, SwapTokenType } from '@/services/swap/swap.service';
+import { web3Service } from '@/services/web3/web3.service';
 
 export async function swapIn(
   network: string,
@@ -10,6 +11,7 @@ export async function swapIn(
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber
 ): Promise<TransactionResponse> {
+  web3Service.setProvider(provider);
   const tokenInAddress = sorReturn.isV1swap
     ? sorReturn.tokenIn
     : sorReturn.v2result.tokenIn;
@@ -48,7 +50,7 @@ export async function swapOut(
   tokenInAmountMax: BigNumber,
   tokenOutAmount: BigNumber
 ): Promise<TransactionResponse> {
-
+  web3Service.setProvider(provider);
   const tokenInAddress = sorReturn.isV1swap
     ? sorReturn.tokenIn
     : sorReturn.v2result.tokenIn;
