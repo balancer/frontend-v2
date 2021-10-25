@@ -56,7 +56,7 @@ const emit = defineEmits<{
  */
 const state = reactive<FormState>({
   amounts: [],
-  tokenAddresses: [...props.pool.tokenAddresses],
+  tokenAddresses: [],
   propAmounts: [],
   validInputs: [],
   highPriceImpactAccepted: false,
@@ -186,6 +186,7 @@ function setNativeAsset(to: NativeAsset): void {
  * CALLBACKS
  */
 onBeforeMount(() => {
+  state.tokenAddresses = props.pool.tokenAddresses;
   if (isWethPool.value) setNativeAssetByBalance();
 });
 

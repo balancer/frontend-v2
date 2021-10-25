@@ -31,15 +31,15 @@ export default function usePoolTransfers() {
     return poolQuery.data.value;
   });
 
-  const loadingPool = computed(
+  const poolQueryLoading = computed(
     (): boolean =>
       (poolQuery.isLoading.value as boolean) ||
       (poolQuery.isIdle.value as boolean) ||
       (poolQuery.error.value as boolean)
   );
 
-  const poolLoaded = computed(
-    (): boolean => !loadingPool.value && !!pool.value
+  const loadingPool = computed(
+    (): boolean => poolQueryLoading.value || !pool.value
   );
 
   const missingPrices = computed(() => {
@@ -54,7 +54,7 @@ export default function usePoolTransfers() {
 
   return {
     pool,
-    poolLoaded,
+    loadingPool,
     useNativeAsset,
     missingPrices
   };
