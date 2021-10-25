@@ -15,7 +15,7 @@ import {
   SwapKind
 } from '@balancer-labs/balancer-js';
 import { bnum } from '@/lib/utils';
-import useWeb3 from '../web3/useWeb3';
+import { web3Service } from '../web3/web3.service';
 
 export enum SwapTokenType {
   fixed,
@@ -180,10 +180,7 @@ export default class SwapService {
   }
 
   private async getFundManagement(): Promise<FundManagement> {
-    const { getProvider } = useWeb3();
-    const provider = getProvider();
-    const signer = provider.getSigner();
-    const userAddress = await signer.getAddress();
+    const userAddress = await web3Service.getUserAddress();
     const funds: FundManagement = {
       sender: userAddress,
       recipient: userAddress,

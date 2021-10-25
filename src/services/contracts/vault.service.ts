@@ -8,7 +8,7 @@ import {
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
-import { contractCaller } from './contract-caller.service';
+import { web3Service } from '../web3/web3.service';
 
 export class VaultService {
   abi: any;
@@ -27,7 +27,7 @@ export class VaultService {
     tokenOutAmount: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return contractCaller.sendTransaction(
+    return web3Service.sendTransaction(
       this.address,
       this.abi,
       'swap',
@@ -44,7 +44,7 @@ export class VaultService {
     limits: string[],
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return contractCaller.sendTransaction(
+    return web3Service.sendTransaction(
       this.address,
       this.abi,
       'batchSwap',

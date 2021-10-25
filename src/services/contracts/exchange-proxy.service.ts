@@ -3,8 +3,8 @@ import configs from '@/lib/config';
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { contractCaller } from './contract-caller.service';
 import { networkId } from '@/composables/useNetwork';
+import { web3Service } from '../web3/web3.service';
 
 export default class ExchangeProxyService {
   abi: any;
@@ -57,7 +57,7 @@ export default class ExchangeProxyService {
     minTotalAmountOut: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return contractCaller.sendTransaction(
+    return web3Service.sendTransaction(
       this.address,
       this.abi,
       'multihopBatchSwapExactIn',
@@ -73,7 +73,7 @@ export default class ExchangeProxyService {
     maxTotalAmountIn: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return contractCaller.sendTransaction(
+    return web3Service.sendTransaction(
       this.address,
       this.abi,
       'multihopBatchSwapExactOut',
