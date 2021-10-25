@@ -537,5 +537,17 @@
     "yearAbbrev": "y",
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
-    "yourTransactions": "Your transactions in this pool"
+    "yourTransactions": "Your transactions in this pool",
+    "createAPool": {
+        "governanceFees": "Allow Balancer governance to manage fees",
+        "swapFeeSuggestion": "0.30% is best for most weighted pools with established tokens. Go higher for more exotic pairs.",
+        "governanceFeesTooltip": "Enable this to give Balancer governance the ability to dynamically manage the fees of this pool in order to maximize profits. But note, Balancer governance is under no obligation to actually manage the fees and will likely only do so if there is significant trading volume.",
+        "fixedFeeRadioLabel": "Permanently fix fees to the initial rate",
+        "dynamicFeeRadioLabel": "Allow dynamic fees from an address I choose",
+        "setAnAddress": "Set an address to control fees",
+        "myAddressOption": "My address: {0}",
+        "customAddressOption": "Allow dynamic fees from an address I choose",
+        "customAddressTitle": "Enter an address which can update fees",
+        "customAddressInfo": "This could be another address you own an address of a smart contract. You can only ever set this once."
+    }
 }
