@@ -58,7 +58,7 @@ export default class GnosisProtocolService {
     );
 
     if (response.status >= 200 && response.status < 300) {
-      return response.data as OrderID;
+      return response.data;
     }
 
     const errorMessage = OperatorError.getErrorFromStatusCode(
@@ -89,7 +89,7 @@ export default class GnosisProtocolService {
     );
 
     if (response.status >= 200 && response.status < 300) {
-      return response.data as OrderID;
+      return response.data;
     }
 
     const errorMessage = OperatorError.getErrorFromStatusCode(
@@ -113,15 +113,12 @@ export default class GnosisProtocolService {
     return null;
   }
 
-  public async getFeeQuote(params: FeeQuoteParams) {
+  public async getFeeQuote(feeQuoteParams: FeeQuoteParams) {
     try {
-      const { amount, kind } = params;
-
-      const sellToken = toErc20Address(params.sellToken);
-      const buyToken = toErc20Address(params.buyToken);
-
-      const response = await axios.get<FeeInformation>(
-        `${this.baseURL}/fee?sellToken=${sellToken}&buyToken=${buyToken}&amount=${amount}&kind=${kind}`
+      // Call API
+      const response = await axios.post<FeeInformation>(
+        `${this.baseURL}/quote`,
+        feeQuoteParams
       );
       return response.data;
     } catch (e) {
