@@ -467,5 +467,17 @@
     "featuredProtocol": "Featured ecosystem protocol",
     "aboutElementFinance": "Element is an open source protocol for fixed and variable yield markets. It is built on Balancer V2. View and manage your liquidity positions directly on Element.fi.",
     "viewAndManangeOnElement": "View and manage all pools on Element.fi",
-    "viewOnElement": "View on Element.fi"
+    "viewOnElement": "View on Element.fi",
+    "createAPool": {
+        "governanceFees": "Allow Balancer governance to manage fees",
+        "swapFeeSuggestion": "0.30% is best for most weighted pools with established tokens. Go higher for more exotic pairs.",
+        "governanceFeesTooltip": "Enable this to give Balancer governance the ability to dynamically manage the fees of this pool in order to maximize profits. But note, Balancer governance is under no obligation to actually manage the fees and will likely only do so if there is significant trading volume.",
+        "fixedFeeRadioLabel": "Permanently fix fees to the initial rate",
+        "dynamicFeeRadioLabel": "Allow dynamic fees from an address I choose",
+        "setAnAddress": "Set an address to control fees",
+        "myAddressOption": "My address: {0}",
+        "customAddressOption": "Allow dynamic fees from an address I choose",
+        "customAddressTitle": "Enter an address which can update fees",
+        "customAddressInfo": "This could be another address you own an address of a smart contract. You can only ever set this once."
+    }
 }
