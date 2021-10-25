@@ -44,9 +44,9 @@ const stackId = Math.random();
         'items-center': align === 'center',
         'items-start': align === 'start',
         'items-end': align === 'end',
-        'justify-center': align === 'center',
-        'justify-start': align === 'start',
-        'justify-end': align === 'end'
+        'justify-center': justify === 'center',
+        'justify-start': justify === 'start',
+        'justify-end': justify === 'end'
       }
     ]"
   >
