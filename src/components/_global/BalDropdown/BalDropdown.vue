@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 /**
  * TYPES
  */
 type Props = {
   options: Array<any>;
+  width?: string;
 };
 
 /**
  * PROPS & EMITS
  */
-defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  width: 'auto'
+});
 
 const emit = defineEmits<{
   (e: 'selected', value: any): void;
@@ -21,6 +24,13 @@ const emit = defineEmits<{
  * STATE
  */
 const showDropdown = ref(false);
+
+/**
+ * COMPUTED
+ */
+const dropdownClasses = computed(() => ({
+  [`w-${props.width}`]: true
+}));
 
 /**
  * METHODS
@@ -44,7 +54,7 @@ function handleRowClick(option: any): void {
     <div class="activator" @click="toggleDropdown">
       <slot name="activator" />
     </div>
-    <div class="bal-dropdown" v-if="showDropdown">
+    <div :class="['bal-dropdown', dropdownClasses]" v-if="showDropdown">
       <div
         v-for="(option, i) in options"
         :key="i"
@@ -57,7 +67,7 @@ function handleRowClick(option: any): void {
   </div>
 </template>
 
-<style>
+<style scoped>
 .bal-dropdown {
   @apply absolute shadow rounded-lg z-10;
   @apply bg-white dark:bg-gray-800;
