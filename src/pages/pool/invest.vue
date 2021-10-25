@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 // Components
 import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.vue';
@@ -9,27 +8,15 @@ import TradeSettingsPopover, {
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 /**
- * TYPES
- */
-type Props = {
-  pool: FullPool;
-};
-
-/**
- * PROPS
- */
-defineProps<Props>();
-
-/**
  * STATE
  */
 const { network } = configService;
-const { useNativeAsset, poolLoaded } = usePoolTransfers();
+const { pool, loadingPool, useNativeAsset } = usePoolTransfers();
 </script>
 
 <template>
   <div>
-    <BalLoadingBlock v-if="!poolLoaded" class="h-96" />
+    <BalLoadingBlock v-if="loadingPool" class="h-96" />
     <BalCard v-else shadow="xl" exposeOverflow noBorder>
       <template #header>
         <div class="w-full">

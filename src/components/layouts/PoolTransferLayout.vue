@@ -19,7 +19,7 @@ const id = ref<string>(route.params.id as string);
  * COMPOSABLES
  */
 const { upToLargeBreakpoint } = useBreakpoints();
-const { pool, poolLoaded, useNativeAsset } = usePoolTransfers();
+const { pool, loadingPool, useNativeAsset } = usePoolTransfers();
 </script>
 
 <template>
@@ -32,7 +32,7 @@ const { pool, poolLoaded, useNativeAsset } = usePoolTransfers();
     </div>
     <div class="layout-container">
       <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-6">
-        <BalLoadingBlock v-if="!poolLoaded" class="h-64" />
+        <BalLoadingBlock v-if="loadingPool" class="h-64" />
         <MyWalletTokensCard
           v-else
           :pool="pool"
@@ -56,7 +56,7 @@ const { pool, poolLoaded, useNativeAsset } = usePoolTransfers();
           ]"
         >
           <template #myWalletTokens>
-            <BalLoadingBlock v-if="!poolLoaded" class="h-64" />
+            <BalLoadingBlock v-if="loadingPool" class="h-64" />
             <MyWalletTokensCard
               v-else
               :pool="pool"
@@ -67,7 +67,7 @@ const { pool, poolLoaded, useNativeAsset } = usePoolTransfers();
             />
           </template>
           <template #myPoolBalances>
-            <BalLoadingBlock v-if="!poolLoaded" class="h-64" />
+            <BalLoadingBlock v-if="loadingPool" class="h-64" />
             <MyPoolBalancesCard
               v-else
               :pool="pool"
@@ -78,11 +78,11 @@ const { pool, poolLoaded, useNativeAsset } = usePoolTransfers();
           </template>
         </BalAccordion>
 
-        <router-view :key="$route.path" :pool="pool" />
+        <router-view :key="$route.path" />
       </div>
 
       <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-6">
-        <BalLoadingBlock v-if="!poolLoaded" class="h-64" />
+        <BalLoadingBlock v-if="loadingPool" class="h-64" />
         <MyPoolBalancesCard v-else :pool="pool" />
       </div>
     </div>
