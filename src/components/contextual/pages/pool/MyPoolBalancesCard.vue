@@ -54,7 +54,9 @@ onBeforeMount(() => {
   <BalCard noPad>
     <template #header>
       <div class="card-header">
-        <h5>My pool balance</h5>
+        <h5>
+          {{ $t('poolTransfer.myPoolBalancesCard.title') }}
+        </h5>
         <h5>
           {{ fiatTotalLabel }}
         </h5>
@@ -81,7 +83,7 @@ onBeforeMount(() => {
       <BalBtn
         tag="router-link"
         :to="{ name: 'invest' }"
-        label="Invest in pool"
+        :label="$t('investInPool')"
         color="gradient"
         block
       />
@@ -89,7 +91,7 @@ onBeforeMount(() => {
         v-if="hasBpt"
         tag="router-link"
         :to="{ name: 'withdraw' }"
-        label="Withdraw"
+        :label="$t('withdraw.label')"
         block
       />
     </div>
