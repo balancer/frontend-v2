@@ -9,12 +9,13 @@ import { tryPromiseWithTimeout } from '@/lib/utils/promise';
 import { bnum } from '@/lib/utils';
 import {
   FeeInformation,
+  FeeQuoteParams,
   OrderMetaData,
   PriceQuoteParams
 } from '@/services/gnosis/types';
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
 import useWeb3 from '@/services/web3/useWeb3';
-import { calculateValidTo } from '@/services/gnosis/utils';
+import { calculateValidTo, toErc20Address } from '@/services/gnosis/utils';
 import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
 import { match0xService } from '@/services/gnosis/match0x.service';
 import { paraSwapService } from '@/services/gnosis/paraswap.service';
@@ -28,19 +29,26 @@ import { TradeQuote } from './types';
 
 import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
+import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 
 const HIGH_FEE_THRESHOLD = 0.2;
-const GNOSIS_FEE_SUBSIDY_ENABLED = true;
-const GNOSIS_FEE_SUBSIDY = 0.625;
+const APP_DATA =
+  process.env.VUE_APP_GNOSIS_APP_DATA ??
+  '0xE9F29AE547955463ED535162AEFEE525D8D309571A2B18BC26086C8C35D781EB';
 
-const state = reactive({
-  validationErrors: {
-    feeExceedsPrice: false,
-    priceExceedsBalance: false
-  },
+type State = {
+  warnings: {
+    highFees: boolean;
+  };
+  validationError: null | string;
+  submissionError: null | string;
+};
+
+const state = reactive<State>({
   warnings: {
     highFees: false
   },
+  validationError: null,
   submissionError: null
 });
 
@@ -76,27 +84,27 @@ type Props = {
 const PRICE_QUOTE_TIMEOUT = 10000;
 
 const priceQuotesResolveLast = onlyResolvesLast(getPriceQuotes);
-const feeQuotesResolveLast = onlyResolvesLast(getFeeQuote);
+const feeQuoteResolveLast = onlyResolvesLast(getFeeQuote);
 
-function getPriceQuotes(queryParams: PriceQuoteParams) {
+function getPriceQuotes(params: PriceQuoteParams) {
   return Promise.allSettled([
     tryPromiseWithTimeout(
-      gnosisProtocolService.getPriceQuote(queryParams),
+      gnosisProtocolService.getPriceQuote(params),
       PRICE_QUOTE_TIMEOUT
     ),
     tryPromiseWithTimeout(
-      match0xService.getPriceQuote(queryParams),
+      match0xService.getPriceQuote(params),
       PRICE_QUOTE_TIMEOUT
     ),
     tryPromiseWithTimeout(
-      paraSwapService.getPriceQuote(queryParams),
+      paraSwapService.getPriceQuote(params),
       PRICE_QUOTE_TIMEOUT
     )
   ]);
 }
 
-function getFeeQuote(queryParams: PriceQuoteParams) {
-  return gnosisProtocolService.getFeeQuote(queryParams);
+function getFeeQuote(params: FeeQuoteParams) {
+  return gnosisProtocolService.getFeeQuote(params);
 }
 
 export default function useGnosis({
@@ -128,13 +136,11 @@ export default function useGnosis({
     () => store.state.app.transactionDeadline
   );
 
-  const hasValidationErrors = computed(() =>
-    Object.values(state.validationErrors).some(hasError => hasError)
-  );
+  const hasValidationError = computed(() => state.validationError != null);
 
   // METHODS
   function getFeeAmount() {
-    const feeAmountInToken = feeQuote.value?.amount ?? '0';
+    const feeAmountInToken = feeQuote.value?.quote.feeAmount ?? '0';
     const feeAmountOutToken = tokenOutAmountScaled.value
       .div(tokenInAmountScaled.value)
       .times(feeAmountInToken)
@@ -189,8 +195,7 @@ export default function useGnosis({
           ? quote.minimumOutAmount
           : tokenOutAmountScaled.value.toString(),
         validTo: calculateValidTo(appTransactionDeadline.value),
-        appData:
-          '0xE9F29AE547955463ED535162AEFEE525D8D309571A2B18BC26086C8C35D781EB',
+        appData: APP_DATA,
         feeAmount: quote.feeAmountInToken,
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
@@ -268,11 +273,8 @@ export default function useGnosis({
   }
 
   function resetState(shouldResetFees = true) {
-    state.validationErrors.feeExceedsPrice = false;
-    state.validationErrors.priceExceedsBalance = false;
-
     state.warnings.highFees = false;
-
+    state.validationError = null;
     state.submissionError = null;
 
     if (shouldResetFees) {
@@ -298,94 +300,112 @@ export default function useGnosis({
     }
 
     updatingQuotes.value = true;
+    state.validationError = null;
 
+    let feeQuoteResult: FeeInformation | null = null;
     try {
-      const queryParams = {
-        sellToken: tokenInAddressInput.value,
-        buyToken: tokenOutAddressInput.value,
-        amount: amountToExchange.toString(),
-        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
-        fromDecimals: tokenIn.value.decimals,
-        toDecimals: tokenOut.value.decimals
+      const feeQuoteParams: FeeQuoteParams = {
+        sellToken: toErc20Address(tokenInAddressInput.value),
+        buyToken: toErc20Address(tokenOutAddressInput.value),
+        from: account.value,
+        receiver: account.value,
+        validTo: calculateValidTo(appTransactionDeadline.value),
+        appData: APP_DATA,
+        partiallyFillable: false,
+        sellTokenBalance: OrderBalance.EXTERNAL,
+        buyTokenBalance: OrderBalance.ERC20,
+        kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY
       };
 
+      if (exactIn.value) {
+        feeQuoteParams.sellAmountBeforeFee = amountToExchange.toString();
+      } else {
+        feeQuoteParams.buyAmountAfterFee = amountToExchange.toString();
+      }
+
       // TODO: there is a chance to optimize here and not make a new request if the fee is not expired
-      const feeQuoteResult = await feeQuotesResolveLast(queryParams);
+      feeQuoteResult = await feeQuoteResolveLast(feeQuoteParams);
+    } catch (e) {
+      feeQuoteResult = null;
 
-      if (feeQuoteResult != null) {
-        if (GNOSIS_FEE_SUBSIDY_ENABLED) {
-          feeQuoteResult.amount = bnum(feeQuoteResult.amount)
-            .times(GNOSIS_FEE_SUBSIDY)
-            .integerValue(BigNumber.ROUND_CEIL)
-            .toString();
+      state.validationError = e.message;
+    }
+
+    if (feeQuoteResult != null) {
+      try {
+        let priceQuoteAmount: string | null = null;
+
+        const priceQuoteParams: PriceQuoteParams = {
+          sellToken: tokenInAddressInput.value,
+          buyToken: tokenOutAddressInput.value,
+          amount: amountToExchange.toString(),
+          kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
+          fromDecimals: tokenIn.value.decimals,
+          toDecimals: tokenOut.value.decimals
+        };
+
+        const priceQuotes = await priceQuotesResolveLast(priceQuoteParams);
+
+        const priceQuoteAmounts = priceQuotes.reduce<string[]>(
+          (fulfilledPriceQuotes, priceQuote) => {
+            if (
+              priceQuote.status === 'fulfilled' &&
+              priceQuote.value &&
+              priceQuote.value.amount != null
+            ) {
+              fulfilledPriceQuotes.push(priceQuote.value.amount);
+            }
+            return fulfilledPriceQuotes;
+          },
+          []
+        );
+
+        if (priceQuoteAmounts.length > 0) {
+          // For sell orders get the largest (max) quote. For buy orders get the smallest (min) quote.
+          priceQuoteAmount = (exactIn.value
+            ? BigNumber.max(...priceQuoteAmounts)
+            : BigNumber.min(...priceQuoteAmounts)
+          ).toString(10);
         }
 
-        if (exactIn.value) {
-          state.validationErrors.feeExceedsPrice = amountToExchange
-            .minus(feeQuoteResult.amount)
-            .isNegative();
-        }
-        if (!state.validationErrors.feeExceedsPrice) {
-          let priceQuoteAmount: string | null = null;
+        if (priceQuoteAmount != null) {
+          feeQuote.value = feeQuoteResult;
 
-          const priceQuotes = await priceQuotesResolveLast(queryParams);
+          if (exactIn.value) {
+            tokenOutAmountInput.value = bnum(
+              formatUnits(priceQuoteAmount, tokenOut.value.decimals)
+            ).toFixed(6, BigNumber.ROUND_DOWN);
 
-          const priceQuoteAmounts = priceQuotes.reduce<string[]>(
-            (fulfilledPriceQuotes, priceQuote) => {
-              if (
-                priceQuote.status === 'fulfilled' &&
-                priceQuote.value &&
-                priceQuote.value.amount != null
-              ) {
-                fulfilledPriceQuotes.push(priceQuote.value.amount);
-              }
-              return fulfilledPriceQuotes;
-            },
-            []
-          );
+            const { feeAmountInToken } = getQuote();
 
-          if (priceQuoteAmounts.length > 0) {
-            // For sell orders get the largest (max) quote. For buy orders get the smallest (min) quote.
-            priceQuoteAmount = (exactIn.value
-              ? BigNumber.max(...priceQuoteAmounts)
-              : BigNumber.min(...priceQuoteAmounts)
-            ).toString(10);
-          }
+            state.warnings.highFees = bnum(feeAmountInToken)
+              .div(amountToExchange)
+              .gt(HIGH_FEE_THRESHOLD);
+          } else {
+            tokenInAmountInput.value = bnum(
+              formatUnits(priceQuoteAmount, tokenIn.value.decimals)
+            ).toFixed(6, BigNumber.ROUND_DOWN);
 
-          if (priceQuoteAmount != null) {
-            feeQuote.value = feeQuoteResult;
+            const { feeAmountOutToken, maximumInAmount } = getQuote();
 
-            if (exactIn.value) {
-              tokenOutAmountInput.value = bnum(
-                formatUnits(priceQuoteAmount, tokenOut.value.decimals)
-              ).toFixed(6, BigNumber.ROUND_DOWN);
+            state.warnings.highFees = bnum(feeAmountOutToken)
+              .div(amountToExchange)
+              .gt(HIGH_FEE_THRESHOLD);
 
-              const { feeAmountInToken } = getQuote();
+            const priceExceedsBalance = bnum(
+              formatUnits(maximumInAmount, tokenIn.value.decimals)
+            ).gt(balanceFor(tokenIn.value.address));
 
-              state.warnings.highFees = bnum(feeAmountInToken)
-                .div(amountToExchange)
-                .gt(HIGH_FEE_THRESHOLD);
-            } else {
-              tokenInAmountInput.value = bnum(
-                formatUnits(priceQuoteAmount, tokenIn.value.decimals)
-              ).toFixed(6, BigNumber.ROUND_DOWN);
-
-              const { feeAmountOutToken, maximumInAmount } = getQuote();
-
-              state.warnings.highFees = bnum(feeAmountOutToken)
-                .div(amountToExchange)
-                .gt(HIGH_FEE_THRESHOLD);
-
-              state.validationErrors.priceExceedsBalance = bnum(
-                formatUnits(maximumInAmount, tokenIn.value.decimals)
-              ).gt(balanceFor(tokenIn.value.address));
+            if (priceExceedsBalance) {
+              state.validationError = ApiErrorCodes.PriceExceedsBalance;
             }
           }
         }
+      } catch (e) {
+        console.log('[Gnosis Quotes] Failed to update quotes', e);
       }
-    } catch (e) {
-      console.log('[Gnosis Quotes] Failed to update quotes', e);
     }
+
     updatingQuotes.value = false;
   }
 
@@ -399,7 +419,7 @@ export default function useGnosis({
     ...toRefs(state),
     feeQuote,
     updatingQuotes,
-    hasValidationErrors,
+    hasValidationError,
     confirming,
     getQuote
   };

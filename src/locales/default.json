@@ -117,12 +117,20 @@
     "flashLoanFee": "Flash loan fee",
     "gnosisErrors": {
         "lowAmount": {
-            "body": "The fees for this transaction exceeds the amount you want to trade.",
-            "header": "Your trade amount is too low"
+            "header": "Your trade amount is too low",
+            "body": "The fees for this transaction exceeds the amount you want to trade."
         },
         "lowBalance": {
-            "body": "The fees and potential slippage (up to {2}) set for this trade exceeds your {0} balance. You need at least {1} {0} to proceed.",
-            "header": "Insufficient {0} balance"
+            "header": "Insufficient {0} balance",
+            "body": "The fees and potential slippage (up to {2}) set for this trade exceeds your {0} balance. You need at least {1} {0} to proceed."
+        },
+        "noLiquidity": {
+            "header": "No liquidity",
+            "body": "Not enough liquidity"
+        },
+        "genericError": {
+            "header": "An error has occurred",
+            "body": "Error code: {0}"
         }
     },
     "gnosisWarnings": {
