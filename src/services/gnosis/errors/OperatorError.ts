@@ -25,6 +25,7 @@ export enum ApiErrorCodes {
   UnsupportedBuyTokenSource = 'UnsupportedBuyTokenSource',
   SellAmountDoesNotCoverFee = 'SellAmountDoesNotCoverFee',
   PriceExceedsBalance = 'PriceExceedsBalance',
+  NoLiquidity = 'NoLiquidity',
   UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
   UNHANDLED_CREATE_ERROR = 'UNHANDLED_CREATE_ERROR',
   UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR'

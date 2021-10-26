@@ -122,6 +122,10 @@
             "header": "Insufficient {0} balance",
             "body": "The fees and potential slippage (up to {2}) set for this trade exceeds your {0} balance. You need at least {1} {0} to proceed."
         },
+        "noLiquidity": {
+            "header": "No liquidity",
+            "body": "Not enough liquidity"
+        },
         "genericError": {
             "header": "An error has occurred",
             "body": "Error code: {0}"

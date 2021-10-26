@@ -288,6 +288,13 @@ export default defineComponent({
                 fNum(trading.slippageBufferRate.value, 'percent')
               ])
             };
+          } else if (errorCode === ApiErrorCodes.NoLiquidity) {
+            return {
+              header: t('gnosisErrors.noLiquidity.header', [
+                trading.tokenIn.value.symbol
+              ]),
+              body: t('gnosisErrors.noLiquidity.body')
+            };
           } else {
             return {
               header: t('gnosisErrors.genericError.header'),
