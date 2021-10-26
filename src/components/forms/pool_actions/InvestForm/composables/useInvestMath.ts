@@ -8,6 +8,7 @@ import { formatUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
+import { ETH_TX_BUFFER } from '@/constants/transactions';
 
 export type InvestMathResponse = {
   // computed
@@ -43,7 +44,7 @@ export default function useInvestFormMath(
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { tokens, balances, balanceFor } = useTokens();
+  const { tokens, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippage } = useSlippage();
   const { managedPoolWithTradingHalted } = usePool(pool);
   const { currency } = useUserSettings();
@@ -100,9 +101,19 @@ export default function useInvestFormMath(
   );
 
   const maximized = computed(() =>
-    fullAmounts.value.every(
-      (amount, i) => amount === balanceFor(tokenAddresses.value[i])
-    )
+    fullAmounts.value.every((amount, i) => {
+      if (tokenAddresses.value[i] === nativeAsset.address) {
+        const balance = balanceFor(tokenAddresses.value[i]);
+        return (
+          amount ===
+          bnum(balance)
+            .minus(ETH_TX_BUFFER)
+            .toString()
+        );
+      } else {
+        return amount === balanceFor(tokenAddresses.value[i]);
+      }
+    })
   );
 
   const optimized = computed(() => {
@@ -145,7 +156,16 @@ export default function useInvestFormMath(
 
   function maximizeAmounts(): void {
     fullAmounts.value.forEach((_, i) => {
-      amounts.value[i] = balanceFor(tokenAddresses.value[i]);
+      if (tokenAddresses.value[i] === nativeAsset.address) {
+        const balance = balanceFor(tokenAddresses.value[i]);
+        amounts.value[i] = bnum(balance).gt(ETH_TX_BUFFER)
+          ? bnum(balance)
+              .minus(ETH_TX_BUFFER)
+              .toString()
+          : '0';
+      } else {
+        amounts.value[i] = balanceFor(tokenAddresses.value[i]);
+      }
     });
   }
 

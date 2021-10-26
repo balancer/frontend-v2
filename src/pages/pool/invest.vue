@@ -5,13 +5,14 @@ import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.v
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
+// Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 /**
  * STATE
  */
 const { network } = configService;
-const { pool, loadingPool, useNativeAsset } = usePoolTransfers();
+const { pool, loadingPool } = usePoolTransfers();
 </script>
 
 <template>
@@ -29,7 +30,7 @@ const { pool, loadingPool, useNativeAsset } = usePoolTransfers();
           </div>
         </div>
       </template>
-      <InvestForm :pool="pool" v-model:useNativeAsset="useNativeAsset" />
+      <InvestForm :pool="pool" />
     </BalCard>
   </div>
 </template>
