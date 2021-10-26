@@ -10,6 +10,7 @@ WORKDIR ${APP_ROOT}
 
 FROM base AS dependencies
 
+COPY prepare.js ./
 COPY package*.json ./
 
 RUN npm install -g npm@7
