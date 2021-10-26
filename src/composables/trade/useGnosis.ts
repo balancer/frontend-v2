@@ -15,7 +15,7 @@ import {
 } from '@/services/gnosis/types';
 import { signOrder, UnsignedOrder } from '@/services/gnosis/signing';
 import useWeb3 from '@/services/web3/useWeb3';
-import { calculateValidTo } from '@/services/gnosis/utils';
+import { calculateValidTo, toErc20Address } from '@/services/gnosis/utils';
 import { gnosisProtocolService } from '@/services/gnosis/gnosisProtocol.service';
 import { match0xService } from '@/services/gnosis/match0x.service';
 import { paraSwapService } from '@/services/gnosis/paraswap.service';
@@ -305,8 +305,8 @@ export default function useGnosis({
     let feeQuoteResult: FeeInformation | null = null;
     try {
       const feeQuoteParams: FeeQuoteParams = {
-        sellToken: tokenInAddressInput.value,
-        buyToken: tokenOutAddressInput.value,
+        sellToken: toErc20Address(tokenInAddressInput.value),
+        buyToken: toErc20Address(tokenOutAddressInput.value),
         from: account.value,
         receiver: account.value,
         validTo: calculateValidTo(appTransactionDeadline.value),
