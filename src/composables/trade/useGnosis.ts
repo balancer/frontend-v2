@@ -31,7 +31,8 @@ import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
 
 const HIGH_FEE_THRESHOLD = 0.2;
-const BALANCER_APP_DATA =
+const APP_DATA =
+  process.env.VUE_APP_GNOSIS_APP_DATA ??
   '0xE9F29AE547955463ED535162AEFEE525D8D309571A2B18BC26086C8C35D781EB';
 
 const state = reactive({
@@ -190,7 +191,7 @@ export default function useGnosis({
           ? quote.minimumOutAmount
           : tokenOutAmountScaled.value.toString(),
         validTo: calculateValidTo(appTransactionDeadline.value),
-        appData: BALANCER_APP_DATA,
+        appData: APP_DATA,
         feeAmount: quote.feeAmountInToken,
         kind: exactIn.value ? OrderKind.SELL : OrderKind.BUY,
         receiver: account.value,
@@ -306,7 +307,7 @@ export default function useGnosis({
         from: account.value,
         receiver: account.value,
         validTo: calculateValidTo(appTransactionDeadline.value),
-        appData: BALANCER_APP_DATA,
+        appData: APP_DATA,
         partiallyFillable: false,
         sellTokenBalance: OrderBalance.EXTERNAL,
         buyTokenBalance: OrderBalance.ERC20,
