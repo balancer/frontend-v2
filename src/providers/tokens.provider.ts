@@ -47,6 +47,7 @@ export interface TokensProviderResponse {
   injectedTokens: Ref<TokenInfoMap>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: TokenInfo;
+  wrappedNativeAsset: ComputedRef<TokenInfo>;
   activeTokenListTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
@@ -54,6 +55,7 @@ export interface TokensProviderResponse {
   dynamicDataLoaded: ComputedRef<boolean>;
   dynamicDataLoading: ComputedRef<boolean>;
   priceQueryError: Ref<boolean>;
+  priceQueryLoading: Ref<boolean>;
   balancesQueryError: Ref<boolean>;
   allowancesQueryError: Ref<boolean>;
   refetchPrices: Ref<() => void>;
@@ -147,7 +149,11 @@ export default {
       ...state.injectedTokens
     }));
 
-    const tokenAddresses = computed(() => Object.keys(tokens.value));
+    const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
+
+    const wrappedNativeAsset = computed(
+      (): TokenInfo => getToken(networkConfig.addresses.weth)
+    );
 
     /****************************************************************
      * Dynamic metadata
@@ -305,7 +311,9 @@ export default {
       amount: string,
       contractAddress = networkConfig.addresses.vault
     ): boolean {
-      if (!amount || bnum(amount).eq(0) || !contractAddress) return false;
+      if (!amount || bnum(amount).eq(0)) return false;
+      if (!contractAddress) return false;
+      if (tokenAddress === nativeAsset.address) return false;
 
       const allowance = bnum(
         allowances.value[contractAddress][getAddress(tokenAddress)]
@@ -390,9 +398,10 @@ export default {
     provide(TokensProviderSymbol, {
       // state
       ...toRefs(state),
+      nativeAsset,
       // computed
       tokens,
-      nativeAsset,
+      wrappedNativeAsset,
       activeTokenListTokens,
       prices,
       balances,
@@ -400,6 +409,7 @@ export default {
       dynamicDataLoaded,
       dynamicDataLoading,
       priceQueryError,
+      priceQueryLoading,
       balancesQueryError,
       allowancesQueryError,
       // methods

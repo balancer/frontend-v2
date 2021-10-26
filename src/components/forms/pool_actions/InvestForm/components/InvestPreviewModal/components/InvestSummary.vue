@@ -143,7 +143,7 @@ function weeklyYieldForAPR(apr: string): string {
                   {{ thirdPartyAPRLabel }}
                 </span>
               </div>
-              <BalStatBreakdown
+              <BalBreakdown
                 :items="Object.entries(lmBreakdown)"
                 :hideItems="!multiRewardPool"
               >
@@ -160,7 +160,7 @@ function weeklyYieldForAPR(apr: string): string {
                     {{ lmTokens[item[0]].symbol }}
                   </span>
                 </template>
-              </BalStatBreakdown>
+              </BalBreakdown>
             </div>
           </BalTooltip>
         </div>

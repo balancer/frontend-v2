@@ -264,8 +264,6 @@
     "trade": "Торговать",
     "tradeEarns": "Эта сделка приносит вам прибыль",
     "tradeFromWeth": "Торговля от WETH",
-    "tradeInterface": "Торговый интерфейс",
-    "tradeInterfaceTooltip": "Выберите Balancer для лучшей ликвидности в пулах Balancer V1 и V2. Выберите Gnosis, чтобы покупать и продавать токены с использованием безгазовых ордеров, обеспечивая при этом защиту MEV.",
     "tradeLiquidity": "Торговая ликвидность",
     "tradeSettled": "Ваша сделка рассчитана",
     "tradeSubmissionError": {"title":"произошла ошибка", "actionLabel":"Увольнять"},

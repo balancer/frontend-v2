@@ -264,8 +264,6 @@
     "trade": "Comercio",
     "tradeEarns": "Este comercio te hace ganar",
     "tradeFromWeth": "Comercio desde WETH",
-    "tradeInterface": "Interfaz comercial",
-    "tradeInterfaceTooltip": "Elija Balancer para obtener la mejor liquidez en los pools de Balancer V1 y V2. Elija Gnosis para comprar y vender tokens utilizando pedidos sin gas mientras brinda protección MEV.",
     "tradeLiquidity": "Liquidez comercial",
     "tradeSettled": "Tu comercio se ha asentado",
     "tradeSubmissionError": {"title":"Se ha producido un error", "actionLabel":"Despedir"},

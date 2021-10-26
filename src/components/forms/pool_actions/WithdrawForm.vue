@@ -74,7 +74,7 @@
         :key="tokenAddress"
         v-model:amount="amounts[i]"
         v-model:address="tokenAddresses[i]"
-        :weight="isStableLikePool ? 0 : tokenWeights[i]"
+        :weight="isStableLikePool ? 0 : Number(tokenWeights[i])"
         :customBalance="singleAssetMaxes[i]"
         :name="tokenAddress"
         class="mb-4"
@@ -114,7 +114,7 @@
                 class="text-gray-400 -mb-px ml-2"
               />
             </template>
-            <div v-html="$t('withdrawWarning')" class="w-52" />
+            <div v-html="$t('withdrawWarning')" />
           </BalTooltip>
         </div>
         <BalCheckbox
@@ -135,7 +135,7 @@
           block
           @click="trackGoal(Goals.ClickWithdraw)"
         >
-          {{ $t('withdraw') }}
+          {{ $t('withdraw.label') }}
           {{ missingPrices || total.length > 15 ? '' : total }}
         </BalBtn>
       </template>
@@ -152,7 +152,8 @@ import {
   reactive,
   toRefs,
   PropType,
-  toRef
+  toRef,
+  ref
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -242,7 +243,8 @@ export default defineComponent({
       toRef(props, 'pool'),
       tokens,
       balances,
-      'exit'
+      'exit',
+      ref(false)
     );
 
     // COMPUTED
@@ -488,6 +490,7 @@ export default defineComponent({
         getProvider(),
         account.value,
         fullAmounts.value,
+        props.pool.tokenAddresses,
         bptBalance.value,
         exitTokenIndex.value,
         exactOut.value
@@ -508,6 +511,7 @@ export default defineComponent({
           getProvider(),
           account.value,
           amountsOut.value,
+          props.pool.tokenAddresses,
           `${bptIn.value}`,
           exitTokenIndex.value,
           exactOut.value

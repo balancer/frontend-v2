@@ -19,7 +19,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-html="$t('marketConditionsWarning')" class="w-52" />
+          <div v-html="$t('marketConditionsWarning')" />
         </BalTooltip>
       </div>
       <AppSlippageForm class="mt-1" />
@@ -31,7 +31,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-text="$t('whichPools')" class="w-52" />
+          <div v-text="$t('whichPools')" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">
@@ -49,7 +49,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-text="$t('ethereumTxTypeTooltip')" class="w-52" />
+          <div v-text="$t('ethereumTxTypeTooltip')" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">
@@ -60,14 +60,17 @@
         />
       </div>
     </div>
-    <div v-if="appTradeInterface === TradeInterface.GNOSIS" class="mt-6">
+    <div
+      class="mt-6"
+      v-if="isGassless && context === TradeSettingsContext.trade"
+    >
       <div class="flex items-baseline">
         <span v-text="$t('transactionDeadline')" class="font-medium mb-2" />
         <BalTooltip>
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
           </template>
-          <div v-html="$t('transactionDeadlineTooltip')" class="w-52" />
+          <div v-html="$t('transactionDeadlineTooltip')" />
         </BalTooltip>
       </div>
       <div class="flex mt-1">
@@ -106,7 +109,6 @@ import useNumbers from '@/composables/useNumbers';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
 import useFathom from '@/composables/useFathom';
 
-import { TradeInterface } from '@/store/modules/app';
 import {
   tradeLiquidityOptions,
   ethereumTxTypeOptions
@@ -131,7 +133,8 @@ export default defineComponent({
     context: {
       type: [String, Number] as PropType<TradeSettingsContext>,
       required: true
-    }
+    },
+    isGassless: { type: Boolean, default: false }
   },
 
   setup(props) {
@@ -156,9 +159,6 @@ export default defineComponent({
 
     // COMPUTED
     const appTradeLiquidity = computed(() => store.state.app.tradeLiquidity);
-    const appTradeInterface = computed<TradeInterface>(
-      () => store.state.app.tradeInterface
-    );
     const appTransactionDeadline = computed<number>(
       () => store.state.app.transactionDeadline
     );
@@ -184,11 +184,10 @@ export default defineComponent({
       // data
       ...toRefs(data),
       Goals,
-      // constants,
-      TradeInterface,
+      // types,
+      TradeSettingsContext,
       // computed
       appTradeLiquidity,
-      appTradeInterface,
       appTransactionDeadline,
       hideLiquidity,
       isEIP1559SupportedNetwork,

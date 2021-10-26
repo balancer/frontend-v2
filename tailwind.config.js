@@ -56,6 +56,9 @@ module.exports = {
       ...defaultTheme.screens
     },
     extend: {
+      height: {
+        '112': '28rem'
+      },
       colors: {
         gray: {
           50: '#F8FAFC',
@@ -124,6 +127,7 @@ module.exports = {
   variants: {
     extend: {
       margin: ['first'],
+      borderRadius: ['first', 'last'],
       zIndex: ['hover'],
       borderWidth: ['dark', 'last']
     }

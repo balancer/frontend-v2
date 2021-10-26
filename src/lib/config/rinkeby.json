@@ -6,9 +6,9 @@
   "shortName": "Rinkeby",
   "network": "rinkeby",
   "unknown": false,
-  "rpc": "https://eth-rinkeby.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
-  "ws": "wss://eth-rinkeby.ws.alchemyapi.io/v2/QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO",
-  "loggingRpc": "https://eth-mainnet.alchemyapi.io/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88",
+  "rpc": "https://eth-rinkeby.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
+  "ws": "wss://eth-rinkeby.ws.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
+  "loggingRpc": "https://eth-rinkeby.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://rinkeby.etherscan.io",
   "explorerName": "Etherscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-rinkeby-v2",
@@ -29,6 +29,7 @@
     "dsProxyRegistry": "0x130767E0cf05469CF11Fa3fcf270dfC1f52b9072",
     "exchangeProxy": "0x4e67bf5bD28Dd4b570FBAFe11D0633eCbA2754Ec",
     "merkleRedeem": "0x3bc73D276EEE8cA9424Ecb922375A0357c1833B3",
+    "merkleOrchard": "0x0F3e0c4218b7b0108a3643cFe9D3ec0d4F57c54e",
     "multicall": "0x3b2A02F22fCbc872AF77674ceD303eb269a46ce3",
     "authorizer": "0xA331D84eC860Bf466b4CdCcFb4aC09a1B43F3aE6",
     "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
@@ -40,6 +41,10 @@
     "wstETH": "0xba453033d328bfdd7799a4643611b616d80ddd97",
     "lidoRelayer": "",
     "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d"
+  },
+  "keys": {
+    "infura": "daaa68ec242643719749dd1caba2fc66",
+    "alchemy": "QCsM2iU0bQ49eGDmZ7-Y--Wpu0lVWXSO-Ti"
   },
   "strategies": {
     "0": {

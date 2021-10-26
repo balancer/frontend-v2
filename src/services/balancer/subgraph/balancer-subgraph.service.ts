@@ -4,6 +4,8 @@ import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
 import PoolActivities from './entities/poolActivities';
 import PoolSnapshots from './entities/poolSnapshots';
+import TradePairSnapshots from './entities/tradePairs';
+
 import { Network, networkId } from '@/composables/useNetwork';
 
 export default class BalancerSubgraphService {
@@ -11,6 +13,7 @@ export default class BalancerSubgraphService {
   poolShares: PoolShares;
   poolActivities: PoolActivities;
   poolSnapshots: PoolSnapshots;
+  tradePairSnapshots: TradePairSnapshots;
 
   constructor(
     readonly client = balancerSubgraphClient,
@@ -21,6 +24,7 @@ export default class BalancerSubgraphService {
     this.poolShares = new PoolShares(this);
     this.poolActivities = new PoolActivities(this);
     this.poolSnapshots = new PoolSnapshots(this);
+    this.tradePairSnapshots = new TradePairSnapshots(this);
   }
 
   public get blockTime(): number {
@@ -30,8 +34,7 @@ export default class BalancerSubgraphService {
       case Network.POLYGON:
         return 2;
       case Network.ARBITRUM:
-        // TODO: Replace this with a more realistic number once activity picks up
-        return 13;
+        return 3;
       case Network.KOVAN:
         // Should be ~4s but this causes subgraph to return with unindexed block error.
         return 1;

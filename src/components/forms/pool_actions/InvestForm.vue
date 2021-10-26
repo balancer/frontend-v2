@@ -98,7 +98,7 @@
         v-model:amount="amounts[i]"
         v-model:address="tokenAddresses[i]"
         v-model:isValid="validInputs[i]"
-        :weight="isStableLikePool ? 0 : tokenWeights[i]"
+        :weight="isStableLikePool ? 0 : Number(tokenWeights[i])"
         :name="tokenAddress"
         class="mb-4"
         fixedToken
@@ -121,7 +121,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52" v-html="$t('ethBufferInstruction')" />
+          <div v-html="$t('ethBufferInstruction')" />
         </BalTooltip>
       </div>
       <div v-if="isWstETHPool" class="flex items-center mb-4">
@@ -146,7 +146,7 @@
           <template v-slot:activator>
             <BalIcon name="info" size="xs" class="text-gray-400 ml-2" />
           </template>
-          <div class="w-52" v-html="$t('wrapStEthTooltip')" />
+          <div v-html="$t('wrapStEthTooltip')" />
         </BalTooltip>
       </div>
     </div>
@@ -181,7 +181,7 @@
                 class="text-gray-400 -mb-px ml-2"
               />
             </template>
-            <div v-html="$t('customAmountsTip')" class="w-52" />
+            <div v-html="$t('customAmountsTip')" />
           </BalTooltip>
         </div>
         <BalBtn
@@ -232,7 +232,8 @@ import {
   reactive,
   toRefs,
   PropType,
-  toRef
+  toRef,
+  ref
 } from 'vue';
 import { FormRef } from '@/types';
 import {
@@ -335,14 +336,6 @@ export default defineComponent({
       managedPoolWithTradingHalted
     } = usePool(toRef(props, 'pool'));
 
-    const { amounts } = toRefs(data);
-
-    const {
-      requiredApprovalState,
-      requiredApprovals,
-      approveNextAllowance
-    } = useTokenApprovals(props.pool.tokenAddresses, amounts);
-
     // SERVICES
     const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
@@ -350,7 +343,8 @@ export default defineComponent({
       toRef(props, 'pool'),
       tokens,
       allBalances,
-      'join'
+      'join',
+      ref(false)
     );
 
     // COMPUTED
@@ -398,10 +392,6 @@ export default defineComponent({
       if (!hasAmounts.value) return false;
       return requiredApprovals.value.length > 0;
     });
-
-    const approving = computed(
-      () => requiredApprovalState.value[requiredApprovals.value[0]].confirming
-    );
 
     const isProportional = computed(() => {
       return data.investType === FormTypes.proportional;
@@ -498,6 +488,12 @@ export default defineComponent({
       return validTypes;
     });
 
+    const {
+      approving,
+      requiredApprovals,
+      approveNextAllowance
+    } = useTokenApprovals(props.pool.tokenAddresses, fullAmounts);
+
     // METHODS
     function tokenBalance(index: number): string {
       return balances.value[index] || '0';
@@ -566,6 +562,7 @@ export default defineComponent({
         getProvider(),
         account.value,
         fullAmounts.value,
+        props.pool.tokenAddresses,
         minBptOut.value
       );
       queryBptOut = formatUnits(
@@ -593,6 +590,7 @@ export default defineComponent({
           getProvider(),
           account.value,
           fullAmounts.value,
+          props.pool.tokenAddresses,
           _bptOut
         );
         console.log('Receipt', tx);

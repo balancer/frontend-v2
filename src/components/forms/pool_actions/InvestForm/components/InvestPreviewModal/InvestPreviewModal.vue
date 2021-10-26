@@ -8,7 +8,7 @@ import useNumbers from '@/composables/useNumbers';
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
 import InvestActions from './components/InvestActions.vue';
-import { InvestMath } from '../../composables/useInvestFormMath';
+import { InvestMathResponse } from '../../composables/useInvestMath';
 import { useI18n } from 'vue-i18n';
 
 /**
@@ -16,7 +16,8 @@ import { useI18n } from 'vue-i18n';
  */
 type Props = {
   pool: FullPool;
-  investMath: InvestMath;
+  math: InvestMathResponse;
+  tokenAddresses: string[];
 };
 
 type AmountMap = {
@@ -43,7 +44,7 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact } = toRefs(props.investMath);
+const { fullAmounts, priceImpact } = toRefs(props.math);
 
 /**
  * COMPUTED
@@ -54,13 +55,11 @@ const title = computed((): string =>
     : t('investment.preview.titles.default')
 );
 
-const tokenAddresses = computed((): string[] => props.pool.tokenAddresses);
-
 const amountMap = computed(
   (): AmountMap => {
     const amountMap = {};
     fullAmounts.value.forEach((amount, i) => {
-      if (hasAmount(i)) amountMap[tokenAddresses.value[i]] = amount;
+      if (hasAmount(i)) amountMap[props.tokenAddresses[i]] = amount;
     });
     return amountMap;
   }
@@ -137,7 +136,8 @@ function hasAmount(index: number): boolean {
 
     <InvestActions
       :pool="pool"
-      :investMath="investMath"
+      :math="math"
+      :tokenAddresses="tokenAddresses"
       class="mt-4"
       @success="investmentConfirmed = true"
     />

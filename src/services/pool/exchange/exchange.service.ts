@@ -18,7 +18,7 @@ export default class ExchangeService {
 
   constructor(
     pool: Ref<FullPool>,
-    private readonly config: ConfigService = configService
+    public readonly config: ConfigService = configService
   ) {
     this.pool = pool;
     this.vaultAddress = this.config.network.addresses.vault;
@@ -29,9 +29,15 @@ export default class ExchangeService {
     provider: Web3Provider | JsonRpcProvider,
     account: string,
     amountsIn: string[],
+    tokensIn: string[],
     bptOut = '0'
   ) {
-    const txParams = this.joinParams.serialize(account, amountsIn, bptOut);
+    const txParams = this.joinParams.serialize(
+      account,
+      amountsIn,
+      tokensIn,
+      bptOut
+    );
 
     return await callStatic(
       provider,
@@ -46,16 +52,24 @@ export default class ExchangeService {
     provider: Web3Provider | JsonRpcProvider,
     account: string,
     amountsIn: string[],
+    tokensIn: string[],
     bptOut = '0'
   ): Promise<TransactionResponse> {
-    const txParams = this.joinParams.serialize(account, amountsIn, bptOut);
+    const txParams = this.joinParams.serialize(
+      account,
+      amountsIn,
+      tokensIn,
+      bptOut
+    );
+    const value = this.joinParams.value(amountsIn, tokensIn);
 
     return await sendTransaction(
       provider,
       this.vaultAddress,
       Vault__factory.abi,
       'joinPool',
-      txParams
+      txParams,
+      { value }
     );
   }
 
@@ -63,6 +77,7 @@ export default class ExchangeService {
     provider: Web3Provider | JsonRpcProvider,
     account: string,
     amountsOut: string[],
+    tokensOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
     exactOut: boolean
@@ -70,6 +85,7 @@ export default class ExchangeService {
     const txParams = this.exitParams.serialize(
       account,
       amountsOut,
+      tokensOut,
       bptIn,
       exitTokenIndex,
       exactOut
@@ -88,6 +104,7 @@ export default class ExchangeService {
     provider: Web3Provider | JsonRpcProvider,
     account: string,
     amountsOut: string[],
+    tokensOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
     exactOut: boolean
@@ -95,6 +112,7 @@ export default class ExchangeService {
     const txParams = this.exitParams.serialize(
       account,
       amountsOut,
+      tokensOut,
       bptIn,
       exitTokenIndex,
       exactOut
