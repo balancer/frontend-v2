@@ -6,14 +6,14 @@ import { ref, computed } from 'vue';
  */
 type Props = {
   options: Array<any>;
-  width?: string;
+  minWidth?: string;
 };
 
 /**
  * PROPS & EMITS
  */
 const props = withDefaults(defineProps<Props>(), {
-  width: 'auto'
+  minWidth: 'auto'
 });
 
 const emit = defineEmits<{
@@ -29,7 +29,7 @@ const showDropdown = ref(false);
  * COMPUTED
  */
 const dropdownClasses = computed(() => ({
-  [`w-${props.width}`]: true
+  [`min-w-${props.minWidth}`]: true
 }));
 
 /**
