@@ -140,11 +140,13 @@ export class ClaimService {
               .find(liquidityProvider => Number(liquidityProvider.velocity) > 0)
               ?.velocity.toString() ?? '0';
 
-          multiTokenCurrentRewardsEstimate.push({
-            rewards,
-            velocity,
-            token: getAddress(token)
-          });
+          if (Number(rewards) > 0) {
+            multiTokenCurrentRewardsEstimate.push({
+              rewards,
+              velocity,
+              token: getAddress(token)
+            });
+          }
         }
 
         return {
