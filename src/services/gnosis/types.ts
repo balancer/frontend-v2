@@ -38,7 +38,8 @@ export type FeeQuoteParams = Pick<
   receiver: string;
   sellTokenBalance: OrderBalance;
   buyTokenBalance: OrderBalance;
-  sellAmountBeforeFee: string;
+  sellAmountBeforeFee?: string;
+  buyAmountAfterFee?: string;
 };
 
 export type PriceQuoteParams = Pick<

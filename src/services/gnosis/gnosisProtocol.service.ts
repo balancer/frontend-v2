@@ -113,18 +113,21 @@ export default class GnosisProtocolService {
   }
 
   public async getFeeQuote(feeQuoteParams: FeeQuoteParams) {
-    try {
-      const { data } = await axios.post<FeeInformation>(
-        `${this.baseURL}/quote`,
-        feeQuoteParams
-      );
+    const response = await axios.post<FeeInformation>(
+      `${this.baseURL}/quote`,
+      feeQuoteParams,
+      {
+        validateStatus: () => true
+      }
+    );
 
-      return data;
-    } catch (e) {
-      console.log(`[Gnosis Protocol]: Failed to get fee from API`, e);
+    if (response.status >= 200 && response.status < 300) {
+      return response.data;
     }
 
-    return null;
+    const errorMessage = OperatorError.getErrorFromStatusCode(response, 'get');
+
+    throw new Error(errorMessage);
   }
 
   public async getPriceQuote(params: PriceQuoteParams) {
