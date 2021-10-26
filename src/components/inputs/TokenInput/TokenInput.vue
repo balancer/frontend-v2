@@ -11,6 +11,7 @@ import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
+import { ETH_TX_BUFFER } from '@/constants/transactions';
 
 /**
  * TYPES
@@ -68,7 +69,6 @@ const emit = defineEmits<{
  */
 const _amount = ref<InputValue>('');
 const _address = ref<string>('');
-const ETH_BUFFER = 0.1;
 
 /**
  * COMPOSABLEs
@@ -85,7 +85,18 @@ const { isWalletReady } = useWeb3();
 const hasToken = computed(() => !!_address.value);
 const hasAmount = computed(() => bnum(_amount.value).gt(0));
 const hasBalance = computed(() => bnum(tokenBalance.value).gt(0));
-const isMaxed = computed(() => _amount.value === tokenBalance.value);
+const isMaxed = computed(() => {
+  if (_address.value === nativeAsset.address && !props.disableEthBuffer) {
+    return (
+      _amount.value ===
+      bnum(tokenBalance.value)
+        .minus(ETH_TX_BUFFER)
+        .toString()
+    );
+  } else {
+    return _amount.value === tokenBalance.value;
+  }
+});
 
 const tokenBalance = computed(() => {
   if (props.customBalance) return props.customBalance;
@@ -141,9 +152,9 @@ const setMax = () => {
 
   if (_address.value === nativeAsset.address && !props.disableEthBuffer) {
     // Subtract buffer for gas
-    _amount.value = bnum(tokenBalance.value).gt(ETH_BUFFER)
+    _amount.value = bnum(tokenBalance.value).gt(ETH_TX_BUFFER)
       ? bnum(tokenBalance.value)
-          .minus(ETH_BUFFER)
+          .minus(ETH_TX_BUFFER)
           .toString()
       : '0';
   } else {
