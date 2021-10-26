@@ -44,7 +44,6 @@ export default class GnosisProtocolService {
   }) {
     const { order, owner } = params;
 
-    // Call API
     const response = await axios.post<OrderID>(
       `${this.baseURL}/orders`,
       {
@@ -75,7 +74,6 @@ export default class GnosisProtocolService {
   }) {
     const { cancellation, owner } = params;
 
-    // Call API
     const response = await axios.delete<OrderID>(
       `${this.baseURL}/orders/${cancellation.orderUid}`,
       {
@@ -102,10 +100,11 @@ export default class GnosisProtocolService {
 
   public async getOrder(orderId: OrderID) {
     try {
-      const response = await axios.get<OrderMetaData>(
+      const { data } = await axios.get<OrderMetaData>(
         `${this.baseURL}/orders/${orderId}`
       );
-      return response.data;
+
+      return data;
     } catch (e) {
       console.log(`[Gnosis Protocol]: Failed to get order ${orderId}`, e);
     }
@@ -115,11 +114,11 @@ export default class GnosisProtocolService {
 
   public async getFeeQuote(feeQuoteParams: FeeQuoteParams) {
     try {
-      // Call API
       const { data } = await axios.post<FeeInformation>(
         `${this.baseURL}/quote`,
         feeQuoteParams
       );
+
       return data;
     } catch (e) {
       console.log(`[Gnosis Protocol]: Failed to get fee from API`, e);
@@ -144,6 +143,7 @@ export default class GnosisProtocolService {
       const response = await axios.get<PriceInformation>(
         `${this.baseURL}/markets/${market}/${kind}/${amount}`
       );
+
       return response.data;
     } catch (e) {
       console.log(`[Gnosis Protocol]: Failed to get price from API`, e);
