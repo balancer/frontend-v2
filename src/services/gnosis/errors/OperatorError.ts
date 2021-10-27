@@ -7,8 +7,6 @@ export interface ApiErrorObject {
   description: string;
 }
 
-// Conforms to backend API
-// https://github.com/gnosis/gp-v2-services/blob/0bd5f7743bebaa5acd3be13e35ede2326a096f14/orderbook/openapi.yml#L562
 export enum ApiErrorCodes {
   DuplicateOrder = 'DuplicateOrder',
   InvalidSignature = 'InvalidSignature',
@@ -25,11 +23,15 @@ export enum ApiErrorCodes {
   OrderExpired = 'OrderExpired',
   UnsupportedSellTokenSource = 'UnsupportedSellTokenSource',
   UnsupportedBuyTokenSource = 'UnsupportedBuyTokenSource',
+  SellAmountDoesNotCoverFee = 'SellAmountDoesNotCoverFee',
+  PriceExceedsBalance = 'PriceExceedsBalance',
+  NoLiquidity = 'NoLiquidity',
   UNHANDLED_GET_ERROR = 'UNHANDLED_GET_ERROR',
   UNHANDLED_CREATE_ERROR = 'UNHANDLED_CREATE_ERROR',
   UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR'
 }
 
+// TODO: move these into translation files and return only the error codes.
 export enum ApiErrorCodeDetails {
   DuplicateOrder = 'There was another identical order already submitted. Please try again.',
   InsufficientFee = "The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
@@ -103,7 +105,7 @@ export default class OperatorError extends Error {
   }
   static getErrorFromStatusCode(
     response: AxiosResponse,
-    action: 'create' | 'delete'
+    action: ApiActionType
   ) {
     switch (response.status) {
       case 400:

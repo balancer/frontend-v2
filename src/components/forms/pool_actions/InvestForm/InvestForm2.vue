@@ -13,12 +13,13 @@ import { isStableLike, usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
-import useInvestFormMath from './composables/useInvestFormMath';
+import useInvestMath from './composables/useInvestMath';
 import { isRequired } from '@/lib/utils/validations';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 /**
  * TYPES
@@ -30,7 +31,6 @@ enum NativeAsset {
 
 type Props = {
   pool: FullPool;
-  useNativeAsset: boolean;
 };
 
 type FormState = {
@@ -47,16 +47,12 @@ type FormState = {
  */
 const props = defineProps<Props>();
 
-const emit = defineEmits<{
-  (e: 'update:useNativeAsset', value: boolean): void;
-}>();
-
 /**
  * STATE
  */
 const state = reactive<FormState>({
   amounts: [],
-  tokenAddresses: [...props.pool.tokenAddresses],
+  tokenAddresses: [],
   propAmounts: [],
   validInputs: [],
   highPriceImpactAccepted: false,
@@ -70,12 +66,13 @@ const showInvestPreview = ref(false);
  */
 const { t } = useI18n();
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const { useNativeAsset } = usePoolTransfers();
 
-const investMath = useInvestFormMath(
+const investMath = useInvestMath(
   toRef(props, 'pool'),
   toRef(state, 'tokenAddresses'),
   toRef(state, 'amounts'),
-  toRef(props, 'useNativeAsset')
+  useNativeAsset
 );
 
 const {
@@ -124,6 +121,10 @@ function handleAmountChange(value: string, index: number): void {
       state.amounts = [...proportionalAmounts.value];
     }
   });
+}
+
+function handleAddressChange(newAddress: string): void {
+  useNativeAsset.value = newAddress === nativeAsset.address;
 }
 
 function tokenWeight(address: string): number {
@@ -186,26 +187,20 @@ function setNativeAsset(to: NativeAsset): void {
  * CALLBACKS
  */
 onBeforeMount(() => {
+  state.tokenAddresses = [...props.pool.tokenAddresses];
   if (isWethPool.value) setNativeAssetByBalance();
 });
 
 /**
  * WATCHERS
  */
-watch(state.tokenAddresses, newAddresses => {
-  emit('update:useNativeAsset', newAddresses.includes(nativeAsset.address));
-});
-
-watch(
-  () => props.useNativeAsset,
-  shouldUseNativeAsset => {
-    if (shouldUseNativeAsset) {
-      setNativeAsset(NativeAsset.unwrapped);
-    } else {
-      setNativeAsset(NativeAsset.wrapped);
-    }
+watch(useNativeAsset, shouldUseNativeAsset => {
+  if (shouldUseNativeAsset) {
+    setNativeAsset(NativeAsset.unwrapped);
+  } else {
+    setNativeAsset(NativeAsset.wrapped);
   }
-);
+});
 </script>
 
 <template>
@@ -234,10 +229,11 @@ watch(
       fixedToken
       :options="tokenOptions(i)"
       @update:amount="handleAmountChange($event, i)"
+      @update:address="handleAddressChange($event)"
     />
 
     <InvestFormTotals
-      :investMath="investMath"
+      :math="investMath"
       @maximize="maximizeAmounts"
       @optimize="optimizeAmounts"
     />
@@ -275,7 +271,7 @@ watch(
       <InvestPreviewModal
         v-if="showInvestPreview"
         :pool="pool"
-        :investMath="investMath"
+        :math="investMath"
         :tokenAddresses="state.tokenAddresses"
         @close="showInvestPreview = false"
       />

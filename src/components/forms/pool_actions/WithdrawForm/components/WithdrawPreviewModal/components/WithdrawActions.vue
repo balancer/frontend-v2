@@ -1,35 +1,32 @@
 <script setup lang="ts">
 import { toRef, ref, toRefs, computed, reactive } from 'vue';
-import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
-import { InvestMathResponse } from '../../../composables/useInvestMath';
 import {
   Step,
   StepState
 } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 // Composables
-import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import { useI18n } from 'vue-i18n';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
-import useTokenApprovals, {
-  ApprovalState
-} from '@/composables/pools/useTokenApprovals';
 import useConfig from '@/composables/useConfig';
+import useWithdrawalState from '../../../composables/useWithdrawalState';
+// Services
+import PoolExchange from '@/services/pool/exchange/exchange.service';
 
 /**
  * TYPES
  */
 type Props = {
   pool: FullPool;
-  math: InvestMathResponse;
-  tokenAddresses: string[];
+  math: WithdrawMathResponse;
 };
 
 type Action = {
@@ -40,7 +37,7 @@ type Action = {
   promise: () => Promise<void>;
 };
 
-type InvestmentState = {
+type WithdrawalState = {
   init: boolean;
   confirming: boolean;
   confirmed: boolean;
@@ -61,7 +58,7 @@ const emit = defineEmits<{
  * STATE
  */
 const currentActionIndex = ref(0);
-const investmentState = reactive<InvestmentState>({
+const withdrawalState = reactive<WithdrawalState>({
   init: false,
   confirming: false,
   confirmed: false,
@@ -74,16 +71,19 @@ const investmentState = reactive<InvestmentState>({
 const route = useRoute();
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { getToken } = useTokens();
 const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.math);
 
-const { requiredApprovalState, approveToken } = useTokenApprovals(
-  props.pool.tokenAddresses,
-  fullAmounts
-);
+const { tokenOutIndex, tokensOut } = useWithdrawalState(toRef(props, 'pool'));
+
+const {
+  bptIn,
+  fiatTotalLabel,
+  amountsOut,
+  exactOut,
+  singleAssetMaxOut
+} = toRefs(props.math);
 
 /**
  * SERVICES
@@ -93,57 +93,27 @@ const poolExchange = new PoolExchange(toRef(props, 'pool'));
 /**
  * COMPUTED
  */
-const allApproved = computed((): boolean =>
-  Object.values(requiredApprovalState.value).every(state => state.approved)
-);
-
-const approvalActions = computed((): Action[] => {
-  return Object.keys(requiredApprovalState.value).map((address, i) => {
-    const token = getToken(address);
-    const state = requiredApprovalState.value[address];
-
-    return {
-      label: t('transactionSummary.approveForInvesting', [token.symbol]),
-      loadingLabel: state.init
-        ? t('investment.preview.loadingLabel.approval')
-        : t('confirming'),
-      pending: state.init || state.confirming,
-      promise: async () => {
-        const confirmed = await approveToken(token.address);
-        if (confirmed) currentActionIndex.value += 1;
-      },
-      step: {
-        tooltip: t('investment.preview.tooltips.approval', [token.symbol]),
-        state: approvalStepState(state, i)
-      }
-    };
-  });
-});
-
-const investStepState = computed(
+const withdrawalStepState = computed(
   (): StepState => {
-    if (approvalActions.value.length > 0 && !allApproved.value) {
-      return StepState.Todo;
-    } else if (investmentState.confirming) return StepState.Pending;
-    else if (investmentState.init) return StepState.WalletOpen;
-    else if (investmentState.confirmed) return StepState.Success;
+    if (withdrawalState.confirming) return StepState.Pending;
+    else if (withdrawalState.init) return StepState.WalletOpen;
+    else if (withdrawalState.confirmed) return StepState.Success;
 
     return StepState.Active;
   }
 );
 
 const actions = computed((): Action[] => [
-  ...approvalActions.value,
   {
-    label: t('invest'),
-    loadingLabel: investmentState.init
-      ? t('investment.preview.loadingLabel.investment')
+    label: t('withdraw.label'),
+    loadingLabel: withdrawalState.init
+      ? t('withdraw.preview.loadingLabel.withdraw')
       : t('confirming'),
-    pending: investmentState.init || investmentState.confirming,
+    pending: withdrawalState.init || withdrawalState.confirming,
     promise: submit,
     step: {
-      tooltip: t('investmentTooltip'),
-      state: investStepState.value
+      tooltip: t('withdraw.preview.tooltips.withdrawStep'),
+      state: withdrawalStepState.value
     }
   }
 ]);
@@ -155,34 +125,20 @@ const currentAction = computed(
 const steps = computed((): Step[] => actions.value.map(action => action.step));
 
 const explorerLink = computed((): string =>
-  investmentState.receipt
-    ? explorerLinks.txLink(investmentState.receipt.transactionHash)
+  withdrawalState.receipt
+    ? explorerLinks.txLink(withdrawalState.receipt.transactionHash)
     : ''
 );
 
 /**
  * METHODS
  */
-function approvalStepState(state: ApprovalState, index: number): StepState {
-  if (state.confirming) {
-    return StepState.Pending;
-  } else if (state.init) {
-    return StepState.WalletOpen;
-  } else if (!state.approved && index === currentActionIndex.value) {
-    return StepState.Active;
-  } else if (state.approved) {
-    return StepState.Success;
-  } else {
-    return StepState.Todo;
-  }
-}
-
 async function handleTransaction(tx): Promise<void> {
   addTransaction({
     id: tx.hash,
     type: 'tx',
-    action: 'invest',
-    summary: t('transactionSummary.investInPool', [
+    action: 'withdraw',
+    summary: t('transactionSummary.withdrawFromPool', [
       fiatTotalLabel.value,
       getPoolWeights(props.pool)
     ]),
@@ -192,42 +148,44 @@ async function handleTransaction(tx): Promise<void> {
     }
   });
 
-  investmentState.confirmed = await txListener(tx, {
+  withdrawalState.confirmed = await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       emit('success', receipt);
-      investmentState.confirming = false;
-      investmentState.receipt = receipt;
+      withdrawalState.confirming = false;
+      withdrawalState.receipt = receipt;
 
       const confirmedAt = await getTxConfirmedAt(receipt);
-      investmentState.confirmedAt = dateTimeLabelFor(confirmedAt);
+      withdrawalState.confirmedAt = dateTimeLabelFor(confirmedAt);
     },
     onTxFailed: () => {
-      investmentState.confirming = false;
+      withdrawalState.confirming = false;
     }
   });
 }
 
 async function submit(): Promise<void> {
   try {
-    investmentState.init = true;
+    withdrawalState.init = true;
 
-    const tx = await poolExchange.join(
+    const tx = await poolExchange.exit(
       getProvider(),
       account.value,
-      fullAmounts.value,
-      props.tokenAddresses,
-      bptOut.value
+      amountsOut.value,
+      tokensOut.value,
+      bptIn.value,
+      singleAssetMaxOut.value ? tokenOutIndex.value : null,
+      exactOut.value
     );
 
-    investmentState.init = false;
-    investmentState.confirming = true;
+    withdrawalState.init = false;
+    withdrawalState.confirming = true;
 
     console.log('Receipt', tx);
 
     handleTransaction(tx);
   } catch (error) {
-    investmentState.init = false;
-    investmentState.confirming = false;
+    withdrawalState.init = false;
+    withdrawalState.confirming = false;
     console.error(error);
   }
 }
@@ -236,12 +194,12 @@ async function submit(): Promise<void> {
 <template>
   <div>
     <BalHorizSteps
-      v-if="actions.length > 1 && !investmentState.confirmed"
+      v-if="actions.length > 1 && !withdrawalState.confirmed"
       :steps="steps"
       class="flex justify-center"
     />
     <BalBtn
-      v-if="!investmentState.confirmed"
+      v-if="!withdrawalState.confirmed"
       color="gradient"
       class="mt-4"
       :disabled="currentAction.pending"
@@ -259,7 +217,7 @@ async function submit(): Promise<void> {
         <div class="flex items-center">
           <BalIcon name="clock" />
           <span class="ml-2">
-            {{ investmentState.confirmedAt }}
+            {{ withdrawalState.confirmedAt }}
           </span>
         </div>
         <BalLink

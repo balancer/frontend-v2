@@ -6,7 +6,7 @@ import Weighted from './weighted';
 import Stable from './stable';
 import { TokenInfoMap } from '@/types/TokenList';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { Ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { isStable, isStableLike } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
@@ -34,7 +34,7 @@ export default class CalculatorService {
     public allTokens: Ref<TokenInfoMap>,
     public balances: Ref<BalanceMap>,
     public action: PoolAction,
-    public useNativeAsset: Ref<boolean>,
+    public useNativeAsset: Ref<boolean> = ref(false),
     weightedClass = Weighted,
     stableClass = Stable,
     public readonly config = configService
