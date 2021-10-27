@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import { AddressZero } from '@ethersproject/constants';
 import { configService } from '@/services/config/config.service';
-import {
-  PoolToken,
-  poolCreator
-} from '@/services/pool-creator/pool-creator.service';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
-import useWeb3 from '@/services/web3/useWeb3';
 import { computed, onMounted, reactive, ref, nextTick } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useTokens from '@/composables/useTokens';
 import anime from 'animejs';
 import { sum, sumBy } from 'lodash';
 import usePoolCreation, {
@@ -29,9 +23,7 @@ const emptyTokenWeight: TokenWeight = {
   amount: 0
 };
 
-const { userNetworkConfig, getProvider } = useWeb3();
 const { tokenWeights, updateTokenWeights, proceed } = usePoolCreation();
-const { getToken } = useTokens();
 const networkName = configService.network.name;
 
 const _tokenOutAmount = ref();
@@ -92,9 +84,9 @@ const addTokenToPool = async () => {
 
   wrapperHeight.value += tokenWeightItemHeight.value;
 
-  const newWeights = [
+  const newWeights: TokenWeight[] = [
     ...tokenWeights.value,
-    { ...emptyTokenWeight, id: tokenWeights.value.length - 1 }
+    { ...emptyTokenWeight, id: tokenWeights.value.length - 1 } as TokenWeight
   ];
   updateTokenWeights(newWeights);
 
@@ -154,31 +146,6 @@ const createDisabled = computed(() => {
   if (totalWeight.value > 100) return true;
   return false;
 });
-
-const poolSymbol = computed(() => {
-  const tokenSymbols = tokenWeights.map((token: TokenWeight) => {
-    const weightRounded = Math.round(token.weight);
-    const tokenInfo = getToken(token.tokenAddress);
-    return `${Math.round(weightRounded)}${tokenInfo.symbol}`;
-  });
-
-  return tokenSymbols.join('-');
-});
-
-const createPool = () => {
-  const provider = getProvider();
-  const poolTokens: PoolToken[] = tokenWeights.map(w => {
-    return { address: w.tokenAddress, weight: new BigNumber(`${w.weight}e16`) };
-  });
-  poolCreator.createWeightedPool(
-    provider,
-    'MyPool',
-    poolSymbol.value,
-    '0.01',
-    poolTokens,
-    AddressZero
-  );
-};
 
 const addTokenListElementRef = (el: HTMLElement) => {
   if (!tokenWeightItemElements.includes(el)) {

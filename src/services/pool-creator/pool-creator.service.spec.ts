@@ -1,32 +1,38 @@
+import { TokenWeight } from '@/composables/pools/usePoolCreation';
+import { poolCreator } from './pool-creator.service';
 import BigNumber from 'bignumber.js';
-import { PoolInitToken, poolCreator } from './pool-creator.service';
 
-const tokens: Record<string, PoolInitToken> = {};
+const tokens: Record<string, TokenWeight> = {};
+
+jest.mock('@/services/rpc-provider/rpc-provider.service');
 
 describe('PoolCreator', () => {
   beforeEach(() => {
     tokens.MKR = {
-      address: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
-      symbol: 'MKR',
-      weight: new BigNumber(0.7e18)
+      tokenAddress: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
+      weight: 70,
+      isLocked: false,
+      id: 0
     };
     tokens.WETH = {
-      address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      symbol: 'WETH',
-      weight: new BigNumber(0.2e18)
+      tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      weight: 20,
+      isLocked: false,
+      id: 1
     };
     tokens.USDT = {
-      address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      symbol: 'USDT',
-      weight: new BigNumber(0.1e18)
+      tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+      weight: 10,
+      isLocked: false,
+      id: 2
     };
   });
 
-  describe('createWeightedPool', () => {});
+  // describe('createWeightedPool', () => {});
 
   describe('sortTokens', () => {
     it('Should sort tokens by their address', () => {
-      const unsortedTokens: PoolInitToken[] = [
+      const unsortedTokens: TokenWeight[] = [
         tokens.WETH,
         tokens.MKR,
         tokens.USDT
@@ -37,32 +43,30 @@ describe('PoolCreator', () => {
     });
   });
 
-  describe('calculatePoolSymbol', () => {
-    it('Should work for default split', () => {
-      const poolTokens = [tokens.MKR, tokens.WETH, tokens.USDT];
-      const symbol = poolCreator.calculatePoolSymbol(poolTokens);
-      expect(symbol).toEqual('70MKR-20WETH-10USDT');
+  describe('calculateTokenWeights', () => {
+    it('Should return 50e16/50e16 for 2 Token happy case. ', () => {
+      tokens.MKR.weight = 50;
+      tokens.WETH.weight = 50;
+      const normalizedWeights: string[] = poolCreator.calculateTokenWeights([
+        tokens.MKR,
+        tokens.WETH
+      ]);
+      expect(normalizedWeights[0]).toEqual(new BigNumber(0.5e18).toString());
+      expect(normalizedWeights[1]).toEqual(new BigNumber(0.5e18).toString());
     });
 
-    it('Should look good for 33-33-33 split', () => {
-      tokens.MKR.weight = new BigNumber(0.3333e18);
-      tokens.WETH.weight = new BigNumber(0.3333e18);
-      tokens.USDT.weight = new BigNumber(0.3333e18);
-
-      const symbol = poolCreator.calculatePoolSymbol([
+    it('Should return weights that add up to exactly 1e18', () => {
+      tokens.MKR.weight = 33.33;
+      tokens.WETH.weight = 33.33;
+      tokens.USDT.weight = 33.33;
+      const normalizedWeights: string[] = poolCreator.calculateTokenWeights([
         tokens.MKR,
         tokens.WETH,
         tokens.USDT
       ]);
-      expect(symbol).toEqual('33MKR-33WETH-33USDT');
-    });
-
-    it('Should make 66-33 split 67-33', () => {
-      tokens.MKR.weight = new BigNumber(0.6666e18);
-      tokens.WETH.weight = new BigNumber(0.3333e18);
-
-      const symbol = poolCreator.calculatePoolSymbol([tokens.MKR, tokens.WETH]);
-      expect(symbol).toEqual('67MKR-33WETH');
+      expect(normalizedWeights[0]).toEqual('333333333333333333');
+      expect(normalizedWeights[1]).toEqual('333333333333333333');
+      expect(normalizedWeights[2]).toEqual('333333333333333334');
     });
   });
 });

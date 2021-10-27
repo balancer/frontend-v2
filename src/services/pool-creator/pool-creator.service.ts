@@ -6,17 +6,14 @@ import {
 import { Contract } from '@ethersproject/contracts';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { configService } from '../config/config.service';
-import { BigNumber } from 'bignumber.js';
+import BigNumber from 'bignumber.js';
+import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { defaultAbiCoder } from '@ethersproject/abi';
+import { TokenWeight } from '@/composables/pools/usePoolCreation';
+import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 
 type Address = string;
-
-export interface PoolInitToken {
-  address: Address;
-  symbol: string;
-  weight: BigNumber;
-}
 
 export interface CreatePoolReturn {
   id: string;
@@ -38,7 +35,7 @@ export class PoolCreator {
     name: string,
     symbol: string,
     swapFee: string,
-    tokens: PoolInitToken[],
+    tokens: TokenWeight[],
     owner: Address
   ): Promise<CreatePoolReturn> {
     const weightedPoolFactoryAddress =
@@ -47,12 +44,12 @@ export class PoolCreator {
     // Tokens must be sorted in order of addresses
     tokens = this.sortTokens(tokens);
 
-    const tokenAddresses: Address[] = tokens.map((token: PoolInitToken) => {
-      return token.address;
+    const tokenAddresses: Address[] = tokens.map((token: TokenWeight) => {
+      return token.tokenAddress;
     });
 
     const tokenWeights = this.calculateTokenWeights(tokens);
-    const swapFeeScaled = new BigNumber(`${swapFee}e16`);
+    const swapFeeScaled = EPBigNumber.from(`${swapFee}e16`);
 
     const params = [
       name,
@@ -104,7 +101,7 @@ export class PoolCreator {
     poolId: string,
     sender: Address,
     receiver: Address,
-    tokens: PoolInitToken[],
+    tokens: TokenWeight[],
     initialBalances: BigNumber[]
   ) {
     const initialBalancesString: string[] = initialBalances.map(n =>
@@ -115,8 +112,8 @@ export class PoolCreator {
       [JOIN_KIND_INIT, initialBalancesString]
     );
 
-    const tokenAddresses: Address[] = tokens.map((token: PoolInitToken) => {
-      return token.address;
+    const tokenAddresses: Address[] = tokens.map((token: TokenWeight) => {
+      return token.tokenAddress;
     });
 
     const joinPoolRequest: JoinPoolRequest = {
@@ -144,29 +141,41 @@ export class PoolCreator {
     console.log('Receipt is: ', receipt);
   }
 
-  public sortTokens(tokens: PoolInitToken[]) {
+  public sortTokens(tokens: TokenWeight[]) {
     return [...tokens].sort((tokenA, tokenB) => {
-      return tokenA.address > tokenB.address ? 1 : -1;
+      return tokenA.tokenAddress > tokenB.tokenAddress ? 1 : -1;
     });
   }
 
-  public calculateTokenWeights(tokens: PoolInitToken[]): string[] {
-    let totalWeight = new BigNumber(0);
-    const expectedTotalWeight = new BigNumber(1e18);
-
-    tokens.forEach((token: PoolInitToken) => {
-      totalWeight = totalWeight.plus(token.weight);
+  public calculateTokenWeights(tokens: TokenWeight[]): string[] {
+    const weights: EPBigNumber[] = tokens.map((token: TokenWeight) => {
+      const normalizedWeight = new BigNumber(token.weight).multipliedBy(
+        new BigNumber(1e16)
+      );
+      return EPBigNumber.from(normalizedWeight.toString());
+    });
+    const normalizedWeights = toNormalizedWeights(weights);
+    const weightStrings = normalizedWeights.map((weight: EPBigNumber) => {
+      return weight.toString();
     });
 
-    // If weights don't add to exactly 1e18, add missing weight to first token
-    const remainingWeight = expectedTotalWeight.minus(totalWeight);
-    tokens[0].weight = tokens[0].weight.plus(remainingWeight);
+    return weightStrings;
+    // let totalWeight = new BigNumber(0);
+    // const expectedTotalWeight = new BigNumber(1e18);
 
-    const weights: string[] = tokens.map((token: PoolInitToken) => {
-      return token.weight.toString();
-    });
+    // tokens.forEach((token: TokenWeight) => {
+    //   totalWeight = totalWeight.plus(token.weight);
+    // });
 
-    return weights;
+    // // If weights don't add to exactly 1e18, add missing weight to first token
+    // const remainingWeight = expectedTotalWeight.minus(totalWeight);
+    // tokens[0].weight = new BigNumber(tokens[0].weight).plus(remainingWeight).toNumber();
+
+    // const weights: string[] = tokens.map((token: TokenWeight) => {
+    //   return token.weight.toString();
+    // });
+
+    // return weights;
   }
 }
 
