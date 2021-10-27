@@ -461,6 +461,20 @@
     },
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
+    "transactionErrors": {
+        "default": {
+            "title": "Transaction failed",
+            "description": "Please try again later."
+        },
+        "gasTooLow": {
+            "title": "Gas too low",
+            "description": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas."
+        },
+        "slippage": {
+            "title": "Transaction failed due to slippage",
+            "description": "The market price changed beyond your slippage tolerance due to other trades processed before yours. Try again or increase your slippage tolerance."
+        }
+    },
     "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
     "transactionStatus": {
         "cancelled": "Cancelled",
