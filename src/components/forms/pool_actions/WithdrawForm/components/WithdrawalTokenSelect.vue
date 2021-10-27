@@ -70,7 +70,7 @@ function handleSelected(newToken: string): void {
 </script>
 
 <template>
-  <BalDropdown :options="options" width="44" @selected="handleSelected">
+  <BalDropdown :options="options" minWidth="44" @selected="handleSelected">
     <template #activator>
       <div class="token-select-input selected group selectable">
         <div>
