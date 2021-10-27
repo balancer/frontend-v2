@@ -201,7 +201,7 @@ export default {
             const isJoin = type === 'Join';
 
             return {
-              label: isJoin ? t('invest') : t('withdraw'),
+              label: isJoin ? t('invest') : t('withdraw.label'),
               value: fNum(getJoinExitValue(amounts), 'usd'),
               timestamp,
               formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),

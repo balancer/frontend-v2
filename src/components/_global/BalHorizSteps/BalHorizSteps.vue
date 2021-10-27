@@ -50,7 +50,9 @@ const { connector } = useWeb3();
 /**
  * COMPUTED
  */
-const walletLogo = computed((): string => getConnectorLogo(connector?.value?.id));
+const walletLogo = computed((): string =>
+  getConnectorLogo(connector?.value?.id)
+);
 
 /**
  * METHODS

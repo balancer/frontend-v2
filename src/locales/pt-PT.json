@@ -264,8 +264,6 @@
     "trade": "Trocar",
     "tradeEarns": "Este comércio rende você",
     "tradeFromWeth": "Comércio da WETH",
-    "tradeInterface": "Interface comercial",
-    "tradeInterfaceTooltip": "Escolha o Balancer para obter a melhor liquidez nos pools do Balancer V1 e V2. Escolha Gnose para comprar e vender tokens usando ordens sem gás enquanto fornece proteção MEV.",
     "tradeLiquidity": "Liquidez comercial",
     "tradeSettled": "Seu comércio foi resolvido",
     "tradeSubmissionError": {"title":"ocorreu um erro", "actionLabel":"Liberar"},

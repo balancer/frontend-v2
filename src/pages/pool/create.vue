@@ -64,17 +64,45 @@ const steps = computed(() => [
     <div class="col-span-5 col-start-4 relative">
       <AnimatePresence
         :isVisible="!appLoading && activeStep === 1"
-        :initial="{ opacity: 0, translateY: '-100px', position: 'absolute', top: 0, left: 0, right: 0 }"
+        :initial="{
+          opacity: 0,
+          translateY: '-100px',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0
+        }"
         :animate="{ opacity: 1, translateY: '0px', position: 'relative' }"
-        :exit="{ opacity: 0, translateY: '100px', position: 'absolute', top: 0, left: 0, right: 0 }"
+        :exit="{
+          opacity: 0,
+          translateY: '100px',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0
+        }"
       >
         <PoolFees @nextStep="onNextStep" />
       </AnimatePresence>
       <AnimatePresence
         :isVisible="!appLoading && activeStep === 0"
-        :initial="{ opacity: 0, translateY: '-100px', position: 'absolute', top: 0, left: 0, right: 0 }"
+        :initial="{
+          opacity: 0,
+          translateY: '-100px',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0
+        }"
         :animate="{ opacity: 1, translateY: '0px', position: 'relative' }"
-        :exit="{ opacity: 0, translateY: '100px', position: 'absolute', top: 0, left: 0, right: 0 }"
+        :exit="{
+          opacity: 0,
+          translateY: '100px',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0
+        }"
       >
         <ChooseWeights
           v-model:tokenWeights="tokenWeights"

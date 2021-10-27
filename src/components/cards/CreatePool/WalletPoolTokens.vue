@@ -82,10 +82,11 @@ const unallocatedTokenWeight = computed(() =>
         <div class="col-span-5">
           <span class="text-sm font-semibold">Total</span>
         </div>
-        <div class="col-span-4 text-right">
-        </div>
+        <div class="col-span-4 text-right"></div>
         <div class="col-span-3 text-right">
-          <span class="text-sm font-semibold">{{ 100 - unallocatedTokenWeight }}%</span>
+          <span class="text-sm font-semibold"
+            >{{ 100 - unallocatedTokenWeight }}%</span
+          >
         </div>
       </div>
     </div>

@@ -102,7 +102,7 @@ export default {
     const provider = computed(
       () =>
         pluginState.connector?.provider ??
-        rpcProviderService.getJsonProvider(chainId.value.toString())
+        rpcProviderService.getJsonProvider(chainId.value)
     );
     const signer = computed(() => pluginState.connector?.provider?.getSigner());
 

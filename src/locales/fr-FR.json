@@ -264,8 +264,6 @@
     "trade": "Échanger",
     "tradeEarns": "Ce métier vous rapporte",
     "tradeFromWeth": "Commerce de WETH",
-    "tradeInterface": "Interface commerciale",
-    "tradeInterfaceTooltip": "Choisissez Balancer pour la meilleure liquidité sur les pools Balancer V1 et V2. Choisissez Gnosis pour acheter et vendre des jetons en utilisant des commandes sans gaz tout en offrant une protection MEV.",
     "tradeLiquidity": "Liquidité commerciale",
     "tradeSettled": "Votre commerce est réglé",
     "tradeSubmissionError": {"title":"Une erreur est survenue", "actionLabel":"Rejeter"},

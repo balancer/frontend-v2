@@ -43,8 +43,7 @@ export default function useWeb3() {
   // COMPUTED REFS + COMPUTED REFS
   const userNetworkConfig = computed(() => {
     try {
-      if (chainId.value)
-        return configService.getNetworkConfig(String(chainId.value));
+      if (chainId.value) return configService.getNetworkConfig(chainId.value);
       return null;
     } catch (error) {
       console.error(error);
@@ -55,6 +54,7 @@ export default function useWeb3() {
   const isMainnet = computed(
     () => appNetworkConfig.chainId === Network.MAINNET
   );
+  const isKovan = computed(() => appNetworkConfig.chainId === Network.KOVAN);
   const isPolygon = computed(
     () => appNetworkConfig.chainId === Network.POLYGON
   );
@@ -133,6 +133,7 @@ export default function useWeb3() {
     blockNumber,
     isV1Supported,
     isMainnet,
+    isKovan,
     isPolygon,
     isArbitrum,
     isEIP1559SupportedNetwork,

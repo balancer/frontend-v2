@@ -396,25 +396,27 @@ export default function useTransactions() {
   }
 
   function checkTxActivity(transaction: Transaction) {
-    provider.value
-      .getTransactionReceipt(transaction.id)
-      .then(tx => {
-        if (tx != null) {
-          finalizeTransaction(transaction.id, 'tx', tx);
-        }
-      })
-      .catch(e =>
-        console.log(
-          '[Transactions]: Failed to fetch tx information',
-          transaction,
-          e
-        )
-      )
-      .finally(() =>
-        updateTransaction(transaction.id, 'tx', {
-          lastCheckedBlockNumber: blockNumber.value
+    if (provider.value != null) {
+      provider.value
+        .getTransactionReceipt(transaction.id)
+        .then(tx => {
+          if (tx != null) {
+            finalizeTransaction(transaction.id, 'tx', tx);
+          }
         })
-      );
+        .catch(e =>
+          console.log(
+            '[Transactions]: Failed to fetch tx information',
+            transaction,
+            e
+          )
+        )
+        .finally(() =>
+          updateTransaction(transaction.id, 'tx', {
+            lastCheckedBlockNumber: blockNumber.value
+          })
+        );
+    }
   }
 
   async function handlePendingTransactions() {

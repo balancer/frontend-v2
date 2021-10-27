@@ -8,8 +8,9 @@ import { formatUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
+import { ETH_TX_BUFFER } from '@/constants/transactions';
 
-export type InvestMath = {
+export type InvestMathResponse = {
   // computed
   hasAmounts: Ref<boolean>;
   fullAmounts: Ref<string[]>;
@@ -30,8 +31,10 @@ export type InvestMath = {
 
 export default function useInvestFormMath(
   pool: Ref<FullPool>,
-  amounts: Ref<string[]>
-): InvestMath {
+  tokenAddresses: Ref<string[]>,
+  amounts: Ref<string[]>,
+  useNativeAsset: Ref<boolean>
+): InvestMathResponse {
   /**
    * STATE
    */
@@ -41,7 +44,7 @@ export default function useInvestFormMath(
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { tokens, balances, balanceFor } = useTokens();
+  const { tokens, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippage } = useSlippage();
   const { managedPoolWithTradingHalted } = usePool(pool);
   const { currency } = useUserSettings();
@@ -49,12 +52,17 @@ export default function useInvestFormMath(
   /**
    * Services
    */
-  const poolCalculator = new PoolCalculator(pool, tokens, balances, 'join');
+  const poolCalculator = new PoolCalculator(
+    pool,
+    tokens,
+    balances,
+    'join',
+    useNativeAsset
+  );
 
   /**
    * COMPUTED
    */
-  const tokenAddresses = computed(() => pool.value.tokenAddresses);
   const tokenCount = computed(() => tokenAddresses.value.length);
 
   // Input amounts can be null so fullAmounts returns amounts for all tokens
@@ -93,9 +101,19 @@ export default function useInvestFormMath(
   );
 
   const maximized = computed(() =>
-    fullAmounts.value.every(
-      (amount, i) => amount === balanceFor(tokenAddresses.value[i])
-    )
+    fullAmounts.value.every((amount, i) => {
+      if (tokenAddresses.value[i] === nativeAsset.address) {
+        const balance = balanceFor(tokenAddresses.value[i]);
+        return (
+          amount ===
+          bnum(balance)
+            .minus(ETH_TX_BUFFER)
+            .toString()
+        );
+      } else {
+        return amount === balanceFor(tokenAddresses.value[i]);
+      }
+    })
   );
 
   const optimized = computed(() => {
@@ -138,7 +156,16 @@ export default function useInvestFormMath(
 
   function maximizeAmounts(): void {
     fullAmounts.value.forEach((_, i) => {
-      amounts.value[i] = balanceFor(tokenAddresses.value[i]);
+      if (tokenAddresses.value[i] === nativeAsset.address) {
+        const balance = balanceFor(tokenAddresses.value[i]);
+        amounts.value[i] = bnum(balance).gt(ETH_TX_BUFFER)
+          ? bnum(balance)
+              .minus(ETH_TX_BUFFER)
+              .toString()
+          : '0';
+      } else {
+        amounts.value[i] = balanceFor(tokenAddresses.value[i]);
+      }
     });
   }
 

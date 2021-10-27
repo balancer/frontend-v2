@@ -38,6 +38,7 @@ export interface Config {
   addresses: {
     exchangeProxy: string;
     merkleRedeem: string;
+    merkleOrchard: string;
     multicall: string;
     vault: string;
     weightedPoolFactory: string;
@@ -47,6 +48,10 @@ export interface Config {
     wstETH: string;
     lidoRelayer: string;
     balancerHelpers: string;
+  };
+  keys: {
+    infura: string;
+    alchemy: string;
   };
   strategies: Record<
     string,

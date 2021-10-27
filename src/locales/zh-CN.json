@@ -264,8 +264,6 @@
     "trade": "交易",
     "tradeEarns": "这笔交易为您赚钱",
     "tradeFromWeth": "来自 WETH 的交易",
-    "tradeInterface": "交易界面",
-    "tradeInterfaceTooltip": "选择 Balancer 以获得跨 Balancer V1 和 V2 池的最佳流动性。选择 Gnosis 使用无燃料订单买卖代币，同时提供 MEV 保护。",
     "tradeLiquidity": "贸易流动性",
     "tradeSettled": "您的交易已经结算",
     "tradeSubmissionError": {"title":"发生了错误", "actionLabel":"解雇"},

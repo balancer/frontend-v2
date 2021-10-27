@@ -53,11 +53,9 @@
                   class="text-gray-400 ml-2"
                 />
               </template>
-              <div class="w-52">
-                <span>
-                  {{ swapFeeToolTip }}
-                </span>
-              </div>
+              <span>
+                {{ swapFeeToolTip }}
+              </span>
             </BalTooltip>
           </div>
         </div>

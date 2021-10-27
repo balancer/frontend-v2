@@ -436,7 +436,8 @@ export default defineComponent({
       const prefixMap = {
         [Network.MAINNET]: 'app.',
         [Network.KOVAN]: 'kovan.',
-        [Network.POLYGON]: 'polygon.'
+        [Network.POLYGON]: 'polygon.',
+        [Network.ARBITRUM]: 'arbitrum.'
       };
       const prefix = prefixMap[chainId] || '';
       if (props.sorReturn.isV1swap && chainId === 1) {

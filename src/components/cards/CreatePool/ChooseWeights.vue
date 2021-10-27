@@ -133,7 +133,12 @@ const distributeWeights = () => {
 };
 
 const totalWeight = computed(() => {
-  return Math.floor(sumBy(tokenWeights.filter(w => w.tokenAddress !== ''), w => w.weight));
+  return Math.floor(
+    sumBy(
+      tokenWeights.filter(w => w.tokenAddress !== ''),
+      w => w.weight
+    )
+  );
 });
 
 const addTokenListElementRef = (el: HTMLElement) => {
@@ -181,15 +186,12 @@ const addTokenListElementRef = (el: HTMLElement) => {
                 >Add Token
               </BalBtn>
             </div>
-            <div
-              ref="totalsRowElement"
-              class="bg-gray-50 w-full p-2 px-4"
-            >
+            <div ref="totalsRowElement" class="bg-gray-50 w-full p-2 px-4">
               <div class="w-full flex justify-between">
                 <h6>Total</h6>
                 <h6>{{ totalWeight }}%</h6>
               </div>
-                <BalProgressBar :width="totalWeight" class="my-2" />
+              <BalProgressBar :width="totalWeight" class="my-2" />
             </div>
           </div>
         </div>

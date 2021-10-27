@@ -650,6 +650,9 @@ export default function useSor({
     poolsLoading,
     getQuote,
     resetState,
-    confirming
+    confirming,
+
+    // For Tests
+    setSwapCost
   };
 }

@@ -1,5 +1,5 @@
 <template v-slot:aprCell="pool">
-  <BalTooltip v-if="pool.hasLiquidityMiningRewards" noPad>
+  <BalTooltip v-if="pool.hasLiquidityMiningRewards" width="auto" noPad>
     <template v-slot:activator>
       <div class="ml-1">
         <StarsIcon
@@ -30,22 +30,24 @@
             {{ thirdPartyAPRLabel }}
           </span>
         </div>
-        <BalStatBreakdown
+        <BalBreakdown
           :items="Object.entries(lmBreakdown)"
           :hideItems="!multiRewardPool"
         >
-          {{ fNum(pool.dynamic.apr.liquidityMining, 'percent') }}
-          <span class="ml-1 text-gray-500 text-xs flex items-center">
-            {{ $t('liquidityMiningAPR') }}
-            <StarsIcon class="h-4 text-yellow-300" />
-          </span>
-          <template v-if="multiRewardPool" v-slot:item="{ item }">
+          <div class="flex items-center">
+            {{ fNum(pool.dynamic.apr.liquidityMining, 'percent') }}
+            <span class="ml-1 text-gray-500 text-xs flex items-center">
+              {{ $t('liquidityMiningAPR') }}
+              <StarsIcon class="h-4 text-yellow-300" />
+            </span>
+          </div>
+          <template v-if="multiRewardPool" #item="{ item }">
             {{ fNum(item[1], 'percent') }}
-            <span class="text-gray-500 text-xs ml-2">
+            <span class="text-gray-500 text-xs ml-1">
               {{ lmTokens[item[0]].symbol }} {{ $t('apr') }}
             </span>
           </template>
-        </BalStatBreakdown>
+        </BalBreakdown>
       </div>
     </div>
   </BalTooltip>

@@ -1,6 +1,10 @@
 <template>
   <transition appear @enter="enter" @leave="leave" :css="false">
-    <div id="animateContainer" ref="animateContainer" v-if="isVisible || _isVisible">
+    <div
+      id="animateContainer"
+      ref="animateContainer"
+      v-if="isVisible || _isVisible"
+    >
       <slot></slot>
     </div>
   </transition>
@@ -8,7 +12,14 @@
 
 <script lang="ts">
 import anime, { AnimeParams } from 'animejs';
-import { defineComponent, onMounted, PropType, ref, watch, nextTick } from 'vue';
+import {
+  defineComponent,
+  onMounted,
+  PropType,
+  ref,
+  watch,
+  nextTick
+} from 'vue';
 export default defineComponent({
   emits: ['on-exit'],
   props: {
@@ -72,7 +83,7 @@ export default defineComponent({
     };
 
     const leave = (el, done) => {
-      console.log('bing')
+      console.log('bing');
       anime.set(el, {
         'pointer-events': 'none'
       });

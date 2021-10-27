@@ -60,7 +60,8 @@ export default defineComponent({
       return {
         backgroundColor: colors.blue['500'],
         borderColor: colors.blue['500'],
-        backgroundImage: `radial-gradient(circle at center, ${colors.pink['500']} 0, ${colors.pink['50']} 40%, ${colors.blue['500']} 100%)`
+        borderWidth: 0,
+        backgroundImage: `linear-gradient(to top right, ${colors.blue['500']}, ${colors.pink['500']})`
       };
     });
 

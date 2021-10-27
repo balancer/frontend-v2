@@ -3,7 +3,10 @@
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">{{ title }}</h4>
-        <TradeSettingsPopover :context="TradeSettingsContext.trade" />
+        <TradeSettingsPopover
+          :context="TradeSettingsContext.trade"
+          :isGasless="trading.tradeGasless.value"
+        />
       </div>
     </template>
     <div>
@@ -16,6 +19,13 @@
         :effectivePriceMessage="trading.effectivePriceMessage"
         @amountChange="trading.handleAmountChange"
         class="mb-4"
+      />
+      <GasReimbursement
+        v-if="!ENABLE_LEGACY_TRADE_INTERFACE && trading.isBalancerTrade.value"
+        class="mb-5"
+        :address-in="tokenInAddress"
+        :address-out="tokenOutAddress"
+        :sorReturn="trading.sor.sorReturn.value"
       />
       <BalAlert
         v-if="error"
@@ -54,19 +64,39 @@
         @click.prevent="handlePreviewButton"
       />
       <div
-        class="mt-6 bg-gray-50 rounded text-sm p-3 grid gap-2 grid-flow-col text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-        v-if="trading.isBalancerTrade.value"
+        v-if="
+          !ENABLE_LEGACY_TRADE_INTERFACE &&
+            trading.isGnosisSupportedOnNetwork.value
+        "
+        class="mt-6 text-sm flex items-center"
       >
-        <LightBulbIcon />
-        <span>
-          {{ $t('tradesThroughWeth') }}
-          <a
-            @click="switchToWETH()"
-            class="text-blue-500"
-            v-text="$t('tradeFromWeth')"
-          />
-          {{ $t('saveGas') }}
-        </span>
+        <BalTooltip
+          width="64"
+          :disabled="!trading.isGaslessTradingDisabled.value"
+        >
+          <template v-slot:activator>
+            <BalToggle
+              name="tradeGasless"
+              :checked="trading.tradeGasless.value"
+              @toggle="trading.toggleTradeGasless"
+              :disabled="trading.isGaslessTradingDisabled.value"
+            />
+          </template>
+          <div
+            v-text="
+              trading.isWrapUnwrapTrade.value
+                ? $t('tradeGaslessToggle.disabledTooltip.wrapUnwrap')
+                : $t('tradeGaslessToggle.disabledTooltip.eth')
+            "
+          ></div>
+        </BalTooltip>
+        <span class="text-sm pl-2">{{ $t('tradeGaslessToggle.label') }}</span>
+        <BalTooltip width="64">
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
+          </template>
+          <div v-html="$t('tradeGaslessToggle.tooltip')" />
+        </BalTooltip>
       </div>
     </div>
   </BalCard>
@@ -92,6 +122,7 @@ import useValidation, {
   TradeValidation
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
+import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -108,7 +139,9 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
 import { configService } from '@/services/config/config.service';
+import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 
+import GasReimbursement from '../TradeCard/GasReimbursement.vue';
 import TradePair from '../TradeCard/TradePair.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useRelayerApproval, {
@@ -121,7 +154,8 @@ export default defineComponent({
   components: {
     TradePair,
     TradePreviewModalGP,
-    TradeSettingsPopover
+    TradeSettingsPopover,
+    GasReimbursement
   },
 
   setup() {
@@ -179,13 +213,13 @@ export default defineComponent({
     );
 
     const tradeDisabled = computed(() => {
-      const hasValidationErrors = errorMessage.value !== TradeValidation.VALID;
+      const hasValidationError = errorMessage.value !== TradeValidation.VALID;
       const hasGnosisErrors =
-        trading.isGnosisTrade.value && trading.gnosis.hasValidationErrors.value;
+        trading.isGnosisTrade.value && trading.gnosis.hasValidationError.value;
       const hasBalancerErrors =
         trading.isBalancerTrade.value && isHighPriceImpact.value;
 
-      return hasValidationErrors || hasGnosisErrors || hasBalancerErrors;
+      return hasValidationError || hasGnosisErrors || hasBalancerErrors;
     });
 
     useTokenApproval(tokenInAddress, tokenInAmount, tokens);
@@ -202,55 +236,73 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      switch (errorMessage.value) {
-        case TradeValidation.NO_NATIVE_ASSET: {
-          return {
-            header: t('noNativeAsset', [nativeAsset.symbol]),
-            body: t('noNativeAssetDetailed', [
-              nativeAsset.symbol,
-              configService.network.chainName
-            ])
-          };
-        }
-        case TradeValidation.NO_BALANCE: {
-          return {
-            header: t('insufficientBalance'),
-            body: t('insufficientBalanceDetailed')
-          };
-        }
-        case TradeValidation.NO_LIQUIDITY: {
+      if (errorMessage.value === TradeValidation.NO_NATIVE_ASSET) {
+        return {
+          header: t('noNativeAsset', [nativeAsset.symbol]),
+          body: t('noNativeAssetDetailed', [
+            nativeAsset.symbol,
+            configService.network.chainName
+          ])
+        };
+      }
+
+      if (errorMessage.value === TradeValidation.NO_BALANCE) {
+        return {
+          header: t('insufficientBalance'),
+          body: t('insufficientBalanceDetailed')
+        };
+      }
+
+      if (trading.isBalancerTrade.value) {
+        if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {
             header: t('insufficientLiquidity'),
             body: t('insufficientLiquidityDetailed')
           };
         }
-        default:
       }
 
       if (trading.isGnosisTrade.value) {
-        if (trading.gnosis.validationErrors.value.feeExceedsPrice) {
-          return {
-            header: t('gnosisErrors.lowAmount.header'),
-            body: t('gnosisErrors.lowAmount.body')
-          };
-        }
-        if (trading.gnosis.validationErrors.value.priceExceedsBalance) {
-          return {
-            header: t('gnosisErrors.lowBalance.header', [
-              trading.tokenIn.value.symbol
-            ]),
-            body: t('gnosisErrors.lowBalance.body', [
-              trading.tokenIn.value.symbol,
-              fNum(
-                formatUnits(
-                  trading.getQuote().maximumInAmount,
-                  trading.tokenIn.value.decimals
+        if (trading.gnosis.validationError.value != null) {
+          const errorCode = trading.gnosis.validationError.value;
+
+          if (errorCode === ApiErrorCodes.SellAmountDoesNotCoverFee) {
+            return {
+              header: t('gnosisErrors.lowAmount.header'),
+              body: t('gnosisErrors.lowAmount.body')
+            };
+          } else if (errorCode === ApiErrorCodes.PriceExceedsBalance) {
+            return {
+              header: t('gnosisErrors.lowBalance.header', [
+                trading.tokenIn.value.symbol
+              ]),
+              body: t('gnosisErrors.lowBalance.body', [
+                trading.tokenIn.value.symbol,
+                fNum(
+                  formatUnits(
+                    trading.getQuote().maximumInAmount,
+                    trading.tokenIn.value.decimals
+                  ),
+                  'token'
                 ),
-                'token'
-              ),
-              fNum(trading.slippageBufferRate.value, 'percent')
-            ])
-          };
+                fNum(trading.slippageBufferRate.value, 'percent')
+              ])
+            };
+          } else if (errorCode === ApiErrorCodes.NoLiquidity) {
+            return {
+              header: t('gnosisErrors.noLiquidity.header', [
+                trading.tokenIn.value.symbol
+              ]),
+              body: t('gnosisErrors.noLiquidity.body')
+            };
+          } else {
+            return {
+              header: t('gnosisErrors.genericError.header'),
+              body: t('gnosisErrors.genericError.body', [
+                trading.gnosis.validationError.value
+              ])
+            };
+          }
         }
       } else if (trading.isBalancerTrade.value) {
         if (isHighPriceImpact.value) {
@@ -336,6 +388,7 @@ export default defineComponent({
     return {
       // constants
       TOKENS,
+      ENABLE_LEGACY_TRADE_INTERFACE,
       // context
       TradeSettingsContext,
 
