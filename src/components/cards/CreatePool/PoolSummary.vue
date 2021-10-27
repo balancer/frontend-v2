@@ -8,22 +8,18 @@ import Vibrant from 'node-vibrant/dist/vibrant';
 import { prominent } from 'color.js';
 import { eq, sumBy } from 'lodash';
 import echarts from 'echarts';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
 
-type Props = {
-  tokens: TokenWeight[];
-};
-const props = withDefaults(defineProps<Props>(), {
-  tokens: [] as any
-});
 const emit = defineEmits(['update:colors']);
 
 const { tokens } = useTokens();
+const { tokenWeights } = usePoolCreation();
 const { resolve } = useUrls();
 const colors = ref<(string | null)[]>([]);
 const chartInstance = ref<echarts.ECharts>();
 
 watch(
-  () => props.tokens,
+  tokenWeights,
   async (oldValue, newValue) => {
     await nextTick();
     await calculateColors();
@@ -35,7 +31,7 @@ watch(
 );
 
 const calculateColors = async () => {
-  const colorPromises = props.tokens
+  const colorPromises = tokenWeights.value
     .filter(t => t.tokenAddress !== '')
     .map(async t => {
       try {
@@ -61,7 +57,7 @@ const calculateColors = async () => {
 
 const unallocatedTokenWeight = computed(() =>
   sumBy(
-    props.tokens.filter(t => t.tokenAddress === ''),
+    tokenWeights.value.filter(t => t.tokenAddress === ''),
     'weight'
   )
 );
@@ -101,7 +97,7 @@ const chartConfig = computed(() => {
           show: false
         },
         data: [
-          ...props.tokens
+          ...tokenWeights.value
             .filter(t => t.tokenAddress !== '')
             .map((t, i) => {
               const tokenLogoURI = resolve(

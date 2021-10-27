@@ -12,19 +12,19 @@ import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue'
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useApp from '@/composables/useApp';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
 
 /**
  * COMPOSABLES
  */
 const { appLoading } = useApp();
+const { activeStep } = usePoolCreation();
 
 /**
  * STATE
  */
 const route = useRoute();
-const tokenWeights = ref<TokenWeight>();
 const tokenColors = ref<string[]>([]);
-const activeStep = ref(0);
 /**
  * QUERIES
  */
@@ -104,16 +104,13 @@ const steps = computed(() => [
           right: 0
         }"
       >
-        <ChooseWeights
-          v-model:tokenWeights="tokenWeights"
-          @nextStep="onNextStep"
-        />
+        <ChooseWeights />
       </AnimatePresence>
     </div>
     <div class="col-span-3">
       <BalStack vertical spacing="base">
-        <PoolSummary v-model:colors="tokenColors" :tokens="tokenWeights" />
-        <WalletPoolTokens :colors="tokenColors" :tokenWeights="tokenWeights" />
+        <PoolSummary v-model:colors="tokenColors" />
+        <WalletPoolTokens :colors="tokenColors" />
       </BalStack>
     </div>
   </div>

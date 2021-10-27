@@ -7,13 +7,15 @@ import BalStack from '@/components/_global/BalStack/BalStack.vue';
 import { isRequired } from '@/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
 import { isAddress } from '@ethersproject/address';
+import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
 
 const emit = defineEmits(['nextStep']);
 
 const { fNum } = useNumbers();
+const { initialFee } = usePoolCreation();
 const { t } = useI18n();
 const { account } = useWeb3();
-const fee = ref('0');
 const isCustomFee = ref(false);
 const areFeesGovernanceManaged = ref(true);
 const customFeeManagementOption = ref();
@@ -22,13 +24,14 @@ const customAddress = ref('');
 const isValidAddress = ref(true);
 
 function onFixedInput(val: string): void {
-  fee.value = '0';
-  fee.value = val;
+  initialFee.value = '0';
+  initialFee.value = val;
   isCustomFee.value = false;
+
 }
 
 function onCustomInput(val: string): void {
-  fee.value = (Number(val) / 100).toString();
+  initialFee.value = (Number(val) / 100).toString();
   isCustomFee.value = true;
 }
 
@@ -40,7 +43,7 @@ function onCustomAddressInput(val: string) {
   isValidAddress.value = false;
 }
 
-const FIXED_FEE_OPTIONS = ['0.005', '0.01', '0.02'];
+const FIXED_FEE_OPTIONS = ['0.0005', '0.003', '0.01'];
 const feeOptions = FIXED_FEE_OPTIONS.map(option => {
   return {
     label: fNum(option, null, { format: '0.0%' }),
@@ -79,7 +82,7 @@ const { userNetworkConfig } = useWeb3();
         <BalStack spacing="xs" horizontal>
           <BalBtnGroup
             :options="feeOptions"
-            v-model="fee"
+            v-model="initialFee"
             @update:modelValue="onFixedInput"
           />
           <div :class="['custom-input', customInputClasses]">
@@ -176,19 +179,14 @@ const { userNetworkConfig } = useWeb3();
           {{ $t('createAPool.customAddressInfo') }}
         </p>
         <BalStack vertical spacing="xs">
-          <input
-            :class="[
-              'w-full border py-2 bg-transparent flex items-center px-4 rounded-lg shadow-inner',
-              addressInputClasses
-            ]"
+          <BalTextInput
             v-model="customAddress"
             placeholder="0xBA4...2069"
             type="text"
             @update:modelValue="onCustomAddressInput"
+            size='sm'
+
           />
-          <span v-if="!isValidAddress" class="text-sm text-red-500 font-medium"
-            >This is not a valid ethereum address.</span
-          >
         </BalStack>
       </BalStack>
       <BalBtn block color="gradient" @click="emit('nextStep')">Next</BalBtn>

@@ -3,25 +3,25 @@ import useTokens from '@/composables/useTokens';
 import { TokenWeight } from './ChooseWeights.vue';
 import { computed } from 'vue';
 import { sumBy } from 'lodash';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
 
 type Props = {
-  tokenWeights: TokenWeight[];
   colors: string[];
 };
 
 const props = withDefaults(defineProps<Props>(), {
-  tokenWeights: [] as any,
   colors: [] as any
 });
 
 const { tokens } = useTokens();
+const { tokenWeights } = usePoolCreation();
 
 const allocatedTokenWeights = computed(() =>
-  props.tokenWeights.filter(t => t.tokenAddress !== '')
+  tokenWeights.value.filter(t => t.tokenAddress !== '')
 );
 const unallocatedTokenWeight = computed(() =>
   sumBy(
-    props.tokenWeights.filter(t => t.tokenAddress === ''),
+    tokenWeights.value.filter(t => t.tokenAddress === ''),
     'weight'
   )
 );

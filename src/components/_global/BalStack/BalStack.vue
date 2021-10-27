@@ -32,6 +32,13 @@ const spacingClass = computed(() => {
 });
 
 const stackId = Math.random();
+const slots = useSlots();
+
+const slotsWithContent = computed(() => {
+  return slots.default().filter(slot => {
+    return slot.children !== 'v-if'
+  })
+})
 </script>
 
 <template>
@@ -51,13 +58,13 @@ const stackId = Math.random();
     ]"
   >
     <div
-      v-for="(child, i) in $slots.default()"
+      v-for="(child, i) in slotsWithContent"
       :key="`stack-${stackId}-child-${i}`"
       :class="{
-        [spacingClass]: i !== $slots.default().length - 1,
-        'border-b': i !== $slots.default().length - 1 && withBorder && vertical,
+        [spacingClass]: i !== slotsWithContent.length - 1,
+        'border-b': i !== slotsWithContent.length - 1 && withBorder && vertical,
         'border-r':
-          i !== $slots.default().length - 1 && withBorder && horizontal
+          i !== slotsWithContent.length - 1 && withBorder && horizontal
       }"
     >
       <component :is="child" />

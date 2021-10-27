@@ -8,15 +8,9 @@ import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import anime from 'animejs';
 import { sum, sumBy } from 'lodash';
+import usePoolCreation, { TokenWeight } from '@/composables/pools/usePoolCreation';
 
 const emit = defineEmits(['update:tokenWeights', 'nextStep']);
-
-export type TokenWeight = {
-  tokenAddress: string;
-  weight: number;
-  isLocked: boolean;
-  id: number;
-};
 
 const emptyTokenWeight: TokenWeight = {
   tokenAddress: '',
@@ -26,12 +20,12 @@ const emptyTokenWeight: TokenWeight = {
 };
 
 const { userNetworkConfig } = useWeb3();
+const { tokenWeights, updateTokenWeights, proceed } = usePoolCreation();
 const networkName = configService.network.name;
 
 const _tokenOutAmount = ref();
 const _tokenOutAddress = ref();
 
-const tokenWeights = reactive<TokenWeight[]>([]);
 const tokenWeightListWrapper = ref<HTMLElement>();
 const addTokenRowElement = ref<HTMLElement>();
 const totalsRowElement = ref<HTMLElement>();
@@ -61,18 +55,19 @@ onMounted(async () => {
 });
 
 const handleWeightChange = (weight: string, id: number) => {
-  const tokenWeight = tokenWeights[id];
+  const tokenWeight = tokenWeights.value[id];
   tokenWeight.weight = Number(weight);
+  
   distributeWeights();
 };
 
 const handleAddressChange = (address: string, id: number) => {
-  const tokenWeight = tokenWeights[id];
+  const tokenWeight = tokenWeights.value[id];
   tokenWeight.tokenAddress = address;
 };
 
 const handleLockedWeight = (isLocked: boolean, id: number) => {
-  const tokenWeight = tokenWeights[id];
+  const tokenWeight = tokenWeights.value[id];
   tokenWeight.isLocked = isLocked;
   distributeWeights();
 };
@@ -86,14 +81,14 @@ const addTokenToPool = async () => {
 
   wrapperHeight.value += tokenWeightItemHeight.value;
 
-  tokenWeights.push({ ...emptyTokenWeight, id: tokenWeights.length - 1 });
-  emit('update:tokenWeights', tokenWeights);
+  const newWeights = [...tokenWeights.value, { ...emptyTokenWeight, id: tokenWeights.value.length - 1 }];
+  updateTokenWeights(newWeights);
 
   // to avoid reflow we are going to transform the totals + add token
   // down instead of having the new token weight item shift them
   anime({
     targets: [totalsRowElement.value, addTokenRowElement.value],
-    translateY: `${tokenWeightItemHeight.value * tokenWeights.length}px`
+    translateY: `${tokenWeightItemHeight.value * tokenWeights.value.length}px`
   });
 
   await nextTick();
@@ -121,10 +116,10 @@ const addTokenToPool = async () => {
 const distributeWeights = () => {
   // get all the locked weights and sum those bad boys
   const lockedPct = sum(
-    tokenWeights.filter(w => w.isLocked).map(w => w.weight / 100)
+    tokenWeights.value.filter(w => w.isLocked).map(w => w.weight / 100)
   );
   const pctAvailableToDistribute = 1 - lockedPct;
-  const unlockedWeights = tokenWeights.filter(w => !w.isLocked);
+  const unlockedWeights = tokenWeights.value.filter(w => !w.isLocked);
   const evenDistributionWeight =
     pctAvailableToDistribute / unlockedWeights.length;
   for (const tokenWeight of unlockedWeights) {
@@ -135,7 +130,7 @@ const distributeWeights = () => {
 const totalWeight = computed(() => {
   return Math.floor(
     sumBy(
-      tokenWeights.filter(w => w.tokenAddress !== ''),
+      tokenWeights.value.filter(w => w.tokenAddress !== ''),
       w => w.weight
     )
   );
@@ -196,7 +191,7 @@ const addTokenListElementRef = (el: HTMLElement) => {
           </div>
         </div>
       </BalCard>
-      <BalBtn block color="gradient" @click="emit('nextStep')">Next</BalBtn>
+      <BalBtn block color="gradient" @click="proceed">Next</BalBtn>
     </BalStack>
   </BalCard>
 </template>
