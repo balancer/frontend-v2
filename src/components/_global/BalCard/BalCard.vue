@@ -1,20 +1,22 @@
 <template>
   <div :class="['bal-card', cardClasses]">
-    <div v-if="imgSrc" class="feature" :style="featureStyles" />
-    <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
-      <component :is="titleTag" v-if="!!title" v-text="title" />
-      <div
-        v-if="$slots.header"
-        :class="['header-content', headerContentClasses]"
-      >
-        <slot name="header" />
+    <div :class="['flex flex-col', { 'overflow-y-scroll': overflowYScroll }]">
+      <div v-if="imgSrc" class="feature" :style="featureStyles" />
+      <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
+        <component :is="titleTag" v-if="!!title" v-text="title" />
+        <div
+          v-if="$slots.header"
+          :class="['header-content', headerContentClasses]"
+        >
+          <slot name="header" />
+        </div>
       </div>
-    </div>
-    <div :class="['content', contentClasses]">
-      <slot />
-    </div>
-    <div v-if="$slots.footer" :class="['footer', footerClasses]">
-      <slot name="footer" />
+      <div :class="['content', contentClasses]">
+        <slot />
+      </div>
+      <div v-if="$slots.footer" :class="['footer', footerClasses]">
+        <slot name="footer" />
+      </div>
     </div>
   </div>
 </template>
@@ -38,6 +40,7 @@ export default defineComponent({
     growContent: { type: Boolean, default: false },
     rightAlignHeader: { type: Boolean, default: false },
     exposeOverflow: { type: Boolean, default: false },
+    overflowYScroll: { type: Boolean, default: false },
     shadow: {
       type: String,
       default: '',
