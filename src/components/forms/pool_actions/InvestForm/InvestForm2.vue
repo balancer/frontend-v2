@@ -1,25 +1,21 @@
 <script setup lang="ts">
-import {
-  reactive,
-  toRef,
-  computed,
-  ref,
-  nextTick,
-  onBeforeMount,
-  watch
-} from 'vue';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { isStableLike, usePool } from '@/composables/usePool';
-import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import InvestFormTotals from './components/InvestFormTotals.vue';
-import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
-import useInvestMath from './composables/useInvestMath';
+import { toRef, computed, ref, nextTick, onBeforeMount, watch } from 'vue';
 import { isRequired } from '@/lib/utils/validations';
 import { bnum } from '@/lib/utils';
+// Types
+import { FullPool } from '@/services/balancer/subgraph/types';
+// Composables
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
+import useInvestState from './composables/useInvestState';
+import useInvestMath from './composables/useInvestMath';
+import { isStableLike, usePool } from '@/composables/usePool';
+// Components
+import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import InvestFormTotals from './components/InvestFormTotals.vue';
+import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
 
 /**
  * TYPES
@@ -33,15 +29,6 @@ type Props = {
   pool: FullPool;
 };
 
-type FormState = {
-  amounts: string[];
-  tokenAddresses: string[];
-  propAmounts: string[];
-  validInputs: boolean[];
-  highPriceImpactAccepted: boolean;
-  submitting: boolean;
-};
-
 /**
  * PROPS & EMITS
  */
@@ -50,15 +37,6 @@ const props = defineProps<Props>();
 /**
  * STATE
  */
-const state = reactive<FormState>({
-  amounts: [],
-  tokenAddresses: [],
-  propAmounts: [],
-  validInputs: [],
-  highPriceImpactAccepted: false,
-  submitting: false
-});
-
 const showInvestPreview = ref(false);
 
 /**
@@ -67,11 +45,17 @@ const showInvestPreview = ref(false);
 const { t } = useI18n();
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { useNativeAsset } = usePoolTransfers();
+const {
+  tokenAddresses,
+  amounts,
+  validInputs,
+  highPriceImpactAccepted
+} = useInvestState();
 
 const investMath = useInvestMath(
   toRef(props, 'pool'),
-  toRef(state, 'tokenAddresses'),
-  toRef(state, 'amounts'),
+  tokenAddresses,
+  amounts,
   useNativeAsset
 );
 
@@ -98,12 +82,12 @@ const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
  */
 const hasValidInputs = computed(
   (): boolean =>
-    state.validInputs.every(validInput => validInput === true) &&
+    validInputs.value.every(validInput => validInput === true) &&
     hasAcceptedHighPriceImpact.value
 );
 
 const hasAcceptedHighPriceImpact = computed((): boolean =>
-  highPriceImpact.value ? state.highPriceImpactAccepted : true
+  highPriceImpact.value ? highPriceImpactAccepted.value : true
 );
 
 const forceProportionalInputs = computed(
@@ -114,11 +98,11 @@ const forceProportionalInputs = computed(
  * METHODS
  */
 function handleAmountChange(value: string, index: number): void {
-  state.amounts[index] = value;
+  amounts.value[index] = value;
 
   nextTick(() => {
     if (forceProportionalInputs.value) {
-      state.amounts = [...proportionalAmounts.value];
+      amounts.value = [...proportionalAmounts.value];
     }
   });
 }
@@ -176,10 +160,10 @@ function setNativeAsset(to: NativeAsset): void {
       ? wrappedNativeAsset.value.address
       : nativeAsset.address;
 
-  const indexOfAsset = state.tokenAddresses.indexOf(fromAddress);
+  const indexOfAsset = tokenAddresses.value.indexOf(fromAddress);
 
   if (indexOfAsset >= 0) {
-    state.tokenAddresses[indexOfAsset] = toAddress;
+    tokenAddresses.value[indexOfAsset] = toAddress;
   }
 }
 
@@ -187,7 +171,7 @@ function setNativeAsset(to: NativeAsset): void {
  * CALLBACKS
  */
 onBeforeMount(() => {
-  state.tokenAddresses = [...props.pool.tokenAddresses];
+  tokenAddresses.value = [...props.pool.tokenAddresses];
   if (isWethPool.value) setNativeAssetByBalance();
 });
 
@@ -216,13 +200,13 @@ watch(useNativeAsset, shouldUseNativeAsset => {
     />
 
     <TokenInput
-      v-for="(n, i) in state.tokenAddresses.length"
+      v-for="(n, i) in tokenAddresses.length"
       :key="i"
-      :name="state.tokenAddresses[i]"
-      v-model:address="state.tokenAddresses[i]"
-      v-model:amount="state.amounts[i]"
-      v-model:isValid="state.validInputs[i]"
-      :weight="tokenWeight(state.tokenAddresses[i])"
+      :name="tokenAddresses[i]"
+      v-model:address="tokenAddresses[i]"
+      v-model:amount="amounts[i]"
+      v-model:isValid="validInputs[i]"
+      :weight="tokenWeight(tokenAddresses[i])"
       :hintAmount="propAmountFor(i)"
       :hint="hint(i)"
       class="mb-4"
@@ -240,7 +224,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
 
     <div v-if="highPriceImpact" class="border rounded-lg p-4 pb-2 mt-4">
       <BalCheckbox
-        v-model="state.highPriceImpactAccepted"
+        v-model="highPriceImpactAccepted"
         :rules="[isRequired($t('priceImpactCheckbox'))]"
         name="highPriceImpactAccepted"
         class="text-gray-500"
@@ -272,7 +256,7 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         v-if="showInvestPreview"
         :pool="pool"
         :math="investMath"
-        :tokenAddresses="state.tokenAddresses"
+        :tokenAddresses="tokenAddresses"
         @close="showInvestPreview = false"
       />
     </teleport>
