@@ -36,13 +36,16 @@ export default function useTranasactionErrors() {
   /**
    * METHODS
    */
-  function parseError(error): TransactionError {
+  function parseError(error): TransactionError | null {
+    if (error?.code && error.code === 4001) return null; // User rejected transaction
+
     if (error?.message) {
       if (error.message.includes('-32010')) return gasTooLowError;
       if (error.message.includes('BAL#507')) return slippageError;
 
       return defaultError(error.message);
     }
+
     return defaultError();
   }
 

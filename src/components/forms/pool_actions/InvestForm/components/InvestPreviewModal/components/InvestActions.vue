@@ -48,7 +48,7 @@ type InvestmentState = {
   confirming: boolean;
   confirmed: boolean;
   confirmedAt: string;
-  error?: TransactionError;
+  error?: TransactionError | null;
   receipt?: TransactionReceipt;
 };
 
@@ -247,6 +247,7 @@ async function submit(): Promise<void> {
       :title="investmentState.error.title"
       :description="investmentState.error.description"
       block
+      class="mb-4"
     />
     <BalHorizSteps
       v-if="actions.length > 1 && !investmentState.confirmed"
