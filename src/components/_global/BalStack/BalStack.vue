@@ -36,9 +36,9 @@ const slots = useSlots();
 
 const slotsWithContent = computed(() => {
   return slots.default().filter(slot => {
-    return slot.children !== 'v-if'
-  })
-})
+    return slot.children !== 'v-if';
+  });
+});
 </script>
 
 <template>

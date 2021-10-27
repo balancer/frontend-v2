@@ -13,21 +13,16 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 const emit = defineEmits(['nextStep']);
 
 const { fNum } = useNumbers();
-const { initialFee } = usePoolCreation();
+const { initialFee, feeManagementType, setFeeManagement, thirdPartyFeeController } = usePoolCreation();
 const { t } = useI18n();
 const { account } = useWeb3();
 const isCustomFee = ref(false);
-const areFeesGovernanceManaged = ref(true);
-const customFeeManagementOption = ref();
-const dynamicAddressOption = ref();
-const customAddress = ref('');
 const isValidAddress = ref(true);
 
 function onFixedInput(val: string): void {
   initialFee.value = '0';
   initialFee.value = val;
   isCustomFee.value = false;
-
 }
 
 function onCustomInput(val: string): void {
@@ -62,6 +57,12 @@ const addressInputClasses = computed(() => ({
 }));
 
 const { userNetworkConfig } = useWeb3();
+
+const onChangeFeeManagementType = (val: boolean) => {
+  if (val) {
+    setFeeManagement('fixed')
+  }
+}
 </script>
 
 <template>
@@ -103,7 +104,7 @@ const { userNetworkConfig } = useWeb3();
       </BalStack>
       <BalStack horizontal spacing="none" align="center">
         <BalCheckbox
-          v-model="areFeesGovernanceManaged"
+          @update:modelValue="onChangeFeeManagementType"
           name="areFeesGovernanceManaged"
           size="sm"
           :label="$t('createAPool.governanceFees')"
@@ -115,11 +116,11 @@ const { userNetworkConfig } = useWeb3();
           class="ml-2"
         />
       </BalStack>
-      <BalStack vertical spacing="xs" v-if="!areFeesGovernanceManaged">
+      <BalStack vertical spacing="xs" v-if="['address', 'fixed', 'self'].includes(feeManagementType)">
         <h6 class="mb-1">Alternative fee management options</h6>
         <BalRadio
-          v-model="customFeeManagementOption"
-          value="fixed-initial"
+          v-model="feeManagementType"
+          value="fixed"
           name="feeManagementOptions"
         >
           <template v-slot:label>
@@ -129,8 +130,8 @@ const { userNetworkConfig } = useWeb3();
           </template>
         </BalRadio>
         <BalRadio
-          v-model="customFeeManagementOption"
-          value="dynamic-address"
+          v-model="feeManagementType"
+          value="self"
           name="feeManagementOptions"
         >
           <template v-slot:label>
@@ -143,12 +144,12 @@ const { userNetworkConfig } = useWeb3();
       <BalStack
         vertical
         spacing="xs"
-        v-if="customFeeManagementOption === 'dynamic-address'"
+        v-if="['address', 'self'].includes(feeManagementType)"
       >
-        <h6 class="mb-1">Alternative fee management options</h6>
+        <h6 class="mb-1">Set an address to control fees</h6>
         <BalRadio
-          v-model="dynamicAddressOption"
-          value="my-address"
+          v-model="feeManagementType"
+          value="self"
           name="addressOption"
         >
           <template v-slot:label>
@@ -158,8 +159,8 @@ const { userNetworkConfig } = useWeb3();
           </template>
         </BalRadio>
         <BalRadio
-          v-model="dynamicAddressOption"
-          value="custom-address"
+          v-model="feeManagementType"
+          value="address"
           name="addressOption"
         >
           <template v-slot:label>
@@ -171,7 +172,7 @@ const { userNetworkConfig } = useWeb3();
       </BalStack>
       <BalStack
         vertical
-        v-if="dynamicAddressOption === 'custom-address'"
+        v-if="feeManagementType === 'address'"
         spacing="xs"
       >
         <h6>{{ $t('createAPool.customAddressTitle') }}</h6>
@@ -180,12 +181,11 @@ const { userNetworkConfig } = useWeb3();
         </p>
         <BalStack vertical spacing="xs">
           <BalTextInput
-            v-model="customAddress"
+            v-model="thirdPartyFeeController"
             placeholder="0xBA4...2069"
             type="text"
             @update:modelValue="onCustomAddressInput"
-            size='sm'
-
+            size="sm"
           />
         </BalStack>
       </BalStack>

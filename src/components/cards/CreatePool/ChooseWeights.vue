@@ -8,7 +8,9 @@ import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import anime from 'animejs';
 import { sum, sumBy } from 'lodash';
-import usePoolCreation, { TokenWeight } from '@/composables/pools/usePoolCreation';
+import usePoolCreation, {
+  TokenWeight
+} from '@/composables/pools/usePoolCreation';
 
 const emit = defineEmits(['update:tokenWeights', 'nextStep']);
 
@@ -57,7 +59,7 @@ onMounted(async () => {
 const handleWeightChange = (weight: string, id: number) => {
   const tokenWeight = tokenWeights.value[id];
   tokenWeight.weight = Number(weight);
-  
+
   distributeWeights();
 };
 
@@ -81,7 +83,10 @@ const addTokenToPool = async () => {
 
   wrapperHeight.value += tokenWeightItemHeight.value;
 
-  const newWeights = [...tokenWeights.value, { ...emptyTokenWeight, id: tokenWeights.value.length - 1 }];
+  const newWeights = [
+    ...tokenWeights.value,
+    { ...emptyTokenWeight, id: tokenWeights.value.length - 1 }
+  ];
   updateTokenWeights(newWeights);
 
   // to avoid reflow we are going to transform the totals + add token
