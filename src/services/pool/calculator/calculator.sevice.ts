@@ -10,6 +10,7 @@ import { Ref, ref } from 'vue';
 import { isStable, isStableLike } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
+import { ETH_TX_BUFFER } from '@/constants/transactions';
 
 interface Amounts {
   send: string[];
@@ -87,7 +88,14 @@ export default class CalculatorService {
 
     this.tokenAddresses.forEach((token, tokenIndex) => {
       let hasBalance = true;
-      const balance = this.balances.value[token] || '0';
+      let balance;
+      if (token === this.config.network.nativeAsset.address) {
+        balance = bnum(this.balances.value[token])
+          .minus(ETH_TX_BUFFER)
+          .toString();
+      } else {
+        balance = this.balances.value[token] || '0';
+      }
       const amounts = this.propAmountsGiven(balance, tokenIndex, type);
 
       amounts.send.forEach((amount, amountIndex) => {
