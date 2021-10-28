@@ -430,7 +430,7 @@ async function claimAvailableRewards() {
             </li>
           </ul>
         </div>
-        <div class="pt-3 border-t p-3 border-gray-200">
+        <div class="pt-3 border-t p-3 border-gray-200 dark:border-gray-700">
           View this week's<router-link
             :to="{ name: 'liquidity-mining' }"
             class="text-blue-500 hover:underline"

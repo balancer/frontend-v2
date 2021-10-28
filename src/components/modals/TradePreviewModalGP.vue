@@ -168,94 +168,138 @@
         v-if="totalRequiredTransactions > 1"
         class="flex my-5 justify-center items-center"
       >
-        <BalTooltip
-          v-if="showGnosisRelayerApprovalStep"
-          :disabled="!requiresGnosisRelayerApproval"
-          width="64"
-        >
-          <template v-slot:activator>
-            <div
-              :class="[
-                'step',
-                {
-                  'step-active':
-                    activeTransactionType === 'gnosisRelayerApproval',
-                  'step-approved': !requiresGnosisRelayerApproval
-                }
-              ]"
-            >
-              <BalIcon
-                v-if="!requiresGnosisRelayerApproval"
-                name="check"
-                class="text-green-500"
-              />
-              <template v-else>1</template>
-            </div>
-          </template>
-          <div>
-            <div class="mb-2 font-semibold">
+        <template v-if="showGnosisRelayerApprovalStep">
+          <BalTooltip :disabled="!requiresGnosisRelayerApproval" width="64">
+            <template v-slot:activator>
+              <div
+                :class="[
+                  'step',
+                  {
+                    'step-active':
+                      activeTransactionType === 'gnosisRelayerApproval',
+                    'step-approved': !requiresGnosisRelayerApproval
+                  }
+                ]"
+              >
+                <BalIcon
+                  v-if="!requiresGnosisRelayerApproval"
+                  name="check"
+                  class="text-green-500"
+                />
+                <template v-else>1</template>
+              </div>
+            </template>
+            <div>
+              <div class="mb-2 font-semibold">
+                <div>
+                  {{
+                    $t(
+                      'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.title'
+                    )
+                  }}
+                </div>
+              </div>
               <div>
                 {{
                   $t(
-                    'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.title'
+                    'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.content'
                   )
                 }}
               </div>
             </div>
+          </BalTooltip>
+          <div class="step-seperator" />
+        </template>
+        <template v-else-if="showLidoRelayerApprovalStep">
+          <BalTooltip :disabled="!requiresLidoRelayerApproval" width="64">
+            <template v-slot:activator>
+              <div
+                :class="[
+                  'step',
+                  {
+                    'step-active':
+                      activeTransactionType === 'lidoRelayerApproval',
+                    'step-approved': !requiresLidoRelayerApproval
+                  }
+                ]"
+              >
+                <BalIcon
+                  v-if="!requiresLidoRelayerApproval"
+                  name="check"
+                  class="text-green-500"
+                />
+                <template v-else>1</template>
+              </div>
+            </template>
             <div>
-              {{
-                $t(
-                  'tradeSummary.transactionTypesTooltips.gnosisRelayerApproval.content'
-                )
-              }}
+              <div class="mb-2 font-semibold">
+                <div>
+                  {{
+                    $t(
+                      'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.title'
+                    )
+                  }}
+                </div>
+              </div>
+              <div>
+                {{
+                  $t(
+                    'tradeSummary.transactionTypesTooltips.lidoRelayerApproval.content'
+                  )
+                }}
+              </div>
             </div>
-          </div>
-        </BalTooltip>
-        <div class="step-seperator" v-if="showGnosisRelayerApprovalStep" />
-        <BalTooltip
-          v-if="showTokenApprovalStep"
-          :disabled="!requiresTokenApproval"
-          width="64"
-        >
-          <template v-slot:activator>
-            <div
-              :class="[
-                'step',
-                {
-                  'step-active': activeTransactionType === 'tokenApproval',
-                  'step-approved': !requiresTokenApproval
-                }
-              ]"
-            >
-              <BalIcon
-                v-if="!requiresTokenApproval"
-                name="check"
-                class="text-green-500"
-              />
-              <template v-else>{{
-                showGnosisRelayerApprovalStep ? 2 : 1
-              }}</template>
-            </div>
-          </template>
-          <div>
-            <div class="mb-2 font-semibold">
-              {{
-                $t(
-                  'tradeSummary.transactionTypesTooltips.tokenApproval.title',
-                  [trading.tokenIn.value.symbol]
-                )
-              }}
-            </div>
+          </BalTooltip>
+          <div class="step-seperator" />
+        </template>
+        <template v-if="showTokenApprovalStep">
+          <BalTooltip
+            v-if="showTokenApprovalStep"
+            :disabled="!requiresTokenApproval"
+            width="64"
+          >
+            <template v-slot:activator>
+              <div
+                :class="[
+                  'step',
+                  {
+                    'step-active': activeTransactionType === 'tokenApproval',
+                    'step-approved': !requiresTokenApproval
+                  }
+                ]"
+              >
+                <BalIcon
+                  v-if="!requiresTokenApproval"
+                  name="check"
+                  class="text-green-500"
+                />
+                <template v-else>{{
+                  showGnosisRelayerApprovalStep || showLidoRelayerApprovalStep
+                    ? 2
+                    : 1
+                }}</template>
+              </div>
+            </template>
             <div>
-              {{
-                $t(
-                  'tradeSummary.transactionTypesTooltips.tokenApproval.content'
-                )
-              }}
+              <div class="mb-2 font-semibold">
+                {{
+                  $t(
+                    'tradeSummary.transactionTypesTooltips.tokenApproval.title',
+                    [trading.tokenIn.value.symbol]
+                  )
+                }}
+              </div>
+              <div>
+                {{
+                  $t(
+                    'tradeSummary.transactionTypesTooltips.tokenApproval.content'
+                  )
+                }}
+              </div>
             </div>
-          </div>
-        </BalTooltip>
-        <div class="step-seperator" v-if="showTokenApprovalStep" />
+          </BalTooltip>
+          <div class="step-seperator" />
+        </template>
         <BalTooltip width="64">
           <template v-slot:activator>
             <div
@@ -271,10 +315,18 @@
           </template>
           <div>
             <div class="mb-2 font-semibold">
-              {{ $t('tradeSummary.transactionTypesTooltips.trade.title') }}
+              {{
+                trading.isGnosisTrade.value
+                  ? $t('tradeSummary.transactionTypesTooltips.sign.title')
+                  : $t('tradeSummary.transactionTypesTooltips.trade.title')
+              }}
             </div>
             <div>
-              {{ $t('tradeSummary.transactionTypesTooltips.trade.content') }}
+              {{
+                trading.isGnosisTrade.value
+                  ? $t('tradeSummary.transactionTypesTooltips.sign.content')
+                  : $t('tradeSummary.transactionTypesTooltips.trade.content')
+              }}
             </div>
           </div>
         </BalTooltip>
@@ -288,6 +340,16 @@
         :loading-label="`${$t('approvingGnosisRelayer')}...`"
       >
         {{ $t('approveGnosisRelayer') }}
+      </BalBtn>
+      <BalBtn
+        v-else-if="requiresLidoRelayerApproval"
+        color="gradient"
+        block
+        @click.prevent="lidoRelayerApproval.approve"
+        :loading="lidoRelayerApproval.approving.value"
+        :loading-label="`${$t('approvingLidoRelayer')}...`"
+      >
+        {{ $t('approveLidoRelayer') }}
       </BalBtn>
       <BalBtn
         v-else-if="requiresTokenApproval"
@@ -323,16 +385,16 @@
         @actionClick="trading.resetSubmissionError"
       />
     </div>
-    <BalCard shadow="none" class="mt-3" v-if="showTradeRoute">
-      <TradeRoute
-        :address-in="trading.tokenIn.value.address"
-        :amount-in="trading.tokenInAmountInput.value"
-        :address-out="trading.tokenOut.value.address"
-        :amount-out="trading.tokenOutAmountInput.value"
-        :pools="trading.sor.pools.value"
-        :sor-return="trading.sor.sorReturn.value"
-      />
-    </BalCard>
+    <TradeRoute
+      v-if="showTradeRoute"
+      :address-in="trading.tokenIn.value.address"
+      :amount-in="trading.tokenInAmountInput.value"
+      :address-out="trading.tokenOut.value.address"
+      :amount-out="trading.tokenOutAmountInput.value"
+      :pools="trading.sor.pools.value"
+      :sor-return="trading.sor.sorReturn.value"
+      class="mt-3"
+    />
   </BalModal>
 </template>
 
@@ -358,6 +420,8 @@ import { bnum } from '@/lib/utils';
 
 import { FiatCurrency } from '@/constants/currency';
 import useUserSettings from '@/composables/useUserSettings';
+import { isStETH } from '@/lib/utils/balancer/lido';
+import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
 const PRICE_UPDATE_THRESHOLD = 0.02;
 
@@ -577,6 +641,21 @@ export default defineComponent({
       props.trading.isGnosisTrade
     );
 
+    const wrapType = computed(() =>
+      getWrapAction(
+        props.trading.tokenIn.value.address,
+        props.trading.tokenOut.value.address
+      )
+    );
+
+    const isStETHTrade = computed(
+      () =>
+        isStETH(addressIn.value, props.trading.tokenOut.value.address) &&
+        wrapType.value === WrapType.NonWrap
+    );
+
+    const lidoRelayerApproval = useRelayerApproval(Relayer.LIDO, isStETHTrade);
+
     const requiresTokenApproval = computed(() => {
       if (props.trading.isWrap.value && !props.trading.isEthTrade.value) {
         return approvalRequired(
@@ -599,6 +678,12 @@ export default defineComponent({
         !gnosisRelayerApproval.isUnlocked.value
     );
 
+    const requiresLidoRelayerApproval = computed(
+      () =>
+        props.trading.isBalancerTrade.value &&
+        !lidoRelayerApproval.isUnlocked.value
+    );
+
     const showTokenApprovalStep = computed(
       () =>
         requiresTokenApproval.value ||
@@ -613,22 +698,39 @@ export default defineComponent({
         gnosisRelayerApproval.approving.value
     );
 
+    const showLidoRelayerApprovalStep = computed(
+      () =>
+        requiresLidoRelayerApproval.value ||
+        lidoRelayerApproval.approved.value ||
+        lidoRelayerApproval.approving.value
+    );
+
     const totalRequiredTransactions = computed(() => {
       let txCount = 1; // trade
       if (showTokenApprovalStep.value) {
         txCount++;
       }
+
       if (showGnosisRelayerApprovalStep.value) {
         txCount++;
+      } else if (showLidoRelayerApprovalStep.value) {
+        txCount++;
       }
+
       return txCount;
     });
 
     const activeTransactionType = computed<
-      'gnosisRelayerApproval' | 'tokenApproval' | 'trade'
+      | 'gnosisRelayerApproval'
+      | 'lidoRelayerApproval'
+      | 'tokenApproval'
+      | 'trade'
     >(() => {
       if (requiresGnosisRelayerApproval.value) {
         return 'gnosisRelayerApproval';
+      }
+      if (requiresLidoRelayerApproval.value) {
+        return 'lidoRelayerApproval';
       }
       if (requiresTokenApproval.value) {
         return 'tokenApproval';
@@ -637,7 +739,10 @@ export default defineComponent({
     });
 
     const requiresApproval = computed(
-      () => requiresGnosisRelayerApproval.value || requiresTokenApproval.value
+      () =>
+        requiresGnosisRelayerApproval.value ||
+        requiresLidoRelayerApproval.value ||
+        requiresTokenApproval.value
     );
 
     const showPriceUpdateError = computed(
@@ -732,12 +837,15 @@ export default defineComponent({
       totalRequiredTransactions,
       requiresApproval,
       gnosisRelayerApproval,
+      lidoRelayerApproval,
       tokenApproval,
       requiresTokenApproval,
       requiresGnosisRelayerApproval,
+      requiresLidoRelayerApproval,
       approveToken,
       showTokenApprovalStep,
       showGnosisRelayerApprovalStep,
+      showLidoRelayerApprovalStep,
       activeTransactionType,
 
       // consants

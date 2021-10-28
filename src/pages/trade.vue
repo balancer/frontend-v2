@@ -136,7 +136,7 @@ export default defineComponent({
 
 <style scoped>
 .trade-container {
-  @apply max-w-full mt-2 xs:mt-8;
+  @apply mt-2 xs:mt-8 w-full;
   max-width: 450px;
 }
 
