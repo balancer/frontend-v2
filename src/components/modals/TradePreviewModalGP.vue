@@ -681,7 +681,9 @@ export default defineComponent({
     );
 
     const requiresLidoRelayerApproval = computed(
-      () => !lidoRelayerApproval.isUnlocked.value
+      () =>
+        props.trading.isBalancerTrade.value &&
+        !lidoRelayerApproval.isUnlocked.value
     );
 
     const showTokenApprovalStep = computed(
