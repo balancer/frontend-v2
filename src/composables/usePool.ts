@@ -11,12 +11,18 @@ export function isMetaStable(poolType: PoolType): boolean {
   return poolType === PoolType.MetaStable;
 }
 
-export function isLiquidityBootstrapping(poolType: PoolType): boolean {
-  return poolType === PoolType.LiquidityBootstrapping;
+export function isPhantomStable(poolType: PoolType): boolean {
+  return poolType === PoolType.PhantomStable;
 }
 
 export function isStableLike(poolType: PoolType): boolean {
-  return isStable(poolType) || isMetaStable(poolType);
+  return (
+    isStable(poolType) || isMetaStable(poolType) || isPhantomStable(poolType)
+  );
+}
+
+export function isLiquidityBootstrapping(poolType: PoolType): boolean {
+  return poolType === PoolType.LiquidityBootstrapping;
 }
 
 export function isWeighted(poolType: PoolType): boolean {
