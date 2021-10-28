@@ -22,7 +22,7 @@ export default class ExchangeProxyService {
     tokenIn: SwapToken,
     tokenOut: SwapToken,
     options: Record<string, any> = {}
-  ) : Promise<TransactionResponse> {
+  ): Promise<TransactionResponse> {
     if (tokenOut.type === SwapTokenType.min) {
       return this.multihopBatchSwapExactIn(
         swaps,

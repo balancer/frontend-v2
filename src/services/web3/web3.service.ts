@@ -1,11 +1,16 @@
 import { resolveENSAvatar } from '@tomfrench/ens-avatar-resolver';
+import { Ref, ref } from 'vue';
 import { Contract } from '@ethersproject/contracts';
 import { ErrorCode } from '@ethersproject/logger';
-import { JsonRpcProvider, TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import {
+  JsonRpcProvider,
+  TransactionResponse,
+  Web3Provider
+} from '@ethersproject/providers';
 import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { logFailedTx } from '@/lib/utils/logging';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
-import { configService as _configService } from '@/services/config/config.service';
+import ConfigService, { configService } from '@/services/config/config.service';
 
 interface Web3Profile {
   ens: string | null;
@@ -16,22 +21,22 @@ const RPC_INVALID_PARAMS_ERROR_CODE = -32602;
 const EIP1559_UNSUPPORTED_REGEX = /network does not support EIP-1559/i;
 
 export default class Web3Service {
-  provider: Web3Provider | JsonRpcProvider;
+  provider: Ref<Web3Provider | JsonRpcProvider>;
 
   constructor(
-    readonly rpcProviderService = _rpcProviderService,
-    private readonly configService = _configService
+    private readonly rpcProviderService = _rpcProviderService,
+    private readonly config: ConfigService = configService
   ) {
-    this.provider = this.rpcProviderService.jsonProvider;
+    this.provider = ref(this.rpcProviderService.jsonProvider);
   }
 
-  public setProvider(provider: Web3Provider | JsonRpcProvider) {
+  public setProvider(provider: Ref<Web3Provider | JsonRpcProvider>) {
     this.provider = provider;
   }
 
   async getEnsName(address: string): Promise<string | null> {
     try {
-      return await this.provider.lookupAddress(address);
+      return await this.provider.value.lookupAddress(address);
     } catch (error) {
       return null;
     }
@@ -53,7 +58,7 @@ export default class Web3Service {
   }
 
   async getUserAddress(): Promise<string> {
-    const signer = this.provider.getSigner();
+    const signer = this.provider.value.getSigner();
     const userAddress: string = await signer.getAddress();
     return userAddress;
   }
@@ -66,8 +71,8 @@ export default class Web3Service {
     options: Record<string, any>,
     forceEthereumLegacyTxType = false
   ): Promise<TransactionResponse> {
-    const signer = this.provider.getSigner();
-    const contract = new Contract(contractAddress, abi, this.provider);
+    const signer = this.provider.value.getSigner();
+    const contract = new Contract(contractAddress, abi, this.provider.value);
     const contractWithSigner = contract.connect(signer);
 
     try {
@@ -97,7 +102,7 @@ export default class Web3Service {
         );
       } else if (
         e.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT &&
-        this.configService.env.APP_ENV !== 'development'
+        this.config.env.APP_ENV !== 'development'
       ) {
         const sender = await signer.getAddress();
         logFailedTx(sender, contract, action, params, options);
