@@ -77,6 +77,7 @@ export default class ExchangeService {
     provider: Web3Provider | JsonRpcProvider,
     account: string,
     amountsOut: string[],
+    tokensOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
     exactOut: boolean
@@ -84,6 +85,7 @@ export default class ExchangeService {
     const txParams = this.exitParams.serialize(
       account,
       amountsOut,
+      tokensOut,
       bptIn,
       exitTokenIndex,
       exactOut
@@ -102,6 +104,7 @@ export default class ExchangeService {
     provider: Web3Provider | JsonRpcProvider,
     account: string,
     amountsOut: string[],
+    tokensOut: string[],
     bptIn: string,
     exitTokenIndex: number | null,
     exactOut: boolean
@@ -109,6 +112,7 @@ export default class ExchangeService {
     const txParams = this.exitParams.serialize(
       account,
       amountsOut,
+      tokensOut,
       bptIn,
       exitTokenIndex,
       exactOut

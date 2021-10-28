@@ -135,7 +135,7 @@
           block
           @click="trackGoal(Goals.ClickWithdraw)"
         >
-          {{ $t('withdraw') }}
+          {{ $t('withdraw.label') }}
           {{ missingPrices || total.length > 15 ? '' : total }}
         </BalBtn>
       </template>
@@ -490,6 +490,7 @@ export default defineComponent({
         getProvider(),
         account.value,
         fullAmounts.value,
+        props.pool.tokenAddresses,
         bptBalance.value,
         exitTokenIndex.value,
         exactOut.value
@@ -510,6 +511,7 @@ export default defineComponent({
           getProvider(),
           account.value,
           amountsOut.value,
+          props.pool.tokenAddresses,
           `${bptIn.value}`,
           exitTokenIndex.value,
           exactOut.value
