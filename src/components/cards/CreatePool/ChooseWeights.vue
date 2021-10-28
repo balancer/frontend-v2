@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { AddressZero } from '@ethersproject/constants';
 import { configService } from '@/services/config/config.service';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';

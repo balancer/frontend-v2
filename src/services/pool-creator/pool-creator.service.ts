@@ -49,7 +49,7 @@ export class PoolCreator {
     });
 
     const tokenWeights = this.calculateTokenWeights(tokens);
-    const swapFeeScaled = EPBigNumber.from(`${swapFee}e16`);
+    const swapFeeScaled = new BigNumber(`${swapFee}e16`);
 
     const params = [
       name,
@@ -60,8 +60,6 @@ export class PoolCreator {
       owner
     ];
 
-    console.log('Params: ', params);
-
     const tx: TransactionResponse = await sendTransaction(
       provider,
       weightedPoolFactoryAddress,
@@ -70,23 +68,12 @@ export class PoolCreator {
       params
     );
 
-    console.log('TX is: ', tx);
-
     const receipt: any = await tx.wait();
-
-    console.log('Receipt is: ', receipt);
-
     const events = receipt.events.filter(e => e.event === 'PoolCreated');
-
-    console.log('Pool created events: ', events);
     const poolAddress = events[0].args[0];
-
-    console.log('Pool address: ', poolAddress);
 
     const pool = new Contract(poolAddress, WeightedPool__factory.abi, provider);
     const poolId = await pool.getPoolId();
-
-    console.log('Pool ID: ', poolId);
 
     const poolDetails: CreatePoolReturn = {
       id: poolId,

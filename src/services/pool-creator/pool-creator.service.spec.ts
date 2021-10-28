@@ -1,10 +1,26 @@
+import { Web3Provider } from '@ethersproject/providers';
+import { AddressZero } from '@ethersproject/constants';
 import { TokenWeight } from '@/composables/pools/usePoolCreation';
 import { poolCreator } from './pool-creator.service';
 import BigNumber from 'bignumber.js';
 
 const tokens: Record<string, TokenWeight> = {};
 
+const mockPoolId =
+  'EEE8292CB20A443BA1CAAA59C985CE14CA2BDEE5000100000000000000000263';
+
 jest.mock('@/services/rpc-provider/rpc-provider.service');
+jest.mock('@/lib/utils/balancer/web3');
+jest.mock('@ethersproject/contracts', () => {
+  const Contract = jest.fn().mockImplementation(() => {
+    return {
+      getPoolId: jest.fn().mockImplementation(() => mockPoolId)
+    };
+  });
+  return {
+    Contract
+  };
+});
 
 describe('PoolCreator', () => {
   beforeEach(() => {
@@ -28,7 +44,58 @@ describe('PoolCreator', () => {
     };
   });
 
-  // describe('createWeightedPool', () => {});
+  describe('createWeightedPool', () => {
+    const mockPoolAddress = '0xEEE8292cb20a443ba1caaa59c985ce14ca2bdee5';
+
+    let poolDetails;
+    const mockPoolName = 'TestPool';
+    const mockPoolSymbol = '50WETH-50USDT';
+    const mockSwapFee = '0.01';
+    const mockOwner = AddressZero;
+
+    beforeEach(async () => {
+      require('@/lib/utils/balancer/web3').__setMockPoolAddress(
+        mockPoolAddress
+      );
+      const mockProvider = {} as Web3Provider;
+      tokens.WETH.weight = 50;
+      tokens.USDT.weight = 50;
+      poolDetails = await poolCreator.createWeightedPool(
+        mockProvider,
+        mockPoolName,
+        mockPoolSymbol,
+        mockSwapFee,
+        [tokens.WETH, tokens.USDT],
+        mockOwner
+      );
+    });
+
+    it('Should call sendTransaction with the correct information', () => {
+      const sendTransactionArgs = require('@/lib/utils/balancer/web3')
+        .sendTransaction.mock.calls[0];
+      expect(sendTransactionArgs[3]).toEqual('create');
+      const sendTransactionParams = sendTransactionArgs[4];
+      expect(sendTransactionParams[0]).toEqual(mockPoolName);
+      expect(sendTransactionParams[1]).toEqual(mockPoolSymbol);
+      expect(sendTransactionParams[2]).toEqual([
+        tokens.WETH.tokenAddress,
+        tokens.USDT.tokenAddress
+      ]);
+      expect(sendTransactionParams[3]).toEqual([
+        new BigNumber(tokens.WETH.weight).multipliedBy(1e16).toString(),
+        new BigNumber(tokens.USDT.weight).multipliedBy(1e16).toString()
+      ]);
+      expect(sendTransactionParams[4]).toEqual(
+        new BigNumber(mockSwapFee).multipliedBy(1e16).toString()
+      );
+      expect(sendTransactionParams[5]).toEqual(mockOwner);
+    });
+
+    it('Should return pool id and address correctly', () => {
+      expect(poolDetails.id).toEqual(mockPoolId);
+      expect(poolDetails.address).toEqual(mockPoolAddress);
+    });
+  });
 
   describe('sortTokens', () => {
     it('Should sort tokens by their address', () => {
