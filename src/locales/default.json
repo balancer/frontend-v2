@@ -426,13 +426,21 @@
                 "content": "Your permission is required to use a batch relayer for gas-free, MEV protected transactions.",
                 "title": "Approve trading on Gnosis protocol"
             },
+            "lidoRelayerApproval": {
+                "content": "Your permission is required to use lido relayer for stETH trades.",
+                "title": "Approve lido relayer"
+            },
             "tokenApproval": {
                 "content": "Your permission is required to trade this token on Balancer. Approvals are required once per token, per wallet.",
                 "title": "Approve {0}"
             },
-            "trade": {
+            "sign": {
                 "content": "Upon your signature, CowSwap will find an optimal route amongst other traders or DeFi exchanges, with MEV protection.",
                 "title": "Sign a free message to trade"
+            },
+            "trade": {
+                "content": "Finalize the transaction by submitting it for inclusion on the blockchain.",
+                "title": "Confirm transaction"
             }
         },
         "unwrap": {
@@ -488,7 +496,7 @@
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
         "approveGnosisRelayer": "Approve Gnosis relayer",
-        "approveLidoRelayer": "Approve Lido Relayer",
+        "approveLidoRelayer": "Approve Lido relayer",
         "investInPool": "{0} in {1}",
         "withdrawFromPool": "{0} from {1}",
         "wrapUnwrap": "{0} {1} to {2}"
