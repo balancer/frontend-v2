@@ -86,7 +86,7 @@ const { parseError } = useTranasactionErrors();
 const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.math);
 
 const { requiredApprovalState, approveToken } = useTokenApprovals(
-  props.pool.tokenAddresses,
+  props.tokenAddresses,
   fullAmounts
 );
 
