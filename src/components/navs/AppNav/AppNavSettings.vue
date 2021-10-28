@@ -171,6 +171,7 @@
         {{ networkName }}
       </div>
     </div>
+    <div v-else class="mt-4" />
   </div>
 </template>
 
