@@ -11,7 +11,7 @@
   "loggingRpc": "https://eth-kovan.alchemyapi.io/v2/{{ALCHEMY_KEY}}",
   "explorer": "https://kovan.etherscan.io",
   "explorerName": "Etherscan",
-  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/destiner/balancer-kovan-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-kovan/pools",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
   "supportsEIP1559": true,
