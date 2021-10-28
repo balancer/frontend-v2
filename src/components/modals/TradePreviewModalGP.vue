@@ -323,16 +323,16 @@
         @actionClick="trading.resetSubmissionError"
       />
     </div>
-    <BalCard shadow="none" class="mt-3" v-if="showTradeRoute">
-      <TradeRoute
-        :address-in="trading.tokenIn.value.address"
-        :amount-in="trading.tokenInAmountInput.value"
-        :address-out="trading.tokenOut.value.address"
-        :amount-out="trading.tokenOutAmountInput.value"
-        :pools="trading.sor.pools.value"
-        :sor-return="trading.sor.sorReturn.value"
-      />
-    </BalCard>
+    <TradeRoute
+      v-if="showTradeRoute"
+      :address-in="trading.tokenIn.value.address"
+      :amount-in="trading.tokenInAmountInput.value"
+      :address-out="trading.tokenOut.value.address"
+      :amount-out="trading.tokenOutAmountInput.value"
+      :pools="trading.sor.pools.value"
+      :sor-return="trading.sor.sorReturn.value"
+      class="mt-3"
+    />
   </BalModal>
 </template>
 
