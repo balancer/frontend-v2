@@ -44,7 +44,6 @@ export default class GnosisProtocolService {
   }) {
     const { order, owner } = params;
 
-    // Call API
     const response = await axios.post<OrderID>(
       `${this.baseURL}/orders`,
       {
@@ -58,7 +57,7 @@ export default class GnosisProtocolService {
     );
 
     if (response.status >= 200 && response.status < 300) {
-      return response.data as OrderID;
+      return response.data;
     }
 
     const errorMessage = OperatorError.getErrorFromStatusCode(
@@ -75,7 +74,6 @@ export default class GnosisProtocolService {
   }) {
     const { cancellation, owner } = params;
 
-    // Call API
     const response = await axios.delete<OrderID>(
       `${this.baseURL}/orders/${cancellation.orderUid}`,
       {
@@ -89,7 +87,7 @@ export default class GnosisProtocolService {
     );
 
     if (response.status >= 200 && response.status < 300) {
-      return response.data as OrderID;
+      return response.data;
     }
 
     const errorMessage = OperatorError.getErrorFromStatusCode(
@@ -102,10 +100,11 @@ export default class GnosisProtocolService {
 
   public async getOrder(orderId: OrderID) {
     try {
-      const response = await axios.get<OrderMetaData>(
+      const { data } = await axios.get<OrderMetaData>(
         `${this.baseURL}/orders/${orderId}`
       );
-      return response.data;
+
+      return data;
     } catch (e) {
       console.log(`[Gnosis Protocol]: Failed to get order ${orderId}`, e);
     }
@@ -113,22 +112,22 @@ export default class GnosisProtocolService {
     return null;
   }
 
-  public async getFeeQuote(params: FeeQuoteParams) {
-    try {
-      const { amount, kind } = params;
+  public async getFeeQuote(feeQuoteParams: FeeQuoteParams) {
+    const response = await axios.post<FeeInformation>(
+      `${this.baseURL}/quote`,
+      feeQuoteParams,
+      {
+        validateStatus: () => true
+      }
+    );
 
-      const sellToken = toErc20Address(params.sellToken);
-      const buyToken = toErc20Address(params.buyToken);
-
-      const response = await axios.get<FeeInformation>(
-        `${this.baseURL}/fee?sellToken=${sellToken}&buyToken=${buyToken}&amount=${amount}&kind=${kind}`
-      );
+    if (response.status >= 200 && response.status < 300) {
       return response.data;
-    } catch (e) {
-      console.log(`[Gnosis Protocol]: Failed to get fee from API`, e);
     }
 
-    return null;
+    const errorMessage = OperatorError.getErrorFromStatusCode(response, 'get');
+
+    throw new Error(errorMessage);
   }
 
   public async getPriceQuote(params: PriceQuoteParams) {
@@ -147,6 +146,7 @@ export default class GnosisProtocolService {
       const response = await axios.get<PriceInformation>(
         `${this.baseURL}/markets/${market}/${kind}/${amount}`
       );
+
       return response.data;
     } catch (e) {
       console.log(`[Gnosis Protocol]: Failed to get price from API`, e);

@@ -87,10 +87,11 @@ function tokenFor(option: string): TokenInfo {
         class="text-blue-500 group-hover:text-pink-500 ml-2"
       />
     </div>
-    <BalPopover
+    <BalDropdown
       v-else-if="hasToken && fixed && options.length > 0"
-      align="left"
-      no-pad
+      :options="options"
+      minWidth="40"
+      @selected="emit('update:modelValue', $event)"
     >
       <template #activator>
         <div class="token-select-input selected group selectable">
@@ -110,33 +111,25 @@ function tokenFor(option: string): TokenInfo {
           />
         </div>
       </template>
-      <template #default="scope">
-        <div class="flex flex-col w-44 rounded-lg overflow-hidden">
-          <div
-            v-for="option in options"
-            :key="option"
-            :set="(optionToken = tokenFor(option) || {})"
-            class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-850"
-            @click="
-              scope.close;
-              emit('update:modelValue', option);
-            "
-          >
-            <div class="flex items-center">
-              <BalAsset :address="optionToken?.address" class="shadow" />
-              <span class="ml-1 font-medium">
-                {{ optionToken?.symbol }}
-              </span>
-            </div>
-            <BalIcon
-              v-if="optionToken.address === modelValue"
-              name="check"
-              class="text-blue-500"
-            />
+      <template #option="{ option: address }">
+        <div
+          :set="(optionToken = tokenFor(address) || {})"
+          class="flex items-center justify-between"
+        >
+          <div class="flex items-center">
+            <BalAsset :address="optionToken?.address" class="shadow" />
+            <span class="ml-1 font-medium">
+              {{ optionToken?.symbol }}
+            </span>
           </div>
+          <BalIcon
+            v-if="optionToken.address === modelValue"
+            name="check"
+            class="text-blue-500 ml-4"
+          />
         </div>
       </template>
-    </BalPopover>
+    </BalDropdown>
 
     <div
       v-else
