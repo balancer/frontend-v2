@@ -1,8 +1,9 @@
-import { Web3Provider } from '@ethersproject/providers';
+import { TransactionReceipt, Web3Provider } from '@ethersproject/providers';
 import { AddressZero } from '@ethersproject/constants';
 import { TokenWeight } from '@/composables/pools/usePoolCreation';
-import { poolCreator } from './pool-creator.service';
+import { JoinPoolRequest, poolCreator } from './pool-creator.service';
 import BigNumber from 'bignumber.js';
+import { WeightedPoolEncoder } from '@balancer-labs/balancer-js';
 
 const tokens: Record<string, TokenWeight> = {};
 
@@ -24,6 +25,7 @@ jest.mock('@ethersproject/contracts', () => {
 
 describe('PoolCreator', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     tokens.MKR = {
       tokenAddress: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
       weight: 70,
@@ -94,6 +96,51 @@ describe('PoolCreator', () => {
     it('Should return pool id and address correctly', () => {
       expect(poolDetails.id).toEqual(mockPoolId);
       expect(poolDetails.address).toEqual(mockPoolAddress);
+    });
+  });
+
+  describe('joinPool', () => {
+    let joinTx: TransactionReceipt;
+    const mockSender = '0xeeedce01a98ebc40f76b2d1f403e52d55b74feee';
+    const mockReceiver = '0xabcdce01a98ebc40f76b2d1f403e52d55b74fddd';
+
+    // Conversion rate 1 WETH = 3000 USDT
+    const tokenBalances = [
+      new BigNumber(2e18), // WETH, 18 demials
+      new BigNumber(6000e6) // USDT, 6 decimals
+    ]
+
+    beforeEach(async () => {
+      const mockProvider = {} as Web3Provider;
+      joinTx = await poolCreator.joinPool(
+        mockProvider,
+        mockPoolId,
+        mockSender,
+        mockReceiver,
+        [tokens.WETH, tokens.USDT],
+        tokenBalances
+      );
+    });
+
+    it('Should call sendTransaction with the correct information', () => {
+      const sendTransactionArgs = require('@/lib/utils/balancer/web3')
+        .sendTransaction.mock.calls[0];
+      expect(sendTransactionArgs[3]).toEqual('joinPool');
+      const sendTransactionParams = sendTransactionArgs[4];
+      expect(sendTransactionParams[0]).toEqual(mockPoolId);
+      expect(sendTransactionParams[1]).toEqual(mockSender);
+      expect(sendTransactionParams[2]).toEqual(mockReceiver);
+      const joinPoolRequest: JoinPoolRequest = sendTransactionParams[3];
+      expect(joinPoolRequest.assets).toEqual([tokens.WETH.tokenAddress, tokens.USDT.tokenAddress])
+      expect(joinPoolRequest.maxAmountsIn).toEqual(['2000000000000000000', '6000000000']);
+
+      const expectedUserData = WeightedPoolEncoder.joinInit(tokenBalances.map(tb => tb.toString()));
+      expect(joinPoolRequest.userData).toEqual(expectedUserData);
+      expect(joinPoolRequest.fromInternalBalance).toEqual(false);
+    });
+
+    it('Should return the transaction data of the mined transaction', () => {
+      expect(joinTx).toBeTruthy();
     });
   });
 

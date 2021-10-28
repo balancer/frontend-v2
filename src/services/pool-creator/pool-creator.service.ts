@@ -4,7 +4,7 @@ import {
   WeightedPool__factory
 } from '@balancer-labs/typechain';
 import { Contract } from '@ethersproject/contracts';
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse, TransactionReceipt, Web3Provider } from '@ethersproject/providers';
 import { configService } from '../config/config.service';
 import BigNumber from 'bignumber.js';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
@@ -90,7 +90,7 @@ export class PoolCreator {
     receiver: Address,
     tokens: TokenWeight[],
     initialBalances: BigNumber[]
-  ) {
+  ): Promise<TransactionReceipt> {
     const initialBalancesString: string[] = initialBalances.map(n =>
       n.toString()
     );
@@ -121,11 +121,9 @@ export class PoolCreator {
       [poolId, sender, receiver, joinPoolRequest]
     );
 
-    console.log('tx is: ', tx);
+    const receipt: TransactionReceipt = await tx.wait();
 
-    const receipt: any = await tx.wait();
-
-    console.log('Receipt is: ', receipt);
+    return receipt;
   }
 
   public sortTokens(tokens: TokenWeight[]) {
