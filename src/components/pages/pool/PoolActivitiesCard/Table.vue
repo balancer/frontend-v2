@@ -56,7 +56,7 @@
 
       <template v-slot:valueCell="action">
         <div class="px-6 py-4 flex justify-end font-numeric">
-          {{ fNum(action.value, 'usd_m') }}
+          {{ action.formattedValue }}
         </div>
       </template>
 
@@ -87,7 +87,6 @@
 <script lang="ts">
 import { PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import numeral from 'numeral';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { getAddress } from '@ethersproject/address';
@@ -109,7 +108,8 @@ type TokenAmount = {
 
 interface ActivityRow {
   label: string;
-  value: string;
+  formattedValue: string;
+  value: number;
   timestamp: number;
   formattedDate: string;
   tx: string;
@@ -180,7 +180,7 @@ export default {
         Cell: 'valueCell',
         align: 'right',
         className: 'align-center w-40',
-        sortKey: pool => numeral(pool.value).value(),
+        sortKey: pool => pool.value,
         width: 125
       },
       {
@@ -189,7 +189,7 @@ export default {
         accessor: 'timestamp',
         Cell: 'timeCell',
         align: 'right',
-        sortKey: pool => numeral(pool.timestamp).value(),
+        sortKey: pool => pool.timestamp,
         width: 200
       }
     ]);
@@ -199,10 +199,13 @@ export default {
         ? []
         : props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
             const isJoin = type === 'Join';
+            const value = getJoinExitValue(amounts);
 
             return {
               label: isJoin ? t('invest') : t('withdraw'),
-              value: fNum(getJoinExitValue(amounts), 'usd'),
+              value,
+              formattedValue:
+                value > 0 ? fNum(fNum(value, 'usd'), 'usd_m') : '-',
               timestamp,
               formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
               tx,
@@ -222,7 +225,7 @@ export default {
 
           return total.plus(amountNumber.times(price));
         }, bnum(0))
-        .toString();
+        .toNumber();
     }
 
     function getJoinExitDetails(amounts: PoolActivity['amounts']) {
