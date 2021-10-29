@@ -69,13 +69,7 @@ const { pool, loadingPool, useNativeAsset } = usePoolTransfers();
         </template>
         <template #myPoolBalances>
           <BalLoadingBlock v-if="loadingPool" class="h-64" />
-          <MyPoolBalancesCard
-            v-else
-            :pool="pool"
-            hideHeader
-            noBorder
-            square
-          />
+          <MyPoolBalancesCard v-else :pool="pool" hideHeader noBorder square />
         </template>
       </BalAccordion>
 
