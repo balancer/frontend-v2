@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 // Composables
@@ -8,6 +8,8 @@ import useUserSettings from '@/composables/useUserSettings';
 import useTokens from '@/composables/useTokens';
 // Components
 import AssetRow from './components/AssetRow.vue';
+import { useRoute } from 'vue-router';
+import { usePool } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -32,20 +34,26 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
+const { isWethPool } = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
+const route = useRoute();
 
 /**
  * COMPUTED
  */
+const pageContext = computed(() => route.name);
+
 const tokenAddresses = computed(() => {
-  if (props.useNativeAsset) {
+  if (pageContext.value === 'invest' && props.useNativeAsset) {
     return props.pool.tokenAddresses.map(address => {
       if (address === wrappedNativeAsset.value.address)
         return nativeAsset.address;
       return address;
     });
+  } else if (pageContext.value === 'withdraw' && isWethPool.value) {
+    return [nativeAsset.address, ...props.pool.tokenAddresses];
   }
 
   return props.pool.tokenAddresses;
@@ -54,9 +62,15 @@ const tokenAddresses = computed(() => {
 const fiatTotal = computed(() => {
   const fiatValue = tokenAddresses.value
     .map(address => {
-      if (address === nativeAsset.address && !props.useNativeAsset) return '0';
-      if (address === wrappedNativeAsset.value.address && props.useNativeAsset)
-        return '0';
+      if (pageContext.value === 'invest') {
+        if (address === nativeAsset.address && !props.useNativeAsset)
+          return '0';
+        if (
+          address === wrappedNativeAsset.value.address &&
+          props.useNativeAsset
+        )
+          return '0';
+      }
 
       const tokenBalance = balanceFor(address);
       return toFiat(tokenBalance, address);
@@ -74,7 +88,9 @@ const fiatTotal = computed(() => {
  * METHODS
  */
 function isSelectedNativeAsset(address: string): boolean {
+  if (pageContext.value === 'withdraw') return true;
   if (props.useNativeAsset && address === nativeAsset.address) return true;
+
   return !props.useNativeAsset && address === wrappedNativeAsset.value.address;
 }
 </script>
@@ -84,13 +100,13 @@ function isSelectedNativeAsset(address: string): boolean {
     <template v-if="!hideHeader" #header>
       <div class="p-4 w-full border-b dark:border-gray-700">
         <h6>
-          {{ $t('investment.myWalletTokensCard.title') }}
+          {{ $t('poolTransfer.myWalletTokensCard.title') }}
         </h6>
       </div>
     </template>
 
-    <div class="-mt-3 p-4">
-      <div v-for="address in pool.tokenAddresses" :key="address" class="py-3">
+    <div class="-mt-2 p-4">
+      <div v-for="address in pool.tokenAddresses" :key="address" class="py-2">
         <div v-if="address === wrappedNativeAsset.address">
           <div class="flex items-start justify-between">
             <BalBreakdown
@@ -99,11 +115,15 @@ function isSelectedNativeAsset(address: string): boolean {
               size="lg"
             >
               <div class="flex justify-between">
-                <span>{{ nativeAsset.name }} {{ $t('tokens') }}</span>
+                <span>
+                  {{ nativeAsset.name }}
+                  <span class="lowercase">{{ $t('tokens') }}</span>
+                </span>
                 <BalTooltip
+                  v-if="pageContext === 'invest'"
                   :text="
                     $t(
-                      'investment.myWalletTokensCard.tooltips.nativeAssetSelection',
+                      'poolTransfer.myWalletTokensCard.tooltips.nativeAssetSelection',
                       [nativeAsset.symbol, wrappedNativeAsset.symbol]
                     )
                   "

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { configService } from '@/services/config/config.service';
+// Composables
+import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Components
-import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.vue';
+import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm2.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
-// Composables
-import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 
 /**
  * STATE
@@ -25,12 +25,12 @@ const { pool, loadingPool } = usePoolTransfers();
             {{ network.chainName }}
           </div>
           <div class="flex items-center justify-between">
-            <h4>{{ $t('investInPool') }}</h4>
+            <h4>{{ $t('withdrawFromPool') }}</h4>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>
         </div>
       </template>
-      <InvestForm :pool="pool" />
+      <WithdrawForm :pool="pool" />
     </BalCard>
   </div>
 </template>

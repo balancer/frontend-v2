@@ -202,7 +202,7 @@ export default {
             const value = getJoinExitValue(amounts);
 
             return {
-              label: isJoin ? t('invest') : t('withdraw'),
+              label: isJoin ? t('invest') : t('withdraw.label'),
               value,
               formattedValue:
                 value > 0 ? fNum(fNum(value, 'usd'), 'usd_m') : '-',

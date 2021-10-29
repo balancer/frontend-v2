@@ -127,6 +127,7 @@ module.exports = {
   variants: {
     extend: {
       margin: ['first'],
+      borderRadius: ['first', 'last'],
       zIndex: ['hover'],
       borderWidth: ['dark', 'last']
     }

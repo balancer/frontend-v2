@@ -6,10 +6,11 @@ import Weighted from './weighted';
 import Stable from './stable';
 import { TokenInfoMap } from '@/types/TokenList';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
-import { Ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { isStable, isStableLike } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
+import { ETH_TX_BUFFER } from '@/constants/transactions';
 
 interface Amounts {
   send: string[];
@@ -34,7 +35,7 @@ export default class CalculatorService {
     public allTokens: Ref<TokenInfoMap>,
     public balances: Ref<BalanceMap>,
     public action: PoolAction,
-    public useNativeAsset: Ref<boolean>,
+    public useNativeAsset: Ref<boolean> = ref(false),
     weightedClass = Weighted,
     stableClass = Stable,
     public readonly config = configService
@@ -87,7 +88,14 @@ export default class CalculatorService {
 
     this.tokenAddresses.forEach((token, tokenIndex) => {
       let hasBalance = true;
-      const balance = this.balances.value[token] || '0';
+      let balance;
+      if (token === this.config.network.nativeAsset.address) {
+        balance = bnum(this.balances.value[token])
+          .minus(ETH_TX_BUFFER)
+          .toString();
+      } else {
+        balance = this.balances.value[token] || '0';
+      }
       const amounts = this.propAmountsGiven(balance, tokenIndex, type);
 
       amounts.send.forEach((amount, amountIndex) => {

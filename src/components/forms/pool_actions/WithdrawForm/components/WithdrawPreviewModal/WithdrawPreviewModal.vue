@@ -1,24 +1,26 @@
 <script setup lang="ts">
-import { computed, toRefs, ref } from 'vue';
-import useTokens from '@/composables/useTokens';
+import { computed, toRefs, ref, toRef } from 'vue';
+import { bnum } from '@/lib/utils';
+// Types
+import { WithdrawMathResponse } from '../../composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TokenInfoMap } from '@/types/TokenList';
-import { bnum } from '@/lib/utils';
+// Composables
 import useNumbers from '@/composables/useNumbers';
-import InvestSummary from './components/InvestSummary.vue';
-import TokenAmounts from './components/TokenAmounts.vue';
-import InvestActions from './components/InvestActions.vue';
-import { InvestMathResponse } from '../../composables/useInvestMath';
 import { useI18n } from 'vue-i18n';
-import useInvestState from '../../composables/useInvestState';
+import useTokens from '@/composables/useTokens';
+// Components
+import WithdrawSummary from './components/WithdrawSummary.vue';
+import TokenAmounts from './components/TokenAmounts.vue';
+import WithdrawActions from './components/WithdrawActions.vue';
+import useWithdrawalState from '../../composables/useWithdrawalState';
 
 /**
  * TYPES
  */
 type Props = {
   pool: FullPool;
-  math: InvestMathResponse;
-  tokenAddresses: string[];
+  math: WithdrawMathResponse;
 };
 
 type AmountMap = {
@@ -37,7 +39,7 @@ const emit = defineEmits<{
 /**
  * STATE
  */
-const investmentConfirmed = ref(false);
+const withdrawalConfirmed = ref(false);
 
 /**
  * COMPOSABLES
@@ -45,23 +47,23 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact } = toRefs(props.math);
-const { resetAmounts } = useInvestState();
+const { fullAmounts, priceImpact, resetMath } = toRefs(props.math);
+const { tokensOut, maxSlider } = useWithdrawalState(toRef(props, 'pool'));
 
 /**
  * COMPUTED
  */
 const title = computed((): string =>
-  investmentConfirmed.value
-    ? t('investment.preview.titles.confirmed')
-    : t('investment.preview.titles.default')
+  withdrawalConfirmed.value
+    ? t('withdraw.preview.titles.confirmed')
+    : t('withdraw.preview.titles.default')
 );
 
 const amountMap = computed(
   (): AmountMap => {
     const amountMap = {};
     fullAmounts.value.forEach((amount, i) => {
-      if (hasAmount(i)) amountMap[props.tokenAddresses[i]] = amount;
+      if (hasAmount(i)) amountMap[tokensOut.value[i]] = amount;
     });
     return amountMap;
   }
@@ -105,19 +107,20 @@ function hasAmount(index: number): boolean {
 }
 
 function handleClose(): void {
-  if (investmentConfirmed.value) {
-    resetAmounts();
+  if (withdrawalConfirmed.value) {
+    resetMath.value();
+    maxSlider();
   }
   emit('close');
 }
 </script>
 
 <template>
-  <BalModal show :fireworks="investmentConfirmed" @close="handleClose">
+  <BalModal show :fireworks="withdrawalConfirmed" @close="handleClose">
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle
-          v-if="investmentConfirmed"
+          v-if="withdrawalConfirmed"
           size="8"
           color="green"
           class="text-white mr-2"
@@ -137,18 +140,17 @@ function handleClose(): void {
       :fiatTotal="fiatTotal"
     />
 
-    <InvestSummary
+    <WithdrawSummary
       :pool="pool"
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
     />
 
-    <InvestActions
+    <WithdrawActions
       :pool="pool"
       :math="math"
-      :tokenAddresses="tokenAddresses"
       class="mt-4"
-      @success="investmentConfirmed = true"
+      @success="withdrawalConfirmed = true"
     />
   </BalModal>
 </template>

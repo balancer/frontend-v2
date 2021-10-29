@@ -85,7 +85,7 @@ export default defineComponent({
      */
     const tabs = [
       { value: 'invest', label: t('invest') },
-      { value: 'withdraw', label: t('withdraw') }
+      { value: 'withdraw', label: t('withdraw.label') }
     ];
     const activeTab = ref(tabs[0].value);
     const investmentSuccess = ref(false);

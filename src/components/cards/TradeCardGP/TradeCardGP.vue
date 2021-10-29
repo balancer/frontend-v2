@@ -139,6 +139,7 @@ import TradeSettingsPopover, {
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
 import { configService } from '@/services/config/config.service';
+import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 
 import GasReimbursement from '../TradeCard/GasReimbursement.vue';
 import TradePair from '../TradeCard/TradePair.vue';
@@ -212,13 +213,13 @@ export default defineComponent({
     );
 
     const tradeDisabled = computed(() => {
-      const hasValidationErrors = errorMessage.value !== TradeValidation.VALID;
+      const hasValidationError = errorMessage.value !== TradeValidation.VALID;
       const hasGnosisErrors =
-        trading.isGnosisTrade.value && trading.gnosis.hasValidationErrors.value;
+        trading.isGnosisTrade.value && trading.gnosis.hasValidationError.value;
       const hasBalancerErrors =
         trading.isBalancerTrade.value && isHighPriceImpact.value;
 
-      return hasValidationErrors || hasGnosisErrors || hasBalancerErrors;
+      return hasValidationError || hasGnosisErrors || hasBalancerErrors;
     });
 
     useTokenApproval(tokenInAddress, tokenInAmount, tokens);
@@ -262,29 +263,46 @@ export default defineComponent({
       }
 
       if (trading.isGnosisTrade.value) {
-        if (trading.gnosis.validationErrors.value.feeExceedsPrice) {
-          return {
-            header: t('gnosisErrors.lowAmount.header'),
-            body: t('gnosisErrors.lowAmount.body')
-          };
-        }
-        if (trading.gnosis.validationErrors.value.priceExceedsBalance) {
-          return {
-            header: t('gnosisErrors.lowBalance.header', [
-              trading.tokenIn.value.symbol
-            ]),
-            body: t('gnosisErrors.lowBalance.body', [
-              trading.tokenIn.value.symbol,
-              fNum(
-                formatUnits(
-                  trading.getQuote().maximumInAmount,
-                  trading.tokenIn.value.decimals
+        if (trading.gnosis.validationError.value != null) {
+          const errorCode = trading.gnosis.validationError.value;
+
+          if (errorCode === ApiErrorCodes.SellAmountDoesNotCoverFee) {
+            return {
+              header: t('gnosisErrors.lowAmount.header'),
+              body: t('gnosisErrors.lowAmount.body')
+            };
+          } else if (errorCode === ApiErrorCodes.PriceExceedsBalance) {
+            return {
+              header: t('gnosisErrors.lowBalance.header', [
+                trading.tokenIn.value.symbol
+              ]),
+              body: t('gnosisErrors.lowBalance.body', [
+                trading.tokenIn.value.symbol,
+                fNum(
+                  formatUnits(
+                    trading.getQuote().maximumInAmount,
+                    trading.tokenIn.value.decimals
+                  ),
+                  'token'
                 ),
-                'token'
-              ),
-              fNum(trading.slippageBufferRate.value, 'percent')
-            ])
-          };
+                fNum(trading.slippageBufferRate.value, 'percent')
+              ])
+            };
+          } else if (errorCode === ApiErrorCodes.NoLiquidity) {
+            return {
+              header: t('gnosisErrors.noLiquidity.header', [
+                trading.tokenIn.value.symbol
+              ]),
+              body: t('gnosisErrors.noLiquidity.body')
+            };
+          } else {
+            return {
+              header: t('gnosisErrors.genericError.header'),
+              body: t('gnosisErrors.genericError.body', [
+                trading.gnosis.validationError.value
+              ])
+            };
+          }
         }
       } else if (trading.isBalancerTrade.value) {
         if (isHighPriceImpact.value) {
