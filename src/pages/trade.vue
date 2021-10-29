@@ -101,7 +101,7 @@ export default defineComponent({
     const { upToLargeBreakpoint } = useBreakpoints();
     const showPriceGraphModal = ref(false);
     // manual flag while subgraph syncs
-    const hideWidgets = true;
+    const hideWidgets = false;
     // COMPUTED
     const appLoading = computed(() => store.state.app.loading);
     const tradeInterface = computed(() => store.state.app.tradeInterface);
