@@ -89,9 +89,4 @@ const { pool, loadingPool, useNativeAsset } = usePoolTransfers();
   @apply px-4 lg:px-6;
   @apply flex items-center justify-between;
 }
-
-.layout-container {
-  @apply max-w-xl lg:container mx-auto;
-  @apply grid grid-cols-1 lg:grid-cols-7 gap-y-8 gap-x-0 lg:gap-x-8;
-}
 </style>

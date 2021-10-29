@@ -53,12 +53,12 @@ const centerClasses = computed(() => ({
 
 <style scoped>
 .layout-container {
-  @apply max-w-xl lg:container mx-auto;
+  @apply max-w-6xl mx-auto px-0 sm:px-4;
   @apply grid grid-cols-1 lg:grid-cols-7 gap-y-8 gap-x-0 lg:gap-x-8;
 }
 
 .center-col {
-  @apply col-span-3 lg:max-w-lg;
+  @apply col-span-3;
 }
 
 .gutter-col {
