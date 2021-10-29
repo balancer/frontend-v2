@@ -8,6 +8,7 @@ import { useRoute } from 'vue-router';
 import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
 import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
 import BalAccordion from '@/components/_global/BalAccordion/BalAccordion.vue';
+import Col3Layout from '@/components/layouts/Col3Layout.vue';
 
 /**
  * STATE
@@ -30,62 +31,61 @@ const { pool, loadingPool, useNativeAsset } = usePoolTransfers();
         <BalIcon name="x" size="lg" />
       </router-link>
     </div>
-    <div class="layout-container">
-      <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-6">
+
+    <Col3Layout offsetGutters mobileHideGutters>
+      <template #gutterLeft v-if="!upToLargeBreakpoint">
         <BalLoadingBlock v-if="loadingPool" class="h-64" />
         <MyWalletTokensCard
           v-else
           :pool="pool"
           v-model:useNativeAsset="useNativeAsset"
         />
-      </div>
+      </template>
 
-      <div class="col-span-3">
-        <BalAccordion
-          v-if="upToLargeBreakpoint"
-          class="mb-4"
-          :sections="[
-            {
-              title: $t('poolTransfer.myWalletTokensCard.title'),
-              id: 'myWalletTokens'
-            },
-            {
-              title: $t('poolTransfer.myPoolBalancesCard.title'),
-              id: 'myPoolBalances'
-            }
-          ]"
-        >
-          <template #myWalletTokens>
-            <BalLoadingBlock v-if="loadingPool" class="h-64" />
-            <MyWalletTokensCard
-              v-else
-              :pool="pool"
-              v-model:useNativeAsset="useNativeAsset"
-              hideHeader
-              noBorder
-              square
-            />
-          </template>
-          <template #myPoolBalances>
-            <BalLoadingBlock v-if="loadingPool" class="h-64" />
-            <MyPoolBalancesCard
-              v-else
-              :pool="pool"
-              hideHeader
-              noBorder
-              square
-            />
-          </template>
-        </BalAccordion>
+      <BalAccordion
+        v-if="upToLargeBreakpoint"
+        class="mb-4"
+        :sections="[
+          {
+            title: $t('poolTransfer.myWalletTokensCard.title'),
+            id: 'myWalletTokens'
+          },
+          {
+            title: $t('poolTransfer.myPoolBalancesCard.title'),
+            id: 'myPoolBalances'
+          }
+        ]"
+      >
+        <template #myWalletTokens>
+          <BalLoadingBlock v-if="loadingPool" class="h-64" />
+          <MyWalletTokensCard
+            v-else
+            :pool="pool"
+            v-model:useNativeAsset="useNativeAsset"
+            hideHeader
+            noBorder
+            square
+          />
+        </template>
+        <template #myPoolBalances>
+          <BalLoadingBlock v-if="loadingPool" class="h-64" />
+          <MyPoolBalancesCard
+            v-else
+            :pool="pool"
+            hideHeader
+            noBorder
+            square
+          />
+        </template>
+      </BalAccordion>
 
-        <router-view :key="$route.path" />
-      </div>
+      <router-view :key="$route.path" />
 
-      <div v-if="!upToLargeBreakpoint" class="col-span-2 mt-6">
+      <template #gutterRight v-if="!upToLargeBreakpoint">
         <BalLoadingBlock v-if="loadingPool" class="h-64" />
         <MyPoolBalancesCard v-else :pool="pool" />
-      </div>
-    </div>
+      </template>
+    </Col3Layout>
   </div>
 </template>
 
