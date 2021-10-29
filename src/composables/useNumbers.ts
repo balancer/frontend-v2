@@ -2,16 +2,6 @@ import numeral from 'numeral';
 import BigNumber from 'bignumber.js';
 import useTokens from './useTokens';
 
-export type Preset =
-  | 'default'
-  | 'token'
-  | 'token_fixed'
-  | 'token_lg'
-  | 'usd'
-  | 'usd_lg'
-  | 'percent'
-  | 'percent_lg';
-
 interface Options {
   format?: string;
   forcePreset?: boolean;
@@ -28,6 +18,8 @@ enum PresetFormats {
   percent = '0.00%',
   percent_lg = '0%'
 }
+
+export type Preset = keyof typeof PresetFormats;
 
 export function fNum(
   number: number | string,
