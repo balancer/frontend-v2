@@ -29,7 +29,7 @@ export interface SorReturn {
   returnDecimals: number;
   hasSwaps: boolean;
   returnAmount: BigNumber;
-  marketSpNormalised: OldBigNumber;
+  marketSpNormalised: string;
   v1result: [Swap[][], BigNumber, OldBigNumber];
   v2result: SwapInfo;
 }
@@ -290,9 +290,9 @@ export class SorManager {
     else isV1best = true;
 
     // Need to return marketSp as normalized
-    const marketSpV1Normalised: OldBigNumber = marketSpV1Scaled.div(
-      10 ** (18 + tokenInDecimals - tokenOutDecimals)
-    );
+    const marketSpV1Normalised = marketSpV1Scaled
+      .div(10 ** (18 + tokenInDecimals - tokenOutDecimals))
+      .toString();
 
     const v1return: SorReturn = {
       isV1swap: true,
@@ -368,9 +368,9 @@ export class SorManager {
       );
 
     // Need to return marketSp as normalized
-    const marketSpV1Normalised: OldBigNumber = marketSpV1Scaled.div(
-      10 ** (18 + tokenInDecimals - tokenOutDecimals)
-    );
+    const marketSpV1Normalised = marketSpV1Scaled
+      .div(10 ** (18 + tokenInDecimals - tokenOutDecimals))
+      .toString();
 
     const v1return: SorReturn = {
       isV1swap: true,

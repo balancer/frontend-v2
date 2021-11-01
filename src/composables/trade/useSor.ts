@@ -105,7 +105,7 @@ export default function useSor({
     tokenOut: '',
     returnDecimals: 18,
     returnAmount: Zero,
-    marketSpNormalised: new OldBigNumber(0),
+    marketSpNormalised: '0',
     v1result: [[], Zero, new OldBigNumber(0)],
     v2result: {
       tokenAddresses: [],
@@ -115,7 +115,7 @@ export default function useSor({
       returnAmountConsideringFees: Zero,
       tokenIn: '',
       tokenOut: '',
-      marketSp: new OldBigNumber(0)
+      marketSp: '0'
     }
   });
   const trading = ref(false);
