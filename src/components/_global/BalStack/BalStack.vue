@@ -10,6 +10,8 @@ type Props = {
   ref?: any;
   align?: 'center' | 'start' | 'end';
   justify?: 'center' | 'start' | 'end';
+  isDynamic?: boolean;
+  expandChildren?: boolean;
 };
 
 const SpacingMap: Record<Spacing, number> = {
@@ -35,6 +37,13 @@ const stackId = Math.random();
 const slots = useSlots();
 
 const slotsWithContent = computed(() => {
+  if (props.isDynamic) {
+    if (slots.default()[0].children?.length) {
+      return (slots.default()[0].children as any[]).filter(
+        child => child.children !== 'v-if'
+      );
+    }
+  }
   return slots.default().filter(slot => {
     return slot.children !== 'v-if';
   });
@@ -64,7 +73,8 @@ const slotsWithContent = computed(() => {
         [spacingClass]: i !== slotsWithContent.length - 1,
         'border-b': i !== slotsWithContent.length - 1 && withBorder && vertical,
         'border-r':
-          i !== slotsWithContent.length - 1 && withBorder && horizontal
+          i !== slotsWithContent.length - 1 && withBorder && horizontal,
+        'w-full': expandChildren
       }"
     >
       <component :is="child" />

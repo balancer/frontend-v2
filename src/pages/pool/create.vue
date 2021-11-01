@@ -6,6 +6,7 @@ import ChooseWeights, {
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
 import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
 import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
+import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { eq } from 'lodash';
 import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
@@ -13,6 +14,29 @@ import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalS
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useApp from '@/composables/useApp';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+
+const initialAnimateProps = {
+  opacity: 0,
+  translateY: '-100px',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0
+};
+
+const entryAnimateProps = {
+  opacity: 1,
+  translateY: '0px',
+  position: 'relative'
+};
+const exitAnimateProps = {
+  opacity: 0,
+  translateY: '100px',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0
+};
 
 /**
  * COMPOSABLES
@@ -63,48 +87,28 @@ const steps = computed(() => [
     </div>
     <div class="col-span-5 col-start-4 relative">
       <AnimatePresence
+        :isVisible="!appLoading && activeStep === 0"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
+      >
+        <ChooseWeights />
+      </AnimatePresence>
+      <AnimatePresence
         :isVisible="!appLoading && activeStep === 1"
-        :initial="{
-          opacity: 0,
-          translateY: '-100px',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0
-        }"
-        :animate="{ opacity: 1, translateY: '0px', position: 'relative' }"
-        :exit="{
-          opacity: 0,
-          translateY: '100px',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0
-        }"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
       >
         <PoolFees @nextStep="onNextStep" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 0"
-        :initial="{
-          opacity: 0,
-          translateY: '-100px',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0
-        }"
-        :animate="{ opacity: 1, translateY: '0px', position: 'relative' }"
-        :exit="{
-          opacity: 0,
-          translateY: '100px',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0
-        }"
+        :isVisible="!appLoading && activeStep === 2"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
       >
-        <ChooseWeights />
+        <SimilarPools />
       </AnimatePresence>
     </div>
     <div class="col-span-3">

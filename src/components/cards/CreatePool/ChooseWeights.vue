@@ -146,6 +146,11 @@ const addTokenListElementRef = (el: HTMLElement) => {
     tokenWeightItemElements.push(el);
   }
 };
+
+const validateAndProceed = () => {
+
+  proceed();
+}
 </script>
 
 <template>
@@ -196,7 +201,7 @@ const addTokenListElementRef = (el: HTMLElement) => {
           </div>
         </div>
       </BalCard>
-      <BalBtn block color="gradient" @click="proceed">Next</BalBtn>
+      <BalBtn block color="gradient" :disabled="totalWeight !== 100" @click="validateAndProceed">Next</BalBtn>
     </BalStack>
   </BalCard>
 </template>

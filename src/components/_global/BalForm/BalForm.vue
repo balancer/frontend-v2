@@ -33,6 +33,7 @@ function useFormValidations() {
         child.component &&
         typeof child.component.proxy.validate === 'function'
       ) {
+
         validatable.value.push(child.component.proxy);
       }
       if (Array.isArray(child.children)) {

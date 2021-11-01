@@ -42,7 +42,7 @@ const isSelectedInHiddenTokens = computed(() =>
  * METHODS
  */
 function symbolFor(token: PoolToken): string {
-  return tokens.value[token.address]?.symbol || '---';
+  return token.symbol || tokens.value[token.address]?.symbol || '---';
 }
 
 function weightFor(token: PoolToken): string {

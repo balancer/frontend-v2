@@ -1,6 +1,7 @@
 import i18n from '@/plugins/i18n';
 import { bnum } from '.';
 import numeral from 'numeral';
+import { isAddress } from '@ethersproject/address';
 
 export function isRequired(field = '') {
   const _field = field ? `${field} ` : 'Input ';
@@ -39,4 +40,8 @@ export const isEmailCheck = email => {
 
 export function isEmail() {
   return v => !v || isEmailCheck(v) || i18n.global.t('mustBeValidEmail');
+}
+
+export function isValidAddress() {
+  return v => !v || isAddress(v) || i18n.global.t('mustBeValidAddress');
 }
