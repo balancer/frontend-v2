@@ -50,7 +50,8 @@ const {
   tokenAddresses,
   amounts,
   validInputs,
-  highPriceImpactAccepted
+  highPriceImpactAccepted,
+  resetAmounts
 } = useInvestState();
 
 const investMath = useInvestMath(
@@ -172,6 +173,7 @@ function setNativeAsset(to: NativeAsset): void {
  * CALLBACKS
  */
 onBeforeMount(() => {
+  resetAmounts();
   tokenAddresses.value = [...props.pool.tokenAddresses];
   if (isWethPool.value) setNativeAssetByBalance();
 });
