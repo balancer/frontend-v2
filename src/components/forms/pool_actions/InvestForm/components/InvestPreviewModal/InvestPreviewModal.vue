@@ -8,15 +8,16 @@ import useNumbers from '@/composables/useNumbers';
 import InvestSummary from './components/InvestSummary.vue';
 import TokenAmounts from './components/TokenAmounts.vue';
 import InvestActions from './components/InvestActions.vue';
-import { InvestMath } from '../../composables/useInvestFormMath';
+import { InvestMathResponse } from '../../composables/useInvestMath';
 import { useI18n } from 'vue-i18n';
+import useInvestState from '../../composables/useInvestState';
 
 /**
  * TYPES
  */
 type Props = {
   pool: FullPool;
-  investMath: InvestMath;
+  math: InvestMathResponse;
   tokenAddresses: string[];
 };
 
@@ -44,7 +45,8 @@ const investmentConfirmed = ref(false);
 const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
-const { fullAmounts, priceImpact } = toRefs(props.investMath);
+const { fullAmounts, priceImpact } = toRefs(props.math);
+const { resetAmounts } = useInvestState();
 
 /**
  * COMPUTED
@@ -101,10 +103,17 @@ const fiatTotal = computed((): string =>
 function hasAmount(index: number): boolean {
   return bnum(fullAmounts.value[index]).gt(0);
 }
+
+function handleClose(): void {
+  if (investmentConfirmed.value) {
+    resetAmounts();
+  }
+  emit('close');
+}
 </script>
 
 <template>
-  <BalModal show :fireworks="investmentConfirmed" @close="emit('close')">
+  <BalModal show :fireworks="investmentConfirmed" @close="handleClose">
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle
@@ -136,7 +145,7 @@ function hasAmount(index: number): boolean {
 
     <InvestActions
       :pool="pool"
-      :investMath="investMath"
+      :math="math"
       :tokenAddresses="tokenAddresses"
       class="mt-4"
       @success="investmentConfirmed = true"

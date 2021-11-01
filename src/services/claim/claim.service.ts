@@ -262,12 +262,14 @@ export class ClaimService {
     ]);
 
     try {
-      const result = (await multicall(
+      const result = (await multicall<boolean | string>(
         String(networkId.value),
         rpcProviderService.jsonProvider,
         merkleOrchardAbi,
-        [...claimStatusCalls, ...rootCalls]
-      )) as [boolean | string][];
+        [...claimStatusCalls, ...rootCalls],
+        {},
+        true
+      )) as (boolean | string)[];
 
       if (result.length > 0) {
         const chunks = chunk(flatten(result), totalWeeks);

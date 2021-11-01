@@ -273,7 +273,7 @@ export default function useTrading(
 
   watch(blockNumber, () => {
     if (isGnosisTrade.value) {
-      if (!gnosis.hasValidationErrors.value) {
+      if (!gnosis.hasValidationError.value) {
         gnosis.handleAmountChange();
       }
     } else if (isBalancerTrade.value) {
