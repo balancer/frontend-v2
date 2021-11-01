@@ -56,12 +56,11 @@ const setTradePair = (pair: TrendingPair[]) => {
   <BalCard
     :square="upToLargeBreakpoint"
     noPad
-    hFull
     growContent
     :noBorder="upToLargeBreakpoint"
     shadow="false"
   >
-    <div class="flex flex-col bg-transparent lg:bg-white widget-card h-full">
+    <div class="trending-pairs">
       <div
         v-if="!upToLargeBreakpoint"
         class="flex justify-between p-3 lg:shadow-lg"
@@ -81,3 +80,10 @@ const setTradePair = (pair: TrendingPair[]) => {
     </div>
   </BalCard>
 </template>
+
+<style scoped>
+.trending-pairs {
+  @apply flex flex-col bg-transparent lg:bg-white;
+  min-height: 200px;
+}
+</style>

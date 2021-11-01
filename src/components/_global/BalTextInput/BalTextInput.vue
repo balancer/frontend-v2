@@ -21,7 +21,7 @@ type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
 type InputSize = 'sm' | 'md' | 'lg';
 type ValidationTrigger = 'input' | 'blur';
 type RuleFunction = (val: InputValue) => string;
-type Rules = RuleFunction[];
+export type Rules = RuleFunction[];
 
 type Props = {
   name: string;

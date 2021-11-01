@@ -1,4 +1,4 @@
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts';
+import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
 
 export type OrderID = string;
 
@@ -17,7 +17,7 @@ export type OrderMetaData = {
   sellAmount: string;
   buyAmount: string;
   validTo: number;
-  appData: number;
+  appData: string;
   feeAmount: string;
   kind: OrderKind;
   partiallyFillable: false;
@@ -27,6 +27,23 @@ export type OrderMetaData = {
 
 export type FeeQuoteParams = Pick<
   OrderMetaData,
+  | 'sellToken'
+  | 'buyToken'
+  | 'kind'
+  | 'validTo'
+  | 'appData'
+  | 'partiallyFillable'
+> & {
+  from: string;
+  receiver: string;
+  sellTokenBalance: OrderBalance;
+  buyTokenBalance: OrderBalance;
+  sellAmountBeforeFee?: string;
+  buyAmountAfterFee?: string;
+};
+
+export type PriceQuoteParams = Pick<
+  OrderMetaData,
   'sellToken' | 'buyToken' | 'kind'
 > & {
   amount: string;
@@ -34,11 +51,12 @@ export type FeeQuoteParams = Pick<
   toDecimals: number;
 };
 
-export type PriceQuoteParams = FeeQuoteParams;
-
 export type FeeInformation = {
-  expirationDate: string;
-  amount: string;
+  expiration: string;
+  from: string;
+  quote: FeeQuoteParams & {
+    feeAmount: string;
+  };
 };
 
 export type PriceInformation = {

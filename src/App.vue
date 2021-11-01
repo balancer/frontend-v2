@@ -4,7 +4,7 @@ import { VueQueryDevTools } from 'vue-query/devtools';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import BigNumber from 'bignumber.js';
-import * as Layouts from '@/components/layouts';
+import * as Layouts from '@/pages/_layouts';
 import useWeb3Watchers from '@/composables/watchers/useWeb3Watchers';
 import WalletSelectModal from '@/components/web3/WalletSelectModal.vue';
 import useWeb3 from '@/services/web3/useWeb3';

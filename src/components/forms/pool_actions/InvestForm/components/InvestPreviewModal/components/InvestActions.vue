@@ -1,32 +1,37 @@
 <script setup lang="ts">
 import { toRef, ref, toRefs, computed, reactive } from 'vue';
+import PoolExchange from '@/services/pool/exchange/exchange.service';
+import { getPoolWeights } from '@/services/pool/pool.helper';
+// Types
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import { InvestMathResponse } from '../../../composables/useInvestMath';
+import {
+  Step,
+  StepState
+} from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+// Composables
 import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
-import PoolExchange from '@/services/pool/exchange/exchange.service';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { useI18n } from 'vue-i18n';
-import { getPoolWeights } from '@/services/pool/pool.helper';
-import { InvestMath } from '../../../composables/useInvestFormMath';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
 import useTokenApprovals, {
   ApprovalState
 } from '@/composables/pools/useTokenApprovals';
-import {
-  Step,
-  StepState
-} from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
 import useConfig from '@/composables/useConfig';
+import useTranasactionErrors, {
+  TransactionError
+} from '@/composables/useTransactionErrors';
 
 /**
  * TYPES
  */
 type Props = {
   pool: FullPool;
-  investMath: InvestMath;
+  math: InvestMathResponse;
   tokenAddresses: string[];
 };
 
@@ -43,6 +48,7 @@ type InvestmentState = {
   confirming: boolean;
   confirmed: boolean;
   confirmedAt: string;
+  error?: TransactionError | null;
   receipt?: TransactionReceipt;
 };
 
@@ -76,10 +82,11 @@ const { getToken } = useTokens();
 const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.investMath);
+const { parseError } = useTranasactionErrors();
+const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.math);
 
 const { requiredApprovalState, approveToken } = useTokenApprovals(
-  props.pool.tokenAddresses,
+  props.tokenAddresses,
   fullAmounts
 );
 
@@ -226,6 +233,7 @@ async function submit(): Promise<void> {
   } catch (error) {
     investmentState.init = false;
     investmentState.confirming = false;
+    investmentState.error = parseError(error);
     console.error(error);
   }
 }
@@ -233,6 +241,14 @@ async function submit(): Promise<void> {
 
 <template>
   <div>
+    <BalAlert
+      v-if="investmentState.error"
+      type="error"
+      :title="investmentState.error.title"
+      :description="investmentState.error.description"
+      block
+      class="mb-4"
+    />
     <BalHorizSteps
       v-if="actions.length > 1 && !investmentState.confirmed"
       :steps="steps"
