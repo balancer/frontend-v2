@@ -216,16 +216,24 @@ export default {
     );
 
     function getJoinExitValue(amounts: PoolActivity['amounts']) {
-      return amounts
-        .reduce((total, amount, index) => {
-          const address = getAddress(props.tokens[index]);
-          const token = tokens.value[address];
-          const price = priceFor(token.address);
-          const amountNumber = bnum(Math.abs(parseFloat(amount)));
+      let total = bnum(0);
 
-          return total.plus(amountNumber.times(price));
-        }, bnum(0))
-        .toNumber();
+      for (let i = 0; i < amounts.length; i++) {
+        const amount = amounts[i];
+        const address = getAddress(props.tokens[i]);
+        const token = tokens.value[address];
+        const price = priceFor(token.address);
+        const amountNumber = Math.abs(parseFloat(amount));
+
+        // If the price is unknown for any of the positive amounts - the value cannot be computed.
+        if (amountNumber > 0 && price === 0) {
+          return 0;
+        }
+
+        total = total.plus(bnum(amountNumber).times(price));
+      }
+
+      return total.toNumber();
     }
 
     function getJoinExitDetails(amounts: PoolActivity['amounts']) {
