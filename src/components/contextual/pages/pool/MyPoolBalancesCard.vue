@@ -4,6 +4,8 @@ import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/compos
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
+import useUserSettings from '@/composables/useUserSettings';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -21,14 +23,13 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const {
-  fiatTotalLabel,
-  initMath,
-  proportionalAmounts,
-  hasBpt
-} = useWithdrawMath(toRef(props, 'pool'));
+const { fiatTotalLabel, initMath, proportionalAmounts } = useWithdrawMath(
+  toRef(props, 'pool')
+);
 const { getTokens } = useTokens();
-const { fNum } = useNumbers();
+const { fNum, toFiat } = useNumbers();
+const { currency } = useUserSettings();
+const { isWalletReady } = useWeb3();
 
 /**
  * COMPUTED
@@ -40,6 +41,11 @@ const tokens = computed(() => getTokens(props.pool.tokenAddresses));
  */
 function weightLabelFor(address: string): string {
   return fNum(props.pool.onchain.tokens[address].weight, 'percent_lg');
+}
+
+function fiatLabelFor(index: number, address: string): string {
+  const fiatValue = toFiat(proportionalAmounts.value[index], address);
+  return fNum(fiatValue, currency.value);
 }
 
 /**
@@ -58,7 +64,7 @@ onBeforeMount(() => {
           {{ $t('poolTransfer.myPoolBalancesCard.title') }}
         </h5>
         <h5>
-          {{ fiatTotalLabel }}
+          {{ isWalletReady ? fiatTotalLabel : '-' }}
         </h5>
       </div>
     </template>
@@ -70,30 +76,24 @@ onBeforeMount(() => {
       >
         <div class="flex items-center">
           <BalAsset :address="token.address" :size="36" class="mr-4" />
-          {{ weightLabelFor(token.address) }}
-          {{ token.symbol }}
+          <div class="flex flex-col">
+            <span>
+              {{ weightLabelFor(token.address) }}
+              {{ token.symbol }}
+            </span>
+            <span class="text-gray-500 text-sm">
+              {{ token.name }}
+            </span>
+          </div>
         </div>
 
-        <span class="flex-grow text-right">
-          {{ fNum(proportionalAmounts[index], 'token') }}
+        <span class="flex flex-col flex-grow text-right">
+          {{ isWalletReady ? fNum(proportionalAmounts[index], 'token') : '-' }}
+          <span class="text-gray-500 text-sm">
+            {{ isWalletReady ? fiatLabelFor(index, token.address) : '-' }}
+          </span>
         </span>
       </div>
-    </div>
-    <div :class="['px-4 pb-4 pt-1', { 'grid gap-2 grid-cols-2': hasBpt }]">
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'invest' }"
-        :label="$t('investInPool')"
-        color="gradient"
-        block
-      />
-      <BalBtn
-        v-if="hasBpt"
-        tag="router-link"
-        :to="{ name: 'withdraw' }"
-        :label="$t('withdraw.label')"
-        block
-      />
     </div>
   </BalCard>
 </template>

@@ -42,9 +42,11 @@ const { pool, loadingPool, useNativeAsset } = usePoolTransfers();
         />
       </template>
 
+      <router-view :key="$route.path" />
+
       <BalAccordion
         v-if="upToLargeBreakpoint"
-        class="mb-4"
+        class="mt-4"
         :sections="[
           {
             title: $t('poolTransfer.myWalletTokensCard.title'),
@@ -72,8 +74,6 @@ const { pool, loadingPool, useNativeAsset } = usePoolTransfers();
           <MyPoolBalancesCard v-else :pool="pool" hideHeader noBorder square />
         </template>
       </BalAccordion>
-
-      <router-view :key="$route.path" />
 
       <template #gutterRight v-if="!upToLargeBreakpoint">
         <BalLoadingBlock v-if="loadingPool" class="h-64" />

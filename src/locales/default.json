@@ -41,6 +41,7 @@
     "balance": "Balance",
     "balances": "Balances",
     "basedOnLast24h": "based on the last 24h",
+    "basedOnTokensInWallet": "Based on pool tokens in your wallet",
     "best": "Best",
     "browseLists": "Browse lists",
     "browserWallet": "Browser Wallet",
@@ -101,7 +102,7 @@
     "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>investment, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
     "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
     "etherscan": "Etherscan",
-    "exceedsBalance": "Exceeds balance",
+    "exceedsBalance": "Exceeds wallet balance",
     "exceedsPoolBalance": "Exceeds pool balance for this token",
     "explore": "Explore",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
@@ -559,5 +560,6 @@
     "yearAbbrev": "y",
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
+    "youCanInvest": "You can invest",
     "yourTransactions": "Your transactions in this pool"
 }
