@@ -58,7 +58,7 @@ const centerClasses = computed(() => ({
 }
 
 .center-col {
-  @apply col-span-3;
+  @apply w-full sm:max-w-xl mx-auto lg:mx-0 col-span-3;
 }
 
 .gutter-col {
