@@ -30,7 +30,7 @@
     "exchangeProxy": "0x4e67bf5bD28Dd4b570FBAFe11D0633eCbA2754Ec",
     "merkleRedeem": "0x3bc73D276EEE8cA9424Ecb922375A0357c1833B3",
     "merkleOrchard": "0xc33e0fE411322009947931c32d2273ee645cDb5B",
-    "multicall": "0x3b2A02F22fCbc872AF77674ceD303eb269a46ce3",
+    "multicall": "0x5ba1e12693dc8f9c48aad8770482f4739beed696",
     "authorizer": "0xA331D84eC860Bf466b4CdCcFb4aC09a1B43F3aE6",
     "vault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
     "weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
