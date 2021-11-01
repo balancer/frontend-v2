@@ -218,7 +218,7 @@ const chartGrid = computed(() => {
         <button
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
           @click="toggle"
-          class="maximise border m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
+          class="maximise m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
         >
           <BalIcon v-if="!isModal" name="maximize-2" class="text-gray-500" />
           <BalIcon v-if="isModal" name="x" class="text-gray-500" />
