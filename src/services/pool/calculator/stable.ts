@@ -21,26 +21,36 @@ export default class Stable {
   }
 
   public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
-    const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
-    const ampAdjusted = this.adjustAmp(amp);
-    const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
-      this.scaleInput(tokenAmounts[i], priceRate)
-    );
+    try {
+      const amp = bnum(this.calc.pool.value.onchain.amp?.toString() || '0');
+      const ampAdjusted = this.adjustAmp(amp);
+      const amounts = this.calc.pool.value.tokens.map(({ priceRate }, i) =>
+        this.scaleInput(tokenAmounts[i], priceRate)
+      );
 
-    const bptOut = SDK.StableMath._calcBptOutGivenExactTokensIn(
-      ampAdjusted,
-      this.scaledBalances,
-      amounts,
-      this.scaledPoolTotalSupply,
-      bnum(this.calc.poolSwapFee.toString())
-    );
+      const bptOut = SDK.StableMath._calcBptOutGivenExactTokensIn(
+        ampAdjusted,
+        this.scaledBalances,
+        amounts,
+        this.scaledPoolTotalSupply,
+        bnum(this.calc.poolSwapFee.toString())
+      );
 
-    return this.scaleOutput(
-      bptOut.toString(),
-      this.calc.poolDecimals,
-      '1',
-      BigNumber.ROUND_DOWN // If OUT given IN, round down
-    );
+      return this.scaleOutput(
+        bptOut.toString(),
+        this.calc.poolDecimals,
+        '1',
+        BigNumber.ROUND_DOWN // If OUT given IN, round down
+      );
+    } catch (error) {
+      console.error(error);
+      return this.scaleOutput(
+        '0',
+        this.calc.poolDecimals,
+        '1',
+        BigNumber.ROUND_DOWN // If OUT given IN, round down
+      );
+    }
   }
 
   public bptInForExactTokensOut(tokenAmounts: string[]): BigNumber {
