@@ -16,6 +16,7 @@ import { isStableLike, usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
+import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 
 /**
  * TYPES
@@ -234,6 +235,8 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         :label="$t('priceImpactAccept', [$t('depositing')])"
       />
     </div>
+
+    <WrapStEthLink :pool="pool" class="mt-4" />
 
     <div class="mt-4">
       <BalBtn
