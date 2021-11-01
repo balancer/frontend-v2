@@ -1,127 +1,108 @@
-<template>
-  <BalCard noPad>
-    <div class="relative overflow-hidden">
-      <div
-        class="flex justify-between items-end border-b dark:border-gray-900 px-4"
-      >
-        <BalTabs v-model="activeTab" :tabs="tabs" class="pt-4 -mb-px" no-pad />
-        <TradeSettingsPopover :context="TradeSettingsContext.invest" />
-      </div>
+<script setup lang="ts">
+import { toRef, onBeforeMount, computed } from 'vue';
+import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
+import { FullPool } from '@/services/balancer/subgraph/types';
+import useTokens from '@/composables/useTokens';
+import useNumbers from '@/composables/useNumbers';
+import useUserSettings from '@/composables/useUserSettings';
+import { bnum } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
 
-      <template v-if="activeTab === 'invest'">
-        <InvestForm
-          :pool="pool"
-          :missing-prices="missingPrices"
-          @success="handleInvestment($event)"
-        />
-        <SuccessOverlay
-          v-if="investmentSuccess"
-          :title="$t('investmentSettled')"
-          :description="$t('investmentSuccess')"
-          :closeLabel="$t('close')"
-          :explorerLink="explorer.txLink(txHash)"
-          @close="investmentSuccess = false"
-        />
-      </template>
-      <template v-if="activeTab === 'withdraw'">
-        <WithdrawForm
-          :pool="pool"
-          :missing-prices="missingPrices"
-          @success="handleWithdrawal($event)"
-        />
-        <SuccessOverlay
-          v-if="withdrawalSuccess"
-          :title="$t('withdrawalSettled')"
-          :description="$t('withdrawalSuccess')"
-          :closeLabel="$t('close')"
-          :explorerLink="explorer.txLink(txHash)"
-          @close="withdrawalSuccess = false"
-        />
-      </template>
+/**
+ * TYPES
+ */
+type Props = {
+  pool: FullPool;
+  missingPrices: boolean;
+};
+
+/**
+ * PROPS
+ */
+const props = defineProps<Props>();
+
+/**
+ * COMPOSABLES
+ */
+const { initMath, hasBpt } = useWithdrawMath(toRef(props, 'pool'));
+const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const { fNum, toFiat } = useNumbers();
+const { currency } = useUserSettings();
+const { isWalletReady, toggleWalletSelectModal } = useWeb3();
+
+/**
+ * COMPUTED
+ */
+const fiatTotal = computed(() => {
+  const fiatValue = props.pool.tokenAddresses
+    .map(address => {
+      let tokenBalance = '0';
+
+      if (address === wrappedNativeAsset.value.address) {
+        const wrappedBalance = balanceFor(address);
+        const nativeBalance = balanceFor(nativeAsset.address);
+        tokenBalance = bnum(nativeBalance).gt(wrappedBalance)
+          ? nativeBalance
+          : wrappedBalance;
+      } else {
+        tokenBalance = balanceFor(address);
+      }
+
+      return toFiat(tokenBalance, address);
+    })
+    .reduce((total, value) =>
+      bnum(total)
+        .plus(value)
+        .toString()
+    );
+
+  return fNum(fiatValue, currency.value);
+});
+
+/**
+ * CALLBACKS
+ */
+onBeforeMount(() => {
+  initMath();
+});
+</script>
+
+<template>
+  <BalCard>
+    <div class="text-gray-500 text-sm">
+      {{ $t('basedOnTokensInWallet') }}
+    </div>
+    <div class="flex justify-between items-center mb-4">
+      <h5>
+        {{ $t('youCanInvest') }}
+      </h5>
+      <h5>
+        {{ isWalletReady ? fiatTotal : '-' }}
+      </h5>
+    </div>
+
+    <BalBtn
+      v-if="!isWalletReady"
+      :label="$t('connectWallet')"
+      color="gradient"
+      block
+      @click="toggleWalletSelectModal"
+    />
+    <div v-else class="grid gap-2 grid-cols-2">
+      <BalBtn
+        tag="router-link"
+        :to="{ name: 'invest' }"
+        :label="$t('invest')"
+        color="gradient"
+        block
+      />
+      <BalBtn
+        :tag="hasBpt ? 'router-link' : 'div'"
+        :to="{ name: 'withdraw' }"
+        :label="$t('withdraw.label')"
+        :disabled="!hasBpt"
+        block
+      />
     </div>
   </BalCard>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
-import InvestForm from '@/components/forms/pool_actions/InvestForm.vue';
-import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm.vue';
-import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-import { useI18n } from 'vue-i18n';
-import TradeSettingsPopover, {
-  TradeSettingsContext
-} from '@/components/popovers/TradeSettingsPopover.vue';
-import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/services/web3/useWeb3';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
-
-export default defineComponent({
-  name: 'PoolActionsCard',
-
-  emits: ['onTx'],
-
-  components: {
-    InvestForm,
-    WithdrawForm,
-    SuccessOverlay,
-    TradeSettingsPopover
-  },
-
-  props: {
-    pool: { type: Object, required: true },
-    missingPrices: { type: Boolean, default: false }
-  },
-
-  setup(_, { emit }) {
-    /**
-     * COMPOSABLES
-     */
-    const { t } = useI18n();
-    const { trackGoal, Goals } = useFathom();
-    const { explorerLinks: explorer } = useWeb3();
-
-    /**
-     * STATE
-     */
-    const tabs = [
-      { value: 'invest', label: t('invest') },
-      { value: 'withdraw', label: t('withdraw.label') }
-    ];
-    const activeTab = ref(tabs[0].value);
-    const investmentSuccess = ref(false);
-    const withdrawalSuccess = ref(false);
-    const txHash = ref('');
-
-    /**
-     * METHODS
-     */
-    function handleInvestment(txReceipt: TransactionReceipt): void {
-      investmentSuccess.value = true;
-      txHash.value = txReceipt.transactionHash;
-      trackGoal(Goals.Invested);
-      emit('onTx', txReceipt);
-    }
-
-    function handleWithdrawal(txReceipt: TransactionReceipt): void {
-      withdrawalSuccess.value = true;
-      txHash.value = txReceipt.transactionHash;
-      trackGoal(Goals.Withdrawal);
-      emit('onTx', txReceipt);
-    }
-
-    return {
-      // data
-      activeTab,
-      tabs,
-      investmentSuccess,
-      withdrawalSuccess,
-      txHash,
-      TradeSettingsContext,
-      // methods
-      handleInvestment,
-      handleWithdrawal,
-      explorer
-    };
-  }
-});
-</script>

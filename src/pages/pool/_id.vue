@@ -108,19 +108,19 @@
         v-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-1 lg:px-0"
       >
-        <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-96" />
+        <BalLoadingBlock
+          v-if="loadingPool"
+          class="pool-actions-card h-60 mb-4"
+        />
         <MyPoolBalancesCard
           v-else
           :pool="pool"
           :missingPrices="missingPrices"
+          class="mb-4"
         />
-        <!-- <PoolActionsCard
-          v-else-if="!noInitLiquidity"
-          :pool="pool"
-          :missing-prices="missingPrices"
-          @on-tx="onNewTx"
-          class="pool-actions-card"
-        /> -->
+
+        <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-40" />
+        <PoolActionsCard v-else :pool="pool" :missingPrices="missingPrices" />
       </div>
       <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
         <BalCard noPad imgSrc="/images/partners/copper-launch.png">

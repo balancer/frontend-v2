@@ -41,6 +41,7 @@
     "balance": "Balance",
     "balances": "Balances",
     "basedOnLast24h": "based on the last 24h",
+    "basedOnTokensInWallet": "Based on pool tokens in your wallet",
     "best": "Best",
     "browseLists": "Browse lists",
     "browserWallet": "Browser Wallet",
@@ -559,5 +560,6 @@
     "yearAbbrev": "y",
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
+    "youCanInvest": "You can invest",
     "yourTransactions": "Your transactions in this pool"
 }
