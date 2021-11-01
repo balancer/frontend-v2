@@ -222,7 +222,10 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       @optimize="optimizeAmounts"
     />
 
-    <div v-if="highPriceImpact" class="border dark:border-gray-700 rounded-lg p-2 pb-2 mt-4">
+    <div
+      v-if="highPriceImpact"
+      class="border dark:border-gray-700 rounded-lg p-2 pb-2 mt-4"
+    >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
         :rules="[isRequired($t('priceImpactCheckbox'))]"
