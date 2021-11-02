@@ -8,7 +8,7 @@ import {
 } from '@balancer-labs/sor2';
 import { SOR as SORV1 } from '@balancer-labs/sor';
 import { BigNumber } from '@ethersproject/bignumber';
-import { BaseProvider } from '@ethersproject/providers';
+import { Provider } from '@ethersproject/providers';
 import { AddressZero } from '@ethersproject/constants';
 import OldBigNumber from 'bignumber.js';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
@@ -61,7 +61,7 @@ export class SorManager {
 
   constructor(
     isV1Supported: boolean,
-    provider: BaseProvider,
+    provider: Provider,
     gasPrice: BigNumber,
     maxPools: number,
     chainId: number,
@@ -73,7 +73,7 @@ export class SorManager {
 
     // Initialises SOR. Note they use different SOR packages.
     this.sorV1 = new SORV1(
-      provider,
+      provider as any,
       new OldBigNumber(gasPrice.toString()),
       maxPools,
       chainId,
