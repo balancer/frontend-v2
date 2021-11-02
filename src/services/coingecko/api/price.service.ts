@@ -230,6 +230,7 @@ export class PriceService {
   public addressMapIn(address: string): string {
     const addressMap = TOKENS.Prices.ChainMap[this.appNetwork];
     if (!addressMap) return address;
+    console.log('bingandbong', address.toLowerCase(), addressMap)
     return addressMap[address.toLowerCase()] || address;
   }
 
