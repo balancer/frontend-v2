@@ -29,13 +29,9 @@ async function getPairPriceData(
   days: number
 ) {
   let _inputAsset =
-    inputAsset === nativeAsset
-      ? wrappedNativeAsset
-      : inputAsset;
+    inputAsset === nativeAsset ? wrappedNativeAsset : inputAsset;
   let _outputAsset =
-    outputAsset === nativeAsset
-      ? wrappedNativeAsset
-      : outputAsset;
+    outputAsset === nativeAsset ? wrappedNativeAsset : outputAsset;
   const aggregateBy = days === 1 ? 'hour' : 'day';
   const inputAssetData = await coingeckoService.prices.getTokensHistorical(
     [_inputAsset],

@@ -58,7 +58,14 @@ const QUERY_KEYS = {
       wrappedNativeAsset: Ref<TokenInfo>
     ) => [
       'pairPriceData',
-      { tokenInAddress, tokenOutAddress, activeTimespan, userNetworkId, nativeAsset, wrappedNativeAsset }
+      {
+        tokenInAddress,
+        tokenOutAddress,
+        activeTimespan,
+        userNetworkId,
+        nativeAsset,
+        wrappedNativeAsset
+      }
     ],
     Prices: (networkId: Ref<Network>, tokens: Ref<string[]>) => [
       'tokens',
