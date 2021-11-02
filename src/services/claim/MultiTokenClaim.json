@@ -54,6 +54,13 @@
             "token": "0x4e352cf164e64adcbad318c3a1e222e9eba4ce42",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-mcdex-arbitrum.json",
             "weekStart": 4
+        },
+        {
+            "label": "PICKLE",
+            "distributor": "0xf02CeB58d549E4b403e8F85FBBaEe4c5dfA47c01",
+            "token": "0x965772e0e9c84b6f359c8597c891108dcf1c5b1a",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-pickle-arbitrum.json",
+            "weekStart": 4
         }
     ]
   }

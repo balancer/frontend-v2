@@ -98,7 +98,7 @@ function isSelectedNativeAsset(address: string): boolean {
 <template>
   <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
-      <div class="p-4 w-full border-b dark:border-gray-700">
+      <div class="p-4 w-full shadow-lg">
         <h6>
           {{ $t('poolTransfer.myWalletTokensCard.title') }}
         </h6>
@@ -133,7 +133,7 @@ function isSelectedNativeAsset(address: string): boolean {
                 <AssetRow
                   :address="asset.address"
                   :selected="isSelectedNativeAsset(asset.address)"
-                  class="cursor-pointer"
+                  :class="[{ 'cursor-pointer': pageContext === 'invest' }]"
                   @click="
                     emit(
                       'update:useNativeAsset',

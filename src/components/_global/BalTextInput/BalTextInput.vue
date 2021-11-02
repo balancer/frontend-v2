@@ -147,6 +147,6 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 }
 
 .error {
-  @apply text-xs text-red-500 mt-1;
+  @apply text-xs text-red-500 mt-1 ml-1;
 }
 </style>

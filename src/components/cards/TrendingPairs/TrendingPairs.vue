@@ -20,7 +20,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 
 const getTrendingTradePairs = async () => {
   return await balancerSubgraphService.tradePairSnapshots.get({
-    orderBy: 'swapVolume',
+    orderBy: 'totalSwapVolume',
     orderDirection: 'desc',
     where: {
       timestamp_gte: startOfDay(new Date()).getTime() / 1000
@@ -56,12 +56,11 @@ const setTradePair = (pair: TrendingPair[]) => {
   <BalCard
     :square="upToLargeBreakpoint"
     noPad
-    hFull
     growContent
     :noBorder="upToLargeBreakpoint"
     shadow="false"
   >
-    <div class="flex flex-col bg-transparent lg:bg-white widget-card h-full">
+    <div class="trending-pairs">
       <div
         v-if="!upToLargeBreakpoint"
         class="flex justify-between p-3 lg:shadow-lg"
@@ -70,7 +69,7 @@ const setTradePair = (pair: TrendingPair[]) => {
       </div>
       <div class="px-1 lg:p-3 flex flex-wrap">
         <button
-          class="py-1 px-2 bg-transparent hover:bg-blue-100 hover:text-white text-sm rounded-lg lg:shadow my-2 mr-2 font-medium lg:font-normal"
+          class="py-1 px-2 bg-transparent hover:bg-blue-500 hover:text-white text-sm rounded-lg lg:shadow my-2 mr-2 font-medium lg:font-normal"
           v-for="(pair, i) in trendingPairs"
           :key="`trendingPair-${i}`"
           @click="setTradePair(pair)"
@@ -81,3 +80,10 @@ const setTradePair = (pair: TrendingPair[]) => {
     </div>
   </BalCard>
 </template>
+
+<style scoped>
+.trending-pairs {
+  @apply flex flex-col bg-transparent;
+  min-height: 200px;
+}
+</style>
