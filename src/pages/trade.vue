@@ -20,7 +20,6 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
  * STATE
  */
 const showPriceGraphModal = ref(false);
-const hideWidgets = ref(true); // Temp feature flag
 
 /**
  * COMPOSABLES
@@ -58,7 +57,7 @@ onMounted(() => {
 
 <template>
   <Col3Layout offsetGutters mobileHideGutters class="mt-8">
-    <template #gutterLeft v-if="!hideWidgets">
+    <template #gutterLeft>
       <MyWallet />
       <TrendingPairs class="mt-4" />
     </template>
@@ -73,7 +72,7 @@ onMounted(() => {
         <TradeCardGP />
       </template>
     </template>
-    <div v-if="!hideWidgets" class="mt-8 p-4 sm:p-0 lg:p-0">
+    <div class="mt-8 p-4 sm:p-0 lg:p-0">
       <BalAccordion
         class="accordion-mw w-full"
         v-if="upToLargeBreakpoint"
@@ -95,16 +94,13 @@ onMounted(() => {
       </BalAccordion>
     </div>
 
-    <template #gutterRight v-if="!hideWidgets">
+    <template #gutterRight>
       <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
     </template>
   </Col3Layout>
 
   <teleport to="#modal">
-    <BalModal
-      :show="showPriceGraphModal && !hideWidgets"
-      @close="onPriceGraphModalClose"
-    >
+    <BalModal :show="showPriceGraphModal" @close="onPriceGraphModalClose">
       <div class="graph-modal">
         <PairPriceGraph
           :toggleModal="togglePairPriceGraphModal"

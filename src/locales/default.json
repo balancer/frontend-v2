@@ -238,6 +238,7 @@
     "myTransactions": "My transactions",
     "myV2Investments": "My V2 investments",
     "myWallet": "My Ethereum wallet",
+    "myWallet2": "My wallet",
     "name": "Name",
     "namePlaceholder": "Name, symbol or contract address",
     "nativeTokens": "Native tokens",
@@ -560,6 +561,8 @@
     "yearAbbrev": "y",
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
-    "youCanInvest": "You can invest",
-    "yourTransactions": "Your transactions in this pool"
+    "yourTransactions": "Your transactions in this pool",
+    "trendingPairs": "Trending pairs",
+    "chooseAPair": "Please select a valid pair",
+    "youCanInvest": "You can invest"
 }
