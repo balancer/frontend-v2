@@ -157,7 +157,7 @@ const {
   reactive({
     retry: false,
     shouldLoadPriceData,
-    enabled: false,
+    enabled: isPriceQueryEnabled,
     // when refetch on window focus in enabled, it causes a flash
     // in the loading state of the card which is jarring. disabling it
     refetchOnWindowFocus: false

@@ -95,9 +95,9 @@ onMounted(() => {
     </div>
 
     <template #gutterRight>
-      <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
     </template>
   </Col3Layout>
+      <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
 
   <teleport to="#modal">
     <BalModal :show="showPriceGraphModal" @close="onPriceGraphModalClose">
