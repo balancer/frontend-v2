@@ -24,12 +24,18 @@ import useWeb3 from '@/services/web3/useWeb3';
 async function getPairPriceData(
   inputAsset: string,
   outputAsset: string,
-  days: number,
+  days: number
 ) {
   const { nativeAsset, wrappedNativeAsset } = useTokens();
 
-  let _inputAsset = inputAsset === nativeAsset.address ? wrappedNativeAsset.value.address : inputAsset;
-  let _outputAsset = outputAsset === nativeAsset.address ? wrappedNativeAsset.value.address : outputAsset;
+  let _inputAsset =
+    inputAsset === nativeAsset.address
+      ? wrappedNativeAsset.value.address
+      : inputAsset;
+  let _outputAsset =
+    outputAsset === nativeAsset.address
+      ? wrappedNativeAsset.value.address
+      : outputAsset;
   const aggregateBy = days === 1 ? 'hour' : 'day';
   const inputAssetData = await coingeckoService.prices.getTokensHistorical(
     [_inputAsset],

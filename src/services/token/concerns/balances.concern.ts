@@ -1,7 +1,7 @@
 import TokenService from '../token.service';
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
 import { multicall } from '@/lib/utils/balancer/contract';
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 import { TokenInfoMap } from '@/types/TokenList';
 import { formatUnits } from '@ethersproject/units';
@@ -62,12 +62,14 @@ export default class BalancesConcern {
         );
       }
 
-      const balances: [BigNumber][] = await multicall(
-        this.network,
-        this.provider,
-        erc20Abi,
-        addresses.map(address => [address, 'balanceOf', [account]])
-      );
+      const balances: BigNumber[] = (
+        await multicall<BigNumberish>(
+          this.network,
+          this.provider,
+          erc20Abi,
+          addresses.map(address => [address, 'balanceOf', [account]])
+        )
+      ).map(result => BigNumber.from(result ?? '0')); // If we fail to read a token's balance, treat it as zero
 
       return {
         ...this.associateBalances(balances, addresses, tokens),
@@ -85,14 +87,14 @@ export default class BalancesConcern {
   }
 
   private associateBalances(
-    balances: [BigNumber][],
+    balances: BigNumber[],
     addresses: string[],
     tokens: TokenInfoMap
   ): BalanceMap {
     return Object.fromEntries(
       addresses.map((address, i) => [
         getAddress(address),
-        formatUnits(balances[i][0].toString(), tokens[address].decimals)
+        formatUnits(balances[i], tokens[address].decimals)
       ])
     );
   }

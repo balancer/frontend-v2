@@ -133,7 +133,7 @@ function isSelectedNativeAsset(address: string): boolean {
                 <AssetRow
                   :address="asset.address"
                   :selected="isSelectedNativeAsset(asset.address)"
-                  class="cursor-pointer"
+                  :class="[{ 'cursor-pointer': pageContext === 'invest' }]"
                   @click="
                     emit(
                       'update:useNativeAsset',

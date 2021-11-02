@@ -2,7 +2,6 @@ import set from 'lodash/set';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { Interface } from '@ethersproject/abi';
-import { default as multicallAbi } from '@/lib/abi/Multicall.json';
 import configs from '@/lib/config';
 
 export async function call(provider, abi: any[], call: any[], options?) {
@@ -15,28 +14,39 @@ export async function call(provider, abi: any[], call: any[], options?) {
   }
 }
 
-export async function multicall(
+export async function multicall<T>(
   network: string,
   provider,
   abi: any[],
   calls: any[],
-  options?
-): Promise<any[]> {
+  options: any = {},
+  requireSuccess = false
+): Promise<(T | null)[]> {
   const multi = new Contract(
     configs[network].addresses.multicall,
-    multicallAbi,
+    [
+      'function tryAggregate(bool requireSuccess, tuple(address, bytes)[] memory calls) public view returns (tuple(bool, bytes)[] memory returnData)'
+    ],
     provider
   );
   const itf = new Interface(abi);
   try {
-    const [, res] = await multi.aggregate(
+    const res: [boolean, string][] = await multi.tryAggregate(
+      // if false, allows individual calls to fail without causing entire multicall to fail
+      requireSuccess,
       calls.map(call => [
         call[0].toLowerCase(),
         itf.encodeFunctionData(call[1], call[2])
       ]),
-      options || {}
+      options
     );
-    return res.map((call, i) => itf.decodeFunctionResult(calls[i][1], call));
+
+    return res.map(([success, returnData], i) => {
+      if (!success) return null;
+      const decodedResult = itf.decodeFunctionResult(calls[i][1], returnData);
+      // Automatically unwrap any simple return values
+      return decodedResult.length > 1 ? decodedResult : decodedResult[0];
+    });
   } catch (e) {
     return Promise.reject(e);
   }
@@ -77,7 +87,7 @@ export class Multicaller {
       this.calls,
       this.options
     );
-    result.forEach((r, i) => set(obj, this.paths[i], r.length > 1 ? r : r[0]));
+    result.forEach((r, i) => set(obj, this.paths[i], r));
     this.calls = [];
     this.paths = [];
     return obj;

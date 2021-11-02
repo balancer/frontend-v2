@@ -1,5 +1,5 @@
 import { computed, Ref, ref, watch } from 'vue';
-import { bnum } from '@/lib/utils';
+import { bnum, forChange } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -54,7 +54,13 @@ export default function useWithdrawMath(
    */
   const { isWalletReady, account } = useWeb3();
   const { toFiat, fNum } = useNumbers();
-  const { tokens: allTokens, balances, balanceFor, getToken } = useTokens();
+  const {
+    tokens: allTokens,
+    balances,
+    balanceFor,
+    getToken,
+    dynamicDataLoading
+  } = useTokens();
   const { minusSlippage, addSlippage } = useSlippage();
   const { currency } = useUserSettings();
 
@@ -207,7 +213,10 @@ export default function useWithdrawMath(
    */
   watch(tokenOut, () => (tokenOutAmount.value = ''));
 
-  watch(isWalletReady, () => initMath());
+  watch(isWalletReady, async () => {
+    await forChange(dynamicDataLoading, false);
+    initMath();
+  });
   watch(account, () => initMath());
 
   return {

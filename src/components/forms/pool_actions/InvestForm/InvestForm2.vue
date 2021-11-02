@@ -16,6 +16,7 @@ import { isStableLike, usePool } from '@/composables/usePool';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
 import InvestPreviewModal from './components/InvestPreviewModal/InvestPreviewModal.vue';
+import WrapStEthLink from '@/components/contextual/pages/pool/invest/WrapStEthLink.vue';
 
 /**
  * TYPES
@@ -49,7 +50,8 @@ const {
   tokenAddresses,
   amounts,
   validInputs,
-  highPriceImpactAccepted
+  highPriceImpactAccepted,
+  resetAmounts
 } = useInvestState();
 
 const investMath = useInvestMath(
@@ -171,6 +173,7 @@ function setNativeAsset(to: NativeAsset): void {
  * CALLBACKS
  */
 onBeforeMount(() => {
+  resetAmounts();
   tokenAddresses.value = [...props.pool.tokenAddresses];
   if (isWethPool.value) setNativeAssetByBalance();
 });
@@ -222,16 +225,20 @@ watch(useNativeAsset, shouldUseNativeAsset => {
       @optimize="optimizeAmounts"
     />
 
-    <div v-if="highPriceImpact" class="border rounded-lg p-4 pb-2 mt-4">
+    <div
+      v-if="highPriceImpact"
+      class="border dark:border-gray-700 rounded-lg p-2 pb-2 mt-4"
+    >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
         :rules="[isRequired($t('priceImpactCheckbox'))]"
         name="highPriceImpactAccepted"
-        class="text-gray-500"
         size="sm"
         :label="$t('priceImpactAccept', [$t('depositing')])"
       />
     </div>
+
+    <WrapStEthLink :pool="pool" class="mt-4" />
 
     <div class="mt-4">
       <BalBtn
