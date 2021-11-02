@@ -26,6 +26,10 @@ async function getPairPriceData(
   outputAsset: string,
   days: number
 ) {
+  console.log('input', {
+    inputAsset,
+    outputAsset
+  })
   const aggregateBy = days === 1 ? 'hour' : 'day';
   const inputAssetData = await coingeckoService.prices.getTokensHistorical(
     [inputAsset],
