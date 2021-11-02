@@ -71,7 +71,7 @@
     "copperLaunchPromo": {
         "buttonLabel": "View this auction on Copper",
         "description": "Copper is the platform for FLAs—a simple crowdfunding mechanism that enables projects and ideas from across the world to raise money from individuals without barriers to entry.",
-        "poweredByBalancer": "Copper is built on Balancer V2 and uses Liquidity Bootstapping Pools to power it’s FLAs",
+        "poweredByBalancer": "Copper is built on Balancer V2 and uses Liquidity Bootstrapping Pools to power its FLAs",
         "title": "A Copper fair launch auction pool (FLA)"
     },
     "copyAddress": "Copy address",
