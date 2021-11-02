@@ -126,6 +126,8 @@ const dataMax = computed(() => {
   return (maxBy(priceData.value || [], v => v[1]) || [])[1] || 0;
 });
 
+const isPriceQueryEnabled = computed(() => wrappedNativeAsset.value !== undefined);
+
 const {
   isLoading: isLoadingPriceData,
   data: priceData,
@@ -143,13 +145,14 @@ const {
     getPairPriceData(
       tokenInAddress.value,
       tokenOutAddress.value,
-      nativeAsset.address,
-      wrappedNativeAsset.value.address,
+      nativeAsset?.address,
+      wrappedNativeAsset.value?.address,
       activeTimespan.value.value
     ),
   reactive({
     retry: false,
     shouldLoadPriceData,
+    enabled: isPriceQueryEnabled,
     // when refetch on window focus in enabled, it causes a flash
     // in the loading state of the card which is jarring. disabling it
     refetchOnWindowFocus: false
