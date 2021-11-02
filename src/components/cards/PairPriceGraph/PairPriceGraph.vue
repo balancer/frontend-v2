@@ -156,8 +156,7 @@ const {
     ),
   reactive({
     retry: false,
-    shouldLoadPriceData,
-    enabled: isPriceQueryEnabled,
+    enabled: false,
     // when refetch on window focus in enabled, it causes a flash
     // in the loading state of the card which is jarring. disabling it
     refetchOnWindowFocus: false
@@ -232,7 +231,8 @@ const chartGrid = computed(() => {
       :noBorder="upToLargeBreakpoint || isModal"
       v-else
     >
-      <div class="relative h-full bg-transparent p-4">
+    Elim
+      <!-- <div class="relative h-full bg-transparent p-4">
         <button
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
           @click="toggle"
@@ -333,7 +333,7 @@ const chartGrid = computed(() => {
             }}</span>
           </div>
         </div>
-      </div>
+      </div> -->
     </BalCard>
   </div>
 </template>
