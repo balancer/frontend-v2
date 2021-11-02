@@ -149,6 +149,7 @@ function setNativeAssetByBalance(): void {
 
   if (bnum(nativeAssetBalance).gt(wrappedNativeAssetBalance)) {
     setNativeAsset(NativeAsset.unwrapped);
+    useNativeAsset.value = true;
   }
 }
 
