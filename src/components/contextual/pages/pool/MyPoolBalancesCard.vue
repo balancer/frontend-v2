@@ -6,6 +6,7 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
+import { usePool } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -30,6 +31,7 @@ const { getTokens } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { isWalletReady } = useWeb3();
+const { isStableLikePool } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -78,7 +80,9 @@ onBeforeMount(() => {
           <BalAsset :address="token.address" :size="36" class="mr-4" />
           <div class="flex flex-col">
             <span>
-              {{ weightLabelFor(token.address) }}
+              <span v-if="!isStableLikePool">
+                {{ weightLabelFor(token.address) }}
+              </span>
               {{ token.symbol }}
             </span>
             <span class="text-gray-500 text-sm">
