@@ -61,6 +61,7 @@ async function getPairPriceData(
     (_, timestamp: any) =>
       format(fromUnixTime(timestamp / 1000), 'yyyy/MM/dd HH:mm')
   );
+
   return toPairs(formatTimestamps);
 }
 
@@ -107,12 +108,14 @@ const chartHeight = ref(
 const activeTimespan = ref(chartTimespans[0]);
 const appLoading = computed(() => store.state.app.loading);
 
-const inputSym = computed(
-  () => tokens.value[getAddress(tokenInAddress.value)]?.symbol
-);
-const outputSym = computed(
-  () => tokens.value[getAddress(tokenOutAddress.value)]?.symbol
-);
+const inputSym = computed(() => {
+  if (tokenInAddress.value === '') return 'Unknown';
+  return tokens.value[getAddress(tokenInAddress.value)]?.symbol;
+});
+const outputSym = computed(() => {
+  if (tokenOutAddress.value === '') return 'Unknown';
+  return tokens.value[getAddress(tokenOutAddress.value)]?.symbol;
+});
 
 const shouldLoadPriceData = computed(
   () => tokenInAddress.value !== '' && tokenOutAddress.value !== ''
@@ -126,7 +129,9 @@ const dataMax = computed(() => {
   return (maxBy(priceData.value || [], v => v[1]) || [])[1] || 0;
 });
 
-const isPriceQueryEnabled = computed(() => wrappedNativeAsset.value !== undefined);
+const isPriceQueryEnabled = computed(
+  () => wrappedNativeAsset.value !== undefined
+);
 
 const {
   isLoading: isLoadingPriceData,
