@@ -75,7 +75,6 @@ export class PriceService {
         address => address !== this.appAddresses.wstETH
       );
 
-      console.log('badresses', addresses);
       addresses = addresses.map(address => this.addressMapIn(address));
       const pageCount = Math.ceil(addresses.length / addressesPerRequest);
       const pages = Array.from(Array(pageCount).keys());
@@ -230,7 +229,6 @@ export class PriceService {
   public addressMapIn(address: string): string {
     const addressMap = TOKENS.Prices.ChainMap[this.appNetwork];
     if (!addressMap) return address;
-    console.log('bingandbong', address.toLowerCase(), addressMap)
     return addressMap[address.toLowerCase()] || address;
   }
 
