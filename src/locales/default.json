@@ -11,7 +11,7 @@
         "balances-fetch-error": "Failed to fetch token balances.",
         "pool-fetch-error": "Failed to fetch pool.",
         "pools-fetch-error": "Failed to fetch pools.",
-        "price-fetch-error": "Our pricing provider, Coingecko, is currently down.",
+        "price-fetch-error": "Our pricing provider, CoinGecko, is currently down.",
         "retry-label": "Refresh to try again"
     },
     "allow": "Allow",
