@@ -117,10 +117,6 @@ const outputSym = computed(() => {
   return tokens.value[getAddress(tokenOutAddress.value)]?.symbol;
 });
 
-const shouldLoadPriceData = computed(
-  () => tokenInAddress.value !== '' && tokenOutAddress.value !== ''
-);
-
 const dataMin = computed(() => {
   return (minBy(priceData.value || [], v => v[1]) || [])[1] || 0;
 });
@@ -128,10 +124,6 @@ const dataMin = computed(() => {
 const dataMax = computed(() => {
   return (maxBy(priceData.value || [], v => v[1]) || [])[1] || 0;
 });
-
-const isPriceQueryEnabled = computed(
-  () => wrappedNativeAsset.value !== undefined
-);
 
 const {
   isLoading: isLoadingPriceData,
@@ -156,7 +148,6 @@ const {
     ),
   reactive({
     retry: false,
-    enabled: false,
     // when refetch on window focus in enabled, it causes a flash
     // in the loading state of the card which is jarring. disabling it
     refetchOnWindowFocus: false
@@ -206,7 +197,6 @@ const chartGrid = computed(() => {
 
 <template>
   <div
-    ref="elementToAnimate"
     :class="[
       '',
       {
@@ -231,8 +221,7 @@ const chartGrid = computed(() => {
       :noBorder="upToLargeBreakpoint || isModal"
       v-else
     >
-    Elim
-      <!-- <div class="relative h-full bg-transparent p-4">
+      <div class="relative h-full bg-transparent p-4">
         <button
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
           @click="toggle"
@@ -284,6 +273,7 @@ const chartGrid = computed(() => {
             hide-y-axis
             hide-x-axis
             show-header
+            use-min-max
           />
           <div
             :class="[
@@ -333,7 +323,7 @@ const chartGrid = computed(() => {
             }}</span>
           </div>
         </div>
-      </div> -->
+      </div>
     </BalCard>
   </div>
 </template>
