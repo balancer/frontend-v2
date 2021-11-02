@@ -24,17 +24,17 @@ import useWeb3 from '@/services/web3/useWeb3';
 async function getPairPriceData(
   inputAsset: string,
   outputAsset: string,
+  nativeAsset: string,
+  wrappedNativeAsset: string,
   days: number
 ) {
-  const { nativeAsset, wrappedNativeAsset } = useTokens();
-
   let _inputAsset =
-    inputAsset === nativeAsset.address
-      ? wrappedNativeAsset.value.address
+    inputAsset === nativeAsset
+      ? wrappedNativeAsset
       : inputAsset;
   let _outputAsset =
-    outputAsset === nativeAsset.address
-      ? wrappedNativeAsset.value.address
+    outputAsset === nativeAsset
+      ? wrappedNativeAsset
       : outputAsset;
   const aggregateBy = days === 1 ? 'hour' : 'day';
   const inputAssetData = await coingeckoService.prices.getTokensHistorical(
@@ -100,7 +100,7 @@ type Props = {
 const props = defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
 const store = useStore();
-const { tokens } = useTokens();
+const { tokens, wrappedNativeAsset, nativeAsset } = useTokens();
 const { tokenInAddress, tokenOutAddress } = useTradeState();
 const tailwind = useTailwind();
 const { chainId: userNetworkId } = useWeb3();
@@ -139,12 +139,16 @@ const {
     tokenInAddress,
     tokenOutAddress,
     activeTimespan,
-    userNetworkId
+    userNetworkId,
+    nativeAsset,
+    wrappedNativeAsset
   ),
   () =>
     getPairPriceData(
       tokenInAddress.value,
       tokenOutAddress.value,
+      nativeAsset.address,
+      wrappedNativeAsset.value.address,
       activeTimespan.value.value
     ),
   reactive({
