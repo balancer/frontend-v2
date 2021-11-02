@@ -75,6 +75,7 @@ export class PriceService {
         address => address !== this.appAddresses.wstETH
       );
 
+      console.log('badresses', addresses);
       addresses = addresses.map(address => this.addressMapIn(address));
       const pageCount = Math.ceil(addresses.length / addressesPerRequest);
       const pages = Array.from(Array(pageCount).keys());
