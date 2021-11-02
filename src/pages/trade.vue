@@ -95,6 +95,7 @@ onMounted(() => {
     </div>
 
     <template #gutterRight>
+      bingbong
       <PairPriceGraph :toggleModal="togglePairPriceGraphModal" />
     </template>
   </Col3Layout>
