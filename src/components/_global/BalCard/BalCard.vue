@@ -1,6 +1,6 @@
 <template>
   <div :class="['bal-card', cardClasses]">
-    <div :class="['flex flex-col', { 'overflow-y-scroll': overflowYScroll }]">
+    <div :class="['card-container', { 'overflow-y-scroll': overflowYScroll }]">
       <div v-if="imgSrc" class="feature" :style="featureStyles" />
       <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
         <component :is="titleTag" v-if="!!title" v-text="title" />
@@ -111,6 +111,13 @@ export default defineComponent({
 <style scoped>
 .bal-card {
   @apply flex flex-col;
+}
+
+.card-container {
+  @apply flex flex-col;
+}
+.card-container::-webkit-scrollbar {
+  width: 0;
 }
 
 .header {

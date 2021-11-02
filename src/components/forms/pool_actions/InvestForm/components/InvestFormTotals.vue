@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import useNumbers from '@/composables/useNumbers';
-import { InvestMath } from '../composables/useInvestFormMath';
+import { InvestMathResponse } from '../composables/useInvestMath';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
  */
 type Props = {
-  investMath: InvestMath;
+  math: InvestMathResponse;
 };
 
 /**
@@ -30,11 +30,12 @@ const { isWalletReady } = useWeb3();
 const {
   fiatTotal,
   hasNoBalances,
+  hasAllTokens,
   priceImpact,
   highPriceImpact,
   maximized,
   optimized
-} = toRefs(props.investMath);
+} = toRefs(props.math);
 
 /**
  * COMPUTED
@@ -93,10 +94,7 @@ const optimizeBtnClasses = computed(() => ({
           </BalTooltip>
         </div>
 
-        <div
-          v-if="isWalletReady && !hasNoBalances"
-          class="text-sm font-semibold"
-        >
+        <div v-if="isWalletReady && hasAllTokens" class="text-sm font-semibold">
           <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
             {{ $t('optimized') }}
           </span>
@@ -115,11 +113,13 @@ const optimizeBtnClasses = computed(() => ({
 
 <style scoped>
 .data-table {
-  @apply border dark:border-gray-700 rounded-lg divide-y dark:divide-gray-700;
+  @apply border dark:border-gray-900 rounded-lg divide-y dark:divide-gray-900;
 }
 
 .data-table-row {
-  @apply grid grid-cols-4 divide-x dark:divide-gray-700;
+  @apply grid grid-cols-4 items-center;
+  @apply divide-x dark:divide-gray-900;
+  @apply dark:bg-gray-800;
 }
 
 .data-table-number-col {
@@ -127,7 +127,7 @@ const optimizeBtnClasses = computed(() => ({
 }
 
 .total-row {
-  @apply text-lg font-bold;
+  @apply text-lg font-bold rounded-t-lg;
 }
 
 .price-impact-row {

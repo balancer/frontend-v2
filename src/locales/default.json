@@ -18,6 +18,7 @@
     "allowing": "Allowing...",
     "allPools": "All pools",
     "allTransactions": "All transactions",
+    "allTokens": "All tokens",
     "ammPlatform": "Automated portfolio manager and trading platform",
     "amount": "Amount",
     "amountBeforeFees": "Amount before fees",
@@ -40,6 +41,7 @@
     "balance": "Balance",
     "balances": "Balances",
     "basedOnLast24h": "based on the last 24h",
+    "basedOnTokensInWallet": "Based on pool tokens in your wallet",
     "best": "Best",
     "browseLists": "Browse lists",
     "browserWallet": "Browser Wallet",
@@ -100,7 +102,8 @@
     "ethBufferInstruction": "This pool requires Wrapped Ether (WETH). To maximize your<br>investment, you could wrap some additional ETH. Make sure to keep<br>enough ETH to cover gas costs.",
     "ethereumTxTypeTooltip": "Most users will want EIP-1559 Transactions, but there are some instances that may require a Legacy Transaction. For example, some Ledger users have had issues using MetaMask with EIP-1559 Transactions.",
     "etherscan": "Etherscan",
-    "exceedsBalance": "Exceeds balance",
+    "exceedsBalance": "Exceeds wallet balance",
+    "exceedsPoolBalance": "Exceeds pool balance for this token",
     "explore": "Explore",
     "exploreBalancerV1Pools": "Explore V1 pools ->",
     "explorePools": "Explore pools",
@@ -115,12 +118,20 @@
     "flashLoanFee": "Flash loan fee",
     "gnosisErrors": {
         "lowAmount": {
-            "body": "The fees for this transaction exceeds the amount you want to trade.",
-            "header": "Your trade amount is too low"
+            "header": "Your trade amount is too low",
+            "body": "The fees for this transaction exceeds the amount you want to trade."
         },
         "lowBalance": {
-            "body": "The fees and potential slippage (up to {2}) set for this trade exceeds your {0} balance. You need at least {1} {0} to proceed.",
-            "header": "Insufficient {0} balance"
+            "header": "Insufficient {0} balance",
+            "body": "The fees and potential slippage (up to {2}) set for this trade exceeds your {0} balance. You need at least {1} {0} to proceed."
+        },
+        "noLiquidity": {
+            "header": "No liquidity",
+            "body": "Not enough liquidity"
+        },
+        "genericError": {
+            "header": "An error has occurred",
+            "body": "Error code: {0}"
         }
     },
     "gnosisWarnings": {
@@ -145,15 +156,6 @@
     "investInPool": "Invest in pool",
     "investment": {
         "label": "Investment",
-        "myPoolBalancesCard": {
-            "title": "My pool balance"
-        },
-        "myWalletTokensCard": {
-            "title": "Pool tokens in my wallet",
-            "tooltips": {
-                "nativeAssetSelection": "Select {0} or {1} to invest in this pool. Wrap or unwrap {0} to invest a larger amount and maximize your investment."
-            }
-        },
         "preview": {
             "loadingLabel": {
                 "approval": "Confirm approval in wallet",
@@ -236,6 +238,7 @@
     "myTransactions": "My transactions",
     "myV2Investments": "My V2 investments",
     "myWallet": "My Ethereum wallet",
+    "myWallet2": "My wallet",
     "name": "Name",
     "namePlaceholder": "Name, symbol or contract address",
     "nativeTokens": "Native tokens",
@@ -282,6 +285,17 @@
     "poolReturns": "Pool returns",
     "poolTokenName": "Pool token name",
     "poolTransactions": "Pool transactions",
+    "poolTransfer": {
+        "myPoolBalancesCard": {
+            "title": "My pool balance"
+        },
+        "myWalletTokensCard": {
+            "title": "Pool tokens in my wallet",
+            "tooltips": {
+                "nativeAssetSelection": "Select {0} or {1} to invest in this pool. Wrap or unwrap {0} to invest a larger amount and maximize your investment."
+            }
+        }
+    },
     "poolType": "Pool type",
     "poolValue": "Pool value",
     "popularBases": "Popular:",
@@ -303,6 +317,7 @@
     },
     "profit": "Profit (1{0})",
     "proportionalSuggestion": "Proportional suggestion",
+    "proportionalWithdrawal": "Proportional withdrawal",
     "protocolFees": "Protocol fees",
     "rank": "Rank (1{0})",
     "receipt": "Receipt",
@@ -361,6 +376,10 @@
         "invest": {
             "priceImpact": "Price impact from adding liquidity results when  the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",
             "total": "The total value in {0} you’ll be investing into this pool."
+        },
+        "withdraw": {
+            "priceImpact": "Price impact from removing liquidity results when the value of each token added is not proportional to the weights of the pool. Removing non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get for exiting your position.",
+            "total": "The total value in {0} you’ll be withdrawing from this pool."
         }
     },
     "total": "Total",
@@ -452,6 +471,20 @@
     },
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
+    "transactionErrors": {
+        "default": {
+            "title": "Transaction failed",
+            "description": "Please try again later."
+        },
+        "gasTooLow": {
+            "title": "Gas too low",
+            "description": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas."
+        },
+        "slippage": {
+            "title": "Transaction failed due to slippage",
+            "description": "The market price changed beyond your slippage tolerance due to other trades processed before yours. Try again or increase your slippage tolerance."
+        }
+    },
     "transactionPending": "No transactions pending | {n} transaction pending | {n} transactions pending",
     "transactionStatus": {
         "cancelled": "Cancelled",
@@ -497,8 +530,26 @@
     "weight": "Weight",
     "weightedPool": "Weighted pool",
     "whichPools": "Which liquidity pools should be used when you make a trade.",
-    "withdraw": "Withdraw",
+    "withdraw": {
+        "label": "Withdraw",
+        "tooltips": {
+            "priceImpact": "Withdrawing custom amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
+        },
+        "preview": {
+            "loadingLabel": {
+                "withdraw": "Confirm withdrawal in wallet"
+            },
+            "titles": {
+                "confirmed": "Withdrawal confirmed",
+                "default": "Withdrawal preview"
+            },
+            "tooltips": {
+                "withdrawStep": "Confirm withdrawal from this pool"
+            }
+        }
+    },
     "withdrawal": "Withdrawal",
+    "withdrawFromPool": "Withdraw from pool",
     "withdrawalSettled": "Your withdrawal has settled",
     "withdrawalSuccess": "Your investment has been withdrawn from this pool, and the underlying tokens are now in your wallet.",
     "withdrawFee": "Withdraw fee",
@@ -510,5 +561,8 @@
     "yearAbbrev": "y",
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
-    "yourTransactions": "Your transactions in this pool"
+    "yourTransactions": "Your transactions in this pool",
+    "trendingPairs": "Trending pairs",
+    "chooseAPair": "Please select a valid pair",
+    "youCanInvest": "You can invest"
 }
