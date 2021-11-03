@@ -10,7 +10,7 @@
           @change="onChange"
         />
       </div>
-      <div class="relative ml-4 flex-col">
+      <div class="relative ml-2 flex-col">
         <label
           v-if="$slots.label || label"
           :for="name"
@@ -142,7 +142,7 @@ export default defineComponent({
 }
 
 .bal-checkbox-input {
-  @apply text-blue-500 bg-white border rounded leading-none;
+  @apply text-blue-500 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded leading-none;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;

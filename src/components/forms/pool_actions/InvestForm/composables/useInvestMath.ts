@@ -24,6 +24,7 @@ export type InvestMathResponse = {
   bptOut: Ref<string>;
   hasZeroBalance: Ref<boolean>;
   hasNoBalances: Ref<boolean>;
+  hasAllTokens: Ref<boolean>;
   // methods
   maximizeAmounts: () => void;
   optimizeAmounts: () => void;
@@ -143,6 +144,10 @@ export default function useInvestFormMath(
     poolTokenBalances.value.every(balance => bnum(balance).eq(0))
   );
 
+  const hasAllTokens = computed((): boolean =>
+    poolTokenBalances.value.every(balance => bnum(balance).gt(0))
+  );
+
   /**
    * METHODS
    */
@@ -202,6 +207,7 @@ export default function useInvestFormMath(
     bptOut,
     hasZeroBalance,
     hasNoBalances,
+    hasAllTokens,
     // methods
     maximizeAmounts,
     optimizeAmounts

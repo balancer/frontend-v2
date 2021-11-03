@@ -24,18 +24,24 @@ import useWeb3 from '@/services/web3/useWeb3';
 async function getPairPriceData(
   inputAsset: string,
   outputAsset: string,
+  nativeAsset: string,
+  wrappedNativeAsset: string,
   days: number
 ) {
+  let _inputAsset =
+    inputAsset === nativeAsset ? wrappedNativeAsset : inputAsset;
+  let _outputAsset =
+    outputAsset === nativeAsset ? wrappedNativeAsset : outputAsset;
   const aggregateBy = days === 1 ? 'hour' : 'day';
   const inputAssetData = await coingeckoService.prices.getTokensHistorical(
-    [inputAsset],
+    [_inputAsset],
     days,
     1,
     aggregateBy
   );
 
   const outputAssetData = await coingeckoService.prices.getTokensHistorical(
-    [outputAsset],
+    [_outputAsset],
     days,
     1,
     aggregateBy
@@ -55,6 +61,7 @@ async function getPairPriceData(
     (_, timestamp: any) =>
       format(fromUnixTime(timestamp / 1000), 'yyyy/MM/dd HH:mm')
   );
+
   return toPairs(formatTimestamps);
 }
 
@@ -90,7 +97,7 @@ type Props = {
 const props = defineProps<Props>();
 const { upToLargeBreakpoint } = useBreakpoints();
 const store = useStore();
-const { tokens } = useTokens();
+const { tokens, wrappedNativeAsset, nativeAsset } = useTokens();
 const { tokenInAddress, tokenOutAddress } = useTradeState();
 const tailwind = useTailwind();
 const { chainId: userNetworkId } = useWeb3();
@@ -101,16 +108,14 @@ const chartHeight = ref(
 const activeTimespan = ref(chartTimespans[0]);
 const appLoading = computed(() => store.state.app.loading);
 
-const inputSym = computed(
-  () => tokens.value[getAddress(tokenInAddress.value)]?.symbol
-);
-const outputSym = computed(
-  () => tokens.value[getAddress(tokenOutAddress.value)]?.symbol
-);
-
-const shouldLoadPriceData = computed(
-  () => tokenInAddress.value !== '' && tokenOutAddress.value !== ''
-);
+const inputSym = computed(() => {
+  if (tokenInAddress.value === '') return 'Unknown';
+  return tokens.value[getAddress(tokenInAddress.value)]?.symbol;
+});
+const outputSym = computed(() => {
+  if (tokenOutAddress.value === '') return 'Unknown';
+  return tokens.value[getAddress(tokenOutAddress.value)]?.symbol;
+});
 
 const dataMin = computed(() => {
   return (minBy(priceData.value || [], v => v[1]) || [])[1] || 0;
@@ -129,17 +134,20 @@ const {
     tokenInAddress,
     tokenOutAddress,
     activeTimespan,
-    userNetworkId
+    userNetworkId,
+    nativeAsset,
+    wrappedNativeAsset
   ),
   () =>
     getPairPriceData(
       tokenInAddress.value,
       tokenOutAddress.value,
+      nativeAsset?.address,
+      wrappedNativeAsset.value?.address,
       activeTimespan.value.value
     ),
   reactive({
     retry: false,
-    shouldLoadPriceData,
     // when refetch on window focus in enabled, it causes a flash
     // in the loading state of the card which is jarring. disabling it
     refetchOnWindowFocus: false
@@ -189,7 +197,6 @@ const chartGrid = computed(() => {
 
 <template>
   <div
-    ref="elementToAnimate"
     :class="[
       '',
       {
@@ -218,7 +225,7 @@ const chartGrid = computed(() => {
         <button
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
           @click="toggle"
-          class="maximise border m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
+          class="maximise m-4 p-2 flex justify-center items-center shadow-lg rounded-full"
         >
           <BalIcon v-if="!isModal" name="maximize-2" class="text-gray-500" />
           <BalIcon v-if="isModal" name="x" class="text-gray-500" />
@@ -266,6 +273,7 @@ const chartGrid = computed(() => {
             hide-y-axis
             hide-x-axis
             show-header
+            use-min-max
           />
           <div
             :class="[

@@ -2,6 +2,7 @@ import { Ref, computed } from 'vue';
 import { PoolType, AnyPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
+import { bnum } from '@/lib/utils';
 
 export function isStable(poolType: PoolType): boolean {
   return poolType === PoolType.Stable;
@@ -58,6 +59,10 @@ export function isWstETH(pool: AnyPool): boolean {
   );
 }
 
+export function noInitLiquidity(pool: AnyPool): boolean {
+  return bnum(pool?.onchain?.totalSupply || '0').eq(0);
+}
+
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isStablePool = computed(
     (): boolean => !!pool.value && isStable(pool.value.poolType)
@@ -90,6 +95,9 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isWstETHPool = computed(
     (): boolean => !!pool.value && isWstETH(pool.value)
   );
+  const noInitLiquidityPool = computed(
+    () => !!pool.value && noInitLiquidity(pool.value)
+  );
 
   return {
     // computed
@@ -103,6 +111,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     managedPoolWithTradingHalted,
     isWethPool,
     isWstETHPool,
+    noInitLiquidityPool,
     // methods
     isStable,
     isMetaStable,
@@ -111,6 +120,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isLiquidityBootstrapping,
     isWeightedLike,
     isTradingHaltable,
-    isWeth
+    isWeth,
+    noInitLiquidity
   };
 }
