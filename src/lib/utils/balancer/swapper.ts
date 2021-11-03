@@ -6,7 +6,6 @@ import {
   SwapToken,
   SwapTokenType
 } from '@/services/swap/swap.service';
-import { web3Service } from '@/services/web3/web3.service';
 
 export async function swapIn(
   network: string,
