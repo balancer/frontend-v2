@@ -2,6 +2,7 @@ import { computed, ComputedRef, reactive, ref, Ref, toRefs } from 'vue';
 import { useStore } from 'vuex';
 import { BigNumber } from 'bignumber.js';
 import { formatUnits } from '@ethersproject/units';
+import { AddressZero } from '@ethersproject/constants';
 import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
 
@@ -307,8 +308,8 @@ export default function useGnosis({
       const feeQuoteParams: FeeQuoteParams = {
         sellToken: toErc20Address(tokenInAddressInput.value),
         buyToken: toErc20Address(tokenOutAddressInput.value),
-        from: account.value,
-        receiver: account.value,
+        from: account.value || AddressZero,
+        receiver: account.value || AddressZero,
         validTo: calculateValidTo(appTransactionDeadline.value),
         appData: APP_DATA,
         partiallyFillable: false,
