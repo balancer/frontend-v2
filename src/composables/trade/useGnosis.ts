@@ -1,7 +1,9 @@
 import { computed, ComputedRef, reactive, ref, Ref, toRefs } from 'vue';
 import { useStore } from 'vuex';
-import { BigNumber } from 'bignumber.js';
+import { BigNumber, parseFixed } from '@ethersproject/bignumber';
+import { WeiPerEther as ONE } from '@ethersproject/constants';
 import { formatUnits } from '@ethersproject/units';
+import OldBigNumber from 'bignumber.js';
 import { AddressZero } from '@ethersproject/constants';
 import { OrderBalance, OrderKind } from '@gnosis.pm/gp-v2-contracts';
 import { onlyResolvesLast } from 'awesome-only-resolves-last-promise';
@@ -32,7 +34,7 @@ import useNumbers from '../useNumbers';
 import useTokens from '../useTokens';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 
-const HIGH_FEE_THRESHOLD = 0.2;
+const HIGH_FEE_THRESHOLD = parseFixed('0.2', 18);
 const APP_DATA =
   process.env.VUE_APP_GNOSIS_APP_DATA ??
   '0xE9F29AE547955463ED535162AEFEE525D8D309571A2B18BC26086C8C35D781EB';
@@ -143,9 +145,8 @@ export default function useGnosis({
   function getFeeAmount() {
     const feeAmountInToken = feeQuote.value?.quote.feeAmount ?? '0';
     const feeAmountOutToken = tokenOutAmountScaled.value
+      .mul(feeAmountInToken)
       .div(tokenInAmountScaled.value)
-      .times(feeAmountInToken)
-      .integerValue(BigNumber.ROUND_DOWN)
       .toString();
 
     return {
@@ -158,15 +159,15 @@ export default function useGnosis({
     const { feeAmountInToken, feeAmountOutToken } = getFeeAmount();
 
     const maximumInAmount = tokenInAmountScaled.value
-      .plus(feeAmountInToken)
-      .times(1 + slippageBufferRate.value)
-      .integerValue(BigNumber.ROUND_DOWN)
+      .add(feeAmountInToken)
+      .mul(parseFixed(String(1 + slippageBufferRate.value), 18))
+      .div(ONE)
       .toString();
 
     const minimumOutAmount = tokenOutAmountScaled.value
-      .minus(feeAmountOutToken)
-      .div(1 + slippageBufferRate.value)
-      .integerValue(BigNumber.ROUND_DOWN)
+      .sub(feeAmountOutToken)
+      .mul(ONE)
+      .div(parseFixed(String(1 + slippageBufferRate.value), 18))
       .toString();
 
     return {
@@ -187,10 +188,11 @@ export default function useGnosis({
       const unsignedOrder: UnsignedOrder = {
         sellToken: tokenInAddressInput.value,
         buyToken: tokenOutAddressInput.value,
-        sellAmount: bnum(
-          exactIn.value ? tokenInAmountScaled.value : quote.maximumInAmount
+        sellAmount: (exactIn.value
+          ? tokenInAmountScaled.value
+          : quote.maximumInAmount
         )
-          .minus(quote.feeAmountInToken)
+          .sub(quote.feeAmountInToken)
           .toString(),
         buyAmount: exactIn.value
           ? quote.minimumOutAmount
@@ -268,7 +270,7 @@ export default function useGnosis({
       }
       confirming.value = false;
     } catch (e) {
-      state.submissionError = e.message;
+      state.submissionError = (e as Error).message;
       confirming.value = false;
     }
   }
@@ -291,12 +293,6 @@ export default function useGnosis({
     if (amountToExchange.isZero()) {
       tokenInAmountInput.value = '0';
       tokenOutAmountInput.value = '0';
-      return;
-    }
-
-    if (amountToExchange.isNaN()) {
-      tokenInAmountInput.value = '';
-      tokenOutAmountInput.value = '';
       return;
     }
 
@@ -328,8 +324,7 @@ export default function useGnosis({
       feeQuoteResult = await feeQuoteResolveLast(feeQuoteParams);
     } catch (e) {
       feeQuoteResult = null;
-
-      state.validationError = e.message;
+      state.validationError = (e as Error).message;
     }
 
     if (feeQuoteResult != null) {
@@ -364,9 +359,13 @@ export default function useGnosis({
         if (priceQuoteAmounts.length > 0) {
           // For sell orders get the largest (max) quote. For buy orders get the smallest (min) quote.
           priceQuoteAmount = (exactIn.value
-            ? BigNumber.max(...priceQuoteAmounts)
-            : BigNumber.min(...priceQuoteAmounts)
-          ).toString(10);
+            ? priceQuoteAmounts.reduce((a, b) =>
+                BigNumber.from(a).gt(b) ? a : b
+              )
+            : priceQuoteAmounts.reduce((a, b) =>
+                BigNumber.from(a).lt(b) ? a : b
+              )
+          ).toString();
         }
 
         if (priceQuoteAmount != null) {
@@ -375,23 +374,23 @@ export default function useGnosis({
           if (exactIn.value) {
             tokenOutAmountInput.value = bnum(
               formatUnits(priceQuoteAmount, tokenOut.value.decimals)
-            ).toFixed(6, BigNumber.ROUND_DOWN);
+            ).toFixed(6, OldBigNumber.ROUND_DOWN);
 
             const { feeAmountInToken } = getQuote();
 
-            state.warnings.highFees = bnum(feeAmountInToken)
-              .div(amountToExchange)
-              .gt(HIGH_FEE_THRESHOLD);
+            state.warnings.highFees = BigNumber.from(feeAmountInToken).gt(
+              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
+            );
           } else {
             tokenInAmountInput.value = bnum(
               formatUnits(priceQuoteAmount, tokenIn.value.decimals)
-            ).toFixed(6, BigNumber.ROUND_DOWN);
+            ).toFixed(6, OldBigNumber.ROUND_DOWN);
 
             const { feeAmountOutToken, maximumInAmount } = getQuote();
 
-            state.warnings.highFees = bnum(feeAmountOutToken)
-              .div(amountToExchange)
-              .gt(HIGH_FEE_THRESHOLD);
+            state.warnings.highFees = BigNumber.from(feeAmountOutToken).gt(
+              amountToExchange.mul(HIGH_FEE_THRESHOLD).div(ONE)
+            );
 
             const priceExceedsBalance = bnum(
               formatUnits(maximumInAmount, tokenIn.value.decimals)
