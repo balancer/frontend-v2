@@ -64,7 +64,7 @@ export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
   } catch (err) {
     console.error(
       `An error occurred while attempting to add network information to wallet. ${
-        (err as MetamaskError).message
+        (err as Error).message
       }`
     );
     return false;

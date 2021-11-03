@@ -13,7 +13,6 @@ import { AddressZero } from '@ethersproject/constants';
 import OldBigNumber from 'bignumber.js';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
-import { MetamaskError } from '@/types';
 
 const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 export enum LiquiditySelection {
@@ -138,9 +137,9 @@ export class SorManager {
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = v2result;
     } catch (err) {
-      const error = err as MetamaskError;
-
-      console.log(`[SorManager] V2 fetchPools issue: ${error.message}`);
+      console.log(
+        `[SorManager] V2 fetchPools issue: ${(err as Error).message}`
+      );
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = false;
     }
@@ -157,7 +156,7 @@ export class SorManager {
         this.fetchStatus.v1success = v1result;
       } catch (err) {
         console.log(
-          `[SorManager] V1 fetchPools issue: ${(err as MetamaskError).message}`
+          `[SorManager] V1 fetchPools issue: ${(err as Error).message}`
         );
         this.fetchStatus.v1finishedFetch = true;
         this.fetchStatus.v1success = false;
