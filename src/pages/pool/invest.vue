@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { configService } from '@/services/config/config.service';
 // Components
-import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.vue';
+import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
