@@ -62,7 +62,7 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
         'https://storageapi.fleek.co/tomafrench-team-bucket/arbitrum.vetted.tokenlist.json'
     },
     External: [
-      'https://raw.githubusercontent.com/dospore/tracer-balancer-token-list/master/tokens.json'
+      'https://tracer.finance/tokens'
     ]
   }
 };
