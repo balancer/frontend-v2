@@ -1,4 +1,4 @@
-import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse } from '@ethersproject/providers';
 import { BigNumber } from 'bignumber.js';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import {
@@ -8,8 +8,6 @@ import {
 } from '@/services/swap/swap.service';
 
 export async function swapIn(
-  network: string,
-  provider: Web3Provider,
   sorReturn: SorReturn,
   tokenInAmount: BigNumber,
   tokenOutAmountMin: BigNumber
@@ -46,8 +44,6 @@ export async function swapIn(
 }
 
 export async function swapOut(
-  network: string,
-  provider: Web3Provider,
   sorReturn: SorReturn,
   tokenInAmountMax: BigNumber,
   tokenOutAmount: BigNumber
