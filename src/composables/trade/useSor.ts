@@ -45,11 +45,18 @@ import useTokens from '../useTokens';
 import { getStETHByWstETH } from '@/lib/utils/balancer/lido';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
+type SorState = {
+  validationErrors: {
+    highPriceImpact: boolean;
+  };
+  submissionError: string | null;
+};
+
 const GAS_PRICE = process.env.VUE_APP_GAS_PRICE || '100000000000';
 const MAX_POOLS = process.env.VUE_APP_MAX_POOLS || '4';
 const MIN_PRICE_IMPACT = 0.0001;
 const HIGH_PRICE_IMPACT_THRESHOLD = 0.05;
-const state = reactive({
+const state = reactive<SorState>({
   validationErrors: {
     highPriceImpact: false
   },
@@ -472,7 +479,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
-        state.submissionError = e.message;
+        state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
       }
@@ -494,7 +501,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
-        state.submissionError = e.message;
+        state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
       }
@@ -526,7 +533,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
-        state.submissionError = e.message;
+        state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
       }
@@ -555,7 +562,7 @@ export default function useSor({
         }
       } catch (e) {
         console.log(e);
-        state.submissionError = e.message;
+        state.submissionError = (e as Error).message;
         trading.value = false;
         confirming.value = false;
       }

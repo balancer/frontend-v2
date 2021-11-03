@@ -269,7 +269,7 @@ export default function useGnosis({
       }
       confirming.value = false;
     } catch (e) {
-      state.submissionError = e.message;
+      state.submissionError = (e as Error).message;
       confirming.value = false;
     }
   }
@@ -323,7 +323,7 @@ export default function useGnosis({
       feeQuoteResult = await feeQuoteResolveLast(feeQuoteParams);
     } catch (e) {
       feeQuoteResult = null;
-      state.validationError = e.message;
+      state.validationError = (e as Error).message;
     }
 
     if (feeQuoteResult != null) {

@@ -16,6 +16,7 @@ import {
 import { networkId } from '@/composables/useNetwork';
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants';
+import { MetamaskError } from '@/types';
 
 // For error codes, see:
 // - https://eth.wiki/json-rpc/json-rpc-error-codes-improvement-proposal
@@ -159,9 +160,10 @@ async function _signPayload(
       signingScheme
     })) as EcdsaSignature; // Only ECDSA signing supported for now
   } catch (e) {
+    const error = e as MetamaskError;
     if (
-      e.code === METHOD_NOT_FOUND_ERROR_CODE ||
-      RPC_REQUEST_FAILED_REGEX.test(e.message)
+      error.code === METHOD_NOT_FOUND_ERROR_CODE ||
+      RPC_REQUEST_FAILED_REGEX.test(error.message)
     ) {
       // Maybe the wallet returns the proper error code? We can only hope 🤞
       // OR it failed with a generic message, there's no error code set, and we also hope it'll work
@@ -174,26 +176,26 @@ async function _signPayload(
         default:
           throw e;
       }
-    } else if (METAMASK_STRING_CHAINID_REGEX.test(e.message)) {
+    } else if (METAMASK_STRING_CHAINID_REGEX.test(error.message)) {
       // Metamask now enforces chainId to be an integer
       return _signPayload(payload, signFn, signer, 'int_v4');
-    } else if (e.code === METAMASK_SIGNATURE_ERROR_CODE) {
+    } else if (error.code === METAMASK_SIGNATURE_ERROR_CODE) {
       // We tried to sign order the nice way.
       // That works fine for regular MM addresses. Does not work for Hardware wallets, though.
       // See https://github.com/MetaMask/metamask-extension/issues/10240#issuecomment-810552020
       // So, when that specific error occurs, we know this is a problem with MM + HW.
       // Then, we fallback to ETHSIGN.
       return _signPayload(payload, signFn, signer, 'eth_sign');
-    } else if (V4_ERROR_MSG_REGEX.test(e.message)) {
+    } else if (V4_ERROR_MSG_REGEX.test(error.message)) {
       // Failed with `v4`, and the wallet does not set the proper error code
       return _signPayload(payload, signFn, signer, 'v3');
-    } else if (V3_ERROR_MSG_REGEX.test(e.message)) {
+    } else if (V3_ERROR_MSG_REGEX.test(error.message)) {
       // Failed with `v3`, and the wallet does not set the proper error code
       return _signPayload(payload, signFn, signer, 'eth_sign');
     } else {
       // Some other error signing. Let it bubble up.
-      console.error(e);
-      throw e;
+      console.error(error);
+      throw error;
     }
   }
   return { signature: signature.data.toString(), signingScheme };
