@@ -64,16 +64,16 @@
           v-if="!appLoading && missingPrices"
           type="warning"
           :title="$t('noPriceInfo')"
-          size="sm"
           class="mt-2"
+          block
         />
         <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"
           :title="$t('noInitLiquidity')"
           :description="$t('noInitLiquidityDetail')"
-          size="sm"
           class="mt-2"
+          block
         />
       </div>
 
@@ -113,7 +113,7 @@
           class="pool-actions-card h-60 mb-4"
         />
         <MyPoolBalancesCard
-          v-else
+          v-else-if="!noInitLiquidity"
           :pool="pool"
           :missingPrices="missingPrices"
           class="mb-4"
