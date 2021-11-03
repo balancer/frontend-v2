@@ -55,6 +55,7 @@ export class SorManager {
     v2success: false
   };
   private isV1Supported: boolean;
+  private isFetching: boolean;
   maxPools: number;
   gasPrice: BigNumber;
   selectedPools: (SubgraphPoolBase | Pool)[] = [];
@@ -84,6 +85,7 @@ export class SorManager {
     this.weth = weth;
     this.gasPrice = gasPrice;
     this.maxPools = maxPools;
+    this.isFetching = false;
   }
 
   // Uses SOR V2 to retrieve the cost & reuses for SOR V1 to save time (requires onchain call).
@@ -122,6 +124,10 @@ export class SorManager {
 
   // This fetches ALL pool with onchain info.
   async fetchPools(): Promise<void> {
+    if (this.isFetching) {
+      return;
+    }
+    this.isFetching = true;
     let v1fetch;
     console.log(`[SorManager] fetch Subgraph (V1:${this.isV1Supported})`);
     if (this.isV1Supported) {
@@ -167,6 +173,7 @@ export class SorManager {
     }
 
     this.selectedPools = this.sorV2.getPools();
+    this.isFetching = false;
   }
   // Gets swaps for V1 & V2 liquidity and determined best result
   async getBestSwap(

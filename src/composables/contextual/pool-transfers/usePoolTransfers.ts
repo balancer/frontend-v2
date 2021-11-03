@@ -9,6 +9,7 @@ import useTokens from '@/composables/useTokens';
  * STATE
  */
 const useNativeAsset = ref(false);
+const transfersAllowed = ref(true);
 
 export default function usePoolTransfers() {
   const route = useRoute();
@@ -56,6 +57,7 @@ export default function usePoolTransfers() {
     pool,
     loadingPool,
     useNativeAsset,
-    missingPrices
+    missingPrices,
+    transfersAllowed
   };
 }
