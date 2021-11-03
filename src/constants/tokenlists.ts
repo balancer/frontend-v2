@@ -61,8 +61,6 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
       Vetted:
         'https://storageapi.fleek.co/tomafrench-team-bucket/arbitrum.vetted.tokenlist.json'
     },
-    External: [
-      'https://tracer.finance/tokens'
-    ]
+    External: ['https://tracer.finance/tokens']
   }
 };
