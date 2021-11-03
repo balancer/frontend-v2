@@ -120,7 +120,11 @@
         />
 
         <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-40" />
-        <PoolActionsCard v-else :pool="pool" :missingPrices="missingPrices" />
+        <PoolActionsCard
+          v-else-if="!noInitLiquidity"
+          :pool="pool"
+          :missingPrices="missingPrices"
+        />
       </div>
       <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
         <BalCard noPad imgSrc="/images/partners/copper-launch.png">
