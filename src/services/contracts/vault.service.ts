@@ -2,23 +2,26 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { SwapV2 } from '@balancer-labs/sor2';
-import { configService } from '@/services/config/config.service';
+import ConfigService, { configService } from '@/services/config/config.service';
 import {
   FundManagement,
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
-import { web3Service } from '../web3/web3.service';
+import Web3Service, { web3Service } from '../web3/web3.service';
 
 export class VaultService {
   abi: any;
 
-  constructor() {
+  constructor(
+    protected readonly config: ConfigService = configService,
+    private readonly web3: Web3Service = web3Service
+  ) {
     this.abi = Vault__factory.abi;
   }
 
   get address() {
-    return configService.network.addresses.vault;
+    return this.config.network.addresses.vault;
   }
 
   public swap(
@@ -27,7 +30,7 @@ export class VaultService {
     tokenOutAmount: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return web3Service.sendTransaction(
+    return this.web3.sendTransaction(
       this.address,
       this.abi,
       'swap',
@@ -44,7 +47,7 @@ export class VaultService {
     limits: string[],
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return web3Service.sendTransaction(
+    return this.web3.sendTransaction(
       this.address,
       this.abi,
       'batchSwap',

@@ -6,7 +6,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import { getWstETHByStETH, isStETH } from '@/lib/utils/balancer/lido';
 import { SwapV2 } from '@balancer-labs/sor2';
-import { configService } from '@/services/config/config.service';
+import ConfigService, { configService } from '@/services/config/config.service';
 import { vaultService } from '@/services/contracts/vault.service';
 import { lidoRelayerService } from '@/services/contracts/lido-relayer.service';
 import {
@@ -15,7 +15,7 @@ import {
   SwapKind
 } from '@balancer-labs/balancer-js';
 import { bnum } from '@/lib/utils';
-import { web3Service } from '../web3/web3.service';
+import Web3Service, { web3Service } from '../web3/web3.service';
 
 export enum SwapTokenType {
   fixed,
@@ -30,6 +30,11 @@ export interface SwapToken {
 }
 
 export default class SwapService {
+  constructor(
+    private readonly config: ConfigService = configService,
+    private readonly web3: Web3Service = web3Service
+  ) {}
+
   public async batchSwapV1(
     tokenIn: SwapToken,
     tokenOut: SwapToken,
@@ -127,7 +132,7 @@ export default class SwapService {
     }
 
     // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
-    const { stETH, wstETH } = configService.network.addresses;
+    const { stETH, wstETH } = this.config.network.addresses;
     if (tokenIn.address === stETH.toLowerCase()) {
       tokenIn.address = wstETH.toLowerCase();
       tokenIn.amount = bnum(await getWstETHByStETH(tokenIn.amount.toString()));
@@ -180,7 +185,7 @@ export default class SwapService {
   }
 
   private async getFundManagement(): Promise<FundManagement> {
-    const userAddress = await web3Service.getUserAddress();
+    const userAddress = await this.web3.getUserAddress();
     const funds: FundManagement = {
       sender: userAddress,
       recipient: userAddress,

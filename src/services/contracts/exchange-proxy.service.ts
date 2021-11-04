@@ -1,20 +1,22 @@
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
-import configs from '@/lib/config';
+import ConfigService, { configService } from '@/services/config/config.service';
 import { SwapToken, SwapTokenType } from '../swap/swap.service';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { networkId } from '@/composables/useNetwork';
-import { web3Service } from '../web3/web3.service';
+import Web3Service, { web3Service } from '../web3/web3.service';
 
 export default class ExchangeProxyService {
   abi: any;
 
-  constructor() {
+  constructor(
+    private readonly config: ConfigService = configService,
+    private readonly web3: Web3Service = web3Service
+  ) {
     this.abi = exchangeProxyAbi;
   }
 
   private get address() {
-    return configs[networkId.value].addresses.exchangeProxy;
+    return this.config.network.addresses.exchangeProxy;
   }
 
   public multihopBatchSwap(
@@ -57,7 +59,7 @@ export default class ExchangeProxyService {
     minTotalAmountOut: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return web3Service.sendTransaction(
+    return this.web3.sendTransaction(
       this.address,
       this.abi,
       'multihopBatchSwapExactIn',
@@ -73,7 +75,7 @@ export default class ExchangeProxyService {
     maxTotalAmountIn: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
-    return web3Service.sendTransaction(
+    return this.web3.sendTransaction(
       this.address,
       this.abi,
       'multihopBatchSwapExactOut',

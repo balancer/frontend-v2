@@ -1,6 +1,5 @@
 import { LidoRelayer__factory } from '@balancer-labs/typechain';
 import { VaultService } from '@/services/contracts/vault.service';
-import { configService } from '@/services/config/config.service';
 
 export class LidoRelayerService extends VaultService {
   constructor() {
@@ -9,7 +8,7 @@ export class LidoRelayerService extends VaultService {
   }
 
   get address() {
-    return configService.network.addresses.lidoRelayer;
+    return this.config.network.addresses.lidoRelayer;
   }
 }
 

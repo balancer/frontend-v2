@@ -140,7 +140,7 @@ export default {
         pluginState.connector = connector;
 
         // Add the new provider to the web3 service
-        web3Service.setProvider(web3Provider);
+        web3Service.setUserProvider(web3Provider);
 
         // for when user reloads the app on an already connected wallet
         // need to store address to pre-load that connection
