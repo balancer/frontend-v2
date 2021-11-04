@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { BigNumber } from 'bignumber.js';
+import { BigNumber } from '@ethersproject/bignumber';
 import { SorReturn } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import {
   swapService,

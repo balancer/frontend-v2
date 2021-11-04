@@ -11,6 +11,7 @@ import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-p
 import { logFailedTx } from '@/lib/utils/logging';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import ConfigService, { configService } from '@/services/config/config.service';
+import { MetamaskError } from '@/types';
 
 interface Web3Profile {
   ens: string | null;
@@ -87,9 +88,11 @@ export default class Web3Service {
 
       return await contract[action](...params, options);
     } catch (e) {
+      const error = e as MetamaskError;
+
       if (
-        e.code === RPC_INVALID_PARAMS_ERROR_CODE &&
-        EIP1559_UNSUPPORTED_REGEX.test(e.message)
+        error.code === RPC_INVALID_PARAMS_ERROR_CODE &&
+        EIP1559_UNSUPPORTED_REGEX.test(error.message)
       ) {
         // Sending tx as EIP1559 has failed, retry with legacy tx type
         return this.sendTransaction(
@@ -101,13 +104,13 @@ export default class Web3Service {
           true
         );
       } else if (
-        e.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT &&
+        error.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT &&
         this.config.env.APP_ENV !== 'development'
       ) {
         const sender = await signer.getAddress();
         logFailedTx(sender, contract, action, params, options);
       }
-      return Promise.reject(e);
+      return Promise.reject(error);
     }
   }
 }

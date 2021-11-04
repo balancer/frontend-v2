@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@ethersproject/bignumber';
 import { exchangeProxyService } from '../contracts/exchange-proxy.service';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Swap } from '@balancer-labs/sor/dist/types';
@@ -14,7 +14,6 @@ import {
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
-import { bnum } from '@/lib/utils';
 import Web3Service, { web3Service } from '../web3/web3.service';
 
 export type Address = string;
@@ -48,7 +47,7 @@ export default class SwapService {
 
     /* I have no idea what this is doing still... */
     if (tokenIn.address === NATIVE_ASSET_ADDRESS) {
-      options.value = `0x${tokenIn.amount.toString(16)}`;
+      options.value = `0x${tokenIn.amount.toHexString()}`;
     }
 
     try {
@@ -77,7 +76,7 @@ export default class SwapService {
     const overrides: any = {};
 
     if (tokenIn.address === AddressZero) {
-      overrides.value = `0x${tokenIn.amount.toString(16)}`;
+      overrides.value = `0x${tokenIn.amount.toHexString()}`;
     }
 
     const swapKind =
@@ -130,19 +129,17 @@ export default class SwapService {
     const overrides: any = {};
 
     if (tokenIn.address === AddressZero) {
-      overrides.value = `0x${tokenIn.amount.toString(16)}`;
+      overrides.value = `0x${tokenIn.amount.toHexString()}`;
     }
 
     // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
     const { stETH, wstETH } = this.config.network.addresses;
     if (tokenIn.address === stETH.toLowerCase()) {
       tokenIn.address = wstETH.toLowerCase();
-      tokenIn.amount = bnum(await getWstETHByStETH(tokenIn.amount.toString()));
+      tokenIn.amount = await getWstETHByStETH(tokenIn.amount);
     } else if (tokenOut.address === stETH.toLowerCase()) {
       tokenOut.address = wstETH.toLowerCase();
-      tokenOut.amount = bnum(
-        await getWstETHByStETH(tokenOut.amount.toString())
-      );
+      tokenOut.amount = await getWstETHByStETH(tokenOut.amount);
     }
 
     const swapKind =
@@ -215,7 +212,7 @@ export default class SwapService {
         if (token.toLowerCase() === tokenIn.address.toLowerCase()) {
           limits[i] = tokenIn.amount.toString();
         } else if (token.toLowerCase() === tokenOut.address.toLowerCase()) {
-          limits[i] = tokenOut.amount.times(-1).toString();
+          limits[i] = tokenOut.amount.mul(-1).toString();
         } else {
           limits[i] = '0';
         }
@@ -226,7 +223,7 @@ export default class SwapService {
         if (token.toLowerCase() === tokenIn.address.toLowerCase()) {
           limits[i] = tokenIn.amount.toString();
         } else if (token.toLowerCase() === tokenOut.address.toLowerCase()) {
-          limits[i] = tokenOut.amount.times(-1).toString();
+          limits[i] = tokenOut.amount.mul(-1).toString();
         } else {
           limits[i] = '0';
         }
