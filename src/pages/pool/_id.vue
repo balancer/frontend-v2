@@ -98,8 +98,11 @@
           </div>
 
           <div>
-            <h4 v-text="$t('poolTransactions')" class="px-4 lg:px-0 mb-2" />
-            <PoolActivitiesCard :pool="pool" :loading="loadingPool" />
+            <h4
+              v-text="$t('poolTransactions.title')"
+              class="px-4 lg:px-0 mb-2"
+            />
+            <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
           </div>
         </div>
       </div>

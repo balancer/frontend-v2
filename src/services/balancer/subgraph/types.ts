@@ -100,6 +100,15 @@ export interface PoolActivity {
   type: PoolActivityType;
 }
 
+export interface PoolSwap {
+  tokenIn: string;
+  tokenOut: string;
+  tokenAmountIn: string;
+  tokenAmountOut: string;
+  timestamp: number;
+  tx: string;
+}
+
 export interface PoolSnapshot {
   pool: {
     id: string;
