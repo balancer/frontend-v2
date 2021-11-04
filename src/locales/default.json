@@ -16,8 +16,7 @@
     },
     "allow": "Allow",
     "allowing": "Allowing...",
-    "allPools": "All pools",
-    "allTransactions": "All transactions",
+    "allPools": "All pools",    
     "allTokens": "All tokens",
     "ammPlatform": "Automated portfolio manager and trading platform",
     "amount": "Amount",
@@ -154,6 +153,7 @@
     "insufficientLiquidityDetailed": "Try trading with a smaller amount or check back when liquidity for this pool has increased.",
     "invest": "Invest",
     "investInPool": "Invest in pool",
+    "investWithdraw": "Invest & Withdraw",
     "investment": {
         "label": "Investment",
         "preview": {
@@ -235,7 +235,6 @@
     "myInvestments": "My V2 Balancer investments",
     "myPortfolio": "My portfolio",
     "myShare": "My share",
-    "myTransactions": "My transactions",
     "myV2Investments": "My V2 investments",
     "myWallet": "My Ethereum wallet",
     "myWallet2": "My wallet",
@@ -262,8 +261,7 @@
     "noPriceInfo": "Price information is missing for this pool, since it contains a token not found by our price provider.",
     "noRecentActivity": "Your recent activity will appear here…",
     "noResults": "No results.",
-    "noTransactionsPool": "No transactions in this pool.",
-    "noTransactionsUserPool": "You haven't made any transactions in this pool.",
+    "noSwapsPool": "No swaps in this pool.",
     "numberOfPools": "Number of pools",
     "oneDay": "1D",
     "oneMonth": "1M",
@@ -284,7 +282,19 @@
     "poolName": "Pool name",
     "poolReturns": "Pool returns",
     "poolTokenName": "Pool token name",
-    "poolTransactions": "Pool transactions",
+    "poolTransactions": {
+        "title": "Pool transactions",
+        "tabs": {
+            "allInvestments": "Investments",
+            "myInvestments": "My investments",
+            "swaps": "Swaps"
+        },
+        "noResults": {
+            "allInvestments": "No investments in this pool.",
+            "myInvestments": "You haven't made any investments in this pool.",
+            "swaps": "No swaps in this pool."
+        }
+    },
     "poolTransfer": {
         "myPoolBalancesCard": {
             "title": "My pool balance"
