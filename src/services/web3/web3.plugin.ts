@@ -106,7 +106,7 @@ export default {
         rpcProviderService.getJsonProvider(chainId.value)
     );
     const signer = computed(() => pluginState.connector?.provider?.getSigner());
-    const web3Provider = computed(() => {
+    const userProvider = computed(() => {
       return new Web3Provider(pluginState.connector.provider as any);
     });
 
@@ -140,7 +140,7 @@ export default {
         pluginState.connector = connector;
 
         // Add the new provider to the web3 service
-        web3Service.setUserProvider(web3Provider);
+        web3Service.setUserProvider(userProvider);
 
         // for when user reloads the app on an already connected wallet
         // need to store address to pre-load that connection
