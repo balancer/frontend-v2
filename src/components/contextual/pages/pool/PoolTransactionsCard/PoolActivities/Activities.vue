@@ -33,17 +33,21 @@ const props = withDefaults(defineProps<Props>(), {
  * COMPOSABLES
  */
 const route = useRoute();
+
 /**
  * STATE
  */
+
 const id = route.params.id as string;
 /**
  * QUERIES
  */
+
 const poolActivitiesQuery =
   props.poolActivityType === PoolTransactionsTab.ALL_ACTIVITY
     ? usePoolActivitiesQuery(id)
     : usePoolUserActivitiesQuery(id);
+
 /**
  * COMPUTED
  */
@@ -63,6 +67,7 @@ const poolActivitiesHasNextPage = computed(
 const poolActivitiesIsFetchingNextPage = computed(
   () => poolActivitiesQuery.isFetchingNextPage?.value
 );
+
 /**
  * METHODS
  */
