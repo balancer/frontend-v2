@@ -17,6 +17,8 @@ import {
 import { bnum } from '@/lib/utils';
 import Web3Service, { web3Service } from '../web3/web3.service';
 
+export type Address = string;
+
 export enum SwapTokenType {
   fixed,
   min,
@@ -24,7 +26,7 @@ export enum SwapTokenType {
 }
 
 export interface SwapToken {
-  address: string;
+  address: Address;
   amount: BigNumber;
   type: SwapTokenType;
 }

@@ -1,6 +1,6 @@
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
 import ConfigService, { configService } from '@/services/config/config.service';
-import { SwapToken, SwapTokenType } from '../swap/swap.service';
+import { Address, SwapToken, SwapTokenType } from '../swap/swap.service';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import Web3Service, { web3Service } from '../web3/web3.service';
@@ -53,8 +53,8 @@ export default class ExchangeProxyService {
 
   public multihopBatchSwapExactIn(
     swaps: Swap[][],
-    tokenIn: string,
-    tokenOut: string,
+    tokenIn: Address,
+    tokenOut: Address,
     totalAmountIn: string,
     minTotalAmountOut: string,
     options: Record<string, any> = {}
@@ -70,8 +70,8 @@ export default class ExchangeProxyService {
 
   public multihopBatchSwapExactOut(
     swaps: Swap[][],
-    tokenIn: string,
-    tokenOut: string,
+    tokenIn: Address,
+    tokenOut: Address,
     maxTotalAmountIn: string,
     options: Record<string, any> = {}
   ): Promise<TransactionResponse> {
