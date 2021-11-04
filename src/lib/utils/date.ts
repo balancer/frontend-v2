@@ -8,3 +8,7 @@ export function toUtcTime(date: Date) {
     date.getUTCSeconds()
   );
 }
+
+export function unixToJsTime(time: number) {
+  return time * 1000;
+}

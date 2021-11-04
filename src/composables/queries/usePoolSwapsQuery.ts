@@ -6,49 +6,49 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolActivity } from '@/services/balancer/subgraph/types';
+import { PoolSwap } from '@/services/balancer/subgraph/types';
 import useNetwork from '../useNetwork';
 
-type PoolActivitiesQueryResponse = {
-  poolActivities: PoolActivity[];
+type PoolSwapsQueryResponse = {
+  poolSwaps: PoolSwap[];
   skip?: number;
 };
 
-export default function usePoolActivitiesQuery(
+export default function usePoolSwapsQuery(
   id: string,
-  options: UseInfiniteQueryOptions<PoolActivitiesQueryResponse> = {}
+  options: UseInfiniteQueryOptions<PoolSwapsQueryResponse> = {}
 ) {
   // COMPOSABLES
   const { networkId } = useNetwork();
 
   // DATA
-  const queryKey = reactive(QUERY_KEYS.Pools.Activities(networkId, id));
+  const queryKey = reactive(QUERY_KEYS.Pools.Swaps(networkId, id));
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const poolActivities = await balancerSubgraphService.poolActivities.get({
+    const poolSwaps = await balancerSubgraphService.poolSwaps.get({
       first: POOLS.Pagination.PerPage,
       skip: pageParam,
       where: {
-        pool: id
+        poolId: id
       }
     });
 
     return {
-      poolActivities,
+      poolSwaps,
       skip:
-        poolActivities.length >= POOLS.Pagination.PerPage
+        poolSwaps.length >= POOLS.Pagination.PerPage
           ? pageParam + POOLS.Pagination.PerPage
           : undefined
     };
   };
 
   const queryOptions = reactive({
-    getNextPageParam: (lastPage: PoolActivitiesQueryResponse) => lastPage.skip,
+    getNextPageParam: (lastPage: PoolSwapsQueryResponse) => lastPage.skip,
     ...options
   });
 
-  return useInfiniteQuery<PoolActivitiesQueryResponse>(
+  return useInfiniteQuery<PoolSwapsQueryResponse>(
     queryKey,
     queryFn,
     queryOptions
