@@ -10,7 +10,7 @@ import {
 } from '@balancer-labs/balancer-js';
 import Web3Service, { web3Service } from '../web3/web3.service';
 
-export class VaultService {
+export default class VaultService {
   abi: any;
 
   constructor(

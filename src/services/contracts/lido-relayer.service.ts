@@ -1,7 +1,7 @@
 import { LidoRelayer__factory } from '@balancer-labs/typechain';
-import { VaultService } from '@/services/contracts/vault.service';
+import VaultService from '@/services/contracts/vault.service';
 
-export class LidoRelayerService extends VaultService {
+export default class LidoRelayerService extends VaultService {
   constructor() {
     super();
     this.abi = LidoRelayer__factory.abi;
