@@ -13,6 +13,9 @@ interface Env {
   INFURA_PROJECT_ID: string;
   PORTIS_DAPP_ID: string;
   ENABLE_STABLE_POOLS: boolean;
+  TENDERLY_ACCOUNT_ID: string;
+  TENDERLY_PROJECT_ID: string;
+  TENDERLY_ACCESS_TOKEN: string;
 }
 
 export default class ConfigService {
@@ -33,7 +36,13 @@ export default class ConfigService {
         this.getNetworkConfig(networkId.value).keys.infura ||
         'MISSING_KEY',
       ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
-      PORTIS_DAPP_ID: process.env.VUE_APP_PORTIS_DAPP_ID || 'MISSING_KEY'
+      PORTIS_DAPP_ID: process.env.VUE_APP_PORTIS_DAPP_ID || 'MISSING_KEY',
+      TENDERLY_ACCOUNT_ID:
+        process.env.VUE_APP_TENDERLY_ACCOUNT_ID || 'MISSING_KEY',
+      TENDERLY_PROJECT_ID:
+        process.env.VUE_APP_TENDERLY_PROJECT_ID || 'MISSING_KEY',
+      TENDERLY_ACCESS_TOKEN:
+        process.env.VUE_APP_TENDERLY_ACCESS_TOKEN || 'MISSING_KEY'
     };
   }
 

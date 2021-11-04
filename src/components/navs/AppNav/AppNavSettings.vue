@@ -139,6 +139,18 @@
         @update:modelValue="setEthereumTxType"
       />
     </div>
+    <div v-if="simulationAvailable" class="px-4 mt-6">
+      <div class="flex items-baseline">
+        <span v-text="$t('simulation')" class="font-medium mb-2" />
+        <BalTooltip>
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="ml-1 text-gray-400 -mb-px" />
+          </template>
+          <div v-text="$t('ethereumTxTypeTooltip')" />
+        </BalTooltip>
+      </div>
+      <SimulationToggle />
+    </div>
     <div
       v-if="ENABLE_LEGACY_TRADE_INTERFACE && isGnosisSupportedNetwork"
       class="px-4 mt-6"
@@ -184,6 +196,7 @@ import {
 } from '@/services/web3/web3.plugin';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
 import AppSlippageForm from '@/components/forms/AppSlippageForm.vue';
+import SimulationToggle from '@/components/inputs/SimulationToggle.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -195,6 +208,7 @@ import {
 import { TradeInterface } from '@/store/modules/app';
 import useEthereumTxType from '@/composables/useEthereumTxType';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
+import useSimulation from '@/composables/useSimulation';
 
 const locales = {
   'en-US': 'English',
@@ -214,7 +228,8 @@ const locales = {
 export default defineComponent({
   components: {
     AppSlippageForm,
-    Avatar
+    Avatar,
+    SimulationToggle
   },
 
   setup() {
@@ -231,6 +246,7 @@ export default defineComponent({
       appNetworkConfig
     } = useWeb3();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
+    const { simulationAvailable } = useSimulation();
 
     // DATA
     const data = reactive({
@@ -316,7 +332,8 @@ export default defineComponent({
       explorer: explorerLinks,
       ethereumTxType,
       setEthereumTxType,
-      ethereumTxTypeOptions
+      ethereumTxTypeOptions,
+      simulationAvailable
     };
   }
 });
