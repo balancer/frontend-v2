@@ -3,7 +3,7 @@ import { configService } from '@/services/config/config.service';
 // Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Components
-import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm2.vue';
+import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';

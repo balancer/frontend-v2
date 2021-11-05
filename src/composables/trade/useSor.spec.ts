@@ -1,11 +1,13 @@
 import { ref, computed } from 'vue';
 import { mount } from 'vue-composable-tester';
+import { BigNumber } from '@ethersproject/bignumber';
+
 import useSor from '@/composables/trade/useSor';
 import { configService } from '@/services/config/config.service';
 import { mocked } from 'ts-jest/utils';
 import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import BigNumber from 'bignumber.js';
+import OldBigNumber from 'bignumber.js';
 
 jest.mock('vue-i18n');
 jest.mock('vuex');
@@ -71,7 +73,7 @@ describe('setSwapCost', () => {
   const sorManager = new SorManager(
     false,
     rpcProviderService.jsonProvider,
-    new BigNumber(1),
+    BigNumber.from(1),
     1,
     1,
     '1',
@@ -90,9 +92,9 @@ describe('setSwapCost', () => {
 
     const tokenAddress = '0x0';
     const tokenDecimals = 5;
-    const expectedTokenPriceInEth = new BigNumber(
+    const expectedTokenPriceInEth = new OldBigNumber(
       mockEthPrice / mockTokenPrice
-    );
+    ).toString();
 
     await sor.setSwapCost(tokenAddress, tokenDecimals, mockedSorManager as any);
     expect(mockedSorManager.setCostOutputToken).toBeCalledWith(
