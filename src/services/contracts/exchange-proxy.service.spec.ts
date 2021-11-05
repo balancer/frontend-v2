@@ -60,7 +60,8 @@ describe('exchange-proxy.service', () => {
         totalAmountIn,
         minTotalAmountOut
       );
-      const sendTransactionArgs = require('@/services/web3/web3.service').web3Service.sendTransaction.mock.calls[0];
+      const sendTransactionArgs = require('@/services/web3/web3.service')
+        .web3Service.sendTransaction.mock.calls[0];
       const transactionParams = sendTransactionArgs[3];
       expect(transactionParams[0]).toEqual(swaps);
       expect(transactionParams[1]).toEqual(tokens.USDC.address);
@@ -79,7 +80,8 @@ describe('exchange-proxy.service', () => {
         tokens.DAI.address,
         maxTotalAmountIn
       );
-      const sendTransactionArgs = require('@/services/web3/web3.service').web3Service.sendTransaction.mock.calls[0];
+      const sendTransactionArgs = require('@/services/web3/web3.service')
+        .web3Service.sendTransaction.mock.calls[0];
       const transactionParams = sendTransactionArgs[3];
       expect(transactionParams[0]).toEqual(swaps);
       expect(transactionParams[1]).toEqual(tokens.USDC.address);
