@@ -10,7 +10,7 @@ import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
 import { forChange } from '@/lib/utils';
-import { isManaged, isStableLike } from '../usePool';
+import { investableTokensFor, isManaged, isStableLike } from '../usePool';
 import { getAddress } from '@ethersproject/address';
 
 export default function usePoolQuery(
@@ -53,6 +53,7 @@ export default function usePoolQuery(
 
     await injectTokens([
       ...pool.tokensList,
+      ...investableTokensFor(pool),
       balancerSubgraphService.pools.addressFor(pool.id)
     ]);
     await forChange(dynamicDataLoading, false);

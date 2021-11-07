@@ -75,9 +75,12 @@ const {
   isMismatchedNetwork
 } = useWeb3();
 
-const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
-  toRef(props, 'pool')
-);
+const {
+  managedPoolWithTradingHalted,
+  isWethPool,
+  isStableLikePool,
+  investableTokens
+} = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
@@ -175,7 +178,7 @@ function setNativeAsset(to: NativeAsset): void {
  */
 onBeforeMount(() => {
   resetAmounts();
-  tokenAddresses.value = [...props.pool.tokenAddresses];
+  tokenAddresses.value = [...investableTokens.value];
   if (isWethPool.value) setNativeAssetByBalance();
 });
 

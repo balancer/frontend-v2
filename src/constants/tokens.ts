@@ -52,5 +52,14 @@ export const TOKENS = {
         stETH: 1.0352
       }
     }
+  },
+  Investable: {
+    '0x21ff756ca0cfcc5fff488ad67babadffee0c4149000000000000000000000240': {
+      Tokens: [
+        '0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115', // USDC
+        '0xcC08220af469192C53295fDd34CFb8DF29aa17AB', // USDT
+        '0x04DF6e4121c27713ED22341E7c7Df330F56f289B' // DAI
+      ]
+    }
   }
 };

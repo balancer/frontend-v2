@@ -3,7 +3,11 @@ import { PoolType, AnyPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
+import { TOKENS } from '@/constants/tokens';
 
+/**
+ * METHODS
+ */
 export function isStable(poolType: PoolType): boolean {
   return poolType === PoolType.Stable;
 }
@@ -13,7 +17,7 @@ export function isMetaStable(poolType: PoolType): boolean {
 }
 
 export function isPhantomStable(poolType: PoolType): boolean {
-  return poolType === PoolType.PhantomStable;
+  return poolType === PoolType.StablePhantom;
 }
 
 export function isStableLike(poolType: PoolType): boolean {
@@ -63,12 +67,29 @@ export function noInitLiquidity(pool: AnyPool): boolean {
   return bnum(pool?.onchain?.totalSupply || '0').eq(0);
 }
 
+export function investableTokensFor(pool: AnyPool): string[] {
+  if (isPhantomStable(pool.poolType)) {
+    return TOKENS.Investable[pool.id].Tokens || [];
+  } else {
+    return pool.tokenAddresses || [];
+  }
+}
+
+/**
+ * COMPOSABLE
+ */
 export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
+  /**
+   * COMPUTED
+   */
   const isStablePool = computed(
     (): boolean => !!pool.value && isStable(pool.value.poolType)
   );
   const isMetaStablePool = computed(
     (): boolean => !!pool.value && isMetaStable(pool.value.poolType)
+  );
+  const isPhantomStablePool = computed(
+    (): boolean => !!pool.value && isPhantomStable(pool.value.poolType)
   );
   const isStableLikePool = computed(
     (): boolean => !!pool.value && isStableLike(pool.value.poolType)
@@ -99,10 +120,17 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     () => !!pool.value && noInitLiquidity(pool.value)
   );
 
+  const investableTokens = computed(() => {
+    if (!pool.value) return [];
+
+    return investableTokensFor(pool.value);
+  });
+
   return {
     // computed
     isStablePool,
     isMetaStablePool,
+    isPhantomStablePool,
     isStableLikePool,
     isWeightedPool,
     isWeightedLikePool,
@@ -112,15 +140,18 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWethPool,
     isWstETHPool,
     noInitLiquidityPool,
+    investableTokens,
     // methods
     isStable,
     isMetaStable,
+    isPhantomStable,
     isStableLike,
     isWeighted,
     isLiquidityBootstrapping,
     isWeightedLike,
     isTradingHaltable,
     isWeth,
-    noInitLiquidity
+    noInitLiquidity,
+    investableTokensFor
   };
 }

@@ -10,7 +10,7 @@ export enum PoolType {
   Investment = 'Investment',
   Stable = 'Stable',
   MetaStable = 'MetaStable',
-  PhantomStable = 'PhantomStable',
+  StablePhantom = 'StablePhantom',
   LiquidityBootstrapping = 'LiquidityBootstrapping'
 }
 export type TimeTravelPeriod = '24h';

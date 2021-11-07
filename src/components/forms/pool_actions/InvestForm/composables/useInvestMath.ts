@@ -90,7 +90,9 @@ export default function useInvestFormMath(
     fNum(fiatTotal.value, currency.value)
   );
 
-  const hasAmounts = computed(() => bnum(fiatTotal.value).gt(0));
+  const hasAmounts = computed(() =>
+    fullAmounts.value.some(amount => bnum(amount).gt(0))
+  );
 
   const priceImpact = computed((): number => {
     if (!hasAmounts.value) return 0;
