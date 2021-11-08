@@ -1,4 +1,4 @@
-import { configService } from '@/services/config/config.service'; 
+import { configService } from '@/services/config/config.service';
 import { BigNumberish } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 

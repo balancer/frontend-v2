@@ -215,7 +215,7 @@ describe('swap.service', () => {
         expect(singleSwapArg.poolId).toEqual(PoolIdETHstETH);
         expect(singleSwapArg.kind).toEqual(SwapKind.GivenIn);
         expect(singleSwapArg.assetIn).toEqual(tokens.ETH.address);
-        expect(singleSwapArg.assetOut).toEqual(tokens.wstETH.address); 
+        expect(singleSwapArg.assetOut).toEqual(tokens.wstETH.address);
         expect(singleSwapArg.amount).toEqual(amount);
         expect(singleSwapArg.userData).toEqual('');
 
