@@ -64,16 +64,16 @@
           v-if="!appLoading && missingPrices"
           type="warning"
           :title="$t('noPriceInfo')"
-          size="sm"
           class="mt-2"
+          block
         />
         <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"
           :title="$t('noInitLiquidity')"
           :description="$t('noInitLiquidityDetail')"
-          size="sm"
           class="mt-2"
+          block
         />
       </div>
 
@@ -98,8 +98,11 @@
           </div>
 
           <div>
-            <h4 v-text="$t('poolTransactions')" class="px-4 lg:px-0 mb-2" />
-            <PoolActivitiesCard :pool="pool" :loading="loadingPool" />
+            <h4
+              v-text="$t('poolTransactions.title')"
+              class="px-4 lg:px-0 mb-2"
+            />
+            <PoolTransactionsCard :pool="pool" :loading="loadingPool" />
           </div>
         </div>
       </div>
@@ -108,13 +111,22 @@
         v-if="!isLiquidityBootstrappingPool"
         class="order-1 lg:order-2 px-1 lg:px-0"
       >
-        <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-96" />
+        <BalLoadingBlock
+          v-if="loadingPool"
+          class="pool-actions-card h-60 mb-4"
+        />
+        <MyPoolBalancesCard
+          v-else-if="!noInitLiquidity"
+          :pool="pool"
+          :missingPrices="missingPrices"
+          class="mb-4"
+        />
+
+        <BalLoadingBlock v-if="loadingPool" class="pool-actions-card h-40" />
         <PoolActionsCard
           v-else-if="!noInitLiquidity"
           :pool="pool"
-          :missing-prices="missingPrices"
-          @on-tx="onNewTx"
-          class="pool-actions-card"
+          :missingPrices="missingPrices"
         />
       </div>
       <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
@@ -148,7 +160,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
-import * as PoolPageComponents from '@/components/pages/pool';
+import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 import { useI18n } from 'vue-i18n';
@@ -240,12 +252,14 @@ export default defineComponent({
       }
     });
 
-    const loadingPool = computed(
+    const poolQueryLoading = computed(
       () =>
         poolQuery.isLoading.value ||
         poolQuery.isIdle.value ||
         poolQuery.error.value
     );
+
+    const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
 
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
     const historicalPrices = computed(

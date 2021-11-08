@@ -20,6 +20,9 @@ import useConfig from '@/composables/useConfig';
 import useWithdrawalState from '../../../composables/useWithdrawalState';
 // Services
 import PoolExchange from '@/services/pool/exchange/exchange.service';
+import useTranasactionErrors, {
+  TransactionError
+} from '@/composables/useTransactionErrors';
 
 /**
  * TYPES
@@ -42,6 +45,7 @@ type WithdrawalState = {
   confirming: boolean;
   confirmed: boolean;
   confirmedAt: string;
+  error?: TransactionError | null;
   receipt?: TransactionReceipt;
 };
 
@@ -74,6 +78,7 @@ const { networkConfig } = useConfig();
 const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { parseError } = useTranasactionErrors();
 
 const { tokenOutIndex, tokensOut } = useWithdrawalState(toRef(props, 'pool'));
 
@@ -186,6 +191,7 @@ async function submit(): Promise<void> {
   } catch (error) {
     withdrawalState.init = false;
     withdrawalState.confirming = false;
+    withdrawalState.error = parseError(error);
     console.error(error);
   }
 }
@@ -193,6 +199,14 @@ async function submit(): Promise<void> {
 
 <template>
   <div>
+    <BalAlert
+      v-if="withdrawalState.error"
+      type="error"
+      :title="withdrawalState.error.title"
+      :description="withdrawalState.error.description"
+      block
+      class="mb-4"
+    />
     <BalHorizSteps
       v-if="actions.length > 1 && !withdrawalState.confirmed"
       :steps="steps"

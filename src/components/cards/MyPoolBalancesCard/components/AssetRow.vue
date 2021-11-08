@@ -43,7 +43,7 @@ const fiatLabel = computed(() => {
       <span>
         {{ token.symbol }}
       </span>
-      <span v-if="token.name !== token.symbol" class="text-sm text-gray-400">
+      <span v-if="token.name !== token.symbol" class="text-sm text-gray-500">
         {{ token.name }}
       </span>
     </div>
@@ -52,7 +52,7 @@ const fiatLabel = computed(() => {
       <span>
         {{ balanceLabel }}
       </span>
-      <span class="text-sm text-gray-400">
+      <span class="text-sm text-gray-500">
         {{ fiatLabel }}
       </span>
     </div>

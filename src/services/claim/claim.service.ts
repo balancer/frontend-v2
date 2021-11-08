@@ -140,7 +140,7 @@ export class ClaimService {
               .find(liquidityProvider => Number(liquidityProvider.velocity) > 0)
               ?.velocity.toString() ?? '0';
 
-          if (Number(velocity) > 0) {
+          if (Number(rewards) > 0) {
             multiTokenCurrentRewardsEstimate.push({
               rewards,
               velocity,
@@ -262,12 +262,14 @@ export class ClaimService {
     ]);
 
     try {
-      const result = (await multicall(
+      const result = (await multicall<boolean | string>(
         String(networkId.value),
         rpcProviderService.jsonProvider,
         merkleOrchardAbi,
-        [...claimStatusCalls, ...rootCalls]
-      )) as [boolean | string][];
+        [...claimStatusCalls, ...rootCalls],
+        {},
+        true
+      )) as (boolean | string)[];
 
       if (result.length > 0) {
         const chunks = chunk(flatten(result), totalWeeks);

@@ -3,7 +3,7 @@ import { configService } from '@/services/config/config.service';
 // Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 // Components
-import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm2.vue';
+import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -12,12 +12,12 @@ import TradeSettingsPopover, {
  * STATE
  */
 const { network } = configService;
-const { pool, loadingPool } = usePoolTransfers();
+const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 </script>
 
 <template>
   <div>
-    <BalLoadingBlock v-if="loadingPool" class="h-96" />
+    <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-96" />
     <BalCard v-else shadow="xl" exposeOverflow noBorder>
       <template #header>
         <div class="w-full">

@@ -96,6 +96,7 @@ export default class TokenListService {
 
   private async getByEns(ensName: string): Promise<TokenList> {
     const resolver = await this.provider.getResolver(ensName);
+    if (resolver === null) throw new Error('Could not resolve ENS');
     const [, ipfsHash] = (await resolver.getContentHash()).split('://');
     return await this.ipfsService.get<TokenList>(ipfsHash);
   }
