@@ -53,7 +53,7 @@ describe('exchange-proxy.service', () => {
     it('Should call the contract with correct params', async () => {
       const totalAmountIn = '10';
       const minTotalAmountOut = '10';
-      const result = await exchangeProxyService.multihopBatchSwapExactIn(
+      await exchangeProxyService.multihopBatchSwapExactIn(
         swaps,
         tokens.USDC.address,
         tokens.DAI.address,
@@ -74,7 +74,7 @@ describe('exchange-proxy.service', () => {
   describe('multihopBatchSwapExactOut', () => {
     it('Should call the contract with correct params', async () => {
       const maxTotalAmountIn = '10';
-      const result = await exchangeProxyService.multihopBatchSwapExactOut(
+      await exchangeProxyService.multihopBatchSwapExactOut(
         swaps,
         tokens.USDC.address,
         tokens.DAI.address,

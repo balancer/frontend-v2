@@ -1,12 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Swap } from '@balancer-labs/sor/dist/types';
 import { SwapV2 } from '@balancer-labs/sor2';
-import SwapService, {
-  Address,
-  SwapTokenType,
-  SwapToken,
-  swapService
-} from './swap.service';
+import SwapService, { SwapTokenType, SwapToken } from './swap.service';
 import { configService } from '@/services/config/config.service';
 import {
   FundManagement,
@@ -87,7 +82,7 @@ describe('swap.service', () => {
     it('Should call exchange-proxy when swapping with exact inputs', async () => {
       tokens.USDC.type = SwapTokenType.fixed;
       tokens.DAI.type = SwapTokenType.min;
-      const result = await service.batchSwapV1(tokens.USDC, tokens.DAI, swaps);
+      await service.batchSwapV1(tokens.USDC, tokens.DAI, swaps);
       const exchangeProxyArgs = require('@/services/contracts/exchange-proxy.service')
         .exchangeProxyService.multihopBatchSwap.mock.calls[0];
       expect(exchangeProxyArgs[0]).toEqual(swaps);
@@ -99,7 +94,7 @@ describe('swap.service', () => {
     it('Should call exchange-proxy when swapping with exact outputs', async () => {
       tokens.USDC.type = SwapTokenType.max;
       tokens.DAI.type = SwapTokenType.fixed;
-      const result = await service.batchSwapV1(tokens.USDC, tokens.DAI, swaps);
+      await service.batchSwapV1(tokens.USDC, tokens.DAI, swaps);
       const exchangeProxyArgs = require('@/services/contracts/exchange-proxy.service')
         .exchangeProxyService.multihopBatchSwap.mock.calls[0];
       expect(exchangeProxyArgs[0]).toEqual(swaps);
@@ -123,7 +118,7 @@ describe('swap.service', () => {
           }
         ]
       ];
-      const result = await service.batchSwapV1(tokens.ETH, tokens.USDC, swaps);
+      await service.batchSwapV1(tokens.ETH, tokens.USDC, swaps);
       const exchangeProxyArgs = require('@/services/contracts/exchange-proxy.service')
         .exchangeProxyService.multihopBatchSwap.mock.calls[0];
       expect(exchangeProxyArgs[0]).toEqual(swaps);
@@ -170,7 +165,7 @@ describe('swap.service', () => {
       it('Should call vault.swap when swapping a single token for another', async () => {
         tokens.USDC.type = SwapTokenType.fixed;
         tokens.DAI.type = SwapTokenType.min;
-        const result = await service.batchSwapV2(
+        await service.batchSwapV2(
           tokens.USDC,
           tokens.DAI,
           swaps,
@@ -209,12 +204,10 @@ describe('swap.service', () => {
             userData: ''
           }
         ];
-        const result = await service.batchSwapV2(
-          tokens.ETH,
-          tokens.stETH,
-          swaps,
-          [tokens.ETH.address, tokens.stETH.address]
-        );
+        await service.batchSwapV2(tokens.ETH, tokens.stETH, swaps, [
+          tokens.ETH.address,
+          tokens.stETH.address
+        ]);
         const lidoRelayerSwapArgs = require('@/services/contracts/lido-relayer.service')
           .lidoRelayerService.swap.mock.calls[0];
         const singleSwapArg: SingleSwap = lidoRelayerSwapArgs[0];
@@ -263,7 +256,7 @@ describe('swap.service', () => {
       it('Should call vault.batchSwap when swapping multiple tokens through multiple pools', async () => {
         tokens.USDC.type = SwapTokenType.fixed;
         tokens.DAI.type = SwapTokenType.min;
-        const result = await service.batchSwapV2(
+        await service.batchSwapV2(
           tokens.ETH,
           tokens.DAI,
           swaps,
@@ -332,7 +325,7 @@ describe('swap.service', () => {
       it('Should call lido-relayer.batchSwap when swapping stETH', async () => {
         tokens.USDC.type = SwapTokenType.fixed;
         tokens.stETH.type = SwapTokenType.min;
-        const result = await service.batchSwapV2(
+        await service.batchSwapV2(
           tokens.USDC,
           tokens.stETH,
           swaps,
