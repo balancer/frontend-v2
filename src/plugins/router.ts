@@ -35,18 +35,6 @@ const routes: RouteRecordRaw[] = [
     component: PoolPage
   },
   {
-    path: '/pool/:id/invest',
-    name: 'invest',
-    component: PoolInvestPage,
-    meta: { layout: 'PoolTransferLayout' }
-  },
-  {
-    path: '/pool/:id/withdraw',
-    name: 'withdraw',
-    component: PoolWithdrawPage,
-    meta: { layout: 'PoolTransferLayout' }
-  },
-  {
     path: '/liquidity-mining',
     name: 'liquidity-mining',
     component: LiquidityMiningPage
@@ -58,13 +46,23 @@ const routes: RouteRecordRaw[] = [
   }
 ];
 
-/**
- * DEV/STAGING ONLY ROUTES
- */
+// Temp solution to limit new invest flow to staging and dev apps.
 if (
   ['development', 'staging'].includes(process.env.VUE_APP_ENV || 'development')
 ) {
-  // routes.push();
+  routes.push({
+    path: '/pool/:id/invest',
+    name: 'invest',
+    component: PoolInvestPage,
+    meta: { layout: 'PoolTransferLayout' }
+  });
+
+  routes.push({
+    path: '/pool/:id/withdraw',
+    name: 'withdraw',
+    component: PoolWithdrawPage,
+    meta: { layout: 'PoolTransferLayout' }
+  });
 }
 
 const router = createRouter({

@@ -1,6 +1,5 @@
 import { computed, onMounted, ref, Ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { parseFixed } from '@ethersproject/bignumber';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import { GP_SUPPORTED_NETWORKS } from '@/services/gnosis/constants';
@@ -10,7 +9,7 @@ import useTokens from '../useTokens';
 import useUserSettings from '../useUserSettings';
 import { networkId } from '../useNetwork';
 
-import { bnum, lsGet, lsSet } from '@/lib/utils';
+import { bnum, lsGet, lsSet, scale } from '@/lib/utils';
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 
 import LS_KEYS from '@/constants/local-storage.keys';
@@ -62,11 +61,11 @@ export default function useTrading(
   );
 
   const tokenInAmountScaled = computed(() =>
-    parseFixed(tokenInAmountInput.value, tokenIn.value.decimals)
+    scale(bnum(tokenInAmountInput.value), tokenIn.value.decimals)
   );
 
   const tokenOutAmountScaled = computed(() =>
-    parseFixed(tokenOutAmountInput.value, tokenOut.value.decimals)
+    scale(bnum(tokenOutAmountInput.value), tokenOut.value.decimals)
   );
 
   const requiresTokenApproval = computed(() => {

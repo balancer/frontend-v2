@@ -1,8 +1,8 @@
 import Calculator from './calculator.sevice';
 import { PiOptions } from './calculator.sevice';
-import { formatUnits, parseUnits } from '@ethersproject/units';
+import { parseUnits, formatUnits } from '@ethersproject/units';
 import { bnum } from '@/lib/utils';
-import OldBigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js';
 
 import * as SDK from '@georgeroman/balancer-v2-pools';
 import { weightedBPTForTokensZeroPriceImpact as _bptForTokensZeroPriceImpact } from '@balancer-labs/sor2';
@@ -14,7 +14,7 @@ export default class Weighted {
     this.calc = calculator;
   }
 
-  public exactTokensInForBPTOut(tokenAmounts: string[]): OldBigNumber {
+  public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
     const balances = this.calc.poolTokenBalances.map(b => bnum(b.toString()));
     const weights = this.calc.poolTokenWeights.map(w => bnum(w.toString()));
     const denormAmounts = this.calc.denormAmounts(
@@ -32,7 +32,7 @@ export default class Weighted {
     );
   }
 
-  public bptInForExactTokensOut(tokenAmounts: string[]): OldBigNumber {
+  public bptInForExactTokensOut(tokenAmounts: string[]): BigNumber {
     const balances = this.calc.poolTokenBalances.map(b => bnum(b.toString()));
     const weights = this.calc.poolTokenWeights.map(w => bnum(w.toString()));
     const denormAmounts = this.calc.denormAmounts(
@@ -50,10 +50,7 @@ export default class Weighted {
     );
   }
 
-  public bptInForExactTokenOut(
-    amount: string,
-    tokenIndex: number
-  ): OldBigNumber {
+  public bptInForExactTokenOut(amount: string, tokenIndex: number): BigNumber {
     const tokenBalance = bnum(
       this.calc.poolTokenBalances[tokenIndex].toString()
     );
@@ -78,7 +75,7 @@ export default class Weighted {
   public exactBPTInForTokenOut(
     bptAmount: string,
     tokenIndex: number
-  ): OldBigNumber {
+  ): BigNumber {
     const tokenBalance = bnum(
       this.calc.poolTokenBalances[tokenIndex].toString()
     );
@@ -98,7 +95,7 @@ export default class Weighted {
     );
   }
 
-  public priceImpact(tokenAmounts: string[], opts: PiOptions): OldBigNumber {
+  public priceImpact(tokenAmounts: string[], opts: PiOptions): BigNumber {
     let bptAmount, bptZeroPriceImpact;
 
     if (this.calc.action === 'join') {
@@ -137,20 +134,19 @@ export default class Weighted {
     }
   }
 
-  public bptForTokensZeroPriceImpact(tokenAmounts: string[]): OldBigNumber {
+  public bptForTokensZeroPriceImpact(tokenAmounts: string[]): BigNumber {
     const denormAmounts = this.calc.denormAmounts(
       tokenAmounts,
       this.calc.poolTokenDecimals
     );
+    const amounts = denormAmounts.map(a => bnum(a.toString()));
 
-    return bnum(
-      _bptForTokensZeroPriceImpact(
-        this.calc.poolTokenBalances,
-        this.calc.poolTokenDecimals,
-        this.calc.poolTokenWeights,
-        denormAmounts,
-        this.calc.poolTotalSupply
-      ).toString()
+    return _bptForTokensZeroPriceImpact(
+      this.calc.poolTokenBalances.map(b => bnum(b.toString())),
+      this.calc.poolTokenDecimals,
+      this.calc.poolTokenWeights.map(w => bnum(w.toString())),
+      amounts,
+      bnum(this.calc.poolTotalSupply.toString())
     );
   }
 }

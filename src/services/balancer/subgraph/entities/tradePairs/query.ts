@@ -3,13 +3,13 @@ import { merge } from 'lodash';
 const defaultArgs = {
   first: 1000,
   where: {
-    totalSwapVolume_gt: 0
+    swapVolume_gt: 0
   }
 };
 
 const defaultAttrs = {
-  totalSwapFee: true,
-  totalSwapVolume: true,
+  swapFee: true,
+  swapVolume: true,
   pair: {
     token0: {
       address: true,

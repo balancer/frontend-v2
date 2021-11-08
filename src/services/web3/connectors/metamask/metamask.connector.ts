@@ -1,4 +1,3 @@
-import { MetamaskError } from '@/types';
 import { Connector } from '../connector';
 export class MetamaskConnector extends Connector {
   id = 'injected';
@@ -23,7 +22,7 @@ export class MetamaskConnector extends Connector {
           chainId = await provider.request({ method: 'eth_chainId' });
         }
       } catch (err) {
-        if ((err as MetamaskError).code === 4001) {
+        if (err.code === 4001) {
           // EIP-1193 userRejectedRequest error
           // If this happens, the user rejected the connection request.
           console.log('Please connect to MetaMask.');

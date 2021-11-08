@@ -13,7 +13,6 @@ import { defineComponent, computed } from 'vue';
 export default defineComponent({
   name: 'BalLink',
 
-  inheritAttrs: false,
   props: {
     external: {
       type: Boolean,

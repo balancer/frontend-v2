@@ -43,7 +43,9 @@ const tokensWithBalance = computed(() => {
     :hFull="upToLargeBreakpoint"
     shadow="false"
   >
-    <div class="flex flex-col w-full h-full bg-transparent">
+    <div
+      class="flex flex-col bg-white w-full h-full bg-transparent lg:bg-white"
+    >
       <div class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:shadow-lg">
         <h6 v-if="!upToLargeBreakpoint">{{ $t('myWallet2') }}</h6>
         <div
@@ -59,7 +61,7 @@ const tokensWithBalance = computed(() => {
         <BalAssetSet
           v-else-if="isWalletReady"
           @click="setTokenInAddress"
-          :width="275"
+          :width="230"
           wrap
           :size="32"
           :addresses="tokensWithBalance"

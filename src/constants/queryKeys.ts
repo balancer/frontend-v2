@@ -1,5 +1,4 @@
 import { Network } from '@/composables/useNetwork';
-import { TokenInfo } from '@/types/TokenList';
 import { Ref } from 'vue';
 export const POOLS_ROOT_KEY = 'pools';
 export const BALANCES_ROOT_KEY = 'accountBalances';
@@ -33,12 +32,7 @@ const QUERY_KEYS = {
       networkId: Ref<Network>,
       id: string,
       account: Ref<string>
-    ) => [POOLS_ROOT_KEY, 'activities', 'user', { networkId, account, id }],
-    Swaps: (networkId: Ref<Network>, id: string) => [
-      POOLS_ROOT_KEY,
-      'swaps',
-      { networkId, id }
-    ]
+    ) => [POOLS_ROOT_KEY, 'activities', 'user', { networkId, account, id }]
   },
   TokenLists: {
     All: (networkId: Ref<Network>) => ['tokenLists', 'all', { networkId }]
@@ -58,19 +52,10 @@ const QUERY_KEYS = {
       tokenInAddress: Ref<string>,
       tokenOutAddress: Ref<string>,
       activeTimespan: Ref<{ option: string; value: number }>,
-      userNetworkId: Ref<number>,
-      nativeAsset: TokenInfo,
-      wrappedNativeAsset: Ref<TokenInfo>
+      userNetworkId: Ref<number>
     ) => [
       'pairPriceData',
-      {
-        tokenInAddress,
-        tokenOutAddress,
-        activeTimespan,
-        userNetworkId,
-        nativeAsset,
-        wrappedNativeAsset
-      }
+      { tokenInAddress, tokenOutAddress, activeTimespan, userNetworkId }
     ],
     Prices: (networkId: Ref<Network>, tokens: Ref<string[]>) => [
       'tokens',

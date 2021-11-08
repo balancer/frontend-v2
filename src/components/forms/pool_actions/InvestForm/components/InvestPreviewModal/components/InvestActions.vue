@@ -22,9 +22,6 @@ import useTokenApprovals, {
   ApprovalState
 } from '@/composables/pools/useTokenApprovals';
 import useConfig from '@/composables/useConfig';
-import useTranasactionErrors, {
-  TransactionError
-} from '@/composables/useTransactionErrors';
 
 /**
  * TYPES
@@ -48,7 +45,6 @@ type InvestmentState = {
   confirming: boolean;
   confirmed: boolean;
   confirmedAt: string;
-  error?: TransactionError | null;
   receipt?: TransactionReceipt;
 };
 
@@ -82,11 +78,10 @@ const { getToken } = useTokens();
 const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { parseError } = useTranasactionErrors();
 const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.math);
 
 const { requiredApprovalState, approveToken } = useTokenApprovals(
-  props.tokenAddresses,
+  props.pool.tokenAddresses,
   fullAmounts
 );
 
@@ -233,7 +228,6 @@ async function submit(): Promise<void> {
   } catch (error) {
     investmentState.init = false;
     investmentState.confirming = false;
-    investmentState.error = parseError(error);
     console.error(error);
   }
 }
@@ -241,14 +235,6 @@ async function submit(): Promise<void> {
 
 <template>
   <div>
-    <BalAlert
-      v-if="investmentState.error"
-      type="error"
-      :title="investmentState.error.title"
-      :description="investmentState.error.description"
-      block
-      class="mb-4"
-    />
     <BalHorizSteps
       v-if="actions.length > 1 && !investmentState.confirmed"
       :steps="steps"

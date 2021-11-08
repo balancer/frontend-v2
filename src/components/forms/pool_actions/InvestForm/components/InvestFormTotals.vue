@@ -30,7 +30,6 @@ const { isWalletReady } = useWeb3();
 const {
   fiatTotal,
   hasNoBalances,
-  hasAllTokens,
   priceImpact,
   highPriceImpact,
   maximized,
@@ -94,7 +93,10 @@ const optimizeBtnClasses = computed(() => ({
           </BalTooltip>
         </div>
 
-        <div v-if="isWalletReady && hasAllTokens" class="text-sm font-semibold">
+        <div
+          v-if="isWalletReady && !hasNoBalances"
+          class="text-sm font-semibold"
+        >
           <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
             {{ $t('optimized') }}
           </span>
@@ -117,7 +119,7 @@ const optimizeBtnClasses = computed(() => ({
 }
 
 .data-table-row {
-  @apply grid grid-cols-4 items-center;
+  @apply grid grid-cols-4;
   @apply divide-x dark:divide-gray-900;
   @apply dark:bg-gray-800;
 }

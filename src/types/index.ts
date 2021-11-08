@@ -33,7 +33,3 @@ export interface HtmlInputEvent {
   key: string;
   preventDefault();
 }
-
-export interface MetamaskError extends Error {
-  code: number | string;
-}

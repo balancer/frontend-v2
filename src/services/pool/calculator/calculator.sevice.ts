@@ -1,6 +1,6 @@
+import BigNumber from 'bignumber.js';
 import { parseUnits, formatUnits } from '@ethersproject/units';
-import OldBigNumber from 'bignumber.js';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { BigNumberish } from '@ethersproject/bignumber';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import Weighted from './weighted';
 import Stable from './stable';
@@ -10,7 +10,6 @@ import { Ref, ref } from 'vue';
 import { isStable, isStableLike } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
-import { ETH_TX_BUFFER } from '@/constants/transactions';
 
 interface Amounts {
   send: string[];
@@ -47,14 +46,14 @@ export default class CalculatorService {
   public priceImpact(
     tokenAmounts: string[],
     opts: PiOptions = { exactOut: false, tokenIndex: 0 }
-  ): OldBigNumber {
+  ): BigNumber {
     if (this.isStableLikePool) {
       return this.stable.priceImpact(tokenAmounts, opts);
     }
     return this.weighted.priceImpact(tokenAmounts, opts);
   }
 
-  public exactTokensInForBPTOut(tokenAmounts: string[]): OldBigNumber {
+  public exactTokensInForBPTOut(tokenAmounts: string[]): BigNumber {
     if (this.isStableLikePool) {
       return this.stable.exactTokensInForBPTOut(tokenAmounts);
     }
@@ -64,17 +63,14 @@ export default class CalculatorService {
   public exactBPTInForTokenOut(
     bptAmount: string,
     tokenIndex: number
-  ): OldBigNumber {
+  ): BigNumber {
     if (this.isStableLikePool) {
       return this.stable.exactBPTInForTokenOut(bptAmount, tokenIndex);
     }
     return this.weighted.exactBPTInForTokenOut(bptAmount, tokenIndex);
   }
 
-  public bptInForExactTokenOut(
-    amount: string,
-    tokenIndex: number
-  ): OldBigNumber {
+  public bptInForExactTokenOut(amount: string, tokenIndex: number): BigNumber {
     if (this.isStableLikePool) {
       return this.stable.bptInForExactTokenOut(amount, tokenIndex);
     }
@@ -91,14 +87,7 @@ export default class CalculatorService {
 
     this.tokenAddresses.forEach((token, tokenIndex) => {
       let hasBalance = true;
-      let balance;
-      if (token === this.config.network.nativeAsset.address) {
-        balance = bnum(this.balances.value[token])
-          .minus(ETH_TX_BUFFER)
-          .toString();
-      } else {
-        balance = this.balances.value[token] || '0';
-      }
+      const balance = this.balances.value[token] || '0';
       const amounts = this.propAmountsGiven(balance, tokenIndex, type);
 
       amounts.send.forEach((amount, amountIndex) => {
@@ -158,7 +147,7 @@ export default class CalculatorService {
     return amounts;
   }
 
-  public denormAmounts(amounts: string[], decimals: number[]): BigNumber[] {
+  public denormAmounts(amounts: string[], decimals: number[]): BigNumberish[] {
     return amounts.map((a, i) => parseUnits(a, decimals[i]));
   }
 
@@ -181,7 +170,7 @@ export default class CalculatorService {
     return this.pool.value.tokenAddresses;
   }
 
-  public get poolTokenBalances(): BigNumber[] {
+  public get poolTokenBalances(): BigNumberish[] {
     const normalizedBalances = Object.values(
       this.pool.value.onchain.tokens
     ).map(t => t.balance);
@@ -194,18 +183,18 @@ export default class CalculatorService {
     return Object.values(this.pool.value.onchain.tokens).map(t => t.decimals);
   }
 
-  public get poolTokenWeights(): BigNumber[] {
+  public get poolTokenWeights(): BigNumberish[] {
     const normalizedWeights = Object.values(this.pool.value.onchain.tokens).map(
       t => t.weight
     );
     return normalizedWeights.map(weight => parseUnits(weight.toString(), 18));
   }
 
-  public get poolTotalSupply(): BigNumber {
+  public get poolTotalSupply(): BigNumberish {
     return parseUnits(this.pool.value.onchain.totalSupply, this.poolDecimals);
   }
 
-  public get poolSwapFee(): BigNumber {
+  public get poolSwapFee(): BigNumberish {
     return parseUnits(this.pool.value.onchain.swapFee, 18);
   }
 

@@ -1,5 +1,5 @@
 import { computed, Ref, ref, watch } from 'vue';
-import { bnum, forChange } from '@/lib/utils';
+import { bnum } from '@/lib/utils';
 import { formatUnits } from '@ethersproject/units';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -10,7 +10,6 @@ import useUserSettings from '@/composables/useUserSettings';
 import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
-import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
@@ -33,15 +32,14 @@ export type WithdrawMathResponse = {
   exactOut: Ref<boolean>;
   singleAssetMaxOut: Ref<boolean>;
   tokenOutPoolBalance: Ref<string>;
-  initMath: () => void;
   resetMath: () => void;
 };
 
 export default function useWithdrawMath(
   pool: Ref<FullPool>,
-  isProportional: Ref<boolean> = ref(true),
-  tokenOut: Ref<string> = ref(''),
-  tokenOutIndex: Ref<number> = ref(0)
+  isProportional: Ref<boolean>,
+  tokenOut: Ref<string>,
+  tokenOutIndex: Ref<number>
 ): WithdrawMathResponse {
   /**
    * STATE
@@ -52,15 +50,8 @@ export default function useWithdrawMath(
   /**
    * COMPOSABLES
    */
-  const { isWalletReady, account } = useWeb3();
   const { toFiat, fNum } = useNumbers();
-  const {
-    tokens: allTokens,
-    balances,
-    balanceFor,
-    getToken,
-    dynamicDataLoading
-  } = useTokens();
+  const { tokens: allTokens, balances, balanceFor, getToken } = useTokens();
   const { minusSlippage, addSlippage } = useSlippage();
   const { currency } = useUserSettings();
 
@@ -199,12 +190,8 @@ export default function useWithdrawMath(
   /**
    * METHODS
    */
-  function initMath(): void {
-    propBptIn.value = bptBalance.value;
-  }
-
   function resetMath(): void {
-    initMath();
+    propBptIn.value = bptBalance.value;
     tokenOutAmount.value = '';
   }
 
@@ -212,12 +199,6 @@ export default function useWithdrawMath(
    * WATCHERS
    */
   watch(tokenOut, () => (tokenOutAmount.value = ''));
-
-  watch(isWalletReady, async () => {
-    await forChange(dynamicDataLoading, false);
-    initMath();
-  });
-  watch(account, () => initMath());
 
   return {
     // computed
@@ -239,7 +220,6 @@ export default function useWithdrawMath(
     singleAssetMaxOut,
     tokenOutPoolBalance,
     // methods
-    initMath,
     resetMath
   };
 }

@@ -10,7 +10,6 @@ import TokenAmounts from './components/TokenAmounts.vue';
 import InvestActions from './components/InvestActions.vue';
 import { InvestMathResponse } from '../../composables/useInvestMath';
 import { useI18n } from 'vue-i18n';
-import useInvestState from '../../composables/useInvestState';
 
 /**
  * TYPES
@@ -46,7 +45,6 @@ const { t } = useI18n();
 const { getToken } = useTokens();
 const { toFiat } = useNumbers();
 const { fullAmounts, priceImpact } = toRefs(props.math);
-const { resetAmounts } = useInvestState();
 
 /**
  * COMPUTED
@@ -103,17 +101,10 @@ const fiatTotal = computed((): string =>
 function hasAmount(index: number): boolean {
   return bnum(fullAmounts.value[index]).gt(0);
 }
-
-function handleClose(): void {
-  if (investmentConfirmed.value) {
-    resetAmounts();
-  }
-  emit('close');
-}
 </script>
 
 <template>
-  <BalModal show :fireworks="investmentConfirmed" @close="handleClose">
+  <BalModal show :fireworks="investmentConfirmed" @close="emit('close')">
     <template v-slot:header>
       <div class="flex items-center">
         <BalCircle

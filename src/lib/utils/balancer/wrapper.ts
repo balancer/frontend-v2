@@ -1,5 +1,6 @@
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumberish } from 'ethers';
+import { BigNumber } from 'bignumber.js';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import configs from '@/lib/config';
 import { configService } from '@/services/config/config.service';
@@ -37,11 +38,11 @@ export const getWrapOutput = (
   wrapper: string,
   wrapType: WrapType,
   wrapAmount: BigNumberish
-): BigNumber => {
+) => {
   if (wrapType === WrapType.NonWrap) throw new Error('Invalid wrap type');
   const { weth, wstETH } = configService.network.addresses;
 
-  if (wrapper === weth) return BigNumber.from(wrapAmount);
+  if (wrapper === weth) return wrapAmount;
   if (wrapper === wstETH) {
     return wrapType === WrapType.Wrap
       ? getWstETHByStETH(wrapAmount)
@@ -99,7 +100,7 @@ const wrapNative = async (
     ['function deposit() payable'],
     'deposit',
     [],
-    { value: amount }
+    { value: amount.toString() }
   );
 
 const unwrapNative = (
@@ -112,7 +113,7 @@ const unwrapNative = (
     configs[network].addresses.weth,
     ['function withdraw(uint256 wad)'],
     'withdraw',
-    [amount]
+    [amount.toString()]
   );
 
 const wrapLido = async (
@@ -125,7 +126,7 @@ const wrapLido = async (
     configs[network].addresses.wstETH,
     ['function wrap(uint256 _stETHAmount) returns (uint256)'],
     'wrap',
-    [amount]
+    [amount.toString()]
   );
 
 const unwrapLido = async (
@@ -138,5 +139,5 @@ const unwrapLido = async (
     configs[network].addresses.wstETH,
     ['function unwrap(uint256 _wstETHAmount) returns (uint256)'],
     'unwrap',
-    [amount]
+    [amount.toString()]
   );

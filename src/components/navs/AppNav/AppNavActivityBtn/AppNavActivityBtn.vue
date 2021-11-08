@@ -126,7 +126,7 @@ export default defineComponent({
         addNotification({
           type: 'error',
           title: t('errorCancellingOrder'),
-          message: (e as Error).message
+          message: e.message
         });
       }
     }

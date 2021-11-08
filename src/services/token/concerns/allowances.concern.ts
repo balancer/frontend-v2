@@ -1,7 +1,7 @@
 import TokenService from '../token.service';
 import { default as erc20Abi } from '@/lib/abi/ERC20.json';
 import { multicall } from '@/lib/utils/balancer/contract';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { TokenInfoMap } from '@/types/TokenList';
@@ -56,23 +56,21 @@ export default class AllowancesConcern {
     const network = this.service.configService.network.key;
     const provider = this.service.rpcProviderService.jsonProvider;
 
-    const allowances: BigNumber[] = (
-      await multicall<BigNumberish>(
-        network,
-        provider,
-        erc20Abi,
-        tokenAddresses.map(token => [
-          token,
-          'allowance',
-          [account, contractAddress]
-        ])
-      )
-    ).map(balance => BigNumber.from(balance ?? '0')); // If we fail to read a token's allowance, treat it as zero;
+    const allowances: [BigNumber][] = await multicall(
+      network,
+      provider,
+      erc20Abi,
+      tokenAddresses.map(token => [
+        token,
+        'allowance',
+        [account, contractAddress]
+      ])
+    );
 
     return Object.fromEntries(
       tokenAddresses.map((token, i) => [
         getAddress(token),
-        formatUnits(allowances[i], tokens[token].decimals)
+        formatUnits(allowances[i][0].toString(), tokens[token].decimals)
       ])
     );
   }

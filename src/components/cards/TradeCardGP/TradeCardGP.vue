@@ -147,7 +147,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
-import { useTradeState } from '@/composables/trade/useTradeState';
 
 const { nativeAsset } = configService.network;
 
@@ -168,17 +167,13 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { appNetworkConfig } = useWeb3();
     const { tokens } = useTokens();
-    const {
-      tokenInAddress,
-      tokenOutAddress,
-      tokenInAmount,
-      tokenOutAmount,
-      setTokenInAddress,
-      setTokenOutAddress
-    } = useTradeState();
 
     // DATA
     const exactIn = ref(true);
+    const tokenInAddress = ref('');
+    const tokenInAmount = ref('');
+    const tokenOutAddress = ref('');
+    const tokenOutAmount = ref('');
     const modalTradePreviewIsOpen = ref(false);
     const dismissedErrors = ref({
       highPriceImpact: false
@@ -367,8 +362,8 @@ export default defineComponent({
         assetOut = getAddress(assetOut);
       }
 
-      setTokenInAddress(assetIn || store.state.trade.inputAsset);
-      setTokenOutAddress(assetOut || store.state.trade.outputAsset);
+      tokenInAddress.value = assetIn || store.state.trade.inputAsset;
+      tokenOutAddress.value = assetOut || store.state.trade.outputAsset;
     }
 
     function switchToWETH() {

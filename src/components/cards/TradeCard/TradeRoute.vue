@@ -1,5 +1,5 @@
 <template>
-  <BalCard shadow="none" v-if="routes.length > 0">
+  <div v-if="routes.length > 0">
     <div
       class="flex text-gray-500 items-center cursor-pointer"
       @click="toggleVisibility"
@@ -117,7 +117,7 @@
         </div>
       </div>
     </div>
-  </BalCard>
+  </div>
 </template>
 
 <script lang="ts">

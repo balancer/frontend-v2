@@ -3,7 +3,6 @@ import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provid
 import Pools from './entities/pools';
 import PoolShares from './entities/poolShares';
 import PoolActivities from './entities/poolActivities';
-import PoolSwaps from './entities/poolSwaps';
 import PoolSnapshots from './entities/poolSnapshots';
 import TradePairSnapshots from './entities/tradePairs';
 
@@ -13,7 +12,6 @@ export default class BalancerSubgraphService {
   pools: Pools;
   poolShares: PoolShares;
   poolActivities: PoolActivities;
-  poolSwaps: PoolSwaps;
   poolSnapshots: PoolSnapshots;
   tradePairSnapshots: TradePairSnapshots;
 
@@ -25,7 +23,6 @@ export default class BalancerSubgraphService {
     this.pools = new Pools(this);
     this.poolShares = new PoolShares(this);
     this.poolActivities = new PoolActivities(this);
-    this.poolSwaps = new PoolSwaps(this);
     this.poolSnapshots = new PoolSnapshots(this);
     this.tradePairSnapshots = new TradePairSnapshots(this);
   }
