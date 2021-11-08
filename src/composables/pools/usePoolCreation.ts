@@ -1,11 +1,14 @@
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { ref, reactive, toRefs, watch, computed } from 'vue';
+import { flatten } from 'lodash';
+import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
 import { useQuery } from 'vue-query';
+import usePoolsQuery from '../queries/usePoolsQuery';
 
 export type TokenWeight = {
   tokenAddress: string;
   weight: number;
   isLocked: boolean;
+  amount: number;
   id: number;
 };
 
@@ -46,6 +49,10 @@ async function getSimilarPools(tokensInPool: string[]) {
   return response;
 }
 
+async function getVolumeForSimilarPools(pools: string[]) {
+  console.log('h');
+}
+
 export default function usePoolCreation() {
   watch(
     () => poolCreationState.tokenWeights,
@@ -75,6 +82,10 @@ export default function usePoolCreation() {
     poolCreationState.feeType = type;
   };
 
+  const setStep = (step: number) => {
+    poolCreationState.activeStep = 0;;
+  };
+
   const setFeeController = (controller: FeeController) => {
     poolCreationState.feeController = controller;
   };
@@ -83,13 +94,12 @@ export default function usePoolCreation() {
     poolCreationState.thirdPartyFeeController = address;
   };
 
-  const { data: similarPools, isLoading: isLoadingSimilarPools } = useQuery(
-    ['dingo', { a: poolCreationState.tokensList }],
-    () => getSimilarPools(poolCreationState.tokensList),
-    reactive({
-      enabled: poolCreationState.tokensList.length > 0
-    })
-  );
+  const tokensList = computed(() => poolCreationState.tokensList);
+
+  const { data: similarPoolsResponse, isLoading: isLoadingSimilarPools } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
+  const similarPools = computed(() => {
+    return flatten(similarPoolsResponse.value?.pages.map(p => p.pools));
+  })
 
   const existingPool = computed(() => {
     if (!similarPools.value?.length) return null;
@@ -107,6 +117,7 @@ export default function usePoolCreation() {
     setFeeType,
     setFeeController,
     setTrpController,
+    setStep,
     similarPools,
     isLoadingSimilarPools,
     existingPool

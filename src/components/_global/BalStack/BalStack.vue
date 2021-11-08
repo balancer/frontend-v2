@@ -8,8 +8,8 @@ type Props = {
   spacing: Spacing;
   withBorder?: boolean;
   ref?: any;
-  align?: 'center' | 'start' | 'end';
-  justify?: 'center' | 'start' | 'end';
+  align?: 'center' | 'start' | 'end' | 'between';
+  justify?: 'center' | 'start' | 'end' | 'between';
   isDynamic?: boolean;
   expandChildren?: boolean;
 };
@@ -60,9 +60,11 @@ const slotsWithContent = computed(() => {
         'items-center': align === 'center',
         'items-start': align === 'start',
         'items-end': align === 'end',
+        'items-between': align === 'between',
         'justify-center': justify === 'center',
         'justify-start': justify === 'start',
-        'justify-end': justify === 'end'
+        'justify-end': justify === 'end',
+        'justify-between': justify === 'between',
       }
     ]"
   >

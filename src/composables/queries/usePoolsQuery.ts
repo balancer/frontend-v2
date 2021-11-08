@@ -20,6 +20,7 @@ type PoolsQueryResponse = {
 
 type FilterOptions = {
   poolIds?: Ref<string[]>;
+  isExactTokensList?: boolean;
   pageSize?: number;
 };
 
@@ -46,11 +47,12 @@ export default function usePoolsQuery(
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
+    const tokensListFilterKey = filterOptions?.isExactTokensList ? 'tokensList' : 'tokensList_contains';
     const queryArgs: any = {
       first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
       skip: pageParam,
       where: {
-        tokensList_contains: tokenList.value
+        [tokensListFilterKey]: tokenList.value
       }
     };
     if (filterOptions?.poolIds?.value.length) {

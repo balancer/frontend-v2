@@ -11,7 +11,9 @@ const { userNetworkConfig, isWalletReady } = useWeb3();
 const {
   similarPools,
   isLoadingSimilarPools,
-  existingPool
+  existingPool,
+  setStep,
+  proceed
 } = usePoolCreation();
 const { fNum } = useNumbers();
 
@@ -35,10 +37,7 @@ const title = computed(() => {
         avoid fractured liquidity and lower profits for both pools.
       </p>
       <div v-if="isLoadingSimilarPools">my name jeff</div>
-      <BalCard
-        v-else-if="existingPool"
-        shadow="false"
-      >
+      <BalCard v-else-if="existingPool" shadow="false">
         <BalStack vertical>
           <BalStack spacing="sm" horizontal align="center">
             <BalAssetSet :width="35" :addresses="existingPool.tokensList" />
@@ -53,17 +52,15 @@ const title = computed(() => {
             </BalStack>
             <BalStack vertical spacing="none">
               <span class="font-medium">Vol (24h)</span>
-              <span class="font-semibold">TBD</span>
+              <span class="font-semibold">{{
+                fNum(existingPool.dynamic.volume, 'usd')
+              }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
               <span class="font-medium">Fees</span>
               <span class="font-semibold">{{
                 fNum(existingPool.swapFee, 'percent')
               }}</span>
-            </BalStack>
-            <BalStack vertical spacing="none">
-              <span class="font-medium">APR</span>
-              <span class="font-semibold">TBD</span>
             </BalStack>
           </BalStack>
         </BalStack>
@@ -75,7 +72,7 @@ const title = computed(() => {
               <BalAssetSet :width="35" :addresses="pool.tokensList" />
               <TokenPills :tokens="pool.tokens" />
             </BalStack>
-            <BalStack horizontal spacing="lg">
+            <BalStack horizontal spacing="xl">
               <BalStack vertical spacing="none">
                 <span class="font-medium">Pool value</span>
                 <span class="font-semibold">{{
@@ -84,7 +81,9 @@ const title = computed(() => {
               </BalStack>
               <BalStack vertical spacing="none">
                 <span class="font-medium">Vol (24h)</span>
-                <span class="font-semibold">TBD</span>
+                <span class="font-semibold">{{
+                  fNum(pool.dynamic.volume, 'usd')
+                }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
                 <span class="font-medium">Fees</span>
@@ -92,22 +91,25 @@ const title = computed(() => {
                   fNum(pool.swapFee, 'percent')
                 }}</span>
               </BalStack>
-              <BalStack vertical spacing="none">
-                <span class="font-medium">APR</span>
-                <span class="font-semibold">TBD</span>
-              </BalStack>
             </BalStack>
           </BalStack>
         </BalCard>
       </BalStack>
-      <BalAlert v-if="!existingPool" block type="warning" title="Are you sure you want to continue?">
+      <BalAlert
+        v-if="!existingPool"
+        block
+        type="warning"
+        title="Are you sure you want to continue?"
+      >
         You can continue to create your pool anyway, but you’ll have to pay pool
         creation gas costs and liquidity will be fractured which is likely to
         result in your new pool being less profitable.
       </BalAlert>
       <BalStack horizontal expandChildren>
-        <BalBtn block outline>Cancel</BalBtn>
-        <BalBtn v-if="!existingPool" block color="gradient">Continue anyway</BalBtn>
+        <BalBtn @click="setStep(0)" block outline>Cancel</BalBtn>
+        <BalBtn @click="proceed" v-if="!existingPool" block color="gradient"
+          >Continue anyway</BalBtn
+        >
       </BalStack>
     </BalStack>
   </BalCard>

@@ -7,7 +7,9 @@ export enum StepState {
   Active,
   WalletOpen,
   Pending,
-  Success
+  Success,
+  Warning,
+  Error
 }
 
 export type Step = {

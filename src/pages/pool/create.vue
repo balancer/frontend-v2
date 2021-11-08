@@ -7,13 +7,14 @@ import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
 import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
 import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
 import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
+import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { eq } from 'lodash';
-import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useApp from '@/composables/useApp';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
 
 const initialAnimateProps = {
   opacity: 0,
@@ -42,7 +43,7 @@ const exitAnimateProps = {
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const { activeStep } = usePoolCreation();
+const { activeStep, similarPools } = usePoolCreation();
 
 /**
  * STATE
@@ -70,12 +71,17 @@ const steps = computed(() => [
     state: activeStep.value === 1 ? StepState.Active : StepState.Todo
   },
   {
+    tooltip: 'Similar pools',
+    state: StepState.Warning,
+    isVisible: similarPools.value.length > 0 && activeStep.value === 2
+  },
+  {
     tooltip: 'Set initial liquidity',
-    state: activeStep.value === 2 ? StepState.Active : StepState.Todo
+    state: activeStep.value === 3 ? StepState.Active : StepState.Todo
   },
   {
     tooltip: 'Confirm pool creation',
-    state: activeStep.value === 3 ? StepState.Active : StepState.Todo
+    state: activeStep.value === 4 ? StepState.Active : StepState.Todo
   }
 ]);
 </script>
@@ -109,6 +115,14 @@ const steps = computed(() => [
         :exit="exitAnimateProps"
       >
         <SimilarPools />
+      </AnimatePresence>
+      <AnimatePresence
+        :isVisible="!appLoading && activeStep === 3"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
+      >
+        <InitialLiquidity />
       </AnimatePresence>
     </div>
     <div class="col-span-3">

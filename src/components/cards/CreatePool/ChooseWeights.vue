@@ -18,7 +18,8 @@ const emptyTokenWeight: TokenWeight = {
   tokenAddress: '',
   weight: 0,
   id: 0,
-  isLocked: false
+  isLocked: false,
+  amount: 0
 };
 
 const { userNetworkConfig } = useWeb3();
@@ -148,9 +149,8 @@ const addTokenListElementRef = (el: HTMLElement) => {
 };
 
 const validateAndProceed = () => {
-
   proceed();
-}
+};
 </script>
 
 <template>
@@ -201,7 +201,13 @@ const validateAndProceed = () => {
           </div>
         </div>
       </BalCard>
-      <BalBtn block color="gradient" :disabled="totalWeight !== 100" @click="validateAndProceed">Next</BalBtn>
+      <BalBtn
+        block
+        color="gradient"
+        :disabled="totalWeight !== 100"
+        @click="validateAndProceed"
+        >Next</BalBtn
+      >
     </BalStack>
   </BalCard>
 </template>

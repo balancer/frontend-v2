@@ -70,7 +70,7 @@ const onChangeFeeManagementType = (val: boolean) => {
 };
 
 // const isProceedDisabled = computed(() => {
-  
+
 // })
 
 const submit = (values: any) => {
