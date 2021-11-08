@@ -110,8 +110,6 @@ export class PoolCreator {
       fromInternalBalance: false
     };
 
-    // Get approval for all tokens here
-
     const vaultAddress = configService.network.addresses.vault;
     const tx = await sendTransaction(
       provider,
@@ -145,22 +143,6 @@ export class PoolCreator {
     });
 
     return weightStrings;
-    // let totalWeight = new BigNumber(0);
-    // const expectedTotalWeight = new BigNumber(1e18);
-
-    // tokens.forEach((token: TokenWeight) => {
-    //   totalWeight = totalWeight.plus(token.weight);
-    // });
-
-    // // If weights don't add to exactly 1e18, add missing weight to first token
-    // const remainingWeight = expectedTotalWeight.minus(totalWeight);
-    // tokens[0].weight = new BigNumber(tokens[0].weight).plus(remainingWeight).toNumber();
-
-    // const weights: string[] = tokens.map((token: TokenWeight) => {
-    //   return token.weight.toString();
-    // });
-
-    // return weights;
   }
 }
 
