@@ -9,6 +9,7 @@ import {
   SwapKind
 } from '@balancer-labs/balancer-js';
 
+jest.mock('@/lib/utils/balancer/lido');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 jest.mock('@/services/contracts/exchange-proxy.service');
 jest.mock('@/services/contracts/vault.service');
@@ -44,12 +45,12 @@ describe('swap.service', () => {
     };
     tokens.stETH = {
       address: configService.network.addresses.stETH,
-      amount: BigNumber.from(1e15),
+      amount: BigNumber.from(2e15),
       type: SwapTokenType.fixed
     };
     tokens.wstETH = {
       address: configService.network.addresses.wstETH,
-      amount: BigNumber.from(1e15),
+      amount: BigNumber.from(3e15),
       type: SwapTokenType.fixed
     };
 
@@ -206,7 +207,7 @@ describe('swap.service', () => {
         ];
         await service.batchSwapV2(tokens.ETH, tokens.stETH, swaps, [
           tokens.ETH.address,
-          tokens.stETH.address
+          tokens.wstETH.address // tokenAddresses currently contain wstETH even though tokenIn is stETH
         ]);
         const lidoRelayerSwapArgs = require('@/services/contracts/lido-relayer.service')
           .lidoRelayerService.swap.mock.calls[0];
@@ -214,7 +215,7 @@ describe('swap.service', () => {
         expect(singleSwapArg.poolId).toEqual(PoolIdETHstETH);
         expect(singleSwapArg.kind).toEqual(SwapKind.GivenIn);
         expect(singleSwapArg.assetIn).toEqual(tokens.ETH.address);
-        expect(singleSwapArg.assetOut).toEqual(tokens.stETH.address);
+        expect(singleSwapArg.assetOut).toEqual(tokens.wstETH.address); 
         expect(singleSwapArg.amount).toEqual(amount);
         expect(singleSwapArg.userData).toEqual('');
 
@@ -302,7 +303,7 @@ describe('swap.service', () => {
         tokenAddresses = [
           tokens.USDC.address,
           tokens.ETH.address,
-          tokens.stETH.address
+          tokens.wstETH.address
         ];
         swaps = [
           {

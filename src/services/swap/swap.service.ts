@@ -135,11 +135,17 @@ export default class SwapService {
     // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
     const { stETH, wstETH } = this.config.network.addresses;
     if (tokenIn.address === stETH.toLowerCase()) {
-      tokenIn.address = wstETH.toLowerCase();
-      tokenIn.amount = await getWstETHByStETH(tokenIn.amount);
+      tokenIn = {
+        address: wstETH.toLowerCase(),
+        amount: await getWstETHByStETH(tokenIn.amount),
+        type: tokenIn.type
+      };
     } else if (tokenOut.address === stETH.toLowerCase()) {
-      tokenOut.address = wstETH.toLowerCase();
-      tokenOut.amount = await getWstETHByStETH(tokenOut.amount);
+      tokenOut = {
+        address: wstETH.toLowerCase(),
+        amount: await getWstETHByStETH(tokenOut.amount),
+        type: tokenOut.type
+      };
     }
 
     const swapKind =
