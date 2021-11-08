@@ -177,7 +177,7 @@ watchEffect(() => {
   <BalTextInput
     v-model="_amount"
     :placeholder="hintAmount || '0.0'"
-    type="decimal"
+    type="number"
     :label="label"
     :decimalLimit="token?.decimals || 18"
     :rules="inputRules"

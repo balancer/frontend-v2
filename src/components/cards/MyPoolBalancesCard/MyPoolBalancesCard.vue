@@ -72,7 +72,7 @@ const fiatTotal = computed(() => {
 <template>
   <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
-      <div class="p-4 w-full border-b dark:border-gray-700">
+      <div class="p-4 w-full shadow-lg">
         <h6>
           {{ $t('poolTransfer.myPoolBalancesCard.title') }}
         </h6>

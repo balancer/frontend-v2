@@ -2,7 +2,7 @@
   <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
   <div :class="[wrapperClass]" v-else>
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
-      <h3 class="text-gray-800 text-xl tracking-wider">
+      <h3 class="text-gray-800 dark:text-gray-400 text-xl tracking-wider">
         {{ currentValue }}
       </h3>
       <span
@@ -360,15 +360,10 @@ export default defineComponent({
         const currentDayValue = numeral(
           (props.data[0].values[props.data[0].values.length - 1] || [])[1]
         );
-        currentValue.value = currentDayValue.format(
-          props.axisLabelFormatter.yAxis || '$0,0.00'
-        );
-        const previousDayValue = numeral(
-          (props.data[0].values[props.data[0].values.length - 2] || [])[1]
-        );
+        const startValue = numeral((props.data[0].values[0] || [])[1]);
         change.value =
-          ((currentDayValue.value() || 0) - (previousDayValue.value() || 0)) /
-          (previousDayValue.value() || 0);
+          ((currentDayValue.value() || 0) - (startValue.value() || 0)) /
+          (startValue.value() || 0);
       }
     );
 
@@ -382,13 +377,10 @@ export default defineComponent({
       currentValue.value = currentDayValue.format(
         props.axisLabelFormatter.yAxis || '$0,0.00'
       );
-      const previousDayValue = numeral(
-        (props.data[0].values[props.data[0].values.length - 2] || [])[1]
-      );
-
+      const startValue = numeral((props.data[0].values[0] || [])[1]);
       change.value =
-        ((currentDayValue.value() || 0) - (previousDayValue.value() || 0)) /
-        (previousDayValue.value() || 0);
+        ((currentDayValue.value() || 0) - (startValue.value() || 0)) /
+        (startValue.value() || 0);
     });
 
     // Triggered when hovering mouse over different xAxis points
@@ -402,9 +394,13 @@ export default defineComponent({
           props.data[seriesIndex].values[dataIndex][1]
         ).format(props.axisLabelFormatter.yAxis || '$0,0.00');
 
-        // no change if first point in the chart
+        // if first point in chart, show overall change
         if (dataIndex === 0) {
-          change.value = 0;
+          const prev = props.data[seriesIndex].values[0][1] as number;
+          const current = props.data[seriesIndex].values[
+            props.data[seriesIndex].values.length - 1
+          ][1] as number;
+          change.value = (current - prev) / prev;
         } else {
           const prev = props.data[seriesIndex].values[
             dataIndex - 1

@@ -5,7 +5,7 @@ import { UseInfiniteQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 
-import BalancerSubgraph from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolActivity } from '@/services/balancer/subgraph/types';
 import useNetwork from '../useNetwork';
 
@@ -18,9 +18,6 @@ export default function usePoolActivitiesQuery(
   id: string,
   options: UseInfiniteQueryOptions<PoolActivitiesQueryResponse> = {}
 ) {
-  // SERVICES
-  const balancerSubgraph = new BalancerSubgraph();
-
   // COMPOSABLES
   const { networkId } = useNetwork();
 
@@ -29,7 +26,7 @@ export default function usePoolActivitiesQuery(
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const poolActivities = await balancerSubgraph.poolActivities.get({
+    const poolActivities = await balancerSubgraphService.poolActivities.get({
       first: POOLS.Pagination.PerPage,
       skip: pageParam,
       where: {

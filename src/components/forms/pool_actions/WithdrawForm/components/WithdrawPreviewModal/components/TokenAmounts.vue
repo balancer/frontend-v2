@@ -43,11 +43,7 @@ function amountShare(address: string): string {
 
 <template>
   <div class="token-amount-table">
-    <div
-      v-for="(amount, address, index) in amountMap"
-      :key="address"
-      class="relative"
-    >
+    <div v-for="(amount, address) in amountMap" :key="address" class="relative">
       <div class="token-amount-table-content">
         <BalAsset :address="address" :size="36" />
         <div class="flex flex-col ml-3">
@@ -63,12 +59,6 @@ function amountShare(address: string): string {
           </div>
         </div>
       </div>
-      <div
-        v-if="index != Object.keys(amountMap).length - 1"
-        class="addition-separator"
-      >
-        <BalIcon name="plus" size="xl" class="font-bold" />
-      </div>
     </div>
   </div>
 </template>
@@ -80,12 +70,5 @@ function amountShare(address: string): string {
 
 .token-amount-table-content {
   @apply p-3 flex items-center;
-}
-
-.addition-separator {
-  @apply absolute bottom-0 right-0 -mb-6 mr-6;
-  @apply w-12 h-12 rounded-full bg-white dark:bg-gray-900 z-10;
-  @apply border dark:border-gray-700;
-  @apply flex items-center justify-center;
 }
 </style>

@@ -2,16 +2,6 @@ import numeral from 'numeral';
 import BigNumber from 'bignumber.js';
 import useTokens from './useTokens';
 
-export type Preset =
-  | 'default'
-  | 'token'
-  | 'token_fixed'
-  | 'token_lg'
-  | 'usd'
-  | 'usd_lg'
-  | 'percent'
-  | 'percent_lg';
-
 interface Options {
   format?: string;
   forcePreset?: boolean;
@@ -29,6 +19,8 @@ enum PresetFormats {
   percent_lg = '0%'
 }
 
+export type Preset = keyof typeof PresetFormats;
+
 export function fNum(
   number: number | string,
   preset: Preset | null = 'default',
@@ -40,6 +32,15 @@ export function fNum(
   if (number >= 10_000 && !options.forcePreset) {
     adjustedPreset = `${preset}_lg`;
   }
+
+  if (
+    (preset === 'token' || preset === 'token_fixed') &&
+    number > 0 &&
+    number < 0.0001
+  ) {
+    return '< 0.0001';
+  }
+
   if (number < 1e-6) {
     // Numeral returns NaN in this case so just set to zero.
     // https://github.com/adamwdraper/Numeral-js/issues/596

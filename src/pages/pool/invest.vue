@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { configService } from '@/services/config/config.service';
 // Components
-import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm2.vue';
+import InvestForm from '@/components/forms/pool_actions/InvestForm/InvestForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
@@ -12,12 +12,12 @@ import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTra
  * STATE
  */
 const { network } = configService;
-const { pool, loadingPool } = usePoolTransfers();
+const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
 </script>
 
 <template>
   <div>
-    <BalLoadingBlock v-if="loadingPool" class="h-96" />
+    <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-96" />
     <BalCard v-else shadow="xl" exposeOverflow noBorder>
       <template #header>
         <div class="w-full">

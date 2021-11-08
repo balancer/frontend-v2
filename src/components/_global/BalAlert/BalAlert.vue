@@ -7,7 +7,7 @@
         </div>
       </div>
       <div :class="['bal-alert-content', contentClasses]">
-        <div class="">
+        <div>
           <h5 :class="['bal-alert-title', titleClasses, textSizeClass]">
             <slot name="title">
               {{ title }}
@@ -193,7 +193,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .bal-alert {
   @apply inline-block rounded-lg font-medium;
 }
@@ -204,9 +204,14 @@ export default defineComponent({
 
 .bal-alert-content {
   @apply flex;
+  min-width: 0;
 }
 
 .bal-alert-icon {
   @apply rounded-full flex items-center justify-center mr-2;
+}
+
+.bal-alert-description {
+  @apply overflow-hidden break-words;
 }
 </style>

@@ -38,7 +38,8 @@ const {
   tokenOut,
   tokenOutIndex,
   highPriceImpactAccepted,
-  validInput
+  validInput,
+  maxSlider
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
@@ -82,6 +83,7 @@ const singleAssetRules = computed(() => [
  */
 onBeforeMount(() => {
   isProportional.value = true;
+  maxSlider();
 });
 </script>
 
@@ -112,12 +114,14 @@ onBeforeMount(() => {
 
     <WithdrawTotals :math="withdrawMath" class="mt-4" />
 
-    <div v-if="highPriceImpact" class="border rounded-lg p-4 pb-2 mt-4">
+    <div
+      v-if="highPriceImpact"
+      class="border dark:border-gray-700 rounded-lg p-2 pb-2 mt-4"
+    >
       <BalCheckbox
         v-model="highPriceImpactAccepted"
         :rules="[isRequired($t('priceImpactCheckbox'))]"
         name="highPriceImpactAccepted"
-        class="text-gray-500"
         size="sm"
         :label="$t('priceImpactAccept', [$t('withdrawing')])"
       />

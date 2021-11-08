@@ -1,10 +1,11 @@
 <template>
   <BalLink
+    v-if="isActive()"
     :href="EXTERNAL_LINKS.Balancer.BalForGas"
     external
     class="block hover:no-underline"
   >
-    <div v-if="isActive()" class="message relative px-2 py-3">
+    <div class="message relative px-2 py-3">
       <div class="ml-12">
         <h6 v-text="$t('highGasFees')" class="relative text-sm" />
         <div class="relative text-sm text-gray-500" v-html="text" />
