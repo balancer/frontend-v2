@@ -4,7 +4,7 @@ import ChooseWeights, {
   TokenWeight
 } from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
-import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
+import WalletInitialLiquidity from '@/components/cards/CreatePool/WalletInitialLiquidity.vue';
 import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
 import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
 import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
@@ -128,7 +128,7 @@ const steps = computed(() => [
     <div class="col-span-3">
       <BalStack vertical spacing="base">
         <PoolSummary v-model:colors="tokenColors" />
-        <WalletPoolTokens :colors="tokenColors" />
+        <WalletInitialLiquidity :colors="tokenColors" />
       </BalStack>
     </div>
   </div>

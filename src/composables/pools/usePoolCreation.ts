@@ -1,8 +1,10 @@
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { getAddress } from '@ethersproject/address';
 import { flatten } from 'lodash';
 import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
 import { useQuery } from 'vue-query';
 import usePoolsQuery from '../queries/usePoolsQuery';
+import useTokens from '../useTokens';
 
 export type TokenWeight = {
   tokenAddress: string;
@@ -49,11 +51,8 @@ async function getSimilarPools(tokensInPool: string[]) {
   return response;
 }
 
-async function getVolumeForSimilarPools(pools: string[]) {
-  console.log('h');
-}
-
 export default function usePoolCreation() {
+  const { balanceFor } = useTokens();
   watch(
     () => poolCreationState.tokenWeights,
     () => {
@@ -95,6 +94,13 @@ export default function usePoolCreation() {
   };
 
   const tokensList = computed(() => poolCreationState.tokensList);
+  const balances = computed(() => {
+    const _balances: Record<string, string> = {};
+    for (const token of tokensList.value) {  
+      _balances[token] = balanceFor(getAddress(token));
+    }
+    return _balances;
+  })
 
   const { data: similarPoolsResponse, isLoading: isLoadingSimilarPools } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
   const similarPools = computed(() => {
