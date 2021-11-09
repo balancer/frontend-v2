@@ -5,6 +5,8 @@ import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
 import { useQuery } from 'vue-query';
 import usePoolsQuery from '../queries/usePoolsQuery';
 import useTokens from '../useTokens';
+import useWeb3 from '@/services/web3/useWeb3';
+import { poolCreator } from '@/services/pool-creator/pool-creator.service';
 
 export type TokenWeight = {
   tokenAddress: string;
@@ -28,7 +30,9 @@ const poolCreationState = reactive({
   feeController: 'self' as FeeController,
   thirdPartyFeeController: '',
   fee: '0',
-  tokensList: [] as string[]
+  tokensList: [] as string[],
+  poolId: '' as string,
+  poolAddress: ''
   // tokensList: [
   //   '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
   //   '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1'
@@ -52,7 +56,8 @@ async function getSimilarPools(tokensInPool: string[]) {
 }
 
 export default function usePoolCreation() {
-  const { balanceFor } = useTokens();
+  const { balanceFor, getToken } = useTokens();
+  const { account, getProvider } = useWeb3();
   watch(
     () => poolCreationState.tokenWeights,
     () => {
@@ -93,6 +98,43 @@ export default function usePoolCreation() {
     poolCreationState.thirdPartyFeeController = address;
   };
 
+  const getPoolSymbol = (): string => {
+    const tokenSymbols = poolCreationState.tokenWeights.map(
+      (token: TokenWeight) => {
+        const weightRounded = Math.round(token.weight);
+        const tokenInfo = getToken(token.tokenAddress);
+        return `${Math.round(weightRounded)}${tokenInfo.symbol}`;
+      }
+    );
+
+    return tokenSymbols.join('-');
+  };
+
+  const createPool = async () => {
+    const provider = getProvider();
+    const poolDetails = await poolCreator.createWeightedPool(
+      provider,
+      'MyPool',
+      getPoolSymbol(),
+      '0.01',
+      poolCreationState.tokenWeights,
+      poolCreationState.thirdPartyFeeController
+    );
+    poolCreationState.poolId = poolDetails.id;
+    poolCreationState.poolAddress = poolDetails.address;
+  };
+
+  const joinPool = () => {
+    const provider = getProvider();
+    poolCreator.joinPool(
+      provider,
+      poolCreationState.poolId,
+      account.value,
+      account.value,
+      poolCreationState.tokenWeights
+    )
+  }
+
   const tokensList = computed(() => poolCreationState.tokensList);
   const balances = computed(() => {
     const _balances: Record<string, string> = {};
@@ -126,6 +168,9 @@ export default function usePoolCreation() {
     setStep,
     similarPools,
     isLoadingSimilarPools,
-    existingPool
+    existingPool,
+    getPoolSymbol,
+    createPool,
+    joinPool
   };
 }

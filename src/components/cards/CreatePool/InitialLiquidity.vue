@@ -5,7 +5,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 
 const { userNetworkConfig } = useWeb3();
-const { tokenWeights } = usePoolCreation();
+const { tokenWeights, createPool, joinPool } = usePoolCreation();
 
 // @update:amount="handleInAmountChange"
 // @update:address="emit('update:tokenInAddress', $event)"
@@ -29,7 +29,8 @@ const { tokenWeights } = usePoolCreation();
           name="tokenIn"
         />
       </BalStack>
-      <BalBtn block color="gradient">Preview</BalBtn>
+      <BalBtn @click="createPool" block color="gradient">Create Pool</BalBtn>
+      <BalBtn @click="joinPool" block color="gradient">Join Pool</BalBtn>
     </BalStack>
   </BalCard>
 </template>

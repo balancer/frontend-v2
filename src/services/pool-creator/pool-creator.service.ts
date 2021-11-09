@@ -88,11 +88,10 @@ export class PoolCreator {
     poolId: string,
     sender: Address,
     receiver: Address,
-    tokens: TokenWeight[],
-    initialBalances: BigNumber[]
+    tokens: TokenWeight[]
   ): Promise<TransactionReceipt> {
-    const initialBalancesString: string[] = initialBalances.map(n =>
-      n.toString()
+    const initialBalancesString: string[] = tokens.map(token =>
+      token.amount.toString()
     );
     const initUserData = defaultAbiCoder.encode(
       ['uint256', 'uint256[]'],
