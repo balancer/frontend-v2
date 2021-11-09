@@ -1,11 +1,12 @@
 import { TransactionReceipt, Web3Provider } from '@ethersproject/providers';
 import { AddressZero } from '@ethersproject/constants';
 import { TokenWeight } from '@/composables/pools/usePoolCreation';
-import { JoinPoolRequest, poolCreator } from './pool-creator.service';
+import Pools, { JoinPoolRequest } from './pools';
 import BigNumber from 'bignumber.js';
 import { WeightedPoolEncoder } from '@balancer-labs/balancer-js';
 
 const tokens: Record<string, TokenWeight> = {};
+const poolCreator = new Pools();
 
 const mockPoolId =
   'EEE8292CB20A443BA1CAAA59C985CE14CA2BDEE5000100000000000000000263';
@@ -135,7 +136,7 @@ describe('PoolCreator', () => {
 
     beforeEach(async () => {
       const mockProvider = {} as Web3Provider;
-      joinTx = await poolCreator.joinPool(
+      joinTx = await poolCreator.join(
         mockProvider,
         mockPoolId,
         mockSender,

@@ -4,12 +4,13 @@ import { BigNumber } from 'bignumber.js';
 import { flatten } from 'lodash';
 import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
 import { useQuery } from 'vue-query';
-import usePoolsQuery from '../queries/usePoolsQuery';
+import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
-import { poolCreator } from '@/services/pool-creator/pool-creator.service';
+import { balancerService } from '@/services/balancer/balancer.service';
 import { AddressZero } from '@ethersproject/constants';
 import { scale } from '@/lib/utils';
+import { PoolType } from '@/services/balancer/subgraph/types';
 
 export type TokenWeight = {
   tokenAddress: string;
@@ -127,7 +128,7 @@ export default function usePoolCreation() {
 
   const createPool = async () => {
     const provider = getProvider();
-    const poolDetails = await poolCreator.createWeightedPool(
+    const poolDetails = await balancerService.pools.create(PoolType.Weighted)(
       provider,
       'MyPool',
       getPoolSymbol(),
@@ -140,9 +141,9 @@ export default function usePoolCreation() {
     poolCreationState.poolAddress = poolDetails.address;
   };
 
-  const joinPool = () => {
+  const joinPool = async () => {
     const provider = getProvider();
-    poolCreator.joinPool(
+    const result = await balancerService.pools.join(
       provider,
       poolCreationState.poolId,
       account.value,
@@ -150,6 +151,7 @@ export default function usePoolCreation() {
       poolCreationState.tokenWeights,
       getScaledAmounts()
     );
+    console.log("Got join pool result: ", result);
   };
 
   const tokensList = computed(() => poolCreationState.tokensList);
@@ -161,6 +163,7 @@ export default function usePoolCreation() {
     return _balances;
   });
 
+  const result = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
   const {
     data: similarPoolsResponse,
     isLoading: isLoadingSimilarPools

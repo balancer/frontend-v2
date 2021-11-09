@@ -7,8 +7,9 @@ const tokens: Record<string, TokenWeight> = {};
 
 jest.mock('@/composables/useTokens');
 jest.mock('@/services/web3/useWeb3');
-jest.mock('@/services/pool-creator/pool-creator.service');
+jest.mock('@/services/balancer/balancer.service');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
+jest.mock('@/composables/queries/usePoolsQuery');
 
 describe('usePoolCreation', () => {
   const { result: poolCreation } = mount(() => usePoolCreation());
@@ -19,19 +20,22 @@ describe('usePoolCreation', () => {
       tokenAddress: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
       weight: 70,
       isLocked: false,
-      id: 0
+      id: 0,
+      amount: 0
     };
     tokens.WETH = {
       tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       weight: 20,
       isLocked: false,
-      id: 1
+      id: 1,
+      amount: 0
     };
     tokens.USDT = {
       tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
       weight: 10,
       isLocked: false,
-      id: 2
+      id: 2,
+      amount: 0
     };
   });
 

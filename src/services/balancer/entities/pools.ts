@@ -1,3 +1,5 @@
+import { PoolType } from '@/services/balancer/subgraph/types';
+
 import {
   Vault__factory,
   WeightedPoolFactory__factory,
@@ -5,7 +7,7 @@ import {
 } from '@balancer-labs/typechain';
 import { Contract } from '@ethersproject/contracts';
 import { TransactionResponse, TransactionReceipt, Web3Provider } from '@ethersproject/providers';
-import { configService } from '../config/config.service';
+import { configService } from '@/services/config/config.service';
 import BigNumber from 'bignumber.js';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
@@ -30,7 +32,16 @@ export interface JoinPoolRequest {
   fromInternalBalance: boolean;
 }
 
-export class PoolCreator {
+export default class Pools {
+  create(type: PoolType) {
+    switch (type) {
+      case PoolType.Weighted:
+        return this.createWeightedPool.bind(this);
+      default:
+        throw new Error('Cannot create pool of type: ' + type);
+    }
+  }
+
   public async createWeightedPool(
     provider: Web3Provider,
     name: string,
@@ -86,7 +97,7 @@ export class PoolCreator {
     return poolDetails;
   }
 
-  public async joinPool(
+  public async join(
     provider: Web3Provider,
     poolId: string,
     sender: Address,
@@ -148,5 +159,3 @@ export class PoolCreator {
     return weightStrings;
   }
 }
-
-export const poolCreator = new PoolCreator();
