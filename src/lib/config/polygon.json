@@ -10,7 +10,7 @@
   "rpc": "https://polygon-mainnet.infura.io/v3/{{INFURA_KEY}}",
   "ws": "wss://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
   "loggingRpc": "https://polygon-mainnet.g.alchemy.com/v2/{{ALCHEMY_KEY}}",
-  "publicRpc": "https://rpc-mainnet.matic.network",
+  "publicRpc": "https://polygon-rpc.com",
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
