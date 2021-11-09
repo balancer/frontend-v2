@@ -1,5 +1,6 @@
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { getAddress } from '@ethersproject/address';
+import { BigNumber } from 'bignumber.js';
 import { flatten } from 'lodash';
 import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
 import { useQuery } from 'vue-query';
@@ -7,6 +8,8 @@ import usePoolsQuery from '../queries/usePoolsQuery';
 import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import { poolCreator } from '@/services/pool-creator/pool-creator.service';
+import { AddressZero } from '@ethersproject/constants';
+import { scale } from '@/lib/utils';
 
 export type TokenWeight = {
   tokenAddress: string;
@@ -87,7 +90,7 @@ export default function usePoolCreation() {
   };
 
   const setStep = (step: number) => {
-    poolCreationState.activeStep = 0;;
+    poolCreationState.activeStep = 0;
   };
 
   const setFeeController = (controller: FeeController) => {
@@ -96,6 +99,18 @@ export default function usePoolCreation() {
 
   const setTrpController = (address: string) => {
     poolCreationState.thirdPartyFeeController = address;
+  };
+
+  const getScaledAmounts = (): BigNumber[] => {
+    const scaledAmounts: BigNumber[] = poolCreationState.tokenWeights.map(
+      (token: TokenWeight) => {
+        const tokenInfo = getToken(token.tokenAddress);
+        const amount = new BigNumber(token.amount);
+        const scaledAmount = scale(amount, tokenInfo.decimals);
+        return scaledAmount;
+      }
+    );
+    return scaledAmounts;
   };
 
   const getPoolSymbol = (): string => {
@@ -118,7 +133,8 @@ export default function usePoolCreation() {
       getPoolSymbol(),
       '0.01',
       poolCreationState.tokenWeights,
-      poolCreationState.thirdPartyFeeController
+      // poolCreationState.thirdPartyFeeController
+      AddressZero
     );
     poolCreationState.poolId = poolDetails.id;
     poolCreationState.poolAddress = poolDetails.address;
@@ -131,23 +147,27 @@ export default function usePoolCreation() {
       poolCreationState.poolId,
       account.value,
       account.value,
-      poolCreationState.tokenWeights
-    )
-  }
+      poolCreationState.tokenWeights,
+      getScaledAmounts()
+    );
+  };
 
   const tokensList = computed(() => poolCreationState.tokensList);
   const balances = computed(() => {
     const _balances: Record<string, string> = {};
-    for (const token of tokensList.value) {  
+    for (const token of tokensList.value) {
       _balances[token] = balanceFor(getAddress(token));
     }
     return _balances;
-  })
+  });
 
-  const { data: similarPoolsResponse, isLoading: isLoadingSimilarPools } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
+  const {
+    data: similarPoolsResponse,
+    isLoading: isLoadingSimilarPools
+  } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
   const similarPools = computed(() => {
     return flatten(similarPoolsResponse.value?.pages.map(p => p.pools));
-  })
+  });
 
   const existingPool = computed(() => {
     if (!similarPools.value?.length) return null;

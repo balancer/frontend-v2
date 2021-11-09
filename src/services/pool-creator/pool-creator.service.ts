@@ -12,6 +12,7 @@ import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { TokenWeight } from '@/composables/pools/usePoolCreation';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
+import { scale } from '@/lib/utils';
 
 type Address = string;
 
@@ -38,6 +39,8 @@ export class PoolCreator {
     tokens: TokenWeight[],
     owner: Address
   ): Promise<CreatePoolReturn> {
+    if (!owner.length) return Promise.reject('No pool owner specified');
+
     const weightedPoolFactoryAddress =
       configService.network.addresses.weightedPoolFactory;
 
@@ -49,7 +52,7 @@ export class PoolCreator {
     });
 
     const tokenWeights = this.calculateTokenWeights(tokens);
-    const swapFeeScaled = new BigNumber(`${swapFee}e16`);
+    const swapFeeScaled = scale(new BigNumber(swapFee), 16);
 
     const params = [
       name,
@@ -88,10 +91,11 @@ export class PoolCreator {
     poolId: string,
     sender: Address,
     receiver: Address,
-    tokens: TokenWeight[]
+    tokens: TokenWeight[],
+    scaledInitialBalances: BigNumber[]
   ): Promise<TransactionReceipt> {
-    const initialBalancesString: string[] = tokens.map(token =>
-      token.amount.toString()
+    const initialBalancesString: string[] = scaledInitialBalances.map(balance =>
+      balance.toString()
     );
     const initUserData = defaultAbiCoder.encode(
       ['uint256', 'uint256[]'],
