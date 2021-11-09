@@ -1,4 +1,4 @@
-import { JsonRpcProvider } from '@balancer-labs/sor2/node_modules/@ethersproject/providers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-provider.service';
 
 interface Web3Profile {

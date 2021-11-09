@@ -69,6 +69,7 @@ export const POOLS = {
   Investment: {
     AllowList: [
       '0x4fd63966879300cafafbb35d157dc5229278ed23000100000000000000000169', // kovan
+      '0x37a6fc079cad790e556baedda879358e076ef1b3000100000000000000000348', // WSB Kovan
       '0xccf5575570fac94cec733a58ff91bb3d073085c70002000000000000000000af', // iROBOT mainnet
       '0xe7b1d394f3b40abeaa0b64a545dbcf89da1ecb3f00010000000000000000009a' // Techemy mainnet
     ]

@@ -160,18 +160,14 @@
       <div class="flex mt-1"></div>
     </div>
     <div
-      v-if="networkName"
       class="network p-4 mt-4 text-sm border-t dark:border-gray-900 rounded-b-xl"
     >
       <div v-text="$t('network')" />
       <div class="flex items-baseline">
-        <div
-          :class="['w-2 h-2 mr-1 bg-green-400 rounded-full', networkColorClass]"
-        ></div>
-        {{ networkName }}
+        <div :class="['w-2 h-2 mr-1 rounded-full', networkColorClass]"></div>
+        {{ isUnsupportedNetwork ? $t('unsupportedNetwork') : networkName }}
       </div>
     </div>
-    <div v-else class="mt-4" />
   </div>
 </template>
 
@@ -195,6 +191,7 @@ import {
 import { TradeInterface } from '@/store/modules/app';
 import useEthereumTxType from '@/composables/useEthereumTxType';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
+import { Network } from '@/composables/useNetwork';
 
 const locales = {
   'en-US': 'English',
@@ -228,7 +225,8 @@ export default defineComponent({
       isV1Supported,
       isEIP1559SupportedNetwork,
       userNetworkConfig,
-      appNetworkConfig
+      appNetworkConfig,
+      isUnsupportedNetwork
     } = useWeb3();
     const { ethereumTxType, setEthereumTxType } = useEthereumTxType();
 
@@ -242,18 +240,28 @@ export default defineComponent({
 
     // COMPUTED
     const networkColorClass = computed(() => {
-      switch (userNetworkConfig.value?.shortName) {
-        case 'Kovan':
-          return 'bg-purple-500';
-        case 'Ropsten':
-          return 'bg-pink-500';
-        case 'Rinkeby':
-          return 'bg-yellow-500';
-        case 'Goerli':
-          return 'bg-blue-500';
-        default:
-          return 'bg-green-500';
+      let color = 'green';
+
+      if (isUnsupportedNetwork.value) {
+        color = 'red';
+      } else {
+        switch (userNetworkConfig.value?.chainId) {
+          case Network.KOVAN:
+            color = 'purple';
+            break;
+          case Network.ROPSTEN:
+            color = 'pink';
+            break;
+          case Network.RINKEBY:
+            color = 'yellow';
+            break;
+          case Network.GÖRLI:
+            color = 'blue';
+            break;
+        }
       }
+
+      return `bg-${color}-500 dark:bg-${color}-400`;
     });
     const networkName = computed(() => userNetworkConfig.value?.name);
     const appLocale = computed(() => store.state.app.locale);
@@ -306,6 +314,7 @@ export default defineComponent({
       hideDisconnect,
       isEIP1559SupportedNetwork,
       isGnosisSupportedNetwork,
+      isUnsupportedNetwork,
       // methods
       disconnectWallet,
       setDarkMode,

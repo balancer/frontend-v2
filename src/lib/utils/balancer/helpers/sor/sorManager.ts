@@ -4,14 +4,13 @@ import {
   SubgraphPoolBase,
   SwapTypes,
   SwapOptions,
-  PoolFilter,
-  bnum
+  PoolFilter
 } from '@balancer-labs/sor2';
 import { SOR as SORV1 } from '@balancer-labs/sor';
-import { BaseProvider } from '@ethersproject/providers';
+import { BigNumber } from '@ethersproject/bignumber';
+import { Provider } from '@ethersproject/providers';
 import { AddressZero } from '@ethersproject/constants';
-import BigNumber from 'bignumber.js';
-import { scale } from '@/lib/utils';
+import OldBigNumber from 'bignumber.js';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 
@@ -30,8 +29,8 @@ export interface SorReturn {
   returnDecimals: number;
   hasSwaps: boolean;
   returnAmount: BigNumber;
-  marketSpNormalised: BigNumber;
-  v1result: [Swap[][], BigNumber, BigNumber];
+  marketSpNormalised: string;
+  v1result: [Swap[][], BigNumber, OldBigNumber];
   v2result: SwapInfo;
 }
 
@@ -63,7 +62,7 @@ export class SorManager {
 
   constructor(
     isV1Supported: boolean,
-    provider: BaseProvider,
+    provider: Provider,
     gasPrice: BigNumber,
     maxPools: number,
     chainId: number,
@@ -75,8 +74,8 @@ export class SorManager {
 
     // Initialises SOR. Note they use different SOR packages.
     this.sorV1 = new SORV1(
-      provider,
-      gasPrice,
+      provider as any,
+      new OldBigNumber(gasPrice.toString()),
       maxPools,
       chainId,
       poolsSourceV1
@@ -94,30 +93,30 @@ export class SorManager {
   async setCostOutputToken(
     tokenAddr: string,
     tokenDecimals: number,
-    manualCost: BigNumber | null = null
+    manualCost: string | null = null
   ): Promise<BigNumber> {
     tokenAddr = tokenAddr === NATIVE_ASSET_ADDRESS ? this.weth : tokenAddr;
 
     if (manualCost) {
       await this.sorV2.swapCostCalculator.setNativeAssetPriceInToken(
         tokenAddr,
-        manualCost.toString()
+        manualCost
       );
     }
 
     const cost = await this.sorV2.getCostOfSwapInToken(
       tokenAddr,
+      tokenDecimals,
       this.gasPrice,
-      bnum(SWAP_COST)
+      BigNumber.from(SWAP_COST)
     );
 
     console.log(`[SorManager] Cost for token ${tokenAddr}: ${cost.toString()}`);
 
     if (this.isV1Supported) {
-      // V1 uses EVM scaled value but V2 returns cost in human scale
       this.sorV1.setCostOutputToken(
         tokenAddr,
-        scale(cost, tokenDecimals).dp(0)
+        new OldBigNumber(cost.toString())
       );
     }
     return cost;
@@ -144,7 +143,9 @@ export class SorManager {
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = v2result;
     } catch (err) {
-      console.log(`[SorManager] V2 fetchPools issue: ${err.message}`);
+      console.log(
+        `[SorManager] V2 fetchPools issue: ${(err as Error).message}`
+      );
       this.fetchStatus.v2finishedFetch = true;
       this.fetchStatus.v2success = false;
     }
@@ -160,7 +161,9 @@ export class SorManager {
         this.fetchStatus.v1finishedFetch = true;
         this.fetchStatus.v1success = v1result;
       } catch (err) {
-        console.log(`[SorManager] V1 fetchPools issue: ${err.message}`);
+        console.log(
+          `[SorManager] V1 fetchPools issue: ${(err as Error).message}`
+        );
         this.fetchStatus.v1finishedFetch = true;
         this.fetchStatus.v1success = false;
       }
@@ -179,23 +182,21 @@ export class SorManager {
     tokenInDecimals: number,
     tokenOutDecimals: number,
     swapType: SwapTypes,
-    amountScaled: BigNumber,
+    amountScaled: OldBigNumber,
     swapDecimals: number,
     liquiditySelection: LiquiditySelection
   ): Promise<SorReturn> {
     console.log(
       `[SorManager] getBestSwap: ${tokenIn}/${tokenOut} (Liq: ${liquiditySelection}) (V1: ${this.isV1Supported})`
     );
-    // V2 uses normalised values. V1 uses scaled values.
-    const amountNormalised = scale(amountScaled, -swapDecimals);
 
     const v1TokenIn = tokenIn === NATIVE_ASSET_ADDRESS ? this.weth : tokenIn;
     const v1TokenOut = tokenOut === NATIVE_ASSET_ADDRESS ? this.weth : tokenOut;
 
     let swapsV1: Swap[][] = [];
-    let returnAmountV1 = new BigNumber(0);
-    let marketSpV1Scaled = new BigNumber(0);
-    let returnAmountV1ConsideringFees = new BigNumber(0);
+    let returnAmountV1 = new OldBigNumber(0);
+    let marketSpV1Scaled = new OldBigNumber(0);
+    let returnAmountV1ConsideringFees = new OldBigNumber(0);
 
     if (this.isV1Supported)
       [
@@ -220,7 +221,7 @@ export class SorManager {
     const swapOptions: SwapOptions = {
       maxPools: this.maxPools,
       gasPrice: this.gasPrice,
-      swapGas: bnum(SWAP_COST),
+      swapGas: BigNumber.from(SWAP_COST),
       poolTypeFilter: PoolFilter.All,
       timestamp: timestampSeconds,
       forceRefresh: true
@@ -230,7 +231,7 @@ export class SorManager {
       v2TokenIn.toLowerCase(),
       v2TokenOut.toLowerCase(),
       swapType,
-      amountNormalised,
+      BigNumber.from(amountScaled.toString()),
       swapOptions
     );
 
@@ -248,8 +249,8 @@ export class SorManager {
 
     if (swapType === SwapTypes.SwapExactIn) {
       return this.selectBestSwapIn(
-        returnAmountV1,
-        returnAmountV1ConsideringFees,
+        BigNumber.from(returnAmountV1.toString()),
+        BigNumber.from(returnAmountV1ConsideringFees.toString()),
         marketSpV1Scaled,
         swapsV1,
         swapInfoV2,
@@ -261,8 +262,8 @@ export class SorManager {
       );
     } else {
       return this.selectBestSwapOut(
-        returnAmountV1,
-        returnAmountV1ConsideringFees,
+        BigNumber.from(returnAmountV1.toString()),
+        BigNumber.from(returnAmountV1ConsideringFees.toString()),
         marketSpV1Scaled,
         swapsV1,
         swapInfoV2,
@@ -278,7 +279,7 @@ export class SorManager {
   private selectBestSwapIn(
     returnAmountV1: BigNumber,
     returnAmountV1ConsideringFees: BigNumber,
-    marketSpV1Scaled: BigNumber,
+    marketSpV1Scaled: OldBigNumber,
     swapsV1: Swap[][],
     swapInfoV2: SwapInfo,
     tokenIn: string,
@@ -292,15 +293,17 @@ export class SorManager {
     if (returnAmountV1.isZero()) isV1best = false;
     else if (swapInfoV2.swapAmount.isZero()) isV1best = true;
     else if (
-      returnAmountV1ConsideringFees.lt(swapInfoV2.returnAmountConsideringFees)
+      returnAmountV1ConsideringFees.lt(
+        swapInfoV2.returnAmountConsideringFees.toString()
+      )
     )
       isV1best = false;
     else isV1best = true;
 
     // Need to return marketSp as normalized
-    const marketSpV1Normalised: BigNumber = marketSpV1Scaled.div(
-      10 ** (18 + tokenInDecimals - tokenOutDecimals)
-    );
+    const marketSpV1Normalised = marketSpV1Scaled
+      .div(10 ** (18 + tokenInDecimals - tokenOutDecimals))
+      .toString();
 
     const v1return: SorReturn = {
       isV1swap: true,
@@ -309,7 +312,7 @@ export class SorManager {
       tokenOut: tokenOut,
       returnDecimals: tokenOutDecimals,
       hasSwaps: swapsV1.length > 0,
-      returnAmount: returnAmountV1,
+      returnAmount: BigNumber.from(returnAmountV1.toString()),
       v1result: [swapsV1, returnAmountV1, marketSpV1Scaled],
       v2result: swapInfoV2,
       marketSpNormalised: marketSpV1Normalised
@@ -353,7 +356,7 @@ export class SorManager {
   private selectBestSwapOut(
     returnAmountV1: BigNumber,
     returnAmountV1ConsideringFees: BigNumber,
-    marketSpV1Scaled: BigNumber,
+    marketSpV1Scaled: OldBigNumber,
     swapsV1: Swap[][],
     swapInfoV2: SwapInfo,
     tokenIn: string,
@@ -372,13 +375,13 @@ export class SorManager {
     else if (swapInfoV2.returnAmount.isZero()) isV1best = true;
     else
       isV1best = returnAmountV1ConsideringFees.lt(
-        swapInfoV2.returnAmountConsideringFees
+        swapInfoV2.returnAmountConsideringFees.toString()
       );
 
     // Need to return marketSp as normalized
-    const marketSpV1Normalised: BigNumber = marketSpV1Scaled.div(
-      10 ** (18 + tokenInDecimals - tokenOutDecimals)
-    );
+    const marketSpV1Normalised = marketSpV1Scaled
+      .div(10 ** (18 + tokenInDecimals - tokenOutDecimals))
+      .toString();
 
     const v1return: SorReturn = {
       isV1swap: true,
@@ -387,7 +390,7 @@ export class SorManager {
       tokenOut: tokenOut,
       returnDecimals: tokenInDecimals,
       hasSwaps: swapsV1.length > 0,
-      returnAmount: returnAmountV1,
+      returnAmount: BigNumber.from(returnAmountV1.toString()),
       v1result: [swapsV1, returnAmountV1, marketSpV1Scaled],
       v2result: swapInfoV2,
       marketSpNormalised: marketSpV1Normalised
