@@ -46,7 +46,8 @@ export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
             name: appNetworkConfig.nativeAsset.name,
             symbol: appNetworkConfig.nativeAsset.symbol,
             decimals: appNetworkConfig.nativeAsset.decimals
-          }
+          },
+          blockExplorerUrls: [appNetworkConfig.explorer]
         }
       ]
     };
