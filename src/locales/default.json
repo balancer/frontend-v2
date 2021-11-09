@@ -516,6 +516,7 @@
     "transactionType": "Transaction type",
     "unavailableOnNetwork": "Sorry! Balancer is not available on this network",
     "unavailableOnNetworkWithName": "Sorry! Balancer is not available on {0}",
+    "unsupportedNetwork": "Unsupported network",
     "unknown": "Unknown",
     "unknownPoolType": "Unknown pool type",
     "unlock": "Unlock",

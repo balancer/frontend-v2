@@ -663,12 +663,13 @@ export default defineComponent({
           props.trading.tokenInAmountInput.value,
           props.trading.tokenOut.value.address
         );
-      } else {
-        return (
-          props.trading.requiresTokenApproval.value &&
-          !tokenApproval.isUnlockedV2.value
-        );
+      } else if (props.trading.requiresTokenApproval.value) {
+        return props.trading.isBalancerTrade.value &&
+          props.trading.sor.sorReturn.value.isV1swap
+          ? !tokenApproval.isUnlockedV1.value
+          : !tokenApproval.isUnlockedV2.value;
       }
+      return false;
     });
 
     const requiresGnosisRelayerApproval = computed(
@@ -802,8 +803,13 @@ export default defineComponent({
         await tokenApproval.approveSpender(
           props.trading.tokenOut.value.address
         );
+      } else if (
+        props.trading.isBalancerTrade.value &&
+        props.trading.sor.sorReturn.value.isV1swap
+      ) {
+        await tokenApproval.approveV1();
       } else {
-        tokenApproval.approveV2();
+        await tokenApproval.approveV2();
       }
     }
 
