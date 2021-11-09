@@ -32,6 +32,15 @@ export function fNum(
   if (number >= 10_000 && !options.forcePreset) {
     adjustedPreset = `${preset}_lg`;
   }
+
+  if (
+    (preset === 'token' || preset === 'token_fixed') &&
+    number > 0 &&
+    number < 0.0001
+  ) {
+    return '< 0.0001';
+  }
+
   if (number < 1e-6) {
     // Numeral returns NaN in this case so just set to zero.
     // https://github.com/adamwdraper/Numeral-js/issues/596

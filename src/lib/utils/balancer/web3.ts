@@ -11,6 +11,7 @@ import {
   EthereumTxType,
   ethereumTxType
 } from '@/composables/useEthereumTxType';
+import { MetamaskError } from '@/types';
 
 const ENV = process.env.VUE_APP_ENV || 'development';
 // only disable if set to "false"
@@ -74,9 +75,11 @@ export async function sendTransaction(
     }
     return await contractWithSigner[action](...params, paramsOverrides);
   } catch (e) {
+    const error = e as MetamaskError;
+
     if (
-      e.code === RPC_INVALID_PARAMS_ERROR_CODE &&
-      EIP1559_UNSUPPORTED_REGEX.test(e.message)
+      error.code === RPC_INVALID_PARAMS_ERROR_CODE &&
+      EIP1559_UNSUPPORTED_REGEX.test(error.message)
     ) {
       // Sending tx as EIP1559 has failed, retry with legacy tx type
       return sendTransaction(
@@ -89,13 +92,13 @@ export async function sendTransaction(
         true
       );
     } else if (
-      e.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT &&
+      error.code === ErrorCode.UNPREDICTABLE_GAS_LIMIT &&
       ENV !== 'development'
     ) {
       const sender = await web3.getSigner().getAddress();
       logFailedTx(sender, contract, action, params, overrides);
     }
-    return Promise.reject(e);
+    return Promise.reject(error);
   }
 }
 

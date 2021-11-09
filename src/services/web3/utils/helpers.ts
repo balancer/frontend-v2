@@ -1,5 +1,6 @@
 import { ExternalProvider } from '@ethersproject/providers';
 import { configService } from '@/services/config/config.service';
+import { MetamaskError } from '@/types';
 
 export async function switchToAppNetwork(provider: ExternalProvider) {
   const appNetworkConfig = configService.network;
@@ -13,12 +14,14 @@ export async function switchToAppNetwork(provider: ExternalProvider) {
       return true;
     }
   } catch (err) {
+    const error = err as MetamaskError;
+
     // user rejected request
-    if (err.code === 4001) {
+    if (error.code === 4001) {
       return false;
     }
     // chain does not exist, let's add it
-    if (err.code === 4902) {
+    if (error.code === 4902) {
       return importNetworkDetailsToWallet(provider);
     }
   }
@@ -60,7 +63,9 @@ export async function importNetworkDetailsToWallet(provider: ExternalProvider) {
     }
   } catch (err) {
     console.error(
-      `An error occurred while attempting to add network information to wallet. ${err.message}`
+      `An error occurred while attempting to add network information to wallet. ${
+        (err as Error).message
+      }`
     );
     return false;
   }
