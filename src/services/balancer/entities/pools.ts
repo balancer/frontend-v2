@@ -104,7 +104,7 @@ export default class Pools {
     receiver: Address,
     tokens: TokenWeight[],
     scaledInitialBalances: BigNumber[]
-  ): Promise<TransactionReceipt> {
+  ): Promise<TransactionResponse> {
     const initialBalancesString: string[] = scaledInitialBalances.map(balance =>
       balance.toString()
     );
@@ -125,17 +125,13 @@ export default class Pools {
     };
 
     const vaultAddress = configService.network.addresses.vault;
-    const tx = await sendTransaction(
+    return sendTransaction(
       provider,
       vaultAddress,
       Vault__factory.abi,
       'joinPool',
       [poolId, sender, receiver, joinPoolRequest]
     );
-
-    const receipt: TransactionReceipt = await tx.wait();
-
-    return receipt;
   }
 
   public sortTokens(tokens: TokenWeight[]) {

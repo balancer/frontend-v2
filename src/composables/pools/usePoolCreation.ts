@@ -143,7 +143,7 @@ export default function usePoolCreation() {
 
   const joinPool = async () => {
     const provider = getProvider();
-    const result = await balancerService.pools.join(
+    const response = await balancerService.pools.join(
       provider,
       poolCreationState.poolId,
       account.value,
@@ -151,7 +151,7 @@ export default function usePoolCreation() {
       poolCreationState.tokenWeights,
       getScaledAmounts()
     );
-    console.log("Got join pool result: ", result);
+    console.log("Got join pool response: ", response);
   };
 
   const tokensList = computed(() => poolCreationState.tokensList);
