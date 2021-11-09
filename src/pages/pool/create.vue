@@ -15,6 +15,7 @@ import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useApp from '@/composables/useApp';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
 
 const initialAnimateProps = {
   opacity: 0,
@@ -43,7 +44,7 @@ const exitAnimateProps = {
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const { activeStep, similarPools } = usePoolCreation();
+const { activeStep, similarPools, tokensList } = usePoolCreation();
 
 /**
  * STATE
@@ -89,7 +90,10 @@ const steps = computed(() => [
 <template>
   <div class="w-full grid grid-cols-11 gap-x-8 pt-8 grid-container mx-auto">
     <div class="col-span-3">
-      <BalVerticalSteps title="Create a weighted pool steps" :steps="steps" />
+      <BalStack vertical>
+        <BalVerticalSteps title="Create a weighted pool steps" :steps="steps" />
+        <WalletPoolTokens :tokens="tokensList" />
+      </BalStack>
     </div>
     <div class="col-span-5 col-start-4 relative">
       <AnimatePresence
