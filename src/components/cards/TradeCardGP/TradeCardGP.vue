@@ -17,7 +17,6 @@
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
         :effectivePriceMessage="trading.effectivePriceMessage"
-        :tradeLoading="trading.isLoading.value"
         @amountChange="trading.handleAmountChange"
         class="mb-4"
       />
@@ -50,8 +49,8 @@
       />
       <BalBtn
         v-if="trading.isLoading.value"
-        :loading="true"
-        :disabled="true"
+        loading
+        disabled
         :loading-label="
           trading.isGnosisTrade.value ? $t('loadingBestPrice') : $t('loading')
         "
