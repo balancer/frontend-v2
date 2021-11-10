@@ -49,7 +49,8 @@
       />
       <BalBtn
         v-if="trading.isLoading.value"
-        :loading="true"
+        loading
+        disabled
         :loading-label="
           trading.isGnosisTrade.value ? $t('loadingBestPrice') : $t('loading')
         "
