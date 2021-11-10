@@ -68,7 +68,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     id: 'action',
     accessor: 'tx',
     Cell: 'actionCell',
-    width: 175,
+    width: 150,
     sortable: false
   },
   {
@@ -76,7 +76,7 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
     id: 'details',
     accessor: '',
     Cell: 'detailsCell',
-    width: 300,
+    width: 325,
     sortable: false
   },
   {
@@ -163,7 +163,7 @@ const swapRows = computed<SwapRow[]>(() =>
       </template>
 
       <template v-slot:detailsCell="action">
-        <div class="px-6 py-4 flex -mt-1 items-center">
+        <div class="px-6 py-4 flex -mt-1 items-center flex-wrap">
           <div class="token-item">
             <BalAsset :address="action.tokenIn" class="mr-2 flex-shrink-0" />
             <span class="font-numeric">{{

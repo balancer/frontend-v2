@@ -78,7 +78,7 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     id: 'action',
     accessor: 'tx',
     Cell: 'actionCell',
-    width: 175,
+    width: 150,
     sortable: false
   },
   {
@@ -86,7 +86,7 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
     id: 'details',
     accessor: '',
     Cell: 'detailsCell',
-    width: 300,
+    width: 325,
     sortable: false
   },
   {
