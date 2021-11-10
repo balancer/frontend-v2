@@ -128,7 +128,7 @@ export default function usePoolCreation() {
 
   const createPool = async () => {
     const provider = getProvider();
-    const poolDetails = await balancerService.pools.create(PoolType.Weighted)(
+    const poolDetails = await balancerService.pools.weighted.create(
       provider,
       'MyPool',
       getPoolSymbol(),
@@ -143,7 +143,7 @@ export default function usePoolCreation() {
 
   const joinPool = async () => {
     const provider = getProvider();
-    const response = await balancerService.pools.join(
+    const response = await balancerService.pools.weighted.join(
       provider,
       poolCreationState.poolId,
       account.value,

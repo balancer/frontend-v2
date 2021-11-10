@@ -1,12 +1,12 @@
-import { TransactionReceipt, Web3Provider } from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { AddressZero } from '@ethersproject/constants';
 import { TokenWeight } from '@/composables/pools/usePoolCreation';
-import Pools, { JoinPoolRequest } from './pools';
+import WeightedPoolsService, { JoinPoolRequest } from './weighted-pool.service';
 import BigNumber from 'bignumber.js';
 import { WeightedPoolEncoder } from '@balancer-labs/balancer-js';
 
 const tokens: Record<string, TokenWeight> = {};
-const poolCreator = new Pools();
+const weightedPoolsService = new WeightedPoolsService();
 
 const mockPoolId =
   'EEE8292CB20A443BA1CAAA59C985CE14CA2BDEE5000100000000000000000263';
@@ -67,7 +67,7 @@ describe('PoolCreator', () => {
         const mockProvider = {} as Web3Provider;
         tokens.WETH.weight = 50;
         tokens.USDT.weight = 50;
-        poolDetails = await poolCreator.createWeightedPool(
+        poolDetails = await weightedPoolsService.create(
           mockProvider,
           mockPoolName,
           mockPoolSymbol,
@@ -110,7 +110,7 @@ describe('PoolCreator', () => {
         tokens.WETH.weight = 50;
         tokens.USDT.weight = 50;
         expect(
-          poolCreator.createWeightedPool(
+          weightedPoolsService.create(
             mockProvider,
             mockPoolName,
             mockPoolSymbol,
@@ -124,7 +124,7 @@ describe('PoolCreator', () => {
   });
 
   describe('joinPool', () => {
-    let joinTx: TransactionReceipt;
+    let joinTx: TransactionResponse;
     const mockSender = '0xeeedce01a98ebc40f76b2d1f403e52d55b74feee';
     const mockReceiver = '0xabcdce01a98ebc40f76b2d1f403e52d55b74fddd';
 
@@ -136,7 +136,7 @@ describe('PoolCreator', () => {
 
     beforeEach(async () => {
       const mockProvider = {} as Web3Provider;
-      joinTx = await poolCreator.join(
+      joinTx = await weightedPoolsService.join(
         mockProvider,
         mockPoolId,
         mockSender,
@@ -184,7 +184,7 @@ describe('PoolCreator', () => {
         tokens.USDT
       ];
 
-      const sortedTokens = poolCreator.sortTokens(unsortedTokens);
+      const sortedTokens = weightedPoolsService.sortTokens(unsortedTokens);
       expect(sortedTokens).toEqual([tokens.MKR, tokens.WETH, tokens.USDT]);
     });
   });
@@ -193,10 +193,9 @@ describe('PoolCreator', () => {
     it('Should return 50e16/50e16 for 2 Token happy case. ', () => {
       tokens.MKR.weight = 50;
       tokens.WETH.weight = 50;
-      const normalizedWeights: string[] = poolCreator.calculateTokenWeights([
-        tokens.MKR,
-        tokens.WETH
-      ]);
+      const normalizedWeights: string[] = weightedPoolsService.calculateTokenWeights(
+        [tokens.MKR, tokens.WETH]
+      );
       expect(normalizedWeights[0]).toEqual(new BigNumber(0.5e18).toString());
       expect(normalizedWeights[1]).toEqual(new BigNumber(0.5e18).toString());
     });
@@ -205,11 +204,9 @@ describe('PoolCreator', () => {
       tokens.MKR.weight = 33.33;
       tokens.WETH.weight = 33.33;
       tokens.USDT.weight = 33.33;
-      const normalizedWeights: string[] = poolCreator.calculateTokenWeights([
-        tokens.MKR,
-        tokens.WETH,
-        tokens.USDT
-      ]);
+      const normalizedWeights: string[] = weightedPoolsService.calculateTokenWeights(
+        [tokens.MKR, tokens.WETH, tokens.USDT]
+      );
       expect(normalizedWeights[0]).toEqual('333333333333333333');
       expect(normalizedWeights[1]).toEqual('333333333333333333');
       expect(normalizedWeights[2]).toEqual('333333333333333334');

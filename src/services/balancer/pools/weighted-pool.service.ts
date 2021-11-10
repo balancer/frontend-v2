@@ -32,17 +32,8 @@ export interface JoinPoolRequest {
   fromInternalBalance: boolean;
 }
 
-export default class Pools {
-  create(type: PoolType) {
-    switch (type) {
-      case PoolType.Weighted:
-        return this.createWeightedPool.bind(this);
-      default:
-        throw new Error('Cannot create pool of type: ' + type);
-    }
-  }
-
-  public async createWeightedPool(
+export default class WeightedPoolService {
+  public async create(
     provider: Web3Provider,
     name: string,
     symbol: string,

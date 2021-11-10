@@ -1,10 +1,10 @@
-import Pools from './entities/pools';
+import PoolsService from './pools/pools.service';
 
 export default class BalancerService {
-  pools: Pools;
+  pools: PoolsService;
 
   constructor() {
-    this.pools = new Pools();
+    this.pools = new PoolsService();
   }
 }
 
