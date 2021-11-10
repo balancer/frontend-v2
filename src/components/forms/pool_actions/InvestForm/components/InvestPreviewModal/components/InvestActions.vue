@@ -216,20 +216,20 @@ async function submit(): Promise<void> {
   try {
     investmentState.init = true;
 
-    const tx = await poolExchange.join(
-      getProvider(),
-      account.value,
-      fullAmounts.value,
-      props.tokenAddresses,
-      bptOut.value
-    );
+    // const tx = await poolExchange.join(
+    //   getProvider(),
+    //   account.value,
+    //   fullAmounts.value,
+    //   props.tokenAddresses,
+    //   bptOut.value
+    // );
 
     investmentState.init = false;
     investmentState.confirming = true;
 
-    console.log('Receipt', tx);
+    // console.log('Receipt', tx);
 
-    handleTransaction(tx);
+    // handleTransaction(tx);
   } catch (error) {
     investmentState.init = false;
     investmentState.confirming = false;

@@ -96,7 +96,11 @@ export default function useInvestFormMath(
 
   const priceImpact = computed((): number => {
     if (!hasAmounts.value) return 0;
-    return poolCalculator.priceImpact(fullAmounts.value).toNumber() || 0;
+    try {
+      return poolCalculator.priceImpact(fullAmounts.value).toNumber() || 0;
+    } catch (error) {
+      return 0;
+    }
   });
 
   const highPriceImpact = computed(() =>
