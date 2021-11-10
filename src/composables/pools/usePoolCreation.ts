@@ -3,8 +3,11 @@ import { getAddress } from '@ethersproject/address';
 import { BigNumber } from 'bignumber.js';
 import { flatten } from 'lodash';
 import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useQuery } from 'vue-query';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
+import useTransactions from '@/composables/useTransactions';
+import useEthers from '@/composables/useEthers';
 import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import { balancerService } from '@/services/balancer/balancer.service';
@@ -23,8 +26,11 @@ export type TokenWeight = {
 type FeeManagementType = 'governance' | 'self';
 type FeeType = 'fixed' | 'dynamic';
 type FeeController = 'self' | 'other';
+type CreateState = 'none' | 'creating' | 'created' | 'failed';
+type JoinState = 'non' | 'joining' | 'joined' | 'failed';
 
 const poolCreationState = reactive({
+  name: 'MyPool',
   tokenWeights: [] as TokenWeight[],
   activeStep: 0,
   initialFee: '0',
@@ -36,7 +42,9 @@ const poolCreationState = reactive({
   fee: '0',
   tokensList: [] as string[],
   poolId: '' as string,
-  poolAddress: ''
+  poolAddress: '',
+  createState: 'none' as CreateState,
+  joinState: 'none' as JoinState
   // tokensList: [
   //   '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
   //   '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1'
@@ -62,6 +70,9 @@ async function getSimilarPools(tokensInPool: string[]) {
 export default function usePoolCreation() {
   const { balanceFor, getToken } = useTokens();
   const { account, getProvider } = useWeb3();
+  const { txListener } = useEthers();
+  const { addTransaction } = useTransactions();
+  const { t } = useI18n();
   watch(
     () => poolCreationState.tokenWeights,
     () => {
@@ -78,6 +89,11 @@ export default function usePoolCreation() {
     poolCreationState.tokenWeights = weights;
   };
 
+  const sortTokenWeights = () => {
+    poolCreationState.tokenWeights.sort((tokenA, tokenB) => {
+      return tokenA.tokenAddress > tokenB.tokenAddress ? 1 : -1;
+    });
+  }
   const proceed = () => {
     poolCreationState.activeStep += 1;
   };
@@ -127,31 +143,85 @@ export default function usePoolCreation() {
   };
 
   const createPool = async () => {
+    sortTokenWeights();
     const provider = getProvider();
-    const poolDetails = await balancerService.pools.weighted.create(
-      provider,
-      'MyPool',
-      getPoolSymbol(),
-      '0.01',
-      poolCreationState.tokenWeights,
-      // poolCreationState.thirdPartyFeeController
-      AddressZero
-    );
-    poolCreationState.poolId = poolDetails.id;
-    poolCreationState.poolAddress = poolDetails.address;
+    try {
+      poolCreationState.createState = 'creating';
+      const tx = await balancerService.pools.weighted.create(
+        provider,
+        poolCreationState.name,
+        getPoolSymbol(),
+        '0.01',
+        poolCreationState.tokenWeights,
+        // poolCreationState.thirdPartyFeeController
+        AddressZero
+      );
+
+      addTransaction({
+        id: tx.hash,
+        type: 'tx',
+        action: 'createpool',
+        summary: t('transactionSummary.createPool'),
+        details: {
+          name: poolCreationState.name
+        }
+      });
+
+      txListener(tx, {
+        onTxConfirmed: async () => {
+          const poolDetails = await balancerService.pools.weighted.details(
+            provider,
+            tx
+          );
+          poolCreationState.poolId = poolDetails.id;
+          poolCreationState.poolAddress = poolDetails.address;
+          poolCreationState.createState = 'created';
+        },
+        onTxFailed: () => {
+          poolCreationState.createState = 'failed';
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      poolCreationState.createState = 'failed';
+    }
   };
 
   const joinPool = async () => {
+    sortTokenWeights();
     const provider = getProvider();
-    const response = await balancerService.pools.weighted.join(
-      provider,
-      poolCreationState.poolId,
-      account.value,
-      account.value,
-      poolCreationState.tokenWeights,
-      getScaledAmounts()
-    );
-    console.log("Got join pool response: ", response);
+    try {
+      poolCreationState.joinState = 'joining';
+      const tx = await balancerService.pools.weighted.initJoin(
+        provider,
+        poolCreationState.poolId,
+        account.value,
+        account.value,
+        poolCreationState.tokenWeights,
+        getScaledAmounts()
+      );
+
+      console.log('Got join pool response: ', tx);
+
+      addTransaction({
+        id: tx.hash,
+        type: 'tx',
+        action: 'invest',
+        summary: t('transactionSummary.investInPool')
+      });
+
+      txListener(tx, {
+        onTxConfirmed: () => {
+          poolCreationState.joinState = 'joined';
+        },
+        onTxFailed: () => {
+          poolCreationState.joinState = 'failed';
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      poolCreationState.joinState = 'failed';
+    }
   };
 
   const tokensList = computed(() => poolCreationState.tokensList);

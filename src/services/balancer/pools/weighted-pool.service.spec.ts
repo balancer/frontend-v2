@@ -25,6 +25,12 @@ jest.mock('@ethersproject/contracts', () => {
 });
 
 describe('PoolCreator', () => {
+  let poolDetails;
+  const mockPoolName = 'TestPool';
+  const mockPoolSymbol = '50WETH-50USDT';
+  const mockSwapFee = '0.01';
+  const mockOwner = AddressZero;
+
   beforeEach(() => {
     jest.clearAllMocks();
     tokens.MKR = {
@@ -50,14 +56,8 @@ describe('PoolCreator', () => {
     };
   });
 
-  describe('createWeightedPool', () => {
+  describe('create', () => {
     const mockPoolAddress = '0xEEE8292cb20a443ba1caaa59c985ce14ca2bdee5';
-
-    let poolDetails;
-    const mockPoolName = 'TestPool';
-    const mockPoolSymbol = '50WETH-50USDT';
-    const mockSwapFee = '0.01';
-    const mockOwner = AddressZero;
 
     describe('happy case', () => {
       beforeEach(async () => {
@@ -67,7 +67,7 @@ describe('PoolCreator', () => {
         const mockProvider = {} as Web3Provider;
         tokens.WETH.weight = 50;
         tokens.USDT.weight = 50;
-        poolDetails = await weightedPoolsService.create(
+        await weightedPoolsService.create(
           mockProvider,
           mockPoolName,
           mockPoolSymbol,
@@ -97,11 +97,6 @@ describe('PoolCreator', () => {
         );
         expect(sendTransactionParams[5]).toEqual(mockOwner);
       });
-
-      it('Should return pool id and address correctly', () => {
-        expect(poolDetails.id).toEqual(mockPoolId);
-        expect(poolDetails.address).toEqual(mockPoolAddress);
-      });
     });
 
     describe('error handling', () => {
@@ -123,7 +118,38 @@ describe('PoolCreator', () => {
     });
   });
 
-  describe('joinPool', () => {
+  describe('details', () => {
+    const mockPoolAddress = '0xDDD8292cb20a443ba1caaa59c985ce14ca2bdee5';
+    let createPoolTransaction: TransactionResponse;
+    const mockProvider = {} as Web3Provider;
+
+    beforeEach(async () => {
+      require('@/lib/utils/balancer/web3').__setMockPoolAddress(
+        mockPoolAddress
+      );
+      tokens.WETH.weight = 50;
+      tokens.USDT.weight = 50;
+      createPoolTransaction = await weightedPoolsService.create(
+        mockProvider,
+        mockPoolName,
+        mockPoolSymbol,
+        mockSwapFee,
+        [tokens.WETH, tokens.USDT],
+        mockOwner
+      );
+    });
+
+    it('should take a pool create transaction response and return details about the pool', async () => {
+      const poolDetails = await weightedPoolsService.details(
+        mockProvider,
+        createPoolTransaction
+      );
+      expect(poolDetails.id).toEqual(mockPoolId);
+      expect(poolDetails.address).toEqual(mockPoolAddress);
+    });
+  });
+
+  describe('initJoin', () => {
     let joinTx: TransactionResponse;
     const mockSender = '0xeeedce01a98ebc40f76b2d1f403e52d55b74feee';
     const mockReceiver = '0xabcdce01a98ebc40f76b2d1f403e52d55b74fddd';
@@ -136,7 +162,7 @@ describe('PoolCreator', () => {
 
     beforeEach(async () => {
       const mockProvider = {} as Web3Provider;
-      joinTx = await weightedPoolsService.join(
+      joinTx = await weightedPoolsService.initJoin(
         mockProvider,
         mockPoolId,
         mockSender,

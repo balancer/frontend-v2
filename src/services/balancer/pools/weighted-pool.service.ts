@@ -6,7 +6,11 @@ import {
   WeightedPool__factory
 } from '@balancer-labs/typechain';
 import { Contract } from '@ethersproject/contracts';
-import { TransactionResponse, TransactionReceipt, Web3Provider } from '@ethersproject/providers';
+import {
+  TransactionResponse,
+  TransactionReceipt,
+  Web3Provider
+} from '@ethersproject/providers';
 import { configService } from '@/services/config/config.service';
 import BigNumber from 'bignumber.js';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
@@ -40,14 +44,11 @@ export default class WeightedPoolService {
     swapFee: string,
     tokens: TokenWeight[],
     owner: Address
-  ): Promise<CreatePoolReturn> {
+  ): Promise<TransactionResponse> {
     if (!owner.length) return Promise.reject('No pool owner specified');
 
     const weightedPoolFactoryAddress =
       configService.network.addresses.weightedPoolFactory;
-
-    // Tokens must be sorted in order of addresses
-    tokens = this.sortTokens(tokens);
 
     const tokenAddresses: Address[] = tokens.map((token: TokenWeight) => {
       return token.tokenAddress;
@@ -65,15 +66,20 @@ export default class WeightedPoolService {
       owner
     ];
 
-    const tx: TransactionResponse = await sendTransaction(
+    return sendTransaction(
       provider,
       weightedPoolFactoryAddress,
       WeightedPoolFactory__factory.abi,
       'create',
       params
     );
+  }
 
-    const receipt: any = await tx.wait();
+  public async details(
+    provider: Web3Provider,
+    createPoolTransaction: TransactionResponse
+  ): Promise<CreatePoolReturn> {
+    const receipt: any = await createPoolTransaction.wait();
     const events = receipt.events.filter(e => e.event === 'PoolCreated');
     const poolAddress = events[0].args[0];
 
@@ -88,7 +94,7 @@ export default class WeightedPoolService {
     return poolDetails;
   }
 
-  public async join(
+  public async initJoin(
     provider: Web3Provider,
     poolId: string,
     sender: Address,
@@ -123,12 +129,6 @@ export default class WeightedPoolService {
       'joinPool',
       [poolId, sender, receiver, joinPoolRequest]
     );
-  }
-
-  public sortTokens(tokens: TokenWeight[]) {
-    return [...tokens].sort((tokenA, tokenB) => {
-      return tokenA.tokenAddress > tokenB.tokenAddress ? 1 : -1;
-    });
   }
 
   public calculateTokenWeights(tokens: TokenWeight[]): string[] {
