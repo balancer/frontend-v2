@@ -18,7 +18,6 @@ type Props = {
   exactIn: boolean;
   priceImpact?: number;
   effectivePriceMessage?: UseTrading['effectivePriceMessage'];
-  tradeLoading?: boolean;
 };
 
 /**
@@ -136,7 +135,6 @@ watchEffect(() => {
       @update:amount="handleInAmountChange"
       @update:address="emit('update:tokenInAddress', $event)"
       :excludedTokens="[_tokenOutAddress]"
-      :disabled="tradeLoading"
     />
 
     <div class="flex items-center my-2">
@@ -159,7 +157,6 @@ watchEffect(() => {
       @update:address="emit('update:tokenOutAddress', $event)"
       noRules
       noMax
-      :disabled="tradeLoading"
       :excludedTokens="[_tokenInAddress]"
     />
   </div>
