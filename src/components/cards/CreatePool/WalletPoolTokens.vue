@@ -49,27 +49,47 @@ const totalFiat = computed(() => {
 </script>
 
 <template>
-  <AnimatePresence
-    :initial="initialAnimateProps"
-    :animate="entryAnimateProps"
-    :exit="exitAnimateProps"
-    isVisible="true"
-  >
-    <BalCard noPad shadow="false">
-      <div class="p-2 px-3 border-b">
-        <h6>Pool tokens in my wallet</h6>
-      </div>
-      <BalStack isDynamic vertical class="p-4" spacing="sm">
-        <div>
-          <h6 class="branch relative">Native tokens</h6>
-          <BalStack isDynamic vertical spacing="xs">
-            <BalStack
-              class="ml-6 twig relative"
-              v-for="token in nativeTokens"
-              :key="`wallet-pool-token-${token}`"
-              horizontal
-              justify="between"
-            >
+  <BalCard noPad shadow="false">
+    <div class="p-2 px-3 border-b">
+      <h6>Pool tokens in my wallet</h6>
+    </div>
+    <BalStack vertical class="p-4" spacing="sm">
+      <div>
+        <h6 class="branch relative">Native tokens</h6>
+        <BalStack isDynamic vertical spacing="xs">
+          <BalStack
+            class="ml-6 twig relative"
+            v-for="token in nativeTokens"
+            :key="`wallet-pool-token-${token}`"
+            horizontal
+            justify="between"
+          >
+            <BalStack vertical spacing="none">
+              <h6>{{ _tokens[token]?.symbol || 'N/A' }}</h6>
+              <span class="text-sm text-gray-600">{{
+                _tokens[token]?.name || 'Unknown token'
+              }}</span>
+            </BalStack>
+            <BalStack vertical spacing="none" align="end">
+              <h6>{{ fNum(balanceFor(token), 'token') }}</h6>
+              <span class="text-sm text-gray-600">{{
+                fNum(priceFor(token) * Number(balanceFor(token)), 'usd')
+              }}</span>
+            </BalStack>
+          </BalStack>
+        </BalStack>
+        <div
+          v-for="token in validTokens"
+          :key="`wallet-pool-token-${token}`"
+          class="mb-2"
+        >
+          <AnimatePresence
+            :initial="initialAnimateProps"
+            :animate="entryAnimateProps"
+            :exit="exitAnimateProps"
+            isVisible="true"
+          >
+            <BalStack horizontal justify="between" isDynamic>
               <BalStack vertical spacing="none">
                 <h6>{{ _tokens[token]?.symbol || 'N/A' }}</h6>
                 <span class="text-sm text-gray-600">{{
@@ -83,42 +103,15 @@ const totalFiat = computed(() => {
                 }}</span>
               </BalStack>
             </BalStack>
-          </BalStack>
-          <div
-            v-for="token in validTokens"
-            :key="`wallet-pool-token-${token}`"
-            class="mb-2"
-          >
-            <AnimatePresence
-              :initial="initialAnimateProps"
-              :animate="entryAnimateProps"
-              :exit="exitAnimateProps"
-              isVisible="true"
-            >
-              <BalStack horizontal justify="between" isDynamic>
-                <BalStack vertical spacing="none">
-                  <h6>{{ _tokens[token]?.symbol || 'N/A' }}</h6>
-                  <span class="text-sm text-gray-600">{{
-                    _tokens[token]?.name || 'Unknown token'
-                  }}</span>
-                </BalStack>
-                <BalStack vertical spacing="none" align="end">
-                  <h6>{{ fNum(balanceFor(token), 'token') }}</h6>
-                  <span class="text-sm text-gray-600">{{
-                    fNum(priceFor(token) * Number(balanceFor(token)), 'usd')
-                  }}</span>
-                </BalStack>
-              </BalStack>
-            </AnimatePresence>
-          </div>
-          <BalStack justify="between">
-            <h6>Total</h6>
-            <h6>{{ fNum(totalFiat, 'usd') }}</h6>
-          </BalStack>
+          </AnimatePresence>
         </div>
-      </BalStack>
-    </BalCard>
-  </AnimatePresence>
+        <BalStack justify="between">
+          <h6>Total</h6>
+          <h6>{{ fNum(totalFiat, 'usd') }}</h6>
+        </BalStack>
+      </div>
+    </BalStack>
+  </BalCard>
 </template>
 
 <style scoped>

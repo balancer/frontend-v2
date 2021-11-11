@@ -1,6 +1,8 @@
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import { FullPool, PoolType } from '@/services/balancer/subgraph/types';
+import CalculatorService from '@/services/pool/calculator/calculator.sevice';
 import { getAddress } from '@ethersproject/address';
-import { flatten } from 'lodash';
+import { flatten, sumBy } from 'lodash';
 import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
 import { useQuery } from 'vue-query';
 import usePoolsQuery from '../queries/usePoolsQuery';
@@ -52,7 +54,7 @@ async function getSimilarPools(tokensInPool: string[]) {
 }
 
 export default function usePoolCreation() {
-  const { balanceFor } = useTokens();
+  const { balanceFor, tokens, balances, priceFor } = useTokens();
   watch(
     () => poolCreationState.tokenWeights,
     () => {
@@ -94,13 +96,6 @@ export default function usePoolCreation() {
   };
 
   const tokensList = computed(() => poolCreationState.tokensList);
-  const balances = computed(() => {
-    const _balances: Record<string, string> = {};
-    for (const token of tokensList.value) {  
-      _balances[token] = balanceFor(getAddress(token));
-    }
-    return _balances;
-  })
 
   const { data: similarPoolsResponse, isLoading: isLoadingSimilarPools } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
   const similarPools = computed(() => {
@@ -115,6 +110,53 @@ export default function usePoolCreation() {
     return similarPool;
   });
 
+  const placeholderPool = computed<FullPool>(() => {
+    return {
+      onchain: {
+        tokens: {},
+        totalSupply: '0',
+        decimals: 0,
+        swapFee: poolCreationState.fee,
+        swapEnabled: true
+      },
+      dynamic: {
+        apr: {
+          pool: '',
+          thirdParty: '',
+          liquidityMining: '',
+          liquidityMiningBreakdown: {},
+          total: ''
+        },
+        period: '24h',
+        volume: '0',
+        fees: '',
+        isNewPool: true,
+      },
+      id: 'placeholder',
+      address: 'placeholder',
+      poolType: PoolType.Weighted,
+      swapFee: poolCreationState.fee,
+      owner: poolCreationState.feeController,
+      factory: 'placeholder',
+      tokens: poolCreationState.tokensList.map(t => tokens[t]),
+      tokensList: poolCreationState.tokensList,
+      tokenAddresses: poolCreationState.tokensList,
+      totalLiquidity: '0',
+      totalShares: '0',
+      totalSwapFee: '0',
+      totalSwapVolume: '0',
+      hasLiquidityMiningRewards: false,
+      createTime: Date.now()
+    }
+  });
+
+  const totalLiquidity = computed(() => {
+    return sumBy(
+      tokensList.value,
+      t => priceFor(t) * Number(balanceFor(t))
+    );
+  })
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -126,6 +168,8 @@ export default function usePoolCreation() {
     setStep,
     similarPools,
     isLoadingSimilarPools,
-    existingPool
+    existingPool,
+    placeholderPool,
+    totalLiquidity
   };
 }

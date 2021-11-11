@@ -8,6 +8,7 @@ import WalletInitialLiquidity from '@/components/cards/CreatePool/WalletInitialL
 import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
 import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
 import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
+import PreviewPool from '@/components/cards/CreatePool/PreviewPool.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { eq } from 'lodash';
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
@@ -127,6 +128,14 @@ const steps = computed(() => [
         :exit="exitAnimateProps"
       >
         <InitialLiquidity />
+      </AnimatePresence>
+      <AnimatePresence
+        :isVisible="!appLoading && activeStep === 4"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
+      >
+        <PreviewPool />
       </AnimatePresence>
     </div>
     <div class="col-span-3">

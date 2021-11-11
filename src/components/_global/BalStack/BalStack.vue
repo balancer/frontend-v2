@@ -38,7 +38,7 @@ const slots = useSlots();
 
 const slotsWithContent = computed(() => {
   if (props.isDynamic) {
-    if (slots.default()[0].children?.length) {
+    if (Array.isArray(slots.default()[0].children)) {
       return (slots.default()[0].children as any[]).filter(
         child => child.children !== 'v-if'
       );
