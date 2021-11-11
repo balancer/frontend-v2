@@ -9,6 +9,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
+import useWeb3 from '@/services/web3/useWeb3';
 import { forChange } from '@/lib/utils';
 import { isManaged, isStableLike } from '../usePool';
 import { getAddress } from '@ethersproject/address';
@@ -22,6 +23,7 @@ export default function usePoolQuery(
    */
   const { getTokens, injectTokens, prices, dynamicDataLoading } = useTokens();
   const { appLoading } = useApp();
+  const { account } = useWeb3();
   const { currency } = useUserSettings();
 
   /**
@@ -44,10 +46,11 @@ export default function usePoolQuery(
       }
     });
 
-    if (
-      (isStableLike(pool.poolType) && !POOLS.Stable.AllowList.includes(id)) ||
-      (isManaged(pool.poolType) && !POOLS.Investment.AllowList.includes(id))
-    ) {
+    const isOwnedByUser = getAddress(pool.owner) === getAddress(account.value);
+    const isAllowlisted =
+      (isStableLike(pool.poolType) && POOLS.Stable.AllowList.includes(id)) ||
+      (isManaged(pool.poolType) && POOLS.Investment.AllowList.includes(id));
+    if (!isOwnedByUser && !isAllowlisted) {
       throw new Error('Pool not allowed');
     }
 
