@@ -290,6 +290,10 @@ export default function useGnosis({
       ? tokenInAmountScaled.value
       : tokenOutAmountScaled.value;
 
+    if (amountToExchange === undefined) {
+      return;
+    }
+
     if (amountToExchange.isZero()) {
       tokenInAmountInput.value = '0';
       tokenOutAmountInput.value = '0';
