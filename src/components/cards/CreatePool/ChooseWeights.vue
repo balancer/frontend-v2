@@ -2,7 +2,6 @@
 import { configService } from '@/services/config/config.service';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
-import useWeb3 from '@/services/web3/useWeb3';
 import { computed, onMounted, reactive, ref, nextTick } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
@@ -11,6 +10,7 @@ import { sum, sumBy } from 'lodash';
 import usePoolCreation, {
   TokenWeight
 } from '@/composables/pools/usePoolCreation';
+import { BigNumber } from 'bignumber.js';
 
 const emit = defineEmits(['update:tokenWeights', 'nextStep']);
 
@@ -22,7 +22,6 @@ const emptyTokenWeight: TokenWeight = {
   amount: 0
 };
 
-const { userNetworkConfig } = useWeb3();
 const { tokenWeights, updateTokenWeights, proceed } = usePoolCreation();
 const networkName = configService.network.name;
 
@@ -84,9 +83,9 @@ const addTokenToPool = async () => {
 
   wrapperHeight.value += tokenWeightItemHeight.value;
 
-  const newWeights = [
+  const newWeights: TokenWeight[] = [
     ...tokenWeights.value,
-    { ...emptyTokenWeight, id: tokenWeights.value.length - 1 }
+    { ...emptyTokenWeight, id: tokenWeights.value.length - 1 } as TokenWeight
   ];
   updateTokenWeights(newWeights);
 
@@ -140,6 +139,11 @@ const totalWeight = computed(() => {
       w => w.weight
     )
   );
+});
+
+const createDisabled = computed(() => {
+  if (totalWeight.value > 100) return true;
+  return false;
 });
 
 const addTokenListElementRef = (el: HTMLElement) => {
