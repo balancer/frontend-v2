@@ -51,10 +51,10 @@ const { activeStep, similarPools, tokensList } = usePoolCreation();
  */
 const route = useRoute();
 const tokenColors = ref<string[]>([]);
-/**
- * QUERIES
- */
 
+/**
+ * FUNCTIONS
+ */
 const onNextStep = () => {
   activeStep.value += 1;
 };
@@ -92,7 +92,7 @@ const steps = computed(() => [
     <div class="col-span-3">
       <BalStack vertical>
         <BalVerticalSteps title="Create a weighted pool steps" :steps="steps" />
-        <WalletPoolTokens :tokens="tokensList" />
+        <WalletPoolTokens v-if="activeStep === 3" :tokens="tokensList" />
       </BalStack>
     </div>
     <div class="col-span-5 col-start-4 relative">
