@@ -52,7 +52,7 @@ export interface TokensProviderResponse {
   injectedTokens: Ref<TokenInfoMap>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: NativeAsset;
-  wrappedNativeAsset: ComputedRef<NativeAsset>;
+  wrappedNativeAsset: ComputedRef<TokenInfo>;
   activeTokenListTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
