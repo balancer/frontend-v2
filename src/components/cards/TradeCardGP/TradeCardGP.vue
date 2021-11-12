@@ -16,6 +16,9 @@
         v-model:tokenOutAmount="tokenOutAmount"
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
+        :tradeLoading="
+          trading.isBalancerTrade.value ? trading.isLoading.value : false
+        "
         :effectivePriceMessage="trading.effectivePriceMessage"
         @amountChange="trading.handleAmountChange"
         class="mb-4"
