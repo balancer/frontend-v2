@@ -51,14 +51,16 @@ const {
   amounts,
   validInputs,
   highPriceImpactAccepted,
-  resetAmounts
+  resetAmounts,
+  batchSwapQuery
 } = useInvestState();
 
 const investMath = useInvestMath(
   toRef(props, 'pool'),
   tokenAddresses,
   amounts,
-  useNativeAsset
+  useNativeAsset,
+  batchSwapQuery
 );
 
 const {

@@ -247,6 +247,57 @@ async function batchSwapGivenInV2(
   }
 }
 
+export async function boostedJoinBatchSwap(
+  network: string,
+  web3: Web3Provider,
+  swaps: SwapV2[],
+  tokenAddresses: string[],
+  tokenOut: string,
+  amountsInMap: Record<string, BigNumber>,
+  amountOutMin: BigNumber
+) {
+  try {
+    const address = await web3.getSigner().getAddress();
+    const overrides: any = {};
+    const tokensIn: string[] = Object.keys(amountsInMap);
+
+    const funds: FundManagement = {
+      sender: address,
+      recipient: address,
+      fromInternalBalance: false,
+      toInternalBalance: false
+    };
+
+    // Limits:
+    // +ve means max to send
+    // -ve mean min to receive
+    // For a multihop the intermediate tokens should be 0
+    const limits: string[] = [];
+    tokenAddresses.forEach((token, i) => {
+      if (tokensIn.includes(token.toLowerCase())) {
+        limits[i] = amountsInMap[token].toString();
+      } else if (token.toLowerCase() === tokenOut.toLowerCase()) {
+        limits[i] = amountOutMin.mul(-1).toString();
+      } else {
+        limits[i] = '0';
+      }
+    });
+    console.log('Limits', limits);
+
+    return sendTransaction(
+      web3,
+      configs[network].addresses.vault,
+      Vault__factory.abi,
+      'batchSwap',
+      [SwapKind.GivenIn, swaps, tokenAddresses, funds, limits, MaxUint256],
+      overrides
+    );
+  } catch (error) {
+    console.log('[Swapper] batchSwapGivenInV2 Error:', error);
+    throw error;
+  }
+}
+
 async function batchSwapGivenOutV2(
   network: string,
   web3: Web3Provider,

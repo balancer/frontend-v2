@@ -2,6 +2,7 @@ import { computed } from 'vue';
 import { parseUnits, formatUnits } from '@ethersproject/units';
 import useUserSettings from './useUserSettings';
 import { bnum } from '@/lib/utils';
+import { BigNumber } from 'ethers';
 
 export default function useSlippage() {
   const { slippage } = useUserSettings();
@@ -14,10 +15,14 @@ export default function useSlippage() {
 
   function minusSlippage(_amount: string, decimals: number): string {
     let amount = parseUnits(_amount, decimals);
-    const delta = amount.mul(slippageBasisPoints.value).div(10000);
-    amount = amount.sub(delta);
+    amount = minusSlippageScaled(amount);
 
     return formatUnits(amount, decimals).toString();
+  }
+
+  function minusSlippageScaled(amount: BigNumber): BigNumber {
+    const delta = amount.mul(slippageBasisPoints.value).div(10000);
+    return amount.sub(delta);
   }
 
   function addSlippage(_amount: string, decimals: number): string {
@@ -28,5 +33,5 @@ export default function useSlippage() {
     return formatUnits(amount, decimals).toString();
   }
 
-  return { minusSlippage, addSlippage };
+  return { minusSlippage, minusSlippageScaled, addSlippage };
 }

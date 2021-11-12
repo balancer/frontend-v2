@@ -25,6 +25,17 @@ import useConfig from '@/composables/useConfig';
 import useTranasactionErrors, {
   TransactionError
 } from '@/composables/useTransactionErrors';
+import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sor2';
+import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { Vault, Vault__factory } from '@balancer-labs/typechain';
+import { BigNumber, Contract } from 'ethers';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { formatUnits } from '@ethersproject/units';
+import VaultAbi from '@/lib/abi/VaultAbi.json';
+import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
+import useSlippage from '@/composables/useSlippage';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -83,7 +94,10 @@ const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { parseError } = useTranasactionErrors();
-const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.math);
+const { minusSlippageScaled } = useSlippage();
+const { fullAmounts, fullAmountsScaled, bptOut, fiatTotalLabel } = toRefs(
+  props.math
+);
 
 const { requiredApprovalState, approveToken } = useTokenApprovals(
   props.tokenAddresses,
@@ -215,6 +229,51 @@ async function handleTransaction(tx): Promise<void> {
 async function submit(): Promise<void> {
   try {
     investmentState.init = true;
+    
+    const sor = new SOR(
+      rpcProviderService.jsonProvider,
+      configService.network.chainId,
+      configService.network.subgraph
+    );
+
+    const fetchedPools = await sor.fetchPools([], false);
+
+    const vault = new Contract(
+      configService.network.addresses.vault,
+      VaultAbi,
+      rpcProviderService.jsonProvider
+    );
+
+    const tokensIn = props.tokenAddresses.map(address => address.toLowerCase())
+
+    const result = await queryBatchSwapTokensIn(
+      sor,
+      vault,
+      tokensIn,
+      fullAmountsScaled.value,
+      props.pool.address.toLowerCase()
+    );
+
+    const amountOutMin = minusSlippageScaled(
+      BigNumber.from(result.amountTokenOut).abs()
+    );
+    const amountsInMap = Object.fromEntries(
+      tokensIn.map((token, i) => [token, fullAmountsScaled.value[i]])
+    );
+
+    const tx = await boostedJoinBatchSwap(
+      configService.network.key,
+      getProvider(),
+      result.swaps,
+      result.assets,
+      props.pool.address,
+      amountsInMap,
+      BigNumber.from(amountOutMin)
+    );
+
+    /**
+     * 
+     */
 
     // const tx = await poolExchange.join(
     //   getProvider(),
@@ -227,9 +286,9 @@ async function submit(): Promise<void> {
     investmentState.init = false;
     investmentState.confirming = true;
 
-    // console.log('Receipt', tx);
+    console.log('Receipt', tx);
 
-    // handleTransaction(tx);
+    handleTransaction(tx);
   } catch (error) {
     investmentState.init = false;
     investmentState.confirming = false;
