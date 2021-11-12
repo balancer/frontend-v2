@@ -152,9 +152,10 @@ const inputRules = computed(() => {
 const maxPercentage = computed(() => {
   if (!hasBalance.value || !hasAmount.value) return '0';
 
-  const percentage = amountBN.value.div(tokenBalance.value).times(100);
-
-  return percentage.toFixed(2);
+  return amountBN.value
+    .div(tokenBalance.value)
+    .times(100)
+    .toFixed(2);
 });
 
 const bufferPercentage = computed(() => {
