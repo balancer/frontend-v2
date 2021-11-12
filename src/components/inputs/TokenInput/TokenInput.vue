@@ -292,7 +292,7 @@ watchEffect(() => {
         />
         <div
           v-if="shouldShowTxBufferMessage"
-          class="mt-2 text-yellow-600 dark:text-yellow-400 text-sm"
+          class="mt-2 text-yellow-600 dark:text-yellow-400 text-xs"
         >
           {{
             t('minTransactionBuffer', [
