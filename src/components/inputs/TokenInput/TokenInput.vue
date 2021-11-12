@@ -96,12 +96,12 @@ const shouldUseTxBuffer = computed(
   () =>
     _address.value === nativeAsset.address && !props.disableNativeAssetBuffer
 );
-const amountExceedsBalance = computed(() =>
+const amountExceedsTokenBalance = computed(() =>
   amountBN.value.gt(tokenBalance.value)
 );
 const shouldShowTxBufferMessage = computed(() => {
   if (
-    amountExceedsBalance.value ||
+    amountExceedsTokenBalance.value ||
     !shouldUseTxBuffer.value ||
     !hasBalance.value ||
     !hasAmount.value
@@ -167,7 +167,9 @@ const bufferPercentage = computed(() => {
     .toFixed(2);
 });
 
-const barColor = computed(() => (amountExceedsBalance.value ? 'red' : 'green'));
+const barColor = computed(() =>
+  amountExceedsTokenBalance.value ? 'red' : 'green'
+);
 
 const priceImpactSign = computed(() =>
   (props.priceImpact || 0) >= 0 ? '-' : '+'
