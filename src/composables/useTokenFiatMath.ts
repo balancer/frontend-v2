@@ -22,12 +22,12 @@ export default function useTokenFiatMath(
   /**
    * COMPUTED
    */
-  const tokenCount = computed(() => tokenAddresses.value.length);
+  const tokenCount = computed(() => tokenAddresses.length);
 
   // Input amounts can be null so fullAmounts returns amounts for all tokens
   // and zero if null.
   const fullAmounts = computed((): string[] =>
-    new Array(tokenCount.value).fill('0').map((_, i) => amounts.value[i] || '0')
+    new Array(tokenCount.value).fill('0').map((_, i) => amounts[i] || '0')
   );
 
   const fiatAmounts = computed((): string[] =>

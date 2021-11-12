@@ -170,6 +170,7 @@ async function submit(
 
         const confirmedAt = await getTxConfirmedAt(receipt);
         state.confirmedAt = dateTimeLabelFor(confirmedAt);
+        currentActionIndex.value += 1;
       },
       onTxFailed: () => {
         state.confirming = false;

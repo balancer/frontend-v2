@@ -12,13 +12,14 @@ import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue
 import PreviewPool from '@/components/cards/CreatePool/PreviewPool.vue';
 import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
 import SimilarPoolsCompact from '@/components/cards/CreatePool/SimilarPoolsCompact.vue';
-import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
 
 import anime from 'animejs';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 import useApp from '@/composables/useApp';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import { StepState } from '@/types';
+import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { useRoute } from 'vue-router';
 

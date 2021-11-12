@@ -1,12 +1,19 @@
 <script lang="ts" setup>
-import { computed, ComputedRef } from 'vue';
+import { ref, computed, ComputedRef } from 'vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
+
+/**
+ * STATE
+ */
+
+const poolCreated = ref(false);
 
 /**
  * COMPOSABLES
@@ -100,6 +107,7 @@ const tokenAmounts = computed((): string[] => {
           :tokenAddresses="tokenAddresses"
           :amounts="tokenAmounts"
           class="mt-4"
+          @success="poolCreated = true"
         />
       </BalCard>
       <BalCard shadow="false" noPad>

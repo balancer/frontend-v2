@@ -7,7 +7,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import {
   Step,
   StepState
-} from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+} from '@/types';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
