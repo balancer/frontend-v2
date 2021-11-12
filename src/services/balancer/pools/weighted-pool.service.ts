@@ -100,11 +100,8 @@ export default class WeightedPoolService {
     sender: Address,
     receiver: Address,
     tokens: TokenWeight[],
-    scaledInitialBalances: BigNumber[]
+    initialBalancesString: string[]
   ): Promise<TransactionResponse> {
-    const initialBalancesString: string[] = scaledInitialBalances.map(balance =>
-      balance.toString()
-    );
     const initUserData = defaultAbiCoder.encode(
       ['uint256', 'uint256[]'],
       [JOIN_KIND_INIT, initialBalancesString]

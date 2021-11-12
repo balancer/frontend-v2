@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { getActiveClassName } from '@/components/utils';
-import { StepState } from '../BalHorizSteps/BalHorizSteps.vue';
+import { StepState } from '@/types';
 
 type Props = {
   title: string;

@@ -37,3 +37,27 @@ export interface HtmlInputEvent {
 export interface MetamaskError extends Error {
   code: number | string;
 }
+
+export enum StepState {
+  Todo,
+  Active,
+  WalletOpen,
+  Pending,
+  Success,
+  Warning,
+  Error,
+  Completed
+}
+
+export type Step = {
+  tooltip: string;
+  state: StepState;
+};
+
+export type Action = {
+  label: string;
+  loadingLabel: string;
+  pending: boolean;
+  step: Step;
+  promise: () => Promise<void>;
+};

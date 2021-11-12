@@ -14,10 +14,10 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { AddressZero } from '@ethersproject/constants';
 import { bnum, scale } from '@/lib/utils';
-
 import BigNumber from 'bignumber.js';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
+import { TransactionResponse } from '@ethersproject/providers';
 
 export type TokenWeight = {
   tokenAddress: string;
@@ -30,8 +30,6 @@ export type TokenWeight = {
 type FeeManagementType = 'governance' | 'self';
 type FeeType = 'fixed' | 'dynamic';
 type FeeController = 'self' | 'other';
-type CreateState = 'none' | 'creating' | 'created' | 'failed';
-type JoinState = 'non' | 'joining' | 'joined' | 'failed';
 
 const emptyPoolCreationState = {
   name: 'MyPool',
@@ -47,8 +45,6 @@ const emptyPoolCreationState = {
   tokensList: [] as string[],
   poolId: '' as string,
   poolAddress: '',
-  createState: 'none' as CreateState,
-  joinState: 'none' as JoinState,
   type: PoolType.Weighted
 };
 
@@ -136,13 +132,13 @@ export default function usePoolCreation() {
     tokenColors.value = colors;
   }
 
-  const getScaledAmounts = (): BigNumber[] => {
-    const scaledAmounts: BigNumber[] = poolCreationState.tokenWeights.map(
+  const getScaledAmounts = (): string[] => {
+    const scaledAmounts: string[] = poolCreationState.tokenWeights.map(
       (token: TokenWeight) => {
         const tokenInfo = getToken(token.tokenAddress);
         const amount = new BigNumber(token.amount);
         const scaledAmount = scale(amount, tokenInfo.decimals);
-        return scaledAmount;
+        return scaledAmount.toString();
       }
     );
     return scaledAmounts;
@@ -160,11 +156,10 @@ export default function usePoolCreation() {
     return tokenSymbols.join('-');
   };
 
-  const createPool = async () => {
+  async function createPool(): Promise<TransactionResponse> {
     sortTokenWeights();
     const provider = getProvider();
     try {
-      poolCreationState.createState = 'creating';
       const tx = await balancerService.pools.weighted.create(
         provider,
         poolCreationState.name,
@@ -193,23 +188,23 @@ export default function usePoolCreation() {
           );
           poolCreationState.poolId = poolDetails.id;
           poolCreationState.poolAddress = poolDetails.address;
-          poolCreationState.createState = 'created';
         },
         onTxFailed: () => {
-          poolCreationState.createState = 'failed';
+          console.log('Create failed');
         }
       });
+
+      return tx;
     } catch (e) {
       console.log(e);
-      poolCreationState.createState = 'failed';
+      return Promise.reject('Create failed');
     }
-  };
+  }
 
   const joinPool = async () => {
     sortTokenWeights();
     const provider = getProvider();
     try {
-      poolCreationState.joinState = 'joining';
       const tx = await balancerService.pools.weighted.initJoin(
         provider,
         poolCreationState.poolId,
@@ -228,17 +223,10 @@ export default function usePoolCreation() {
         summary: t('transactionSummary.investInPool')
       });
 
-      txListener(tx, {
-        onTxConfirmed: () => {
-          poolCreationState.joinState = 'joined';
-        },
-        onTxFailed: () => {
-          poolCreationState.joinState = 'failed';
-        }
-      });
+      return tx;
     } catch (e) {
       console.log(e);
-      poolCreationState.joinState = 'failed';
+      return Promise.reject('Join failed');
     }
   };
 
@@ -320,6 +308,7 @@ export default function usePoolCreation() {
     totalLiquidity,
     maxInitialLiquidity,
     getPoolSymbol,
+    getScaledAmounts,
     createPool,
     joinPool,
     tokenColors,

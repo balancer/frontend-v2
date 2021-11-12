@@ -1,28 +1,9 @@
-<script lang="ts">
-/**
- * TYPES
- */
-export enum StepState {
-  Todo,
-  Active,
-  WalletOpen,
-  Pending,
-  Success,
-  Warning,
-  Error,
-  Completed
-}
-
-export type Step = {
-  tooltip: string;
-  state: StepState;
-};
-</script>
-
 <script setup lang="ts">
 import { computed } from 'vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { getConnectorLogo } from '@/services/web3/web3.plugin';
+import { Step, StepState } from '@/types';
+
 const stepState = StepState;
 
 /**

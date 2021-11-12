@@ -20,7 +20,7 @@ export type ApprovalStateMap = {
 
 export default function useTokenApprovals(
   tokenAddresses: string[],
-  amounts: Ref<string[]>
+  amounts: string[]
 ) {
   /**
    * COMPOSABLES
@@ -36,7 +36,7 @@ export default function useTokenApprovals(
    */
   const requiredApprovalState = ref<ApprovalStateMap>(
     Object.fromEntries(
-      approvalsRequired(tokenAddresses, amounts.value).map(address => [
+      approvalsRequired(tokenAddresses, amounts).map(address => [
         address,
         { init: false, confirming: false, approved: false }
       ])
@@ -50,7 +50,7 @@ export default function useTokenApprovals(
    * COMPUTED
    */
   const requiredApprovals = computed(() =>
-    approvalsRequired(tokenAddresses, amounts.value)
+    approvalsRequired(tokenAddresses, amounts)
   );
 
   /**

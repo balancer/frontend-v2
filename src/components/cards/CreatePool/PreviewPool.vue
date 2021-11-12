@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { computed, ComputedRef } from 'vue';
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
@@ -14,6 +15,7 @@ const { userNetworkConfig } = useWeb3();
 const {
   tokenWeights,
   totalLiquidity,
+  getScaledAmounts,
   getPoolSymbol,
   type: poolType,
   initialFee
@@ -25,6 +27,13 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
+const tokenAddresses = computed((): string[] => {
+  return tokenWeights.value.map((token) => token.tokenAddress);
+});
+
+const tokenAmounts = computed((): string[] => {
+  return getScaledAmounts();
+});
 </script>
 
 <template>
@@ -87,10 +96,11 @@ const { t } = useI18n();
           <h6>{{ $t('total') }}</h6>
           <h6>{{ fNum(totalLiquidity, 'usd') }}</h6>
         </BalStack>
-        <!-- <BalHorizSteps
-          :steps="steps"
-          class="flex justify-center"
-        /> -->
+        <CreateActions
+          :tokenAddresses="tokenAddresses"
+          :amounts="tokenAmounts"
+          class="mt-4"
+        />
       </BalCard>
       <BalCard shadow="false" noPad>
         <div class="bg-gray-50 p-2">
