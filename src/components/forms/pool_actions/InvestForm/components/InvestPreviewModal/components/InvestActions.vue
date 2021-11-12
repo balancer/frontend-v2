@@ -229,7 +229,7 @@ async function handleTransaction(tx): Promise<void> {
 async function submit(): Promise<void> {
   try {
     investmentState.init = true;
-    
+
     const sor = new SOR(
       rpcProviderService.jsonProvider,
       configService.network.chainId,
@@ -244,7 +244,7 @@ async function submit(): Promise<void> {
       rpcProviderService.jsonProvider
     );
 
-    const tokensIn = props.tokenAddresses.map(address => address.toLowerCase())
+    const tokensIn = props.tokenAddresses.map(address => address.toLowerCase());
 
     const result = await queryBatchSwapTokensIn(
       sor,
@@ -272,7 +272,7 @@ async function submit(): Promise<void> {
     );
 
     /**
-     * 
+     *
      */
 
     // const tx = await poolExchange.join(
