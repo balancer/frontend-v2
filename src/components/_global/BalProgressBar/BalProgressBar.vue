@@ -24,12 +24,12 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const barClasses = computed(() => ({
   [`h-${props.size}`]: true,
-  [`bg-${props.color}-500 dark:bg-${props.color}-400`]: true
+  [`bg-${props.color}-400`]: true
 }));
 
 const bufferBarClasses = computed(() => ({
   [`h-${props.size}`]: true,
-  [`bg-yellow-500 dark:bg-yellow-400`]: true
+  [`bg-yellow-500`]: true
 }));
 
 const barStyles = computed(() => ({
