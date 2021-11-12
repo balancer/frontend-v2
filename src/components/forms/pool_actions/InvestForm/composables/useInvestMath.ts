@@ -8,7 +8,9 @@ import { formatUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
-import { ETH_TX_BUFFER } from '@/constants/transactions';
+import { configService } from '@/services/config/config.service';
+
+const { nativeAsset } = configService.network;
 
 export type InvestMathResponse = {
   // computed
@@ -45,7 +47,7 @@ export default function useInvestFormMath(
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { tokens, balances, balanceFor, nativeAsset } = useTokens();
+  const { tokens, balances, balanceFor } = useTokens();
   const { minusSlippage } = useSlippage();
   const { managedPoolWithTradingHalted } = usePool(pool);
   const { currency } = useUserSettings();
@@ -108,7 +110,7 @@ export default function useInvestFormMath(
         return (
           amount ===
           bnum(balance)
-            .minus(ETH_TX_BUFFER)
+            .minus(nativeAsset.minTransactionBuffer)
             .toString()
         );
       } else {
@@ -163,9 +165,9 @@ export default function useInvestFormMath(
     fullAmounts.value.forEach((_, i) => {
       if (tokenAddresses.value[i] === nativeAsset.address) {
         const balance = balanceFor(tokenAddresses.value[i]);
-        amounts.value[i] = bnum(balance).gt(ETH_TX_BUFFER)
+        amounts.value[i] = bnum(balance).gt(nativeAsset.minTransactionBuffer)
           ? bnum(balance)
-              .minus(ETH_TX_BUFFER)
+              .minus(nativeAsset.minTransactionBuffer)
               .toString()
           : '0';
       } else {

@@ -23,7 +23,8 @@
     "symbol": "MATIC",
     "decimals": 18,
     "deeplinkId": "matic",
-    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png"
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0/logo.png",
+    "minTransactionBuffer": "0.1"
   },
   "addresses": {
     "exchangeProxy": "",

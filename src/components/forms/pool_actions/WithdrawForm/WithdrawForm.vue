@@ -105,7 +105,7 @@ onBeforeMount(() => {
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
       fixedToken
-      disableEthBuffer
+      disableNativeAssetBuffer
     >
       <template #tokenSelect>
         <WithdrawalTokenSelect :pool="pool" :initToken="tokenOut" />
