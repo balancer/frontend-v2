@@ -96,14 +96,6 @@ const forceProportionalInputs = computed(
   (): boolean => managedPoolWithTradingHalted.value
 );
 
-const canPreview = computed(() => {
-  console.log("Has amounts: ", hasAmounts.value);
-  console.log("Has valid inputs: ", hasValidInputs.value);
-  console.log("Is mismatched: ", isMismatchedNetwork.value);
-
-  return !hasAmounts.value || !hasValidInputs.value || isMismatchedNetwork.value
-})
-
 /**
  * METHODS
  */
@@ -177,7 +169,6 @@ function setNativeAsset(to: NativeAsset): void {
     tokenAddresses.value[indexOfAsset] = toAddress;
   }
 }
-
 
 /**
  * CALLBACKS
