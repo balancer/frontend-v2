@@ -210,7 +210,7 @@ async function submit(): Promise<void> {
       block
       @click="currentAction.promise()"
     >
-      AA{{ currentAction.label }}
+      {{ currentAction.label }}
     </BalBtn>
     <template v-else>
       <div
