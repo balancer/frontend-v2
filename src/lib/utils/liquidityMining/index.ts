@@ -71,13 +71,6 @@ export function computeTotalAPRForPool(
   currency: FiatCurrency,
   totalLiquidity: string
 ) {
-  console.log(
-    'PRICE',
-    tokenRewards.map(({ tokenAddress }) => [
-      tokenAddress,
-      prices[getAddress(tokenAddress)]
-    ])
-  );
   return tokenRewards
     .reduce(
       (totalRewards, { amount, tokenAddress }) =>
