@@ -39,14 +39,13 @@ export function computeAPRForPool(
   totalLiquidity: string
 ) {
   // Guard against null price
-  return tokenPrice != null
-    ? bnum(rewards)
-        .div(7)
-        .times(tokenPrice)
-        .times(365)
-        .div(totalLiquidity)
-        .toString()
-    : '0';
+  if (tokenPrice === null || tokenPrice === undefined) return '0';
+  return bnum(rewards)
+    .div(7)
+    .times(tokenPrice)
+    .times(365)
+    .div(totalLiquidity)
+    .toString();
 }
 
 export function computeAPRsForPool(
@@ -59,7 +58,7 @@ export function computeAPRsForPool(
     getAddress(reward.tokenAddress),
     computeAPRForPool(
       reward.amount,
-      prices[getAddress(reward.tokenAddress)][currency],
+      prices[getAddress(reward.tokenAddress)]?.[currency],
       totalLiquidity
     )
   ]);
@@ -72,13 +71,20 @@ export function computeTotalAPRForPool(
   currency: FiatCurrency,
   totalLiquidity: string
 ) {
+  console.log(
+    'PRICE',
+    tokenRewards.map(({ tokenAddress }) => [
+      tokenAddress,
+      prices[getAddress(tokenAddress)]
+    ])
+  );
   return tokenRewards
     .reduce(
       (totalRewards, { amount, tokenAddress }) =>
         totalRewards.plus(
           computeAPRForPool(
             amount,
-            prices[getAddress(tokenAddress)][currency],
+            prices[getAddress(tokenAddress)]?.[currency],
             totalLiquidity
           )
         ),
