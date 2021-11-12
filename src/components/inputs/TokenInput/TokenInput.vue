@@ -11,14 +11,11 @@ import { bnum } from '@/lib/utils';
 import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
 
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
 
 import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 
 import { TokenInfo } from '@/types/TokenList';
-
-const { nativeAsset } = configService.network;
 
 /**
  * TYPES
@@ -81,7 +78,7 @@ const _address = ref<string>('');
  * COMPOSABLEs
  */
 
-const { getToken, balanceFor } = useTokens();
+const { getToken, balanceFor, nativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { t } = useI18n();

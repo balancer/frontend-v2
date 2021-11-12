@@ -11,8 +11,6 @@ import { isStable, isStableLike } from '@/composables/usePool';
 import { bnum } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 
-const { nativeAsset } = configService.network;
-
 interface Amounts {
   send: string[];
   receive: string[];
@@ -95,7 +93,7 @@ export default class CalculatorService {
       let balance;
       if (token === this.config.network.nativeAsset.address) {
         balance = bnum(this.balances.value[token])
-          .minus(nativeAsset.minTransactionBuffer)
+          .minus(this.config.network.nativeAsset.minTransactionBuffer)
           .toString();
       } else {
         balance = this.balances.value[token] || '0';

@@ -115,8 +115,6 @@ import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useUserSettings from '@/composables/useUserSettings';
 
-const { nativeAsset } = configService.network;
-
 export default defineComponent({
   components: {
     SuccessOverlay,
@@ -135,7 +133,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
-    const { tokens } = useTokens();
+    const { tokens, nativeAsset } = useTokens();
     const { userNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
     const {

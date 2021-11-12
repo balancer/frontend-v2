@@ -8,9 +8,6 @@ import { formatUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
-import { configService } from '@/services/config/config.service';
-
-const { nativeAsset } = configService.network;
 
 export type InvestMathResponse = {
   // computed
@@ -47,7 +44,7 @@ export default function useInvestFormMath(
    * COMPOSABLES
    */
   const { toFiat } = useNumbers();
-  const { tokens, balances, balanceFor } = useTokens();
+  const { tokens, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippage } = useSlippage();
   const { managedPoolWithTradingHalted } = usePool(pool);
   const { currency } = useUserSettings();

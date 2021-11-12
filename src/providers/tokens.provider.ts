@@ -15,7 +15,12 @@ import { getAddress, isAddress } from '@ethersproject/address';
 import { bnum, forChange } from '@/lib/utils';
 import { currentLiquidityMiningRewardTokens } from '@/lib/utils/liquidityMining';
 
-import { TokenInfo, TokenInfoMap, TokenList } from '@/types/TokenList';
+import {
+  NativeAsset,
+  TokenInfo,
+  TokenInfoMap,
+  TokenList
+} from '@/types/TokenList';
 
 import symbolKeys from '@/constants/symbol.keys';
 
@@ -46,8 +51,8 @@ export interface TokensProviderResponse {
   tokens: ComputedRef<TokenInfoMap>;
   injectedTokens: Ref<TokenInfoMap>;
   allowanceContracts: Ref<string[]>;
-  nativeAsset: TokenInfo;
-  wrappedNativeAsset: ComputedRef<TokenInfo>;
+  nativeAsset: NativeAsset;
+  wrappedNativeAsset: ComputedRef<NativeAsset>;
   activeTokenListTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
@@ -109,7 +114,7 @@ export default {
     /**
      * STATE
      */
-    const nativeAsset: TokenInfo = {
+    const nativeAsset: NativeAsset = {
       ...networkConfig.nativeAsset,
       chainId: networkConfig.chainId
     };
