@@ -1,0 +1,97 @@
+{
+  "key": "250",
+  "chainId": 250,
+  "chainName": "Fantom",
+  "name": "Fantom Opera",
+  "shortName": "Fantom",
+  "network": "fantom",
+  "unknown": false,
+  "rpc": "https://graph-node.beets-ftm-node.com/rpc",
+  "ws": "wss://graph-node.beets-ftm-node.com/ws",
+  "loggingRpc": "",
+  "explorer": "https://ftmscan.com",
+  "explorerName": "Ftmscan",
+  "subgraph": "https://graph-node.beets-ftm-node.com/subgraphs/name/beethovenx-v4",
+  "blockSubgraph": "https://graph-node.beets-ftm-node.com/subgraphs/name/fantom-blocks",
+  "farmSubgraph": "https://graph-node.beets-ftm-node.com/subgraphs/name/masterchef",
+  "backendUrl": "https://backend.beets-ftm-node.com/graphql",
+  "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-rinkeby/pools",
+  "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
+  "nativeAsset": {
+    "name": "Fantom",
+    "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "symbol": "FTM",
+    "decimals": 18,
+    "deeplinkId": "fantom",
+    "logoURI": "https://storageapi.fleek.co/beethovenxfi-team-bucket/FTM.png",
+    "minTransactionBuffer": "0.05"
+  },
+  "addresses": {
+    "bFactory": "",
+    "bActions": "",
+    "dsProxyRegistry": "",
+    "exchangeProxy": "",
+    "merkleRedeem": "",
+    "multicall": "0x09523Acc78Dd297Ae5Da00DdeBE6f10ebF784565",
+    "authorizer": "0x974D3FF709D84Ba44cde3257C0B5B0b14C081Ce9",
+    "vault": "0x20dd72Ed959b6147912C2e529F0a0C651c33c9ce",
+    "weightedPoolFactory": "0x60467cb225092cE0c989361934311175f437Cf53",
+    "stablePoolFactory": "0x55df810876354Fc3e249f701Dd78DeDE57991F8D",
+    "tokenFactory": "0x6732d651EeA0bc98FcF4EFF8B62e0CdCB0064f4b",
+    "weth": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
+    "stETH": "",
+    "wstETH": "",
+    "usdc": "0x04068da6c83afcfa0e13ba15a6696662335d5b75",
+    "beets": "0xF24Bcf4d1e507740041C9cFd2DddB29585aDCe1e",
+    "lidoRelayer": "",
+    "balancerHelpers": "0xfE18C7C70b0a2c6541bEde0367124278BC345Dc8",
+    "masterChef": "0x8166994d9ebBe5829EC86Bd81258149B87faCfd3",
+    "beetsUsdcReferencePricePool": "0x03c6b3f09d2504606936b1a4decefad204687890000200000000000000000015",
+    "beethovenxToken": "0xf24bcf4d1e507740041c9cfd2dddb29585adce1e",
+    "defaultPoolOwner": "0xCd983793ADb846dcE4830c22F30C7Ef0C864a776",
+    "earlyLudwigNft": "0xf2558d6a252C1041a3902870B1FdB0B7524B3098",
+    "hnd": "0x10010078a54396F62c96dF8532dc2B4847d47ED3",
+    "hndRewarder": "0x0A190202AD82F2bEA8Be994e34D588F6E235083e",
+    "merkleOrchard": ""
+  },
+  "strategies": {
+    "0": {
+      "type": "0",
+      "name": "stablePool"
+    },
+    "1": {
+      "type": "1",
+      "name": "weightedPool"
+    },
+    "2": {
+      "type": "2",
+      "name": "weightedPool"
+    }
+  },
+  "lbp": {
+    "poolId": "0x03c6b3f09d2504606936b1a4decefad204687890000200000000000000000015",
+    "tokenAddress": "0xF24Bcf4d1e507740041C9cFd2DddB29585aDCe1e",
+    "tokenSymbol": "BEETS",
+    "startingAmount": 5000000,
+    "usdcAddress": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
+    "startTime": "2021-10-07T14:00:00+0000",
+    "endTime": "2021-10-08T14:00:00+0000",
+    "weightStep":  0.00625,
+    "timeStep": 3600
+  },
+  "etherscan": {
+    "apiKey": "PKKV6JBSI4B1251AXR1PCDZBPWQBXBFERB",
+    "apiUrl": "https://api.ftmscan.com/api"
+  },
+  "tokenListSanityUrl": "https://1g2ag2hb.apicdn.sanity.io/v1/data/query/production?query=%7B%0A%20%20%22name%22%3A%20%22Beethoven%20X%22%2C%0A%20%20%22timestamp%22%3A%20%222021-10-06T18%3A18%3A18.181Z%22%2C%0A%20%20%22version%22%3A%20%7B%0A%20%20%20%20%22major%22%3A%201%2C%0A%20%20%20%20%22minor%22%3A%200%2C%0A%20%20%20%20%22patch%22%3A%202%0A%20%20%7D%2C%0A%20%20%22tags%22%3A%20%7B%7D%2C%0A%20%20%22logoURI%22%3A%20%22https%3A%2F%2Fstorageapi.fleek.co%2Fbeethovenxfi-team-bucket%2Fbethovenx-icon.png%22%2C%0A%20%20%22keywords%22%3A%20%5B%0A%20%20%20%20%22beethoven%22%2C%0A%20%20%20%20%22default%22%2C%0A%20%20%20%20%22fantom%22%0A%20%20%5D%2C%0A%20%20%22tokens%22%3A%20*%5B_type%20%3D%3D%20%22fantomToken%22%5D%7B%0A%20%20%20%20%20%20name%2C%0A%20%20%20%20%20%20address%2C%0A%20%20%20%20%20%20symbol%2C%0A%20%20%20%20%20%20decimals%2C%0A%20%20%20%20%20%20%22chainId%22%3A%20250%2C%0A%20%20%20%20%20%20logoURI%0A%20%20%20%7D%0A%7D",
+  "configSanityUrl": "https://1g2ag2hb.apicdn.sanity.io/v1/data/query/production?query=*%5B_type%20%3D%3D%20%22config%22%20%26%26%20chainId%20%3D%3D%20250%5D%5B0%5D%7B%0A%20%20...%2C%0A%20%20%22incentivizedPools%22%3A%20select(%0A%20%20%20%20%20%20defined(incentivizedPools)%20%3D%3E%20incentivizedPools%2C%0A%20%20%20%20%20%20%5B%5D%0A%20%20)%2C%0A%20%20%22pausedPools%22%3A%20select(%0A%20%20%20%20%20%20defined(pausedPools)%20%3D%3E%20pausedPools%2C%0A%20%20%20%20%20%20%5B%5D%0A%20%20)%2C%0A%20%20%22blacklistedPools%22%3A%20select(%0A%20%20%20%20%20%20defined(blacklistedPools)%20%3D%3E%20blacklistedPools%2C%0A%20%20%20%20%20%20%5B%5D%0A%20%20)%2C%0A%7D",
+  "supportsEIP1559": false,
+  "supportsElementPools": false,
+  "keys": {
+    "infura": "daaa68ec242643719749dd1caba2fc66",
+    "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88"
+  }
+}
+
+
+

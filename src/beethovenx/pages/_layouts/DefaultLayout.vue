@@ -1,0 +1,82 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import AppNav from '@/beethovenx/components/navs/AppNav.vue';
+import AppFooterNav from '@/components/navs/AppFooterNav/AppFooterNav.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
+import AppHeaderBg from '@/beethovenx/components/backgrounds/AppHeaderBg.vue';
+
+/**
+ * COMPOSABLES
+ */
+const route = useRoute();
+const { upToLargeBreakpoint } = useBreakpoints();
+
+/**
+ * COMPUTED
+ */
+const isHomePage = computed(() => route.path === '/');
+</script>
+
+<template>
+  <div>
+    <AppNav />
+    <AppHeaderBg />
+    <div class="pb-16 relative">
+      <router-view :key="$route.path" />
+    </div>
+    <AppFooterNav v-if="upToLargeBreakpoint" />
+    <div class="flex flex-1 items-end relative">
+      <img src="~@/beethovenx/assets/images/community-image.png" />
+      <div
+        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex justify-center pb-6 ml-8"
+      >
+        <a href="https://twitter.com/beethoven_x" class="mr-12">
+          <img
+            src="~@/beethovenx/assets/images/twitter-icon.png"
+            width="40"
+            class="mx-auto"
+          />
+        </a>
+        <a href="https://beethovenxio.medium.com/" class="mr-12">
+          <img
+            src="~@/beethovenx/assets/images/medium-icon.png"
+            width="40"
+            class="mx-auto"
+          />
+        </a>
+        <a href="https://discord.gg/jedS4zGk28" class="mr-12">
+          <img
+            src="~@/beethovenx/assets/images/discord-icon.png"
+            width="40"
+            class="mx-auto"
+          />
+        </a>
+        <a href="https://docs.beethovenx.io/" class="mr-12">
+          <img
+            src="~@/beethovenx/assets/images/gitbook-logo.png"
+            width="40"
+            class="mx-auto"
+          />
+        </a>
+        <a href="https://github.com/beethovenxfi">
+          <img
+            src="~@/beethovenx/assets/images/github-logo.png"
+            width="40"
+            class="mx-auto"
+          />
+        </a>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+.VueQueryDevtoolsPanel + button {
+  @apply text-black bg-gray-100 p-2 rounded text-sm;
+}
+
+#intercom-activator {
+  z-index: 2147483004;
+}
+</style>

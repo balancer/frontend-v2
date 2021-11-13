@@ -62,5 +62,27 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
         'https://storageapi.fleek.co/tomafrench-team-bucket/arbitrum.vetted.tokenlist.json'
     },
     External: ['https://tracer.finance/tokens']
+  },
+  '4': {
+    Balancer: {
+      Default:
+        'https://beethoven-assets.s3.eu-central-1.amazonaws.com/beethoven-rinkeby.tokenlist.json',
+      Vetted:
+        'https://beethoven-assets.s3.eu-central-1.amazonaws.com/beethoven-rinkeby.tokenlist.json'
+    },
+    External: [
+      'https://beethoven-assets.s3.eu-central-1.amazonaws.com/beethoven-rinkeby.tokenlist.json'
+    ]
+  },
+  '250': {
+    Balancer: {
+      Default:
+        'https://beethoven-assets.s3.eu-central-1.amazonaws.com/beethoven-fantom.tokenlist.json',
+      Vetted:
+        'https://beethoven-assets.s3.eu-central-1.amazonaws.com/beethoven-fantom.tokenlist.json'
+    },
+    External: [
+      'https://beethoven-assets.s3.eu-central-1.amazonaws.com/beethoven-fantom.tokenlist.json'
+    ]
   }
 };

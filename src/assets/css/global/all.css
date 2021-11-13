@@ -24,8 +24,16 @@ input {
   caret-color: theme('colors.pink.500');
 }
 
+
 #app {
-  @apply bg-white dark:bg-gray-900;
+  background-image: linear-gradient(to bottom,
+    #08061F,
+    #1B1464,
+    #00395E,
+    #00544E,
+    #000000
+  );
+  /*@apply bg-white dark:bg-gray-900;*/
   @apply text-gray-900 dark:text-gray-50;
   min-height: calc(100vh + 1px);
 }

@@ -14,5 +14,13 @@
   "42161": {
     "input": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
     "output": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8"
+  },
+  "4": {
+    "input": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "output": "0x0483863540CB2C1ea77F7827db43ee160a0Ad7AC"
+  },
+  "250": {
+    "input": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "output": "0xb3654dc3d10ea7645f8319668e8f54d2574fbdc8"
   }
 }

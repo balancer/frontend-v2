@@ -81,7 +81,7 @@ export class SorManager {
       poolsSourceV1
     );
 
-    this.sorV2 = new SORV2(provider, chainId, subgraphUrlV2);
+    this.sorV2 = new SORV2(provider as any, chainId, subgraphUrlV2);
     this.weth = weth;
     this.gasPrice = gasPrice;
     this.maxPools = maxPools;

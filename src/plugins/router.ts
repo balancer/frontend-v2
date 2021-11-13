@@ -1,10 +1,10 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import HomePage from '@/pages/index.vue';
+import HomePage from '@/beethovenx/pages/index.vue';
 import PoolPage from '@/pages/pool/_id.vue';
 import PoolInvestPage from '@/pages/pool/invest.vue';
 import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
-import TradePage from '@/pages/trade.vue';
+import TradePage from '@/beethovenx/pages/trade.vue';
 
 const routes: RouteRecordRaw[] = [
   {

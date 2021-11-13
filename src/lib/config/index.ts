@@ -3,6 +3,7 @@ import kovan from './kovan.json';
 import rinkeby from './rinkeby.json';
 import polygon from './polygon.json';
 import arbitrum from './arbitrum.json';
+import fantom from '../../beethovenx/config/fantom.json';
 import docker from './docker.json';
 import test from './test.json';
 import { Network } from '@/composables/useNetwork';
@@ -69,6 +70,7 @@ const config: Record<Config['chainId'], Config> = {
   [Network.RINKEBY]: rinkeby,
   [Network.POLYGON]: polygon,
   [Network.ARBITRUM]: arbitrum,
+  [Network.FANTOM]: fantom,
   12345: test,
   // @ts-ignore
   17: docker

@@ -5,7 +5,6 @@ import mixins from '@/plugins/mixins';
 import i18n from '@/plugins/i18n';
 import blocknative from '@/plugins/blocknative';
 import vueQuery from '@/plugins/vueQuery';
-import initSentry from '@/plugins/sentry';
 import registerDirectives from '@/plugins/directives';
 import { registerGlobalComponents } from '@/plugins/components';
 import Web3Plugin from '@/services/web3/web3.plugin';
@@ -52,7 +51,7 @@ const app = createApp(Root)
 
 registerDirectives(app);
 registerGlobalComponents(app);
-initSentry(app);
+//initSentry(app);
 
 app.mount('#app');
 
