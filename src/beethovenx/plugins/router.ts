@@ -8,7 +8,6 @@ import TradePage from '@/beethovenx/pages/trade.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', redirect: '/trade' },
-  { path: '/invest', name: 'invest', component: HomePage },
   {
     path: '/trade/:assetIn?/:assetOut?',
     name: 'trade',
@@ -42,6 +41,7 @@ const routes: RouteRecordRaw[] = [
     name: 'liquidity-mining',
     component: LiquidityMiningPage
   },
+  { path: '/invest', name: 'invest', component: HomePage },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',

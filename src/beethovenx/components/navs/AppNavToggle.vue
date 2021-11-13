@@ -11,7 +11,7 @@
       Swap
     </router-link>
     <router-link
-      :to="{ name: 'home' }"
+      :to="{ name: 'invest' }"
       :class="[
         'toggle-link px-6 rounded-l-lg',
         { [activeClasses]: !isTradePage }

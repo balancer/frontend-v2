@@ -13,6 +13,7 @@ interface Env {
   INFURA_PROJECT_ID: string;
   PORTIS_DAPP_ID: string;
   ENABLE_STABLE_POOLS: boolean;
+  BACKEND_URL?: string;
 }
 
 export default class ConfigService {
@@ -33,7 +34,8 @@ export default class ConfigService {
         this.getNetworkConfig(networkId.value).keys.infura ||
         'MISSING_KEY',
       ENABLE_STABLE_POOLS: process.env.VUE_APP_ENABLE_STABLE_POOLS === 'true',
-      PORTIS_DAPP_ID: process.env.VUE_APP_PORTIS_DAPP_ID || 'MISSING_KEY'
+      PORTIS_DAPP_ID: process.env.VUE_APP_PORTIS_DAPP_ID || 'MISSING_KEY',
+      BACKEND_URL: process.env.VUE_APP_BACKEND_URL
     };
   }
 

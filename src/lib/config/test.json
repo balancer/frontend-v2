@@ -62,5 +62,7 @@
       "name": "weightedPool"
     }
   },
-  "supportsElementPools": true
+  "supportsElementPools": true,
+  "backendUrl": "",
+  "configSanityUrl": ""
 }

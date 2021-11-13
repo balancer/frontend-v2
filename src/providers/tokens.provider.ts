@@ -26,7 +26,7 @@ import symbolKeys from '@/constants/symbol.keys';
 
 import useTokenLists from '@/composables/useTokenLists';
 import useConfig from '@/composables/useConfig';
-import useTokenPricesQuery from '@/composables/queries/useTokenPricesQuery';
+import useTokenPricesQuery from '@/beethovenx/composables/queries/useTokenPricesQuery';
 import useBalancesQuery from '@/composables/queries/useBalancesQuery';
 import useAllowancesQuery from '@/composables/queries/useAllowancesQuery';
 import useUserSettings from '@/composables/useUserSettings';

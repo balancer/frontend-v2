@@ -62,14 +62,16 @@ export interface Config {
       name: string;
     }
   >;
+  backendUrl: string;
+  configSanityUrl: string;
 }
 
 const config: Record<Config['chainId'], Config> = {
-  [Network.MAINNET]: homestead,
-  [Network.KOVAN]: kovan,
-  [Network.RINKEBY]: rinkeby,
-  [Network.POLYGON]: polygon,
-  [Network.ARBITRUM]: arbitrum,
+  //[Network.MAINNET]: homestead,
+  //[Network.KOVAN]: kovan,
+  //[Network.RINKEBY]: rinkeby,
+  //[Network.POLYGON]: polygon,
+  //[Network.ARBITRUM]: arbitrum,
   [Network.FANTOM]: fantom,
   12345: test,
   // @ts-ignore
