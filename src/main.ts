@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import store from '@/store';
-import router from '@/plugins/router';
+import router from '@/beethovenx/plugins/router';
 import mixins from '@/plugins/mixins';
 import i18n from '@/plugins/i18n';
 import blocknative from '@/plugins/blocknative';

@@ -1,0 +1,64 @@
+<template>
+  <div :class="`app-nav-toggle bg-gray-800`">
+    <router-link
+      :to="{ name: 'trade' }"
+      :class="[
+        'toggle-link px-6 rounded-r-lg',
+        { [activeClasses]: isTradePage }
+      ]"
+      @click="trackGoal(Goals.ClickNavTrade)"
+    >
+      Swap
+    </router-link>
+    <router-link
+      :to="{ name: 'home' }"
+      :class="[
+        'toggle-link px-6 rounded-l-lg',
+        { [activeClasses]: !isTradePage }
+      ]"
+      @click="trackGoal(Goals.ClickNavInvest)"
+    >
+      {{ $t('invest') }}
+    </router-link>
+  </div>
+</template>
+
+<script lang="ts">
+import useFathom from '@/composables/useFathom';
+import { computed, defineComponent } from 'vue';
+import { useRoute } from 'vue-router';
+
+export default defineComponent({
+  name: 'AppNavToggle',
+
+  props: {
+    darkModeBg: { type: String, default: '800' }
+  },
+
+  setup() {
+    const route = useRoute();
+    const activeClasses =
+      'bg-black text-white rounded-lg dark:text-black dark:bg-white';
+    const isTradePage = computed(() => route.name === 'trade');
+    const { trackGoal, Goals } = useFathom();
+
+    return {
+      isTradePage,
+      activeClasses,
+      trackGoal,
+      Goals
+    };
+  }
+});
+</script>
+
+<style scoped>
+.app-nav-toggle {
+  @apply h-10 flex items-center rounded-lg shadow;
+  font-variation-settings: 'wght' 600;
+}
+
+.toggle-link {
+  @apply h-full flex items-center;
+}
+</style>
