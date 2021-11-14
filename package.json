@@ -17,7 +17,9 @@
     "tailwind:build": "tailwind-config-viewer export ./tailwind-static",
     "tailwind:view": "tailwind-config-viewer -o"
   },
-  "dependencies": {},
+  "dependencies": {
+    "decimal.js": "^10.3.1"
+  },
   "devDependencies": {
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
     "@balancer-labs/balancer-js": "^1.0.1",

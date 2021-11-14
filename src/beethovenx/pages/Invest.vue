@@ -21,7 +21,17 @@
       <div class="mb-16" />
     </template>
     <div class="px-4 lg:px-0">
-      <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
+      <div class="px-4 lg:px-0 mb-3 flex">
+        <div class="flex-1">
+          <h3>Community Investment Pools</h3>
+          <p>
+            Investment pools created by the community. Please DYOR before
+            investing in any community pool.
+          </p>
+        </div>
+        <BalBtn label="Compose a pool" @click="goToPoolCreate" />
+      </div>
+      <!--      <h3 class="mb-3">{{ $t('investmentPools') }}</h3>-->
       <TokenSearchInput
         v-model="selectedTokens"
         :loading="isLoadingPools"
@@ -113,6 +123,10 @@ export default defineComponent({
 
     const hideV1Links = computed(() => !isV1Supported);
 
+    function goToPoolCreate() {
+      router.push({ name: 'pool-create' });
+    }
+
     watch(poolsQuery.error, () => {
       if (poolsQuery.error.value) {
         addAlert({
@@ -149,6 +163,7 @@ export default defineComponent({
       loadMorePools,
       addSelectedToken,
       removeSelectedToken,
+      goToPoolCreate,
 
       // constants
       EXTERNAL_LINKS

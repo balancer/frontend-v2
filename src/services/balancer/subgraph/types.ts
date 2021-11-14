@@ -137,3 +137,10 @@ export type TradePairSnapshot = {
     };
   };
 };
+
+export interface SubgraphBalancer {
+  poolCount: number;
+  totalLiquidity: number;
+  totalSwapFee: number;
+  totalSwapVolume: number;
+}

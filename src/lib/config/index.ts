@@ -50,6 +50,15 @@ export interface Config {
     wstETH: string;
     lidoRelayer: string;
     balancerHelpers: string;
+    beethovenxToken: string;
+    hndRewarder: string;
+    masterChef: string;
+    earlyLudwigNft: string;
+    hnd: string;
+    beetsUsdcReferencePricePool: string;
+    beets: string;
+    usdc: string;
+    defaultPoolOwner: string;
   };
   keys: {
     infura: string;
@@ -64,6 +73,8 @@ export interface Config {
   >;
   backendUrl: string;
   configSanityUrl: string;
+  blockSubgraph: string;
+  farmSubgraph: string;
 }
 
 const config: Record<Config['chainId'], Config> = {
@@ -73,7 +84,7 @@ const config: Record<Config['chainId'], Config> = {
   //[Network.POLYGON]: polygon,
   //[Network.ARBITRUM]: arbitrum,
   [Network.FANTOM]: fantom,
-  12345: test,
+  //12345: test,
   // @ts-ignore
   17: docker
 };
