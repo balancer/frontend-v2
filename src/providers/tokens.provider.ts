@@ -9,7 +9,7 @@ import {
   ComputedRef,
   onBeforeMount
 } from 'vue';
-import { compact, pick } from 'lodash';
+import { compact, pick, find } from 'lodash';
 import { getAddress, isAddress } from '@ethersproject/address';
 
 import { bnum, forChange } from '@/lib/utils';
@@ -382,7 +382,12 @@ export default {
      * Get single token from state
      */
     function getToken(address: string): TokenInfo {
-      return tokens.value[address];
+      const token = find(
+        tokens.value,
+        token => token.address.toLowerCase() === address.toLowerCase()
+      );
+
+      return token!;
     }
 
     /**

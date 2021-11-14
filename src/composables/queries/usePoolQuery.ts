@@ -50,9 +50,9 @@ export default function usePoolQuery(
     const isAllowlisted =
       (isStableLike(pool.poolType) && POOLS.Stable.AllowList.includes(id)) ||
       (isManaged(pool.poolType) && POOLS.Investment.AllowList.includes(id));
-    if (!isOwnedByUser && !isAllowlisted) {
+    /*if (!isOwnedByUser && !isAllowlisted) {
       throw new Error('Pool not allowed');
-    }
+    }*/
 
     await injectTokens([
       ...pool.tokensList,
