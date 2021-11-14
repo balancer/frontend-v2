@@ -9,5 +9,5 @@
 }
 
 .icon-spin-anim:hover .bal-icon {
-  @apply text-blue-500;
+  @apply text-green-500;
 }

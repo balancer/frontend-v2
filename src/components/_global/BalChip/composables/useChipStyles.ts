@@ -14,7 +14,7 @@ export function useChipClasses(props) {
 
   const bgColorClasses = (): string => {
     if (props.color === 'gradient')
-      return 'text-white bg-gradient-to-tr from-blue-500 to-pink-500';
+      return 'text-white bg-gradient-to-tr from-green-500 to-pink-500';
     if (props.color === 'white') return 'bg-white dark:bg-gray-900';
     if (props.color === 'red') return 'text-white bg-red-500';
 

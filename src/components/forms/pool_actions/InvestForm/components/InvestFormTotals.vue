@@ -62,7 +62,7 @@ const optimizeBtnClasses = computed(() => ({
           </span>
           <span
             v-else
-            class="text-blue-500 cursor-pointer"
+            class="text-green-500 cursor-pointer"
             @click="emit('maximize')"
           >
             {{ $t('max') }}

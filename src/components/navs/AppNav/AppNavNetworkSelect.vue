@@ -39,7 +39,7 @@
             {{ network.name }}
           </span>
         </div>
-        <BalIcon v-if="isActive(network)" name="check" class="text-blue-500" />
+        <BalIcon v-if="isActive(network)" name="check" class="text-green-500" />
       </a>
     </div>
   </BalPopover>

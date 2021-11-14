@@ -46,7 +46,7 @@
       </div>
       <template v-if="transactions.length > 0" v-slot:footer>
         <div class="w-full p-3 rounded-b-lg bg-white dark:bg-gray-800 text-sm">
-          <a @click="clearAllTransactions()" class="text-blue-500">
+          <a @click="clearAllTransactions()" class="text-green-500">
             {{ $t('clearTransactions') }}
           </a>
         </div>
