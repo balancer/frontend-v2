@@ -95,9 +95,13 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { parseError } = useTranasactionErrors();
 const { minusSlippageScaled } = useSlippage();
-const { fullAmounts, batchSwapAmountMap, bptOut, fiatTotalLabel, batchSwap } = toRefs(
-  props.math
-);
+const {
+  fullAmounts,
+  batchSwapAmountMap,
+  bptOut,
+  fiatTotalLabel,
+  batchSwap
+} = toRefs(props.math);
 
 const { requiredApprovalState, approveToken } = useTokenApprovals(
   props.tokenAddresses,

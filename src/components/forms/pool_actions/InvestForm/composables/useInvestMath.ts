@@ -257,7 +257,7 @@ export default function useInvestFormMath(
         Object.keys(batchSwapAmountMap.value),
         Object.values(batchSwapAmountMap.value),
         pool.value.address.toLowerCase()
-      )
+      );
       batchSwap.value = await queryBatchSwapTokensIn(
         sor,
         vault,
@@ -265,7 +265,7 @@ export default function useInvestFormMath(
         Object.values(batchSwapAmountMap.value),
         pool.value.address.toLowerCase()
       );
-      console.log('batchSwap.value', batchSwap.value)
+      console.log('batchSwap.value', batchSwap.value);
     }
   });
 
