@@ -11,7 +11,7 @@
       Swap
     </router-link>
     <router-link
-      :to="{ name: 'invest' }"
+      :to="{ name: 'pools' }"
       :class="[
         'toggle-link px-6 rounded-l-lg',
         { [activeClasses]: isInvestPage }
