@@ -3,6 +3,7 @@ import HomePage from '@/beethovenx/pages/Invest.vue';
 import PoolPage from '@/beethovenx/pages/pool/_id.vue';
 import PoolInvestPage from '@/beethovenx/pages/pool/invest.vue';
 import PoolWithdrawPage from '@/beethovenx/pages/pool/withdraw.vue';
+import PoolFarmPage from '@/beethovenx/pages/pool/farm.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/beethovenx/pages/trade.vue';
 import PoolCreate from '@/beethovenx/pages/PoolCreate.vue';
@@ -37,6 +38,12 @@ const routes: RouteRecordRaw[] = [
     name: 'withdraw',
     component: PoolWithdrawPage,
     meta: { layout: 'PoolTransferLayout' }
+  },
+  {
+    path: '/pool/:id/farm',
+    name: 'farm',
+    component: PoolFarmPage,
+    meta: { layout: 'FarmLayout' }
   },
   {
     path: '/liquidity-mining',

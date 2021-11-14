@@ -4,6 +4,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { useRoute } from 'vue-router';
 import useTokens from '@/composables/useTokens';
+import usePools from '@/composables/pools/usePools';
 
 /**
  * STATE
@@ -19,6 +20,7 @@ export default function usePoolTransfers() {
    * COMPOSABLES
    */
   const { prices } = useTokens();
+  const { poolsWithFarms, userPools } = usePools();
 
   /**
    * QUERIES
@@ -28,8 +30,27 @@ export default function usePoolTransfers() {
   /**
    * COMPUTED
    */
-  const pool = computed((): FullPool | undefined => {
-    return poolQuery.data.value;
+  const pool = computed(() => {
+    const poolWithFarm = poolsWithFarms.value.find(
+      poolWithFarm => poolWithFarm.id === (route.params.id as string)
+    );
+    const userPool = userPools.value.find(
+      poolWithFarm => poolWithFarm.id === (route.params.id as string)
+    );
+
+    if (!poolQuery.data.value) {
+      return undefined;
+    }
+
+    return {
+      ...poolQuery.data.value,
+      dynamic: poolWithFarm
+        ? poolWithFarm.dynamic
+        : poolQuery.data.value.dynamic,
+      hasLiquidityMiningRewards: !!poolWithFarm,
+      farm: poolWithFarm?.farm,
+      shares: userPool?.shares
+    };
   });
 
   const poolQueryLoading = computed(

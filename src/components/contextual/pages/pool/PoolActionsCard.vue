@@ -59,6 +59,10 @@ const fiatTotal = computed(() => {
   return fNum(fiatValue, currency.value);
 });
 
+const hasFarmStake = computed(
+  () => props.pool.farm?.stake && props.pool.farm.stake > 0
+);
+
 /**
  * CALLBACKS
  */
@@ -104,5 +108,13 @@ onBeforeMount(() => {
         block
       />
     </div>
+    <BalBtn
+      class="mt-2"
+      :tag="hasFarmStake ? 'router-link' : 'div'"
+      :to="{ name: 'farm' }"
+      label="Farm"
+      :disabled="!hasFarmStake"
+      block
+    />
   </BalCard>
 </template>

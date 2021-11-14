@@ -80,6 +80,8 @@ export interface OnchainPoolData {
 
 export interface FullPool extends DecoratedPool {
   onchain: OnchainPoolData;
+  farm?: DecoratedFarm;
+  shares?: string;
 }
 
 export type AnyPool = Pool | FullPool | DecoratedPoolWithShares;

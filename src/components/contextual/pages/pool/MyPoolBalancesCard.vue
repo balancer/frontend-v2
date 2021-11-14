@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, onBeforeMount, computed } from 'vue';
+import { toRef, onBeforeMount, computed, ref } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
@@ -7,6 +7,8 @@ import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
 import { usePool } from '@/composables/usePool';
+import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -24,19 +26,46 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fiatTotalLabel, initMath, proportionalAmounts } = useWithdrawMath(
-  toRef(props, 'pool')
-);
-const { getTokens } = useTokens();
+const { initMath } = useWithdrawMath(toRef(props, 'pool'));
+const { getTokens, tokens, balances, balanceFor } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { isWalletReady } = useWeb3();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
 
+const fiatTotalLabel = computed(() => {
+  const pool = props.pool;
+
+  return fNum(parseFloat(pool.shares || '0') + (pool.farm?.stake || 0), 'usd', {
+    forcePreset: true
+  });
+});
+
+const poolCalculator = new PoolCalculator(
+  toRef(props, 'pool'),
+  tokens,
+  balances,
+  'exit',
+  ref(false)
+);
+
+const proportionalAmounts = computed((): string[] => {
+  const farm = props.pool.farm;
+  const userBalance = parseFloat(balanceFor(getAddress(props.pool.address)));
+  const farmBalance = farm ? farm.userBpt : 0;
+
+  const { receive } = poolCalculator.propAmountsGiven(
+    `${userBalance + farmBalance}`,
+    0,
+    'send'
+  );
+  return receive;
+});
+
 /**
  * COMPUTED
  */
-const tokens = computed(() => getTokens(props.pool.tokenAddresses));
+const poolTokens = computed(() => getTokens(props.pool.tokenAddresses));
 
 /**
  * METHODS
@@ -72,7 +101,7 @@ onBeforeMount(() => {
     </template>
     <div class="px-4 py-2">
       <div
-        v-for="(token, _, index) in tokens"
+        v-for="(token, _, index) in poolTokens"
         :key="token.address"
         class="asset-row"
       >

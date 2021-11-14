@@ -9,6 +9,7 @@ import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 // Components
 import AssetRow from './components/AssetRow.vue';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -45,15 +46,16 @@ const poolCalculator = new PoolCalculator(
 /**
  * COMPUTED
  */
-const bptBalance = computed((): string => balanceFor(props.pool.address));
-
 const propTokenAmounts = computed((): string[] => {
+  const farm = props.pool.farm;
+  const userBalance = parseFloat(balanceFor(getAddress(props.pool.address)));
+  const farmBalance = farm ? farm.userBpt : 0;
+
   const { receive } = poolCalculator.propAmountsGiven(
-    bptBalance.value,
+    `${userBalance + farmBalance}`,
     0,
     'send'
   );
-
   return receive;
 });
 

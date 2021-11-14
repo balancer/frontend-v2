@@ -92,6 +92,12 @@
             <PoolStatCards :pool="pool" :loading="loadingPool" />
           </div>
 
+          <div class="mb-4" v-if="loadingPool || !!pool.farm">
+            <h4 class="px-4 lg:px-0 mb-4">Farm</h4>
+            <FarmStatCardsLoading v-if="loadingPool" />
+            <FarmStatCards v-else :pool="pool" />
+          </div>
+
           <div class="mb-4">
             <h4 v-text="$t('poolComposition')" class="px-4 lg:px-0 mb-4" />
             <PoolBalancesCard :pool="pool" :loading="loadingPool" />
@@ -175,6 +181,9 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
+import FarmStatCards from '@/beethovenx/components/pages/farm/FarmStatCards.vue';
+import FarmStatCardsLoading from '@/beethovenx/components/pages/farm/FarmStatCardsLoading.vue';
+import usePools from '@/composables/pools/usePools';
 
 interface PoolPageData {
   id: string;
@@ -184,7 +193,9 @@ export default defineComponent({
   components: {
     ...PoolPageComponents,
     GauntletIcon,
-    LiquidityMiningTooltip
+    LiquidityMiningTooltip,
+    FarmStatCards,
+    FarmStatCardsLoading
   },
 
   setup() {
@@ -199,6 +210,7 @@ export default defineComponent({
     const { prices } = useTokens();
     const { blockNumber } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
+    const { poolsWithFarms, userPools } = usePools();
 
     /**
      * QUERIES
@@ -219,7 +231,29 @@ export default defineComponent({
     /**
      * COMPUTED
      */
-    const pool = computed(() => poolQuery.data.value);
+    //const pool = computed(() => poolQuery.data.value);
+    const pool = computed(() => {
+      const poolWithFarm = poolsWithFarms.value.find(
+        poolWithFarm => poolWithFarm.id === (route.params.id as string)
+      );
+      const userPool = userPools.value.find(
+        poolWithFarm => poolWithFarm.id === (route.params.id as string)
+      );
+
+      if (!poolQuery.data.value) {
+        return undefined;
+      }
+
+      return {
+        ...poolQuery.data.value,
+        dynamic: poolWithFarm
+          ? poolWithFarm.dynamic
+          : poolQuery.data.value.dynamic,
+        hasLiquidityMiningRewards: !!poolWithFarm,
+        farm: poolWithFarm?.farm,
+        shares: userPool?.shares
+      };
+    });
     const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
       poolQuery.data
     );

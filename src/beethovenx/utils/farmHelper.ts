@@ -9,7 +9,13 @@ import {
 } from '@/beethovenx/services/subgraph/subgraph-types';
 
 export function calculateTvl(farm: Farm, pool: DecoratedPool) {
-  const { tokens, priceFor } = useTokens();
+  const response = useTokens();
+
+  if (!response) {
+    return 0;
+  }
+
+  const { tokens, priceFor, dynamicDataLoaded, dynamicDataLoading } = response;
 
   if (pool && pool.totalShares !== '0' && farm.slpBalance !== '0') {
     const valuePerShare =
@@ -124,7 +130,8 @@ export function decorateFarm(
     pendingBeetsValue: (farmUser?.pendingBeets || 0) * beetsPrice,
     share: userShare,
     pendingRewardToken: farmUser?.pendingRewardToken || 0,
-    pendingRewardTokenValue: farmUser?.pendingRewardTokenValue || 0
+    pendingRewardTokenValue: farmUser?.pendingRewardTokenValue || 0,
+    userBpt: new BigNumber(farmUser?.amount || 0).div(1e18).toNumber()
   };
 }
 

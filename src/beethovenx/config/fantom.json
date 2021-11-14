@@ -24,7 +24,7 @@
     "decimals": 18,
     "deeplinkId": "fantom",
     "logoURI": "https://storageapi.fleek.co/beethovenxfi-team-bucket/FTM.png",
-    "minTransactionBuffer": "0.05"
+    "minTransactionBuffer": "0.5"
   },
   "addresses": {
     "bFactory": "",
