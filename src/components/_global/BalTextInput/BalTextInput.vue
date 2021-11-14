@@ -21,7 +21,7 @@ type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
 type InputSize = 'sm' | 'md' | 'lg';
 type ValidationTrigger = 'input' | 'blur';
 type RuleFunction = (val: InputValue) => string;
-export type Rules = RuleFunction[];
+type Rules = RuleFunction[];
 
 type Props = {
   name: string;
@@ -96,21 +96,29 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
           </span>
         </slot>
       </div>
-      <div :class="['input-group', inputGroupClasses]">
+      <div :class="['input-group', 'relative', inputGroupClasses]">
         <div v-if="$slots.prepend" :class="['prepend', prependClasses]">
           <slot name="prepend" />
         </div>
-        <input
-          :type="type"
-          :name="name"
-          :value="modelValue"
-          v-bind="inputAttrs"
-          :disabled="disabled"
-          @blur="onBlur"
-          @input="onInput"
-          @keydown="onKeydown"
-          :class="['input', inputClasses]"
-        />
+        <div class="middle">
+          <input
+            :type="type"
+            :name="name"
+            :value="modelValue"
+            v-bind="inputAttrs"
+            :disabled="disabled"
+            @blur="onBlur"
+            @input="onInput"
+            @keydown="onKeydown"
+            :class="['input', inputClasses]"
+          />
+          <div v-if="$slots.info" class="info absolute -bottom-1.5">
+            <slot name="info">
+              {{ info }}
+            </slot>
+          </div>
+        </div>
+
         <div v-if="$slots.append" :class="['append', appendClasses]">
           <slot name="append" />
         </div>
@@ -138,8 +146,12 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
   @apply flex;
 }
 
+.middle {
+  @apply flex-grow;
+}
+
 .input {
-  @apply flex-grow bg-transparent overflow-hidden;
+  @apply bg-transparent overflow-hidden w-full;
 }
 
 .label {
@@ -148,5 +160,9 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 
 .error {
   @apply text-xs text-red-500 mt-1 ml-1;
+}
+
+.info {
+  @apply text-gray-500 text-xs;
 }
 </style>

@@ -45,7 +45,7 @@
               class="text-green-500"
             />
           </div>
-          <div class="w-24 border-l dark:border-gray-850 ml-4">
+          <div class="w-24 border-l border-r dark:border-gray-850 ml-4 mr-4">
             <BalTextInput
               name="pool-token-weight"
               :model-value="tokenWeightInput"
