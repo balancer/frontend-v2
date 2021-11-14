@@ -5,14 +5,22 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers from '@/composables/useNumbers';
+import { useI18n } from 'vue-i18n';
 
 /**
  * COMPOSABLES
  */
 const { userNetworkConfig } = useWeb3();
-const { tokenWeights, totalLiquidity } = usePoolCreation();
+const {
+  tokenWeights,
+  totalLiquidity,
+  getPoolSymbol,
+  type: poolType,
+  initialFee
+} = usePoolCreation();
 const { tokens, priceFor } = useTokens();
 const { fNum } = useNumbers();
+const { t } = useI18n();
 
 /**
  * COMPUTED
@@ -24,7 +32,7 @@ const { fNum } = useNumbers();
     <BalStack vertical>
       <BalStack vertical spacing="xs">
         <span class="text-sm text-gray-700">{{ userNetworkConfig?.name }}</span>
-        <h5 class="font-bold">Preview new weighted pool</h5>
+        <h5 class="font-bold">{{ $t('previewPool', [poolType]) }}</h5>
       </BalStack>
       <BalStack horizontal spacing="sm" isDynamic>
         <div
@@ -43,7 +51,7 @@ const { fNum } = useNumbers();
       </BalStack>
       <BalCard shadow="false" noPad>
         <div class="bg-gray-50 p-2">
-          <h6>Tokens and initial seed liquidity</h6>
+          <h6 class="text-sm">{{ $t('tokensAndSeedLiquidity') }}</h6>
         </div>
         <BalStack vertical spacing="none" withBorder isDynamic>
           <div
@@ -59,7 +67,9 @@ const { fNum } = useNumbers();
                     >{{ fNum(token.weight / 100, 'percent') }}
                     {{ tokens[token.tokenAddress].symbol }}</span
                   >
-                  <span class="text-sm text-gray-500">Initial weight: ??</span>
+                  <span class="text-sm text-gray-500"
+                    >{{ $t('initialWeight') }}: ??</span
+                  >
                 </BalStack>
               </BalStack>
               <BalStack vertical spacing="none" align="end">
@@ -74,15 +84,40 @@ const { fNum } = useNumbers();
           </div>
         </BalStack>
         <BalStack horizontal justify="between" class="p-4 border-t">
-          <h6>Total</h6>
+          <h6>{{ $t('total') }}</h6>
           <h6>{{ fNum(totalLiquidity, 'usd') }}</h6>
         </BalStack>
         <!-- <BalHorizSteps
           :steps="steps"
           class="flex justify-center"
         /> -->
-        <BalBtn color="gradient">Create pool</BalBtn>
       </BalCard>
+      <BalCard shadow="false" noPad>
+        <div class="bg-gray-50 p-2">
+          <h6 class="text-sm">{{ $t('summary') }}</h6>
+        </div>
+        <BalStack vertical spacing="xs" class="p-3">
+          <BalStack horizontal justify="between">
+            <span class="text-sm">{{ $t('poolSymbol') }}:</span>
+            <span class="text-sm">{{ getPoolSymbol() }}</span>
+          </BalStack>
+          <BalStack horizontal justify="between">
+            <span class="text-sm">{{ $t('poolName') }}:</span>
+            <span class="text-sm">{{ getPoolSymbol() }}</span>
+          </BalStack>
+          <BalStack horizontal justify="between">
+            <span class="text-sm">{{ $t('poolType') }}:</span>
+            <span class="text-sm">{{ poolType }}</span>
+          </BalStack>
+          <BalStack horizontal justify="between">
+            <span class="text-sm">{{ $t('swapFee') }}:</span>
+            <span class="text-sm">{{ fNum(initialFee, 'percent') }}</span>
+          </BalStack>
+        </BalStack>
+      </BalCard>
+      <BalBtn class="w-full" block color="gradient">{{
+        $t('createPool')
+      }}</BalBtn>
     </BalStack>
   </BalCard>
 </template>

@@ -35,9 +35,9 @@ type Props = {
   decimalLimit?: number;
   validateOn?: ValidationTrigger;
   rules?: Rules;
-  rounded?: boolean;
-  shadow?: boolean;
-  border?: boolean;
+  noRadius?: boolean;
+  noShadow?: boolean;
+  noBorder?: boolean;
   format?: (input: string | number) => string | number;
 };
 
@@ -137,7 +137,6 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 
 <style scoped>
 .bal-text-input {
-  @apply shadow-lg rounded-lg;
 }
 
 .input-container {

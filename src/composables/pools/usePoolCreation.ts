@@ -48,7 +48,8 @@ const emptyPoolCreationState = {
   poolId: '' as string,
   poolAddress: '',
   createState: 'none' as CreateState,
-  joinState: 'none' as JoinState
+  joinState: 'none' as JoinState,
+  type: PoolType.Weighted
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
@@ -88,9 +89,9 @@ export default function usePoolCreation() {
 
   function resetPoolCreationState() {
     for (const key of Object.keys(poolCreationState)) {
-      console.log('before', poolCreationState[key], key)
+      console.log('before', poolCreationState[key], key);
       poolCreationState[key] = emptyPoolCreationState[key];
-      console.log('after', poolCreationState[key], key)
+      console.log('after', poolCreationState[key], key);
     }
   }
 
@@ -235,7 +236,6 @@ export default function usePoolCreation() {
 
   const tokensList = computed(() => poolCreationState.tokensList);
 
-  const result = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
   const {
     data: similarPoolsResponse,
     isLoading: isLoadingSimilarPools
@@ -313,6 +313,6 @@ export default function usePoolCreation() {
     maxInitialLiquidity,
     getPoolSymbol,
     createPool,
-    joinPool
+    joinPool,
   };
 }

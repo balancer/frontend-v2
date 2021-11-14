@@ -149,9 +149,9 @@ watchEffect(() => {
     validateOn="input"
     autocomplete="off"
     autocorrect="off"
-    :rounded="false"
-    :border="false"
-    :shadow="false"
+    noShadow
+    noBorder
+    noRadius
     step="any"
     spellcheck="false"
     v-bind="$attrs"

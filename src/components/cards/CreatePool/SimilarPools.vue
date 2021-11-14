@@ -6,6 +6,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers from '@/composables/useNumbers';
 
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+import { useI18n } from 'vue-i18n';
 
 /**
  * COMPOSABLES
@@ -20,11 +21,12 @@ const {
   resetPoolCreationState
 } = usePoolCreation();
 const { fNum } = useNumbers();
+const { t } = useI18n();
 
 /** COMPUTED */
 const title = computed(() => {
-  if (existingPool.value) return 'This pool already exists';
-  return 'Similar pools exist';
+  if (existingPool.value) return t('createAPool.poolAlreadyExists');
+  return t('createAPool.similarPoolsExist');
 });
 
 /**
@@ -43,12 +45,7 @@ function cancel() {
         userNetworkConfig?.name
       }}</span>
       <h5 class="font-bold">{{ title }}</h5>
-      <p v-if="existingPool">
-        There’s already another pool with exactly the same tokens and fee
-        structure. It’s recommended to add your liquidity to the other pool or
-        to go back and change your Pool Creation parameters in a material way to
-        avoid fractured liquidity and lower profits for both pools.
-      </p>
+      <p v-if="existingPool">{{ $t('createAPool.existingPoolInfo') }}</p>
       <div v-if="isLoadingSimilarPools">my name jeff</div>
       <BalCard v-else-if="existingPool" shadow="false">
         <BalStack vertical>
@@ -58,19 +55,19 @@ function cancel() {
           </BalStack>
           <BalStack horizontal spacing="lg">
             <BalStack vertical spacing="none">
-              <span class="font-medium">Pool value</span>
+              <span class="font-medium">{{ $t('poolValue') }}</span>
               <span class="font-semibold">{{
                 fNum(existingPool.totalLiquidity, 'usd')
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
-              <span class="font-medium">Vol (24h)</span>
+              <span class="font-medium">{{ $t('volume24hShort') }}</span>
               <span class="font-semibold">{{
                 fNum(existingPool.dynamic.volume, 'usd')
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
-              <span class="font-medium">Fees</span>
+              <span class="font-medium">{{ $t('fees') }}</span>
               <span class="font-semibold">{{
                 fNum(existingPool.swapFee, 'percent')
               }}</span>
@@ -87,19 +84,19 @@ function cancel() {
             </BalStack>
             <BalStack horizontal spacing="xl">
               <BalStack vertical spacing="none">
-                <span class="font-medium">Pool value</span>
+                <span class="font-medium">{{ $t('poolValue') }}</span>
                 <span class="font-semibold">{{
                   fNum(pool.totalLiquidity, 'usd')
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
-                <span class="font-medium">Vol (24h)</span>
+                <span class="font-medium">{{ $t('volume24hShort') }}</span>
                 <span class="font-semibold">{{
                   fNum(pool.dynamic.volume, 'usd')
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
-                <span class="font-medium">Fees</span>
+                <span class="font-medium">{{ $t('fees') }}</span>
                 <span class="font-semibold">{{
                   fNum(pool.swapFee, 'percent')
                 }}</span>
