@@ -168,13 +168,17 @@ export default defineComponent({
       },
       {
         name: t('myBalance'),
-        accessor: pool => fNum(pool.shares, 'usd', { forcePreset: true }),
+        accessor: pool =>
+          fNum(
+            parseFloat(pool.shares || '0') + (pool.farm?.stake || 0),
+            'usd',
+            { forcePreset: true }
+          ),
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,
-        sortKey: pool => Number(pool.shares),
-        width: 150,
-        cellClassName: 'font-numeric'
+        sortKey: pool => Number(pool.shares || 0) + (pool.farm?.stake || 0),
+        width: 150
       },
       {
         name: t('poolValue'),
