@@ -19,7 +19,7 @@ import {
 
 export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   // COMPOSABLES
-  const poolsQuery = usePoolsQuery(poolsTokenList);
+  const poolsQuery = usePoolsQuery(poolsTokenList, {}, { pageSize: 1000 });
   const userPoolsQuery = useUserPoolsQuery();
   const protocolDataQuery = useProtocolDataQuery();
   const { priceFor, dynamicDataLoaded } = useTokens();
@@ -171,7 +171,7 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     totalInvestedAmount,
     isLoadingPools,
     isLoadingUserPools,
-    poolsHasNextPage,
+    poolsHasNextPage: false,
     poolsIsFetchingNextPage,
     isLoadingFarms,
     poolsWithFarms,

@@ -48,11 +48,13 @@
       </template>
       <template v-slot:poolNameCell="pool">
         <div v-if="!isLoading" class="px-6 py-4 flex items-center">
-          <TokenPills
+          <!--          <TokenPills
             :tokens="orderedPoolTokens(pool)"
             :isStablePool="isStableLike(pool.poolType)"
             :selectedTokens="selectedTokens"
-          />
+          />-->
+
+          <h5 class="text-left font-normal">{{ pool.name }}</h5>
           <BalChip
             v-if="pool.dynamic.isNewPool"
             color="red"
@@ -103,8 +105,8 @@ import { isStableLike } from '@/composables/usePool';
 
 export default defineComponent({
   components: {
-    LiquidityMiningTooltip,
-    TokenPills
+    LiquidityMiningTooltip
+    //TokenPills
   },
 
   emits: ['loadMore'],
@@ -158,7 +160,7 @@ export default defineComponent({
         noGrow: true
       },
       {
-        name: t('composition'),
+        name: 'Pool',
         id: 'poolName',
         accessor: 'id',
         Cell: 'poolNameCell',

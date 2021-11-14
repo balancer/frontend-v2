@@ -51,8 +51,3 @@ export interface DecoratedPoolWithFarm extends DecoratedPool {
 export interface DecoratedPoolWithRequiredFarm extends DecoratedPool {
   farm: DecoratedFarm;
 }
-
-export interface DecoratedPoolWithShares extends DecoratedPool {
-  shares: string;
-  farm?: DecoratedFarm;
-}

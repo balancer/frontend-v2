@@ -23,6 +23,16 @@ export const TOKENS = {
     '42161': {
       WETH: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
       BAL: '0x040d1EdC9569d4Bab2D15287Dc5A4F10F56a56B8'
+    },
+    '250': {
+      ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      WETH: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
+      BAL: '0xF24Bcf4d1e507740041C9cFd2DddB29585aDCe1e'
+    },
+    '4': {
+      ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      WETH: '0x80dD2B80FbcFB06505A301d732322e987380EcD6',
+      BAL: '0xba100000625a3754423978a60c9317c58a424e3d'
     }
   },
   Prices: {

@@ -14,6 +14,7 @@ const defaultArgs = {
 
 const defaultAttrs = {
   id: true,
+  name: true,
   poolType: true,
   swapFee: true,
   tokensList: true,

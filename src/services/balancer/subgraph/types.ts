@@ -1,3 +1,5 @@
+import { DecoratedFarm } from '@/beethovenx/services/subgraph/subgraph-types';
+
 export type QueryArgs = Record<string, any>;
 export type QueryAttrs = Record<string, any>;
 export type QueryBuilder = (
@@ -91,6 +93,7 @@ export interface PoolShare {
 
 export interface DecoratedPoolWithShares extends DecoratedPool {
   shares: string;
+  farm?: DecoratedFarm;
 }
 
 export type PoolActivityType = 'Join' | 'Exit';

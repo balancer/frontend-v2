@@ -27,13 +27,16 @@
         <span
           v-for="token in sortedBalances"
           :key="`wallet-${token.symbol}`"
-          class="mr-6 cursor-pointer hover:text-blue-700"
+          class="mr-6 cursor-pointer hover:text-green-500"
           @click="addToken(token.address)"
         >
           {{ token?.symbol }}
         </span>
       </div>
-      <div v-else class="text-gray-400 flex flex-wrap py-3">
+      <div
+        v-else-if="whiteListedTokens.length > 0"
+        class="text-gray-400 flex flex-wrap py-3"
+      >
         <span class="mr-2">{{ $t('popularBases') }}</span>
         <span
           v-for="token in whiteListedTokens"
@@ -64,6 +67,7 @@ import { NATIVE_ASSET_ADDRESS, TOKENS } from '@/constants/tokens';
 import { getAddress } from '@ethersproject/address';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
+import { TokenInfo } from '@/types/TokenList';
 
 export default defineComponent({
   name: 'TokenSearchInput',
@@ -97,11 +101,11 @@ export default defineComponent({
     // sorted by biggest bag balance, limited to biggest 5
     const sortedBalances = computed(() => {
       const addressesWithBalance = Object.entries(balances.value)
-        .filter(balance => balance[1] !== '0.0')
+        .filter(balance => balance[1] !== '0.0' && balance[1] !== '0')
         .map(balance => balance[0]);
       const tokensWithBalance = Object.values(
         pick(tokens.value, addressesWithBalance)
-      );
+      ).filter(token => !isTokenSelected(token.address));
 
       return take(tokensWithBalance, 6);
     });
@@ -111,8 +115,19 @@ export default defineComponent({
     const whiteListedTokens = computed(() =>
       Object.values(tokens.value)
         .filter(token => TOKENS.Popular.Symbols.includes(token.symbol))
-        .filter(token => !props.modelValue.includes(token.address))
+        .filter(token => !isTokenSelected(token.address))
     );
+
+    function isTokenSelected(token: string) {
+      const eth = TOKENS.AddressMap[appNetworkConfig.key].ETH;
+      const weth = TOKENS.AddressMap[appNetworkConfig.key].WETH;
+
+      if (token === eth && props.modelValue.includes(weth)) {
+        return true;
+      }
+
+      return props.modelValue.includes(token);
+    }
 
     /**
      * METHODS
@@ -122,7 +137,7 @@ export default defineComponent({
       // special case for ETH where we want it to filter as WETH regardless
       // as ETH is the native asset
       if (getAddress(token) === NATIVE_ASSET_ADDRESS) {
-        _token = appNetworkConfig.addresses.weth;
+        _token = TOKENS.AddressMap[appNetworkConfig.key].WETH;
       }
       // const newSelected = [...props.modelValue, _token];
       emit('add', _token);
