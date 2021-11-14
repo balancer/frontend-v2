@@ -49,7 +49,6 @@ const stepCircleClasses = computed(() => {
     ]);
   });
 });
-
 </script>
 
 <template>

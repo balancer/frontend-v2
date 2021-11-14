@@ -37,7 +37,7 @@ const poolCreationState = reactive({
   name: 'MyPool',
   tokenWeights: [] as TokenWeight[],
   activeStep: 0,
-  initialFee: '0',
+  initialFee: '0.003',
   isFeeGovManaged: false,
   feeManagementType: 'governance' as FeeManagementType,
   feeType: 'fixed' as FeeType,

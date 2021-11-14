@@ -87,7 +87,10 @@
         "customAddressTitle": "Enter an address which can update fees",
         "customAddressInfo": "This could be another address you own an address of a smart contract. You can only ever set this once.",
         "poolSummary": "Pool summary",
-        "maxInitialLiquidity": "Max initial liquidity in wallet"
+        "maxInitialLiquidity": "Max initial liquidity in wallet",
+        "setPoolFees": "Set pool fees",
+        "bestFeeOption": "0.30% is best for most weighted pool with established tokens. Go higher for more exotic pairs.",
+        "alternativeFeeManagement": "Alternative fee management options"
     },
     "createPool": "Create a pool",
     "currentNetwork": "Current network",
@@ -262,6 +265,7 @@
     "newInvestment": "New investment",
     "newTrade": "New Trade",
     "newWithdrawal": "New withdrawal",
+    "next": "Next",
     "noContent": "No content",
     "noData": "No data available",
     "noInitLiquidity": "This pool has no initial liquidity",

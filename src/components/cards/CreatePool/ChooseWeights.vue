@@ -62,10 +62,14 @@ const totalWeight = computed(() => {
   );
   let total = bnum(0);
   for (const weight of normalisedWeights) {
-    total = total.plus(bnum(formatUnits(weight, 18)))
+    total = total.plus(bnum(formatUnits(weight, 18)));
   }
 
-  total = total.minus((bnum(tokenWeights.value.length - validTokens.length).div(tokenWeights.value.length)));
+  total = total.minus(
+    bnum(tokenWeights.value.length - validTokens.length).div(
+      tokenWeights.value.length
+    )
+  );
   return (Number(total.toString()) * 100).toFixed(2);
 });
 

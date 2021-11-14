@@ -8,13 +8,19 @@ import { onMounted } from 'vue';
  * COMPOSABLES
  */
 const { userNetworkConfig } = useWeb3();
-const { tokenWeights, createPool, joinPool, proceed, optimisedLiquidity } = usePoolCreation();
+const {
+  tokenWeights,
+  createPool,
+  joinPool,
+  proceed,
+  optimisedLiquidity
+} = usePoolCreation();
 
 onMounted(() => {
   for (const token of tokenWeights.value) {
     token.amount = optimisedLiquidity.value[token.tokenAddress].balanceRequired;
   }
-})
+});
 </script>
 
 <template>
@@ -25,14 +31,14 @@ onMounted(() => {
         <h5 class="font-bold">Set initial liquidity</h5>
       </BalStack>
       <BalStack isDynamic vertical>
-          <TokenInput
-            v-for="(token, i) in tokenWeights"
-            :key="token.tokenAddress"
-            v-model:amount="tokenWeights[i].amount"
-            v-model:address="tokenWeights[i].tokenAddress"
-            :weight="tokenWeights[i].weight / 100"
-            :name="`initial-token-${tokenWeights[i].tokenAddress}`"
-          />
+        <TokenInput
+          v-for="(token, i) in tokenWeights"
+          :key="token.tokenAddress"
+          v-model:amount="tokenWeights[i].amount"
+          v-model:address="tokenWeights[i].tokenAddress"
+          :weight="tokenWeights[i].weight / 100"
+          :name="`initial-token-${tokenWeights[i].tokenAddress}`"
+        />
       </BalStack>
       <BalBtn @click="proceed" block color="gradient">Preview</BalBtn>
     </BalStack>

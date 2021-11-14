@@ -145,9 +145,8 @@ export default class CalculatorService {
     [this.sendRatios, this.receiveRatios].forEach((ratios, ratioType) => {
       ratios.forEach((ratio, i) => {
         if (i !== index || type !== types[ratioType]) {
-
           const tokenAddress = this.tokenOf(types[ratioType], i);
-          console.log('mesk', tokenAddress)
+          console.log('mesk', tokenAddress);
           const token = this.allTokens.value[tokenAddress];
           amounts[types[ratioType]][i] = formatUnits(
             fixedDenormAmount.mul(ratio).div(fixedRatio),

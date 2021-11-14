@@ -19,7 +19,11 @@ const props = withDefaults(defineProps<Props>(), {
  * COMPOSABLES
  */
 const { tokens } = useTokens();
-const { tokenWeights, optimisedLiquidity, maxInitialLiquidity } = usePoolCreation();
+const {
+  tokenWeights,
+  optimisedLiquidity,
+  maxInitialLiquidity
+} = usePoolCreation();
 const { t } = useI18n();
 const { fNum } = useNumbers();
 /**
@@ -67,7 +71,12 @@ const unallocatedTokenWeight = computed(() =>
             <div v-if="token.tokenAddress === 'unallocated'"></div>
           </div>
           <div class="col-span-4 text-right">
-            {{ fNum(optimisedLiquidity[token.tokenAddress].liquidityRequired, 'usd') }}
+            {{
+              fNum(
+                optimisedLiquidity[token.tokenAddress].liquidityRequired,
+                'usd'
+              )
+            }}
           </div>
           <div class="col-span-3 text-right  font-medium">
             {{ token.weight }}%

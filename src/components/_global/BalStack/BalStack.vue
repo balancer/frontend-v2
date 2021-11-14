@@ -64,7 +64,7 @@ const slotsWithContent = computed(() => {
         'justify-center': justify === 'center',
         'justify-start': justify === 'start',
         'justify-end': justify === 'end',
-        'justify-between': justify === 'between',
+        'justify-between': justify === 'between'
       }
     ]"
   >

@@ -47,7 +47,9 @@ export default function usePoolsQuery(
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const tokensListFilterKey = filterOptions?.isExactTokensList ? 'tokensList' : 'tokensList_contains';
+    const tokensListFilterKey = filterOptions?.isExactTokensList
+      ? 'tokensList'
+      : 'tokensList_contains';
     const queryArgs: any = {
       first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
       skip: pageParam,
