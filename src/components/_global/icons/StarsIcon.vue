@@ -15,8 +15,8 @@
         y2="16.3182"
         gradientUnits="userSpaceOnUse"
       >
-        <stop :stop-color="theme.colors.pink['500']" />
-        <stop offset="1" :stop-color="theme.colors.yellow['500']" />
+        <stop :stop-color="theme.colors.blue['500']" />
+        <stop offset="1" :stop-color="theme.colors.green['500']" />
       </linearGradient>
     </defs>
     <path

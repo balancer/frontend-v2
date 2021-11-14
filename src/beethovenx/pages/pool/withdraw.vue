@@ -7,12 +7,17 @@ import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawF
 import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
+import { computed } from 'vue';
 
 /**
  * STATE
  */
 const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
+
+const hasBptStaked = computed(
+  () => pool.value && pool.value.farm && pool.value.farm.userBpt > 0
+);
 </script>
 
 <template>
@@ -28,6 +33,14 @@ const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
             <h4>{{ $t('withdrawFromPool') }}</h4>
             <TradeSettingsPopover :context="TradeSettingsContext.invest" />
           </div>
+          <BalAlert
+            v-if="hasBptStaked"
+            title="You have BPT staked in the farm"
+            description="To withdraw your funds, you need to first unstake your BPT from the farm."
+            type="warning"
+            size="sm"
+            class="mt-2 mb-2"
+          />
         </div>
       </template>
       <WithdrawForm :pool="pool" />

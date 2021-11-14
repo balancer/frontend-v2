@@ -39,6 +39,10 @@
         </div>
       </template>
       <template v-slot:iconColumnCell="pool">
+        <div
+          v-if="pool.farm && parseFloat(pool.shares) > 0"
+          class="rounded-br-xl h-4 w-4 flex bg-yellow-500 absolute top-0 left-0 bg-opacity-80"
+        />
         <div v-if="!isLoading" class="px-6 py-4">
           <BalAssetSet
             :addresses="orderedTokenAddressesFor(pool)"

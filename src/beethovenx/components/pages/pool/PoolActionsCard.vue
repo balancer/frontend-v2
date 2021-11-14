@@ -7,6 +7,7 @@ import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
+import { getAddress } from '@ethersproject/address';
 
 /**
  * TYPES
@@ -59,6 +60,18 @@ const fiatTotal = computed(() => {
   return fNum(fiatValue, currency.value);
 });
 
+const hasUnstakedBpt = computed(
+  () =>
+    props.pool.farm &&
+    parseFloat(balanceFor(getAddress(props.pool.address))) > 0
+);
+
+const hasFarm = computed(() => !!props.pool.farm);
+
+const hasFarmStake = computed(
+  () => props.pool.farm?.stake && props.pool.farm.stake > 0
+);
+
 /**
  * CALLBACKS
  */
@@ -104,5 +117,22 @@ onBeforeMount(() => {
         block
       />
     </div>
+    <BalBtn
+      v-if="hasFarm"
+      class="mt-2"
+      :tag="hasFarmStake ? 'router-link' : 'div'"
+      :to="{ name: 'farm' }"
+      label="Farm"
+      :disabled="!hasFarmStake"
+      block
+    />
+    <BalAlert
+      v-if="hasUnstakedBpt"
+      title="You have unstaked BPT in your wallet"
+      description="If you deposit your BPT into the farm, you will earn additional rewards paid out in BEETS."
+      type="warning"
+      size="sm"
+      class="mt-2"
+    />
   </BalCard>
 </template>

@@ -31,7 +31,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import AppIcon from '@/beethovenx/components/images/AppIcon.vue';
 import AppNavAlert from '@/components/navs/AppNav/AppNavAlert';
 import AppNavToggle from '@/beethovenx/components/navs/AppNavToggle.vue';
-import AppNavActions from '@/components/navs/AppNav/AppNavActions.vue';
+import AppNavActions from '@/beethovenx/components/navs/AppNavActions.vue';
 import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
 import useAlerts from '@/composables/useAlerts';
