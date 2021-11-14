@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import { configService } from '@/services/config/config.service';
+import { computed, onMounted, reactive, ref, nextTick } from 'vue';
+
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
-import { computed, onMounted, reactive, ref, nextTick } from 'vue';
+
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
-import anime from 'animejs';
-import { sum, sumBy } from 'lodash';
 import usePoolCreation, {
   TokenWeight
 } from '@/composables/pools/usePoolCreation';
-import { BigNumber } from 'bignumber.js';
+
+import { balancerService } from '@/services/balancer/balancer.service';
+import { configService } from '@/services/config/config.service';
+
+import { formatUnits } from '@ethersproject/units';
+import { sum, sumBy } from 'lodash';
+import anime from 'animejs';
+import { bnum } from '@/lib/utils';
 
 const emit = defineEmits(['update:tokenWeights', 'nextStep']);
 
@@ -22,9 +28,17 @@ const emptyTokenWeight: TokenWeight = {
   amount: 0
 };
 
+/**
+ * COMPOSABLES
+ */
 const { tokenWeights, updateTokenWeights, proceed } = usePoolCreation();
-const networkName = configService.network.name;
+const { upToLargeBreakpoint } = useBreakpoints();
+const { fNum } = useNumbers();
 
+/**
+ * STATE
+ */
+const networkName = configService.network.name;
 const _tokenOutAmount = ref();
 const _tokenOutAddress = ref();
 
@@ -34,13 +48,35 @@ const totalsRowElement = ref<HTMLElement>();
 const tokenWeightItemElements = reactive<HTMLElement[]>([]);
 const wrapperHeight = ref(0);
 
-const { upToLargeBreakpoint } = useBreakpoints();
-const { fNum } = useNumbers();
-
+/**
+ * COMPUTED
+ */
 const tokenWeightItemHeight = computed(() =>
   upToLargeBreakpoint.value ? 56 : 64
 );
+const totalWeight = computed(() => {
+  const validTokens = tokenWeights.value.filter(t => t.tokenAddress !== '');
+  if (validTokens.length === 0) return 0;
+  const normalisedWeights = balancerService.pools.weighted.calculateTokenWeights(
+    validTokens
+  );
+  let total = bnum(0);
+  for (const weight of normalisedWeights) {
+    total = total.plus(bnum(formatUnits(weight, 18)))
+  }
 
+  total = total.minus((bnum(tokenWeights.value.length - validTokens.length).div(tokenWeights.value.length)));
+  return (Number(total.toString()) * 100).toFixed(2);
+});
+
+const createDisabled = computed(() => {
+  if (Number(totalWeight.value) === 100) return false;
+  return true;
+});
+
+/**
+ * LIFECYCLE
+ */
 onMounted(async () => {
   // retrieving height causes reflow, get the height of the wrapper once
   // and manually uptick it when we add items to prevent double reflow during anim
@@ -56,25 +92,28 @@ onMounted(async () => {
   distributeWeights();
 });
 
-const handleWeightChange = (weight: string, id: number) => {
+/**
+ * FUNCTIONS
+ */
+function handleWeightChange(weight: string, id: number) {
   const tokenWeight = tokenWeights.value[id];
   tokenWeight.weight = Number(weight);
 
   distributeWeights();
-};
+}
 
-const handleAddressChange = (address: string, id: number) => {
+function handleAddressChange(address: string, id: number) {
   const tokenWeight = tokenWeights.value[id];
   tokenWeight.tokenAddress = address;
-};
+}
 
-const handleLockedWeight = (isLocked: boolean, id: number) => {
+function handleLockedWeight(isLocked: boolean, id: number) {
   const tokenWeight = tokenWeights.value[id];
   tokenWeight.isLocked = isLocked;
   distributeWeights();
-};
+}
 
-const addTokenToPool = async () => {
+async function addTokenToPool() {
   // animate the height
   anime({
     targets: tokenWeightListWrapper.value,
@@ -116,9 +155,9 @@ const addTokenToPool = async () => {
   }
 
   distributeWeights();
-};
+}
 
-const distributeWeights = () => {
+function distributeWeights() {
   // get all the locked weights and sum those bad boys
   const lockedPct = sum(
     tokenWeights.value.filter(w => w.isLocked).map(w => w.weight / 100)
@@ -130,31 +169,17 @@ const distributeWeights = () => {
   for (const tokenWeight of unlockedWeights) {
     tokenWeight.weight = Number((evenDistributionWeight * 100).toFixed(2));
   }
-};
+}
 
-const totalWeight = computed(() => {
-  return Math.floor(
-    sumBy(
-      tokenWeights.value.filter(w => w.tokenAddress !== ''),
-      w => w.weight
-    )
-  );
-});
-
-const createDisabled = computed(() => {
-  if (totalWeight.value > 100) return true;
-  return false;
-});
-
-const addTokenListElementRef = (el: HTMLElement) => {
+function addTokenListElementRef(el: HTMLElement) {
   if (!tokenWeightItemElements.includes(el)) {
     tokenWeightItemElements.push(el);
   }
-};
+}
 
-const validateAndProceed = () => {
+function validateAndProceed() {
   proceed();
-};
+}
 </script>
 
 <template>
@@ -208,7 +233,7 @@ const validateAndProceed = () => {
       <BalBtn
         block
         color="gradient"
-        :disabled="totalWeight !== 100"
+        :disabled="createDisabled"
         @click="validateAndProceed"
         >Next</BalBtn
       >

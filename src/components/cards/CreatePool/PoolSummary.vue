@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TokenWeight } from './ChooseWeights.vue';
 import ECharts from 'vue-echarts';
-import { computed, nextTick, ref, toRef, toRefs, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
 import Vibrant from 'node-vibrant/dist/vibrant';
@@ -9,52 +9,25 @@ import { prominent } from 'color.js';
 import { eq, sumBy } from 'lodash';
 import echarts from 'echarts';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import { useI18n } from 'vue-i18n';
 
 const emit = defineEmits(['update:colors']);
 
-const { tokens } = useTokens();
-const { tokenWeights } = usePoolCreation();
-const { resolve } = useUrls();
+/** STATE */
 const colors = ref<(string | null)[]>([]);
 const chartInstance = ref<echarts.ECharts>();
 
-watch(
-  tokenWeights,
-  async (oldValue, newValue) => {
-    await nextTick();
-    await calculateColors();
-    await nextTick();
-    const colors = chartInstance.value?.getOption().color;
-    emit('update:colors', colors);
-  },
-  { deep: true }
-);
+/**
+ * COMPOSABLES
+ */
+const { tokens } = useTokens();
+const { tokenWeights } = usePoolCreation();
+const { t } = useI18n();
+const { resolve } = useUrls();
 
-const calculateColors = async () => {
-  const colorPromises = tokenWeights.value
-    .filter(t => t.tokenAddress !== '')
-    .map(async t => {
-      try {
-        const tokenLogoURI = resolve(
-          tokens.value[t.tokenAddress].logoURI || ''
-        );
-        const color = await prominent(tokenLogoURI, {
-          amount: 2,
-          format: 'hex'
-        });
-        if (color[0] === '#ffffff' || color[0] === '#000000')
-          return color[1] as string;
-        return color[0] as string;
-      } catch {
-        return null;
-      }
-    });
-  const _colors = await Promise.all(colorPromises);
-  await nextTick();
-  colors.value = _colors;
-  await nextTick();
-};
-
+/**
+ * COMPUTED
+ */
 const unallocatedTokenWeight = computed(() =>
   sumBy(
     tokenWeights.value.filter(t => t.tokenAddress === ''),
@@ -129,12 +102,55 @@ const chartConfig = computed(() => {
     ]
   };
 });
+
+/**
+ * WATCHERS
+ */
+watch(
+  tokenWeights,
+  async (oldValue, newValue) => {
+    await nextTick();
+    await calculateColors();
+    await nextTick();
+    const colors = chartInstance.value?.getOption().color;
+    emit('update:colors', colors);
+  },
+  { deep: true }
+);
+
+/**
+ * FUNCTIONS
+ */
+const calculateColors = async () => {
+  const colorPromises = tokenWeights.value
+    .filter(t => t.tokenAddress !== '')
+    .map(async t => {
+      try {
+        const tokenLogoURI = resolve(
+          tokens.value[t.tokenAddress].logoURI || ''
+        );
+        const color = await prominent(tokenLogoURI, {
+          amount: 2,
+          format: 'hex'
+        });
+        if (color[0] === '#ffffff' || color[0] === '#000000')
+          return color[1] as string;
+        return color[0] as string;
+      } catch {
+        return null;
+      }
+    });
+  const _colors = await Promise.all(colorPromises);
+  await nextTick();
+  colors.value = _colors;
+  await nextTick();
+};
 </script>
 
 <template>
   <BalCard noPad shadow="false">
     <div class="p-2 px-3 border-b">
-      <h6>Pool Summary</h6>
+      <h6>{{ $t('createAPool.poolSummary') }}</h6>
     </div>
     <div class="p-2">
       <ECharts

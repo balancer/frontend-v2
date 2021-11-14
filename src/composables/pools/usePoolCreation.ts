@@ -2,8 +2,7 @@ import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-s
 import { FullPool, PoolType } from '@/services/balancer/subgraph/types';
 import CalculatorService from '@/services/pool/calculator/calculator.sevice';
 import { getAddress } from '@ethersproject/address';
-import { flatten, sumBy } from 'lodash';
-import { BigNumber } from 'bignumber.js';
+import { flatten, minBy, sumBy } from 'lodash';
 import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuery } from 'vue-query';
@@ -14,7 +13,11 @@ import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { AddressZero } from '@ethersproject/constants';
-import { scale } from '@/lib/utils';
+import { bnum, scale } from '@/lib/utils';
+
+import BigNumber from 'bignumber.js';
+import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
+import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 
 export type TokenWeight = {
   tokenAddress: string;
@@ -46,10 +49,6 @@ const poolCreationState = reactive({
   poolAddress: '',
   createState: 'none' as CreateState,
   joinState: 'none' as JoinState
-  // tokensList: [
-  //   '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
-  //   '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1'
-  // ] as string[]
 });
 
 async function getSimilarPools(tokensInPool: string[]) {
@@ -94,7 +93,7 @@ export default function usePoolCreation() {
     poolCreationState.tokenWeights.sort((tokenA, tokenB) => {
       return tokenA.tokenAddress > tokenB.tokenAddress ? 1 : -1;
     });
-  }
+  };
   const proceed = () => {
     poolCreationState.activeStep += 1;
   };
@@ -244,52 +243,48 @@ export default function usePoolCreation() {
     return similarPool;
   });
 
-  const placeholderPool = computed<FullPool>(() => {
-    return {
-      onchain: {
-        tokens: {},
-        totalSupply: '0',
-        decimals: 0,
-        swapFee: poolCreationState.fee,
-        swapEnabled: true
-      },
-      dynamic: {
-        apr: {
-          pool: '',
-          thirdParty: '',
-          liquidityMining: '',
-          liquidityMiningBreakdown: {},
-          total: ''
-        },
-        period: '24h',
-        volume: '0',
-        fees: '',
-        isNewPool: true,
-      },
-      id: 'placeholder',
-      address: 'placeholder',
-      poolType: PoolType.Weighted,
-      swapFee: poolCreationState.fee,
-      owner: poolCreationState.feeController,
-      factory: 'placeholder',
-      tokens: poolCreationState.tokensList.map(t => tokens[t]),
-      tokensList: poolCreationState.tokensList,
-      tokenAddresses: poolCreationState.tokensList,
-      totalLiquidity: '0',
-      totalShares: '0',
-      totalSwapFee: '0',
-      totalSwapVolume: '0',
-      hasLiquidityMiningRewards: false,
-      createTime: Date.now()
+  const optimisedLiquidity = computed(() => {
+    // need to filter out the empty tokens just in case
+    const validTokens = tokensList.value.filter(t => t !== '');
+    const optimisedLiquidity = {};
+    // token with the lowest balance is the bottleneck
+    const bottleneckToken = minBy(
+      validTokens,
+      token => Number(balanceFor(token)) * Number(priceFor(token))
+    );
+    if (!bottleneckToken) return optimisedLiquidity;
+
+    const bottleneckWeight =
+      poolCreationState.tokenWeights.find(
+        t => t.tokenAddress === bottleneckToken
+      )?.weight || 0;
+
+    const bip = bnum(priceFor(bottleneckToken || '0'))
+      .times(balanceFor(bottleneckToken))
+      .div(bottleneckWeight);
+    for (const token of poolCreationState.tokenWeights) {
+      // get the price for a single token
+      const tokenPrice = bnum(priceFor(token.tokenAddress));
+      // the usd value needed for its weight
+      const liquidityRequired = bip.times(token.weight);
+      const balanceRequired = liquidityRequired.div(tokenPrice);
+      optimisedLiquidity[token.tokenAddress] = {
+        liquidityRequired: liquidityRequired.toString(),
+        balanceRequired: balanceRequired.toString()
+      };
     }
+    return optimisedLiquidity;
   });
 
+  const maxInitialLiquidity = computed(() =>
+    sumBy(Object.values(optimisedLiquidity.value), (liq: any) =>
+      Number(liq.liquidityRequired)
+    )
+  );
+
   const totalLiquidity = computed(() => {
-    return sumBy(
-      tokensList.value,
-      t => priceFor(t) * Number(balanceFor(t))
-    );
-  })
+    return sumBy(tokensList.value, t => priceFor(t) * Number(balanceFor(t)));
+  });
 
   return {
     ...toRefs(poolCreationState),
@@ -300,11 +295,12 @@ export default function usePoolCreation() {
     setFeeController,
     setTrpController,
     setStep,
+    optimisedLiquidity,
     similarPools,
     isLoadingSimilarPools,
     existingPool,
-    placeholderPool,
     totalLiquidity,
+    maxInitialLiquidity,
     getPoolSymbol,
     createPool,
     joinPool
