@@ -17,6 +17,7 @@ import { defineComponent, toRefs, ref, computed, watch } from 'vue';
 import useTokens from '@/composables/useTokens';
 import Avatar from '../../images/Avatar.vue';
 import useUrls from '@/composables/useUrls';
+import { find } from 'lodash';
 
 export default defineComponent({
   name: 'BalAsset',
@@ -55,7 +56,12 @@ export default defineComponent({
     const iconSRC = computed(() => {
       if (props.iconURI) return resolve(props.iconURI);
 
-      const token = tokens.value[address.value];
+      const token = find(
+        tokens.value,
+        (token, tokenAddress) =>
+          tokenAddress.toLowerCase() === address.value.toLowerCase()
+      );
+
       if (!token) return '';
       return resolve(token.logoURI);
     });

@@ -1,20 +1,103 @@
-import { computed, Ref, ref } from 'vue';
+import { computed, ComputedRef, Ref, ref } from 'vue';
 
 import { flatten } from 'lodash';
 
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useUserPoolsQuery from '@/composables/queries/useUserPoolsQuery';
+import useFarms from '@/beethovenx/composables/farms/useFarms';
+import { decorateFarms, getPoolApr } from '@/beethovenx/utils/farmHelper';
+import useAverageBlockTime from '@/beethovenx/composables/blocks/useAverageBlockTime';
+import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
+import { DecoratedPoolWithShares } from '@/services/balancer/subgraph/types';
+import { uniqBy } from 'lodash';
+import useTokens from '@/composables/useTokens';
+import useWeb3 from '@/services/web3/useWeb3';
+import {
+  DecoratedPoolWithFarm,
+  DecoratedPoolWithRequiredFarm
+} from '@/beethovenx/services/subgraph/subgraph-types';
 
 export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   // COMPOSABLES
   const poolsQuery = usePoolsQuery(poolsTokenList);
   const userPoolsQuery = useUserPoolsQuery();
+  const protocolDataQuery = useProtocolDataQuery();
+  const { priceFor, dynamicDataLoaded } = useTokens();
+  const { appNetworkConfig } = useWeb3();
+  const beetsPrice = computed(
+    () => protocolDataQuery.data?.value?.beetsPrice || 0
+  );
+  const rewardTokenPrice = computed(() =>
+    dynamicDataLoaded.value ? priceFor(appNetworkConfig.addresses.hnd) : 0
+  );
+
+  const {
+    farms,
+    allFarmsForUser,
+    isLoadingFarms,
+    harvestAllFarms,
+    refetchFarmsForUser
+  } = useFarms();
+  const { blocksPerYear, blocksPerDay } = useAverageBlockTime();
 
   // COMPUTED
-  const pools = computed(() =>
-    poolsQuery.data.value
-      ? flatten(poolsQuery.data.value.pages.map(page => page.pools))
-      : []
+
+  const pools = computed(() => {
+    if (!poolsQuery.data.value) {
+      return [];
+    }
+
+    const flattened = flatten(
+      poolsQuery.data.value.pages.map(page => page.pools)
+    );
+
+    return flattened;
+  });
+
+  const decoratedFarms = computed(() => {
+    return decorateFarms(
+      pools.value,
+      farms.value,
+      allFarmsForUser.value,
+      blocksPerYear.value,
+      blocksPerDay.value,
+      beetsPrice.value,
+      rewardTokenPrice.value
+    );
+  });
+
+  const poolsWithFarms: ComputedRef<DecoratedPoolWithFarm[]> = computed(() => {
+    return pools.value.map(pool => {
+      const farm = decoratedFarms.value.find(
+        farm => pool.address.toLowerCase() === farm.pair.toLowerCase()
+      );
+
+      return {
+        ...pool,
+        farm,
+        hasLiquidityMiningRewards: !!farm,
+        dynamic: {
+          ...pool.dynamic,
+          apr: farm
+            ? getPoolApr(
+                pool,
+                farm,
+                blocksPerYear.value,
+                beetsPrice.value,
+                rewardTokenPrice.value
+              )
+            : pool.dynamic.apr
+        }
+      };
+    });
+  });
+
+  const onlyPoolsWithFarms: ComputedRef<DecoratedPoolWithRequiredFarm[]> = computed(
+    () => {
+      return poolsWithFarms.value.filter(
+        pool => !!pool.farm
+      ) as DecoratedPoolWithRequiredFarm[];
+    }
   );
 
   const tokens = computed(() =>
@@ -23,7 +106,36 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
       : []
   );
 
-  const userPools = computed(() => userPoolsQuery.data.value?.pools);
+  const userPools = computed<DecoratedPoolWithShares[]>(() => {
+    const userPools = userPoolsQuery.data.value?.pools || [];
+    const userFarmPools = onlyPoolsWithFarms.value
+      .filter(pool => pool.farm.stake > 0)
+      .map(pool => ({ ...pool, shares: '0' }));
+
+    return uniqBy([...userPools, ...userFarmPools], 'id').map(pool => {
+      const farm = decoratedFarms.value.find(
+        farm => pool.address.toLowerCase() === farm.pair.toLowerCase()
+      );
+
+      return {
+        ...pool,
+        farm,
+        hasLiquidityMiningRewards: !!farm,
+        dynamic: {
+          ...pool.dynamic,
+          apr: farm
+            ? getPoolApr(
+                pool,
+                farm,
+                blocksPerYear.value,
+                beetsPrice.value,
+                rewardTokenPrice.value
+              )
+            : pool.dynamic.apr
+        }
+      };
+    });
+  });
 
   const totalInvestedAmount = computed(
     () => userPoolsQuery.data.value?.totalInvestedAmount
@@ -47,6 +159,10 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     poolsQuery.fetchNextPage.value();
   }
 
+  function refetchPools() {
+    poolsQuery.refetch.value();
+  }
+
   return {
     // computed
     pools,
@@ -57,9 +173,16 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     isLoadingUserPools,
     poolsHasNextPage,
     poolsIsFetchingNextPage,
+    isLoadingFarms,
+    poolsWithFarms,
+    onlyPoolsWithFarms,
     poolsQuery,
 
     // methods
-    loadMorePools
+    loadMorePools,
+    refetchPools,
+
+    harvestAllFarms,
+    refetchFarmsForUser
   };
 }

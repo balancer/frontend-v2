@@ -64,22 +64,6 @@
       />
       <div class="mb-12" />
     </template>
-
-    <template v-if="isWalletReady && poolsWithUserInFarm.length > 0">
-      <div class="mb-16">
-        <div class="px-4 lg:px-0">
-          <h4 class="mb-4">My Farms</h4>
-        </div>
-        <FarmsTable
-          :pools="poolsWithUserInFarm"
-          noPoolsLabel="No farms found"
-          :loading="false"
-          :isPaginated="false"
-          :isLoadingMore="false"
-          class="mb-8"
-        />
-      </div>
-    </template>
   </div>
 </template>
 
@@ -90,16 +74,15 @@ import { EXTERNAL_LINKS } from '@/constants/links';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
-import FarmsTable from '@/components/tables/FarmsTable/FarmsTable.vue';
-import PortfolioAssetsPieChart from '@/components/pages/portfolio/PortfolioAssetsPieChart.vue';
-import PortfolioPoolsPieChart from '@/components/pages/portfolio/PortfolioPoolsPieChart.vue';
-import PortfolioValueLineChart from '@/components/pages/portfolio/PortfolioValueLineChart.vue';
-import PortfolioStatWithBarChart from '@/components/pages/portfolio/PortfolioStatWithBarChart.vue';
+import PortfolioAssetsPieChart from '@/beethovenx/components/pages/portfolio/PortfolioAssetsPieChart.vue';
+import PortfolioPoolsPieChart from '@/beethovenx/components/pages/portfolio/PortfolioPoolsPieChart.vue';
+import PortfolioValueLineChart from '@/beethovenx/components/pages/portfolio/PortfolioValueLineChart.vue';
+import PortfolioStatWithBarChart from '@/beethovenx/components/pages/portfolio/PortfolioStatWithBarChart.vue';
 import { chartColors } from '@/beethovenx/constants/colors';
-import PortfolioHeader from '@/components/pages/portfolio/PortfolioHeader.vue';
+import PortfolioHeader from '@/beethovenx/components/pages/portfolio/PortfolioHeader.vue';
 import { orderBy, sum } from 'lodash';
 import useNumbers from '@/composables/useNumbers';
-import PortfolioPoolsStatCards from '@/components/pages/portfolio/PortfolioPoolsStatCards.vue';
+import PortfolioPoolsStatCards from '@/beethovenx/components/pages/portfolio/PortfolioPoolsStatCards.vue';
 import usePortfolio from '@/beethovenx/composables/usePortfolio';
 
 export default defineComponent({
@@ -110,8 +93,7 @@ export default defineComponent({
     PortfolioStatWithBarChart,
     PortfolioValueLineChart,
     PortfolioAssetsPieChart,
-    PoolsTable,
-    FarmsTable
+    PoolsTable
   },
 
   setup() {

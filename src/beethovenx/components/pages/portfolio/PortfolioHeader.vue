@@ -78,11 +78,11 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import numeral from 'numeral';
-import { UserPortfolioData } from '@/services/beethovenx/beethovenx-types';
+import { UserPortfolioData } from '@/beethovenx/services/beethovenx/beethovenx-types';
 import useNumbers from '@/composables/useNumbers';
-import useProtocolDataQuery from '@/composables/queries/useProtocolDataQuery';
-import { DecoratedPoolWithRequiredFarm } from '@/services/balancer/subgraph/types';
+import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
 import { sumBy } from 'lodash';
+import { DecoratedPoolWithRequiredFarm } from '@/beethovenx/services/subgraph/subgraph-types';
 
 export default defineComponent({
   props: {

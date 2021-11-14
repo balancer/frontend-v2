@@ -38,12 +38,12 @@ import * as echarts from 'echarts/core';
 import ECharts from 'vue-echarts';
 import useNumbers from '@/composables/useNumbers';
 import useTailwind from '@/composables/useTailwind';
-import { chartColors } from '@/constants/colors';
+import { chartColors } from '@/beethovenx/constants/colors';
 import { flatMap, groupBy, map } from 'lodash';
 import {
   UserPortfolioData,
   UserTokenData
-} from '@/services/beethovenx/beethovenx-types';
+} from '@/beethovenx/services/beethovenx/beethovenx-types';
 import { format } from 'date-fns';
 import { orderBy } from 'lodash';
 

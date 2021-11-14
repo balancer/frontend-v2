@@ -44,16 +44,18 @@ export interface DecoratedPool extends Pool {
   dynamic: {
     period: TimeTravelPeriod;
     volume: string;
-    apr: {
-      pool: string;
-      thirdParty: string;
-      liquidityMining: string;
-      liquidityMiningBreakdown: { [address: string]: string };
-      total: string;
-    };
+    apr: PoolApr;
     fees: string;
     isNewPool: boolean;
   };
+}
+
+export interface PoolApr {
+  pool: string;
+  thirdParty: string;
+  liquidityMining: string;
+  liquidityMiningBreakdown: { [address: string]: string };
+  total: string;
 }
 
 export interface OnchainTokenData {
