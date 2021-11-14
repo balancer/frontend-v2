@@ -5,6 +5,8 @@ import AppNav from '@/beethovenx/components/navs/AppNav.vue';
 import AppFooterNav from '@/components/navs/AppFooterNav/AppFooterNav.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
 import AppHeaderBg from '@/beethovenx/components/backgrounds/AppHeaderBg.vue';
+import AppHero from '@/beethovenx/components/heroes/AppHero.vue';
+import GlobalStats from '@/beethovenx/components/stats/GlobalStats.vue';
 
 /**
  * COMPOSABLES
@@ -15,6 +17,17 @@ const { upToLargeBreakpoint } = useBreakpoints();
 /**
  * COMPUTED
  */
+const isFarmsPage = computed(() => route.path === '/farm');
+const isPortfolioPage = computed(() => route.path === '/my-portfolio');
+const isInvestPage = computed(() => {
+  return route.path === '/invest';
+});
+const isTradePage = computed(() => {
+  return route.path === '/trade';
+});
+const showGlobalStats = computed(() => {
+  return isInvestPage.value || isFarmsPage.value || isTradePage.value;
+});
 const isHomePage = computed(() => route.path === '/');
 </script>
 
@@ -22,6 +35,10 @@ const isHomePage = computed(() => route.path === '/');
   <div>
     <AppNav />
     <AppHeaderBg />
+    <div class="relative">
+      <AppHero v-if="isInvestPage" />
+      <GlobalStats v-if="showGlobalStats" />
+    </div>
     <div class="pb-16 relative">
       <router-view :key="$route.path" />
     </div>
