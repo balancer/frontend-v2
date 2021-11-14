@@ -20,7 +20,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 const isFarmsPage = computed(() => route.path === '/farm');
 const isPortfolioPage = computed(() => route.path === '/my-portfolio');
 const isInvestPage = computed(() => {
-  return route.path === '/invest';
+  return route.path === '/pools';
 });
 const isTradePage = computed(() => {
   return route.path === '/trade';
