@@ -52,7 +52,7 @@ const {
   validInputs,
   highPriceImpactAccepted,
   resetAmounts,
-  batchSwapQuery
+  sor
 } = useInvestState();
 
 const investMath = useInvestMath(
@@ -60,7 +60,7 @@ const investMath = useInvestMath(
   tokenAddresses,
   amounts,
   useNativeAsset,
-  batchSwapQuery
+  sor
 );
 
 const {

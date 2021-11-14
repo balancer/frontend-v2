@@ -95,7 +95,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { parseError } = useTranasactionErrors();
 const { minusSlippageScaled } = useSlippage();
-const { fullAmounts, fullAmountsScaled, bptOut, fiatTotalLabel } = toRefs(
+const { fullAmounts, batchSwapAmountMap, bptOut, fiatTotalLabel, batchSwap } = toRefs(
   props.math
 );
 
@@ -228,60 +228,28 @@ async function handleTransaction(tx): Promise<void> {
 
 async function submit(): Promise<void> {
   try {
+    let tx;
     investmentState.init = true;
 
-    const sor = new SOR(
-      rpcProviderService.jsonProvider,
-      configService.network.chainId,
-      configService.network.subgraph
-    );
-
-    const fetchedPools = await sor.fetchPools([], false);
-
-    const vault = new Contract(
-      configService.network.addresses.vault,
-      VaultAbi,
-      rpcProviderService.jsonProvider
-    );
-
-    const tokensIn = props.tokenAddresses.map(address => address.toLowerCase());
-
-    const result = await queryBatchSwapTokensIn(
-      sor,
-      vault,
-      tokensIn,
-      fullAmountsScaled.value,
-      props.pool.address.toLowerCase()
-    );
-
-    const amountOutMin = minusSlippageScaled(
-      BigNumber.from(result.amountTokenOut).abs()
-    );
-    const amountsInMap = Object.fromEntries(
-      tokensIn.map((token, i) => [token, fullAmountsScaled.value[i]])
-    );
-
-    const tx = await boostedJoinBatchSwap(
-      configService.network.key,
-      getProvider(),
-      result.swaps,
-      result.assets,
-      props.pool.address,
-      amountsInMap,
-      BigNumber.from(amountOutMin)
-    );
-
-    /**
-     *
-     */
-
-    // const tx = await poolExchange.join(
-    //   getProvider(),
-    //   account.value,
-    //   fullAmounts.value,
-    //   props.tokenAddresses,
-    //   bptOut.value
-    // );
+    if (batchSwap.value) {
+      tx = await boostedJoinBatchSwap(
+        configService.network.key,
+        getProvider(),
+        batchSwap.value.swaps,
+        batchSwap.value.assets,
+        props.pool.address,
+        batchSwapAmountMap.value,
+        BigNumber.from(bptOut.value)
+      );
+    } else {
+      tx = await poolExchange.join(
+        getProvider(),
+        account.value,
+        fullAmounts.value,
+        props.tokenAddresses,
+        bptOut.value
+      );
+    }
 
     investmentState.init = false;
     investmentState.confirming = true;

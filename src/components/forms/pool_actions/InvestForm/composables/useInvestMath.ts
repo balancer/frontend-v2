@@ -6,19 +6,23 @@ import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
-import { isPhantomStable, usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
 import { ETH_TX_BUFFER } from '@/constants/transactions';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
-import { queryBatchSwapTokensInUpdateAmounts } from '@balancer-labs/sor2';
-import { BatchSwapQuery, vault } from './useInvestState';
+import { queryBatchSwapTokensIn, SOR, SwapV2 } from '@balancer-labs/sor2';
+import { Contract } from 'ethers';
+import VaultAbi from '@/lib/abi/VaultAbi.json';
+import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 
 export type InvestMathResponse = {
   // computed
   hasAmounts: Ref<boolean>;
   fullAmounts: Ref<string[]>;
   fullAmountsScaled: Ref<BigNumber[]>;
+  batchSwapAmountMap: Ref<Record<string, BigNumber>>;
   fiatTotal: Ref<string>;
   fiatTotalLabel: Ref<string>;
   priceImpact: Ref<number>;
@@ -26,6 +30,7 @@ export type InvestMathResponse = {
   maximized: Ref<boolean>;
   optimized: Ref<boolean>;
   proportionalAmounts: Ref<string[]>;
+  batchSwap: Ref<BatchSwap | null>;
   bptOut: Ref<string>;
   hasZeroBalance: Ref<boolean>;
   hasNoBalances: Ref<boolean>;
@@ -35,17 +40,30 @@ export type InvestMathResponse = {
   optimizeAmounts: () => void;
 };
 
+export type BatchSwap = {
+  amountTokenOut: string;
+  swaps: SwapV2[];
+  assets: string[];
+};
+
+export const vault = new Contract(
+  configService.network.addresses.vault,
+  VaultAbi,
+  rpcProviderService.jsonProvider
+);
+
 export default function useInvestFormMath(
   pool: Ref<FullPool>,
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
   useNativeAsset: Ref<boolean>,
-  batchSwapQuery: Ref<BatchSwapQuery | null>
+  sor: SOR
 ): InvestMathResponse {
   /**
    * STATE
    */
   const proportionalAmounts = ref<string[]>([]);
+  const batchSwap = ref<BatchSwap | null>(null);
 
   /**
    * COMPOSABLES
@@ -86,6 +104,19 @@ export default function useInvestFormMath(
     fullAmounts.value.map((amount, i) =>
       parseUnits(amount, poolTokens.value[i].decimals)
     )
+  );
+
+  const batchSwapAmountMap = computed(
+    (): Record<string, BigNumber> => {
+      const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
+        tokenAddresses.value[i].toLowerCase(),
+        amount
+      ]);
+      const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
+        (amount as BigNumber).gt(0)
+      );
+      return Object.fromEntries(onlyTokensWithAmounts);
+    }
   );
 
   const fiatAmounts = computed((): string[] =>
@@ -145,10 +176,16 @@ export default function useInvestFormMath(
   });
 
   const bptOut = computed(() => {
-    let _bptOut = poolCalculator
-      .exactTokensInForBPTOut(fullAmounts.value)
-      .toString();
-    _bptOut = formatUnits(_bptOut, pool.value.onchain.decimals);
+    let _bptOut;
+
+    if (batchSwap.value) {
+      _bptOut = BigNumber.from(batchSwap.value.amountTokenOut).abs();
+    } else {
+      _bptOut = poolCalculator
+        .exactTokensInForBPTOut(fullAmounts.value)
+        .toString();
+      _bptOut = formatUnits(_bptOut, pool.value.onchain.decimals);
+    }
 
     if (managedPoolWithTradingHalted.value) return _bptOut;
     return minusSlippage(_bptOut, pool.value.onchain.decimals);
@@ -215,23 +252,20 @@ export default function useInvestFormMath(
       proportionalAmounts.value = send;
     }
 
-    if (pool.value && isPhantomStablePool.value && batchSwapQuery?.value) {
-      console.log([
-        batchSwapQuery.value.swaps,
-        batchSwapQuery.value.assets,
-        tokenAddresses.value.map(address => address.toLowerCase()),
-        fullAmountsScaled.value,
+    if (pool.value && isPhantomStablePool.value && hasAmounts.value) {
+      console.log(
+        Object.keys(batchSwapAmountMap.value),
+        Object.values(batchSwapAmountMap.value),
         pool.value.address.toLowerCase()
-      ]);
-      const result = await queryBatchSwapTokensInUpdateAmounts(
+      )
+      batchSwap.value = await queryBatchSwapTokensIn(
+        sor,
         vault,
-        batchSwapQuery.value.swaps,
-        batchSwapQuery.value.assets,
-        tokenAddresses.value.map(address => address.toLowerCase()),
-        fullAmountsScaled.value,
+        Object.keys(batchSwapAmountMap.value),
+        Object.values(batchSwapAmountMap.value),
         pool.value.address.toLowerCase()
       );
-      console.log('result', result);
+      console.log('batchSwap.value', batchSwap.value)
     }
   });
 
@@ -240,6 +274,7 @@ export default function useInvestFormMath(
     hasAmounts,
     fullAmounts,
     fullAmountsScaled,
+    batchSwapAmountMap,
     fiatTotal,
     fiatTotalLabel,
     priceImpact,
@@ -247,6 +282,7 @@ export default function useInvestFormMath(
     maximized,
     optimized,
     proportionalAmounts,
+    batchSwap,
     bptOut,
     hasZeroBalance,
     hasNoBalances,
