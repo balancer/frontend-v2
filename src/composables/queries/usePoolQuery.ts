@@ -46,13 +46,15 @@ export default function usePoolQuery(
       }
     });
 
+    const requiresAllowlisting =
+      isStableLike(pool.poolType) || isManaged(pool.poolType);
     const isOwnedByUser =
       isAddress(account.value) &&
       getAddress(pool.owner) === getAddress(account.value);
     const isAllowlisted =
-      (isStableLike(pool.poolType) && POOLS.Stable.AllowList.includes(id)) ||
-      (isManaged(pool.poolType) && POOLS.Investment.AllowList.includes(id));
-    if (!isOwnedByUser && !isAllowlisted) {
+      POOLS.Stable.AllowList.includes(id) ||
+      POOLS.Investment.AllowList.includes(id);
+    if (requiresAllowlisting && !isAllowlisted && !isOwnedByUser) {
       throw new Error('Pool not allowed');
     }
 
