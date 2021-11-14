@@ -90,7 +90,8 @@
         "maxInitialLiquidity": "Max initial liquidity in wallet",
         "setPoolFees": "Set pool fees",
         "bestFeeOption": "0.30% is best for most weighted pool with established tokens. Go higher for more exotic pairs.",
-        "alternativeFeeManagement": "Alternative fee management options"
+        "alternativeFeeManagement": "Alternative fee management options",
+        "chooseTokenWeights": "Choose tokens & weights"
     },
     "createPool": "Create a pool",
     "currentNetwork": "Current network",

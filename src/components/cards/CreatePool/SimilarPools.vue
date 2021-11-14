@@ -1,26 +1,39 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
+
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useWeb3 from '@/services/web3/useWeb3';
-import { computed, defineComponent } from 'vue';
-import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
-import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import useNumbers from '@/composables/useNumbers';
-import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 
+import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+
+/**
+ * COMPOSABLES
+ */
 const { userNetworkConfig, isWalletReady } = useWeb3();
 const {
   similarPools,
   isLoadingSimilarPools,
   existingPool,
   setStep,
-  proceed
+  proceed,
+  resetPoolCreationState
 } = usePoolCreation();
 const { fNum } = useNumbers();
 
+/** COMPUTED */
 const title = computed(() => {
   if (existingPool.value) return 'This pool already exists';
   return 'Similar pools exist';
 });
+
+/**
+ * FUNCTIONS
+ */
+function cancel() {
+  resetPoolCreationState();
+  setStep(0);
+}
 </script>
 
 <template>
@@ -106,7 +119,7 @@ const title = computed(() => {
         result in your new pool being less profitable.
       </BalAlert>
       <BalStack horizontal expandChildren>
-        <BalBtn @click="setStep(0)" block outline>Cancel</BalBtn>
+        <BalBtn @click="cancel" block outline>Cancel</BalBtn>
         <BalBtn @click="proceed" v-if="!existingPool" block color="gradient"
           >Continue anyway</BalBtn
         >

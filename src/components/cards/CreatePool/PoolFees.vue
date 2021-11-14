@@ -240,6 +240,7 @@ function onChangeFeeController(val: string) {
         type="submit"
         block
         color="gradient"
+        @click="proceed"
         >{{ $t('next') }}</BalBtn
       >
     </BalStack>

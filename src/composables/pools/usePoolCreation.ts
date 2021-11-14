@@ -33,7 +33,7 @@ type FeeController = 'self' | 'other';
 type CreateState = 'none' | 'creating' | 'created' | 'failed';
 type JoinState = 'non' | 'joining' | 'joined' | 'failed';
 
-const poolCreationState = reactive({
+const emptyPoolCreationState = {
   name: 'MyPool',
   tokenWeights: [] as TokenWeight[],
   activeStep: 0,
@@ -49,7 +49,9 @@ const poolCreationState = reactive({
   poolAddress: '',
   createState: 'none' as CreateState,
   joinState: 'none' as JoinState
-});
+};
+
+const poolCreationState = reactive({ ...emptyPoolCreationState });
 
 async function getSimilarPools(tokensInPool: string[]) {
   const queryArgs = {
@@ -63,8 +65,7 @@ async function getSimilarPools(tokensInPool: string[]) {
       symbol: true
     }
   };
-  const response = await balancerSubgraphService.pools.get(queryArgs, attrs);
-  return response;
+  return balancerSubgraphService.pools.get(queryArgs, attrs);
 }
 
 export default function usePoolCreation() {
@@ -84,6 +85,14 @@ export default function usePoolCreation() {
       deep: true
     }
   );
+
+  function resetPoolCreationState() {
+    for (const key of Object.keys(poolCreationState)) {
+      console.log('before', poolCreationState[key], key)
+      poolCreationState[key] = emptyPoolCreationState[key];
+      console.log('after', poolCreationState[key], key)
+    }
+  }
 
   const updateTokenWeights = (weights: TokenWeight[]) => {
     poolCreationState.tokenWeights = weights;
@@ -295,6 +304,7 @@ export default function usePoolCreation() {
     setFeeController,
     setTrpController,
     setStep,
+    resetPoolCreationState,
     optimisedLiquidity,
     similarPools,
     isLoadingSimilarPools,

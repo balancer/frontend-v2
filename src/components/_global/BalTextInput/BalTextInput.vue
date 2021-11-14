@@ -54,9 +54,9 @@ const props = withDefaults(defineProps<Props>(), {
   decimalLimit: 18,
   validateOn: 'blur',
   rules: () => [],
-  rounded: true,
-  shadow: true,
-  border: true
+  noRadius: false,
+  noShadow: false,
+  noBorder: false
 });
 
 const emit = defineEmits<{
@@ -137,6 +137,7 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 
 <style scoped>
 .bal-text-input {
+  @apply shadow-lg rounded-lg;
 }
 
 .input-container {

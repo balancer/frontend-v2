@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { uniqueId } from 'lodash';
 import { computed, useSlots } from 'vue';
 
 type Spacing = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | 'none';
@@ -33,7 +34,7 @@ const spacingClass = computed(() => {
   return `${spacingType}-${SpacingMap[props.spacing]}`;
 });
 
-const stackId = Math.random();
+const stackId = uniqueId();
 const slots = useSlots();
 
 const slotsWithContent = computed(() => {

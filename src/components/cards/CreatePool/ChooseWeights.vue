@@ -17,8 +17,9 @@ import { formatUnits } from '@ethersproject/units';
 import { sum, sumBy } from 'lodash';
 import anime from 'animejs';
 import { bnum } from '@/lib/utils';
+import { useI18n } from 'vue-i18n';
 
-const emit = defineEmits(['update:tokenWeights', 'nextStep']);
+defineEmits(['update:tokenWeights', 'nextStep']);
 
 const emptyTokenWeight: TokenWeight = {
   tokenAddress: '',
@@ -34,6 +35,7 @@ const emptyTokenWeight: TokenWeight = {
 const { tokenWeights, updateTokenWeights, proceed } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
+const { t } = useI18n();
 
 /**
  * STATE
@@ -73,7 +75,7 @@ const totalWeight = computed(() => {
   return (Number(total.toString()) * 100).toFixed(2);
 });
 
-const createDisabled = computed(() => {
+const isProceedDisabled = computed(() => {
   if (Number(totalWeight.value) === 100) return false;
   return true;
 });
@@ -87,12 +89,14 @@ onMounted(async () => {
   wrapperHeight.value = tokenWeightListWrapper.value?.offsetHeight || 0;
 
   // add in the first token list item
-  addTokenToPool();
-  addTokenToPool();
-
+  if (!tokenWeights.value.length) {
+    addTokenToPool();
+    addTokenToPool();
+  } else {
+    await animateHeight(tokenWeights.value.length);
+  }
   // wait for vue to reflect the changes of above
   await nextTick();
-
   distributeWeights();
 });
 
@@ -117,20 +121,14 @@ function handleLockedWeight(isLocked: boolean, id: number) {
   distributeWeights();
 }
 
-async function addTokenToPool() {
-  // animate the height
+async function animateHeight(offset = 0) {
+  // animate the height initially
   anime({
     targets: tokenWeightListWrapper.value,
-    height: `${wrapperHeight.value + tokenWeightItemHeight.value}px`
+    height: `${wrapperHeight.value + tokenWeightItemHeight.value * offset}px`
   });
 
-  wrapperHeight.value += tokenWeightItemHeight.value;
-
-  const newWeights: TokenWeight[] = [
-    ...tokenWeights.value,
-    { ...emptyTokenWeight, id: tokenWeights.value.length - 1 } as TokenWeight
-  ];
-  updateTokenWeights(newWeights);
+  wrapperHeight.value += tokenWeightItemHeight.value * offset;
 
   // to avoid reflow we are going to transform the totals + add token
   // down instead of having the new token weight item shift them
@@ -157,7 +155,15 @@ async function addTokenToPool() {
       opacity: 1
     });
   }
+}
 
+async function addTokenToPool() {
+  const newWeights: TokenWeight[] = [
+    ...tokenWeights.value,
+    { ...emptyTokenWeight, id: tokenWeights.value.length - 1 } as TokenWeight
+  ];
+  updateTokenWeights(newWeights);
+  await animateHeight(1);
   distributeWeights();
 }
 
@@ -180,10 +186,6 @@ function addTokenListElementRef(el: HTMLElement) {
     tokenWeightItemElements.push(el);
   }
 }
-
-function validateAndProceed() {
-  proceed();
-}
 </script>
 
 <template>
@@ -191,14 +193,14 @@ function validateAndProceed() {
     <BalStack vertical spacing="sm">
       <BalStack vertical spacing="xs">
         <span class="text-sm text-gray-700">{{ networkName }}</span>
-        <h5 class="font-bold">Choose tokens {{ `&` }} weights</h5>
+        <h5 class="font-bold">{{ $t('createAPool.chooseTokenWeights') }}</h5>
       </BalStack>
       <BalCard :shadow="false" noPad>
         <div ref="tokenWeightListWrapper">
           <div class="flex flex-col">
             <div class="bg-gray-50 w-full flex justify-between p-2 px-4">
-              <h6>Token</h6>
-              <h6>Weight</h6>
+              <h6>{{ $t('token') }}</h6>
+              <h6>{{ $t('weight') }}</h6>
             </div>
             <div class="relative w-full">
               <div
@@ -221,12 +223,12 @@ function validateAndProceed() {
 
             <div class="p-3" ref="addTokenRowElement">
               <BalBtn @click="addTokenToPool" outline color="blue" size="sm"
-                >Add Token
+                >{{ $t('addToken') }}
               </BalBtn>
             </div>
             <div ref="totalsRowElement" class="bg-gray-50 w-full p-2 px-4">
               <div class="w-full flex justify-between">
-                <h6>Total</h6>
+                <h6>{{ $t('total') }}</h6>
                 <h6>{{ totalWeight }}%</h6>
               </div>
               <BalProgressBar :width="totalWeight" class="my-2" />
@@ -237,8 +239,8 @@ function validateAndProceed() {
       <BalBtn
         block
         color="gradient"
-        :disabled="createDisabled"
-        @click="validateAndProceed"
+        :disabled="isProceedDisabled"
+        @click="proceed"
         >Next</BalBtn
       >
     </BalStack>

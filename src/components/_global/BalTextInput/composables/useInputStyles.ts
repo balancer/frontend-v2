@@ -48,10 +48,10 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const parentClasses = computed(() => attrs.class);
 
   const inputContainerClasses = computed(() => ({
-    'border border-gray-100 dark:border-gray-800': props.border,
+    'border border-gray-100 dark:border-gray-800': !props.noBorder,
     [extPaddingClass()]: true,
     'border-red-500 dark:border-red-500': isInvalid.value,
-    'shadow-inner': props.shadow
+    'shadow-inner': !props.noShadow
   }));
 
   const inputGroupClasses = computed(() => ({
@@ -82,7 +82,7 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   }));
 
   const borderRadiusClasses = computed(() => ({
-    'rounded-lg': props.rounded
+    'rounded-lg': !props.noRadius
   }));
 
   return {

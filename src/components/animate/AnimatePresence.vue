@@ -44,7 +44,6 @@ export default defineComponent({
     const _isVisible = ref(false);
 
     onMounted(() => {
-      console.log('besketit', props.isVisible);
       if (animateContainer.value) {
         anime.set(animateContainer.value, {
           ...props.initial
@@ -83,7 +82,6 @@ export default defineComponent({
     };
 
     const leave = (el, done) => {
-      console.log('bing');
       anime.set(el, {
         'pointer-events': 'none'
       });

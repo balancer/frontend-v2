@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useClassName } from '@/components/utils';
+import { getActiveClassName } from '@/components/utils';
 import { computed } from 'vue';
 import { StepState } from '../BalHorizSteps/BalHorizSteps.vue';
 
@@ -24,7 +24,7 @@ const visibleSteps = computed(() => {
 
 const stepTextClasses = computed(() => {
   return visibleSteps.value.map(step => {
-    return useClassName(step.state, [
+    return getActiveClassName(step.state, [
       [StepState.Active, 'text-blue-400 font-semibold hover:text-blue-800'],
       [StepState.Todo, 'text-gray-400 font-normal hover:text-blue-500'],
       [StepState.Success, 'text-green-500 font-semibold'],
@@ -35,7 +35,7 @@ const stepTextClasses = computed(() => {
 
 const stepCircleClasses = computed(() => {
   return visibleSteps.value.map(step => {
-    return useClassName(step.state, [
+    return getActiveClassName(step.state, [
       [
         StepState.Active,
         'border-2 border-none bg-gradient-from-l bg-gradient-to-r from-blue-600 to-blue-50 text-white'
@@ -94,14 +94,9 @@ const stepCircleClasses = computed(() => {
 
 <style scoped>
 .circle-line::after {
+  @apply absolute left-0 right-0 my-0 mx-auto bg-gray-300 w-px;
   content: '';
-  position: absolute;
-  width: 1px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
   bottom: -17px;
   height: 17px;
-  background-color: lightgray;
 }
 </style>
