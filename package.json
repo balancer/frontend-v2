@@ -29,6 +29,7 @@
     "@balancer-labs/sor2": "github:beethovenxfi/balancer-sor#beethovenx-master",
     "@balancer-labs/typechain": "^1.0.0",
     "@ensdomains/content-hash": "^2.5.3",
+    "ethereumjs-abi": "github:ethereumjs/ethereumjs-abi",
     "@ethersproject/abi": "~5.4.1",
     "@ethersproject/abstract-provider": "~5.4.1",
     "@ethersproject/abstract-signer": "~5.4.1",
