@@ -8,7 +8,7 @@ import { StepState, Action } from '@/types';
 
 export default function useTokenApprovalActions(
   tokenAddresses: string[],
-  amounts: string[],
+  amounts: Ref<string[]>,
   currentActionIndex: Ref<number>
 ) {
   const { t } = useI18n();

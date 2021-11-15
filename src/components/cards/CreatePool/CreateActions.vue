@@ -42,7 +42,7 @@ type ActionState = {
   receipt?: TransactionReceipt;
 };
 
-const defaultActionStateValues: ActionState = {
+const defaultActionState: ActionState = {
   init: false,
   confirming: false,
   confirmed: false,
@@ -62,8 +62,8 @@ const emit = defineEmits<{
  * STATE
  */
 const currentActionIndex = ref(0);
-const joinPoolState = reactive<ActionState>({ ...defaultActionStateValues });
-const createPoolState = reactive<ActionState>({ ...defaultActionStateValues });
+const joinPoolState = reactive<ActionState>({ ...defaultActionState });
+const createPoolState = reactive<ActionState>({ ...defaultActionState });
 
 const joinPoolStepState = generateStepState(joinPoolState);
 const createPoolStepState = generateStepState(createPoolState);
@@ -78,13 +78,9 @@ const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { parseError } = useTranasactionErrors();
-const { fiatTotalLabel } = useTokenFiatMath(
-  props.tokenAddresses,
-  props.amounts
-);
 const { allApproved, tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
-  props.amounts,
+  ref(props.amounts),
   currentActionIndex
 );
 const { createPool, joinPool } = usePoolCreation();
@@ -94,6 +90,7 @@ const { createPool, joinPool } = usePoolCreation();
  */
 
 const actions = computed((): Action[] => [
+  ...tokenApprovalActions.value,
   {
     label: t('createpool'),
     loadingLabel: t('confirming'),
@@ -104,7 +101,6 @@ const actions = computed((): Action[] => [
       state: createPoolStepState.value
     }
   },
-  ...tokenApprovalActions.value,
   {
     label: t('joinpool'),
     loadingLabel: joinPoolState.init
@@ -209,7 +205,7 @@ async function submit(
       block
       @click="currentAction.promise()"
     >
-      AA{{ currentAction.label }}
+      {{ currentAction.label }}
     </BalBtn>
     <template v-else>
       <div
