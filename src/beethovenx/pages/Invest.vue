@@ -13,7 +13,7 @@
         />
       </div>
       <PoolsTable
-        :isLoading="isLoadingUserPools"
+        :isLoading="isLoadingUserPools || isLoadingFarms"
         :data="userPools"
         :noPoolsLabel="$t('noInvestments')"
         showPoolShares
@@ -104,7 +104,8 @@ export default defineComponent({
       poolsHasNextPage,
       poolsIsFetchingNextPage,
       poolsQuery,
-      poolsWithFarms
+      poolsWithFarms,
+      isLoadingFarms
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
     const { beethovenxConfig } = useBeethovenxConfig();
@@ -180,6 +181,7 @@ export default defineComponent({
       goToPoolCreate,
       hasUnstakedBpt,
       communityPools,
+      isLoadingFarms,
 
       // constants
       EXTERNAL_LINKS
