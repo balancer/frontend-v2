@@ -24,7 +24,7 @@
         :sorReturn="sorReturn"
       />
       <BalAlert
-        v-if="error"
+        v-if="error && !(poolsLoading || isLoadingApprovals)"
         class="mb-4"
         type="error"
         size="sm"
