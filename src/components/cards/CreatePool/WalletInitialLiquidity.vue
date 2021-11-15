@@ -7,6 +7,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
+import { getActiveClassName } from '@/components/utils';
 
 /**
  * COMPOSABLES
@@ -34,6 +35,11 @@ const unallocatedTokenWeight = computed(() =>
     'weight'
   )
 );
+
+const totalsClass = computed(() => ({
+  'text-gray-700 ': maxInitialLiquidity.value >= 20000,
+  'text-yellow-500': maxInitialLiquidity.value < 20000
+}));
 </script>
 
 <template>
@@ -105,7 +111,10 @@ const unallocatedTokenWeight = computed(() =>
           <span class="text-sm font-semibold">{{ $t('total') }}</span>
         </div>
         <div
-          class="col-span-4 text-sm font-semibold flex items-center justify-end"
+          :class="[
+            'col-span-4 text-sm font-semibold flex items-center justify-end',
+            totalsClass
+          ]"
         >
           {{ fNum(maxInitialLiquidity, 'usd') }}
         </div>

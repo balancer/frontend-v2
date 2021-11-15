@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { computed, onMounted, ref } from 'vue';
+
 import ChooseWeights, {
   TokenWeight
 } from '@/components/cards/CreatePool/ChooseWeights.vue';
@@ -9,16 +10,17 @@ import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
 import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
 import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
 import PreviewPool from '@/components/cards/CreatePool/PreviewPool.vue';
-import { computed, onMounted, ref, watch } from 'vue';
-import { eq } from 'lodash';
-import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
+import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
+import SimilarPoolsCompact from '@/components/cards/CreatePool/SimilarPoolsCompact.vue';
+import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+
+import anime from 'animejs';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+
 import useApp from '@/composables/useApp';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
-import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
-import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
 import useBreakpoints from '@/composables/useBreakpoints';
-import anime from 'animejs';
+import { useRoute } from 'vue-router';
 
 const initialAnimateProps = {
   opacity: 0,
@@ -141,6 +143,9 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
       <BalStack vertical>
         <BalVerticalSteps title="Create a weighted pool steps" :steps="steps" />
         <WalletPoolTokens v-if="activeStep === 3" :tokens="tokensList" />
+        <AnimatePresence :isVisible="doSimilarPoolsExist">
+          <SimilarPoolsCompact />
+        </AnimatePresence>
       </BalStack>
     </div>
     <div class="col-span-11 lg:col-span-5 col-start-1 lg:col-start-4 relative">
@@ -191,8 +196,8 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
     </div>
     <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
       <BalStack vertical spacing="base">
-        <PoolSummary v-model:colors="tokenColors" />
-        <WalletInitialLiquidity :colors="tokenColors" />
+        <PoolSummary />
+        <WalletInitialLiquidity />
       </BalStack>
     </div>
     <div ref="accordionWrapper" class="col-span-11 mt-4 pb-24">
@@ -207,7 +212,7 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
           <PoolSummary />
         </template>
         <template v-slot:max-initial-liquidity>
-          <WalletInitialLiquidity :colors="tokenColors" />
+          <WalletInitialLiquidity />
         </template>
       </BalAccordion>
     </div>
