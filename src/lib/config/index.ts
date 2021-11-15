@@ -34,6 +34,7 @@ export interface Config {
     decimals: number;
     deeplinkId: string;
     logoURI: string;
+    minTransactionBuffer: string;
   };
   addresses: {
     exchangeProxy: string;

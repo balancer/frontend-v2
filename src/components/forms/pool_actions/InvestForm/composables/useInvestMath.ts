@@ -8,7 +8,6 @@ import { formatUnits, parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
-import { ETH_TX_BUFFER } from '@/constants/transactions';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
 import { queryBatchSwapTokensIn, SOR, SwapV2 } from '@balancer-labs/sor2';
@@ -161,7 +160,7 @@ export default function useInvestFormMath(
         return (
           amount ===
           bnum(balance)
-            .minus(ETH_TX_BUFFER)
+            .minus(nativeAsset.minTransactionBuffer)
             .toString()
         );
       } else {
@@ -222,9 +221,9 @@ export default function useInvestFormMath(
     fullAmounts.value.forEach((_, i) => {
       if (tokenAddresses.value[i] === nativeAsset.address) {
         const balance = balanceFor(tokenAddresses.value[i]);
-        amounts.value[i] = bnum(balance).gt(ETH_TX_BUFFER)
+        amounts.value[i] = bnum(balance).gt(nativeAsset.minTransactionBuffer)
           ? bnum(balance)
-              .minus(ETH_TX_BUFFER)
+              .minus(nativeAsset.minTransactionBuffer)
               .toString()
           : '0';
       } else {

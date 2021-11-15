@@ -13,6 +13,13 @@
             "token": "0x226f7b842E0F0120b7E194D05432b3fd14773a9D",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-union.json",
             "weekStart": 1
+        },
+        {
+            "label": "BANK",
+            "distributor": "0x9d20FE66eC5Dd15a3D3213556534C77cA20318bE",
+            "token": "0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-bankless.json",
+            "weekStart": 1
         }
     ],
     "42": [
