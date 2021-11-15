@@ -136,27 +136,20 @@
         />
       </div>
       <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
-        <BalCard noPad imgSrc="/images/partners/copper-launch.png">
+        <BalCard noPad>
           <div class="p-4 mt-2">
             <div class="mb-4 font-semibold">
-              {{ $t('copperLaunchPromo.title') }}
+              This is a Liquidity Bootstrapping Pool (LBP)
             </div>
             <div class="mb-4 text-sm">
-              {{ $t('copperLaunchPromo.description') }}
+              LBPs are usually used for token fair launch auctions (FLAs).
+              Beethoven X will soon support a fully permissionless interface to
+              allow anyone to create a FLA.
             </div>
             <div class="italic mb-4 text-sm">
-              {{ $t('copperLaunchPromo.poweredByBalancer') }}
+              Only the pool creator has permission to add or remove liquidity
+              from an LBP.
             </div>
-            <BalLink
-              :href="EXTERNAL_LINKS.Copper.Auctions(pool.address)"
-              external
-              class="block hover:no-underline"
-            >
-              <BalBtn color="blue" block
-                >{{ $t('copperLaunchPromo.buttonLabel') }}
-                <BalIcon name="arrow-up-right" size="sm" class="ml-1"
-              /></BalBtn>
-            </BalLink>
           </div>
         </BalCard>
       </div>
