@@ -270,14 +270,23 @@ export default defineComponent({
 
     async function populateInitialTokens(): Promise<void> {
       let assetIn = router.currentRoute.value.params.assetIn as string;
-      if (assetIn === nativeAsset.deeplinkId) assetIn = nativeAsset.address;
-      else if (isAddress(assetIn)) assetIn = getAddress(assetIn);
+
+      if (assetIn === nativeAsset.deeplinkId) {
+        assetIn = nativeAsset.address;
+      } else if (isAddress(assetIn)) {
+        assetIn = getAddress(assetIn);
+      }
+
       let assetOut = router.currentRoute.value.params.assetOut as string;
-      if (assetOut === nativeAsset.deeplinkId) assetOut = nativeAsset.address;
-      else if (isAddress(assetOut)) assetOut = getAddress(assetOut);
+
+      if (assetOut === nativeAsset.deeplinkId) {
+        assetOut = nativeAsset.address;
+      } else if (isAddress(assetOut)) {
+        assetOut = getAddress(assetOut);
+      }
 
       setTokenInAddress(assetIn || store.state.trade.inputAsset);
-      setTokenOutAddress(assetOut || '');
+      setTokenOutAddress(assetOut || store.state.trade.outputAsset);
     }
 
     function showTradePreviewModal() {
