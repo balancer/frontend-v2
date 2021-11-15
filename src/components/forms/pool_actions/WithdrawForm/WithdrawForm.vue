@@ -39,7 +39,8 @@ const {
   tokenOutIndex,
   highPriceImpactAccepted,
   validInput,
-  maxSlider
+  maxSlider,
+  tokensOut
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
@@ -92,7 +93,7 @@ onBeforeMount(() => {
     <ProportionalWithdrawalInput
       v-if="isProportional"
       :pool="pool"
-      :tokenAddresses="pool.tokenAddresses"
+      :tokenAddresses="tokensOut"
       :math="withdrawMath"
     />
     <TokenInput

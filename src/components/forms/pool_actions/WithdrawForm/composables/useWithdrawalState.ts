@@ -1,6 +1,7 @@
 import { Ref, computed, reactive, toRefs } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
+import { usePool } from '@/composables/usePool';
 
 /**
  * STATE
@@ -24,21 +25,24 @@ export default function useWithdrawalState(pool: Ref<FullPool>) {
    * COMPOSABLES
    */
   const { nativeAsset, wrappedNativeAsset } = useTokens();
+  const { investableTokens } = usePool(pool);
 
   /**
    * COMPUTED
    */
   const tokensOut = computed(() => {
+    const poolTokens = [...investableTokens.value];
+
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH
-      return pool.value.tokenAddresses.map(address => {
+      return poolTokens.map(address => {
         if (address === wrappedNativeAsset.value.address) {
           return nativeAsset.address;
         }
         return address;
       });
 
-    return pool.value.tokenAddresses;
+    return poolTokens;
   });
 
   const tokenOutIndex = computed(() => {
