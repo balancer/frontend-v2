@@ -25,6 +25,7 @@ export interface PoolToken {
 
 export interface Pool {
   id: string;
+  name: string;
   address: string;
   poolType: PoolType;
   swapFee: string;
