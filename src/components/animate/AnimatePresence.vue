@@ -25,15 +25,21 @@ export default defineComponent({
   props: {
     initial: {
       type: Object as PropType<AnimeParams>,
-      required: true
+      default: () => ({
+        opacity: 0
+      })
     },
     animate: {
       type: Object as PropType<AnimeParams>,
-      required: true
+      default: () => ({
+        opacity: 1
+      })
     },
     exit: {
       type: Object as PropType<AnimeParams>,
-      required: true
+      default: () => ({
+        opacity: 0
+      })
     },
     isVisible: {
       type: Boolean

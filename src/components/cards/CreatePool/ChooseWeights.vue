@@ -18,6 +18,7 @@ import { sum, sumBy } from 'lodash';
 import anime from 'animejs';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 const emit = defineEmits(['update:height']);
 
@@ -255,16 +256,17 @@ function addTokenListElementRef(el: HTMLElement) {
             </div>
           </div>
         </BalCard>
-        <BalAlert
-          v-if="showLiquidityAlert"
-          :title="$t('createAPool.recommendedLiquidity')"
-          type="warning"
-          >{{
-            $t('createAPool.youCanFundWithThisPoolWith', [
-              fNum(maxInitialLiquidity, 'usd')
-            ])
-          }}</BalAlert
-        >
+        <AnimatePresence :isVisible="showLiquidityAlert">
+          <BalAlert
+            :title="$t('createAPool.recommendedLiquidity')"
+            type="warning"
+            >{{
+              $t('createAPool.youCanFundWithThisPoolWith', [
+                fNum(maxInitialLiquidity, 'usd')
+              ])
+            }}</BalAlert
+          >
+        </AnimatePresence>
         <BalBtn
           block
           color="gradient"
