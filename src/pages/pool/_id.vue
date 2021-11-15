@@ -315,6 +315,9 @@ export default defineComponent({
       return false;
     });
 
+    // Temporary solution to hide Copper card on Fei pool page.
+    // Longer terms solution is needed distinguish LBP platforms
+    // and display custom widgets linking to their pages.
     const isCopperPool = computed((): boolean => {
       const feiPoolId =
         '0xede4efcc5492cf41ed3f0109d60bc0543cfad23a0002000000000000000000bb';
