@@ -130,7 +130,11 @@
         />
       </div>
       <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
-        <BalCard noPad imgSrc="/images/partners/copper-launch.png">
+        <BalCard
+          v-if="isCopperPool"
+          noPad
+          imgSrc="/images/partners/copper-launch.png"
+        >
           <div class="p-4 mt-2">
             <div class="mb-4 font-semibold">
               {{ $t('copperLaunchPromo.title') }}
@@ -311,6 +315,16 @@ export default defineComponent({
       return false;
     });
 
+    const isCopperPool = computed((): boolean => {
+      const feiPoolId =
+        '0xede4efcc5492cf41ed3f0109d60bc0543cfad23a0002000000000000000000bb';
+      return (
+        !!pool.value &&
+        isLiquidityBootstrappingPool.value &&
+        pool.value.id !== feiPoolId
+      );
+    });
+
     /**
      * METHODS
      */
@@ -362,6 +376,7 @@ export default defineComponent({
       swapFeeToolTip,
       isStableLikePool,
       isLiquidityBootstrappingPool,
+      isCopperPool,
       // methods
       fNum,
       onNewTx
