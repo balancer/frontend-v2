@@ -577,5 +577,10 @@
     "yourTransactions": "Your transactions in this pool",
     "trendingPairs": "Trending pairs",
     "chooseAPair": "Please select a valid pair",
-    "youCanInvest": "You can invest"
+    "youCanInvest": "You can invest",
+    "portfolioAssetsPieChartInfo": "A break down of your assets in all investment pools.",
+    "portfolioValueInfo": "A view of your portfolio value over time.",
+    "portfolioVolumeInfo": "Info text",
+    "portfolioFeesInfo": "Info text",
+    "portfolioPoolsInfoText": "A break down of your investment pools."
 }
