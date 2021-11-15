@@ -54,8 +54,8 @@
 import { computed, defineComponent, ref } from 'vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { fNum } from '@/composables/useNumbers';
-import { useGovernance } from '@/composables/useGovernance';
-import { bn, fp } from '@/lib/utils/numbers';
+import { useGovernance } from '@/beethovenx/composables/useGovernance';
+import { fp } from '@/beethovenx/utils/numbers';
 
 export default defineComponent({
   components: {},
