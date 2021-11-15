@@ -25,17 +25,10 @@ import useConfig from '@/composables/useConfig';
 import useTranasactionErrors, {
   TransactionError
 } from '@/composables/useTransactionErrors';
-import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sor2';
 import { configService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { Vault, Vault__factory } from '@balancer-labs/typechain';
-import { BigNumber, Contract } from 'ethers';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { BigNumber } from 'ethers';
 import { formatUnits } from '@ethersproject/units';
-import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
-import useSlippage from '@/composables/useSlippage';
-import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -94,7 +87,6 @@ const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { parseError } = useTranasactionErrors();
-const { minusSlippageScaled } = useSlippage();
 const {
   fullAmounts,
   batchSwapAmountMap,
@@ -251,7 +243,7 @@ async function submit(): Promise<void> {
         account.value,
         fullAmounts.value,
         props.tokenAddresses,
-        bptOut.value
+        formatUnits(bptOut.value, props.pool.onchain.decimals)
       );
     }
 

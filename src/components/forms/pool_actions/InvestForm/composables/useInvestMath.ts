@@ -4,7 +4,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import useNumbers, { fNum } from '@/composables/useNumbers';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
-import { formatUnits, parseUnits } from '@ethersproject/units';
+import { parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
@@ -69,7 +69,7 @@ export default function useInvestFormMath(
    */
   const { toFiat } = useNumbers();
   const { tokens, getToken, balances, balanceFor, nativeAsset } = useTokens();
-  const { minusSlippage } = useSlippage();
+  const { minusSlippageScaled } = useSlippage();
   const { managedPoolWithTradingHalted, isPhantomStablePool } = usePool(pool);
   const { currency } = useUserSettings();
 
@@ -174,20 +174,19 @@ export default function useInvestFormMath(
     return fullAmounts.value.every((amount, i) => amount === send[i]);
   });
 
-  const bptOut = computed(() => {
-    let _bptOut;
+  const bptOut = computed((): string => {
+    let _bptOut: BigNumber;
 
     if (batchSwap.value) {
       _bptOut = BigNumber.from(batchSwap.value.amountTokenOut).abs();
     } else {
-      _bptOut = poolCalculator
-        .exactTokensInForBPTOut(fullAmounts.value)
-        .toString();
-      _bptOut = formatUnits(_bptOut, pool.value.onchain.decimals);
+      _bptOut = BigNumber.from(
+        poolCalculator.exactTokensInForBPTOut(fullAmounts.value).toString()
+      );
     }
 
-    if (managedPoolWithTradingHalted.value) return _bptOut;
-    return minusSlippage(_bptOut, pool.value.onchain.decimals);
+    if (managedPoolWithTradingHalted.value) return _bptOut.toString();
+    return minusSlippageScaled(_bptOut).toString();
   });
 
   const poolTokenBalances = computed((): string[] =>
