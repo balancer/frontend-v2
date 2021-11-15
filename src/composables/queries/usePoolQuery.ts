@@ -12,7 +12,7 @@ import useUserSettings from '../useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
 import { forChange } from '@/lib/utils';
 import { isManaged, isStableLike } from '../usePool';
-import { getAddress } from '@ethersproject/address';
+import { getAddress, isAddress } from '@ethersproject/address';
 
 export default function usePoolQuery(
   id: string,
@@ -46,11 +46,15 @@ export default function usePoolQuery(
       }
     });
 
-    const isOwnedByUser = getAddress(pool.owner) === getAddress(account.value);
+    const requiresAllowlisting =
+      isStableLike(pool.poolType) || isManaged(pool.poolType);
+    const isOwnedByUser =
+      isAddress(account.value) &&
+      getAddress(pool.owner) === getAddress(account.value);
     const isAllowlisted =
-      (isStableLike(pool.poolType) && POOLS.Stable.AllowList.includes(id)) ||
-      (isManaged(pool.poolType) && POOLS.Investment.AllowList.includes(id));
-    if (!isOwnedByUser && !isAllowlisted) {
+      POOLS.Stable.AllowList.includes(id) ||
+      POOLS.Investment.AllowList.includes(id);
+    if (requiresAllowlisting && !isAllowlisted && !isOwnedByUser) {
       throw new Error('Pool not allowed');
     }
 
