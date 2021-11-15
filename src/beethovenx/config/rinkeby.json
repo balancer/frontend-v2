@@ -1,0 +1,96 @@
+{
+  "key": "4",
+  "chainId": 4,
+  "chainName": "Ethereum",
+  "name": "Ethereum Testnet Rinkeby",
+  "shortName": "Rinkeby",
+  "network": "rinkeby",
+  "unknown": false,
+  "rpc": "https://speedy-nodes-nyc.moralis.io/27bc050d15af36ec85017ecf/eth/rinkeby",
+  "ws": "wss://speedy-nodes-nyc.moralis.io/27bc050d15af36ec85017ecf/eth/rinkeby/ws",
+  "loggingRpc": "",
+  "explorer": "https://rinkeby.etherscan.io",
+  "explorerName": "RinkebyScan",
+  "subgraph": "https://api.studio.thegraph.com/query/8788/beethovenx-rinkeby/v0.0.2",
+  "farmSubgraph": "https://api.studio.thegraph.com/query/8788/beethovenx-farms-rinkeby/v0.0.6",
+  "blockSubgraph": "https://api.studio.thegraph.com/query/8788/rinkeby-blocks/v0.0.2",
+  "backendUrl": "https://backend.beets-ftm-node.com/graphql",
+  "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-rinkeby/pools",
+  "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
+  "nativeAsset": {
+    "name": "Ether",
+    "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    "symbol": "ETH",
+    "decimals": 18,
+    "deeplinkId": "ether",
+    "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+    "minTransactionBuffer": "0.5"
+  },
+  "addresses": {
+    "bFactory": "",
+    "bActions": "",
+    "dsProxyRegistry": "",
+    "exchangeProxy": "",
+    "merkleRedeem": "",
+    "multicall": "0x40f7218fa50ead995c4343eB0bB46dD414F9da7A",
+    "authorizer": "0x974D3FF709D84Ba44cde3257C0B5B0b14C081Ce9",
+    "vault": "0xF07513C68C55A31337E3b58034b176A15Dce16eD",
+    "weightedPoolFactory": "0x72F700b6e33aB2db1b915E06b99D7Ab913748380",
+    "stablePoolFactory": "0x73bf10fB8867F5687d0C7590d0aE2B4beBCC85fd",
+    "tokenFactory": "0xC1Ff645400DD37989e77802326665cCf4fFDB352",
+    "weth": "0x80dD2B80FbcFB06505A301d732322e987380EcD6",
+    "stETH": "",
+    "wstETH": "",
+    "usdc": "0x70b55af71b29c5ca7e67bd1995250364c4be5554",
+    "beets": "0x76227eFa96fF24738c28dEf07208E704a92cD31A",
+    "lidoRelayer": "",
+    "balancerHelpers": "0x49bf4cB1fF35ceda7BDB33064A9781144EF5d2b7",
+    "masterChef": "0xC926255d7BE5e1c432894ce966C30775c15f26C1",
+    "beetsUsdcReferencePricePool": "0xc5406e40f6f84468451319ec83038b2c063d280600020000000000000000002a",
+    "beethovenxToken": "0xf24bcf4d1e507740041c9cfd2dddb29585adce1e",
+    "fbeetsVestingToken":"0x33276D43aDA054a281d40a11d48310Cdc0156fc2",
+    "fbeetsToken":"0xC7Dc8F18A14c77F664fBF2EAC6F108c8099Fa35c",
+    "defaultPoolOwner": "0xCd983793ADb846dcE4830c22F30C7Ef0C864a776",
+    "earlyLudwigNft": "0x4Cb35E11e28Ac1AA33a0F5De0B266E9193a48E84",
+    "hnd": "0xb8fecb889862c486bcce52222c7efe9b30371ad5",
+    "hndRewarder": "0xc16Eb9F429AB417Fe97D096A45a110CfFCC23018",
+    "merkleOrchard": ""
+  },
+  "strategies": {
+    "0": {
+      "type": "0",
+      "name": "stablePool"
+    },
+    "1": {
+      "type": "1",
+      "name": "weightedPool"
+    },
+    "2": {
+      "type": "2",
+      "name": "weightedPool"
+    }
+  },
+  "lbp": {
+    "poolId": "0x49096affb047f312a3def632c07b962f6b2276da000200000000000000000029",
+    "tokenAddress": "0x76227eFa96fF24738c28dEf07208E704a92cD31A",
+    "tokenSymbol": "BEETS",
+    "startingAmount": 5000000,
+    "usdcAddress": "0x70b55Af71B29c5Ca7e67bD1995250364C4bE5554",
+    "startTime": "2021-10-07T06:18:00+0000",
+    "endTime": "2021-10-07T08:18:00+0000",
+    "weightStep":  0.00625,
+    "timeStep": 300
+  },
+  "etherscan": {
+    "apiKey": "6BBVB2S3S5I1JJIYZJUVU21WVEB5CEVPYU",
+    "apiUrl": "https://api-rinkeby.etherscan.io/api"
+  },
+  "tokenListSanityUrl": "https://1g2ag2hb.api.sanity.io/v1/data/query/production?query=%7B%0A%20%20%22name%22%3A%20%22Beethoven%20X%22%2C%0A%20%20%22timestamp%22%3A%20%222021-10-06T18%3A18%3A18.181Z%22%2C%0A%20%20%22version%22%3A%20%7B%0A%20%20%20%20%22major%22%3A%201%2C%0A%20%20%20%20%22minor%22%3A%200%2C%0A%20%20%20%20%22patch%22%3A%202%0A%20%20%7D%2C%0A%20%20%22tags%22%3A%20%7B%7D%2C%0A%20%20%22logoURI%22%3A%20%22https%3A%2F%2Fstorageapi.fleek.co%2Fbeethovenxfi-team-bucket%2Fbethovenx-icon.png%22%2C%0A%20%20%22keywords%22%3A%20%5B%0A%20%20%20%20%22beethoven%22%2C%0A%20%20%20%20%22default%22%2C%0A%20%20%20%20%22fantom%22%0A%20%20%5D%2C%0A%20%20%22tokens%22%3A%20*%5B_type%20%3D%3D%20%22fantomToken%22%5D%7B%0A%20%20%20%20%20%20name%2C%0A%20%20%20%20%20%20address%2C%0A%20%20%20%20%20%20symbol%2C%0A%20%20%20%20%20%20decimals%2C%0A%20%20%20%20%20%20%22chainId%22%3A%20250%2C%0A%20%20%20%20%20%20logoURI%0A%20%20%20%7D%0A%7D",
+  "configSanityUrl": "",
+  "supportsEIP1559": false,
+  "supportsElementPools": false,
+  "keys": {
+    "infura": "",
+    "alchemy": ""
+  }
+}

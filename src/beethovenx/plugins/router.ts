@@ -8,6 +8,7 @@ import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/beethovenx/pages/trade.vue';
 import PoolCreate from '@/beethovenx/pages/PoolCreate.vue';
 import Portfolio from '@/beethovenx/pages/Portfolio.vue';
+import FreshBeets from '@/beethovenx/pages/FreshBeets.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', redirect: '/trade' },
@@ -53,6 +54,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/pools', name: 'pools', component: HomePage },
   { path: '/pool-create', name: 'pool-create', component: PoolCreate },
   { path: '/my-portfolio', name: 'my-portfolio', component: Portfolio },
+  // { path: '/fbeets', name: 'fbeets', component: FreshBeets },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
