@@ -17,6 +17,8 @@ import useApp from '@/composables/useApp';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
 import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
+import useBreakpoints from '@/composables/useBreakpoints';
+import anime from 'animejs';
 
 const initialAnimateProps = {
   opacity: 0,
@@ -42,23 +44,28 @@ const exitAnimateProps = {
 };
 
 /**
- * COMPOSABLES
- */
-const { appLoading } = useApp();
-const { activeStep, similarPools, tokensList } = usePoolCreation();
-
-/**
  * STATE
  */
 const route = useRoute();
 const tokenColors = ref<string[]>([]);
+const currentWrapperHeight = ref(0);
+const accordionWrapper = ref<HTMLElement>();
+const hasCompletedMountAnimation = ref(false);
 
 /**
- * FUNCTIONS
+ * COMPOSABLES
  */
-const onNextStep = () => {
-  activeStep.value += 1;
-};
+const { appLoading } = useApp();
+const { activeStep, similarPools, tokensList } = usePoolCreation();
+const { upToLargeBreakpoint } = useBreakpoints();
+
+onMounted(() => {
+  if (accordionWrapper.value) {
+    anime.set(accordionWrapper.value, {
+      opacity: 0
+    });
+  }
+});
 
 /**
  * COMPUTED
@@ -86,38 +93,64 @@ const steps = computed(() => [
     state: activeStep.value === 4 ? StepState.Active : StepState.Todo
   }
 ]);
+
+/**
+ * FUNCTIONS
+ */
+function setWrapperHeight(dimensions: { width: number; height: number }) {
+  // need to transform the accordion as everything is absolutely
+  // positioned inside the AnimateHeight component
+  anime({
+    targets: accordionWrapper.value,
+    translateY: `${dimensions.height}px`,
+    complete: () => {
+      if (!hasCompletedMountAnimation.value) {
+        anime({
+          targets: accordionWrapper.value,
+          opacity: 1,
+          complete: () => {
+            hasCompletedMountAnimation.value = true;
+          }
+        });
+      }
+    }
+  });
+}
+const _console = console;
 </script>
 
 <template>
   <div class="w-full grid grid-cols-11 gap-x-8 pt-8 grid-container mx-auto">
-    <div class="col-span-3">
+    <div class="col-span-3" v-if="!upToLargeBreakpoint">
       <BalStack vertical>
         <BalVerticalSteps title="Create a weighted pool steps" :steps="steps" />
         <WalletPoolTokens v-if="activeStep === 3" :tokens="tokensList" />
       </BalStack>
     </div>
-    <div class="col-span-5 col-start-4 relative">
+    <div class="col-span-11 lg:col-span-5 col-start-1 lg:col-start-4 relative">
       <AnimatePresence
         :isVisible="!appLoading && activeStep === 0"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
       >
-        <ChooseWeights />
+        <ChooseWeights @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
         :isVisible="!appLoading && activeStep === 1"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
+        @update-dimensions="setWrapperHeight"
       >
-        <PoolFees @nextStep="onNextStep" />
+        <PoolFees />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 2"
+        :isVisible="!appLoading && activeStep === 2 && similarPools.length > 0"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
+        @update-dimensions="setWrapperHeight"
       >
         <SimilarPools />
       </AnimatePresence>
@@ -126,6 +159,7 @@ const steps = computed(() => [
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
+        @update-dimensions="setWrapperHeight"
       >
         <InitialLiquidity />
       </AnimatePresence>
@@ -134,15 +168,33 @@ const steps = computed(() => [
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
+        @update-dimensions="setWrapperHeight"
       >
         <PreviewPool />
       </AnimatePresence>
     </div>
-    <div class="col-span-3">
+    <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
       <BalStack vertical spacing="base">
         <PoolSummary v-model:colors="tokenColors" />
         <WalletInitialLiquidity :colors="tokenColors" />
       </BalStack>
+    </div>
+    <div ref="accordionWrapper" class="col-span-11 mt-4 pb-24">
+      <BalAccordion
+        v-if="upToLargeBreakpoint"
+        :sections="[
+          { title: 'Pool summary', id: 'pool-summary' },
+          { title: 'Max initial liquidity', id: 'max-initial-liquidity' }
+        ]"
+      >
+        <template v-slot:pool-summary>
+          <PoolSummary v-model:colors="tokenColors" />
+        </template>
+        <template v-slot:max-initial-liquidity>
+          <WalletInitialLiquidity :colors="tokenColors" />
+        </template>
+      </BalAccordion>
+      
     </div>
   </div>
 </template>

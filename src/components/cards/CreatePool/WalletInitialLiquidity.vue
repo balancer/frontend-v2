@@ -6,6 +6,7 @@ import { sumBy } from 'lodash';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 type Props = {
   colors: string[];
@@ -26,6 +27,8 @@ const {
 } = usePoolCreation();
 const { t } = useI18n();
 const { fNum } = useNumbers();
+const { upToLargeBreakpoint } = useBreakpoints();
+
 /**
  * COMPUTED
  */
@@ -42,7 +45,7 @@ const unallocatedTokenWeight = computed(() =>
 
 <template>
   <BalCard noPad shadow="false">
-    <div class="p-2 px-3 border-b">
+    <div class="p-2 px-3 border-b" v-if="!upToLargeBreakpoint">
       <h6>{{ $t('createAPool.maxInitialLiquidity') }}</h6>
     </div>
     <div class="p-2">

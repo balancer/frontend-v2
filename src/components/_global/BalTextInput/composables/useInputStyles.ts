@@ -1,7 +1,6 @@
 import { Ref, computed } from 'vue';
 
 export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
-  console.log('props', props);
   const extPaddingClass = (): string => {
     switch (props.size) {
       case 'sm':

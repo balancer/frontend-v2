@@ -19,7 +19,7 @@ import anime from 'animejs';
 import { bnum } from '@/lib/utils';
 import { useI18n } from 'vue-i18n';
 
-defineEmits(['update:tokenWeights', 'nextStep']);
+const emit = defineEmits(['update:height']);
 
 const emptyTokenWeight: TokenWeight = {
   tokenAddress: '',
@@ -48,7 +48,9 @@ const tokenWeightListWrapper = ref<HTMLElement>();
 const addTokenRowElement = ref<HTMLElement>();
 const totalsRowElement = ref<HTMLElement>();
 const tokenWeightItemElements = reactive<HTMLElement[]>([]);
+const cardWrapper = ref<HTMLElement>();
 const wrapperHeight = ref(0);
+const cardWrapperHeight = ref(0);
 
 /**
  * COMPUTED
@@ -87,6 +89,7 @@ onMounted(async () => {
   // retrieving height causes reflow, get the height of the wrapper once
   // and manually uptick it when we add items to prevent double reflow during anim
   wrapperHeight.value = tokenWeightListWrapper.value?.offsetHeight || 0;
+  cardWrapperHeight.value = cardWrapper.value?.offsetHeight || 0;
 
   // add in the first token list item
   if (!tokenWeights.value.length) {
@@ -122,6 +125,11 @@ function handleLockedWeight(isLocked: boolean, id: number) {
 }
 
 async function animateHeight(offset = 0) {
+  emit('update:height', {
+    height:
+      cardWrapperHeight.value +
+      tokenWeightItemHeight.value * tokenWeights.value.length
+  });
   // animate the height initially
   anime({
     targets: tokenWeightListWrapper.value,
@@ -189,60 +197,62 @@ function addTokenListElementRef(el: HTMLElement) {
 </script>
 
 <template>
-  <BalCard>
-    <BalStack vertical spacing="sm">
-      <BalStack vertical spacing="xs">
-        <span class="text-sm text-gray-700">{{ networkName }}</span>
-        <h5 class="font-bold">{{ $t('createAPool.chooseTokenWeights') }}</h5>
-      </BalStack>
-      <BalCard :shadow="false" noPad>
-        <div ref="tokenWeightListWrapper">
-          <div class="flex flex-col">
-            <div class="bg-gray-50 w-full flex justify-between p-2 px-4">
-              <h6>{{ $t('token') }}</h6>
-              <h6>{{ $t('weight') }}</h6>
-            </div>
-            <div class="relative w-full">
-              <div
-                class="absolute w-full"
-                v-for="(_, i) of tokenWeights"
-                :key="`tokenweight-${i}`"
-                :ref="addTokenListElementRef"
-              >
-                <TokenWeightInput
-                  v-model:weight="tokenWeights[i].weight"
-                  v-model:address="tokenWeights[i].tokenAddress"
-                  @update:weight="data => handleWeightChange(data, i)"
-                  @update:address="data => handleAddressChange(data, i)"
-                  @update:isLocked="data => handleLockedWeight(data, i)"
-                  noRules
-                  noMax
-                />
+  <div ref="cardWrapper">
+    <BalCard>
+      <BalStack vertical spacing="sm">
+        <BalStack vertical spacing="xs">
+          <span class="text-sm text-gray-700">{{ networkName }}</span>
+          <h5 class="font-bold">{{ $t('createAPool.chooseTokenWeights') }}</h5>
+        </BalStack>
+        <BalCard :shadow="false" noPad>
+          <div ref="tokenWeightListWrapper">
+            <div class="flex flex-col">
+              <div class="bg-gray-50 w-full flex justify-between p-2 px-4">
+                <h6>{{ $t('token') }}</h6>
+                <h6>{{ $t('weight') }}</h6>
               </div>
-            </div>
+              <div class="relative w-full">
+                <div
+                  class="absolute w-full"
+                  v-for="(_, i) of tokenWeights"
+                  :key="`tokenweight-${i}`"
+                  :ref="addTokenListElementRef"
+                >
+                  <TokenWeightInput
+                    v-model:weight="tokenWeights[i].weight"
+                    v-model:address="tokenWeights[i].tokenAddress"
+                    @update:weight="data => handleWeightChange(data, i)"
+                    @update:address="data => handleAddressChange(data, i)"
+                    @update:isLocked="data => handleLockedWeight(data, i)"
+                    noRules
+                    noMax
+                  />
+                </div>
+              </div>
 
-            <div class="p-3" ref="addTokenRowElement">
-              <BalBtn @click="addTokenToPool" outline color="blue" size="sm"
-                >{{ $t('addToken') }}
-              </BalBtn>
-            </div>
-            <div ref="totalsRowElement" class="bg-gray-50 w-full p-2 px-4">
-              <div class="w-full flex justify-between">
-                <h6>{{ $t('total') }}</h6>
-                <h6>{{ totalWeight }}%</h6>
+              <div class="p-3" ref="addTokenRowElement">
+                <BalBtn @click="addTokenToPool" outline color="blue" size="sm"
+                  >{{ $t('addToken') }}
+                </BalBtn>
               </div>
-              <BalProgressBar :width="totalWeight" class="my-2" />
+              <div ref="totalsRowElement" class="bg-gray-50 w-full p-2 px-4">
+                <div class="w-full flex justify-between">
+                  <h6>{{ $t('total') }}</h6>
+                  <h6>{{ totalWeight }}%</h6>
+                </div>
+                <BalProgressBar :width="totalWeight" class="my-2" />
+              </div>
             </div>
           </div>
-        </div>
-      </BalCard>
-      <BalBtn
-        block
-        color="gradient"
-        :disabled="isProceedDisabled"
-        @click="proceed"
-        >Next</BalBtn
-      >
-    </BalStack>
-  </BalCard>
+        </BalCard>
+        <BalBtn
+          block
+          color="gradient"
+          :disabled="isProceedDisabled"
+          @click="proceed"
+          >Next</BalBtn
+        >
+      </BalStack>
+    </BalCard>
+  </div>
 </template>

@@ -105,7 +105,11 @@ export default function usePoolCreation() {
     });
   };
   const proceed = () => {
-    poolCreationState.activeStep += 1;
+    if (!similarPools.value.length && poolCreationState.activeStep === 1) {
+      poolCreationState.activeStep += 2;
+    } else {
+      poolCreationState.activeStep += 1;
+    }
   };
 
   const setFeeManagement = (type: FeeManagementType) => {
@@ -313,6 +317,6 @@ export default function usePoolCreation() {
     maxInitialLiquidity,
     getPoolSymbol,
     createPool,
-    joinPool,
+    joinPool
   };
 }

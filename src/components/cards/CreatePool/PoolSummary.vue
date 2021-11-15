@@ -10,6 +10,7 @@ import { eq, sumBy } from 'lodash';
 import echarts from 'echarts';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { useI18n } from 'vue-i18n';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 const emit = defineEmits(['update:colors']);
 
@@ -22,6 +23,7 @@ const chartInstance = ref<echarts.ECharts>();
  */
 const { tokens } = useTokens();
 const { tokenWeights } = usePoolCreation();
+const { upToLargeBreakpoint } = useBreakpoints();
 const { t } = useI18n();
 const { resolve } = useUrls();
 
@@ -149,7 +151,7 @@ const calculateColors = async () => {
 
 <template>
   <BalCard noPad shadow="false">
-    <div class="p-2 px-3 border-b">
+    <div class="p-2 px-3 border-b" v-if="!upToLargeBreakpoint">
       <h6>{{ $t('createAPool.poolSummary') }}</h6>
     </div>
     <div class="p-2">

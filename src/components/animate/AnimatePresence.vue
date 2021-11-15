@@ -21,7 +21,7 @@ import {
   nextTick
 } from 'vue';
 export default defineComponent({
-  emits: ['on-exit'],
+  emits: ['on-exit', 'update-dimensions'],
   props: {
     initial: {
       type: Object as PropType<AnimeParams>,
@@ -65,7 +65,7 @@ export default defineComponent({
       }
     );
 
-    const enter = (el, done) => {
+    const enter = async (el, done) => {
       // on mount we set initial values, but the issue is that enter will run at
       // the same time, setTimeout(0) makes the animation run on the next
       // available tick, so it's instant visually but on a tick delay for code
@@ -79,6 +79,14 @@ export default defineComponent({
           }),
         0
       );
+      setTimeout(() => {
+        if (animateContainer.value) {
+          emit('update-dimensions', {
+            width: animateContainer.value.offsetWidth,
+            height: animateContainer.value.offsetHeight
+          });
+        }
+      }, 100);
     };
 
     const leave = (el, done) => {
