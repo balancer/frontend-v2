@@ -120,10 +120,10 @@ onBeforeMount(() => {
     <BalBtn
       v-if="hasFarm"
       class="mt-2"
-      :tag="hasFarmStake ? 'router-link' : 'div'"
+      :tag="hasFarmStake || hasUnstakedBpt ? 'router-link' : 'div'"
       :to="{ name: 'farm' }"
       label="Farm"
-      :disabled="!hasFarmStake"
+      :disabled="!hasFarmStake && !hasUnstakedBpt"
       block
     />
     <BalAlert
