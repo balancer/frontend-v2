@@ -34,9 +34,11 @@ export type InvestMathResponse = {
   hasZeroBalance: Ref<boolean>;
   hasNoBalances: Ref<boolean>;
   hasAllTokens: Ref<boolean>;
+  shouldFetchBatchSwap: Ref<boolean>;
   // methods
   maximizeAmounts: () => void;
   optimizeAmounts: () => void;
+  getBatchSwap: () => Promise<void>;
 };
 
 export type BatchSwap = {
@@ -205,6 +207,10 @@ export default function useInvestFormMath(
     poolTokenBalances.value.every(balance => bnum(balance).gt(0))
   );
 
+  const shouldFetchBatchSwap = computed(
+    (): boolean => pool.value && isPhantomStablePool.value && hasAmounts.value
+  );
+
   /**
    * METHODS
    */
@@ -236,6 +242,16 @@ export default function useInvestFormMath(
     amounts.value = [...send];
   }
 
+  async function getBatchSwap(): Promise<void> {
+    batchSwap.value = await queryBatchSwapTokensIn(
+      sor,
+      vault,
+      Object.keys(batchSwapAmountMap.value),
+      Object.values(batchSwapAmountMap.value),
+      pool.value.address.toLowerCase()
+    );
+  }
+
   watch(fullAmounts, async (newAmounts, oldAmounts) => {
     const changedIndex = newAmounts.findIndex(
       (amount, i) => oldAmounts[i] !== amount
@@ -250,21 +266,7 @@ export default function useInvestFormMath(
       proportionalAmounts.value = send;
     }
 
-    if (pool.value && isPhantomStablePool.value && hasAmounts.value) {
-      console.log(
-        Object.keys(batchSwapAmountMap.value),
-        Object.values(batchSwapAmountMap.value),
-        pool.value.address.toLowerCase()
-      );
-      batchSwap.value = await queryBatchSwapTokensIn(
-        sor,
-        vault,
-        Object.keys(batchSwapAmountMap.value),
-        Object.values(batchSwapAmountMap.value),
-        pool.value.address.toLowerCase()
-      );
-      console.log('batchSwap.value', batchSwap.value);
-    }
+    if (shouldFetchBatchSwap.value) await getBatchSwap();
   });
 
   return {
@@ -285,8 +287,10 @@ export default function useInvestFormMath(
     hasZeroBalance,
     hasNoBalances,
     hasAllTokens,
+    shouldFetchBatchSwap,
     // methods
     maximizeAmounts,
-    optimizeAmounts
+    optimizeAmounts,
+    getBatchSwap
   };
 }

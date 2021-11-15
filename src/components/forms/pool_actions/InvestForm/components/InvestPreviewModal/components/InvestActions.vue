@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, ref, toRefs, computed, reactive } from 'vue';
+import { toRef, ref, toRefs, computed, reactive, watch } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 // Types
@@ -83,7 +83,7 @@ const route = useRoute();
 const { t } = useI18n();
 const { networkConfig } = useConfig();
 const { getToken } = useTokens();
-const { account, getProvider, explorerLinks } = useWeb3();
+const { account, getProvider, explorerLinks, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { parseError } = useTranasactionErrors();
@@ -92,7 +92,8 @@ const {
   batchSwapAmountMap,
   bptOut,
   fiatTotalLabel,
-  batchSwap
+  batchSwap,
+  shouldFetchBatchSwap
 } = toRefs(props.math);
 
 const { requiredApprovalState, approveToken } = useTokenApprovals(
@@ -173,6 +174,13 @@ const explorerLink = computed((): string =>
   investmentState.receipt
     ? explorerLinks.txLink(investmentState.receipt.transactionHash)
     : ''
+);
+
+const transactionInProgress = computed(
+  (): boolean =>
+    investmentState.init ||
+    investmentState.confirming ||
+    investmentState.confirmed
 );
 
 /**
@@ -260,6 +268,15 @@ async function submit(): Promise<void> {
     console.error(error);
   }
 }
+
+/**
+ * WATCHERS
+ */
+watch(blockNumber, async () => {
+  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
+    await props.math.getBatchSwap();
+  }
+});
 </script>
 
 <template>
