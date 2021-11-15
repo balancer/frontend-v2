@@ -1,6 +1,6 @@
 import homestead from './homestead.json';
 import kovan from './kovan.json';
-import rinkeby from './rinkeby.json';
+import rinkeby from '../../beethovenx/config/rinkeby.json';
 import polygon from './polygon.json';
 import arbitrum from './arbitrum.json';
 import fantom from '../../beethovenx/config/fantom.json';
@@ -54,6 +54,8 @@ export interface Config {
     hndRewarder: string;
     masterChef: string;
     earlyLudwigNft: string;
+    fbeetsVestingToken: string;
+    fbeetsToken: string;
     hnd: string;
     beetsUsdcReferencePricePool: string;
     beets: string;
@@ -81,7 +83,7 @@ export interface Config {
 const config: Record<Config['chainId'], Config> = {
   //[Network.MAINNET]: homestead,
   //[Network.KOVAN]: kovan,
-  //[Network.RINKEBY]: rinkeby,
+  [Network.RINKEBY]: rinkeby,
   //[Network.POLYGON]: polygon,
   //[Network.ARBITRUM]: arbitrum,
   [Network.FANTOM]: fantom,
