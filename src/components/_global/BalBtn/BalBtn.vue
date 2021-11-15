@@ -165,6 +165,11 @@ export default defineComponent({
       }
       if (props.outline || props.flat)
         return `text-${props.color}-500 dark:text-${props.color}-400`;
+
+      if (props.color === 'gradient' && props.loading) {
+        return 'text-gray-600';
+      }
+
       return 'text-white';
     });
 
@@ -207,6 +212,11 @@ export default defineComponent({
     const iconColor = computed(() => {
       if (props.outline) return props.color;
       if (props.color === 'white') return 'gray';
+
+      if (props.color === 'gradient' && props.loading) {
+        return 'gray';
+      }
+
       return 'white';
     });
 
