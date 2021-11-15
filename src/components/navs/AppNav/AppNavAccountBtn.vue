@@ -10,10 +10,21 @@
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
-        <Avatar :address="account" :size="avatarSize" />
+        <img
+          v-if="nftImage !== null"
+          :src="nftImage"
+          width="22"
+          class="rounded-full h-22 w-22"
+        />
+        <Avatar
+          v-else
+          :address="account"
+          :profile="profile"
+          :size="avatarSize"
+        />
         <span
-          v-if="profile && profile.ens"
-          v-text="profile && profile.ens"
+          v-if="profile.ens"
+          v-text="profile.ens"
           class="pl-2 hidden lg:inline-block"
         />
         <span
@@ -33,6 +44,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import AppNavSettings from './AppNavSettings.vue';
 import Avatar from '@/components/images/Avatar.vue';
 import useWeb3 from '@/services/web3/useWeb3';
+import useNftQuery from '@/beethovenx/composables/nft/useNftQuery';
 
 export default defineComponent({
   name: 'AppNavAccountBtn',
@@ -45,6 +57,11 @@ export default defineComponent({
   setup() {
     const { bp, upToLargeBreakpoint } = useBreakpoints();
     const { isLoadingProfile, profile, account } = useWeb3();
+    const nftQuery = useNftQuery();
+
+    const nftImage = computed(() => {
+      return nftQuery.data.value || null;
+    });
 
     const avatarSize = computed(() => {
       if (bp.value === 'sm') {
@@ -63,7 +80,8 @@ export default defineComponent({
       profile,
       avatarSize,
       upToLargeBreakpoint,
-      isLoadingProfile
+      isLoadingProfile,
+      nftImage
     };
   }
 });
