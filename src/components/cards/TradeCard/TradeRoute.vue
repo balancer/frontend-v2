@@ -1,5 +1,5 @@
 <template>
-  <BalCard shadow="none" v-if="routes.length > 0">
+  <div v-if="routes.length > 0">
     <div
       class="flex text-gray-500 items-center cursor-pointer"
       @click="toggleVisibility"
@@ -117,7 +117,7 @@
         </div>
       </div>
     </div>
-  </BalCard>
+  </div>
 </template>
 
 <script lang="ts">
@@ -197,8 +197,7 @@ export default defineComponent({
     }
 
     const label = computed(() => {
-      const version = props.sorReturn.isV1swap ? 'V1' : 'V2';
-      return `${t('usingLiquidity', [version])}`;
+      return `Order Routing`;
     });
 
     const input = computed(() => {
@@ -432,21 +431,7 @@ export default defineComponent({
     }
 
     function getPoolLink(id: string): string {
-      const chainId = appNetworkConfig.chainId;
-      const prefixMap = {
-        [Network.MAINNET]: 'app.',
-        [Network.KOVAN]: 'kovan.',
-        [Network.POLYGON]: 'polygon.',
-        [Network.ARBITRUM]: 'arbitrum.'
-      };
-      const prefix = prefixMap[chainId] || '';
-      if (props.sorReturn.isV1swap && chainId === 1) {
-        return `https://pools.balancer.exchange/#/pool/${id}`;
-      } else {
-        return props.sorReturn.isV1swap
-          ? `https://${prefix}pools.balancer.exchange/#/pool/${id}`
-          : `https://${prefix}balancer.fi/#/pool/${id}`;
-      }
+      return `https://app.beets.fi/#/pool/${id}`;
     }
 
     return {

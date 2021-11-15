@@ -23,11 +23,6 @@ export default function useTokenListsQuery(
 
   const queryFn = async () => {
     console.log('Fetching tokenLists');
-    console.log(
-      await tokenListService.getTokenListMap(
-        appNetworkConfig.tokenListSanityUrl
-      )
-    );
     return tokenListService.getTokenListMap(
       appNetworkConfig.tokenListSanityUrl
     );
