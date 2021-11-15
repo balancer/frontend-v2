@@ -37,8 +37,8 @@ export const SupportedWallets = [
   'metamask',
   'walletconnect',
   'gnosis',
-  'walletlink',
-  'portis'
+  'walletlink'
+  //'portis'
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
   metamask: 'Metamask',

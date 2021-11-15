@@ -29,8 +29,8 @@
         y2="8.46881"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#FF00FF" />
-        <stop offset="1" stop-color="#0000FF" />
+        <stop stop-color="#00E59D" />
+        <stop offset="1" stop-color="#00E59D" />
       </linearGradient>
       <linearGradient
         id="wallet_gradient"

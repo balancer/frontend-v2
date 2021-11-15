@@ -8,7 +8,7 @@
       size="sm"
       class="capitalize mr-2 w-18"
       v-bind="attrs_"
-      :color="modelValue === option.value ? 'blue' : 'gray'"
+      :color="modelValue === option.value ? 'green' : 'gray'"
     >
       {{ 'best' === option.label ? $t(option.label) : option.label }}
     </BalBtn>
