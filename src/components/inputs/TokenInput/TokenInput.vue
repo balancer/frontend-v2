@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { HtmlInputEvent } from '@/types';
 import { ref, computed, watchEffect } from 'vue';
-import useTokens from '@/composables/useTokens';
-import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
-import useNumbers from '@/composables/useNumbers';
-import { bnum } from '@/lib/utils';
-import useUserSettings from '@/composables/useUserSettings';
-import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
+
+import useNumbers from '@/composables/useNumbers';
+import useTokens from '@/composables/useTokens';
+import useUserSettings from '@/composables/useUserSettings';
+
+import { bnum } from '@/lib/utils';
+import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
+
 import useWeb3 from '@/services/web3/useWeb3';
-import { TokenInfo } from '@/types/TokenList';
+
 import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
-import { ETH_TX_BUFFER } from '@/constants/transactions';
+import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
+
+import { TokenInfo } from '@/types/TokenList';
 
 /**
  * TYPES
@@ -35,7 +39,7 @@ type Props = {
   excludedTokens?: string[];
   options?: string[];
   rules?: Rules;
-  disableEthBuffer?: boolean;
+  disableNativeAssetBuffer?: boolean;
 };
 
 /**
@@ -50,7 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
   fixedToken: false,
   disableMax: false,
   hintAmount: '',
-  disableEthBuffer: false,
+  disableNativeAssetBuffer: false,
   options: () => [],
   rules: () => []
 });
@@ -73,6 +77,7 @@ const _address = ref<string>('');
 /**
  * COMPOSABLEs
  */
+
 const { getToken, balanceFor, nativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
@@ -83,15 +88,37 @@ const { isWalletReady } = useWeb3();
  * COMPUTED
  */
 const hasToken = computed(() => !!_address.value);
-const hasAmount = computed(() => bnum(_amount.value).gt(0));
-const hasBalance = computed(() => bnum(tokenBalance.value).gt(0));
+const amountBN = computed(() => bnum(_amount.value));
+const tokenBalanceBN = computed(() => bnum(tokenBalance.value));
+const hasAmount = computed(() => amountBN.value.gt(0));
+const hasBalance = computed(() => tokenBalanceBN.value.gt(0));
+const shouldUseTxBuffer = computed(
+  () =>
+    _address.value === nativeAsset.address && !props.disableNativeAssetBuffer
+);
+const amountExceedsTokenBalance = computed(() =>
+  amountBN.value.gt(tokenBalance.value)
+);
+const shouldShowTxBufferMessage = computed(() => {
+  if (
+    amountExceedsTokenBalance.value ||
+    !shouldUseTxBuffer.value ||
+    !hasBalance.value ||
+    !hasAmount.value
+  ) {
+    return false;
+  }
+
+  return amountBN.value.gte(
+    tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer)
+  );
+});
+
 const isMaxed = computed(() => {
-  if (_address.value === nativeAsset.address && !props.disableEthBuffer) {
+  if (shouldUseTxBuffer.value) {
     return (
       _amount.value ===
-      bnum(tokenBalance.value)
-        .minus(ETH_TX_BUFFER)
-        .toString()
+      tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer).toString()
     );
   } else {
     return _amount.value === tokenBalance.value;
@@ -125,16 +152,24 @@ const inputRules = computed(() => {
 const maxPercentage = computed(() => {
   if (!hasBalance.value || !hasAmount.value) return '0';
 
-  return bnum(_amount.value)
+  return amountBN.value
     .div(tokenBalance.value)
     .times(100)
-    .toFixed(1);
+    .toFixed(2);
 });
 
-const barColor = computed(() => {
-  if (bnum(_amount.value).gt(tokenBalance.value)) return 'red';
-  return 'green';
+const bufferPercentage = computed(() => {
+  if (!shouldShowTxBufferMessage.value) return '0';
+
+  return bnum(nativeAsset.minTransactionBuffer)
+    .div(tokenBalance.value)
+    .times(100)
+    .toFixed(2);
 });
+
+const barColor = computed(() =>
+  amountExceedsTokenBalance.value ? 'red' : 'green'
+);
 
 const priceImpactSign = computed(() =>
   (props.priceImpact || 0) >= 0 ? '-' : '+'
@@ -150,12 +185,13 @@ const priceImpactClass = computed(() =>
 const setMax = () => {
   if (props.disableMax) return;
 
-  if (_address.value === nativeAsset.address && !props.disableEthBuffer) {
+  if (
+    _address.value === nativeAsset.address &&
+    !props.disableNativeAssetBuffer
+  ) {
     // Subtract buffer for gas
-    _amount.value = bnum(tokenBalance.value).gt(ETH_TX_BUFFER)
-      ? bnum(tokenBalance.value)
-          .minus(ETH_TX_BUFFER)
-          .toString()
+    _amount.value = tokenBalanceBN.value.gt(nativeAsset.minTransactionBuffer)
+      ? tokenBalanceBN.value.minus(nativeAsset.minTransactionBuffer).toString()
       : '0';
   } else {
     _amount.value = tokenBalance.value;
@@ -250,9 +286,21 @@ watchEffect(() => {
         <BalProgressBar
           v-if="hasBalance && !noMax"
           :width="maxPercentage"
+          :buffer-width="bufferPercentage"
           :color="barColor"
           class="mt-2"
         />
+        <div
+          v-if="shouldShowTxBufferMessage"
+          class="mt-2 text-yellow-600 dark:text-yellow-400 text-xs"
+        >
+          {{
+            t('minTransactionBuffer', [
+              nativeAsset.minTransactionBuffer,
+              nativeAsset.symbol
+            ])
+          }}
+        </div>
       </div>
     </template>
   </BalTextInput>

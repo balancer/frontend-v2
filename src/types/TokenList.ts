@@ -11,6 +11,11 @@ export interface TokenInfo {
   };
 }
 
+export type NativeAsset = TokenInfo & {
+  deeplinkId: string;
+  minTransactionBuffer: string;
+};
+
 export interface Version {
   readonly major: number;
   readonly minor: number;

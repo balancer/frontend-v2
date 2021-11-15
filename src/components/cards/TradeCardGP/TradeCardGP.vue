@@ -16,6 +16,9 @@
         v-model:tokenOutAmount="tokenOutAmount"
         v-model:tokenOutAddress="tokenOutAddress"
         v-model:exactIn="exactIn"
+        :tradeLoading="
+          trading.isBalancerTrade.value ? trading.isLoading.value : false
+        "
         :effectivePriceMessage="trading.effectivePriceMessage"
         @amountChange="trading.handleAmountChange"
         class="mb-4"
@@ -150,8 +153,6 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import { useTradeState } from '@/composables/trade/useTradeState';
 
-const { nativeAsset } = configService.network;
-
 export default defineComponent({
   components: {
     TradePair,
@@ -168,7 +169,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
     const { fNum } = useNumbers();
     const { appNetworkConfig } = useWeb3();
-    const { tokens } = useTokens();
+    const { tokens, nativeAsset } = useTokens();
     const {
       tokenInAddress,
       tokenOutAddress,
