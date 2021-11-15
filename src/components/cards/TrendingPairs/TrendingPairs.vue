@@ -5,7 +5,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { getAddress } from '@ethersproject/address';
-import { startOfDay, getUnixTime } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { computed } from 'vue';
 import { useQuery } from 'vue-query';
 
@@ -69,7 +69,7 @@ const setTradePair = (pair: TrendingPair[]) => {
       </div>
       <div class="px-1 lg:p-3 flex flex-wrap">
         <button
-          class="py-1 px-2 bg-transparent hover:bg-green-500 hover:text-white text-sm rounded-lg lg:shadow my-2 mr-2 font-medium lg:font-normal"
+          class="py-1 px-2 bg-gray-800 hover:bg-green-500 hover:text-white text-sm rounded-lg lg:shadow my-2 mr-2 font-medium lg:font-normal"
           v-for="(pair, i) in trendingPairs"
           :key="`trendingPair-${i}`"
           @click="setTradePair(pair)"

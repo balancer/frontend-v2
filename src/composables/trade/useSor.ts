@@ -145,6 +145,8 @@ export default function useSor({
   const { fNum } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor } = useTokens();
+  const sorManagerInitialized = ref(false);
+  const sorManagerRef = ref<SorManager | null>(null);
 
   const liquiditySelection = computed(() => store.state.app.tradeLiquidity);
 
@@ -197,6 +199,9 @@ export default function useSor({
       poolsUrlV1,
       subgraphUrl
     );
+
+    sorManagerInitialized.value = true;
+    sorManagerRef.value = sorManager;
 
     fetchPools();
   }
@@ -659,6 +664,8 @@ export default function useSor({
     confirming,
 
     // For Tests
-    setSwapCost
+    setSwapCost,
+    sorManagerInitialized,
+    sorManagerRef
   };
 }

@@ -12,7 +12,7 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import MyWallet from '@/components/cards/MyWallet/MyWallet.vue';
 import TrendingPairs from '@/components/cards/TrendingPairs/TrendingPairs.vue';
 import PairPriceGraph from '@/components/cards/PairPriceGraph/PairPriceGraph.vue';
-import TradeCard from '@/components/cards/TradeCard/TradeCard.vue';
+import TradeCard from '@/beethovenx/components/pages/trade/TradeCard.vue';
 import TradeCardGP from '@/components/cards/TradeCardGP/TradeCardGP.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 
