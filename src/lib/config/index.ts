@@ -75,6 +75,7 @@ export interface Config {
   configSanityUrl: string;
   blockSubgraph: string;
   farmSubgraph: string;
+  tokenListSanityUrl: string;
 }
 
 const config: Record<Config['chainId'], Config> = {
