@@ -142,7 +142,7 @@ export default defineComponent({
       return isWalletReady.value && farmUser.value
         ? [
             isPositive(),
-            isLessThanOrEqualTo(Number(bptDeposited.value), t('exceedsBalance'))
+            isLessThanOrEqualTo(bptDeposited.value, t('exceedsBalance'))
           ]
         : [isPositive()];
     }

@@ -165,7 +165,7 @@ export default defineComponent({
       return isWalletReady.value
         ? [
             isPositive(),
-            isLessThanOrEqualTo(Number(bptBalance.value), t('exceedsBalance'))
+            isLessThanOrEqualTo(bptBalance.value, t('exceedsBalance'))
           ]
         : [isPositive()];
     }
