@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { TokenWeight } from './ChooseWeights.vue';
-import ECharts from 'vue-echarts';
 import { computed, nextTick, ref, watch } from 'vue';
+
+import ECharts from 'vue-echarts';
+import echarts from 'echarts';
+
+import { TokenWeight } from './ChooseWeights.vue';
+
 import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
-import Vibrant from 'node-vibrant/dist/vibrant';
+import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useBreakpoints from '@/composables/useBreakpoints';
+import { useI18n } from 'vue-i18n';
+
 import { prominent } from 'color.js';
 import { eq, sumBy } from 'lodash';
-import echarts from 'echarts';
-import usePoolCreation from '@/composables/pools/usePoolCreation';
-import { useI18n } from 'vue-i18n';
-import useBreakpoints from '@/composables/useBreakpoints';
-
-const emit = defineEmits(['update:colors']);
 
 /** STATE */
 const colors = ref<(string | null)[]>([]);
@@ -22,7 +23,7 @@ const chartInstance = ref<echarts.ECharts>();
  * COMPOSABLES
  */
 const { tokens } = useTokens();
-const { tokenWeights } = usePoolCreation();
+const { tokenWeights, updateTokenColors } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { t } = useI18n();
 const { resolve } = useUrls();
@@ -71,6 +72,7 @@ const chartConfig = computed(() => {
         labelLine: {
           show: false
         },
+        colors: colors.value,
         data: [
           ...tokenWeights.value
             .filter(t => t.tokenAddress !== '')
@@ -112,10 +114,9 @@ watch(
   tokenWeights,
   async (oldValue, newValue) => {
     await nextTick();
-    await calculateColors();
+    const colors = await calculateColors();
     await nextTick();
-    const colors = chartInstance.value?.getOption().color;
-    emit('update:colors', colors);
+    updateTokenColors(colors as string[]);
   },
   { deep: true }
 );
@@ -123,7 +124,7 @@ watch(
 /**
  * FUNCTIONS
  */
-const calculateColors = async () => {
+async function calculateColors() {
   const colorPromises = tokenWeights.value
     .filter(t => t.tokenAddress !== '')
     .map(async t => {
@@ -143,9 +144,8 @@ const calculateColors = async () => {
       }
     });
   const _colors = await Promise.all(colorPromises);
-  await nextTick();
   colors.value = _colors;
-  await nextTick();
+  return _colors;
 };
 </script>
 

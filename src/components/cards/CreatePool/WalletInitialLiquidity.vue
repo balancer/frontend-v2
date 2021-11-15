@@ -8,14 +8,6 @@ import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 
-type Props = {
-  colors: string[];
-};
-
-const props = withDefaults(defineProps<Props>(), {
-  colors: [] as any
-});
-
 /**
  * COMPOSABLES
  */
@@ -23,7 +15,8 @@ const { tokens } = useTokens();
 const {
   tokenWeights,
   optimisedLiquidity,
-  maxInitialLiquidity
+  maxInitialLiquidity,
+  tokenColors
 } = usePoolCreation();
 const { t } = useI18n();
 const { fNum } = useNumbers();
@@ -67,7 +60,7 @@ const unallocatedTokenWeight = computed(() =>
             <div class="flex flex-row items-center">
               <div
                 class="rounded-full w-1.5 h-1.5 mr-2"
-                :style="{ backgroundColor: colors[i] }"
+                :style="{ backgroundColor: tokenColors[i] }"
               ></div>
               <span class='text-sm'>{{ tokens[token.tokenAddress]?.symbol }}</span>
             </div>

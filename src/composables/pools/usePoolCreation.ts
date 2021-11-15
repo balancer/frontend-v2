@@ -49,7 +49,7 @@ const emptyPoolCreationState = {
   poolAddress: '',
   createState: 'none' as CreateState,
   joinState: 'none' as JoinState,
-  type: PoolType.Weighted
+  type: PoolType.Weighted,
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
@@ -68,6 +68,8 @@ async function getSimilarPools(tokensInPool: string[]) {
   };
   return balancerSubgraphService.pools.get(queryArgs, attrs);
 }
+
+const tokenColors = ref<string[]>([]);
 
 export default function usePoolCreation() {
   const { balanceFor, tokens, balances, priceFor, getToken } = useTokens();
@@ -89,9 +91,7 @@ export default function usePoolCreation() {
 
   function resetPoolCreationState() {
     for (const key of Object.keys(poolCreationState)) {
-      console.log('before', poolCreationState[key], key);
       poolCreationState[key] = emptyPoolCreationState[key];
-      console.log('after', poolCreationState[key], key);
     }
   }
 
@@ -131,6 +131,10 @@ export default function usePoolCreation() {
   const setTrpController = (address: string) => {
     poolCreationState.thirdPartyFeeController = address;
   };
+
+  function updateTokenColors(colors: string[]) {
+    tokenColors.value = colors;
+  }
 
   const getScaledAmounts = (): BigNumber[] => {
     const scaledAmounts: BigNumber[] = poolCreationState.tokenWeights.map(
@@ -317,6 +321,8 @@ export default function usePoolCreation() {
     maxInitialLiquidity,
     getPoolSymbol,
     createPool,
-    joinPool
+    joinPool,
+    tokenColors,
+    updateTokenColors
   };
 }

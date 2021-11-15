@@ -47,7 +47,6 @@ const exitAnimateProps = {
  * STATE
  */
 const route = useRoute();
-const tokenColors = ref<string[]>([]);
 const currentWrapperHeight = ref(0);
 const accordionWrapper = ref<HTMLElement>();
 const hasCompletedMountAnimation = ref(false);
@@ -70,33 +69,51 @@ onMounted(() => {
 /**
  * COMPUTED
  */
+const doSimilarPoolsExist = computed(() => similarPools.value.length > 0);
+
 const steps = computed(() => [
   {
     tooltip: 'Choose tokens & weights',
-    state: activeStep.value === 0 ? StepState.Active : StepState.Todo
+    state: getStepState(0),
+    label: 1
   },
   {
     tooltip: 'Set pool fees',
-    state: activeStep.value === 1 ? StepState.Active : StepState.Todo
+    state: getStepState(1),
+    label: 2
   },
   {
     tooltip: 'Similar pools',
     state: StepState.Warning,
-    isVisible: similarPools.value.length > 0 && activeStep.value === 2
+    isVisible: doSimilarPoolsExist.value && activeStep.value === 2
   },
   {
     tooltip: 'Set initial liquidity',
-    state: activeStep.value === 3 ? StepState.Active : StepState.Todo
+    state: getStepState(3),
+    label: 3
   },
   {
     tooltip: 'Confirm pool creation',
-    state: activeStep.value === 4 ? StepState.Active : StepState.Todo
+    state: getStepState(4),
+    label: 4
   }
 ]);
 
 /**
  * FUNCTIONS
  */
+function getStepState(idx: number) {
+  if (activeStep.value === idx) {
+    return StepState.Active;
+  } else {
+    if (activeStep.value > idx) {
+      return StepState.Completed;
+    } else {
+      return StepState.Todo;
+    }
+  }
+}
+
 function setWrapperHeight(dimensions: { width: number; height: number }) {
   // need to transform the accordion as everything is absolutely
   // positioned inside the AnimateHeight component
@@ -116,7 +133,6 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
     }
   });
 }
-const _console = console;
 </script>
 
 <template>
@@ -188,13 +204,12 @@ const _console = console;
         ]"
       >
         <template v-slot:pool-summary>
-          <PoolSummary v-model:colors="tokenColors" />
+          <PoolSummary />
         </template>
         <template v-slot:max-initial-liquidity>
           <WalletInitialLiquidity :colors="tokenColors" />
         </template>
       </BalAccordion>
-      
     </div>
   </div>
 </template>
