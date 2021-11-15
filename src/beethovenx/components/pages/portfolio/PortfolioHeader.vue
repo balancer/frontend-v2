@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-16 flex">
+  <div class="mb-8 md:mb-16 md:flex">
     <div class="flex-1">
       <h2 class="text-green-500 mb-2">My Portfolio</h2>
       <BalLoadingBlock v-if="isLoading" class="h-10 w-40" />
@@ -8,40 +8,42 @@
       </h2>
     </div>
 
-    <template v-if="isLoading">
-      <BalLoadingBlock
-        v-for="n in 2"
-        :key="n"
-        :class="['h-28', 'w-48', n === 1 ? 'mr-4' : '']"
-      />
-    </template>
-    <template v-else>
-      <BalCard class="w-48 mr-4">
-        <div class="text-sm text-gray-500 font-medium mb-2 text-left">
-          Pending Rewards
-        </div>
-        <div class="text-xl font-medium truncate flex items-center">
-          <div>{{ farmData.pendingBeets }}&nbsp;</div>
-          <div class="text-sm text-gray-500 font-medium mt-1 text-left">
-            BEETS
+    <div class="grid md:flex grid-cols-2 gap-x-4 md:gap-x-0 mt-8 md:mt-0">
+      <template v-if="isLoading">
+        <BalLoadingBlock
+          v-for="n in 2"
+          :key="n"
+          :class="['h-28', 'w-48', n === 1 ? 'mr-4' : '']"
+        />
+      </template>
+      <template v-else>
+        <BalCard class="md:w-48 md:mr-4">
+          <div class="text-sm text-gray-500 font-medium mb-2 text-left">
+            Pending Rewards
           </div>
-        </div>
-        <div class="text-sm text-gray-500 font-medium mt-1 text-left">
-          {{ farmData.pendingBeetsValue }}
-        </div>
-      </BalCard>
-      <BalCard class="w-48">
-        <div class="text-sm text-gray-500 font-medium mb-2 text-left">
-          Average APR
-        </div>
-        <div class="text-xl font-medium truncate flex items-center">
-          {{ farmData.apr }}
-        </div>
-        <div class="text-sm text-gray-500 font-medium mt-1 text-left">
-          {{ farmData.dailyBeets }} BEETS / day
-        </div>
-      </BalCard>
-    </template>
+          <div class="text-xl font-medium truncate flex items-center">
+            <div>{{ farmData.pendingBeets }}&nbsp;</div>
+            <div class="text-sm text-gray-500 font-medium mt-1 text-left">
+              BEETS
+            </div>
+          </div>
+          <div class="text-sm text-gray-500 font-medium mt-1 text-left">
+            {{ farmData.pendingBeetsValue }}
+          </div>
+        </BalCard>
+        <BalCard class="md:w-48">
+          <div class="text-sm text-gray-500 font-medium mb-2 text-left">
+            Average APR
+          </div>
+          <div class="text-xl font-medium truncate flex items-center">
+            {{ farmData.apr }}
+          </div>
+          <div class="text-sm text-gray-500 font-medium mt-1 text-left">
+            {{ farmData.dailyBeets }} BEETS / day
+          </div>
+        </BalCard>
+      </template>
+    </div>
     <!--    <BalCard class="w-44" v-if="tvl">
       <div class="text-sm text-gray-500 font-medium mb-2">
         TVL
