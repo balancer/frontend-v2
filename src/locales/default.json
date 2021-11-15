@@ -73,6 +73,7 @@
         "poweredByBalancer": "Copper is built on Balancer V2 and uses Liquidity Bootstrapping Pools to power its FLAs",
         "title": "A Copper fair launch auction pool (FLA)"
     },
+    "continueAnyway": "Continue anyway",
     "copyAddress": "Copy address",
     "create": "Create",
     "createAPool": {
@@ -96,7 +97,9 @@
         "poolAlreadyExists": "This pool already exists",
         "similarPoolsExist": "Similar pools exist",
         "previewPool": "Preview new {0} pool",
-        "tokensAndSeedLiquidity": "Tokens and initial seed liquidity"
+        "tokensAndSeedLiquidity": "Tokens and initial seed liquidity",
+        "recommendedLiquidity": "It’s recommended proivde new pools with at least $20,000 in initial funds",
+        "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}."
     },
     "createPool": "Create a pool",
     "currentNetwork": "Current network",

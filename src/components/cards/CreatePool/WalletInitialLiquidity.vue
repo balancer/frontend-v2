@@ -44,13 +44,19 @@ const unallocatedTokenWeight = computed(() =>
     <div class="p-2">
       <div class="grid grid-cols-12 w-full gap-y-1.5">
         <div class="col-span-5">
-          <span class="text-sm font-semibold text-gray-700">{{ $t('token') }}</span>
+          <span class="text-sm font-semibold text-gray-700">{{
+            $t('token')
+          }}</span>
         </div>
         <div class="col-span-4 text-right">
-          <span class="text-sm font-semibold text-gray-700">{{ $t('usdValue') }}</span>
+          <span class="text-sm font-semibold text-gray-700">{{
+            $t('usdValue')
+          }}</span>
         </div>
         <div class="col-span-3 text-right">
-          <span class="text-sm font-semibold text-gray-700">{{ $t('poolPercent') }}</span>
+          <span class="text-sm font-semibold text-gray-700">{{
+            $t('poolPercent')
+          }}</span>
         </div>
         <template
           v-for="(token, i) in allocatedTokenWeights"
@@ -62,7 +68,9 @@ const unallocatedTokenWeight = computed(() =>
                 class="rounded-full w-1.5 h-1.5 mr-2"
                 :style="{ backgroundColor: tokenColors[i] }"
               ></div>
-              <span class='text-sm'>{{ tokens[token.tokenAddress]?.symbol }}</span>
+              <span class="text-sm">{{
+                tokens[token.tokenAddress]?.symbol
+              }}</span>
             </div>
             <div v-if="token.tokenAddress === 'unallocated'"></div>
           </div>
@@ -96,7 +104,9 @@ const unallocatedTokenWeight = computed(() =>
         <div class="col-span-5">
           <span class="text-sm font-semibold">{{ $t('total') }}</span>
         </div>
-        <div class="col-span-4 text-sm font-semibold flex items-center justify-end">
+        <div
+          class="col-span-4 text-sm font-semibold flex items-center justify-end"
+        >
           {{ fNum(maxInitialLiquidity, 'usd') }}
         </div>
         <div class="col-span-3 text-right">

@@ -146,7 +146,7 @@ async function calculateColors() {
   const _colors = await Promise.all(colorPromises);
   colors.value = _colors;
   return _colors;
-};
+}
 </script>
 
 <template>

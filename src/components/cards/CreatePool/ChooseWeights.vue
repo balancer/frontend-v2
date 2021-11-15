@@ -32,7 +32,12 @@ const emptyTokenWeight: TokenWeight = {
 /**
  * COMPOSABLES
  */
-const { tokenWeights, updateTokenWeights, proceed } = usePoolCreation();
+const {
+  tokenWeights,
+  updateTokenWeights,
+  proceed,
+  maxInitialLiquidity
+} = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
 const { t } = useI18n();
@@ -80,6 +85,11 @@ const totalWeight = computed(() => {
 const isProceedDisabled = computed(() => {
   if (Number(totalWeight.value) === 100) return false;
   return true;
+});
+
+const showLiquidityAlert = computed(() => {
+  const validTokens = tokenWeights.value.filter(t => t.tokenAddress !== '');
+  return maxInitialLiquidity.value < 20000 && validTokens.length >= 2;
 });
 
 /**
@@ -245,12 +255,22 @@ function addTokenListElementRef(el: HTMLElement) {
             </div>
           </div>
         </BalCard>
+        <BalAlert
+          v-if="showLiquidityAlert"
+          :title="$t('createAPool.recommendedLiquidity')"
+          type="warning"
+          >{{
+            $t('createAPool.youCanFundWithThisPoolWith', [
+              fNum(maxInitialLiquidity, 'usd')
+            ])
+          }}</BalAlert
+        >
         <BalBtn
           block
           color="gradient"
           :disabled="isProceedDisabled"
           @click="proceed"
-          >Next</BalBtn
+          >{{ showLiquidityAlert ? $t('continueAnyway') : $t('next') }}</BalBtn
         >
       </BalStack>
     </BalCard>

@@ -49,7 +49,7 @@ const emptyPoolCreationState = {
   poolAddress: '',
   createState: 'none' as CreateState,
   joinState: 'none' as JoinState,
-  type: PoolType.Weighted,
+  type: PoolType.Weighted
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
