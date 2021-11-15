@@ -30,16 +30,15 @@
     >
       Portfolio
     </router-link>
-    <router-link
-      :to="{ name: 'fbeets' }"
-      :class="[
-        'toggle-link px-4 rounded-l-lg',
-        { [activeClasses]: isFreshBeetsPage }
-      ]"
-      v-if="isLoggedIn"
-    >
-      fBeets
-    </router-link>
+    <!--    <router-link-->
+    <!--      :to="{ name: 'fbeets' }"-->
+    <!--      :class="[-->
+    <!--        'toggle-link px-4 rounded-l-lg',-->
+    <!--        { [activeClasses]: isFreshBeetsPage }-->
+    <!--      ]"-->
+    <!--    >-->
+    <!--      fBeets-->
+    <!--    </router-link>-->
   </div>
 </template>
 
