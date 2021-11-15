@@ -16,7 +16,11 @@
         :address="address"
         :size="size"
         @click="$emit('click', address)"
-        :class="['token-icon', { absolute: !wrap, relative: wrap }]"
+        :class="[
+          'token-icon',
+          'cursor-pointer',
+          { absolute: !wrap, relative: wrap }
+        ]"
         :style="{
           left: `${leftOffsetFor(i)}px`,
           zIndex: `${20 - i}`,
