@@ -7,6 +7,7 @@ const defaultArgs = {
   orderDirection: 'desc',
   where: {
     totalShares_gt: 0.01,
+    totalLiquidity_gt: '1',
     id_not_in: POOLS.BlockList,
     poolType_not: 'Element'
   }

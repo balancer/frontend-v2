@@ -18,7 +18,7 @@
       ]"
       @click="trackGoal(Goals.ClickNavInvest)"
     >
-      {{ $t('invest') }}
+      {{ $t('invest') }}<span class="hidden lg:inline">&nbsp;/&nbsp;Farm</span>
     </router-link>
     <router-link
       :to="{ name: 'my-portfolio' }"

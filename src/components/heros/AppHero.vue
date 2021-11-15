@@ -7,7 +7,7 @@
           class="text-base font-medium text-white opacity-90 font-body mb-2"
         />
         <BalLoadingBlock
-          v-if="isLoadingUserPools"
+          v-if="isLoadingUserPools || isLoadingFarms"
           class="h-10 w-40 mx-auto"
           white
         />
@@ -65,7 +65,11 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isWalletReady, toggleWalletSelectModal } = useWeb3();
     const { trackGoal, Goals } = useFathom();
-    const { totalInvestedAmount, isLoadingUserPools } = usePools();
+    const {
+      totalInvestedAmount,
+      isLoadingUserPools,
+      isLoadingFarms
+    } = usePools();
     const { darkMode } = useDarkMode();
 
     const classes = computed(() => ({
@@ -82,6 +86,7 @@ export default defineComponent({
       // data
       totalInvestedAmount,
       isLoadingUserPools,
+      isLoadingFarms,
       Goals,
 
       // computed
