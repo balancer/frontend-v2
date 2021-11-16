@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, ref, toRefs, computed, ComputedRef, reactive } from 'vue';
+import { toRef, ref, Ref, toRefs, computed, ComputedRef, reactive } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 // Types
@@ -33,26 +33,37 @@ type Props = {
   amounts: string[];
 };
 
+type CreateState = {
+  confirmed: boolean;
+  confirmedAt: string;
+  receipt?: TransactionReceipt;
+};
+
 /**
  * PROPS & EMITS
  */
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: 'success', value: TransactionReceipt): void;
+  (e: 'success'): void;
 }>();
 
 /**
  * STATE
  */
 
-let poolCreated = false;
+const createState = reactive<CreateState>({
+  confirmed: false,
+  confirmedAt: ''
+});
 
 /*
  * COMPOSABLES
  */
 // const route = useRoute();
 const { t } = useI18n();
+const { explorerLinks } = useWeb3();
+const { networkConfig } = useConfig();
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
   ref(props.amounts)
@@ -73,27 +84,44 @@ const actions = computed((): TransactionActionInfo[] => [
     stepTooltip: t('createPoolTooltip')
   },
   {
-    label: t('joinPool'),
-    loadingLabel: t('investment.preview.loadingLabel.investment'),
+    label: t('fundPool'),
+    loadingLabel: t('investment.preview.loadingLabel.fund'),
     confirmingLabel: t('confirming'),
     action: joinPool,
-    stepTooltip: t('investmentTooltip')
+    stepTooltip: t('fundPoolTooltip')
   }
 ]);
+
+const explorerLink = computed((): string =>
+  createState.receipt
+    ? explorerLinks.txLink(createState.receipt.transactionHash)
+    : ''
+);
+
+/**
+ * METHODS
+ */
+
+function handleSuccess(details: any): void {
+  createState.confirmed = true;
+  createState.receipt = details.receipt;
+  createState.confirmedAt = details.confirmedAt;
+  emit('success');
+};
 
 </script>
 
 <template>
   <div>
-    <BalActionSteps :actions="actions" @success="poolCreated = true" />
-    <template v-if="poolCreated">
+    <BalActionSteps :actions="actions" @success="handleSuccess" />
+    <template v-if="createState.confirmed">
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >
         <div class="flex items-center">
           <BalIcon name="clock" />
           <span class="ml-2">
-            {{ joinPoolState.confirmedAt }}
+            {{ createState.confirmedAt }}
           </span>
         </div>
         <BalLink
@@ -120,6 +148,6 @@ const actions = computed((): TransactionActionInfo[] => [
       >
         {{ $t('returnToPool') }}
       </BalBtn>
-    </template> -->
+    </template>
   </div>
 </template>

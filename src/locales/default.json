@@ -102,7 +102,7 @@
         "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}."
     },
     "createPool": "Create pool",
-    "createPoolTooltip": "Confirm pool creation",
+    "createPoolTooltip": "Create weighted pool",
     "currentNetwork": "Current network",
     "custom": "Custom",
     "customAmounts": "Custom amounts",
@@ -143,6 +143,8 @@
     "fixedFeesTooltip": "Liquidity providers in this pool earn fixed swap fees on every trade utilizing the liquidity in this pool.",
     "fixedSwapFeeLabel": "Fixed swap fees: <b>{0}</b>",
     "flashLoanFee": "Flash loan fee",
+    "fundPool": "Fund pool",
+    "fundPoolTooltip": "Add the initial liquidity for this pool.",
     "gnosisErrors": {
         "lowAmount": {
             "header": "Your trade amount is too low",
@@ -189,6 +191,7 @@
             "loadingLabel": {
                 "approval": "Confirm approval in wallet",
                 "create": "Confirm create in wallet",
+                "fund": "Confirm fund in wallet",
                 "investment": "Confirm investment in wallet"
             },
             "titles": {
@@ -544,6 +547,7 @@
         "approveForTrading": "Approve {0} for trading",
         "approveGnosisRelayer": "Approve Gnosis relayer",
         "approveLidoRelayer": "Approve Lido relayer",
+        "createPool": "Create pool",
         "investInPool": "{0} in {1}",
         "withdrawFromPool": "{0} from {1}",
         "wrapUnwrap": "{0} {1} to {2}"

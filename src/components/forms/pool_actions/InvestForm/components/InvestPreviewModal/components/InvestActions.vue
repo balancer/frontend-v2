@@ -75,6 +75,9 @@ const { tokenApprovalActions } = useTokenApprovalActions(
  */
 const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
+/**
+ * COMPUTED
+ */
 const actions = computed((): TransactionActionInfo[] => [
   ...tokenApprovalActions,
   {

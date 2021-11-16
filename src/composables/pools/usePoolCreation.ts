@@ -117,7 +117,7 @@ export default function usePoolCreation() {
   };
 
   const setStep = (step: number) => {
-    poolCreationState.activeStep = 0;
+    poolCreationState.activeStep = step;
   };
 
   const setFeeController = (controller: FeeController) => {

@@ -49,7 +49,7 @@ type Props = {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: 'success', value: TransactionReceipt): void;
+  (e: 'success', value: any): void;
 }>();
 
 const defaultActionState: TransactionActionState = {
@@ -145,14 +145,16 @@ async function submit(
 
     state.confirmed = await txListener(tx, {
       onTxConfirmed: async (receipt: TransactionReceipt) => {
-        if (currentActionIndex.value >= actions.value.length - 1) {
-          emit('success', receipt);
-        }
         state.confirming = false;
         state.receipt = receipt;
 
         const confirmedAt = await getTxConfirmedAt(receipt);
         state.confirmedAt = dateTimeLabelFor(confirmedAt);
+
+        if (currentActionIndex.value >= actions.value.length - 1) {
+          emit('success', { receipt, confirmedAt: state.confirmedAt });
+        }
+
         currentActionIndex.value += 1;
       },
       onTxFailed: () => {
