@@ -1,9 +1,6 @@
 import { useI18n } from 'vue-i18n';
+import { TransactionError } from '@/types/transactions';
 
-export type TransactionError = {
-  title: string;
-  description: string;
-};
 
 export default function useTranasactionErrors() {
   /**

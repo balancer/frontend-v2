@@ -1,15 +1,12 @@
-import { Ref, computed } from 'vue';
+import { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import useTokenApprovals, {
-  ApprovalState
-} from '@/composables/pools/useTokenApprovals';
+import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 import useTokens from '@/composables/useTokens';
-import { StepState, Action } from '@/types';
+import { TransactionActionInfo } from '@/types/transactions';
 
 export default function useTokenApprovalActions(
   tokenAddresses: string[],
-  amounts: Ref<string[]>,
-  currentActionIndex: Ref<number>
+  amounts: Ref<string[]>
 ) {
   const { t } = useI18n();
   const { getToken } = useTokens();
@@ -18,49 +15,22 @@ export default function useTokenApprovalActions(
     amounts
   );
 
-  const allApproved = computed((): boolean =>
-    Object.values(requiredApprovalState.value).every(state => state.approved)
-  );
-
-  function approvalStepState(state: ApprovalState, index: number): StepState {
-    if (state.confirming) {
-      return StepState.Pending;
-    } else if (state.init) {
-      return StepState.WalletOpen;
-    } else if (!state.approved && index === currentActionIndex.value) {
-      return StepState.Active;
-    } else if (state.approved) {
-      return StepState.Success;
-    } else {
-      return StepState.Todo;
-    }
-  }
-
-  const tokenApprovalActions = computed((): Action[] => {
-    return Object.keys(requiredApprovalState.value).map((address, i) => {
-      const token = getToken(address);
-      const state = requiredApprovalState.value[address];
-      return {
-        label: t('transactionSummary.approveForInvesting', [token.symbol]),
-        loadingLabel: state.init
-          ? t('investment.preview.loadingLabel.approval')
-          : t('confirming'),
-        pending: state.init || state.confirming,
-        promise: async () => {
-          const confirmed = await approveToken(token.address);
-          if (confirmed) currentActionIndex.value += 1;
-        },
-        step: {
-          tooltip: t('investment.preview.tooltips.approval', [token.symbol]),
-          state: approvalStepState(state, i)
-        }
-      };
-    });
+  const tokenApprovalActions: TransactionActionInfo[] = Object.keys(
+    requiredApprovalState.value
+  ).map(address => {
+    const token = getToken(address);
+    return {
+      label: t('transactionSummary.approveForInvesting', [token.symbol]),
+      loadingLabel: t('investment.preview.loadingLabel.approval'),
+      confirmingLabel: t('confirming'),
+      stepTooltip: t('investment.preview.tooltips.approval', [token.symbol]),
+      action: () => {
+        return approveToken(token.address);
+      }
+    };
   });
 
   return {
-    allApproved,
     tokenApprovalActions
-  }
-
+  };
 }

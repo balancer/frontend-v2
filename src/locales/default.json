@@ -102,6 +102,7 @@
         "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}."
     },
     "createPool": "Create a pool",
+    "createPoolTooltip": "Confirm pool creation",
     "currentNetwork": "Current network",
     "custom": "Custom",
     "customAmounts": "Custom amounts",
@@ -187,6 +188,7 @@
         "preview": {
             "loadingLabel": {
                 "approval": "Confirm approval in wallet",
+                "create": "Confirm create in wallet",
                 "investment": "Confirm investment in wallet"
             },
             "titles": {
@@ -213,6 +215,7 @@
     "investmentTooltip": "Confirm investment into this pool",
     "inYourWallet": "In your wallet:",
     "isRequired": "is required",
+    "joinPool": "Join pool",
     "language": "Language",
     "learnMore": "Learn more",
     "light": "Light",

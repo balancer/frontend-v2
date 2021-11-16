@@ -18,12 +18,12 @@ import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
 
 import useConfig from '@/composables/useConfig';
-import useTranasactionErrors, {
-  TransactionError
-} from '@/composables/useTransactionErrors';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
-import { Step, StepState, Action } from '@/types';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import {
+  TransactionActionInfo,
+} from '@/types/transactions';
+import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 
 /**
  * TYPES
@@ -31,22 +31,6 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 type Props = {
   tokenAddresses: string[];
   amounts: string[];
-};
-
-type ActionState = {
-  init: boolean;
-  confirming: boolean;
-  confirmed: boolean;
-  confirmedAt: string;
-  error?: TransactionError | null;
-  receipt?: TransactionReceipt;
-};
-
-const defaultActionState: ActionState = {
-  init: false,
-  confirming: false,
-  confirmed: false,
-  confirmedAt: ''
 };
 
 /**
@@ -58,30 +42,14 @@ const emit = defineEmits<{
   (e: 'success', value: TransactionReceipt): void;
 }>();
 
-/**
- * STATE
- */
-const currentActionIndex = ref(0);
-const joinPoolState = reactive<ActionState>({ ...defaultActionState });
-const createPoolState = reactive<ActionState>({ ...defaultActionState });
-
-const joinPoolStepState = generateStepState(joinPoolState);
-const createPoolStepState = generateStepState(createPoolState);
-
-/**
+/*
  * COMPOSABLES
  */
-const route = useRoute();
+// const route = useRoute();
 const { t } = useI18n();
-const { networkConfig } = useConfig();
-const { account, getProvider, explorerLinks } = useWeb3();
-const { addTransaction } = useTransactions();
-const { txListener, getTxConfirmedAt } = useEthers();
-const { parseError } = useTranasactionErrors();
-const { allApproved, tokenApprovalActions } = useTokenApprovalActions(
+const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
-  ref(props.amounts),
-  currentActionIndex
+  ref(props.amounts)
 );
 const { createPool, joinPool } = usePoolCreation();
 
@@ -89,125 +57,30 @@ const { createPool, joinPool } = usePoolCreation();
  * COMPUTED
  */
 
-const actions = computed((): Action[] => [
-  ...tokenApprovalActions.value,
+const actions = computed((): TransactionActionInfo[] => [
+  ...tokenApprovalActions,
   {
-    label: t('createpool'),
-    loadingLabel: t('confirming'),
-    pending: createPoolState.init || createPoolState.confirming,
-    promise: submit.bind(null, createPool, createPoolState),
-    step: {
-      tooltip: t('createPoolTooltip'),
-      state: createPoolStepState.value
-    }
+    label: t('createPool'),
+    loadingLabel: t('investment.preview.loadingLabel.create'),
+    confirmingLabel: t('confirming'),
+    action: createPool,
+    stepTooltip: t('createPoolTooltip')
   },
   {
-    label: t('joinpool'),
-    loadingLabel: joinPoolState.init
-      ? t('investment.preview.loadingLabel.investment')
-      : t('confirming'),
-    pending: joinPoolState.init || joinPoolState.confirming,
-    promise: submit.bind(null, joinPool, joinPoolState),
-    step: {
-      tooltip: t('investmentTooltip'),
-      state: joinPoolStepState.value
-    }
+    label: t('joinPool'),
+    loadingLabel: t('investment.preview.loadingLabel.investment'),
+    confirmingLabel: t('confirming'),
+    action: joinPool,
+    stepTooltip: t('investmentTooltip')
   }
 ]);
 
-const currentAction = computed(
-  (): Action => actions.value[currentActionIndex.value]
-);
-
-const steps = computed((): Step[] => actions.value.map(action => action.step));
-
-const explorerLink = computed((): string =>
-  joinPoolState.receipt
-    ? explorerLinks.txLink(joinPoolState.receipt.transactionHash)
-    : ''
-);
-
-/**
- * METHODS
- */
-
-function generateStepState(actionState: ActionState): ComputedRef<StepState> {
-  return computed(
-    (): StepState => {
-      if (tokenApprovalActions.value.length > 0 && !allApproved.value) {
-        return StepState.Todo;
-      } else if (actionState.confirming) return StepState.Pending;
-      else if (actionState.init) return StepState.WalletOpen;
-      else if (actionState.confirmed) return StepState.Success;
-      return StepState.Active;
-    }
-  );
-}
-
-async function submit(
-  action: () => Promise<TransactionResponse>,
-  state: ActionState
-): Promise<void> {
-  try {
-    state.init = true;
-
-    const tx = await action();
-
-    state.init = false;
-    state.confirming = true;
-
-    console.log('Receipt', tx);
-
-    state.confirmed = await txListener(tx, {
-      onTxConfirmed: async (receipt: TransactionReceipt) => {
-        emit('success', receipt);
-        state.confirming = false;
-        state.receipt = receipt;
-
-        const confirmedAt = await getTxConfirmedAt(receipt);
-        state.confirmedAt = dateTimeLabelFor(confirmedAt);
-        currentActionIndex.value += 1;
-      },
-      onTxFailed: () => {
-        state.confirming = false;
-      }
-    });
-  } catch (error) {
-    state.init = false;
-    state.confirming = false;
-    state.error = parseError(error);
-    console.error(error);
-  }
-}
 </script>
 
 <template>
   <div>
-    <BalAlert
-      v-if="joinPoolState.error"
-      type="error"
-      :title="joinPoolState.error.title"
-      :description="joinPoolState.error.description"
-      block
-      class="mb-4"
-    />
-    <BalHorizSteps
-      v-if="actions.length > 1 && !joinPoolState.confirmed"
-      :steps="steps"
-      class="flex justify-center"
-    />
-    <BalBtn
-      v-if="!joinPoolState.confirmed"
-      color="gradient"
-      class="mt-4"
-      :loading="currentAction.pending"
-      :loading-label="currentAction.loadingLabel"
-      block
-      @click="currentAction.promise()"
-    >
-      {{ currentAction.label }}
-    </BalBtn>
-    <template v-else>
+    <BalActionSteps :actions="actions" />
+    <!-- <template v-else>
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >
@@ -241,6 +114,6 @@ async function submit(
       >
         {{ $t('returnToPool') }}
       </BalBtn>
-    </template>
+    </template> -->
   </div>
 </template>
