@@ -47,7 +47,6 @@ export abstract class Connector {
   };
 
   handleDisconnect = () => {
-    console.log('disconnecting');
     // reset everything
     if (this.provider?.removeAllListeners) this.provider?.removeAllListeners();
     this.account.value = null;
