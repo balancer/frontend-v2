@@ -42,6 +42,12 @@ const emit = defineEmits<{
   (e: 'success', value: TransactionReceipt): void;
 }>();
 
+/**
+ * STATE
+ */
+
+let poolCreated = false;
+
 /*
  * COMPOSABLES
  */
@@ -79,8 +85,8 @@ const actions = computed((): TransactionActionInfo[] => [
 
 <template>
   <div>
-    <BalActionSteps :actions="actions" />
-    <!-- <template v-else>
+    <BalActionSteps :actions="actions" @success="poolCreated = true" />
+    <template v-if="poolCreated">
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >

@@ -151,7 +151,9 @@ async function submit(
 
     state.confirmed = await txListener(tx, {
       onTxConfirmed: async (receipt: TransactionReceipt) => {
-        emit('success', receipt);
+        if (currentActionIndex.value >= actions.value.length - 1) {
+          emit('success', receipt);
+        }
         state.confirming = false;
         state.receipt = receipt;
 

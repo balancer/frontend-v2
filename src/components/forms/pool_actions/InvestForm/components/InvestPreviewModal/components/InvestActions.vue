@@ -4,7 +4,7 @@ import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider';
 import { InvestMathResponse } from '../../../composables/useInvestMath';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
@@ -20,6 +20,8 @@ import useTranasactionErrors, {
 } from '@/composables/useTransactionErrors';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import { Step, StepState, Action } from '@/types';
+import { TransactionActionInfo } from '@/types/transactions';
+import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 /**
  * TYPES
  */
@@ -30,11 +32,8 @@ type Props = {
 };
 
 type InvestmentState = {
-  init: boolean;
-  confirming: boolean;
   confirmed: boolean;
   confirmedAt: string;
-  error?: TransactionError | null;
   receipt?: TransactionReceipt;
 };
 
@@ -50,10 +49,7 @@ const emit = defineEmits<{
 /**
  * STATE
  */
-const currentActionIndex: Ref<number> = ref(0);
 const investmentState = reactive<InvestmentState>({
-  init: false,
-  confirming: false,
   confirmed: false,
   confirmedAt: ''
 });
@@ -69,10 +65,9 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { parseError } = useTranasactionErrors();
 const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.math);
-const { allApproved, tokenApprovalActions } = useTokenApprovalActions(
+const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
-  fullAmounts.value,
-  currentActionIndex
+  ref(fullAmounts.value)
 );
 
 /**
@@ -80,42 +75,16 @@ const { allApproved, tokenApprovalActions } = useTokenApprovalActions(
  */
 const poolExchange = new PoolExchange(toRef(props, 'pool'));
 
-/**
- * COMPUTED
- */
-const investStepState = computed(
-  (): StepState => {
-    if (tokenApprovalActions.value.length > 0 && !allApproved.value) {
-      return StepState.Todo;
-    } else if (investmentState.confirming) return StepState.Pending;
-    else if (investmentState.init) return StepState.WalletOpen;
-    else if (investmentState.confirmed) return StepState.Success;
-
-    return StepState.Active;
-  }
-);
-
-const actions = computed((): Action[] => [
-  ...tokenApprovalActions.value,
+const actions = computed((): TransactionActionInfo[] => [
+  ...tokenApprovalActions,
   {
     label: t('invest'),
-    loadingLabel: investmentState.init
-      ? t('investment.preview.loadingLabel.investment')
-      : t('confirming'),
-    pending: investmentState.init || investmentState.confirming,
-    promise: submit,
-    step: {
-      tooltip: t('investmentTooltip'),
-      state: investStepState.value
-    }
+    loadingLabel: t('investment.preview.loadingLabel.investment'),
+    confirmingLabel: t('confirming'),
+    action: submit,
+    stepTooltip: t('investmentTooltip')
   }
 ]);
-
-const currentAction = computed(
-  (): Action => actions.value[currentActionIndex.value]
-);
-
-const steps = computed((): Step[] => actions.value.map(action => action.step));
 
 const explorerLink = computed((): string =>
   investmentState.receipt
@@ -144,25 +113,23 @@ async function handleTransaction(tx): Promise<void> {
     }
   });
 
-  investmentState.confirmed = await txListener(tx, {
+  await txListener(tx, {
     onTxConfirmed: async (receipt: TransactionReceipt) => {
       emit('success', receipt);
-      investmentState.confirming = false;
       investmentState.receipt = receipt;
 
       const confirmedAt = await getTxConfirmedAt(receipt);
       investmentState.confirmedAt = dateTimeLabelFor(confirmedAt);
+      investmentState.confirmed = true;
     },
     onTxFailed: () => {
-      investmentState.confirming = false;
+      console.error("Invest failed");
     }
   });
 }
 
-async function submit(): Promise<void> {
+async function submit(): Promise<TransactionResponse> {
   try {
-    investmentState.init = true;
-
     const tx = await poolExchange.join(
       getProvider(),
       account.value,
@@ -171,48 +138,21 @@ async function submit(): Promise<void> {
       bptOut.value
     );
 
-    investmentState.init = false;
-    investmentState.confirming = true;
-
     console.log('Receipt', tx);
 
     handleTransaction(tx);
+    return tx;
   } catch (error) {
-    investmentState.init = false;
-    investmentState.confirming = false;
-    investmentState.error = parseError(error);
     console.error(error);
+    return Promise.reject(error);
   }
 }
 </script>
 
 <template>
   <div>
-    <BalAlert
-      v-if="investmentState.error"
-      type="error"
-      :title="investmentState.error.title"
-      :description="investmentState.error.description"
-      block
-      class="mb-4"
-    />
-    <BalHorizSteps
-      v-if="actions.length > 1 && !investmentState.confirmed"
-      :steps="steps"
-      class="flex justify-center"
-    />
-    <BalBtn
-      v-if="!investmentState.confirmed"
-      color="gradient"
-      class="mt-4"
-      :loading="currentAction.pending"
-      :loading-label="currentAction.loadingLabel"
-      block
-      @click="currentAction.promise()"
-    >
-      {{ currentAction.label }}
-    </BalBtn>
-    <template v-else>
+    <BalActionSteps :actions="actions" />
+    <template v-if="investmentState.confirmed">
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >
