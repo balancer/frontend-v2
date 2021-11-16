@@ -56,11 +56,12 @@ export default defineComponent({
     const iconSRC = computed(() => {
       if (props.iconURI) return resolve(props.iconURI);
 
-      const token = find(
-        tokens.value,
-        (token, tokenAddress) =>
+      const token = find(tokens.value, (token, tokenAddress) => {
+        return (
+          address.value &&
           tokenAddress.toLowerCase() === address.value.toLowerCase()
-      );
+        );
+      });
 
       if (!token) return '';
       return resolve(token.logoURI);
