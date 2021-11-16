@@ -190,7 +190,7 @@
     "light": "Light",
     "liquidityBootstrappingPool": "Liquidity Bootstrapping Pool",
     "liquidityMining": "Liquidity mining",
-    "liquidityMiningAPR": "Liquidity Mining APR",
+    "liquidityMiningAPR": "Farm APR",
     "liquidityMiningPopover": {
         "airdropEligibility": "People who provide liquidity to eligible investment pools or trade on eligible token pairs receive weekly $BAL distributions as incentives. $BAL token holders own the Balancer Protocol and can help shape its future by voting on governance proposals.",
         "airdropExplainer": "Weekly distributions from liquidity mining on {0} are airdropped on Wednesdays, sent directly to your wallet using disperse.app",
