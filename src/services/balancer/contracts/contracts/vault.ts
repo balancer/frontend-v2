@@ -13,6 +13,7 @@ import {
   isTradingHaltable
 } from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
+import { pick } from 'lodash';
 
 export default class Vault {
   service: Service;
@@ -33,7 +34,7 @@ export default class Vault {
       this.service.provider,
       Vault__factory.abi
     );
-    const tokenMultiCaller = new Multicaller(
+    const poolMultiCaller = new Multicaller(
       this.configService.network.key,
       this.service.provider,
       this.service.allABIs
@@ -41,33 +42,39 @@ export default class Vault {
 
     vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
     result = await vaultMultiCaller.execute(result);
-    tokenMultiCaller.call('totalSupply', poolAddress, 'totalSupply');
-    tokenMultiCaller.call('decimals', poolAddress, 'decimals');
-    tokenMultiCaller.call('swapFee', poolAddress, 'getSwapFeePercentage');
+    poolMultiCaller.call('totalSupply', poolAddress, 'totalSupply');
+    poolMultiCaller.call('decimals', poolAddress, 'decimals');
+    poolMultiCaller.call('swapFee', poolAddress, 'getSwapFeePercentage');
 
     if (isWeightedLike(type)) {
-      tokenMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
+      poolMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
 
       if (isTradingHaltable(type)) {
-        tokenMultiCaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
+        poolMultiCaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
       }
     } else if (isStableLike(type)) {
-      tokenMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
+      poolMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
     }
 
-    result = await tokenMultiCaller.execute(result);
+    result = await poolMultiCaller.execute(result);
 
-    return this.serializePoolData(result, type, tokens);
+    return this.serializePoolData(result, type, tokens, poolAddress);
   }
 
   public serializePoolData(
     data,
     type: PoolType,
-    tokens: TokenInfoMap
+    tokens: TokenInfoMap,
+    poolAddress: string
   ): OnchainPoolData {
+    // Filter out pre-minted BPT token if exists
+    const validTokens = Object.keys(tokens).filter(
+      address => address !== poolAddress
+    );
+    tokens = pick(tokens, validTokens);
+
     const _tokens = {};
     const weights = this.normalizeWeights(data?.weights, type, tokens);
-
     data.poolTokens.tokens.map((token, i) => {
       const tokenBalance = data.poolTokens.balances[i];
       const tokenDecimals = tokens[token]?.decimals;
@@ -80,6 +87,8 @@ export default class Vault {
         logoURI: tokens[token]?.logoURI
       };
     });
+
+    delete _tokens[poolAddress];
 
     let amp = '0';
     if (data?.amp) {

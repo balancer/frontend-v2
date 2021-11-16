@@ -82,6 +82,12 @@ export default class Pools {
       const poolService = new this.poolServiceClass(pool);
 
       pool.address = this.addressFor(pool.id);
+
+      // Remove pre-minted BPT token if exits
+      pool.tokensList = pool.tokensList.filter(
+        address => address !== pool.address.toLowerCase()
+      );
+
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.tokens = this.formatPoolTokens(pool);
       pool.totalLiquidity = poolService.calcTotalLiquidity(prices, currency);
