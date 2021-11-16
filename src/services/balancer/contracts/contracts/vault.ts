@@ -67,7 +67,7 @@ export default class Vault {
 
     result = await poolMultiCaller.execute(result);
 
-    console.log('onchain data', result)
+    console.log('onchain data', result);
 
     return this.serializePoolData(result, type, tokens, poolAddress);
   }
