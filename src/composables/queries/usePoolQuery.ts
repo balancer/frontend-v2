@@ -46,11 +46,11 @@ export default function usePoolQuery(
       }
     });
 
-    const isOwnedByUser = getAddress(pool.owner) === getAddress(account.value);
+    /*const isOwnedByUser = getAddress(pool.owner) === getAddress(account.value);
     const isAllowlisted =
       (isStableLike(pool.poolType) && POOLS.Stable.AllowList.includes(id)) ||
       (isManaged(pool.poolType) && POOLS.Investment.AllowList.includes(id));
-    /*if (!isOwnedByUser && !isAllowlisted) {
+    if (!isOwnedByUser && !isAllowlisted) {
       throw new Error('Pool not allowed');
     }*/
 
