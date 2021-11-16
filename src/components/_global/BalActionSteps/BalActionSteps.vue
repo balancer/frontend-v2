@@ -113,12 +113,6 @@ const currentActionState = computed(
 
 const steps = computed((): Step[] => actions.value.map(action => action.step));
 
-// const explorerLink = computed((): string =>
-//   joinPoolState.receipt
-//     ? explorerLinks.txLink(joinPoolState.receipt.transactionHash)
-//     : ''
-// );
-
 /**
  * METHODS
  */
@@ -200,42 +194,5 @@ async function submit(
     >
       {{ currentAction.label }}
     </BalBtn>
-    <!--
-      TODO: Move this to calling .vue file on complete step.  
-       <template v-else>
-      <div
-        class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
-      >
-        <div class="flex items-center">
-          <BalIcon name="clock" />
-          <span class="ml-2">
-            {{ currentActionState.confirmedAt }}
-          </span>
-        </div>
-        <BalLink
-          :href="explorerLink"
-          external
-          noStyle
-          class="group flex items-center"
-        >
-          {{ networkConfig.explorerName }}
-          <BalIcon
-            name="arrow-up-right"
-            size="sm"
-            class="ml-px group-hover:text-pink-500 transition-colors"
-          />
-        </BalLink>
-      </div>
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'pool', params: { id: route.params.id } }"
-        color="gray"
-        outline
-        block
-        class="mt-2"
-      >
-        {{ $t('returnToPool') }}
-      </BalBtn>
-    </template> -->
   </div>
 </template>

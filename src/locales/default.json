@@ -101,7 +101,7 @@
         "recommendedLiquidity": "It’s recommended proivde new pools with at least $20,000 in initial funds",
         "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}."
     },
-    "createPool": "Create a pool",
+    "createPool": "Create pool",
     "createPoolTooltip": "Confirm pool creation",
     "currentNetwork": "Current network",
     "custom": "Custom",
