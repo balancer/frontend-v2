@@ -21,6 +21,15 @@
       {{ $t('invest') }}<span class="hidden lg:inline">&nbsp;/&nbsp;Farm</span>
     </router-link>
     <router-link
+      :to="{ name: 'fbeets' }"
+      :class="[
+        'toggle-link px-4 rounded-l-lg',
+        { [activeClasses]: isFreshBeetsPage }
+      ]"
+    >
+      fBEETS
+    </router-link>
+    <router-link
       :to="{ name: 'my-portfolio' }"
       :class="[
         'toggle-link px-4 rounded-l-lg',
@@ -30,15 +39,6 @@
     >
       Portfolio
     </router-link>
-    <!--    <router-link-->
-    <!--      :to="{ name: 'fbeets' }"-->
-    <!--      :class="[-->
-    <!--        'toggle-link px-4 rounded-l-lg',-->
-    <!--        { [activeClasses]: isFreshBeetsPage }-->
-    <!--      ]"-->
-    <!--    >-->
-    <!--      fBeets-->
-    <!--    </router-link>-->
   </div>
 </template>
 
