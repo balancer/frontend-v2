@@ -42,7 +42,7 @@ export abstract class Connector {
     this.account.value = getAddress(accounts[0]);
   };
 
-  handleChainChanged = (chainId: string | number) => {
+  handleChainChanged = chainId => {
     this.chainId.value = Number(chainId);
   };
 
