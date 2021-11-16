@@ -22,7 +22,10 @@ export abstract class Connector {
   // must return the provider
   abstract connect(): Promise<ConnectorPayload>;
 
-  handleAccountsChanged = accounts => {
+  handleAccountsChanged = (accounts: string[]) => {
+    if (accounts.length === 0) {
+      this.handleDisconnect();
+    }
     if (this.selectedAccount !== '') {
       const account = accounts.find(
         account => getAddress(account) === getAddress(this.selectedAccount)
@@ -39,11 +42,12 @@ export abstract class Connector {
     this.account.value = getAddress(accounts[0]);
   };
 
-  handleChainChanged = chainId => {
+  handleChainChanged = (chainId: string | number) => {
     this.chainId.value = Number(chainId);
   };
 
   handleDisconnect = () => {
+    console.log('disconnecting');
     // reset everything
     if (this.provider?.removeAllListeners) this.provider?.removeAllListeners();
     this.account.value = null;
@@ -69,6 +73,5 @@ export abstract class Connector {
 
     this.provider.on('accountsChanged', this.handleAccountsChanged);
     this.provider.on('chainChanged', this.handleChainChanged);
-    this.provider.on('disconnect', this.handleDisconnect);
   }
 }
