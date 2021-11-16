@@ -102,7 +102,7 @@
         "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}."
     },
     "createPool": "Create pool",
-    "createPoolTooltip": "Create weighted pool",
+    "createPoolTooltip": "Create {0} pool",
     "currentNetwork": "Current network",
     "custom": "Custom",
     "customAmounts": "Custom amounts",
@@ -191,7 +191,7 @@
             "loadingLabel": {
                 "approval": "Confirm approval in wallet",
                 "create": "Confirm create in wallet",
-                "fund": "Confirm fund in wallet",
+                "fund": "Confirm funding in wallet",
                 "investment": "Confirm investment in wallet"
             },
             "titles": {
@@ -350,6 +350,7 @@
     "portfolio": "Portfolio",
     "potentialWeeklyYield": "Potential weekly yield",
     "preview": "Preview",
+    "previewPool": "Preview new {0} pool",
     "previewTrade": "Preview trade",
     "previewTradeTransactions": "Preview trade transactions",
     "previewUnwrap": "Preview {0} Unwrap",
@@ -573,6 +574,7 @@
     "viewFullWallet": "View full wallet",
     "viewLess": "View less",
     "viewOnElement": "View on Element.fi",
+    "viewPool": "View pool",
     "viewTransaction": "View transaction",
     "volume24h": "Volume (24{0})",
     "volume24hShort": "Vol (24h)",

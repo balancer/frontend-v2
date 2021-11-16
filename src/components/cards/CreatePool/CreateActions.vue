@@ -68,7 +68,12 @@ const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
   ref(props.amounts)
 );
-const { createPool, joinPool } = usePoolCreation();
+const {
+  createPool,
+  joinPool,
+  poolId,
+  poolTypeString,
+} = usePoolCreation();
 
 /**
  * COMPUTED
@@ -81,7 +86,7 @@ const actions = computed((): TransactionActionInfo[] => [
     loadingLabel: t('investment.preview.loadingLabel.create'),
     confirmingLabel: t('confirming'),
     action: createPool,
-    stepTooltip: t('createPoolTooltip')
+    stepTooltip: t('createPoolTooltip', [poolTypeString.value])
   },
   {
     label: t('fundPool'),
@@ -140,13 +145,13 @@ function handleSuccess(details: any): void {
       </div>
       <BalBtn
         tag="router-link"
-        :to="{ name: 'pool', params: { id: route.params.id } }"
+        :to="{ name: 'pool', params: { id: poolId } }"
         color="gray"
         outline
         block
         class="mt-2"
       >
-        {{ $t('returnToPool') }}
+        {{ $t('viewPool') }}
       </BalBtn>
     </template>
   </div>

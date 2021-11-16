@@ -291,6 +291,15 @@ export default function usePoolCreation() {
     return sumBy(tokensList.value, t => priceFor(t) * Number(balanceFor(t)));
   });
 
+  const poolTypeString = computed((): string => {
+    switch (poolCreationState.type) {
+      case PoolType.Weighted:
+        return 'weighted';
+      default:
+        return '';
+    };
+  });
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -308,6 +317,7 @@ export default function usePoolCreation() {
     totalLiquidity,
     maxInitialLiquidity,
     getPoolSymbol,
+    poolTypeString,
     getScaledAmounts,
     createPool,
     joinPool,

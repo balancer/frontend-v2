@@ -32,7 +32,7 @@ const {
   totalLiquidity,
   getScaledAmounts,
   getPoolSymbol,
-  type: poolType,
+  poolTypeString,
   initialFee
 } = usePoolCreation();
 const { tokens, priceFor } = useTokens();
@@ -42,8 +42,13 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
+
+const title = computed((): string =>
+  poolCreated.value ? t('poolCreated') : t('previewPool', [poolTypeString.value])
+);
+
 const tokenAddresses = computed((): string[] => {
-  return tokenWeights.value.map((token) => token.tokenAddress);
+  return tokenWeights.value.map(token => token.tokenAddress);
 });
 
 const tokenAmounts = computed((): string[] => {
@@ -55,7 +60,7 @@ const tokenAmounts = computed((): string[] => {
  */
 function handleClose(): void {
   emit('close');
-} 
+}
 
 function handleSuccess(): void {
   poolCreated.value = true;
@@ -68,8 +73,18 @@ function handleSuccess(): void {
     <BalCard>
       <BalStack vertical>
         <BalStack vertical spacing="xs">
-          <span class="text-sm text-gray-700">{{ userNetworkConfig?.name }}</span>
-          <h5 class="font-bold">{{ $t('previewPool', [poolType]) }}</h5>
+          <span class="text-sm text-gray-700">{{
+            userNetworkConfig?.name
+          }}</span>
+          <BalCircle
+            v-if="poolCreated"
+            size="8"
+            color="green"
+            class="text-white mr-2"
+          >
+            <BalIcon name="check" />
+          </BalCircle>
+          <h4>{{ title }}</h4>
         </BalStack>
         <BalStack horizontal spacing="sm" isDynamic>
           <div
