@@ -193,7 +193,7 @@ export default function useGnosis({
           .sub(quote.feeAmountInToken)
           .toString(),
         buyAmount: exactIn.value
-          ? quote.minimumOutAmount
+          ? quote.minimumOutAmount.toString()
           : tokenOutAmountScaled.value.toString(),
         validTo: calculateValidTo(appTransactionDeadline.value),
         appData: APP_DATA,
