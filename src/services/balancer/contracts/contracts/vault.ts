@@ -10,7 +10,8 @@ import { TokenInfoMap } from '@/types/TokenList';
 import {
   isWeightedLike,
   isStableLike,
-  isTradingHaltable
+  isTradingHaltable,
+  isPhantomStable
 } from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { pick } from 'lodash';
@@ -40,6 +41,8 @@ export default class Vault {
       this.service.allABIs
     );
 
+    console.log('tokens', tokens);
+
     vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
     result = await vaultMultiCaller.execute(result);
     poolMultiCaller.call('totalSupply', poolAddress, 'totalSupply');
@@ -54,9 +57,17 @@ export default class Vault {
       }
     } else if (isStableLike(type)) {
       poolMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
+
+      if (isPhantomStable(type)) {
+        Object.keys(tokens).forEach(token => {
+          poolMultiCaller.call(`subPools.${token}.priceRate`, token, 'getRate');
+        });
+      }
     }
 
     result = await poolMultiCaller.execute(result);
+
+    console.log('onchain data', result)
 
     return this.serializePoolData(result, type, tokens, poolAddress);
   }
@@ -67,18 +78,19 @@ export default class Vault {
     tokens: TokenInfoMap,
     poolAddress: string
   ): OnchainPoolData {
+    const result = <OnchainPoolData>{};
+
     // Filter out pre-minted BPT token if exists
     const validTokens = Object.keys(tokens).filter(
       address => address !== poolAddress
     );
     tokens = pick(tokens, validTokens);
 
-    const _tokens = {};
     const weights = this.normalizeWeights(data?.weights, type, tokens);
     data.poolTokens.tokens.map((token, i) => {
       const tokenBalance = data.poolTokens.balances[i];
       const tokenDecimals = tokens[token]?.decimals;
-      _tokens[token] = {
+      result.tokens[token] = {
         balance: formatUnits(tokenBalance, tokenDecimals),
         weight: weights[i],
         decimals: tokenDecimals,
@@ -88,36 +100,37 @@ export default class Vault {
       };
     });
 
-    delete _tokens[poolAddress];
+    delete result.tokens[poolAddress];
 
-    let amp = '0';
+    result.amp = '0';
     if (data?.amp) {
-      amp = data.amp.value.div(data.amp.precision);
+      result.amp = data.amp.value.div(data.amp.precision);
     }
 
-    let swapEnabled = true;
+    result.swapEnabled = true;
     if (Object.keys(data).includes('swapEnabled')) {
-      swapEnabled = data.swapEnabled;
+      result.swapEnabled = data.swapEnabled;
     }
 
-    return {
-      tokens: _tokens,
-      totalSupply: formatUnits(data.totalSupply, data.decimals),
-      decimals: data.decimals,
-      swapFee: formatUnits(data.swapFee, 18),
-      amp,
-      swapEnabled
-    };
+    if (data?.subPools) {
+      result.subPools = data.subPools;
+    }
+
+    result.totalSupply = formatUnits(data.totalSupply, data.decimals);
+    result.decimals = data.decimals;
+    result.swapFee = formatUnits(data.swapFee, 18);
+
+    return result;
   }
 
   public normalizeWeights(
     weights: BigNumber[],
     type: PoolType,
     tokens: TokenInfoMap
-  ) {
+  ): number[] {
     if (isWeightedLike(type)) {
       // toNormalizedWeights returns weights as 18 decimal fixed point
-      return toNormalizedWeights(weights).map(w => formatUnits(w, 18));
+      return toNormalizedWeights(weights).map(w => Number(formatUnits(w, 18)));
     } else if (isStableLike(type)) {
       const tokensList = Object.values(tokens);
       return tokensList.map(() => 1 / tokensList.length);

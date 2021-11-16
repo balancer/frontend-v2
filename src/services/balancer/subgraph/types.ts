@@ -1,3 +1,5 @@
+import { BigNumber } from 'ethers';
+
 export type QueryArgs = Record<string, any>;
 export type QueryAttrs = Record<string, any>;
 export type QueryBuilder = (
@@ -73,6 +75,11 @@ export interface OnchainPoolData {
   swapFee: string;
   amp?: string;
   swapEnabled: boolean;
+  subPools?: Record<string, LinearPoolData>;
+}
+
+export interface LinearPoolData {
+  priceRate: BigNumber;
 }
 
 export interface FullPool extends DecoratedPool {

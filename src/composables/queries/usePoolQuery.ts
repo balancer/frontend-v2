@@ -5,7 +5,7 @@ import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool, Pool } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
@@ -34,18 +34,9 @@ export default function usePoolQuery(
   );
 
   /**
-   * QUERY INPUTS
+   * METHODS
    */
-  const queryKey = QUERY_KEYS.Pools.Current(id);
-
-  const queryFn = async () => {
-    const [pool] = await balancerSubgraphService.pools.get({
-      where: {
-        id: id.toLowerCase(),
-        totalShares_gt: -1 // Avoid the filtering for low liquidity pools
-      }
-    });
-
+  function isBlocked(pool: Pool): boolean {
     const requiresAllowlisting =
       isStableLike(pool.poolType) || isManaged(pool.poolType);
     const isOwnedByUser =
@@ -54,9 +45,35 @@ export default function usePoolQuery(
     const isAllowlisted =
       POOLS.Stable.AllowList.includes(id) ||
       POOLS.Investment.AllowList.includes(id);
-    if (requiresAllowlisting && !isAllowlisted && !isOwnedByUser) {
-      throw new Error('Pool not allowed');
-    }
+
+    return requiresAllowlisting && !isAllowlisted && !isOwnedByUser;
+  }
+
+  function removePreMintedBpt(pool: Pool): Pool {
+    const poolAddress = balancerSubgraphService.pools.addressFor(pool.id);
+    // Remove pre-minted BPT token if exits
+    pool.tokensList = pool.tokensList.filter(
+      address => address !== poolAddress.toLowerCase()
+    );
+    return pool;
+  }
+
+  /**
+   * QUERY INPUTS
+   */
+  const queryKey = QUERY_KEYS.Pools.Current(id);
+
+  const queryFn = async () => {
+    let [pool] = await balancerSubgraphService.pools.get({
+      where: {
+        id: id.toLowerCase(),
+        totalShares_gt: -1 // Avoid the filtering for low liquidity pools
+      }
+    });
+
+    if (isBlocked(pool)) throw new Error('Pool not allowed');
+
+    pool = removePreMintedBpt(pool);
 
     await injectTokens([
       ...pool.tokensList,
