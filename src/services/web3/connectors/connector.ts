@@ -25,21 +25,22 @@ export abstract class Connector {
   handleAccountsChanged = (accounts: string[]) => {
     if (accounts.length === 0) {
       this.handleDisconnect();
-    }
-    if (this.selectedAccount !== '') {
-      const account = accounts.find(
-        account => getAddress(account) === getAddress(this.selectedAccount)
-      );
-      // sense check the account that was previously connected
-      if (!account) {
-        this.account.value = accounts[0];
-        console.warn(
-          `Previously connected account [${this.selectedAccount}] was not found in the connection. Defaulting to the first.`
+    } else {
+      if (this.selectedAccount !== '') {
+        const account = accounts.find(
+          account => getAddress(account) === getAddress(this.selectedAccount)
         );
+        // sense check the account that was previously connected
+        if (!account) {
+          this.account.value = accounts[0];
+          console.warn(
+            `Previously connected account [${this.selectedAccount}] was not found in the connection. Defaulting to the first.`
+          );
+        }
+        this.account.value = getAddress(this.selectedAccount);
       }
-      this.account.value = getAddress(this.selectedAccount);
+      this.account.value = getAddress(accounts[0]);
     }
-    this.account.value = getAddress(accounts[0]);
   };
 
   handleChainChanged = chainId => {
