@@ -777,14 +777,14 @@ export default defineComponent({
         const newQuote = props.trading.getQuote();
 
         if (props.trading.exactIn.value) {
-          priceUpdated.value = bnum(lastQuote.value.minimumOutAmount)
-            .minus(newQuote.minimumOutAmount)
+          priceUpdated.value = lastQuote.value.minimumOutAmount
+            .sub(newQuote.minimumOutAmount)
             .abs()
             .div(lastQuote.value.minimumOutAmount)
             .gt(PRICE_UPDATE_THRESHOLD);
         } else {
-          priceUpdated.value = bnum(lastQuote.value.maximumInAmount)
-            .minus(newQuote.maximumInAmount)
+          priceUpdated.value = lastQuote.value.maximumInAmount
+            .sub(newQuote.maximumInAmount)
             .abs()
             .div(lastQuote.value.maximumInAmount)
             .gt(PRICE_UPDATE_THRESHOLD);
