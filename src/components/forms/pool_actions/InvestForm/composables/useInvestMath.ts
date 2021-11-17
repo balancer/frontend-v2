@@ -6,7 +6,7 @@ import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
 import { parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
-import { isStablePhantom, usePool } from '@/composables/usePool';
+import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
