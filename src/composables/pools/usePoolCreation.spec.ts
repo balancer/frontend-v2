@@ -1,3 +1,4 @@
+import { assert } from 'console';
 import { mount } from 'vue-composable-tester';
 import usePoolCreation, { TokenWeight } from './usePoolCreation';
 
@@ -10,10 +11,11 @@ jest.mock('@/services/web3/useWeb3');
 jest.mock('@/services/balancer/balancer.service');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
 jest.mock('@/composables/queries/usePoolsQuery');
+jest.mock('@/composables/useEthers');
 
 describe('usePoolCreation', () => {
   const { result: poolCreation } = mount(() => usePoolCreation());
-  const { updateTokenWeights, getPoolSymbol } = poolCreation;
+  const { updateTokenWeights, getPoolSymbol, getScaledAmounts } = poolCreation;
 
   beforeEach(() => {
     tokens.MKR = {
@@ -36,6 +38,13 @@ describe('usePoolCreation', () => {
       isLocked: false,
       id: 2,
       amount: 0
+    };
+    tokens.USDC = {
+      tokenAddress: '0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115',
+      weight: 50,
+      isLocked: false,
+      id: 3,
+      amount: Number(7643.537999999996)
     };
   });
 
@@ -65,6 +74,14 @@ describe('usePoolCreation', () => {
       updateTokenWeights([tokens.MKR, tokens.WETH]);
       const symbol = getPoolSymbol();
       expect(symbol).toEqual('67MKR-33WETH');
+    });
+  });
+
+  describe('getScaledAmounts', () => {
+    it('Should not return any amounts with decimals', () => {
+      updateTokenWeights([tokens.USDC]);
+      const scaledAmounts = getScaledAmounts();
+      expect(scaledAmounts[0]).toEqual('7643538000');
     });
   });
 });
