@@ -272,6 +272,13 @@ export default function usePoolCreation() {
     return sumBy(tokensList.value, t => priceFor(t) * Number(balanceFor(t)));
   });
 
+  const poolLiquidity = computed(() => {
+    return sumBy(
+      poolCreationState.tokenWeights,
+      tw => priceFor(tw.tokenAddress) * tw.amount
+    );
+  });
+
   const poolTypeString = computed((): string => {
     switch (poolCreationState.type) {
       case PoolType.Weighted:
@@ -297,6 +304,7 @@ export default function usePoolCreation() {
     existingPool,
     totalLiquidity,
     maxInitialLiquidity,
+    poolLiquidity,
     getPoolSymbol,
     poolTypeString,
     getScaledAmounts,

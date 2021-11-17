@@ -28,7 +28,7 @@ const poolCreated = ref(false);
 const { userNetworkConfig } = useWeb3();
 const {
   tokenWeights,
-  totalLiquidity,
+  poolLiquidity,
   getScaledAmounts,
   getPoolSymbol,
   poolTypeString,
@@ -104,7 +104,14 @@ function handleSuccess(): void {
                     {{ tokens[token.tokenAddress].symbol }}</span
                   >
                   <span class="text-sm text-gray-500"
-                    >{{ $t('initialWeight') }}: ??</span
+                    >{{ $t('initialWeight') }}:
+                    {{
+                      fNum(
+                        (token.amount * priceFor(token.tokenAddress)) /
+                          poolLiquidity,
+                        'percent'
+                      )
+                    }}</span
                   >
                 </BalStack>
               </BalStack>
@@ -121,7 +128,7 @@ function handleSuccess(): void {
         </BalStack>
         <BalStack horizontal justify="between" class="p-4 border-t">
           <h6>{{ $t('total') }}</h6>
-          <h6>{{ fNum(totalLiquidity, 'usd') }}</h6>
+          <h6>{{ fNum(poolLiquidity, 'usd') }}</h6>
         </BalStack>
       </BalCard>
       <BalCard shadow="false" noPad>
