@@ -6,7 +6,7 @@ import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
 import { parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
-import { isPhantomStable, usePool } from '@/composables/usePool';
+import { isStablePhantom, usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
@@ -72,7 +72,7 @@ export default function useInvestFormMath(
   const { toFiat } = useNumbers();
   const { tokens, getToken, balances, balanceFor, nativeAsset } = useTokens();
   const { minusSlippageScaled } = useSlippage();
-  const { managedPoolWithTradingHalted, isPhantomStablePool } = usePool(pool);
+  const { managedPoolWithTradingHalted, isStablePhantomPool } = usePool(pool);
   const { currency } = useUserSettings();
 
   /**
@@ -179,7 +179,7 @@ export default function useInvestFormMath(
   const bptOut = computed((): string => {
     let _bptOut: BigNumber;
 
-    if (isPhantomStablePool.value) {
+    if (isStablePhantomPool.value) {
       _bptOut = batchSwap.value
         ? BigNumber.from(batchSwap.value.amountTokenOut).abs()
         : BigNumber.from(0);
@@ -210,7 +210,7 @@ export default function useInvestFormMath(
   );
 
   const shouldFetchBatchSwap = computed(
-    (): boolean => pool.value && isPhantomStablePool.value && hasAmounts.value
+    (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value
   );
 
   /**

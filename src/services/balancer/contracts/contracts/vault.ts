@@ -19,7 +19,7 @@ import {
   isWeightedLike,
   isStableLike,
   isTradingHaltable,
-  isPhantomStable
+  isStablePhantom
 } from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { pick } from 'lodash';
@@ -65,7 +65,7 @@ export default class Vault {
     } else if (isStableLike(type)) {
       poolMulticaller.call('amp', poolAddress, 'getAmplificationParameter');
 
-      if (isPhantomStable(type)) {
+      if (isStablePhantom(type)) {
         Object.keys(tokens).forEach(token => {
           poolMulticaller.call(`linearPools.${token}.id`, token, 'getPoolId');
           poolMulticaller.call(
@@ -101,7 +101,7 @@ export default class Vault {
 
     vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
 
-    if (isPhantomStable(type) && result.linearPools) {
+    if (isStablePhantom(type) && result.linearPools) {
       // Get pool tokens for linear pools
       Object.keys(result.linearPools).forEach(address => {
         if (!result.linearPools) return;

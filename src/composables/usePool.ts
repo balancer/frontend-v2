@@ -16,13 +16,13 @@ export function isMetaStable(poolType: PoolType): boolean {
   return poolType === PoolType.MetaStable;
 }
 
-export function isPhantomStable(poolType: PoolType): boolean {
+export function isStablePhantom(poolType: PoolType): boolean {
   return poolType === PoolType.StablePhantom;
 }
 
 export function isStableLike(poolType: PoolType): boolean {
   return (
-    isStable(poolType) || isMetaStable(poolType) || isPhantomStable(poolType)
+    isStable(poolType) || isMetaStable(poolType) || isStablePhantom(poolType)
   );
 }
 
@@ -68,7 +68,7 @@ export function noInitLiquidity(pool: AnyPool): boolean {
 }
 
 export function investableTokensFor(pool: AnyPool): string[] {
-  if (isPhantomStable(pool.poolType)) {
+  if (isStablePhantom(pool.poolType)) {
     return TOKENS.Investable[pool.id].Tokens || [];
   } else {
     return pool.tokenAddresses || [];
@@ -88,8 +88,8 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   const isMetaStablePool = computed(
     (): boolean => !!pool.value && isMetaStable(pool.value.poolType)
   );
-  const isPhantomStablePool = computed(
-    (): boolean => !!pool.value && isPhantomStable(pool.value.poolType)
+  const isStablePhantomPool = computed(
+    (): boolean => !!pool.value && isStablePhantom(pool.value.poolType)
   );
   const isStableLikePool = computed(
     (): boolean => !!pool.value && isStableLike(pool.value.poolType)
@@ -130,7 +130,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     // computed
     isStablePool,
     isMetaStablePool,
-    isPhantomStablePool,
+    isStablePhantomPool,
     isStableLikePool,
     isWeightedPool,
     isWeightedLikePool,
@@ -144,7 +144,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     // methods
     isStable,
     isMetaStable,
-    isPhantomStable,
+    isStablePhantom,
     isStableLike,
     isWeighted,
     isLiquidityBootstrapping,

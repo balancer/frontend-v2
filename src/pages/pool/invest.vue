@@ -17,7 +17,7 @@ import useInvestState from '@/components/forms/pool_actions/InvestForm/composabl
  */
 const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
-const { isPhantomStablePool } = usePool(pool);
+const { isStablePhantomPool } = usePool(pool);
 const { sor, sorReady } = useInvestState();
 
 /**
@@ -26,7 +26,7 @@ const { sor, sorReady } = useInvestState();
 onBeforeMount(async () => {
   await forChange(loadingPool, false);
 
-  if (pool.value && isPhantomStablePool.value) {
+  if (pool.value && isStablePhantomPool.value) {
     // Initialise SOR for batch swap queries
     sorReady.value = await sor.fetchPools([], false);
   } else {
