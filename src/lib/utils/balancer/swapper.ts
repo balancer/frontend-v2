@@ -247,6 +247,9 @@ async function batchSwapGivenInV2(
   }
 }
 
+/**
+ * Join a Boosted Pool (StablePhantom) using a batch swap
+ */
 export async function boostedJoinBatchSwap(
   network: string,
   web3: Web3Provider,
@@ -282,7 +285,6 @@ export async function boostedJoinBatchSwap(
         limits[i] = '0';
       }
     });
-    console.log('Limits', limits);
 
     return sendTransaction(
       web3,
