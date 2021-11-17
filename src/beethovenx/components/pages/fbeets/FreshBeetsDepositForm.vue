@@ -19,7 +19,7 @@
         <template v-slot:info>
           <div class="cursor-pointer" @click.prevent="amount = bptBalance">
             {{ $t('balance') }}:
-            {{ bptBalance }}
+            {{ fBeetsLoading ? '-' : bptBalance }}
           </div>
         </template>
         <template v-slot:append>
