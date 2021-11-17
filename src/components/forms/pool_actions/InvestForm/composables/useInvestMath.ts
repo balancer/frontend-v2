@@ -147,7 +147,7 @@ export default function useInvestFormMath(
     try {
       return poolCalculator.priceImpact(fullAmounts.value).toNumber() || 0;
     } catch (error) {
-      return 0;
+      return 100;
     }
   });
 
