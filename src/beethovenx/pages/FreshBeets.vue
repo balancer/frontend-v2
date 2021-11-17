@@ -10,13 +10,11 @@
         </h2>
         <p>
           30% of Beethoven X protocol revenue is used to reward fBEETS holders.
-          When your Fidelio Duetto BPTs are staked, you recieve fBEETS in return
-          for a fully composable token that can interact with other protocols.
-          Your fBEETS are continuously compounding. When you unstake, you will
-          receive all the originally deposited Fidelio Duetto BPTs plus any
-          additional from fees.
+          When your Fidelio Duetto BPTs are staked, you recieve fBEETS in
+          return. Your fBEETS are continuously compounding. When you unstake,
+          you will receive all the originally deposited Fidelio Duetto BPTs plus
+          any additional from fees.
         </p>
-        <!--        <BalLoadingBlock v-if="false" class="h-10 w-40" />-->
       </div>
       <div class="hidden pl-8 ml-6 md:block w-72">
         <img src="~@/beethovenx/assets/images/BEETX-fBEET-3D2x.png" />
