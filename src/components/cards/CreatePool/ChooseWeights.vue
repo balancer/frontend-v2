@@ -8,6 +8,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import usePoolCreation, {
   TokenWeight
 } from '@/composables/pools/usePoolCreation';
+import useTokens from '@/composables/useTokens';
 
 import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
@@ -39,6 +40,7 @@ const {
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
+const { nativeAsset } = useTokens();
 
 /**
  * STATE
@@ -86,6 +88,10 @@ const isProceedDisabled = computed(() => {
 const showLiquidityAlert = computed(() => {
   const validTokens = tokenWeights.value.filter(t => t.tokenAddress !== '');
   return maxInitialLiquidity.value < 20000 && validTokens.length >= 2;
+});
+
+const excludedTokens = computed((): string[] => {
+  return [nativeAsset.address];
 });
 
 /**
@@ -232,6 +238,7 @@ function addTokenListElementRef(el: HTMLElement) {
                     @update:isLocked="data => handleLockedWeight(data, i)"
                     noRules
                     noMax
+                    :excludedTokens="excludedTokens"
                   />
                 </div>
               </div>
