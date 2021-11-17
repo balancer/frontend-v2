@@ -39,7 +39,12 @@
               </p>
             </div>
             <div>
-              <h4 class="text-green-500 text-3xl text-right">9.83%</h4>
+              <BalLoadingBlock
+                v-if="fBeetsLoading"
+                class="h-8 w-24 mb-1"
+                white
+              />
+              <h4 v-else class="text-green-500 text-3xl text-right">9.83%</h4>
               <p class="text-right">Year to date</p>
             </div>
           </div>
