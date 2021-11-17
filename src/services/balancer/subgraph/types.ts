@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers';
 
+export type Address = string;
 export type QueryArgs = Record<string, any>;
 export type QueryAttrs = Record<string, any>;
 export type QueryBuilder = (
@@ -22,6 +23,12 @@ export interface PoolToken {
   balance: string;
   weight: string;
   priceRate: string | null;
+}
+
+export interface RawPoolTokens {
+  balances: BigNumber[];
+  lastChangeBlock: BigNumber;
+  tokens: string[];
 }
 
 export interface Pool {
@@ -63,24 +70,64 @@ export interface OnchainTokenData {
   balance: string;
   weight: number;
   decimals: number;
-  logoURI: string;
+  logoURI: string | undefined;
   name: string;
   symbol: string;
 }
 
+export type OnchainTokenDataMap = Record<Address, OnchainTokenData>;
+
+export interface RawOnchainPoolData {
+  decimals: number;
+  poolTokens: RawPoolTokens;
+  swapFee: BigNumber;
+  totalSupply: BigNumber;
+  weights?: BigNumber[];
+  swapEnabled?: boolean;
+  amp?: {
+    value: BigNumber;
+    precision: BigNumber;
+  };
+  linearPools?: Record<Address, RawLinearPoolData>;
+}
+
 export interface OnchainPoolData {
-  tokens: Record<string, OnchainTokenData>;
+  tokens: Record<Address, OnchainTokenData>;
   totalSupply: string;
   decimals: number;
   swapFee: string;
   amp?: string;
   swapEnabled: boolean;
-  subPools?: Record<string, LinearPoolData>;
+  linearPools?: Record<Address, LinearPoolData>;
 }
 
-export interface LinearPoolData {
-  priceRate: BigNumber;
+export interface RawLinearPoolToken {
+  address: string;
+  index: BigNumber;
 }
+
+export interface LinearPoolToken {
+  address: string;
+  index: number;
+  balance: string;
+}
+
+export interface RawLinearPoolData {
+  id: string;
+  priceRate: BigNumber;
+  mainToken: RawLinearPoolToken;
+  wrappedToken: RawLinearPoolToken;
+  tokenData: RawPoolTokens;
+}
+export type RawLinearPoolDataMap = Record<Address, RawLinearPoolData>;
+
+export interface LinearPoolData {
+  id: string;
+  priceRate: string;
+  mainToken: LinearPoolToken;
+  wrappedToken: LinearPoolToken;
+}
+export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 
 export interface FullPool extends DecoratedPool {
   onchain: OnchainPoolData;

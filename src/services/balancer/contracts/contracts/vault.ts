@@ -1,10 +1,18 @@
 import Service from '../balancer-contracts.service';
-import { Vault__factory } from '@balancer-labs/typechain';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
-import { OnchainPoolData, PoolType } from '../../subgraph/types';
+import {
+  LinearPoolDataMap,
+  OnchainPoolData,
+  OnchainTokenDataMap,
+  PoolType,
+  RawLinearPoolData,
+  RawLinearPoolDataMap,
+  RawOnchainPoolData,
+  RawPoolTokens
+} from '../../subgraph/types';
 import ConfigService from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 import {
@@ -15,6 +23,7 @@ import {
 } from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { pick } from 'lodash';
+import { Vault__factory } from '@balancer-labs/typechain';
 
 export default class Vault {
   service: Service;
@@ -29,56 +38,97 @@ export default class Vault {
     tokens: TokenInfoMap
   ): Promise<OnchainPoolData> {
     const poolAddress = getAddress(id.slice(0, 42));
-    let result = {} as Record<any, any>;
+    let result = <RawOnchainPoolData>{};
+
     const vaultMultiCaller = new Multicaller(
       this.configService.network.key,
       this.service.provider,
       Vault__factory.abi
     );
-    const poolMultiCaller = new Multicaller(
+
+    const poolMulticaller = new Multicaller(
       this.configService.network.key,
       this.service.provider,
-      this.service.allABIs
+      this.service.allPoolABIs
     );
 
-    console.log('tokens', tokens);
-
-    vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
-    result = await vaultMultiCaller.execute(result);
-    poolMultiCaller.call('totalSupply', poolAddress, 'totalSupply');
-    poolMultiCaller.call('decimals', poolAddress, 'decimals');
-    poolMultiCaller.call('swapFee', poolAddress, 'getSwapFeePercentage');
+    poolMulticaller.call('totalSupply', poolAddress, 'totalSupply');
+    poolMulticaller.call('decimals', poolAddress, 'decimals');
+    poolMulticaller.call('swapFee', poolAddress, 'getSwapFeePercentage');
 
     if (isWeightedLike(type)) {
-      poolMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
+      poolMulticaller.call('weights', poolAddress, 'getNormalizedWeights', []);
 
       if (isTradingHaltable(type)) {
-        poolMultiCaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
+        poolMulticaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
       }
     } else if (isStableLike(type)) {
-      poolMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
+      poolMulticaller.call('amp', poolAddress, 'getAmplificationParameter');
 
       if (isPhantomStable(type)) {
         Object.keys(tokens).forEach(token => {
-          poolMultiCaller.call(`subPools.${token}.priceRate`, token, 'getRate');
+          poolMulticaller.call(`linearPools.${token}.id`, token, 'getPoolId');
+          poolMulticaller.call(
+            `linearPools.${token}.priceRate`,
+            token,
+            'getRate'
+          );
+          poolMulticaller.call(
+            `linearPools.${token}.mainToken.address`,
+            token,
+            'getMainToken'
+          );
+          poolMulticaller.call(
+            `linearPools.${token}.mainToken.index`,
+            token,
+            'getMainIndex'
+          );
+          poolMulticaller.call(
+            `linearPools.${token}.wrappedToken.address`,
+            token,
+            'getWrappedToken'
+          );
+          poolMulticaller.call(
+            `linearPools.${token}.wrappedToken.index`,
+            token,
+            'getWrappedIndex'
+          );
         });
       }
     }
 
-    result = await poolMultiCaller.execute(result);
+    result = await poolMulticaller.execute(result);
 
-    console.log('onchain data', result);
+    vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
 
-    return this.serializePoolData(result, type, tokens, poolAddress);
+    if (isPhantomStable(type) && result.linearPools) {
+      // Get pool tokens for linear pools
+      Object.keys(result.linearPools).forEach(address => {
+        if (!result.linearPools) return;
+        const linearPool: RawLinearPoolData = result.linearPools[address];
+        vaultMultiCaller.call(
+          `linearPools.${address}.tokenData`,
+          this.address,
+          'getPoolTokens',
+          [linearPool.id]
+        );
+      });
+    }
+
+    result = await vaultMultiCaller.execute(result);
+
+    console.log('Raw onchain data', result);
+
+    return this.formatPoolData(result, type, tokens, poolAddress);
   }
 
-  public serializePoolData(
-    data,
+  public formatPoolData(
+    data: RawOnchainPoolData,
     type: PoolType,
     tokens: TokenInfoMap,
     poolAddress: string
   ): OnchainPoolData {
-    const result = <OnchainPoolData>{};
+    const poolData = <OnchainPoolData>{};
 
     // Filter out pre-minted BPT token if exists
     const validTokens = Object.keys(tokens).filter(
@@ -86,41 +136,96 @@ export default class Vault {
     );
     tokens = pick(tokens, validTokens);
 
-    const weights = this.normalizeWeights(data?.weights, type, tokens);
-    data.poolTokens.tokens.map((token, i) => {
-      const tokenBalance = data.poolTokens.balances[i];
-      const tokenDecimals = tokens[token]?.decimals;
-      result.tokens[token] = {
-        balance: formatUnits(tokenBalance, tokenDecimals),
+    const normalizedWeights = this.normalizeWeights(
+      data?.weights || [],
+      type,
+      tokens
+    );
+
+    poolData.tokens = this.formatPoolTokens(
+      data.poolTokens,
+      tokens,
+      normalizedWeights,
+      poolAddress
+    );
+
+    poolData.amp = '0';
+    if (data?.amp) {
+      poolData.amp = data.amp.value.div(data.amp.precision).toString();
+    }
+
+    poolData.swapEnabled = true;
+    if (data.swapEnabled !== undefined) {
+      poolData.swapEnabled = data.swapEnabled;
+    }
+
+    if (data?.linearPools) {
+      poolData.linearPools = this.formatLinearPools(data.linearPools);
+    }
+
+    poolData.totalSupply = formatUnits(data.totalSupply, data.decimals);
+    poolData.decimals = data.decimals;
+    poolData.swapFee = formatUnits(data.swapFee, 18);
+
+    console.log('onchain data:', poolData);
+
+    return poolData;
+  }
+
+  private formatPoolTokens(
+    poolTokens: RawPoolTokens,
+    tokenInfo: TokenInfoMap,
+    weights: number[],
+    poolAddress: string
+  ): OnchainTokenDataMap {
+    const tokens = <OnchainTokenDataMap>{};
+
+    poolTokens.tokens.forEach((token, i) => {
+      const tokenBalance = poolTokens.balances[i];
+      const decimals = tokenInfo[token]?.decimals;
+      tokens[token] = {
+        decimals,
+        balance: formatUnits(tokenBalance, decimals),
         weight: weights[i],
-        decimals: tokenDecimals,
-        symbol: tokens[token]?.symbol,
-        name: tokens[token]?.name,
-        logoURI: tokens[token]?.logoURI
+        symbol: tokenInfo[token]?.symbol,
+        name: tokenInfo[token]?.name,
+        logoURI: tokenInfo[token]?.logoURI
       };
     });
 
-    delete result.tokens[poolAddress];
+    // Remove pre-minted BPT
+    delete tokens[poolAddress];
 
-    result.amp = '0';
-    if (data?.amp) {
-      result.amp = data.amp.value.div(data.amp.precision);
-    }
+    return tokens;
+  }
 
-    result.swapEnabled = true;
-    if (Object.keys(data).includes('swapEnabled')) {
-      result.swapEnabled = data.swapEnabled;
-    }
+  private formatLinearPools(
+    linearPools: RawLinearPoolDataMap
+  ): LinearPoolDataMap {
+    const _linearPools = <LinearPoolDataMap>{};
 
-    if (data?.subPools) {
-      result.subPools = data.subPools;
-    }
+    Object.keys(linearPools).forEach(address => {
+      const { id, mainToken, wrappedToken, priceRate, tokenData } = linearPools[
+        address
+      ];
 
-    result.totalSupply = formatUnits(data.totalSupply, data.decimals);
-    result.decimals = data.decimals;
-    result.swapFee = formatUnits(data.swapFee, 18);
+      _linearPools[address] = {
+        id,
+        priceRate: formatUnits(priceRate.toString(), 18),
+        mainToken: {
+          address: getAddress(mainToken.address),
+          index: mainToken.index.toNumber(),
+          balance: tokenData.balances[mainToken.index.toNumber()].toString()
+        },
+        wrappedToken: {
+          address: getAddress(wrappedToken.address),
+          index: wrappedToken.index.toNumber(),
+          balance: tokenData.balances[wrappedToken.index.toNumber()].toString()
+        }
+      };
+    });
 
-    return result;
+    return _linearPools;
   }
 
   public normalizeWeights(

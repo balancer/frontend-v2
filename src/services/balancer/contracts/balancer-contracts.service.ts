@@ -1,13 +1,13 @@
 import Vault from './contracts/vault';
 import {
-  Vault__factory,
   WeightedPool__factory,
   StablePool__factory,
   InvestmentPool__factory
 } from '@balancer-labs/typechain';
+import LinearPoolAbi from '@/lib/abi/LinearPool.json';
 import { Config } from '@/lib/config';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { default as TokenAbi } from '@/lib/abi/ERC20.json';
+import ERC20_ABI from '@/lib/abi/ERC20.json';
 import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { configService as _configService } from '@/services/config/config.service';
 
@@ -28,15 +28,15 @@ export default class BalancerContractsService {
   }
 
   // Combine all the ABIs and remove duplicates
-  public get allABIs() {
+  public get allPoolABIs() {
     return Object.values(
       Object.fromEntries(
         [
-          ...Vault__factory.abi,
           ...WeightedPool__factory.abi,
           ...StablePool__factory.abi,
           ...InvestmentPool__factory.abi,
-          ...TokenAbi
+          ...LinearPoolAbi,
+          ...ERC20_ABI
         ].map(row => [row.name, row])
       )
     );
