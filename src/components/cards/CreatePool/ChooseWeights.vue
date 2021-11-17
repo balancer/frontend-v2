@@ -210,7 +210,7 @@ function addTokenListElementRef(el: HTMLElement) {
           <span class="text-sm text-gray-700">{{ networkName }}</span>
           <h5 class="font-bold">{{ $t('createAPool.chooseTokenWeights') }}</h5>
         </BalStack>
-        <BalCard :shadow="false" noPad>
+        <BalCard shadow="none" noPad>
           <div ref="tokenWeightListWrapper">
             <div class="flex flex-col">
               <div class="bg-gray-50 w-full flex justify-between p-2 px-4">

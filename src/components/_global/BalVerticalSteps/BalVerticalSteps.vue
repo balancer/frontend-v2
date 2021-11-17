@@ -58,7 +58,7 @@ const stepCircleClasses = computed(() => {
 </script>
 
 <template>
-  <BalCard noPad shadow="false">
+  <BalCard noPad shadow="none">
     <div class="p-2 px-3 border-b">
       <h6>{{ title }}</h6>
     </div>

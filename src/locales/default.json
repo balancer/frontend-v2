@@ -513,6 +513,7 @@
         "approve": "Approve",
         "claim": "Claim",
         "createPool": "Create pool",
+        "fundPool": "Fund pool",
         "invest": "Invest",
         "trade": "Trade",
         "unwrap": "Unwrap",
@@ -550,6 +551,7 @@
         "approveGnosisRelayer": "Approve Gnosis relayer",
         "approveLidoRelayer": "Approve Lido relayer",
         "createPool": "Create pool",
+        "fundPool": "Fund pool",
         "investInPool": "{0} in {1}",
         "withdrawFromPool": "{0} from {1}",
         "wrapUnwrap": "{0} {1} to {2}"

@@ -126,8 +126,6 @@ async function submit(
     state.init = false;
     state.confirming = true;
 
-    console.log('Receipt', tx);
-
     state.confirmed = await txListener(tx, {
       onTxConfirmed: async (receipt: TransactionReceipt) => {
         state.receipt = receipt;
@@ -137,9 +135,10 @@ async function submit(
 
         if (currentActionIndex.value >= actions.value.length - 1) {
           emit('success', { receipt, confirmedAt: state.confirmedAt });
+        } else {
+          currentActionIndex.value += 1;
         }
 
-        currentActionIndex.value += 1;
         state.confirming = false;
       },
       onTxFailed: () => {

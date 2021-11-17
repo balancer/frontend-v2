@@ -58,7 +58,7 @@ const setTradePair = (pair: TrendingPair[]) => {
     noPad
     growContent
     :noBorder="upToLargeBreakpoint"
-    shadow="false"
+    shadow="none"
   >
     <div class="trending-pairs">
       <div

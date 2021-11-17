@@ -194,13 +194,11 @@ export default function usePoolCreation() {
         getScaledAmounts()
       );
 
-      console.log('Got join pool response: ', tx);
-
       addTransaction({
         id: tx.hash,
         type: 'tx',
-        action: 'invest',
-        summary: t('transactionSummary.investInPool')
+        action: 'fundPool',
+        summary: t('transactionSummary.fundPool')
       });
 
       return tx;

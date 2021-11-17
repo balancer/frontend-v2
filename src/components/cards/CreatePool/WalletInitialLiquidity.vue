@@ -39,7 +39,7 @@ const totalsClass = computed(() => ({
 </script>
 
 <template>
-  <BalCard noPad shadow="false">
+  <BalCard noPad shadow="none">
     <div class="p-2 px-3 border-b" v-if="!upToLargeBreakpoint">
       <h6>{{ $t('createAPool.maxInitialLiquidity') }}</h6>
     </div>

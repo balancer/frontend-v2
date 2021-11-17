@@ -1,10 +1,6 @@
 <template>
   <transition appear @enter="enter" @leave="leave" :css="false">
-    <div
-      id="animateContainer"
-      ref="animateContainer"
-      v-if="isVisible || _isVisible"
-    >
+    <div id="animateContainer" ref="animateContainer" v-if="isVisible">
       <slot></slot>
     </div>
   </transition>
@@ -47,7 +43,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const animateContainer = ref<HTMLElement>();
-    const _isVisible = ref(false);
 
     onMounted(() => {
       if (animateContainer.value) {
@@ -113,8 +108,7 @@ export default defineComponent({
     return {
       animateContainer,
       enter,
-      leave,
-      _isVisible
+      leave
     };
   }
 });

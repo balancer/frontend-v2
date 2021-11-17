@@ -70,7 +70,7 @@ function handleSuccess(): void {
 <template>
   <BalModal show :fireworks="poolCreated" @close="handleClose">
     <BalStack vertical>
-      <BalStack vertical spacing="xs">
+      <div class="flex items-center">
         <BalCircle
           v-if="poolCreated"
           size="8"
@@ -80,8 +80,8 @@ function handleSuccess(): void {
           <BalIcon name="check" />
         </BalCircle>
         <h4>{{ title }}</h4>
-      </BalStack>
-      <BalCard shadow="false" noPad>
+      </div>
+      <BalCard shadow="none" noPad>
         <div class="bg-gray-50 p-2">
           <h6 class="text-sm">
             {{ $t('createAPool.tokensAndSeedLiquidity') }}
@@ -95,7 +95,7 @@ function handleSuccess(): void {
           >
             <BalStack horizontal justify="between">
               <BalStack horizontal align="center">
-                <BalAsset :address="token.tokenAddress" size="36" />
+                <BalAsset :address="token.tokenAddress" :size="36" />
                 <BalStack vertical spacing="none">
                   <span class=" font-semibold"
                     >{{ fNum(token.weight / 100, 'percent') }}
@@ -129,7 +129,7 @@ function handleSuccess(): void {
           <h6>{{ fNum(poolLiquidity, 'usd') }}</h6>
         </BalStack>
       </BalCard>
-      <BalCard shadow="false" noPad>
+      <BalCard shadow="none" noPad>
         <div class="bg-gray-50 p-2">
           <h6 class="text-sm">{{ $t('summary') }}</h6>
         </div>
@@ -144,7 +144,7 @@ function handleSuccess(): void {
           </BalStack>
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('poolType') }}:</span>
-            <span class="text-sm">{{ poolType }}</span>
+            <span class="text-sm">{{ poolTypeString }}</span>
           </BalStack>
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('swapFee') }}:</span>

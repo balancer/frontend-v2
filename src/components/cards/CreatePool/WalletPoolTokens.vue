@@ -48,7 +48,7 @@ const totalFiat = computed(() => {
 </script>
 
 <template>
-  <BalCard noPad shadow="false">
+  <BalCard noPad shadow="none">
     <div class="p-2 px-3 border-b">
       <h6>Pool tokens in my wallet</h6>
     </div>
@@ -86,7 +86,7 @@ const totalFiat = computed(() => {
             :initial="initialAnimateProps"
             :animate="entryAnimateProps"
             :exit="exitAnimateProps"
-            isVisible="true"
+            :isVisible="true"
           >
             <BalStack horizontal justify="between" isDynamic>
               <BalStack vertical spacing="none">

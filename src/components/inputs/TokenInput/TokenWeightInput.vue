@@ -128,6 +128,7 @@ watchEffect(() => {
 
 <template>
   <BalTextInput
+    name="weight"
     v-model="_weight"
     :placeholder="hintAmount || '0.0'"
     type="string"
