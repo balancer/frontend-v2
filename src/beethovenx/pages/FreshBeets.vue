@@ -28,7 +28,12 @@
           <div class="flex">
             <div class="flex-1">
               <h4>Staking APR</h4>
-              <p class="text-green-500 font-medium">
+              <BalLoadingBlock
+                v-if="fBeetsLoading"
+                class="h-6 w-56 mb-1"
+                white
+              />
+              <p v-else class="text-green-500 font-medium">
                 1 fBEETS = {{ fNum(currentExchangeRate, 'token') }} Fidelio
                 Duetto BPT
               </p>
