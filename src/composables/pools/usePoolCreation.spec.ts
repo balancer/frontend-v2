@@ -80,7 +80,7 @@ describe('usePoolCreation', () => {
     it('Should not return any amounts with decimals', () => {
       updateTokenWeights([tokens.USDC]);
       const scaledAmounts = getScaledAmounts();
-      expect(scaledAmounts[0]).toEqual('7643538000');
+      expect(scaledAmounts[0]).toEqual('7643537999');
     });
   });
 });

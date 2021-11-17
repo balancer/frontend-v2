@@ -117,8 +117,9 @@ export default function usePoolCreation() {
       (token: TokenWeight) => {
         const tokenInfo = getToken(token.tokenAddress);
         const amount = new BigNumber(token.amount);
-        const scaledAmount = scale(amount, tokenInfo.decimals).dp(0);
-        return scaledAmount.toString();
+        const scaledAmount = scale(amount, tokenInfo.decimals);
+        const scaledRoundedAmount = scaledAmount.dp(0, BigNumber.ROUND_FLOOR);
+        return scaledRoundedAmount.toString();
       }
     );
     return scaledAmounts;
