@@ -82,7 +82,6 @@ export default class Pools {
       const poolService = new this.poolServiceClass(pool);
 
       pool.address = this.addressFor(pool.id);
-
       pool.tokenAddresses = pool.tokensList.map(t => getAddress(t));
       pool.tokens = this.formatPoolTokens(pool);
       pool.totalLiquidity = poolService.calcTotalLiquidity(prices, currency);
