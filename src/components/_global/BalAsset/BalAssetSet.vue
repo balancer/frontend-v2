@@ -102,7 +102,7 @@ export default defineComponent({
 
 <style scoped>
 .addresses-row {
-  @apply relative mb-3;
+  @apply relative mb-3 flex;
 }
 .addresses-row:last-child {
   @apply mb-0;
