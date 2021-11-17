@@ -7,34 +7,20 @@
  * Useful if there are an arbitrary number of actions the user must take such as
  * "approve n tokens, then invest in a pool.""
  */
-import { toRef, ref, toRefs, computed, ComputedRef, reactive } from 'vue';
-import PoolExchange from '@/services/pool/exchange/exchange.service';
-import { getPoolWeights } from '@/services/pool/pool.helper';
-// Types
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { ref, computed, reactive } from 'vue';
 import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/abstract-provider';
-import useTokenFiatMath from '@/composables/useTokenFiatMath';
-// Composables
-import useWeb3 from '@/services/web3/useWeb3';
-import useTransactions from '@/composables/useTransactions';
-import useEthers from '@/composables/useEthers';
-import { useI18n } from 'vue-i18n';
-import { dateTimeLabelFor } from '@/composables/useTime';
-import { useRoute } from 'vue-router';
-
-import useConfig from '@/composables/useConfig';
-import useTransactionErrors from '@/composables/useTransactionErrors';
-import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import { Step, StepState } from '@/types';
 import {
   TransactionAction,
   TransactionActionInfo,
   TransactionActionState
 } from '@/types/transactions';
-import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useEthers from '@/composables/useEthers';
+import { dateTimeLabelFor } from '@/composables/useTime';
+import useTransactionErrors from '@/composables/useTransactionErrors';
 
 /**
  * TYPES
@@ -73,11 +59,6 @@ const actionStates = props.actions.map(actionInfo => {
 /**
  * COMPOSABLES
  */
-const route = useRoute();
-const { t } = useI18n();
-const { networkConfig } = useConfig();
-const { account, getProvider, explorerLinks } = useWeb3();
-const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { parseError } = useTransactionErrors();
 
@@ -109,6 +90,10 @@ const currentAction = computed(
 
 const currentActionState = computed(
   (): TransactionActionState => actionStates[currentActionIndex.value]
+);
+
+const lastActionState = computed(
+  (): TransactionActionState => actionStates[actionStates.length - 1]
 );
 
 const steps = computed((): Step[] => actions.value.map(action => action.step));
@@ -145,7 +130,6 @@ async function submit(
 
     state.confirmed = await txListener(tx, {
       onTxConfirmed: async (receipt: TransactionReceipt) => {
-        state.confirming = false;
         state.receipt = receipt;
 
         const confirmedAt = await getTxConfirmedAt(receipt);
@@ -156,6 +140,7 @@ async function submit(
         }
 
         currentActionIndex.value += 1;
+        state.confirming = false;
       },
       onTxFailed: () => {
         state.confirming = false;
@@ -181,12 +166,12 @@ async function submit(
       class="mb-4"
     />
     <BalHorizSteps
-      v-if="actions.length > 1 && !currentActionState.confirmed"
+      v-if="actions.length > 1 && !lastActionState.confirmed"
       :steps="steps"
       class="flex justify-center"
     />
     <BalBtn
-      v-if="!currentActionState.confirmed"
+      v-if="!lastActionState.confirmed"
       color="gradient"
       class="mt-4"
       :loading="currentAction.pending"

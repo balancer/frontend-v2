@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { toRef, ref, Ref, toRefs, computed, reactive } from 'vue';
+import { toRef, toRefs, computed, reactive } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider';
+import {
+  TransactionReceipt,
+  TransactionResponse
+} from '@ethersproject/abstract-provider';
 import { InvestMathResponse } from '../../../composables/useInvestMath';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
@@ -13,13 +16,8 @@ import useEthers from '@/composables/useEthers';
 import { useI18n } from 'vue-i18n';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
-
 import useConfig from '@/composables/useConfig';
-import useTranasactionErrors, {
-  TransactionError
-} from '@/composables/useTransactionErrors';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
-import { Step, StepState, Action } from '@/types';
 import { TransactionActionInfo } from '@/types/transactions';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 /**
@@ -63,11 +61,10 @@ const { networkConfig } = useConfig();
 const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { parseError } = useTranasactionErrors();
 const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.math);
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
-  ref(fullAmounts.value)
+  fullAmounts
 );
 
 /**
@@ -99,8 +96,6 @@ const explorerLink = computed((): string =>
  * METHODS
  */
 
-
-
 async function handleTransaction(tx): Promise<void> {
   addTransaction({
     id: tx.hash,
@@ -126,7 +121,7 @@ async function handleTransaction(tx): Promise<void> {
       investmentState.confirmed = true;
     },
     onTxFailed: () => {
-      console.error("Invest failed");
+      console.error('Invest failed');
     }
   });
 }
