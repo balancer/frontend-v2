@@ -512,6 +512,7 @@
     "transactionAction": {
         "approve": "Approve",
         "claim": "Claim",
+        "createPool": "Create pool",
         "invest": "Invest",
         "trade": "Trade",
         "unwrap": "Unwrap",

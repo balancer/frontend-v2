@@ -153,7 +153,7 @@ export default function usePoolCreation() {
       addTransaction({
         id: tx.hash,
         type: 'tx',
-        action: 'createpool',
+        action: 'createPool',
         summary: t('transactionSummary.createPool'),
         details: {
           name: poolCreationState.name

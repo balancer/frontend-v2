@@ -4,7 +4,6 @@ import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
-import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 
@@ -25,7 +24,6 @@ const poolCreated = ref(false);
 /**
  * COMPOSABLES
  */
-const { userNetworkConfig } = useWeb3();
 const {
   tokenWeights,
   poolLiquidity,
