@@ -2,9 +2,11 @@ import Service from '@/services/balancer/contracts/balancer-contracts.service';
 import ConfigService from '@/services/config/config.service';
 import { call } from '@/lib/utils/balancer/contract';
 import { default as FreshBeetsAbi } from '@/beethovenx/abi/FreshBeets.json';
+import { default as ERC20Abi } from '@/lib/abi/ERC20.json';
 import { BigNumber } from 'ethers';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { Web3Provider } from '@ethersproject/providers';
+import Erc20 from '@/beethovenx/services/erc20/contracts/erc20';
 
 export default class FreshBeets {
   service: Service;
@@ -21,7 +23,6 @@ export default class FreshBeets {
   }
 
   public async getTotalVestedTokenAmount(): Promise<BigNumber> {
-    console.log('calling');
     return await call(this.service.provider, FreshBeetsAbi, [
       this.vestingTokenAddress,
       'balanceOf',
@@ -37,8 +38,16 @@ export default class FreshBeets {
     ]);
   }
 
-  public async enter(provider: Web3Provider, amount: BigNumber): Promise<void> {
-    await sendTransaction(
+  public async bptBalanceOf(account: string): Promise<BigNumber> {
+    return await call(this.service.provider, ERC20Abi, [
+      this.vestingTokenAddress,
+      'balanceOf',
+      [account]
+    ]);
+  }
+
+  public async enter(provider: Web3Provider, amount: BigNumber) {
+    return sendTransaction(
       provider,
       this.fbeetsAddress,
       FreshBeetsAbi,
@@ -47,8 +56,8 @@ export default class FreshBeets {
     );
   }
 
-  public async leave(provider: Web3Provider, amount: BigNumber): Promise<void> {
-    await sendTransaction(
+  public async leave(provider: Web3Provider, amount: BigNumber) {
+    return sendTransaction(
       provider,
       this.fbeetsAddress,
       FreshBeetsAbi,

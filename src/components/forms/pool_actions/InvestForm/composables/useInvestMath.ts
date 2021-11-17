@@ -89,10 +89,16 @@ export default function useInvestFormMath(
     fNum(fiatTotal.value, currency.value)
   );
 
-  const hasAmounts = computed(() => bnum(fiatTotal.value).gt(0));
+  const hasAmounts = computed(() => {
+    const tokensWithValue = fullAmounts.value.filter(amount =>
+      bnum(amount).gt(0)
+    );
+
+    return tokensWithValue.length > 0;
+  });
 
   const priceImpact = computed((): number => {
-    if (!hasAmounts.value) return 0;
+    if (bnum(fiatTotal.value).eq(0)) return 0;
     return poolCalculator.priceImpact(fullAmounts.value).toNumber() || 0;
   });
 
