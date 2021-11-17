@@ -6,7 +6,7 @@ import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import useTokens from '@/composables/useTokens';
 import { parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
-import { usePool } from '@/composables/usePool';
+import { isPhantomStable, usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
@@ -179,8 +179,12 @@ export default function useInvestFormMath(
   const bptOut = computed((): string => {
     let _bptOut: BigNumber;
 
-    if (batchSwap.value) {
-      _bptOut = BigNumber.from(batchSwap.value.amountTokenOut).abs();
+    if (isPhantomStablePool.value) {
+      if (batchSwap.value) {
+        _bptOut = BigNumber.from(batchSwap.value.amountTokenOut).abs();
+      } else {
+        _bptOut = BigNumber.from(0);
+      }
     } else {
       _bptOut = BigNumber.from(
         poolCalculator.exactTokensInForBPTOut(fullAmounts.value).toString()
