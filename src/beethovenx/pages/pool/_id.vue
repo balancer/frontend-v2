@@ -167,7 +167,7 @@ import { useRoute } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
 import { usePool } from '@/composables/usePool';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
-import usePoolSnapshotsQuery from '@/composables/queries/usePoolSnapshotsQuery';
+import usePoolSnapshotsQuery from '@/beethovenx/composables/queries/usePoolSnapshotsQuery';
 import { POOLS } from '@/constants/pools';
 import { EXTERNAL_LINKS } from '@/constants/links';
 import useWeb3 from '@/services/web3/useWeb3';
