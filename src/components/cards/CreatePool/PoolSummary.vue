@@ -4,16 +4,13 @@ import { computed, nextTick, ref, watch } from 'vue';
 import ECharts from 'vue-echarts';
 import echarts from 'echarts';
 
-import { TokenWeight } from './ChooseWeights.vue';
-
 import useTokens from '@/composables/useTokens';
 import useUrls from '@/composables/useUrls';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { useI18n } from 'vue-i18n';
 
 import { prominent } from 'color.js';
-import { eq, sumBy } from 'lodash';
+import { sumBy } from 'lodash';
 
 /** STATE */
 const colors = ref<(string | null)[]>([]);
@@ -25,7 +22,6 @@ const chartInstance = ref<echarts.ECharts>();
 const { tokens } = useTokens();
 const { tokenWeights, updateTokenColors } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
-const { t } = useI18n();
 const { resolve } = useUrls();
 
 /**
@@ -84,7 +80,7 @@ const chartConfig = computed(() => {
                 name: t.tokenAddress,
                 value: t.weight,
                 tooltip: {
-                  formatter: params => {
+                  formatter: () => {
                     return `<img width="32" height="32" src="${tokenLogoURI}" />`;
                   },
                   borderWidth: '0'
@@ -112,7 +108,7 @@ const chartConfig = computed(() => {
  */
 watch(
   tokenWeights,
-  async (oldValue, newValue) => {
+  async () => {
     await nextTick();
     const colors = await calculateColors();
     await nextTick();

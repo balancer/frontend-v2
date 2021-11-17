@@ -38,7 +38,7 @@ export default defineComponent({
     exit: {
       type: Object as PropType<AnimeParams>,
       default: () => ({
-        opacity: 0,
+        opacity: 0
       })
     },
     isVisible: {

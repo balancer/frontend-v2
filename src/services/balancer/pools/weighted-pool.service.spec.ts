@@ -25,7 +25,6 @@ jest.mock('@ethersproject/contracts', () => {
 });
 
 describe('PoolCreator', () => {
-  let poolDetails;
   const mockPoolName = 'TestPool';
   const mockPoolSymbol = '50WETH-50USDT';
   const mockSwapFee = '0.01';
@@ -156,8 +155,8 @@ describe('PoolCreator', () => {
 
     // Conversion rate 1 WETH = 3000 USDT
     const tokenBalances = [
-      new BigNumber(2e18), // WETH, 18 demials
-      new BigNumber(6000e6) // USDT, 6 decimals
+      new BigNumber(2e18).toString(), // WETH, 18 demials
+      new BigNumber(6000e6).toString() // USDT, 6 decimals
     ];
 
     beforeEach(async () => {
@@ -199,19 +198,6 @@ describe('PoolCreator', () => {
 
     it('Should return the transaction data of the mined transaction', () => {
       expect(joinTx).toBeTruthy();
-    });
-  });
-
-  describe('sortTokens', () => {
-    it('Should sort tokens by their address', () => {
-      const unsortedTokens: TokenWeight[] = [
-        tokens.WETH,
-        tokens.MKR,
-        tokens.USDT
-      ];
-
-      const sortedTokens = weightedPoolsService.sortTokens(unsortedTokens);
-      expect(sortedTokens).toEqual([tokens.MKR, tokens.WETH, tokens.USDT]);
     });
   });
 

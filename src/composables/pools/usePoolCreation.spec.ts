@@ -1,4 +1,3 @@
-import { assert } from 'console';
 import { mount } from 'vue-composable-tester';
 import usePoolCreation, { TokenWeight } from './usePoolCreation';
 

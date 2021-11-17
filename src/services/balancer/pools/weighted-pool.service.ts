@@ -1,16 +1,10 @@
-import { PoolType } from '@/services/balancer/subgraph/types';
-
 import {
   Vault__factory,
   WeightedPoolFactory__factory,
   WeightedPool__factory
 } from '@balancer-labs/typechain';
 import { Contract } from '@ethersproject/contracts';
-import {
-  TransactionResponse,
-  TransactionReceipt,
-  Web3Provider
-} from '@ethersproject/providers';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { configService } from '@/services/config/config.service';
 import BigNumber from 'bignumber.js';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';

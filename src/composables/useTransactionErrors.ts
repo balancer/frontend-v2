@@ -1,7 +1,6 @@
 import { useI18n } from 'vue-i18n';
 import { TransactionError } from '@/types/transactions';
 
-
 export default function useTranasactionErrors() {
   /**
    * COMPOSABLES

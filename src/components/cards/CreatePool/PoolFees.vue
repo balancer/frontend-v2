@@ -7,11 +7,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 
 import { isRequired, isValidAddress } from '@/lib/utils/validations';
 
-import { useI18n } from 'vue-i18n';
-import { FormRef } from '@/types';
 import { isAddress } from 'ethers/lib/utils';
-
-const emit = defineEmits(['nextStep']);
 
 /**
  * STATIC
@@ -22,7 +18,6 @@ const FIXED_FEE_OPTIONS = ['0.0005', '0.003', '0.01'];
  * STATE
  */
 const isCustomFee = ref(false);
-const poolFeeForm = ref<FormRef>();
 const checkboxState = ref(true);
 
 /**
@@ -42,7 +37,6 @@ const {
   fee,
   proceed
 } = usePoolCreation();
-const { t } = useI18n();
 const { account } = useWeb3();
 const { userNetworkConfig } = useWeb3();
 

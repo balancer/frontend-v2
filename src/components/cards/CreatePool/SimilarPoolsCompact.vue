@@ -2,14 +2,12 @@
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import { useI18n } from 'vue-i18n';
 
 import { Pool } from '@/services/balancer/subgraph/types';
 
 /**
  * COMPOSABLES
  */
-const { t } = useI18n();
 const { similarPools } = usePoolCreation();
 const { tokens } = useTokens();
 const { fNum } = useNumbers();
@@ -26,7 +24,12 @@ function getPoolLabel(pool: Pool) {
 
 <template>
   <BalCard noPad shadow="false">
-    <BalStack spacing='sm' align='center' horizontal class="p-2 px-3 border-b text-yellow-500">
+    <BalStack
+      spacing="sm"
+      align="center"
+      horizontal
+      class="p-2 px-3 border-b text-yellow-500"
+    >
       <BalIcon class="mt-1" name="alert-circle" :size="32" />
       <h6>{{ $t('createAPool.similarPoolsExist') }}</h6>
     </BalStack>

@@ -50,7 +50,7 @@ const defaultActionState: TransactionActionState = {
  */
 const currentActionIndex = ref(0);
 
-const actionStates = props.actions.map(actionInfo => {
+const actionStates = props.actions.map(() => {
   return reactive<TransactionActionState>({
     ...defaultActionState
   });

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { getActiveClassName } from '@/components/utils';
 import { StepState } from '@/types';
 

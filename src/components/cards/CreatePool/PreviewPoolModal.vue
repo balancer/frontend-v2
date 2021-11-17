@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, ComputedRef } from 'vue';
-import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+import { ref, computed } from 'vue';
 import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
@@ -44,7 +43,9 @@ const { t } = useI18n();
  */
 
 const title = computed((): string =>
-  poolCreated.value ? t('poolCreated') : t('previewPool', [poolTypeString.value])
+  poolCreated.value
+    ? t('poolCreated')
+    : t('previewPool', [poolTypeString.value])
 );
 
 const tokenAddresses = computed((): string[] => {

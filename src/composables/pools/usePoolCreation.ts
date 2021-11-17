@@ -1,11 +1,7 @@
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool, PoolType } from '@/services/balancer/subgraph/types';
-import CalculatorService from '@/services/pool/calculator/calculator.sevice';
-import { getAddress } from '@ethersproject/address';
+import { PoolType } from '@/services/balancer/subgraph/types';
 import { flatten, minBy, sumBy } from 'lodash';
-import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
+import { ref, reactive, toRefs, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useQuery } from 'vue-query';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
@@ -15,8 +11,6 @@ import { balancerService } from '@/services/balancer/balancer.service';
 import { AddressZero } from '@ethersproject/constants';
 import { bnum, scale } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
-import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
-import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { TransactionResponse } from '@ethersproject/providers';
 
 export type TokenWeight = {
@@ -50,25 +44,10 @@ const emptyPoolCreationState = {
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
 
-async function getSimilarPools(tokensInPool: string[]) {
-  const queryArgs = {
-    first: 3,
-    where: {
-      tokensList: tokensInPool
-    }
-  };
-  const attrs = {
-    tokens: {
-      symbol: true
-    }
-  };
-  return balancerSubgraphService.pools.get(queryArgs, attrs);
-}
-
 const tokenColors = ref<string[]>([]);
 
 export default function usePoolCreation() {
-  const { balanceFor, tokens, balances, priceFor, getToken } = useTokens();
+  const { balanceFor, priceFor, getToken } = useTokens();
   const { account, getProvider } = useWeb3();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
@@ -100,6 +79,7 @@ export default function usePoolCreation() {
       return tokenA.tokenAddress > tokenB.tokenAddress ? 1 : -1;
     });
   };
+
   const proceed = () => {
     if (!similarPools.value.length && poolCreationState.activeStep === 1) {
       poolCreationState.activeStep += 2;
@@ -236,6 +216,7 @@ export default function usePoolCreation() {
     data: similarPoolsResponse,
     isLoading: isLoadingSimilarPools
   } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
+
   const similarPools = computed(() => {
     return flatten(similarPoolsResponse.value?.pages.map(p => p.pools));
   });
@@ -297,7 +278,7 @@ export default function usePoolCreation() {
         return 'weighted';
       default:
         return '';
-    };
+    }
   });
 
   return {

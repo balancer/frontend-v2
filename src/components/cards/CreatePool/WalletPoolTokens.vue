@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
-import useWeb3 from '@/services/web3/useWeb3';
-import { computed, defineComponent } from 'vue';
+import { computed } from 'vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useNumbers from '@/composables/useNumbers';
 import { sumBy } from 'lodash';

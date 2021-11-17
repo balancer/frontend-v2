@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, nextTick } from 'vue';
 
-import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
 
 import useNumbers from '@/composables/useNumbers';
@@ -14,10 +13,9 @@ import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
 
 import { formatUnits } from '@ethersproject/units';
-import { sum, sumBy } from 'lodash';
+import { sum } from 'lodash';
 import anime from 'animejs';
 import { bnum } from '@/lib/utils';
-import { useI18n } from 'vue-i18n';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 const emit = defineEmits(['update:height']);
@@ -41,14 +39,11 @@ const {
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
-const { t } = useI18n();
 
 /**
  * STATE
  */
 const networkName = configService.network.name;
-const _tokenOutAmount = ref();
-const _tokenOutAddress = ref();
 
 const tokenWeightListWrapper = ref<HTMLElement>();
 const addTokenRowElement = ref<HTMLElement>();

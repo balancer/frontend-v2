@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
-import ChooseWeights, {
-  TokenWeight
-} from '@/components/cards/CreatePool/ChooseWeights.vue';
+import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
 import WalletInitialLiquidity from '@/components/cards/CreatePool/WalletInitialLiquidity.vue';
 import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
@@ -16,13 +14,11 @@ import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalS
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 import anime from 'animejs';
-import { eq } from 'lodash';
 
 import useApp from '@/composables/useApp';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { StepState } from '@/types';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { useRoute } from 'vue-router';
 
 const initialAnimateProps = {
   opacity: 0,
@@ -50,8 +46,6 @@ const exitAnimateProps = {
 /**
  * STATE
  */
-const route = useRoute();
-const currentWrapperHeight = ref(0);
 const accordionWrapper = ref<HTMLElement>();
 const hasCompletedMountAnimation = ref(false);
 
@@ -59,13 +53,7 @@ const hasCompletedMountAnimation = ref(false);
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const {
-  activeStep,
-  similarPools,
-  tokensList,
-  setStep,
-  proceed
-} = usePoolCreation();
+const { activeStep, similarPools, tokensList, setStep } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 onMounted(() => {
@@ -225,7 +213,10 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
     </div>
 
     <teleport to="#modal">
-      <PreviewPoolModal v-if="!appLoading && activeStep === 4" @close="setStep(3)" />
+      <PreviewPoolModal
+        v-if="!appLoading && activeStep === 4"
+        @close="setStep(3)"
+      />
     </teleport>
   </div>
 </template>
