@@ -180,11 +180,9 @@ export default function useInvestFormMath(
     let _bptOut: BigNumber;
 
     if (isPhantomStablePool.value) {
-      if (batchSwap.value) {
-        _bptOut = BigNumber.from(batchSwap.value.amountTokenOut).abs();
-      } else {
-        _bptOut = BigNumber.from(0);
-      }
+      _bptOut = batchSwap.value
+        ? BigNumber.from(batchSwap.value.amountTokenOut).abs()
+        : BigNumber.from(0);
     } else {
       _bptOut = BigNumber.from(
         poolCalculator.exactTokensInForBPTOut(fullAmounts.value).toString()
