@@ -21,13 +21,13 @@
       {{ $t('invest') }}<span class="hidden lg:inline">&nbsp;/&nbsp;Farm</span>
     </router-link>
     <router-link
-      :to="{ name: 'fbeets' }"
+      :to="{ name: 'stake' }"
       :class="[
         'toggle-link px-4 rounded-l-lg',
-        { [activeClasses]: isFreshBeetsPage }
+        { [activeClasses]: isStakePage }
       ]"
     >
-      fBEETS
+      Stake
     </router-link>
     <router-link
       :to="{ name: 'my-portfolio' }"
@@ -66,7 +66,7 @@ export default defineComponent({
     const isFarmPage = computed(() => String(route.name).startsWith('farm'));
     const isBeetsPage = computed(() => route.name === 'beets');
     const isPortfolioPage = computed(() => route.name === 'my-portfolio');
-    const isFreshBeetsPage = computed(() => route.name === 'fbeets');
+    const isStakePage = computed(() => route.name === 'stake');
     const isInvestPage = computed(
       () => route.name === 'invest' || String(route.name).startsWith('pool')
     );
@@ -90,7 +90,7 @@ export default defineComponent({
       Goals,
       isLoggedIn,
       isPortfolioPage,
-      isFreshBeetsPage,
+      isStakePage,
       isInvestPage
     };
   }

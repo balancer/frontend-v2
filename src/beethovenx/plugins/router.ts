@@ -54,7 +54,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/pools', name: 'pools', component: HomePage },
   { path: '/pool-create', name: 'pool-create', component: PoolCreate },
   { path: '/my-portfolio', name: 'my-portfolio', component: Portfolio },
-  { path: '/fbeets', name: 'fbeets', component: FreshBeets },
+  { path: '/stake', name: 'stake', component: FreshBeets },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
