@@ -36,7 +36,8 @@ const {
   tokenWeights,
   updateTokenWeights,
   proceed,
-  maxInitialLiquidity
+  maxInitialLiquidity,
+  tokensList
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
@@ -66,7 +67,7 @@ const totalWeight = computed(() => {
   if (validTokens.length === 0) return 0;
   const normalisedWeights = balancerService.pools.weighted.calculateTokenWeights(
     validTokens
-  );
+  ); 
   let total = bnum(0);
   for (const weight of normalisedWeights) {
     total = total.plus(bnum(formatUnits(weight, 18)));
@@ -91,7 +92,7 @@ const showLiquidityAlert = computed(() => {
 });
 
 const excludedTokens = computed((): string[] => {
-  return [nativeAsset.address];
+  return [nativeAsset.address, ...tokensList.value];
 });
 
 /**

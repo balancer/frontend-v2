@@ -88,31 +88,31 @@ export default function usePoolCreation() {
     }
   };
 
-  const setFeeManagement = (type: FeeManagementType) => {
+  function setFeeManagement(type: FeeManagementType) {
     poolCreationState.feeManagementType = type;
-  };
+  }
 
-  const setFeeType = (type: FeeType) => {
+  function setFeeType(type: FeeType) {
     poolCreationState.feeType = type;
-  };
+  }
 
-  const setStep = (step: number) => {
+  function setStep(step: number) {
     poolCreationState.activeStep = step;
-  };
+  }
 
-  const setFeeController = (controller: FeeController) => {
+  function setFeeController(controller: FeeController) {
     poolCreationState.feeController = controller;
-  };
+  }
 
-  const setTrpController = (address: string) => {
+  function setTrpController(address: string) {
     poolCreationState.thirdPartyFeeController = address;
-  };
+  }
 
   function updateTokenColors(colors: string[]) {
     tokenColors.value = colors;
   }
 
-  const getScaledAmounts = (): string[] => {
+  function getScaledAmounts() {
     const scaledAmounts: string[] = poolCreationState.tokenWeights.map(
       (token: TokenWeight) => {
         const tokenInfo = getToken(token.tokenAddress);
@@ -123,9 +123,9 @@ export default function usePoolCreation() {
       }
     );
     return scaledAmounts;
-  };
+  }
 
-  const getPoolSymbol = (): string => {
+  function getPoolSymbol() {
     const tokenSymbols = poolCreationState.tokenWeights.map(
       (token: TokenWeight) => {
         const weightRounded = Math.round(token.weight);
@@ -135,7 +135,7 @@ export default function usePoolCreation() {
     );
 
     return tokenSymbols.join('-');
-  };
+  }
 
   async function createPool(): Promise<TransactionResponse> {
     sortTokenWeights();
@@ -182,7 +182,7 @@ export default function usePoolCreation() {
     }
   }
 
-  const joinPool = async () => {
+  async function joinPool() {
     sortTokenWeights();
     const provider = getProvider();
     try {
@@ -207,7 +207,7 @@ export default function usePoolCreation() {
       console.log(e);
       return Promise.reject('Join failed');
     }
-  };
+  }
 
   const tokensList = computed(() => poolCreationState.tokensList);
 
@@ -258,14 +258,15 @@ export default function usePoolCreation() {
         balanceRequired: balanceRequired.toString()
       };
     }
+    console.log('optimisedLiquidity', optimisedLiquidity)
     return optimisedLiquidity;
   });
 
-  const maxInitialLiquidity = computed(() =>
-    sumBy(Object.values(optimisedLiquidity.value), (liq: any) =>
+  const maxInitialLiquidity = computed(() => {
+    return sumBy(Object.values(optimisedLiquidity.value), (liq: any) =>
       Number(liq.liquidityRequired)
     )
-  );
+  });
 
   const totalLiquidity = computed(() => {
     return sumBy(tokensList.value, t => priceFor(t) * Number(balanceFor(t)));
@@ -278,14 +279,10 @@ export default function usePoolCreation() {
     );
   });
 
-  const poolTypeString = computed((): string => {
-    switch (poolCreationState.type) {
-      case PoolType.Weighted:
-        return 'weighted';
-      default:
-        return '';
-    }
-  });
+  const tokensWithNoPrice = computed(() => {
+    const validTokens = tokensList.value.filter(t => t !== '');
+    return validTokens.filter(token => priceFor(token) === 0);
+  })
 
   return {
     ...toRefs(poolCreationState),
@@ -298,6 +295,7 @@ export default function usePoolCreation() {
     setStep,
     resetPoolCreationState,
     optimisedLiquidity,
+    tokensWithNoPrice,
     similarPools,
     isLoadingSimilarPools,
     existingPool,
@@ -305,7 +303,7 @@ export default function usePoolCreation() {
     maxInitialLiquidity,
     poolLiquidity,
     getPoolSymbol,
-    poolTypeString,
+    poolTypeString: '',
     getScaledAmounts,
     createPool,
     joinPool,

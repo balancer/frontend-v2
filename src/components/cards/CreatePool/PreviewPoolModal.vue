@@ -6,6 +6,8 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
+import BalCard from '@/components/_global/BalCard/BalCard.vue';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * PROPS & EMITS
@@ -30,11 +32,13 @@ const {
   getScaledAmounts,
   getPoolSymbol,
   poolTypeString,
-  initialFee
+  initialFee,
+  type: poolType
 } = usePoolCreation();
 const { tokens, priceFor } = useTokens();
 const { fNum } = useNumbers();
 const { t } = useI18n();
+const { userNetworkConfig } = useWeb3();
 
 /**
  * COMPUTED
@@ -68,7 +72,10 @@ function handleSuccess(): void {
 </script>
 
 <template>
-  <BalModal show :fireworks="poolCreated" @close="handleClose">
+  <BalCard>
+    <BalStack vertical spacing="xs">
+      <span class="text-sm text-gray-700">{{ userNetworkConfig?.name }}</span>
+    </BalStack>
     <BalStack vertical>
       <div class="flex items-center">
         <BalCircle
@@ -81,6 +88,21 @@ function handleSuccess(): void {
         </BalCircle>
         <h4>{{ title }}</h4>
       </div>
+      <BalStack horizontal spacing="sm" isDynamic>
+        <div
+          v-for="token in tokenWeights"
+          :key="`tokenchip-${token.tokenAddress}`"
+          class="rounded-lg shadow-lg p-2"
+        >
+          <BalStack horizontal spacing="xs" align="center">
+            <BalAsset :address="token.tokenAddress" :size="24" />
+            <span class="text-sm font-medium">{{
+              tokens[token.tokenAddress].symbol
+            }}</span>
+            <span class="text-sm">{{ fNum(token.weight / 100, 'percent') }}</span>
+          </BalStack>
+        </div>
+      </BalStack>
       <BalCard shadow="none" noPad>
         <div class="bg-gray-50 p-2">
           <h6 class="text-sm">
@@ -144,7 +166,7 @@ function handleSuccess(): void {
           </BalStack>
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('poolType') }}:</span>
-            <span class="text-sm">{{ poolTypeString }}</span>
+            <span class="text-sm capitalize">{{ poolTypeString }}</span>
           </BalStack>
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('swapFee') }}:</span>
@@ -159,5 +181,5 @@ function handleSuccess(): void {
         @success="handleSuccess"
       />
     </BalStack>
-  </BalModal>
+  </BalCard>
 </template>

@@ -14,7 +14,8 @@ const {
   tokenWeights,
   optimisedLiquidity,
   maxInitialLiquidity,
-  tokenColors
+  tokenColors,
+  tokensWithNoPrice
 } = usePoolCreation();
 const { fNum } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -36,10 +37,13 @@ const totalsClass = computed(() => ({
   'text-gray-700 ': maxInitialLiquidity.value >= 20000,
   'text-yellow-500': maxInitialLiquidity.value < 20000
 }));
+
+const _console = console;
 </script>
 
 <template>
   <BalCard noPad shadow="none">
+    {{ _console.log('t', tokensWithNoPrice) }}
     <div class="p-2 px-3 border-b" v-if="!upToLargeBreakpoint">
       <h6>{{ $t('createAPool.maxInitialLiquidity') }}</h6>
     </div>
@@ -121,5 +125,15 @@ const totalsClass = computed(() => ({
         </div>
       </div>
     </div>
+    <!-- <BalAlert type="error" title="">
+      <BalStack vertical spacing='xs'>
+
+      <span class="font-medium text-gray-700">
+        Add estimated token price for the unknown tokens to see potential pool
+        liquidity percentages
+      </span>
+      <button class="font-semibold text-red-500">Add token prices -></button>
+      </BalStack>
+    </BalAlert> -->
   </BalCard>
 </template>

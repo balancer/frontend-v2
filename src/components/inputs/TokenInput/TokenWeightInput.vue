@@ -68,11 +68,6 @@ const token = computed((): TokenInfo | undefined => {
   return getToken(_address.value);
 });
 
-const rules = computed(() => {
-  if (!hasToken.value || !isWalletReady.value) return [isPositive()];
-  return [isPositive()];
-});
-
 /**
  * METHODS
  */
@@ -135,7 +130,6 @@ watchEffect(() => {
     type="string"
     :label="label"
     :decimalLimit="token?.decimals || 18"
-    :rules="rules"
     validateOn="input"
     autocomplete="off"
     autocorrect="off"

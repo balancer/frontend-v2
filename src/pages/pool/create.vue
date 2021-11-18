@@ -186,6 +186,7 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
         :exit="exitAnimateProps"
         @update-dimensions="setWrapperHeight"
       >
+        <PreviewPoolModal />
       </AnimatePresence>
     </div>
     <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
@@ -210,13 +211,6 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
         </template>
       </BalAccordion>
     </div>
-
-    <teleport to="#modal">
-      <PreviewPoolModal
-        v-if="!appLoading && activeStep === 4"
-        @close="setStep(3)"
-      />
-    </teleport>
   </div>
 </template>
 
