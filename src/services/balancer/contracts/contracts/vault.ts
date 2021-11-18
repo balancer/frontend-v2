@@ -66,6 +66,10 @@ export default class Vault {
       poolMulticaller.call('amp', poolAddress, 'getAmplificationParameter');
 
       if (isStablePhantom(type)) {
+        // TODO - uncomment this call once deployed contracts support virtualSupply
+        // Overwrite totalSupply with virtualSupply for StablePhantom pools
+        // poolMulticaller.call('totalSupply', poolAddress, 'virtualSupply');
+
         Object.keys(tokens).forEach(token => {
           poolMulticaller.call(`linearPools.${token}.id`, token, 'getPoolId');
           poolMulticaller.call(
@@ -123,7 +127,7 @@ export default class Vault {
   }
 
   public formatPoolData(
-    data: RawOnchainPoolData,
+    rawData: RawOnchainPoolData,
     type: PoolType,
     tokens: TokenInfoMap,
     poolAddress: string
@@ -137,35 +141,35 @@ export default class Vault {
     tokens = pick(tokens, validTokens);
 
     const normalizedWeights = this.normalizeWeights(
-      data?.weights || [],
+      rawData?.weights || [],
       type,
       tokens
     );
 
     poolData.tokens = this.formatPoolTokens(
-      data.poolTokens,
+      rawData.poolTokens,
       tokens,
       normalizedWeights,
       poolAddress
     );
 
     poolData.amp = '0';
-    if (data?.amp) {
-      poolData.amp = data.amp.value.div(data.amp.precision).toString();
+    if (rawData?.amp) {
+      poolData.amp = rawData.amp.value.div(rawData.amp.precision).toString();
     }
 
     poolData.swapEnabled = true;
-    if (data.swapEnabled !== undefined) {
-      poolData.swapEnabled = data.swapEnabled;
+    if (rawData.swapEnabled !== undefined) {
+      poolData.swapEnabled = rawData.swapEnabled;
     }
 
-    if (data?.linearPools) {
-      poolData.linearPools = this.formatLinearPools(data.linearPools);
+    if (rawData?.linearPools) {
+      poolData.linearPools = this.formatLinearPools(rawData.linearPools);
     }
 
-    poolData.totalSupply = formatUnits(data.totalSupply, data.decimals);
-    poolData.decimals = data.decimals;
-    poolData.swapFee = formatUnits(data.swapFee, 18);
+    poolData.totalSupply = formatUnits(rawData.totalSupply, rawData.decimals);
+    poolData.decimals = rawData.decimals;
+    poolData.swapFee = formatUnits(rawData.swapFee, 18);
 
     console.log('onchain data:', poolData);
 

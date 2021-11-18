@@ -201,6 +201,11 @@ export default class CalculatorService {
   }
 
   public get poolTotalSupply(): BigNumber {
+    // TODO - Remove this conditional when virtualSupply is accessible via the onchain calls.
+    // For StablePhantom pools, virtualSupply will be used to overwrite the onchain.totalSupply value.
+    if (this.isStablePhantomPool) {
+      return parseUnits(this.pool.value.totalShares, this.poolDecimals);
+    }
     return parseUnits(this.pool.value.onchain.totalSupply, this.poolDecimals);
   }
 
@@ -222,6 +227,10 @@ export default class CalculatorService {
 
   public get isStableLikePool(): boolean {
     return isStableLike(this.pool.value.poolType);
+  }
+
+  public get isStablePhantomPool(): boolean {
+    return isStablePhantom(this.pool.value.poolType);
   }
 
   public get sendTokens(): string[] {
