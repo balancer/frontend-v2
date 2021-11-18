@@ -1,7 +1,7 @@
 <template>
   <div class="lg:container lg:mx-auto pt-12 md:pt-12">
     <div class="flex justify-center mb-8">
-      <div class="flex flex-col w-full max-w-xl mt-auto mb-2">
+      <div class="flex flex-col w-full max-w-3xl mt-auto mb-2">
         <h2 class="text-green-500">
           Maximize your Yield
         </h2>
@@ -10,22 +10,65 @@
         </h2>
         <p>
           30% of Beethoven X protocol revenue is used to reward fBEETS holders.
-          When your Fidelio Duetto BPTs are staked, you recieve fBEETS in
-          return. Your fBEETS are continuously compounding. When you unstake,
-          you will receive all the originally deposited Fidelio Duetto BPTs plus
-          any additional from fees.
+          When you stake your Fidelio Duetto BPTs, you receive fBEETS in return.
+          fBEETS holders earn triple yield:
         </p>
+        <ul class="list-disc list-inside ml-2 mt-2">
+          <li>Swap fees earned as a Liquidity Provider (LP)</li>
+          <li>Farm incentives</li>
+          <li>Protocol revenue</li>
+        </ul>
+        <!--        <BalLoadingBlock v-if="false" class="h-10 w-40" />-->
       </div>
-      <div class="hidden pl-8 ml-6 md:block w-72">
-        <img src="~@/beethovenx/assets/images/BEETX-fBEET-3D2x.png" />
+      <div class="hidden pl-8 ml-6 md:block">
+        <img
+          src="~@/beethovenx/assets/images/BEETX-fBEET-3D2x.png"
+          style="width: 256px; max-width: 256px;"
+        />
       </div>
     </div>
+    <div class="flex justify-center mb-8">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols3 gap-4 w-full max-w-3xl"
+      >
+        <BalCard>
+          <div class="text-sm text-gray-500 font-medium mb-2">
+            BPT Staked
+          </div>
+          <div class="text-xl font-medium truncate flex items-center">
+            23%
+          </div>
+        </BalCard>
+        <BalCard>
+          <div class="text-sm text-gray-500 font-medium mb-2">
+            BEETS Staked
+          </div>
+          <div class="text-xl font-medium truncate flex items-center">
+            23%
+          </div>
+        </BalCard>
+        <BalCard>
+          <div class="text-sm text-gray-500 font-medium mb-2">
+            fBEETS APR
+          </div>
+          <div class="text-xl font-medium truncate flex items-center">
+            320%
+            <FreshBeetsAprTooltip
+              :swap-apr="20"
+              :farm-apr="20"
+              :fbeets-apr="20"
+            />
+          </div>
+        </BalCard>
+      </div>
+      <div class="w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72" />
+    </div>
     <div class="flex flex-col justify-center md:flex-row">
-      <div class="flex flex-col w-full max-w-xl mx-auto mb-4 md:m-0">
+      <div class="flex flex-col w-full max-w-3xl mx-auto mb-4 md:m-0">
         <BalCard shadow="xl" class="mb-4">
           <div class="flex">
             <div class="flex-1">
-              <h4>Staking APR</h4>
+              <h4>fBEETS APR</h4>
               <BalLoadingBlock
                 v-if="fBeetsLoading"
                 class="h-6 w-56 mb-1"
@@ -37,12 +80,7 @@
               </p>
             </div>
             <div>
-              <BalLoadingBlock
-                v-if="fBeetsLoading"
-                class="h-8 w-24 mb-1"
-                white
-              />
-              <h4 v-else class="text-green-500 text-3xl text-right">9.83%</h4>
+              <h4 class="text-green-500 text-3xl text-right">9.83%</h4>
               <p class="text-right">Year to date</p>
             </div>
           </div>
@@ -130,9 +168,11 @@ import FreshBeetsWithdrawForm from '@/beethovenx/components/pages/fbeets/FreshBe
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import { scaleDown } from '@/lib/utils';
 import { BigNumber } from 'bignumber.js';
+import FreshBeetsAprTooltip from '@/beethovenx/components/pages/fbeets/FreshBeetsAprTooltip.vue';
 
 export default defineComponent({
   components: {
+    FreshBeetsAprTooltip,
     BalCard,
     FreshBeetsDepositForm,
     FreshBeetsWithdrawForm
