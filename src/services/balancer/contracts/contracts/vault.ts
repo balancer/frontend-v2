@@ -121,8 +121,6 @@ export default class Vault {
 
     result = await vaultMultiCaller.execute(result);
 
-    console.log('Raw onchain data', result);
-
     return this.formatPoolData(result, type, tokens, poolAddress);
   }
 
@@ -170,8 +168,6 @@ export default class Vault {
     poolData.totalSupply = formatUnits(rawData.totalSupply, rawData.decimals);
     poolData.decimals = rawData.decimals;
     poolData.swapFee = formatUnits(rawData.swapFee, 18);
-
-    console.log('onchain data:', poolData);
 
     return poolData;
   }
