@@ -34,7 +34,8 @@ const {
   priceImpact,
   highPriceImpact,
   maximized,
-  optimized
+  optimized,
+  batchSwapLoading
 } = toRefs(props.math);
 
 /**
@@ -73,8 +74,11 @@ const optimizeBtnClasses = computed(() => ({
     <div :class="['data-table-row price-impact-row', priceImpactClasses]">
       <div class="p-2">{{ $t('priceImpact') }}</div>
       <div class="data-table-number-col">
-        <div>
-          {{ fNum(priceImpact, 'percent') }}
+        <div class="flex">
+          <span v-if="!batchSwapLoading">
+            {{ fNum(priceImpact, 'percent') }}
+          </span>
+          <BalLoadingBlock v-else class="w-10" />
 
           <BalTooltip :text="$t('customAmountsTip')">
             <template v-slot:activator>

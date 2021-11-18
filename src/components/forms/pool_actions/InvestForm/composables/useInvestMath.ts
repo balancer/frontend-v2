@@ -35,6 +35,7 @@ export type InvestMathResponse = {
   hasNoBalances: Ref<boolean>;
   hasAllTokens: Ref<boolean>;
   shouldFetchBatchSwap: Ref<boolean>;
+  batchSwapLoading: Ref<boolean>;
   // methods
   maximizeAmounts: () => void;
   optimizeAmounts: () => void;
@@ -65,6 +66,7 @@ export default function useInvestFormMath(
    */
   const proportionalAmounts = ref<string[]>([]);
   const batchSwap = ref<BatchSwap | null>(null);
+  const batchSwapLoading = ref(false);
 
   /**
    * COMPOSABLES
@@ -145,7 +147,13 @@ export default function useInvestFormMath(
   const priceImpact = computed((): number => {
     if (!hasAmounts.value) return 0;
     try {
-      return poolCalculator.priceImpact(fullAmounts.value).toNumber() || 0;
+      return (
+        poolCalculator
+          .priceImpact(fullAmounts.value, {
+            queryBPT: fullBPTOut.value.toString()
+          })
+          .toNumber() || 0
+      );
     } catch (error) {
       return 100;
     }
@@ -176,21 +184,29 @@ export default function useInvestFormMath(
     return fullAmounts.value.every((amount, i) => amount === send[i]);
   });
 
-  const bptOut = computed((): string => {
-    let _bptOut: BigNumber;
+  const fullBPTOut = computed(
+    (): BigNumber => {
+      let _bptOut: BigNumber;
 
-    if (isStablePhantomPool.value) {
-      _bptOut = batchSwap.value
-        ? BigNumber.from(batchSwap.value.amountTokenOut).abs()
-        : BigNumber.from(0);
-    } else {
-      _bptOut = BigNumber.from(
-        poolCalculator.exactTokensInForBPTOut(fullAmounts.value).toString()
-      );
+      if (isStablePhantomPool.value) {
+        _bptOut = batchSwap.value
+          ? BigNumber.from(batchSwap.value.amountTokenOut).abs()
+          : BigNumber.from(0);
+      } else {
+        _bptOut = BigNumber.from(
+          poolCalculator.exactTokensInForBPTOut(fullAmounts.value).toString()
+        );
+      }
+
+      console.log('query BPT', _bptOut.toString());
+
+      return _bptOut;
     }
+  );
 
-    if (managedPoolWithTradingHalted.value) return _bptOut.toString();
-    return minusSlippageScaled(_bptOut).toString();
+  const bptOut = computed((): string => {
+    if (managedPoolWithTradingHalted.value) return fullBPTOut.value.toString();
+    return minusSlippageScaled(fullBPTOut.value).toString();
   });
 
   const poolTokenBalances = computed((): string[] =>
@@ -245,6 +261,7 @@ export default function useInvestFormMath(
   }
 
   async function getBatchSwap(): Promise<void> {
+    batchSwapLoading.value = true;
     batchSwap.value = await queryBatchSwapTokensIn(
       sor,
       vault,
@@ -252,6 +269,7 @@ export default function useInvestFormMath(
       Object.values(batchSwapAmountMap.value),
       pool.value.address.toLowerCase()
     );
+    batchSwapLoading.value = false;
   }
 
   watch(fullAmounts, async (newAmounts, oldAmounts) => {
@@ -290,6 +308,7 @@ export default function useInvestFormMath(
     hasNoBalances,
     hasAllTokens,
     shouldFetchBatchSwap,
+    batchSwapLoading,
     // methods
     maximizeAmounts,
     optimizeAmounts,
