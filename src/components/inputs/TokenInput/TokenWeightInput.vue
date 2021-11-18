@@ -39,6 +39,7 @@ const emit = defineEmits<{
   (e: 'update:isValid', value: boolean): void;
   (e: 'update:isLocked', value: boolean): void;
   (e: 'keydown', value: HtmlInputEvent);
+  (e: 'delete'): void;
 }>();
 
 /**
@@ -189,6 +190,14 @@ watchEffect(() => {
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
             <path ref="lockPath" d="M7 11V7a5 4 0 0 1 10 -2v-1"></path>
           </svg>
+        </button>
+        <button
+          @click="emit('delete')"
+          :class="[
+            'ml-2 ease-color mt-1 text-gray-500 hover:text-red-500 flex items-center shadow-sm border bg-gray-50 rounded-full p-1 justify-center'
+          ]"
+        >
+          <BalIcon name="trash-2" size="sm" />
         </button>
       </BalStack>
     </template>

@@ -138,9 +138,8 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
     <div class="col-span-3" v-if="!upToLargeBreakpoint">
       <BalStack vertical>
         <BalVerticalSteps title="Create a weighted pool steps" :steps="steps" />
-        <WalletPoolTokens v-if="activeStep === 3" :tokens="tokensList" />
         <AnimatePresence :isVisible="doSimilarPoolsExist">
-          <SimilarPoolsCompact />
+          <SimilarPoolsCompact v-if="activeStep === 0" />
         </AnimatePresence>
       </BalStack>
     </div>

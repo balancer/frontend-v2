@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, nextTick } from 'vue';
+import { computed, onMounted, ref, nextTick } from 'vue';
 
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
 
@@ -50,7 +50,7 @@ const networkName = configService.network.name;
 const tokenWeightListWrapper = ref<HTMLElement>();
 const addTokenRowElement = ref<HTMLElement>();
 const totalsRowElement = ref<HTMLElement>();
-const tokenWeightItemElements = reactive<HTMLElement[]>([]);
+const tokenWeightItemElements = ref<HTMLElement[]>([]);
 const cardWrapper = ref<HTMLElement>();
 const wrapperHeight = ref(0);
 const cardWrapperHeight = ref(0);
@@ -160,18 +160,22 @@ async function animateHeight(offset = 0) {
   await nextTick();
 
   // get the last added token weight element
-  if (tokenWeightItemElements[tokenWeightItemElements.length - 1]) {
-    anime.set(tokenWeightItemElements[tokenWeightItemElements.length - 1], {
-      left: 0,
-      right: 0,
-      top: `${tokenWeightItemHeight.value *
-        (tokenWeightItemElements.length - 1)}px`,
-      opacity: 0
-    });
+  if (tokenWeightItemElements.value[tokenWeightItemElements.value.length - 1]) {
+    anime.set(
+      tokenWeightItemElements.value[tokenWeightItemElements.value.length - 1],
+      {
+        left: 0,
+        right: 0,
+        top: `${tokenWeightItemHeight.value *
+          (tokenWeights.value.length - 1)}px`,
+        opacity: 0
+      }
+    );
 
     // fade it in as well
     anime({
-      targets: tokenWeightItemElements[tokenWeightItemElements.length - 1],
+      targets:
+        tokenWeightItemElements.value[tokenWeightItemElements.value.length - 1],
       opacity: 1
     });
   }
@@ -202,9 +206,20 @@ function distributeWeights() {
 }
 
 function addTokenListElementRef(el: HTMLElement) {
-  if (!tokenWeightItemElements.includes(el)) {
-    tokenWeightItemElements.push(el);
+  const filteredElements = tokenWeightItemElements.value.filter(
+    e => e !== null
+  );
+  if (!filteredElements.includes(el)) {
+    tokenWeightItemElements.value = [...filteredElements, el];
   }
+}
+
+async function handleRemoveToken(index: number) {
+  tokenWeightItemElements.value = tokenWeightItemElements.value.filter(
+    (_, i) => i !== index
+  );
+  updateTokenWeights(tokenWeights.value.filter((_, i) => i !== index));
+  animateHeight(-1);
 }
 </script>
 
@@ -236,6 +251,7 @@ function addTokenListElementRef(el: HTMLElement) {
                     @update:weight="data => handleWeightChange(data, i)"
                     @update:address="data => handleAddressChange(data, i)"
                     @update:isLocked="data => handleLockedWeight(data, i)"
+                    @delete="() => handleRemoveToken(i)"
                     noRules
                     noMax
                     :excludedTokens="excludedTokens"
