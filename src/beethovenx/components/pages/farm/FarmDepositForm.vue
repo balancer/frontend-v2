@@ -121,8 +121,12 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: {
-      type: Object as PropType<DecoratedPoolWithRequiredFarm>,
+    tokenAddress: {
+      type: String,
+      required: true
+    },
+    farmId: {
+      type: String,
       required: true
     }
   },
@@ -150,13 +154,14 @@ export default defineComponent({
     const { amount } = toRefs(data);
     const depositing = ref(false);
     const approving = ref(false);
+    const { tokenAddress, farmId } = toRefs(props);
 
-    const { approve, deposit } = useFarm(toRef(props, 'pool'));
+    const { approve, deposit } = useFarm(tokenAddress, farmId);
     const allowanceAvailableQuery = useAllowanceAvailableQuery(
-      props.pool.farm.pair
+      tokenAddress.value
     );
     const bptBalance = computed(() =>
-      balanceFor(getAddress(props.pool.farm.pair))
+      balanceFor(getAddress(tokenAddress.value))
     );
 
     const { txListener } = useEthers();

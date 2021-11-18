@@ -35,6 +35,7 @@ export default defineComponent({
     noContentPad: { type: Boolean, default: false },
     noBorder: { type: Boolean, default: false },
     darkBgColor: { type: String, default: '850' },
+    bgColor: { type: String },
     imgSrc: { type: String, default: '' },
     hFull: { type: Boolean, default: false },
     growContent: { type: Boolean, default: false },
@@ -59,10 +60,11 @@ export default defineComponent({
       return {
         'rounded-lg': !props.square,
         'overflow-hidden': !props.exposeOverflow,
-        [`bg-white dark:bg-gray-${props.darkBgColor}`]: true,
+        [`bg-white dark:bg-gray-${props.darkBgColor}`]: !props.bgColor,
         [`shadow${props.shadow ? '-' : ''}${props.shadow}`]: true,
         [borderClasses.value]: !props.noBorder,
-        'h-full': props.hFull
+        'h-full': props.hFull,
+        [props.bgColor || '']: true
       };
     });
 

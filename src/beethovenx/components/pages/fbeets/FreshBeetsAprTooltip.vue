@@ -1,7 +1,7 @@
 <template>
   <BalTooltip width="auto" noPad>
     <template v-slot:activator>
-      <div class="ml-1">
+      <div>
         <StarsIcon class="h-5 text-yellow-300" v-bind="$attrs" />
       </div>
     </template>

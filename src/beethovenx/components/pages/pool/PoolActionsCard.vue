@@ -72,6 +72,9 @@ const hasFarmStake = computed(
   () => props.pool.farm?.stake && props.pool.farm.stake > 0
 );
 
+const farmId = computed(() => props.pool.farm?.id || '');
+const tokenAddress = computed(() => props.pool.address);
+
 /**
  * CALLBACKS
  */
@@ -121,7 +124,7 @@ onBeforeMount(() => {
       v-if="hasFarm"
       class="mt-2"
       :tag="hasFarmStake || hasUnstakedBpt ? 'router-link' : 'div'"
-      :to="{ name: 'farm' }"
+      :to="{ name: 'farm', params: { id: farmId, tokenAddress } }"
       label="Farm"
       :disabled="!hasFarmStake && !hasUnstakedBpt"
       block

@@ -41,7 +41,7 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'PoolTransferLayout' }
   },
   {
-    path: '/pool/:id/farm',
+    path: '/farm/:id/token/:tokenAddress',
     name: 'farm',
     component: PoolFarmPage,
     meta: { layout: 'FarmLayout' }

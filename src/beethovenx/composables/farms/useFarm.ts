@@ -21,18 +21,17 @@ export async function approveToken(
 }
 
 export default function useFarm(
-  pool: Ref<DecoratedPoolWithRequiredFarm> | Ref<undefined>
+  tokenAddress: Ref<string>,
+  farmId: Ref<string>
 ) {
   const { getProvider, appNetworkConfig, account } = useWeb3();
   const { addTransaction } = useTransactions();
-  const tokenAddress = pool.value?.farm.pair || '';
-  const farmId = pool.value?.farm.id || '';
 
   async function requiresApproval(
     amount: Ref<string> = ref(MaxUint256.toString())
   ) {
     const allowance = await erc20ContractService.erc20.allowance(
-      tokenAddress,
+      tokenAddress.value,
       account.value,
       appNetworkConfig.addresses.masterChef
     );
@@ -48,7 +47,7 @@ export default function useFarm(
       const tx = await erc20ContractService.erc20.approveToken(
         provider,
         appNetworkConfig.addresses.masterChef,
-        tokenAddress
+        tokenAddress.value
       );
 
       addTransaction({
@@ -79,7 +78,7 @@ export default function useFarm(
       const provider = getProvider();
       const tx = await masterChefContractsService.masterChef.deposit(
         provider,
-        farmId,
+        farmId.value,
         amount.toString(),
         account.value
       );
@@ -106,7 +105,7 @@ export default function useFarm(
       const provider = getProvider();
       const tx = await masterChefContractsService.masterChef.harvest(
         provider,
-        farmId,
+        farmId.value,
         account.value
       );
 
@@ -132,7 +131,7 @@ export default function useFarm(
       const provider = getProvider();
       const tx = await masterChefContractsService.masterChef.withdrawAndHarvest(
         provider,
-        farmId,
+        farmId.value,
         amount.toString(),
         account.value
       );

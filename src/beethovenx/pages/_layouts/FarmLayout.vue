@@ -31,9 +31,9 @@ usePoolTransfersGuard();
   <div class="pb-16">
     <div class="layout-header mb-12">
       <div></div>
-      <router-link :to="{ name: 'pool', params: { id } }">
+      <a @click="$router.go(-1)">
         <BalIcon name="x" size="lg" />
-      </router-link>
+      </a>
     </div>
 
     <Col3Layout offsetGutters mobileHideGutters>

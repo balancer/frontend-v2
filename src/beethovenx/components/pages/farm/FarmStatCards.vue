@@ -73,7 +73,10 @@ export default defineComponent({
   setup(props) {
     const { fNum } = useNumbers();
     const { txListener } = useEthers();
-    const { harvest } = useFarm(ref(props.pool));
+    const { harvest } = useFarm(
+      ref(props.pool.address),
+      ref(props.pool.farm.id)
+    );
     const harvesting = ref(false);
     const farmUserQuery = useFarmUserQuery(props.pool.farm.id);
     const farmUser = computed(() => farmUserQuery.data.value);

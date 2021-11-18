@@ -105,8 +105,12 @@ export default defineComponent({
   emits: ['success'],
 
   props: {
-    pool: {
-      type: Object as PropType<DecoratedPoolWithRequiredFarm>,
+    tokenAddress: {
+      type: String,
+      required: true
+    },
+    farmId: {
+      type: String,
       required: true
     }
   },
@@ -127,8 +131,9 @@ export default defineComponent({
     const { tokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
     const { amount } = toRefs(data);
-    const { withdrawAndHarvest } = useFarm(toRef(props, 'pool'));
-    const farmUserQuery = useFarmUserQuery(props.pool.farm.id);
+    const { tokenAddress, farmId } = toRefs(props);
+    const { withdrawAndHarvest } = useFarm(tokenAddress, farmId);
+    const farmUserQuery = useFarmUserQuery(tokenAddress.value);
     const farmUser = computed(() => {
       return farmUserQuery.data.value;
     });

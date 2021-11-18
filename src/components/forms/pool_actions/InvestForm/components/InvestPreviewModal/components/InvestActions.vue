@@ -17,7 +17,7 @@ import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import { useI18n } from 'vue-i18n';
 import { dateTimeLabelFor } from '@/composables/useTime';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import useTokenApprovals, {
   ApprovalState
 } from '@/composables/pools/useTokenApprovals';
@@ -76,6 +76,7 @@ const investmentState = reactive<InvestmentState>({
  * COMPOSABLES
  */
 const route = useRoute();
+const router = useRouter();
 const { t } = useI18n();
 const { networkConfig } = useConfig();
 const { getToken } = useTokens();
@@ -290,15 +291,8 @@ async function submit(): Promise<void> {
           />
         </BalLink>
       </div>
-      <BalBtn
-        tag="router-link"
-        :to="{ name: 'pool', params: { id: route.params.id } }"
-        color="gray"
-        outline
-        block
-        class="mt-2"
-      >
-        {{ $t('returnToPool') }}
+      <BalBtn color="gray" outline block class="mt-2" @click="$router.back()">
+        Finished investing
       </BalBtn>
     </template>
   </div>

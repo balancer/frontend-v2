@@ -3,7 +3,7 @@ import { ref } from 'vue';
 // Composables
 import useBreakpoints from '@/composables/useBreakpoints';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 // Components
 import MyPoolBalancesCard from '@/components/cards/MyPoolBalancesCard/MyPoolBalancesCard.vue';
 import MyWalletTokensCard from '@/components/cards/MyWalletTokensCard/MyWalletTokensCard.vue';
@@ -34,9 +34,7 @@ usePoolTransfersGuard();
   <div class="pb-16">
     <div class="layout-header mb-12">
       <div></div>
-      <router-link :to="{ name: 'pool', params: { id } }">
-        <BalIcon name="x" size="lg" />
-      </router-link>
+      <a @click="$router.go(-1)"><BalIcon name="x" size="lg"/></a>
     </div>
 
     <Col3Layout offsetGutters mobileHideGutters>

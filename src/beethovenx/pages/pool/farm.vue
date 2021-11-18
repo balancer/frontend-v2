@@ -12,6 +12,7 @@ import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { useRoute } from 'vue-router';
 import usePools from '@/composables/pools/usePools';
 import { computed, ref } from 'vue';
+import useTokens from '@/composables/useTokens';
 
 /**
  * STATE
@@ -19,47 +20,12 @@ import { computed, ref } from 'vue';
 const { network } = configService;
 const { explorerLinks: explorer } = useWeb3();
 const route = useRoute();
-const {
-  poolsWithFarms,
-  userPools,
-  isLoadingUserPools,
-  isLoadingFarms,
-  isLoadingPools
-} = usePools();
 
-const poolQuery = usePoolQuery(route.params.id as string);
+const { loading: loadingTokens } = useTokens();
+
 const farmInvestmentSuccess = ref(false);
 const farmWithdrawalSuccess = ref(false);
 const txHash = ref('');
-
-const loadingPool = computed(
-  () =>
-    isLoadingUserPools.value ||
-    isLoadingPools.value ||
-    isLoadingFarms.value ||
-    poolQuery.isLoading.value
-);
-
-const pool = computed(() => {
-  const poolWithFarm = poolsWithFarms.value.find(
-    poolWithFarm => poolWithFarm.id === (route.params.id as string)
-  );
-  const userPool = userPools.value.find(
-    poolWithFarm => poolWithFarm.id === (route.params.id as string)
-  );
-
-  if (!poolQuery.data.value) {
-    return undefined;
-  }
-
-  return {
-    ...poolQuery.data.value,
-    dynamic: poolWithFarm ? poolWithFarm.dynamic : poolQuery.data.value.dynamic,
-    hasLiquidityMiningRewards: !!poolWithFarm,
-    farm: poolWithFarm?.farm,
-    shares: userPool?.shares
-  };
-});
 
 function handleFarmInvestment(txReceipt): void {
   farmInvestmentSuccess.value = true;
@@ -74,7 +40,7 @@ function handleFarmWithdrawal(txReceipt): void {
 
 <template>
   <div>
-    <BalLoadingBlock v-if="loadingPool" class="h-96" />
+    <BalLoadingBlock v-if="loadingTokens" class="h-96" />
     <BalCard v-else shadow="xl" exposeOverflow noBorder>
       <template #header>
         <div class="w-full">
@@ -86,7 +52,11 @@ function handleFarmWithdrawal(txReceipt): void {
           </div>
         </div>
       </template>
-      <FarmDepositForm :pool="pool" @success="handleFarmInvestment($event)" />
+      <FarmDepositForm
+        :token-address="route.params.tokenAddress"
+        :farm-id="route.params.id"
+        @success="handleFarmInvestment($event)"
+      />
       <!--      <SuccessOverlay
         v-if="true"
         :title="$t('farmDepositSettled')"
@@ -96,7 +66,11 @@ function handleFarmWithdrawal(txReceipt): void {
         @close="farmInvestmentSuccess = false"
         class="h-96"
       />-->
-      <FarmWithdrawForm :pool="pool" @success="handleFarmWithdrawal($event)" />
+      <FarmWithdrawForm
+        :token-address="route.params.tokenAddress"
+        :farm-id="route.params.id"
+        @success="handleFarmWithdrawal($event)"
+      />
       <!--      <SuccessOverlay
         v-if="farmWithdrawalSuccess"
         :title="$t('farmWithdrawalSettled')"
