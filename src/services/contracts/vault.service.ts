@@ -1,3 +1,4 @@
+import { ContractInterface } from '@ethersproject/contracts';
 import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { Vault__factory } from '@balancer-labs/typechain';
@@ -11,7 +12,7 @@ import {
 import Web3Service, { web3Service } from '../web3/web3.service';
 
 export default class VaultService {
-  abi: any;
+  abi: ContractInterface;
 
   constructor(
     protected readonly config: ConfigService = configService,

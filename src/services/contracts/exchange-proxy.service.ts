@@ -1,3 +1,4 @@
+import { ContractInterface } from '@ethersproject/contracts';
 import exchangeProxyAbi from '@/lib/abi/ExchangeProxy.json';
 import ConfigService, { configService } from '@/services/config/config.service';
 import { Address, SwapToken, SwapTokenType } from '../swap/swap.service';
@@ -6,7 +7,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import Web3Service, { web3Service } from '../web3/web3.service';
 
 export default class ExchangeProxyService {
-  abi: any;
+  abi: ContractInterface;
 
   constructor(
     private readonly config: ConfigService = configService,

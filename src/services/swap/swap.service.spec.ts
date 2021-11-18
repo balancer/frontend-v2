@@ -8,6 +8,7 @@ import {
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
+import { AddressZero } from '@ethersproject/constants';
 
 jest.mock('@/lib/utils/balancer/lido');
 jest.mock('@/services/rpc-provider/rpc-provider.service');
@@ -41,6 +42,12 @@ describe('swap.service', () => {
     tokens.ETH = {
       address: configService.network.nativeAsset.address,
       amount: BigNumber.from(1e15),
+      type: SwapTokenType.fixed
+    };
+    tokens.ETHv2 = {
+      // With v2 swaps the ETH address is set to 0x0
+      address: AddressZero,
+      amount: BigNumber.from(1.2e15),
       type: SwapTokenType.fixed
     };
     tokens.stETH = {
@@ -104,7 +111,7 @@ describe('swap.service', () => {
       expect(exchangeProxyArgs[3]).toEqual({});
     });
 
-    it('Should call exchange-proxy when swapping with exact outputs', async () => {
+    it('Should call exchange-proxy when swapping with native asset', async () => {
       tokens.ETH.type = SwapTokenType.fixed;
       tokens.USDC.type = SwapTokenType.min;
       swaps = [
@@ -126,7 +133,7 @@ describe('swap.service', () => {
       expect(exchangeProxyArgs[1]).toEqual(tokens.ETH);
       expect(exchangeProxyArgs[2]).toEqual(tokens.USDC);
       expect(exchangeProxyArgs[3]).toEqual({
-        value: `0x${tokens.ETH.amount.toHexString()}`
+        value: tokens.ETH.amount
       });
     });
 
@@ -190,11 +197,41 @@ describe('swap.service', () => {
 
         expect(vaultSwapArgs[2]).toEqual(tokens.DAI.amount.toString());
       });
+
+      it('Should set options.value to tokenIn.amount when swapping a native asset', async () => {
+        tokens.ETHv2.type = SwapTokenType.fixed;
+        tokens.DAI.type = SwapTokenType.min;
+        tokenAddresses = [tokens.ETHv2.address, tokens.DAI.address];
+        await service.batchSwapV2(
+          tokens.ETHv2,
+          tokens.DAI,
+          swaps,
+          tokenAddresses
+        );
+        const vaultSwapArgs = require('@/services/contracts/vault.service')
+          .vaultService.swap.mock.calls[0];
+        const singleSwapArg: SingleSwap = vaultSwapArgs[0];
+        expect(singleSwapArg.poolId).toEqual(PoolIdUSDCDAI);
+        expect(singleSwapArg.kind).toEqual(SwapKind.GivenIn);
+        expect(singleSwapArg.assetIn).toEqual(tokens.ETHv2.address);
+        expect(singleSwapArg.assetOut).toEqual(tokens.DAI.address);
+        expect(singleSwapArg.amount).toEqual(amount);
+        expect(singleSwapArg.userData).toEqual('');
+
+        const vaultSwapFundsArg: FundManagement = vaultSwapArgs[1];
+        expect(vaultSwapFundsArg.sender).toEqual(userAddress);
+        expect(vaultSwapFundsArg.recipient).toEqual(userAddress);
+        expect(vaultSwapFundsArg.fromInternalBalance).toEqual(false);
+        expect(vaultSwapFundsArg.toInternalBalance).toEqual(false);
+
+        expect(vaultSwapArgs[2]).toEqual(tokens.DAI.amount.toString());
+        expect(vaultSwapArgs[3]).toEqual({ value: tokens.ETHv2.amount });
+      });
     });
 
     describe('single swap lido', () => {
       it('Should call lido-relayer.swap when swapping a single token for another', async () => {
-        tokens.ETH.type = SwapTokenType.fixed;
+        tokens.ETHv2.type = SwapTokenType.fixed;
         tokens.stETH.type = SwapTokenType.min;
         swaps = [
           {
@@ -205,8 +242,8 @@ describe('swap.service', () => {
             userData: ''
           }
         ];
-        await service.batchSwapV2(tokens.ETH, tokens.stETH, swaps, [
-          tokens.ETH.address,
+        await service.batchSwapV2(tokens.ETHv2, tokens.stETH, swaps, [
+          tokens.ETHv2.address,
           tokens.wstETH.address // tokenAddresses currently contain wstETH even though tokenIn is stETH
         ]);
         const lidoRelayerSwapArgs = require('@/services/contracts/lido-relayer.service')
@@ -214,7 +251,7 @@ describe('swap.service', () => {
         const singleSwapArg: SingleSwap = lidoRelayerSwapArgs[0];
         expect(singleSwapArg.poolId).toEqual(PoolIdETHstETH);
         expect(singleSwapArg.kind).toEqual(SwapKind.GivenIn);
-        expect(singleSwapArg.assetIn).toEqual(tokens.ETH.address);
+        expect(singleSwapArg.assetIn).toEqual(tokens.ETHv2.address);
         expect(singleSwapArg.assetOut).toEqual(tokens.wstETH.address);
         expect(singleSwapArg.amount).toEqual(amount);
         expect(singleSwapArg.userData).toEqual('');
@@ -226,13 +263,14 @@ describe('swap.service', () => {
         expect(fundsArg.toInternalBalance).toEqual(false);
 
         expect(lidoRelayerSwapArgs[2]).toEqual(tokens.stETH.amount.toString());
+        expect(lidoRelayerSwapArgs[3]).toEqual({ value: tokens.ETHv2.amount });
       });
     });
 
     describe('multi swap', () => {
       beforeEach(() => {
         tokenAddresses = [
-          tokens.ETH.address,
+          tokens.ETHv2.address,
           tokens.USDC.address,
           tokens.DAI.address
         ];
@@ -255,10 +293,10 @@ describe('swap.service', () => {
       });
 
       it('Should call vault.batchSwap when swapping multiple tokens through multiple pools', async () => {
-        tokens.USDC.type = SwapTokenType.fixed;
+        tokens.ETHv2.type = SwapTokenType.fixed;
         tokens.DAI.type = SwapTokenType.min;
         await service.batchSwapV2(
-          tokens.ETH,
+          tokens.ETHv2,
           tokens.DAI,
           swaps,
           tokenAddresses
@@ -276,9 +314,11 @@ describe('swap.service', () => {
         expect(fundsArg.toInternalBalance).toEqual(false);
 
         const limitsArg: string[] = vaultBatchSwapArgs[4];
-        expect(limitsArg[0]).toEqual(tokens.ETH.amount.toString());
+        expect(limitsArg[0]).toEqual(tokens.ETHv2.amount.toString());
         expect(limitsArg[1]).toEqual('0');
         expect(limitsArg[2]).toEqual(tokens.DAI.amount.mul(-1).toString());
+
+        expect(vaultBatchSwapArgs[5]).toEqual({ value: tokens.ETHv2.amount });
       });
 
       it('Should return a rejected promise if vault throws an error', () => {
@@ -302,7 +342,7 @@ describe('swap.service', () => {
       beforeEach(() => {
         tokenAddresses = [
           tokens.USDC.address,
-          tokens.ETH.address,
+          tokens.ETHv2.address,
           tokens.wstETH.address
         ];
         swaps = [
@@ -348,6 +388,40 @@ describe('swap.service', () => {
         expect(limitsArg[0]).toEqual(tokens.USDC.amount.toString());
         expect(limitsArg[1]).toEqual('0');
         expect(limitsArg[2]).toEqual(tokens.stETH.amount.mul(-1).toString());
+      });
+
+      it('Should pass overrides.value when swapping ETH for stETH', async () => {
+        tokens.ETHv2.type = SwapTokenType.fixed;
+        tokens.stETH.type = SwapTokenType.min;
+        tokenAddresses = [
+          tokens.ETHv2.address,
+          tokens.USDC.address,
+          tokens.wstETH.address
+        ];
+        await service.batchSwapV2(
+          tokens.ETHv2,
+          tokens.stETH,
+          swaps,
+          tokenAddresses
+        );
+        const lidoBatchSwapArgs = require('@/services/contracts/lido-relayer.service')
+          .lidoRelayerService.batchSwap.mock.calls[0];
+        expect(lidoBatchSwapArgs[0]).toEqual(SwapKind.GivenIn);
+        expect(lidoBatchSwapArgs[1]).toEqual(swaps);
+        expect(lidoBatchSwapArgs[2]).toEqual(tokenAddresses);
+
+        const fundsArg: FundManagement = lidoBatchSwapArgs[3];
+        expect(fundsArg.sender).toEqual(userAddress);
+        expect(fundsArg.recipient).toEqual(userAddress);
+        expect(fundsArg.fromInternalBalance).toEqual(false);
+        expect(fundsArg.toInternalBalance).toEqual(false);
+
+        const limitsArg: string[] = lidoBatchSwapArgs[4];
+        expect(limitsArg[0]).toEqual(tokens.ETHv2.amount.toString());
+        expect(limitsArg[1]).toEqual('0');
+        expect(limitsArg[2]).toEqual(tokens.stETH.amount.mul(-1).toString());
+
+        expect(lidoBatchSwapArgs[5]).toEqual({ value: tokens.ETHv2.amount });
       });
 
       it('Should return a rejected promise if lido-relayer throws an error', () => {

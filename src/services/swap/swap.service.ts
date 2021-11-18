@@ -45,9 +45,8 @@ export default class SwapService {
 
     const options: any = {};
 
-    /* I have no idea what this is doing still... */
     if (tokenIn.address === NATIVE_ASSET_ADDRESS) {
-      options.value = `0x${tokenIn.amount.toHexString()}`;
+      options.value = tokenIn.amount;
     }
 
     try {
@@ -76,7 +75,7 @@ export default class SwapService {
     const overrides: any = {};
 
     if (tokenIn.address === AddressZero) {
-      overrides.value = `0x${tokenIn.amount.toHexString()}`;
+      overrides.value = tokenIn.amount;
     }
 
     const swapKind =
@@ -97,7 +96,12 @@ export default class SwapService {
           userData: swaps[0].userData
         };
 
-        return vaultService.swap(single, funds, tokenOut.amount.toString());
+        return vaultService.swap(
+          single,
+          funds,
+          tokenOut.amount.toString(),
+          overrides
+        );
       }
 
       const limits: string[] = this.calculateLimits(
@@ -111,7 +115,8 @@ export default class SwapService {
         swaps,
         tokenAddresses,
         funds,
-        limits
+        limits,
+        overrides
       );
     } catch (e) {
       console.log('[Swapper] batchSwapV2 Error:', e);
@@ -129,18 +134,18 @@ export default class SwapService {
     const overrides: any = {};
 
     if (tokenIn.address === AddressZero) {
-      overrides.value = `0x${tokenIn.amount.toHexString()}`;
+      overrides.value = tokenIn.amount;
     }
 
     // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
     const { stETH, wstETH } = this.config.network.addresses;
-    if (tokenIn.address === stETH.toLowerCase()) {
+    if (tokenIn.address.toLowerCase() === stETH.toLowerCase()) {
       tokenIn = {
         address: wstETH.toLowerCase(),
         amount: await getWstETHByStETH(tokenIn.amount),
         type: tokenIn.type
       };
-    } else if (tokenOut.address === stETH.toLowerCase()) {
+    } else if (tokenOut.address.toLowerCase() === stETH.toLowerCase()) {
       tokenOut = {
         address: wstETH.toLowerCase(),
         amount: await getWstETHByStETH(tokenOut.amount),
@@ -181,7 +186,8 @@ export default class SwapService {
         swaps,
         tokenAddresses,
         funds,
-        limits
+        limits,
+        overrides
       );
     } catch (e) {
       console.log('[Swapper] lidoBatchSwap Error:', e);

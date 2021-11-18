@@ -22,14 +22,14 @@ const RPC_INVALID_PARAMS_ERROR_CODE = -32602;
 const EIP1559_UNSUPPORTED_REGEX = /network does not support EIP-1559/i;
 
 export default class Web3Service {
-  appProvider: ComputedRef<JsonRpcProvider>;
+  appProvider: JsonRpcProvider;
   userProvider!: ComputedRef<Web3Provider>;
 
   constructor(
     private readonly rpcProviderService = _rpcProviderService,
     private readonly config: ConfigService = configService
   ) {
-    this.appProvider = computed(() => this.rpcProviderService.jsonProvider);
+    this.appProvider = this.rpcProviderService.jsonProvider;
   }
 
   public setUserProvider(provider: ComputedRef<Web3Provider>) {
@@ -38,7 +38,7 @@ export default class Web3Service {
 
   async getEnsName(address: string): Promise<string | null> {
     try {
-      return await this.appProvider.value.lookupAddress(address);
+      return await this.appProvider.lookupAddress(address);
     } catch (error) {
       return null;
     }
@@ -67,7 +67,7 @@ export default class Web3Service {
 
   public async sendTransaction(
     contractAddress: string,
-    abi: any[],
+    abi: any,
     action: string,
     params: any[],
     options: Record<string, any>,
