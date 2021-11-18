@@ -3,14 +3,9 @@ import { HtmlInputEvent } from '@/types';
 import { ref, computed, watchEffect } from 'vue';
 import useTokens from '@/composables/useTokens';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
-import useNumbers from '@/composables/useNumbers';
-import { bnum } from '@/lib/utils';
-import useUserSettings from '@/composables/useUserSettings';
-import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
-import { useI18n } from 'vue-i18n';
+import { isPositive } from '@/lib/utils/validations';
 import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
-import LockSvg from './unlock.svg';
 
 /**
  * TYPES
@@ -58,10 +53,7 @@ const isLocked = ref(false);
 /**
  * COMPOSABLEs
  */
-const { getToken, balanceFor, nativeAsset } = useTokens();
-const { fNum, toFiat } = useNumbers();
-const { currency } = useUserSettings();
-const { t } = useI18n();
+const { getToken } = useTokens();
 const { isWalletReady } = useWeb3();
 import anime from 'animejs';
 
@@ -125,10 +117,6 @@ function onInput(event) {
   lockWeight(true);
 }
 
-function formatInputAsPct(input: string | number) {
-  return fNum(input, 'percent');
-}
-
 /**
  * CALLBACKS
  */
@@ -140,6 +128,7 @@ watchEffect(() => {
 
 <template>
   <BalTextInput
+    name="weight"
     v-model="_weight"
     :placeholder="hintAmount || '0.0'"
     type="string"

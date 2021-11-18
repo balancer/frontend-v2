@@ -5,6 +5,7 @@ import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '../useTransactions';
 import { MaxUint256 } from '@ethersproject/constants';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
 
@@ -56,9 +57,8 @@ export default function useTokenApprovals(
   /**
    * METHODS
    */
-  async function approveToken(address: string): Promise<boolean> {
+  async function approveToken(address: string): Promise<TransactionResponse> {
     const state = requiredApprovalState.value[address];
-    let confirmed = false;
 
     try {
       state.init = true;
@@ -87,7 +87,7 @@ export default function useTokenApprovals(
         }
       });
 
-      confirmed = await txListener(tx, {
+      txListener(tx, {
         onTxConfirmed: async () => {
           await refetchAllowances.value();
           state.confirming = false;
@@ -97,13 +97,14 @@ export default function useTokenApprovals(
           state.confirming = false;
         }
       });
+
+      return tx;
     } catch (error) {
       state.confirming = false;
       state.init = false;
       console.error(error);
+      return Promise.reject(error);
     }
-
-    return confirmed;
   }
 
   /**

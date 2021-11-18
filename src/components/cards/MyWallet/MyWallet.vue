@@ -41,7 +41,7 @@ const tokensWithBalance = computed(() => {
     :noBorder="upToLargeBreakpoint"
     growContent
     :hFull="upToLargeBreakpoint"
-    shadow="false"
+    shadow="none"
   >
     <div class="flex flex-col w-full h-full bg-transparent">
       <div class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:shadow-lg">

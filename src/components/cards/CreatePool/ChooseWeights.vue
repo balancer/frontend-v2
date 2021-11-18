@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, nextTick } from 'vue';
 
-import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
 
 import useNumbers from '@/composables/useNumbers';
@@ -9,15 +8,15 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import usePoolCreation, {
   TokenWeight
 } from '@/composables/pools/usePoolCreation';
+import useTokens from '@/composables/useTokens';
 
 import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
 
 import { formatUnits } from '@ethersproject/units';
-import { sum, sumBy } from 'lodash';
+import { sum } from 'lodash';
 import anime from 'animejs';
 import { bnum } from '@/lib/utils';
-import { useI18n } from 'vue-i18n';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 const emit = defineEmits(['update:height']);
@@ -41,14 +40,12 @@ const {
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
-const { t } = useI18n();
+const { nativeAsset } = useTokens();
 
 /**
  * STATE
  */
 const networkName = configService.network.name;
-const _tokenOutAmount = ref();
-const _tokenOutAddress = ref();
 
 const tokenWeightListWrapper = ref<HTMLElement>();
 const addTokenRowElement = ref<HTMLElement>();
@@ -91,6 +88,10 @@ const isProceedDisabled = computed(() => {
 const showLiquidityAlert = computed(() => {
   const validTokens = tokenWeights.value.filter(t => t.tokenAddress !== '');
   return maxInitialLiquidity.value < 20000 && validTokens.length >= 2;
+});
+
+const excludedTokens = computed((): string[] => {
+  return [nativeAsset.address];
 });
 
 /**
@@ -215,7 +216,7 @@ function addTokenListElementRef(el: HTMLElement) {
           <span class="text-sm text-gray-700">{{ networkName }}</span>
           <h5 class="font-bold">{{ $t('createAPool.chooseTokenWeights') }}</h5>
         </BalStack>
-        <BalCard :shadow="false" noPad>
+        <BalCard shadow="none" noPad>
           <div ref="tokenWeightListWrapper">
             <div class="flex flex-col">
               <div class="bg-gray-50 w-full flex justify-between p-2 px-4">
@@ -237,6 +238,7 @@ function addTokenListElementRef(el: HTMLElement) {
                     @update:isLocked="data => handleLockedWeight(data, i)"
                     noRules
                     noMax
+                    :excludedTokens="excludedTokens"
                   />
                 </div>
               </div>

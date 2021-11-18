@@ -1,26 +1,24 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 
-import ChooseWeights, {
-  TokenWeight
-} from '@/components/cards/CreatePool/ChooseWeights.vue';
+import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
 import WalletInitialLiquidity from '@/components/cards/CreatePool/WalletInitialLiquidity.vue';
 import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
 import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
 import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
-import PreviewPool from '@/components/cards/CreatePool/PreviewPool.vue';
 import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
 import SimilarPoolsCompact from '@/components/cards/CreatePool/SimilarPoolsCompact.vue';
-import { StepState } from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+import PreviewPoolModal from '@/components/cards/CreatePool/PreviewPoolModal.vue';
+import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 import anime from 'animejs';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 import useApp from '@/composables/useApp';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import { StepState } from '@/types';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { useRoute } from 'vue-router';
 
 const initialAnimateProps = {
   opacity: 0,
@@ -48,8 +46,6 @@ const exitAnimateProps = {
 /**
  * STATE
  */
-const route = useRoute();
-const currentWrapperHeight = ref(0);
 const accordionWrapper = ref<HTMLElement>();
 const hasCompletedMountAnimation = ref(false);
 
@@ -57,7 +53,7 @@ const hasCompletedMountAnimation = ref(false);
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const { activeStep, similarPools, tokensList } = usePoolCreation();
+const { activeStep, similarPools, tokensList, setStep } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 onMounted(() => {
@@ -191,7 +187,6 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
         :exit="exitAnimateProps"
         @update-dimensions="setWrapperHeight"
       >
-        <PreviewPool />
       </AnimatePresence>
     </div>
     <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
@@ -216,6 +211,13 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
         </template>
       </BalAccordion>
     </div>
+
+    <teleport to="#modal">
+      <PreviewPoolModal
+        v-if="!appLoading && activeStep === 4"
+        @close="setStep(3)"
+      />
+    </teleport>
   </div>
 </template>
 

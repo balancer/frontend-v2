@@ -46,8 +46,8 @@ function cancel() {
       }}</span>
       <h5 class="font-bold">{{ title }}</h5>
       <p v-if="existingPool">{{ $t('createAPool.existingPoolInfo') }}</p>
-      <div v-if="isLoadingSimilarPools">my name jeff</div>
-      <BalCard v-else-if="existingPool" shadow="false">
+      <div v-if="isLoadingSimilarPools"></div>
+      <BalCard v-else-if="existingPool" shadow="none">
         <BalStack vertical>
           <BalStack spacing="sm" horizontal align="center">
             <BalAssetSet :width="35" :addresses="existingPool.tokensList" />
@@ -76,7 +76,7 @@ function cancel() {
         </BalStack>
       </BalCard>
       <BalStack isDynamic v-else vertical>
-        <BalCard shadow="false" v-for="pool in similarPools" :key="pool.id">
+        <BalCard shadow="none" v-for="pool in similarPools" :key="pool.id">
           <BalStack vertical>
             <BalStack spacing="sm" horizontal align="center">
               <BalAssetSet :width="35" :addresses="pool.tokensList" />

@@ -12,11 +12,12 @@ import HiddenTokensPills from './HiddenTokensPills.vue';
 
 type Props = {
   tokens: PoolToken[];
-  isStablePool: boolean;
+  isStablePool?: boolean;
   selectedTokens?: string[];
 };
 
 const props = withDefaults(defineProps<Props>(), {
+  isStablePool: false,
   selectedTokens: () => []
 });
 

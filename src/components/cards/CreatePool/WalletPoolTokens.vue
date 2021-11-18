@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
-import useWeb3 from '@/services/web3/useWeb3';
-import { computed, defineComponent } from 'vue';
+import { computed } from 'vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useNumbers from '@/composables/useNumbers';
 import { sumBy } from 'lodash';
@@ -49,7 +48,7 @@ const totalFiat = computed(() => {
 </script>
 
 <template>
-  <BalCard noPad shadow="false">
+  <BalCard noPad shadow="none">
     <div class="p-2 px-3 border-b">
       <h6>Pool tokens in my wallet</h6>
     </div>
@@ -87,7 +86,7 @@ const totalFiat = computed(() => {
             :initial="initialAnimateProps"
             :animate="entryAnimateProps"
             :exit="exitAnimateProps"
-            isVisible="true"
+            :isVisible="true"
           >
             <BalStack horizontal justify="between" isDynamic>
               <BalStack vertical spacing="none">

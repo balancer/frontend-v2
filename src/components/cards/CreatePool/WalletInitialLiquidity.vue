@@ -1,13 +1,10 @@
 <script lang="ts" setup>
 import useTokens from '@/composables/useTokens';
-import { TokenWeight } from './ChooseWeights.vue';
 import { computed } from 'vue';
 import { sumBy } from 'lodash';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
-import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { getActiveClassName } from '@/components/utils';
 
 /**
  * COMPOSABLES
@@ -19,7 +16,6 @@ const {
   maxInitialLiquidity,
   tokenColors
 } = usePoolCreation();
-const { t } = useI18n();
 const { fNum } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
 
@@ -43,7 +39,7 @@ const totalsClass = computed(() => ({
 </script>
 
 <template>
-  <BalCard noPad shadow="false">
+  <BalCard noPad shadow="none">
     <div class="p-2 px-3 border-b" v-if="!upToLargeBreakpoint">
       <h6>{{ $t('createAPool.maxInitialLiquidity') }}</h6>
     </div>

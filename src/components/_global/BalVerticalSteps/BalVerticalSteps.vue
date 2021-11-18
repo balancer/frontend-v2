@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { getActiveClassName } from '@/components/utils';
-import { StepState } from '../BalHorizSteps/BalHorizSteps.vue';
+import { StepState } from '@/types';
 
 type Props = {
   title: string;
@@ -58,7 +58,7 @@ const stepCircleClasses = computed(() => {
 </script>
 
 <template>
-  <BalCard noPad shadow="false">
+  <BalCard noPad shadow="none">
     <div class="p-2 px-3 border-b">
       <h6>{{ title }}</h6>
     </div>

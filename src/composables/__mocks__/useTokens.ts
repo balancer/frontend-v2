@@ -12,6 +12,10 @@ export default function useTokens() {
         },
         '0xdac17f958d2ee523a2206206994597c13d831ec7': {
           symbol: 'USDT'
+        },
+        '0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115': {
+          symbol: 'USDC',
+          decimals: 6
         }
       };
       return mockTokens[address];

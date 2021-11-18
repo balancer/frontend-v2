@@ -1,11 +1,7 @@
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool, PoolType } from '@/services/balancer/subgraph/types';
-import CalculatorService from '@/services/pool/calculator/calculator.sevice';
-import { getAddress } from '@ethersproject/address';
+import { PoolType } from '@/services/balancer/subgraph/types';
 import { flatten, minBy, sumBy } from 'lodash';
-import { ref, reactive, toRefs, watch, computed, toRef } from 'vue';
+import { ref, reactive, toRefs, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useQuery } from 'vue-query';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
@@ -14,10 +10,8 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { AddressZero } from '@ethersproject/constants';
 import { bnum, scale } from '@/lib/utils';
-
 import BigNumber from 'bignumber.js';
-import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
-import { toNormalizedWeights } from '@balancer-labs/balancer-js';
+import { TransactionResponse } from '@ethersproject/providers';
 
 export type TokenWeight = {
   tokenAddress: string;
@@ -30,8 +24,6 @@ export type TokenWeight = {
 type FeeManagementType = 'governance' | 'self';
 type FeeType = 'fixed' | 'dynamic';
 type FeeController = 'self' | 'other';
-type CreateState = 'none' | 'creating' | 'created' | 'failed';
-type JoinState = 'non' | 'joining' | 'joined' | 'failed';
 
 const emptyPoolCreationState = {
   name: 'MyPool',
@@ -47,32 +39,15 @@ const emptyPoolCreationState = {
   tokensList: [] as string[],
   poolId: '' as string,
   poolAddress: '',
-  createState: 'none' as CreateState,
-  joinState: 'none' as JoinState,
   type: PoolType.Weighted
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
 
-async function getSimilarPools(tokensInPool: string[]) {
-  const queryArgs = {
-    first: 3,
-    where: {
-      tokensList: tokensInPool
-    }
-  };
-  const attrs = {
-    tokens: {
-      symbol: true
-    }
-  };
-  return balancerSubgraphService.pools.get(queryArgs, attrs);
-}
-
 const tokenColors = ref<string[]>([]);
 
 export default function usePoolCreation() {
-  const { balanceFor, tokens, balances, priceFor, getToken } = useTokens();
+  const { balanceFor, priceFor, getToken } = useTokens();
   const { account, getProvider } = useWeb3();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
@@ -104,6 +79,7 @@ export default function usePoolCreation() {
       return tokenA.tokenAddress > tokenB.tokenAddress ? 1 : -1;
     });
   };
+
   const proceed = () => {
     if (!similarPools.value.length && poolCreationState.activeStep === 1) {
       poolCreationState.activeStep += 2;
@@ -121,7 +97,7 @@ export default function usePoolCreation() {
   };
 
   const setStep = (step: number) => {
-    poolCreationState.activeStep = 0;
+    poolCreationState.activeStep = step;
   };
 
   const setFeeController = (controller: FeeController) => {
@@ -136,13 +112,14 @@ export default function usePoolCreation() {
     tokenColors.value = colors;
   }
 
-  const getScaledAmounts = (): BigNumber[] => {
-    const scaledAmounts: BigNumber[] = poolCreationState.tokenWeights.map(
+  const getScaledAmounts = (): string[] => {
+    const scaledAmounts: string[] = poolCreationState.tokenWeights.map(
       (token: TokenWeight) => {
         const tokenInfo = getToken(token.tokenAddress);
         const amount = new BigNumber(token.amount);
         const scaledAmount = scale(amount, tokenInfo.decimals);
-        return scaledAmount;
+        const scaledRoundedAmount = scaledAmount.dp(0, BigNumber.ROUND_FLOOR);
+        return scaledRoundedAmount.toString();
       }
     );
     return scaledAmounts;
@@ -160,11 +137,10 @@ export default function usePoolCreation() {
     return tokenSymbols.join('-');
   };
 
-  const createPool = async () => {
+  async function createPool(): Promise<TransactionResponse> {
     sortTokenWeights();
     const provider = getProvider();
     try {
-      poolCreationState.createState = 'creating';
       const tx = await balancerService.pools.weighted.create(
         provider,
         poolCreationState.name,
@@ -178,7 +154,7 @@ export default function usePoolCreation() {
       addTransaction({
         id: tx.hash,
         type: 'tx',
-        action: 'createpool',
+        action: 'createPool',
         summary: t('transactionSummary.createPool'),
         details: {
           name: poolCreationState.name
@@ -193,23 +169,23 @@ export default function usePoolCreation() {
           );
           poolCreationState.poolId = poolDetails.id;
           poolCreationState.poolAddress = poolDetails.address;
-          poolCreationState.createState = 'created';
         },
         onTxFailed: () => {
-          poolCreationState.createState = 'failed';
+          console.log('Create failed');
         }
       });
+
+      return tx;
     } catch (e) {
       console.log(e);
-      poolCreationState.createState = 'failed';
+      return Promise.reject('Create failed');
     }
-  };
+  }
 
   const joinPool = async () => {
     sortTokenWeights();
     const provider = getProvider();
     try {
-      poolCreationState.joinState = 'joining';
       const tx = await balancerService.pools.weighted.initJoin(
         provider,
         poolCreationState.poolId,
@@ -219,26 +195,17 @@ export default function usePoolCreation() {
         getScaledAmounts()
       );
 
-      console.log('Got join pool response: ', tx);
-
       addTransaction({
         id: tx.hash,
         type: 'tx',
-        action: 'invest',
-        summary: t('transactionSummary.investInPool')
+        action: 'fundPool',
+        summary: t('transactionSummary.fundPool')
       });
 
-      txListener(tx, {
-        onTxConfirmed: () => {
-          poolCreationState.joinState = 'joined';
-        },
-        onTxFailed: () => {
-          poolCreationState.joinState = 'failed';
-        }
-      });
+      return tx;
     } catch (e) {
       console.log(e);
-      poolCreationState.joinState = 'failed';
+      return Promise.reject('Join failed');
     }
   };
 
@@ -248,6 +215,7 @@ export default function usePoolCreation() {
     data: similarPoolsResponse,
     isLoading: isLoadingSimilarPools
   } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
+
   const similarPools = computed(() => {
     return flatten(similarPoolsResponse.value?.pages.map(p => p.pools));
   });
@@ -303,6 +271,22 @@ export default function usePoolCreation() {
     return sumBy(tokensList.value, t => priceFor(t) * Number(balanceFor(t)));
   });
 
+  const poolLiquidity = computed(() => {
+    return sumBy(
+      poolCreationState.tokenWeights,
+      tw => priceFor(tw.tokenAddress) * tw.amount
+    );
+  });
+
+  const poolTypeString = computed((): string => {
+    switch (poolCreationState.type) {
+      case PoolType.Weighted:
+        return 'weighted';
+      default:
+        return '';
+    }
+  });
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -319,7 +303,10 @@ export default function usePoolCreation() {
     existingPool,
     totalLiquidity,
     maxInitialLiquidity,
+    poolLiquidity,
     getPoolSymbol,
+    poolTypeString,
+    getScaledAmounts,
     createPool,
     joinPool,
     tokenColors,

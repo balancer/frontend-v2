@@ -1,21 +1,35 @@
 <script lang="ts" setup>
-import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
+import { ref, computed } from 'vue';
+import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
-import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 
 /**
+ * PROPS & EMITS
+ */
+const emit = defineEmits<{
+  (e: 'close'): void;
+  (e: 'success'): void;
+}>();
+
+/**
+ * STATE
+ */
+
+const poolCreated = ref(false);
+
+/**
  * COMPOSABLES
  */
-const { userNetworkConfig } = useWeb3();
 const {
   tokenWeights,
-  totalLiquidity,
+  poolLiquidity,
+  getScaledAmounts,
   getPoolSymbol,
-  type: poolType,
+  poolTypeString,
   initialFee
 } = usePoolCreation();
 const { tokens, priceFor } = useTokens();
@@ -25,33 +39,53 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
+
+const title = computed((): string =>
+  poolCreated.value
+    ? t('poolCreated')
+    : t('previewPool', [poolTypeString.value])
+);
+
+const tokenAddresses = computed((): string[] => {
+  return tokenWeights.value.map(token => token.tokenAddress);
+});
+
+const tokenAmounts = computed((): string[] => {
+  return getScaledAmounts();
+});
+
+/**
+ * METHODS
+ */
+function handleClose(): void {
+  emit('close');
+}
+
+function handleSuccess(): void {
+  poolCreated.value = true;
+  emit('success');
+}
 </script>
 
 <template>
-  <BalCard>
+  <BalModal show :fireworks="poolCreated" @close="handleClose">
     <BalStack vertical>
-      <BalStack vertical spacing="xs">
-        <span class="text-sm text-gray-700">{{ userNetworkConfig?.name }}</span>
-        <h5 class="font-bold">{{ $t('previewPool', [poolType]) }}</h5>
-      </BalStack>
-      <BalStack horizontal spacing="sm" isDynamic>
-        <div
-          v-for="token in tokenWeights"
-          :key="`tokenchip-${token.tokenAddress}`"
-          class="rounded-lg shadow-lg p-2"
+      <div class="flex items-center">
+        <BalCircle
+          v-if="poolCreated"
+          size="8"
+          color="green"
+          class="text-white mr-2"
         >
-          <BalStack horizontal spacing="xs" align="center">
-            <BalAsset :address="token.tokenAddress" :size="24" />
-            <span class="text-lg font-medium">{{
-              tokens[token.tokenAddress].symbol
-            }}</span>
-            <span class="">{{ fNum(token.weight / 100, 'percent') }}</span>
-          </BalStack>
-        </div>
-      </BalStack>
-      <BalCard shadow="false" noPad>
+          <BalIcon name="check" />
+        </BalCircle>
+        <h4>{{ title }}</h4>
+      </div>
+      <BalCard shadow="none" noPad>
         <div class="bg-gray-50 p-2">
-          <h6 class="text-sm">{{ $t('tokensAndSeedLiquidity') }}</h6>
+          <h6 class="text-sm">
+            {{ $t('createAPool.tokensAndSeedLiquidity') }}
+          </h6>
         </div>
         <BalStack vertical spacing="none" withBorder isDynamic>
           <div
@@ -61,14 +95,21 @@ const { t } = useI18n();
           >
             <BalStack horizontal justify="between">
               <BalStack horizontal align="center">
-                <BalAsset :address="token.tokenAddress" size="36" />
+                <BalAsset :address="token.tokenAddress" :size="36" />
                 <BalStack vertical spacing="none">
                   <span class=" font-semibold"
                     >{{ fNum(token.weight / 100, 'percent') }}
                     {{ tokens[token.tokenAddress].symbol }}</span
                   >
                   <span class="text-sm text-gray-500"
-                    >{{ $t('initialWeight') }}: ??</span
+                    >{{ $t('initialWeight') }}:
+                    {{
+                      fNum(
+                        (token.amount * priceFor(token.tokenAddress)) /
+                          poolLiquidity,
+                        'percent'
+                      )
+                    }}</span
                   >
                 </BalStack>
               </BalStack>
@@ -85,14 +126,10 @@ const { t } = useI18n();
         </BalStack>
         <BalStack horizontal justify="between" class="p-4 border-t">
           <h6>{{ $t('total') }}</h6>
-          <h6>{{ fNum(totalLiquidity, 'usd') }}</h6>
+          <h6>{{ fNum(poolLiquidity, 'usd') }}</h6>
         </BalStack>
-        <!-- <BalHorizSteps
-          :steps="steps"
-          class="flex justify-center"
-        /> -->
       </BalCard>
-      <BalCard shadow="false" noPad>
+      <BalCard shadow="none" noPad>
         <div class="bg-gray-50 p-2">
           <h6 class="text-sm">{{ $t('summary') }}</h6>
         </div>
@@ -107,7 +144,7 @@ const { t } = useI18n();
           </BalStack>
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('poolType') }}:</span>
-            <span class="text-sm">{{ poolType }}</span>
+            <span class="text-sm">{{ poolTypeString }}</span>
           </BalStack>
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('swapFee') }}:</span>
@@ -115,9 +152,12 @@ const { t } = useI18n();
           </BalStack>
         </BalStack>
       </BalCard>
-      <BalBtn class="w-full" block color="gradient">{{
-        $t('createPool')
-      }}</BalBtn>
+      <CreateActions
+        :tokenAddresses="tokenAddresses"
+        :amounts="tokenAmounts"
+        class="mt-4"
+        @success="handleSuccess"
+      />
     </BalStack>
-  </BalCard>
+  </BalModal>
 </template>

@@ -6,7 +6,7 @@ type Spacing = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | 'none';
 type Props = {
   vertical?: boolean;
   horizontal?: boolean;
-  spacing: Spacing;
+  spacing?: Spacing;
   withBorder?: boolean;
   ref?: any;
   align?: 'center' | 'start' | 'end' | 'between';

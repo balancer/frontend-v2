@@ -8,13 +8,7 @@ import { onMounted } from 'vue';
  * COMPOSABLES
  */
 const { userNetworkConfig } = useWeb3();
-const {
-  tokenWeights,
-  createPool,
-  joinPool,
-  proceed,
-  optimisedLiquidity
-} = usePoolCreation();
+const { tokenWeights, proceed, optimisedLiquidity } = usePoolCreation();
 
 onMounted(() => {
   for (const token of tokenWeights.value) {
