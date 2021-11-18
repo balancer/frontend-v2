@@ -84,10 +84,13 @@ export default function usePoolQuery(
 
     // Need to fetch onchain pool data first so that calculations can be
     // performed in the decoration step.
+    const poolTokenMeta = getTokens(
+      pool.tokensList.map(address => getAddress(address))
+    );
     const onchainData = await balancerContractsService.vault.getPoolData(
       id,
       pool.poolType,
-      getTokens(pool.tokensList.map(address => getAddress(address)))
+      poolTokenMeta
     );
 
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
