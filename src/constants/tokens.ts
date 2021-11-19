@@ -27,6 +27,7 @@ export const TOKENS = {
   },
   Prices: {
     ChainMap: {
+      // Addresses must be lowercased
       '42': {
         '0xdfcea9088c8a88a76ff74892c1457c17dfeef9c1':
           '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -52,7 +53,16 @@ export const TOKENS = {
           '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
         // AAVE USDT
         '0x13512979ade267ab5100878e2e0f485b568328a4':
-          '0xdac17f958d2ee523a2206206994597c13d831ec7' // USDT
+          '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+        // Wrapped aUSDC
+        '0x0fbddc06a4720408a2f5eb78e62bc31ac6e2a3c4':
+          '0xbcca60bb61934080951369a648fb03df4f96263c', // aUSDC
+        // Wrapped aUSDT
+        '0xe8191aacfcdb32260cda25830dc6c9342142f310':
+          '0x3ed3b47dd13ec9a98b44e6204a523e766b225811', // aUSDT
+        // Wrapped aUSDT
+        '0x4811a7bb9061a46753486e5e84b3cd3d668fb596':
+          '0x028171bca77440897b824ca71d1c56cac55b68a3' // aDAI
       }
     },
     // TODO - remove once coingecko supports wstETH
@@ -65,9 +75,9 @@ export const TOKENS = {
   Investable: {
     '0x21ff756ca0cfcc5fff488ad67babadffee0c4149000000000000000000000240': {
       Tokens: [
-        '0xe22da380ee6B445bb8273C81944ADEB6E8450422', // USDC
-        '0x13512979ADE267AB5100878E2e0f485B568328a4', // USDT
-        '0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD', // DAI
+        '0xe22da380ee6B445bb8273C81944ADEB6E8450422', // AAVE USDC
+        '0x13512979ADE267AB5100878E2e0f485B568328a4', // AAVE USDT
+        '0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD', // AAVE DAI
         '0x0FbdDC06a4720408a2f5Eb78e62Bc31AC6E2A3c4', // Wrapped aUSDC
         '0xE8191aACfcdb32260Cda25830Dc6C9342142f310', // Wrapped aUSDT
         '0x4811A7Bb9061A46753486E5e84B3CD3D668fB596' // Wrapped aDAI
