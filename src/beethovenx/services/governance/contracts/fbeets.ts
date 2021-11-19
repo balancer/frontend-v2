@@ -103,9 +103,9 @@ export default class FreshBeets {
   }
 
   public get fbeetsAddress(): string {
-    return this.service.config.addresses.fbeetsToken || '';
+    return this.service.config.fBeets.address || '';
   }
   public get vestingTokenAddress(): string {
-    return this.service.config.addresses.fbeetsVestingToken || '';
+    return this.service.config.fBeets.poolAddress || '';
   }
 }

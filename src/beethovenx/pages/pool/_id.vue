@@ -162,7 +162,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
+import { computed, defineComponent, reactive, toRefs, watch } from 'vue';
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
@@ -180,7 +180,7 @@ import useApp from '@/composables/useApp';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import FarmStatCards from '@/beethovenx/components/pages/farm/FarmStatCards.vue';
 import FarmStatCardsLoading from '@/beethovenx/components/pages/farm/FarmStatCardsLoading.vue';
-import usePools from '@/composables/pools/usePools';
+import usePoolWithFarm from '@/beethovenx/composables/pool/usePoolWithFarm';
 
 interface PoolPageData {
   id: string;
@@ -207,7 +207,8 @@ export default defineComponent({
     const { prices } = useTokens();
     const { blockNumber } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
-    const { poolsWithFarms, userPools } = usePools();
+
+    const { pool, loadingPool } = usePoolWithFarm(route.params.id as string);
 
     /**
      * QUERIES
@@ -225,32 +226,6 @@ export default defineComponent({
       id: route.params.id as string
     });
 
-    /**
-     * COMPUTED
-     */
-    //const pool = computed(() => poolQuery.data.value);
-    const pool = computed(() => {
-      const poolWithFarm = poolsWithFarms.value.find(
-        poolWithFarm => poolWithFarm.id === (route.params.id as string)
-      );
-      const userPool = userPools.value.find(
-        poolWithFarm => poolWithFarm.id === (route.params.id as string)
-      );
-
-      if (!poolQuery.data.value) {
-        return undefined;
-      }
-
-      return {
-        ...poolQuery.data.value,
-        dynamic: poolWithFarm
-          ? poolWithFarm.dynamic
-          : poolQuery.data.value.dynamic,
-        hasLiquidityMiningRewards: !!poolWithFarm,
-        farm: poolWithFarm?.farm,
-        shares: userPool?.shares
-      };
-    });
     const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
       poolQuery.data
     );
@@ -259,7 +234,7 @@ export default defineComponent({
       () =>
         !loadingPool.value &&
         pool.value &&
-        Number(pool.value.onchain.totalSupply) === 0
+        Number(pool.value.onchain?.totalSupply) === 0
     );
 
     const communityManagedFees = computed(
@@ -290,8 +265,6 @@ export default defineComponent({
         poolQuery.error.value
     );
 
-    const loadingPool = computed(() => poolQueryLoading.value || !pool.value);
-
     const snapshots = computed(() => poolSnapshotsQuery.data.value?.snapshots);
     const historicalPrices = computed(
       () => poolSnapshotsQuery.data.value?.prices
@@ -304,7 +277,7 @@ export default defineComponent({
     const titleTokens = computed(() => {
       if (!pool.value) return [];
 
-      return Object.entries(pool.value.onchain.tokens).sort(
+      return Object.entries(pool.value.onchain?.tokens || {}).sort(
         ([, a]: any[], [, b]: any[]) => b.weight - a.weight
       );
     });
@@ -318,7 +291,7 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      const feeLabel = `${fNum(pool.value.onchain.swapFee, 'percent')}`;
+      const feeLabel = `${fNum(pool.value.onchain?.swapFee || '0', 'percent')}`;
 
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);

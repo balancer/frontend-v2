@@ -54,8 +54,6 @@ export interface Config {
     hndRewarder: string;
     masterChef: string;
     earlyLudwigNft: string;
-    fbeetsVestingToken: string;
-    fbeetsToken: string;
     hnd: string;
     beetsUsdcReferencePricePool: string;
     beets: string;
@@ -78,6 +76,12 @@ export interface Config {
   blockSubgraph: string;
   farmSubgraph: string;
   tokenListSanityUrl: string;
+  fBeets: {
+    address: string;
+    poolId: string;
+    poolAddress: string;
+    farmId: string;
+  };
 }
 
 const config: Record<Config['chainId'], Config> = {

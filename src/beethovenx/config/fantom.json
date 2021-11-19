@@ -92,6 +92,12 @@
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
     "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88"
+  },
+  "fBeets": {
+    "address": "0x33276d43ada054a281d40a11d48310cdc0156fc2",
+    "poolId": "0x33276d43ada054a281d40a11d48310cdc0156fc2000200000000000000000001",
+    "poolAddress": "0x33276d43ada054a281d40a11d48310cdc0156fc2",
+    "farmId": "3"
   }
 }
 

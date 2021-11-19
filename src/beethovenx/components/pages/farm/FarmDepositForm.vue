@@ -46,7 +46,7 @@
       <template v-else>
         <BalBtn
           v-if="approvalRequired"
-          label="Approve BPT"
+          :label="`Approve ${tokenName ? tokenName : 'BPT'}`"
           :loading="approving"
           :loading-label="$t('approving')"
           :disabled="!validInput || parseFloat(amount) === 0 || amount === ''"

@@ -5,7 +5,7 @@ import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 </script>
 
 <template>
-  <div class="flex justify-center mb-8">
+  <div class="flex justify-center mb-6">
     <div class="w-full max-w-3xl">
       <BalCard bg-color="bg-yellow-500 mb-4">
         <div class="flex">

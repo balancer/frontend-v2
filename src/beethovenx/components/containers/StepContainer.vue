@@ -1,11 +1,12 @@
 <template>
   <BalCard class="mb-4">
     <div class="step-card-container">
-      <div class="step-card-step text-green-500">
-        <BalIcon v-if="complete" name="check" class="text-green-500" />
-        <span v-else class="text-gray-500 dark:text-gray-400">{{
-          stepNumber
-        }}</span>
+      <div
+        :class="['step-card-step', complete ? 'bg-green-500 border-black' : '']"
+      >
+        <span :class="[complete ? 'text-black' : 'text-gray-400']"
+          >{{ stepNumber }}
+        </span>
       </div>
       <div class="ml-3 flex-1">
         <span>{{ title }}</span>

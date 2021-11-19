@@ -15,7 +15,7 @@ export function calculateTvl(farm: Farm, pool: DecoratedPool) {
     return 0;
   }
 
-  const { tokens, priceFor, dynamicDataLoaded, dynamicDataLoading } = response;
+  const { tokens, priceFor } = response;
 
   if (pool && pool.totalShares !== '0' && farm.slpBalance !== '0') {
     const valuePerShare =
@@ -34,11 +34,7 @@ export function calculateTvl(farm: Farm, pool: DecoratedPool) {
   return 0;
 }
 
-export function calculateRewardsPerDay(
-  farm: Farm,
-  pool: DecoratedPool,
-  blocksPerDay: number
-) {
+export function calculateRewardsPerDay(farm: Farm, blocksPerDay: number) {
   const totalBeetsPerDay = new BigNumber(
     farm.masterChef.beetsPerBlock
   ).multipliedBy(blocksPerDay);
@@ -123,7 +119,7 @@ export function decorateFarm(
   return {
     ...farm,
     tvl,
-    rewards: calculateRewardsPerDay(farm, pool, blocksPerDay),
+    rewards: calculateRewardsPerDay(farm, blocksPerDay),
     apr,
     stake: tvl * userShare,
     pendingBeets: farmUser?.pendingBeets || 0,
