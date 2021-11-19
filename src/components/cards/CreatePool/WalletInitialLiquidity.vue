@@ -11,7 +11,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
  */
 const { tokens } = useTokens();
 const {
-  tokenWeights,
+  seedTokens,
   optimisedLiquidity,
   maxInitialLiquidity,
   tokenColors,
@@ -24,11 +24,11 @@ const { upToLargeBreakpoint } = useBreakpoints();
  * COMPUTED
  */
 const allocatedTokenWeights = computed(() =>
-  tokenWeights.value.filter(t => t.tokenAddress !== '')
+  seedTokens.value.filter(t => t.tokenAddress !== '')
 );
 const unallocatedTokenWeight = computed(() =>
   sumBy(
-    tokenWeights.value.filter(t => t.tokenAddress === ''),
+    seedTokens.value.filter(t => t.tokenAddress === ''),
     'weight'
   )
 );
@@ -48,7 +48,7 @@ const totalsClass = computed(() => ({
       <div class="grid grid-cols-12 w-full gap-y-1.5">
         <div class="col-span-5">
           <span class="text-sm font-semibold text-gray-700 dark:text-gray-500">{{
-            $t('token')
+          $t('token')
           }}</span>
         </div>
         <div class="col-span-4 text-right">

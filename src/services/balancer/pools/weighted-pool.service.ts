@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { defaultAbiCoder } from '@ethersproject/abi';
-import { TokenWeight } from '@/composables/pools/usePoolCreation';
+import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { scale } from '@/lib/utils';
 
@@ -36,7 +36,7 @@ export default class WeightedPoolService {
     name: string,
     symbol: string,
     swapFee: string,
-    tokens: TokenWeight[],
+    tokens: PoolSeedToken[],
     owner: Address
   ): Promise<TransactionResponse> {
     if (!owner.length) return Promise.reject('No pool owner specified');
@@ -44,18 +44,18 @@ export default class WeightedPoolService {
     const weightedPoolFactoryAddress =
       configService.network.addresses.weightedPoolFactory;
 
-    const tokenAddresses: Address[] = tokens.map((token: TokenWeight) => {
+    const tokenAddresses: Address[] = tokens.map((token: PoolSeedToken) => {
       return token.tokenAddress;
     });
 
-    const tokenWeights = this.calculateTokenWeights(tokens);
+    const seedTokens = this.calculateTokenWeights(tokens);
     const swapFeeScaled = scale(new BigNumber(swapFee), 16);
 
     const params = [
       name,
       symbol,
       tokenAddresses,
-      tokenWeights,
+      seedTokens,
       swapFeeScaled.toString(),
       owner
     ];
@@ -93,7 +93,7 @@ export default class WeightedPoolService {
     poolId: string,
     sender: Address,
     receiver: Address,
-    tokens: TokenWeight[],
+    tokens: PoolSeedToken[],
     initialBalancesString: string[]
   ): Promise<TransactionResponse> {
     const initUserData = defaultAbiCoder.encode(
@@ -101,7 +101,7 @@ export default class WeightedPoolService {
       [JOIN_KIND_INIT, initialBalancesString]
     );
 
-    const tokenAddresses: Address[] = tokens.map((token: TokenWeight) => {
+    const tokenAddresses: Address[] = tokens.map((token: PoolSeedToken) => {
       return token.tokenAddress;
     });
 
@@ -122,8 +122,8 @@ export default class WeightedPoolService {
     );
   }
 
-  public calculateTokenWeights(tokens: TokenWeight[]): string[] {
-    const weights: EPBigNumber[] = tokens.map((token: TokenWeight) => {
+  public calculateTokenWeights(tokens: PoolSeedToken[]): string[] {
+    const weights: EPBigNumber[] = tokens.map((token: PoolSeedToken) => {
       const normalizedWeight = new BigNumber(token.weight).multipliedBy(
         new BigNumber(1e16)
       );

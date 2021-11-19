@@ -27,7 +27,7 @@ const poolCreated = ref(false);
  * COMPOSABLES
  */
 const {
-  tokenWeights,
+  seedTokens,
   poolLiquidity,
   getScaledAmounts,
   getPoolSymbol,
@@ -52,7 +52,7 @@ const title = computed((): string =>
 );
 
 const tokenAddresses = computed((): string[] => {
-  return tokenWeights.value.map(token => token.tokenAddress);
+  return seedTokens.value.map(token => token.tokenAddress);
 });
 
 const tokenAmounts = computed((): string[] => {
@@ -106,7 +106,7 @@ function handleSuccess(): void {
         </div>
         <BalStack vertical spacing="none" withBorder isDynamic>
           <div
-            v-for="token in tokenWeights"
+            v-for="token in seedTokens"
             :key="`tokenpreview-${token.tokenAddress}`"
             class="p-4"
           >

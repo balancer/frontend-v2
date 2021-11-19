@@ -1,11 +1,11 @@
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { AddressZero } from '@ethersproject/constants';
-import { TokenWeight } from '@/composables/pools/usePoolCreation';
+import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import WeightedPoolsService, { JoinPoolRequest } from './weighted-pool.service';
 import BigNumber from 'bignumber.js';
 import { WeightedPoolEncoder } from '@balancer-labs/balancer-js';
 
-const tokens: Record<string, TokenWeight> = {};
+const tokens: Record<string, PoolSeedToken> = {};
 const weightedPoolsService = new WeightedPoolsService();
 
 const mockPoolId =

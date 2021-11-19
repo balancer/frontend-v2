@@ -1,9 +1,9 @@
 import { mount } from 'vue-composable-tester';
-import usePoolCreation, { TokenWeight } from './usePoolCreation';
+import usePoolCreation, { PoolSeedToken } from './usePoolCreation';
 
 // const { updateTokenWeights, getPoolSymbol } = usePoolCreation();
 
-const tokens: Record<string, TokenWeight> = {};
+const tokens: Record<string, PoolSeedToken> = {};
 
 jest.mock('@/composables/useTokens');
 jest.mock('@/services/web3/useWeb3');

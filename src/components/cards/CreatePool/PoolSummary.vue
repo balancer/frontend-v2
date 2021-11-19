@@ -21,7 +21,7 @@ const chartInstance = ref<echarts.ECharts>();
  * COMPOSABLES
  */
 const { tokens } = useTokens();
-const { tokenWeights, updateTokenColors } = usePoolCreation();
+const { seedTokens, updateTokenColors } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
 const { resolve } = useUrls();
@@ -31,7 +31,7 @@ const { resolve } = useUrls();
  */
 const unallocatedTokenWeight = computed(() =>
   sumBy(
-    tokenWeights.value.filter(t => t.tokenAddress === ''),
+    seedTokens.value.filter(t => t.tokenAddress === ''),
     'weight'
   )
 );
@@ -72,7 +72,7 @@ const chartConfig = computed(() => {
         },
         colors: colors.value,
         data: [
-          ...tokenWeights.value
+          ...seedTokens.value
             .filter(t => t.tokenAddress !== '')
             .map((t, i) => {
               const tokenLogoURI = resolve(
@@ -109,7 +109,7 @@ const chartConfig = computed(() => {
  * WATCHERS
  */
 watch(
-  tokenWeights,
+  seedTokens,
   async () => {
     await nextTick();
     const colors = await calculateColors();
@@ -123,7 +123,7 @@ watch(
  * FUNCTIONS
  */
 async function calculateColors() {
-  const colorPromises = tokenWeights.value
+  const colorPromises = seedTokens.value
     .filter(t => t.tokenAddress !== '')
     .map(async t => {
       try {

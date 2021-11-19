@@ -6,7 +6,7 @@ import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vu
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 import usePoolCreation, {
-  TokenWeight
+  PoolSeedToken
 } from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
 
@@ -21,7 +21,7 @@ import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 const emit = defineEmits(['update:height']);
 
-const emptyTokenWeight: TokenWeight = {
+const emptyTokenWeight: PoolSeedToken = {
   tokenAddress: '',
   weight: 0,
   id: 0,
@@ -33,7 +33,7 @@ const emptyTokenWeight: TokenWeight = {
  * COMPOSABLES
  */
 const {
-  tokenWeights,
+  seedTokens,
   updateTokenWeights,
   proceed,
   maxInitialLiquidity,
@@ -63,7 +63,7 @@ const tokenWeightItemHeight = computed(() =>
   upToLargeBreakpoint.value ? 56 : 64
 );
 const totalWeight = computed(() => {
-  const validTokens = tokenWeights.value.filter(t => t.tokenAddress !== '');
+  const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
   const validPercentage = sumBy(validTokens, 'weight');
   return validPercentage.toFixed(2);
 });
@@ -74,7 +74,7 @@ const isProceedDisabled = computed(() => {
 });
 
 const showLiquidityAlert = computed(() => {
-  const validTokens = tokenWeights.value.filter(t => t.tokenAddress !== '');
+  const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
   return maxInitialLiquidity.value < 20000 && validTokens.length >= 2;
 });
 
@@ -92,11 +92,11 @@ onMounted(async () => {
   cardWrapperHeight.value = cardWrapper.value?.offsetHeight || 0;
 
   // add in the first token list item
-  if (!tokenWeights.value.length) {
+  if (!seedTokens.value.length) {
     addTokenToPool();
     addTokenToPool();
   } else {
-    await animateHeight(tokenWeights.value.length);
+    await animateHeight(seedTokens.value.length);
   }
   // wait for vue to reflect the changes of above
   await nextTick();
@@ -107,19 +107,19 @@ onMounted(async () => {
  * FUNCTIONS
  */
 function handleWeightChange(weight: string, id: number) {
-  const tokenWeight = tokenWeights.value[id];
+  const tokenWeight = seedTokens.value[id];
   tokenWeight.weight = Number(weight);
 
   distributeWeights();
 }
 
 function handleAddressChange(address: string, id: number) {
-  const tokenWeight = tokenWeights.value[id];
+  const tokenWeight = seedTokens.value[id];
   tokenWeight.tokenAddress = address;
 }
 
 function handleLockedWeight(isLocked: boolean, id: number) {
-  const tokenWeight = tokenWeights.value[id];
+  const tokenWeight = seedTokens.value[id];
   tokenWeight.isLocked = isLocked;
   distributeWeights();
 }
@@ -128,7 +128,7 @@ async function animateHeight(offset = 0) {
   emit('update:height', {
     height:
       cardWrapperHeight.value +
-      tokenWeightItemHeight.value * tokenWeights.value.length
+      tokenWeightItemHeight.value * seedTokens.value.length
   });
   // animate the height initially
   anime({
@@ -142,7 +142,7 @@ async function animateHeight(offset = 0) {
   // down instead of having the new token weight item shift them
   anime({
     targets: [totalsRowElement.value, addTokenRowElement.value],
-    translateY: `${tokenWeightItemHeight.value * tokenWeights.value.length}px`
+    translateY: `${tokenWeightItemHeight.value * seedTokens.value.length}px`
   });
 
   await nextTick();
@@ -155,7 +155,7 @@ async function animateHeight(offset = 0) {
         left: 0,
         right: 0,
         top: `${tokenWeightItemHeight.value *
-          (tokenWeights.value.length - 1)}px`,
+          (seedTokens.value.length - 1)}px`,
         opacity: 0
       }
     );
@@ -170,9 +170,9 @@ async function animateHeight(offset = 0) {
 }
 
 async function addTokenToPool() {
-  const newWeights: TokenWeight[] = [
-    ...tokenWeights.value,
-    { ...emptyTokenWeight, id: tokenWeights.value.length - 1 } as TokenWeight
+  const newWeights: PoolSeedToken[] = [
+    ...seedTokens.value,
+    { ...emptyTokenWeight, id: seedTokens.value.length - 1 } as PoolSeedToken
   ];
   updateTokenWeights(newWeights);
   await animateHeight(1);
@@ -182,10 +182,10 @@ async function addTokenToPool() {
 function distributeWeights() {
   // get all the locked weights and sum those bad boys
   const lockedPct = sum(
-    tokenWeights.value.filter(w => w.isLocked).map(w => w.weight / 100)
+    seedTokens.value.filter(w => w.isLocked).map(w => w.weight / 100)
   );
   const pctAvailableToDistribute = bnum(1 - lockedPct);
-  const unlockedWeights = tokenWeights.value.filter(w => !w.isLocked);
+  const unlockedWeights = seedTokens.value.filter(w => !w.isLocked);
   const evenDistributionWeight = pctAvailableToDistribute.div(
     unlockedWeights.length
   );
@@ -228,7 +228,7 @@ async function handleRemoveToken(index: number) {
   tokenWeightItemElements.value = tokenWeightItemElements.value.filter(
     (_, i) => i !== index
   );
-  updateTokenWeights(tokenWeights.value.filter((_, i) => i !== index));
+  updateTokenWeights(seedTokens.value.filter((_, i) => i !== index));
   distributeWeights();
   animateHeight(-1);
 }
@@ -252,13 +252,13 @@ async function handleRemoveToken(index: number) {
               <div class="relative w-full">
                 <div
                   class="absolute w-full"
-                  v-for="(_, i) of tokenWeights"
+                  v-for="(_, i) of seedTokens"
                   :key="`tokenweight-${i}`"
                   :ref="addTokenListElementRef"
                 >
                   <TokenWeightInput
-                    v-model:weight="tokenWeights[i].weight"
-                    v-model:address="tokenWeights[i].tokenAddress"
+                    v-model:weight="seedTokens[i].weight"
+                    v-model:address="seedTokens[i].tokenAddress"
                     @update:weight="data => handleWeightChange(data, i)"
                     @update:address="data => handleAddressChange(data, i)"
                     @update:isLocked="data => handleLockedWeight(data, i)"
