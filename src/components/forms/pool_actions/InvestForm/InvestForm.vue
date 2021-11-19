@@ -77,12 +77,9 @@ const {
   isMismatchedNetwork
 } = useWeb3();
 
-const {
-  managedPoolWithTradingHalted,
-  isWethPool,
-  isStableLikePool,
-  lpTokens
-} = usePool(toRef(props, 'pool'));
+const { managedPoolWithTradingHalted, isWethPool, isStableLikePool } = usePool(
+  toRef(props, 'pool')
+);
 
 /**
  * COMPUTED
