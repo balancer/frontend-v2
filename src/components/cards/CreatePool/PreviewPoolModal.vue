@@ -178,7 +178,6 @@ function handleSuccess(): void {
       <CreateActions
         :tokenAddresses="tokenAddresses"
         :amounts="tokenAmounts"
-        class="mt-4"
         @success="handleSuccess"
       />
     </BalStack>

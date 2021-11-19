@@ -18,7 +18,7 @@ export type PoolSeedToken = {
   weight: number;
   isLocked: boolean;
   amount: number;
-  id: number;
+  id: string;
 };
 
 type FeeManagementType = 'governance' | 'self';

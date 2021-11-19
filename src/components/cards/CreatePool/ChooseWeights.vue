@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, nextTick } from 'vue';
+import { computed, onMounted, ref, nextTick, onBeforeUpdate } from 'vue';
 
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
 
@@ -14,7 +14,7 @@ import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
 
 import { formatUnits } from '@ethersproject/units';
-import { sum, sumBy } from 'lodash';
+import { sum, sumBy, uniqueId } from 'lodash';
 import anime from 'animejs';
 import { bnum } from '@/lib/utils';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -84,7 +84,7 @@ const excludedTokens = computed((): string[] => {
 
 const maxTokenAmountReached = computed(() => {
   return seedTokens.value.length >= 8;
-})
+});
 
 /**
  * LIFECYCLE
@@ -105,6 +105,11 @@ onMounted(async () => {
   // wait for vue to reflect the changes of above
   await nextTick();
   distributeWeights();
+});
+
+onBeforeUpdate(() => {
+  console.log('eshay');
+  seedTokenElements.value = [];
 });
 
 /**
@@ -169,7 +174,7 @@ async function animateHeight(offset = 0, animateAllElements = false) {
 async function addTokenToPool() {
   const newWeights: PoolSeedToken[] = [
     ...seedTokens.value,
-    { ...emptyTokenWeight, id: seedTokens.value.length - 1 } as PoolSeedToken
+    { ...emptyTokenWeight, id: uniqueId() } as PoolSeedToken
   ];
   updateTokenWeights(newWeights);
   await animateHeight(1);
@@ -213,17 +218,18 @@ function distributeWeights() {
 }
 
 function addTokenListElementRef(el: HTMLElement) {
-  const filteredElements = seedTokenElements.value.filter(e => e !== null);
-  if (!filteredElements.includes(el)) {
-    seedTokenElements.value = [...filteredElements, el];
+  // const filteredElements = seedTokenElements.value.filter(e => e !== null);
+  if (!seedTokenElements.value.includes(el) && el) {
+    seedTokenElements.value.push(el);
   }
 }
 
 async function handleRemoveToken(index: number) {
+  updateTokenWeights(seedTokens.value.filter((_, i) => i !== index));
+  await nextTick();
   seedTokenElements.value = seedTokenElements.value.filter(
     (_, i) => i !== index
   );
-  updateTokenWeights(seedTokens.value.filter((_, i) => i !== index));
   distributeWeights();
   animateHeight(-1);
 }
@@ -253,8 +259,8 @@ async function handleRemoveToken(index: number) {
               <div class="relative w-full">
                 <div
                   class="absolute w-full"
-                  v-for="(_, i) of seedTokens"
-                  :key="`tokenweight-${i}`"
+                  v-for="(token, i) of seedTokens"
+                  :key="`tokenweight-${token.id}`"
                   :ref="addTokenListElementRef"
                 >
                   <AnimatePresence isVisible>
@@ -274,7 +280,12 @@ async function handleRemoveToken(index: number) {
               </div>
 
               <div class="p-3" ref="addTokenRowElement">
-                <BalBtn :disabled="maxTokenAmountReached" @click="addTokenToPool" outline :color="maxTokenAmountReached ? 'gray' : 'blue'" size="sm"
+                <BalBtn
+                  :disabled="maxTokenAmountReached"
+                  @click="addTokenToPool"
+                  outline
+                  :color="maxTokenAmountReached ? 'gray' : 'blue'"
+                  size="sm"
                   >{{ $t('addToken') }}
                 </BalBtn>
               </div>
