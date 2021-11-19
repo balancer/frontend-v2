@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
@@ -96,6 +96,8 @@ const steps = computed(() => [
     label: 4
   }
 ]);
+
+watch(activeStep, () => console.log('active', activeStep.value))
 
 /**
  * FUNCTIONS

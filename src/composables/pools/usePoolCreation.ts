@@ -174,6 +174,10 @@ export default function usePoolCreation() {
   }
 
   function goBack() {
+    if (!similarPools.value.length && poolCreationState.activeStep === 3) {
+      poolCreationState.activeStep -= 2;
+      return;
+    }
     poolCreationState.activeStep -= 1;
   }
 
