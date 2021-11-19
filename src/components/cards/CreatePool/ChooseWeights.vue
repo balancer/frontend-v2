@@ -239,13 +239,13 @@ async function handleRemoveToken(index: number) {
     <BalCard>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">
-          <span class="text-sm text-gray-700">{{ networkName }}</span>
-          <h5 class="font-bold">{{ $t('createAPool.chooseTokenWeights') }}</h5>
+          <span class="text-sm text-gray-700 dark:text-gray-500">{{ networkName }}</span>
+          <h5 class="font-bold dark:text-gray-300">{{ $t('createAPool.chooseTokenWeights') }}</h5>
         </BalStack>
         <BalCard shadow="none" noPad>
           <div ref="tokenWeightListWrapper">
             <div class="flex flex-col">
-              <div class="bg-gray-50 w-full flex justify-between p-2 px-4">
+              <div class="bg-gray-50 dark:bg-gray-850 w-full flex justify-between p-2 px-4">
                 <h6>{{ $t('token') }}</h6>
                 <h6>{{ $t('weight') }}</h6>
               </div>
@@ -275,7 +275,7 @@ async function handleRemoveToken(index: number) {
                   >{{ $t('addToken') }}
                 </BalBtn>
               </div>
-              <div ref="totalsRowElement" class="bg-gray-50 w-full p-2 px-4">
+              <div ref="totalsRowElement" class="bg-gray-50 dark:bg-gray-850 w-full p-2 px-4">
                 <div class="w-full flex justify-between">
                   <h6>{{ $t('total') }}</h6>
                   <h6>{{ totalWeight }}%</h6>

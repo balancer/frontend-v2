@@ -42,14 +42,21 @@ function cancel() {
 <template>
   <BalCard :class="{ 'border-red-400': existingPool }">
     <BalStack vertical>
-      <span v-if="isWalletReady" class="text-sm text-gray-700">{{
-        userNetworkConfig?.name
-      }}</span>
-      <BalStack align="center" horizontal spacing="xs">
-        <button @click="goBack" class="text-blue-500 hover:text-blue-700 flex">
-          <BalIcon class="flex" name="chevron-left" />
-        </button>
-        <h5 class="font-bold">{{ title }}</h5>
+      <BalStack vertical spacing="xs">
+        <span
+          v-if="isWalletReady"
+          class="text-sm text-gray-700 dark:text-gray-500"
+          >{{ userNetworkConfig?.name }}</span
+        >
+        <BalStack align="center" horizontal spacing="xs">
+          <button
+            @click="goBack"
+            class="text-blue-500 hover:text-blue-700 flex"
+          >
+            <BalIcon class="flex" name="chevron-left" />
+          </button>
+          <h5 class="font-bold dark:text-gray-300">{{ title }}</h5>
+        </BalStack>
       </BalStack>
       <p v-if="existingPool">{{ $t('createAPool.existingPoolInfo') }}</p>
       <div v-if="isLoadingSimilarPools"></div>
@@ -61,19 +68,19 @@ function cancel() {
           </BalStack>
           <BalStack horizontal spacing="lg">
             <BalStack vertical spacing="none">
-              <span class="font-medium">{{ $t('poolValue') }}</span>
+              <span class="font-medium  dark:text-gray-500">{{ $t('poolValue') }}</span>
               <span class="font-semibold">{{
                 fNum(existingPool.totalLiquidity, 'usd')
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
-              <span class="font-medium">{{ $t('volume24hShort') }}</span>
+              <span class="font-medium  dark:text-gray-500">{{ $t('volume24hShort') }}</span>
               <span class="font-semibold">{{
                 fNum(existingPool.dynamic.volume, 'usd')
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
-              <span class="font-medium">{{ $t('fees') }}</span>
+              <span class="font-medium capitalize  dark:text-gray-500">{{ $t('fees') }}</span>
               <span class="font-semibold">{{
                 fNum(existingPool.swapFee, 'percent')
               }}</span>
@@ -90,19 +97,19 @@ function cancel() {
             </BalStack>
             <BalStack horizontal spacing="xl">
               <BalStack vertical spacing="none">
-                <span class="font-medium">{{ $t('poolValue') }}</span>
+                <span class="font-medium  dark:text-gray-500">{{ $t('poolValue') }}</span>
                 <span class="font-semibold">{{
                   fNum(pool.totalLiquidity, 'usd')
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
-                <span class="font-medium">{{ $t('volume24hShort') }}</span>
+                <span class="font-medium  dark:text-gray-500">{{ $t('volume24hShort') }}</span>
                 <span class="font-semibold">{{
                   fNum(pool.dynamic.volume, 'usd')
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
-                <span class="font-medium">{{ $t('fees') }}</span>
+                <span class="font-medium capitalize dark:text-gray-500">{{ $t('fees') }}</span>
                 <span class="font-semibold">{{
                   fNum(pool.swapFee, 'percent')
                 }}</span>

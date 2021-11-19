@@ -161,7 +161,7 @@ watchEffect(() => {
         <button
           @click="lockWeight(false)"
           :class="[
-            'ml-2 ease-color mt-1 text-gray-500 hover:text-blue-500 flex items-center shadow-sm border bg-gray-50 rounded-full p-1 justify-center',
+            'ml-2 ease-color mt-1 text-gray-500 dark:text-gray-300 hover:text-blue-800 dark:hover:text-blue-800 flex items-center shadow-sm border dark:border-0 bg-gray-50 dark:bg-gray-850 rounded-full p-1 justify-center',
             {
               'text-blue-500': isLocked,
               'border-transparent': !isLocked
@@ -188,7 +188,7 @@ watchEffect(() => {
         <button
           @click="emit('delete')"
           :class="[
-            'ml-2 ease-color mt-1 text-gray-500 hover:text-red-500 flex items-center shadow-sm border bg-gray-50 rounded-full p-1 justify-center'
+            'ml-2 ease-color mt-1 text-gray-500 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-500 flex items-center shadow-sm border dark:border-0 bg-gray-50 dark:bg-gray-850 rounded-full p-1 justify-center'
           ]"
         >
           <BalIcon name="trash-2" size="sm" />

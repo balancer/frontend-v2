@@ -11,6 +11,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 
 import { prominent } from 'color.js';
 import { sumBy } from 'lodash';
+import useDarkMode from '@/composables/useDarkMode';
 
 /** STATE */
 const colors = ref<(string | null)[]>([]);
@@ -22,6 +23,7 @@ const chartInstance = ref<echarts.ECharts>();
 const { tokens } = useTokens();
 const { tokenWeights, updateTokenColors } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { darkMode } = useDarkMode();
 const { resolve } = useUrls();
 
 /**
@@ -57,7 +59,7 @@ const chartConfig = computed(() => {
         itemStyle: {
           borderRadius: 5,
           borderColor: '#fff',
-          borderWidth: 5,
+          borderWidth: darkMode ? 0 : 5,
           borderCap: 'butt',
           borderJoin: 'round'
         },
@@ -147,8 +149,8 @@ async function calculateColors() {
 
 <template>
   <BalCard noPad shadow="none">
-    <div class="p-2 px-3 border-b" v-if="!upToLargeBreakpoint">
-      <h6>{{ $t('createAPool.poolSummary') }}</h6>
+    <div class="p-2 px-3 border-b dark:border-gray-600" v-if="!upToLargeBreakpoint">
+      <h6 class="dark:text-gray-300">{{ $t('createAPool.poolSummary') }}</h6>
     </div>
     <div class="p-2">
       <ECharts

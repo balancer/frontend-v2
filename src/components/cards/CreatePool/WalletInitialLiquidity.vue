@@ -41,23 +41,23 @@ const totalsClass = computed(() => ({
 
 <template>
   <BalCard noPad shadow="none">
-    <div class="p-2 px-3 border-b" v-if="!upToLargeBreakpoint">
-      <h6>{{ $t('createAPool.maxInitialLiquidity') }}</h6>
+    <div class="p-2 px-3 border-b dark:border-gray-600" v-if="!upToLargeBreakpoint">
+      <h6 class="dark:text-gray-300">{{ $t('createAPool.maxInitialLiquidity') }}</h6>
     </div>
     <div class="p-2">
       <div class="grid grid-cols-12 w-full gap-y-1.5">
         <div class="col-span-5">
-          <span class="text-sm font-semibold text-gray-700">{{
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-500">{{
             $t('token')
           }}</span>
         </div>
         <div class="col-span-4 text-right">
-          <span class="text-sm font-semibold text-gray-700">{{
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-500">{{
             $t('usdValue')
           }}</span>
         </div>
         <div class="col-span-3 text-right">
-          <span class="text-sm font-semibold text-gray-700">{{
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-500">{{
             $t('poolPercent')
           }}</span>
         </div>

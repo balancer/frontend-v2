@@ -22,7 +22,7 @@ onMounted(() => {
   <BalCard>
     <BalStack vertical>
       <BalStack vertical spacing="xs">
-        <span class="text-sm text-gray-700">{{ userNetworkConfig?.name }}</span>
+        <span class="text-sm text-gray-700 dark:text-gray-500">{{ userNetworkConfig?.name }}</span>
         <BalStack horizontal spacing="xs" align="center">
           <button
             @click="goBack"
@@ -31,7 +31,7 @@ onMounted(() => {
             <BalIcon class="flex" name="chevron-left" />
           </button>
 
-          <h5 class="font-bold">Set initial liquidity</h5>
+          <h5 class="font-bold dark:text-gray-300">Set initial liquidity</h5>
         </BalStack>
       </BalStack>
       <BalStack isDynamic vertical>

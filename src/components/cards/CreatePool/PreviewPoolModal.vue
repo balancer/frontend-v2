@@ -75,7 +75,7 @@ function handleSuccess(): void {
 <template>
   <BalCard>
     <BalStack vertical spacing="xs">
-      <span class="text-sm text-gray-700">{{ userNetworkConfig?.name }}</span>
+      <span class="text-sm text-gray-700 dark:text-gray-500">{{ userNetworkConfig?.name }}</span>
     </BalStack>
     <BalStack vertical>
       <div class="flex items-center">
@@ -95,28 +95,11 @@ function handleSuccess(): void {
             <BalIcon class="flex" name="chevron-left" />
           </button>
 
-          <h5 class="font-bold">{{ title }}</h5>
+          <h5 class="font-bold dark:text-gray-300">{{ title }}</h5>
         </BalStack>
       </div>
-      <BalStack horizontal spacing="sm" isDynamic>
-        <div
-          v-for="token in tokenWeights"
-          :key="`tokenchip-${token.tokenAddress}`"
-          class="rounded-lg shadow-lg p-2"
-        >
-          <BalStack horizontal spacing="xs" align="center">
-            <BalAsset :address="token.tokenAddress" :size="24" />
-            <span class="text-sm font-medium">{{
-              tokens[token.tokenAddress].symbol
-            }}</span>
-            <span class="text-sm">{{
-              fNum(token.weight / 100, 'percent')
-            }}</span>
-          </BalStack>
-        </div>
-      </BalStack>
       <BalCard shadow="none" noPad>
-        <div class="bg-gray-50 p-2">
+        <div class="bg-gray-50 dark:bg-gray-700 p-2">
           <h6 class="text-sm">
             {{ $t('createAPool.tokensAndSeedLiquidity') }}
           </h6>
@@ -158,13 +141,13 @@ function handleSuccess(): void {
             </BalStack>
           </div>
         </BalStack>
-        <BalStack horizontal justify="between" class="p-4 border-t">
+        <BalStack horizontal justify="between" class="p-4 border-t dark:border-gray-600">
           <h6>{{ $t('total') }}</h6>
           <h6>{{ fNum(poolLiquidity, 'usd') }}</h6>
         </BalStack>
       </BalCard>
       <BalCard shadow="none" noPad>
-        <div class="bg-gray-50 p-2">
+        <div class="bg-gray-50 dark:bg-gray-700 p-2">
           <h6 class="text-sm">{{ $t('summary') }}</h6>
         </div>
         <BalStack vertical spacing="xs" class="p-3">

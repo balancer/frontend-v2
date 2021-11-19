@@ -77,7 +77,8 @@ const slotsWithContent = computed(() => {
         'border-b': i !== slotsWithContent.length - 1 && withBorder && vertical,
         'border-r':
           i !== slotsWithContent.length - 1 && withBorder && horizontal,
-        'w-full': expandChildren
+        'w-full': expandChildren,
+        'dark:border-gray-600': true
       }"
     >
       <component :is="child" />
