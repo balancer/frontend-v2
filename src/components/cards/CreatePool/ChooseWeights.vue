@@ -51,7 +51,7 @@ const networkName = configService.network.name;
 const tokenWeightListWrapper = ref<HTMLElement>();
 const addTokenRowElement = ref<HTMLElement>();
 const totalsRowElement = ref<HTMLElement>();
-const tokenWeightItemElements = ref<HTMLElement[]>([]);
+const seedTokenElements = ref<HTMLElement[]>([]);
 const cardWrapper = ref<HTMLElement>();
 const wrapperHeight = ref(0);
 const cardWrapperHeight = ref(0);
@@ -96,7 +96,7 @@ onMounted(async () => {
     addTokenToPool();
     addTokenToPool();
   } else {
-    await animateHeight(seedTokens.value.length);
+    await animateHeight(seedTokens.value.length, true);
   }
   // wait for vue to reflect the changes of above
   await nextTick();
@@ -124,7 +124,7 @@ function handleLockedWeight(isLocked: boolean, id: number) {
   distributeWeights();
 }
 
-async function animateHeight(offset = 0) {
+async function animateHeight(offset = 0, animateAllElements = false) {
   emit('update:height', {
     height:
       cardWrapperHeight.value +
@@ -150,24 +150,16 @@ async function animateHeight(offset = 0) {
   await nextTick();
 
   // get the last added token weight element
-  if (tokenWeightItemElements.value[tokenWeightItemElements.value.length - 1]) {
-    anime.set(
-      tokenWeightItemElements.value[tokenWeightItemElements.value.length - 1],
-      {
-        left: 0,
-        right: 0,
-        top: `${tokenWeightItemHeight.value * (seedTokens.value.length - 1)}px`,
-        opacity: 0
-      }
-    );
-
-    // fade it in as well
-    anime({
-      targets:
-        tokenWeightItemElements.value[tokenWeightItemElements.value.length - 1],
-      opacity: 1
+  seedTokenElements.value.forEach((seedTokenElement, i) => {
+    anime.set(seedTokenElement, {
+      left: 0,
+      right: 0,
+      top: `${tokenWeightItemHeight.value * i}px`
     });
-  }
+    anime({
+      targets: seedTokenElement
+    });
+  });
 }
 
 async function addTokenToPool() {
@@ -217,16 +209,14 @@ function distributeWeights() {
 }
 
 function addTokenListElementRef(el: HTMLElement) {
-  const filteredElements = tokenWeightItemElements.value.filter(
-    e => e !== null
-  );
+  const filteredElements = seedTokenElements.value.filter(e => e !== null);
   if (!filteredElements.includes(el)) {
-    tokenWeightItemElements.value = [...filteredElements, el];
+    seedTokenElements.value = [...filteredElements, el];
   }
 }
 
 async function handleRemoveToken(index: number) {
-  tokenWeightItemElements.value = tokenWeightItemElements.value.filter(
+  seedTokenElements.value = seedTokenElements.value.filter(
     (_, i) => i !== index
   );
   updateTokenWeights(seedTokens.value.filter((_, i) => i !== index));
@@ -263,17 +253,19 @@ async function handleRemoveToken(index: number) {
                   :key="`tokenweight-${i}`"
                   :ref="addTokenListElementRef"
                 >
-                  <TokenWeightInput
-                    v-model:weight="seedTokens[i].weight"
-                    v-model:address="seedTokens[i].tokenAddress"
-                    @update:weight="data => handleWeightChange(data, i)"
-                    @update:address="data => handleAddressChange(data, i)"
-                    @update:isLocked="data => handleLockedWeight(data, i)"
-                    @delete="() => handleRemoveToken(i)"
-                    noRules
-                    noMax
-                    :excludedTokens="excludedTokens"
-                  />
+                  <AnimatePresence isVisible>
+                    <TokenWeightInput
+                      v-model:weight="seedTokens[i].weight"
+                      v-model:address="seedTokens[i].tokenAddress"
+                      @update:weight="data => handleWeightChange(data, i)"
+                      @update:address="data => handleAddressChange(data, i)"
+                      @update:isLocked="data => handleLockedWeight(data, i)"
+                      @delete="() => handleRemoveToken(i)"
+                      noRules
+                      noMax
+                      :excludedTokens="excludedTokens"
+                    />
+                  </AnimatePresence>
                 </div>
               </div>
 
