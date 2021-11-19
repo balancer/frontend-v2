@@ -5,13 +5,18 @@ import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool, Pool } from '@/services/balancer/subgraph/types';
+import { FullPool, LinearPool, Pool } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
 import { forChange } from '@/lib/utils';
-import { investableTokensFor, isManaged, isStableLike } from '../usePool';
+import {
+  lpTokensFor,
+  isManaged,
+  isStableLike,
+  isStablePhantom
+} from '../usePool';
 import { getAddress, isAddress } from '@ethersproject/address';
 
 export default function usePoolQuery(
@@ -49,12 +54,44 @@ export default function usePoolQuery(
     return requiresAllowlisting && !isAllowlisted && !isOwnedByUser;
   }
 
-  function removePreMintedBpt(pool: Pool): Pool {
+  function removePreMintedBPT(pool: Pool): Pool {
     const poolAddress = balancerSubgraphService.pools.addressFor(pool.id);
     // Remove pre-minted BPT token if exits
     pool.tokensList = pool.tokensList.filter(
       address => address !== poolAddress.toLowerCase()
     );
+    return pool;
+  }
+
+  /**
+   * fetches StablePhantom linear pools and extracts
+   * required attributes.
+   */
+  async function getLinearPoolAttrs(pool: Pool): Promise<Pool> {
+    pool.mainTokens = [];
+    pool.wrappedTokens = [];
+
+    // Fetch linear pools from subgraph
+    const linearPools = (await balancerSubgraphService.pools.get(
+      {
+        where: {
+          address_in: pool.tokensList,
+          totalShares_gt: -1 // Avoid the filtering for low liquidity pools
+        }
+      },
+      { mainIndex: true, wrappedIndex: true }
+    )) as LinearPool[];
+
+    // Inject main/wrapped tokens into pool schema
+    linearPools.map(linearPool => {
+      pool.mainTokens?.push(
+        getAddress(linearPool.tokensList[linearPool.mainIndex])
+      );
+      pool.wrappedTokens?.push(
+        getAddress(linearPool.tokensList[linearPool.wrappedIndex])
+      );
+    });
+
     return pool;
   }
 
@@ -73,11 +110,15 @@ export default function usePoolQuery(
 
     if (isBlocked(pool)) throw new Error('Pool not allowed');
 
-    pool = removePreMintedBpt(pool);
+    if (isStablePhantom(pool.poolType)) {
+      pool = removePreMintedBPT(pool);
+      pool = await getLinearPoolAttrs(pool);
+    }
 
+    // Inject relevant pool tokens to fetch metadata
     await injectTokens([
       ...pool.tokensList,
-      ...investableTokensFor(pool),
+      ...lpTokensFor(pool),
       balancerSubgraphService.pools.addressFor(pool.id)
     ]);
     await forChange(dynamicDataLoading, false);
@@ -100,6 +141,7 @@ export default function usePoolQuery(
       currency.value
     );
 
+    console.log('pool', { onchain: onchainData, ...decoratedPool });
     return { onchain: onchainData, ...decoratedPool };
   };
 
