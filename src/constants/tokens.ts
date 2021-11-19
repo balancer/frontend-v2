@@ -71,17 +71,5 @@ export const TOKENS = {
         stETH: 1.0352
       }
     }
-  },
-  Investable: {
-    '0x21ff756ca0cfcc5fff488ad67babadffee0c4149000000000000000000000240': {
-      Tokens: [
-        '0xe22da380ee6B445bb8273C81944ADEB6E8450422', // AAVE USDC
-        '0x13512979ADE267AB5100878E2e0f485B568328a4', // AAVE USDT
-        '0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD', // AAVE DAI
-        '0x0FbdDC06a4720408a2f5Eb78e62Bc31AC6E2A3c4', // Wrapped aUSDC
-        '0xE8191aACfcdb32260Cda25830Dc6C9342142f310', // Wrapped aUSDT
-        '0x4811A7Bb9061A46753486E5e84B3CD3D668fB596' // Wrapped aDAI
-      ]
-    }
   }
 };

@@ -3,7 +3,6 @@ import { PoolType, AnyPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
-import { TOKENS } from '@/constants/tokens';
 
 /**
  * METHODS
