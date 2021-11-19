@@ -14,7 +14,7 @@ import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
 
 import { formatUnits } from '@ethersproject/units';
-import { sum } from 'lodash';
+import { sum, sumBy } from 'lodash';
 import anime from 'animejs';
 import { bnum } from '@/lib/utils';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -64,21 +64,23 @@ const tokenWeightItemHeight = computed(() =>
 );
 const totalWeight = computed(() => {
   const validTokens = tokenWeights.value.filter(t => t.tokenAddress !== '');
-  if (validTokens.length === 0) return 0;
-  const normalisedWeights = balancerService.pools.weighted.calculateTokenWeights(
-    validTokens
-  ); 
-  let total = bnum(0);
-  for (const weight of normalisedWeights) {
-    total = total.plus(bnum(formatUnits(weight, 18)));
-  }
+  const validPercentage = sumBy(validTokens, 'weight');
+  return validPercentage.toFixed(2);
+  // if (validTokens.length === 0) return 0;
+  // const normalisedWeights = balancerService.pools.weighted.calculateTokenWeights(
+  //   tokenWeights.value
+  // );
+  // let total = bnum(0);
+  // for (const weight of normalisedWeights) {
+  //   total = total.plus(bnum(formatUnits(weight, 18)));
+  // }
 
-  total = total.minus(
-    bnum(tokenWeights.value.length - validTokens.length).div(
-      tokenWeights.value.length
-    )
-  );
-  return (Number(total.toString()) * 100).toFixed(2);
+  // total = total.minus(
+  //   bnum(tokenWeights.value.length - validTokens.length).div(
+  //     tokenWeights.value.length
+  //   )
+  // );
+  // return (Number(total.toString()) * 100).toFixed(2);
 });
 
 const isProceedDisabled = computed(() => {
@@ -197,13 +199,35 @@ function distributeWeights() {
   const lockedPct = sum(
     tokenWeights.value.filter(w => w.isLocked).map(w => w.weight / 100)
   );
-  const pctAvailableToDistribute = 1 - lockedPct;
+  const pctAvailableToDistribute = bnum(1 - lockedPct);
   const unlockedWeights = tokenWeights.value.filter(w => !w.isLocked);
-  const evenDistributionWeight =
-    pctAvailableToDistribute / unlockedWeights.length;
-  for (const tokenWeight of unlockedWeights) {
-    tokenWeight.weight = Number((evenDistributionWeight * 100).toFixed(2));
-  }
+  const evenDistributionWeight = pctAvailableToDistribute.div(
+    unlockedWeights.length
+  );
+
+  const error = pctAvailableToDistribute.minus(
+    evenDistributionWeight.times(unlockedWeights.length)
+  );
+  const isErrorDivisible = error.mod(unlockedWeights.length).eq(0);
+  const distributableError = isErrorDivisible
+    ? error.div(unlockedWeights.length)
+    : error;
+
+  const normalisedWeights = unlockedWeights.map((_, i) => {
+    const evenDistributionWeight4DP = Number(evenDistributionWeight.toFixed(4));
+    const errorScaledTo4DP = Number(distributableError.toString()) * 1e14;
+    if (!isErrorDivisible && i === 0) {
+      return evenDistributionWeight4DP + errorScaledTo4DP;
+    } else if (isErrorDivisible) {
+      return evenDistributionWeight4DP + errorScaledTo4DP;
+    } else {
+      return evenDistributionWeight4DP;
+    }
+  });
+
+  unlockedWeights.forEach((tokenWeight, i) => {
+    tokenWeight.weight = Number((normalisedWeights[i] * 100).toFixed(2));
+  });
 }
 
 function addTokenListElementRef(el: HTMLElement) {
@@ -220,6 +244,7 @@ async function handleRemoveToken(index: number) {
     (_, i) => i !== index
   );
   updateTokenWeights(tokenWeights.value.filter((_, i) => i !== index));
+  distributeWeights();
   animateHeight(-1);
 }
 </script>

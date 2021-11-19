@@ -258,7 +258,6 @@ export default function usePoolCreation() {
         balanceRequired: balanceRequired.toString()
       };
     }
-    console.log('optimisedLiquidity', optimisedLiquidity)
     return optimisedLiquidity;
   });
 

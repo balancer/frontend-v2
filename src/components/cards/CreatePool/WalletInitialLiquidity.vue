@@ -38,12 +38,10 @@ const totalsClass = computed(() => ({
   'text-yellow-500': maxInitialLiquidity.value < 20000
 }));
 
-const _console = console;
 </script>
 
 <template>
   <BalCard noPad shadow="none">
-    {{ _console.log('t', tokensWithNoPrice) }}
     <div class="p-2 px-3 border-b" v-if="!upToLargeBreakpoint">
       <h6>{{ $t('createAPool.maxInitialLiquidity') }}</h6>
     </div>
