@@ -4,9 +4,10 @@ import useWeb3 from '@/services/web3/useWeb3';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import { onMounted, ref } from 'vue';
 
 /**
- * COMPOSABLES
+ * STATE
  */
 const { userNetworkConfig } = useWeb3();
 const {
@@ -15,26 +16,51 @@ const {
   optimisedLiquidity,
   goBack,
   hasManuallySetInitialBalances,
-  updateManualLiquidityFlag
+  updateManualLiquidityFlag,
+  autoOptimiseBalances,
+  lastManuallySetTokenNum
 } = usePoolCreation();
 
 /**
  * LIFECYCLE
  */
 onMounted(() => {
-  if (!hasManuallySetInitialBalances.value) {
-    for (const token of seedTokens.value) {
-      token.amount =
-        optimisedLiquidity.value[token.tokenAddress].balanceRequired;
-    }
-  }
+  optimiseLiquidity()
 });
+
+/**
+ * METHODS
+ */
+
+function optimiseLiquidity() {
+  if (hasManuallySetInitialBalances.value) return;
+
+  for (const token of seedTokens.value) {
+    token.amount =
+      optimisedLiquidity.value[token.tokenAddress].balanceRequired;
+  }
+}
+
+function toggleAutoOptimise() {
+  autoOptimiseBalances.value = !autoOptimiseBalances.value;
+
+  checkLiquidityOptimisation();
+}
+
+function checkLiquidityOptimisation() {
+  if (!autoOptimiseBalances.value) return;
+
+  optimiseLiquidity();
+}
 
 /**
  * FUNCTIONS
  */
-function handleAmountChange() {
+function handleAmountChange(tokenNum) {
   updateManualLiquidityFlag(true);
+  lastManuallySetTokenNum.value = tokenNum;
+
+  checkLiquidityOptimisation();
 }
 </script>
 
@@ -54,7 +80,22 @@ function handleAmountChange() {
           </button>
 
           <h5 class="font-bold dark:text-gray-300">Set initial liquidity</h5>
-        </BalStack>
+          <div class="flex items-center">
+            <BalToggle
+              name="autoOptimise"
+              :checked="autoOptimiseBalances"
+              @toggle="toggleAutoOptimise"
+            />
+            <span class="text-sm pl-2">{{
+              $t('autoOptimiseLiquidityToggle.label')
+            }}</span>
+            <BalTooltip width="64">
+              <template v-slot:activator>
+                <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
+              </template>
+              <div v-html="$t('autoOptimiseLiquidityToggle.tooltip')" />
+            </BalTooltip>
+          </div>
       </BalStack>
       <BalStack isDynamic vertical>
         <TokenInput
@@ -62,7 +103,7 @@ function handleAmountChange() {
           :key="token.tokenAddress"
           v-model:amount="seedTokens[i].amount"
           v-model:address="seedTokens[i].tokenAddress"
-          @update:amount="handleAmountChange"
+          @update:amount="handleAmountChange(i)"
           :weight="seedTokens[i].weight / 100"
           :name="`initial-token-${seedTokens[i].tokenAddress}`"
           fixedToken

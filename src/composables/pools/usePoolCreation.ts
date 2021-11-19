@@ -40,8 +40,10 @@ const emptyPoolCreationState = {
   poolId: '' as string,
   poolAddress: '',
   hasManuallySetInitialBalances: false,
-  type: PoolType.Weighted,
-  symbol: ''
+  symbol: '',
+  lastManuallySetTokenNum: -1,
+  autoOptimiseBalances: false,
+  type: PoolType.Weighted
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
@@ -84,20 +86,31 @@ export default function usePoolCreation() {
     // need to filter out the empty tokens just in case
     const validTokens = tokensList.value.filter(t => t !== '');
     const optimisedLiquidity = {};
-    // token with the lowest balance is the bottleneck
-    const bottleneckToken = minBy(
-      validTokens,
-      token => Number(balanceFor(token)) * Number(priceFor(token))
-    );
-    if (!bottleneckToken) return optimisedLiquidity;
+    let bip;
+    // If a user has modified the amount for a token, that token is used to optimise the rest
+    if (poolCreationState.lastManuallySetTokenNum != -1) {
+      const modifiedToken = poolCreationState.seedTokens[poolCreationState.lastManuallySetTokenNum];
+      bip = bnum(priceFor(modifiedToken.tokenAddress || '0'))
+        .times(modifiedToken.amount)
+        .div(modifiedToken.weight);
+    } else {
+      // token with the lowest balance is the bottleneck
+      const bottleneckToken = minBy(
+        validTokens,
+        token => Number(balanceFor(token)) * Number(priceFor(token))
+      );
+      if (!bottleneckToken) return optimisedLiquidity;
 
-    const bottleneckWeight =
-      poolCreationState.seedTokens.find(t => t.tokenAddress === bottleneckToken)
-        ?.weight || 0;
+      const bottleneckWeight =
+        poolCreationState.seedTokens.find(
+          t => t.tokenAddress === bottleneckToken
+        )?.weight || 0;
 
-    const bip = bnum(priceFor(bottleneckToken || '0'))
-      .times(balanceFor(bottleneckToken))
-      .div(bottleneckWeight);
+      bip = bnum(priceFor(bottleneckToken || '0'))
+        .times(balanceFor(bottleneckToken))
+        .div(bottleneckWeight);
+    }
+
     for (const token of poolCreationState.seedTokens) {
       // get the price for a single token
       const tokenPrice = bnum(priceFor(token.tokenAddress));

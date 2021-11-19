@@ -36,6 +36,10 @@
     "approvingGnosisRelayer": "Approving Gnosis relayer",
     "approvingLidoRelayer": "Approving Lido relayer",
     "apr": "APR",
+    "autoOptimiseLiquidityToggle": {
+        "label": "Auto optimize liquidity",
+        "tooltip": "Optimise token values automatically to match the token weights you specified."
+    },
     "availableToClaim": "Available to claim:",
     "balance": "Balance",
     "balances": "Balances",
