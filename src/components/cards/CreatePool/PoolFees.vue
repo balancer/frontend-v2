@@ -112,7 +112,12 @@ function onChangeFeeController(val: string) {
       <BalStack vertical spacing="xs">
         <span class="text-sm text-gray-700">{{ userNetworkConfig?.name }}</span>
         <BalStack horizontal align="center" spacing="xs">
-          <button @click="goBack" class="text-blue-500 hover:text-blue-700 flex"><BalIcon class="flex" name="chevron-left" /></button>
+          <button
+            @click="goBack"
+            class="text-blue-500 hover:text-blue-700 flex"
+          >
+            <BalIcon class="flex" name="chevron-left" />
+          </button>
           <h5 class="font-bold">{{ $t('createAPool.setPoolFees') }}</h5>
         </BalStack>
       </BalStack>

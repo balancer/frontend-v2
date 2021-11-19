@@ -45,7 +45,7 @@ const stepCircleClasses = computed(() => {
         StepState.Active,
         'border-2 border-none bg-gradient-from-l bg-gradient-to-r from-blue-600 to-blue-50 text-white active'
       ],
-      [StepState.Todo, 'border-2 border-gray-300 text-gray-500'],
+      [StepState.Todo, 'border-2 border-gray-300 dark:border-gray-600 text-gray-500'],
       [
         StepState.Success,
         'border-2 border-none bg-gradient-to-tr from-green-500 to-green-200 text-white'
@@ -59,8 +59,8 @@ const stepCircleClasses = computed(() => {
 
 <template>
   <BalCard noPad shadow="none">
-    <div class="p-2 px-3 border-b">
-      <h6>{{ title }}</h6>
+    <div class="p-2 px-3 border-b dark:border-gray-600">
+      <h6 class="dark:text-gray-300">{{ title }}</h6>
     </div>
     <BalStack vertical isDynamic spacing="sm" class="p-4">
       <div
@@ -100,7 +100,7 @@ const stepCircleClasses = computed(() => {
 
 <style scoped>
 .circle-line::after {
-  @apply absolute left-0 right-0 my-0 mx-auto bg-gray-300 w-px;
+  @apply absolute left-0 right-0 my-0 mx-auto bg-gray-300 dark:bg-gray-600 w-px;
   content: '';
   bottom: -1.0625rem;
   height: 0.9375rem;

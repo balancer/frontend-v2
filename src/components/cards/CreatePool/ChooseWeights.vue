@@ -66,21 +66,6 @@ const totalWeight = computed(() => {
   const validTokens = tokenWeights.value.filter(t => t.tokenAddress !== '');
   const validPercentage = sumBy(validTokens, 'weight');
   return validPercentage.toFixed(2);
-  // if (validTokens.length === 0) return 0;
-  // const normalisedWeights = balancerService.pools.weighted.calculateTokenWeights(
-  //   tokenWeights.value
-  // );
-  // let total = bnum(0);
-  // for (const weight of normalisedWeights) {
-  //   total = total.plus(bnum(formatUnits(weight, 18)));
-  // }
-
-  // total = total.minus(
-  //   bnum(tokenWeights.value.length - validTokens.length).div(
-  //     tokenWeights.value.length
-  //   )
-  // );
-  // return (Number(total.toString()) * 100).toFixed(2);
 });
 
 const isProceedDisabled = computed(() => {
