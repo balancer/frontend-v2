@@ -70,12 +70,18 @@ export default class Vault {
         // Overwrite totalSupply with virtualSupply for StablePhantom pools
         // poolMulticaller.call('totalSupply', poolAddress, 'virtualSupply');
 
-        Object.keys(tokens).forEach(token => {
+        Object.keys(tokens).forEach((token, i) => {
           poolMulticaller.call(`linearPools.${token}.id`, token, 'getPoolId');
           poolMulticaller.call(
             `linearPools.${token}.priceRate`,
             token,
             'getRate'
+          );
+          poolMulticaller.call(
+            `tokenRates[${i}]`,
+            poolAddress,
+            'getTokenRate',
+            [token]
           );
           poolMulticaller.call(
             `linearPools.${token}.mainToken.address`,
@@ -163,6 +169,12 @@ export default class Vault {
 
     if (rawData?.linearPools) {
       poolData.linearPools = this.formatLinearPools(rawData.linearPools);
+    }
+
+    if (rawData.tokenRates) {
+      poolData.tokenRates = rawData.tokenRates.map(rate =>
+        formatUnits(rate.toString(), 18)
+      );
     }
 
     poolData.totalSupply = formatUnits(rawData.totalSupply, rawData.decimals);

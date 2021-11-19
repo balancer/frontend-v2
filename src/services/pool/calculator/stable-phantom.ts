@@ -91,10 +91,8 @@ export default class StablePhantom {
   }
 
   private get priceRates(): BigNumberish[] {
-    const linearPools = Object.values(
-      this.calc.pool.value.onchain.linearPools || {}
-    );
-    if (!linearPools) return [];
-    return linearPools.map(pool => parseUnits(pool.priceRate, 18));
+    const tokenRates = this.calc.pool.value.onchain.tokenRates;
+    if (!tokenRates) return [];
+    return tokenRates.map(rate => parseUnits(rate, 18));
   }
 }

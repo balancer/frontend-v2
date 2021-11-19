@@ -89,6 +89,7 @@ export interface RawOnchainPoolData {
     precision: BigNumber;
   };
   linearPools?: Record<Address, RawLinearPoolData>;
+  tokenRates?: BigNumber[];
 }
 
 export interface OnchainPoolData {
@@ -99,6 +100,7 @@ export interface OnchainPoolData {
   amp?: string;
   swapEnabled: boolean;
   linearPools?: Record<Address, LinearPoolData>;
+  tokenRates?: string[];
 }
 
 export interface RawLinearPoolToken {
