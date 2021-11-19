@@ -25,13 +25,13 @@ export default function useWithdrawalState(pool: Ref<FullPool>) {
    * COMPOSABLES
    */
   const { nativeAsset, wrappedNativeAsset } = useTokens();
-  const { investableTokens } = usePool(pool);
+  const { lpTokens } = usePool(pool);
 
   /**
    * COMPUTED
    */
   const tokensOut = computed(() => {
-    const poolTokens = [...investableTokens.value];
+    const poolTokens = [...lpTokens.value];
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH

@@ -33,14 +33,14 @@ const selectedOption = ref(props.initToken);
  */
 const { getTokens, getToken, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
-const { isWethPool, investableTokens } = usePool(toRef(props, 'pool'));
+const { isWethPool, lpTokens } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
  */
 const tokenAddresses = computed(() => {
-  if (isWethPool.value) return [nativeAsset.address, ...investableTokens.value];
-  return investableTokens.value;
+  if (isWethPool.value) return [nativeAsset.address, ...lpTokens.value];
+  return lpTokens.value;
 });
 
 const tokens = computed(() => getTokens(tokenAddresses.value));

@@ -67,9 +67,14 @@ export function noInitLiquidity(pool: AnyPool): boolean {
   return bnum(pool?.onchain?.totalSupply || '0').eq(0);
 }
 
-export function investableTokensFor(pool: AnyPool): string[] {
+/**
+ * @returns tokens that can be used to invest or withdraw from a pool
+ */
+export function lpTokensFor(pool: AnyPool): string[] {
   if (isStablePhantom(pool.poolType)) {
-    return TOKENS.Investable[pool.id].Tokens || [];
+    const mainTokens = pool.mainTokens || [];
+    const wrappedTokens = pool.wrappedTokens || [];
+    return [...mainTokens, ...wrappedTokens];
   } else {
     return pool.tokenAddresses || [];
   }
@@ -120,10 +125,10 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     () => !!pool.value && noInitLiquidity(pool.value)
   );
 
-  const investableTokens = computed(() => {
+  const lpTokens = computed(() => {
     if (!pool.value) return [];
 
-    return investableTokensFor(pool.value);
+    return lpTokensFor(pool.value);
   });
 
   return {
@@ -140,7 +145,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isWethPool,
     isWstETHPool,
     noInitLiquidityPool,
-    investableTokens,
+    lpTokens,
     // methods
     isStable,
     isMetaStable,
@@ -152,6 +157,6 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isTradingHaltable,
     isWeth,
     noInitLiquidity,
-    investableTokensFor
+    lpTokensFor
   };
 }

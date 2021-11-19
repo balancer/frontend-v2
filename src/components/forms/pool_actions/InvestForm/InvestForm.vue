@@ -81,7 +81,7 @@ const {
   managedPoolWithTradingHalted,
   isWethPool,
   isStableLikePool,
-  investableTokens
+  lpTokens
 } = usePool(toRef(props, 'pool'));
 
 /**
@@ -180,7 +180,7 @@ function setNativeAsset(to: NativeAsset): void {
  */
 onBeforeMount(() => {
   resetAmounts();
-  tokenAddresses.value = [...investableTokens.value];
+  tokenAddresses.value = [...lpTokens.value];
   if (isWethPool.value) setNativeAssetByBalance();
 });
 
