@@ -48,6 +48,13 @@ export interface Pool {
   hasLiquidityMiningRewards: boolean;
   onchain?: OnchainPoolData;
   createTime: number;
+  mainTokens?: string[];
+  wrappedTokens?: string[];
+}
+
+export interface LinearPool extends Pool {
+  mainIndex: number;
+  wrappedIndex: number;
 }
 
 export interface DecoratedPool extends Pool {
