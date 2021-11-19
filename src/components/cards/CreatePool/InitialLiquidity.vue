@@ -22,7 +22,9 @@ onMounted(() => {
   <BalCard>
     <BalStack vertical>
       <BalStack vertical spacing="xs">
-        <span class="text-sm text-gray-700 dark:text-gray-500">{{ userNetworkConfig?.name }}</span>
+        <span class="text-sm text-gray-700 dark:text-gray-500">{{
+          userNetworkConfig?.name
+        }}</span>
         <BalStack horizontal spacing="xs" align="center">
           <button
             @click="goBack"

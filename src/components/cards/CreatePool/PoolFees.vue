@@ -110,7 +110,9 @@ function onChangeFeeController(val: string) {
   <BalCard>
     <BalStack vertical>
       <BalStack vertical spacing="xs">
-        <span class="text-sm text-gray-700 dark:text-gray-500">{{ userNetworkConfig?.name }}</span>
+        <span class="text-sm text-gray-700 dark:text-gray-500">{{
+          userNetworkConfig?.name
+        }}</span>
         <BalStack horizontal align="center" spacing="xs">
           <button
             @click="goBack"
@@ -118,7 +120,9 @@ function onChangeFeeController(val: string) {
           >
             <BalIcon class="flex" name="chevron-left" />
           </button>
-          <h5 class="font-bold dark:text-gray-300">{{ $t('createAPool.setPoolFees') }}</h5>
+          <h5 class="font-bold dark:text-gray-300">
+            {{ $t('createAPool.setPoolFees') }}
+          </h5>
         </BalStack>
       </BalStack>
       <BalStack vertical spacing="sm">

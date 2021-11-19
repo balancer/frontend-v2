@@ -75,7 +75,9 @@ function handleSuccess(): void {
 <template>
   <BalCard>
     <BalStack vertical spacing="xs">
-      <span class="text-sm text-gray-700 dark:text-gray-500">{{ userNetworkConfig?.name }}</span>
+      <span class="text-sm text-gray-700 dark:text-gray-500">{{
+        userNetworkConfig?.name
+      }}</span>
     </BalStack>
     <BalStack vertical>
       <div class="flex items-center">
@@ -141,7 +143,11 @@ function handleSuccess(): void {
             </BalStack>
           </div>
         </BalStack>
-        <BalStack horizontal justify="between" class="p-4 border-t dark:border-gray-600">
+        <BalStack
+          horizontal
+          justify="between"
+          class="p-4 border-t dark:border-gray-600"
+        >
           <h6>{{ $t('total') }}</h6>
           <h6>{{ fNum(poolLiquidity, 'usd') }}</h6>
         </BalStack>

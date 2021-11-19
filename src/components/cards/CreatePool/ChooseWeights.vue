@@ -133,7 +133,8 @@ async function animateHeight(offset = 0) {
   // animate the height initially
   anime({
     targets: tokenWeightListWrapper.value,
-    height: `${wrapperHeight.value + tokenWeightItemHeight.value * offset}px`
+    height: `${wrapperHeight.value + tokenWeightItemHeight.value * offset}px`,
+    easing: 'spring(0.4, 500, 9, 0)'
   });
 
   wrapperHeight.value += tokenWeightItemHeight.value * offset;
@@ -142,7 +143,8 @@ async function animateHeight(offset = 0) {
   // down instead of having the new token weight item shift them
   anime({
     targets: [totalsRowElement.value, addTokenRowElement.value],
-    translateY: `${tokenWeightItemHeight.value * seedTokens.value.length}px`
+    translateY: `${tokenWeightItemHeight.value * seedTokens.value.length}px`,
+    easing: 'spring(0.4, 500, 9, 0)'
   });
 
   await nextTick();
@@ -154,8 +156,7 @@ async function animateHeight(offset = 0) {
       {
         left: 0,
         right: 0,
-        top: `${tokenWeightItemHeight.value *
-          (seedTokens.value.length - 1)}px`,
+        top: `${tokenWeightItemHeight.value * (seedTokens.value.length - 1)}px`,
         opacity: 0
       }
     );
@@ -239,13 +240,19 @@ async function handleRemoveToken(index: number) {
     <BalCard>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">
-          <span class="text-sm text-gray-700 dark:text-gray-500">{{ networkName }}</span>
-          <h5 class="font-bold dark:text-gray-300">{{ $t('createAPool.chooseTokenWeights') }}</h5>
+          <span class="text-sm text-gray-700 dark:text-gray-500">{{
+            networkName
+          }}</span>
+          <h5 class="font-bold dark:text-gray-300">
+            {{ $t('createAPool.chooseTokenWeights') }}
+          </h5>
         </BalStack>
         <BalCard shadow="none" noPad>
           <div ref="tokenWeightListWrapper">
             <div class="flex flex-col">
-              <div class="bg-gray-50 dark:bg-gray-850 w-full flex justify-between p-2 px-4">
+              <div
+                class="bg-gray-50 dark:bg-gray-850 w-full flex justify-between p-2 px-4"
+              >
                 <h6>{{ $t('token') }}</h6>
                 <h6>{{ $t('weight') }}</h6>
               </div>
@@ -275,7 +282,10 @@ async function handleRemoveToken(index: number) {
                   >{{ $t('addToken') }}
                 </BalBtn>
               </div>
-              <div ref="totalsRowElement" class="bg-gray-50 dark:bg-gray-850 w-full p-2 px-4">
+              <div
+                ref="totalsRowElement"
+                class="bg-gray-50 dark:bg-gray-850 w-full p-2 px-4"
+              >
                 <div class="w-full flex justify-between">
                   <h6>{{ $t('total') }}</h6>
                   <h6>{{ totalWeight }}%</h6>
