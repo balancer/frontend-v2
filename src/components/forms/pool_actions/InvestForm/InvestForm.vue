@@ -11,7 +11,7 @@ import useTokens from '@/composables/useTokens';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
 import useInvestState from './composables/useInvestState';
 import useInvestMath from './composables/useInvestMath';
-import { isStableLike, usePool } from '@/composables/usePool';
+import { isStableLike, isStablePhantom, usePool } from '@/composables/usePool';
 // Components
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import InvestFormTotals from './components/InvestFormTotals.vue';
@@ -101,6 +101,13 @@ const forceProportionalInputs = computed(
   (): boolean => managedPoolWithTradingHalted.value
 );
 
+const investmentTokens = computed((): string[] => {
+  if (isStablePhantom(props.pool.poolType)) {
+    return props.pool.mainTokens || [];
+  }
+  return props.pool.tokenAddresses;
+});
+
 /**
  * METHODS
  */
@@ -180,7 +187,7 @@ function setNativeAsset(to: NativeAsset): void {
  */
 onBeforeMount(() => {
   resetAmounts();
-  tokenAddresses.value = [...lpTokens.value];
+  tokenAddresses.value = [...investmentTokens.value];
   if (isWethPool.value) setNativeAssetByBalance();
 });
 
