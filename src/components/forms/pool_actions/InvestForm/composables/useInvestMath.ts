@@ -155,13 +155,14 @@ export default function useInvestFormMath(
           .toNumber() || 0
       );
     } catch (error) {
-      return 100;
+      return 1;
     }
   });
 
-  const highPriceImpact = computed(() =>
-    bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01)
-  );
+  const highPriceImpact = computed((): boolean => {
+    if (batchSwapLoading.value) return false;
+    return bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01);
+  });
 
   const maximized = computed(() =>
     fullAmounts.value.every((amount, i) => {
