@@ -63,7 +63,7 @@
             block
             @click="trackGoal(Goals.ClickFarmDeposit)"
           >
-            Deposit BPT
+            Deposit {{ tokenName ? tokenName : 'BPT' }}
           </BalBtn>
         </template>
       </template>
@@ -128,6 +128,9 @@ export default defineComponent({
     farmId: {
       type: String,
       required: true
+    },
+    tokenName: {
+      type: String
     }
   },
 

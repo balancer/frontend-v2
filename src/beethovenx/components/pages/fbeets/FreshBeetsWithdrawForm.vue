@@ -53,7 +53,7 @@
           block
           @click="trackGoal(Goals.ClickFarmWithdraw)"
         >
-          Withdraw BPT
+          Burn fBEETS
         </BalBtn>
       </template>
     </div>
@@ -96,7 +96,7 @@ type DataProps = {
 };
 
 export default defineComponent({
-  name: 'FarmWithdrawForm',
+  name: 'FreshBeetsWithdrawForm',
   components: {},
   emits: ['success'],
 

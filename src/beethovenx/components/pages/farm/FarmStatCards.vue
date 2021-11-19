@@ -17,20 +17,17 @@
           My Pending Rewards
         </div>
         <div class="text-xl font-medium truncate flex items-center">
-          {{ fNum(pool.farm.pendingBeets, 'token_fixed') }} BEETS
+          {{ fNum(farm.pendingBeets, 'token_fixed') }} BEETS
         </div>
         <div
-          v-if="pool.farm.pendingRewardToken > 0"
+          v-if="farm.pendingRewardToken > 0"
           class="text-xl font-medium truncate flex items-center"
         >
-          {{ fNum(pool.farm.pendingRewardToken, 'token_fixed') }} HND
+          {{ fNum(farm.pendingRewardToken, 'token_fixed') }} HND
         </div>
         <div class="truncate flex items-center pb-8">
           {{
-            fNum(
-              pool.farm.pendingBeetsValue + pool.farm.pendingRewardTokenValue,
-              'usd'
-            )
+            fNum(farm.pendingBeetsValue + farm.pendingRewardTokenValue, 'usd')
           }}
         </div>
 
@@ -38,9 +35,7 @@
           label="Harvest"
           block
           color="gradient"
-          :disabled="
-            pool.farm.pendingBeets <= 0 && pool.farm.pendingRewardToken <= 0
-          "
+          :disabled="farm.pendingBeets <= 0 && farm.pendingRewardToken <= 0"
           :loading="harvesting"
           @click.prevent="harvestRewards"
         />
@@ -54,7 +49,7 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 import useEthers from '@/composables/useEthers';
-import { DecoratedPoolWithRequiredFarm } from '@/beethovenx/services/subgraph/subgraph-types';
+import { DecoratedFarm } from '@/beethovenx/services/subgraph/subgraph-types';
 import useFarm from '@/beethovenx/composables/farms/useFarm';
 import useFarmUserQuery from '@/beethovenx/composables/farms/useFarmUserQuery';
 
@@ -64,8 +59,12 @@ export default defineComponent({
   },
 
   props: {
-    pool: {
-      type: Object as PropType<DecoratedPoolWithRequiredFarm>,
+    farm: {
+      type: Object as PropType<DecoratedFarm>,
+      required: true
+    },
+    tokenAddress: {
+      type: String,
       required: true
     }
   },
@@ -73,12 +72,9 @@ export default defineComponent({
   setup(props) {
     const { fNum } = useNumbers();
     const { txListener } = useEthers();
-    const { harvest } = useFarm(
-      ref(props.pool.address),
-      ref(props.pool.farm.id)
-    );
+    const { harvest } = useFarm(ref(props.tokenAddress), ref(props.farm.id));
     const harvesting = ref(false);
-    const farmUserQuery = useFarmUserQuery(props.pool.farm.id);
+    const farmUserQuery = useFarmUserQuery(props.farm.id);
     const farmUser = computed(() => farmUserQuery.data.value);
 
     async function harvestRewards(): Promise<void> {
@@ -103,7 +99,7 @@ export default defineComponent({
 
     // COMPUTED
     const stats = computed(() => {
-      const farm = props.pool.farm;
+      const farm = props.farm;
 
       return [
         {

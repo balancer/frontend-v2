@@ -53,7 +53,7 @@
           block
           @click="trackGoal(Goals.ClickFarmWithdraw)"
         >
-          Withdraw BPT
+          Withdraw {{ tokenName ? tokenName : 'BPT' }}
         </BalBtn>
       </template>
     </div>
@@ -112,6 +112,9 @@ export default defineComponent({
     farmId: {
       type: String,
       required: true
+    },
+    tokenName: {
+      type: String
     }
   },
 

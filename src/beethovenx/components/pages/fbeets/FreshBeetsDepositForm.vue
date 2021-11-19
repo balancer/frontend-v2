@@ -1,6 +1,6 @@
 <template>
   <BalForm ref="depositForm" @on-submit="submit">
-    <div class="px-4 pt-6">
+    <div class="px-4">
       <BalTextInput
         name="Deposit"
         v-model="amount"
@@ -106,7 +106,7 @@ type DataProps = {
 };
 
 export default defineComponent({
-  name: 'FarmDepositForm',
+  name: 'FreshBeetsDepositForm',
 
   components: {},
 
