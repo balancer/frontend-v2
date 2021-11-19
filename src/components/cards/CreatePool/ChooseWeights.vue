@@ -82,6 +82,10 @@ const excludedTokens = computed((): string[] => {
   return [nativeAsset.address, ...tokensList.value];
 });
 
+const maxTokenAmountReached = computed(() => {
+  return seedTokens.value.length >= 8;
+})
+
 /**
  * LIFECYCLE
  */
@@ -270,7 +274,7 @@ async function handleRemoveToken(index: number) {
               </div>
 
               <div class="p-3" ref="addTokenRowElement">
-                <BalBtn @click="addTokenToPool" outline color="blue" size="sm"
+                <BalBtn :disabled="maxTokenAmountReached" @click="addTokenToPool" outline :color="maxTokenAmountReached ? 'gray' : 'blue'" size="sm"
                   >{{ $t('addToken') }}
                 </BalBtn>
               </div>

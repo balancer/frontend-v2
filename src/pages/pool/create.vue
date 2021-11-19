@@ -97,7 +97,7 @@ const steps = computed(() => [
   }
 ]);
 
-watch(activeStep, () => console.log('active', activeStep.value))
+watch(activeStep, () => console.log('active', activeStep.value));
 
 /**
  * FUNCTIONS
