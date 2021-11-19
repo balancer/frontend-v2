@@ -35,7 +35,8 @@ const {
   setTrpController,
   thirdPartyFeeController,
   fee,
-  proceed
+  proceed,
+  goBack
 } = usePoolCreation();
 const { account } = useWeb3();
 const { userNetworkConfig } = useWeb3();
@@ -110,7 +111,10 @@ function onChangeFeeController(val: string) {
     <BalStack vertical>
       <BalStack vertical spacing="xs">
         <span class="text-sm text-gray-700">{{ userNetworkConfig?.name }}</span>
-        <h5 class="font-bold">{{ $t('createAPool.setPoolFees') }}</h5>
+        <BalStack horizontal align="center" spacing="xs">
+          <button @click="goBack" class="text-blue-500 hover:text-blue-700 flex"><BalIcon class="flex" name="chevron-left" /></button>
+          <h5 class="font-bold">{{ $t('createAPool.setPoolFees') }}</h5>
+        </BalStack>
       </BalStack>
       <BalStack vertical spacing="sm">
         <div>

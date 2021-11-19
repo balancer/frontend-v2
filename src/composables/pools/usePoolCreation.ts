@@ -88,6 +88,10 @@ export default function usePoolCreation() {
     }
   };
 
+  const goBack = () => {
+    poolCreationState.activeStep -= 1;
+  };
+
   function setFeeManagement(type: FeeManagementType) {
     poolCreationState.feeManagementType = type;
   }
@@ -264,7 +268,7 @@ export default function usePoolCreation() {
   const maxInitialLiquidity = computed(() => {
     return sumBy(Object.values(optimisedLiquidity.value), (liq: any) =>
       Number(liq.liquidityRequired)
-    )
+    );
   });
 
   const totalLiquidity = computed(() => {
@@ -281,7 +285,7 @@ export default function usePoolCreation() {
   const tokensWithNoPrice = computed(() => {
     const validTokens = tokensList.value.filter(t => t !== '');
     return validTokens.filter(token => priceFor(token) === 0);
-  })
+  });
 
   return {
     ...toRefs(poolCreationState),
@@ -307,6 +311,7 @@ export default function usePoolCreation() {
     createPool,
     joinPool,
     tokenColors,
-    updateTokenColors
+    updateTokenColors,
+    goBack
   };
 }

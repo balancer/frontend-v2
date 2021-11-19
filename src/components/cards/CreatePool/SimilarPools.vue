@@ -18,7 +18,8 @@ const {
   existingPool,
   setStep,
   proceed,
-  resetPoolCreationState
+  resetPoolCreationState,
+  goBack
 } = usePoolCreation();
 const { fNum } = useNumbers();
 const { t } = useI18n();
@@ -44,7 +45,12 @@ function cancel() {
       <span v-if="isWalletReady" class="text-sm text-gray-700">{{
         userNetworkConfig?.name
       }}</span>
-      <h5 class="font-bold">{{ title }}</h5>
+      <BalStack align="center" horizontal spacing="xs">
+        <button @click="goBack" class="text-blue-500 hover:text-blue-700 flex">
+          <BalIcon class="flex" name="chevron-left" />
+        </button>
+        <h5 class="font-bold">{{ title }}</h5>
+      </BalStack>
       <p v-if="existingPool">{{ $t('createAPool.existingPoolInfo') }}</p>
       <div v-if="isLoadingSimilarPools"></div>
       <BalCard v-else-if="existingPool" shadow="none">

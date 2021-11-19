@@ -37,7 +37,6 @@ const totalsClass = computed(() => ({
   'text-gray-700 ': maxInitialLiquidity.value >= 20000,
   'text-yellow-500': maxInitialLiquidity.value < 20000
 }));
-
 </script>
 
 <template>

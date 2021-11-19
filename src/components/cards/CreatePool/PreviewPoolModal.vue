@@ -33,7 +33,8 @@ const {
   getPoolSymbol,
   poolTypeString,
   initialFee,
-  type: poolType
+  type: poolType,
+  goBack
 } = usePoolCreation();
 const { tokens, priceFor } = useTokens();
 const { fNum } = useNumbers();
@@ -86,7 +87,16 @@ function handleSuccess(): void {
         >
           <BalIcon name="check" />
         </BalCircle>
-        <h4>{{ title }}</h4>
+        <BalStack horizontal align="center" spacing="xs">
+          <button
+            @click="goBack"
+            class="text-blue-500 hover:text-blue-700 flex"
+          >
+            <BalIcon class="flex" name="chevron-left" />
+          </button>
+
+          <h5 class="font-bold">{{ title }}</h5>
+        </BalStack>
       </div>
       <BalStack horizontal spacing="sm" isDynamic>
         <div
@@ -99,7 +109,9 @@ function handleSuccess(): void {
             <span class="text-sm font-medium">{{
               tokens[token.tokenAddress].symbol
             }}</span>
-            <span class="text-sm">{{ fNum(token.weight / 100, 'percent') }}</span>
+            <span class="text-sm">{{
+              fNum(token.weight / 100, 'percent')
+            }}</span>
           </BalStack>
         </div>
       </BalStack>
