@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import useTokens from '@/composables/useTokens';
-
 type Props = {
   loading: boolean;
   fBeetsBalance: string;
@@ -13,8 +11,6 @@ const props = defineProps<Props>();
 /**
  * STATE
  */
-
-const { loading } = useTokens();
 </script>
 
 <template>
@@ -24,7 +20,7 @@ const { loading } = useTokens();
       <div class="flex items-center space-x-4">
         <img src="~@/beethovenx/assets/images/fBEETS.png" width="64" />
         <div class="flex flex-col justify-center">
-          <BalLoadingBlock v-if="loading" class="h-6 w-24 mb-1" white />
+          <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
             {{ props.fBeetsBalance }}
           </p>
@@ -40,7 +36,7 @@ const { loading } = useTokens();
           width="64"
         />
         <div class="flex flex-col justify-center">
-          <BalLoadingBlock v-if="loading" class="h-6 w-24 mb-1" white />
+          <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
             {{ props.bptBalance }}
           </p>
@@ -58,7 +54,7 @@ const { loading } = useTokens();
           width="64"
         />
         <div class="flex flex-col justify-center">
-          <BalLoadingBlock v-if="loading" class="h-6 w-24 mb-1" white />
+          <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
             {{ props.beetsBalance }}
           </p>

@@ -125,6 +125,7 @@ export default defineComponent({
     const { tokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
     const { amount } = toRefs(data);
+    const { refetchBalances } = useTokens();
 
     const bptDeposited = computed(() => {
       return scaleDown(
@@ -145,27 +146,31 @@ export default defineComponent({
     async function submit(): Promise<void> {
       if (!data.withdrawForm.validate()) return;
 
-      withdrawing.value = true;
-      const amountScaled = scale(new BigNumber(amount.value), 18);
-      console.log('amount scaled', amountScaled.toString());
-      const tx = await unStake(amountScaled.toString());
+      try {
+        withdrawing.value = true;
+        const amountScaled = scale(new BigNumber(amount.value), 18);
+        const tx = await unStake(amountScaled.toString());
 
-      if (!tx) {
-        withdrawing.value = false;
-        return;
-      }
-
-      txListener(tx, {
-        onTxConfirmed: async () => {
-          emit('success', tx);
-          amount.value = '';
-          await freshBeetsQuery.refetch.value();
+        if (!tx) {
           withdrawing.value = false;
-        },
-        onTxFailed: () => {
-          withdrawing.value = false;
+          return;
         }
-      });
+
+        txListener(tx, {
+          onTxConfirmed: async () => {
+            emit('success', tx);
+            amount.value = '';
+            await freshBeetsQuery.refetch.value();
+            await refetchBalances.value();
+            withdrawing.value = false;
+          },
+          onTxFailed: () => {
+            withdrawing.value = false;
+          }
+        });
+      } catch {
+        withdrawing.value = false;
+      }
     }
 
     watch(isWalletReady, isAuth => {

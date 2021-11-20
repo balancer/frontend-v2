@@ -245,10 +245,6 @@ export default defineComponent({
       }
     });
 
-    onMounted(() => {
-      injectTokens([tokenAddress.value]);
-    });
-
     return {
       // data
       ...toRefs(data),

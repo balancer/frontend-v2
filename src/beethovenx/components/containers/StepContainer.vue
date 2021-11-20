@@ -15,7 +15,7 @@
         <slot name="right" />
       </div>
     </div>
-    <div v-if="$slots.content" class="mt-6">
+    <div v-if="$slots.content" class="mt-6 relative">
       <slot name="content" />
     </div>
   </BalCard>

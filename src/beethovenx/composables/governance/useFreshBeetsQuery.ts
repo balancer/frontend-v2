@@ -21,7 +21,11 @@ export default function useFreshBeetsQuery() {
   const queryKey = reactive(QUERY_KEYS.Dexes.GetAmountsOut);
 
   const queryFn = async () => {
-    return governanceContractsService.fbeets.getData(account.value);
+    const data = await governanceContractsService.fbeets.getData(account.value);
+
+    console.log('fbeets balance', data.userBalance.toString());
+
+    return data;
   };
 
   const queryOptions = reactive({

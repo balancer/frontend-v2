@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { fNum } from '@/composables/useNumbers';
 import { useFreshBeets } from '@/beethovenx/composables/governance/useFreshBeets';
@@ -16,13 +16,18 @@ import FreshBeetsWithdrawSteps from '@/beethovenx/components/pages/fbeets/FreshB
 import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
 
-const { appNetworkConfig } = useWeb3();
+const { appNetworkConfig, isLoadingProfile } = useWeb3();
 const {
   fBeetsLoading,
   userFbeetsBalance,
   userBptTokenBalance
 } = useFreshBeets();
-const { balanceFor } = useTokens();
+const {
+  balanceFor,
+  injectTokens,
+  dynamicDataLoading,
+  loading: tokensLoading
+} = useTokens();
 
 const farmUserQuery = useFarmUserQuery(appNetworkConfig.fBeets.farmId);
 const farmUser = computed(() => {
@@ -59,6 +64,22 @@ const hasBpt = computed(() => userBptTokenBalance.value.gt(0));
 
 const beetsBalance = computed(() =>
   fNum(balanceFor(getAddress(appNetworkConfig.addresses.beets)), 'token')
+);
+
+onMounted(() => {
+  injectTokens([
+    appNetworkConfig.fBeets.poolAddress,
+    appNetworkConfig.fBeets.address
+  ]);
+});
+
+const dataLoading = computed(
+  () =>
+    fBeetsLoading.value ||
+    farmUserQuery.isLoading.value ||
+    farmUserQuery.isIdle.value ||
+    tokensLoading.value ||
+    dynamicDataLoading.value
 );
 
 const tabs = [
@@ -98,7 +119,7 @@ const activeTab = ref(tabs[0].value);
       </div>
       <div class="w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72">
         <FreshBeetsBalances
-          :loading="fBeetsLoading"
+          :loading="dataLoading"
           :f-beets-balance="fbeetsBalance"
           :bpt-balance="bptBalance"
           :beets-balance="beetsBalance"

@@ -4,6 +4,8 @@ import StepContainer from '@/beethovenx/components/containers/StepContainer.vue'
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import FreshBeetsDepositForm from '@/beethovenx/components/pages/fbeets/FreshBeetsDepositForm.vue';
 import FarmDepositForm from '@/beethovenx/components/pages/farm/FarmDepositForm.vue';
+import { useFreshBeets } from '@/beethovenx/composables/governance/useFreshBeets';
+import useFarmUserQuery from '@/beethovenx/composables/farms/useFarmUserQuery';
 
 type Props = {
   hasBpt: boolean;
@@ -14,6 +16,13 @@ type Props = {
 const props = defineProps<Props>();
 
 const { appNetworkConfig } = useWeb3();
+const { freshBeetsQuery } = useFreshBeets();
+const farmUserQuery = useFarmUserQuery(appNetworkConfig.fBeets.farmId);
+
+function handleFarmDeposit(txReceipt): void {
+  freshBeetsQuery.refetch.value();
+  farmUserQuery.refetch.value();
+}
 </script>
 
 <template>
@@ -30,7 +39,7 @@ const { appNetworkConfig } = useWeb3();
           name: 'invest',
           params: { id: appNetworkConfig.fBeets.poolId }
         }"
-        label="Invest BEETS"
+        label="Invest"
       />
     </template>
   </StepContainer>
@@ -53,6 +62,7 @@ const { appNetworkConfig } = useWeb3();
         :farm-id="appNetworkConfig.fBeets.farmId"
         :token-address="appNetworkConfig.fBeets.address"
         token-name="fBEETS"
+        @success="handleFarmDeposit($event)"
       />
     </template>
   </StepContainer>

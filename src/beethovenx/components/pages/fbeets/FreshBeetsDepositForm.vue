@@ -95,6 +95,7 @@ import BigNumber from 'bignumber.js';
 import { useFreshBeets } from '@/beethovenx/composables/governance/useFreshBeets';
 import useAllowanceAvailableQuery from '@/beethovenx/composables/farms/useAllowanceAvailableQuery';
 import { governanceContractsService } from '@/beethovenx/services/governance/governance-contracts.service';
+import useTokens from '@/composables/useTokens';
 
 type DataProps = {
   depositForm: FormRef;
@@ -140,6 +141,7 @@ export default defineComponent({
       freshBeetsQuery,
       userAllowance
     } = useFreshBeets();
+    const { refetchBalances } = useTokens();
 
     const { amount } = toRefs(data);
     const depositing = ref(false);
@@ -166,23 +168,28 @@ export default defineComponent({
     async function approveToken(): Promise<void> {
       if (!data.depositForm.validate()) return;
 
-      approving.value = true;
-      const tx = await approve();
+      try {
+        approving.value = true;
+        const tx = await approve();
 
-      if (!tx) {
-        approving.value = false;
-        return;
-      }
-
-      txListener(tx, {
-        onTxConfirmed: async () => {
-          await freshBeetsQuery.refetch.value();
+        if (!tx) {
           approving.value = false;
-        },
-        onTxFailed: () => {
-          approving.value = false;
+          return;
         }
-      });
+
+        txListener(tx, {
+          onTxConfirmed: async () => {
+            await freshBeetsQuery.refetch.value();
+            await refetchBalances.value();
+            approving.value = false;
+          },
+          onTxFailed: () => {
+            approving.value = false;
+          }
+        });
+      } catch {
+        approving.value = false;
+      }
     }
 
     const approvalRequired = computed(() => {
@@ -203,24 +210,29 @@ export default defineComponent({
 
       depositing.value = true;
       const amountScaled = scale(new BigNumber(amount.value), 18);
-      const tx = await stake(amountScaled.toString());
 
-      if (!tx) {
-        depositing.value = false;
-        return;
-      }
+      try {
+        const tx = await stake(amountScaled.toString());
 
-      txListener(tx, {
-        onTxConfirmed: async () => {
-          await freshBeetsQuery.refetch.value();
-          emit('success', tx);
-          data.amount = '';
+        if (!tx) {
           depositing.value = false;
-        },
-        onTxFailed: () => {
-          depositing.value = false;
+          return;
         }
-      });
+
+        txListener(tx, {
+          onTxConfirmed: async () => {
+            await freshBeetsQuery.refetch.value();
+            emit('success', tx);
+            data.amount = '';
+            depositing.value = false;
+          },
+          onTxFailed: () => {
+            depositing.value = false;
+          }
+        });
+      } catch {
+        depositing.value = false;
+      }
     }
 
     watch(isWalletReady, isAuth => {
