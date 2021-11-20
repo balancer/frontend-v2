@@ -68,9 +68,6 @@ export default function usePoolQuery(
    * required attributes.
    */
   async function getLinearPoolAttrs(pool: Pool): Promise<Pool> {
-    pool.mainTokens = [];
-    pool.wrappedTokens = [];
-
     // Fetch linear pools from subgraph
     const linearPools = (await balancerSubgraphService.pools.get(
       {
@@ -83,12 +80,16 @@ export default function usePoolQuery(
     )) as LinearPool[];
 
     // Inject main/wrapped tokens into pool schema
-    linearPools.map(linearPool => {
-      pool.mainTokens?.push(
-        getAddress(linearPool.tokensList[linearPool.mainIndex])
+    linearPools.forEach(linearPool => {
+      if (!pool.mainTokens) pool.mainTokens = [];
+      if (!pool.wrappedTokens) pool.wrappedTokens = [];
+      const index = pool.tokensList.indexOf(linearPool.address.toLowerCase());
+
+      pool.mainTokens[index] = getAddress(
+        linearPool.tokensList[linearPool.mainIndex]
       );
-      pool.wrappedTokens?.push(
-        getAddress(linearPool.tokensList[linearPool.wrappedIndex])
+      pool.wrappedTokens[index] = getAddress(
+        linearPool.tokensList[linearPool.wrappedIndex]
       );
     });
 
