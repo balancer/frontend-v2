@@ -97,7 +97,8 @@
     "address": "0x33276d43ada054a281d40a11d48310cdc0156fc2",
     "poolId": "0x33276d43ada054a281d40a11d48310cdc0156fc2000200000000000000000001",
     "poolAddress": "0x33276d43ada054a281d40a11d48310cdc0156fc2",
-    "farmId": "3"
+    "farmId": "3",
+    "oldFarmId": "1"
   }
 }
 

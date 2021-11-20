@@ -30,6 +30,7 @@ const {
 } = useTokens();
 
 const farmUserQuery = useFarmUserQuery(appNetworkConfig.fBeets.farmId);
+
 const farmUser = computed(() => {
   return farmUserQuery.data.value;
 });
@@ -66,6 +67,11 @@ const beetsBalance = computed(() =>
   fNum(balanceFor(getAddress(appNetworkConfig.addresses.beets)), 'token')
 );
 
+const oldFarmUserQuery = useFarmUserQuery(appNetworkConfig.fBeets.oldFarmId);
+const oldFarmUser = computed(() => {
+  return oldFarmUserQuery.data.value;
+});
+
 onMounted(() => {
   injectTokens([
     appNetworkConfig.fBeets.poolAddress,
@@ -93,7 +99,7 @@ const activeTab = ref(tabs[0].value);
 <template>
   <div class="lg:container lg:mx-auto pt-12 md:pt-12">
     <FreshBeetsHeader />
-    <FreshBeetsOldFarmAlert />
+    <FreshBeetsOldFarmAlert v-if="oldFarmUser && oldFarmUser.amount > 0" />
 
     <div class="flex justify-center mb-8">
       <div class="w-full max-w-3xl">

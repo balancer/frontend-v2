@@ -81,6 +81,7 @@ export interface Config {
     poolId: string;
     poolAddress: string;
     farmId: string;
+    oldFarmId: string;
   };
 }
 

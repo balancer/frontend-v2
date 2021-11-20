@@ -37,6 +37,7 @@ function handleFarmInvestment(txReceipt): void {
 }
 
 function handleFarmWithdrawal(txReceipt): void {
+  console.log('farm id', props.farmId);
   farmWithdrawalSuccess.value = true;
   txHash.value = txReceipt.hash;
 }
@@ -55,16 +56,16 @@ const activeTab = ref(tabs[0].value);
 
 <template>
   <div class="mt-4 relative">
+    <BalAlert
+      v-if="!loading && props.hasUnstakedBpt"
+      title="You have unstaked BPT in your wallet"
+      description="If you deposit your BPT into the farm, you will earn additional rewards paid out in BEETS."
+      type="warning"
+      size="sm"
+      class="mb-3"
+    />
     <BalLoadingBlock v-if="loading || dynamicDataLoading" class="h-96" />
     <BalCard v-else>
-      <BalAlert
-        v-if="props.hasUnstakedBpt"
-        title="You have unstaked BPT in your wallet"
-        description="If you deposit your BPT into the farm, you will earn additional rewards paid out in BEETS."
-        type="warning"
-        size="sm"
-        class="mb-3"
-      />
       <div class="text-gray-500 text-sm">
         Stake your BPTs to earn BEETS
       </div>
