@@ -13,6 +13,8 @@ import BalTabs from '@/components/_global/BalTabs/BalTabs.vue';
 import useFarmUserQuery from '@/beethovenx/composables/farms/useFarmUserQuery';
 import FreshBeetsDepositSteps from '@/beethovenx/components/pages/fbeets/FreshBeetsDepositSteps.vue';
 import FreshBeetsWithdrawSteps from '@/beethovenx/components/pages/fbeets/FreshBeetsWithdrawSteps.vue';
+import useTokens from '@/composables/useTokens';
+import { getAddress } from '@ethersproject/address';
 
 const { appNetworkConfig } = useWeb3();
 const {
@@ -20,6 +22,7 @@ const {
   userFbeetsBalance,
   userBptTokenBalance
 } = useFreshBeets();
+const { balanceFor } = useTokens();
 
 const farmUserQuery = useFarmUserQuery(appNetworkConfig.fBeets.farmId);
 const farmUser = computed(() => {
@@ -53,6 +56,10 @@ const fbeetsBalance = computed(() => {
 });
 
 const hasBpt = computed(() => userBptTokenBalance.value.gt(0));
+
+const beetsBalance = computed(() =>
+  fNum(balanceFor(getAddress(appNetworkConfig.addresses.beets)), 'token')
+);
 
 const tabs = [
   { value: 'deposit', label: 'Deposit' },
@@ -92,9 +99,9 @@ const activeTab = ref(tabs[0].value);
       <div class="w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72">
         <FreshBeetsBalances
           :loading="fBeetsLoading"
-          :fBeetsBalance="fbeetsBalance"
-          :bptBalance="bptBalance"
-          beetsBalance="123.2"
+          :f-beets-balance="fbeetsBalance"
+          :bpt-balance="bptBalance"
+          :beets-balance="beetsBalance"
         />
       </div>
     </div>
