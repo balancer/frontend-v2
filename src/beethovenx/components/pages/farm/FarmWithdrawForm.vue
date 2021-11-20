@@ -1,42 +1,40 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
-    <div class="px-4 pt-8">
-      <BalTextInput
-        name="Withdraw"
-        v-model="amount"
-        v-model:isValid="validInput"
-        :rules="amountRules()"
-        :disabled="withdrawing"
-        type="number"
-        min="0"
-        step="any"
-        placeholder="0"
-        :decimal-limit="18"
-        validate-on="input"
-        prepend-border
-        append-shadow
-      >
-        <template v-slot:info>
-          <div class="cursor-pointer" @click.prevent="amount = bptDeposited">
-            {{ $t('balance') }}:
-            {{ bptDeposited }}
-          </div>
-        </template>
-        <template v-slot:append>
-          <div class="p-2">
-            <BalBtn
-              size="xs"
-              color="white"
-              @click.prevent="amount = bptDeposited"
-            >
-              {{ $t('max') }}
-            </BalBtn>
-          </div>
-        </template>
-      </BalTextInput>
-    </div>
+    <BalTextInput
+      name="Withdraw"
+      v-model="amount"
+      v-model:isValid="validInput"
+      :rules="amountRules()"
+      :disabled="withdrawing"
+      type="number"
+      min="0"
+      step="any"
+      placeholder="0"
+      :decimal-limit="18"
+      validate-on="input"
+      prepend-border
+      append-shadow
+    >
+      <template v-slot:info>
+        <div class="cursor-pointer" @click.prevent="amount = bptDeposited">
+          {{ $t('balance') }}:
+          {{ bptDeposited }}
+        </div>
+      </template>
+      <template v-slot:append>
+        <div class="p-2">
+          <BalBtn
+            size="xs"
+            color="white"
+            @click.prevent="amount = bptDeposited"
+          >
+            {{ $t('max') }}
+          </BalBtn>
+        </div>
+      </template>
+    </BalTextInput>
 
-    <div class="p-4">
+    <div class="pt-4">
       <BalBtn
         v-if="!isWalletReady"
         :label="$t('connectWallet')"
@@ -61,17 +59,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  PropType,
-  reactive,
-  ref,
-  toRef,
-  toRefs,
-  watch
-} from 'vue';
+import { computed, defineComponent, reactive, ref, toRefs, watch } from 'vue';
 import { FormRef } from '@/types';
 import {
   isLessThanOrEqualTo,
@@ -88,7 +76,6 @@ import useTokens from '@/composables/useTokens';
 import { BigNumber } from 'bignumber.js';
 import useEthers from '@/composables/useEthers';
 import useFarmUserQuery from '@/beethovenx/composables/farms/useFarmUserQuery';
-import { DecoratedPoolWithRequiredFarm } from '@/beethovenx/services/subgraph/subgraph-types';
 import useFarm from '@/beethovenx/composables/farms/useFarm';
 
 type DataProps = {
@@ -136,7 +123,7 @@ export default defineComponent({
     const { amount } = toRefs(data);
     const { tokenAddress, farmId } = toRefs(props);
     const { withdrawAndHarvest } = useFarm(tokenAddress, farmId);
-    const farmUserQuery = useFarmUserQuery(tokenAddress.value);
+    const farmUserQuery = useFarmUserQuery(farmId.value);
     const farmUser = computed(() => {
       return farmUserQuery.data.value;
     });
@@ -179,34 +166,11 @@ export default defineComponent({
       });
     }
 
-    /*watch(balances, (newBalances, oldBalances) => {
-      const balancesChanged = !isEqual(newBalances, oldBalances);
-      if (balancesChanged) {
-        //
-      }
-    });*/
-
     watch(isWalletReady, isAuth => {
       if (!isAuth) {
         data.amount = '0';
         data.propMax = [];
       }
-    });
-
-    watch(account, () => {
-      /*if (hasZeroBalance.value) {
-        //
-      } else {
-        //
-      }*/
-    });
-
-    onMounted(() => {
-      /*if (hasZeroBalance.value) {
-        //
-      } else {
-        //
-      }*/
     });
 
     return {

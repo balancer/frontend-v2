@@ -1,42 +1,36 @@
 <template>
   <BalForm ref="depositForm" @on-submit="submit">
-    <div class="px-4 pt-6">
-      <BalTextInput
-        name="Deposit"
-        v-model="amount"
-        v-model:isValid="validInput"
-        :rules="amountRules()"
-        :disabled="loading"
-        type="number"
-        min="0"
-        step="any"
-        placeholder="0"
-        :decimal-limit="18"
-        validate-on="input"
-        prepend-border
-        append-shadow
-      >
-        <template v-slot:info>
-          <div class="cursor-pointer" @click.prevent="amount = bptBalance">
-            {{ $t('balance') }}:
-            {{ bptBalance }}
-          </div>
-        </template>
-        <template v-slot:append>
-          <div class="p-2">
-            <BalBtn
-              size="xs"
-              color="white"
-              @click.prevent="amount = bptBalance"
-            >
-              {{ $t('max') }}
-            </BalBtn>
-          </div>
-        </template>
-      </BalTextInput>
-    </div>
+    <BalTextInput
+      name="Deposit"
+      v-model="amount"
+      v-model:isValid="validInput"
+      :rules="amountRules()"
+      :disabled="loading"
+      type="number"
+      min="0"
+      step="any"
+      placeholder="0"
+      :decimal-limit="18"
+      validate-on="input"
+      prepend-border
+      append-shadow
+    >
+      <template v-slot:info>
+        <div class="cursor-pointer" @click.prevent="amount = bptBalance">
+          {{ $t('balance') }}:
+          {{ bptBalance }}
+        </div>
+      </template>
+      <template v-slot:append>
+        <div class="p-2">
+          <BalBtn size="xs" color="white" @click.prevent="amount = bptBalance">
+            {{ $t('max') }}
+          </BalBtn>
+        </div>
+      </template>
+    </BalTextInput>
 
-    <div class="p-4 pb-8 border-b dark:border-gray-700">
+    <div class="pt-4">
       <BalBtn
         v-if="!isWalletReady"
         :label="$t('connectWallet')"
@@ -152,7 +146,13 @@ export default defineComponent({
     } = useWeb3();
     const { fNum } = useNumbers();
     const { t } = useI18n();
-    const { tokens, balanceFor } = useTokens();
+    const {
+      tokens,
+      balanceFor,
+      injectTokens,
+      dynamicDataLoading,
+      loading
+    } = useTokens();
     const { trackGoal, Goals } = useFathom();
     const { amount } = toRefs(data);
     const depositing = ref(false);
@@ -238,13 +238,6 @@ export default defineComponent({
       });
     }
 
-    /*watch(balances, (newBalances, oldBalances) => {
-      const balancesChanged = !isEqual(newBalances, oldBalances);
-      if (balancesChanged) {
-        //
-      }
-    });*/
-
     watch(isWalletReady, isAuth => {
       if (!isAuth) {
         data.amount = '0';
@@ -252,20 +245,8 @@ export default defineComponent({
       }
     });
 
-    watch(account, () => {
-      /*if (hasZeroBalance.value) {
-        //
-      } else {
-        //
-      }*/
-    });
-
     onMounted(() => {
-      /*if (hasZeroBalance.value) {
-        //
-      } else {
-        //
-      }*/
+      injectTokens([tokenAddress.value]);
     });
 
     return {

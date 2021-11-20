@@ -3,13 +3,11 @@ import HomePage from '@/beethovenx/pages/Invest.vue';
 import PoolPage from '@/beethovenx/pages/pool/_id.vue';
 import PoolInvestPage from '@/beethovenx/pages/pool/invest.vue';
 import PoolWithdrawPage from '@/beethovenx/pages/pool/withdraw.vue';
-import PoolFarmPage from '@/beethovenx/pages/farm/farm.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/beethovenx/pages/trade.vue';
 import PoolCreate from '@/beethovenx/pages/PoolCreate.vue';
 import Portfolio from '@/beethovenx/pages/Portfolio.vue';
 import FreshBeets from '@/beethovenx/pages/FreshBeets.vue';
-import FreshBeetsDepositWithdraw from '@/beethovenx/pages/FreshBeetsDepositWithdraw.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', redirect: '/trade' },
@@ -42,13 +40,6 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'PoolTransferLayout' }
   },
   {
-    path: '/farm/:id/token/:tokenAddress/:tokenName?',
-    name: 'farm',
-    component: PoolFarmPage,
-    meta: { layout: 'FarmLayout' }
-  },
-
-  {
     path: '/liquidity-mining',
     name: 'liquidity-mining',
     component: LiquidityMiningPage
@@ -57,12 +48,6 @@ const routes: RouteRecordRaw[] = [
   { path: '/pool-create', name: 'pool-create', component: PoolCreate },
   { path: '/my-portfolio', name: 'my-portfolio', component: Portfolio },
   { path: '/stake', name: 'stake', component: FreshBeets },
-  {
-    path: '/stake/deposit-withdraw',
-    name: 'stake-deposit-withdraw',
-    component: FreshBeetsDepositWithdraw,
-    meta: { layout: 'FarmLayout' }
-  },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',

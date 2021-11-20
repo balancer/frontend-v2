@@ -583,5 +583,9 @@
     "portfolioValueInfo": "A view of your portfolio value over time.",
     "portfolioVolumeInfo": "Info text",
     "portfolioFeesInfo": "Info text",
-    "portfolioPoolsInfoText": "A break down of your investment pools."
+    "portfolioPoolsInfoText": "A break down of your investment pools.",
+    "farmWithdrawalSettled": "Your withdrawal has settled",
+    "farmWithdrawalSuccess": "Your LP tokens have been withdrawn from this farm and any pending rewards have been harvested.",
+    "farmDepositSettled": "Your deposit has settled",
+    "farmDepositSuccess": "Your LP tokens have been deposited into this farm. You will now start to accrue farming rewards."
 }

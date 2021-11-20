@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { configService } from '@/services/config/config.service';
-import useWeb3 from '@/services/web3/useWeb3';
-import { useRoute } from 'vue-router';
 import useTokens from '@/composables/useTokens';
 
 type Props = {
   loading: boolean;
   fBeetsBalance: string;
   bptBalance: string;
+  beetsBalance: string;
 };
 
 const props = defineProps<Props>();
@@ -15,11 +13,8 @@ const props = defineProps<Props>();
 /**
  * STATE
  */
-const { network } = configService;
-const { explorerLinks: explorer } = useWeb3();
-const route = useRoute();
 
-const { loading, injectTokens, dynamicDataLoading } = useTokens();
+const { loading } = useTokens();
 </script>
 
 <template>
@@ -31,7 +26,7 @@ const { loading, injectTokens, dynamicDataLoading } = useTokens();
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
-            {{ fBeetsBalance }}
+            {{ props.fBeetsBalance }}
           </p>
           <p class="text-sm md:text-base text-primary">fBEETS</p>
         </div>
@@ -47,7 +42,7 @@ const { loading, injectTokens, dynamicDataLoading } = useTokens();
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
-            {{ bptBalance }}
+            {{ props.bptBalance }}
           </p>
           <p class="text-sm md:text-base text-primary">
             Fidelio Duetto BPTs
@@ -65,7 +60,7 @@ const { loading, injectTokens, dynamicDataLoading } = useTokens();
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
-            1,230.2
+            {{ props.beetsBalance }}
           </p>
           <p class="text-sm md:text-base text-primary">
             BEETS

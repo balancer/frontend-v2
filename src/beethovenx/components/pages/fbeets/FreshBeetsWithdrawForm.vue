@@ -1,6 +1,6 @@
 <template>
   <BalForm ref="withdrawForm" @on-submit="submit">
-    <div class="px-4 pt-6">
+    <div>
       <BalTextInput
         name="Withdraw"
         v-model="amount"
@@ -36,7 +36,7 @@
       </BalTextInput>
     </div>
 
-    <div class="p-4">
+    <div class="pt-4">
       <BalBtn
         v-if="!isWalletReady"
         :label="$t('connectWallet')"
