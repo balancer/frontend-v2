@@ -30,6 +30,7 @@ export type WithdrawMathResponse = {
   priceImpact: Ref<number>;
   highPriceImpact: Ref<boolean>;
   proportionalAmounts: Ref<string[]>;
+  proportionalPoolTokenAmounts: Ref<string[]>;
   singleAssetMaxes: Ref<string[]>;
   exactOut: Ref<boolean>;
   singleAssetMaxOut: Ref<boolean>;
@@ -103,13 +104,32 @@ export default function useWithdrawMath(
     bnum(tokenOutAmount.value).gt(tokenOutPoolBalance.value)
   );
 
-  const proportionalAmounts = computed((): string[] => {
+  const proportionalPoolTokenAmounts = computed((): string[] => {
     const { receive } = poolCalculator.propAmountsGiven(
       propBptIn.value,
       0,
       'send'
     );
     return receive;
+  });
+
+  const proportionalMainTokenAmounts = computed((): string[] => {
+    if (pool.value.onchain.linearPools) {
+      const linearPools = Object.values(pool.value.onchain.linearPools);
+      return proportionalPoolTokenAmounts.value.map((amount, i) => {
+        return bnum(amount)
+          .times(linearPools[i].priceRate)
+          .toString();
+      });
+    }
+    return [];
+  });
+
+  const proportionalAmounts = computed((): string[] => {
+    if (isStablePhantom(pool.value.poolType)) {
+      return proportionalMainTokenAmounts.value;
+    }
+    return proportionalPoolTokenAmounts.value;
   });
 
   const fullAmounts = computed(() => {
@@ -242,6 +262,7 @@ export default function useWithdrawMath(
     priceImpact,
     highPriceImpact,
     proportionalAmounts,
+    proportionalPoolTokenAmounts,
     singleAssetMaxes,
     exactOut,
     singleAssetMaxOut,

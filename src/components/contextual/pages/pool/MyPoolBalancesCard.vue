@@ -24,9 +24,11 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fiatTotalLabel, initMath, proportionalAmounts } = useWithdrawMath(
-  toRef(props, 'pool')
-);
+const {
+  fiatTotalLabel,
+  initMath,
+  proportionalPoolTokenAmounts
+} = useWithdrawMath(toRef(props, 'pool'));
 const { getTokens } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
@@ -46,7 +48,7 @@ function weightLabelFor(address: string): string {
 }
 
 function fiatLabelFor(index: number, address: string): string {
-  const fiatValue = toFiat(proportionalAmounts.value[index], address);
+  const fiatValue = toFiat(proportionalPoolTokenAmounts.value[index], address);
   return fNum(fiatValue, currency.value);
 }
 
@@ -92,7 +94,11 @@ onBeforeMount(() => {
         </div>
 
         <span class="flex flex-col flex-grow text-right">
-          {{ isWalletReady ? fNum(proportionalAmounts[index], 'token') : '-' }}
+          {{
+            isWalletReady
+              ? fNum(proportionalPoolTokenAmounts[index], 'token')
+              : '-'
+          }}
           <span class="text-gray-500 text-sm">
             {{ isWalletReady ? fiatLabelFor(index, token.address) : '-' }}
           </span>
