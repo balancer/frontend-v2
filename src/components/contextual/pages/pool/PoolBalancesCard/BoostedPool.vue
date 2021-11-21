@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue';
+import { formatUnits } from '@ethersproject/units';
+import { flatten } from 'lodash';
+
+import { bnum } from '@/lib/utils';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
-import useWeb3 from '@/services/web3/useWeb3';
+import useTokens from '@/composables/useTokens';
 
 import AssetRow from './components/AssetRow';
 
@@ -29,16 +34,31 @@ const props = withDefaults(defineProps<Props>(), {
  * COMPOSABLES
  */
 const { upToLargeBreakpoint } = useBreakpoints();
-const { fNum } = useNumbers();
+const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { explorerLinks } = useWeb3();
+const { getToken } = useTokens();
 
 /**
  * COMPUTED
  */
-// TODO: implement
-const totalFiat = computed(() => {
-  return fNum(0, currency.value);
+const totalFiatValue = computed(() => {
+  const fiatValue = flatten(
+    props.pool.tokenAddresses.map(address => getUnderlyingTokens(address))
+  )
+    .map(token =>
+      toFiat(
+        formatUnits(token.balance, getToken(token.address).decimals),
+        token.address
+      )
+    )
+    .reduce((total, value) =>
+      bnum(total)
+        .plus(value)
+        .toString()
+    );
+
+  return fNum(fiatValue, currency.value);
 });
 
 /**
@@ -105,7 +125,7 @@ function getUnderlyingTokens(address: string) {
         class="flex w-full justify-between p-4 border-t dark:border-gray-900 text-base font-semibold"
       >
         <div>{{ $t('total') }}</div>
-        <div>{{ totalFiat }}</div>
+        <div>{{ totalFiatValue }}</div>
       </div>
     </template>
   </BalCard>
