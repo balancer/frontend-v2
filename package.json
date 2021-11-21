@@ -1,6 +1,6 @@
 {
   "name": "@balancer-labs/frontend-v2",
-  "version": "1.28.5",
+  "version": "1.28.7",
   "engines": {
     "node": "14.x",
     "npm": ">=7"
@@ -22,7 +22,7 @@
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
     "@balancer-labs/balancer-js": "^1.0.1",
     "@balancer-labs/sor": "^1.1.0",
-    "@balancer-labs/sor2": "npm:@balancer-labs/sor@^2.0.0-beta.7",
+    "@balancer-labs/sor2": "npm:@balancer-labs/sor@^2.0.0-beta.8",
     "@balancer-labs/typechain": "^1.0.0",
     "@ensdomains/content-hash": "^2.5.3",
     "@gnosis.pm/gp-v2-contracts": "^1.0.2",
