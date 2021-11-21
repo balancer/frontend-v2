@@ -9,13 +9,33 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
  * COMPOSABLES
  */
 const { userNetworkConfig } = useWeb3();
-const { seedTokens, proceed, optimisedLiquidity, goBack } = usePoolCreation();
+const {
+  seedTokens,
+  proceed,
+  optimisedLiquidity,
+  goBack,
+  hasManuallySetInitialBalances,
+  updateManualLiquidityFlag
+} = usePoolCreation();
 
+/**
+ * LIFECYCLE
+ */
 onMounted(() => {
-  for (const token of seedTokens.value) {
-    token.amount = optimisedLiquidity.value[token.tokenAddress].balanceRequired;
+  if (!hasManuallySetInitialBalances.value) {
+    for (const token of seedTokens.value) {
+      token.amount =
+        optimisedLiquidity.value[token.tokenAddress].balanceRequired;
+    }
   }
 });
+
+/**
+ * FUNCTIONS
+ */
+function handleAmountChange() {
+  updateManualLiquidityFlag(true);
+}
 </script>
 
 <template>
@@ -42,6 +62,7 @@ onMounted(() => {
           :key="token.tokenAddress"
           v-model:amount="seedTokens[i].amount"
           v-model:address="seedTokens[i].tokenAddress"
+          @update:amount="handleAmountChange"
           :weight="seedTokens[i].weight / 100"
           :name="`initial-token-${seedTokens[i].tokenAddress}`"
         />

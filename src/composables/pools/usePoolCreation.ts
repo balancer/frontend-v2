@@ -39,6 +39,7 @@ const emptyPoolCreationState = {
   tokensList: [] as string[],
   poolId: '' as string,
   poolAddress: '',
+  hasManuallySetInitialBalances: false,
   type: PoolType.Weighted
 };
 
@@ -205,6 +206,10 @@ export default function usePoolCreation() {
     tokenColors.value = colors;
   }
 
+  function updateManualLiquidityFlag(isManual: boolean) {
+    poolCreationState.hasManuallySetInitialBalances = isManual;
+  }
+
   function getScaledAmounts() {
     const scaledAmounts: string[] = poolCreationState.seedTokens.map(
       (token: PoolSeedToken) => {
@@ -318,6 +323,7 @@ export default function usePoolCreation() {
     getScaledAmounts,
     createPool,
     joinPool,
+    updateManualLiquidityFlag,
     optimisedLiquidity,
     tokensWithNoPrice,
     similarPools,
