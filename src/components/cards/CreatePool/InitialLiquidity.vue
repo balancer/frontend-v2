@@ -25,6 +25,7 @@ const {
  */
 onMounted(() => {
   optimiseLiquidity();
+  scaleLiquidity();
 });
 
 /**
