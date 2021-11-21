@@ -46,10 +46,10 @@ const { userNetworkConfig } = useWeb3();
  */
 
 const title = computed((): string =>
-  poolCreated.value
-    ? t('poolCreated')
-    : t('previewPool', [poolTypeString.value])
+  poolCreated.value ? t('poolCreated') : t('previewPool', [poolTypeString])
 );
+
+const initialWeightLabel = computed(() => t('initialWeight'));
 
 const tokenAddresses = computed((): string[] => {
   return seedTokens.value.map(token => token.tokenAddress);
@@ -69,6 +69,13 @@ function handleClose(): void {
 function handleSuccess(): void {
   poolCreated.value = true;
   emit('success');
+}
+
+function getInitialWeight(tokenAddress: string, tokenAmount: number) {
+  return fNum(
+    (tokenAmount * priceFor(tokenAddress)) / poolLiquidity.value,
+    'percent'
+  );
 }
 </script>
 
@@ -116,29 +123,23 @@ function handleSuccess(): void {
               <BalStack horizontal align="center">
                 <BalAsset :address="token.tokenAddress" :size="36" />
                 <BalStack vertical spacing="none">
-                  <span class=" font-semibold"
-                    >{{ fNum(token.weight / 100, 'percent') }}
-                    {{ tokens[token.tokenAddress].symbol }}</span
-                  >
-                  <span class="text-sm text-gray-500"
-                    >{{ $t('initialWeight') }}:
-                    {{
-                      fNum(
-                        (token.amount * priceFor(token.tokenAddress)) /
-                          poolLiquidity,
-                        'percent'
-                      )
-                    }}</span
-                  >
+                  <span class="font-semibold">
+                    {{ fNum(token.weight / 100, 'percent') }}
+                    {{ tokens[token.tokenAddress].symbol }}
+                  </span>
+                  <span class="text-sm text-gray-500">
+                    {{ initialWeightLabel }}:
+                    {{ getInitialWeight(token.tokenAddress, token.amount) }}
+                  </span>
                 </BalStack>
               </BalStack>
               <BalStack vertical spacing="none" align="end">
-                <span class="font-semibold">{{
-                  fNum(token.amount, 'token')
-                }}</span>
-                <span class="text-sm text-gray-500">{{
-                  fNum(token.amount * priceFor(token.tokenAddress), 'usd')
-                }}</span>
+                <span class="font-semibold">
+                  {{ fNum(token.amount, 'token') }}
+                </span>
+                <span class="text-sm text-gray-500">
+                  {{ fNum(token.amount * priceFor(token.tokenAddress), 'usd') }}
+                </span>
               </BalStack>
             </BalStack>
           </div>
