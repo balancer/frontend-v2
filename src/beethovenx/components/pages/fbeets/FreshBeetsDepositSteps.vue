@@ -11,6 +11,7 @@ type Props = {
   hasBpt: boolean;
   hasUnstakedFbeets: boolean;
   hasStakedFbeets: boolean;
+  loading: boolean;
 };
 
 const props = defineProps<Props>();
@@ -49,7 +50,7 @@ function handleFarmDeposit(txReceipt): void {
     :complete="props.hasUnstakedFbeets || props.hasStakedFbeets"
   >
     <template v-slot:content>
-      <FreshBeetsDepositForm />
+      <FreshBeetsDepositForm :loading="props.loading" />
     </template>
   </StepContainer>
   <StepContainer
@@ -62,6 +63,7 @@ function handleFarmDeposit(txReceipt): void {
         :farm-id="appNetworkConfig.fBeets.farmId"
         :token-address="appNetworkConfig.fBeets.address"
         token-name="fBEETS"
+        :data-loading="props.loading"
         @success="handleFarmDeposit($event)"
       />
     </template>

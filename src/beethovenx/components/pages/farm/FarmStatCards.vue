@@ -11,36 +11,14 @@
         </div>
       </BalCard>
     </div>
-    <div>
-      <BalCard>
-        <div class="text-sm text-gray-500 font-medium mb-2">
-          My Pending Rewards
-        </div>
-        <div class="text-xl font-medium truncate flex items-center">
-          {{ fNum(farm.pendingBeets, 'token_fixed') }} BEETS
-        </div>
-        <div
-          v-if="farm.pendingRewardToken > 0"
-          class="text-xl font-medium truncate flex items-center"
-        >
-          {{ fNum(farm.pendingRewardToken, 'token_fixed') }} HND
-        </div>
-        <div class="truncate flex items-center pb-8">
-          {{
-            fNum(farm.pendingBeetsValue + farm.pendingRewardTokenValue, 'usd')
-          }}
-        </div>
-
-        <BalBtn
-          label="Harvest"
-          block
-          color="gradient"
-          :disabled="farm.pendingBeets <= 0 && farm.pendingRewardToken <= 0"
-          :loading="harvesting"
-          @click.prevent="harvestRewards"
-        />
-      </BalCard>
-    </div>
+    <FarmHarvestRewardsCard
+      :farm-id="pool.farm.id"
+      :token-address="pool.address"
+      :pending-beets="pool.farm.pendingBeets"
+      :pending-beets-value="pool.farm.pendingBeetsValue"
+      :pending-reward-token="pool.farm.pendingRewardToken"
+      :pending-reward-token-value="pool.farm.pendingRewardTokenValue"
+    />
   </div>
 </template>
 
@@ -49,22 +27,25 @@ import { computed, defineComponent, PropType, ref } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 import useEthers from '@/composables/useEthers';
-import { DecoratedFarm } from '@/beethovenx/services/subgraph/subgraph-types';
+import {
+  DecoratedFarm,
+  DecoratedPoolWithFarm,
+  DecoratedPoolWithRequiredFarm
+} from '@/beethovenx/services/subgraph/subgraph-types';
 import useFarm from '@/beethovenx/composables/farms/useFarm';
 import useFarmUserQuery from '@/beethovenx/composables/farms/useFarmUserQuery';
+import FarmHarvestRewardsCard from '@/beethovenx/components/pages/farm/FarmHarvestRewardsCard.vue';
+import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 export default defineComponent({
   components: {
+    FarmHarvestRewardsCard,
     LiquidityMiningTooltip
   },
 
   props: {
-    farm: {
-      type: Object as PropType<DecoratedFarm>,
-      required: true
-    },
-    tokenAddress: {
-      type: String,
+    pool: {
+      type: Object as PropType<DecoratedPoolWithRequiredFarm>,
       required: true
     }
   },
@@ -72,9 +53,12 @@ export default defineComponent({
   setup(props) {
     const { fNum } = useNumbers();
     const { txListener } = useEthers();
-    const { harvest } = useFarm(ref(props.tokenAddress), ref(props.farm.id));
+    const { harvest } = useFarm(
+      ref(props.pool.address),
+      ref(props.pool.farm.id)
+    );
     const harvesting = ref(false);
-    const farmUserQuery = useFarmUserQuery(props.farm.id);
+    const farmUserQuery = useFarmUserQuery(props.pool.farm.id);
     const farmUser = computed(() => farmUserQuery.data.value);
 
     async function harvestRewards(): Promise<void> {
@@ -99,7 +83,7 @@ export default defineComponent({
 
     // COMPUTED
     const stats = computed(() => {
-      const farm = props.farm;
+      const farm = props.pool.farm;
 
       return [
         {

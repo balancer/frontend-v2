@@ -15,6 +15,11 @@ import FreshBeetsDepositSteps from '@/beethovenx/components/pages/fbeets/FreshBe
 import FreshBeetsWithdrawSteps from '@/beethovenx/components/pages/fbeets/FreshBeetsWithdrawSteps.vue';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
+import useFarmUser from '@/beethovenx/composables/farms/useFarmUser';
+import usePoolWithFarm from '@/beethovenx/composables/pool/usePoolWithFarm';
+import FarmStatCards from '@/beethovenx/components/pages/farm/FarmStatCards.vue';
+import FarmStatCardsLoading from '@/beethovenx/components/pages/farm/FarmStatCardsLoading.vue';
+import FarmHarvestRewardsCard from '@/beethovenx/components/pages/farm/FarmHarvestRewardsCard.vue';
 
 const { appNetworkConfig, isLoadingProfile } = useWeb3();
 const {
@@ -29,11 +34,10 @@ const {
   loading: tokensLoading
 } = useTokens();
 
-const farmUserQuery = useFarmUserQuery(appNetworkConfig.fBeets.farmId);
-
-const farmUser = computed(() => {
-  return farmUserQuery.data.value;
-});
+const { farmUser, farmUserLoading } = useFarmUser(
+  appNetworkConfig.fBeets.farmId
+);
+const { pool, loadingPool } = usePoolWithFarm(appNetworkConfig.fBeets.poolId);
 const fbeetsDeposited = computed(() => {
   const amount = farmUser.value?.amount;
 
@@ -82,11 +86,17 @@ onMounted(() => {
 const dataLoading = computed(
   () =>
     fBeetsLoading.value ||
-    farmUserQuery.isLoading.value ||
-    farmUserQuery.isIdle.value ||
+    farmUserLoading.value ||
     tokensLoading.value ||
     dynamicDataLoading.value
 );
+
+const pendingRewards = computed(() => {
+  return {
+    count: farmUser.value?.pendingBeets || 0,
+    value: farmUser.value?.pendingBeetsValue || 0
+  };
+});
 
 const tabs = [
   { value: 'deposit', label: 'Deposit' },
@@ -104,9 +114,6 @@ const activeTab = ref(tabs[0].value);
     <div class="flex justify-center mb-8">
       <div class="w-full max-w-3xl">
         <FreshBeetsStatCards />
-        <!--        <FarmStatCardsLoading v-if="loadingPool || !pool" />
-        <FarmStatCards v-else :farm="pool.farm" :token-address="pool.address" />-->
-
         <div class="mb-4">
           <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
         </div>
@@ -115,12 +122,14 @@ const activeTab = ref(tabs[0].value);
           :hasBpt="hasBpt"
           :hasUnstakedFbeets="hasUnstakedFbeets"
           :hasStakedFbeets="fbeetsDeposited.gt(0)"
+          :loading="dataLoading"
         />
         <FreshBeetsWithdrawSteps
           v-if="activeTab === 'withdraw'"
           :hasBpt="hasBpt"
           :hasUnstakedFbeets="hasUnstakedFbeets"
           :hasStakedFbeets="fbeetsDeposited.gt(0)"
+          :loading="dataLoading"
         />
       </div>
       <div class="w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72">
@@ -129,6 +138,14 @@ const activeTab = ref(tabs[0].value);
           :f-beets-balance="fbeetsBalance"
           :bpt-balance="bptBalance"
           :beets-balance="beetsBalance"
+        />
+        <FarmHarvestRewardsCard
+          :farm-id="appNetworkConfig.fBeets.farmId"
+          :token-address="appNetworkConfig.fBeets.poolAddress"
+          :pending-beets="farmUser?.pendingBeets || 0"
+          :pending-beets-value="farmUser?.pendingBeetsValue || 0"
+          :pending-reward-token-value="0"
+          :pending-reward-token="0"
         />
       </div>
     </div>

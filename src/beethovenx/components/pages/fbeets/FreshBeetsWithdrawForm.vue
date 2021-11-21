@@ -17,9 +17,13 @@
         append-shadow
       >
         <template v-slot:info>
-          <div class="cursor-pointer" @click.prevent="amount = bptDeposited">
+          <div
+            class="cursor-pointer flex"
+            @click.prevent="amount = bptDeposited"
+          >
             {{ $t('balance') }}:
-            {{ fBeetsLoading ? '-' : bptDeposited }}
+            <BalLoadingBlock v-if="loading" class="h-4 w-24 ml-1" white />
+            <span v-else>&nbsp;{{ bptDeposited }}</span>
           </div>
         </template>
         <template v-slot:append>
@@ -46,10 +50,10 @@
       <template v-else>
         <BalBtn
           type="submit"
-          :loading-label="fBeetsLoading ? 'Loading' : $t('confirming')"
+          :loading-label="loading ? 'Loading' : $t('confirming')"
           color="gradient"
           :disabled="!validInput || amount === '0' || amount === ''"
-          :loading="withdrawing || fBeetsLoading"
+          :loading="withdrawing || loading"
           block
           @click="trackGoal(Goals.ClickFarmWithdraw)"
         >
@@ -77,7 +81,7 @@ import {
   isRequired
 } from '@/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
-import { scale, scaleDown } from '@/lib/utils';
+import { scale, scaleDown, sleep } from '@/lib/utils';
 import useFathom from '@/composables/useFathom';
 
 import { TOKENS } from '@/constants/tokens';
@@ -86,6 +90,8 @@ import useTokens from '@/composables/useTokens';
 import { BigNumber } from 'bignumber.js';
 import useEthers from '@/composables/useEthers';
 import { useFreshBeets } from '@/beethovenx/composables/governance/useFreshBeets';
+import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
+import useFarmUser from '@/beethovenx/composables/farms/useFarmUser';
 
 type DataProps = {
   withdrawForm: FormRef;
@@ -94,13 +100,17 @@ type DataProps = {
   validInput: boolean;
   propToken: number;
 };
-
 export default defineComponent({
   name: 'FreshBeetsWithdrawForm',
   components: {},
   emits: ['success'],
 
-  props: {},
+  props: {
+    loading: {
+      type: Boolean,
+      required: true
+    }
+  },
 
   setup(props, { emit }) {
     const data = reactive<DataProps>({
@@ -111,21 +121,22 @@ export default defineComponent({
       propToken: 0
     });
 
-    const {
-      fBeetsLoading,
-      userFbeetsBalance,
-      unStake,
-      freshBeetsQuery
-    } = useFreshBeets();
+    const { userFbeetsBalance, unStake, freshBeetsQuery } = useFreshBeets();
 
     const { txListener } = useEthers();
-    const { isWalletReady, account, toggleWalletSelectModal } = useWeb3();
+    const {
+      isWalletReady,
+      account,
+      toggleWalletSelectModal,
+      appNetworkConfig
+    } = useWeb3();
     const withdrawing = ref(false);
     const { t } = useI18n();
     const { tokens } = useTokens();
     const { trackGoal, Goals } = useFathom();
     const { amount } = toRefs(data);
     const { refetchBalances } = useTokens();
+    const { farmUserRefetch } = useFarmUser(appNetworkConfig.fBeets.farmId);
 
     const bptDeposited = computed(() => {
       return scaleDown(
@@ -161,7 +172,6 @@ export default defineComponent({
             emit('success', tx);
             amount.value = '';
             await freshBeetsQuery.refetch.value();
-            await refetchBalances.value();
             withdrawing.value = false;
           },
           onTxFailed: () => {
@@ -192,7 +202,6 @@ export default defineComponent({
       // data
       ...toRefs(data),
       withdrawing,
-      fBeetsLoading,
 
       Goals,
       TOKENS,

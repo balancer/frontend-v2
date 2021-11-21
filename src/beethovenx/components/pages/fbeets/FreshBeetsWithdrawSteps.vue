@@ -11,6 +11,7 @@ type Props = {
   hasBpt: boolean;
   hasUnstakedFbeets: boolean;
   hasStakedFbeets: boolean;
+  loading: boolean;
 };
 
 const props = defineProps<Props>();
@@ -37,6 +38,7 @@ function handleFarmWithdrawal(txReceipt): void {
         :token-address="appNetworkConfig.fBeets.address"
         token-name="fBEETS"
         @success="handleFarmWithdrawal($event)"
+        :data-loading="props.loading"
       />
     </template>
   </StepContainer>
@@ -46,7 +48,7 @@ function handleFarmWithdrawal(txReceipt): void {
     :complete="props.hasBpt"
   >
     <template v-slot:content>
-      <FreshBeetsWithdrawForm />
+      <FreshBeetsWithdrawForm :loading="props.loading" />
     </template>
   </StepContainer>
   <StepContainer

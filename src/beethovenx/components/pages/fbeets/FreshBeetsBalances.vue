@@ -16,7 +16,9 @@ const props = defineProps<Props>();
 <template>
   <BalCard shadow="xl" class="mb-4 pb-1">
     <div class="flex flex-col flex-grow md:mb-10">
-      <h4 class="mb-3">My Balance</h4>
+      <div class="text-sm text-gray-500 font-medium mb-3">
+        My Balance
+      </div>
       <div class="flex items-center space-x-4">
         <img src="~@/beethovenx/assets/images/fBEETS.png" width="64" />
         <div class="flex flex-col justify-center">
@@ -29,7 +31,7 @@ const props = defineProps<Props>();
       </div>
     </div>
     <div class="flex flex-col flex-grow md:mb-10">
-      <h4 class="mb-3">My Unstaked BPTs</h4>
+      <div class="text-sm text-gray-500 font-medium mb-3">My Unstaked BPTs</div>
       <div class="flex items-center space-x-4">
         <img
           src="~@/beethovenx/assets/images/fidellio-duetto-bpt.png"
@@ -47,7 +49,9 @@ const props = defineProps<Props>();
       </div>
     </div>
     <div class="flex flex-col flex-grow">
-      <h4 class="mb-3">My Uninvested BEETS</h4>
+      <div class="text-sm text-gray-500 font-medium mb-3">
+        My Uninvested BEETS
+      </div>
       <div class="flex items-center space-x-4">
         <img
           src="~@/beethovenx/assets/images/beets-icon-large.png"

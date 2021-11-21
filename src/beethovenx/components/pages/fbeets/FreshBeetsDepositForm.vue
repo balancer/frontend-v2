@@ -6,7 +6,7 @@
         v-model="amount"
         v-model:isValid="validInput"
         :rules="amountRules()"
-        :disabled="fBeetsLoading"
+        :disabled="loading"
         type="number"
         min="0"
         step="any"
@@ -17,9 +17,10 @@
         append-shadow
       >
         <template v-slot:info>
-          <div class="cursor-pointer" @click.prevent="amount = bptBalance">
+          <div class="cursor-pointer flex" @click.prevent="amount = bptBalance">
             {{ $t('balance') }}:
-            {{ fBeetsLoading ? '-' : bptBalance }}
+            <BalLoadingBlock v-if="loading" class="h-4 w-24 ml-1" white />
+            <span v-else>&nbsp;{{ bptBalance }}</span>
           </div>
         </template>
         <template v-slot:append>
@@ -47,8 +48,8 @@
         <BalBtn
           v-if="approvalRequired"
           label="Approve BPT"
-          :loading="approving || fBeetsLoading"
-          :loading-label="fBeetsLoading ? 'Loading' : $t('approving')"
+          :loading="approving || loading"
+          :loading-label="loading ? 'Loading' : $t('approving')"
           :disabled="!validInput || parseFloat(amount) === 0 || amount === ''"
           block
           @click.prevent="approveToken"
@@ -56,10 +57,10 @@
         <template v-else>
           <BalBtn
             type="submit"
-            :loading-label="fBeetsLoading ? 'Loading' : $t('confirming')"
+            :loading-label="loading ? 'Loading' : $t('confirming')"
             color="gradient"
             :disabled="!validInput || parseFloat(amount) === 0 || amount === ''"
-            :loading="depositing || fBeetsLoading"
+            :loading="depositing || loading"
             block
           >
             Deposit BPT
@@ -88,7 +89,7 @@ import {
 } from '@/lib/utils/validations';
 import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
-import { scale, scaleDown } from '@/lib/utils';
+import { scale, scaleDown, sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useEthers from '@/composables/useEthers';
 import BigNumber from 'bignumber.js';
@@ -96,10 +97,10 @@ import { useFreshBeets } from '@/beethovenx/composables/governance/useFreshBeets
 import useAllowanceAvailableQuery from '@/beethovenx/composables/farms/useAllowanceAvailableQuery';
 import { governanceContractsService } from '@/beethovenx/services/governance/governance-contracts.service';
 import useTokens from '@/composables/useTokens';
+import useFarmUser from '@/beethovenx/composables/farms/useFarmUser';
 
 type DataProps = {
   depositForm: FormRef;
-  loading: boolean;
   amount: string;
   propMax: string[];
   validInput: boolean;
@@ -113,12 +114,16 @@ export default defineComponent({
 
   emits: ['success'],
 
-  props: {},
+  props: {
+    loading: {
+      type: Boolean,
+      required: true
+    }
+  },
 
   setup(props, { emit }) {
     const data = reactive<DataProps>({
       depositForm: {} as FormRef,
-      loading: false,
       amount: '',
       propMax: [],
       validInput: true,
@@ -134,14 +139,13 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { t } = useI18n();
     const {
-      fBeetsLoading,
       userBptTokenBalance,
       approve,
       stake,
       freshBeetsQuery,
       userAllowance
     } = useFreshBeets();
-    const { refetchBalances } = useTokens();
+    const { farmUserRefetch } = useFarmUser(appNetworkConfig.fBeets.farmId);
 
     const { amount } = toRefs(data);
     const depositing = ref(false);
@@ -179,8 +183,6 @@ export default defineComponent({
 
         txListener(tx, {
           onTxConfirmed: async () => {
-            await freshBeetsQuery.refetch.value();
-            await refetchBalances.value();
             approving.value = false;
           },
           onTxFailed: () => {
@@ -267,8 +269,7 @@ export default defineComponent({
       // methods
       submit,
       fNum,
-      bptBalance,
-      fBeetsLoading
+      bptBalance
     };
   }
 });

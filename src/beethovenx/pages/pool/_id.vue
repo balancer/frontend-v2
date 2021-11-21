@@ -95,11 +95,7 @@
           <div class="mb-4" v-if="loadingPool || !!pool.farm">
             <h4 class="px-4 lg:px-0 mb-4">Farm</h4>
             <FarmStatCardsLoading v-if="loadingPool" />
-            <FarmStatCards
-              v-else
-              :farm="pool.farm"
-              :token-address="pool.address"
-            />
+            <FarmStatCards v-else :pool="pool" />
           </div>
 
           <div class="mb-4">

@@ -16,9 +16,10 @@
       append-shadow
     >
       <template v-slot:info>
-        <div class="cursor-pointer" @click.prevent="amount = bptDeposited">
+        <div class="cursor-pointer flex" @click.prevent="amount = bptDeposited">
           {{ $t('balance') }}:
-          {{ bptDeposited }}
+          <BalLoadingBlock v-if="dataLoading" class="h-4 w-24 ml-1" white />
+          <span v-else>&nbsp;{{ bptDeposited }}</span>
         </div>
       </template>
       <template v-slot:append>
@@ -44,10 +45,10 @@
       <template v-else>
         <BalBtn
           type="submit"
-          :loading-label="$t('confirming')"
+          :loading-label="dataLoading ? 'Loading' : $t('confirming')"
           color="gradient"
           :disabled="!validInput || amount === '0' || amount === ''"
-          :loading="withdrawing"
+          :loading="withdrawing || dataLoading"
           block
           @click="trackGoal(Goals.ClickFarmWithdraw)"
         >
@@ -102,6 +103,9 @@ export default defineComponent({
     },
     tokenName: {
       type: String
+    },
+    dataLoading: {
+      type: Boolean
     }
   },
 
