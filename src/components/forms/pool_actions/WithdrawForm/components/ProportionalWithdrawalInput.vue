@@ -4,9 +4,10 @@ import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { TokenInfoMap } from '@/types/TokenList';
 // Composables
 import useNumbers from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
+import { isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
@@ -52,7 +53,14 @@ const { fNum } = useNumbers();
 /**
  * COMPUTED
  */
-const tokens = computed(() => getTokens(props.tokenAddresses));
+const tokens = computed(
+  (): TokenInfoMap => {
+    if (isStablePhantom(props.pool.poolType)) {
+      return getTokens(props.pool.mainTokens || []);
+    }
+    return getTokens(props.pool.tokenAddresses);
+  }
+);
 
 const percentageLabel = computed(() => {
   try {

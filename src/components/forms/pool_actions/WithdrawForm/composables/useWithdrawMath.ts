@@ -11,6 +11,7 @@ import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
+import { isStablePhantom } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -72,10 +73,17 @@ export default function useWithdrawMath(
   /**
    * COMPUTED
    */
-  const tokenCount = computed(() => pool.value.tokenAddresses.length);
+  const tokenAddresses = computed((): string[] => {
+    if (isStablePhantom(pool.value.poolType)) {
+      return pool.value.mainTokens || [];
+    }
+    return pool.value.tokenAddresses;
+  });
+
+  const tokenCount = computed((): number => pool.value.tokenAddresses.length);
 
   const tokens = computed(() =>
-    pool.value.tokenAddresses.map(address => getToken(address))
+    tokenAddresses.value.map(address => getToken(address))
   );
 
   const bptBalance = computed(() => {

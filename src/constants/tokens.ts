@@ -49,7 +49,7 @@ export const TOKENS = {
         '0xff795577d9ac8bd7d90ee22b6c1703490b6512fd':
           '0x6b175474e89094c44da98b954eedeac495271d0f', // DAI
         // AAVE USDC
-        '0xe22da380ee6B445bb8273C81944ADEB6E8450422':
+        '0xe22da380ee6b445bb8273c81944adeb6e8450422':
           '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
         // AAVE USDT
         '0x13512979ade267ab5100878e2e0f485b568328a4':
