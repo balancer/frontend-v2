@@ -35,7 +35,7 @@ const emptyPoolCreationState = {
   feeType: 'fixed' as FeeType,
   feeController: 'self' as FeeController,
   thirdPartyFeeController: '',
-  fee: '0',
+  fee: 0.1,
   tokensList: [] as string[],
   poolId: '' as string,
   poolAddress: '',

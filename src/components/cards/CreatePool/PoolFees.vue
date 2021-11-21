@@ -19,6 +19,7 @@ const FIXED_FEE_OPTIONS = ['0.0005', '0.003', '0.01'];
  */
 const isCustomFee = ref(false);
 const checkboxState = ref(true);
+const isInvalidFee = ref(false);
 
 /**
  * COMPOSABLES
@@ -56,6 +57,9 @@ const isProceedDisabled = computed(() => {
   ) {
     return true;
   }
+
+  if (isInvalidFee.value) return true;
+
   return false;
 });
 
@@ -79,6 +83,10 @@ function onFixedInput(val: string): void {
 function onCustomInput(val: string): void {
   initialFee.value = (Number(val) / 100).toString();
   isCustomFee.value = true;
+
+  if (Number(val) <= 0.00001 || Number(val) > 10) {
+    isInvalidFee.value = true;
+  }
 }
 
 function onChangeFeeManagementType(val: boolean) {
@@ -143,14 +151,33 @@ function onChangeFeeController(val: string) {
               placeholder="0.1"
               type="number"
               step="any"
-              min="0"
               @update:modelValue="onCustomInput"
             />
+            <!-- <BalTextInput
+              class="w-20"
+              v-model="fee"
+              placeholder="0.1"
+              size="xs"
+              type="number"
+              @input="onCustomInput"
+            >
+              <template v-slot:append>
+                %
+              </template>
+            </BalTextInput> -->
             <div class="px-1">
               %
             </div>
           </div>
         </BalStack>
+        <BalAlert
+          class="w-full"
+          :title="$t('invalidFee')"
+          type="error"
+          v-if="isInvalidFee"
+        >
+          {{ $t('invalidFeeExplain') }}
+        </BalAlert>
       </BalStack>
       <BalStack horizontal spacing="none" align="center">
         <BalCheckbox

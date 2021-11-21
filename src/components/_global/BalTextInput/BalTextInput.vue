@@ -18,7 +18,7 @@ import { omit } from 'lodash';
  */
 type InputValue = string | number;
 type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
-type InputSize = 'sm' | 'md' | 'lg';
+type InputSize = 'xs' | 'sm' | 'md' | 'lg';
 type ValidationTrigger = 'input' | 'blur';
 type RuleFunction = (val: InputValue) => string;
 export type Rules = RuleFunction[];

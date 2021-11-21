@@ -3,6 +3,8 @@ import { Ref, computed } from 'vue';
 export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const extPaddingClass = (): string => {
     switch (props.size) {
+      case 'xs':
+        return 'p-1';
       case 'sm':
         return 'p-1';
       case 'lg':
@@ -14,6 +16,8 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
 
   const intPaddingClass = (): string => {
     switch (props.size) {
+      case 'xs':
+        return 'p-px';
       case 'sm':
         return 'p-px';
       case 'lg':
@@ -25,6 +29,8 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
 
   const inputTextSize = (): string => {
     switch (props.size) {
+      case 'xs':
+        return 'text-base';
       case 'sm':
         return 'text-base';
       case 'lg':
@@ -36,6 +42,8 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
 
   const inputHeightClass = (): string => {
     switch (props.size) {
+      case 'xs':
+        return 'h-6';
       case 'sm':
         return 'h-8';
       case 'lg':
