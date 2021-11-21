@@ -112,9 +112,7 @@ function getUnderlyingTokens(address: string) {
             />
           </BalLink>
           <template #item="{ item: asset }">
-            <div class="grid grid-cols-3">
-              <AssetRow :address="asset.address" :balance="asset.balance" />
-            </div>
+            <AssetRow :address="asset.address" :balance="asset.balance" />
           </template>
         </BalBreakdown>
       </div>

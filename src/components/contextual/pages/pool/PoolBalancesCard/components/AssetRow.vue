@@ -46,28 +46,30 @@ const fiatLabel = computed(() => {
 </script>
 
 <template>
-  <div>
-    <BalLink
-      :href="explorerLinks.addressLink(token.address)"
-      external
-      noStyle
-      class="flex items-center"
-    >
-      <BalAsset :address="token.address" class="mr-2" />
-      {{ token.symbol }}
-      <BalIcon
-        name="arrow-up-right"
-        size="sm"
-        class="ml-2 text-gray-500 hover:text-blue-500 transition-colors"
-      />
-    </BalLink>
-  </div>
+  <div class="grid grid-cols-3">
+    <div>
+      <BalLink
+        :href="explorerLinks.addressLink(token.address)"
+        external
+        noStyle
+        class="flex items-center"
+      >
+        <BalAsset :address="token.address" class="mr-2" />
+        {{ token.symbol }}
+        <BalIcon
+          name="arrow-up-right"
+          size="sm"
+          class="ml-2 text-gray-500 hover:text-blue-500 transition-colors"
+        />
+      </BalLink>
+    </div>
 
-  <div class="justify-self-end">
-    {{ balanceLabel }}
-  </div>
+    <div class="justify-self-end">
+      {{ balanceLabel }}
+    </div>
 
-  <div class="justify-self-end">
-    {{ fiatLabel }}
+    <div class="justify-self-end">
+      {{ fiatLabel }}
+    </div>
   </div>
 </template>
