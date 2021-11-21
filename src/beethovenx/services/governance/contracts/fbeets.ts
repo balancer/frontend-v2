@@ -17,8 +17,8 @@ export default class FreshBeets {
   public async getData(
     account: string
   ): Promise<{
-    totalSupply: BigNumber;
-    totalVestedAmount: BigNumber;
+    totalFbeetsSupply: BigNumber;
+    totalBptStaked: BigNumber;
     userBalance: BigNumber;
     userBptTokenBalance: BigNumber;
     allowance: BigNumber;
@@ -29,21 +29,20 @@ export default class FreshBeets {
       FreshBeetsAbi
     );
 
-    multicaller.call('totalSupply', this.fbeetsAddress, 'totalSupply', []);
     multicaller.call(
-      'totalVestedAmount',
-      this.vestingTokenAddress,
-      'balanceOf',
-      [this.fbeetsAddress]
+      'totalFbeetsSupply',
+      this.fbeetsAddress,
+      'totalSupply',
+      []
     );
+    multicaller.call('totalBptStaked', this.bptTokenAddress, 'balanceOf', [
+      this.fbeetsAddress
+    ]);
     multicaller.call('userBalance', this.fbeetsAddress, 'balanceOf', [account]);
-    multicaller.call(
-      'userBptTokenBalance',
-      this.vestingTokenAddress,
-      'balanceOf',
-      [account]
-    );
-    multicaller.call('allowance', this.vestingTokenAddress, 'allowance', [
+    multicaller.call('userBptTokenBalance', this.bptTokenAddress, 'balanceOf', [
+      account
+    ]);
+    multicaller.call('allowance', this.bptTokenAddress, 'allowance', [
       account,
       this.fbeetsAddress
     ]);
@@ -60,7 +59,7 @@ export default class FreshBeets {
 
   public async getTotalVestedTokenAmount(): Promise<BigNumber> {
     return await call(this.service.provider, FreshBeetsAbi, [
-      this.vestingTokenAddress,
+      this.bptTokenAddress,
       'balanceOf',
       [this.fbeetsAddress]
     ]);
@@ -76,36 +75,36 @@ export default class FreshBeets {
 
   public async bptBalanceOf(account: string): Promise<BigNumber> {
     return await call(this.service.provider, ERC20Abi, [
-      this.vestingTokenAddress,
+      this.bptTokenAddress,
       'balanceOf',
       [account]
     ]);
   }
 
-  public async enter(provider: Web3Provider, amount: BigNumber) {
+  public async enter(provider: Web3Provider, amount: string) {
     return sendTransaction(
       provider,
       this.fbeetsAddress,
       FreshBeetsAbi,
       'enter',
-      [amount]
+      [BigNumber.from(amount)]
     );
   }
 
-  public async leave(provider: Web3Provider, amount: BigNumber) {
+  public async leave(provider: Web3Provider, amount: string) {
     return sendTransaction(
       provider,
       this.fbeetsAddress,
       FreshBeetsAbi,
       'leave',
-      [amount]
+      [BigNumber.from(amount)]
     );
   }
 
   public get fbeetsAddress(): string {
     return this.service.config.fBeets.address || '';
   }
-  public get vestingTokenAddress(): string {
+  public get bptTokenAddress(): string {
     return this.service.config.fBeets.poolAddress || '';
   }
 }

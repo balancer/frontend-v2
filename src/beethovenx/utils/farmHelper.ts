@@ -47,13 +47,11 @@ export function calculateRewardsPerDay(farm: Farm, blocksPerDay: number) {
 
 export function calculateApr(
   farm: Farm,
-  pool: DecoratedPool,
+  tvl: number,
   blocksPerYear: number,
   beetsPrice: number,
   rewardTokenPrice: number
 ) {
-  const tvl = calculateTvl(farm, pool);
-
   if (tvl === 0) {
     return 0;
   }
@@ -81,8 +79,9 @@ export function getPoolApr(
   beetsPrice: number,
   rewardTokenPrice: number
 ): PoolApr {
+  const tvl = calculateTvl(farm, pool);
   const liquidityMiningApr = farm
-    ? `${calculateApr(farm, pool, blocksPerYear, beetsPrice, rewardTokenPrice)}`
+    ? `${calculateApr(farm, tvl, blocksPerYear, beetsPrice, rewardTokenPrice)}`
     : '0';
 
   return {
@@ -107,7 +106,7 @@ export function decorateFarm(
   const tvl = calculateTvl(farm, pool);
   const apr = calculateApr(
     farm,
-    pool,
+    tvl,
     blocksPerYear,
     beetsPrice,
     rewardTokenPrice

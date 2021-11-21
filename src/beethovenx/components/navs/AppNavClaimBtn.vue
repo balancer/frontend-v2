@@ -93,6 +93,7 @@ import useEthers from '@/composables/useEthers';
 import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { Alert } from '@/composables/useAlerts';
+import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 
 export default defineComponent({
   name: 'NavAlert',
@@ -102,7 +103,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { isWalletReady } = useWeb3();
+    const { isWalletReady, appNetworkConfig } = useWeb3();
     const { txListener } = useEthers();
     const { fNum } = useNumbers();
     const {
@@ -114,9 +115,15 @@ export default defineComponent({
     } = usePools();
     const harvesting = ref(false);
     const { upToLargeBreakpoint } = useBreakpoints();
+    const { fbeetsDecoratedFarm } = useFreshBeets();
 
     const data = computed(() => {
       const farms = onlyPoolsWithFarms.value.map(pool => pool.farm);
+
+      if (fbeetsDecoratedFarm.value) {
+        farms.push(fbeetsDecoratedFarm.value);
+      }
+
       const pendingRewardToken = sumBy(farms, farm => farm.pendingRewardToken);
       const pendingRewardTokenValue = sumBy(
         farms,

@@ -4,14 +4,14 @@ import QUERY_KEYS from '@/beethovenx/constants/queryKeys';
 import useApp from '@/composables/useApp';
 import useWeb3 from '@/services/web3/useWeb3';
 import { governanceContractsService } from '@/beethovenx/services/governance/governance-contracts.service';
-import { BigNumber } from 'ethers';
+import BigNumber from 'bignumber.js';
 
 interface QueryResponse {
-  totalSupply: BigNumber;
-  userBptTokenBalance: BigNumber;
+  totalFbeetsSupply: BigNumber;
+  totalBptStaked: BigNumber;
   userBalance: BigNumber;
+  userBptTokenBalance: BigNumber;
   allowance: BigNumber;
-  totalVestedAmount: BigNumber;
 }
 
 export default function useFreshBeetsQuery() {
@@ -23,9 +23,19 @@ export default function useFreshBeetsQuery() {
   const queryFn = async () => {
     const data = await governanceContractsService.fbeets.getData(account.value);
 
-    console.log('fbeets balance', data.userBalance.toString());
+    /*console.log('totalFbeetsSupply', data.totalFbeetsSupply.toString());
+    console.log('totalBptStaked', data.totalBptStaked.toString());
+    console.log('userBalance', data.userBalance.toString());
+    console.log('userBptTokenBalance', data.userBptTokenBalance.toString());
+    console.log('allowance', data.allowance.toString());*/
 
-    return data;
+    return {
+      totalFbeetsSupply: new BigNumber(data.totalFbeetsSupply.toString()),
+      totalBptStaked: new BigNumber(data.totalBptStaked.toString()),
+      userBalance: new BigNumber(data.userBalance.toString()),
+      userBptTokenBalance: new BigNumber(data.userBptTokenBalance.toString()),
+      allowance: new BigNumber(data.allowance.toString())
+    };
   };
 
   const queryOptions = reactive({

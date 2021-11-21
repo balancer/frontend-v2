@@ -183,6 +183,7 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     refetchPools,
 
     harvestAllFarms,
-    refetchFarmsForUser
+    refetchFarmsForUser,
+    farms
   };
 }

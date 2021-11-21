@@ -93,7 +93,7 @@ import { scale, scaleDown, sleep } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useEthers from '@/composables/useEthers';
 import BigNumber from 'bignumber.js';
-import { useFreshBeets } from '@/beethovenx/composables/governance/useFreshBeets';
+import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 import useAllowanceAvailableQuery from '@/beethovenx/composables/farms/useAllowanceAvailableQuery';
 import { governanceContractsService } from '@/beethovenx/services/governance/governance-contracts.service';
 import useTokens from '@/composables/useTokens';

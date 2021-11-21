@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { fNum } from '@/composables/useNumbers';
-import { useFreshBeets } from '@/beethovenx/composables/governance/useFreshBeets';
+import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 import { scaleDown } from '@/lib/utils';
 import { BigNumber } from 'bignumber.js';
 import FreshBeetsBalances from '@/beethovenx/components/pages/fbeets/FreshBeetsBalances.vue';
@@ -17,9 +17,7 @@ import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
 import useFarmUser from '@/beethovenx/composables/farms/useFarmUser';
 import usePoolWithFarm from '@/beethovenx/composables/pool/usePoolWithFarm';
-import FarmStatCards from '@/beethovenx/components/pages/farm/FarmStatCards.vue';
 import FarmStatCardsLoading from '@/beethovenx/components/pages/farm/FarmStatCardsLoading.vue';
-import FarmHarvestRewardsCard from '@/beethovenx/components/pages/farm/FarmHarvestRewardsCard.vue';
 
 const { appNetworkConfig, isLoadingProfile } = useWeb3();
 const {
@@ -91,13 +89,6 @@ const dataLoading = computed(
     dynamicDataLoading.value
 );
 
-const pendingRewards = computed(() => {
-  return {
-    count: farmUser.value?.pendingBeets || 0,
-    value: farmUser.value?.pendingBeetsValue || 0
-  };
-});
-
 const tabs = [
   { value: 'deposit', label: 'Deposit' },
   { value: 'withdraw', label: 'Withdraw' }
@@ -113,7 +104,10 @@ const activeTab = ref(tabs[0].value);
 
     <div class="flex justify-center mb-8">
       <div class="w-full max-w-3xl">
-        <FreshBeetsStatCards />
+        <div class="mb-6">
+          <FarmStatCardsLoading v-if="dataLoading" />
+          <FreshBeetsStatCards v-else />
+        </div>
         <div class="mb-4">
           <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
         </div>
@@ -138,14 +132,6 @@ const activeTab = ref(tabs[0].value);
           :f-beets-balance="fbeetsBalance"
           :bpt-balance="bptBalance"
           :beets-balance="beetsBalance"
-        />
-        <FarmHarvestRewardsCard
-          :farm-id="appNetworkConfig.fBeets.farmId"
-          :token-address="appNetworkConfig.fBeets.poolAddress"
-          :pending-beets="farmUser?.pendingBeets || 0"
-          :pending-beets-value="farmUser?.pendingBeetsValue || 0"
-          :pending-reward-token-value="0"
-          :pending-reward-token="0"
         />
       </div>
     </div>

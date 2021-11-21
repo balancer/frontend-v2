@@ -89,7 +89,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import { BigNumber } from 'bignumber.js';
 import useEthers from '@/composables/useEthers';
-import { useFreshBeets } from '@/beethovenx/composables/governance/useFreshBeets';
+import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import useFarmUser from '@/beethovenx/composables/farms/useFarmUser';
 

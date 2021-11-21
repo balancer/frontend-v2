@@ -4,7 +4,7 @@ import StepContainer from '@/beethovenx/components/containers/StepContainer.vue'
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import FarmWithdrawForm from '@/beethovenx/components/pages/farm/FarmWithdrawForm.vue';
 import FreshBeetsWithdrawForm from '@/beethovenx/components/pages/fbeets/FreshBeetsWithdrawForm.vue';
-import { useFreshBeets } from '@/beethovenx/composables/governance/useFreshBeets';
+import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 import useFarmUserQuery from '@/beethovenx/composables/farms/useFarmUserQuery';
 
 type Props = {
