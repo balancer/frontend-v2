@@ -74,13 +74,21 @@ export function useFreshBeets() {
     dynamicDataLoaded.value ? priceFor(appNetworkConfig.addresses.hnd) : 0
   );
 
-  const pool = computed(() =>
-    pools.value?.find(
+  const pool = computed(() => {
+    console.log(
+      pools.value?.find(
+        pool =>
+          pool.address.toLowerCase() ===
+          appNetworkConfig.fBeets.poolAddress.toLowerCase()
+      )
+    );
+
+    return pools.value?.find(
       pool =>
         pool.address.toLowerCase() ===
         appNetworkConfig.fBeets.poolAddress.toLowerCase()
-    )
-  );
+    );
+  });
 
   const beetsStaked = computed(() => {
     if (!pool.value) {
@@ -108,9 +116,7 @@ export function useFreshBeets() {
       return undefined;
     }
 
-    const tvl =
-      calculateTvl(farm.value, pool.value) *
-      currentExchangeRate.value.toNumber();
+    const tvl = calculateTvl(farm.value, pool.value);
     const apr = calculateApr(
       farm.value,
       tvl,

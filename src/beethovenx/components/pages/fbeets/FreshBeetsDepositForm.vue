@@ -146,6 +146,7 @@ export default defineComponent({
       userAllowance
     } = useFreshBeets();
     const { farmUserRefetch } = useFarmUser(appNetworkConfig.fBeets.farmId);
+    const { refetchAllowances } = useTokens();
 
     const { amount } = toRefs(data);
     const depositing = ref(false);
@@ -183,6 +184,7 @@ export default defineComponent({
 
         txListener(tx, {
           onTxConfirmed: async () => {
+            await refetchAllowances.value();
             approving.value = false;
           },
           onTxFailed: () => {

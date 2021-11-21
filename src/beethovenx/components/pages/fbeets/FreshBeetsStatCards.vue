@@ -5,11 +5,28 @@ import FarmHarvestRewardsCard from '@/beethovenx/components/pages/farm/FarmHarve
 import useWeb3 from '@/services/web3/useWeb3';
 import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 import useNumbers from '@/composables/useNumbers';
+import { computed } from 'vue';
 
 const { appNetworkConfig } = useWeb3();
 const { fNum } = useNumbers();
 
-const { fbeetsDecoratedFarm, totalBptStaked, beetsStaked } = useFreshBeets();
+const {
+  fbeetsDecoratedFarm,
+  totalBptStaked,
+  beetsStaked,
+  pool
+} = useFreshBeets();
+
+const swapApr = computed(() =>
+  pool.value ? parseFloat(pool.value.dynamic.apr.total) : 0
+);
+const farmApr = computed(() =>
+  fbeetsDecoratedFarm.value ? fbeetsDecoratedFarm.value.apr : 0
+);
+const fbeetsApr = computed(() => 0);
+const totalApr = computed(
+  () => swapApr.value + farmApr.value + fbeetsApr.value
+);
 </script>
 
 <template>
@@ -28,17 +45,17 @@ const { fbeetsDecoratedFarm, totalBptStaked, beetsStaked } = useFreshBeets();
           APR
         </div>
         <div class="text-xl font-medium truncate flex items-center">
-          {{ fNum(fbeetsDecoratedFarm?.apr || '0', 'percent') }}
+          {{ fNum(totalApr || '0', 'percent') }}
           <FreshBeetsAprTooltip
-            :swap-apr="20"
-            :farm-apr="20"
-            :fbeets-apr="20"
+            :swap-apr="swapApr"
+            :farm-apr="farmApr"
+            :fbeets-apr="fbeetsApr"
           />
         </div>
       </BalCard>
       <BalCard>
         <div class="text-sm text-gray-500 font-medium mb-2">
-          BEETS Staked
+          Total BEETS Staked
         </div>
         <div class="text-xl font-medium truncate flex items-center">
           {{ fNum(beetsStaked, 'token') }}
@@ -46,7 +63,7 @@ const { fbeetsDecoratedFarm, totalBptStaked, beetsStaked } = useFreshBeets();
       </BalCard>
       <BalCard>
         <div class="text-sm text-gray-500 font-medium mb-2">
-          BPT Staked
+          Total BPT Staked
         </div>
         <div class="text-xl font-medium truncate flex items-center">
           {{ fNum(totalBptStaked.toString(), 'token') }}

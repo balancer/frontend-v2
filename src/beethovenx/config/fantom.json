@@ -94,11 +94,11 @@
     "alchemy": "cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88"
   },
   "fBeets": {
-    "address": "0x33276d43ada054a281d40a11d48310cdc0156fc2",
-    "poolId": "0x33276d43ada054a281d40a11d48310cdc0156fc2000200000000000000000001",
-    "poolAddress": "0x33276d43ada054a281d40a11d48310cdc0156fc2",
-    "farmId": "3",
-    "oldFarmId": "1"
+    "address": "0xfcef8a994209d6916EB2C86cDD2AFD60Aa6F54b1",
+    "poolId": "0xcde5a11a4acb4ee4c805352cec57e236bdbc3837000200000000000000000019",
+    "poolAddress": "0xcde5a11a4acb4ee4c805352cec57e236bdbc3837",
+    "farmId": "9",
+    "oldFarmId": "9"
   }
 }
 
