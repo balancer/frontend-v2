@@ -302,7 +302,7 @@ async function handleRemoveToken(index: number) {
             </div>
           </div>
         </BalCard>
-        <AnimatePresence :isVisible="showLiquidityAlert">
+        <AnimatePresence :isVisible="showLiquidityAlert" :exit="{ opacity: 1 }">
           <BalAlert
             :title="$t('createAPool.recommendedLiquidity')"
             type="warning"
