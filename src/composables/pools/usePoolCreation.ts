@@ -40,7 +40,8 @@ const emptyPoolCreationState = {
   poolId: '' as string,
   poolAddress: '',
   hasManuallySetInitialBalances: false,
-  type: PoolType.Weighted
+  type: PoolType.Weighted,
+  symbol: ''
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
@@ -65,6 +66,9 @@ export default function usePoolCreation() {
       poolCreationState.tokensList = poolCreationState.seedTokens.map(
         w => w.tokenAddress
       );
+
+      poolCreationState.name = getPoolSymbol();
+      poolCreationState.symbol = getPoolSymbol();
     },
     {
       deep: true
@@ -123,6 +127,15 @@ export default function usePoolCreation() {
       poolCreationState.seedTokens,
       tw => priceFor(tw.tokenAddress) * tw.amount
     );
+  });
+
+  const poolTypeString = computed((): string => {
+    switch (poolCreationState.type) {
+      case PoolType.Weighted:
+        return 'weighted';
+      default:
+        return '';
+    }
   });
 
   const tokensWithNoPrice = computed(() => {
@@ -228,7 +241,7 @@ export default function usePoolCreation() {
       (token: PoolSeedToken) => {
         const weightRounded = Math.round(token.weight);
         const tokenInfo = getToken(token.tokenAddress);
-        return `${Math.round(weightRounded)}${tokenInfo.symbol}`;
+        return `${Math.round(weightRounded)}${tokenInfo?.symbol || 'N/A'}`;
       }
     );
 
@@ -307,6 +320,10 @@ export default function usePoolCreation() {
     }
   }
 
+  function setActiveStep(step: number) {
+    poolCreationState.activeStep = step;
+  }
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -324,6 +341,7 @@ export default function usePoolCreation() {
     createPool,
     joinPool,
     updateManualLiquidityFlag,
+    setActiveStep,
     optimisedLiquidity,
     tokensWithNoPrice,
     similarPools,
@@ -332,7 +350,7 @@ export default function usePoolCreation() {
     totalLiquidity,
     maxInitialLiquidity,
     poolLiquidity,
-    poolTypeString: '',
+    poolTypeString,
     tokenColors
   };
 }

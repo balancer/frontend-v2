@@ -65,6 +65,7 @@ function handleAmountChange() {
           @update:amount="handleAmountChange"
           :weight="seedTokens[i].weight / 100"
           :name="`initial-token-${seedTokens[i].tokenAddress}`"
+          fixedToken
         />
       </BalStack>
       <BalBtn @click="proceed" block color="gradient">Preview</BalBtn>

@@ -34,7 +34,10 @@ const {
   poolTypeString,
   initialFee,
   type: poolType,
-  goBack
+  goBack,
+  name: poolName,
+  symbol: poolSymbol,
+  setActiveStep
 } = usePoolCreation();
 const { tokens, priceFor } = useTokens();
 const { fNum } = useNumbers();
@@ -46,7 +49,7 @@ const { userNetworkConfig } = useWeb3();
  */
 
 const title = computed((): string =>
-  poolCreated.value ? t('poolCreated') : t('previewPool', [poolTypeString])
+  poolCreated.value ? t('poolCreated') : t('previewPool', [poolTypeString.value])
 );
 
 const initialWeightLabel = computed(() => t('initialWeight'));
@@ -76,6 +79,10 @@ function getInitialWeight(tokenAddress: string, tokenAmount: number) {
     (tokenAmount * priceFor(tokenAddress)) / poolLiquidity.value,
     'percent'
   );
+}
+
+function navigateToPoolFee() {
+  setActiveStep(1);
 }
 </script>
 
@@ -160,11 +167,11 @@ function getInitialWeight(tokenAddress: string, tokenAmount: number) {
         <BalStack vertical spacing="xs" class="p-3">
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('poolSymbol') }}:</span>
-            <span class="text-sm">{{ getPoolSymbol() }}</span>
+            <BalInlineInput size="xs" v-model="poolName" inputAlignRight />
           </BalStack>
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('poolName') }}:</span>
-            <span class="text-sm">{{ getPoolSymbol() }}</span>
+            <BalInlineInput size="xs" v-model="poolSymbol" inputAlignRight />
           </BalStack>
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('poolType') }}:</span>
@@ -172,7 +179,12 @@ function getInitialWeight(tokenAddress: string, tokenAmount: number) {
           </BalStack>
           <BalStack horizontal justify="between">
             <span class="text-sm">{{ $t('swapFee') }}:</span>
-            <span class="text-sm">{{ fNum(initialFee, 'percent') }}</span>
+            <BalStack horizontal spacing="sm">
+              <span class="text-sm">{{ fNum(initialFee, 'percent') }}</span>
+              <button class="hover:text-blue-500" @click="navigateToPoolFee">
+                <BalIcon name="edit" size="xs" />
+              </button>
+            </BalStack>
           </BalStack>
         </BalStack>
       </BalCard>
