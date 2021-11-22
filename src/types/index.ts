@@ -1,5 +1,6 @@
 export type RuleFunction = (val: string | number) => string;
 export type Rules = Array<RuleFunction>;
+import { SwapV2 } from '@balancer-labs/sor2';
 import { BigNumberish } from '@ethersproject/bignumber';
 
 export interface FormRef {
@@ -37,3 +38,9 @@ export interface HtmlInputEvent {
 export interface MetamaskError extends Error {
   code: number | string;
 }
+
+export type BatchSwap = {
+  amountTokenOut: string;
+  swaps: SwapV2[];
+  assets: string[];
+};

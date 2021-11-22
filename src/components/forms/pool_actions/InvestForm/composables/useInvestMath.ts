@@ -15,6 +15,7 @@ import { Contract } from 'ethers';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { BatchSwap } from '@/types';
 
 export type InvestMathResponse = {
   // computed
@@ -40,12 +41,6 @@ export type InvestMathResponse = {
   maximizeAmounts: () => void;
   optimizeAmounts: () => void;
   getBatchSwap: () => Promise<void>;
-};
-
-export type BatchSwap = {
-  amountTokenOut: string;
-  swaps: SwapV2[];
-  assets: string[];
 };
 
 export const vault = new Contract(
