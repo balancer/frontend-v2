@@ -11,7 +11,9 @@ import useSlippage from '@/composables/useSlippage';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
-import { isStablePhantom } from '@/composables/usePool';
+import { isStablePhantom, usePool } from '@/composables/usePool';
+import { BatchSwap } from '@/types';
+// import { queryBatchSwapTokensOut } from '@balancer-labs/sor2';
 
 /**
  * TYPES
@@ -50,6 +52,8 @@ export default function useWithdrawMath(
    */
   const propBptIn = ref('');
   const tokenOutAmount = ref('');
+  // const batchSwap = ref<BatchSwap | null>(null);
+  // const batchSwapLoading = ref(false);
 
   /**
    * COMPOSABLES
@@ -65,6 +69,7 @@ export default function useWithdrawMath(
   } = useTokens();
   const { minusSlippage, addSlippage } = useSlippage();
   const { currency } = useUserSettings();
+  const { isStablePhantomPool } = usePool(pool);
 
   /**
    * Services
@@ -126,7 +131,7 @@ export default function useWithdrawMath(
   });
 
   const proportionalAmounts = computed((): string[] => {
-    if (isStablePhantom(pool.value.poolType)) {
+    if (isStablePhantomPool.value) {
       return proportionalMainTokenAmounts.value;
     }
     return proportionalPoolTokenAmounts.value;
@@ -224,6 +229,10 @@ export default function useWithdrawMath(
     fNum(fiatTotal.value, currency.value)
   );
 
+  // const shouldFetchBatchSwap = computed(
+  //   (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value
+  // );
+
   /**
    * METHODS
    */
@@ -236,6 +245,18 @@ export default function useWithdrawMath(
     tokenOutAmount.value = '';
   }
 
+  // async function getBatchSwap(): Promise<void> {
+  //   batchSwapLoading.value = true;
+  //   batchSwap.value = await queryBatchSwapTokensOut(
+  //     sor,
+  //     vault,
+  //     Object.keys(batchSwapAmountMap.value),
+  //     Object.values(batchSwapAmountMap.value),
+  //     pool.value.address.toLowerCase()
+  //   );
+  //   batchSwapLoading.value = false;
+  // }
+
   /**
    * WATCHERS
    */
@@ -245,7 +266,12 @@ export default function useWithdrawMath(
     await forChange(dynamicDataLoading, false);
     initMath();
   });
+
   watch(account, () => initMath());
+
+  // watch(fullAmounts, async () => {
+  //   if (shouldFetchBatchSwap.value) await getBatchSwap();
+  // });
 
   return {
     // computed
