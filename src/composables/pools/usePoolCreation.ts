@@ -150,7 +150,21 @@ export default function usePoolCreation() {
   const existingPool = computed(() => {
     if (!similarPools.value?.length) return null;
     const similarPool = similarPools.value.find(
-      pool => pool.swapFee === poolCreationState.initialFee
+      pool => {
+        if (pool.swapFee === poolCreationState.initialFee) {
+          let weightsMatch = true;
+          for (const token of pool.tokens) {
+            const relevantToken = poolCreationState.seedTokens.find(t => t.tokenAddress === token.address);
+            const similarPoolWeight = token.weight;
+            const seedTokenWeight = String((relevantToken?.weight || 0) / 100);
+            if (similarPoolWeight !== seedTokenWeight) {
+              weightsMatch = false;
+            }
+          }
+          return weightsMatch;
+        }
+        return false;
+      }
     );
     return similarPool;
   });
@@ -249,19 +263,16 @@ export default function usePoolCreation() {
   }
 
   async function createPool(): Promise<TransactionResponse> {
-    console.log('malays', poolCreationState)
-    return null as any;
     sortTokenWeights();
     const provider = getProvider();
     try {
       const tx = await balancerService.pools.weighted.create(
         provider,
         poolCreationState.name,
-        getPoolSymbol(),
-        '0.01',
+        poolCreationState.symbol,
+        poolCreationState.initialFee,
         poolCreationState.seedTokens,
-        // poolCreationState.thirdPartyFeeController
-        AddressZero
+        poolCreationState.feeController === 'other' ? poolCreationState.thirdPartyFeeController : AddressZero
       );
 
       addTransaction({

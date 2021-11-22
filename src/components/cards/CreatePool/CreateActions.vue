@@ -59,6 +59,7 @@ const { createPool, joinPool, poolId, poolTypeString } = usePoolCreation();
  */
 
 const actions = computed((): TransactionActionInfo[] => [
+  ...tokenApprovalActions,
   {
     label: t('createPool'),
     loadingLabel: t('investment.preview.loadingLabel.create'),
@@ -66,7 +67,6 @@ const actions = computed((): TransactionActionInfo[] => [
     action: createPool,
     stepTooltip: t('createPoolTooltip', [poolTypeString.value])
   },
-  ...tokenApprovalActions,
   {
     label: t('fundPool'),
     loadingLabel: t('investment.preview.loadingLabel.fund'),

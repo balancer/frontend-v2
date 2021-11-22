@@ -183,7 +183,7 @@
     "insufficientLiquidity": "Not enough liquidity",
     "insufficientLiquidityDetailed": "Try trading with a smaller amount or check back when liquidity for this pool has increased.",
     "invalidFee": "Invalid fee",
-    "invalidFeeExplain": "Please enter a valid fee between 0.000001% and 10%",
+    "invalidFeeExplain": "Please enter a valid fee between 0.0001% and 10%",
     "invest": "Invest",
     "investInPool": "Invest in pool",
     "investWithdraw": "Invest & Withdraw",

@@ -12,7 +12,7 @@ import { isAddress } from 'ethers/lib/utils';
 /**
  * STATIC
  */
-const FIXED_FEE_OPTIONS = ['0.0005', '0.003', '0.01'];
+const FIXED_FEE_OPTIONS = ['0.001', '0.003', '0.01'];
 
 /**
  * STATE
@@ -37,7 +37,8 @@ const {
   thirdPartyFeeController,
   fee,
   proceed,
-  goBack
+  goBack,
+  isLoadingSimilarPools
 } = usePoolCreation();
 const { account } = useWeb3();
 const { userNetworkConfig } = useWeb3();
@@ -84,8 +85,10 @@ function onCustomInput(val: string): void {
   initialFee.value = (Number(val) / 100).toString();
   isCustomFee.value = true;
 
-  if (Number(val) <= 0.00001 || Number(val) > 10) {
+  if (Number(val) <= 0.0001 || Number(val) > 10) {
     isInvalidFee.value = true;
+  } else {
+    isInvalidFee.value = false;
   }
 }
 
@@ -270,7 +273,7 @@ function onChangeFeeController(val: string) {
         </BalStack>
       </BalStack>
       <BalBtn
-        :disabled="isProceedDisabled"
+        :disabled="isProceedDisabled || isLoadingSimilarPools"
         type="submit"
         block
         color="gradient"
