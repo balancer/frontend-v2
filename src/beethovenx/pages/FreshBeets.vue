@@ -105,8 +105,7 @@ const activeTab = ref(tabs[0].value);
     <div class="flex justify-center mb-8">
       <div class="w-full max-w-3xl">
         <div class="mb-6">
-          <FarmStatCardsLoading v-if="dataLoading" />
-          <FreshBeetsStatCards v-else />
+          <FreshBeetsStatCards />
         </div>
         <div class="mb-4">
           <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />

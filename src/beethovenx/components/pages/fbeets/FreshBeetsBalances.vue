@@ -2,6 +2,7 @@
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 import useNumbers from '@/composables/useNumbers';
+import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 
 type Props = {
   loading: boolean;
@@ -21,7 +22,8 @@ const {
   userFbeetsBalance,
   currentExchangeRate,
   beetsPerShare,
-  ftmPerShare
+  ftmPerShare,
+  fBeetsLoading
 } = useFreshBeets();
 
 /**
@@ -35,14 +37,26 @@ const {
       Exchange Rate
     </div>
     <div
-      class="border-green-500 bg-green-900 border-2 rounded-xl px-3 py-1 text-center mb-2"
+      class="border-green-500 bg-green-900 border-2 rounded-xl px-3 py-1 text-center justify-center mb-2 flex items-center"
     >
-      1 fBEETS = {{ fNum(currentExchangeRate, 'token') }} BPT
+      1 fBEETS =
+      <BalLoadingBlock v-if="fBeetsLoading" class="h-5 w-4 mx-0.5" white />{{
+        !fBeetsLoading ? fNum(currentExchangeRate, 'token') : ''
+      }}
+      BPT
     </div>
     <div
-      class="border-red-500 bg-red-900 border-2 rounded-xl px-3 py-1 text-center"
+      class="border-red-500 bg-red-900 border-2 rounded-xl px-3 py-1 text-center justify-center flex items-center"
     >
-      1 BPT = {{ fNum(beetsPerShare) }} BEETS / {{ fNum(ftmPerShare) }} FTM
+      1 BPT =
+      <BalLoadingBlock v-if="fBeetsLoading" class="h-5 w-4 mx-0.5" white />{{
+        !fBeetsLoading ? fNum(beetsPerShare) : ''
+      }}
+      BEETS /
+      <BalLoadingBlock v-if="fBeetsLoading" class="h-5 w-4 mx-0.5" white />{{
+        !fBeetsLoading ? fNum(ftmPerShare) : ''
+      }}
+      FTM
     </div>
   </BalCard>
   <BalCard class="mb-4 pb-1">

@@ -25,14 +25,23 @@ export function useFreshBeets() {
   const { getProvider, appNetworkConfig } = useWeb3();
   const freshBeetsQuery = useFreshBeetsQuery();
   const { addTransaction } = useTransactions();
-  const { farmUser } = useFarmUser(appNetworkConfig.fBeets.farmId);
+  const { farmUser, farmUserLoading } = useFarmUser(
+    appNetworkConfig.fBeets.farmId
+  );
   const { blocksPerYear, blocksPerDay } = useAverageBlockTime();
-  const { pools, farms } = usePools();
+  const { pools, farms, isLoadingPools, isLoadingFarms } = usePools();
   const protocolDataQuery = useProtocolDataQuery();
   const { priceFor, dynamicDataLoaded } = useTokens();
   const { isLoading, isIdle, data } = freshBeetsQuery;
 
-  const fBeetsLoading = computed(() => isLoading.value || isIdle.value);
+  const fBeetsLoading = computed(
+    () =>
+      isLoading.value ||
+      isIdle.value ||
+      isLoadingPools.value ||
+      isLoadingFarms.value ||
+      farmUserLoading.value
+  );
 
   const totalSupply = computed(
     () => data.value?.totalFbeetsSupply.div(1e18) ?? bn(0)
