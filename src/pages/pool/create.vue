@@ -12,6 +12,7 @@ import SimilarPoolsCompact from '@/components/cards/CreatePool/SimilarPoolsCompa
 import PreviewPoolModal from '@/components/cards/CreatePool/PreviewPoolModal.vue';
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import Col3Layout from '@/components/layouts/Col3Layout.vue';
 
 import anime from 'animejs';
 
@@ -53,7 +54,13 @@ const hasCompletedMountAnimation = ref(false);
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const { activeStep, similarPools, tokensList, setStep, maxInitialLiquidity } = usePoolCreation();
+const {
+  activeStep,
+  similarPools,
+  tokensList,
+  setStep,
+  maxInitialLiquidity
+} = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 onMounted(() => {
@@ -139,15 +146,20 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
 </script>
 
 <template>
-  <div class="w-full grid grid-cols-11 gap-x-8 pt-8 grid-container mx-auto">
-    <div class="col-span-3" v-if="!upToLargeBreakpoint">
-      <BalStack vertical>
-        <BalVerticalSteps title="Create a weighted pool steps" :steps="steps" />
-        <AnimatePresence :isVisible="doSimilarPoolsExist">
-          <SimilarPoolsCompact v-if="activeStep === 0" />
-        </AnimatePresence>
-      </BalStack>
-    </div>
+  <Col3Layout offsetGutters mobileHideGutters class="mt-8">
+    <template #gutterLeft>
+      <div class="col-span-3" v-if="!upToLargeBreakpoint">
+        <BalStack vertical>
+          <BalVerticalSteps
+            title="Create a weighted pool steps"
+            :steps="steps"
+          />
+          <AnimatePresence :isVisible="doSimilarPoolsExist">
+            <SimilarPoolsCompact v-if="activeStep === 0" />
+          </AnimatePresence>
+        </BalStack>
+      </div>
+    </template>
     <div class="col-span-11 lg:col-span-5 col-start-1 lg:col-start-4 relative">
       <AnimatePresence
         :isVisible="!appLoading && activeStep === 0"
@@ -194,12 +206,14 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
         <PreviewPoolModal />
       </AnimatePresence>
     </div>
-    <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
-      <BalStack vertical spacing="base">
-        <PoolSummary />
-        <WalletInitialLiquidity />
-      </BalStack>
-    </div>
+    <template #gutterRight>
+      <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
+        <BalStack vertical spacing="base">
+          <PoolSummary />
+          <WalletInitialLiquidity />
+        </BalStack>
+      </div>
+    </template>
     <div ref="accordionWrapper" class="col-span-11 mt-4 pb-24">
       <BalAccordion
         v-if="upToLargeBreakpoint"
@@ -216,7 +230,7 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
         </template>
       </BalAccordion>
     </div>
-  </div>
+  </Col3Layout>
 </template>
 
 <style scoped>
