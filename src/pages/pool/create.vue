@@ -53,7 +53,7 @@ const hasCompletedMountAnimation = ref(false);
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const { activeStep, similarPools, tokensList, setStep } = usePoolCreation();
+const { activeStep, similarPools, tokensList, setStep, maxInitialLiquidity } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 onMounted(() => {
@@ -115,9 +115,14 @@ function getStepState(idx: number) {
 function setWrapperHeight(dimensions: { width: number; height: number }) {
   // need to transform the accordion as everything is absolutely
   // positioned inside the AnimateHeight component
+  let mobileOffset = 0;
+  if (upToLargeBreakpoint.value && maxInitialLiquidity.value < 20000) {
+    mobileOffset = 90;
+  }
   anime({
     targets: accordionWrapper.value,
-    translateY: `${dimensions.height}px`,
+    translateY: `${dimensions.height + mobileOffset}px`,
+    easing: 'spring(0.4, 500, 9, 0)',
     complete: () => {
       if (!hasCompletedMountAnimation.value) {
         anime({

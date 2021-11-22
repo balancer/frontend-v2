@@ -56,7 +56,7 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const parentClasses = computed(() => attrs.class);
 
   const inputContainerClasses = computed(() => ({
-    [extPaddingClass()]: true,
+    [extPaddingClass()]: true
   }));
 
   const inputGroupClasses = computed(() => ({

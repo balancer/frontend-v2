@@ -108,7 +108,6 @@ onMounted(async () => {
 });
 
 onBeforeUpdate(() => {
-  console.log('eshay');
   seedTokenElements.value = [];
 });
 

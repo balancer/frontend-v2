@@ -128,7 +128,7 @@ function toggleEditable() {
             @keydown="onKeydown"
             :class="['input', inputClasses]"
           />
-          <BalStack horizontal spacing="none" align='center'>
+          <BalStack horizontal spacing="none" align="center">
             <div v-if="$slots.append" :class="['append', appendClasses]">
               <slot name="append" />
             </div>

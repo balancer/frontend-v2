@@ -49,7 +49,9 @@ const { userNetworkConfig } = useWeb3();
  */
 
 const title = computed((): string =>
-  poolCreated.value ? t('poolCreated') : t('previewPool', [poolTypeString.value])
+  poolCreated.value
+    ? t('poolCreated')
+    : t('previewPool', [poolTypeString.value])
 );
 
 const initialWeightLabel = computed(() => t('initialWeight'));
