@@ -21,28 +21,28 @@ describe('usePoolCreation', () => {
       tokenAddress: '0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2',
       weight: 70,
       isLocked: false,
-      id: 0,
+      id: '0',
       amount: 0
     };
     tokens.WETH = {
       tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       weight: 20,
       isLocked: false,
-      id: 1,
+      id: '1',
       amount: 0
     };
     tokens.USDT = {
       tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
       weight: 10,
       isLocked: false,
-      id: 2,
+      id: '2',
       amount: 0
     };
     tokens.USDC = {
       tokenAddress: '0xc2569dd7d0fd715B054fBf16E75B001E5c0C1115',
       weight: 50,
       isLocked: false,
-      id: 3,
+      id: '3',
       amount: Number(7643.537999999996)
     };
   });

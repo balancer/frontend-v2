@@ -21,6 +21,11 @@ export type PoolSeedToken = {
   id: string;
 };
 
+export type OptimisedLiquidity = {
+  liquidityRequired: string;
+  balanceRequired: number;
+};
+
 type FeeManagementType = 'governance' | 'self';
 type FeeType = 'fixed' | 'dynamic';
 type FeeController = 'self' | 'other';
@@ -39,9 +44,10 @@ const emptyPoolCreationState = {
   tokensList: [] as string[],
   poolId: '' as string,
   poolAddress: '',
-  hasManuallySetInitialBalances: false,
-  type: PoolType.Weighted,
-  symbol: ''
+  symbol: '',
+  manuallySetToken: '' as string,
+  autoOptimiseBalances: false,
+  type: PoolType.Weighted
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
@@ -80,37 +86,47 @@ export default function usePoolCreation() {
    */
   const tokensList = computed(() => poolCreationState.tokensList);
 
-  const optimisedLiquidity = computed(() => {
-    // need to filter out the empty tokens just in case
-    const validTokens = tokensList.value.filter(t => t !== '');
-    const optimisedLiquidity = {};
-    // token with the lowest balance is the bottleneck
-    const bottleneckToken = minBy(
-      validTokens,
-      token => Number(balanceFor(token)) * Number(priceFor(token))
-    );
-    if (!bottleneckToken) return optimisedLiquidity;
+  const optimisedLiquidity = computed(
+    (): Record<string, OptimisedLiquidity> => {
+      // need to filter out the empty tokens just in case
+      const validTokens = tokensList.value.filter(t => t !== '');
+      const optimisedLiquidity = {};
 
-    const bottleneckWeight =
-      poolCreationState.seedTokens.find(t => t.tokenAddress === bottleneckToken)
-        ?.weight || 0;
+      // token with the lowest balance is the bottleneck
+      const bottleneckToken = minBy(
+        validTokens,
+        token => Number(balanceFor(token)) * Number(priceFor(token))
+      );
+      if (!bottleneckToken) return optimisedLiquidity;
 
-    const bip = bnum(priceFor(bottleneckToken || '0'))
-      .times(balanceFor(bottleneckToken))
-      .div(bottleneckWeight);
-    for (const token of poolCreationState.seedTokens) {
-      // get the price for a single token
-      const tokenPrice = bnum(priceFor(token.tokenAddress));
-      // the usd value needed for its weight
-      const liquidityRequired = bip.times(token.weight);
-      const balanceRequired = liquidityRequired.div(tokenPrice);
-      optimisedLiquidity[token.tokenAddress] = {
-        liquidityRequired: liquidityRequired.toString(),
-        balanceRequired: balanceRequired.toString()
-      };
+      const bottleneckWeight =
+        poolCreationState.seedTokens.find(
+          t => t.tokenAddress === bottleneckToken
+        )?.weight || 0;
+
+      const bip = bnum(priceFor(bottleneckToken || '0'))
+        .times(balanceFor(bottleneckToken))
+        .div(bottleneckWeight);
+
+      return getTokensScaledByBIP(bip);
     }
-    return optimisedLiquidity;
-  });
+  );
+
+  const scaledLiquidity = computed(
+    (): Record<string, OptimisedLiquidity> => {
+      const scaledLiquidity = {};
+      const modifiedToken = findSeedTokenByAddress(
+        poolCreationState.manuallySetToken
+      );
+      if (!modifiedToken) return scaledLiquidity;
+
+      const bip = bnum(priceFor(modifiedToken.tokenAddress || '0'))
+        .times(modifiedToken.amount)
+        .div(modifiedToken.weight);
+
+      return getTokensScaledByBIP(bip);
+    }
+  );
 
   const maxInitialLiquidity = computed(() => {
     return sumBy(Object.values(optimisedLiquidity.value), (liq: any) =>
@@ -209,6 +225,12 @@ export default function usePoolCreation() {
     poolCreationState.activeStep -= 1;
   }
 
+  function findSeedTokenByAddress(address: string) {
+    return poolCreationState.seedTokens.find((token: PoolSeedToken) => {
+      return token.tokenAddress === address;
+    });
+  }
+
   function setFeeManagement(type: FeeManagementType) {
     poolCreationState.feeManagementType = type;
   }
@@ -233,8 +255,24 @@ export default function usePoolCreation() {
     tokenColors.value = colors;
   }
 
-  function updateManualLiquidityFlag(isManual: boolean) {
-    poolCreationState.hasManuallySetInitialBalances = isManual;
+  function updateManuallySetToken(address: string) {
+    poolCreationState.manuallySetToken = address;
+  }
+
+  function getTokensScaledByBIP(bip): Record<string, OptimisedLiquidity> {
+    const optimisedLiquidity = {};
+    for (const token of poolCreationState.seedTokens) {
+      // get the price for a single token
+      const tokenPrice = bnum(priceFor(token.tokenAddress));
+      // the usd value needed for its weight
+      const liquidityRequired = bip.times(token.weight);
+      const balanceRequired = liquidityRequired.div(tokenPrice);
+      optimisedLiquidity[token.tokenAddress] = {
+        liquidityRequired: liquidityRequired.toString(),
+        balanceRequired: balanceRequired.toNumber()
+      };
+    }
+    return optimisedLiquidity;
   }
 
   function getScaledAmounts() {
@@ -353,9 +391,10 @@ export default function usePoolCreation() {
     getScaledAmounts,
     createPool,
     joinPool,
-    updateManualLiquidityFlag,
     setActiveStep,
+    updateManuallySetToken,
     optimisedLiquidity,
+    scaledLiquidity,
     tokensWithNoPrice,
     similarPools,
     isLoadingSimilarPools,
