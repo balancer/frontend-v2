@@ -90,7 +90,7 @@ export function useFreshBeets() {
     );
   });
 
-  const beetsStaked = computed(() => {
+  const totalBeetsStaked = computed(() => {
     if (!pool.value) {
       return '0';
     }
@@ -218,7 +218,7 @@ export function useFreshBeets() {
     pool,
     farmUser,
     totalBptStaked,
-    beetsStaked,
+    totalBeetsStaked,
 
     approve,
     stake,

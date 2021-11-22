@@ -14,11 +14,11 @@
         When you stake your Fidelio Duetto BPTs, you receive fBEETS in return.
         fBEETS holders earn triple yield:
       </p>
-      <ul class="list-disc list-inside ml-2 mt-2">
+      <ol class="list-decimal list-inside ml-2 mt-2">
         <li>Swap fees earned as a Liquidity Provider (LP)</li>
         <li>Farm incentives</li>
-        <li>Protocol revenue</li>
-      </ul>
+        <li>30% of Protocol Revenue</li>
+      </ol>
       <!--        <BalLoadingBlock v-if="false" class="h-10 w-40" />-->
     </div>
     <div class="hidden pl-8 ml-6 md:block">

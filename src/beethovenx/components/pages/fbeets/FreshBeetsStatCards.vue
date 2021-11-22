@@ -14,7 +14,7 @@ const {
   fbeetsDecoratedFarm,
   totalBptStaked,
   totalSupply,
-  beetsStaked,
+  totalBeetsStaked,
   pool
 } = useFreshBeets();
 
@@ -49,7 +49,7 @@ const totalApr = computed(
         fBEETS Minted
       </div>
       <div class="text-xl font-medium truncate flex items-center">
-        {{ fNum(totalSupply.div(1e18).toString(), 'token') }}
+        {{ fNum(totalSupply.div(1e18).toString(), 'token_lg') }}
       </div>
     </BalCard>
     <BalCard>
@@ -57,7 +57,7 @@ const totalApr = computed(
         BEETS Staked
       </div>
       <div class="text-xl font-medium truncate flex items-center">
-        {{ fNum(totalSupply.div(1e18).toString(), 'token') }}
+        {{ fNum(totalBeetsStaked, 'token_lg') }}
       </div>
     </BalCard>
 
@@ -92,7 +92,7 @@ const totalApr = computed(
           BEETS
         </div>
         <div class="text-xl font-medium truncate flex items-center">
-          3,300 / day
+          {{ fNum(fbeetsDecoratedFarm?.rewards || '0', 'token_lg') }} / day
         </div>
       </BalCard>
       <BalCard>
@@ -100,7 +100,7 @@ const totalApr = computed(
           My balance
         </div>
         <div class="text-xl font-medium truncate flex items-center">
-          ${{ fNum(totalSupply.div(1e18).toString(), 'token') }}
+          {{ fNum(fbeetsDecoratedFarm?.stake || '0', 'usd') }}
         </div>
       </BalCard>
       <BalCard>
@@ -108,7 +108,7 @@ const totalApr = computed(
           My share
         </div>
         <div class="text-xl font-medium truncate flex items-center">
-          0.10%
+          {{ fNum(fbeetsDecoratedFarm?.share || '0', 'percent') }}
         </div>
       </BalCard>
     </div>

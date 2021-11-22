@@ -47,7 +47,7 @@ const props = defineProps<Props>();
         </div>
       </div>
     </div>
-    <div class="flex items-center my-4">
+    <div class="flex items-center my-5">
       <div class="h-1 w-full flex-1 bg-gray-700 rounded-3xl" />
       <div class="text-gray-500 mx-2">OR</div>
       <div class="h-1 w-full flex-1 bg-gray-700 rounded-3xl" />
@@ -70,7 +70,7 @@ const props = defineProps<Props>();
       </div>
     </div>
 
-    <div class="flex items-center my-4">
+    <div class="flex items-center my-5">
       <div class="h-1 w-full flex-1 bg-gray-700 rounded-3xl" />
       <div class="text-gray-500 mx-2">OR</div>
       <div class="h-1 w-full flex-1 bg-gray-700 rounded-3xl" />
