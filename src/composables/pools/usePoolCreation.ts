@@ -7,6 +7,7 @@ import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
+import { configService } from '@/services/config/config.service';
 import { balancerService } from '@/services/balancer/balancer.service';
 import { AddressZero } from '@ethersproject/constants';
 import { bnum, scale } from '@/lib/utils';
@@ -47,6 +48,7 @@ const emptyPoolCreationState = {
   symbol: '',
   manuallySetToken: '' as string,
   autoOptimiseBalances: false,
+  useNativeAsset: false,
   type: PoolType.Weighted
 };
 
@@ -57,7 +59,13 @@ export default function usePoolCreation() {
   /**
    * COMPOSABLES
    */
-  const { balanceFor, priceFor, getToken } = useTokens();
+  const {
+    balanceFor,
+    priceFor,
+    getToken,
+    nativeAsset,
+    wrappedNativeAsset
+  } = useTokens();
   const { account, getProvider } = useWeb3();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
@@ -115,9 +123,11 @@ export default function usePoolCreation() {
   const scaledLiquidity = computed(
     (): Record<string, OptimisedLiquidity> => {
       const scaledLiquidity = {};
-      const modifiedToken = findSeedTokenByAddress(
-        poolCreationState.manuallySetToken
-      );
+      const manuallySetToken =
+        poolCreationState.manuallySetToken === nativeAsset.address
+          ? wrappedNativeAsset.value.address
+          : poolCreationState.manuallySetToken;
+      const modifiedToken = findSeedTokenByAddress(manuallySetToken);
       if (!modifiedToken) return scaledLiquidity;
 
       const bip = bnum(priceFor(modifiedToken.tokenAddress || '0'))
@@ -183,6 +193,10 @@ export default function usePoolCreation() {
       }
     );
     return similarPool;
+  });
+
+  const isWethPool = computed((): boolean => {
+    return tokensList.value.includes(configService.network.addresses.weth);
   });
 
   /**
@@ -348,12 +362,23 @@ export default function usePoolCreation() {
     sortTokenWeights();
     const provider = getProvider();
     try {
+      const tokenAddresses: string[] = poolCreationState.seedTokens.map(
+        (token: PoolSeedToken) => {
+          if (
+            token.tokenAddress === wrappedNativeAsset.value.address &&
+            poolCreationState.useNativeAsset
+          ) {
+            return nativeAsset.address;
+          }
+          return token.tokenAddress;
+        }
+      );
       const tx = await balancerService.pools.weighted.initJoin(
         provider,
         poolCreationState.poolId,
         account.value,
         account.value,
-        poolCreationState.seedTokens,
+        tokenAddresses,
         getScaledAmounts()
       );
 
@@ -403,6 +428,7 @@ export default function usePoolCreation() {
     maxInitialLiquidity,
     poolLiquidity,
     poolTypeString,
-    tokenColors
+    tokenColors,
+    isWethPool
   };
 }
