@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 
+import { usePool } from '@/composables/usePool';
+
 import Activities from './PoolActivities/Activities.vue';
+import BoostedActivities from './BoostedPoolActivities/Activities.vue';
 import Swaps from './PoolSwaps/Swaps.vue';
 
 import { PoolTransactionsTab } from './types';
-
-const { t } = useI18n();
 
 /**
  * TYPES
@@ -22,9 +23,15 @@ type Props = {
 /**
  * PROPS
  */
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   loading: false
 });
+
+/**
+ * COMPOSABLES
+ */
+const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
+const { t } = useI18n();
 
 /**
  * STATE
@@ -53,21 +60,42 @@ const activeTab = ref(tabs[0].value);
   >
     <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
   </div>
-  <Activities
-    v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
-    :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
-    :pool="pool"
-    :loading="loading"
-  />
-  <Activities
-    v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
-    :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
-    :pool="pool"
-    :loading="loading"
-  />
-  <Swaps
-    v-else-if="activeTab === PoolTransactionsTab.SWAPS"
-    :pool="pool"
-    :loading="loading"
-  />
+  <template v-if="isStablePhantomPool">
+    <BoostedActivities
+      v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
+      :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
+      :pool="pool"
+      :loading="loading"
+    />
+    <BoostedActivities
+      v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
+      :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
+      :pool="pool"
+      :loading="loading"
+    />
+    <Swaps
+      v-else-if="activeTab === PoolTransactionsTab.SWAPS"
+      :pool="pool"
+      :loading="loading"
+    />
+  </template>
+  <template v-else>
+    <Activities
+      v-if="activeTab === PoolTransactionsTab.ALL_ACTIVITY"
+      :pool-activity-type="PoolTransactionsTab.ALL_ACTIVITY"
+      :pool="pool"
+      :loading="loading"
+    />
+    <Activities
+      v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
+      :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
+      :pool="pool"
+      :loading="loading"
+    />
+    <Swaps
+      v-else-if="activeTab === PoolTransactionsTab.SWAPS"
+      :pool="pool"
+      :loading="loading"
+    />
+  </template>
 </template>

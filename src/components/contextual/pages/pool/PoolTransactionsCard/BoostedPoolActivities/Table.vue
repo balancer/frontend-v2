@@ -1,52 +1,50 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { defineEmits, defineProps, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { formatDistanceToNow } from 'date-fns';
-import { getAddress } from '@ethersproject/address';
+import { groupBy } from 'lodash';
+
+import useWeb3 from '@/services/web3/useWeb3';
+import { PoolActivityType, PoolSwap } from '@/services/balancer/subgraph/types';
 
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 
-import {
-  PoolActivity,
-  PoolActivityType
-} from '@/services/balancer/subgraph/types';
-import useWeb3 from '@/services/web3/useWeb3';
+import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 
 import { bnum } from '@/lib/utils';
-
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 
 /**
  * TYPES
  */
-
 type TokenAmount = {
   address: string;
-  symbol: string;
   amount: string;
 };
 
-type ActivityRow = {
+type SwapRow = {
   label: string;
-  formattedValue: string;
-  value: number;
+  tokenIn: string;
+  tokenOut: string;
   timestamp: number;
   formattedDate: string;
-  tx: string;
+  value: number;
+  formattedValue: string;
   type: PoolActivityType;
+  tx: string;
   tokenAmounts: TokenAmount[];
 };
 
 type Props = {
   tokens: string[];
-  poolActivities: PoolActivity[];
+  poolSwaps: PoolSwap[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
+  poolAddress: string;
 };
 
 /**
@@ -65,14 +63,14 @@ const emit = defineEmits(['loadMore']);
  */
 const { fNum } = useNumbers();
 const { t } = useI18n();
-const { explorerLinks } = useWeb3();
-const { tokens, priceFor } = useTokens();
+const { priceFor } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { explorerLinks } = useWeb3();
 
 /**
  * COMPUTED
  */
-const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
+const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
   {
     name: t('action'),
     id: 'action',
@@ -110,22 +108,29 @@ const columns = computed<ColumnDefinition<ActivityRow>[]>(() => [
   }
 ]);
 
-const activityRows = computed<ActivityRow[]>(() =>
+const swapRows = computed<SwapRow[]>(() =>
   props.isLoading
     ? []
-    : props.poolActivities.map(({ type, timestamp, tx, amounts }) => {
+    : Object.entries(groupBy(props.poolSwaps, 'tx')).map(([tx, swaps]) => {
+        const { tokenIn, tokenOut, timestamp } = swaps[0];
+
+        const type: PoolActivityType =
+          tokenOut === props.poolAddress ? 'Join' : 'Exit';
         const isJoin = type === 'Join';
-        const value = getJoinExitValue(amounts);
+        const tokenAmounts = getJoinExitDetails(swaps, isJoin);
+        const value = getJoinExitValue(tokenAmounts);
 
         return {
           label: isJoin ? t('invest') : t('withdraw.label'),
           value,
           formattedValue: value > 0 ? fNum(fNum(value, 'usd'), 'usd_m') : '-',
+          tokenIn,
+          tokenOut,
           timestamp,
           formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
           tx,
           type,
-          tokenAmounts: getJoinExitDetails(amounts)
+          tokenAmounts: getJoinExitDetails(swaps, isJoin)
         };
       })
 );
@@ -133,15 +138,12 @@ const activityRows = computed<ActivityRow[]>(() =>
 /**
  * METHODS
  */
-function getJoinExitValue(amounts: PoolActivity['amounts']) {
+function getJoinExitValue(tokenAmounts: TokenAmount[]) {
   let total = bnum(0);
 
-  for (let i = 0; i < amounts.length; i++) {
-    const amount = amounts[i];
-    const address = getAddress(props.tokens[i]);
-    const token = tokens.value[address];
-    const price = priceFor(token.address);
-    const amountNumber = Math.abs(parseFloat(amount));
+  for (let i = 0; i < tokenAmounts.length; i++) {
+    const price = priceFor(tokenAmounts[i].address);
+    const amountNumber = Math.abs(parseFloat(tokenAmounts[i].amount));
 
     // If the price is unknown for any of the positive amounts - the value cannot be computed.
     if (amountNumber > 0 && price === 0) {
@@ -154,19 +156,16 @@ function getJoinExitValue(amounts: PoolActivity['amounts']) {
   return total.toNumber();
 }
 
-function getJoinExitDetails(amounts: PoolActivity['amounts']) {
-  return amounts.map((amount, index) => {
-    const address = getAddress(props.tokens[index]);
-    const token = tokens.value[address];
-    const symbol = token ? token.symbol : address;
-    const amountNumber = parseFloat(amount);
-
-    return {
-      address,
-      symbol,
-      amount: fNum(amountNumber, 'token')
-    };
-  });
+function getJoinExitDetails(swaps: PoolSwap[], isJoin: boolean) {
+  return isJoin
+    ? swaps.map(swap => ({
+        address: swap.tokenIn,
+        amount: fNum(swap.tokenAmountIn, 'token')
+      }))
+    : swaps.map(swap => ({
+        address: swap.tokenOut,
+        amount: fNum(swap.tokenAmountOut, 'token')
+      }));
 }
 </script>
 
@@ -179,7 +178,7 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
   >
     <BalTable
       :columns="columns"
-      :data="activityRows"
+      :data="swapRows"
       :is-loading="isLoading"
       :is-loading-more="isLoadingMore"
       :is-paginated="isPaginated"
@@ -255,3 +254,9 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
     </BalTable>
   </BalCard>
 </template>
+
+<style scoped>
+.token-item {
+  @apply m-1 flex items-center p-1 px-2 bg-gray-50 dark:bg-gray-700 rounded-lg;
+}
+</style>
