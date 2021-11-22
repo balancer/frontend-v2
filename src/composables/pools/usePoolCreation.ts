@@ -249,6 +249,8 @@ export default function usePoolCreation() {
   }
 
   async function createPool(): Promise<TransactionResponse> {
+    console.log('malays', poolCreationState)
+    return null as any;
     sortTokenWeights();
     const provider = getProvider();
     try {

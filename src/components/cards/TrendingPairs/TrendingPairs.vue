@@ -5,7 +5,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import { getAddress } from '@ethersproject/address';
-import { startOfDay } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { computed } from 'vue';
 import { useQuery } from 'vue-query';
 
@@ -23,7 +23,7 @@ const getTrendingTradePairs = async () => {
     orderBy: 'totalSwapVolume',
     orderDirection: 'desc',
     where: {
-      timestamp_gte: startOfDay(new Date()).getTime() / 1000
+      timestamp_gte: getUnixTime(new Date().setUTCHours(0, 0, 0, 0))
     },
     first: 5
   });

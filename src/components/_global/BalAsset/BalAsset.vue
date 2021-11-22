@@ -4,10 +4,11 @@
     :src="iconSRC"
     :style="{
       width: `${size}px`,
-      height: `${size}px`
+      height: `${size}px`,
+      background: 'white'
     }"
     @error="error = true"
-    class="rounded-full inline-block bg-white leading-none shadow-sm"
+    class="rounded-full inline-block leading-none shadow-sm"
   />
   <Avatar v-else :address="address" :size="size" />
 </template>

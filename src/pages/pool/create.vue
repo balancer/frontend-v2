@@ -160,54 +160,52 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
         </BalStack>
       </div>
     </template>
-      <div class="relative center-col-mh">
-        <AnimatePresence
-          :isVisible="!appLoading && activeStep === 0"
-          :initial="initialAnimateProps"
-          :animate="entryAnimateProps"
-          :exit="exitAnimateProps"
-        >
-          <ChooseWeights @update:height="setWrapperHeight" />
-        </AnimatePresence>
-        <AnimatePresence
-          :isVisible="!appLoading && activeStep === 1"
-          :initial="initialAnimateProps"
-          :animate="entryAnimateProps"
-          :exit="exitAnimateProps"
-          @update-dimensions="setWrapperHeight"
-        >
-          <PoolFees />
-        </AnimatePresence>
-        <AnimatePresence
-          :isVisible="
-            !appLoading && activeStep === 2 && similarPools.length > 0
-          "
-          :initial="initialAnimateProps"
-          :animate="entryAnimateProps"
-          :exit="exitAnimateProps"
-          @update-dimensions="setWrapperHeight"
-        >
-          <SimilarPools />
-        </AnimatePresence>
-        <AnimatePresence
-          :isVisible="!appLoading && activeStep === 3"
-          :initial="initialAnimateProps"
-          :animate="entryAnimateProps"
-          :exit="exitAnimateProps"
-          @update-dimensions="setWrapperHeight"
-        >
-          <InitialLiquidity />
-        </AnimatePresence>
-        <AnimatePresence
-          :isVisible="!appLoading && activeStep === 4"
-          :initial="initialAnimateProps"
-          :animate="entryAnimateProps"
-          :exit="exitAnimateProps"
-          @update-dimensions="setWrapperHeight"
-        >
-          <PreviewPoolModal />
-        </AnimatePresence>
-      </div>
+    <div class="relative center-col-mh">
+      <AnimatePresence
+        :isVisible="!appLoading && activeStep === 0"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
+      >
+        <ChooseWeights @update:height="setWrapperHeight" />
+      </AnimatePresence>
+      <AnimatePresence
+        :isVisible="!appLoading && activeStep === 1"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
+        @update-dimensions="setWrapperHeight"
+      >
+        <PoolFees />
+      </AnimatePresence>
+      <AnimatePresence
+        :isVisible="!appLoading && activeStep === 2 && similarPools.length > 0"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
+        @update-dimensions="setWrapperHeight"
+      >
+        <SimilarPools />
+      </AnimatePresence>
+      <AnimatePresence
+        :isVisible="!appLoading && activeStep === 3"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
+        @update-dimensions="setWrapperHeight"
+      >
+        <InitialLiquidity />
+      </AnimatePresence>
+      <AnimatePresence
+        :isVisible="!appLoading && activeStep === 4"
+        :initial="initialAnimateProps"
+        :animate="entryAnimateProps"
+        :exit="exitAnimateProps"
+        @update-dimensions="setWrapperHeight"
+      >
+        <PreviewPoolModal />
+      </AnimatePresence>
+    </div>
     <template #gutterRight>
       <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
         <BalStack vertical spacing="base">

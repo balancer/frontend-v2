@@ -113,7 +113,7 @@ export async function batchSwapGivenInV1(
   const overrides: any = {};
 
   if (tokenIn === NATIVE_ASSET_ADDRESS) {
-    overrides.value = `0x${tokenInAmount.toHexString()}`;
+    overrides.value = tokenInAmount.toHexString();
   }
 
   try {
@@ -149,7 +149,7 @@ export async function batchSwapGivenOutV1(
   const overrides: any = {};
 
   if (tokenIn === NATIVE_ASSET_ADDRESS) {
-    overrides.value = `0x${tokenInAmountMax.toHexString()}`;
+    overrides.value = tokenInAmountMax.toHexString();
   }
 
   try {
@@ -181,7 +181,7 @@ async function batchSwapGivenInV2(
   const overrides: any = {};
 
   if (tokenIn === AddressZero) {
-    overrides.value = `0x${tokenInAmount.toHexString()}`;
+    overrides.value = tokenInAmount.toHexString();
   }
 
   const address = await web3.getSigner().getAddress();
@@ -261,7 +261,7 @@ async function batchSwapGivenOutV2(
   const overrides: any = {};
 
   if (tokenIn === AddressZero) {
-    overrides.value = `0x${tokenInAmountMax.toHexString()}`;
+    overrides.value = tokenInAmountMax.toHexString();
   }
 
   const address = await web3.getSigner().getAddress();
@@ -341,7 +341,7 @@ async function lidoBatchSwapGivenIn(
   const overrides: any = {};
 
   if (tokenIn === AddressZero) {
-    overrides.value = `0x${tokenInAmount.toHexString()}`;
+    overrides.value = tokenInAmount.toHexString();
   }
 
   // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses
@@ -431,7 +431,7 @@ async function lidoBatchSwapGivenOut(
   const overrides: any = {};
 
   if (tokenIn === AddressZero) {
-    overrides.value = `0x${tokenInAmountMax.toHexString()}`;
+    overrides.value = tokenInAmountMax.toHexString();
   }
 
   // Convert tokenIn/tokenOut so that it matches what's in tokenAddresses

@@ -605,14 +605,12 @@ export default function useSor({
 
   function getQuote(): TradeQuote {
     const maximumInAmount =
-      tokenInAmountScaled != null
-        ? getMaxIn(tokenInAmountScaled.value).toString()
-        : '';
+      tokenInAmountScaled != null ? getMaxIn(tokenInAmountScaled.value) : Zero;
 
     const minimumOutAmount =
       tokenOutAmountScaled != null
-        ? getMinOut(tokenOutAmountScaled.value).toString()
-        : '';
+        ? getMinOut(tokenOutAmountScaled.value)
+        : Zero;
 
     return {
       feeAmountInToken: '0',
