@@ -124,8 +124,8 @@ const activeTab = ref(tabs[0].value);
       <div class="w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72" />
     </div>
 
-    <div class="flex justify-center mb-8">
-      <div class="w-full max-w-3xl">
+    <div class="lg:flex justify-center mb-8">
+      <div class="w-full lg:max-w-3xl">
         <div class="mb-6">
           <FreshBeetsStatCards />
         </div>
@@ -147,7 +147,7 @@ const activeTab = ref(tabs[0].value);
           :loading="dataLoading"
         />
       </div>
-      <div class="w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72">
+      <div class="w-full lg:max-w-xl mx-auto md:mx-0 lg:ml-6 md:block lg:w-72">
         <FreshBeetsBalances
           :loading="dataLoading"
           :f-beets-balance="fbeetsBalance"

@@ -17,7 +17,7 @@ function handleFarmWithdrawal(txReceipt): void {
 
 <template>
   <div class="flex justify-center mb-6">
-    <div class="w-full max-w-3xl">
+    <div class="w-full lg:max-w-3xl">
       <BalCard>
         <div class="flex mb-4">
           <BalIcon name="alert-circle" size="xl" class="text-yellow-500" />
@@ -33,6 +33,8 @@ function handleFarmWithdrawal(txReceipt): void {
         />
       </BalCard>
     </div>
-    <div class="w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72" />
+    <div
+      class="hidden w-full max-w-xl mx-auto md:mx-0 md:ml-6 lg:block md:w-72"
+    />
   </div>
 </template>
