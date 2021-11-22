@@ -17,7 +17,7 @@ import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
 import useFarmUser from '@/beethovenx/composables/farms/useFarmUser';
 import usePoolWithFarm from '@/beethovenx/composables/pool/usePoolWithFarm';
-import FarmStatCardsLoading from '@/beethovenx/components/pages/farm/FarmStatCardsLoading.vue';
+import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 
 const { appNetworkConfig, isLoadingProfile } = useWeb3();
 const {
@@ -101,6 +101,28 @@ const activeTab = ref(tabs[0].value);
   <div class="lg:container lg:mx-auto pt-12 md:pt-12">
     <FreshBeetsHeader />
     <FreshBeetsOldFarmAlert v-if="oldFarmUser && oldFarmUser.amount > 0" />
+
+    <div class="flex justify-center">
+      <div class="w-full max-w-3xl">
+        <BalAlert
+          v-if="userBptTokenBalance.gt(0)"
+          title="You have unstaked BPT in your wallet"
+          description="If you stake your BPT, you will receive fBEETS and be eligible to earn a portion of Beethoven X Protocol Revenue."
+          type="warning"
+          size="md"
+          class="mb-4"
+        />
+        <BalAlert
+          v-if="userBptTokenBalance.eq(0) && userFbeetsBalance.gt(0)"
+          title="You have unstaked fBEETS in your wallet"
+          description="If you deposit your fBEETS into the farm, you will earn additional rewards paid out in BEETS."
+          type="warning"
+          size="md"
+          class="mb-4"
+        />
+      </div>
+      <div class="w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72" />
+    </div>
 
     <div class="flex justify-center mb-8">
       <div class="w-full max-w-3xl">
