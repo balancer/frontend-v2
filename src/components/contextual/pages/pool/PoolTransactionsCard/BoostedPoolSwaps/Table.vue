@@ -2,36 +2,31 @@
 import { defineEmits, defineProps, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { formatDistanceToNow } from 'date-fns';
-import { groupBy } from 'lodash';
-
-import useWeb3 from '@/services/web3/useWeb3';
-import { FullPool, PoolSwap } from '@/services/balancer/subgraph/types';
 
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useBreakpoints from '@/composables/useBreakpoints';
 
+import { PoolSwap } from '@/services/balancer/subgraph/types';
+
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 
 import { bnum } from '@/lib/utils';
+import useWeb3 from '@/services/web3/useWeb3';
 
 /**
  * TYPES
  */
-type TokenAmount = {
-  address: string;
-  amount: string;
-};
-
 type SwapRow = {
-  label: string;
+  tokenIn: string;
+  tokenOut: string;
+  tokenAmountIn: string;
+  tokenAmountOut: string;
   timestamp: number;
   formattedDate: string;
   value: number;
   formattedValue: string;
-  isInvest: boolean;
   tx: string;
-  tokenAmounts: TokenAmount[];
 };
 
 type Props = {
@@ -42,8 +37,6 @@ type Props = {
   loadMore?: () => void;
   isPaginated?: boolean;
   noResultsLabel?: string;
-  poolAddress: string;
-  pool: FullPool;
 };
 
 /**
@@ -107,72 +100,36 @@ const columns = computed<ColumnDefinition<SwapRow>[]>(() => [
   }
 ]);
 
-const swapRows = computed<SwapRow[]>(() => {
-  if (props.isLoading) {
-    return [];
-  }
+const swapRows = computed<SwapRow[]>(() =>
+  props.isLoading
+    ? []
+    : props.poolSwaps.map(
+        ({
+          tokenIn,
+          tokenOut,
+          tokenAmountIn,
+          tokenAmountOut,
+          timestamp,
+          tx
+        }) => {
+          const value = bnum(priceFor(tokenOut))
+            .times(tokenAmountOut)
+            .toNumber();
 
-  const groupedSwaps = Object.entries(groupBy(props.poolSwaps, 'tx'));
-
-  return groupedSwaps.map(([tx, swaps]) => {
-    const { tokenOut, timestamp } = swaps[0];
-
-    const isInvest = tokenOut === props.pool.address;
-    const tokenAmounts = getInvestmentDetails(swaps, isInvest);
-    const value = getInvestmentValue(tokenAmounts);
-
-    return {
-      label: isInvest ? t('invest') : t('withdraw.label'),
-      value,
-      formattedValue: value > 0 ? fNum(fNum(value, 'usd'), 'usd_m') : '-',
-      timestamp,
-      formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
-      tx,
-      isInvest,
-      tokenAmounts: getInvestmentDetails(swaps, isInvest)
-    };
-  });
-});
-
-/**
- * METHODS
- */
-function getInvestmentValue(tokenAmounts: TokenAmount[]) {
-  let total = bnum(0);
-
-  for (const { address, amount } of tokenAmounts) {
-    const price = priceFor(address);
-    const amountNumber = Math.abs(parseFloat(amount));
-
-    // If the price is unknown for any of the positive amounts - the value cannot be computed.
-    if (amountNumber > 0 && price === 0) {
-      return 0;
-    }
-
-    total = total.plus(bnum(amountNumber).times(price));
-  }
-
-  return total.toNumber();
-}
-
-function getInvestmentDetails(swaps: PoolSwap[], isInvest: boolean) {
-  const { linearPools } = props.pool.onchain;
-
-  return swaps.map(swap => {
-    let address = isInvest ? swap.tokenIn : swap.tokenOut;
-
-    if (linearPools != null) {
-      address = isInvest
-        ? linearPools[swap.tokenIn].mainToken.address
-        : linearPools[swap.tokenOut].mainToken.address;
-    }
-
-    return {
-      address,
-      amount: isInvest ? swap.tokenAmountIn : swap.tokenAmountOut
-    };
-  });
-}
+          return {
+            value,
+            formattedValue: value > 0 ? fNum(fNum(value, 'usd'), 'usd_m') : '-',
+            tokenIn,
+            tokenOut,
+            tokenAmountIn,
+            tokenAmountOut,
+            timestamp,
+            formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
+            tx
+          };
+        }
+      )
+);
 </script>
 
 <template>
@@ -197,39 +154,29 @@ function getInvestmentDetails(swaps: PoolSwap[], isInvest: boolean) {
         sortDirection: 'desc'
       }"
     >
-      <template v-slot:actionCell="action">
+      <template v-slot:actionCell>
         <div class="px-6 py-2">
           <div class="flex items-center">
-            <div class="flex center mr-3">
-              <BalIcon
-                v-if="action.isInvest"
-                name="plus"
-                size="sm"
-                class="text-green-500 dark:text-green-400"
-              />
-              <BalIcon v-else name="minus" size="sm" class="text-red-500" />
-            </div>
-            <div>{{ action.label }}</div>
+            {{ $t('swap') }}
           </div>
         </div>
       </template>
 
       <template v-slot:detailsCell="action">
-        <div class="px-6 py-4 flex -mt-1 flex-wrap">
-          <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
-            <div
-              class="m-1 flex items-center p-1 px-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
-              v-if="tokenAmount.amount !== '0'"
-            >
-              <BalAsset
-                :address="tokenAmount.address"
-                class="mr-2 flex-shrink-0"
-              />
-              <span class="font-numeric">{{
-                fNum(tokenAmount.amount, 'token')
-              }}</span>
-            </div>
-          </template>
+        <div class="px-6 py-4 flex -mt-1 items-center flex-wrap">
+          <div class="token-item">
+            <BalAsset :address="action.tokenIn" class="mr-2 flex-shrink-0" />
+            <span class="font-numeric">{{
+              fNum(action.tokenAmountIn, 'token')
+            }}</span>
+          </div>
+          <BalIcon name="arrow-right" class="mx-1" />
+          <div class="token-item">
+            <BalAsset :address="action.tokenOut" class="mr-2 flex-shrink-0" />
+            <span class="font-numeric">{{
+              fNum(action.tokenAmountOut, 'token')
+            }}</span>
+          </div>
         </div>
       </template>
 

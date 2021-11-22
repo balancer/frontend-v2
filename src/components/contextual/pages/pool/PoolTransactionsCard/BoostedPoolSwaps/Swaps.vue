@@ -4,13 +4,11 @@ import { useRoute } from 'vue-router';
 import { flatten } from 'lodash';
 
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';
-import useUserPoolSwapsQuery from '@/composables/queries/useUserPoolSwapsQuery';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 
-import { PoolTransactionsTab } from '../types';
-
 import Table from './Table.vue';
+import { getPoolAddress } from '@balancer-labs/balancer-js';
 
 /**
  * TYPES
@@ -18,15 +16,13 @@ import Table from './Table.vue';
 type Props = {
   pool: FullPool;
   loading: boolean;
-  poolActivityType: PoolTransactionsTab;
 };
 
 /**
  * PROPS
  */
-const props = withDefaults(defineProps<Props>(), {
-  loading: false,
-  poolActivityType: PoolTransactionsTab.ALL_ACTIVITY
+withDefaults(defineProps<Props>(), {
+  loading: false
 });
 
 /**
@@ -37,16 +33,16 @@ const route = useRoute();
 /**
  * STATE
  */
-
 const id = route.params.id as string;
+const poolAddress = getPoolAddress(id);
+
 /**
  * QUERIES
  */
-
-const poolSwapsQuery =
-  props.poolActivityType === PoolTransactionsTab.ALL_ACTIVITY
-    ? usePoolSwapsQuery(id)
-    : useUserPoolSwapsQuery(id);
+const poolSwapsQuery = usePoolSwapsQuery(id, {
+  tokenIn_not: poolAddress,
+  tokenOut_not: poolAddress
+});
 
 /**
  * COMPUTED
@@ -74,15 +70,10 @@ function loadMorePoolSwaps() {
   <Table
     :tokens="pool ? pool.tokensList : []"
     :pool-swaps="poolSwaps"
-    :pool="pool"
     :is-loading="loading || isLoadingPoolSwaps"
     :is-loading-more="poolSwapsIsFetchingNextPage"
     :is-paginated="poolSwapsHasNextPage"
     @load-more="loadMorePoolSwaps"
-    :no-results-label="
-      poolActivityType === PoolTransactionsTab.ALL_ACTIVITY
-        ? $t('poolTransactions.noResults.allInvestments')
-        : $t('poolTransactions.noResults.myInvestments')
-    "
+    :no-results-label="$t('poolTransactions.noResults.swaps')"
   />
 </template>

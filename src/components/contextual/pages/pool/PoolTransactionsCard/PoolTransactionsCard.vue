@@ -8,6 +8,7 @@ import { usePool } from '@/composables/usePool';
 
 import Activities from './PoolActivities/Activities.vue';
 import BoostedActivities from './BoostedPoolActivities/Activities.vue';
+import BoostedSwaps from './BoostedPoolSwaps/Swaps.vue';
 import Swaps from './PoolSwaps/Swaps.vue';
 
 import { PoolTransactionsTab } from './types';
@@ -73,7 +74,7 @@ const activeTab = ref(tabs[0].value);
       :pool="pool"
       :loading="loading"
     />
-    <Swaps
+    <BoostedSwaps
       v-else-if="activeTab === PoolTransactionsTab.SWAPS"
       :pool="pool"
       :loading="loading"
