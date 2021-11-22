@@ -152,12 +152,7 @@ export default defineComponent({
     const depositing = ref(false);
     const approving = ref(false);
 
-    const bptBalance = computed(() =>
-      scaleDown(
-        new BigNumber(userBptTokenBalance.value.toString()),
-        18
-      ).toString()
-    );
+    const bptBalance = computed(() => userBptTokenBalance.value.toString());
 
     const { txListener } = useEthers();
 

@@ -139,10 +139,7 @@ export default defineComponent({
     const { farmUserRefetch } = useFarmUser(appNetworkConfig.fBeets.farmId);
 
     const bptDeposited = computed(() => {
-      return scaleDown(
-        new BigNumber(userFbeetsBalance.value.toString()),
-        18
-      ).toString();
+      return userFbeetsBalance.value.toString();
     });
 
     function amountRules() {
