@@ -34,20 +34,26 @@ export function useFreshBeets() {
 
   const fBeetsLoading = computed(() => isLoading.value || isIdle.value);
 
-  const totalSupply = computed(() => data.value?.totalFbeetsSupply ?? bn(0));
+  const totalSupply = computed(
+    () => data.value?.totalFbeetsSupply.div(1e18) ?? bn(0)
+  );
   const totalBptStaked = computed(() => {
     return data.value?.totalBptStaked.div(1e18) ?? bn(0);
   });
-  const userFbeetsBalance = computed(() => data.value?.userBalance ?? bn(0));
+  const userFbeetsBalance = computed(
+    () => data.value?.userBalance.div(1e18) ?? bn(0)
+  );
   const userBptTokenBalance = computed(
-    () => data.value?.userBptTokenBalance ?? bn(0)
+    () => data.value?.userBptTokenBalance.div(1e18) ?? bn(0)
   );
-  const userAllowance = computed(() => data.value?.allowance ?? bn(0));
-  const currentExchangeRate = computed(() =>
-    totalSupply.value.eq(0)
+  const userAllowance = computed(
+    () => data.value?.allowance.div(1e18) ?? bn(0)
+  );
+  const currentExchangeRate = computed(() => {
+    return totalSupply.value.eq(0)
       ? bn(0)
-      : totalBptStaked.value.div(totalSupply.value)
-  );
+      : totalBptStaked.value.div(totalSupply.value);
+  });
 
   const totalSupplyIsZero = computed(() => totalSupply.value.eq(bn(0)) ?? true);
 
@@ -75,20 +81,60 @@ export function useFreshBeets() {
   );
 
   const pool = computed(() => {
-    console.log(
-      pools.value?.find(
-        pool =>
-          pool.address.toLowerCase() ===
-          appNetworkConfig.fBeets.poolAddress.toLowerCase()
-      )
-    );
-
     return pools.value?.find(
       pool =>
         pool.address.toLowerCase() ===
         appNetworkConfig.fBeets.poolAddress.toLowerCase()
     );
   });
+
+  const beets = computed(() =>
+    pool.value?.tokens.find(
+      token =>
+        token.address.toLowerCase() ===
+        appNetworkConfig.addresses.beets.toLowerCase()
+    )
+  );
+
+  const ftm = computed(() =>
+    pool.value?.tokens.find(
+      token =>
+        token.address.toLowerCase() ===
+        appNetworkConfig.addresses.weth.toLowerCase()
+    )
+  );
+
+  const userStakedBptBalance = computed(() =>
+    userFbeetsBalance.value.times(currentExchangeRate.value)
+  );
+
+  const userBptShare = computed(() => {
+    if (!pool.value) {
+      return bn(0);
+    }
+
+    return userStakedBptBalance.value.div(pool.value.totalShares);
+  });
+
+  const beetsPerShare = computed(() =>
+    beets.value && pool.value
+      ? `${parseFloat(beets.value.balance) /
+          parseFloat(pool.value.totalShares)}`
+      : '0'
+  );
+
+  const ftmPerShare = computed(() =>
+    ftm.value && pool.value
+      ? `${parseFloat(ftm.value.balance) / parseFloat(pool.value.totalShares)}`
+      : '0'
+  );
+
+  const userStakedBeetsBalance = computed(() =>
+    userBptShare.value.times(beets.value?.balance || '0')
+  );
+  const userStakedFtmBalance = computed(() =>
+    userBptShare.value.times(ftm.value?.balance || '0')
+  );
 
   const totalBeetsStaked = computed(() => {
     if (!pool.value) {
@@ -219,6 +265,11 @@ export function useFreshBeets() {
     farmUser,
     totalBptStaked,
     totalBeetsStaked,
+    userStakedBptBalance,
+    userStakedBeetsBalance,
+    userStakedFtmBalance,
+    beetsPerShare,
+    ftmPerShare,
 
     approve,
     stake,

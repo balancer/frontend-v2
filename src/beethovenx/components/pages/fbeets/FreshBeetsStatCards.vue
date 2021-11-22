@@ -49,7 +49,7 @@ const totalApr = computed(
         fBEETS Minted
       </div>
       <div class="text-xl font-medium truncate flex items-center">
-        {{ fNum(totalSupply.div(1e18).toString(), 'token_lg') }}
+        {{ fNum(totalSupply?.toString() || '0', 'token_lg') }}
       </div>
     </BalCard>
     <BalCard>
@@ -76,7 +76,7 @@ const totalApr = computed(
     </BalCard>
     <!--    </template>-->
   </div>
-  <h4 class="px-4 lg:px-0 mb-4">Farm</h4>
+  <h4 class="px-4 lg:px-0 mb-4">Fresh BEETS Farm</h4>
   <div class="grid grid-cols-1 sm:grid-cols-1 xl:grid-cols-2 gap-4">
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4">
       <BalCard>

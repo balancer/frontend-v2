@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
+import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
+import useNumbers from '@/composables/useNumbers';
 
 type Props = {
   loading: boolean;
@@ -9,6 +11,18 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+
+const { fNum } = useNumbers();
+
+const {
+  userStakedFtmBalance,
+  userStakedBeetsBalance,
+  userStakedBptBalance,
+  userFbeetsBalance,
+  currentExchangeRate,
+  beetsPerShare,
+  ftmPerShare
+} = useFreshBeets();
 
 /**
  * STATE
@@ -23,12 +37,12 @@ const props = defineProps<Props>();
     <div
       class="border-green-500 bg-green-900 border-2 rounded-xl px-3 py-1 text-center mb-2"
     >
-      1 fBEETS = 1.02 BPT
+      1 fBEETS = {{ fNum(currentExchangeRate, 'token') }} BPT
     </div>
     <div
       class="border-red-500 bg-red-900 border-2 rounded-xl px-3 py-1 text-center"
     >
-      1 BPT = 1 BEETS / 0.2 FTM
+      1 BPT = {{ fNum(beetsPerShare) }} BEETS / {{ fNum(ftmPerShare) }} FTM
     </div>
   </BalCard>
   <BalCard class="mb-4 pb-1">
@@ -41,7 +55,7 @@ const props = defineProps<Props>();
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
-            {{ props.fBeetsBalance }}
+            {{ fNum(userFbeetsBalance.toString(), 'token') }}
           </p>
           <p class="text-sm md:text-base text-primary">fBEETS</p>
         </div>
@@ -61,7 +75,7 @@ const props = defineProps<Props>();
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
-            {{ props.bptBalance }}
+            {{ fNum(userStakedBptBalance.toString(), 'token') }}
           </p>
           <p class="text-sm md:text-base text-primary">
             Fidelio Duetto BPTs
@@ -84,7 +98,7 @@ const props = defineProps<Props>();
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
-            {{ props.bptBalance }}
+            {{ fNum(userStakedBeetsBalance.toString(), 'token') }}
           </p>
           <p class="text-sm md:text-base text-primary">
             BEETS
@@ -101,7 +115,7 @@ const props = defineProps<Props>();
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
-            {{ props.bptBalance }}
+            {{ fNum(userStakedFtmBalance.toString(), 'token') }}
           </p>
           <p class="text-sm md:text-base text-primary">
             FTM
