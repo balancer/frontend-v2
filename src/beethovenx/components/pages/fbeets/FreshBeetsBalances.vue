@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import BalCard from '@/components/_global/BalCard/BalCard.vue';
+
 type Props = {
   loading: boolean;
   fBeetsBalance: string;
@@ -14,13 +16,28 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-  <BalCard shadow="xl" class="mb-4 pb-1">
-    <div class="flex flex-col flex-grow md:mb-10">
+  <BalCard class="mb-4">
+    <div class="text-sm text-gray-500 font-medium mb-4">
+      Exchange Rate
+    </div>
+    <div
+      class="border-green-500 bg-green-900 border-2 rounded-xl px-3 py-1 text-center mb-2"
+    >
+      1 fBEETS = 1.02 BPT
+    </div>
+    <div
+      class="border-red-500 bg-red-900 border-2 rounded-xl px-3 py-1 text-center"
+    >
+      1 BPT = 1 BEETS / 0.2 FTM
+    </div>
+  </BalCard>
+  <BalCard class="mb-4 pb-1">
+    <div class="flex flex-col flex-grow">
       <div class="text-sm text-gray-500 font-medium mb-3">
-        My Balance
+        My Stake
       </div>
       <div class="flex items-center space-x-4">
-        <img src="~@/beethovenx/assets/images/fBEETS.png" width="64" />
+        <img src="~@/beethovenx/assets/images/fBEETS.png" width="52" />
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
@@ -30,12 +47,16 @@ const props = defineProps<Props>();
         </div>
       </div>
     </div>
-    <div class="flex flex-col flex-grow md:mb-10">
-      <div class="text-sm text-gray-500 font-medium mb-3">My Unstaked BPTs</div>
+    <div class="flex items-center my-4">
+      <div class="h-1 w-full flex-1 bg-gray-700 rounded-3xl" />
+      <div class="text-gray-500 mx-2">OR</div>
+      <div class="h-1 w-full flex-1 bg-gray-700 rounded-3xl" />
+    </div>
+    <div class="flex flex-col flex-grow">
       <div class="flex items-center space-x-4">
         <img
           src="~@/beethovenx/assets/images/fidellio-duetto-bpt.png"
-          width="64"
+          width="52"
         />
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
@@ -48,22 +69,42 @@ const props = defineProps<Props>();
         </div>
       </div>
     </div>
+
+    <div class="flex items-center my-4">
+      <div class="h-1 w-full flex-1 bg-gray-700 rounded-3xl" />
+      <div class="text-gray-500 mx-2">OR</div>
+      <div class="h-1 w-full flex-1 bg-gray-700 rounded-3xl" />
+    </div>
     <div class="flex flex-col flex-grow">
-      <div class="text-sm text-gray-500 font-medium mb-3">
-        My Uninvested BEETS
-      </div>
       <div class="flex items-center space-x-4">
         <img
           src="~@/beethovenx/assets/images/beets-icon-large.png"
-          width="64"
+          width="52"
         />
         <div class="flex flex-col justify-center">
           <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
           <p v-else class="text-sm font-bold md:text-lg">
-            {{ props.beetsBalance }}
+            {{ props.bptBalance }}
           </p>
           <p class="text-sm md:text-base text-primary">
             BEETS
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col flex-grow mt-4">
+      <div class="flex items-center space-x-4">
+        <img
+          src="https://storageapi.fleek.co/beethovenxfi-team-bucket/FTM.png"
+          width="52"
+        />
+        <div class="flex flex-col justify-center">
+          <BalLoadingBlock v-if="props.loading" class="h-6 w-24 mb-1" white />
+          <p v-else class="text-sm font-bold md:text-lg">
+            {{ props.bptBalance }}
+          </p>
+          <p class="text-sm md:text-base text-primary">
+            FTM
           </p>
         </div>
       </div>

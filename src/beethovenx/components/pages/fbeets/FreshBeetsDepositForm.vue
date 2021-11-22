@@ -63,7 +63,7 @@
             :loading="depositing || loading"
             block
           >
-            Deposit BPT
+            Mint fBEETS
           </BalBtn>
         </template>
       </template>
