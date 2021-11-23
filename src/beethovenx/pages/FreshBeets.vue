@@ -23,7 +23,8 @@ const { appNetworkConfig, isLoadingProfile } = useWeb3();
 const {
   fBeetsLoading,
   userFbeetsBalance,
-  userBptTokenBalance
+  userBptTokenBalance,
+  userUnstakedFbeetsBalance
 } = useFreshBeets();
 const {
   balanceFor,
@@ -113,7 +114,7 @@ const activeTab = ref(tabs[0].value);
           class="mb-4"
         />
         <BalAlert
-          v-if="userBptTokenBalance.eq(0) && userFbeetsBalance.gt(0)"
+          v-if="userBptTokenBalance.eq(0) && userUnstakedFbeetsBalance.gt(0)"
           title="You have unstaked fBEETS in your wallet"
           description="If you deposit your fBEETS into the farm, you will earn additional rewards paid out in BEETS."
           type="warning"

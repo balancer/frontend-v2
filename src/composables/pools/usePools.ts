@@ -184,6 +184,7 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
 
     harvestAllFarms,
     refetchFarmsForUser,
-    farms
+    farms,
+    allFarmsForUser
   };
 }
