@@ -214,9 +214,12 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
         </BalStack>
       </div>
     </template>
-    <div ref="accordionWrapper" class="col-span-11 mt-4 pb-24">
+    <div
+      v-if="upToLargeBreakpoint"
+      ref="accordionWrapper"
+      class="col-span-11 mt-4 pb-24"
+    >
       <BalAccordion
-        v-if="upToLargeBreakpoint"
         :sections="[
           { title: 'Pool summary', id: 'pool-summary' },
           { title: 'Max initial liquidity', id: 'max-initial-liquidity' }

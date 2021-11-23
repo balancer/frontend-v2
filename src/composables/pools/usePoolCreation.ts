@@ -165,23 +165,23 @@ export default function usePoolCreation() {
 
   const existingPool = computed(() => {
     if (!similarPools.value?.length) return null;
-    const similarPool = similarPools.value.find(
-      pool => {
-        if (pool.swapFee === poolCreationState.initialFee) {
-          let weightsMatch = true;
-          for (const token of pool.tokens) {
-            const relevantToken = poolCreationState.seedTokens.find(t => t.tokenAddress === token.address);
-            const similarPoolWeight = token.weight;
-            const seedTokenWeight = String((relevantToken?.weight || 0) / 100);
-            if (similarPoolWeight !== seedTokenWeight) {
-              weightsMatch = false;
-            }
+    const similarPool = similarPools.value.find(pool => {
+      if (pool.swapFee === poolCreationState.initialFee) {
+        let weightsMatch = true;
+        for (const token of pool.tokens) {
+          const relevantToken = poolCreationState.seedTokens.find(
+            t => t.tokenAddress === token.address
+          );
+          const similarPoolWeight = token.weight;
+          const seedTokenWeight = String((relevantToken?.weight || 0) / 100);
+          if (similarPoolWeight !== seedTokenWeight) {
+            weightsMatch = false;
           }
-          return weightsMatch;
         }
-        return false;
+        return weightsMatch;
       }
-    );
+      return false;
+    });
     return similarPool;
   });
 
@@ -310,7 +310,9 @@ export default function usePoolCreation() {
         poolCreationState.symbol,
         poolCreationState.initialFee,
         poolCreationState.seedTokens,
-        poolCreationState.feeController === 'other' ? poolCreationState.thirdPartyFeeController : AddressZero
+        poolCreationState.feeController === 'other'
+          ? poolCreationState.thirdPartyFeeController
+          : AddressZero
       );
 
       addTransaction({
