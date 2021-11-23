@@ -81,8 +81,8 @@ function loadMorePoolSwaps() {
     @load-more="loadMorePoolSwaps"
     :no-results-label="
       poolActivityType === PoolTransactionsTab.ALL_ACTIVITY
-        ? $t('poolTransactions.noResults.allInvestments')
-        : $t('poolTransactions.noResults.myInvestments')
+        ? $t('poolTransactions.noResults.allTransactions')
+        : $t('poolTransactions.noResults.myTransactions')
     "
   />
 </template>

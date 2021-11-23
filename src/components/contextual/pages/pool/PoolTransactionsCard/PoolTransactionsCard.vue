@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRef } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -8,7 +8,6 @@ import { usePool } from '@/composables/usePool';
 
 import Activities from './PoolActivities/Activities.vue';
 import BoostedActivities from './BoostedPoolActivities/Activities.vue';
-import BoostedSwaps from './BoostedPoolSwaps/Swaps.vue';
 import Swaps from './PoolSwaps/Swaps.vue';
 
 import { PoolTransactionsTab } from './types';
@@ -35,24 +34,40 @@ const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
 const { t } = useI18n();
 
 /**
+ * COMPUTED
+ */
+const tabs = computed(() =>
+  isStablePhantomPool
+    ? [
+        {
+          value: PoolTransactionsTab.ALL_ACTIVITY,
+          label: t('poolTransactions.tabs.allTransactions')
+        },
+        {
+          value: PoolTransactionsTab.USER_ACTIVITY,
+          label: t('poolTransactions.tabs.myTransactions')
+        }
+      ]
+    : [
+        {
+          value: PoolTransactionsTab.ALL_ACTIVITY,
+          label: t('poolTransactions.tabs.allInvestments')
+        },
+        {
+          value: PoolTransactionsTab.SWAPS,
+          label: t('poolTransactions.tabs.swaps')
+        },
+        {
+          value: PoolTransactionsTab.USER_ACTIVITY,
+          label: t('poolTransactions.tabs.myInvestments')
+        }
+      ]
+);
+
+/**
  * STATE
  */
-const tabs = [
-  {
-    value: PoolTransactionsTab.ALL_ACTIVITY,
-    label: t('poolTransactions.tabs.allInvestments')
-  },
-  {
-    value: PoolTransactionsTab.SWAPS,
-    label: t('poolTransactions.tabs.swaps')
-  },
-  {
-    value: PoolTransactionsTab.USER_ACTIVITY,
-    label: t('poolTransactions.tabs.myInvestments')
-  }
-];
-
-const activeTab = ref(tabs[0].value);
+const activeTab = ref(tabs.value[0].value);
 </script>
 
 <template>
@@ -71,11 +86,6 @@ const activeTab = ref(tabs[0].value);
     <BoostedActivities
       v-else-if="activeTab === PoolTransactionsTab.USER_ACTIVITY"
       :pool-activity-type="PoolTransactionsTab.USER_ACTIVITY"
-      :pool="pool"
-      :loading="loading"
-    />
-    <BoostedSwaps
-      v-else-if="activeTab === PoolTransactionsTab.SWAPS"
       :pool="pool"
       :loading="loading"
     />

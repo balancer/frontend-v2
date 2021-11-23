@@ -23,13 +23,15 @@ type TokenAmount = {
   amount: string;
 };
 
+type SwapType = 'invest' | 'withdraw' | 'trade';
+
 type SwapRow = {
   label: string;
   timestamp: number;
   formattedDate: string;
   value: number;
   formattedValue: string;
-  isInvest: boolean;
+  type: SwapType;
   tx: string;
   tokenAmounts: TokenAmount[];
 };
@@ -115,21 +117,34 @@ const swapRows = computed<SwapRow[]>(() => {
   const groupedSwaps = Object.entries(groupBy(props.poolSwaps, 'tx'));
 
   return groupedSwaps.map(([tx, swaps]) => {
-    const { tokenOut, timestamp } = swaps[0];
+    const { tokenIn, tokenOut, timestamp } = swaps[0];
 
-    const isInvest = tokenOut === props.pool.address;
-    const tokenAmounts = getInvestmentDetails(swaps, isInvest);
-    const value = getInvestmentValue(tokenAmounts);
+    let type: SwapType;
+    let label: string;
+
+    if (tokenOut === props.pool.address) {
+      type = 'invest';
+      label = t('invest');
+    } else if (tokenIn === props.pool.address) {
+      type = 'withdraw';
+      label = t('withdraw.label');
+    } else {
+      type = 'trade';
+      label = t('trade');
+    }
+
+    const tokenAmounts = getTokenAmounts(swaps, type);
+    const value = getTransactionValue(tokenAmounts, type);
 
     return {
-      label: isInvest ? t('invest') : t('withdraw.label'),
+      label,
+      type,
       value,
       formattedValue: value > 0 ? fNum(fNum(value, 'usd'), 'usd_m') : '-',
       timestamp,
       formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
       tx,
-      isInvest,
-      tokenAmounts: getInvestmentDetails(swaps, isInvest)
+      tokenAmounts
     };
   });
 });
@@ -137,7 +152,13 @@ const swapRows = computed<SwapRow[]>(() => {
 /**
  * METHODS
  */
-function getInvestmentValue(tokenAmounts: TokenAmount[]) {
+function getTransactionValue(tokenAmounts: TokenAmount[], type: SwapType) {
+  if (type === 'trade') {
+    return bnum(priceFor(tokenAmounts[1].address))
+      .times(tokenAmounts[1].amount)
+      .toNumber();
+  }
+
   let total = bnum(0);
 
   for (const { address, amount } of tokenAmounts) {
@@ -155,23 +176,44 @@ function getInvestmentValue(tokenAmounts: TokenAmount[]) {
   return total.toNumber();
 }
 
-function getInvestmentDetails(swaps: PoolSwap[], isInvest: boolean) {
-  const { linearPools } = props.pool.onchain;
+function getTokenAmounts(swaps: PoolSwap[], type: SwapType) {
+  const isInvest = type === 'invest';
 
+  if (type === 'trade') {
+    const swap = swaps[0];
+    const { tokenIn, tokenOut, tokenAmountIn, tokenAmountOut } = swap;
+
+    return [
+      {
+        address: getUnderlyingTokenAddress(tokenIn),
+        amount: tokenAmountIn
+      },
+      {
+        address: getUnderlyingTokenAddress(tokenOut),
+        amount: tokenAmountOut
+      }
+    ];
+  }
   return swaps.map(swap => {
     let address = isInvest ? swap.tokenIn : swap.tokenOut;
 
-    if (linearPools != null) {
-      address = isInvest
-        ? linearPools[swap.tokenIn].mainToken.address
-        : linearPools[swap.tokenOut].mainToken.address;
-    }
+    address = isInvest
+      ? getUnderlyingTokenAddress(swap.tokenIn)
+      : getUnderlyingTokenAddress(swap.tokenOut);
 
     return {
       address,
       amount: isInvest ? swap.tokenAmountIn : swap.tokenAmountOut
     };
   });
+}
+
+function getUnderlyingTokenAddress(address: string) {
+  const { linearPools } = props.pool.onchain;
+
+  return linearPools != null && linearPools[address] != null
+    ? linearPools[address].mainToken.address
+    : address;
 }
 </script>
 
@@ -202,12 +244,23 @@ function getInvestmentDetails(swaps: PoolSwap[], isInvest: boolean) {
           <div class="flex items-center">
             <div class="flex center mr-3">
               <BalIcon
-                v-if="action.isInvest"
+                v-if="action.type === 'invest'"
                 name="plus"
                 size="sm"
                 class="text-green-500 dark:text-green-400"
               />
-              <BalIcon v-else name="minus" size="sm" class="text-red-500" />
+              <BalIcon
+                v-else-if="action.type === 'withdraw'"
+                name="minus"
+                size="sm"
+                class="text-red-500"
+              />
+              <BalIcon
+                v-else
+                name="repeat"
+                size="sm"
+                class="text-green-500 dark:text-green-400"
+              />
             </div>
             <div>{{ action.label }}</div>
           </div>
@@ -215,20 +268,43 @@ function getInvestmentDetails(swaps: PoolSwap[], isInvest: boolean) {
       </template>
 
       <template v-slot:detailsCell="action">
-        <div class="px-6 py-4 flex -mt-1 flex-wrap">
-          <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
-            <div
-              class="m-1 flex items-center p-1 px-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
-              v-if="tokenAmount.amount !== '0'"
-            >
+        <div class="px-6 py-4 flex -mt-1 flex-wrap items-center">
+          <template v-if="action.type === 'trade'">
+            <div class="token-item">
               <BalAsset
-                :address="tokenAmount.address"
+                :address="action.tokenAmounts[0].address"
                 class="mr-2 flex-shrink-0"
               />
               <span class="font-numeric">{{
-                fNum(tokenAmount.amount, 'token')
+                fNum(action.tokenAmounts[0].amount, 'token')
               }}</span>
             </div>
+            <BalIcon name="arrow-right" class="mx-1" />
+            <div class="token-item">
+              <BalAsset
+                :address="action.tokenAmounts[1].address"
+                class="mr-2 flex-shrink-0"
+              />
+              <span class="font-numeric">{{
+                fNum(action.tokenAmounts[1].amount, 'token')
+              }}</span>
+            </div>
+          </template>
+          <template v-else>
+            <template v-for="(tokenAmount, i) in action.tokenAmounts" :key="i">
+              <div
+                class="m-1 flex items-center p-1 px-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                v-if="tokenAmount.amount !== '0'"
+              >
+                <BalAsset
+                  :address="tokenAmount.address"
+                  class="mr-2 flex-shrink-0"
+                />
+                <span class="font-numeric">{{
+                  fNum(tokenAmount.amount, 'token')
+                }}</span>
+              </div>
+            </template>
           </template>
         </div>
       </template>
