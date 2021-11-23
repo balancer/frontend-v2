@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
@@ -7,7 +7,6 @@ import WalletInitialLiquidity from '@/components/cards/CreatePool/WalletInitialL
 import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
 import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
 import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
-import WalletPoolTokens from '@/components/cards/CreatePool/WalletPoolTokens.vue';
 import SimilarPoolsCompact from '@/components/cards/CreatePool/SimilarPoolsCompact.vue';
 import PreviewPoolModal from '@/components/cards/CreatePool/PreviewPoolModal.vue';
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
@@ -54,13 +53,7 @@ const hasCompletedMountAnimation = ref(false);
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const {
-  activeStep,
-  similarPools,
-  tokensList,
-  setStep,
-  maxInitialLiquidity
-} = usePoolCreation();
+const { activeStep, similarPools, maxInitialLiquidity } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 onMounted(() => {
