@@ -10,6 +10,7 @@ import BigNumber from 'bignumber.js';
 import { BigNumber as EPBigNumber } from '@ethersproject/bignumber';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { defaultAbiCoder } from '@ethersproject/abi';
+import { AddressZero } from '@ethersproject/constants';
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { scale } from '@/lib/utils';
@@ -93,7 +94,7 @@ export default class WeightedPoolService {
     poolId: string,
     sender: Address,
     receiver: Address,
-    tokens: PoolSeedToken[],
+    tokenAddresses: Address[],
     initialBalancesString: string[]
   ): Promise<TransactionResponse> {
     const initUserData = defaultAbiCoder.encode(
@@ -101,9 +102,9 @@ export default class WeightedPoolService {
       [JOIN_KIND_INIT, initialBalancesString]
     );
 
-    const tokenAddresses: Address[] = tokens.map((token: PoolSeedToken) => {
-      return token.tokenAddress;
-    });
+    const value = this.value(initialBalancesString, tokenAddresses);
+
+    tokenAddresses = this.parseTokensIn(tokenAddresses);
 
     const joinPoolRequest: JoinPoolRequest = {
       assets: tokenAddresses,
@@ -118,7 +119,8 @@ export default class WeightedPoolService {
       vaultAddress,
       Vault__factory.abi,
       'joinPool',
-      [poolId, sender, receiver, joinPoolRequest]
+      [poolId, sender, receiver, joinPoolRequest],
+      { value }
     );
   }
 
@@ -135,5 +137,26 @@ export default class WeightedPoolService {
     });
 
     return weightStrings;
+  }
+
+  private value(amountsIn: string[], tokensIn: string[]): EPBigNumber {
+    let value = '0';
+    const nativeAsset = configService.network.nativeAsset;
+
+    amountsIn.forEach((amount, i) => {
+      if (tokensIn[i] === nativeAsset.address) {
+        value = amount;
+      }
+    });
+
+    return EPBigNumber.from(value);
+  }
+
+  private parseTokensIn(tokensIn: string[]): string[] {
+    const nativeAsset = configService.network.nativeAsset;
+
+    return tokensIn.map(address =>
+      address === nativeAsset.address ? AddressZero : address
+    );
   }
 }

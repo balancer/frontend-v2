@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, onBeforeMount, watch, ref } from 'vue';
+import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
+import useTokens from '@/composables/useTokens';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
@@ -9,20 +11,31 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
  * STATE
  */
 const { userNetworkConfig } = useWeb3();
+const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const {
   seedTokens,
+  tokensList,
   proceed,
   optimisedLiquidity,
   scaledLiquidity,
   goBack,
   manuallySetToken,
   updateManuallySetToken,
-  autoOptimiseBalances
+  autoOptimiseBalances,
+  isWethPool,
+  useNativeAsset
 } = usePoolCreation();
+
+const tokenAddresses = ref([] as string[]);
 
 /**
  * LIFECYCLE
  */
+onBeforeMount(() => {
+  tokenAddresses.value = [...tokensList.value];
+  if (isWethPool.value) setNativeAssetIfRequired();
+});
+
 onMounted(() => {
   optimiseLiquidity();
   scaleLiquidity();
@@ -31,7 +44,6 @@ onMounted(() => {
 /**
  * METHODS
  */
-
 function optimiseLiquidity() {
   if (manuallySetToken.value) return;
 
@@ -41,7 +53,7 @@ function optimiseLiquidity() {
 }
 
 function scaleLiquidity() {
-  if (!autoOptimiseBalances.value) return;
+  if (!autoOptimiseBalances.value || !manuallySetToken.value) return;
 
   for (const token of seedTokens.value) {
     if (token.tokenAddress !== manuallySetToken.value) {
@@ -69,6 +81,38 @@ function handleAmountChange(tokenAddress) {
   updateManuallySetToken(tokenAddress);
 
   checkLiquidityScaling();
+}
+
+function handleAddressChange(newAddress: string): void {
+  useNativeAsset.value = newAddress === nativeAsset.address;
+}
+
+function tokenOptions(index: number): string[] {
+  if (tokenAddresses.value[index] === wrappedNativeAsset.value.address)
+    return [wrappedNativeAsset.value.address, nativeAsset.address];
+  if (tokenAddresses.value[index] === nativeAsset.address)
+    return [nativeAsset.address, wrappedNativeAsset.value.address];
+  return [];
+}
+
+// If useNativeAsset is set, or ETH has a higher balance than WETH, then use it for the input.
+function setNativeAssetIfRequired(): void {
+  const nativeAssetBalance = balanceFor(nativeAsset.address);
+  const wrappedNativeAssetBalance = balanceFor(
+    wrappedNativeAsset.value.address
+  );
+
+  if (
+    useNativeAsset.value ||
+    bnum(nativeAssetBalance).gt(wrappedNativeAssetBalance)
+  ) {
+    tokenAddresses.value = tokenAddresses.value.map(address => {
+      if (address == wrappedNativeAsset.value.address) {
+        return nativeAsset.address;
+      }
+      return address;
+    });
+  }
 }
 </script>
 
@@ -108,14 +152,16 @@ function handleAmountChange(tokenAddress) {
       </BalStack>
       <BalStack isDynamic vertical>
         <TokenInput
-          v-for="(token, i) in seedTokens"
-          :key="token.tokenAddress"
+          v-for="(address, i) in tokenAddresses"
+          :key="i"
           v-model:amount="seedTokens[i].amount"
-          v-model:address="seedTokens[i].tokenAddress"
-          @update:amount="handleAmountChange(token.tokenAddress)"
+          v-model:address="tokenAddresses[i]"
           :weight="seedTokens[i].weight / 100"
           :name="`initial-token-${seedTokens[i].tokenAddress}`"
           fixedToken
+          :options="tokenOptions(i)"
+          @update:amount="handleAmountChange(address)"
+          @update:address="handleAddressChange($event)"
         />
       </BalStack>
       <BalBtn @click="proceed" block color="gradient">Preview</BalBtn>

@@ -37,9 +37,10 @@ const {
   goBack,
   name: poolName,
   symbol: poolSymbol,
-  setActiveStep
+  setActiveStep,
+  useNativeAsset
 } = usePoolCreation();
-const { tokens, priceFor } = useTokens();
+const { tokens, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum } = useNumbers();
 const { t } = useI18n();
 const { userNetworkConfig } = useWeb3();
@@ -57,7 +58,15 @@ const title = computed((): string =>
 const initialWeightLabel = computed(() => t('initialWeight'));
 
 const tokenAddresses = computed((): string[] => {
-  return seedTokens.value.map(token => token.tokenAddress);
+  return seedTokens.value.map(token => {
+    if (
+      token.tokenAddress == wrappedNativeAsset.value.address &&
+      useNativeAsset.value
+    ) {
+      return nativeAsset.address;
+    }
+    return token.tokenAddress;
+  });
 });
 
 const tokenAmounts = computed((): string[] => {
