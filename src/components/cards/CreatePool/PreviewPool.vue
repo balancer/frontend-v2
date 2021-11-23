@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
@@ -36,12 +36,21 @@ const {
   name: poolName,
   symbol: poolSymbol,
   setActiveStep,
-  useNativeAsset
+  useNativeAsset,
+  sortTokenWeights
 } = usePoolCreation();
+
 const { tokens, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum } = useNumbers();
 const { t } = useI18n();
 const { userNetworkConfig } = useWeb3();
+
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(() => {
+  sortTokenWeights();
+});
 
 /**
  * COMPUTED
