@@ -11,6 +11,7 @@ const stepState = StepState;
  */
 type Props = {
   steps: Step[];
+  spacerWidth: number;
 };
 
 /**
@@ -23,7 +24,8 @@ withDefaults(defineProps<Props>(), {
     { tooltip: 'This is pending', state: StepState.Pending },
     { tooltip: 'Do this now', state: StepState.Active },
     { tooltip: 'Do this next', state: StepState.Todo }
-  ]
+  ],
+  spacerWidth: 16
 });
 
 /**
@@ -60,7 +62,10 @@ function stateClasses(state: StepState): string {
 <template>
   <div class="flex items-center">
     <div v-for="(step, i) in steps" :key="i" class="flex items-center">
-      <div v-if="i !== 0" class="h-px bg-gray-100 dark:bg-gray-700 w-16" />
+      <div
+        v-if="i !== 0"
+        :class="['h-px bg-gray-100 dark:bg-gray-700', `w-${spacerWidth}`]"
+      />
       <BalTooltip :text="step.tooltip" width="44" textCenter>
         <template v-slot:activator>
           <div :class="['step', stateClasses(step.state)]">
