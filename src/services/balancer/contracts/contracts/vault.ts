@@ -13,7 +13,6 @@ import {
   RawOnchainPoolData,
   RawPoolTokens
 } from '../../subgraph/types';
-import ConfigService from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 import {
   isWeightedLike,
@@ -24,12 +23,20 @@ import {
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { pick } from 'lodash';
 import { Vault__factory } from '@balancer-labs/typechain';
+import { Contract } from 'ethers';
+import VaultAbi from '@/lib/abi/VaultAbi.json';
 
 export default class Vault {
   service: Service;
+  instance: Contract;
 
-  constructor(service, private readonly configService = new ConfigService()) {
+  constructor(service, instanceABI = VaultAbi) {
     this.service = service;
+    this.instance = new Contract(
+      this.service.config.addresses.vault,
+      instanceABI,
+      this.service.provider
+    );
   }
 
   public async getPoolData(
@@ -41,13 +48,13 @@ export default class Vault {
     let result = <RawOnchainPoolData>{};
 
     const vaultMultiCaller = new Multicaller(
-      this.configService.network.key,
+      this.service.config.key,
       this.service.provider,
       Vault__factory.abi
     );
 
     const poolMulticaller = new Multicaller(
-      this.configService.network.key,
+      this.service.config.key,
       this.service.provider,
       this.service.allPoolABIs
     );

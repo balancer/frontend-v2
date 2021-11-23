@@ -39,7 +39,8 @@ const {
   hasBpt,
   fiatTotalLabel,
   fiatAmounts,
-  proportionalAmounts
+  proportionalAmounts,
+  shouldFetchBatchSwap
 } = toRefs(props.math);
 
 const { slider } = useWithdrawalState(toRef(props, 'pool'));
@@ -92,6 +93,10 @@ function handleSliderChange(newVal: number): void {
     .toFixed(props.pool.onchain.decimals);
 }
 
+async function handleSliderEnd(): Promise<void> {
+  if (shouldFetchBatchSwap.value) await props.math.getBatchSwap();
+}
+
 /**
  * WATCHERS
  */
@@ -131,6 +136,7 @@ onBeforeMount(() => {
           tooltip="none"
           :disabled="!hasBpt"
           @update:modelValue="handleSliderChange"
+          @dragEnd="handleSliderEnd"
         />
       </div>
     </div>

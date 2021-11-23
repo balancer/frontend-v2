@@ -1,6 +1,6 @@
 import { computed, Ref, ref, watch } from 'vue';
 import { bnum, forChange } from '@/lib/utils';
-import { formatUnits } from '@ethersproject/units';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 // Services
@@ -12,8 +12,10 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isStablePhantom, usePool } from '@/composables/usePool';
-import { BatchSwap } from '@/types';
-// import { queryBatchSwapTokensOut } from '@balancer-labs/sor2';
+import { BatchSwapOut } from '@/types';
+import { queryBatchSwapTokensOut, SOR } from '@balancer-labs/sor2';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { BigNumber } from 'ethers';
 
 /**
  * TYPES
@@ -37,23 +39,28 @@ export type WithdrawMathResponse = {
   exactOut: Ref<boolean>;
   singleAssetMaxOut: Ref<boolean>;
   tokenOutPoolBalance: Ref<string>;
+  shouldFetchBatchSwap: Ref<boolean>;
+  batchSwap: Ref<BatchSwapOut | null>;
+  batchSwapAmountsOutMap: Ref<Record<string, BigNumber>>;
   initMath: () => void;
   resetMath: () => void;
+  getBatchSwap: () => Promise<void>;
 };
 
 export default function useWithdrawMath(
   pool: Ref<FullPool>,
   isProportional: Ref<boolean> = ref(true),
   tokenOut: Ref<string> = ref(''),
-  tokenOutIndex: Ref<number> = ref(0)
+  tokenOutIndex: Ref<number> = ref(0),
+  sor: SOR
 ): WithdrawMathResponse {
   /**
    * STATE
    */
   const propBptIn = ref('');
   const tokenOutAmount = ref('');
-  // const batchSwap = ref<BatchSwap | null>(null);
-  // const batchSwapLoading = ref(false);
+  const batchSwap = ref<BatchSwapOut | null>(null);
+  const batchSwapLoading = ref(false);
 
   /**
    * COMPOSABLES
@@ -86,7 +93,7 @@ export default function useWithdrawMath(
     return pool.value.tokenAddresses;
   });
 
-  const tokenCount = computed((): number => pool.value.tokenAddresses.length);
+  const tokenCount = computed((): number => tokenAddresses.value.length);
 
   const tokens = computed(() =>
     tokenAddresses.value.map(address => getToken(address))
@@ -122,9 +129,10 @@ export default function useWithdrawMath(
     if (pool.value.onchain.linearPools) {
       const linearPools = Object.values(pool.value.onchain.linearPools);
       return proportionalPoolTokenAmounts.value.map((amount, i) => {
+        console.log('amount', amount)
         return bnum(amount)
           .times(linearPools[i].priceRate)
-          .toString();
+          .toFixed(tokens.value[i].decimals); // TODO - may need to specify rounding
       });
     }
     return [];
@@ -143,6 +151,12 @@ export default function useWithdrawMath(
       return i === tokenOutIndex.value ? tokenOutAmount.value : '0';
     });
   });
+
+  const fullAmountsScaled = computed((): BigNumber[] =>
+    fullAmounts.value.map((amount, i) =>
+      parseUnits(amount, tokens.value[i].decimals)
+    )
+  );
 
   const amountsOut = computed(() => {
     return fullAmounts.value.map((amount, i) => {
@@ -229,15 +243,16 @@ export default function useWithdrawMath(
     fNum(fiatTotal.value, currency.value)
   );
 
-  // const shouldFetchBatchSwap = computed(
-  //   (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value
-  // );
+  const shouldFetchBatchSwap = computed(
+    (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value
+  );
 
   /**
    * METHODS
    */
   function initMath(): void {
     propBptIn.value = bptBalance.value;
+    if (shouldFetchBatchSwap.value) getBatchSwap();
   }
 
   function resetMath(): void {
@@ -245,17 +260,51 @@ export default function useWithdrawMath(
     tokenOutAmount.value = '';
   }
 
-  // async function getBatchSwap(): Promise<void> {
-  //   batchSwapLoading.value = true;
-  //   batchSwap.value = await queryBatchSwapTokensOut(
-  //     sor,
-  //     vault,
-  //     Object.keys(batchSwapAmountMap.value),
-  //     Object.values(batchSwapAmountMap.value),
-  //     pool.value.address.toLowerCase()
-  //   );
-  //   batchSwapLoading.value = false;
-  // }
+  /**
+   * TESTING
+   */
+  // Assumes proportional exit
+  // simply divides bptIn by number of tokens out
+  const batchSwapAmountsIn = computed(() => {
+    return tokenAddresses.value.map(() => {
+      return parseUnits(
+        bnum(bptIn.value)
+          .div(tokenCount.value)
+          .toString(),
+        18
+      );
+    });
+  });
+
+  const batchSwapAmountsOutMap = computed(
+    (): Record<string, BigNumber> => {
+      const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
+        tokenAddresses.value[i].toLowerCase(),
+        amount
+      ]);
+      const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
+        (amount as BigNumber).gt(0)
+      );
+      return Object.fromEntries(onlyTokensWithAmounts);
+    }
+  );
+  /**
+   * END TESTING
+   */
+
+  async function getBatchSwap(): Promise<void> {
+    batchSwapLoading.value = true;
+    // Currently assumes proportional exit
+    batchSwap.value = await queryBatchSwapTokensOut(
+      sor,
+      balancerContractsService.vault.instance,
+      pool.value.address.toLowerCase(),
+      batchSwapAmountsIn.value,
+      tokenAddresses.value
+    );
+    console.log('batchSwap', batchSwap.value);
+    batchSwapLoading.value = false;
+  }
 
   /**
    * WATCHERS
@@ -268,10 +317,6 @@ export default function useWithdrawMath(
   });
 
   watch(account, () => initMath());
-
-  // watch(fullAmounts, async () => {
-  //   if (shouldFetchBatchSwap.value) await getBatchSwap();
-  // });
 
   return {
     // computed
@@ -293,8 +338,12 @@ export default function useWithdrawMath(
     exactOut,
     singleAssetMaxOut,
     tokenOutPoolBalance,
+    shouldFetchBatchSwap,
+    batchSwap,
+    batchSwapAmountsOutMap,
     // methods
     initMath,
-    resetMath
+    resetMath,
+    getBatchSwap
   };
 }

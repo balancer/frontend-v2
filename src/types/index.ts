@@ -44,3 +44,9 @@ export type BatchSwap = {
   swaps: SwapV2[];
   assets: string[];
 };
+
+export type BatchSwapOut = {
+  amountTokensOut: string[];
+  swaps: SwapV2[];
+  assets: string[];
+};

@@ -1,7 +1,10 @@
 import { Ref, computed, reactive, toRefs } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
-import { usePool } from '@/composables/usePool';
+import { isStablePhantom, usePool } from '@/composables/usePool';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { configService } from '@/services/config/config.service';
+import { SOR } from '@balancer-labs/sor2';
 
 /**
  * STATE
@@ -12,6 +15,7 @@ const state = reactive({
   validInput: true,
   highPriceImpactAccepted: false,
   submitting: false,
+  sorReady: false,
   slider: {
     val: 1000,
     max: 1000,
@@ -20,18 +24,26 @@ const state = reactive({
   }
 });
 
-export default function useWithdrawalState(pool: Ref<FullPool>) {
+const sor = new SOR(
+  rpcProviderService.jsonProvider,
+  configService.network.chainId,
+  configService.network.subgraph
+);
+
+export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   /**
    * COMPOSABLES
    */
   const { nativeAsset, wrappedNativeAsset } = useTokens();
-  const { lpTokens } = usePool(pool);
 
   /**
    * COMPUTED
    */
   const tokensOut = computed(() => {
-    const poolTokens = [...lpTokens.value];
+    if (!pool.value) return [];
+    const poolTokens = isStablePhantom(pool.value.poolType)
+      ? pool.value.mainTokens || []
+      : pool.value.tokenAddresses;
 
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH
@@ -60,6 +72,7 @@ export default function useWithdrawalState(pool: Ref<FullPool>) {
     ...toRefs(state),
     tokensOut,
     tokenOutIndex,
+    sor,
     // methods
     maxSlider
   };

@@ -300,6 +300,59 @@ export async function boostedJoinBatchSwap(
   }
 }
 
+/**
+ * Exit a Boosted Pool (StablePhantom) using a batch swap
+ */
+export async function boostedExitBatchSwap(
+  network: string,
+  web3: Web3Provider,
+  swaps: SwapV2[],
+  tokenAddresses: string[],
+  tokenIn: string,
+  amountInMin: BigNumber,
+  amountsOutMap: Record<string, BigNumber>
+) {
+  try {
+    const address = await web3.getSigner().getAddress();
+    const overrides: any = {};
+    const tokensOut: string[] = Object.keys(amountsOutMap);
+
+    const funds: FundManagement = {
+      sender: address,
+      recipient: address,
+      fromInternalBalance: false,
+      toInternalBalance: false
+    };
+
+    // Limits:
+    // +ve means max to send
+    // -ve mean min to receive
+    // For a multihop the intermediate tokens should be 0
+    const limits: string[] = [];
+    tokenAddresses.forEach((token, i) => {
+      if (tokensOut.includes(token.toLowerCase())) {
+        limits[i] = amountsOutMap[token].toString();
+      } else if (token.toLowerCase() === tokenIn.toLowerCase()) {
+        limits[i] = amountInMin.mul(-1).toString();
+      } else {
+        limits[i] = '0';
+      }
+    });
+
+    return sendTransaction(
+      web3,
+      configs[network].addresses.vault,
+      Vault__factory.abi,
+      'batchSwap',
+      [SwapKind.GivenIn, swaps, tokenAddresses, funds, limits, MaxUint256],
+      overrides
+    );
+  } catch (error) {
+    console.log('[Swapper] batchSwapGivenInV2 Error:', error);
+    throw error;
+  }
+}
+
 async function batchSwapGivenOutV2(
   network: string,
   web3: Web3Provider,

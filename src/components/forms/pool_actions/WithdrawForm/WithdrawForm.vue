@@ -40,14 +40,16 @@ const {
   highPriceImpactAccepted,
   validInput,
   maxSlider,
-  tokensOut
+  tokensOut,
+  sor
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
   isProportional,
   tokenOut,
-  tokenOutIndex
+  tokenOutIndex,
+  sor
 );
 
 const {
@@ -55,7 +57,8 @@ const {
   highPriceImpact,
   singleAssetMaxes,
   tokenOutAmount,
-  tokenOutPoolBalance
+  tokenOutPoolBalance,
+  initMath
 } = withdrawMath;
 
 const {
@@ -85,6 +88,7 @@ const singleAssetRules = computed(() => [
 onBeforeMount(() => {
   isProportional.value = true;
   maxSlider();
+  initMath();
 });
 </script>
 

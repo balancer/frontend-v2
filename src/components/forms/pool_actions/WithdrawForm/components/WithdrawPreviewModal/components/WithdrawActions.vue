@@ -23,6 +23,9 @@ import PoolExchange from '@/services/pool/exchange/exchange.service';
 import useTranasactionErrors, {
   TransactionError
 } from '@/composables/useTransactionErrors';
+import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
+import { configService } from '@/services/config/config.service';
+import { parseUnits } from '@ethersproject/units';
 
 /**
  * TYPES
@@ -87,7 +90,9 @@ const {
   fiatTotalLabel,
   amountsOut,
   exactOut,
-  singleAssetMaxOut
+  singleAssetMaxOut,
+  batchSwap,
+  batchSwapAmountsOutMap
 } = toRefs(props.math);
 
 /**
@@ -170,17 +175,30 @@ async function handleTransaction(tx): Promise<void> {
 
 async function submit(): Promise<void> {
   try {
+    let tx;
     withdrawalState.init = true;
 
-    const tx = await poolExchange.exit(
-      getProvider(),
-      account.value,
-      amountsOut.value,
-      tokensOut.value,
-      bptIn.value,
-      singleAssetMaxOut.value ? tokenOutIndex.value : null,
-      exactOut.value
-    );
+    if (batchSwap.value) {
+      tx = await boostedExitBatchSwap(
+        configService.network.key,
+        getProvider(),
+        batchSwap.value.swaps,
+        batchSwap.value.assets,
+        props.pool.address,
+        parseUnits(bptIn.value, 18),
+        batchSwapAmountsOutMap.value
+      );
+    } else {
+      tx = await poolExchange.exit(
+        getProvider(),
+        account.value,
+        amountsOut.value,
+        tokensOut.value,
+        bptIn.value,
+        singleAssetMaxOut.value ? tokenOutIndex.value : null,
+        exactOut.value
+      );
+    }
 
     withdrawalState.init = false;
     withdrawalState.confirming = true;
