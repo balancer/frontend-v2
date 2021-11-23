@@ -30,10 +30,8 @@ const {
   seedTokens,
   poolLiquidity,
   getScaledAmounts,
-  getPoolSymbol,
   poolTypeString,
   initialFee,
-  type: poolType,
   goBack,
   name: poolName,
   symbol: poolSymbol,
@@ -76,10 +74,6 @@ const tokenAmounts = computed((): string[] => {
 /**
  * METHODS
  */
-function handleClose(): void {
-  emit('close');
-}
-
 function handleSuccess(): void {
   poolCreated.value = true;
   emit('success');

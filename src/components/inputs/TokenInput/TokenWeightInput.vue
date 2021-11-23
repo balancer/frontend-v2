@@ -3,8 +3,6 @@ import { HtmlInputEvent } from '@/types';
 import { ref, computed, watchEffect } from 'vue';
 import useTokens from '@/composables/useTokens';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
-import { isPositive } from '@/lib/utils/validations';
-import useWeb3 from '@/services/web3/useWeb3';
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -55,7 +53,6 @@ const isLocked = ref(false);
  * COMPOSABLEs
  */
 const { getToken } = useTokens();
-const { isWalletReady } = useWeb3();
 import anime from 'animejs';
 
 /**

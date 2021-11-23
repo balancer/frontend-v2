@@ -14,8 +14,7 @@ const {
   seedTokens,
   optimisedLiquidity,
   maxInitialLiquidity,
-  tokenColors,
-  tokensWithNoPrice
+  tokenColors
 } = usePoolCreation();
 const { fNum } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
