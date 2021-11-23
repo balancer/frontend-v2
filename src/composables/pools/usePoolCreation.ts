@@ -315,7 +315,6 @@ export default function usePoolCreation() {
   }
 
   async function createPool(): Promise<TransactionResponse> {
-    sortTokenWeights();
     const provider = getProvider();
     try {
       const tx = await balancerService.pools.weighted.create(
@@ -361,7 +360,6 @@ export default function usePoolCreation() {
   }
 
   async function joinPool() {
-    sortTokenWeights();
     const provider = getProvider();
     try {
       const tokenAddresses: string[] = poolCreationState.seedTokens.map(
@@ -420,6 +418,7 @@ export default function usePoolCreation() {
     joinPool,
     setActiveStep,
     updateManuallySetToken,
+    sortTokenWeights,
     optimisedLiquidity,
     scaledLiquidity,
     tokensWithNoPrice,

@@ -67,8 +67,9 @@ const totalWeight = computed(() => {
 });
 
 const isProceedDisabled = computed(() => {
-  if (Number(totalWeight.value) === 100) return false;
-  return true;
+  if (Number(totalWeight.value) !== 100) return true;
+  if (seedTokens.value.length < 2) return true;
+  return false;
 });
 
 const showLiquidityAlert = computed(() => {

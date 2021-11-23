@@ -166,7 +166,7 @@ describe('PoolCreator', () => {
         mockPoolId,
         mockSender,
         mockReceiver,
-        [tokens.WETH, tokens.USDT],
+        [tokens.WETH.tokenAddress, tokens.USDT.tokenAddress],
         tokenBalances
       );
     });

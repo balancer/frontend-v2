@@ -98,6 +98,10 @@ const lastActionState = computed(
 
 const steps = computed((): Step[] => actions.value.map(action => action.step));
 
+const spacerWidth = computed((): number => {
+  return 13 - steps.value.length;
+});
+
 /**
  * METHODS
  */
@@ -120,6 +124,7 @@ async function submit(
 ): Promise<void> {
   try {
     state.init = true;
+    state.error = null;
 
     const tx = await action();
 
@@ -167,6 +172,7 @@ async function submit(
     <BalHorizSteps
       v-if="actions.length > 1 && !lastActionState.confirmed"
       :steps="steps"
+      :spacerWidth="spacerWidth"
       class="flex justify-center"
     />
     <BalBtn

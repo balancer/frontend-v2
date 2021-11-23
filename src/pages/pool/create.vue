@@ -8,7 +8,7 @@ import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
 import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
 import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
 import SimilarPoolsCompact from '@/components/cards/CreatePool/SimilarPoolsCompact.vue';
-import PreviewPoolModal from '@/components/cards/CreatePool/PreviewPoolModal.vue';
+import PreviewPool from '@/components/cards/CreatePool/PreviewPool.vue';
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
@@ -196,7 +196,7 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
         :exit="exitAnimateProps"
         @update-dimensions="setWrapperHeight"
       >
-        <PreviewPoolModal />
+        <PreviewPool />
       </AnimatePresence>
     </div>
     <template #gutterRight>
