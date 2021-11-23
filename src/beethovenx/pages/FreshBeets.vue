@@ -53,17 +53,7 @@ const bptBalance = computed(() => {
   );
 });
 
-const hasUnstakedFbeets = computed(() => userFbeetsBalance.value.gt(0));
-
-const fbeetsBalance = computed(() => {
-  const unstakedFbeets = scaleDown(
-    new BigNumber(userFbeetsBalance.value.toString()),
-    18
-  );
-
-  return fNum(unstakedFbeets.plus(fbeetsDeposited.value).toString(), 'token');
-});
-
+const hasUnstakedFbeets = computed(() => userUnstakedFbeetsBalance.value.gt(0));
 const hasBpt = computed(() => userBptTokenBalance.value.gt(0));
 
 const beetsBalance = computed(() =>
@@ -151,7 +141,7 @@ const activeTab = ref(tabs[0].value);
       <div class="w-full lg:max-w-xl mx-auto md:mx-0 lg:ml-6 md:block lg:w-72">
         <FreshBeetsBalances
           :loading="dataLoading"
-          :f-beets-balance="fbeetsBalance"
+          :f-beets-balance="userFbeetsBalance"
           :bpt-balance="bptBalance"
           :beets-balance="beetsBalance"
         />

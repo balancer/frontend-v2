@@ -121,7 +121,11 @@ export default defineComponent({
       propToken: 0
     });
 
-    const { userFbeetsBalance, unStake, freshBeetsQuery } = useFreshBeets();
+    const {
+      userUnstakedFbeetsBalance,
+      unStake,
+      freshBeetsQuery
+    } = useFreshBeets();
 
     const { txListener } = useEthers();
     const {
@@ -139,7 +143,7 @@ export default defineComponent({
     const { farmUserRefetch } = useFarmUser(appNetworkConfig.fBeets.farmId);
 
     const bptDeposited = computed(() => {
-      return userFbeetsBalance.value.toString();
+      return userUnstakedFbeetsBalance.value.toString();
     });
 
     function amountRules() {
