@@ -50,10 +50,10 @@ export function useFreshBeets() {
     return data.value?.totalBptStaked.div(1e18) ?? bn(0);
   });
   const userFbeetsBalance = computed(
-    () => data.value?.userBalance.div(1e18) ?? bn(0)
+    () => data.value?.userBalance?.div(1e18) ?? bn(0)
   );
   const userBptTokenBalance = computed(
-    () => data.value?.userBptTokenBalance.div(1e18) ?? bn(0)
+    () => data.value?.userBptTokenBalance?.div(1e18) ?? bn(0)
   );
   const userAllowance = computed(
     () => data.value?.allowance.div(1e18) ?? bn(0)
