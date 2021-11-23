@@ -120,6 +120,7 @@ async function submit(
 ): Promise<void> {
   try {
     state.init = true;
+    state.error = null;
 
     const tx = await action();
 
