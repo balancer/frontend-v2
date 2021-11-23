@@ -10,10 +10,8 @@ import usePoolCreation, {
 } from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
 
-import { balancerService } from '@/services/balancer/balancer.service';
 import { configService } from '@/services/config/config.service';
 
-import { formatUnits } from '@ethersproject/units';
 import { sum, sumBy, uniqueId } from 'lodash';
 import anime from 'animejs';
 import { bnum } from '@/lib/utils';
@@ -132,7 +130,7 @@ function handleLockedWeight(isLocked: boolean, id: number) {
   distributeWeights();
 }
 
-async function animateHeight(offset = 0, animateAllElements = false) {
+async function animateHeight(offset = 0) {
   emit('update:height', {
     height:
       cardWrapperHeight.value +

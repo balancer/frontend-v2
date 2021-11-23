@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 
