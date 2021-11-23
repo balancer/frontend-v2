@@ -129,7 +129,7 @@ export default function useWithdrawMath(
     if (pool.value.onchain.linearPools) {
       const linearPools = Object.values(pool.value.onchain.linearPools);
       return proportionalPoolTokenAmounts.value.map((amount, i) => {
-        console.log('amount', amount)
+        console.log('amount', amount);
         return bnum(amount)
           .times(linearPools[i].priceRate)
           .toFixed(tokens.value[i].decimals); // TODO - may need to specify rounding
