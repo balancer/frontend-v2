@@ -1,12 +1,16 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
-import { keyBy } from 'lodash';
 import { QueryObserverOptions } from 'react-query/core';
 import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool, LinearPool, Pool } from '@/services/balancer/subgraph/types';
+import {
+  FullPool,
+  LinearPool,
+  Pool,
+  PoolToken
+} from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
@@ -80,7 +84,7 @@ export default function usePoolQuery(
       { mainIndex: true, wrappedIndex: true }
     )) as LinearPool[];
 
-    const tokensMap = {};
+    const linearPoolTokens: PoolToken[] = [];
 
     // Inject main/wrapped tokens into pool schema
     linearPools.forEach(linearPool => {
@@ -95,10 +99,14 @@ export default function usePoolQuery(
         linearPool.tokensList[linearPool.wrappedIndex]
       );
 
-      Object.assign(tokensMap, keyBy(linearPool.tokens, 'address'));
+      linearPoolTokens.push(
+        ...linearPool.tokens.filter(
+          token => token.address !== linearPool.address
+        )
+      );
     });
 
-    pool.underlyingTokens = tokensMap;
+    pool.linearPoolTokens = linearPoolTokens;
 
     return pool;
   }

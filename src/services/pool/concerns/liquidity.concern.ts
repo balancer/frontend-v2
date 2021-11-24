@@ -12,7 +12,6 @@ import {
 } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { getAddress } from '@ethersproject/address';
-import { castArray } from 'lodash';
 import PoolService from '../pool.service';
 
 interface OnchainTokenInfo extends OnchainTokenData {
@@ -98,18 +97,9 @@ export default class LiquidityConcern {
 
     if (
       isStablePhantom(this.poolType) &&
-      this.poolService.pool.underlyingTokens != null
+      this.poolService.pool.linearPoolTokens != null
     ) {
-      const { underlyingTokens } = this.poolService.pool;
-
-      tokens = [
-        ...castArray(this.poolService.pool.wrappedTokens),
-        ...castArray(this.poolService.pool.mainTokens)
-      ].map(address => {
-        const token = underlyingTokens[address.toLowerCase()];
-
-        return token;
-      });
+      tokens = this.poolService.pool.linearPoolTokens;
     }
 
     let sumBalance = bnum(0);
