@@ -75,7 +75,12 @@ export default function useWithdrawMath(
     getToken,
     dynamicDataLoading
   } = useTokens();
-  const { minusSlippage, addSlippage, minusSlippageScaled, addSlippageScaled } = useSlippage();
+  const {
+    minusSlippage,
+    addSlippage,
+    minusSlippageScaled,
+    addSlippageScaled
+  } = useSlippage();
   const { currency } = useUserSettings();
   const { isStablePhantomPool } = usePool(pool);
 
@@ -257,7 +262,8 @@ export default function useWithdrawMath(
   );
 
   const shouldFetchBatchSwap = computed(
-    (): boolean => pool.value && isStablePhantomPool.value && bnum(bptIn.value).gt(0)
+    (): boolean =>
+      pool.value && isStablePhantomPool.value && bnum(bptIn.value).gt(0)
   );
 
   /**

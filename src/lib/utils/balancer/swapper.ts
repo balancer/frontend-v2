@@ -339,7 +339,7 @@ export async function boostedExitBatchSwap(
       }
     });
 
-    console.log('limits', limits)
+    console.log('limits', limits);
 
     return sendTransaction(
       web3,
