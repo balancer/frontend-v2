@@ -12,6 +12,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { prominent } from 'color.js';
 import { sumBy } from 'lodash';
 import useDarkMode from '@/composables/useDarkMode';
+import useTailwind from '@/composables/useTailwind';
 
 /** STATE */
 const colors = ref<(string | null)[]>([]);
@@ -24,6 +25,7 @@ const { tokens } = useTokens();
 const { seedTokens, updateTokenColors } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
+const tailwind = useTailwind();
 const { resolve } = useUrls();
 
 /**
@@ -58,8 +60,8 @@ const chartConfig = computed(() => {
         showEmptyCircle: true,
         itemStyle: {
           borderRadius: 5,
-          borderColor: '#fff',
-          borderWidth: darkMode ? 0 : 5,
+          borderColor: !darkMode ? tailwind.theme.colors.gray['850'] : '#fff',
+          borderWidth: 5,
           borderCap: 'butt',
           borderJoin: 'round'
         },

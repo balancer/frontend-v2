@@ -37,8 +37,13 @@ export default defineComponent({
         opacity: 0
       })
     },
+    unmountInstantly: {
+      type: Boolean,
+      default: () => false
+    },
     isVisible: {
-      type: Boolean
+      type: Boolean,
+      default: () => true
     }
   },
   setup(props, { emit }) {
@@ -91,6 +96,10 @@ export default defineComponent({
     };
 
     const leave = (el, done) => {
+      if (props.unmountInstantly) {
+        done();
+        emit('on-exit');
+      }
       anime.set(el, {
         'pointer-events': 'none'
       });

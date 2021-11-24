@@ -4,26 +4,38 @@ import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import useNumbers from '@/composables/useNumbers';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 /**
  * STATE
  */
+const hasClearedOptimisedAmounts = ref(false);
+
+/**
+ * COMPOSBALES
+ */
 const { userNetworkConfig } = useWeb3();
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const { fNum } = useNumbers();
 const {
   seedTokens,
   tokensList,
-  proceed,
   optimisedLiquidity,
+  totalLiquidity,
   scaledLiquidity,
-  goBack,
   manuallySetToken,
-  updateManuallySetToken,
   autoOptimiseBalances,
+  currentLiquidity,
   isWethPool,
-  useNativeAsset
+  useNativeAsset,
+  goBack,
+  updateManuallySetToken,
+  proceed,
+  clearAmounts,
+  setAmountsToMaxBalances
 } = usePoolCreation();
 
 const tokenAddresses = ref([] as string[]);
@@ -44,12 +56,13 @@ onMounted(() => {
 /**
  * METHODS
  */
-function optimiseLiquidity() {
-  if (manuallySetToken.value) return;
+function optimiseLiquidity(force = false) {
+  if (manuallySetToken.value && !force) return;
 
   for (const token of seedTokens.value) {
     token.amount = optimisedLiquidity.value[token.tokenAddress].balanceRequired;
   }
+  hasClearedOptimisedAmounts.value = false;
 }
 
 function scaleLiquidity() {
@@ -114,6 +127,11 @@ function setNativeAssetIfRequired(): void {
     });
   }
 }
+
+function handleClearAll() {
+  clearAmounts();
+  hasClearedOptimisedAmounts.value = true;
+}
 </script>
 
 <template>
@@ -133,22 +151,28 @@ function setNativeAssetIfRequired(): void {
 
           <h5 class="font-bold dark:text-gray-300">Set initial liquidity</h5>
         </BalStack>
-        <BalStack horizontal spacing="xs" align="center">
-          <BalToggle
-            name="autoOptimise"
-            :checked="autoOptimiseBalances"
-            @toggle="toggleAutoOptimise"
-          />
-          <span class="text-sm pl-2">{{
-            $t('autoOptimiseLiquidityToggle.label')
-          }}</span>
-          <BalTooltip width="64">
-            <template v-slot:activator>
-              <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
-            </template>
-            <div v-html="$t('autoOptimiseLiquidityToggle.tooltip')" />
-          </BalTooltip>
-        </BalStack>
+        <AnimatePresence
+          :isVisible="!manuallySetToken && !hasClearedOptimisedAmounts"
+          unmountInstantly
+        >
+          <BalStack
+            horizontal
+            align="center"
+            spacing="sm"
+            class="border rounded-lg p-2 mt-2"
+          >
+            <BalIcon name="zap" size="sm" class="mt-1 text-gray-500" />
+            <span class="dark:text-gray-400 font-medium">
+              {{ $t('optimizedPrefilled') }}
+            </span>
+            <button
+              @click="handleClearAll"
+              class="text-sm font-medium text-gray-400 hover:text-blue-500"
+            >
+              Clear all
+            </button>
+          </BalStack>
+        </AnimatePresence>
       </BalStack>
       <BalStack isDynamic vertical>
         <TokenInput
@@ -164,7 +188,58 @@ function setNativeAssetIfRequired(): void {
           @update:address="handleAddressChange($event)"
         />
       </BalStack>
-      <BalBtn @click="proceed" block color="gradient">Preview</BalBtn>
+      <BalStack horizontal spacing="sm" align="center">
+        <span class="text-sm pl-2">{{
+          $t('autoOptimiseLiquidityToggle.label')
+        }}</span>
+        <BalToggle
+          name="autoOptimise"
+          :checked="autoOptimiseBalances"
+          @toggle="toggleAutoOptimise"
+        />
+        <BalTooltip width="64">
+          <template v-slot:activator>
+            <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
+          </template>
+          <div v-html="$t('autoOptimiseLiquidityToggle.tooltip')" />
+        </BalTooltip>
+      </BalStack>
+      <div class="p-3 border rounded-lg">
+        <BalStack horizontal justify="between">
+          <BalStack vertical spacing="none">
+            <h6>{{ $t('total') }}</h6>
+            <BalStack horizontal spacing="xs" class="font-medium">
+              <span class="text-sm">
+                {{ $t('available') }}: {{ fNum(totalLiquidity, 'usd') }}
+              </span>
+              <button
+                class="text-sm font-semibold text-blue-500 hover:text-blue-50"
+                @click="setAmountsToMaxBalances"
+              >
+                {{ $t('max') }}
+              </button>
+            </BalStack>
+          </BalStack>
+          <BalStack vertical spacing="none">
+            <h6>{{ fNum(currentLiquidity, 'usd') }}</h6>
+            <AnimatePresence
+              :isVisible="manuallySetToken || hasClearedOptimisedAmounts"
+              unmountInstantly
+            >
+              <button
+                v-if="manuallySetToken || hasClearedOptimisedAmounts"
+                @click="optimiseLiquidity(true)"
+                class="bg-clip-text text-sm text-transparent font-medium bg-gradient-to-tr from-blue-500 to-pink-500  hover:from-blue-800 hover:to-pink-800"
+              >
+                {{ $t('optimize') }}
+              </button>
+            </AnimatePresence>
+          </BalStack>
+        </BalStack>
+      </div>
+      <BalBtn @click="proceed" block color="gradient">{{
+        $t('preview')
+      }}</BalBtn>
     </BalStack>
   </BalCard>
 </template>

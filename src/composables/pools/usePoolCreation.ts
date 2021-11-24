@@ -148,6 +148,14 @@ export default function usePoolCreation() {
     return sumBy(tokensList.value, t => priceFor(t) * Number(balanceFor(t)));
   });
 
+  const currentLiquidity = computed(() => {
+    let total = 0;
+    for (const token of poolCreationState.seedTokens) {
+      total = total + priceFor(token.tokenAddress) * token.amount;
+    }
+    return total;
+  });
+
   const poolLiquidity = computed(() => {
     return sumBy(
       poolCreationState.seedTokens,
@@ -271,6 +279,18 @@ export default function usePoolCreation() {
 
   function updateManuallySetToken(address: string) {
     poolCreationState.manuallySetToken = address;
+  }
+
+  function clearAmounts() {
+    for (const token of poolCreationState.seedTokens) {
+      token.amount = 0;
+    }
+  }
+
+  function setAmountsToMaxBalances() {
+    for (const token of poolCreationState.seedTokens) {
+      token.amount = Number(balanceFor(token.tokenAddress));
+    }
   }
 
   function getTokensScaledByBIP(bip): Record<string, OptimisedLiquidity> {
@@ -419,6 +439,9 @@ export default function usePoolCreation() {
     setActiveStep,
     updateManuallySetToken,
     sortTokenWeights,
+    clearAmounts,
+    setAmountsToMaxBalances,
+    currentLiquidity,
     optimisedLiquidity,
     scaledLiquidity,
     tokensWithNoPrice,
