@@ -27,11 +27,15 @@ export default function useSlippage() {
 
   function addSlippage(_amount: string, decimals: number): string {
     let amount = parseUnits(_amount, decimals);
-    const delta = amount.mul(slippageBasisPoints.value).div(10000);
-    amount = amount.add(delta);
+    amount = addSlippageScaled(amount);
 
     return formatUnits(amount, decimals).toString();
   }
 
-  return { minusSlippage, minusSlippageScaled, addSlippage };
+  function addSlippageScaled(amount: BigNumber): BigNumber {
+    const delta = amount.mul(slippageBasisPoints.value).div(10000);
+    return amount.add(delta);
+  }
+
+  return { minusSlippage, minusSlippageScaled, addSlippage, addSlippageScaled };
 }

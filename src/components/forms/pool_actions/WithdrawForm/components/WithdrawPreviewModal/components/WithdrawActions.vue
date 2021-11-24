@@ -179,13 +179,18 @@ async function submit(): Promise<void> {
     withdrawalState.init = true;
 
     if (batchSwap.value) {
+      console.log('Batch swap amounts out', batchSwap.value.amountTokensOut);
+      console.log(
+        'inputs amounts out',
+        Object.values(batchSwapAmountsOutMap.value).map(val => val.toString())
+      );
       tx = await boostedExitBatchSwap(
         configService.network.key,
         getProvider(),
         batchSwap.value.swaps,
         batchSwap.value.assets,
         props.pool.address,
-        parseUnits(bptIn.value, 18),
+        parseUnits(bptIn.value, props.pool.onchain.decimals),
         batchSwapAmountsOutMap.value
       );
     } else {

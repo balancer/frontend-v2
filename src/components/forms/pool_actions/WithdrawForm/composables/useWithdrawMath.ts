@@ -16,6 +16,7 @@ import { BatchSwapOut } from '@/types';
 import { queryBatchSwapTokensOut, SOR } from '@balancer-labs/sor2';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { BigNumber } from 'ethers';
+import OldBigNumber from 'bignumber.js';
 
 /**
  * TYPES
@@ -74,7 +75,7 @@ export default function useWithdrawMath(
     getToken,
     dynamicDataLoading
   } = useTokens();
-  const { minusSlippage, addSlippage } = useSlippage();
+  const { minusSlippage, addSlippage, minusSlippageScaled, addSlippageScaled } = useSlippage();
   const { currency } = useUserSettings();
   const { isStablePhantomPool } = usePool(pool);
 
@@ -95,7 +96,11 @@ export default function useWithdrawMath(
 
   const tokenCount = computed((): number => tokenAddresses.value.length);
 
-  const tokens = computed(() =>
+  const poolTokens = computed(() =>
+    pool.value.tokenAddresses.map(address => getToken(address))
+  );
+
+  const withdrawalTokens = computed(() =>
     tokenAddresses.value.map(address => getToken(address))
   );
 
@@ -126,14 +131,19 @@ export default function useWithdrawMath(
   });
 
   const proportionalMainTokenAmounts = computed((): string[] => {
-    if (pool.value.onchain.linearPools) {
-      const linearPools = Object.values(pool.value.onchain.linearPools);
-      return proportionalPoolTokenAmounts.value.map((amount, i) => {
-        console.log('amount', amount);
-        return bnum(amount)
-          .times(linearPools[i].priceRate)
-          .toFixed(tokens.value[i].decimals); // TODO - may need to specify rounding
+    if (pool.value.onchain.linearPools && batchSwap.value) {
+      return batchSwap.value.amountTokensOut.map((amount, i) => {
+        const _amount = bnum(amount)
+          .abs()
+          .toString();
+        return formatUnits(_amount, withdrawalTokens.value[i].decimals);
       });
+      // const linearPools = Object.values(pool.value.onchain.linearPools);
+      // return proportionalPoolTokenAmounts.value.map((amount, i) => {
+      //   return bnum(amount)
+      //     .times(linearPools[i].priceRate)
+      //     .toFixed(withdrawalTokens.value[i].decimals); // TODO - may need to specify rounding
+      // });
     }
     return [];
   });
@@ -154,14 +164,14 @@ export default function useWithdrawMath(
 
   const fullAmountsScaled = computed((): BigNumber[] =>
     fullAmounts.value.map((amount, i) =>
-      parseUnits(amount, tokens.value[i].decimals)
+      parseUnits(amount, withdrawalTokens.value[i].decimals)
     )
   );
 
   const amountsOut = computed(() => {
     return fullAmounts.value.map((amount, i) => {
       if (amount === '0' || exactOut.value) return amount;
-      return minusSlippage(amount, tokens.value[i].decimals);
+      return minusSlippage(amount, withdrawalTokens.value[i].decimals);
     });
   });
 
@@ -181,8 +191,11 @@ export default function useWithdrawMath(
 
   const hasAmounts = computed(() => bnum(fiatTotal.value).gt(0));
 
+  // TODO - this essentially returns maxes in BB-A-DAI, etc
+  // Probably need to convert values to tokenOut with priceRate
+  // But which price rate?
   const singleAssetMaxes = computed((): string[] => {
-    return tokens.value.map((token, tokenIndex) => {
+    return poolTokens.value.map((token, tokenIndex) => {
       return formatUnits(
         poolCalculator
           .exactBPTInForTokenOut(bptBalance.value, tokenIndex)
@@ -225,7 +238,7 @@ export default function useWithdrawMath(
 
   const fiatAmounts = computed((): string[] =>
     fullAmounts.value.map((amount, i) =>
-      toFiat(amount, tokens.value[i].address)
+      toFiat(amount, withdrawalTokens.value[i].address)
     )
   );
 
@@ -244,7 +257,7 @@ export default function useWithdrawMath(
   );
 
   const shouldFetchBatchSwap = computed(
-    (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value
+    (): boolean => pool.value && isStablePhantomPool.value && bnum(bptIn.value).gt(0)
   );
 
   /**
@@ -263,31 +276,44 @@ export default function useWithdrawMath(
   /**
    * TESTING
    */
-  // Assumes proportional exit
-  // simply divides bptIn by number of tokens out
-  const batchSwapAmountsIn = computed(() => {
-    return tokenAddresses.value.map(() => {
-      return parseUnits(
-        bnum(bptIn.value)
-          .div(tokenCount.value)
-          .toString(),
-        18
-      );
-    });
-  });
-
   const batchSwapAmountsOutMap = computed(
     (): Record<string, BigNumber> => {
       const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
         tokenAddresses.value[i].toLowerCase(),
         amount
       ]);
-      const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
+      let onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
         (amount as BigNumber).gt(0)
       );
+      onlyTokensWithAmounts = onlyTokensWithAmounts.map(([token, amount]) => {
+        return [token, minusSlippageScaled(amount as BigNumber)];
+      });
       return Object.fromEntries(onlyTokensWithAmounts);
     }
   );
+
+  // Assumes proportional exit
+  const batchSwapAmountsIn = computed(() => {
+    const poolTokenSum = proportionalPoolTokenAmounts.value.reduce(
+      (a, b) =>
+        bnum(a)
+          .plus(b)
+          .toString(),
+      '0'
+    );
+    const amountsIn = proportionalPoolTokenAmounts.value
+      .map(amount => {
+        const fraction = bnum(amount).div(poolTokenSum);
+        return fraction
+          .times(bptIn.value)
+          .toFixed(pool.value.onchain.decimals, OldBigNumber.ROUND_DOWN);
+      })
+      .filter(amount => bnum(amount).gt(0));
+    return amountsIn.map(amount =>
+      parseUnits(amount, pool.value.onchain.decimals)
+    );
+  });
+
   /**
    * END TESTING
    */
@@ -300,7 +326,7 @@ export default function useWithdrawMath(
       balancerContractsService.vault.instance,
       pool.value.address.toLowerCase(),
       batchSwapAmountsIn.value,
-      tokenAddresses.value
+      tokenAddresses.value.map(address => address.toLowerCase())
     );
     console.log('batchSwap', batchSwap.value);
     batchSwapLoading.value = false;

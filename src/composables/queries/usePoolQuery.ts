@@ -142,7 +142,7 @@ export default function usePoolQuery(
       currency.value
     );
 
-    console.log('pool', { onchain: onchainData, ...decoratedPool });
+    // console.log('pool', { onchain: onchainData, ...decoratedPool });
     return { onchain: onchainData, ...decoratedPool };
   };
 

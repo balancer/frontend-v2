@@ -15,7 +15,7 @@ export default class StablePhantom {
   }
 
   public priceImpact(tokenAmounts: string[], opts: PiOptions): OldBigNumber {
-    if (!opts.queryBPT) return bnum(100);
+    if (!opts.queryBPT) return bnum(1);
 
     let bptAmount: OldBigNumber | BigNumberish;
     let bptZeroPriceImpact: OldBigNumber;
@@ -28,7 +28,7 @@ export default class StablePhantom {
       return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
     } else {
       // TODO - withdrawl price impact calc
-      return new OldBigNumber(100);
+      return new OldBigNumber(1);
     }
   }
 

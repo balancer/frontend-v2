@@ -331,13 +331,15 @@ export async function boostedExitBatchSwap(
     const limits: string[] = [];
     tokenAddresses.forEach((token, i) => {
       if (tokensOut.includes(token.toLowerCase())) {
-        limits[i] = amountsOutMap[token].toString();
+        limits[i] = amountsOutMap[token].mul(-1).toString();
       } else if (token.toLowerCase() === tokenIn.toLowerCase()) {
-        limits[i] = amountInMin.mul(-1).toString();
+        limits[i] = amountInMin.toString();
       } else {
         limits[i] = '0';
       }
     });
+
+    console.log('limits', limits)
 
     return sendTransaction(
       web3,
