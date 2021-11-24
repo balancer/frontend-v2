@@ -1,4 +1,8 @@
-import { isStableLike, isWeightedLike } from '@/composables/usePool';
+import {
+  isStableLike,
+  isStablePhantom,
+  isWeightedLike
+} from '@/composables/usePool';
 import { FiatCurrency } from '@/constants/currency';
 import { bnum } from '@/lib/utils';
 import {
@@ -8,6 +12,7 @@ import {
 } from '@/services/balancer/subgraph/types';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { getAddress } from '@ethersproject/address';
+import { castArray } from 'lodash';
 import PoolService from '../pool.service';
 
 interface OnchainTokenInfo extends OnchainTokenData {
@@ -89,14 +94,32 @@ export default class LiquidityConcern {
   }
 
   public calcStableTotal(prices: TokenPrices, currency: FiatCurrency): string {
+    let tokens = this.poolTokens;
+
+    if (
+      isStablePhantom(this.poolType) &&
+      this.poolService.pool.underlyingTokens != null
+    ) {
+      const { underlyingTokens } = this.poolService.pool;
+
+      tokens = [
+        ...castArray(this.poolService.pool.wrappedTokens),
+        ...castArray(this.poolService.pool.mainTokens)
+      ].map(address => {
+        const token = underlyingTokens[address.toLowerCase()];
+
+        return token;
+      });
+    }
+
     let sumBalance = bnum(0);
     let sumValue = bnum(0);
 
-    for (let i = 0; i < this.poolTokens.length; i++) {
-      const token = this.poolTokens[i];
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
       const address = getAddress(token.address);
 
-      // if a token's price is unkown, ignore it
+      // if a token's price is unknown, ignore it
       // it will be computed at the next step
       if (!prices[address]) {
         continue;
@@ -114,8 +137,8 @@ export default class LiquidityConcern {
       // assume relative spot price = 1
       const avgPrice = sumValue.dividedBy(sumBalance);
 
-      for (let i = 0; i < this.poolTokens.length; i++) {
-        const token = this.poolTokens[i];
+      for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
         const address = getAddress(token.address);
         // if a token's price is known, skip it
         // it has been taken into account in the prev step

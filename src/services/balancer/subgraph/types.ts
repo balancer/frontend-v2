@@ -50,6 +50,7 @@ export interface Pool {
   createTime: number;
   mainTokens?: string[];
   wrappedTokens?: string[];
+  underlyingTokens?: Record<string, PoolToken>;
 }
 
 export interface LinearPool extends Pool {

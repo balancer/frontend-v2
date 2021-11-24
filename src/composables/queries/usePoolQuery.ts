@@ -1,5 +1,6 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
+import { keyBy } from 'lodash';
 import { QueryObserverOptions } from 'react-query/core';
 import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
@@ -79,6 +80,8 @@ export default function usePoolQuery(
       { mainIndex: true, wrappedIndex: true }
     )) as LinearPool[];
 
+    const tokensMap = {};
+
     // Inject main/wrapped tokens into pool schema
     linearPools.forEach(linearPool => {
       if (!pool.mainTokens) pool.mainTokens = [];
@@ -91,7 +94,11 @@ export default function usePoolQuery(
       pool.wrappedTokens[index] = getAddress(
         linearPool.tokensList[linearPool.wrappedIndex]
       );
+
+      Object.assign(tokensMap, keyBy(linearPool.tokens, 'address'));
     });
+
+    pool.underlyingTokens = tokensMap;
 
     return pool;
   }
