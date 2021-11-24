@@ -5,7 +5,12 @@ import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool, LinearPool, Pool } from '@/services/balancer/subgraph/types';
+import {
+  FullPool,
+  LinearPool,
+  Pool,
+  PoolToken
+} from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
@@ -79,6 +84,8 @@ export default function usePoolQuery(
       { mainIndex: true, wrappedIndex: true }
     )) as LinearPool[];
 
+    const linearPoolTokens: PoolToken[] = [];
+
     // Inject main/wrapped tokens into pool schema
     linearPools.forEach(linearPool => {
       if (!pool.mainTokens) pool.mainTokens = [];
@@ -91,7 +98,15 @@ export default function usePoolQuery(
       pool.wrappedTokens[index] = getAddress(
         linearPool.tokensList[linearPool.wrappedIndex]
       );
+
+      linearPoolTokens.push(
+        ...linearPool.tokens.filter(
+          token => token.address !== linearPool.address
+        )
+      );
     });
+
+    pool.linearPoolTokens = linearPoolTokens;
 
     return pool;
   }
