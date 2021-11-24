@@ -10,7 +10,7 @@ import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
-import { queryBatchSwapTokensIn, SOR, SwapV2 } from '@balancer-labs/sor2';
+import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sor2';
 import { Contract } from 'ethers';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import { configService } from '@/services/config/config.service';

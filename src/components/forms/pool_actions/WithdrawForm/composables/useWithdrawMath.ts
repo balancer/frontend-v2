@@ -12,7 +12,6 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isStablePhantom, usePool } from '@/composables/usePool';
-import { BatchSwap } from '@/types';
 // import { queryBatchSwapTokensOut } from '@balancer-labs/sor2';
 
 /**
