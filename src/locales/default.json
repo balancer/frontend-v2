@@ -94,7 +94,7 @@
         "customAddressInfo": "This could be another address you own an address of a smart contract. You can only ever set this once.",
         "poolSummary": "Pool summary",
         "maxInitialLiquidity": "Max initial liquidity in wallet",
-        "setPoolFees": "Set pool fees",
+        "setPoolFees": "Set pool fees",    
         "bestFeeOption": "0.30% is best for most weighted pool with established tokens. Go higher for more exotic pairs.",
         "alternativeFeeManagement": "Alternative fee management options",
         "chooseTokenWeights": "Choose tokens & weights",
@@ -103,7 +103,7 @@
         "similarPoolsExist": "Similar pools exist",
         "previewPool": "Preview new {0} pool",
         "tokensAndSeedLiquidity": "Tokens and initial seed liquidity",
-        "recommendedLiquidity": "It’s recommended to provide new pools with at least $20,000 in initial funds",
+        "recommendedLiquidity": "It’s recommended to  provide new pools with at least $20,000 in initial funds",
         "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}."
     },
     "createPool": "Create pool",
