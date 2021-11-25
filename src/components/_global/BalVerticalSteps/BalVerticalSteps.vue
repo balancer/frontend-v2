@@ -101,7 +101,7 @@ function handleNavigate(state: StepState, stepIndex: number) {
                   "
                   >{{ step.label || i + 1 }}</span
                 >
-                <span v-else>!</span>
+                <span class="font-bold" v-else>!</span>
               </div>
             </div>
             <span :class="['text-sm', stepTextClasses[i]]">

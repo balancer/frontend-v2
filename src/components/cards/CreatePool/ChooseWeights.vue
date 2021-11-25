@@ -354,7 +354,9 @@ function handleProceed() {
                   <BalStack horizontal spacing="xs" align="center">
                     <h6 :class="weightColor">{{ totalAllocatedWeight }}%</h6>
                     <BalIcon
-                      v-if="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
+                      v-if="
+                        Number(totalWeight) > 100 || Number(totalWeight) <= 0
+                      "
                       class="text-red-500 mt-1"
                       name="alert-circle"
                       size="sm"
@@ -393,9 +395,13 @@ function handleProceed() {
           }}</BalAlert>
         </AnimatePresence>
         <AnimatePresence :isVisible="zeroWeightToken" unmountInstantly>
-          <BalAlert :title="$t('createAPool.totalWeightAlertTitle')" type="error">{{
-            $t('createAPool.zeroWeightInfo', [zeroWeightToken?.symbol])
-          }}</BalAlert>
+          <BalAlert
+            :title="$t('createAPool.totalWeightAlertTitle')"
+            type="error"
+            >{{
+              $t('createAPool.zeroWeightInfo', [zeroWeightToken?.symbol])
+            }}</BalAlert
+          >
         </AnimatePresence>
         <BalBtn
           block
