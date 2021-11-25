@@ -17,8 +17,9 @@ export default function usePoolWithFarm(
 ): {
   pool: ComputedRef<DecoratedPoolWithFarm | undefined>;
   loadingPool: ComputedRef<boolean>;
+  isLoadingFarms: ComputedRef<boolean>;
 } {
-  const { poolsWithFarms, userPools } = usePools();
+  const { poolsWithFarms, userPools, isLoadingFarms } = usePools();
   const poolQuery = usePoolQuery(poolId);
 
   const pool = computed(() => {
@@ -50,6 +51,7 @@ export default function usePoolWithFarm(
 
   return {
     pool,
-    loadingPool
+    loadingPool,
+    isLoadingFarms
   };
 }
