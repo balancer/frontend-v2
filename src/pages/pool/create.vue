@@ -146,7 +146,7 @@ function handleNavigate(stepIndex: number) {
   <Col3Layout offsetGutters mobileHideGutters class="mt-8">
     <template #gutterLeft>
       <div class="col-span-3" v-if="!upToLargeBreakpoint">
-        <BalStack vertical>
+        <BalStack vertical v-if="!appLoading">
           <BalVerticalSteps
             title="Create a weighted pool steps"
             :steps="steps"
@@ -206,7 +206,7 @@ function handleNavigate(stepIndex: number) {
     </div>
     <template #gutterRight>
       <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
-        <BalStack vertical spacing="base">
+        <BalStack vertical spacing="base" v-if="!appLoading">
           <PoolSummary />
           <WalletInitialLiquidity />
         </BalStack>

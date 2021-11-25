@@ -13,6 +13,7 @@ import { prominent } from 'color.js';
 import { sumBy } from 'lodash';
 import useDarkMode from '@/composables/useDarkMode';
 import useTailwind from '@/composables/useTailwind';
+import useApp from '@/composables/useApp';
 
 /** STATE */
 const colors = ref<(string | null)[]>([]);
@@ -25,6 +26,7 @@ const { tokens } = useTokens();
 const { seedTokens, updateTokenColors } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
+const { appLoading } = useApp();
 const tailwind = useTailwind();
 const { resolve } = useUrls();
 
@@ -59,7 +61,6 @@ const chartConfig = computed(() => {
         stillShowZeroSum: true,
         showEmptyCircle: true,
         itemStyle: {
-          borderRadius: 5,
           borderColor: !darkMode ? tailwind.theme.colors.gray['850'] : '#fff',
           borderWidth: 5,
           borderCap: 'butt',
@@ -72,35 +73,45 @@ const chartConfig = computed(() => {
         labelLine: {
           show: false
         },
+
         colors: colors.value,
         data: [
           ...seedTokens.value
-            .filter(t => t.tokenAddress !== '')
+            // .filter(t => t.tokenAddress !== '')
             .map((t, i) => {
               const tokenLogoURI = resolve(
-                tokens.value[t.tokenAddress].logoURI || ''
+                tokens.value[t.tokenAddress]?.logoURI || ''
               );
               return {
                 name: t.tokenAddress,
                 value: t.weight,
                 tooltip: {
-                  formatter: () => {
-                    return `<img width="32" height="32" src="${tokenLogoURI}" />`;
-                  },
+                  show: false,
                   borderWidth: '0'
                 },
+                emphasis: {
+                  label: {
+                    show: true,
+                    formatter: () => ' ',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    backgroundColor: {
+                      image: tokenLogoURI
+                    },
+                    width: 48,
+                    height: 48,
+                    borderRadius: 48,
+                    overflow: 'hidden',
+                  }
+                },
                 itemStyle: {
-                  color: colors.value[i]
+                  color:
+                    t.tokenAddress === ''
+                      ? tailwind.theme.colors.gray[`${i + 1}00`]
+                      : colors.value[i]
                 }
               };
-            }),
-          {
-            name: 'Unallocated',
-            value: unallocatedTokenWeight.value,
-            itemStyle: {
-              color: 'darkGray'
-            }
-          }
+            })
         ]
       }
     ]
