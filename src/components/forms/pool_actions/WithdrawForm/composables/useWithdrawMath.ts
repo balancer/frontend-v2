@@ -17,6 +17,7 @@ import { queryBatchSwapTokensOut, SOR } from '@balancer-labs/sor2';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { BigNumber } from 'ethers';
 import OldBigNumber from 'bignumber.js';
+import { TokenInfo } from '@/types/TokenList';
 
 /**
  * TYPES
@@ -101,11 +102,19 @@ export default function useWithdrawMath(
 
   const tokenCount = computed((): number => tokenAddresses.value.length);
 
-  const poolTokens = computed(() =>
+  /**
+   * The tokens of the pool
+   */
+  const poolTokens = computed((): TokenInfo[] =>
     pool.value.tokenAddresses.map(address => getToken(address))
   );
 
-  const withdrawalTokens = computed(() =>
+  /**
+   * The tokens being withdrawn
+   * In most cases these are the same as the pool tokens
+   * except for Stable
+   */
+  const withdrawalTokens = computed((): TokenInfo[] =>
     tokenAddresses.value.map(address => getToken(address))
   );
 
@@ -140,8 +149,10 @@ export default function useWithdrawMath(
   });
 
   /**
-   * Proportional amounts out for a StablePhantom pool's output tokens
-   * Derived from queryBatchSwap amounts out.
+   * Proportional amounts out for a StablePhantom pool's output tokens.
+   * Derived from queryBatchSwap amounts out result.
+   * Output tokens could be the mainTokens or unwrapped wrapped tokens.
+   * e.g. USDC, USDT, DAI or aUSDC, aUSDT, aDAI
    */
   const proportionalMainTokenAmounts = computed((): string[] => {
     if (pool.value.onchain.linearPools && batchSwap.value) {
@@ -212,6 +223,9 @@ export default function useWithdrawMath(
     });
   });
 
+  /**
+   * Checks if the single asset withdrawal is maxed out.
+   */
   const singleAssetMaxed = computed(() => {
     return (
       singleAssetMaxes.value[tokenOutIndex.value] ===
@@ -219,6 +233,10 @@ export default function useWithdrawMath(
     );
   });
 
+  /**
+   * Checks if exactOut case, where the user is requesting
+   * a single asset withdrawal that is not maxed out.
+   */
   const exactOut = computed(() => {
     return !isProportional.value && !singleAssetMaxed.value;
   });
