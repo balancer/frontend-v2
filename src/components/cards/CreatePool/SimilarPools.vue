@@ -45,7 +45,7 @@ function cancel() {
       <BalStack vertical spacing="xs">
         <span
           v-if="isWalletReady"
-          class="text-sm text-gray-700 dark:text-gray-500"
+          class="text-xs text-gray-700 dark:text-gray-500"
           >{{ userNetworkConfig?.name }}</span
         >
         <BalStack align="center" horizontal spacing="xs">

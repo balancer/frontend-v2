@@ -53,7 +53,7 @@ const hasCompletedMountAnimation = ref(false);
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const { activeStep, similarPools, maxInitialLiquidity } = usePoolCreation();
+const { activeStep, similarPools, maxInitialLiquidity, setActiveStep } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 onMounted(() => {
@@ -136,6 +136,10 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
     }
   });
 }
+
+function handleNavigate(stepIndex: number) {
+  setActiveStep(stepIndex);
+}
 </script>
 
 <template>
@@ -146,6 +150,7 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
           <BalVerticalSteps
             title="Create a weighted pool steps"
             :steps="steps"
+            @navigate="handleNavigate"
           />
           <AnimatePresence :isVisible="doSimilarPoolsExist">
             <SimilarPoolsCompact v-if="activeStep === 0" />

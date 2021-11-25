@@ -16,6 +16,7 @@ type Step = {
 };
 
 const props = defineProps<Props>();
+const emit = defineEmits(['navigate']);
 
 /**
  * COMPUTED
@@ -30,7 +31,7 @@ const stepTextClasses = computed(() => {
   return visibleSteps.value.map(step => {
     return getActiveClassName(step.state, [
       [StepState.Active, 'text-blue-400 font-semibold hover:text-blue-800'],
-      [StepState.Todo, 'text-gray-400 font-normal hover:text-blue-500'],
+      [StepState.Todo, 'text-gray-400 font-normal'],
       [StepState.Success, 'text-green-500 font-semibold'],
       [StepState.Warning, 'text-red-500 font-semibold'],
       [StepState.Completed, 'text-gray-700 font-medium']
@@ -58,6 +59,14 @@ const stepCircleClasses = computed(() => {
     ]);
   });
 });
+
+/**
+ * FUNCTIONS
+ */
+function handleNavigate(state: StepState, stepIndex: number) {
+  if (state === StepState.Todo) return;
+  emit('navigate', stepIndex);
+}
 </script>
 
 <template>
@@ -65,12 +74,16 @@ const stepCircleClasses = computed(() => {
     <div class="p-2 px-3 border-b dark:border-gray-600">
       <h6 class="dark:text-gray-300">{{ title }}</h6>
     </div>
-    <BalStack vertical isDynamic spacing="sm" class="p-4">
+    <BalStack vertical isDynamic spacing="base" class="p-4" justify='center'>
       <div
         v-for="(step, i) in visibleSteps"
         :key="`vertical-step-${step.tooltip}`"
+        class="flex items-center"
       >
-        <button>
+        <button
+          @click="handleNavigate(step.state, i)"
+          :class="{ 'cursor-default': step.state === StepState.Todo }"
+        >
           <BalStack horizontal align="center" spacing="sm">
             <div
               :class="[
@@ -105,12 +118,12 @@ const stepCircleClasses = computed(() => {
 .circle-line::after {
   @apply absolute left-0 right-0 my-0 mx-auto bg-gray-300 dark:bg-gray-600 w-px;
   content: '';
-  bottom: -1.0625rem;
-  height: 0.9375rem;
+  bottom: -1.125rem;
+  height: 1.0625rem;
 }
 
 .circle-line.active::after {
-  bottom: -0.9375rem;
-  height: 0.9375rem;
+  bottom: -1rem;
+  height: 1rem;
 }
 </style>

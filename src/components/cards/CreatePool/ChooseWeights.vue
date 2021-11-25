@@ -99,7 +99,7 @@ onMounted(async () => {
     addTokenToPool();
     addTokenToPool();
   } else {
-    await animateHeight(seedTokens.value.length, true);
+    await animateHeight(seedTokens.value.length);
   }
   // wait for vue to reflect the changes of above
   await nextTick();
@@ -238,7 +238,7 @@ async function handleRemoveToken(index: number) {
     <BalCard>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">
-          <span class="text-sm text-gray-700 dark:text-gray-500">{{
+          <span class="text-xs text-gray-700 dark:text-gray-500">{{
             networkName
           }}</span>
           <h5 class="font-bold dark:text-gray-300">

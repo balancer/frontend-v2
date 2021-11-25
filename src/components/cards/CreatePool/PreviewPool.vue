@@ -103,7 +103,7 @@ function navigateToPoolFee() {
 <template>
   <BalCard>
     <BalStack vertical spacing="xs">
-      <span class="text-sm text-gray-700 dark:text-gray-500">{{
+      <span class="text-xs text-gray-700 dark:text-gray-500">{{
         userNetworkConfig?.name
       }}</span>
     </BalStack>
