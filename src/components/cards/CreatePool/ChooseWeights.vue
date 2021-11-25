@@ -41,7 +41,7 @@ const {
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
-const { nativeAsset } = useTokens();
+const { nativeAsset, tokens } = useTokens();
 const { isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { t } = useI18n();
 
@@ -65,6 +65,15 @@ const tokenWeightItemHeight = computed(() =>
   upToLargeBreakpoint.value ? 56 : 64
 );
 
+const zeroWeightToken = computed(() => {
+  const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
+  const zeroWeightToken = validTokens.find(t => t.weight === 0);
+  if (zeroWeightToken) {
+    return tokens.value[zeroWeightToken.tokenAddress];
+  }
+  return null;
+});
+
 const walletLabel = computed(() => {
   if (!isWalletReady.value) {
     return t('connectWallet');
@@ -75,16 +84,22 @@ const walletLabel = computed(() => {
   return t('next');
 });
 
-const totalWeight = computed(() => {
+const totalAllocatedWeight = computed(() => {
   const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
   const validPercentage = sumBy(validTokens, 'weight');
   return validPercentage.toFixed(2);
 });
 
+const totalWeight = computed(() => {
+  const pct = sumBy(seedTokens.value, 'weight');
+  return pct.toFixed(2);
+});
+
 const isProceedDisabled = computed(() => {
   if (!isWalletReady.value) return false;
-  if (Number(totalWeight.value) !== 100) return true;
+  if (Number(totalAllocatedWeight.value) !== 100) return true;
   if (seedTokens.value.length < 2) return true;
+  if (zeroWeightToken.value) return true;
   return false;
 });
 
@@ -99,6 +114,23 @@ const excludedTokens = computed((): string[] => {
 
 const maxTokenAmountReached = computed(() => {
   return seedTokens.value.length >= 8;
+});
+
+const progressBarColor = computed(() => {
+  if (
+    Number(totalAllocatedWeight.value) > 100 ||
+    Number(totalAllocatedWeight.value) <= 0
+  ) {
+    return 'red';
+  }
+  return 'green';
+});
+
+const weightColor = computed(() => {
+  if (Number(totalWeight.value) > 100 || Number(totalWeight.value) <= 0) {
+    return 'text-red-500';
+  }
+  return 'text-gray-800';
 });
 
 /**
@@ -197,9 +229,11 @@ async function addTokenToPool() {
 
 function distributeWeights() {
   // get all the locked weights and sum those bad boys
-  const lockedPct = sum(
+  let lockedPct = sum(
     seedTokens.value.filter(w => w.isLocked).map(w => w.weight / 100)
   );
+  // makes it so that new allocations are set as 0
+  if (lockedPct > 1) lockedPct = 1;
   const pctAvailableToDistribute = bnum(1 - lockedPct);
   const unlockedWeights = seedTokens.value.filter(w => !w.isLocked);
   const evenDistributionWeight = pctAvailableToDistribute.div(
@@ -316,17 +350,29 @@ function handleProceed() {
                 class="bg-gray-50 dark:bg-gray-850 w-full p-2 px-4"
               >
                 <div class="w-full flex justify-between">
-                  <h6>{{ $t('total') }}</h6>
-                  <h6>{{ totalWeight }}%</h6>
+                  <h6>{{ $t('totalAllocated') }}</h6>
+                  <BalStack horizontal spacing="xs" align="center">
+                    <h6 :class="weightColor">{{ totalAllocatedWeight }}%</h6>
+                    <BalIcon
+                      v-if="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
+                      class="text-red-500 mt-1"
+                      name="alert-circle"
+                      size="sm"
+                    />
+                  </BalStack>
                 </div>
-                <BalProgressBar :width="totalWeight" class="my-2" />
+                <BalProgressBar
+                  :color="progressBarColor"
+                  :width="totalAllocatedWeight"
+                  class="my-2"
+                />
               </div>
             </div>
           </div>
         </BalCard>
         <AnimatePresence
           :isVisible="showLiquidityAlert && isWalletReady"
-          :exit="{ opacity: 1 }"
+          unmountInstantly
         >
           <BalAlert
             :title="$t('createAPool.recommendedLiquidity')"
@@ -337,6 +383,19 @@ function handleProceed() {
               ])
             }}</BalAlert
           >
+        </AnimatePresence>
+        <AnimatePresence
+          :isVisible="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
+          unmountInstantly
+        >
+          <BalAlert :title="$t('createAPool.zeroWeightTitle')" type="error">{{
+            $t('createAPool.totalWeightAlert')
+          }}</BalAlert>
+        </AnimatePresence>
+        <AnimatePresence :isVisible="zeroWeightToken" unmountInstantly>
+          <BalAlert :title="$t('createAPool.totalWeightAlertTitle')" type="error">{{
+            $t('createAPool.zeroWeightInfo', [zeroWeightToken?.symbol])
+          }}</BalAlert>
         </AnimatePresence>
         <BalBtn
           block

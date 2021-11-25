@@ -104,7 +104,11 @@
         "previewPool": "Preview new {0} pool",
         "tokensAndSeedLiquidity": "Tokens and initial seed liquidity",
         "recommendedLiquidity": "It’s recommended to  provide new pools with at least $20,000 in initial funds",
-        "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}."
+        "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}.",
+        "zeroWeightTitle": "You’ve included a token with zero weight",
+        "zeroWeightInfo": "All tokens in a pool must have a weighting greater than zero. Either remove or replace {0} or set it above 0.01%.",
+        "totalWeightAlert": "The total weighting of all tokens must equal exactly 100% before you can proceed.",
+        "totalWeightAlertTitle": "The total weight must be 100%"
     },
     "createPool": "Create pool",
     "createPoolTooltip": "Create {0} pool",
@@ -441,6 +445,7 @@
         }
     },
     "total": "Total",
+    "totalAllocated": "Total allocated",
     "totalAPR": "Total APR",
     "totalSupply": "Total supply",
     "totalValue": "Total value",
