@@ -53,7 +53,12 @@ const hasCompletedMountAnimation = ref(false);
  * COMPOSABLES
  */
 const { appLoading } = useApp();
-const { activeStep, similarPools, maxInitialLiquidity, setActiveStep } = usePoolCreation();
+const {
+  activeStep,
+  similarPools,
+  maxInitialLiquidity,
+  setActiveStep
+} = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 onMounted(() => {

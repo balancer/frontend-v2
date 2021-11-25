@@ -48,31 +48,25 @@ const totalsClass = computed(() => ({
         {{ $t('createAPool.maxInitialLiquidity') }}
       </h6>
     </div>
-    <div class="p-2">
+    <div class="p-2 px-4">
       <div class="grid grid-cols-12 w-full gap-y-1.5">
-        <div class="col-span-5">
+        <div class="col-span-6">
           <span
             class="text-sm font-semibold text-gray-700 dark:text-gray-500"
             >{{ $t('token') }}</span
           >
         </div>
-        <div class="col-span-4 text-right">
+        <div class="col-span-6 text-right">
           <span
             class="text-sm font-semibold text-gray-700 dark:text-gray-500"
             >{{ $t('usdValue') }}</span
-          >
-        </div>
-        <div class="col-span-3 text-right">
-          <span
-            class="text-sm font-semibold text-gray-700 dark:text-gray-500"
-            >{{ $t('poolPercent') }}</span
           >
         </div>
         <template
           v-for="(token, i) in allocatedTokenWeights"
           :key="token.tokenAddress"
         >
-          <div class="col-span-5 text-left  font-medium">
+          <div class="col-span-6 text-left  font-medium">
             <div class="flex flex-row items-center">
               <div
                 class="rounded-full w-1.5 h-1.5 mr-2"
@@ -84,7 +78,7 @@ const totalsClass = computed(() => ({
             </div>
             <div v-if="token.tokenAddress === 'unallocated'"></div>
           </div>
-          <div class="col-span-4 text-sm text-right">
+          <div class="col-span-6 text-sm text-right">
             {{
               fNum(
                 optimisedLiquidity[token.tokenAddress].liquidityRequired,
@@ -92,40 +86,26 @@ const totalsClass = computed(() => ({
               )
             }}
           </div>
-          <div class="col-span-3 text-right text-sm font-medium">
-            {{ token.weight }}%
-          </div>
         </template>
         <div
-          class="col-span-5 text-left font-medium text-sm"
+          class="col-span-6 text-left font-medium text-sm"
           v-if="unallocatedTokenWeight > 0"
         >
           {{ $t('unallocated') }}
         </div>
-        <div class="col-span-4 text-right" v-if="unallocatedTokenWeight > 0">
+        <div class="col-span-6 text-right" v-if="unallocatedTokenWeight > 0">
           -
         </div>
-        <div
-          class="col-span-3 text-sm text-right font-medium"
-          v-if="unallocatedTokenWeight > 0"
-        >
-          {{ unallocatedTokenWeight }}%
-        </div>
-        <div class="col-span-5">
+        <div class="col-span-6">
           <span class="text-sm font-semibold">{{ $t('total') }}</span>
         </div>
         <div
           :class="[
-            'col-span-4 text-sm font-semibold flex items-center justify-end',
+            'col-span-6 text-sm font-semibold flex items-center justify-end',
             totalsClass
           ]"
         >
           {{ fNum(maxInitialLiquidity, 'usd') }}
-        </div>
-        <div class="col-span-3 text-right">
-          <span class="text-sm font-semibold"
-            >{{ 100 - unallocatedTokenWeight }}%</span
-          >
         </div>
       </div>
     </div>

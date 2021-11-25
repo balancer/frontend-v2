@@ -101,7 +101,7 @@ const chartConfig = computed(() => {
                     width: 48,
                     height: 48,
                     borderRadius: 48,
-                    overflow: 'hidden',
+                    overflow: 'hidden'
                   }
                 },
                 itemStyle: {

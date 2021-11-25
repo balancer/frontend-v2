@@ -324,7 +324,10 @@ function handleProceed() {
             </div>
           </div>
         </BalCard>
-        <AnimatePresence :isVisible="showLiquidityAlert && isWalletReady" :exit="{ opacity: 1 }">
+        <AnimatePresence
+          :isVisible="showLiquidityAlert && isWalletReady"
+          :exit="{ opacity: 1 }"
+        >
           <BalAlert
             :title="$t('createAPool.recommendedLiquidity')"
             type="warning"
