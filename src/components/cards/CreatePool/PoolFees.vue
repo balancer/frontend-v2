@@ -194,7 +194,7 @@ function onChangeFeeController(val: string) {
         <BalTooltip
           :text="$t('createAPool.governanceFeesTooltip')"
           icon-size="sm"
-          class="ml-2"
+          class="ml-2 mt-2"
         />
       </BalStack>
       <BalStack vertical spacing="xs" v-if="feeManagementType === 'self'">
@@ -266,7 +266,7 @@ function onChangeFeeController(val: string) {
             placeholder="0xBA4...2069"
             type="text"
             size="sm"
-            validateOn="input"
+            validateOn="blur"
             :rules="[isRequired($t('A controller address')), isValidAddress()]"
             name="customAddress"
           />
