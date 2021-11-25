@@ -22,6 +22,9 @@ import useWeb3 from '@/services/web3/useWeb3';
 import BalLink from '@/components/_global/BalLink/BalLink.vue';
 
 import { TOKENS } from '@/constants/tokens';
+import useTranasactionErrors, {
+  TransactionError
+} from '@/composables/useTransactionErrors';
 
 type ClaimableToken = {
   token: string;
@@ -48,7 +51,7 @@ const tabs = [
 const activeTab = ref(tabs[0].value);
 const isClaiming = ref(false);
 const elapstedTimeSinceEstimateTimestamp = ref(0);
-const claimError = ref<string | null>(null);
+const claimError = ref<TransactionError | null>(null);
 
 // COMPOSABLES
 const { upToLargeBreakpoint } = useBreakpoints();
@@ -71,6 +74,7 @@ const {
   priceQueryLoading,
   loading: tokensLoading
 } = useTokens();
+const { parseError } = useTranasactionErrors();
 
 const BALTokenAddress = getAddress(TOKENS.AddressMap[networkId.value].BAL);
 
@@ -242,7 +246,7 @@ async function claimAvailableRewards() {
       });
     } catch (e) {
       console.log(e);
-      claimError.value = e.message;
+      claimError.value = parseError(e);
       isClaiming.value = false;
     }
   }
@@ -360,8 +364,8 @@ async function claimAvailableRewards() {
           class="mb-6 -mt-4"
           type="error"
           size="md"
-          title="An error has occurred"
-          :description="claimError"
+          :title="claimError.title"
+          :description="claimError.description"
           block
           action-label="Dismiss"
           @actionClick="claimError = null"
