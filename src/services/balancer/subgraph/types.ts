@@ -51,6 +51,7 @@ export interface Pool {
   mainTokens?: string[];
   wrappedTokens?: string[];
   linearPoolTokens?: PoolToken[];
+  linearPoolTokensAddresses?: string[];
 }
 
 export interface LinearPool extends Pool {

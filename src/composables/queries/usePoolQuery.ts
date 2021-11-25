@@ -100,13 +100,16 @@ export default function usePoolQuery(
       );
 
       linearPoolTokens.push(
-        ...linearPool.tokens.filter(
-          token => token.address !== linearPool.address
-        )
+        ...linearPool.tokens
+          .filter(token => token.address !== linearPool.address)
+          .map(token => ({ ...token, address: getAddress(token.address) }))
       );
     });
 
     pool.linearPoolTokens = linearPoolTokens;
+    pool.linearPoolTokensAddresses = linearPoolTokens.map(
+      token => token.address
+    );
 
     return pool;
   }

@@ -9,6 +9,7 @@ import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
 import useNetwork from '../useNetwork';
+import { isStablePhantom } from '../usePool';
 
 /**
  * TYPES
@@ -48,10 +49,19 @@ export default function usePoolSnapshotsQuery(
   const queryFn = async () => {
     if (!pool.value) throw new Error('No pool');
 
-    // TODO - remove this once coingecko supports wstEth
-    const tokens = pool.value.tokenAddresses.includes(addresses.wstETH)
-      ? [...pool.value.tokenAddresses, addresses.stETH]
-      : pool.value.tokenAddresses;
+    let tokens: string[] = [];
+
+    if (
+      isStablePhantom(pool.value.poolType) &&
+      pool.value.linearPoolTokensAddresses != null
+    ) {
+      tokens = pool.value.linearPoolTokensAddresses;
+    } else if (pool.value.tokenAddresses.includes(addresses.wstETH)) {
+      // TODO - remove this once coingecko supports wstEth
+      tokens = [...pool.value.tokenAddresses, addresses.stETH];
+    } else {
+      tokens = pool.value.tokenAddresses;
+    }
 
     const prices = await coingeckoService.prices.getTokensHistorical(
       tokens,
