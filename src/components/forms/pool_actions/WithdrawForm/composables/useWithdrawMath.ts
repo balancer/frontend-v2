@@ -126,6 +126,10 @@ export default function useWithdrawMath(
     bnum(tokenOutAmount.value).gt(tokenOutPoolBalance.value)
   );
 
+  /**
+   * Proportional pool token amounts out given BPT in.
+   * Only relevant for exit calls, not batchSwap or batch relayer exits.
+   */
   const proportionalPoolTokenAmounts = computed((): string[] => {
     const { receive } = poolCalculator.propAmountsGiven(
       propBptIn.value,
@@ -135,6 +139,10 @@ export default function useWithdrawMath(
     return receive;
   });
 
+  /**
+   * Proportional amounts out for a StablePhantom pool's output tokens
+   * Derived from queryBatchSwap amounts out.
+   */
   const proportionalMainTokenAmounts = computed((): string[] => {
     if (pool.value.onchain.linearPools && batchSwap.value) {
       return batchSwap.value.amountTokensOut.map((amount, i) => {
@@ -143,12 +151,6 @@ export default function useWithdrawMath(
           .toString();
         return formatUnits(_amount, withdrawalTokens.value[i].decimals);
       });
-      // const linearPools = Object.values(pool.value.onchain.linearPools);
-      // return proportionalPoolTokenAmounts.value.map((amount, i) => {
-      //   return bnum(amount)
-      //     .times(linearPools[i].priceRate)
-      //     .toFixed(withdrawalTokens.value[i].decimals); // TODO - may need to specify rounding
-      // });
     }
     return [];
   });
