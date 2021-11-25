@@ -81,7 +81,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
   );
   const managedPoolWithTradingHalted = computed(
     (): boolean =>
-      !!pool.value && isManagedPool.value && !!pool.value.onchain?.swapEnabled
+      !!pool.value && isManagedPool.value && !pool.value.onchain?.swapEnabled
   );
   const isWethPool = computed(
     (): boolean => !!pool.value && isWeth(pool.value)
