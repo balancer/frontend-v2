@@ -1,15 +1,20 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
+import { mapValues, tail } from 'lodash';
+
 import QUERY_KEYS from '@/constants/queryKeys';
+
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
-import usePoolQuery from './usePoolQuery';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
+
 import useNetwork from '../useNetwork';
 import { isStablePhantom } from '../usePool';
+
+import usePoolQuery from './usePoolQuery';
 
 /**
  * TYPES
@@ -51,11 +56,10 @@ export default function usePoolSnapshotsQuery(
 
     let tokens: string[] = [];
 
-    if (
-      isStablePhantom(pool.value.poolType) &&
-      pool.value.linearPoolTokensAddresses != null
-    ) {
-      tokens = pool.value.linearPoolTokensAddresses;
+    const isStablePhantomPool = isStablePhantom(pool.value.poolType);
+
+    if (isStablePhantomPool && pool.value.mainTokens != null) {
+      tokens = pool.value.mainTokens;
     } else if (pool.value.tokenAddresses.includes(addresses.wstETH)) {
       // TODO - remove this once coingecko supports wstEth
       tokens = [...pool.value.tokenAddresses, addresses.stETH];
@@ -67,6 +71,17 @@ export default function usePoolSnapshotsQuery(
       coingeckoService.prices.getTokensHistorical(tokens, days),
       balancerSubgraphService.poolSnapshots.get(id, days)
     ]);
+
+    if (isStablePhantomPool) {
+      return {
+        prices,
+        snapshots: mapValues(snapshots, snapshot => ({
+          ...snapshot,
+          // remove pool token
+          amounts: tail(snapshot.amounts)
+        }))
+      };
+    }
 
     return { prices, snapshots };
   };
