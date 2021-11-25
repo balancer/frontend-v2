@@ -16,6 +16,8 @@ import { sum, sumBy, uniqueId } from 'lodash';
 import anime from 'animejs';
 import { bnum } from '@/lib/utils';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import useWeb3 from '@/services/web3/useWeb3';
+import { useI18n } from 'vue-i18n';
 
 const emit = defineEmits(['update:height']);
 
@@ -40,6 +42,8 @@ const {
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
 const { nativeAsset } = useTokens();
+const { isWalletReady, toggleWalletSelectModal } = useWeb3();
+const { t } = useI18n();
 
 /**
  * STATE
@@ -60,6 +64,17 @@ const cardWrapperHeight = ref(0);
 const tokenWeightItemHeight = computed(() =>
   upToLargeBreakpoint.value ? 56 : 64
 );
+
+const walletLabel = computed(() => {
+  if (!isWalletReady.value) {
+    return t('connectWallet');
+  }
+  if (showLiquidityAlert.value) {
+    return t('continueAnyway');
+  }
+  return t('next');
+});
+
 const totalWeight = computed(() => {
   const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
   const validPercentage = sumBy(validTokens, 'weight');
@@ -67,6 +82,7 @@ const totalWeight = computed(() => {
 });
 
 const isProceedDisabled = computed(() => {
+  if (!isWalletReady.value) return false;
   if (Number(totalWeight.value) !== 100) return true;
   if (seedTokens.value.length < 2) return true;
   return false;
@@ -231,6 +247,14 @@ async function handleRemoveToken(index: number) {
   distributeWeights();
   animateHeight(-1);
 }
+
+function handleProceed() {
+  if (!isWalletReady.value) {
+    toggleWalletSelectModal(true);
+  } else {
+    proceed();
+  }
+}
 </script>
 
 <template>
@@ -300,7 +324,7 @@ async function handleRemoveToken(index: number) {
             </div>
           </div>
         </BalCard>
-        <AnimatePresence :isVisible="showLiquidityAlert" :exit="{ opacity: 1 }">
+        <AnimatePresence :isVisible="showLiquidityAlert && isWalletReady" :exit="{ opacity: 1 }">
           <BalAlert
             :title="$t('createAPool.recommendedLiquidity')"
             type="warning"
@@ -315,8 +339,8 @@ async function handleRemoveToken(index: number) {
           block
           color="gradient"
           :disabled="isProceedDisabled"
-          @click="proceed"
-          >{{ showLiquidityAlert ? $t('continueAnyway') : $t('next') }}</BalBtn
+          @click="handleProceed"
+          >{{ walletLabel }}</BalBtn
         >
       </BalStack>
     </BalCard>
