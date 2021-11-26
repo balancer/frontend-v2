@@ -215,7 +215,9 @@ export default function useWithdrawMath(
     return addSlippage(_bptIn, pool.value.onchain.decimals);
   });
 
-  const hasAmounts = computed(() => bnum(fiatTotal.value).gt(0));
+  const hasAmounts = computed(() =>
+    fullAmounts.value.some(amount => bnum(amount).gt(0))
+  );
 
   const singleAssetMaxes = computed((): string[] => {
     if (isStablePhantomPool.value) return batchSwapSingleAssetMaxes.value;

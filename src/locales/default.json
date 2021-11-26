@@ -287,11 +287,15 @@
     "poolTransactions": {
         "title": "Pool transactions",
         "tabs": {
+            "allTransactions": "Transactions",
+            "myTransactions": "My transactions",
             "allInvestments": "Investments",
             "myInvestments": "My investments",
             "swaps": "Swaps"
         },
         "noResults": {
+            "allTransactions": "No transactions in this pool.",
+            "myTransactions": "You haven't made any transactions in this pool.",
             "allInvestments": "No investments in this pool.",
             "myInvestments": "You haven't made any investments in this pool.",
             "swaps": "No swaps in this pool."
@@ -491,6 +495,10 @@
         "gasTooLow": {
             "title": "Gas too low",
             "description": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas."
+        },
+        "cannotEstGas": {
+            "title": "Cannot estimate gas",
+            "description": "Transaction may fail or require manual gas limit."
         },
         "slippage": {
             "title": "Transaction failed due to slippage",

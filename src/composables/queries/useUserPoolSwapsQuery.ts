@@ -1,4 +1,4 @@
-import { reactive, computed } from 'vue';
+import { computed, reactive } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
 
@@ -6,18 +6,18 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { PoolActivity } from '@/services/balancer/subgraph/types';
-import useWeb3 from '@/services/web3/useWeb3';
+import { PoolSwap } from '@/services/balancer/subgraph/types';
 import useNetwork from '../useNetwork';
+import useWeb3 from '@/services/web3/useWeb3';
 
-type UserPoolActivitiesQueryResponse = {
-  poolActivities: PoolActivity[];
+type PoolSwapsQueryResponse = {
+  poolSwaps: PoolSwap[];
   skip?: number;
 };
 
-export default function usePoolUserActivitiesQuery(
+export default function useUserPoolSwapsQuery(
   id: string,
-  options: UseInfiniteQueryOptions<UserPoolActivitiesQueryResponse> = {}
+  options: UseInfiniteQueryOptions<PoolSwapsQueryResponse> = {}
 ) {
   // COMPOSABLES
   const { account, isWalletReady } = useWeb3();
@@ -27,25 +27,23 @@ export default function usePoolUserActivitiesQuery(
   const enabled = computed(() => isWalletReady.value && account.value != null);
 
   // DATA
-  const queryKey = reactive(
-    QUERY_KEYS.Pools.UserActivities(networkId, id, account)
-  );
+  const queryKey = reactive(QUERY_KEYS.Pools.UserSwaps(networkId, id, account));
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const poolActivities = await balancerSubgraphService.poolActivities.get({
+    const poolSwaps = await balancerSubgraphService.poolSwaps.get({
       first: POOLS.Pagination.PerPage,
       skip: pageParam,
       where: {
-        pool: id,
-        sender: account.value.toLowerCase()
+        userAddress: account.value.toLowerCase(),
+        poolId: id
       }
     });
 
     return {
-      poolActivities,
+      poolSwaps,
       skip:
-        poolActivities.length >= POOLS.Pagination.PerPage
+        poolSwaps.length >= POOLS.Pagination.PerPage
           ? pageParam + POOLS.Pagination.PerPage
           : undefined
     };
@@ -53,12 +51,11 @@ export default function usePoolUserActivitiesQuery(
 
   const queryOptions = reactive({
     enabled,
-    getNextPageParam: (lastPage: UserPoolActivitiesQueryResponse) =>
-      lastPage.skip,
+    getNextPageParam: (lastPage: PoolSwapsQueryResponse) => lastPage.skip,
     ...options
   });
 
-  return useInfiniteQuery<UserPoolActivitiesQueryResponse>(
+  return useInfiniteQuery<PoolSwapsQueryResponse>(
     queryKey,
     queryFn,
     queryOptions
