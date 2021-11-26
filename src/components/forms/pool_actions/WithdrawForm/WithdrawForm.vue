@@ -106,7 +106,7 @@ onBeforeMount(() => {
       :address="tokenOut"
       v-model:amount="tokenOutAmount"
       v-model:isValid="validInput"
-      :customBalance="singleAssetMaxes[tokenOutIndex]"
+      :customBalance="singleAssetMaxes[tokenOutIndex] || '0'"
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
       fixedToken

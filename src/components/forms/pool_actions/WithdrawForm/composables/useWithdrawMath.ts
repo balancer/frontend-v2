@@ -217,9 +217,6 @@ export default function useWithdrawMath(
 
   const hasAmounts = computed(() => bnum(fiatTotal.value).gt(0));
 
-  // TODO - this essentially returns maxes in BB-A-DAI, etc
-  // Probably need to convert values to tokenOut with priceRate
-  // But which price rate?
   const singleAssetMaxes = computed((): string[] => {
     if (isStablePhantomPool.value) return batchSwapSingleAssetMaxes.value;
 
