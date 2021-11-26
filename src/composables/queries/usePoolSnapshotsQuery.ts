@@ -5,6 +5,8 @@ import { mapValues, tail } from 'lodash';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
+import { bnum } from '@/lib/utils';
+
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
@@ -59,6 +61,7 @@ export default function usePoolSnapshotsQuery(
     const isStablePhantomPool = isStablePhantom(pool.value.poolType);
 
     if (isStablePhantomPool && pool.value.mainTokens != null) {
+      // TODO - remove this once coingecko supports linear tokens
       tokens = pool.value.mainTokens;
     } else if (pool.value.tokenAddresses.includes(addresses.wstETH)) {
       // TODO - remove this once coingecko supports wstEth
@@ -67,14 +70,34 @@ export default function usePoolSnapshotsQuery(
       tokens = pool.value.tokenAddresses;
     }
 
-    const [prices, snapshots] = await Promise.all([
+    const [historicalPrices, snapshots] = await Promise.all([
       coingeckoService.prices.getTokensHistorical(tokens, days),
       balancerSubgraphService.poolSnapshots.get(id, days)
     ]);
 
     if (isStablePhantomPool) {
+      const tokensWithoutPoolToken = tail(pool.value.tokens);
+
       return {
-        prices,
+        // Adjust the price from coingecko by the priceRate (1 LINEAR-AUSDC -> priceRate * 1 USDC)
+        prices:
+          tokensWithoutPoolToken.length === tokens.length
+            ? mapValues(historicalPrices, prices =>
+                prices.map((price, index) => {
+                  // indexes of the tokens and mainTokens should match
+
+                  const token = tokensWithoutPoolToken[index];
+
+                  if (token != null && token.priceRate != null) {
+                    return bnum(price)
+                      .times(token.priceRate)
+                      .toNumber();
+                  }
+
+                  return price;
+                })
+              )
+            : historicalPrices,
         snapshots: mapValues(snapshots, snapshot => ({
           ...snapshot,
           // remove pool token
@@ -83,7 +106,7 @@ export default function usePoolSnapshotsQuery(
       };
     }
 
-    return { prices, snapshots };
+    return { prices: historicalPrices, snapshots };
   };
 
   const queryOptions = reactive({
