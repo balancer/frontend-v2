@@ -38,7 +38,7 @@
     "weightedPoolFactory": "0x60467cb225092cE0c989361934311175f437Cf53",
     "stablePoolFactory": "0x55df810876354Fc3e249f701Dd78DeDE57991F8D",
     "tokenFactory": "0x6732d651EeA0bc98FcF4EFF8B62e0CdCB0064f4b",
-    "weth": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
+    "weth": "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",
     "stETH": "",
     "wstETH": "",
     "usdc": "0x04068da6c83afcfa0e13ba15a6696662335d5b75",
