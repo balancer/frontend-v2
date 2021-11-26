@@ -22,7 +22,7 @@ import {
   isStablePhantom
 } from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
-import { pick } from 'lodash';
+import { merge, pick } from 'lodash';
 import { Vault__factory } from '@balancer-labs/typechain';
 
 export default class Vault {
@@ -112,17 +112,34 @@ export default class Vault {
     vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
 
     if (isStablePhantom(type) && result.linearPools) {
-      // Get pool tokens for linear pools
+      const wrappedTokensMap: Record<string, string> = {};
+
       Object.keys(result.linearPools).forEach(address => {
         if (!result.linearPools) return;
         const linearPool: RawLinearPoolData = result.linearPools[address];
+
         vaultMultiCaller.call(
           `linearPools.${address}.tokenData`,
           this.address,
           'getPoolTokens',
           [linearPool.id]
         );
+
+        wrappedTokensMap[address] = linearPool.wrappedToken.address;
       });
+
+      Object.entries(wrappedTokensMap).forEach(([address, wrappedToken]) => {
+        poolMulticaller.call(
+          `${address}.unwrappedTokenAddress`,
+          wrappedToken,
+          'ATOKEN'
+        );
+      });
+
+      const callResult = await poolMulticaller.execute();
+      if (callResult != null) {
+        merge(result.linearPools, callResult);
+      }
     }
 
     result = await vaultMultiCaller.execute(result);
@@ -217,9 +234,14 @@ export default class Vault {
     const _linearPools = <LinearPoolDataMap>{};
 
     Object.keys(linearPools).forEach(address => {
-      const { id, mainToken, wrappedToken, priceRate, tokenData } = linearPools[
-        address
-      ];
+      const {
+        id,
+        mainToken,
+        wrappedToken,
+        priceRate,
+        unwrappedTokenAddress,
+        tokenData
+      } = linearPools[address];
 
       _linearPools[address] = {
         id,
@@ -233,7 +255,8 @@ export default class Vault {
           address: getAddress(wrappedToken.address),
           index: wrappedToken.index.toNumber(),
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString()
-        }
+        },
+        unwrappedTokenAddress: getAddress(unwrappedTokenAddress)
       };
     });
 
