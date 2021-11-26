@@ -312,9 +312,8 @@ export default defineComponent({
         const tokensWithPrice = Object.keys(prices.value);
 
         const tokens =
-          isStablePhantomPool.value &&
-          pool.value.linearPoolTokensAddresses != null
-            ? pool.value.linearPoolTokensAddresses
+          isStablePhantomPool.value && pool.value.linearPoolTokensMap != null
+            ? Object.keys(pool.value.linearPoolTokensMap)
             : pool.value.tokenAddresses;
 
         return !tokens.every(token => tokensWithPrice.includes(token));
