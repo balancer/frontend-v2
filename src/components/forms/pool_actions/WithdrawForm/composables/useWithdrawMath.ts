@@ -76,12 +76,7 @@ export default function useWithdrawMath(
     getToken,
     dynamicDataLoading
   } = useTokens();
-  const {
-    minusSlippage,
-    addSlippage,
-    minusSlippageScaled,
-    addSlippageScaled
-  } = useSlippage();
+  const { minusSlippage, addSlippage, minusSlippageScaled } = useSlippage();
   const { currency } = useUserSettings();
   const { isStablePhantomPool } = usePool(pool);
 
@@ -333,6 +328,9 @@ export default function useWithdrawMath(
    */
 
   // Assumes proportional exit
+  // TODO - adjust for single asset case
+  // For single asset exact out case we need a new query batch swap function
+  // That takes amounts out and returns bptIn.
   const batchSwapBPTIn = computed((): BigNumber[] => {
     const poolTokenSum = bnSum(proportionalPoolTokenAmounts.value).toString();
 
