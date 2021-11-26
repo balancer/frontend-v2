@@ -1,5 +1,5 @@
 import { computed, Ref, ref, watch } from 'vue';
-import { bnum, forChange } from '@/lib/utils';
+import { bnSum, bnum, forChange } from '@/lib/utils';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -86,7 +86,7 @@ export default function useWithdrawMath(
   const { isStablePhantomPool } = usePool(pool);
 
   /**
-   * Services
+   * SERVICES
    */
   const poolCalculator = new PoolCalculator(pool, allTokens, balances, 'exit');
 
@@ -102,9 +102,7 @@ export default function useWithdrawMath(
 
   const tokenCount = computed((): number => tokenAddresses.value.length);
 
-  /**
-   * The tokens of the pool
-   */
+  // The tokens of the pool
   const poolTokens = computed((): TokenInfo[] =>
     pool.value.tokenAddresses.map(address => getToken(address))
   );
@@ -186,6 +184,10 @@ export default function useWithdrawMath(
     )
   );
 
+  /**
+   * The full input amounts array minus slippage,
+   * if the amount is not 0 or a single asset exact out case.
+   */
   const amountsOut = computed(() => {
     return fullAmounts.value.map((amount, i) => {
       if (amount === '0' || exactOut.value) return amount;
@@ -193,6 +195,11 @@ export default function useWithdrawMath(
     });
   });
 
+  /**
+   * The BPT value to be used for the withdrawal transaction.
+   * Only in the single asset exact out case should the BPT value
+   * be adjusted to account for slippage.
+   */
   const bptIn = computed(() => {
     if (isProportional.value) return propBptIn.value;
     if (!exactOut.value) return bptBalance.value; // Single asset max withdrawal
@@ -223,9 +230,7 @@ export default function useWithdrawMath(
     });
   });
 
-  /**
-   * Checks if the single asset withdrawal is maxed out.
-   */
+  // Checks if the single asset withdrawal is maxed out.
   const singleAssetMaxed = computed(() => {
     return (
       singleAssetMaxes.value[tokenOutIndex.value] ===
@@ -241,6 +246,10 @@ export default function useWithdrawMath(
     return !isProportional.value && !singleAssetMaxed.value;
   });
 
+  /**
+   * Checks that the state of the form is a single asset withdrawal
+   * and if the single asset is maxed out.
+   */
   const singleAssetMaxOut = computed(
     () => !isProportional.value && singleAssetMaxed.value
   );
@@ -249,6 +258,7 @@ export default function useWithdrawMath(
     if (amountExceedsPoolBalance.value) return 1;
     if (!hasAmounts.value || isProportional.value) return 0;
 
+    // TODO - handle single asset withdrawal price impact for StablePhantom pools
     return poolCalculator
       .priceImpact(fullAmounts.value, {
         exactOut: exactOut.value,
@@ -287,6 +297,25 @@ export default function useWithdrawMath(
   );
 
   /**
+   * Token amounts out to pass in to batch swap transaction and used as limits.
+   * TODO - needs to handle single asset exact out case where we shouldn't minus slippage
+   */
+  const batchSwapAmountsOutMap = computed(
+    (): Record<string, BigNumber> => {
+      const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
+        tokenAddresses.value[i].toLowerCase(),
+        amount
+      ]);
+      const onlyTokensWithAmounts = allTokensWithAmounts
+        .filter(([, amount]) => (amount as BigNumber).gt(0))
+        .map(([token, amount]) => {
+          return [token, minusSlippageScaled(amount as BigNumber)];
+        });
+      return Object.fromEntries(onlyTokensWithAmounts);
+    }
+  );
+
+  /**
    * METHODS
    */
   function initMath(): void {
@@ -302,41 +331,22 @@ export default function useWithdrawMath(
   /**
    * TESTING
    */
-  const batchSwapAmountsOutMap = computed(
-    (): Record<string, BigNumber> => {
-      const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
-        tokenAddresses.value[i].toLowerCase(),
-        amount
-      ]);
-      let onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
-        (amount as BigNumber).gt(0)
-      );
-      onlyTokensWithAmounts = onlyTokensWithAmounts.map(([token, amount]) => {
-        return [token, minusSlippageScaled(amount as BigNumber)];
-      });
-      return Object.fromEntries(onlyTokensWithAmounts);
-    }
-  );
 
   // Assumes proportional exit
-  const batchSwapAmountsIn = computed(() => {
-    const poolTokenSum = proportionalPoolTokenAmounts.value.reduce(
-      (a, b) =>
-        bnum(a)
-          .plus(b)
-          .toString(),
-      '0'
-    );
-    const amountsIn = proportionalPoolTokenAmounts.value
-      .map(amount => {
-        const fraction = bnum(amount).div(poolTokenSum);
+  const batchSwapBPTIn = computed((): BigNumber[] => {
+    const poolTokenSum = bnSum(proportionalPoolTokenAmounts.value).toString();
+
+    const fractionalBPTIn = proportionalPoolTokenAmounts.value
+      .map(poolTokenAmount => {
+        const fraction = bnum(poolTokenAmount).div(poolTokenSum);
         return fraction
           .times(bptIn.value)
           .toFixed(pool.value.onchain.decimals, OldBigNumber.ROUND_DOWN);
       })
-      .filter(amount => bnum(amount).gt(0));
-    return amountsIn.map(amount =>
-      parseUnits(amount, pool.value.onchain.decimals)
+      .filter(BPT => bnum(BPT).gt(0));
+
+    return fractionalBPTIn.map(bptFraction =>
+      parseUnits(bptFraction, pool.value.onchain.decimals)
     );
   });
 
@@ -351,7 +361,7 @@ export default function useWithdrawMath(
       sor,
       balancerContractsService.vault.instance,
       pool.value.address.toLowerCase(),
-      batchSwapAmountsIn.value,
+      batchSwapBPTIn.value,
       tokenAddresses.value.map(address => address.toLowerCase())
     );
     console.log('batchSwap', batchSwap.value);
