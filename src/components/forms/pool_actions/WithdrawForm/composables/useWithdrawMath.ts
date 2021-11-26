@@ -46,7 +46,7 @@ export type WithdrawMathResponse = {
   batchSwapAmountsOutMap: Ref<Record<string, BigNumber>>;
   initMath: () => void;
   resetMath: () => void;
-  getBatchSwap: () => Promise<void>;
+  getBatchSwap: () => Promise<BatchSwapOut>;
 };
 
 export default function useWithdrawMath(
@@ -63,6 +63,7 @@ export default function useWithdrawMath(
   const tokenOutAmount = ref('');
   const batchSwap = ref<BatchSwapOut | null>(null);
   const batchSwapLoading = ref(false);
+  const batchSwapSingleAssetMaxes = ref<string[]>([]);
 
   /**
    * COMPOSABLES
@@ -102,6 +103,10 @@ export default function useWithdrawMath(
     pool.value.tokenAddresses.map(address => getToken(address))
   );
 
+  const tokenOutDecimals = computed(
+    (): number => getToken(tokenOut.value).decimals
+  );
+
   /**
    * The tokens being withdrawn
    * In most cases these are the same as the pool tokens
@@ -111,9 +116,10 @@ export default function useWithdrawMath(
     tokenAddresses.value.map(address => getToken(address))
   );
 
-  const bptBalance = computed(() => {
-    return balanceFor(pool.value.address);
-  });
+  const bptBalance = computed(() => balanceFor(pool.value.address));
+  const bptBalanceScaled = computed(() =>
+    parseUnits(bptBalance.value, pool.value.onchain.decimals)
+  );
 
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
 
@@ -215,6 +221,8 @@ export default function useWithdrawMath(
   // Probably need to convert values to tokenOut with priceRate
   // But which price rate?
   const singleAssetMaxes = computed((): string[] => {
+    if (isStablePhantomPool.value) return batchSwapSingleAssetMaxes.value;
+
     return poolTokens.value.map((token, tokenIndex) => {
       return formatUnits(
         poolCalculator
@@ -332,6 +340,8 @@ export default function useWithdrawMath(
   // For single asset exact out case we need a new query batch swap function
   // That takes amounts out and returns bptIn.
   const batchSwapBPTIn = computed((): BigNumber[] => {
+    if (singleAssetMaxOut.value) return [bptBalanceScaled.value];
+
     const poolTokenSum = bnSum(proportionalPoolTokenAmounts.value).toString();
 
     const fractionalBPTIn = proportionalPoolTokenAmounts.value
@@ -348,28 +358,53 @@ export default function useWithdrawMath(
     );
   });
 
+  const batchSwapTokensOut = computed((): string[] => {
+    if (singleAssetMaxOut.value) return [tokenOut.value];
+    return tokenAddresses.value.map(address => address.toLowerCase());
+  });
+
   /**
    * END TESTING
    */
 
-  async function getBatchSwap(): Promise<void> {
+  async function getBatchSwap(
+    bptIn: BigNumber[] | null = null,
+    tokensOut: string[] | null = null
+  ): Promise<BatchSwapOut> {
     batchSwapLoading.value = true;
-    // Currently assumes proportional exit
     batchSwap.value = await queryBatchSwapTokensOut(
       sor,
       balancerContractsService.vault.instance,
       pool.value.address.toLowerCase(),
-      batchSwapBPTIn.value,
-      tokenAddresses.value.map(address => address.toLowerCase())
+      bptIn || batchSwapBPTIn.value,
+      tokensOut || batchSwapTokensOut.value
     );
     console.log('batchSwap', batchSwap.value);
     batchSwapLoading.value = false;
+    return batchSwap.value;
+  }
+
+  // Fetch single asset max out for current tokenOut using batch swaps.
+  // Set max out returned from batchSwap in state.
+  async function getSingleAssetMaxOut(): Promise<void> {
+    const batchSwap = await getBatchSwap(
+      [bptBalanceScaled.value],
+      [tokenOut.value]
+    );
+    const amountOutScaled = bnum(batchSwap.amountTokensOut[0])
+      .abs()
+      .toString();
+    const amountOut = formatUnits(amountOutScaled, tokenOutDecimals.value);
+    batchSwapSingleAssetMaxes.value[tokenOutIndex.value] = amountOut;
   }
 
   /**
    * WATCHERS
    */
-  watch(tokenOut, () => (tokenOutAmount.value = ''));
+  watch(tokenOut, async () => {
+    tokenOutAmount.value = '';
+    if (isStablePhantomPool.value) await getSingleAssetMaxOut();
+  });
 
   watch(isWalletReady, async () => {
     await forChange(dynamicDataLoading, false);
