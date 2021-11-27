@@ -1,6 +1,10 @@
 <template>
   <img
-    v-if="iconSRC && !error"
+    v-if="
+      iconSRC &&
+        !error &&
+        !iconSRC.startsWith('https://raw.githubusercontent.com/')
+    "
     :src="iconSRC"
     :style="{
       width: `${size}px`,
@@ -63,7 +67,6 @@ export default defineComponent({
         );
       });
 
-      if (!token) return '';
       return resolve(token.logoURI);
     });
 
