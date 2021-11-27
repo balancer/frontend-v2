@@ -23,12 +23,6 @@ export default function useFreshBeetsQuery() {
   const queryFn = async () => {
     const data = await governanceContractsService.fbeets.getData(account.value);
 
-    /*console.log('totalFbeetsSupply', data.totalFbeetsSupply.toString());
-    console.log('totalBptStaked', data.totalBptStaked.toString());
-    console.log('userBalance', data.userBalance.toString());
-    console.log('userBptTokenBalance', data.userBptTokenBalance.toString());
-    console.log('allowance', data.allowance.toString());*/
-
     return {
       totalFbeetsSupply: new BigNumber(data.totalFbeetsSupply.toString()),
       totalBptStaked: new BigNumber(data.totalBptStaked.toString()),

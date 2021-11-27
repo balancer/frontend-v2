@@ -38,16 +38,16 @@ export function useFreshBeets() {
   } = usePools();
   const protocolDataQuery = useProtocolDataQuery();
   const { priceFor, dynamicDataLoaded } = useTokens();
-  const { isLoading, isIdle, data } = freshBeetsQuery;
+  const { isLoading, data } = freshBeetsQuery;
 
-  const fBeetsLoading = computed(
-    () =>
+  const fBeetsLoading = computed(() => {
+    return (
       isLoading.value ||
-      isIdle.value ||
       isLoadingPools.value ||
       isLoadingFarms.value ||
       farmUserLoading.value
-  );
+    );
+  });
 
   const userFbeetsFarm = computed(() =>
     allFarmsForUser.value?.find(

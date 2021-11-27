@@ -9,7 +9,7 @@ export default function useFarmUser(farmId: string) {
   });
 
   const farmUserLoading = computed(() => {
-    return farmUserQuery.isLoading.value || farmUserQuery.isIdle.value;
+    return farmUserQuery.isLoading.value;
   });
 
   return {

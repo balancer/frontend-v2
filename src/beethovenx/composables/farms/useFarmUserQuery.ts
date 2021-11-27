@@ -9,6 +9,7 @@ import { masterChefContractsService } from '@/beethovenx/services/farm/master-ch
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
 import { farmSubgraphClient } from '@/beethovenx/services/subgraph/farm-subgraph.client';
 import { FarmUser } from '@/beethovenx/services/subgraph/subgraph-types';
+import { AddressZero } from '@ethersproject/constants';
 
 export default function useFarmUserQuery(
   farmId: string,
@@ -25,7 +26,6 @@ export default function useFarmUserQuery(
   const enabled = computed(
     () =>
       isWalletReady.value &&
-      account.value != null &&
       !appLoading.value &&
       !loading.value &&
       !dynamicDataLoading.value
@@ -33,19 +33,21 @@ export default function useFarmUserQuery(
   const queryKey = QUERY_KEYS.Farms.User(farmId, account);
 
   const queryFn = async () => {
+    const address = account.value || AddressZero;
+
     try {
       const userData = await farmSubgraphClient.getUserDataForFarm(
         farmId,
-        account.value
+        address
       );
       const pendingBeets = await masterChefContractsService.masterChef.getPendingBeetsForFarm(
         farmId,
-        account.value
+        address
       );
 
       const pendingRewardToken = await masterChefContractsService.hndRewarder.getPendingReward(
         farmId,
-        account.value
+        address
       );
 
       const hndPrice = priceFor(appNetworkConfig.addresses.hnd);
