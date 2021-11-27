@@ -63,6 +63,7 @@ import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
 import useDarkMode from '@/composables/useDarkMode';
 import { sumBy } from 'lodash';
+import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 
 export default defineComponent({
   name: 'AppHero',
@@ -77,6 +78,7 @@ export default defineComponent({
       isLoadingUserPools,
       onlyPoolsWithFarms
     } = usePools();
+    const { fbeetsDecoratedFarm } = useFreshBeets();
     const { darkMode } = useDarkMode();
     //const { decoratedFarms, isLoadingDecoratedFarms } = useDecoratedFarms();
 
@@ -89,7 +91,8 @@ export default defineComponent({
     const totalInvestedAndFarmAmount = computed(() => {
       return (
         sumBy(onlyPoolsWithFarms.value, pool => pool.farm.stake || 0) +
-        parseFloat(totalInvestedAmount.value || '0')
+        parseFloat(totalInvestedAmount.value || '0') +
+        (fbeetsDecoratedFarm.value?.stake || 0)
       );
     });
 
