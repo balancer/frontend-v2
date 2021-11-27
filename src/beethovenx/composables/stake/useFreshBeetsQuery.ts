@@ -18,7 +18,7 @@ export default function useFreshBeetsQuery() {
   const { appLoading } = useApp();
   const { isWalletReady, account } = useWeb3();
   const enabled = computed(() => !appLoading.value && isWalletReady.value);
-  const queryKey = reactive(QUERY_KEYS.Dexes.GetAmountsOut);
+  const queryKey = reactive(QUERY_KEYS.FBeets.all);
 
   const queryFn = async () => {
     const data = await governanceContractsService.fbeets.getData(account.value);
