@@ -220,6 +220,17 @@ export function useFreshBeets() {
     return tx;
   }
 
+  const swapApr = computed(() =>
+    pool.value ? parseFloat(pool.value.dynamic.apr.total) : 0
+  );
+  const farmApr = computed(() =>
+    fbeetsDecoratedFarm.value ? fbeetsDecoratedFarm.value.apr : 0
+  );
+  const fbeetsApr = computed(() => 0);
+  const totalApr = computed(
+    () => swapApr.value + farmApr.value + fbeetsApr.value
+  );
+
   async function stake(amount: string) {
     const tx = await governanceContractsService.fbeets.enter(
       getProvider(),
@@ -280,6 +291,10 @@ export function useFreshBeets() {
     beetsPerShare,
     ftmPerShare,
     userUnstakedFbeetsBalance,
+    swapApr,
+    farmApr,
+    fbeetsApr,
+    totalApr,
 
     approve,
     stake,

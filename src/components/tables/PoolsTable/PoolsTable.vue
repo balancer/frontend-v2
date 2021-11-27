@@ -14,10 +14,6 @@
       skeleton-class="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
-      :link="{
-        to: 'pool',
-        getParams: pool => ({ id: pool.id })
-      }"
       :on-row-click="handleRowClick"
       :is-paginated="isPaginated"
       @load-more="$emit('loadMore')"
@@ -58,7 +54,9 @@
             :selectedTokens="selectedTokens"
           />-->
 
-          <h5 class="text-left font-normal">{{ pool.name }}</h5>
+          <h5 class="text-left font-normal">
+            {{ pool.name }}
+          </h5>
           <BalChip
             v-if="pool.dynamic.isNewPool"
             color="red"
@@ -106,6 +104,7 @@ import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isStableLike } from '@/composables/usePool';
+import useWeb3 from '@/services/web3/useWeb3';
 
 export default defineComponent({
   components: {
@@ -151,6 +150,7 @@ export default defineComponent({
     const { trackGoal, Goals } = useFathom();
     const { darkMode } = useDarkMode();
     const { upToLargeBreakpoint } = useBreakpoints();
+    const { appNetworkConfig } = useWeb3();
 
     // DATA
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -241,7 +241,22 @@ export default defineComponent({
 
     function handleRowClick(pool: DecoratedPoolWithShares) {
       trackGoal(Goals.ClickPoolsTableRow);
-      router.push({ name: 'pool', params: { id: pool.id } });
+
+      if (
+        pool.address.toLowerCase() ===
+        appNetworkConfig.fBeets.poolAddress.toLowerCase()
+      ) {
+        router.push({ name: 'stake' });
+      } else {
+        router.push({ name: 'pool', params: { id: pool.id } });
+      }
+    }
+
+    function isFbeetsPool(pool: DecoratedPoolWithShares) {
+      return (
+        pool.address.toLowerCase() ===
+        appNetworkConfig.fBeets.poolAddress.toLowerCase()
+      );
     }
 
     return {
@@ -258,7 +273,8 @@ export default defineComponent({
       fNum,
       orderedTokenAddressesFor,
       orderedPoolTokens,
-      isStableLike
+      isStableLike,
+      isFbeetsPool
     };
   }
 });

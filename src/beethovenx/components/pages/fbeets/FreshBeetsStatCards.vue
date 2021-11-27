@@ -17,19 +17,12 @@ const {
   totalSupply,
   totalBeetsStaked,
   pool,
-  fBeetsLoading
+  fBeetsLoading,
+  swapApr,
+  farmApr,
+  fbeetsApr,
+  totalApr
 } = useFreshBeets();
-
-const swapApr = computed(() =>
-  pool.value ? parseFloat(pool.value.dynamic.apr.total) : 0
-);
-const farmApr = computed(() =>
-  fbeetsDecoratedFarm.value ? fbeetsDecoratedFarm.value.apr : 0
-);
-const fbeetsApr = computed(() => 0);
-const totalApr = computed(
-  () => swapApr.value + farmApr.value + fbeetsApr.value
-);
 </script>
 
 <template>
