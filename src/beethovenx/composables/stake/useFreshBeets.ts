@@ -173,7 +173,7 @@ export function useFreshBeets() {
   }
 
   const swapApr = computed(() =>
-    pool.value ? parseFloat(pool.value.dynamic.apr.total) : 0
+    pool.value ? parseFloat(pool.value.dynamic.apr.pool) : 0
   );
   const farmApr = computed(() =>
     fbeetsDecoratedFarm.value ? fbeetsDecoratedFarm.value.apr : 0
