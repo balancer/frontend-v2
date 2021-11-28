@@ -85,89 +85,9 @@ export default defineComponent({
     alert: { type: Object as PropType<Alert>, required: true }
   },
 
-  setup(props) {
-    const { isWalletReady, appNetworkConfig } = useWeb3();
-    const { txListener } = useEthers();
+  setup() {
     const { fNum } = useNumbers();
-    const {
-      isLoadingPools,
-      isLoadingFarms,
-      onlyPoolsWithFarms,
-      harvestAllFarms,
-      refetchFarmsForUser
-    } = usePools();
-    const harvesting = ref(false);
     const { upToLargeBreakpoint } = useBreakpoints();
-    const { fbeetsDecoratedFarm } = useFreshBeets();
-
-    const data = computed(() => {
-      const farms = onlyPoolsWithFarms.value.map(pool => pool.farm);
-
-      if (fbeetsDecoratedFarm.value) {
-        farms.push(fbeetsDecoratedFarm.value);
-      }
-
-      const pendingRewardToken = sumBy(farms, farm => farm.pendingRewardToken);
-      const pendingRewardTokenValue = sumBy(
-        farms,
-        farm => farm.pendingRewardTokenValue
-      );
-      const pendingBeetsValue = sumBy(farms, farm => farm.pendingBeetsValue);
-
-      const averageApr =
-        sumBy(farms, farm => farm.apr * (farm.stake || 0)) /
-        sumBy(farms, farm => farm.stake || 0);
-
-      return {
-        numFarms: farms.filter(farm => farm.stake > 0).length,
-        totalBalance: fNum(
-          sumBy(farms, farm => farm.stake || 0),
-          'usd'
-        ),
-        pendingBeets:
-          numeral(sumBy(farms, farm => farm.pendingBeets)).format(
-            '0,0.[0000]'
-          ) + ' BEETS',
-        hasPendingRewardToken: pendingRewardToken > 0,
-        pendingRewardToken:
-          numeral(pendingRewardToken).format('0,0.[0000]') + ' HND',
-        pendingRewardValue: fNum(
-          pendingBeetsValue + pendingRewardTokenValue,
-          'usd'
-        ),
-        apr: fNum(averageApr, 'percent'),
-        dailyApr: fNum(averageApr / 365, 'percent')
-      };
-    });
-
-    const hasFarmRewards = computed(
-      () =>
-        onlyPoolsWithFarms.value.filter(pool => pool.farm.stake > 0).length > 0
-    );
-
-    async function harvestAllRewards(): Promise<void> {
-      const farmIds = onlyPoolsWithFarms.value
-        .filter(pool => pool.farm.stake > 0)
-        .map(pool => pool.farm.id);
-
-      harvesting.value = true;
-      const tx = await harvestAllFarms(farmIds);
-
-      if (!tx) {
-        harvesting.value = false;
-        return;
-      }
-
-      txListener(tx, {
-        onTxConfirmed: async () => {
-          await refetchFarmsForUser();
-          harvesting.value = false;
-        },
-        onTxFailed: () => {
-          harvesting.value = false;
-        }
-      });
-    }
 
     const protocolDataQuery = useProtocolDataQuery();
     const tvl = computed(
@@ -186,14 +106,8 @@ export default defineComponent({
     const loading = computed(() => protocolDataQuery.isLoading.value);
 
     return {
-      data,
-      hasFarmRewards,
       fNum,
-      harvestAllRewards,
-      harvesting,
       upToLargeBreakpoint,
-      isLoadingPools,
-      isLoadingFarms,
       beetsPrice,
       tvl,
       circulatingSupply,
