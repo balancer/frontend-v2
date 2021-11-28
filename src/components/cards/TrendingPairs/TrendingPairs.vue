@@ -15,7 +15,7 @@ type TrendingPair = {
 };
 
 const { setTokenOutAddress, setTokenInAddress } = useTradeState();
-const { chainId: userNetworkId } = useWeb3();
+const { chainId: userNetworkId, appNetworkConfig } = useWeb3();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 const getTrendingTradePairs = async () => {
@@ -33,16 +33,27 @@ const { data: tradePairSnapshots } = useQuery(
   QUERY_KEYS.Tokens.TrendingPairs(userNetworkId),
   () => getTrendingTradePairs()
 );
+
+function formatToken({ address, symbol }: { address: string; symbol: string }) {
+  const formatted = getAddress(address);
+
+  if (formatted === appNetworkConfig.addresses.weth) {
+    return {
+      address: appNetworkConfig.nativeAsset.address,
+      symbol: appNetworkConfig.nativeAsset.symbol
+    };
+  }
+
+  return {
+    address: formatted,
+    symbol
+  };
+}
+
 const trendingPairs = computed(() => {
   return (tradePairSnapshots.value || []).map(pairSnapshot => [
-    {
-      symbol: pairSnapshot.pair.token0.symbol,
-      address: getAddress(pairSnapshot.pair.token0.address)
-    },
-    {
-      symbol: pairSnapshot.pair.token1.symbol,
-      address: getAddress(pairSnapshot.pair.token1.address)
-    }
+    formatToken(pairSnapshot.pair.token0),
+    formatToken(pairSnapshot.pair.token1)
   ]);
 });
 
