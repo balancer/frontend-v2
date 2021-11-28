@@ -1,6 +1,6 @@
 <template>
   <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
-  <div :class="[wrapperClass]" v-else>
+  <div :class="[wrapperClass]" v-else @mouseleave="handleMouseLeave">
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
       <h3 class="text-gray-800 dark:text-gray-400 text-xl tracking-wider">
         {{ currentValue }}
@@ -367,10 +367,7 @@ export default defineComponent({
       }
     );
 
-    // make sure to update the latest values when we get a fresh set of data
-    // need to do this onMount as well since the data doesn't change on mount
-    // it simply is there without change so it won't trigger the watcher
-    onMounted(() => {
+    function setCurrentValueToLatest() {
       const currentDayValue = numeral(
         (props.data[0].values[props.data[0].values.length - 1] || [])[1]
       );
@@ -381,7 +378,19 @@ export default defineComponent({
       change.value =
         ((currentDayValue.value() || 0) - (startValue.value() || 0)) /
         (startValue.value() || 0);
+    }
+
+    // make sure to update the latest values when we get a fresh set of data
+    // need to do this onMount as well since the data doesn't change on mount
+    // it simply is there without change so it won't trigger the watcher
+    onMounted(() => {
+      setCurrentValueToLatest();
     });
+
+    //reset the current value to latest when the user's mouse leaves the view
+    function handleMouseLeave() {
+      setCurrentValueToLatest();
+    }
 
     // Triggered when hovering mouse over different xAxis points
     const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
@@ -441,7 +450,8 @@ export default defineComponent({
 
       // computed
       chartConfig,
-      styleOverrides
+      styleOverrides,
+      handleMouseLeave
     };
   }
 });
