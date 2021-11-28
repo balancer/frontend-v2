@@ -244,19 +244,13 @@ export default defineComponent({
 
       if (
         pool.address.toLowerCase() ===
-        appNetworkConfig.fBeets.poolAddress.toLowerCase()
+          appNetworkConfig.fBeets.poolAddress.toLowerCase() &&
+        props.showPoolShares
       ) {
         router.push({ name: 'stake' });
       } else {
         router.push({ name: 'pool', params: { id: pool.id } });
       }
-    }
-
-    function isFbeetsPool(pool: DecoratedPoolWithShares) {
-      return (
-        pool.address.toLowerCase() ===
-        appNetworkConfig.fBeets.poolAddress.toLowerCase()
-      );
     }
 
     return {
@@ -273,8 +267,7 @@ export default defineComponent({
       fNum,
       orderedTokenAddressesFor,
       orderedPoolTokens,
-      isStableLike,
-      isFbeetsPool
+      isStableLike
     };
   }
 });

@@ -160,7 +160,6 @@ export default defineComponent({
         fbeetsDecoratedFarm.value &&
         fbeetsDecoratedFarm.value?.share > 0
       ) {
-        console.log('farm apr', farmApr.value);
         return [
           {
             ...fbeetsPool,

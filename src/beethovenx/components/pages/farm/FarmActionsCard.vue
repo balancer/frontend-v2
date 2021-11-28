@@ -4,7 +4,7 @@ import FarmDepositForm from '@/beethovenx/components/pages/farm/FarmDepositForm.
 import FarmWithdrawForm from '@/beethovenx/components/pages/farm/FarmWithdrawForm.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useRoute } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import useTokens from '@/composables/useTokens';
 import { PoolTransactionsTab } from '@/components/contextual/pages/pool/PoolTransactionsCard/types';
 import BalTabs from '@/components/_global/BalTabs/BalTabs.vue';
@@ -14,6 +14,7 @@ type Props = {
   tokenAddress: string;
   farmId: string;
   hasUnstakedBpt: boolean;
+  hasFarmRewards: boolean;
 };
 
 const props = defineProps<Props>();
@@ -22,7 +23,7 @@ const props = defineProps<Props>();
  * STATE
  */
 const { network } = configService;
-const { explorerLinks: explorer } = useWeb3();
+const { explorerLinks: explorer, appNetworkConfig } = useWeb3();
 const route = useRoute();
 
 const { loading, injectTokens, dynamicDataLoading } = useTokens();
@@ -31,13 +32,16 @@ const farmInvestmentSuccess = ref(false);
 const farmWithdrawalSuccess = ref(false);
 const txHash = ref('');
 
+const isOldFbeetsFarm = computed(
+  () => props.farmId === appNetworkConfig.fBeets.oldFarmId
+);
+
 function handleFarmInvestment(txReceipt): void {
   farmInvestmentSuccess.value = true;
   txHash.value = txReceipt.hash;
 }
 
 function handleFarmWithdrawal(txReceipt): void {
-  console.log('farm id', props.farmId);
   farmWithdrawalSuccess.value = true;
   txHash.value = txReceipt.hash;
 }
@@ -57,15 +61,23 @@ const activeTab = ref(tabs[0].value);
 <template>
   <div class="mt-4 relative">
     <BalAlert
-      v-if="!loading && props.hasUnstakedBpt"
+      v-if="!loading && props.hasUnstakedBpt && !isOldFbeetsFarm"
       title="You have unstaked BPT in your wallet"
       description="If you deposit your BPT into the farm, you will earn additional rewards paid out in BEETS."
       type="warning"
       size="sm"
       class="mb-3"
     />
+    <BalAlert
+      v-if="!loading && isOldFbeetsFarm"
+      title="Incentives for the Fidelio Duetto have moved to fBEETS"
+      description="To receive BEETS rewards for this pool, you need to stake your BPT for fBEETS."
+      type="warning"
+      size="sm"
+      class="mb-3"
+    />
     <BalLoadingBlock v-if="loading || dynamicDataLoading" class="h-96" />
-    <BalCard v-else>
+    <BalCard v-else-if="!isOldFbeetsFarm">
       <div class="text-gray-500 text-sm">
         Stake your BPTs to earn BEETS
       </div>

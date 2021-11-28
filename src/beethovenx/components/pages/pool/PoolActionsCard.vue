@@ -76,6 +76,7 @@ const hasFarmStake = computed(
 
 const farmId = computed(() => props.pool.farm?.id || '');
 const tokenAddress = computed(() => props.pool.address);
+const hasFarmRewards = computed(() => props.pool.farm?.rewards || 0 > 0);
 
 /**
  * CALLBACKS
@@ -129,5 +130,6 @@ onBeforeMount(() => {
     :has-unstaked-bpt="hasUnstakedBpt"
     :token-address="tokenAddress"
     :farm-id="farmId"
+    :has-farm-rewards="hasFarmRewards"
   />
 </template>
