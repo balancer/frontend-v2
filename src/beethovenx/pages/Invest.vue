@@ -14,7 +14,7 @@
       </div>
       <PoolsTable
         :isLoading="isLoadingUserPools || isLoadingFarms"
-        :data="userPoolsWithFbeets"
+        :data="userPools"
         :noPoolsLabel="$t('noInvestments')"
         showPoolShares
         :selectedTokens="selectedTokens"
@@ -111,7 +111,6 @@ export default defineComponent({
     const { addAlert, removeAlert } = useAlerts();
     const { beethovenxConfig } = useBeethovenxConfig();
     const {
-      userStakedBptBalance,
       fbeetsDecoratedFarm,
       fbeetsApr,
       farmApr,
@@ -147,7 +146,7 @@ export default defineComponent({
       userPools.value.find(pool => pool.farm && parseFloat(pool.shares) > 0)
     );
 
-    const userPoolsWithFbeets = computed(() => {
+    /*const userPoolsWithFbeets = computed(() => {
       const fbeetsPool = pools.value?.find(pool => {
         return (
           pool.address.toLowerCase() ===
@@ -190,7 +189,7 @@ export default defineComponent({
       }
 
       return userPools.value;
-    });
+    });*/
 
     function goToPoolCreate() {
       router.push({ name: 'pool-create' });
@@ -215,7 +214,7 @@ export default defineComponent({
     return {
       // data
       filteredPools,
-      userPoolsWithFbeets,
+      userPools,
       isLoadingPools,
       isLoadingUserPools,
 

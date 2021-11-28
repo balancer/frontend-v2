@@ -242,15 +242,7 @@ export default defineComponent({
     function handleRowClick(pool: DecoratedPoolWithShares) {
       trackGoal(Goals.ClickPoolsTableRow);
 
-      if (
-        pool.address.toLowerCase() ===
-          appNetworkConfig.fBeets.poolAddress.toLowerCase() &&
-        props.showPoolShares
-      ) {
-        router.push({ name: 'stake' });
-      } else {
-        router.push({ name: 'pool', params: { id: pool.id } });
-      }
+      router.push({ name: 'pool', params: { id: pool.id } });
     }
 
     return {

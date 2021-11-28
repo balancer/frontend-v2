@@ -14,7 +14,8 @@ import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import {
   DecoratedPoolWithFarm,
-  DecoratedPoolWithRequiredFarm
+  DecoratedPoolWithRequiredFarm,
+  Farm
 } from '@/beethovenx/services/subgraph/subgraph-types';
 
 export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
@@ -55,9 +56,22 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   });
 
   const decoratedFarms = computed(() => {
+    //here we replace the old farm with the fbeets farm on fidellio duetto.
+    const mappedFarms = farms.value
+      .filter(farm => farm.id !== appNetworkConfig.fBeets.oldFarmId)
+      .map(
+        (farm): Farm =>
+          farm.id === appNetworkConfig.fBeets.farmId
+            ? {
+                ...farm,
+                pair: appNetworkConfig.fBeets.poolAddress.toLowerCase()
+              }
+            : farm
+      );
+
     return decorateFarms(
       pools.value,
-      farms.value,
+      mappedFarms,
       allFarmsForUser.value,
       blocksPerYear.value,
       blocksPerDay.value,

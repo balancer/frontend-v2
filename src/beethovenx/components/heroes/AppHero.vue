@@ -78,7 +78,6 @@ export default defineComponent({
       isLoadingUserPools,
       onlyPoolsWithFarms
     } = usePools();
-    const { fbeetsDecoratedFarm } = useFreshBeets();
     const { darkMode } = useDarkMode();
     //const { decoratedFarms, isLoadingDecoratedFarms } = useDecoratedFarms();
 
@@ -91,8 +90,7 @@ export default defineComponent({
     const totalInvestedAndFarmAmount = computed(() => {
       return (
         sumBy(onlyPoolsWithFarms.value, pool => pool.farm.stake || 0) +
-        parseFloat(totalInvestedAmount.value || '0') +
-        (fbeetsDecoratedFarm.value?.stake || 0)
+        parseFloat(totalInvestedAmount.value || '0')
       );
     });
 

@@ -33,7 +33,7 @@ const farmWithdrawalSuccess = ref(false);
 const txHash = ref('');
 
 const isOldFbeetsFarm = computed(
-  () => props.farmId === appNetworkConfig.fBeets.oldFarmId
+  () => props.farmId === appNetworkConfig.fBeets.farmId
 );
 
 function handleFarmInvestment(txReceipt): void {
@@ -71,7 +71,7 @@ const activeTab = ref(tabs[0].value);
     <BalAlert
       v-if="!loading && isOldFbeetsFarm"
       title="Incentives for the Fidelio Duetto have moved to fBEETS"
-      description="To receive BEETS rewards for this pool, you need to stake your BPT for fBEETS."
+      description="To receive BEETS rewards for this pool, you need to stake your BPT for fBEETS. Click on the 'Stake' tab to get started."
       type="warning"
       size="sm"
       class="mb-3"
