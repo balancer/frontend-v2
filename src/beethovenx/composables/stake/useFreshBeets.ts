@@ -27,7 +27,7 @@ export function useFreshBeets() {
     isLoadingPools,
     isLoadingFarms
   } = usePools();
-  const { isLoading, data } = freshBeetsQuery;
+  const { isLoading, data, refetch } = freshBeetsQuery;
 
   const fBeetsLoading = computed(() => {
     return (
@@ -247,6 +247,7 @@ export function useFreshBeets() {
     farmApr,
     fbeetsApr,
     totalApr,
+    refetch,
 
     approve,
     stake,
