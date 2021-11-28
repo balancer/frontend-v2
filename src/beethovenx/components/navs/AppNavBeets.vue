@@ -8,77 +8,58 @@
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
-        <StarsIcon
+        <img
+          src="~@/beethovenx/assets/images/beets-icon-large.png"
+          width="28"
           :class="{ 'mr-2': !upToLargeBreakpoint }"
-          v-if="
-            upToLargeBreakpoint ? !(isLoadingPools && isLoadingFarms) : true
-          "
+          v-if="upToLargeBreakpoint ? !loading : true"
         />
-        <BalLoadingIcon
-          size="sm"
-          v-if="harvesting || isLoadingPools || isLoadingFarms"
-        />
-        <span class="hidden lg:block" v-else>{{
-          data.pendingRewardValue
-        }}</span>
+        <BalLoadingIcon size="sm" v-if="loading" />
+        <span class="hidden lg:block" v-else>
+          {{ fNum(beetsPrice, 'usd') }}
+        </span>
       </BalBtn>
     </template>
     <div class="w-80 sm:w-96">
       <h5 class="text-lg mb-3 px-3 pt-3">
-        Farm Incentives
+        Beethoven X
       </h5>
-      <BalCard class="mx-2 mb-2">
-        <div class="text-sm text-gray-500 font-medium mb-2 text-left">
-          Pending Rewards
-        </div>
-        <div class="text-xl font-medium truncate flex items-center">
-          {{ data.pendingBeets }}
-        </div>
-        <div
-          v-if="data.hasPendingRewardToken"
-          class="text-xl font-medium truncate flex items-center"
-        >
-          {{ data.pendingRewardToken }}
-        </div>
-        <div class="text-sm text-gray-500 font-medium mt-1 text-left">
-          {{ data.pendingRewardValue }}
-        </div>
-      </BalCard>
-      <div class="grid grid-cols-2 gap-x-2 gap-y-2 px-2">
-        <BalCard class="">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-2 px-2 mb-2">
+        <BalCard>
           <div class="text-sm text-gray-500 font-medium mb-2 text-left">
-            Total Deposit
+            TVL
           </div>
           <div class="text-xl font-medium truncate flex items-center">
-            {{ data.totalBalance }}
-          </div>
-          <div class="text-sm text-gray-500 font-medium mt-1 text-left">
-            {{ data.numFarms }} {{ data.numFarms === 1 ? 'Farm' : 'Farms' }}
+            ${{ fNum(tvl, 'usd_lg') }}
           </div>
         </BalCard>
         <BalCard>
           <div class="text-sm text-gray-500 font-medium mb-2 text-left">
-            Average APR
+            BEETS
           </div>
           <div class="text-xl font-medium truncate flex items-center">
-            {{ data.apr }}
-          </div>
-          <div class="text-sm text-gray-500 font-medium mt-1 text-left">
-            {{ data.dailyApr }} Daily
+            {{ fNum(beetsPrice, 'usd') }}
           </div>
         </BalCard>
       </div>
-      <div class="mx-2 mb-2 mt-2">
-        <BalBtn
-          type="submit"
-          loading-label="Harvesting"
-          :disabled="!hasFarmRewards"
-          :loading="harvesting"
-          @click="harvestAllRewards"
-          class="w-full"
-        >
-          Harvest All Rewards
-        </BalBtn>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-2 px-2 mb-2">
+        <BalCard>
+          <div class="text-sm text-gray-500 font-medium mb-2 text-left">
+            Market Cap
+          </div>
+          <div class="text-xl font-medium truncate flex items-center">
+            ${{ fNum(marketCap, 'usd_lg') }}
+          </div>
+        </BalCard>
+        <BalCard>
+          <div class="text-sm text-gray-500 font-medium mb-2 text-left">
+            Circulating Supply
+          </div>
+          <div class="text-xl font-medium truncate flex items-center">
+            {{ fNum(circulatingSupply, 'token_lg') }}
+          </div>
+        </BalCard>
       </div>
     </div>
   </BalPopover>
@@ -95,9 +76,10 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { Alert } from '@/composables/useAlerts';
 import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
+import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
 
 export default defineComponent({
-  name: 'AppNavClaimBtn',
+  name: 'AppNavBeets',
 
   props: {
     alert: { type: Object as PropType<Alert>, required: true }
@@ -187,6 +169,22 @@ export default defineComponent({
       });
     }
 
+    const protocolDataQuery = useProtocolDataQuery();
+    const tvl = computed(
+      () => protocolDataQuery.data?.value?.totalLiquidity || 0
+    );
+
+    const beetsPrice = computed(
+      () => protocolDataQuery.data?.value?.beetsPrice || 0
+    );
+    const circulatingSupply = computed(
+      () => protocolDataQuery.data.value?.circulatingSupply || 0
+    );
+    const marketCap = computed(() => {
+      return beetsPrice.value * circulatingSupply.value;
+    });
+    const loading = computed(() => protocolDataQuery.isLoading.value);
+
     return {
       data,
       hasFarmRewards,
@@ -195,7 +193,12 @@ export default defineComponent({
       harvesting,
       upToLargeBreakpoint,
       isLoadingPools,
-      isLoadingFarms
+      isLoadingFarms,
+      beetsPrice,
+      tvl,
+      circulatingSupply,
+      marketCap,
+      loading
     };
   }
 });

@@ -112,7 +112,9 @@ const activeTab = ref(tabs[0].value);
           class="mb-4"
         />
       </div>
-      <div class="w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72" />
+      <div
+        class="hidden w-full max-w-xl mx-auto md:mx-0 md:ml-6 md:block md:w-72"
+      />
     </div>
 
     <div class="lg:flex justify-center mb-8">

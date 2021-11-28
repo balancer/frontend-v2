@@ -29,11 +29,11 @@ export default defineComponent({
 
 <style scoped>
 .app-nav-footer {
-  @apply fixed bottom-0 left-0 w-full px-2 mb-4 z-20;
+  @apply fixed bottom-0 left-0 w-full z-20;
 }
 
 .app-nav-footer-container {
-  @apply w-full py-2 mx-auto rounded-full max-w-lg;
+  @apply w-full py-2;
   @apply bg-white dark:bg-gray-800 shadow-xl;
   @apply flex justify-between items-center;
 }

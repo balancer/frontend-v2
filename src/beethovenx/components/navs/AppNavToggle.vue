@@ -1,40 +1,28 @@
 <template>
-  <div :class="`app-nav-toggle bg-gray-800`">
+  <div :class="`app-nav-toggle`">
     <router-link
       :to="{ name: 'trade' }"
-      :class="[
-        'toggle-link px-6 rounded-r-lg',
-        { [activeClasses]: isTradePage }
-      ]"
+      :class="['toggle-link px-6', { [activeClasses]: isTradePage }]"
       @click="trackGoal(Goals.ClickNavTrade)"
     >
       Swap
     </router-link>
     <router-link
       :to="{ name: 'pools' }"
-      :class="[
-        'toggle-link px-6 rounded-l-lg',
-        { [activeClasses]: isInvestPage }
-      ]"
+      :class="['toggle-link px-6', { [activeClasses]: isInvestPage }]"
       @click="trackGoal(Goals.ClickNavInvest)"
     >
       {{ $t('invest') }}<span class="hidden lg:inline">&nbsp;/&nbsp;Farm</span>
     </router-link>
     <router-link
       :to="{ name: 'stake' }"
-      :class="[
-        'toggle-link px-4 rounded-l-lg',
-        { [activeClasses]: isStakePage }
-      ]"
+      :class="['toggle-link px-4', { [activeClasses]: isStakePage }]"
     >
       Stake
     </router-link>
     <router-link
       :to="{ name: 'my-portfolio' }"
-      :class="[
-        'toggle-link px-4 rounded-l-lg',
-        { [activeClasses]: isPortfolioPage }
-      ]"
+      :class="['toggle-link px-4', { [activeClasses]: isPortfolioPage }]"
       v-if="isLoggedIn"
     >
       Portfolio
@@ -60,8 +48,7 @@ export default defineComponent({
     const route = useRoute();
     const { appLoading } = useApp();
     const { account, isLoadingProfile } = useWeb3();
-    const activeClasses =
-      'bg-black text-white rounded-lg dark:text-black dark:bg-white';
+    const activeClasses = 'bg-black text-green-500 dark:bg-gray-800';
     const isTradePage = computed(() => route.name === 'trade');
     const isFarmPage = computed(() => String(route.name).startsWith('farm'));
     const isBeetsPage = computed(() => route.name === 'beets');
@@ -99,7 +86,7 @@ export default defineComponent({
 
 <style scoped>
 .app-nav-toggle {
-  @apply h-10 flex items-center rounded-lg shadow;
+  @apply h-12 flex items-center;
   font-variation-settings: 'wght' 600;
 }
 
