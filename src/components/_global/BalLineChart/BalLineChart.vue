@@ -1,6 +1,6 @@
 <template>
   <BalLoadingBlock v-if="isLoading" class="h-96 mt-16" />
-  <div :class="[wrapperClass]" v-else>
+  <div :class="[wrapperClass]" v-else @mouseleave="handleMouseLeave">
     <div id="lineChartHeader" class="mb-4" v-if="showHeader">
       <h3 class="text-gray-800 dark:text-gray-400 text-xl tracking-wider">
         {{ currentValue }}
@@ -353,17 +353,28 @@ export default defineComponent({
       }
     );
 
+    function setCurrentValueToLatest(updateCurrentValue: boolean) {
+      const currentDayValue = numeral(
+        (props.data[0].values[props.data[0].values.length - 1] || [])[1]
+      );
+
+      if (updateCurrentValue) {
+        currentValue.value = currentDayValue.format(
+          props.axisLabelFormatter.yAxis || '$0,0.00'
+        );
+      }
+
+      const startValue = numeral((props.data[0].values[0] || [])[1]);
+      change.value =
+        ((currentDayValue.value() || 0) - (startValue.value() || 0)) /
+        (startValue.value() || 0);
+    }
+
     // make sure to update the latest values when we get a fresh set of data
     watch(
       () => props.data,
       () => {
-        const currentDayValue = numeral(
-          (props.data[0].values[props.data[0].values.length - 1] || [])[1]
-        );
-        const startValue = numeral((props.data[0].values[0] || [])[1]);
-        change.value =
-          ((currentDayValue.value() || 0) - (startValue.value() || 0)) /
-          (startValue.value() || 0);
+        setCurrentValueToLatest(false);
       }
     );
 
@@ -371,17 +382,13 @@ export default defineComponent({
     // need to do this onMount as well since the data doesn't change on mount
     // it simply is there without change so it won't trigger the watcher
     onMounted(() => {
-      const currentDayValue = numeral(
-        (props.data[0].values[props.data[0].values.length - 1] || [])[1]
-      );
-      currentValue.value = currentDayValue.format(
-        props.axisLabelFormatter.yAxis || '$0,0.00'
-      );
-      const startValue = numeral((props.data[0].values[0] || [])[1]);
-      change.value =
-        ((currentDayValue.value() || 0) - (startValue.value() || 0)) /
-        (startValue.value() || 0);
+      setCurrentValueToLatest(true);
     });
+
+    //reset the current value to latest when the user's mouse leaves the view
+    function handleMouseLeave() {
+      setCurrentValueToLatest(true);
+    }
 
     // Triggered when hovering mouse over different xAxis points
     const handleAxisMoved = ({ dataIndex, seriesIndex }: AxisMoveEvent) => {
@@ -434,6 +441,7 @@ export default defineComponent({
       // methods
       handleAxisMoved,
       numeral,
+      handleMouseLeave,
 
       // data
       currentValue,
