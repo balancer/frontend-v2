@@ -19,6 +19,11 @@ export enum Relayer {
   LIDO = 'lido'
 }
 
+const relayerAddressMap = {
+  [Relayer.GNOSIS]: GP_RELAYER_CONTRACT_ADDRESS,
+  [Relayer.LIDO]: configService.network.addresses.lidoRelayer
+};
+
 export default function useRelayerApproval(
   relayer: Relayer,
   isEnabled: Ref<boolean>
@@ -33,11 +38,7 @@ export default function useRelayerApproval(
    * COMPOSABLES
    */
   const { getProvider, account } = useWeb3();
-  const relayerAddress = ref(
-    relayer === Relayer.LIDO
-      ? configService.network.addresses.lidoRelayer
-      : GP_RELAYER_CONTRACT_ADDRESS
-  );
+  const relayerAddress = ref(relayerAddressMap[relayer]);
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
   const { t } = useI18n();
