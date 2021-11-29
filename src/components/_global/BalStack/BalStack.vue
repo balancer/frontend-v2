@@ -46,7 +46,8 @@ const slotsWithContent = computed(() => {
     }
   }
   return slots.default().filter(slot => {
-    return slot.children !== 'v-if';
+    if (slot.children !== 'v-if') return true;
+    return false;
   });
 });
 </script>
@@ -72,16 +73,19 @@ const slotsWithContent = computed(() => {
     <div
       v-for="(child, i) in slotsWithContent"
       :key="`stack-${stackId}-child-${i}`"
-      :class="{
-        [spacingClass]: i !== slotsWithContent.length - 1,
-        'border-b': i !== slotsWithContent.length - 1 && withBorder && vertical,
-        'border-r':
-          i !== slotsWithContent.length - 1 && withBorder && horizontal,
-        'w-full': expandChildren,
-        'dark:border-gray-600': true
-      }"
     >
-      <component :is="child" />
+      <component
+        :is="child"
+        :class="{
+          [spacingClass]: i !== slotsWithContent.length - 1,
+          'border-b':
+            i !== slotsWithContent.length - 1 && withBorder && vertical,
+          'border-r':
+            i !== slotsWithContent.length - 1 && withBorder && horizontal,
+          'w-full': expandChildren,
+          'dark:border-gray-600': true
+        }"
+      />
     </div>
   </div>
 </template>
