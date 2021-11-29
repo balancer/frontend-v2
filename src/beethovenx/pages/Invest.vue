@@ -1,8 +1,45 @@
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
+    <div class="mb-8 flex">
+      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-8" />
+      <div class="flex-1 flex justify-end">
+        <BalBtn
+          class="hidden lg:block"
+          label="Compose a pool"
+          @click="goToPoolCreate"
+        />
+      </div>
+    </div>
+    <TokenSearchInput
+      v-model="selectedTokens"
+      :loading="isLoadingPools"
+      @add="addSelectedToken"
+      @remove="removeSelectedToken"
+    />
+    <PoolsTable
+      v-if="activeTab === 'beethovenx-pools'"
+      :isLoading="isLoadingPools"
+      :data="beethovenPools"
+      :noPoolsLabel="$t('noPoolsFound')"
+      :isPaginated="false"
+      :isLoadingMore="false"
+      @loadMore="() => {}"
+    />
+    <p class="px-4 lg:px-0 mb-3 mt-4" v-if="activeTab === 'community-pools'">
+      Investment pools created by the community. Please DYOR before investing in
+      any community pool.
+    </p>
+    <PoolsTable
+      v-if="activeTab === 'community-pools'"
+      :isLoading="isLoadingPools"
+      :data="communityPools"
+      :noPoolsLabel="$t('noPoolsFound')"
+      :isPaginated="true"
+      :isLoadingMore="false"
+      :sort-externally="true"
+    />
     <template v-if="isWalletReady">
       <div class="px-4 lg:px-0">
-        <h3 class="mb-2">My Investments</h3>
         <BalAlert
           v-if="hasUnstakedBpt"
           title="You have unstaked BPT in your wallet"
@@ -13,6 +50,7 @@
         />
       </div>
       <PoolsTable
+        v-if="activeTab === 'my-investments'"
         :isLoading="isLoadingUserPools || isLoadingFarms"
         :data="userPools"
         :noPoolsLabel="$t('noInvestments')"
@@ -20,49 +58,7 @@
         :selectedTokens="selectedTokens"
         class="mb-8"
       />
-      <div class="mb-16" />
     </template>
-    <div class="px-4 lg:px-0">
-      <h3 class="mb-3">Beethoven-X Investment Pools</h3>
-      <TokenSearchInput
-        v-model="selectedTokens"
-        :loading="isLoadingPools"
-        @add="addSelectedToken"
-        @remove="removeSelectedToken"
-      />
-    </div>
-    <PoolsTable
-      :isLoading="isLoadingPools"
-      :data="beethovenPools"
-      :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="false"
-      :isLoadingMore="false"
-      @loadMore="() => {}"
-      class="mb-16"
-    />
-    <div class="px-4 lg:px-0 mb-3 flex">
-      <div class="flex-1">
-        <h3>Community Investment Pools</h3>
-        <p>
-          Investment pools created by the community. Please DYOR before
-          investing in any community pool.
-        </p>
-      </div>
-      <BalBtn
-        class="hidden lg:block"
-        label="Compose a pool"
-        @click="goToPoolCreate"
-      />
-    </div>
-    <PoolsTable
-      :isLoading="isLoadingPools"
-      :data="communityPools"
-      :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="true"
-      :isLoadingMore="false"
-      class="mb-8"
-      :sort-externally="true"
-    />
   </div>
 </template>
 
@@ -78,14 +74,13 @@ import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import { BalTableColumnSortData } from '@/components/_global/BalTable/BalTable.vue';
-
-const POOLS_PER_PAGE = 20;
+import BalTabs from '@/components/_global/BalTabs/BalTabs.vue';
 
 export default defineComponent({
   components: {
     TokenSearchInput,
-    PoolsTable
+    PoolsTable,
+    BalTabs
     //FeaturedPools
   },
 
@@ -114,6 +109,14 @@ export default defineComponent({
       beethovenPools
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
+
+    const tabs = [
+      { value: 'beethovenx-pools', label: 'Beethoven X Pools' },
+      { value: 'community-pools', label: 'Community Pools' },
+      { value: 'my-investments', label: 'My Investments' }
+    ];
+
+    const activeTab = ref(tabs[0].value);
 
     const hideV1Links = computed(() => !isV1Supported);
 
@@ -165,6 +168,8 @@ export default defineComponent({
       hasUnstakedBpt,
       communityPools,
       isLoadingFarms,
+      tabs,
+      activeTab,
 
       // constants
       EXTERNAL_LINKS
