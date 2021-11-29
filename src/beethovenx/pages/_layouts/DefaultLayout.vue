@@ -12,7 +12,7 @@ import GlobalStats from '@/beethovenx/components/stats/GlobalStats.vue';
  * COMPOSABLES
  */
 const route = useRoute();
-const { upToLargeBreakpoint } = useBreakpoints();
+const { upToXLargeBreakpoint } = useBreakpoints();
 
 /**
  * COMPUTED
@@ -42,7 +42,7 @@ const isHomePage = computed(() => route.path === '/');
     <div class="pb-16 relative">
       <router-view :key="$route.path" />
     </div>
-    <AppFooterNav v-if="upToLargeBreakpoint" />
+    <AppFooterNav v-if="upToXLargeBreakpoint" />
     <div class="flex flex-1 items-end relative">
       <img src="~@/beethovenx/assets/images/community-image.png" />
       <div
