@@ -277,10 +277,15 @@ export type ColumnDefinition<T = Data> = {
   cellClassName?: string;
 };
 
+export type BalTableColumnSortData = {
+  column: string;
+  direction: 'asc' | 'desc' | null;
+};
+
 export default defineComponent({
   name: 'BalTable',
 
-  emits: ['loadMore'],
+  emits: ['loadMore', 'handleSort'],
 
   props: {
     columns: {
@@ -328,9 +333,13 @@ export default defineComponent({
         sortColumn: null,
         sortDirection: null
       })
+    },
+    sortExternally: {
+      type: Boolean,
+      default: false
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const stickyHeaderRef = ref();
     const tableRef = ref<HTMLElement>();
     const isColumnStuck = ref(false);
@@ -386,6 +395,15 @@ export default defineComponent({
         }
       }
 
+      if (props.sortExternally && columnId) {
+        emit('handleSort', {
+          column: columnId,
+          direction: currentSortDirection.value
+        });
+        tableData.value = props.data;
+        return;
+      }
+
       const sortedData = sortBy(
         (props.data as any).value || props.data,
         column.sortKey
@@ -433,7 +451,11 @@ export default defineComponent({
     watch(
       () => props.data,
       newData => {
-        if (currentSortColumn.value && currentSortDirection.value !== null) {
+        if (
+          !props.sortExternally &&
+          currentSortColumn.value &&
+          currentSortDirection.value !== null
+        ) {
           handleSort(currentSortColumn.value, false);
           return;
         }

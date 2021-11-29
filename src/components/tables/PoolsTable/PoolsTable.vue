@@ -8,15 +8,17 @@
   >
     <BalTable
       :columns="columns"
-      :data="data"
+      :data="filteredData"
       :is-loading="isLoading"
       :is-loading-more="isLoadingMore"
       skeleton-class="h-64"
       sticky="both"
       :square="upToLargeBreakpoint"
       :on-row-click="handleRowClick"
-      :is-paginated="isPaginated"
-      @load-more="$emit('loadMore')"
+      :is-paginated="filteredData.length < data.length"
+      :sort-externally="true"
+      @load-more="handleLoadMore"
+      @handle-sort="handleSort"
       :initial-state="{
         sortColumn: 'poolValue',
         sortDirection: 'desc'
@@ -83,7 +85,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { computed, defineComponent, PropType, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -100,11 +102,17 @@ import useFathom from '@/composables/useFathom';
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
-import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
+import {
+  BalTableColumnSortData,
+  ColumnDefinition
+} from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
 import { isStableLike } from '@/composables/usePool';
 import useWeb3 from '@/services/web3/useWeb3';
+import { sortBy } from 'lodash';
+
+const POOLS_PER_PAGE = 10;
 
 export default defineComponent({
   components: {
@@ -151,6 +159,11 @@ export default defineComponent({
     const { darkMode } = useDarkMode();
     const { upToLargeBreakpoint } = useBreakpoints();
     const { appNetworkConfig } = useWeb3();
+    const numPoolsVisible = ref(POOLS_PER_PAGE);
+    const sortData = ref<BalTableColumnSortData>({
+      column: 'poolValue',
+      direction: 'desc'
+    });
 
     // DATA
     const columns = ref<ColumnDefinition<DecoratedPoolWithShares>[]>([
@@ -225,6 +238,24 @@ export default defineComponent({
       }
     ]);
 
+    const filteredData = computed(() => {
+      let data: any[] = props.data || [];
+
+      const column = columns.value.find(
+        column => column.id === sortData.value.column
+      );
+
+      if (column && column.sortKey) {
+        data = sortBy(data, column.sortKey);
+
+        if (sortData.value.direction === 'desc') {
+          data = data.reverse();
+        }
+      }
+
+      return data.slice(0, numPoolsVisible.value);
+    });
+
     // METHODS
     function orderedTokenAddressesFor(pool: DecoratedPoolWithShares) {
       const sortedTokens = orderedPoolTokens(pool);
@@ -245,9 +276,18 @@ export default defineComponent({
       router.push({ name: 'pool', params: { id: pool.id } });
     }
 
+    function handleSort(data: BalTableColumnSortData) {
+      sortData.value = data;
+    }
+
+    function handleLoadMore() {
+      numPoolsVisible.value = numPoolsVisible.value + POOLS_PER_PAGE;
+    }
+
     return {
       // data
       columns,
+      filteredData,
 
       // computed
       darkMode,
@@ -259,7 +299,9 @@ export default defineComponent({
       fNum,
       orderedTokenAddressesFor,
       orderedPoolTokens,
-      isStableLike
+      isStableLike,
+      handleSort,
+      handleLoadMore
     };
   }
 });

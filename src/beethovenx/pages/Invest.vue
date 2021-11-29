@@ -33,11 +33,11 @@
     </div>
     <PoolsTable
       :isLoading="isLoadingPools"
-      :data="filteredPools"
+      :data="beethovenPools"
       :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="poolsHasNextPage"
-      :isLoadingMore="poolsIsFetchingNextPage"
-      @loadMore="loadMorePools"
+      :isPaginated="false"
+      :isLoadingMore="false"
+      @loadMore="() => {}"
       class="mb-16"
     />
     <div class="px-4 lg:px-0 mb-3 flex">
@@ -58,16 +58,16 @@
       :isLoading="isLoadingPools"
       :data="communityPools"
       :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="poolsHasNextPage"
-      :isLoadingMore="poolsIsFetchingNextPage"
-      @loadMore="loadMorePools"
+      :isPaginated="true"
+      :isLoadingMore="false"
       class="mb-8"
+      :sort-externally="true"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, watch } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -78,8 +78,9 @@ import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
-import useBeethovenxConfig from '@/beethovenx/composables/useBeethovenxConfig';
-import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
+import { BalTableColumnSortData } from '@/components/_global/BalTable/BalTable.vue';
+
+const POOLS_PER_PAGE = 20;
 
 export default defineComponent({
   components: {
@@ -101,7 +102,6 @@ export default defineComponent({
     } = usePoolFilters();
 
     const {
-      pools,
       userPools,
       isLoadingPools,
       isLoadingUserPools,
@@ -109,91 +109,17 @@ export default defineComponent({
       poolsHasNextPage,
       poolsIsFetchingNextPage,
       poolsQuery,
-      poolsWithFarms,
-      isLoadingFarms
+      isLoadingFarms,
+      communityPools,
+      beethovenPools
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
-    const { beethovenxConfig } = useBeethovenxConfig();
-    const {
-      fbeetsDecoratedFarm,
-      fbeetsApr,
-      farmApr,
-      totalApr,
-      swapApr
-    } = useFreshBeets();
-
-    //TODO: this will break down once pagination starts happening
-    const communityPools = computed(() => {
-      return poolsWithFarms.value?.filter(
-        pool => !beethovenxConfig.value.incentivizedPools.includes(pool.id)
-      );
-    });
-
-    // COMPUTED
-    const filteredPools = computed(() => {
-      return selectedTokens.value.length > 0
-        ? poolsWithFarms.value?.filter(pool => {
-            return (
-              selectedTokens.value.every((selectedToken: string) =>
-                pool.tokenAddresses.includes(selectedToken)
-              ) && beethovenxConfig.value.incentivizedPools.includes(pool.id)
-            );
-          })
-        : poolsWithFarms?.value.filter(pool =>
-            beethovenxConfig.value.incentivizedPools.includes(pool.id)
-          );
-    });
 
     const hideV1Links = computed(() => !isV1Supported);
 
     const hasUnstakedBpt = computed(() =>
       userPools.value.find(pool => pool.farm && parseFloat(pool.shares) > 0)
     );
-
-    /*const userPoolsWithFbeets = computed(() => {
-      const fbeetsPool = pools.value?.find(pool => {
-        return (
-          pool.address.toLowerCase() ===
-          appNetworkConfig.fBeets.poolAddress.toLowerCase()
-        );
-      });
-
-      if (
-        fbeetsPool &&
-        fbeetsDecoratedFarm.value &&
-        fbeetsDecoratedFarm.value?.share > 0
-      ) {
-        return [
-          {
-            ...fbeetsPool,
-            name: fbeetsPool.name + ' (fBEETS)',
-            hasLiquidityMiningRewards: true,
-            farm: fbeetsDecoratedFarm.value,
-            tokens: [
-              {
-                address: appNetworkConfig.fBeets.address,
-                balance: '0',
-                weight: '1'
-              },
-              ...fbeetsPool.tokens
-            ],
-            dynamic: {
-              ...fbeetsPool.dynamic,
-              apr: {
-                pool: `${swapApr.value}`,
-                liquidityMining: `${farmApr.value}`,
-                total: `${totalApr.value}`,
-                thirdParty: `${fbeetsApr.value}`,
-                liquidityMiningBreakdown: {}
-              }
-            }
-          },
-          ...(userPools.value || [])
-        ];
-      }
-
-      return userPools.value;
-    });*/
 
     function goToPoolCreate() {
       router.push({ name: 'pool-create' });
@@ -217,7 +143,7 @@ export default defineComponent({
 
     return {
       // data
-      filteredPools,
+      beethovenPools,
       userPools,
       isLoadingPools,
       isLoadingUserPools,
