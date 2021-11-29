@@ -1,5 +1,5 @@
 // Shamelessly adapted from OpenZeppelin-contracts test utils
-import { toWei, soliditySha3 } from 'web3-utils';
+import { toBN, soliditySha3 } from 'web3-utils';
 import { loadTree } from '../../lib/utils/merkle';
 import { scale } from '@/lib/utils';
 
@@ -15,7 +15,7 @@ registerPromiseWorker((message: ClaimWorkerMessage) => {
     const merkleTree = loadTree(report, decimals);
 
     const proof = merkleTree.getHexProof(
-      soliditySha3(account, scale(claimAmount, decimals))
+      soliditySha3(account, toBN(scale(claimAmount, decimals).toString()))
     ) as string[];
 
     return [
