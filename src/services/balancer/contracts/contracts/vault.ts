@@ -22,7 +22,7 @@ import {
   isStablePhantom
 } from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
-import { merge, pick } from 'lodash';
+import { pick } from 'lodash';
 import { Vault__factory } from '@balancer-labs/typechain';
 
 export default class Vault {
@@ -130,16 +130,13 @@ export default class Vault {
 
       Object.entries(wrappedTokensMap).forEach(([address, wrappedToken]) => {
         poolMulticaller.call(
-          `${address}.unwrappedTokenAddress`,
+          `linearPools.${address}.unwrappedTokenAddress`,
           wrappedToken,
           'ATOKEN'
         );
       });
 
-      const callResult = await poolMulticaller.execute();
-      if (callResult != null) {
-        merge(result.linearPools, callResult);
-      }
+      result = await poolMulticaller.execute(result);
     }
 
     result = await vaultMultiCaller.execute(result);
