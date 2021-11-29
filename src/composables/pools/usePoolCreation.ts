@@ -207,13 +207,21 @@ export default function usePoolCreation() {
     return tokensList.value.includes(configService.network.addresses.weth);
   });
 
+  const isSimilarPoolsQueryEnabled = computed(
+    () => tokensList.value.length > 0
+  );
+
   /**
    * FUNCTIONS
    */
   const {
     data: similarPoolsResponse,
     isLoading: isLoadingSimilarPools
-  } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
+  } = usePoolsQuery(
+    tokensList,
+    { enabled: isSimilarPoolsQueryEnabled.value },
+    { isExactTokensList: true }
+  );
 
   function resetPoolCreationState() {
     for (const key of Object.keys(poolCreationState)) {

@@ -157,8 +157,8 @@ function handleNavigate(stepIndex: number) {
             :steps="steps"
             @navigate="handleNavigate"
           />
-          <AnimatePresence :isVisible="doSimilarPoolsExist">
-            <SimilarPoolsCompact v-if="activeStep === 0" />
+          <AnimatePresence :isVisible="doSimilarPoolsExist && activeStep === 0">
+            <SimilarPoolsCompact />
           </AnimatePresence>
         </BalStack>
       </div>

@@ -10,10 +10,8 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import { prominent } from 'color.js';
-import { sumBy } from 'lodash';
 import useDarkMode from '@/composables/useDarkMode';
 import useTailwind from '@/composables/useTailwind';
-import useApp from '@/composables/useApp';
 
 /** STATE */
 const colors = ref<(string | null)[]>([]);
@@ -26,20 +24,12 @@ const { tokens } = useTokens();
 const { seedTokens, updateTokenColors } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
-const { appLoading } = useApp();
 const tailwind = useTailwind();
 const { resolve } = useUrls();
 
 /**
  * COMPUTED
  */
-const unallocatedTokenWeight = computed(() =>
-  sumBy(
-    seedTokens.value.filter(t => t.tokenAddress === ''),
-    'weight'
-  )
-);
-
 const chartConfig = computed(() => {
   return {
     tooltip: {
