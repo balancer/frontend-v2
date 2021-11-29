@@ -9,7 +9,14 @@ import { ClaimWorkerMessage, ComputeClaimProofPayload } from './types';
 registerPromiseWorker((message: ClaimWorkerMessage) => {
   if (message.type === 'computeClaimProof') {
     const payload = message.payload as ComputeClaimProofPayload;
-    const { report, account, claim, distributor, tokenIndex, decimals } = payload;
+    const {
+      report,
+      account,
+      claim,
+      distributor,
+      tokenIndex,
+      decimals
+    } = payload;
 
     const claimAmount = claim.amount;
     const merkleTree = loadTree(report, decimals);

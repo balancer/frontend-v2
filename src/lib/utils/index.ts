@@ -76,7 +76,10 @@ export function bnum(val: string | number | BigNumber): BigNumber {
 
 export const bnumZero = bnum(0);
 
-export function scale(input: BigNumber | string, decimalPlaces: number): BigNumber {
+export function scale(
+  input: BigNumber | string,
+  decimalPlaces: number
+): BigNumber {
   const unscaled = typeof input === 'string' ? new BigNumber(input) : input;
   const scalePow = new BigNumber(decimalPlaces.toString());
   const scaleMul = new BigNumber(10).pow(scalePow);
