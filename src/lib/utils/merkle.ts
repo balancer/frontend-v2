@@ -1,6 +1,7 @@
 // Shamelessly adapted from OpenZeppelin-contracts test utils
 import { keccak256, keccakFromString, bufferToHex } from 'ethereumjs-util';
 import { hexToBytes, toWei, soliditySha3 } from 'web3-utils';
+import { scale } from '@/lib/utils';
 
 // Merkle tree called with 32 byte hex values
 export class MerkleTree {
@@ -147,10 +148,10 @@ export class MerkleTree {
   }
 }
 
-export function loadTree(balances) {
+export function loadTree(balances, decimals = 18) {
   const elements = [];
   Object.keys(balances).forEach(address => {
-    const balance = toWei(balances[address]);
+    const balance = scale(balances[address], decimals);
     const leaf = soliditySha3(address, balance);
     // @ts-ignore
     elements.push(leaf);
