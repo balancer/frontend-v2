@@ -48,13 +48,24 @@ const tokenAddresses = ref([] as string[]);
  */
 const areAmountsMaxed = computed(() => {
   // need to perform rounding here as JS cuts off those
-  // really long numbers which makes it impossible to compare 
+  // really long numbers which makes it impossible to compare
   const isMaxed = seedTokens.value.every(
     t =>
       Number(Number(t.amount).toFixed(6)) ===
       Number(Number(balanceFor(t.tokenAddress)).toFixed(6))
   );
   return isMaxed;
+});
+
+const isExceedingWalletBalance = computed(() => {
+  // need to perform rounding here as JS cuts off those
+  // really long numbers which makes it impossible to compare
+  const isExceeding = seedTokens.value.some(
+    t =>
+      Number(Number(t.amount).toFixed(6)) >
+      Number(Number(balanceFor(t.tokenAddress)).toFixed(6))
+  );
+  return isExceeding;
 });
 
 /**
@@ -169,10 +180,7 @@ function handleClearAll() {
 
           <h5 class="font-bold dark:text-gray-300">Set initial liquidity</h5>
         </BalStack>
-        <AnimatePresence
-          :isVisible="isOptimised"
-          unmountInstantly
-        >
+        <AnimatePresence :isVisible="isOptimised" unmountInstantly>
           <BalStack
             horizontal
             align="center"
@@ -258,9 +266,13 @@ function handleClearAll() {
           </BalStack>
         </BalStack>
       </div>
-      <BalBtn @click="proceed" block color="gradient">{{
-        t('preview')
-      }}</BalBtn>
+      <BalBtn
+        :disabled="isExceedingWalletBalance"
+        @click="proceed"
+        block
+        color="gradient"
+        >{{ t('preview') }}</BalBtn
+      >
     </BalStack>
   </BalCard>
 </template>
