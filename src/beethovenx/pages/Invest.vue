@@ -48,7 +48,11 @@
           investing in any community pool.
         </p>
       </div>
-      <BalBtn label="Compose a pool" @click="goToPoolCreate" />
+      <BalBtn
+        class="hidden lg:block"
+        label="Compose a pool"
+        @click="goToPoolCreate"
+      />
     </div>
     <PoolsTable
       :isLoading="isLoadingPools"
