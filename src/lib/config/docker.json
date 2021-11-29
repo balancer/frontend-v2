@@ -39,7 +39,8 @@
     "lidoRelayer": "",
     "MockFlashLoanReceiver": "",
     "balancerHelpers": "",
-    "merkleOrchard": ""
+    "merkleOrchard": "",
+    "batchRelayer": ""
   },
   "keys": {},
   "strategies": {
