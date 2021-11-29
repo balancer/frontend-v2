@@ -147,16 +147,17 @@ function onChangeFeeController(val: string) {
             v-model="initialFee"
             @update:modelValue="onFixedInput"
           />
-          <div :class="['custom-input', customInputClasses]">
-            <input
-              class="w-12 text-right bg-transparent"
-              v-model="fee"
-              placeholder="0.1"
-              type="number"
-              step="any"
-              @update:modelValue="onCustomInput"
-            />
-            <!-- <BalTextInput
+          <div>
+            <div :class="['custom-input', customInputClasses]">
+              <input
+                class="w-12 text-right bg-transparent h-full"
+                v-model="fee"
+                placeholder="0.1"
+                type="number"
+                step="any"
+                @update:modelValue="onCustomInput"
+              />
+              <!-- <BalTextInput
               class="w-20"
               v-model="fee"
               placeholder="0.1"
@@ -168,8 +169,9 @@ function onChangeFeeController(val: string) {
                 %
               </template>
             </BalTextInput> -->
-            <div class="px-1">
-              %
+              <div class="px-1">
+                %
+              </div>
             </div>
           </div>
         </BalStack>

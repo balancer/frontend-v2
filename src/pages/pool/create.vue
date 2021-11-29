@@ -124,6 +124,8 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
   if (upToLargeBreakpoint.value && maxInitialLiquidity.value < 20000) {
     mobileOffset = 90;
   }
+
+  console.log('dims', dimensions)
   anime({
     targets: accordionWrapper.value,
     translateY: `${dimensions.height + mobileOffset}px`,
@@ -208,6 +210,25 @@ function handleNavigate(stepIndex: number) {
       >
         <PreviewPool />
       </AnimatePresence>
+      <div
+        v-if="upToLargeBreakpoint"
+        ref="accordionWrapper"
+        class="mt-4 pb-24"
+      >
+        <BalAccordion
+          :sections="[
+            { title: 'Pool summary', id: 'pool-summary' },
+            { title: 'Max initial liquidity', id: 'max-initial-liquidity' }
+          ]"
+        >
+          <template v-slot:pool-summary>
+            <PoolSummary />
+          </template>
+          <template v-slot:max-initial-liquidity>
+            <WalletInitialLiquidity />
+          </template>
+        </BalAccordion>
+      </div>
     </div>
     <template #gutterRight>
       <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
@@ -217,25 +238,6 @@ function handleNavigate(stepIndex: number) {
         </BalStack>
       </div>
     </template>
-    <div
-      v-if="upToLargeBreakpoint"
-      ref="accordionWrapper"
-      class="col-span-11 mt-4 pb-24"
-    >
-      <BalAccordion
-        :sections="[
-          { title: 'Pool summary', id: 'pool-summary' },
-          { title: 'Max initial liquidity', id: 'max-initial-liquidity' }
-        ]"
-      >
-        <template v-slot:pool-summary>
-          <PoolSummary />
-        </template>
-        <template v-slot:max-initial-liquidity>
-          <WalletInitialLiquidity />
-        </template>
-      </BalAccordion>
-    </div>
   </Col3Layout>
 </template>
 

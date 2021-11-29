@@ -70,22 +70,18 @@ const slotsWithContent = computed(() => {
       }
     ]"
   >
-    <div
+    <component
       v-for="(child, i) in slotsWithContent"
       :key="`stack-${stackId}-child-${i}`"
-    >
-      <component
-        :is="child"
-        :class="{
-          [spacingClass]: i !== slotsWithContent.length - 1,
-          'border-b':
-            i !== slotsWithContent.length - 1 && withBorder && vertical,
-          'border-r':
-            i !== slotsWithContent.length - 1 && withBorder && horizontal,
-          'w-full': expandChildren,
-          'dark:border-gray-600': true
-        }"
-      />
-    </div>
+      :is="child"
+      :class="{
+        [spacingClass]: i !== slotsWithContent.length - 1,
+        'border-b': i !== slotsWithContent.length - 1 && withBorder && vertical,
+        'border-r':
+          i !== slotsWithContent.length - 1 && withBorder && horizontal,
+        'w-full': expandChildren,
+        'dark:border-gray-600': true
+      }"
+    />
   </div>
 </template>

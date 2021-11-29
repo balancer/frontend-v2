@@ -96,7 +96,6 @@ const arbitrageDelta = computed(() => {
   };
 });
 
-
 /**
  * METHODS
  */
