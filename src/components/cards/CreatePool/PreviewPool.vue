@@ -8,6 +8,7 @@ import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import useWeb3 from '@/services/web3/useWeb3';
+import { sumBy } from 'lodash';
 
 /**
  * PROPS & EMITS
@@ -79,6 +80,22 @@ const tokenAddresses = computed((): string[] => {
 const tokenAmounts = computed((): string[] => {
   return getScaledAmounts();
 });
+
+const arbitrageDelta = computed(() => {
+  const totalPctDelta = sumBy(seedTokens.value, t => {
+    const initialPct =
+      (t.amount * priceFor(t.tokenAddress)) / poolLiquidity.value;
+    const expectedPct = t.weight / 100;
+    const delta = Math.abs(initialPct - expectedPct);
+    return delta;
+  });
+
+  return {
+    delta: totalPctDelta,
+    value: totalPctDelta * poolLiquidity.value
+  };
+});
+
 
 /**
  * METHODS
@@ -202,6 +219,23 @@ function navigateToPoolFee() {
           </BalStack>
         </BalStack>
       </BalCard>
+      <AnimatePresence
+        :isVisible="arbitrageDelta.delta > 0.05"
+        unmountInstantly
+      >
+        <BalAlert
+          type="error"
+          class="mb-4"
+          :title="
+            t('createAPool.arbTitle', [
+              fNum(arbitrageDelta.value, 'usd'),
+              fNum(arbitrageDelta.delta, 'percent')
+            ])
+          "
+        >
+          {{ t('createAPool.arbReason') }}
+        </BalAlert>
+      </AnimatePresence>
       <CreateActions
         :tokenAddresses="tokenAddresses"
         :amounts="tokenAmounts"

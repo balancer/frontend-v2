@@ -213,7 +213,7 @@ function handleNavigate(stepIndex: number) {
       <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
         <BalStack vertical spacing="base" v-if="!appLoading">
           <PoolSummary />
-          <WalletInitialLiquidity />
+          <!-- <WalletInitialLiquidity /> -->
         </BalStack>
       </div>
     </template>
