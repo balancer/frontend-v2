@@ -25,6 +25,19 @@
       <a class="app-nav-other-item" href="https://discord.gg/jedS4zGk28">
         Discord
       </a>
+      <a class="app-nav-other-item" href="https://anyswap.exchange/#/router">
+        AnySwap Bridge
+        <div class="text-xs text-gray-400">
+          ETH / AVAX / BSC / MATIC
+        </div>
+      </a>
+      <a
+        class="app-nav-other-item"
+        href="https://app.allbridge.io/bridge?from=SOL&to=FTM&asset=SOL"
+      >
+        AllBridge
+        <div class="text-xs text-gray-400">SOL / MATIC / CELO</div>
+      </a>
     </div>
   </BalPopover>
 </template>
