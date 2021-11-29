@@ -9,18 +9,18 @@ import useNumbers from '@/composables/useNumbers';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { useI18n } from 'vue-i18n';
+import { sumBy } from 'lodash';
 
 /**
  * STATE
  */
 const isOptimised = ref(false);
-const isMaxed = ref(false);
 
 /**
  * COMPOSBALES
  */
 const { userNetworkConfig } = useWeb3();
-const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const { balanceFor, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum } = useNumbers();
 const {
   seedTokens,
@@ -37,7 +37,8 @@ const {
   updateManuallySetToken,
   proceed,
   clearAmounts,
-  setAmountsToMaxBalances
+  setAmountsToMaxBalances,
+  poolLiquidity
 } = usePoolCreation();
 const { t } = useI18n();
 
@@ -66,6 +67,21 @@ const isExceedingWalletBalance = computed(() => {
       Number(Number(balanceFor(t.tokenAddress)).toFixed(6))
   );
   return isExceeding;
+});
+
+const arbitrageDelta = computed(() => {
+  const totalPctDelta = sumBy(seedTokens.value, t => {
+    const initialPct =
+      (t.amount * priceFor(t.tokenAddress)) / poolLiquidity.value;
+    const expectedPct = t.weight / 100;
+    const delta = Math.abs(initialPct - expectedPct);
+    return delta;
+  });
+
+  return {
+    delta: totalPctDelta,
+    value: totalPctDelta * poolLiquidity.value
+  };
 });
 
 /**
@@ -266,6 +282,22 @@ function handleClearAll() {
           </BalStack>
         </BalStack>
       </div>
+      <AnimatePresence
+        :isVisible="arbitrageDelta.delta > 0.05"
+        unmountInstantly
+      >
+        <BalAlert
+          type="warning"
+          :title="
+            t('createAPool.arbTitle', [
+              fNum(arbitrageDelta.value, 'usd'),
+              fNum(arbitrageDelta.delta, 'percent')
+            ])
+          "
+        >
+          {{ t('createAPool.arbReason') }}
+        </BalAlert>
+      </AnimatePresence>
       <BalBtn
         :disabled="isExceedingWalletBalance"
         @click="proceed"

@@ -108,7 +108,9 @@
         "zeroWeightTitle": "You’ve included a token with zero weight",
         "zeroWeightInfo": "All tokens in a pool must have a weighting greater than zero. Either remove or replace {0} or set it above 0.01%.",
         "totalWeightAlert": "The total weighting of all tokens must equal exactly 100% before you can proceed.",
-        "totalWeightAlertTitle": "The total weight must be 100%"
+        "totalWeightAlertTitle": "The total weight must be 100%",
+        "arbTitle": "You could lose up to {0} ({1})",
+        "arbReason": "Based on pricing information from CoinGecko, you’re vulnerable to losing funds to arbitraguers since the amounts you’re adding to the pool are not in proportion to the pool weights specified."
     },
     "createPool": "Create pool",
     "createPoolTooltip": "Create {0} pool",
