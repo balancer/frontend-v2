@@ -1,7 +1,7 @@
 import { Ref, computed, reactive, toRefs } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
-import { isStablePhantom, usePool } from '@/composables/usePool';
+import { isStablePhantom } from '@/composables/usePool';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { configService } from '@/services/config/config.service';
 import { SOR } from '@balancer-labs/sor2';
