@@ -125,7 +125,6 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
     mobileOffset = 90;
   }
 
-  console.log('dims', dimensions)
   anime({
     targets: accordionWrapper.value,
     translateY: `${dimensions.height + mobileOffset}px`,
@@ -210,11 +209,7 @@ function handleNavigate(stepIndex: number) {
       >
         <PreviewPool />
       </AnimatePresence>
-      <div
-        v-if="upToLargeBreakpoint"
-        ref="accordionWrapper"
-        class="mt-4 pb-24"
-      >
+      <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="mt-4 pb-24">
         <BalAccordion
           :sections="[
             { title: 'Pool summary', id: 'pool-summary' },
