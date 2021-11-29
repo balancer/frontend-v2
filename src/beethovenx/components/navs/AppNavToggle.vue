@@ -25,7 +25,7 @@
       :class="['toggle-link px-4', { [activeClasses]: isPortfolioPage }]"
       v-if="isLoggedIn"
     >
-      Portfolio
+      My Portfolio
     </router-link>
   </div>
 </template>
@@ -36,8 +36,6 @@ import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import useApp from '@/composables/useApp';
 import useWeb3 from '@/services/web3/useWeb3';
-import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
-import AppNavOtherItems from '@/beethovenx/components/navs/AppNavOtherItems.vue';
 
 export default defineComponent({
   name: 'AppNavToggle',
