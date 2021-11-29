@@ -50,6 +50,7 @@ export interface Pool {
   createTime: number;
   mainTokens?: string[];
   wrappedTokens?: string[];
+  unwrappedTokens?: string[];
   linearPoolTokens?: PoolToken[];
 }
 
