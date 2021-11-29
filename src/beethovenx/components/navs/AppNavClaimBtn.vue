@@ -116,14 +116,9 @@ export default defineComponent({
     } = usePools();
     const harvesting = ref(false);
     const { upToLargeBreakpoint } = useBreakpoints();
-    const { fbeetsDecoratedFarm } = useFreshBeets();
 
     const data = computed(() => {
       const farms = onlyPoolsWithFarms.value.map(pool => pool.farm);
-
-      if (fbeetsDecoratedFarm.value) {
-        farms.push(fbeetsDecoratedFarm.value);
-      }
 
       const pendingRewardToken = sumBy(farms, farm => farm.pendingRewardToken);
       const pendingRewardTokenValue = sumBy(
