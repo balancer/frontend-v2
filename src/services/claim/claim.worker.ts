@@ -22,7 +22,7 @@ registerPromiseWorker((message: ClaimWorkerMessage) => {
     const merkleTree = loadTree(report, decimals);
 
     const proof = merkleTree.getHexProof(
-      soliditySha3(account, toBN(scale(claimAmount, decimals).toString()))
+      soliditySha3(account, toBN(scale(claimAmount, decimals).toString(10)))
     ) as string[];
 
     return [

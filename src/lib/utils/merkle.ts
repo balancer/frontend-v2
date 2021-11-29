@@ -152,7 +152,7 @@ export function loadTree(balances, decimals = 18) {
   const elements = [];
   Object.keys(balances).forEach(address => {
     const balance = scale(balances[address], decimals);
-    const leaf = soliditySha3(address, toBN(balance.toString()));
+    const leaf = soliditySha3(address, toBN(balance.toString(10)));
     // @ts-ignore
     elements.push(leaf);
   });
