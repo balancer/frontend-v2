@@ -27,6 +27,13 @@
             "token": "0xcfeaead4947f0705a14ec42ac3d44129e1ef3ed5",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-note.json",
             "weekStart": 1
+        },
+        {
+            "label": "NEXO",
+            "distributor": "0x0000000000000000000000000000000000000000",
+            "token": "0xB62132e35a6c13ee1EE0f84dC5d40bad8d815206",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-nexo.json",
+            "weekStart": 1
         }
     ],
     "42": [
@@ -51,6 +58,20 @@
             "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
             "token": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-polygon.json",
+            "weekStart": 1
+        },
+        {
+            "label": "WMATIC",
+            "distributor": "0x0000000000000000000000000000000000000000",
+            "token": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-wmatic-polygon.json",
+            "weekStart": 1
+        },
+        {
+            "label": "TUSD",
+            "distributor": "0x0000000000000000000000000000000000000000",
+            "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-tusd-polygon.json",
             "weekStart": 1
         }
       ],
