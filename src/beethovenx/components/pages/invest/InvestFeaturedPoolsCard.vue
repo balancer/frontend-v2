@@ -5,15 +5,24 @@ import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
 import useNumbers from '@/composables/useNumbers';
+import { useRouter } from 'vue-router';
 
 type Props = {
   pools: FullPool[];
   isLoading: boolean;
 };
 
+const router = useRouter();
 const props = defineProps<Props>();
 
 const { fNum } = useNumbers();
+
+function navigateToPool(pool: FullPool) {
+  router.push({
+    name: 'pool',
+    params: { id: pool.id }
+  });
+}
 </script>
 
 <template>
@@ -27,7 +36,8 @@ const { fNum } = useNumbers();
       <BalCard
         v-for="pool in props.pools"
         :key="pool.id"
-        class="col col-span-1"
+        class="col col-span-1 cursor-pointer"
+        @click="navigateToPool(pool)"
       >
         <div class="text-gray-500 font-medium mb-4">
           {{ pool.name }}
