@@ -39,7 +39,7 @@ function navigateToPool(pool: FullPool) {
         class="col col-span-1 cursor-pointer"
         @click="navigateToPool(pool)"
       >
-        <div class="text-gray-500 font-medium mb-4">
+        <div class="text-gray-500 font-medium mb-4 truncate">
           {{ pool.name }}
         </div>
         <BalAssetSet
