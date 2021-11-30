@@ -50,6 +50,7 @@ export interface Pool {
   createTime: number;
   mainTokens?: string[];
   wrappedTokens?: string[];
+  unwrappedTokens?: string[];
   linearPoolTokens?: PoolToken[];
 }
 
@@ -127,6 +128,7 @@ export interface RawLinearPoolData {
   priceRate: BigNumber;
   mainToken: RawLinearPoolToken;
   wrappedToken: RawLinearPoolToken;
+  unwrappedTokenAddress: string;
   tokenData: RawPoolTokens;
 }
 export type RawLinearPoolDataMap = Record<Address, RawLinearPoolData>;
@@ -136,6 +138,7 @@ export interface LinearPoolData {
   priceRate: string;
   mainToken: LinearPoolToken;
   wrappedToken: LinearPoolToken;
+  unwrappedTokenAddress: string;
 }
 export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 
