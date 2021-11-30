@@ -17,6 +17,7 @@ import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service
 import { ipfsService } from '@/services/ipfs/ipfs.service';
 
 import MultiTokenClaim from './MultiTokenClaim.json';
+import TokenDecimals from './TokenDecimals.json';
 
 import {
   ClaimProofTuple,
@@ -203,6 +204,7 @@ export class ClaimService {
           account,
           distributor: tokenPendingClaims.tokenClaimInfo.distributor,
           tokenIndex,
+          decimals: tokenPendingClaims.tokenClaimInfo.decimals,
           // objects must be cloned
           report: { ...tokenPendingClaims.reports[claim.id] },
           claim: { ...claim }
@@ -226,10 +228,16 @@ export class ClaimService {
 
   private getTokenClaimsInfo() {
     const tokenClaims = MultiTokenClaim[networkId.value];
+    const tokenDecimals = TokenDecimals[networkId.value];
+
     if (tokenClaims != null) {
       return (tokenClaims as TokenClaimInfo[]).map(tokenClaim => ({
         ...tokenClaim,
-        token: getAddress(tokenClaim.token)
+        token: getAddress(tokenClaim.token),
+        decimals:
+          tokenDecimals != null && tokenDecimals[tokenClaim.token]
+            ? tokenDecimals[tokenClaim.token]
+            : 18
       }));
     }
 
