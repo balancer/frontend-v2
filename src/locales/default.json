@@ -205,7 +205,7 @@
         },
         "tabs": {
             "claimable": "Claimable now",
-            "currentEstimate": "Current week"
+            "currentEstimate": "Pending"
         },
         "title": "Token incentives"
     },
