@@ -30,7 +30,7 @@ function navigateToPool(pool: FullPool) {
     class="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-4 mb-12"
   >
     <template v-if="props.isLoading">
-      <BalLoadingBlock v-for="n in 4" :key="n" class="h-52" />
+      <BalLoadingBlock v-for="n in 4" :key="n" class="h-44" />
     </template>
     <template v-else>
       <BalCard
