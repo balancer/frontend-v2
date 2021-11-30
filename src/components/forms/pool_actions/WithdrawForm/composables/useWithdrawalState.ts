@@ -2,9 +2,6 @@ import { Ref, computed, reactive, toRefs } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
 import { isStablePhantom } from '@/composables/usePool';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { configService } from '@/services/config/config.service';
-import { SOR } from '@balancer-labs/sor2';
 
 /**
  * STATE
@@ -23,12 +20,6 @@ const state = reactive({
     interval: 1
   }
 });
-
-const sor = new SOR(
-  rpcProviderService.jsonProvider,
-  configService.network.chainId,
-  configService.network.subgraph
-);
 
 export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   /**
@@ -72,7 +63,6 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
     ...toRefs(state),
     tokensOut,
     tokenOutIndex,
-    sor,
     // methods
     maxSlider
   };

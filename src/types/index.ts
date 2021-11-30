@@ -1,5 +1,6 @@
 export type RuleFunction = (val: string | number) => string;
 export type Rules = Array<RuleFunction>;
+import { BatchSwapStep } from '@balancer-labs/sdk';
 import { SwapV2 } from '@balancer-labs/sor2';
 import { BigNumberish } from '@ethersproject/bignumber';
 
@@ -46,7 +47,7 @@ export type BatchSwap = {
 };
 
 export type BatchSwapOut = {
-  amountTokensOut: string[];
-  swaps: SwapV2[];
+  returnAmounts: BigNumberish[];
+  swaps: BatchSwapStep[];
   assets: string[];
 };

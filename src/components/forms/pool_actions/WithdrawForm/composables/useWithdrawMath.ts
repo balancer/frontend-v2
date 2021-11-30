@@ -18,6 +18,9 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import { BigNumber } from 'ethers';
 import OldBigNumber from 'bignumber.js';
 import { TokenInfo } from '@/types/TokenList';
+import { balancer } from '@/lib/balancer.sdk';
+import { SwapType } from '@balancer-labs/sdk';
+import { SwapKind } from '@balancer-labs/balancer-js';
 
 /**
  * TYPES
@@ -44,7 +47,8 @@ export type WithdrawMathResponse = {
   shouldFetchBatchSwap: Ref<boolean>;
   batchSwap: Ref<BatchSwapOut | null>;
   batchSwapAmountsOutMap: Ref<Record<string, BigNumber>>;
-  initMath: () => void;
+  batchSwapKind: Ref<SwapKind>;
+  initMath: () => Promise<void>;
   resetMath: () => void;
   getBatchSwap: () => Promise<BatchSwapOut>;
 };
@@ -53,8 +57,7 @@ export default function useWithdrawMath(
   pool: Ref<FullPool>,
   isProportional: Ref<boolean> = ref(true),
   tokenOut: Ref<string> = ref(''),
-  tokenOutIndex: Ref<number> = ref(0),
-  sor: SOR
+  tokenOutIndex: Ref<number> = ref(0)
 ): WithdrawMathResponse {
   /**
    * STATE
@@ -155,14 +158,14 @@ export default function useWithdrawMath(
    */
   const proportionalMainTokenAmounts = computed((): string[] => {
     if (pool.value.onchain.linearPools && batchSwap.value) {
-      return batchSwap.value.amountTokensOut.map((amount, i) => {
-        const _amount = bnum(amount)
+      return batchSwap.value.returnAmounts.map((amount, i) => {
+        const _amount = bnum(amount.toString())
           .abs()
           .toString();
         return formatUnits(_amount, withdrawalTokens.value[i].decimals);
       });
     }
-    return [];
+    return new Array(tokenCount.value).fill('0');
   });
 
   const proportionalAmounts = computed((): string[] => {
@@ -175,7 +178,7 @@ export default function useWithdrawMath(
   const fullAmounts = computed(() => {
     if (isProportional.value) return proportionalAmounts.value;
     return new Array(tokenCount.value).fill('0').map((_, i) => {
-      return i === tokenOutIndex.value ? tokenOutAmount.value : '0';
+      return i === tokenOutIndex.value ? tokenOutAmount.value || '0' : '0';
     });
   });
 
@@ -201,9 +204,18 @@ export default function useWithdrawMath(
    * Only in the single asset exact out case should the BPT value
    * be adjusted to account for slippage.
    */
-  const bptIn = computed(() => {
+  const bptIn = computed((): string => {
     if (isProportional.value) return propBptIn.value;
     if (!exactOut.value) return bptBalance.value; // Single asset max withdrawal
+
+    if (exactOut.value && isStablePhantomPool.value) {
+      if (!batchSwap.value) return '0';
+      const _bptIn = formatUnits(
+        batchSwap.value.returnAmounts[0],
+        pool.value.onchain.decimals
+      );
+      return addSlippage(_bptIn, pool.value.onchain.decimals);
+    }
 
     // Else single asset exact amount case
     let _bptIn = poolCalculator
@@ -298,10 +310,7 @@ export default function useWithdrawMath(
       pool.value && isStablePhantomPool.value && bnum(bptIn.value).gt(0)
   );
 
-  /**
-   * Token amounts out to pass in to batch swap transaction and used as limits.
-   * TODO - needs to handle single asset exact out case where we shouldn't minus slippage
-   */
+  // Token amounts out to pass in to batch swap transaction and used as limits.
   const batchSwapAmountsOutMap = computed(
     (): Record<string, BigNumber> => {
       const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
@@ -311,24 +320,14 @@ export default function useWithdrawMath(
       const onlyTokensWithAmounts = allTokensWithAmounts
         .filter(([, amount]) => (amount as BigNumber).gt(0))
         .map(([token, amount]) => {
-          return [token, minusSlippageScaled(amount as BigNumber)];
+          return [
+            token,
+            exactOut.value ? amount : minusSlippageScaled(amount as BigNumber)
+          ];
         });
       return Object.fromEntries(onlyTokensWithAmounts);
     }
   );
-
-  /**
-   * METHODS
-   */
-  function initMath(): void {
-    propBptIn.value = bptBalance.value;
-    if (shouldFetchBatchSwap.value) getBatchSwap();
-  }
-
-  function resetMath(): void {
-    initMath();
-    tokenOutAmount.value = '';
-  }
 
   /**
    * TESTING
@@ -340,6 +339,13 @@ export default function useWithdrawMath(
   // That takes amounts out and returns bptIn.
   const batchSwapBPTIn = computed((): BigNumber[] => {
     if (singleAssetMaxOut.value) return [bptBalanceScaled.value];
+    if (exactOut.value) {
+      return batchSwap.value
+        ? batchSwap.value.returnAmounts.map(amount =>
+            BigNumber.from(amount.toString())
+          )
+        : [];
+    }
 
     const poolTokenSum = bnSum(proportionalPoolTokenAmounts.value).toString();
 
@@ -362,35 +368,73 @@ export default function useWithdrawMath(
     return tokenAddresses.value.map(address => address.toLowerCase());
   });
 
+  const batchSwapKind = computed(
+    (): SwapKind => (exactOut.value ? SwapKind.GivenOut : SwapKind.GivenIn)
+  );
+
+  /**
+   * TODO - figure out how to detect when to use batch relayer
+   */
+  const shouldUseBatchRelayer = computed((): boolean => {
+    return false;
+  });
+
   /**
    * END TESTING
    */
 
+  /**
+   * METHODS
+   */
+  async function initMath(): Promise<void> {
+    propBptIn.value = bptBalance.value;
+    if (shouldFetchBatchSwap.value) batchSwap.value = await getBatchSwap();
+  }
+
+  function resetMath(): void {
+    initMath();
+    tokenOutAmount.value = '';
+  }
+
+  /**
+   * Given either BPT in or the exact tokens out, fetches batch swap
+   * required, where return amounts are the opposite of amounts.
+   * @param amounts either BPT in amounts or exact out amounts
+   * @param tokensOut tokens to recieve
+   * @param swapType defaults to exact in
+   */
   async function getBatchSwap(
-    bptIn: BigNumber[] | null = null,
-    tokensOut: string[] | null = null
+    amounts: BigNumber[] | null = null,
+    tokensOut: string[] | null = null,
+    swapType: SwapType = SwapType.SwapExactIn
   ): Promise<BatchSwapOut> {
     batchSwapLoading.value = true;
-    batchSwap.value = await queryBatchSwapTokensOut(
-      sor,
-      balancerContractsService.vault.instance,
-      pool.value.address.toLowerCase(),
-      bptIn || batchSwapBPTIn.value,
-      tokensOut || batchSwapTokensOut.value
-    );
+
+    amounts = amounts || batchSwapBPTIn.value;
+    const tokensIn = amounts.map(() => pool.value.address);
+    const fetchPools = !batchSwap.value;
+
+    const result = await balancer.swaps.queryBatchSwapWithSor({
+      tokensIn: tokensIn,
+      tokensOut: tokensOut || batchSwapTokensOut.value,
+      swapType,
+      amounts,
+      fetchPools
+    });
+
     console.log('batchSwap', batchSwap.value);
     batchSwapLoading.value = false;
-    return batchSwap.value;
+    return result;
   }
 
   // Fetch single asset max out for current tokenOut using batch swaps.
   // Set max out returned from batchSwap in state.
   async function getSingleAssetMaxOut(): Promise<void> {
-    const batchSwap = await getBatchSwap(
+    const _batchSwap = await getBatchSwap(
       [bptBalanceScaled.value],
       [tokenOut.value]
     );
-    const amountOutScaled = bnum(batchSwap.amountTokensOut[0])
+    const amountOutScaled = bnum(_batchSwap.returnAmounts[0].toString())
       .abs()
       .toString();
     const amountOut = formatUnits(amountOutScaled, tokenOutDecimals.value);
@@ -400,9 +444,9 @@ export default function useWithdrawMath(
   /**
    * WATCHERS
    */
-  watch(tokenOut, async () => {
+  watch(tokenOut, () => {
     tokenOutAmount.value = '';
-    if (isStablePhantomPool.value) await getSingleAssetMaxOut();
+    if (isStablePhantomPool.value) getSingleAssetMaxOut();
   });
 
   watch(isWalletReady, async () => {
@@ -411,6 +455,17 @@ export default function useWithdrawMath(
   });
 
   watch(account, () => initMath());
+
+  watch(fullAmounts, async () => {
+    if (exactOut.value) {
+      const amountsOut = fullAmountsScaled.value.filter(amount => amount.gt(0));
+      batchSwap.value = await getBatchSwap(
+        amountsOut,
+        [tokenOut.value],
+        SwapType.SwapExactOut
+      );
+    }
+  });
 
   return {
     // computed
@@ -435,6 +490,7 @@ export default function useWithdrawMath(
     shouldFetchBatchSwap,
     batchSwap,
     batchSwapAmountsOutMap,
+    batchSwapKind,
     // methods
     initMath,
     resetMath,

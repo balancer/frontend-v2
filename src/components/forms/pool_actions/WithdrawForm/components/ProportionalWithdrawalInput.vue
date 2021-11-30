@@ -40,7 +40,8 @@ const {
   fiatTotalLabel,
   fiatAmounts,
   proportionalAmounts,
-  shouldFetchBatchSwap
+  shouldFetchBatchSwap,
+  batchSwap
 } = toRefs(props.math);
 
 const { slider } = useWithdrawalState(toRef(props, 'pool'));
@@ -94,7 +95,9 @@ function handleSliderChange(newVal: number): void {
 }
 
 async function handleSliderEnd(): Promise<void> {
-  if (shouldFetchBatchSwap.value) await props.math.getBatchSwap();
+  if (shouldFetchBatchSwap.value) {
+    batchSwap.value = await props.math.getBatchSwap();
+  }
 }
 
 /**

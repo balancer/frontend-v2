@@ -92,7 +92,8 @@ const {
   exactOut,
   singleAssetMaxOut,
   batchSwap,
-  batchSwapAmountsOutMap
+  batchSwapAmountsOutMap,
+  batchSwapKind
 } = toRefs(props.math);
 
 /**
@@ -179,7 +180,7 @@ async function submit(): Promise<void> {
     withdrawalState.init = true;
 
     if (batchSwap.value) {
-      console.log('Batch swap amounts out', batchSwap.value.amountTokensOut);
+      console.log('Batch swap amounts out', batchSwap.value.returnAmounts);
       console.log(
         'inputs amounts out',
         Object.values(batchSwapAmountsOutMap.value).map(val => val.toString())
@@ -191,7 +192,8 @@ async function submit(): Promise<void> {
         batchSwap.value.assets,
         props.pool.address,
         parseUnits(bptIn.value, props.pool.onchain.decimals),
-        batchSwapAmountsOutMap.value
+        batchSwapAmountsOutMap.value,
+        batchSwapKind.value
       );
     } else {
       tx = await poolExchange.exit(

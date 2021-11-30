@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
-import { forChange } from '@/lib/utils';
+// import { onBeforeMount } from 'vue';
+// import { forChange } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 // Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-import { usePool } from '@/composables/usePool';
-import useWithdrawalState from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawalState';
+// import { usePool } from '@/composables/usePool';
+// import useWithdrawalState from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawalState';
 // Components
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
 import TradeSettingsPopover, {
@@ -17,30 +17,27 @@ import TradeSettingsPopover, {
  */
 const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
-const { isStablePhantomPool } = usePool(pool);
-const { sor, sorReady } = useWithdrawalState(pool);
+// const { isStablePhantomPool } = usePool(pool);
+// const { sor, sorReady } = useWithdrawalState(pool);
 
 /**
  * CALLBACKS
  */
-onBeforeMount(async () => {
-  await forChange(loadingPool, false);
+// onBeforeMount(async () => {
+//   await forChange(loadingPool, false);
 
-  if (pool.value && isStablePhantomPool.value) {
-    // Initialise SOR for batch swap queries
-    sorReady.value = await sor.fetchPools([], false);
-  } else {
-    sorReady.value = true;
-  }
-});
+//   if (pool.value && isStablePhantomPool.value) {
+//     // Initialise SOR for batch swap queries
+//     sorReady.value = await sor.fetchPools([], false);
+//   } else {
+//     sorReady.value = true;
+//   }
+// });
 </script>
 
 <template>
   <div>
-    <BalLoadingBlock
-      v-if="loadingPool || !transfersAllowed || !sorReady"
-      class="h-96"
-    />
+    <BalLoadingBlock v-if="loadingPool || !transfersAllowed" class="h-96" />
     <BalCard v-else shadow="xl" exposeOverflow noBorder>
       <template #header>
         <div class="w-full">

@@ -16,6 +16,7 @@ import {
   SingleSwap,
   SwapKind
 } from '@balancer-labs/balancer-js';
+import { BatchSwapStep } from '@balancer-labs/sdk';
 
 export async function swapIn(
   network: string,
@@ -306,11 +307,12 @@ export async function boostedJoinBatchSwap(
 export async function boostedExitBatchSwap(
   network: string,
   web3: Web3Provider,
-  swaps: SwapV2[],
+  swaps: BatchSwapStep[],
   tokenAddresses: string[],
   tokenIn: string,
-  amountInMin: BigNumber,
-  amountsOutMap: Record<string, BigNumber>
+  amountIn: BigNumber,
+  amountsOutMap: Record<string, BigNumber>,
+  swapKind: SwapKind = SwapKind.GivenIn
 ) {
   try {
     const address = await web3.getSigner().getAddress();
@@ -333,7 +335,7 @@ export async function boostedExitBatchSwap(
       if (tokensOut.includes(token.toLowerCase())) {
         limits[i] = amountsOutMap[token].mul(-1).toString();
       } else if (token.toLowerCase() === tokenIn.toLowerCase()) {
-        limits[i] = amountInMin.toString();
+        limits[i] = amountIn.abs().toString();
       } else {
         limits[i] = '0';
       }
@@ -346,7 +348,7 @@ export async function boostedExitBatchSwap(
       configs[network].addresses.vault,
       Vault__factory.abi,
       'batchSwap',
-      [SwapKind.GivenIn, swaps, tokenAddresses, funds, limits, MaxUint256],
+      [swapKind, swaps, tokenAddresses, funds, limits, MaxUint256],
       overrides
     );
   } catch (error) {
