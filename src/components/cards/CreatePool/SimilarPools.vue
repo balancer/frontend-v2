@@ -98,7 +98,9 @@ function cancel() {
         <BalCard shadow="none" v-for="pool in similarPools" :key="pool.id">
           <BalStack vertical>
             <BalStack spacing="sm" horizontal align="center">
-              <BalAssetSet :width="35" :addresses="pool.tokensList" />
+              <div>
+                <BalAssetSet :width="35" :addresses="pool.tokensList" />
+              </div>
               <TokenPills :tokens="pool.tokens" />
             </BalStack>
             <BalStack horizontal spacing="xl">

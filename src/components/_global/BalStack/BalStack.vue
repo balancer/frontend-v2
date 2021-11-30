@@ -72,7 +72,7 @@ const slotsWithContent = computed(() => {
   >
     <component
       v-for="(child, i) in slotsWithContent"
-      :key="`stack-${stackId}-child-${i}`"
+      :key="`stack-${stackId}-child-${i}-${child?.key || ''}`"
       :is="child"
       :class="{
         [spacingClass]: i !== slotsWithContent.length - 1,
