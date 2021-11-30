@@ -21,7 +21,7 @@ registerPromiseWorker((message: ClaimWorkerMessage) => {
     const claimAmount = claim.amount;
     const merkleTree = loadTree(report, decimals);
 
-    const scaledBalance: string = scale(claimAmount, decimals).toString(10);
+    const scaledBalance = scale(claimAmount, decimals).toString(10);
 
     const proof = merkleTree.getHexProof(
       soliditySha3(
@@ -30,12 +30,6 @@ registerPromiseWorker((message: ClaimWorkerMessage) => {
       )
     ) as string[];
 
-    return [
-      parseInt(claim.id),
-      scale(claimAmount, decimals),
-      distributor,
-      tokenIndex,
-      proof
-    ];
+    return [parseInt(claim.id), scaledBalance, distributor, tokenIndex, proof];
   }
 });
