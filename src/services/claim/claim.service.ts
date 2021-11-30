@@ -229,11 +229,15 @@ export class ClaimService {
   private getTokenClaimsInfo() {
     const tokenClaims = MultiTokenClaim[networkId.value];
     const tokenDecimals = TokenDecimals[networkId.value];
+
     if (tokenClaims != null) {
       return (tokenClaims as TokenClaimInfo[]).map(tokenClaim => ({
         ...tokenClaim,
         token: getAddress(tokenClaim.token),
-        decimals: tokenDecimals[tokenClaim.token] || 18
+        decimals:
+          tokenDecimals != null && tokenDecimals[tokenClaim.token]
+            ? tokenDecimals[tokenClaim.token]
+            : 18
       }));
     }
 
