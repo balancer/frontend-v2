@@ -35,10 +35,9 @@ const isHomePage = computed(() => route.path === '/');
   <div>
     <AppNav />
     <AppHeaderBg />
-    <div class="relative">
+    <!--    <div class="relative">
       <AppHero v-if="isInvestPage" />
-      <!--      <GlobalStats v-if="showGlobalStats" />-->
-    </div>
+    </div>-->
     <div class="pb-16 relative">
       <router-view :key="$route.path" />
     </div>

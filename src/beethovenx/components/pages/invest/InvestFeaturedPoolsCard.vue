@@ -1,0 +1,53 @@
+<script setup lang="ts">
+import { FullPool } from '@/services/balancer/subgraph/types';
+import BalCard from '@/components/_global/BalCard/BalCard.vue';
+import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
+import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
+import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import useNumbers from '@/composables/useNumbers';
+
+type Props = {
+  pools: FullPool[];
+  isLoading: boolean;
+};
+
+const props = defineProps<Props>();
+
+const { fNum } = useNumbers();
+</script>
+
+<template>
+  <div
+    class="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-4 mb-12"
+  >
+    <template v-if="props.isLoading">
+      <BalLoadingBlock v-for="n in 4" :key="n" class="h-52" />
+    </template>
+    <template v-else>
+      <BalCard
+        v-for="pool in props.pools"
+        :key="pool.id"
+        class="col col-span-1"
+      >
+        <div class="text-gray-500 font-medium mb-4">
+          {{ pool.name }}
+        </div>
+        <BalAssetSet
+          :addresses="pool.tokens.map(token => token.address)"
+          :size="40"
+          :width="150"
+        />
+        <!--        <div class="font-medium truncate flex items-center mt-2 text-gray-500">
+          {{ topPerformer.name }}
+        </div>-->
+        <div class="text-xl font-medium truncate flex items-center mt-4">
+          {{ fNum(pool.dynamic.apr.total, 'percent') }} APR
+          <LiquidityMiningTooltip :pool="pool" />
+        </div>
+        <div class="text-sm text-gray-500">
+          {{ fNum(pool.dynamic.apr.total / 365, 'percent') }} DAILY
+        </div>
+      </BalCard>
+    </template>
+  </div>
+</template>

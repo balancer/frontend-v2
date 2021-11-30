@@ -1,14 +1,24 @@
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <div class="mb-8 flex">
-      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mr-8" />
-      <div class="flex-1 flex justify-end">
-        <BalBtn
-          class="hidden lg:block"
-          label="Compose a pool"
-          @click="goToPoolCreate"
+    <div class="flex mb-3 items-center">
+      <div class="flex-1">
+        <img
+          src="~@/beethovenx/assets/images/featured-pools.svg"
+          class="-ml-4"
         />
       </div>
+      <BalBtn
+        class="hidden lg:block"
+        label="Compose a pool"
+        @click="goToPoolCreate"
+      />
+    </div>
+    <InvestFeaturedPoolsCard
+      :pools="featuredPools"
+      :isLoading="isLoadingPools"
+    />
+    <div class="mb-8">
+      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
     </div>
     <TokenSearchInput
       v-model="selectedTokens"
@@ -75,9 +85,12 @@ import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import BalTabs from '@/components/_global/BalTabs/BalTabs.vue';
+import InvestFeaturedPoolsCard from '@/beethovenx/components/pages/invest/InvestFeaturedPoolsCard.vue';
+import { orderBy } from 'lodash';
 
 export default defineComponent({
   components: {
+    InvestFeaturedPoolsCard,
     TokenSearchInput,
     PoolsTable,
     BalTabs
@@ -122,6 +135,14 @@ export default defineComponent({
 
     const hasUnstakedBpt = computed(() =>
       userPools.value.find(pool => pool.farm && parseFloat(pool.shares) > 0)
+    );
+
+    const featuredPools = computed(() =>
+      orderBy(
+        beethovenPools.value || [],
+        pool => pool.dynamic.apr.total,
+        'desc'
+      ).slice(0, 4)
     );
 
     function goToPoolCreate() {
@@ -170,6 +191,7 @@ export default defineComponent({
       isLoadingFarms,
       tabs,
       activeTab,
+      featuredPools,
 
       // constants
       EXTERNAL_LINKS
