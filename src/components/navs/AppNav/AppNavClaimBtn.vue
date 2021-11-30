@@ -405,7 +405,7 @@ async function claimAvailableRewards() {
             <li class="mt-2">
               Claim BAL on other networks
               <template v-if="isArbitrum">
-                <BalLink href="https://balancer.fi" external>
+                <BalLink href="https://app.balancer.fi" external>
                   Ethereum
                 </BalLink>
                 and
@@ -414,7 +414,7 @@ async function claimAvailableRewards() {
                 >.
               </template>
               <template v-else-if="isPolygon">
-                <BalLink href="https://balancer.fi" external>
+                <BalLink href="https://app.balancer.fi" external>
                   Ethereum
                 </BalLink>
                 and
