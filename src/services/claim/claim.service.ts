@@ -245,9 +245,12 @@ export class ClaimService {
   }
 
   private async getSnapshot(manifest: string) {
-    const response = await axios.get<Snapshot>(manifest);
-
-    return response.data || {};
+    try {
+      const response = await axios.get<Snapshot>(manifest);
+      return response.data || {};
+    } catch (error) {
+      return {};
+    }
   }
 
   private async getClaimStatus(
