@@ -51,7 +51,7 @@
     <template v-if="isWalletReady">
       <div class="px-4 lg:px-0">
         <BalAlert
-          v-if="hasUnstakedBpt"
+          v-if="hasUnstakedBpt && activeTab === 'my-investments'"
           title="You have unstaked BPT in your wallet"
           description="If you deposit your BPT into the farm, you will earn additional rewards paid out in BEETS."
           type="warning"
