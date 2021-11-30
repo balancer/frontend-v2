@@ -15,7 +15,7 @@
     </div>
     <InvestFeaturedPoolsCard
       :pools="featuredPools"
-      :isLoading="isLoadingPools"
+      :isLoading="isLoadingPools || beethovenxConfigLoading"
     />
     <div class="mb-8">
       <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
@@ -87,6 +87,7 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import BalTabs from '@/components/_global/BalTabs/BalTabs.vue';
 import InvestFeaturedPoolsCard from '@/beethovenx/components/pages/invest/InvestFeaturedPoolsCard.vue';
 import { orderBy } from 'lodash';
+import useBeethovenxConfig from '@/beethovenx/composables/useBeethovenxConfig';
 
 export default defineComponent({
   components: {
@@ -122,6 +123,7 @@ export default defineComponent({
       beethovenPools
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
+    const { beethovenxConfig, beethovenxConfigLoading } = useBeethovenxConfig();
 
     const tabs = [
       { value: 'beethovenx-pools', label: 'Beethoven X Pools' },
@@ -137,13 +139,13 @@ export default defineComponent({
       userPools.value.find(pool => pool.farm && parseFloat(pool.shares) > 0)
     );
 
-    const featuredPools = computed(() =>
-      orderBy(
-        beethovenPools.value || [],
-        pool => pool.dynamic.apr.total,
-        'desc'
-      ).slice(0, 4)
-    );
+    const featuredPools = computed(() => {
+      const filtered = (beethovenPools.value || []).filter(pool =>
+        beethovenxConfig.value.featuredPools.includes(pool.id)
+      );
+
+      return filtered.slice(0, 4);
+    });
 
     function goToPoolCreate() {
       router.push({ name: 'pool-create' });
@@ -171,6 +173,7 @@ export default defineComponent({
       userPools,
       isLoadingPools,
       isLoadingUserPools,
+      beethovenxConfigLoading,
 
       // computed
       isWalletReady,

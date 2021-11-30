@@ -20,6 +20,7 @@ export interface BeethovenxConfig {
   incentivizedPools: string[];
   pausedPools: string[];
   blacklistedPools: string[];
+  featuredPools: string[];
 }
 
 export default class BeethovenxService {
