@@ -14,6 +14,9 @@
   "subgraph": "https://api.thegraph.com/subgraphs/name/destiner/balancer-kovan-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange-kovan/pools",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsRc02.json",
+  "subgraphs": {
+    "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2"
+  },
   "supportsEIP1559": true,
   "nativeAsset": {
     "name": "Ether",

@@ -15,6 +15,9 @@
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
+  "subgraphs": {
+    "aave": ""
+  },
   "supportsEIP1559": false,
   "nativeAsset": {
     "name": "Ether",

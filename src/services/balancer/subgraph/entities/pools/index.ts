@@ -23,6 +23,7 @@ import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
 import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
 import { differenceInWeeks } from 'date-fns';
+import { aaveSubgraphService } from '@/services/aave/subgraph/aave-subgraph.service';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -102,6 +103,9 @@ export default class Pools {
         thirdPartyAPR
       );
       const isNewPool = this.isNewPool(pool);
+      const reservesAPR = await this.getATokenAPR(pool);
+
+      console.log(reservesAPR);
 
       // TODO - remove hasLiquidityMiningRewards from schema
       // Add a conditional to usePool or somewhere else that
@@ -226,6 +230,22 @@ export default class Pools {
     return bnum(pool.totalSwapFee)
       .minus(pastPool.totalSwapFee)
       .toString();
+  }
+
+  private async getATokenAPR(pool: Pool): Promise<any> {
+    const reserves = await aaveSubgraphService.reserves.get({
+      where: {
+        underlyingAsset_in: pool.mainTokens,
+        isActive: true,
+        aEmissionPerSecond_gt: 0
+      }
+    });
+
+    return reserves.map(reserve => ({
+      // @ts-ignore
+      address: getAddress(reserve.aToken.underlyingAssetAddress),
+      apr: reserve.supplyAPR
+    }));
   }
 
   private async timeTravelBlock(period: TimeTravelPeriod): Promise<number> {
