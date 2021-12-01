@@ -22,7 +22,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 
 const initialAnimateProps = {
   opacity: 0,
-  translateY: '-100px',
+  translateY: '100px',
   position: 'absolute',
   top: 0,
   left: 0,
@@ -36,7 +36,7 @@ const entryAnimateProps = {
 };
 const exitAnimateProps = {
   opacity: 0,
-  translateY: '100px',
+  translateY: '-100px',
   position: 'absolute',
   top: 0,
   left: 0,

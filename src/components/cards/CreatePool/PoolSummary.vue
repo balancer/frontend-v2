@@ -45,7 +45,8 @@ const chartConfig = computed(() => {
         const tokenWeight =
           (seedTokens.value.find(t => t.tokenAddress === name)?.weight || 0) /
           100;
-        return `${fNum(tokenWeight, 'percent')} ${tokens.value[name]?.symbol || 'N/A'}`;
+        return `${fNum(tokenWeight, 'percent')} ${tokens.value[name]?.symbol ||
+          'N/A'}`;
       },
       selectedMode: false,
       top: 'bottom'
