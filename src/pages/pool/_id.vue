@@ -356,8 +356,10 @@ export default defineComponent({
     });
 
     const hasInjectedToken = computed(() => {
-      return titleTokens.value.some(([token]) => injectedTokens.value[token]?.symbol !== undefined)
-    })
+      return titleTokens.value.some(
+        ([token]) => injectedTokens.value[token]?.symbol !== undefined
+      );
+    });
 
     /**
      * METHODS

@@ -27,17 +27,23 @@
     </template>
     <div class="px-4 lg:px-0">
       <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
-      <BalStack horizontal justify="between" align="center">
+      <div class="flex w-full justify-between flex-col lg:flex-row">
         <TokenSearchInput
           v-model="selectedTokens"
           :loading="isLoadingPools"
           @add="addSelectedToken"
           @remove="removeSelectedToken"
         />
-        <BalBtn @click="navigateToCreatePool" color="blue" size="sm">{{
-          $t('createAPool.title')
-        }}</BalBtn>
-      </BalStack>
+        <div class="w-full flex justify-end items-end">
+          <BalBtn
+            class="mt-2 lg:mt-0"
+            @click="navigateToCreatePool"
+            color="blue"
+            size="sm"
+            >{{ $t('createAPool.title') }}</BalBtn
+          >
+        </div>
+      </div>
     </div>
 
     <PoolsTable

@@ -419,11 +419,9 @@ function handleProceed() {
             <BalStack vertical spacing="xs">
               <span>{{ $t('tokenWarning') }}</span>
               <div>
-                <BalBtn
-                  @click="acceptCustomTokenDisclaimer"
-                  size="xs"
-                  >{{ $t('accept') }}</BalBtn
-                >
+                <BalBtn @click="acceptCustomTokenDisclaimer" size="xs">{{
+                  $t('accept')
+                }}</BalBtn>
               </div>
             </BalStack>
           </BalAlert>
