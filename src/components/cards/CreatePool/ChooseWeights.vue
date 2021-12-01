@@ -422,7 +422,6 @@ function handleProceed() {
                 <BalBtn
                   @click="acceptCustomTokenDisclaimer"
                   size="xs"
-                  color="red"
                   >{{ $t('accept') }}</BalBtn
                 >
               </div>

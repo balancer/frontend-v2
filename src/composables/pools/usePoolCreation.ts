@@ -101,7 +101,9 @@ export default function usePoolCreation() {
   );
 
   const hasInjectedToken = computed(() => {
-    return tokensList.value.some(token => injectedTokens.value[token]?.symbol !== undefined)
+    return tokensList.value.some(
+      token => injectedTokens.value[token]?.symbol !== undefined
+    );
   });
 
   const optimisedLiquidity = computed(
