@@ -54,7 +54,7 @@ const stepCircleClasses = computed(() => {
         StepState.Success,
         'border-2 border-none bg-gradient-to-tr from-green-500 to-green-200 text-white'
       ],
-      [StepState.Warning, 'border-2 border-none bg-red-500 text-white'],
+      [StepState.Warning, 'border-2 border-none bg-red-500 text-white active'],
       [StepState.Completed, 'border-2 border-gray-600 font-medium']
     ]);
   });
@@ -119,7 +119,7 @@ function handleNavigate(state: StepState, stepIndex: number) {
   @apply absolute left-0 right-0 my-0 mx-auto bg-gray-300 dark:bg-gray-600 w-px;
   content: '';
   bottom: -1.125rem;
-  height: 1.0625rem;
+  height: 1rem;
 }
 
 .circle-line.active::after {
