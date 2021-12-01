@@ -59,9 +59,9 @@ const chartConfig = computed(() => {
       selectedMode: false,
       top: 'bottom',
       textStyle: {
-        color: !darkMode
-            ? tailwind.theme.colors.gray['850']
-            : tailwind.theme.colors.gray['100']
+        color: darkMode.value
+          ? tailwind.theme.colors.gray['300']
+          : tailwind.theme.colors.gray['850']
       }
     },
     series: [
@@ -72,9 +72,9 @@ const chartConfig = computed(() => {
         stillShowZeroSum: true,
         showEmptyCircle: true,
         itemStyle: {
-          borderColor: !darkMode
+          borderColor: darkMode.value
             ? tailwind.theme.colors.gray['850']
-            : tailwind.theme.colors.gray['850'],
+            : '#fff',
           borderWidth: 5,
           borderCap: 'butt',
           borderJoin: 'round'

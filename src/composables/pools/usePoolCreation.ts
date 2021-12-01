@@ -314,7 +314,7 @@ export default function usePoolCreation() {
         liquidityRequired: liquidityRequired.toString(),
         balanceRequired: balanceRequired.toNumber()
       };
-    } 
+    }
     return optimisedLiquidity;
   }
 

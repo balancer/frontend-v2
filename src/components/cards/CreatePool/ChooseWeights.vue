@@ -45,7 +45,7 @@ const { fNum } = useNumbers();
 const { nativeAsset, tokens } = useTokens();
 const { isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { t } = useI18n();
-const {darkMode} = useDarkMode();
+const { darkMode } = useDarkMode();
 
 /**
  * STATE
@@ -132,7 +132,7 @@ const weightColor = computed(() => {
   if (Number(totalWeight.value) > 100 || Number(totalWeight.value) <= 0) {
     return 'text-red-500';
   }
-  return !darkMode ? 'text-gray-800' : 'text-gray-200';
+  return darkMode.value ? 'text-gray-300' : 'text-gray-800';
 });
 
 /**
