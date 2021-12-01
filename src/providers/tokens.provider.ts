@@ -54,6 +54,7 @@ export interface TokensProviderResponse {
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;
   activeTokenListTokens: ComputedRef<TokenInfoMap>;
+  balancerTokenListTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
   allowances: ComputedRef<ContractAllowancesMap>;
@@ -111,6 +112,7 @@ export default {
     const {
       allTokenLists,
       activeTokenLists,
+      balancerTokenLists,
       loadingTokenLists
     } = useTokenLists();
     const { currency } = useUserSettings();
@@ -145,6 +147,14 @@ export default {
     const activeTokenListTokens = computed(
       (): TokenInfoMap =>
         mapTokenListTokens(Object.values(activeTokenLists.value))
+    );
+
+    /**
+     * All tokens from Balancer token lists, e.g. 'listed' and 'vetted'.
+     */
+    const balancerTokenListTokens = computed(
+      (): TokenInfoMap =>
+        mapTokenListTokens(Object.values(balancerTokenLists.value))
     );
 
     /**
@@ -417,6 +427,7 @@ export default {
       tokens,
       wrappedNativeAsset,
       activeTokenListTokens,
+      balancerTokenListTokens,
       prices,
       balances,
       allowances,
