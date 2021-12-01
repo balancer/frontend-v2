@@ -25,9 +25,9 @@ const emit = defineEmits(['update:height']);
 const emptyTokenWeight: PoolSeedToken = {
   tokenAddress: '',
   weight: 0,
-  id: 0,
+  id: '0',
   isLocked: false,
-  amount: 0
+  amount: '0'
 };
 
 /**
