@@ -68,7 +68,7 @@
           block
         />
         <BalAlert
-          v-if="!appLoading && hasInjectedToken"
+          v-if="!appLoading && hasCustomToken"
           type="error"
           :title="$t('highRiskPool')"
           class="mt-2"
@@ -212,9 +212,10 @@ export default defineComponent({
     const route = useRoute();
     const { fNum } = useNumbers();
     const { isWalletReady } = useWeb3();
-    const { prices, injectedTokens } = useTokens();
+    const { prices } = useTokens();
     const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
+    const { balancerTokenListTokens } = useTokens();
 
     /**
      * QUERIES
@@ -355,9 +356,13 @@ export default defineComponent({
       return '';
     });
 
-    const hasInjectedToken = computed(() => {
-      return titleTokens.value.some(
-        ([token]) => injectedTokens.value[token]?.symbol !== undefined
+    const hasCustomToken = computed(() => {
+      const knownTokens = Object.keys(balancerTokenListTokens.value);
+      return (
+        !!pool.value &&
+        pool.value.tokenAddresses.some(
+          address => !knownTokens.includes(address)
+        )
       );
     });
 
@@ -414,7 +419,7 @@ export default defineComponent({
       isLiquidityBootstrappingPool,
       isCopperPool,
       copperNetworkPrefix,
-      hasInjectedToken,
+      hasCustomToken,
       // methods
       fNum,
       onNewTx
