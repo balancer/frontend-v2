@@ -299,7 +299,7 @@ export default function usePoolCreation() {
 
   function clearAmounts() {
     for (const token of poolCreationState.seedTokens) {
-      token.amount = bnum(0).toString();
+      token.amount = '0';
     }
   }
 
