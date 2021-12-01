@@ -72,6 +72,7 @@
     "babel-loader": "^8.2.2",
     "bignumber.js": "^9.0.1",
     "bnc-sdk": "^3.5.0",
+    "color.js": "^1.2.0",
     "date-fns": "^2.21.1",
     "echarts": "^5.2.0",
     "eslint": "^6.7.2",
@@ -110,8 +111,5 @@
     "worker-loader": "^3.0.8"
   },
   "license": "MIT",
-  "repository": "balancer-labs/frontend-v2",
-  "dependencies": {
-    "color.js": "^1.2.0"
-  }
+  "repository": "balancer-labs/frontend-v2"
 }
