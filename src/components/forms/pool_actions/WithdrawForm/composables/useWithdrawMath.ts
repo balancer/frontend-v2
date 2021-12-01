@@ -317,7 +317,7 @@ export default function useWithdrawMath(
     if (!isStablePhantomPool.value || !pool.value.onchain.linearPools)
       return false;
     // Need to get pool balances of Stables, e.g. Dai, USDC, USDT
-    console.log('pool', pool.value)
+    console.log('pool', pool.value);
     const poolStableBalances = Object.values(
       pool.value.onchain.linearPools
     ).map((linearPool, i) =>
@@ -331,8 +331,11 @@ export default function useWithdrawMath(
     const priceRates = Object.values(pool.value.onchain.linearPools).map(
       linearPool => linearPool.priceRate
     );
-    console.log('priceRates', priceRates)
-    console.log('proportionalPoolTokenAmounts', proportionalPoolTokenAmounts.value)
+    console.log('priceRates', priceRates);
+    console.log(
+      'proportionalPoolTokenAmounts',
+      proportionalPoolTokenAmounts.value
+    );
     const accountStableBalances = proportionalPoolTokenAmounts.value.map(
       (amount, i) =>
         bnum(amount)
@@ -340,6 +343,8 @@ export default function useWithdrawMath(
           .toFixed(withdrawalTokens.value[i].decimals, OldBigNumber.ROUND_UP)
     );
     console.log('accountStableBalances', accountStableBalances);
+
+    // const diffs =
 
     // Then compare the two, if account balance is greater than pool balance, we need the relayer
     // caveat, if single asset we only need to compare that stable's balances
