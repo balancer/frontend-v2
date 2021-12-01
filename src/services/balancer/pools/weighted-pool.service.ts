@@ -50,7 +50,7 @@ export default class WeightedPoolService {
     });
 
     const seedTokens = this.calculateTokenWeights(tokens);
-    const swapFeeScaled = scale(new BigNumber(swapFee), 16);
+    const swapFeeScaled = scale(new BigNumber(swapFee), 18);
 
     const params = [
       name,

@@ -48,9 +48,8 @@ const tokenAddresses = ref([] as string[]);
  * COMPUTED
  */
 const areAmountsMaxed = computed(() => {
-  const isMaxed = seedTokens.value.every(
-    t =>
-      bnum(t.amount).eq(balanceFor(t.tokenAddress))
+  const isMaxed = seedTokens.value.every(t =>
+    bnum(t.amount).eq(balanceFor(t.tokenAddress))
   );
   return isMaxed;
 });
@@ -58,9 +57,8 @@ const areAmountsMaxed = computed(() => {
 const isExceedingWalletBalance = computed(() => {
   // need to perform rounding here as JS cuts off those
   // really long numbers which makes it impossible to compare
-  const isExceeding = seedTokens.value.some(
-    t =>
-      bnum(t.amount).gt(balanceFor(t.tokenAddress))
+  const isExceeding = seedTokens.value.some(t =>
+    bnum(t.amount).gt(balanceFor(t.tokenAddress))
   );
   return isExceeding;
 });
@@ -68,9 +66,11 @@ const isExceedingWalletBalance = computed(() => {
 const arbitrageDelta = computed(() => {
   let totalPctDelta = bnum(0);
   for (const token of seedTokens.value) {
-    const initialPct = (bnum(token.amount).times(priceFor(token.tokenAddress))).div(poolLiquidity.value)
+    const initialPct = bnum(token.amount)
+      .times(priceFor(token.tokenAddress))
+      .div(poolLiquidity.value);
     const expectedPct = token.weight / 100;
-    const delta = (initialPct.minus(expectedPct)).abs();
+    const delta = initialPct.minus(expectedPct).abs();
     totalPctDelta = totalPctDelta.plus(delta);
   }
   return {
