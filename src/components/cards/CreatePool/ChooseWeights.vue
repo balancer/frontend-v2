@@ -39,7 +39,10 @@ const {
   proceed,
   maxInitialLiquidity,
   tokensList,
-  totalLiquidity
+  totalLiquidity,
+  hasInjectedToken,
+  acceptCustomTokenDisclaimer,
+  acceptedCustomTokenDisclaimer
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
@@ -103,6 +106,8 @@ const isProceedDisabled = computed(() => {
   if (Number(totalAllocatedWeight.value) !== 100) return true;
   if (seedTokens.value.length < 2) return true;
   if (zeroWeightToken.value) return true;
+  if (hasInjectedToken.value && !acceptedCustomTokenDisclaimer.value)
+    return true;
   return false;
 });
 
@@ -384,7 +389,7 @@ function handleProceed() {
             type="warning"
             >{{
               $t('createAPool.youCanFundWithThisPoolWith', [
-                fNum(totalLiquidity, 'usd')
+                fNum(totalLiquidity.toString(), 'usd')
               ])
             }}</BalAlert
           >
@@ -405,6 +410,21 @@ function handleProceed() {
               $t('createAPool.totalWeightAlert', [zeroWeightToken?.symbol])
             }}</BalAlert
           >
+        </AnimatePresence>
+        <AnimatePresence
+          :isVisible="hasInjectedToken && !acceptedCustomTokenDisclaimer"
+          unmountInstantly
+        >
+          <BalAlert :title="$t('tokenWarningTitle')" type="warning">
+            <BalStack vertical spacing="xs">
+              <span>{{ $t('tokenWarning') }}</span>
+              <div>
+                <BalBtn @click="acceptCustomTokenDisclaimer" size="xs">{{
+                  $t('accept')
+                }}</BalBtn>
+              </div>
+            </BalStack>
+          </BalAlert>
         </AnimatePresence>
         <BalBtn
           block

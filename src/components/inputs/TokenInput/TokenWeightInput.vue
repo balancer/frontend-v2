@@ -150,7 +150,6 @@ watchEffect(() => {
         class="mr-2"
         @update:modelValue="emit('update:address', $event)"
         :excludedTokens="excludedTokens"
-        disableInjection
       />
     </template>
     <template v-slot:append>

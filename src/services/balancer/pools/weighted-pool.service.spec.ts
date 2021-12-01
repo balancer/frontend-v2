@@ -37,21 +37,21 @@ describe('PoolCreator', () => {
       weight: 70,
       isLocked: false,
       id: '0',
-      amount: 0
+      amount: '0'
     };
     tokens.WETH = {
       tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       weight: 20,
       isLocked: false,
       id: '1',
-      amount: 0
+      amount: '0'
     };
     tokens.USDT = {
       tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
       weight: 10,
       isLocked: false,
       id: '2',
-      amount: 0
+      amount: '0'
     };
   });
 
@@ -92,7 +92,7 @@ describe('PoolCreator', () => {
           new BigNumber(tokens.USDT.weight).multipliedBy(1e16).toString()
         ]);
         expect(sendTransactionParams[4]).toEqual(
-          new BigNumber(mockSwapFee).multipliedBy(1e16).toString()
+          new BigNumber(mockSwapFee).multipliedBy(1e18).toString()
         );
         expect(sendTransactionParams[5]).toEqual(mockOwner);
       });
