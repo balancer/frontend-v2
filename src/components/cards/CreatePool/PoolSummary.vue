@@ -57,7 +57,12 @@ const chartConfig = computed(() => {
         return `${tokens.value[name]?.symbol || 'Unallocated'}`;
       },
       selectedMode: false,
-      top: 'bottom'
+      top: 'bottom',
+      textStyle: {
+        color: !darkMode
+            ? tailwind.theme.colors.gray['850']
+            : tailwind.theme.colors.gray['100']
+      }
     },
     series: [
       {
@@ -67,7 +72,9 @@ const chartConfig = computed(() => {
         stillShowZeroSum: true,
         showEmptyCircle: true,
         itemStyle: {
-          borderColor: !darkMode ? tailwind.theme.colors.gray['850'] : '#fff',
+          borderColor: !darkMode
+            ? tailwind.theme.colors.gray['850']
+            : tailwind.theme.colors.gray['850'],
           borderWidth: 5,
           borderCap: 'butt',
           borderJoin: 'round'

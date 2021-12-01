@@ -18,6 +18,7 @@ import { bnum } from '@/lib/utils';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import { useI18n } from 'vue-i18n';
+import useDarkMode from '@/composables/useDarkMode';
 
 const emit = defineEmits(['update:height']);
 
@@ -44,6 +45,7 @@ const { fNum } = useNumbers();
 const { nativeAsset, tokens } = useTokens();
 const { isWalletReady, toggleWalletSelectModal } = useWeb3();
 const { t } = useI18n();
+const {darkMode} = useDarkMode();
 
 /**
  * STATE
@@ -130,7 +132,7 @@ const weightColor = computed(() => {
   if (Number(totalWeight.value) > 100 || Number(totalWeight.value) <= 0) {
     return 'text-red-500';
   }
-  return 'text-gray-800';
+  return !darkMode ? 'text-gray-800' : 'text-gray-200';
 });
 
 /**
