@@ -283,7 +283,6 @@ export default {
         if (token) {
           return { [address]: token };
         } else {
-          console.log('meh', disableInjection);
           if (!disableInjection) {
             await injectTokens([address]);
             return pick(tokens.value, address);
