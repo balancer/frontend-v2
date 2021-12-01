@@ -24,7 +24,7 @@ export type PoolSeedToken = {
 
 export type OptimisedLiquidity = {
   liquidityRequired: string;
-  balanceRequired: number;
+  balanceRequired: string;
 };
 
 type FeeManagementType = 'governance' | 'self';
@@ -105,10 +105,18 @@ export default function usePoolCreation() {
       const optimisedLiquidity = {};
 
       // token with the lowest balance is the bottleneck
-      const bottleneckToken = minBy(
-        validTokens,
-        token => Number(balanceFor(token)) * Number(priceFor(token))
+      let bottleneckToken = validTokens[0];
+      // keeping track of the lowest amt
+      let currentMin = bnum(balanceFor(validTokens[0])).times(
+        priceFor(validTokens[0])
       );
+      for (const token of validTokens) {
+        const value = bnum(balanceFor(token)).times(priceFor(token));
+        if (value.lt(currentMin)) {
+          currentMin = value;
+          bottleneckToken = token;
+        }
+      }
       if (!bottleneckToken) return optimisedLiquidity;
 
       const bottleneckWeight =
@@ -149,7 +157,11 @@ export default function usePoolCreation() {
   });
 
   const totalLiquidity = computed(() => {
-    return sumBy(tokensList.value, t => priceFor(t) * Number(balanceFor(t)));
+    let total = bnum(0);
+    for (const token of tokensList.value) {
+      total = total.plus(bnum(priceFor(token)).times(balanceFor(token)));
+    }
+    return total;
   });
 
   const currentLiquidity = computed(() => {
@@ -309,7 +321,9 @@ export default function usePoolCreation() {
     }
   }
 
-  function getTokensScaledByBIP(bip: BigNumber): Record<string, OptimisedLiquidity> {
+  function getTokensScaledByBIP(
+    bip: BigNumber
+  ): Record<string, OptimisedLiquidity> {
     const optimisedLiquidity = {};
     for (const token of poolCreationState.seedTokens) {
       // get the price for a single token
