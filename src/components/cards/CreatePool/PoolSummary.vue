@@ -32,7 +32,12 @@ const chartInstance = ref<echarts.ECharts>();
  * COMPOSABLES
  */
 const { tokens } = useTokens();
-const { seedTokens, updateTokenColors, totalLiquidity } = usePoolCreation();
+const {
+  seedTokens,
+  updateTokenColors,
+  totalLiquidity,
+  tokensList
+} = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
 const { fNum } = useNumbers();
@@ -43,6 +48,8 @@ const { resolve } = useUrls();
  * COMPUTED
  */
 const chartConfig = computed(() => {
+  const validTokens = tokensList.value.filter(t => t !== '');
+  if (colors.value.length !== validTokens.length) return;
   return {
     tooltip: {
       show: true,
@@ -137,8 +144,9 @@ const chartConfig = computed(() => {
 watch(
   seedTokens,
   async () => {
-    await nextTick();
     const colors = await calculateColors();
+    await nextTick();
+    await nextTick();
     await nextTick();
     updateTokenColors(colors as string[]);
   },
