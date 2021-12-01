@@ -231,20 +231,24 @@ function handleClearAll() {
         />
       </BalStack>
       <BalStack horizontal spacing="sm" align="center">
-        <span class="text-sm pl-2">{{
-          t('autoOptimiseLiquidityToggle.label')
-        }}</span>
-        <BalToggle
-          name="autoOptimise"
-          :checked="autoOptimiseBalances"
-          @toggle="toggleAutoOptimise"
-        />
-        <BalTooltip width="64">
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
-          </template>
-          <div v-html="t('autoOptimiseLiquidityToggle.tooltip')" />
-        </BalTooltip>
+        <div>
+          <span class="text-sm pl-2">{{
+            t('autoOptimiseLiquidityToggle.label')
+          }}</span>
+          <BalTooltip width="64">
+            <template v-slot:activator>
+              <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
+            </template>
+            <div v-html="t('autoOptimiseLiquidityToggle.tooltip')" />
+          </BalTooltip>
+        </div>
+        <div>
+          <BalToggle
+            name="autoOptimise"
+            :checked="autoOptimiseBalances"
+            @toggle="toggleAutoOptimise"
+          />
+        </div>
       </BalStack>
       <div class="p-3 border rounded-lg">
         <BalStack horizontal justify="between">
