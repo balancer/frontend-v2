@@ -18,7 +18,7 @@ export type PoolSeedToken = {
   tokenAddress: string;
   weight: number;
   isLocked: boolean;
-  amount: number;
+  amount: string;
   id: string;
 };
 
@@ -153,18 +153,21 @@ export default function usePoolCreation() {
   });
 
   const currentLiquidity = computed(() => {
-    let total = 0;
+    let total = bnum(0);
     for (const token of poolCreationState.seedTokens) {
-      total = total + priceFor(token.tokenAddress) * token.amount;
+      total = total.plus(
+        bnum(token.amount).times(priceFor(token.tokenAddress))
+      );
     }
     return total;
   });
 
   const poolLiquidity = computed(() => {
-    return sumBy(
-      poolCreationState.seedTokens,
-      tw => priceFor(tw.tokenAddress) * tw.amount
-    );
+    let sum = bnum(0);
+    for (const token of poolCreationState.seedTokens) {
+      sum = sum.plus(bnum(token.amount).times(priceFor(token.tokenAddress)));
+    }
+    return sum;
   });
 
   const poolTypeString = computed((): string => {
@@ -296,13 +299,13 @@ export default function usePoolCreation() {
 
   function clearAmounts() {
     for (const token of poolCreationState.seedTokens) {
-      token.amount = 0;
+      token.amount = bnum(0).toString();
     }
   }
 
   function setAmountsToMaxBalances() {
     for (const token of poolCreationState.seedTokens) {
-      token.amount = Number(balanceFor(token.tokenAddress));
+      token.amount = balanceFor(token.tokenAddress);
     }
   }
 
