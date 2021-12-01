@@ -1,5 +1,5 @@
 import { PoolType } from '@/services/balancer/subgraph/types';
-import { flatten, minBy, sumBy } from 'lodash';
+import { flatten, sumBy } from 'lodash';
 import { ref, reactive, toRefs, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
@@ -9,7 +9,6 @@ import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
 import { balancerService } from '@/services/balancer/balancer.service';
-import { AddressZero } from '@ethersproject/constants';
 import { bnum, scale } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 import { TransactionResponse } from '@ethersproject/providers';
@@ -234,12 +233,12 @@ export default function usePoolCreation() {
 
   const poolOwner = computed(() => {
     if (poolCreationState.feeManagementType === 'governance') {
-      return POOLS.DelegateOwner
+      return POOLS.DelegateOwner;
     } else {
       if (poolCreationState.feeController === 'self') {
-        return account.value
+        return account.value;
       } else {
-        return poolCreationState.thirdPartyFeeController
+        return poolCreationState.thirdPartyFeeController;
       }
     }
   });

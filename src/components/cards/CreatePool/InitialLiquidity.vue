@@ -9,7 +9,6 @@ import useNumbers from '@/composables/useNumbers';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { useI18n } from 'vue-i18n';
-import { sumBy } from 'lodash';
 
 /**
  * STATE
