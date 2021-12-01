@@ -218,7 +218,7 @@ function navigateToPoolFee() {
           </BalStack>
         </BalStack>
       </BalCard>
-      <AnimatePresence
+      <!-- <AnimatePresence
         :isVisible="arbitrageDelta.delta > 0.05"
         unmountInstantly
       >
@@ -234,7 +234,7 @@ function navigateToPoolFee() {
         >
           {{ t('createAPool.arbReason') }}
         </BalAlert>
-      </AnimatePresence>
+      </AnimatePresence> -->
       <CreateActions
         :tokenAddresses="tokenAddresses"
         :amounts="tokenAmounts"
