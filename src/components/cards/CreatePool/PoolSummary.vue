@@ -12,6 +12,7 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { prominent } from 'color.js';
 import useDarkMode from '@/composables/useDarkMode';
 import useTailwind from '@/composables/useTailwind';
+import useNumbers from '@/composables/useNumbers';
 
 /** STATE */
 const colors = ref<(string | null)[]>([]);
@@ -21,9 +22,10 @@ const chartInstance = ref<echarts.ECharts>();
  * COMPOSABLES
  */
 const { tokens } = useTokens();
-const { seedTokens, updateTokenColors } = usePoolCreation();
+const { seedTokens, updateTokenColors, totalLiquidity } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
+const { fNum } = useNumbers();
 const tailwind = useTailwind();
 const { resolve } = useUrls();
 
@@ -38,10 +40,15 @@ const chartConfig = computed(() => {
       confine: true
     },
     legend: {
-      show: false
-    },
-    grid: {
-      containLabel: true
+      show: true,
+      formatter: name => {
+        const tokenWeight =
+          (seedTokens.value.find(t => t.tokenAddress === name)?.weight || 0) /
+          100;
+        return `${fNum(tokenWeight, 'percent')} ${tokens.value[name]?.symbol || 'N/A'}`;
+      },
+      selectedMode: false,
+      top: 'bottom'
     },
     series: [
       {
@@ -63,7 +70,7 @@ const chartConfig = computed(() => {
         labelLine: {
           show: false
         },
-
+        top: -20,
         colors: colors.value,
         data: [
           ...seedTokens.value
@@ -166,5 +173,14 @@ async function calculateColors() {
         autoresize
       />
     </div>
+    <BalStack class="mb-2" vertical spacing="none" align="center">
+      <BalStack horizontal spacing="xs">
+        <h6>{{ $t('createAPool.maxInitialLiquidity') }}</h6>
+        <BalTooltip>
+          {{ $t('createAPool.maxLiquidityTooltip') }}
+        </BalTooltip>
+      </BalStack>
+      <span>{{ fNum(totalLiquidity, 'usd') }}</span>
+    </BalStack>
   </BalCard>
 </template>
