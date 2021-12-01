@@ -440,6 +440,8 @@
     "tokenSearch": "Token search",
     "tokensLowerCase": "tokens",
     "tokensParen": "Token(s)",
+    "tokenWarning": "Balancer Labs is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowlege before continuing.",
+    "tokenWarningTitle": "You have added a custom token",
     "tooltips": {
         "invest": {
             "priceImpact": "Price impact from adding liquidity results when the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",
