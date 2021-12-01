@@ -23,7 +23,7 @@
         v-if="account && !dynamicDataLoading && !hasNoBalances"
         class="text-gray-400 overflow-x-auto"
       >
-        <span class="mr-2">{{ $t('inYourWallet') }}</span>
+        <span class="mr-2">{{ $t('inYourWallet') }}:</span>
         <span
           v-for="token in sortedBalances"
           :key="`wallet-${token.symbol}`"

@@ -8,25 +8,42 @@
 
 <script lang="ts">
 import anime, { AnimeParams } from 'animejs';
-import { defineComponent, onMounted, PropType, ref } from 'vue';
+import {
+  defineComponent,
+  onMounted,
+  PropType,
+  ref,
+  watch,
+  nextTick
+} from 'vue';
 export default defineComponent({
-  emits: ['on-exit'],
+  emits: ['on-exit', 'update-dimensions'],
   props: {
     initial: {
       type: Object as PropType<AnimeParams>,
-      required: true
+      default: () => ({
+        opacity: 0
+      })
     },
     animate: {
       type: Object as PropType<AnimeParams>,
-      required: true
+      default: () => ({
+        opacity: 1
+      })
     },
     exit: {
       type: Object as PropType<AnimeParams>,
-      required: true
+      default: () => ({
+        opacity: 0
+      })
+    },
+    unmountInstantly: {
+      type: Boolean,
+      default: () => false
     },
     isVisible: {
       type: Boolean,
-      required: true
+      default: () => true
     }
   },
   setup(props, { emit }) {
@@ -40,7 +57,21 @@ export default defineComponent({
       }
     });
 
-    const enter = (el, done) => {
+    watch(
+      () => props.isVisible,
+      async () => {
+        if (props.isVisible) {
+          await nextTick();
+          if (animateContainer.value) {
+            anime.set(animateContainer.value, {
+              ...props.initial
+            });
+          }
+        }
+      }
+    );
+
+    const enter = async (el, done) => {
       // on mount we set initial values, but the issue is that enter will run at
       // the same time, setTimeout(0) makes the animation run on the next
       // available tick, so it's instant visually but on a tick delay for code
@@ -54,9 +85,21 @@ export default defineComponent({
           }),
         0
       );
+      setTimeout(() => {
+        if (animateContainer.value) {
+          emit('update-dimensions', {
+            width: animateContainer.value.offsetWidth,
+            height: animateContainer.value.offsetHeight
+          });
+        }
+      }, 100);
     };
 
     const leave = (el, done) => {
+      if (props.unmountInstantly) {
+        done();
+        emit('on-exit');
+      }
       anime.set(el, {
         'pointer-events': 'none'
       });
