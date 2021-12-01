@@ -183,6 +183,7 @@ export default function usePoolCreation() {
 
   const existingPool = computed(() => {
     if (!similarPools.value?.length) return null;
+
     const similarPool = similarPools.value.find(pool => {
       if (pool.swapFee === poolCreationState.initialFee) {
         let weightsMatch = true;
@@ -190,7 +191,7 @@ export default function usePoolCreation() {
           const relevantToken = poolCreationState.seedTokens.find(
             t => t.tokenAddress === token.address
           );
-          const similarPoolWeight = token.weight;
+          const similarPoolWeight = Number(token.weight).toFixed(2);
           const seedTokenWeight = String((relevantToken?.weight || 0) / 100);
           if (similarPoolWeight !== seedTokenWeight) {
             weightsMatch = false;

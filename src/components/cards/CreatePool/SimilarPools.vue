@@ -63,7 +63,9 @@ function cancel() {
       <BalCard v-else-if="existingPool" shadow="none">
         <BalStack vertical>
           <BalStack spacing="sm" horizontal align="center">
-            <BalAssetSet :width="35" :addresses="existingPool.tokensList" />
+            <div>
+              <BalAssetSet :width="35" :addresses="existingPool.tokensList" />
+            </div>
             <TokenPills :tokens="existingPool.tokens" />
           </BalStack>
           <BalStack horizontal spacing="lg">

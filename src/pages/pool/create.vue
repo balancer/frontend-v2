@@ -3,7 +3,6 @@ import { computed, onMounted, ref } from 'vue';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
-import WalletInitialLiquidity from '@/components/cards/CreatePool/WalletInitialLiquidity.vue';
 import PoolFees from '@/components/cards/CreatePool/PoolFees.vue';
 import SimilarPools from '@/components/cards/CreatePool/SimilarPools.vue';
 import InitialLiquidity from '@/components/cards/CreatePool/InitialLiquidity.vue';
@@ -120,11 +119,10 @@ function getStepState(idx: number) {
 function setWrapperHeight(dimensions: { width: number; height: number }) {
   // need to transform the accordion as everything is absolutely
   // positioned inside the AnimateHeight component
-  let mobileOffset = 0;
+  let mobileOffset = 30;
   if (upToLargeBreakpoint.value && maxInitialLiquidity.value < 20000) {
     mobileOffset = 90;
   }
-
   anime({
     targets: accordionWrapper.value,
     translateY: `${dimensions.height + mobileOffset}px`,
@@ -170,6 +168,7 @@ function handleNavigate(stepIndex: number) {
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
+        @update-dimensions="setWrapperHeight"
       >
         <ChooseWeights @update:height="setWrapperHeight" />
       </AnimatePresence>
@@ -209,18 +208,12 @@ function handleNavigate(stepIndex: number) {
       >
         <PreviewPool />
       </AnimatePresence>
-      <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="mt-4 pb-24">
+      <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="pb-24">
         <BalAccordion
-          :sections="[
-            { title: 'Pool summary', id: 'pool-summary' },
-            { title: 'Max initial liquidity', id: 'max-initial-liquidity' }
-          ]"
+          :sections="[{ title: 'Pool summary', id: 'pool-summary' }]"
         >
           <template v-slot:pool-summary>
             <PoolSummary />
-          </template>
-          <template v-slot:max-initial-liquidity>
-            <WalletInitialLiquidity />
           </template>
         </BalAccordion>
       </div>
