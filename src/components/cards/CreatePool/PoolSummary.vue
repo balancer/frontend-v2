@@ -14,6 +14,16 @@ import useDarkMode from '@/composables/useDarkMode';
 import useTailwind from '@/composables/useTailwind';
 import useNumbers from '@/composables/useNumbers';
 
+/**
+ * CONSTANTS
+ */
+const manualColorMap = {
+  ETH: '#627EEA',
+  WETH: '#627EEA',
+  WBTC: '#F7931A',
+  BAL: '#00265A'
+};
+
 /** STATE */
 const colors = ref<(string | null)[]>([]);
 const chartInstance = ref<echarts.ECharts>();
@@ -145,6 +155,9 @@ async function calculateColors() {
           amount: 2,
           format: 'hex'
         });
+        if (manualColorMap[tokens.value[t.tokenAddress].symbol]) {
+          return manualColorMap[tokens.value[t.tokenAddress].symbol];
+        }
         if (color[0] === '#ffffff' || color[0] === '#000000')
           return color[1] as string;
         return color[0] as string;
