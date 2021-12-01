@@ -360,6 +360,7 @@ export default defineComponent({
       const knownTokens = Object.keys(balancerTokenListTokens.value);
       return (
         !!pool.value &&
+        !isLiquidityBootstrappingPool.value &&
         pool.value.tokenAddresses.some(
           address => !knownTokens.includes(address)
         )
