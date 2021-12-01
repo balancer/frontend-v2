@@ -7,6 +7,7 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
+import { shortenLabel } from '@/lib/utils';
 
 /**
  * PROPS & EMITS
@@ -36,13 +37,16 @@ const {
   symbol: poolSymbol,
   setActiveStep,
   useNativeAsset,
-  sortTokenWeights
+  sortTokenWeights,
+  feeManagementType,
+  feeController,
+  thirdPartyFeeController
 } = usePoolCreation();
 
 const { tokens, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum } = useNumbers();
 const { t } = useI18n();
-const { userNetworkConfig } = useWeb3();
+const { userNetworkConfig, account } = useWeb3();
 
 /**
  * LIFECYCLE
@@ -96,6 +100,18 @@ function getInitialWeight(tokenAddress: string, tokenAmount: number) {
 
 function navigateToPoolFee() {
   setActiveStep(1);
+}
+
+function getSwapFeeManager() {
+  if (feeManagementType.value === 'governance') {
+    return t('balancerGovernance');
+  } else {
+    if (feeController.value === 'self') {
+      return `${t('myWallet')}: ${shortenLabel(account.value)}`;
+    } else {
+      return shortenLabel(thirdPartyFeeController.value);
+    }
+  }
 }
 </script>
 
@@ -194,6 +210,15 @@ function navigateToPoolFee() {
             <span class="text-sm">{{ $t('swapFee') }}:</span>
             <BalStack horizontal spacing="sm">
               <span class="text-sm">{{ fNum(initialFee, 'percent') }}</span>
+              <button class="hover:text-blue-500" @click="navigateToPoolFee">
+                <BalIcon name="edit" size="xs" />
+              </button>
+            </BalStack>
+          </BalStack>
+          <BalStack horizontal justify="between">
+            <span class="text-sm">{{ $t('swapFeeManager') }}:</span>
+            <BalStack horizontal spacing="sm">
+              <span class="text-sm">{{ getSwapFeeManager() }}</span>
               <button class="hover:text-blue-500" @click="navigateToPoolFee">
                 <BalIcon name="edit" size="xs" />
               </button>

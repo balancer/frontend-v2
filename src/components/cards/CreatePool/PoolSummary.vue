@@ -51,12 +51,10 @@ const chartConfig = computed(() => {
     },
     legend: {
       show: true,
+      type: 'scroll',
+      icon: 'circle',
       formatter: name => {
-        const tokenWeight =
-          (seedTokens.value.find(t => t.tokenAddress === name)?.weight || 0) /
-          100;
-        return `${fNum(tokenWeight, 'percent')} ${tokens.value[name]?.symbol ||
-          'N/A'}`;
+        return `${tokens.value[name]?.symbol || 'Unallocated'}`;
       },
       selectedMode: false,
       top: 'bottom'
@@ -189,8 +187,8 @@ async function calculateColors() {
     </div>
     <BalStack class="mb-2" vertical spacing="none" align="center">
       <BalStack horizontal spacing="xs">
-        <h6>{{ $t('createAPool.maxInitialLiquidity') }}</h6>
-        <BalTooltip>
+        <h6>{{ $t('inYourWallet') }}</h6>
+        <BalTooltip iconSize="sm" class="mt-1">
           {{ $t('createAPool.maxLiquidityTooltip') }}
         </BalTooltip>
       </BalStack>

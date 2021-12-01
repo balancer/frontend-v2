@@ -199,7 +199,7 @@ function onChangeFeeController(val: string) {
           class="ml-2 mt-2"
         />
       </BalStack>
-      <BalStack vertical spacing="xs" v-if="feeManagementType === 'self'">
+      <BalStack vertical spacing="sm" v-if="feeManagementType === 'self'">
         <h6 class="mb-1">{{ $t('createAPool.alternativeFeeManagement') }}</h6>
         <BalRadio
           v-model="feeType"
@@ -226,7 +226,7 @@ function onChangeFeeController(val: string) {
           </template>
         </BalRadio>
       </BalStack>
-      <BalStack vertical spacing="xs" v-if="feeType === 'dynamic'">
+      <BalStack vertical spacing="sm" v-if="feeType === 'dynamic'">
         <h6 class="mb-1">{{ $t('createAPool.setAnAddress') }}</h6>
         <BalRadio
           v-model="feeController"
