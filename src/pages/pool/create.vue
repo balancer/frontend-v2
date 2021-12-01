@@ -131,10 +131,9 @@ function setWrapperHeight(dimensions?: { width: number; height: number }) {
       mobileOffset += 90;
     }
     if (hasInjectedToken.value) {
-      mobileOffset +=  upToSmallBreakpoint.value ? 145 : 160;
+      mobileOffset += upToSmallBreakpoint.value ? 145 : 160;
     }
   }
-  console.log('set', mobileOffset)
   anime({
     targets: accordionWrapper.value,
     translateY: `${prevWrapperHeight.value + mobileOffset}px`,
@@ -163,7 +162,7 @@ function handleNavigate(stepIndex: number) {
 
 watch([hasInjectedToken, totalLiquidity], () => {
   setWrapperHeight();
-})
+});
 </script>
 
 <template>
