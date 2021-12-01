@@ -56,7 +56,9 @@ const {
   activeStep,
   similarPools,
   maxInitialLiquidity,
-  setActiveStep
+  setActiveStep,
+  hasInjectedToken,
+  seedTokens
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 
@@ -119,10 +121,18 @@ function getStepState(idx: number) {
 function setWrapperHeight(dimensions: { width: number; height: number }) {
   // need to transform the accordion as everything is absolutely
   // positioned inside the AnimateHeight component
-  let mobileOffset = 30;
-  if (upToLargeBreakpoint.value && maxInitialLiquidity.value < 20000) {
-    mobileOffset = 90;
+  const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
+
+  let mobileOffset = 50;
+  if (upToLargeBreakpoint.value) {
+    if (validTokens.length >= 2 && maxInitialLiquidity.value < 20000) {
+      mobileOffset += 90;
+    }
+    if (hasInjectedToken.value) {
+      mobileOffset += 145;
+    }
   }
+  console.log('set', mobileOffset);
   anime({
     targets: accordionWrapper.value,
     translateY: `${dimensions.height + mobileOffset}px`,
