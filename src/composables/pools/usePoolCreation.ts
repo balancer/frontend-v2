@@ -309,17 +309,17 @@ export default function usePoolCreation() {
     }
   }
 
-  function getTokensScaledByBIP(bip): Record<string, OptimisedLiquidity> {
+  function getTokensScaledByBIP(bip: BigNumber): Record<string, OptimisedLiquidity> {
     const optimisedLiquidity = {};
     for (const token of poolCreationState.seedTokens) {
       // get the price for a single token
       const tokenPrice = bnum(priceFor(token.tokenAddress));
       // the usd value needed for its weight
-      const liquidityRequired = bip.times(token.weight);
-      const balanceRequired = liquidityRequired.div(tokenPrice);
+      const liquidityRequired: BigNumber = bip.times(token.weight);
+      const balanceRequired: BigNumber = liquidityRequired.div(tokenPrice);
       optimisedLiquidity[token.tokenAddress] = {
         liquidityRequired: liquidityRequired.toString(),
-        balanceRequired: balanceRequired.toNumber()
+        balanceRequired: balanceRequired.toString()
       };
     }
     return optimisedLiquidity;
