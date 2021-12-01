@@ -168,6 +168,11 @@ export default {
       ...state.injectedTokens
     }));
 
+    const allTokens = computed(() => ({
+      ...mapTokenListTokens(Object.values(allTokenLists.value)),
+      ...state.injectedTokens
+    }));
+
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
 
     const wrappedNativeAsset = computed(
@@ -289,7 +294,7 @@ export default {
 
       if (isAddress(query)) {
         const address = getAddress(query);
-        const token = tokens.value[address];
+        const token = allTokens.value[address];
         if (token) {
           return { [address]: token };
         } else {
@@ -301,7 +306,7 @@ export default {
           }
         }
       } else {
-        const tokensArray = Object.entries(tokens.value);
+        const tokensArray = Object.entries(allTokens.value);
         const results = tokensArray.filter(
           ([, token]) =>
             token.name.toLowerCase().includes(query.toLowerCase()) ||
