@@ -13,6 +13,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { bnum, scale } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 import { TransactionResponse } from '@ethersproject/providers';
+import { POOLS } from '@/constants/pools';
 
 export type PoolSeedToken = {
   tokenAddress: string;
@@ -231,6 +232,18 @@ export default function usePoolCreation() {
     () => tokensList.value.length > 0
   );
 
+  const poolOwner = computed(() => {
+    if (poolCreationState.feeManagementType === 'governance') {
+      return POOLS.DelegateOwner
+    } else {
+      if (poolCreationState.feeController === 'self') {
+        return account.value
+      } else {
+        return poolCreationState.thirdPartyFeeController
+      }
+    }
+  });
+
   /**
    * FUNCTIONS
    */
@@ -373,9 +386,7 @@ export default function usePoolCreation() {
         poolCreationState.symbol,
         poolCreationState.initialFee,
         poolCreationState.seedTokens,
-        poolCreationState.feeController === 'other'
-          ? poolCreationState.thirdPartyFeeController
-          : AddressZero
+        poolOwner.value
       );
 
       addTransaction({
