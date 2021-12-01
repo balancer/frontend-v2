@@ -113,7 +113,7 @@ export default function useWithdrawMath(
   /**
    * The tokens being withdrawn
    * In most cases these are the same as the pool tokens
-   * except for Stable
+   * except for Stable Phantom pools
    */
   const withdrawalTokens = computed((): TokenInfo[] =>
     tokenAddresses.value.map(address => getToken(address))
@@ -310,6 +310,43 @@ export default function useWithdrawMath(
       pool.value && isStablePhantomPool.value && bnum(bptIn.value).gt(0)
   );
 
+  /**
+   * TODO - figure out how to detect when to use batch relayer
+   */
+  const shouldUseBatchRelayer = computed((): boolean => {
+    if (!isStablePhantomPool.value || !pool.value.onchain.linearPools)
+      return false;
+    // Need to get pool balances of Stables, e.g. Dai, USDC, USDT
+    console.log('pool', pool.value)
+    const poolStableBalances = Object.values(
+      pool.value.onchain.linearPools
+    ).map((linearPool, i) =>
+      formatUnits(
+        linearPool.mainToken.balance,
+        withdrawalTokens.value[i].decimals
+      )
+    );
+    console.log('poolStableBalances', poolStableBalances);
+    // Then account balances in stables using BPT of linear pools and price rate
+    const priceRates = Object.values(pool.value.onchain.linearPools).map(
+      linearPool => linearPool.priceRate
+    );
+    console.log('priceRates', priceRates)
+    console.log('proportionalPoolTokenAmounts', proportionalPoolTokenAmounts.value)
+    const accountStableBalances = proportionalPoolTokenAmounts.value.map(
+      (amount, i) =>
+        bnum(amount)
+          .times(priceRates[i])
+          .toFixed(withdrawalTokens.value[i].decimals, OldBigNumber.ROUND_UP)
+    );
+    console.log('accountStableBalances', accountStableBalances);
+
+    // Then compare the two, if account balance is greater than pool balance, we need the relayer
+    // caveat, if single asset we only need to compare that stable's balances
+    // if proportional exit then we need to check all
+    return false;
+  });
+
   // Token amounts out to pass in to batch swap transaction and used as limits.
   const batchSwapAmountsOutMap = computed(
     (): Record<string, BigNumber> => {
@@ -329,14 +366,7 @@ export default function useWithdrawMath(
     }
   );
 
-  /**
-   * TESTING
-   */
-
-  // Assumes proportional exit
-  // TODO - adjust for single asset case
-  // For single asset exact out case we need a new query batch swap function
-  // That takes amounts out and returns bptIn.
+  // An array of BPT values to be passed into the batch swap tx
   const batchSwapBPTIn = computed((): BigNumber[] => {
     if (singleAssetMaxOut.value) return [bptBalanceScaled.value];
     if (exactOut.value) {
@@ -373,17 +403,6 @@ export default function useWithdrawMath(
   );
 
   /**
-   * TODO - figure out how to detect when to use batch relayer
-   */
-  const shouldUseBatchRelayer = computed((): boolean => {
-    return false;
-  });
-
-  /**
-   * END TESTING
-   */
-
-  /**
    * METHODS
    */
   async function initMath(): Promise<void> {
@@ -412,7 +431,7 @@ export default function useWithdrawMath(
 
     amounts = amounts || batchSwapBPTIn.value;
     const tokensIn = amounts.map(() => pool.value.address);
-    const fetchPools = !batchSwap.value;
+    const fetchPools = !batchSwap.value; // Only needs to be fetched on first call
 
     const result = await balancer.swaps.queryBatchSwapWithSor({
       tokensIn: tokensIn,
@@ -457,6 +476,7 @@ export default function useWithdrawMath(
   watch(account, () => initMath());
 
   watch(fullAmounts, async () => {
+    shouldUseBatchRelayer.value;
     if (exactOut.value) {
       const amountsOut = fullAmountsScaled.value.filter(amount => amount.gt(0));
       batchSwap.value = await getBatchSwap(
