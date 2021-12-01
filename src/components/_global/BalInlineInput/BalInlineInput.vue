@@ -65,6 +65,7 @@ const emit = defineEmits<{
  * STATE
  */
 const isEditable = ref(false);
+const inputElement = ref<HTMLElement>();
 
 /**
  * COMPOSABLES
@@ -97,6 +98,11 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
  */
 function toggleEditable() {
   isEditable.value = !isEditable.value;
+  setTimeout(() => {
+    if (inputElement.value) {
+      inputElement.value.focus();
+    }
+  }, 200);
 }
 </script>
 
@@ -127,6 +133,7 @@ function toggleEditable() {
             @input="onInput"
             @keydown="onKeydown"
             :class="['input', inputClasses]"
+            ref="inputElement"
           />
           <BalStack horizontal spacing="none" align="center">
             <div v-if="$slots.append" :class="['append', appendClasses]">
