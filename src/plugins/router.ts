@@ -5,6 +5,7 @@ import PoolInvestPage from '@/pages/pool/invest.vue';
 import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/pages/trade.vue';
+import CreatePoolPage from '@/pages/pool/create.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -22,6 +23,11 @@ const routes: RouteRecordRaw[] = [
     redirect: to => {
       return `/trade${to.path.split('/swap')[1]}`;
     }
+  },
+  {
+    path: '/pool/create',
+    name: 'create-pool',
+    component: CreatePoolPage
   },
   {
     path: '/pool/:id',

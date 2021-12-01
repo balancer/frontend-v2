@@ -67,7 +67,11 @@ export interface TokensProviderResponse {
   refetchBalances: Ref<() => void>;
   refetchAllowances: Ref<() => void>;
   injectTokens: (addresses: string[]) => Promise<void>;
-  searchTokens: (query: string, excluded: string[]) => Promise<TokenInfoMap>;
+  searchTokens: (
+    query: string,
+    excluded: string[],
+    disableInjection?: boolean
+  ) => Promise<TokenInfoMap>;
   hasBalance: (address: string) => boolean;
   approvalRequired: (
     tokenAddress: string,
@@ -268,7 +272,8 @@ export default {
      */
     async function searchTokens(
       query: string,
-      excluded: string[] = []
+      excluded: string[] = [],
+      disableInjection = false
     ): Promise<TokenInfoMap> {
       if (!query) return removeExcluded(tokens.value, excluded);
 
@@ -278,8 +283,12 @@ export default {
         if (token) {
           return { [address]: token };
         } else {
-          await injectTokens([address]);
-          return pick(tokens.value, address);
+          if (!disableInjection) {
+            await injectTokens([address]);
+            return pick(tokens.value, address);
+          } else {
+            return { [address]: token };
+          }
         }
       } else {
         const tokensArray = Object.entries(tokens.value);

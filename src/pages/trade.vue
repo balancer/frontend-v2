@@ -74,7 +74,7 @@ onMounted(() => {
     </template>
     <div class="mt-8 p-4 sm:p-0 lg:p-0">
       <BalAccordion
-        class="accordion-mw w-full"
+        class="w-full"
         v-if="upToLargeBreakpoint"
         :sections="[
           { title: 'My wallet', id: 'my-wallet' },

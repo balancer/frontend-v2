@@ -16,10 +16,12 @@ type PoolsQueryResponse = {
   pools: DecoratedPool[];
   tokens: string[];
   skip?: number;
+  enabled?: boolean;
 };
 
 type FilterOptions = {
   poolIds?: Ref<string[]>;
+  isExactTokensList?: boolean;
   pageSize?: number;
 };
 
@@ -42,15 +44,18 @@ export default function usePoolsQuery(
   );
 
   // COMPUTED
-  const enabled = computed(() => !appLoading.value);
+  const enabled = computed(() => !appLoading.value && options.enabled);
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
+    const tokensListFilterKey = filterOptions?.isExactTokensList
+      ? 'tokensList'
+      : 'tokensList_contains';
     const queryArgs: any = {
       first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
       skip: pageParam,
       where: {
-        tokensList_contains: tokenList.value
+        [tokensListFilterKey]: tokenList.value
       }
     };
     if (filterOptions?.poolIds?.value.length) {

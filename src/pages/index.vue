@@ -2,7 +2,12 @@
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
     <template v-if="isWalletReady">
       <div class="px-4 lg:px-0">
-        <h3 class="mb-4">{{ $t('myV2Investments') }}</h3>
+        <BalStack horizontal justify="between" align="center">
+          <h3>{{ $t('myV2Investments') }}</h3>
+          <BalBtn @click="navigateToCreatePool" color="blue" size="sm">{{
+            $t('createAPool.title')
+          }}</BalBtn>
+        </BalStack>
       </div>
       <PoolsTable
         :isLoading="isLoadingUserPools"
@@ -22,12 +27,17 @@
     </template>
     <div class="px-4 lg:px-0">
       <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
-      <TokenSearchInput
-        v-model="selectedTokens"
-        :loading="isLoadingPools"
-        @add="addSelectedToken"
-        @remove="removeSelectedToken"
-      />
+      <BalStack horizontal justify="between" align="center">
+        <TokenSearchInput
+          v-model="selectedTokens"
+          :loading="isLoadingPools"
+          @add="addSelectedToken"
+          @remove="removeSelectedToken"
+        />
+        <BalBtn @click="navigateToCreatePool" color="blue" size="sm">{{
+          $t('createAPool.title')
+        }}</BalBtn>
+      </BalStack>
     </div>
 
     <PoolsTable
@@ -129,6 +139,13 @@ export default defineComponent({
       }
     });
 
+    /**
+     * METHODS
+     */
+    function navigateToCreatePool() {
+      router.push({ name: 'create-pool' });
+    }
+
     return {
       // data
       filteredPools,
@@ -149,6 +166,7 @@ export default defineComponent({
       loadMorePools,
       addSelectedToken,
       removeSelectedToken,
+      navigateToCreatePool,
 
       // constants
       EXTERNAL_LINKS

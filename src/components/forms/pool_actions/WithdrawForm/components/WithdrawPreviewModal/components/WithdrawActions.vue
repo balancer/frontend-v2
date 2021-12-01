@@ -4,10 +4,7 @@ import { getPoolWeights } from '@/services/pool/pool.helper';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
-import {
-  Step,
-  StepState
-} from '@/components/_global/BalHorizSteps/BalHorizSteps.vue';
+import { Step, StepState } from '@/types';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
