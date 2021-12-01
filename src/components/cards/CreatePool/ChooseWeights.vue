@@ -389,15 +389,15 @@ function handleProceed() {
             }}</BalAlert
           >
         </AnimatePresence>
-        <AnimatePresence
-          :isVisible="zeroWeightToken"
-          unmountInstantly
-        >
+        <AnimatePresence :isVisible="zeroWeightToken" unmountInstantly>
           <BalAlert :title="$t('createAPool.zeroWeightTitle')" type="error">{{
             $t('createAPool.totalWeightAlert')
           }}</BalAlert>
         </AnimatePresence>
-        <AnimatePresence :isVisible="Number(totalWeight) > 100 || Number(totalWeight) <= 0" unmountInstantly>
+        <AnimatePresence
+          :isVisible="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
+          unmountInstantly
+        >
           <BalAlert
             :title="$t('createAPool.totalWeightAlertTitle')"
             type="error"

@@ -83,6 +83,7 @@
     "copyAddress": "Copy address",
     "create": "Create",
     "createAPool": {
+        "title": "Create a pool",
         "governanceFees": "Allow Balancer governance to manage fees",
         "swapFeeSuggestion": "0.30% is best for most weighted pools with established tokens. Go higher for more exotic pairs.",
         "governanceFeesTooltip": "Enable this to give Balancer governance the ability to dynamically manage the fees of this pool in order to maximize profits. But note, Balancer governance is under no obligation to actually manage the fees and will likely only do so if there is significant trading volume.",
