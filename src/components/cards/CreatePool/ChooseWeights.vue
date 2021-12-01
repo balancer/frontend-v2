@@ -94,6 +94,7 @@ const totalAllocatedWeight = computed(() => {
 
 const totalWeight = computed(() => {
   const pct = sumBy(seedTokens.value, 'weight');
+  console.log('pct', pct);
   return pct.toFixed(2);
 });
 
@@ -389,14 +390,14 @@ function handleProceed() {
           >
         </AnimatePresence>
         <AnimatePresence
-          :isVisible="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
+          :isVisible="zeroWeightToken"
           unmountInstantly
         >
           <BalAlert :title="$t('createAPool.zeroWeightTitle')" type="error">{{
             $t('createAPool.totalWeightAlert')
           }}</BalAlert>
         </AnimatePresence>
-        <AnimatePresence :isVisible="zeroWeightToken" unmountInstantly>
+        <AnimatePresence :isVisible="Number(totalWeight) > 100 || Number(totalWeight) <= 0" unmountInstantly>
           <BalAlert
             :title="$t('createAPool.totalWeightAlertTitle')"
             type="error"
