@@ -14,7 +14,8 @@ module.exports = {
         /^hover:/,
         'dark',
         /^dark:/,
-        /^mr/
+        /^mr/,
+        /^w/
       ]
     }
   },
