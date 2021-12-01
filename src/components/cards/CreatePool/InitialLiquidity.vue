@@ -9,7 +9,6 @@ import useNumbers from '@/composables/useNumbers';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import { useI18n } from 'vue-i18n';
-import { sumBy } from 'lodash';
 
 /**
  * STATE
@@ -48,12 +47,8 @@ const tokenAddresses = ref([] as string[]);
  * COMPUTED
  */
 const areAmountsMaxed = computed(() => {
-  // need to perform rounding here as JS cuts off those
-  // really long numbers which makes it impossible to compare
-  const isMaxed = seedTokens.value.every(
-    t =>
-      Number(Number(t.amount).toFixed(6)) ===
-      Number(Number(balanceFor(t.tokenAddress)).toFixed(6))
+  const isMaxed = seedTokens.value.every(t =>
+    bnum(t.amount).eq(balanceFor(t.tokenAddress))
   );
   return isMaxed;
 });
@@ -61,26 +56,25 @@ const areAmountsMaxed = computed(() => {
 const isExceedingWalletBalance = computed(() => {
   // need to perform rounding here as JS cuts off those
   // really long numbers which makes it impossible to compare
-  const isExceeding = seedTokens.value.some(
-    t =>
-      Number(Number(t.amount).toFixed(6)) >
-      Number(Number(balanceFor(t.tokenAddress)).toFixed(6))
+  const isExceeding = seedTokens.value.some(t =>
+    bnum(t.amount).gt(balanceFor(t.tokenAddress))
   );
   return isExceeding;
 });
 
 const arbitrageDelta = computed(() => {
-  const totalPctDelta = sumBy(seedTokens.value, t => {
-    const initialPct =
-      (t.amount * priceFor(t.tokenAddress)) / poolLiquidity.value;
-    const expectedPct = t.weight / 100;
-    const delta = Math.abs(initialPct - expectedPct);
-    return delta;
-  });
-
+  let totalPctDelta = bnum(0);
+  for (const token of seedTokens.value) {
+    const initialPct = bnum(token.amount)
+      .times(priceFor(token.tokenAddress))
+      .div(poolLiquidity.value);
+    const expectedPct = token.weight / 100;
+    const delta = initialPct.minus(expectedPct).abs();
+    totalPctDelta = totalPctDelta.plus(delta);
+  }
   return {
     delta: totalPctDelta,
-    value: totalPctDelta * poolLiquidity.value
+    value: totalPctDelta.times(poolLiquidity.value)
   };
 });
 
@@ -231,20 +225,24 @@ function handleClearAll() {
         />
       </BalStack>
       <BalStack horizontal spacing="sm" align="center">
-        <span class="text-sm pl-2">{{
-          t('autoOptimiseLiquidityToggle.label')
-        }}</span>
-        <BalToggle
-          name="autoOptimise"
-          :checked="autoOptimiseBalances"
-          @toggle="toggleAutoOptimise"
-        />
-        <BalTooltip width="64">
-          <template v-slot:activator>
-            <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
-          </template>
-          <div v-html="t('autoOptimiseLiquidityToggle.tooltip')" />
-        </BalTooltip>
+        <div>
+          <span class="text-sm pl-2">{{
+            t('autoOptimiseLiquidityToggle.label')
+          }}</span>
+          <BalTooltip width="64">
+            <template v-slot:activator>
+              <BalIcon name="info" size="xs" class="text-gray-400 ml-1 flex" />
+            </template>
+            <div v-html="t('autoOptimiseLiquidityToggle.tooltip')" />
+          </BalTooltip>
+        </div>
+        <div>
+          <BalToggle
+            name="autoOptimise"
+            :checked="autoOptimiseBalances"
+            @toggle="toggleAutoOptimise"
+          />
+        </div>
       </BalStack>
       <div class="p-3 border rounded-lg">
         <BalStack horizontal justify="between">

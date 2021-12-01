@@ -1,5 +1,5 @@
 import { PoolType } from '@/services/balancer/subgraph/types';
-import { flatten, minBy, sumBy } from 'lodash';
+import { flatten, sumBy } from 'lodash';
 import { ref, reactive, toRefs, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
@@ -9,22 +9,22 @@ import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import { configService } from '@/services/config/config.service';
 import { balancerService } from '@/services/balancer/balancer.service';
-import { AddressZero } from '@ethersproject/constants';
 import { bnum, scale } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 import { TransactionResponse } from '@ethersproject/providers';
+import { POOLS } from '@/constants/pools';
 
 export type PoolSeedToken = {
   tokenAddress: string;
   weight: number;
   isLocked: boolean;
-  amount: number;
+  amount: string;
   id: string;
 };
 
 export type OptimisedLiquidity = {
   liquidityRequired: string;
-  balanceRequired: number;
+  balanceRequired: string;
 };
 
 type FeeManagementType = 'governance' | 'self';
@@ -41,7 +41,7 @@ const emptyPoolCreationState = {
   feeType: 'fixed' as FeeType,
   feeController: 'self' as FeeController,
   thirdPartyFeeController: '',
-  fee: 0.1,
+  fee: '',
   tokensList: [] as string[],
   poolId: '' as string,
   poolAddress: '',
@@ -105,10 +105,18 @@ export default function usePoolCreation() {
       const optimisedLiquidity = {};
 
       // token with the lowest balance is the bottleneck
-      const bottleneckToken = minBy(
-        validTokens,
-        token => Number(balanceFor(token)) * Number(priceFor(token))
+      let bottleneckToken = validTokens[0];
+      // keeping track of the lowest amt
+      let currentMin = bnum(balanceFor(validTokens[0])).times(
+        priceFor(validTokens[0])
       );
+      for (const token of validTokens) {
+        const value = bnum(balanceFor(token)).times(priceFor(token));
+        if (value.lt(currentMin)) {
+          currentMin = value;
+          bottleneckToken = token;
+        }
+      }
       if (!bottleneckToken) return optimisedLiquidity;
 
       const bottleneckWeight =
@@ -149,22 +157,29 @@ export default function usePoolCreation() {
   });
 
   const totalLiquidity = computed(() => {
-    return sumBy(tokensList.value, t => priceFor(t) * Number(balanceFor(t)));
+    let total = bnum(0);
+    for (const token of tokensList.value) {
+      total = total.plus(bnum(priceFor(token)).times(balanceFor(token)));
+    }
+    return total;
   });
 
   const currentLiquidity = computed(() => {
-    let total = 0;
+    let total = bnum(0);
     for (const token of poolCreationState.seedTokens) {
-      total = total + priceFor(token.tokenAddress) * token.amount;
+      total = total.plus(
+        bnum(token.amount).times(priceFor(token.tokenAddress))
+      );
     }
     return total;
   });
 
   const poolLiquidity = computed(() => {
-    return sumBy(
-      poolCreationState.seedTokens,
-      tw => priceFor(tw.tokenAddress) * tw.amount
-    );
+    let sum = bnum(0);
+    for (const token of poolCreationState.seedTokens) {
+      sum = sum.plus(bnum(token.amount).times(priceFor(token.tokenAddress)));
+    }
+    return sum;
   });
 
   const poolTypeString = computed((): string => {
@@ -215,6 +230,18 @@ export default function usePoolCreation() {
   const isSimilarPoolsQueryEnabled = computed(
     () => tokensList.value.length > 0
   );
+
+  const poolOwner = computed(() => {
+    if (poolCreationState.feeManagementType === 'governance') {
+      return POOLS.DelegateOwner;
+    } else {
+      if (poolCreationState.feeController === 'self') {
+        return account.value;
+      } else {
+        return poolCreationState.thirdPartyFeeController;
+      }
+    }
+  });
 
   /**
    * FUNCTIONS
@@ -296,27 +323,29 @@ export default function usePoolCreation() {
 
   function clearAmounts() {
     for (const token of poolCreationState.seedTokens) {
-      token.amount = 0;
+      token.amount = '0';
     }
   }
 
   function setAmountsToMaxBalances() {
     for (const token of poolCreationState.seedTokens) {
-      token.amount = Number(balanceFor(token.tokenAddress));
+      token.amount = balanceFor(token.tokenAddress);
     }
   }
 
-  function getTokensScaledByBIP(bip): Record<string, OptimisedLiquidity> {
+  function getTokensScaledByBIP(
+    bip: BigNumber
+  ): Record<string, OptimisedLiquidity> {
     const optimisedLiquidity = {};
     for (const token of poolCreationState.seedTokens) {
       // get the price for a single token
       const tokenPrice = bnum(priceFor(token.tokenAddress));
       // the usd value needed for its weight
-      const liquidityRequired = bip.times(token.weight);
-      const balanceRequired = liquidityRequired.div(tokenPrice);
+      const liquidityRequired: BigNumber = bip.times(token.weight);
+      const balanceRequired: BigNumber = liquidityRequired.div(tokenPrice);
       optimisedLiquidity[token.tokenAddress] = {
         liquidityRequired: liquidityRequired.toString(),
-        balanceRequired: balanceRequired.toNumber()
+        balanceRequired: balanceRequired.toString()
       };
     }
     return optimisedLiquidity;
@@ -356,9 +385,7 @@ export default function usePoolCreation() {
         poolCreationState.symbol,
         poolCreationState.initialFee,
         poolCreationState.seedTokens,
-        poolCreationState.feeController === 'other'
-          ? poolCreationState.thirdPartyFeeController
-          : AddressZero
+        poolOwner.value
       );
 
       addTransaction({

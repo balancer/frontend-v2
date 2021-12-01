@@ -97,7 +97,7 @@
         "poolSummary": "Pool summary",
         "maxInitialLiquidity": "Max initial liquidity",
         "setPoolFees": "Set pool fees",    
-        "bestFeeOption": "0.30% is best for most weighted pool with established tokens. Go higher for more exotic pairs.",
+        "bestFeeOption": "0.30% is best for most weighted pools with established tokens. Go higher for more exotic tokens.",
         "alternativeFeeManagement": "Alternative fee management options",
         "chooseTokenWeights": "Choose tokens & weights",
         "existingPoolInfo": "There’s already another pool with exactly the same tokens and fee structure. It’s recommended to add your liquidity to the other pool or to go back and change your Pool Creation parameters in a material way to avoid fractured liquidity and lower profits for both pools.",

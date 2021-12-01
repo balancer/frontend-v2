@@ -38,7 +38,8 @@ const {
   updateTokenWeights,
   proceed,
   maxInitialLiquidity,
-  tokensList
+  tokensList,
+  totalLiquidity
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { fNum } = useNumbers();
@@ -383,7 +384,7 @@ function handleProceed() {
             type="warning"
             >{{
               $t('createAPool.youCanFundWithThisPoolWith', [
-                fNum(maxInitialLiquidity, 'usd')
+                fNum(totalLiquidity, 'usd')
               ])
             }}</BalAlert
           >

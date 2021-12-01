@@ -196,7 +196,7 @@ function onChangeFeeController(val: string) {
         <BalTooltip
           :text="$t('createAPool.governanceFeesTooltip')"
           icon-size="sm"
-          class="ml-2 mt-2"
+          class="ml-2 mt-1"
         />
       </BalStack>
       <BalStack vertical spacing="sm" v-if="feeManagementType === 'self'">
