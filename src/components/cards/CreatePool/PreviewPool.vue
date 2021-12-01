@@ -37,7 +37,7 @@ const {
   symbol: poolSymbol,
   setActiveStep,
   useNativeAsset,
-  sortTokenWeights,
+  sortSeedTokens,
   feeManagementType,
   feeController,
   thirdPartyFeeController
@@ -52,7 +52,7 @@ const { userNetworkConfig, account } = useWeb3();
  * LIFECYCLE
  */
 onBeforeMount(() => {
-  sortTokenWeights();
+  sortSeedTokens();
 });
 
 /**

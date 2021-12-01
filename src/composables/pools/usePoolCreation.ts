@@ -92,7 +92,11 @@ export default function usePoolCreation() {
   /**
    * COMPUTED
    */
-  const tokensList = computed(() => poolCreationState.tokensList);
+  const tokensList = computed(() =>
+    [...poolCreationState.tokensList].sort((tokenA, tokenB) => {
+      return tokenA > tokenB ? 1 : -1;
+    })
+  );
 
   const optimisedLiquidity = computed(
     (): Record<string, OptimisedLiquidity> => {
@@ -234,7 +238,7 @@ export default function usePoolCreation() {
     poolCreationState.seedTokens = weights;
   }
 
-  function sortTokenWeights() {
+  function sortSeedTokens() {
     poolCreationState.seedTokens.sort((tokenA, tokenB) => {
       return tokenA.tokenAddress > tokenB.tokenAddress ? 1 : -1;
     });
@@ -447,7 +451,7 @@ export default function usePoolCreation() {
     joinPool,
     setActiveStep,
     updateManuallySetToken,
-    sortTokenWeights,
+    sortSeedTokens,
     clearAmounts,
     setAmountsToMaxBalances,
     currentLiquidity,
