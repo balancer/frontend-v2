@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
@@ -47,7 +47,7 @@ const exitAnimateProps = {
  */
 const accordionWrapper = ref<HTMLElement>();
 const hasCompletedMountAnimation = ref(false);
-
+const prevWrapperHeight = ref(0);
 /**
  * COMPOSABLES
  */
@@ -56,9 +56,12 @@ const {
   activeStep,
   similarPools,
   maxInitialLiquidity,
-  setActiveStep
+  setActiveStep,
+  hasInjectedToken,
+  seedTokens,
+  totalLiquidity
 } = usePoolCreation();
-const { upToLargeBreakpoint } = useBreakpoints();
+const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
 
 onMounted(() => {
   if (accordionWrapper.value) {
@@ -116,16 +119,24 @@ function getStepState(idx: number) {
   }
 }
 
-function setWrapperHeight(dimensions: { width: number; height: number }) {
+function setWrapperHeight(dimensions?: { width: number; height: number }) {
   // need to transform the accordion as everything is absolutely
   // positioned inside the AnimateHeight component
-  let mobileOffset = 30;
-  if (upToLargeBreakpoint.value && maxInitialLiquidity.value < 20000) {
-    mobileOffset = 90;
+  const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
+  if (dimensions?.height) prevWrapperHeight.value = dimensions.height;
+
+  let mobileOffset = 50;
+  if (upToLargeBreakpoint.value) {
+    if (validTokens.length >= 2 && maxInitialLiquidity.value < 20000) {
+      mobileOffset += 90;
+    }
+    if (hasInjectedToken.value) {
+      mobileOffset += upToSmallBreakpoint.value ? 145 : 160;
+    }
   }
   anime({
     targets: accordionWrapper.value,
-    translateY: `${dimensions.height + mobileOffset}px`,
+    translateY: `${prevWrapperHeight.value + mobileOffset}px`,
     easing: 'spring(0.4, 500, 9, 0)',
     complete: () => {
       if (!hasCompletedMountAnimation.value) {
@@ -144,6 +155,14 @@ function setWrapperHeight(dimensions: { width: number; height: number }) {
 function handleNavigate(stepIndex: number) {
   setActiveStep(stepIndex);
 }
+
+/**
+ * WATCHERS
+ */
+
+watch([hasInjectedToken, totalLiquidity], () => {
+  setWrapperHeight();
+});
 </script>
 
 <template>

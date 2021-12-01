@@ -49,7 +49,8 @@ const emptyPoolCreationState = {
   manuallySetToken: '' as string,
   autoOptimiseBalances: false,
   useNativeAsset: false,
-  type: PoolType.Weighted
+  type: PoolType.Weighted,
+  acceptedCustomTokenDisclaimer: false
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
@@ -64,7 +65,8 @@ export default function usePoolCreation() {
     priceFor,
     getToken,
     nativeAsset,
-    wrappedNativeAsset
+    wrappedNativeAsset,
+    injectedTokens
   } = useTokens();
   const { account, getProvider } = useWeb3();
   const { txListener } = useEthers();
@@ -97,6 +99,12 @@ export default function usePoolCreation() {
       return tokenA > tokenB ? 1 : -1;
     })
   );
+
+  const hasInjectedToken = computed(() => {
+    return tokensList.value.some(
+      token => injectedTokens.value[token]?.symbol !== undefined
+    );
+  });
 
   const optimisedLiquidity = computed(
     (): Record<string, OptimisedLiquidity> => {
@@ -460,6 +468,10 @@ export default function usePoolCreation() {
     poolCreationState.activeStep = step;
   }
 
+  function acceptCustomTokenDisclaimer() {
+    poolCreationState.acceptedCustomTokenDisclaimer = true;
+  }
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -481,6 +493,7 @@ export default function usePoolCreation() {
     sortSeedTokens,
     clearAmounts,
     setAmountsToMaxBalances,
+    acceptCustomTokenDisclaimer,
     currentLiquidity,
     optimisedLiquidity,
     scaledLiquidity,
@@ -493,6 +506,7 @@ export default function usePoolCreation() {
     poolLiquidity,
     poolTypeString,
     tokenColors,
-    isWethPool
+    isWethPool,
+    hasInjectedToken
   };
 }
