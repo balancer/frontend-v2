@@ -69,7 +69,7 @@
         },
         {
             "label": "TUSD",
-            "distributor": "0x0000000000000000000000000000000000000000",
+            "distributor": "0x09f3010ec0f6d72ef8ff2008f8e756d60482c9a8",
             "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-tusd-polygon.json",
             "weekStart": 1
