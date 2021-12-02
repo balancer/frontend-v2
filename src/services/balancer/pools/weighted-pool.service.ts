@@ -14,6 +14,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { scale } from '@/lib/utils';
+import TOPICS from '@/constants/topics';
 
 type Address = string;
 
@@ -85,10 +86,7 @@ export default class WeightedPoolService {
 
     if (!poolAddress) {
       const logs = receipt.logs.filter(
-        l =>
-          l.topics?.length > 0 &&
-          l.topics[0] ===
-            '0xa9ba3ffe0b6c366b81232caab38605a0699ad5398d6cce76f91ee809e322dafc' // PoolCreated topic
+        l => l.topics?.length > 0 && l.topics[0] === TOPICS.PoolCreated
       );
       poolAddress = logs[0].address;
     }
