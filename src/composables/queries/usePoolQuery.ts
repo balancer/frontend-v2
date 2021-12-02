@@ -126,7 +126,9 @@ export default function usePoolQuery(
 
     if (isBlocked(pool)) throw new Error('Pool not allowed');
 
-    if (isStablePhantom(pool.poolType)) {
+    const isStablePhantomPool = isStablePhantom(pool.poolType);
+
+    if (isStablePhantomPool) {
       pool = removePreMintedBPT(pool);
       pool = await getLinearPoolAttrs(pool);
     }
@@ -157,8 +159,20 @@ export default function usePoolQuery(
       currency.value
     );
 
-    // console.log('pool', { onchain: onchainData, ...decoratedPool });
-    return { onchain: onchainData, ...decoratedPool };
+    let unwrappedTokens: Pool['unwrappedTokens'];
+
+    if (isStablePhantomPool && onchainData.linearPools != null) {
+      unwrappedTokens = Object.entries(onchainData.linearPools).map(
+        ([, linearPool]) => linearPool.unwrappedTokenAddress
+      );
+    }
+
+    console.log('pool', {
+      onchain: onchainData,
+      unwrappedTokens,
+      ...decoratedPool
+    });
+    return { onchain: onchainData, unwrappedTokens, ...decoratedPool };
   };
 
   const queryOptions = reactive({

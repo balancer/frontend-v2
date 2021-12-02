@@ -5,6 +5,8 @@ import {
   InvestmentPool__factory
 } from '@balancer-labs/typechain';
 import LinearPoolAbi from '@/lib/abi/LinearPool.json';
+import StaticATokenLMAbi from '@/lib/abi/StaticATokenLM.json';
+
 import StablePhantomPool from '@/lib/abi/StablePhantomPool.json';
 import { Config } from '@/lib/config';
 import { JsonRpcProvider } from '@ethersproject/providers';
@@ -38,6 +40,7 @@ export default class BalancerContractsService {
           ...InvestmentPool__factory.abi,
           ...StablePhantomPool,
           ...LinearPoolAbi,
+          ...StaticATokenLMAbi,
           ...ERC20_ABI
         ].map(row => [row.name, row])
       )

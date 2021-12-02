@@ -144,7 +144,8 @@ export default defineComponent({
   props: {
     open: { type: Boolean, default: false },
     excludedTokens: { type: Array as PropType<string[]>, default: () => [] },
-    includeEther: { type: Boolean, default: false }
+    includeEther: { type: Boolean, default: false },
+    disableInjection: { type: Boolean, default: false }
   },
 
   setup(props, { emit }) {
@@ -225,7 +226,11 @@ export default defineComponent({
 
     async function onToggleList(uri: string): Promise<void> {
       toggleTokenList(uri);
-      state.results = await searchTokens(state.query, excludedTokens.value);
+      state.results = await searchTokens(
+        state.query,
+        excludedTokens.value,
+        props.disableInjection
+      );
     }
 
     function onListExit(): void {
@@ -244,7 +249,11 @@ export default defineComponent({
     watch(
       toRef(state, 'query'),
       async newQuery => {
-        state.results = await searchTokens(newQuery, excludedTokens.value);
+        state.results = await searchTokens(
+          newQuery,
+          excludedTokens.value,
+          props.disableInjection
+        );
       },
       { immediate: true }
     );

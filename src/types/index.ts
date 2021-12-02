@@ -51,3 +51,19 @@ export type BatchSwapOut = {
   swaps: BatchSwapStep[];
   assets: string[];
 };
+
+export enum StepState {
+  Todo,
+  Active,
+  WalletOpen,
+  Pending,
+  Success,
+  Warning,
+  Error,
+  Completed
+}
+
+export type Step = {
+  tooltip: string;
+  state: StepState;
+};

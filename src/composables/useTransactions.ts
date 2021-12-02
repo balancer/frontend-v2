@@ -39,7 +39,9 @@ export type TransactionAction =
   | 'wrap'
   | 'unwrap'
   | 'invest'
-  | 'withdraw';
+  | 'withdraw'
+  | 'createPool'
+  | 'fundPool';
 
 export type TransactionType = 'order' | 'tx';
 
