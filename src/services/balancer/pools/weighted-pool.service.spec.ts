@@ -4,8 +4,7 @@ import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import WeightedPoolsService, { JoinPoolRequest } from './weighted-pool.service';
 import BigNumber from 'bignumber.js';
 import { WeightedPoolEncoder } from '@balancer-labs/balancer-js';
-import polygonCreatePoolTransactionReceipt from './__mocks__/polygon-create-pool-receipt';
-import polygonCreatePoolTransactionReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
+import polygonCreatePoolReceiptNoEvents from './__mocks__/polygon-create-pool-receipt-no-events';
 import polygonCreatePoolReceipt from './__mocks__/polygon-create-pool-receipt';
 
 const tokens: Record<string, PoolSeedToken> = {};
@@ -151,24 +150,38 @@ describe('PoolCreator', () => {
     });
 
     it('should work with a polygon create pool transaction receipt', async () => {
-      const mockTransactionResponse: TransactionResponse = Object.assign({}, createPoolTransaction);
-      mockTransactionResponse.wait = jest.fn().mockImplementation(() => polygonCreatePoolReceipt);
+      const mockTransactionResponse: TransactionResponse = Object.assign(
+        {},
+        createPoolTransaction
+      );
+      mockTransactionResponse.wait = jest
+        .fn()
+        .mockImplementation(() => polygonCreatePoolReceipt);
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
         mockTransactionResponse
       );
-      expect(poolDetails.address.toLowerCase()).toEqual('0x3bb9d50a0743103f896d823b332ee15e231848d1');
+      expect(poolDetails.address.toLowerCase()).toEqual(
+        '0x3bb9d50a0743103f896d823b332ee15e231848d1'
+      );
     });
 
     it('should work with a polygon create pool transaction receipt with no events', async () => {
-      const mockTransactionResponse: TransactionResponse = Object.assign({}, createPoolTransaction);
-      mockTransactionResponse.wait = jest.fn().mockImplementation(() => polygonCreatePoolTransactionReceiptNoEvents);
+      const mockTransactionResponse: TransactionResponse = Object.assign(
+        {},
+        createPoolTransaction
+      );
+      mockTransactionResponse.wait = jest
+        .fn()
+        .mockImplementation(() => polygonCreatePoolReceiptNoEvents);
       const poolDetails = await weightedPoolsService.details(
         mockProvider,
         mockTransactionResponse
       );
-      expect(poolDetails.address.toLowerCase()).toEqual('0x92e244b931bd6c71c1db2e50326480a0ba530fc7');
-    })
+      expect(poolDetails.address.toLowerCase()).toEqual(
+        '0x92e244b931bd6c71c1db2e50326480a0ba530fc7'
+      );
+    });
   });
 
   describe('initJoin', () => {
