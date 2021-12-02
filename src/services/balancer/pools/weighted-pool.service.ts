@@ -14,6 +14,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { PoolSeedToken } from '@/composables/pools/usePoolCreation';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { scale } from '@/lib/utils';
+import TOPICS from '@/constants/topics';
 
 type Address = string;
 
@@ -75,8 +76,20 @@ export default class WeightedPoolService {
     createPoolTransaction: TransactionResponse
   ): Promise<CreatePoolReturn> {
     const receipt: any = await createPoolTransaction.wait();
-    const events = receipt.events.filter(e => e.event === 'PoolCreated');
-    const poolAddress = events[0].args[0];
+    let poolAddress;
+    if (receipt.events) {
+      const events = receipt.events.filter(e => e.event === 'PoolCreated');
+      if (events.length > 0 && events[0].args.length > 0) {
+        poolAddress = events[0].args[0];
+      }
+    }
+
+    if (!poolAddress) {
+      const logs = receipt.logs.filter(
+        l => l.topics?.length > 0 && l.topics[0] === TOPICS.PoolCreated
+      );
+      poolAddress = logs[0].address;
+    }
 
     const pool = new Contract(poolAddress, WeightedPool__factory.abi, provider);
     const poolId = await pool.getPoolId();
