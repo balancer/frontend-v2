@@ -1,7 +1,6 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
-import { mapValues, tail } from 'lodash';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
@@ -64,11 +63,7 @@ export default function usePoolSnapshotsQuery(
 
       return {
         prices,
-        snapshots: mapValues(snapshots, snapshot => ({
-          ...snapshot,
-          // remove pool token
-          amounts: tail(snapshot.amounts)
-        }))
+        snapshots
       };
     } else {
       let tokens = pool.value.tokenAddresses;
