@@ -6,6 +6,7 @@ export type TokenClaimInfo = {
   label: string;
   distributor: string;
   token: string;
+  decimals: number;
   manifest: string;
   weekStart: number;
 };
@@ -51,6 +52,7 @@ export type ComputeClaimProofPayload = {
   claim: Claim;
   distributor: string;
   tokenIndex: number;
+  decimals: number;
 };
 
 export type ClaimWorkerMessage<P = any> = {

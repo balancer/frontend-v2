@@ -3,6 +3,8 @@ import { Ref, computed } from 'vue';
 export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const extPaddingClass = (): string => {
     switch (props.size) {
+      case 'xs':
+        return 'p-1';
       case 'sm':
         return 'p-1';
       case 'lg':
@@ -14,6 +16,8 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
 
   const intPaddingClass = (): string => {
     switch (props.size) {
+      case 'xs':
+        return 'p-px';
       case 'sm':
         return 'p-px';
       case 'lg':
@@ -25,6 +29,8 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
 
   const inputTextSize = (): string => {
     switch (props.size) {
+      case 'xs':
+        return 'text-base';
       case 'sm':
         return 'text-base';
       case 'lg':
@@ -36,6 +42,8 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
 
   const inputHeightClass = (): string => {
     switch (props.size) {
+      case 'xs':
+        return 'h-6';
       case 'sm':
         return 'h-8';
       case 'lg':
@@ -48,9 +56,10 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
   const parentClasses = computed(() => attrs.class);
 
   const inputContainerClasses = computed(() => ({
-    'border border-gray-100 dark:border-gray-800': true,
+    'border border-gray-100 dark:border-gray-800': !props.noBorder,
     [extPaddingClass()]: true,
-    'border-red-500 dark:border-red-500': isInvalid.value
+    'border-red-500 dark:border-red-500': isInvalid.value,
+    'shadow-inner': !props.noShadow
   }));
 
   const inputGroupClasses = computed(() => ({
@@ -80,6 +89,10 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
     [inputHeightClass()]: true
   }));
 
+  const borderRadiusClasses = computed(() => ({
+    'rounded-lg': !props.noRadius
+  }));
+
   return {
     parentClasses,
     inputContainerClasses,
@@ -88,6 +101,7 @@ export default function useInputStyles(props, isInvalid: Ref<boolean>, attrs) {
     footerClasses,
     inputClasses,
     prependClasses,
-    appendClasses
+    appendClasses,
+    borderRadiusClasses
   };
 }
