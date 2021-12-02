@@ -310,44 +310,19 @@ export default function useWithdrawMath(
       pool.value && isStablePhantomPool.value && bnum(bptIn.value).gt(0)
   );
 
-  /**
-   * TODO - figure out how to detect when to use batch relayer
-   */
   const shouldUseBatchRelayer = computed((): boolean => {
     if (!isStablePhantomPool.value || !pool.value.onchain.linearPools)
       return false;
-    // Need to get pool balances of Stables, e.g. Dai, USDC, USDT
-    console.log('pool', pool.value);
-    const poolStableBalances = Object.values(
-      pool.value.onchain.linearPools
-    ).map((linearPool, i) =>
-      formatUnits(
-        linearPool.mainToken.balance,
-        withdrawalTokens.value[i].decimals
-      )
-    );
-    console.log('poolStableBalances', poolStableBalances);
-    // Then account balances in stables using BPT of linear pools and price rate
-    const priceRates = Object.values(pool.value.onchain.linearPools).map(
-      linearPool => linearPool.priceRate
-    );
-    console.log('priceRates', priceRates);
-    console.log(
-      'proportionalPoolTokenAmounts',
-      proportionalPoolTokenAmounts.value
-    );
-    const accountStableBalances = proportionalPoolTokenAmounts.value.map(
-      (amount, i) =>
-        bnum(amount)
-          .times(priceRates[i])
-          .toFixed(withdrawalTokens.value[i].decimals, OldBigNumber.ROUND_UP)
-    );
-    console.log('accountStableBalances', accountStableBalances);
 
-    // const diffs =
+    // TODO - check with Fer / Nico if buffer required, e.g.
+    // If pool stable balances below certain threshold, use batch relayer
 
-    // Then compare the two, if account balance is greater than pool balance, we need the relayer
-    // caveat, if single asset we only need to compare that stable's balances
+    // If batchSwap has any 0 return amounts, we should use batch relayer
+    if (batchSwap.value) {
+      const returnAmounts = batchSwap.value.returnAmounts;
+    }
+
+    // If single asset we only need to compare that stable's balances
     // if proportional exit then we need to check all
     return false;
   });
