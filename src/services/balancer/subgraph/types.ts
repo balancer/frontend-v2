@@ -23,7 +23,7 @@ export interface PoolToken {
   balance: string;
   weight: string;
   priceRate: string | null;
-  apr?: string;
+  symbol?: string;
 }
 
 export interface RawPoolTokens {

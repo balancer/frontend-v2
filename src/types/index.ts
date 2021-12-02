@@ -45,6 +45,22 @@ export type BatchSwap = {
   assets: string[];
 };
 
+export enum StepState {
+  Todo,
+  Active,
+  WalletOpen,
+  Pending,
+  Success,
+  Warning,
+  Error,
+  Completed
+}
+
+export type Step = {
+  tooltip: string;
+  state: StepState;
+};
+
 export type Address = string;
 export type QueryArgs = Record<string, any>;
 export type QueryAttrs = Record<string, any>;

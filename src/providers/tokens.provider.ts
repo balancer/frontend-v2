@@ -54,6 +54,7 @@ export interface TokensProviderResponse {
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;
   activeTokenListTokens: ComputedRef<TokenInfoMap>;
+  balancerTokenListTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
   allowances: ComputedRef<ContractAllowancesMap>;
@@ -67,7 +68,11 @@ export interface TokensProviderResponse {
   refetchBalances: Ref<() => void>;
   refetchAllowances: Ref<() => void>;
   injectTokens: (addresses: string[]) => Promise<void>;
-  searchTokens: (query: string, excluded: string[]) => Promise<TokenInfoMap>;
+  searchTokens: (
+    query: string,
+    excluded: string[],
+    disableInjection?: boolean
+  ) => Promise<TokenInfoMap>;
   hasBalance: (address: string) => boolean;
   approvalRequired: (
     tokenAddress: string,
@@ -107,6 +112,7 @@ export default {
     const {
       allTokenLists,
       activeTokenLists,
+      balancerTokenLists,
       loadingTokenLists
     } = useTokenLists();
     const { currency } = useUserSettings();
@@ -141,6 +147,14 @@ export default {
     const activeTokenListTokens = computed(
       (): TokenInfoMap =>
         mapTokenListTokens(Object.values(activeTokenLists.value))
+    );
+
+    /**
+     * All tokens from Balancer token lists, e.g. 'listed' and 'vetted'.
+     */
+    const balancerTokenListTokens = computed(
+      (): TokenInfoMap =>
+        mapTokenListTokens(Object.values(balancerTokenLists.value))
     );
 
     /**
@@ -271,7 +285,8 @@ export default {
      */
     async function searchTokens(
       query: string,
-      excluded: string[] = []
+      excluded: string[] = [],
+      disableInjection = false
     ): Promise<TokenInfoMap> {
       if (!query) return removeExcluded(tokens.value, excluded);
 
@@ -281,8 +296,12 @@ export default {
         if (token) {
           return { [address]: token };
         } else {
-          await injectTokens([address]);
-          return pick(tokens.value, address);
+          if (!disableInjection) {
+            await injectTokens([address]);
+            return pick(tokens.value, address);
+          } else {
+            return { [address]: token };
+          }
         }
       } else {
         const tokensArray = Object.entries(tokens.value);
@@ -411,6 +430,7 @@ export default {
       tokens,
       wrappedNativeAsset,
       activeTokenListTokens,
+      balancerTokenListTokens,
       prices,
       balances,
       allowances,

@@ -12,11 +12,12 @@ import HiddenTokensPills from './HiddenTokensPills.vue';
 
 type Props = {
   tokens: PoolToken[];
-  isStablePool: boolean;
+  isStablePool?: boolean;
   selectedTokens?: string[];
 };
 
 const props = withDefaults(defineProps<Props>(), {
+  isStablePool: false,
   selectedTokens: () => []
 });
 
@@ -42,7 +43,7 @@ const isSelectedInHiddenTokens = computed(() =>
  * METHODS
  */
 function symbolFor(token: PoolToken): string {
-  return tokens.value[token.address]?.symbol || '---';
+  return token.symbol || tokens.value[token.address]?.symbol || '---';
 }
 
 function weightFor(token: PoolToken): string {
