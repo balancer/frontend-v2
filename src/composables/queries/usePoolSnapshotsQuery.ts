@@ -5,8 +5,6 @@ import { mapValues, tail } from 'lodash';
 
 import QUERY_KEYS from '@/constants/queryKeys';
 
-import { bnum } from '@/lib/utils';
-
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
@@ -56,57 +54,36 @@ export default function usePoolSnapshotsQuery(
   const queryFn = async () => {
     if (!pool.value) throw new Error('No pool');
 
-    let tokens: string[] = [];
+    let snapshots: PoolSnapshots = {};
+    let prices: HistoricalPrices = {};
 
     const isStablePhantomPool = isStablePhantom(pool.value.poolType);
 
-    if (isStablePhantomPool && pool.value.mainTokens != null) {
-      // TODO - remove this once coingecko supports linear tokens
-      tokens = pool.value.mainTokens;
-    } else if (pool.value.tokenAddresses.includes(addresses.wstETH)) {
-      // TODO - remove this once coingecko supports wstEth
-      tokens = [...pool.value.tokenAddresses, addresses.stETH];
-    } else {
-      tokens = pool.value.tokenAddresses;
-    }
-
-    const [historicalPrices, snapshots] = await Promise.all([
-      coingeckoService.prices.getTokensHistorical(tokens, days),
-      balancerSubgraphService.poolSnapshots.get(id, days)
-    ]);
-
     if (isStablePhantomPool) {
-      const tokensWithoutPoolToken = tail(pool.value.tokens);
+      snapshots = await balancerSubgraphService.poolSnapshots.get(id, days);
 
       return {
-        // Adjust the price from coingecko by the priceRate (1 LINEAR-AUSDC -> priceRate * 1 USDC)
-        prices:
-          tokensWithoutPoolToken.length === tokens.length
-            ? mapValues(historicalPrices, prices =>
-                prices.map((price, index) => {
-                  // indexes of the tokens and mainTokens should match
-
-                  const token = tokensWithoutPoolToken[index];
-
-                  if (token != null && token.priceRate != null) {
-                    return bnum(price)
-                      .times(token.priceRate)
-                      .toNumber();
-                  }
-
-                  return price;
-                })
-              )
-            : historicalPrices,
+        prices,
         snapshots: mapValues(snapshots, snapshot => ({
           ...snapshot,
           // remove pool token
           amounts: tail(snapshot.amounts)
         }))
       };
+    } else {
+      let tokens = pool.value.tokenAddresses;
+      if (pool.value.tokenAddresses.includes(addresses.wstETH)) {
+        // TODO - remove this once coingecko supports wstEth
+        tokens = [...pool.value.tokenAddresses, addresses.stETH];
+      }
+
+      [prices, snapshots] = await Promise.all([
+        coingeckoService.prices.getTokensHistorical(tokens, days),
+        balancerSubgraphService.poolSnapshots.get(id, days)
+      ]);
     }
 
-    return { prices: historicalPrices, snapshots };
+    return { prices, snapshots };
   };
 
   const queryOptions = reactive({

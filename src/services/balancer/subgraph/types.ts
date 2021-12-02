@@ -183,7 +183,7 @@ export interface PoolSnapshot {
   totalShares: string;
   swapVolume: string;
   swapFees: string;
-  liquidity: number;
+  liquidity: string;
 }
 
 export type PoolSnapshots = Record<number, PoolSnapshot>;

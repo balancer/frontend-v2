@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { toRefs, computed, Ref } from 'vue';
+import { toRefs, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 import { zip } from 'lodash';
 import { fromUnixTime, format } from 'date-fns';
 
-import { PoolSnapshots } from '@/services/balancer/subgraph/types';
+import { FullPool, PoolSnapshots } from '@/services/balancer/subgraph/types';
+import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 
 import useTailwind from '@/composables/useTailwind';
 import useDarkMode from '@/composables/useDarkMode';
+import { isStablePhantom } from '@/composables/usePool';
 
 /**
  * TYPES
  */
 type Props = {
-  prices: Record<string, number[]>;
+  prices: HistoricalPrices;
   snapshots: PoolSnapshots;
   loading: boolean;
+  pool: FullPool;
 };
 
 /**
@@ -29,13 +32,8 @@ const props = withDefaults(defineProps<Props>(), {
 /**
  * STATE
  */
-const {
-  prices,
-  snapshots
-}: {
-  prices: Ref<Record<string, number[]>>;
-  snapshots: Ref<PoolSnapshots>;
-} = toRefs(props);
+const { prices, snapshots, pool } = toRefs(props);
+const MIN_CHART_VALUES = 7;
 
 /**
  * COMPOSABLES
@@ -45,136 +43,154 @@ const { t } = useI18n();
 const tailwind = useTailwind();
 const { darkMode } = useDarkMode();
 
+/**
+ * COMPUTED
+ */
 const hodlColor = computed(() =>
   darkMode.value
     ? tailwind.theme.colors.gray['600']
     : tailwind.theme.colors.black
 );
 
-const chartColors = [tailwind.theme.colors.green['400'], hodlColor.value];
+const chartColors = computed(() => [
+  tailwind.theme.colors.green['400'],
+  hodlColor.value
+]);
 
-/**
- * COMPUTED
- */
+const supportsPoolLiquidity = computed(() =>
+  isStablePhantom(pool.value.poolType)
+);
+
 const appLoading = computed(() => store.state.app.loading);
 
-const nonEmptySnapshots = computed(() => {
-  if (!history.value) return [];
-  return history.value.filter(state => state.totalShares !== '0');
-});
-
 const history = computed(() => {
-  if (
-    !prices ||
-    !prices.value ||
-    Object.values(prices.value).length === 0 ||
-    !snapshots ||
-    !snapshots.value
-  ) {
+  const pricesTimestamps = Object.keys(prices.value);
+  const snapshotsTimestamps = Object.keys(snapshots.value);
+
+  if (snapshotsTimestamps.length === 0) {
     return [];
   }
 
-  const defaultState = {
-    amounts: ['0', '0'],
-    totalShares: '0'
-  };
+  // Prices are not required when using pool liquidity
+  if (!supportsPoolLiquidity.value && pricesTimestamps.length === 0) {
+    return [];
+  }
 
-  return Object.keys(prices.value).map(timestamp => {
-    const price = prices.value[timestamp];
-    const state = snapshots.value[timestamp]
-      ? snapshots.value[timestamp]
-      : defaultState;
+  return snapshotsTimestamps
+    .map(snapshotTimestamp => {
+      const timestamp = parseInt(snapshotTimestamp);
 
-    const amounts: string[] = state.amounts;
-    const totalShares: string = state.totalShares;
-    return {
-      timestamp: parseInt(timestamp),
-      price,
-      amounts,
-      totalShares
-    };
-  });
+      const snapshot = snapshots.value[timestamp];
+      const price = prices.value[timestamp] ?? [0, 0];
+      const amounts = snapshot.amounts ?? ['0', '0'];
+      const totalShares = parseFloat(snapshot.totalShares) ?? 0;
+      const liquidity = parseFloat(snapshot.liquidity) ?? 0;
+
+      return {
+        timestamp,
+        price,
+        amounts,
+        totalShares,
+        liquidity
+      };
+    })
+    .filter(state => state.totalShares > 0);
 });
 
 const timestamps = computed(() => {
-  if (!nonEmptySnapshots.value || nonEmptySnapshots.value.length === 0) {
+  if (history.value.length === 0) {
     return [];
   }
 
-  return nonEmptySnapshots.value.map(state =>
+  return history.value.map(state =>
     format(fromUnixTime(state.timestamp / 1000), 'yyyy/MM/dd')
   );
 });
 
-const holdValues = computed(() => {
-  if (!nonEmptySnapshots.value || nonEmptySnapshots.value.length === 0) {
+const hodlValues = computed(() => {
+  if (history.value.length === 0) {
     return [];
   }
-  const firstState = nonEmptySnapshots.value[0];
+
+  const firstState = history.value[0];
   const firstValue = getPoolValue(firstState.amounts, firstState.price);
 
-  return history.value
-    .filter(state => state.totalShares !== '0')
-    .map(state => {
-      if (state.timestamp < firstState.timestamp) {
-        return 0;
-      }
-      const currentValue = getPoolValue(firstState.amounts, state.price);
-      return currentValue / firstValue - 1;
-    });
+  return history.value.map(state => {
+    if (state.timestamp < firstState.timestamp) {
+      return 0;
+    }
+
+    const currentValue = getPoolValue(firstState.amounts, state.price);
+
+    return currentValue / firstValue - 1;
+  });
 });
 
 const bptValues = computed(() => {
-  if (!nonEmptySnapshots.value || nonEmptySnapshots.value.length === 0) {
+  if (history.value.length === 0) {
     return [];
   }
-  const firstState = nonEmptySnapshots.value[0];
-  const firstValue = getPoolValue(firstState.amounts, firstState.price);
-  const firstShares = parseFloat(firstState.totalShares);
+
+  const firstState = history.value[0];
+  const firstValue = supportsPoolLiquidity.value
+    ? firstState.liquidity
+    : getPoolValue(firstState.amounts, firstState.price);
+  const firstShares = firstState.totalShares;
   const firstValuePerBpt = firstValue / firstShares;
-  const values = history.value
-    .filter(state => state.totalShares !== '0')
-    .map(state => {
-      if (state.timestamp < firstState.timestamp) {
-        return 0;
-      }
-      const currentValue = getPoolValue(state.amounts, state.price);
-      const currentShares = parseFloat(state.totalShares);
-      const currentValuePerBpt = currentValue / currentShares;
-      return currentValuePerBpt / firstValuePerBpt - 1;
-    });
-  return values;
+
+  return history.value.map(state => {
+    if (state.timestamp < firstState.timestamp) {
+      return 0;
+    }
+
+    const currentValue = supportsPoolLiquidity.value
+      ? state.liquidity
+      : getPoolValue(state.amounts, state.price);
+    const currentShares = state.totalShares;
+    const currentValuePerBpt = currentValue / currentShares;
+
+    return currentValuePerBpt / firstValuePerBpt - 1;
+  });
 });
 
-const series = computed(() => [
-  {
-    name: t('poolReturns'),
-    values: zip(timestamps.value, bptValues.value)
-  },
-  {
-    name: 'HODL',
-    values: zip(timestamps.value, holdValues.value)
+const series = computed(() => {
+  // TODO: currently HODL series is disabled when using pool liquidity
+  const supportsHODLSeries = !supportsPoolLiquidity.value;
+
+  const chartSeries = [
+    {
+      name: t('poolReturns'),
+      values: zip(timestamps.value, bptValues.value)
+    }
+  ];
+
+  if (supportsHODLSeries) {
+    chartSeries.push({
+      name: 'HODL',
+      values: zip(timestamps.value, hodlValues.value)
+    });
   }
-]);
+
+  return chartSeries;
+});
 
 /**
  * METHODS
  */
 function getPoolValue(amounts: string[], prices: number[]) {
-  const values = amounts.map((amount, index) => {
-    const price = prices[index];
-    return price * parseFloat(amount);
-  });
+  return amounts
+    .map((amount, index) => {
+      const price = prices[index];
 
-  const total = values.reduce((total, value) => total + value, 0);
-
-  return total;
+      return price * parseFloat(amount);
+    })
+    .reduce((total, value) => total + value, 0);
 }
 </script>
 
 <template>
   <BalLoadingBlock v-if="loading || appLoading" class="h-96" />
-  <div class="chart mr-n2 ml-n2" v-else-if="nonEmptySnapshots.length >= 7">
+  <div class="chart mr-n2 ml-n2" v-else-if="history.length >= MIN_CHART_VALUES">
     <BalLineChart
       :data="series"
       :isPeriodSelectionEnabled="false"

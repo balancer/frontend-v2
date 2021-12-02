@@ -83,6 +83,7 @@
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-1 lg:px-0">
             <PoolChart
+              :pool="pool"
               :prices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
@@ -386,6 +387,7 @@ export default defineComponent({
       isStableLikePool,
       isLiquidityBootstrappingPool,
       isCopperPool,
+      isStablePhantomPool,
       // methods
       fNum,
       onNewTx
