@@ -241,7 +241,7 @@ function distributeWeights() {
   );
   // makes it so that new allocations are set as 0
   if (lockedPct > 1) lockedPct = 1;
-  const pctAvailableToDistribute = bnum(1 - lockedPct);
+  const pctAvailableToDistribute = bnum(1).minus(lockedPct);
   const unlockedWeights = seedTokens.value.filter(w => !w.isLocked);
   const evenDistributionWeight = pctAvailableToDistribute.div(
     unlockedWeights.length
