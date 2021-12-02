@@ -17,8 +17,8 @@ import { useI18n } from 'vue-i18n';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
 import useConfig from '@/composables/useConfig';
-import { configService } from '@/services/config/config.service';
-import { BigNumber } from 'ethers';
+// import { configService } from '@/services/config/config.service';
+// import { BigNumber } from 'ethers';
 import { formatUnits } from '@ethersproject/units';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import { TransactionActionInfo } from '@/types/transactions';
@@ -70,7 +70,7 @@ const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const {
   fullAmounts,
-  batchSwapAmountMap,
+  // batchSwapAmountMap,
   bptOut,
   fiatTotalLabel,
   batchSwap,
@@ -156,15 +156,15 @@ async function submit(): Promise<TransactionResponse> {
     investmentState.init = true;
 
     if (batchSwap.value) {
-      tx = await boostedJoinBatchSwap(
-        configService.network.key,
-        getProvider(),
-        batchSwap.value.swaps,
-        batchSwap.value.assets,
-        props.pool.address,
-        batchSwapAmountMap.value,
-        BigNumber.from(bptOut.value)
-      );
+      // tx = await boostedJoinBatchSwap(
+      //   configService.network.key,
+      //   getProvider(),
+      //   batchSwap.value.swaps,
+      //   batchSwap.value.assets,
+      //   props.pool.address,
+      //   batchSwapAmountMap.value,
+      //   BigNumber.from(bptOut.value)
+      // );
     } else {
       tx = await poolExchange.join(
         getProvider(),
