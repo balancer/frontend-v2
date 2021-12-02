@@ -37,7 +37,6 @@ const {
   seedTokens,
   updateTokenWeights,
   proceed,
-  maxInitialLiquidity,
   tokensList,
   totalLiquidity,
   hasInjectedToken,
@@ -113,7 +112,7 @@ const isProceedDisabled = computed(() => {
 
 const showLiquidityAlert = computed(() => {
   const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
-  return maxInitialLiquidity.value < 20000 && validTokens.length >= 2;
+  return totalLiquidity.value.lt(20000) && validTokens.length >= 2;
 });
 
 const excludedTokens = computed((): string[] => {
