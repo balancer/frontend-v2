@@ -109,8 +109,6 @@ export default function usePoolQuery(
 
     pool.linearPoolTokensMap = linearPoolTokensMap;
 
-    console.log(pool.linearPoolTokensMap);
-
     return pool;
   }
 
