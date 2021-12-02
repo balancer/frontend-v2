@@ -68,6 +68,13 @@
           block
         />
         <BalAlert
+          v-if="!appLoading && hasCustomToken"
+          type="error"
+          :title="$t('highRiskPool')"
+          class="mt-2"
+          block
+        />
+        <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"
           :title="$t('noInitLiquidity')"
@@ -147,7 +154,12 @@
               {{ $t('copperLaunchPromo.poweredByBalancer') }}
             </div>
             <BalLink
-              :href="EXTERNAL_LINKS.Copper.Auctions(pool.address)"
+              :href="
+                EXTERNAL_LINKS.Copper.Auctions(
+                  pool.address,
+                  copperNetworkPrefix
+                )
+              "
               external
               class="block hover:no-underline"
             >
@@ -202,8 +214,9 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isWalletReady } = useWeb3();
     const { prices } = useTokens();
-    const { blockNumber } = useWeb3();
+    const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
+    const { balancerTokenListTokens } = useTokens();
 
     /**
      * QUERIES
@@ -322,6 +335,10 @@ export default defineComponent({
       return false;
     });
 
+    const isCopperNetworkSupported = computed(
+      () => isMainnet.value || isPolygon.value || isKovan.value
+    );
+
     // Temporary solution to hide Copper card on Fei pool page.
     // Longer terms solution is needed distinguish LBP platforms
     // and display custom widgets linking to their pages.
@@ -331,7 +348,29 @@ export default defineComponent({
       return (
         !!pool.value &&
         isLiquidityBootstrappingPool.value &&
-        pool.value.id !== feiPoolId
+        pool.value.id !== feiPoolId &&
+        isCopperNetworkSupported.value
+      );
+    });
+
+    const copperNetworkPrefix = computed(() => {
+      if (isPolygon.value) {
+        return 'polygon.';
+      }
+      if (isKovan.value) {
+        return 'kovan.';
+      }
+      return '';
+    });
+
+    const hasCustomToken = computed(() => {
+      const knownTokens = Object.keys(balancerTokenListTokens.value);
+      return (
+        !!pool.value &&
+        !isLiquidityBootstrappingPool.value &&
+        pool.value.tokenAddresses.some(
+          address => !knownTokens.includes(address)
+        )
       );
     });
 
@@ -388,6 +427,8 @@ export default defineComponent({
       isLiquidityBootstrappingPool,
       isCopperPool,
       isStablePhantomPool,
+      copperNetworkPrefix,
+      hasCustomToken,
       // methods
       fNum,
       onNewTx

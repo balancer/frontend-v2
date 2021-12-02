@@ -1,5 +1,7 @@
 import i18n from '@/plugins/i18n';
 import { bnum } from '.';
+import numeral from 'numeral';
+import { isAddress } from '@ethersproject/address';
 
 export function isRequired(field = '') {
   const _field = field ? `${field} ` : 'Input ';
@@ -18,7 +20,10 @@ export function isPositiveCheck(number: number | string) {
   return bnum(number).isGreaterThanOrEqualTo(0);
 }
 export function isPositive() {
-  return v => !v || isPositiveCheck(v) || i18n.global.t('mustBePositive');
+  return v =>
+    !v ||
+    isPositiveCheck(numeral(v).value() || 0) ||
+    i18n.global.t('mustBePositive');
 }
 
 export function isLessThanOrEqualTo(max: number | string, msg = '') {
@@ -35,4 +40,8 @@ export const isEmailCheck = email => {
 
 export function isEmail() {
   return v => !v || isEmailCheck(v) || i18n.global.t('mustBeValidEmail');
+}
+
+export function isValidAddress() {
+  return v => !v || isAddress(v) || i18n.global.t('mustBeValidAddress');
 }

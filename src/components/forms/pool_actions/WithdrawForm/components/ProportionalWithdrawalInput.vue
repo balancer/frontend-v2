@@ -77,7 +77,7 @@ const percentageLabel = computed(() => {
   }
 });
 
-const tokenWeights = computed((): number[] =>
+const seedTokens = computed((): number[] =>
   Object.values(props.pool.onchain.tokens).map(token => token.weight)
 );
 
@@ -148,7 +148,7 @@ onBeforeMount(() => {
               <span class="text-lg font-medium">
                 {{ token.symbol }}
                 <span v-if="!isStableLikePool">
-                  {{ fNum(tokenWeights[i], 'percent_lg') }}
+                  {{ fNum(seedTokens[i], 'percent_lg') }}
                 </span>
               </span>
             </div>
