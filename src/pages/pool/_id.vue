@@ -67,13 +67,13 @@
           class="mt-2"
           block
         />
-        <BalAlert
+        <!-- <BalAlert
           v-if="!appLoading && hasCustomToken"
           type="error"
           :title="$t('highRiskPool')"
           class="mt-2"
           block
-        />
+        /> -->
         <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"
