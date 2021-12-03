@@ -5,7 +5,6 @@ import { getAddress } from '@ethersproject/address';
 import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { aaveSubgraphService } from '@/services/aave/subgraph/aave-subgraph.service';
 import { configService as _configService } from '@/services/config/config.service';
 
 import { FiatCurrency } from '@/constants/currency';
@@ -32,6 +31,7 @@ import {
   DecoratedPool,
   PoolToken
 } from '../../types';
+import { aaveService } from '@/services/aave/aave.service';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -230,11 +230,7 @@ export default class Pools {
       const {
         total,
         tokenBreakdown
-      } = await aaveSubgraphService.reserves.calcWeightedSupplyAPRFor(
-        pool,
-        prices,
-        currency
-      );
+      } = await aaveService.calcWeightedSupplyAPRFor(pool, prices, currency);
 
       thirdPartyAPR = total;
       thirdPartyAPRBreakdown = tokenBreakdown;
