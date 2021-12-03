@@ -71,7 +71,7 @@
               ? '-'
               : fNum(pool.dynamic.apr.total, 'percent')
           }}
-          <LiquidityMiningTooltip :pool="pool" />
+          <LiquidityAPRTooltip :pool="pool" />
         </div>
       </template>
     </BalTable>
@@ -93,7 +93,7 @@ import { getAddress } from '@ethersproject/address';
 import useNumbers from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
 
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import TokenPills from './TokenPills/TokenPills.vue';
 
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
@@ -103,7 +103,7 @@ import { isStableLike } from '@/composables/usePool';
 
 export default defineComponent({
   components: {
-    LiquidityMiningTooltip,
+    LiquidityAPRTooltip,
     TokenPills
   },
 

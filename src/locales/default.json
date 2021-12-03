@@ -426,7 +426,8 @@
     "theme": "Theme",
     "thirdPartyRewards": {
         "apr": {
-            "steth": "stETH staking rewards APR"
+            "steth": "stETH staking rewards APR",
+            "aaveBoosted": "Aave boosted APR"
         },
         "fiat": {
             "steth": "stETH staking rewards"

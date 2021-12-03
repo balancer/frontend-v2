@@ -33,7 +33,7 @@
             >
               {{ $t('new') }}
             </BalChip>
-            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-1" />
+            <LiquidityAPRTooltip :pool="pool" class="-ml-1 mt-1" />
           </div>
           <div class="flex items-center mt-2">
             <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
@@ -178,7 +178,7 @@
 import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
@@ -200,7 +200,7 @@ export default defineComponent({
   components: {
     ...PoolPageComponents,
     GauntletIcon,
-    LiquidityMiningTooltip
+    LiquidityAPRTooltip
   },
 
   setup() {

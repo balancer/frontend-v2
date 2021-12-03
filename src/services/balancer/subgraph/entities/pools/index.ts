@@ -18,7 +18,7 @@ import { Network } from '@/composables/useNetwork';
 import { configService as _configService } from '@/services/config/config.service';
 import { TokenPrices } from '@/services/coingecko/api/price.service';
 import { FiatCurrency } from '@/constants/currency';
-import { isStable, isWstETH } from '@/composables/usePool';
+import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
 import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
 import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
@@ -90,22 +90,23 @@ export default class Pools {
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
       const poolAPR = this.calcAPR(pool, pastPool);
+
       const fees = this.calcFees(pool, pastPool);
       const {
         hasLiquidityMiningRewards,
         liquidityMiningAPR,
         liquidityMiningBreakdown
       } = this.calcLiquidityMiningAPR(pool, prices, currency);
-      const thirdPartyAPR = await this.calcThirdPartyAPR(pool);
+      const {
+        thirdPartyAPR,
+        thirdPartyAPRBreakdown
+      } = await this.calcThirdPartyAPR(pool, prices, currency);
       const totalAPR = this.calcTotalAPR(
         poolAPR,
         liquidityMiningAPR,
         thirdPartyAPR
       );
       const isNewPool = this.isNewPool(pool);
-      const reservesAPR = await this.getATokenAPR(pool);
-
-      console.log(reservesAPR);
 
       // TODO - remove hasLiquidityMiningRewards from schema
       // Add a conditional to usePool or somewhere else that
@@ -120,6 +121,7 @@ export default class Pools {
           apr: {
             pool: poolAPR,
             thirdParty: thirdPartyAPR,
+            thirdPartyBreakdown: thirdPartyAPRBreakdown,
             liquidityMining: liquidityMiningAPR,
             liquidityMiningBreakdown,
             total: totalAPR
@@ -206,11 +208,60 @@ export default class Pools {
    * liquidity minning rewards. These APRs may require 3rd party
    * API requests.
    */
-  private async calcThirdPartyAPR(pool: Pool): Promise<string> {
+  private async calcThirdPartyAPR(
+    pool: Pool,
+    prices: TokenPrices,
+    currency: FiatCurrency
+  ) {
+    let thirdPartyAPR = '0';
+    const thirdPartyAPRBreakdown = {};
+
     if (isWstETH(pool)) {
-      return await lidoService.calcStEthAPRFor(pool);
+      thirdPartyAPR = await lidoService.calcStEthAPRFor(pool);
+    } else if (isStablePhantom(pool.poolType)) {
+      if (pool.wrappedTokens != null) {
+        const reserves = await aaveSubgraphService.reserves.get({
+          where: {
+            underlyingAsset_in: pool.mainTokens,
+            isActive: true,
+            aEmissionPerSecond_gt: 0
+          }
+        });
+
+        if (reserves.length > 0) {
+          let totalWeightedAPR = bnum(0);
+
+          reserves.forEach(reserve => {
+            // @ts-ignore
+            const token = getAddress(reserve.aToken.underlyingAssetAddress);
+
+            if (
+              pool.linearPoolTokensMap != null &&
+              pool.linearPoolTokensMap[token] != null &&
+              prices[token] != null
+            ) {
+              const price = prices[token][currency] || 0;
+              const balance = pool.linearPoolTokensMap[token].balance;
+              const value = bnum(balance).times(price);
+              const weightedAPR = value
+                .times(reserve.supplyAPR)
+                .div(pool.totalLiquidity);
+
+              thirdPartyAPRBreakdown[token] = weightedAPR.toString();
+
+              totalWeightedAPR = totalWeightedAPR.plus(weightedAPR);
+            }
+          });
+
+          thirdPartyAPR = totalWeightedAPR.toString();
+        }
+      }
     }
-    return '0';
+
+    return {
+      thirdPartyAPR,
+      thirdPartyAPRBreakdown
+    };
   }
 
   private calcTotalAPR(
@@ -230,22 +281,6 @@ export default class Pools {
     return bnum(pool.totalSwapFee)
       .minus(pastPool.totalSwapFee)
       .toString();
-  }
-
-  private async getATokenAPR(pool: Pool): Promise<any> {
-    const reserves = await aaveSubgraphService.reserves.get({
-      where: {
-        underlyingAsset_in: pool.mainTokens,
-        isActive: true,
-        aEmissionPerSecond_gt: 0
-      }
-    });
-
-    return reserves.map(reserve => ({
-      // @ts-ignore
-      address: getAddress(reserve.aToken.underlyingAssetAddress),
-      apr: reserve.supplyAPR
-    }));
   }
 
   private async timeTravelBlock(period: TimeTravelPeriod): Promise<number> {
