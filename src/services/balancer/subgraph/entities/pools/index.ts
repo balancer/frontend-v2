@@ -1,6 +1,30 @@
-import Service from '../../balancer-subgraph.service';
-import queryBuilder from './query';
+import { differenceInWeeks } from 'date-fns';
+
+import { getAddress } from '@ethersproject/address';
+
+import { lidoService } from '@/services/lido/lido.service';
+import PoolService from '@/services/pool/pool.service';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { aaveSubgraphService } from '@/services/aave/subgraph/aave-subgraph.service';
+import { configService as _configService } from '@/services/config/config.service';
+
+import { FiatCurrency } from '@/constants/currency';
+
 import { bnum } from '@/lib/utils';
+import {
+  currentLiquidityMiningRewards,
+  computeTotalAPRForPool,
+  computeAPRsForPool
+} from '@/lib/utils/liquidityMining';
+
+import { Network } from '@/composables/useNetwork';
+import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
+import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
+
+import Service from '../../balancer-subgraph.service';
+
+import queryBuilder from './query';
+
 import {
   Pool,
   QueryBuilder,
@@ -8,22 +32,6 @@ import {
   DecoratedPool,
   PoolToken
 } from '../../types';
-import { getAddress } from '@ethersproject/address';
-import {
-  currentLiquidityMiningRewards,
-  computeTotalAPRForPool,
-  computeAPRsForPool
-} from '@/lib/utils/liquidityMining';
-import { Network } from '@/composables/useNetwork';
-import { configService as _configService } from '@/services/config/config.service';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { FiatCurrency } from '@/constants/currency';
-import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
-import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
-import { lidoService } from '@/services/lido/lido.service';
-import PoolService from '@/services/pool/pool.service';
-import { differenceInWeeks } from 'date-fns';
-import { aaveSubgraphService } from '@/services/aave/subgraph/aave-subgraph.service';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -214,48 +222,22 @@ export default class Pools {
     currency: FiatCurrency
   ) {
     let thirdPartyAPR = '0';
-    const thirdPartyAPRBreakdown = {};
+    let thirdPartyAPRBreakdown = {};
 
     if (isWstETH(pool)) {
       thirdPartyAPR = await lidoService.calcStEthAPRFor(pool);
     } else if (isStablePhantom(pool.poolType)) {
-      if (pool.wrappedTokens != null) {
-        const reserves = await aaveSubgraphService.reserves.get({
-          where: {
-            underlyingAsset_in: pool.mainTokens,
-            isActive: true,
-            aEmissionPerSecond_gt: 0
-          }
-        });
+      const {
+        total,
+        tokenBreakdown
+      } = await aaveSubgraphService.reserves.calcWeightedSupplyAPRFor(
+        pool,
+        prices,
+        currency
+      );
 
-        if (reserves.length > 0) {
-          let totalWeightedAPR = bnum(0);
-
-          reserves.forEach(reserve => {
-            // @ts-ignore
-            const token = getAddress(reserve.aToken.underlyingAssetAddress);
-
-            if (
-              pool.linearPoolTokensMap != null &&
-              pool.linearPoolTokensMap[token] != null &&
-              prices[token] != null
-            ) {
-              const price = prices[token][currency] || 0;
-              const balance = pool.linearPoolTokensMap[token].balance;
-              const value = bnum(balance).times(price);
-              const weightedAPR = value
-                .times(reserve.supplyAPR)
-                .div(pool.totalLiquidity);
-
-              thirdPartyAPRBreakdown[token] = weightedAPR.toString();
-
-              totalWeightedAPR = totalWeightedAPR.plus(weightedAPR);
-            }
-          });
-
-          thirdPartyAPR = totalWeightedAPR.toString();
-        }
-      }
+      thirdPartyAPR = total;
+      thirdPartyAPRBreakdown = tokenBreakdown;
     }
 
     return {

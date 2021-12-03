@@ -1,8 +1,10 @@
-import { aaveSubgraphClient } from './aave-subgraph.client';
-import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import Reserves from './entities/reserves';
-
 import { Network, networkId } from '@/composables/useNetwork';
+
+import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+
+import { aaveSubgraphClient } from './aave-subgraph.client';
+
+import Reserves from './entities/reserves';
 
 export default class AaveSubgraphService {
   reserves: Reserves;
