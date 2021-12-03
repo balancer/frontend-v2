@@ -97,9 +97,9 @@ export default class LiquidityConcern {
 
     if (
       isStablePhantom(this.poolType) &&
-      this.poolService.pool.linearPoolTokens != null
+      this.poolService.pool.linearPoolTokensMap != null
     ) {
-      tokens = this.poolService.pool.linearPoolTokens;
+      tokens = Object.values(this.poolService.pool.linearPoolTokensMap);
     }
 
     let sumBalance = bnum(0);

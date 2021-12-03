@@ -51,8 +51,8 @@ export interface Pool {
   createTime: number;
   mainTokens?: string[];
   wrappedTokens?: string[];
+  linearPoolTokensMap?: Record<string, PoolToken>;
   unwrappedTokens?: string[];
-  linearPoolTokens?: PoolToken[];
 }
 
 export interface LinearPool extends Pool {
@@ -67,6 +67,7 @@ export interface DecoratedPool extends Pool {
     apr: {
       pool: string;
       thirdParty: string;
+      thirdPartyBreakdown: { [address: string]: string };
       liquidityMining: string;
       liquidityMiningBreakdown: { [address: string]: string };
       total: string;
