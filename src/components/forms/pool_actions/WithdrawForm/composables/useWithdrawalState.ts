@@ -2,7 +2,9 @@ import { Ref, computed, reactive, toRefs } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
 import { isStablePhantom } from '@/composables/usePool';
-import useRelayerApproval, { Relayer } from '@/composables/trade/useRelayerApproval';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 
 /**
  * STATE

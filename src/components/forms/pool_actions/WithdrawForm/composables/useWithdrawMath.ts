@@ -479,9 +479,9 @@ export default function useWithdrawMath(
       let rates: string[] = [];
       if (pool.value.onchain.linearPools) {
         // TODO - how should the rates be scaled?
-        rates = Object.values(pool.value.onchain.linearPools).map(
-          linearPool => linearPool.priceRate
-        ).map(priceRate => parseUnits(priceRate, 18).toString());
+        rates = Object.values(pool.value.onchain.linearPools)
+          .map(linearPool => linearPool.priceRate)
+          .map(priceRate => parseUnits(priceRate, 18).toString());
       }
 
       console.log('inputs', [
@@ -502,7 +502,10 @@ export default function useWithdrawMath(
         parseUnits(slippage.value, 18).toString()
       );
       console.log('stableExit', result);
-      console.log('amountsOut', result.outputs.amountsOut.map(amount => amount.toString()));
+      console.log(
+        'amountsOut',
+        result.outputs.amountsOut.map(amount => amount.toString())
+      );
     }
   });
 
