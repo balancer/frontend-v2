@@ -83,6 +83,7 @@ export default function useWithdrawMath(
   const { minusSlippage, addSlippage, minusSlippageScaled } = useSlippage();
   const { currency } = useUserSettings();
   const { isStablePhantomPool } = usePool(pool);
+  const { slippage } = useUserSettings();
 
   /**
    * SERVICES
@@ -320,6 +321,10 @@ export default function useWithdrawMath(
     // If batchSwap has any 0 return amounts, we should use batch relayer
     if (batchSwap.value) {
       const returnAmounts = batchSwap.value.returnAmounts;
+      return (
+        hasBpt.value &&
+        returnAmounts.some(amount => (amount as BigNumber).eq(0))
+      );
     }
 
     // If single asset we only need to compare that stable's balances
@@ -421,7 +426,6 @@ export default function useWithdrawMath(
       fetchPools
     });
 
-    console.log('batchSwap', batchSwap.value);
     batchSwapLoading.value = false;
     return result;
   }
@@ -464,6 +468,41 @@ export default function useWithdrawMath(
         [tokenOut.value],
         SwapType.SwapExactOut
       );
+    }
+  });
+
+  watch(batchSwap, async newBatchSwap => {
+    console.log('batchSwap', newBatchSwap);
+    console.log('shouldUseBatchRelayer', shouldUseBatchRelayer.value);
+    if (shouldUseBatchRelayer.value) {
+      const tokensOut = pool.value.wrappedTokens || [];
+      let rates: string[] = [];
+      if (pool.value.onchain.linearPools) {
+        // TODO - how should the rates be scaled?
+        rates = Object.values(pool.value.onchain.linearPools).map(
+          linearPool => linearPool.priceRate
+        ).map(priceRate => parseUnits(priceRate, 18).toString());
+      }
+
+      console.log('inputs', [
+        account.value,
+        pool.value.address,
+        batchSwapBPTIn.value.map(amount => amount.toString()),
+        tokensOut,
+        rates,
+        parseUnits(slippage.value, 18).toString()
+      ]);
+
+      const result = await balancerContractsService.batchRelayer.stableExitStatic(
+        account.value,
+        pool.value.address,
+        batchSwapBPTIn.value.map(amount => amount.toString()),
+        tokensOut,
+        rates,
+        parseUnits(slippage.value, 18).toString()
+      );
+      console.log('stableExit', result);
+      console.log('amountsOut', result.outputs.amountsOut.map(amount => amount.toString()));
     }
   });
 

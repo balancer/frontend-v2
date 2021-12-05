@@ -2,6 +2,7 @@ import { Ref, computed, reactive, toRefs } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
 import { isStablePhantom } from '@/composables/usePool';
+import useRelayerApproval, { Relayer } from '@/composables/trade/useRelayerApproval';
 
 /**
  * STATE
@@ -26,6 +27,7 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
    * COMPOSABLES
    */
   const { nativeAsset, wrappedNativeAsset } = useTokens();
+  const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 
   /**
    * COMPUTED
@@ -63,6 +65,7 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
     ...toRefs(state),
     tokensOut,
     tokenOutIndex,
+    batchRelayerApproval,
     // methods
     maxSlider
   };

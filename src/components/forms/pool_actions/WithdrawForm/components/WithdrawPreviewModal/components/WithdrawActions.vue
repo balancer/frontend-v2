@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { toRef, ref, toRefs, computed, reactive } from 'vue';
+import { toRef, toRefs, ref, computed, reactive, onBeforeMount } from 'vue';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
-import { Step, StepState } from '@/types';
+import {
+  TransactionReceipt,
+  TransactionResponse
+} from '@ethersproject/abstract-provider';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
@@ -17,12 +19,10 @@ import useConfig from '@/composables/useConfig';
 import useWithdrawalState from '../../../composables/useWithdrawalState';
 // Services
 import PoolExchange from '@/services/pool/exchange/exchange.service';
-import useTranasactionErrors, {
-  TransactionError
-} from '@/composables/useTransactionErrors';
 import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
 import { configService } from '@/services/config/config.service';
 import { parseUnits } from '@ethersproject/units';
+import { TransactionActionInfo } from '@/types/transactions';
 
 /**
  * TYPES
@@ -32,20 +32,11 @@ type Props = {
   math: WithdrawMathResponse;
 };
 
-type Action = {
-  label: string;
-  loadingLabel: string;
-  pending: boolean;
-  step: Step;
-  promise: () => Promise<void>;
-};
-
 type WithdrawalState = {
   init: boolean;
   confirming: boolean;
   confirmed: boolean;
   confirmedAt: string;
-  error?: TransactionError | null;
   receipt?: TransactionReceipt;
 };
 
@@ -61,7 +52,6 @@ const emit = defineEmits<{
 /**
  * STATE
  */
-const currentActionIndex = ref(0);
 const withdrawalState = reactive<WithdrawalState>({
   init: false,
   confirming: false,
@@ -78,9 +68,9 @@ const { networkConfig } = useConfig();
 const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { parseError } = useTranasactionErrors();
-
-const { tokenOutIndex, tokensOut } = useWithdrawalState(toRef(props, 'pool'));
+const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
+  toRef(props, 'pool')
+);
 
 const {
   bptIn,
@@ -93,6 +83,16 @@ const {
   batchSwapKind
 } = toRefs(props.math);
 
+const withdrawalAction: TransactionActionInfo = {
+  label: t('withdraw.label'),
+  loadingLabel: t('withdraw.preview.loadingLabel.withdraw'),
+  confirmingLabel: t('confirming'),
+  action: submit,
+  stepTooltip: t('withdraw.preview.tooltips.withdrawStep')
+};
+
+const actions = ref<TransactionActionInfo[]>([withdrawalAction]);
+
 /**
  * SERVICES
  */
@@ -101,37 +101,6 @@ const poolExchange = new PoolExchange(toRef(props, 'pool'));
 /**
  * COMPUTED
  */
-const withdrawalStepState = computed(
-  (): StepState => {
-    if (withdrawalState.confirming) return StepState.Pending;
-    else if (withdrawalState.init) return StepState.WalletOpen;
-    else if (withdrawalState.confirmed) return StepState.Success;
-
-    return StepState.Active;
-  }
-);
-
-const actions = computed((): Action[] => [
-  {
-    label: t('withdraw.label'),
-    loadingLabel: withdrawalState.init
-      ? t('withdraw.preview.loadingLabel.withdraw')
-      : t('confirming'),
-    pending: withdrawalState.init || withdrawalState.confirming,
-    promise: submit,
-    step: {
-      tooltip: t('withdraw.preview.tooltips.withdrawStep'),
-      state: withdrawalStepState.value
-    }
-  }
-]);
-
-const currentAction = computed(
-  (): Action => actions.value[currentActionIndex.value]
-);
-
-const steps = computed((): Step[] => actions.value.map(action => action.step));
-
 const explorerLink = computed((): string =>
   withdrawalState.receipt
     ? explorerLinks.txLink(withdrawalState.receipt.transactionHash)
@@ -171,17 +140,12 @@ async function handleTransaction(tx): Promise<void> {
   });
 }
 
-async function submit(): Promise<void> {
+async function submit(): Promise<TransactionResponse> {
   try {
     let tx;
     withdrawalState.init = true;
 
     if (batchSwap.value) {
-      console.log('Batch swap amounts out', batchSwap.value.returnAmounts);
-      console.log(
-        'inputs amounts out',
-        Object.values(batchSwapAmountsOutMap.value).map(val => val.toString())
-      );
       tx = await boostedExitBatchSwap(
         configService.network.key,
         getProvider(),
@@ -210,42 +174,28 @@ async function submit(): Promise<void> {
     console.log('Receipt', tx);
 
     handleTransaction(tx);
+    return tx;
   } catch (error) {
     withdrawalState.init = false;
     withdrawalState.confirming = false;
-    withdrawalState.error = parseError(error);
     console.error(error);
+    return Promise.reject(error);
   }
 }
+
+/**
+ * CALLBACKS
+ */
+onBeforeMount(() => {
+  if (!batchRelayerApproval.isUnlocked.value) {
+    actions.value.unshift(batchRelayerApproval.action.value);
+  }
+});
 </script>
 
 <template>
   <div>
-    <BalAlert
-      v-if="withdrawalState.error"
-      type="error"
-      :title="withdrawalState.error.title"
-      :description="withdrawalState.error.description"
-      block
-      class="mb-4"
-    />
-    <BalHorizSteps
-      v-if="actions.length > 1 && !withdrawalState.confirmed"
-      :steps="steps"
-      class="flex justify-center"
-    />
-    <BalBtn
-      v-if="!withdrawalState.confirmed"
-      color="gradient"
-      class="mt-4"
-      :disabled="currentAction.pending"
-      :loading="currentAction.pending"
-      :loading-label="currentAction.loadingLabel"
-      block
-      @click="currentAction.promise()"
-    >
-      {{ currentAction.label }}
-    </BalBtn>
+    <BalActionSteps v-if="!withdrawalState.confirmed" :actions="actions" />
     <template v-else>
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"

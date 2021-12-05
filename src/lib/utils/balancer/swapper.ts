@@ -313,7 +313,7 @@ export async function boostedExitBatchSwap(
   amountIn: BigNumber,
   amountsOutMap: Record<string, BigNumber>,
   swapKind: SwapKind = SwapKind.GivenIn
-) {
+): Promise<TransactionResponse> {
   try {
     const address = await web3.getSigner().getAddress();
     const overrides: any = {};

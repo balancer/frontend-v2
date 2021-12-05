@@ -246,7 +246,8 @@ export default defineComponent({
     const approvingToken = computed(() => tokenApproval.approving.value);
 
     const approvingLidoRelayer = computed(
-      () => lidoRelayerApproval.approving.value
+      () =>
+        lidoRelayerApproval.init.value || lidoRelayerApproval.approving.value
     );
 
     const totalRequiredTransactions = computed(() => {
