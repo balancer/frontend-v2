@@ -256,7 +256,8 @@ export default function usePoolCreation() {
    */
   const {
     data: similarPoolsResponse,
-    isLoading: isLoadingSimilarPools
+    isLoading: isLoadingSimilarPools,
+    isIdle: isSimilarPoolQueryIdle
   } = usePoolsQuery(
     tokensList,
     { enabled: isSimilarPoolsQueryEnabled.value },
@@ -500,6 +501,7 @@ export default function usePoolCreation() {
     tokensWithNoPrice,
     similarPools,
     isLoadingSimilarPools,
+    isSimilarPoolQueryIdle,
     existingPool,
     totalLiquidity,
     maxInitialLiquidity,

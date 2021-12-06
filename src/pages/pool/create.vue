@@ -57,7 +57,8 @@ const {
   similarPools,
   setActiveStep,
   hasInjectedToken,
-  totalLiquidity
+  totalLiquidity,
+  isSimilarPoolQueryIdle
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 
@@ -167,7 +168,7 @@ watch([hasInjectedToken, totalLiquidity], () => {
           />
           <AnimatePresence
             :isVisible="
-              doSimilarPoolsExist && activeStep === 0 && validTokens.length
+              doSimilarPoolsExist && activeStep === 0 && !isSimilarPoolQueryIdle
             "
           >
             <SimilarPoolsCompact />
