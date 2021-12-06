@@ -110,6 +110,13 @@ export default class Vault {
             token,
             'getWrappedIndex'
           );
+          // TODO - getWrappedTokenRateCache is due to be depreciated for getWrappedTokenRate
+          // which will return the rate rather than an object.
+          poolMulticaller.call(
+            `linearPools.${token}.wrappedToken.rateCache`,
+            token,
+            'getWrappedTokenRateCache'
+          );
         });
       }
     }
@@ -258,7 +265,8 @@ export default class Vault {
         wrappedToken: {
           address: getAddress(wrappedToken.address),
           index: wrappedToken.index.toNumber(),
-          balance: tokenData.balances[wrappedToken.index.toNumber()].toString()
+          balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
+          priceRate: formatUnits(wrappedToken.rateCache.rate.toString(), 18)
         },
         unwrappedTokenAddress: getAddress(unwrappedTokenAddress)
       };

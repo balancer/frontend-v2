@@ -118,17 +118,29 @@ export interface RawLinearPoolToken {
   index: BigNumber;
 }
 
+export interface RawWrappedLinearPoolToken extends RawLinearPoolToken {
+  rateCache: {
+    duration: BigNumber;
+    expires: BigNumber;
+    rate: BigNumber;
+  };
+}
+
 export interface LinearPoolToken {
   address: string;
   index: number;
   balance: string;
 }
 
+export interface WrappedLinearPoolToken extends LinearPoolToken {
+  priceRate: string;
+}
+
 export interface RawLinearPoolData {
   id: string;
   priceRate: BigNumber;
   mainToken: RawLinearPoolToken;
-  wrappedToken: RawLinearPoolToken;
+  wrappedToken: RawWrappedLinearPoolToken;
   unwrappedTokenAddress: string;
   tokenData: RawPoolTokens;
 }
@@ -138,7 +150,7 @@ export interface LinearPoolData {
   id: string;
   priceRate: string;
   mainToken: LinearPoolToken;
-  wrappedToken: LinearPoolToken;
+  wrappedToken: WrappedLinearPoolToken;
   unwrappedTokenAddress: string;
 }
 export type LinearPoolDataMap = Record<Address, LinearPoolData>;

@@ -13,7 +13,6 @@ import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 import { isStablePhantom, usePool } from '@/composables/usePool';
 import { BatchSwapOut } from '@/types';
-import { queryBatchSwapTokensOut, SOR } from '@balancer-labs/sor2';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { BigNumber } from 'ethers';
 import OldBigNumber from 'bignumber.js';
@@ -48,6 +47,9 @@ export type WithdrawMathResponse = {
   batchSwap: Ref<BatchSwapOut | null>;
   batchSwapAmountsOutMap: Ref<Record<string, BigNumber>>;
   batchSwapKind: Ref<SwapKind>;
+  shouldUseBatchRelayer: Ref<boolean>;
+  batchRelayerSwap: Ref<any | null>;
+  loadingAmountsOut: Ref<boolean>;
   initMath: () => Promise<void>;
   resetMath: () => void;
   getBatchSwap: () => Promise<BatchSwapOut>;
@@ -69,7 +71,7 @@ export default function useWithdrawMath(
   const batchSwapLoading = ref(false);
   const batchSwapSingleAssetMaxes = ref<string[]>([]);
 
-  const batchRelayerSwap = ref<TransactionData | null>(null);
+  const batchRelayerSwap = ref<any | null>(null);
   const batchRelayerSwapLoading = ref(false);
   const batchRelayerSwapSingleAssetMaxes = ref<string[]>([]);
 
@@ -158,12 +160,19 @@ export default function useWithdrawMath(
 
   /**
    * Proportional amounts out for a StablePhantom pool's output tokens.
-   * Derived from queryBatchSwap amounts out result.
+   * Derived from queryBatchSwap or batchRelayer amounts out result.
    * Output tokens could be the mainTokens or unwrapped wrapped tokens.
    * e.g. USDC, USDT, DAI or aUSDC, aUSDT, aDAI
    */
   const proportionalMainTokenAmounts = computed((): string[] => {
-    if (pool.value.onchain.linearPools && batchSwap.value) {
+    if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
+      return batchRelayerSwap.value.outputs.amountsOut.map((amount, i) => {
+        const _amount = bnum(amount.toString())
+          .abs()
+          .toString();
+        return formatUnits(_amount, withdrawalTokens.value[i].decimals);
+      });
+    } else if (batchSwap.value) {
       return batchSwap.value.returnAmounts.map((amount, i) => {
         const _amount = bnum(amount.toString())
           .abs()
@@ -387,6 +396,10 @@ export default function useWithdrawMath(
     (): SwapKind => (exactOut.value ? SwapKind.GivenOut : SwapKind.GivenIn)
   );
 
+  const loadingAmountsOut = computed(
+    (): boolean => batchSwapLoading.value || batchRelayerSwapLoading.value
+  );
+
   /**
    * METHODS
    */
@@ -438,7 +451,7 @@ export default function useWithdrawMath(
     if (pool.value.onchain.linearPools) {
       // TODO - how should the rates be scaled?
       rates = Object.values(pool.value.onchain.linearPools)
-        .map(linearPool => linearPool.priceRate)
+        .map(linearPool => linearPool.wrappedToken.priceRate)
         .map(priceRate => parseUnits(priceRate, 18).toString());
     }
 
@@ -510,11 +523,9 @@ export default function useWithdrawMath(
     }
   });
 
-  watch(batchSwap, newBatchSwap => {
-    console.log('batchSwap', newBatchSwap);
-    console.log('shouldUseBatchRelayer', shouldUseBatchRelayer.value);
+  watch(batchSwap, async () => {
     if (shouldUseBatchRelayer.value) {
-      getBatchRelayerSwap();
+      batchRelayerSwap.value = await getBatchRelayerSwap();
     }
   });
 
@@ -542,6 +553,9 @@ export default function useWithdrawMath(
     batchSwap,
     batchSwapAmountsOutMap,
     batchSwapKind,
+    shouldUseBatchRelayer,
+    batchRelayerSwap,
+    loadingAmountsOut,
     // methods
     initMath,
     resetMath,

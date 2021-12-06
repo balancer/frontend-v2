@@ -1,7 +1,8 @@
-import { Contract } from 'ethers';
+import { Contract, Signer } from 'ethers';
 import ContractService from '../balancer-contracts.service';
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 import { FundManagement, TransactionData } from '@balancer-labs/sdk';
+import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 
 export default class BatchRelayer {
   service: ContractService;
@@ -45,5 +46,14 @@ export default class BatchRelayer {
       funds,
       slippage
     );
+  }
+
+  public async stableExit(
+    txInfo: TransactionData,
+    userSigner: Signer
+  ): Promise<TransactionResponse> {
+    return await this.instance
+      .connect(userSigner)
+      [txInfo.function](txInfo.params, { value: '0' });
   }
 }

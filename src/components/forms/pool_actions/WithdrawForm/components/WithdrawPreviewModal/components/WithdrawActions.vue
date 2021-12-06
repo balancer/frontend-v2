@@ -23,6 +23,7 @@ import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
 import { configService } from '@/services/config/config.service';
 import { parseUnits } from '@ethersproject/units';
 import { TransactionActionInfo } from '@/types/transactions';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 
 /**
  * TYPES
@@ -65,7 +66,7 @@ const withdrawalState = reactive<WithdrawalState>({
 const route = useRoute();
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { account, getProvider, explorerLinks } = useWeb3();
+const { account, getProvider, getSigner, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
@@ -80,7 +81,9 @@ const {
   singleAssetMaxOut,
   batchSwap,
   batchSwapAmountsOutMap,
-  batchSwapKind
+  batchSwapKind,
+  shouldUseBatchRelayer,
+  batchRelayerSwap
 } = toRefs(props.math);
 
 const withdrawalAction: TransactionActionInfo = {
@@ -145,7 +148,12 @@ async function submit(): Promise<TransactionResponse> {
     let tx;
     withdrawalState.init = true;
 
-    if (batchSwap.value) {
+    if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
+      tx = await balancerContractsService.batchRelayer.stableExit(
+        batchRelayerSwap.value,
+        getSigner()
+      );
+    } else if (batchSwap.value) {
       tx = await boostedExitBatchSwap(
         configService.network.key,
         getProvider(),
@@ -187,7 +195,8 @@ async function submit(): Promise<TransactionResponse> {
  * CALLBACKS
  */
 onBeforeMount(() => {
-  if (!batchRelayerApproval.isUnlocked.value) {
+  if (shouldUseBatchRelayer.value && !batchRelayerApproval.isUnlocked.value) {
+    // Prepend relayer approval action if batch relayer not approved
     actions.value.unshift(batchRelayerApproval.action.value);
   }
 });

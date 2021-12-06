@@ -40,16 +40,14 @@ const {
   highPriceImpactAccepted,
   validInput,
   maxSlider,
-  tokensOut,
-  sor
+  tokensOut
 } = useWithdrawalState(toRef(props, 'pool'));
 
 const withdrawMath = useWithdrawMath(
   toRef(props, 'pool'),
   isProportional,
   tokenOut,
-  tokenOutIndex,
-  sor
+  tokenOutIndex
 );
 
 const {
@@ -58,7 +56,8 @@ const {
   singleAssetMaxes,
   tokenOutAmount,
   tokenOutPoolBalance,
-  initMath
+  initMath,
+  loadingAmountsOut
 } = withdrawMath;
 
 const {
@@ -144,7 +143,12 @@ onBeforeMount(() => {
         v-else
         :label="$t('preview')"
         color="gradient"
-        :disabled="!hasAmounts || !hasValidInputs || isMismatchedNetwork"
+        :disabled="
+          !hasAmounts ||
+            !hasValidInputs ||
+            isMismatchedNetwork ||
+            loadingAmountsOut
+        "
         block
         @click="showPreview = true"
       />
