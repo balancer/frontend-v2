@@ -53,6 +53,7 @@ export type WithdrawMathResponse = {
   initMath: () => Promise<void>;
   resetMath: () => void;
   getBatchSwap: () => Promise<BatchSwapOut>;
+  getBatchRelayerSwap: () => Promise<TransactionData>;
 };
 
 export default function useWithdrawMath(
@@ -69,11 +70,13 @@ export default function useWithdrawMath(
 
   const batchSwap = ref<BatchSwapOut | null>(null);
   const batchSwapLoading = ref(false);
-  const batchSwapSingleAssetMaxes = ref<string[]>([]);
 
   const batchRelayerSwap = ref<any | null>(null);
   const batchRelayerSwapLoading = ref(false);
-  const batchRelayerSwapSingleAssetMaxes = ref<string[]>([]);
+
+  // This array can be set by either a regular batch swap result
+  // or a batch relayer result, if the batch swap returns 0.
+  const batchSwapSingleAssetMaxes = ref<string[]>([]);
 
   /**
    * COMPOSABLES
@@ -396,6 +399,10 @@ export default function useWithdrawMath(
     (): SwapKind => (exactOut.value ? SwapKind.GivenOut : SwapKind.GivenIn)
   );
 
+  const batchRelayerTokenOut = computed(
+    (): string => pool.value?.wrappedTokens?.[tokenOutIndex.value] || ''
+  );
+
   const loadingAmountsOut = computed(
     (): boolean => batchSwapLoading.value || batchRelayerSwapLoading.value
   );
@@ -405,7 +412,12 @@ export default function useWithdrawMath(
    */
   async function initMath(): Promise<void> {
     propBptIn.value = bptBalance.value;
-    if (shouldFetchBatchSwap.value) batchSwap.value = await getBatchSwap();
+    if (shouldFetchBatchSwap.value) {
+      batchSwap.value = await getBatchSwap();
+      if (shouldFetchBatchSwap.value) {
+        batchRelayerSwap.value = await getBatchRelayerSwap();
+      }
+    }
   }
 
   function resetMath(): void {
@@ -443,39 +455,31 @@ export default function useWithdrawMath(
     return result;
   }
 
-  async function getBatchRelayerSwap() {
+  async function getBatchRelayerSwap(
+    amounts: string[] | null = null,
+    tokensOut: string[] | null = null,
+    exactOut = false
+  ): Promise<TransactionData> {
     batchRelayerSwapLoading.value = true;
 
-    const tokensOut = pool.value.wrappedTokens || [];
+    amounts = amounts || batchSwapBPTIn.value.map(amount => amount.toString());
+    tokensOut = tokensOut || pool.value.wrappedTokens || [];
+
     let rates: string[] = [];
     if (pool.value.onchain.linearPools) {
-      // TODO - how should the rates be scaled?
       rates = Object.values(pool.value.onchain.linearPools)
         .map(linearPool => linearPool.wrappedToken.priceRate)
         .map(priceRate => parseUnits(priceRate, 18).toString());
     }
 
-    console.log('inputs', [
-      account.value,
-      pool.value.address,
-      batchSwapBPTIn.value.map(amount => amount.toString()),
-      tokensOut,
-      rates,
-      parseUnits(slippage.value, 18).toString()
-    ]);
-
     const result = await balancerContractsService.batchRelayer.stableExitStatic(
       account.value,
       pool.value.address,
-      batchSwapBPTIn.value.map(amount => amount.toString()),
+      amounts,
       tokensOut,
       rates,
-      parseUnits(slippage.value, 18).toString() // TODO - how should slippage be scaled
-    );
-    console.log('stableExit', result);
-    console.log(
-      'amountsOut',
-      result.outputs.amountsOut.map(amount => amount.toString())
+      parseUnits(slippage.value, 18).toString(),
+      exactOut
     );
 
     batchRelayerSwapLoading.value = false;
@@ -489,11 +493,34 @@ export default function useWithdrawMath(
       [bptBalanceScaled.value],
       [tokenOut.value]
     );
-    const amountOutScaled = bnum(_batchSwap.returnAmounts[0].toString())
-      .abs()
-      .toString();
-    const amountOut = formatUnits(amountOutScaled, tokenOutDecimals.value);
-    batchSwapSingleAssetMaxes.value[tokenOutIndex.value] = amountOut;
+
+    const batchSwapAmountOut = bnum(
+      _batchSwap.returnAmounts[0].toString()
+    ).abs();
+
+    if (batchSwapAmountOut.gt(0)) {
+      const amountOut = formatUnits(
+        batchSwapAmountOut.toString(),
+        tokenOutDecimals.value
+      );
+
+      batchSwapSingleAssetMaxes.value[tokenOutIndex.value] = amountOut;
+    } else {
+      const _batchRelayerSwap = await getBatchRelayerSwap(
+        [bptBalanceScaled.value.toString()],
+        [batchRelayerTokenOut.value]
+      );
+
+      const batchRelayerAmountOut = bnum(
+        _batchRelayerSwap.outputs.amountsOut[0].toString()
+      ).abs();
+      const amountOut = formatUnits(
+        batchRelayerAmountOut.toString(),
+        tokenOutDecimals.value
+      );
+
+      batchSwapSingleAssetMaxes.value[tokenOutIndex.value] = amountOut;
+    }
   }
 
   /**
@@ -512,7 +539,11 @@ export default function useWithdrawMath(
   watch(account, () => initMath());
 
   watch(fullAmounts, async () => {
-    shouldUseBatchRelayer.value;
+    /**
+     * When amounts change we need to trigger fetching of batch swaps
+     * and if batch swaps return amounts are zero, fetch the batch swap via
+     * the relayer.
+     */
     if (exactOut.value) {
       const amountsOut = fullAmountsScaled.value.filter(amount => amount.gt(0));
       batchSwap.value = await getBatchSwap(
@@ -520,12 +551,27 @@ export default function useWithdrawMath(
         [tokenOut.value],
         SwapType.SwapExactOut
       );
-    }
-  });
 
-  watch(batchSwap, async () => {
-    if (shouldUseBatchRelayer.value) {
-      batchRelayerSwap.value = await getBatchRelayerSwap();
+      if (shouldUseBatchRelayer.value) {
+        batchRelayerSwap.value = await getBatchRelayerSwap(
+          amountsOut.map(amount => amount.toString()),
+          [batchRelayerTokenOut.value],
+          true
+        );
+      }
+    } else if (!isProportional.value) {
+      // Single asset out max case
+      batchSwap.value = await getBatchSwap(
+        [bptBalanceScaled.value],
+        [tokenOut.value]
+      );
+
+      if (shouldUseBatchRelayer.value) {
+        batchRelayerSwap.value = await getBatchRelayerSwap(
+          [bptBalanceScaled.value.toString()],
+          [batchRelayerTokenOut.value]
+        );
+      }
     }
   });
 
@@ -559,6 +605,7 @@ export default function useWithdrawMath(
     // methods
     initMath,
     resetMath,
-    getBatchSwap
+    getBatchSwap,
+    getBatchRelayerSwap
   };
 }

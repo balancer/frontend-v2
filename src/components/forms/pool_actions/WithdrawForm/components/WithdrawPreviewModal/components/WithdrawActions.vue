@@ -66,7 +66,7 @@ const withdrawalState = reactive<WithdrawalState>({
 const route = useRoute();
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { account, getProvider, getSigner, explorerLinks } = useWeb3();
+const { account, getProvider, explorerLinks } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
@@ -151,7 +151,7 @@ async function submit(): Promise<TransactionResponse> {
     if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
       tx = await balancerContractsService.batchRelayer.stableExit(
         batchRelayerSwap.value,
-        getSigner()
+        getProvider()
       );
     } else if (batchSwap.value) {
       tx = await boostedExitBatchSwap(

@@ -1,18 +1,19 @@
-import { Contract, Signer } from 'ethers';
+import { Contract } from 'ethers';
 import ContractService from '../balancer-contracts.service';
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 import { FundManagement, TransactionData } from '@balancer-labs/sdk';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { sendTransaction } from '@/lib/utils/balancer/web3';
 
 export default class BatchRelayer {
   service: ContractService;
   instance: Contract;
 
-  constructor(service, abi = BatchRelayerAbi) {
+  constructor(service, public readonly abi = BatchRelayerAbi) {
     this.service = service;
     this.instance = new Contract(
       this.service.config.addresses.batchRelayer,
-      abi,
+      this.abi,
       this.service.provider
     );
   }
@@ -27,7 +28,8 @@ export default class BatchRelayer {
     amountsIn: string[],
     tokensOut: string[],
     rates: string[],
-    slippage: string
+    slippage: string,
+    exactOut = false
   ): Promise<TransactionData> {
     const funds: FundManagement = {
       sender: account,
@@ -38,7 +40,11 @@ export default class BatchRelayer {
 
     const tokensIn = tokensOut.map(() => tokenIn);
 
-    return await this.service.sdk.relayer.swapUnwrapAaveStaticExactIn(
+    const method = exactOut
+      ? 'swapUnwrapAaveStaticExactOut'
+      : 'swapUnwrapAaveStaticExactIn';
+
+    return await this.service.sdk.relayer[method](
       tokensIn,
       tokensOut,
       amountsIn,
@@ -50,10 +56,14 @@ export default class BatchRelayer {
 
   public async stableExit(
     txInfo: TransactionData,
-    userSigner: Signer
+    userProivder: Web3Provider
   ): Promise<TransactionResponse> {
-    return await this.instance
-      .connect(userSigner)
-      [txInfo.function](txInfo.params, { value: '0' });
+    return await sendTransaction(
+      userProivder,
+      this.address,
+      this.abi,
+      txInfo.function,
+      [txInfo.params]
+    );
   }
 }

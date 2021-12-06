@@ -42,7 +42,9 @@ const {
   proportionalAmounts,
   shouldFetchBatchSwap,
   batchSwap,
-  loadingAmountsOut
+  loadingAmountsOut,
+  batchRelayerSwap,
+  shouldUseBatchRelayer
 } = toRefs(props.math);
 
 const { slider } = useWithdrawalState(toRef(props, 'pool'));
@@ -98,6 +100,9 @@ function handleSliderChange(newVal: number): void {
 async function handleSliderEnd(): Promise<void> {
   if (shouldFetchBatchSwap.value) {
     batchSwap.value = await props.math.getBatchSwap();
+    if (shouldUseBatchRelayer.value) {
+      batchRelayerSwap.value = await props.math.getBatchRelayerSwap();
+    }
   }
 }
 
