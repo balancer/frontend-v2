@@ -299,7 +299,7 @@ function handleProceed() {
 </script>
 
 <template>
-  <div ref="cardWrapper">
+  <div ref="cardWrapper" class="mb-16">
     <BalCard>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">
