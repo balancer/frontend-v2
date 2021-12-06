@@ -75,6 +75,9 @@ onMounted(() => {
  * COMPUTED
  */
 const doSimilarPoolsExist = computed(() => similarPools.value.length > 0);
+const validTokens = computed(() =>
+  seedTokens.value.filter(t => t.tokenAddress !== '')
+);
 
 const steps = computed(() => [
   {
@@ -175,7 +178,11 @@ watch([hasInjectedToken, totalLiquidity], () => {
             :steps="steps"
             @navigate="handleNavigate"
           />
-          <AnimatePresence :isVisible="doSimilarPoolsExist && activeStep === 0">
+          <AnimatePresence
+            :isVisible="
+              doSimilarPoolsExist && activeStep === 0 && validTokens.length
+            "
+          >
             <SimilarPoolsCompact />
           </AnimatePresence>
         </BalStack>
