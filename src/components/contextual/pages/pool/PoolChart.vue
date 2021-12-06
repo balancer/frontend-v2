@@ -3,7 +3,7 @@ import { toRefs, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 import { zip } from 'lodash';
-import { fromUnixTime, format } from 'date-fns';
+import { format } from 'date-fns';
 
 import { FullPool, PoolSnapshots } from '@/services/balancer/subgraph/types';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
@@ -97,15 +97,9 @@ const history = computed(() => {
     .filter(state => state.totalShares > 0);
 });
 
-const timestamps = computed(() => {
-  if (history.value.length === 0) {
-    return [];
-  }
-
-  return history.value.map(state =>
-    format(fromUnixTime(state.timestamp / 1000), 'yyyy/MM/dd')
-  );
-});
+const timestamps = computed(() =>
+  history.value.map(state => format(state.timestamp, 'yyyy/MM/dd'))
+);
 
 const hodlValues = computed(() => {
   if (history.value.length === 0) {
