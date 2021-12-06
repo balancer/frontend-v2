@@ -71,7 +71,7 @@ const history = computed(() => {
     return [];
   }
 
-  // Prices are not required when using pool liquidity
+  // Prices are required when not using pool liquidity
   if (!supportsPoolLiquidity.value && pricesTimestamps.length === 0) {
     return [];
   }
