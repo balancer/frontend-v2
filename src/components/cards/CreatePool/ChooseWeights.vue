@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, nextTick, onBeforeUpdate, watch } from 'vue';
+import { computed, onMounted, ref, nextTick, onBeforeUpdate } from 'vue';
 
 import TokenWeightInput from '@/components/inputs/TokenInput/TokenWeightInput.vue';
 
