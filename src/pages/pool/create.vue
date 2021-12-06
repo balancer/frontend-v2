@@ -55,13 +55,11 @@ const { appLoading } = useApp();
 const {
   activeStep,
   similarPools,
-  maxInitialLiquidity,
   setActiveStep,
   hasInjectedToken,
-  seedTokens,
   totalLiquidity
 } = usePoolCreation();
-const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
+const { upToLargeBreakpoint } = useBreakpoints();
 
 onMounted(() => {
   if (accordionWrapper.value) {
@@ -75,9 +73,6 @@ onMounted(() => {
  * COMPUTED
  */
 const doSimilarPoolsExist = computed(() => similarPools.value.length > 0);
-const validTokens = computed(() =>
-  seedTokens.value.filter(t => t.tokenAddress !== '')
-);
 
 const steps = computed(() => [
   {
@@ -125,18 +120,10 @@ function getStepState(idx: number) {
 function setWrapperHeight(dimensions?: { width: number; height: number }) {
   // need to transform the accordion as everything is absolutely
   // positioned inside the AnimateHeight component
-  const validTokens = seedTokens.value.filter(t => t.tokenAddress !== '');
   if (dimensions?.height) prevWrapperHeight.value = dimensions.height;
 
-  let mobileOffset = 50;
-  if (upToLargeBreakpoint.value) {
-    if (validTokens.length >= 2 && maxInitialLiquidity.value < 20000) {
-      mobileOffset += 90;
-    }
-    if (hasInjectedToken.value) {
-      mobileOffset += upToSmallBreakpoint.value ? 145 : 160;
-    }
-  }
+  let mobileOffset = 20;
+
   anime({
     targets: accordionWrapper.value,
     translateY: `${prevWrapperHeight.value + mobileOffset}px`,
@@ -194,7 +181,6 @@ watch([hasInjectedToken, totalLiquidity], () => {
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
       >
         <ChooseWeights @update:height="setWrapperHeight" />
       </AnimatePresence>
@@ -205,7 +191,7 @@ watch([hasInjectedToken, totalLiquidity], () => {
         :exit="exitAnimateProps"
         @update-dimensions="setWrapperHeight"
       >
-        <PoolFees />
+        <PoolFees @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
         :isVisible="!appLoading && activeStep === 2 && similarPools.length > 0"
@@ -223,7 +209,7 @@ watch([hasInjectedToken, totalLiquidity], () => {
         :exit="exitAnimateProps"
         @update-dimensions="setWrapperHeight"
       >
-        <InitialLiquidity />
+        <InitialLiquidity @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
         :isVisible="!appLoading && activeStep === 4"
