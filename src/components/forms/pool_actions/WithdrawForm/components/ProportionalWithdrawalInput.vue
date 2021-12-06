@@ -123,7 +123,10 @@ onBeforeMount(() => {
         <div class="flex">
           <WithdrawalTokenSelect :pool="pool" />
           <div class="flex-grow text-right text-xl font-numeric">
-            <BalLoadingBlock v-if="loadingAmountsOut" class="w-20 h-8 float-right" />
+            <BalLoadingBlock
+              v-if="loadingAmountsOut"
+              class="w-20 h-8 float-right"
+            />
             <span v-else>{{ missingPrices ? '-' : fiatTotalLabel }}</span>
           </div>
         </div>
@@ -164,7 +167,9 @@ onBeforeMount(() => {
               </span>
             </div>
           </div>
-          <div class="flex flex-col flex-grow items-end text-right pl-2 font-numeric">
+          <div
+            class="flex flex-col flex-grow items-end text-right pl-2 font-numeric"
+          >
             <BalLoadingBlock v-if="loadingAmountsOut" class="w-20 h-12" />
             <template v-else>
               <span class="break-words text-xl">
