@@ -19,7 +19,7 @@ import { BigNumber } from 'ethers';
 import OldBigNumber from 'bignumber.js';
 import { TokenInfo } from '@/types/TokenList';
 import { balancer } from '@/lib/balancer.sdk';
-import { SwapType } from '@balancer-labs/sdk';
+import { SwapType, TransactionData } from '@balancer-labs/sdk';
 import { SwapKind } from '@balancer-labs/balancer-js';
 
 /**
@@ -64,9 +64,14 @@ export default function useWithdrawMath(
    */
   const propBptIn = ref('');
   const tokenOutAmount = ref('');
+
   const batchSwap = ref<BatchSwapOut | null>(null);
   const batchSwapLoading = ref(false);
   const batchSwapSingleAssetMaxes = ref<string[]>([]);
+
+  const batchRelayerSwap = ref<TransactionData | null>(null);
+  const batchRelayerSwapLoading = ref(false);
+  const batchRelayerSwapSingleAssetMaxes = ref<string[]>([]);
 
   /**
    * COMPOSABLES
@@ -315,9 +320,6 @@ export default function useWithdrawMath(
     if (!isStablePhantomPool.value || !pool.value.onchain.linearPools)
       return false;
 
-    // TODO - check with Fer / Nico if buffer required, e.g.
-    // If pool stable balances below certain threshold, use batch relayer
-
     // If batchSwap has any 0 return amounts, we should use batch relayer
     if (batchSwap.value) {
       const returnAmounts = batchSwap.value.returnAmounts;
@@ -327,8 +329,6 @@ export default function useWithdrawMath(
       );
     }
 
-    // If single asset we only need to compare that stable's balances
-    // if proportional exit then we need to check all
     return false;
   });
 
@@ -430,6 +430,45 @@ export default function useWithdrawMath(
     return result;
   }
 
+  async function getBatchRelayerSwap() {
+    batchRelayerSwapLoading.value = true;
+
+    const tokensOut = pool.value.wrappedTokens || [];
+    let rates: string[] = [];
+    if (pool.value.onchain.linearPools) {
+      // TODO - how should the rates be scaled?
+      rates = Object.values(pool.value.onchain.linearPools)
+        .map(linearPool => linearPool.priceRate)
+        .map(priceRate => parseUnits(priceRate, 18).toString());
+    }
+
+    console.log('inputs', [
+      account.value,
+      pool.value.address,
+      batchSwapBPTIn.value.map(amount => amount.toString()),
+      tokensOut,
+      rates,
+      parseUnits(slippage.value, 18).toString()
+    ]);
+
+    const result = await balancerContractsService.batchRelayer.stableExitStatic(
+      account.value,
+      pool.value.address,
+      batchSwapBPTIn.value.map(amount => amount.toString()),
+      tokensOut,
+      rates,
+      parseUnits(slippage.value, 18).toString() // TODO - how should slippage be scaled
+    );
+    console.log('stableExit', result);
+    console.log(
+      'amountsOut',
+      result.outputs.amountsOut.map(amount => amount.toString())
+    );
+
+    batchRelayerSwapLoading.value = false;
+    return result;
+  }
+
   // Fetch single asset max out for current tokenOut using batch swaps.
   // Set max out returned from batchSwap in state.
   async function getSingleAssetMaxOut(): Promise<void> {
@@ -471,41 +510,11 @@ export default function useWithdrawMath(
     }
   });
 
-  watch(batchSwap, async newBatchSwap => {
+  watch(batchSwap, newBatchSwap => {
     console.log('batchSwap', newBatchSwap);
     console.log('shouldUseBatchRelayer', shouldUseBatchRelayer.value);
     if (shouldUseBatchRelayer.value) {
-      const tokensOut = pool.value.wrappedTokens || [];
-      let rates: string[] = [];
-      if (pool.value.onchain.linearPools) {
-        // TODO - how should the rates be scaled?
-        rates = Object.values(pool.value.onchain.linearPools)
-          .map(linearPool => linearPool.priceRate)
-          .map(priceRate => parseUnits(priceRate, 18).toString());
-      }
-
-      console.log('inputs', [
-        account.value,
-        pool.value.address,
-        batchSwapBPTIn.value.map(amount => amount.toString()),
-        tokensOut,
-        rates,
-        parseUnits(slippage.value, 18).toString()
-      ]);
-
-      const result = await balancerContractsService.batchRelayer.stableExitStatic(
-        account.value,
-        pool.value.address,
-        batchSwapBPTIn.value.map(amount => amount.toString()),
-        tokensOut,
-        rates,
-        parseUnits(slippage.value, 18).toString()
-      );
-      console.log('stableExit', result);
-      console.log(
-        'amountsOut',
-        result.outputs.amountsOut.map(amount => amount.toString())
-      );
+      getBatchRelayerSwap();
     }
   });
 

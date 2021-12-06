@@ -1,4 +1,4 @@
-import { computed, Ref, ref, watch } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Vault__factory } from '@balancer-labs/typechain';
 
@@ -39,12 +39,6 @@ export default function useRelayerApproval(
   const approving = ref(false);
   const approved = ref(false);
 
-  // If the approval is ever required, set this to true and don't revert.
-  // The purpose of this flag is to know throughout a flow that the approval
-  // was required initially. The 'isUnlocked' property does not satisfy this
-  // requirement.
-  // const isRequired = ref(false);
-
   /**
    * COMPOSABLES
    */
@@ -79,15 +73,6 @@ export default function useRelayerApproval(
       action: approve
     })
   );
-
-  /**
-   * WATCHERS
-   */
-  // watch(relayerApproval.data, isRelayerApproved => {
-  //   if (!isRequired.value) {
-  //     isRequired.value = !isRelayerApproved;
-  //   }
-  // });
 
   /**
    * METHODS
