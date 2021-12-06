@@ -111,7 +111,7 @@ export default class OperatorError extends Error {
         );
         return i18n.global.t('apiErrorCodeDetails.Error500', [
           action === 'create'
-            ? i18n.global.t('creating')
+            ? i18n.global.t('creating').toLocaleLowerCase()
             : i18n.global.t('cancelling').toLocaleLowerCase()
         ]);
     }
