@@ -235,10 +235,6 @@ export default function usePoolCreation() {
     return tokensList.value.includes(configService.network.addresses.weth);
   });
 
-  const isSimilarPoolsQueryEnabled = computed(
-    () => tokensList.value.length > 0
-  );
-
   const poolOwner = computed(() => {
     if (poolCreationState.feeManagementType === 'governance') {
       return POOLS.DelegateOwner;
@@ -256,7 +252,7 @@ export default function usePoolCreation() {
    */
   const {
     data: similarPoolsResponse,
-    isLoading: isLoadingSimilarPools,
+    isLoading: isLoadingSimilarPools
   } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
 
   function resetPoolCreationState() {
