@@ -85,10 +85,6 @@ const actions = computed((): TransactionActionInfo[] => [
 
 const requiredActions = computed(() => {
   if (hasRestoredFromSavedState.value && needsSeeding.value) {
-    console.log(
-      'es',
-      actions.value.filter(action => action.label === t('fundPool'))
-    );
     return actions.value.filter(action => action.label === t('fundPool'));
   }
   return actions.value;
