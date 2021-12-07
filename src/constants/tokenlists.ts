@@ -23,10 +23,8 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
     },
     External: [
       'ipns://tokens.uniswap.org',
-      'tokenlist.zerion.eth',
-      'tokens.1inch.eth',
+      'https://www.gemini.com/uniswap/manifest.json',
       'tokenlist.aave.eth',
-      // 'https://tokens.coingecko.com/uniswap/all.json', Breaks balance/allowance fetching
       'https://umaproject.org/uma.tokenlist.json'
     ]
   },
