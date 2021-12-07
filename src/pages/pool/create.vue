@@ -15,9 +15,14 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import anime from 'animejs';
 
 import useApp from '@/composables/useApp';
-import usePoolCreation from '@/composables/pools/usePoolCreation';
+import usePoolCreation, {
+  POOL_CREATION_STATE_KEY,
+  POOL_CREATION_STATE_VERSION
+} from '@/composables/pools/usePoolCreation';
 import { StepState } from '@/types';
 import useBreakpoints from '@/composables/useBreakpoints';
+import useAlerts from '@/composables/useAlerts';
+import { lsGet } from '@/lib/utils';
 
 const initialAnimateProps = {
   opacity: 0,
@@ -48,6 +53,7 @@ const exitAnimateProps = {
 const accordionWrapper = ref<HTMLElement>();
 const hasCompletedMountAnimation = ref(false);
 const prevWrapperHeight = ref(0);
+
 /**
  * COMPOSABLES
  */
@@ -60,15 +66,29 @@ const {
   hasInjectedToken,
   seedTokens,
   totalLiquidity,
-  hasRestoredFromSavedState
+  hasRestoredFromSavedState,
+  importState
 } = usePoolCreation();
 const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
+const { removeAlert } = useAlerts();
 
 onMounted(() => {
+  removeAlert('return-to-pool-creation');
   if (accordionWrapper.value) {
     anime.set(accordionWrapper.value, {
       opacity: 0
     });
+  }
+
+  let previouslySavedState = lsGet(
+    POOL_CREATION_STATE_KEY,
+    null,
+    POOL_CREATION_STATE_VERSION
+  );
+  if (activeStep.value === 0 && previouslySavedState !== null) {
+    previouslySavedState = JSON.parse(previouslySavedState);
+    importState(previouslySavedState);
+    hasRestoredFromSavedState.value = true;
   }
 });
 

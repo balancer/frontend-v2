@@ -1,4 +1,4 @@
-import { ref, reactive, toRefs, watch, computed, onMounted } from 'vue';
+import { ref, reactive, toRefs, watch, computed } from 'vue';
 
 import { useI18n } from 'vue-i18n';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
@@ -9,7 +9,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import BigNumber from 'bignumber.js';
 import { flatten, sumBy } from 'lodash';
-import { bnum, lsGet, lsRemove, lsSet, scale } from '@/lib/utils';
+import { bnum, lsRemove, lsSet, scale } from '@/lib/utils';
 
 import { PoolType } from '@/services/balancer/subgraph/types';
 import { balancerService } from '@/services/balancer/balancer.service';
@@ -17,8 +17,8 @@ import { configService } from '@/services/config/config.service';
 import { TransactionResponse } from '@ethersproject/providers';
 import { POOLS } from '@/constants/pools';
 
-const POOL_CREATION_STATE_VERSION = '1.0';
-const POOL_CREATION_STATE_KEY = 'poolCreationState';
+export const POOL_CREATION_STATE_VERSION = '1.0';
+export const POOL_CREATION_STATE_KEY = 'poolCreationState';
 
 export type PoolSeedToken = {
   tokenAddress: string;
@@ -62,7 +62,7 @@ const emptyPoolCreationState = {
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
 const tokenColors = ref<string[]>([]);
-const hasRestoredFromSavedState = ref(false);
+export const hasRestoredFromSavedState = ref<boolean | null>(null);
 
 export default function usePoolCreation() {
   /**
@@ -112,25 +112,6 @@ export default function usePoolCreation() {
         setActiveStep(4);
       }
     }, 3500);
-  });
-
-  /**
-   * LIFECYCLE
-   */
-  onMounted(async () => {
-    let previouslySavedState = lsGet(
-      POOL_CREATION_STATE_KEY,
-      null,
-      POOL_CREATION_STATE_VERSION
-    );
-    if (poolCreationState.activeStep === 0 && previouslySavedState !== null) {
-      previouslySavedState = JSON.parse(previouslySavedState);
-      for (const key of Object.keys(poolCreationState)) {
-        if (key === 'activeStep') continue;
-        poolCreationState[key] = previouslySavedState[key];
-      }
-      hasRestoredFromSavedState.value = true;
-    }
   });
 
   /**
@@ -537,6 +518,13 @@ export default function usePoolCreation() {
     lsRemove(POOL_CREATION_STATE_KEY);
   }
 
+  function importState(state) {
+    for (const key of Object.keys(poolCreationState)) {
+      if (key === 'activeStep') continue;
+      poolCreationState[key] = state[key];
+    }
+  }
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -561,6 +549,7 @@ export default function usePoolCreation() {
     acceptCustomTokenDisclaimer,
     saveState,
     resetState,
+    importState,
     currentLiquidity,
     optimisedLiquidity,
     scaledLiquidity,
