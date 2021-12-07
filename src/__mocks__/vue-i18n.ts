@@ -7,3 +7,7 @@ export function useI18n() {
     })
   };
 }
+
+export function createI18n() {
+  return {};
+}

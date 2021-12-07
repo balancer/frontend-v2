@@ -21,7 +21,7 @@ export default class ConfigService {
       APP_ENV: process.env.VUE_APP_ENV || 'development',
       NETWORK: networkId.value,
       APP_DOMAIN: process.env.VUE_APP_DOMAIN || 'app.balancer.fi',
-      IPFS_NODE: process.env.VUE_APP_IPFS_NODE || 'ipfs.io',
+      IPFS_NODE: process.env.VUE_APP_IPFS_NODE || 'cloudflare-ipfs.com',
       BLOCKNATIVE_DAPP_ID:
         process.env.VUE_APP_BLOCKNATIVE_DAPP_ID || 'MISSING_KEY',
       ALCHEMY_KEY:
