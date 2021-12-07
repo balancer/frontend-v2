@@ -257,12 +257,7 @@ export default function usePoolCreation() {
   const {
     data: similarPoolsResponse,
     isLoading: isLoadingSimilarPools,
-    isIdle: isSimilarPoolQueryIdle
-  } = usePoolsQuery(
-    tokensList,
-    { enabled: isSimilarPoolsQueryEnabled.value },
-    { isExactTokensList: true }
-  );
+  } = usePoolsQuery(tokensList, {}, { isExactTokensList: true });
 
   function resetPoolCreationState() {
     for (const key of Object.keys(poolCreationState)) {
@@ -501,7 +496,6 @@ export default function usePoolCreation() {
     tokensWithNoPrice,
     similarPools,
     isLoadingSimilarPools,
-    isSimilarPoolQueryIdle,
     existingPool,
     totalLiquidity,
     maxInitialLiquidity,
