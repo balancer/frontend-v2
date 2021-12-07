@@ -85,7 +85,7 @@ export default defineComponent({
             easing: 'spring(0.2, 80, 10, 0)',
             complete: () => {
               done();
-              emit('on-presence', { isCompleted: false });
+              emit('on-presence', { isCompleted: true });
             }
           }),
         0
