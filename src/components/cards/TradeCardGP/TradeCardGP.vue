@@ -253,13 +253,6 @@ export default defineComponent({
         };
       }
 
-      if (errorMessage.value === TradeValidation.NO_BALANCE) {
-        return {
-          header: t('insufficientBalance'),
-          body: t('insufficientBalanceDetailed')
-        };
-      }
-
       if (trading.isBalancerTrade.value) {
         if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {
