@@ -63,6 +63,8 @@ function getUnderlyingTokens(address: string) {
         <BalBreakdown
           :items="getUnderlyingTokens(address)"
           class="w-full"
+          offsetClassOverrides="mt-4 ml-3"
+          initVertBarClassOverrides="h-6 -mt-6"
           size="lg"
         >
           <BalLink
