@@ -108,6 +108,7 @@ onBeforeMount(() => {
       :customBalance="singleAssetMaxes[tokenOutIndex] || '0'"
       :rules="singleAssetRules"
       :balanceLabel="$t('singleTokenMax')"
+      :balanceLoading="loadingAmountsOut"
       fixedToken
       disableNativeAssetBuffer
     >

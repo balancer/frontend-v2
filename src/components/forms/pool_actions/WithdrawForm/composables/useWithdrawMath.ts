@@ -1,3 +1,11 @@
+/**
+ * useWithdrawMath
+ *
+ * Returns state, computed properties and methods for the withdraw form math.
+ *
+ * TODO:
+ * Requires major refactor following Boosted pools (StablePhantom) logic additions.
+ */
 import { computed, Ref, ref, watch } from 'vue';
 import { bnSum, bnum, forChange } from '@/lib/utils';
 import { formatUnits, parseUnits } from '@ethersproject/units';
@@ -90,10 +98,14 @@ export default function useWithdrawMath(
     getToken,
     dynamicDataLoading
   } = useTokens();
-  const { minusSlippage, addSlippage, minusSlippageScaled } = useSlippage();
+  const {
+    minusSlippage,
+    addSlippageScaled,
+    minusSlippageScaled
+  } = useSlippage();
   const { currency } = useUserSettings();
   const { isStablePhantomPool } = usePool(pool);
-  const { slippage } = useUserSettings();
+  const { slippageScaled } = useUserSettings();
 
   /**
    * SERVICES
@@ -121,6 +133,8 @@ export default function useWithdrawMath(
     (): number => getToken(tokenOut.value).decimals
   );
 
+  const poolDecimals = computed((): number => pool.value.onchain.decimals);
+
   /**
    * The tokens being withdrawn
    * In most cases these are the same as the pool tokens
@@ -132,7 +146,7 @@ export default function useWithdrawMath(
 
   const bptBalance = computed(() => balanceFor(pool.value.address));
   const bptBalanceScaled = computed(() =>
-    parseUnits(bptBalance.value, pool.value.onchain.decimals)
+    parseUnits(bptBalance.value, poolDecimals.value)
   );
 
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
@@ -143,10 +157,6 @@ export default function useWithdrawMath(
     );
     return balances[tokenOutIndex.value];
   });
-
-  const amountExceedsPoolBalance = computed(() =>
-    bnum(tokenOutAmount.value).gt(tokenOutPoolBalance.value)
-  );
 
   /**
    * Proportional pool token amounts out given BPT in.
@@ -218,32 +228,48 @@ export default function useWithdrawMath(
   });
 
   /**
-   * The BPT value to be used for the withdrawal transaction.
-   * Only in the single asset exact out case should the BPT value
-   * be adjusted to account for slippage.
+   * The BPT value to be used for the withdrawal transaction without accounting for slippage.
+   */
+  const fullBPTIn = computed(
+    (): BigNumber => {
+      if (isProportional.value)
+        return parseUnits(propBptIn.value, poolDecimals.value);
+      if (!exactOut.value)
+        return parseUnits(bptBalance.value, poolDecimals.value); // Single asset max withdrawal
+
+      // Else single asset exact out amount case
+
+      if (isStablePhantomPool.value) {
+        if (shouldUseBatchRelayer.value) {
+          return BigNumber.from(
+            batchRelayerSwap.value?.outputs?.amountsIn || '0'
+          );
+        }
+        return BigNumber.from(
+          batchSwap.value?.returnAmounts?.[0]?.toString() || '0'
+        );
+      }
+
+      const _bptIn = poolCalculator
+        .bptInForExactTokenOut(tokenOutAmount.value, tokenOutIndex.value)
+        .toString();
+
+      return BigNumber.from(_bptIn);
+    }
+  );
+
+  /**
+   * The BPT value to be used for the withdrawal transaction accounting for slippage.
+   * Only in the single asset exact out case should the BPT value be adjusted to account for slippage.
    */
   const bptIn = computed((): string => {
-    if (isProportional.value) return propBptIn.value;
-    if (!exactOut.value) return bptBalance.value; // Single asset max withdrawal
-
-    if (exactOut.value && isStablePhantomPool.value) {
-      if (!batchSwap.value) return '0';
-      const _bptIn = formatUnits(
-        batchSwap.value.returnAmounts[0],
-        pool.value.onchain.decimals
-      );
-      return addSlippage(_bptIn, pool.value.onchain.decimals);
-    }
-
-    // Else single asset exact amount case
-    let _bptIn = poolCalculator
-      .bptInForExactTokenOut(tokenOutAmount.value, tokenOutIndex.value)
-      .toString();
-
-    _bptIn = formatUnits(_bptIn, pool.value.onchain.decimals);
-
-    return addSlippage(_bptIn, pool.value.onchain.decimals);
+    if (exactOut.value) return addSlippageScaled(fullBPTIn.value).toString();
+    return fullBPTIn.value.toString();
   });
+
+  const normalizedBPTIn = computed((): string =>
+    formatUnits(bptIn.value, poolDecimals.value)
+  );
 
   const hasAmounts = computed(() =>
     fullAmounts.value.some(amount => bnum(amount).gt(0))
@@ -287,14 +313,15 @@ export default function useWithdrawMath(
   );
 
   const priceImpact = computed((): number => {
-    if (amountExceedsPoolBalance.value) return 1;
     if (!hasAmounts.value || isProportional.value) return 0;
 
     // TODO - handle single asset withdrawal price impact for StablePhantom pools
+    console.log('RE_CALC PI FOR', fullBPTIn.value.toString());
     return poolCalculator
       .priceImpact(fullAmounts.value, {
         exactOut: exactOut.value,
-        tokenIndex: tokenOutIndex.value
+        tokenIndex: tokenOutIndex.value,
+        queryBPT: fullBPTIn.value.toString()
       })
       .toNumber();
   });
@@ -325,7 +352,9 @@ export default function useWithdrawMath(
 
   const shouldFetchBatchSwap = computed(
     (): boolean =>
-      pool.value && isStablePhantomPool.value && bnum(bptIn.value).gt(0)
+      pool.value &&
+      isStablePhantomPool.value &&
+      bnum(normalizedBPTIn.value).gt(0)
   );
 
   const shouldUseBatchRelayer = computed((): boolean => {
@@ -380,13 +409,13 @@ export default function useWithdrawMath(
       .map(poolTokenAmount => {
         const fraction = bnum(poolTokenAmount).div(poolTokenSum);
         return fraction
-          .times(bptIn.value)
-          .toFixed(pool.value.onchain.decimals, OldBigNumber.ROUND_DOWN);
+          .times(normalizedBPTIn.value)
+          .toFixed(poolDecimals.value, OldBigNumber.ROUND_DOWN);
       })
       .filter(BPT => bnum(BPT).gt(0));
 
     return fractionalBPTIn.map(bptFraction =>
-      parseUnits(bptFraction, pool.value.onchain.decimals)
+      parseUnits(bptFraction, poolDecimals.value)
     );
   });
 
@@ -426,6 +455,21 @@ export default function useWithdrawMath(
   }
 
   /**
+   * Returns wrappedToken price rate for conversion to stable.
+   * @param wrappedToken the wrapped linear pool token address.
+   */
+  function scaledWrappedTokenRateFor(wrappedToken: string): string {
+    if (!pool.value.onchain.linearPools) return '0';
+
+    const normalPriceRate =
+      Object.values(pool.value.onchain.linearPools).find(
+        linearPool => linearPool.wrappedToken.address === wrappedToken
+      )?.wrappedToken?.priceRate || '0';
+
+    return parseUnits(normalPriceRate, 18).toString();
+  }
+
+  /**
    * Given either BPT in or the exact tokens out, fetches batch swap
    * required, where return amounts are the opposite of amounts.
    * @param amounts either BPT in amounts or exact out amounts
@@ -455,6 +499,14 @@ export default function useWithdrawMath(
     return result;
   }
 
+  /**
+   * Given either BPT in or the exact wrapped tokens out to convert to stables,
+   * fetches batch swap using the relayer required, where return amounts are the
+   * opposite of amounts.
+   * @param amounts either BPT in amounts or exact out amounts
+   * @param tokensOut wrapped tokens to convert to stables
+   * @param swapType defaults to exact in
+   */
   async function getBatchRelayerSwap(
     amounts: string[] | null = null,
     tokensOut: string[] | null = null,
@@ -465,12 +517,10 @@ export default function useWithdrawMath(
     amounts = amounts || batchSwapBPTIn.value.map(amount => amount.toString());
     tokensOut = tokensOut || pool.value.wrappedTokens || [];
 
-    let rates: string[] = [];
-    if (pool.value.onchain.linearPools) {
-      rates = Object.values(pool.value.onchain.linearPools)
-        .map(linearPool => linearPool.wrappedToken.priceRate)
-        .map(priceRate => parseUnits(priceRate, 18).toString());
-    }
+    const rates: string[] = [];
+    tokensOut.forEach((tokenOut, i) => {
+      rates[i] = scaledWrappedTokenRateFor(tokenOut);
+    });
 
     const result = await balancerContractsService.batchRelayer.stableExitStatic(
       account.value,
@@ -478,9 +528,11 @@ export default function useWithdrawMath(
       amounts,
       tokensOut,
       rates,
-      parseUnits(slippage.value, 18).toString(),
+      slippageScaled.value,
       exactOut
     );
+
+    console.log('BATCHRELAYERSWAP', result);
 
     batchRelayerSwapLoading.value = false;
     return result;

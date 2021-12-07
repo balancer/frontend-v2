@@ -21,9 +21,10 @@ import useWithdrawalState from '../../../composables/useWithdrawalState';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
 import { boostedExitBatchSwap } from '@/lib/utils/balancer/swapper';
 import { configService } from '@/services/config/config.service';
-import { parseUnits } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import { TransactionActionInfo } from '@/types/transactions';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import { BigNumber } from 'ethers';
 
 /**
  * TYPES
@@ -160,7 +161,7 @@ async function submit(): Promise<TransactionResponse> {
         batchSwap.value.swaps,
         batchSwap.value.assets,
         props.pool.address,
-        parseUnits(bptIn.value, props.pool.onchain.decimals),
+        BigNumber.from(bptIn.value),
         batchSwapAmountsOutMap.value,
         batchSwapKind.value
       );
@@ -170,7 +171,7 @@ async function submit(): Promise<TransactionResponse> {
         account.value,
         amountsOut.value,
         tokensOut.value,
-        bptIn.value,
+        formatUnits(bptIn.value, props.pool.onchain.decimals),
         singleAssetMaxOut.value ? tokenOutIndex.value : null,
         exactOut.value
       );

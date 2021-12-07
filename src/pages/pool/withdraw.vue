@@ -1,12 +1,7 @@
 <script setup lang="ts">
-// import { onBeforeMount } from 'vue';
-// import { forChange } from '@/lib/utils';
 import { configService } from '@/services/config/config.service';
 // Composables
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
-// import { usePool } from '@/composables/usePool';
-// import useWithdrawalState from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawalState';
-// Components
 import WithdrawForm from '@/components/forms/pool_actions/WithdrawForm/WithdrawForm.vue';
 import TradeSettingsPopover, {
   TradeSettingsContext
@@ -17,22 +12,6 @@ import TradeSettingsPopover, {
  */
 const { network } = configService;
 const { pool, loadingPool, transfersAllowed } = usePoolTransfers();
-// const { isStablePhantomPool } = usePool(pool);
-// const { sor, sorReady } = useWithdrawalState(pool);
-
-/**
- * CALLBACKS
- */
-// onBeforeMount(async () => {
-//   await forChange(loadingPool, false);
-
-//   if (pool.value && isStablePhantomPool.value) {
-//     // Initialise SOR for batch swap queries
-//     sorReady.value = await sor.fetchPools([], false);
-//   } else {
-//     sorReady.value = true;
-//   }
-// });
 </script>
 
 <template>

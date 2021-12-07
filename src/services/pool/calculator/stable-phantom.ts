@@ -15,7 +15,8 @@ export default class StablePhantom {
   }
 
   public priceImpact(tokenAmounts: string[], opts: PiOptions): OldBigNumber {
-    if (!opts.queryBPT) return bnum(1);
+    if (!opts.queryBPT)
+      throw new Error('Need query BPT to calc StablePhantom Price Impact');
 
     let bptAmount: OldBigNumber | BigNumberish;
     let bptZeroPriceImpact: OldBigNumber;
@@ -27,8 +28,32 @@ export default class StablePhantom {
 
       return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
     } else {
-      // TODO - withdrawl price impact calc
-      return new OldBigNumber(1);
+      // Single asset exit
+      if (opts.exactOut) {
+        bptAmount = bnum(opts.queryBPT);
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      } else {
+        bptAmount = parseUnits(
+          this.calc.bptBalance,
+          this.calc.poolDecimals
+        ).toString();
+        // tokenAmounts = this.calc.pool.value.tokensList.map((_, i) => {
+        //   if (i !== opts.tokenIndex) return '0';
+        //   const tokenAmount = this.exactBPTInForTokenOut(
+        //     this.calc.bptBalance,
+        //     opts.tokenIndex
+        //   ).toString();
+        //   return formatUnits(
+        //     tokenAmount,
+        //     this.calc.poolTokenDecimals[opts.tokenIndex]
+        //   ).toString();
+        // });
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      }
+
+      return bnum(bptAmount)
+        .div(bptZeroPriceImpact)
+        .minus(1);
     }
   }
 
