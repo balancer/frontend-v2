@@ -142,6 +142,16 @@ export default {
      */
 
     /**
+     * All tokens from all token lists.
+     */
+    const allTokenListTokens = computed(
+      (): TokenInfoMap => ({
+        ...mapTokenListTokens(Object.values(allTokenLists.value)),
+        ...state.injectedTokens
+      })
+    );
+
+    /**
      * All tokens from token lists that are toggled on.
      */
     const activeTokenListTokens = computed(
@@ -163,15 +173,12 @@ export default {
      * and any injected tokens. Static and dynamic
      * meta data should be available for these tokens.
      */
-    const tokens = computed(() => ({
-      ...activeTokenListTokens.value,
-      ...state.injectedTokens
-    }));
-
-    const allTokens = computed(() => ({
-      ...mapTokenListTokens(Object.values(allTokenLists.value)),
-      ...state.injectedTokens
-    }));
+    const tokens = computed(
+      (): TokenInfoMap => ({
+        ...activeTokenListTokens.value,
+        ...state.injectedTokens
+      })
+    );
 
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
 
@@ -294,7 +301,7 @@ export default {
 
       if (isAddress(query)) {
         const address = getAddress(query);
-        const token = allTokens.value[address];
+        const token = allTokenListTokens.value[address];
         if (token) {
           return { [address]: token };
         } else {
@@ -306,7 +313,7 @@ export default {
           }
         }
       } else {
-        const tokensArray = Object.entries(allTokens.value);
+        const tokensArray = Object.entries(allTokenListTokens.value);
         const results = tokensArray.filter(
           ([, token]) =>
             token.name.toLowerCase().includes(query.toLowerCase()) ||
