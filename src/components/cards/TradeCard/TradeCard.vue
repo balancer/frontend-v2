@@ -247,11 +247,6 @@ export default defineComponent({
               configService.network.chainName
             ])
           };
-        case TradeValidation.NO_BALANCE:
-          return {
-            header: t('insufficientBalance'),
-            body: t('insufficientBalanceDetailed')
-          };
         case TradeValidation.NO_LIQUIDITY:
           return {
             header: t('insufficientLiquidity'),
