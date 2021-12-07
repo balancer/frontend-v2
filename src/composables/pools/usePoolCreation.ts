@@ -242,7 +242,9 @@ export default function usePoolCreation() {
             t => t.tokenAddress === token.address
           );
           const similarPoolWeight = Number(token.weight).toFixed(2);
-          const seedTokenWeight = String((relevantToken?.weight || 0) / 100);
+          const seedTokenWeight = ((relevantToken?.weight || 0) / 100).toFixed(
+            2
+          );
           if (similarPoolWeight !== seedTokenWeight) {
             weightsMatch = false;
           }
@@ -283,7 +285,7 @@ export default function usePoolCreation() {
   } = usePoolsQuery(
     tokensList,
     { enabled: isSimilarPoolsQueryEnabled.value },
-    { isExactTokensList: true }
+    { isExactTokensList: true, pageSize: 999 }
   );
 
   function resetPoolCreationState() {
