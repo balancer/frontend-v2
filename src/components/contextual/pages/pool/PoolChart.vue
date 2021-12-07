@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs, computed } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
 import { zip } from 'lodash';
@@ -16,7 +16,7 @@ import { isStablePhantom } from '@/composables/usePool';
  * TYPES
  */
 type Props = {
-  prices: HistoricalPrices;
+  historicalPrices: HistoricalPrices;
   snapshots: PoolSnapshots;
   loading: boolean;
   pool: FullPool;
@@ -29,10 +29,9 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false
 });
 
-/**
+/**Z
  * STATE
  */
-const { prices, snapshots, pool } = toRefs(props);
 const MIN_CHART_VALUES = 7;
 
 /**
@@ -58,14 +57,14 @@ const chartColors = computed(() => [
 ]);
 
 const supportsPoolLiquidity = computed(() =>
-  isStablePhantom(pool.value.poolType)
+  isStablePhantom(props.pool.poolType)
 );
 
 const appLoading = computed(() => store.state.app.loading);
 
 const history = computed(() => {
-  const pricesTimestamps = Object.keys(prices.value);
-  const snapshotsTimestamps = Object.keys(snapshots.value);
+  const pricesTimestamps = Object.keys(props.historicalPrices);
+  const snapshotsTimestamps = Object.keys(props.snapshots);
 
   if (snapshotsTimestamps.length === 0) {
     return [];
@@ -80,21 +79,26 @@ const history = computed(() => {
     .map(snapshotTimestamp => {
       const timestamp = parseInt(snapshotTimestamp);
 
-      const snapshot = snapshots.value[timestamp];
-      const price = prices.value[timestamp] ?? [0, 0];
-      const amounts = snapshot.amounts ?? ['0', '0'];
+      const snapshot = props.snapshots[timestamp];
+      const prices = props.historicalPrices[timestamp] ?? [];
+      const amounts = snapshot.amounts ?? [];
       const totalShares = parseFloat(snapshot.totalShares) ?? 0;
       const liquidity = parseFloat(snapshot.liquidity) ?? 0;
 
       return {
         timestamp,
-        price,
+        prices,
         amounts,
         totalShares,
         liquidity
       };
     })
-    .filter(state => state.totalShares > 0);
+    .filter(({ totalShares, prices, amounts }) => {
+      if (!supportsPoolLiquidity.value && prices.length === 0) {
+        return false;
+      }
+      return totalShares > 0 && amounts.length > 0;
+    });
 });
 
 const timestamps = computed(() =>
@@ -107,14 +111,14 @@ const hodlValues = computed(() => {
   }
 
   const firstState = history.value[0];
-  const firstValue = getPoolValue(firstState.amounts, firstState.price);
+  const firstValue = getPoolValue(firstState.amounts, firstState.prices);
 
   return history.value.map(state => {
     if (state.timestamp < firstState.timestamp) {
       return 0;
     }
 
-    const currentValue = getPoolValue(firstState.amounts, state.price);
+    const currentValue = getPoolValue(firstState.amounts, state.prices);
 
     return currentValue / firstValue - 1;
   });
@@ -128,7 +132,7 @@ const bptValues = computed(() => {
   const firstState = history.value[0];
   const firstValue = supportsPoolLiquidity.value
     ? firstState.liquidity
-    : getPoolValue(firstState.amounts, firstState.price);
+    : getPoolValue(firstState.amounts, firstState.prices);
   const firstShares = firstState.totalShares;
   const firstValuePerBpt = firstValue / firstShares;
 
@@ -139,7 +143,7 @@ const bptValues = computed(() => {
 
     const currentValue = supportsPoolLiquidity.value
       ? state.liquidity
-      : getPoolValue(state.amounts, state.price);
+      : getPoolValue(state.amounts, state.prices);
     const currentShares = state.totalShares;
     const currentValuePerBpt = currentValue / currentShares;
 

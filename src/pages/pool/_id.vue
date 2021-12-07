@@ -91,7 +91,7 @@
           <div class="px-1 lg:px-0">
             <PoolChart
               :pool="pool"
-              :prices="historicalPrices"
+              :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
             />
