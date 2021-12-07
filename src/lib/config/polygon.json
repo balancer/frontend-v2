@@ -16,6 +16,9 @@
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
+  "subgraphs": {
+    "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic"
+  },
   "supportsEIP1559": false,
   "nativeAsset": {
     "name": "Matic",

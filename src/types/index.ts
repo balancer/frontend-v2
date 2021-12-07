@@ -67,3 +67,11 @@ export type Step = {
   tooltip: string;
   state: StepState;
 };
+
+export type Address = string;
+export type QueryArgs = Record<string, any>;
+export type QueryAttrs = Record<string, any>;
+export type QueryBuilder = (
+  args?: QueryArgs,
+  attrs?: QueryAttrs
+) => Record<string, any>;

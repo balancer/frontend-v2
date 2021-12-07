@@ -5,12 +5,7 @@ import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import {
-  FullPool,
-  LinearPool,
-  Pool,
-  PoolToken
-} from '@/services/balancer/subgraph/types';
+import { FullPool, LinearPool, Pool } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
@@ -84,7 +79,7 @@ export default function usePoolQuery(
       { mainIndex: true, wrappedIndex: true }
     )) as LinearPool[];
 
-    const linearPoolTokens: PoolToken[] = [];
+    const linearPoolTokensMap: Pool['linearPoolTokensMap'] = {};
 
     // Inject main/wrapped tokens into pool schema
     linearPools.forEach(linearPool => {
@@ -99,14 +94,19 @@ export default function usePoolQuery(
         linearPool.tokensList[linearPool.wrappedIndex]
       );
 
-      linearPoolTokens.push(
-        ...linearPool.tokens.filter(
-          token => token.address !== linearPool.address
-        )
-      );
+      linearPool.tokens
+        .filter(token => token.address !== linearPool.address)
+        .forEach(token => {
+          const address = getAddress(token.address);
+
+          linearPoolTokensMap[address] = {
+            ...token,
+            address
+          };
+        });
     });
 
-    pool.linearPoolTokens = linearPoolTokens;
+    pool.linearPoolTokensMap = linearPoolTokensMap;
 
     return pool;
   }

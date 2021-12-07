@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import i18n from '@/plugins/i18n';
 
 type ApiActionType = 'get' | 'create' | 'delete';
 
@@ -31,41 +32,19 @@ export enum ApiErrorCodes {
   UNHANDLED_DELETE_ERROR = 'UNHANDLED_DELETE_ERROR'
 }
 
-// TODO: move these into translation files and return only the error codes.
-export enum ApiErrorCodeDetails {
-  DuplicateOrder = 'There was another identical order already submitted. Please try again.',
-  InsufficientFee = "The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
-  InvalidSignature = 'The order signature is invalid. Check whether your Wallet app supports off-chain signing.',
-  MissingOrderData = 'The order has missing information.',
-  InsufficientValidTo = 'The order you are signing is already expired. This can happen if you set a short expiration in the settings and waited too long before signing the transaction. Please try again.',
-  InsufficientFunds = "The account doesn't have enough funds.",
-  UnsupportedToken = 'One of the tokens you are trading is unsupported.',
-  WrongOwner = "The signature is invalid.\n\nIt's likely that the signing method provided by your wallet doesn't comply with the standards required by Balancer.\n\nCheck whether your Wallet app supports off-chain signing (EIP-712 or ETHSIGN).",
-  NotFound = 'Token pair selected has insufficient liquidity.',
-  OrderNotFound = 'The order you are trying to cancel does not exist.',
-  AlreadyCancelled = 'Order is already cancelled.',
-  OrderFullyExecuted = 'Order is already filled.',
-  OrderExpired = 'Order is expired.',
-  UnsupportedSellTokenSource = 'The sell token source is currently not supported.',
-  UnsupportedBuyTokenSource = 'The buy token source is currently not supported.',
-  UNHANDLED_GET_ERROR = 'Order fetch failed. This may be due to a server or network connectivity issue. Please try again later.',
-  UNHANDLED_CREATE_ERROR = 'The order was not accepted by the network.',
-  UNHANDLED_DELETE_ERROR = 'The order cancellation was not accepted by the network.'
-}
-
 function _mapActionToErrorDetail(action?: ApiActionType) {
   switch (action) {
     case 'get':
-      return ApiErrorCodeDetails.UNHANDLED_GET_ERROR;
+      return i18n.global.t('apiErrorCodeDetails.UnhandledGetError');
     case 'create':
-      return ApiErrorCodeDetails.UNHANDLED_CREATE_ERROR;
+      return i18n.global.t('apiErrorCodeDetails.UnhandledCreateError');
     case 'delete':
-      return ApiErrorCodeDetails.UNHANDLED_DELETE_ERROR;
+      return i18n.global.t('apiErrorCodeDetails.UnhandledDeleteError');
     default:
       console.error(
         '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.'
       );
-      return 'Something failed. Please try again later.';
+      return i18n.global.t('apiErrorCodeDetails.UnhandledError');
   }
 }
 
@@ -76,7 +55,6 @@ export default class OperatorError extends Error {
 
   // Status 400 errors
   // https://github.com/gnosis/gp-v2-services/blob/9014ae55412a356e46343e051aefeb683cc69c41/orderbook/openapi.yml#L563
-  static apiErrorDetails = ApiErrorCodeDetails;
 
   public static getErrorMessage(
     orderPostError: ApiErrorObject,
@@ -85,8 +63,9 @@ export default class OperatorError extends Error {
     try {
       console.log(orderPostError);
       if (orderPostError.errorType) {
-        const errorMessage =
-          OperatorError.apiErrorDetails[orderPostError.errorType];
+        const errorMessage = i18n.global.t(
+          `apiErrorCodeDetails.${orderPostError.errorType.toString()}`
+        );
         // shouldn't fall through as this error constructor expects the error code to exist but just in case
         return errorMessage || orderPostError.errorType;
       } else {
@@ -113,16 +92,14 @@ export default class OperatorError extends Error {
         return this.getErrorMessage(response.data, action);
 
       case 403:
-        return `The order cannot be ${
-          action === 'create' ? 'accepted' : 'cancelled'
-        }. Your account is deny-listed.`;
+        return action === 'create'
+          ? i18n.global.t('apiErrorCodeDetails.error403Accept')
+          : i18n.global.t('apiErrorCodeDetails.error403Cancel');
 
       case 429:
-        return `The order cannot be ${
-          action === 'create'
-            ? 'accepted. Too many order placements'
-            : 'cancelled. Too many order cancellations'
-        }. Please, retry in a minute`;
+        return action === 'create'
+          ? i18n.global.t('apiErrorCodeDetails.error429Accept')
+          : i18n.global.t('apiErrorCodeDetails.error429Cancel');
 
       case 500:
       default:
@@ -132,9 +109,11 @@ export default class OperatorError extends Error {
           } the order, status code:`,
           response.status || 'unknown'
         );
-        return `Error ${
-          action === 'create' ? 'creating' : 'cancelling'
-        } the order`;
+        return i18n.global.t('apiErrorCodeDetails.Error500', [
+          action === 'create'
+            ? i18n.global.t('creating').toLocaleLowerCase()
+            : i18n.global.t('cancelling').toLocaleLowerCase()
+        ]);
     }
   }
   constructor(apiError: ApiErrorObject) {
@@ -142,7 +121,7 @@ export default class OperatorError extends Error {
 
     this.type = apiError.errorType;
     this.description = apiError.description;
-    this.message = ApiErrorCodeDetails[apiError.errorType];
+    this.message = i18n.global.t(`apiErrorCodeDetails.${apiError.errorType}`);
   }
 }
 
