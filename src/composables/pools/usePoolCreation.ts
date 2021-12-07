@@ -1,18 +1,24 @@
-import { PoolType } from '@/services/balancer/subgraph/types';
-import { flatten, sumBy } from 'lodash';
-import { ref, reactive, toRefs, watch, computed } from 'vue';
+import { ref, reactive, toRefs, watch, computed, onMounted } from 'vue';
+
 import { useI18n } from 'vue-i18n';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
-import { balancerService } from '@/services/balancer/balancer.service';
-import { bnum, scale } from '@/lib/utils';
+
 import BigNumber from 'bignumber.js';
+import { flatten, sumBy } from 'lodash';
+import { bnum, lsGet, lsRemove, lsSet, scale } from '@/lib/utils';
+
+import { PoolType } from '@/services/balancer/subgraph/types';
+import { balancerService } from '@/services/balancer/balancer.service';
+import { configService } from '@/services/config/config.service';
 import { TransactionResponse } from '@ethersproject/providers';
 import { POOLS } from '@/constants/pools';
+
+const POOL_CREATION_STATE_VERSION = '1.0';
+const POOL_CREATION_STATE_KEY = 'poolCreationState';
 
 export type PoolSeedToken = {
   tokenAddress: string;
@@ -50,11 +56,13 @@ const emptyPoolCreationState = {
   autoOptimiseBalances: false,
   useNativeAsset: false,
   type: PoolType.Weighted,
-  acceptedCustomTokenDisclaimer: false
+  acceptedCustomTokenDisclaimer: false,
+  needsSeeding: false
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
 const tokenColors = ref<string[]>([]);
+const hasRestoredFromSavedState = ref(false);
 
 export default function usePoolCreation() {
   /**
@@ -90,6 +98,40 @@ export default function usePoolCreation() {
       deep: true
     }
   );
+
+  watch(hasRestoredFromSavedState, () => {
+    // this timeout is to ensure that the UI has
+    // time to compute all the watchers and other things
+    // before changing the step. Changing it immediately
+    // results in a blank page being rendered.
+    // The hasRestoredFromSavedState flag is also used to
+    // hide the mount of the first step so it 'seems' like
+    // that the preview page is mounted first.
+    setTimeout(() => {
+      if (hasRestoredFromSavedState.value) {
+        setActiveStep(4);
+      }
+    }, 3500);
+  });
+
+  /**
+   * LIFECYCLE
+   */
+  onMounted(async () => {
+    let previouslySavedState = lsGet(
+      POOL_CREATION_STATE_KEY,
+      null,
+      POOL_CREATION_STATE_VERSION
+    );
+    if (poolCreationState.activeStep === 0 && previouslySavedState !== null) {
+      previouslySavedState = JSON.parse(previouslySavedState);
+      for (const key of Object.keys(poolCreationState)) {
+        if (key === 'activeStep') continue;
+        poolCreationState[key] = previouslySavedState[key];
+      }
+      hasRestoredFromSavedState.value = true;
+    }
+  });
 
   /**
    * COMPUTED
@@ -414,6 +456,8 @@ export default function usePoolCreation() {
           );
           poolCreationState.poolId = poolDetails.id;
           poolCreationState.poolAddress = poolDetails.address;
+          poolCreationState.needsSeeding = true;
+          saveState();
         },
         onTxFailed: () => {
           console.log('Create failed');
@@ -457,6 +501,15 @@ export default function usePoolCreation() {
         summary: t('transactionSummary.fundPool')
       });
 
+      txListener(tx, {
+        onTxConfirmed: async () => {
+          resetState();
+        },
+        onTxFailed: () => {
+          console.log('Seed failed');
+        }
+      });
+
       return tx;
     } catch (e) {
       console.log(e);
@@ -470,6 +523,18 @@ export default function usePoolCreation() {
 
   function acceptCustomTokenDisclaimer() {
     poolCreationState.acceptedCustomTokenDisclaimer = true;
+  }
+
+  function saveState() {
+    lsSet(
+      POOL_CREATION_STATE_KEY,
+      JSON.stringify(poolCreationState),
+      POOL_CREATION_STATE_VERSION
+    );
+  }
+
+  function resetState() {
+    lsRemove(POOL_CREATION_STATE_KEY);
   }
 
   return {
@@ -494,6 +559,8 @@ export default function usePoolCreation() {
     clearAmounts,
     setAmountsToMaxBalances,
     acceptCustomTokenDisclaimer,
+    saveState,
+    resetState,
     currentLiquidity,
     optimisedLiquidity,
     scaledLiquidity,
@@ -507,6 +574,7 @@ export default function usePoolCreation() {
     poolTypeString,
     tokenColors,
     isWethPool,
-    hasInjectedToken
+    hasInjectedToken,
+    hasRestoredFromSavedState
   };
 }

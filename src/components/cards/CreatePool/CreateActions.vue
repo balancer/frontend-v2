@@ -52,7 +52,14 @@ const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
   ref(props.amounts)
 );
-const { createPool, joinPool, poolId, poolTypeString } = usePoolCreation();
+const {
+  createPool,
+  joinPool,
+  poolId,
+  poolTypeString,
+  hasRestoredFromSavedState,
+  needsSeeding
+} = usePoolCreation();
 
 /**
  * COMPUTED
@@ -76,6 +83,17 @@ const actions = computed((): TransactionActionInfo[] => [
   }
 ]);
 
+const requiredActions = computed(() => {
+  if (hasRestoredFromSavedState.value && needsSeeding.value) {
+    console.log(
+      'es',
+      actions.value.filter(action => action.label === t('fundPool'))
+    );
+    return actions.value.filter(action => action.label === t('fundPool'));
+  }
+  return actions.value;
+});
+
 const explorerLink = computed((): string =>
   createState.receipt
     ? explorerLinks.txLink(createState.receipt.transactionHash)
@@ -96,7 +114,7 @@ function handleSuccess(details: any): void {
 
 <template>
   <div>
-    <BalActionSteps :actions="actions" @success="handleSuccess" />
+    <BalActionSteps :actions="requiredActions" @success="handleSuccess" />
     <template v-if="createState.confirmed">
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"

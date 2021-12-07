@@ -59,7 +59,8 @@ const {
   setActiveStep,
   hasInjectedToken,
   seedTokens,
-  totalLiquidity
+  totalLiquidity,
+  hasRestoredFromSavedState
 } = usePoolCreation();
 const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
 
@@ -183,7 +184,9 @@ watch([hasInjectedToken, totalLiquidity], () => {
     </template>
     <div class="relative center-col-mh">
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 0"
+        :isVisible="
+          !appLoading && activeStep === 0 && !hasRestoredFromSavedState
+        "
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"

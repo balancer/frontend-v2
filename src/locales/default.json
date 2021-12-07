@@ -113,7 +113,9 @@
         "totalWeightAlertTitle": "The total weight must be 100%",
         "arbTitle": "You could lose up to {0} ({1})",
         "arbReason": "Based on pricing information from CoinGecko, you’re vulnerable to losing funds to arbitraguers since the amounts you’re adding to the pool are not in proportion to the pool weights specified.",
-        "maxLiquidityTooltip": "This is the max amount of liquidity you can provide to the pool with the current token selection."
+        "maxLiquidityTooltip": "This is the max amount of liquidity you can provide to the pool with the current token selection.",
+        "addSeedLiquidity": "Add seed liquidity to finalize pool creation",
+        "addSeedLiquidityInfo": "Provide liquidity to start earning swap fees and to make this pool available for others to invest in."
     },
     "createPool": "Create pool",
     "createPoolTooltip": "Create {0} pool",

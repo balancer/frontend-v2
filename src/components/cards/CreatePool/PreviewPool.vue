@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue';
+import { ref, computed, onBeforeMount, onMounted } from 'vue';
 import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
@@ -81,6 +81,15 @@ const tokenAddresses = computed((): string[] => {
 
 const tokenAmounts = computed((): string[] => {
   return getScaledAmounts();
+});
+
+/**
+ * LIFECYCLE
+ */
+onMounted(() => {
+  // upon reaching this step. save the state of pool creation
+  // as all the editable inputs have been set
+  // saveState();
 });
 
 /**
