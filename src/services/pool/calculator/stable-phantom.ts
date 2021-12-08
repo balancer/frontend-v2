@@ -37,6 +37,8 @@ export default class StablePhantom {
           this.calc.bptBalance,
           this.calc.poolDecimals
         ).toString();
+        // TODO - probably need to figure out how to do this
+        // May require a batch swap call for each token
         // tokenAmounts = this.calc.pool.value.tokensList.map((_, i) => {
         //   if (i !== opts.tokenIndex) return '0';
         //   const tokenAmount = this.exactBPTInForTokenOut(
