@@ -171,8 +171,6 @@
     "noInitLiquidityDetail": "プール作成UIの準備が整うまで、投資がサポートされる前に、スマートコントラクトでINIT結合タイプが必要です。",
     "noInvestments": "このプールへの投資はありません。",
     "noInvestmentsPool": "このプールへの投資はありません",
-    "noNativeAsset": "あなたは{0}を持っていません",
-    "noNativeAssetDetailed": "{1}ガス料金を支払うには、このウォレットと取引するために{0}を追加する必要があります。",
     "noPoolsFound": "プールが見つかりません",
     "noPriceImpact": "ベストプライス",
     "noPriceImpactTip": "トークンを比例的に追加すると、最良の価格が得られます。",
