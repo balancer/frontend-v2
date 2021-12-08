@@ -572,27 +572,9 @@ export default function useWithdrawMath(
     }
   }
 
-  /**
-   * WATCHERS
-   */
-  watch(tokenOut, () => {
-    tokenOutAmount.value = '';
-    if (isStablePhantomPool.value) getSingleAssetMaxOut();
-  });
+  async function handleSingleAssetOutChange(): Promise<void> {
+    if (!isStablePhantomPool.value) return;
 
-  watch(isWalletReady, async () => {
-    await forChange(dynamicDataLoading, false);
-    initMath();
-  });
-
-  watch(account, () => initMath());
-
-  watch(fullAmounts, async () => {
-    /**
-     * When amounts change we need to trigger fetching of batch swaps
-     * and if batch swaps return amounts are zero, fetch the batch swap via
-     * the relayer.
-     */
     if (exactOut.value) {
       const amountsOut = fullAmountsScaled.value.filter(amount => amount.gt(0));
       batchSwap.value = await getBatchSwap(
@@ -622,6 +604,30 @@ export default function useWithdrawMath(
         );
       }
     }
+  }
+
+  /**
+   * WATCHERS
+   */
+  watch(tokenOut, () => {
+    tokenOutAmount.value = '';
+    if (isStablePhantomPool.value) getSingleAssetMaxOut();
+  });
+
+  watch(isWalletReady, async () => {
+    await forChange(dynamicDataLoading, false);
+    initMath();
+  });
+
+  watch(account, () => initMath());
+
+  watch(fullAmounts, async () => {
+    /**
+     * When amounts change we need to trigger fetching of batch swaps
+     * and if batch swaps return amounts are zero, fetch the batch swap via
+     * the relayer.
+     */
+    await handleSingleAssetOutChange();
   });
 
   return {
