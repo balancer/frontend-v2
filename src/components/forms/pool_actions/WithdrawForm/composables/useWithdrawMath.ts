@@ -316,7 +316,6 @@ export default function useWithdrawMath(
     if (!hasAmounts.value || isProportional.value) return 0;
 
     // TODO - handle single asset withdrawal price impact for StablePhantom pools
-    console.log('RE_CALC PI FOR', fullBPTIn.value.toString());
     return poolCalculator
       .priceImpact(fullAmounts.value, {
         exactOut: exactOut.value,
@@ -531,8 +530,6 @@ export default function useWithdrawMath(
       slippageScaled.value,
       exactOut
     );
-
-    console.log('BATCHRELAYERSWAP', result);
 
     batchRelayerSwapLoading.value = false;
     return result;
