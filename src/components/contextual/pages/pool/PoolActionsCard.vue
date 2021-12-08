@@ -7,6 +7,7 @@ import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
+import { lpTokensFor } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -34,7 +35,7 @@ const { isWalletReady, toggleWalletSelectModal } = useWeb3();
  * COMPUTED
  */
 const fiatTotal = computed(() => {
-  const fiatValue = props.pool.tokenAddresses
+  const fiatValue = lpTokensFor(props.pool)
     .map(address => {
       let tokenBalance = '0';
 
