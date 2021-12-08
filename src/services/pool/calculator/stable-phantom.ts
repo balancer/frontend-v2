@@ -33,23 +33,11 @@ export default class StablePhantom {
         bptAmount = bnum(opts.queryBPT);
         bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       } else {
+        // Single asset max out case
         bptAmount = parseUnits(
           this.calc.bptBalance,
           this.calc.poolDecimals
         ).toString();
-        // TODO - probably need to figure out how to do this
-        // May require a batch swap call for each token
-        // tokenAmounts = this.calc.pool.value.tokensList.map((_, i) => {
-        //   if (i !== opts.tokenIndex) return '0';
-        //   const tokenAmount = this.exactBPTInForTokenOut(
-        //     this.calc.bptBalance,
-        //     opts.tokenIndex
-        //   ).toString();
-        //   return formatUnits(
-        //     tokenAmount,
-        //     this.calc.poolTokenDecimals[opts.tokenIndex]
-        //   ).toString();
-        // });
         bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
       }
 
