@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { toRef, toRefs, ref, computed, reactive, onBeforeMount } from 'vue';
+import {
+  toRef,
+  toRefs,
+  ref,
+  computed,
+  reactive,
+  onBeforeMount,
+  watch
+} from 'vue';
 import { getPoolWeights } from '@/services/pool/pool.helper';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -67,7 +75,7 @@ const withdrawalState = reactive<WithdrawalState>({
 const route = useRoute();
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { account, getProvider, explorerLinks } = useWeb3();
+const { account, getProvider, explorerLinks, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { tokenOutIndex, tokensOut, batchRelayerApproval } = useWithdrawalState(
@@ -84,7 +92,8 @@ const {
   batchSwapAmountsOutMap,
   batchSwapKind,
   shouldUseBatchRelayer,
-  batchRelayerSwap
+  batchRelayerSwap,
+  shouldFetchBatchSwap
 } = toRefs(props.math);
 
 const withdrawalAction: TransactionActionInfo = {
@@ -109,6 +118,13 @@ const explorerLink = computed((): string =>
   withdrawalState.receipt
     ? explorerLinks.txLink(withdrawalState.receipt.transactionHash)
     : ''
+);
+
+const transactionInProgress = computed(
+  (): boolean =>
+    withdrawalState.init ||
+    withdrawalState.confirming ||
+    withdrawalState.confirmed
 );
 
 /**
@@ -199,6 +215,15 @@ onBeforeMount(() => {
   if (shouldUseBatchRelayer.value && !batchRelayerApproval.isUnlocked.value) {
     // Prepend relayer approval action if batch relayer not approved
     actions.value.unshift(batchRelayerApproval.action.value);
+  }
+});
+
+/**
+ * WATCHERS
+ */
+watch(blockNumber, async () => {
+  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
+    await props.math.getSwap();
   }
 });
 </script>

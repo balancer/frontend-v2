@@ -60,8 +60,7 @@ export type WithdrawMathResponse = {
   loadingAmountsOut: Ref<boolean>;
   initMath: () => Promise<void>;
   resetMath: () => void;
-  getBatchSwap: () => Promise<BatchSwapOut>;
-  getBatchRelayerSwap: () => Promise<TransactionData>;
+  getSwap: () => Promise<void>;
 };
 
 export default function useWithdrawMath(
@@ -572,10 +571,19 @@ export default function useWithdrawMath(
     }
   }
 
-  async function handleSingleAssetOutChange(): Promise<void> {
+  /**
+   * High level function that uses withdrawal state to
+   * decide what swap should be fetched and sets it.
+   */
+  async function getSwap(): Promise<void> {
     if (!isStablePhantomPool.value) return;
 
-    if (exactOut.value) {
+    if (isProportional.value) {
+      batchSwap.value = await getBatchSwap();
+      if (shouldUseBatchRelayer.value) {
+        batchRelayerSwap.value = await getBatchRelayerSwap();
+      }
+    } else if (exactOut.value) {
       const amountsOut = fullAmountsScaled.value.filter(amount => amount.gt(0));
       batchSwap.value = await getBatchSwap(
         amountsOut,
@@ -590,8 +598,8 @@ export default function useWithdrawMath(
           true
         );
       }
-    } else if (!isProportional.value) {
-      // Single asset out max case
+    } else {
+      // Single asset max out case
       batchSwap.value = await getBatchSwap(
         [bptBalanceScaled.value],
         [tokenOut.value]
@@ -623,11 +631,10 @@ export default function useWithdrawMath(
 
   watch(fullAmounts, async () => {
     /**
-     * When amounts change we need to trigger fetching of batch swaps
-     * and if batch swaps return amounts are zero, fetch the batch swap via
-     * the relayer.
+     * If a single asset exit and the input values change we
+     * need to refetch the swap to get the required BPT in.
      */
-    await handleSingleAssetOutChange();
+    if (!isProportional.value) await getSwap();
   });
 
   return {
@@ -660,7 +667,6 @@ export default function useWithdrawMath(
     // methods
     initMath,
     resetMath,
-    getBatchSwap,
-    getBatchRelayerSwap
+    getSwap
   };
 }
