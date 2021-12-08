@@ -304,8 +304,6 @@
     "noInitLiquidityDetail":"Até que a IU de criação de pool esteja pronta, um tipo de junção INIT é necessário no contrato inteligente antes que os investimentos sejam suportados.",
     "noInvestments":"Sem investimentos neste pool.",
     "noInvestmentsPool":"Nenhum investimento neste pool",
-    "noNativeAsset":"Você não tem {0}",
-    "noNativeAssetDetailed":"Você precisará adicionar alguns {0} para negociar com esta carteira a fim de pagar as {1} taxas de gás.",
     "noPoolsFound":"Nenhum pool encontrado",
     "noPriceImpact":"Melhor preço",
     "noPriceImpactTip":"Adicionar tokens proporcionalmente obtém o melhor preço.",
