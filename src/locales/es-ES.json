@@ -171,8 +171,6 @@
     "noInitLiquidityDetail": "Hasta que la IU de creación del pool esté lista, se requiere un tipo de unión INIT en el contrato inteligente antes de que se admitan las inversiones.",
     "noInvestments": "No hay inversiones en este pool.",
     "noInvestmentsPool": "No hay inversiones en este pool",
-    "noNativeAsset": "No tienes {0}",
-    "noNativeAssetDetailed": "Deberá agregar algo de {0} para comerciar con esta billetera a fin de pagar las {1} tarifas de gas.",
     "noPoolsFound": "No se encontraron pools",
     "noPriceImpact": "Mejor precio",
     "noPriceImpactTip": "Agregar tokens proporcionalmente te da el mejor precio.",

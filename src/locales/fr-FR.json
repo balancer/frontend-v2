@@ -171,8 +171,6 @@
     "noInitLiquidityDetail": "Jusqu'à ce que l'interface utilisateur de création de pool soit prête, un type de jointure INIT est requis au niveau du contrat intelligent avant que les investissements ne soient pris en charge.",
     "noInvestments": "Aucun investissement dans ce pool.",
     "noInvestmentsPool": "Aucun investissement dans ce pool",
-    "noNativeAsset": "Vous n'avez pas {0}",
-    "noNativeAssetDetailed": "Vous devrez ajouter des {0} pour échanger avec ce portefeuille afin de payer {1} les frais d'essence.",
     "noPoolsFound": "Aucune pool trouvée",
     "noPriceImpact": "Meilleur prix",
     "noPriceImpactTip": "L'ajout de jetons vous permet d'obtenir proportionnellement le meilleur prix.",
