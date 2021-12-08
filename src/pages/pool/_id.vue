@@ -368,6 +368,7 @@ export default defineComponent({
       return (
         !!pool.value &&
         !isLiquidityBootstrappingPool.value &&
+        !isStablePhantomPool.value &&
         pool.value.tokenAddresses.some(
           address => !knownTokens.includes(address)
         )
