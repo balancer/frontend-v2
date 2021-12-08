@@ -304,8 +304,6 @@
     "noInitLiquidityDetail":"Havuz oluşturma kullanıcı arabirimi hazır olana kadar, yatırımlar desteklenmeden önce akıllı sözleşmede bir INIT birleştirme türü gerekir.",
     "noInvestments":"Bu havuza yatırım yok.",
     "noInvestmentsPool":"Bu havuza yatırım yok",
-    "noNativeAsset":"{0} yok",
-    "noNativeAssetDetailed":"{1} gaz ücretini ödemek için bu cüzdanla ticaret yapmak için biraz {0} eklemeniz gerekecek.",
     "noPoolsFound":"Havuz bulunamadı",
     "noPriceImpact":"En iyi fiyat",
     "noPriceImpactTip":"Tokenleri orantılı olarak eklemek size en iyi fiyatı verir.",

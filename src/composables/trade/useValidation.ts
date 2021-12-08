@@ -3,8 +3,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '../useTokens';
 import { bnum } from '@/lib/utils';
 
-const MIN_NATIVE_ASSET_REQUIRED = 0.0001;
-
 export enum TradeValidation {
   VALID,
   NO_ACCOUNT,
@@ -21,7 +19,7 @@ export default function useValidation(
   tokenOutAmount: Ref<string>
 ) {
   const { isWalletReady } = useWeb3();
-  const { nativeAsset, balances } = useTokens();
+  const { balances } = useTokens();
 
   const noAmounts = computed(
     () =>
@@ -39,11 +37,6 @@ export default function useValidation(
       bnum(balances.value[tokenInAddress.value]).lt(tokenInAmount.value)
   );
 
-  const notEnoughForGas = computed(() => {
-    const nativeAssetBalance = bnum(balances.value[nativeAsset.address]);
-    return nativeAssetBalance.lt(MIN_NATIVE_ASSET_REQUIRED);
-  });
-
   /**
    * Not definitive. Only probably true if no other exceptions,
    * i.e. valid inputs, wallet connected, enough balance, etc.
@@ -60,8 +53,6 @@ export default function useValidation(
     if (!isWalletReady.value) return TradeValidation.NO_ACCOUNT;
 
     if (noAmounts.value || missingToken.value) return TradeValidation.EMPTY;
-
-    if (notEnoughForGas.value) return TradeValidation.NO_NATIVE_ASSET;
 
     if (exceedsBalance.value) return TradeValidation.NO_BALANCE;
 
