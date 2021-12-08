@@ -85,6 +85,7 @@ export default function usePoolQuery(
     linearPools.forEach(linearPool => {
       if (!pool.mainTokens) pool.mainTokens = [];
       if (!pool.wrappedTokens) pool.wrappedTokens = [];
+
       const index = pool.tokensList.indexOf(linearPool.address.toLowerCase());
 
       pool.mainTokens[index] = getAddress(

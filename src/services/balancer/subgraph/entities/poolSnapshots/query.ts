@@ -8,7 +8,8 @@ const defaultAttrs = {
   amounts: true,
   totalShares: true,
   swapVolume: true,
-  swapFees: true
+  swapFees: true,
+  liquidity: true
 };
 
 export default (args = {}, attrs = {}) => ({
