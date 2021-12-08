@@ -90,7 +90,8 @@
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-1 lg:px-0">
             <PoolChart
-              :prices="historicalPrices"
+              :pool="pool"
+              :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
             />
@@ -237,9 +238,11 @@ export default defineComponent({
      * COMPUTED
      */
     const pool = computed(() => poolQuery.data.value);
-    const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
-      poolQuery.data
-    );
+    const {
+      isStableLikePool,
+      isLiquidityBootstrappingPool,
+      isStablePhantomPool
+    } = usePool(poolQuery.data);
 
     const noInitLiquidity = computed(
       () =>
@@ -321,9 +324,13 @@ export default defineComponent({
     const missingPrices = computed(() => {
       if (pool.value) {
         const tokensWithPrice = Object.keys(prices.value);
-        return !pool.value.tokenAddresses.every(token =>
-          tokensWithPrice.includes(token)
-        );
+
+        const tokens =
+          isStablePhantomPool.value && pool.value.linearPoolTokensMap != null
+            ? Object.keys(pool.value.linearPoolTokensMap)
+            : pool.value.tokenAddresses;
+
+        return !tokens.every(token => tokensWithPrice.includes(token));
       }
       return false;
     });
@@ -419,6 +426,7 @@ export default defineComponent({
       isStableLikePool,
       isLiquidityBootstrappingPool,
       isCopperPool,
+      isStablePhantomPool,
       copperNetworkPrefix,
       hasCustomToken,
       // methods
