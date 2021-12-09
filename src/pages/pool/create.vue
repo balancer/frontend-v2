@@ -90,7 +90,7 @@ onMounted(async () => {
     importState(previouslySavedState);
     hasRestoredFromSavedState.value = true;
     await nextTick();
-    setActiveStep(previouslySavedState.activeStep)
+    setActiveStep(previouslySavedState.activeStep);
   }
 });
 
