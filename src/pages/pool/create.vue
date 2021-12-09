@@ -45,10 +45,11 @@ const {
   hasRestoredFromSavedState,
   setRestoredState,
   importState,
-  resetPoolCreationState
+  resetPoolCreationState,
+  tokensList
 } = usePoolCreation();
-const { upToLargeBreakpoint } = useBreakpoints();
 const { dynamicDataLoading } = useTokens();
+const { upToLargeBreakpoint } = useBreakpoints();
 const { removeAlert } = useAlerts();
 
 onMounted(async () => {
@@ -77,6 +78,7 @@ onMounted(async () => {
  * COMPUTED
  */
 const doSimilarPoolsExist = computed(() => similarPools.value.length > 0);
+const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 
 const steps = computed(() => [
   {
@@ -150,6 +152,7 @@ function setWrapperHeight(dimensions?: { width: number; height: number }) {
   // positioned inside the AnimateHeight component
   if (dimensions?.height) prevWrapperHeight.value = dimensions.height;
   let mobileOffset = 20;
+
   anime({
     targets: accordionWrapper.value,
     translateY: `${prevWrapperHeight.value + mobileOffset}px`,
@@ -199,7 +202,11 @@ watch([hasInjectedToken, totalLiquidity], () => {
             :steps="steps"
             @navigate="handleNavigate"
           />
-          <AnimatePresence :isVisible="doSimilarPoolsExist && activeStep === 0">
+          <AnimatePresence
+            :isVisible="
+              doSimilarPoolsExist && activeStep === 0 && validTokens.length
+            "
+          >
             <SimilarPoolsCompact />
           </AnimatePresence>
         </BalStack>
@@ -228,7 +235,6 @@ watch([hasInjectedToken, totalLiquidity], () => {
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
-        @update-dimensions="setWrapperHeight"
       >
         <ChooseWeights @update:height="setWrapperHeight" />
       </AnimatePresence>

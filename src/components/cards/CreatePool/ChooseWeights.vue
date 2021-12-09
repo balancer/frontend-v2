@@ -20,7 +20,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { useI18n } from 'vue-i18n';
 import useDarkMode from '@/composables/useDarkMode';
 
-const emit = defineEmits(['update:height']);
+const emit = defineEmits(['update:height', 'trigger:alert']);
 
 const emptyTokenWeight: PoolSeedToken = {
   tokenAddress: '',
@@ -302,7 +302,7 @@ function onAlertMountChange() {
 </script>
 
 <template>
-  <div ref="cardWrapper">
+  <div ref="cardWrapper" class="mb-16">
     <BalCard>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">
@@ -384,6 +384,8 @@ function onAlertMountChange() {
         </BalCard>
         <AnimatePresence
           :isVisible="showLiquidityAlert && isWalletReady"
+          @on-presence="onAlertMountChange"
+          @on-exit="onAlertMountChange"
           unmountInstantly
         >
           <BalAlert

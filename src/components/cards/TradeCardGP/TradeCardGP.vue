@@ -142,7 +142,6 @@ import TradeSettingsPopover, {
   TradeSettingsContext
 } from '@/components/popovers/TradeSettingsPopover.vue';
 
-import { configService } from '@/services/config/config.service';
 import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 
 import GasReimbursement from '../TradeCard/GasReimbursement.vue';
@@ -243,23 +242,6 @@ export default defineComponent({
     });
 
     const error = computed(() => {
-      if (errorMessage.value === TradeValidation.NO_NATIVE_ASSET) {
-        return {
-          header: t('noNativeAsset', [nativeAsset.symbol]),
-          body: t('noNativeAssetDetailed', [
-            nativeAsset.symbol,
-            configService.network.chainName
-          ])
-        };
-      }
-
-      if (errorMessage.value === TradeValidation.NO_BALANCE) {
-        return {
-          header: t('insufficientBalance'),
-          body: t('insufficientBalanceDetailed')
-        };
-      }
-
       if (trading.isBalancerTrade.value) {
         if (errorMessage.value === TradeValidation.NO_LIQUIDITY) {
           return {

@@ -17,7 +17,7 @@ import {
   nextTick
 } from 'vue';
 export default defineComponent({
-  emits: ['on-exit', 'update-dimensions'],
+  emits: ['on-exit', 'update-dimensions', 'on-presence'],
   props: {
     initial: {
       type: Object as PropType<AnimeParams>,
@@ -75,13 +75,18 @@ export default defineComponent({
       // on mount we set initial values, but the issue is that enter will run at
       // the same time, setTimeout(0) makes the animation run on the next
       // available tick, so it's instant visually but on a tick delay for code
+      emit('on-presence', { isCompleted: false });
+
       setTimeout(
         () =>
           anime({
             targets: el,
             ...props.animate,
             easing: 'spring(0.2, 80, 10, 0)',
-            complete: () => done()
+            complete: () => {
+              done();
+              emit('on-presence', { isCompleted: true });
+            }
           }),
         0
       );
@@ -92,13 +97,13 @@ export default defineComponent({
             height: animateContainer.value.offsetHeight
           });
         }
-      }, 100);
+      }, 0);
     };
 
     const leave = (el, done) => {
       if (props.unmountInstantly) {
         done();
-        emit('on-exit');
+        emit('on-exit', { isCompleted: true });
       }
       anime.set(el, {
         'pointer-events': 'none'
@@ -109,7 +114,7 @@ export default defineComponent({
         easing: 'spring(0.2, 80, 10, 0)',
         complete: () => {
           done();
-          emit('on-exit');
+          emit('on-exit', { isCompleted: true });
         }
       });
     };

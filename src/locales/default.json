@@ -312,8 +312,6 @@
     "noInitLiquidityDetail": "Until the pool creation UI is ready, an INIT join type is required at the smart contract before investments are supported.",
     "noInvestments": "No investments",
     "noInvestmentsPool": "No investments in this pool",
-    "noNativeAsset": "You don't have {0}",
-    "noNativeAssetDetailed": "You’ll need to add some {0} to trade with this wallet in order to pay for {1} gas fees.",
     "noPoolsFound": "No pools found",
     "noPriceImpact": "Best price",
     "noPriceImpactTip": "Adding tokens proportionally gets you the best price.",
