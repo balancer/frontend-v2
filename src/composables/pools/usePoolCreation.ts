@@ -277,6 +277,8 @@ export default function usePoolCreation() {
     for (const key of Object.keys(poolCreationState)) {
       poolCreationState[key] = emptyPoolCreationState[key];
     }
+    setRestoredState(false);
+    resetState();
   }
 
   function updateTokenWeights(weights: PoolSeedToken[]) {
@@ -304,6 +306,9 @@ export default function usePoolCreation() {
       return;
     }
     poolCreationState.activeStep -= 1;
+    if (hasRestoredFromSavedState.value) {
+      setRestoredState(false);
+    }
   }
 
   function findSeedTokenByAddress(address: string) {
@@ -513,6 +518,10 @@ export default function usePoolCreation() {
     }
   }
 
+  function setRestoredState(value: boolean) {
+    hasRestoredFromSavedState.value = value;
+  }
+
   return {
     ...toRefs(poolCreationState),
     updateTokenWeights,
@@ -538,6 +547,7 @@ export default function usePoolCreation() {
     saveState,
     resetState,
     importState,
+    setRestoredState,
     currentLiquidity,
     optimisedLiquidity,
     scaledLiquidity,

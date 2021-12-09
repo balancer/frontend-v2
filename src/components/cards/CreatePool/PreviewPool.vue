@@ -44,8 +44,7 @@ const {
   feeController,
   thirdPartyFeeController,
   saveState,
-  hasRestoredFromSavedState,
-  needsSeeding
+  hasRestoredFromSavedState
 } = usePoolCreation();
 
 const { tokens, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
@@ -60,7 +59,7 @@ onBeforeMount(() => {
   sortSeedTokens();
   if (hasRestoredFromSavedState.value) {
     // so the user can navigate back to the first step
-    hasRestoredFromSavedState.value = false;
+    // hasRestoredFromSavedState.value = false;
   }
   saveState();
 });
@@ -126,15 +125,6 @@ function getSwapFeeManager() {
 
 <template>
   <BalStack vertical spacing="xs">
-    <AnimatePresence :isVisible="needsSeeding" unmountInstantly>
-      <BalAlert
-        type="warning"
-        class="mb-4"
-        :title="t('createAPool.addSeedLiquidity')"
-      >
-        {{ t('createAPool.addSeedLiquidityInfo') }}
-      </BalAlert>
-    </AnimatePresence>
     <BalCard>
       <BalStack vertical spacing="xs">
         <span class="text-xs text-gray-700 dark:text-gray-500">{{

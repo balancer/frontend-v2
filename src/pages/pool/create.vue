@@ -25,29 +25,6 @@ import useAlerts from '@/composables/useAlerts';
 import { lsGet } from '@/lib/utils';
 import useTokens from '@/composables/useTokens';
 
-const initialAnimateProps = {
-  opacity: 0,
-  translateY: '100px',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0
-};
-
-const entryAnimateProps = {
-  opacity: 1,
-  translateY: '0px',
-  position: 'relative'
-};
-const exitAnimateProps = {
-  opacity: 0,
-  translateY: '-100px',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0
-};
-
 /**
  * STATE
  */
@@ -68,10 +45,12 @@ const {
   seedTokens,
   totalLiquidity,
   hasRestoredFromSavedState,
-  importState
+  setRestoredState,
+  importState,
+  resetPoolCreationState
 } = usePoolCreation();
 const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
-const { dynamicDataLoading } = useTokens()
+const { dynamicDataLoading } = useTokens();
 const { removeAlert } = useAlerts();
 
 onMounted(async () => {
@@ -90,7 +69,7 @@ onMounted(async () => {
   if (activeStep.value === 0 && previouslySavedState !== null) {
     previouslySavedState = JSON.parse(previouslySavedState);
     importState(previouslySavedState);
-    hasRestoredFromSavedState.value = true;
+    setRestoredState(true);
     await nextTick();
     setActiveStep(previouslySavedState.activeStep);
   }
@@ -128,6 +107,30 @@ const steps = computed(() => [
     label: 4
   }
 ]);
+
+const initialAnimateProps = computed(() => ({
+  opacity: 0,
+  translateY: '100px',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0
+}));
+
+const entryAnimateProps = computed(() => ({
+  opacity: 1,
+  translateY: hasRestoredFromSavedState.value ? '116px' : '0px',
+  position: 'relative'
+}));
+
+const exitAnimateProps = computed(() => ({
+  opacity: 0,
+  translateY: '-100px',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0
+}));
 
 /**
  * FUNCTIONS
@@ -178,7 +181,15 @@ function setWrapperHeight(dimensions?: { width: number; height: number }) {
 }
 
 function handleNavigate(stepIndex: number) {
+  if (hasRestoredFromSavedState.value) {
+    setRestoredState(false);
+  }
   setActiveStep(stepIndex);
+}
+
+function handleReset() {
+  resetPoolCreationState();
+  setActiveStep(0);
 }
 
 /**
@@ -207,6 +218,21 @@ watch([hasInjectedToken, totalLiquidity], () => {
       </div>
     </template>
     <div class="relative center-col-mh">
+      <AnimatePresence
+        :isVisible="hasRestoredFromSavedState && !appLoading"
+        unmountInstantly
+      >
+        <BalAlert
+          type="warning"
+          class="mb-4"
+          :title="$t('createAPool.recoveredState')"
+        >
+          {{ $t('createAPool.recoveredStateInfo') }}
+          <button @click="handleReset" class="font-semibold text-blue-500">
+            {{ $t('clickHere') }}
+          </button>
+        </BalAlert>
+      </AnimatePresence>
       <AnimatePresence
         :isVisible="
           !appLoading && activeStep === 0 && !hasRestoredFromSavedState
