@@ -8,8 +8,6 @@ import useNumbers from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import { shortenLabel } from '@/lib/utils';
-import AnimatePresence from '@/components/animate/AnimatePresence.vue';
-import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 
 /**
  * PROPS & EMITS
@@ -43,8 +41,7 @@ const {
   feeManagementType,
   feeController,
   thirdPartyFeeController,
-  saveState,
-  hasRestoredFromSavedState
+  saveState
 } = usePoolCreation();
 
 const { tokens, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
@@ -57,10 +54,6 @@ const { userNetworkConfig, account } = useWeb3();
  */
 onBeforeMount(() => {
   sortSeedTokens();
-  if (hasRestoredFromSavedState.value) {
-    // so the user can navigate back to the first step
-    // hasRestoredFromSavedState.value = false;
-  }
   saveState();
 });
 
