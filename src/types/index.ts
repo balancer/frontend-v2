@@ -47,7 +47,7 @@ export type BatchSwap = {
 };
 
 export type BatchSwapOut = {
-  returnAmounts: BigNumberish[];
+  returnAmounts: string[];
   swaps: BatchSwapStep[];
   assets: string[];
 };
