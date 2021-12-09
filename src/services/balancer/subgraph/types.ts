@@ -120,11 +120,7 @@ export interface RawLinearPoolToken {
 }
 
 export interface RawWrappedLinearPoolToken extends RawLinearPoolToken {
-  rateCache: {
-    duration: BigNumber;
-    expires: BigNumber;
-    rate: BigNumber;
-  };
+  rate: string;
 }
 
 export interface LinearPoolToken {

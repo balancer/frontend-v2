@@ -73,9 +73,8 @@ export default class Vault {
       poolMulticaller.call('amp', poolAddress, 'getAmplificationParameter');
 
       if (isStablePhantom(type)) {
-        // TODO - uncomment this call once deployed contracts support virtualSupply
         // Overwrite totalSupply with virtualSupply for StablePhantom pools
-        // poolMulticaller.call('totalSupply', poolAddress, 'virtualSupply');
+        poolMulticaller.call('totalSupply', poolAddress, 'getVirtualSupply');
 
         Object.keys(tokens).forEach((token, i) => {
           poolMulticaller.call(`linearPools.${token}.id`, token, 'getPoolId');
@@ -110,12 +109,10 @@ export default class Vault {
             token,
             'getWrappedIndex'
           );
-          // TODO - getWrappedTokenRateCache is due to be depreciated for getWrappedTokenRate
-          // which will return the rate rather than an object.
           poolMulticaller.call(
-            `linearPools.${token}.wrappedToken.rateCache`,
+            `linearPools.${token}.wrappedToken.rate`,
             token,
-            'getWrappedTokenRateCache'
+            'getWrappedTokenRate'
           );
         });
       }
@@ -266,7 +263,7 @@ export default class Vault {
           address: getAddress(wrappedToken.address),
           index: wrappedToken.index.toNumber(),
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
-          priceRate: formatUnits(wrappedToken.rateCache.rate.toString(), 18)
+          priceRate: formatUnits(wrappedToken.rate, 18)
         },
         unwrappedTokenAddress: getAddress(unwrappedTokenAddress)
       };
