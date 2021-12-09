@@ -15,8 +15,10 @@ export default class StablePhantom {
   }
 
   public priceImpact(tokenAmounts: string[], opts: PiOptions): OldBigNumber {
-    if (!opts.queryBPT) return bnum(100);
+    if (!opts.queryBPT)
+      throw new Error('Need query BPT to calc StablePhantom Price Impact');
 
+    console.log('Query BPT:', opts.queryBPT);
     let bptAmount: OldBigNumber | BigNumberish;
     let bptZeroPriceImpact: OldBigNumber;
 
@@ -27,8 +29,22 @@ export default class StablePhantom {
 
       return bnum(1).minus(bptAmount.div(bptZeroPriceImpact));
     } else {
-      // TODO - withdrawl price impact calc
-      return new OldBigNumber(100);
+      // Single asset exit
+      if (opts.exactOut) {
+        bptAmount = bnum(opts.queryBPT);
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      } else {
+        // Single asset max out case
+        bptAmount = parseUnits(
+          this.calc.bptBalance,
+          this.calc.poolDecimals
+        ).toString();
+        bptZeroPriceImpact = this.bptForTokensZeroPriceImpact(tokenAmounts);
+      }
+
+      return bnum(bptAmount)
+        .div(bptZeroPriceImpact)
+        .minus(1);
     }
   }
 

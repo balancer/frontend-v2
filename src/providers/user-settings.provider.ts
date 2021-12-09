@@ -1,8 +1,17 @@
-import { provide, InjectionKey, reactive, Ref, toRefs } from 'vue';
+import {
+  provide,
+  InjectionKey,
+  reactive,
+  Ref,
+  toRefs,
+  computed,
+  ComputedRef
+} from 'vue';
 import symbolKeys from '@/constants/symbol.keys';
 import LS_KEYS from '@/constants/local-storage.keys';
 import { FiatCurrency } from '@/constants/currency';
 import { lsGet, lsSet } from '@/lib/utils';
+import { parseUnits } from '@ethersproject/units';
 
 /**
  * TYPES
@@ -15,6 +24,7 @@ export interface UserSettingsState {
 export interface UserSettingsProviderResponse {
   currency: Ref<FiatCurrency>;
   slippage: Ref<string>;
+  slippageScaled: ComputedRef<string>;
   setCurrency: (newCurrency: FiatCurrency) => void;
   setSlippage: (newSlippage: string) => void;
 }
@@ -36,6 +46,13 @@ const state: UserSettingsState = reactive({
   currency: lsCurrency,
   slippage: lsSlippage
 });
+
+/**
+ * COMPUTED
+ */
+const slippageScaled = computed((): string =>
+  parseUnits(state.slippage, 18).toString()
+);
 
 /**
  * METHODS
@@ -62,7 +79,8 @@ export default {
       ...toRefs(state),
       // methods
       setCurrency,
-      setSlippage
+      setSlippage,
+      slippageScaled
     });
 
     return () => slots.default();

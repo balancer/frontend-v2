@@ -13,7 +13,6 @@ import {
   RawOnchainPoolData,
   RawPoolTokens
 } from '../../subgraph/types';
-import ConfigService from '@/services/config/config.service';
 import { TokenInfoMap } from '@/types/TokenList';
 import {
   isWeightedLike,
@@ -24,12 +23,20 @@ import {
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { pick } from 'lodash';
 import { Vault__factory } from '@balancer-labs/typechain';
+import { Contract } from 'ethers';
+import VaultAbi from '@/lib/abi/VaultAbi.json';
 
 export default class Vault {
   service: Service;
+  instance: Contract;
 
-  constructor(service, private readonly configService = new ConfigService()) {
+  constructor(service, instanceABI = VaultAbi) {
     this.service = service;
+    this.instance = new Contract(
+      this.service.config.addresses.vault,
+      instanceABI,
+      this.service.provider
+    );
   }
 
   public async getPoolData(
@@ -41,13 +48,13 @@ export default class Vault {
     let result = <RawOnchainPoolData>{};
 
     const vaultMultiCaller = new Multicaller(
-      this.configService.network.key,
+      this.service.config.key,
       this.service.provider,
       Vault__factory.abi
     );
 
     const poolMulticaller = new Multicaller(
-      this.configService.network.key,
+      this.service.config.key,
       this.service.provider,
       this.service.allPoolABIs
     );
@@ -102,6 +109,13 @@ export default class Vault {
             `linearPools.${token}.wrappedToken.index`,
             token,
             'getWrappedIndex'
+          );
+          // TODO - getWrappedTokenRateCache is due to be depreciated for getWrappedTokenRate
+          // which will return the rate rather than an object.
+          poolMulticaller.call(
+            `linearPools.${token}.wrappedToken.rateCache`,
+            token,
+            'getWrappedTokenRateCache'
           );
         });
       }
@@ -251,7 +265,8 @@ export default class Vault {
         wrappedToken: {
           address: getAddress(wrappedToken.address),
           index: wrappedToken.index.toNumber(),
-          balance: tokenData.balances[wrappedToken.index.toNumber()].toString()
+          balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
+          priceRate: formatUnits(wrappedToken.rateCache.rate.toString(), 18)
         },
         unwrappedTokenAddress: getAddress(unwrappedTokenAddress)
       };

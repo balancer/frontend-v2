@@ -1,5 +1,6 @@
 export type RuleFunction = (val: string | number) => string;
 export type Rules = Array<RuleFunction>;
+import { BatchSwapStep } from '@balancer-labs/sdk';
 import { SwapV2 } from '@balancer-labs/sor2';
 import { BigNumberish } from '@ethersproject/bignumber';
 
@@ -42,6 +43,12 @@ export interface MetamaskError extends Error {
 export type BatchSwap = {
   amountTokenOut: string;
   swaps: SwapV2[];
+  assets: string[];
+};
+
+export type BatchSwapOut = {
+  returnAmounts: BigNumberish[];
+  swaps: BatchSwapStep[];
   assets: string[];
 };
 

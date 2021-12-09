@@ -39,7 +39,9 @@ const {
   hasBpt,
   fiatTotalLabel,
   fiatAmounts,
-  proportionalAmounts
+  proportionalAmounts,
+  shouldFetchBatchSwap,
+  loadingAmountsOut
 } = toRefs(props.math);
 
 const { slider } = useWithdrawalState(toRef(props, 'pool'));
@@ -92,6 +94,12 @@ function handleSliderChange(newVal: number): void {
     .toFixed(props.pool.onchain.decimals);
 }
 
+async function handleSliderEnd(): Promise<void> {
+  if (shouldFetchBatchSwap.value) {
+    await props.math.getSwap();
+  }
+}
+
 /**
  * WATCHERS
  */
@@ -114,7 +122,11 @@ onBeforeMount(() => {
         <div class="flex">
           <WithdrawalTokenSelect :pool="pool" />
           <div class="flex-grow text-right text-xl font-numeric">
-            {{ missingPrices ? '-' : fiatTotalLabel }}
+            <BalLoadingBlock
+              v-if="loadingAmountsOut"
+              class="w-20 h-8 float-right"
+            />
+            <span v-else>{{ missingPrices ? '-' : fiatTotalLabel }}</span>
           </div>
         </div>
         <div class="flex mt-2 text-sm text-gray-500">
@@ -131,6 +143,7 @@ onBeforeMount(() => {
           tooltip="none"
           :disabled="!hasBpt"
           @update:modelValue="handleSliderChange"
+          @dragEnd="handleSliderEnd"
         />
       </div>
     </div>
@@ -153,13 +166,18 @@ onBeforeMount(() => {
               </span>
             </div>
           </div>
-          <div class="flex flex-col flex-grow text-right pl-2 font-numeric">
-            <span class="break-words text-xl">
-              {{ fNum(proportionalAmounts[i], 'token') }}
-            </span>
-            <span class="text-sm text-gray-400">
-              {{ fNum(fiatAmounts[i], 'usd') }}
-            </span>
+          <div
+            class="flex flex-col flex-grow items-end text-right pl-2 font-numeric"
+          >
+            <BalLoadingBlock v-if="loadingAmountsOut" class="w-20 h-12" />
+            <template v-else>
+              <span class="break-words text-xl">
+                {{ fNum(proportionalAmounts[i], 'token') }}
+              </span>
+              <span class="text-sm text-gray-400">
+                {{ fNum(fiatAmounts[i], 'usd') }}
+              </span>
+            </template>
           </div>
         </div>
       </div>

@@ -52,6 +52,7 @@ export interface Config {
     wstETH: string;
     lidoRelayer: string;
     balancerHelpers: string;
+    batchRelayer: string;
   };
   keys: {
     infura: string;

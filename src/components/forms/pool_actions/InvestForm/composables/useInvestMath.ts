@@ -11,11 +11,8 @@ import useUserSettings from '@/composables/useUserSettings';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
 import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sor2';
-import { Contract } from 'ethers';
-import VaultAbi from '@/lib/abi/VaultAbi.json';
-import { configService } from '@/services/config/config.service';
-import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import { BatchSwap } from '@/types';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 
 export type InvestMathResponse = {
   // computed
@@ -42,12 +39,6 @@ export type InvestMathResponse = {
   optimizeAmounts: () => void;
   getBatchSwap: () => Promise<void>;
 };
-
-export const vault = new Contract(
-  configService.network.addresses.vault,
-  VaultAbi,
-  rpcProviderService.jsonProvider
-);
 
 export default function useInvestFormMath(
   pool: Ref<FullPool>,
@@ -260,7 +251,7 @@ export default function useInvestFormMath(
     batchSwapLoading.value = true;
     batchSwap.value = await queryBatchSwapTokensIn(
       sor,
-      vault,
+      balancerContractsService.vault.instance,
       Object.keys(batchSwapAmountMap.value),
       Object.values(batchSwapAmountMap.value),
       pool.value.address.toLowerCase()
