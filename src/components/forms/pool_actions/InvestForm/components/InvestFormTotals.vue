@@ -41,7 +41,8 @@ const {
  * COMPUTED
  */
 const priceImpactClasses = computed(() => ({
-  'bg-red-500 text-white divide-red-400': highPriceImpact.value
+  'dark:bg-gray-800': !highPriceImpact.value,
+  'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value
 }));
 
 const optimizeBtnClasses = computed(() => ({
@@ -119,7 +120,6 @@ const optimizeBtnClasses = computed(() => ({
 .data-table-row {
   @apply grid grid-cols-4 items-center;
   @apply divide-x dark:divide-gray-900;
-  @apply dark:bg-gray-800;
 }
 
 .data-table-number-col {
@@ -127,7 +127,7 @@ const optimizeBtnClasses = computed(() => ({
 }
 
 .total-row {
-  @apply text-lg font-bold rounded-t-lg;
+  @apply text-lg font-bold rounded-t-lg dark:bg-gray-800;
 }
 
 .price-impact-row {
