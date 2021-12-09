@@ -23,6 +23,7 @@ import { StepState } from '@/types';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useAlerts from '@/composables/useAlerts';
 import { lsGet } from '@/lib/utils';
+import useTokens from '@/composables/useTokens';
 
 const initialAnimateProps = {
   opacity: 0,
@@ -70,6 +71,7 @@ const {
   importState
 } = usePoolCreation();
 const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
+const { dynamicDataLoading } = useTokens()
 const { removeAlert } = useAlerts();
 
 onMounted(async () => {
@@ -244,7 +246,7 @@ watch([hasInjectedToken, totalLiquidity], () => {
         <InitialLiquidity />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 4"
+        :isVisible="!appLoading && activeStep === 4 && !dynamicDataLoading"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"

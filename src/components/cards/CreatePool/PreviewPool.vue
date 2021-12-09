@@ -9,6 +9,7 @@ import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
 import { shortenLabel } from '@/lib/utils';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+import useTokenApprovals from '@/composables/pools/useTokenApprovals';
 
 /**
  * PROPS & EMITS

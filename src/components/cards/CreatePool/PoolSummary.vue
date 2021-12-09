@@ -151,7 +151,7 @@ watch(
     await nextTick();
     updateTokenColors(colors as string[]);
   },
-  { deep: true }
+  { deep: true, immediate: true }
 );
 
 /**
