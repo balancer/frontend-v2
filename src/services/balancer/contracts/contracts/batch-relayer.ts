@@ -29,7 +29,8 @@ export default class BatchRelayer {
     tokensOut: string[],
     rates: string[],
     slippage: string,
-    exactOut = false
+    exactOut = false,
+    fetchPools = true
   ): Promise<TransactionData> {
     const funds: FundManagement = {
       sender: account,
@@ -50,7 +51,11 @@ export default class BatchRelayer {
       amountsIn,
       rates,
       funds,
-      slippage
+      slippage,
+      {
+        fetchPools,
+        fetchOnChain: false
+      }
     );
   }
 

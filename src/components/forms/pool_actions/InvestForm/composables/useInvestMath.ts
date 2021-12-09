@@ -171,29 +171,29 @@ export default function useInvestFormMath(
     return fullAmounts.value.every((amount, i) => amount === send[i]);
   });
 
-  const fullBPTOut = computed(
-    (): BigNumber => {
-      let _bptOut: BigNumber;
+  const fullBPTOut = computed((): string => {
+    let _bptOut: string;
 
-      if (isStablePhantomPool.value) {
-        _bptOut = batchSwap.value
-          ? BigNumber.from(batchSwap.value.amountTokenOut).abs()
-          : BigNumber.from(0);
-      } else {
-        _bptOut = BigNumber.from(
-          poolCalculator.exactTokensInForBPTOut(fullAmounts.value).toString()
-        );
-      }
-
-      console.log('query BPT', _bptOut.toString());
-
-      return _bptOut;
+    if (isStablePhantomPool.value) {
+      _bptOut = batchSwap.value
+        ? bnum(batchSwap.value.amountTokenOut)
+            .abs()
+            .toString()
+        : '0';
+    } else {
+      _bptOut = poolCalculator
+        .exactTokensInForBPTOut(fullAmounts.value)
+        .toString();
     }
-  );
+
+    console.log('query BPT', _bptOut.toString());
+
+    return _bptOut;
+  });
 
   const bptOut = computed((): string => {
     if (managedPoolWithTradingHalted.value) return fullBPTOut.value.toString();
-    return minusSlippageScaled(fullBPTOut.value).toString();
+    return minusSlippageScaled(fullBPTOut.value);
   });
 
   const poolTokenBalances = computed((): string[] =>
