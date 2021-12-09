@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, nextTick } from 'vue';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
@@ -72,7 +72,7 @@ const {
 const { upToLargeBreakpoint, upToSmallBreakpoint } = useBreakpoints();
 const { removeAlert } = useAlerts();
 
-onMounted(() => {
+onMounted(async () => {
   removeAlert('return-to-pool-creation');
   if (accordionWrapper.value) {
     anime.set(accordionWrapper.value, {
@@ -89,6 +89,8 @@ onMounted(() => {
     previouslySavedState = JSON.parse(previouslySavedState);
     importState(previouslySavedState);
     hasRestoredFromSavedState.value = true;
+    await nextTick();
+    setActiveStep(4)
   }
 });
 

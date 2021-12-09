@@ -99,21 +99,6 @@ export default function usePoolCreation() {
     }
   );
 
-  watch(hasRestoredFromSavedState, () => {
-    // this timeout is to ensure that the UI has
-    // time to compute all the watchers and other things
-    // before changing the step. Changing it immediately
-    // results in a blank page being rendered.
-    // The hasRestoredFromSavedState flag is also used to
-    // hide the mount of the first step so it 'seems' like
-    // that the preview page is mounted first.
-    setTimeout(() => {
-      if (hasRestoredFromSavedState.value) {
-        setActiveStep(4);
-      }
-    }, 3500);
-  });
-
   /**
    * COMPUTED
    */
