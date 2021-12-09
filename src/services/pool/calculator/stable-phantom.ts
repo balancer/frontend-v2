@@ -18,6 +18,7 @@ export default class StablePhantom {
     if (!opts.queryBPT)
       throw new Error('Need query BPT to calc StablePhantom Price Impact');
 
+    console.log('Query BPT:', opts.queryBPT);
     let bptAmount: OldBigNumber | BigNumberish;
     let bptZeroPriceImpact: OldBigNumber;
 
