@@ -295,6 +295,7 @@ export default function usePoolCreation() {
     } else {
       poolCreationState.activeStep += 1;
     }
+    saveState();
   }
 
   function goBack() {
