@@ -26,11 +26,12 @@ const props = defineProps<Props>();
  */
 const {
   fiatTotalLabel,
+  fiatAmounts,
   initMath,
   proportionalPoolTokenAmounts
 } = useWithdrawMath(toRef(props, 'pool'));
 const { getTokens } = useTokens();
-const { fNum, toFiat } = useNumbers();
+const { fNum } = useNumbers();
 const { currency } = useUserSettings();
 const { isWalletReady } = useWeb3();
 const { isStableLikePool } = usePool(toRef(props, 'pool'));
@@ -47,9 +48,8 @@ function weightLabelFor(address: string): string {
   return fNum(props.pool.onchain.tokens[address].weight, 'percent_lg');
 }
 
-function fiatLabelFor(index: number, address: string): string {
-  const fiatValue = toFiat(proportionalPoolTokenAmounts.value[index], address);
-  return fNum(fiatValue, currency.value);
+function fiatLabelFor(index: number): string {
+  return fNum(fiatAmounts.value[index], currency.value);
 }
 
 /**
@@ -100,7 +100,7 @@ onBeforeMount(() => {
               : '-'
           }}
           <span class="text-gray-500 text-sm">
-            {{ isWalletReady ? fiatLabelFor(index, token.address) : '-' }}
+            {{ isWalletReady ? fiatLabelFor(index) : '-' }}
           </span>
         </span>
       </div>
