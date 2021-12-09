@@ -44,15 +44,6 @@ export default class BatchRelayer {
       ? 'swapUnwrapAaveStaticExactOut'
       : 'swapUnwrapAaveStaticExactIn';
 
-    console.log([
-      method,
-      tokensIn,
-      tokensOut,
-      amountsIn,
-      rates,
-      funds,
-      slippage
-    ]);
     return await this.service.sdk.relayer[method](
       tokensIn,
       tokensOut,
