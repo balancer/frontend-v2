@@ -53,7 +53,7 @@ export type WithdrawMathResponse = {
   tokenOutPoolBalance: Ref<string>;
   shouldFetchBatchSwap: Ref<boolean>;
   batchSwap: Ref<BatchSwapOut | null>;
-  batchSwapAmountsOutMap: Ref<Record<string, BigNumber>>;
+  batchSwapAmountsOutMap: Ref<Record<string, string>>;
   batchSwapKind: Ref<SwapKind>;
   shouldUseBatchRelayer: Ref<boolean>;
   batchRelayerSwap: Ref<any | null>;
@@ -363,19 +363,20 @@ export default function useWithdrawMath(
 
   // Token amounts out to pass in to batch swap transaction and used as limits.
   const batchSwapAmountsOutMap = computed(
-    (): Record<string, BigNumber> => {
+    (): Record<string, string> => {
       const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
         tokenAddresses.value[i].toLowerCase(),
-        amount
+        amount,
+        withdrawalTokens.value[i].decimals
       ]);
       const onlyTokensWithAmounts = allTokensWithAmounts
         .filter(([, amount]) => bnum(amount).gt(0))
-        .map(([token, amount]) => {
+        .map(([token, amount, decimals]) => {
           return [
             token,
             exactOut.value
               ? amount
-              : minusSlippageScaled(amount, tokenOutDecimals.value)
+              : minusSlippageScaled(amount.toString(), Number(decimals))
           ];
         });
       return Object.fromEntries(onlyTokensWithAmounts);

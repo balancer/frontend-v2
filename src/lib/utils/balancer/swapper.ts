@@ -17,6 +17,7 @@ import {
   SwapKind
 } from '@balancer-labs/balancer-js';
 import { BatchSwapStep } from '@balancer-labs/sdk';
+import { bnum } from '..';
 
 export async function swapIn(
   network: string,
@@ -310,8 +311,8 @@ export async function boostedExitBatchSwap(
   swaps: BatchSwapStep[],
   tokenAddresses: string[],
   tokenIn: string,
-  amountIn: BigNumber,
-  amountsOutMap: Record<string, BigNumber>,
+  amountIn: string,
+  amountsOutMap: Record<string, string>,
   swapKind: SwapKind = SwapKind.GivenIn
 ): Promise<TransactionResponse> {
   try {
@@ -333,9 +334,13 @@ export async function boostedExitBatchSwap(
     const limits: string[] = [];
     tokenAddresses.forEach((token, i) => {
       if (tokensOut.includes(token.toLowerCase())) {
-        limits[i] = amountsOutMap[token].mul(-1).toString();
+        limits[i] = bnum(amountsOutMap[token])
+          .times(-1)
+          .toString();
       } else if (token.toLowerCase() === tokenIn.toLowerCase()) {
-        limits[i] = amountIn.abs().toString();
+        limits[i] = bnum(amountIn)
+          .abs()
+          .toString();
       } else {
         limits[i] = '0';
       }

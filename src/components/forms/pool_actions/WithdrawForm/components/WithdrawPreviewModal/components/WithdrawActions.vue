@@ -177,7 +177,7 @@ async function submit(): Promise<TransactionResponse> {
         batchSwap.value.swaps,
         batchSwap.value.assets,
         props.pool.address,
-        BigNumber.from(bptIn.value),
+        bptIn.value,
         batchSwapAmountsOutMap.value,
         batchSwapKind.value
       );
