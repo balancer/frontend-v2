@@ -22,7 +22,6 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { isStablePhantom, usePool } from '@/composables/usePool';
 import { BatchSwapOut } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { BigNumber } from 'ethers';
 import OldBigNumber from 'bignumber.js';
 import { TokenInfo } from '@/types/TokenList';
 import { balancer } from '@/lib/balancer.sdk';
@@ -214,6 +213,10 @@ export default function useWithdrawMath(
       parseUnits(amount, withdrawalTokens.value[i].decimals).toString()
     )
   );
+
+  /**
+   * A linear
+   */
 
   /**
    * The full input amounts array minus slippage,
