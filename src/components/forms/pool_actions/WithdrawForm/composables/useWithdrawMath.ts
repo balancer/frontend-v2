@@ -254,7 +254,8 @@ export default function useWithdrawMath(
    * Only in the single asset exact out case should the BPT value be adjusted to account for slippage.
    */
   const bptIn = computed((): string => {
-    if (exactOut.value) return addSlippageScaled(fullBPTIn.value);
+    if (exactOut.value)
+      return addSlippageScaled(fullBPTIn.value, poolDecimals.value);
     return fullBPTIn.value.toString();
   });
 
@@ -370,7 +371,12 @@ export default function useWithdrawMath(
       const onlyTokensWithAmounts = allTokensWithAmounts
         .filter(([, amount]) => bnum(amount).gt(0))
         .map(([token, amount]) => {
-          return [token, exactOut.value ? amount : minusSlippageScaled(amount)];
+          return [
+            token,
+            exactOut.value
+              ? amount
+              : minusSlippageScaled(amount, tokenOutDecimals.value)
+          ];
         });
       return Object.fromEntries(onlyTokensWithAmounts);
     }

@@ -157,6 +157,15 @@ async function submit(): Promise<TransactionResponse> {
     investmentState.init = true;
 
     if (batchSwap.value) {
+      console.log('inputs', [
+        configService.network.key,
+        getProvider(),
+        batchSwap.value.swaps,
+        batchSwap.value.assets,
+        props.pool.address,
+        batchSwapAmountMap.value,
+        bptOut.value
+      ]);
       tx = await boostedJoinBatchSwap(
         configService.network.key,
         getProvider(),
