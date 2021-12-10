@@ -310,7 +310,6 @@ export default function useWithdrawMath(
   const priceImpact = computed((): number => {
     if (!hasAmounts.value || isProportional.value) return 0;
 
-    // TODO - handle single asset withdrawal price impact for StablePhantom pools
     return poolCalculator
       .priceImpact(fullAmounts.value, {
         exactOut: exactOut.value,
