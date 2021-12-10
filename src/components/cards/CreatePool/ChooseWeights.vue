@@ -202,9 +202,7 @@ async function animateHeight(offset = 0) {
       });
     }
   });
-
   wrapperHeight.value += tokenWeightItemHeight.value * offset;
-
   // to avoid reflow we are going to transform the totals + add token
   // down instead of having the new token weight item shift them
   anime({
@@ -212,9 +210,7 @@ async function animateHeight(offset = 0) {
     translateY: `${tokenWeightItemHeight.value * seedTokens.value.length}px`,
     easing: 'spring(0.4, 500, 9, 0)'
   });
-
   await nextTick();
-
   // get the last added token weight element
   seedTokenElements.value.forEach((seedTokenElement, i) => {
     anime.set(seedTokenElement, {
