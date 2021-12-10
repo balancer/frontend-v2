@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue';
+import { computed } from 'vue';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
-import { FullPool } from '@/services/balancer/subgraph/types';
-import { usePool } from '@/composables/usePool';
-import { bnum } from '@/lib/utils';
 
 /**
  * TYPES

@@ -32,7 +32,6 @@ import { configService } from '@/services/config/config.service';
 import { formatUnits } from '@ethersproject/units';
 import { TransactionActionInfo } from '@/types/transactions';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { BigNumber } from 'ethers';
 
 /**
  * TYPES
