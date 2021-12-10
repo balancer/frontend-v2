@@ -13,6 +13,7 @@ import { TokenInfo } from '@/types/TokenList';
 import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sor2';
 import { BatchSwap } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+import usePromiseSequence from '@/composables/usePromiseSequence';
 
 export type InvestMathResponse = {
   // computed
@@ -62,6 +63,11 @@ export default function useInvestFormMath(
   const { minusSlippageScaled } = useSlippage();
   const { managedPoolWithTradingHalted, isStablePhantomPool } = usePool(pool);
   const { currency } = useUserSettings();
+  const {
+    promises: batchSwapPromises,
+    processing: processingBatchSwaps,
+    processAll: processBatchSwaps
+  } = usePromiseSequence();
 
   /**
    * Services
@@ -265,6 +271,11 @@ export default function useInvestFormMath(
     );
 
     if (changedIndex >= 0) {
+      if (shouldFetchBatchSwap.value) {
+        batchSwapPromises.value.push(getBatchSwap);
+        if (!processingBatchSwaps.value) processBatchSwaps();
+      }
+
       const { send } = poolCalculator.propAmountsGiven(
         fullAmounts.value[changedIndex],
         changedIndex,
@@ -272,8 +283,6 @@ export default function useInvestFormMath(
       );
       proportionalAmounts.value = send;
     }
-
-    if (shouldFetchBatchSwap.value) await getBatchSwap();
   });
 
   return {
