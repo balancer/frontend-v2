@@ -117,7 +117,7 @@ function getSwapFeeManager() {
 </script>
 
 <template>
-  <BalStack vertical spacing="xs">
+  <BalStack vertical spacing="xs" class="mb-24">
     <BalCard>
       <BalStack vertical spacing="xs">
         <span class="text-xs text-gray-700 dark:text-gray-500">{{

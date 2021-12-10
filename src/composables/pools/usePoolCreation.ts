@@ -57,7 +57,8 @@ const emptyPoolCreationState = {
   useNativeAsset: false,
   type: PoolType.Weighted,
   acceptedCustomTokenDisclaimer: false,
-  needsSeeding: false
+  needsSeeding: false,
+  createPoolTxHash: ''
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
@@ -403,6 +404,7 @@ export default function usePoolCreation() {
         poolCreationState.seedTokens,
         poolOwner.value
       );
+      poolCreationState.createPoolTxHash = tx.hash;
 
       addTransaction({
         id: tx.hash,
