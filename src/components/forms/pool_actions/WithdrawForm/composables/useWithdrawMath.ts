@@ -433,7 +433,7 @@ export default function useWithdrawMath(
     propBptIn.value = bptBalance.value;
     if (shouldFetchBatchSwap.value) {
       batchSwap.value = await getBatchSwap();
-      if (shouldFetchBatchSwap.value) {
+      if (shouldUseBatchRelayer.value) {
         batchRelayerSwap.value = await getBatchRelayerSwap();
       }
     }
