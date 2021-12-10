@@ -314,7 +314,7 @@ export default function useWithdrawMath(
       .priceImpact(fullAmounts.value, {
         exactOut: exactOut.value,
         tokenIndex: tokenOutIndex.value,
-        queryBPT: fullBPTIn.value.toString()
+        queryBPT: fullBPTIn.value
       })
       .toNumber();
   });
