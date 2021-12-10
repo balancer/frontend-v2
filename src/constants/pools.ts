@@ -93,10 +93,10 @@ export const POOLS = {
     '0x751a0bc0e3f75b38e01cf25bfce7ff36de1c87de': 'liquidityBootstrappingPool', // Mainnet LBP
     '0x48767f9f868a4a7b86a90736632f6e44c2df7fa9': 'managedPool', // Mainnet Managed
     '0x0f7bb7ce7b6ed9366f9b6b910adefe72dc538193': 'managedPool', // Polygon Managed
-    '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'managedPool', // Arbitrum Managed
-    '0xd7fad3bd59d6477cbe1be7f646f7f1ba25b230f8': 'boostedPool', // Mainnet StablePhantom
-    '0xdcdbf71a870cc60c6f9b621e28a7d3ffd6dd4965': 'boostedPool', // Arbitrum StablePhantom
-    '0xf302f9f50958c5593770fdf4d4812309ff77414f': 'boostedPool', // Polygon StablePhantom
-    '0x94522c4586cb15e08aff943545fb2c8ca7f508ce': 'boostedPool' // Kovan StablePhantom
+    '0xacd615b3705b9c880e4e7293f1030b34e57b4c1c': 'managedPool', // arbitrum managed
+    // '0xb08e16cfc07c684daa2f93c70323badb2a6cbfd2': 'boostedPool', // mainnet stablephantom
+    '0xdae7e32adc5d490a43ccba1f0c736033f2b4efca': 'boostedPool', // arbitrum stablephantom
+    '0xc128a9954e6c874ea3d62ce62b468ba073093f25': 'boostedPool', // polygon stablephantom
+    '0x6c7f4d97269ece163fd08d5c2584a21e4a33934c': 'boostedPool' // kovan stablephantom
   }
 };
