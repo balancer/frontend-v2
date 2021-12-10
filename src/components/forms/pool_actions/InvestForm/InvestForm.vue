@@ -68,7 +68,8 @@ const {
   highPriceImpact,
   maximizeAmounts,
   optimizeAmounts,
-  proportionalAmounts
+  proportionalAmounts,
+  batchSwapLoading
 } = investMath;
 
 const {
@@ -262,7 +263,12 @@ watch(useNativeAsset, shouldUseNativeAsset => {
         v-else
         :label="$t('preview')"
         color="gradient"
-        :disabled="!hasAmounts || !hasValidInputs || isMismatchedNetwork"
+        :disabled="
+          !hasAmounts ||
+            !hasValidInputs ||
+            isMismatchedNetwork ||
+            batchSwapLoading
+        "
         block
         @click="showInvestPreview = true"
       />
