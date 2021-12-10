@@ -27,6 +27,7 @@ import { TokenInfo } from '@/types/TokenList';
 import { balancer } from '@/lib/balancer.sdk';
 import { SwapType, TransactionData } from '@balancer-labs/sdk';
 import { SwapKind } from '@balancer-labs/balancer-js';
+import usePromiseSequence from '@/composables/usePromiseSequence';
 
 /**
  * TYPES
@@ -104,6 +105,11 @@ export default function useWithdrawMath(
   const { currency } = useUserSettings();
   const { isStablePhantomPool } = usePool(pool);
   const { slippageScaled } = useUserSettings();
+  const {
+    promises: swapPromises,
+    processing: processingSwaps,
+    processAll: processSwaps
+  } = usePromiseSequence();
 
   /**
    * SERVICES
@@ -430,6 +436,7 @@ export default function useWithdrawMath(
    */
   async function initMath(): Promise<void> {
     propBptIn.value = bptBalance.value;
+
     if (shouldFetchBatchSwap.value) {
       batchSwap.value = await getBatchSwap();
       if (shouldUseBatchRelayer.value) {
@@ -632,7 +639,10 @@ export default function useWithdrawMath(
      * If a single asset exit and the input values change we
      * need to refetch the swap to get the required BPT in.
      */
-    if (!isProportional.value) await getSwap();
+    if (!isProportional.value) {
+      swapPromises.value.push(getSwap);
+      if (!processingSwaps.value) processSwaps();
+    }
   });
 
   return {
