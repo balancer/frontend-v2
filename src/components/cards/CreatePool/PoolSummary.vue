@@ -147,8 +147,6 @@ watch(
   async () => {
     const colors = await calculateColors();
     await nextTick();
-    await nextTick();
-    await nextTick();
     updateTokenColors(colors as string[]);
   },
   { deep: true, immediate: true }
