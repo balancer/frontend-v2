@@ -307,7 +307,10 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      const feeLabel = `${fNum(pool.value.onchain.swapFee, 'percent')}`;
+      const feeLabel = `${fNum(
+        pool.value.onchain.swapFee,
+        'percent_variable'
+      )}`;
 
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);

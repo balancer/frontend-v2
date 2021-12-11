@@ -16,6 +16,7 @@ enum PresetFormats {
   usd_lg = '$0,0',
   usd_m = '$0,0.00a',
   percent = '0.00%',
+  percent_variable = '0.[0000]%',
   percent_lg = '0%'
 }
 
