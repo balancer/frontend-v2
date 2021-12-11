@@ -8,7 +8,7 @@ import {
   onBeforeMount,
   watch
 } from 'vue';
-import { getPoolWeights } from '@/services/pool/pool.helper';
+import { poolWeightsLabel } from '@/composables/usePool';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import {
@@ -136,7 +136,7 @@ async function handleTransaction(tx): Promise<void> {
     action: 'withdraw',
     summary: t('transactionSummary.withdrawFromPool', [
       fiatTotalLabel.value,
-      getPoolWeights(props.pool)
+      poolWeightsLabel(props.pool)
     ]),
     details: {
       total: fiatTotalLabel.value,

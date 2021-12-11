@@ -1,8 +1,9 @@
 import { Ref, computed } from 'vue';
-import { PoolType, AnyPool } from '@/services/balancer/subgraph/types';
+import { PoolType, AnyPool, FullPool } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
+import { fNum } from './useNumbers';
 
 /**
  * METHODS
@@ -77,6 +78,21 @@ export function lpTokensFor(pool: AnyPool): string[] {
   } else {
     return pool.tokenAddresses || [];
   }
+}
+
+/**
+ * Returns pool weights label
+ */
+export function poolWeightsLabel(pool: FullPool): string {
+  if (isStableLike(pool.poolType)) {
+    return Object.values(pool.onchain.tokens)
+      .map(token => token.symbol)
+      .join(', ');
+  }
+
+  return Object.values(pool.onchain.tokens)
+    .map(token => `${fNum(token.weight, 'percent_lg')} ${token.symbol}`)
+    .join(', ');
 }
 
 /**

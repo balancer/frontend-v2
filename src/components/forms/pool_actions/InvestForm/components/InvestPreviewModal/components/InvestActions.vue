@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRef, toRefs, computed, reactive, watch } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
-import { getPoolWeights } from '@/services/pool/pool.helper';
+import { poolWeightsLabel } from '@/composables/usePool';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import {
@@ -126,7 +126,7 @@ async function handleTransaction(tx): Promise<void> {
     action: 'invest',
     summary: t('transactionSummary.investInPool', [
       fiatTotalLabel.value,
-      getPoolWeights(props.pool)
+      poolWeightsLabel(props.pool)
     ]),
     details: {
       total: fiatTotalLabel.value,

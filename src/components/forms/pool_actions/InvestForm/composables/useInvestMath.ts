@@ -230,7 +230,7 @@ export default function useInvestFormMath(
   }
 
   function fiatAmount(index: number): string {
-    return toFiat(tokenAmount(index), pool.value.tokenAddresses[index]);
+    return toFiat(tokenAmount(index), tokenAddresses.value[index]);
   }
 
   function maximizeAmounts(): void {
