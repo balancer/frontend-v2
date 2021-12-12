@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, nextTick } from 'vue';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
@@ -15,32 +15,15 @@ import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import anime from 'animejs';
 
 import useApp from '@/composables/useApp';
-import usePoolCreation from '@/composables/pools/usePoolCreation';
+import usePoolCreation, {
+  POOL_CREATION_STATE_KEY,
+  POOL_CREATION_STATE_VERSION
+} from '@/composables/pools/usePoolCreation';
 import { StepState } from '@/types';
 import useBreakpoints from '@/composables/useBreakpoints';
-
-const initialAnimateProps = {
-  opacity: 0,
-  translateY: '100px',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0
-};
-
-const entryAnimateProps = {
-  opacity: 1,
-  translateY: '0px',
-  position: 'relative'
-};
-const exitAnimateProps = {
-  opacity: 0,
-  translateY: '-100px',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0
-};
+import useAlerts from '@/composables/useAlerts';
+import { lsGet } from '@/lib/utils';
+import useTokens from '@/composables/useTokens';
 
 /**
  * STATE
@@ -48,6 +31,7 @@ const exitAnimateProps = {
 const accordionWrapper = ref<HTMLElement>();
 const hasCompletedMountAnimation = ref(false);
 const prevWrapperHeight = ref(0);
+
 /**
  * COMPOSABLES
  */
@@ -58,15 +42,35 @@ const {
   setActiveStep,
   hasInjectedToken,
   totalLiquidity,
+  hasRestoredFromSavedState,
+  setRestoredState,
+  importState,
+  resetPoolCreationState,
   tokensList
 } = usePoolCreation();
+const { dynamicDataLoading } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
+const { removeAlert } = useAlerts();
 
-onMounted(() => {
+onMounted(async () => {
+  removeAlert('return-to-pool-creation');
   if (accordionWrapper.value) {
     anime.set(accordionWrapper.value, {
       opacity: 0
     });
+  }
+
+  let previouslySavedState = lsGet(
+    POOL_CREATION_STATE_KEY,
+    null,
+    POOL_CREATION_STATE_VERSION
+  );
+  if (activeStep.value === 0 && previouslySavedState !== null) {
+    previouslySavedState = JSON.parse(previouslySavedState);
+    importState(previouslySavedState);
+    setRestoredState(true);
+    await nextTick();
+    setActiveStep(previouslySavedState.activeStep);
   }
 });
 
@@ -104,6 +108,30 @@ const steps = computed(() => [
   }
 ]);
 
+const initialAnimateProps = computed(() => ({
+  opacity: 0,
+  translateY: '100px',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0
+}));
+
+const entryAnimateProps = computed(() => ({
+  opacity: 1,
+  translateY: hasRestoredFromSavedState.value ? '116px' : '0px',
+  position: 'relative'
+}));
+
+const exitAnimateProps = computed(() => ({
+  opacity: 0,
+  translateY: '-100px',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0
+}));
+
 /**
  * FUNCTIONS
  */
@@ -123,7 +151,6 @@ function setWrapperHeight(dimensions?: { width: number; height: number }) {
   // need to transform the accordion as everything is absolutely
   // positioned inside the AnimateHeight component
   if (dimensions?.height) prevWrapperHeight.value = dimensions.height;
-
   let mobileOffset = 20;
 
   anime({
@@ -145,7 +172,15 @@ function setWrapperHeight(dimensions?: { width: number; height: number }) {
 }
 
 function handleNavigate(stepIndex: number) {
+  if (hasRestoredFromSavedState.value) {
+    setRestoredState(false);
+  }
   setActiveStep(stepIndex);
+}
+
+function handleReset() {
+  resetPoolCreationState();
+  setActiveStep(0);
 }
 
 /**
@@ -179,7 +214,24 @@ watch([hasInjectedToken, totalLiquidity], () => {
     </template>
     <div class="relative center-col-mh">
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 0"
+        :isVisible="hasRestoredFromSavedState && !appLoading"
+        unmountInstantly
+      >
+        <BalAlert
+          type="warning"
+          class="mb-4"
+          :title="$t('createAPool.recoveredState')"
+        >
+          {{ $t('createAPool.recoveredStateInfo') }}
+          <button @click="handleReset" class="font-semibold text-blue-500">
+            {{ $t('clickHere') }}
+          </button>
+        </BalAlert>
+      </AnimatePresence>
+      <AnimatePresence
+        :isVisible="
+          !appLoading && activeStep === 0 && !hasRestoredFromSavedState
+        "
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"
@@ -214,7 +266,7 @@ watch([hasInjectedToken, totalLiquidity], () => {
         <InitialLiquidity @update:height="setWrapperHeight" />
       </AnimatePresence>
       <AnimatePresence
-        :isVisible="!appLoading && activeStep === 4"
+        :isVisible="!appLoading && activeStep === 4 && !dynamicDataLoading"
         :initial="initialAnimateProps"
         :animate="entryAnimateProps"
         :exit="exitAnimateProps"

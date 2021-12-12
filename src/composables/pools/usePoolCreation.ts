@@ -1,18 +1,24 @@
-import { PoolType } from '@/services/balancer/subgraph/types';
-import { flatten, sumBy } from 'lodash';
 import { ref, reactive, toRefs, watch, computed } from 'vue';
+
 import { useI18n } from 'vue-i18n';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import useTokens from '../useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
-import { configService } from '@/services/config/config.service';
-import { balancerService } from '@/services/balancer/balancer.service';
-import { bnum, scale } from '@/lib/utils';
+
 import BigNumber from 'bignumber.js';
+import { flatten, sumBy } from 'lodash';
+import { bnum, lsRemove, lsSet, scale } from '@/lib/utils';
+
+import { PoolType } from '@/services/balancer/subgraph/types';
+import { balancerService } from '@/services/balancer/balancer.service';
+import { configService } from '@/services/config/config.service';
 import { TransactionResponse } from '@ethersproject/providers';
 import { POOLS } from '@/constants/pools';
+
+export const POOL_CREATION_STATE_VERSION = '1.0';
+export const POOL_CREATION_STATE_KEY = 'poolCreationState';
 
 export type PoolSeedToken = {
   tokenAddress: string;
@@ -50,11 +56,14 @@ const emptyPoolCreationState = {
   autoOptimiseBalances: false,
   useNativeAsset: false,
   type: PoolType.Weighted,
-  acceptedCustomTokenDisclaimer: false
+  acceptedCustomTokenDisclaimer: false,
+  needsSeeding: false,
+  createPoolTxHash: ''
 };
 
 const poolCreationState = reactive({ ...emptyPoolCreationState });
 const tokenColors = ref<string[]>([]);
+export const hasRestoredFromSavedState = ref<boolean | null>(null);
 
 export default function usePoolCreation() {
   /**
@@ -219,7 +228,9 @@ export default function usePoolCreation() {
             t => t.tokenAddress === token.address
           );
           const similarPoolWeight = Number(token.weight).toFixed(2);
-          const seedTokenWeight = String((relevantToken?.weight || 0) / 100);
+          const seedTokenWeight = ((relevantToken?.weight || 0) / 100).toFixed(
+            2
+          );
           if (similarPoolWeight !== seedTokenWeight) {
             weightsMatch = false;
           }
@@ -259,6 +270,8 @@ export default function usePoolCreation() {
     for (const key of Object.keys(poolCreationState)) {
       poolCreationState[key] = emptyPoolCreationState[key];
     }
+    setRestoredState(false);
+    resetState();
   }
 
   function updateTokenWeights(weights: PoolSeedToken[]) {
@@ -277,6 +290,7 @@ export default function usePoolCreation() {
     } else {
       poolCreationState.activeStep += 1;
     }
+    saveState();
   }
 
   function goBack() {
@@ -285,6 +299,9 @@ export default function usePoolCreation() {
       return;
     }
     poolCreationState.activeStep -= 1;
+    if (hasRestoredFromSavedState.value) {
+      setRestoredState(false);
+    }
   }
 
   function findSeedTokenByAddress(address: string) {
@@ -387,6 +404,7 @@ export default function usePoolCreation() {
         poolCreationState.seedTokens,
         poolOwner.value
       );
+      poolCreationState.createPoolTxHash = tx.hash;
 
       addTransaction({
         id: tx.hash,
@@ -406,6 +424,8 @@ export default function usePoolCreation() {
           );
           poolCreationState.poolId = poolDetails.id;
           poolCreationState.poolAddress = poolDetails.address;
+          poolCreationState.needsSeeding = true;
+          saveState();
         },
         onTxFailed: () => {
           console.log('Create failed');
@@ -449,6 +469,15 @@ export default function usePoolCreation() {
         summary: t('transactionSummary.fundPool')
       });
 
+      txListener(tx, {
+        onTxConfirmed: async () => {
+          resetState();
+        },
+        onTxFailed: () => {
+          console.log('Seed failed');
+        }
+      });
+
       return tx;
     } catch (e) {
       console.log(e);
@@ -462,6 +491,29 @@ export default function usePoolCreation() {
 
   function acceptCustomTokenDisclaimer() {
     poolCreationState.acceptedCustomTokenDisclaimer = true;
+  }
+
+  function saveState() {
+    lsSet(
+      POOL_CREATION_STATE_KEY,
+      JSON.stringify(poolCreationState),
+      POOL_CREATION_STATE_VERSION
+    );
+  }
+
+  function resetState() {
+    lsRemove(POOL_CREATION_STATE_KEY);
+  }
+
+  function importState(state) {
+    for (const key of Object.keys(poolCreationState)) {
+      if (key === 'activeStep') continue;
+      poolCreationState[key] = state[key];
+    }
+  }
+
+  function setRestoredState(value: boolean) {
+    hasRestoredFromSavedState.value = value;
   }
 
   return {
@@ -486,6 +538,10 @@ export default function usePoolCreation() {
     clearAmounts,
     setAmountsToMaxBalances,
     acceptCustomTokenDisclaimer,
+    saveState,
+    resetState,
+    importState,
+    setRestoredState,
     currentLiquidity,
     optimisedLiquidity,
     scaledLiquidity,
@@ -499,6 +555,7 @@ export default function usePoolCreation() {
     poolTypeString,
     tokenColors,
     isWethPool,
-    hasInjectedToken
+    hasInjectedToken,
+    hasRestoredFromSavedState
   };
 }
