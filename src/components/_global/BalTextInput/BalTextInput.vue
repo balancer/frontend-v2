@@ -136,6 +136,9 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 </template>
 
 <style scoped>
+.bal-text-input {
+}
+
 .input-container {
   @apply bg-white dark:bg-gray-800;
 }
