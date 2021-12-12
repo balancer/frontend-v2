@@ -283,12 +283,7 @@ function onAlertMountChange() {
             </BalStack>
             <BalStack vertical spacing="none">
               <h6>{{ fNum(currentLiquidity, 'usd') }}</h6>
-              <AnimatePresence
-                :isVisible="!isOptimised"
-                @on-presence="onAlertMountChange"
-                @on-exit="onAlertMountChange"
-                unmountInstantly
-              >
+              <AnimatePresence :isVisible="!isOptimised" unmountInstantly>
                 <button
                   @click="optimiseLiquidity(true)"
                   class="bg-clip-text text-sm text-transparent font-medium bg-gradient-to-tr from-blue-500 to-pink-500  hover:from-blue-800 hover:to-pink-800"

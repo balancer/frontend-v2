@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { TransactionActionInfo } from '@/types/transactions';
@@ -8,7 +8,6 @@ import useConfig from '@/composables/useConfig';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
-import useEthers from '@/composables/useEthers';
 
 /**
  * TYPES
@@ -22,7 +21,6 @@ type CreateState = {
   confirmed: boolean;
   confirmedAt: string;
   receipt?: TransactionReceipt;
-  isRestoredTxConfirmed?: boolean;
 };
 
 /**
@@ -37,10 +35,10 @@ const emit = defineEmits<{
 /**
  * STATE
  */
+
 const createState = reactive<CreateState>({
   confirmed: false,
-  confirmedAt: '',
-  isRestoredTxConfirmed: false
+  confirmedAt: ''
 });
 
 /*
@@ -50,24 +48,16 @@ const createState = reactive<CreateState>({
 const { t } = useI18n();
 const { explorerLinks } = useWeb3();
 const { networkConfig } = useConfig();
-const { isTxConfirmed } = useEthers();
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
   ref(props.amounts)
 );
-const {
-  createPool,
-  joinPool,
-  poolId,
-  poolTypeString,
-  hasRestoredFromSavedState,
-  needsSeeding,
-  createPoolTxHash
-} = usePoolCreation();
+const { createPool, joinPool, poolId, poolTypeString } = usePoolCreation();
 
 /**
  * COMPUTED
  */
+
 const actions = computed((): TransactionActionInfo[] => [
   ...tokenApprovalActions,
   {
@@ -86,32 +76,16 @@ const actions = computed((): TransactionActionInfo[] => [
   }
 ]);
 
-const requiredActions = computed(() => {
-  if (
-    (hasRestoredFromSavedState.value && needsSeeding.value) ||
-    createState.isRestoredTxConfirmed
-  ) {
-    return actions.value.filter(action => action.label === t('fundPool'));
-  }
-  return actions.value;
-});
-
 const explorerLink = computed((): string =>
   createState.receipt
     ? explorerLinks.txLink(createState.receipt.transactionHash)
     : ''
 );
 
-onMounted(async () => {
-  if (createPoolTxHash.value) {
-    const isConfirmed = await isTxConfirmed(createPoolTxHash.value);
-    createState.isRestoredTxConfirmed = isConfirmed;
-  }
-});
-
 /**
  * METHODS
  */
+
 function handleSuccess(details: any): void {
   createState.confirmed = true;
   createState.receipt = details.receipt;
@@ -122,7 +96,7 @@ function handleSuccess(details: any): void {
 
 <template>
   <div>
-    <BalActionSteps :actions="requiredActions" @success="handleSuccess" />
+    <BalActionSteps :actions="actions" @success="handleSuccess" />
     <template v-if="createState.confirmed">
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"

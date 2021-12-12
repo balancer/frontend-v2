@@ -36,8 +36,7 @@ const {
   seedTokens,
   updateTokenColors,
   totalLiquidity,
-  tokensList,
-  hasRestoredFromSavedState
+  tokensList
 } = usePoolCreation();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { darkMode } = useDarkMode();
@@ -143,13 +142,15 @@ const chartConfig = computed(() => {
  * WATCHERS
  */
 watch(
-  [seedTokens, hasRestoredFromSavedState],
+  seedTokens,
   async () => {
     const colors = await calculateColors();
     await nextTick();
+    await nextTick();
+    await nextTick();
     updateTokenColors(colors as string[]);
   },
-  { deep: true, immediate: true }
+  { deep: true }
 );
 
 /**
