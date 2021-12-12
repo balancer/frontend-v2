@@ -99,7 +99,7 @@ import TokenPills from './TokenPills/TokenPills.vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 import useDarkMode from '@/composables/useDarkMode';
 import useBreakpoints from '@/composables/useBreakpoints';
-import { isStableLike } from '@/composables/usePool';
+import { isStableLike, isStablePhantom } from '@/composables/usePool';
 
 export default defineComponent({
   components: {
@@ -222,6 +222,8 @@ export default defineComponent({
     }
 
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
+      if (isStablePhantom(pool.poolType))
+        return pool.tokens.filter(token => token.address !== pool.address);
       if (isStableLike(pool.poolType)) return pool.tokens;
 
       const sortedTokens = pool.tokens.slice();
