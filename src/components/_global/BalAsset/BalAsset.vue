@@ -67,6 +67,10 @@ export default defineComponent({
         );
       });
 
+      if (!token) {
+        return '';
+      }
+
       return resolve(token.logoURI);
     });
 
