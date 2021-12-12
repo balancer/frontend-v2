@@ -34,45 +34,21 @@ export default function useEthers() {
     return new Date(toJsTimestamp(block.timestamp));
   }
 
-  async function isTxConfirmed(hash: string): Promise<boolean> {
-    const tx = await rpcProviderService.jsonProvider.getTransaction(hash);
-    const isConfirmed = new Promise<boolean>(resolve => {
-      txListener(
-        tx,
-        {
-          onTxConfirmed: () => {
-            resolve(true);
-          },
-          onTxFailed: () => {
-            resolve(false);
-          }
-        },
-        false,
-        false
-      );
-    });
-
-    return isConfirmed;
-  }
-
   async function txListener(
     tx: TransactionResponse,
     callbacks: {
       onTxConfirmed: ConfirmedTxCallback;
       onTxFailed: FailedTxCallback;
     },
-    shouldRefetchBalances = true,
-    shouldRetry = true
+    shouldRefetchBalances = true
   ): Promise<boolean> {
     let confirmed = false;
-    const retries = shouldRetry ? 5 : 1;
-    console.log('dingodng', retries);
     processedTxs.value.add(tx.hash);
 
     try {
       // Sometimes this will throw if we're talking to a service
       // in front of the RPC that hasn't picked up the tx yet (e.g. Gnosis)
-      const receipt = await retryPromiseWithDelay(tx.wait(), retries, 5000);
+      const receipt = await retryPromiseWithDelay(tx.wait(), 5, 5000);
 
       let txHash = tx.hash;
       try {
@@ -111,5 +87,5 @@ export default function useEthers() {
     return confirmed;
   }
 
-  return { txListener, getTxConfirmedAt, isTxConfirmed };
+  return { txListener, getTxConfirmedAt };
 }
