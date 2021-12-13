@@ -26,6 +26,10 @@ export default function useBreakpoints() {
     ['xs', 'sm', 'md'].includes(bp.value)
   );
 
+  const upToXLargeBreakpoint = computed(() =>
+    ['xs', 'sm', 'md', 'lg', 'xl'].includes(bp.value)
+  );
+
   const upToSmallBreakpoint = computed(() => ['xs', 'sm'].includes(bp.value));
 
   return {
@@ -33,6 +37,7 @@ export default function useBreakpoints() {
     bp,
     upToLargeBreakpoint,
     upToMediumBreakpoint,
-    upToSmallBreakpoint
+    upToSmallBreakpoint,
+    upToXLargeBreakpoint
   };
 }

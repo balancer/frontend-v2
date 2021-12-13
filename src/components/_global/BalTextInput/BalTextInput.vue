@@ -12,12 +12,13 @@ import useInputStyles from './composables/useInputStyles';
 import useInputEvents from './composables/useInputEvents';
 import useInputValidation from './composables/useInputValidation';
 import { omit } from 'lodash';
+import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
 
 /**
  * TYPES
  */
 type InputValue = string | number;
-type InputType = 'text' | 'number' | 'date' | 'email' | 'password';
+type InputType = 'text' | 'number' | 'date' | 'email' | 'password' | 'textarea';
 type InputSize = 'sm' | 'md' | 'lg';
 type ValidationTrigger = 'input' | 'blur';
 type RuleFunction = (val: InputValue) => string;
@@ -31,6 +32,8 @@ type Props = {
   size?: InputSize;
   disabled?: boolean;
   label?: string;
+  title?: string;
+  tooltip?: string;
   inputAlignRight?: boolean;
   decimalLimit?: number;
   validateOn?: ValidationTrigger;
@@ -88,6 +91,15 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 
 <template>
   <div :class="['bal-text-input', parentClasses]">
+    <div v-if="title" class="mb-1">
+      {{ title }}
+      <BalTooltip v-if="tooltip">
+        <template v-slot:activator>
+          <BalIcon name="info" size="sm" class="ml-1 text-gray-400 -mb-px" />
+        </template>
+        <div v-html="tooltip" />
+      </BalTooltip>
+    </div>
     <div :class="['input-container', inputContainerClasses]">
       <div v-if="$slots.header || label" :class="['header', headerClasses]">
         <slot name="header">
@@ -101,7 +113,18 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
           <slot name="prepend" />
         </div>
         <div class="middle">
+          <textarea
+            v-if="type === 'textarea'"
+            :value="modelValue"
+            v-bind="inputAttrs"
+            :disabled="disabled"
+            @blur="onBlur"
+            @input="onInput"
+            @keydown="onKeydown"
+            :class="['input', inputClasses, 'h-48']"
+          />
           <input
+            v-else
             :type="type"
             :name="name"
             :value="modelValue"
@@ -112,6 +135,7 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
             @keydown="onKeydown"
             :class="['input', inputClasses]"
           />
+
           <div v-if="$slots.info" class="info absolute -bottom-1.5">
             <slot name="info">
               {{ info }}

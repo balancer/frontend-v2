@@ -41,6 +41,7 @@ export interface Pool {
   hasLiquidityMiningRewards: boolean;
   onchain?: OnchainPoolData;
   createTime: number;
+  swapEnabled?: boolean;
 }
 
 export interface DecoratedPool extends Pool {
@@ -151,4 +152,31 @@ export interface SubgraphBalancer {
   totalLiquidity: number;
   totalSwapFee: number;
   totalSwapVolume: number;
+}
+
+export interface SubgraphTokenPrice {
+  id: string;
+  asset: string;
+  amount: string;
+  pricingAsset: string;
+  price: string;
+  block: string;
+  timestamp: number;
+}
+
+export interface SubgraphSwap {
+  id: string;
+  tokenIn: string;
+  tokenInSym: string;
+  tokenOut: string;
+  tokenOutSym: string;
+  tokenAmountIn: string;
+  tokenAmountOut: string;
+  poolId: {
+    id: string;
+  };
+  userAddress: {
+    id: string;
+  };
+  timestamp: number;
 }

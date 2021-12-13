@@ -15,7 +15,12 @@ export default function useBeethovenxConfig() {
     (): BeethovenxConfig =>
       beethovenxConfigQuery.data.value
         ? beethovenxConfigQuery.data.value
-        : { incentivizedPools: [], blacklistedPools: [], pausedPools: [] }
+        : {
+            incentivizedPools: [],
+            blacklistedPools: [],
+            pausedPools: [],
+            featuredPools: []
+          }
   );
 
   return {

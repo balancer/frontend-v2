@@ -119,7 +119,8 @@ export class PriceService {
       throw new Error('To many requests for rate limit.');
 
     const now = Math.floor(Date.now() / 1000);
-    const end = now - (now % twentyFourHoursInSecs);
+    const end =
+      aggregateBy === 'hour' ? now : now - (now % twentyFourHoursInSecs);
     const start = end - days * twentyFourHoursInSecs;
 
     // TODO - remove once wsteth is supported

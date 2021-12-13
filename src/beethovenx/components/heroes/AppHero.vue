@@ -63,6 +63,7 @@ import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
 import useDarkMode from '@/composables/useDarkMode';
 import { sumBy } from 'lodash';
+import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 
 export default defineComponent({
   name: 'AppHero',

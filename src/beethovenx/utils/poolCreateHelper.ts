@@ -1,7 +1,7 @@
-import { PoolTokenInput } from '@/beethovenx/services/pool/creator/pool-creator.service';
 import { sumBy, uniqBy } from 'lodash';
 import { BalanceMap } from '@/services/token/concerns/balances.concern';
 import { TokenInfoMap } from '@/types/TokenList';
+import { PoolTokenInput } from '@/beethovenx/services/pool/creator/pool-creator.service';
 
 export function getTokensErrorFromInputs(
   poolTokens: PoolTokenInput[],

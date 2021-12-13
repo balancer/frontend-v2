@@ -14,8 +14,10 @@ import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
 import {
   DecoratedPoolWithFarm,
-  DecoratedPoolWithRequiredFarm
+  DecoratedPoolWithRequiredFarm,
+  Farm
 } from '@/beethovenx/services/subgraph/subgraph-types';
+import useBeethovenxConfig from '@/beethovenx/composables/useBeethovenxConfig';
 
 export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   // COMPOSABLES
@@ -24,6 +26,7 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   const protocolDataQuery = useProtocolDataQuery();
   const { priceFor, dynamicDataLoaded } = useTokens();
   const { appNetworkConfig } = useWeb3();
+  const { beethovenxConfig } = useBeethovenxConfig();
   const beetsPrice = computed(
     () => protocolDataQuery.data?.value?.beetsPrice || 0
   );
@@ -55,9 +58,22 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   });
 
   const decoratedFarms = computed(() => {
+    //here we replace the old farm with the fbeets farm on fidellio duetto.
+    const mappedFarms = farms.value
+      .filter(farm => farm.id !== appNetworkConfig.fBeets.oldFarmId)
+      .map(
+        (farm): Farm =>
+          farm.id === appNetworkConfig.fBeets.farmId
+            ? {
+                ...farm,
+                pair: appNetworkConfig.fBeets.poolAddress.toLowerCase()
+              }
+            : farm
+      );
+
     return decorateFarms(
       pools.value,
-      farms.value,
+      mappedFarms,
       allFarmsForUser.value,
       blocksPerYear.value,
       blocksPerDay.value,
@@ -154,6 +170,26 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     () => poolsQuery.isFetchingNextPage?.value
   );
 
+  const communityPools = computed(() =>
+    poolsWithFarms.value?.filter(
+      pool => !beethovenxConfig.value.incentivizedPools.includes(pool.id)
+    )
+  );
+
+  const beethovenPools = computed(() => {
+    return poolsTokenList.value.length > 0
+      ? poolsWithFarms.value?.filter(pool => {
+          return (
+            poolsTokenList.value.every((selectedToken: string) =>
+              pool.tokenAddresses.includes(selectedToken)
+            ) && beethovenxConfig.value.incentivizedPools.includes(pool.id)
+          );
+        })
+      : poolsWithFarms?.value.filter(pool =>
+          beethovenxConfig.value.incentivizedPools.includes(pool.id)
+        );
+  });
+
   // METHODS
   function loadMorePools() {
     poolsQuery.fetchNextPage.value();
@@ -166,6 +202,8 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   return {
     // computed
     pools,
+    communityPools,
+    beethovenPools,
     tokens,
     userPools,
     totalInvestedAmount,

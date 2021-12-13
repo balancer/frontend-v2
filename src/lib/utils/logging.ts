@@ -10,7 +10,7 @@ export function logFailedTx(
   params: any,
   overrides: any
 ): void {
-  captureException(`Failed transaction:
+  /*captureException(`Failed transaction:
     Sender: ${sender}
     Contract: ${contract.address}
     Params: ${params}
@@ -22,5 +22,5 @@ export function logFailedTx(
   const provider = rpcProviderService.loggingProvider;
   const dummyWallet = new Wallet(dummyPrivateKey).connect(provider);
   const loggingContract = contract.connect(dummyWallet);
-  loggingContract[action](...params, overrides);
+  loggingContract[action](...params, overrides);*/
 }

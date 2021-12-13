@@ -9,6 +9,8 @@ import TradePairSnapshots from './entities/tradePairs';
 
 import { Network, networkId } from '@/composables/useNetwork';
 import Balancers from '@/services/balancer/subgraph/entities/balancers';
+import Swaps from '@/services/balancer/subgraph/entities/swaps';
+import TokenPrices from '@/services/balancer/subgraph/entities/tokenPrices';
 
 export default class BalancerSubgraphService {
   pools: Pools;
@@ -18,6 +20,8 @@ export default class BalancerSubgraphService {
   poolSnapshots: PoolSnapshots;
   tradePairSnapshots: TradePairSnapshots;
   balancers: Balancers;
+  tokenPrices: TokenPrices;
+  swaps: Swaps;
 
   constructor(
     readonly client = balancerSubgraphClient,
@@ -30,7 +34,9 @@ export default class BalancerSubgraphService {
     this.poolSwaps = new PoolSwaps(this);
     this.poolSnapshots = new PoolSnapshots(this);
     this.tradePairSnapshots = new TradePairSnapshots(this);
+    this.tokenPrices = new TokenPrices(this);
     this.balancers = new Balancers(this);
+    this.swaps = new Swaps(this);
   }
 
   public get blockTime(): number {

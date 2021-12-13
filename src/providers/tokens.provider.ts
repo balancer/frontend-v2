@@ -67,7 +67,11 @@ export interface TokensProviderResponse {
   refetchBalances: Ref<() => void>;
   refetchAllowances: Ref<() => void>;
   injectTokens: (addresses: string[]) => Promise<void>;
-  searchTokens: (query: string, excluded: string[]) => Promise<TokenInfoMap>;
+  searchTokens: (
+    query: string,
+    excluded: string[],
+    included?: string[]
+  ) => Promise<TokenInfoMap>;
   hasBalance: (address: string) => boolean;
   approvalRequired: (
     tokenAddress: string,
@@ -127,7 +131,8 @@ export default {
       allowanceContracts: compact([
         networkConfig.addresses.vault,
         networkConfig.addresses.wstETH,
-        networkConfig.addresses.exchangeProxy
+        networkConfig.addresses.exchangeProxy,
+        networkConfig.addresses.copperProxy
       ])
     });
 
@@ -201,12 +206,13 @@ export default {
         allowanceData.value ? allowanceData.value : {}
     );
 
-    const dynamicDataLoaded = computed(
-      () =>
+    const dynamicDataLoaded = computed(() => {
+      return (
         priceQuerySuccess.value &&
         balanceQuerySuccess.value &&
         allowanceQuerySuccess.value
-    );
+      );
+    });
 
     const dynamicDataLoading = computed(
       () =>
@@ -268,9 +274,10 @@ export default {
      */
     async function searchTokens(
       query: string,
-      excluded: string[] = []
+      excluded: string[] = [],
+      included?: string[]
     ): Promise<TokenInfoMap> {
-      if (!query) return removeExcluded(tokens.value, excluded);
+      if (!query) return filterTokens(tokens.value, excluded, included);
 
       if (isAddress(query)) {
         const address = getAddress(query);
@@ -288,17 +295,27 @@ export default {
             token.name.toLowerCase().includes(query.toLowerCase()) ||
             token.symbol.toLowerCase().includes(query.toLowerCase())
         );
-        return removeExcluded(Object.fromEntries(results), excluded);
+        return filterTokens(Object.fromEntries(results), excluded, included);
       }
     }
 
     /**
      * Remove excluded tokens from given token map.
      */
-    function removeExcluded(
+    function filterTokens(
       tokens: TokenInfoMap,
-      excluded: string[]
+      excluded: string[],
+      included?: string[]
     ): TokenInfoMap {
+      if (included) {
+        return Object.keys(tokens)
+          .filter(address => included.includes(address))
+          .reduce((result, address) => {
+            result[address] = tokens[address];
+            return result;
+          }, {});
+      }
+
       return Object.keys(tokens)
         .filter(address => !excluded.includes(address))
         .reduce((result, address) => {
@@ -319,6 +336,7 @@ export default {
       if (!amount || bnum(amount).eq(0)) return false;
       if (!contractAddress) return false;
       if (tokenAddress === nativeAsset.address) return false;
+      if (!allowances.value || !allowances.value[contractAddress]) return false;
 
       const allowance = bnum(
         allowances.value[contractAddress][getAddress(tokenAddress)]

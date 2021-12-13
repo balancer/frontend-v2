@@ -2,7 +2,8 @@
   <BalPopover no-pad>
     <template v-slot:activator>
       <BalBtn
-        color="white"
+        color="transparent"
+        flat
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         class="mr-2 p-1 relative"
         :circle="upToLargeBreakpoint"

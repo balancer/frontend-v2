@@ -5,16 +5,8 @@ import useFreshBeetsQuery from '@/beethovenx/composables/stake/useFreshBeetsQuer
 import { computed } from 'vue';
 import useTransactions from '@/composables/useTransactions';
 import useFarmUser from '@/beethovenx/composables/farms/useFarmUser';
-import useAverageBlockTime from '@/beethovenx/composables/blocks/useAverageBlockTime';
 import usePools from '@/composables/pools/usePools';
-import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
-import useTokens from '@/composables/useTokens';
 import { DecoratedFarm } from '@/beethovenx/services/subgraph/subgraph-types';
-import {
-  calculateApr,
-  calculateRewardsPerDay,
-  calculateTvl
-} from '@/beethovenx/utils/farmHelper';
 import BigNumber from 'bignumber.js';
 
 function bn(num: number) {
@@ -28,26 +20,23 @@ export function useFreshBeets() {
   const { farmUser, farmUserLoading } = useFarmUser(
     appNetworkConfig.fBeets.farmId
   );
-  const { blocksPerYear, blocksPerDay } = useAverageBlockTime();
   const {
-    pools,
+    poolsWithFarms,
     farms,
     allFarmsForUser,
     isLoadingPools,
     isLoadingFarms
   } = usePools();
-  const protocolDataQuery = useProtocolDataQuery();
-  const { priceFor, dynamicDataLoaded } = useTokens();
-  const { isLoading, isIdle, data } = freshBeetsQuery;
+  const { isLoading, data, refetch } = freshBeetsQuery;
 
-  const fBeetsLoading = computed(
-    () =>
+  const fBeetsLoading = computed(() => {
+    return (
       isLoading.value ||
-      isIdle.value ||
       isLoadingPools.value ||
       isLoadingFarms.value ||
       farmUserLoading.value
-  );
+    );
+  });
 
   const userFbeetsFarm = computed(() =>
     allFarmsForUser.value?.find(
@@ -80,17 +69,8 @@ export function useFreshBeets() {
       : totalBptStaked.value.div(totalSupply.value);
   });
 
-  const totalSupplyIsZero = computed(() => totalSupply.value.eq(bn(0)) ?? true);
-
-  const beetsPrice = computed(
-    () => protocolDataQuery.data?.value?.beetsPrice || 0
-  );
-  const rewardTokenPrice = computed(() =>
-    dynamicDataLoaded.value ? priceFor(appNetworkConfig.addresses.hnd) : 0
-  );
-
   const pool = computed(() => {
-    return pools.value?.find(
+    return poolsWithFarms.value?.find(
       pool =>
         pool.address.toLowerCase() ===
         appNetworkConfig.fBeets.poolAddress.toLowerCase()
@@ -166,37 +146,9 @@ export function useFreshBeets() {
     return farms.value.find(farm => farm.id === appNetworkConfig.fBeets.farmId);
   });
 
-  const fbeetsDecoratedFarm = computed((): DecoratedFarm | undefined => {
-    if (!farm.value || !pool.value) {
-      return undefined;
-    }
-
-    const tvl = calculateTvl(farm.value, pool.value);
-    const apr = calculateApr(
-      farm.value,
-      tvl,
-      blocksPerYear.value,
-      beetsPrice.value,
-      rewardTokenPrice.value
-    );
-    const userShare = new BigNumber(farmUser.value?.amount || 0)
-      .div(farm.value.slpBalance)
-      .toNumber();
-
-    return {
-      ...farm.value,
-      tvl,
-      rewards: calculateRewardsPerDay(farm.value, blocksPerDay.value),
-      apr,
-      stake: tvl * userShare,
-      pendingBeets: farmUser.value?.pendingBeets || 0,
-      pendingBeetsValue: (farmUser.value?.pendingBeets || 0) * beetsPrice.value,
-      share: userShare,
-      pendingRewardToken: farmUser.value?.pendingRewardToken || 0,
-      pendingRewardTokenValue: farmUser.value?.pendingRewardTokenValue || 0,
-      userBpt: new BigNumber(farmUser.value?.amount || 0).div(1e18).toNumber()
-    };
-  });
+  const fbeetsDecoratedFarm = computed(
+    (): DecoratedFarm | undefined => pool.value?.farm
+  );
 
   async function approve(amount?: string) {
     const tx = await erc20ContractService.erc20.approveToken(
@@ -219,6 +171,17 @@ export function useFreshBeets() {
 
     return tx;
   }
+
+  const swapApr = computed(() =>
+    pool.value ? parseFloat(pool.value.dynamic.apr.pool) : 0
+  );
+  const farmApr = computed(() =>
+    fbeetsDecoratedFarm.value ? fbeetsDecoratedFarm.value.apr : 0
+  );
+  const fbeetsApr = computed(() => 0);
+  const totalApr = computed(
+    () => swapApr.value + farmApr.value + fbeetsApr.value
+  );
 
   async function stake(amount: string) {
     const tx = await governanceContractsService.fbeets.enter(
@@ -280,6 +243,11 @@ export function useFreshBeets() {
     beetsPerShare,
     ftmPerShare,
     userUnstakedFbeetsBalance,
+    swapApr,
+    farmApr,
+    fbeetsApr,
+    totalApr,
+    refetch,
 
     approve,
     stake,

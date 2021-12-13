@@ -92,9 +92,12 @@
             <PoolStatCards :pool="pool" :loading="loadingPool" />
           </div>
 
-          <div class="mb-4" v-if="loadingPool || !!pool.farm">
+          <div
+            class="mb-4"
+            v-if="loadingPool || (!!pool.farm && pool.farm.rewards > 0)"
+          >
             <h4 class="px-4 lg:px-0 mb-4">Farm</h4>
-            <FarmStatCardsLoading v-if="loadingPool" />
+            <FarmStatCardsLoading v-if="loadingPool || isLoadingFarms" />
             <FarmStatCards v-else :pool="pool" />
           </div>
 
@@ -204,7 +207,9 @@ export default defineComponent({
     const { blockNumber } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
 
-    const { pool, loadingPool } = usePoolWithFarm(route.params.id as string);
+    const { pool, loadingPool, isLoadingFarms } = usePoolWithFarm(
+      route.params.id as string
+    );
 
     /**
      * QUERIES
@@ -362,6 +367,7 @@ export default defineComponent({
       swapFeeToolTip,
       isStableLikePool,
       isLiquidityBootstrappingPool,
+      isLoadingFarms,
       // methods
       fNum,
       onNewTx

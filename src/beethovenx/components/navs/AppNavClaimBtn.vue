@@ -2,7 +2,8 @@
   <BalPopover no-pad>
     <template v-slot:activator>
       <BalBtn
-        color="white"
+        color="transparent"
+        flat
         class="mr-2 text-base"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
@@ -96,7 +97,7 @@ import { Alert } from '@/composables/useAlerts';
 import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
 
 export default defineComponent({
-  name: 'NavAlert',
+  name: 'AppNavClaimBtn',
 
   props: {
     alert: { type: Object as PropType<Alert>, required: true }
@@ -115,14 +116,9 @@ export default defineComponent({
     } = usePools();
     const harvesting = ref(false);
     const { upToLargeBreakpoint } = useBreakpoints();
-    const { fbeetsDecoratedFarm } = useFreshBeets();
 
     const data = computed(() => {
       const farms = onlyPoolsWithFarms.value.map(pool => pool.farm);
-
-      if (fbeetsDecoratedFarm.value) {
-        farms.push(fbeetsDecoratedFarm.value);
-      }
 
       const pendingRewardToken = sumBy(farms, farm => farm.pendingRewardToken);
       const pendingRewardTokenValue = sumBy(

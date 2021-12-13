@@ -3,6 +3,7 @@
     <div v-if="account" class="flex items-center">
       <AppNavActivityBtn />
       <AppNavClaimBtn />
+      <AppNavBeets />
       <AppNavAccountBtn />
     </div>
     <BalBtn
@@ -31,11 +32,13 @@ import useWeb3 from '@/services/web3/useWeb3';
 import AppNavActivityBtn from '@/components/navs/AppNav/AppNavActivityBtn/AppNavActivityBtn.vue';
 import AppNavAccountBtn from '@/components/navs/AppNav/AppNavAccountBtn.vue';
 import AppNavClaimBtn from '@/beethovenx/components/navs/AppNavClaimBtn.vue';
+import AppNavBeets from '@/beethovenx/components/navs/AppNavBeets.vue';
 
 export default defineComponent({
   name: 'AppNavActions',
 
   components: {
+    AppNavBeets,
     AppNavAccountBtn,
     AppNavClaimBtn,
     AppNavActivityBtn

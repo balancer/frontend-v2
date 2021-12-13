@@ -55,7 +55,8 @@ export default defineComponent({
           'gray',
           'red',
           'white',
-          'blue'
+          'blue',
+          'transparent'
         ].includes(val)
     },
     label: { type: String, default: '' },
@@ -125,6 +126,10 @@ export default defineComponent({
     });
 
     const bgFlatClasses = computed(() => {
+      if (props.color === 'transparent') {
+        return '';
+      }
+
       return `
         bg-${props.color}-50 hover:bg-${props.color}-100
         dark:bg-${props.color}-800 dark:hover:bg-${props.color}-700

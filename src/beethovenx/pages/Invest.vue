@@ -1,10 +1,57 @@
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
+    <div class="flex mb-3 items-center">
+      <div class="flex-1">
+        <img
+          src="~@/beethovenx/assets/images/featured-pools.svg"
+          class="-ml-4"
+        />
+      </div>
+      <BalBtn
+        class="hidden lg:block"
+        label="Compose a pool"
+        @click="goToPoolCreate"
+      />
+    </div>
+    <InvestFeaturedPoolsCard
+      :pools="featuredPools"
+      :isLoading="isLoadingPools || beethovenxConfigLoading"
+    />
+    <div class="mb-8">
+      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px" />
+    </div>
+    <TokenSearchInput
+      v-model="selectedTokens"
+      :loading="isLoadingPools"
+      @add="addSelectedToken"
+      @remove="removeSelectedToken"
+    />
+    <PoolsTable
+      v-if="activeTab === 'beethovenx-pools'"
+      :isLoading="isLoadingPools"
+      :data="beethovenPools"
+      :noPoolsLabel="$t('noPoolsFound')"
+      :isPaginated="false"
+      :isLoadingMore="false"
+      @loadMore="() => {}"
+    />
+    <p class="px-4 lg:px-0 mb-3 mt-4" v-if="activeTab === 'community-pools'">
+      Investment pools created by the community. Please DYOR before investing in
+      any community pool.
+    </p>
+    <PoolsTable
+      v-if="activeTab === 'community-pools'"
+      :isLoading="isLoadingPools"
+      :data="communityPools"
+      :noPoolsLabel="$t('noPoolsFound')"
+      :isPaginated="true"
+      :isLoadingMore="false"
+      :sort-externally="true"
+    />
     <template v-if="isWalletReady">
       <div class="px-4 lg:px-0">
-        <h3 class="mb-2">My Investments</h3>
         <BalAlert
-          v-if="hasUnstakedBpt"
+          v-if="hasUnstakedBpt && activeTab === 'my-investments'"
           title="You have unstaked BPT in your wallet"
           description="If you deposit your BPT into the farm, you will earn additional rewards paid out in BEETS."
           type="warning"
@@ -13,6 +60,7 @@
         />
       </div>
       <PoolsTable
+        v-if="activeTab === 'my-investments'"
         :isLoading="isLoadingUserPools || isLoadingFarms"
         :data="userPools"
         :noPoolsLabel="$t('noInvestments')"
@@ -20,50 +68,12 @@
         :selectedTokens="selectedTokens"
         class="mb-8"
       />
-      <div class="mb-16" />
     </template>
-    <div class="px-4 lg:px-0">
-      <h3 class="mb-3">Beethoven-X Investment Pools</h3>
-      <TokenSearchInput
-        v-model="selectedTokens"
-        :loading="isLoadingPools"
-        @add="addSelectedToken"
-        @remove="removeSelectedToken"
-      />
-    </div>
-    <PoolsTable
-      :isLoading="isLoadingPools"
-      :data="filteredPools"
-      :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="poolsHasNextPage"
-      :isLoadingMore="poolsIsFetchingNextPage"
-      @loadMore="loadMorePools"
-      class="mb-16"
-    />
-    <div class="px-4 lg:px-0 mb-3 flex">
-      <div class="flex-1">
-        <h3>Community Investment Pools</h3>
-        <p>
-          Investment pools created by the community. Please DYOR before
-          investing in any community pool.
-        </p>
-      </div>
-      <BalBtn label="Compose a pool" @click="goToPoolCreate" />
-    </div>
-    <PoolsTable
-      :isLoading="isLoadingPools"
-      :data="communityPools"
-      :noPoolsLabel="$t('noPoolsFound')"
-      :isPaginated="poolsHasNextPage"
-      :isLoadingMore="poolsIsFetchingNextPage"
-      @loadMore="loadMorePools"
-      class="mb-8"
-    />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, watch } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -74,12 +84,17 @@ import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
+import BalTabs from '@/components/_global/BalTabs/BalTabs.vue';
+import InvestFeaturedPoolsCard from '@/beethovenx/components/pages/invest/InvestFeaturedPoolsCard.vue';
+import { orderBy } from 'lodash';
 import useBeethovenxConfig from '@/beethovenx/composables/useBeethovenxConfig';
 
 export default defineComponent({
   components: {
+    InvestFeaturedPoolsCard,
     TokenSearchInput,
-    PoolsTable
+    PoolsTable,
+    BalTabs
     //FeaturedPools
   },
 
@@ -96,7 +111,6 @@ export default defineComponent({
     } = usePoolFilters();
 
     const {
-      pools,
       userPools,
       isLoadingPools,
       isLoadingUserPools,
@@ -104,39 +118,34 @@ export default defineComponent({
       poolsHasNextPage,
       poolsIsFetchingNextPage,
       poolsQuery,
-      poolsWithFarms,
-      isLoadingFarms
+      isLoadingFarms,
+      communityPools,
+      beethovenPools
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
-    const { beethovenxConfig } = useBeethovenxConfig();
+    const { beethovenxConfig, beethovenxConfigLoading } = useBeethovenxConfig();
 
-    //TODO: this will break down once pagination starts happening
-    const communityPools = computed(() => {
-      return poolsWithFarms.value?.filter(
-        pool => !beethovenxConfig.value.incentivizedPools.includes(pool.id)
-      );
-    });
+    const tabs = [
+      { value: 'beethovenx-pools', label: 'Beethoven X Pools' },
+      { value: 'community-pools', label: 'Community Pools' },
+      { value: 'my-investments', label: 'My Investments' }
+    ];
 
-    // COMPUTED
-    const filteredPools = computed(() => {
-      return selectedTokens.value.length > 0
-        ? poolsWithFarms.value?.filter(pool => {
-            return (
-              selectedTokens.value.every((selectedToken: string) =>
-                pool.tokenAddresses.includes(selectedToken)
-              ) && beethovenxConfig.value.incentivizedPools.includes(pool.id)
-            );
-          })
-        : poolsWithFarms?.value.filter(pool =>
-            beethovenxConfig.value.incentivizedPools.includes(pool.id)
-          );
-    });
+    const activeTab = ref(tabs[0].value);
 
     const hideV1Links = computed(() => !isV1Supported);
 
     const hasUnstakedBpt = computed(() =>
       userPools.value.find(pool => pool.farm && parseFloat(pool.shares) > 0)
     );
+
+    const featuredPools = computed(() => {
+      const filtered = (beethovenPools.value || []).filter(pool =>
+        beethovenxConfig.value.featuredPools.includes(pool.id)
+      );
+
+      return filtered.slice(0, 4);
+    });
 
     function goToPoolCreate() {
       router.push({ name: 'pool-create' });
@@ -160,10 +169,11 @@ export default defineComponent({
 
     return {
       // data
-      filteredPools,
+      beethovenPools,
       userPools,
       isLoadingPools,
       isLoadingUserPools,
+      beethovenxConfigLoading,
 
       // computed
       isWalletReady,
@@ -182,6 +192,9 @@ export default defineComponent({
       hasUnstakedBpt,
       communityPools,
       isLoadingFarms,
+      tabs,
+      activeTab,
+      featuredPools,
 
       // constants
       EXTERNAL_LINKS
