@@ -57,16 +57,7 @@ export const TOKENS = {
           '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
         // AAVE USDT
         '0x13512979ade267ab5100878e2e0f485b568328a4':
-          '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
-        // Wrapped aUSDC
-        '0x0fbddc06a4720408a2f5eb78e62bc31ac6e2a3c4':
-          '0xbcca60bb61934080951369a648fb03df4f96263c', // aUSDC
-        // Wrapped aUSDT
-        '0xe8191aacfcdb32260cda25830dc6c9342142f310':
-          '0x3ed3b47dd13ec9a98b44e6204a523e766b225811', // aUSDT
-        // Wrapped aUSDT
-        '0x4811a7bb9061a46753486e5e84b3cd3d668fb596':
-          '0x028171bca77440897b824ca71d1c56cac55b68a3' // aDAI
+          '0xdac17f958d2ee523a2206206994597c13d831ec7' // USDT
       }
     },
     // TODO - remove once coingecko supports wstETH
