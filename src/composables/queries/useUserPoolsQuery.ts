@@ -111,8 +111,7 @@ export default function useUserPoolsQuery(
   const queryFn = async () => {
     const poolShares = await balancerSubgraphService.poolShares.get({
       where: {
-        userAddress: account.value.toLowerCase(),
-        poolType_not_in: POOLS.ExcludedPoolTypes
+        userAddress: account.value.toLowerCase()
       }
     });
 
@@ -121,7 +120,8 @@ export default function useUserPoolsQuery(
 
     const pools = await balancerSubgraphService.pools.get({
       where: {
-        id_in: poolSharesIds
+        id_in: poolSharesIds,
+        poolType_not_in: POOLS.ExcludedPoolTypes
       }
     });
 
