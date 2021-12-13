@@ -304,8 +304,6 @@
     "noInitLiquidityDetail":"Fino a quando l'interfaccia utente per la creazione del pool non è pronta, è necessario un tipo di join INIT nello smart contract prima che gli investimenti siano supportati.",
     "noInvestments":"Nessun investimento in questo pool.",
     "noInvestmentsPool":"Nessun investimento in questo pool",
-    "noNativeAsset":"Non hai {0}",
-    "noNativeAssetDetailed":"Dovrai aggiungere un po' di {0} per fare trading con questo portafoglio per pagare {1} le tasse del gas.",
     "noPoolsFound":"Nessuna pool trovata",
     "noPriceImpact":"Miglior prezzo",
     "noPriceImpactTip":"Aggiungendo gettoni proporzionalmente ottieni il miglior prezzo.",

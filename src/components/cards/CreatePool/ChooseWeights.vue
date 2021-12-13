@@ -20,7 +20,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { useI18n } from 'vue-i18n';
 import useDarkMode from '@/composables/useDarkMode';
 
-const emit = defineEmits(['update:height']);
+const emit = defineEmits(['update:height', 'trigger:alert']);
 
 const emptyTokenWeight: PoolSeedToken = {
   tokenAddress: '',
@@ -187,20 +187,22 @@ function handleLockedWeight(isLocked: boolean, id: number) {
 }
 
 async function animateHeight(offset = 0) {
+  // animate the height initially
   emit('update:height', {
     height:
-      cardWrapperHeight.value +
-      tokenWeightItemHeight.value * seedTokens.value.length
+      (cardWrapper.value?.offsetHeight || 0) +
+      tokenWeightItemHeight.value * offset
   });
-  // animate the height initially
   anime({
     targets: tokenWeightListWrapper.value,
     height: `${wrapperHeight.value + tokenWeightItemHeight.value * offset}px`,
-    easing: 'spring(0.4, 500, 9, 0)'
+    complete: () => {
+      emit('update:height', {
+        height: cardWrapper.value?.offsetHeight || 0
+      });
+    }
   });
-
   wrapperHeight.value += tokenWeightItemHeight.value * offset;
-
   // to avoid reflow we are going to transform the totals + add token
   // down instead of having the new token weight item shift them
   anime({
@@ -208,18 +210,13 @@ async function animateHeight(offset = 0) {
     translateY: `${tokenWeightItemHeight.value * seedTokens.value.length}px`,
     easing: 'spring(0.4, 500, 9, 0)'
   });
-
   await nextTick();
-
   // get the last added token weight element
   seedTokenElements.value.forEach((seedTokenElement, i) => {
     anime.set(seedTokenElement, {
       left: 0,
       right: 0,
       top: `${tokenWeightItemHeight.value * i}px`
-    });
-    anime({
-      targets: seedTokenElement
     });
   });
 }
@@ -296,10 +293,16 @@ function handleProceed() {
     proceed();
   }
 }
+
+function onAlertMountChange() {
+  emit('update:height', {
+    height: cardWrapper.value?.offsetHeight || 0
+  });
+}
 </script>
 
 <template>
-  <div ref="cardWrapper">
+  <div ref="cardWrapper" class="mb-16">
     <BalCard>
       <BalStack vertical spacing="sm">
         <BalStack vertical spacing="xs">
@@ -381,6 +384,8 @@ function handleProceed() {
         </BalCard>
         <AnimatePresence
           :isVisible="showLiquidityAlert && isWalletReady"
+          @on-presence="onAlertMountChange"
+          @on-exit="onAlertMountChange"
           unmountInstantly
         >
           <BalAlert
@@ -393,7 +398,12 @@ function handleProceed() {
             }}</BalAlert
           >
         </AnimatePresence>
-        <AnimatePresence :isVisible="zeroWeightToken" unmountInstantly>
+        <AnimatePresence
+          :isVisible="zeroWeightToken"
+          unmountInstantly
+          @on-presence="onAlertMountChange"
+          @on-exit="onAlertMountChange"
+        >
           <BalAlert :title="$t('createAPool.zeroWeightTitle')" type="error">{{
             $t('createAPool.zeroWeightInfo')
           }}</BalAlert>
@@ -401,6 +411,8 @@ function handleProceed() {
         <AnimatePresence
           :isVisible="Number(totalWeight) > 100 || Number(totalWeight) <= 0"
           unmountInstantly
+          @on-presence="onAlertMountChange"
+          @on-exit="onAlertMountChange"
         >
           <BalAlert
             :title="$t('createAPool.totalWeightAlertTitle')"
@@ -413,6 +425,8 @@ function handleProceed() {
         <AnimatePresence
           :isVisible="hasInjectedToken && !acceptedCustomTokenDisclaimer"
           unmountInstantly
+          @on-presence="onAlertMountChange"
+          @on-exit="onAlertMountChange"
         >
           <BalAlert :title="$t('tokenWarningTitle')" type="warning">
             <BalStack vertical spacing="xs">

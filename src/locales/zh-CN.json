@@ -304,8 +304,6 @@
     "noInitLiquidityDetail":"在池创建 UI 准备就绪之前，在支持投资之前，智能合约需要 INIT 连接类型。",
     "noInvestments":"此池中没有任何投资。",
     "noInvestmentsPool":"此池中没有任何投资",
-    "noNativeAsset":"您没有{0}",
-    "noNativeAssetDetailed":"您需要添加一些 {0} 才能使用此钱包进行交易，以支付 {1} 汽油费。",
     "noPoolsFound":"找不到池",
     "noPriceImpact":"最好的价钱",
     "noPriceImpactTip":"按比例添加代币可以获得最佳价格。",

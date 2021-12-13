@@ -137,7 +137,7 @@
           :missingPrices="missingPrices"
         />
       </div>
-      <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
+      <!-- <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
         <BalCard
           v-if="isCopperPool"
           noPad
@@ -170,7 +170,7 @@
             </BalLink>
           </div>
         </BalCard>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

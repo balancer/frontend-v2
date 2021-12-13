@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, nextTick } from 'vue';
 
 import useWeb3 from '@/services/web3/useWeb3';
 import useNumbers from '@/composables/useNumbers';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 
 import { isRequired, isValidAddress } from '@/lib/utils/validations';
-
 import { isAddress } from 'ethers/lib/utils';
+
+const emit = defineEmits(['update:height']);
 
 /**
  * STATIC
@@ -20,6 +21,7 @@ const FIXED_FEE_OPTIONS = ['0.001', '0.003', '0.01'];
 const isCustomFee = ref(false);
 const checkboxState = ref(true);
 const isInvalidFee = ref(false);
+const cardWrapper = ref<HTMLElement>();
 
 /**
  * COMPOSABLES
@@ -92,7 +94,7 @@ function onCustomInput(val: string): void {
   }
 }
 
-function onChangeFeeManagementType(val: boolean) {
+async function onChangeFeeManagementType(val: boolean) {
   if (!val) {
     setFeeManagement('self');
   } else {
@@ -101,63 +103,76 @@ function onChangeFeeManagementType(val: boolean) {
     setFeeController('self');
     setTrpController('');
   }
+  await nextTick();
+  emit('update:height', {
+    height: cardWrapper.value?.offsetHeight || 0
+  });
 }
 
-function onChangeFeeType(val: string) {
+async function onChangeFeeType(val: string) {
   if (val === 'fixed') {
     setFeeController('self');
     setTrpController('');
   }
+  await nextTick();
+  emit('update:height', {
+    height: cardWrapper.value?.offsetHeight || 0
+  });
 }
 
-function onChangeFeeController(val: string) {
+async function onChangeFeeController(val: string) {
   if (val === 'self') {
     setTrpController('');
   }
+  await nextTick();
+  emit('update:height', {
+    height: cardWrapper.value?.offsetHeight || 0
+  });
 }
 </script>
 
 <template>
-  <BalCard>
-    <BalStack vertical>
-      <BalStack vertical spacing="xs">
-        <span class="text-xs text-gray-700 dark:text-gray-500">{{
-          userNetworkConfig?.name
-        }}</span>
-        <BalStack horizontal align="center" spacing="xs">
-          <button
-            @click="goBack"
-            class="text-blue-500 hover:text-blue-700 flex"
-          >
-            <BalIcon class="flex" name="chevron-left" />
-          </button>
-          <h5 class="font-bold dark:text-gray-300">
-            {{ $t('createAPool.setPoolFees') }}
-          </h5>
+  <div ref="cardWrapper">
+    <BalCard>
+      <BalStack vertical>
+        <BalStack vertical spacing="xs">
+          <span class="text-xs text-gray-700 dark:text-gray-500">{{
+            userNetworkConfig?.name
+          }}</span>
+          <BalStack horizontal align="center" spacing="xs">
+            <button
+              @click="goBack"
+              class="text-blue-500 hover:text-blue-700 flex"
+            >
+              <BalIcon class="flex" name="chevron-left" />
+            </button>
+            <h5 class="font-bold dark:text-gray-300">
+              {{ $t('createAPool.setPoolFees') }}
+            </h5>
+          </BalStack>
         </BalStack>
-      </BalStack>
-      <BalStack vertical spacing="sm">
-        <div>
-          <h6 class="mb-1">Initial swap fee</h6>
-          <p class="text-gray-600">{{ $t('createAPool.bestFeeOption') }}</p>
-        </div>
-        <BalStack spacing="xs" horizontal>
-          <BalBtnGroup
-            :options="feeOptions"
-            v-model="initialFee"
-            @update:modelValue="onFixedInput"
-          />
+        <BalStack vertical spacing="sm">
           <div>
-            <div :class="['custom-input', customInputClasses]">
-              <input
-                class="w-12 text-right bg-transparent h-full"
-                v-model="fee"
-                placeholder="0.1"
-                type="number"
-                step="any"
-                @update:modelValue="onCustomInput"
-              />
-              <!-- <BalTextInput
+            <h6 class="mb-1">Initial swap fee</h6>
+            <p class="text-gray-600">{{ $t('createAPool.bestFeeOption') }}</p>
+          </div>
+          <BalStack spacing="xs" horizontal>
+            <BalBtnGroup
+              :options="feeOptions"
+              v-model="initialFee"
+              @update:modelValue="onFixedInput"
+            />
+            <div>
+              <div :class="['custom-input', customInputClasses]">
+                <input
+                  class="w-12 text-right bg-transparent h-full"
+                  v-model="fee"
+                  placeholder="0.1"
+                  type="number"
+                  step="any"
+                  @update:modelValue="onCustomInput"
+                />
+                <!-- <BalTextInput
               class="w-20"
               v-model="fee"
               placeholder="0.1"
@@ -169,121 +184,125 @@ function onChangeFeeController(val: string) {
                 %
               </template>
             </BalTextInput> -->
-              <div class="px-1">
-                %
+                <div class="px-1">
+                  %
+                </div>
               </div>
             </div>
-          </div>
+          </BalStack>
+          <BalAlert
+            class="w-full"
+            :title="$t('invalidFee')"
+            type="error"
+            v-if="isInvalidFee"
+          >
+            {{ $t('invalidFeeExplain') }}
+          </BalAlert>
         </BalStack>
-        <BalAlert
-          class="w-full"
-          :title="$t('invalidFee')"
-          type="error"
-          v-if="isInvalidFee"
-        >
-          {{ $t('invalidFeeExplain') }}
-        </BalAlert>
-      </BalStack>
-      <BalStack horizontal spacing="none" align="center">
-        <BalCheckbox
-          @update:modelValue="onChangeFeeManagementType"
-          v-model="checkboxState"
-          name="areFeesGovernanceManaged"
-          size="sm"
-          :label="$t('createAPool.governanceFees')"
-          noMargin
-        />
-        <BalTooltip
-          :text="$t('createAPool.governanceFeesTooltip')"
-          icon-size="sm"
-          class="ml-2 mt-1"
-        />
-      </BalStack>
-      <BalStack vertical spacing="sm" v-if="feeManagementType === 'self'">
-        <h6 class="mb-1">{{ $t('createAPool.alternativeFeeManagement') }}</h6>
-        <BalRadio
-          v-model="feeType"
-          value="fixed"
-          @update:modelValue="onChangeFeeType"
-          name="feeManagementOptions"
-        >
-          <template v-slot:label>
-            <span>
-              {{ $t('createAPool.fixedFeeRadioLabel') }}
-            </span>
-          </template>
-        </BalRadio>
-        <BalRadio
-          v-model="feeType"
-          value="dynamic"
-          @update:modelValue="onChangeFeeType"
-          name="feeManagementOptions"
-        >
-          <template v-slot:label>
-            <span>
-              {{ $t('createAPool.dynamicFeeRadioLabel') }}
-            </span>
-          </template>
-        </BalRadio>
-      </BalStack>
-      <BalStack vertical spacing="sm" v-if="feeType === 'dynamic'">
-        <h6 class="mb-1">{{ $t('createAPool.setAnAddress') }}</h6>
-        <BalRadio
-          v-model="feeController"
-          value="self"
-          @update:modelValue="onChangeFeeController"
-          name="addressOption"
-        >
-          <template v-slot:label>
-            <span>
-              {{ $t('createAPool.myAddressOption', [_shorten(account)]) }}
-            </span>
-          </template>
-        </BalRadio>
-        <BalRadio
-          v-model="feeController"
-          value="other"
-          @update:modelValue="onChangeFeeController"
-          name="addressOption"
-        >
-          <template v-slot:label>
-            <span>
-              {{ $t('createAPool.customAddressOption') }}
-            </span>
-          </template>
-        </BalRadio>
-      </BalStack>
-      <BalStack
-        vertical
-        v-if="feeController === 'other' && feeType === 'dynamic'"
-        spacing="xs"
-      >
-        <h6>{{ $t('createAPool.customAddressTitle') }}</h6>
-        <p class="text-gray-600 mb-1">
-          {{ $t('createAPool.customAddressInfo') }}
-        </p>
-        <BalStack vertical spacing="xs">
-          <BalTextInput
-            v-model="thirdPartyFeeController"
-            placeholder="0xBA4...2069"
-            type="text"
+        <BalStack horizontal spacing="none" align="center">
+          <BalCheckbox
+            @update:modelValue="onChangeFeeManagementType"
+            v-model="checkboxState"
+            name="areFeesGovernanceManaged"
             size="sm"
-            validateOn="blur"
-            :rules="[isRequired($t('A controller address')), isValidAddress()]"
-            name="customAddress"
+            :label="$t('createAPool.governanceFees')"
+            noMargin
+          />
+          <BalTooltip
+            :text="$t('createAPool.governanceFeesTooltip')"
+            icon-size="sm"
+            class="ml-2 mt-1"
           />
         </BalStack>
+        <BalStack vertical spacing="sm" v-if="feeManagementType === 'self'">
+          <h6 class="mb-1">{{ $t('createAPool.alternativeFeeManagement') }}</h6>
+          <BalRadio
+            v-model="feeType"
+            value="fixed"
+            @update:modelValue="onChangeFeeType"
+            name="feeManagementOptions"
+          >
+            <template v-slot:label>
+              <span>
+                {{ $t('createAPool.fixedFeeRadioLabel') }}
+              </span>
+            </template>
+          </BalRadio>
+          <BalRadio
+            v-model="feeType"
+            value="dynamic"
+            @update:modelValue="onChangeFeeType"
+            name="feeManagementOptions"
+          >
+            <template v-slot:label>
+              <span>
+                {{ $t('createAPool.dynamicFeeRadioLabel') }}
+              </span>
+            </template>
+          </BalRadio>
+        </BalStack>
+        <BalStack vertical spacing="sm" v-if="feeType === 'dynamic'">
+          <h6 class="mb-1">{{ $t('createAPool.setAnAddress') }}</h6>
+          <BalRadio
+            v-model="feeController"
+            value="self"
+            @update:modelValue="onChangeFeeController"
+            name="addressOption"
+          >
+            <template v-slot:label>
+              <span>
+                {{ $t('createAPool.myAddressOption', [_shorten(account)]) }}
+              </span>
+            </template>
+          </BalRadio>
+          <BalRadio
+            v-model="feeController"
+            value="other"
+            @update:modelValue="onChangeFeeController"
+            name="addressOption"
+          >
+            <template v-slot:label>
+              <span>
+                {{ $t('createAPool.customAddressOption') }}
+              </span>
+            </template>
+          </BalRadio>
+        </BalStack>
+        <BalStack
+          vertical
+          v-if="feeController === 'other' && feeType === 'dynamic'"
+          spacing="xs"
+        >
+          <h6>{{ $t('createAPool.customAddressTitle') }}</h6>
+          <p class="text-gray-600 mb-1">
+            {{ $t('createAPool.customAddressInfo') }}
+          </p>
+          <BalStack vertical spacing="xs">
+            <BalTextInput
+              v-model="thirdPartyFeeController"
+              placeholder="0xBA4...2069"
+              type="text"
+              size="sm"
+              validateOn="blur"
+              :rules="[
+                isRequired($t('A controller address')),
+                isValidAddress()
+              ]"
+              name="customAddress"
+            />
+          </BalStack>
+        </BalStack>
+        <BalBtn
+          :disabled="isProceedDisabled || isLoadingSimilarPools"
+          type="submit"
+          block
+          color="gradient"
+          @click="proceed"
+          >{{ $t('next') }}</BalBtn
+        >
       </BalStack>
-      <BalBtn
-        :disabled="isProceedDisabled || isLoadingSimilarPools"
-        type="submit"
-        block
-        color="gradient"
-        @click="proceed"
-        >{{ $t('next') }}</BalBtn
-      >
-    </BalStack>
-  </BalCard>
+    </BalCard>
+  </div>
 </template>
 
 <style scoped>

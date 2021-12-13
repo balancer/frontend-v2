@@ -12,7 +12,7 @@
       <div class="flex mt-1">
         <div class="flex">
           <div class="relative">
-            <Avatar :address="account" size="44" />
+            <Avatar :iconURI="profile?.avatar" :address="account" size="44" />
             <div class="connector-icon-wrapper">
               <img
                 :src="connectorLogo"
@@ -220,6 +220,7 @@ export default defineComponent({
     const {
       explorerLinks,
       account,
+      profile,
       disconnectWallet,
       connector,
       isV1Supported,
@@ -302,6 +303,7 @@ export default defineComponent({
       ENABLE_LEGACY_TRADE_INTERFACE,
       // computed
       account,
+      profile,
       appTradeLiquidity,
       appTradeInterface,
       networkName,

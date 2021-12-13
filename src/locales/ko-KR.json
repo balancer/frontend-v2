@@ -304,8 +304,6 @@
     "noInitLiquidityDetail":"풀 생성 UI가 준비 될 때까지 투자가 지원되기 전에 스마트 계약에서 INIT 조인 유형이 필요합니다.",
     "noInvestments":"이 풀에 대한 투자가 없습니다.",
     "noInvestmentsPool":"이 풀에 대한 투자 없음",
-    "noNativeAsset":"{0}이(가) 없습니다.",
-    "noNativeAssetDetailed":"{1} 가스 요금을 지불하려면 이 지갑으로 거래하려면 {0}을(를) 추가해야 합니다.",
     "noPoolsFound":"풀이 없습니다.",
     "noPriceImpact":"최고의 가격",
     "noPriceImpactTip":"비례 적으로 토큰을 추가하면 최상의 가격을 얻을 수 있습니다.",
