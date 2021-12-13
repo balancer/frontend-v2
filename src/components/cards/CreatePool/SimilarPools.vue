@@ -7,6 +7,7 @@ import useNumbers from '@/composables/useNumbers';
 
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import { useI18n } from 'vue-i18n';
+import { orderBy, take } from 'lodash';
 
 /**
  * COMPOSABLES
@@ -28,6 +29,15 @@ const { t } = useI18n();
 const title = computed(() => {
   if (existingPool.value) return t('createAPool.poolAlreadyExists');
   return t('createAPool.similarPoolsExist');
+});
+
+// limit the similar pools on the UI to the first 4 ones
+// with highest tvl
+const relevantSimilarPools = computed(() => {
+  return take(
+    orderBy(similarPools.value, pool => Number(pool.totalLiquidity), 'desc'),
+    4
+  );
 });
 
 /**
@@ -97,7 +107,11 @@ function cancel() {
         </BalStack>
       </BalCard>
       <BalStack isDynamic v-else vertical>
-        <BalCard shadow="none" v-for="pool in similarPools" :key="pool.id">
+        <BalCard
+          shadow="none"
+          v-for="pool in relevantSimilarPools"
+          :key="pool.id"
+        >
           <BalStack vertical>
             <BalStack spacing="sm" horizontal align="center">
               <div>
