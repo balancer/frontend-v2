@@ -122,8 +122,7 @@ export default function useSor({
       returnAmountConsideringFees: Zero,
       tokenIn: '',
       tokenOut: '',
-      marketSp: '0',
-      routes: []
+      marketSp: '0'
     }
   });
   const trading = ref(false);
