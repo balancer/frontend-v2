@@ -28,7 +28,8 @@ type FilterOptions = {
 export default function usePoolsQuery(
   tokenList: Ref<string[]> = ref([]),
   options: UseInfiniteQueryOptions<PoolsQueryResponse> = {},
-  filterOptions?: FilterOptions
+  filterOptions?: FilterOptions,
+  customQueryKey = 'all'
 ) {
   // COMPOSABLES
   const { injectTokens, dynamicDataLoading, prices } = useTokens();
@@ -40,7 +41,8 @@ export default function usePoolsQuery(
   const queryKey = QUERY_KEYS.Pools.All(
     networkId,
     tokenList,
-    filterOptions?.poolIds
+    filterOptions?.poolIds,
+    customQueryKey
   );
 
   // COMPUTED
