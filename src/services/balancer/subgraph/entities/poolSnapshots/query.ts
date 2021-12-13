@@ -1,3 +1,4 @@
+import { isPolygon } from '@/composables/useNetwork';
 import { merge } from 'lodash';
 
 const defaultAttrs = {
@@ -8,9 +9,12 @@ const defaultAttrs = {
   amounts: true,
   totalShares: true,
   swapVolume: true,
-  swapFees: true,
-  liquidity: true
+  swapFees: true
 };
+
+if (!isPolygon) {
+  defaultAttrs['liquidity'] = true;
+}
 
 export default (args = {}, attrs = {}) => ({
   poolSnapshot: {
