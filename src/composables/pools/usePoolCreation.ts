@@ -61,7 +61,7 @@ const emptyPoolCreationState = {
   createPoolTxHash: ''
 };
 
-const poolCreationState = reactive({ ...emptyPoolCreationState });
+export const poolCreationState = reactive({ ...emptyPoolCreationState });
 const tokenColors = ref<string[]>([]);
 export const hasRestoredFromSavedState = ref<boolean | null>(null);
 

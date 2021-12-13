@@ -2,14 +2,14 @@ import { lsGet } from '@/lib/utils';
 import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import usePoolCreation, {
+import {
+  poolCreationState,
   POOL_CREATION_STATE_KEY,
   POOL_CREATION_STATE_VERSION
 } from '../pools/usePoolCreation';
 import useAlerts, { AlertPriority, AlertType } from '../useAlerts';
 
 export default function usePoolCreationWatcher() {
-  const { needsSeeding } = usePoolCreation();
   const { addAlert } = useAlerts();
   const { t } = useI18n();
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function usePoolCreationWatcher() {
     if (previouslySavedState) {
       addAlert({
         id: 'return-to-pool-creation',
-        label: needsSeeding.value
+        label: poolCreationState.needsSeeding
           ? t('finishSeedingPoolAlert')
           : t('finishCreatingPoolAlert'),
         type: AlertType.ERROR,
