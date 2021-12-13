@@ -7,8 +7,7 @@ const defaultArgs = {
   orderDirection: 'desc',
   where: {
     totalShares_gt: 0.01,
-    id_not_in: POOLS.BlockList,
-    poolType_not_in: ['Element', 'AaveLinear', 'Linear']
+    id_not_in: POOLS.BlockList
   }
 };
 

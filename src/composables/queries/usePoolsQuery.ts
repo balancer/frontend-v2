@@ -55,7 +55,8 @@ export default function usePoolsQuery(
       first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
       skip: pageParam,
       where: {
-        [tokensListFilterKey]: tokenList.value
+        [tokensListFilterKey]: tokenList.value,
+        poolType_not_in: POOLS.ExcludedPoolTypes
       }
     };
     if (filterOptions?.poolIds?.value.length) {

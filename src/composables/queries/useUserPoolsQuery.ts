@@ -17,6 +17,7 @@ import useUserSettings from '../useUserSettings';
 import useNetwork from '../useNetwork';
 import { isStablePhantom, lpTokensFor } from '../usePool';
 import { getAddress } from '@ethersproject/address';
+import { POOLS } from '@/constants/pools';
 
 type UserPoolsQueryResponse = {
   pools: DecoratedPoolWithShares[];
@@ -110,7 +111,8 @@ export default function useUserPoolsQuery(
   const queryFn = async () => {
     const poolShares = await balancerSubgraphService.poolShares.get({
       where: {
-        userAddress: account.value.toLowerCase()
+        userAddress: account.value.toLowerCase(),
+        poolType_not_in: POOLS.ExcludedPoolTypes
       }
     });
 
