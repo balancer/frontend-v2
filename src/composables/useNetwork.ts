@@ -1,4 +1,3 @@
-import { configService } from '@/services/config/config.service';
 import { ref } from 'vue';
 
 /**
@@ -24,9 +23,9 @@ const DEFAULT_NETWORK_ID =
 
 export const networkId = ref<Network>(DEFAULT_NETWORK_ID);
 
-export const isMainnet = configService.network.chainId === Network.MAINNET;
-export const isPolygon = configService.network.chainId === Network.POLYGON;
-export const isArbitrum = configService.network.chainId === Network.ARBITRUM;
+export const isMainnet = networkId.value === Network.MAINNET;
+export const isPolygon = networkId.value === Network.POLYGON;
+export const isArbitrum = networkId.value === Network.ARBITRUM;
 
 /**
  * METHODS
