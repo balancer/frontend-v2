@@ -25,7 +25,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { initMath, hasBpt } = useWithdrawMath(toRef(props, 'pool'));
+const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
@@ -58,13 +58,6 @@ const fiatTotal = computed(() => {
     );
 
   return fNum(fiatValue, currency.value);
-});
-
-/**
- * CALLBACKS
- */
-onBeforeMount(() => {
-  initMath();
 });
 </script>
 
