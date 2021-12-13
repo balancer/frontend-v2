@@ -44,6 +44,7 @@ export interface Config {
     multicall: string;
     vault: string;
     weightedPoolFactory: string;
+    lbpFactory: string;
     stablePoolFactory: string;
     weth: string;
     stETH: string;
@@ -59,6 +60,7 @@ export interface Config {
     beets: string;
     usdc: string;
     defaultPoolOwner: string;
+    copperProxy: string;
   };
   keys: {
     infura: string;

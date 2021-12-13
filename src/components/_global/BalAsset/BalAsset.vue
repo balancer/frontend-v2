@@ -11,7 +11,7 @@
       height: `${size}px`
     }"
     @error="error = true"
-    class="rounded-full inline-block bg-white leading-none shadow-sm"
+    class="rounded-full inline-block leading-none shadow-sm"
   />
   <Avatar v-else :address="address" :size="size" />
 </template>
@@ -66,6 +66,10 @@ export default defineComponent({
           tokenAddress.toLowerCase() === address.value.toLowerCase()
         );
       });
+
+      if (!token) {
+        return '';
+      }
 
       return resolve(token.logoURI);
     });
