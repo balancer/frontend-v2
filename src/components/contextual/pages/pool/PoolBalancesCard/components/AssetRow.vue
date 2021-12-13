@@ -6,6 +6,7 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -13,6 +14,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 type Props = {
   address: string;
   balance: string;
+  share: string;
 };
 
 /**
@@ -33,9 +35,15 @@ const { explorerLinks } = useWeb3();
  */
 const token = computed(() => getToken(props.address));
 
-const balance = computed(() =>
-  formatUnits(props.balance, token.value.decimals)
-);
+const balance = computed(() => {
+  const formattedBalance = formatUnits(props.balance, token.value.decimals);
+
+  return props.share != null
+    ? bnum(formattedBalance)
+        .times(props.share)
+        .toString()
+    : formattedBalance;
+});
 
 const balanceLabel = computed(() => fNum(balance.value, 'token'));
 

@@ -4,6 +4,8 @@ import { defineProps } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 
+import { bnum } from '@/lib/utils';
+
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import AssetRow from './components/AssetRow';
@@ -38,6 +40,17 @@ function getUnderlyingTokens(address: string) {
   return linearPools != null
     ? [linearPools[address].mainToken, linearPools[address].wrappedToken]
     : [];
+}
+
+function getTokenShare(address: string) {
+  const totalSupply = props.pool.onchain.totalSupply;
+  const token = props.pool.onchain.tokens[address];
+
+  return token != null
+    ? bnum(token.balance)
+        .div(totalSupply)
+        .toString()
+    : null;
 }
 </script>
 
@@ -82,7 +95,11 @@ function getUnderlyingTokens(address: string) {
             />
           </BalLink>
           <template #item="{ item: asset }">
-            <AssetRow :address="asset.address" :balance="asset.balance" />
+            <AssetRow
+              :address="asset.address"
+              :balance="asset.balance"
+              :share="getTokenShare(address)"
+            />
           </template>
         </BalBreakdown>
       </div>
