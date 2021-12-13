@@ -10,7 +10,11 @@
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
-        <Avatar :address="account" :size="avatarSize" />
+        <Avatar
+          :iconURI="profile?.avatar"
+          :address="account"
+          :size="avatarSize"
+        />
         <span
           v-if="profile && profile.ens"
           v-text="profile && profile.ens"
