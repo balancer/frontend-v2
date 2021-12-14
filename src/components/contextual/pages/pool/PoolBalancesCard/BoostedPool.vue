@@ -7,6 +7,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import AssetRow from './components/AssetRow';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -50,6 +51,20 @@ function getUnderlyingTokens(address: string) {
         }
       ]
     : [];
+}
+
+function getTokenShare(address: string) {
+  const linearPools = props.pool.onchain.linearPools;
+
+  if (linearPools == null) {
+    return null;
+  }
+
+  const token = props.pool.onchain.tokens[address];
+
+  return bnum(token.balance)
+    .div(linearPools[address].totalSupply)
+    .toString();
 }
 </script>
 
@@ -99,6 +114,7 @@ function getUnderlyingTokens(address: string) {
               :token-price-address="asset.tokenPriceAddress"
               :balance="asset.balance"
               :price-rate="asset.priceRate"
+              :share="getTokenShare(address)"
             />
           </template>
         </BalBreakdown>

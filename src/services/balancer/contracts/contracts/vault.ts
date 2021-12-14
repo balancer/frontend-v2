@@ -145,6 +145,11 @@ export default class Vault {
           wrappedToken,
           'ATOKEN'
         );
+        poolMulticaller.call(
+          `linearPools.${address}.totalSupply`,
+          address,
+          'getVirtualSupply'
+        );
       });
 
       result = await poolMulticaller.execute(result);
@@ -248,7 +253,8 @@ export default class Vault {
         wrappedToken,
         priceRate,
         unwrappedTokenAddress,
-        tokenData
+        tokenData,
+        totalSupply
       } = linearPools[address];
 
       _linearPools[address] = {
@@ -265,7 +271,8 @@ export default class Vault {
           balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
           priceRate: formatUnits(wrappedToken.rate, 18)
         },
-        unwrappedTokenAddress: getAddress(unwrappedTokenAddress)
+        unwrappedTokenAddress: getAddress(unwrappedTokenAddress),
+        totalSupply: formatUnits(totalSupply, 18)
       };
     });
 

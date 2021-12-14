@@ -139,6 +139,7 @@ export interface RawLinearPoolData {
   mainToken: RawLinearPoolToken;
   wrappedToken: RawWrappedLinearPoolToken;
   unwrappedTokenAddress: string;
+  totalSupply: string;
   tokenData: RawPoolTokens;
 }
 export type RawLinearPoolDataMap = Record<Address, RawLinearPoolData>;
@@ -149,6 +150,7 @@ export interface LinearPoolData {
   mainToken: LinearPoolToken;
   wrappedToken: WrappedLinearPoolToken;
   unwrappedTokenAddress: string;
+  totalSupply: string;
 }
 export type LinearPoolDataMap = Record<Address, LinearPoolData>;
 
