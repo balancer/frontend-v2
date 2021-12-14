@@ -40,14 +40,14 @@ function getUnderlyingTokens(address: string) {
     return [];
   }
 
-  const tokenPriceAddress = linearPools[address].mainToken.address;
+  const mainTokenAddress = linearPools[address].mainToken.address;
 
   return linearPools != null
     ? [
         linearPools[address].mainToken,
         {
           ...linearPools[address].wrappedToken,
-          tokenPriceAddress
+          mainTokenAddress
         }
       ]
     : [];
@@ -111,7 +111,7 @@ function getTokenShare(address: string) {
           <template #item="{ item: asset }">
             <AssetRow
               :address="asset.address"
-              :token-price-address="asset.tokenPriceAddress"
+              :main-token-address="asset.mainTokenAddress"
               :balance="asset.balance"
               :price-rate="asset.priceRate"
               :share="getTokenShare(address)"

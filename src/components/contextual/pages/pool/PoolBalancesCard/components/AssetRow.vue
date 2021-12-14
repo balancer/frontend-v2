@@ -14,7 +14,7 @@ import { bnum } from '@/lib/utils';
  * TYPES
  */
 type Props = {
-  tokenPriceAddress?: string;
+  mainTokenAddress?: string;
   priceRate?: string;
   address: string;
   balance: string;
@@ -53,7 +53,7 @@ const balanceLabel = computed(() => fNum(balance.value, 'token'));
 const fiatLabel = computed(() => {
   let fiatValue = toFiat(
     balance.value,
-    props.tokenPriceAddress ?? props.address
+    props.mainTokenAddress ?? props.address
   );
 
   if (props.priceRate != null) {
