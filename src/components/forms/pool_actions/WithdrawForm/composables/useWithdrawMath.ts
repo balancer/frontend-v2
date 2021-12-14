@@ -373,12 +373,11 @@ export default function useWithdrawMath(
     (): Record<string, string> => {
       const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
         tokenAddresses.value[i].toLowerCase(),
-        amount,
-        withdrawalTokens.value[i].decimals
+        amount
       ]);
       const onlyTokensWithAmounts = allTokensWithAmounts
         .filter(([, amount]) => bnum(amount).gt(0))
-        .map(([token, amount, decimals]) => {
+        .map(([token, amount]) => {
           return [
             token,
             exactOut.value ? amount : minusSlippageScaled(amount.toString())
