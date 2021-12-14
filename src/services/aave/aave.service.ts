@@ -47,19 +47,20 @@ export default class AaveService {
             token => token === getAddress(reserve.underlyingAsset)
           );
           // Grabs the matching wrapped which generates the yield
-          const token = pool.wrappedTokens[tokenIndex];
+          const wrappedToken = pool.wrappedTokens[tokenIndex];
+          const mainToken = pool.mainTokens[tokenIndex];
 
           if (
             pool.linearPoolTokensMap != null &&
-            pool.linearPoolTokensMap[token] != null &&
-            prices[token] != null
+            pool.linearPoolTokensMap[wrappedToken] != null &&
+            prices[mainToken] != null
           ) {
-            const price = prices[token][currency] || 0;
-            const balance = pool.linearPoolTokensMap[token].balance;
+            const price = prices[mainToken][currency] || 0;
+            const balance = pool.linearPoolTokensMap[wrappedToken].balance;
             const value = bnum(balance).times(price);
             const weightedAPR = value.times(supplyAPR).div(pool.totalLiquidity);
 
-            tokenBreakdown[token] = weightedAPR.toString();
+            tokenBreakdown[wrappedToken] = supplyAPR.toString();
 
             total = total.plus(weightedAPR);
           }
