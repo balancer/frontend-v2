@@ -9,6 +9,7 @@ import PoolCreate from '@/beethovenx/pages/PoolCreate.vue';
 import Portfolio from '@/beethovenx/pages/Portfolio.vue';
 import FreshBeets from '@/beethovenx/pages/FreshBeets.vue';
 import LbpCreate from '@/beethovenx/pages/lbp/LbpCreate.vue';
+import LbpList from '@/beethovenx/pages/lbp/LbpList.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', redirect: '/trade' },
@@ -49,7 +50,8 @@ const routes: RouteRecordRaw[] = [
   { path: '/pool-create', name: 'pool-create', component: PoolCreate },
   { path: '/my-portfolio', name: 'my-portfolio', component: Portfolio },
   { path: '/stake', name: 'stake', component: FreshBeets },
-  { path: '/lbp-create', name: 'lbp-create', component: LbpCreate },
+  { path: '/auction-create', name: 'auction-create', component: LbpCreate },
+  { path: '/auction-list', name: 'auction-list', component: LbpList },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',

@@ -21,7 +21,7 @@
       Stake
     </router-link>
     <router-link
-      :to="{ name: 'lbp-create' }"
+      :to="{ name: 'auction-list' }"
       :class="['toggle-link px-4', { [activeClasses]: isLaunchPage }]"
     >
       Launch
@@ -58,7 +58,9 @@ export default defineComponent({
     const isTradePage = computed(() => route.name === 'trade');
     const isPortfolioPage = computed(() => route.name === 'my-portfolio');
     const isStakePage = computed(() => route.name === 'stake');
-    const isLaunchPage = computed(() => route.name === 'lbp-create');
+    const isLaunchPage = computed(
+      () => route.name === 'auction-list' || route.name === 'auction-create'
+    );
     const isInvestPage = computed(
       () => route.name === 'invest' || String(route.name).startsWith('pool')
     );

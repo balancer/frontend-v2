@@ -1,9 +1,7 @@
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <div>
-      <div class="px-4 lg:px-0">
-        <h3 class="mb-6">Create a Fair Launch Auction</h3>
-      </div>
+    <div class="mb-6">
+      <img src="~@/beethovenx/assets/images/create-auction.svg" class="-ml-4" />
     </div>
     <StepContainer
       :complete="projectDetailsSaved"

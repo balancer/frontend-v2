@@ -128,7 +128,7 @@ const tokensLoaded = computed(() => {
         fee is 3% the project earns $30,000 in trading fees, while sharing
         $20,600 (2%) with Beethoven X from total funds raised at auction end.
       </p>
-      <a href="" class="text-green-500 underline">More Info</a>
+      <a href="" class="text-green-500">More Info</a>
     </div>
   </div>
   <div class="lbp-input-row" v-if="tokensLoaded">

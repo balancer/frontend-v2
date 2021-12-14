@@ -20,36 +20,38 @@ interface LbpState {
   collateralTokenRequiresApproval: boolean;
 }
 
-const state = reactive<LbpState>({
-  data: {
-    name: 'Beethoven X',
-    websiteUrl: 'https://app.beets.fi/',
-    tokenContractAddress: '0x6F00D64b42aF8f449dB15B0b3ee3B444550c4826',
-    tokenIconUrl:
-      'https://beethoven-assets.s3.eu-central-1.amazonaws.com/apple-touch-192.png',
-    twitterUrl: '',
-    mediumUrl: '',
-    discordUrl: '',
-    telegramUrl: '',
-    description: 'BEETS',
+export const LBPDefaultData: LbpData = {
+  name: 'Beethoven X',
+  websiteUrl: 'https://app.beets.fi/',
+  tokenContractAddress: '0x6F00D64b42aF8f449dB15B0b3ee3B444550c4826',
+  tokenIconUrl:
+    'https://beethoven-assets.s3.eu-central-1.amazonaws.com/apple-touch-192.png',
+  twitterUrl: 'https://www.twitter.com',
+  mediumUrl: 'https://www.twitter.com',
+  discordUrl: 'https://www.twitter.com',
+  telegramUrl: 'https://www.twitter.com',
+  description: 'BEETS',
 
-    startDate: '2022-01-05',
-    startTime: '12:00',
-    endDate: '2022-01-12',
-    endTime: '12:00',
-    collateralTokenAddress: '0x70b55af71b29c5ca7e67bd1995250364c4be5554',
-    tokenAmount: '',
-    collateralAmount: '',
-    tokenStartWeight: 95,
-    collateralStartWeight: 5,
-    tokenEndWeight: 50,
-    collateralEndWeight: 50,
-    swapFeePercentage: 2.5,
-    poolName: 'Pool Name',
-    poolSymbol: 'ABC',
-    bannerImageUrl:
-      'https://beethoven-assets.s3.eu-central-1.amazonaws.com/masthead-chillin.svg'
-  },
+  startDate: '2022-01-05',
+  startTime: '12:00',
+  endDate: '2022-01-12',
+  endTime: '12:00',
+  collateralTokenAddress: '0x70b55af71b29c5ca7e67bd1995250364c4be5554',
+  tokenAmount: '',
+  collateralAmount: '',
+  tokenStartWeight: 95,
+  collateralStartWeight: 5,
+  tokenEndWeight: 50,
+  collateralEndWeight: 50,
+  swapFeePercentage: 2.5,
+  poolName: 'Pool Name',
+  poolSymbol: 'ABC',
+  bannerImageUrl:
+    'https://beethoven-assets.s3.eu-central-1.amazonaws.com/masthead-chillin.svg'
+};
+
+const state = reactive<LbpState>({
+  data: LBPDefaultData,
 
   projectDetailsSaved: false,
   auctionConfigSaved: false,

@@ -82,16 +82,16 @@ async function createAuction(): Promise<void> {
 
   <div class="border-purple-500 border-2 rounded-lg px-4 py-4 mb-8">
     <div>
-      <p class="mb-3">Trades disabled by default</p>
+      <p class="mb-3">Trades are disabled by default</p>
       <p class="mb-3">
-        Trades are disabled upon auction creation to prevent auction
-        participants from trading before the auction token price decay is
-        scheduled to start. You have the option to enable trading in the Auction
-        Settings tab and we recommend that you do so right as the auction token
-        price decay is scheduled to start. The Auction Settings tab will become
-        available on the auction page once you’ve created the auction.
+        Trades are initially disabled to prevent auction participants from
+        trading before the auction token price decay is scheduled to start. You
+        have the option to enable trading in the Auction Settings tab and we
+        recommend that you do so right as the auction token price decay is
+        scheduled to start. The Auction Settings tab will become available on
+        the auction page once you’ve created the auction.
       </p>
-      <a href="" class="text-green-500 underline">More Info</a>
+      <a href="" class="text-green-500">More Info</a>
     </div>
   </div>
 
