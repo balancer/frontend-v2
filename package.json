@@ -25,7 +25,7 @@
     "@balancer-labs/balancer-js": "^1.0.1",
     "@balancer-labs/sor": "^1.1.0",
     "@balancer-labs/sor2": "github:balancer-labs/balancer-sor#john/linear-package",
-    "@balancer-labs/sdk": "0.0.9",
+    "@balancer-labs/sdk": "0.0.10",
     "@balancer-labs/typechain": "^1.0.0",
     "@ensdomains/content-hash": "^2.5.3",
     "@ethersproject/abi": "~5.4.1",
