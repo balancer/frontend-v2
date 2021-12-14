@@ -12,8 +12,7 @@
         "pool-fetch-error": "Failed to fetch pool.",
         "pools-fetch-error": "Failed to fetch pools.",
         "price-fetch-error": "Our pricing provider, CoinGecko, is currently down.",
-        "retry-label": "Refresh to try again",
-        "boostedPools": "Increased yields, greater capital efficiency, deeper liquidity. Try Balancer Boosted pools now →"
+        "retry-label": "Refresh to try again"
     },
     "allow": "Allow",
     "allowing": "Allowing...",
