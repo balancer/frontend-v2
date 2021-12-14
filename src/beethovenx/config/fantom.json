@@ -37,7 +37,7 @@
     "vault": "0x20dd72Ed959b6147912C2e529F0a0C651c33c9ce",
     "weightedPoolFactory": "0x60467cb225092cE0c989361934311175f437Cf53",
     "stablePoolFactory": "0x55df810876354Fc3e249f701Dd78DeDE57991F8D",
-    "lbpFactory": "0x458368B3724B5a1c1057A00b28eB03FEb5b64968",
+    "lbpFactory": "0x2C774732c93CE393eC8125bDA49fb3737Ae6F473",
     "tokenFactory": "0x6732d651EeA0bc98FcF4EFF8B62e0CdCB0064f4b",
     "weth": "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",
     "stETH": "",
@@ -56,7 +56,7 @@
     "hnd": "0x10010078a54396F62c96dF8532dc2B4847d47ED3",
     "hndRewarder": "0x0A190202AD82F2bEA8Be994e34D588F6E235083e",
     "merkleOrchard": "",
-    "copperProxy": "0x2D8f6f8d69a27E642Ff96b97b17f3301893FDf46"
+    "copperProxy": "0xbC8a71C75ffbd2807c021F4F81a8832392dEF93c"
   },
   "strategies": {
     "0": {

@@ -57,9 +57,15 @@ const tokensLoaded = computed(() => {
       <div class="text-xl">{{ data.endDate }} {{ data.endTime }} UTC</div>
     </div>
   </div>
-  <div class="mb-4">
-    <div class="text-gray-500">Swap Fee Percentage</div>
-    <div class="text-xl">{{ data.swapFeePercentage }}%</div>
+  <div class="lbp-review-row">
+    <div>
+      <div class="text-gray-500">Swap Fee Percentage</div>
+      <div class="text-xl">{{ data.swapFeePercentage }}%</div>
+    </div>
+    <div>
+      <div class="text-gray-500">Platform Fee</div>
+      <div class="text-xl">2%</div>
+    </div>
   </div>
   <div class="lbp-review-row">
     <div>

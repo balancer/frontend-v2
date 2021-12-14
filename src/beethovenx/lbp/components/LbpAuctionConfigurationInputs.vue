@@ -105,6 +105,32 @@ const tokensLoaded = computed(() => {
       tooltip="Ex: 2.5 = 2.5%. The swap fee percentage must be between 0.0001% and 10%"
     />
   </div>
+  <div>Platform Fee</div>
+  <div class="mt-1 text-lg mb-4">
+    2% Platform Fee - Deducted by Beethoven X from the total funds raised at the
+    end of the auction.
+  </div>
+  <div class="border-blue-500 border-2 rounded-lg px-4 py-4 mb-8">
+    <div>
+      <p class="mb-3">
+        The trading fee is earned by your project on transacted volume during
+        the auction and serves the dual purpose of discouraging price
+        manipulation by large buy orders while also offsetting the platform fee
+        shared with Beethoven X.
+      </p>
+      <p class="mb-3">
+        The 2% platform fee is applied by Beethoven X at the conclusion of an
+        auction on total funds raised. Total funds raised is inclusive of funds
+        raised + volume fee (aka swap fee).
+      </p>
+      <p class="mb-3">
+        Ex: Project raises $600,000 and has $1,000,000 of volume. If the trading
+        fee is 3% the project earns $30,000 in trading fees, while sharing
+        $20,600 (2%) with Beethoven X from total funds raised at auction end.
+      </p>
+      <a href="" class="text-green-500 underline">More Info</a>
+    </div>
+  </div>
   <div class="lbp-input-row" v-if="tokensLoaded">
     <PoolCreateTokenRow
       title="Fair Launch Token"
