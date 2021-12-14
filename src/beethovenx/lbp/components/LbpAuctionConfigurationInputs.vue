@@ -95,7 +95,7 @@ const tokensLoaded = computed(() => {
   </div>
   <div class="mb-8">
     <BalTextInput
-      title="Swap Fee Percentage"
+      title="Trading Fee"
       v-model="data.swapFeePercentage"
       type="number"
       validate-on="input"

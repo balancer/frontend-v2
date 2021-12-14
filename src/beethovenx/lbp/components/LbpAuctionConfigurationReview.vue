@@ -59,7 +59,7 @@ const tokensLoaded = computed(() => {
   </div>
   <div class="lbp-review-row">
     <div>
-      <div class="text-gray-500">Swap Fee Percentage</div>
+      <div class="text-gray-500">Trading Fee</div>
       <div class="text-xl">{{ data.swapFeePercentage }}%</div>
     </div>
     <div>
