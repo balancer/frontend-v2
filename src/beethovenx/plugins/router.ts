@@ -10,6 +10,7 @@ import Portfolio from '@/beethovenx/pages/Portfolio.vue';
 import FreshBeets from '@/beethovenx/pages/FreshBeets.vue';
 import LbpCreate from '@/beethovenx/pages/lbp/LbpCreate.vue';
 import LbpList from '@/beethovenx/pages/lbp/LbpList.vue';
+import LbpDetail from '@/beethovenx/pages/lbp/LbpDetail.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', redirect: '/trade' },
@@ -52,6 +53,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/stake', name: 'stake', component: FreshBeets },
   { path: '/auction-create', name: 'auction-create', component: LbpCreate },
   { path: '/auction-list', name: 'auction-list', component: LbpList },
+  { path: '/auction', name: 'auction', component: LbpDetail },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',

@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue';
 import { LBPDefaultData } from '@/beethovenx/lbp/composables/useLbpState';
 import useTokens from '@/composables/useTokens';
-import { SubgraphSwap } from '@/services/balancer/subgraph/types';
 import BalTable, {
   ColumnDefinition
 } from '@/components/_global/BalTable/BalTable.vue';
@@ -11,9 +10,11 @@ import { LbpData } from '@/beethovenx/lbp/lbp-types';
 import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 import useNumbers from '@/composables/useNumbers';
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
+import { useRouter } from 'vue-router';
 
 const { tokens, loading } = useTokens();
 const { fNum } = useNumbers();
+const router = useRouter();
 
 const columns = ref<ColumnDefinition<LbpData & { volume: string }>[]>([
   {
@@ -61,6 +62,10 @@ const data = computed(() => [
   { ...LBPDefaultData, volume: '240000' },
   { ...LBPDefaultData, volume: '240000' }
 ]);
+
+function handleRowClick(auction: LbpData) {
+  router.push({ name: 'auction', params: { id: 'some-id' } });
+}
 </script>
 
 <template>
@@ -82,6 +87,7 @@ const data = computed(() => [
       :isSortable="false"
       :is-paginated="false"
       :isLoadingMore="false"
+      :on-row-click="handleRowClick"
     >
       <template v-slot:tokenCell="auction">
         <div class="flex items-center px-4">

@@ -1,162 +1,153 @@
+<script lang="ts" setup>
+import { computed, defineComponent, PropType, ref } from 'vue';
+import useNumbers from '@/composables/useNumbers';
+import { differenceInMilliseconds, format, parseISO } from 'date-fns';
+import { DecoratedPool } from '@/services/balancer/subgraph/types';
+import numeral from 'numeral';
+import useLbpAuctionState from '@/beethovenx/lbp/composables/useLbpAuctionState';
+import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
+import BalCard from '@/components/_global/BalCard/BalCard.vue';
+
+const { fNum } = useNumbers();
+const harvesting = ref(false);
+
+const {
+  startsAt,
+  endsAt,
+  isBeforeStart,
+  isAfterEnd,
+  collateralToken,
+  launchToken,
+  pool,
+  data,
+  loadingPool
+} = useLbpAuctionState();
+
+const timeRemaining = computed(() =>
+  isBeforeStart.value
+    ? differenceInMilliseconds(startsAt.value, new Date())
+    : differenceInMilliseconds(endsAt.value, new Date())
+);
+
+const countdownDateFormatted = computed(() =>
+  isBeforeStart.value
+    ? format(startsAt.value, 'MMM d') + ' at ' + format(startsAt.value, 'HH:mm')
+    : format(endsAt.value, 'MMM d') + ' at ' + format(endsAt.value, 'HH:mm')
+);
+
+const countdownLabel = computed(() =>
+  isBeforeStart.value ? 'Starts In' : 'Ends In'
+);
+
+const endDateFormatted = computed(() =>
+  format(endsAt.value, 'MMM d, HH:mm:ss')
+);
+
+const lbpData = computed(() => {
+  const tokens = pool.value?.tokens;
+  const launchToken = tokens?.find(
+    token =>
+      token.address.toLowerCase() ===
+      data.value.tokenContractAddress.toLowerCase()
+  );
+  const collateralToken = tokens?.find(
+    token =>
+      token.address.toLowerCase() ===
+      data.value.collateralTokenAddress.toLowerCase()
+  );
+
+  if (!launchToken || !collateralToken) {
+    return null;
+  }
+
+  const remaining = parseFloat(launchToken.balance);
+  const sold = parseFloat(data.value.tokenAmount) - remaining;
+  const tokenPrice =
+    ((parseFloat(launchToken.weight) / parseFloat(collateralToken.weight)) *
+      parseFloat(collateralToken.balance)) /
+    parseFloat(launchToken.balance);
+  const predictedPrice =
+    ((0.8 / 0.2) * parseFloat(collateralToken.balance)) /
+    parseFloat(launchToken.balance);
+
+  return {
+    sold,
+    remaining,
+    percentSold: sold / parseFloat(data.value.tokenAmount),
+    tokenPrice: numeral(tokenPrice).format('$0,0.0000'),
+    predictedPrice: numeral(predictedPrice).format('$0,0.0000'),
+    beetsWeight: numeral(parseFloat(launchToken.weight) * 100).format('0.[00]'),
+    usdcWeight: numeral(parseFloat(collateralToken.weight) * 100).format(
+      '0.[00]'
+    )
+  };
+});
+
+function transformTime(slotProps) {
+  return {
+    ...slotProps,
+    hours: slotProps.hours < 10 ? `0${slotProps.hours}` : slotProps.hours,
+    minutes:
+      slotProps.minutes < 10 ? `0${slotProps.minutes}` : slotProps.minutes,
+    seconds:
+      slotProps.seconds < 10 ? `0${slotProps.seconds}` : slotProps.seconds
+  };
+}
+</script>
+
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="grid grid-cols-3 sm:grid-cols-3 xl:grid-cols-3 gap-4">
     <template v-if="loading">
       <BalLoadingBlock v-for="n in 3" :key="n" class="h-28" />
     </template>
     <template v-else>
       <BalCard>
         <div class="text-sm text-gray-500 font-medium mb-2">
-          BEETS Price
-        </div>
-        <div class="text-xl font-medium flex items-center">
-          ${{ numeral(beetsPrice).format('0.[0000]') }}
-        </div>
-      </BalCard>
-      <BalCard>
-        <div class="text-sm text-gray-500 font-medium mb-2">
-          Market Cap
+          {{ countdownLabel }}
         </div>
         <div class="text-xl font-medium truncate flex items-center">
-          ${{ fNum(marketCap, 'usd_lg') }}
+          <vue-countdown
+            :time="timeRemaining"
+            v-slot="{ days, hours, minutes, seconds }"
+            :transform="transformTime"
+          >
+            {{
+              days > 1
+                ? `${days} days`
+                : days === 1
+                ? '1 day'
+                : `${hours}:${minutes}:${seconds}`
+            }}
+          </vue-countdown>
+        </div>
+        <div class="text-sm text-gray-500 font-medium mt-1">
+          {{ endDateFormatted }}
         </div>
       </BalCard>
       <BalCard>
         <div class="text-sm text-gray-500 font-medium mb-2">
-          Circulating Supply
+          Current BEETS Price
         </div>
-        <div class="text-xl font-medium flex items-end relative">
-          <div>{{ fNum(circulatingSupply, 'token_lg') }}&nbsp;</div>
-          <div class="text-sm text-gray-500" :style="{ paddingBottom: '2px' }">
-            BEETS
-          </div>
+        <div class="text-xl font-medium truncate flex items-center">
+          {{ lbpData ? fNum(lbpData.tokenPrice, 'usd') : '' }}
+        </div>
+        <div class="text-sm text-gray-500 font-medium mt-1">
+          Predicted price*:
+          {{ lbpData ? fNum(lbpData.predictedPrice, 'usd') : '' }}
+        </div>
+      </BalCard>
+      <BalCard>
+        <div class="text-sm text-gray-500 font-medium mb-2">
+          Tokens Sold
+        </div>
+        <div class="text-xl font-medium truncate flex items-center">
+          {{ lbpData ? fNum(lbpData.percentSold, 'percent') : '' }}
+        </div>
+        <div class="text-sm text-gray-500 font-medium mt-1">
+          {{ lbpData ? fNum(lbpData.sold, 'token_lg') : '' }} of
+          {{ fNum(data.tokenAmount, 'token_lg') }}
         </div>
       </BalCard>
     </template>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
-import useNumbers from '@/composables/useNumbers';
-import { differenceInMilliseconds, format, parseISO } from 'date-fns';
-import { DecoratedPool } from '@/services/balancer/subgraph/types';
-import numeral from 'numeral';
-import useProtocolDataQuery from '@/composables/queries/useProtocolDataQuery';
-
-export default defineComponent({
-  components: {},
-
-  emits: ['lbpStateChange'],
-
-  props: {
-    lbpTokenName: { type: String, required: true },
-    lbpTokenAddress: { type: String, required: true },
-    lbpTokenStartingAmount: { type: Number, required: true },
-    usdcAddress: { type: String, required: true },
-    lbpStartTime: { type: String, required: true },
-    lbpEndTime: { type: String, required: true },
-    pool: { type: Object as PropType<DecoratedPool> },
-    loading: { type: Boolean, default: true },
-    isBeforeLbpStart: { type: Boolean, required: true }
-  },
-
-  setup(props) {
-    const { fNum } = useNumbers();
-    const harvesting = ref(false);
-
-    const timeRemaining = computed(() =>
-      props.isBeforeLbpStart
-        ? differenceInMilliseconds(parseISO(props.lbpStartTime), new Date())
-        : differenceInMilliseconds(parseISO(props.lbpEndTime), new Date())
-    );
-
-    const countdownDateFormatted = computed(() =>
-      props.isBeforeLbpStart
-        ? format(parseISO(props.lbpStartTime), 'MMM d') +
-          ' at ' +
-          format(parseISO(props.lbpStartTime), 'HH:mm')
-        : format(parseISO(props.lbpEndTime), 'MMM d') +
-          ' at ' +
-          format(parseISO(props.lbpEndTime), 'HH:mm')
-    );
-
-    const countdownLabel = computed(() =>
-      props.isBeforeLbpStart ? 'Starts In' : 'Ends In'
-    );
-
-    const lbpData = computed(() => {
-      const tokens = props.pool?.tokens;
-      const beets = tokens?.find(
-        token => token.address.toLowerCase() === props.lbpTokenAddress
-      );
-      const usdc = tokens?.find(
-        token => token.address.toLowerCase() === props.usdcAddress
-      );
-
-      if (!beets || !usdc) {
-        return null;
-      }
-
-      const remaining = parseFloat(beets.balance);
-      const sold = props.lbpTokenStartingAmount - remaining;
-      const tokenPrice =
-        ((parseFloat(beets.weight) / parseFloat(usdc.weight)) *
-          parseFloat(usdc.balance)) /
-        parseFloat(beets.balance);
-      const predictedPrice =
-        ((0.8 / 0.2) * parseFloat(usdc.balance)) / parseFloat(beets.balance);
-
-      return {
-        sold,
-        remaining,
-        percentSold: sold / props.lbpTokenStartingAmount,
-        tokenPrice: numeral(tokenPrice).format('$0,0.0000'),
-        predictedPrice: numeral(predictedPrice).format('$0,0.0000'),
-        beetsWeight: numeral(parseFloat(beets.weight) * 100).format('0.[00]'),
-        usdcWeight: numeral(parseFloat(usdc.weight) * 100).format('0.[00]')
-      };
-    });
-
-    function transformTime(slotProps) {
-      return {
-        ...slotProps,
-        hours: slotProps.hours < 10 ? `0${slotProps.hours}` : slotProps.hours,
-        minutes:
-          slotProps.minutes < 10 ? `0${slotProps.minutes}` : slotProps.minutes,
-        seconds:
-          slotProps.seconds < 10 ? `0${slotProps.seconds}` : slotProps.seconds
-      };
-    }
-
-    const protocolDataQuery = useProtocolDataQuery();
-    const tvl = computed(
-      () => protocolDataQuery.data?.value?.totalLiquidity || 0
-    );
-
-    const beetsPrice = computed(
-      () => protocolDataQuery.data?.value?.beetsPrice || 0
-    );
-    const circulatingSupply = computed(
-      () => protocolDataQuery.data.value?.circulatingSupply || 0
-    );
-    const marketCap = computed(() => {
-      return beetsPrice.value * circulatingSupply.value;
-    });
-
-    return {
-      fNum,
-      harvesting,
-      transformTime,
-      timeRemaining,
-      lbpData,
-      countdownDateFormatted,
-      countdownLabel,
-      tvl,
-      beetsPrice,
-      marketCap,
-      circulatingSupply,
-      numeral
-    };
-  }
-});
-</script>

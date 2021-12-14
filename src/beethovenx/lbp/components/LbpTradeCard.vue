@@ -3,34 +3,24 @@
     <template v-slot:header>
       <div class="w-full flex items-center justify-between">
         <h4 class="font-bold">
-          {{
-            lbpTokenAddress.toLowerCase() === tokenOutAddress.toLowerCase()
-              ? 'Buy'
-              : 'Sell'
-          }}
-          {{ lbpTokenName }}
+          {{ title }}
         </h4>
         <TradeSettingsPopover :context="TradeSettingsContext.trade" />
       </div>
     </template>
     <div>
       <LbpTradePair
-        :lbpTokenAddress="lbpTokenAddress"
-        :token-in-amount-input="tokenInAmount"
-        :token-in-address-input="tokenInAddress"
-        :token-out-amount-input="tokenOutAmount"
-        :token-out-address-input="tokenOutAddress"
-        :exact-in="exactIn"
-        :price-impact="priceImpact"
-        @token-in-amount-change="value => (tokenInAmount = value)"
-        @token-in-address-change="value => (tokenInAddress = value)"
-        @token-out-amount-change="value => (tokenOutAmount = value)"
-        @token-out-address-change="value => (tokenOutAddress = value)"
-        @exact-in-change="value => (exactIn = value)"
-        @change="handleAmountChange"
+        v-model:tokenInAmount="tokenInAmount"
+        v-model:tokenInAddress="tokenInAddress"
+        v-model:tokenOutAmount="tokenOutAmount"
+        v-model:tokenOutAddress="tokenOutAddress"
+        v-model:exactIn="exactIn"
+        :priceImpact="priceImpact"
+        @amountChange="handleAmountChange"
+        class="mb-4"
       />
       <BalAlert
-        v-if="error"
+        v-if="error && !(poolsLoading || isLoadingApprovals)"
         class="mb-4"
         type="error"
         size="sm"
@@ -83,7 +73,6 @@
       :address-out="tokenOutAddress"
       :amount-out="tokenOutAmount"
       :trading="trading"
-      :slippage-error="slippageError"
       @trade="trade"
       @close="modalTradePreviewIsOpen = false"
     />
@@ -94,6 +83,8 @@
 import { isRequired } from '@/lib/utils/validations';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import { getAddress, isAddress } from '@ethersproject/address';
 
 import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useValidation, {
@@ -102,6 +93,7 @@ import useValidation, {
 import useSor from '@/composables/trade/useSor';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
+import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import TradeSettingsPopover, {
@@ -115,51 +107,49 @@ import useDarkMode from '@/composables/useDarkMode';
 import { configService } from '@/services/config/config.service';
 
 import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
-import LbpTradePair from '@/components/cards/LBPTradeCard/LBPTradePair.vue';
-
-const { nativeAsset } = configService.network;
+import { useTradeState } from '@/composables/trade/useTradeState';
+import useUserSettings from '@/composables/useUserSettings';
+import useLbpAuctionState from '@/beethovenx/lbp/composables/useLbpAuctionState';
+import LbpTradePair from '@/beethovenx/lbp/components/LbpTradePair.vue';
 
 export default defineComponent({
   components: {
-    SuccessOverlay,
     LbpTradePair,
+    SuccessOverlay,
     TradePreviewModal,
     TradeRoute,
     TradeSettingsPopover
   },
 
-  emits: ['onTx'],
-
-  props: {
-    usdcAddress: { type: String, required: true },
-    lbpTokenName: { type: String, required: true },
-    lbpTokenAddress: { type: String, required: true },
-    swapEnabled: { type: Boolean }
-  },
-
-  setup(props, { emit }) {
+  setup() {
+    const { data } = useLbpAuctionState();
     const highPiAccepted = ref(false);
     const store = useStore();
-    const { explorerLinks } = useWeb3();
+    const router = useRouter();
+    const { explorerLinks, isMismatchedNetwork } = useWeb3();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
 
-    const { tokens } = useTokens();
+    const { tokens, nativeAsset } = useTokens();
     const { userNetworkConfig } = useWeb3();
     const { darkMode } = useDarkMode();
+    const {
+      tokenInAddress,
+      tokenOutAddress,
+      tokenInAmount,
+      tokenOutAmount,
+      setTokenInAddress,
+      setTokenOutAddress
+    } = useTradeState();
+    const { slippage } = useUserSettings();
 
     const exactIn = ref(true);
-    const tokenInAddress = ref('');
-    const tokenInAmount = ref('');
-    const tokenOutAddress = ref('');
-    const tokenOutAmount = ref('');
+
     const tradeSuccess = ref(false);
     const txHash = ref('');
     const modalTradePreviewIsOpen = ref(false);
 
-    const slippageBufferRate = computed(() =>
-      parseFloat(store.state.app.slippage)
-    );
+    const slippageBufferRate = computed(() => parseFloat(slippage.value));
 
     const tokenIn = computed(() => tokens.value[tokenInAddress.value]);
 
@@ -178,17 +168,16 @@ export default defineComponent({
       }
     });
 
-    const wrapType = computed(() => {
-      return getWrapAction(tokenInAddress.value, tokenOutAddress.value);
-    });
-    const isWrap = computed(() => wrapType.value === WrapType.Wrap);
-    const isUnwrap = computed(() => wrapType.value === WrapType.Unwrap);
+    const wrapType = computed(() =>
+      getWrapAction(tokenInAddress.value, tokenOutAddress.value)
+    );
 
     const isHighPriceImpact = computed(() => {
       return priceImpact.value >= 0.05 && !highPiAccepted.value;
     });
 
     const tradeDisabled = computed(() => {
+      if (isMismatchedNetwork.value) return true;
       if (errorMessage.value !== TradeValidation.VALID) return true;
       if (isHighPriceImpact.value) return true;
       return false;
@@ -208,11 +197,11 @@ export default defineComponent({
       priceImpact,
       sorReturn,
       latestTxHash,
-      latestTx,
       pools,
       fetchPools,
       poolsLoading,
-      slippageError
+      sorManagerRef,
+      sorManagerInitialized
     } = useSor({
       exactIn,
       tokenInAddressInput: tokenInAddress,
@@ -232,21 +221,18 @@ export default defineComponent({
       tokenOutAmount
     );
 
+    const lbpToken = computed(() => {
+      return tokens.value[getAddress(data.value.tokenContractAddress)];
+    });
+
     const title = computed(() => {
-      if (isWrap.value) return t('wrap');
-      if (isUnwrap.value) return t('unwrap');
-      return t('trade');
+      const prefix =
+        lbpToken.value.address === tokenOutAddress.value ? 'Buy' : 'Sell';
+
+      return `${prefix} ${lbpToken.value.symbol}`;
     });
 
     const error = computed(() => {
-      console.log('swap enabled', props.swapEnabled);
-      if (props.swapEnabled === false) {
-        return {
-          header: 'Swapping disabled',
-          body: 'Swapping is disabled for this Event.'
-        };
-      }
-
       if (isHighPriceImpact.value) {
         return {
           header: t('highPriceImpact'),
@@ -285,12 +271,27 @@ export default defineComponent({
     }
 
     async function populateInitialTokens(): Promise<void> {
-      tokenInAddress.value = props.usdcAddress;
-      tokenOutAddress.value = props.lbpTokenAddress;
+      let assetIn = router.currentRoute.value.params.assetIn as string;
+
+      if (assetIn === nativeAsset.deeplinkId) {
+        assetIn = nativeAsset.address;
+      } else if (isAddress(assetIn)) {
+        assetIn = getAddress(assetIn);
+      }
+
+      let assetOut = router.currentRoute.value.params.assetOut as string;
+
+      if (assetOut === nativeAsset.deeplinkId) {
+        assetOut = nativeAsset.address;
+      } else if (isAddress(assetOut)) {
+        assetOut = getAddress(assetOut);
+      }
+
+      setTokenInAddress(assetIn || store.state.trade.inputAsset);
+      setTokenOutAddress(assetOut || store.state.trade.outputAsset);
     }
 
     function showTradePreviewModal() {
-      slippageError.value = false;
       modalTradePreviewIsOpen.value = true;
     }
 
@@ -320,13 +321,12 @@ export default defineComponent({
       txHash.value = latestTxHash.value;
       tradeSuccess.value = true;
       modalTradePreviewIsOpen.value = false;
-
-      emit('onTx', latestTx.value);
     });
 
     populateInitialTokens();
 
     return {
+      data,
       highPiAccepted,
       title,
       error,
@@ -356,7 +356,8 @@ export default defineComponent({
       darkMode,
       tradeCardShadow,
       explorer: explorerLinks,
-      slippageError
+      sorManagerRef,
+      sorManagerInitialized
     };
   }
 });

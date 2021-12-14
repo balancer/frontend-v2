@@ -37,7 +37,7 @@ export const LBPDefaultData: LbpData = {
   endDate: '2022-01-12',
   endTime: '12:00',
   collateralTokenAddress: '0x70b55af71b29c5ca7e67bd1995250364c4be5554',
-  tokenAmount: '',
+  tokenAmount: '100',
   collateralAmount: '',
   tokenStartWeight: 95,
   collateralStartWeight: 5,

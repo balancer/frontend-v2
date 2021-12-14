@@ -66,12 +66,17 @@ export default class BeethovenxService {
       }
     `;
 
-    const { tokenPrices } = await this.get<{
+    const response = await this.get<{
       tokenPrices: GqlTokenPrice[];
     }>(query);
+
+    if (!response) {
+      return {};
+    }
+
     const result: TokenPrices = {};
 
-    for (const tokenPrice of tokenPrices) {
+    for (const tokenPrice of response.tokenPrices) {
       result[getAddress(tokenPrice.address)] = { usd: tokenPrice.price };
     }
 
