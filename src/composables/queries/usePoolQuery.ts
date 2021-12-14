@@ -3,6 +3,8 @@ import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
 import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { formatUnits } from 'ethers/lib/utils';
+import { getAddress, isAddress } from '@ethersproject/address';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { FullPool, LinearPool, Pool } from '@/services/balancer/subgraph/types';
@@ -10,14 +12,13 @@ import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
-import { forChange } from '@/lib/utils';
+import { bnum, forChange } from '@/lib/utils';
 import {
   lpTokensFor,
   isManaged,
   isStableLike,
   isStablePhantom
 } from '../usePool';
-import { getAddress, isAddress } from '@ethersproject/address';
 
 export default function usePoolQuery(
   id: string,
@@ -167,6 +168,51 @@ export default function usePoolQuery(
       unwrappedTokens = Object.entries(onchainData.linearPools).map(
         ([, linearPool]) => linearPool.unwrappedTokenAddress
       );
+
+      if (decoratedPool.linearPoolTokensMap != null) {
+        let totalLiquidity = bnum(0);
+        const tokensMap = getTokens(
+          Object.keys(decoratedPool.linearPoolTokensMap)
+        );
+
+        Object.entries(onchainData.linearPools).forEach(([address, token]) => {
+          const tokenShare = bnum(onchainData.tokens[address].balance).div(
+            token.totalSupply
+          );
+
+          const mainTokenBalance = formatUnits(
+            token.mainToken.balance,
+            tokensMap[token.mainToken.address].decimals
+          );
+
+          const wrappedTokenBalance = formatUnits(
+            token.wrappedToken.balance,
+            tokensMap[token.wrappedToken.address].decimals
+          );
+
+          const mainTokenPrice =
+            prices.value[token.mainToken.address] != null
+              ? prices.value[token.mainToken.address].usd
+              : null;
+
+          if (mainTokenPrice != null) {
+            const mainTokenValue = bnum(mainTokenBalance)
+              .times(tokenShare)
+              .times(mainTokenPrice);
+
+            const wrappedTokenValue = bnum(wrappedTokenBalance)
+              .times(tokenShare)
+              .times(mainTokenPrice)
+              .times(token.wrappedToken.priceRate);
+
+            totalLiquidity = bnum(totalLiquidity)
+              .plus(mainTokenValue)
+              .plus(wrappedTokenValue);
+          }
+        });
+
+        decoratedPool.totalLiquidity = totalLiquidity.toString();
+      }
     }
 
     console.log('pool', {
