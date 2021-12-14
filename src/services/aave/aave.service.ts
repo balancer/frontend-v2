@@ -60,7 +60,7 @@ export default class AaveService {
             const value = bnum(balance).times(price);
             const weightedAPR = value.times(supplyAPR).div(pool.totalLiquidity);
 
-            tokenBreakdown[wrappedToken] = supplyAPR.toString();
+            tokenBreakdown[wrappedToken] = weightedAPR.toString();
 
             total = total.plus(weightedAPR);
           }
