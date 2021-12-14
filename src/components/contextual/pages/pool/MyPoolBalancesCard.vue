@@ -128,7 +128,7 @@ function fiatLabelFor(index: number, address: string): string {
       >
         <div class="flex items-center">
           <BalAsset
-            :address="pool.tokenAddresses[index]"
+            :address="poolTokens[index].address"
             :size="36"
             class="mr-4"
           />

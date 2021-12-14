@@ -7,6 +7,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useBreakpoints from '@/composables/useBreakpoints';
 
 import AssetRow from './components/AssetRow';
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
@@ -35,9 +36,35 @@ const { explorerLinks } = useWeb3();
 function getUnderlyingTokens(address: string) {
   const linearPools = props.pool.onchain.linearPools;
 
+  if (linearPools == null) {
+    return [];
+  }
+
+  const mainTokenAddress = linearPools[address].mainToken.address;
+
   return linearPools != null
-    ? [linearPools[address].mainToken, linearPools[address].wrappedToken]
+    ? [
+        linearPools[address].mainToken,
+        {
+          ...linearPools[address].wrappedToken,
+          mainTokenAddress
+        }
+      ]
     : [];
+}
+
+function getTokenShare(address: string) {
+  const linearPools = props.pool.onchain.linearPools;
+
+  if (linearPools == null) {
+    return null;
+  }
+
+  const token = props.pool.onchain.tokens[address];
+
+  return bnum(token.balance)
+    .div(linearPools[address].totalSupply)
+    .toString();
 }
 </script>
 
@@ -82,7 +109,13 @@ function getUnderlyingTokens(address: string) {
             />
           </BalLink>
           <template #item="{ item: asset }">
-            <AssetRow :address="asset.address" :balance="asset.balance" />
+            <AssetRow
+              :address="asset.address"
+              :main-token-address="asset.mainTokenAddress"
+              :balance="asset.balance"
+              :price-rate="asset.priceRate"
+              :share="getTokenShare(address)"
+            />
           </template>
         </BalBreakdown>
       </div>
