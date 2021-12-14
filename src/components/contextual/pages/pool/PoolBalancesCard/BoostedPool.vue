@@ -35,8 +35,20 @@ const { explorerLinks } = useWeb3();
 function getUnderlyingTokens(address: string) {
   const linearPools = props.pool.onchain.linearPools;
 
+  if (linearPools == null) {
+    return [];
+  }
+
+  const tokenPriceAddress = linearPools[address].mainToken.address;
+
   return linearPools != null
-    ? [linearPools[address].mainToken, linearPools[address].wrappedToken]
+    ? [
+        linearPools[address].mainToken,
+        {
+          ...linearPools[address].wrappedToken,
+          tokenPriceAddress
+        }
+      ]
     : [];
 }
 </script>
@@ -82,7 +94,12 @@ function getUnderlyingTokens(address: string) {
             />
           </BalLink>
           <template #item="{ item: asset }">
-            <AssetRow :address="asset.address" :balance="asset.balance" />
+            <AssetRow
+              :address="asset.address"
+              :token-price-address="asset.tokenPriceAddress"
+              :balance="asset.balance"
+              :price-rate="asset.priceRate"
+            />
           </template>
         </BalBreakdown>
       </div>

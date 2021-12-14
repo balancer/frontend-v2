@@ -5,12 +5,17 @@ import { formatUnits } from '@ethersproject/units';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
+
 import useWeb3 from '@/services/web3/useWeb3';
+
+import { bnum } from '@/lib/utils';
 
 /**
  * TYPES
  */
 type Props = {
+  tokenPriceAddress?: string;
+  priceRate?: string;
   address: string;
   balance: string;
 };
@@ -40,7 +45,17 @@ const balance = computed(() =>
 const balanceLabel = computed(() => fNum(balance.value, 'token'));
 
 const fiatLabel = computed(() => {
-  const fiatValue = toFiat(balance.value, props.address);
+  let fiatValue = toFiat(
+    balance.value,
+    props.tokenPriceAddress ?? props.address
+  );
+
+  if (props.priceRate != null) {
+    fiatValue = bnum(fiatValue)
+      .times(props.priceRate)
+      .toString();
+  }
+
   return fNum(fiatValue, currency.value);
 });
 </script>
