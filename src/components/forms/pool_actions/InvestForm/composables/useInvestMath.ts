@@ -199,7 +199,7 @@ export default function useInvestFormMath(
 
   const bptOut = computed((): string => {
     if (managedPoolWithTradingHalted.value) return fullBPTOut.value.toString();
-    return minusSlippageScaled(fullBPTOut.value, pool.value.onchain.decimals);
+    return minusSlippageScaled(fullBPTOut.value);
   });
 
   const poolTokenBalances = computed((): string[] =>
