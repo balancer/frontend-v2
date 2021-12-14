@@ -16,6 +16,8 @@ interface LbpState {
   fetchingPoolData: boolean;
   poolId: string | null;
   poolAddress: string | null;
+  tokenRequiresApproval: boolean;
+  collateralTokenRequiresApproval: boolean;
 }
 
 const state = reactive<LbpState>({
@@ -44,7 +46,9 @@ const state = reactive<LbpState>({
     collateralEndWeight: 50,
     swapFeePercentage: 2.5,
     poolName: 'Pool Name',
-    poolSymbol: 'ABC'
+    poolSymbol: 'ABC',
+    bannerImageUrl:
+      'https://beethoven-assets.s3.eu-central-1.amazonaws.com/masthead-chillin.svg'
   },
 
   projectDetailsSaved: false,
@@ -53,7 +57,9 @@ const state = reactive<LbpState>({
   creatingAuction: false,
   fetchingPoolData: false,
   poolId: null,
-  poolAddress: null
+  poolAddress: null,
+  tokenRequiresApproval: false,
+  collateralTokenRequiresApproval: false
 });
 
 export default function useLbpState() {
@@ -122,6 +128,10 @@ export default function useLbpState() {
       data.collateralAmount === '' ||
       parseFloat(data.collateralAmount) === 0
     ) {
+      return false;
+    }
+
+    if (state.tokenRequiresApproval || state.collateralTokenRequiresApproval) {
       return false;
     }
 

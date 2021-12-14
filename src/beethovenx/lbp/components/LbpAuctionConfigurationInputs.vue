@@ -8,17 +8,16 @@ import useTokens from '@/composables/useTokens';
 import { computed } from 'vue';
 import { getAddress } from '@ethersproject/address';
 import LbpTokenWeightsConfig from '@/beethovenx/lbp/components/LbpTokenWeightsConfig.vue';
-import {
-  isGreaterThanOrEqualTo,
-  isSymbol,
-  maxChar
-} from '@/beethovenx/utils/validations';
+import { isGreaterThanOrEqualTo } from '@/beethovenx/utils/validations';
 import { isLessThanOrEqualTo } from '@/lib/utils/validations';
 
-const { data } = useLbpState();
+const {
+  data,
+  tokenRequiresApproval,
+  collateralTokenRequiresApproval
+} = useLbpState();
 const { appNetworkConfig } = useWeb3();
-const { loadingTokenLists, tokenListsLoaded } = useTokenLists();
-const { dynamicDataLoaded } = useTokens();
+const { tokenListsLoaded } = useTokenLists();
 
 const allowedCollateralTokens = computed(() => [
   getAddress(appNetworkConfig.addresses.weth),
@@ -120,7 +119,16 @@ const tokensLoaded = computed(() => {
         }
       "
       @token-weight-change="value => {}"
-      @token-approved="address => {}"
+      @token-approved="
+        () => {
+          tokenRequiresApproval = false;
+        }
+      "
+      @requires-approval="
+        () => {
+          tokenRequiresApproval = true;
+        }
+      "
       :can-delete="false"
       :has-token-weight="false"
       :hide-delete="true"
@@ -145,7 +153,16 @@ const tokensLoaded = computed(() => {
         }
       "
       @token-weight-change="value => {}"
-      @token-approved="address => {}"
+      @token-approved="
+        () => {
+          collateralTokenRequiresApproval = false;
+        }
+      "
+      @requires-approval="
+        () => {
+          collateralTokenRequiresApproval = true;
+        }
+      "
       :can-delete="false"
       :has-token-weight="false"
       :hide-delete="true"

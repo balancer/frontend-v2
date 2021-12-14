@@ -35,6 +35,14 @@ const { data } = useLbpState();
     <BalTextInput title="Discord URL" v-model="data.discordUrl" type="text" />
     <BalTextInput title="Telegram URL" v-model="data.telegramUrl" type="text" />
   </div>
+  <div class="mb-8">
+    <BalTextInput
+      title="Banner Image URL"
+      v-model="data.bannerImageUrl"
+      tooltip="Optionally provide a banner image that will appear on your auction page."
+      type="text"
+    />
+  </div>
   <div>
     <BalTextInput
       title="Project Description*"

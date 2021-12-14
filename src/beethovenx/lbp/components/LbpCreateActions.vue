@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import useLbpState from '@/beethovenx/lbp/composables/useLbpState';
-import ActionStepContainer from '@/beethovenx/components/containers/ActionStepContainer.vue';
 import { TransactionReceipt } from '@ethersproject/providers';
 import { computed } from 'vue';
 import { PoolCreatorService } from '@/beethovenx/services/pool/creator/pool-creator.service';
@@ -9,14 +8,14 @@ import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
 import useTokens from '@/composables/useTokens';
 import { CopperProxyService } from '@/beethovenx/services/pool/copper-proxy.service';
+import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 
-const { appNetworkConfig, getProvider, account } = useWeb3();
+const { appNetworkConfig, getProvider } = useWeb3();
 const {
   data,
   creatingAuction,
   poolId,
   poolAddress,
-  poolTokens,
   fetchingPoolData
 } = useLbpState();
 const { addTransaction } = useTransactions();
@@ -85,33 +84,23 @@ async function createAuction(): Promise<void> {
     blandit. Nullam ultrices sem nec cursus convallis. Vivamus in orci id dui
     sagittis fermentum.
   </div>
-  <div class="mb-4">
-    <ActionStepContainer
-      stepNumber="1"
-      :complete="poolId !== null"
-      headline="Create Your Auction"
-      subHeadline="Deploy LBP, Deposit assets, Schedule weight change"
-      buttonText="Create"
-      :buttonTextLoading="fetchingPoolData ? 'Fetching Pool...' : 'Creating...'"
-      :loading="creatingAuction"
-      :disabled="false"
-      @button-click="createAuction()"
-    >
-      <template v-slot:completeContent>
-        <div class="text-sm">{{ poolId }}</div>
-        <div class="text-sm text-right">{{ poolAddress }}</div>
-      </template>
-    </ActionStepContainer>
-  </div>
-  <ActionStepContainer
-    stepNumber="2"
-    :complete="false"
-    headline="Save Project Details"
-    subHeadline="Store your project details off chain"
-    buttonText="Save"
-    buttonTextLoading="Saving..."
-    :loading="false"
+
+  <BalBtn
+    v-if="creatingAuction || poolId === null"
+    @click="createAuction()"
+    :loading="creatingAuction"
+    :loading-label="
+      fetchingPoolData ? 'Saving Your Auction...' : 'Creating Your Auction...'
+    "
     :disabled="false"
-    completeText="testing"
-  />
+    size="md"
+    :block="true"
+    class="mt-8 mb-4"
+  >
+    Create Your Auction
+  </BalBtn>
+  <div v-else>
+    <div class="text-lg">Pool ID: {{ poolId }}</div>
+    <div class="text-lg">Pool Address: {{ poolAddress }}</div>
+  </div>
 </template>

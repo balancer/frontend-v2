@@ -8,6 +8,7 @@ export interface LbpData {
   discordUrl: string;
   telegramUrl: string;
   description: string;
+  bannerImageUrl: string;
 
   startDate: string;
   startTime: string;

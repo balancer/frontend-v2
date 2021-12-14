@@ -127,7 +127,6 @@ import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenMo
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
-import { configService } from '@/services/config/config.service';
 
 const ETH_BUFFER = 0.1;
 
@@ -173,7 +172,8 @@ export default defineComponent({
     'tokenAmountChange',
     'tokenWeightChange',
     'tokenDelete',
-    'tokenApproved'
+    'tokenApproved',
+    'requiresApproval'
   ],
 
   setup(props, { emit }) {
@@ -271,7 +271,9 @@ export default defineComponent({
     );
 
     watch(requiresApproval, newVal => {
-      if (!newVal) {
+      if (newVal) {
+        emit('requiresApproval', props.tokenAddressInput);
+      } else {
         emit('tokenApproved', props.tokenAddressInput);
       }
     });

@@ -10,22 +10,30 @@
       title="Enter Your Project Details"
       step-number="1"
     >
-      <template v-slot:content v-if="!projectDetailsSaved">
-        <LbpProjectDetailInputs />
-        <BalBtn
-          @click="saveProjectDetails()"
-          :disabled="!projectDetailsValid"
-          size="md"
-          :block="true"
-          class="mt-8 mb-2"
-          :loading="loadingToken"
-          loading-label="Loading token..."
-        >
-          Save Project Details
-        </BalBtn>
+      <template v-slot:content>
+        <div v-if="!projectDetailsSaved">
+          <LbpProjectDetailInputs />
+          <BalBtn
+            @click="saveProjectDetails()"
+            :disabled="!projectDetailsValid"
+            size="md"
+            :block="true"
+            class="mt-8 mb-2"
+            :loading="loadingToken"
+            loading-label="Loading token..."
+          >
+            Save Project Details
+          </BalBtn>
+        </div>
+        <LbpProjectDetailReview v-else />
       </template>
       <template v-slot:right v-if="projectDetailsSaved">
-        <BalBtn @click="editProjectDetails()" size="sm">
+        <BalBtn
+          v-if="poolId === null"
+          @click="editProjectDetails()"
+          size="sm"
+          :disabled="creatingAuction"
+        >
           <div class="px-4">
             Edit
           </div>
@@ -37,25 +45,31 @@
       title="Configure Your Auction"
       step-number="2"
     >
-      <template v-slot:content v-if="auctionConfigOpen">
-        <LbpAuctionConfigurationInputs />
-        <LbpPreviewChart />
+      <template v-slot:content v-if="auctionConfigOpen || auctionConfigSaved">
+        <div v-if="auctionConfigOpen">
+          <LbpAuctionConfigurationInputs />
+          <LbpPreviewChart />
 
-        <BalBtn
-          @click="saveAuctionConfig()"
-          :disabled="!auctionConfigValid"
-          size="md"
-          :block="true"
-          class="mt-8 mb-2"
-        >
-          Save Auction Configuration
-        </BalBtn>
+          <BalBtn
+            @click="saveAuctionConfig()"
+            :disabled="!auctionConfigValid"
+            size="md"
+            :block="true"
+            class="mt-8 mb-2"
+          >
+            Save Auction Configuration
+          </BalBtn>
+        </div>
+        <div v-else>
+          <LbpAuctionConfigurationReview />
+        </div>
       </template>
       <template v-slot:right v-if="auctionConfigSaved">
         <BalBtn
+          v-if="poolId === null"
           @click="editAuctionConfig()"
           size="sm"
-          :disabled="!projectDetailsSaved"
+          :disabled="!projectDetailsSaved || creatingAuction"
         >
           <div class="px-4">
             Edit
@@ -64,8 +78,8 @@
       </template>
     </StepContainer>
     <StepContainer
-      :complete="false"
-      title="Review & Deploy Your Fair Launch Auction"
+      :complete="poolId !== null"
+      title="Create Your Fair Launch Auction"
       step-number="3"
     >
       <template v-slot:content v-if="reviewAndDeployOpen">
@@ -92,9 +106,13 @@ import LbpProjectDetailInputs from '@/beethovenx/lbp/components/LbpProjectDetail
 import LbpAuctionConfigurationInputs from '@/beethovenx/lbp/components/LbpAuctionConfigurationInputs.vue';
 import LbpPreviewChart from '@/beethovenx/lbp/components/LbpPreviewChart.vue';
 import LbpCreateActions from '@/beethovenx/lbp/components/LbpCreateActions.vue';
+import LbpProjectDetailReview from '@/beethovenx/lbp/components/LbpProjectDetailReview.vue';
+import LbpAuctionConfigurationReview from '@/beethovenx/lbp/components/LbpAuctionConfigurationReview.vue';
 
 export default defineComponent({
   components: {
+    LbpAuctionConfigurationReview,
+    LbpProjectDetailReview,
     LbpCreateActions,
     LbpPreviewChart,
     LbpAuctionConfigurationInputs,
@@ -123,7 +141,9 @@ export default defineComponent({
       saveAuctionConfig,
       auctionConfigSaved,
       editAuctionConfig,
-      reviewAndDeployOpen
+      reviewAndDeployOpen,
+      poolId,
+      creatingAuction
     } = useLbpState();
 
     const allowedCollateralTokens = computed(() => [
@@ -161,7 +181,9 @@ export default defineComponent({
       saveAuctionConfig,
       auctionConfigSaved,
       editAuctionConfig,
-      reviewAndDeployOpen
+      reviewAndDeployOpen,
+      poolId,
+      creatingAuction
     };
   }
 });
