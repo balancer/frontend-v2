@@ -44,7 +44,7 @@ const tokensLoaded = computed(() => {
     </div>
     <div>
       <div class="text-gray-500">Pool Symbol</div>
-      <div class="text-xl">{{ data.poolSymbol }}</div>
+      <div class="text-xl">BPT-{{ data.poolSymbol }}</div>
     </div>
   </div>
   <div class="lbp-review-row">
