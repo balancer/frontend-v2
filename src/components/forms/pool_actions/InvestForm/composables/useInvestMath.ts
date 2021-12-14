@@ -35,6 +35,7 @@ export type InvestMathResponse = {
   hasAllTokens: Ref<boolean>;
   shouldFetchBatchSwap: Ref<boolean>;
   batchSwapLoading: Ref<boolean>;
+  supportsPropotionalOptimization: Ref<boolean>;
   // methods
   maximizeAmounts: () => void;
   optimizeAmounts: () => void;
@@ -222,6 +223,10 @@ export default function useInvestFormMath(
     (): boolean => pool.value && isStablePhantomPool.value && hasAmounts.value
   );
 
+  const supportsPropotionalOptimization = computed(
+    (): boolean => !isStablePhantomPool.value
+  );
+
   /**
    * METHODS
    */
@@ -305,6 +310,7 @@ export default function useInvestFormMath(
     hasAllTokens,
     shouldFetchBatchSwap,
     batchSwapLoading,
+    supportsPropotionalOptimization,
     // methods
     maximizeAmounts,
     optimizeAmounts,

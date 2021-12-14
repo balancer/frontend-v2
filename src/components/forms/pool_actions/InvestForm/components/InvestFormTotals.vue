@@ -35,7 +35,8 @@ const {
   highPriceImpact,
   maximized,
   optimized,
-  batchSwapLoading
+  batchSwapLoading,
+  supportsPropotionalOptimization
 } = toRefs(props.math);
 
 /**
@@ -99,7 +100,12 @@ const optimizeBtnClasses = computed(() => ({
           </BalTooltip>
         </div>
 
-        <div v-if="isWalletReady && hasAllTokens" class="text-sm font-semibold">
+        <div
+          v-if="
+            isWalletReady && hasAllTokens && supportsPropotionalOptimization
+          "
+          class="text-sm font-semibold"
+        >
           <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
             {{ $t('optimized') }}
           </span>
