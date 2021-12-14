@@ -110,7 +110,7 @@ const tokensLoaded = computed(() => {
     2% Platform Fee - Deducted by Beethoven X from the total funds raised at the
     end of the auction.
   </div>
-  <div class="border-blue-500 border-2 rounded-lg px-4 py-4 mb-8">
+  <div class="border-purple-500 border-2 rounded-lg px-4 py-4 mb-8">
     <div>
       <p class="mb-3">
         The trading fee is earned by your project on transacted volume during

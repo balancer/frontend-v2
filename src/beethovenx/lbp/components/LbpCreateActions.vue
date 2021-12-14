@@ -76,13 +76,23 @@ async function createAuction(): Promise<void> {
 
 <template>
   <div class="mb-6">
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce fringilla
-    ligula feugiat, ultrices lorem eget, pretium mauris. Morbi tempor turpis non
-    urna eleifend, ac porta felis placerat. Pellentesque et ante et tellus
-    commodo finibus. Donec ac sodales lectus, a porttitor eros. Interdum et
-    malesuada fames ac ante ipsum primis in faucibus. Sed vestibulum faucibus
-    blandit. Nullam ultrices sem nec cursus convallis. Vivamus in orci id dui
-    sagittis fermentum.
+    Now that your auction configuration is ready you need to deploy it to the
+    Fantom Blockchain. To do so, you must sign a transaction using your wallet.
+  </div>
+
+  <div class="border-purple-500 border-2 rounded-lg px-4 py-4 mb-8">
+    <div>
+      <p class="mb-3">Trades disabled by default</p>
+      <p class="mb-3">
+        Trades are disabled upon auction creation to prevent auction
+        participants from trading before the auction token price decay is
+        scheduled to start. You have the option to enable trading in the Auction
+        Settings tab and we recommend that you do so right as the auction token
+        price decay is scheduled to start. The Auction Settings tab will become
+        available on the auction page once you’ve created the auction.
+      </p>
+      <a href="" class="text-green-500 underline">More Info</a>
+    </div>
   </div>
 
   <BalBtn

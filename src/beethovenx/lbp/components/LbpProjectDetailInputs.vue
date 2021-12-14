@@ -10,7 +10,6 @@ const { data } = useLbpState();
     <BalTextInput title="Project Name*" v-model="data.name" type="text" />
     <BalTextInput
       title="Project Website URL*"
-      tooltip="testing"
       v-model="data.websiteUrl"
       type="text"
     />
