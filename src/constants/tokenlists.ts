@@ -17,9 +17,9 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '1': {
     Balancer: {
       Default:
-        'https://storageapi.fleek.co/balancer-team-bucket/assets/listed.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/listed.tokenlist.json',
       Vetted:
-        'https://storageapi.fleek.co/balancer-team-bucket/assets/vetted.tokenlist.json'
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/vetted.tokenlist.json'
     },
     External: [
       'ipns://tokens.uniswap.org',
