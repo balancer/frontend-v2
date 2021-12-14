@@ -15,16 +15,16 @@ export default function useSlippage() {
 
   function minusSlippage(_amount: string, decimals: number): string {
     let amount = parseUnits(_amount, decimals).toString();
-    amount = minusSlippageScaled(amount, decimals);
+    amount = minusSlippageScaled(amount);
 
     return formatUnits(amount, decimals);
   }
 
-  function minusSlippageScaled(amount: string, decimals: number): string {
+  function minusSlippageScaled(amount: string): string {
     const delta = bnum(amount)
       .times(slippageBasisPoints.value)
       .div(10000)
-      .toPrecision(decimals, BigNumber.ROUND_UP);
+      .dp(0, BigNumber.ROUND_UP);
 
     return bnum(amount)
       .minus(delta)
@@ -33,16 +33,16 @@ export default function useSlippage() {
 
   function addSlippage(_amount: string, decimals: number): string {
     let amount = parseUnits(_amount, decimals).toString();
-    amount = addSlippageScaled(amount, decimals);
+    amount = addSlippageScaled(amount);
 
     return formatUnits(amount, decimals).toString();
   }
 
-  function addSlippageScaled(amount: string, decimals: number): string {
+  function addSlippageScaled(amount: string): string {
     const delta = bnum(amount)
       .times(slippageBasisPoints.value)
       .div(10000)
-      .toPrecision(decimals, BigNumber.ROUND_DOWN);
+      .dp(0, BigNumber.ROUND_DOWN);
 
     return bnum(amount)
       .plus(delta)
