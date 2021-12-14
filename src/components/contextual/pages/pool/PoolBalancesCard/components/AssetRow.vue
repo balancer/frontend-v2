@@ -51,17 +51,16 @@ const balance = computed(() => {
 const balanceLabel = computed(() => fNum(balance.value, 'token'));
 
 const fiatLabel = computed(() => {
-  let fiatValue = toFiat(
-    balance.value,
-    props.mainTokenAddress ?? props.address
-  );
-
-  if (props.priceRate != null) {
-    fiatValue = bnum(fiatValue)
+  if (props.priceRate && props.mainTokenAddress) {
+    const equivMainTokenBalance = bnum(balance.value)
       .times(props.priceRate)
       .toString();
+
+    const fiatValue = toFiat(equivMainTokenBalance, props.mainTokenAddress);
+    return fNum(fiatValue, currency.value);
   }
 
+  let fiatValue = toFiat(balance.value, props.address);
   return fNum(fiatValue, currency.value);
 });
 </script>
