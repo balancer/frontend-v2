@@ -30,9 +30,7 @@ export default function useUserClaimsQuery(
   const queryKey = reactive(QUERY_KEYS.Claims.All(networkId, account));
 
   // COMPUTED
-  const isQueryEnabled = computed(
-    () => isWalletReady.value && account.value != null
-  );
+  const enabled = computed(() => isWalletReady.value && account.value != null);
 
   // METHODS
   const queryFn = async () => {
@@ -52,7 +50,7 @@ export default function useUserClaimsQuery(
   };
 
   const queryOptions = reactive({
-    enabled: isQueryEnabled,
+    enabled,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     ...options

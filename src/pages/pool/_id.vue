@@ -33,7 +33,7 @@
             >
               {{ $t('new') }}
             </BalChip>
-            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-1" />
+            <LiquidityAPRTooltip :pool="pool" class="-ml-1 mt-1" />
           </div>
           <div class="flex items-center mt-2">
             <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
@@ -90,7 +90,8 @@
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-1 lg:px-0">
             <PoolChart
-              :prices="historicalPrices"
+              :pool="pool"
+              :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
             />
@@ -178,7 +179,7 @@
 import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
@@ -200,7 +201,7 @@ export default defineComponent({
   components: {
     ...PoolPageComponents,
     GauntletIcon,
-    LiquidityMiningTooltip
+    LiquidityAPRTooltip
   },
 
   setup() {
@@ -237,9 +238,11 @@ export default defineComponent({
      * COMPUTED
      */
     const pool = computed(() => poolQuery.data.value);
-    const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
-      poolQuery.data
-    );
+    const {
+      isStableLikePool,
+      isLiquidityBootstrappingPool,
+      isStablePhantomPool
+    } = usePool(poolQuery.data);
 
     const noInitLiquidity = computed(
       () =>
@@ -304,7 +307,10 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      const feeLabel = `${fNum(pool.value.onchain.swapFee, 'percent')}`;
+      const feeLabel = `${fNum(
+        pool.value.onchain.swapFee,
+        'percent_variable'
+      )}`;
 
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);
@@ -321,9 +327,13 @@ export default defineComponent({
     const missingPrices = computed(() => {
       if (pool.value) {
         const tokensWithPrice = Object.keys(prices.value);
-        return !pool.value.tokenAddresses.every(token =>
-          tokensWithPrice.includes(token)
-        );
+
+        const tokens =
+          isStablePhantomPool.value && pool.value.mainTokens
+            ? pool.value.mainTokens
+            : pool.value.tokenAddresses;
+
+        return !tokens.every(token => tokensWithPrice.includes(token));
       }
       return false;
     });
@@ -361,6 +371,7 @@ export default defineComponent({
       return (
         !!pool.value &&
         !isLiquidityBootstrappingPool.value &&
+        !isStablePhantomPool.value &&
         pool.value.tokenAddresses.some(
           address => !knownTokens.includes(address)
         )
@@ -419,6 +430,7 @@ export default defineComponent({
       isStableLikePool,
       isLiquidityBootstrappingPool,
       isCopperPool,
+      isStablePhantomPool,
       copperNetworkPrefix,
       hasCustomToken,
       // methods

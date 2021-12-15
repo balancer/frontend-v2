@@ -33,7 +33,7 @@ withDefaults(defineProps<Props>(), {
 .pill {
   @apply flex;
   @apply relative;
-  @apply mr-1;
+  @apply mr-1 my-px;
 }
 .pill:last-child {
   @apply mr-0;

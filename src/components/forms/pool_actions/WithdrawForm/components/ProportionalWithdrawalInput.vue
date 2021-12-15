@@ -4,9 +4,10 @@ import { bnum } from '@/lib/utils';
 import BigNumber from 'bignumber.js';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
+import { TokenInfoMap } from '@/types/TokenList';
 // Composables
 import useNumbers from '@/composables/useNumbers';
-import { usePool } from '@/composables/usePool';
+import { isStablePhantom, usePool } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
 import usePoolTransfers from '@/composables/contextual/pool-transfers/usePoolTransfers';
@@ -38,7 +39,9 @@ const {
   hasBpt,
   fiatTotalLabel,
   fiatAmounts,
-  proportionalAmounts
+  proportionalAmounts,
+  shouldFetchBatchSwap,
+  loadingAmountsOut
 } = toRefs(props.math);
 
 const { slider } = useWithdrawalState(toRef(props, 'pool'));
@@ -52,7 +55,14 @@ const { fNum } = useNumbers();
 /**
  * COMPUTED
  */
-const tokens = computed(() => getTokens(props.tokenAddresses));
+const tokens = computed(
+  (): TokenInfoMap => {
+    if (isStablePhantom(props.pool.poolType)) {
+      return getTokens(props.pool.mainTokens || []);
+    }
+    return getTokens(props.pool.tokenAddresses);
+  }
+);
 
 const percentageLabel = computed(() => {
   try {
@@ -84,6 +94,12 @@ function handleSliderChange(newVal: number): void {
     .toFixed(props.pool.onchain.decimals);
 }
 
+async function handleSliderEnd(): Promise<void> {
+  if (shouldFetchBatchSwap.value) {
+    await props.math.getSwap();
+  }
+}
+
 /**
  * WATCHERS
  */
@@ -106,7 +122,11 @@ onBeforeMount(() => {
         <div class="flex">
           <WithdrawalTokenSelect :pool="pool" />
           <div class="flex-grow text-right text-xl font-numeric">
-            {{ missingPrices ? '-' : fiatTotalLabel }}
+            <BalLoadingBlock
+              v-if="loadingAmountsOut"
+              class="w-20 h-8 float-right"
+            />
+            <span v-else>{{ missingPrices ? '-' : fiatTotalLabel }}</span>
           </div>
         </div>
         <div class="flex mt-2 text-sm text-gray-500">
@@ -123,6 +143,7 @@ onBeforeMount(() => {
           tooltip="none"
           :disabled="!hasBpt"
           @update:modelValue="handleSliderChange"
+          @dragEnd="handleSliderEnd"
         />
       </div>
     </div>
@@ -145,13 +166,18 @@ onBeforeMount(() => {
               </span>
             </div>
           </div>
-          <div class="flex flex-col flex-grow text-right pl-2 font-numeric">
-            <span class="break-words text-xl">
-              {{ fNum(proportionalAmounts[i], 'token') }}
-            </span>
-            <span class="text-sm text-gray-400">
-              {{ fNum(fiatAmounts[i], 'usd') }}
-            </span>
+          <div
+            class="flex flex-col flex-grow items-end text-right pl-2 font-numeric"
+          >
+            <BalLoadingBlock v-if="loadingAmountsOut" class="w-20 h-12" />
+            <template v-else>
+              <span class="break-words text-xl">
+                {{ fNum(proportionalAmounts[i], 'token') }}
+              </span>
+              <span class="text-sm text-gray-400">
+                {{ fNum(fiatAmounts[i], 'usd') }}
+              </span>
+            </template>
           </div>
         </div>
       </div>

@@ -9,6 +9,7 @@ import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 // Components
 import AssetRow from './components/AssetRow.vue';
+import { usePool } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { tokens, balances, balanceFor } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
+const { isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
 /**
  * SERVICES
@@ -54,11 +56,34 @@ const propTokenAmounts = computed((): string[] => {
     'send'
   );
 
+  if (isStablePhantomPool.value) {
+    // Return linear pool's main token balance using the price rate.
+    // mainTokenBalance = linearPoolBPT * priceRate
+    return props.pool.tokenAddresses.map((address, i) => {
+      if (!props.pool.onchain.linearPools) return '0';
+
+      const priceRate = props.pool.onchain.linearPools[address].priceRate;
+
+      return bnum(receive[i])
+        .times(priceRate)
+        .toString();
+    });
+  }
+
   return receive;
 });
 
+const tokenAddresses = computed((): string[] => {
+  if (isStablePhantomPool.value) {
+    // We're using mainToken balances for StablePhantom pools
+    // so return mainTokens here so that fiat values are correct.
+    return props.pool.mainTokens || [];
+  }
+  return props.pool.tokenAddresses;
+});
+
 const fiatTotal = computed(() => {
-  const fiatValue = props.pool.tokenAddresses
+  const fiatValue = tokenAddresses.value
     .map((address, i) => toFiat(propTokenAmounts.value[i], address))
     .reduce((total, value) =>
       bnum(total)
@@ -72,7 +97,7 @@ const fiatTotal = computed(() => {
 <template>
   <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
-      <div class="p-4 w-full shadow-lg">
+      <div class="p-4 w-full border-b dark:border-gray-900">
         <h6>
           {{ $t('poolTransfer.myPoolBalancesCard.title') }}
         </h6>
@@ -80,11 +105,7 @@ const fiatTotal = computed(() => {
     </template>
 
     <div class="-mt-2 p-4">
-      <div
-        v-for="(address, i) in pool.tokenAddresses"
-        :key="address"
-        class="py-2"
-      >
+      <div v-for="(address, i) in tokenAddresses" :key="address" class="py-2">
         <AssetRow :address="address" :balance="propTokenAmounts[i]" />
       </div>
       <div class="pt-4 flex justify-between font-medium">

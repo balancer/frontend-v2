@@ -33,12 +33,13 @@ const selectedOption = ref(props.initToken);
  */
 const { getTokens, getToken, nativeAsset } = useTokens();
 const { isProportional, tokenOut } = useWithdrawalState(toRef(props, 'pool'));
-const { isWethPool } = usePool(toRef(props, 'pool'));
+const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
 /**
  * COMPUTED
  */
 const tokenAddresses = computed(() => {
+  if (isStablePhantomPool.value) return props.pool?.mainTokens || [];
   if (isWethPool.value)
     return [nativeAsset.address, ...props.pool.tokenAddresses];
   return props.pool.tokenAddresses;
@@ -51,7 +52,7 @@ const options = computed(() => ['all', ...tokenAddresses.value]);
 const selectedToken = computed((): TokenInfo => getToken(selectedOption.value));
 
 const assetSetWidth = computed(
-  () => 40 + (props.pool.tokenAddresses.length - 2) * 10
+  () => 40 + (tokenAddresses.value.length - 2) * 10
 );
 
 /**
@@ -76,7 +77,7 @@ function handleSelected(newToken: string): void {
         <div>
           <BalAssetSet
             v-if="isProportional"
-            :addresses="pool.tokenAddresses"
+            :addresses="tokenAddresses"
             :width="50"
           />
           <BalAsset
@@ -99,10 +100,7 @@ function handleSelected(newToken: string): void {
     <template #option="{ option }">
       <div v-if="option === 'all'" class="flex items-center justify-between">
         <div class="flex items-center">
-          <BalAssetSet
-            :addresses="pool.tokenAddresses"
-            :width="assetSetWidth"
-          />
+          <BalAssetSet :addresses="tokenAddresses" :width="assetSetWidth" />
           {{ $t('allTokens') }}
         </div>
         <BalIcon

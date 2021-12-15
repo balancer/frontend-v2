@@ -1,6 +1,29 @@
-import Service from '../../balancer-subgraph.service';
-import queryBuilder from './query';
+import { differenceInWeeks } from 'date-fns';
+
+import { getAddress } from '@ethersproject/address';
+
+import { lidoService } from '@/services/lido/lido.service';
+import PoolService from '@/services/pool/pool.service';
+import { TokenPrices } from '@/services/coingecko/api/price.service';
+import { configService as _configService } from '@/services/config/config.service';
+
+import { FiatCurrency } from '@/constants/currency';
+
 import { bnum } from '@/lib/utils';
+import {
+  currentLiquidityMiningRewards,
+  computeTotalAPRForPool,
+  computeAPRsForPool
+} from '@/lib/utils/liquidityMining';
+
+import { Network } from '@/composables/useNetwork';
+import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
+import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
+
+import Service from '../../balancer-subgraph.service';
+
+import queryBuilder from './query';
+
 import {
   Pool,
   QueryBuilder,
@@ -8,21 +31,7 @@ import {
   DecoratedPool,
   PoolToken
 } from '../../types';
-import { getAddress } from '@ethersproject/address';
-import {
-  currentLiquidityMiningRewards,
-  computeTotalAPRForPool,
-  computeAPRsForPool
-} from '@/lib/utils/liquidityMining';
-import { Network } from '@/composables/useNetwork';
-import { configService as _configService } from '@/services/config/config.service';
-import { TokenPrices } from '@/services/coingecko/api/price.service';
-import { FiatCurrency } from '@/constants/currency';
-import { isStable, isWstETH } from '@/composables/usePool';
-import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
-import { lidoService } from '@/services/lido/lido.service';
-import PoolService from '@/services/pool/pool.service';
-import { differenceInWeeks } from 'date-fns';
+import { aaveService } from '@/services/aave/aave.service';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -89,13 +98,17 @@ export default class Pools {
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
       const poolAPR = this.calcAPR(pool, pastPool);
+
       const fees = this.calcFees(pool, pastPool);
       const {
         hasLiquidityMiningRewards,
         liquidityMiningAPR,
         liquidityMiningBreakdown
       } = this.calcLiquidityMiningAPR(pool, prices, currency);
-      const thirdPartyAPR = await this.calcThirdPartyAPR(pool);
+      const {
+        thirdPartyAPR,
+        thirdPartyAPRBreakdown
+      } = await this.calcThirdPartyAPR(pool, prices, currency);
       const totalAPR = this.calcTotalAPR(
         poolAPR,
         liquidityMiningAPR,
@@ -116,6 +129,7 @@ export default class Pools {
           apr: {
             pool: poolAPR,
             thirdParty: thirdPartyAPR,
+            thirdPartyBreakdown: thirdPartyAPRBreakdown,
             liquidityMining: liquidityMiningAPR,
             liquidityMiningBreakdown,
             total: totalAPR
@@ -202,11 +216,30 @@ export default class Pools {
    * liquidity minning rewards. These APRs may require 3rd party
    * API requests.
    */
-  private async calcThirdPartyAPR(pool: Pool): Promise<string> {
+  private async calcThirdPartyAPR(
+    pool: Pool,
+    prices: TokenPrices,
+    currency: FiatCurrency
+  ) {
+    let thirdPartyAPR = '0';
+    let thirdPartyAPRBreakdown = {};
+
     if (isWstETH(pool)) {
-      return await lidoService.calcStEthAPRFor(pool);
+      thirdPartyAPR = await lidoService.calcStEthAPRFor(pool);
+    } else if (isStablePhantom(pool.poolType)) {
+      const {
+        total,
+        tokenBreakdown
+      } = await aaveService.calcWeightedSupplyAPRFor(pool, prices, currency);
+
+      thirdPartyAPR = total;
+      thirdPartyAPRBreakdown = tokenBreakdown;
     }
-    return '0';
+
+    return {
+      thirdPartyAPR,
+      thirdPartyAPRBreakdown
+    };
   }
 
   private calcTotalAPR(

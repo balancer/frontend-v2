@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { toRef, toRefs, computed, reactive } from 'vue';
+import { toRef, toRefs, computed, reactive, watch } from 'vue';
 import PoolExchange from '@/services/pool/exchange/exchange.service';
-import { getPoolWeights } from '@/services/pool/pool.helper';
+import { poolWeightsLabel } from '@/composables/usePool';
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
 import {
@@ -17,9 +17,13 @@ import { useI18n } from 'vue-i18n';
 import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
 import useConfig from '@/composables/useConfig';
+import { configService } from '@/services/config/config.service';
+import { BigNumber } from 'ethers';
+import { formatUnits } from '@ethersproject/units';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import { TransactionActionInfo } from '@/types/transactions';
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
+import { boostedJoinBatchSwap } from '@/lib/utils/balancer/swapper';
 /**
  * TYPES
  */
@@ -30,6 +34,8 @@ type Props = {
 };
 
 type InvestmentState = {
+  init: boolean;
+  confirming: boolean;
   confirmed: boolean;
   confirmedAt: string;
   receipt?: TransactionReceipt;
@@ -48,6 +54,8 @@ const emit = defineEmits<{
  * STATE
  */
 const investmentState = reactive<InvestmentState>({
+  init: false,
+  confirming: false,
   confirmed: false,
   confirmedAt: ''
 });
@@ -58,10 +66,18 @@ const investmentState = reactive<InvestmentState>({
 const route = useRoute();
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { account, getProvider, explorerLinks } = useWeb3();
+const { account, getProvider, explorerLinks, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
-const { fullAmounts, bptOut, fiatTotalLabel } = toRefs(props.math);
+const {
+  fullAmounts,
+  batchSwapAmountMap,
+  bptOut,
+  fiatTotalLabel,
+  batchSwap,
+  shouldFetchBatchSwap
+} = toRefs(props.math);
+
 const { tokenApprovalActions } = useTokenApprovalActions(
   props.tokenAddresses,
   fullAmounts
@@ -92,6 +108,13 @@ const explorerLink = computed((): string =>
     : ''
 );
 
+const transactionInProgress = computed(
+  (): boolean =>
+    investmentState.init ||
+    investmentState.confirming ||
+    investmentState.confirmed
+);
+
 /**
  * METHODS
  */
@@ -103,7 +126,7 @@ async function handleTransaction(tx): Promise<void> {
     action: 'invest',
     summary: t('transactionSummary.investInPool', [
       fiatTotalLabel.value,
-      getPoolWeights(props.pool)
+      poolWeightsLabel(props.pool)
     ]),
     details: {
       total: fiatTotalLabel.value,
@@ -119,22 +142,42 @@ async function handleTransaction(tx): Promise<void> {
       const confirmedAt = await getTxConfirmedAt(receipt);
       investmentState.confirmedAt = dateTimeLabelFor(confirmedAt);
       investmentState.confirmed = true;
+      investmentState.confirming = false;
     },
     onTxFailed: () => {
       console.error('Invest failed');
+      investmentState.confirming = false;
     }
   });
 }
 
 async function submit(): Promise<TransactionResponse> {
   try {
-    const tx = await poolExchange.join(
-      getProvider(),
-      account.value,
-      fullAmounts.value,
-      props.tokenAddresses,
-      bptOut.value
-    );
+    let tx;
+    investmentState.init = true;
+
+    if (batchSwap.value) {
+      tx = await boostedJoinBatchSwap(
+        configService.network.key,
+        getProvider(),
+        batchSwap.value.swaps,
+        batchSwap.value.assets,
+        props.pool.address,
+        batchSwapAmountMap.value,
+        BigNumber.from(bptOut.value)
+      );
+    } else {
+      tx = await poolExchange.join(
+        getProvider(),
+        account.value,
+        fullAmounts.value,
+        props.tokenAddresses,
+        formatUnits(bptOut.value, props.pool.onchain.decimals)
+      );
+    }
+
+    investmentState.init = false;
+    investmentState.confirming = true;
 
     console.log('Receipt', tx);
 
@@ -145,6 +188,15 @@ async function submit(): Promise<TransactionResponse> {
     return Promise.reject(error);
   }
 }
+
+/**
+ * WATCHERS
+ */
+watch(blockNumber, async () => {
+  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
+    await props.math.getBatchSwap();
+  }
+});
 </script>
 
 <template>

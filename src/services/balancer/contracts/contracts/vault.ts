@@ -1,24 +1,42 @@
 import Service from '../balancer-contracts.service';
-import { Vault__factory } from '@balancer-labs/typechain';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { getAddress } from '@ethersproject/address';
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
-import { OnchainPoolData, PoolType } from '../../subgraph/types';
-import ConfigService from '@/services/config/config.service';
+import {
+  LinearPoolDataMap,
+  OnchainPoolData,
+  OnchainTokenDataMap,
+  PoolType,
+  RawLinearPoolData,
+  RawLinearPoolDataMap,
+  RawOnchainPoolData,
+  RawPoolTokens
+} from '../../subgraph/types';
 import { TokenInfoMap } from '@/types/TokenList';
 import {
   isWeightedLike,
   isStableLike,
-  isTradingHaltable
+  isTradingHaltable,
+  isStablePhantom
 } from '@/composables/usePool';
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
+import { pick } from 'lodash';
+import { Vault__factory } from '@balancer-labs/typechain';
+import { Contract } from 'ethers';
+import VaultAbi from '@/lib/abi/VaultAbi.json';
 
 export default class Vault {
   service: Service;
+  instance: Contract;
 
-  constructor(service, private readonly configService = new ConfigService()) {
+  constructor(service, instanceABI = VaultAbi) {
     this.service = service;
+    this.instance = new Contract(
+      this.service.config.addresses.vault,
+      instanceABI,
+      this.service.provider
+    );
   }
 
   public async getPoolData(
@@ -27,88 +45,248 @@ export default class Vault {
     tokens: TokenInfoMap
   ): Promise<OnchainPoolData> {
     const poolAddress = getAddress(id.slice(0, 42));
-    let result = {} as Record<any, any>;
+    let result = <RawOnchainPoolData>{};
+
     const vaultMultiCaller = new Multicaller(
-      this.configService.network.key,
+      this.service.config.key,
       this.service.provider,
       Vault__factory.abi
     );
-    const tokenMultiCaller = new Multicaller(
-      this.configService.network.key,
+
+    const poolMulticaller = new Multicaller(
+      this.service.config.key,
       this.service.provider,
-      this.service.allABIs
+      this.service.allPoolABIs
     );
 
-    vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
-    result = await vaultMultiCaller.execute(result);
-    tokenMultiCaller.call('totalSupply', poolAddress, 'totalSupply');
-    tokenMultiCaller.call('decimals', poolAddress, 'decimals');
-    tokenMultiCaller.call('swapFee', poolAddress, 'getSwapFeePercentage');
+    poolMulticaller.call('totalSupply', poolAddress, 'totalSupply');
+    poolMulticaller.call('decimals', poolAddress, 'decimals');
+    poolMulticaller.call('swapFee', poolAddress, 'getSwapFeePercentage');
 
     if (isWeightedLike(type)) {
-      tokenMultiCaller.call('weights', poolAddress, 'getNormalizedWeights', []);
+      poolMulticaller.call('weights', poolAddress, 'getNormalizedWeights', []);
 
       if (isTradingHaltable(type)) {
-        tokenMultiCaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
+        poolMulticaller.call('swapEnabled', poolAddress, 'getSwapEnabled');
       }
     } else if (isStableLike(type)) {
-      tokenMultiCaller.call('amp', poolAddress, 'getAmplificationParameter');
+      poolMulticaller.call('amp', poolAddress, 'getAmplificationParameter');
+
+      if (isStablePhantom(type)) {
+        // Overwrite totalSupply with virtualSupply for StablePhantom pools
+        poolMulticaller.call('totalSupply', poolAddress, 'getVirtualSupply');
+
+        Object.keys(tokens).forEach((token, i) => {
+          poolMulticaller.call(`linearPools.${token}.id`, token, 'getPoolId');
+          poolMulticaller.call(
+            `linearPools.${token}.priceRate`,
+            token,
+            'getRate'
+          );
+          poolMulticaller.call(
+            `tokenRates[${i}]`,
+            poolAddress,
+            'getTokenRate',
+            [token]
+          );
+          poolMulticaller.call(
+            `linearPools.${token}.mainToken.address`,
+            token,
+            'getMainToken'
+          );
+          poolMulticaller.call(
+            `linearPools.${token}.mainToken.index`,
+            token,
+            'getMainIndex'
+          );
+          poolMulticaller.call(
+            `linearPools.${token}.wrappedToken.address`,
+            token,
+            'getWrappedToken'
+          );
+          poolMulticaller.call(
+            `linearPools.${token}.wrappedToken.index`,
+            token,
+            'getWrappedIndex'
+          );
+          poolMulticaller.call(
+            `linearPools.${token}.wrappedToken.rate`,
+            token,
+            'getWrappedTokenRate'
+          );
+        });
+      }
     }
 
-    result = await tokenMultiCaller.execute(result);
+    result = await poolMulticaller.execute(result);
 
-    return this.serializePoolData(result, type, tokens);
+    vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
+
+    if (isStablePhantom(type) && result.linearPools) {
+      const wrappedTokensMap: Record<string, string> = {};
+
+      Object.keys(result.linearPools).forEach(address => {
+        if (!result.linearPools) return;
+        const linearPool: RawLinearPoolData = result.linearPools[address];
+
+        vaultMultiCaller.call(
+          `linearPools.${address}.tokenData`,
+          this.address,
+          'getPoolTokens',
+          [linearPool.id]
+        );
+
+        wrappedTokensMap[address] = linearPool.wrappedToken.address;
+      });
+
+      Object.entries(wrappedTokensMap).forEach(([address, wrappedToken]) => {
+        poolMulticaller.call(
+          `linearPools.${address}.unwrappedTokenAddress`,
+          wrappedToken,
+          'ATOKEN'
+        );
+        poolMulticaller.call(
+          `linearPools.${address}.totalSupply`,
+          address,
+          'getVirtualSupply'
+        );
+      });
+
+      result = await poolMulticaller.execute(result);
+    }
+
+    result = await vaultMultiCaller.execute(result);
+
+    return this.formatPoolData(result, type, tokens, poolAddress);
   }
 
-  public serializePoolData(
-    data,
+  public formatPoolData(
+    rawData: RawOnchainPoolData,
     type: PoolType,
-    tokens: TokenInfoMap
+    tokens: TokenInfoMap,
+    poolAddress: string
   ): OnchainPoolData {
-    const _tokens = {};
-    const weights = this.normalizeWeights(data?.weights, type, tokens);
+    const poolData = <OnchainPoolData>{};
 
-    data.poolTokens.tokens.map((token, i) => {
-      const tokenBalance = data.poolTokens.balances[i];
-      const tokenDecimals = tokens[token]?.decimals;
-      _tokens[token] = {
-        balance: formatUnits(tokenBalance, tokenDecimals),
+    // Filter out pre-minted BPT token if exists
+    const validTokens = Object.keys(tokens).filter(
+      address => address !== poolAddress
+    );
+    tokens = pick(tokens, validTokens);
+
+    const normalizedWeights = this.normalizeWeights(
+      rawData?.weights || [],
+      type,
+      tokens
+    );
+
+    poolData.tokens = this.formatPoolTokens(
+      rawData.poolTokens,
+      tokens,
+      normalizedWeights,
+      poolAddress
+    );
+
+    poolData.amp = '0';
+    if (rawData?.amp) {
+      poolData.amp = rawData.amp.value.div(rawData.amp.precision).toString();
+    }
+
+    poolData.swapEnabled = true;
+    if (rawData.swapEnabled !== undefined) {
+      poolData.swapEnabled = rawData.swapEnabled;
+    }
+
+    if (rawData?.linearPools) {
+      poolData.linearPools = this.formatLinearPools(rawData.linearPools);
+    }
+
+    if (rawData.tokenRates) {
+      poolData.tokenRates = rawData.tokenRates.map(rate =>
+        formatUnits(rate.toString(), 18)
+      );
+    }
+
+    poolData.totalSupply = formatUnits(rawData.totalSupply, rawData.decimals);
+    poolData.decimals = rawData.decimals;
+    poolData.swapFee = formatUnits(rawData.swapFee, 18);
+
+    return poolData;
+  }
+
+  private formatPoolTokens(
+    poolTokens: RawPoolTokens,
+    tokenInfo: TokenInfoMap,
+    weights: number[],
+    poolAddress: string
+  ): OnchainTokenDataMap {
+    const tokens = <OnchainTokenDataMap>{};
+
+    poolTokens.tokens.forEach((token, i) => {
+      const tokenBalance = poolTokens.balances[i];
+      const decimals = tokenInfo[token]?.decimals;
+      tokens[token] = {
+        decimals,
+        balance: formatUnits(tokenBalance, decimals),
         weight: weights[i],
-        decimals: tokenDecimals,
-        symbol: tokens[token]?.symbol,
-        name: tokens[token]?.name,
-        logoURI: tokens[token]?.logoURI
+        symbol: tokenInfo[token]?.symbol,
+        name: tokenInfo[token]?.name,
+        logoURI: tokenInfo[token]?.logoURI
       };
     });
 
-    let amp = '0';
-    if (data?.amp) {
-      amp = data.amp.value.div(data.amp.precision);
-    }
+    // Remove pre-minted BPT
+    delete tokens[poolAddress];
 
-    let swapEnabled = true;
-    if (Object.keys(data).includes('swapEnabled')) {
-      swapEnabled = data.swapEnabled;
-    }
+    return tokens;
+  }
 
-    return {
-      tokens: _tokens,
-      totalSupply: formatUnits(data.totalSupply, data.decimals),
-      decimals: data.decimals,
-      swapFee: formatUnits(data.swapFee, 18),
-      amp,
-      swapEnabled
-    };
+  private formatLinearPools(
+    linearPools: RawLinearPoolDataMap
+  ): LinearPoolDataMap {
+    const _linearPools = <LinearPoolDataMap>{};
+
+    Object.keys(linearPools).forEach(address => {
+      const {
+        id,
+        mainToken,
+        wrappedToken,
+        priceRate,
+        unwrappedTokenAddress,
+        tokenData,
+        totalSupply
+      } = linearPools[address];
+
+      _linearPools[address] = {
+        id,
+        priceRate: formatUnits(priceRate.toString(), 18),
+        mainToken: {
+          address: getAddress(mainToken.address),
+          index: mainToken.index.toNumber(),
+          balance: tokenData.balances[mainToken.index.toNumber()].toString()
+        },
+        wrappedToken: {
+          address: getAddress(wrappedToken.address),
+          index: wrappedToken.index.toNumber(),
+          balance: tokenData.balances[wrappedToken.index.toNumber()].toString(),
+          priceRate: formatUnits(wrappedToken.rate, 18)
+        },
+        unwrappedTokenAddress: getAddress(unwrappedTokenAddress),
+        totalSupply: formatUnits(totalSupply, 18)
+      };
+    });
+
+    return _linearPools;
   }
 
   public normalizeWeights(
     weights: BigNumber[],
     type: PoolType,
     tokens: TokenInfoMap
-  ) {
+  ): number[] {
     if (isWeightedLike(type)) {
       // toNormalizedWeights returns weights as 18 decimal fixed point
-      return toNormalizedWeights(weights).map(w => formatUnits(w, 18));
+      return toNormalizedWeights(weights).map(w => Number(formatUnits(w, 18)));
     } else if (isStableLike(type)) {
       const tokensList = Object.values(tokens);
       return tokensList.map(() => 1 / tokensList.length);

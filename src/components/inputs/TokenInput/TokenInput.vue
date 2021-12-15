@@ -34,6 +34,7 @@ type Props = {
   customBalance?: string;
   balanceLabel?: string;
   disableMax?: boolean;
+  balanceLoading?: boolean;
   hint?: string;
   hintAmount?: string;
   excludedTokens?: string[];
@@ -53,6 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
   noMax: false,
   fixedToken: false,
   disableMax: false,
+  balanceLoading: false,
   hintAmount: '',
   disableNativeAssetBuffer: false,
   options: () => [],
@@ -252,11 +254,14 @@ watchEffect(() => {
           class="flex items-center justify-between text-sm text-gray-500 leading-none"
         >
           <div v-if="!isWalletReady" />
-          <div v-else class="cursor-pointer" @click="setMax">
+          <div v-else class="cursor-pointer flex items-center" @click="setMax">
             {{ balanceLabel ? balanceLabel : $t('balance') }}:
-            <span class="mr-2">
+
+            <BalLoadingBlock v-if="balanceLoading" class="w-12 h-4 mx-2" />
+            <span v-else class="mx-2">
               {{ fNum(tokenBalance, 'token') }}
             </span>
+
             <template v-if="hasBalance && !noMax && !disableMax">
               <span v-if="!isMaxed" class="text-blue-500">
                 {{ $t('max') }}
