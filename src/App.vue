@@ -13,6 +13,7 @@ import Notifications from '@/components/notifications/Notifications.vue';
 import useGnosisSafeApp from './composables/useGnosisSafeApp';
 import useGlobalQueryWatchers from './composables/watchers/useGlobalQueryWatchers';
 import usePoolCreationWatcher from './composables/watchers/usePoolCreationWatcher';
+import useExploitWatcher from './composables/watchers/useExploitWatcher';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -37,6 +38,7 @@ export default defineComponent({
     usePoolCreationWatcher();
     useGlobalQueryWatchers();
     useGnosisSafeApp();
+    useExploitWatcher();
     const { isWalletSelectVisible, toggleWalletSelectModal } = useWeb3();
     const route = useRoute();
     const store = useStore();
