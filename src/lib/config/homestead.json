@@ -47,7 +47,7 @@
     "lidoRelayer": "0xdcdbf71A870cc60C6F9B621E28a7D3Ffd6Dd4965",
     "MockFlashLoanReceiver": "",
     "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E",
-    "batchRelayer": ""
+    "batchRelayer": "0xAc9f49eF3ab0BbC929f7b1bb0A17E1Fca5786251"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
