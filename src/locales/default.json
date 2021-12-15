@@ -461,7 +461,8 @@
             "aaveBoosted": "Aave boosted APR"
         },
         "fiat": {
-            "steth": "stETH staking rewards"
+            "steth": "stETH staking rewards",
+            "aaveBoosted": "Aave boosted rewards"
         }
     },
     "threeMonths": "3M",
