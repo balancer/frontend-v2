@@ -75,7 +75,7 @@ const thirdPartyMultiRewardPool = computed(
   () => Object.keys(thirdPartyTokens.value).length > 1
 );
 
-const thirdPartyAPRLabel = computed(() => {
+const thirdPartyFiatLabel = computed(() => {
   if (isWstETH(props.pool)) return t('thirdPartyRewards.fiat.steth');
   if (isStablePhantom(props.pool.poolType))
     return t('thirdPartyRewards.fiat.aaveBoosted');
@@ -171,7 +171,7 @@ function weeklyYieldForAPR(apr: string): string {
                 <div class="flex items-center">
                   {{ fNum(thirdPartyWeeklyYield, currency) }}
                   <span class="ml-1 text-gray-500 text-xs">
-                    {{ thirdPartyAPRLabel }}
+                    {{ thirdPartyFiatLabel }}
                   </span>
                 </div>
                 <template v-if="thirdPartyMultiRewardPool" #item="{ item }">
