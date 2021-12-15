@@ -42,7 +42,7 @@
     "wstETH": "",
     "lidoRelayer": "",
     "balancerHelpers": "0x77d46184d22CA6a3726a2F500c776767b6A3d6Ab",
-    "batchRelayer": ""
+    "batchRelayer": "0x0000000000000000000000000000000000000000"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
