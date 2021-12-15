@@ -162,6 +162,10 @@ export default function useWithdrawMath(
     return balances[tokenOutIndex.value];
   });
 
+  const amountExceedsPoolBalance = computed(() =>
+    bnum(tokenOutAmount.value).gt(tokenOutPoolBalance.value)
+  );
+
   /**
    * Proportional pool token amounts out given BPT in.
    * Only relevant for exit calls, not batchSwap or batch relayer exits.
@@ -309,6 +313,7 @@ export default function useWithdrawMath(
   );
 
   const priceImpact = computed((): number => {
+    if (amountExceedsPoolBalance.value) return 1;
     if (!hasAmounts.value || isProportional.value) return 0;
 
     return poolCalculator
