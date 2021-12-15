@@ -37,7 +37,7 @@ const { t } = useI18n();
  * COMPUTED
  */
 const tabs = computed(() =>
-  isStablePhantomPool
+  isStablePhantomPool.value
     ? [
         {
           value: PoolTransactionsTab.ALL_ACTIVITY,
