@@ -106,3 +106,10 @@ export async function forChange(
   await sleep(checkDelay);
   await forChange(reactiveVar, expected, checkCount++);
 }
+
+/**
+ * Sums and array of string numbers and returns as BigNumber
+ */
+export function bnSum(amounts: string[]): BigNumber {
+  return amounts.reduce((a, b) => bnum(a).plus(b), bnum(0));
+}

@@ -4,6 +4,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import { useRoute } from 'vue-router';
 import useTokens from '@/composables/useTokens';
+import { isStablePhantom } from '@/composables/usePool';
 
 /**
  * STATE
@@ -43,14 +44,21 @@ export default function usePoolTransfers() {
     (): boolean => poolQueryLoading.value || !pool.value
   );
 
-  const missingPrices = computed(() => {
+  const tokenAddresses = computed(() => {
     if (pool.value) {
-      const tokensWithPrice = Object.keys(prices.value);
-      return !pool.value.tokenAddresses.every(token =>
-        tokensWithPrice.includes(token)
-      );
+      if (isStablePhantom(pool.value.poolType)) {
+        return pool.value.mainTokens || [];
+      }
+      return pool.value?.tokenAddresses || [];
     }
-    return false;
+    return [];
+  });
+
+  const missingPrices = computed(() => {
+    const tokensWithPrice = Object.keys(prices.value);
+    return !tokenAddresses.value.every(token =>
+      tokensWithPrice.includes(token)
+    );
   });
 
   return {

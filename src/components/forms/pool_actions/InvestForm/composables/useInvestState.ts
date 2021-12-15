@@ -1,4 +1,7 @@
 import { reactive, toRefs } from 'vue';
+import { configService } from '@/services/config/config.service';
+import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
+import { SOR } from '@balancer-labs/sor2';
 
 type InvestState = {
   amounts: string[];
@@ -7,6 +10,7 @@ type InvestState = {
   validInputs: boolean[];
   highPriceImpactAccepted: boolean;
   submitting: boolean;
+  sorReady: boolean;
 };
 
 /**
@@ -18,8 +22,15 @@ const state = reactive<InvestState>({
   propAmounts: [],
   validInputs: [],
   highPriceImpactAccepted: false,
-  submitting: false
+  submitting: false,
+  sorReady: false
 });
+
+const sor = new SOR(
+  rpcProviderService.jsonProvider,
+  configService.network.chainId,
+  configService.network.subgraph
+);
 
 /**
  * METHODS
@@ -31,6 +42,7 @@ function resetAmounts(): void {
 export default function useInvestState() {
   return {
     ...toRefs(state),
+    sor,
     resetAmounts
   };
 }

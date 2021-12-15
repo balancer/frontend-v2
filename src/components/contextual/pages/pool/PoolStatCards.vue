@@ -10,7 +10,7 @@
         </div>
         <div class="text-xl font-medium truncate flex items-center">
           {{ stat.value }}
-          <LiquidityMiningTooltip :pool="pool" v-if="stat.id === 'apr'" />
+          <LiquidityAPRTooltip :pool="pool" v-if="stat.id === 'apr'" />
         </div>
       </BalCard>
     </template>
@@ -25,11 +25,11 @@ import useNumbers from '@/composables/useNumbers';
 
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 
 export default defineComponent({
   components: {
-    LiquidityMiningTooltip
+    LiquidityAPRTooltip
   },
 
   props: {

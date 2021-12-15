@@ -19,6 +19,7 @@ import useAlerts, {
   AlertType
 } from './composables/useAlerts';
 import { useI18n } from 'vue-i18n';
+import useExploitWatcher from './composables/watchers/useExploitWatcher';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
 
@@ -43,6 +44,7 @@ export default defineComponent({
     usePoolCreationWatcher();
     useGlobalQueryWatchers();
     useGnosisSafeApp();
+    useExploitWatcher();
     const {
       isWalletSelectVisible,
       toggleWalletSelectModal,

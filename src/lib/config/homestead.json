@@ -15,6 +15,9 @@
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
   "poolsUrlV1": "https://storageapi.fleek.co/balancer-bucket/balancer-exchange/pools",
   "poolsUrlV2": "https://storageapi.fleek.co/johngrantuk-team-bucket/poolsV2.json",
+  "subgraphs": {
+    "aave": "https://api.thegraph.com/subgraphs/name/aave/protocol-v2"
+  },
   "supportsEIP1559": true,
   "nativeAsset": {
     "name": "Ether",
@@ -43,7 +46,8 @@
     "wstETH": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
     "lidoRelayer": "0xdcdbf71A870cc60C6F9B621E28a7D3Ffd6Dd4965",
     "MockFlashLoanReceiver": "",
-    "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E"
+    "balancerHelpers": "0x5aDDCCa35b7A0D07C74063c48700C8590E87864E",
+    "batchRelayer": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

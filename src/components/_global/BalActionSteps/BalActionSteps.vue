@@ -110,9 +110,8 @@ function getStepState(
   actionState: TransactionActionState,
   index: number
 ): StepState {
-  if (currentActionIndex.value < index) {
-    return StepState.Todo;
-  } else if (actionState.confirming) return StepState.Pending;
+  if (currentActionIndex.value < index) return StepState.Todo;
+  else if (actionState.confirming) return StepState.Pending;
   else if (actionState.init) return StepState.WalletOpen;
   else if (actionState.confirmed) return StepState.Success;
   return StepState.Active;
@@ -131,31 +130,38 @@ async function submit(
     state.init = false;
     state.confirming = true;
 
-    state.confirmed = await txListener(tx, {
-      onTxConfirmed: async (receipt: TransactionReceipt) => {
-        state.receipt = receipt;
-
-        const confirmedAt = await getTxConfirmedAt(receipt);
-        state.confirmedAt = dateTimeLabelFor(confirmedAt);
-
-        if (currentActionIndex.value >= actions.value.length - 1) {
-          emit('success', { receipt, confirmedAt: state.confirmedAt });
-        } else {
-          currentActionIndex.value += 1;
-        }
-
-        state.confirming = false;
-      },
-      onTxFailed: () => {
-        state.confirming = false;
-      }
-    });
+    handleTransaction(tx, state);
   } catch (error) {
     state.init = false;
     state.confirming = false;
     state.error = parseError(error);
     console.error(error);
   }
+}
+
+async function handleTransaction(
+  tx: TransactionResponse,
+  state: TransactionActionState
+): Promise<void> {
+  state.confirmed = await txListener(tx, {
+    onTxConfirmed: async (receipt: TransactionReceipt) => {
+      state.receipt = receipt;
+
+      const confirmedAt = await getTxConfirmedAt(receipt);
+      state.confirmedAt = dateTimeLabelFor(confirmedAt);
+
+      if (currentActionIndex.value >= actions.value.length - 1) {
+        emit('success', { receipt, confirmedAt: state.confirmedAt });
+      } else {
+        currentActionIndex.value += 1;
+      }
+
+      state.confirming = false;
+    },
+    onTxFailed: () => {
+      state.confirming = false;
+    }
+  });
 }
 </script>
 

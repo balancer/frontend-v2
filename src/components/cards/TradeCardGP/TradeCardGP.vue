@@ -127,7 +127,6 @@ import useValidation, {
 } from '@/composables/trade/useValidation';
 import useTrading from '@/composables/trade/useTrading';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
-import useTokenApproval from '@/composables/trade/useTokenApproval';
 import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
@@ -147,9 +146,6 @@ import { ApiErrorCodes } from '@/services/gnosis/errors/OperatorError';
 import GasReimbursement from '../TradeCard/GasReimbursement.vue';
 import TradePair from '../TradeCard/TradePair.vue';
 import useWeb3 from '@/services/web3/useWeb3';
-import useRelayerApproval, {
-  Relayer
-} from '@/composables/trade/useRelayerApproval';
 import { useTradeState } from '@/composables/trade/useTradeState';
 
 export default defineComponent({
@@ -168,7 +164,7 @@ export default defineComponent({
     const { bp } = useBreakpoints();
     const { fNum } = useNumbers();
     const { appNetworkConfig } = useWeb3();
-    const { tokens, nativeAsset } = useTokens();
+    const { nativeAsset } = useTokens();
     const {
       tokenInAddress,
       tokenOutAddress,
@@ -227,9 +223,6 @@ export default defineComponent({
 
       return hasValidationError || hasGnosisErrors || hasBalancerErrors;
     });
-
-    useTokenApproval(tokenInAddress, tokenInAmount, tokens);
-    useRelayerApproval(Relayer.GNOSIS, trading.isGnosisTrade);
 
     const title = computed(() => {
       if (trading.wrapType.value === WrapType.Wrap) {

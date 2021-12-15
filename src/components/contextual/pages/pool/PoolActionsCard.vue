@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRef, onBeforeMount, computed } from 'vue';
+import { toRef, computed } from 'vue';
 import useWithdrawMath from '@/components/forms/pool_actions/WithdrawForm/composables/useWithdrawMath';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
@@ -7,6 +7,7 @@ import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
+import { lpTokensFor } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -24,7 +25,7 @@ const props = defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { initMath, hasBpt } = useWithdrawMath(toRef(props, 'pool'));
+const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
@@ -34,7 +35,7 @@ const { isWalletReady, toggleWalletSelectModal } = useWeb3();
  * COMPUTED
  */
 const fiatTotal = computed(() => {
-  const fiatValue = props.pool.tokenAddresses
+  const fiatValue = lpTokensFor(props.pool)
     .map(address => {
       let tokenBalance = '0';
 
@@ -57,13 +58,6 @@ const fiatTotal = computed(() => {
     );
 
   return fNum(fiatValue, currency.value);
-});
-
-/**
- * CALLBACKS
- */
-onBeforeMount(() => {
-  initMath();
 });
 </script>
 

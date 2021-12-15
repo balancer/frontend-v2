@@ -16,6 +16,9 @@
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
+  "subgraphs": {
+    "aave": "https://api.thegraph.com/subgraphs/name/aave/aave-v2-matic"
+  },
   "supportsEIP1559": false,
   "nativeAsset": {
     "name": "Matic",
@@ -39,7 +42,8 @@
     "stETH": "",
     "wstETH": "",
     "lidoRelayer": "",
-    "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d"
+    "balancerHelpers": "0x94905e703fead7f0fd0eee355d267ee909784e6d",
+    "batchRelayer": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

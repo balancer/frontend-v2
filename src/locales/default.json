@@ -78,6 +78,7 @@
     "browseLists": "Browse lists",
     "browserWallet": "Browser Wallet",
     "buy": "Buy",
+    "boostedPool": "Balancer Boosted pool",
     "cancel": "Cancel",
     "cancelling": "Cancelling",
     "changeTheme": "Change theme",
@@ -373,11 +374,15 @@
     "poolTransactions": {
         "title": "Pool transactions",
         "tabs": {
+            "allTransactions": "Transactions",
+            "myTransactions": "My transactions",
             "allInvestments": "Investments",
             "myInvestments": "My investments",
             "swaps": "Swaps"
         },
         "noResults": {
+            "allTransactions": "No transactions in this pool.",
+            "myTransactions": "You haven't made any transactions in this pool.",
             "allInvestments": "No investments in this pool.",
             "myInvestments": "You haven't made any investments in this pool.",
             "swaps": "No swaps in this pool."
@@ -453,10 +458,12 @@
     "theme": "Theme",
     "thirdPartyRewards": {
         "apr": {
-            "steth": "stETH staking rewards APR"
+            "steth": "stETH staking rewards APR",
+            "aaveBoosted": "Aave boosted APR"
         },
         "fiat": {
-            "steth": "stETH staking rewards"
+            "steth": "stETH staking rewards",
+            "aaveBoosted": "Aave boosted rewards"
         }
     },
     "threeMonths": "3M",
