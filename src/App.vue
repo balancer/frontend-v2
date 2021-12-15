@@ -18,7 +18,6 @@ import useAlerts, {
   AlertPriority,
   AlertType
 } from './composables/useAlerts';
-import { isMainnet } from './composables/useNetwork';
 import { useI18n } from 'vue-i18n';
 
 BigNumber.config({ DECIMAL_PLACES: DEFAULT_TOKEN_DECIMALS });
@@ -44,7 +43,11 @@ export default defineComponent({
     usePoolCreationWatcher();
     useGlobalQueryWatchers();
     useGnosisSafeApp();
-    const { isWalletSelectVisible, toggleWalletSelectModal } = useWeb3();
+    const {
+      isWalletSelectVisible,
+      toggleWalletSelectModal,
+      isMainnet
+    } = useWeb3();
     const route = useRoute();
     const store = useStore();
     const router = useRouter();
@@ -52,7 +55,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     // Temporary feature alert for Balancer boosted pools.
-    if (isMainnet) {
+    if (isMainnet.value) {
       const featureAlert: Alert = {
         id: 'boosted-pools',
         priority: AlertPriority.LOW,
