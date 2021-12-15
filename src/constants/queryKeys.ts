@@ -34,10 +34,16 @@ const QUERY_KEYS = {
       id: string,
       account: Ref<string>
     ) => [POOLS_ROOT_KEY, 'activities', 'user', { networkId, account, id }],
-    Swaps: (networkId: Ref<Network>, id: string) => [
+    Swaps: (
+      networkId: Ref<Network>,
+      id: string,
+      subgraphQuery: Record<string, any>
+    ) => [POOLS_ROOT_KEY, 'swaps', { networkId, id, subgraphQuery }],
+    UserSwaps: (networkId: Ref<Network>, id: string, account: Ref<string>) => [
       POOLS_ROOT_KEY,
       'swaps',
-      { networkId, id }
+      'user',
+      { networkId, account, id }
     ]
   },
   TokenLists: {

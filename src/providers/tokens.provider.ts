@@ -274,6 +274,9 @@ export default {
     async function injectTokens(addresses: string[]): Promise<void> {
       addresses = addresses.map(address => getAddress(address));
 
+      // Remove any duplicates
+      addresses = [...new Set(addresses)];
+
       // Only inject tokens that aren't already in tokens
       const injectable = addresses.filter(
         address => !Object.keys(tokens.value).includes(address)

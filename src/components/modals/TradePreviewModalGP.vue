@@ -336,7 +336,10 @@
         color="gradient"
         block
         @click.prevent="gnosisRelayerApproval.approve"
-        :loading="gnosisRelayerApproval.approving.value"
+        :loading="
+          gnosisRelayerApproval.init.value ||
+            gnosisRelayerApproval.approving.value
+        "
         :loading-label="`${$t('approvingGnosisRelayer')}...`"
       >
         {{ $t('approveGnosisRelayer') }}
@@ -346,7 +349,9 @@
         color="gradient"
         block
         @click.prevent="lidoRelayerApproval.approve"
-        :loading="lidoRelayerApproval.approving.value"
+        :loading="
+          lidoRelayerApproval.init.value || lidoRelayerApproval.approving.value
+        "
         :loading-label="`${$t('approvingLidoRelayer')}...`"
       >
         {{ $t('approveLidoRelayer') }}
@@ -695,6 +700,7 @@ export default defineComponent({
     const showGnosisRelayerApprovalStep = computed(
       () =>
         requiresGnosisRelayerApproval.value ||
+        gnosisRelayerApproval.init.value ||
         gnosisRelayerApproval.approved.value ||
         gnosisRelayerApproval.approving.value
     );
@@ -702,6 +708,7 @@ export default defineComponent({
     const showLidoRelayerApprovalStep = computed(
       () =>
         requiresLidoRelayerApproval.value ||
+        lidoRelayerApproval.init.value ||
         lidoRelayerApproval.approved.value ||
         lidoRelayerApproval.approving.value
     );

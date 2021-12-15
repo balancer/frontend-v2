@@ -15,6 +15,9 @@
   "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-arbitrum-v2",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
+  "subgraphs": {
+    "aave": ""
+  },
   "supportsEIP1559": false,
   "nativeAsset": {
     "name": "Ether",
@@ -38,7 +41,8 @@
     "stETH": "",
     "wstETH": "",
     "lidoRelayer": "",
-    "balancerHelpers": "0x77d46184d22CA6a3726a2F500c776767b6A3d6Ab"
+    "balancerHelpers": "0x77d46184d22CA6a3726a2F500c776767b6A3d6Ab",
+    "batchRelayer": ""
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",

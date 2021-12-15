@@ -7,13 +7,13 @@ const defaultArgs = {
   orderDirection: 'desc',
   where: {
     totalShares_gt: 0.01,
-    id_not_in: POOLS.BlockList,
-    poolType_not: 'Element'
+    id_not_in: POOLS.BlockList
   }
 };
 
 const defaultAttrs = {
   id: true,
+  address: true,
   poolType: true,
   swapFee: true,
   tokensList: true,
