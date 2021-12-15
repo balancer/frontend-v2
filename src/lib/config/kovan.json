@@ -45,7 +45,7 @@
     "wstETH": "0xA387B91e393cFB9356A460370842BC8dBB2F29aF",
     "lidoRelayer": "0x41B953164995c11C81DA73D212ED8Af25741b7Ac",
     "balancerHelpers": "0x94905e703fEAd7f0fD0eEe355D267eE909784e6d",
-    "batchRelayer": "0x3C255DE4a73Dd251A33dac2ab927002C964Eb2cB"
+    "batchRelayer": "0x6bfd48F3873E21F7686982d352b610E1523c218B"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
