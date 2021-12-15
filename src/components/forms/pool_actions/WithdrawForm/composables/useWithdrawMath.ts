@@ -221,10 +221,6 @@ export default function useWithdrawMath(
   );
 
   /**
-   * A linear
-   */
-
-  /**
    * The full input amounts array minus slippage,
    * if the amount is not 0 or a single asset exact out case.
    */
