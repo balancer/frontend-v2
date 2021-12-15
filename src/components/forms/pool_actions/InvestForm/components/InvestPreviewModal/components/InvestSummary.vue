@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useNumbers from '@/composables/useNumbers';
-import { isWstETH } from '@/composables/usePool';
+import { isStablePhantom, isWstETH } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
 import { bnum } from '@/lib/utils';
@@ -55,14 +55,31 @@ const lmBreakdown = computed(
 
 const lmTokens = computed(() => getTokens(Object.keys(lmBreakdown.value)));
 
-const multiRewardPool = computed(() => Object.keys(lmTokens.value).length > 1);
+const lmMultiRewardPool = computed(
+  () => Object.keys(lmTokens.value).length > 1
+);
 
 const hasThirdPartyAPR = computed(() =>
   bnum(props.pool.dynamic.apr.thirdParty).gt(0)
 );
 
-const thirdPartyAPRLabel = computed(() => {
+const thirdPartyBreakdown = computed(
+  () => props.pool.dynamic.apr.thirdPartyBreakdown
+);
+
+const thirdPartyTokens = computed(() =>
+  getTokens(Object.keys(thirdPartyBreakdown.value))
+);
+
+const thirdPartyMultiRewardPool = computed(
+  () => Object.keys(thirdPartyTokens.value).length > 1
+);
+
+const thirdPartyFiatLabel = computed(() => {
   if (isWstETH(props.pool)) return t('thirdPartyRewards.fiat.steth');
+  if (isStablePhantom(props.pool.poolType))
+    return t('thirdPartyRewards.fiat.aaveBoosted');
+
   return '';
 });
 
@@ -114,7 +131,19 @@ function weeklyYieldForAPR(apr: string): string {
         <div class="summary-table-label" v-text="$t('potentialWeeklyYield')" />
         <div class="summary-table-number">
           {{ fNum(totalWeeklyYield, currency) }}
-          <BalTooltip icon-size="sm" width="72" class="ml-2" noPad>
+          <BalTooltip icon-size="sm" width="72" noPad>
+            <template v-slot:activator>
+              <StarsIcon
+                v-if="props.pool.hasLiquidityMiningRewards || hasThirdPartyAPR"
+                class="h-4 text-yellow-300"
+              />
+              <BalIcon
+                v-else
+                name="info"
+                size="sm"
+                class="text-gray-300 ml-2"
+              />
+            </template>
             <div
               class="p-2 bg-gray-50 dark:bg-gray-700 rounded-t-lg border-b dark:border-gray-700"
             >
@@ -134,27 +163,36 @@ function weeklyYieldForAPR(apr: string): string {
                   {{ $t('swapFee') }}
                 </span>
               </div>
-              <div
-                v-if="hasThirdPartyAPR"
-                class="whitespace-nowrap flex items-center mb-1"
-              >
-                {{ fNum(thirdPartyWeeklyYield, currency) }}
-                <span class="ml-1 text-gray-500 text-xs">
-                  {{ thirdPartyAPRLabel }}
-                </span>
-              </div>
               <BalBreakdown
+                :items="Object.entries(thirdPartyBreakdown)"
+                v-if="hasThirdPartyAPR"
+                :hideItems="!thirdPartyMultiRewardPool"
+              >
+                <div class="flex items-center">
+                  {{ fNum(thirdPartyWeeklyYield, currency) }}
+                  <span class="ml-1 text-gray-500 text-xs">
+                    {{ thirdPartyFiatLabel }}
+                  </span>
+                </div>
+                <template v-if="thirdPartyMultiRewardPool" #item="{ item }">
+                  {{ fNum(weeklyYieldForAPR(item[1]), currency) }}
+                  <span class="text-gray-500 text-xs ml-1">
+                    {{ thirdPartyTokens[item[0]].symbol }}
+                  </span>
+                </template>
+              </BalBreakdown>
+              <BalBreakdown
+                v-if="props.pool.hasLiquidityMiningRewards"
                 :items="Object.entries(lmBreakdown)"
-                :hideItems="!multiRewardPool"
+                :hideItems="!lmMultiRewardPool"
               >
                 <div class="flex items-center">
                   <span>{{ fNum(lmWeeklyYield, currency) }}</span>
                   <span class="ml-1 text-gray-500">
                     {{ $t('liquidityMining') }}
                   </span>
-                  <StarsIcon class="h-4 text-yellow-300" />
                 </div>
-                <template v-if="multiRewardPool" v-slot:item="{ item }">
+                <template v-if="lmMultiRewardPool" v-slot:item="{ item }">
                   {{ fNum(weeklyYieldForAPR(item[1]), currency) }}
                   <span class="text-gray-500 ml-1">
                     {{ lmTokens[item[0]].symbol }}
