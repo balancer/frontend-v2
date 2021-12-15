@@ -65,6 +65,11 @@ export default defineComponent({
             params: {
               id:
                 '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe'
+            },
+            query: {
+              utm_source: 'website',
+              utm_medium: 'banner',
+              utm_campaign: 'aaveboostedpools'
             }
           })
       };
