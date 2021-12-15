@@ -1,8 +1,8 @@
 <template>
-  <div :class="['app-nav-alert', classes]">
+  <div :class="['app-nav-alert', classes]" @click="handleClick">
     <div class="w-8" />
     <div class="flex-1 text-center flex items-center justify-center">
-      <BalIcon :name="iconName" size="lg" class="mr-4" />
+      <BalIcon v-if="iconName" :name="iconName" size="lg" class="mr-4" />
       <span>{{ alert.label }}</span>
       <BalBtn
         v-if="alert.action && alert.actionLabel"
@@ -37,6 +37,8 @@ export default defineComponent({
       switch (props.alert.type) {
         case AlertType.ERROR:
           return 'bg-red-500 text-white';
+        case AlertType.FEATURE:
+          return 'bg-yellow-300 text-black';
         default:
           return 'bg-black text-white';
       }
@@ -47,13 +49,14 @@ export default defineComponent({
         case AlertType.ERROR:
           return 'alert-triangle';
         default:
-          return 'info';
+          return null;
       }
     });
 
     const classes = computed(() => {
       return {
-        [colorClass.value]: true
+        [colorClass.value]: true,
+        'cursor-pointer': props.alert.actionOnClick
       };
     });
 
@@ -61,7 +64,13 @@ export default defineComponent({
       removeAlert(props.alert.id);
     }
 
-    return { classes, iconName, handleClose };
+    function handleClick() {
+      if (props.alert.actionOnClick && props.alert.action) {
+        props.alert.action();
+      }
+    }
+
+    return { classes, iconName, handleClose, handleClick };
   }
 });
 </script>
