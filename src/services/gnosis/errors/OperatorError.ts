@@ -63,9 +63,10 @@ export default class OperatorError extends Error {
     try {
       console.log(orderPostError);
       if (orderPostError.errorType) {
-        const errorMessage = i18n.global.t(
-          `apiErrorCodeDetails.${orderPostError.errorType.toString()}`
-        );
+        const errorMessage = i18n.global
+          .t(`apiErrorCodeDetails.${orderPostError.errorType.toString()}`)
+          .replace('apiErrorCodeDetails.', ''); // if a translation cannot be found, keep only the error code
+
         // shouldn't fall through as this error constructor expects the error code to exist but just in case
         return errorMessage || orderPostError.errorType;
       } else {

@@ -246,14 +246,14 @@ export default defineComponent({
 
       if (trading.isGnosisTrade.value) {
         if (trading.gnosis.validationError.value != null) {
-          const errorCode = trading.gnosis.validationError.value;
+          const validationError = trading.gnosis.validationError.value;
 
-          if (errorCode === ApiErrorCodes.SellAmountDoesNotCoverFee) {
+          if (validationError === ApiErrorCodes.SellAmountDoesNotCoverFee) {
             return {
               header: t('gnosisErrors.lowAmount.header'),
               body: t('gnosisErrors.lowAmount.body')
             };
-          } else if (errorCode === ApiErrorCodes.PriceExceedsBalance) {
+          } else if (validationError === ApiErrorCodes.PriceExceedsBalance) {
             return {
               header: t('gnosisErrors.lowBalance.header', [
                 trading.tokenIn.value.symbol
@@ -270,7 +270,7 @@ export default defineComponent({
                 fNum(trading.slippageBufferRate.value, 'percent')
               ])
             };
-          } else if (errorCode === ApiErrorCodes.NoLiquidity) {
+          } else if (validationError === ApiErrorCodes.NoLiquidity) {
             return {
               header: t('gnosisErrors.noLiquidity.header', [
                 trading.tokenIn.value.symbol
@@ -280,9 +280,7 @@ export default defineComponent({
           } else {
             return {
               header: t('gnosisErrors.genericError.header'),
-              body: t('gnosisErrors.genericError.body', [
-                trading.gnosis.validationError.value
-              ])
+              body: trading.gnosis.validationError.value
             };
           }
         }
