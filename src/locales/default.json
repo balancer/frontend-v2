@@ -207,8 +207,7 @@
             "body": "Not enough liquidity"
         },
         "genericError": {
-            "header": "An error has occurred",
-            "body": "Error code: {0}"
+            "header": "An error has occurred"
         }
     },
     "gnosisWarnings": {
