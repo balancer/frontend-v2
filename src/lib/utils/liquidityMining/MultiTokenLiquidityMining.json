@@ -7835,6 +7835,12 @@
             "amount": 1000
           }
         ],
+        "0xb204bf10bc3a5435017d3db247f56da601dfe08a0002000000000000000000fe": [
+          {
+            "tokenAddress": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
+            "amount": 66.66
+          }
+        ],
         "0x186084ff790c65088ba694df11758fae4943ee9e000200000000000000000032": [
           {
             "tokenAddress": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
