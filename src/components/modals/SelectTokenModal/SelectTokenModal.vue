@@ -169,11 +169,13 @@ export default defineComponent({
       isActiveList
     } = useTokenLists();
     const {
+      tokens: allTokens,
       searchTokens,
       priceFor,
       balanceFor,
       dynamicDataLoading,
-      nativeAsset
+      nativeAsset,
+      injectTokens
     } = useTokens();
     const { t } = useI18n();
     const { resolve } = useUrls();
@@ -219,7 +221,11 @@ export default defineComponent({
     /**
      * METHODS
      */
-    function onSelectToken(token: string): void {
+    async function onSelectToken(token: string): Promise<void> {
+      if (!allTokens.value[token]) {
+        await injectTokens([token]);
+      }
+
       emit('select', token);
       emit('close');
     }
