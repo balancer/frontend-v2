@@ -44,7 +44,7 @@ const tokensWithBalance = computed(() => {
     shadow="none"
   >
     <div class="flex flex-col w-full h-full bg-transparent">
-      <div class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:shadow-lg">
+      <div class="flex lg:justify-between p-3 pb-0 lg:pb-3 lg:border-b">
         <h6 v-if="!upToLargeBreakpoint">{{ $t('myWallet2') }}</h6>
         <div
           class="font-semibold lg:font-normal ml-1 lg:ml-0"
