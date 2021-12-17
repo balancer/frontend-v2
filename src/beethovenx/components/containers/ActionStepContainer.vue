@@ -46,7 +46,7 @@ const props = defineProps<Props>();
         {{ props.buttonText }}
       </div>
     </BalBtn>
-    <div>
+    <div v-if="props.complete">
       <slot name="completeContent" />
     </div>
   </div>

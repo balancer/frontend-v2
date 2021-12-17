@@ -191,13 +191,13 @@ export default defineComponent({
       isLoading: isLoadingApprovals
     } = useTokenApproval(tokenAddressInput, tokenAmountInput, tokens);
 
-    const requiresApproval = computed(() =>
-      approvalRequired(
+    const requiresApproval = computed(() => {
+      return approvalRequired(
         tokenAddressInput.value,
         tokenAmountInput.value,
         spenderAddress.value
-      )
-    );
+      );
+    });
 
     const tokenValue = computed(() =>
       toFiat(tokenAmountInput.value, tokenAddressInput.value)
@@ -270,7 +270,12 @@ export default defineComponent({
       () => balances.value[tokenAddressInput.value]
     );
 
+    if (requiresApproval.value) {
+      emit('requiresApproval', props.tokenAddressInput);
+    }
+
     watch(requiresApproval, newVal => {
+      console.log('requires approval watch', newVal);
       if (newVal) {
         emit('requiresApproval', props.tokenAddressInput);
       } else {

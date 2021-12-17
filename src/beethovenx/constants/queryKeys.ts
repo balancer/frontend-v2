@@ -68,6 +68,13 @@ const QUERY_KEYS = {
   Config: {
     All: ['config', 'all']
   },
+  Lges: {
+    All: ['lges', 'all'],
+    Current: (id: Ref<string>) => ['lges', 'current', { id }]
+  },
+  GnosisSafe: {
+    Current: (account: Ref<string>) => ['gnosis', 'current', { account }]
+  },
   Claims: {
     All: (account: Ref<string>) => [CLAIMS_ROOT_KEY, { account }]
   },

@@ -2,14 +2,14 @@
 import LbpLineChart from '@/beethovenx/lbp/components/LbpLineChart.vue';
 import { computed } from 'vue';
 import useTailwind from '@/composables/useTailwind';
-import useLbpState from '@/beethovenx/lbp/composables/useLbpState';
+import useLgeCreateState from '@/beethovenx/lbp/composables/useLgeCreateState';
 import {
-  getLbpChartPredictedPriceData,
+  getLbpPreviewChartPredictedPriceData,
   getLbpNumDays
 } from '@/beethovenx/lbp/utils/lbpChartUtils';
 import useTokens from '@/composables/useTokens';
 
-const { data } = useLbpState();
+const { data } = useLgeCreateState();
 const tailwind = useTailwind();
 const { priceFor } = useTokens();
 
@@ -25,7 +25,7 @@ const series = computed(() => {
   return [
     {
       name: 'Predicted Price',
-      values: getLbpChartPredictedPriceData(data.value, price)
+      values: getLbpPreviewChartPredictedPriceData(data.value, price)
     }
   ];
 });

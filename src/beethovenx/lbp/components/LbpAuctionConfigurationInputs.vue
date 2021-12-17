@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useLbpState from '@/beethovenx/lbp/composables/useLbpState';
+import useLgeCreateState from '@/beethovenx/lbp/composables/useLgeCreateState';
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import PoolCreateTokenRow from '@/beethovenx/components/pages/pool-create/PoolCreateTokenRow.vue';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -15,7 +15,7 @@ const {
   data,
   tokenRequiresApproval,
   collateralTokenRequiresApproval
-} = useLbpState();
+} = useLgeCreateState();
 const { appNetworkConfig } = useWeb3();
 const { tokenListsLoaded } = useTokenLists();
 

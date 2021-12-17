@@ -1,4 +1,4 @@
-export interface LbpData {
+export interface LgeData {
   name: string;
   websiteUrl: string;
   tokenContractAddress: string;

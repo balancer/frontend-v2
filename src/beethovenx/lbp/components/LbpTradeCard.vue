@@ -18,6 +18,7 @@
         :priceImpact="priceImpact"
         @amountChange="handleAmountChange"
         class="mb-4"
+        :lge="lge"
       />
       <BalAlert
         v-if="error && !(poolsLoading || isLoadingApprovals)"
@@ -81,7 +82,7 @@
 
 <script lang="ts">
 import { isRequired } from '@/lib/utils/validations';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { getAddress, isAddress } from '@ethersproject/address';
@@ -93,7 +94,6 @@ import useValidation, {
 import useSor from '@/composables/trade/useSor';
 
 import SuccessOverlay from '@/components/cards/SuccessOverlay.vue';
-import TradePair from '@/components/cards/TradeCard/TradePair.vue';
 import TradePreviewModal from '@/components/modals/TradePreviewModal.vue';
 import TradeRoute from '@/components/cards/TradeCard/TradeRoute.vue';
 import TradeSettingsPopover, {
@@ -106,13 +106,29 @@ import useTokens from '@/composables/useTokens';
 import useDarkMode from '@/composables/useDarkMode';
 import { configService } from '@/services/config/config.service';
 
-import { getWrapAction, WrapType } from '@/lib/utils/balancer/wrapper';
+import { getWrapAction } from '@/lib/utils/balancer/wrapper';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useUserSettings from '@/composables/useUserSettings';
-import useLbpAuctionState from '@/beethovenx/lbp/composables/useLbpAuctionState';
+import useLge from '@/beethovenx/lbp/composables/useLge';
 import LbpTradePair from '@/beethovenx/lbp/components/LbpTradePair.vue';
+import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
+import { FullPool } from '@/services/balancer/subgraph/types';
 
 export default defineComponent({
+  props: {
+    lge: {
+      type: Object as PropType<GqlLge>,
+      required: true
+    },
+    pool: {
+      type: Object as PropType<FullPool>,
+      required: true
+    },
+    swapEnabled: {
+      type: Boolean
+    }
+  },
+
   components: {
     LbpTradePair,
     SuccessOverlay,
@@ -121,8 +137,8 @@ export default defineComponent({
     TradeSettingsPopover
   },
 
-  setup() {
-    const { data } = useLbpAuctionState();
+  setup(props) {
+    const { launchToken } = useLge(props.lge, props.pool);
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
@@ -221,18 +237,21 @@ export default defineComponent({
       tokenOutAmount
     );
 
-    const lbpToken = computed(() => {
-      return tokens.value[getAddress(data.value.tokenContractAddress)];
-    });
-
     const title = computed(() => {
       const prefix =
-        lbpToken.value.address === tokenOutAddress.value ? 'Buy' : 'Sell';
+        launchToken.value?.address === tokenOutAddress.value ? 'Buy' : 'Sell';
 
-      return `${prefix} ${lbpToken.value.symbol}`;
+      return `${prefix} ${launchToken.value?.symbol}`;
     });
 
     const error = computed(() => {
+      if (props.swapEnabled === false) {
+        return {
+          header: 'Swapping disabled',
+          body: 'Swapping is disabled for this event.'
+        };
+      }
+
       if (isHighPriceImpact.value) {
         return {
           header: t('highPriceImpact'),
@@ -271,7 +290,7 @@ export default defineComponent({
     }
 
     async function populateInitialTokens(): Promise<void> {
-      let assetIn = router.currentRoute.value.params.assetIn as string;
+      let assetIn = props.lge.collateralTokenAddress;
 
       if (assetIn === nativeAsset.deeplinkId) {
         assetIn = nativeAsset.address;
@@ -279,7 +298,7 @@ export default defineComponent({
         assetIn = getAddress(assetIn);
       }
 
-      let assetOut = router.currentRoute.value.params.assetOut as string;
+      let assetOut = props.lge.tokenContractAddress;
 
       if (assetOut === nativeAsset.deeplinkId) {
         assetOut = nativeAsset.address;
@@ -326,7 +345,6 @@ export default defineComponent({
     populateInitialTokens();
 
     return {
-      data,
       highPiAccepted,
       title,
       error,

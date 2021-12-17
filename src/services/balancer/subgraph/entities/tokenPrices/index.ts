@@ -15,6 +15,6 @@ export default class TokenPrices {
     const query = this.query(args, attrs);
     const data = await this.service.client.get(query);
 
-    return data.tokenPrices;
+    return data?.tokenPrices || [];
   }
 }

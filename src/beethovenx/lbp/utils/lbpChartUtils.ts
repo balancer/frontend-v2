@@ -7,11 +7,11 @@ import {
   differenceInCalendarDays
 } from 'date-fns';
 import { zip } from 'lodash';
-import { LbpData } from '@/beethovenx/lbp/lbp-types';
+import { LgeData } from '@/beethovenx/lbp/lbp-types';
 
 const NUM_STEPS = 48;
 
-export function getLbpChartPredictedPriceData(
+export function getLbpPreviewChartPredictedPriceData(
   {
     tokenAmount,
     tokenStartWeight,
@@ -23,27 +23,64 @@ export function getLbpChartPredictedPriceData(
     startTime,
     endDate,
     endTime
-  }: LbpData,
+  }: LgeData,
   collateralTokenPrice: number
 ) {
   const startDateObj = parseDateForDateAndTime(startDate, startTime);
   const endDateObj = parseDateForDateAndTime(endDate, endTime);
-  const timeStep = differenceInSeconds(endDateObj, startDateObj) / NUM_STEPS;
-  const tokenWeightStep = (tokenStartWeight - tokenEndWeight) / NUM_STEPS;
+
+  return getLbpChartPredictedPriceData({
+    firstTime: startDateObj,
+    endTime: endDateObj,
+    tokenCurrentWeight: tokenStartWeight,
+    tokenEndWeight,
+    collateralCurrentWeight: collateralStartWeight,
+    collateralEndWeight,
+    tokenBalance: parseFloat(tokenAmount),
+    collateralTokenPrice,
+    collateralBalance: parseFloat(collateralAmount),
+    numSteps: NUM_STEPS
+  });
+}
+
+export function getLbpChartPredictedPriceData({
+  firstTime,
+  endTime,
+  tokenCurrentWeight,
+  tokenEndWeight,
+  collateralCurrentWeight,
+  collateralEndWeight,
+  tokenBalance,
+  collateralBalance,
+  collateralTokenPrice,
+  numSteps
+}: {
+  firstTime: Date;
+  endTime: Date;
+  tokenCurrentWeight: number;
+  tokenEndWeight: number;
+  collateralCurrentWeight: number;
+  collateralEndWeight: number;
+  tokenBalance: number;
+  collateralBalance: number;
+  collateralTokenPrice: number;
+  numSteps: number;
+}) {
+  const timeStep = differenceInSeconds(endTime, firstTime) / numSteps;
+  const tokenWeightStep = (tokenCurrentWeight - tokenEndWeight) / numSteps;
   const collateralWeightStep =
-    (collateralEndWeight - collateralStartWeight) / NUM_STEPS;
-  const tokenBalance = parseFloat(tokenAmount);
-  const collateralBalance = parseFloat(collateralAmount);
-  let tokenWeight = tokenStartWeight;
-  let collateralWeight = collateralStartWeight;
+    (collateralEndWeight - collateralCurrentWeight) / numSteps;
+
+  let tokenWeight = tokenCurrentWeight;
+  let collateralWeight = collateralCurrentWeight;
   const predicted: number[] = [
     (((tokenWeight / collateralWeight) * collateralBalance) / tokenBalance) *
       collateralTokenPrice
   ];
-  const times: string[] = [format(startDateObj, 'yyyy-MM-dd HH:mm:ss')];
-  let timestamp = startDateObj;
+  const times: string[] = [format(firstTime, 'yyyy-MM-dd HH:mm:ss')];
+  let timestamp = firstTime;
 
-  while (isBefore(addSeconds(timestamp, timeStep), endDateObj)) {
+  while (isBefore(addSeconds(timestamp, timeStep), endTime)) {
     timestamp = addSeconds(timestamp, timeStep);
     tokenWeight -= tokenWeightStep;
     collateralWeight += collateralWeightStep;
@@ -56,7 +93,7 @@ export function getLbpChartPredictedPriceData(
     times.push(format(timestamp, 'yyyy-MM-dd HH:mm:ss'));
   }
 
-  times.push(format(endDateObj, 'yyyy-MM-dd HH:mm:ss'));
+  times.push(format(endTime, 'yyyy-MM-dd HH:mm:ss'));
   predicted.push(
     (((tokenEndWeight / collateralEndWeight) * collateralBalance) /
       tokenBalance) *
@@ -71,7 +108,7 @@ export function getLbpNumDays({
   startTime,
   endDate,
   endTime
-}: LbpData): number {
+}: LgeData): number {
   const startDateObj = parseDateForDateAndTime(startDate, startTime);
   const endDateObj = parseDateForDateAndTime(endDate, endTime);
 

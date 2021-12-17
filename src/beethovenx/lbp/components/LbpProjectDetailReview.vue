@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import useLbpState from '@/beethovenx/lbp/composables/useLbpState';
+import useLgeCreateState from '@/beethovenx/lbp/composables/useLgeCreateState';
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import useTokens from '@/composables/useTokens';
 import { computed } from 'vue';
 import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
 
-const { data } = useLbpState();
+const { data } = useLgeCreateState();
 const { getToken } = useTokens();
 
 const launchToken = computed(() => getToken(data.value.tokenContractAddress));
@@ -95,7 +95,7 @@ const launchToken = computed(() => getToken(data.value.tokenContractAddress));
   </div>
   <div class="mb-4">
     <div class="text-gray-500">Project Description</div>
-    <div class="text-xl">{{ data.description }}</div>
+    <div class="whitespace-pre-line">{{ data.description }}</div>
   </div>
 </template>
 

@@ -2,25 +2,27 @@ import { computed, reactive, toRefs } from 'vue';
 import { isDateCheck, isTimeCheck, isUrlCheck } from '@/lib/utils/validations';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
-import { LbpData } from '@/beethovenx/lbp/lbp-types';
+import { LgeData } from '@/beethovenx/lbp/lbp-types';
 import { parseUnits } from '@ethersproject/units';
 import { PoolTokenInput } from '@/beethovenx/services/pool/creator/pool-creator.service';
 
 interface LbpState {
-  data: LbpData;
+  data: LgeData;
 
   projectDetailsSaved: boolean;
-  auctionConfigSaved: boolean;
+  lgeConfigSaved: boolean;
   loadingToken: boolean;
-  creatingAuction: boolean;
+  creatingLge: boolean;
   fetchingPoolData: boolean;
   poolId: string | null;
   poolAddress: string | null;
   tokenRequiresApproval: boolean;
   collateralTokenRequiresApproval: boolean;
+  savingLge: boolean;
+  lgeSaved: boolean;
 }
 
-export const LBPDefaultData: LbpData = {
+export const LBPDefaultData: LgeData = {
   name: 'Beethoven X',
   websiteUrl: 'https://app.beets.fi/',
   tokenContractAddress: '0x6F00D64b42aF8f449dB15B0b3ee3B444550c4826',
@@ -54,17 +56,19 @@ const state = reactive<LbpState>({
   data: LBPDefaultData,
 
   projectDetailsSaved: false,
-  auctionConfigSaved: false,
+  lgeConfigSaved: false,
   loadingToken: false,
-  creatingAuction: false,
+  creatingLge: false,
   fetchingPoolData: false,
   poolId: null,
   poolAddress: null,
   tokenRequiresApproval: false,
-  collateralTokenRequiresApproval: false
+  collateralTokenRequiresApproval: false,
+  savingLge: false,
+  lgeSaved: false
 });
 
-export default function useLbpState() {
+export default function useLgeCreateState() {
   const { injectTokens, tokens } = useTokens();
 
   const projectDetailsValid = computed(() => {
@@ -85,15 +89,15 @@ export default function useLbpState() {
     return true;
   });
 
-  const auctionConfigOpen = computed(
-    () => state.projectDetailsSaved && !state.auctionConfigSaved
+  const lgeConfigOpen = computed(
+    () => state.projectDetailsSaved && !state.lgeConfigSaved
   );
 
   const reviewAndDeployOpen = computed(
-    () => state.projectDetailsSaved && state.auctionConfigSaved
+    () => state.projectDetailsSaved && state.lgeConfigSaved
   );
 
-  const auctionConfigValid = computed(() => {
+  const lgeConfigValid = computed(() => {
     const data = state.data;
 
     if (
@@ -150,7 +154,7 @@ export default function useLbpState() {
       collateralAmount
     } = state.data;
 
-    if (!auctionConfigValid.value) {
+    if (!lgeConfigValid.value) {
       return [];
     }
 
@@ -175,35 +179,36 @@ export default function useLbpState() {
     );
 
     await injectTokens([state.data.tokenContractAddress]);
+    state.lgeConfigSaved = false;
     state.projectDetailsSaved = true;
     state.loadingToken = false;
   }
 
   function editProjectDetails() {
-    if (auctionConfigValid.value && !state.auctionConfigSaved) {
-      state.auctionConfigSaved = true;
+    if (lgeConfigValid.value && !state.lgeConfigSaved) {
+      state.lgeConfigSaved = true;
     }
 
     state.projectDetailsSaved = false;
   }
 
-  function saveAuctionConfig() {
-    state.auctionConfigSaved = true;
+  function saveLgeConfig() {
+    state.lgeConfigSaved = true;
   }
 
-  function editAuctionConfig() {
-    state.auctionConfigSaved = false;
+  function editLgeConfig() {
+    state.lgeConfigSaved = false;
   }
 
   return {
     ...toRefs(state),
     projectDetailsValid,
-    auctionConfigOpen,
+    lgeConfigOpen,
     saveProjectDetails,
     editProjectDetails,
-    auctionConfigValid,
-    saveAuctionConfig,
-    editAuctionConfig,
+    lgeConfigValid,
+    saveLgeConfig,
+    editLgeConfig,
     poolTokens,
     reviewAndDeployOpen
   };

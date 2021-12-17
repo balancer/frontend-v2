@@ -480,7 +480,8 @@
         "unwrap": "Unwrap",
         "withdraw": "Withdraw",
         "wrap": "Wrap",
-        "deposit": "Deposit"
+        "deposit": "Deposit",
+        "create": "Create"
     },
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",

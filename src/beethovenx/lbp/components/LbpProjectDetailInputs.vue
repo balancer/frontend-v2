@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import useLbpState from '@/beethovenx/lbp/composables/useLbpState';
+import useLgeCreateState from '@/beethovenx/lbp/composables/useLgeCreateState';
 import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 
-const { data } = useLbpState();
+const { data } = useLgeCreateState();
 </script>
 
 <template>

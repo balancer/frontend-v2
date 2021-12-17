@@ -11,7 +11,7 @@ import { TokenInfoMap } from '@/types/TokenList';
 import { orderBy } from 'lodash';
 import { bnToNormalizedWeights } from '@/beethovenx/utils/numbers';
 import { parseUnits } from '@ethersproject/units';
-import { LbpData } from '@/beethovenx/lbp/lbp-types';
+import { LgeData } from '@/beethovenx/lbp/lbp-types';
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { parseISO, getUnixTime } from 'date-fns';
@@ -36,7 +36,7 @@ export class CopperProxyService {
 
   public async createAuction(
     provider: Web3Provider | JsonRpcProvider,
-    data: LbpData,
+    data: LgeData,
     tokenInfoMap: TokenInfoMap
   ): Promise<TransactionResponse> {
     const sorted = this.toSortedTokens(data, tokenInfoMap);
@@ -88,7 +88,7 @@ export class CopperProxyService {
   }
 
   private toSortedTokens(
-    data: LbpData,
+    data: LgeData,
     tokenInfoMap: TokenInfoMap
   ): PoolTokenInput[] {
     const collateralTokenAddress = getAddress(data.collateralTokenAddress);

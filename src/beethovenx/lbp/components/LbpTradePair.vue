@@ -6,7 +6,8 @@ import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { UseTrading } from '@/composables/trade/useTrading';
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
-import useLbpAuctionState from '@/beethovenx/lbp/composables/useLbpAuctionState';
+import useLge from '@/beethovenx/lbp/composables/useLge';
+import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
 
 /**
  * TYPES
@@ -20,6 +21,7 @@ type Props = {
   priceImpact?: number;
   effectivePriceMessage?: UseTrading['effectivePriceMessage'];
   tradeLoading?: boolean;
+  lge: GqlLge;
 };
 
 /**
@@ -41,7 +43,6 @@ const emit = defineEmits<{
  */
 const { fNum } = useNumbers();
 const { getToken } = useTokens();
-const { data } = useLbpAuctionState();
 
 /**
  * STATE
@@ -96,13 +97,13 @@ const rateLabel = computed(() => {
 
 const tokenInIsLbpToken = computed(
   () =>
-    data.value.tokenContractAddress.toLowerCase() ===
+    props.lge.tokenContractAddress.toLowerCase() ===
     tokenIn.value.address.toLowerCase()
 );
 
 const tokenOutIsLbpToken = computed(
   () =>
-    data.value.tokenContractAddress.toLowerCase() ===
+    props.lge.tokenContractAddress.toLowerCase() ===
     tokenOut.value.address.toLowerCase()
 );
 

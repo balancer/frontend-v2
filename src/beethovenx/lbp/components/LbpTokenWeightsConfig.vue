@@ -3,11 +3,11 @@ import BalRangeInput from '@/components/_global/BalRangeInput/BalRangeInput.vue'
 import BalTooltip from '@/components/_global/BalTooltip/BalTooltip.vue';
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 import LbpTokenWeightRangeLabel from '@/beethovenx/lbp/components/LbpTokenWeightRangeLabel.vue';
-import useLbpState from '@/beethovenx/lbp/composables/useLbpState';
+import useLgeCreateState from '@/beethovenx/lbp/composables/useLgeCreateState';
 import useTokens from '@/composables/useTokens';
 import { computed } from 'vue';
 
-const { data } = useLbpState();
+const { data } = useLgeCreateState();
 const { tokens, getToken, dynamicDataLoaded, dynamicDataLoading } = useTokens();
 
 const launchToken = computed(() => {

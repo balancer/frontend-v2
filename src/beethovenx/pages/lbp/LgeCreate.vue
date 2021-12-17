@@ -3,6 +3,7 @@
     <div class="mb-6">
       <img src="~@/beethovenx/assets/images/create-auction.svg" class="-ml-4" />
     </div>
+    <LgeCreateMultisigWarning />
     <StepContainer
       :complete="projectDetailsSaved"
       title="Enter Your Project Details"
@@ -30,7 +31,7 @@
           v-if="poolId === null"
           @click="editProjectDetails()"
           size="sm"
-          :disabled="creatingAuction"
+          :disabled="creatingLge"
         >
           <div class="px-4">
             Edit
@@ -39,18 +40,18 @@
       </template>
     </StepContainer>
     <StepContainer
-      :complete="auctionConfigSaved"
-      title="Configure Your Auction"
+      :complete="lgeConfigSaved"
+      title="Configure Your Liquidity Generation Event"
       step-number="2"
     >
-      <template v-slot:content v-if="auctionConfigOpen || auctionConfigSaved">
-        <div v-if="auctionConfigOpen">
+      <template v-slot:content v-if="lgeConfigOpen || lgeConfigSaved">
+        <div v-if="lgeConfigOpen">
           <LbpAuctionConfigurationInputs />
           <LbpPreviewChart />
 
           <BalBtn
-            @click="saveAuctionConfig()"
-            :disabled="!auctionConfigValid"
+            @click="saveLgeConfig()"
+            :disabled="!lgeConfigValid"
             size="md"
             :block="true"
             class="mt-8 mb-2"
@@ -62,12 +63,12 @@
           <LbpAuctionConfigurationReview />
         </div>
       </template>
-      <template v-slot:right v-if="auctionConfigSaved">
+      <template v-slot:right v-if="lgeConfigSaved">
         <BalBtn
           v-if="poolId === null"
-          @click="editAuctionConfig()"
+          @click="editLgeConfig()"
           size="sm"
-          :disabled="!projectDetailsSaved || creatingAuction"
+          :disabled="!projectDetailsSaved || creatingLge"
         >
           <div class="px-4">
             Edit
@@ -76,8 +77,8 @@
       </template>
     </StepContainer>
     <StepContainer
-      :complete="poolId !== null"
-      title="Create Your Fair Launch Auction"
+      :complete="lgeSaved"
+      title="Create Your Liquidity Generation Event"
       step-number="3"
     >
       <template v-slot:content v-if="reviewAndDeployOpen">
@@ -99,16 +100,18 @@ import StepContainer from '@/beethovenx/components/containers/StepContainer.vue'
 import useTokenLists from '@/composables/useTokenLists';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
-import useLbpState from '@/beethovenx/lbp/composables/useLbpState';
+import useLgeCreateState from '@/beethovenx/lbp/composables/useLgeCreateState';
 import LbpProjectDetailInputs from '@/beethovenx/lbp/components/LbpProjectDetailInputs.vue';
 import LbpAuctionConfigurationInputs from '@/beethovenx/lbp/components/LbpAuctionConfigurationInputs.vue';
 import LbpPreviewChart from '@/beethovenx/lbp/components/LbpPreviewChart.vue';
 import LbpCreateActions from '@/beethovenx/lbp/components/LbpCreateActions.vue';
 import LbpProjectDetailReview from '@/beethovenx/lbp/components/LbpProjectDetailReview.vue';
 import LbpAuctionConfigurationReview from '@/beethovenx/lbp/components/LbpAuctionConfigurationReview.vue';
+import LgeCreateMultisigWarning from '@/beethovenx/lbp/components/LgeCreateMultisigWarning.vue';
 
 export default defineComponent({
   components: {
+    LgeCreateMultisigWarning,
     LbpAuctionConfigurationReview,
     LbpProjectDetailReview,
     LbpCreateActions,
@@ -133,16 +136,17 @@ export default defineComponent({
       projectDetailsValid,
       saveProjectDetails,
       editProjectDetails,
-      auctionConfigOpen,
+      lgeConfigOpen,
       loadingToken,
-      auctionConfigValid,
-      saveAuctionConfig,
-      auctionConfigSaved,
-      editAuctionConfig,
+      lgeConfigValid,
+      saveLgeConfig,
+      lgeConfigSaved,
+      editLgeConfig,
       reviewAndDeployOpen,
       poolId,
-      creatingAuction
-    } = useLbpState();
+      creatingLge,
+      lgeSaved
+    } = useLgeCreateState();
 
     const allowedCollateralTokens = computed(() => [
       getAddress(appNetworkConfig.addresses.weth),
@@ -173,15 +177,16 @@ export default defineComponent({
       editProjectDetails,
       projectDetailsSaved,
       projectDetailsValid,
-      auctionConfigOpen,
+      lgeConfigOpen,
       loadingToken,
-      auctionConfigValid,
-      saveAuctionConfig,
-      auctionConfigSaved,
-      editAuctionConfig,
+      lgeConfigValid,
+      saveLgeConfig,
+      lgeConfigSaved,
+      editLgeConfig,
       reviewAndDeployOpen,
       poolId,
-      creatingAuction
+      creatingLge,
+      lgeSaved
     };
   }
 });

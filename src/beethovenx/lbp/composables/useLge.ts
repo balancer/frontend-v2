@@ -1,10 +1,10 @@
-import { LbpData } from '@/beethovenx/lbp/lbp-types';
-import { computed, reactive, ref, toRefs } from 'vue';
+import { LgeData } from '@/beethovenx/lbp/lbp-types';
+import { computed, reactive, Ref, ref, toRefs } from 'vue';
 import useTokens from '@/composables/useTokens';
 import { isDateCheck, isTimeCheck, isUrlCheck } from '@/lib/utils/validations';
 import { PoolTokenInput } from '@/beethovenx/services/pool/creator/pool-creator.service';
 import { getAddress } from '@ethersproject/address';
-import { LBPDefaultData } from '@/beethovenx/lbp/composables/useLbpState';
+import { LBPDefaultData } from '@/beethovenx/lbp/composables/useLgeCreateState';
 import {
   format,
   getUnixTime,
@@ -23,36 +23,28 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useSubgraphTokenPricesQuery from '@/beethovenx/composables/queries/useSubgraphTokenPricesQuery';
 import { TokenInfo } from '@/types/TokenList';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
+import useLgeQuery from '@/beethovenx/lbp/composables/useLgeQuery';
+import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
+import { FullPool, PoolToken } from '@/services/balancer/subgraph/types';
 
-interface LbpAuctionState {
-  data: LbpData;
-
-  poolId: string;
-  poolAddress: string;
+interface LgeState {
   refetchQueriesOnBlockNumber: number;
 }
 
-const state = reactive<LbpAuctionState>({
-  data: LBPDefaultData,
-  poolId: '0x22724272247754f7d40e86985b5ee6430086b11900010000000000000000001f',
-  poolAddress: '0x22724272247754f7d40e86985b5ee6430086b119',
+const state = reactive<LgeState>({
   refetchQueriesOnBlockNumber: 0
 });
 
 const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 
-export default function useLbpAuctionState() {
-  const queryClient = useQueryClient();
+export default function useLge(lge: GqlLge, pool: FullPool) {
   const { blockNumber } = useWeb3();
-  const { tokens } = useTokens();
+  const { tokens, priceFor } = useTokens();
 
-  const startsAt = computed(() =>
-    parseISO(`${state.data.startDate}T${state.data.startTime}:00Z`)
-  );
-
-  const endsAt = computed(() =>
-    parseISO(`${state.data.endDate}T${state.data.endTime}:00Z`)
-  );
+  const startsAt = computed(() => {
+    return parseISO(`${lge.startDate}`);
+  });
+  const endsAt = computed(() => parseISO(`${lge.endDate}`));
 
   const startDateTimeFormatted = computed(() =>
     format(startsAt.value, 'MMM d, HH:mm')
@@ -65,36 +57,43 @@ export default function useLbpAuctionState() {
   const isBeforeStart = ref(isBefore(new Date(), startsAt.value));
   const isAfterEnd = ref(isAfter(new Date(), endsAt.value));
 
-  /*const tokenPricesQuery = useSubgraphTokenPricesQuery(
-    ref(state.poolId),
-    ref(state.data.tokenContractAddress.toLowerCase()),
-    ref(`${getUnixTime(subDays(new Date(), 1))}`)
+  const tokenPricesQuery = useSubgraphTokenPricesQuery(
+    ref(lge.id),
+    ref(lge.tokenContractAddress.toLowerCase()),
+    ref(`${getUnixTime(startsAt.value)}`)
   );
+
   const tokenPrices = computed(() => tokenPricesQuery.data.value || []);
   const loadingTokenPrices = computed(
     () =>
       tokenPricesQuery.isLoading.value ||
       tokenPricesQuery.isIdle.value ||
       tokenPricesQuery.error.value
-  );*/
+  );
 
   const launchToken = computed<TokenInfo | null>(
-    () => tokens.value[getAddress(state.data.tokenContractAddress)]
+    () => tokens.value[getAddress(lge.tokenContractAddress)]
   );
 
   const collateralToken = computed<TokenInfo | null>(
-    () => tokens.value[getAddress(state.data.collateralTokenAddress)]
+    () => tokens.value[getAddress(lge.collateralTokenAddress)]
   );
 
-  const poolQuery = usePoolQuery(state.poolId);
-  const loadingPool = computed(
+  const poolLaunchToken = computed<PoolToken | null>(() => {
+    return (
+      pool.tokens.find(token => token.address === lge.tokenContractAddress) ||
+      null
+    );
+  });
+
+  const poolCollateralToken = computed<PoolToken | null>(
     () =>
-      poolQuery.isLoading.value ||
-      poolQuery.isIdle.value ||
-      poolQuery.error.value
+      pool.tokens.find(token => token.address === lge.collateralTokenAddress) ||
+      null
   );
-  const pool = computed(() => {
-    return poolQuery.data.value;
+
+  const collateralTokenPrice = computed(() => {
+    return priceFor(getAddress(lge.collateralTokenAddress));
   });
 
   function refreshStartEndStatus() {
@@ -103,12 +102,12 @@ export default function useLbpAuctionState() {
   }
 
   function invalidateQueries() {
-    queryClient.invalidateQueries([POOLS_ROOT_KEY]).catch();
+    /*queryClient.invalidateQueries([POOLS_ROOT_KEY]).catch();
     queryClient
-      .invalidateQueries([POOLS_ROOT_KEY, 'current', state.poolId])
+      .invalidateQueries([POOLS_ROOT_KEY, 'current', id.value])
       .catch();
     queryClient.invalidateQueries([SWAPS_ROOT_KEY]).catch();
-    queryClient.invalidateQueries([TOKEN_PRICES_ROOT_KEY]).catch();
+    queryClient.invalidateQueries([TOKEN_PRICES_ROOT_KEY]).catch();*/
   }
 
   function onNewTx(): void {
@@ -131,10 +130,11 @@ export default function useLbpAuctionState() {
     endDateTimeFormatted,
     launchToken,
     collateralToken,
-    pool,
-    loadingPool
-    /*tokenPrices,
+    tokenPrices,
     loadingTokenPrices,
-    tokenPricesQuery*/
+    tokenPricesQuery,
+    poolLaunchToken,
+    poolCollateralToken,
+    collateralTokenPrice
   };
 }
