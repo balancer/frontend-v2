@@ -50,7 +50,7 @@ function cancel() {
 </script>
 
 <template>
-  <BalCard shadow="xl" :class="{ 'border-red-400': existingPool }">
+  <BalCard shadow="xl" noBorder :class="{ 'border-red-400': existingPool }">
     <BalStack vertical>
       <BalStack vertical spacing="xs">
         <span

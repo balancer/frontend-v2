@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <div class="pb-16">
     <div class="layout-header mb-12">
