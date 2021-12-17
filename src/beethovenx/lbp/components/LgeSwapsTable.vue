@@ -41,7 +41,7 @@ const { upToLargeBreakpoint } = useBreakpoints();
 const { tokens, priceFor } = useTokens();
 const { isWalletReady } = useWeb3();
 
-usePoolSwapsQuery();
+/*usePoolSwapsQuery();
 
 const swapsQuery = useSwapsQuery(
   {},
@@ -51,20 +51,22 @@ const swapsQuery = useSwapsQuery(
       '0xcde5a11a4acb4ee4c805352cec57e236bdbc3837000200000000000000000019'
     ])
   }
-);
+);*/
 
 const swaps = computed(() =>
-  swapsQuery.data.value
+  /*swapsQuery.data.value
     ? orderBy(
         flatten(swapsQuery.data.value.pages.map(page => page.swaps)),
         'timestamp',
         'desc'
       )
-    : []
+    : []*/
+
+  []
 );
 
 function loadMoreSwaps() {
-  swapsQuery.fetchNextPage.value();
+  //swapsQuery.fetchNextPage.value();
 }
 
 const columns = ref<ColumnDefinition<SubgraphSwap>[]>([
