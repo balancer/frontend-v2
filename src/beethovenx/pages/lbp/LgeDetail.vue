@@ -17,35 +17,33 @@ import BalTabs from '@/components/_global/BalTabs/BalTabs.vue';
 import LgeDetailProjectDetails from '@/beethovenx/lbp/components/LgeDetailProjectDetails.vue';
 import Swaps from '@/components/contextual/pages/pool/PoolTransactionsCard/PoolSwaps/Swaps.vue';
 import LbpDetailMultisigWarning from '@/beethovenx/lbp/components/LbpDetailMultisigWarning.vue';
+import LgeDetailAdmin from '@/beethovenx/lbp/components/LgeDetailAdmin.vue';
 
+const { account } = useWeb3();
 const route = useRoute();
 const { injectTokens, tokens } = useTokens();
 
 const poolQuery = usePoolQuery(route.params.id as string);
-const loadingPool = computed(
-  () =>
-    poolQuery.isLoading.value || poolQuery.isIdle.value || poolQuery.error.value
-);
 const pool = computed(() => {
   return poolQuery.data.value;
 });
 
-const { data, error, isLoading, isIdle } = useLgeQuery(
-  ref(route.params.id as string)
-);
+const { data } = useLgeQuery(ref(route.params.id as string));
 
 const lge = computed(() => data.value);
 
 /**
  * COMPOSABLES
  */
-const { appLoading } = useApp();
 const { blockNumber } = useWeb3();
 
-const enabled = computed(() => !!pool.value?.id);
 const swapEnabled = computed(() => pool.value?.swapEnabled);
 const launchToken = computed(() =>
   lge.value ? tokens.value[getAddress(lge.value.tokenContractAddress)] : null
+);
+
+const isUserAdmin = computed(
+  () => account.value.toLowerCase() === lge.value?.adminAddress.toLowerCase()
 );
 
 const tabs = computed(() => [
@@ -70,10 +68,16 @@ watch(blockNumber, () => {
   if (refetchQueriesOnBlockNumber.value === blockNumber.value) {
     invalidateQueries();
   } else {
-    poolQuery.refetch.value();
+
     tokenPricesQuery.refetch.value();
   }*/
+
+  poolQuery.refetch.value();
 });
+
+function refetchData() {
+  poolQuery.refetch.value();
+}
 </script>
 
 <template>
@@ -99,11 +103,11 @@ watch(blockNumber, () => {
               <div class="grid grid-cols-4 sm:grid-cols-3 xl:grid-cols-3 gap-4">
                 <BalLoadingBlock v-for="n in 3" :key="n" class="h-28" />
               </div>
-              <div
+              <!--              <div
                 class="grid grid-cols-4 sm:grid-cols-3 xl:grid-cols-3 gap-4 mt-4"
               >
                 <BalLoadingBlock v-for="n in 3" :key="n" class="h-28" />
-              </div>
+              </div>-->
             </div>
             <LbpStatCards v-else :lge="lge" :pool="pool" />
             <p class="text-gray-300 mt-4">
@@ -121,25 +125,35 @@ watch(blockNumber, () => {
       </div>
 
       <div class="order-1 lg:order-2 px-1 lg:px-0">
-        <div class="pb-2 pt-20">
+        <div class="pb-2 pt-20 relative">
           <BalLoadingBlock v-if="!lge || !pool || !launchToken" class="h-96" />
           <template v-else>
+            <div
+              v-if="isUserAdmin"
+              class="flex absolute top-0 right-0 items-center"
+            >
+              <LgeDetailAdmin
+                :lge="lge"
+                :pool="pool"
+                @admiEvent="refetchData()"
+              />
+            </div>
             <LbpTradeCard
               :swap-enabled="swapEnabled"
               :lge="lge"
               :pool="pool"
               @on-tx="onNewTx"
             />
-            <div class="mt-4">
+            <!--            <div class="mt-4">
               <img src="~@/beethovenx/assets/images/ludwig-says.svg" />
-            </div>
+            </div>-->
           </template>
         </div>
       </div>
     </div>
 
     <div v-if="lge && pool">
-      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mt-12" />
+      <BalTabs v-model="activeTab" :tabs="tabs" no-pad class="-mb-px mt-24" />
       <LgeDetailProjectDetails
         v-if="lge && pool && activeTab === 'details'"
         :lge="lge"

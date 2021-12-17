@@ -76,6 +76,33 @@ export class CopperProxyService {
     );
   }
 
+  public async setSwapEnabled(
+    provider: Web3Provider | JsonRpcProvider,
+    poolAddress: string,
+    enabled: boolean
+  ): Promise<TransactionResponse> {
+    return await sendTransaction(
+      provider,
+      this.copperProxyAddress,
+      CopperProxyAbi,
+      'setSwapEnabled',
+      [getAddress(poolAddress), enabled]
+    );
+  }
+
+  public async exitPool(
+    provider: Web3Provider | JsonRpcProvider,
+    poolAddress: string
+  ): Promise<TransactionResponse> {
+    return await sendTransaction(
+      provider,
+      this.copperProxyAddress,
+      CopperProxyAbi,
+      'exitPool',
+      [getAddress(poolAddress), [0, 0], 0]
+    );
+  }
+
   async approveToken(
     web3: Web3Provider,
     token: string,

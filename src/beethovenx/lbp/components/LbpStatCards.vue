@@ -146,7 +146,7 @@ function transformTime(slotProps) {
       </div>
     </BalCard>
   </div>
-  <div class="grid grid-cols-4 sm:grid-cols-3 xl:grid-cols-3 gap-4">
+  <!--  <div class="grid grid-cols-4 sm:grid-cols-3 xl:grid-cols-3 gap-4">
     <BalCard>
       <div class="text-sm text-gray-500 font-medium mb-2">
         Current Weights
@@ -202,5 +202,5 @@ function transformTime(slotProps) {
         {{ fNum(fundsRaised, 'token') }} {{ collateralToken?.symbol }}
       </div>
     </BalCard>
-  </div>
+  </div>-->
 </template>
