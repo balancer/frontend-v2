@@ -125,7 +125,7 @@ import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import { last, sum } from 'lodash';
 import useDarkMode from '@/composables/useDarkMode';
-import { isStableLike } from '@/composables/usePool';
+import { isStableLike, isStablePhantom } from '@/composables/usePool';
 import { startOfWeek, subWeeks, format, addDays } from 'date-fns';
 
 function getWeekName(week: string) {
@@ -213,6 +213,8 @@ export default defineComponent({
     const latestWeek = computed(() => last(weeks.value)?.week);
 
     function orderedPoolTokens(pool: DecoratedPoolWithShares): PoolToken[] {
+      if (isStablePhantom(pool.poolType))
+        return pool.tokens.filter(token => token.address !== pool.address);
       if (isStableLike(pool.poolType)) return pool.tokens;
 
       const sortedTokens = pool.tokens.slice();
