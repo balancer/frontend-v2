@@ -71,7 +71,7 @@ function handleNavigate(state: StepState, stepIndex: number) {
 
 <template>
   <BalCard noPad shadow="none">
-    <div class="p-2 px-3 border-b dark:border-gray-600">
+    <div class="p-4 border-b dark:border-gray-600">
       <h6 class="dark:text-gray-300">{{ title }}</h6>
     </div>
     <BalStack vertical isDynamic spacing="base" class="p-4" justify="center">

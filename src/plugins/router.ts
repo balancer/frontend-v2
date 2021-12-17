@@ -27,7 +27,8 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/pool/create',
     name: 'create-pool',
-    component: CreatePoolPage
+    component: CreatePoolPage,
+    meta: { layout: 'FocusedLayout' }
   },
   {
     path: '/pool/:id',
