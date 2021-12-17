@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, watchEffect, computed } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { UseTrading } from '@/composables/trade/useTrading';
 import TradePairToggle from '@/components/cards/TradeCard/TradePairToggle.vue';
-import useLge from '@/beethovenx/lbp/composables/useLge';
 import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
+import LgeTokenInput from '@/beethovenx/lbp/components/TradeCard/LgeTokenInput.vue';
 
 /**
  * TYPES
@@ -144,7 +144,7 @@ watchEffect(() => {
 
 <template>
   <div>
-    <TokenInput
+    <LgeTokenInput
       v-model:amount="_tokenInAmount"
       v-model:address="_tokenInAddress"
       name="tokenIn"
@@ -153,6 +153,7 @@ watchEffect(() => {
       :excludedTokens="[_tokenOutAddress]"
       :disabled="tradeLoading"
       :fixedToken="tokenInIsLbpToken"
+      :lge="props.lge"
     />
 
     <div class="flex items-center my-2">
@@ -166,7 +167,7 @@ watchEffect(() => {
       />
     </div>
 
-    <TokenInput
+    <LgeTokenInput
       v-model:amount="_tokenOutAmount"
       v-model:address="_tokenOutAddress"
       name="tokenOut"
@@ -178,6 +179,7 @@ watchEffect(() => {
       :disabled="tradeLoading"
       :excludedTokens="[_tokenInAddress]"
       :fixedToken="tokenOutIsLbpToken"
+      :lge="props.lge"
     />
   </div>
 </template>

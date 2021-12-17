@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useWeb3 from '@/services/web3/useWeb3';
 import useApp from '@/composables/useApp';
-import LbpTradeCard from '@/beethovenx/lbp/components/LbpTradeCard.vue';
+import LbpTradeCard from '@/beethovenx/lbp/components/TradeCard/LgeTradeCard.vue';
 import LbpStatCards from '@/beethovenx/lbp/components/LbpStatCards.vue';
 import LbpDetailWarning from '@/beethovenx/lbp/components/LbpDetailWarning.vue';
 import LgeChart from '@/beethovenx/lbp/components/LgeChart.vue';

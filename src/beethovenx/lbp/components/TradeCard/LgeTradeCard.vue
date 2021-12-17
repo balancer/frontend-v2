@@ -110,7 +110,7 @@ import { getWrapAction } from '@/lib/utils/balancer/wrapper';
 import { useTradeState } from '@/composables/trade/useTradeState';
 import useUserSettings from '@/composables/useUserSettings';
 import useLge from '@/beethovenx/lbp/composables/useLge';
-import LbpTradePair from '@/beethovenx/lbp/components/LbpTradePair.vue';
+import LbpTradePair from '@/beethovenx/lbp/components/TradeCard/LgeTradePair.vue';
 import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
