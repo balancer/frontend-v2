@@ -185,11 +185,11 @@ function getTokenAmounts(swaps: PoolSwap[], type: SwapType) {
 
     return [
       {
-        address: getUnderlyingTokenAddress(tokenIn),
+        address: tokenIn,
         amount: tokenAmountIn
       },
       {
-        address: getUnderlyingTokenAddress(tokenOut),
+        address: tokenOut,
         amount: tokenAmountOut
       }
     ];
@@ -197,23 +197,11 @@ function getTokenAmounts(swaps: PoolSwap[], type: SwapType) {
   return swaps.map(swap => {
     let address = isInvest ? swap.tokenIn : swap.tokenOut;
 
-    address = isInvest
-      ? getUnderlyingTokenAddress(swap.tokenIn)
-      : getUnderlyingTokenAddress(swap.tokenOut);
-
     return {
       address,
       amount: isInvest ? swap.tokenAmountIn : swap.tokenAmountOut
     };
   });
-}
-
-function getUnderlyingTokenAddress(address: string) {
-  const { linearPools } = props.pool.onchain;
-
-  return linearPools != null && linearPools[address] != null
-    ? linearPools[address].mainToken.address
-    : address;
 }
 </script>
 
