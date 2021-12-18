@@ -68,6 +68,13 @@
             "weekStart": 1
         },
         {
+            "label": "WMATIC",
+            "distributor": "0x201e382a1c2b541af30cc622b406833220d5c313",
+            "token": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-wmatic-polygon.json",
+            "weekStart": 4
+        },
+        {
             "label": "TUSD",
             "distributor": "0x09f3010ec0f6d72ef8ff2008f8e756d60482c9a8",
             "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
