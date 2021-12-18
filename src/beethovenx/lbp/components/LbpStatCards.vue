@@ -149,14 +149,14 @@ watch(blockNumber, () => {
     </BalCard>
     <BalCard>
       <div class="text-sm text-gray-500 font-medium mb-2">
-        Tokens Sold
+        Volume
       </div>
       <div class="text-xl font-medium truncate flex items-center">
-        {{ lbpData ? fNum(lbpData.percentSold, 'percent') : '' }}
+        {{ fNum(props.pool.totalSwapVolume, 'usd_m') }}
       </div>
       <div class="text-sm text-gray-500 font-medium mt-1">
         {{ lbpData ? fNum(lbpData.sold, 'token_lg') : '' }} of
-        {{ fNum(lge.tokenAmount, 'token_lg') }}
+        {{ fNum(lge.tokenAmount, 'token_lg') }} sold
       </div>
     </BalCard>
   </div>

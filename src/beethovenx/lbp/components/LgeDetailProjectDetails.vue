@@ -4,6 +4,10 @@ import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 import useWeb3 from '@/services/web3/useWeb3';
+import { computed } from 'vue';
+import BalCard from '@/components/_global/BalCard/BalCard.vue';
+import BalAsset from '@/components/_global/BalAsset/BalAsset.vue';
+import useNumbers from '@/composables/useNumbers';
 
 type Props = {
   lge: GqlLge;
@@ -12,6 +16,7 @@ type Props = {
 
 const props = defineProps<Props>();
 const { appNetworkConfig } = useWeb3();
+const { fNum } = useNumbers();
 
 const {
   isBeforeStart,
@@ -19,8 +24,20 @@ const {
   startDateTimeFormatted,
   endDateTimeFormatted,
   launchToken,
-  collateralToken
+  collateralToken,
+  poolLaunchToken,
+  poolCollateralToken,
+  collateralTokenPrice
 } = useLge(props.lge, props.pool);
+
+const fundsRaised = computed(
+  () =>
+    parseFloat(poolCollateralToken.value?.balance || '') -
+    parseFloat(props.lge.collateralAmount)
+);
+const fundsRaisedValue = computed(
+  () => fundsRaised.value * collateralTokenPrice.value
+);
 </script>
 
 <template>
@@ -167,6 +184,39 @@ const {
           <span class="mr-1">{{ props.lge.collateralEndWeight }}%</span>
           <BalAsset :address="collateralToken.address" />
         </div>
+      </div>
+    </div>
+    <div class="lbp-review-row">
+      <div v-if="launchToken">
+        <div class="font-medium">Current Weights</div>
+        <div class="items-center flex">
+          <span class="mr-1">
+            {{ fNum(poolLaunchToken?.weight || '0', 'percent_lg') }}
+          </span>
+          <BalAsset
+            :address="launchToken.address"
+            :iconURI="props.lge.tokenIconUrl"
+          />
+          <span class="mx-2">/</span>
+          <span class="mr-1">
+            {{ fNum(poolCollateralToken?.weight || '0', 'percent_lg') }}
+          </span>
+          <BalAsset :address="collateralToken.address" />
+        </div>
+      </div>
+      <div>
+        <div class="font-medium">Liquidity</div>
+        <div>{{ fNum(props.pool.totalLiquidity, 'usd_lg') }}</div>
+      </div>
+    </div>
+    <div class="lbp-review-row">
+      <div>
+        <div class="font-medium">Volume</div>
+        <div>{{ fNum(props.pool.totalSwapVolume, 'usd_lg') }}</div>
+      </div>
+      <div>
+        <div class="font-medium">Funds Raised</div>
+        <div>{{ fNum(fundsRaised, 'usd') }}</div>
       </div>
     </div>
   </div>

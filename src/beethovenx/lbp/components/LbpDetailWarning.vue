@@ -21,7 +21,13 @@ const hidden = ref(false);
     </div>
     <div class="flex items-end mt-4">
       <div class="flex-1">
-        <a href="" class="text-green-500">Read More</a>
+        <a
+          href="https://docs.beethovenx.io/balancer-v2-1/lbps-for-token-launches"
+          target="_blank"
+          class="text-green-500"
+        >
+          Read More
+        </a>
       </div>
       <BalBtn size="sm" color="red" @click="hidden = true">I understand</BalBtn>
     </div>

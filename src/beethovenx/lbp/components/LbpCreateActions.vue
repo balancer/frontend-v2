@@ -130,7 +130,13 @@ function goToLge() {
         scheduled to start. The Auction Settings tab will become available on
         the auction page once you’ve created the auction.
       </p>
-      <a href="" target="_blank" class="text-green-500">More Info</a>
+      <a
+        href="https://docs.beethovenx.io/balancer-v2-1/lbps-for-token-launches"
+        target="_blank"
+        class="text-green-500"
+      >
+        More Info
+      </a>
     </div>
   </div>
 
