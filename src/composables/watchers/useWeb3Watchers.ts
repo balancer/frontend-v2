@@ -15,7 +15,7 @@ import useAlerts, { AlertPriority, AlertType } from '../useAlerts';
 export default function useWeb3Watchers() {
   // COMPOSABLES
   const { t } = useI18n();
-  const { blocknative, supportsBlocknative } = useBlocknative();
+  //const { blocknative, supportsBlocknative } = useBlocknative();
   const {
     appNetworkConfig,
     chainId,
@@ -49,7 +49,7 @@ export default function useWeb3Watchers() {
   // Watch for user account change:
   // -> Unsubscribe Blocknative from old account if exits
   // -> Listen to new account for transactions and update balances
-  watch(
+  /*watch(
     () => account.value,
     (newAccount, oldAccount) => {
       if (supportsBlocknative.value) {
@@ -77,7 +77,7 @@ export default function useWeb3Watchers() {
         );
       }
     }
-  );
+  );*/
 
   // Watch for user network switch
   // -> Display alert message if unsupported or not the same as app network.

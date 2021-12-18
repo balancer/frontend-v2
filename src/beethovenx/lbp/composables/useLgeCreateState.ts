@@ -25,20 +25,22 @@ interface LbpState {
 export const LBPDefaultData: LgeData = {
   name: 'Beethoven X',
   websiteUrl: 'https://app.beets.fi/',
-  tokenContractAddress: '0x6F00D64b42aF8f449dB15B0b3ee3B444550c4826',
-  tokenIconUrl:
-    'https://beethoven-assets.s3.eu-central-1.amazonaws.com/apple-touch-192.png',
+  tokenContractAddress: '0x05848B832E872d9eDd84AC5718D58f21fD9c9649',
+  tokenIconUrl: 'https://ftmscan.com/token/images/steakstakeftm_32.png',
+  //tokenContractAddress: '0x6F00D64b42aF8f449dB15B0b3ee3B444550c4826',
+  //tokenIconUrl:
+  //  'https://beethoven-assets.s3.eu-central-1.amazonaws.com/apple-touch-192.png',
   twitterUrl: 'https://www.twitter.com',
   mediumUrl: 'https://www.twitter.com',
   discordUrl: 'https://www.twitter.com',
   telegramUrl: 'https://www.twitter.com',
   description: 'BEETS',
 
-  startDate: '2022-01-05',
+  startDate: '2021-12-18',
   startTime: '12:00',
   endDate: '2022-01-12',
   endTime: '12:00',
-  collateralTokenAddress: '0x70b55af71b29c5ca7e67bd1995250364c4be5554',
+  collateralTokenAddress: '',
   tokenAmount: '100',
   collateralAmount: '',
   tokenStartWeight: 95,

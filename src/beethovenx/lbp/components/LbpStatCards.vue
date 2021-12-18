@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import useNumbers from '@/composables/useNumbers';
 import { differenceInMilliseconds, format } from 'date-fns';
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -7,6 +7,7 @@ import numeral from 'numeral';
 import useLge from '@/beethovenx/lbp/composables/useLge';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
+import useWeb3 from '@/services/web3/useWeb3';
 
 type Props = {
   lge: GqlLge;
@@ -16,6 +17,7 @@ type Props = {
 const props = defineProps<Props>();
 
 const { fNum } = useNumbers();
+const { blockNumber } = useWeb3();
 
 const {
   startsAt,
@@ -25,7 +27,10 @@ const {
   poolLaunchToken,
   launchToken,
   collateralTokenPrice,
-  collateralToken
+  collateralToken,
+  refreshStartEndStatus,
+  refetchQueriesOnBlockNumber,
+  invalidateQueries
 } = useLge(props.lge, props.pool);
 
 const timeRemaining = computed(() =>
@@ -94,6 +99,14 @@ function transformTime(slotProps) {
       slotProps.seconds < 10 ? `0${slotProps.seconds}` : slotProps.seconds
   };
 }
+
+watch(blockNumber, () => {
+  refreshStartEndStatus();
+
+  if (refetchQueriesOnBlockNumber.value === blockNumber.value) {
+    invalidateQueries();
+  }
+});
 </script>
 
 <template>
@@ -107,6 +120,7 @@ function transformTime(slotProps) {
           :time="timeRemaining"
           v-slot="{ days, hours, minutes, seconds }"
           :transform="transformTime"
+          @end="refreshStartEndStatus()"
         >
           {{
             days > 1

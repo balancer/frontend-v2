@@ -138,7 +138,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { launchToken } = useLge(props.lge, props.pool);
+    const { launchToken, onNewTx } = useLge(props.lge, props.pool);
     const highPiAccepted = ref(false);
     const store = useStore();
     const router = useRouter();
@@ -340,6 +340,7 @@ export default defineComponent({
       txHash.value = latestTxHash.value;
       tradeSuccess.value = true;
       modalTradePreviewIsOpen.value = false;
+      onNewTx();
     });
 
     populateInitialTokens();

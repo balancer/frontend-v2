@@ -18,6 +18,7 @@ import LgeDetailProjectDetails from '@/beethovenx/lbp/components/LgeDetailProjec
 import Swaps from '@/components/contextual/pages/pool/PoolTransactionsCard/PoolSwaps/Swaps.vue';
 import LbpDetailMultisigWarning from '@/beethovenx/lbp/components/LbpDetailMultisigWarning.vue';
 import LgeDetailAdmin from '@/beethovenx/lbp/components/LgeDetailAdmin.vue';
+import useLge from '@/beethovenx/lbp/composables/useLge';
 
 const { account } = useWeb3();
 const route = useRoute();
@@ -138,12 +139,7 @@ function refetchData() {
                 @admiEvent="refetchData()"
               />
             </div>
-            <LbpTradeCard
-              :swap-enabled="swapEnabled"
-              :lge="lge"
-              :pool="pool"
-              @on-tx="onNewTx"
-            />
+            <LbpTradeCard :swap-enabled="swapEnabled" :lge="lge" :pool="pool" />
             <!--            <div class="mt-4">
               <img src="~@/beethovenx/assets/images/ludwig-says.svg" />
             </div>-->

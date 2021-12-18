@@ -47,7 +47,6 @@
       <template v-slot:content v-if="lgeConfigOpen || lgeConfigSaved">
         <div v-if="lgeConfigOpen">
           <LbpAuctionConfigurationInputs />
-          <LbpPreviewChart />
 
           <BalBtn
             @click="saveLgeConfig()"
@@ -103,7 +102,6 @@ import { getAddress } from '@ethersproject/address';
 import useLgeCreateState from '@/beethovenx/lbp/composables/useLgeCreateState';
 import LbpProjectDetailInputs from '@/beethovenx/lbp/components/LbpProjectDetailInputs.vue';
 import LbpAuctionConfigurationInputs from '@/beethovenx/lbp/components/LbpAuctionConfigurationInputs.vue';
-import LbpPreviewChart from '@/beethovenx/lbp/components/LbpPreviewChart.vue';
 import LbpCreateActions from '@/beethovenx/lbp/components/LbpCreateActions.vue';
 import LbpProjectDetailReview from '@/beethovenx/lbp/components/LbpProjectDetailReview.vue';
 import LbpAuctionConfigurationReview from '@/beethovenx/lbp/components/LbpAuctionConfigurationReview.vue';
@@ -115,7 +113,6 @@ export default defineComponent({
     LbpAuctionConfigurationReview,
     LbpProjectDetailReview,
     LbpCreateActions,
-    LbpPreviewChart,
     LbpAuctionConfigurationInputs,
     LbpProjectDetailInputs,
     StepContainer,

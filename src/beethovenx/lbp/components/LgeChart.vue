@@ -95,9 +95,9 @@ const predictedPriceValues = computed(() => {
   return getLbpChartPredictedPriceData({
     firstTime,
     endTime: endsAt.value,
-    tokenCurrentWeight: parseFloat(poolLaunchToken.value.weight),
+    tokenCurrentWeight: parseFloat(poolLaunchToken.value.weight) * 100,
     tokenEndWeight,
-    collateralCurrentWeight: parseFloat(poolCollateralToken.value.weight),
+    collateralCurrentWeight: parseFloat(poolCollateralToken.value.weight) * 100,
     collateralEndWeight,
     collateralBalance,
     tokenBalance: parseFloat(poolLaunchToken.value.balance),

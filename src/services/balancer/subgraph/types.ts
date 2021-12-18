@@ -64,7 +64,7 @@ export interface PoolApr {
 
 export interface OnchainTokenData {
   balance: string;
-  weight: number;
+  weight: string;
   decimals: number;
   logoURI: string;
   name: string;

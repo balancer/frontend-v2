@@ -11,7 +11,7 @@
   "loggingRpc": "",
   "explorer": "https://ftmscan.com",
   "explorerName": "Ftmscan",
-  "subgraph": "https://graph-node.beets-ftm-node.com/subgraphs/name/beethovenx",
+  "subgraph": "https://us-lb.beets-ftm-node.com/subgraphs/name/beethovenx",
   "blockSubgraph": "https://graph-node.beets-ftm-node.com/subgraphs/name/fantom-blocks",
   "farmSubgraph": "https://graph-node.beets-ftm-node.com/subgraphs/name/masterchef",
   "backendUrl": "https://backend.beets-ftm-node.com/graphql",

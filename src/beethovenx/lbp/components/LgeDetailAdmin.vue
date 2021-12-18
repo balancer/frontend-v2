@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TransactionReceipt } from '@ethersproject/providers';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTransactions from '@/composables/useTransactions';
 import useEthers from '@/composables/useEthers';
@@ -9,6 +9,7 @@ import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import BalModal from '@/components/_global/BalModal/BalModal.vue';
+import BalToggle from '@/components/_global/BalToggle/BalToggle.vue';
 
 type Props = {
   lge: GqlLge;
@@ -30,10 +31,15 @@ const copperProxyService = computed(
   () => new CopperProxyService(appNetworkConfig.key)
 );
 
+const poolExited = computed(
+  () => parseFloat(props.pool.totalShares) < 0.00000001
+);
+
 const togglingSwapsEnabled = ref(false);
 const exitingPool = ref(false);
 
 async function toggleSwaps(enable: boolean): Promise<void> {
+  console.log('pool', props.pool);
   try {
     togglingSwapsEnabled.value = true;
 
@@ -106,6 +112,11 @@ function closeModal() {
   <BalModal :show="modalOpen" @close="closeModal">
     <h3>LGE Admin</h3>
     <div class="mt-8">
+      <div class="mb-4">
+        Enabling swaps will make it possible for users to buy and sell your
+        token. We recommend that you enable swaps right as the price decay
+        begins and disable swaps right as the price decay ends.
+      </div>
       <BalBtn
         v-if="props.pool.swapEnabled"
         @click="toggleSwaps(false)"
@@ -123,12 +134,17 @@ function closeModal() {
         Enable Swaps
       </BalBtn>
     </div>
+    <div class="mb-4 mt-12">
+      Exiting the pool will burn your BPT and return all pool funds to your
+      wallet. You should only exit the pool after the LGE has come to an end.
+    </div>
     <BalBtn
       @click="exitPool()"
       color="red"
-      class="mt-5"
       :loading="exitingPool"
       loading-label="Exiting..."
+      class="mb-4"
+      :disabled="poolExited"
     >
       Exit Pool
     </BalBtn>

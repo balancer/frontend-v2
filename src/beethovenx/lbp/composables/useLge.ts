@@ -25,14 +25,22 @@ import { TokenInfo } from '@/types/TokenList';
 import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useLgeQuery from '@/beethovenx/lbp/composables/useLgeQuery';
 import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
-import { FullPool, PoolToken } from '@/services/balancer/subgraph/types';
+import {
+  FullPool,
+  OnchainTokenData,
+  PoolToken
+} from '@/services/balancer/subgraph/types';
 
 interface LgeState {
   refetchQueriesOnBlockNumber: number;
+  isBeforeStart: boolean;
+  isAfterEnd: boolean;
 }
 
 const state = reactive<LgeState>({
-  refetchQueriesOnBlockNumber: 0
+  refetchQueriesOnBlockNumber: 0,
+  isAfterEnd: false,
+  isBeforeStart: false
 });
 
 const REFETCH_QUERIES_BLOCK_BUFFER = 3;
@@ -40,6 +48,7 @@ const REFETCH_QUERIES_BLOCK_BUFFER = 3;
 export default function useLge(lge: GqlLge, pool: FullPool) {
   const { blockNumber } = useWeb3();
   const { tokens, priceFor } = useTokens();
+  const queryClient = useQueryClient();
 
   const startsAt = computed(() => {
     return parseISO(`${lge.startDate}`);
@@ -54,8 +63,8 @@ export default function useLge(lge: GqlLge, pool: FullPool) {
     format(endsAt.value, 'MMM d, HH:mm')
   );
 
-  const isBeforeStart = ref(isBefore(new Date(), startsAt.value));
-  const isAfterEnd = ref(isAfter(new Date(), endsAt.value));
+  state.isBeforeStart = isBefore(new Date(), startsAt.value);
+  state.isAfterEnd = isAfter(new Date(), endsAt.value);
 
   const tokenPricesQuery = useSubgraphTokenPricesQuery(
     ref(lge.id),
@@ -79,17 +88,12 @@ export default function useLge(lge: GqlLge, pool: FullPool) {
     () => tokens.value[getAddress(lge.collateralTokenAddress)]
   );
 
-  const poolLaunchToken = computed<PoolToken | null>(() => {
-    return (
-      pool.tokens.find(token => token.address === lge.tokenContractAddress) ||
-      null
-    );
-  });
+  const poolLaunchToken = computed<OnchainTokenData | null>(
+    () => pool.onchain.tokens[getAddress(lge.tokenContractAddress)] || null
+  );
 
-  const poolCollateralToken = computed<PoolToken | null>(
-    () =>
-      pool.tokens.find(token => token.address === lge.collateralTokenAddress) ||
-      null
+  const poolCollateralToken = computed<OnchainTokenData | null>(
+    () => pool.onchain.tokens[getAddress(lge.collateralTokenAddress)] || null
   );
 
   const collateralTokenPrice = computed(() => {
@@ -97,17 +101,15 @@ export default function useLge(lge: GqlLge, pool: FullPool) {
   });
 
   function refreshStartEndStatus() {
-    isAfterEnd.value = isAfter(new Date(), endsAt.value);
-    isBeforeStart.value = isBefore(new Date(), startsAt.value);
+    state.isAfterEnd = isAfter(new Date(), endsAt.value);
+    state.isBeforeStart = isBefore(new Date(), startsAt.value);
   }
 
   function invalidateQueries() {
-    /*queryClient.invalidateQueries([POOLS_ROOT_KEY]).catch();
-    queryClient
-      .invalidateQueries([POOLS_ROOT_KEY, 'current', id.value])
-      .catch();
+    queryClient.invalidateQueries([POOLS_ROOT_KEY]).catch();
+    queryClient.invalidateQueries([POOLS_ROOT_KEY, 'current', pool.id]).catch();
     queryClient.invalidateQueries([SWAPS_ROOT_KEY]).catch();
-    queryClient.invalidateQueries([TOKEN_PRICES_ROOT_KEY]).catch();*/
+    queryClient.invalidateQueries([TOKEN_PRICES_ROOT_KEY]).catch();
   }
 
   function onNewTx(): void {
@@ -122,8 +124,6 @@ export default function useLge(lge: GqlLge, pool: FullPool) {
     startsAt,
     endsAt,
     startDateTimeFormatted,
-    isBeforeStart,
-    isAfterEnd,
     refreshStartEndStatus,
     onNewTx,
     invalidateQueries,

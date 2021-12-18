@@ -6,6 +6,7 @@ import LbpTokenWeightRangeLabel from '@/beethovenx/lbp/components/LbpTokenWeight
 import useLgeCreateState from '@/beethovenx/lbp/composables/useLgeCreateState';
 import useTokens from '@/composables/useTokens';
 import { computed } from 'vue';
+import LbpPreviewChart from '@/beethovenx/lbp/components/LbpPreviewChart.vue';
 
 const { data } = useLgeCreateState();
 const { tokens, getToken, dynamicDataLoaded, dynamicDataLoading } = useTokens();
@@ -30,7 +31,7 @@ function handleEndWeightChange() {
 <template>
   <div
     class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-4 mb-8"
-    v-if="!dynamicDataLoading"
+    v-if="!dynamicDataLoading && launchToken && collateralToken"
   >
     <div class="col">
       <div>Start Weights</div>
@@ -38,14 +39,14 @@ function handleEndWeightChange() {
         <div class="flex-1">
           <LbpTokenWeightRangeLabel
             :address="data.tokenContractAddress"
-            :symbol="launchToken.symbol"
+            :symbol="launchToken?.symbol || ''"
             :weight="data.tokenStartWeight / 100"
             :iconURI="data.tokenIconUrl"
           />
         </div>
         <LbpTokenWeightRangeLabel
           :address="data.collateralTokenAddress"
-          :symbol="collateralToken.symbol"
+          :symbol="collateralToken?.symbol || ''"
           :weight="data.collateralStartWeight / 100"
         />
       </div>
@@ -74,14 +75,14 @@ function handleEndWeightChange() {
         <div class="flex-1">
           <LbpTokenWeightRangeLabel
             :address="data.tokenContractAddress"
-            :symbol="launchToken.symbol"
+            :symbol="launchToken?.symbol || ''"
             :weight="data.tokenEndWeight / 100"
             :iconURI="data.tokenIconUrl"
           />
         </div>
         <LbpTokenWeightRangeLabel
           :address="data.collateralTokenAddress"
-          :symbol="collateralToken.symbol"
+          :symbol="collateralToken?.symbol || ''"
           :weight="data.collateralEndWeight / 100"
         />
       </div>
@@ -97,4 +98,6 @@ function handleEndWeightChange() {
       </div>
     </div>
   </div>
+
+  <LbpPreviewChart />
 </template>

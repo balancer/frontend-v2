@@ -81,7 +81,7 @@
             size="xs"
             color="white"
             class="h-full"
-            @click="approveSpender(spenderAddress)"
+            @click="approveToken()"
             v-if="requiresApproval"
             :loading="approving"
             loading-label="Approving..."
@@ -127,6 +127,7 @@ import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenMo
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
+import { getAddress, isAddress } from '@ethersproject/address';
 
 const ETH_BUFFER = 0.1;
 
@@ -177,7 +178,14 @@ export default defineComponent({
   ],
 
   setup(props, { emit }) {
-    const { tokens, balances, injectTokens, approvalRequired } = useTokens();
+    const {
+      tokens,
+      balances,
+      injectTokens,
+      approvalRequired,
+      refetchAllowances,
+      allowances
+    } = useTokens();
     const { fNum, toFiat } = useNumbers();
     const { appNetworkConfig } = useWeb3();
     const { tokenAmountInput, tokenAddressInput } = toRefs(props);
@@ -192,6 +200,10 @@ export default defineComponent({
     } = useTokenApproval(tokenAddressInput, tokenAmountInput, tokens);
 
     const requiresApproval = computed(() => {
+      if (approved.value) {
+        return false;
+      }
+
       return approvalRequired(
         tokenAddressInput.value,
         tokenAmountInput.value,
@@ -266,6 +278,11 @@ export default defineComponent({
       modalSelectTokenType.value = type;
     }
 
+    async function approveToken() {
+      await approveSpender(spenderAddress.value);
+      await refetchAllowances.value();
+    }
+
     const balanceLabel = computed(
       () => balances.value[tokenAddressInput.value]
     );
@@ -275,7 +292,6 @@ export default defineComponent({
     }
 
     watch(requiresApproval, newVal => {
-      console.log('requires approval watch', newVal);
       if (newVal) {
         emit('requiresApproval', props.tokenAddressInput);
       } else {
@@ -301,9 +317,9 @@ export default defineComponent({
       approved,
       approving,
       isLoadingApprovals,
-      approveSpender,
       tokenChangeDisabled,
-      requiresApproval
+      requiresApproval,
+      approveToken
     };
   }
 });
