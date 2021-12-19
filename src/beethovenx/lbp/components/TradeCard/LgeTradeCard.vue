@@ -8,7 +8,7 @@
         <TradeSettingsPopover :context="TradeSettingsContext.trade" />
       </div>
     </template>
-    <div>
+    <div class="mb-2">
       <LbpTradePair
         v-model:tokenInAmount="tokenInAmount"
         v-model:tokenInAddress="tokenInAddress"
@@ -46,7 +46,7 @@
         block
         @click.prevent="showTradePreviewModal"
       />
-      <TradeRoute
+      <!--      <TradeRoute
         class="mt-5"
         :address-in="tokenInAddress"
         :amount-in="tokenInAmount"
@@ -54,7 +54,7 @@
         :amount-out="tokenOutAmount"
         :pools="pools"
         :sor-return="sorReturn"
-      />
+      />-->
     </div>
     <SuccessOverlay
       v-if="tradeSuccess"
@@ -133,7 +133,6 @@ export default defineComponent({
     LbpTradePair,
     SuccessOverlay,
     TradePreviewModal,
-    TradeRoute,
     TradeSettingsPopover
   },
 

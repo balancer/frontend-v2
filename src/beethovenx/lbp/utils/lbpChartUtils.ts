@@ -4,10 +4,21 @@ import {
   format,
   isBefore,
   parse,
-  differenceInCalendarDays
+  differenceInCalendarDays,
+  parseISO,
+  formatISO,
+  getUnixTime,
+  fromUnixTime
 } from 'date-fns';
 import { zip } from 'lodash';
 import { LgeData } from '@/beethovenx/lbp/lbp-types';
+import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
+import {
+  FullPool,
+  PoolToken,
+  SubgraphSwap,
+  SubgraphTokenPrice
+} from '@/services/balancer/subgraph/types';
 
 const NUM_STEPS = 48;
 
@@ -74,9 +85,15 @@ export function getLbpChartPredictedPriceData({
   let tokenWeight = tokenCurrentWeight;
   let collateralWeight = collateralCurrentWeight;
   const predicted: number[] = [
-    (((tokenWeight / collateralWeight) * collateralBalance) / tokenBalance) *
+    calculateLbpTokenPrice({
+      tokenWeight,
+      collateralWeight,
+      collateralBalance,
+      tokenBalance,
       collateralTokenPrice
+    })
   ];
+
   const times: string[] = [format(firstTime, 'yyyy-MM-dd HH:mm:ss')];
   let timestamp = firstTime;
 
@@ -85,9 +102,13 @@ export function getLbpChartPredictedPriceData({
     tokenWeight -= tokenWeightStep;
     collateralWeight += collateralWeightStep;
 
-    const tokenPrice =
-      (((tokenWeight / collateralWeight) * collateralBalance) / tokenBalance) *
-      collateralTokenPrice;
+    const tokenPrice = calculateLbpTokenPrice({
+      tokenWeight,
+      collateralWeight,
+      collateralBalance,
+      tokenBalance,
+      collateralTokenPrice
+    });
 
     predicted.push(tokenPrice);
     times.push(format(timestamp, 'yyyy-MM-dd HH:mm:ss'));
@@ -95,12 +116,105 @@ export function getLbpChartPredictedPriceData({
 
   times.push(format(endTime, 'yyyy-MM-dd HH:mm:ss'));
   predicted.push(
-    (((tokenEndWeight / collateralEndWeight) * collateralBalance) /
-      tokenBalance) *
+    calculateLbpTokenPrice({
+      tokenWeight: tokenEndWeight,
+      collateralWeight: collateralEndWeight,
+      collateralBalance,
+      tokenBalance,
       collateralTokenPrice
+    })
   );
 
   return zip(times, predicted);
+}
+
+export function getLbpChartTokenPriceData({
+  lge,
+  collateralTokenPrice,
+  numSteps,
+  startsAt,
+  endsAt,
+  swaps
+}: {
+  lge: GqlLge;
+  swaps: SubgraphSwap[];
+  collateralTokenPrice: number;
+  numSteps: number;
+  startsAt: Date;
+  endsAt: Date;
+}) {
+  const launchToken = lge.tokenContractAddress.toLowerCase();
+  const collateralToken = lge.collateralTokenAddress.toLowerCase();
+  const now = new Date();
+  const hasEnded = isBefore(endsAt, now);
+  const endTime = hasEnded ? endsAt : now;
+  const startTimestamp = getUnixTime(startsAt);
+  const endTimestamp = hasEnded ? getUnixTime(endsAt) : getUnixTime(new Date());
+  const lgeEndTimestamp = getUnixTime(endsAt);
+  let tokenBalance = parseFloat(lge.tokenAmount);
+  let collateralBalance = parseFloat(lge.collateralAmount);
+  const timeStep = differenceInSeconds(endTime, startsAt) / numSteps;
+
+  const prices: number[] = [];
+  const times: string[] = [];
+  let timestamp = getUnixTime(startsAt);
+
+  while (timestamp <= endTimestamp) {
+    const { tokenWeight, collateralWeight } = getWeightsAtTime(
+      timestamp,
+      lge,
+      startTimestamp,
+      lgeEndTimestamp
+    );
+
+    prices.push(
+      calculateLbpTokenPrice({
+        tokenWeight,
+        collateralWeight,
+        collateralBalance,
+        tokenBalance,
+        collateralTokenPrice
+      })
+    );
+    times.push(format(fromUnixTime(timestamp), 'yyyy-MM-dd HH:mm:ss'));
+
+    const filtered = getSwapsInTimeRange(
+      swaps,
+      timestamp,
+      timestamp + timeStep
+    );
+
+    for (const swap of filtered) {
+      const amountIn = parseFloat(swap.tokenAmountIn);
+      const amountOut = parseFloat(swap.tokenAmountOut);
+
+      tokenBalance += swap.tokenIn === launchToken ? amountIn : -amountOut;
+      collateralBalance +=
+        swap.tokenIn === collateralToken ? amountIn : -amountOut;
+
+      const { tokenWeight, collateralWeight } = getWeightsAtTime(
+        swap.timestamp,
+        lge,
+        startTimestamp,
+        lgeEndTimestamp
+      );
+
+      times.push(format(fromUnixTime(swap.timestamp), 'yyyy-MM-dd HH:mm:ss'));
+      prices.push(
+        calculateLbpTokenPrice({
+          tokenWeight,
+          collateralWeight,
+          collateralBalance,
+          tokenBalance,
+          collateralTokenPrice
+        })
+      );
+    }
+
+    timestamp += timeStep;
+  }
+
+  return zip(times, prices);
 }
 
 export function getLbpNumDays({
@@ -117,4 +231,58 @@ export function getLbpNumDays({
 
 function parseDateForDateAndTime(date: string, time: string) {
   return parse(`${date} ${time}`, 'yyyy-MM-dd HH:mm', new Date());
+}
+
+export function calculateLbpTokenPrice({
+  tokenWeight,
+  tokenBalance,
+  collateralTokenPrice,
+  collateralBalance,
+  collateralWeight
+}: {
+  tokenWeight: number;
+  collateralWeight: number;
+  tokenBalance: number;
+  collateralBalance: number;
+  collateralTokenPrice: number;
+}) {
+  return (
+    (((tokenWeight / collateralWeight) * collateralBalance) / tokenBalance) *
+    collateralTokenPrice
+  );
+}
+
+function getSwapsInTimeRange(
+  tokenPrices: SubgraphSwap[],
+  startTimestamp: number,
+  endTimestamp: number
+): SubgraphSwap[] {
+  return tokenPrices.filter(
+    tokenPrice =>
+      tokenPrice.timestamp > startTimestamp &&
+      tokenPrice.timestamp <= endTimestamp
+  );
+}
+
+function getWeightsAtTime(
+  timestamp: number,
+  {
+    tokenStartWeight,
+    tokenEndWeight,
+    collateralStartWeight,
+    collateralEndWeight
+  }: GqlLge,
+  startTimestamp: number,
+  endTimestamp: number
+): { tokenWeight: number; collateralWeight: number } {
+  const percentComplete =
+    (timestamp - startTimestamp) / (endTimestamp - startTimestamp);
+
+  const tokenWeight =
+    tokenStartWeight - (tokenStartWeight - tokenEndWeight) * percentComplete;
+  const collateralWeight =
+    collateralStartWeight -
+    (collateralStartWeight - collateralEndWeight) * percentComplete;
+
+  return { tokenWeight, collateralWeight };
 }

@@ -10,6 +10,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import BalModal from '@/components/_global/BalModal/BalModal.vue';
 import BalToggle from '@/components/_global/BalToggle/BalToggle.vue';
+import useLge from '@/beethovenx/lbp/composables/useLge';
 
 type Props = {
   lge: GqlLge;
@@ -38,8 +39,9 @@ const poolExited = computed(
 const togglingSwapsEnabled = ref(false);
 const exitingPool = ref(false);
 
+const { onNewTx } = useLge(props.lge, props.pool);
+
 async function toggleSwaps(enable: boolean): Promise<void> {
-  console.log('pool', props.pool);
   try {
     togglingSwapsEnabled.value = true;
 
@@ -59,6 +61,7 @@ async function toggleSwaps(enable: boolean): Promise<void> {
     txListener(tx, {
       onTxConfirmed: async () => {
         togglingSwapsEnabled.value = false;
+        onNewTx();
         emit('adminEvent');
       },
       onTxFailed: () => {
@@ -90,6 +93,7 @@ async function exitPool(): Promise<void> {
     txListener(tx, {
       onTxConfirmed: async () => {
         exitingPool.value = false;
+        onNewTx();
         emit('adminEvent');
       },
       onTxFailed: () => {

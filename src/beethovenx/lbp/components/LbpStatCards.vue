@@ -30,7 +30,8 @@ const {
   collateralToken,
   refreshStartEndStatus,
   refetchQueriesOnBlockNumber,
-  invalidateQueries
+  invalidateQueries,
+  onNewTx
 } = useLge(props.lge, props.pool);
 
 const timeRemaining = computed(() =>
@@ -64,6 +65,7 @@ const lbpData = computed(() => {
   }
 
   const remaining = parseFloat(poolLaunchToken.value.balance);
+
   const sold = parseFloat(lge.tokenAmount) - remaining;
   const tokenPrice =
     ((parseFloat(poolLaunchToken.value.weight) /
@@ -101,10 +103,8 @@ function transformTime(slotProps) {
 }
 
 watch(blockNumber, () => {
-  refreshStartEndStatus();
-
-  if (refetchQueriesOnBlockNumber.value === blockNumber.value) {
-    invalidateQueries();
+  if (refetchQueriesOnBlockNumber.value < blockNumber.value) {
+    onNewTx();
   }
 });
 </script>

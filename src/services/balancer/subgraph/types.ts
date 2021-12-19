@@ -160,6 +160,7 @@ export interface SubgraphTokenPrice {
   amount: string;
   pricingAsset: string;
   price: string;
+  priceUSD: string;
   block: string;
   timestamp: number;
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import LgeTable from '@/beethovenx/lbp/components/LgeTable.vue';
+import LgeListWarning from '@/beethovenx/lbp/components/LgeListWarning.vue';
 
 const router = useRouter();
 
@@ -20,6 +21,7 @@ function goToLaunchCreate() {
         @click="goToLaunchCreate"
       />
     </div>
+    <LgeListWarning />
     <div class="mb-32">
       <LgeTable />
     </div>

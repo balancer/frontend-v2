@@ -10,12 +10,13 @@ import useBreakpoints from '@/composables/useBreakpoints';
 import { isStableLike } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useWeb3 from '@/services/web3/useWeb3';
-import { format } from 'date-fns';
+import { format, getUnixTime } from 'date-fns';
 import { flatten, orderBy } from 'lodash';
 import numeral from 'numeral';
 import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
 import useLge from '@/beethovenx/lbp/composables/useLge';
 import usePoolSwapsQuery from '@/composables/queries/usePoolSwapsQuery';
+import useAllPoolSwapsQuery from '@/beethovenx/composables/queries/useAllPoolSwapsQuery';
 
 type Props = {
   lge: GqlLge;
@@ -31,7 +32,9 @@ const {
   startDateTimeFormatted,
   endDateTimeFormatted,
   launchToken,
-  collateralToken
+  collateralToken,
+  startsAt,
+  poolLaunchToken
 } = useLge(props.lge, props.pool);
 
 const { fNum } = useNumbers();
@@ -41,28 +44,9 @@ const { upToLargeBreakpoint } = useBreakpoints();
 const { tokens, priceFor } = useTokens();
 const { isWalletReady } = useWeb3();
 
-/*usePoolSwapsQuery();
-
-const swapsQuery = useSwapsQuery(
-  {},
-  {
-    poolIds: ref([
-      '0x03c6b3f09d2504606936b1a4decefad204687890000200000000000000000015',
-      '0xcde5a11a4acb4ee4c805352cec57e236bdbc3837000200000000000000000019'
-    ])
-  }
-);*/
-
-const swaps = computed(() =>
-  /*swapsQuery.data.value
-    ? orderBy(
-        flatten(swapsQuery.data.value.pages.map(page => page.swaps)),
-        'timestamp',
-        'desc'
-      )
-    : []*/
-
-  []
+const { data: swaps, isLoading } = useAllPoolSwapsQuery(
+  ref(props.lge.id),
+  ref(getUnixTime(startsAt.value))
 );
 
 function loadMoreSwaps() {
@@ -99,7 +83,7 @@ const columns = ref<ColumnDefinition<SubgraphSwap>[]>([
     width: 150
   },
   {
-    name: 'BEETS Price',
+    name: `${poolLaunchToken.value?.symbol} Price`,
     id: 'price',
     accessor: 'price',
     sortKey: 'price',
@@ -115,13 +99,15 @@ const columns = ref<ColumnDefinition<SubgraphSwap>[]>([
 ]);
 
 const data = computed(() => {
-  console.log('swap', swaps.value);
-  return (swaps.value || []).map(swap => ({
+  return orderBy(swaps.value || [], 'timestamp', 'desc').map(swap => ({
     timestamp:
       format(swap.timestamp * 1000, 'MMM dd') +
       ' at ' +
       format(swap.timestamp * 1000, 'HH:mm'),
-    type: swap.tokenOut === props.lbpTokenAddress ? 'Buy' : 'Sell',
+    type:
+      swap.tokenOut === props.lge.tokenContractAddress.toLowerCase()
+        ? 'Buy'
+        : 'Sell',
     input: `${numeral(parseFloat(swap.tokenAmountIn)).format('0,0.[00]')} ${
       swap.tokenInSym
     }`,
@@ -129,7 +115,7 @@ const data = computed(() => {
       swap.tokenOutSym
     }`,
     price: `$${
-      swap.tokenOut === props.lbpTokenAddress
+      swap.tokenOut === props.lge.tokenContractAddress.toLowerCase()
         ? (
             (parseFloat(swap.tokenAmountIn) / parseFloat(swap.tokenAmountOut)) *
             priceFor(getAddress(swap.tokenIn))
@@ -147,7 +133,6 @@ const data = computed(() => {
 </script>
 
 <template>
-  <h4 class="px-4 lg:px-0 mb-2">Transactions</h4>
   <BalCard
     shadow="lg"
     class="mt-4"

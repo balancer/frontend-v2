@@ -19,10 +19,18 @@ import Swaps from '@/components/contextual/pages/pool/PoolTransactionsCard/PoolS
 import LbpDetailMultisigWarning from '@/beethovenx/lbp/components/LbpDetailMultisigWarning.vue';
 import LgeDetailAdmin from '@/beethovenx/lbp/components/LgeDetailAdmin.vue';
 import useLge from '@/beethovenx/lbp/composables/useLge';
+import {
+  POOLS_ROOT_KEY,
+  SWAPS_ROOT_KEY,
+  TOKEN_PRICES_ROOT_KEY
+} from '@/beethovenx/constants/queryKeys';
+import { useQueryClient } from 'vue-query';
+import LgeSwapsTable from '@/beethovenx/lbp/components/LgeSwapsTable.vue';
 
 const { account } = useWeb3();
 const route = useRoute();
 const { injectTokens, tokens } = useTokens();
+const queryClient = useQueryClient();
 
 const poolQuery = usePoolQuery(route.params.id as string);
 const pool = computed(() => {
@@ -64,16 +72,7 @@ watch(lge, () => {
  * WATCHERS
  */
 watch(blockNumber, () => {
-  /*refreshStartEndStatus();
-
-  if (refetchQueriesOnBlockNumber.value === blockNumber.value) {
-    invalidateQueries();
-  } else {
-
-    tokenPricesQuery.refetch.value();
-  }*/
-
-  poolQuery.refetch.value();
+  refetchData();
 });
 
 function refetchData() {
@@ -156,7 +155,7 @@ function refetchData() {
         :pool="pool"
       />
       <div v-if="activeTab === 'swaps'" class="mt-8">
-        <Swaps v-if="pool" :pool="pool" />
+        <LgeSwapsTable :lge="lge" :pool="pool" />
       </div>
     </div>
   </div>

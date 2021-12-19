@@ -53,7 +53,8 @@ const QUERY_KEYS = {
       SWAPS_ROOT_KEY,
       'current',
       { poolIds }
-    ]
+    ],
+    Pool: (poolId: Ref<string>) => [SWAPS_ROOT_KEY, 'pool', { poolId }]
   },
   TokenPrices: {
     Current: (poolId: Ref<string>, asset: Ref<string>) => [

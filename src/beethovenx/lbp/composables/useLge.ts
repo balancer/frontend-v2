@@ -1,18 +1,7 @@
-import { LgeData } from '@/beethovenx/lbp/lbp-types';
-import { computed, reactive, Ref, ref, toRefs } from 'vue';
+import { computed, reactive, ref, toRefs } from 'vue';
 import useTokens from '@/composables/useTokens';
-import { isDateCheck, isTimeCheck, isUrlCheck } from '@/lib/utils/validations';
-import { PoolTokenInput } from '@/beethovenx/services/pool/creator/pool-creator.service';
 import { getAddress } from '@ethersproject/address';
-import { LBPDefaultData } from '@/beethovenx/lbp/composables/useLgeCreateState';
-import {
-  format,
-  getUnixTime,
-  isAfter,
-  isBefore,
-  parseISO,
-  subDays
-} from 'date-fns';
+import { format, getUnixTime, isAfter, isBefore, parseISO } from 'date-fns';
 import {
   POOLS_ROOT_KEY,
   SWAPS_ROOT_KEY,
@@ -22,14 +11,9 @@ import { useQueryClient } from 'vue-query';
 import useWeb3 from '@/services/web3/useWeb3';
 import useSubgraphTokenPricesQuery from '@/beethovenx/composables/queries/useSubgraphTokenPricesQuery';
 import { TokenInfo } from '@/types/TokenList';
-import usePoolQuery from '@/composables/queries/usePoolQuery';
-import useLgeQuery from '@/beethovenx/lbp/composables/useLgeQuery';
 import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
-import {
-  FullPool,
-  OnchainTokenData,
-  PoolToken
-} from '@/services/balancer/subgraph/types';
+import { FullPool, OnchainTokenData } from '@/services/balancer/subgraph/types';
+import { calculateLbpTokenPrice } from '@/beethovenx/lbp/utils/lbpChartUtils';
 
 interface LgeState {
   refetchQueriesOnBlockNumber: number;
@@ -100,6 +84,26 @@ export default function useLge(lge: GqlLge, pool: FullPool) {
     return priceFor(getAddress(lge.collateralTokenAddress));
   });
 
+  const launchTokenPrice = computed(() => {
+    return calculateLbpTokenPrice({
+      tokenWeight: parseFloat(poolLaunchToken.value?.weight || '0'),
+      collateralWeight: parseFloat(poolCollateralToken.value?.weight || '0'),
+      tokenBalance: parseFloat(poolLaunchToken.value?.balance || '0'),
+      collateralBalance: parseFloat(poolCollateralToken.value?.balance || '0'),
+      collateralTokenPrice: collateralTokenPrice.value
+    });
+  });
+
+  const launchTokenStartingPrice = computed(() => {
+    return calculateLbpTokenPrice({
+      tokenWeight: lge.tokenStartWeight,
+      collateralWeight: lge.collateralStartWeight,
+      tokenBalance: parseFloat(lge.tokenAmount),
+      collateralBalance: parseFloat(lge.collateralAmount),
+      collateralTokenPrice: collateralTokenPrice.value
+    });
+  });
+
   function refreshStartEndStatus() {
     state.isAfterEnd = isAfter(new Date(), endsAt.value);
     state.isBeforeStart = isBefore(new Date(), startsAt.value);
@@ -135,6 +139,8 @@ export default function useLge(lge: GqlLge, pool: FullPool) {
     tokenPricesQuery,
     poolLaunchToken,
     poolCollateralToken,
-    collateralTokenPrice
+    collateralTokenPrice,
+    launchTokenPrice,
+    launchTokenStartingPrice
   };
 }

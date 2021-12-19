@@ -147,7 +147,9 @@ function goToLge() {
     headline="Create Your Auction"
     subHeadline="Deploy pool, Deposit funds, Schedule weight changes"
     buttonText="Create"
-    :buttonTextLoading="fetchingPoolData ? 'Fetching Pool...' : 'Creating...'"
+    :buttonTextLoading="
+      fetchingPoolData ? 'Fetching Pool Info...' : 'Creating...'
+    "
     @button-click="createAuction()"
   >
     <template v-slot:completeContent>

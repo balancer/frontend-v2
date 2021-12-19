@@ -6,6 +6,7 @@ const defaultAttrs = {
   amount: true,
   pricingAsset: true,
   price: true,
+  priceUSD: true,
   block: true,
   timestamp: true,
   poolId: {

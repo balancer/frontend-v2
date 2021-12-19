@@ -135,7 +135,7 @@ export class CopperProxyService {
       {
         address: tokenAddress,
         amount: parseUnits(
-          data.collateralAmount,
+          data.tokenAmount,
           tokenInfoMap[tokenAddress].decimals
         ),
         startWeight: parseUnits(`${data.tokenStartWeight}`, 16),

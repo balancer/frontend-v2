@@ -1,16 +1,30 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { zip } from 'lodash';
-import { format, fromUnixTime, parseISO } from 'date-fns';
+import {
+  addSeconds,
+  format,
+  formatISO,
+  fromUnixTime,
+  getUnixTime,
+  isBefore,
+  parseISO,
+  subDays
+} from 'date-fns';
 import useTailwind from '@/composables/useTailwind';
 import useLge from '@/beethovenx/lbp/composables/useLge';
 import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool, OnchainTokenData } from '@/services/balancer/subgraph/types';
 import LbpLineChart from '@/beethovenx/lbp/components/LbpLineChart.vue';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 import useTokens from '@/composables/useTokens';
-import { getLbpChartPredictedPriceData } from '@/beethovenx/lbp/utils/lbpChartUtils';
+import {
+  getLbpChartPredictedPriceData,
+  getLbpChartTokenPriceData
+} from '@/beethovenx/lbp/utils/lbpChartUtils';
+import useAllPoolSwapsQuery from '@/beethovenx/composables/queries/useAllPoolSwapsQuery';
+import { getAddress } from '@ethersproject/address';
 
 const store = useStore();
 const appLoading = computed(() => store.state.app.loading);
@@ -33,74 +47,68 @@ const {
   isBeforeStart,
   isAfterEnd,
   endsAt,
-  poolCollateralToken,
-  poolLaunchToken
+  launchTokenPrice,
+  launchTokenStartingPrice
 } = useLge(props.lge, props.pool);
 
-const currentTokenPrice = computed(() => {
-  return 0;
-});
-
 const lastPriceTimestamp = computed(() => {
-  /*const prices = props.tokenPrices;
+  const prices = tokenPrices.value;
 
   return prices && prices.length > 0
-    ? formatISO(fromUnixTime(prices[prices.length - 1].timestamp))
-    : props.lbpStartTime;*/
-
-  return startsAt.value.toISOString();
+    ? fromUnixTime(prices[prices.length - 1].timestamp)
+    : startsAt.value;
 });
 
 const chartColors = [
-  tailwind.theme.colors.gray['500'],
-  tailwind.theme.colors.green['400']
+  tailwind.theme.colors.green['400'],
+  tailwind.theme.colors.gray['500']
 ];
 
 const { priceFor } = useTokens();
+const { data: swaps, isLoading } = useAllPoolSwapsQuery(
+  ref(props.lge.id),
+  ref(getUnixTime(startsAt.value))
+);
 
 const tokenPriceValues = computed(() => {
-  if (!poolCollateralToken.value || !poolLaunchToken.value) {
+  if (isBeforeStart.value) {
     return [];
   }
 
-  const firstTime = isBeforeStart.value ? startsAt.value : new Date();
-  //const tokenPrices = props.tokenPrices || [];
-  const tokenPrices: any[] = [];
-
-  const times = [
-    ...tokenPrices.map(price =>
-      format(fromUnixTime(price.timestamp), 'yyyy-MM-dd HH:mm:ss')
-    ),
-    format(parseISO(lastPriceTimestamp.value), 'yyyy-MM-dd HH:mm:ss'),
-    format(firstTime, 'yyyy-MM-dd HH:mm:ss')
-  ];
-  const prices = [
-    ...tokenPrices.map(price => parseFloat(price.price)),
-    currentTokenPrice.value,
-    currentTokenPrice.value
-  ];
-
-  return zip(times, prices);
+  return getLbpChartTokenPriceData({
+    swaps: swaps.value || [],
+    lge: props.lge,
+    numSteps: 48,
+    startsAt: startsAt.value,
+    endsAt: endsAt.value,
+    collateralTokenPrice: priceFor(props.lge.collateralTokenAddress)
+  });
 });
 
 const predictedPriceValues = computed(() => {
-  if (!poolCollateralToken.value || !poolLaunchToken.value) {
+  const poolLaunchToken =
+    props.pool.onchain.tokens[getAddress(props.lge.tokenContractAddress)] ||
+    null;
+  const poolCollateralToken =
+    props.pool.onchain.tokens[getAddress(props.lge.collateralTokenAddress)] ||
+    null;
+
+  if (!poolCollateralToken || !poolLaunchToken || isAfterEnd.value) {
     return [];
   }
 
   const { tokenEndWeight, collateralEndWeight } = props.lge;
   const firstTime = isBeforeStart.value ? startsAt.value : new Date();
-  const collateralBalance = parseFloat(poolCollateralToken.value.balance);
 
   return getLbpChartPredictedPriceData({
     firstTime,
     endTime: endsAt.value,
-    tokenCurrentWeight: parseFloat(poolLaunchToken.value.weight) * 100,
+    tokenCurrentWeight: parseFloat(poolLaunchToken.weight) * 100,
     tokenEndWeight,
-    collateralCurrentWeight: parseFloat(poolCollateralToken.value.weight) * 100,
+    collateralCurrentWeight: parseFloat(poolCollateralToken.weight) * 100,
     collateralEndWeight,
-    collateralBalance,
-    tokenBalance: parseFloat(poolLaunchToken.value.balance),
+    collateralBalance: parseFloat(poolCollateralToken.balance),
+    tokenBalance: parseFloat(poolLaunchToken.balance),
     collateralTokenPrice: priceFor(props.lge.collateralTokenAddress),
     numSteps: 48
   });
@@ -109,12 +117,12 @@ const predictedPriceValues = computed(() => {
 const series = computed(() => {
   return [
     {
-      name: 'Predicted Price*',
-      values: predictedPriceValues.value
-    },
-    {
       name: `${launchToken.value?.symbol} Price`,
       values: tokenPriceValues.value
+    },
+    {
+      name: 'Predicted Price*',
+      values: predictedPriceValues.value
     }
   ];
 });
@@ -131,6 +139,7 @@ const series = computed(() => {
       :legendState="{}"
       height="96"
       :showLegend="true"
+      :disable-animation="true"
     />
   </div>
 </template>
