@@ -154,16 +154,23 @@ const swapRows = computed<SwapRow[]>(() => {
  */
 function getTransactionValue(tokenAmounts: TokenAmount[], type: SwapType) {
   if (type === 'trade') {
-    return bnum(priceFor(tokenAmounts[1].address))
-      .times(tokenAmounts[1].amount)
+    const mainTokenAddress = getUnderlyingTokenAddress(tokenAmounts[1].address);
+    const mainEquivAmount = getMainTokenEquivalentAmount(
+      tokenAmounts[1].address,
+      tokenAmounts[1].amount
+    );
+    return bnum(priceFor(mainTokenAddress))
+      .times(mainEquivAmount)
       .toNumber();
   }
 
   let total = bnum(0);
 
   for (const { address, amount } of tokenAmounts) {
-    const price = priceFor(address);
-    const amountNumber = Math.abs(parseFloat(amount));
+    const mainTokenAddress = getUnderlyingTokenAddress(address);
+    const mainEquivAmount = getMainTokenEquivalentAmount(address, amount);
+    const price = priceFor(mainTokenAddress);
+    const amountNumber = Math.abs(parseFloat(mainEquivAmount));
 
     // If the price is unknown for any of the positive amounts - the value cannot be computed.
     if (amountNumber > 0 && price === 0) {
@@ -202,6 +209,20 @@ function getTokenAmounts(swaps: PoolSwap[], type: SwapType) {
       amount: isInvest ? swap.tokenAmountIn : swap.tokenAmountOut
     };
   });
+}
+
+function getUnderlyingTokenAddress(address: string) {
+  const { linearPools } = props.pool.onchain;
+  return linearPools != null && linearPools[address] != null
+    ? linearPools[address].mainToken.address
+    : address;
+}
+
+function getMainTokenEquivalentAmount(address: string, amount: string) {
+  const { linearPools } = props.pool.onchain;
+  return linearPools != null && linearPools[address] != null
+    ? bnum(amount).times(linearPools[address].priceRate)
+    : bnum(amount);
 }
 </script>
 
