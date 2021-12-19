@@ -26,6 +26,7 @@ import '@/assets/css/index.css';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 import { Web3Provider } from '@ethersproject/providers';
 import Root from './Root';
+import VueCountdown from '@chenfengyuan/vue-countdown';
 
 use([
   TitleComponent,
@@ -40,12 +41,11 @@ use([
   PieChart,
   BarChart
 ]);
-
 const app = createApp(Root)
   .use(i18n)
   .use(router)
   .use(store)
-  .use(blocknative)
+  //.use(blocknative)
   .use(vueQuery)
   .use(Web3Plugin, Web3Provider)
   .mixin(mixins)
@@ -55,6 +55,7 @@ registerDirectives(app);
 registerGlobalComponents(app);
 //initSentry(app);
 
+app.component(VueCountdown.name!, VueCountdown);
 app.mount('#app');
 
 export default app;

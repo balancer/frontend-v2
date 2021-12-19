@@ -1,7 +1,10 @@
 import { configService as _configService } from '@/services/config/config.service';
 import axios from 'axios';
 import {
+  CreateLgeTypes,
   GqlHistoricalTokenPrice,
+  GqlLge,
+  GqlLgeCreateInput,
   GqlTokenPrice,
   GqlUserPortfolioData,
   GqlUserTokenData,
@@ -11,6 +14,11 @@ import {
 } from './beethovenx-types';
 import { getAddress } from '@ethersproject/address';
 import { keyBy } from 'lodash';
+import { ethers } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { LgeData } from '@/beethovenx/lbp/lbp-types';
+import { omit } from 'lodash';
 
 export type Price = { [fiat: string]: number };
 export type TokenPrices = { [address: string]: Price };
@@ -66,12 +74,17 @@ export default class BeethovenxService {
       }
     `;
 
-    const { tokenPrices } = await this.get<{
+    const response = await this.get<{
       tokenPrices: GqlTokenPrice[];
     }>(query);
+
+    if (!response) {
+      return {};
+    }
+
     const result: TokenPrices = {};
 
-    for (const tokenPrice of tokenPrices) {
+    for (const tokenPrice of response.tokenPrices) {
       result[getAddress(tokenPrice.address)] = { usd: tokenPrice.price };
     }
 
@@ -125,6 +138,73 @@ export default class BeethovenxService {
     );
 
     return data.result;
+  }
+
+  public async createLge(
+    web3: Web3Provider,
+    input: GqlLgeCreateInput,
+    account: string
+  ): Promise<{ id: string }> {
+    const signature = await web3.getSigner()._signTypedData(
+      {
+        name: 'beethovenx',
+        version: '1',
+        chainId: this.configService.network.chainId
+      },
+      CreateLgeTypes,
+      input
+    );
+
+    const query = jsonToGraphQLQuery({
+      mutation: {
+        lgeCreate: {
+          __args: { signature, lge: input },
+          id: true,
+          address: true,
+          name: true
+        }
+      }
+    });
+
+    return this.get<{ id: string }>(query, account);
+  }
+
+  public async getLge(id: string): Promise<GqlLge> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        lge: {
+          __args: { id },
+          ...this.lgeQueryFields
+        }
+      }
+    });
+
+    const response = await this.get<{ lge: GqlLge }>(query);
+
+    return response.lge;
+  }
+
+  public async getLges(): Promise<GqlLge[]> {
+    const query = jsonToGraphQLQuery({
+      query: { lges: this.lgeQueryFields }
+    });
+
+    const response = await this.get<{ lges: GqlLge[] }>(query);
+
+    return response.lges;
+  }
+
+  public async isAddressMultisigWallet(address: string): Promise<boolean> {
+    const query = jsonToGraphQLQuery({
+      query: { gnosisIsUserMultisigWallet: true }
+    });
+
+    const response = await this.get<{ gnosisIsUserMultisigWallet: boolean }>(
+      query,
+      address
+    );
+
+    return response.gnosisIsUserMultisigWallet;
   }
 
   private async get<T>(query: string, address?: string): Promise<T> {
@@ -194,6 +274,35 @@ export default class BeethovenxService {
         }
       }
     `;
+  }
+
+  private get lgeQueryFields() {
+    return {
+      address: true,
+      collateralAmount: true,
+      collateralEndWeight: true,
+      collateralStartWeight: true,
+      collateralTokenAddress: true,
+      description: true,
+      discordUrl: true,
+      endDate: true,
+      id: true,
+      mediumUrl: true,
+      name: true,
+      startDate: true,
+      swapFeePercentage: true,
+      telegramUrl: true,
+      tokenAmount: true,
+      tokenContractAddress: true,
+      tokenEndWeight: true,
+      tokenIconUrl: true,
+      tokenStartWeight: true,
+      twitterUrl: true,
+      websiteUrl: true,
+      bannerImageUrl: true,
+      adminAddress: true,
+      adminIsMultisig: true
+    };
   }
 
   public mapPortfolioData(data: GqlUserPortfolioData): UserPortfolioData {

@@ -25,8 +25,8 @@
       <a class="app-nav-other-item" href="https://discord.gg/jedS4zGk28">
         Discord
       </a>
-      <a class="app-nav-other-item" href="https://anyswap.exchange/#/router">
-        AnySwap Bridge
+      <a class="app-nav-other-item" href="https://app.multichain.org/#/router">
+        Multichain Bridge
         <div class="text-xs text-gray-400">
           ETH / AVAX / BSC / MATIC
         </div>

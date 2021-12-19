@@ -1,5 +1,5 @@
 <template>
-  <div class="border border-gray-700 rounded-lg">
+  <div>
     <BalTextInput
       name="pool-token-amount"
       :model-value="tokenAmountInput"
@@ -12,15 +12,17 @@
       validate-on="input"
       prepend-border
       :no-margin="true"
+      :title="title"
     >
       <template v-slot:prepend>
-        <div class="flex items-center h-full">
+        <div class="flex items-center h-full mr-4">
           <div
-            class="flex items-center w-32 h-full cursor-pointer group"
+            class="w-32 h-full cursor-pointer group flex items-center h-full"
             @click="openModalSelectToken('input')"
           >
             <BalAsset
               v-if="tokenAddressInput"
+              :iconURI="tokenIconUrl"
               :address="tokenAddressInput"
               :size="28"
             />
@@ -42,10 +44,13 @@
             <BalIcon
               :name="'chevron-down'"
               :size="'sm'"
-              class="text-green-500"
+              :class="tokenChangeDisabled ? 'text-gray-500' : 'text-green-500'"
             />
           </div>
-          <div class="w-24 border-l border-r dark:border-gray-850 ml-4 mr-4">
+          <div
+            v-if="hasTokenWeight"
+            class="w-24 border-l border-r dark:border-gray-850 ml-4"
+          >
             <BalTextInput
               name="pool-token-weight"
               :model-value="tokenWeightInput"
@@ -62,6 +67,7 @@
               <template v-slot:info>Weight (%)</template>
             </BalTextInput>
           </div>
+          <div v-else class="border-r dark:border-gray-850 ml-4 h-20" />
         </div>
       </template>
       <template v-slot:info>
@@ -74,9 +80,9 @@
           <BalBtn
             size="xs"
             color="white"
-            class="mr-4 h-full"
-            @click="approveV2"
-            v-if="!isUnlockedV2"
+            class="h-full"
+            @click="approveToken()"
+            v-if="requiresApproval"
             :loading="approving"
             loading-label="Approving..."
           >
@@ -84,10 +90,11 @@
           </BalBtn>
 
           <BalBtn
+            v-if="!hideDelete"
             size="xs"
             color="white"
             @click="handleTokenDelete"
-            class="h-full"
+            class="ml-4 h-full"
             :disabled="!canDelete"
           >
             <BalIcon
@@ -106,12 +113,13 @@
       @close="modalSelectTokenIsOpen = false"
       @select="handleSelectToken"
       include-ether
+      :included-tokens="allowedTokens"
     />
   </teleport>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRefs, watch } from 'vue';
+import { computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
@@ -119,6 +127,7 @@ import SelectTokenModal from '@/components/modals/SelectTokenModal/SelectTokenMo
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenApproval from '@/composables/trade/useTokenApproval';
+import { getAddress, isAddress } from '@ethersproject/address';
 
 const ETH_BUFFER = 0.1;
 
@@ -140,6 +149,23 @@ export default defineComponent({
     canDelete: {
       type: Boolean,
       required: true
+    },
+    hasTokenWeight: {
+      type: Boolean,
+      required: true
+    },
+    hideDelete: {
+      type: Boolean
+    },
+    title: {
+      type: String
+    },
+    tokenIconUrl: {
+      type: String
+    },
+    allowedTokens: { type: Array as PropType<string[]> },
+    spenderAddress: {
+      type: String
     }
   },
   emits: [
@@ -147,21 +173,43 @@ export default defineComponent({
     'tokenAmountChange',
     'tokenWeightChange',
     'tokenDelete',
-    'tokenApproved'
+    'tokenApproved',
+    'requiresApproval'
   ],
 
   setup(props, { emit }) {
-    const { tokens, balances, injectTokens } = useTokens();
+    const {
+      tokens,
+      balances,
+      injectTokens,
+      approvalRequired,
+      refetchAllowances,
+      allowances
+    } = useTokens();
     const { fNum, toFiat } = useNumbers();
     const { appNetworkConfig } = useWeb3();
     const { tokenAmountInput, tokenAddressInput } = toRefs(props);
+    const spenderAddress = computed(
+      () => props.spenderAddress || appNetworkConfig.addresses.vault
+    );
     const {
       approving,
       approved,
-      isUnlockedV2,
-      approveV2,
+      approveSpender,
       isLoading: isLoadingApprovals
     } = useTokenApproval(tokenAddressInput, tokenAmountInput, tokens);
+
+    const requiresApproval = computed(() => {
+      if (approved.value) {
+        return false;
+      }
+
+      return approvalRequired(
+        tokenAddressInput.value,
+        tokenAmountInput.value,
+        spenderAddress.value
+      );
+    });
 
     const tokenValue = computed(() =>
       toFiat(tokenAmountInput.value, tokenAddressInput.value)
@@ -179,6 +227,10 @@ export default defineComponent({
         : 18;
       return decimals;
     });
+
+    const tokenChangeDisabled = computed(
+      () => props.allowedTokens && props.allowedTokens.length === 1
+    );
 
     const isInRate = ref(true);
     const modalSelectTokenType = ref('input');
@@ -218,16 +270,31 @@ export default defineComponent({
     }
 
     function openModalSelectToken(type: string): void {
+      if (tokenChangeDisabled.value) {
+        return;
+      }
+
       modalSelectTokenIsOpen.value = true;
       modalSelectTokenType.value = type;
+    }
+
+    async function approveToken() {
+      await approveSpender(spenderAddress.value);
+      await refetchAllowances.value();
     }
 
     const balanceLabel = computed(
       () => balances.value[tokenAddressInput.value]
     );
 
-    watch(isUnlockedV2, newVal => {
+    if (requiresApproval.value) {
+      emit('requiresApproval', props.tokenAddressInput);
+    }
+
+    watch(requiresApproval, newVal => {
       if (newVal) {
+        emit('requiresApproval', props.tokenAddressInput);
+      } else {
         emit('tokenApproved', props.tokenAddressInput);
       }
     });
@@ -250,8 +317,9 @@ export default defineComponent({
       approved,
       approving,
       isLoadingApprovals,
-      isUnlockedV2,
-      approveV2
+      tokenChangeDisabled,
+      requiresApproval,
+      approveToken
     };
   }
 });

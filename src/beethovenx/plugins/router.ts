@@ -8,6 +8,9 @@ import TradePage from '@/beethovenx/pages/trade.vue';
 import PoolCreate from '@/beethovenx/pages/PoolCreate.vue';
 import Portfolio from '@/beethovenx/pages/Portfolio.vue';
 import FreshBeets from '@/beethovenx/pages/FreshBeets.vue';
+import LbpCreate from '@/beethovenx/pages/lbp/LgeCreate.vue';
+import LgeList from '@/beethovenx/pages/lbp/LgeList.vue';
+import LbpDetail from '@/beethovenx/pages/lbp/LgeDetail.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', redirect: '/trade' },
@@ -48,6 +51,9 @@ const routes: RouteRecordRaw[] = [
   { path: '/pool-create', name: 'pool-create', component: PoolCreate },
   { path: '/my-portfolio', name: 'my-portfolio', component: Portfolio },
   { path: '/stake', name: 'stake', component: FreshBeets },
+  { path: '/lge-create', name: 'lge-create', component: LbpCreate },
+  { path: '/lge-list', name: 'lge-list', component: LgeList },
+  { path: '/lge/:id', name: 'lge', component: LbpDetail },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',

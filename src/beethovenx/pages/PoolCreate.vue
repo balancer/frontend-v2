@@ -37,6 +37,7 @@
             @token-amount-change="value => tokenAmountChange(value, idx)"
             @token-weight-change="value => tokenWeightChange(value, idx)"
             @token-approved="address => handleTokenApproved(address)"
+            :has-token-weight="true"
           />
         </div>
       </div>
@@ -105,7 +106,6 @@ import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 import { remove } from 'lodash';
-import { PoolTokenInput } from '@/beethovenx/services/pool/creator/pool-creator.service';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import PoolCreateDefinitionFields from '@/beethovenx/components/pages/pool-create/PoolCreateDefinitionFields.vue';
@@ -113,6 +113,7 @@ import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 import { getTokensErrorFromInputs } from '@/beethovenx/utils/poolCreateHelper';
 import PoolCreateActions from '@/beethovenx/components/pages/pool-create/PoolCreateActions.vue';
 import PoolCreateSuccessOverlay from '@/beethovenx/components/pages/pool-create/PoolCreateSuccessOverlay.vue';
+import { PoolTokenInput } from '@/beethovenx/services/pool/creator/pool-creator.service';
 
 export default defineComponent({
   components: {

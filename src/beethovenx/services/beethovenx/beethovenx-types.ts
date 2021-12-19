@@ -116,3 +116,83 @@ export interface GqlTokenPrice {
   address: Scalars['String'];
   price: Scalars['Float'];
 }
+
+export interface GqlLgeCreateInput {
+  id: Scalars['ID'];
+  address: Scalars['String'];
+  bannerImageUrl: Scalars['String'];
+  collateralAmount: Scalars['String'];
+  collateralEndWeight: Scalars['Int'];
+  collateralStartWeight: Scalars['Int'];
+  collateralTokenAddress: Scalars['String'];
+  description: Scalars['String'];
+  discordUrl: Scalars['String'];
+  endDate: Scalars['String'];
+  mediumUrl: Scalars['String'];
+  name: Scalars['String'];
+  startDate: Scalars['String'];
+  swapFeePercentage: Scalars['String'];
+  telegramUrl: Scalars['String'];
+  tokenAmount: Scalars['String'];
+  tokenContractAddress: Scalars['String'];
+  tokenEndWeight: Scalars['Int'];
+  tokenIconUrl: Scalars['String'];
+  tokenStartWeight: Scalars['Int'];
+  twitterUrl: Scalars['String'];
+  websiteUrl: Scalars['String'];
+}
+
+export interface GqlLge {
+  __typename?: 'GqlLge';
+  address: Scalars['String'];
+  bannerImageUrl: Scalars['String'];
+  collateralAmount: Scalars['String'];
+  collateralEndWeight: Scalars['Int'];
+  collateralStartWeight: Scalars['Int'];
+  collateralTokenAddress: Scalars['String'];
+  description: Scalars['String'];
+  discordUrl: Scalars['String'];
+  endDate: Scalars['String'];
+  id: Scalars['ID'];
+  mediumUrl: Scalars['String'];
+  name: Scalars['String'];
+  startDate: Scalars['String'];
+  swapFeePercentage: Scalars['String'];
+  telegramUrl: Scalars['String'];
+  tokenAmount: Scalars['String'];
+  tokenContractAddress: Scalars['String'];
+  tokenEndWeight: Scalars['Int'];
+  tokenIconUrl: Scalars['String'];
+  tokenStartWeight: Scalars['Int'];
+  twitterUrl: Scalars['String'];
+  websiteUrl: Scalars['String'];
+  adminAddress: Scalars['String'];
+  adminIsMultisig: Scalars['Boolean'];
+}
+
+export const CreateLgeTypes = {
+  CreateLge: [
+    { name: 'id', type: 'string' },
+    { name: 'address', type: 'string' },
+    { name: 'name', type: 'string' },
+    { name: 'description', type: 'string' },
+    { name: 'tokenContractAddress', type: 'string' },
+    { name: 'collateralTokenAddress', type: 'string' },
+    { name: 'tokenAmount', type: 'string' },
+    { name: 'collateralAmount', type: 'string' },
+    { name: 'tokenStartWeight', type: 'int' },
+    { name: 'tokenEndWeight', type: 'int' },
+    { name: 'collateralStartWeight', type: 'int' },
+    { name: 'collateralEndWeight', type: 'int' },
+    { name: 'swapFeePercentage', type: 'string' },
+    { name: 'tokenIconUrl', type: 'string' },
+    { name: 'bannerImageUrl', type: 'string' },
+    { name: 'websiteUrl', type: 'string' },
+    { name: 'telegramUrl', type: 'string' },
+    { name: 'twitterUrl', type: 'string' },
+    { name: 'discordUrl', type: 'string' },
+    { name: 'mediumUrl', type: 'string' },
+    { name: 'startDate', type: 'string' },
+    { name: 'endDate', type: 'string' }
+  ]
+};

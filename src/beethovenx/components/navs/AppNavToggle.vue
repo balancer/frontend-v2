@@ -12,13 +12,19 @@
       :class="['toggle-link px-6', { [activeClasses]: isInvestPage }]"
       @click="trackGoal(Goals.ClickNavInvest)"
     >
-      {{ $t('invest') }}<span class="hidden lg:inline">&nbsp;/&nbsp;Farm</span>
+      Invest /&nbsp;Farm
     </router-link>
     <router-link
       :to="{ name: 'stake' }"
       :class="['toggle-link px-4', { [activeClasses]: isStakePage }]"
     >
       Stake
+    </router-link>
+    <router-link
+      :to="{ name: 'lge-list' }"
+      :class="['toggle-link px-4', { [activeClasses]: isLaunchPage }]"
+    >
+      Launch
     </router-link>
     <router-link
       :to="{ name: 'my-portfolio' }"
@@ -50,20 +56,18 @@ export default defineComponent({
     const { account, isLoadingProfile } = useWeb3();
     const activeClasses = 'bg-black text-green-500 dark:bg-gray-800';
     const isTradePage = computed(() => route.name === 'trade');
-    const isFarmPage = computed(() => String(route.name).startsWith('farm'));
-    const isBeetsPage = computed(() => route.name === 'beets');
     const isPortfolioPage = computed(() => route.name === 'my-portfolio');
     const isStakePage = computed(() => route.name === 'stake');
+    const isLaunchPage = computed(
+      () =>
+        route.name === 'lge-list' ||
+        route.name === 'lge-create' ||
+        route.name === 'lge'
+    );
     const isInvestPage = computed(
       () => route.name === 'invest' || String(route.name).startsWith('pool')
     );
-    const isHomePage = computed(
-      () =>
-        !isTradePage.value &&
-        !isFarmPage.value &&
-        !isBeetsPage.value &&
-        !isInvestPage.value
-    );
+
     const { trackGoal, Goals } = useFathom();
 
     const isLoggedIn = computed(
@@ -78,7 +82,8 @@ export default defineComponent({
       isLoggedIn,
       isPortfolioPage,
       isStakePage,
-      isInvestPage
+      isInvestPage,
+      isLaunchPage
     };
   }
 });
