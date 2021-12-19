@@ -39,7 +39,7 @@ const columns = ref<ColumnDefinition<GqlLge>[]>([
     name: 'Token',
     id: 'token',
     accessor: 'token',
-    width: 100,
+    width: 200,
     Cell: 'tokenCell'
   },
   {
@@ -50,7 +50,7 @@ const columns = ref<ColumnDefinition<GqlLge>[]>([
     sortKey: 'startDate',
     width: 200
   },
-  {
+  /*{
     name: 'Volume',
     id: 'volume',
     accessor: 'volume',
@@ -58,7 +58,7 @@ const columns = ref<ColumnDefinition<GqlLge>[]>([
     Cell: 'volumeCell',
     align: 'right',
     width: 125
-  },
+  },*/
   {
     name: 'Links',
     id: 'links',
@@ -90,6 +90,13 @@ const visibleLges = computed(() => {
     return activeTab.value === 'active-upcoming'
       ? isBefore(now, parseISO(lge.endDate))
       : isAfter(now, parseISO(lge.endDate));
+  });
+
+  lges.forEach(lge => {
+    console.log(
+      lge.id,
+      pools.value?.find(pool => pool.id === lge.id)
+    );
   });
 
   return activeTab.value === 'active-upcoming'
@@ -154,13 +161,7 @@ const visibleLges = computed(() => {
       </template>
       <template v-slot:volumeCell="auction">
         <div class="px-4 text-right">
-          {{
-            fNum(
-              pools?.find(pool => pool.id === auction.id)?.totalSwapVolume ||
-                '0',
-              'usd_lg'
-            )
-          }}
+          {{ pools?.find(pool => pool.id === auction.id)?.totalSwapVolume }}
         </div>
       </template>
       <template v-slot:linksCell="auction">
@@ -174,7 +175,10 @@ const visibleLges = computed(() => {
             target="_blank"
             class="mr-2 -mt-1"
           >
-            <img src="~@/beethovenx/assets/images/twitter.svg" class="w-5" />
+            <img
+              src="~@/beethovenx/assets/images/twitter.svg"
+              :style="{ width: '20px', 'max-width': '20px' }"
+            />
           </a>
           <a
             v-if="auction.discordUrl"
@@ -182,7 +186,10 @@ const visibleLges = computed(() => {
             target="_blank"
             class="-mt-1 mr-2"
           >
-            <img src="~@/beethovenx/assets/images/discord.svg" class="w-5" />
+            <img
+              src="~@/beethovenx/assets/images/discord.svg"
+              :style="{ width: '20px', 'max-width': '20px' }"
+            />
           </a>
           <a
             v-if="auction.telegramUrl"
@@ -190,7 +197,10 @@ const visibleLges = computed(() => {
             target="_blank"
             class="-mt-1 mr-2"
           >
-            <img src="~@/beethovenx/assets/images/telegram.svg" class="w-5" />
+            <img
+              src="~@/beethovenx/assets/images/telegram.svg"
+              :style="{ width: '20px', 'max-width': '20px' }"
+            />
           </a>
           <a
             v-if="auction.mediumUrl"
@@ -198,7 +208,10 @@ const visibleLges = computed(() => {
             target="_blank"
             class="-mt-1 mr-2"
           >
-            <img src="~@/beethovenx/assets/images/medium.svg" class="w-5" />
+            <img
+              src="~@/beethovenx/assets/images/medium.svg"
+              :style="{ width: '20px', 'max-width': '20px' }"
+            />
           </a>
         </div>
       </template>

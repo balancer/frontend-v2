@@ -25,6 +25,8 @@ import {
 } from '@/beethovenx/lbp/utils/lbpChartUtils';
 import useAllPoolSwapsQuery from '@/beethovenx/composables/queries/useAllPoolSwapsQuery';
 import { getAddress } from '@ethersproject/address';
+import BalBlankSlate from '@/components/_global/BalBlankSlate/BalBlankSlate.vue';
+import BalIcon from '@/components/_global/BalIcon/BalIcon.vue';
 
 const store = useStore();
 const appLoading = computed(() => store.state.app.loading);
@@ -85,15 +87,31 @@ const tokenPriceValues = computed(() => {
   });
 });
 
-const predictedPriceValues = computed(() => {
-  const poolLaunchToken =
+const poolLaunchToken = computed(
+  () =>
     props.pool.onchain.tokens[getAddress(props.lge.tokenContractAddress)] ||
-    null;
-  const poolCollateralToken =
-    props.pool.onchain.tokens[getAddress(props.lge.collateralTokenAddress)] ||
-    null;
+    null
+);
 
-  if (!poolCollateralToken || !poolLaunchToken || isAfterEnd.value) {
+const poolCollateralToken = computed(
+  () =>
+    props.pool.onchain.tokens[getAddress(props.lge.collateralTokenAddress)] ||
+    null
+);
+
+const fundsRemoved = computed(() => {
+  return (
+    poolCollateralToken.value &&
+    parseFloat(poolCollateralToken.value.balance) <= 0.0001
+  );
+});
+
+const predictedPriceValues = computed(() => {
+  if (
+    !poolCollateralToken.value ||
+    !poolLaunchToken.value ||
+    isAfterEnd.value
+  ) {
     return [];
   }
 
@@ -103,12 +121,12 @@ const predictedPriceValues = computed(() => {
   return getLbpChartPredictedPriceData({
     firstTime,
     endTime: endsAt.value,
-    tokenCurrentWeight: parseFloat(poolLaunchToken.weight) * 100,
+    tokenCurrentWeight: parseFloat(poolLaunchToken.value.weight) * 100,
     tokenEndWeight,
-    collateralCurrentWeight: parseFloat(poolCollateralToken.weight) * 100,
+    collateralCurrentWeight: parseFloat(poolCollateralToken.value.weight) * 100,
     collateralEndWeight,
-    collateralBalance: parseFloat(poolCollateralToken.balance),
-    tokenBalance: parseFloat(poolLaunchToken.balance),
+    collateralBalance: parseFloat(poolCollateralToken.value.balance),
+    tokenBalance: parseFloat(poolLaunchToken.value.balance),
     collateralTokenPrice: priceFor(props.lge.collateralTokenAddress),
     numSteps: 48
   });
@@ -131,7 +149,14 @@ const series = computed(() => {
 <template>
   <BalLoadingBlock v-if="loadingTokenPrices || appLoading" class="h-96" />
   <div class="chart mr-n2 ml-n2" v-else>
+    <BalBlankSlate v-if="fundsRemoved" :style="{ height: '384px' }">
+      <BalIcon name="bar-chart" class="text-red-500" />
+      <span class="text-red-500">
+        The funds were removed from this LBP prior to the end date.
+      </span>
+    </BalBlankSlate>
     <LbpLineChart
+      v-else
       :data="series"
       :isPeriodSelectionEnabled="false"
       :axisLabelFormatter="{ yAxis: '$0.000', xAxis: 'datetime' }"

@@ -50,6 +50,19 @@ const startDateFormatted = computed(() =>
 );
 const endDateFormatted = computed(() => format(endsAt.value, 'MMM d, HH:mm'));
 
+const poolCollateralToken = computed(
+  () =>
+    props.pool.onchain.tokens[getAddress(props.lge.collateralTokenAddress)] ||
+    null
+);
+
+const fundsRemoved = computed(() => {
+  return (
+    poolCollateralToken.value &&
+    parseFloat(poolCollateralToken.value.balance) <= 0.0001
+  );
+});
+
 const lbpData = computed(() => {
   const lge = props.lge;
   const poolLaunchToken =
@@ -144,11 +157,11 @@ watch(blockNumber, () => {
         Current {{ launchToken?.symbol }} Price
       </div>
       <div class="text-xl font-medium truncate flex items-center">
-        {{ lbpData ? lbpData.tokenPrice : '' }}
+        {{ fundsRemoved ? '-' : lbpData ? lbpData.tokenPrice : '' }}
       </div>
       <div class="text-sm text-gray-500 font-medium mt-1">
         Predicted price*:
-        {{ lbpData ? lbpData.predictedPrice : '' }}
+        {{ fundsRemoved ? '-' : lbpData ? lbpData.predictedPrice : '' }}
       </div>
     </BalCard>
     <BalCard>
