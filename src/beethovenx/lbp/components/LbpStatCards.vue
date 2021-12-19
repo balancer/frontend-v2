@@ -8,6 +8,8 @@ import useLge from '@/beethovenx/lbp/composables/useLge';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
 import useWeb3 from '@/services/web3/useWeb3';
+import { calculateLbpTokenPrice } from '@/beethovenx/lbp/utils/lbpChartUtils';
+import { getAddress } from '@ethersproject/address';
 
 type Props = {
   lge: GqlLge;
@@ -23,15 +25,14 @@ const {
   startsAt,
   endsAt,
   isBeforeStart,
-  poolCollateralToken,
-  poolLaunchToken,
   launchToken,
   collateralTokenPrice,
   collateralToken,
   refreshStartEndStatus,
   refetchQueriesOnBlockNumber,
   invalidateQueries,
-  onNewTx
+  onNewTx,
+  launchTokenPrice
 } = useLge(props.lge, props.pool);
 
 const timeRemaining = computed(() =>
@@ -48,33 +49,36 @@ const startDateFormatted = computed(() =>
   format(startsAt.value, 'MMM d, HH:mm')
 );
 const endDateFormatted = computed(() => format(endsAt.value, 'MMM d, HH:mm'));
-const fundsRaised = computed(
-  () =>
-    parseFloat(poolCollateralToken.value?.balance || '') -
-    parseFloat(props.lge.collateralAmount)
-);
-const fundsRaisedValue = computed(
-  () => fundsRaised.value * collateralTokenPrice.value
-);
 
 const lbpData = computed(() => {
   const lge = props.lge;
+  const poolLaunchToken =
+    props.pool.onchain.tokens[getAddress(props.lge.tokenContractAddress)] ||
+    null;
+  const poolCollateralToken =
+    props.pool.onchain.tokens[getAddress(props.lge.collateralTokenAddress)] ||
+    null;
 
-  if (!poolLaunchToken.value || !poolCollateralToken.value) {
+  if (!poolLaunchToken || !poolCollateralToken) {
     return null;
   }
 
-  const remaining = parseFloat(poolLaunchToken.value.balance);
-
+  const remaining = parseFloat(poolLaunchToken.balance);
   const sold = parseFloat(lge.tokenAmount) - remaining;
-  const tokenPrice =
-    ((parseFloat(poolLaunchToken.value.weight) /
-      parseFloat(poolCollateralToken.value.weight)) *
-      parseFloat(poolCollateralToken.value.balance)) /
-    parseFloat(poolLaunchToken.value.balance);
-  const predictedPrice =
-    ((0.8 / 0.2) * parseFloat(poolCollateralToken.value.balance)) /
-    parseFloat(poolLaunchToken.value.balance);
+  const tokenPrice = calculateLbpTokenPrice({
+    tokenWeight: parseFloat(poolLaunchToken.weight),
+    collateralBalance: parseFloat(poolCollateralToken.balance),
+    collateralTokenPrice: collateralTokenPrice.value,
+    collateralWeight: parseFloat(poolCollateralToken.weight),
+    tokenBalance: parseFloat(poolLaunchToken.balance)
+  });
+  const predictedPrice = calculateLbpTokenPrice({
+    tokenWeight: lge.tokenEndWeight,
+    collateralWeight: lge.collateralEndWeight,
+    collateralBalance: parseFloat(poolCollateralToken.balance),
+    collateralTokenPrice: collateralTokenPrice.value,
+    tokenBalance: parseFloat(poolLaunchToken.balance)
+  });
 
   return {
     sold,
@@ -82,12 +86,12 @@ const lbpData = computed(() => {
     percentSold: sold / parseFloat(lge.tokenAmount),
     tokenPrice: numeral(tokenPrice).format('$0,0.0000'),
     predictedPrice: numeral(predictedPrice).format('$0,0.0000'),
-    beetsWeight: numeral(parseFloat(poolLaunchToken.value.weight) * 100).format(
+    beetsWeight: numeral(parseFloat(poolLaunchToken.weight) * 100).format(
       '0.[00]'
     ),
-    usdcWeight: numeral(
-      parseFloat(poolCollateralToken.value.weight) * 100
-    ).format('0.[00]')
+    usdcWeight: numeral(parseFloat(poolCollateralToken.weight) * 100).format(
+      '0.[00]'
+    )
   };
 });
 

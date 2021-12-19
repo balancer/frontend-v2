@@ -17,10 +17,10 @@ const hidden = ref(false);
     </div>
     <div>
       Participating in a Liquidity Generation Event on Beethoven X is a
-      high-risk endeavor. This is a permissionless service, so ANYONE can create
-      an LGE. Beethoven X is not liable for any losses incurred by using our
-      platform. Please be careful and do your own research before participating
-      in any event.
+      high-risk endeavor. This is a permissionless service where
+      <span class="font-bold">ANYONE</span> can create an LGE. Beethoven X is
+      not liable for any losses incurred by using our platform. Please be
+      careful and do your own research before participating in any event.
     </div>
     <div class="flex items-end mt-4">
       <div class="flex-1">
