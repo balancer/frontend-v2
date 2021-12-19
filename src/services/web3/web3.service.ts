@@ -54,8 +54,8 @@ export default class Web3Service {
 
   async getProfile(address: string): Promise<Web3Profile> {
     return {
-      avatar: await this.getEnsAvatar(address),
-      ens: await this.getEnsName(address)
+      ens: await this.getEnsName(address),
+      avatar: await this.getEnsAvatar(address)
     };
   }
 
