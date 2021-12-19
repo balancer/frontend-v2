@@ -6,6 +6,9 @@ import {
   SwapToken,
   SwapTokenType
 } from '@/services/swap/swap.service';
+import { SwapV2 } from '@balancer-labs/sor2';
+import { BatchSwapStep } from '@balancer-labs/sdk';
+import { SwapKind } from '@balancer-labs/balancer-js';
 
 export async function swapIn(
   sorReturn: SorReturn,
@@ -76,5 +79,39 @@ export async function swapOut(
     tokenOut,
     sorReturn.v2result.swaps,
     sorReturn.v2result.tokenAddresses
+  );
+}
+
+export async function boostedJoinBatchSwap(
+  swaps: SwapV2[],
+  tokenAddresses: string[],
+  tokenOut: string,
+  amountsInMap: Record<string, BigNumber>,
+  amountOutMin: BigNumber
+) {
+  return swapService.boostedJoinBatchSwap(
+    swaps,
+    tokenAddresses,
+    tokenOut,
+    amountsInMap,
+    amountOutMin
+  );
+}
+
+export async function boostedExitBatchSwap(
+  swaps: BatchSwapStep[],
+  tokenAddresses: string[],
+  tokenIn: string,
+  amountIn: string,
+  amountsOutMap: Record<string, string>,
+  swapKind: SwapKind = SwapKind.GivenIn
+): Promise<TransactionResponse> {
+  return swapService.boostedExitBatchSwap(
+    swaps,
+    tokenAddresses,
+    tokenIn,
+    amountIn,
+    amountsOutMap,
+    swapKind
   );
 }

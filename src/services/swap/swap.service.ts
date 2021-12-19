@@ -15,6 +15,8 @@ import {
   SwapKind
 } from '@balancer-labs/balancer-js';
 import Web3Service, { web3Service } from '../web3/web3.service';
+import { BatchSwapStep } from '@balancer-labs/sdk';
+import { bnum } from '@/lib/utils';
 
 export type Address = string;
 
@@ -192,6 +194,103 @@ export default class SwapService {
     } catch (e) {
       console.log('[Swapper] lidoBatchSwap Error:', e);
       return Promise.reject(e);
+    }
+  }
+
+  /**
+   * Join a Boosted Pool (StablePhantom) using a batch swap
+   */
+  public async boostedJoinBatchSwap(
+    swaps: SwapV2[],
+    tokenAddresses: string[],
+    tokenOut: string,
+    amountsInMap: Record<string, BigNumber>,
+    amountOutMin: BigNumber
+  ) {
+    try {
+      const overrides: any = {};
+      const tokensIn: string[] = Object.keys(amountsInMap);
+
+      const funds = await this.getFundManagement();
+
+      // Limits:
+      // +ve means max to send
+      // -ve mean min to receive
+      // For a multihop the intermediate tokens should be 0
+      const limits: string[] = [];
+      tokenAddresses.forEach((token, i) => {
+        if (tokensIn.includes(token.toLowerCase())) {
+          limits[i] = amountsInMap[token].toString();
+        } else if (token.toLowerCase() === tokenOut.toLowerCase()) {
+          limits[i] = amountOutMin.mul(-1).toString();
+        } else {
+          limits[i] = '0';
+        }
+      });
+
+      return vaultService.batchSwap(
+        SwapKind.GivenIn,
+        swaps,
+        tokenAddresses,
+        funds,
+        limits,
+        overrides
+      );
+    } catch (error) {
+      console.log('[Swapper] batchSwapGivenInV2 Error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Exit a Boosted Pool (StablePhantom) using a batch swap
+   */
+  public async boostedExitBatchSwap(
+    swaps: BatchSwapStep[],
+    tokenAddresses: string[],
+    tokenIn: string,
+    amountIn: string,
+    amountsOutMap: Record<string, string>,
+    swapKind: SwapKind = SwapKind.GivenIn
+  ): Promise<TransactionResponse> {
+    try {
+      const overrides: any = {};
+      const tokensOut: string[] = Object.keys(amountsOutMap);
+
+      const funds = await this.getFundManagement();
+
+      // Limits:
+      // +ve means max to send
+      // -ve mean min to receive
+      // For a multihop the intermediate tokens should be 0
+      const limits: string[] = [];
+      tokenAddresses.forEach((token, i) => {
+        if (tokensOut.includes(token.toLowerCase())) {
+          limits[i] = bnum(amountsOutMap[token])
+            .times(-1)
+            .toString();
+        } else if (token.toLowerCase() === tokenIn.toLowerCase()) {
+          limits[i] = bnum(amountIn)
+            .abs()
+            .toString();
+        } else {
+          limits[i] = '0';
+        }
+      });
+
+      console.log('limits', limits);
+
+      return vaultService.batchSwap(
+        swapKind,
+        swaps,
+        tokenAddresses,
+        funds,
+        limits,
+        overrides
+      );
+    } catch (error) {
+      console.log('[Swapper] batchSwapGivenInV2 Error:', error);
+      throw error;
     }
   }
 
