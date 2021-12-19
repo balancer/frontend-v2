@@ -95,7 +95,7 @@ export default function useLgeCreateState() {
     () => state.projectDetailsSaved && state.lgeConfigSaved
   );
 
-  const lgeConfigValid = computed(() => {
+  const lgeChartConfigValid = computed(() => {
     const data = state.data;
 
     if (
@@ -116,15 +116,7 @@ export default function useLgeCreateState() {
       return false;
     }
 
-    if (data.swapFeePercentage < 0.0001 || data.swapFeePercentage > 10) {
-      return false;
-    }
-
     if (data.tokenAmount === '' || parseFloat(data.tokenAmount) === 0) {
-      return false;
-    }
-
-    if (data.poolName === '' || data.poolSymbol === '') {
       return false;
     }
 
@@ -132,6 +124,24 @@ export default function useLgeCreateState() {
       data.collateralAmount === '' ||
       parseFloat(data.collateralAmount) === 0
     ) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const lgeConfigValid = computed(() => {
+    const data = state.data;
+
+    if (!lgeChartConfigValid.value) {
+      return false;
+    }
+
+    if (data.swapFeePercentage < 0.0001 || data.swapFeePercentage > 10) {
+      return false;
+    }
+
+    if (data.poolName === '' || data.poolSymbol === '') {
       return false;
     }
 
@@ -208,6 +218,7 @@ export default function useLgeCreateState() {
     saveLgeConfig,
     editLgeConfig,
     poolTokens,
-    reviewAndDeployOpen
+    reviewAndDeployOpen,
+    lgeChartConfigValid
   };
 }
