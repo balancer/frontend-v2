@@ -46,7 +46,7 @@ export default class Web3Service {
 
   async getEnsAvatar(address: string): Promise<string | null> {
     try {
-      return await resolveENSAvatar(this.provider, address);
+      return await resolveENSAvatar(this.appProvider, address);
     } catch (error) {
       return null;
     }
@@ -54,8 +54,8 @@ export default class Web3Service {
 
   async getProfile(address: string): Promise<Web3Profile> {
     return {
-      ens: await this.getEnsName(address),
-      avatar: await this.getEnsAvatar(address)
+      avatar: await this.getEnsAvatar(address),
+      ens: await this.getEnsName(address)
     };
   }
 
