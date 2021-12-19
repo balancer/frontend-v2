@@ -52,7 +52,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/my-portfolio', name: 'my-portfolio', component: Portfolio },
   { path: '/stake', name: 'stake', component: FreshBeets },
   { path: '/lge-create', name: 'lge-create', component: LbpCreate },
-  { path: '/lge-list', name: 'lge-list', component: LgeList },
+  { path: '/launch', name: 'launch', component: LgeList },
   { path: '/lge/:id', name: 'lge', component: LbpDetail },
   {
     path: '/:pathMatch(.*)*',
