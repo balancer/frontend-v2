@@ -16,6 +16,8 @@ import useEthers from '@/composables/useEthers';
 type Props = {
   tokenAddresses: string[];
   amounts: string[];
+  createDisabled: boolean;
+  errorMessage: boolean;
 };
 
 type CreateState = {
@@ -122,7 +124,12 @@ function handleSuccess(details: any): void {
 
 <template>
   <div>
-    <BalActionSteps :actions="requiredActions" @success="handleSuccess" />
+    <BalActionSteps
+      :actions="requiredActions"
+      :disabled="props.createDisabled"
+      :errorMessage="props.errorMessage"
+      @success="handleSuccess"
+    />
     <template v-if="createState.confirmed">
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
