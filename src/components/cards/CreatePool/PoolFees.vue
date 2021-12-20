@@ -133,7 +133,7 @@ async function onChangeFeeController(val: string) {
 
 <template>
   <div ref="cardWrapper">
-    <BalCard>
+    <BalCard shadow="xl" noBorder>
       <BalStack vertical>
         <BalStack vertical spacing="xs">
           <span class="text-xs text-gray-700 dark:text-gray-500">{{

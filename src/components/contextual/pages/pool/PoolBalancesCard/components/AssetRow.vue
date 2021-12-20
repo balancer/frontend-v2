@@ -48,7 +48,17 @@ const balance = computed(() => {
     : formattedBalance;
 });
 
-const balanceLabel = computed(() => fNum(balance.value, 'token'));
+const balanceLabel = computed(() => {
+  if (props.priceRate && props.mainTokenAddress) {
+    const equivMainTokenBalance = bnum(balance.value)
+      .times(props.priceRate)
+      .toString();
+
+    return fNum(equivMainTokenBalance, 'token');
+  }
+
+  return fNum(balance.value, 'token');
+});
 
 const fiatLabel = computed(() => {
   if (props.priceRate && props.mainTokenAddress) {

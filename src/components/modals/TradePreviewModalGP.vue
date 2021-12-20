@@ -783,18 +783,29 @@ export default defineComponent({
       if (lastQuote.value != null) {
         const newQuote = props.trading.getQuote();
 
+        /**
+         * The bignumber returned via the quotes for some reason throw underflow
+         * errors when attempting to use the gt function with the threshold value.
+         * For that reason, the price difference has to be cast to our bignumber type.
+         */
         if (props.trading.exactIn.value) {
-          priceUpdated.value = lastQuote.value.minimumOutAmount
+          const priceDiff = lastQuote.value.minimumOutAmount
             .sub(newQuote.minimumOutAmount)
             .abs()
-            .div(lastQuote.value.minimumOutAmount)
-            .gt(PRICE_UPDATE_THRESHOLD);
+            .div(lastQuote.value.minimumOutAmount);
+
+          priceUpdated.value = bnum(priceDiff.toString()).gt(
+            PRICE_UPDATE_THRESHOLD
+          );
         } else {
-          priceUpdated.value = lastQuote.value.maximumInAmount
+          const priceDiff = lastQuote.value.maximumInAmount
             .sub(newQuote.maximumInAmount)
             .abs()
-            .div(lastQuote.value.maximumInAmount)
-            .gt(PRICE_UPDATE_THRESHOLD);
+            .div(lastQuote.value.maximumInAmount);
+
+          priceUpdated.value = bnum(priceDiff.toString()).gt(
+            PRICE_UPDATE_THRESHOLD
+          );
         }
 
         if (priceUpdated.value) {

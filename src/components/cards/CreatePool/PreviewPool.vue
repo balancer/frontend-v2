@@ -118,7 +118,7 @@ function getSwapFeeManager() {
 
 <template>
   <BalStack vertical spacing="xs" class="mb-24">
-    <BalCard>
+    <BalCard shadow="xl" noBorder>
       <BalStack vertical spacing="xs">
         <span class="text-xs text-gray-700 dark:text-gray-500">{{
           userNetworkConfig?.name

@@ -14,7 +14,7 @@ COPY prepare.js ./
 COPY package*.json ./
 
 RUN npm install -g npm@7
-RUN npm install
+RUN npm ci
 
 FROM dependencies AS build
 
