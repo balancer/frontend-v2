@@ -178,7 +178,7 @@ export function useFreshBeets() {
   const farmApr = computed(() =>
     fbeetsDecoratedFarm.value ? fbeetsDecoratedFarm.value.apr : 0
   );
-  const fbeetsApr = computed(() => 0);
+  const fbeetsApr = computed(() => data.value?.apr || 0);
   const totalApr = computed(
     () => swapApr.value + farmApr.value + fbeetsApr.value
   );
