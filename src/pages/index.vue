@@ -120,7 +120,7 @@ export default defineComponent({
       poolsQuery
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
-    const { upToMediumBreakpoint } = useBreakpoints()
+    const { upToMediumBreakpoint } = useBreakpoints();
 
     // COMPUTED
     const filteredPools = computed(() =>
