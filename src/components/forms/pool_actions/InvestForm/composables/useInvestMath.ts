@@ -262,7 +262,7 @@ export default function useInvestFormMath(
     batchSwapLoading.value = true;
     batchSwap.value = await queryBatchSwapTokensIn(
       sor,
-      balancerContractsService.vault.instance,
+      balancerContractsService.vault.instance as any,
       Object.keys(batchSwapAmountMap.value),
       Object.values(batchSwapAmountMap.value),
       pool.value.address.toLowerCase()
