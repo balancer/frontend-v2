@@ -25,24 +25,28 @@
       </div>
       <div class="mb-16" />
     </template>
+
     <div class="px-4 lg:px-0">
       <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
-      <div class="flex w-full justify-between flex-col lg:flex-row">
+      <div
+        class="flex flex-col md:flex-row w-full justify-between items-end lg:items-center"
+      >
         <TokenSearchInput
           v-model="selectedTokens"
           :loading="isLoadingPools"
           @add="addSelectedToken"
           @remove="removeSelectedToken"
+          class="w-full md:w-2/3"
         />
-        <div class="w-full flex justify-end items-end">
-          <BalBtn
-            class="mt-2 lg:mt-0"
-            @click="navigateToCreatePool"
-            color="blue"
-            size="sm"
-            >{{ $t('createAPool.title') }}</BalBtn
-          >
-        </div>
+        <BalBtn
+          @click="navigateToCreatePool"
+          color="blue"
+          size="sm"
+          :class="{ 'mt-4': upToMediumBreakpoint }"
+          :block="upToMediumBreakpoint"
+        >
+          {{ $t('createAPool.title') }}
+        </BalBtn>
       </div>
     </div>
 
@@ -84,6 +88,7 @@ import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
 import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
+import useBreakpoints from '@/composables/useBreakpoints';
 
 export default defineComponent({
   components: {
@@ -115,6 +120,7 @@ export default defineComponent({
       poolsQuery
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
+    const { upToMediumBreakpoint } = useBreakpoints()
 
     // COMPUTED
     const filteredPools = computed(() =>
@@ -166,6 +172,7 @@ export default defineComponent({
       poolsIsFetchingNextPage,
       selectedTokens,
       isElementSupported,
+      upToMediumBreakpoint,
 
       //methods
       router,
