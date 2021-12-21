@@ -579,7 +579,7 @@
 
 <script>
 export default {
-  name: 'privacy-policy',
+  name: 'terms-of-use',
 };
 </script>
 
