@@ -385,7 +385,7 @@
 
 <script>
 export default {
-  name: 'privacy-policy',
+  name: 'privacy-policy'
 };
 </script>
 

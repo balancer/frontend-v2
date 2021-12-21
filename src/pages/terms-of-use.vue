@@ -582,7 +582,7 @@
 
 <script>
 export default {
-  name: 'terms-of-use',
+  name: 'terms-of-use'
 };
 </script>
 

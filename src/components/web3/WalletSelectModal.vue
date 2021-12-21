@@ -64,19 +64,19 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   emits: ['close'],
   components: {
-    WalletButton,
+    WalletButton
   },
   props: {
     isVisible: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   setup() {
     return {
-      wallets: SupportedWallets.filter((id) => id !== 'gnosis'),
-      EXTERNAL_LINKS,
+      wallets: SupportedWallets.filter(id => id !== 'gnosis'),
+      EXTERNAL_LINKS
     };
-  },
+  }
 });
 </script>
