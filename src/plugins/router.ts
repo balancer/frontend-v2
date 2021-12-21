@@ -72,7 +72,7 @@ const routes: RouteRecordRaw[] = [
     name: 'cookies-policy',
     component: CookiesPolicyPage,
     meta: { layout: 'ContentLayout' }
-  },      
+  },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',

@@ -59,16 +59,19 @@
       <p>
         You accept such changes, by continuing to use the Site and by doing so
         you agree that we have provided you with sufficient notice of such
-        change. Our 
+        change. Our
         <router-link :to="{ name: 'privacy-policy' }">
-          <span className='text-blue-500 hover:text-blue-800 transition-colors'>Privacy Policy</span>
+          <span className="text-blue-500 hover:text-blue-800 transition-colors"
+            >Privacy Policy</span
+          >
         </router-link>
-        and 
-      <router-link :to="{ name: 'cookies-policy' }">
-        <span className='text-blue-500 hover:text-blue-800 transition-colors'>Cookies Policy</span> 
-      </router-link>                
-         also apply to your access
-        and use of the Site.
+        and
+        <router-link :to="{ name: 'cookies-policy' }">
+          <span className="text-blue-500 hover:text-blue-800 transition-colors"
+            >Cookies Policy</span
+          >
+        </router-link>
+        also apply to your access and use of the Site.
       </p>
     </div>
     <div class="subsection">

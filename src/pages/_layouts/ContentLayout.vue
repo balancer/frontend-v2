@@ -7,14 +7,13 @@ import AppNav from '@/components/navs/AppNav/AppNav.vue';
  * COMPOSABLES
  */
 const route = useRoute();
-
 </script>
 
 <template>
-<AppNav />
+  <AppNav />
   <section class="dark:bg-gray-900 lg:py-8">
     <div class="content-container">
-       <router-view/>
+      <router-view />
     </div>
   </section>
 </template>
@@ -62,9 +61,3 @@ em {
   font-synthesis: none;
 }
 </style>
-
-
-
-
-
-

@@ -4,29 +4,47 @@
     @close="$emit('close')"
     title="Connect to a wallet"
   >
-    <p class="pb-3 text-sm">By connecting a wallet, I agree to Balancer Labs’ 
-
+    <p class="pb-3 text-sm">
+      By connecting a wallet, I agree to Balancer Labs’
 
       <router-link :to="{ name: 'terms-of-use' }" target="_blank">
-        <span className='text-blue-500 hover:text-blue-800 focus:text-blue-800 transition-all hover:underline focus:underline'>Terms of Use</span>, 
+        <span
+          className="text-blue-500 hover:text-blue-800 focus:text-blue-800 transition-all hover:underline focus:underline"
+          >Terms of Use</span
+        >,
       </router-link>
 
       <router-link :to="{ name: 'cookies-policy' }" target="_blank">
-        <span className='text-blue-500 hover:text-blue-800 focus:text-blue-800 transition-all hover:underline focus:underline'>Cookies Policy</span> and 
+        <span
+          className="text-blue-500 hover:text-blue-800 focus:text-blue-800 transition-all hover:underline focus:underline"
+          >Cookies Policy</span
+        >
+        and
       </router-link>
 
       <router-link :to="{ name: 'privacy-policy' }" target="_blank">
-        <span className='text-blue-500 hover:text-blue-800 focus:text-blue-800 transition-all hover:underline focus:underline'>Privacy Policy</span>.
+        <span
+          className="text-blue-500 hover:text-blue-800 focus:text-blue-800 transition-all hover:underline focus:underline"
+          >Privacy Policy</span
+        >.
       </router-link>
-
     </p>
     <WalletButton v-for="wallet in wallets" :wallet="wallet" :key="wallet" />
     <div
-      class="p-4 rounded-lg bg-gradient-to-b from-gray-50 dark:from-gray-900 to-gray-100 dark:to-gray-850"
+      class="
+        p-4
+        rounded-lg
+        bg-gradient-to-b
+        from-gray-50
+        dark:from-gray-900
+        to-gray-100
+        dark:to-gray-850
+      "
     >
       <h6>New to Ethereum?</h6>
       <p class="text-sm">
-        Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.
+        Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest
+        and Trade here.
         <BalLink :href="EXTERNAL_LINKS.Ethereum.Wallets" external>
           Learn&nbsp;More
           <span class="align-middle"
@@ -46,19 +64,19 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   emits: ['close'],
   components: {
-    WalletButton
+    WalletButton,
   },
   props: {
     isVisible: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup() {
     return {
-      wallets: SupportedWallets.filter(id => id !== 'gnosis'),
-      EXTERNAL_LINKS
+      wallets: SupportedWallets.filter((id) => id !== 'gnosis'),
+      EXTERNAL_LINKS,
     };
-  }
+  },
 });
 </script>
