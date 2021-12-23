@@ -21,7 +21,7 @@
 import { PropType, defineComponent, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { APR_THRESHOLD } from '@/composables/useNumbers';
 
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
@@ -65,7 +65,10 @@ export default defineComponent({
         {
           id: 'apr',
           label: 'APR',
-          value: fNum(props.pool.dynamic.apr.total, 'percent')
+          value:
+            Number(props.pool.dynamic.apr.total) > APR_THRESHOLD
+              ? '-'
+              : fNum(props.pool.dynamic.apr.total, 'percent')
         }
       ];
     });
