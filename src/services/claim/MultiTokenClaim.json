@@ -69,7 +69,7 @@
         },
         {
             "label": "WMATIC",
-            "distributor": "0x201e382a1c2b541af30cc622b406833220d5c313",
+            "distributor": "0xBd44C01EC7d623372B4572247afB6231eDD8486F",
             "token": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-wmatic-polygon.json",
             "weekStart": 4
