@@ -96,8 +96,10 @@ const history = computed(() => {
     .filter(({ totalShares, prices, amounts, liquidity }) => {
       if (!supportsPoolLiquidity.value && prices.length === 0) {
         return false;
+      } else if (supportsPoolLiquidity.value && liquidity === 0) {
+        return false;
       }
-      return totalShares > 0 && amounts.length > 0 && liquidity > 0;
+      return totalShares > 0 && amounts.length > 0;
     });
 });
 
