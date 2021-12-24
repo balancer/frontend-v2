@@ -8259,7 +8259,7 @@
           },
           {
             "tokenAddress": "0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
-            "amount": 750000
+            "amount": 833333.33
           }
         ],
         "0xdb1db6e248d7bb4175f6e5a382d0a03fe3dcc813000100000000000000000035": [
@@ -8269,7 +8269,7 @@
           },
           {
             "tokenAddress": "0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
-            "amount": 750000
+            "amount": 833333.33
           }
         ],
         "0xcf354603a9aebd2ff9f33e1b04246d8ea204ae9500020000000000000000005a": [
