@@ -40,3 +40,9 @@ export default (args = {}, attrs = {}) => ({
     ...merge({}, defaultAttrs, attrs)
   }
 });
+
+export const pastPoolsQuery = (args = {}, attrs = {}) => ({
+  poolsPastPools: {
+    ...merge({}, defaultAttrs, attrs)
+  }
+});

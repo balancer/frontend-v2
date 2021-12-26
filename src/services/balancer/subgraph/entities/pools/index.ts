@@ -1,5 +1,5 @@
 import Service from '../../balancer-subgraph.service';
-import queryBuilder from './query';
+import queryBuilder, { pastPoolsQuery } from './query';
 import { bnum } from '@/lib/utils';
 import {
   Pool,
@@ -62,26 +62,31 @@ export default class Pools {
     }
   }
 
+  public async getPastPools(): Promise<Pool[]> {
+    const query = pastPoolsQuery();
+
+    try {
+      const {
+        data: { data }
+      } = await axios.post(this.configService.network.poolsUrlV2, {
+        query: jsonToGraphQLQuery({ query })
+      });
+
+      return data.poolsPastPools;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
   public async decorate(
     pools: Pool[],
     period: TimeTravelPeriod,
     prices: TokenPrices,
     currency: FiatCurrency
   ): Promise<DecoratedPool[]> {
-    // Get past state of pools
-    const blockNumber = await this.timeTravelBlock(period);
-    const block = { number: blockNumber };
-    const isInPoolIds = { id_in: pools.map(pool => pool.id) };
-    const pastPoolsQuery = this.query({ where: isInPoolIds, block });
-    let pastPools: Pool[] = [];
-    try {
-      const data: { pools: Pool[] } = await this.service.client.get(
-        pastPoolsQuery
-      );
-      pastPools = data.pools;
-    } catch {
-      // eslint-disable-previous-line no-empty
-    }
+    const pastPools: Pool[] = await this.getPastPools();
+
     return this.serialize(pools, pastPools, period, prices, currency);
   }
 
