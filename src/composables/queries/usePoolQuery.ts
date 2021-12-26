@@ -39,13 +39,12 @@ export default function usePoolQuery(
   const queryKey = QUERY_KEYS.Pools.Current(id);
 
   const queryFn = async () => {
-    const [pool] = await balancerSubgraphService.pools.get({
-      where: {
-        id: id.toLowerCase(),
-        totalShares_gt: -1, // Avoid the filtering for low liquidity pools
-        totalLiquidity_gt: '-1'
-      }
-    });
+    const pools = await balancerSubgraphService.pools.get();
+    const pool = pools.find(pool => pool.id === id.toLowerCase());
+
+    if (!pool) {
+      throw new Error('No pool with id');
+    }
 
     /*const isOwnedByUser = getAddress(pool.owner) === getAddress(account.value);
     const isAllowlisted =

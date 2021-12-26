@@ -24,6 +24,8 @@ import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
 import { differenceInWeeks } from 'date-fns';
 import { POOLS } from '@/constants/pools';
+import axios from 'axios';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -43,16 +45,21 @@ export default class Pools {
     this.networkId = configService.env.NETWORK;
   }
 
-  public async get(args = {}, attrs = {}): Promise<Pool[]> {
-    const query = this.query(args, attrs);
-    const data = await this.service.client.get(query);
-    const pools: Pool[] = data.pools;
+  public async get(): Promise<Pool[]> {
+    const query = this.query();
 
-    return pools.filter(
-      pool =>
-        !POOLS.BlockList.includes(pool.id) &&
-        parseFloat(pool.totalShares) > 0.01
-    );
+    try {
+      const {
+        data: { data }
+      } = await axios.post(this.configService.network.poolsUrlV2, {
+        query: jsonToGraphQLQuery({ query })
+      });
+
+      return data.pools;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   }
 
   public async decorate(

@@ -37,7 +37,6 @@ const defaultAttrs = {
 
 export default (args = {}, attrs = {}) => ({
   pools: {
-    __args: merge({}, defaultArgs, args),
     ...merge({}, defaultAttrs, attrs)
   }
 });
