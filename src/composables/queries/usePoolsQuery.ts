@@ -47,20 +47,12 @@ export default function usePoolsQuery(
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
     const pools = await balancerSubgraphService.pools.get();
-    const filtered = pools.filter(pool => {
-      if (tokenList.value.length > 0) {
-        return intersection(tokenList.value, pool.tokensList).length > 0;
-      }
-
-      return true;
-    });
-
-    const tokens = flatten(filtered.map(pool => pool.tokensList));
+    const tokens = flatten(pools.map(pool => pool.tokensList));
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
 
     const decoratedPools = await balancerSubgraphService.pools.decorate(
-      filtered,
+      pools,
       '24h',
       prices.value,
       currency.value
