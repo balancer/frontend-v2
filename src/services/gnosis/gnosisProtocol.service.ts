@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-import { Network, networkId } from '@/composables/useNetwork';
+import { networkId } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 import { IS_DEV } from '@/constants/env';
 

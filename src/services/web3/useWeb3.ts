@@ -8,7 +8,8 @@ import { isAddress } from '@ethersproject/address';
 import { web3Service } from './web3.service';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
 import { switchToAppNetwork } from './utils/helpers';
-import useNetwork, { Network } from '@/composables/useNetwork';
+import useNetwork from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 /** STATE */
 const blockNumber = ref(0);

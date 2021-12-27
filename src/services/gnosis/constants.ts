@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { networkId, Network } from '@/composables/useNetwork';
+import { networkId } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 import {
   GPv2Settlement,
   GPv2VaultRelayer

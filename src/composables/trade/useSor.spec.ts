@@ -77,8 +77,7 @@ describe('setSwapCost', () => {
     1,
     1,
     '1',
-    'source',
-    'sg'
+    'source'
   );
 
   const mockedSorManager = mocked(sorManager);

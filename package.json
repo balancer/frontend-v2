@@ -23,9 +23,8 @@
     "@babel/plugin-proposal-numeric-separator": "^7.14.5",
     "@balancer-labs/assets": "github:balancer-labs/assets#master",
     "@balancer-labs/balancer-js": "^1.0.1",
-    "@balancer-labs/sdk": "^0.0.14",
+    "@balancer-labs/sdk": "github:beethovenxfi/balancer-sdk#daniel/sdk-refactor-complete-with-build",
     "@balancer-labs/sor": "^1.1.0",
-    "@balancer-labs/sor2": "npm:@balancer-labs/sor@^2.1.0-beta.4",
     "@balancer-labs/typechain": "^1.0.0",
     "@ensdomains/content-hash": "^2.5.3",
     "@ethersproject/abi": "~5.4.1",
@@ -114,5 +113,8 @@
     "worker-loader": "^3.0.8"
   },
   "license": "MIT",
-  "repository": "balancer-labs/frontend-v2"
+  "repository": "balancer-labs/frontend-v2",
+  "dependencies": {
+    "isomorphic-fetch": "^3.0.0"
+  }
 }
