@@ -29,7 +29,7 @@ const state = reactive<InvestState>({
 const sor = new SOR(
   rpcProviderService.jsonProvider as any,
   configService.network.chainId,
-  configService.network.subgraph
+  configService.network.poolsUrlV2
 );
 
 /**

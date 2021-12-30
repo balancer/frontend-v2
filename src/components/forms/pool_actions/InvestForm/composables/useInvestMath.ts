@@ -181,6 +181,7 @@ export default function useInvestFormMath(
   const fullBPTOut = computed((): string => {
     let _bptOut: string;
 
+    console.log('isStablePhantomPool.value', isStablePhantomPool.value);
     if (isStablePhantomPool.value) {
       _bptOut = batchSwap.value
         ? bnum(batchSwap.value.amountTokenOut)
@@ -260,6 +261,12 @@ export default function useInvestFormMath(
 
   async function getBatchSwap(): Promise<void> {
     batchSwapLoading.value = true;
+    console.log(
+      'queryBatchSwapTokensIn',
+      Object.keys(batchSwapAmountMap.value),
+      Object.values(batchSwapAmountMap.value).map(value => value.toString()),
+      pool.value.address.toLowerCase()
+    );
     batchSwap.value = await queryBatchSwapTokensIn(
       sor,
       balancerContractsService.vault.instance as any,
@@ -267,6 +274,8 @@ export default function useInvestFormMath(
       Object.values(batchSwapAmountMap.value),
       pool.value.address.toLowerCase()
     );
+
+    console.log('batchswap', batchSwap.value);
     batchSwapLoading.value = false;
   }
 

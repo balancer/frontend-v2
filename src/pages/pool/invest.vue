@@ -26,9 +26,12 @@ const { sor, sorReady } = useInvestState();
 onBeforeMount(async () => {
   await forChange(loadingPool, false);
 
+  console.log('on before mount', pool.value);
   if (pool.value && isStablePhantomPool.value) {
     // Initialise SOR for batch swap queries
+    console.log('calling fetch pools');
     sorReady.value = await sor.fetchPools([], false);
+    console.log('after fetch pools', sorReady.value);
   } else {
     sorReady.value = true;
   }
