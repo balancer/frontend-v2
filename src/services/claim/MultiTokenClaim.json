@@ -20,6 +20,20 @@
             "token": "0x2d94AA3e47d9D5024503Ca8491fcE9A2fB4DA198",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-bankless.json",
             "weekStart": 1
+        },
+        {
+            "label": "NOTE",
+            "distributor": "0xF1C2dD9bD863f2444086B739383F1043E6b88F69",
+            "token": "0xcfeaead4947f0705a14ec42ac3d44129e1ef3ed5",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-note.json",
+            "weekStart": 1
+        },
+        {
+            "label": "NEXO",
+            "distributor": "0x0000000000000000000000000000000000000000",
+            "token": "0xB62132e35a6c13ee1EE0f84dC5d40bad8d815206",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-nexo.json",
+            "weekStart": 1
         }
     ],
     "42": [
@@ -44,6 +58,34 @@
             "distributor": "0xd2EB7Bd802A7CA68d9AcD209bEc4E664A9abDD7b",
             "token": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
             "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-polygon.json",
+            "weekStart": 1
+        },
+        {
+            "label": "WMATIC",
+            "distributor": "0x087A7AFB6975A2837453BE685EB6272576c0bC06",
+            "token": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-wmatic-polygon.json",
+            "weekStart": 1
+        },
+        {
+            "label": "WMATIC",
+            "distributor": "0xBd44C01EC7d623372B4572247afB6231eDD8486F",
+            "token": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-wmatic-polygon.json",
+            "weekStart": 4
+        },
+        {
+            "label": "WMATIC",
+            "distributor": "0x632208491602Dd205da8Cb9C0BA98620fc19854A",
+            "token": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-wmatic-polygon.json",
+            "weekStart": 5
+        },
+        {
+            "label": "TUSD",
+            "distributor": "0x09f3010ec0f6d72ef8ff2008f8e756d60482c9a8",
+            "token": "0x2e1ad108ff1d8c782fcbbb89aad783ac49586756",
+            "manifest": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-tusd-polygon.json",
             "weekStart": 1
         }
       ],

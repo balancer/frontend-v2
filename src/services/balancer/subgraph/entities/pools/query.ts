@@ -15,6 +15,7 @@ const defaultArgs = {
 const defaultAttrs = {
   id: true,
   name: true,
+  address: true,
   poolType: true,
   swapFee: true,
   tokensList: true,
@@ -27,6 +28,10 @@ const defaultAttrs = {
   amp: true,
   createTime: true,
   swapEnabled: true,
+  wrappedIndex: true,
+  mainIndex: true,
+  lowerTarget: true,
+  upperTarget: true,
   tokens: {
     address: true,
     balance: true,

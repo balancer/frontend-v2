@@ -161,14 +161,12 @@ export default function useGnosis({
     const maximumInAmount = tokenInAmountScaled.value
       .add(feeAmountInToken)
       .mul(parseFixed(String(1 + slippageBufferRate.value), 18))
-      .div(ONE)
-      .toString();
+      .div(ONE);
 
     const minimumOutAmount = tokenOutAmountScaled.value
       .sub(feeAmountOutToken)
       .mul(ONE)
-      .div(parseFixed(String(1 + slippageBufferRate.value), 18))
-      .toString();
+      .div(parseFixed(String(1 + slippageBufferRate.value), 18));
 
     return {
       feeAmountInToken,
@@ -195,7 +193,7 @@ export default function useGnosis({
           .sub(quote.feeAmountInToken)
           .toString(),
         buyAmount: exactIn.value
-          ? quote.minimumOutAmount
+          ? quote.minimumOutAmount.toString()
           : tokenOutAmountScaled.value.toString(),
         validTo: calculateValidTo(appTransactionDeadline.value),
         appData: APP_DATA,

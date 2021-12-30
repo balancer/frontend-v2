@@ -40,8 +40,6 @@ export default function useProtocolDataQuery(
       appNetworkConfig.addresses.usdc
     );
 
-    console.log('beets price', beetsPrice);
-
     const circulatingSupply = await masterChefContractsService.beethovenxToken.getCirculatingSupply();
 
     return {

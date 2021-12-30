@@ -3,16 +3,22 @@ import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
 import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
+import { formatUnits } from 'ethers/lib/utils';
+import { getAddress, isAddress } from '@ethersproject/address';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool, LinearPool, Pool } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
-import { forChange } from '@/lib/utils';
-import { isManaged, isStableLike } from '../usePool';
-import { getAddress } from '@ethersproject/address';
+import { bnum, forChange } from '@/lib/utils';
+import {
+  lpTokensFor,
+  isManaged,
+  isStableLike,
+  isStablePhantom
+} from '../usePool';
 
 export default function usePoolQuery(
   id: string,
@@ -34,38 +40,114 @@ export default function usePoolQuery(
   );
 
   /**
+   * METHODS
+   */
+  function isBlocked(pool: Pool): boolean {
+    const requiresAllowlisting =
+      isStableLike(pool.poolType) || isManaged(pool.poolType);
+
+    const isOwnedByUser =
+      isAddress(account.value) &&
+      isAddress(pool.owner) &&
+      getAddress(pool.owner) === getAddress(account.value);
+    const isAllowlisted =
+      POOLS.Stable.AllowList.includes(id) ||
+      POOLS.Investment.AllowList.includes(id);
+
+    return requiresAllowlisting && !isAllowlisted && !isOwnedByUser;
+  }
+
+  function removePreMintedBPT(pool: Pool): Pool {
+    const poolAddress = balancerSubgraphService.pools.addressFor(pool.id);
+    // Remove pre-minted BPT token if exits
+    pool.tokensList = pool.tokensList.filter(
+      address => address !== poolAddress.toLowerCase()
+    );
+    return pool;
+  }
+
+  /**
+   * fetches StablePhantom linear pools and extracts
+   * required attributes.
+   */
+  async function getLinearPoolAttrs(pool: Pool): Promise<Pool> {
+    // Fetch linear pools from subgraph
+    const pools = await balancerSubgraphService.pools.get();
+    const linearPools = pools.filter(
+      pool => pool.poolType === 'Linear'
+    ) as LinearPool[];
+    const linearPoolTokensMap: Pool['linearPoolTokensMap'] = {};
+
+    // Inject main/wrapped tokens into pool schema
+    linearPools.forEach(linearPool => {
+      if (!pool.mainTokens) pool.mainTokens = [];
+      if (!pool.wrappedTokens) pool.wrappedTokens = [];
+
+      const index = pool.tokensList.indexOf(linearPool.address.toLowerCase());
+
+      pool.mainTokens[index] = getAddress(
+        linearPool.tokensList[linearPool.mainIndex]
+      );
+      pool.wrappedTokens[index] = getAddress(
+        linearPool.tokensList[linearPool.wrappedIndex]
+      );
+
+      linearPool.tokens
+        .filter(token => token.address !== linearPool.address)
+        .forEach(token => {
+          const address = getAddress(token.address);
+
+          linearPoolTokensMap[address] = {
+            ...token,
+            address
+          };
+        });
+    });
+
+    pool.linearPoolTokensMap = linearPoolTokensMap;
+
+    return pool;
+  }
+
+  /**
    * QUERY INPUTS
    */
   const queryKey = QUERY_KEYS.Pools.Current(id);
 
   const queryFn = async () => {
     const pools = await balancerSubgraphService.pools.get();
-    const pool = pools.find(pool => pool.id === id.toLowerCase());
+    let pool = pools.find(pool => pool.id === id.toLowerCase());
 
     if (!pool) {
       throw new Error('No pool with id');
     }
 
-    /*const isOwnedByUser = getAddress(pool.owner) === getAddress(account.value);
-    const isAllowlisted =
-      (isStableLike(pool.poolType) && POOLS.Stable.AllowList.includes(id)) ||
-      (isManaged(pool.poolType) && POOLS.Investment.AllowList.includes(id));
-    if (!isOwnedByUser && !isAllowlisted) {
-      throw new Error('Pool not allowed');
-    }*/
+    if (isBlocked(pool)) throw new Error('Pool not allowed');
 
+    const isStablePhantomPool = isStablePhantom(pool.poolType);
+
+    if (isStablePhantomPool) {
+      pool = removePreMintedBPT(pool);
+      pool = await getLinearPoolAttrs(pool);
+    }
+
+    // Inject relevant pool tokens to fetch metadata
     await injectTokens([
       ...pool.tokensList,
+      ...lpTokensFor(pool),
       balancerSubgraphService.pools.addressFor(pool.id)
     ]);
     await forChange(dynamicDataLoading, false);
 
     // Need to fetch onchain pool data first so that calculations can be
     // performed in the decoration step.
+    const poolTokenMeta = getTokens(
+      pool.tokensList.map(address => getAddress(address))
+    );
     const onchainData = await balancerContractsService.vault.getPoolData(
       id,
       pool.poolType,
-      getTokens(pool.tokensList.map(address => getAddress(address)))
+      poolTokenMeta
     );
 
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
@@ -75,7 +157,60 @@ export default function usePoolQuery(
       currency.value
     );
 
-    return { onchain: onchainData, ...decoratedPool };
+    let unwrappedTokens: Pool['unwrappedTokens'];
+
+    if (isStablePhantomPool && onchainData.linearPools != null) {
+      unwrappedTokens = Object.entries(onchainData.linearPools).map(
+        ([, linearPool]) => linearPool.unwrappedTokenAddress
+      );
+
+      if (decoratedPool.linearPoolTokensMap != null) {
+        let totalLiquidity = bnum(0);
+        const tokensMap = getTokens(
+          Object.keys(decoratedPool.linearPoolTokensMap)
+        );
+
+        Object.entries(onchainData.linearPools).forEach(([address, token]) => {
+          const tokenShare = bnum(onchainData.tokens[address].balance).div(
+            token.totalSupply
+          );
+
+          const mainTokenBalance = formatUnits(
+            token.mainToken.balance,
+            tokensMap[token.mainToken.address].decimals
+          );
+
+          const wrappedTokenBalance = formatUnits(
+            token.wrappedToken.balance,
+            tokensMap[token.wrappedToken.address].decimals
+          );
+
+          const mainTokenPrice =
+            prices.value[token.mainToken.address] != null
+              ? prices.value[token.mainToken.address].usd
+              : null;
+
+          if (mainTokenPrice != null) {
+            const mainTokenValue = bnum(mainTokenBalance)
+              .times(tokenShare)
+              .times(mainTokenPrice);
+
+            const wrappedTokenValue = bnum(wrappedTokenBalance)
+              .times(tokenShare)
+              .times(mainTokenPrice)
+              .times(token.wrappedToken.priceRate);
+
+            totalLiquidity = bnum(totalLiquidity)
+              .plus(mainTokenValue)
+              .plus(wrappedTokenValue);
+          }
+        });
+
+        decoratedPool.totalLiquidity = totalLiquidity.toString();
+      }
+    }
+
+    return { onchain: onchainData, unwrappedTokens, ...decoratedPool };
   };
 
   const queryOptions = reactive({

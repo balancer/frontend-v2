@@ -33,7 +33,7 @@
             >
               {{ $t('new') }}
             </BalChip>
-            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-1" />
+            <LiquidityAPRTooltip :pool="pool" class="-ml-1 mt-1" />
           </div>
           <div class="flex items-center mt-2">
             <div v-html="poolFeeLabel" class="text-sm text-gray-600" />
@@ -68,6 +68,13 @@
           block
         />
         <BalAlert
+          v-if="!appLoading && hasCustomToken"
+          type="error"
+          :title="$t('highRiskPool')"
+          class="mt-2"
+          block
+        />
+        <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"
           :title="$t('noInitLiquidity')"
@@ -83,7 +90,8 @@
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-1 lg:px-0">
             <PoolChart
-              :prices="historicalPrices"
+              :pool="pool"
+              :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
             />
@@ -129,8 +137,12 @@
           :missingPrices="missingPrices"
         />
       </div>
-      <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
-        <BalCard noPad imgSrc="/images/partners/copper-launch.png">
+      <!-- <div v-else class="order-1 lg:order-2 px-1 lg:px-0">
+        <BalCard
+          v-if="isCopperPool"
+          noPad
+          imgSrc="/images/partners/copper-launch.png"
+        >
           <div class="p-4 mt-2">
             <div class="mb-4 font-semibold">
               {{ $t('copperLaunchPromo.title') }}
@@ -142,7 +154,12 @@
               {{ $t('copperLaunchPromo.poweredByBalancer') }}
             </div>
             <BalLink
-              :href="EXTERNAL_LINKS.Copper.Auctions(pool.address)"
+              :href="
+                EXTERNAL_LINKS.Copper.Auctions(
+                  pool.address,
+                  copperNetworkPrefix
+                )
+              "
               external
               class="block hover:no-underline"
             >
@@ -153,7 +170,7 @@
             </BalLink>
           </div>
         </BalCard>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -162,7 +179,7 @@
 import { defineComponent, reactive, toRefs, computed, watch } from 'vue';
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
@@ -184,7 +201,7 @@ export default defineComponent({
   components: {
     ...PoolPageComponents,
     GauntletIcon,
-    LiquidityMiningTooltip
+    LiquidityAPRTooltip
   },
 
   setup() {
@@ -197,8 +214,9 @@ export default defineComponent({
     const { fNum } = useNumbers();
     const { isWalletReady } = useWeb3();
     const { prices } = useTokens();
-    const { blockNumber } = useWeb3();
+    const { blockNumber, isKovan, isMainnet, isPolygon } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
+    const { balancerTokenListTokens } = useTokens();
 
     /**
      * QUERIES
@@ -220,9 +238,11 @@ export default defineComponent({
      * COMPUTED
      */
     const pool = computed(() => poolQuery.data.value);
-    const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
-      poolQuery.data
-    );
+    const {
+      isStableLikePool,
+      isLiquidityBootstrappingPool,
+      isStablePhantomPool
+    } = usePool(poolQuery.data);
 
     const noInitLiquidity = computed(
       () =>
@@ -287,7 +307,10 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      const feeLabel = `${fNum(pool.value.onchain.swapFee, 'percent')}`;
+      const feeLabel = `${fNum(
+        pool.value.onchain.swapFee,
+        'percent_variable'
+      )}`;
 
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);
@@ -304,11 +327,55 @@ export default defineComponent({
     const missingPrices = computed(() => {
       if (pool.value) {
         const tokensWithPrice = Object.keys(prices.value);
-        return !pool.value.tokenAddresses.every(token =>
-          tokensWithPrice.includes(token)
-        );
+
+        const tokens =
+          isStablePhantomPool.value && pool.value.mainTokens
+            ? pool.value.mainTokens
+            : pool.value.tokenAddresses;
+
+        return !tokens.every(token => tokensWithPrice.includes(token));
       }
       return false;
+    });
+
+    const isCopperNetworkSupported = computed(
+      () => isMainnet.value || isPolygon.value || isKovan.value
+    );
+
+    // Temporary solution to hide Copper card on Fei pool page.
+    // Longer terms solution is needed distinguish LBP platforms
+    // and display custom widgets linking to their pages.
+    const isCopperPool = computed((): boolean => {
+      const feiPoolId =
+        '0xede4efcc5492cf41ed3f0109d60bc0543cfad23a0002000000000000000000bb';
+      return (
+        !!pool.value &&
+        isLiquidityBootstrappingPool.value &&
+        pool.value.id !== feiPoolId &&
+        isCopperNetworkSupported.value
+      );
+    });
+
+    const copperNetworkPrefix = computed(() => {
+      if (isPolygon.value) {
+        return 'polygon.';
+      }
+      if (isKovan.value) {
+        return 'kovan.';
+      }
+      return '';
+    });
+
+    const hasCustomToken = computed(() => {
+      const knownTokens = Object.keys(balancerTokenListTokens.value);
+      return (
+        !!pool.value &&
+        !isLiquidityBootstrappingPool.value &&
+        !isStablePhantomPool.value &&
+        pool.value.tokenAddresses.some(
+          address => !knownTokens.includes(address)
+        )
+      );
     });
 
     /**
@@ -362,6 +429,10 @@ export default defineComponent({
       swapFeeToolTip,
       isStableLikePool,
       isLiquidityBootstrappingPool,
+      isCopperPool,
+      isStablePhantomPool,
+      copperNetworkPrefix,
+      hasCustomToken,
       // methods
       fNum,
       onNewTx

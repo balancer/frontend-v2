@@ -14,6 +14,7 @@ type Props = {
   weight?: number | string;
   excludedTokens?: string[];
   options?: string[];
+  disableInjection?: boolean;
 };
 
 /**
@@ -24,7 +25,8 @@ const props = withDefaults(defineProps<Props>(), {
   fixed: false,
   weight: 0,
   excludedTokens: () => [],
-  options: () => []
+  options: () => [],
+  disableInjection: false
 });
 
 const emit = defineEmits<{
@@ -145,6 +147,7 @@ function tokenFor(option: string): TokenInfo {
         v-if="openTokenModal"
         :excludedTokens="[...excludedTokens, modelValue]"
         :includeEther="true"
+        :disableInjection="disableInjection"
         @close="openTokenModal = false"
         @select="emit('update:modelValue', $event)"
       />

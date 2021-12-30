@@ -33,7 +33,7 @@
             >
               {{ $t('new') }}
             </BalChip>
-            <LiquidityMiningTooltip :pool="pool" class="-ml-1 mt-1" />
+            <LiquidityAPRTooltip :pool="pool" class="-ml-1 mt-1" />
           </div>
           <div class="flex items-center mt-2">
             <div v-html="poolFeeLabel" class="text-sm" />
@@ -68,6 +68,13 @@
           block
         />
         <BalAlert
+          v-if="!appLoading && hasCustomToken"
+          type="error"
+          :title="$t('highRiskPool')"
+          class="mt-2"
+          block
+        />
+        <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"
           :title="$t('noInitLiquidity')"
@@ -83,7 +90,8 @@
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-1 lg:px-0">
             <PoolChart
-              :prices="historicalPrices"
+              :pool="pool"
+              :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
             />
@@ -164,7 +172,7 @@
 import { computed, defineComponent, reactive, toRefs, watch } from 'vue';
 import * as PoolPageComponents from '@/components/contextual/pages/pool';
 import GauntletIcon from '@/components/images/icons/GauntletIcon.vue';
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import useNumbers from '@/composables/useNumbers';
@@ -189,7 +197,7 @@ export default defineComponent({
   components: {
     ...PoolPageComponents,
     GauntletIcon,
-    LiquidityMiningTooltip,
+    LiquidityAPRTooltip,
     FarmStatCards,
     FarmStatCardsLoading
   },
@@ -206,6 +214,7 @@ export default defineComponent({
     const { prices } = useTokens();
     const { blockNumber } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
+    const { balancerTokenListTokens } = useTokens();
 
     const { pool, loadingPool, isLoadingFarms } = usePoolWithFarm(
       route.params.id as string
@@ -227,9 +236,11 @@ export default defineComponent({
       id: route.params.id as string
     });
 
-    const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
-      poolQuery.data
-    );
+    const {
+      isStableLikePool,
+      isLiquidityBootstrappingPool,
+      isStablePhantomPool
+    } = usePool(poolQuery.data);
 
     const noInitLiquidity = computed(
       () =>
@@ -316,6 +327,18 @@ export default defineComponent({
       return false;
     });
 
+    const hasCustomToken = computed(() => {
+      const knownTokens = Object.keys(balancerTokenListTokens.value);
+      return (
+        !!pool.value &&
+        !isLiquidityBootstrappingPool.value &&
+        !isStablePhantomPool.value &&
+        pool.value.tokenAddresses.some(
+          address => !knownTokens.includes(address)
+        )
+      );
+    });
+
     /**
      * METHODS
      */
@@ -368,6 +391,7 @@ export default defineComponent({
       isStableLikePool,
       isLiquidityBootstrappingPool,
       isLoadingFarms,
+      hasCustomToken,
       // methods
       fNum,
       onNewTx

@@ -3,7 +3,8 @@ import { orderBy } from 'lodash';
 
 export enum AlertType {
   ERROR = 'error',
-  INFO = 'info'
+  INFO = 'info',
+  FEATURE = 'feature'
 }
 
 export enum AlertPriority {
@@ -19,6 +20,7 @@ export type Alert = {
   type: AlertType;
   actionLabel?: string;
   action?: () => void;
+  actionOnClick?: boolean;
   persistent?: boolean;
 };
 

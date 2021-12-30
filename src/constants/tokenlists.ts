@@ -17,16 +17,14 @@ export const TOKEN_LIST_MAP: TokenListMapByNetwork = {
   '1': {
     Balancer: {
       Default:
-        'https://storageapi.fleek.co/balancer-team-bucket/assets/listed.tokenlist.json',
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/listed.tokenlist.json',
       Vetted:
-        'https://storageapi.fleek.co/balancer-team-bucket/assets/vetted.tokenlist.json'
+        'https://raw.githubusercontent.com/balancer-labs/assets/master/generated/vetted.tokenlist.json'
     },
     External: [
       'ipns://tokens.uniswap.org',
-      'tokenlist.zerion.eth',
-      'tokens.1inch.eth',
+      'https://www.gemini.com/uniswap/manifest.json',
       'tokenlist.aave.eth',
-      // 'https://tokens.coingecko.com/uniswap/all.json', Breaks balance/allowance fetching
       'https://umaproject.org/uma.tokenlist.json'
     ]
   },

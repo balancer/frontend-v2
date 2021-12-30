@@ -9,6 +9,8 @@ type Props = {
   title?: string;
   hideItems?: boolean;
   size?: string;
+  offsetClassOverrides?: string;
+  initVertBarClassOverrides?: string;
 };
 
 /**
@@ -24,6 +26,10 @@ const props = withDefaults(defineProps<Props>(), {
  * COMPUTED
  */
 const initVertBarSizes = computed(() => {
+  if (props.initVertBarClassOverrides != null) {
+    return props.initVertBarClassOverrides;
+  }
+
   switch (props.size) {
     case 'lg':
       return 'h-8 -mt-8';
@@ -51,11 +57,15 @@ const spacingClass = computed(() => {
 });
 
 const offsetClass = computed(() => {
+  if (props.offsetClassOverrides != null) {
+    return props.offsetClassOverrides;
+  }
+
   switch (props.size) {
     case 'lg':
-      return 'mt-3';
+      return 'mt-3 ml-px';
     default:
-      return 'mt-2';
+      return 'mt-2 ml-px';
   }
 });
 </script>
@@ -67,7 +77,7 @@ const offsetClass = computed(() => {
         {{ title }}
       </slot>
     </div>
-    <div v-if="!hideItems" :class="['flex flex-col ml-px', offsetClass]">
+    <div v-if="!hideItems" :class="['flex flex-col', offsetClass]">
       <div
         v-for="(item, i) in items"
         :key="i"

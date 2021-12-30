@@ -34,7 +34,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { isWethPool } = usePool(toRef(props, 'pool'));
+const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
@@ -45,22 +45,30 @@ const route = useRoute();
  */
 const pageContext = computed(() => route.name);
 
-const tokenAddresses = computed(() => {
-  if (pageContext.value === 'invest' && props.useNativeAsset) {
-    return props.pool.tokenAddresses.map(address => {
-      if (address === wrappedNativeAsset.value.address)
-        return nativeAsset.address;
-      return address;
-    });
-  } else if (pageContext.value === 'withdraw' && isWethPool.value) {
-    return [nativeAsset.address, ...props.pool.tokenAddresses];
+const tokenAddresses = computed((): string[] => {
+  if (isStablePhantomPool.value) {
+    return props.pool.mainTokens || [];
   }
 
   return props.pool.tokenAddresses;
 });
 
+const tokensForTotal = computed((): string[] => {
+  if (pageContext.value === 'invest' && props.useNativeAsset) {
+    return tokenAddresses.value.map(address => {
+      if (address === wrappedNativeAsset.value.address)
+        return nativeAsset.address;
+      return address;
+    });
+  } else if (pageContext.value === 'withdraw' && isWethPool.value) {
+    return [nativeAsset.address, ...tokenAddresses.value];
+  }
+
+  return tokenAddresses.value;
+});
+
 const fiatTotal = computed(() => {
-  const fiatValue = tokenAddresses.value
+  const fiatValue = tokensForTotal.value
     .map(address => {
       if (pageContext.value === 'invest') {
         if (address === nativeAsset.address && !props.useNativeAsset)
@@ -98,7 +106,7 @@ function isSelectedNativeAsset(address: string): boolean {
 <template>
   <BalCard shadow="none" noPad>
     <template v-if="!hideHeader" #header>
-      <div class="p-4 w-full shadow-lg">
+      <div class="p-4 w-full border-b dark:border-gray-900">
         <h6>
           {{ $t('poolTransfer.myWalletTokensCard.title') }}
         </h6>
@@ -106,7 +114,7 @@ function isSelectedNativeAsset(address: string): boolean {
     </template>
 
     <div class="-mt-2 p-4">
-      <div v-for="address in pool.tokenAddresses" :key="address" class="py-2">
+      <div v-for="address in tokenAddresses" :key="address" class="py-2">
         <div v-if="address === wrappedNativeAsset.address">
           <div class="flex items-start justify-between">
             <BalBreakdown

@@ -34,14 +34,17 @@ const {
   priceImpact,
   highPriceImpact,
   maximized,
-  optimized
+  optimized,
+  batchSwapLoading,
+  supportsPropotionalOptimization
 } = toRefs(props.math);
 
 /**
  * COMPUTED
  */
 const priceImpactClasses = computed(() => ({
-  'bg-red-500 text-white divide-red-400': highPriceImpact.value
+  'dark:bg-gray-800': !highPriceImpact.value,
+  'bg-red-500 dark:bg-red-500 text-white divide-red-400': highPriceImpact.value
 }));
 
 const optimizeBtnClasses = computed(() => ({
@@ -73,8 +76,11 @@ const optimizeBtnClasses = computed(() => ({
     <div :class="['data-table-row price-impact-row', priceImpactClasses]">
       <div class="p-2">{{ $t('priceImpact') }}</div>
       <div class="data-table-number-col">
-        <div>
-          {{ fNum(priceImpact, 'percent') }}
+        <div class="flex">
+          <span v-if="!batchSwapLoading">
+            {{ fNum(priceImpact, 'percent') }}
+          </span>
+          <BalLoadingBlock v-else class="w-10" />
 
           <BalTooltip :text="$t('customAmountsTip')">
             <template v-slot:activator>
@@ -94,7 +100,12 @@ const optimizeBtnClasses = computed(() => ({
           </BalTooltip>
         </div>
 
-        <div v-if="isWalletReady && hasAllTokens" class="text-sm font-semibold">
+        <div
+          v-if="
+            isWalletReady && hasAllTokens && supportsPropotionalOptimization
+          "
+          class="text-sm font-semibold"
+        >
           <span v-if="optimized" class="text-gray-400 dark:text-gray-600">
             {{ $t('optimized') }}
           </span>
@@ -119,7 +130,6 @@ const optimizeBtnClasses = computed(() => ({
 .data-table-row {
   @apply grid grid-cols-4 items-center;
   @apply divide-x dark:divide-gray-900;
-  @apply dark:bg-gray-800;
 }
 
 .data-table-number-col {
@@ -127,7 +137,7 @@ const optimizeBtnClasses = computed(() => ({
 }
 
 .total-row {
-  @apply text-lg font-bold rounded-t-lg;
+  @apply text-lg font-bold rounded-t-lg dark:bg-gray-800;
 }
 
 .price-impact-row {

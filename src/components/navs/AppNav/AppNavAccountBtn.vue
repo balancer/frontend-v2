@@ -20,7 +20,7 @@
         <Avatar
           v-else
           :address="account"
-          :profile="profile"
+          :iconURI="profile?.avatar"
           :size="avatarSize"
         />
         <span

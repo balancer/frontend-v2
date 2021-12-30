@@ -18,6 +18,10 @@ export default class BeethovenxToken {
   public async getCirculatingSupply(): Promise<number> {
     let result = {} as Record<any, any>;
 
+    if (this.configService.network.chainId === 4) {
+      return 0;
+    }
+
     const masterChefMultiCaller = new Multicaller(
       this.configService.network.key,
       this.service.provider,

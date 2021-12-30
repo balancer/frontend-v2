@@ -7,7 +7,7 @@
         </div>
         <div class="text-xl font-medium truncate flex items-center">
           {{ stat.value }}
-          <LiquidityMiningTooltip :pool="pool" v-if="stat.id === 'apr'" />
+          <LiquidityAPRTooltip :pool="pool" v-if="stat.id === 'apr'" />
         </div>
       </BalCard>
     </div>
@@ -25,7 +25,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
 import useNumbers from '@/composables/useNumbers';
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import useEthers from '@/composables/useEthers';
 import {
   DecoratedFarm,
@@ -40,7 +40,7 @@ import { DecoratedPool } from '@/services/balancer/subgraph/types';
 export default defineComponent({
   components: {
     FarmHarvestRewardsCard,
-    LiquidityMiningTooltip
+    LiquidityAPRTooltip
   },
 
   props: {
