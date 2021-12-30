@@ -5,7 +5,11 @@ import QUERY_KEYS from '@/beethovenx/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { masterChefContractsService } from '@/beethovenx/services/farm/master-chef-contracts.service';
-import { SubgraphBalancer } from '@/services/balancer/subgraph/types';
+import {
+  FullPool,
+  Pool,
+  SubgraphBalancer
+} from '@/services/balancer/subgraph/types';
 
 interface ProtocolData extends SubgraphBalancer {
   beetsPrice: number;
@@ -18,12 +22,12 @@ export default function useProtocolDataQuery(
   const { appNetworkConfig } = useWeb3();
 
   const queryFn = async () => {
-    const [beetsPool] = await balancerSubgraphService.pools.get({
-      where: {
-        id: appNetworkConfig.addresses.beetsUsdcReferencePricePool.toLowerCase(),
-        totalShares_gt: -1 // Avoid the filtering for low liquidity pools
-      }
-    });
+    const pools = await balancerSubgraphService.pools.get();
+    const beetsPool = pools.find(
+      pool =>
+        pool.id ===
+        appNetworkConfig.addresses.beetsUsdcReferencePricePool.toLowerCase()
+    );
 
     if (!beetsPool) {
       throw new Error('Could not load beets reference price pool');
@@ -31,10 +35,12 @@ export default function useProtocolDataQuery(
 
     const balancerData = await balancerSubgraphService.balancers.get();
     const beetsPrice = await getBeetsPrice(
-      appNetworkConfig.addresses.beetsUsdcReferencePricePool,
+      beetsPool,
       appNetworkConfig.addresses.beets,
       appNetworkConfig.addresses.usdc
     );
+
+    console.log('beets price', beetsPrice);
 
     const circulatingSupply = await masterChefContractsService.beethovenxToken.getCirculatingSupply();
 
@@ -58,21 +64,14 @@ export default function useProtocolDataQuery(
 }
 
 export async function getBeetsPrice(
-  poolId: string,
+  beetsPool: Pool,
   beetsAddress: string,
   usdcAddress: string
 ) {
-  const [beetsPool] = await balancerSubgraphService.pools.get({
-    where: {
-      id: poolId.toLowerCase(),
-      totalShares_gt: -1 // Avoid the filtering for low liquidity pools
-    }
-  });
-
-  const beets = beetsPool?.tokens.find(
+  const beets = beetsPool.tokens.find(
     token => token.address.toLowerCase() === beetsAddress.toLowerCase()
   );
-  const usdc = beetsPool?.tokens.find(
+  const usdc = beetsPool.tokens.find(
     token => token.address.toLowerCase() === usdcAddress.toLowerCase()
   );
 

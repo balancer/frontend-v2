@@ -4,12 +4,12 @@ import { merge } from 'lodash';
 const defaultArgs = {
   first: 1000,
   orderBy: 'totalLiquidity',
-  orderDirection: 'desc',
-  where: {
+  orderDirection: 'desc'
+  /*where: {
     totalShares_gt: 0.01,
     id_not_in: POOLS.BlockList,
     poolType_not: 'Element'
-  }
+  }*/
 };
 
 const defaultAttrs = {
@@ -37,7 +37,12 @@ const defaultAttrs = {
 
 export default (args = {}, attrs = {}) => ({
   pools: {
-    __args: merge({}, defaultArgs, args),
+    ...merge({}, defaultAttrs, attrs)
+  }
+});
+
+export const pastPoolsQuery = (args = {}, attrs = {}) => ({
+  poolsPastPools: {
     ...merge({}, defaultAttrs, attrs)
   }
 });

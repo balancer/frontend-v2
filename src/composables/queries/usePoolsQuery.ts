@@ -1,7 +1,7 @@
 import { computed, reactive, ref, Ref } from 'vue';
 import { useInfiniteQuery } from 'vue-query';
 import { UseInfiniteQueryOptions } from 'react-query/types';
-import { flatten } from 'lodash';
+import { flatten, intersection } from 'lodash';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { POOLS } from '@/constants/pools';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
@@ -46,19 +46,7 @@ export default function usePoolsQuery(
 
   // METHODS
   const queryFn = async ({ pageParam = 0 }) => {
-    const queryArgs: any = {
-      first: filterOptions?.pageSize || POOLS.Pagination.PerPage,
-      skip: pageParam,
-      where: {
-        tokensList_contains: tokenList.value
-      }
-    };
-    if (filterOptions?.poolIds?.value.length) {
-      queryArgs.where.id_in = filterOptions.poolIds.value;
-    }
-
-    const pools = await balancerSubgraphService.pools.get(queryArgs);
-
+    const pools = await balancerSubgraphService.pools.get();
     const tokens = flatten(pools.map(pool => pool.tokensList));
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
@@ -73,10 +61,7 @@ export default function usePoolsQuery(
     return {
       pools: decoratedPools,
       tokens,
-      skip:
-        pools.length >= POOLS.Pagination.PerPage
-          ? pageParam + POOLS.Pagination.PerPage
-          : undefined
+      skip: undefined
     };
   };
 

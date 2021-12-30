@@ -182,7 +182,7 @@ export default function useSor({
     const poolsUrlV1 = `${
       configService.network.poolsUrlV1
     }?timestamp=${Date.now()}`;
-    const subgraphUrl = configService.network.subgraph;
+    const subgraphUrl = configService.network.poolsUrlV2;
 
     // If V1 previously selected on another network then it uses this and returns no liquidity.
     if (!isV1Supported) {

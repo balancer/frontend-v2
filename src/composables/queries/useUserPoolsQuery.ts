@@ -53,17 +53,14 @@ export default function useUserPoolsQuery(
     const poolSharesIds = poolShares.map(poolShare => poolShare.poolId.id);
     const poolSharesMap = keyBy(poolShares, poolShare => poolShare.poolId.id);
 
-    const pools = await balancerSubgraphService.pools.get({
-      where: {
-        id_in: poolSharesIds
-      }
-    });
+    const pools = await balancerSubgraphService.pools.get();
+    const userPools = pools.filter(pool => poolSharesIds.includes(pool.id));
 
-    const tokens = flatten(pools.map(pool => pool.tokensList));
+    const tokens = flatten(userPools.map(pool => pool.tokensList));
     await injectTokens(tokens);
     await forChange(dynamicDataLoading, false);
     const decoratedPools = await balancerSubgraphService.pools.decorate(
-      pools,
+      userPools,
       '24h',
       prices.value,
       currency.value
@@ -73,7 +70,7 @@ export default function useUserPoolsQuery(
       ...pool,
       shares: bnum(pool.totalLiquidity)
         .div(pool.totalShares)
-        .times(poolSharesMap[pool.id].balance)
+        .times(poolSharesMap[pool.id]?.balance ?? 0)
         .toString()
     }));
 

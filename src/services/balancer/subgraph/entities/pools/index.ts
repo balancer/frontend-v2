@@ -1,5 +1,5 @@
 import Service from '../../balancer-subgraph.service';
-import queryBuilder from './query';
+import queryBuilder, { pastPoolsQuery } from './query';
 import { bnum } from '@/lib/utils';
 import {
   Pool,
@@ -23,6 +23,9 @@ import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
 import { lidoService } from '@/services/lido/lido.service';
 import PoolService from '@/services/pool/pool.service';
 import { differenceInWeeks } from 'date-fns';
+import { POOLS } from '@/constants/pools';
+import axios from 'axios';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -42,10 +45,38 @@ export default class Pools {
     this.networkId = configService.env.NETWORK;
   }
 
-  public async get(args = {}, attrs = {}): Promise<Pool[]> {
-    const query = this.query(args, attrs);
-    const data = await this.service.client.get(query);
-    return data.pools;
+  public async get(): Promise<Pool[]> {
+    const query = this.query();
+
+    try {
+      const {
+        data: { data }
+      } = await axios.post(this.configService.network.poolsUrlV2, {
+        query: jsonToGraphQLQuery({ query })
+      });
+
+      return data.pools;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  public async getPastPools(): Promise<Pool[]> {
+    const query = pastPoolsQuery();
+
+    try {
+      const {
+        data: { data }
+      } = await axios.post(this.configService.network.poolsUrlV2, {
+        query: jsonToGraphQLQuery({ query })
+      });
+
+      return data.poolsPastPools;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   }
 
   public async decorate(
@@ -54,20 +85,8 @@ export default class Pools {
     prices: TokenPrices,
     currency: FiatCurrency
   ): Promise<DecoratedPool[]> {
-    // Get past state of pools
-    const blockNumber = await this.timeTravelBlock(period);
-    const block = { number: blockNumber };
-    const isInPoolIds = { id_in: pools.map(pool => pool.id) };
-    const pastPoolsQuery = this.query({ where: isInPoolIds, block });
-    let pastPools: Pool[] = [];
-    try {
-      const data: { pools: Pool[] } = await this.service.client.get(
-        pastPoolsQuery
-      );
-      pastPools = data.pools;
-    } catch {
-      // eslint-disable-previous-line no-empty
-    }
+    const pastPools: Pool[] = await this.getPastPools();
+
     return this.serialize(pools, pastPools, period, prices, currency);
   }
 

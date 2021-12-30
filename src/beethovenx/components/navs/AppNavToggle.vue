@@ -21,7 +21,7 @@
       Stake
     </router-link>
     <router-link
-      :to="{ name: 'lge-list' }"
+      :to="{ name: 'launch' }"
       :class="['toggle-link px-4', { [activeClasses]: isLaunchPage }]"
     >
       Launch
@@ -60,7 +60,7 @@ export default defineComponent({
     const isStakePage = computed(() => route.name === 'stake');
     const isLaunchPage = computed(
       () =>
-        route.name === 'lge-list' ||
+        route.name === 'launch' ||
         route.name === 'lge-create' ||
         route.name === 'lge'
     );

@@ -23,35 +23,31 @@ interface LbpState {
 }
 
 export const LBPDefaultData: LgeData = {
-  name: 'Beethoven X',
-  websiteUrl: 'https://app.beets.fi/',
-  tokenContractAddress: '0x05848B832E872d9eDd84AC5718D58f21fD9c9649',
-  tokenIconUrl: 'https://ftmscan.com/token/images/steakstakeftm_32.png',
-  //tokenContractAddress: '0x6F00D64b42aF8f449dB15B0b3ee3B444550c4826',
-  //tokenIconUrl:
-  //  'https://beethoven-assets.s3.eu-central-1.amazonaws.com/apple-touch-192.png',
-  twitterUrl: 'https://www.twitter.com',
-  mediumUrl: 'https://www.twitter.com',
-  discordUrl: 'https://www.twitter.com',
-  telegramUrl: 'https://www.twitter.com',
-  description: 'BEETS',
+  name: '',
+  websiteUrl: '',
+  tokenContractAddress: '',
+  tokenIconUrl: '',
+  twitterUrl: '',
+  mediumUrl: '',
+  discordUrl: '',
+  telegramUrl: '',
+  description: '',
 
-  startDate: '2021-12-18',
-  startTime: '12:00',
-  endDate: '2022-01-12',
-  endTime: '12:00',
+  startDate: '',
+  startTime: '',
+  endDate: '',
+  endTime: '',
   collateralTokenAddress: '',
-  tokenAmount: '100',
+  tokenAmount: '',
   collateralAmount: '',
   tokenStartWeight: 95,
   collateralStartWeight: 5,
   tokenEndWeight: 50,
   collateralEndWeight: 50,
   swapFeePercentage: 2.5,
-  poolName: 'Pool Name',
-  poolSymbol: 'ABC',
-  bannerImageUrl:
-    'https://beethoven-assets.s3.eu-central-1.amazonaws.com/masthead-chillin.svg'
+  poolName: '',
+  poolSymbol: '',
+  bannerImageUrl: ''
 };
 
 const state = reactive<LbpState>({
@@ -99,7 +95,7 @@ export default function useLgeCreateState() {
     () => state.projectDetailsSaved && state.lgeConfigSaved
   );
 
-  const lgeConfigValid = computed(() => {
+  const lgeChartConfigValid = computed(() => {
     const data = state.data;
 
     if (
@@ -120,15 +116,7 @@ export default function useLgeCreateState() {
       return false;
     }
 
-    if (data.swapFeePercentage < 0.0001 || data.swapFeePercentage > 10) {
-      return false;
-    }
-
     if (data.tokenAmount === '' || parseFloat(data.tokenAmount) === 0) {
-      return false;
-    }
-
-    if (data.poolName === '' || data.poolSymbol === '') {
       return false;
     }
 
@@ -136,6 +124,24 @@ export default function useLgeCreateState() {
       data.collateralAmount === '' ||
       parseFloat(data.collateralAmount) === 0
     ) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const lgeConfigValid = computed(() => {
+    const data = state.data;
+
+    if (!lgeChartConfigValid.value) {
+      return false;
+    }
+
+    if (data.swapFeePercentage < 0.0001 || data.swapFeePercentage > 10) {
+      return false;
+    }
+
+    if (data.poolName === '' || data.poolSymbol === '') {
       return false;
     }
 
@@ -212,6 +218,7 @@ export default function useLgeCreateState() {
     saveLgeConfig,
     editLgeConfig,
     poolTokens,
-    reviewAndDeployOpen
+    reviewAndDeployOpen,
+    lgeChartConfigValid
   };
 }

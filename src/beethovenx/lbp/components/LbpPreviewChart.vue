@@ -9,7 +9,7 @@ import {
 } from '@/beethovenx/lbp/utils/lbpChartUtils';
 import useTokens from '@/composables/useTokens';
 
-const { data, lgeConfigValid } = useLgeCreateState();
+const { data, lgeChartConfigValid } = useLgeCreateState();
 const tailwind = useTailwind();
 const { priceFor } = useTokens();
 
@@ -25,7 +25,7 @@ const series = computed(() => {
   return [
     {
       name: 'Predicted Price',
-      values: lgeConfigValid.value
+      values: lgeChartConfigValid.value
         ? getLbpPreviewChartPredictedPriceData(data.value, price)
         : []
     }

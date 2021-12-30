@@ -228,6 +228,22 @@ export default class BeethovenxService {
     }
   }
 
+  public async getFbeetsApr(): Promise<number> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        fbeetsGetApr: {
+          apr: true
+        }
+      }
+    });
+
+    const { fbeetsGetApr } = await this.get<{ fbeetsGetApr: { apr: number } }>(
+      query
+    );
+
+    return fbeetsGetApr.apr;
+  }
+
   private get userProfileDataFragment() {
     return `
       fragment GqlUserPortfolioData on GqlUserPortfolioData {
