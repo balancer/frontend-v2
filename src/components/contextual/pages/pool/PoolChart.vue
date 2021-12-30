@@ -63,7 +63,7 @@ const supportsPoolLiquidity = computed(() =>
 const appLoading = computed(() => store.state.app.loading);
 
 const history = computed(() => {
-  const pricesTimestamps = Object.keys(props.historicalPrices);
+  const pricesTimestamps = Object.keys(props.historicalPrices ?? {});
   const snapshotsTimestamps = Object.keys(props.snapshots);
 
   if (snapshotsTimestamps.length === 0) {

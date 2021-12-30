@@ -3,7 +3,6 @@ import store from '@/store';
 import router from '@/beethovenx/plugins/router';
 import mixins from '@/plugins/mixins';
 import i18n from '@/plugins/i18n';
-import blocknative from '@/plugins/blocknative';
 import vueQuery from '@/plugins/vueQuery';
 import registerDirectives from '@/plugins/directives';
 import { registerGlobalComponents } from '@/plugins/components';

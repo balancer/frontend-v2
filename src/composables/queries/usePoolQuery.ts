@@ -45,8 +45,10 @@ export default function usePoolQuery(
   function isBlocked(pool: Pool): boolean {
     const requiresAllowlisting =
       isStableLike(pool.poolType) || isManaged(pool.poolType);
+
     const isOwnedByUser =
       isAddress(account.value) &&
+      isAddress(pool.owner) &&
       getAddress(pool.owner) === getAddress(account.value);
     const isAllowlisted =
       POOLS.Stable.AllowList.includes(id) ||
@@ -208,11 +210,6 @@ export default function usePoolQuery(
       }
     }
 
-    console.log('pool', {
-      onchain: onchainData,
-      unwrappedTokens,
-      ...decoratedPool
-    });
     return { onchain: onchainData, unwrappedTokens, ...decoratedPool };
   };
 

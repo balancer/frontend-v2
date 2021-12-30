@@ -137,7 +137,8 @@ export default function useWithdrawMath(
     (): number => getToken(tokenOut.value).decimals
   );
 
-  const poolDecimals = computed((): number => pool.value.onchain.decimals);
+  const poolDecimals = computed((): number => 18);
+  //const poolDecimals = computed((): number => pool.value.onchain.decimals);
 
   /**
    * The tokens being withdrawn
@@ -399,6 +400,9 @@ export default function useWithdrawMath(
 
     const fractionalBPTIn = proportionalPoolTokenAmounts.value
       .map(poolTokenAmount => {
+        console.log('normalizedBPTIn.value', normalizedBPTIn.value);
+        console.log('poolDecimals.value', poolDecimals.value.toString());
+
         const fraction = bnum(poolTokenAmount).div(poolTokenSum);
         return fraction
           .times(normalizedBPTIn.value)

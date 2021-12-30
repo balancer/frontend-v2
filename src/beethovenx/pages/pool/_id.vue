@@ -68,6 +68,13 @@
           block
         />
         <BalAlert
+          v-if="!appLoading && hasCustomToken"
+          type="error"
+          :title="$t('highRiskPool')"
+          class="mt-2"
+          block
+        />
+        <BalAlert
           v-if="!appLoading && noInitLiquidity"
           type="warning"
           :title="$t('noInitLiquidity')"
@@ -83,7 +90,8 @@
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-1 lg:px-0">
             <PoolChart
-              :prices="historicalPrices"
+              :pool="pool"
+              :historicalPrices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
             />
@@ -206,6 +214,7 @@ export default defineComponent({
     const { prices } = useTokens();
     const { blockNumber } = useWeb3();
     const { addAlert, removeAlert } = useAlerts();
+    const { balancerTokenListTokens } = useTokens();
 
     const { pool, loadingPool, isLoadingFarms } = usePoolWithFarm(
       route.params.id as string
@@ -227,9 +236,11 @@ export default defineComponent({
       id: route.params.id as string
     });
 
-    const { isStableLikePool, isLiquidityBootstrappingPool } = usePool(
-      poolQuery.data
-    );
+    const {
+      isStableLikePool,
+      isLiquidityBootstrappingPool,
+      isStablePhantomPool
+    } = usePool(poolQuery.data);
 
     const noInitLiquidity = computed(
       () =>
@@ -316,6 +327,18 @@ export default defineComponent({
       return false;
     });
 
+    const hasCustomToken = computed(() => {
+      const knownTokens = Object.keys(balancerTokenListTokens.value);
+      return (
+        !!pool.value &&
+        !isLiquidityBootstrappingPool.value &&
+        !isStablePhantomPool.value &&
+        pool.value.tokenAddresses.some(
+          address => !knownTokens.includes(address)
+        )
+      );
+    });
+
     /**
      * METHODS
      */
@@ -368,6 +391,7 @@ export default defineComponent({
       isStableLikePool,
       isLiquidityBootstrappingPool,
       isLoadingFarms,
+      hasCustomToken,
       // methods
       fNum,
       onNewTx
