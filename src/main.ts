@@ -17,7 +17,8 @@ import {
   LegendComponent,
   ToolboxComponent,
   MarkPointComponent,
-  MarkLineComponent
+  MarkLineComponent,
+  PolarComponent
 } from 'echarts/components';
 import VueVirtualScroller from 'vue3-virtual-scroller';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -39,6 +40,7 @@ use([
   MarkPointComponent,
   MarkLineComponent,
   PieChart,
+  PolarComponent,
   BarChart
 ]);
 const app = createApp(Root)

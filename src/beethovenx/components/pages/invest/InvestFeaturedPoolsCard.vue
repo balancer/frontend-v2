@@ -3,7 +3,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import BalAssetSet from '@/components/_global/BalAsset/BalAssetSet.vue';
 import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
-import LiquidityMiningTooltip from '@/components/tooltips/LiquidityMiningTooltip.vue';
+import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import useNumbers from '@/composables/useNumbers';
 import { useRouter } from 'vue-router';
 
@@ -52,7 +52,7 @@ function navigateToPool(pool: FullPool) {
         </div>-->
         <div class="text-xl font-medium truncate flex items-center mt-4">
           {{ fNum(pool.dynamic.apr.total, 'percent') }} APR
-          <LiquidityMiningTooltip :pool="pool" />
+          <LiquidityAPRTooltip :pool="pool" />
         </div>
         <div class="text-sm text-gray-500">
           {{ fNum(pool.dynamic.apr.total / 365, 'percent') }} DAILY

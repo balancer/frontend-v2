@@ -90,7 +90,8 @@ export function getPoolApr(
     total: `${parseFloat(pool.dynamic.apr.pool) +
       parseFloat(liquidityMiningApr)}`,
     thirdParty: '',
-    liquidityMiningBreakdown: {}
+    liquidityMiningBreakdown: {},
+    thirdPartyBreakdown: {}
   };
 }
 

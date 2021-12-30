@@ -54,6 +54,7 @@ export interface TokensProviderResponse {
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;
   activeTokenListTokens: ComputedRef<TokenInfoMap>;
+  balancerTokenListTokens: ComputedRef<TokenInfoMap>;
   prices: ComputedRef<TokenPrices>;
   balances: ComputedRef<BalanceMap>;
   allowances: ComputedRef<ContractAllowancesMap>;
@@ -70,7 +71,8 @@ export interface TokensProviderResponse {
   searchTokens: (
     query: string,
     excluded: string[],
-    included?: string[]
+    included?: string[],
+    disableInjection?: boolean
   ) => Promise<TokenInfoMap>;
   hasBalance: (address: string) => boolean;
   approvalRequired: (
@@ -111,6 +113,7 @@ export default {
     const {
       allTokenLists,
       activeTokenLists,
+      balancerTokenLists,
       loadingTokenLists
     } = useTokenLists();
     const { currency } = useUserSettings();
@@ -141,6 +144,16 @@ export default {
      */
 
     /**
+     * All tokens from all token lists.
+     */
+    const allTokenListTokens = computed(
+      (): TokenInfoMap => ({
+        ...mapTokenListTokens(Object.values(allTokenLists.value)),
+        ...state.injectedTokens
+      })
+    );
+
+    /**
      * All tokens from token lists that are toggled on.
      */
     const activeTokenListTokens = computed(
@@ -149,15 +162,25 @@ export default {
     );
 
     /**
+     * All tokens from Balancer token lists, e.g. 'listed' and 'vetted'.
+     */
+    const balancerTokenListTokens = computed(
+      (): TokenInfoMap =>
+        mapTokenListTokens(Object.values(balancerTokenLists.value))
+    );
+
+    /**
      * The main tokens map
      * A combination of activated token list tokens
      * and any injected tokens. Static and dynamic
      * meta data should be available for these tokens.
      */
-    const tokens = computed(() => ({
-      ...activeTokenListTokens.value,
-      ...state.injectedTokens
-    }));
+    const tokens = computed(
+      (): TokenInfoMap => ({
+        ...activeTokenListTokens.value,
+        ...state.injectedTokens
+      })
+    );
 
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
 
@@ -254,6 +277,9 @@ export default {
     async function injectTokens(addresses: string[]): Promise<void> {
       addresses = addresses.map(address => getAddress(address));
 
+      // Remove any duplicates
+      addresses = [...new Set(addresses)];
+
       // Only inject tokens that aren't already in tokens
       const injectable = addresses.filter(
         address => !Object.keys(tokens.value).includes(address)
@@ -275,21 +301,26 @@ export default {
     async function searchTokens(
       query: string,
       excluded: string[] = [],
-      included?: string[]
+      included?: string[],
+      disableInjection = false
     ): Promise<TokenInfoMap> {
       if (!query) return filterTokens(tokens.value, excluded, included);
 
       if (isAddress(query)) {
         const address = getAddress(query);
-        const token = tokens.value[address];
+        const token = allTokenListTokens.value[address];
         if (token) {
           return { [address]: token };
         } else {
-          await injectTokens([address]);
-          return pick(tokens.value, address);
+          if (!disableInjection) {
+            await injectTokens([address]);
+            return pick(tokens.value, address);
+          } else {
+            return { [address]: token };
+          }
         }
       } else {
-        const tokensArray = Object.entries(tokens.value);
+        const tokensArray = Object.entries(allTokenListTokens.value);
         const results = tokensArray.filter(
           ([, token]) =>
             token.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -431,6 +462,7 @@ export default {
       tokens,
       wrappedNativeAsset,
       activeTokenListTokens,
+      balancerTokenListTokens,
       prices,
       balances,
       allowances,

@@ -145,7 +145,8 @@ export default defineComponent({
     open: { type: Boolean, default: false },
     excludedTokens: { type: Array as PropType<string[]>, default: () => [] },
     includedTokens: { type: Array as PropType<string[]> },
-    includeEther: { type: Boolean, default: false }
+    includeEther: { type: Boolean, default: false },
+    disableInjection: { type: Boolean, default: false }
   },
 
   setup(props, { emit }) {
@@ -169,11 +170,13 @@ export default defineComponent({
       isActiveList
     } = useTokenLists();
     const {
+      tokens: allTokens,
       searchTokens,
       priceFor,
       balanceFor,
       dynamicDataLoading,
-      nativeAsset
+      nativeAsset,
+      injectTokens
     } = useTokens();
     const { t } = useI18n();
     const { resolve } = useUrls();
@@ -219,7 +222,11 @@ export default defineComponent({
     /**
      * METHODS
      */
-    function onSelectToken(token: string): void {
+    async function onSelectToken(token: string): Promise<void> {
+      if (!allTokens.value[token]) {
+        await injectTokens([token]);
+      }
+
       emit('select', token);
       emit('close');
     }
@@ -229,7 +236,8 @@ export default defineComponent({
       state.results = await searchTokens(
         state.query,
         excludedTokens.value,
-        props.includedTokens
+        props.includedTokens,
+        props.disableInjection
       );
     }
 
@@ -252,7 +260,8 @@ export default defineComponent({
         state.results = await searchTokens(
           newQuery,
           excludedTokens.value,
-          props.includedTokens
+          props.includedTokens,
+          props.disableInjection
         );
       },
       { immediate: true }

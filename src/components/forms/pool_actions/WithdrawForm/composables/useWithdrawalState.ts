@@ -1,6 +1,10 @@
 import { Ref, computed, reactive, toRefs } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
+import { isStablePhantom } from '@/composables/usePool';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 
 /**
  * STATE
@@ -11,6 +15,7 @@ const state = reactive({
   validInput: true,
   highPriceImpactAccepted: false,
   submitting: false,
+  sorReady: false,
   slider: {
     val: 1000,
     max: 1000,
@@ -19,26 +24,32 @@ const state = reactive({
   }
 });
 
-export default function useWithdrawalState(pool: Ref<FullPool>) {
+export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   /**
    * COMPOSABLES
    */
   const { nativeAsset, wrappedNativeAsset } = useTokens();
+  const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 
   /**
    * COMPUTED
    */
   const tokensOut = computed(() => {
+    if (!pool.value) return [];
+    const poolTokens = isStablePhantom(pool.value.poolType)
+      ? pool.value.mainTokens || []
+      : pool.value.tokenAddresses;
+
     if (!state.isProportional && state.tokenOut === nativeAsset.address)
       // replace WETH with ETH
-      return pool.value.tokenAddresses.map(address => {
+      return poolTokens.map(address => {
         if (address === wrappedNativeAsset.value.address) {
           return nativeAsset.address;
         }
         return address;
       });
 
-    return pool.value.tokenAddresses;
+    return poolTokens;
   });
 
   const tokenOutIndex = computed(() => {
@@ -56,6 +67,7 @@ export default function useWithdrawalState(pool: Ref<FullPool>) {
     ...toRefs(state),
     tokensOut,
     tokenOutIndex,
+    batchRelayerApproval,
     // methods
     maxSlider
   };

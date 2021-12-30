@@ -374,7 +374,7 @@ export default defineComponent({
     watch(
       () => props.data,
       () => {
-        setCurrentValueToLatest(false);
+        setCurrentValueToLatest(true);
       }
     );
 
@@ -441,6 +441,7 @@ export default defineComponent({
       // methods
       handleAxisMoved,
       numeral,
+      handleMouseLeave,
 
       // data
       currentValue,
@@ -448,8 +449,7 @@ export default defineComponent({
 
       // computed
       chartConfig,
-      styleOverrides,
-      handleMouseLeave
+      styleOverrides
     };
   }
 });

@@ -22,7 +22,7 @@ export const EXTERNAL_LINKS = {
     }
   },
   Copper: {
-    Auctions: (poolAddress: string) =>
-      `https://copperlaunch.com/auctions/${poolAddress}`
+    Auctions: (poolAddress: string, networkPrefix = '') =>
+      `https://${networkPrefix}copperlaunch.com/auctions/${poolAddress}`
   }
 };

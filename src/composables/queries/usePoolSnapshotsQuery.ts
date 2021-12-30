@@ -1,14 +1,19 @@
 import { computed, reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
+
 import QUERY_KEYS from '@/constants/queryKeys';
+
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
 import { PoolSnapshots } from '@/services/balancer/subgraph/types';
-import usePoolQuery from './usePoolQuery';
 import { coingeckoService } from '@/services/coingecko/coingecko.service';
 import { HistoricalPrices } from '@/services/coingecko/api/price.service';
 import { configService } from '@/services/config/config.service';
+
 import useNetwork from '../useNetwork';
+import { isStablePhantom } from '../usePool';
+
+import usePoolQuery from './usePoolQuery';
 
 /**
  * TYPES
@@ -48,16 +53,30 @@ export default function usePoolSnapshotsQuery(
   const queryFn = async () => {
     if (!pool.value) throw new Error('No pool');
 
-    // TODO - remove this once coingecko supports wstEth
-    const tokens = pool.value.tokenAddresses.includes(addresses.wstETH)
-      ? [...pool.value.tokenAddresses, addresses.stETH]
-      : pool.value.tokenAddresses;
+    let snapshots: PoolSnapshots = {};
+    let prices: HistoricalPrices = {};
 
-    const prices = await coingeckoService.prices.getTokensHistorical(
-      tokens,
-      days
-    );
-    const snapshots = await balancerSubgraphService.poolSnapshots.get(id, days);
+    const isStablePhantomPool = isStablePhantom(pool.value.poolType);
+
+    if (isStablePhantomPool) {
+      snapshots = await balancerSubgraphService.poolSnapshots.get(id, days);
+
+      return {
+        prices,
+        snapshots
+      };
+    } else {
+      let tokens = pool.value.tokenAddresses;
+      if (pool.value.tokenAddresses.includes(addresses.wstETH)) {
+        // TODO - remove this once coingecko supports wstEth
+        tokens = [...pool.value.tokenAddresses, addresses.stETH];
+      }
+
+      [prices, snapshots] = await Promise.all([
+        coingeckoService.prices.getTokensHistorical(tokens, days),
+        balancerSubgraphService.poolSnapshots.get(id, days)
+      ]);
+    }
 
     return { prices, snapshots };
   };
