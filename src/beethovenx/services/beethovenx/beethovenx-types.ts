@@ -55,6 +55,8 @@ interface Scalars {
   GqlBigNumber: string;
   JSON: any;
   UUID: string;
+  BigDecimal: string;
+  BigInt: string;
 }
 
 export interface GqlUserPoolData {
@@ -196,3 +198,35 @@ export const CreateLgeTypes = {
     { name: 'endDate', type: 'string' }
   ]
 };
+
+export interface GqlBeetsProtocolData {
+  __typename?: 'GqlBeetsProtocolData';
+  beetsPrice: Scalars['BigDecimal'];
+  circulatingSupply: Scalars['BigDecimal'];
+  marketCap: Scalars['BigDecimal'];
+  poolCount: Scalars['BigInt'];
+  totalLiquidity: Scalars['BigDecimal'];
+  totalSwapFee: Scalars['BigDecimal'];
+  totalSwapVolume: Scalars['BigDecimal'];
+}
+
+export interface GqlBalancerPoolSnapshot {
+  __typename?: 'GqlBalancerPoolSnapshot';
+  id: Scalars['ID'];
+  liquidityChange24h: Scalars['BigDecimal'];
+  poolId: Scalars['ID'];
+  swapFees24h: Scalars['BigDecimal'];
+  swapVolume24h: Scalars['BigDecimal'];
+  timestamp: Scalars['Int'];
+  tokens: Array<GqlBalancerPoolToken>;
+  totalLiquidity: Scalars['BigDecimal'];
+  totalShares: Scalars['BigDecimal'];
+  totalSwapFee: Scalars['BigDecimal'];
+  totalSwapVolume: Scalars['BigDecimal'];
+}
+
+export interface GqlBalancerPoolToken {
+  __typename?: 'GqlBalancerPoolToken';
+  address: Scalars['String'];
+  balance: Scalars['BigDecimal'];
+}

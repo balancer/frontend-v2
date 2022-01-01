@@ -5,12 +5,13 @@ import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool } from '@/services/balancer/subgraph/types';
+import { FullPool, OnchainPoolData } from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
 import { forChange } from '@/lib/utils';
+import { keyBy } from 'lodash';
 import { isManaged, isStableLike } from '../usePool';
 import { getAddress } from '@ethersproject/address';
 
@@ -62,20 +63,31 @@ export default function usePoolQuery(
 
     // Need to fetch onchain pool data first so that calculations can be
     // performed in the decoration step.
-    const onchainData = await balancerContractsService.vault.getPoolData(
+    /*const onchainData = await balancerContractsService.vault.getPoolData(
       id,
       pool.poolType,
       getTokens(pool.tokensList.map(address => getAddress(address)))
-    );
+    );*/
+
+    //the onchain data is now fetched by the backend, we map it into the desired format
+    //here to avoid editing all of the files that currently use onchain
+
+    const onchain: OnchainPoolData = {
+      totalSupply: pool.totalShares,
+      decimals: 18,
+      swapFee: pool.swapFee,
+      swapEnabled: pool.swapEnabled,
+      tokens: keyBy(pool.tokens, token => getAddress(token.address))
+    };
 
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
-      [{ ...pool, onchain: onchainData }],
+      [{ ...pool, onchain }],
       '24h',
       prices.value,
       currency.value
     );
 
-    return { onchain: onchainData, ...decoratedPool };
+    return { onchain, ...decoratedPool };
   };
 
   const queryOptions = reactive({

@@ -2,6 +2,8 @@ import { configService as _configService } from '@/services/config/config.servic
 import axios from 'axios';
 import {
   CreateLgeTypes,
+  GqlBalancerPoolSnapshot,
+  GqlBeetsProtocolData,
   GqlHistoricalTokenPrice,
   GqlLge,
   GqlLgeCreateInput,
@@ -242,6 +244,60 @@ export default class BeethovenxService {
     );
 
     return fbeetsGetApr.apr;
+  }
+
+  public async getProtocolData(): Promise<GqlBeetsProtocolData> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetProtocolData: {
+          marketCap: true,
+          beetsPrice: true,
+          totalSwapFee: true,
+          totalLiquidity: true,
+          totalSwapVolume: true,
+          poolCount: true,
+          circulatingSupply: true
+        }
+      }
+    });
+
+    const { beetsGetProtocolData } = await this.get<{
+      beetsGetProtocolData: GqlBeetsProtocolData;
+    }>(query);
+
+    return beetsGetProtocolData;
+  }
+
+  public async getPoolSnapshots(
+    poolId: string
+  ): Promise<GqlBalancerPoolSnapshot[]> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        poolSnapshots: {
+          __args: { poolId },
+          id: true,
+          poolId: true,
+          swapFees24h: true,
+          swapVolume24h: true,
+          liquidityChange24h: true,
+          totalShares: true,
+          totalSwapFee: true,
+          totalLiquidity: true,
+          totalSwapVolume: true,
+          timestamp: true,
+          tokens: {
+            address: true,
+            balance: true
+          }
+        }
+      }
+    });
+
+    const { poolSnapshots } = await this.get<{
+      poolSnapshots: GqlBalancerPoolSnapshot[];
+    }>(query);
+
+    return poolSnapshots;
   }
 
   private get userProfileDataFragment() {

@@ -2,14 +2,8 @@ import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { QueryObserverOptions } from 'react-query/core';
 import QUERY_KEYS from '@/beethovenx/constants/queryKeys';
-import useWeb3 from '@/services/web3/useWeb3';
-import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { masterChefContractsService } from '@/beethovenx/services/farm/master-chef-contracts.service';
-import {
-  FullPool,
-  Pool,
-  SubgraphBalancer
-} from '@/services/balancer/subgraph/types';
+import { SubgraphBalancer } from '@/services/balancer/subgraph/types';
+import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
 
 interface ProtocolData extends SubgraphBalancer {
   beetsPrice: number;
@@ -19,35 +13,16 @@ interface ProtocolData extends SubgraphBalancer {
 export default function useProtocolDataQuery(
   options: QueryObserverOptions<ProtocolData> = {}
 ) {
-  const { appNetworkConfig } = useWeb3();
-
   const queryFn = async () => {
-    const pools = await balancerSubgraphService.pools.get();
-    const beetsPool = pools.find(
-      pool =>
-        pool.id ===
-        appNetworkConfig.addresses.beetsUsdcReferencePricePool.toLowerCase()
-    );
-
-    if (!beetsPool) {
-      throw new Error('Could not load beets reference price pool');
-    }
-
-    const balancerData = await balancerSubgraphService.balancers.get();
-    const beetsPrice = await getBeetsPrice(
-      beetsPool,
-      appNetworkConfig.addresses.beets,
-      appNetworkConfig.addresses.usdc
-    );
-
-    console.log('beets price', beetsPrice);
-
-    const circulatingSupply = await masterChefContractsService.beethovenxToken.getCirculatingSupply();
+    const protocolData = await beethovenxService.getProtocolData();
 
     return {
-      ...balancerData,
-      beetsPrice,
-      circulatingSupply
+      poolCount: parseInt(protocolData.poolCount),
+      totalSwapFee: parseFloat(protocolData.totalSwapFee),
+      totalSwapVolume: parseFloat(protocolData.totalSwapVolume),
+      beetsPrice: parseFloat(protocolData.beetsPrice),
+      circulatingSupply: parseFloat(protocolData.circulatingSupply),
+      totalLiquidity: parseFloat(protocolData.totalLiquidity)
     };
   };
 
@@ -60,28 +35,5 @@ export default function useProtocolDataQuery(
     QUERY_KEYS.ProtocolData.All,
     queryFn,
     queryOptions
-  );
-}
-
-export async function getBeetsPrice(
-  beetsPool: Pool,
-  beetsAddress: string,
-  usdcAddress: string
-) {
-  const beets = beetsPool.tokens.find(
-    token => token.address.toLowerCase() === beetsAddress.toLowerCase()
-  );
-  const usdc = beetsPool.tokens.find(
-    token => token.address.toLowerCase() === usdcAddress.toLowerCase()
-  );
-
-  if (!beets || !usdc) {
-    return 0;
-  }
-
-  return (
-    ((parseFloat(beets.weight) / parseFloat(usdc.weight)) *
-      parseFloat(usdc.balance)) /
-    parseFloat(beets.balance)
   );
 }

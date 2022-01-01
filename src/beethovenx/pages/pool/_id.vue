@@ -82,11 +82,13 @@
       <div class="col-span-2 order-2 lg:order-1">
         <div class="grid grid-cols-1 gap-y-8">
           <div class="px-1 lg:px-0">
-            <PoolChart
+            <!--            <PoolChart
               :prices="historicalPrices"
               :snapshots="snapshots"
               :loading="isLoadingSnapshots"
-            />
+            />-->
+            <BalLoadingBlock v-if="isLoadingSnapshots" class="h-96" />
+            <PoolVolumeChart v-else :snapshots="snapshots" />
           </div>
           <div class="mb-4 px-1 lg:px-0">
             <PoolStatCards :pool="pool" :loading="loadingPool" />
@@ -180,6 +182,8 @@ import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import FarmStatCards from '@/beethovenx/components/pages/farm/FarmStatCards.vue';
 import FarmStatCardsLoading from '@/beethovenx/components/pages/farm/FarmStatCardsLoading.vue';
 import usePoolWithFarm from '@/beethovenx/composables/pool/usePoolWithFarm';
+import PoolVolumeChart from '@/beethovenx/components/pages/pool/PoolVolumeChart.vue';
+import BalLoadingBlock from '@/components/_global/BalLoadingBlock/BalLoadingBlock.vue';
 
 interface PoolPageData {
   id: string;
@@ -187,6 +191,8 @@ interface PoolPageData {
 
 export default defineComponent({
   components: {
+    BalLoadingBlock,
+    PoolVolumeChart,
     ...PoolPageComponents,
     GauntletIcon,
     LiquidityMiningTooltip,
