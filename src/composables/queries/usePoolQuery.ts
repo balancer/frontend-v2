@@ -77,7 +77,8 @@ export default function usePoolQuery(
       decimals: 18,
       swapFee: pool.swapFee,
       swapEnabled: pool.swapEnabled,
-      tokens: keyBy(pool.tokens, token => getAddress(token.address))
+      tokens: keyBy(pool.tokens, token => getAddress(token.address)),
+      amp: pool.amp
     };
 
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(

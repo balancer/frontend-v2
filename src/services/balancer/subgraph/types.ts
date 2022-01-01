@@ -34,6 +34,7 @@ export interface Pool {
   swapFee: string;
   owner: string;
   factory: string;
+  amp?: string;
   tokens: PoolToken[];
   tokensList: string[];
   tokenAddresses: string[];
