@@ -6,9 +6,9 @@ import useWeb3 from '@/services/web3/useWeb3';
 import useApp from '@/composables/useApp';
 import useTokens from '@/composables/useTokens';
 import { masterChefContractsService } from '@/beethovenx/services/farm/master-chef-contracts.service';
-import { farmSubgraphClient } from '@/beethovenx/services/subgraph/farm-subgraph.client';
 import { FarmUser } from '@/beethovenx/services/subgraph/subgraph-types';
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
+import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
 
 export default function useAllFarmsForUserQuery(
   options: QueryObserverOptions<FarmUser[]> = {}
@@ -32,19 +32,19 @@ export default function useAllFarmsForUserQuery(
 
   const queryFn = async () => {
     try {
-      const userFarms = await farmSubgraphClient.getUserDataForAllFarms(
+      const userFarms = await beethovenxService.getUserDataForAllFarms(
         account.value
       );
       const decoratedUserFarms: FarmUser[] = [];
 
       for (const userFarm of userFarms) {
         const pendingBeets = await masterChefContractsService.masterChef.getPendingBeetsForFarm(
-          userFarm.pool.id,
+          userFarm.farmId,
           account.value
         );
 
         const pendingRewardToken = await masterChefContractsService.hndRewarder.getPendingReward(
-          userFarm.pool.id,
+          userFarm.farmId,
           account.value
         );
 
@@ -52,6 +52,9 @@ export default function useAllFarmsForUserQuery(
 
         decoratedUserFarms.push({
           ...userFarm,
+          amount: parseFloat(userFarm.amount),
+          rewardDebt: parseFloat(userFarm.rewardDebt),
+          beetsHarvested: parseFloat(userFarm.beetsHarvested),
           pendingBeets,
           pendingBeetsValue: pendingBeets * beetsPrice.value,
           pendingRewardToken,

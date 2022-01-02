@@ -57,6 +57,7 @@ interface Scalars {
   UUID: string;
   BigDecimal: string;
   BigInt: string;
+  Bytes: string;
 }
 
 export interface GqlUserPoolData {
@@ -229,4 +230,54 @@ export interface GqlBalancerPoolToken {
   __typename?: 'GqlBalancerPoolToken';
   address: Scalars['String'];
   balance: Scalars['BigDecimal'];
+}
+
+export interface GqlBeetsFarm {
+  __typename?: 'GqlBeetsFarm';
+  allocPoint: Scalars['Int'];
+  block: Scalars['BigInt'];
+  id: Scalars['ID'];
+  lastRewardBlock: Scalars['BigInt'];
+  masterChef: GqlBeetsMasterChef;
+  pair: Scalars['Bytes'];
+  rewarder?: GqlBeetsRewarder;
+  slpBalance: Scalars['BigInt'];
+  timestamp: Scalars['BigInt'];
+  userCount: Scalars['BigInt'];
+}
+
+export interface GqlBeetsFarmUser {
+  __typename?: 'GqlBeetsFarmUser';
+  address: Scalars['Bytes'];
+  amount: Scalars['BigInt'];
+  beetsHarvested: Scalars['BigInt'];
+  farmId: Scalars['ID'];
+  id: Scalars['ID'];
+  rewardDebt: Scalars['BigInt'];
+  timestamp: Scalars['BigInt'];
+}
+
+export interface GqlBeetsMasterChef {
+  __typename?: 'GqlBeetsMasterChef';
+  beetsPerBlock: Scalars['BigInt'];
+  id: Scalars['ID'];
+  totalAllocPoint: Scalars['Int'];
+}
+
+export interface GqlBeetsProtocolData {
+  __typename?: 'GqlBeetsProtocolData';
+  beetsPrice: Scalars['BigDecimal'];
+  circulatingSupply: Scalars['BigDecimal'];
+  marketCap: Scalars['BigDecimal'];
+  poolCount: Scalars['BigInt'];
+  totalLiquidity: Scalars['BigDecimal'];
+  totalSwapFee: Scalars['BigDecimal'];
+  totalSwapVolume: Scalars['BigDecimal'];
+}
+
+export interface GqlBeetsRewarder {
+  __typename?: 'GqlBeetsRewarder';
+  id: Scalars['ID'];
+  rewardPerSecond: Scalars['BigInt'];
+  rewardToken: Scalars['Bytes'];
 }

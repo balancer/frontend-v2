@@ -40,7 +40,7 @@ export function useFreshBeets() {
 
   const userFbeetsFarm = computed(() =>
     allFarmsForUser.value?.find(
-      userFarm => userFarm.pool.id === appNetworkConfig.fBeets.farmId
+      userFarm => userFarm.farmId === appNetworkConfig.fBeets.farmId
     )
   );
   const totalSupply = computed(

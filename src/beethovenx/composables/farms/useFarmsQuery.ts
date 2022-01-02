@@ -4,7 +4,7 @@ import { UseInfiniteQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/beethovenx/constants/queryKeys';
 import useApp from '@/composables/useApp';
 import { Farm } from '@/beethovenx/services/subgraph/subgraph-types';
-import { farmSubgraphClient } from '@/beethovenx/services/subgraph/farm-subgraph.client';
+import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
 
 type FarmsQueryResponse = {
   farms: Farm[];
@@ -25,11 +25,9 @@ export default function useFarmsQuery(
 
   // METHODS
   const queryFn = async () => {
-    const data = await farmSubgraphClient.getFarms();
+    const farms = await beethovenxService.getBeetsFarms();
 
-    return {
-      farms: data.farms
-    };
+    return { farms };
   };
 
   const queryOptions = reactive({

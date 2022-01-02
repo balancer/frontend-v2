@@ -3,6 +3,8 @@ import axios from 'axios';
 import {
   CreateLgeTypes,
   GqlBalancerPoolSnapshot,
+  GqlBeetsFarm,
+  GqlBeetsFarmUser,
   GqlBeetsProtocolData,
   GqlHistoricalTokenPrice,
   GqlLge,
@@ -21,6 +23,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { LgeData } from '@/beethovenx/lbp/lbp-types';
 import { omit } from 'lodash';
+import { Farm } from '@/beethovenx/services/subgraph/subgraph-types';
 
 export type Price = { [fiat: string]: number };
 export type TokenPrices = { [address: string]: Price };
@@ -298,6 +301,107 @@ export default class BeethovenxService {
     }>(query);
 
     return poolSnapshots;
+  }
+
+  public async getAverageBlockTime(): Promise<number> {
+    const query = jsonToGraphQLQuery({
+      query: { blocksGetAverageBlockTime: true }
+    });
+
+    const { blocksGetAverageBlockTime } = await this.get<{
+      blocksGetAverageBlockTime: number;
+    }>(query);
+
+    return blocksGetAverageBlockTime;
+  }
+
+  public async getBeetsFarms(): Promise<GqlBeetsFarm[]> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetBeetsFarms: {
+          id: true,
+          pair: true,
+          allocPoint: true,
+          slpBalance: true,
+          masterChef: {
+            id: true,
+            totalAllocPoint: true,
+            beetsPerBlock: true
+          },
+          rewarder: {
+            id: true,
+            rewardToken: true,
+            rewardPerSecond: true
+          }
+        }
+      }
+    });
+
+    const { beetsGetBeetsFarms } = await this.get<{
+      beetsGetBeetsFarms: GqlBeetsFarm[];
+    }>(query);
+
+    return beetsGetBeetsFarms;
+  }
+
+  public async getUserDataForFarm(
+    farmId: string,
+    userAddress: string
+  ): Promise<GqlBeetsFarmUser> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetUserDataForFarm: {
+          __args: { farmId },
+          id: true,
+          address: true,
+          amount: true,
+          beetsHarvested: true,
+          farmId: true,
+          rewardDebt: true,
+          timestamp: true
+        }
+      }
+    });
+
+    const { beetsGetUserDataForFarm } = await this.get<{
+      beetsGetUserDataForFarm: GqlBeetsFarmUser | null;
+    }>(query, userAddress);
+
+    return beetsGetUserDataForFarm
+      ? beetsGetUserDataForFarm
+      : {
+          id: '',
+          address: '',
+          amount: '0',
+          beetsHarvested: '0',
+          rewardDebt: '0',
+          timestamp: '',
+          farmId
+        };
+  }
+
+  public async getUserDataForAllFarms(
+    userAddress: string
+  ): Promise<GqlBeetsFarmUser[]> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetUserDataForAllFarms: {
+          id: true,
+          address: true,
+          amount: true,
+          beetsHarvested: true,
+          farmId: true,
+          rewardDebt: true,
+          timestamp: true
+        }
+      }
+    });
+
+    const { beetsGetUserDataForAllFarms } = await this.get<{
+      beetsGetUserDataForAllFarms: GqlBeetsFarmUser[];
+    }>(query, userAddress);
+
+    return beetsGetUserDataForAllFarms;
   }
 
   private get userProfileDataFragment() {

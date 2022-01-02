@@ -1,7 +1,7 @@
 import { reactive } from 'vue';
 import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
-import { blockSubgraphClient } from '@/beethovenx/services/subgraph/block-subraph.client';
+import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
 
 /**
  * TYPES
@@ -13,9 +13,12 @@ export default function useAverageBlockTimeQuery(
   options: UseQueryOptions<number> = {}
 ) {
   const queryFn = async () => {
-    console.log('Fetching average block time');
+    console.log(
+      'Fetching average block time',
+      await beethovenxService.getAverageBlockTime()
+    );
 
-    return await blockSubgraphClient.getAverageBlockTime();
+    return beethovenxService.getAverageBlockTime();
   };
 
   const queryOptions = reactive({
