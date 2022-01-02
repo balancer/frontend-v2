@@ -16,7 +16,7 @@ import {
   UserPortfolioData,
   UserTokenData
 } from './beethovenx-types';
-import { getAddress } from '@ethersproject/address';
+import { getAddress, isAddress } from '@ethersproject/address';
 import { keyBy } from 'lodash';
 import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
@@ -90,7 +90,9 @@ export default class BeethovenxService {
     const result: TokenPrices = {};
 
     for (const tokenPrice of response.tokenPrices) {
-      result[getAddress(tokenPrice.address)] = { usd: tokenPrice.price };
+      if (isAddress(tokenPrice.address)) {
+        result[getAddress(tokenPrice.address)] = { usd: tokenPrice.price };
+      }
     }
 
     return result;
