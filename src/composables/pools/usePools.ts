@@ -170,11 +170,19 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     () => poolsQuery.isFetchingNextPage?.value
   );
 
-  const communityPools = computed(() =>
-    poolsWithFarms.value?.filter(
-      pool => !beethovenxConfig.value.incentivizedPools.includes(pool.id)
-    )
-  );
+  const communityPools = computed(() => {
+    return poolsTokenList.value.length > 0
+      ? poolsWithFarms.value?.filter(pool => {
+          return (
+            poolsTokenList.value.every((selectedToken: string) =>
+              pool.tokenAddresses.includes(selectedToken)
+            ) && !beethovenxConfig.value.incentivizedPools.includes(pool.id)
+          );
+        })
+      : poolsWithFarms?.value.filter(
+          pool => !beethovenxConfig.value.incentivizedPools.includes(pool.id)
+        );
+  });
 
   const beethovenPools = computed(() => {
     return poolsTokenList.value.length > 0

@@ -18,12 +18,8 @@ import {
 } from './beethovenx-types';
 import { getAddress, isAddress } from '@ethersproject/address';
 import { keyBy } from 'lodash';
-import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { LgeData } from '@/beethovenx/lbp/lbp-types';
-import { omit } from 'lodash';
-import { Farm } from '@/beethovenx/services/subgraph/subgraph-types';
 
 export type Price = { [fiat: string]: number };
 export type TokenPrices = { [address: string]: Price };

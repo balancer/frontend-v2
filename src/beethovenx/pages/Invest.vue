@@ -120,7 +120,8 @@ export default defineComponent({
       poolsQuery,
       isLoadingFarms,
       communityPools,
-      beethovenPools
+      beethovenPools,
+      pools
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
     const { beethovenxConfig, beethovenxConfigLoading } = useBeethovenxConfig();
@@ -140,7 +141,7 @@ export default defineComponent({
     );
 
     const featuredPools = computed(() => {
-      const filtered = (beethovenPools.value || []).filter(pool =>
+      const filtered = (pools.value || []).filter(pool =>
         beethovenxConfig.value.featuredPools.includes(pool.id)
       );
 
