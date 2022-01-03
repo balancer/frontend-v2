@@ -52,7 +52,7 @@ export default function useAllFarmsForUserQuery(
 
         decoratedUserFarms.push({
           ...userFarm,
-          amount: parseFloat(userFarm.amount),
+          amount: userFarm.amount,
           rewardDebt: parseFloat(userFarm.rewardDebt),
           beetsHarvested: parseFloat(userFarm.beetsHarvested),
           pendingBeets,

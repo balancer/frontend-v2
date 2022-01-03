@@ -55,7 +55,7 @@ export default function useFarmUserQuery(
 
       return {
         ...userData,
-        amount: parseFloat(userData.amount),
+        amount: userData.amount,
         rewardDebt: parseFloat(userData.rewardDebt),
         beetsHarvested: parseFloat(userData.beetsHarvested),
         pendingBeets,

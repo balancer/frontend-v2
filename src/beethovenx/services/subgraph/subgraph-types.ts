@@ -21,7 +21,7 @@ export interface FarmUser {
   id: string;
   pendingBeets: number;
   pendingBeetsValue: number;
-  amount: number;
+  amount: string;
   rewardDebt: number;
   beetsHarvested: number;
   farmId: string;
