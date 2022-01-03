@@ -121,7 +121,7 @@ export default defineComponent({
       isLoadingFarms,
       communityPools,
       beethovenPools,
-      pools
+      poolsWithFarms
     } = usePools(selectedTokens);
     const { addAlert, removeAlert } = useAlerts();
     const { beethovenxConfig, beethovenxConfigLoading } = useBeethovenxConfig();
@@ -141,7 +141,7 @@ export default defineComponent({
     );
 
     const featuredPools = computed(() => {
-      const filtered = (pools.value || []).filter(pool =>
+      const filtered = (poolsWithFarms.value || []).filter(pool =>
         beethovenxConfig.value.featuredPools.includes(pool.id)
       );
 
