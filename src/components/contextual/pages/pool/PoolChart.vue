@@ -93,8 +93,10 @@ const history = computed(() => {
         liquidity
       };
     })
-    .filter(({ totalShares, prices, amounts }) => {
+    .filter(({ totalShares, prices, amounts, liquidity }) => {
       if (!supportsPoolLiquidity.value && prices.length === 0) {
+        return false;
+      } else if (supportsPoolLiquidity.value && liquidity === 0) {
         return false;
       }
       return totalShares > 0 && amounts.length > 0;

@@ -280,7 +280,10 @@ export default function usePoolCreation() {
 
   function sortSeedTokens() {
     poolCreationState.seedTokens.sort((tokenA, tokenB) => {
-      return tokenA.tokenAddress > tokenB.tokenAddress ? 1 : -1;
+      return tokenA.tokenAddress.toLowerCase() >
+        tokenB.tokenAddress.toLowerCase()
+        ? 1
+        : -1;
     });
   }
 
