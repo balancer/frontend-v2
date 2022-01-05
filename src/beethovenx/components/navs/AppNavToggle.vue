@@ -26,13 +26,13 @@
     >
       Launch
     </router-link>
-    <!--    <router-link
+    <router-link
       :to="{ name: 'my-portfolio' }"
       :class="['toggle-link px-4', { [activeClasses]: isPortfolioPage }]"
       v-if="isLoggedIn"
     >
       My Portfolio
-    </router-link>-->
+    </router-link>
   </div>
 </template>
 
