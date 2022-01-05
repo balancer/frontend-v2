@@ -12,7 +12,7 @@
         </BalTooltip>
       </h4>
       <div class="text-gray-500 mb-2">{{ dateLabel }}</div>
-      <template v-if="data.length > 2">
+      <!--      <template v-if="data.length > 2">
         <ECharts
           ref="chartInstance"
           class="w-full portfolio-value-line-chart"
@@ -20,8 +20,8 @@
           autoresize
           :update-options="{ replaceMerge: 'series' }"
         />
-      </template>
-      <BalBlankSlate v-else :style="{ height: '562px' }">
+      </template>-->
+      <BalBlankSlate :style="{ height: '562px' }">
         <BalIcon name="bar-chart" />
         <span class="dark:text-white">
           {{ $t('insufficientData') }}
@@ -62,7 +62,7 @@ export default defineComponent({
     }
   },
   components: {
-    ECharts
+    //ECharts
   },
   setup(props) {
     const chartInstance = ref<echarts.ECharts>();
