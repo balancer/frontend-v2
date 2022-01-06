@@ -2,9 +2,10 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers, { APR_THRESHOLD } from '@/composables/useNumbers';
+import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { isStablePhantom, isWstETH } from '@/composables/usePool';
+import { APR_THRESHOLD } from '@/constants/poolAPR';
 
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
