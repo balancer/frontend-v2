@@ -32,7 +32,7 @@ export default class MasterChef {
     ]);
     result = await masterChefMultiCaller.execute(result);
 
-    const pendingBeets = result.pendingBeets.toString();
+    const pendingBeets = result.pendingBeets?.toString();
 
     return pendingBeets
       ? scale(new BigNumber(pendingBeets), -18).toNumber()
