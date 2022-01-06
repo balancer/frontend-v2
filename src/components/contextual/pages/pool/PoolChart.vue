@@ -66,6 +66,8 @@ const history = computed(() => {
   const pricesTimestamps = Object.keys(props.historicalPrices);
   const snapshotsTimestamps = Object.keys(props.snapshots);
 
+  if (supportsPoolLiquidity.value) return [];
+
   if (snapshotsTimestamps.length === 0) {
     return [];
   }
