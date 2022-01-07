@@ -123,7 +123,7 @@ const fundsRaisedValue = computed(
         <div>{{ props.lge.startDate }}</div>
       </div>
       <div>
-        <div class="font-medium">Start Date & Time</div>
+        <div class="font-medium">End Date & Time</div>
         <div>{{ props.lge.endDate }}</div>
       </div>
     </div>
