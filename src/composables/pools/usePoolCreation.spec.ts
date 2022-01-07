@@ -76,6 +76,14 @@ describe('usePoolCreation', () => {
       const symbol = getPoolSymbol();
       expect(symbol).toEqual('67MKR-33WETH');
     });
+
+    it('Should fail if there is no symbol', () => {
+      const poolTokens = [];
+      updateTokenWeights(poolTokens);
+
+      const symbol = getPoolSymbol();
+      expect(symbol).toEqual('');
+    });
   });
 
   describe('getScaledAmounts', () => {

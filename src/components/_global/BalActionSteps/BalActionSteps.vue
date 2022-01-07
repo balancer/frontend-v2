@@ -27,6 +27,8 @@ import useTransactionErrors from '@/composables/useTransactionErrors';
  */
 type Props = {
   actions: TransactionActionInfo[];
+  disabled: boolean;
+  errorMessage: string;
 };
 
 /**
@@ -183,6 +185,7 @@ async function handleTransaction(
     />
     <BalBtn
       v-if="!lastActionState.confirmed"
+      :disabled="props.disabled"
       color="gradient"
       class="mt-4"
       :loading="currentAction.pending"
@@ -192,5 +195,6 @@ async function handleTransaction(
     >
       {{ currentAction.label }}
     </BalBtn>
+    <BalTooltip :text="props.errorMessage" />
   </div>
 </template>
