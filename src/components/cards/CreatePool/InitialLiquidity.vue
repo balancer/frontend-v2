@@ -22,13 +22,7 @@ const cardWrapper = ref<HTMLElement>();
  * COMPOSBALES
  */
 const { userNetworkConfig } = useWeb3();
-const {
-  balances,
-  balanceFor,
-  priceFor,
-  nativeAsset,
-  wrappedNativeAsset
-} = useTokens();
+const { balanceFor, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum } = useNumbers();
 const {
   seedTokens,
