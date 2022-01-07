@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { isStablePhantom, isWstETH } from '@/composables/usePool';
+import { APR_THRESHOLD } from '@/constants/poolAPR';
 
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 import { bnum } from '@/lib/utils';
@@ -35,6 +36,9 @@ const lmBreakdown = computed(
   () => props.pool.dynamic.apr.liquidityMiningBreakdown
 );
 
+const validAPR = computed(
+  () => Number(props.pool.dynamic.apr) <= APR_THRESHOLD
+);
 const lmTokens = computed(() => getTokens(Object.keys(lmBreakdown.value)));
 
 const lmMultiRewardPool = computed(
@@ -67,7 +71,7 @@ const thirdPartyAPRLabel = computed(() => {
 </script>
 
 <template v-slot:aprCell="pool">
-  <BalTooltip width="auto" noPad>
+  <BalTooltip width="auto" noPad v-if="validAPR">
     <template v-slot:activator>
       <div class="ml-1">
         <StarsIcon
