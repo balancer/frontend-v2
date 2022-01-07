@@ -22,7 +22,13 @@ const cardWrapper = ref<HTMLElement>();
  * COMPOSBALES
  */
 const { userNetworkConfig } = useWeb3();
-const { balanceFor, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
+const {
+  balances,
+  balanceFor,
+  priceFor,
+  nativeAsset,
+  wrappedNativeAsset
+} = useTokens();
 const { fNum } = useNumbers();
 const {
   seedTokens,
@@ -59,8 +65,8 @@ const areAmountsMaxed = computed(() => {
 const isExceedingWalletBalance = computed(() => {
   // need to perform rounding here as JS cuts off those
   // really long numbers which makes it impossible to compare
-  const isExceeding = seedTokens.value.some(t =>
-    bnum(t.amount).gt(balanceFor(t.tokenAddress))
+  const isExceeding = tokenAddresses.value.some((t, i) =>
+    bnum(seedTokens.value[i].amount).gt(balanceFor(t))
   );
   return isExceeding;
 });
