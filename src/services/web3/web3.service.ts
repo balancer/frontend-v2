@@ -76,6 +76,10 @@ export default class Web3Service {
     const signer = this.userProvider.value.getSigner();
     const contract = new Contract(contractAddress, abi, signer);
 
+    console.log('Contract: ', contractAddress);
+    console.log('Action: ', action);
+    console.log('Params: ', params);
+
     try {
       const gasPriceSettings = await gasPriceService.getGasSettingsForContractCall(
         contract,
