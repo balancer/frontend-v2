@@ -6,10 +6,30 @@ import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
 
+export enum WithdrawalError {
+  SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT
+}
+
+type WithdrawalState = {
+  isProportional: boolean;
+  tokenOut: string;
+  validInput: boolean;
+  highPriceImpactAccepted: boolean;
+  submitting: boolean;
+  sorReady: boolean;
+  slider: {
+    val: number;
+    max: number;
+    min: number;
+    interval: number;
+  };
+  error: WithdrawalError | null;
+};
+
 /**
  * STATE
  */
-const state = reactive({
+const state = reactive<WithdrawalState>({
   isProportional: true,
   tokenOut: '',
   validInput: true,
@@ -21,8 +41,25 @@ const state = reactive({
     max: 1000,
     min: 0,
     interval: 1
-  }
+  },
+  error: null
 });
+
+/**
+ * METHODS
+ */
+export function setError(error: WithdrawalError | null): void {
+  state.error = error;
+}
+
+export function parseError(error: WithdrawalError): string {
+  switch (error) {
+    case WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT:
+      return 'Min BPT error';
+    default:
+      return 'Something went wrong';
+  }
+}
 
 export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
   /**
@@ -69,6 +106,8 @@ export default function useWithdrawalState(pool: Ref<FullPool | undefined>) {
     tokenOutIndex,
     batchRelayerApproval,
     // methods
-    maxSlider
+    maxSlider,
+    setError,
+    parseError
   };
 }
