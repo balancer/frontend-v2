@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import HomePage from '@/beethovenx/pages/Invest.vue';
 import PoolPage from '@/beethovenx/pages/pool/_id.vue';
 import PoolInvestPage from '@/beethovenx/pages/pool/invest.vue';
 import PoolWithdrawPage from '@/beethovenx/pages/pool/withdraw.vue';
@@ -11,9 +10,11 @@ import FreshBeets from '@/beethovenx/pages/FreshBeets.vue';
 import LbpCreate from '@/beethovenx/pages/lbp/LgeCreate.vue';
 import LgeList from '@/beethovenx/pages/lbp/LgeList.vue';
 import LbpDetail from '@/beethovenx/pages/lbp/LgeDetail.vue';
+import HomePage from '@/beethovenx/pages/Home.vue';
+import InvestPage from '@/beethovenx/pages/Invest.vue';
 
 const routes: RouteRecordRaw[] = [
-  { path: '/', name: 'home', redirect: '/trade' },
+  { path: '/', name: 'home', component: HomePage },
   {
     path: '/trade/:assetIn?/:assetOut?',
     name: 'trade',
@@ -47,7 +48,7 @@ const routes: RouteRecordRaw[] = [
     name: 'liquidity-mining',
     component: LiquidityMiningPage
   },
-  { path: '/pools', name: 'pools', component: HomePage },
+  { path: '/pools', name: 'pools', component: InvestPage },
   { path: '/pool-create', name: 'pool-create', component: PoolCreate },
   { path: '/my-portfolio', name: 'my-portfolio', component: Portfolio },
   { path: '/stake', name: 'stake', component: FreshBeets },

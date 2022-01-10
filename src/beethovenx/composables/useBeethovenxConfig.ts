@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import useBeethovenxConfigQuery from '@/beethovenx/composables/queries/useBeethovenxConfigQuery';
-import { BeethovenxConfig } from '@/beethovenx/services/beethovenx/beethovenx.service';
+import { GqlBeetsConfig } from '@/beethovenx/services/beethovenx/beethovenx-types';
 
 export default function useBeethovenxConfig() {
   const beethovenxConfigQuery = useBeethovenxConfigQuery();
@@ -12,14 +12,16 @@ export default function useBeethovenxConfig() {
   );
 
   const beethovenxConfig = computed(
-    (): BeethovenxConfig =>
+    (): GqlBeetsConfig =>
       beethovenxConfigQuery.data.value
         ? beethovenxConfigQuery.data.value
         : {
             incentivizedPools: [],
             blacklistedPools: [],
             pausedPools: [],
-            featuredPools: []
+            featuredPools: [],
+            homeFeaturedPools: [],
+            homeNewsItems: []
           }
   );
 

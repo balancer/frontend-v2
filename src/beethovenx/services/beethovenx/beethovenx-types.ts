@@ -209,6 +209,8 @@ export interface GqlBeetsProtocolData {
   totalLiquidity: Scalars['BigDecimal'];
   totalSwapFee: Scalars['BigDecimal'];
   totalSwapVolume: Scalars['BigDecimal'];
+  swapFee24h: Scalars['BigDecimal'];
+  swapVolume24h: Scalars['BigDecimal'];
 }
 
 export interface GqlBalancerPoolSnapshot {
@@ -264,20 +266,35 @@ export interface GqlBeetsMasterChef {
   totalAllocPoint: Scalars['Int'];
 }
 
-export interface GqlBeetsProtocolData {
-  __typename?: 'GqlBeetsProtocolData';
-  beetsPrice: Scalars['BigDecimal'];
-  circulatingSupply: Scalars['BigDecimal'];
-  marketCap: Scalars['BigDecimal'];
-  poolCount: Scalars['BigInt'];
-  totalLiquidity: Scalars['BigDecimal'];
-  totalSwapFee: Scalars['BigDecimal'];
-  totalSwapVolume: Scalars['BigDecimal'];
-}
-
 export interface GqlBeetsRewarder {
   __typename?: 'GqlBeetsRewarder';
   id: Scalars['ID'];
   rewardPerSecond: Scalars['BigInt'];
   rewardToken: Scalars['Bytes'];
+}
+
+export interface GqlBeetsConfig {
+  __typename?: 'GqlBeetsConfig';
+  blacklistedPools: Array<Scalars['String']>;
+  featuredPools: Array<Scalars['String']>;
+  homeFeaturedPools: Array<GqlBeetsConfigFeaturedPool>;
+  homeNewsItems: Array<GqlBeetsConfigNewsItem>;
+  incentivizedPools: Array<Scalars['String']>;
+  pausedPools: Array<Scalars['String']>;
+}
+
+export interface GqlBeetsConfigFeaturedPool {
+  __typename?: 'GqlBeetsConfigFeaturedPool';
+  description?: Scalars['String'];
+  image: Scalars['String'];
+  poolId: Scalars['String'];
+}
+
+export interface GqlBeetsConfigNewsItem {
+  __typename?: 'GqlBeetsConfigNewsItem';
+  description: Scalars['String'];
+  image: Scalars['String'];
+  title: Scalars['String'];
+  url: Scalars['String'];
+  publishDate: Scalars['String'];
 }

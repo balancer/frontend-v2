@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   CreateLgeTypes,
   GqlBalancerPoolSnapshot,
+  GqlBeetsConfig,
   GqlBeetsFarm,
   GqlBeetsFarmUser,
   GqlBeetsProtocolData,
@@ -24,13 +25,6 @@ import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 export type Price = { [fiat: string]: number };
 export type TokenPrices = { [address: string]: Price };
 export type HistoricalPrices = { [timestamp: string]: number[] };
-
-export interface BeethovenxConfig {
-  incentivizedPools: string[];
-  pausedPools: string[];
-  blacklistedPools: string[];
-  featuredPools: string[];
-}
 
 export default class BeethovenxService {
   private readonly url: string;
@@ -135,12 +129,33 @@ export default class BeethovenxService {
     return result;
   }
 
-  public async getBeethovenxConfig(): Promise<BeethovenxConfig> {
-    const { data } = await axios.get<{ result: BeethovenxConfig }>(
-      this.configService.network.configSanityUrl
-    );
+  public async getBeethovenxConfig(): Promise<GqlBeetsConfig> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetConfig: {
+          incentivizedPools: true,
+          pausedPools: true,
+          blacklistedPools: true,
+          featuredPools: true,
+          homeFeaturedPools: {
+            poolId: true,
+            image: true,
+            description: true
+          },
+          homeNewsItems: {
+            title: true,
+            url: true,
+            image: true,
+            description: true,
+            publishDate: true
+          }
+        }
+      }
+    });
 
-    return data.result;
+    const response = await this.get<{ beetsGetConfig: GqlBeetsConfig }>(query);
+
+    return response.beetsGetConfig;
   }
 
   public async createLge(
@@ -257,7 +272,9 @@ export default class BeethovenxService {
           totalLiquidity: true,
           totalSwapVolume: true,
           poolCount: true,
-          circulatingSupply: true
+          circulatingSupply: true,
+          swapFee24h: true,
+          swapVolume24h: true
         }
       }
     });
