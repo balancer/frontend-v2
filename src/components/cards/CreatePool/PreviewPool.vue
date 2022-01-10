@@ -84,6 +84,10 @@ const tokenAmounts = computed((): string[] => {
   return getScaledAmounts();
 });
 
+const isCreateDisabled = computed(() => {
+  return poolSymbol.value == '' || poolName.value == '';
+});
+
 /**
  * METHODS
  */
@@ -248,6 +252,8 @@ function getSwapFeeManager() {
         </BalAlert>
       </AnimatePresence> -->
         <CreateActions
+          :createDisabled="isCreateDisabled"
+          :errorMessage="t('missingPoolNameOrSymbol')"
           :tokenAddresses="tokenAddresses"
           :amounts="tokenAmounts"
           @success="handleSuccess"
