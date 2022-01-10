@@ -58,7 +58,7 @@ function handleRowClick(pool: Pool) {
         <div class="text-xl font-medium">
           {{ featuredPool.pool.name }}
         </div>
-        <div class="mt-2 mb-6 flex-1">
+        <div class="mt-2 mb-6 flex-1 whitespace-pre-line">
           {{ featuredPool.data.description }}
         </div>
         <template v-slot:footer>
