@@ -19,45 +19,62 @@ const route = useRoute();
 </template>
 
 <style scoped>
-h2,
-h3,
-p,
-ul,
-ol,
-em {
-  @apply pb-3;
-}
+
 .content-container {
   @apply w-full max-w-4xl px-4 md:p-8 lg:p-12 mx-auto py-8 bg-white dark:bg-gray-900;
   min-height: calc(100vh - 140px);
 }
-.subsection {
+
+.content-container >>> h1 {
+  @apply pb-6;
+}
+
+.content-container >>> h2,
+.content-container >>> h3,
+.content-container >>> p,
+.content-container >>> ul,
+.content-container >>> ol,
+.content-container >>> em {
+  @apply pb-3;
+}
+
+.content-container >>> .subsection {
   @apply mb-8;
 }
 
-h1,
-h2,
-h3 {
+.content-container >>> h1,
+.content-container >>> h2,
+.content-container >>> h3 {
   @apply font-body tracking-tight;
   font-variation-settings: 'wght' 500;
 }
 
-h3 {
+.content-container >>> h3 {
   @apply font-body tracking-tight;
   font-variation-settings: 'wght' 600;
 }
 
-li {
+.content-container >>> li {
   @apply list-disc ml-8 pb-2;
 }
 
-ol > li {
+.content-container >>> ol > li {
   @apply list-decimal;
 }
 
-em {
+.content-container >>> em {
   font-style: italic;
   font-variation-settings: 'ital' 1;
   font-synthesis: none;
+}
+
+.content-container >>> table,
+.content-container >>> th,
+.content-container >>> td {
+  @apply p-4 border-gray-500 border text-left align-top;
+}
+
+.content-container >>> table {
+  @apply mt-4 mb-8;
 }
 </style>

@@ -92,8 +92,12 @@
         as service providers and companies that help us service you better. When
         permitted or required by law, we may share information with additional
         third parties for purposes including response to legal process. As
-        applicable, please see our Privacy Policy for more information on how we
-        may share information with affiliates and third parties.
+        applicable, please see our
+        <router-link :to="{ name: 'privacy-policy' }">
+          <span className="link">Privacy Policy</span>
+        </router-link>
+        for more information on how we may share information with affiliates and
+        third parties.
       </p>
     </div>
   </div>
@@ -101,64 +105,10 @@
 
 <script>
 export default {
-  name: 'cookies-policy'
+  name: 'cookies-policy',
 };
 </script>
 
 <style scoped>
-h1 {
-  @apply pb-6;
-}
 
-h2,
-h3,
-p,
-ul,
-ol,
-em {
-  @apply pb-3;
-}
-.content-container {
-  @apply w-full max-w-4xl px-4 md:p-8 lg:p-12 mx-auto py-8 bg-white;
-  min-height: calc(100vh - 140px);
-}
-.subsection {
-  @apply mb-8;
-}
-
-h1,
-h2,
-h3 {
-  @apply font-body tracking-tight;
-  font-variation-settings: 'wght' 500;
-}
-
-h3 {
-  @apply font-body tracking-tight;
-  font-variation-settings: 'wght' 600;
-}
-
-li {
-  @apply list-disc ml-8 pb-2;
-}
-
-ol > li {
-  @apply list-decimal;
-}
-
-em {
-  font-style: italic;
-  font-variation-settings: 'ital' 1;
-  font-synthesis: none;
-}
-
-table,
-th,
-td {
-  @apply p-4 border-gray-500 border text-left align-top;
-}
-
-table {
-  @apply mt-4 mb-8;
-}
 </style>

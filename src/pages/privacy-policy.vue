@@ -41,9 +41,11 @@
         The Balancer Labs UI is not directed to children under the age of 16. If
         a parent or guardian becomes aware that his or her child has provided us
         with personal information without your consent, please contact us at
-        privacypolicy@balancer.finance. If we become aware that a child under
-        the age of 16 has provided us with personal information, we will take
-        reasonable efforts to delete such personal information.
+        <a class="link" href="mailto:privacypolicy@balancer.finance"
+          >privacypolicy@balancer.finance</a
+        >. If we become aware that a child under the age of 16 has provided us
+        with personal information, we will take reasonable efforts to delete
+        such personal information.
       </p>
 
       <h3>
@@ -73,8 +75,11 @@
           “pixel tags” or “clear GIFs”) are electronic images that we use on the
           UI to help deliver cookies, count visits, and understand usage and
           campaign effectiveness. For more information about cookies and how to
-          disable them, see our Cookies Policy and the Your Choices section
-          below.
+          disable them, see our
+          <router-link :to="{ name: 'cookies-policy' }">
+            <span className="link">Cookies Policy</span>
+          </router-link>
+          and the Your Choices section below.
         </li>
       </ul>
 
@@ -248,7 +253,12 @@
         Balancer Labs does not typically use any cookies. It reserves the
         ability to use them to affect the availability and functionality of the
         UI. For more information about cookies and how to disable them, see our
-        Cookies Policy.
+
+        <router-link :to="{ name: 'cookies-policy' }">
+          <span className="text-blue-500 hover:text-blue-800 transition-colors"
+            >Cookies Policy</span
+          > </router-link
+        >.
       </p>
     </div>
     <div class="subsection">
@@ -320,7 +330,7 @@
         Our Services do not respond to “Do Not Track” signals communicated by
         your browser. We do not knowingly retain or sell tracking information
         collected about your online activity. For more information about Do Not
-        Track, please visit www.allaboutdnt.com.
+        Track, please visit <a class="link" target="_blank" href="https://allaboutdnt.com/">www.allaboutdnt.com</a>.
       </p>
     </div>
     <div class="subsection">
@@ -375,7 +385,7 @@
       <p>
         If you have any questions about this Privacy Policy, please contact us
         at
-        <a href="mailto:privacypolicy@balancer.finance"
+        <a class="link" href="mailto:privacypolicy@balancer.finance"
           >privacypolicy@balancer.finance</a
         >.
       </p>
@@ -385,64 +395,10 @@
 
 <script>
 export default {
-  name: 'privacy-policy'
+  name: 'privacy-policy',
 };
 </script>
 
 <style scoped>
-h1 {
-  @apply pb-6;
-}
 
-h2,
-h3,
-p,
-ul,
-ol,
-em {
-  @apply pb-3;
-}
-.content-container {
-  @apply w-full max-w-4xl px-4 md:p-8 lg:p-12 mx-auto py-8 bg-white;
-  min-height: calc(100vh - 140px);
-}
-.subsection {
-  @apply mb-8;
-}
-
-h1,
-h2,
-h3 {
-  @apply font-body tracking-tight;
-  font-variation-settings: 'wght' 500;
-}
-
-h3 {
-  @apply font-body tracking-tight;
-  font-variation-settings: 'wght' 600;
-}
-
-li {
-  @apply list-disc ml-8 pb-2;
-}
-
-ol > li {
-  @apply list-decimal;
-}
-
-em {
-  font-style: italic;
-  font-variation-settings: 'ital' 1;
-  font-synthesis: none;
-}
-
-table,
-th,
-td {
-  @apply p-4 border-gray-500 border text-left align-top;
-}
-
-table {
-  @apply mt-4 mb-8;
-}
 </style>

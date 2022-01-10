@@ -61,13 +61,13 @@
         you agree that we have provided you with sufficient notice of such
         change. Our
         <router-link :to="{ name: 'privacy-policy' }">
-          <span className="text-blue-500 hover:text-blue-800 transition-colors"
+          <span className="link"
             >Privacy Policy</span
           >
         </router-link>
         and
         <router-link :to="{ name: 'cookies-policy' }">
-          <span className="text-blue-500 hover:text-blue-800 transition-colors"
+          <span className="link"
             >Cookies Policy</span
           >
         </router-link>
@@ -365,7 +365,7 @@
         you. You can find more information about how we will process your
         personal information in our
         <router-link :to="{ name: 'privacy-policy' }">
-          <span className="text-blue-500 hover:text-blue-800 transition-colors"
+          <span className="link"
             >Privacy Policy</span
           > </router-link
         >.
@@ -374,7 +374,7 @@
         When you use the Site, we may collect information about your computer
         and your interaction with the Site. See our
         <router-link :to="{ name: 'cookies-policy' }">
-          <span className="text-blue-500 hover:text-blue-800 transition-colors"
+          <span className="link"
             >Cookies Policy</span
           >
         </router-link>
@@ -571,10 +571,9 @@
         Balancer Labs is a company incorporated in Estonia. Please contact us if
         you have any questions about these Terms or other topics, by sending an
         email to
-        <a href="mailto:termsofuse@balancer.finance"
+        <a class="link" href="mailto:termsofuse@balancer.finance"
           >termsofuse@balancer.finance</a
-        >
-        .
+        >.
       </p>
     </div>
   </div>
@@ -587,59 +586,5 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-  @apply pb-6;
-}
 
-h2,
-h3,
-p,
-ul,
-ol,
-em {
-  @apply pb-3;
-}
-.content-container {
-  @apply w-full max-w-4xl px-4 md:p-8 lg:p-12 mx-auto py-8 bg-white;
-  min-height: calc(100vh - 140px);
-}
-.subsection {
-  @apply mb-8;
-}
-
-h1,
-h2,
-h3 {
-  @apply font-body tracking-tight;
-  font-variation-settings: 'wght' 500;
-}
-
-h3 {
-  @apply font-body tracking-tight;
-  font-variation-settings: 'wght' 600;
-}
-
-li {
-  @apply list-disc ml-8 pb-2;
-}
-
-ol > li {
-  @apply list-decimal;
-}
-
-em {
-  font-style: italic;
-  font-variation-settings: 'ital' 1;
-  font-synthesis: none;
-}
-
-table,
-th,
-td {
-  @apply p-4 border-gray-500 border text-left align-top;
-}
-
-table {
-  @apply mt-4 mb-8;
-}
 </style>

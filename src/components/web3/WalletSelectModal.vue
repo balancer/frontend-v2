@@ -9,14 +9,14 @@
 
       <router-link :to="{ name: 'terms-of-use' }" target="_blank">
         <span
-          className="text-blue-500 hover:text-blue-800 focus:text-blue-800 transition-all hover:underline focus:underline"
+          className="link"
           >Terms of Use</span
         >,
       </router-link>
 
       <router-link :to="{ name: 'cookies-policy' }" target="_blank">
         <span
-          className="text-blue-500 hover:text-blue-800 focus:text-blue-800 transition-all hover:underline focus:underline"
+          className="link"
           >Cookies Policy</span
         >
         and
@@ -24,7 +24,7 @@
 
       <router-link :to="{ name: 'privacy-policy' }" target="_blank">
         <span
-          className="text-blue-500 hover:text-blue-800 focus:text-blue-800 transition-all hover:underline focus:underline"
+          className="link"
           >Privacy Policy</span
         >.
       </router-link>
