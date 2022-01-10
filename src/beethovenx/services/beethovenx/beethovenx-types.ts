@@ -281,6 +281,7 @@ export interface GqlBeetsConfig {
   homeNewsItems: Array<GqlBeetsConfigNewsItem>;
   incentivizedPools: Array<Scalars['String']>;
   pausedPools: Array<Scalars['String']>;
+  poolFilters: Array<GqlBeetsConfigPoolFilterItem>;
 }
 
 export interface GqlBeetsConfigFeaturedPool {
@@ -297,4 +298,11 @@ export interface GqlBeetsConfigNewsItem {
   title: Scalars['String'];
   url: Scalars['String'];
   publishDate: Scalars['String'];
+}
+
+export interface GqlBeetsConfigPoolFilterItem {
+  __typename?: 'GqlBeetsConfigPoolFilterItem';
+  id: Scalars['ID'];
+  pools: Array<Scalars['String']>;
+  title: Scalars['String'];
 }

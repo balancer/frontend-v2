@@ -148,6 +148,11 @@ export default class BeethovenxService {
             image: true,
             description: true,
             publishDate: true
+          },
+          poolFilters: {
+            id: true,
+            title: true,
+            pools: true
           }
         }
       }

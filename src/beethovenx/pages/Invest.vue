@@ -23,22 +23,22 @@
     <TokenSearchInput
       v-model="selectedTokens"
       :loading="isLoadingPools"
+      :activeTab="activeTab"
+      :filters="beethovenxConfig.poolFilters"
+      :active-filters="activeFilters"
       @add="addSelectedToken"
       @remove="removeSelectedToken"
+      @toggleFilter="toggleFilter"
     />
     <PoolsTable
       v-if="activeTab === 'beethovenx-pools'"
       :isLoading="isLoadingPools"
-      :data="beethovenPools"
+      :data="filteredBeethovenPools"
       :noPoolsLabel="$t('noPoolsFound')"
       :isPaginated="false"
       :isLoadingMore="false"
       @loadMore="() => {}"
     />
-    <p class="px-4 lg:px-0 mb-3 mt-4" v-if="activeTab === 'community-pools'">
-      Investment pools created by the community. Please DYOR before investing in
-      any community pool.
-    </p>
     <PoolsTable
       v-if="activeTab === 'community-pools'"
       :isLoading="isLoadingPools"
@@ -78,7 +78,6 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 import { EXTERNAL_LINKS } from '@/constants/links';
-import TokenSearchInput from '@/components/inputs/TokenSearchInput.vue';
 import PoolsTable from '@/components/tables/PoolsTable/PoolsTable.vue';
 import usePools from '@/composables/pools/usePools';
 import useWeb3 from '@/services/web3/useWeb3';
@@ -86,8 +85,9 @@ import usePoolFilters from '@/composables/pools/usePoolFilters';
 import useAlerts, { AlertPriority, AlertType } from '@/composables/useAlerts';
 import BalTabs from '@/components/_global/BalTabs/BalTabs.vue';
 import InvestFeaturedPoolsCard from '@/beethovenx/components/pages/invest/InvestFeaturedPoolsCard.vue';
-import { orderBy } from 'lodash';
 import useBeethovenxConfig from '@/beethovenx/composables/useBeethovenxConfig';
+import TokenSearchInput from '@/beethovenx/components/pages/invest/TokenSearchInput.vue';
+import { flatten } from 'lodash';
 
 export default defineComponent({
   components: {
@@ -133,6 +133,7 @@ export default defineComponent({
     ];
 
     const activeTab = ref(tabs[0].value);
+    const activeFilters = ref<string[]>([]);
 
     const hideV1Links = computed(() => !isV1Supported);
 
@@ -148,8 +149,29 @@ export default defineComponent({
       return filtered.slice(0, 4);
     });
 
+    const filteredBeethovenPools = computed(() => {
+      if (activeFilters.value.length === 0 || !beethovenPools.value) {
+        return beethovenPools.value;
+      }
+
+      const selected = beethovenxConfig.value.poolFilters.filter(filter =>
+        activeFilters.value.includes(filter.id)
+      );
+      const poolIds = flatten(selected.map(selected => selected.pools));
+
+      return beethovenPools.value?.filter(pool => poolIds.includes(pool.id));
+    });
+
     function goToPoolCreate() {
       router.push({ name: 'pool-create' });
+    }
+
+    function toggleFilter(filterId: string) {
+      if (activeFilters.value.includes(filterId)) {
+        activeFilters.value = activeFilters.value.filter(id => id !== filterId);
+      } else {
+        activeFilters.value.push(filterId);
+      }
     }
 
     watch(poolsQuery.error, () => {
@@ -196,6 +218,10 @@ export default defineComponent({
       tabs,
       activeTab,
       featuredPools,
+      beethovenxConfig,
+      toggleFilter,
+      activeFilters,
+      filteredBeethovenPools,
 
       // constants
       EXTERNAL_LINKS

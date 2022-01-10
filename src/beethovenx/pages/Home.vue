@@ -1,24 +1,4 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import useWeb3 from '@/services/web3/useWeb3';
-import { fNum } from '@/composables/useNumbers';
-import { useFreshBeets } from '@/beethovenx/composables/stake/useFreshBeets';
-import { scaleDown } from '@/lib/utils';
-import { BigNumber } from 'bignumber.js';
-import FreshBeetsBalances from '@/beethovenx/components/pages/fbeets/FreshBeetsBalances.vue';
-import FreshBeetsHeader from '@/beethovenx/components/pages/fbeets/FreshBeetsHeader.vue';
-import FreshBeetsOldFarmAlert from '@/beethovenx/components/pages/fbeets/FreshBeetsOldFarmAlert.vue';
-import FreshBeetsStatCards from '@/beethovenx/components/pages/fbeets/FreshBeetsStatCards.vue';
-import BalTabs from '@/components/_global/BalTabs/BalTabs.vue';
-import useFarmUserQuery from '@/beethovenx/composables/farms/useFarmUserQuery';
-import FreshBeetsDepositSteps from '@/beethovenx/components/pages/fbeets/FreshBeetsDepositSteps.vue';
-import FreshBeetsWithdrawSteps from '@/beethovenx/components/pages/fbeets/FreshBeetsWithdrawSteps.vue';
-import useTokens from '@/composables/useTokens';
-import { getAddress } from '@ethersproject/address';
-import useFarmUser from '@/beethovenx/composables/farms/useFarmUser';
-import usePoolWithFarm from '@/beethovenx/composables/pool/usePoolWithFarm';
-import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
-import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import HomeDiscoverInvestmentPool from '@/beethovenx/components/pages/home/HomeDiscoverInvestmentPool.vue';
 import HomeNewsItems from '@/beethovenx/components/pages/home/HomeNewsItems.vue';
 </script>
