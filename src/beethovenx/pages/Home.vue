@@ -100,7 +100,7 @@ import HomeNewsItems from '@/beethovenx/components/pages/home/HomeNewsItems.vue'
         </div>
         <router-link
           :to="{ name: 'pools' }"
-          class="text-lg underline text-green-500"
+          class="text-lg underline text-green-500 hidden sm:inline-block"
         >
           Browse All
         </router-link>
