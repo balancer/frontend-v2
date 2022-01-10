@@ -29,7 +29,7 @@ import HomeNewsItems from '@/beethovenx/components/pages/home/HomeNewsItems.vue'
       <div class="mx-auto max-w-7xl">
         <div class="lg:grid lg:grid-cols-2 lg:gap-8">
           <div
-            class="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:px-0 lg:text-left lg:flex lg:items-center"
+            class="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:px-0 lg:text-left lg:flex lg:items-center pb-8 lg:pb-0"
           >
             <div class="lg:pb-12">
               <h1 class="hero-h1">
@@ -75,7 +75,9 @@ import HomeNewsItems from '@/beethovenx/components/pages/home/HomeNewsItems.vue'
               </div>
             </div>
           </div>
-          <div class="sm:mt-12 -mb-16 sm:-mb-48 lg:m-0 lg:relative flex">
+          <div
+            class="sm:mt-12 -mb-16 sm:-mb-48 lg:m-0 lg:relative hidden lg:flex"
+          >
             <div class="flex-1 hidden lg:block" />
             <div
               class="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 lg:max-w-none lg:px-0 items-right flex justify-end"
