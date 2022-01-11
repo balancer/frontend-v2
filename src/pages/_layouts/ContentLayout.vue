@@ -67,6 +67,10 @@ const route = useRoute();
   font-synthesis: none;
 }
 
+.content-container >>> em.font-medium {
+  font-variation-settings: 'ital' 1, 'wght' 500;
+}
+
 .content-container >>> table,
 .content-container >>> th,
 .content-container >>> td {

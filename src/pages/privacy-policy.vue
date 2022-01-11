@@ -4,7 +4,7 @@
       <h1>Balancer Labs OU Privacy&nbsp;Policy</h1>
       <p><em>Last Updated: November 16, 2021</em></p>
       <p>
-        <em>
+        <em class="font-medium">
           This Privacy Policy explains how Balancer Labs OU and its subsidiaries
           and affiliates (“Balancer Labs,” “we,” “our,” or “us”) collects, uses,
           and discloses information about you. This Privacy Policy applies when
@@ -14,7 +14,7 @@
         >
       </p>
       <p>
-        <em>
+        <em class="font-medium">
           We may change this Privacy Policy from time to time. If we make
           changes, we will notify you by revising the date at the top of this
           policy and, when material, we will provide you with additional notice

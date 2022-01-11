@@ -4,8 +4,8 @@
       <h1>Balancer Labs OU Terms of Use</h1>
       <p><em>Last updated: November 23, 2021</em></p>
       <p>
-        <em
-          >Please do not access this site where such access is prohibited by
+        <em class="font-medium">
+          Please do not access this site where such access is prohibited by
           applicable law. Please carefully read these terms of use before using
           the site. These terms apply to any person or entity accessing the site
           and by using the site you agree to be bound by them. The terms of use
@@ -573,7 +573,7 @@
 
 <script>
 export default {
-  name: 'terms-of-use'
+  name: 'terms-of-use',
 };
 </script>
 
