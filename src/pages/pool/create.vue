@@ -327,11 +327,10 @@ watch(hasUnknownToken, () => {
             title="Missing token prices"
             type="error"
           >
-            We couldn't find prices for one or more tokens you have chosen ({{
-              unknownTokenSymbolList
-            }}).<br />
+            {{ $t('createAPool.unknownTokenPriceAlert') }}
+            <br />
             <button class="font-semibold text-red-500 hover:text-red-800">
-              Add token price(s) ->
+              {{ $t('createAPool.addTokenPrice') }}
             </button>
           </BalAlert>
         </BalStack>

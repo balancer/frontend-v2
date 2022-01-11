@@ -112,6 +112,7 @@
     "copyAddress": "Copy address",
     "create": "Create",
     "createAPool": {
+        "addTokenPrice": "Add token price(s) ->",
         "alternativeFeeManagement": "Alternative fee management options",
         "arbTitle": "You could lose up to {0} ({1})",
         "arbReason": "Based on pricing information from CoinGecko, you’re vulnerable to losing funds to arbitraguers since the amounts you’re adding to the pool are not in proportion to the pool weights specified.",
@@ -121,6 +122,7 @@
         "customAddressInfo": "This could be another address you own an address of a smart contract. You can only ever set this once.",
         "customAddressTitle": "Enter an address which can update fees",
         "dynamicFeeRadioLabel": "Allow dynamic fees from an address I choose",
+        "enterTokenPrice": "Enter the estimated current price of {0} in $USD",
         "existingPoolInfo": "There’s already another pool with exactly the same tokens and fee structure. It’s recommended to add your liquidity to the other pool or to go back and change your Pool Creation parameters in a material way to avoid fractured liquidity and lower profits for both pools.",
         "fixedFeeRadioLabel": "Permanently fix fees to the initial rate",
         "governanceFees": "Allow Balancer governance to manage fees",
@@ -142,9 +144,11 @@
         "tokensAndSeedLiquidity": "Tokens and initial seed liquidity",
         "totalWeightAlert": "The total weighting of all tokens must equal exactly 100% before you can proceed.",
         "totalWeightAlertTitle": "The total weight must be 100%",
+        "unknownTokenPriceAlert": "We couldn't find prices for one or more tokens you have chosen ({0}).",
+        "unknownTokenPriceWarning": "Our pricing partner, CoinGecko, does not recognize {0}. This leaves you vulnerable to losing money to arbitraguers, if you don’t add pool assets in proportion to their target weights. To be warned of potential losses, enter the current price of this asset.",
         "youCanFundWithThisPoolWith": "Based on your wallet balances for these tokens, the maximum amount you can fund this pool with is ~{0}.",
         "zeroWeightTitle": "You’ve included a token with zero weight",
-        "zeroWeightInfo": "All tokens in a pool must have a weighting greater than zero. Either remove or replace {0} or set it above 0.01%.",
+        "zeroWeightInfo": "All tokens in a pool must have a weighting greater than zero. Either remove or replace {0} or set it above 0.01%."
     },
     "creating": "Creating",
     "createPool": "Create pool",

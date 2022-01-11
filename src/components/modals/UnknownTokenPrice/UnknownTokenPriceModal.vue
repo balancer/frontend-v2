@@ -81,16 +81,10 @@ function injectUnknownPrices() {
     @close="$emit('close')"
   >
     <BalStack vertical isDynamic>
-      <p>
-        Our pricing partner, CoinGecko, does not recognize
-        {{ tokenSymbolList }}. This leaves you vulnerable to losing money to
-        arbitraguers, if you don’t add pool assets in proportion to their target
-        weights. To be warned of potential losses, enter the current price of
-        this asset.
-      </p>
+      <p>{{ $t('createAPool.unknownTokenPriceWarning', [tokenSymbolList]) }}</p>
 
       <span class="font-semibold">
-        Enter the estimated current price of {{ tokenSymbolList }} in $USD
+        {{ $t('createAPool.enterTokenPrice', [tokenSymbolList]) }}
       </span>
       <BalStack isDynamic vertical>
         <TokenInput
@@ -111,9 +105,9 @@ function injectUnknownPrices() {
           hideFooter
         />
       </BalStack>
-      <BalBtn @click="injectUnknownPrices" :disabled="isSubmitDisabled"
-        >Submit</BalBtn
-      >
+      <BalBtn @click="injectUnknownPrices" :disabled="isSubmitDisabled">{{
+        $t('submit')
+      }}</BalBtn>
     </BalStack>
   </BalModal>
 </template>
