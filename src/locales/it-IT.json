@@ -276,6 +276,7 @@
     "menu":"Menù",
     "minTransactionBuffer":"Per garantire una transazione regolare, almeno {0} {1} deve essere lasciato nel tuo portafoglio per pagare le tasse del gas.",
     "missingPoolNameOrSymbol":"Nome o simbolo del pool mancante",
+    "missingPoolNameOrSymbolInfo":"Manca un nome o un simbolo del pool, compilalo prima di creare le pool.",
     "month":"mese",
     "months":"mesi",
     "mustBeAtLeast":"deve contenere almeno {0} caratteri",
@@ -593,4 +594,3 @@
     "youDidIt":"Ce l'hai fatta!",
     "yourTransactions":"Le tue transazioni in questo pool"
  }
- 
