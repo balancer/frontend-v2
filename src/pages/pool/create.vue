@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch, nextTick } from 'vue';
-import { initial } from 'lodash';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
@@ -338,7 +337,9 @@ watch(hasUnknownToken, () => {
             type="error"
           >
             {{
-              $t('createAPool.unknownTokenPriceAlert', [unknownTokenSymbolList])
+              $t('createAPool.unknownTokenPriceAlert', [
+                readableUnknownTokenSymbols
+              ])
             }}
             <br />
             <button class="font-semibold text-red-500 hover:text-red-800">

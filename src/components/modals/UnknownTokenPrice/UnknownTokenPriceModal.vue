@@ -2,7 +2,6 @@
 import { computed, onBeforeMount, reactive } from 'vue';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
-import { initial } from 'lodash';
 
 import useTokens from '@/composables/useTokens';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
@@ -76,10 +75,16 @@ function injectUnknownPrices() {
     @close="$emit('close')"
   >
     <BalStack vertical isDynamic>
-      <p>{{ $t('createAPool.unknownTokenPriceWarning', [tokenSymbolList]) }}</p>
+      <p>
+        {{
+          $t('createAPool.unknownTokenPriceWarning', [
+            readableUnknownTokenSymbols
+          ])
+        }}
+      </p>
 
       <span class="font-semibold">
-        {{ $t('createAPool.enterTokenPrice', [tokenSymbolList]) }}
+        {{ $t('createAPool.enterTokenPrice', [readableUnknownTokenSymbols]) }}
       </span>
       <BalStack isDynamic vertical>
         <TokenInput
