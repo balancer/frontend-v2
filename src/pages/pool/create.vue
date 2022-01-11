@@ -197,7 +197,7 @@ watch([hasInjectedToken, totalLiquidity], () => {
   setWrapperHeight();
 });
 
-// make sure to inject any custom tokens we cannot inject 
+// make sure to inject any custom tokens we cannot inject
 // on mount as it will attempt to inject 'known' tokens too,
 // as during mount, tokens are still loading
 watch(isLoadingTokens, () => {
