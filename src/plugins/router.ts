@@ -6,6 +6,7 @@ import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/pages/trade.vue';
 import CreatePoolPage from '@/pages/pool/create.vue';
+import MigratePoolPage from '@/pages/pool/migrate.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -46,6 +47,12 @@ const routes: RouteRecordRaw[] = [
     name: 'withdraw',
     component: PoolWithdrawPage,
     meta: { layout: 'PoolTransferLayout' }
+  },
+  {
+    path: '/pool/migrate/:from/:to',
+    name: 'migrate-pool',
+    component: MigratePoolPage,
+    meta: { layout: 'FocusedLayout' }
   },
   {
     path: '/liquidity-mining',

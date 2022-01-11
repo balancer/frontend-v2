@@ -65,10 +65,10 @@ export default class BatchRelayer {
 
   public async stableExit(
     txInfo: TransactionData,
-    userProivder: Web3Provider
+    userProvider: Web3Provider
   ): Promise<TransactionResponse> {
     return await sendTransaction(
-      userProivder,
+      userProvider,
       this.address,
       this.abi,
       txInfo.function,

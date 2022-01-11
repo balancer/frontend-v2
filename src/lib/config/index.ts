@@ -54,6 +54,10 @@ export interface Config {
     balancerHelpers: string;
     batchRelayer: string;
   };
+  pools: {
+    staBAL3: string;
+    bbAaveUSD: string;
+  };
   keys: {
     infura: string;
     alchemy: string;

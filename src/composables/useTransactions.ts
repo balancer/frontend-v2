@@ -41,7 +41,8 @@ export type TransactionAction =
   | 'invest'
   | 'withdraw'
   | 'createPool'
-  | 'fundPool';
+  | 'fundPool'
+  | 'migratePool';
 
 export type TransactionType = 'order' | 'tx';
 

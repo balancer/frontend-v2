@@ -58,10 +58,13 @@
     "approveGnosisRelayer": "Approve Gnosis relayer",
     "approveGP": "Approve trading on Gnosis Protocol",
     "approveLidoRelayer": "Approve Lido relayer",
+    "approveBatchRelayer": "Approve batch relayer",
+    "approvingBatchRelayer": "Approve batch relayer",
+    "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer for pool migration.",
     "approveTokens": "Approve tokens",
     "approving": "Approving",
     "approvingGnosisRelayer": "Approving Gnosis relayer",
-    "approvingLidoRelayer": "Approving Lido relayer",
+    "approvingLidoRelayer": "Approving Lido relayer",    
     "apr": "APR",
     "autoOptimiseLiquidityToggle": {
         "label": "Auto optimize liquidity",
@@ -81,6 +84,7 @@
     "boostedPool": "Balancer Boosted pool",
     "cancel": "Cancel",
     "cancelling": "Cancelling",
+    "checkWallet": "Confirm in wallet",
     "changeTheme": "Change theme",
     "claim": "Claim",
     "claimAll": "Claim all",
@@ -145,6 +149,40 @@
         "maxLiquidityTooltip": "This is the max amount of liquidity you can provide to the pool with the current token selection.",
         "recoveredState": "We've recovered your previous choices",
         "recoveredStateInfo": "You last left off before finishing creating this pool. We've restored all your choices from before. Want to start over?"
+    },
+    "migratePool": {
+        "aaveBoostedPool": {
+            "whyMigrate": {
+                "title": "Why migrate?",
+                "description": "Boosted pools also earn additional yield from holding interest-bearing aTokens. aTokens accrue interest in real time when underlying assets are loaned out to borrowers on Aave."                
+            },
+            "migrateToPool": {
+                "title": "Migrate to a boosted pool"
+            },
+            "poolStats": {
+                "title": "Boosted pool stats"
+            }
+        },
+        "previewModal": {
+            "title": "Preview migrate",
+            "riskWarnings": {
+                "title": "Some risks - you may lose funds in the pool if:",
+                "risks": {
+                    "loseUSDPeg": "Any of the tokens in this pool permanently loses it's target peg of 1 USD.",
+                    "aaveStableExploit": "Problems arise on Aave. This is because, most of the stablecoins will be invested into Aave aTokens to earn you additional yield."
+                }
+            },
+            "actions": {                
+                "title": "Migrate pool",
+                "loading": "Confirm pool migration in wallet",
+                "migrationStep": "Confirm pool migration"                
+            }
+        },
+        "migrateToBoostedPool": "Migrate to a boosted pool",
+        "errorLoadingMigration": {
+            "title": "Something went wrong",
+            "description": "An error occurred while trying to show pool migration."
+        }      
     },
     "creating": "Creating",
     "createPool": "Create pool",
@@ -308,6 +346,7 @@
     "minTransactionBuffer": "To ensure a smooth transaction, at least {0} {1} must be left in your wallet to pay for gas fees.",
     "missingPoolNameOrSymbol": "Missing pool name or symbol",
     "menu": "Menu",
+    "migrate": "Migrate",
     "month": "month",
     "months": "months",
     "mustBeAtLeast": "must be at least {0} characters",
@@ -410,6 +449,7 @@
     "previewTradeTransactions": "Preview trade transactions",
     "previewUnwrap": "Preview {0} Unwrap",
     "previewWrap": "Preview {0} Wrap",
+    "previewMigrate": "Preview migrate",
     "priceImpact": "Price impact",
     "priceImpactAccept": "I accept the high price impact from {0} single token amounts, moving the market price based on the depth of the market.",
     "priceImpactCheckbox": "Price impact acknowledgement",
@@ -490,6 +530,10 @@
         "withdraw": {
             "priceImpact": "Price impact from removing liquidity results when the value of each token removed is not proportional to the weights of the pool. Removing non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get for exiting your position.",
             "total": "The total value in {0} you’ll be withdrawing from this pool."
+        },
+        "migratePool": {
+            "priceImpact": "The higher the price impact, the worse price you’ll get for exiting your position.",
+            "total": "The total value in {0} you’ll be migrating."
         }
     },
     "total": "Total",
@@ -576,11 +620,12 @@
         "claim": "Claim",
         "createPool": "Create pool",
         "fundPool": "Fund pool",
+        "migratePool": "Migrate pool",
         "invest": "Invest",
         "trade": "Trade",
         "unwrap": "Unwrap",
         "withdraw": "Withdraw",
-        "wrap": "Wrap"
+        "wrap": "Wrap"        
     },
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",
@@ -614,12 +659,12 @@
     "transactionSummary": {
         "approveForInvesting": "Approve {0} for investing",
         "approveForTrading": "Approve {0} for trading",
-        "approveGnosisRelayer": "Approve Gnosis relayer",
-        "approveLidoRelayer": "Approve Lido relayer",
+        "approveRelayer": "Approve {0} relayer",
         "createPool": "Create pool",
         "fundPool": "Fund pool",
         "investInPool": "{0} in {1}",
         "withdrawFromPool": "{0} from {1}",
+        "migratePool": "{0} {0} to {2}",
         "wrapUnwrap": "{0} {1} to {2}"
     },
     "transactionType": "Transaction type",
@@ -686,6 +731,7 @@
     "yieldEarnings": "Yield earnings",
     "youDidIt": "You did it!",
     "yourTransactions": "Your transactions in this pool",
+    "yourBalanceInPool": "Your balance in this pool",
     "trendingPairs": "Trending pairs",
     "chooseAPair": "Please select a valid pair",
     "youCanInvest": "You can invest"

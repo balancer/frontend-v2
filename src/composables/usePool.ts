@@ -8,6 +8,7 @@ import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
 import { fNum } from './useNumbers';
+import { isMainnet } from './useNetwork';
 
 /**
  * METHODS
@@ -65,6 +66,18 @@ export function isWstETH(pool: AnyPool): boolean {
   return pool.tokenAddresses.includes(
     getAddress(configService.network.addresses.wstETH)
   );
+}
+
+export function isStaBAL3(pool: AnyPool): boolean {
+  if (isMainnet) {
+    return pool.id === configService.network.pools.staBAL3;
+  }
+
+  return false;
+}
+
+export function isMigratablePool(pool: AnyPool) {
+  return isStaBAL3(pool);
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {
@@ -176,6 +189,7 @@ export function usePool(pool: Ref<AnyPool> | Ref<undefined>) {
     isTradingHaltable,
     isWeth,
     noInitLiquidity,
-    lpTokensFor
+    lpTokensFor,
+    isMigratablePool
   };
 }

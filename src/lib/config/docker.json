@@ -45,6 +45,10 @@
     "merkleOrchard": "",
     "batchRelayer": ""
   },
+  "pools": {
+    "staBAL3": "",
+    "bbAaveUSD": ""
+  },
   "keys": {},
   "strategies": {
     "0": {

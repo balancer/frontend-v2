@@ -44,6 +44,10 @@
     "balancerHelpers": "0x77d46184d22CA6a3726a2F500c776767b6A3d6Ab",
     "batchRelayer": "0x466262c2a275aB106E54D95B5B04603e12b58cA1"
   },
+  "pools": {
+    "staBAL3": "",
+    "bbAaveUSD": ""
+  },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
     "alchemy": "VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh"
