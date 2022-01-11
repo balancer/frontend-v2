@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from 'vue';
+import { computed, ref, Ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { bnum } from '@/lib/utils';
@@ -12,6 +12,9 @@ import usePoolQuery from '@/composables/queries/usePoolQuery';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import useTokens from '@/composables/useTokens';
+import useRelayerApproval, {
+  Relayer
+} from '@/composables/trade/useRelayerApproval';
 
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import TradeSettingsPopover, {
@@ -48,7 +51,9 @@ const showPreviewModal = ref(false);
  */
 const fromPoolQuery = usePoolQuery(props.poolMigrationInfo.fromPoolId);
 const toPoolQuery = usePoolQuery(props.poolMigrationInfo.toPoolId);
+const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 
+const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
 /**
  * COMPUTED
  */
@@ -117,7 +122,10 @@ const toPoolTokenInfo = computed(() =>
 
     <BalLoadingBlock
       v-if="
-        isLoadingPools || fromPoolTokenInfo == null || toPoolTokenInfo == null
+        isLoadingPools ||
+          fromPoolTokenInfo == null ||
+          toPoolTokenInfo == null ||
+          batchRelayerApprovalLoading
       "
       class="h-96"
     />
