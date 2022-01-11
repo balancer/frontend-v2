@@ -48,7 +48,7 @@ const {
   resetPoolCreationState,
   tokensList
 } = usePoolCreation();
-const { dynamicDataLoading } = useTokens();
+const { dynamicDataLoading, tokens, injectTokens } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { removeAlert } = useAlerts();
 
@@ -67,6 +67,10 @@ onMounted(async () => {
   );
   if (activeStep.value === 0 && previouslySavedState !== null) {
     previouslySavedState = JSON.parse(previouslySavedState);
+    const uninjectedTokens = previouslySavedState.seedTokens
+      .filter(seedToken => tokens.value[seedToken.tokenAddress] === undefined)
+      .map(seedToken => seedToken.tokenAddress);
+    injectTokens(uninjectedTokens);
     importState(previouslySavedState);
     setRestoredState(true);
     await nextTick();
