@@ -24,20 +24,24 @@ import statusLogo from '@/assets/images/connectors/status.svg';
 import trustwalletLogo from '@/assets/images/connectors/trustwallet.svg';
 import walletconnectLogo from '@/assets/images/connectors/walletconnect.svg';
 import walletlinkLogo from '@/assets/images/connectors/walletlink.svg';
+import cloverLogo from '@/assets/images/connectors/clover.svg';
 import i18n from '@/plugins/i18n';
 import { rpcProviderService } from '../rpc-provider/rpc-provider.service';
+import { CloverWalletConnector } from '@/services/web3/connectors/clover/clover.connector';
 
 export type Wallet =
   | 'metamask'
   | 'walletconnect'
   | 'gnosis'
   | 'walletlink'
-  | 'portis';
+  | 'portis'
+  | 'clover';
 export const SupportedWallets = [
   'metamask',
   'walletconnect',
   'gnosis',
-  'walletlink'
+  'walletlink',
+  'clover'
   //'portis'
 ] as Wallet[];
 export const WalletNameMap: Record<Wallet, string> = {
@@ -45,7 +49,8 @@ export const WalletNameMap: Record<Wallet, string> = {
   walletconnect: 'WalletConnect',
   gnosis: 'Gnosis Safe',
   walletlink: 'Coinbase',
-  portis: 'Portis'
+  portis: 'Portis',
+  clover: 'Clover'
 };
 type ConnectorImplementation = new (...args: any[]) => Connector;
 export const Web3ProviderSymbol = Symbol('WEB3_PROVIDER');
@@ -66,7 +71,8 @@ const WalletConnectorDictionary: Record<Wallet, ConnectorImplementation> = {
   walletconnect: WalletConnectConnector,
   gnosis: GnosisSafeConnector,
   walletlink: WalletLinkConnector,
-  portis: PortisConnector
+  portis: PortisConnector,
+  clover: CloverWalletConnector
 };
 
 type WalletState = 'connecting' | 'connected' | 'disconnected';
@@ -218,6 +224,9 @@ export function getConnectorName(connectorId: string): string {
   if (connectorId === 'gnosis') {
     return 'Gnosis Safe';
   }
+  if (connectorId === 'clover') {
+    return 'Clover';
+  }
   return i18n.global.t('unknown');
 }
 
@@ -253,5 +262,9 @@ export function getConnectorLogo(connectorId: string): string {
   if (connectorId === 'walletlink') {
     return walletlinkLogo;
   }
+  if (connectorId === 'clover') {
+    return cloverLogo;
+  }
+
   return defaultLogo;
 }
