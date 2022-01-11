@@ -24,7 +24,7 @@ import usePoolCreation, {
 import { StepState } from '@/types';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useAlerts from '@/composables/useAlerts';
-import { lsGet } from '@/lib/utils';
+import { formatWordListAsSentence, lsGet } from '@/lib/utils';
 import useTokens from '@/composables/useTokens';
 
 /**
@@ -90,18 +90,9 @@ const unknownTokens = computed(() => {
   });
 });
 const hasUnknownToken = computed(() => unknownTokens.value.length > 0);
-
-const unknownTokenSymbolList = computed(() => {
-  if (!unknownTokens.value.length) return '';
-  if (unknownTokens.value.length >= 2) {
-    const commaSeperatedSymbols = initial(unknownTokens.value).map(
-      token => tokens.value[token].symbol
-    );
-    return `${commaSeperatedSymbols.join(',')} and ${
-      tokens.value[unknownTokens.value[unknownTokens.value.length - 1]].symbol
-    }`;
-  }
-  return tokens.value[unknownTokens.value[0]].symbol;
+const readableUnknownTokenSymbols = computed(() => {
+  const tokenSymbols = (unknownTokens.value || []).map(tokenAddress => tokens.value[tokenAddress].symbol);
+  return formatWordListAsSentence(tokenSymbols);
 });
 
 const steps = computed(() => [
@@ -217,12 +208,6 @@ function handleUnknownModalClose() {
 
 watch([hasInjectedToken, totalLiquidity], () => {
   setWrapperHeight();
-});
-
-watch(hasUnknownToken, () => {
-  if (hasUnknownToken.value) {
-    isUnknownTokenModalVisible.value = true;
-  }
 });
 </script>
 
@@ -341,7 +326,7 @@ watch(hasUnknownToken, () => {
   </Col3Layout>
   <UnknownTokenPriceModal
     @close="handleUnknownModalClose"
-    :isVisible="isUnknownTokenModalVisible"
+    :isVisible="hasUnknownToken"
     :unknownTokens="unknownTokens"
   />
 </template>

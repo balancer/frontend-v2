@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import pkg from '@/../package.json';
 import { Ref } from 'vue';
+import { initial } from 'lodash';
 
 export function shorten(str = '') {
   return `${str.slice(0, 6)}...${str.slice(str.length - 4)}`;
@@ -112,4 +113,18 @@ export async function forChange(
  */
 export function bnSum(amounts: string[]): BigNumber {
   return amounts.reduce((a, b) => bnum(a).plus(b), bnum(0));
+}
+
+/**
+ *  creates a sentence readable list for an array for string
+ *  e.g. 'UBT, DSB and BAL' for [UBT, DSB, BAL]
+ */
+export function formatWordListAsSentence(words: string[]) {
+  if (!words.length) return '';
+  if (words.length >= 2) {
+    const commaSeperatedWords = initial(words);
+    return `${commaSeperatedWords.join(',')} and ${words[words.length - 1]}`;
+  }
+  // only one word, so just return that
+  return words[0];
 }

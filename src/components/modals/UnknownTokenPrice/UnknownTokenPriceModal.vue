@@ -6,6 +6,7 @@ import { initial } from 'lodash';
 
 import useTokens from '@/composables/useTokens';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import { formatWordListAsSentence } from '@/lib/utils';
 
 type Props = {
   isVisible: boolean;
@@ -42,17 +43,9 @@ onBeforeMount(() => {
 /**
  * COMPUTED
  */
-const tokenSymbolList = computed(() => {
-  if (!props.unknownTokens.length) return '';
-  if (props.unknownTokens.length >= 2) {
-    const commaSeperatedSymbols = initial(props.unknownTokens).map(
-      token => tokens.value[token].symbol
-    );
-    return `${commaSeperatedSymbols.join(',')} and ${
-      tokens.value[props.unknownTokens[props.unknownTokens.length - 1]].symbol
-    }`;
-  }
-  return tokens.value[props.unknownTokens[0]].symbol;
+const readableUnknownTokenSymbols = computed(() => {
+  const tokenSymbols = (props.unknownTokens || []).map(tokenAddress => tokens.value[tokenAddress].symbol);
+  return formatWordListAsSentence(tokenSymbols);
 });
 
 const isSubmitDisabled = computed(() => {
