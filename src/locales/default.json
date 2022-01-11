@@ -311,6 +311,7 @@
     "maximum": "Maximum",
     "minTransactionBuffer": "To ensure a smooth transaction, at least {0} {1} must be left in your wallet to pay for gas fees.",
     "missingPoolNameOrSymbol": "Missing pool name or symbol",
+    "missingTokenPrices": "Missing token prices",
     "menu": "Menu",
     "month": "month",
     "months": "months",

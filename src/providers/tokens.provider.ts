@@ -184,8 +184,6 @@ export default {
     );
 
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
-    // converted to computed ref for use in query
-    const injectedPrices = computed(() => state.injectedPrices);
 
     const wrappedNativeAsset = computed(
       (): TokenInfo => getToken(networkConfig.addresses.weth)
@@ -203,7 +201,7 @@ export default {
       isLoading: priceQueryLoading,
       isError: priceQueryError,
       refetch: refetchPrices
-    } = useTokenPricesQuery(tokenAddresses, injectedPrices);
+    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'));
 
     const {
       data: balanceData,

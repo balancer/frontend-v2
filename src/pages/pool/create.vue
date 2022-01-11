@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
@@ -53,6 +54,7 @@ const {
 const { dynamicDataLoading, priceFor, tokens, injectTokens } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { removeAlert } = useAlerts();
+const { t } = useI18n();
 
 /**
  * Restore of the state needs to be called in this parent component
@@ -337,7 +339,7 @@ watch(hasUnknownToken, () => {
           <PoolSummary />
           <BalAlert
             v-if="hasUnknownToken"
-            title="Missing token prices"
+            :title="t('missingTokenPrices')"
             type="error"
           >
             {{
