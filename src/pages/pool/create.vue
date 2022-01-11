@@ -218,6 +218,10 @@ function handleUnknownModalClose() {
   isUnknownTokenModalVisible.value = false;
 }
 
+function showUnknownTokenModal() {
+  isUnknownTokenModalVisible.value = true;
+}
+
 /**
  * WATCHERS
  */
@@ -342,7 +346,10 @@ watch(hasUnknownToken, () => {
               ])
             }}
             <br />
-            <button class="font-semibold text-red-500 hover:text-red-800">
+            <button
+              @click="showUnknownTokenModal"
+              class="font-semibold text-red-500 hover:text-red-800"
+            >
               {{ $t('createAPool.addTokenPrice') }}
             </button>
           </BalAlert>
