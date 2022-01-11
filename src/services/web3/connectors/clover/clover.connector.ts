@@ -30,6 +30,9 @@ export class CloverWalletConnector extends Connector {
 
           chainId = await provider.request({ method: 'eth_chainId' });
         }
+
+        this.handleChainChanged(chainId);
+        this.handleAccountsChanged(accounts);
       } catch (err) {
         if ((err as MetamaskError).code === 4001) {
           // EIP-1193 userRejectedRequest error
@@ -39,9 +42,6 @@ export class CloverWalletConnector extends Connector {
           console.error(err);
         }
       }
-
-      this.handleChainChanged(chainId);
-      this.handleAccountsChanged(accounts);
     }
     return {
       // TODO type this
