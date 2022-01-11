@@ -44,7 +44,9 @@ onBeforeMount(() => {
  * COMPUTED
  */
 const readableUnknownTokenSymbols = computed(() => {
-  const tokenSymbols = (props.unknownTokens || []).map(tokenAddress => tokens.value[tokenAddress].symbol);
+  const tokenSymbols = (props.unknownTokens || []).map(
+    tokenAddress => tokens.value[tokenAddress].symbol
+  );
   return formatWordListAsSentence(tokenSymbols);
 });
 
