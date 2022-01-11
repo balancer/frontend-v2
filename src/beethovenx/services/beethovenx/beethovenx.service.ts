@@ -168,7 +168,7 @@ export default class BeethovenxService {
     input: GqlLgeCreateInput,
     account: string
   ): Promise<{ id: string }> {
-    const signature = await web3.getSigner()._signTypedData(
+    /*const signature = await web3.getSigner()._signTypedData(
       {
         name: 'beethovenx',
         version: '1',
@@ -176,12 +176,12 @@ export default class BeethovenxService {
       },
       CreateLgeTypes,
       input
-    );
+    );*/
 
     const query = jsonToGraphQLQuery({
       mutation: {
         lgeCreate: {
-          __args: { signature, lge: input },
+          __args: { signature: '', lge: input },
           id: true,
           address: true,
           name: true
