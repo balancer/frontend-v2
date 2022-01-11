@@ -19,22 +19,29 @@ export class CloverWalletConnector extends Connector {
       this.provider = provider;
       this.active.value = true;
 
+      let accounts = null;
+      let chainId = null;
+      // try the best practice way of get accounts with eth_requestAccounts && eth_chainId
       try {
-        if (provider.send) {
-          const accounts = await provider.send('eth_accounts');
-          const chainId = await provider.send('eth_chainId');
-          this.handleChainChanged(chainId.result);
-          this.handleAccountsChanged(accounts.result);
+        if (provider.request) {
+          accounts = await provider.request({
+            method: 'eth_requestAccounts'
+          });
+
+          chainId = await provider.request({ method: 'eth_chainId' });
         }
       } catch (err) {
         if ((err as MetamaskError).code === 4001) {
           // EIP-1193 userRejectedRequest error
           // If this happens, the user rejected the connection request.
-          console.log('Rejected connection.');
+          console.log('Rejected connection');
         } else {
           console.error(err);
         }
       }
+
+      this.handleChainChanged(chainId);
+      this.handleAccountsChanged(accounts);
     }
     return {
       // TODO type this
