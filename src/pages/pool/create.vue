@@ -51,10 +51,16 @@ const {
   resetPoolCreationState,
   tokensList
 } = usePoolCreation();
-const { dynamicDataLoading, priceFor, tokens } = useTokens();
+const { dynamicDataLoading, priceFor, tokens, injectTokens } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { removeAlert } = useAlerts();
 
+/**
+ * Restore of the state needs to be called in this parent component
+ * as if it is called from the usePoolCreation composable, it will
+ * trigger a restore on the mount of all the subcomponents which may
+ * use usePoolCreation as well, causing problems.
+ */
 onMounted(async () => {
   removeAlert('return-to-pool-creation');
   if (accordionWrapper.value) {
@@ -69,7 +75,15 @@ onMounted(async () => {
     POOL_CREATION_STATE_VERSION
   );
   if (activeStep.value === 0 && previouslySavedState !== null) {
+    // need to make sure to inject any tokens that were chosen
     previouslySavedState = JSON.parse(previouslySavedState);
+    const uninjectedTokens = previouslySavedState.seedTokens
+      .filter(
+        loadedSeedToken =>
+          tokens.value[loadedSeedToken.tokenAddress] === undefined
+      )
+      .map(token => token.tokenAddress);
+    injectTokens(uninjectedTokens);
     importState(previouslySavedState);
     setRestoredState(true);
     await nextTick();
@@ -90,8 +104,11 @@ const unknownTokens = computed(() => {
   });
 });
 const hasUnknownToken = computed(() => unknownTokens.value.length > 0);
+
 const readableUnknownTokenSymbols = computed(() => {
-  const tokenSymbols = (unknownTokens.value || []).map(tokenAddress => tokens.value[tokenAddress].symbol);
+  const tokenSymbols = (unknownTokens.value || []).map(
+    tokenAddress => tokens.value[tokenAddress].symbol
+  );
   return formatWordListAsSentence(tokenSymbols);
 });
 
@@ -208,6 +225,14 @@ function handleUnknownModalClose() {
 
 watch([hasInjectedToken, totalLiquidity], () => {
   setWrapperHeight();
+});
+
+// need to manually update modal flags as on close
+// the modal needs a value to unmount on
+watch(hasUnknownToken, () => {
+  if (hasUnknownToken.value) {
+    isUnknownTokenModalVisible.value = true;
+  }
 });
 </script>
 
@@ -326,7 +351,7 @@ watch([hasInjectedToken, totalLiquidity], () => {
   </Col3Layout>
   <UnknownTokenPriceModal
     @close="handleUnknownModalClose"
-    :isVisible="hasUnknownToken"
+    :isVisible="isUnknownTokenModalVisible"
     :unknownTokens="unknownTokens"
   />
 </template>
