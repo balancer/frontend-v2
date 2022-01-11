@@ -70,7 +70,7 @@ function getIndexOfUnknownToken(address: string) {
 
 function injectUnknownPrices() {
   injectPrices(unknownTokenPrices);
-  emit('close')
+  emit('close');
 }
 </script>
 
