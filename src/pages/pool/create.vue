@@ -327,7 +327,9 @@ watch(hasUnknownToken, () => {
             title="Missing token prices"
             type="error"
           >
-            {{ $t('createAPool.unknownTokenPriceAlert') }}
+            {{
+              $t('createAPool.unknownTokenPriceAlert', [unknownTokenSymbolList])
+            }}
             <br />
             <button class="font-semibold text-red-500 hover:text-red-800">
               {{ $t('createAPool.addTokenPrice') }}
