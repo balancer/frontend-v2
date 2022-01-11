@@ -105,10 +105,8 @@
 
 <script>
 export default {
-  name: 'cookies-policy',
+  name: 'cookies-policy'
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

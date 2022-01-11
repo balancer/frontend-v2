@@ -46,7 +46,7 @@ export default defineComponent({
 
     const classes = computed(() => {
       return {
-        'link': !props.noStyle
+        link: !props.noStyle
       };
     });
 

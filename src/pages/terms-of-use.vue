@@ -61,15 +61,11 @@
         you agree that we have provided you with sufficient notice of such
         change. Our
         <router-link :to="{ name: 'privacy-policy' }">
-          <span className="link"
-            >Privacy Policy</span
-          >
+          <span className="link">Privacy Policy</span>
         </router-link>
         and
         <router-link :to="{ name: 'cookies-policy' }">
-          <span className="link"
-            >Cookies Policy</span
-          >
+          <span className="link">Cookies Policy</span>
         </router-link>
         also apply to your access and use of the Site.
       </p>
@@ -365,18 +361,14 @@
         you. You can find more information about how we will process your
         personal information in our
         <router-link :to="{ name: 'privacy-policy' }">
-          <span className="link"
-            >Privacy Policy</span
-          > </router-link
+          <span className="link">Privacy Policy</span> </router-link
         >.
       </p>
       <p>
         When you use the Site, we may collect information about your computer
         and your interaction with the Site. See our
         <router-link :to="{ name: 'cookies-policy' }">
-          <span className="link"
-            >Cookies Policy</span
-          >
+          <span className="link">Cookies Policy</span>
         </router-link>
         for more information.
       </p>
@@ -585,6 +577,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

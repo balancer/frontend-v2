@@ -19,7 +19,6 @@ const route = useRoute();
 </template>
 
 <style scoped>
-
 .content-container {
   @apply w-full max-w-4xl px-4 md:p-8 lg:p-12 mx-auto py-8 bg-white dark:bg-gray-900;
   min-height: calc(100vh - 140px);

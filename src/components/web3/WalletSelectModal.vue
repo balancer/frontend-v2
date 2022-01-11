@@ -8,25 +8,16 @@
       By connecting a wallet, I agree to Balancer Labs’
 
       <router-link :to="{ name: 'terms-of-use' }" target="_blank">
-        <span
-          className="link"
-          >Terms of Use</span
-        >,
+        <span className="link">Terms of Use</span>,
       </router-link>
 
       <router-link :to="{ name: 'cookies-policy' }" target="_blank">
-        <span
-          className="link"
-          >Cookies Policy</span
-        >
+        <span className="link">Cookies Policy</span>
         and
       </router-link>
 
       <router-link :to="{ name: 'privacy-policy' }" target="_blank">
-        <span
-          className="link"
-          >Privacy Policy</span
-        >.
+        <span className="link">Privacy Policy</span>.
       </router-link>
     </p>
     <WalletButton v-for="wallet in wallets" :wallet="wallet" :key="wallet" />
