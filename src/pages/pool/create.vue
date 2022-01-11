@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch, nextTick } from 'vue';
+import { initial } from 'lodash';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
@@ -11,6 +12,7 @@ import PreviewPool from '@/components/cards/CreatePool/PreviewPool.vue';
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
+import UnknownTokenPriceModal from '@/components/modals/UnknownTokenPrice/UnknownTokenPriceModal.vue';
 
 import anime from 'animejs';
 
@@ -31,6 +33,7 @@ import useTokens from '@/composables/useTokens';
 const accordionWrapper = ref<HTMLElement>();
 const hasCompletedMountAnimation = ref(false);
 const prevWrapperHeight = ref(0);
+const isUnknownTokenModalVisible = ref(false);
 
 /**
  * COMPOSABLES
@@ -48,7 +51,7 @@ const {
   resetPoolCreationState,
   tokensList
 } = usePoolCreation();
-const { dynamicDataLoading } = useTokens();
+const { dynamicDataLoading, priceFor, tokens } = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { removeAlert } = useAlerts();
 
@@ -79,6 +82,27 @@ onMounted(async () => {
  */
 const doSimilarPoolsExist = computed(() => similarPools.value.length > 0);
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
+
+const unknownTokens = computed(() => {
+  if (dynamicDataLoading.value) return [];
+  return validTokens.value.filter(token => {
+    return priceFor(token) === 0;
+  });
+});
+const hasUnknownToken = computed(() => unknownTokens.value.length > 0);
+
+const unknownTokenSymbolList = computed(() => {
+  if (!unknownTokens.value.length) return '';
+  if (unknownTokens.value.length >= 2) {
+    const commaSeperatedSymbols = initial(unknownTokens.value).map(
+      token => tokens.value[token].symbol
+    );
+    return `${commaSeperatedSymbols.join(',')} and ${
+      tokens.value[unknownTokens.value[unknownTokens.value.length - 1]].symbol
+    }`;
+  }
+  return tokens.value[unknownTokens.value[0]].symbol;
+});
 
 const steps = computed(() => [
   {
@@ -183,12 +207,22 @@ function handleReset() {
   setActiveStep(0);
 }
 
+function handleUnknownModalClose() {
+  isUnknownTokenModalVisible.value = false;
+}
+
 /**
  * WATCHERS
  */
 
 watch([hasInjectedToken, totalLiquidity], () => {
   setWrapperHeight();
+});
+
+watch(hasUnknownToken, () => {
+  if (hasUnknownToken.value) {
+    isUnknownTokenModalVisible.value = true;
+  }
 });
 </script>
 
@@ -288,11 +322,27 @@ watch([hasInjectedToken, totalLiquidity], () => {
       <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
         <BalStack vertical spacing="base" v-if="!appLoading">
           <PoolSummary />
-          <!-- <WalletInitialLiquidity /> -->
+          <BalAlert
+            v-if="hasUnknownToken"
+            title="Missing token prices"
+            type="error"
+          >
+            We couldn't find prices for one or more tokens you have chosen ({{
+              unknownTokenSymbolList
+            }}).<br />
+            <button class="font-semibold text-red-500 hover:text-red-800">
+              Add token price(s) ->
+            </button>
+          </BalAlert>
         </BalStack>
       </div>
     </template>
   </Col3Layout>
+  <UnknownTokenPriceModal
+    @close="handleUnknownModalClose"
+    :isVisible="isUnknownTokenModalVisible"
+    :unknownTokens="unknownTokens"
+  />
 </template>
 
 <style scoped>

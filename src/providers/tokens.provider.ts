@@ -44,6 +44,7 @@ export interface TokensProviderState {
   loading: boolean;
   injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
+  injectedPrices: Record<string, number>;
 }
 
 export interface TokensProviderResponse {
@@ -88,6 +89,7 @@ export interface TokensProviderResponse {
   balanceFor: (address: string) => string;
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
+  injectPrices: (pricesToInject: Record<string, number>) => void;
 }
 
 /**
@@ -134,7 +136,8 @@ export default {
         networkConfig.addresses.vault,
         networkConfig.addresses.wstETH,
         networkConfig.addresses.exchangeProxy
-      ])
+      ]),
+      injectedPrices: {}
     });
 
     /**
@@ -181,6 +184,8 @@ export default {
     );
 
     const tokenAddresses = computed((): string[] => Object.keys(tokens.value));
+    // converted to computed ref for use in query
+    const injectedPrices = computed(() => state.injectedPrices);
 
     const wrappedNativeAsset = computed(
       (): TokenInfo => getToken(networkConfig.addresses.weth)
@@ -198,7 +203,7 @@ export default {
       isLoading: priceQueryLoading,
       isError: priceQueryError,
       refetch: refetchPrices
-    } = useTokenPricesQuery(tokenAddresses);
+    } = useTokenPricesQuery(tokenAddresses, injectedPrices);
 
     const {
       data: balanceData,
@@ -420,6 +425,18 @@ export default {
     }
 
     /**
+     * Injects prices for tokens where the pricing provider
+     * may have not found a valid price for provided tokens
+     * @param pricesToInject A map of <address, price> to inject
+     */
+    function injectPrices(pricesToInject: Record<string, number>) {
+      state.injectedPrices = {
+        ...state.injectedPrices,
+        ...pricesToInject
+      };
+    }
+
+    /**
      * CALLBACKS
      */
     onBeforeMount(async () => {
@@ -464,7 +481,8 @@ export default {
       priceFor,
       balanceFor,
       getTokens,
-      getToken
+      getToken,
+      injectPrices
     });
 
     return () => slots.default();

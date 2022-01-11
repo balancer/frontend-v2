@@ -41,6 +41,7 @@ type Props = {
   options?: string[];
   rules?: Rules;
   disableNativeAssetBuffer?: boolean;
+  hideFooter?: boolean;
 };
 
 /**
@@ -57,6 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
   balanceLoading: false,
   hintAmount: '',
   disableNativeAssetBuffer: false,
+  hideFooter: false,
   options: () => [],
   rules: () => []
 });
@@ -245,7 +247,7 @@ watchEffect(() => {
         />
       </slot>
     </template>
-    <template #footer>
+    <template v-if="!hideFooter" #footer>
       <div
         v-if="isWalletReady || (hasAmount && hasToken)"
         class="flex flex-col pt-1"
