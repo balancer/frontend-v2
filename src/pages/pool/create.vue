@@ -198,8 +198,8 @@ watch([hasInjectedToken, totalLiquidity], () => {
 });
 
 // make sure to inject any custom tokens we cannot inject
-// on mount as it will attempt to inject 'known' tokens too,
-// as during mount, tokens are still loading
+// after tokens have finished loading as it will attempt to 
+// inject 'known' tokens too, as during mount, tokens are still loading
 watch(isLoadingTokens, () => {
   if (!isLoadingTokens.value) {
     const uninjectedTokens = seedTokens.value
