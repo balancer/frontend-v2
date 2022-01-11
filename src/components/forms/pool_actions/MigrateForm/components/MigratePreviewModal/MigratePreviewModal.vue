@@ -70,11 +70,7 @@ function navigateToMigratedPool() {
       :totalFiatPoolInvestment="totalFiatPoolInvestment"
     />
 
-    <MigrateSummary
-      :pool="toPoolTokenInfo"
-      :totalFiatPoolInvestment="totalFiatPoolInvestment"
-      :priceImpact="0"
-    />
+    <MigrateSummary :priceImpact="0" />
 
     <MigrateActions
       :fromPool="fromPool"

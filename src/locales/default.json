@@ -172,6 +172,9 @@
                     "aaveStableExploit": "Problems arise on Aave. This is because, most of the stablecoins will be invested into Aave aTokens to earn you additional yield."
                 }
             },
+            "summary": {
+                "title": "Migrate summary"
+            },
             "actions": {                
                 "title": "Migrate pool",
                 "loading": "Confirm pool migration in wallet",

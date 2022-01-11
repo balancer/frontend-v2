@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
-
-import { FullPool } from '@/services/balancer/subgraph/types';
 
 /**
  * TYPES
  */
 type Props = {
-  pool: FullPool;
-  totalFiatPoolInvestment: string;
   priceImpact: number;
 };
 
 /**
- * PROPS & EMITS
+ * PROPS
  */
 defineProps<Props>();
 
@@ -22,28 +17,14 @@ defineProps<Props>();
  * COMPOSABLES
  */
 const { fNum } = useNumbers();
-const { currency } = useUserSettings();
 </script>
 
 <template>
   <div class="summary-table">
     <h6 class="p-2">
-      Upgrade summary
+      {{ $t('migratePool.previewModal.summary.title') }}
     </h6>
     <div class="flex flex-col py-2">
-      <div class="summary-table-row">
-        <div class="summary-table-label">
-          {{ $t('total') }}
-        </div>
-        <div class="summary-table-number">
-          {{ fNum(totalFiatPoolInvestment, currency) }}
-          <BalTooltip
-            :text="$t('tooltips.migratePool.total', [currency.toUpperCase()])"
-            icon-size="sm"
-            class="ml-2"
-          />
-        </div>
-      </div>
       <div class="summary-table-row">
         <div class="summary-table-label">
           {{ $t('priceImpact') }}
