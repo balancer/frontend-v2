@@ -195,6 +195,5 @@ async function handleTransaction(
     >
       {{ currentAction.label }}
     </BalBtn>
-    <BalTooltip :text="props.errorMessage" />
   </div>
 </template>
