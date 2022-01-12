@@ -374,7 +374,7 @@ export default defineComponent({
     watch(
       () => props.data,
       () => {
-        setCurrentValueToLatest(false);
+        setCurrentValueToLatest(true);
       }
     );
 
