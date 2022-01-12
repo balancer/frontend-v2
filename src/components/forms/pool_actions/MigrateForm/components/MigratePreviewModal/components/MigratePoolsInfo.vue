@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { ComputedRef } from 'vue';
 
-import useUserSettings from '@/composables/useUserSettings';
-import useNumbers from '@/composables/useNumbers';
-
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -12,20 +9,13 @@ import { TokenInfo } from '@/types/TokenList';
 type Props = {
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
-  totalFiatPoolInvestment: ComputedRef<string>;
+  fiatTotalLabel: ComputedRef<string>;
 };
 
 /**
  * PROPS
  */
 defineProps<Props>();
-
-/**
- * COMPOSABLES
- */
-
-const { fNum } = useNumbers();
-const { currency } = useUserSettings();
 </script>
 
 <template>
@@ -37,7 +27,7 @@ const { currency } = useUserSettings();
       <div>
         <div>{{ fromPoolTokenInfo.symbol }}</div>
         <div class="text-gray-500">
-          {{ fNum(totalFiatPoolInvestment, currency) }}
+          {{ fiatTotalLabel }}
         </div>
       </div>
     </div>
@@ -49,7 +39,7 @@ const { currency } = useUserSettings();
       <div>
         <div>{{ toPoolTokenInfo.symbol }}</div>
         <div class="text-gray-500">
-          {{ fNum(totalFiatPoolInvestment, currency) }}
+          {{ fiatTotalLabel }}
         </div>
       </div>
     </div>

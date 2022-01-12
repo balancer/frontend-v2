@@ -165,7 +165,7 @@ async function submit(): Promise<TransactionResponse> {
     withdrawalState.init = true;
 
     if (shouldUseBatchRelayer.value && batchRelayerSwap.value) {
-      tx = await balancerContractsService.batchRelayer.stableExit(
+      tx = await balancerContractsService.batchRelayer.execute(
         batchRelayerSwap.value,
         getProvider()
       );

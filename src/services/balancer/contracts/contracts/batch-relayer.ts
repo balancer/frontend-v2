@@ -62,8 +62,8 @@ export default class BatchRelayer {
       }
     );
   }
-
-  public async stableExit(
+  // execute
+  public async execute(
     txInfo: TransactionData,
     userProvider: Web3Provider
   ): Promise<TransactionResponse> {

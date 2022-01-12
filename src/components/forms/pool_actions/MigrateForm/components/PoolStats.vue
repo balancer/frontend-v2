@@ -10,7 +10,6 @@ import { PoolMigrationInfo } from '@/components/forms/pool_actions/MigrateForm/t
 type Props = {
   poolMigrationInfo: PoolMigrationInfo;
   pool: FullPool;
-  isLoading: boolean;
 };
 
 /**
@@ -26,8 +25,7 @@ const { currency } = useUserSettings();
 </script>
 
 <template>
-  <BalLoadingBlock v-if="isLoading" class="h-64" />
-  <BalCard v-else noPad shadow="none">
+  <BalCard noPad shadow="none">
     <div class="p-4 w-full border-b dark:border-gray-900">
       <h6>
         {{ $t(`migratePool.${poolMigrationInfo.type}.poolStats.title`) }}

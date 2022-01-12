@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import useNumbers from '@/composables/useNumbers';
+import { Ref } from 'vue';
 
 /**
  * TYPES
  */
 type Props = {
-  priceImpact: number;
+  priceImpact: Ref<number>;
 };
 
 /**

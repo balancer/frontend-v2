@@ -56,6 +56,7 @@ export default class CalculatorService {
       if (this.isStablePhantomPool) {
         return this.stablePhantom.priceImpact(tokenAmounts, opts);
       } else {
+        console.log('HERE');
         return this.stable.priceImpact(tokenAmounts, opts);
       }
     }

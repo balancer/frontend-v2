@@ -164,7 +164,10 @@
             }
         },
         "previewModal": {
-            "title": "Preview migrate",
+            "titles": {
+                "default": "Migrate preview",
+                "confirmed": "Migrate confirmed"
+            },
             "riskWarnings": {
                 "title": "Some risks - you may lose funds in the pool if:",
                 "risks": {
@@ -258,6 +261,7 @@
         }
     },
     "goToBalancerV1Site": "Go to the Balancer V1 site ->",
+    "goToMigratedPool": "Go to migrated pool",
     "highGasFees": "High gas fees? Here's a helping hand",
     "highPriceImpact": "High price impact",
     "highPriceImpactDetailed": "This trade is significantly moving the market price.",
@@ -535,7 +539,7 @@
             "total": "The total value in {0} you’ll be withdrawing from this pool."
         },
         "migratePool": {
-            "priceImpact": "The higher the price impact, the worse price you’ll get for exiting your position.",
+            "priceImpact": "Price impact from adding liquidity results when the value of each token added is not proportional to the weights of the pool. Adding non-proportional amounts causes the internal prices of the pool to change, as if you were swapping tokens. The higher the price impact, the worse price you’ll get to enter your position.",
             "total": "The total value in {0} you’ll be migrating."
         }
     },
@@ -667,7 +671,7 @@
         "fundPool": "Fund pool",
         "investInPool": "{0} in {1}",
         "withdrawFromPool": "{0} from {1}",
-        "migratePool": "{0} {0} to {2}",
+        "migratePool": "{0} {1} to {2}",
         "wrapUnwrap": "{0} {1} to {2}"
     },
     "transactionType": "Transaction type",

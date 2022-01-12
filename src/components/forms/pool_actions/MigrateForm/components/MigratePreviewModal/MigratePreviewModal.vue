@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ComputedRef } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
+
+import useMigrateMath from '../../composables/useMigrateMath';
 
 import MigratePoolRisks from './components/MigratePoolRisks.vue';
 import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
@@ -22,7 +24,7 @@ type Props = {
   toPool: FullPool;
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
-  totalFiatPoolInvestment: ComputedRef<string>;
+  math: ReturnType<typeof useMigrateMath>;
 };
 
 /**
@@ -30,14 +32,31 @@ type Props = {
  */
 const props = defineProps<Props>();
 
+const { fiatTotalLabel, priceImpact } = toRefs(props.math);
+
 const emit = defineEmits<{
   (e: 'close'): void;
 }>();
 
 /**
+ * STATE
+ */
+const migrateConfirmed = ref(false);
+
+/**
  * COMPOSABLES
  */
-const router = useRouter();
+const { t } = useI18n();
+
+/**
+ * COMPUTED
+ */
+
+const title = computed((): string =>
+  migrateConfirmed.value
+    ? t('migratePool.previewModal.titles.confirmed')
+    : t('migratePool.previewModal.titles.default')
+);
 
 /**
  * METHODS
@@ -45,18 +64,24 @@ const router = useRouter();
 function handleClose() {
   emit('close');
 }
-
-function navigateToMigratedPool() {
-  router.push({ name: 'pool', params: { id: props.toPool.id } });
-}
 </script>
 
 <template>
-  <BalModal show @close="handleClose">
+  <BalModal show :fireworks="migrateConfirmed" @close="handleClose">
     <template v-slot:header>
-      <h4>
-        {{ $t('migratePool.previewModal.title') }}
-      </h4>
+      <div class="flex items-center">
+        <BalCircle
+          v-if="withdrawalConfirmed"
+          size="8"
+          color="green"
+          class="text-white mr-2"
+        >
+          <BalIcon name="check" />
+        </BalCircle>
+        <h4>
+          {{ title }}
+        </h4>
+      </div>
     </template>
 
     <MigratePoolRisks
@@ -67,18 +92,19 @@ function navigateToMigratedPool() {
     <MigratePoolsInfo
       :fromPoolTokenInfo="fromPoolTokenInfo"
       :toPoolTokenInfo="toPoolTokenInfo"
-      :totalFiatPoolInvestment="totalFiatPoolInvestment"
+      :fiatTotalLabel="fiatTotalLabel"
     />
 
-    <MigrateSummary :priceImpact="0" />
+    <MigrateSummary :priceImpact="priceImpact" />
 
     <MigrateActions
       :fromPool="fromPool"
       :toPool="toPool"
       :fromPoolTokenInfo="fromPoolTokenInfo"
       :toPoolTokenInfo="toPoolTokenInfo"
-      :totalFiatPoolInvestment="totalFiatPoolInvestment"
-      @success="navigateToMigratedPool"
+      :fiatTotalLabel="fiatTotalLabel"
+      :math="math"
+      @success="migrateConfirmed = true"
       class="mt-4"
     />
   </BalModal>

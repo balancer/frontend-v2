@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onBeforeMount, ComputedRef } from 'vue';
+import { ref, computed, reactive, onBeforeMount, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { StablePoolEncoder } from '@balancer-labs/sdk';
 
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -8,6 +9,8 @@ import {
   TransactionReceipt,
   TransactionResponse
 } from '@ethersproject/abstract-provider';
+import { TransactionActionInfo } from '@/types/transactions';
+import { TokenInfo } from '@/types/TokenList';
 
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';
@@ -18,11 +21,14 @@ import useConfig from '@/composables/useConfig';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
+import useUserSettings from '@/composables/useUserSettings';
+import useMigrateMath from '../../../composables/useMigrateMath';
 
 // Services
-import { TransactionActionInfo } from '@/types/transactions';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
-import { TokenInfo } from '@/types/TokenList';
+
+// Libs
+import { balancer } from '@/lib/balancer.sdk';
 
 /**
  * TYPES
@@ -32,7 +38,7 @@ type Props = {
   toPool: FullPool;
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
-  totalFiatPoolInvestment: ComputedRef<string>;
+  math: ReturnType<typeof useMigrateMath>;
 };
 
 type MigratePoolState = {
@@ -47,6 +53,10 @@ type MigratePoolState = {
  * PROPS & EMITS
  */
 const props = defineProps<Props>();
+
+const { fiatTotalLabel, bptBalanceScaled, swapAmountsOut, tokenCount } = toRefs(
+  props.math
+);
 
 const emit = defineEmits<{
   (e: 'success', value: TransactionReceipt): void;
@@ -67,14 +77,15 @@ const migratePoolState = reactive<MigratePoolState>({
  */
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { getProvider, explorerLinks } = useWeb3();
+const { getProvider, explorerLinks, account } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
+const { slippageScaled } = useUserSettings();
 const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 
 const migrateAction: TransactionActionInfo = {
   label: t('migratePool.previewModal.actions.title'),
-  loadingLabel: t('migratePool.previewModal.loadingLabel.loading'),
+  loadingLabel: t('migratePool.previewModal.actions.loading'),
   confirmingLabel: t('confirming'),
   action: submit,
   stepTooltip: t('migratePool.previewModal.actions.migrationStep')
@@ -100,14 +111,14 @@ async function handleTransaction(tx): Promise<void> {
     type: 'tx',
     action: 'migratePool',
     summary: t('transactionSummary.migratePool', [
-      props.totalFiatPoolInvestment.value,
+      fiatTotalLabel.value,
       props.fromPoolTokenInfo.symbol,
       props.toPoolTokenInfo.symbol
     ]),
     details: {
       fromPool: props.fromPool,
       toPool: props.toPool,
-      totalFiatPoolInvestment: props.totalFiatPoolInvestment.value
+      totalFiatPoolInvestment: fiatTotalLabel.value
     }
   });
 
@@ -126,13 +137,31 @@ async function handleTransaction(tx): Promise<void> {
   });
 }
 
-async function submit(): Promise<TransactionResponse> {
+async function submit() {
   try {
-    let tx;
+    let tx: TransactionResponse;
     migratePoolState.init = true;
 
-    tx = await balancerContractsService.batchRelayer.stableExit(
-      '',
+    const txInfo = await balancer.relayer.exitPoolAndBatchSwap({
+      exiter: account.value,
+      swapRecipient: account.value,
+      poolId: props.fromPool.id,
+      exitTokens: props.fromPool.tokensList,
+      userData: StablePoolEncoder.exitExactBPTInForTokensOut(
+        bptBalanceScaled.value
+      ),
+      // minExitAmountsOut: swapAmountsOut.value,
+      minExitAmountsOut: ['0', '0', '0'],
+      finalTokensOut: new Array(tokenCount.value).fill(props.toPool.address),
+      slippage: slippageScaled.value,
+      fetchPools: {
+        fetchPools: true,
+        fetchOnChain: false
+      }
+    });
+
+    tx = await balancerContractsService.batchRelayer.execute(
+      txInfo,
       getProvider()
     );
 
@@ -144,8 +173,6 @@ async function submit(): Promise<TransactionResponse> {
     handleTransaction(tx);
     return tx;
   } catch (error) {
-    migratePoolState.init = false;
-    migratePoolState.confirming = false;
     console.error(error);
     return Promise.reject(error);
   }
@@ -165,7 +192,7 @@ onBeforeMount(() => {
 <template>
   <div>
     <BalActionSteps v-if="!migratePoolState.confirmed" :actions="actions" />
-    <template v-else>
+    <template>
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >
@@ -189,6 +216,16 @@ onBeforeMount(() => {
           />
         </BalLink>
       </div>
+      <BalBtn
+        tag="router-link"
+        :to="{ name: 'pool', params: { id: toPool.id } }"
+        color="gray"
+        outline
+        block
+        class="mt-2"
+      >
+        {{ $t('goToMigratedPool') }}
+      </BalBtn>
     </template>
   </div>
 </template>
