@@ -509,7 +509,7 @@
             "wrapUnwrap": "This option has been disabled because Wrap/Unwrap transactions always require a gas transaction."
         },
         "label": "Trade gasless",
-        "tooltip": "‘Trade gasless’ on the Balancer-Gnosis-Protocol (CowSwap) for free signature trades, MEV protection, and the best prices with intelligent trade routing across DeFi exchanges. Turn it off to trade only through Balancer liquidity pools using gas."
+        "tooltip": "‘Trade gasless’ on the Balancer CoW Protocol for free signature trades, MEV protection, and the best prices with intelligent trade routing across DeFi exchanges. Turn it off to trade only through Balancer liquidity pools using gas."
     },
     "tradeInterface": "Trade interface",
     "tradeInterfaceTooltip": "Choose Balancer for the best liquidity across Balancer V1 and V2 pools. Choose Gnosis to buy and sell tokens using gas-less orders while enjoying MEV protection.",
@@ -551,7 +551,7 @@
                 "title": "Approve {0}"
             },
             "sign": {
-                "content": "Upon your signature, CowSwap will find an optimal route amongst other traders or DeFi exchanges, with MEV protection.",
+                "content": "Upon your signature, the Balancer CoW Protocol will find an optimal route amongst other traders or DeFi exchanges, with MEV protection.",
                 "title": "Sign a free message to trade"
             },
             "trade": {
