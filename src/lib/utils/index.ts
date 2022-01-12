@@ -123,7 +123,7 @@ export function formatWordListAsSentence(words: string[]) {
   if (!words.length) return '';
   if (words.length >= 2) {
     const commaSeperatedWords = initial(words);
-    return `${commaSeperatedWords.join(',')} and ${words[words.length - 1]}`;
+    return `${commaSeperatedWords.join(', ')} and ${words[words.length - 1]}`;
   }
   // only one word, so just return that
   return words[0];
