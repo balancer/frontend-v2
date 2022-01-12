@@ -139,8 +139,8 @@ onBeforeMount(() => {
     <BalAlert
       v-if="error !== null"
       type="error"
-      title="Error"
-      :description="parseError(error)"
+      :title="parseError(error).title"
+      :description="parseError(error).description"
       class="mt-4"
       block
       actionLabel="Dismiss"

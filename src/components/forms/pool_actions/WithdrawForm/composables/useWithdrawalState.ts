@@ -5,6 +5,7 @@ import { isStablePhantom } from '@/composables/usePool';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
+import { BasicContent } from '@/types';
 
 export enum WithdrawalError {
   SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT
@@ -52,12 +53,19 @@ export function setError(error: WithdrawalError | null): void {
   state.error = error;
 }
 
-export function parseError(error: WithdrawalError): string {
+export function parseError(error: WithdrawalError): BasicContent {
   switch (error) {
     case WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT:
-      return 'Min BPT error';
+      return {
+        title: 'Warning',
+        description:
+          "You can only withdraw 30% of the pool's value in single asset withdrawals"
+      };
     default:
-      return 'Something went wrong';
+      return {
+        title: 'Oops',
+        description: 'Something went wrong.'
+      };
   }
 }
 
