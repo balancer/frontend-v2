@@ -101,9 +101,7 @@ function toggleEditable() {
   isEditable.value = !isEditable.value;
   // if the value was changed to false it means that
   // the user clicked the save icon
-  if (isEditable.value === false) {
-    emit('save');
-  }
+  if (isEditable.value === false) emit('save');
   setTimeout(() => {
     if (inputElement.value) {
       inputElement.value.focus();

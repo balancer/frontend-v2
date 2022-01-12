@@ -92,12 +92,8 @@ export default function usePoolCreation() {
         w => w.tokenAddress
       );
 
-      if (!poolCreationState.name) {
-        poolCreationState.name = getPoolSymbol();
-      }
-      if (!poolCreationState.symbol) {
-        poolCreationState.symbol = getPoolSymbol();
-      }
+      poolCreationState.name = poolCreationState.name || getPoolSymbol();
+      poolCreationState.symbol = poolCreationState.name || getPoolSymbol();
     },
     {
       deep: true
