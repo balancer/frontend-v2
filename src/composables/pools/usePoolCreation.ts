@@ -93,7 +93,7 @@ export default function usePoolCreation() {
       );
 
       poolCreationState.name = poolCreationState.name || getPoolSymbol();
-      poolCreationState.symbol = poolCreationState.name || getPoolSymbol();
+      poolCreationState.symbol = poolCreationState.symbol || getPoolSymbol();
     },
     {
       deep: true
