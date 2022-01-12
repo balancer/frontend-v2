@@ -9,6 +9,7 @@ Please include a summary of the change and if relevant which issue is fixed. Ple
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] Dependency changes
 - [ ] Code refactor / cleanup
+- [ ] Documentation or wording changes
 - [ ] Other
 
 ## How should this be tested?
