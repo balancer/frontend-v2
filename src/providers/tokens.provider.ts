@@ -202,7 +202,9 @@ export default {
       isLoading: priceQueryLoading,
       isError: priceQueryError,
       refetch: refetchPrices
-    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'));
+    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'), {
+      keepPreviousData: true
+    });
 
     const {
       data: balanceData,
@@ -210,7 +212,7 @@ export default {
       isLoading: balanceQueryLoading,
       isError: balancesQueryError,
       refetch: refetchBalances
-    } = useBalancesQuery(tokens);
+    } = useBalancesQuery(tokens, { keepPreviousData: true });
 
     const {
       data: allowanceData,
