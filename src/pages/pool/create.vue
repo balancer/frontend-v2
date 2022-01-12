@@ -106,13 +106,14 @@ const doSimilarPoolsExist = computed(() => similarPools.value.length > 0);
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 
 const unknownTokens = computed(() => {
-  if (dynamicDataLoading.value) return [];
   return validTokens.value.filter(token => {
     return priceFor(token) === 0 || injectedPrices.value[token];
   });
 });
 
-const hasUnknownToken = computed(() => unknownTokens.value.length > 0);
+const hasUnknownToken = computed(() =>
+  validTokens.value.some(t => priceFor(t) === 0)
+);
 
 const steps = computed(() => [
   {
@@ -237,10 +238,8 @@ watch([hasInjectedToken, totalLiquidity], () => {
 // on next step here, rather than having to clutter the
 // usePoolCreation composable further
 watch(activeStep, () => {
-  if (activeStep.value === 1) {
-    if (hasUnknownToken.value) {
-      showUnknownTokenModal();
-    }
+  if (hasUnknownToken.value && !hasRestoredFromSavedState.value) {
+    showUnknownTokenModal();
   }
 });
 </script>
