@@ -51,6 +51,7 @@ export interface TokensProviderResponse {
   loading: Ref<boolean>;
   tokens: ComputedRef<TokenInfoMap>;
   injectedTokens: Ref<TokenInfoMap>;
+  injectedPrices: Ref<Record<string, number>>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;

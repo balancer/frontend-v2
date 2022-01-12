@@ -113,6 +113,7 @@
     },
     "continueAnyway": "Continue anyway",
     "copyAddress": "Copy address",
+    "correctTokenPricing": "Correct token pricing may help you avoid losing money to arbitrageurs. Losses could happen if you don't add pool assets in proportion to their target weights.",
     "create": "Create",
     "createAPool": {
         "addTokenPrice": "Add token price(s) ->",
@@ -174,6 +175,7 @@
     "emptyInvestmentPools": "You have not joined any Balancer investment pools.",
     "emptyInvestmentPoolsLink": "View investment pools ->",
     "enterAmount": "Enter amount",
+    "enterAPrice": "Enter a price",
     "errorCancellingOrder": "Error cancelling order",
     "errorNoLists": "Sorry, we can't find any lists",
     "errorNoMatch": "Sorry, we can't find any matches",
@@ -489,6 +491,7 @@
     "tokenSearch": "Token search",
     "tokensLowerCase": "tokens",
     "tokensParen": "Token(s)",
+    "tokenPrices": "Token prices",
     "tokenWarning": "Balancer Labs is not liable for any losses you might incur as a direct or indirect result of adding liquidity to this pool. Do not add deflationary tokens, tokens with transfer fees, or any other non-ERC20-conforming tokens. Please acknowlege before continuing.",
     "tokenWarningTitle": "You have added a custom token",
     "tooltips": {
