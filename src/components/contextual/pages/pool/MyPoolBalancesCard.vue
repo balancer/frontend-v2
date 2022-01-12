@@ -172,7 +172,7 @@ function navigateToPoolMigration(pool: FullPool) {
         </span>
       </div>
       <BalBtn
-        v-if="isMigratablePool(props.pool)"
+        v-if="Number(bptBalance) > 0 && isMigratablePool(props.pool)"
         color="blue"
         class="mt-4"
         block
