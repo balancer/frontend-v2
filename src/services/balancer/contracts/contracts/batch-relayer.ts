@@ -62,7 +62,7 @@ export default class BatchRelayer {
       }
     );
   }
-  // execute
+
   public async execute(
     txInfo: TransactionData,
     userProvider: Web3Provider

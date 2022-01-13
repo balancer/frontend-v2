@@ -43,10 +43,10 @@ export default function useMigrateMath(
     'join',
     ref(false)
   );
+
   /**
    * COMPUTED
    */
-
   const bptBalance = computed(() => balanceFor(fromPool.value.address));
 
   const hasBpt = computed(() => bnum(bptBalance.value).gt(0));
@@ -104,10 +104,6 @@ export default function useMigrateMath(
       .toNumber();
   });
 
-  const highPriceImpact = computed(() =>
-    bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01)
-  );
-
   return {
     // computed
     bptBalance,
@@ -119,7 +115,6 @@ export default function useMigrateMath(
     fiatTotal,
     fiatTotalLabel,
     swapAmountsOut,
-    priceImpact,
-    highPriceImpact
+    priceImpact
   };
 }

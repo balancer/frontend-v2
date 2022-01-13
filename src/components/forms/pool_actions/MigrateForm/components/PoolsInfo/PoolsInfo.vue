@@ -29,11 +29,16 @@ type Props = {
  * PROPS
  */
 const props = defineProps<Props>();
+
+/**
+ * STATE
+ */
+const showPreviewModal = ref(false);
+
 /**
  * COMPOSABLES
  */
 const { t } = useI18n();
-const showPreviewModal = ref(false);
 
 const { fromPool, toPool } = toRefs(props);
 
