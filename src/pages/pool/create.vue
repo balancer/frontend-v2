@@ -43,14 +43,15 @@ const { appLoading } = useApp();
 const {
   activeStep,
   similarPools,
-  setActiveStep,
   hasInjectedToken,
   hasRestoredFromSavedState,
+  tokensList,
+  seedTokens,
+  setActiveStep,
   setRestoredState,
   importState,
-  resetPoolCreationState,
-  tokensList,
-  totalLiquidity
+  totalLiquidity,
+  resetPoolCreationState
 } = usePoolCreation();
 const { removeAlert } = useAlerts();
 const { t } = useI18n();
@@ -60,7 +61,8 @@ const {
   priceFor,
   tokens,
   injectTokens,
-  injectedPrices
+  injectedPrices,
+  loading: isLoadingTokens
 } = useTokens();
 
 /**
@@ -76,7 +78,6 @@ onMounted(async () => {
       opacity: 0
     });
   }
-
   let previouslySavedState = lsGet(
     POOL_CREATION_STATE_KEY,
     null,
@@ -85,13 +86,6 @@ onMounted(async () => {
   if (activeStep.value === 0 && previouslySavedState !== null) {
     // need to make sure to inject any tokens that were chosen
     previouslySavedState = JSON.parse(previouslySavedState);
-    const uninjectedTokens = previouslySavedState.seedTokens
-      .filter(
-        loadedSeedToken =>
-          tokens.value[loadedSeedToken.tokenAddress] === undefined
-      )
-      .map(token => token.tokenAddress);
-    injectTokens(uninjectedTokens);
     importState(previouslySavedState);
     setRestoredState(true);
     await nextTick();
@@ -240,6 +234,18 @@ watch([hasInjectedToken, totalLiquidity], () => {
 watch(activeStep, () => {
   if (hasUnknownToken.value && !hasRestoredFromSavedState.value) {
     showUnknownTokenModal();
+  }
+});
+
+// make sure to inject any custom tokens we cannot inject
+// after tokens have finished loading as it will attempt to
+// inject 'known' tokens too, as during mount, tokens are still loading
+watch(isLoadingTokens, () => {
+  if (!isLoadingTokens.value) {
+    const uninjectedTokens = seedTokens.value
+      .filter(seedToken => tokens.value[seedToken.tokenAddress] === undefined)
+      .map(seedToken => seedToken.tokenAddress);
+    injectTokens(uninjectedTokens);
   }
 });
 </script>

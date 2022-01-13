@@ -60,6 +60,7 @@ const emit = defineEmits<{
   (e: 'update:isValid', value: boolean): void;
   (e: 'keydown', value: HtmlInputEvent);
   (e: 'editToggled', value: boolean): void;
+  (e: 'save'): void;
 }>();
 
 /**
@@ -99,6 +100,9 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
 function toggleEditable() {
   isEditable.value = !isEditable.value;
   emit('editToggled', isEditable.value);
+  // if the value was changed to false it means that
+  // the user clicked the save icon
+  if (isEditable.value === false) emit('save');
   setTimeout(() => {
     if (inputElement.value) {
       inputElement.value.focus();

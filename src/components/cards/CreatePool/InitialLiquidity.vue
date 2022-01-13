@@ -35,12 +35,13 @@ const {
   currentLiquidity,
   isWethPool,
   useNativeAsset,
+  poolLiquidity,
   goBack,
   updateManuallySetToken,
   proceed,
   clearAmounts,
   setAmountsToMaxBalances,
-  poolLiquidity
+  saveState
 } = usePoolCreation();
 const { t } = useI18n();
 
@@ -179,6 +180,11 @@ function onAlertMountChange() {
   emit('update:height', {
     height: cardWrapper.value?.offsetHeight || 0
   });
+}
+
+function saveAndProceed() {
+  saveState();
+  proceed();
 }
 </script>
 
@@ -319,7 +325,7 @@ function onAlertMountChange() {
         </AnimatePresence>
         <BalBtn
           :disabled="isExceedingWalletBalance"
-          @click="proceed"
+          @click="saveAndProceed"
           block
           color="gradient"
           >{{ t('preview') }}</BalBtn

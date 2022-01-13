@@ -280,6 +280,7 @@
     "minTransactionBuffer":"لضمان إجراء معاملة سلسة ، يجب ترك {0} {1} على الأقل في محفظتك لدفع رسوم الغاز.",
     "missingPoolNameOrSymbol":"اسم التجمع أو رمزه مفقود",
     "missingTokenPrices":"أسعار الرموز المفقودة",
+    "missingPoolNameOrSymbolInfo":"يوجد اسم أو رمز للتجمع مفقود ، قم بتعبئته قبل إنشاء التجمع.",
     "month":"شهر",
     "months":"الشهور",
     "mustBeAtLeast":"يجب ألا يقل عدد الأحرف عن {0}",
