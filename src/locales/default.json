@@ -59,7 +59,6 @@
     "approveGP": "Approve trading on Gnosis Protocol",
     "approveLidoRelayer": "Approve Lido relayer",
     "approveBatchRelayer": "Approve Batch relayer",
-    "approvingBatchRelayer": "Approving Batch relayer",
     "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
     "approveTokens": "Approve tokens",
     "approving": "Approving",
