@@ -39,6 +39,7 @@ const toPoolQuery = usePoolQuery(props.poolMigrationInfo.toPoolId);
 const batchRelayerApproval = useRelayerApproval(Relayer.BATCH);
 
 const { loading: batchRelayerApprovalLoading } = toRefs(batchRelayerApproval);
+
 /**
  * COMPUTED
  */
@@ -96,16 +97,4 @@ const toPoolTokenInfo = computed(() =>
       <PoolStats v-else :pool="toPool" :poolMigrationInfo="poolMigrationInfo" />
     </template>
   </Col3Layout>
-  <teleport to="#modal">
-    <MigratePreviewModal
-      v-if="showPreviewModal"
-      :fromPool="fromPool"
-      :toPool="toPool"
-      :fromPoolTokenInfo="fromPoolTokenInfo"
-      :toPoolTokenInfo="toPoolTokenInfo"
-      :poolMigrationInfo="poolMigrationInfo"
-      :totalFiatPoolInvestment="totalFiatPoolInvestment"
-      @close="showPreviewModal = false"
-    />
-  </teleport>
 </template>

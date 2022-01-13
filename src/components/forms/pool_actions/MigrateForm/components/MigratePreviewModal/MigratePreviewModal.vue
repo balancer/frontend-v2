@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 
-import useMigrateMath from '../../composables/useMigrateMath';
+import { MigrateMathResponse } from '../../composables/useMigrateMath';
 
 import MigratePoolRisks from './components/MigratePoolRisks.vue';
 import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
@@ -24,7 +24,7 @@ type Props = {
   toPool: FullPool;
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
-  math: ReturnType<typeof useMigrateMath>;
+  math: MigrateMathResponse;
 };
 
 /**

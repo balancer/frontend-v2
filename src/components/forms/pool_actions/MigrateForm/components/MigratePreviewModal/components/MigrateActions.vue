@@ -22,7 +22,7 @@ import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
 import useUserSettings from '@/composables/useUserSettings';
-import useMigrateMath from '../../../composables/useMigrateMath';
+import { MigrateMathResponse } from '../../../composables/useMigrateMath';
 
 // Services
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
@@ -38,7 +38,7 @@ type Props = {
   toPool: FullPool;
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
-  math: ReturnType<typeof useMigrateMath>;
+  math: MigrateMathResponse;
 };
 
 type MigratePoolState = {
@@ -150,8 +150,7 @@ async function submit() {
       userData: StablePoolEncoder.exitExactBPTInForTokensOut(
         bptBalanceScaled.value
       ),
-      // minExitAmountsOut: swapAmountsOut.value,
-      minExitAmountsOut: ['0', '0', '0'],
+      minExitAmountsOut: swapAmountsOut.value,
       finalTokensOut: new Array(tokenCount.value).fill(props.toPool.address),
       slippage: slippageScaled.value,
       fetchPools: {
@@ -192,7 +191,7 @@ onBeforeMount(() => {
 <template>
   <div>
     <BalActionSteps v-if="!migratePoolState.confirmed" :actions="actions" />
-    <template>
+    <template v-else>
       <div
         class="flex items-center justify-between text-gray-400 dark:text-gray-600 mt-4 text-sm"
       >

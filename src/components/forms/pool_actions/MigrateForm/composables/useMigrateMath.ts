@@ -11,7 +11,9 @@ import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 import { bnSum, bnum } from '@/lib/utils';
 import useSlippage from '@/composables/useSlippage';
 
-export default function useMigrateFormMath(
+export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;
+
+export default function useMigrateMath(
   fromPool: Ref<FullPool>,
   toPool: Ref<FullPool>
 ) {
