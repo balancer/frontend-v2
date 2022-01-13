@@ -22,7 +22,7 @@ import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
 
 /**
- * 
+ *
  * @param inputAsset The address of the input asset
  * @param outputAsset The address of the output asset
  * @param nativeAsset The address of the native asset on the network
@@ -249,8 +249,14 @@ const chartGrid = computed(() => {
         </button>
         <div
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
+          class="flex"
         >
           <h6 class="font-medium">{{ outputSym }}/{{ inputSym }}</h6>
+          <BalTooltip class="ml-2" :text="$t('coingeckoPricingTooltip')">
+            <template v-slot:activator>
+              <img class="h-5" src="@/assets/images/icons/coingecko.svg" />
+            </template>
+          </BalTooltip>
         </div>
         <div
           v-if="failedToLoadPriceData && tokenOutAddress"
