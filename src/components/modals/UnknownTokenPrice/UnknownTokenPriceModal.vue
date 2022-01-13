@@ -106,6 +106,7 @@ function injectUnknownPrices() {
           "
           noMax
           hideFooter
+          noRules
         />
       </BalStack>
       <BalBtn @click="injectUnknownPrices" :disabled="isSubmitDisabled">{{
