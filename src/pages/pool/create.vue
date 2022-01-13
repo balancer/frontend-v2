@@ -329,7 +329,7 @@ watch(activeStep, () => {
       <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="pb-24">
         <BalAccordion
           :sections="[
-            { title: 'Pool summary', id: 'pool-summary' },
+            { title: t('poolSummary'), id: 'pool-summary' },
             { title: t('tokenPrices'), id: 'token-prices' }
           ]"
         >

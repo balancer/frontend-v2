@@ -3,6 +3,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
+import useUserSettings from '@/composables/useUserSettings';
 
 import { computed } from 'vue';
 
@@ -19,19 +20,24 @@ const { upToLargeBreakpoint } = useBreakpoints();
 const { tokensList } = usePoolCreation();
 const { tokens, priceFor, injectedPrices } = useTokens();
 const { fNum } = useNumbers();
+const { currency } = useUserSettings();
 
 /**
  * COMPUTED
  */
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 const knownTokens = computed(() =>
-  validTokens.value.filter(t => priceFor(t) !== 0 && !injectedPrices.value[t])
+  validTokens.value.filter(
+    token => priceFor(token) !== 0 && !injectedPrices.value[token]
+  )
 );
 const unknownTokens = computed(() =>
-  validTokens.value.filter(t => priceFor(t) === 0 || injectedPrices.value[t])
+  validTokens.value.filter(
+    token => priceFor(token) === 0 || injectedPrices.value[token]
+  )
 );
 const hasUnknownPrice = computed(() =>
-  validTokens.value.some(t => priceFor(t) === 0)
+  validTokens.value.some(token => priceFor(token) === 0)
 );
 </script>
 
@@ -56,7 +62,7 @@ const hasUnknownPrice = computed(() =>
           <BalStack horizontal justify="center">
             <div>
               <div class="-mr-1">
-                <span>{{ fNum(priceFor(token), 'usd') }}</span>
+                <span>{{ fNum(priceFor(token), currency) }}</span>
               </div>
             </div>
             <img
@@ -93,7 +99,7 @@ const hasUnknownPrice = computed(() =>
               horizontal
               align="center"
             >
-              <span>{{ fNum(injectedPrices[token], 'usd') }}</span>
+              <span>{{ fNum(injectedPrices[token], currency) }}</span>
               <BalIcon size="sm" name="edit" />
             </BalStack>
             <BalStack v-else horizontal align="center">
