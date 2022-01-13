@@ -114,6 +114,7 @@ export default function useMigrateFormMath(
     fullAmounts,
     fullAmountsScaled,
     tokenCount,
+    fiatTotal,
     fiatTotalLabel,
     swapAmountsOut,
     priceImpact,

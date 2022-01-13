@@ -8,8 +8,8 @@ import useMigrateMath from '../../composables/useMigrateMath';
 
 import MigratePoolRisks from './components/MigratePoolRisks.vue';
 import MigratePoolsInfo from './components/MigratePoolsInfo.vue';
-import MigrateSummary from './components/MigrateSummary.vue';
 import MigrateActions from './components/MigrateActions.vue';
+import InvestSummary from '../../../InvestForm/components/InvestPreviewModal/components/InvestSummary.vue';
 
 import { TokenInfo } from '@/types/TokenList';
 
@@ -32,7 +32,7 @@ type Props = {
  */
 const props = defineProps<Props>();
 
-const { fiatTotalLabel, priceImpact } = toRefs(props.math);
+const { fiatTotalLabel, fiatTotal, priceImpact } = toRefs(props.math);
 
 const emit = defineEmits<{
   (e: 'close'): void;
@@ -95,7 +95,12 @@ function handleClose() {
       :fiatTotalLabel="fiatTotalLabel"
     />
 
-    <MigrateSummary :priceImpact="priceImpact" />
+    <InvestSummary
+      :pool="toPool"
+      :fiatTotal="fiatTotal"
+      :priceImpact="priceImpact"
+      :showTotal="false"
+    />
 
     <MigrateActions
       :fromPool="fromPool"

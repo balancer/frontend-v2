@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import useNumbers from '@/composables/useNumbers';
 import { isStablePhantom, isWstETH } from '@/composables/usePool';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
+
 import { bnum } from '@/lib/utils';
+
 import { FullPool } from '@/services/balancer/subgraph/types';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -15,12 +18,15 @@ type Props = {
   pool: FullPool;
   fiatTotal: string;
   priceImpact: number;
+  showTotal?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showTotal: true
+});
 
 /**
  * COMPOSABLES
@@ -100,7 +106,7 @@ function weeklyYieldForAPR(apr: string): string {
       {{ $t('summary') }}
     </h6>
     <div class="flex flex-col py-2">
-      <div class="summary-table-row">
+      <div v-if="showTotal" class="summary-table-row">
         <div class="summary-table-label">
           {{ $t('total') }}
         </div>
