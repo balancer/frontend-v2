@@ -276,6 +276,7 @@
     "menu":"菜单",
     "minTransactionBuffer":"为确保交易顺利进行，您的钱包中必须至少留有 {0} {1} 以支付加油费。",
     "missingPoolNameOrSymbol":"缺少池名称或符号",
+    "missingPoolNameOrSymbolInfo":"缺少池名称或符号，请在创建池之前填写。",
     "month":"月",
     "months":"月",
     "mustBeAtLeast":"必须至少为{0}个字符",
