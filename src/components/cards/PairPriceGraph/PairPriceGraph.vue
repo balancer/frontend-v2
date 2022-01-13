@@ -44,9 +44,7 @@ async function getPairPriceData(
     outputAsset === nativeAsset ? wrappedNativeAsset : outputAsset;
 
   if (inverse) {
-    const tempInputAsset = _inputAsset;
-    _inputAsset = _outputAsset;
-    _outputAsset = tempInputAsset;
+    [_inputAsset, _outputAsset] = [_outputAsset, _inputAsset];
   }
   const aggregateBy = days === 1 ? 'hour' : 'day';
   const inputAssetData = await coingeckoService.prices.getTokensHistorical(
@@ -252,7 +250,11 @@ const chartGrid = computed(() => {
           class="flex"
         >
           <h6 class="font-medium">{{ outputSym }}/{{ inputSym }}</h6>
-          <BalTooltip class="ml-2" :text="$t('coingeckoPricingTooltip')">
+          <BalTooltip
+            width="64"
+            class="ml-2"
+            :text="$t('coingeckoPricingTooltip')"
+          >
             <template v-slot:activator>
               <img class="h-5" src="@/assets/images/icons/coingecko.svg" />
             </template>
