@@ -25,6 +25,7 @@
     "amountToInvest": "Amount to invest",
     "amountToWithdraw": "Amount to withdraw",
     "amplification": "Amplification",
+    "and": "and",
     "apiErrorCodeDetails": {
         "DuplicateOrder": "There was another identical order already submitted. Please try again.",
         "InsufficientFee": "The signed fee is insufficient. It's possible that is higher now due to a change in the gas price, ether price, or the sell token price. Please try again to get an updated fee quote.",
@@ -638,6 +639,7 @@
     "unsupportedNetwork": "Unsupported network",
     "unknown": "Unknown",
     "unknownPoolType": "Unknown pool type",
+    "unknownTokenPrice": "Unknown token price",
     "unlock": "Unlock",
     "unlocking": "Unlocking",
     "unwrap": "Unwrap",

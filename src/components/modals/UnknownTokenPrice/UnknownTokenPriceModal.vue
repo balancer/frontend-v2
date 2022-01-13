@@ -5,6 +5,8 @@ import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 
 import useTokens from '@/composables/useTokens';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
+import { useI18n } from 'vue-i18n';
+
 import { formatWordListAsSentence } from '@/lib/utils';
 
 type Props = {
@@ -14,7 +16,7 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   isVisible: false,
-  unknownTokens: [] as string[]
+  unknownTokens: () => []
 });
 
 const emit = defineEmits(['close']);
@@ -29,6 +31,7 @@ const unknownTokenPrices = reactive({});
  */
 const { seedTokens } = usePoolCreation();
 const { tokens, injectPrices } = useTokens();
+const { t } = useI18n();
 
 /**
  * LIFECYCLE
@@ -46,7 +49,7 @@ const readableUnknownTokenSymbols = computed(() => {
   const tokenSymbols = (props.unknownTokens || []).map(
     tokenAddress => tokens.value[tokenAddress].symbol
   );
-  return formatWordListAsSentence(tokenSymbols);
+  return formatWordListAsSentence(tokenSymbols, t);
 });
 
 const isSubmitDisabled = computed(() => {
@@ -56,7 +59,7 @@ const isSubmitDisabled = computed(() => {
 });
 
 /**
- * FUNCTIONS
+ * METHODS
  */
 function getIndexOfUnknownToken(address: string) {
   return seedTokens.value.findIndex(token => address === token.tokenAddress);
@@ -70,7 +73,7 @@ function injectUnknownPrices() {
 
 <template>
   <BalModal
-    title="Unknown token price"
+    :title="t('unknownTokenPrice')"
     :show="isVisible"
     @close="$emit('close')"
   >
