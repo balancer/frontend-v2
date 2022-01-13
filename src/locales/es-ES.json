@@ -276,6 +276,7 @@
     "menu":"Menú",
     "minTransactionBuffer":"Para garantizar una transacción sin problemas, debe dejar al menos {0} {1} en su billetera para pagar las tarifas del combustible.",
     "missingPoolNameOrSymbol":"Falta el nombre o el símbolo de pool",
+    "missingPoolNameOrSymbolInfo":"Falta un nombre o símbolo de pool, rellénelo antes de crear el pool.",
     "month":"mes",
     "months":"meses",
     "mustBeAtLeast":"debe tener al menos {0} caracteres",
@@ -593,4 +594,3 @@
     "youDidIt":"¡Lo hiciste!",
     "yourTransactions":"Tus transacciones en este pool"
  }
- 

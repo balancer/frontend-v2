@@ -276,6 +276,7 @@
     "menu":"Cardápio",
     "minTransactionBuffer":"Para garantir uma transação tranquila, pelo menos {0} {1} deve ser deixado em sua carteira para pagar as taxas de gás.",
     "missingPoolNameOrSymbol":"Nome ou símbolo do pool ausente",
+    "missingPoolNameOrSymbolInfo":"Há um nome ou símbolo de pool ausente, preencha-o antes de criar o pool.",
     "month":"mês",
     "months":"meses",
     "mustBeAtLeast":"deve ter pelo menos {0} caracteres",

@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue';
 import CreateActions from '@/components/cards/CreatePool/CreateActions.vue';
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
-import { useI18n } from 'vue-i18n';
 import useWeb3 from '@/services/web3/useWeb3';
+
+import { useI18n } from 'vue-i18n';
 import { shortenLabel } from '@/lib/utils';
 
 /**
@@ -54,7 +56,6 @@ const { userNetworkConfig, account } = useWeb3();
  */
 onBeforeMount(() => {
   sortSeedTokens();
-  saveState();
 });
 
 /**
@@ -84,8 +85,8 @@ const tokenAmounts = computed((): string[] => {
   return getScaledAmounts();
 });
 
-const isCreateDisabled = computed(() => {
-  return poolSymbol.value == '' || poolName.value == '';
+const hasMissingPoolNameOrSymbol = computed(() => {
+  return poolSymbol.value === '' || poolName.value === '';
 });
 
 /**
@@ -204,11 +205,21 @@ function getSwapFeeManager() {
           <BalStack vertical spacing="xs" class="p-3">
             <BalStack horizontal justify="between">
               <span class="text-sm">{{ $t('poolSymbol') }}:</span>
-              <BalInlineInput size="xs" v-model="poolName" inputAlignRight />
+              <BalInlineInput
+                size="xs"
+                v-model="poolName"
+                @save="saveState"
+                inputAlignRight
+              />
             </BalStack>
             <BalStack horizontal justify="between">
               <span class="text-sm">{{ $t('poolName') }}:</span>
-              <BalInlineInput size="xs" v-model="poolSymbol" inputAlignRight />
+              <BalInlineInput
+                size="xs"
+                v-model="poolSymbol"
+                @save="saveState"
+                inputAlignRight
+              />
             </BalStack>
             <BalStack horizontal justify="between">
               <span class="text-sm">{{ $t('poolType') }}:</span>
@@ -234,11 +245,16 @@ function getSwapFeeManager() {
             </BalStack>
           </BalStack>
         </BalCard>
-        <!-- <AnimatePresence
-        :isVisible="arbitrageDelta.delta > 0.05"
-        unmountInstantly
-      >
-        <BalAlert
+        <AnimatePresence
+          :isVisible="hasMissingPoolNameOrSymbol"
+          unmountInstantly
+        >
+          <BalAlert :title="$t('missingPoolNameOrSymbol')" type="error">
+            {{ $t('missingPoolNameOrSymbolInfo') }}
+          </BalAlert>
+        </AnimatePresence>
+
+        <!-- <BalAlert
           type="error"
           class="mb-4"
           :title="
@@ -249,11 +265,9 @@ function getSwapFeeManager() {
           "
         >
           {{ t('createAPool.arbReason') }}
-        </BalAlert>
-      </AnimatePresence> -->
+        </BalAlert> -->
         <CreateActions
-          :createDisabled="isCreateDisabled"
-          :errorMessage="t('missingPoolNameOrSymbol')"
+          :createDisabled="hasMissingPoolNameOrSymbol"
           :tokenAddresses="tokenAddresses"
           :amounts="tokenAmounts"
           @success="handleSuccess"

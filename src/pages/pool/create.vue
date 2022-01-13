@@ -39,16 +39,22 @@ const { appLoading } = useApp();
 const {
   activeStep,
   similarPools,
-  setActiveStep,
   hasInjectedToken,
   totalLiquidity,
   hasRestoredFromSavedState,
+  tokensList,
+  seedTokens,
+  setActiveStep,
   setRestoredState,
   importState,
-  resetPoolCreationState,
-  tokensList
+  resetPoolCreationState
 } = usePoolCreation();
-const { dynamicDataLoading } = useTokens();
+const {
+  dynamicDataLoading,
+  tokens,
+  injectTokens,
+  loading: isLoadingTokens
+} = useTokens();
 const { upToLargeBreakpoint } = useBreakpoints();
 const { removeAlert } = useAlerts();
 
@@ -59,7 +65,6 @@ onMounted(async () => {
       opacity: 0
     });
   }
-
   let previouslySavedState = lsGet(
     POOL_CREATION_STATE_KEY,
     null,
@@ -67,6 +72,7 @@ onMounted(async () => {
   );
   if (activeStep.value === 0 && previouslySavedState !== null) {
     previouslySavedState = JSON.parse(previouslySavedState);
+
     importState(previouslySavedState);
     setRestoredState(true);
     await nextTick();
@@ -189,6 +195,18 @@ function handleReset() {
 
 watch([hasInjectedToken, totalLiquidity], () => {
   setWrapperHeight();
+});
+
+// make sure to inject any custom tokens we cannot inject
+// after tokens have finished loading as it will attempt to
+// inject 'known' tokens too, as during mount, tokens are still loading
+watch(isLoadingTokens, () => {
+  if (!isLoadingTokens.value) {
+    const uninjectedTokens = seedTokens.value
+      .filter(seedToken => tokens.value[seedToken.tokenAddress] === undefined)
+      .map(seedToken => seedToken.tokenAddress);
+    injectTokens(uninjectedTokens);
+  }
 });
 </script>
 
