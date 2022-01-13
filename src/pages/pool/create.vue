@@ -13,6 +13,7 @@ import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalS
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
 import UnknownTokenPriceModal from '@/components/modals/UnknownTokenPrice/UnknownTokenPriceModal.vue';
+import TokenPrices from '@/components/cards/CreatePool/TokenPrices.vue';
 
 import anime from 'animejs';
 
@@ -24,7 +25,7 @@ import usePoolCreation, {
 import { StepState } from '@/types';
 import useBreakpoints from '@/composables/useBreakpoints';
 import useAlerts from '@/composables/useAlerts';
-import { formatWordListAsSentence, lsGet } from '@/lib/utils';
+import { lsGet } from '@/lib/utils';
 import useTokens from '@/composables/useTokens';
 
 /**
@@ -44,17 +45,23 @@ const {
   similarPools,
   setActiveStep,
   hasInjectedToken,
-  totalLiquidity,
   hasRestoredFromSavedState,
   setRestoredState,
   importState,
   resetPoolCreationState,
-  tokensList
+  tokensList,
+  totalLiquidity
 } = usePoolCreation();
-const { dynamicDataLoading, priceFor, tokens, injectTokens } = useTokens();
-const { upToLargeBreakpoint } = useBreakpoints();
 const { removeAlert } = useAlerts();
 const { t } = useI18n();
+const { upToLargeBreakpoint } = useBreakpoints();
+const {
+  dynamicDataLoading,
+  priceFor,
+  tokens,
+  injectTokens,
+  injectedPrices
+} = useTokens();
 
 /**
  * Restore of the state needs to be called in this parent component
@@ -99,19 +106,14 @@ const doSimilarPoolsExist = computed(() => similarPools.value.length > 0);
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
 
 const unknownTokens = computed(() => {
-  if (dynamicDataLoading.value) return [];
   return validTokens.value.filter(token => {
-    return priceFor(token) === 0;
+    return priceFor(token) === 0 || injectedPrices.value[token];
   });
 });
-const hasUnknownToken = computed(() => unknownTokens.value.length > 0);
 
-const readableUnknownTokenSymbols = computed(() => {
-  const tokenSymbols = (unknownTokens.value || []).map(
-    tokenAddress => tokens.value[tokenAddress].symbol
-  );
-  return formatWordListAsSentence(tokenSymbols);
-});
+const hasUnknownToken = computed(() =>
+  validTokens.value.some(t => priceFor(t) === 0)
+);
 
 const steps = computed(() => [
   {
@@ -232,11 +234,12 @@ watch([hasInjectedToken, totalLiquidity], () => {
   setWrapperHeight();
 });
 
-// need to manually update modal flags as on close
-// the modal needs a value to unmount on
-watch(hasUnknownToken, () => {
-  if (hasUnknownToken.value) {
-    isUnknownTokenModalVisible.value = true;
+// can handle the behaviour to show the unknown token modal
+// on next step here, rather than having to clutter the
+// usePoolCreation composable further
+watch(activeStep, () => {
+  if (hasUnknownToken.value && !hasRestoredFromSavedState.value) {
+    showUnknownTokenModal();
   }
 });
 </script>
@@ -325,10 +328,16 @@ watch(hasUnknownToken, () => {
       </AnimatePresence>
       <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="pb-24">
         <BalAccordion
-          :sections="[{ title: 'Pool summary', id: 'pool-summary' }]"
+          :sections="[
+            { title: t('poolSummary'), id: 'pool-summary' },
+            { title: t('tokenPrices'), id: 'token-prices' }
+          ]"
         >
           <template v-slot:pool-summary>
             <PoolSummary />
+          </template>
+          <template v-slot:token-prices>
+            <TokenPrices />
           </template>
         </BalAccordion>
       </div>
@@ -337,24 +346,7 @@ watch(hasUnknownToken, () => {
       <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
         <BalStack vertical spacing="base" v-if="!appLoading">
           <PoolSummary />
-          <BalAlert
-            v-if="hasUnknownToken"
-            :title="t('missingTokenPrices')"
-            type="error"
-          >
-            {{
-              $t('createAPool.unknownTokenPriceAlert', [
-                readableUnknownTokenSymbols
-              ])
-            }}
-            <br />
-            <button
-              @click="showUnknownTokenModal"
-              class="font-semibold text-red-500 hover:text-red-800"
-            >
-              {{ $t('createAPool.addTokenPrice') }}
-            </button>
-          </BalAlert>
+          <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
         </BalStack>
       </div>
     </template>

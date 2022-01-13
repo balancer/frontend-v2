@@ -51,6 +51,7 @@ export interface TokensProviderResponse {
   loading: Ref<boolean>;
   tokens: ComputedRef<TokenInfoMap>;
   injectedTokens: Ref<TokenInfoMap>;
+  injectedPrices: Ref<Record<string, number>>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;
@@ -201,7 +202,9 @@ export default {
       isLoading: priceQueryLoading,
       isError: priceQueryError,
       refetch: refetchPrices
-    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'));
+    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'), {
+      keepPreviousData: true
+    });
 
     const {
       data: balanceData,
@@ -209,7 +212,7 @@ export default {
       isLoading: balanceQueryLoading,
       isError: balancesQueryError,
       refetch: refetchBalances
-    } = useBalancesQuery(tokens);
+    } = useBalancesQuery(tokens, { keepPreviousData: true });
 
     const {
       data: allowanceData,
