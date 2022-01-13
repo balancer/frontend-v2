@@ -59,11 +59,12 @@
     "approveGP": "Approve trading on Gnosis Protocol",
     "approveLidoRelayer": "Approve Lido relayer",
     "approveBatchRelayer": "Approve Batch relayer",
+    "approvingBatchRelayer": "Approving Batch relayer",
     "approveBatchRelayerTooltip": "Your permission is required to use the Batch relayer.",
     "approveTokens": "Approve tokens",
     "approving": "Approving",
     "approvingGnosisRelayer": "Approving Gnosis relayer",
-    "approvingLidoRelayer": "Approving Lido relayer",
+    "approvingLidoRelayer": "Approving Lido relayer",    
     "apr": "APR",
     "autoOptimiseLiquidityToggle": {
         "label": "Auto optimize liquidity",
@@ -628,7 +629,7 @@
         "trade": "Trade",
         "unwrap": "Unwrap",
         "withdraw": "Withdraw",
-        "wrap": "Wrap"
+        "wrap": "Wrap"        
     },
     "transactionDeadline": "Transaction deadline",
     "transactionDeadlineTooltip": "Your swap will expire and not execute if it is pending for more than the selected duration. Only executed swaps incur fees for trades between ERC-20 tokens.",

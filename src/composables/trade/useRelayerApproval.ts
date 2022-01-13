@@ -68,7 +68,7 @@ export default function useRelayerApproval(
     (): TransactionActionInfo => ({
       label: t('approveBatchRelayer'),
       loadingLabel: t('checkWallet'),
-      confirmingLabel: t('confirming'),
+      confirmingLabel: t('approvingBatchRelayer'),
       stepTooltip: t('approveBatchRelayerTooltip'),
       action: approve
     })
