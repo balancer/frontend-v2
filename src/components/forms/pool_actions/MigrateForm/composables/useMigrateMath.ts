@@ -106,8 +106,6 @@ export default function useMigrateFormMath(
     bnum(priceImpact.value).isGreaterThanOrEqualTo(0.01)
   );
 
-  console.log(priceImpact.value);
-
   return {
     // computed
     bptBalance,
