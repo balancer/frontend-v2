@@ -15,32 +15,7 @@ import { BatchSwap } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 
-export type InvestMathResponse = {
-  // computed
-  hasAmounts: Ref<boolean>;
-  fullAmounts: Ref<string[]>;
-  fullAmountsScaled: Ref<BigNumber[]>;
-  batchSwapAmountMap: Ref<Record<string, BigNumber>>;
-  fiatTotal: Ref<string>;
-  fiatTotalLabel: Ref<string>;
-  priceImpact: Ref<number>;
-  highPriceImpact: Ref<boolean>;
-  maximized: Ref<boolean>;
-  optimized: Ref<boolean>;
-  proportionalAmounts: Ref<string[]>;
-  batchSwap: Ref<BatchSwap | null>;
-  bptOut: Ref<string>;
-  hasZeroBalance: Ref<boolean>;
-  hasNoBalances: Ref<boolean>;
-  hasAllTokens: Ref<boolean>;
-  shouldFetchBatchSwap: Ref<boolean>;
-  batchSwapLoading: Ref<boolean>;
-  supportsPropotionalOptimization: Ref<boolean>;
-  // methods
-  maximizeAmounts: () => void;
-  optimizeAmounts: () => void;
-  getBatchSwap: () => Promise<void>;
-};
+export type InvestMathResponse = ReturnType<typeof useInvestFormMath>;
 
 export default function useInvestFormMath(
   pool: Ref<FullPool>,
@@ -48,7 +23,7 @@ export default function useInvestFormMath(
   amounts: Ref<string[]>,
   useNativeAsset: Ref<boolean>,
   sor: SOR
-): InvestMathResponse {
+) {
   /**
    * STATE
    */
