@@ -63,17 +63,18 @@ const { hasBpt, fiatTotalLabel } = migrateMath;
     </template>
     <div class="mb-6">
       <div class="text-gray-500">{{ $t('yourBalanceInPool') }}</div>
-      <div class="font-semibold">
+      <div class="font-semibold text-lg">
         {{ hasBpt ? fiatTotalLabel : '-' }}
       </div>
     </div>
     <PoolInfoBreakdown :pool="fromPool" :poolTokenInfo="fromPoolTokenInfo" />
-    <div class="block flex justify-center my-5">
-      <ArrowDownIcon />
+    <div class="block flex justify-center dark:text-gray-50 my-4">
+      <ArrowDownIcon class="dark:text-gray-500 h-5 w-5" />
     </div>
     <PoolInfoBreakdown :pool="toPool" :poolTokenInfo="toPoolTokenInfo" />
     <BalBtn
       color="gradient"
+      class="mt-6"
       block
       :disabled="!hasBpt"
       @click="showPreviewModal = true"

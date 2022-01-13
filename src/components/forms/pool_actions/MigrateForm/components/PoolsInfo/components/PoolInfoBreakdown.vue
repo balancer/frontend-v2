@@ -28,7 +28,7 @@ const { tokens } = useTokens();
 </script>
 
 <template>
-  <div class="rounded-lg border dark:border-gray-800 dark:bg-gray-800 p-3 mb-6">
+  <div class="rounded-lg border dark:border-gray-800 dark:bg-gray-800 p-3">
     <BalBreakdown
       :items="pool.tokenAddresses"
       class="w-full cursor-pointer select-none"
