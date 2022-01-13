@@ -276,6 +276,7 @@
     "menu":"メニュー",
     "minTransactionBuffer":"スムーズな取引を確実にするには、ガス料金を支払うために少なくとも{0} {1}をウォレットに残しておく必要があります。",
     "missingPoolNameOrSymbol":"プール名またはシンボルがありません",
+    "missingPoolNameOrSymbolInfo":"プール名または記号がありません。プールを作成する前に入力してください。",
     "month":"月",
     "months":"月",
     "mustBeAtLeast":"{0}文字以上である必要があります",
