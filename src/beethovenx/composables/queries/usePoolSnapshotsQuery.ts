@@ -9,13 +9,14 @@ import {
   beethovenxService,
   HistoricalPrices
 } from '@/beethovenx/services/beethovenx/beethovenx.service';
+import { GqlBalancerPoolSnapshot } from '@/beethovenx/services/beethovenx/beethovenx-types';
 
 /**
  * TYPES
  */
 interface QueryResponse {
   prices: HistoricalPrices;
-  snapshots: PoolSnapshots;
+  snapshots: GqlBalancerPoolSnapshot[];
 }
 
 export default function usePoolSnapshotsQuery(
@@ -45,7 +46,7 @@ export default function usePoolSnapshotsQuery(
     const prices = await beethovenxService.getHistoricalTokenPrices(
       pool.value.tokensList
     );
-    const snapshots = await balancerSubgraphService.poolSnapshots.get(id, days);
+    const snapshots = await beethovenxService.getPoolSnapshots(id);
 
     return { prices, snapshots };
   };

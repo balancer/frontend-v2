@@ -3,16 +3,14 @@ import { useQuery } from 'vue-query';
 import { UseQueryOptions } from 'react-query/types';
 import QUERY_KEYS from '@/beethovenx/constants/queryKeys';
 import { FETCH_ONCE_OPTIONS } from '@/constants/vue-query';
-import {
-  BeethovenxConfig,
-  beethovenxService
-} from '@/beethovenx/services/beethovenx/beethovenx.service';
+import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
+import { GqlBeetsConfig } from '@/beethovenx/services/beethovenx/beethovenx-types';
 
 /**
  * Fetch all token lists, should only happen once.
  */
 export default function useBeethovenxConfigQuery(
-  options: UseQueryOptions<BeethovenxConfig> = {}
+  options: UseQueryOptions<GqlBeetsConfig> = {}
 ) {
   const queryKey = reactive(QUERY_KEYS.Config.All);
 
@@ -27,5 +25,5 @@ export default function useBeethovenxConfigQuery(
     ...options
   });
 
-  return useQuery<BeethovenxConfig>(queryKey, queryFn, queryOptions);
+  return useQuery<GqlBeetsConfig>(queryKey, queryFn, queryOptions);
 }

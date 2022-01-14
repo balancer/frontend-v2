@@ -140,8 +140,8 @@ const {
   ),
   () =>
     getPairPriceData(
-      tokenInAddress.value,
       tokenOutAddress.value,
+      tokenInAddress.value,
       nativeAsset?.address,
       wrappedNativeAsset.value?.address,
       activeTimespan.value.value

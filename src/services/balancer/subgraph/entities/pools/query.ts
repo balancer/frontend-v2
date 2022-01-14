@@ -33,6 +33,9 @@ const defaultAttrs = {
   lowerTarget: true,
   upperTarget: true,
   tokens: {
+    name: true,
+    symbol: true,
+    decimals: true,
     address: true,
     balance: true,
     weight: true,

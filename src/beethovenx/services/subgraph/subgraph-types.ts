@@ -10,7 +10,7 @@ export interface Farm {
     totalAllocPoint: number;
     beetsPerBlock: string;
   };
-  rewarder: {
+  rewarder?: {
     id: string;
     rewardToken: string;
     rewardPerSecond: string;
@@ -21,12 +21,10 @@ export interface FarmUser {
   id: string;
   pendingBeets: number;
   pendingBeetsValue: number;
-  amount: number;
+  amount: string;
   rewardDebt: number;
   beetsHarvested: number;
-  pool: {
-    id: string;
-  };
+  farmId: string;
   pendingRewardToken: number;
   pendingRewardTokenValue: number;
 }

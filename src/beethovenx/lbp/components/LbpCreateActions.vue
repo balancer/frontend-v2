@@ -13,6 +13,7 @@ import { omit } from 'lodash';
 import ActionStepContainer from '@/beethovenx/components/containers/ActionStepContainer.vue';
 import { GqlLge } from '@/beethovenx/services/beethovenx/beethovenx-types';
 import { useRouter } from 'vue-router';
+import BalBtn from '@/components/_global/BalBtn/BalBtn.vue';
 
 const { appNetworkConfig, getProvider, account } = useWeb3();
 const {
@@ -71,6 +72,8 @@ async function createAuction(): Promise<void> {
 
         fetchingPoolData.value = false;
         creatingLge.value = false;
+
+        await saveAuction();
       },
       onTxFailed: () => {
         creatingLge.value = false;
@@ -117,7 +120,9 @@ function goToLge() {
 <template>
   <div class="mb-6">
     Now that your auction configuration is ready, you need to deploy it to the
-    Fantom Blockchain. To do so, you must sign two transactions.
+    Fantom Blockchain. When you click the button below and sign the transaction,
+    the contract will deploy your pool, deposit your funds and schedule the
+    auction weight changes
   </div>
 
   <div class="border-purple-500 border-2 rounded-lg px-4 py-4 mb-8">
@@ -139,8 +144,23 @@ function goToLge() {
       </a>
     </div>
   </div>
+  <BalBtn
+    v-if="!lgeSaved"
+    @click="createAuction()"
+    :loading="creatingLge || savingLge"
+    :loading-label="
+      savingLge
+        ? 'Saving data...'
+        : fetchingPoolData
+        ? 'Fetching Pool Info...'
+        : 'Creating...'
+    "
+    class="w-full"
+  >
+    Create Your Auction
+  </BalBtn>
 
-  <ActionStepContainer
+  <!--  <ActionStepContainer
     step-number="1"
     :complete="poolId !== null && creatingLge === false"
     :loading="creatingLge"
@@ -148,7 +168,11 @@ function goToLge() {
     subHeadline="Deploy pool, Deposit funds, Schedule weight changes"
     buttonText="Create"
     :buttonTextLoading="
-      fetchingPoolData ? 'Fetching Pool Info...' : 'Creating...'
+      savingLge
+        ? 'Saving data...'
+        : fetchingPoolData
+        ? 'Fetching Pool Info...'
+        : 'Creating...'
     "
     @button-click="createAuction()"
   >
@@ -171,7 +195,7 @@ function goToLge() {
         <div class="text-right text-gray-500">Auction Saved</div>
       </template>
     </ActionStepContainer>
-  </div>
+  </div>-->
   <div v-if="lgeSaved" class="mt-8">
     <div class="mb-2">
       <a

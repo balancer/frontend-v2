@@ -6,16 +6,20 @@
       <AppNavBeets />
       <AppNavAccountBtn />
     </div>
-    <BalBtn
-      v-else
-      color="white"
-      :size="upToLargeBreakpoint ? 'md' : 'sm'"
-      @click="toggleWalletSelectModal"
-    >
-      <WalletIcon class="mr-2" />
-      <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
-      <span class="lg:hidden" v-text="$t('connect')" />
-    </BalBtn>
+    <div v-else class="flex">
+      <div class="mr-2">
+        <AppNavBeets />
+      </div>
+      <BalBtn
+        color="white"
+        :size="upToLargeBreakpoint ? 'md' : 'sm'"
+        @click="toggleWalletSelectModal"
+      >
+        <WalletIcon class="mr-2" />
+        <span class="hidden lg:inline-block" v-text="$t('connectWallet')" />
+        <span class="lg:hidden" v-text="$t('connect')" />
+      </BalBtn>
+    </div>
   </div>
 </template>
 

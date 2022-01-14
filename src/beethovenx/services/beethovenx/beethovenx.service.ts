@@ -2,6 +2,11 @@ import { configService as _configService } from '@/services/config/config.servic
 import axios from 'axios';
 import {
   CreateLgeTypes,
+  GqlBalancerPoolSnapshot,
+  GqlBeetsConfig,
+  GqlBeetsFarm,
+  GqlBeetsFarmUser,
+  GqlBeetsProtocolData,
   GqlHistoricalTokenPrice,
   GqlLge,
   GqlLgeCreateInput,
@@ -12,24 +17,14 @@ import {
   UserPortfolioData,
   UserTokenData
 } from './beethovenx-types';
-import { getAddress } from '@ethersproject/address';
+import { getAddress, isAddress } from '@ethersproject/address';
 import { keyBy } from 'lodash';
-import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { LgeData } from '@/beethovenx/lbp/lbp-types';
-import { omit } from 'lodash';
 
 export type Price = { [fiat: string]: number };
 export type TokenPrices = { [address: string]: Price };
 export type HistoricalPrices = { [timestamp: string]: number[] };
-
-export interface BeethovenxConfig {
-  incentivizedPools: string[];
-  pausedPools: string[];
-  blacklistedPools: string[];
-  featuredPools: string[];
-}
 
 export default class BeethovenxService {
   private readonly url: string;
@@ -85,7 +80,9 @@ export default class BeethovenxService {
     const result: TokenPrices = {};
 
     for (const tokenPrice of response.tokenPrices) {
-      result[getAddress(tokenPrice.address)] = { usd: tokenPrice.price };
+      if (isAddress(tokenPrice.address)) {
+        result[getAddress(tokenPrice.address)] = { usd: tokenPrice.price };
+      }
     }
 
     return result;
@@ -132,12 +129,38 @@ export default class BeethovenxService {
     return result;
   }
 
-  public async getBeethovenxConfig(): Promise<BeethovenxConfig> {
-    const { data } = await axios.get<{ result: BeethovenxConfig }>(
-      this.configService.network.configSanityUrl
-    );
+  public async getBeethovenxConfig(): Promise<GqlBeetsConfig> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetConfig: {
+          incentivizedPools: true,
+          pausedPools: true,
+          blacklistedPools: true,
+          featuredPools: true,
+          homeFeaturedPools: {
+            poolId: true,
+            image: true,
+            description: true
+          },
+          homeNewsItems: {
+            title: true,
+            url: true,
+            image: true,
+            description: true,
+            publishDate: true
+          },
+          poolFilters: {
+            id: true,
+            title: true,
+            pools: true
+          }
+        }
+      }
+    });
 
-    return data.result;
+    const response = await this.get<{ beetsGetConfig: GqlBeetsConfig }>(query);
+
+    return response.beetsGetConfig;
   }
 
   public async createLge(
@@ -145,7 +168,7 @@ export default class BeethovenxService {
     input: GqlLgeCreateInput,
     account: string
   ): Promise<{ id: string }> {
-    const signature = await web3.getSigner()._signTypedData(
+    /*const signature = await web3.getSigner()._signTypedData(
       {
         name: 'beethovenx',
         version: '1',
@@ -153,12 +176,12 @@ export default class BeethovenxService {
       },
       CreateLgeTypes,
       input
-    );
+    );*/
 
     const query = jsonToGraphQLQuery({
       mutation: {
         lgeCreate: {
-          __args: { signature, lge: input },
+          __args: { signature: '', lge: input },
           id: true,
           address: true,
           name: true
@@ -242,6 +265,163 @@ export default class BeethovenxService {
     );
 
     return fbeetsGetApr.apr;
+  }
+
+  public async getProtocolData(): Promise<GqlBeetsProtocolData> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetProtocolData: {
+          marketCap: true,
+          beetsPrice: true,
+          totalSwapFee: true,
+          totalLiquidity: true,
+          totalSwapVolume: true,
+          poolCount: true,
+          circulatingSupply: true,
+          swapFee24h: true,
+          swapVolume24h: true
+        }
+      }
+    });
+
+    const { beetsGetProtocolData } = await this.get<{
+      beetsGetProtocolData: GqlBeetsProtocolData;
+    }>(query);
+
+    return beetsGetProtocolData;
+  }
+
+  public async getPoolSnapshots(
+    poolId: string
+  ): Promise<GqlBalancerPoolSnapshot[]> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        poolSnapshots: {
+          __args: { poolId },
+          id: true,
+          poolId: true,
+          swapFees24h: true,
+          swapVolume24h: true,
+          liquidityChange24h: true,
+          totalShares: true,
+          totalSwapFee: true,
+          totalLiquidity: true,
+          totalSwapVolume: true,
+          timestamp: true,
+          tokens: {
+            address: true,
+            balance: true
+          }
+        }
+      }
+    });
+
+    const { poolSnapshots } = await this.get<{
+      poolSnapshots: GqlBalancerPoolSnapshot[];
+    }>(query);
+
+    return poolSnapshots;
+  }
+
+  public async getAverageBlockTime(): Promise<number> {
+    const query = jsonToGraphQLQuery({
+      query: { blocksGetAverageBlockTime: true }
+    });
+
+    const { blocksGetAverageBlockTime } = await this.get<{
+      blocksGetAverageBlockTime: number;
+    }>(query);
+
+    return blocksGetAverageBlockTime;
+  }
+
+  public async getBeetsFarms(): Promise<GqlBeetsFarm[]> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetBeetsFarms: {
+          id: true,
+          pair: true,
+          allocPoint: true,
+          slpBalance: true,
+          masterChef: {
+            id: true,
+            totalAllocPoint: true,
+            beetsPerBlock: true
+          },
+          rewarder: {
+            id: true,
+            rewardToken: true,
+            rewardPerSecond: true
+          }
+        }
+      }
+    });
+
+    const { beetsGetBeetsFarms } = await this.get<{
+      beetsGetBeetsFarms: GqlBeetsFarm[];
+    }>(query);
+
+    return beetsGetBeetsFarms;
+  }
+
+  public async getUserDataForFarm(
+    farmId: string,
+    userAddress: string
+  ): Promise<GqlBeetsFarmUser> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetUserDataForFarm: {
+          __args: { farmId },
+          id: true,
+          address: true,
+          amount: true,
+          beetsHarvested: true,
+          farmId: true,
+          rewardDebt: true,
+          timestamp: true
+        }
+      }
+    });
+
+    const { beetsGetUserDataForFarm } = await this.get<{
+      beetsGetUserDataForFarm: GqlBeetsFarmUser | null;
+    }>(query, userAddress);
+
+    return beetsGetUserDataForFarm
+      ? beetsGetUserDataForFarm
+      : {
+          id: '',
+          address: '',
+          amount: '0',
+          beetsHarvested: '0',
+          rewardDebt: '0',
+          timestamp: '',
+          farmId
+        };
+  }
+
+  public async getUserDataForAllFarms(
+    userAddress: string
+  ): Promise<GqlBeetsFarmUser[]> {
+    const query = jsonToGraphQLQuery({
+      query: {
+        beetsGetUserDataForAllFarms: {
+          id: true,
+          address: true,
+          amount: true,
+          beetsHarvested: true,
+          farmId: true,
+          rewardDebt: true,
+          timestamp: true
+        }
+      }
+    });
+
+    const { beetsGetUserDataForAllFarms } = await this.get<{
+      beetsGetUserDataForAllFarms: GqlBeetsFarmUser[];
+    }>(query, userAddress);
+
+    return beetsGetUserDataForAllFarms;
   }
 
   private get userProfileDataFragment() {

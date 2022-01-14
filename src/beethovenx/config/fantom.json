@@ -6,7 +6,7 @@
   "shortName": "Fantom",
   "network": "fantom",
   "unknown": false,
-  "rpc": "https://rpc.ftm.tools/",
+  "rpc": "https://graph-node.beets-ftm-node.com/rpc",
   "ws": "wss://graph-node.beets-ftm-node.com/ws",
   "loggingRpc": "",
   "explorer": "https://ftmscan.com",

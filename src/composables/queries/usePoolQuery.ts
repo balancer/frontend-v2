@@ -5,9 +5,13 @@ import useTokens from '@/composables/useTokens';
 import QUERY_KEYS from '@/constants/queryKeys';
 import { formatUnits } from 'ethers/lib/utils';
 import { getAddress, isAddress } from '@ethersproject/address';
-import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
-import { FullPool, LinearPool, Pool } from '@/services/balancer/subgraph/types';
+import {
+  FullPool,
+  OnchainPoolData,
+  Pool,
+  LinearPool
+} from '@/services/balancer/subgraph/types';
 import { POOLS } from '@/constants/pools';
 import useApp from '../useApp';
 import useUserSettings from '../useUserSettings';
@@ -19,6 +23,7 @@ import {
   isStableLike,
   isStablePhantom
 } from '../usePool';
+import { keyBy } from 'lodash';
 
 export default function usePoolQuery(
   id: string,
@@ -141,14 +146,23 @@ export default function usePoolQuery(
 
     // Need to fetch onchain pool data first so that calculations can be
     // performed in the decoration step.
-    const poolTokenMeta = getTokens(
-      pool.tokensList.map(address => getAddress(address))
-    );
-    const onchainData = await balancerContractsService.vault.getPoolData(
+    /*const onchainData = await balancerContractsService.vault.getPoolData(
       id,
       pool.poolType,
-      poolTokenMeta
-    );
+      getTokens(pool.tokensList.map(address => getAddress(address)))
+    );*/
+
+    //the onchain data is now fetched by the backend, we map it into the desired format
+    //here to avoid editing all of the files that currently use onchain
+
+    const onchainData: OnchainPoolData = {
+      totalSupply: pool.totalShares,
+      decimals: 18,
+      swapFee: pool.swapFee,
+      swapEnabled: pool.swapEnabled,
+      tokens: keyBy(pool.tokens, token => getAddress(token.address)),
+      amp: pool.amp
+    };
 
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
       [{ ...pool, onchain: onchainData }],

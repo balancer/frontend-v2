@@ -46,10 +46,6 @@ function handleFarmWithdrawal(txReceipt): void {
   txHash.value = txReceipt.hash;
 }
 
-onMounted(() => {
-  injectTokens([route.params.tokenAddress as string]);
-});
-
 const tabs = [
   { value: 'deposit', label: 'Deposit' },
   { value: 'withdraw', label: 'Withdraw' }

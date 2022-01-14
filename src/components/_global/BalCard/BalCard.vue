@@ -1,22 +1,20 @@
 <template>
   <div :class="['bal-card', cardClasses]">
-    <div :class="['card-container', { 'overflow-y-scroll': overflowYScroll }]">
-      <div v-if="imgSrc" class="feature" :style="featureStyles" />
-      <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
-        <component :is="titleTag" v-if="!!title" v-text="title" />
-        <div
-          v-if="$slots.header"
-          :class="['header-content', headerContentClasses]"
-        >
-          <slot name="header" />
-        </div>
+    <div v-if="imgSrc" class="feature" :style="featureStyles" />
+    <div v-if="!!title || $slots.header" :class="['header', headerClasses]">
+      <component :is="titleTag" v-if="!!title" v-text="title" />
+      <div
+        v-if="$slots.header"
+        :class="['header-content', headerContentClasses]"
+      >
+        <slot name="header" />
       </div>
-      <div :class="['content', contentClasses]">
-        <slot />
-      </div>
-      <div v-if="$slots.footer" :class="['footer', footerClasses]">
-        <slot name="footer" />
-      </div>
+    </div>
+    <div :class="['content', contentClasses]">
+      <slot />
+    </div>
+    <div v-if="$slots.footer" :class="['footer', footerClasses]">
+      <slot name="footer" />
     </div>
   </div>
 </template>
@@ -115,13 +113,6 @@ export default defineComponent({
   @apply flex flex-col;
 }
 
-.card-container {
-  @apply flex flex-col;
-}
-.card-container::-webkit-scrollbar {
-  width: 0;
-}
-
 .header {
   @apply flex items-center;
 }
@@ -131,7 +122,7 @@ export default defineComponent({
 }
 
 .footer {
-  @apply flex items-center;
+  @apply flex items-end flex-1;
 }
 
 .feature {

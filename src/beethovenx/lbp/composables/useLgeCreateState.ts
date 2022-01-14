@@ -3,8 +3,9 @@ import { isDateCheck, isTimeCheck, isUrlCheck } from '@/lib/utils/validations';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';
 import { LgeData } from '@/beethovenx/lbp/lbp-types';
-import { parseUnits } from '@ethersproject/units';
 import { PoolTokenInput } from '@/beethovenx/services/pool/creator/pool-creator.service';
+import { format, formatInTimeZone, utcToZonedTime } from 'date-fns-tz';
+import { toUtcTime } from '@/lib/utils/date';
 
 interface LbpState {
   data: LgeData;
@@ -96,6 +97,9 @@ export default function useLgeCreateState() {
   );
 
   const lgeChartConfigValid = computed(() => {
+    const now = new Date();
+    const today = formatInTimeZone(now, 'UTC', 'yyyy-MM-dd');
+    const nowTime = formatInTimeZone(now, 'UTC', 'HH:mm');
     const data = state.data;
 
     if (
@@ -104,27 +108,34 @@ export default function useLgeCreateState() {
       !isTimeCheck(data.startTime) ||
       !isTimeCheck(data.endTime)
     ) {
-      return false;
+      return 'Invalid date provided';
+    }
+
+    if (
+      data.startDate < today ||
+      (data.startDate === today && data.startTime < nowTime)
+    ) {
+      return 'Start date is in the past';
     }
 
     if (data.startDate > data.endDate) {
-      return false;
+      return 'End date is before start date';
     }
 
     //same date, time needs to be after
     if (data.startDate === data.endDate && data.startTime >= data.endTime) {
-      return false;
+      return 'End date/time is before start date/time';
     }
 
     if (data.tokenAmount === '' || parseFloat(data.tokenAmount) === 0) {
-      return false;
+      return 'Missing token amount';
     }
 
     if (
       data.collateralAmount === '' ||
       parseFloat(data.collateralAmount) === 0
     ) {
-      return false;
+      return 'Missing collateral amount';
     }
 
     return true;
@@ -133,7 +144,7 @@ export default function useLgeCreateState() {
   const lgeConfigValid = computed(() => {
     const data = state.data;
 
-    if (!lgeChartConfigValid.value) {
+    if (lgeChartConfigValid.value !== true) {
       return false;
     }
 

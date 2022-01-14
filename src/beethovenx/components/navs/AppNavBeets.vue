@@ -4,7 +4,7 @@
       <BalBtn
         color="transparent"
         flat
-        class="mr-2 text-base"
+        class="text-base"
         :size="upToLargeBreakpoint ? 'md' : 'sm'"
         :circle="upToLargeBreakpoint"
       >
@@ -36,10 +36,10 @@
         </BalCard>
         <BalCard>
           <div class="text-sm text-gray-500 font-medium mb-2 text-left">
-            BEETS
+            BEETS Price
           </div>
           <div class="text-xl font-medium truncate flex items-center">
-            {{ fNum(beetsPrice, 'usd') }}
+            ${{ fNum(beetsPrice, 'token_fixed') }}
           </div>
         </BalCard>
       </div>

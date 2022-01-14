@@ -19,6 +19,7 @@
       </div>
     </div>
   </nav>
+  <AppNavBelow />
 </template>
 
 <script>
@@ -32,9 +33,11 @@ import AppNavActions from '@/beethovenx/components/navs/AppNavActions.vue';
 import useFathom from '@/composables/useFathom';
 import useWeb3 from '@/services/web3/useWeb3';
 import useAlerts from '@/composables/useAlerts';
+import AppNavBelow from '@/beethovenx/components/navs/AppNavBelow';
 
 export default defineComponent({
   components: {
+    AppNavBelow,
     AppIcon,
     AppNavAlert,
     AppNavToggle,
@@ -44,7 +47,7 @@ export default defineComponent({
 
   setup() {
     // COMPOSABLES
-    const { bp, upToXLargeBreakpoint } = useBreakpoints();
+    const { bp, upToXLargeBreakpoint, upToLargeBreakpoint } = useBreakpoints();
     const { trackGoal, Goals } = useFathom();
     const { connector } = useWeb3();
     const { currentAlert } = useAlerts();
@@ -83,7 +86,8 @@ export default defineComponent({
       hideNetworkSelect,
       // methods
       trackGoal,
-      Goals
+      Goals,
+      upToLargeBreakpoint
     };
   }
 });

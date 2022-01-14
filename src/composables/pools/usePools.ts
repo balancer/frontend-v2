@@ -24,14 +24,14 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
   const poolsQuery = usePoolsQuery(poolsTokenList, {}, { pageSize: 1000 });
   const userPoolsQuery = useUserPoolsQuery();
   const protocolDataQuery = useProtocolDataQuery();
-  const { priceFor, dynamicDataLoaded } = useTokens();
+  const { priceFor } = useTokens();
   const { appNetworkConfig } = useWeb3();
   const { beethovenxConfig } = useBeethovenxConfig();
   const beetsPrice = computed(
     () => protocolDataQuery.data?.value?.beetsPrice || 0
   );
-  const rewardTokenPrice = computed(() =>
-    dynamicDataLoaded.value ? priceFor(appNetworkConfig.addresses.hnd) : 0
+  const rewardTokenPrice = computed(
+    () => priceFor(appNetworkConfig.addresses.hnd) ?? 0
   );
 
   const {
@@ -170,11 +170,19 @@ export default function usePools(poolsTokenList: Ref<string[]> = ref([])) {
     () => poolsQuery.isFetchingNextPage?.value
   );
 
-  const communityPools = computed(() =>
-    poolsWithFarms.value?.filter(
-      pool => !beethovenxConfig.value.incentivizedPools.includes(pool.id)
-    )
-  );
+  const communityPools = computed(() => {
+    return poolsTokenList.value.length > 0
+      ? poolsWithFarms.value?.filter(pool => {
+          return (
+            poolsTokenList.value.every((selectedToken: string) =>
+              pool.tokenAddresses.includes(selectedToken)
+            ) && !beethovenxConfig.value.incentivizedPools.includes(pool.id)
+          );
+        })
+      : poolsWithFarms?.value.filter(
+          pool => !beethovenxConfig.value.incentivizedPools.includes(pool.id)
+        );
+  });
 
   const beethovenPools = computed(() => {
     return poolsTokenList.value.length > 0

@@ -151,7 +151,7 @@ export function decorateFarms(
       pool => pool.address.toLowerCase() === farm.pair.toLowerCase()
     );
     const farmUser = allFarmsForUser.find(
-      userFarm => userFarm.pool.id === farm.id
+      userFarm => userFarm.farmId === farm.id
     );
 
     if (pool) {

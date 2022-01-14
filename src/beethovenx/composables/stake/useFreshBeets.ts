@@ -9,7 +9,7 @@ import usePools from '@/composables/pools/usePools';
 import { DecoratedFarm } from '@/beethovenx/services/subgraph/subgraph-types';
 import BigNumber from 'bignumber.js';
 
-function bn(num: number) {
+function bn(num: number | string) {
   return new BigNumber(num);
 }
 
@@ -40,7 +40,7 @@ export function useFreshBeets() {
 
   const userFbeetsFarm = computed(() =>
     allFarmsForUser.value?.find(
-      userFarm => userFarm.pool.id === appNetworkConfig.fBeets.farmId
+      userFarm => userFarm.farmId === appNetworkConfig.fBeets.farmId
     )
   );
   const totalSupply = computed(
@@ -53,7 +53,7 @@ export function useFreshBeets() {
     return data.value?.userBalance?.div(1e18) ?? bn(0);
   });
   const userFbeetsBalance = computed(() => {
-    const userFbeetsInFarm = bn(userFbeetsFarm.value?.amount || 0).div(1e18);
+    const userFbeetsInFarm = bn(userFbeetsFarm.value?.amount || '0').div(1e18);
 
     return userUnstakedFbeetsBalance.value.plus(userFbeetsInFarm);
   });

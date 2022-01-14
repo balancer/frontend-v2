@@ -7,13 +7,14 @@ import useApp from '@/composables/useApp';
 import useTokens from '@/composables/useTokens';
 import { masterChefContractsService } from '@/beethovenx/services/farm/master-chef-contracts.service';
 import useProtocolDataQuery from '@/beethovenx/composables/queries/useProtocolDataQuery';
-import { farmSubgraphClient } from '@/beethovenx/services/subgraph/farm-subgraph.client';
+
 import { FarmUser } from '@/beethovenx/services/subgraph/subgraph-types';
 import { AddressZero } from '@ethersproject/constants';
+import { beethovenxService } from '@/beethovenx/services/beethovenx/beethovenx.service';
 
 export default function useFarmUserQuery(
   farmId: string,
-  options: QueryObserverOptions<FarmUser> = {}
+  options: QueryObserverOptions<FarmUser | null> = {}
 ) {
   const { account, isWalletReady, appNetworkConfig } = useWeb3();
   const { appLoading } = useApp();
@@ -36,7 +37,7 @@ export default function useFarmUserQuery(
     const address = account.value || AddressZero;
 
     try {
-      const userData = await farmSubgraphClient.getUserDataForFarm(
+      const userData = await beethovenxService.getUserDataForFarm(
         farmId,
         address
       );
@@ -54,6 +55,9 @@ export default function useFarmUserQuery(
 
       return {
         ...userData,
+        amount: userData.amount,
+        rewardDebt: parseFloat(userData.rewardDebt),
+        beetsHarvested: parseFloat(userData.beetsHarvested),
         pendingBeets,
         pendingBeetsValue: pendingBeets * beetsPrice.value,
         pendingRewardToken,
@@ -61,6 +65,8 @@ export default function useFarmUserQuery(
       };
     } catch (e) {
       console.log('ERROR', e);
+
+      return null;
     }
   };
 
@@ -70,5 +76,5 @@ export default function useFarmUserQuery(
     ...options
   });
 
-  return useQuery<FarmUser>(queryKey, queryFn, queryOptions);
+  return useQuery<FarmUser | null>(queryKey, queryFn, queryOptions);
 }

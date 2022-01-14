@@ -22,11 +22,13 @@ export enum PoolType {
 export type TimeTravelPeriod = '24h';
 
 export interface PoolToken {
+  name: string;
+  symbol: string;
+  decimals: number;
   address: string;
   balance: string;
   weight: string;
   priceRate: string | null;
-  symbol?: string;
 }
 
 export interface RawPoolTokens {
@@ -43,6 +45,7 @@ export interface Pool {
   swapFee: string;
   owner: string;
   factory: string;
+  amp?: string;
   tokens: PoolToken[];
   tokensList: string[];
   tokenAddresses: string[];
@@ -53,7 +56,7 @@ export interface Pool {
   hasLiquidityMiningRewards: boolean;
   onchain?: OnchainPoolData;
   createTime: number;
-  swapEnabled?: boolean;
+  swapEnabled: boolean;
   mainTokens?: string[];
   wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
@@ -63,6 +66,7 @@ export interface Pool {
 export interface LinearPool extends Pool {
   mainIndex: number;
   wrappedIndex: number;
+  swapEnabled: boolean;
 }
 
 export interface DecoratedPool extends Pool {
@@ -88,7 +92,7 @@ export interface OnchainTokenData {
   balance: string;
   weight: string;
   decimals: number;
-  logoURI: string | undefined;
+  //logoURI: string;
   name: string;
   symbol: string;
 }
@@ -200,9 +204,9 @@ export interface PoolSwap {
 }
 
 export interface PoolSnapshot {
-  pool: {
+  /*pool: {
     id: string;
-  };
+  };*/
   timestamp: number;
   amounts: string[];
   totalShares: string;

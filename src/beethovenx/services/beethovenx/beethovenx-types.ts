@@ -55,6 +55,9 @@ interface Scalars {
   GqlBigNumber: string;
   JSON: any;
   UUID: string;
+  BigDecimal: string;
+  BigInt: string;
+  Bytes: string;
 }
 
 export interface GqlUserPoolData {
@@ -196,3 +199,110 @@ export const CreateLgeTypes = {
     { name: 'endDate', type: 'string' }
   ]
 };
+
+export interface GqlBeetsProtocolData {
+  __typename?: 'GqlBeetsProtocolData';
+  beetsPrice: Scalars['BigDecimal'];
+  circulatingSupply: Scalars['BigDecimal'];
+  marketCap: Scalars['BigDecimal'];
+  poolCount: Scalars['BigInt'];
+  totalLiquidity: Scalars['BigDecimal'];
+  totalSwapFee: Scalars['BigDecimal'];
+  totalSwapVolume: Scalars['BigDecimal'];
+  swapFee24h: Scalars['BigDecimal'];
+  swapVolume24h: Scalars['BigDecimal'];
+}
+
+export interface GqlBalancerPoolSnapshot {
+  __typename?: 'GqlBalancerPoolSnapshot';
+  id: Scalars['ID'];
+  liquidityChange24h: Scalars['BigDecimal'];
+  poolId: Scalars['ID'];
+  swapFees24h: Scalars['BigDecimal'];
+  swapVolume24h: Scalars['BigDecimal'];
+  timestamp: Scalars['Int'];
+  tokens: Array<GqlBalancerPoolToken>;
+  totalLiquidity: Scalars['BigDecimal'];
+  totalShares: Scalars['BigDecimal'];
+  totalSwapFee: Scalars['BigDecimal'];
+  totalSwapVolume: Scalars['BigDecimal'];
+}
+
+export interface GqlBalancerPoolToken {
+  __typename?: 'GqlBalancerPoolToken';
+  address: Scalars['String'];
+  balance: Scalars['BigDecimal'];
+}
+
+export interface GqlBeetsFarm {
+  __typename?: 'GqlBeetsFarm';
+  allocPoint: Scalars['Int'];
+  block: Scalars['BigInt'];
+  id: Scalars['ID'];
+  lastRewardBlock: Scalars['BigInt'];
+  masterChef: GqlBeetsMasterChef;
+  pair: Scalars['Bytes'];
+  rewarder?: GqlBeetsRewarder;
+  slpBalance: Scalars['BigInt'];
+  timestamp: Scalars['BigInt'];
+  userCount: Scalars['BigInt'];
+}
+
+export interface GqlBeetsFarmUser {
+  __typename?: 'GqlBeetsFarmUser';
+  address: Scalars['Bytes'];
+  amount: Scalars['BigInt'];
+  beetsHarvested: Scalars['BigInt'];
+  farmId: Scalars['ID'];
+  id: Scalars['ID'];
+  rewardDebt: Scalars['BigInt'];
+  timestamp: Scalars['BigInt'];
+}
+
+export interface GqlBeetsMasterChef {
+  __typename?: 'GqlBeetsMasterChef';
+  beetsPerBlock: Scalars['BigInt'];
+  id: Scalars['ID'];
+  totalAllocPoint: Scalars['Int'];
+}
+
+export interface GqlBeetsRewarder {
+  __typename?: 'GqlBeetsRewarder';
+  id: Scalars['ID'];
+  rewardPerSecond: Scalars['BigInt'];
+  rewardToken: Scalars['Bytes'];
+}
+
+export interface GqlBeetsConfig {
+  __typename?: 'GqlBeetsConfig';
+  blacklistedPools: Array<Scalars['String']>;
+  featuredPools: Array<Scalars['String']>;
+  homeFeaturedPools: Array<GqlBeetsConfigFeaturedPool>;
+  homeNewsItems: Array<GqlBeetsConfigNewsItem>;
+  incentivizedPools: Array<Scalars['String']>;
+  pausedPools: Array<Scalars['String']>;
+  poolFilters: Array<GqlBeetsConfigPoolFilterItem>;
+}
+
+export interface GqlBeetsConfigFeaturedPool {
+  __typename?: 'GqlBeetsConfigFeaturedPool';
+  description?: Scalars['String'];
+  image: Scalars['String'];
+  poolId: Scalars['String'];
+}
+
+export interface GqlBeetsConfigNewsItem {
+  __typename?: 'GqlBeetsConfigNewsItem';
+  description: Scalars['String'];
+  image: Scalars['String'];
+  title: Scalars['String'];
+  url: Scalars['String'];
+  publishDate: Scalars['String'];
+}
+
+export interface GqlBeetsConfigPoolFilterItem {
+  __typename?: 'GqlBeetsConfigPoolFilterItem';
+  id: Scalars['ID'];
+  pools: Array<Scalars['String']>;
+  title: Scalars['String'];
+}
