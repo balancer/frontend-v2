@@ -27,12 +27,9 @@ const {
   isBeforeStart,
   launchToken,
   collateralTokenPrice,
-  collateralToken,
   refreshStartEndStatus,
   refetchQueriesOnBlockNumber,
-  invalidateQueries,
-  onNewTx,
-  launchTokenPrice
+  onNewTx
 } = useLge(props.lge, props.pool);
 
 const timeRemaining = computed(() =>
@@ -143,7 +140,7 @@ watch(blockNumber, () => {
             days > 1
               ? `${days} days`
               : days === 1
-              ? '1 day'
+              ? `0${days}:${hours}:${minutes}:${seconds}`
               : `${hours}:${minutes}:${seconds}`
           }}
         </vue-countdown>
