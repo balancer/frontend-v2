@@ -8,7 +8,7 @@ import useTokens from '@/composables/useTokens';
 import { computed } from 'vue';
 import LbpPreviewChart from '@/beethovenx/lbp/components/LbpPreviewChart.vue';
 
-const { data } = useLgeCreateState();
+const { data, lgeChartConfigValid } = useLgeCreateState();
 const { tokens, getToken, dynamicDataLoaded, dynamicDataLoading } = useTokens();
 
 const launchToken = computed(() => {
@@ -98,6 +98,11 @@ function handleEndWeightChange() {
       </div>
     </div>
   </div>
-
+  <BalAlert
+    v-if="lgeChartConfigValid !== true"
+    :title="lgeChartConfigValid"
+    class="w-full mb-8"
+    type="error"
+  />
   <LbpPreviewChart />
 </template>

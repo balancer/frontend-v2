@@ -25,9 +25,10 @@ const series = computed(() => {
   return [
     {
       name: 'Predicted Price',
-      values: lgeChartConfigValid.value
-        ? getLbpPreviewChartPredictedPriceData(data.value, price)
-        : []
+      values:
+        lgeChartConfigValid.value === true
+          ? getLbpPreviewChartPredictedPriceData(data.value, price)
+          : []
     }
   ];
 });

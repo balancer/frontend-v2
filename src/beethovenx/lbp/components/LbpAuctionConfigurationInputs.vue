@@ -4,17 +4,18 @@ import BalTextInput from '@/components/_global/BalTextInput/BalTextInput.vue';
 import PoolCreateTokenRow from '@/beethovenx/components/pages/pool-create/PoolCreateTokenRow.vue';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokenLists from '@/composables/useTokenLists';
-import useTokens from '@/composables/useTokens';
 import { computed } from 'vue';
 import { getAddress } from '@ethersproject/address';
 import LbpTokenWeightsConfig from '@/beethovenx/lbp/components/LbpTokenWeightsConfig.vue';
 import { isGreaterThanOrEqualTo } from '@/beethovenx/utils/validations';
 import { isLessThanOrEqualTo } from '@/lib/utils/validations';
+import BalAlert from '@/components/_global/BalAlert/BalAlert.vue';
 
 const {
   data,
   tokenRequiresApproval,
-  collateralTokenRequiresApproval
+  collateralTokenRequiresApproval,
+  lgeChartConfigValid
 } = useLgeCreateState();
 const { appNetworkConfig } = useWeb3();
 const { tokenListsLoaded } = useTokenLists();
