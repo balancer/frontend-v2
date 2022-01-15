@@ -13,7 +13,7 @@
   "publicRpc": "https://polygon-rpc.com",
   "explorer": "https://polygonscan.com",
   "explorerName": "Polygonscan",
-  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2",
+  "subgraph": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2-beta",
   "poolsUrlV1": "",
   "poolsUrlV2": "",
   "subgraphs": {
