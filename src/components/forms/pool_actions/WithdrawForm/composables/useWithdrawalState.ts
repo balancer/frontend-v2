@@ -7,6 +7,9 @@ import useRelayerApproval, {
 } from '@/composables/trade/useRelayerApproval';
 import { BasicContent } from '@/types';
 
+/**
+ * TYPES
+ */
 export enum WithdrawalError {
   SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT
 }
