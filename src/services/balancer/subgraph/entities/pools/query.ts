@@ -5,6 +5,7 @@ const defaultArgs = {
   first: 1000,
   orderBy: 'totalLiquidity',
   orderDirection: 'desc',
+  subgraphError: 'allow',
   where: {
     totalShares_gt: 0.01,
     id_not_in: POOLS.BlockList
