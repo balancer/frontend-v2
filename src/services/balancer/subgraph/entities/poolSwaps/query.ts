@@ -3,7 +3,8 @@ import { merge } from 'lodash';
 const defaultArgs = {
   first: 100,
   orderBy: 'timestamp',
-  orderDirection: 'desc'
+  orderDirection: 'desc',
+  subgraphError: 'allow'
 };
 
 const defaultAttrs = {

@@ -2,6 +2,7 @@ import { merge } from 'lodash';
 
 const defaultArgs = {
   first: 1000,
+  subgraphError: 'allow',
   where: {
     totalSwapVolume_gt: 0
   }

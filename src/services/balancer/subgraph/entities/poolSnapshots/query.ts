@@ -1,6 +1,10 @@
 import { isPolygon } from '@/composables/useNetwork';
 import { merge } from 'lodash';
 
+const defaultArgs = {
+  subgraphError: 'allow'
+};
+
 const defaultAttrs = {
   pool: {
     id: true
@@ -18,7 +22,7 @@ if (!isPolygon) {
 
 export default (args = {}, attrs = {}) => ({
   poolSnapshot: {
-    __args: args,
+    __args: merge({}, defaultArgs, args),
     ...merge({}, defaultAttrs, attrs)
   }
 });
