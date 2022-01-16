@@ -136,11 +136,10 @@ export default function useWithdrawMath(
     if (!isWeightedPool.value) return bptBalance.value;
     // Maximum BPT allowed from weighted pool is 30%
     const poolMax = bnum(pool.value.totalShares)
-      .times(0.25)
+      .times(0.3)
       .toFixed(poolDecimals.value, OldBigNumber.ROUND_DOWN);
     // If the user's bpt balance is greater than the withdrawal limit for
     // weighted pools we need to return the poolMax bpt value.
-    console.log('maxes', bptBalance.value, poolMax);
     return OldBigNumber.min(bptBalance.value, poolMax).toString();
   });
 
@@ -273,7 +272,7 @@ export default function useWithdrawMath(
       return poolTokens.value.map((token, tokenIndex) => {
         return formatUnits(
           poolCalculator
-            .exactBPTInForTokenOut(bptBalance.value, tokenIndex)
+            .exactBPTInForTokenOut(bptBalanceScaled.value, tokenIndex)
             .toString(),
           token.decimals
         );
@@ -320,7 +319,6 @@ export default function useWithdrawMath(
     if (amountExceedsPoolBalance.value) return 1;
     if (!hasAmounts.value || isProportional.value) return 0;
 
-    console.log('fullBPTIn.value', fullBPTIn.value);
     return poolCalculator
       .priceImpact(fullAmounts.value, {
         exactOut: exactOut.value,
