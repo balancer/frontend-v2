@@ -9,7 +9,6 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 
 import { bnSum, bnum } from '@/lib/utils';
-import useSlippage from '@/composables/useSlippage';
 
 export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;
 
@@ -23,7 +22,6 @@ export default function useMigrateMath(
   const { tokens, balances, balanceFor, getToken } = useTokens();
   const { currency } = useUserSettings();
   const { fNum, toFiat } = useNumbers();
-  const { minusSlippageScaled } = useSlippage();
 
   /**
    * SERVICES
