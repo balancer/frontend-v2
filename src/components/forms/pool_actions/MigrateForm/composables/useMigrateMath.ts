@@ -78,10 +78,6 @@ export default function useMigrateMath(
     )
   );
 
-  const swapAmountsOut = computed(() =>
-    fullAmountsScaled.value.map(minusSlippageScaled)
-  );
-
   const fiatAmounts = computed((): string[] =>
     fromPool.value.tokenAddresses.map((address, i) =>
       toFiat(fullAmounts.value[i], address)
@@ -118,7 +114,6 @@ export default function useMigrateMath(
     tokenCount,
     fiatTotal,
     fiatTotalLabel,
-    swapAmountsOut,
     priceImpact
   };
 }
