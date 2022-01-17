@@ -94,6 +94,7 @@
     "clearTransactions": "Clear transactions",
     "clickHere": "Click here",
     "close": "Close",
+    "coingeckoPricingTooltip": "The data for this graph is pulled from our pricing provider, CoinGecko.",
     "communitySwapFeeLabel": "Delegated swap fees; currently fixed: <b>{0}</b>",
     "composition": "Composition",
     "configuration": "Configuration",
