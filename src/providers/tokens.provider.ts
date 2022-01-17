@@ -44,12 +44,14 @@ export interface TokensProviderState {
   loading: boolean;
   injectedTokens: TokenInfoMap;
   allowanceContracts: string[];
+  injectedPrices: Record<string, number>;
 }
 
 export interface TokensProviderResponse {
   loading: Ref<boolean>;
   tokens: ComputedRef<TokenInfoMap>;
   injectedTokens: Ref<TokenInfoMap>;
+  injectedPrices: Ref<Record<string, number>>;
   allowanceContracts: Ref<string[]>;
   nativeAsset: NativeAsset;
   wrappedNativeAsset: ComputedRef<TokenInfo>;
@@ -88,6 +90,7 @@ export interface TokensProviderResponse {
   balanceFor: (address: string) => string;
   getTokens: (addresses: string[]) => TokenInfoMap;
   getToken: (address: string) => TokenInfo;
+  injectPrices: (pricesToInject: Record<string, number>) => void;
 }
 
 /**
@@ -134,7 +137,8 @@ export default {
         networkConfig.addresses.vault,
         networkConfig.addresses.wstETH,
         networkConfig.addresses.exchangeProxy
-      ])
+      ]),
+      injectedPrices: {}
     });
 
     /**
@@ -198,7 +202,9 @@ export default {
       isLoading: priceQueryLoading,
       isError: priceQueryError,
       refetch: refetchPrices
-    } = useTokenPricesQuery(tokenAddresses);
+    } = useTokenPricesQuery(tokenAddresses, toRef(state, 'injectedPrices'), {
+      keepPreviousData: true
+    });
 
     const {
       data: balanceData,
@@ -206,7 +212,7 @@ export default {
       isLoading: balanceQueryLoading,
       isError: balancesQueryError,
       refetch: refetchBalances
-    } = useBalancesQuery(tokens);
+    } = useBalancesQuery(tokens, { keepPreviousData: true });
 
     const {
       data: allowanceData,
@@ -420,6 +426,18 @@ export default {
     }
 
     /**
+     * Injects prices for tokens where the pricing provider
+     * may have not found a valid price for provided tokens
+     * @param pricesToInject A map of <address, price> to inject
+     */
+    function injectPrices(pricesToInject: Record<string, number>) {
+      state.injectedPrices = {
+        ...state.injectedPrices,
+        ...pricesToInject
+      };
+    }
+
+    /**
      * CALLBACKS
      */
     onBeforeMount(async () => {
@@ -464,7 +482,8 @@ export default {
       priceFor,
       balanceFor,
       getTokens,
-      getToken
+      getToken,
+      injectPrices
     });
 
     return () => slots.default();
