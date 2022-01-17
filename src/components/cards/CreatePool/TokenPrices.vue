@@ -59,7 +59,7 @@ const hasUnknownPrice = computed(() =>
           justify="between"
           align="center"
         >
-          <span>{{ tokens[token].symbol }}</span>
+          <span>{{ tokens[token]?.symbol }}</span>
           <BalStack horizontal justify="center">
             <div>
               <div class="-mr-1">
@@ -96,7 +96,7 @@ const hasUnknownPrice = computed(() =>
                 'w-1/2 text-left',
                 { 'font-medium': injectedPrices[token] === undefined }
               ]"
-              >{{ tokens[token].symbol }}</span
+              >{{ tokens[token]?.symbol }}</span
             >
             <BalStack
               v-if="injectedPrices[token] !== undefined"
