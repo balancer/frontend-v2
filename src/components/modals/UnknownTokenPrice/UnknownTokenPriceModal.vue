@@ -103,9 +103,7 @@ function injectUnknownPrices() {
           fixedToken
           placeholder="$0.00"
           v-model:amount="unknownTokenPrices[address]"
-          v-model:address="
-            seedTokens[getIndexOfUnknownToken(address)].tokenAddress
-          "
+          :address="address"
           :name="
             `initial-token-${
               seedTokens[getIndexOfUnknownToken(address)].tokenAddress
