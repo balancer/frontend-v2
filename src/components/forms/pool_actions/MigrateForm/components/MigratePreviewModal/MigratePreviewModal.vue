@@ -32,7 +32,10 @@ type Props = {
  */
 const props = defineProps<Props>();
 
-const { fiatTotalLabel, fiatTotal, priceImpact } = toRefs(props.math);
+const { priceImpact } = toRefs(props.math);
+
+const fiatTotalLabel = ref(props.math.fiatTotalLabel.value);
+const fiatTotal = ref(props.math.fiatTotal.value);
 
 const emit = defineEmits<{
   (e: 'close'): void;
