@@ -42,6 +42,7 @@ type Props = {
   rules?: Rules;
   disableNativeAssetBuffer?: boolean;
   hideFooter?: boolean;
+  ignoreWalletBalance?: boolean;
 };
 
 /**
@@ -59,6 +60,7 @@ const props = withDefaults(defineProps<Props>(), {
   hintAmount: '',
   disableNativeAssetBuffer: false,
   hideFooter: false,
+  ignoreWalletBalance: false,
   options: () => [],
   rules: () => []
 });
@@ -144,13 +146,15 @@ const tokenValue = computed(() => {
 });
 
 const inputRules = computed(() => {
-  if (!hasToken.value || !isWalletReady.value || props.noRules)
+  if (!hasToken.value || !isWalletReady.value || props.noRules) {
     return [isPositive()];
-  return [
-    ...props.rules,
-    isPositive(),
-    isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance'))
-  ];
+  }
+
+  const rules = [...props.rules, isPositive()];
+  if (!props.ignoreWalletBalance) {
+    rules.push(isLessThanOrEqualTo(tokenBalance.value, t('exceedsBalance')));
+  }
+  return rules;
 });
 
 const maxPercentage = computed(() => {

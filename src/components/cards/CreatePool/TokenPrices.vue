@@ -57,6 +57,7 @@ const hasUnknownPrice = computed(() =>
           v-for="token in knownTokens"
           :key="`tokenPrice-known-${token}`"
           justify="between"
+          align="center"
         >
           <span>{{ tokens[token].symbol }}</span>
           <BalStack horizontal justify="center">
@@ -76,14 +77,14 @@ const hasUnknownPrice = computed(() =>
         vertical
         isDynamic
         spacing="xs"
-        :class="{ 'mt-2': knownTokens.length }"
+        :class="{ 'mt-1': knownTokens.length }"
       >
         <button
           @click="toggleUnknownPriceModal"
           :class="[
-            'hover:text-blue-500',
             {
-              'text-red-500': hasUnknownPrice
+              'text-red-500 hover:text-red-700': hasUnknownPrice,
+              'hover:text-blue-500': !hasUnknownPrice
             }
           ]"
           v-for="token in unknownTokens"
@@ -91,21 +92,33 @@ const hasUnknownPrice = computed(() =>
         >
           <BalStack horizontal isDynamic justify="between">
             <span
-              :class="{ 'font-medium': injectedPrices[token] === undefined }"
+              :class="[
+                'w-1/2 text-left',
+                { 'font-medium': injectedPrices[token] === undefined }
+              ]"
               >{{ tokens[token].symbol }}</span
             >
             <BalStack
               v-if="injectedPrices[token] !== undefined"
               horizontal
               align="center"
+              class="w-1/2 text-right"
             >
-              <span>{{ fNum(injectedPrices[token], currency) }}</span>
-              <BalIcon size="sm" name="edit" />
+              <span class="w-4/5 break-words">{{
+                fNum(injectedPrices[token], currency)
+              }}</span>
+              <BalIcon size="sm" name="edit" class="mr-px" />
             </BalStack>
-            <BalStack v-else horizontal align="center">
-              <div>
+            <BalStack
+              v-else
+              spacing="none"
+              horizontal
+              align="center"
+              class="w-3/4"
+            >
+              <div class="w-full justify-end">
                 <div class="-mr-1">
-                  <span>{{ $t('enterAPrice') }}</span>
+                  <span class="text-left">{{ $t('enterAPrice') }}</span>
                 </div>
               </div>
               <BalIcon name="alert-circle" />

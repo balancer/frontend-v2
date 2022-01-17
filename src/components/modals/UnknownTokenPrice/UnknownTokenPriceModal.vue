@@ -8,6 +8,7 @@ import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { useI18n } from 'vue-i18n';
 
 import { formatWordListAsSentence } from '@/lib/utils';
+import { isLessThanOrEqualTo } from '@/lib/utils/validations';
 
 type Props = {
   isVisible: boolean;
@@ -20,6 +21,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['close']);
+// Hundred million max price for a token
+const PRICE_CAP = 100000000;
 
 /**
  * STATE
@@ -106,7 +109,8 @@ function injectUnknownPrices() {
           "
           noMax
           hideFooter
-          noRules
+          :rules="[isLessThanOrEqualTo(PRICE_CAP)]"
+          ignoreWalletBalance
         />
       </BalStack>
       <BalBtn @click="injectUnknownPrices" :disabled="isSubmitDisabled">{{
