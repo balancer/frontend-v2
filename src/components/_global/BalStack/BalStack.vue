@@ -1,5 +1,5 @@
 <script lang="ts">
-import {  defineComponent, PropType, h } from 'vue';
+import { defineComponent, PropType, h } from 'vue';
 
 type Spacing = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | 'none';
 type Alignment = 'center' | 'start' | 'end' | 'between';
