@@ -7,7 +7,7 @@ import useTokens from '@/composables/useTokens';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import { useI18n } from 'vue-i18n';
 
-import { formatWordListAsSentence } from '@/lib/utils';
+import { bnum, formatWordListAsSentence } from '@/lib/utils';
 import { isLessThanOrEqualTo } from '@/lib/utils/validations';
 
 type Props = {
@@ -56,9 +56,13 @@ const readableUnknownTokenSymbols = computed(() => {
 });
 
 const isSubmitDisabled = computed(() => {
-  return props.unknownTokens.some(token =>
+  const noPricesEntered = props.unknownTokens.some(token =>
     [null, ''].includes(unknownTokenPrices[token])
   );
+  const hasLargePrice = props.unknownTokens.some(token =>
+    bnum(unknownTokenPrices[token]).gt(PRICE_CAP)
+  );
+  return noPricesEntered || hasLargePrice;
 });
 
 /**
