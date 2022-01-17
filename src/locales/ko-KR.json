@@ -276,6 +276,7 @@
     "menu":"메뉴",
     "minTransactionBuffer":"원활한 거래를 위해 가스 요금을 지불하려면 지갑에 최소 {0} {1}이(가) 남아 있어야 합니다.",
     "missingPoolNameOrSymbol":"풀 이름 또는 기호가 누락되었습니다.",
+    "missingPoolNameOrSymbolInfo":"누락된 풀 이름 또는 기호가 있습니다. 풀을 생성하기 전에 채우십시오.",
     "month":"달",
     "months":"개월",
     "mustBeAtLeast":"{0} 자 이상이어야합니다.",

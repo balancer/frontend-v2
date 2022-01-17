@@ -276,6 +276,7 @@
     "menu":"Menu",
     "minTransactionBuffer":"Pour garantir une transaction fluide, au moins {0} {1} doit être laissé dans votre portefeuille pour payer les frais d'essence.",
     "missingPoolNameOrSymbol":"Nom ou symbole de pool manquant",
+    "missingPoolNameOrSymbolInfo":"Il manque un nom ou un symbole de pool, remplissez-le avant de créer le pool.",
     "month":"mois",
     "months":"mois",
     "mustBeAtLeast":"doit comporter au moins {0} caractères",

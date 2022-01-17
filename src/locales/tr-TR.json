@@ -276,6 +276,7 @@
     "menu":"Menü",
     "minTransactionBuffer":"Sorunsuz bir işlem sağlamak için, gaz ücretlerini ödemek için cüzdanınızda en az {0} {1} bırakılmalıdır.",
     "missingPoolNameOrSymbol":"Havuz adı veya sembolü eksik",
+    "missingPoolNameOrSymbolInfo":"Havuz adı veya sembolü eksik, havuzu oluşturmadan önce doldurun.",
     "month":"ay",
     "months":"aylar",
     "mustBeAtLeast":"en az {0} karakter olmalıdır",
