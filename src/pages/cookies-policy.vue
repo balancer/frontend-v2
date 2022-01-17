@@ -102,11 +102,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'cookies-policy'
-};
-</script>
-
-<style scoped></style>

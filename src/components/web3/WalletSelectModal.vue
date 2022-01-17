@@ -5,19 +5,18 @@
     title="Connect to a wallet"
   >
     <p class="pb-3 text-sm">
-      By connecting a wallet, I agree to Balancer Labs’
-
+      {{ $t('byConnectingWallet') }}
       <router-link :to="{ name: 'terms-of-use' }" target="_blank">
-        <span className="link">Terms of Use</span>,
+        <span className="link">{{ $t('policies.termsOfUse') }}</span
+        >,
       </router-link>
-
       <router-link :to="{ name: 'cookies-policy' }" target="_blank">
-        <span className="link">Cookies Policy</span>
-        and
+        <span className="link">{{ $t('policies.cookiesPolicy') }}</span>
       </router-link>
-
+      {{ $t('and') }}
       <router-link :to="{ name: 'privacy-policy' }" target="_blank">
-        <span className="link">Privacy Policy</span>.
+        <span className="link">{{ $t('policies.privacyPolicy') }}</span
+        >.
       </router-link>
     </p>
     <WalletButton v-for="wallet in wallets" :wallet="wallet" :key="wallet" />
@@ -32,12 +31,11 @@
         dark:to-gray-850
       "
     >
-      <h6>New to Ethereum?</h6>
+      <h6>{{ $t('newToEthereum') }}</h6>
       <p class="text-sm">
-        Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest
-        and Trade here.
+        {{ $t('setUpEthereumWallet') }}
         <BalLink :href="EXTERNAL_LINKS.Ethereum.Wallets" external>
-          Learn&nbsp;More
+          {{ $t('learnMore') }}
           <span class="align-middle"
             ><BalIcon name="arrow-up-right" size="sm"
           /></span>

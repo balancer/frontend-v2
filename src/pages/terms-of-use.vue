@@ -570,11 +570,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'terms-of-use'
-};
-</script>
-
-<style scoped></style>
