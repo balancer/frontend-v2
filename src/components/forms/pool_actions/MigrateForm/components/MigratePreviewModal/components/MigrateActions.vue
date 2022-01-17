@@ -54,9 +54,12 @@ type MigratePoolState = {
  */
 const props = defineProps<Props>();
 
-const { fiatTotalLabel, bptBalanceScaled, swapAmountsOut, tokenCount } = toRefs(
-  props.math
-);
+const {
+  fiatTotalLabel,
+  bptBalanceScaled,
+  fullAmountsScaled,
+  tokenCount
+} = toRefs(props.math);
 
 const emit = defineEmits<{
   (e: 'success', value: TransactionReceipt): void;
@@ -150,7 +153,8 @@ async function submit() {
       userData: StablePoolEncoder.exitExactBPTInForTokensOut(
         bptBalanceScaled.value
       ),
-      minExitAmountsOut: swapAmountsOut.value,
+      // @ts-ignore
+      expectedAmountsOut: fullAmountsScaled.value,
       finalTokensOut: new Array(tokenCount.value).fill(props.toPool.address),
       slippage: slippageScaled.value,
       fetchPools: {
