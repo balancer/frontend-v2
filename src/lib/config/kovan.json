@@ -48,8 +48,8 @@
     "batchRelayer": "0x6bfd48F3873E21F7686982d352b610E1523c218B"
   },
   "pools": {
-    "staBAL3": "",
-    "bbAaveUSD": ""
+    "staBAL3": "0xf5f6fb82649df7991054ef796c39da81b93364df0002000000000000000004a5",
+    "bbAaveUSD": "0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8"
   },
   "keys": {
     "infura": "daaa68ec242643719749dd1caba2fc66",
