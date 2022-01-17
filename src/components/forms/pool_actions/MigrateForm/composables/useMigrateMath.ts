@@ -97,6 +97,10 @@ export default function useMigrateMath(
   );
 
   const priceImpact = computed(() => {
+    // TODO: When from/to pool token count is different its not possible to calculate the price impact.
+    if (fromPool.value.tokensList.length !== toPool.value.tokensList.length) {
+      return 0;
+    }
     return toPoolCalculator
       .priceImpact(fullAmounts.value, {
         queryBPT: fullBPTOut.value

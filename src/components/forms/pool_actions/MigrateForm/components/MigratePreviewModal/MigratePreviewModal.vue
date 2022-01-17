@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 
-import { isMainnet } from '@/composables/useNetwork';
 import { MigrateMathResponse } from '../../composables/useMigrateMath';
 
 import MigratePoolRisks from './components/MigratePoolRisks.vue';
@@ -100,7 +99,6 @@ function handleClose() {
     />
 
     <InvestSummary
-      v-if="isMainnet"
       :pool="toPool"
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
