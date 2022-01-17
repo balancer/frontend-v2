@@ -19,6 +19,7 @@
     "allowing": "Allowing...",
     "allPools": "All pools",    
     "allTokens": "All tokens",
+    "and": "and",
     "ammPlatform": "Automated portfolio manager and trading platform",
     "amount": "Amount",
     "amountBeforeFees": "Amount before fees",
@@ -82,6 +83,7 @@
     "browserWallet": "Browser Wallet",
     "buy": "Buy",
     "boostedPool": "Balancer Boosted pool",
+    "byConnectingWallet": "By connecting a wallet, I agree to Balancer Labs’",
     "cancel": "Cancel",
     "cancelling": "Cancelling",
     "checkWallet": "Confirm in wallet",
@@ -346,6 +348,7 @@
     "new": "New",
     "newInvestment": "New investment",
     "newTrade": "New Trade",
+    "newToEthereum": "New to Ethereum?",
     "newWithdrawal": "New withdrawal",
     "next": "Next",
     "noContent": "No content",
@@ -375,6 +378,11 @@
     "pendingClaims": "Pending claims",
     "pendingEstimate": "Pending: (estimate)",
     "perWeek": "per week",
+    "policies": {
+        "cookiesPolicy": "Cookies Policy",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfUse": "Terms of Use"
+    },
     "pool": "Pool",
     "poolBalance": "Pool balance",
     "poolComposition": "Pool composition",
@@ -455,6 +463,7 @@
     "sell": "Sell",
     "send": "Send",
     "settings": "Settings",
+    "setUpEthereumWallet": "Balancer is a DeFi app on Ethereum. Set up an Ethereum Wallet to Invest and Trade here.",
     "singleToken": "Single token",
     "singleTokenMax": "Single token max",
     "slippageTolerance": "Slippage tolerance",
@@ -469,6 +478,7 @@
     "switchNetwork": "Switch Network",
     "symbol": "Symbol",
     "tableShowsBalancerV2Pools": "This table shows only Balancer V2 pools.",
+    
     "theme": "Theme",
     "thirdPartyRewards": {
         "apr": {
