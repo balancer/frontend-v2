@@ -32,10 +32,6 @@ export default defineComponent({
     justify: {
       type: String as PropType<Alignment>
     },
-    isDynamic: {
-      type: Boolean,
-      default: () => false
-    },
     expandChildren: {
       type: Boolean,
       default: () => false

@@ -156,7 +156,7 @@ function getSwapFeeManager() {
               {{ $t('createAPool.tokensAndSeedLiquidity') }}
             </h6>
           </div>
-          <BalStack vertical spacing="none" withBorder isDynamic>
+          <BalStack vertical spacing="none" withBorder>
             <div
               v-for="token in seedTokens"
               :key="`tokenpreview-${token.tokenAddress}`"
