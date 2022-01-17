@@ -4,16 +4,38 @@
     @close="$emit('close')"
     title="Connect to a wallet"
   >
+    <p class="pb-3 text-sm">
+      {{ $t('byConnectingWallet') }}
+      <router-link :to="{ name: 'terms-of-use' }" target="_blank">
+        <span className="link">{{ $t('policies.termsOfUse') }}</span
+        >,
+      </router-link>
+      <router-link :to="{ name: 'cookies-policy' }" target="_blank">
+        <span className="link">{{ $t('policies.cookiesPolicy') }}</span>
+      </router-link>
+      {{ $t('and') }}
+      <router-link :to="{ name: 'privacy-policy' }" target="_blank">
+        <span className="link">{{ $t('policies.privacyPolicy') }}</span
+        >.
+      </router-link>
+    </p>
     <WalletButton v-for="wallet in wallets" :wallet="wallet" :key="wallet" />
     <div
-      class="p-4 rounded-lg bg-gradient-to-b from-gray-50 dark:from-gray-900 to-gray-100 dark:to-gray-850"
+      class="
+        p-4
+        rounded-lg
+        bg-gradient-to-b
+        from-gray-50
+        dark:from-gray-900
+        to-gray-100
+        dark:to-gray-850
+      "
     >
-      <h6>New to Ethereum?</h6>
+      <h6>{{ $t('newToEthereum') }}</h6>
       <p class="text-sm">
-        Balancer is a DeFi app on Ethereum. To invest and trade here, you'll
-        first need to set up an Ethereum Wallet.
+        {{ $t('setUpEthereumWallet') }}
         <BalLink :href="EXTERNAL_LINKS.Ethereum.Wallets" external>
-          Learn More
+          {{ $t('learnMore') }}
           <span class="align-middle"
             ><BalIcon name="arrow-up-right" size="sm"
           /></span>
