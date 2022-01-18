@@ -56,7 +56,6 @@ const { t } = useI18n();
 /**
  * COMPUTED
  */
-
 const title = computed((): string =>
   migrateConfirmed.value
     ? t('migratePool.previewModal.titles.confirmed')
