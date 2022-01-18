@@ -176,7 +176,7 @@ export default defineComponent({
       },
       {
         name: t('poolValue'),
-        accessor: pool => fNum(pool.totalLiquidity, 'usd'),
+        accessor: pool => fNum(pool.totalLiquidity, 'usd', { noDecimals: true }),
         align: 'right',
         id: 'poolValue',
         sortKey: pool => {
@@ -189,7 +189,7 @@ export default defineComponent({
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
-        accessor: pool => fNum(pool.dynamic.volume, 'usd'),
+        accessor: pool => fNum(pool.dynamic.volume, 'usd', { noDecimals: true }),
         align: 'right',
         id: 'poolVolume',
         sortKey: pool => {
