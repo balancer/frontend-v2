@@ -4,6 +4,9 @@ import { defineComponent, PropType, h } from 'vue';
 type Spacing = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | 'none';
 type Alignment = 'center' | 'start' | 'end' | 'between';
 
+/**
+ * Maps discrete spacing types to a tailwind spacing tier
+ */
 const SpacingMap: Record<Spacing, number> = {
   xs: 1,
   sm: 2,
@@ -16,22 +19,41 @@ const SpacingMap: Record<Spacing, number> = {
 
 export default defineComponent({
   props: {
+    /**
+     * Stacked top down
+     */
     vertical: { type: Boolean, default: () => false },
+    /**
+     * Stacked left to right
+     */
     horizontal: { type: Boolean, default: () => false },
     spacing: {
       type: String as PropType<Spacing>,
       default: () => 'base'
     },
+    /**
+     * Show a hairline border after each stack element
+     */
     withBorder: {
       type: Boolean,
       default: () => false
     },
+    /**
+     * Flex align prop
+     */
     align: {
       type: String as PropType<Alignment>
     },
+    /**
+     * Flex justify prop
+     */
     justify: {
       type: String as PropType<Alignment>
     },
+    /**
+     * Will cause children of the stack to occupy
+     * as much space as possible.
+     */
     expandChildren: {
       type: Boolean,
       default: () => false
@@ -46,22 +68,35 @@ export default defineComponent({
   },
   render() {
     const spacingType = this.vertical ? 'mb' : 'mr';
-    const spacingClass = `${spacingType}-${SpacingMap[this.spacing]}`;
+    const borderType = this.vertical ? 'b' : 'r';
+    const widthClass = this.expandChildren ? 'w-full' : '';
+    const borderClass = this.withBorder ? `border-${borderType}` : '';
+    const stackNodeClass = `dark:border-gray-600 ${spacingType}-${
+      SpacingMap[this.spacing]
+    } ${borderClass} ${widthClass}`;
 
+    // @ts-ignore
     const vNodes = this.$slots.default() || [];
+    // if a childs 'value' is 'v-if', it is not visible so filter it out
+    // to not cause an empty node to render with margin
     const children = vNodes.filter(vNode => vNode.children !== 'v-if');
+    // need to apply margin and decorator classes to all children
     const styledChildren = children.map((child, childIndex) => {
       let styledNestedChildren = child.children;
+      // a child can have an array of nested children, this is when
+      // those children are rendered as part of a 'v-for directive'
       if (Array.isArray(styledNestedChildren)) {
+        // and those children can be nullish too
         const nonNullishChildren = styledNestedChildren.filter(
           nestedChild => nestedChild !== undefined || nestedChild !== null
         );
         styledNestedChildren = nonNullishChildren.map(
           (nestedChild, nestedChildIndex) => {
+            //@ts-ignore
             return h(nestedChild, {
               class:
                 nestedChildIndex !== nonNullishChildren.length - 1
-                  ? spacingClass
+                  ? stackNodeClass
                   : null
             });
           }
@@ -69,13 +104,13 @@ export default defineComponent({
         return h(
           child,
           {
-            class: childIndex !== children.length - 1 ? spacingClass : null
+            class: childIndex !== children.length - 1 ? stackNodeClass : null
           },
           [styledNestedChildren]
         );
       }
       return h(child, {
-        class: childIndex !== children.length - 1 ? spacingClass : null
+        class: childIndex !== children.length - 1 ? stackNodeClass : null
       });
     });
     return h(
