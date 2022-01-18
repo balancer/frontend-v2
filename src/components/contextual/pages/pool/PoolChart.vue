@@ -194,7 +194,7 @@ function getPoolValue(amounts: string[], prices: number[]) {
     <BalLineChart
       :data="series"
       :isPeriodSelectionEnabled="false"
-      :axisLabelFormatter="{ yAxis: '0.00%' }"
+      :axisLabelFormatter="{ yAxis: { style: 'unit', unit: 'percent', maximumFractionDigits: 2, minimumFractionDigits: 2 } }"
       :color="chartColors"
       height="96"
       :showLegend="true"

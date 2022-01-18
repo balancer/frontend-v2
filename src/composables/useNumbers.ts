@@ -8,7 +8,7 @@ interface Options {
   noDecimals?: boolean;
 }
 
-interface Options2 extends Intl.NumberFormatOptions {
+export interface FNumOptions extends Intl.NumberFormatOptions {
   noDecimals?: boolean;
 }
 
@@ -67,7 +67,7 @@ export function fNum(
 
 export function fNum2(
   number: number | string,
-  options: Options2 = {}
+  options: FNumOptions | undefined = {}
 ): string {
   if (typeof number === 'string') {
     number = new BigNumber(number).toNumber();
@@ -76,6 +76,25 @@ export function fNum2(
   const formatterOptions: Intl.NumberFormatOptions = Object.assign({}, options);
   if (options.noDecimals) {
     formatterOptions.maximumFractionDigits = 0;
+  }
+
+  if (
+    number >= 1e4 &&
+    !formatterOptions.minimumFractionDigits &&
+    !formatterOptions.maximumFractionDigits
+  ) {
+    formatterOptions.minimumFractionDigits = 0;
+    formatterOptions.maximumFractionDigits = 0;
+  }
+
+  // For consistency with numeral
+  if (options.unit === 'percent') {
+    number = number * 100;
+    formatterOptions.useGrouping = false;
+  }
+
+  if (formatterOptions.style === 'currency') {
+    formatterOptions.currency = 'USD';
   }
 
   const formatter = new Intl.NumberFormat('en-US', formatterOptions);

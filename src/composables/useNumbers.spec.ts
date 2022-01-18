@@ -75,18 +75,63 @@ describe('useNumbers', () => {
     const { fNum, fNum2 } = result;
 
     const testNumbers = [
+      '0',
+      '0.0',
+      '0.000005',
       '0.001',
       '0.123456789',
+      '0.6',
       '1.3',
+      '8',
       '13.44',
-      '188.9123'
+      '121',
+      '188.9123',
+      '5129.199911',
+      '87654',
+      '112124.8791743',
+      '121237821371'
     ];
 
-    it('BalLineChart should give the same result', () => {
-      const format1 = fNum(5.6, null, { format: '0.00%' });
-      const format2 = fNum2(5.6, { unit: 'percent' });
-      expect(format1).toEqual(format2);
-    })
+    it('BalLineChart percent formatter should give the same result', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, null, { format: '0.00%' });
+        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('BalLineChart USD formatter should give the same result', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, null, { format: '$0,0.00' });
+        const format2 = fNum2(testNumber, { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('usd preset should give same result as style: currency', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, 'usd');
+        const format2 = fNum2(testNumber, { style: 'currency' });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('percent preset should give same result as unit: percent', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, 'percent');
+        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('PoolFees formatted percent should give the same result', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, null, { format: '0.0%' });
+        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        expect(format2).toEqual(format1);
+      });
+    });
+
 
 
   });

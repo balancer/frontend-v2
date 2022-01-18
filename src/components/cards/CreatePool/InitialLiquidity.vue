@@ -277,7 +277,7 @@ function saveAndProceed() {
               <h6>{{ t('total') }}</h6>
               <BalStack horizontal spacing="xs" class="font-medium">
                 <span class="text-sm">
-                  {{ t('available') }}: {{ fNum(totalLiquidity, 'usd') }}
+                  {{ t('available') }}: {{ fNum2(totalLiquidity, { style: 'currency' }) }}
                 </span>
                 <button
                   :disabled="areAmountsMaxed"
@@ -295,7 +295,7 @@ function saveAndProceed() {
               </BalStack>
             </BalStack>
             <BalStack vertical spacing="none">
-              <h6>{{ fNum(currentLiquidity, 'usd') }}</h6>
+              <h6>{{ fNum2(currentLiquidity, { style: 'currency' }) }}</h6>
               <AnimatePresence
                 :isVisible="!isOptimised"
                 @on-presence="onAlertMountChange"
@@ -322,8 +322,8 @@ function saveAndProceed() {
             type="warning"
             :title="
               t('createAPool.arbTitle', [
-                fNum(arbitrageDelta.value, 'usd'),
-                fNum(arbitrageDelta.delta, 'percent')
+                fNum2(arbitrageDelta.value, { style: 'currency' }),
+                fNum2(arbitrageDelta.delta, { style: 'unit', unit: 'percent' })
               ])
             "
           >
