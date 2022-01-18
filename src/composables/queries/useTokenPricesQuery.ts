@@ -25,10 +25,13 @@ const PER_PAGE = 1000;
  */
 export default function useTokenPricesQuery(
   addresses: Ref<string[]> = ref([]),
+  pricesToInject: Ref<Record<string, number>> = ref({}),
   options: UseQueryOptions<QueryResponse> = {}
 ) {
   const { networkId } = useNetwork();
-  const queryKey = reactive(QUERY_KEYS.Tokens.Prices(networkId, addresses));
+  const queryKey = reactive(
+    QUERY_KEYS.Tokens.Prices(networkId, addresses, pricesToInject)
+  );
   const { currency } = useUserSettings();
 
   // TODO: kill this with fire as soon as Coingecko supports wstETH
@@ -42,6 +45,18 @@ export default function useTokenPricesQuery(
       };
     }
 
+    return prices;
+  }
+
+  function injectCustomTokens(
+    prices: TokenPrices,
+    pricesToInject: Record<string, number>
+  ): TokenPrices {
+    for (const address of Object.keys(pricesToInject)) {
+      prices[address] = {
+        [currency.value]: pricesToInject[address]
+      };
+    }
     return prices;
   }
 
@@ -65,6 +80,8 @@ export default function useTokenPricesQuery(
     }
 
     prices = injectWstEth(prices);
+    console.log('Injecting price data', pricesToInject.value);
+    prices = injectCustomTokens(prices, pricesToInject.value);
     return prices;
   };
 

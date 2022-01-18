@@ -78,11 +78,12 @@ const QUERY_KEYS = {
         wrappedNativeAsset
       }
     ],
-    Prices: (networkId: Ref<Network>, tokens: Ref<string[]>) => [
-      'tokens',
-      'prices',
-      { networkId, tokens }
-    ]
+    Prices: (
+      networkId: Ref<Network>,
+      tokens: Ref<string[]>,
+      pricesToInject: Ref<Record<string, number>>
+    ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
+    AllPrices: ['tokens', 'prices']
   },
   Account: {
     Balances: (
