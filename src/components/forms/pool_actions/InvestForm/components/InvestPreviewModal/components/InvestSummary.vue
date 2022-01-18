@@ -15,12 +15,15 @@ type Props = {
   pool: FullPool;
   fiatTotal: string;
   priceImpact: number;
+  showTotal?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showTotal: true
+});
 
 /**
  * COMPOSABLES
@@ -100,7 +103,7 @@ function weeklyYieldForAPR(apr: string): string {
       {{ $t('summary') }}
     </h6>
     <div class="flex flex-col py-2">
-      <div class="summary-table-row">
+      <div v-if="showTotal" class="summary-table-row">
         <div class="summary-table-label">
           {{ $t('total') }}
         </div>
