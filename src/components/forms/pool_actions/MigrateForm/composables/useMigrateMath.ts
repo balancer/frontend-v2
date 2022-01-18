@@ -76,16 +76,6 @@ export default function useMigrateMath(
     )
   );
 
-  const fiatAmounts = computed((): string[] =>
-    fromPool.value.tokenAddresses.map((address, i) =>
-      toFiat(fullAmounts.value[i], address)
-    )
-  );
-
-  const fiatTotal = computed(() => bnSum(fiatAmounts.value).toString());
-
-  const fiatTotalLabel = computed(() => fNum(fiatTotal.value, currency.value));
-
   const fullBPTOut = computed(() =>
     fromPoolCalculator.exactTokensInForBPTOut(fullAmounts.value).toString()
   );
@@ -102,6 +92,30 @@ export default function useMigrateMath(
       .toNumber();
   });
 
+  const fiatAmounts = computed((): string[] =>
+    fromPool.value.tokenAddresses.map((address, i) =>
+      toFiat(fullAmounts.value[i], address)
+    )
+  );
+
+  const fiatTotal = computed(() => bnSum(fiatAmounts.value).toString());
+
+  const fiatTotalLabel = computed(() => fNum(fiatTotal.value, currency.value));
+
+  const fiatTotalWithPriceImpact = computed(() => {
+    if (priceImpact.value > 0) {
+      const fiatTotalBN = bnum(fiatTotal.value);
+
+      return fiatTotalBN.minus(fiatTotalBN.times(priceImpact.value)).toString();
+    }
+
+    return fiatTotal.value;
+  });
+
+  const fiatTotalWithPriceImpactLabel = computed(() =>
+    fNum(fiatTotalWithPriceImpact.value, currency.value)
+  );
+
   return {
     // computed
     bptBalance,
@@ -112,6 +126,8 @@ export default function useMigrateMath(
     tokenCount,
     fiatTotal,
     fiatTotalLabel,
+    fiatTotalWithPriceImpact,
+    fiatTotalWithPriceImpactLabel,
     priceImpact
   };
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -32,9 +32,11 @@ type Props = {
  */
 const props = defineProps<Props>();
 
-const { priceImpact } = toRefs(props.math);
-
+const priceImpact = ref(props.math.priceImpact.value);
 const fiatTotalLabel = ref(props.math.fiatTotalLabel.value);
+const fiatTotalWithPriceImpact = ref(
+  props.math.fiatTotalWithPriceImpactLabel.value
+);
 const fiatTotal = ref(props.math.fiatTotal.value);
 
 const emit = defineEmits<{
@@ -95,7 +97,8 @@ function handleClose() {
     <MigratePoolsInfo
       :fromPoolTokenInfo="fromPoolTokenInfo"
       :toPoolTokenInfo="toPoolTokenInfo"
-      :fiatTotalLabel="fiatTotalLabel"
+      :fromPoolFiatTotalLabel="fiatTotalLabel"
+      :toPoolFiatTotalLabel="fiatTotalWithPriceImpact"
     />
 
     <InvestSummary

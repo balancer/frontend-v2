@@ -9,7 +9,8 @@ import { TokenInfo } from '@/types/TokenList';
 type Props = {
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
-  fiatTotalLabel: ComputedRef<string>;
+  fromPoolFiatTotalLabel: ComputedRef<string>;
+  toPoolFiatTotalLabel: ComputedRef<string>;
 };
 
 /**
@@ -27,7 +28,7 @@ defineProps<Props>();
       <div>
         <div>{{ fromPoolTokenInfo.symbol }}</div>
         <div class="text-gray-500">
-          {{ fiatTotalLabel }}
+          {{ fromPoolFiatTotalLabel }}
         </div>
       </div>
     </div>
@@ -39,7 +40,7 @@ defineProps<Props>();
       <div>
         <div>{{ toPoolTokenInfo.symbol }}</div>
         <div class="text-gray-500">
-          {{ fiatTotalLabel }}
+          {{ toPoolFiatTotalLabel }}
         </div>
       </div>
     </div>
