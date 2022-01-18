@@ -32,6 +32,7 @@ export class CloverWalletConnector extends Connector {
         }
 
         this.handleChainChanged(chainId);
+        // @ts-ignore
         this.handleAccountsChanged(accounts);
       } catch (err) {
         if ((err as MetamaskError).code === 4001) {

@@ -6,7 +6,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 
 import useBreakpoints from '@/composables/useBreakpoints';
 
-import AssetRow from './components/AssetRow';
+import AssetRow from './components/AssetRow.vue';
 import { bnum } from '@/lib/utils';
 
 /**

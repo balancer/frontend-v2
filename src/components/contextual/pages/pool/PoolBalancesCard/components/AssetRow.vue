@@ -40,12 +40,11 @@ const { explorerLinks } = useWeb3();
 const token = computed(() => getToken(props.address));
 
 const balance = computed(() => {
-  const formattedBalance = formatUnits(props.balance, token.value.decimals);
   return props.share != null
-    ? bnum(formattedBalance)
+    ? bnum(props.balance)
         .times(props.share)
         .toString()
-    : formattedBalance;
+    : props.balance;
 });
 
 const balanceLabel = computed(() => {

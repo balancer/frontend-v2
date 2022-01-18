@@ -40,6 +40,30 @@ const defaultAttrs = {
     balance: true,
     weight: true,
     priceRate: true
+  },
+  linearPools: {
+    id: true,
+    address: true,
+    priceRate: true,
+    totalSupply: true,
+    unwrappedTokenAddress: true,
+    mainToken: {
+      index: true,
+      address: true,
+      balance: true,
+      name: true,
+      symbol: true,
+      decimals: true
+    },
+    wrappedToken: {
+      index: true,
+      address: true,
+      balance: true,
+      priceRate: true,
+      name: true,
+      symbol: true,
+      decimals: true
+    }
   }
 };
 

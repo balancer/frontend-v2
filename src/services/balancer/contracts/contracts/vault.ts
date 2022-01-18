@@ -230,8 +230,8 @@ export default class Vault {
         balance: formatUnits(tokenBalance, decimals),
         weight: `${weights[i]}`,
         symbol: tokenInfo[token]?.symbol,
-        name: tokenInfo[token]?.name,
-        logoURI: tokenInfo[token]?.logoURI
+        name: tokenInfo[token]?.name
+        //logoURI: tokenInfo[token]?.logoURI
       };
     });
 

@@ -61,6 +61,30 @@ export interface Pool {
   wrappedTokens?: string[];
   linearPoolTokensMap?: Record<string, PoolToken>;
   unwrappedTokens?: string[];
+  linearPools?: {
+    id: string;
+    address: string;
+    priceRate: string;
+    unwrappedTokenAddress: string;
+    totalSupply: string;
+    mainToken: {
+      address: string;
+      index: number;
+      balance: string;
+      name: string;
+      symbol: string;
+      decimals: number;
+    };
+    wrappedToken: {
+      address: string;
+      index: number;
+      balance: string;
+      priceRate: string;
+      name: string;
+      symbol: string;
+      decimals: number;
+    };
+  }[];
 }
 
 export interface LinearPool extends Pool {

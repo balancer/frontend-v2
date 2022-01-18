@@ -59,15 +59,21 @@ export default function usePoolQuery(
       POOLS.Stable.AllowList.includes(id) ||
       POOLS.Investment.AllowList.includes(id);
 
-    return requiresAllowlisting && !isAllowlisted && !isOwnedByUser;
+    //return requiresAllowlisting && !isAllowlisted && !isOwnedByUser;
+
+    return false;
   }
 
   function removePreMintedBPT(pool: Pool): Pool {
-    const poolAddress = balancerSubgraphService.pools.addressFor(pool.id);
     // Remove pre-minted BPT token if exits
     pool.tokensList = pool.tokensList.filter(
-      address => address !== poolAddress.toLowerCase()
+      address => address !== pool.address.toLowerCase()
     );
+
+    pool.tokens = pool.tokens.filter(
+      token => token.address !== pool.address.toLowerCase()
+    );
+
     return pool;
   }
 
@@ -75,12 +81,9 @@ export default function usePoolQuery(
    * fetches StablePhantom linear pools and extracts
    * required attributes.
    */
-  async function getLinearPoolAttrs(pool: Pool): Promise<Pool> {
+  function getLinearPoolAttrs(pool: Pool): Pool {
     // Fetch linear pools from subgraph
-    const pools = await balancerSubgraphService.pools.get();
-    const linearPools = pools.filter(
-      pool => pool.poolType === 'Linear'
-    ) as LinearPool[];
+    const linearPools = pool.linearPools || [];
     const linearPoolTokensMap: Pool['linearPoolTokensMap'] = {};
 
     // Inject main/wrapped tokens into pool schema
@@ -89,24 +92,24 @@ export default function usePoolQuery(
       if (!pool.wrappedTokens) pool.wrappedTokens = [];
 
       const index = pool.tokensList.indexOf(linearPool.address.toLowerCase());
+      const mainToken = getAddress(linearPool.mainToken.address);
+      const wrappedToken = getAddress(linearPool.wrappedToken.address);
 
-      pool.mainTokens[index] = getAddress(
-        linearPool.tokensList[linearPool.mainIndex]
-      );
-      pool.wrappedTokens[index] = getAddress(
-        linearPool.tokensList[linearPool.wrappedIndex]
-      );
+      pool.mainTokens[index] = mainToken;
+      pool.wrappedTokens[index] = wrappedToken;
 
-      linearPool.tokens
-        .filter(token => token.address !== linearPool.address)
-        .forEach(token => {
-          const address = getAddress(token.address);
+      linearPoolTokensMap[mainToken] = {
+        ...linearPool.mainToken,
+        address: mainToken,
+        priceRate: null,
+        weight: ''
+      };
 
-          linearPoolTokensMap[address] = {
-            ...token,
-            address
-          };
-        });
+      linearPoolTokensMap[wrappedToken] = {
+        ...linearPool.wrappedToken,
+        address: wrappedToken,
+        weight: ''
+      };
     });
 
     pool.linearPoolTokensMap = linearPoolTokensMap;
@@ -131,9 +134,9 @@ export default function usePoolQuery(
 
     const isStablePhantomPool = isStablePhantom(pool.poolType);
 
-    if (isStablePhantomPool) {
+    if (isStablePhantomPool && pool.linearPools) {
       pool = removePreMintedBPT(pool);
-      pool = await getLinearPoolAttrs(pool);
+      pool = getLinearPoolAttrs(pool);
     }
 
     // Inject relevant pool tokens to fetch metadata
@@ -161,7 +164,10 @@ export default function usePoolQuery(
       swapFee: pool.swapFee,
       swapEnabled: pool.swapEnabled,
       tokens: keyBy(pool.tokens, token => getAddress(token.address)),
-      amp: pool.amp
+      amp: pool.amp,
+      linearPools: pool.linearPools
+        ? keyBy(pool.linearPools, linearPool => getAddress(linearPool.address))
+        : undefined
     };
 
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(
@@ -180,24 +186,14 @@ export default function usePoolQuery(
 
       if (decoratedPool.linearPoolTokensMap != null) {
         let totalLiquidity = bnum(0);
-        const tokensMap = getTokens(
-          Object.keys(decoratedPool.linearPoolTokensMap)
-        );
 
         Object.entries(onchainData.linearPools).forEach(([address, token]) => {
           const tokenShare = bnum(onchainData.tokens[address].balance).div(
             token.totalSupply
           );
 
-          const mainTokenBalance = formatUnits(
-            token.mainToken.balance,
-            tokensMap[token.mainToken.address].decimals
-          );
-
-          const wrappedTokenBalance = formatUnits(
-            token.wrappedToken.balance,
-            tokensMap[token.wrappedToken.address].decimals
-          );
+          const mainTokenBalance = token.mainToken.balance;
+          const wrappedTokenBalance = token.wrappedToken.balance;
 
           const mainTokenPrice =
             prices.value[token.mainToken.address] != null

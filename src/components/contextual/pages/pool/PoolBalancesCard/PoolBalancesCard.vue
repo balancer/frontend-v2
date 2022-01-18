@@ -2,9 +2,8 @@
 import { defineProps } from 'vue';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
-
-import Pool from './Pool';
-import BoostedPool from './BoostedPool';
+import Pool from './Pool.vue';
+import BoostedPool from './BoostedPool.vue';
 
 /**
  * TYPES
