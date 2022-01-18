@@ -10,6 +10,7 @@ import useWeb3 from '@/services/web3/useWeb3';
 import { getAddress } from '@ethersproject/address';
 import BalCard from '@/components/_global/BalCard/BalCard.vue';
 import FarmActionsCard from '@/beethovenx/components/pages/farm/FarmActionsCard.vue';
+import { lpTokensFor } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -37,7 +38,7 @@ const { isWalletReady, toggleWalletSelectModal } = useWeb3();
  * COMPUTED
  */
 const fiatTotal = computed(() => {
-  const fiatValue = props.pool.tokenAddresses
+  const fiatValue = lpTokensFor(props.pool)
     .map(address => {
       let tokenBalance = '0';
 

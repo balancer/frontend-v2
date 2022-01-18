@@ -325,9 +325,13 @@ export default defineComponent({
     const missingPrices = computed(() => {
       if (pool.value) {
         const tokensWithPrice = Object.keys(prices.value);
-        return !pool.value.tokenAddresses.every(token =>
-          tokensWithPrice.includes(token)
-        );
+
+        const tokens =
+          isStablePhantomPool.value && pool.value.mainTokens
+            ? pool.value.mainTokens
+            : pool.value.tokenAddresses;
+
+        return !tokens.every(token => tokensWithPrice.includes(token));
       }
       return false;
     });
