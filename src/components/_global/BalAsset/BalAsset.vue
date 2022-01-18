@@ -9,7 +9,7 @@
     :style="{
       width: `${size}px`,
       height: `${size}px`,
-      background: 'white'
+      background: 'transparent'
     }"
     @error="error = true"
     class="rounded-full inline-block leading-none shadow-sm"
