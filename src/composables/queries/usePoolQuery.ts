@@ -167,7 +167,8 @@ export default function usePoolQuery(
       amp: pool.amp,
       linearPools: pool.linearPools
         ? keyBy(pool.linearPools, linearPool => getAddress(linearPool.address))
-        : undefined
+        : undefined,
+      tokenRates: pool.tokenRates
     };
 
     const [decoratedPool] = await balancerSubgraphService.pools.decorate(

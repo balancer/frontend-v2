@@ -41,6 +41,7 @@ const defaultAttrs = {
     weight: true,
     priceRate: true
   },
+  tokenRates: true,
   linearPools: {
     id: true,
     address: true,

@@ -181,7 +181,6 @@ export default function useInvestFormMath(
   const fullBPTOut = computed((): string => {
     let _bptOut: string;
 
-    console.log('isStablePhantomPool.value', isStablePhantomPool.value);
     if (isStablePhantomPool.value) {
       _bptOut = batchSwap.value
         ? bnum(batchSwap.value.amountTokenOut)
@@ -193,8 +192,6 @@ export default function useInvestFormMath(
         .exactTokensInForBPTOut(fullAmounts.value)
         .toString();
     }
-
-    console.log('query BPT', _bptOut.toString());
 
     return _bptOut;
   });
