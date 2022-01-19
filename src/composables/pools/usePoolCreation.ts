@@ -92,8 +92,8 @@ export default function usePoolCreation() {
         w => w.tokenAddress
       );
 
-      poolCreationState.name = getPoolSymbol();
-      poolCreationState.symbol = getPoolSymbol();
+      poolCreationState.name = poolCreationState.name || getPoolSymbol();
+      poolCreationState.symbol = poolCreationState.symbol || getPoolSymbol();
     },
     {
       deep: true
@@ -280,7 +280,10 @@ export default function usePoolCreation() {
 
   function sortSeedTokens() {
     poolCreationState.seedTokens.sort((tokenA, tokenB) => {
-      return tokenA.tokenAddress > tokenB.tokenAddress ? 1 : -1;
+      return tokenA.tokenAddress.toLowerCase() >
+        tokenB.tokenAddress.toLowerCase()
+        ? 1
+        : -1;
     });
   }
 
@@ -382,15 +385,22 @@ export default function usePoolCreation() {
   }
 
   function getPoolSymbol() {
+    let valid = true;
+
     const tokenSymbols = poolCreationState.seedTokens.map(
       (token: PoolSeedToken) => {
         const weightRounded = Math.round(token.weight);
         const tokenInfo = getToken(token.tokenAddress);
-        return `${Math.round(weightRounded)}${tokenInfo?.symbol || 'N/A'}`;
+        if (!tokenInfo) {
+          valid = false;
+        }
+        return tokenInfo
+          ? `${Math.round(weightRounded)}${tokenInfo.symbol}`
+          : '';
       }
     );
 
-    return tokenSymbols.join('-');
+    return valid ? tokenSymbols.join('-') : '';
   }
 
   async function createPool(): Promise<TransactionResponse> {

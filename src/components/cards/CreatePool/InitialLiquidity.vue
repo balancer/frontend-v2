@@ -35,12 +35,13 @@ const {
   currentLiquidity,
   isWethPool,
   useNativeAsset,
+  poolLiquidity,
   goBack,
   updateManuallySetToken,
   proceed,
   clearAmounts,
   setAmountsToMaxBalances,
-  poolLiquidity
+  saveState
 } = usePoolCreation();
 const { t } = useI18n();
 
@@ -59,8 +60,8 @@ const areAmountsMaxed = computed(() => {
 const isExceedingWalletBalance = computed(() => {
   // need to perform rounding here as JS cuts off those
   // really long numbers which makes it impossible to compare
-  const isExceeding = seedTokens.value.some(t =>
-    bnum(t.amount).gt(balanceFor(t.tokenAddress))
+  const isExceeding = tokenAddresses.value.some((t, i) =>
+    bnum(seedTokens.value[i].amount).gt(balanceFor(t))
   );
   return isExceeding;
 });
@@ -179,6 +180,11 @@ function onAlertMountChange() {
   emit('update:height', {
     height: cardWrapper.value?.offsetHeight || 0
   });
+}
+
+function saveAndProceed() {
+  saveState();
+  proceed();
 }
 </script>
 
@@ -319,7 +325,7 @@ function onAlertMountChange() {
         </AnimatePresence>
         <BalBtn
           :disabled="isExceedingWalletBalance"
-          @click="proceed"
+          @click="saveAndProceed"
           block
           color="gradient"
           >{{ t('preview') }}</BalBtn

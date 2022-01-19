@@ -26,6 +26,7 @@ import useNumbers from '@/composables/useNumbers';
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
+import { APR_THRESHOLD } from '@/constants/poolAPR';
 
 export default defineComponent({
   components: {
@@ -65,7 +66,10 @@ export default defineComponent({
         {
           id: 'apr',
           label: 'APR',
-          value: fNum(props.pool.dynamic.apr.total, 'percent')
+          value:
+            Number(props.pool.dynamic.apr.total) > APR_THRESHOLD
+              ? '-'
+              : fNum(props.pool.dynamic.apr.total, 'percent')
         }
       ];
     });

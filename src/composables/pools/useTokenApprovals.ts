@@ -107,59 +107,6 @@ export default function useTokenApprovals(
     }
   }
 
-  /**
-   * TODO - remove this on transition to new invest flow
-   * The old invest flow doesn't work with static initiated state: requiredApprovalState
-   */
-  async function oldApproveToken(): Promise<boolean> {
-    const address = requiredApprovals.value[0];
-    let confirmed = false;
-
-    try {
-      approving.value = true;
-
-      const tx = await sendTransaction(
-        getProvider(),
-        address,
-        ERC20ABI,
-        'approve',
-        [appNetworkConfig.addresses.vault, MaxUint256.toString()]
-      );
-
-      addTransaction({
-        id: tx.hash,
-        type: 'tx',
-        action: 'approve',
-        summary: t('transactionSummary.approveForInvesting', [
-          tokens.value[address]?.symbol
-        ]),
-        details: {
-          contractAddress: address,
-          spender: appNetworkConfig.addresses.vault
-        }
-      });
-
-      confirmed = await txListener(tx, {
-        onTxConfirmed: async () => {
-          await refetchAllowances.value();
-          approving.value = false;
-        },
-        onTxFailed: () => {
-          approving.value = false;
-        }
-      });
-    } catch (error) {
-      approving.value = false;
-      console.error(error);
-    }
-
-    return confirmed;
-  }
-
-  async function approveNextAllowance(): Promise<boolean> {
-    return await oldApproveToken();
-  }
-
   return {
     // state
     requiredApprovalState,
@@ -167,7 +114,6 @@ export default function useTokenApprovals(
     // computed
     requiredApprovals,
     // methods
-    approveNextAllowance,
     approveToken
   };
 }
