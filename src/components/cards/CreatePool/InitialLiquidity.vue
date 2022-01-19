@@ -85,8 +85,8 @@ const arbitrageDelta = computed(() => {
 });
 
 const hasZeroAmount = computed(() => {
-  return seedTokens.value.some(seedToken => bnum(seedToken.amount).eq(0))
-})
+  return seedTokens.value.some(seedToken => bnum(seedToken.amount).eq(0));
+});
 
 /**
  * LIFECYCLE
