@@ -4,7 +4,7 @@ import { bnum } from '@/lib/utils';
 import useWeb3 from '@/services/web3/useWeb3';
 import useTokens from '@/composables/useTokens';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
@@ -324,7 +324,7 @@ function saveAndProceed() {
             :title="
               t('createAPool.arbTitle', [
                 fNum2(arbitrageDelta.value, { style: 'currency' }),
-                fNum2(arbitrageDelta.delta, { style: 'unit', unit: 'percent' })
+                fNum2(arbitrageDelta.delta, FNumFormats.percent)
               ])
             "
           >
