@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted } from 'vue';
+import { ref, computed, reactive, onMounted, onBeforeMount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { TransactionActionInfo } from '@/types/transactions';
@@ -25,6 +25,7 @@ type CreateState = {
   confirmedAt: string;
   receipt?: TransactionReceipt;
   isRestoredTxConfirmed?: boolean;
+  isLoadingRestoredTx: boolean;
 };
 
 /**
@@ -42,7 +43,8 @@ const emit = defineEmits<{
 const createState = reactive<CreateState>({
   confirmed: false,
   confirmedAt: '',
-  isRestoredTxConfirmed: false
+  isRestoredTxConfirmed: false,
+  isLoadingRestoredTx: false,
 });
 
 /*
@@ -77,7 +79,7 @@ const actions = computed((): TransactionActionInfo[] => [
     loadingLabel: t('investment.preview.loadingLabel.create'),
     confirmingLabel: t('confirming'),
     action: createPool,
-    stepTooltip: t('createPoolTooltip', [poolTypeString.value])
+    stepTooltip: t('createPoolTooltip', [poolTypeString.value]),
   },
   {
     label: t('fundPool'),
@@ -104,9 +106,11 @@ const explorerLink = computed((): string =>
     : ''
 );
 
-onMounted(async () => {
+onBeforeMount(async () => {
   if (createPoolTxHash.value) {
+    createState.isLoadingRestoredTx = true;
     const isConfirmed = await isTxConfirmed(createPoolTxHash.value);
+    createState.isLoadingRestoredTx = false;
     createState.isRestoredTxConfirmed = isConfirmed;
   }
 });
@@ -129,6 +133,8 @@ function handleSuccess(details: any): void {
       :disabled="props.createDisabled"
       :errorMessage="props.errorMessage"
       @success="handleSuccess"
+      :isLoading="createState.isLoadingRestoredTx"
+      :loadingLabel="$t('restoring')"
     />
     <template v-if="createState.confirmed">
       <div
