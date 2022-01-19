@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, nextTick } from 'vue';
+import { computed, onMounted, ref, watch, nextTick, onBeforeMount } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
@@ -66,12 +66,9 @@ const {
 } = useTokens();
 
 /**
- * Restore of the state needs to be called in this parent component
- * as if it is called from the usePoolCreation composable, it will
- * trigger a restore on the mount of all the subcomponents which may
- * use usePoolCreation as well, causing problems.
+ * LIFECYCLE
  */
-onMounted(async () => {
+onBeforeMount(async () => {
   removeAlert('return-to-pool-creation');
   if (accordionWrapper.value) {
     anime.set(accordionWrapper.value, {
@@ -91,6 +88,10 @@ onMounted(async () => {
     await nextTick();
     setActiveStep(previouslySavedState.activeStep);
   }
+  // make sure to inject any custom tokens we cannot inject
+  // after tokens have finished loading as it will attempt to
+  // inject 'known' tokens too, as during mount, tokens are still loading
+  injectUnknownPoolTokens();
 });
 
 /**
@@ -220,10 +221,18 @@ function showUnknownTokenModal() {
   isUnknownTokenModalVisible.value = true;
 }
 
+function injectUnknownPoolTokens() {
+  if (!isLoadingTokens.value) {
+    const uninjectedTokens = seedTokens.value
+      .filter(seedToken => tokens.value[seedToken.tokenAddress] === undefined)
+      .map(seedToken => seedToken.tokenAddress);
+    injectTokens(uninjectedTokens);
+  }
+}
+
 /**
  * WATCHERS
  */
-
 watch([hasInjectedToken, totalLiquidity], () => {
   setWrapperHeight();
 });
@@ -241,12 +250,7 @@ watch(activeStep, () => {
 // after tokens have finished loading as it will attempt to
 // inject 'known' tokens too, as during mount, tokens are still loading
 watch(isLoadingTokens, () => {
-  if (!isLoadingTokens.value) {
-    const uninjectedTokens = seedTokens.value
-      .filter(seedToken => tokens.value[seedToken.tokenAddress] === undefined)
-      .map(seedToken => seedToken.tokenAddress);
-    injectTokens(uninjectedTokens);
-  }
+  injectUnknownPoolTokens();
 });
 </script>
 
