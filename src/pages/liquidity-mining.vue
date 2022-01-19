@@ -80,7 +80,7 @@ import LMTable from '@/components/tables/LMTable/LMTable.vue';
 import LiquidityMiningDistributions from '@/lib/utils/liquidityMining/MultiTokenLiquidityMining.json';
 import usePoolsQuery from '@/composables/queries/usePoolsQuery';
 import { flatten, last, takeRight, uniq } from 'lodash';
-import { Network } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { getAddress } from '@ethersproject/address';

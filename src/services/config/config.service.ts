@@ -1,7 +1,8 @@
 import { Config } from '@/lib/config';
 import configs from '@/lib/config';
 import template from '@/lib/utils/template';
-import { Network, networkId } from '@/composables/useNetwork';
+import { networkId } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 interface Env {
   APP_ENV: string;
