@@ -280,7 +280,7 @@ function getSwapFeeManager() {
           </BalAlert>
         </AnimatePresence>
         <AnimatePresence
-          :isVisible="hasInvalidInitialWeight && createPoolTxHash"
+          :isVisible="hasInvalidInitialWeight && createPoolTxHash !== ''"
           unmountInstantly
         >
           <BalAlert
