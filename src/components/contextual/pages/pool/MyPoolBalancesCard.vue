@@ -3,7 +3,6 @@ import { toRef, computed, ref } from 'vue';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
 import useWeb3 from '@/services/web3/useWeb3';
 import { usePool } from '@/composables/usePool';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
@@ -27,7 +26,6 @@ const props = defineProps<Props>();
  */
 const { tokens, balances, balanceFor, getTokens } = useTokens();
 const { fNum2, toFiat } = useNumbers();
-const { currency } = useUserSettings();
 const { isWalletReady } = useWeb3();
 const { isStableLikePool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 
@@ -150,7 +148,11 @@ function fiatLabelFor(index: number, address: string): string {
         </div>
 
         <span class="flex flex-col flex-grow text-right">
-          {{ isWalletReady ? fNum2(propTokenAmounts[index], { maximumFractionDigits: 4 }) : '-' }}
+          {{
+            isWalletReady
+              ? fNum2(propTokenAmounts[index], { maximumFractionDigits: 4 })
+              : '-'
+          }}
           <span class="text-gray-500 text-sm">
             {{ isWalletReady ? fiatLabelFor(index, address) : '-' }}
           </span>

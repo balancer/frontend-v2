@@ -47,7 +47,11 @@ function symbolFor(token: PoolToken): string {
 }
 
 function weightFor(token: PoolToken): string {
-  return fNum2(token.weight, { style: 'unit', unit: 'percent', maximumFractionDigits: 0 });
+  return fNum2(token.weight, {
+    style: 'unit',
+    unit: 'percent',
+    maximumFractionDigits: 0
+  });
 }
 
 const MAX_PILLS = 11;

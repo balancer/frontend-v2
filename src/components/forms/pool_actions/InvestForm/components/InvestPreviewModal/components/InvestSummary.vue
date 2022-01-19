@@ -118,7 +118,14 @@ function weeklyYieldForAPR(apr: string): string {
           {{ $t('priceImpact') }}
         </div>
         <div class="summary-table-number">
-          {{ fNum2(priceImpact, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+          {{
+            fNum2(priceImpact, {
+              style: 'unit',
+              unit: 'percent',
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })
+          }}
           <BalTooltip
             :text="$t('tooltips.invest.priceImpact')"
             icon-size="sm"

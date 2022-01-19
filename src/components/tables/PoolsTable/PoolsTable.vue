@@ -69,7 +69,12 @@
           {{
             Number(pool.dynamic.apr.pool) > 10000
               ? '-'
-              : fNum2(pool.dynamic.apr.total, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
+              : fNum2(pool.dynamic.apr.total, {
+                  style: 'unit',
+                  unit: 'percent',
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                })
           }}
           <LiquidityAPRTooltip :pool="pool" />
         </div>
@@ -166,7 +171,8 @@ export default defineComponent({
       },
       {
         name: t('myBalance'),
-        accessor: pool => fNum2(pool.shares, { style: 'currency', fixedFormat: true }),
+        accessor: pool =>
+          fNum2(pool.shares, { style: 'currency', fixedFormat: true }),
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,

@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
 
 /**
  * TYPES

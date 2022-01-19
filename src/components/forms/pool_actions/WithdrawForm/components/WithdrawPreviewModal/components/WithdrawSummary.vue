@@ -48,7 +48,14 @@ const { currency } = useUserSettings();
           {{ $t('priceImpact') }}
         </div>
         <div class="summary-table-number">
-          {{ fNum2(priceImpact, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+          {{
+            fNum2(priceImpact, {
+              style: 'unit',
+              unit: 'percent',
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })
+          }}
           <BalTooltip
             :text="$t('tooltips.withdraw.priceImpact')"
             icon-size="sm"

@@ -4,8 +4,6 @@ import { formatUnits } from '@ethersproject/units';
 
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
-
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { bnum } from '@/lib/utils';
@@ -31,7 +29,6 @@ const props = defineProps<Props>();
  */
 const { getToken } = useTokens();
 const { fNum2, toFiat } = useNumbers();
-const { currency } = useUserSettings();
 const { explorerLinks } = useWeb3();
 
 /**

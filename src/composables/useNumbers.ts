@@ -13,7 +13,6 @@ export interface FNumOptions extends Intl.NumberFormatOptions {
   abbreviate?: boolean; // If true, reduce number size and add k/M/B to end
 }
 
-
 enum PresetFormats {
   default = '(0.[0]a)',
   default_lg = '(0.[0]a)',
@@ -39,7 +38,11 @@ export function fNum(
   if (options.format) return numeral(number).format(options.format);
 
   let adjustedPreset;
-  if (number >= 10_000 && !options.forcePreset && !preset?.match(/_(lg|m|variable)$/)) {
+  if (
+    number >= 10_000 &&
+    !options.forcePreset &&
+    !preset?.match(/_(lg|m|variable)$/)
+  ) {
     adjustedPreset = `${preset}_lg`;
   }
 
@@ -81,15 +84,18 @@ export default function useNumbers() {
       number = new BigNumber(number).toNumber();
     }
 
-    const formatterOptions: Intl.NumberFormatOptions = Object.assign({}, options);
+    const formatterOptions: Intl.NumberFormatOptions = Object.assign(
+      {},
+      options
+    );
     let postfixSymbol = '';
 
     if (options.abbreviate) {
       const lookup = [
-        { value: 1, symbol: "" },
-        { value: 1e3, symbol: "k" },
-        { value: 1e6, symbol: "m" },
-        { value: 1e9, symbol: "b" },
+        { value: 1, symbol: '' },
+        { value: 1e3, symbol: 'k' },
+        { value: 1e6, symbol: 'm' },
+        { value: 1e9, symbol: 'b' }
       ];
       const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
       const item = lookup

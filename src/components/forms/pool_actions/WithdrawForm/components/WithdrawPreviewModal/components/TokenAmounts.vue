@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
 import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -27,7 +26,6 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { fNum2 } = useNumbers();
-const { currency } = useUserSettings();
 
 /**
  * METHODS

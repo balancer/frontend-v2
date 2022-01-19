@@ -279,10 +279,11 @@ export default function useTransactions() {
         tokenOut.decimals
       );
 
-      return `${fNum2(tokenInAmount, { maximumFractionDigits: 4 })} ${tokenIn.symbol} -> ${fNum2(
-        tokenOutAmount,
-        { maximumFractionDigits: 4 }
-      )} ${tokenOut.symbol}`;
+      return `${fNum2(tokenInAmount, { maximumFractionDigits: 4 })} ${
+        tokenIn.symbol
+      } -> ${fNum2(tokenOutAmount, { maximumFractionDigits: 4 })} ${
+        tokenOut.symbol
+      }`;
     }
 
     return transaction.summary;

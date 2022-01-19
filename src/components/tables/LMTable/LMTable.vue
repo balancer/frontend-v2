@@ -77,7 +77,10 @@
           >
             <span v-if="tokenIndex !== 0">+</span>&nbsp;
             <span class="font-numeric">{{
-              fNum2(tokenDist.amount, { style: 'decimal', maximumFractionDigits: 0 })
+              fNum2(tokenDist.amount, {
+                style: 'decimal',
+                maximumFractionDigits: 0
+              })
             }}</span>
             {{ tokens[getAddress(tokenDist.tokenAddress)]?.symbol || 'N/A' }}
           </span>
@@ -98,11 +101,19 @@
             class="font-semibold text-right"
           >
             <span v-if="i !== 0">+</span>&nbsp;
-            <span class="font-numeric">{{ fNum2(total, { style: 'decimal', maximumFractionDigits: 0 }) }}</span>
+            <span class="font-numeric">{{
+              fNum2(total, { style: 'decimal', maximumFractionDigits: 0 })
+            }}</span>
             {{ tokens[getAddress(token)]?.symbol || 'N/A' }}
           </span>
           <span class="mt-2 text-gray-500 font-numeric"
-            >~${{ fNum2(calculatePricesFor(totals[week.week]), { style: 'decimal', maximumFractionDigits: 1, abbreviate: true }) }}</span
+            >~${{
+              fNum2(calculatePricesFor(totals[week.week]), {
+                style: 'decimal',
+                maximumFractionDigits: 1,
+                abbreviate: true
+              })
+            }}</span
           >
         </div>
       </template>

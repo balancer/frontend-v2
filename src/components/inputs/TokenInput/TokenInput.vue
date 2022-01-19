@@ -5,7 +5,6 @@ import { useI18n } from 'vue-i18n';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
-import useUserSettings from '@/composables/useUserSettings';
 
 import { bnum } from '@/lib/utils';
 import { isPositive, isLessThanOrEqualTo } from '@/lib/utils/validations';
@@ -86,7 +85,6 @@ const _address = ref<string>('');
 
 const { getToken, balanceFor, nativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
-const { currency } = useUserSettings();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
 

@@ -120,7 +120,10 @@ const activityRows = computed<ActivityRow[]>(() =>
         return {
           label: isJoin ? t('invest') : t('withdraw.label'),
           value,
-          formattedValue: value > 0 ? fNum2(value, { style: 'currency', abbreviate: true }) : '-',
+          formattedValue:
+            value > 0
+              ? fNum2(value, { style: 'currency', abbreviate: true })
+              : '-',
           timestamp,
           formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
           tx,

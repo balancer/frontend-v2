@@ -222,9 +222,10 @@ async function claimAvailableRewards() {
       const summary = claimableTokens.value
         .map(
           claimableToken =>
-            `${fNum2(claimableToken.amount, { minimumFractionDigits: 4, maximumFractionDigits: 4 })} ${
-              claimableToken.symbol
-            }`
+            `${fNum2(claimableToken.amount, {
+              minimumFractionDigits: 4,
+              maximumFractionDigits: 4
+            })} ${claimableToken.symbol}`
         )
         .join(', ');
 
@@ -308,7 +309,9 @@ async function claimAvailableRewards() {
                 />
                 <div>
                   <div class="font-medium">
-                    {{ fNum2(claimableToken.amount, { maximumFractionDigits: 4 }) }}
+                    {{
+                      fNum2(claimableToken.amount, { maximumFractionDigits: 4 })
+                    }}
                     {{ claimableToken.symbol }}
                   </div>
                   <div class="font-sm text-gray-400">
@@ -333,7 +336,9 @@ async function claimAvailableRewards() {
                 />
                 <div>
                   <div class="font-medium">
-                    {{ fNum2(claimableToken.amount, { maximumFractionDigits: 4 }) }}
+                    {{
+                      fNum2(claimableToken.amount, { maximumFractionDigits: 4 })
+                    }}
                     {{ claimableToken.symbol }}
                   </div>
                   <div class="font-sm text-gray-400">
@@ -356,7 +361,9 @@ async function claimAvailableRewards() {
           :disabled="!hasClaimableTokens"
           >{{ $t('claimAll') }}
           <template v-if="hasClaimableTokens"
-            >~{{ fNum2(totalClaimableTokensFiatValue, { style: 'currency' }) }}</template
+            >~{{
+              fNum2(totalClaimableTokensFiatValue, { style: 'currency' })
+            }}</template
           ></BalBtn
         >
         <BalAlert

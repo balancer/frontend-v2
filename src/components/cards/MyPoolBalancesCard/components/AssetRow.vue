@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
 
 /**
  * TYPES
@@ -22,14 +21,15 @@ const props = defineProps<Props>();
  */
 const { getToken } = useTokens();
 const { fNum2, toFiat } = useNumbers();
-const { currency } = useUserSettings();
 
 /**
  * COMPUTED
  */
 const token = computed(() => getToken(props.address));
 
-const balanceLabel = computed(() => fNum2(props.balance, { maximumFractionDigits: 4 }));
+const balanceLabel = computed(() =>
+  fNum2(props.balance, { maximumFractionDigits: 4 })
+);
 
 const fiatLabel = computed(() => {
   const fiatValue = toFiat(props.balance, props.address);

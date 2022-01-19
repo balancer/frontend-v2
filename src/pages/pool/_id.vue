@@ -21,7 +21,13 @@
                 v-if="!isStableLikePool"
                 class="font-medium text-gray-400 text-xs mt-px ml-1"
               >
-                {{ fNum2(tokenMeta.weight, { style: 'unit', unit: 'percent', maximumFractionDigits: 0 }) }}
+                {{
+                  fNum2(tokenMeta.weight, {
+                    style: 'unit',
+                    unit: 'percent',
+                    maximumFractionDigits: 0
+                  })
+                }}
               </span>
             </div>
             <BalChip
@@ -307,10 +313,12 @@ export default defineComponent({
 
     const poolFeeLabel = computed(() => {
       if (!pool.value) return '';
-      const feeLabel = `${fNum2(
-        pool.value.onchain.swapFee,
-        { style: 'unit', unit: 'percent', maximumFractionDigits: 4, fixedFormat: true }
-      )}`;
+      const feeLabel = `${fNum2(pool.value.onchain.swapFee, {
+        style: 'unit',
+        unit: 'percent',
+        maximumFractionDigits: 4,
+        fixedFormat: true
+      })}`;
 
       if (feesFixed.value) {
         return t('fixedSwapFeeLabel', [feeLabel]);

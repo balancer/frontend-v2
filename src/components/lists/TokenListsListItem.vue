@@ -9,7 +9,14 @@
     <div class="flex-auto">
       {{ tokenlist.name }}
       <div class="text-gray text-sm flex items-center">
-        {{ fNum2(tokenlist.tokens.length, { style: 'decimal', maximumFractionDigits: 1, abbreviate: true }) }} {{ $t('tokensLowerCase') }}
+        {{
+          fNum2(tokenlist.tokens.length, {
+            style: 'decimal',
+            maximumFractionDigits: 1,
+            abbreviate: true
+          })
+        }}
+        {{ $t('tokensLowerCase') }}
         <BalLink :href="listUrl" external class="flex items-center">
           <BalIcon
             name="arrow-up-right"

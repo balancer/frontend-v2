@@ -4,7 +4,6 @@ import { bnum } from '@/lib/utils';
 import { FullPool } from '@/services/balancer/subgraph/types';
 // Composables
 import useNumbers from '@/composables/useNumbers';
-import useUserSettings from '@/composables/useUserSettings';
 import useTokens from '@/composables/useTokens';
 // Components
 import AssetRow from './components/AssetRow.vue';
@@ -37,7 +36,6 @@ const emit = defineEmits<{
 const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum2, toFiat } = useNumbers();
-const { currency } = useUserSettings();
 const route = useRoute();
 
 /**

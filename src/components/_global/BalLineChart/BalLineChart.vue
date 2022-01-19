@@ -180,7 +180,10 @@ export default defineComponent({
           const latestValue = last(
             props.data.find(d => d.name === legendName)?.values as any
           ) as [string | number, string | number];
-          return `${legendName}: ${fNum2(latestValue[1], props.axisLabelFormatter.yAxis)}`;
+          return `${legendName}: ${fNum2(
+            latestValue[1],
+            props.axisLabelFormatter.yAxis
+          )}`;
         },
         selected: props.legendState || {},
         textStyle: {
@@ -203,8 +206,7 @@ export default defineComponent({
         },
         axisLabel: {
           formatter: props.axisLabelFormatter.xAxis
-            ? value =>
-                fNum2(value, props.axisLabelFormatter.xAxis)
+            ? value => fNum2(value, props.axisLabelFormatter.xAxis)
             : undefined,
           color: tailwind.theme.colors.gray['400']
         }
@@ -227,8 +229,7 @@ export default defineComponent({
         axisLabel: {
           show: !props.hideYAxis,
           formatter: props.axisLabelFormatter.yAxis
-            ? value =>
-                fNum2(value, props.axisLabelFormatter.yAxis) 
+            ? value => fNum2(value, props.axisLabelFormatter.yAxis)
             : undefined,
           color: tailwind.theme.colors.gray['400']
         },
@@ -269,7 +270,10 @@ export default defineComponent({
                 <span>
                 ${param.marker} ${
                     param.seriesName
-                  } <span class='font-medium'>${fNum2(param.value[1], props.axisLabelFormatter.yAxis)})}
+                  } <span class='font-medium'>${fNum2(
+                    param.value[1],
+                    props.axisLabelFormatter.yAxis
+                  )})}
                   </span>
                 </span>
               `

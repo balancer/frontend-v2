@@ -233,11 +233,11 @@ export default function useGnosis({
       const tokenInAmountEst = exactIn.value ? '' : '~';
       const tokenOutAmountEst = exactIn.value ? '~' : '';
 
-      const summary = `${tokenInAmountEst}${fNum2(sellAmount, { maximumFractionDigits: 4 })} ${
-        tokenIn.value.symbol
-      } -> ${tokenOutAmountEst}${fNum2(buyAmount, { maximumFractionDigits: 4 })} ${
-        tokenOut.value.symbol
-      }`;
+      const summary = `${tokenInAmountEst}${fNum2(sellAmount, {
+        maximumFractionDigits: 4
+      })} ${tokenIn.value.symbol} -> ${tokenOutAmountEst}${fNum2(buyAmount, {
+        maximumFractionDigits: 4
+      })} ${tokenOut.value.symbol}`;
 
       const { validTo, partiallyFillable } = unsignedOrder;
 

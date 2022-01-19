@@ -64,16 +64,25 @@ describe('useNumbers', () => {
     it('Should give the same result without any arguments', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber);
-        const format2 = fNum2(testNumber, { style: 'decimal', maximumFractionDigits: 1, abbreviate: true });
+        const format2 = fNum2(testNumber, {
+          style: 'decimal',
+          maximumFractionDigits: 1,
+          abbreviate: true
+        });
         expect(format2).toEqual(format1);
       });
-
     });
 
     it('Should give the same result as a formatted percentage', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, null, { format: '0.00%' });
-        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2, fixedFormat: true });
+        const format2 = fNum2(testNumber, {
+          style: 'unit',
+          unit: 'percent',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+          fixedFormat: true
+        });
         expect(format2).toEqual(format1);
       });
     });
@@ -81,7 +90,12 @@ describe('useNumbers', () => {
     it('Should give the same result as a formatted dollar value', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, null, { format: '$0,0.00' });
-        const format2 = fNum2(testNumber, { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, fixedFormat: true });
+        const format2 = fNum2(testNumber, {
+          style: 'currency',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+          fixedFormat: true
+        });
         expect(format2).toEqual(format1);
       });
     });
@@ -97,7 +111,10 @@ describe('useNumbers', () => {
     it('Should return the same result as usd forced preset', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'usd', { forcePreset: true });
-        const format2 = fNum2(testNumber, { style: 'currency', fixedFormat: true });
+        const format2 = fNum2(testNumber, {
+          style: 'currency',
+          fixedFormat: true
+        });
         expect(format2).toEqual(format1);
       });
     });
@@ -105,7 +122,10 @@ describe('useNumbers', () => {
     it('Should return the same result as usd_m preset', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'usd_m');
-        const format2 = fNum2(testNumber, { style: 'currency', abbreviate: true });
+        const format2 = fNum2(testNumber, {
+          style: 'currency',
+          abbreviate: true
+        });
         expect(format2).toEqual(format1);
       });
     });
@@ -113,15 +133,23 @@ describe('useNumbers', () => {
     it('Should return the same result as nested usd usd_m preset', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(fNum(testNumber, 'usd'), 'usd_m');
-        const format2 = fNum2(testNumber, { style: 'currency', abbreviate: true });
+        const format2 = fNum2(testNumber, {
+          style: 'currency',
+          abbreviate: true
+        });
         expect(format2).toEqual(format1);
       });
-    })
+    });
 
     it('Should return the same result as percent preset', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'percent');
-        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const format2 = fNum2(testNumber, {
+          style: 'unit',
+          unit: 'percent',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
         expect(format2).toEqual(format1);
       });
     });
@@ -129,7 +157,11 @@ describe('useNumbers', () => {
     it('Should return the same result as percent_lg preset', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'percent_lg');
-        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', maximumFractionDigits: 0 });
+        const format2 = fNum2(testNumber, {
+          style: 'unit',
+          unit: 'percent',
+          maximumFractionDigits: 0
+        });
         expect(format2).toEqual(format1);
       });
     });
@@ -137,7 +169,12 @@ describe('useNumbers', () => {
     it('Should return the same result as percent_variable preset', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'percent_variable');
-        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', maximumFractionDigits: 4, fixedFormat: true });
+        const format2 = fNum2(testNumber, {
+          style: 'unit',
+          unit: 'percent',
+          maximumFractionDigits: 4,
+          fixedFormat: true
+        });
         expect(format2).toEqual(format1);
       });
     });
@@ -145,7 +182,13 @@ describe('useNumbers', () => {
     it('Should return the same result as a formatted percentage unit', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, null, { format: '0.0%' });
-        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1, fixedFormat: true });
+        const format2 = fNum2(testNumber, {
+          style: 'unit',
+          unit: 'percent',
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1,
+          fixedFormat: true
+        });
         expect(format2).toEqual(format1);
       });
     });
@@ -161,7 +204,10 @@ describe('useNumbers', () => {
     it('Should return the same result for token_fixed', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'token_fixed');
-        const format2 = fNum2(testNumber, { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+        const format2 = fNum2(testNumber, {
+          minimumFractionDigits: 4,
+          maximumFractionDigits: 4
+        });
         expect(format2).toEqual(format1);
       });
     });
@@ -169,13 +215,13 @@ describe('useNumbers', () => {
     it('Should return the same result for token_lg', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'token_lg');
-        const format2 = fNum2(testNumber, { style: 'decimal', maximumFractionDigits: 0 });
+        const format2 = fNum2(testNumber, {
+          style: 'decimal',
+          maximumFractionDigits: 0
+        });
         expect(format2).toEqual(format1);
       });
     });
-
-
-
   });
 
   describe('toFiat', () => {

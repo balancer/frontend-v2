@@ -273,7 +273,14 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
             <BalStack horizontal justify="between" class="mt-1">
               <span class="text-sm">{{ $t('swapFee') }}:</span>
               <BalStack horizontal spacing="sm">
-                <span class="text-sm">{{ fNum2(initialFee, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+                <span class="text-sm">{{
+                  fNum2(initialFee, {
+                    style: 'unit',
+                    unit: 'percent',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  })
+                }}</span>
                 <button class="hover:text-blue-500" @click="navigateToPoolFee">
                   <BalIcon name="edit" size="xs" />
                 </button>

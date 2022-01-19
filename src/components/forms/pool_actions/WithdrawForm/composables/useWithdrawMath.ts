@@ -102,7 +102,6 @@ export default function useWithdrawMath(
     addSlippageScaled,
     minusSlippageScaled
   } = useSlippage();
-  const { currency } = useUserSettings();
   const { isStablePhantomPool } = usePool(pool);
   const { slippageScaled } = useUserSettings();
   const {

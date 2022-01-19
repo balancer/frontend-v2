@@ -118,7 +118,10 @@ const swapRows = computed<SwapRow[]>(() =>
 
           return {
             value,
-            formattedValue: value > 0 ? fNum2(value, { style: 'currency', abbreviate: true }) : '-',
+            formattedValue:
+              value > 0
+                ? fNum2(value, { style: 'currency', abbreviate: true })
+                : '-',
             tokenIn,
             tokenOut,
             tokenAmountIn,

@@ -146,7 +146,12 @@ function cancel() {
                   $t('fees')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum2(pool.swapFee, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                  fNum2(pool.swapFee, {
+                    style: 'unit',
+                    unit: 'percent',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  })
                 }}</span>
               </BalStack>
             </BalStack>

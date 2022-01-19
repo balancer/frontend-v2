@@ -140,7 +140,8 @@ const swapRows = computed<SwapRow[]>(() => {
       label,
       type,
       value,
-      formattedValue: value > 0 ? fNum2(value, { style: 'currency', abbreviate: true }) : '-',
+      formattedValue:
+        value > 0 ? fNum2(value, { style: 'currency', abbreviate: true }) : '-',
       timestamp,
       formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
       tx,
@@ -285,7 +286,9 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                 class="mr-2 flex-shrink-0"
               />
               <span class="font-numeric">{{
-                fNum2(action.tokenAmounts[0].amount, { maximumFractionDigits: 4 })
+                fNum2(action.tokenAmounts[0].amount, {
+                  maximumFractionDigits: 4
+                })
               }}</span>
             </div>
             <BalIcon name="arrow-right" class="mx-1" />
@@ -295,7 +298,9 @@ function getMainTokenEquivalentAmount(address: string, amount: string) {
                 class="mr-2 flex-shrink-0"
               />
               <span class="font-numeric">{{
-                fNum2(action.tokenAmounts[1].amount, { maximumFractionDigits: 4 })
+                fNum2(action.tokenAmounts[1].amount, {
+                  maximumFractionDigits: 4
+                })
               }}</span>
             </div>
           </template>

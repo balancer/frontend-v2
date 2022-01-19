@@ -398,8 +398,12 @@ export default function useSor({
     confirming.value = false;
 
     let summary = '';
-    const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, { maximumFractionDigits: 4 });
-    const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, { maximumFractionDigits: 4 });
+    const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, {
+      maximumFractionDigits: 4
+    });
+    const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, {
+      maximumFractionDigits: 4
+    });
 
     const tokenInSymbol = tokenIn.value.symbol;
     const tokenOutSymbol = tokenOut.value.symbol;

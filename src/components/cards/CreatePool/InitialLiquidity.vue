@@ -25,7 +25,7 @@ const cardWrapper = ref<HTMLElement>();
  */
 const { userNetworkConfig } = useWeb3();
 const { balanceFor, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const {
   seedTokens,
   tokensList,
@@ -277,7 +277,8 @@ function saveAndProceed() {
               <h6>{{ t('total') }}</h6>
               <BalStack horizontal spacing="xs" class="font-medium">
                 <span class="text-sm">
-                  {{ t('available') }}: {{ fNum2(totalLiquidity, { style: 'currency' }) }}
+                  {{ t('available') }}:
+                  {{ fNum2(totalLiquidity, { style: 'currency' }) }}
                 </span>
                 <button
                   :disabled="areAmountsMaxed"

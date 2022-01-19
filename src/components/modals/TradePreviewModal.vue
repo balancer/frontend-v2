@@ -11,7 +11,8 @@
         />
         <div class="flex flex-col">
           <div class="font-bold">
-            {{ fNum2(amountIn, { maximumFractionDigits: 4 }) }} {{ symbolIn }} ->
+            {{ fNum2(amountIn, { maximumFractionDigits: 4 }) }}
+            {{ symbolIn }} ->
             {{ fNum2(amountOut, { maximumFractionDigits: 4 }) }} {{ symbolOut }}
           </div>
           <div class="text-gray-500 text-sm">
@@ -64,7 +65,8 @@
               {{ totalRequiredTransactions }}
             </div>
             <div class="ml-3">
-              {{ $t('trade') }} {{ fNum2(valueIn, { style: 'currency' }) }} {{ symbolIn }} ->
+              {{ $t('trade') }} {{ fNum2(valueIn, { style: 'currency' }) }}
+              {{ symbolIn }} ->
               {{ symbolOut }}
             </div>
           </div>
