@@ -84,6 +84,11 @@ const arbitrageDelta = computed(() => {
   };
 });
 
+const hasZeroAmount = computed(() => {
+  console.log(seedTokens.value.some(seedToken => bnum(seedToken.amount).eq(0)));
+  return seedTokens.value.some(seedToken => bnum(seedToken.amount).eq(0))
+})
+
 /**
  * LIFECYCLE
  */
@@ -327,7 +332,7 @@ function saveAndProceed() {
           </BalAlert>
         </AnimatePresence>
         <BalBtn
-          :disabled="isExceedingWalletBalance"
+          :disabled="isExceedingWalletBalance || hasZeroAmount"
           @click="saveAndProceed"
           block
           color="gradient"
