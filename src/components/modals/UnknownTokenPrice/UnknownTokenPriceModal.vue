@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, reactive } from 'vue';
+import { computed } from 'vue';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 

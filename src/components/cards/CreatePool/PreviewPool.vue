@@ -48,7 +48,7 @@ const {
   saveState
 } = usePoolCreation();
 
-const { tokens, priceFor, nativeAsset, wrappedNativeAsset, pool } = useTokens();
+const { tokens, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
 const { fNum } = useNumbers();
 const { t } = useI18n();
 const { userNetworkConfig, account } = useWeb3();
