@@ -90,7 +90,7 @@ import {
 
 import { getAddress } from '@ethersproject/address';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
 
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
@@ -240,6 +240,7 @@ export default defineComponent({
     return {
       // data
       columns,
+      FNumFormats,
 
       // computed
       darkMode,
