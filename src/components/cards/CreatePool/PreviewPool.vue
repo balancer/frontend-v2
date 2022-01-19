@@ -5,7 +5,7 @@ import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useTokens from '@/composables/useTokens';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { useI18n } from 'vue-i18n';
@@ -216,7 +216,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                 </BalStack>
                 <BalStack vertical spacing="none" align="end">
                   <span class="font-semibold">
-                    {{ fNum2(token.amount, { maximumFractionDigits: 4 }) }}
+                    {{ fNum2(token.amount, FNumFormats.token) }}
                   </span>
                   <span class="text-sm text-gray-500">
                     {{
@@ -274,12 +274,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
               <span class="text-sm">{{ $t('swapFee') }}:</span>
               <BalStack horizontal spacing="sm">
                 <span class="text-sm">{{
-                  fNum2(initialFee, {
-                    style: 'unit',
-                    unit: 'percent',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                  })
+                  fNum2(initialFee, FNumFormats.percent)
                 }}</span>
                 <button class="hover:text-blue-500" @click="navigateToPoolFee">
                   <BalIcon name="edit" size="xs" />
@@ -322,7 +317,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
           :title="
             t('createAPool.arbTitle', [
               fNum2(arbitrageDelta.value, { style: 'currency' }),
-              fNum2(arbitrageDelta.delta, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
+              fNum2(arbitrageDelta.delta, FNumFormats.percent)
             ])
           "
         >

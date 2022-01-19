@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import usePoolCreation from '@/composables/pools/usePoolCreation';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 
 import { Pool } from '@/services/balancer/subgraph/types';
@@ -18,20 +18,13 @@ function getPoolLabel(pool: Pool) {
   const tokensString = pool.tokens
     .map(
       t =>
-        `${tokens.value[t.address]?.symbol} ${fNum2(t.weight, {
-          style: 'unit',
-          unit: 'percent',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })}`
+        `${tokens.value[t.address]?.symbol} ${fNum2(
+          t.weight,
+          FNumFormats.percent
+        )}`
     )
     .join(', ');
-  return `${tokensString} (${fNum2(pool.swapFee, {
-    style: 'unit',
-    unit: 'percent',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  })} fee)`;
+  return `${tokensString} (${fNum2(pool.swapFee, FNumFormats.percent)} fee)`;
 }
 </script>
 

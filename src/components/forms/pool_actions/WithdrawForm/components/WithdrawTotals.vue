@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
 import { WithdrawMathResponse } from '../composables/useWithdrawMath';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 /**
  * TYPES
@@ -37,14 +37,7 @@ const priceImpactClasses = computed(() => ({
       <div class="data-table-number-col">
         <div class="flex items-center">
           <BalLoadingBlock v-if="loadingAmountsOut" class="w-10 h-6" />
-          <span v-else>{{
-            fNum2(priceImpact, {
-              style: 'unit',
-              unit: 'percent',
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })
-          }}</span>
+          <span v-else>{{ fNum2(priceImpact, FNumFormats.percent) }}</span>
 
           <BalTooltip :text="$t('withdraw.tooltips.priceImpact')">
             <template v-slot:activator>

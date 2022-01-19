@@ -3,7 +3,7 @@ import { HtmlInputEvent } from '@/types';
 import { ref, computed, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 
 import { bnum } from '@/lib/utils';
@@ -280,13 +280,7 @@ watchEffect(() => {
               {{ fNum2(tokenValue, { style: 'currency' }) }}
               <span v-if="priceImpact" :class="priceImpactClass">
                 ({{
-                  priceImpactSign +
-                    fNum2(priceImpact, {
-                      style: 'unit',
-                      unit: 'percent',
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2
-                    })
+                  priceImpactSign + fNum2(priceImpact, FNumFormats.percent)
                 }})
               </span>
             </template>

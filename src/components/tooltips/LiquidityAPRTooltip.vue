@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { isStablePhantom, isWstETH } from '@/composables/usePool';
 import { APR_THRESHOLD } from '@/constants/poolAPR';
@@ -93,26 +93,12 @@ const thirdPartyAPRLabel = computed(() => {
       <div class="px-3 pt-3 pb-1 bg-gray-50 dark:bg-gray-800 rounded-t">
         <div class="text-gray-500">{{ $t('totalAPR') }}</div>
         <div class="text-lg">
-          {{
-            fNum2(pool.dynamic.apr.total, {
-              style: 'unit',
-              unit: 'percent',
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })
-          }}
+          {{ fNum2(pool.dynamic.apr.total, FNumFormats.percent) }}
         </div>
       </div>
       <div class="p-3">
         <div class="whitespace-nowrap flex items-center mb-1">
-          {{
-            fNum2(pool.dynamic.apr.pool, {
-              style: 'unit',
-              unit: 'percent',
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })
-          }}
+          {{ fNum2(pool.dynamic.apr.pool, FNumFormats.percent) }}
           <span class="ml-1 text-gray-500 text-xs">{{ $t('swapFeeAPR') }}</span>
         </div>
         <BalBreakdown
@@ -121,27 +107,13 @@ const thirdPartyAPRLabel = computed(() => {
           :hideItems="!thirdPartyMultiRewardPool"
         >
           <div class="flex items-center">
-            {{
-              fNum2(pool.dynamic.apr.thirdParty, {
-                style: 'unit',
-                unit: 'percent',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })
-            }}
+            {{ fNum2(pool.dynamic.apr.thirdParty, FNumFormats.percent) }}
             <span class="ml-1 text-gray-500 text-xs">
               {{ thirdPartyAPRLabel }}
             </span>
           </div>
           <template v-if="thirdPartyMultiRewardPool" #item="{ item }">
-            {{
-              fNum2(item[1], {
-                style: 'unit',
-                unit: 'percent',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })
-            }}
+            {{ fNum2(item[1], FNumFormats.percent) }}
             <span class="text-gray-500 text-xs ml-1">
               {{ thirdPartyTokens[item[0]].symbol }} {{ $t('apr') }}
             </span>
@@ -153,27 +125,13 @@ const thirdPartyAPRLabel = computed(() => {
           :hideItems="!lmMultiRewardPool"
         >
           <div class="flex items-center">
-            {{
-              fNum2(pool.dynamic.apr.liquidityMining, {
-                style: 'unit',
-                unit: 'percent',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })
-            }}
+            {{ fNum2(pool.dynamic.apr.liquidityMining, FNumFormats.percent) }}
             <span class="ml-1 text-gray-500 text-xs flex items-center">
               {{ $t('liquidityMiningAPR') }}
             </span>
           </div>
           <template v-if="lmMultiRewardPool" #item="{ item }">
-            {{
-              fNum2(item[1], {
-                style: 'unit',
-                unit: 'percent',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })
-            }}
+            {{ fNum2(item[1], FNumFormats.percent) }}
             <span class="text-gray-500 text-xs ml-1">
               {{ lmTokens[item[0]].symbol }} {{ $t('apr') }}
             </span>

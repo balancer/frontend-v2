@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { PropType, defineComponent, toRefs, computed, Ref } from 'vue';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { useI18n } from 'vue-i18n';
 import { FullPool } from '@/services/balancer/subgraph/types';
 import numeral from 'numeral';
@@ -158,12 +158,10 @@ export default defineComponent({
 
     function weightFor(address: string): string {
       if (!pool || !pool.value) return '-';
-      return fNum2(pool.value.onchain.tokens[address].weight, {
-        style: 'unit',
-        unit: 'percent',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
+      return fNum2(
+        pool.value.onchain.tokens[address].weight,
+        FNumFormats.percent
+      );
     }
 
     function fiatValueFor(address: string): string {

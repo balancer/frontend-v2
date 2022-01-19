@@ -129,7 +129,7 @@ import useTrading from '@/composables/trade/useTrading';
 import { ENABLE_LEGACY_TRADE_INTERFACE } from '@/composables/trade/constants';
 import useTokens from '@/composables/useTokens';
 import useBreakpoints from '@/composables/useBreakpoints';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 import { TOKENS } from '@/constants/tokens';
 
@@ -267,12 +267,7 @@ export default defineComponent({
                   ),
                   { maximumFractionDigits: 4 }
                 ),
-                fNum2(trading.slippageBufferRate.value, {
-                  style: 'unit',
-                  unit: 'percent',
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2
-                })
+                fNum2(trading.slippageBufferRate.value, FNumFormats.percent)
               ])
             };
           } else if (validationError === ApiErrorCodes.NoLiquidity) {

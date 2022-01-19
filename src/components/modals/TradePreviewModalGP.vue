@@ -69,12 +69,7 @@
                   >
                     / {{ $t('priceImpact') }}:
                     {{
-                      fNum2(trading.sor.priceImpact.value, {
-                        style: 'unit',
-                        unit: 'percent',
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                      })
+                      fNum2(trading.sor.priceImpact.value, FNumFormats.percent)
                     }}
                   </span>
                 </div>
@@ -172,12 +167,7 @@
         :title="$t('priceUpdatedAlert.title')"
         :description="
           $t('priceUpdatedAlert.description', [
-            fNum2(PRICE_UPDATE_THRESHOLD, {
-              style: 'unit',
-              unit: 'percent',
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })
+            fNum2(PRICE_UPDATE_THRESHOLD, FNumFormats.percent)
           ])
         "
         :action-label="$t('priceUpdatedAlert.actionLabel')"
@@ -430,7 +420,7 @@ import { useI18n } from 'vue-i18n';
 import { mapValues } from 'lodash';
 
 import { UseTrading } from '@/composables/trade/useTrading';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
@@ -481,12 +471,7 @@ export default defineComponent({
 
     // COMPUTED
     const slippageRatePercent = computed(() =>
-      fNum2(slippage.value, {
-        style: 'unit',
-        unit: 'percent',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })
+      fNum2(slippage.value, FNumFormats.percent)
     );
 
     const addressIn = computed(() => props.trading.tokenIn.value.address);

@@ -31,7 +31,7 @@ const {
   priceFor
 } = useTokens();
 const { tokensList } = usePoolCreation();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 /**
  * COMPUTED
  */

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { InvestMathResponse } from '../composables/useInvestMath';
 import useWeb3 from '@/services/web3/useWeb3';
 
@@ -78,14 +78,7 @@ const optimizeBtnClasses = computed(() => ({
       <div class="data-table-number-col">
         <div class="flex">
           <span v-if="!batchSwapLoading">
-            {{
-              fNum2(priceImpact, {
-                style: 'unit',
-                unit: 'percent',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })
-            }}
+            {{ fNum2(priceImpact, FNumFormats.percent) }}
           </span>
           <BalLoadingBlock v-else class="w-10" />
 

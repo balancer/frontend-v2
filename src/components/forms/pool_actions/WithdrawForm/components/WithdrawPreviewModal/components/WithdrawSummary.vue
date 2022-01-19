@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import { FullPool } from '@/services/balancer/subgraph/types';
 
@@ -48,14 +48,7 @@ const { currency } = useUserSettings();
           {{ $t('priceImpact') }}
         </div>
         <div class="summary-table-number">
-          {{
-            fNum2(priceImpact, {
-              style: 'unit',
-              unit: 'percent',
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })
-          }}
+          {{ fNum2(priceImpact, FNumFormats.percent) }}
           <BalTooltip
             :text="$t('tooltips.withdraw.priceImpact')"
             icon-size="sm"

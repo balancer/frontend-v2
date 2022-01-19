@@ -13,6 +13,18 @@ export interface FNumOptions extends Intl.NumberFormatOptions {
   abbreviate?: boolean; // If true, reduce number size and add k/M/B to end
 }
 
+export const FNumFormats = {
+  percent: {
+    style: 'unit',
+    unit: 'percent',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  },
+  token: {
+    maximumFractionDigits: 4
+  }
+};
+
 enum PresetFormats {
   default = '(0.[0]a)',
   default_lg = '(0.[0]a)',

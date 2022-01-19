@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import usePoolCreation from '@/composables/pools/usePoolCreation';
 import useWeb3 from '@/services/web3/useWeb3';
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 import TokenPills from '@/components/tables/PoolsTable/TokenPills/TokenPills.vue';
 import { useI18n } from 'vue-i18n';
@@ -100,12 +100,7 @@ function cancel() {
                 $t('fees')
               }}</span>
               <span class="font-semibold">{{
-                fNum2(existingPool.swapFee, {
-                  style: 'unit',
-                  unit: 'percent',
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2
-                })
+                fNum2(existingPool.swapFee, FNumFormats.percent)
               }}</span>
             </BalStack>
           </BalStack>
@@ -146,12 +141,7 @@ function cancel() {
                   $t('fees')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum2(pool.swapFee, {
-                    style: 'unit',
-                    unit: 'percent',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                  })
+                  fNum2(pool.swapFee, FNumFormats.percent)
                 }}</span>
               </BalStack>
             </BalStack>

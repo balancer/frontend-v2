@@ -69,12 +69,7 @@
           {{
             Number(pool.dynamic.apr.pool) > 10000
               ? '-'
-              : fNum2(pool.dynamic.apr.total, {
-                  style: 'unit',
-                  unit: 'percent',
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2
-                })
+              : fNum2(pool.dynamic.apr.total, FNumFormats.percent)
           }}
           <LiquidityAPRTooltip :pool="pool" />
         </div>

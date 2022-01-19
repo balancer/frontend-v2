@@ -21,7 +21,7 @@
 import { PropType, defineComponent, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 
 import { DecoratedPool } from '@/services/balancer/subgraph/types';
 
@@ -69,12 +69,7 @@ export default defineComponent({
           value:
             Number(props.pool.dynamic.apr.total) > APR_THRESHOLD
               ? '-'
-              : fNum2(props.pool.dynamic.apr.total, {
-                  style: 'unit',
-                  unit: 'percent',
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2
-                })
+              : fNum2(props.pool.dynamic.apr.total, FNumFormats.percent)
         }
       ];
     });

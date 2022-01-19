@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useNumbers from '@/composables/useNumbers';
+import useNumbers, { FNumFormats } from '@/composables/useNumbers';
 import { bnum } from '@/lib/utils';
 import { TokenInfoMap } from '@/types/TokenList';
 
@@ -53,14 +53,7 @@ function amountShare(address: string): string {
           </div>
           <div class="text-sm text-gray-500 font-numeric">
             {{ fNum2(fiatAmountMap[address], { style: 'currency' }) }}
-            ({{
-              fNum2(amountShare(address), {
-                style: 'unit',
-                unit: 'percent',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })
-            }})
+            ({{ fNum2(amountShare(address), FNumFormats.percent) }})
           </div>
         </div>
       </div>
