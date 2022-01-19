@@ -184,7 +184,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { t } = useI18n();
 
     const { appNetworkConfig } = useWeb3();
@@ -428,7 +428,12 @@ export default defineComponent({
     }
 
     function formatShare(share: number): string {
-      return fNum(share, 'percent');
+      return fNum2(share, {
+        style: 'unit',
+        unit: 'percent',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
     }
 
     function getPoolLink(id: string): string {

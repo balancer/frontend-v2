@@ -70,9 +70,9 @@ const totalFiat = computed(() => {
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none" align="end">
-              <h6>{{ fNum(balanceFor(token), 'token') }}</h6>
+              <h6>{{ fNum2(balanceFor(token), { maximumFractionDigits: 4 }) }}</h6>
               <span class="text-sm text-gray-600">{{
-                fNum(priceFor(token) * Number(balanceFor(token)), 'usd')
+                fNum2(priceFor(token) * Number(balanceFor(token)), { style: 'currency' })
               }}</span>
             </BalStack>
           </BalStack>
@@ -96,9 +96,9 @@ const totalFiat = computed(() => {
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none" align="end">
-                <h6>{{ fNum(balanceFor(token), 'token') }}</h6>
+                <h6>{{ fNum2(balanceFor(token), { maximumFractionDigits: 4 }) }}</h6>
                 <span class="text-sm text-gray-600">{{
-                  fNum(priceFor(token) * Number(balanceFor(token)), 'usd')
+                  fNum2(priceFor(token) * Number(balanceFor(token)), { style: 'currency' })
                 }}</span>
               </BalStack>
             </BalStack>
@@ -106,7 +106,7 @@ const totalFiat = computed(() => {
         </div>
         <BalStack justify="between">
           <h6>Total</h6>
-          <h6>{{ fNum(totalFiat, 'usd') }}</h6>
+          <h6>{{ fNum2(totalFiat, { style: 'currency' }) }}</h6>
         </BalStack>
       </div>
     </BalStack>

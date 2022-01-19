@@ -30,7 +30,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { getToken } = useTokens();
-const { fNum, toFiat } = useNumbers();
+const { fNum2, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { explorerLinks } = useWeb3();
 
@@ -54,10 +54,10 @@ const balanceLabel = computed(() => {
       .times(props.priceRate)
       .toString();
 
-    return fNum(equivMainTokenBalance, 'token');
+    return fNum2(equivMainTokenBalance, { maximumFractionDigits: 4 });
   }
 
-  return fNum(balance.value, 'token');
+  return fNum2(balance.value, { maximumFractionDigits: 4 });
 });
 
 const fiatLabel = computed(() => {
@@ -67,11 +67,11 @@ const fiatLabel = computed(() => {
       .toString();
 
     const fiatValue = toFiat(equivMainTokenBalance, props.mainTokenAddress);
-    return fNum(fiatValue, currency.value);
+    return fNum2(fiatValue, { style: 'currency' });
   }
 
   let fiatValue = toFiat(balance.value, props.address);
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, { style: 'currency' });
 });
 </script>
 

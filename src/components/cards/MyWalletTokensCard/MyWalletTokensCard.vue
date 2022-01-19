@@ -36,7 +36,7 @@ const emit = defineEmits<{
  */
 const { isWethPool, isStablePhantomPool } = usePool(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { fNum, toFiat } = useNumbers();
+const { fNum2, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const route = useRoute();
 
@@ -89,7 +89,7 @@ const fiatTotal = computed(() => {
         .toString()
     );
 
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, { style: 'currency' });
 });
 
 /**

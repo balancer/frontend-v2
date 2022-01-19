@@ -11,11 +11,11 @@
         />
         <div class="flex flex-col">
           <div class="font-bold">
-            {{ fNum(amountIn, 'token') }} {{ symbolIn }} ->
-            {{ fNum(amountOut, 'token') }} {{ symbolOut }}
+            {{ fNum2(amountIn, { maximumFractionDigits: 4 }) }} {{ symbolIn }} ->
+            {{ fNum2(amountOut, { maximumFractionDigits: 4 }) }} {{ symbolOut }}
           </div>
           <div class="text-gray-500 text-sm">
-            {{ fNum(valueIn, 'usd') }}
+            {{ fNum2(valueIn, { style: 'currency' }) }}
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@
               {{ totalRequiredTransactions }}
             </div>
             <div class="ml-3">
-              {{ $t('trade') }} {{ fNum(valueIn, 'usd') }} {{ symbolIn }} ->
+              {{ $t('trade') }} {{ fNum2(valueIn, { style: 'currency' }) }} {{ symbolIn }} ->
               {{ symbolOut }}
             </div>
           </div>
@@ -150,7 +150,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { fNum, toFiat } = useNumbers();
+    const { fNum2, toFiat } = useNumbers();
 
     const { addressIn, amountIn, addressOut, isV1Swap } = toRefs(props);
 
@@ -272,7 +272,7 @@ export default defineComponent({
 
     return {
       // methods
-      fNum,
+      fNum2,
       onClose,
       approveLidoRelayer,
       approveToken,

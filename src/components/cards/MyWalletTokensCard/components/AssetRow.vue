@@ -21,21 +21,22 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { getToken, balanceFor } = useTokens();
-const { fNum, toFiat } = useNumbers();
-const { currency } = useUserSettings();
+const { fNum2, toFiat } = useNumbers();
 
 /**
  * COMPUTED
  */
 const token = computed(() => getToken(props.address));
 
-const balanceLabel = computed(() => fNum(balanceFor(props.address), 'token'));
+const balanceLabel = computed(() =>
+  fNum2(balanceFor(props.address), { maximumFractionDigits: 4 })
+);
 
 const fiatLabel = computed(() => {
   const tokenBalance = balanceFor(props.address);
   const fiatValue = toFiat(tokenBalance, props.address);
 
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, { style: 'currency' });
 });
 </script>
 

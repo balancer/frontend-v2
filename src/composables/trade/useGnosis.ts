@@ -126,7 +126,7 @@ export default function useGnosis({
   const store = useStore();
   const { account, getSigner } = useWeb3();
   const { addTransaction } = useTransactions();
-  const { fNum } = useNumbers();
+  const { fNum2 } = useNumbers();
   const { balanceFor } = useTokens();
 
   // DATA
@@ -233,9 +233,9 @@ export default function useGnosis({
       const tokenInAmountEst = exactIn.value ? '' : '~';
       const tokenOutAmountEst = exactIn.value ? '~' : '';
 
-      const summary = `${tokenInAmountEst}${fNum(sellAmount, 'token')} ${
+      const summary = `${tokenInAmountEst}${fNum2(sellAmount, { maximumFractionDigits: 4 })} ${
         tokenIn.value.symbol
-      } -> ${tokenOutAmountEst}${fNum(buyAmount, 'token')} ${
+      } -> ${tokenOutAmountEst}${fNum2(buyAmount, { maximumFractionDigits: 4 })} ${
         tokenOut.value.symbol
       }`;
 

@@ -142,7 +142,7 @@ export default function useSor({
   const { trackGoal, Goals } = useFathom();
   const { txListener } = useEthers();
   const { addTransaction } = useTransactions();
-  const { fNum } = useNumbers();
+  const { fNum2 } = useNumbers();
   const { t } = useI18n();
   const { injectTokens, priceFor } = useTokens();
 
@@ -398,8 +398,8 @@ export default function useSor({
     confirming.value = false;
 
     let summary = '';
-    const tokenInAmountFormatted = fNum(tokenInAmountInput.value, 'token');
-    const tokenOutAmountFormatted = fNum(tokenOutAmountInput.value, 'token');
+    const tokenInAmountFormatted = fNum2(tokenInAmountInput.value, { maximumFractionDigits: 4 });
+    const tokenOutAmountFormatted = fNum2(tokenOutAmountInput.value, { maximumFractionDigits: 4 });
 
     const tokenInSymbol = tokenIn.value.symbol;
     const tokenOutSymbol = tokenOut.value.symbol;

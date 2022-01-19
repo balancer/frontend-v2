@@ -56,7 +56,7 @@ const claimError = ref<TransactionError | null>(null);
 // COMPOSABLES
 const { upToLargeBreakpoint } = useBreakpoints();
 const userClaimsQuery = useUserClaimsQuery();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const {
   account,
   getProvider,
@@ -222,7 +222,7 @@ async function claimAvailableRewards() {
       const summary = claimableTokens.value
         .map(
           claimableToken =>
-            `${fNum(claimableToken.amount, 'token_fixed')} ${
+            `${fNum2(claimableToken.amount, { minimumFractionDigits: 4, maximumFractionDigits: 4 })} ${
               claimableToken.symbol
             }`
         )
@@ -268,7 +268,7 @@ async function claimAvailableRewards() {
         />
         <BalLoadingIcon size="sm" v-if="userClaimsLoading" />
         <span class="hidden lg:block" v-else>{{
-          fNum(totalRewardsFiatValue, 'usd')
+          fNum2(totalRewardsFiatValue, { style: 'currency' })
         }}</span>
       </BalBtn>
     </template>
@@ -308,11 +308,11 @@ async function claimAvailableRewards() {
                 />
                 <div>
                   <div class="font-medium">
-                    {{ fNum(claimableToken.amount, 'token') }}
+                    {{ fNum2(claimableToken.amount, { maximumFractionDigits: 4 }) }}
                     {{ claimableToken.symbol }}
                   </div>
                   <div class="font-sm text-gray-400">
-                    {{ fNum(claimableToken.fiatValue, 'usd') }}
+                    {{ fNum2(claimableToken.fiatValue, { style: 'currency' }) }}
                   </div>
                 </div>
               </div>
@@ -333,11 +333,11 @@ async function claimAvailableRewards() {
                 />
                 <div>
                   <div class="font-medium">
-                    {{ fNum(claimableToken.amount, 'token') }}
+                    {{ fNum2(claimableToken.amount, { maximumFractionDigits: 4 }) }}
                     {{ claimableToken.symbol }}
                   </div>
                   <div class="font-sm text-gray-400">
-                    {{ fNum(claimableToken.fiatValue, 'usd') }}
+                    {{ fNum2(claimableToken.fiatValue, { style: 'currency' }) }}
                   </div>
                 </div>
               </div>
@@ -356,7 +356,7 @@ async function claimAvailableRewards() {
           :disabled="!hasClaimableTokens"
           >{{ $t('claimAll') }}
           <template v-if="hasClaimableTokens"
-            >~{{ fNum(totalClaimableTokensFiatValue, 'usd') }}</template
+            >~{{ fNum2(totalClaimableTokensFiatValue, { style: 'currency' }) }}</template
           ></BalBtn
         >
         <BalAlert

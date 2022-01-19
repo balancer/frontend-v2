@@ -89,7 +89,7 @@ export default function useWithdrawMath(
    * COMPOSABLES
    */
   const { isWalletReady, account } = useWeb3();
-  const { toFiat, fNum } = useNumbers();
+  const { toFiat, fNum2 } = useNumbers();
   const {
     tokens: allTokens,
     balances,
@@ -346,7 +346,7 @@ export default function useWithdrawMath(
   );
 
   const fiatTotalLabel = computed((): string =>
-    fNum(fiatTotal.value, currency.value)
+    fNum2(fiatTotal.value, { style: 'currency' })
   );
 
   const shouldFetchBatchSwap = computed(

@@ -21,7 +21,7 @@ const props = defineProps<Props>();
  * COMPOSABLES
  */
 const { getToken } = useTokens();
-const { fNum, toFiat } = useNumbers();
+const { fNum2, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 
 /**
@@ -29,11 +29,11 @@ const { currency } = useUserSettings();
  */
 const token = computed(() => getToken(props.address));
 
-const balanceLabel = computed(() => fNum(props.balance, 'token'));
+const balanceLabel = computed(() => fNum2(props.balance, { maximumFractionDigits: 4 }));
 
 const fiatLabel = computed(() => {
   const fiatValue = toFiat(props.balance, props.address);
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, { style: 'currency' });
 });
 </script>
 

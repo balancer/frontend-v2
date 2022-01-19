@@ -16,7 +16,7 @@ const {
   maxInitialLiquidity,
   tokenColors
 } = usePoolCreation();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { upToLargeBreakpoint } = useBreakpoints();
 
 /**
@@ -80,10 +80,9 @@ const totalsClass = computed(() => ({
           </div>
           <div class="col-span-6 text-sm text-right">
             {{
-              fNum(
-                optimisedLiquidity[token.tokenAddress].liquidityRequired,
-                'usd'
-              )
+              fNum2(optimisedLiquidity[token.tokenAddress].liquidityRequired, {
+                style: 'currency'
+              })
             }}
           </div>
         </template>
@@ -105,7 +104,7 @@ const totalsClass = computed(() => ({
             totalsClass
           ]"
         >
-          {{ fNum(maxInitialLiquidity, 'usd') }}
+          {{ fNum2(maxInitialLiquidity, { style: 'currency' }) }}
         </div>
       </div>
     </div>

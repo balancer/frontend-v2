@@ -357,7 +357,8 @@ export default defineComponent({
           currentDayValue.value() || 0,
           props.axisLabelFormatter.yAxis || {
             style: 'currency',
-            currency: 'USD'
+            currency: 'USD',
+            fixedFormat: true
           }
         );
       }
@@ -399,7 +400,8 @@ export default defineComponent({
           props.data[seriesIndex].values[dataIndex][1],
           props.axisLabelFormatter.yAxis || {
             style: 'currency',
-            currency: 'USD'
+            currency: 'USD',
+            fixedFormat: true
           }
         );
 

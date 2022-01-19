@@ -14,6 +14,7 @@ const mockTokens = {
 
 const mockDefaultCurrency = FiatCurrency.usd;
 
+jest.mock('@/composables/useUserSettings');
 jest.mock('@/composables/useTokens', () => {
   return jest.fn().mockImplementation(() => {
     return {
@@ -36,47 +37,14 @@ describe('useNumbers', () => {
     expect(result).toBeTruthy();
   });
 
-  describe('fNum', () => {
-    const { fNum } = result;
-
-    it('Should format a number with default formatter when only a number is specified', () => {
-      const number = 1234567.8912345;
-      const formattedNumber = fNum(number);
-      expect(formattedNumber).toEqual('1,234,568');
-    });
-
-    it('Should not return decimal places for numbers > 1 if usd with noDecimals is specified', () => {
-      const number = 3.28;
-      const formattedNumber = fNum(number, 'usd', { noDecimals: true });
-      expect(formattedNumber).toEqual('$3');
-    });
-
-    it('Should return 1 when the number is > 0.5 and < 1 and usd with noDecimals is specified', () => {
-      const number = 0.887;
-      const formattedNumber = fNum(number, 'usd', { noDecimals: true });
-      expect(formattedNumber).toEqual('$1');
-    });
-
-    it('Should return 0 when the number is < 0.5 and usd with noDecimals is specified', () => {
-      const number = 0.387;
-      const formattedNumber = fNum(number, 'usd', { noDecimals: true });
-      expect(formattedNumber).toEqual('$0');
-    });
-
-    it('Should return 0 when the number is 0 and usd with no decimals is specified', () => {
-      const number = 0.0;
-      const formattedNumber = fNum(number, 'usd', { noDecimals: true });
-      expect(formattedNumber).toEqual('$0');
-    });
-
-  });
-
   describe('fNum2', () => {
     const { fNum, fNum2 } = result;
 
     const testNumbers = [
+      '',
       '0',
       '0.0',
+      '0.0000',
       '0.000005',
       '0.001',
       '0.123456789',
@@ -88,27 +56,37 @@ describe('useNumbers', () => {
       '188.9123',
       '5129.199911',
       '87654',
-      '112124.8791743',
+      '112124.3791743',
+      '1883234',
       '121237821371'
     ];
 
-    it('BalLineChart percent formatter should give the same result', () => {
+    it('Should give the same result without any arguments', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber);
+        const format2 = fNum2(testNumber, { style: 'decimal', maximumFractionDigits: 1, abbreviate: true });
+        expect(format2).toEqual(format1);
+      });
+
+    });
+
+    it('Should give the same result as a formatted percentage', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, null, { format: '0.00%' });
-        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2, fixedFormat: true });
         expect(format2).toEqual(format1);
       });
     });
 
-    it('BalLineChart USD formatter should give the same result', () => {
+    it('Should give the same result as a formatted dollar value', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, null, { format: '$0,0.00' });
-        const format2 = fNum2(testNumber, { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const format2 = fNum2(testNumber, { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, fixedFormat: true });
         expect(format2).toEqual(format1);
       });
     });
 
-    it('usd preset should give same result as style: currency', () => {
+    it('Should return the same result as usd preset', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'usd');
         const format2 = fNum2(testNumber, { style: 'currency' });
@@ -116,7 +94,31 @@ describe('useNumbers', () => {
       });
     });
 
-    it('percent preset should give same result as unit: percent', () => {
+    it('Should return the same result as usd forced preset', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, 'usd', { forcePreset: true });
+        const format2 = fNum2(testNumber, { style: 'currency', fixedFormat: true });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('Should return the same result as usd_m preset', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, 'usd_m');
+        const format2 = fNum2(testNumber, { style: 'currency', abbreviate: true });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('Should return the same result as nested usd usd_m preset', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(fNum(testNumber, 'usd'), 'usd_m');
+        const format2 = fNum2(testNumber, { style: 'currency', abbreviate: true });
+        expect(format2).toEqual(format1);
+      });
+    })
+
+    it('Should return the same result as percent preset', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, 'percent');
         const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -124,10 +126,50 @@ describe('useNumbers', () => {
       });
     });
 
-    it('PoolFees formatted percent should give the same result', () => {
+    it('Should return the same result as percent_lg preset', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, 'percent_lg');
+        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', maximumFractionDigits: 0 });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('Should return the same result as percent_variable preset', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, 'percent_variable');
+        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', maximumFractionDigits: 4, fixedFormat: true });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('Should return the same result as a formatted percentage unit', () => {
       testNumbers.forEach(testNumber => {
         const format1 = fNum(testNumber, null, { format: '0.0%' });
-        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        const format2 = fNum2(testNumber, { style: 'unit', unit: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1, fixedFormat: true });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('Should return the same result for token', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, 'token');
+        const format2 = fNum2(testNumber, { maximumFractionDigits: 4 });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('Should return the same result for token_fixed', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, 'token_fixed');
+        const format2 = fNum2(testNumber, { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+        expect(format2).toEqual(format1);
+      });
+    });
+
+    it('Should return the same result for token_lg', () => {
+      testNumbers.forEach(testNumber => {
+        const format1 = fNum(testNumber, 'token_lg');
+        const format2 = fNum2(testNumber, { style: 'decimal', maximumFractionDigits: 0 });
         expect(format2).toEqual(format1);
       });
     });

@@ -20,7 +20,7 @@ defineProps<Props>();
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { currency } = useUserSettings();
 </script>
 
@@ -35,7 +35,7 @@ const { currency } = useUserSettings();
           {{ $t('total') }}
         </div>
         <div class="summary-table-number">
-          {{ fNum(fiatTotal, currency) }}
+          {{ fNum2(fiatTotal, { style: 'currency' }) }}
           <BalTooltip
             :text="$t('tooltips.withdraw.total', [currency.toUpperCase()])"
             icon-size="sm"
@@ -48,7 +48,7 @@ const { currency } = useUserSettings();
           {{ $t('priceImpact') }}
         </div>
         <div class="summary-table-number">
-          {{ fNum(priceImpact, 'percent') }}
+          {{ fNum2(priceImpact, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
           <BalTooltip
             :text="$t('tooltips.withdraw.priceImpact')"
             icon-size="sm"

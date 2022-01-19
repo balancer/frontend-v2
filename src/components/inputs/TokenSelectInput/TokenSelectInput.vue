@@ -42,7 +42,7 @@ const openTokenModal = ref(false);
  * COMPOSABLEs
  */
 const { getToken } = useTokens();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 
 /**
  * COMPUTED
@@ -80,7 +80,13 @@ function tokenFor(option: string): TokenInfo {
         {{ token?.symbol }}
       </span>
       <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
-        {{ fNum(weight, 'percent_lg') }}
+        {{
+          fNum2(weight, {
+            style: 'unit',
+            unit: 'percent',
+            maximumFractionDigits: 0
+          })
+        }}
       </span>
       <BalIcon
         v-if="!fixed"
@@ -104,7 +110,13 @@ function tokenFor(option: string): TokenInfo {
             {{ token?.symbol }}
           </span>
           <span v-if="Number(weight) > 0" class="text-gray-500 ml-2">
-            {{ fNum(weight, 'percent_lg') }}
+            {{
+              fNum2(weight, {
+                style: 'unit',
+                unit: 'percent',
+                maximumFractionDigits: 0
+              })
+            }}
           </span>
           <BalIcon
             name="chevron-down"

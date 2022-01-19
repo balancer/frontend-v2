@@ -63,7 +63,7 @@ const emit = defineEmits(['loadMore']);
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { explorerLinks } = useWeb3();
 const { tokens, priceFor } = useTokens();
@@ -120,7 +120,7 @@ const activityRows = computed<ActivityRow[]>(() =>
         return {
           label: isJoin ? t('invest') : t('withdraw.label'),
           value,
-          formattedValue: value > 0 ? fNum(fNum(value, 'usd'), 'usd_m') : '-',
+          formattedValue: value > 0 ? fNum2(value, { style: 'currency', abbreviate: true }) : '-',
           timestamp,
           formattedDate: t('timeAgo', [formatDistanceToNow(timestamp)]),
           tx,
@@ -164,7 +164,7 @@ function getJoinExitDetails(amounts: PoolActivity['amounts']) {
     return {
       address,
       symbol,
-      amount: fNum(amountNumber, 'token')
+      amount: fNum2(amountNumber, { maximumFractionDigits: 4 })
     };
   });
 }

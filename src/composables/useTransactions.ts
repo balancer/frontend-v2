@@ -254,7 +254,7 @@ export default function useTransactions() {
   } = useWeb3();
   const { addNotification } = useNotifications();
   const { t } = useI18n();
-  const { fNum } = useNumbers();
+  const { fNum2 } = useNumbers();
 
   // COMPUTED
   const provider = computed(() => getWeb3Provider());
@@ -279,9 +279,9 @@ export default function useTransactions() {
         tokenOut.decimals
       );
 
-      return `${fNum(tokenInAmount, 'token')} ${tokenIn.symbol} -> ${fNum(
+      return `${fNum2(tokenInAmount, { maximumFractionDigits: 4 })} ${tokenIn.symbol} -> ${fNum2(
         tokenOutAmount,
-        'token'
+        { maximumFractionDigits: 4 }
       )} ${tokenOut.symbol}`;
     }
 

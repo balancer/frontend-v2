@@ -84,7 +84,7 @@ export default defineComponent({
     /**
      * COMPOSABLES
      */
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { explorerLinks } = useWeb3();
     const { t } = useI18n();
     const { upToLargeBreakpoint } = useBreakpoints();
@@ -151,12 +151,19 @@ export default defineComponent({
 
     function balanceFor(address: string): string {
       if (!pool || !pool.value) return '-';
-      return fNum(pool.value.onchain.tokens[address].balance, 'token');
+      return fNum2(pool.value.onchain.tokens[address].balance, {
+        maximumFractionDigits: 4
+      });
     }
 
     function weightFor(address: string): string {
       if (!pool || !pool.value) return '-';
-      return fNum(pool.value.onchain.tokens[address].weight, 'percent');
+      return fNum2(pool.value.onchain.tokens[address].weight, {
+        style: 'unit',
+        unit: 'percent',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
     }
 
     function fiatValueFor(address: string): string {
@@ -164,7 +171,7 @@ export default defineComponent({
       if (!pool || !pool.value || price === 0) return '-';
 
       const balance = Number(pool.value.onchain.tokens[address].balance);
-      return fNum(balance * price, 'usd');
+      return fNum2(balance * price, { style: 'currency' });
     }
 
     return {
@@ -172,7 +179,7 @@ export default defineComponent({
       balanceFor,
       weightFor,
       fiatValueFor,
-      fNum,
+      fNum2,
       explorer: explorerLinks,
       columns,
       tableData,

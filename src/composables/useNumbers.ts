@@ -1,20 +1,22 @@
 import numeral from 'numeral';
 import BigNumber from 'bignumber.js';
 import useTokens from './useTokens';
+import useUserSettings from '@/composables/useUserSettings';
 
 interface Options {
   format?: string;
   forcePreset?: boolean;
-  noDecimals?: boolean;
 }
 
 export interface FNumOptions extends Intl.NumberFormatOptions {
-  noDecimals?: boolean;
+  fixedFormat?: boolean; // If true, don't auto-adjust based on number magnitde
+  abbreviate?: boolean; // If true, reduce number size and add k/M/B to end
 }
 
 
 enum PresetFormats {
   default = '(0.[0]a)',
+  default_lg = '(0.[0]a)',
   token = '0,0.[0000]',
   token_fixed = '0,0.0000',
   token_lg = '0,0',
@@ -22,7 +24,6 @@ enum PresetFormats {
   usd = '$0,0.00',
   usd_lg = '$0,0',
   usd_m = '$0,0.00a',
-  usd_nodecimals = '$0,0',
   percent = '0.00%',
   percent_variable = '0.[0000]%',
   percent_lg = '0%'
@@ -38,12 +39,8 @@ export function fNum(
   if (options.format) return numeral(number).format(options.format);
 
   let adjustedPreset;
-  if (number >= 10_000 && !options.forcePreset) {
+  if (number >= 10_000 && !options.forcePreset && !preset?.match(/_(lg|m|variable)$/)) {
     adjustedPreset = `${preset}_lg`;
-  }
-
-  if (options.noDecimals) {
-    adjustedPreset = `${preset}_nodecimals`;
   }
 
   if (
@@ -65,50 +62,73 @@ export function fNum(
   );
 }
 
-export function fNum2(
-  number: number | string,
-  options: FNumOptions | undefined = {}
-): string {
-  if (typeof number === 'string') {
-    number = new BigNumber(number).toNumber();
-  }
-
-  const formatterOptions: Intl.NumberFormatOptions = Object.assign({}, options);
-  if (options.noDecimals) {
-    formatterOptions.maximumFractionDigits = 0;
-  }
-
-  if (
-    number >= 1e4 &&
-    !formatterOptions.minimumFractionDigits &&
-    !formatterOptions.maximumFractionDigits
-  ) {
-    formatterOptions.minimumFractionDigits = 0;
-    formatterOptions.maximumFractionDigits = 0;
-  }
-
-  // For consistency with numeral
-  if (options.unit === 'percent') {
-    number = number * 100;
-    formatterOptions.useGrouping = false;
-  }
-
-  if (formatterOptions.style === 'currency') {
-    formatterOptions.currency = 'USD';
-  }
-
-  const formatter = new Intl.NumberFormat('en-US', formatterOptions);
-
-  return formatter.format(number);
-}
-
 export default function useNumbers() {
+  const { currency } = useUserSettings();
   const { priceFor } = useTokens();
 
   function toFiat(amount: number | string, tokenAddress: string): string {
     const price = priceFor(tokenAddress);
     const tokenAmount = new BigNumber(amount);
     return tokenAmount.times(price).toString();
+  }
+
+  function fNum2(
+    number: number | string,
+    options: FNumOptions | undefined = {}
+  ): string {
+    if (typeof number === 'string') {
+      number = number || 0;
+      number = new BigNumber(number).toNumber();
+    }
+
+    const formatterOptions: Intl.NumberFormatOptions = Object.assign({}, options);
+    let postfixSymbol = '';
+
+    if (options.abbreviate) {
+      const lookup = [
+        { value: 1, symbol: "" },
+        { value: 1e3, symbol: "k" },
+        { value: 1e6, symbol: "m" },
+        { value: 1e9, symbol: "b" },
+      ];
+      const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+      const item = lookup
+        .slice()
+        .reverse()
+        .find(function(item) {
+          return number >= item.value;
+        });
+      postfixSymbol = item ? item.symbol : '';
+      const fractionDigits = 2;
+      number = item
+        ? new BigNumber(
+            (number / item.value).toFixed(fractionDigits).replace(rx, '$1')
+          ).toNumber()
+        : number;
+    }
+
+    if (number >= 1e4 && !options.fixedFormat) {
+      formatterOptions.minimumFractionDigits = 0;
+      formatterOptions.maximumFractionDigits = 0;
+    }
+
+    // For consistency with numeral
+    if (options.unit === 'percent') {
+      number = number * 100;
+      formatterOptions.useGrouping = false;
+    }
+
+    if (options.style === 'currency') {
+      formatterOptions.currency = currency.value;
+    }
+
+    if (!options.style && number > 0 && number < 0.0001) {
+      return '< 0.0001';
+    }
+
+    const formatter = new Intl.NumberFormat('en-US', formatterOptions);
+
+    return formatter.format(number) + postfixSymbol;
   }
 
   return { fNum, fNum2, toFiat };

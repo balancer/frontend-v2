@@ -26,7 +26,7 @@ const cardWrapper = ref<HTMLElement>();
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const {
   initialFee,
   feeController,
@@ -69,7 +69,13 @@ const isProceedDisabled = computed(() => {
 // this does not need to be computed as it relies on a static
 const feeOptions = FIXED_FEE_OPTIONS.map(option => {
   return {
-    label: fNum(option, null, { format: '0.0%' }),
+    label: fNum2(option, {
+      style: 'unit',
+      unit: 'percent',
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+      fixedFormat: true
+    }),
     value: option
   };
 });

@@ -26,7 +26,11 @@
               </div>
               <div>
                 <div class="font-medium">
-                  {{ fNum(trading.tokenInAmountInput.value, 'token') }}
+                  {{
+                    fNum2(trading.tokenInAmountInput.value, {
+                      maximumFractionDigits: 4
+                    })
+                  }}
                   {{ trading.tokenIn.value.symbol }}
                 </div>
                 <div class="text-gray-500 dark:text-gray-400 text-sm">
@@ -48,7 +52,11 @@
               </div>
               <div>
                 <div class="font-medium">
-                  {{ fNum(trading.tokenOutAmountInput.value, 'token') }}
+                  {{
+                    fNum2(trading.tokenOutAmountInput.value, {
+                      maximumFractionDigits: 4
+                    })
+                  }}
                   {{ trading.tokenOut.value.symbol }}
                 </div>
                 <div class="text-gray-500 dark:text-gray-400 text-sm">
@@ -60,7 +68,14 @@
                     "
                   >
                     / {{ $t('priceImpact') }}:
-                    {{ fNum(trading.sor.priceImpact.value, 'percent') }}
+                    {{
+                      fNum2(trading.sor.priceImpact.value, {
+                        style: 'unit',
+                        unit: 'percent',
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                      })
+                    }}
                   </span>
                 </div>
               </div>
@@ -157,7 +172,12 @@
         :title="$t('priceUpdatedAlert.title')"
         :description="
           $t('priceUpdatedAlert.description', [
-            fNum(PRICE_UPDATE_THRESHOLD, 'percent')
+            fNum2(PRICE_UPDATE_THRESHOLD, {
+              style: 'unit',
+              unit: 'percent',
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })
           ])
         "
         :action-label="$t('priceUpdatedAlert.actionLabel')"
@@ -444,7 +464,7 @@ export default defineComponent({
   setup(props, { emit }) {
     // COMPOSABLES
     const { t } = useI18n();
-    const { fNum, toFiat } = useNumbers();
+    const { fNum2, toFiat } = useNumbers();
     const { tokens, approvalRequired } = useTokens();
     const { blockNumber } = useWeb3();
     const { slippage } = useUserSettings();
@@ -460,34 +480,41 @@ export default defineComponent({
     const showSummaryInFiat = ref(false);
 
     // COMPUTED
-    const slippageRatePercent = computed(() => fNum(slippage.value, 'percent'));
+    const slippageRatePercent = computed(() =>
+      fNum2(slippage.value, {
+        style: 'unit',
+        unit: 'percent',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+    );
 
     const addressIn = computed(() => props.trading.tokenIn.value.address);
 
     const tokenInFiatValue = computed(() =>
-      fNum(
+      fNum2(
         toFiat(
           props.trading.tokenInAmountInput.value,
           props.trading.tokenIn.value.address
         ),
-        'usd'
+        { style: 'currency' }
       )
     );
 
     const tokenOutFiatValue = computed(() =>
-      fNum(
+      fNum2(
         toFiat(
           props.trading.tokenOutAmountInput.value,
           props.trading.tokenOut.value.address
         ),
-        'usd'
+        { style: 'currency' }
       )
     );
 
     const showTradeRoute = computed(() => props.trading.isBalancerTrade.value);
 
     const zeroFee = computed(() =>
-      showSummaryInFiat.value ? fNum('0', 'usd') : '0.0 ETH'
+      showSummaryInFiat.value ? fNum2('0', { style: 'currency' }) : '0.0 ETH'
     );
 
     const summary = computed(() => {
@@ -551,16 +578,16 @@ export default defineComponent({
         return mapValues(
           summaryItems,
           itemValue =>
-            `${fNum(
+            `${fNum2(
               toFiat(itemValue, exactIn ? tokenOut.address : tokenIn.address),
-              'usd'
+              { style: 'currency' }
             )}`
         );
       } else {
         return mapValues(
           summaryItems,
           itemValue =>
-            `${fNum(itemValue, 'token')} ${
+            `${fNum2(itemValue, { maximumFractionDigits: 4 })} ${
               exactIn || props.trading.isWrapUnwrapTrade.value
                 ? tokenOut.symbol
                 : tokenIn.symbol
@@ -841,7 +868,7 @@ export default defineComponent({
       FiatCurrency,
 
       // methods
-      fNum,
+      fNum2,
       onClose,
       trade,
       cofirmPriceUpdate,

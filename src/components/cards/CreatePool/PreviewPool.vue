@@ -49,7 +49,7 @@ const {
 } = usePoolCreation();
 
 const { tokens, priceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { t } = useI18n();
 const { userNetworkConfig, account } = useWeb3();
 
@@ -188,7 +188,14 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                   <BalAsset :address="token.tokenAddress" :size="36" />
                   <BalStack vertical spacing="none">
                     <span class="font-semibold">
-                      {{ fNum(token.weight / 100, 'percent') }}
+                      {{
+                        fNum2(token.weight / 100, {
+                          style: 'unit',
+                          unit: 'percent',
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2
+                        })
+                      }}
                       {{ tokens[token.tokenAddress]?.symbol }}
                     </span>
                     <span
@@ -209,15 +216,15 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
                 </BalStack>
                 <BalStack vertical spacing="none" align="end">
                   <span class="font-semibold">
-                    {{ fNum(token.amount, 'token') }}
+                    {{ fNum2(token.amount, { maximumFractionDigits: 4 }) }}
                   </span>
                   <span class="text-sm text-gray-500">
                     {{
-                      fNum(
+                      fNum2(
                         bnum(token.amount)
                           .times(priceFor(token.tokenAddress))
                           .toString(),
-                        'usd'
+                        { style: 'currency' }
                       )
                     }}
                   </span>
@@ -231,7 +238,9 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
             class="p-4 border-t dark:border-gray-600"
           >
             <h6>{{ $t('total') }}</h6>
-            <h6>{{ fNum(poolLiquidity.toString(), 'usd') }}</h6>
+            <h6>
+              {{ fNum2(poolLiquidity.toString(), { style: 'currency' }) }}
+            </h6>
           </BalStack>
         </BalCard>
         <BalCard shadow="none" noPad>
@@ -264,7 +273,7 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
             <BalStack horizontal justify="between" class="mt-1">
               <span class="text-sm">{{ $t('swapFee') }}:</span>
               <BalStack horizontal spacing="sm">
-                <span class="text-sm">{{ fNum(initialFee, 'percent') }}</span>
+                <span class="text-sm">{{ fNum2(initialFee, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
                 <button class="hover:text-blue-500" @click="navigateToPoolFee">
                   <BalIcon name="edit" size="xs" />
                 </button>
@@ -305,8 +314,8 @@ function getInitialWeightHighlightClass(tokenAddress: string) {
           class="mb-4"
           :title="
             t('createAPool.arbTitle', [
-              fNum(arbitrageDelta.value, 'usd'),
-              fNum(arbitrageDelta.delta, 'percent')
+              fNum2(arbitrageDelta.value, { style: 'currency' }),
+              fNum2(arbitrageDelta.delta, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
             ])
           "
         >

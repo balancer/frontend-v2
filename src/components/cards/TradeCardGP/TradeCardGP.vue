@@ -162,7 +162,7 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const { bp } = useBreakpoints();
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { appNetworkConfig } = useWeb3();
     const { nativeAsset } = useTokens();
     const {
@@ -260,14 +260,19 @@ export default defineComponent({
               ]),
               body: t('gnosisErrors.lowBalance.body', [
                 trading.tokenIn.value.symbol,
-                fNum(
+                fNum2(
                   formatUnits(
                     trading.getQuote().maximumInAmount,
                     trading.tokenIn.value.decimals
                   ),
-                  'token'
+                  { maximumFractionDigits: 4 }
                 ),
-                fNum(trading.slippageBufferRate.value, 'percent')
+                fNum2(trading.slippageBufferRate.value, {
+                  style: 'unit',
+                  unit: 'percent',
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                })
               ])
             };
           } else if (validationError === ApiErrorCodes.NoLiquidity) {

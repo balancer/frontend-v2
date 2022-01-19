@@ -38,7 +38,7 @@ const emit = defineEmits<{
 /**
  * COMPOSABLES
  */
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { getToken } = useTokens();
 
 /**
@@ -89,7 +89,9 @@ const rateLabel = computed(() => {
     outSymbol = tokenIn.value.symbol;
   }
 
-  return `1 ${inSymbol} = ${fNum(rate, 'token')} ${outSymbol}`;
+  return `1 ${inSymbol} = ${fNum2(rate, {
+    maximumFractionDigits: 4
+  })} ${outSymbol}`;
 });
 
 /**

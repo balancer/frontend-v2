@@ -10,15 +10,28 @@ import { Pool } from '@/services/balancer/subgraph/types';
  */
 const { similarPools } = usePoolCreation();
 const { tokens } = useTokens();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 /**
  * FUNCTIONS
  */
 function getPoolLabel(pool: Pool) {
   const tokensString = pool.tokens
-    .map(t => `${tokens.value[t.address]?.symbol} ${fNum(t.weight, 'percent')}`)
+    .map(
+      t =>
+        `${tokens.value[t.address]?.symbol} ${fNum2(t.weight, {
+          style: 'unit',
+          unit: 'percent',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}`
+    )
     .join(', ');
-  return `${tokensString} (${fNum(pool.swapFee, 'percent')} fee)`;
+  return `${tokensString} (${fNum2(pool.swapFee, {
+    style: 'unit',
+    unit: 'percent',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })} fee)`;
 }
 </script>
 

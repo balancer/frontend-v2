@@ -27,7 +27,7 @@ const props = defineProps<Props>();
  */
 const { hasBpt } = useWithdrawMath(toRef(props, 'pool'));
 const { balanceFor, nativeAsset, wrappedNativeAsset } = useTokens();
-const { fNum, toFiat } = useNumbers();
+const { fNum2, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { isWalletReady, toggleWalletSelectModal } = useWeb3();
 
@@ -57,7 +57,7 @@ const fiatTotal = computed(() => {
         .toString()
     );
 
-  return fNum(fiatValue, currency.value);
+  return fNum2(fiatValue, { style: 'currency' });
 });
 </script>
 

@@ -22,7 +22,7 @@ const {
   resetPoolCreationState,
   goBack
 } = usePoolCreation();
-const { fNum } = useNumbers();
+const { fNum2 } = useNumbers();
 const { t } = useI18n();
 
 /** COMPUTED */
@@ -84,7 +84,7 @@ function cancel() {
                 $t('poolValue')
               }}</span>
               <span class="font-semibold">{{
-                fNum(existingPool.totalLiquidity, 'usd')
+                fNum2(existingPool.totalLiquidity, { style: 'currency' })
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
@@ -92,7 +92,7 @@ function cancel() {
                 $t('volume24hShort')
               }}</span>
               <span class="font-semibold">{{
-                fNum(existingPool.dynamic.volume, 'usd')
+                fNum2(existingPool.dynamic.volume, { style: 'currency' })
               }}</span>
             </BalStack>
             <BalStack vertical spacing="none">
@@ -100,7 +100,12 @@ function cancel() {
                 $t('fees')
               }}</span>
               <span class="font-semibold">{{
-                fNum(existingPool.swapFee, 'percent')
+                fNum2(existingPool.swapFee, {
+                  style: 'unit',
+                  unit: 'percent',
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                })
               }}</span>
             </BalStack>
           </BalStack>
@@ -125,7 +130,7 @@ function cancel() {
                   $t('poolValue')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum(pool.totalLiquidity, 'usd')
+                  fNum2(pool.totalLiquidity, { style: 'currency' })
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
@@ -133,7 +138,7 @@ function cancel() {
                   $t('volume24hShort')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum(pool.dynamic.volume, 'usd')
+                  fNum2(pool.dynamic.volume, { style: 'currency' })
                 }}</span>
               </BalStack>
               <BalStack vertical spacing="none">
@@ -141,7 +146,7 @@ function cancel() {
                   $t('fees')
                 }}</span>
                 <span class="font-semibold">{{
-                  fNum(pool.swapFee, 'percent')
+                  fNum2(pool.swapFee, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
                 }}</span>
               </BalStack>
             </BalStack>

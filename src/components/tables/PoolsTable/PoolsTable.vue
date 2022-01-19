@@ -69,7 +69,7 @@
           {{
             Number(pool.dynamic.apr.pool) > 10000
               ? '-'
-              : fNum(pool.dynamic.apr.total, 'percent')
+              : fNum2(pool.dynamic.apr.total, { style: 'unit', unit: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
           }}
           <LiquidityAPRTooltip :pool="pool" />
         </div>
@@ -139,7 +139,7 @@ export default defineComponent({
 
   setup(props) {
     // COMPOSABLES
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const router = useRouter();
     const { t } = useI18n();
     const { trackGoal, Goals } = useFathom();
@@ -166,7 +166,7 @@ export default defineComponent({
       },
       {
         name: t('myBalance'),
-        accessor: pool => fNum(pool.shares, 'usd', { forcePreset: true }),
+        accessor: pool => fNum2(pool.shares, { style: 'currency', fixedFormat: true }),
         align: 'right',
         id: 'myBalance',
         hidden: !props.showPoolShares,
@@ -176,7 +176,7 @@ export default defineComponent({
       },
       {
         name: t('poolValue'),
-        accessor: pool => fNum(pool.totalLiquidity, 'usd', { noDecimals: true }),
+        accessor: pool => fNum2(pool.totalLiquidity, { style: 'currency' }),
         align: 'right',
         id: 'poolValue',
         sortKey: pool => {
@@ -189,7 +189,7 @@ export default defineComponent({
       },
       {
         name: t('volume24h', [t('hourAbbrev')]),
-        accessor: pool => fNum(pool.dynamic.volume, 'usd', { noDecimals: true }),
+        accessor: pool => fNum2(pool.dynamic.volume, { style: 'currency' }),
         align: 'right',
         id: 'poolVolume',
         sortKey: pool => {
@@ -247,7 +247,7 @@ export default defineComponent({
       // methods
       handleRowClick,
       getAddress,
-      fNum,
+      fNum2,
       orderedTokenAddressesFor,
       orderedPoolTokens,
       isStableLike

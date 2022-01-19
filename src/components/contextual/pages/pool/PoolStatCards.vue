@@ -40,7 +40,7 @@ export default defineComponent({
 
   setup(props) {
     // COMPOSABLES
-    const { fNum } = useNumbers();
+    const { fNum2 } = useNumbers();
     const { t } = useI18n();
 
     // COMPUTED
@@ -51,17 +51,17 @@ export default defineComponent({
         {
           id: 'poolValue',
           label: t('poolValue'),
-          value: fNum(props.pool.totalLiquidity, 'usd')
+          value: fNum2(props.pool.totalLiquidity, { style: 'currency' })
         },
         {
           id: 'volumeTime',
           label: t('volumeTime', ['24h']),
-          value: fNum(props.pool.dynamic.volume, 'usd')
+          value: fNum2(props.pool.dynamic.volume, { style: 'currency' })
         },
         {
           id: 'feesTime',
           label: t('feesTime', ['24h']),
-          value: fNum(props.pool.dynamic.fees, 'usd')
+          value: fNum2(props.pool.dynamic.fees, { style: 'currency' })
         },
         {
           id: 'apr',
@@ -69,7 +69,12 @@ export default defineComponent({
           value:
             Number(props.pool.dynamic.apr.total) > APR_THRESHOLD
               ? '-'
-              : fNum(props.pool.dynamic.apr.total, 'percent')
+              : fNum2(props.pool.dynamic.apr.total, {
+                  style: 'unit',
+                  unit: 'percent',
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                })
         }
       ];
     });
