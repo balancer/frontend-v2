@@ -32,6 +32,7 @@ import {
   PoolToken
 } from '../../types';
 import { aaveService } from '@/services/aave/aave.service';
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 
 const IS_LIQUIDITY_MINING_ENABLED = true;
 
@@ -44,7 +45,8 @@ export default class Pools {
     service: Service,
     query: QueryBuilder = queryBuilder,
     private readonly configService = _configService,
-    private readonly poolServiceClass = PoolService
+    private readonly poolServiceClass = PoolService,
+    private readonly balancerContracts = balancerContractsService
   ) {
     this.service = service;
     this.query = query;
@@ -87,6 +89,9 @@ export default class Pools {
     prices: TokenPrices,
     currency: FiatCurrency
   ): Promise<DecoratedPool[]> {
+    const protocolFeePercentage = await this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage();
+    const protcolFeeFraction = (100 - protocolFeePercentage) / 100;
+
     const promises = pools.map(async pool => {
       const poolService = new this.poolServiceClass(pool);
 
@@ -97,7 +102,7 @@ export default class Pools {
 
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
-      const poolAPR = this.calcAPR(pool, pastPool);
+      const poolAPR = this.calcAPR(pool, pastPool, protcolFeeFraction);
 
       const fees = this.calcFees(pool, pastPool);
       const {
@@ -108,7 +113,12 @@ export default class Pools {
       const {
         thirdPartyAPR,
         thirdPartyAPRBreakdown
-      } = await this.calcThirdPartyAPR(pool, prices, currency);
+      } = await this.calcThirdPartyAPR(
+        pool,
+        prices,
+        currency,
+        protcolFeeFraction
+      );
       const totalAPR = this.calcTotalAPR(
         poolAPR,
         liquidityMiningAPR,
@@ -161,15 +171,21 @@ export default class Pools {
       .toString();
   }
 
-  private calcAPR(pool: Pool, pastPool?: Pool) {
+  private calcAPR(
+    pool: Pool,
+    pastPool: Pool | undefined,
+    protcolFeeFraction: number
+  ) {
     if (!pastPool)
       return bnum(pool.totalSwapFee)
+        .times(protcolFeeFraction)
         .dividedBy(pool.totalLiquidity)
         .multipliedBy(365)
         .toString();
 
     const swapFees = bnum(pool.totalSwapFee).minus(pastPool.totalSwapFee);
     return swapFees
+      .times(protcolFeeFraction)
       .dividedBy(pool.totalLiquidity)
       .multipliedBy(365)
       .toString();
@@ -219,13 +235,17 @@ export default class Pools {
   private async calcThirdPartyAPR(
     pool: Pool,
     prices: TokenPrices,
-    currency: FiatCurrency
+    currency: FiatCurrency,
+    protcolFeeFraction: number
   ) {
     let thirdPartyAPR = '0';
     let thirdPartyAPRBreakdown = {};
 
     if (isWstETH(pool)) {
-      thirdPartyAPR = await lidoService.calcStEthAPRFor(pool);
+      thirdPartyAPR = await lidoService.calcStEthAPRFor(
+        pool,
+        protcolFeeFraction
+      );
     } else if (isStablePhantom(pool.poolType)) {
       const {
         total,
