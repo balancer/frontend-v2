@@ -85,16 +85,29 @@ export async function swapOut(
 export async function boostedJoinBatchSwap(
   swaps: SwapV2[],
   tokenAddresses: string[],
-  tokenOut: string,
+  tokenOutAddress: string,
   amountsInMap: Record<string, BigNumber>,
   amountOutMin: BigNumber
 ) {
+  const tokensIn: SwapToken[] = Object.entries(amountsInMap).map(
+    ([address, amount]) => {
+      return {
+        address,
+        amount,
+        type: SwapTokenType.fixed
+      };
+    }
+  );
+  const tokenOut: SwapToken = {
+    address: tokenOutAddress,
+    amount: amountOutMin,
+    type: SwapTokenType.min
+  };
   return swapService.boostedJoinBatchSwap(
-    swaps,
-    tokenAddresses,
+    tokensIn,
     tokenOut,
-    amountsInMap,
-    amountOutMin
+    swaps,
+    tokenAddresses
   );
 }
 

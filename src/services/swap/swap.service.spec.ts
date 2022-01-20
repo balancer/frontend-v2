@@ -562,15 +562,10 @@ describe('swap.service', () => {
         tokens.USDC.type = SwapTokenType.fixed;
         tokens.DAI.type = SwapTokenType.min;
         await service.boostedJoinBatchSwap(
+          [tokens.USDC, tokens.USDT, tokens.DAI],
+          tokens.bbaUSD,
           swaps,
-          tokenAddresses,
-          tokens.bbaUSD.address,
-          {
-            [tokens.USDC.address]: tokens.USDC.amount,
-            [tokens.USDT.address]: tokens.USDT.amount,
-            [tokens.DAI.address]: tokens.DAI.amount
-          },
-          tokens.bbaUSD.amount
+          tokenAddresses
         );
         const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
           .vaultService.batchSwap.mock.calls[0];

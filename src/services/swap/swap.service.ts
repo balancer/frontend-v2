@@ -201,15 +201,18 @@ export default class SwapService {
    * Join a Boosted Pool (StablePhantom) using a batch swap
    */
   public async boostedJoinBatchSwap(
+    tokensIn: SwapToken[],
+    tokenOut: SwapToken,
     swaps: SwapV2[],
-    tokenAddresses: string[],
-    tokenOut: string,
-    amountsInMap: Record<string, BigNumber>,
-    amountOutMin: BigNumber
+    tokenAddresses: string[]
   ) {
     try {
       const overrides: any = {};
-      const tokensIn: string[] = Object.keys(amountsInMap);
+      const tokensInAddresses: string[] = tokensIn.map(token => token.address);
+      const amountsInMap: Record<string, BigNumber> = {};
+      tokensIn.forEach(token => {
+        amountsInMap[token.address] = token.amount;
+      });
 
       const funds = await this.getFundManagement();
 
@@ -219,10 +222,10 @@ export default class SwapService {
       // For a multihop the intermediate tokens should be 0
       const limits: string[] = [];
       tokenAddresses.forEach((token, i) => {
-        if (tokensIn.includes(token.toLowerCase())) {
+        if (tokensInAddresses.includes(token.toLowerCase())) {
           limits[i] = amountsInMap[token].toString();
-        } else if (token.toLowerCase() === tokenOut.toLowerCase()) {
-          limits[i] = amountOutMin.mul(-1).toString();
+        } else if (token.toLowerCase() === tokenOut.address.toLowerCase()) {
+          limits[i] = tokenOut.amount.mul(-1).toString();
         } else {
           limits[i] = '0';
         }
