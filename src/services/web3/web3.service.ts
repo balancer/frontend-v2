@@ -11,7 +11,7 @@ import { rpcProviderService as _rpcProviderService } from '../rpc-provider/rpc-p
 import { logFailedTx } from '@/lib/utils/logging';
 import { gasPriceService } from '@/services/gas-price/gas-price.service';
 import ConfigService, { configService } from '@/services/config/config.service';
-import { MetamaskError } from '@/types';
+import { WalletError } from '@/types';
 
 interface Web3Profile {
   ens: string | null;
@@ -92,7 +92,7 @@ export default class Web3Service {
 
       return await contract[action](...params, options);
     } catch (e) {
-      const error = e as MetamaskError;
+      const error = e as WalletError;
 
       if (
         error.code === RPC_INVALID_PARAMS_ERROR_CODE &&
