@@ -106,8 +106,8 @@ export default class SwapService {
       }
 
       const limits: string[] = this.calculateLimits(
-        tokenIn,
-        tokenOut,
+        [tokenIn],
+        [tokenOut],
         tokenAddresses
       );
 
@@ -180,7 +180,11 @@ export default class SwapService {
         );
       }
 
-      const limits = this.calculateLimits(tokenIn, tokenOut, tokenAddresses);
+      const limits = this.calculateLimits(
+        [tokenIn],
+        [tokenOut],
+        tokenAddresses
+      );
 
       return lidoRelayerService.batchSwap(
         swapKind,
@@ -207,28 +211,13 @@ export default class SwapService {
   ) {
     try {
       const overrides: any = {};
-      const tokensInAddresses: string[] = tokensIn.map(token => token.address);
-      const amountsInMap: Record<string, BigNumber> = {};
-      tokensIn.forEach(token => {
-        amountsInMap[token.address] = token.amount;
-      });
-
       const funds = await this.getFundManagement();
 
-      // Limits:
-      // +ve means max to send
-      // -ve mean min to receive
-      // For a multihop the intermediate tokens should be 0
-      const limits: string[] = [];
-      tokenAddresses.forEach((token, i) => {
-        if (tokensInAddresses.includes(token.toLowerCase())) {
-          limits[i] = amountsInMap[token].toString();
-        } else if (token.toLowerCase() === tokenOut.address.toLowerCase()) {
-          limits[i] = tokenOut.amount.mul(-1).toString();
-        } else {
-          limits[i] = '0';
-        }
-      });
+      const limits: string[] = this.calculateLimits(
+        tokensIn,
+        [tokenOut],
+        tokenAddresses
+      );
 
       return vaultService.batchSwap(
         SwapKind.GivenIn,
@@ -256,30 +245,13 @@ export default class SwapService {
   ): Promise<TransactionResponse> {
     try {
       const overrides: any = {};
-      const tokensOutAddresses: string[] = tokensOut.map(
-        token => token.address
-      );
-      const amountsOutMap: Record<string, BigNumber> = {};
-      tokensOut.forEach(token => {
-        amountsOutMap[token.address] = token.amount;
-      });
-
       const funds = await this.getFundManagement();
 
-      // Limits:
-      // +ve means max to send
-      // -ve mean min to receive
-      // For a multihop the intermediate tokens should be 0
-      const limits: string[] = [];
-      tokenAddresses.forEach((token, i) => {
-        if (tokensOutAddresses.includes(token.toLowerCase())) {
-          limits[i] = amountsOutMap[token].mul(-1).toString();
-        } else if (token.toLowerCase() === tokenIn.address.toLowerCase()) {
-          limits[i] = tokenIn.amount.toString();
-        } else {
-          limits[i] = '0';
-        }
-      });
+      const limits: string[] = this.calculateLimits(
+        [tokenIn],
+        tokensOut,
+        tokenAddresses
+      );
 
       console.log('limits', limits);
 
@@ -309,40 +281,27 @@ export default class SwapService {
   }
 
   public calculateLimits(
-    tokenIn: SwapToken,
-    tokenOut: SwapToken,
+    tokensIn: SwapToken[],
+    tokensOut: SwapToken[],
     tokenAddresses: string[]
   ): string[] {
-    const swapKind =
-      tokenOut.type === SwapTokenType.min
-        ? SwapKind.GivenIn
-        : SwapKind.GivenOut;
-
     const limits: string[] = [];
 
-    if (swapKind == SwapKind.GivenIn) {
-      // BatchSwapGivenIn
-      tokenAddresses.forEach((token, i) => {
-        if (token.toLowerCase() === tokenIn.address.toLowerCase()) {
-          limits[i] = tokenIn.amount.toString();
-        } else if (token.toLowerCase() === tokenOut.address.toLowerCase()) {
-          limits[i] = tokenOut.amount.mul(-1).toString();
-        } else {
-          limits[i] = '0';
-        }
-      });
-    } else {
-      // BatchSwapGivenOut
-      tokenAddresses.forEach((token, i) => {
-        if (token.toLowerCase() === tokenIn.address.toLowerCase()) {
-          limits[i] = tokenIn.amount.toString();
-        } else if (token.toLowerCase() === tokenOut.address.toLowerCase()) {
-          limits[i] = tokenOut.amount.mul(-1).toString();
-        } else {
-          limits[i] = '0';
-        }
-      });
-    }
+    tokenAddresses.forEach((token, i) => {
+      const tokenIn = tokensIn.find(
+        swapToken => token.toLowerCase() === swapToken.address.toLowerCase()
+      );
+      const tokenOut = tokensOut.find(
+        swapToken => token.toLowerCase() === swapToken.address.toLowerCase()
+      );
+      if (tokenIn) {
+        limits[i] = tokenIn.amount.toString();
+      } else if (tokenOut) {
+        limits[i] = tokenOut.amount.mul(-1).toString();
+      } else {
+        limits[i] = '0';
+      }
+    });
 
     console.log('Limits', limits);
     return limits;
