@@ -3,16 +3,16 @@ import { Contract } from 'ethers';
 import { formatUnits } from '@ethersproject/units';
 import ProtocolFeesCollectorAbi from '@/lib/abi/ProtocolFeesCollector.json';
 
+/**
+ * @summary Interface to the vaults protocol fees collector contract.
+ * @description Requires vault instance since this is where the
+ * protocol fees collector address is set.
+ * @arg vault instantiated Vault class
+ */
 export default class ProtocolFeesCollector {
   address?: string;
   instance?: Contract;
 
-  /**
-   * @summary Interface to the vaults protocol fees collector contract.
-   * @description Requires vault instance since this is where the
-   * protocol fees collector address is set.
-   * @param vault instantiated Vault class
-   */
   constructor(private readonly vault: Vault) {}
 
   /**
