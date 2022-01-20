@@ -38,7 +38,7 @@ export default class ProtocolFeesCollector {
 
   /**
    * @summary Fetches protcol fee percentage.
-   * @returns percentage as number, e.g. 0.1 = 0.1%
+   * @returns percentage as fractional number, e.g. 0.1 = 10%
    */
   public async getSwapFeePercentage(): Promise<number> {
     this.instance = await this.getInstance();

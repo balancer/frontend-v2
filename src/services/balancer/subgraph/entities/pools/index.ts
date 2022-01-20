@@ -90,7 +90,6 @@ export default class Pools {
     currency: FiatCurrency
   ): Promise<DecoratedPool[]> {
     const protocolFeePercentage = await this.balancerContracts.vault.protocolFeesCollector.getSwapFeePercentage();
-    const protcolFeeFraction = (100 - protocolFeePercentage) / 100;
 
     const promises = pools.map(async pool => {
       const poolService = new this.poolServiceClass(pool);
@@ -102,7 +101,7 @@ export default class Pools {
 
       const pastPool = pastPools.find(p => p.id === pool.id);
       const volume = this.calcVolume(pool, pastPool);
-      const poolAPR = this.calcAPR(pool, pastPool, protcolFeeFraction);
+      const poolAPR = this.calcAPR(pool, pastPool, protocolFeePercentage);
 
       const fees = this.calcFees(pool, pastPool);
       const {
@@ -117,7 +116,7 @@ export default class Pools {
         pool,
         prices,
         currency,
-        protcolFeeFraction
+        protocolFeePercentage
       );
       const totalAPR = this.calcTotalAPR(
         poolAPR,
@@ -174,18 +173,18 @@ export default class Pools {
   private calcAPR(
     pool: Pool,
     pastPool: Pool | undefined,
-    protcolFeeFraction: number
+    protocolFeePercentage: number
   ) {
     if (!pastPool)
       return bnum(pool.totalSwapFee)
-        .times(protcolFeeFraction)
+        .times(1 - protocolFeePercentage)
         .dividedBy(pool.totalLiquidity)
         .multipliedBy(365)
         .toString();
 
     const swapFees = bnum(pool.totalSwapFee).minus(pastPool.totalSwapFee);
     return swapFees
-      .times(protcolFeeFraction)
+      .times(1 - protocolFeePercentage)
       .dividedBy(pool.totalLiquidity)
       .multipliedBy(365)
       .toString();
@@ -236,7 +235,7 @@ export default class Pools {
     pool: Pool,
     prices: TokenPrices,
     currency: FiatCurrency,
-    protcolFeeFraction: number
+    protocolFeePercentage: number
   ) {
     let thirdPartyAPR = '0';
     let thirdPartyAPRBreakdown = {};
@@ -244,7 +243,7 @@ export default class Pools {
     if (isWstETH(pool)) {
       thirdPartyAPR = await lidoService.calcStEthAPRFor(
         pool,
-        protcolFeeFraction
+        protocolFeePercentage
       );
     } else if (isStablePhantom(pool.poolType)) {
       const {
