@@ -1,4 +1,4 @@
-import { Network } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 export type FactoryType =
   | 'oracleWeightedPool'
