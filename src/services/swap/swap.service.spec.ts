@@ -29,8 +29,16 @@ describe('swap.service', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    require('@/services/contracts/vault.service').vaultService.batchSwap = jest
+      .fn()
+      .mockImplementation();
     tokens.USDC = {
       address: '0xc2569dd7d0fd715b054fbf16e75b001e5c0c1115',
+      amount: BigNumber.from('1000000'),
+      type: SwapTokenType.fixed
+    };
+    tokens.USDT = {
+      address: '0xcC08220af469192C53295fDd34CFb8DF29aa17AB',
       amount: BigNumber.from('1000000'),
       type: SwapTokenType.fixed
     };
@@ -435,6 +443,277 @@ describe('swap.service', () => {
         ).rejects.toEqual(
           '[Swapper] lidoBatchSwap Error: Error: Failed to swap'
         );
+      });
+    });
+  });
+
+  describe('boostedPools', () => {
+    let swaps: SwapV2[] = [];
+    const userAddress = '0xddd0c9C1b6C8537BeD0487C3fd64CF6140bd4ddd';
+    let tokenAddresses;
+
+    const PoolIdBBAUSDC =
+      '0x0bbd32b14a6503ee20f87df38cf2d5d3b59ea2f50000000000000000000004d6';
+    const PoolIdBBAUSD =
+      '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8';
+    const PoolIdBBAUSDT =
+      '0xe667d48618e71c2a02e4a1b66ed9def1426938b60000000000000000000004d7';
+    const PoolIdBBADAI =
+      '0xfcccb77a946b6a3bd59d149f083b5bfbb8004d6d0000000000000000000004d5';
+
+    beforeEach(() => {
+      tokens.bbaUSD = {
+        address: '0x8fd162f338b770f7e879030830cde9173367f301',
+        amount: BigNumber.from('0'),
+        type: SwapTokenType.fixed
+      };
+      tokens.USDC = {
+        address: '0xe22da380ee6b445bb8273c81944adeb6e8450422',
+        amount: BigNumber.from('300000000'),
+        type: SwapTokenType.fixed
+      };
+      tokens.bbaUSDC = {
+        address: '0x0bbd32b14a6503ee20f87df38cf2d5d3b59ea2f5',
+        amount: BigNumber.from('0'),
+        type: SwapTokenType.fixed
+      };
+      tokens.USDT = {
+        address: '0x13512979ade267ab5100878e2e0f485b568328a4',
+        amount: BigNumber.from('400000000'),
+        type: SwapTokenType.fixed
+      };
+      tokens.bbaUSDT = {
+        address: '0xe667d48618e71c2a02e4a1b66ed9def1426938b6',
+        amount: BigNumber.from('0'),
+        type: SwapTokenType.fixed
+      };
+      tokens.DAI = {
+        address: '0xff795577d9ac8bd7d90ee22b6c1703490b6512fd',
+        amount: BigNumber.from('500000000000000000000'),
+        type: SwapTokenType.min
+      };
+      tokens.bbaDAI = {
+        address: '0xfcccb77a946b6a3bd59d149f083b5bfbb8004d6d',
+        amount: BigNumber.from('0'),
+        type: SwapTokenType.fixed
+      };
+
+      require('@/services/web3/web3.service').setUserAddress(userAddress);
+    });
+
+    describe('boostedJoinBatchSwap', () => {
+      beforeEach(() => {
+        tokenAddresses = [
+          tokens.USDC.address,
+          tokens.bbaUSDC.address,
+          tokens.bbaUSD.address,
+          tokens.USDT.address,
+          tokens.bbaUSDT.address,
+          tokens.DAI.address,
+          tokens.bbaDAI.address
+        ];
+        swaps = [
+          {
+            poolId: PoolIdBBAUSDC,
+            assetInIndex: 0,
+            assetOutIndex: 1,
+            amount: tokens.USDC.amount.toString(),
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBAUSD,
+            assetInIndex: 1,
+            assetOutIndex: 2,
+            amount: tokens.bbaUSD.amount.toString(),
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBAUSDT,
+            assetInIndex: 3,
+            assetOutIndex: 4,
+            amount: tokens.USDT.amount.toString(),
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBAUSD,
+            assetInIndex: 4,
+            assetOutIndex: 2,
+            amount: '0',
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBADAI,
+            assetInIndex: 5,
+            assetOutIndex: 6,
+            amount: tokens.DAI.amount.toString(),
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBAUSD,
+            assetInIndex: 6,
+            assetOutIndex: 2,
+            amount: '0',
+            userData: '0x'
+          }
+        ];
+      });
+
+      it('Should call vault.batchSwap when joining a boosted pool', async () => {
+        tokens.USDC.type = SwapTokenType.fixed;
+        tokens.DAI.type = SwapTokenType.min;
+        await service.boostedJoinBatchSwap(
+          swaps,
+          tokenAddresses,
+          tokens.bbaUSD.address,
+          {
+            [tokens.USDC.address]: tokens.USDC.amount,
+            [tokens.USDT.address]: tokens.USDT.amount,
+            [tokens.DAI.address]: tokens.DAI.amount
+          },
+          tokens.bbaUSD.amount
+        );
+        const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
+          .vaultService.batchSwap.mock.calls[0];
+        expect(vaultBatchSwapArgs[0]).toEqual(SwapKind.GivenIn);
+        expect(vaultBatchSwapArgs[1]).toEqual(swaps);
+        expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
+
+        const fundsArg: FundManagement = vaultBatchSwapArgs[3];
+        expect(fundsArg.sender).toEqual(userAddress);
+        expect(fundsArg.recipient).toEqual(userAddress);
+        expect(fundsArg.fromInternalBalance).toEqual(false);
+        expect(fundsArg.toInternalBalance).toEqual(false);
+
+        const limitsArg: string[] = vaultBatchSwapArgs[4];
+        expect(limitsArg[0]).toEqual(tokens.USDC.amount.toString());
+        expect(limitsArg[1]).toEqual('0');
+        expect(limitsArg[2]).toEqual(tokens.bbaUSD.amount.mul(-1).toString());
+        expect(limitsArg[3]).toEqual(tokens.USDT.amount.toString());
+        expect(limitsArg[4]).toEqual('0');
+        expect(limitsArg[5]).toEqual(tokens.DAI.amount.toString());
+        expect(limitsArg[6]).toEqual('0');
+      });
+    });
+
+    describe('boostedExitBatchSwap', () => {
+      beforeEach(() => {
+        tokenAddresses = [
+          tokens.bbaUSD.address,
+          tokens.bbaUSDC.address,
+          tokens.USDC.address,
+          tokens.bbaUSDT.address,
+          tokens.USDT.address,
+          tokens.bbaDAI.address,
+          tokens.DAI.address
+        ];
+        swaps = [
+          {
+            poolId: PoolIdBBAUSD,
+            assetInIndex: 0,
+            assetOutIndex: 1,
+            amount: tokens.USDC.amount.toString(),
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBAUSDC,
+            assetInIndex: 1,
+            assetOutIndex: 2,
+            amount: '0',
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBAUSD,
+            assetInIndex: 0,
+            assetOutIndex: 3,
+            amount: tokens.USDT.amount.toString(),
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBAUSDT,
+            assetInIndex: 3,
+            assetOutIndex: 4,
+            amount: '0',
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBAUSD,
+            assetInIndex: 0,
+            assetOutIndex: 5,
+            amount: tokens.DAI.amount.toString(),
+            userData: '0x'
+          },
+          {
+            poolId: PoolIdBBADAI,
+            assetInIndex: 5,
+            assetOutIndex: 6,
+            amount: '0',
+            userData: '0x'
+          }
+        ];
+      });
+
+      it('Should call vault.batchSwap when swapping multiple tokens through multiple pools', async () => {
+        tokens.USDC.type = SwapTokenType.fixed;
+        tokens.DAI.type = SwapTokenType.min;
+        await service.boostedExitBatchSwap(
+          swaps,
+          tokenAddresses,
+          tokens.bbaUSD.address,
+          tokens.bbaUSD.amount,
+          {
+            [tokens.USDC.address]: tokens.USDC.amount.toString(),
+            [tokens.USDT.address]: tokens.USDT.amount.toString(),
+            [tokens.DAI.address]: tokens.DAI.amount.toString()
+          },
+          SwapKind.GivenIn
+        );
+        const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
+          .vaultService.batchSwap.mock.calls[0];
+        expect(vaultBatchSwapArgs[0]).toEqual(SwapKind.GivenIn);
+        expect(vaultBatchSwapArgs[1]).toEqual(swaps);
+        expect(vaultBatchSwapArgs[2]).toEqual(tokenAddresses);
+
+        const fundsArg: FundManagement = vaultBatchSwapArgs[3];
+        expect(fundsArg.sender).toEqual(userAddress);
+        expect(fundsArg.recipient).toEqual(userAddress);
+        expect(fundsArg.fromInternalBalance).toEqual(false);
+        expect(fundsArg.toInternalBalance).toEqual(false);
+
+        const limitsArg: string[] = vaultBatchSwapArgs[4];
+        expect(limitsArg[0]).toEqual(tokens.bbaUSD.amount.toString());
+        expect(limitsArg[1]).toEqual('0');
+        expect(limitsArg[2]).toEqual(tokens.USDC.amount.mul(-1).toString());
+        expect(limitsArg[3]).toEqual('0');
+        expect(limitsArg[4]).toEqual(tokens.USDT.amount.mul(-1).toString());
+        expect(limitsArg[5]).toEqual('0');
+        expect(limitsArg[6]).toEqual(tokens.DAI.amount.mul(-1).toString());
+      });
+
+      it('Should return a rejected promise if vault throws an error', () => {
+        const tokenAddresses = [
+          tokens.ETH.address,
+          tokens.USDC.address,
+          tokens.DAI.address
+        ];
+        require('@/services/contracts/vault.service').vaultService.batchSwap = jest
+          .fn()
+          .mockImplementation(() => {
+            throw new Error('Failed to swap');
+          });
+        expect(
+          service.boostedExitBatchSwap(
+            swaps,
+            tokenAddresses,
+            tokens.bbaUSD.address,
+            tokens.bbaUSD.amount,
+            {
+              [tokens.USDC.address]: tokens.USDC.amount.toString(),
+              [tokens.USDT.address]: tokens.USDT.amount.toString(),
+              [tokens.DAI.address]: tokens.DAI.amount.toString()
+            },
+            SwapKind.GivenIn
+          )
+        ).rejects.toEqual('[Swapper] batchSwapV2 Error: Error: Failed to swap');
       });
     });
   });
