@@ -6,6 +6,7 @@ import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { UseTrading } from '@/composables/trade/useTrading';
+import useForm from '@/components/_global/BalForm/useForm';
 
 /**
  * TYPES
@@ -141,40 +142,48 @@ watchEffect(() => {
   _tokenOutAmount.value = props.tokenOutAmount;
   _tokenOutAddress.value = props.tokenOutAddress;
 });
+
+const form = useForm({
+  name: 'trade'
+});
 </script>
 
 <template>
   <div>
-    <TokenInput
-      :amount="_tokenInAmount"
-      :address="_tokenInAddress"
-      name="tokenIn"
-      @update:amount="handleInAmountChange"
-      @update:address="handleInputTokenChange"
-      :disabled="tradeLoading"
-    />
-
-    <div class="flex items-center my-2">
-      <TradePairToggle @toggle="handleTokenSwitch" />
-      <div class="h-px mx-2 bg-gray-100 dark:bg-gray-700 flex-grow" />
-      <div
-        v-if="rateLabel"
-        class="flex items-center text-xs text-gray-500 cursor-pointer"
-        @click="isInRate = !isInRate"
-        v-html="rateLabel"
+    <BalForm>
+      <TokenInput
+        v-bind="
+          form.register(
+            ['amount', 'address'],
+            [_tokenInAmount, _tokenInAddress]
+          )
+        "
+        name="tokenIn"
+        :disabled="tradeLoading"
       />
-    </div>
 
-    <TokenInput
-      :amount="_tokenOutAmount"
-      :address="_tokenOutAddress"
-      name="tokenOut"
-      :priceImpact="priceImpact"
-      @update:amount="handleOutAmountChange"
-      @update:address="handleOutputTokenChange"
-      noRules
-      noMax
-      :disabled="tradeLoading"
-    />
+      <div class="flex items-center my-2">
+        <TradePairToggle @toggle="handleTokenSwitch" />
+        <div class="h-px mx-2 bg-gray-100 dark:bg-gray-700 flex-grow" />
+        <div
+          v-if="rateLabel"
+          class="flex items-center text-xs text-gray-500 cursor-pointer"
+          @click="isInRate = !isInRate"
+          v-html="rateLabel"
+        />
+      </div>
+
+      <TokenInput
+        :amount="_tokenOutAmount"
+        :address="_tokenOutAddress"
+        name="tokenOut"
+        :priceImpact="priceImpact"
+        @update:amount="handleOutAmountChange"
+        @update:address="handleOutputTokenChange"
+        noRules
+        noMax
+        :disabled="tradeLoading"
+      />
+    </BalForm>
   </div>
 </template>
