@@ -21,17 +21,31 @@ import { getAddress } from '@ethersproject/address';
 import QUERY_KEYS from '@/constants/queryKeys';
 import useWeb3 from '@/services/web3/useWeb3';
 
+/**
+ *
+ * @param inputAsset The address of the input asset
+ * @param outputAsset The address of the output asset
+ * @param nativeAsset The address of the native asset on the network
+ * @param wrappedNativeAsset The address of the wrapped native asset on the network
+ * @param days The number of days to pull historical data for
+ * @param inverse Swaps the pricing calc to be output/input rather than input/output
+ */
 async function getPairPriceData(
   inputAsset: string,
   outputAsset: string,
   nativeAsset: string,
   wrappedNativeAsset: string,
-  days: number
+  days: number,
+  inverse?: boolean
 ) {
   let _inputAsset =
     inputAsset === nativeAsset ? wrappedNativeAsset : inputAsset;
   let _outputAsset =
     outputAsset === nativeAsset ? wrappedNativeAsset : outputAsset;
+
+  if (inverse) {
+    [_inputAsset, _outputAsset] = [_outputAsset, _inputAsset];
+  }
   const aggregateBy = days === 1 ? 'hour' : 'day';
   const inputAssetData = await coingeckoService.prices.getTokensHistorical(
     [_inputAsset],
@@ -144,7 +158,8 @@ const {
       tokenOutAddress.value,
       nativeAsset?.address,
       wrappedNativeAsset.value?.address,
-      activeTimespan.value.value
+      activeTimespan.value.value,
+      true
     ),
   reactive({
     retry: false,
@@ -232,8 +247,18 @@ const chartGrid = computed(() => {
         </button>
         <div
           v-if="!failedToLoadPriceData && !(isLoadingPriceData || appLoading)"
+          class="flex"
         >
-          <h6 class="font-medium">{{ inputSym }}/{{ outputSym }}</h6>
+          <h6 class="font-medium">{{ outputSym }}/{{ inputSym }}</h6>
+          <BalTooltip
+            width="64"
+            class="ml-2"
+            :text="$t('coingeckoPricingTooltip')"
+          >
+            <template v-slot:activator>
+              <img class="h-5" src="@/assets/images/icons/coingecko.svg" />
+            </template>
+          </BalTooltip>
         </div>
         <div
           v-if="failedToLoadPriceData && tokenOutAddress"

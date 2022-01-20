@@ -116,6 +116,22 @@ function handleTokenSwitch(): void {
   emit('amountChange');
 }
 
+async function handleInputTokenChange(newTokenIn: string) {
+  if (newTokenIn === _tokenOutAddress.value) {
+    handleTokenSwitch();
+    return;
+  }
+  emit('update:tokenInAddress', newTokenIn);
+}
+
+async function handleOutputTokenChange(newTokenOut: string) {
+  if (newTokenOut === _tokenInAddress.value) {
+    handleTokenSwitch();
+    return;
+  }
+  emit('update:tokenOutAddress', newTokenOut);
+}
+
 /**
  * CALLBACKS
  */
@@ -130,12 +146,11 @@ watchEffect(() => {
 <template>
   <div>
     <TokenInput
-      v-model:amount="_tokenInAmount"
-      v-model:address="_tokenInAddress"
+      :amount="_tokenInAmount"
+      :address="_tokenInAddress"
       name="tokenIn"
       @update:amount="handleInAmountChange"
-      @update:address="emit('update:tokenInAddress', $event)"
-      :excludedTokens="[_tokenOutAddress]"
+      @update:address="handleInputTokenChange"
       :disabled="tradeLoading"
     />
 
@@ -151,16 +166,15 @@ watchEffect(() => {
     </div>
 
     <TokenInput
-      v-model:amount="_tokenOutAmount"
-      v-model:address="_tokenOutAddress"
+      :amount="_tokenOutAmount"
+      :address="_tokenOutAddress"
       name="tokenOut"
       :priceImpact="priceImpact"
       @update:amount="handleOutAmountChange"
-      @update:address="emit('update:tokenOutAddress', $event)"
+      @update:address="handleOutputTokenChange"
       noRules
       noMax
       :disabled="tradeLoading"
-      :excludedTokens="[_tokenInAddress]"
     />
   </div>
 </template>

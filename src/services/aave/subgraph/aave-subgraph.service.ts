@@ -1,4 +1,5 @@
-import { Network, networkId } from '@/composables/useNetwork';
+import { networkId } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 import { rpcProviderService as _rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 

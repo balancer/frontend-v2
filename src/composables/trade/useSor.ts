@@ -13,7 +13,7 @@ import { BigNumber, parseFixed, formatFixed } from '@ethersproject/bignumber';
 import { Zero, WeiPerEther as ONE } from '@ethersproject/constants';
 import { BigNumber as OldBigNumber } from 'bignumber.js';
 import { Pool } from '@balancer-labs/sor/dist/types';
-import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sor2';
+import { SubgraphPoolBase, SwapTypes } from '@balancer-labs/sdk';
 import { useI18n } from 'vue-i18n';
 
 import { scale, bnum } from '@/lib/utils';
@@ -180,7 +180,6 @@ export default function useSor({
     const poolsUrlV1 = `${
       configService.network.poolsUrlV1
     }?timestamp=${Date.now()}`;
-    const subgraphUrl = configService.network.subgraph;
 
     // If V1 previously selected on another network then it uses this and returns no liquidity.
     if (!isV1Supported) {
@@ -194,8 +193,7 @@ export default function useSor({
       Number(MAX_POOLS),
       configService.network.chainId,
       configService.network.addresses.weth,
-      poolsUrlV1,
-      subgraphUrl
+      poolsUrlV1
     );
 
     fetchPools();

@@ -59,6 +59,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
   (e: 'update:isValid', value: boolean): void;
   (e: 'keydown', value: HtmlInputEvent);
+  (e: 'editToggled', value: boolean): void;
   (e: 'save'): void;
 }>();
 
@@ -89,7 +90,6 @@ const { onInput, onKeydown, onBlur } = useInputEvents(props, emit, validate);
 /**
  * COMPUTED
  */
-
 // We don't want to pass on parent level classes to the html
 // input element. So we need to remove it from the attrs object.
 const inputAttrs = computed(() => omit(attrs, 'class'));
@@ -99,6 +99,7 @@ const inputAttrs = computed(() => omit(attrs, 'class'));
  */
 function toggleEditable() {
   isEditable.value = !isEditable.value;
+  emit('editToggled', isEditable.value);
   // if the value was changed to false it means that
   // the user clicked the save icon
   if (isEditable.value === false) emit('save');
@@ -107,6 +108,11 @@ function toggleEditable() {
       inputElement.value.focus();
     }
   }, 200);
+}
+
+function handleBlur(e: HtmlInputEvent) {
+  toggleEditable();
+  onBlur(e);
 }
 </script>
 
@@ -123,17 +129,17 @@ function toggleEditable() {
         </slot>
       </div>
       <div :class="['input-group', inputGroupClasses]">
-        <BalStack horizontal spacing="sm">
+        <BalStack horizontal spacing="sm" class="w-full">
           <div v-if="$slots.prepend" :class="['prepend', prependClasses]">
             <slot name="prepend" />
           </div>
           <input
             :type="type"
             :name="name"
-            :value="modelValue"
+            :value="format ? format(modelValue) : modelValue"
             v-bind="inputAttrs"
             :disabled="!isEditable || disabled"
-            @blur="onBlur"
+            @blur="handleBlur"
             @input="onInput"
             @keydown="onKeydown"
             :class="['input', inputClasses]"

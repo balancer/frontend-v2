@@ -10,7 +10,7 @@ import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
 import { BigNumber } from 'ethers';
 import { TokenInfo } from '@/types/TokenList';
-import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sor2';
+import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
 import { BatchSwap } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import usePromiseSequence from '@/composables/usePromiseSequence';

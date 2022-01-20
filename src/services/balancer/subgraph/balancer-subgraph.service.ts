@@ -7,7 +7,8 @@ import PoolSwaps from './entities/poolSwaps';
 import PoolSnapshots from './entities/poolSnapshots';
 import TradePairSnapshots from './entities/tradePairs';
 
-import { Network, networkId } from '@/composables/useNetwork';
+import { networkId } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 export default class BalancerSubgraphService {
   pools: Pools;

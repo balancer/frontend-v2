@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, computed, reactive, onBeforeMount } from 'vue';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { TransactionActionInfo } from '@/types/transactions';
+
+import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
+
 import useWeb3 from '@/services/web3/useWeb3';
 import useConfig from '@/composables/useConfig';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import usePoolCreation from '@/composables/pools/usePoolCreation';
-import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';
 import useEthers from '@/composables/useEthers';
+import { useI18n } from 'vue-i18n';
 
 /**
  * TYPES
@@ -25,6 +27,7 @@ type CreateState = {
   confirmedAt: string;
   receipt?: TransactionReceipt;
   isRestoredTxConfirmed?: boolean;
+  isLoadingRestoredTx: boolean;
 };
 
 /**
@@ -42,7 +45,8 @@ const emit = defineEmits<{
 const createState = reactive<CreateState>({
   confirmed: false,
   confirmedAt: '',
-  isRestoredTxConfirmed: false
+  isRestoredTxConfirmed: false,
+  isLoadingRestoredTx: false
 });
 
 /*
@@ -104,9 +108,11 @@ const explorerLink = computed((): string =>
     : ''
 );
 
-onMounted(async () => {
+onBeforeMount(async () => {
   if (createPoolTxHash.value) {
+    createState.isLoadingRestoredTx = true;
     const isConfirmed = await isTxConfirmed(createPoolTxHash.value);
+    createState.isLoadingRestoredTx = false;
     createState.isRestoredTxConfirmed = isConfirmed;
   }
 });
@@ -129,6 +135,8 @@ function handleSuccess(details: any): void {
       :disabled="props.createDisabled"
       :errorMessage="props.errorMessage"
       @success="handleSuccess"
+      :isLoading="createState.isLoadingRestoredTx"
+      :loadingLabel="$t('restoring')"
     />
     <template v-if="createState.confirmed">
       <div
