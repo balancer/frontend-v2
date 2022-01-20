@@ -16,7 +16,6 @@ import {
 } from '@balancer-labs/balancer-js';
 import Web3Service, { web3Service } from '../web3/web3.service';
 import { BatchSwapStep } from '@balancer-labs/sdk';
-import { bnum } from '@/lib/utils';
 
 export type Address = string;
 
@@ -249,16 +248,21 @@ export default class SwapService {
    * Exit a Boosted Pool (StablePhantom) using a batch swap
    */
   public async boostedExitBatchSwap(
+    tokenIn: SwapToken,
+    tokensOut: SwapToken[],
     swaps: BatchSwapStep[],
     tokenAddresses: string[],
-    tokenIn: string,
-    amountIn: string,
-    amountsOutMap: Record<string, string>,
-    swapKind: SwapKind = SwapKind.GivenIn
+    swapKind: SwapKind
   ): Promise<TransactionResponse> {
     try {
       const overrides: any = {};
-      const tokensOut: string[] = Object.keys(amountsOutMap);
+      const tokensOutAddresses: string[] = tokensOut.map(
+        token => token.address
+      );
+      const amountsOutMap: Record<string, BigNumber> = {};
+      tokensOut.forEach(token => {
+        amountsOutMap[token.address] = token.amount;
+      });
 
       const funds = await this.getFundManagement();
 
@@ -268,14 +272,10 @@ export default class SwapService {
       // For a multihop the intermediate tokens should be 0
       const limits: string[] = [];
       tokenAddresses.forEach((token, i) => {
-        if (tokensOut.includes(token.toLowerCase())) {
-          limits[i] = bnum(amountsOutMap[token])
-            .times(-1)
-            .toString();
-        } else if (token.toLowerCase() === tokenIn.toLowerCase()) {
-          limits[i] = bnum(amountIn)
-            .abs()
-            .toString();
+        if (tokensOutAddresses.includes(token.toLowerCase())) {
+          limits[i] = amountsOutMap[token].mul(-1).toString();
+        } else if (token.toLowerCase() === tokenIn.address.toLowerCase()) {
+          limits[i] = tokenIn.amount.toString();
         } else {
           limits[i] = '0';
         }

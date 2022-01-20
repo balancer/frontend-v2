@@ -114,17 +114,31 @@ export async function boostedJoinBatchSwap(
 export async function boostedExitBatchSwap(
   swaps: BatchSwapStep[],
   tokenAddresses: string[],
-  tokenIn: string,
+  tokenInAddress: string,
   amountIn: string,
   amountsOutMap: Record<string, string>,
   swapKind: SwapKind = SwapKind.GivenIn
 ): Promise<TransactionResponse> {
+  const tokenIn: SwapToken = {
+    address: tokenInAddress,
+    amount: BigNumber.from(amountIn),
+    type: SwapTokenType.min
+  };
+
+  const tokensOut: SwapToken[] = Object.entries(amountsOutMap).map(
+    ([address, amount]) => {
+      return {
+        address,
+        amount: BigNumber.from(amount),
+        type: SwapTokenType.fixed
+      };
+    }
+  );
   return swapService.boostedExitBatchSwap(
+    tokenIn,
+    tokensOut,
     swaps,
     tokenAddresses,
-    tokenIn,
-    amountIn,
-    amountsOutMap,
     swapKind
   );
 }

@@ -651,15 +651,10 @@ describe('swap.service', () => {
         tokens.USDC.type = SwapTokenType.fixed;
         tokens.DAI.type = SwapTokenType.min;
         await service.boostedExitBatchSwap(
+          tokens.bbaUSD,
+          [tokens.USDC, tokens.USDT, tokens.DAI],
           swaps,
           tokenAddresses,
-          tokens.bbaUSD.address,
-          tokens.bbaUSD.amount,
-          {
-            [tokens.USDC.address]: tokens.USDC.amount.toString(),
-            [tokens.USDT.address]: tokens.USDT.amount.toString(),
-            [tokens.DAI.address]: tokens.DAI.amount.toString()
-          },
           SwapKind.GivenIn
         );
         const vaultBatchSwapArgs = require('@/services/contracts/vault.service')
