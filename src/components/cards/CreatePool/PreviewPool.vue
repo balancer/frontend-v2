@@ -133,6 +133,13 @@ function getSwapFeeManager() {
     }
   }
 }
+
+function getInitialWeightHighlightClass(tokenAddress: string) {
+  return {
+    'text-gray-500': initialWeights[tokenAddress].gte(0.01),
+    'text-yellow-500': initialWeights[tokenAddress].lt(0.01)
+  };
+}
 </script>
 
 <template>
@@ -187,18 +194,16 @@ function getSwapFeeManager() {
                     <span
                       :class="[
                         'text-sm',
-                        {
-                          'text-gray-500': initialWeights[
-                            token.tokenAddress
-                          ].gte(0.01),
-                          'text-yellow-500': initialWeights[
-                            token.tokenAddress
-                          ].lt(0.01)
-                        }
+                        getInitialWeightHighlightClass(token.tokenAddress)
                       ]"
                     >
                       {{ initialWeightLabel }}:
-                      {{ fNum(initialWeights[token.tokenAddress], 'percent') }}
+                      {{
+                        fNum(
+                          initialWeights[token.tokenAddress].toString(),
+                          'percent'
+                        )
+                      }}
                     </span>
                   </BalStack>
                 </BalStack>
@@ -208,7 +213,12 @@ function getSwapFeeManager() {
                   </span>
                   <span class="text-sm text-gray-500">
                     {{
-                      fNum(token.amount * priceFor(token.tokenAddress), 'usd')
+                      fNum(
+                        bnum(token.amount)
+                          .times(priceFor(token.tokenAddress))
+                          .toString(),
+                        'usd'
+                      )
                     }}
                   </span>
                 </BalStack>
@@ -221,7 +231,7 @@ function getSwapFeeManager() {
             class="p-4 border-t dark:border-gray-600"
           >
             <h6>{{ $t('total') }}</h6>
-            <h6>{{ fNum(poolLiquidity, 'usd') }}</h6>
+            <h6>{{ fNum(poolLiquidity.toString(), 'usd') }}</h6>
           </BalStack>
         </BalCard>
         <BalCard shadow="none" noPad>
