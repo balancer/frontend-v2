@@ -1,13 +1,19 @@
 import { Ref, computed } from 'vue';
+import { getAddress } from 'ethers/lib/utils';
+
 import {
   PoolType,
   AnyPool,
   FullPool
 } from '@/services/balancer/subgraph/types';
 import { configService } from '@/services/config/config.service';
-import { getAddress } from 'ethers/lib/utils';
+
+import { POOLS } from '@/constants/pools';
+
 import { bnum } from '@/lib/utils';
+
 import { fNum } from './useNumbers';
+import { networkId } from './useNetwork';
 
 /**
  * METHODS
@@ -67,12 +73,8 @@ export function isWstETH(pool: AnyPool): boolean {
   );
 }
 
-export function isStaBAL3(pool: AnyPool): boolean {
-  return pool.id === configService.network.pools.staBAL3;
-}
-
 export function isMigratablePool(pool: AnyPool) {
-  return isStaBAL3(pool);
+  return pool.id === POOLS.IdsMap[networkId.value]?.staBAL;
 }
 
 export function noInitLiquidity(pool: AnyPool): boolean {

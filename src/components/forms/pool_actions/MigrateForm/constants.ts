@@ -1,16 +1,18 @@
 import { keyBy } from 'lodash';
 
-import { configService } from '@/services/config/config.service';
-
 import { PoolMigrationType, PoolMigrationInfo } from './types';
+import { POOLS } from '@/constants/pools';
+import { networkId } from '@/composables/useNetwork';
 
 const riskI18nLabelPrefix = 'migratePool.previewModal.riskWarnings.risks';
+
+const poolsIdsMap = POOLS.IdsMap[networkId.value];
 
 export const POOL_MIGRATIONS: PoolMigrationInfo[] = [
   {
     type: PoolMigrationType.AAVE_BOOSTED_POOL,
-    fromPoolId: configService.network.pools.staBAL3,
-    toPoolId: configService.network.pools.bbAaveUSD,
+    fromPoolId: poolsIdsMap?.staBAL ?? '',
+    toPoolId: poolsIdsMap?.bbAaveUSD ?? '',
     riskI18nLabels: [
       `${riskI18nLabelPrefix}.loseUSDPeg`,
       `${riskI18nLabelPrefix}.aaveStableExploit`

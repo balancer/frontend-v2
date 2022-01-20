@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive, onBeforeMount, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { StablePoolEncoder } from '@balancer-labs/sdk';
+import { StablePoolEncoder, WeightedPoolEncoder } from '@balancer-labs/sdk';
 
 // Types
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -29,6 +29,7 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 
 // Libs
 import { balancer } from '@/lib/balancer.sdk';
+import { isStableLike } from '@/composables/usePool';
 
 /**
  * TYPES
@@ -145,15 +146,23 @@ async function submit() {
     let tx: TransactionResponse;
     migratePoolState.init = true;
 
+    let userData = '';
+    if (isStableLike(props.fromPool.poolType)) {
+      userData = StablePoolEncoder.exitExactBPTInForTokensOut(
+        bptBalanceScaled.value
+      );
+    } else {
+      userData = WeightedPoolEncoder.exitExactBPTInForTokensOut(
+        bptBalanceScaled.value
+      );
+    }
+
     const txInfo = await balancer.relayer.exitPoolAndBatchSwap({
       exiter: account.value,
       swapRecipient: account.value,
       poolId: props.fromPool.id,
       exitTokens: props.fromPool.tokensList,
-      userData: StablePoolEncoder.exitExactBPTInForTokensOut(
-        bptBalanceScaled.value
-      ),
-      // @ts-ignore
+      userData,
       expectedAmountsOut: fullAmountsScaled.value,
       finalTokensOut: new Array(tokenCount.value).fill(props.toPool.address),
       slippage: slippageScaled.value,

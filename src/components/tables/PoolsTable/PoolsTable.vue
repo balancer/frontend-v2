@@ -10,6 +10,8 @@ import {
 
 import { getAddress } from '@ethersproject/address';
 
+import { POOLS } from '@/constants/pools';
+
 import useNumbers from '@/composables/useNumbers';
 import useFathom from '@/composables/useFathom';
 import useDarkMode from '@/composables/useDarkMode';
@@ -19,12 +21,12 @@ import {
   isStablePhantom,
   isMigratablePool
 } from '@/composables/usePool';
+import { networkId } from '@/composables/useNetwork';
 
 import LiquidityAPRTooltip from '@/components/tooltips/LiquidityAPRTooltip.vue';
 import { ColumnDefinition } from '@/components/_global/BalTable/BalTable.vue';
 
 import TokenPills from './TokenPills/TokenPills.vue';
-import { configService } from '@/services/config/config.service';
 
 /**
  * TYPES
@@ -170,7 +172,10 @@ function handleRowClick(pool: DecoratedPoolWithShares) {
 function navigateToPoolMigration(pool: DecoratedPoolWithShares) {
   router.push({
     name: 'migrate-pool',
-    params: { from: pool.id, to: configService.network.pools.bbAaveUSD },
+    params: {
+      from: pool.id,
+      to: POOLS.IdsMap[networkId.value]?.bbAaveUSD
+    },
     query: { returnRoute: 'home' }
   });
 }

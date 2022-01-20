@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ComputedRef } from 'vue';
-
 import { TokenInfo } from '@/types/TokenList';
 
 /**
@@ -9,8 +7,6 @@ import { TokenInfo } from '@/types/TokenList';
 type Props = {
   fromPoolTokenInfo: TokenInfo;
   toPoolTokenInfo: TokenInfo;
-  fromPoolFiatTotalLabel: ComputedRef<string>;
-  toPoolFiatTotalLabel: ComputedRef<string>;
 };
 
 /**
@@ -25,24 +21,14 @@ defineProps<Props>();
   >
     <div class="flex items-center p-3">
       <BalAsset :address="fromPoolTokenInfo.address" class="mr-2" :size="36" />
-      <div>
-        <div>{{ fromPoolTokenInfo.symbol }}</div>
-        <div class="text-gray-500">
-          {{ fromPoolFiatTotalLabel }}
-        </div>
-      </div>
+      <div>{{ fromPoolTokenInfo.symbol }}</div>
     </div>
     <div class="arrow-container">
       <ArrowDownIcon />
     </div>
     <div class="flex items-center p-3 border-t dark:border-gray-900">
       <BalAsset :address="toPoolTokenInfo.address" class="mr-2" :size="36" />
-      <div>
-        <div>{{ toPoolTokenInfo.symbol }}</div>
-        <div class="text-gray-500">
-          {{ toPoolFiatTotalLabel }}
-        </div>
-      </div>
+      <div>{{ toPoolTokenInfo.symbol }}</div>
     </div>
   </div>
 </template>

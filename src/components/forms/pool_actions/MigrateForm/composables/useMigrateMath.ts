@@ -102,20 +102,6 @@ export default function useMigrateMath(
 
   const fiatTotalLabel = computed(() => fNum(fiatTotal.value, currency.value));
 
-  const fiatTotalWithPriceImpact = computed(() => {
-    if (priceImpact.value > 0) {
-      const fiatTotalBN = bnum(fiatTotal.value);
-
-      return fiatTotalBN.minus(fiatTotalBN.times(priceImpact.value)).toString();
-    }
-
-    return fiatTotal.value;
-  });
-
-  const fiatTotalWithPriceImpactLabel = computed(() =>
-    fNum(fiatTotalWithPriceImpact.value, currency.value)
-  );
-
   return {
     // computed
     bptBalance,
@@ -126,8 +112,6 @@ export default function useMigrateMath(
     tokenCount,
     fiatTotal,
     fiatTotalLabel,
-    fiatTotalWithPriceImpact,
-    fiatTotalWithPriceImpactLabel,
     priceImpact
   };
 }

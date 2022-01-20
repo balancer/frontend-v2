@@ -1,4 +1,49 @@
-export const POOLS = {
+import { Network } from '@/composables/useNetwork';
+
+export type FactoryType =
+  | 'oracleWeightedPool'
+  | 'weightedPool'
+  | 'stablePool'
+  | 'managedPool'
+  | 'liquidityBootstrappingPool'
+  | 'boostedPool';
+
+export type Pools = {
+  IdsMap: Partial<Record<Network, Record<'staBAL' | 'bbAaveUSD', string>>>;
+  Pagination: {
+    PerPage: number;
+  };
+  DelegateOwner: string;
+  ZeroAddress: string;
+  DynamicFees: {
+    Gauntlet: string[];
+  };
+  BlockList: string[];
+  ExcludedPoolTypes: string[];
+  Stable: {
+    AllowList: string[];
+  };
+  Investment: {
+    AllowList: string[];
+  };
+  Factories: Record<string, FactoryType>;
+};
+
+export const POOLS: Pools = {
+  IdsMap: {
+    [Network.MAINNET]: {
+      staBAL:
+        '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063',
+      bbAaveUSD:
+        '0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe'
+    },
+    [Network.KOVAN]: {
+      staBAL:
+        '0xf5f6fb82649df7991054ef796c39da81b93364df0002000000000000000004a5',
+      bbAaveUSD:
+        '0x8fd162f338b770f7e879030830cde9173367f3010000000000000000000004d8'
+    }
+  },
   Pagination: {
     PerPage: 10
   },

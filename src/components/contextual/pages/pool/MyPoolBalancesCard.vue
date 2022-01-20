@@ -2,15 +2,17 @@
 import { toRef, computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { POOLS } from '@/constants/pools';
+
 import { FullPool } from '@/services/balancer/subgraph/types';
 import useWeb3 from '@/services/web3/useWeb3';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
-import { configService } from '@/services/config/config.service';
 
 import useTokens from '@/composables/useTokens';
 import useNumbers from '@/composables/useNumbers';
 import useUserSettings from '@/composables/useUserSettings';
 import { usePool } from '@/composables/usePool';
+import { networkId } from '@/composables/useNetwork';
 
 import { bnum } from '@/lib/utils';
 
@@ -54,6 +56,8 @@ const poolCalculator = new PoolCalculator(
  * COMPUTED
  */
 const bptBalance = computed((): string => balanceFor(props.pool.address));
+
+const hasBptBalance = computed(() => bnum(bptBalance.value).gt(0));
 
 const poolTokens = computed(() =>
   Object.values(getTokens(props.pool.tokenAddresses))
@@ -118,7 +122,10 @@ function fiatLabelFor(index: number, address: string): string {
 function navigateToPoolMigration(pool: FullPool) {
   router.push({
     name: 'migrate-pool',
-    params: { from: pool.id, to: configService.network.pools.bbAaveUSD },
+    params: {
+      from: pool.id,
+      to: POOLS.IdsMap[networkId.value]?.bbAaveUSD
+    },
     query: {
       returnRoute: 'pool',
       returnParams: JSON.stringify({ id: pool.id })
@@ -172,7 +179,7 @@ function navigateToPoolMigration(pool: FullPool) {
         </span>
       </div>
       <BalBtn
-        v-if="Number(bptBalance) > 0 && isMigratablePool(props.pool)"
+        v-if="hasBptBalance && isMigratablePool(props.pool)"
         color="blue"
         class="mt-4"
         block

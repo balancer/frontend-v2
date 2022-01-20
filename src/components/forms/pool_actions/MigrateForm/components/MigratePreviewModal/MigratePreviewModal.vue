@@ -34,9 +34,6 @@ const props = defineProps<Props>();
 
 const priceImpact = ref(props.math.priceImpact.value);
 const fiatTotalLabel = ref(props.math.fiatTotalLabel.value);
-const fiatTotalWithPriceImpact = ref(
-  props.math.fiatTotalWithPriceImpactLabel.value
-);
 const fiatTotal = ref(props.math.fiatTotal.value);
 
 const emit = defineEmits<{
@@ -96,15 +93,12 @@ function handleClose() {
     <MigratePoolsInfo
       :fromPoolTokenInfo="fromPoolTokenInfo"
       :toPoolTokenInfo="toPoolTokenInfo"
-      :fromPoolFiatTotalLabel="fiatTotalLabel"
-      :toPoolFiatTotalLabel="fiatTotalWithPriceImpact"
     />
 
     <InvestSummary
       :pool="toPool"
       :fiatTotal="fiatTotal"
       :priceImpact="priceImpact"
-      :showTotal="false"
     />
 
     <MigrateActions
