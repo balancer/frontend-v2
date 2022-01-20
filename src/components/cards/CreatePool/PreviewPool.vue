@@ -9,7 +9,8 @@ import useNumbers from '@/composables/useNumbers';
 import useWeb3 from '@/services/web3/useWeb3';
 
 import { useI18n } from 'vue-i18n';
-import { shortenLabel } from '@/lib/utils';
+import { bnum, shortenLabel } from '@/lib/utils';
+import BigNumber from 'bignumber.js';
 
 /**
  * PROPS & EMITS
@@ -31,18 +32,19 @@ const poolCreated = ref(false);
 const {
   seedTokens,
   poolLiquidity,
-  getScaledAmounts,
   poolTypeString,
   initialFee,
-  goBack,
   name: poolName,
   symbol: poolSymbol,
-  setActiveStep,
   useNativeAsset,
-  sortSeedTokens,
   feeManagementType,
   feeController,
   thirdPartyFeeController,
+  createPoolTxHash,
+  goBack,
+  setActiveStep,
+  sortSeedTokens,
+  getScaledAmounts,
   saveState
 } = usePoolCreation();
 
@@ -67,6 +69,7 @@ const title = computed((): string =>
     : t('previewPool', [poolTypeString.value])
 );
 
+// translations are breaking when directly using this label
 const initialWeightLabel = computed(() => t('initialWeight'));
 
 const tokenAddresses = computed((): string[] => {
@@ -89,19 +92,30 @@ const hasMissingPoolNameOrSymbol = computed(() => {
   return poolSymbol.value === '' || poolName.value === '';
 });
 
+const initialWeights = computed(() => {
+  const _initialWeights: Record<string, BigNumber> = {};
+  for (const seedToken of seedTokens.value) {
+    _initialWeights[seedToken.tokenAddress] = bnum(seedToken.amount)
+      .times(priceFor(seedToken.tokenAddress))
+      .div(poolLiquidity.value);
+  }
+  return _initialWeights;
+});
+
+// an invalid initial weight is one where the the weight
+// is less than 1% of the pools value
+const hasInvalidInitialWeight = computed(() => {
+  return Object.values(initialWeights.value).some(initialWeight =>
+    initialWeight.lt(0.01)
+  );
+});
+
 /**
  * METHODS
  */
 function handleSuccess(): void {
   poolCreated.value = true;
   emit('success');
-}
-
-function getInitialWeight(tokenAddress: string, tokenAmount: number) {
-  return fNum(
-    (tokenAmount * priceFor(tokenAddress)) / poolLiquidity.value,
-    'percent'
-  );
 }
 
 function navigateToPoolFee() {
@@ -168,11 +182,23 @@ function getSwapFeeManager() {
                   <BalStack vertical spacing="none">
                     <span class="font-semibold">
                       {{ fNum(token.weight / 100, 'percent') }}
-                      {{ tokens[token.tokenAddress].symbol }}
+                      {{ tokens[token.tokenAddress]?.symbol }}
                     </span>
-                    <span class="text-sm text-gray-500">
+                    <span
+                      :class="[
+                        'text-sm',
+                        {
+                          'text-gray-500': initialWeights[
+                            token.tokenAddress
+                          ].gte(0.01),
+                          'text-yellow-500': initialWeights[
+                            token.tokenAddress
+                          ].lt(0.01)
+                        }
+                      ]"
+                    >
                       {{ initialWeightLabel }}:
-                      {{ getInitialWeight(token.tokenAddress, token.amount) }}
+                      {{ fNum(initialWeights[token.tokenAddress], 'percent') }}
                     </span>
                   </BalStack>
                 </BalStack>
@@ -225,7 +251,7 @@ function getSwapFeeManager() {
               <span class="text-sm">{{ $t('poolType') }}:</span>
               <span class="text-sm capitalize">{{ poolTypeString }}</span>
             </BalStack>
-            <BalStack horizontal justify="between">
+            <BalStack horizontal justify="between" class="mt-1">
               <span class="text-sm">{{ $t('swapFee') }}:</span>
               <BalStack horizontal spacing="sm">
                 <span class="text-sm">{{ fNum(initialFee, 'percent') }}</span>
@@ -253,7 +279,17 @@ function getSwapFeeManager() {
             {{ $t('missingPoolNameOrSymbolInfo') }}
           </BalAlert>
         </AnimatePresence>
-
+        <AnimatePresence
+          :isVisible="hasInvalidInitialWeight && createPoolTxHash !== ''"
+          unmountInstantly
+        >
+          <BalAlert
+            :title="$t('createAPool.invalidInitialWeightsTitle')"
+            type="warning"
+          >
+            {{ $t('createAPool.invalidInitialWeightsInfo') }}
+          </BalAlert>
+        </AnimatePresence>
         <!-- <BalAlert
           type="error"
           class="mb-4"
