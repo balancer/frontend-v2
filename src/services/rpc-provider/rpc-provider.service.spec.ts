@@ -1,6 +1,5 @@
 import RpcProviderService from '@/services/rpc-provider/rpc-provider.service';
 import { JsonRpcProvider, WebSocketProvider } from '@ethersproject/providers';
-import { mocked } from 'ts-jest/utils';
 
 jest.mock('@ethersproject/providers', () => {
   return {
@@ -14,8 +13,8 @@ jest.mock('@ethersproject/providers', () => {
 });
 
 describe('RPC provider service', () => {
-  const MockedJsonRpcProvider = mocked(JsonRpcProvider, true);
-  const MockedWebSocketProvider = mocked(WebSocketProvider, true);
+  const MockedJsonRpcProvider = jest.mocked(JsonRpcProvider, true);
+  const MockedWebSocketProvider = jest.mocked(WebSocketProvider, true);
 
   beforeEach(() => {
     MockedJsonRpcProvider.mockClear();
