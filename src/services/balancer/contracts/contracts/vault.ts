@@ -25,18 +25,23 @@ import { pick } from 'lodash';
 import { Vault__factory } from '@balancer-labs/typechain';
 import { Contract } from 'ethers';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
+import ProtocolFeesCollector from './protocol-fees-collector';
 
 export default class Vault {
   service: Service;
   instance: Contract;
 
-  constructor(service, instanceABI = VaultAbi) {
+  constructor(service: Service, instanceABI = VaultAbi) {
     this.service = service;
     this.instance = new Contract(
       this.service.config.addresses.vault,
       instanceABI,
       this.service.provider
     );
+  }
+
+  public get protocolFeesCollector(): ProtocolFeesCollector {
+    return new ProtocolFeesCollector(this);
   }
 
   public async getPoolData(
@@ -120,8 +125,6 @@ export default class Vault {
 
     result = await poolMulticaller.execute(result);
 
-    vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
-
     if (isStablePhantom(type) && result.linearPools) {
       const wrappedTokensMap: Record<string, string> = {};
 
@@ -155,6 +158,7 @@ export default class Vault {
       result = await poolMulticaller.execute(result);
     }
 
+    vaultMultiCaller.call('poolTokens', this.address, 'getPoolTokens', [id]);
     result = await vaultMultiCaller.execute(result);
 
     return this.formatPoolData(result, type, tokens, poolAddress);
