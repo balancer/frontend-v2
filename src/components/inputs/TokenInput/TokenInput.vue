@@ -228,7 +228,7 @@ watchEffect(() => {
 
 <template>
   <BalTextInput
-    :value="formContext ? formContext.register(name) : _amount"
+    :value="formContext ? formContext.register('amount', inputRules) : _amount"
     :placeholder="hintAmount || '0.0'"
     type="number"
     :label="label"
@@ -243,7 +243,7 @@ watchEffect(() => {
     inputAlignRight
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
-    @update:modelValue="handleTextInputChange(name, $event)"
+    @update:modelValue="handleTextInputChange('amount', $event)"
     @update:isValid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
@@ -269,6 +269,7 @@ watchEffect(() => {
           class="flex items-center justify-between text-sm text-gray-500 leading-none"
         >
           bingbong {{ formContext.values }}
+          {{ formContext.errors }}
           <div v-if="!isWalletReady" />
           <div v-else class="cursor-pointer flex items-center" @click="setMax">
             {{ balanceLabel ? balanceLabel : $t('balance') }}:
