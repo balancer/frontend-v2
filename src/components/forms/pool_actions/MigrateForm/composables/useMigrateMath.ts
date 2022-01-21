@@ -167,6 +167,10 @@ export default function useMigrateMath(
   async function getBatchSwap(): Promise<void> {
     batchSwapLoading.value = true;
 
+    if (!batchSwapLoaded.value) {
+      await balancer.sor.fetchPools();
+    }
+
     batchSwap.value = await queryBatchSwapTokensIn(
       balancer.sor,
       balancerContractsService.vault.instance as any,
