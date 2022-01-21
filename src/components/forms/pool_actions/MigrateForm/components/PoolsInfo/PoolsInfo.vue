@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs } from 'vue';
+import { onBeforeMount, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
@@ -44,6 +44,13 @@ const { fromPool, toPool } = toRefs(props);
 
 const migrateMath = useMigrateMath(fromPool, toPool);
 const { hasBpt, fiatTotalLabel } = migrateMath;
+
+/**
+ * CALLBACKS
+ */
+onBeforeMount(() => {
+  migrateMath.getBatchSwap();
+});
 </script>
 
 <template>

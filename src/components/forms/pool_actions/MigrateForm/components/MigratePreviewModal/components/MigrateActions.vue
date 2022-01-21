@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onBeforeMount, toRefs } from 'vue';
+import { ref, computed, reactive, onBeforeMount, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { StablePoolEncoder, WeightedPoolEncoder } from '@balancer-labs/sdk';
 
@@ -59,7 +59,8 @@ const {
   fiatTotalLabel,
   bptBalanceScaled,
   fullAmountsScaled,
-  tokenCount
+  tokenCount,
+  shouldFetchBatchSwap
 } = toRefs(props.math);
 
 const emit = defineEmits<{
@@ -81,7 +82,7 @@ const migratePoolState = reactive<MigratePoolState>({
  */
 const { t } = useI18n();
 const { networkConfig } = useConfig();
-const { getProvider, explorerLinks, account } = useWeb3();
+const { getProvider, explorerLinks, account, blockNumber } = useWeb3();
 const { addTransaction } = useTransactions();
 const { txListener, getTxConfirmedAt } = useEthers();
 const { slippageScaled } = useUserSettings();
@@ -104,6 +105,13 @@ const explorerLink = computed(() =>
   migratePoolState.receipt
     ? explorerLinks.txLink(migratePoolState.receipt.transactionHash)
     : ''
+);
+
+const transactionInProgress = computed(
+  () =>
+    migratePoolState.init ||
+    migratePoolState.confirming ||
+    migratePoolState.confirmed
 );
 
 /**
@@ -163,7 +171,9 @@ async function submit() {
       poolId: props.fromPool.id,
       exitTokens: props.fromPool.tokensList,
       userData,
-      expectedAmountsOut: fullAmountsScaled.value,
+      expectedAmountsOut: fullAmountsScaled.value.map(amount =>
+        amount.toString()
+      ),
       finalTokensOut: new Array(tokenCount.value).fill(props.toPool.address),
       slippage: slippageScaled.value,
       fetchPools: {
@@ -197,6 +207,15 @@ onBeforeMount(() => {
   if (!batchRelayerApproval.isUnlocked.value) {
     // Prepend relayer approval action if batch relayer not approved
     actions.value.unshift(batchRelayerApproval.action.value);
+  }
+});
+
+/**
+ * WATCHERS
+ */
+watch(blockNumber, async () => {
+  if (shouldFetchBatchSwap.value && !transactionInProgress.value) {
+    await props.math.getBatchSwap();
   }
 });
 </script>

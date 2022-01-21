@@ -15,12 +15,15 @@ type Props = {
   pool: FullPool;
   fiatTotal: string;
   priceImpact: number;
+  isLoadingPriceImpact?: boolean;
 };
 
 /**
  * PROPS & EMITS
  */
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  isLoadingPriceImpact: false
+});
 
 /**
  * COMPOSABLES
@@ -118,7 +121,8 @@ function weeklyYieldForAPR(apr: string): string {
           {{ $t('priceImpact') }}
         </div>
         <div class="summary-table-number">
-          {{ fNum(priceImpact, 'percent') }}
+          <BalLoadingBlock v-if="isLoadingPriceImpact" class="h-6 w-10" />
+          <template v-else>{{ fNum(priceImpact, 'percent') }}</template>
           <BalTooltip
             :text="$t('tooltips.invest.priceImpact')"
             icon-size="sm"

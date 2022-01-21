@@ -1,14 +1,24 @@
 import { computed, ref, Ref } from 'vue';
 import { parseUnits } from 'ethers/lib/utils';
+import { BigNumber } from 'ethers';
 
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import useUserSettings from '@/composables/useUserSettings';
+import { usePool } from '@/composables/usePool';
 
 import { FullPool } from '@/services/balancer/subgraph/types';
 import PoolCalculator from '@/services/pool/calculator/calculator.sevice';
 
 import { bnSum, bnum } from '@/lib/utils';
+
+import { balancer } from '@/lib/balancer.sdk';
+
+import { queryBatchSwapTokensIn } from '@balancer-labs/sdk';
+
+import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
+
+import { BatchSwap } from '@/types';
 
 export type MigrateMathResponse = ReturnType<typeof useMigrateMath>;
 
@@ -16,6 +26,12 @@ export default function useMigrateMath(
   fromPool: Ref<FullPool>,
   toPool: Ref<FullPool>
 ) {
+  /**
+   * STATE
+   */
+  const batchSwap = ref<BatchSwap | null>(null);
+  const batchSwapLoading = ref(false);
+
   /**
    * COMPOSABLES
    */
@@ -42,6 +58,8 @@ export default function useMigrateMath(
     ref(false)
   );
 
+  const toPoolTypes = usePool(toPool);
+
   /**
    * COMPUTED
    */
@@ -53,11 +71,17 @@ export default function useMigrateMath(
 
   const poolDecimals = computed(() => fromPool.value.onchain.decimals);
 
+  const batchSwapLoaded = computed(() => batchSwap.value != null);
+
   const bptBalanceScaled = computed(() =>
     parseUnits(bptBalance.value, poolDecimals.value).toString()
   );
 
-  const withdrawalTokens = computed(() =>
+  const shouldFetchBatchSwap = computed(
+    () => toPoolTypes.isStablePhantomPool.value
+  );
+
+  const poolTokens = computed(() =>
     fromPool.value.tokenAddresses.map(address => getToken(address))
   );
 
@@ -70,27 +94,62 @@ export default function useMigrateMath(
     return receive;
   });
 
-  const fullAmountsScaled = computed((): string[] =>
+  const fullAmountsScaled = computed(() =>
     fullAmounts.value.map((amount, i) =>
-      parseUnits(amount, withdrawalTokens.value[i].decimals).toString()
+      parseUnits(amount, poolTokens.value[i].decimals)
     )
   );
 
-  const fullBPTOut = computed(() =>
-    fromPoolCalculator.exactTokensInForBPTOut(fullAmounts.value).toString()
-  );
+  const fullBPTOut = computed((): string => {
+    let _bptOut: string;
 
-  const priceImpact = computed(() => {
+    if (toPoolTypes.isStablePhantomPool.value) {
+      _bptOut = batchSwap.value
+        ? bnum(batchSwap.value.amountTokenOut)
+            .abs()
+            .toString()
+        : '0';
+    } else {
+      _bptOut = toPoolCalculator
+        .exactTokensInForBPTOut(fullAmounts.value)
+        .toString();
+    }
+
+    console.log('query BPT', _bptOut.toString());
+
+    return _bptOut;
+  });
+
+  const priceImpact = computed((): number => {
     // TODO: When from/to pool token count is different its not possible to calculate the price impact.
     if (fromPool.value.tokensList.length !== toPool.value.tokensList.length) {
       return 0;
     }
-    return toPoolCalculator
-      .priceImpact(fullAmounts.value, {
-        queryBPT: fullBPTOut.value
-      })
-      .toNumber();
+    try {
+      return (
+        toPoolCalculator
+          .priceImpact(fullAmounts.value, {
+            queryBPT: fullBPTOut.value.toString()
+          })
+          .toNumber() || 0
+      );
+    } catch (error) {
+      return 1;
+    }
   });
+
+  const batchSwapAmountMap = computed(
+    (): Record<string, BigNumber> => {
+      const allTokensWithAmounts = fullAmountsScaled.value.map((amount, i) => [
+        fromPool.value.tokenAddresses[i].toLowerCase(),
+        amount
+      ]);
+      const onlyTokensWithAmounts = allTokensWithAmounts.filter(([, amount]) =>
+        (amount as BigNumber).gt(0)
+      );
+      return Object.fromEntries(onlyTokensWithAmounts);
+    }
+  );
 
   const fiatAmounts = computed((): string[] =>
     fromPool.value.tokenAddresses.map((address, i) =>
@@ -102,6 +161,23 @@ export default function useMigrateMath(
 
   const fiatTotalLabel = computed(() => fNum(fiatTotal.value, currency.value));
 
+  /**
+   * METHODS
+   */
+  async function getBatchSwap(): Promise<void> {
+    batchSwapLoading.value = true;
+
+    batchSwap.value = await queryBatchSwapTokensIn(
+      balancer.sor,
+      balancerContractsService.vault.instance as any,
+      Object.keys(batchSwapAmountMap.value),
+      Object.values(batchSwapAmountMap.value),
+      toPool.value.address.toLowerCase()
+    );
+
+    batchSwapLoading.value = false;
+  }
+
   return {
     // computed
     bptBalance,
@@ -112,6 +188,11 @@ export default function useMigrateMath(
     tokenCount,
     fiatTotal,
     fiatTotalLabel,
-    priceImpact
+    priceImpact,
+    shouldFetchBatchSwap,
+    batchSwapLoading,
+    batchSwapLoaded,
+    // methods
+    getBatchSwap
   };
 }

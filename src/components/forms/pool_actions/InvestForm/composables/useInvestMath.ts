@@ -15,9 +15,9 @@ import { BatchSwap } from '@/types';
 import { balancerContractsService } from '@/services/balancer/contracts/balancer-contracts.service';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 
-export type InvestMathResponse = ReturnType<typeof useInvestFormMath>;
+export type InvestMathResponse = ReturnType<typeof useInvestMath>;
 
-export default function useInvestFormMath(
+export default function useInvestMath(
   pool: Ref<FullPool>,
   tokenAddresses: Ref<string[]>,
   amounts: Ref<string[]>,
@@ -236,6 +236,14 @@ export default function useInvestFormMath(
   async function getBatchSwap(): Promise<void> {
     batchSwapLoading.value = true;
     batchSwap.value = await queryBatchSwapTokensIn(
+      sor,
+      balancerContractsService.vault.instance as any,
+      Object.keys(batchSwapAmountMap.value),
+      Object.values(batchSwapAmountMap.value),
+      pool.value.address.toLowerCase()
+    );
+
+    console.log(
       sor,
       balancerContractsService.vault.instance as any,
       Object.keys(batchSwapAmountMap.value),
