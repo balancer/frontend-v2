@@ -243,13 +243,6 @@ export default function useInvestMath(
       pool.value.address.toLowerCase()
     );
 
-    console.log(
-      sor,
-      balancerContractsService.vault.instance as any,
-      Object.keys(batchSwapAmountMap.value),
-      Object.values(batchSwapAmountMap.value),
-      pool.value.address.toLowerCase()
-    );
     batchSwapLoading.value = false;
   }
 
