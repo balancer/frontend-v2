@@ -25,7 +25,7 @@ import { balancerContractsService } from '@/services/balancer/contracts/balancer
 import OldBigNumber from 'bignumber.js';
 import { TokenInfo } from '@/types/TokenList';
 import { balancer } from '@/lib/balancer.sdk';
-import { SwapType, TransactionData } from '@balancer-labs/sdk';
+import { SwapType, TransactionData, UnwrapType } from '@balancer-labs/sdk';
 import { SwapKind } from '@balancer-labs/balancer-js';
 import usePromiseSequence from '@/composables/usePromiseSequence';
 
@@ -510,6 +510,7 @@ export default function useWithdrawMath(
   async function getBatchRelayerSwap(
     amounts: string[] | null = null,
     tokensOut: string[] | null = null,
+    unwrapType: UnwrapType = 'yearn',
     exactOut = false
   ): Promise<TransactionData> {
     batchRelayerSwapLoading.value = true;
@@ -530,6 +531,7 @@ export default function useWithdrawMath(
       tokensOut,
       rates,
       slippageScaled.value,
+      unwrapType,
       exactOut,
       fetchPools
     );
@@ -560,7 +562,8 @@ export default function useWithdrawMath(
     } else {
       const _batchRelayerSwap = await getBatchRelayerSwap(
         [bptBalanceScaled.value.toString()],
-        [batchRelayerTokenOut.value]
+        [batchRelayerTokenOut.value],
+        'yearn'
       );
 
       const batchRelayerAmountOut = bnum(
@@ -584,6 +587,8 @@ export default function useWithdrawMath(
 
     if (isProportional.value) {
       batchSwap.value = await getBatchSwap();
+
+      console.log('batch swap', batchSwap.value);
       if (shouldUseBatchRelayer.value) {
         batchRelayerSwap.value = await getBatchRelayerSwap();
       }
@@ -601,6 +606,7 @@ export default function useWithdrawMath(
         batchRelayerSwap.value = await getBatchRelayerSwap(
           amountsOut.map(amount => amount.toString()),
           [batchRelayerTokenOut.value],
+          'yearn',
           true
         );
       }
@@ -614,7 +620,8 @@ export default function useWithdrawMath(
       if (shouldUseBatchRelayer.value) {
         batchRelayerSwap.value = await getBatchRelayerSwap(
           [bptBalanceScaled.value.toString()],
-          [batchRelayerTokenOut.value]
+          [batchRelayerTokenOut.value],
+          'yearn'
         );
       }
     }

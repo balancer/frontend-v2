@@ -11,7 +11,7 @@
   "loggingRpc": "",
   "explorer": "https://rinkeby.etherscan.io",
   "explorerName": "RinkebyScan",
-  "subgraph": "https://api.studio.thegraph.com/query/8788/beethovenx-rinkeby/v3.0.2",
+  "subgraph": "https://api.studio.thegraph.com/query/8788/beethovenx-rinkeby/v3.0.5",
   "farmSubgraph": "https://api.studio.thegraph.com/query/8788/beethovenx-farms-rinkeby/v0.0.6",
   "blockSubgraph": "https://api.studio.thegraph.com/query/8788/rinkeby-blocks/v0.0.2",
   "backendUrl": "https://dev-backend.beets-ftm-node.com/graphql",
@@ -60,7 +60,7 @@
     "hndRewarder": "0xc16Eb9F429AB417Fe97D096A45a110CfFCC23018",
     "merkleOrchard": "",
     "copperProxy": "0x6664b125b8f19F8e8d871e71F2B9fB0e24f45a0B",
-    "batchRelayer": "0xef549Ab453ED06839772C99C96921cfE6822D505"
+    "batchRelayer": "0x536dE38AF5275E0e6249BbB08250c5004F15da44"
   },
   "strategies": {
     "0": {

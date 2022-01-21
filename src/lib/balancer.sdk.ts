@@ -5,6 +5,8 @@ const network = ((): Network => {
   switch (configService.network.key) {
     case '1':
       return Network.MAINNET;
+    case '4':
+      return Network.RINKEBY;
     case '42':
       return Network.KOVAN;
     case '137':
@@ -18,6 +20,6 @@ const network = ((): Network => {
 
 export const balancer = new BalancerSDK({
   network,
-  rpcUrl: configService.rpc,
-  subgraphUrl: configService.network.subgraph
+  rpcUrl: configService.network.rpc,
+  subgraphUrl: configService.network.poolsUrlV2
 });

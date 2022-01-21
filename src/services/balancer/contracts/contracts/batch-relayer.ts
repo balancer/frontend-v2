@@ -1,7 +1,11 @@
 import { Contract } from 'ethers';
 import ContractService from '../balancer-contracts.service';
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
-import { FundManagement, TransactionData } from '@balancer-labs/sdk';
+import {
+  FundManagement,
+  TransactionData,
+  UnwrapType
+} from '@balancer-labs/sdk';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 
@@ -33,6 +37,7 @@ export default class BatchRelayer {
     tokensOut: string[],
     rates: string[],
     slippage: string,
+    unwrapType: UnwrapType,
     exactOut = false,
     fetchPools = true
   ): Promise<TransactionData> {
@@ -45,9 +50,7 @@ export default class BatchRelayer {
 
     const tokensIn = tokensOut.map(() => tokenIn);
 
-    const method = exactOut
-      ? 'swapUnwrapAaveStaticExactOut'
-      : 'swapUnwrapAaveStaticExactIn';
+    const method = exactOut ? 'swapUnwrapExactOut' : 'swapUnwrapExactIn';
 
     return await this.service.sdk.relayer[method](
       tokensIn,
@@ -56,6 +59,7 @@ export default class BatchRelayer {
       rates,
       funds,
       slippage,
+      unwrapType,
       {
         fetchPools,
         fetchOnChain: false
