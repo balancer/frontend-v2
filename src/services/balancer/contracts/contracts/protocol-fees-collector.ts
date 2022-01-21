@@ -38,7 +38,7 @@ export default class ProtocolFeesCollector {
 
   /**
    * @summary Fetches protcol fee percentage.
-   * @description If onchain call fails, returns 0 so there are no catestrophic failures
+   * @description If onchain call fails, returns 0 so there are no catastrophic failures
    * @returns percentage as fractional number, e.g. 0.1 = 10%
    */
   public async getSwapFeePercentage(): Promise<number> {
