@@ -2,7 +2,6 @@ import ProtocolFeesCollector from './protocol-fees-collector';
 import { balancerContractsService } from '../balancer-contracts.service';
 import Vault from './vault';
 import { Contract } from 'ethers';
-// import { bnum } from '@/lib/utils';
 import { mocked } from 'ts-jest/utils';
 
 jest.mock('../balancer-contracts.service');
