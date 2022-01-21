@@ -40,5 +40,17 @@ describe('ProtocolFeesCollector', () => {
 
       expect(percentage).toBe(0.1);
     });
+
+    it('returns 0 if error thrown', async () => {
+      jest.spyOn(console, 'error').mockImplementation();
+      vault.instance.getProtocolFeesCollector.mockImplementation(() => {
+        throw new Error('Failed to fetch addresss');
+      });
+
+      const protocolFeesCollector = new ProtocolFeesCollector(vault);
+      const percentage = await protocolFeesCollector.getSwapFeePercentage();
+
+      expect(percentage).toBe(0);
+    });
   });
 });

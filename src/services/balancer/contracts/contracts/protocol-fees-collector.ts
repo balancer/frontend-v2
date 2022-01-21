@@ -38,11 +38,17 @@ export default class ProtocolFeesCollector {
 
   /**
    * @summary Fetches protcol fee percentage.
+   * @description If onchain call fails, returns 0 so there are no catestrophic failures
    * @returns percentage as fractional number, e.g. 0.1 = 10%
    */
   public async getSwapFeePercentage(): Promise<number> {
-    this.instance = await this.getInstance();
-    const scaledPercentage = await this.instance.getSwapFeePercentage();
-    return Number(formatUnits(scaledPercentage, 18));
+    try {
+      this.instance = await this.getInstance();
+      const scaledPercentage = await this.instance.getSwapFeePercentage();
+      return Number(formatUnits(scaledPercentage, 18));
+    } catch (error) {
+      console.error('Failed to fetch protocol fee', error);
+      return 0;
+    }
   }
 }
