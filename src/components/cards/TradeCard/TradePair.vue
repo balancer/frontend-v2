@@ -151,16 +151,7 @@ const form = useForm({
 <template>
   <div>
     <BalForm>
-      <TokenInput
-        v-bind="
-          form.register(
-            ['amount', 'address'],
-            [_tokenInAmount, _tokenInAddress]
-          )
-        "
-        name="tokenIn"
-        :disabled="tradeLoading"
-      />
+      <TokenInput name="tokenIn" :disabled="tradeLoading" />
 
       <div class="flex items-center my-2">
         <TradePairToggle @toggle="handleTokenSwitch" />

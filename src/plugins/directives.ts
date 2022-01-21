@@ -21,4 +21,18 @@ export default function registerDirectives(app: App) {
       document.body.removeEventListener('click', el.__vueOnClickOutside);
     }
   });
+
+  app.directive('formvalue', {
+    updated: (el, binding) => {
+      if (!binding.instance) return;
+
+      console.log({
+        el,
+        binding,
+        slot: binding.instance.$slots.default
+      })
+
+      const formInstance = binding.instance.form;
+    }
+  });
 }

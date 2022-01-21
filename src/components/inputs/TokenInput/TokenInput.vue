@@ -16,6 +16,7 @@ import { Rules } from '@/components/_global/BalTextInput/BalTextInput.vue';
 import TokenSelectInput from '@/components/inputs/TokenSelectInput/TokenSelectInput.vue';
 
 import { TokenInfo } from '@/types/TokenList';
+import useFormContext from '@/components/_global/BalForm/useFormContext';
 
 /**
  * TYPES
@@ -89,6 +90,7 @@ const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
+const formContext: any = useFormContext();
 
 /**
  * COMPUTED
@@ -208,6 +210,13 @@ const setMax = () => {
   emit('update:amount', _amount.value);
 };
 
+function handleTextInputChange(name: string, event) {
+  emit('update:amount', event);
+  if (formContext) {
+    formContext.onChange(name, event);
+  }
+}
+
 /**
  * CALLBACKS
  */
@@ -219,7 +228,7 @@ watchEffect(() => {
 
 <template>
   <BalTextInput
-    v-model="_amount"
+    :value="formContext ? formContext.register(name) : _amount"
     :placeholder="hintAmount || '0.0'"
     type="number"
     :label="label"
@@ -234,7 +243,7 @@ watchEffect(() => {
     inputAlignRight
     @blur="emit('blur', $event)"
     @input="emit('input', $event)"
-    @update:modelValue="emit('update:amount', $event)"
+    @update:modelValue="handleTextInputChange(name, $event)"
     @update:isValid="emit('update:isValid', $event)"
     @keydown="emit('keydown', $event)"
   >
@@ -259,6 +268,7 @@ watchEffect(() => {
         <div
           class="flex items-center justify-between text-sm text-gray-500 leading-none"
         >
+          bingbong {{ formContext.values }}
           <div v-if="!isWalletReady" />
           <div v-else class="cursor-pointer flex items-center" @click="setMax">
             {{ balanceLabel ? balanceLabel : $t('balance') }}:

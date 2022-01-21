@@ -1,68 +1,64 @@
-import { reactive } from 'vue';
+import { onBeforeMount, provide, reactive, ref, toRefs, watch } from 'vue';
 
 type UseFormRequest = {
   name: string;
 };
 
-type FormState = {
+type FormInstance = {
   name: string;
-  inputs: Record<
-    string,
-    {
-      value: any;
-      changeHandler: (value: any) => void;
-    }
-  >;
+  values: Record<string, any>;
 };
 
+export const FormContextSymbol = Symbol('FORM_CONTEXT');
+
+const formInstance = reactive<FormInstance>({ name: '', values: {} });
+
 export default function useForm({ name }: UseFormRequest) {
+  onBeforeMount(() => {
+    if (!name) {
+      throw new Error(
+        `Failed to create a form instance. No form name was provided.`
+      );
+    }
+    formInstance.name = name;
+  });
+
   /**
    * STATE
    */
-  const formState = reactive<FormState>({ name, inputs: {} });
 
-  if (!name) {
-    throw new Error(
-      `Failed to create a form instance. No form name was provided.`
-    );
-  }
-
-  function register(names: string | string[], defaultValue?: any | any[]) {
-    // this will be passed to the input components via v-bind
-    // it will assign the v-model handlers
-    const binder: any = {};
-    if (Array.isArray(names)) {
-      for (const name of names) {
-        if (!formState.inputs[name]) {
-          formState.inputs[name] = {
-            value: defaultValue ?? '',
-            changeHandler: function(value: any) {
-              console.log('eshayz', value);
-              formState.inputs[name].value = value;
-            }
-          };
-        }
-        binder[name] = formState.inputs[name].value;
-        binder[`v-mydirective:[@update:${name}]`] =
-          formState.inputs[name].changeHandler;
-      }
-    } else {
-      if (!formState.inputs[names]) {
-        formState.inputs[name] = {
-          value: defaultValue ?? '',
-          changeHandler: function(value: any) {
-            console.log('eshayz', value);
-            formState.inputs[name].value = value;
-          }
-        };
-      }
-      binder[name] = formState.inputs[name].value;
-      binder[`v-mydirective:[@update:${name}]`] = formState.inputs[name].changeHandler;
+  /**
+   * METHODS
+   */
+  function register(name: string) {
+    if (!formInstance.values[name]) {
+      formInstance.values[name] = '';
     }
-    return binder;
+    console.log('lol', formInstance.values[name]);
+    return formInstance.values[name];
   }
+
+  function onChange(name: string, value: any) {
+    console.log('formIns', formInstance.values)
+    if (formInstance.values[name] === undefined) {
+      throw new Error(
+        `[${name}] is not a registered input for form [${formInstance.name}]`
+      );
+    }
+    console.log('linglong', name, value)
+    formInstance.values[name] = value;
+  }
+
+  watch(
+    () => formInstance.values,
+    () => {
+      console.log('f', formInstance.values);
+    }
+  );
+
+  provide(FormContextSymbol, { ...toRefs(formInstance), register, onChange });
 
   return {
-    register
+    ...toRefs(formInstance)
   };
 }
