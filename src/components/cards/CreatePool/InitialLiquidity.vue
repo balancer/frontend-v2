@@ -8,7 +8,9 @@ import useNumbers from '@/composables/useNumbers';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
+
 import { useI18n } from 'vue-i18n';
+import { isGreaterThan } from '@/lib/utils/validations';
 
 const emit = defineEmits(['update:height']);
 
@@ -80,6 +82,10 @@ const arbitrageDelta = computed(() => {
     delta: totalPctDelta,
     value: totalPctDelta.times(poolLiquidity.value)
   };
+});
+
+const hasZeroAmount = computed(() => {
+  return seedTokens.value.some(seedToken => bnum(seedToken.amount).eq(0));
 });
 
 /**
@@ -229,15 +235,16 @@ function saveAndProceed() {
         <BalStack isDynamic vertical>
           <TokenInput
             v-for="(address, i) in tokenAddresses"
-            :key="i"
             v-model:amount="seedTokens[i].amount"
             v-model:address="tokenAddresses[i]"
+            fixedToken
+            :key="i"
             :weight="seedTokens[i].weight / 100"
             :name="`initial-token-${seedTokens[i].tokenAddress}`"
-            fixedToken
             :options="tokenOptions(i)"
             @update:amount="handleAmountChange(address)"
             @update:address="handleAddressChange($event)"
+            :rules="[isGreaterThan(0)]"
           />
         </BalStack>
         <BalStack horizontal spacing="sm" align="center">
@@ -324,7 +331,7 @@ function saveAndProceed() {
           </BalAlert>
         </AnimatePresence>
         <BalBtn
-          :disabled="isExceedingWalletBalance"
+          :disabled="isExceedingWalletBalance || hasZeroAmount"
           @click="saveAndProceed"
           block
           color="gradient"

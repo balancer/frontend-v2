@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, reactive } from 'vue';
+import { computed } from 'vue';
 
 import TokenInput from '@/components/inputs/TokenInput/TokenInput.vue';
 
@@ -27,22 +27,23 @@ const PRICE_CAP = 100000000;
 /**
  * STATE
  */
-const unknownTokenPrices = reactive({});
 
 /**
  * COMPOSABLES
  */
 const { seedTokens } = usePoolCreation();
-const { tokens, injectPrices } = useTokens();
+const { tokens, injectPrices, injectedPrices } = useTokens();
 const { t } = useI18n();
 
 /**
  * LIFECYCLE
  */
-onBeforeMount(() => {
+const unknownTokenPrices = computed(() => {
+  const _unknownTokenPrices = {};
   for (const token of props.unknownTokens) {
-    unknownTokenPrices[token] = null;
+    _unknownTokenPrices[token] = injectedPrices.value[token] || null;
   }
+  return _unknownTokenPrices;
 });
 
 /**
@@ -73,7 +74,7 @@ function getIndexOfUnknownToken(address: string) {
 }
 
 function injectUnknownPrices() {
-  injectPrices(unknownTokenPrices);
+  injectPrices(unknownTokenPrices.value);
   emit('close');
 }
 </script>
