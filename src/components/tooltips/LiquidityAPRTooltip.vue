@@ -37,8 +37,9 @@ const lmBreakdown = computed(
 );
 
 const validAPR = computed(
-  () => Number(props.pool.dynamic.apr) <= APR_THRESHOLD
+  () => Number(props.pool.dynamic.apr.total) * 100 <= APR_THRESHOLD
 );
+
 const lmTokens = computed(() => getTokens(Object.keys(lmBreakdown.value)));
 
 const lmMultiRewardPool = computed(

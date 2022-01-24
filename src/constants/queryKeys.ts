@@ -1,4 +1,4 @@
-import { Network } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 import { NativeAsset } from '@/types/TokenList';
 import { Ref } from 'vue';
 export const POOLS_ROOT_KEY = 'pools';
@@ -78,11 +78,12 @@ const QUERY_KEYS = {
         wrappedNativeAsset
       }
     ],
-    Prices: (networkId: Ref<Network>, tokens: Ref<string[]>) => [
-      'tokens',
-      'prices',
-      { networkId, tokens }
-    ]
+    Prices: (
+      networkId: Ref<Network>,
+      tokens: Ref<string[]>,
+      pricesToInject: Ref<Record<string, number>>
+    ) => ['tokens', 'prices', { networkId, tokens, pricesToInject }],
+    AllPrices: ['tokens', 'prices']
   },
   Account: {
     Balances: (

@@ -6,6 +6,9 @@ import PoolWithdrawPage from '@/pages/pool/withdraw.vue';
 import LiquidityMiningPage from '@/pages/liquidity-mining.vue';
 import TradePage from '@/pages/trade.vue';
 import CreatePoolPage from '@/pages/pool/create.vue';
+import TermsOfUsePage from '@/pages/terms-of-use.vue';
+import PrivacyPolicyPage from '@/pages/privacy-policy.vue';
+import CookiesPolicyPage from '@/pages/cookies-policy.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -51,6 +54,24 @@ const routes: RouteRecordRaw[] = [
     path: '/liquidity-mining',
     name: 'liquidity-mining',
     component: LiquidityMiningPage
+  },
+  {
+    path: '/terms-of-use',
+    name: 'terms-of-use',
+    component: TermsOfUsePage,
+    meta: { layout: 'ContentLayout' }
+  },
+  {
+    path: '/privacy-policy',
+    name: 'privacy-policy',
+    component: PrivacyPolicyPage,
+    meta: { layout: 'ContentLayout' }
+  },
+  {
+    path: '/cookies-policy',
+    name: 'cookies-policy',
+    component: CookiesPolicyPage,
+    meta: { layout: 'ContentLayout' }
   },
   {
     path: '/:pathMatch(.*)*',

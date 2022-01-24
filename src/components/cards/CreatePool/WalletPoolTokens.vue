@@ -55,7 +55,7 @@ const totalFiat = computed(() => {
     <BalStack vertical class="p-4" spacing="sm">
       <div>
         <h6 class="branch relative">Native tokens</h6>
-        <BalStack isDynamic vertical spacing="xs">
+        <BalStack vertical spacing="xs">
           <BalStack
             class="ml-6 twig relative"
             v-for="token in nativeTokens"
@@ -88,7 +88,7 @@ const totalFiat = computed(() => {
             :exit="exitAnimateProps"
             :isVisible="true"
           >
-            <BalStack horizontal justify="between" isDynamic>
+            <BalStack horizontal justify="between">
               <BalStack vertical spacing="none">
                 <h6>{{ _tokens[token]?.symbol || 'N/A' }}</h6>
                 <span class="text-sm text-gray-600">{{

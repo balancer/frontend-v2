@@ -4,7 +4,6 @@ import { BigNumber } from '@ethersproject/bignumber';
 
 import useSor from '@/composables/trade/useSor';
 import { configService } from '@/services/config/config.service';
-import { mocked } from 'ts-jest/utils';
 import { SorManager } from '@/lib/utils/balancer/helpers/sor/sorManager';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
 import OldBigNumber from 'bignumber.js';
@@ -77,11 +76,10 @@ describe('setSwapCost', () => {
     1,
     1,
     '1',
-    'source',
-    'sg'
+    'source'
   );
 
-  const mockedSorManager = mocked(sorManager);
+  const mockedSorManager = jest.mocked(sorManager);
 
   beforeEach(() => {
     mockedSorManager.setCostOutputToken.mockClear();

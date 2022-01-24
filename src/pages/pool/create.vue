@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, nextTick } from 'vue';
+import { computed, ref, watch, nextTick, onBeforeMount } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import ChooseWeights from '@/components/cards/CreatePool/ChooseWeights.vue';
 import PoolSummary from '@/components/cards/CreatePool/PoolSummary.vue';
@@ -11,6 +12,8 @@ import PreviewPool from '@/components/cards/CreatePool/PreviewPool.vue';
 import BalVerticalSteps from '@/components/_global/BalVerticalSteps/BalVerticalSteps.vue';
 import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 import Col3Layout from '@/components/layouts/Col3Layout.vue';
+import UnknownTokenPriceModal from '@/components/modals/UnknownTokenPrice/UnknownTokenPriceModal.vue';
+import TokenPrices from '@/components/cards/CreatePool/TokenPrices.vue';
 
 import anime from 'animejs';
 
@@ -31,6 +34,7 @@ import useTokens from '@/composables/useTokens';
 const accordionWrapper = ref<HTMLElement>();
 const hasCompletedMountAnimation = ref(false);
 const prevWrapperHeight = ref(0);
+const isUnknownTokenModalVisible = ref(false);
 
 /**
  * COMPOSABLES
@@ -39,39 +43,55 @@ const { appLoading } = useApp();
 const {
   activeStep,
   similarPools,
-  setActiveStep,
   hasInjectedToken,
-  totalLiquidity,
   hasRestoredFromSavedState,
+  tokensList,
+  seedTokens,
+  setActiveStep,
   setRestoredState,
   importState,
-  resetPoolCreationState,
-  tokensList
+  totalLiquidity,
+  resetPoolCreationState
 } = usePoolCreation();
-const { dynamicDataLoading } = useTokens();
-const { upToLargeBreakpoint } = useBreakpoints();
 const { removeAlert } = useAlerts();
+const { t } = useI18n();
+const { upToLargeBreakpoint } = useBreakpoints();
+const {
+  dynamicDataLoading,
+  priceFor,
+  tokens,
+  injectTokens,
+  injectedPrices,
+  loading: isLoadingTokens
+} = useTokens();
 
-onMounted(async () => {
+/**
+ * LIFECYCLE
+ */
+onBeforeMount(async () => {
   removeAlert('return-to-pool-creation');
   if (accordionWrapper.value) {
     anime.set(accordionWrapper.value, {
       opacity: 0
     });
   }
-
   let previouslySavedState = lsGet(
     POOL_CREATION_STATE_KEY,
     null,
     POOL_CREATION_STATE_VERSION
   );
   if (activeStep.value === 0 && previouslySavedState !== null) {
+    // need to make sure to inject any tokens that were chosen
     previouslySavedState = JSON.parse(previouslySavedState);
     importState(previouslySavedState);
     setRestoredState(true);
     await nextTick();
     setActiveStep(previouslySavedState.activeStep);
   }
+  // make sure to inject any custom tokens we cannot inject
+  // after tokens have finished loading as it will attempt to
+  // inject 'known' tokens too, as during mount, tokens are still loading
+  injectUnknownPoolTokens();
 });
 
 /**
@@ -79,6 +99,16 @@ onMounted(async () => {
  */
 const doSimilarPoolsExist = computed(() => similarPools.value.length > 0);
 const validTokens = computed(() => tokensList.value.filter(t => t !== ''));
+
+const unknownTokens = computed(() => {
+  return validTokens.value.filter(token => {
+    return priceFor(token) === 0 || injectedPrices.value[token];
+  });
+});
+
+const hasUnknownToken = computed(() =>
+  validTokens.value.some(t => priceFor(t) === 0)
+);
 
 const steps = computed(() => [
   {
@@ -183,12 +213,44 @@ function handleReset() {
   setActiveStep(0);
 }
 
+function handleUnknownModalClose() {
+  isUnknownTokenModalVisible.value = false;
+}
+
+function showUnknownTokenModal() {
+  isUnknownTokenModalVisible.value = true;
+}
+
+function injectUnknownPoolTokens() {
+  if (!isLoadingTokens.value) {
+    const uninjectedTokens = seedTokens.value
+      .filter(seedToken => tokens.value[seedToken.tokenAddress] === undefined)
+      .map(seedToken => seedToken.tokenAddress);
+    injectTokens(uninjectedTokens);
+  }
+}
+
 /**
  * WATCHERS
  */
-
 watch([hasInjectedToken, totalLiquidity], () => {
   setWrapperHeight();
+});
+
+// can handle the behaviour to show the unknown token modal
+// on next step here, rather than having to clutter the
+// usePoolCreation composable further
+watch(activeStep, () => {
+  if (hasUnknownToken.value && !hasRestoredFromSavedState.value) {
+    showUnknownTokenModal();
+  }
+});
+
+// make sure to inject any custom tokens we cannot inject
+// after tokens have finished loading as it will attempt to
+// inject 'known' tokens too, as during mount, tokens are still loading
+watch(isLoadingTokens, () => {
+  injectUnknownPoolTokens();
 });
 </script>
 
@@ -276,10 +338,16 @@ watch([hasInjectedToken, totalLiquidity], () => {
       </AnimatePresence>
       <div v-if="upToLargeBreakpoint" ref="accordionWrapper" class="pb-24">
         <BalAccordion
-          :sections="[{ title: 'Pool summary', id: 'pool-summary' }]"
+          :sections="[
+            { title: t('poolSummary'), id: 'pool-summary' },
+            { title: t('tokenPrices'), id: 'token-prices' }
+          ]"
         >
           <template v-slot:pool-summary>
             <PoolSummary />
+          </template>
+          <template v-slot:token-prices>
+            <TokenPrices />
           </template>
         </BalAccordion>
       </div>
@@ -288,11 +356,16 @@ watch([hasInjectedToken, totalLiquidity], () => {
       <div class="col-span-11 lg:col-span-3" v-if="!upToLargeBreakpoint">
         <BalStack vertical spacing="base" v-if="!appLoading">
           <PoolSummary />
-          <!-- <WalletInitialLiquidity /> -->
+          <TokenPrices :toggleUnknownPriceModal="showUnknownTokenModal" />
         </BalStack>
       </div>
     </template>
   </Col3Layout>
+  <UnknownTokenPriceModal
+    @close="handleUnknownModalClose"
+    :isVisible="isUnknownTokenModalVisible"
+    :unknownTokens="unknownTokens"
+  />
 </template>
 
 <style scoped>

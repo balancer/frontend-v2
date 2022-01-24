@@ -5,7 +5,7 @@ import {
   SwapTypes,
   SwapOptions,
   PoolFilter
-} from '@balancer-labs/sor2';
+} from '@balancer-labs/sdk';
 import { SOR as SORV1 } from '@balancer-labs/sor';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Provider } from '@ethersproject/providers';
@@ -13,6 +13,7 @@ import { AddressZero } from '@ethersproject/constants';
 import OldBigNumber from 'bignumber.js';
 import { Swap, Pool } from '@balancer-labs/sor/dist/types';
 import { NATIVE_ASSET_ADDRESS } from '@/constants/tokens';
+import { balancer } from '@/lib/balancer.sdk';
 
 const SWAP_COST = process.env.VUE_APP_SWAP_COST || '100000';
 export enum LiquiditySelection {
@@ -67,8 +68,7 @@ export class SorManager {
     maxPools: number,
     chainId: number,
     weth: string,
-    poolsSourceV1: string,
-    subgraphUrlV2: string
+    poolsSourceV1: string
   ) {
     this.isV1Supported = isV1Supported;
 
@@ -81,7 +81,7 @@ export class SorManager {
       poolsSourceV1
     );
 
-    this.sorV2 = new SORV2(provider as any, chainId, subgraphUrlV2);
+    this.sorV2 = balancer.sor;
     this.weth = weth;
     this.gasPrice = gasPrice;
     this.maxPools = maxPools;

@@ -5,7 +5,7 @@ import polygon from './polygon.json';
 import arbitrum from './arbitrum.json';
 import docker from './docker.json';
 import test from './test.json';
-import { Network } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 export interface Config {
   key: string;

@@ -1,6 +1,6 @@
 import { WebSocketProvider, JsonRpcProvider } from '@ethersproject/providers';
 import ConfigService, { configService } from '@/services/config/config.service';
-import { Network } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 
 type NewBlockHandler = (blockNumber: number) => any;
 
