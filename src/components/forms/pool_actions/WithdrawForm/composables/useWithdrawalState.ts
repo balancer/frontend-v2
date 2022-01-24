@@ -6,12 +6,13 @@ import useRelayerApproval, {
   Relayer
 } from '@/composables/trade/useRelayerApproval';
 import { BaseContent } from '@/types';
+import i18n from '@/plugins/i18n';
 
 /**
  * TYPES
  */
 export enum WithdrawalError {
-  SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT
+  SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT = 'SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT'
 }
 
 type WithdrawalState = {
@@ -60,14 +61,15 @@ export function parseError(error: WithdrawalError): BaseContent {
   switch (error) {
     case WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT:
       return {
-        title: 'Warning',
-        description:
-          "You can only withdraw 30% of the pool's value in single asset withdrawals"
+        title: i18n.global.t('warning'),
+        description: i18n.global.t(
+          `withdraw.errors.${WithdrawalError.SINGLE_ASSET_WITHDRAWAL_MIN_BPT_LIMIT}`
+        )
       };
     default:
       return {
-        title: 'Oops',
-        description: 'Something went wrong.'
+        title: i18n.global.t('Ooops'),
+        description: i18n.global.t('somethingWentWrong')
       };
   }
 }
