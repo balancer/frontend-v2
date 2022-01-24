@@ -76,7 +76,7 @@ export type QueryBuilder = (
   attrs?: QueryAttrs
 ) => Record<string, any>;
 
-export type BasicContent = {
+export type BaseContent = {
   title: string;
   description: string;
 };
