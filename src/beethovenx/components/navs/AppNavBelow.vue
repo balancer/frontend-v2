@@ -27,14 +27,14 @@ const swapVolume24h = computed(
   <div class="bg-black">
     <div class="px-4 lg:px-6 py-2 flex items-center">
       <div class="flex-1 items-center">
-        <!--        <span class="mr-4">
+        <span class="mr-4">
           TVL:
           <BalLoadingBlock
             v-if="procotolDataLoading"
             class="w-20 h-4 inline-block"
           />
           <span v-else class="text-green-500">${{ fNum(tvl, 'usd_lg') }}</span>
-        </span>-->
+        </span>
         <span class="mr-4 hidden md:inline">
           Volume (24h):
           <BalLoadingBlock

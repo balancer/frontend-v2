@@ -28,20 +28,22 @@ const defaultAttrs = {
   amp: true,
   createTime: true,
   swapEnabled: true,
-  wrappedIndex: true,
-  mainIndex: true,
-  lowerTarget: true,
-  upperTarget: true,
   tokens: {
     name: true,
     symbol: true,
     decimals: true,
     address: true,
     balance: true,
-    weight: true,
-    priceRate: true
-  },
-  tokenRates: true,
+    weight: true
+    //TODO: uncomment for linear support
+    //priceRate: true
+  }
+  //TODO: uncomment for linear support
+  /*wrappedIndex: true,
+  mainIndex: true,
+  lowerTarget: true,
+  upperTarget: true,*/
+  /*tokenRates: true,
   linearPools: {
     id: true,
     address: true,
@@ -65,7 +67,7 @@ const defaultAttrs = {
       symbol: true,
       decimals: true
     }
-  }
+  }*/
 };
 
 export default (args = {}, attrs = {}) => ({
