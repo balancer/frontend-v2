@@ -11,7 +11,7 @@
   "loggingRpc": "",
   "explorer": "https://rinkeby.etherscan.io",
   "explorerName": "RinkebyScan",
-  "subgraph": "https://api.studio.thegraph.com/query/8788/beethovenx-rinkeby/v3.0.5",
+  "subgraph": "https://api.studio.thegraph.com/query/8788/beethovenx-rinkeby/v3.0.6",
   "farmSubgraph": "https://api.studio.thegraph.com/query/8788/beethovenx-farms-rinkeby/v0.0.6",
   "blockSubgraph": "https://api.studio.thegraph.com/query/8788/rinkeby-blocks/v0.0.2",
   "backendUrl": "https://dev-backend.beets-ftm-node.com/graphql",
