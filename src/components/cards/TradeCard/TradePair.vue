@@ -6,7 +6,6 @@ import { bnum } from '@/lib/utils';
 import useNumbers from '@/composables/useNumbers';
 import useTokens from '@/composables/useTokens';
 import { UseTrading } from '@/composables/trade/useTrading';
-import useForm from '@/components/_global/BalForm/useForm';
 
 /**
  * TYPES
