@@ -1,18 +1,21 @@
 <script lang="ts" setup>
-import { provide, useSlots, h } from 'vue';
-import useForm from './useForm';
+import { onBeforeMount, provide } from 'vue';
+import { FormContextSymbol, FormInstance } from './useForm';
 
 type Props = {
-  name: string;
+  form: FormInstance;
 };
 
 const props = withDefaults(defineProps<Props>(), {});
 
-const slots = useSlots();
+provide(FormContextSymbol, props.form);
 
-/**
- * COMPUTED
- */
+onBeforeMount(() => {
+  if (!props.form) {
+    throw new Error(`<BalForm /> component was rendered with a form instance.`);
+  }
+});
+
 /**
  * METHODS
  */

@@ -1,11 +1,7 @@
-import { inject } from "vue";
-import { FormContextSymbol } from "./useForm";
+import { inject } from 'vue';
+import { FormContextSymbol, FormInstance } from './useForm';
 
-
-export default function useFormContext() {
-
-  const formContext = inject(FormContextSymbol);
-
-  console.log('contexst', formContext)
+export default function useFormContext(): FormInstance {
+  const formContext = inject(FormContextSymbol) as FormInstance;
   return formContext;
 }

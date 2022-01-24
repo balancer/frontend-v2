@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { HtmlInputEvent } from '@/types';
+import { HtmlInputEvent, RuleFunction } from '@/types';
 import { ref, computed, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -27,6 +27,7 @@ type Props = {
   amount: InputValue;
   address?: string;
   weight?: number | string;
+  // ignore all rules
   noRules?: boolean;
   noMax?: boolean;
   priceImpact?: number;
@@ -40,10 +41,15 @@ type Props = {
   hintAmount?: string;
   excludedTokens?: string[];
   options?: string[];
+  // a list of rules to apply to the text input component
   rules?: Rules;
   disableNativeAssetBuffer?: boolean;
   hideFooter?: boolean;
+  // will ignore the wallet balance check if true,
+  // no error will be rendered
   ignoreWalletBalance?: boolean;
+  // form binding
+  name?: string;
 };
 
 /**
@@ -62,6 +68,7 @@ const props = withDefaults(defineProps<Props>(), {
   disableNativeAssetBuffer: false,
   hideFooter: false,
   ignoreWalletBalance: false,
+  name: '',
   options: () => [],
   rules: () => []
 });
@@ -90,7 +97,7 @@ const { fNum, toFiat } = useNumbers();
 const { currency } = useUserSettings();
 const { t } = useI18n();
 const { isWalletReady } = useWeb3();
-const formContext: any = useFormContext();
+const formContext = useFormContext();
 
 /**
  * COMPUTED
@@ -210,11 +217,24 @@ const setMax = () => {
   emit('update:amount', _amount.value);
 };
 
-function handleTextInputChange(name: string, event) {
+function handleTextInputChange(id: string, event) {
+  const formInputKey = `${props.name}.${id}`;
   emit('update:amount', event);
   if (formContext) {
-    formContext.onChange(name, event);
+    formContext.onChange(formInputKey, event);
   }
+}
+
+function getValue(id: string) {
+  const formInputKey = `${props.name}.${id}`;
+  // if this component is a child of a <BalForm /> bind it.
+  if (formContext) {
+    return formContext.register(
+      formInputKey,
+      inputRules.value as RuleFunction[]
+    );
+  }
+  return _amount.value;
 }
 
 /**
@@ -228,7 +248,7 @@ watchEffect(() => {
 
 <template>
   <BalTextInput
-    :value="formContext ? formContext.register('amount', inputRules) : _amount"
+    :value="getValue('amount')"
     :placeholder="hintAmount || '0.0'"
     type="number"
     :label="label"
@@ -268,8 +288,6 @@ watchEffect(() => {
         <div
           class="flex items-center justify-between text-sm text-gray-500 leading-none"
         >
-          bingbong {{ formContext.values }}
-          {{ formContext.errors }}
           <div v-if="!isWalletReady" />
           <div v-else class="cursor-pointer flex items-center" @click="setMax">
             {{ balanceLabel ? balanceLabel : $t('balance') }}:

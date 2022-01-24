@@ -150,7 +150,7 @@ const form = useForm({
 
 <template>
   <div>
-    <BalForm>
+    <BalForm :form="form">
       <TokenInput name="tokenIn" :disabled="tradeLoading" />
 
       <div class="flex items-center my-2">
