@@ -1,4 +1,4 @@
-import { Network } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 import { NativeAsset } from '@/types/TokenList';
 import { Ref } from 'vue';
 export const POOLS_ROOT_KEY = 'pools';

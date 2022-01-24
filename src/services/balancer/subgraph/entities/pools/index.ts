@@ -16,7 +16,7 @@ import {
   computeAPRsForPool
 } from '@/lib/utils/liquidityMining';
 
-import { Network } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 import { isStable, isStablePhantom, isWstETH } from '@/composables/usePool';
 import { oneSecondInMs, twentyFourHoursInSecs } from '@/composables/useTime';
 

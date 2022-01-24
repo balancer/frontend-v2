@@ -6,7 +6,7 @@ export function registerGlobalComponents(app: App): void {
   const req = require.context(
     '@/components/_global',
     true,
-    /^((?!stories).)*\.(js|ts|vue)$/i
+    /^((?!(stories|spec)).)*\.(js|ts|vue)$/i
   );
   for (const filePath of req.keys()) {
     const componentName = parsePath(filePath).name;

@@ -2,7 +2,7 @@ import { computed, inject } from 'vue';
 import BlocknativeSdk from 'bnc-sdk';
 import { bnSdkSymbol } from '@/plugins/blocknative';
 
-import { Network } from '@/composables/useNetwork';
+import { Network } from '@balancer-labs/sdk';
 import useWeb3 from '@/services/web3/useWeb3';
 
 const SUPPORTED_NETWORKS = [
