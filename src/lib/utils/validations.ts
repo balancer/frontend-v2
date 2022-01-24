@@ -45,3 +45,10 @@ export function isEmail() {
 export function isValidAddress() {
   return v => !v || isAddress(v) || i18n.global.t('mustBeValidAddress');
 }
+
+export function isGreaterThan(min: number | string, msg = '') {
+  return v =>
+    !v ||
+    bnum(v).isGreaterThan(min) ||
+    (msg ? msg : i18n.global.t('mustBeMoreThan', [min]));
+}

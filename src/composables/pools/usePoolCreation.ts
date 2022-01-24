@@ -375,6 +375,7 @@ export default function usePoolCreation() {
     const scaledAmounts: string[] = poolCreationState.seedTokens.map(
       (token: PoolSeedToken) => {
         const tokenInfo = getToken(token.tokenAddress);
+        if (!tokenInfo) return '0';
         const amount = new BigNumber(token.amount);
         const scaledAmount = scale(amount, tokenInfo.decimals);
         const scaledRoundedAmount = scaledAmount.dp(0, BigNumber.ROUND_FLOOR);

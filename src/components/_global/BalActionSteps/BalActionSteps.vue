@@ -29,6 +29,12 @@ type Props = {
   actions: TransactionActionInfo[];
   disabled: boolean;
   errorMessage: string;
+  // override action state loading prop and show
+  // loading for all steps
+  isLoading?: boolean;
+  // override action state loading label
+  // for all steps
+  loadingLabel?: string;
 };
 
 /**
@@ -177,23 +183,24 @@ async function handleTransaction(
       block
       class="mb-4"
     />
-    <BalHorizSteps
-      v-if="actions.length > 1 && !lastActionState.confirmed"
-      :steps="steps"
-      :spacerWidth="spacerWidth"
-      class="flex justify-center"
-    />
-    <BalBtn
-      v-if="!lastActionState.confirmed"
-      :disabled="props.disabled"
-      color="gradient"
-      class="mt-4"
-      :loading="currentAction.pending"
-      :loading-label="currentAction.loadingLabel"
-      block
-      @click="currentAction.promise()"
-    >
-      {{ currentAction.label }}
-    </BalBtn>
+    <BalStack vertical>
+      <BalHorizSteps
+        v-if="actions.length > 1 && !lastActionState.confirmed"
+        :steps="steps"
+        :spacerWidth="spacerWidth"
+        class="flex justify-center"
+      />
+      <BalBtn
+        v-if="!lastActionState.confirmed"
+        :disabled="props.disabled"
+        color="gradient"
+        :loading="currentAction.pending || isLoading"
+        :loading-label="isLoading ? loadingLabel : currentAction.loadingLabel"
+        block
+        @click="currentAction.promise()"
+      >
+        {{ currentAction.label }}
+      </BalBtn>
+    </BalStack>
   </div>
 </template>
